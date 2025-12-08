@@ -111,7 +111,7 @@ void GUIWindow_Rest::Update() {
         render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);
         render->DrawTextureNew(16 / 640.0f, 26 / 480.0f, rest_ui_sky_frame_current);
         if (rest_ui_hourglass_frame_current) {
-            rest_ui_hourglass_frame_current->Release();
+            rest_ui_hourglass_frame_current->release();
             rest_ui_hourglass_frame_current = nullptr;
         }
 

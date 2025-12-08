@@ -556,14 +556,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
 
 bool ArcomageGame::LoadSprites() {
     // load layout sprite
-    pArcomageGame->pSprites = assets->getImage_PCXFromIconsLOD("sprites.pcx");
-
-    // mask out blue
-    for (Color &pixel : pArcomageGame->pSprites->rgba().pixels())
-        if (pixel == colorTable.Blue)
-            pixel = Color();
-    render->Update_Texture(pArcomageGame->pSprites);
-
+    pArcomageGame->pSprites = assets->getImage_PCXFromIconsLOD("sprites.pcx", colorTable.Blue);
     return true;
 }
 
@@ -989,10 +982,10 @@ void ArcomageGame::Loop() {
         am_effects_array[i].explosion_eff->Free();
     }
 
-    pArcomageGame->pGameBackground->Release();
+    pArcomageGame->pGameBackground->release();
     pArcomageGame->pGameBackground = nullptr;
 
-    pArcomageGame->pSprites->Release();
+    pArcomageGame->pSprites->release();
     pArcomageGame->pSprites = nullptr;
 
     pArcomageGame->bGameInProgress = false;
@@ -1375,11 +1368,11 @@ void DrawRectanglesForText() {
 
     pTargetXY.x = 8;
     pTargetXY.y = 56;
-    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, 0, 2);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetXY, colorTable.White);
 
     pTargetXY.x = 555;
     pTargetXY.y = 56;
-    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, 0, 2);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetXY, colorTable.White);
 
     // players name rectangle
     pSrcRect.x = 283;
@@ -1388,11 +1381,11 @@ void DrawRectanglesForText() {
     pSrcRect.h = 190 - pSrcRect.y;
     pTargetXY.x = 8;
     pTargetXY.y = 13;
-    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetXY, colorTable.White);
 
     pTargetXY.x = 555;
     pTargetXY.y = 13;
-    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetXY, colorTable.White);
 
     // tower height rectangle
     pSrcRect.x = 234;
@@ -1401,11 +1394,11 @@ void DrawRectanglesForText() {
     pSrcRect.h = 190 - pSrcRect.y;
     pTargetXY.x = 100;
     pTargetXY.y = 296;
-    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetXY, colorTable.White);
 
     pTargetXY.x = 492;
     pTargetXY.y = 296;
-    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetXY, colorTable.White);
 
     // wall height rectangle
     pSrcRect.x = 192;
@@ -1414,11 +1407,11 @@ void DrawRectanglesForText() {
     pSrcRect.h = 190 - pSrcRect.y;
     pTargetXY.x = 168;
     pTargetXY.y = 296;
-    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetXY, colorTable.White);
 
     pTargetXY.x = 430;
     pTargetXY.y = 296;
-    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetXY, colorTable.White);
 }
 
 void DrawPlayersText() {
@@ -1551,7 +1544,8 @@ void DrawPlayerLevels(std::string_view str, Pointi *pXY) {
             pSrcRect.w = v7 - 842 - pSrcRect.x;
             pSrcRect.h = 207 - pSrcRect.y;
             // draw digit
-            render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
+            // TODO(captainurist): this was drawn with blendMode = 1 in original binary, did it have special meaning?
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetPoint, colorTable.White);
             pTargetPoint.x += 22;
         }
     }
@@ -1573,7 +1567,7 @@ void DrawBricksCount(std::string_view str, Pointi *pXY) {
             pSrcRect.w = v7 - 357 - pSrcRect.x;
             pSrcRect.h = 138 - pSrcRect.y;
             // draw digit
-            render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, 0, 2);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetPoint, colorTable.White);
             pTargetPoint.x += 13;
         }
     }
@@ -1595,7 +1589,7 @@ void DrawGemsCount(std::string_view str, Pointi *pXY) {
             pSrcRect.w = v7 - 357 - pSrcRect.x;
             pSrcRect.h = 148 - pSrcRect.y;
             // draw digit
-            render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, 0, 2);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetPoint, colorTable.White);
             pTargetPoint.x += 13;
         }
     }
@@ -1617,7 +1611,7 @@ void DrawBeastsCount(std::string_view str, Pointi *pXY) {
             pSrcRect.w = x_offset - 357 - pSrcRect.x;
             pSrcRect.h = 158 - pSrcRect.y;
             // draw digit
-            render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, 0, 2);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcRect, pTargetPoint, colorTable.White);
             pTargetPoint.x += 13;
         }
     }
@@ -1639,7 +1633,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = tower_top - pSrcXYZW.y;
     pTargetXY.x = 102;
     pTargetXY.y = 297 - tower_top;
-    if (tower_height > 0) render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);  //стена башни
+    if (tower_height > 0) render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);  //стена башни
 
     // draw player 0 top
     pSrcXYZW.y = 0;
@@ -1648,7 +1642,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = 94 - pSrcXYZW.y;
     pTargetXY.y = 203 - tower_top;
     pTargetXY.x = 91;
-    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);  //верхушка башни
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);  //верхушка башни
 
     // draw player 1 tower
     tower_height = am_Players[1].tower_height;
@@ -1662,7 +1656,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = tower_top - pSrcXYZW.y;
     pTargetXY.x = 494;
     pTargetXY.y = 297 - tower_top;
-    if (tower_height > 0) render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);
+    if (tower_height > 0) render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);
 
     // draw tower 1 top
     pSrcXYZW.x = 384;
@@ -1671,7 +1665,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = 188 - pSrcXYZW.y;
     pTargetXY.x = 483;
     pTargetXY.y = 203 - tower_top;
-    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);
 }
 
 void DrawPlayersWall() {
@@ -1693,7 +1687,7 @@ void DrawPlayersWall() {
         pSrcXYZW.h = player_0_pixh - pSrcXYZW.y;
         pTargetXY.x = 177;
         pTargetXY.y = 297 - player_0_pixh;
-        render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+        render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);
     }
 
     // draw player 1 wall
@@ -1707,7 +1701,7 @@ void DrawPlayersWall() {
         pSrcXYZW.h = player_1_pixh - pSrcXYZW.y;
         pTargetXY.x = 439;
         pTargetXY.y = 297 - player_1_pixh;
-        render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+        render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);
     }
 }
 
@@ -1739,14 +1733,14 @@ void DrawCards() {
                 pSrcXYZW.y = 0;
                 pSrcXYZW.w = 288 - pSrcXYZW.x;
                 pSrcXYZW.h = 128 - pSrcXYZW.y;
-                render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);  //рисуется оборотные стороны карт противника
+                render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);  //рисуется оборотные стороны карт противника
             } else {
                 pArcomageGame->GetCardRect(am_Players[current_player_num].cards_at_hand[card_slot], &pSrcXYZW);
                 if (!CanCardBePlayed(current_player_num, card_slot)) {
                     // рисуются неактивные карты - greyed out
-                    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 0);
+                    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.Gray);
                 } else {
-                    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);  //рисуются активные карты
+                    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);  //рисуются активные карты
                 }
             }
         }
@@ -1768,7 +1762,7 @@ void DrawCards() {
             if (shown_cards[table_cards].uCardId != -1) {
                 // draw card - greyed out
                 pArcomageGame->GetCardRect(shown_cards[table_cards].uCardId, &pSrcXYZW);
-                render->DrawFromSpriteSheet(&pSrcXYZW, &shown_cards[table_cards].hide_anim_pos, 0, 0);
+                render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, shown_cards[table_cards].hide_anim_pos, colorTable.Gray);
             }
             if (shown_cards[table_cards].discarded != 0) {
                 // draw discarded text
@@ -1778,7 +1772,7 @@ void DrawCards() {
                 pSrcXYZW.y = 200;
                 pSrcXYZW.w = 916 - pSrcXYZW.x;
                 pSrcXYZW.h = 216 - pSrcXYZW.y;
-                render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+                render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);
             }
         } else if (hide_card_anim_count <= 0) {
             // animation finished
@@ -1801,7 +1795,7 @@ void DrawCards() {
                 shown_cards[table_cards].hide_anim_pos.x += shown_cards[table_cards].hide_anim_spd.x;
                 shown_cards[table_cards].hide_anim_pos.y += shown_cards[table_cards].hide_anim_spd.y;
                 pArcomageGame->GetCardRect(shown_cards[table_cards].uCardId, &pSrcXYZW);
-                render->DrawFromSpriteSheet(&pSrcXYZW, &shown_cards[table_cards].hide_anim_pos, 0, 0);
+                render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, shown_cards[table_cards].hide_anim_pos, colorTable.Gray);
             }
         }
     }
@@ -1816,7 +1810,7 @@ void DrawCards() {
     pSrcXYZW.h = 128 - pSrcXYZW.y;
     pTargetXY.x = 120;
     pTargetXY.y = 18;
-    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 0);
+    render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.Gray);
 }
 
 void DrawCardAnimation(int animation_stage) {
@@ -1855,7 +1849,7 @@ void DrawCardAnimation(int animation_stage) {
             pSrcXYZW.y = 0;
             pSrcXYZW.w = 288 - pSrcXYZW.x;
             pSrcXYZW.h = 128 - pSrcXYZW.y;
-            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_drawncard, 0, 2);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_drawncard, colorTable.White);
         } else {
             // animation is running - update position and draw
             pSrcXYZW.x = 192;
@@ -1864,7 +1858,7 @@ void DrawCardAnimation(int animation_stage) {
             pSrcXYZW.h = 128 - pSrcXYZW.y;
             anim_card_pos_drawncard.x += anim_card_spd_drawncard.x;
             anim_card_pos_drawncard.y += anim_card_spd_drawncard.y;
-            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_drawncard, 0, 2);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_drawncard, colorTable.White);
 
             // reset if animation is finished
             if (!drawn_card_anim_cnt) drawn_card_slot_index = -1;
@@ -1892,7 +1886,7 @@ void DrawCardAnimation(int animation_stage) {
                 pArcomageGame->GetCardRect(discarded_card_id, &pSrcXYZW);
                 pTargetXY.x = shown_cards[card_slot].table_pos.x;
                 pTargetXY.y = shown_cards[card_slot].table_pos.y;
-                render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 0);
+                render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.Gray);
 
                 // reset discard anim
                 discarded_card_id = -1;
@@ -1902,7 +1896,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(discarded_card_id, &pSrcXYZW);
             anim_card_pos_playdiscard.x += anim_card_spd_playdiscard.x;
             anim_card_pos_playdiscard.y += anim_card_spd_playdiscard.y;
-            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_playdiscard, 0, 0);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_playdiscard, colorTable.Gray);
         }
     }
     // end discard card anim
@@ -1915,7 +1909,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             anim_card_pos_playdiscard.x += anim_card_spd_playdiscard.x;
             anim_card_pos_playdiscard.y += anim_card_spd_playdiscard.y;
-            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_playdiscard, 0, 2);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_playdiscard, colorTable.White);
             return;
         }
 
@@ -1930,7 +1924,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = 272;
             pTargetXY.y = 173;
-            render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);
             return;
         }
 
@@ -1950,7 +1944,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = 272;
             pTargetXY.y = 173;
-            render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.White);
             return;
         }
 
@@ -1960,7 +1954,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             anim_card_pos_playdiscard.x += anim_card_spd_playdiscard.x;
             anim_card_pos_playdiscard.y += anim_card_spd_playdiscard.y;
-            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_playdiscard, 0, 0);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_playdiscard, colorTable.Gray);
             return;
         }
 
@@ -1979,7 +1973,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = shown_cards[v19].table_pos.x;
             pTargetXY.y = shown_cards[v19].table_pos.y;
-            render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 0);
+            render->DrawFromSpriteSheet(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.Gray);
 
             // reset anim
             played_card_id = -1;

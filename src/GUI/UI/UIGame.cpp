@@ -2,6 +2,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include <string>
+#include <utility>
 
 #include "GUI/UI/UIGame.h"
 
@@ -401,7 +402,7 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
 
     // update gamma preview
     if (gamma_preview_image) {
-        gamma_preview_image->Release();
+        gamma_preview_image->release();
         gamma_preview_image = nullptr;
     }
 
@@ -469,7 +470,7 @@ void OptionsMenuSkin::Release() {
 #define RELEASE(img)        \
     {                       \
         if (img) {          \
-            img->Release(); \
+            img->release(); \
             img = nullptr;  \
         }                   \
     }
@@ -1248,10 +1249,19 @@ void GameUI_DrawCharacterSelectionFrame() {
 void GameUI_DrawPartySpells() {
     for (int i = 0; i < spellBuffsAtRightPanel.size(); ++i) {
         if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
-            render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640.,
-                                           pPartySpellbuffsUI_XYs[i][1] / 480.,
-                                           party_buff_icons[i],
-                                           pMiscTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]);
+            int time = (pMiscTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]) % 126;
+
+            Recti rect;
+            rect.w = party_buff_icons[i]->width() / 16;
+            rect.h = party_buff_icons[i]->height() / 8;
+            rect.x = time % 16 * rect.w;
+            rect.y = time / 16 * rect.h;
+
+            Pointi point;
+            point.x = pPartySpellbuffsUI_XYs[i][0];
+            point.y = pPartySpellbuffsUI_XYs[i][1];
+
+            render->DrawFromSpriteSheet(party_buff_icons[i], rect, point, colorTable.White);
         }
     }
 
@@ -1411,14 +1421,15 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        static GraphicsImage *minimaptemp;
-        if (!minimaptemp) {
-            minimaptemp = GraphicsImage::Create(rect.size());
-        }
+        static GraphicsImage *minimaptemp = nullptr;
 
         bool partymoved = true;  // TODO(pskelton): actually check for party movement
 
         if (partymoved) {
+            if (minimaptemp) {
+                minimaptemp->release();
+            }
+
             int imageWidth = viewparams->location_minimap->width(); // Assume a square image.
 
             // Party position in fixpoint image coordinates.
@@ -1433,18 +1444,18 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
             // TODO(pskelton): could stretch texture rather than rescale
             assert(rect.w == 137 && rect.h == 117);
 
+            RgbaImage minimapImage = RgbaImage::solid(rect.w, rect.h, Color());
             int step16 = (1 << 16) * imageWidth / zoom;
             for (int dstY = 0, srcY16 = starty16; dstY < rect.h; ++dstY, srcY16 += step16) {
-                std::span<Color> dstLine = minimaptemp->rgba()[dstY];
+                std::span<Color> dstLine = minimapImage[dstY];
                 std::span<const Color> srcLine = viewparams->location_minimap->rgba()[srcY16 >> 16];
                 for (int dstX = 0, srcX16 = startx16; dstX < rect.w; ++dstX, srcX16 += step16)
                     dstLine[dstX] = srcLine[srcX16 >> 16];
             }
 
             // draw image
-            render->Update_Texture(minimaptemp);
+            minimaptemp = GraphicsImage::Create(std::move(minimapImage));
             render->DrawTextureNew(rect.x / 640., rect.y / 480., minimaptemp);
-            // minimaptemp->Release();
         } else {
             // no need to update map - just redraw
             render->DrawTextureNew(rect.x / 640., rect.y / 480., minimaptemp);

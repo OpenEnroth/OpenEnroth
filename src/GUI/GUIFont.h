@@ -96,7 +96,7 @@ class GUIFont {
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,
                           unsigned int w, unsigned int h, Color firstColor,
                           Color secondColor, Color shadowColor, std::string_view pString,
-                          GraphicsImage *image);
+                          RgbaImage *image);
     int GetStringHeightWithSecondFont(GUIFont *secondFont, std::string_view text_str, int width, int x);
 
  private:

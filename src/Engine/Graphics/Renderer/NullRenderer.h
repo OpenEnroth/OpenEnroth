@@ -30,9 +30,6 @@ class NullRenderer : public BaseRenderer {
 
     virtual TextureRenderId CreateTexture(RgbaImageView image) override;
     virtual void DeleteTexture(TextureRenderId id) override;
-    virtual void UpdateTexture(TextureRenderId id, RgbaImageView image) override;
-
-    virtual void Update_Texture(GraphicsImage *texture) override;
 
     virtual void BeginScene2D() override;
     virtual void ScreenFade(Color color, float t) override;
@@ -50,7 +47,6 @@ class NullRenderer : public BaseRenderer {
 
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
                                int start_opacity, int end_opacity) override;
-    virtual void TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) override;
 
     virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) override;
     virtual void EndTextNew() override;
@@ -73,8 +69,7 @@ class NullRenderer : public BaseRenderer {
     virtual void EndDecals() override;
     virtual void DrawDecal(Decal *pDecal, float z_bias) override;
 
-    virtual void DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
-                                     int blend_mode) override;
+    virtual void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) override;
 
     virtual void DrawIndoorFaces() override;
 

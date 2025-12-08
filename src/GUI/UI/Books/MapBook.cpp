@@ -1,6 +1,8 @@
 #include "MapBook.h"
 
 #include <string>
+#include <bit>
+#include <utility>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
@@ -169,7 +171,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         int screenWidth = br_x - tl_x + 1;
         int screenHeight = br_y - tl_y + 1;
 
-        int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);
+        int loc_power = std::countr_zero(static_cast<unsigned int>(viewparams->location_minimap->width()));
         int scale_increment = (1 << (loc_power + 16)) / viewparams->uMapBookMapZoom;
         double MapSizeScale = (double)(1 << (16 - loc_power));
         int stepX_r_resets =
@@ -180,10 +182,12 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         int scaled_posY = stepY_r >> 16;
 
         static GraphicsImage *minimaptemp = nullptr;
-        if (!minimaptemp) {
-            minimaptemp = GraphicsImage::Create(screenWidth, screenHeight);
+        if (minimaptemp) {
+            minimaptemp->release();
         }
-        Color *minitempix = minimaptemp->rgba().pixels().data();
+
+        RgbaImage minimapImage = RgbaImage::solid(screenWidth, screenHeight, Color());
+        Color *minitempix = minimapImage.pixels().data();
         const Color *minimap_pixels = viewparams->location_minimap->rgba().pixels().data();
         int textr_width = viewparams->location_minimap->width();
 
@@ -217,7 +221,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
             }
         }
 
-        render->Update_Texture(minimaptemp);
+        minimaptemp = GraphicsImage::Create(std::move(minimapImage));
         render->DrawTextureNew(tl_x / 640., tl_y / 480., minimaptemp);
     } else {  // indoors
         if (!pIndoor->pMapOutlines.empty()) {

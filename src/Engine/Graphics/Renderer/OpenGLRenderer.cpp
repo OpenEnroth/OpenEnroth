@@ -37,7 +37,6 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
-#include "Arcomage/Arcomage.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
 
@@ -49,7 +48,6 @@
 #include "Library/Image/ImageFunctions.h"
 
 #include "Utility/String/Format.h"
-#include "Utility/Memory/MemSet.h"
 
 #include "OpenGLShader.h"
 
@@ -717,8 +715,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 
         int w = imgin->width();
         int h = imgin->height();
-        GraphicsImage *temp = GraphicsImage::Create(w, h);
-        RgbaImage &dstImage = temp->rgba();
+        RgbaImage dstImage = RgbaImage::solid(w, h, Color());
 
         Color c = maskImage.pixels()[2700];  // guess at brightest pixel
         unsigned int rmax = c.r;
@@ -767,56 +764,12 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
         }
 
         // draw image
-        render->Update_Texture(temp);
+        GraphicsImage *temp = GraphicsImage::Create(std::move(dstImage));
         render->DrawTextureNew(x / float(outputRender.w), y / float(outputRender.h), temp);
 
         render->DrawTwodVerts();
 
-        temp->Release();
-    }
-}
-
-// TODO(pskelton): renderbase
-//----- (004A65CC) --------------------------------------------------------
-//_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
-// a6 is time, a7 is 0, a8 is 63
-void OpenGLRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) {
-    // TODO(pskelton): sort this - precalculate/ shader
-    static std::array<GraphicsImage *, 14> cachedtemp {};
-    static std::array<int, 14> cachetime { -1 };
-
-    if (img) {
-        std::string_view tempstr{ img->GetName() };
-        int number = tempstr[4] - 48;
-        int number2 = tempstr[5] - 48;
-
-        int thisslot = 10 * number + number2 - 1;
-        if (cachetime[thisslot] != time) {
-            int width = img->width();
-            int height = img->height();
-            if (!cachedtemp[thisslot]) {
-                cachedtemp[thisslot] = GraphicsImage::Create(width, height);
-            }
-
-            const Palette &palette = img->palette();
-            auto temppix = cachedtemp[thisslot]->rgba().pixels();
-            auto texpix24 = img->indexed().pixels();
-
-            for (size_t i = 0, size = temppix.size(); i < size; i++) {
-                int index = texpix24[i];
-                if (index >= 0 && index <= 63) {
-                    index = (time + index) % (2 * 63);
-                    if (index >= 63)
-                        index = (2 * 63) - index;
-                    temppix[i] = palette.colors[index];
-                }
-            }
-
-            cachetime[thisslot] = time;
-            render->Update_Texture(cachedtemp[thisslot]);
-        }
-
-        render->DrawTextureNew(u, v, cachedtemp[thisslot]);
+        temp->release();
     }
 }
 
@@ -1193,24 +1146,22 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
     }
 }
 
-void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
+void OpenGLRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {
     // want to draw psrcrect section @ point
-
-    GraphicsImage *texture = pArcomageGame->pSprites;
 
     if (!texture) {
         logger->trace("Missing Arcomage Sprite Sheet");
         return;
     }
 
-    float col = (blend_mode == 2) ? 1.0f : 0.5f;
-    Colorf cf = Colorf(col, col, col);
+    //float col = (blendMode == 2) ? 1.0f : 0.5f;
+    Colorf cf = color.toColorf();
 
-    int width = pSrcRect->w;
-    int height = pSrcRect->h;
+    int width = srcRect.w;
+    int height = srcRect.h;
 
-    int x = pTargetPoint->x;
-    int y = pTargetPoint->y;
+    int x = targetPoint.x;
+    int y = targetPoint.y;
     int z = x + width;
     int w = y + height;
 
@@ -1219,7 +1170,7 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
         return;
 
     // check for overlap
-    if (!Recti(*pTargetPoint, pSrcRect->size()).intersects(this->clipRect))
+    if (!Recti(targetPoint, srcRect.size()).intersects(this->clipRect))
         return;
 
     float gltexid = static_cast<float>(texture->renderId().value());
@@ -1231,10 +1182,10 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
     float draww = static_cast<float>(w);
     float drawz = static_cast<float>(z);
 
-    float texx = pSrcRect->x / float(texwidth);
-    float texy = pSrcRect->y / float(texheight);
-    float texz = (pSrcRect->x + pSrcRect->w) / float(texwidth);
-    float texw = (pSrcRect->y + pSrcRect->h) / float(texheight);
+    float texx = srcRect.x / float(texwidth);
+    float texy = srcRect.y / float(texheight);
+    float texz = (srcRect.x + srcRect.w) / float(texwidth);
+    float texw = (srcRect.y + srcRect.h) / float(texheight);
 
     // 0 1 2 / 0 2 3
 
@@ -1304,10 +1255,6 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
     return;
 }
 
-void OpenGLRenderer::Update_Texture(GraphicsImage *texture) {
-    UpdateTexture(texture->renderId(), texture->rgba());
-}
-
 TextureRenderId OpenGLRenderer::CreateTexture(RgbaImageView image) {
     assert(image);
 
@@ -1330,15 +1277,6 @@ void OpenGLRenderer::DeleteTexture(TextureRenderId id) {
 
     GLuint glId = id.value();
     glDeleteTextures(1, &glId);
-}
-
-void OpenGLRenderer::UpdateTexture(TextureRenderId id, RgbaImageView image) {
-    assert(image);
-    assert(id);
-
-    glBindTexture(GL_TEXTURE_2D, id.value());
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.width(), image.height(), GL_RGBA, GL_UNSIGNED_BYTE, image.pixels().data());
-    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // TODO(pskelton): to camera?
@@ -2682,7 +2620,7 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
     assert(tex);
 
     if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->GetName());
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->name());
 
     Colorf cf = colourmask.toColorf();
 
@@ -2788,7 +2726,7 @@ void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *im
     assert(img);
 
     if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, img->GetName());
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, img->name());
 
     Colorf cf(1.0f, 1.0f, 1.0f);
 
@@ -3223,14 +3161,14 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         if (!face.GetTexture()) continue;
                         GraphicsImage *tex = face.GetTexture();
 
-                        std::string texname = tex->GetName();
+                        std::string texname = tex->name();
 
                         Duration animLength;
                         Duration frame;
                         if (face.IsAnimated()) {
                             tex = pTextureFrameTable->animationFrame(face.animationId, frame);
                             animLength = pTextureFrameTable->animationLength(face.animationId);
-                            texname = tex->GetName();
+                            texname = tex->name();
                         }
                         // gather up all texture and shaderverts data
 
@@ -3315,7 +3253,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 frame += pTextureFrameTable->animationFrameLength(face.animationId);
                                 tex = pTextureFrameTable->animationFrame(face.animationId, frame);
                                 if (!tex) break;
-                                texname = tex->GetName();
+                                texname = tex->name();
                             }
                         } while (animLength > frame);
 
@@ -3443,7 +3381,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                                 if (texlayer == -1) { // texture has been reset - see if its in the map
                                     GraphicsImage *tex = face.GetTexture();
-                                    std::string texname = tex->GetName();
+                                    std::string texname = tex->name();
                                     auto mapiter = bsptexmap.find(texname);
                                     if (mapiter != bsptexmap.end()) {
                                         // if so, extract unit and layer
@@ -3843,14 +3781,14 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 // TODO(pskelton): Same as outdoors. When ODM and BLV face is combined - seperate out function
                 GraphicsImage *tex = face->GetTexture();
-                std::string texname = tex->GetName();
+                std::string texname = tex->name();
 
                 Duration animLength;
                 Duration frame;
                 if (face->IsAnimated()) {
                     tex = pTextureFrameTable->animationFrame(face->animationId, frame);
                     animLength = pTextureFrameTable->animationLength(face->animationId);
-                    texname = tex->GetName();
+                    texname = tex->name();
                 }
 
                 int texunit = 0;
@@ -3914,7 +3852,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         frame += pTextureFrameTable->animationFrameLength(face->animationId);
                         tex = pTextureFrameTable->animationFrame(face->animationId, frame);
                         if (!tex) break;
-                        texname = tex->GetName();
+                        texname = tex->name();
                     }
                 } while (animLength > frame);
 
@@ -4063,7 +4001,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 if (texlayer == -1) { // texture has been reset - see if its in the map
                     GraphicsImage *tex = face->GetTexture();
-                    std::string texname = tex->GetName();
+                    std::string texname = tex->name();
                     auto mapiter = bsptexmap.find(texname);
                     if (mapiter != bsptexmap.end()) {
                         // if so, extract unit and layer

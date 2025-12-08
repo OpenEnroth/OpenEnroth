@@ -1078,12 +1078,8 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
 }
 
 static void LoadPartyBuffIcons() {
-    for (unsigned i = 0; i < 14; ++i) {
-        //auto temp = assets->GetImage_Paletted(StringPrintf("isn-%02d", i + 1));
-        //int booty = temp->GetHeight();
-        //party_buff_icons[i] = assets->getImage_ColorKey(StringPrintf("isn-%02d", i + 1), colorTable.TealMask);
-        party_buff_icons[i] = assets->getImage_Paletted(fmt::format("isn-{:02}", i + 1));
-    }
+    for (unsigned i = 0; i < 14; ++i)
+        party_buff_icons[i] = assets->getImage_Buff(fmt::format("isn-{:02}", i + 1));
 
     uIconIdx_FlySpell = pIconsFrameTable->animationId("spell21");
     uIconIdx_WaterWalk = pIconsFrameTable->animationId("spell27");

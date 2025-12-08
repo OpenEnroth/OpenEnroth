@@ -6748,7 +6748,7 @@ void Character::Zero() {
     uNumFireSpikeCasts = 0; // TODO(pskelton): firespike meant to remain permanantly??
     for (int z = 0; z < 5; z++) {
         if (vBeacons[z])
-            vBeacons[z]->image->Release();
+            vBeacons[z]->image->release();
         vBeacons[z].reset();
     }
     // Character bits
@@ -6792,7 +6792,7 @@ void Character::cleanupBeacons() {
     for (int i = 0; i < 5; i++) {
         if (!vBeacons[i] || vBeacons[i]->uBeaconTime >= pParty->GetPlayingTime())
             continue;
-        vBeacons[i]->image->Release();
+        vBeacons[i]->image->release();
         vBeacons[i].reset();
     }
 }
@@ -6813,7 +6813,7 @@ bool Character::setBeacon(int index, Duration duration) {
 
     if (vBeacons[index]) {
         // overwrite so clear image
-        vBeacons[index]->image->Release();
+        vBeacons[index]->image->release();
     }
     vBeacons[index] = beacon;
 

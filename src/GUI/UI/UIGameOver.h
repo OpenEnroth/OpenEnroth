@@ -15,4 +15,5 @@ class GUIWindow_GameOver : public GUIWindow {
  protected:
     UIMessageType _releaseEvent = UIMSG_0;
     bool _showPopUp = false;
+    GraphicsImage *_winnerCert = nullptr;
 };

@@ -63,6 +63,13 @@ class LodReader final {
     [[nodiscard]] Blob read(std::string_view filename) const;
 
     /**
+     * @param filename                  Name of the LOD file entry.
+     * @return                          Display path for the given LOD entry. Same as `read(filename).displayPath()` but
+     *                                  also works for non-existent entries.
+     */
+    [[nodiscard]] std::string displayPath(std::string_view filename) const;
+
+    /**
      * @return                          List of all files in a LOD.
      */
     [[nodiscard]] std::vector<std::string> ls() const;

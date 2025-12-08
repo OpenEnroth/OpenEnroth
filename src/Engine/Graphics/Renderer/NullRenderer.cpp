@@ -47,9 +47,6 @@ TextureRenderId NullRenderer::CreateTexture(RgbaImageView image) {
 }
 
 void NullRenderer::DeleteTexture(TextureRenderId id) {}
-void NullRenderer::UpdateTexture(TextureRenderId id, RgbaImageView image) {}
-
-void NullRenderer::Update_Texture(GraphicsImage *texture) {}
 
 void NullRenderer::BeginScene2D() {}
 void NullRenderer::ScreenFade(Color color, float t) {}
@@ -59,12 +56,12 @@ void NullRenderer::ResetUIClipRect() {}
 
 void NullRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
     if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->GetName());
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->name());
 }
 
 void NullRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *tex, int height) {
     if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->GetName());
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->name());
 }
 
 void NullRenderer::DrawTextureOffset(int x, int y, int offset_x, int offset_y,
@@ -73,7 +70,6 @@ void NullRenderer::DrawImage(GraphicsImage *, const Recti &rect, int paletteid, 
 
 void NullRenderer::BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
                                  int start_opacity, int end_opacity) {}
-void NullRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) {}
 
 void NullRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {}
 void NullRenderer::EndTextNew() {}
@@ -99,8 +95,7 @@ void NullRenderer::BeginDecals() {}
 void NullRenderer::EndDecals() {}
 void NullRenderer::DrawDecal(Decal *pDecal, float z_bias) {}
 
-void NullRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
-                                       int blend_mode) {}
+void NullRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {}
 
 void NullRenderer::DrawIndoorFaces() {}
 

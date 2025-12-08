@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <cstring>
 
+#include "Library/Serialization/SerializationFwd.h"
+
 #include "Utility/String/Format.h"
 
 #include "Colorf.h"
@@ -91,6 +93,8 @@ struct Color {
 };
 static_assert(sizeof(Color) == 4);
 static_assert(alignof(Color) == 1);
+
+MM_DECLARE_SERIALIZATION_FUNCTIONS(Color)
 
 
 using ColorTag = detail::ColorTag<Color>;

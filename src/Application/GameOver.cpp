@@ -28,8 +28,6 @@ void GameOver_Setup() {
     GameOverNoSound = true;
     pAudioPlayer->stopSounds();
 
-    CreateWinnerCertificate();
-
     // break out of house and dialogue
     if (window_SpeakInHouse) window_SpeakInHouse->Release();
     window_SpeakInHouse = nullptr;
@@ -37,7 +35,7 @@ void GameOver_Setup() {
     window_SpeakInHouse = nullptr;
 }
 
-void CreateWinnerCertificate() {
+GraphicsImage *CreateWinnerCertificate() {
     render->Present();
     render->BeginScene2D();
     GraphicsImage *background = assets->getImage_PCXFromIconsLOD("winbg.pcx");
@@ -119,9 +117,11 @@ void CreateWinnerCertificate() {
 
     RgbaImage pixels = render->MakeFullScreenshot();
     ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
-    assets->winnerCert = GraphicsImage::Create(std::move(pixels));
+    GraphicsImage *result = GraphicsImage::Create(std::move(pixels));
 
-    background->Release();
+    background->release();
     background = nullptr;
     tempwindow_SpeakInHouse->Release();
+
+    return result;
 }

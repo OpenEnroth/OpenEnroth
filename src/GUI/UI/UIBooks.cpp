@@ -14,58 +14,58 @@
 
 void GUIWindow_Book::Release() {
     if (ui_book_map_frame) {
-        ui_book_map_frame->Release();
+        ui_book_map_frame->release();
     }
     if (ui_book_quest_div_bar) {
-        ui_book_quest_div_bar->Release();
+        ui_book_quest_div_bar->release();
     }
     if (ui_book_button8_off) {
-        ui_book_button8_off->Release();
+        ui_book_button8_off->release();
     }
     if (ui_book_button8_on) {
-        ui_book_button8_on->Release();
+        ui_book_button8_on->release();
     }
     if (ui_book_button7_off) {
-        ui_book_button7_off->Release();
+        ui_book_button7_off->release();
     }
     if (ui_book_button7_on) {
-        ui_book_button7_on->Release();
+        ui_book_button7_on->release();
     }
     if (ui_book_button6_off) {
-        ui_book_button6_off->Release();
+        ui_book_button6_off->release();
     }
     if (ui_book_button6_on) {
-        ui_book_button6_on->Release();
+        ui_book_button6_on->release();
     }
     if (ui_book_button5_off) {
-        ui_book_button5_off->Release();
+        ui_book_button5_off->release();
     }
     if (ui_book_button5_on) {
-        ui_book_button5_on->Release();
+        ui_book_button5_on->release();
     }
     if (ui_book_button4_off) {
-        ui_book_button4_off->Release();
+        ui_book_button4_off->release();
     }
     if (ui_book_button4_on) {
-        ui_book_button4_on->Release();
+        ui_book_button4_on->release();
     }
     if (ui_book_button3_off) {
-        ui_book_button3_off->Release();
+        ui_book_button3_off->release();
     }
     if (ui_book_button3_on) {
-        ui_book_button3_on->Release();
+        ui_book_button3_on->release();
     }
     if (ui_book_button2_off) {
-        ui_book_button2_off->Release();
+        ui_book_button2_off->release();
     }
     if (ui_book_button2_on) {
-        ui_book_button2_on->Release();
+        ui_book_button2_on->release();
     }
     if (ui_book_button1_off) {
-        ui_book_button1_off->Release();
+        ui_book_button1_off->release();
     }
     if (ui_book_button1_on) {
-        ui_book_button1_on->Release();
+        ui_book_button1_on->release();
     }
 
     pAudioPlayer->playUISound(SOUND_closebook);

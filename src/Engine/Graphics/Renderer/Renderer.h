@@ -83,10 +83,6 @@ class Renderer {
 
     virtual TextureRenderId CreateTexture(RgbaImageView image) = 0;
     virtual void DeleteTexture(TextureRenderId id) = 0;
-    virtual void UpdateTexture(TextureRenderId id, RgbaImageView image) = 0;
-
-    virtual void Update_Texture(GraphicsImage *texture) = 0;
-
 
     virtual void BeginScene2D() = 0;
     virtual void ScreenFade(Color color, float t) = 0;
@@ -100,7 +96,6 @@ class Renderer {
     virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask32 = colorTable.White) = 0;
 
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
-    virtual void TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) = 0;
     virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
 
     virtual void DrawMasked(float u, float v, GraphicsImage *img,
@@ -147,9 +142,7 @@ class Renderer {
 
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) = 0;
 
-    virtual void DrawFromSpriteSheet(Recti *pSrcRect,
-                               Pointi *pTargetPoint, int a3,
-                               int blend_mode) = 0;
+    virtual void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) = 0;
 
     virtual void DrawIndoorFaces() = 0;
 

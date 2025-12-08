@@ -1,4 +1,7 @@
+#pragma once
+
 #include "MagicEnums.h"
+#include "MagicEnumFunctions.h"
 
 class Blob;
 

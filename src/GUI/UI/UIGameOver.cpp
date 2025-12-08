@@ -16,6 +16,7 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(W
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_GAMEOVER_WINDOW;
     GameOver_Setup();
+    _winnerCert = CreateWinnerCertificate();
     this->sHint = fmt::format(
         "{}\n \n{}\n \n{}",
         localization->str(LSTR_CONGRATULATIONS_ADVENTURER),
@@ -25,8 +26,8 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(W
 
 void GUIWindow_GameOver::Update() {
     // draw winners certificate background
-    assert(assets->winnerCert);
-    render->DrawTextureNew(0, 0, assets->winnerCert);
+    assert(_winnerCert);
+    render->DrawTextureNew(0, 0, _winnerCert);
 
     // draw pop up box
     if (_showPopUp) {
@@ -48,6 +49,8 @@ void GUIWindow_GameOver::Release() {
     current_screen_type = prev_screen_type;
     GameOverNoSound = false;
     pEventTimer->setPaused(false);
+
+    _winnerCert->release();
 
     GUIWindow::Release();
 }

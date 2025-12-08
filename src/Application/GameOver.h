@@ -1,4 +1,6 @@
 #pragma once
 
+class GraphicsImage;
+
 void GameOver_Setup();
-void CreateWinnerCertificate();
+GraphicsImage *CreateWinnerCertificate();

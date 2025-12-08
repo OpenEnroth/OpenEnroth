@@ -284,7 +284,7 @@ void Menu::EventLoop() {
                 pAudioPlayer->playUISound(SOUND_ClickMovingSelector);
 
                 if (gamma_preview_image) {
-                    gamma_preview_image->Release();
+                    gamma_preview_image->release();
                     gamma_preview_image = nullptr;
                 }
 
@@ -422,7 +422,7 @@ void Menu::EventLoop() {
                     } else {
                         for (int i = 0; i < 5; i++) {
                             if (game_ui_options_controls[i]) {
-                                game_ui_options_controls[i]->Release();
+                                game_ui_options_controls[i]->release();
                                 game_ui_options_controls[i] = nullptr;
                             }
                         }
@@ -453,7 +453,7 @@ void Menu::MenuLoop() {
     confirmationState = CONFIRM_NONE;
 
     if (gamma_preview_image) {
-        gamma_preview_image->Release();
+        gamma_preview_image->release();
         gamma_preview_image = nullptr;
     }
 
@@ -486,7 +486,7 @@ void Menu::MenuLoop() {
     pGUIWindow_CurrentMenu = nullptr;
 
     if (gamma_preview_image) {
-        gamma_preview_image->Release();
+        gamma_preview_image->release();
         gamma_preview_image = nullptr;
     }
 }

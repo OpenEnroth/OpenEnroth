@@ -704,7 +704,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 }
 
 GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {
-    main_menu_background->Release();
+    main_menu_background->release();
     main_menu_background = nullptr;
 }
 

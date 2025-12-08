@@ -832,11 +832,6 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
         mouse->SetCursorImage("MICON1");
 
-    if (assets->winnerCert) {
-        assets->winnerCert->Release();
-        assets->winnerCert = nullptr;
-    }
-
     // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
     render->uNumBillboardsToDraw = 0;
 

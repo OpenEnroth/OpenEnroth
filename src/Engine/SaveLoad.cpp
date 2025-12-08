@@ -133,7 +133,7 @@ void LoadGame(int uSlot) {
 
     for (int i = 0; i < pSavegameList->numSavegameFiles; ++i) {
         if (pSavegameList->pSavegameThumbnails[i] != nullptr) {
-            pSavegameList->pSavegameThumbnails[i]->Release();
+            pSavegameList->pSavegameThumbnails[i]->release();
             pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
     }
@@ -267,7 +267,7 @@ void DoSavegame(int uSlot) {
 
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
         if (pSavegameList->pSavegameThumbnails[i] != nullptr) {
-            pSavegameList->pSavegameThumbnails[i]->Release();
+            pSavegameList->pSavegameThumbnails[i]->release();
             pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
     }

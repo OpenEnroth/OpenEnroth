@@ -24,15 +24,12 @@ class AssetsManager {
     GraphicsImage *getImage_Paletted(std::string_view name);
     GraphicsImage *getImage_Solid(std::string_view name);
     GraphicsImage *getImage_Alpha(std::string_view name);
+    GraphicsImage *getImage_Buff(std::string_view name);
 
-    GraphicsImage *getImage_PCXFromIconsLOD(std::string_view name);
+    GraphicsImage *getImage_PCXFromIconsLOD(std::string_view name, Color colorkey = Color());
 
     GraphicsImage *getBitmap(std::string_view name, bool generated = false);
     GraphicsImage *getSprite(std::string_view name);
-
-    // TODO(pskelton): Contain better
-    // TODO(pskelton): Manager should have a ref to all loose textures created throuh CreateTexture_Blank also
-    GraphicsImage *winnerCert{ nullptr };
 
     std::unique_ptr<GUIFont> pFontBookOnlyShadow;
     std::unique_ptr<GUIFont> pFontBookLloyds;

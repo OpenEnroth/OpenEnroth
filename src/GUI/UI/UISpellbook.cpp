@@ -258,35 +258,35 @@ void GUIWindow_Spellbook::initializeTextures() {
 
 void GUIWindow_Spellbook::onCloseSpellBook() {
     if (ui_spellbook_btn_close) {
-        ui_spellbook_btn_close->Release();
+        ui_spellbook_btn_close->release();
         ui_spellbook_btn_close = nullptr;
     }
     if (ui_spellbook_btn_close_click) {
-        ui_spellbook_btn_close_click->Release();
+        ui_spellbook_btn_close_click->release();
         ui_spellbook_btn_close_click = nullptr;
     }
 
     if (ui_spellbook_btn_quckspell) {
-        ui_spellbook_btn_quckspell->Release();
+        ui_spellbook_btn_quckspell->release();
         ui_spellbook_btn_quckspell = nullptr;
     }
     if (ui_spellbook_btn_quckspell_click) {
-        ui_spellbook_btn_quckspell_click->Release();
+        ui_spellbook_btn_quckspell_click->release();
         ui_spellbook_btn_quckspell_click = nullptr;
     }
 
     for (MagicSchool page : allMagicSchools()) {
         if (ui_spellbook_school_backgrounds[page]) {
-            ui_spellbook_school_backgrounds[page]->Release();
+            ui_spellbook_school_backgrounds[page]->release();
             ui_spellbook_school_backgrounds[page] = nullptr;
         }
 
         if (ui_spellbook_school_tabs[page][0]) {
-            ui_spellbook_school_tabs[page][0]->Release();
+            ui_spellbook_school_tabs[page][0]->release();
             ui_spellbook_school_tabs[page][0] = nullptr;
         }
         if (ui_spellbook_school_tabs[page][1]) {
-            ui_spellbook_school_tabs[page][1]->Release();
+            ui_spellbook_school_tabs[page][1]->release();
             ui_spellbook_school_tabs[page][1] = nullptr;
         }
     }
@@ -297,11 +297,11 @@ void GUIWindow_Spellbook::onCloseSpellBook() {
 void GUIWindow_Spellbook::onCloseSpellBookPage() {
     for (unsigned int i = 1; i <= 11; i++) {
         if (SBPageCSpellsTextureList[i]) {
-            SBPageCSpellsTextureList[i]->Release();
+            SBPageCSpellsTextureList[i]->release();
             SBPageCSpellsTextureList[i] = nullptr;
         }
         if (SBPageSSpellsTextureList[i]) {
-            SBPageSSpellsTextureList[i]->Release();
+            SBPageSSpellsTextureList[i]->release();
             SBPageSSpellsTextureList[i] = nullptr;
         }
     }

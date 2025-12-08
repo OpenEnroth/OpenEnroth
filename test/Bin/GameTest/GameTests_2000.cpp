@@ -679,7 +679,7 @@ GAME_TEST(Issues, Issue2298) {
     // Holding an item when entering a shop = it can not be dropped after
     // This tests that the mouse cursor updates correctly when dropping an item
     auto pickedItemTape = tapes.custom([] { return pParty->pPickedItem.itemId; });
-    auto mouseCursorTape = tapes.custom([] { return mouse->cursor_img->GetName(); });
+    auto mouseCursorTape = tapes.custom([] { return mouse->cursor_img->name(); });
     game.startNewGame();
     test.startTaping();
     game.tick();
