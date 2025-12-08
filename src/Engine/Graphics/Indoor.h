@@ -221,9 +221,7 @@ struct IndoorLocation {
     void toggleLight(signed int uLightID, unsigned int bToggle);
 
     void DrawIndoorFaces(bool bD3D);
-    void PrepareActorRenderList_BLV();
     void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, int uSectorID);
-    void PrepareItemsRenderList_BLV();
 
     std::string filename;
     unsigned int bLoaded = 0;

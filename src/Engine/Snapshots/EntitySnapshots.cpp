@@ -264,7 +264,7 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     dst->sprites.fill(nullptr);
 
     dst->scale = src.scale / 65536.0f;
-    dst->flags = src.flags;
+    dst->flags = static_cast<SpriteFrameFlags>(src.flags);
 
     dst->glowRadius = src.glowRadius;
     dst->paletteId = src.paletteId;

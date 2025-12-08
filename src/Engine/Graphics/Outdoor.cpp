@@ -786,11 +786,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
             assert(false);
 
         int flags = 0;
-        // v16 = (int *)frame->uFlags;
-        if (frame->flags & 2) flags = 2;
-        if (frame->flags & 0x40000) flags |= 0x40;
-        if (frame->flags & 0x20000) flags |= 0x80;
-        if ((256 << Sprite_Octant) & frame->flags) flags |= 4;
+        if (frame->flags & SPRITE_FRAME_LUMINOUS) flags = 2;
+        if (frame->flags & SPRITE_FRAME_TRANSPARENT) flags |= 0x40;
+        if (frame->flags & SPRITE_FRAME_GLOW) flags |= 0x80;
+        if (frame->flags & mirrorFlagForOctant(Sprite_Octant)) flags |= 4;
         if (frame->glowRadius) {
             pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].sectorId, frame->glowRadius, colorTable.White,
                                          _4E94D3_light_type);

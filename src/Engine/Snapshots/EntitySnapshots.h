@@ -121,12 +121,17 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(Planei_MM7)
 void reconstruct(const Planei_MM7 &src, Planef *dst);
 
 
+/**
+ * `SFTItem` in MMExtension code.
+ *
+ * @see https://github.com/GrayFace/MMExtension/blob/a2ab9b12705de7576aecf8111168666d6398f830/Scripts/Structs/01%20common%20structs.lua#L2405
+ */
 struct SpriteFrame_MM6 {
     std::array<char, 12> animationName; // Only set for the 1st frame in an animated sequence.
     std::array<char, 12> textureName; // Texture name in sprites.lod w/o rotational suffixes.
     std::array<int16_t, 8> hwSpriteIds;
     int32_t scale;
-    int32_t flags;
+    int32_t flags; // TODO(captainurist): 2 bytes in MM6?
     int16_t glowRadius;
     int16_t paletteId; // Palette id, a number in [0, 999] referencing palXXX in bitmaps.lod.
     int16_t paletteIndex; // Not used in OE, this was an index in a palette array that had non-existing palettes removed.

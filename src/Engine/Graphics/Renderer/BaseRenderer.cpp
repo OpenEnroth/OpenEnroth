@@ -147,15 +147,15 @@ void BaseRenderer::DrawSpriteObjects() {
             }
 
             // centre sprite
-            if (frame->flags & 0x20) {
+            if (frame->flags & SPRITE_FRAME_CENTER) {
                 z -= (frame->scale * frame->sprites[octant]->uHeight) / 2;
             }
 
             int16_t setflags = 0;
-            if (frame->flags & 2) setflags = 2;
-            if ((256 << octant) & frame->flags) setflags |= 4;
-            if (frame->flags & 0x40000) setflags |= 0x40;
-            if (frame->flags & 0x20000) setflags |= 0x80;
+            if (frame->flags & SPRITE_FRAME_LUMINOUS) setflags = 2;
+            if (frame->flags & mirrorFlagForOctant(octant)) setflags |= 4;
+            if (frame->flags & SPRITE_FRAME_TRANSPARENT) setflags |= 0x40;
+            if (frame->flags & SPRITE_FRAME_GLOW) setflags |= 0x80;
 
             // lighting
             int lightradius = frame->glowRadius * object->field_22_glow_radius_multiplier;
@@ -275,10 +275,10 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         8) &
                         7;
                     int v37 = v13;
-                    if (frame->flags & 2) v38 = 2;
-                    if ((256 << v13) & frame->flags) v38 |= 4;
-                    if (frame->flags & 0x40000) v38 |= 0x40;
-                    if (frame->flags & 0x20000) v38 |= 0x80;
+                    if (frame->flags & SPRITE_FRAME_LUMINOUS) v38 = 2;
+                    if (frame->flags & mirrorFlagForOctant(v13)) v38 |= 4;
+                    if (frame->flags & SPRITE_FRAME_TRANSPARENT) v38 |= 0x40;
+                    if (frame->flags & SPRITE_FRAME_GLOW) v38 |= 0x80;
 
                     // for light
                     if (frame->glowRadius) {
