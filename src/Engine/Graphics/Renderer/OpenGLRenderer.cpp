@@ -1354,6 +1354,7 @@ struct GLshaderverts {
 GLshaderverts terrshaderstore[127 * 127 * 6] = {};
 
 void OpenGLRenderer::DrawOutdoorTerrain() {
+    _initWaterTiles();
     // shader version
     // draws entire terrain in one go at the moment
     // textures must all be square and same size
@@ -3100,6 +3101,7 @@ GLshaderverts *outbuildshaderstore[16] = { nullptr };
 int numoutbuildverts[16] = { 0 };
 
 void OpenGLRenderer::DrawOutdoorBuildings() {
+    _initWaterTiles();
     // shader
     // verts are streamed to gpu as required
     // textures can be different sizes
@@ -3724,6 +3726,7 @@ GLshaderverts *BSPshaderstore[16] = { nullptr };
 int numBSPverts[16] = { 0 };
 
 void OpenGLRenderer::DrawIndoorFaces() {
+    _initWaterTiles();
     // void RenderOpenGL::DrawIndoorBSP() {
 
     // TODO(pskelton): might have to pass a texture width through for the waterr flow textures to size right
@@ -4456,12 +4459,6 @@ bool OpenGLRenderer::Initialize() {
 
     _initImGui();
 
-    // Load water tile animations.
-    for (unsigned i = 0; i < 7; ++i) {
-        std::string container_name = fmt::format("HDWTR{:03}", i);
-        hd_water_tile_anim[i] = assets->getBitmap(container_name);
-    }
-
     return Reinitialize(true);
 }
 
@@ -4529,6 +4526,16 @@ void OpenGLRenderer::_shutdownImGui() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
+}
+
+void OpenGLRenderer::_initWaterTiles() {
+    if (hd_water_tile_anim[0])
+        return;
+
+    for (unsigned i = 0; i < 7; ++i) {
+        std::string container_name = fmt::format("HDWTR{:03}", i);
+        hd_water_tile_anim[i] = assets->getBitmap(container_name);
+    }
 }
 
 void OpenGLRenderer::FillRectFast(int x, int y, int width, int height, Color color) {

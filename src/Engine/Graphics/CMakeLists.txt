@@ -52,6 +52,8 @@ set(ENGINE_GRAPHICS_HEADERS
         PortalFunctions.h
         RenderEntities.h
         Sprites.h
+        SpriteFrameEnums.h
+        SpriteFrameEnumFunctions.h
         TileGenerator.h
         TurnBasedOverlay.h
         Viewport.h

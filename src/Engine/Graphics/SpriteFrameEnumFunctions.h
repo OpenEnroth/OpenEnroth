@@ -5,7 +5,7 @@
 #include "SpriteFrameEnums.h"
 
 /**
- * @retunrs                             Mirror flag for octant N: mirrorFlagForOctant(3) returns SPRITE_FRAME_MIRROR_3.
+ * @returns                             Mirror flag for octant N: mirrorFlagForOctant(3) returns SPRITE_FRAME_MIRROR_3.
  */
 constexpr SpriteFrameFlag mirrorFlagForOctant(int octant) {
     assert(octant >= 0 && octant <= 7);
