@@ -167,17 +167,14 @@ class Renderer {
 
     std::shared_ptr<GameConfig> config = nullptr;
 
-    HitMap<int> _equipmentHitMap;
-
     Color uFogColor;
-    int hd_water_current_frame;
-    GraphicsImage *hd_water_tile_anim[7];
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw; // TODO(captainurist): this is not properly cleared if BeginScene3D is not called,
                                        //                     resulting in dangling textures in pBillboardRenderListD3D.
 
     int drawcalls;
 
+ protected:
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;

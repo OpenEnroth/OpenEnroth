@@ -162,14 +162,6 @@ void Engine::drawWorld() {
         // if ( !render->pRenderD3D )
         // pMouse->DrawCursorToTarget();
         if (!PauseGameDrawing()) {
-            // Water animation in vanilla was borked, or so it seems. Water has 7 frames, frame durations are:
-            //
-            // Frame    0       1       2       3       4       5       6       Total
-            // Vanilla  1/12s   1/6s    1/6s    1/6s    1/6s    1/6s    1/12s   1s
-            // OE       1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1s
-            render->hd_water_current_frame =
-                std::floor(std::fmod(pMiscTimer->time().realtimeMillisecondsFloat(), 1.0f) * 7.0f);
-
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
             } else {
@@ -755,11 +747,6 @@ void Engine::SecondaryInitialization() {
     UI_Create();
 
     spell_fx_renedrer->LoadAnimations();
-
-    for (unsigned i = 0; i < 7; ++i) {
-        std::string container_name = fmt::format("HDWTR{:03}", i);
-        render->hd_water_tile_anim[i] = assets->getBitmap(container_name);
-    }
 
     pNPCStats = new NPCStats();
     pNPCStats->Initialize(engine->resources());
