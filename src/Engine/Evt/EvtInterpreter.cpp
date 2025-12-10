@@ -1,6 +1,5 @@
 #include <string>
 #include <utility>
-#include <functional>
 
 #include <tl/generator.hpp>
 
@@ -9,6 +8,7 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -344,6 +344,14 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_SpeakNPC:
             if (_canShowMessages) {
+                // TODO(pskeltonm): Fix #2223 stop tutorial message spam - should be data mod
+                if (engine->_outdoor->level_filename == "out01.odm" && _eventId >= 200 && _eventId <= 218) {
+                    if (engine->_OE_transientVariables[_eventId - 200]) {
+                        break;
+                    }
+                    engine->_OE_transientVariables[_eventId - 200] = 1;
+                }
+
                 initializeNPCDialogue(ir.data.npc_descr.npc_id, false);
             } else {
                 bDialogueUI_InitializeActor_NPC_ID = ir.data.npc_descr.npc_id;

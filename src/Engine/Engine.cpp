@@ -555,6 +555,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1 ? GUIProgressBar::TYPE_Fullscreen : GUIProgressBar::TYPE_Box);
 
+    engine->_OE_transientVariables.fill(0);
     loadMapEventsAndStrings(engine->_transitionMapId);
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?

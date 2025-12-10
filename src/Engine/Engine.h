@@ -130,6 +130,7 @@ class Engine {
     EvtProgram _localEventMap;
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
+    std::array<unsigned char, 50> _OE_transientVariables; // These are cleared on loading a new map
     MapId _currentLoadedMapId = MAP_INVALID;
     MapId _transitionMapId = MAP_INVALID;
     TeleportPoint _teleportPoint;
