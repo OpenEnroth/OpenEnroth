@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0f8f99d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;39d87c6</span>
    </div>
   </td>
  </tr>
@@ -403,6 +403,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:ab1142926fcd5a20be8199e245bbd07ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a053263b49947156e648f67f20795d21c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLRenderer.html#a053263b49947156e648f67f20795d21c">_shutdownImGui</a> ()</td></tr>
 <tr class="separator:a053263b49947156e648f67f20795d21c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9964d58811cb47affab0a4367513f6ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLRenderer.html#a9964d58811cb47affab0a4367513f6ee">_initWaterTiles</a> ()</td></tr>
+<tr class="separator:a9964d58811cb47affab0a4367513f6ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a801acf5bc0462a5b6d2553e5eb301d4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLRenderer.html#a801acf5bc0462a5b6d2553e5eb301d4c">_set_3d_projection_matrix</a> ()</td></tr>
 <tr class="separator:a801acf5bc0462a5b6d2553e5eb301d4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d172a631484c081e11bd66476b794cb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLRenderer.html#a1d172a631484c081e11bd66476b794cb">_set_3d_modelview_matrix</a> ()</td></tr>
@@ -537,39 +539,38 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a605c3b4a9c829befd171704b7756150e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83b4113c7941fbd50406fa317e9fd31b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLRenderer.html#a83b4113c7941fbd50406fa317e9fd31b">gamma</a> {}</td></tr>
 <tr class="separator:a83b4113c7941fbd50406fa317e9fd31b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb186f9dd0ff1e17e3186b46f505e504"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *, 7 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLRenderer.html#abb186f9dd0ff1e17e3186b46f505e504">hd_water_tile_anim</a> = {{}}</td></tr>
+<tr class="separator:abb186f9dd0ff1e17e3186b46f505e504"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classBaseRenderer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classBaseRenderer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classBaseRenderer.html">BaseRenderer</a></td></tr>
 <tr class="memitem:aad3378f6fef0acc26f608ab73f08ec45 inherit pro_attribs_classBaseRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBaseRenderer.html#aad3378f6fef0acc26f608ab73f08ec45">outputRender</a> = {0, 0}</td></tr>
 <tr class="separator:aad3378f6fef0acc26f608ab73f08ec45 inherit pro_attribs_classBaseRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc5cebdb8057cfe47ff2683575bcb2b2 inherit pro_attribs_classBaseRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBaseRenderer.html#acc5cebdb8057cfe47ff2683575bcb2b2">outputPresent</a> = {0, 0}</td></tr>
 <tr class="separator:acc5cebdb8057cfe47ff2683575bcb2b2 inherit pro_attribs_classBaseRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d2ac63aae3f4f3b6418be8d67869154 inherit pro_attribs_classBaseRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classHitMap.html">HitMap</a>&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBaseRenderer.html#a6d2ac63aae3f4f3b6418be8d67869154">_equipmentHitMap</a></td></tr>
+<tr class="separator:a6d2ac63aae3f4f3b6418be8d67869154 inherit pro_attribs_classBaseRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classRenderer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classRenderer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classRenderer.html">Renderer</a></td></tr>
+<tr class="memitem:a10cdb4bef84ed4aac4952f2c8c781ecb inherit pro_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structDecalBuilder.html">DecalBuilder</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a10cdb4bef84ed4aac4952f2c8c781ecb">decal_builder</a> = nullptr</td></tr>
+<tr class="separator:a10cdb4bef84ed4aac4952f2c8c781ecb inherit pro_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a060128594c5cf08d395c918c2b008158 inherit pro_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a060128594c5cf08d395c918c2b008158">spell_fx_renderer</a> = nullptr</td></tr>
+<tr class="separator:a060128594c5cf08d395c918c2b008158 inherit pro_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a519cbc3d3f3b9955eb574fe9e9ab571c inherit pro_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classParticleEngine.html">ParticleEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a519cbc3d3f3b9955eb574fe9e9ab571c">particle_engine</a> = nullptr</td></tr>
+<tr class="separator:a519cbc3d3f3b9955eb574fe9e9ab571c inherit pro_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ac79b2a2a7b33647b55389ac1805503 inherit pro_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classVis.html">Vis</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a7ac79b2a2a7b33647b55389ac1805503">vis</a> = nullptr</td></tr>
+<tr class="separator:a7ac79b2a2a7b33647b55389ac1805503 inherit pro_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_classRenderer"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classRenderer')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classRenderer.html">Renderer</a></td></tr>
 <tr class="memitem:acab1616b6952fe429bcbbec7df53752d inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classGameConfig.html">GameConfig</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#acab1616b6952fe429bcbbec7df53752d">config</a> = nullptr</td></tr>
 <tr class="separator:acab1616b6952fe429bcbbec7df53752d inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81e04a2e6dc4e5527170bf27c4241aa2 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classHitMap.html">HitMap</a>&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a81e04a2e6dc4e5527170bf27c4241aa2">_equipmentHitMap</a></td></tr>
-<tr class="separator:a81e04a2e6dc4e5527170bf27c4241aa2 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab783d803aa6adc72a785737161f33fe5 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ab783d803aa6adc72a785737161f33fe5">uFogColor</a></td></tr>
 <tr class="separator:ab783d803aa6adc72a785737161f33fe5 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8096cb930e788159b565758f475d494 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ab8096cb930e788159b565758f475d494">hd_water_current_frame</a></td></tr>
-<tr class="separator:ab8096cb930e788159b565758f475d494 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad1144eadc6b1b2b3d873dc9b36a42ac inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#aad1144eadc6b1b2b3d873dc9b36a42ac">hd_water_tile_anim</a> [7]</td></tr>
-<tr class="separator:aad1144eadc6b1b2b3d873dc9b36a42ac inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae413e5aae9c95c8267689b59484ef9b0 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structRenderBillboardD3D.html">RenderBillboardD3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ae413e5aae9c95c8267689b59484ef9b0">pBillboardRenderListD3D</a> [1000]</td></tr>
 <tr class="separator:ae413e5aae9c95c8267689b59484ef9b0 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31aabb552aa94c72768f457d83c323b3 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a31aabb552aa94c72768f457d83c323b3">uNumBillboardsToDraw</a></td></tr>
 <tr class="separator:a31aabb552aa94c72768f457d83c323b3 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68526fd75b5a5797aee8efeff83c1fea inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a68526fd75b5a5797aee8efeff83c1fea">drawcalls</a></td></tr>
 <tr class="separator:a68526fd75b5a5797aee8efeff83c1fea inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10cdb4bef84ed4aac4952f2c8c781ecb inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structDecalBuilder.html">DecalBuilder</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a10cdb4bef84ed4aac4952f2c8c781ecb">decal_builder</a> = nullptr</td></tr>
-<tr class="separator:a10cdb4bef84ed4aac4952f2c8c781ecb inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a060128594c5cf08d395c918c2b008158 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a060128594c5cf08d395c918c2b008158">spell_fx_renderer</a> = nullptr</td></tr>
-<tr class="separator:a060128594c5cf08d395c918c2b008158 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a519cbc3d3f3b9955eb574fe9e9ab571c inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classParticleEngine.html">ParticleEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a519cbc3d3f3b9955eb574fe9e9ab571c">particle_engine</a> = nullptr</td></tr>
-<tr class="separator:a519cbc3d3f3b9955eb574fe9e9ab571c inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ac79b2a2a7b33647b55389ac1805503 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classVis.html">Vis</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a7ac79b2a2a7b33647b55389ac1805503">vis</a> = nullptr</td></tr>
-<tr class="separator:a7ac79b2a2a7b33647b55389ac1805503 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acc4c196ca6b404f5dd566d675f617b27" name="acc4c196ca6b404f5dd566d675f617b27"></a>
@@ -655,6 +656,31 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">void OpenGLRenderer::_initImGui </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9964d58811cb47affab0a4367513f6ee" name="a9964d58811cb47affab0a4367513f6ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9964d58811cb47affab0a4367513f6ee">&#9670;&#160;</a></span>_initWaterTiles()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OpenGLRenderer::_initWaterTiles </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -3291,6 +3317,28 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int OpenGLRenderer::GPU_MAX_UNIFORM_COMP {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abb186f9dd0ff1e17e3186b46f505e504" name="abb186f9dd0ff1e17e3186b46f505e504"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb186f9dd0ff1e17e3186b46f505e504">&#9670;&#160;</a></span>hd_water_tile_anim</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;<a class="el" href="classGraphicsImage.html">GraphicsImage</a> *, 7&gt; OpenGLRenderer::hd_water_tile_anim = {{}}</td>
         </tr>
       </table>
   </td>

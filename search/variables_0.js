@@ -131,7 +131,7 @@ var searchData=
   ['_5fenumbystring_128',['_enumByString',['../classdetail_1_1EnumSerializationTable.html#adcb5ca937478b8a39a7587c4ba3a1f5f',1,'detail::EnumSerializationTable']]],
   ['_5fenvironment_129',['_environment',['../classGameStarter.html#a98d25ec3dd5bdbddaaf3003398eaf4f5',1,'GameStarter']]],
   ['_5fequipment_130',['_equipment',['../classInventory.html#ae2ef0a8477aba41c41127281c2c314f6',1,'Inventory']]],
-  ['_5fequipmenthitmap_131',['_equipmentHitMap',['../classRenderer.html#a81e04a2e6dc4e5527170bf27c4241aa2',1,'Renderer']]],
+  ['_5fequipmenthitmap_131',['_equipmentHitMap',['../classBaseRenderer.html#a6d2ac63aae3f4f3b6418be8d67869154',1,'BaseRenderer']]],
   ['_5fevent_132',['_event',['../classGUIWindow__BranchlessDialogue.html#aa749cdbfdc6be33a125ca3c8a030c6e9',1,'GUIWindow_BranchlessDialogue']]],
   ['_5feventhandler_133',['_eventHandler',['../classPlatformApplication.html#a3cc767d407df5625b6b13a57442e45b8',1,'PlatformApplication']]],
   ['_5feventid_134',['_eventId',['../classEvtInterpreter.html#a82e5ad7d5c60206941a31fa3d66055fe',1,'EvtInterpreter']]],
