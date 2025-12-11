@@ -1248,10 +1248,10 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     if (v11->animationName == "null") assert(false);
 
     v30 = 0;
-    if (v11->flags & 2) v30 = 2;
-    if (v11->flags & 0x40000) v30 |= 0x40;
-    if (v11->flags & 0x20000) v30 |= 0x80;
-    if ((256 << v9) & v11->flags) v30 |= 4;
+    if (v11->flags & SPRITE_FRAME_LUMINOUS) v30 = 2;
+    if (v11->flags & SPRITE_FRAME_TRANSPARENT) v30 |= 0x40;
+    if (v11->flags & SPRITE_FRAME_GLOW) v30 |= 0x80;
+    if (v11->flags & mirrorFlagForOctant(v9)) v30 |= 4;
 
     int view_x = 0;
     int view_y = 0;

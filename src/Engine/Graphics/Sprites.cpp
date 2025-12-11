@@ -30,7 +30,7 @@ void Sprite::Release() {
 //----- (0044D4F6) --------------------------------------------------------
 void SpriteFrameTable::ResetLoadedFlags() {
     for (SpriteFrame &spriteFrame : pSpriteSFrames)
-        spriteFrame.flags &= ~0x80;
+        spriteFrame.flags &= ~SPRITE_FRAME_LOADED;
 }
 
 //----- (0044D513) --------------------------------------------------------
@@ -42,19 +42,19 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
             unsigned iter_uSpriteID = uSpriteID;
             //if (iter_uSpriteID == 603) assert(false);
 
-            int uFlags = pSpriteSFrames[iter_uSpriteID].flags;
+            SpriteFrameFlags uFlags = pSpriteSFrames[iter_uSpriteID].flags;
 
-            if (!(uFlags & 0x0080)) {  // not loaded
-                pSpriteSFrames[iter_uSpriteID].flags |= 0x80;  // set loaded
+            if (!(uFlags & SPRITE_FRAME_LOADED)) {
+                pSpriteSFrames[iter_uSpriteID].flags |= SPRITE_FRAME_LOADED;
 
                 while (1) {
-                    if (uFlags & 0x10) {  // single frame per frame sequence
+                    if (uFlags & SPRITE_FRAME_IMAGE1) {
                         Sprite *sprite = pSprites_LOD->loadSprite(pSpriteSFrames[iter_uSpriteID].textureName);
                         if (sprite == nullptr)
                             logger->warning("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].textureName);
                         for (unsigned i = 0; i < 8; ++i)
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
-                    } else if (uFlags & 0x10000) {
+                    } else if (uFlags & SPRITE_FRAME_IMAGES3) {
                         for (unsigned i = 0; i < 8; ++i) {
                             switch (i) {
                                 case 3:
@@ -78,7 +78,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
 
-                    } else if (uFlags & 0x40) {  // part of monster fidgeting seq
+                    } else if (uFlags & SPRITE_FRAME_FIDGET) {
                         for (unsigned i = 0; i < 8; ++i) {
                             switch (i) {
                                 case 0:
@@ -111,7 +111,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                         }
                     } else {
                         for (unsigned i = 0; i < 8; ++i) {
-                            if (((0x0100 << i) & pSpriteSFrames[iter_uSpriteID].flags)) {  // mirrors
+                            if (pSpriteSFrames[iter_uSpriteID].flags & mirrorFlagForOctant(i)) {
                                 switch (i) {
                                     case 1:
                                         spriteName = pSpriteSFrames[iter_uSpriteID].textureName + "7";
@@ -152,7 +152,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                         }
                     }
 
-                    if (!(pSpriteSFrames[iter_uSpriteID].flags & 1)) {
+                    if (!(pSpriteSFrames[iter_uSpriteID].flags & SPRITE_FRAME_HAS_MORE)) {
                         return;
                     }
                     ++iter_uSpriteID;
@@ -178,7 +178,7 @@ int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
 //----- (0044D8D0) --------------------------------------------------------
 SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
     SpriteFrame *v4 = &pSpriteSFrames[uSpriteID];
-    if (~v4->flags & 1 || !v4->animationLength)
+    if (!(v4->flags & SPRITE_FRAME_HAS_MORE) || !v4->animationLength)
         return v4;
 
     // uAnimLength / uAnimTime = actual number of frames in sprite
@@ -198,7 +198,7 @@ SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
 //----- (0044D91F) --------------------------------------------------------
 SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, Duration time) {
     SpriteFrame *sprite = &pSpriteSFrames[uSpriteID];
-    if (!(sprite->flags & 1) || !sprite->animationLength)
+    if (!(sprite->flags & SPRITE_FRAME_HAS_MORE) || !sprite->animationLength)
         return sprite;
 
     for (Duration t = sprite->animationLength - time % sprite->animationLength; t >= sprite->frameLength; ++sprite)

@@ -61,6 +61,8 @@ class BaseRenderer : public Renderer {
     Sizei outputRender = {0, 0};
     Sizei outputPresent = {0, 0};
 
+    HitMap<int> _equipmentHitMap;
+
  private:
     void updateRenderDimensions();
 };

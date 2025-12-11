@@ -6,6 +6,9 @@
 
 #include "Engine/Time/Duration.h"
 
+#include "SpriteFrameEnums.h"
+#include "SpriteFrameEnumFunctions.h"
+
 struct DecorationDesc;
 class GraphicsImage;
 struct LodSprite;
@@ -31,7 +34,7 @@ class SpriteFrame {
     std::string textureName;
     std::array<Sprite *, 8> sprites = {{}};
     float scale = 1.0;
-    int flags = 0;  // 128 for loaded - 1 for anim
+    SpriteFrameFlags flags;
     int glowRadius = 0;
     int paletteId = 0;
     Duration frameLength;

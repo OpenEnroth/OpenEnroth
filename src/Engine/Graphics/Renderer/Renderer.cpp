@@ -18,7 +18,6 @@ Renderer::Renderer(
     this->vis = vis;
 
     uFogColor = Color();
-    hd_water_current_frame = 0;
     memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
     uNumBillboardsToDraw = 0;
     drawcalls = 0;
