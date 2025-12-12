@@ -108,7 +108,13 @@ void ParticleEngine::Draw() {
 
     DrawParticles_BLV();
     if (pLines.uNumLines) {
-        render->DrawLines(pLines.pLineVertices, pLines.uNumLines);
+        render->BeginLines2D();
+        for (int i = 0; i < pLines.uNumLines; i++)
+            render->RasterLine2D(pLines.pLineVertices[i * 2].pos.xy().toInt(),
+                                 pLines.pLineVertices[i * 2 + 1].pos.xy().toInt(),
+                                 pLines.pLineVertices[i * 2].diffuse,
+                                 pLines.pLineVertices[i * 2 + 1].diffuse);
+        render->EndLines2D();
     }
 }
 

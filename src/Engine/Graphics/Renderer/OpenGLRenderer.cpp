@@ -293,44 +293,19 @@ void OpenGLRenderer::EndLines2D() {
     linevertscnt = 0;
 }
 
-void OpenGLRenderer::RasterLine2D(Pointi a, Pointi b, Color uColor32) {
-    Colorf cf = uColor32.toColorf();
-
+void OpenGLRenderer::RasterLine2D(Pointi a, Pointi b, Color acolor, Color bcolor) {
     lineshaderstore[linevertscnt].x = a.x;
     lineshaderstore[linevertscnt].y = a.y;
-    lineshaderstore[linevertscnt].color = cf;
+    lineshaderstore[linevertscnt].color = acolor.toColorf();
     linevertscnt++;
 
     lineshaderstore[linevertscnt].x = b.x;
     lineshaderstore[linevertscnt].y = b.y;
-    lineshaderstore[linevertscnt].color = cf;
+    lineshaderstore[linevertscnt].color = bcolor.toColorf();
     linevertscnt++;
 
     // draw if buffer full
     if (linevertscnt == 2000) EndLines2D();
-}
-
-// used for debug protal lines
-void OpenGLRenderer::DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) {
-    BeginLines2D();
-    for (int i = 0; i < num_vertices - 1; ++i) {
-        Colorf color0 = vertices[i].diffuse.toColorf();
-        Colorf color1 = vertices[i + 1].diffuse.toColorf();
-
-        lineshaderstore[linevertscnt].x = vertices[i].pos.x;
-        lineshaderstore[linevertscnt].y = vertices[i].pos.y;
-        lineshaderstore[linevertscnt].color = color0;
-        linevertscnt++;
-
-        lineshaderstore[linevertscnt].x = vertices[i + 1].pos.x + 0.5f;
-        lineshaderstore[linevertscnt].y = vertices[i + 1].pos.y + 0.5f;
-        lineshaderstore[linevertscnt].color = color1;
-        linevertscnt++;
-
-        // draw if buffer full
-        if (linevertscnt == 2000) EndLines2D();
-    }
-    EndLines2D();
 }
 
 void OpenGLRenderer::BeginScene3D() {

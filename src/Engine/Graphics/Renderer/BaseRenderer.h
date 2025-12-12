@@ -19,6 +19,9 @@ class BaseRenderer : public Renderer {
 
     virtual bool Initialize() override;
 
+    using Renderer::RasterLine2D;
+    virtual void RasterLine2D(Pointi a, Pointi b, Color color) override;
+
     virtual void TransformBillboardsAndSetPalettesODM() override;
     virtual void DrawSpriteObjects() override;
     virtual void PrepareDecorationsRenderList_ODM() override;

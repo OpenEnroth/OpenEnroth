@@ -150,52 +150,19 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
                                             Color sStartDiffuse32,
                                             RenderVertexSoft *pLineEnd,
                                             Color sEndDiffuse32,
-                                            unsigned int uOutNumVertices,
                                             float z_stuff) {
     RenderVertexSoft a1[20];         // [sp+8h] [bp-7C4h]@6
     RenderVertexSoft pVertices[20];  // [sp+3C8h] [bp-404h]@2
     RenderVertexD3D3 v24[2];         // [sp+788h] [bp-44h]@11
 
-    // if ( render->pRenderD3D )
-    //{
-    for (unsigned i = 0; i < 20; i++) pVertices[i].flt_2C = 0.0;
-    if ((char)uOutNumVertices) {
-        pVertices[0].vWorldViewProjX = pLineBegin->vWorldViewProjX;
-        pVertices[0].vWorldViewProjY = pLineBegin->vWorldViewProjY;
-
-        pVertices[1].vWorldViewProjX = pLineEnd->vWorldViewProjX;
-        pVertices[1].vWorldViewProjY = pLineEnd->vWorldViewProjY;
-        v24[0].specular = Color();
-        v24[0].pos.x = pVertices[0].vWorldViewProjX;
-        v24[0].pos.y = pVertices[0].vWorldViewProjY;
-        v24[0].pos.z = 0.001 - z_stuff;
-        v24[0].diffuse = sStartDiffuse32;
-        v24[0].rhw = 0.001f;
-        v24[0].texcoord.x = 0.0f;
-        v24[0].texcoord.y = 0.0f;
-
-        v24[1].pos.x = pVertices[1].vWorldViewProjX;
-        v24[1].pos.y = pVertices[1].vWorldViewProjY;
-        v24[1].diffuse = sEndDiffuse32;
-        v24[1].pos.z = 0.001 - z_stuff;
-        v24[1].specular = Color();
-        v24[1].rhw = 0.001f;
-        v24[1].texcoord.x = 0.0f;
-        v24[1].texcoord.y = 0.0f;
-        // v19 = render->pRenderD3D->pDevice;
-        render->DrawLines(v24, 2);
-        return;
-    }
-    for (unsigned i = 0; i < 20; i++) a1[i].flt_2C = 0.0;
-    uOutNumVertices = 2;
+    int uOutNumVertices = 2;
     a1[0].vWorldPosition.x = pLineBegin->vWorldPosition.x;
     a1[0].vWorldPosition.y = pLineBegin->vWorldPosition.y;
     a1[0].vWorldPosition.z = pLineBegin->vWorldPosition.z;
     a1[1].vWorldPosition.x = pLineEnd->vWorldPosition.x;
     a1[1].vWorldPosition.y = pLineEnd->vWorldPosition.y;
     a1[1].vWorldPosition.z = pLineEnd->vWorldPosition.z;
-    if (CullFaceToCameraFrustum(a1, &uOutNumVertices, pVertices, 4) != 1 ||
-        (signed int)uOutNumVertices >= 2) {
+    if (CullFaceToCameraFrustum(a1, &uOutNumVertices, pVertices, 4) != 1 || uOutNumVertices >= 2) {
         ViewTransform(pVertices, 2);
         Project(pVertices, 2, 0);
         v24[0].specular = Color();
@@ -216,10 +183,14 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         v24[1].texcoord.x = 0.0;
         v24[1].texcoord.y = 0.0;
         // v19 = render->pRenderD3D->pDevice;
-        render->DrawLines(v24, 2);
-        return;
+
+        Pointi a(pVertices[0].vWorldViewProjX, pVertices[0].vWorldViewProjY);
+        Pointi b(pVertices[1].vWorldViewProjX, pVertices[1].vWorldViewProjY);
+
+        render->BeginLines2D();
+        render->RasterLine2D(a, b, sStartDiffuse32, sEndDiffuse32);
+        render->EndLines2D();
     }
-    //}
 }
 
 //----- (004379EE) --------------------------------------------------------
@@ -229,10 +200,9 @@ void Camera3D::debug_outline_sw(RenderVertexSoft *a2,
     if (!uNumVertices) return;
     if ((signed int)(uNumVertices - 1) > 0) {
         for (unsigned i = 0; i < uNumVertices - 1; i++)
-            do_draw_debug_line_sw(&a2[i], uDiffuse32, &a2[i + 1], uDiffuse32, 0,
-                                  a5);
+            do_draw_debug_line_sw(&a2[i], uDiffuse32, &a2[i + 1], uDiffuse32, a5);
     }
-    do_draw_debug_line_sw(&a2[uNumVertices - 1], uDiffuse32, a2, uDiffuse32, 0, a5);
+    do_draw_debug_line_sw(&a2[uNumVertices - 1], uDiffuse32, a2, uDiffuse32, a5);
 }
 
 //----- (004376E7) --------------------------------------------------------
@@ -305,9 +275,9 @@ void Camera3D::BuildViewFrustum() {
 // TODO(pskelton): does this func need to copy verts or could it be eliminated
 //----- (00437285) --------------------------------------------------------
 bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
-                                      unsigned int *pOutNumVertices,
-                                      RenderVertexSoft *pVertices,
-                                      signed int NumFrustumPlanes) {
+                                       int *pOutNumVertices,
+                                       RenderVertexSoft *pVertices,
+                                       int NumFrustumPlanes) {
     if (NumFrustumPlanes <= 0) return false;
     if (*pOutNumVertices <= 0) return false;
 

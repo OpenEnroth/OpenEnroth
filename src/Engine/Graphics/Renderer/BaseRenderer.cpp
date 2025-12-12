@@ -38,6 +38,10 @@ bool BaseRenderer::Initialize() {
     return true;
 }
 
+void BaseRenderer::RasterLine2D(Pointi a, Pointi b, Color color) {
+    RasterLine2D(a, b, color, color);
+}
+
 unsigned int BaseRenderer::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
     if (uNumBillboardsToDraw >= 999) {
         return 0;

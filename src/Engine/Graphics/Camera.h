@@ -23,9 +23,9 @@ struct Camera3D {
                  bool fit_into_viewport = false);
 
     bool CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
-        unsigned int *pOutNumVertices,
+        int *pOutNumVertices,
         RenderVertexSoft *pVertices,
-        signed int NumFrustumPlanes);
+        int NumFrustumPlanes);
 
     bool CullFaceToFrustum(RenderVertexSoft *inVerts,
         unsigned int *pOutNumVertices,
@@ -46,8 +46,7 @@ struct Camera3D {
     void do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
                                Color sStartDiffuse32,
                                RenderVertexSoft *pLineEnd,
-                               Color sEndDiffuse32,
-                               unsigned int uOutNumVertices, float z_stuff);
+                               Color sEndDiffuse32, float z_stuff);
     bool is_face_faced_to_cameraBLV(BLVFace *pFace);
     bool is_face_faced_to_cameraODM(ODMFace *pFace, RenderVertexSoft *a2);
     static void GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV);
