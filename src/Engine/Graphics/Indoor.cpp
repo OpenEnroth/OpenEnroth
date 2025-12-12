@@ -1247,11 +1247,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     // error catching
     if (v11->animationName == "null") assert(false);
 
-    v30 = 0;
-    if (v11->flags & SPRITE_FRAME_LUMINOUS) v30 = BILLBOARD_LUMINOUS;
-    if (v11->flags & SPRITE_FRAME_TRANSPARENT) v30 |= BILLBOARD_TRANSPARENT;
-    if (v11->flags & SPRITE_FRAME_GLOWING) v30 |= BILLBOARD_GLOWING;
-    if (v11->flags & mirrorFlagForOctant(v9)) v30 |= BILLBOARD_MIRRORED;
+    v30 = billboardFlagsForSprite(v11->flags, v9);
 
     int view_x = 0;
     int view_y = 0;
@@ -2028,7 +2024,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
 //----- (0043F515) --------------------------------------------------------
 void FindBillboardsLightLevels_BLV() {
     for (unsigned i = 0; i < uNumBillboardsToDraw; ++i) {
-        if (pBillboardRenderList[i].flags & BILLBOARD_LUMINOUS ||
+        if (pBillboardRenderList[i].flags & BILLBOARD_LIT ||
             uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
                 !pBillboardRenderList[i].uIndoorSectorID)
             pBillboardRenderList[i].dimming_level = 0;

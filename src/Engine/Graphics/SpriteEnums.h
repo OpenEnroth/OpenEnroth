@@ -2,6 +2,18 @@
 
 #include "Utility/Flags.h"
 
+// TODO(captainurist): somehow most flags aren't used. Figure out why.
+enum class BillboardFlag {
+    BILLBOARD_LIT = 0x2,
+    BILLBOARD_MIRRORED = 0x4, // Mirror horizontally.
+    BILLBOARD_TRANSPARENT = 0x40,
+    BILLBOARD_GLOWING = 0x80,
+    BILLBOARD_STONED = 0x100, // Affected by ACTOR_BUFF_STONED.
+    BILLBOARD_0X200 = 0x200,
+};
+using enum BillboardFlag;
+MM_DECLARE_FLAGS(BillboardFlags, BillboardFlag)
+
 // TODO(captainurist): Should be split in two, see FrameFlags.
 //                     Also, I'm not sure the value naming is correct, some of the flags aren't even used.
 
@@ -10,7 +22,7 @@
  */
 enum class SpriteFrameFlag : int {
     SPRITE_FRAME_HAS_MORE = 0x1,        // Animation continues with more frames.
-    SPRITE_FRAME_LUMINOUS = 0x2,        // Self-lit sprite.
+    SPRITE_FRAME_LIT = 0x2,             // Self-lit sprite, not dimmed indoors, not affected by lights.
     SPRITE_FRAME_FIRST = 0x4,           // First frame of animation.
     SPRITE_FRAME_IMAGE1 = 0x10,         // Single image for all 8 octants.
     SPRITE_FRAME_CENTER = 0x20,         // Z-center the sprite. If not set, `pos.z` will be at the bottom of the sprite.

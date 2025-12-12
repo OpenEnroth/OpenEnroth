@@ -785,11 +785,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (frame->sprites[Sprite_Octant]->texture->height() == 0 || frame->sprites[Sprite_Octant]->texture->width() == 0)
             assert(false);
 
-        BillboardFlags flags = 0;
-        if (frame->flags & SPRITE_FRAME_LUMINOUS) flags = BILLBOARD_LUMINOUS;
-        if (frame->flags & SPRITE_FRAME_TRANSPARENT) flags |= BILLBOARD_TRANSPARENT;
-        if (frame->flags & SPRITE_FRAME_GLOWING) flags |= BILLBOARD_GLOWING;
-        if (frame->flags & mirrorFlagForOctant(Sprite_Octant)) flags |= BILLBOARD_MIRRORED;
+        BillboardFlags flags = billboardFlagsForSprite(frame->flags, Sprite_Octant);
+
         if (frame->glowRadius) {
             pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].sectorId, frame->glowRadius, colorTable.White,
                                          _4E94D3_light_type);

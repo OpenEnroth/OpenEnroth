@@ -151,11 +151,7 @@ void BaseRenderer::DrawSpriteObjects() {
                 z -= (frame->scale * frame->sprites[octant]->uHeight) / 2;
             }
 
-            BillboardFlags setflags;
-            if (frame->flags & SPRITE_FRAME_LUMINOUS) setflags |= BILLBOARD_LUMINOUS;
-            if (frame->flags & mirrorFlagForOctant(octant)) setflags |= BILLBOARD_MIRRORED;
-            if (frame->flags & SPRITE_FRAME_TRANSPARENT) setflags |= BILLBOARD_TRANSPARENT;
-            if (frame->flags & SPRITE_FRAME_GLOWING) setflags |= BILLBOARD_GLOWING;
+            BillboardFlags setflags = billboardFlagsForSprite(frame->flags, octant);
 
             // lighting
             int lightradius = frame->glowRadius * object->field_22_glow_radius_multiplier;
@@ -266,7 +262,6 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
 
                     int v10 = TrigLUT.atan2(pLevelDecorations[i].vPosition.x - pCamera3D->vCameraPos.x,
                                             pLevelDecorations[i].vPosition.y - pCamera3D->vCameraPos.y);
-                    v38 = 0;
                     v13 = ((signed int)(TrigLUT.uIntegerPi +
                         ((signed int)TrigLUT.uIntegerPi >>
                             3) +
@@ -275,10 +270,8 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         8) &
                         7;
                     int v37 = v13;
-                    if (frame->flags & SPRITE_FRAME_LUMINOUS) v38 = BILLBOARD_LUMINOUS;
-                    if (frame->flags & mirrorFlagForOctant(v13)) v38 |= BILLBOARD_MIRRORED;
-                    if (frame->flags & SPRITE_FRAME_TRANSPARENT) v38 |= BILLBOARD_TRANSPARENT;
-                    if (frame->flags & SPRITE_FRAME_GLOWING) v38 |= BILLBOARD_GLOWING;
+
+                    v38 = billboardFlagsForSprite(frame->flags, v13);
 
                     // for light
                     if (frame->glowRadius) {
