@@ -202,8 +202,6 @@ OpenGLRenderer::~OpenGLRenderer() {
     _shutdownImGui();
 }
 
-void OpenGLRenderer::Release() { logger->info("RenderGL - Release"); }
-
 RgbaImage OpenGLRenderer::ReadScreenPixels() {
     RgbaImage result = RgbaImage::uninitialized(outputRender.w, outputRender.h);
     if (outputRender != outputPresent) {

@@ -15,8 +15,6 @@ class NullRenderer : public BaseRenderer {
     virtual void ClearTarget(Color uColor) override;
     virtual void Present() override;
 
-    virtual void Release() override;
-
     virtual void BeginLines2D() override;
     virtual void EndLines2D() override;
     virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) override;

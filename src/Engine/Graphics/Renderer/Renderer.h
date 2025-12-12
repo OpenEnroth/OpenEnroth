@@ -47,8 +47,6 @@ class Renderer {
     virtual void ClearTarget(Color uColor) = 0;
     virtual void Present() = 0;
 
-    virtual void Release() = 0;
-
     virtual void BeginLines2D() = 0;
     virtual void EndLines2D() = 0;
     virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) = 0;

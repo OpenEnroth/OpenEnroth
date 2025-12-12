@@ -26,8 +26,6 @@ void NullRenderer::Present() {
     swapBuffers();
 }
 
-void NullRenderer::Release() {}
-
 void NullRenderer::BeginLines2D() {}
 void NullRenderer::EndLines2D() {}
 void NullRenderer::RasterLine2D(Pointi a, Pointi b, Color uColor32) {}
