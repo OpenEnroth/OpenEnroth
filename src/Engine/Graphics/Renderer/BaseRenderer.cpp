@@ -603,7 +603,6 @@ void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int col
 }
 
 void BaseRenderer::ClearBlack() {  // used only at start and in game over win
-    ClearHitMap();
     ClearTarget(Color());
 }
 
@@ -719,20 +718,6 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     return foundActors;
 }
 
-void BaseRenderer::ClearHitMap() {
-    _equipmentHitMap.clear();
-}
-
-void BaseRenderer::DrawToHitMap(float u, float v, GraphicsImage *img, int zVal) {
-    if (!img) return;
-
-    // Convert normalized coordinates to screen pixel coordinates
-    int screenX = static_cast<int>(u * outputRender.w);
-    int screenY = static_cast<int>(v * outputRender.h);
-
-    _equipmentHitMap.add(Pointi(screenX, screenY), img, zVal);
-}
-
 bool BaseRenderer::Reinitialize(bool firstInit) {
     updateRenderDimensions();
     return true;
@@ -758,10 +743,6 @@ void BaseRenderer::updateRenderDimensions() {
                            config->graphics.ViewPortY1.value(), // 8 in vanilla
                            outputRender.w - config->graphics.ViewPortX2.value(),  // 468 in vanilla
                            outputRender.h - config->graphics.ViewPortY2.value()); // 352 in vanilla
-}
-
-int BaseRenderer::QueryHitMap(Pointi screenPos, int defaultValue) {
-    return _equipmentHitMap.query(screenPos, defaultValue);
 }
 
 Pointi BaseRenderer::MapToRender(Pointi position) {

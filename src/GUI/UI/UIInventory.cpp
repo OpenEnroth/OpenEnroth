@@ -17,7 +17,6 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(Pointi position, Si
 }
 
 void GUIWindow_Inventory_CastSpell::Update() {
-    render->ClearHitMap();
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
     CharacterUI_DrawPaperdoll(&pParty->activeCharacter());

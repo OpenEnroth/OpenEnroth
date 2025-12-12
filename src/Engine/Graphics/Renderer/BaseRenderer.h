@@ -41,11 +41,6 @@ class BaseRenderer : public Renderer {
 
     virtual std::vector<Actor*> getActorsInViewport(int pDepth) override;
 
-    virtual void ClearHitMap() override;
-    virtual void DrawToHitMap(float u, float v, GraphicsImage *pTexture, int zVal) override;
-
-    virtual int QueryHitMap(Pointi screenPos, int defaultValue) override;
-
     bool Reinitialize(bool firstInit) override;
 
     virtual Sizei GetRenderDimensions() override;
@@ -60,8 +55,6 @@ class BaseRenderer : public Renderer {
  protected:
     Sizei outputRender = {0, 0};
     Sizei outputPresent = {0, 0};
-
-    HitMap<int> _equipmentHitMap;
 
  private:
     void updateRenderDimensions();

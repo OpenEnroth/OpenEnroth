@@ -52,17 +52,6 @@ class Renderer {
     virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) = 0;
     virtual void DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) = 0;
 
-    virtual void ClearHitMap() = 0;
-    virtual void DrawToHitMap(float u, float v, GraphicsImage *pTexture, int value) = 0;
-    /**
-     * Query the equipment hit map for hit testing.
-     *
-     * @param screenPos                 Screen position to query (absolute screen coordinates).
-     * @param defaultValue              Default value to return.
-     * @return                          Item ID at the position, or `defaultValue` if no equipment found.
-     */
-    virtual int QueryHitMap(Pointi screenPos, int defaultValue) = 0;
-
     virtual void BeginScene3D() = 0;
 
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,

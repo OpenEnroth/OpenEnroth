@@ -1827,7 +1827,6 @@ static void loadAndPrepareODMInternal(MapId mapid) {
 
     // thisa->AllocSoftwareDrawBuffers();
     pWeather->bRenderSnow = false;
-    render->ClearHitMap();
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;
