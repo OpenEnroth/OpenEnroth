@@ -7,10 +7,23 @@
 
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Vec.h"
+#include "Utility/Flags.h"
 
 class Sprite;
 class SpriteFrame;
 class GraphicsImage;
+
+// TODO(captainurist): somehow most flags aren't used. Figure out why.
+enum class BillboardFlag {
+    BILLBOARD_LUMINOUS = 0x2,
+    BILLBOARD_MIRRORED = 0x4, // Mirror horizontally.
+    BILLBOARD_TRANSPARENT = 0x40,
+    BILLBOARD_GLOWING = 0x80,
+    BILLBOARD_STONED = 0x100, // Affected by ACTOR_BUFF_STONED.
+    BILLBOARD_0X200 = 0x200,
+};
+using enum BillboardFlag;
+MM_DECLARE_FLAGS(BillboardFlags, BillboardFlag)
 
 struct RenderBillboard {
     float screenspace_projection_factor_x;
@@ -21,7 +34,7 @@ struct RenderBillboard {
     Sprite *hwsprite;  // int16_t HwSpriteID;
     int16_t uPaletteId;
     int uIndoorSectorID;
-    int16_t field_1E;  // flags
+    BillboardFlags flags;  // flags
     int16_t world_x;
     int16_t world_y;
     int16_t world_z;
@@ -133,7 +146,7 @@ struct SoftwareBillboard {
     char field_18[8];
     uint16_t *pPalette;
     uint16_t *pPalette2;
-    unsigned int uFlags;  // & 4   - mirror horizontally
+    BillboardFlags uFlags;
     unsigned int uTargetPitch;
     unsigned int uViewportX;
     unsigned int uViewportY;

@@ -1206,7 +1206,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     int v10;               // eax@7
     SpriteFrame *v11;      // eax@7
     Particle_sw particle;  // [sp+Ch] [bp-A0h]@3
-    int v30;               // [sp+8Ch] [bp-20h]@7
+    BillboardFlags v30;               // [sp+8Ch] [bp-20h]@7
 
     if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
@@ -1248,10 +1248,10 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     if (v11->animationName == "null") assert(false);
 
     v30 = 0;
-    if (v11->flags & SPRITE_FRAME_LUMINOUS) v30 = 2;
-    if (v11->flags & SPRITE_FRAME_TRANSPARENT) v30 |= 0x40;
-    if (v11->flags & SPRITE_FRAME_GLOW) v30 |= 0x80;
-    if (v11->flags & mirrorFlagForOctant(v9)) v30 |= 4;
+    if (v11->flags & SPRITE_FRAME_LUMINOUS) v30 = BILLBOARD_LUMINOUS;
+    if (v11->flags & SPRITE_FRAME_TRANSPARENT) v30 |= BILLBOARD_TRANSPARENT;
+    if (v11->flags & SPRITE_FRAME_GLOWING) v30 |= BILLBOARD_GLOWING;
+    if (v11->flags & mirrorFlagForOctant(v9)) v30 |= BILLBOARD_MIRRORED;
 
     int view_x = 0;
     int view_y = 0;
@@ -1294,7 +1294,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                         pCamera3D->ViewPlaneDistPixels;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].flags = v30;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].world_x =
                         pLevelDecorations[uDecorationID].vPosition.x;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].world_y =
@@ -2028,7 +2028,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
 //----- (0043F515) --------------------------------------------------------
 void FindBillboardsLightLevels_BLV() {
     for (unsigned i = 0; i < uNumBillboardsToDraw; ++i) {
-        if (pBillboardRenderList[i].field_1E & 2 ||
+        if (pBillboardRenderList[i].flags & BILLBOARD_LUMINOUS ||
             uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
                 !pBillboardRenderList[i].uIndoorSectorID)
             pBillboardRenderList[i].dimming_level = 0;
