@@ -92,7 +92,6 @@ void GUIProgressBar::Release() {
 void GUIProgressBar::Draw() {
     // render->BeginScene3D();
     render->BeginScene2D();
-    //render->ClearBlack();
 
     if (uType != TYPE_Fullscreen) {
         engine->DrawGUI();

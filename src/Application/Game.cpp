@@ -107,7 +107,7 @@ int Game::run() {
             Fsm *fsm = application->installComponent(GameFsmBuilder::buildFsm(startingState));
             MM_AT_SCOPE_EXIT(application->removeComponent<Fsm>());
             while (!fsm->hasReachedExitState()) {
-                render->ClearBlack();
+                render->ClearTarget(colorTable.Black);
                 render->BeginScene2D();
 
                 fsm->update();

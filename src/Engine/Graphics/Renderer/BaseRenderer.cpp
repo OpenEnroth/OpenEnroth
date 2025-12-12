@@ -602,10 +602,6 @@ void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int col
     DrawTextureNew(u, v, pTexture, mask);
 }
 
-void BaseRenderer::ClearBlack() {  // used only at start and in game over win
-    ClearTarget(Color());
-}
-
 //----- (004A4CC9) ---------------------------------------
 void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) {
     // fireball / implosion sphere
