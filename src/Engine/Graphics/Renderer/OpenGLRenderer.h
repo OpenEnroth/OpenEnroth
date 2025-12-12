@@ -199,6 +199,8 @@ class OpenGLRenderer : public BaseRenderer {
     float gamma{};
 
     std::array<GraphicsImage *, 7> hd_water_tile_anim = {{}}; // Water animation textures.
+
+    std::vector<GLuint> _texturesForDeletion;
 };
 
 

@@ -1282,8 +1282,9 @@ void OpenGLRenderer::DeleteTexture(TextureRenderId id) {
     if (!id)
         return;
 
-    GLuint glId = id.value();
-    glDeleteTextures(1, &glId);
+    // Texture ids will be released after swapBuffers(). We might have the passed id saved in the render lists, so
+    // can't release it yet.
+    _texturesForDeletion.push_back(id.value());
 }
 
 // TODO(pskelton): to camera?
@@ -3085,6 +3086,11 @@ void OpenGLRenderer::swapBuffers() {
     }
 
     openGLContext->swapBuffers();
+
+    if (!_texturesForDeletion.empty()) {
+        glDeleteTextures(_texturesForDeletion.size(), _texturesForDeletion.data());
+        _texturesForDeletion.clear();
+    }
 
     if (config->graphics.FPSLimit.value() > 0)
         _frameLimiter.tick(config->graphics.FPSLimit.value());
