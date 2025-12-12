@@ -161,11 +161,9 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         ViewTransform(pVertices, 2);
         Project(pVertices, 2, 0);
 
-        Pointi a(pVertices[0].vWorldViewProjX, pVertices[0].vWorldViewProjY);
-        Pointi b(pVertices[1].vWorldViewProjX, pVertices[1].vWorldViewProjY);
-
         render->BeginLines2D();
-        render->RasterLine2D(a, b, sStartDiffuse32, sEndDiffuse32);
+        render->RasterLine2D(pVertices[0].vWorldViewProj.toInt(), pVertices[1].vWorldViewProj.toInt(),
+                             sStartDiffuse32, sEndDiffuse32);
         render->EndLines2D();
     }
 }
@@ -403,39 +401,39 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
         v->_rhw = RHW;
         viewscalefactor = RHW * ViewPlaneDistPixels;
 
-        v->vWorldViewProjX = (double)pViewport->viewportCenterX -
+        v->vWorldViewProj.x = (double)pViewport->viewportCenterX -
                              viewscalefactor * (double)v->vWorldViewPosition.y;
-        v->vWorldViewProjY = (double)pViewport->viewportCenterY -
+        v->vWorldViewProj.y = (double)pViewport->viewportCenterY -
                              viewscalefactor * (double)v->vWorldViewPosition.z;
 
         if (fit_into_viewport) {
             fitted_x = (double)(signed int)pViewport->viewportBR_X;
-            if (fitted_x >= pVertices[i].vWorldViewProjX)
-                temp_r = pVertices[i].vWorldViewProjX;
+            if (fitted_x >= pVertices[i].vWorldViewProj.x)
+                temp_r = pVertices[i].vWorldViewProj.x;
             else
                 temp_r = fitted_x;
             temp_l = (double)(signed int)pViewport->viewportTL_X;
             if (temp_l <= temp_r) {
-                if (fitted_x >= pVertices[i].vWorldViewProjX)
-                    fitted_x = pVertices[i].vWorldViewProjX;
+                if (fitted_x >= pVertices[i].vWorldViewProj.x)
+                    fitted_x = pVertices[i].vWorldViewProj.x;
             } else {
                 fitted_x = temp_l;
             }
-            pVertices[i].vWorldViewProjX = fitted_x;
+            pVertices[i].vWorldViewProj.x = fitted_x;
 
             fitted_y = (double)(signed int)pViewport->viewportBR_Y;
-            if (fitted_y >= pVertices[i].vWorldViewProjY)
-                temp_b = pVertices[i].vWorldViewProjY;
+            if (fitted_y >= pVertices[i].vWorldViewProj.y)
+                temp_b = pVertices[i].vWorldViewProj.y;
             else
                 temp_b = fitted_y;
             temp_t = (double)(signed int)pViewport->viewportTL_Y;
             if (temp_t <= temp_b) {
-                if (fitted_y >= pVertices[i].vWorldViewProjY)
-                    fitted_y = pVertices[i].vWorldViewProjY;
+                if (fitted_y >= pVertices[i].vWorldViewProj.y)
+                    fitted_y = pVertices[i].vWorldViewProj.y;
             } else {
                 fitted_y = temp_t;
             }
-            pVertices[i].vWorldViewProjY = fitted_y;
+            pVertices[i].vWorldViewProj.y = fitted_y;
         }
     }
 }
@@ -449,11 +447,11 @@ void Camera3D::Project(int x, int y, int z, int *screenspace_x, int *screenspace
     this->Project(&v, 1, false);
 
     if (screenspace_x) {
-        *screenspace_x = floorf(v.vWorldViewProjX + 0.5f);
+        *screenspace_x = floorf(v.vWorldViewProj.x + 0.5f);
     }
 
     if (screenspace_y) {
-        *screenspace_y = floorf(v.vWorldViewProjY + 0.5f);
+        *screenspace_y = floorf(v.vWorldViewProj.y + 0.5f);
     }
 }
 

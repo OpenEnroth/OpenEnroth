@@ -355,7 +355,7 @@ bool CalcPortalShapePoly(const BLVFace *pFace, RenderVertexSoft *pVertices,
     pCamera3D->Project(pOutBounding, 4);
 
     // make sure frustum planes will be on correct side
-    if (pOutBounding[0].vWorldViewProjX > pOutBounding[3].vWorldViewProjX) {
+    if (pOutBounding[0].vWorldViewProj.x > pOutBounding[3].vWorldViewProj.x) {
         RenderVertexSoft temp[4];
         memcpy(temp, pOutBounding, sizeof(RenderVertexSoft) * 4);
         pOutBounding[0] = temp[3];

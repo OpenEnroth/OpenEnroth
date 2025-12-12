@@ -71,10 +71,9 @@ struct ODMRenderParams {
 extern ODMRenderParams *pODMRenderParams;
 
 struct RenderVertexSoft {
-    Vec3f vWorldPosition {};
-    Vec3f vWorldViewPosition {};
-    float vWorldViewProjX = 0;
-    float vWorldViewProjY = 0;
+    Vec3f vWorldPosition;
+    Vec3f vWorldViewPosition;
+    Vec2f vWorldViewProj;
     float _rhw = 0;
     float u = 0;
     float v = 0;
