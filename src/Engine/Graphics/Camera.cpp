@@ -151,38 +151,15 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
                                             RenderVertexSoft *pLineEnd,
                                             Color sEndDiffuse32,
                                             float z_stuff) {
-    RenderVertexSoft a1[20];         // [sp+8h] [bp-7C4h]@6
-    RenderVertexSoft pVertices[20];  // [sp+3C8h] [bp-404h]@2
-    RenderVertexD3D3 v24[2];         // [sp+788h] [bp-44h]@11
+    RenderVertexSoft a1[20];
+    RenderVertexSoft pVertices[20];
 
     int uOutNumVertices = 2;
-    a1[0].vWorldPosition.x = pLineBegin->vWorldPosition.x;
-    a1[0].vWorldPosition.y = pLineBegin->vWorldPosition.y;
-    a1[0].vWorldPosition.z = pLineBegin->vWorldPosition.z;
-    a1[1].vWorldPosition.x = pLineEnd->vWorldPosition.x;
-    a1[1].vWorldPosition.y = pLineEnd->vWorldPosition.y;
-    a1[1].vWorldPosition.z = pLineEnd->vWorldPosition.z;
+    a1[0].vWorldPosition = pLineBegin->vWorldPosition;
+    a1[1].vWorldPosition = pLineEnd->vWorldPosition;
     if (CullFaceToCameraFrustum(a1, &uOutNumVertices, pVertices, 4) != 1 || uOutNumVertices >= 2) {
         ViewTransform(pVertices, 2);
         Project(pVertices, 2, 0);
-        v24[0].specular = Color();
-        v24[0].pos.x = pVertices[0].vWorldViewProjX;
-        v24[0].pos.y = pVertices[0].vWorldViewProjY;
-        v24[0].pos.z = 0.001 - z_stuff;
-        v24[0].diffuse = sStartDiffuse32;
-        v24[0].rhw = 0.001f;
-        v24[0].texcoord.x = 0.0;
-        v24[0].texcoord.y = 0.0;
-
-        v24[1].pos.x = pVertices[1].vWorldViewProjX;
-        v24[1].pos.y = pVertices[1].vWorldViewProjY;
-        v24[1].diffuse = sEndDiffuse32;
-        v24[1].pos.z = 0.001 - z_stuff;
-        v24[1].specular = Color();
-        v24[1].rhw = 0.001f;
-        v24[1].texcoord.x = 0.0;
-        v24[1].texcoord.y = 0.0;
-        // v19 = render->pRenderD3D->pDevice;
 
         Pointi a(pVertices[0].vWorldViewProjX, pVertices[0].vWorldViewProjY);
         Pointi b(pVertices[1].vWorldViewProjX, pVertices[1].vWorldViewProjY);
