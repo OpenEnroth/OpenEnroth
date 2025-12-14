@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <vector>
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
 #include <glm/glm.hpp>
