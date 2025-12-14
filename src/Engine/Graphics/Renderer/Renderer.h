@@ -47,8 +47,11 @@ class Renderer {
 
     virtual void BeginLines2D() = 0;
     virtual void EndLines2D() = 0;
-    virtual void RasterLine2D(Pointi a, Pointi b, Color color) = 0;
     virtual void RasterLine2D(Pointi a, Pointi b, Color acolor, Color bcolor) = 0;
+
+    void RasterLine2D(Pointi a, Pointi b, Color color) {
+        RasterLine2D(a, b, color, color);
+    }
 
     virtual void BeginScene3D() = 0;
 

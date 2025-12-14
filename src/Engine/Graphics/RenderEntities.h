@@ -8,8 +8,6 @@
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Vec.h"
 
-#include "Utility/Flags.h"
-
 #include "SpriteEnums.h"
 
 class Sprite;
