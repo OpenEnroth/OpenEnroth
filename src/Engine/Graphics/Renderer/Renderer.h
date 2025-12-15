@@ -169,9 +169,9 @@ class Renderer {
 
     Color uFogColor;
 
-	static const int MAX_BILLBOARDS_D3D = 5000;
+    static const int MAX_BILLBOARDS_D3D = 5000;
     RenderBillboardD3D pBillboardRenderListD3D[MAX_BILLBOARDS_D3D];
-	std::array<RenderBillboardD3D*,MAX_BILLBOARDS_D3D> pSortedBillboardRenderListD3D;
+    std::array<RenderBillboardD3D*, MAX_BILLBOARDS_D3D> pSortedBillboardRenderListD3D;
     unsigned int uNumBillboardsToDraw; // TODO(captainurist): this is not properly cleared if BeginScene3D is not called,
                                        //                     resulting in dangling textures in pBillboardRenderListD3D.
 
