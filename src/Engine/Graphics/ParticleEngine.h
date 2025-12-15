@@ -83,7 +83,7 @@ struct stru2_LineList {
 
 class ParticleEngine {
  public:
-    static const int PARTICLES_ARRAY_SIZE = 500;
+    static const int PARTICLES_ARRAY_SIZE = 5000;
 
     /**
      * Particle engine constructor.
