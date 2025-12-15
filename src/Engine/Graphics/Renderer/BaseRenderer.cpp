@@ -38,8 +38,8 @@ bool BaseRenderer::Initialize() {
     return true;
 }
 
-unsigned int BaseRenderer::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
-    if (uNumBillboardsToDraw >= 999) {
+unsigned int BaseRenderer::NextBillboardIndex() {
+    if (uNumBillboardsToDraw >= MAX_BILLBOARDS_D3D - 1) {
         return 0;
     }
 
@@ -48,43 +48,7 @@ unsigned int BaseRenderer::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
         return 0;
     }
 
-    unsigned int v7 = 0;
-    for (int left = 0, right = uNumBillboardsToDraw; left < right;) {  // binsearch
-        v7 = left + (right - left) / 2;
-        if (z <= render->pBillboardRenderListD3D[v7].z_order)
-            right = v7;
-        else
-            left = v7 + 1;
-    }
-
-    if (z > render->pBillboardRenderListD3D[v7].z_order) {
-        if (v7 == render->uNumBillboardsToDraw - 1) {
-            v7 = render->uNumBillboardsToDraw;
-        } else {
-            if (render->uNumBillboardsToDraw > v7) {
-                for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7; i++) {
-                    render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i] =
-                        render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)];
-                }
-            }
-            ++v7;
-        }
-        uNumBillboardsToDraw++;
-        return v7;
-    }
-
-    if (z <= render->pBillboardRenderListD3D[v7].z_order) {
-        if (render->uNumBillboardsToDraw > v7) {
-            for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7; i++) {
-                render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i] =
-                    render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)];
-            }
-        }
-        uNumBillboardsToDraw++;
-        return v7;
-    }
-
-    return v7;
+    return uNumBillboardsToDraw++;
 }
 
 
@@ -415,7 +379,7 @@ void BaseRenderer::TransformBillboard(const SoftwareBillboard *pSoftBillboard, c
     if (pSprite->texture->height() == 0 || pSprite->texture->width() == 0)
         assert(false);
 
-    unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(pSoftBillboard->screen_space_z);
+    unsigned int billboard_index = NextBillboardIndex();
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
     float scr_proj_x = pSoftBillboard->screenspace_projection_factor_x;
@@ -507,7 +471,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                 GraphicsImage *texture,
                                                 Color uDiffuse,
                                                 int angle) {
-    unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
+    unsigned int billboard_index = NextBillboardIndex();
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
     billboard->opacity = RenderBillboardD3D::Opaque_1;
@@ -630,7 +594,7 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
         }
     }
 
-    unsigned int v5 = Billboard_ProbablyAddToListAndSortByZOrder(depth);
+    unsigned int v5 = NextBillboardIndex();
     pBillboardRenderListD3D[v5].field_90 = 0;
     pBillboardRenderListD3D[v5].sParentBillboardID = -1;
     pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
