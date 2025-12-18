@@ -2339,7 +2339,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         [](const auto& a, const auto& b) {
             return a->screen_space_z > b->screen_space_z;
         });
-	std::reverse(pSortedBillboardRenderListD3D.begin(), pSortedBillboardRenderListD3D.begin() + uNumBillboardsToDraw);
+    std::reverse(pSortedBillboardRenderListD3D.begin(), pSortedBillboardRenderListD3D.begin() + uNumBillboardsToDraw);
 
     for (int i = uNumBillboardsToDraw - 1; i >= 0; --i) {
         //if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend) {
@@ -2349,7 +2349,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         //    }
         //}
 
-        auto billboard = pSortedBillboardRenderListD3D[i];
+        RenderBillboardD3D* billboard = pSortedBillboardRenderListD3D[i];
 
         //int palette{ pBillboardRenderListD3D[i].PaletteID};
         int paletteId = billboard->paletteId;
