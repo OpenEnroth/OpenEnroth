@@ -665,7 +665,7 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     std::vector<Actor*> foundActors;
 
     for (int i = 0; i < render->uNumBillboardsToDraw; i++) {
-        int renderId = render->pBillboardRenderListD3D[i].sParentBillboardID;
+        int renderId = render->pSortedBillboardRenderListD3D[i]->sParentBillboardID;
         if(renderId == -1) {
             continue; // E.g. spell particle.
         }
