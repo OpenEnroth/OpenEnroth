@@ -43,12 +43,10 @@ unsigned int BaseRenderer::NextBillboardIndex() {
         return 0;
     }
 
-    if (!uNumBillboardsToDraw) {
-        uNumBillboardsToDraw = 1;
-        return 0;
-    }
+    int index = uNumBillboardsToDraw++;
+    pSortedBillboardRenderListD3D[index] = &pBillboardRenderListD3D[index];
 
-    return uNumBillboardsToDraw++;
+    return index;
 }
 
 

@@ -2330,10 +2330,6 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
     float oneof = 1.0f / (pCamera3D->GetFarClip());
 
     // we need to loop over all billboards from farthest to nearest
-    // set the list to a pointer to original
-    for (unsigned i = 0; i < uNumBillboardsToDraw; ++i) {
-        pSortedBillboardRenderListD3D[i] = &pBillboardRenderListD3D[i];
-    }
     // sort the list based on screen_space_z
     std::stable_sort(pSortedBillboardRenderListD3D.begin(), pSortedBillboardRenderListD3D.begin() + uNumBillboardsToDraw,
         [](const auto& a, const auto& b) {

@@ -19,7 +19,7 @@ Renderer::Renderer(
 
     uFogColor = Color();
     memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
-	pSortedBillboardRenderListD3D.fill(nullptr);
+    pSortedBillboardRenderListD3D.fill(nullptr);
     uNumBillboardsToDraw = 0;
     drawcalls = 0;
 }
