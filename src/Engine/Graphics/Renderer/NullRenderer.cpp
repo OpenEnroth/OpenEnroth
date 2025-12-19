@@ -26,12 +26,9 @@ void NullRenderer::Present() {
     swapBuffers();
 }
 
-void NullRenderer::Release() {}
-
 void NullRenderer::BeginLines2D() {}
 void NullRenderer::EndLines2D() {}
-void NullRenderer::RasterLine2D(Pointi a, Pointi b, Color uColor32) {}
-void NullRenderer::DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) {}
+void NullRenderer::RasterLine2D(Pointi a, Pointi b, Color acolor, Color bcolor) {}
 
 void NullRenderer::BeginScene3D() {
     // TODO(captainurist): doesn't belong here.

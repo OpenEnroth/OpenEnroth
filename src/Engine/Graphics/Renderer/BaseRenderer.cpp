@@ -113,11 +113,7 @@ void BaseRenderer::DrawSpriteObjects() {
                 z -= (frame->scale * frame->sprites[octant]->uHeight) / 2;
             }
 
-            int16_t setflags = 0;
-            if (frame->flags & SPRITE_FRAME_LUMINOUS) setflags = 2;
-            if (frame->flags & mirrorFlagForOctant(octant)) setflags |= 4;
-            if (frame->flags & SPRITE_FRAME_TRANSPARENT) setflags |= 0x40;
-            if (frame->flags & SPRITE_FRAME_GLOW) setflags |= 0x80;
+            BillboardFlags setflags = billboardFlagsForSprite(frame->flags, octant);
 
             // lighting
             int lightradius = frame->glowRadius * object->field_22_glow_radius_multiplier;
@@ -158,7 +154,7 @@ void BaseRenderer::DrawSpriteObjects() {
                             pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = billb_scale;
                             pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = billb_scale;
 
-                            pBillboardRenderList[::uNumBillboardsToDraw].field_1E = setflags;
+                            pBillboardRenderList[::uNumBillboardsToDraw].flags = setflags;
                             pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
                             pBillboardRenderList[::uNumBillboardsToDraw].world_y = y;
                             pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
@@ -190,7 +186,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
     int v13;                // ecx@9
     Color color;
     Particle_sw local_0;    // [sp+Ch] [bp-98h]@7
-    int v38;                // [sp+88h] [bp-1Ch]@9
+    BillboardFlags v38;                // [sp+88h] [bp-1Ch]@9
 
     for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
         if (::uNumBillboardsToDraw >= 500) {
@@ -228,7 +224,6 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
 
                     int v10 = TrigLUT.atan2(pLevelDecorations[i].vPosition.x - pCamera3D->vCameraPos.x,
                                             pLevelDecorations[i].vPosition.y - pCamera3D->vCameraPos.y);
-                    v38 = 0;
                     v13 = ((signed int)(TrigLUT.uIntegerPi +
                         ((signed int)TrigLUT.uIntegerPi >>
                             3) +
@@ -237,10 +232,8 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         8) &
                         7;
                     int v37 = v13;
-                    if (frame->flags & SPRITE_FRAME_LUMINOUS) v38 = 2;
-                    if (frame->flags & mirrorFlagForOctant(v13)) v38 |= 4;
-                    if (frame->flags & SPRITE_FRAME_TRANSPARENT) v38 |= 0x40;
-                    if (frame->flags & SPRITE_FRAME_GLOW) v38 |= 0x80;
+
+                    v38 = billboardFlagsForSprite(frame->flags, v13);
 
                     // for light
                     if (frame->glowRadius) {
@@ -301,7 +294,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v41;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v41;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
-                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].field_1E = v38 | 0x200;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].flags = v38 | BILLBOARD_0X200;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, i);
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].dimming_level = 0;
@@ -354,7 +347,7 @@ void BaseRenderer::TransformBillboardsAndSetPalettesODM() {
             billboard.screenspace_projection_factor_y = p->screenspace_projection_factor_y;
             billboard.sTintColor = p->sTintColor;
             billboard.object_pid = p->object_pid;
-            billboard.uFlags = p->field_1E;
+            billboard.uFlags = p->flags;
 
             TransformBillboard(&billboard, p);
         } else {
@@ -408,7 +401,7 @@ void BaseRenderer::TransformBillboard(const SoftwareBillboard *pSoftBillboard, c
 
     float point_x = pSprite->uWidth / 2 - pSprite->uAreaX;
     float point_y = pSprite->uHeight - pSprite->uAreaY;
-    if (pSoftBillboard->uFlags & 4) point_x *= -1.f;
+    if (pSoftBillboard->uFlags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[0].diffuse = diffuse;
     billboard->pQuads[0].pos.x = pSoftBillboard->screen_space_x - point_x * scr_proj_x;
     billboard->pQuads[0].pos.y = pSoftBillboard->screen_space_y - point_y * scr_proj_y;
@@ -420,7 +413,7 @@ void BaseRenderer::TransformBillboard(const SoftwareBillboard *pSoftBillboard, c
 
     point_x = pSprite->uWidth / 2 - pSprite->uAreaX;
     point_y = -pSprite->uAreaY;
-    if (pSoftBillboard->uFlags & 4) point_x = point_x * -1.f;
+    if (pSoftBillboard->uFlags & BILLBOARD_MIRRORED) point_x = point_x * -1.f;
     billboard->pQuads[1].specular = specular;
     billboard->pQuads[1].diffuse = diffuse;
     billboard->pQuads[1].pos.x = pSoftBillboard->screen_space_x - point_x * scr_proj_x;
@@ -432,7 +425,7 @@ void BaseRenderer::TransformBillboard(const SoftwareBillboard *pSoftBillboard, c
 
     point_x = pSprite->uWidth / 2 + pSprite->uAreaX;
     point_y = -pSprite->uAreaY;
-    if (pSoftBillboard->uFlags & 4) point_x *= -1.f;
+    if (pSoftBillboard->uFlags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[2].diffuse = diffuse;
     billboard->pQuads[2].specular = specular;
     billboard->pQuads[2].pos.x = pSoftBillboard->screen_space_x + point_x * scr_proj_x;
@@ -444,7 +437,7 @@ void BaseRenderer::TransformBillboard(const SoftwareBillboard *pSoftBillboard, c
 
     point_x = pSprite->uWidth / 2 + pSprite->uAreaX;
     point_y = pSprite->uHeight - pSprite->uAreaY;
-    if (pSoftBillboard->uFlags & 4) point_x *= -1.f;
+    if (pSoftBillboard->uFlags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[3].diffuse = diffuse;
     billboard->pQuads[3].specular = specular;
     billboard->pQuads[3].pos.x = pSoftBillboard->screen_space_x + point_x * scr_proj_x;
@@ -571,11 +564,6 @@ void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int col
     DrawTextureNew(u, v, pTexture, mask);
 }
 
-void BaseRenderer::ClearBlack() {  // used only at start and in game over win
-    ClearHitMap();
-    ClearTarget(Color());
-}
-
 //----- (004A4CC9) ---------------------------------------
 void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) {
     // fireball / implosion sphere
@@ -688,20 +676,6 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     return foundActors;
 }
 
-void BaseRenderer::ClearHitMap() {
-    _equipmentHitMap.clear();
-}
-
-void BaseRenderer::DrawToHitMap(float u, float v, GraphicsImage *img, int zVal) {
-    if (!img) return;
-
-    // Convert normalized coordinates to screen pixel coordinates
-    int screenX = static_cast<int>(u * outputRender.w);
-    int screenY = static_cast<int>(v * outputRender.h);
-
-    _equipmentHitMap.add(Pointi(screenX, screenY), img, zVal);
-}
-
 bool BaseRenderer::Reinitialize(bool firstInit) {
     updateRenderDimensions();
     return true;
@@ -727,10 +701,6 @@ void BaseRenderer::updateRenderDimensions() {
                            config->graphics.ViewPortY1.value(), // 8 in vanilla
                            outputRender.w - config->graphics.ViewPortX2.value(),  // 468 in vanilla
                            outputRender.h - config->graphics.ViewPortY2.value()); // 352 in vanilla
-}
-
-int BaseRenderer::QueryHitMap(Pointi screenPos, int defaultValue) {
-    return _equipmentHitMap.query(screenPos, defaultValue);
 }
 
 Pointi BaseRenderer::MapToRender(Pointi position) {

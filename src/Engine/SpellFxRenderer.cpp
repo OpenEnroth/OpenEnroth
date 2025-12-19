@@ -176,9 +176,9 @@ void SpellFxRenderer::DrawProjectiles() {
         // 20.0f is width scaling factor
         dstWidthScale = pCamera3D->ViewPlaneDistPixels / v[1].vWorldViewPosition.x * 20.0f;
         srcWidthScale = pCamera3D->ViewPlaneDistPixels / v[0].vWorldViewPosition.x * 20.0f;
-        render->DrawProjectile(v[0].vWorldViewProjX, v[0].vWorldViewProjY,
+        render->DrawProjectile(v[0].vWorldViewProj.x, v[0].vWorldViewProj.y,
                                v[0].vWorldViewPosition.x, srcWidthScale,
-                               v[1].vWorldViewProjX, v[1].vWorldViewProjY,
+                               v[1].vWorldViewProj.x, v[1].vWorldViewProj.y,
                                v[1].vWorldViewPosition.x, dstWidthScale, p->texture);
     }
 }
@@ -1130,7 +1130,6 @@ void SpellFxRenderer::RenderSpecialEffects() {
     float fadeAlpha;             // ST14_4@6 (renamed from v7)
     Duration animElapsed;        // ST14_4@8 (renamed from v8)
     SpriteFrame *prismaticFrame; // eax@8 (renamed from v10)
-    RenderVertexD3D3 vd3d[4];    // [sp+60h] [bp-8Ch]@9
 
     if (uNumProjectiles) {
         DrawProjectiles();

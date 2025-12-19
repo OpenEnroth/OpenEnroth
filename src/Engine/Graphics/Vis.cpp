@@ -158,11 +158,11 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
     for (int i = 0; i < num_vertices; ++i) {
         RenderVertexSoft *v = &vertices[i];
 
-        if (v->vWorldViewProjX < min_x) min_x = v->vWorldViewProjX;
-        if (v->vWorldViewProjX > max_x) max_x = v->vWorldViewProjX;
+        if (v->vWorldViewProj.x < min_x) min_x = v->vWorldViewProj.x;
+        if (v->vWorldViewProj.x > max_x) max_x = v->vWorldViewProj.x;
 
-        if (v->vWorldViewProjY < min_y) min_y = v->vWorldViewProjY;
-        if (v->vWorldViewProjY > max_y) max_y = v->vWorldViewProjY;
+        if (v->vWorldViewProj.y < min_y) min_y = v->vWorldViewProj.y;
+        if (v->vWorldViewProj.y > max_y) max_y = v->vWorldViewProj.y;
     }
     // //--------------------------------
 
@@ -209,17 +209,17 @@ void Vis::GetPolygonScreenSpaceCenter(RenderVertexSoft *vertices,
 
     SortByScreenSpaceX(array_F8DDF8.data(), 0, num_vertices - 1);
     *out_center_x =
-        (array_F8DDF8[num_vertices - 1].vWorldViewProjX -
-         array_F8DDF8[0].vWorldViewProjX) *
+        (array_F8DDF8[num_vertices - 1].vWorldViewProj.x -
+         array_F8DDF8[0].vWorldViewProj.x) *
         0.5 +
-        array_F8DDF8[0].vWorldViewProjX;
+        array_F8DDF8[0].vWorldViewProj.x;
 
     SortByScreenSpaceY(array_F8DDF8.data(), 0, num_vertices - 1);
     *out_center_y =
-        (array_F8DDF8[num_vertices - 1].vWorldViewProjY -
-         array_F8DDF8[0].vWorldViewProjY) *
+        (array_F8DDF8[num_vertices - 1].vWorldViewProj.y -
+         array_F8DDF8[0].vWorldViewProj.y) *
         0.5 +
-        array_F8DDF8[0].vWorldViewProjY;
+        array_F8DDF8[0].vWorldViewProj.y;
 }
 
 //----- (004C1542) --------------------------------------------------------
@@ -654,7 +654,7 @@ void Vis::SortVerticesByY(RenderVertexD3D3 *pArray, unsigned int uStart, unsigne
 //----- (004C288E) --------------------------------------------------------
 void Vis::SortByScreenSpaceX(RenderVertexSoft *pArray, int start, int end) {  // сортировка по возрастанию экранных координат х
     auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
-        return l.vWorldViewProjX < r.vWorldViewProjX;
+        return l.vWorldViewProj.x < r.vWorldViewProj.x;
     };
     std::stable_sort(pArray + start, pArray + end + 1, cmp);
 }
@@ -662,7 +662,7 @@ void Vis::SortByScreenSpaceX(RenderVertexSoft *pArray, int start, int end) {  //
 //----- (004C297E) --------------------------------------------------------
 void Vis::SortByScreenSpaceY(RenderVertexSoft *pArray, int start, int end) {
     auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
-        return l.vWorldViewProjY < r.vWorldViewProjY;
+        return l.vWorldViewProj.y < r.vWorldViewProj.y;
     };
     std::stable_sort(pArray + start, pArray + end + 1, cmp);
 }

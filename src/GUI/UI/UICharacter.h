@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 
+#include "Engine/HitMap.h"
 #include "Engine/Data/AwardEnums.h"
 
 #include "GUI/GUIWindow.h"
@@ -56,7 +57,6 @@ class GUIWindow_CharacterRecord : public GUIWindow {
 };
 
 bool ringscreenactive();
-static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage *item_texture = nullptr, bool doZDraw = false);
 
 class GraphicsImage;
 extern GraphicsImage *ui_character_skills_background;
@@ -67,3 +67,5 @@ extern GraphicsImage *ui_character_inventory_background_strip;
 extern GraphicsImage *ui_character_inventory_paperdoll_background;
 
 extern std::array<GraphicsImage *, 16> paperdoll_dbrds;
+
+extern HitMap<int> equipmentHitMap;

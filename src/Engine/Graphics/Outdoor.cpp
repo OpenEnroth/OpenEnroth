@@ -785,11 +785,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (frame->sprites[Sprite_Octant]->texture->height() == 0 || frame->sprites[Sprite_Octant]->texture->width() == 0)
             assert(false);
 
-        int flags = 0;
-        if (frame->flags & SPRITE_FRAME_LUMINOUS) flags = 2;
-        if (frame->flags & SPRITE_FRAME_TRANSPARENT) flags |= 0x40;
-        if (frame->flags & SPRITE_FRAME_GLOW) flags |= 0x80;
-        if (frame->flags & mirrorFlagForOctant(Sprite_Octant)) flags |= 4;
+        BillboardFlags flags = billboardFlagsForSprite(frame->flags, Sprite_Octant);
+
         if (frame->glowRadius) {
             pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].sectorId, frame->glowRadius, colorTable.White,
                                          _4E94D3_light_type);
@@ -844,13 +841,13 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Actor, i);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].flags = flags | BILLBOARD_0X200;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
                             pMonsterList->monsters[pActors[i].monsterInfo.id].tintColor;  // *((int *)&v35[v36] - 36);
                         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
-                                flags | 0x100;
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].flags =
+                                flags | BILLBOARD_STONED;
                         }
                     }
                 }
@@ -1830,7 +1827,6 @@ static void loadAndPrepareODMInternal(MapId mapid) {
 
     // thisa->AllocSoftwareDrawBuffers();
     pWeather->bRenderSnow = false;
-    render->ClearHitMap();
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;

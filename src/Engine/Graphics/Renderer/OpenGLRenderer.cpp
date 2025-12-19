@@ -201,8 +201,6 @@ OpenGLRenderer::~OpenGLRenderer() {
     _shutdownImGui();
 }
 
-void OpenGLRenderer::Release() { logger->info("RenderGL - Release"); }
-
 RgbaImage OpenGLRenderer::ReadScreenPixels() {
     RgbaImage result = RgbaImage::uninitialized(outputRender.w, outputRender.h);
     if (outputRender != outputPresent) {
@@ -294,44 +292,19 @@ void OpenGLRenderer::EndLines2D() {
     linevertscnt = 0;
 }
 
-void OpenGLRenderer::RasterLine2D(Pointi a, Pointi b, Color uColor32) {
-    Colorf cf = uColor32.toColorf();
-
+void OpenGLRenderer::RasterLine2D(Pointi a, Pointi b, Color acolor, Color bcolor) {
     lineshaderstore[linevertscnt].x = a.x;
     lineshaderstore[linevertscnt].y = a.y;
-    lineshaderstore[linevertscnt].color = cf;
+    lineshaderstore[linevertscnt].color = acolor.toColorf();
     linevertscnt++;
 
     lineshaderstore[linevertscnt].x = b.x;
     lineshaderstore[linevertscnt].y = b.y;
-    lineshaderstore[linevertscnt].color = cf;
+    lineshaderstore[linevertscnt].color = bcolor.toColorf();
     linevertscnt++;
 
     // draw if buffer full
     if (linevertscnt == 2000) EndLines2D();
-}
-
-// used for debug protal lines
-void OpenGLRenderer::DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) {
-    BeginLines2D();
-    for (int i = 0; i < num_vertices - 1; ++i) {
-        Colorf color0 = vertices[i].diffuse.toColorf();
-        Colorf color1 = vertices[i + 1].diffuse.toColorf();
-
-        lineshaderstore[linevertscnt].x = vertices[i].pos.x;
-        lineshaderstore[linevertscnt].y = vertices[i].pos.y;
-        lineshaderstore[linevertscnt].color = color0;
-        linevertscnt++;
-
-        lineshaderstore[linevertscnt].x = vertices[i + 1].pos.x + 0.5f;
-        lineshaderstore[linevertscnt].y = vertices[i + 1].pos.y + 0.5f;
-        lineshaderstore[linevertscnt].color = color1;
-        linevertscnt++;
-
-        // draw if buffer full
-        if (linevertscnt == 2000) EndLines2D();
-    }
-    EndLines2D();
 }
 
 void OpenGLRenderer::BeginScene3D() {
@@ -839,9 +812,9 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     unsigned _507D30_idx = 0;
     for (; _507D30_idx < uNumVertices; _507D30_idx++) {
         // outbound screen x dist
-        float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - VertexRenderList[_507D30_idx].vWorldViewProjX);
+        float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - VertexRenderList[_507D30_idx].vWorldViewProj.x);
         // outbound screen y dist
-        float y_dist = inv_viewplanedist * (blv_horizon_height_offset - VertexRenderList[_507D30_idx].vWorldViewProjY);
+        float y_dist = inv_viewplanedist * (blv_horizon_height_offset - VertexRenderList[_507D30_idx].vWorldViewProj.y);
 
         // rotate vectors to cam facing
         float skyfinalleft = (SkyBillboard.CamVecLeft_X * x_dist) + (SkyBillboard.CamVecLeft_Z * y_dist) + SkyBillboard.CamVecLeft_Y;
@@ -884,8 +857,8 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
         float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
         float thisdepth = (oneoz - oneon) / (oneof - oneon);
         // copy first
-        thisvert->x = VertexRenderList[0].vWorldViewProjX;
-        thisvert->y = VertexRenderList[0].vWorldViewProjY;
+        thisvert->x = VertexRenderList[0].vWorldViewProj.x;
+        thisvert->y = VertexRenderList[0].vWorldViewProj.y;
         thisvert->z = thisdepth;
         thisvert->w = VertexRenderList[0]._rhw;
         thisvert->u = VertexRenderList[0].u;
@@ -900,8 +873,8 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
         for (unsigned i = 1; i < 3; ++i) {
             oneoz = 1.0f / VertexRenderList[z + i].vWorldViewPosition.x;
             thisdepth = (oneoz - oneon) / (oneof - oneon);
-            thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
-            thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
+            thisvert->x = VertexRenderList[z + i].vWorldViewProj.x;
+            thisvert->y = VertexRenderList[z + i].vWorldViewProj.y;
             thisvert->z = thisdepth;
             thisvert->w = VertexRenderList[z + i]._rhw;
             thisvert->u = VertexRenderList[z + i].u;
@@ -1283,8 +1256,9 @@ void OpenGLRenderer::DeleteTexture(TextureRenderId id) {
     if (!id)
         return;
 
-    GLuint glId = id.value();
-    glDeleteTextures(1, &glId);
+    // Texture ids will be released after swapBuffers(). We might have the passed id saved in the render lists, so
+    // can't release it yet.
+    _texturesForDeletion.push_back(id.value());
 }
 
 // TODO(pskelton): to camera?
@@ -1937,25 +1911,25 @@ void OpenGLRenderer::DrawOutdoorSky() {
         //  |8,351                468,351 |
         // 1._____________________________.2
         //
-        VertexRenderList[0].vWorldViewProjX = (double)(signed int)pViewport->viewportTL_X;  // 8
-        VertexRenderList[0].vWorldViewProjY = (double)(signed int)pViewport->viewportTL_Y;  // 8
+        VertexRenderList[0].vWorldViewProj.x = (double)(signed int)pViewport->viewportTL_X;  // 8
+        VertexRenderList[0].vWorldViewProj.y = (double)(signed int)pViewport->viewportTL_Y;  // 8
 
-        VertexRenderList[1].vWorldViewProjX = (double)(signed int)pViewport->viewportTL_X;   // 8
-        VertexRenderList[1].vWorldViewProjY = (double)bot_y_proj + 1;  // 247
+        VertexRenderList[1].vWorldViewProj.x = (double)(signed int)pViewport->viewportTL_X;   // 8
+        VertexRenderList[1].vWorldViewProj.y = (double)bot_y_proj + 1;  // 247
 
-        VertexRenderList[2].vWorldViewProjX = (double)(signed int)pViewport->viewportBR_X;   // 468
-        VertexRenderList[2].vWorldViewProjY = (double)bot_y_proj + 1;  // 247
+        VertexRenderList[2].vWorldViewProj.x = (double)(signed int)pViewport->viewportBR_X;   // 468
+        VertexRenderList[2].vWorldViewProj.y = (double)bot_y_proj + 1;  // 247
 
-        VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->viewportBR_X;  // 468
-        VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->viewportTL_Y;  // 8
+        VertexRenderList[3].vWorldViewProj.x = (double)(signed int)pViewport->viewportBR_X;  // 468
+        VertexRenderList[3].vWorldViewProj.y = (double)(signed int)pViewport->viewportTL_Y;  // 8
 
         float widthperpixel = 1 / pCamera3D->ViewPlaneDistPixels;
 
         for (unsigned i = 0; i < uNumVertices; ++i) {
             // outbound screen X dist
-            float x_dist = widthperpixel * (pViewport->viewportCenterX - VertexRenderList[i].vWorldViewProjX);
+            float x_dist = widthperpixel * (pViewport->viewportCenterX - VertexRenderList[i].vWorldViewProj.x);
             // outbound screen y dist
-            float y_dist = widthperpixel * (horizon_height_offset - VertexRenderList[i].vWorldViewProjY);
+            float y_dist = widthperpixel * (horizon_height_offset - VertexRenderList[i].vWorldViewProj.y);
 
             // rotate vectors to cam facing
             float skyfinalleft = (SkyBillboard.CamVecLeft_X * x_dist) + (SkyBillboard.CamVecLeft_Z * y_dist) + SkyBillboard.CamVecLeft_Y;
@@ -1982,24 +1956,24 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
         if (config->graphics.Fog.value()) {
             // fade sky
-            VertexRenderList[4].vWorldViewProjX = (double)pViewport->viewportTL_X;
-            VertexRenderList[4].vWorldViewProjY = (double)pViewport->viewportTL_Y;
-            VertexRenderList[5].vWorldViewProjX = (double)pViewport->viewportTL_X;
-            VertexRenderList[5].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
-            VertexRenderList[6].vWorldViewProjX = (double)pViewport->viewportBR_X;
-            VertexRenderList[6].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
-            VertexRenderList[7].vWorldViewProjX = (double)pViewport->viewportBR_X;
-            VertexRenderList[7].vWorldViewProjY = (double)pViewport->viewportTL_Y;
+            VertexRenderList[4].vWorldViewProj.x = (double)pViewport->viewportTL_X;
+            VertexRenderList[4].vWorldViewProj.y = (double)pViewport->viewportTL_Y;
+            VertexRenderList[5].vWorldViewProj.x = (double)pViewport->viewportTL_X;
+            VertexRenderList[5].vWorldViewProj.y = (double)bot_y_proj - config->graphics.FogHorizon.value();
+            VertexRenderList[6].vWorldViewProj.x = (double)pViewport->viewportBR_X;
+            VertexRenderList[6].vWorldViewProj.y = (double)bot_y_proj - config->graphics.FogHorizon.value();
+            VertexRenderList[7].vWorldViewProj.x = (double)pViewport->viewportBR_X;
+            VertexRenderList[7].vWorldViewProj.y = (double)pViewport->viewportTL_Y;
 
             // sub sky
-            VertexRenderList[8].vWorldViewProjX = (double)pViewport->viewportTL_X;
-            VertexRenderList[8].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
-            VertexRenderList[9].vWorldViewProjX = (double)pViewport->viewportTL_X;
-            VertexRenderList[9].vWorldViewProjY = (double)pViewport->viewportBR_Y + 1;
-            VertexRenderList[10].vWorldViewProjX = (double)pViewport->viewportBR_X;
-            VertexRenderList[10].vWorldViewProjY = (double)pViewport->viewportBR_Y + 1;
-            VertexRenderList[11].vWorldViewProjX = (double)pViewport->viewportBR_X;
-            VertexRenderList[11].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
+            VertexRenderList[8].vWorldViewProj.x = (double)pViewport->viewportTL_X;
+            VertexRenderList[8].vWorldViewProj.y = (double)bot_y_proj - config->graphics.FogHorizon.value();
+            VertexRenderList[9].vWorldViewProj.x = (double)pViewport->viewportTL_X;
+            VertexRenderList[9].vWorldViewProj.y = (double)pViewport->viewportBR_Y + 1;
+            VertexRenderList[10].vWorldViewProj.x = (double)pViewport->viewportBR_X;
+            VertexRenderList[10].vWorldViewProj.y = (double)pViewport->viewportBR_Y + 1;
+            VertexRenderList[11].vWorldViewProj.x = (double)pViewport->viewportBR_X;
+            VertexRenderList[11].vWorldViewProj.y = (double)bot_y_proj - config->graphics.FogHorizon.value();
         }
 
         _set_ortho_projection(1);
@@ -2032,8 +2006,8 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
         // copy first
-        thisvert->x = VertexRenderList[0].vWorldViewProjX;
-        thisvert->y = VertexRenderList[0].vWorldViewProjY;
+        thisvert->x = VertexRenderList[0].vWorldViewProj.x;
+        thisvert->y = VertexRenderList[0].vWorldViewProj.y;
         thisvert->z = 1.0f;
         thisvert->w = VertexRenderList[0]._rhw;
         thisvert->u = VertexRenderList[0].u;
@@ -2046,8 +2020,8 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 
         // copy other two (z+1)(z+2)
         for (unsigned i = 1; i < 3; ++i) {
-            thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
-            thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
+            thisvert->x = VertexRenderList[z + i].vWorldViewProj.x;
+            thisvert->y = VertexRenderList[z + i].vWorldViewProj.y;
             thisvert->z = 1.0f;
             thisvert->w = VertexRenderList[z + i]._rhw;
             thisvert->u = VertexRenderList[z + i].u;
@@ -2071,8 +2045,8 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
             forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
             // copy first
-            thisvert->x = VertexRenderList[4].vWorldViewProjX;
-            thisvert->y = VertexRenderList[4].vWorldViewProjY;
+            thisvert->x = VertexRenderList[4].vWorldViewProj.x;
+            thisvert->y = VertexRenderList[4].vWorldViewProj.y;
             thisvert->z = 1.0f;
             thisvert->w = 1.0f;
             thisvert->u = 0.5f;
@@ -2086,8 +2060,8 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 
             // copy other two (z+1)(z+2)
             for (unsigned i = 1; i < 3; ++i) {
-                thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
-                thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
+                thisvert->x = VertexRenderList[z + i].vWorldViewProj.x;
+                thisvert->y = VertexRenderList[z + i].vWorldViewProj.y;
                 thisvert->z = 1.0f;
                 thisvert->w = 1.0f;
                 thisvert->u = 0.5f;
@@ -2111,8 +2085,8 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
             forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
             // copy first
-            thisvert->x = VertexRenderList[8].vWorldViewProjX;
-            thisvert->y = VertexRenderList[8].vWorldViewProjY;
+            thisvert->x = VertexRenderList[8].vWorldViewProj.x;
+            thisvert->y = VertexRenderList[8].vWorldViewProj.y;
             thisvert->z = 1.0f;
             thisvert->w = 1.0f;
             thisvert->u = 0.5f;
@@ -2125,8 +2099,8 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 
             // copy other two (z+1)(z+2)
             for (unsigned i = 1; i < 3; ++i) {
-                thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
-                thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
+                thisvert->x = VertexRenderList[z + i].vWorldViewProj.x;
+                thisvert->y = VertexRenderList[z + i].vWorldViewProj.y;
                 thisvert->z = 1.0f;
                 thisvert->w = 1.0f;
                 thisvert->u = 0.5f;
@@ -3094,6 +3068,11 @@ void OpenGLRenderer::swapBuffers() {
     }
 
     openGLContext->swapBuffers();
+
+    if (!_texturesForDeletion.empty()) {
+        glDeleteTextures(_texturesForDeletion.size(), _texturesForDeletion.data());
+        _texturesForDeletion.clear();
+    }
 
     if (config->graphics.FPSLimit.value() > 0)
         _frameLimiter.tick(config->graphics.FPSLimit.value());

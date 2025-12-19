@@ -150,76 +150,22 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
                                             Color sStartDiffuse32,
                                             RenderVertexSoft *pLineEnd,
                                             Color sEndDiffuse32,
-                                            unsigned int uOutNumVertices,
                                             float z_stuff) {
-    RenderVertexSoft a1[20];         // [sp+8h] [bp-7C4h]@6
-    RenderVertexSoft pVertices[20];  // [sp+3C8h] [bp-404h]@2
-    RenderVertexD3D3 v24[2];         // [sp+788h] [bp-44h]@11
+    RenderVertexSoft a1[20];
+    RenderVertexSoft pVertices[20];
 
-    // if ( render->pRenderD3D )
-    //{
-    for (unsigned i = 0; i < 20; i++) pVertices[i].flt_2C = 0.0;
-    if ((char)uOutNumVertices) {
-        pVertices[0].vWorldViewProjX = pLineBegin->vWorldViewProjX;
-        pVertices[0].vWorldViewProjY = pLineBegin->vWorldViewProjY;
-
-        pVertices[1].vWorldViewProjX = pLineEnd->vWorldViewProjX;
-        pVertices[1].vWorldViewProjY = pLineEnd->vWorldViewProjY;
-        v24[0].specular = Color();
-        v24[0].pos.x = pVertices[0].vWorldViewProjX;
-        v24[0].pos.y = pVertices[0].vWorldViewProjY;
-        v24[0].pos.z = 0.001 - z_stuff;
-        v24[0].diffuse = sStartDiffuse32;
-        v24[0].rhw = 0.001f;
-        v24[0].texcoord.x = 0.0f;
-        v24[0].texcoord.y = 0.0f;
-
-        v24[1].pos.x = pVertices[1].vWorldViewProjX;
-        v24[1].pos.y = pVertices[1].vWorldViewProjY;
-        v24[1].diffuse = sEndDiffuse32;
-        v24[1].pos.z = 0.001 - z_stuff;
-        v24[1].specular = Color();
-        v24[1].rhw = 0.001f;
-        v24[1].texcoord.x = 0.0f;
-        v24[1].texcoord.y = 0.0f;
-        // v19 = render->pRenderD3D->pDevice;
-        render->DrawLines(v24, 2);
-        return;
-    }
-    for (unsigned i = 0; i < 20; i++) a1[i].flt_2C = 0.0;
-    uOutNumVertices = 2;
-    a1[0].vWorldPosition.x = pLineBegin->vWorldPosition.x;
-    a1[0].vWorldPosition.y = pLineBegin->vWorldPosition.y;
-    a1[0].vWorldPosition.z = pLineBegin->vWorldPosition.z;
-    a1[1].vWorldPosition.x = pLineEnd->vWorldPosition.x;
-    a1[1].vWorldPosition.y = pLineEnd->vWorldPosition.y;
-    a1[1].vWorldPosition.z = pLineEnd->vWorldPosition.z;
-    if (CullFaceToCameraFrustum(a1, &uOutNumVertices, pVertices, 4) != 1 ||
-        (signed int)uOutNumVertices >= 2) {
+    int uOutNumVertices = 2;
+    a1[0].vWorldPosition = pLineBegin->vWorldPosition;
+    a1[1].vWorldPosition = pLineEnd->vWorldPosition;
+    if (CullFaceToCameraFrustum(a1, &uOutNumVertices, pVertices, 4) != 1 || uOutNumVertices >= 2) {
         ViewTransform(pVertices, 2);
         Project(pVertices, 2, 0);
-        v24[0].specular = Color();
-        v24[0].pos.x = pVertices[0].vWorldViewProjX;
-        v24[0].pos.y = pVertices[0].vWorldViewProjY;
-        v24[0].pos.z = 0.001 - z_stuff;
-        v24[0].diffuse = sStartDiffuse32;
-        v24[0].rhw = 0.001f;
-        v24[0].texcoord.x = 0.0;
-        v24[0].texcoord.y = 0.0;
 
-        v24[1].pos.x = pVertices[1].vWorldViewProjX;
-        v24[1].pos.y = pVertices[1].vWorldViewProjY;
-        v24[1].diffuse = sEndDiffuse32;
-        v24[1].pos.z = 0.001 - z_stuff;
-        v24[1].specular = Color();
-        v24[1].rhw = 0.001f;
-        v24[1].texcoord.x = 0.0;
-        v24[1].texcoord.y = 0.0;
-        // v19 = render->pRenderD3D->pDevice;
-        render->DrawLines(v24, 2);
-        return;
+        render->BeginLines2D();
+        render->RasterLine2D(pVertices[0].vWorldViewProj.toInt(), pVertices[1].vWorldViewProj.toInt(),
+                             sStartDiffuse32, sEndDiffuse32);
+        render->EndLines2D();
     }
-    //}
 }
 
 //----- (004379EE) --------------------------------------------------------
@@ -229,10 +175,9 @@ void Camera3D::debug_outline_sw(RenderVertexSoft *a2,
     if (!uNumVertices) return;
     if ((signed int)(uNumVertices - 1) > 0) {
         for (unsigned i = 0; i < uNumVertices - 1; i++)
-            do_draw_debug_line_sw(&a2[i], uDiffuse32, &a2[i + 1], uDiffuse32, 0,
-                                  a5);
+            do_draw_debug_line_sw(&a2[i], uDiffuse32, &a2[i + 1], uDiffuse32, a5);
     }
-    do_draw_debug_line_sw(&a2[uNumVertices - 1], uDiffuse32, a2, uDiffuse32, 0, a5);
+    do_draw_debug_line_sw(&a2[uNumVertices - 1], uDiffuse32, a2, uDiffuse32, a5);
 }
 
 //----- (004376E7) --------------------------------------------------------
@@ -305,9 +250,9 @@ void Camera3D::BuildViewFrustum() {
 // TODO(pskelton): does this func need to copy verts or could it be eliminated
 //----- (00437285) --------------------------------------------------------
 bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
-                                      unsigned int *pOutNumVertices,
-                                      RenderVertexSoft *pVertices,
-                                      signed int NumFrustumPlanes) {
+                                       int *pOutNumVertices,
+                                       RenderVertexSoft *pVertices,
+                                       int NumFrustumPlanes) {
     if (NumFrustumPlanes <= 0) return false;
     if (*pOutNumVertices <= 0) return false;
 
@@ -456,39 +401,39 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
         v->_rhw = RHW;
         viewscalefactor = RHW * ViewPlaneDistPixels;
 
-        v->vWorldViewProjX = (double)pViewport->viewportCenterX -
+        v->vWorldViewProj.x = (double)pViewport->viewportCenterX -
                              viewscalefactor * (double)v->vWorldViewPosition.y;
-        v->vWorldViewProjY = (double)pViewport->viewportCenterY -
+        v->vWorldViewProj.y = (double)pViewport->viewportCenterY -
                              viewscalefactor * (double)v->vWorldViewPosition.z;
 
         if (fit_into_viewport) {
             fitted_x = (double)(signed int)pViewport->viewportBR_X;
-            if (fitted_x >= pVertices[i].vWorldViewProjX)
-                temp_r = pVertices[i].vWorldViewProjX;
+            if (fitted_x >= pVertices[i].vWorldViewProj.x)
+                temp_r = pVertices[i].vWorldViewProj.x;
             else
                 temp_r = fitted_x;
             temp_l = (double)(signed int)pViewport->viewportTL_X;
             if (temp_l <= temp_r) {
-                if (fitted_x >= pVertices[i].vWorldViewProjX)
-                    fitted_x = pVertices[i].vWorldViewProjX;
+                if (fitted_x >= pVertices[i].vWorldViewProj.x)
+                    fitted_x = pVertices[i].vWorldViewProj.x;
             } else {
                 fitted_x = temp_l;
             }
-            pVertices[i].vWorldViewProjX = fitted_x;
+            pVertices[i].vWorldViewProj.x = fitted_x;
 
             fitted_y = (double)(signed int)pViewport->viewportBR_Y;
-            if (fitted_y >= pVertices[i].vWorldViewProjY)
-                temp_b = pVertices[i].vWorldViewProjY;
+            if (fitted_y >= pVertices[i].vWorldViewProj.y)
+                temp_b = pVertices[i].vWorldViewProj.y;
             else
                 temp_b = fitted_y;
             temp_t = (double)(signed int)pViewport->viewportTL_Y;
             if (temp_t <= temp_b) {
-                if (fitted_y >= pVertices[i].vWorldViewProjY)
-                    fitted_y = pVertices[i].vWorldViewProjY;
+                if (fitted_y >= pVertices[i].vWorldViewProj.y)
+                    fitted_y = pVertices[i].vWorldViewProj.y;
             } else {
                 fitted_y = temp_t;
             }
-            pVertices[i].vWorldViewProjY = fitted_y;
+            pVertices[i].vWorldViewProj.y = fitted_y;
         }
     }
 }
@@ -502,11 +447,11 @@ void Camera3D::Project(int x, int y, int z, int *screenspace_x, int *screenspace
     this->Project(&v, 1, false);
 
     if (screenspace_x) {
-        *screenspace_x = floorf(v.vWorldViewProjX + 0.5f);
+        *screenspace_x = floorf(v.vWorldViewProj.x + 0.5f);
     }
 
     if (screenspace_y) {
-        *screenspace_y = floorf(v.vWorldViewProjY + 0.5f);
+        *screenspace_y = floorf(v.vWorldViewProj.y + 0.5f);
     }
 }
 
