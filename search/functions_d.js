@@ -69,7 +69,7 @@ var searchData=
   ['mindresistancedescription_66',['mindResistanceDescription',['../classLocalization.html#a9dddbbe74e3aa7ed8d41dd72c2f9ad76',1,'Localization']]],
   ['minmax_67',['minMax',['../classAccessible.html#aead21420d5c80418c860dc0db6deb4e1',1,'Accessible']]],
   ['minutes_68',['minutes',['../classDuration.html#afec8c277e3a840ff926648bcfcce7cf1',1,'Duration']]],
-  ['mirrorflagforoctant_69',['mirrorFlagForOctant',['../SpriteFrameEnumFunctions_8h.html#a76ca2a15216e7f5203b3f6bd3f5a292c',1,'SpriteFrameEnumFunctions.h']]],
+  ['mirrorflagforoctant_69',['mirrorFlagForOctant',['../Graphics_2SpriteEnumFunctions_8h.html#a76ca2a15216e7f5203b3f6bd3f5a292c',1,'SpriteEnumFunctions.h']]],
   ['mm6_5finitialize_70',['MM6_Initialize',['../Engine_8h.html#a706129ccf676662e6dd2368567111ba0',1,'MM6_Initialize():&#160;Engine.cpp'],['../Engine_8cpp.html#a706129ccf676662e6dd2368567111ba0',1,'MM6_Initialize():&#160;Engine.cpp']]],
   ['mm7_5finitialize_71',['MM7_Initialize',['../classEngine.html#ae8049e9b2ca0a604db1c119f040f1e68',1,'Engine']]],
   ['mm7_5floadlods_72',['MM7_LoadLods',['../Engine_8cpp.html#a44018916edeb8a9ded7acf460500750f',1,'Engine.cpp']]],
