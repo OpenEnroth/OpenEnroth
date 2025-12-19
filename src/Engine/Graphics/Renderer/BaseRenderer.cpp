@@ -49,6 +49,18 @@ unsigned int BaseRenderer::NextBillboardIndex() {
     return index;
 }
 
+void BaseRenderer::SortBillboards() {
+    // we need to loop over all billboards from farthest to nearest
+    // sort the list based on screen_space_z
+
+    // TODO(pskelton): retrace so we dont need to reverse after sorting
+    std::stable_sort(pSortedBillboardRenderListD3D.begin(), pSortedBillboardRenderListD3D.begin() + uNumBillboardsToDraw,
+        [](const auto& a, const auto& b) {
+            return a->screen_space_z > b->screen_space_z;
+        });
+    std::reverse(pSortedBillboardRenderListD3D.begin(), pSortedBillboardRenderListD3D.begin() + uNumBillboardsToDraw);
+}
+
 
 // TODO: Move this to sprites ?
 // combined with IndoorLocation::PrepareItemsRenderList_BLV() (0044028F)

@@ -49,6 +49,7 @@ class BaseRenderer : public Renderer {
 
  protected:
     unsigned int NextBillboardIndex();
+    void SortBillboards();
     void TransformBillboard(const SoftwareBillboard *a2, const RenderBillboard *pBillboard);
 
  protected:
