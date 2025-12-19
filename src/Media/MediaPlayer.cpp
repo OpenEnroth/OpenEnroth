@@ -845,7 +845,7 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
         while (true) {
             MessageLoopWithWait();
 
-            render->ClearBlack();
+            render->ClearTarget(colorTable.Black);
             render->BeginScene2D();
 
             std::this_thread::sleep_for(2ms);

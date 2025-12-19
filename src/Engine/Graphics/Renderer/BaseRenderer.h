@@ -33,18 +33,12 @@ class BaseRenderer : public Renderer {
     virtual void DrawTextureGrayShade(float u, float v, GraphicsImage *a4) override;
     virtual void DrawTransparentRedShade(float u, float v, GraphicsImage *a4) override;
     virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) override;
-    virtual void ClearBlack() override;
     virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) override;
     virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) override;
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
 
     virtual std::vector<Actor*> getActorsInViewport(int pDepth) override;
-
-    virtual void ClearHitMap() override;
-    virtual void DrawToHitMap(float u, float v, GraphicsImage *pTexture, int zVal) override;
-
-    virtual int QueryHitMap(Pointi screenPos, int defaultValue) override;
 
     bool Reinitialize(bool firstInit) override;
 
@@ -60,8 +54,6 @@ class BaseRenderer : public Renderer {
  protected:
     Sizei outputRender = {0, 0};
     Sizei outputPresent = {0, 0};
-
-    HitMap<int> _equipmentHitMap;
 
  private:
     void updateRenderDimensions();

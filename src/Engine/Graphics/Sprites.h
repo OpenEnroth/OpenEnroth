@@ -6,8 +6,8 @@
 
 #include "Engine/Time/Duration.h"
 
-#include "SpriteFrameEnums.h"
-#include "SpriteFrameEnumFunctions.h"
+#include "SpriteEnums.h"
+#include "SpriteEnumFunctions.h"
 
 struct DecorationDesc;
 class GraphicsImage;

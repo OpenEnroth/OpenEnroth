@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <vector>
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
 #include <glm/glm.hpp>
@@ -33,12 +34,9 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void ClearTarget(Color uColor) override;
     virtual void Present() override;
 
-    virtual void Release() override;
-
     virtual void BeginLines2D() override;
     virtual void EndLines2D() override;
-    virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) override;
-    virtual void DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) override;
+    virtual void RasterLine2D(Pointi a, Pointi b, Color acolor, Color bcolor) override;
 
     virtual void BeginScene3D() override;
 
@@ -201,6 +199,8 @@ class OpenGLRenderer : public BaseRenderer {
     float gamma{};
 
     std::array<GraphicsImage *, 7> hd_water_tile_anim = {{}}; // Water animation textures.
+
+    std::vector<GLuint> _texturesForDeletion;
 };
 
 

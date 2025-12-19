@@ -8,6 +8,8 @@
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Vec.h"
 
+#include "SpriteEnums.h"
+
 class Sprite;
 class SpriteFrame;
 class GraphicsImage;
@@ -21,7 +23,7 @@ struct RenderBillboard {
     Sprite *hwsprite;  // int16_t HwSpriteID;
     int16_t uPaletteId;
     int uIndoorSectorID;
-    int16_t field_1E;  // flags
+    BillboardFlags flags;  // flags
     int16_t world_x;
     int16_t world_y;
     int16_t world_z;
@@ -67,10 +69,9 @@ struct ODMRenderParams {
 extern ODMRenderParams *pODMRenderParams;
 
 struct RenderVertexSoft {
-    Vec3f vWorldPosition {};
-    Vec3f vWorldViewPosition {};
-    float vWorldViewProjX = 0;
-    float vWorldViewProjY = 0;
+    Vec3f vWorldPosition;
+    Vec3f vWorldViewPosition;
+    Vec2f vWorldViewProj;
     float _rhw = 0;
     float u = 0;
     float v = 0;
@@ -133,7 +134,7 @@ struct SoftwareBillboard {
     char field_18[8];
     uint16_t *pPalette;
     uint16_t *pPalette2;
-    unsigned int uFlags;  // & 4   - mirror horizontally
+    BillboardFlags uFlags;
     unsigned int uTargetPitch;
     unsigned int uViewportX;
     unsigned int uViewportY;

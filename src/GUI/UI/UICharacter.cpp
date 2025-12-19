@@ -39,13 +39,15 @@
 
 void CharacterUI_LoadPaperdollTextures();
 
+static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage *item_texture = nullptr, bool doZDraw = false);
+
 /**
  * Prepare textures of character doll with wetsuit on.
  *
  * @param uPlayerID     ID of player, 1-based.
  * @offset 0x43EF2B
  */
-void WetsuitOn(int uPlayerID);
+static void WetsuitOn(int uPlayerID);
 
 /**
  * Prepare textures of character doll with wetsuit off.
@@ -53,7 +55,9 @@ void WetsuitOn(int uPlayerID);
  * @param uPlayerID     ID of player, 1-based.
  * @offset 0x43F0BD
  */
-void WetsuitOff(int uPlayerID);
+static void WetsuitOff(int uPlayerID);
+
+HitMap<int> equipmentHitMap;
 
 int bRingsShownInCharScreen;  // 5118E0
 
@@ -643,7 +647,6 @@ void GUIWindow_CharacterRecord::createAwardsScrollBar() {
 void GUIWindow_CharacterRecord::Update() {
     auto player = &pParty->activeCharacter();
 
-    render->ClearHitMap();
     switch (current_character_screen_window) {
         case WINDOW_CharacterWindow_Stats: {
             CharacterUI_ReleaseButtons();
@@ -1014,6 +1017,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
     int uPlayerID = pParty->getCharacterIdInParty(player);
 
+    equipmentHitMap.clear();
     render->ResetUIClipRect();
     render->DrawTextureNew(467 / 640.0f, 0, ui_character_inventory_paperdoll_background);
 
@@ -1026,7 +1030,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // TODO(captainurist): need to also z-draw arms and wrists.
         render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID]);
         if (!bRingsShownInCharScreen)
-            render->DrawToHitMap(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID], player->inventory.entry(ITEM_SLOT_ARMOUR).index());
+            equipmentHitMap.add({pPaperdoll_BodyX, pPaperdoll_BodyY}, paperdoll_dbods[uPlayerID], player->inventory.entry(ITEM_SLOT_ARMOUR).index());
 
         // hands aren't in two handed grip pose
         if (!bTwoHandedGrip) {
@@ -1345,7 +1349,7 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
     }
 
     if (doZDraw)
-        render->DrawToHitMap(x / 640.0f, y / 480.0f, item_texture, id);
+        equipmentHitMap.add({x, y}, item_texture, id);
 }
 
 //----- (0043E825) --------------------------------------------------------
@@ -2131,7 +2135,7 @@ void OnPaperdollLeftClick() {
         // player->pEquipment.uGlove);
 
     } else {  // z picking as before
-        int v34 = render->QueryHitMap(mouse->position(), -1);
+        int v34 = equipmentHitMap.query(mouse->position(), -1);
         InventoryEntry entry = pParty->activeCharacter().inventory.entry(v34);
 
         if (entry) {

@@ -2,6 +2,18 @@
 
 #include "Utility/Flags.h"
 
+// TODO(captainurist): somehow most flags aren't used. Figure out why.
+enum class BillboardFlag {
+    BILLBOARD_LIT = 0x2,
+    BILLBOARD_MIRRORED = 0x4, // Mirror horizontally.
+    BILLBOARD_TRANSPARENT = 0x40,
+    BILLBOARD_GLOWING = 0x80,
+    BILLBOARD_STONED = 0x100, // Affected by ACTOR_BUFF_STONED.
+    BILLBOARD_0X200 = 0x200,
+};
+using enum BillboardFlag;
+MM_DECLARE_FLAGS(BillboardFlags, BillboardFlag)
+
 // TODO(captainurist): Should be split in two, see FrameFlags.
 //                     Also, I'm not sure the value naming is correct, some of the flags aren't even used.
 
@@ -10,10 +22,10 @@
  */
 enum class SpriteFrameFlag : int {
     SPRITE_FRAME_HAS_MORE = 0x1,        // Animation continues with more frames.
-    SPRITE_FRAME_LUMINOUS = 0x2,        // Self-lit sprite.
+    SPRITE_FRAME_LIT = 0x2,             // Self-lit sprite, not dimmed indoors, not affected by lights.
     SPRITE_FRAME_FIRST = 0x4,           // First frame of animation.
     SPRITE_FRAME_IMAGE1 = 0x10,         // Single image for all 8 octants.
-    SPRITE_FRAME_CENTER = 0x20,         // Center sprite.
+    SPRITE_FRAME_CENTER = 0x20,         // Z-center the sprite. If not set, `pos.z` will be at the bottom of the sprite.
     SPRITE_FRAME_FIDGET = 0x40,         // Part of a monster fidget sequence.
     SPRITE_FRAME_LOADED = 0x80,         // Sprite group has been loaded.
     SPRITE_FRAME_MIRROR_0 = 0x100,      // Mirror octant 0.
@@ -25,8 +37,8 @@ enum class SpriteFrameFlag : int {
     SPRITE_FRAME_MIRROR_6 = 0x4000,     // Mirror octant 6.
     SPRITE_FRAME_MIRROR_7 = 0x8000,     // Mirror octant 7.
     SPRITE_FRAME_IMAGES3 = 0x10000,     // Only views 0,2,4 exist (mirrored). MM7+.
-    SPRITE_FRAME_GLOW = 0x20000,        // Glow effect. MM7+.
-    SPRITE_FRAME_TRANSPARENT = 0x40000, // Transparent sprite. MM7+. // TODO(captainurist): Is it? Looks like mirror_all flag.
+    SPRITE_FRAME_GLOWING = 0x20000,     // Glow effect. MM7+.
+    SPRITE_FRAME_TRANSPARENT = 0x40000, // Transparent sprite. MM7+.
 };
 using enum SpriteFrameFlag;
 MM_DECLARE_FLAGS(SpriteFrameFlags, SpriteFrameFlag)

@@ -333,7 +333,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         v26.vWorldPosition.y = face_center_y + a1.y * 400.0f;
         v26.vWorldPosition.z = face_center_z + a1.z * 400.0f;
 
-        pCamera3D->do_draw_debug_line_sw(&v25, colorTable.White, &v26, colorTable.Yellow, 0, 0);
+        pCamera3D->do_draw_debug_line_sw(&v25, colorTable.White, &v26, colorTable.Yellow, 0);
     }
 
 
@@ -355,7 +355,7 @@ bool CalcPortalShapePoly(const BLVFace *pFace, RenderVertexSoft *pVertices,
     pCamera3D->Project(pOutBounding, 4);
 
     // make sure frustum planes will be on correct side
-    if (pOutBounding[0].vWorldViewProjX > pOutBounding[3].vWorldViewProjX) {
+    if (pOutBounding[0].vWorldViewProj.x > pOutBounding[3].vWorldViewProj.x) {
         RenderVertexSoft temp[4];
         memcpy(temp, pOutBounding, sizeof(RenderVertexSoft) * 4);
         pOutBounding[0] = temp[3];

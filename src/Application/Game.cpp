@@ -107,7 +107,7 @@ int Game::run() {
             Fsm *fsm = application->installComponent(GameFsmBuilder::buildFsm(startingState));
             MM_AT_SCOPE_EXIT(application->removeComponent<Fsm>());
             while (!fsm->hasReachedExitState()) {
-                render->ClearBlack();
+                render->ClearTarget(colorTable.Black);
                 render->BeginScene2D();
 
                 fsm->update();
@@ -485,7 +485,6 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                render->ClearHitMap();
                 if (current_screen_type == SCREEN_GAME) {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                         new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
