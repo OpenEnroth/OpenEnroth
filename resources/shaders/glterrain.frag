@@ -6,9 +6,10 @@
 
 in vec4 vertexColour;
 in vec2 texuv;
-flat in vec2 olayer;
+flat in float olayer;
 in vec3 vsPos;
 in vec3 vsNorm;
+flat in int vsAttrib;
 in vec4 viewspace;
 
 out vec4 FragColour;
@@ -74,10 +75,10 @@ void main() {
     vec4 fragcol = vec4(0);
 
     // get normal texture at point
-    fragcol = texture(textureArray1, vec3(texuv.x,texuv.y,olayer.y));
+    fragcol = texture(textureArray1, vec3(texuv.x,texuv.y,olayer));
 
-    // replace texture with water if alpha or a water tile
-    if (fragcol.a == 0.0 || olayer.x == 0.0){
+    // replace texture with water if alpha or a water tile (bit 0x1 in attribs)
+    if (fragcol.a == 0.0 || (vsAttrib & 0x1) > 0){
         fragcol = watercol;
     }
 

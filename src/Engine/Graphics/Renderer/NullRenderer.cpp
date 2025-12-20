@@ -51,18 +51,11 @@ void NullRenderer::ScreenFade(Color color, float t) {}
 void NullRenderer::SetUIClipRect(const Recti &rect) {}
 void NullRenderer::ResetUIClipRect() {}
 
-void NullRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
-    if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->name());
+void NullRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) {
+    if (texture && engine->callObserver)
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, texture->name());
 }
 
-void NullRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *tex, int height) {
-    if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->name());
-}
-
-void NullRenderer::DrawTextureOffset(int x, int y, int offset_x, int offset_y,
-                                     GraphicsImage *) {}
 void NullRenderer::DrawImage(GraphicsImage *, const Recti &rect, int paletteid, Color colourmask) {}
 
 void NullRenderer::BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
@@ -71,8 +64,6 @@ void NullRenderer::BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImag
 void NullRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {}
 void NullRenderer::EndTextNew() {}
 void NullRenderer::DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) {}
-
-void NullRenderer::FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32) {}
 
 void NullRenderer::DrawOutdoorBuildings() {}
 
@@ -91,8 +82,6 @@ RgbaImage NullRenderer::MakeFullScreenshot() {
 void NullRenderer::BeginDecals() {}
 void NullRenderer::EndDecals() {}
 void NullRenderer::DrawDecal(Decal *pDecal, float z_bias) {}
-
-void NullRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {}
 
 void NullRenderer::DrawIndoorFaces() {}
 
