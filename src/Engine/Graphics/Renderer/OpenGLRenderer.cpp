@@ -572,12 +572,6 @@ void OpenGLRenderer::ScreenFade(Color color, float t) {
 }
 
 
-void OpenGLRenderer::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
-                                       GraphicsImage *pTexture) {
-    DrawTextureNew((float)(pX - move_X)/outputRender.w, (float)(pY - move_Y)/outputRender.h, pTexture);
-}
-
-
 void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int paletteid, Color uColor32) {
     if (!img) {
         logger->trace("Null img passed to DrawImage");
@@ -1126,115 +1120,6 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
         numdecalverts += 3;
         assert(numdecalverts <= 9999);
     }
-}
-
-void OpenGLRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {
-    // want to draw psrcrect section @ point
-
-    if (!texture) {
-        logger->trace("Missing Arcomage Sprite Sheet");
-        return;
-    }
-
-    //float col = (blendMode == 2) ? 1.0f : 0.5f;
-    Colorf cf = color.toColorf();
-
-    int width = srcRect.w;
-    int height = srcRect.h;
-
-    int x = targetPoint.x;
-    int y = targetPoint.y;
-    int z = x + width;
-    int w = y + height;
-
-    // check bounds
-    if (x >= outputRender.w || y >= outputRender.h)
-        return;
-
-    // check for overlap
-    if (!Recti(targetPoint, srcRect.size()).intersects(this->clipRect))
-        return;
-
-    float gltexid = static_cast<float>(texture->renderId().value());
-    int texwidth = texture->width();
-    int texheight = texture->height();
-
-    float drawx = static_cast<float>(x);
-    float drawy = static_cast<float>(y);
-    float draww = static_cast<float>(w);
-    float drawz = static_cast<float>(z);
-
-    float texx = srcRect.x / float(texwidth);
-    float texy = srcRect.y / float(texheight);
-    float texz = (srcRect.x + srcRect.w) / float(texwidth);
-    float texw = (srcRect.y + srcRect.h) / float(texheight);
-
-    // 0 1 2 / 0 2 3
-
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    ////////////////////////////////
-
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    if (twodvertscnt > 490) DrawTwodVerts();
-    return;
 }
 
 TextureRenderId OpenGLRenderer::CreateTexture(RgbaImageView image) {
@@ -2599,51 +2484,58 @@ void OpenGLRenderer::BeginScene2D() {
     _set_ortho_modelview();
 }
 
-// TODO(pskelton): use alpha from mask too
-void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
-    assert(tex);
+void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) {
+    if (!texture) {
+        logger->trace("Null texture passed to DrawQuad2D");
+        return;
+    }
 
     if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->name());
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, texture->name());
 
-    Colorf cf = colourmask.toColorf();
-
-    int width = tex->width();
-    int height = tex->height();
-
-    int x = u * outputRender.w;
-    int y = v * outputRender.h;
-    int z = x + width;
-    int w = y + height;
-
-    // check bounds
-    if (x >= outputRender.w || y >= outputRender.h)
+    // Early out if destination is completely outside render area.
+    if (dstRect.x >= outputRender.w || dstRect.y >= outputRender.h)
         return;
 
-    // check for overlap
-    Recti clippedRect = Recti(x, y, width, height).intersection(this->clipRect);
-    if (clippedRect.isEmpty())
+    // Clip destination rect against clip rect.
+    Recti clippedDst = dstRect.intersection(this->clipRect);
+    if (clippedDst.isEmpty())
         return;
 
-    float gltexid = tex->renderId().value();
+    // Calculate how much was clipped from each side as a fraction of original size.
+    float leftClip = (clippedDst.x - dstRect.x) / float(dstRect.w);
+    float topClip = (clippedDst.y - dstRect.y) / float(dstRect.h);
+    float rightClip = (clippedDst.x + clippedDst.w - dstRect.x) / float(dstRect.w);
+    float bottomClip = (clippedDst.y + clippedDst.h - dstRect.y) / float(dstRect.h);
 
-    float drawx = clippedRect.x;
-    float drawy = clippedRect.y;
-    float drawz = clippedRect.x + clippedRect.w;
-    float draww = clippedRect.y + clippedRect.h;
+    // Convert srcRect to UV coordinates and apply proportional clipping.
+    float texWidth = texture->width();
+    float texHeight = texture->height();
+    float srcU1 = srcRect.x / texWidth;
+    float srcV1 = srcRect.y / texHeight;
+    float srcU2 = (srcRect.x + srcRect.w) / texWidth;
+    float srcV2 = (srcRect.y + srcRect.h) / texHeight;
 
-    float texx = (drawx - x) / float(width);
-    float texy = (drawy - y) / float(height);
-    float texz = (drawz - x) / float(width);
-    float texw = (draww - y) / float(height);
+    // Interpolate UVs based on clipping.
+    float u1 = srcU1 + (srcU2 - srcU1) * leftClip;
+    float v1 = srcV1 + (srcV2 - srcV1) * topClip;
+    float u2 = srcU1 + (srcU2 - srcU1) * rightClip;
+    float v2 = srcV1 + (srcV2 - srcV1) * bottomClip;
 
-    // 0 1 2 / 0 2 3
+    Colorf cf = color.toColorf();
+    float gltexid = texture->renderId().value();
 
+    float drawx = clippedDst.x;
+    float drawy = clippedDst.y;
+    float drawz = clippedDst.x + clippedDst.w;
+    float draww = clippedDst.y + clippedDst.h;
+
+    // Triangle 1: top-left, top-right, bottom-right
     twodshaderstore[twodvertscnt].x = drawx;
     twodshaderstore[twodvertscnt].y = drawy;
     twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].u = u1;
+    twodshaderstore[twodvertscnt].v = v1;
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
@@ -2652,8 +2544,8 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
     twodshaderstore[twodvertscnt].x = drawz;
     twodshaderstore[twodvertscnt].y = drawy;
     twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].u = u2;
+    twodshaderstore[twodvertscnt].v = v1;
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
@@ -2662,20 +2554,19 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
     twodshaderstore[twodvertscnt].x = drawz;
     twodshaderstore[twodvertscnt].y = draww;
     twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].u = u2;
+    twodshaderstore[twodvertscnt].v = v2;
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
-    ////////////////////////////////
-
+    // Triangle 2: top-left, bottom-right, bottom-left
     twodshaderstore[twodvertscnt].x = drawx;
     twodshaderstore[twodvertscnt].y = drawy;
     twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].u = u1;
+    twodshaderstore[twodvertscnt].v = v1;
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
@@ -2684,8 +2575,8 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
     twodshaderstore[twodvertscnt].x = drawz;
     twodshaderstore[twodvertscnt].y = draww;
     twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].u = u2;
+    twodshaderstore[twodvertscnt].v = v2;
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
@@ -2694,122 +2585,15 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
     twodshaderstore[twodvertscnt].x = drawx;
     twodshaderstore[twodvertscnt].y = draww;
     twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].u = u1;
+    twodshaderstore[twodvertscnt].v = v2;
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
-    return;
 }
-
-// TODO(pskelton): add optional colour32
-void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *img, int custom_height) {
-    assert(img);
-
-    if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, img->name());
-
-    Colorf cf(1.0f, 1.0f, 1.0f);
-
-    int width = img->width();
-    int height = img->height();
-
-    int x = u * outputRender.w;
-    int y = v * outputRender.h + 0.5;
-    int z = x + width;
-    int w = y + custom_height;
-
-    // check bounds
-    if (x >= outputRender.w || y >= outputRender.h) return;
-
-    // check for overlap
-    Recti clippedRect = Recti(x, y, width, custom_height).intersection(this->clipRect);
-    if (clippedRect.isEmpty())
-        return;
-
-    float gltexid = img->renderId().value();
-
-    float drawx = clippedRect.x;
-    float drawy = clippedRect.y;
-    float drawz = clippedRect.x + clippedRect.w;
-    float draww = clippedRect.y + clippedRect.h;
-
-    float texx = (drawx - x) / float(width);
-    float texy = (drawy - y) / float(height);
-    float texz = float(drawz) / z;
-    float texw = float(draww) / w;
-
-    // 0 1 2 / 0 2 3
-
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    ////////////////////////////////
-
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    if (twodvertscnt > 490) DrawTwodVerts();
-    return;
-}
-
 
 twodverts textshaderstore[10000] = {};
 int textvertscnt = 0;
@@ -4515,99 +4299,6 @@ void OpenGLRenderer::_initWaterTiles() {
         std::string container_name = fmt::format("HDWTR{:03}", i);
         hd_water_tile_anim[i] = assets->getBitmap(container_name);
     }
-}
-
-void OpenGLRenderer::FillRectFast(int x, int y, int width, int height, Color color) {
-    Colorf cf = color.toColorf();
-
-    // check bounds
-    if (x >= outputRender.w || y >= outputRender.h)
-        return;
-
-    // check for overlap
-    Recti clippedRect = Recti(x, y, width, height).intersection(this->clipRect);
-    if (clippedRect.isEmpty())
-        return;
-
-    static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
-    float gltexid = static_cast<float>(effpar03->renderId().value());
-
-    float drawx = clippedRect.x;
-    float drawy = clippedRect.y;
-    float drawz = clippedRect.x + clippedRect.w;
-    float draww = clippedRect.y + clippedRect.h;
-
-    float texx = 0.5f;
-    float texy = 0.5f;
-    float texz = 0.5f;
-    float texw = 0.5f;
-
-    // 0 1 2 / 0 2 3
-
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    ////////////////////////////////
-
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
-
-    if (twodvertscnt > 490) DrawTwodVerts();
-    return;
 }
 
 bool OpenGLRenderer::Reinitialize(bool firstInit) {

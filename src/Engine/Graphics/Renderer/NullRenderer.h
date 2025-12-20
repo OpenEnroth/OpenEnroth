@@ -34,12 +34,7 @@ class NullRenderer : public BaseRenderer {
     virtual void SetUIClipRect(const Recti &rect) override;
     virtual void ResetUIClipRect() override;
 
-    virtual void DrawTextureNew(float u, float v, GraphicsImage *, Color colourmask = colorTable.White) override;
-
-    virtual void DrawTextureCustomHeight(float u, float v, GraphicsImage *,
-                                         int height) override;
-    virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
-                                   GraphicsImage *) override;
+    virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) override;
     virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask = colorTable.White) override;
 
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
@@ -48,10 +43,6 @@ class NullRenderer : public BaseRenderer {
     virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) override;
     virtual void EndTextNew() override;
     virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) override;
-
-    virtual void FillRectFast(int uX, int uY,
-                              int uWidth, int uHeight,
-                              Color uColor32) override;
 
     virtual void DrawOutdoorBuildings() override;
 
@@ -65,8 +56,6 @@ class NullRenderer : public BaseRenderer {
     virtual void BeginDecals() override;
     virtual void EndDecals() override;
     virtual void DrawDecal(Decal *pDecal, float z_bias) override;
-
-    virtual void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) override;
 
     virtual void DrawIndoorFaces() override;
 

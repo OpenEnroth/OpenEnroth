@@ -78,9 +78,24 @@ class Renderer {
     virtual void SetUIClipRect(const Recti &rect) = 0;
     virtual void ResetUIClipRect() = 0;
 
-    virtual void DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask32 = colorTable.White) = 0;
-    virtual void DrawTextureCustomHeight(float u, float v, GraphicsImage *, int height) = 0;
-    virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, GraphicsImage *) = 0;
+    /**
+     * Core 2D quad drawing function. All other 2D texture drawing functions (except `DrawImage`) delegate to this one.
+     *
+     * @param texture                   The texture to draw.
+     * @param srcRect                   Source rectangle in texture pixel coordinates.
+     * @param dstRect                   Destination rectangle in screen pixels.
+     * @param color                     Multiplicative color mask applied to the texture. Use `colorTable.White` for no
+     *                                  tinting. RGB components scale the texture colors, alpha controls transparency.
+     */
+    virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) = 0;
+
+    void DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask = colorTable.White);
+    void DrawTextureCustomHeight(float u, float v, GraphicsImage *img, int height);
+    void DrawTextureOffset(int x, int y, int offset_x, int offset_y, GraphicsImage *img);
+    void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color);
+    void FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32);
+
+    // TODO(captainurist): DrawImage uses palette, should be refactored to use a separate palette shader.
     virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask32 = colorTable.White) = 0;
 
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
@@ -96,10 +111,6 @@ class Renderer {
     virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) = 0;
     virtual void EndTextNew() = 0;
     virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) = 0;
-
-    virtual void FillRectFast(int uX, int uY,
-                              int uWidth, int uHeight,
-                              Color uColor32) = 0;
 
     virtual void DrawOutdoorBuildings() = 0;
 
@@ -129,8 +140,6 @@ class Renderer {
     virtual void DrawDecal(Decal *pDecal, float z_bias) = 0;
 
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) = 0;
-
-    virtual void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) = 0;
 
     virtual void DrawIndoorFaces() = 0;
 
@@ -167,6 +176,10 @@ class Renderer {
     SpellFxRenderer *spell_fx_renderer = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
+
+    // Cached texture for FillRectFast solid color fills.
+    // Initialized lazily on first use.
+    GraphicsImage *_solidFillTexture = nullptr;
 };
 
 extern Renderer *render;
