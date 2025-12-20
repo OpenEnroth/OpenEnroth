@@ -433,12 +433,9 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
         // copy first
-        thisvert->pos.x = v29[0].pos.x;
-        thisvert->pos.y = v29[0].pos.y;
-        thisvert->pos.z = v29[0].pos.z;
+        thisvert->pos = v29[0].pos;
         thisvert->w = 1.0f;
-        thisvert->texuv.x = v29[0].texcoord.x;
-        thisvert->texuv.y = v29[0].texcoord.y;
+        thisvert->texuv = v29[0].texcoord;
         thisvert->texw = v29[0].rhw;
         thisvert->screenspace = srcworldview;
         thisvert->color = colorTable.White.toColorf();
@@ -447,12 +444,9 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
 
         // copy other two (z+1)(z+2)
         for (unsigned i = 1; i < 3; ++i) {
-            thisvert->pos.x = v29[z + i].pos.x;
-            thisvert->pos.y = v29[z + i].pos.y;
-            thisvert->pos.z = v29[z + i].pos.z;
+            thisvert->pos = v29[z + i].pos;
             thisvert->w = 1.0f;
-            thisvert->texuv.x = v29[z + i].texcoord.x;
-            thisvert->texuv.y = v29[z + i].texcoord.y;
+            thisvert->texuv = v29[z + i].texcoord;
             thisvert->texw = v29[z + i].rhw;
             thisvert->screenspace = (z + i == 3) ? srcworldview: dstworldview;
             thisvert->color = colorTable.White.toColorf();
@@ -850,12 +844,9 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
         float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
         float thisdepth = (oneoz - oneon) / (oneof - oneon);
         // copy first
-        thisvert->pos.x = VertexRenderList[0].vWorldViewProj.x;
-        thisvert->pos.y = VertexRenderList[0].vWorldViewProj.y;
-        thisvert->pos.z = thisdepth;
+        thisvert->pos = Vec3f(VertexRenderList[0].vWorldViewProj.x, VertexRenderList[0].vWorldViewProj.y, thisdepth);
         thisvert->w = VertexRenderList[0]._rhw;
-        thisvert->texuv.x = VertexRenderList[0].u;
-        thisvert->texuv.y = VertexRenderList[0].v;
+        thisvert->texuv = Vec2f(VertexRenderList[0].u, VertexRenderList[0].v);
         thisvert->texw = 1.0f;
         thisvert->screenspace = scrspace;
         thisvert->color = uTint;
@@ -866,12 +857,9 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
         for (unsigned i = 1; i < 3; ++i) {
             oneoz = 1.0f / VertexRenderList[z + i].vWorldViewPosition.x;
             thisdepth = (oneoz - oneon) / (oneof - oneon);
-            thisvert->pos.x = VertexRenderList[z + i].vWorldViewProj.x;
-            thisvert->pos.y = VertexRenderList[z + i].vWorldViewProj.y;
-            thisvert->pos.z = thisdepth;
+            thisvert->pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, thisdepth);
             thisvert->w = VertexRenderList[z + i]._rhw;
-            thisvert->texuv.x = VertexRenderList[z + i].u;
-            thisvert->texuv.y = VertexRenderList[z + i].v;
+            thisvert->texuv = Vec2f(VertexRenderList[z + i].u, VertexRenderList[z + i].v);
             thisvert->texw = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
@@ -1890,12 +1878,9 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
         // copy first
-        thisvert->pos.x = VertexRenderList[0].vWorldViewProj.x;
-        thisvert->pos.y = VertexRenderList[0].vWorldViewProj.y;
-        thisvert->pos.z = 1.0f;
+        thisvert->pos = Vec3f(VertexRenderList[0].vWorldViewProj.x, VertexRenderList[0].vWorldViewProj.y, 1.0f);
         thisvert->w = VertexRenderList[0]._rhw;
-        thisvert->texuv.x = VertexRenderList[0].u;
-        thisvert->texuv.y = VertexRenderList[0].v;
+        thisvert->texuv = Vec2f(VertexRenderList[0].u, VertexRenderList[0].v);
         thisvert->texw = 1.0f;
         thisvert->screenspace = scrspace;
         thisvert->color = uTint;
@@ -1904,12 +1889,9 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 
         // copy other two (z+1)(z+2)
         for (unsigned i = 1; i < 3; ++i) {
-            thisvert->pos.x = VertexRenderList[z + i].vWorldViewProj.x;
-            thisvert->pos.y = VertexRenderList[z + i].vWorldViewProj.y;
-            thisvert->pos.z = 1.0f;
+            thisvert->pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, 1.0f);
             thisvert->w = VertexRenderList[z + i]._rhw;
-            thisvert->texuv.x = VertexRenderList[z + i].u;
-            thisvert->texuv.y = VertexRenderList[z + i].v;
+            thisvert->texuv = Vec2f(VertexRenderList[z + i].u, VertexRenderList[z + i].v);
             thisvert->texw = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
@@ -1929,12 +1911,9 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
             forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
             // copy first
-            thisvert->pos.x = VertexRenderList[4].vWorldViewProj.x;
-            thisvert->pos.y = VertexRenderList[4].vWorldViewProj.y;
-            thisvert->pos.z = 1.0f;
+            thisvert->pos = Vec3f(VertexRenderList[4].vWorldViewProj.x, VertexRenderList[4].vWorldViewProj.y, 1.0f);
             thisvert->w = 1.0f;
-            thisvert->texuv.x = 0.5f;
-            thisvert->texuv.y = 0.5f;
+            thisvert->texuv = Vec2f(0.5f, 0.5f);
             thisvert->texw = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
@@ -1944,12 +1923,9 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 
             // copy other two (z+1)(z+2)
             for (unsigned i = 1; i < 3; ++i) {
-                thisvert->pos.x = VertexRenderList[z + i].vWorldViewProj.x;
-                thisvert->pos.y = VertexRenderList[z + i].vWorldViewProj.y;
-                thisvert->pos.z = 1.0f;
+                thisvert->pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, 1.0f);
                 thisvert->w = 1.0f;
-                thisvert->texuv.x = 0.5f;
-                thisvert->texuv.y = 0.5f;
+                thisvert->texuv = Vec2f(0.5f, 0.5f);
                 thisvert->texw = 1.0f;
                 thisvert->screenspace = scrspace;
                 thisvert->color = uTint;
@@ -1969,12 +1945,9 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
             forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
             // copy first
-            thisvert->pos.x = VertexRenderList[8].vWorldViewProj.x;
-            thisvert->pos.y = VertexRenderList[8].vWorldViewProj.y;
-            thisvert->pos.z = 1.0f;
+            thisvert->pos = Vec3f(VertexRenderList[8].vWorldViewProj.x, VertexRenderList[8].vWorldViewProj.y, 1.0f);
             thisvert->w = 1.0f;
-            thisvert->texuv.x = 0.5f;
-            thisvert->texuv.y = 0.5f;
+            thisvert->texuv = Vec2f(0.5f, 0.5f);
             thisvert->texw = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
@@ -1983,12 +1956,9 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 
             // copy other two (z+1)(z+2)
             for (unsigned i = 1; i < 3; ++i) {
-                thisvert->pos.x = VertexRenderList[z + i].vWorldViewProj.x;
-                thisvert->pos.y = VertexRenderList[z + i].vWorldViewProj.y;
-                thisvert->pos.z = 1.0f;
+                thisvert->pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, 1.0f);
                 thisvert->w = 1.0f;
-                thisvert->texuv.x = 0.5f;
-                thisvert->texuv.y = 0.5f;
+                thisvert->texuv = Vec2f(0.5f, 0.5f);
                 thisvert->texw = 1.0f;
                 thisvert->screenspace = scrspace;
                 thisvert->color = uTint;
