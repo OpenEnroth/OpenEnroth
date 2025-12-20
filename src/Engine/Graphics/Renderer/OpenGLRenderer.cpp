@@ -230,8 +230,7 @@ void OpenGLRenderer::ClearTarget(Color uColor) {
 }
 
 struct linesverts {
-    GLfloat x;
-    GLfloat y;
+    Vec2f pos;
     Colorf color;
 };
 
@@ -254,7 +253,7 @@ void OpenGLRenderer::BeginLines2D() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(lineshaderstore), NULL, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, x));
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, pos));
         glEnableVertexAttribArray(0);
         // colour attribute
         glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, color));
@@ -295,13 +294,11 @@ void OpenGLRenderer::EndLines2D() {
 }
 
 void OpenGLRenderer::RasterLine2D(Pointi a, Pointi b, Color acolor, Color bcolor) {
-    lineshaderstore[linevertscnt].x = a.x;
-    lineshaderstore[linevertscnt].y = a.y;
+    lineshaderstore[linevertscnt].pos = a.toFloat();
     lineshaderstore[linevertscnt].color = acolor.toColorf();
     linevertscnt++;
 
-    lineshaderstore[linevertscnt].x = b.x;
-    lineshaderstore[linevertscnt].y = b.y;
+    lineshaderstore[linevertscnt].pos = b.toFloat();
     lineshaderstore[linevertscnt].color = bcolor.toColorf();
     linevertscnt++;
 

@@ -19,6 +19,10 @@ struct Vec2 {
         return Vec2<int>(std::round(x), std::round(y));
     }
 
+    [[nodiscard]] Vec2<float> toFloat() const requires std::is_integral_v<T> {
+        return Vec2<float>(x, y);
+    }
+
     [[nodiscard]] auto lengthSqr() const {
         // Note that auto return type is important because this way Vec2s::lengthSqr returns int.
         return x * x + y * y;
