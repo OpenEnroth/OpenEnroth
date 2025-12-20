@@ -467,11 +467,8 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
 }
 
 struct twodverts {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-    GLfloat u;
-    GLfloat v;
+    Vec3f pos;
+    Vec2f texuv;
     Colorf color;
     GLfloat texid;
     GLfloat paletteid;
@@ -494,31 +491,22 @@ void OpenGLRenderer::ScreenFade(Color color, float t) {
 
     // 0 1 2 / 0 2 3
 
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = 0.5f;
-    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = 0.5f;
-    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, drawy, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = 0.5f;
-    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
@@ -526,31 +514,22 @@ void OpenGLRenderer::ScreenFade(Color color, float t) {
 
     ////////////////////////////////
 
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = 0.5f;
-    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = 0;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = 0.5f;
-    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = 0.5f;
-    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, draww, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
@@ -600,31 +579,22 @@ void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int palett
 
     // 0 1 2 / 0 2 3
 
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(texx, texy);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, drawy, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(texz, texy);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(texz, texw);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
@@ -632,31 +602,22 @@ void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int palett
 
     ////////////////////////////////
 
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(texx, texy);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texz;
-    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(texz, texw);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = texx;
-    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, draww, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(texx, texw);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
@@ -2498,7 +2459,7 @@ void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, co
     float v2 = srcV1 + (srcV2 - srcV1) * bottomClip;
 
     Colorf cf = color.toColorf();
-    float gltexid = texture->renderId().value();
+    int gltexid = texture->renderId().value();
 
     float drawx = clippedDst.x;
     float drawy = clippedDst.y;
@@ -2506,62 +2467,44 @@ void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, co
     float draww = clippedDst.y + clippedDst.h;
 
     // Triangle 1: top-left, top-right, bottom-right
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = u1;
-    twodshaderstore[twodvertscnt].v = v1;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(u1, v1);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = u2;
-    twodshaderstore[twodvertscnt].v = v1;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, drawy, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(u2, v1);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = u2;
-    twodshaderstore[twodvertscnt].v = v2;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(u2, v2);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     // Triangle 2: top-left, bottom-right, bottom-left
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = drawy;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = u1;
-    twodshaderstore[twodvertscnt].v = v1;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(u1, v1);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawz;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = u2;
-    twodshaderstore[twodvertscnt].v = v2;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(u2, v2);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
-    twodshaderstore[twodvertscnt].x = drawx;
-    twodshaderstore[twodvertscnt].y = draww;
-    twodshaderstore[twodvertscnt].z = 0;
-    twodshaderstore[twodvertscnt].u = u1;
-    twodshaderstore[twodvertscnt].v = v2;
+    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, draww, 0);
+    twodshaderstore[twodvertscnt].texuv = Vec2f(u1, v2);
     twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
@@ -2614,10 +2557,10 @@ void OpenGLRenderer::EndTextNew() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(textshaderstore), NULL, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, x));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, pos));
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, u));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, texuv));
         glEnableVertexAttribArray(1);
         // colour
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, color));
@@ -2713,65 +2656,47 @@ void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float
     float texz = u2;
     float texw = v2;
 
-    // 0 1 2 / 0 2 3
-    textshaderstore[textvertscnt].x = drawx;
-    textshaderstore[textvertscnt].y = drawy;
-    textshaderstore[textvertscnt].z = 0;
-    textshaderstore[textvertscnt].u = texx;
-    textshaderstore[textvertscnt].v = texy;
+    // Triangle 1: top-left, top-right, bottom-right
+    textshaderstore[textvertscnt].pos = Vec3f(drawx, drawy, 0);
+    textshaderstore[textvertscnt].texuv = Vec2f(texx, texy);
     textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].texid = isshadow;
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
-    textshaderstore[textvertscnt].x = drawz;
-    textshaderstore[textvertscnt].y = drawy;
-    textshaderstore[textvertscnt].z = 0;
-    textshaderstore[textvertscnt].u = texz;
-    textshaderstore[textvertscnt].v = texy;
+    textshaderstore[textvertscnt].pos = Vec3f(drawz, drawy, 0);
+    textshaderstore[textvertscnt].texuv = Vec2f(texz, texy);
     textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].texid = isshadow;
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
-    textshaderstore[textvertscnt].x = drawz;
-    textshaderstore[textvertscnt].y = draww;
-    textshaderstore[textvertscnt].z = 0;
-    textshaderstore[textvertscnt].u = texz;
-    textshaderstore[textvertscnt].v = texw;
+    textshaderstore[textvertscnt].pos = Vec3f(drawz, draww, 0);
+    textshaderstore[textvertscnt].texuv = Vec2f(texz, texw);
     textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].texid = isshadow;
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
-    ////////////////////////////////
-    textshaderstore[textvertscnt].x = drawx;
-    textshaderstore[textvertscnt].y = drawy;
-    textshaderstore[textvertscnt].z = 0;
-    textshaderstore[textvertscnt].u = texx;
-    textshaderstore[textvertscnt].v = texy;
+    // Triangle 2: top-left, bottom-right, bottom-left
+    textshaderstore[textvertscnt].pos = Vec3f(drawx, drawy, 0);
+    textshaderstore[textvertscnt].texuv = Vec2f(texx, texy);
     textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].texid = isshadow;
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
-    textshaderstore[textvertscnt].x = drawz;
-    textshaderstore[textvertscnt].y = draww;
-    textshaderstore[textvertscnt].z = 0;
-    textshaderstore[textvertscnt].u = texz;
-    textshaderstore[textvertscnt].v = texw;
+    textshaderstore[textvertscnt].pos = Vec3f(drawz, draww, 0);
+    textshaderstore[textvertscnt].texuv = Vec2f(texz, texw);
     textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].texid = isshadow;
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
-    textshaderstore[textvertscnt].x = drawx;
-    textshaderstore[textvertscnt].y = draww;
-    textshaderstore[textvertscnt].z = 0;
-    textshaderstore[textvertscnt].u = texx;
-    textshaderstore[textvertscnt].v = texw;
+    textshaderstore[textvertscnt].pos = Vec3f(drawx, draww, 0);
+    textshaderstore[textvertscnt].texuv = Vec2f(texx, texw);
     textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].texid = isshadow;
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
@@ -4556,10 +4481,10 @@ void OpenGLRenderer::DrawTwodVerts() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(twodshaderstore), twodshaderstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, x));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, pos));
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, u));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, texuv));
         glEnableVertexAttribArray(1);
         // colour
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, color));
