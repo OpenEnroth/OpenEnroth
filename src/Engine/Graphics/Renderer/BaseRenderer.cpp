@@ -39,7 +39,7 @@ bool BaseRenderer::Initialize() {
 }
 
 unsigned int BaseRenderer::NextBillboardIndex() {
-    if (uNumBillboardsToDraw >= MAX_BILLBOARDS_D3D - 1) {
+    if (uNumBillboardsToDraw >= MAX_BILLBOARDS_D3D) {
         return 0;
     }
 
@@ -53,12 +53,10 @@ void BaseRenderer::SortBillboards() {
     // we need to loop over all billboards from farthest to nearest
     // sort the list based on screen_space_z
 
-    // TODO(pskelton): retrace so we dont need to reverse after sorting
     std::stable_sort(pSortedBillboardRenderListD3D.begin(), pSortedBillboardRenderListD3D.begin() + uNumBillboardsToDraw,
         [](const auto& a, const auto& b) {
-            return a->screen_space_z > b->screen_space_z;
+            return a->screen_space_z < b->screen_space_z;
         });
-    std::reverse(pSortedBillboardRenderListD3D.begin(), pSortedBillboardRenderListD3D.begin() + uNumBillboardsToDraw);
 }
 
 
