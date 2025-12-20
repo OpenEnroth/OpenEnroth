@@ -45,6 +45,7 @@
 #include "Library/Color/Colorf.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Geometry/Size.h"
+#include "Library/Geometry/Vec.h"
 #include "Library/Image/ImageFunctions.h"
 
 #include "Utility/String/Format.h"
@@ -333,13 +334,10 @@ void OpenGLRenderer::BeginScene3D() {
 }
 
 struct forcepersverts {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
+    Vec3f pos;
     GLfloat w;
-    GLfloat u;
-    GLfloat v;
-    GLfloat q;  // rhw
+    Vec2f texuv;
+    GLfloat texw;  // rhw for texture perspective correction
     GLfloat screenspace;
     Colorf color;
     GLfloat texid;
@@ -435,13 +433,13 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
         // copy first
-        thisvert->x = v29[0].pos.x;
-        thisvert->y = v29[0].pos.y;
-        thisvert->z = v29[0].pos.z;
+        thisvert->pos.x = v29[0].pos.x;
+        thisvert->pos.y = v29[0].pos.y;
+        thisvert->pos.z = v29[0].pos.z;
         thisvert->w = 1.0f;
-        thisvert->u = v29[0].texcoord.x;
-        thisvert->v = v29[0].texcoord.y;
-        thisvert->q = v29[0].rhw;
+        thisvert->texuv.x = v29[0].texcoord.x;
+        thisvert->texuv.y = v29[0].texcoord.y;
+        thisvert->texw = v29[0].rhw;
         thisvert->screenspace = srcworldview;
         thisvert->color = colorTable.White.toColorf();
         thisvert->texid = texid;
@@ -449,13 +447,13 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
 
         // copy other two (z+1)(z+2)
         for (unsigned i = 1; i < 3; ++i) {
-            thisvert->x = v29[z + i].pos.x;
-            thisvert->y = v29[z + i].pos.y;
-            thisvert->z = v29[z + i].pos.z;
+            thisvert->pos.x = v29[z + i].pos.x;
+            thisvert->pos.y = v29[z + i].pos.y;
+            thisvert->pos.z = v29[z + i].pos.z;
             thisvert->w = 1.0f;
-            thisvert->u = v29[z + i].texcoord.x;
-            thisvert->v = v29[z + i].texcoord.y;
-            thisvert->q = v29[z + i].rhw;
+            thisvert->texuv.x = v29[z + i].texcoord.x;
+            thisvert->texuv.y = v29[z + i].texcoord.y;
+            thisvert->texw = v29[z + i].rhw;
             thisvert->screenspace = (z + i == 3) ? srcworldview: dstworldview;
             thisvert->color = colorTable.White.toColorf();
             thisvert->texid = texid;
@@ -852,13 +850,13 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
         float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
         float thisdepth = (oneoz - oneon) / (oneof - oneon);
         // copy first
-        thisvert->x = VertexRenderList[0].vWorldViewProj.x;
-        thisvert->y = VertexRenderList[0].vWorldViewProj.y;
-        thisvert->z = thisdepth;
+        thisvert->pos.x = VertexRenderList[0].vWorldViewProj.x;
+        thisvert->pos.y = VertexRenderList[0].vWorldViewProj.y;
+        thisvert->pos.z = thisdepth;
         thisvert->w = VertexRenderList[0]._rhw;
-        thisvert->u = VertexRenderList[0].u;
-        thisvert->v = VertexRenderList[0].v;
-        thisvert->q = 1.0f;
+        thisvert->texuv.x = VertexRenderList[0].u;
+        thisvert->texuv.y = VertexRenderList[0].v;
+        thisvert->texw = 1.0f;
         thisvert->screenspace = scrspace;
         thisvert->color = uTint;
         thisvert->texid = texid;
@@ -868,13 +866,13 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
         for (unsigned i = 1; i < 3; ++i) {
             oneoz = 1.0f / VertexRenderList[z + i].vWorldViewPosition.x;
             thisdepth = (oneoz - oneon) / (oneof - oneon);
-            thisvert->x = VertexRenderList[z + i].vWorldViewProj.x;
-            thisvert->y = VertexRenderList[z + i].vWorldViewProj.y;
-            thisvert->z = thisdepth;
+            thisvert->pos.x = VertexRenderList[z + i].vWorldViewProj.x;
+            thisvert->pos.y = VertexRenderList[z + i].vWorldViewProj.y;
+            thisvert->pos.z = thisdepth;
             thisvert->w = VertexRenderList[z + i]._rhw;
-            thisvert->u = VertexRenderList[z + i].u;
-            thisvert->v = VertexRenderList[z + i].v;
-            thisvert->q = 1.0f;
+            thisvert->texuv.x = VertexRenderList[z + i].u;
+            thisvert->texuv.y = VertexRenderList[z + i].v;
+            thisvert->texw = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
             thisvert->texid = texid;
@@ -1892,13 +1890,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
         // copy first
-        thisvert->x = VertexRenderList[0].vWorldViewProj.x;
-        thisvert->y = VertexRenderList[0].vWorldViewProj.y;
-        thisvert->z = 1.0f;
+        thisvert->pos.x = VertexRenderList[0].vWorldViewProj.x;
+        thisvert->pos.y = VertexRenderList[0].vWorldViewProj.y;
+        thisvert->pos.z = 1.0f;
         thisvert->w = VertexRenderList[0]._rhw;
-        thisvert->u = VertexRenderList[0].u;
-        thisvert->v = VertexRenderList[0].v;
-        thisvert->q = 1.0f;
+        thisvert->texuv.x = VertexRenderList[0].u;
+        thisvert->texuv.y = VertexRenderList[0].v;
+        thisvert->texw = 1.0f;
         thisvert->screenspace = scrspace;
         thisvert->color = uTint;
         thisvert->texid = texid;
@@ -1906,13 +1904,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 
         // copy other two (z+1)(z+2)
         for (unsigned i = 1; i < 3; ++i) {
-            thisvert->x = VertexRenderList[z + i].vWorldViewProj.x;
-            thisvert->y = VertexRenderList[z + i].vWorldViewProj.y;
-            thisvert->z = 1.0f;
+            thisvert->pos.x = VertexRenderList[z + i].vWorldViewProj.x;
+            thisvert->pos.y = VertexRenderList[z + i].vWorldViewProj.y;
+            thisvert->pos.z = 1.0f;
             thisvert->w = VertexRenderList[z + i]._rhw;
-            thisvert->u = VertexRenderList[z + i].u;
-            thisvert->v = VertexRenderList[z + i].v;
-            thisvert->q = 1.0f;
+            thisvert->texuv.x = VertexRenderList[z + i].u;
+            thisvert->texuv.y = VertexRenderList[z + i].v;
+            thisvert->texw = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
             thisvert->texid = texid;
@@ -1931,13 +1929,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
             forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
             // copy first
-            thisvert->x = VertexRenderList[4].vWorldViewProj.x;
-            thisvert->y = VertexRenderList[4].vWorldViewProj.y;
-            thisvert->z = 1.0f;
+            thisvert->pos.x = VertexRenderList[4].vWorldViewProj.x;
+            thisvert->pos.y = VertexRenderList[4].vWorldViewProj.y;
+            thisvert->pos.z = 1.0f;
             thisvert->w = 1.0f;
-            thisvert->u = 0.5f;
-            thisvert->v = 0.5f;
-            thisvert->q = 1.0f;
+            thisvert->texuv.x = 0.5f;
+            thisvert->texuv.y = 0.5f;
+            thisvert->texw = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
             thisvert->color.a = 0;
@@ -1946,13 +1944,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 
             // copy other two (z+1)(z+2)
             for (unsigned i = 1; i < 3; ++i) {
-                thisvert->x = VertexRenderList[z + i].vWorldViewProj.x;
-                thisvert->y = VertexRenderList[z + i].vWorldViewProj.y;
-                thisvert->z = 1.0f;
+                thisvert->pos.x = VertexRenderList[z + i].vWorldViewProj.x;
+                thisvert->pos.y = VertexRenderList[z + i].vWorldViewProj.y;
+                thisvert->pos.z = 1.0f;
                 thisvert->w = 1.0f;
-                thisvert->u = 0.5f;
-                thisvert->v = 0.5f;
-                thisvert->q = 1.0f;
+                thisvert->texuv.x = 0.5f;
+                thisvert->texuv.y = 0.5f;
+                thisvert->texw = 1.0f;
                 thisvert->screenspace = scrspace;
                 thisvert->color = uTint;
                 thisvert->color.a = ((z + i) == 7) ? 0.0f : 1.0f;
@@ -1971,13 +1969,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
             forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
             // copy first
-            thisvert->x = VertexRenderList[8].vWorldViewProj.x;
-            thisvert->y = VertexRenderList[8].vWorldViewProj.y;
-            thisvert->z = 1.0f;
+            thisvert->pos.x = VertexRenderList[8].vWorldViewProj.x;
+            thisvert->pos.y = VertexRenderList[8].vWorldViewProj.y;
+            thisvert->pos.z = 1.0f;
             thisvert->w = 1.0f;
-            thisvert->u = 0.5f;
-            thisvert->v = 0.5f;
-            thisvert->q = 1.0f;
+            thisvert->texuv.x = 0.5f;
+            thisvert->texuv.y = 0.5f;
+            thisvert->texw = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
             thisvert->texid = texidsolid;
@@ -1985,13 +1983,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 
             // copy other two (z+1)(z+2)
             for (unsigned i = 1; i < 3; ++i) {
-                thisvert->x = VertexRenderList[z + i].vWorldViewProj.x;
-                thisvert->y = VertexRenderList[z + i].vWorldViewProj.y;
-                thisvert->z = 1.0f;
+                thisvert->pos.x = VertexRenderList[z + i].vWorldViewProj.x;
+                thisvert->pos.y = VertexRenderList[z + i].vWorldViewProj.y;
+                thisvert->pos.z = 1.0f;
                 thisvert->w = 1.0f;
-                thisvert->u = 0.5f;
-                thisvert->v = 0.5f;
-                thisvert->q = 1.0f;
+                thisvert->texuv.x = 0.5f;
+                thisvert->texuv.y = 0.5f;
+                thisvert->texw = 1.0f;
                 thisvert->screenspace = scrspace;
                 thisvert->color = uTint;
                 thisvert->texid = texidsolid;
@@ -2018,18 +2016,24 @@ void OpenGLRenderer::DrawForcePerVerts() {
 
         glBufferData(GL_ARRAY_BUFFER, sizeof(forceperstore), forceperstore, GL_DYNAMIC_DRAW);
 
-        // position attribute
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, x));
+        // position attribute (vec3)
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, pos));
         glEnableVertexAttribArray(0);
-        // tex uv
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, u));
+        // position w (float)
+        glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, w));
         glEnableVertexAttribArray(1);
-        // screen space depth
-        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, screenspace));
+        // tex uv (vec2)
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, texuv));
         glEnableVertexAttribArray(2);
-        // colour
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, color));
+        // tex w (float)
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, texw));
         glEnableVertexAttribArray(3);
+        // screen space depth (float)
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, screenspace));
+        glEnableVertexAttribArray(4);
+        // colour (vec4)
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, color));
+        glEnableVertexAttribArray(5);
     }
 
     // update buffer
@@ -2044,6 +2048,8 @@ void OpenGLRenderer::DrawForcePerVerts() {
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
+    glEnableVertexAttribArray(5);
 
     forcepershader.use();
 
@@ -2116,6 +2122,8 @@ void OpenGLRenderer::DrawForcePerVerts() {
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
+    glDisableVertexAttribArray(5);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
