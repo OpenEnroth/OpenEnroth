@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;337936d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2af967c</span>
    </div>
   </td>
  </tr>
@@ -272,8 +272,10 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:ae5c39ca3acf2a0f47c3307bb6f3da868"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBaseRenderer.html#ae5c39ca3acf2a0f47c3307bb6f3da868">Billboard_ProbablyAddToListAndSortByZOrder</a> (float z)</td></tr>
-<tr class="separator:ae5c39ca3acf2a0f47c3307bb6f3da868"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a480c7ce7fb7c4e7a234a983b30397615"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBaseRenderer.html#a480c7ce7fb7c4e7a234a983b30397615">NextBillboardIndex</a> ()</td></tr>
+<tr class="separator:a480c7ce7fb7c4e7a234a983b30397615"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a220bdfe03f4dd5f3916d2cd7c52569bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBaseRenderer.html#a220bdfe03f4dd5f3916d2cd7c52569bf">SortBillboards</a> ()</td></tr>
+<tr class="separator:a220bdfe03f4dd5f3916d2cd7c52569bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a015326c78f5da0ac4c7cf4d85816f6b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBaseRenderer.html#a015326c78f5da0ac4c7cf4d85816f6b3">TransformBillboard</a> (const <a class="el" href="structSoftwareBillboard.html">SoftwareBillboard</a> *a2, const <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *pBillboard)</td></tr>
 <tr class="separator:a015326c78f5da0ac4c7cf4d85816f6b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -305,12 +307,17 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:acab1616b6952fe429bcbbec7df53752d inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab783d803aa6adc72a785737161f33fe5 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ab783d803aa6adc72a785737161f33fe5">uFogColor</a></td></tr>
 <tr class="separator:ab783d803aa6adc72a785737161f33fe5 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae413e5aae9c95c8267689b59484ef9b0 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structRenderBillboardD3D.html">RenderBillboardD3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ae413e5aae9c95c8267689b59484ef9b0">pBillboardRenderListD3D</a> [1000]</td></tr>
-<tr class="separator:ae413e5aae9c95c8267689b59484ef9b0 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfcf074bd379066547ea7d9645af0bb8 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structRenderBillboardD3D.html">RenderBillboardD3D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#adfcf074bd379066547ea7d9645af0bb8">pBillboardRenderListD3D</a> [<a class="el" href="classRenderer.html#afe522e71a4629900943e2570c9bf5d1c">MAX_BILLBOARDS_D3D</a>]</td></tr>
+<tr class="separator:adfcf074bd379066547ea7d9645af0bb8 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6141b166a462ca1bc0da81779bc74b81 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structRenderBillboardD3D.html">RenderBillboardD3D</a> *, <a class="el" href="classRenderer.html#afe522e71a4629900943e2570c9bf5d1c">MAX_BILLBOARDS_D3D</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a6141b166a462ca1bc0da81779bc74b81">pSortedBillboardRenderListD3D</a></td></tr>
+<tr class="separator:a6141b166a462ca1bc0da81779bc74b81 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31aabb552aa94c72768f457d83c323b3 inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a31aabb552aa94c72768f457d83c323b3">uNumBillboardsToDraw</a></td></tr>
 <tr class="separator:a31aabb552aa94c72768f457d83c323b3 inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68526fd75b5a5797aee8efeff83c1fea inherit pub_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a68526fd75b5a5797aee8efeff83c1fea">drawcalls</a></td></tr>
 <tr class="separator:a68526fd75b5a5797aee8efeff83c1fea inherit pub_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_attribs_classRenderer"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classRenderer')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classRenderer.html">Renderer</a></td></tr>
+<tr class="memitem:afe522e71a4629900943e2570c9bf5d1c inherit pub_static_attribs_classRenderer"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#afe522e71a4629900943e2570c9bf5d1c">MAX_BILLBOARDS_D3D</a> = 5000</td></tr>
+<tr class="separator:afe522e71a4629900943e2570c9bf5d1c inherit pub_static_attribs_classRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1baf68bf858407e6f9d72a1be5344a7a" name="a1baf68bf858407e6f9d72a1be5344a7a"></a>
@@ -368,32 +375,6 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae5c39ca3acf2a0f47c3307bb6f3da868" name="ae5c39ca3acf2a0f47c3307bb6f3da868"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5c39ca3acf2a0f47c3307bb6f3da868">&#9670;&#160;</a></span>Billboard_ProbablyAddToListAndSortByZOrder()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned int BaseRenderer::Billboard_ProbablyAddToListAndSortByZOrder </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>z</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a03d3c4c4354757ee9a0709f8bb0d4cb8" name="a03d3c4c4354757ee9a0709f8bb0d4cb8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a03d3c4c4354757ee9a0709f8bb0d4cb8">&#9670;&#160;</a></span>BillboardSphereSpellFX()</h2>
 
@@ -1000,6 +981,31 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a480c7ce7fb7c4e7a234a983b30397615" name="a480c7ce7fb7c4e7a234a983b30397615"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a480c7ce7fb7c4e7a234a983b30397615">&#9670;&#160;</a></span>NextBillboardIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int BaseRenderer::NextBillboardIndex </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab0ddcc92999d9f3f78fb26a95a414ff4" name="ab0ddcc92999d9f3f78fb26a95a414ff4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab0ddcc92999d9f3f78fb26a95a414ff4">&#9670;&#160;</a></span>PrepareDecorationsRenderList_ODM()</h2>
 
@@ -1054,6 +1060,31 @@ Additional Inherited Members</h2></td></tr>
 <p>Implements <a class="el" href="classRenderer.html#a8836df30add6677153892ecdf8530e2a">Renderer</a>.</p>
 
 <p>Reimplemented in <a class="el" href="classNullRenderer.html#a7672266b139793ddeb2e67e54899b36b">NullRenderer</a>, and <a class="el" href="classOpenGLRenderer.html#a6eace6511f0e32ca15fb52d66a0aeaf3">OpenGLRenderer</a>.</p>
+
+</div>
+</div>
+<a id="a220bdfe03f4dd5f3916d2cd7c52569bf" name="a220bdfe03f4dd5f3916d2cd7c52569bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a220bdfe03f4dd5f3916d2cd7c52569bf">&#9670;&#160;</a></span>SortBillboards()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BaseRenderer::SortBillboards </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
