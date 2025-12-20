@@ -2090,11 +2090,8 @@ void OpenGLRenderer::SetFogParametersGL() {
 }
 
 struct billbverts {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-    GLfloat u;
-    GLfloat v;
+    Vec3f pos;
+    Vec2f texuv;
     Colorf color;
     GLfloat screenspace;
     GLfloat texid;
@@ -2157,13 +2154,10 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
 
         float thisblend = static_cast<float>(billboard->opacity);
 
-        // 0 1 2 / 0 2 3
-
-        billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
-        billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
-        billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
-        billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
+        // Triangle 1: vertices 0, 1, 2
+        billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[0].pos.x, billboard->pQuads[0].pos.y, thisdepth);
+        billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f),
+                                                 std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f));
         billbstore[billbstorecnt].color = billboard->pQuads[0].diffuse.toColorf();
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
@@ -2171,11 +2165,9 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].paletteId = paletteId;
         billbstorecnt++;
 
-        billbstore[billbstorecnt].x = billboard->pQuads[1].pos.x;
-        billbstore[billbstorecnt].y = billboard->pQuads[1].pos.y;
-        billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f);
-        billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f);
+        billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[1].pos.x, billboard->pQuads[1].pos.y, thisdepth);
+        billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f),
+                                                 std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f));
         billbstore[billbstorecnt].color = billboard->pQuads[1].diffuse.toColorf();
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
@@ -2183,11 +2175,9 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].paletteId = paletteId;
         billbstorecnt++;
 
-        billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
-        billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
-        billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
-        billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
+        billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[2].pos.x, billboard->pQuads[2].pos.y, thisdepth);
+        billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f),
+                                                 std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f));
         billbstore[billbstorecnt].color = billboard->pQuads[2].diffuse.toColorf();
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
@@ -2195,14 +2185,11 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].paletteId = paletteId;
         billbstorecnt++;
 
-        ////////////////////////////////
-
+        // Triangle 2: vertices 0, 2, 3 (if quad has 4 vertices)
         if (billboard->pQuads[3].pos.x != 0.0f && billboard->pQuads[3].pos.y != 0.0f && billboard->pQuads[3].pos.z != 0.0f) {
-            billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
-            billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
-            billbstore[billbstorecnt].z = thisdepth;
-            billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
-            billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
+            billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[0].pos.x, billboard->pQuads[0].pos.y, thisdepth);
+            billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f),
+                                                     std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f));
             billbstore[billbstorecnt].color = billboard->pQuads[0].diffuse.toColorf();
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
@@ -2210,11 +2197,9 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].paletteId = paletteId;
             billbstorecnt++;
 
-            billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
-            billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
-            billbstore[billbstorecnt].z = thisdepth;
-            billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
-            billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
+            billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[2].pos.x, billboard->pQuads[2].pos.y, thisdepth);
+            billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f),
+                                                     std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f));
             billbstore[billbstorecnt].color = billboard->pQuads[2].diffuse.toColorf();
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
@@ -2222,11 +2207,9 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].paletteId = paletteId;
             billbstorecnt++;
 
-            billbstore[billbstorecnt].x = billboard->pQuads[3].pos.x;
-            billbstore[billbstorecnt].y = billboard->pQuads[3].pos.y;
-            billbstore[billbstorecnt].z = thisdepth;
-            billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f);
-            billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f);
+            billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[3].pos.x, billboard->pQuads[3].pos.y, thisdepth);
+            billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f),
+                                                     std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f));
             billbstore[billbstorecnt].color = billboard->pQuads[3].diffuse.toColorf();
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
@@ -2262,10 +2245,10 @@ void OpenGLRenderer::DrawBillboards() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(billbstore), billbstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, x));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, pos));
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, u));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, texuv));
         glEnableVertexAttribArray(1);
         // colour
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, color));
