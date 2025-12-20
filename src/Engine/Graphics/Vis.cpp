@@ -133,12 +133,12 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
 
     // v6 = render->pBillboardRenderListD3D;
     for (unsigned i = 0; i < render->uNumBillboardsToDraw; ++i) {
-        RenderBillboardD3D *billboard = &render->pBillboardRenderListD3D[i];
+        RenderBillboardD3D *billboard = render->pSortedBillboardRenderListD3D[i];
         if (IsPointInsideD3DBillboard(billboard, x, y)) {
             if (v13 == -1)
                 v13 = i;
             else if (pBillboardRenderList[billboard->sParentBillboardID].screen_space_z <
-                     pBillboardRenderList[render->pBillboardRenderListD3D[v13].sParentBillboardID].screen_space_z)
+                     pBillboardRenderList[render->pSortedBillboardRenderListD3D[v13]->sParentBillboardID].screen_space_z)
                 v13 = i;
         }
     }
@@ -166,10 +166,10 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
     }
     // //--------------------------------
 
-    if (min_x < render->pBillboardRenderListD3D[v13].pQuads[0].pos.x ||
-        render->pBillboardRenderListD3D[v13].pQuads[0].pos.y > min_y ||
-        render->pBillboardRenderListD3D[v13].pQuads[3].pos.x < max_x ||
-        render->pBillboardRenderListD3D[v13].pQuads[1].pos.y < max_y)
+    if (min_x < render->pSortedBillboardRenderListD3D[v13]->pQuads[0].pos.x ||
+        render->pSortedBillboardRenderListD3D[v13]->pQuads[0].pos.y > min_y ||
+        render->pSortedBillboardRenderListD3D[v13]->pQuads[3].pos.x < max_x ||
+        render->pSortedBillboardRenderListD3D[v13]->pQuads[1].pos.y < max_y)
         return false;
 
     return true;
@@ -227,7 +227,7 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
                                Vis_SelectionList *list,
                                Vis_SelectionFilter *filter) {
     for (int i = 0; i < render->uNumBillboardsToDraw; ++i) {
-        RenderBillboardD3D *d3d_billboard = &render->pBillboardRenderListD3D[i];
+        RenderBillboardD3D *d3d_billboard = render->pSortedBillboardRenderListD3D[i];
         if (isBillboardPartOfSelection(i, filter) && IsPointInsideD3DBillboard(d3d_billboard, fX, fY)) {
             if (DoesRayIntersectBillboard(fPickDepth, i)) {
                 RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
@@ -725,7 +725,7 @@ Vis_PIDAndDepth Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
 void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
                                   Vis_SelectionFilter *filter) {
     for (int i = 0; i < render->uNumBillboardsToDraw; ++i) {
-        RenderBillboardD3D *d3d_billboard = &render->pBillboardRenderListD3D[i];
+        RenderBillboardD3D *d3d_billboard = render->pSortedBillboardRenderListD3D[i];
 
         if (isBillboardPartOfSelection(i, filter)) {
             if (DoesRayIntersectBillboard(pick_depth, i)) {
@@ -745,7 +745,7 @@ bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filte
         return true;
     assert(filter->vis_object_type == VisObjectType_Sprite);
 
-    int parentBillboardId = render->pBillboardRenderListD3D[billboardId].sParentBillboardID;
+    int parentBillboardId = render->pSortedBillboardRenderListD3D[billboardId]->sParentBillboardID;
 
     if (parentBillboardId == -1)
         return false;
@@ -828,10 +828,10 @@ bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_Selectio
 //----- (004C091D) --------------------------------------------------------
 bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx) {
     // Too deep so never hit anyway
-    if (render->pBillboardRenderListD3D[uD3DBillboardIdx].screen_space_z > fDepth)
+    if (render->pSortedBillboardRenderListD3D[uD3DBillboardIdx]->screen_space_z > fDepth)
         return false;
 
-    int billboardId = render->pBillboardRenderListD3D[uD3DBillboardIdx].sParentBillboardID;
+    int billboardId = render->pSortedBillboardRenderListD3D[uD3DBillboardIdx]->sParentBillboardID;
     if (billboardId == -1)
         return false;
 
@@ -839,7 +839,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
         return false;
 
     // billboard will be visible somewhere on screen - clamp billboard corners to screen viewport
-    auto& billboard = render->pBillboardRenderListD3D[uD3DBillboardIdx];
+    auto& billboard = *render->pSortedBillboardRenderListD3D[uD3DBillboardIdx];
     float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->viewportTL_X, (float)pViewport->viewportBR_X);
     float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->viewportTL_X, (float)pViewport->viewportBR_X);
     float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->viewportTL_Y, (float)pViewport->viewportBR_Y);

@@ -156,7 +156,10 @@ class Renderer {
     std::shared_ptr<GameConfig> config = nullptr;
 
     Color uFogColor;
-    RenderBillboardD3D pBillboardRenderListD3D[1000];
+
+    static const int MAX_BILLBOARDS_D3D = 5000;
+    RenderBillboardD3D pBillboardRenderListD3D[MAX_BILLBOARDS_D3D];
+    std::array<RenderBillboardD3D*, MAX_BILLBOARDS_D3D> pSortedBillboardRenderListD3D;
     unsigned int uNumBillboardsToDraw; // TODO(captainurist): this is not properly cleared if BeginScene3D is not called,
                                        //                     resulting in dangling textures in pBillboardRenderListD3D.
 
@@ -179,10 +182,6 @@ extern int uNumSpritesDrawnThisFrame;
 extern RenderVertexSoft VertexRenderList[50];
 extern RenderVertexSoft array_73D150[20];
 
-extern RenderVertexD3D3 d3d_vertex_buffer[50];
-
-int ODM_NearClip(unsigned int uVertexID);
-int ODM_FarClip(unsigned int uNumVertices);
 
 struct SkyBillboardStruct {
     void CalcSkyFrustumVec(int a2, int a3, int a4, int a5, int a6, int a7);

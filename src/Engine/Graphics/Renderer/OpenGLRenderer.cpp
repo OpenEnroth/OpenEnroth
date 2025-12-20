@@ -65,7 +65,6 @@ unsigned int uNumBillboardsToDraw;
 int uNumSpritesDrawnThisFrame;
 RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
-RenderVertexD3D3 d3d_vertex_buffer[50];
 
 static GLuint framebuffer = 0;
 static GLuint framebufferTextures[2] = {0, 0};
@@ -2304,6 +2303,8 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
     float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
     float oneof = 1.0f / (pCamera3D->GetFarClip());
 
+    SortBillboards();
+
     for (int i = uNumBillboardsToDraw - 1; i >= 0; --i) {
         //if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend) {
         //    if (blendtrack != pBillboardRenderListD3D[i].opacity) {
@@ -2312,11 +2313,13 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         //    }
         //}
 
-        //int palette{ pBillboardRenderListD3D[i].PaletteID};
-        int paletteId = pBillboardRenderListD3D[i].paletteId;
+        RenderBillboardD3D* billboard = pSortedBillboardRenderListD3D[i];
 
-        if (pBillboardRenderListD3D[i].texture) {
-            auto texture = pBillboardRenderListD3D[i].texture;
+        //int palette{ pBillboardRenderListD3D[i].PaletteID};
+        int paletteId = billboard->paletteId;
+
+        if (billboard->texture) {
+            auto texture = billboard->texture;
             gltexid = texture->renderId().value();
         } else {
             static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
@@ -2328,8 +2331,6 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         //    glBindTexture(GL_TEXTURE_2D, gltexid);
         //}
 
-        auto billboard = &pBillboardRenderListD3D[i];
-        auto b = &pBillboardRenderList[i];
 
         float oneoz = 1.0f / billboard->screen_space_z;
         float thisdepth = (oneoz - oneon) / (oneof - oneon);

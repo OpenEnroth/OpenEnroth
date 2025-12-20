@@ -38,53 +38,25 @@ bool BaseRenderer::Initialize() {
     return true;
 }
 
-unsigned int BaseRenderer::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
-    if (uNumBillboardsToDraw >= 999) {
+unsigned int BaseRenderer::NextBillboardIndex() {
+    if (uNumBillboardsToDraw >= MAX_BILLBOARDS_D3D) {
         return 0;
     }
 
-    if (!uNumBillboardsToDraw) {
-        uNumBillboardsToDraw = 1;
-        return 0;
-    }
+    int index = uNumBillboardsToDraw++;
+    pSortedBillboardRenderListD3D[index] = &pBillboardRenderListD3D[index];
 
-    unsigned int v7 = 0;
-    for (int left = 0, right = uNumBillboardsToDraw; left < right;) {  // binsearch
-        v7 = left + (right - left) / 2;
-        if (z <= render->pBillboardRenderListD3D[v7].z_order)
-            right = v7;
-        else
-            left = v7 + 1;
-    }
+    return index;
+}
 
-    if (z > render->pBillboardRenderListD3D[v7].z_order) {
-        if (v7 == render->uNumBillboardsToDraw - 1) {
-            v7 = render->uNumBillboardsToDraw;
-        } else {
-            if (render->uNumBillboardsToDraw > v7) {
-                for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7; i++) {
-                    render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i] =
-                        render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)];
-                }
-            }
-            ++v7;
-        }
-        uNumBillboardsToDraw++;
-        return v7;
-    }
+void BaseRenderer::SortBillboards() {
+    // we need to loop over all billboards from farthest to nearest
+    // sort the list based on screen_space_z
 
-    if (z <= render->pBillboardRenderListD3D[v7].z_order) {
-        if (render->uNumBillboardsToDraw > v7) {
-            for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7; i++) {
-                render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i] =
-                    render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)];
-            }
-        }
-        uNumBillboardsToDraw++;
-        return v7;
-    }
-
-    return v7;
+    std::stable_sort(pSortedBillboardRenderListD3D.begin(), pSortedBillboardRenderListD3D.begin() + uNumBillboardsToDraw,
+        [](const auto& a, const auto& b) {
+            return a->screen_space_z < b->screen_space_z;
+        });
 }
 
 
@@ -408,7 +380,7 @@ void BaseRenderer::TransformBillboard(const SoftwareBillboard *pSoftBillboard, c
     if (pSprite->texture->height() == 0 || pSprite->texture->width() == 0)
         assert(false);
 
-    unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(pSoftBillboard->screen_space_z);
+    unsigned int billboard_index = NextBillboardIndex();
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
     float scr_proj_x = pSoftBillboard->screenspace_projection_factor_x;
@@ -500,7 +472,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                 GraphicsImage *texture,
                                                 Color uDiffuse,
                                                 int angle) {
-    unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
+    unsigned int billboard_index = NextBillboardIndex();
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
     billboard->opacity = RenderBillboardD3D::Opaque_1;
@@ -618,7 +590,7 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
         }
     }
 
-    unsigned int v5 = Billboard_ProbablyAddToListAndSortByZOrder(depth);
+    unsigned int v5 = NextBillboardIndex();
     pBillboardRenderListD3D[v5].field_90 = 0;
     pBillboardRenderListD3D[v5].sParentBillboardID = -1;
     pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
@@ -689,7 +661,7 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     std::vector<Actor*> foundActors;
 
     for (int i = 0; i < render->uNumBillboardsToDraw; i++) {
-        int renderId = render->pBillboardRenderListD3D[i].sParentBillboardID;
+        int renderId = render->pSortedBillboardRenderListD3D[i]->sParentBillboardID;
         if(renderId == -1) {
             continue; // E.g. spell particle.
         }

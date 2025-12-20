@@ -600,6 +600,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     onMapLoad();
     pGameLoadingUI_ProgressBar->Progress();
     memset(&render->pBillboardRenderListD3D, 0, sizeof(render->pBillboardRenderListD3D));
+    render->pSortedBillboardRenderListD3D.fill(nullptr);
     pGameLoadingUI_ProgressBar->Release();
 }
 

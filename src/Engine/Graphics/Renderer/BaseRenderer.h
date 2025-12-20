@@ -48,7 +48,8 @@ class BaseRenderer : public Renderer {
     virtual Pointi MapToPresent(Pointi position) override;
 
  protected:
-    unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
+    unsigned int NextBillboardIndex();
+    void SortBillboards();
     void TransformBillboard(const SoftwareBillboard *a2, const RenderBillboard *pBillboard);
 
  protected:

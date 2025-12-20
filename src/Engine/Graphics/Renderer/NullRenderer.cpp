@@ -103,7 +103,9 @@ void NullRenderer::DrawTwodVerts() {}
 
 bool NullRenderer::ReloadShaders() { return true; }
 
-void NullRenderer::DoRenderBillboards_D3D() {}
+void NullRenderer::DoRenderBillboards_D3D() {
+    SortBillboards();
+}
 
 void NullRenderer::beginOverlays() {}
 void NullRenderer::endOverlays() {}
