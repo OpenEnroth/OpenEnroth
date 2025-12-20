@@ -875,16 +875,10 @@ RgbaImage OpenGLRenderer::MakeFullScreenshot() {
 }
 
 struct GLdecalverts {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-    GLfloat u;
-    GLfloat v;
+    Vec3f pos;
+    Vec2f texuv;
     GLfloat texunit;
-    GLfloat red;
-    GLfloat green;
-    GLfloat blue;
-    GLfloat attribs;
+    Colorf color;
 };
 
 GLdecalverts decalshaderstore[10000] = {};
@@ -912,20 +906,17 @@ void OpenGLRenderer::BeginDecals() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLdecalverts) * 10000, decalshaderstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, x));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, pos));
         glEnableVertexAttribArray(0);
         // tex uv attribute
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, u));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, texuv));
         glEnableVertexAttribArray(1);
         // tex unit attribute
         glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, texunit));
         glEnableVertexAttribArray(2);
         // colours
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, red));
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, color));
         glEnableVertexAttribArray(3);
-        // attribs - not used here yet
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, attribs));
-        glEnableVertexAttribArray(4);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -938,11 +929,11 @@ void OpenGLRenderer::EndDecals() {
     // draw here
 
     if (numdecalverts) {
-            glBindBuffer(GL_ARRAY_BUFFER, decalVBO);
-            // orphan buffer
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLdecalverts) * 10000, NULL, GL_DYNAMIC_DRAW);
-            // update buffer
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLdecalverts) * numdecalverts, decalshaderstore);
+        glBindBuffer(GL_ARRAY_BUFFER, decalVBO);
+        // orphan buffer
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLdecalverts) * 10000, NULL, GL_DYNAMIC_DRAW);
+        // update buffer
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLdecalverts) * numdecalverts, decalshaderstore);
     } else {
         return;
     }
@@ -980,7 +971,6 @@ void OpenGLRenderer::EndDecals() {
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
-    glEnableVertexAttribArray(4);
 
     glDrawArrays(GL_TRIANGLES, 0, numdecalverts);
     drawcalls++;
@@ -991,7 +981,6 @@ void OpenGLRenderer::EndDecals() {
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
-    glDisableVertexAttribArray(4);
     glBindVertexArray(0);
     //glBindBuffer(GL_ARRAY_BUFFER, 0);
     glActiveTexture(GL_TEXTURE0);
@@ -1029,16 +1018,10 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
         float uFinalB = uTint.b * color_mult * decalColorMult.b;
 
         // copy first
-        thisvert->x = pDecal->pVertices[0].vWorldPosition.x;
-        thisvert->y = pDecal->pVertices[0].vWorldPosition.y;
-        thisvert->z = pDecal->pVertices[0].vWorldPosition.z;
-        thisvert->u = pDecal->pVertices[0].u;
-        thisvert->v = pDecal->pVertices[0].v;
+        thisvert->pos = pDecal->pVertices[0].vWorldPosition;
+        thisvert->texuv = Vec2f(pDecal->pVertices[0].u, pDecal->pVertices[0].v);
         thisvert->texunit = 0;
-        thisvert->red = uFinalR;
-        thisvert->green = uFinalG;
-        thisvert->blue = uFinalB;
-        thisvert->attribs = 0;
+        thisvert->color = Colorf(uFinalR, uFinalG, uFinalB, 1.0f);
         thisvert++;
 
         // copy other two (z+1)(z+2)
@@ -1048,16 +1031,10 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
             uFinalG = uTint.g * color_mult * decalColorMult.g;
             uFinalB = uTint.b * color_mult * decalColorMult.b;
 
-            thisvert->x = pDecal->pVertices[z + i].vWorldPosition.x;
-            thisvert->y = pDecal->pVertices[z + i].vWorldPosition.y;
-            thisvert->z = pDecal->pVertices[z + i].vWorldPosition.z;
-            thisvert->u = pDecal->pVertices[z + i].u;
-            thisvert->v = pDecal->pVertices[z + i].v;
+            thisvert->pos = pDecal->pVertices[z + i].vWorldPosition;
+            thisvert->texuv = Vec2f(pDecal->pVertices[z + i].u, pDecal->pVertices[z + i].v);
             thisvert->texunit = 0;
-            thisvert->red = uFinalR;
-            thisvert->green = uFinalG;
-            thisvert->blue = uFinalB;
-            thisvert->attribs = 0;
+            thisvert->color = Colorf(uFinalR, uFinalG, uFinalB, 1.0f);
             thisvert++;
         }
 
