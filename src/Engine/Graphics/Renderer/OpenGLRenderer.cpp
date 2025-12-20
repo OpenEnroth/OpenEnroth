@@ -1117,16 +1117,11 @@ const int terrain_height_scale = 32;
 
 // struct for storing vert data for gpu submit
 struct GLshaderverts {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-    GLfloat u;
-    GLfloat v;
+    Vec3f pos;
+    Vec2f texuv;
     GLfloat texunit;
     GLfloat texturelayer;
-    GLfloat normx;
-    GLfloat normy;
-    GLfloat normz;
+    Vec3f normal;
     GLfloat attribs;
     GLfloat sector;
 };
@@ -1228,81 +1223,51 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 // calc each vertex
                 // [0] - x,y        n1
-                terrshaderstore[6 * (x + (127 * y))].x = pTerrainVertices[y * 128 + x].vWorldPosition.x;
-                terrshaderstore[6 * (x + (127 * y))].y = pTerrainVertices[y * 128 + x].vWorldPosition.y;
-                terrshaderstore[6 * (x + (127 * y))].z = pTerrainVertices[y * 128 + x].vWorldPosition.z;
-                terrshaderstore[6 * (x + (127 * y))].u = 0;
-                terrshaderstore[6 * (x + (127 * y))].v = 0;
+                terrshaderstore[6 * (x + (127 * y))].pos = pTerrainVertices[y * 128 + x].vWorldPosition;
+                terrshaderstore[6 * (x + (127 * y))].texuv = Vec2f(0, 0);
                 terrshaderstore[6 * (x + (127 * y))].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y))].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y))].normx = norm.x;
-                terrshaderstore[6 * (x + (127 * y))].normy = norm.y;
-                terrshaderstore[6 * (x + (127 * y))].normz = norm.z;
+                terrshaderstore[6 * (x + (127 * y))].normal = norm;
                 terrshaderstore[6 * (x + (127 * y))].attribs = 0;
 
                 // [1] - x+1,y+1    n1
-                terrshaderstore[6 * (x + (127 * y)) + 1].x = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.x;
-                terrshaderstore[6 * (x + (127 * y)) + 1].y = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.y;
-                terrshaderstore[6 * (x + (127 * y)) + 1].z = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.z;
-                terrshaderstore[6 * (x + (127 * y)) + 1].u = 1;
-                terrshaderstore[6 * (x + (127 * y)) + 1].v = 1;
+                terrshaderstore[6 * (x + (127 * y)) + 1].pos = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition;
+                terrshaderstore[6 * (x + (127 * y)) + 1].texuv = Vec2f(1, 1);
                 terrshaderstore[6 * (x + (127 * y)) + 1].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 1].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normx = norm.x;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normy = norm.y;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normz = norm.z;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normal = norm;
                 terrshaderstore[6 * (x + (127 * y)) + 1].attribs = 0;
 
                 // [2] - x+1,y      n1
-                terrshaderstore[6 * (x + (127 * y)) + 2].x = pTerrainVertices[y * 128 + x + 1].vWorldPosition.x;
-                terrshaderstore[6 * (x + (127 * y)) + 2].y = pTerrainVertices[y * 128 + x + 1].vWorldPosition.y;
-                terrshaderstore[6 * (x + (127 * y)) + 2].z = pTerrainVertices[y * 128 + x + 1].vWorldPosition.z;
-                terrshaderstore[6 * (x + (127 * y)) + 2].u = 1;
-                terrshaderstore[6 * (x + (127 * y)) + 2].v = 0;
+                terrshaderstore[6 * (x + (127 * y)) + 2].pos = pTerrainVertices[y * 128 + x + 1].vWorldPosition;
+                terrshaderstore[6 * (x + (127 * y)) + 2].texuv = Vec2f(1, 0);
                 terrshaderstore[6 * (x + (127 * y)) + 2].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 2].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normx = norm.x;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normy = norm.y;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normz = norm.z;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normal = norm;
                 terrshaderstore[6 * (x + (127 * y)) + 2].attribs = 0;
 
                 // [3] - x,y        n2
-                terrshaderstore[6 * (x + (127 * y)) + 3].x = pTerrainVertices[y * 128 + x].vWorldPosition.x;
-                terrshaderstore[6 * (x + (127 * y)) + 3].y = pTerrainVertices[y * 128 + x].vWorldPosition.y;
-                terrshaderstore[6 * (x + (127 * y)) + 3].z = pTerrainVertices[y * 128 + x].vWorldPosition.z;
-                terrshaderstore[6 * (x + (127 * y)) + 3].u = 0;
-                terrshaderstore[6 * (x + (127 * y)) + 3].v = 0;
+                terrshaderstore[6 * (x + (127 * y)) + 3].pos = pTerrainVertices[y * 128 + x].vWorldPosition;
+                terrshaderstore[6 * (x + (127 * y)) + 3].texuv = Vec2f(0, 0);
                 terrshaderstore[6 * (x + (127 * y)) + 3].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 3].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normx = norm2.x;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normy = norm2.y;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normz = norm2.z;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normal = norm2;
                 terrshaderstore[6 * (x + (127 * y)) + 3].attribs = 0;
 
                 // [4] - x,y+1      n2
-                terrshaderstore[6 * (x + (127 * y)) + 4].x = pTerrainVertices[(y + 1) * 128 + x].vWorldPosition.x;
-                terrshaderstore[6 * (x + (127 * y)) + 4].y = pTerrainVertices[(y + 1) * 128 + x].vWorldPosition.y;
-                terrshaderstore[6 * (x + (127 * y)) + 4].z = pTerrainVertices[(y + 1) * 128 + x].vWorldPosition.z;
-                terrshaderstore[6 * (x + (127 * y)) + 4].u = 0;
-                terrshaderstore[6 * (x + (127 * y)) + 4].v = 1;
+                terrshaderstore[6 * (x + (127 * y)) + 4].pos = pTerrainVertices[(y + 1) * 128 + x].vWorldPosition;
+                terrshaderstore[6 * (x + (127 * y)) + 4].texuv = Vec2f(0, 1);
                 terrshaderstore[6 * (x + (127 * y)) + 4].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 4].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normx = norm2.x;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normy = norm2.y;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normz = norm2.z;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normal = norm2;
                 terrshaderstore[6 * (x + (127 * y)) + 4].attribs = 0;
 
                 // [5] - x+1,y+1    n2
-                terrshaderstore[6 * (x + (127 * y)) + 5].x = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.x;
-                terrshaderstore[6 * (x + (127 * y)) + 5].y = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.y;
-                terrshaderstore[6 * (x + (127 * y)) + 5].z = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.z;
-                terrshaderstore[6 * (x + (127 * y)) + 5].u = 1;
-                terrshaderstore[6 * (x + (127 * y)) + 5].v = 1;
+                terrshaderstore[6 * (x + (127 * y)) + 5].pos = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition;
+                terrshaderstore[6 * (x + (127 * y)) + 5].texuv = Vec2f(1, 1);
                 terrshaderstore[6 * (x + (127 * y)) + 5].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 5].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normx = norm2.x;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normy = norm2.y;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normz = norm2.z;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normal = norm2;
                 terrshaderstore[6 * (x + (127 * y)) + 5].attribs = 0;
             }
         }
@@ -1318,17 +1283,17 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(terrshaderstore), terrshaderstore, GL_STATIC_DRAW);
         // submit data layout
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, x));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, pos));
         glEnableVertexAttribArray(0);
         // tex uv attribute
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, u));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texuv));
         glEnableVertexAttribArray(1);
         // tex unit attribute
         // tex array layer attribute
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texunit));
         glEnableVertexAttribArray(2);
         // normals
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normx));
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normal));
         glEnableVertexAttribArray(3);
         // attribs - not used here yet
         glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
@@ -1590,41 +1555,29 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 // top tri
                 // x, y
-                VertexRenderList[0].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy))].x;
-                VertexRenderList[0].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy))].y;
-                VertexRenderList[0].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy))].z;
+                VertexRenderList[0].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy))].pos;
                 // x + 1, y + 1
-                VertexRenderList[1].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 1].x;
-                VertexRenderList[1].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 1].y;
-                VertexRenderList[1].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 1].z;
+                VertexRenderList[1].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 1].pos;
                 // x + 1, y
-                VertexRenderList[2].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].x;
-                VertexRenderList[2].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].y;
-                VertexRenderList[2].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].z;
+                VertexRenderList[2].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].pos;
 
                 // bottom tri
                 // x, y
-                VertexRenderList[3].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].x;
-                VertexRenderList[3].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].y;
-                VertexRenderList[3].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].z;
+                VertexRenderList[3].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].pos;
                 // x, y + 1
-                VertexRenderList[4].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].x;
-                VertexRenderList[4].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].y;
-                VertexRenderList[4].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].z;
+                VertexRenderList[4].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].pos;
                 // x + 1, y + 1
-                VertexRenderList[5].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].x;
-                VertexRenderList[5].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].y;
-                VertexRenderList[5].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].z;
+                VertexRenderList[5].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].pos;
 
                 float WorldMinZ = pOutdoor->GetPolygonMinZ(VertexRenderList, 6);
                 float WorldMaxZ = pOutdoor->GetPolygonMaxZ(VertexRenderList, 6);
 
                 // TODO(pskelton): terrain and boxes should be saved for easier retrieval
                 // test expanded box against bloodsplat
-                BBoxf thissquare{ terrshaderstore[6 * (loopx + (127 * loopy))].x ,
-                                  terrshaderstore[6 * (loopx + (127 * loopy)) + 1].x,
-                                  terrshaderstore[6 * (loopx + (127 * loopy)) + 1].y,
-                                  terrshaderstore[6 * (loopx + (127 * loopy))].y,
+                BBoxf thissquare{ terrshaderstore[6 * (loopx + (127 * loopy))].pos.x ,
+                                  terrshaderstore[6 * (loopx + (127 * loopy)) + 1].pos.x,
+                                  terrshaderstore[6 * (loopx + (127 * loopy)) + 1].pos.y,
+                                  terrshaderstore[6 * (loopx + (127 * loopy))].pos.y,
                                   WorldMinZ,
                                   WorldMaxZ };
 
@@ -2909,17 +2862,17 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, outbuildshaderstore[l], GL_DYNAMIC_DRAW);
 
             // position attribute
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, x));
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, pos));
             glEnableVertexAttribArray(0);
             // tex uv attribute
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, u));
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texuv));
             glEnableVertexAttribArray(1);
             // tex unit attribute
             // tex array layer attribute
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texunit));
             glEnableVertexAttribArray(2);
             // normals
-            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normx));
+            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normal));
             glEnableVertexAttribArray(3);
             // attribs - not used here yet
             glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
@@ -3059,31 +3012,23 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                     GLshaderverts *thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
 
                                     // copy first
-                                    thisvert->x = model.pVertices[face.pVertexIDs[0]].x;
-                                    thisvert->y = model.pVertices[face.pVertexIDs[0]].y;
-                                    thisvert->z = model.pVertices[face.pVertexIDs[0]].z;
-                                    thisvert->u = face.pTextureUIDs[0] + face.sTextureDeltaU;
-                                    thisvert->v = face.pTextureVIDs[0] + face.sTextureDeltaV;
+                                    thisvert->pos = model.pVertices[face.pVertexIDs[0]];
+                                    thisvert->texuv = Vec2f(face.pTextureUIDs[0] + face.sTextureDeltaU,
+                                                            face.pTextureVIDs[0] + face.sTextureDeltaV); // TODO(captainurist): adding in IDs?
                                     thisvert->texunit = texunit;
                                     thisvert->texturelayer = texlayer;
-                                    thisvert->normx = face.facePlane.normal.x;
-                                    thisvert->normy = face.facePlane.normal.y;
-                                    thisvert->normz = face.facePlane.normal.z;
+                                    thisvert->normal = face.facePlane.normal;
                                     thisvert->attribs = attribflags;
                                     thisvert++;
 
                                     // copy other two (z+1)(z+2)
                                     for (unsigned i = 1; i < 3; ++i) {
-                                        thisvert->x = model.pVertices[face.pVertexIDs[z + i]].x;
-                                        thisvert->y = model.pVertices[face.pVertexIDs[z + i]].y;
-                                        thisvert->z = model.pVertices[face.pVertexIDs[z + i]].z;
-                                        thisvert->u = face.pTextureUIDs[z + i] + face.sTextureDeltaU;
-                                        thisvert->v = face.pTextureVIDs[z + i] + face.sTextureDeltaV;
+                                        thisvert->pos = model.pVertices[face.pVertexIDs[z + i]];
+                                        thisvert->texuv = Vec2f(face.pTextureUIDs[z + i] + face.sTextureDeltaU,
+                                                                face.pTextureVIDs[z + i] + face.sTextureDeltaV); // TODO(captainurist): adding in IDs?
                                         thisvert->texunit = texunit;
                                         thisvert->texturelayer = texlayer;
-                                        thisvert->normx = face.facePlane.normal.x;
-                                        thisvert->normy = face.facePlane.normal.y;
-                                        thisvert->normz = face.facePlane.normal.z;
+                                        thisvert->normal = face.facePlane.normal;
                                         thisvert->attribs = attribflags;
                                         thisvert++;
                                     }
@@ -3505,17 +3450,17 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
 
                 // position attribute
-                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, x));
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, pos));
                 glEnableVertexAttribArray(0);
                 // tex uv attribute
-                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, u));
+                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texuv));
                 glEnableVertexAttribArray(1);
                 // tex unit attribute
                 // tex array layer attribute
                 glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texunit));
                 glEnableVertexAttribArray(2);
                 // normals
-                glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normx));
+                glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normal));
                 glEnableVertexAttribArray(3);
                 // attribs
                 glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
@@ -3657,40 +3602,34 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
 
                     // copy first
-                    thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
-                    thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
-                    thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
-                    thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
-                    thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                    thisvert->pos = pIndoor->pVertices[face->pVertexIDs[0]];
+                    // TODO(captainurist): adding in IDs below?
+                    thisvert->texuv = Vec2f(face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU /*+ face->sTextureDeltaU*/,
+                                            face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV /*+ face->sTextureDeltaV*/);
                     if (face->Indoor_sky()) {
-                        thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
-                        thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
+                        thisvert->texuv.x = (skymodtimex + thisvert->texuv.x) * 0.25f;
+                        thisvert->texuv.y = (skymodtimey + thisvert->texuv.y) * 0.25f;
                     }
                     thisvert->texunit = texunit;
                     thisvert->texturelayer = texlayer;
-                    thisvert->normx = face->facePlane.normal.x;
-                    thisvert->normy = face->facePlane.normal.y;
-                    thisvert->normz = face->facePlane.normal.z;
+                    thisvert->normal = face->facePlane.normal;
                     thisvert->attribs = attribflags;
                     thisvert->sector = face->uSectorID;
                     thisvert++;
 
                     // copy other two (z+1)(z+2)
                     for (unsigned i = 1; i < 3; ++i) {
-                        thisvert->x = pIndoor->pVertices[face->pVertexIDs[z + i]].x;
-                        thisvert->y = pIndoor->pVertices[face->pVertexIDs[z + i]].y;
-                        thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
-                        thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
-                        thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                        thisvert->pos = pIndoor->pVertices[face->pVertexIDs[z + i]];
+                        // TODO(captainurist): adding in IDs???
+                        thisvert->texuv = Vec2f(face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU /*+ face->sTextureDeltaU*/,
+                                                face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV /*+ face->sTextureDeltaV*/);
                         if (face->Indoor_sky()) {
-                            thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
-                            thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
+                            thisvert->texuv.x = (skymodtimex + thisvert->texuv.x) * 0.25f;
+                            thisvert->texuv.y = (skymodtimey + thisvert->texuv.y) * 0.25f;
                         }
                         thisvert->texunit = texunit;
                         thisvert->texturelayer = texlayer;
-                        thisvert->normx = face->facePlane.normal.x;
-                        thisvert->normy = face->facePlane.normal.y;
-                        thisvert->normz = face->facePlane.normal.z;
+                        thisvert->normal = face->facePlane.normal;
                         thisvert->attribs = attribflags;
                         thisvert->sector = face->uSectorID;
                         thisvert++;
