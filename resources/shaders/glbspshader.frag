@@ -6,11 +6,10 @@
 
 in vec4 vertexColour;
 in vec2 texuv;
-flat in vec2 olayer;
+flat in float olayer;
 in vec3 vsPos;
 in vec3 vsNorm;
 flat in int vsAttrib;
-flat in int vsSector;
 
 out vec4 FragColour;
 
@@ -113,12 +112,12 @@ void main() {
 
     texcoords.x = (deltas.x + texuv.x) / float(texsize.x);
     texcoords.y = (deltas.y + texuv.y) / float(texsize.y);
-    fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer.y));
+    fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer));
 
     vec4 toplayer = texture(textureArray0, vec3(texcoords.x,texcoords.y,0));
     vec4 watercol = texture(textureArray0, vec3(texcoords.x,texcoords.y,waterframe));
 
-    if ((watertiles == 1) && (olayer.y == 0.0)){
+    if ((watertiles == 1) && (olayer == 0.0)){
         if ((vsAttrib & 0x3C00) != 0){ // water anim disabled
             fragcol = toplayer;
         } else {
@@ -214,14 +213,6 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     if (diff == 0.0) {
         ambient = vec3(0.0);
     }
-
-    // stationary sources cant light outside their sector
-    // if (light.sector > 0.0) {
-    //     if (vsSector != int(light.sector)) {
-    //         ambient = vec3(0);
-    //         diff = 0.0;
-    //     }
-    // }
 
     vec3 diffuse = light.diffuse * diff ;//* vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec ;//* vec3(texture(material.specular, TexCoords));

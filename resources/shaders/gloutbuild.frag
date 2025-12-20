@@ -6,7 +6,7 @@
 
 in vec4 vertexColour;
 in vec2 texuv;
-flat in vec2 olayer;
+flat in float olayer;
 in vec3 vsPos;
 in vec3 vsNorm;
 flat in int vsAttrib;
@@ -100,12 +100,12 @@ void main() {
 
     texcoords.x = (deltas.x + texuv.x) / float(texsize.x);
     texcoords.y = (deltas.y + texuv.y) / float(texsize.y);
-    fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer.y));
+    fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer));
 
     vec4 toplayer = texture(textureArray0, vec3(texcoords.x,texcoords.y,0));
     vec4 watercol = texture(textureArray0, vec3(texcoords.x,texcoords.y,waterframe));
 
-    if ((watertiles == 1) && (olayer.y == 0.0)){
+    if ((watertiles == 1) && (olayer == 0.0)){
         if ((vsAttrib & 0x3C00) != 0){ // water anim disabled
             fragcol = toplayer;
         } else {
