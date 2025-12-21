@@ -190,6 +190,7 @@ class OpenGLRenderer : public BaseRenderer {
 
     // terrain shader
     OpenGLVertexBuffer<ShaderVertex> _terrainBuffer;
+    std::array<ShaderVertex, 127 * 127 * 6> _terrainVertices;
     // all terrain textures are square
     GLuint terraintextures[8]{};
     unsigned int numterraintexloaded[8]{};

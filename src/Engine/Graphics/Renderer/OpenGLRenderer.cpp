@@ -991,11 +991,6 @@ void OpenGLRenderer::_set_ortho_modelview() {
 
 
 // ---------------------- terrain -----------------------
-const int terrain_block_scale = 512;
-const int terrain_height_scale = 32;
-
-std::array<ShaderVertex, 127 * 127 * 6> terrshaderstore = {};
-
 void OpenGLRenderer::DrawOutdoorTerrain() {
     _initWaterTiles();
     // shader version
@@ -1093,46 +1088,46 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 // calc each vertex
                 // [0] - x,y        n1
-                terrshaderstore[6 * (x + (127 * y))].pos = pTerrainVertices[y * 128 + x].vWorldPosition;
-                terrshaderstore[6 * (x + (127 * y))].texuv = Vec2f(0, 0);
-                terrshaderstore[6 * (x + (127 * y))].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y))].normal = norm;
-                terrshaderstore[6 * (x + (127 * y))].attribs = waterAttrib;
+                _terrainVertices[6 * (x + (127 * y))].pos = pTerrainVertices[y * 128 + x].vWorldPosition;
+                _terrainVertices[6 * (x + (127 * y))].texuv = Vec2f(0, 0);
+                _terrainVertices[6 * (x + (127 * y))].texturelayer = tilelayer;
+                _terrainVertices[6 * (x + (127 * y))].normal = norm;
+                _terrainVertices[6 * (x + (127 * y))].attribs = waterAttrib;
 
                 // [1] - x+1,y+1    n1
-                terrshaderstore[6 * (x + (127 * y)) + 1].pos = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition;
-                terrshaderstore[6 * (x + (127 * y)) + 1].texuv = Vec2f(1, 1);
-                terrshaderstore[6 * (x + (127 * y)) + 1].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normal = norm;
-                terrshaderstore[6 * (x + (127 * y)) + 1].attribs = waterAttrib;
+                _terrainVertices[6 * (x + (127 * y)) + 1].pos = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition;
+                _terrainVertices[6 * (x + (127 * y)) + 1].texuv = Vec2f(1, 1);
+                _terrainVertices[6 * (x + (127 * y)) + 1].texturelayer = tilelayer;
+                _terrainVertices[6 * (x + (127 * y)) + 1].normal = norm;
+                _terrainVertices[6 * (x + (127 * y)) + 1].attribs = waterAttrib;
 
                 // [2] - x+1,y      n1
-                terrshaderstore[6 * (x + (127 * y)) + 2].pos = pTerrainVertices[y * 128 + x + 1].vWorldPosition;
-                terrshaderstore[6 * (x + (127 * y)) + 2].texuv = Vec2f(1, 0);
-                terrshaderstore[6 * (x + (127 * y)) + 2].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normal = norm;
-                terrshaderstore[6 * (x + (127 * y)) + 2].attribs = waterAttrib;
+                _terrainVertices[6 * (x + (127 * y)) + 2].pos = pTerrainVertices[y * 128 + x + 1].vWorldPosition;
+                _terrainVertices[6 * (x + (127 * y)) + 2].texuv = Vec2f(1, 0);
+                _terrainVertices[6 * (x + (127 * y)) + 2].texturelayer = tilelayer;
+                _terrainVertices[6 * (x + (127 * y)) + 2].normal = norm;
+                _terrainVertices[6 * (x + (127 * y)) + 2].attribs = waterAttrib;
 
                 // [3] - x,y        n2
-                terrshaderstore[6 * (x + (127 * y)) + 3].pos = pTerrainVertices[y * 128 + x].vWorldPosition;
-                terrshaderstore[6 * (x + (127 * y)) + 3].texuv = Vec2f(0, 0);
-                terrshaderstore[6 * (x + (127 * y)) + 3].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normal = norm2;
-                terrshaderstore[6 * (x + (127 * y)) + 3].attribs = waterAttrib;
+                _terrainVertices[6 * (x + (127 * y)) + 3].pos = pTerrainVertices[y * 128 + x].vWorldPosition;
+                _terrainVertices[6 * (x + (127 * y)) + 3].texuv = Vec2f(0, 0);
+                _terrainVertices[6 * (x + (127 * y)) + 3].texturelayer = tilelayer;
+                _terrainVertices[6 * (x + (127 * y)) + 3].normal = norm2;
+                _terrainVertices[6 * (x + (127 * y)) + 3].attribs = waterAttrib;
 
                 // [4] - x,y+1      n2
-                terrshaderstore[6 * (x + (127 * y)) + 4].pos = pTerrainVertices[(y + 1) * 128 + x].vWorldPosition;
-                terrshaderstore[6 * (x + (127 * y)) + 4].texuv = Vec2f(0, 1);
-                terrshaderstore[6 * (x + (127 * y)) + 4].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normal = norm2;
-                terrshaderstore[6 * (x + (127 * y)) + 4].attribs = waterAttrib;
+                _terrainVertices[6 * (x + (127 * y)) + 4].pos = pTerrainVertices[(y + 1) * 128 + x].vWorldPosition;
+                _terrainVertices[6 * (x + (127 * y)) + 4].texuv = Vec2f(0, 1);
+                _terrainVertices[6 * (x + (127 * y)) + 4].texturelayer = tilelayer;
+                _terrainVertices[6 * (x + (127 * y)) + 4].normal = norm2;
+                _terrainVertices[6 * (x + (127 * y)) + 4].attribs = waterAttrib;
 
                 // [5] - x+1,y+1    n2
-                terrshaderstore[6 * (x + (127 * y)) + 5].pos = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition;
-                terrshaderstore[6 * (x + (127 * y)) + 5].texuv = Vec2f(1, 1);
-                terrshaderstore[6 * (x + (127 * y)) + 5].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normal = norm2;
-                terrshaderstore[6 * (x + (127 * y)) + 5].attribs = waterAttrib;
+                _terrainVertices[6 * (x + (127 * y)) + 5].pos = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition;
+                _terrainVertices[6 * (x + (127 * y)) + 5].texuv = Vec2f(1, 1);
+                _terrainVertices[6 * (x + (127 * y)) + 5].texturelayer = tilelayer;
+                _terrainVertices[6 * (x + (127 * y)) + 5].normal = norm2;
+                _terrainVertices[6 * (x + (127 * y)) + 5].attribs = waterAttrib;
             }
         }
 
@@ -1140,7 +1135,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
         _terrainBuffer.reset(GL_STATIC_DRAW,
             &ShaderVertex::pos, &ShaderVertex::texuv, &ShaderVertex::texturelayer,
             &ShaderVertex::normal, &ShaderVertex::attribs);
-        _terrainBuffer.update(terrshaderstore);
+        _terrainBuffer.update(_terrainVertices);
 
         // texture set up - load in all previously found
         for (int unit = 0; unit < 8; unit++) {
@@ -1387,29 +1382,29 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 // top tri
                 // x, y
-                VertexRenderList[0].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy))].pos;
+                VertexRenderList[0].vWorldPosition = _terrainVertices[6 * (loopx + (127 * loopy))].pos;
                 // x + 1, y + 1
-                VertexRenderList[1].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 1].pos;
+                VertexRenderList[1].vWorldPosition = _terrainVertices[6 * (loopx + (127 * loopy)) + 1].pos;
                 // x + 1, y
-                VertexRenderList[2].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].pos;
+                VertexRenderList[2].vWorldPosition = _terrainVertices[6 * (loopx + (127 * loopy)) + 2].pos;
 
                 // bottom tri
                 // x, y
-                VertexRenderList[3].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].pos;
+                VertexRenderList[3].vWorldPosition = _terrainVertices[6 * (loopx + (127 * loopy)) + 3].pos;
                 // x, y + 1
-                VertexRenderList[4].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].pos;
+                VertexRenderList[4].vWorldPosition = _terrainVertices[6 * (loopx + (127 * loopy)) + 4].pos;
                 // x + 1, y + 1
-                VertexRenderList[5].vWorldPosition = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].pos;
+                VertexRenderList[5].vWorldPosition = _terrainVertices[6 * (loopx + (127 * loopy)) + 5].pos;
 
                 float WorldMinZ = pOutdoor->GetPolygonMinZ(VertexRenderList, 6);
                 float WorldMaxZ = pOutdoor->GetPolygonMaxZ(VertexRenderList, 6);
 
                 // TODO(pskelton): terrain and boxes should be saved for easier retrieval
                 // test expanded box against bloodsplat
-                BBoxf thissquare{ terrshaderstore[6 * (loopx + (127 * loopy))].pos.x ,
-                                  terrshaderstore[6 * (loopx + (127 * loopy)) + 1].pos.x,
-                                  terrshaderstore[6 * (loopx + (127 * loopy)) + 1].pos.y,
-                                  terrshaderstore[6 * (loopx + (127 * loopy))].pos.y,
+                BBoxf thissquare{ _terrainVertices[6 * (loopx + (127 * loopy))].pos.x ,
+                                  _terrainVertices[6 * (loopx + (127 * loopy)) + 1].pos.x,
+                                  _terrainVertices[6 * (loopx + (127 * loopy)) + 1].pos.y,
+                                  _terrainVertices[6 * (loopx + (127 * loopy))].pos.y,
                                   WorldMinZ,
                                   WorldMaxZ };
 
