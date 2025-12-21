@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Data/TileEnums.h"
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
 

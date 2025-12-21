@@ -1,7 +1,6 @@
 #pragma once
 
 #include <span>
-#include <array>
 #include <vector>
 
 #include "Library/Image/Palette.h"
