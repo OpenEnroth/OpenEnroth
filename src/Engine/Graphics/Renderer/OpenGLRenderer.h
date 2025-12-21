@@ -205,23 +205,29 @@ class OpenGLRenderer : public BaseRenderer {
 
     // line shader
     OpenGLVertexBuffer<LineVertex> _lineBuffer;
+    std::vector<LineVertex> _lineVertices;
 
     // forced perspective shader
     OpenGLVertexBuffer<ForcePerVertex> _forcePerBuffer;
+    std::vector<ForcePerVertex> _forcePerVertices;
 
     // two d shader
     OpenGLVertexBuffer<TwoDVertex> _twodBuffer;
+    std::vector<TwoDVertex> _twodVertices;
 
     // text shader
     OpenGLVertexBuffer<TwoDVertex> _textBuffer;
+    std::vector<TwoDVertex> _textVertices;
     GLuint texmain{}, texshadow{};
 
     // billboards shader
     OpenGLVertexBuffer<BillboardVertex> _billboardBuffer;
+    std::vector<BillboardVertex> _billboardVertices;
     GLuint paltex2D{};
 
     // decal shader
     OpenGLVertexBuffer<DecalVertex> _decalBuffer;
+    std::vector<DecalVertex> _decalVertices;
 
     // Fog parameters
     Colorf fog;
