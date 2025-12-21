@@ -25,5 +25,6 @@ var searchData=
   ['mm_5fpp_5fcat_22',['MM_PP_CAT',['../Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7',1,'Preprocessor.h']]],
   ['mm_5fpp_5fcat_5fi_23',['MM_PP_CAT_I',['../Preprocessor_8h.html#aae890e93223657e64983f30cc7f8abeb',1,'Preprocessor.h']]],
   ['mm_5fpp_5fremove_5fparens_24',['MM_PP_REMOVE_PARENS',['../Preprocessor_8h.html#ad6b6f05cba03015810531a3fee373860',1,'Preprocessor.h']]],
-  ['mm_5fpp_5fremove_5fparens_5fi_25',['MM_PP_REMOVE_PARENS_I',['../Preprocessor_8h.html#a51fe2428ec6a7465230426dd91164fe7',1,'Preprocessor.h']]]
+  ['mm_5fpp_5fremove_5fparens_5fi_25',['MM_PP_REMOVE_PARENS_I',['../Preprocessor_8h.html#a51fe2428ec6a7465230426dd91164fe7',1,'Preprocessor.h']]],
+  ['mm_5fregister_5fopengl_5fvertex_5ftype_26',['MM_REGISTER_OPENGL_VERTEX_TYPE',['../OpenGLVertexBuffer_8h.html#a65a5bbe9ef0e0739cec4a1a329ee2dca',1,'OpenGLVertexBuffer.h']]]
 ];

@@ -44,6 +44,6 @@ var searchData=
   ['trigtablelookup_41',['TrigTableLookup',['../classTrigTableLookup.html',1,'']]],
   ['turnbased_5fqueueelem_42',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html',1,'']]],
   ['turnbasedoverlay_43',['TurnBasedOverlay',['../classTurnBasedOverlay.html',1,'']]],
-  ['twodverts_44',['twodverts',['../structtwodverts.html',1,'']]],
+  ['twodvertex_44',['TwoDVertex',['../structTwoDVertex.html',1,'']]],
   ['typedhandler_45',['TypedHandler',['../classdetail_1_1TypedHandler.html',1,'detail']]]
 ];

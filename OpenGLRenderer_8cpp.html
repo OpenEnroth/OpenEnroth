@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d2dc72f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e292317</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="OpenGLRenderer_8h.html">OpenGLRenderer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="OpenGLVertexBuffer_8h.html">OpenGLVertexBuffer.h</a>&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
@@ -130,17 +131,7 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlinesverts.html">linesverts</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structforcepersverts.html">forcepersverts</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtwodverts.html">twodverts</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGLdecalverts.html">GLdecalverts</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGLshaderverts.html">GLshaderverts</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbillbverts.html">billbverts</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -186,36 +177,34 @@ Variables</h2></td></tr>
 <tr class="separator:a1a72b8f3236ba0b45e0661488f41a392"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad12c1f606bb601dcbeb8617f088772ef"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#ad12c1f606bb601dcbeb8617f088772ef">OpenGLES</a> = false</td></tr>
 <tr class="separator:ad12c1f606bb601dcbeb8617f088772ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18031432193548d2f8ddabdc9c38f2e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structlinesverts.html">linesverts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a18031432193548d2f8ddabdc9c38f2e0">lineshaderstore</a> [2000] = {}</td></tr>
-<tr class="separator:a18031432193548d2f8ddabdc9c38f2e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73ce73397e80f69ee9c543c76068a4a5"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structLineVertex.html">LineVertex</a>, 2000 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a73ce73397e80f69ee9c543c76068a4a5">lineshaderstore</a> = {}</td></tr>
+<tr class="separator:a73ce73397e80f69ee9c543c76068a4a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb7ca8e502ab3eb959994252d2ecdb6c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#aeb7ca8e502ab3eb959994252d2ecdb6c">linevertscnt</a> = 0</td></tr>
 <tr class="separator:aeb7ca8e502ab3eb959994252d2ecdb6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa544afceed166862010a95ecc363e179"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#aa544afceed166862010a95ecc363e179">MAX_FORCEPERSTORECNT</a> { 498 }</td></tr>
-<tr class="separator:aa544afceed166862010a95ecc363e179"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6167ec4ba0543e9721739374e7a49bc4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structforcepersverts.html">forcepersverts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a6167ec4ba0543e9721739374e7a49bc4">forceperstore</a> [<a class="el" href="OpenGLRenderer_8cpp.html#aa544afceed166862010a95ecc363e179">MAX_FORCEPERSTORECNT</a>] {}</td></tr>
-<tr class="separator:a6167ec4ba0543e9721739374e7a49bc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a786ad230b0ee55fb2f2039688aff87d8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a786ad230b0ee55fb2f2039688aff87d8">forceperstorecnt</a> { 0 }</td></tr>
+<tr class="memitem:a0b43a21b5ca333eed93f8f1784c4d209"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structForcePerVertex.html">ForcePerVertex</a>, 10000 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a0b43a21b5ca333eed93f8f1784c4d209">forceperstore</a> = {}</td></tr>
+<tr class="separator:a0b43a21b5ca333eed93f8f1784c4d209"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a786ad230b0ee55fb2f2039688aff87d8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a786ad230b0ee55fb2f2039688aff87d8">forceperstorecnt</a> = 0</td></tr>
 <tr class="separator:a786ad230b0ee55fb2f2039688aff87d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17cb7cd76c498c55d47b5e20f3293b53"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtwodverts.html">twodverts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a17cb7cd76c498c55d47b5e20f3293b53">twodshaderstore</a> [500] = {}</td></tr>
-<tr class="separator:a17cb7cd76c498c55d47b5e20f3293b53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3690e73b21225818b95f670bf83e0234"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structTwoDVertex.html">TwoDVertex</a>, 500 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a3690e73b21225818b95f670bf83e0234">twodshaderstore</a> = {}</td></tr>
+<tr class="separator:a3690e73b21225818b95f670bf83e0234"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b08d9638f463d97eb0aa54227c5b31e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a1b08d9638f463d97eb0aa54227c5b31e">twodvertscnt</a> = 0</td></tr>
 <tr class="separator:a1b08d9638f463d97eb0aa54227c5b31e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0b823848f5be03db53645d80889d495"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGLdecalverts.html">GLdecalverts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#ac0b823848f5be03db53645d80889d495">decalshaderstore</a> [10000] = {}</td></tr>
-<tr class="separator:ac0b823848f5be03db53645d80889d495"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ac11bf931573e05ffd514f2ffef546b"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structDecalVertex.html">DecalVertex</a>, 10000 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a4ac11bf931573e05ffd514f2ffef546b">decalshaderstore</a> = {}</td></tr>
+<tr class="separator:a4ac11bf931573e05ffd514f2ffef546b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8ab09ce7e966384b163b1672abae1b3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#ad8ab09ce7e966384b163b1672abae1b3">numdecalverts</a> { 0 }</td></tr>
 <tr class="separator:ad8ab09ce7e966384b163b1672abae1b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a785c9cd92f156aa959562d5cc61875df"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a785c9cd92f156aa959562d5cc61875df">terrain_block_scale</a> = 512</td></tr>
 <tr class="separator:a785c9cd92f156aa959562d5cc61875df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fb472553e4280dc559388f31f964105"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a4fb472553e4280dc559388f31f964105">terrain_height_scale</a> = 32</td></tr>
 <tr class="separator:a4fb472553e4280dc559388f31f964105"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e4fb426705d1947716d29fcf07931ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGLshaderverts.html">GLshaderverts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a8e4fb426705d1947716d29fcf07931ce">terrshaderstore</a> [127 *127 *6] = {}</td></tr>
-<tr class="separator:a8e4fb426705d1947716d29fcf07931ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78e9fb218adfab3b5b8fc6b3fce9ee1a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structbillbverts.html">billbverts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a78e9fb218adfab3b5b8fc6b3fce9ee1a">billbstore</a> [1000] {}</td></tr>
-<tr class="separator:a78e9fb218adfab3b5b8fc6b3fce9ee1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe21c1f4f72bd7f765a3f020a6645d52"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#abe21c1f4f72bd7f765a3f020a6645d52">billbstorecnt</a> { 0 }</td></tr>
+<tr class="memitem:ad003d5fc932f175db11a5def9a38efbf"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structGLshaderverts.html">GLshaderverts</a>, 127 *127 *6 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#ad003d5fc932f175db11a5def9a38efbf">terrshaderstore</a> = {}</td></tr>
+<tr class="separator:ad003d5fc932f175db11a5def9a38efbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a156a3522619ca5fd6b59eccc630710"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structBillboardVertex.html">BillboardVertex</a>, 1000 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a0a156a3522619ca5fd6b59eccc630710">billbstore</a> = {}</td></tr>
+<tr class="separator:a0a156a3522619ca5fd6b59eccc630710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe21c1f4f72bd7f765a3f020a6645d52"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#abe21c1f4f72bd7f765a3f020a6645d52">billbstorecnt</a> = 0</td></tr>
 <tr class="separator:abe21c1f4f72bd7f765a3f020a6645d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0398a1fb3dcd30de4ddae2c08b7a815d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtwodverts.html">twodverts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a0398a1fb3dcd30de4ddae2c08b7a815d">textshaderstore</a> [10000] = {}</td></tr>
-<tr class="separator:a0398a1fb3dcd30de4ddae2c08b7a815d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60d4c5a92eabf19ad3315ce1d1d4649a"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structTwoDVertex.html">TwoDVertex</a>, 10000 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a60d4c5a92eabf19ad3315ce1d1d4649a">textshaderstore</a> = {}</td></tr>
+<tr class="separator:a60d4c5a92eabf19ad3315ce1d1d4649a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63172b369feada2c7acfbd6ba96273fd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a63172b369feada2c7acfbd6ba96273fd">textvertscnt</a> = 0</td></tr>
 <tr class="separator:a63172b369feada2c7acfbd6ba96273fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ac3e3cca82e7ed13ae95548f2b8257f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGLshaderverts.html">GLshaderverts</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenGLRenderer_8cpp.html#a5ac3e3cca82e7ed13ae95548f2b8257f">outbuildshaderstore</a> [16] = { nullptr }</td></tr>
@@ -351,14 +340,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a78e9fb218adfab3b5b8fc6b3fce9ee1a" name="a78e9fb218adfab3b5b8fc6b3fce9ee1a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78e9fb218adfab3b5b8fc6b3fce9ee1a">&#9670;&#160;</a></span>billbstore</h2>
+<a id="a0a156a3522619ca5fd6b59eccc630710" name="a0a156a3522619ca5fd6b59eccc630710"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a156a3522619ca5fd6b59eccc630710">&#9670;&#160;</a></span>billbstore</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structbillbverts.html">billbverts</a> billbstore[1000] {}</td>
+          <td class="memname">std::array&lt;<a class="el" href="structBillboardVertex.html">BillboardVertex</a>, 1000&gt; billbstore = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -372,7 +361,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int billbstorecnt { 0 }</td>
+          <td class="memname">int billbstorecnt = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -393,14 +382,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ac0b823848f5be03db53645d80889d495" name="ac0b823848f5be03db53645d80889d495"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac0b823848f5be03db53645d80889d495">&#9670;&#160;</a></span>decalshaderstore</h2>
+<a id="a4ac11bf931573e05ffd514f2ffef546b" name="a4ac11bf931573e05ffd514f2ffef546b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ac11bf931573e05ffd514f2ffef546b">&#9670;&#160;</a></span>decalshaderstore</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structGLdecalverts.html">GLdecalverts</a> decalshaderstore[10000] = {}</td>
+          <td class="memname">std::array&lt;<a class="el" href="structDecalVertex.html">DecalVertex</a>, 10000&gt; decalshaderstore = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -429,14 +418,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a6167ec4ba0543e9721739374e7a49bc4" name="a6167ec4ba0543e9721739374e7a49bc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6167ec4ba0543e9721739374e7a49bc4">&#9670;&#160;</a></span>forceperstore</h2>
+<a id="a0b43a21b5ca333eed93f8f1784c4d209" name="a0b43a21b5ca333eed93f8f1784c4d209"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b43a21b5ca333eed93f8f1784c4d209">&#9670;&#160;</a></span>forceperstore</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structforcepersverts.html">forcepersverts</a> forceperstore[<a class="el" href="OpenGLRenderer_8cpp.html#aa544afceed166862010a95ecc363e179">MAX_FORCEPERSTORECNT</a>] {}</td>
+          <td class="memname">std::array&lt;<a class="el" href="structForcePerVertex.html">ForcePerVertex</a>, 10000&gt; forceperstore = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -450,7 +439,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int forceperstorecnt { 0 }</td>
+          <td class="memname">int forceperstorecnt = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -501,14 +490,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a18031432193548d2f8ddabdc9c38f2e0" name="a18031432193548d2f8ddabdc9c38f2e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18031432193548d2f8ddabdc9c38f2e0">&#9670;&#160;</a></span>lineshaderstore</h2>
+<a id="a73ce73397e80f69ee9c543c76068a4a5" name="a73ce73397e80f69ee9c543c76068a4a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73ce73397e80f69ee9c543c76068a4a5">&#9670;&#160;</a></span>lineshaderstore</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structlinesverts.html">linesverts</a> lineshaderstore[2000] = {}</td>
+          <td class="memname">std::array&lt;<a class="el" href="structLineVertex.html">LineVertex</a>, 2000&gt; lineshaderstore = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -523,20 +512,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int linevertscnt = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa544afceed166862010a95ecc363e179" name="aa544afceed166862010a95ecc363e179"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa544afceed166862010a95ecc363e179">&#9670;&#160;</a></span>MAX_FORCEPERSTORECNT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int MAX_FORCEPERSTORECNT { 498 }</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -663,28 +638,28 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a8e4fb426705d1947716d29fcf07931ce" name="a8e4fb426705d1947716d29fcf07931ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e4fb426705d1947716d29fcf07931ce">&#9670;&#160;</a></span>terrshaderstore</h2>
+<a id="ad003d5fc932f175db11a5def9a38efbf" name="ad003d5fc932f175db11a5def9a38efbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad003d5fc932f175db11a5def9a38efbf">&#9670;&#160;</a></span>terrshaderstore</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structGLshaderverts.html">GLshaderverts</a> terrshaderstore[127 *127 *6] = {}</td>
+          <td class="memname">std::array&lt;<a class="el" href="structGLshaderverts.html">GLshaderverts</a>, 127 * 127 * 6&gt; terrshaderstore = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a0398a1fb3dcd30de4ddae2c08b7a815d" name="a0398a1fb3dcd30de4ddae2c08b7a815d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0398a1fb3dcd30de4ddae2c08b7a815d">&#9670;&#160;</a></span>textshaderstore</h2>
+<a id="a60d4c5a92eabf19ad3315ce1d1d4649a" name="a60d4c5a92eabf19ad3315ce1d1d4649a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60d4c5a92eabf19ad3315ce1d1d4649a">&#9670;&#160;</a></span>textshaderstore</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structtwodverts.html">twodverts</a> textshaderstore[10000] = {}</td>
+          <td class="memname">std::array&lt;<a class="el" href="structTwoDVertex.html">TwoDVertex</a>, 10000&gt; textshaderstore = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -705,14 +680,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a17cb7cd76c498c55d47b5e20f3293b53" name="a17cb7cd76c498c55d47b5e20f3293b53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a17cb7cd76c498c55d47b5e20f3293b53">&#9670;&#160;</a></span>twodshaderstore</h2>
+<a id="a3690e73b21225818b95f670bf83e0234" name="a3690e73b21225818b95f670bf83e0234"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3690e73b21225818b95f670bf83e0234">&#9670;&#160;</a></span>twodshaderstore</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structtwodverts.html">twodverts</a> twodshaderstore[500] = {}</td>
+          <td class="memname">std::array&lt;<a class="el" href="structTwoDVertex.html">TwoDVertex</a>, 500&gt; twodshaderstore = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
