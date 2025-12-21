@@ -166,14 +166,18 @@ class Renderer {
 
     int drawcalls;
 
+    /**
+     * @returns                         1x1 white texture for solid color fills. Initialized lazily on first use.
+     */
+    GraphicsImage *solidFillTexture();
+
  protected:
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
 
-    // Cached texture for FillRectFast solid color fills.
-    // Initialized lazily on first use.
+ private:
     GraphicsImage *_solidFillTexture = nullptr;
 };
 

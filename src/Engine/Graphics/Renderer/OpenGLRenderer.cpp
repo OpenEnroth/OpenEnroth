@@ -422,8 +422,7 @@ void OpenGLRenderer::ScreenFade(Color color, float t) {
     float drawz = static_cast<float>(pViewport->viewportBR_X);
     float draww = static_cast<float>(pViewport->viewportBR_Y);
 
-    static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
-    float gltexid = static_cast<float>(effpar03->renderId().value());
+    float gltexid = static_cast<float>(solidFillTexture()->renderId().value());
 
     // 0 1 2 / 0 2 3
 
@@ -1573,8 +1572,7 @@ void OpenGLRenderer::DrawOutdoorSky() {
 void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel) {
     auto texid = texture->renderId().value();
 
-    static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
-    float texidsolid = static_cast<float>(effpar03->renderId().value());
+    float texidsolid = static_cast<float>(solidFillTexture()->renderId().value());
 
     //glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

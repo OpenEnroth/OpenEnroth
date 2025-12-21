@@ -65,13 +65,14 @@ void Renderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect,
     DrawQuad2D(texture, srcRect, dstRect, color);
 }
 
-void Renderer::FillRectFast(int x, int y, int width, int height, Color color) {
+GraphicsImage *Renderer::solidFillTexture() {
     if (!_solidFillTexture)
         _solidFillTexture = GraphicsImage::Create(RgbaImage::solid(1, 1, colorTable.White));
-    if (!_solidFillTexture)
-        return;
+    return _solidFillTexture;
+}
 
+void Renderer::FillRectFast(int x, int y, int width, int height, Color color) {
     Recti srcRect(0, 0, 1, 1);
     Recti dstRect(x, y, width, height);
-    DrawQuad2D(_solidFillTexture, srcRect, dstRect, color);
+    DrawQuad2D(solidFillTexture(), srcRect, dstRect, color);
 }
