@@ -91,7 +91,6 @@ class Renderer {
 
     void DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask = colorTable.White);
     void DrawTextureCustomHeight(float u, float v, GraphicsImage *img, int height);
-    void DrawTextureOffset(int x, int y, int offset_x, int offset_y, GraphicsImage *img);
     void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color);
     void FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32);
 

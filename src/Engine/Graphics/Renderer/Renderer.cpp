@@ -57,16 +57,6 @@ void Renderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *img, int
     DrawQuad2D(img, srcRect, dstRect, colorTable.White);
 }
 
-void Renderer::DrawTextureOffset(int x, int y, int offsetX, int offsetY, GraphicsImage *img) {
-    if (!img)
-        return;
-
-    Sizei renderDims = GetRenderDimensions();
-    float u = static_cast<float>(x - offsetX) / renderDims.w;
-    float v = static_cast<float>(y - offsetY) / renderDims.h;
-    DrawTextureNew(u, v, img);
-}
-
 void Renderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {
     if (!texture)
         return;

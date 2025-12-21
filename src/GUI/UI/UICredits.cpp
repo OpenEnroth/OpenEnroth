@@ -39,7 +39,10 @@ GUICredits::~GUICredits() {
 void GUICredits::Update() {
     render->DrawTextureNew(0, 0, _mm6TitleTexture);
     render->SetUIClipRect(creditsRect);
-    render->DrawTextureOffset(creditsRect.x, creditsRect.y, 0, _moveY, _creditsTexture);
+    Sizei renderDims = render->GetRenderDimensions();
+    render->DrawTextureNew(creditsRect.x / static_cast<float>(renderDims.w),
+                           (creditsRect.y - _moveY) / renderDims.h,
+                           _creditsTexture);
     render->ResetUIClipRect();
 
     _moveY += 0.25; // TODO(captainurist): #time gotta be dt-based.
