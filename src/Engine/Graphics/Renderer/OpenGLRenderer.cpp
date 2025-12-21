@@ -1,5 +1,7 @@
 #include "OpenGLRenderer.h"
 
+#include "OpenGLVertexBuffer.h"
+
 #include <algorithm>
 #include <memory>
 #include <utility>
@@ -228,12 +230,7 @@ void OpenGLRenderer::ClearTarget(Color uColor) {
     return;
 }
 
-struct linesverts {
-    Vec2f pos;
-    Colorf color;
-};
-
-linesverts lineshaderstore[2000] = {};
+std::array<LineVertex, 2000> lineshaderstore = {};
 int linevertscnt = 0;
 
 void OpenGLRenderer::BeginLines2D() {
@@ -242,52 +239,29 @@ void OpenGLRenderer::BeginLines2D() {
 
     DrawTwodVerts();
 
-    if (lineVAO == 0) {
-        glGenVertexArrays(1, &lineVAO);
-        glGenBuffers(1, &lineVBO);
-
-        glBindVertexArray(lineVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(lineshaderstore), NULL, GL_DYNAMIC_DRAW);
-
-        // position attribute
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, pos));
-        glEnableVertexAttribArray(0);
-        // colour attribute
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, color));
-        glEnableVertexAttribArray(1);
+    if (!_lineBuffer) {
+        _lineBuffer.reset(GL_DYNAMIC_DRAW,
+            &LineVertex::pos,
+            &LineVertex::color);
     }
 }
 
 void OpenGLRenderer::EndLines2D() {
     if (!linevertscnt) return;
 
-    // update buffer
-    glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(lineshaderstore), NULL, GL_DYNAMIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(linesverts) * linevertscnt, lineshaderstore);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(lineVAO);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    _lineBuffer.update({lineshaderstore.data(), static_cast<size_t>(linevertscnt)});
+    _lineBuffer.bind();
 
     lineshader.use();
 
-    //// set projection
     glUniformMatrix4fv(lineshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
-    //// set view
     glUniformMatrix4fv(lineshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
     glDrawArrays(GL_LINES, 0, (linevertscnt));
     drawcalls++;
 
     glUseProgram(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    _lineBuffer.unbind();
 
     linevertscnt = 0;
 }
@@ -329,19 +303,8 @@ void OpenGLRenderer::BeginScene3D() {
     gamma = GetGamma();
 }
 
-struct forcepersverts {
-    Vec3f pos;
-    GLfloat w;
-    Vec2f texuv;
-    GLfloat texw;  // rhw for texture perspective correction
-    GLfloat screenspace;
-    Colorf color;
-    GLfloat texid;
-};
-
-const int MAX_FORCEPERSTORECNT{ 498 };
-forcepersverts forceperstore[MAX_FORCEPERSTORECNT]{};
-int forceperstorecnt{ 0 };
+std::array<ForcePerVertex, 10000> forceperstore = {};
+int forceperstorecnt = 0;
 
 
 void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, float srcfovoworldview,
@@ -426,7 +389,7 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
     // load up poly
     for (int z = 0; z < 2; z++) {
         // 123, 134, 145, 156..
-        forcepersverts *thisvert = &forceperstore[forceperstorecnt];
+        ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
 
         // copy first
         thisvert->pos = v29[0].pos;
@@ -451,7 +414,6 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
         }
 
         forceperstorecnt += 3;
-        assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 
     // TODO(pskelton): do these need batching?
@@ -465,15 +427,7 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
     glEnable(GL_CULL_FACE);
 }
 
-struct twodverts {
-    Vec3f pos;
-    Vec2f texuv;
-    Colorf color;
-    GLfloat texid;
-    GLfloat paletteid;
-};
-
-twodverts twodshaderstore[500] = {};
+std::array<TwoDVertex, 500> twodshaderstore = {};
 int twodvertscnt = 0;
 
 void OpenGLRenderer::ScreenFade(Color color, float t) {
@@ -797,7 +751,7 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
     // load up poly
     for (int z = 0; z < (uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
-        forcepersverts *thisvert = &forceperstore[forceperstorecnt];
+        ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
         float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
         float thisdepth = (oneoz - oneon) / (oneof - oneon);
         // copy first
@@ -826,7 +780,6 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
 
         forceperstorecnt += 3;
         // TODO (pskelton): should force drawing if buffer is full
-        assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 }
 
@@ -873,14 +826,7 @@ RgbaImage OpenGLRenderer::MakeFullScreenshot() {
     return flipVertically(ReadScreenPixels());
 }
 
-struct GLdecalverts {
-    Vec3f pos;
-    Vec2f texuv;
-    GLfloat texunit;
-    Colorf color;
-};
-
-GLdecalverts decalshaderstore[10000] = {};
+std::array<DecalVertex, 10000> decalshaderstore = {};
 int numdecalverts{ 0 };
 
 
@@ -895,49 +841,21 @@ void OpenGLRenderer::BeginDecals() {
 
     // gen buffers
 
-    if (decalVAO == 0) {
-        glGenVertexArrays(1, &decalVAO);
-        glGenBuffers(1, &decalVBO);
-
-        glBindVertexArray(decalVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, decalVBO);
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLdecalverts) * 10000, decalshaderstore, GL_DYNAMIC_DRAW);
-
-        // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, pos));
-        glEnableVertexAttribArray(0);
-        // tex uv attribute
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, texuv));
-        glEnableVertexAttribArray(1);
-        // tex unit attribute
-        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, texunit));
-        glEnableVertexAttribArray(2);
-        // colours
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, color));
-        glEnableVertexAttribArray(3);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+    if (!_decalBuffer) {
+        _decalBuffer.reset(GL_DYNAMIC_DRAW,
+            &DecalVertex::pos,
+            &DecalVertex::texuv,
+            &DecalVertex::texunit,
+            &DecalVertex::color);
     }
 
     numdecalverts = 0;
 }
 
 void OpenGLRenderer::EndDecals() {
-    // draw here
+    if (!numdecalverts) return;
 
-    if (numdecalverts) {
-        glBindBuffer(GL_ARRAY_BUFFER, decalVBO);
-        // orphan buffer
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLdecalverts) * 10000, NULL, GL_DYNAMIC_DRAW);
-        // update buffer
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLdecalverts) * numdecalverts, decalshaderstore);
-    } else {
-        return;
-    }
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    _decalBuffer.update({decalshaderstore.data(), static_cast<size_t>(numdecalverts)});
 
     // ?
     _set_3d_projection_matrix();
@@ -965,23 +883,13 @@ void OpenGLRenderer::EndDecals() {
     GraphicsImage *texture = assets->getBitmap("hwsplat04");
     glBindTexture(GL_TEXTURE_2D, texture->renderId().value());
 
-    glBindVertexArray(decalVAO);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
-
+    _decalBuffer.bind();
     glDrawArrays(GL_TRIANGLES, 0, numdecalverts);
     drawcalls++;
 
     // unload
     glUseProgram(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
-    glBindVertexArray(0);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    _decalBuffer.unbind();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -1009,7 +917,7 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
 
     for (int z = 0; z < (pDecal->uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
-        GLdecalverts *thisvert = &decalshaderstore[numdecalverts];
+        DecalVertex *thisvert = &decalshaderstore[numdecalverts];
         Colorf uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[0].vWorldViewPosition.x, 0, nullptr).toColorf();
 
         float uFinalR = uTint.r * color_mult * decalColorMult.r;
@@ -1123,7 +1031,7 @@ struct GLshaderverts {
     GLfloat attribs;
 };
 
-GLshaderverts terrshaderstore[127 * 127 * 6] = {};
+std::array<GLshaderverts, 127 * 127 * 6> terrshaderstore = {};
 
 void OpenGLRenderer::DrawOutdoorTerrain() {
     _initWaterTiles();
@@ -1273,7 +1181,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
         glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
 
         // submit vert data
-        glBufferData(GL_ARRAY_BUFFER, sizeof(terrshaderstore), terrshaderstore, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(terrshaderstore), terrshaderstore.data(), GL_STATIC_DRAW);
         // submit data layout
         // position attribute
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, pos));
@@ -1508,12 +1416,6 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
     // unload
     glUseProgram(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
-    glDisableVertexAttribArray(4);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -1755,7 +1657,7 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
     // load up poly
     for (int z = 0; z < (numVertices - 2); z++) {
         // 123, 134, 145, 156..
-        forcepersverts *thisvert = &forceperstore[forceperstorecnt];
+        ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
 
         // copy first
         thisvert->pos = Vec3f(VertexRenderList[0].vWorldViewProj.x, VertexRenderList[0].vWorldViewProj.y, 1.0f);
@@ -1780,7 +1682,6 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
         }
 
         forceperstorecnt += 3;
-        assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 
     if (config->graphics.Fog.value()) {
@@ -1788,7 +1689,7 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
         // load up poly
         for (int z = 4; z < 6; z++) {
             // 456, 467..
-            forcepersverts *thisvert = &forceperstore[forceperstorecnt];
+            ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
 
             // copy first
             thisvert->pos = Vec3f(VertexRenderList[4].vWorldViewProj.x, VertexRenderList[4].vWorldViewProj.y, 1.0f);
@@ -1815,14 +1716,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
             }
 
             forceperstorecnt += 3;
-            assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
         }
 
         // draw sub sky
         // load up poly
         for (int z = 8; z < 10; z++) {
             // 456, 467..
-            forcepersverts *thisvert = &forceperstore[forceperstorecnt];
+            ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
 
             // copy first
             thisvert->pos = Vec3f(VertexRenderList[8].vWorldViewProj.x, VertexRenderList[8].vWorldViewProj.y, 1.0f);
@@ -1847,7 +1747,6 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
             }
 
             forceperstorecnt += 3;
-            assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
         }
     }
 
@@ -1857,49 +1756,18 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 void OpenGLRenderer::DrawForcePerVerts() {
     if (!forceperstorecnt) return;
 
-    if (forceperVAO == 0) {
-        glGenVertexArrays(1, &forceperVAO);
-        glGenBuffers(1, &forceperVBO);
-
-        glBindVertexArray(forceperVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, forceperVBO);
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(forceperstore), forceperstore, GL_DYNAMIC_DRAW);
-
-        // position attribute (vec3)
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, pos));
-        glEnableVertexAttribArray(0);
-        // position w (float)
-        glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, w));
-        glEnableVertexAttribArray(1);
-        // tex uv (vec2)
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, texuv));
-        glEnableVertexAttribArray(2);
-        // tex w (float)
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, texw));
-        glEnableVertexAttribArray(3);
-        // screen space depth (float)
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, screenspace));
-        glEnableVertexAttribArray(4);
-        // colour (vec4)
-        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, color));
-        glEnableVertexAttribArray(5);
+    if (!_forcePerBuffer) {
+        _forcePerBuffer.reset(GL_DYNAMIC_DRAW,
+            &ForcePerVertex::pos,
+            &ForcePerVertex::w,
+            &ForcePerVertex::texuv,
+            &ForcePerVertex::texw,
+            &ForcePerVertex::screenspace,
+            &ForcePerVertex::color);
     }
 
-    // update buffer
-    glBindBuffer(GL_ARRAY_BUFFER, forceperVBO);
-
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(forcepersverts) * forceperstorecnt, forceperstore);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(forceperVAO);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
-    glEnableVertexAttribArray(4);
-    glEnableVertexAttribArray(5);
+    _forcePerBuffer.update({forceperstore.data(), static_cast<size_t>(forceperstorecnt)});
+    _forcePerBuffer.bind();
 
     forcepershader.use();
 
@@ -1968,16 +1836,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
     }
 
     glUseProgram(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
-    glDisableVertexAttribArray(4);
-    glDisableVertexAttribArray(5);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
+    _forcePerBuffer.unbind();
 
     forceperstorecnt = 0;
 }
@@ -2011,18 +1870,8 @@ void OpenGLRenderer::SetFogParametersGL() {
     }
 }
 
-struct billbverts {
-    Vec3f pos;
-    Vec2f texuv;
-    Colorf color;
-    GLfloat screenspace;
-    GLfloat texid;
-    GLfloat blend;
-    GLfloat paletteId;
-};
-
-billbverts billbstore[1000] {};
-int billbstorecnt{ 0 };
+std::array<BillboardVertex, 1000> billbstore = {};
+int billbstorecnt = 0;
 
 //----- (004A1C1E) --------------------------------------------------------
 void OpenGLRenderer::DoRenderBillboards_D3D() {
@@ -2159,33 +2008,14 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
 void OpenGLRenderer::DrawBillboards() {
     if (!billbstorecnt) return;
 
-    if (billbVAO == 0) {
-        glGenVertexArrays(1, &billbVAO);
-        glGenBuffers(1, &billbVBO);
-
-        glBindVertexArray(billbVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, billbVBO);
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(billbstore), billbstore, GL_DYNAMIC_DRAW);
-
-        // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, pos));
-        glEnableVertexAttribArray(0);
-        // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, texuv));
-        glEnableVertexAttribArray(1);
-        // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, color));
-        glEnableVertexAttribArray(2);
-        // screenspace
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, screenspace));
-        glEnableVertexAttribArray(3);
-        // texid
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, texid));
-        glEnableVertexAttribArray(4);
-        // palette index
-        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, paletteId));
-        glEnableVertexAttribArray(5);
+    if (!_billboardBuffer) {
+        _billboardBuffer.reset(GL_DYNAMIC_DRAW,
+            &BillboardVertex::pos,
+            &BillboardVertex::texuv,
+            &BillboardVertex::color,
+            &BillboardVertex::screenspace,
+            &BillboardVertex::texid,
+            &BillboardVertex::paletteId);
     }
 
     constexpr GLint paltex2D_id = 1;
@@ -2200,18 +2030,8 @@ void OpenGLRenderer::DrawBillboards() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
-    // update buffer
-    glBindBuffer(GL_ARRAY_BUFFER, billbVBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(billbverts) * billbstorecnt, billbstore);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(billbVAO);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
-    glEnableVertexAttribArray(4);
-    glEnableVertexAttribArray(5);
+    _billboardBuffer.update({billbstore.data(), static_cast<size_t>(billbstorecnt)});
+    _billboardBuffer.bind();
 
     billbshader.use();
 
@@ -2280,16 +2100,7 @@ void OpenGLRenderer::DrawBillboards() {
     }
 
     glUseProgram(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
-    glDisableVertexAttribArray(4);
-    glDisableVertexAttribArray(5);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
+    _billboardBuffer.unbind();
     billbstorecnt = 0;
 }
 
@@ -2420,7 +2231,7 @@ void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, co
     if (twodvertscnt > 490) DrawTwodVerts();
 }
 
-twodverts textshaderstore[10000] = {};
+std::array<TwoDVertex, 10000> textshaderstore = {};
 int textvertscnt = 0;
 
 void OpenGLRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
@@ -2454,43 +2265,16 @@ void OpenGLRenderer::EndTextNew() {
         DrawTwodVerts();
     }
 
-    if (textVAO == 0) {
-        glGenVertexArrays(1, &textVAO);
-        glGenBuffers(1, &textVBO);
-
-        glBindVertexArray(textVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(textshaderstore), NULL, GL_DYNAMIC_DRAW);
-
-        // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, pos));
-        glEnableVertexAttribArray(0);
-        // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, texuv));
-        glEnableVertexAttribArray(1);
-        // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, color));
-        glEnableVertexAttribArray(2);
-        // texid
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, texid));
-        glEnableVertexAttribArray(3);
+    if (!_textBuffer) {
+        _textBuffer.reset(GL_DYNAMIC_DRAW,
+            &TwoDVertex::pos,
+            &TwoDVertex::texuv,
+            &TwoDVertex::color,
+            &TwoDVertex::texid);
     }
 
-    // update buffer
-    glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-    // orphan
-    glBufferData(GL_ARRAY_BUFFER, sizeof(textshaderstore), NULL, GL_DYNAMIC_DRAW);
-    // update buffer
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(twodverts) * textvertscnt, textshaderstore);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(textVAO);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
+    _textBuffer.update({textshaderstore.data(), static_cast<size_t>(textvertscnt)});
+    _textBuffer.bind();
 
     textshader.use();
 
@@ -2517,14 +2301,7 @@ void OpenGLRenderer::EndTextNew() {
     drawcalls++;
 
     glUseProgram(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
+    _textBuffer.unbind();
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glActiveTexture(GL_TEXTURE0);
@@ -3206,13 +2983,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
     // unload
     glUseProgram(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
-    glDisableVertexAttribArray(4);
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -3849,19 +3620,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
         }
 
         glUseProgram(0);
-
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glDisableVertexAttribArray(3);
-        glDisableVertexAttribArray(4);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
         glBindVertexArray(0);
-
-
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -4169,44 +3928,16 @@ bool OpenGLRenderer::ReloadShaders() {
     ReleaseTerrain();
     ReleaseBSP();
 
-    if (textVAO) {
-        glDeleteVertexArrays(1, &textVAO);
-        textVAO = 0;
-    }
-    if (textVBO) {
-        glDeleteBuffers(1, &textVBO);
-        textVBO = 0;
-    }
+    _textBuffer.reset();
     textvertscnt = 0;
 
-    if (lineVAO) {
-        glDeleteVertexArrays(1, &lineVAO);
-        lineVAO = 0;
-    }
-    if (lineVBO) {
-        glDeleteBuffers(1, &lineVBO);
-        lineVBO = 0;
-    }
+    _lineBuffer.reset();
     linevertscnt = 0;
 
-    if (twodVAO) {
-        glDeleteVertexArrays(1, &twodVAO);
-        twodVAO = 0;
-    }
-    if (twodVBO) {
-        glDeleteBuffers(1, &twodVBO);
-        twodVBO = 0;
-    }
+    _twodBuffer.reset();
     twodvertscnt = 0;
 
-    if (billbVAO) {
-        glDeleteVertexArrays(1, &billbVAO);
-        billbVAO = 0;
-    }
-    if (billbVBO) {
-        glDeleteBuffers(1, &billbVBO);
-        billbVBO = 0;
-    }
+    _billboardBuffer.reset();
     if (paltex2D) {
         glDeleteTextures(1, &paltex2D);
         paltex2D = 0;
@@ -4214,24 +3945,10 @@ bool OpenGLRenderer::ReloadShaders() {
 
     billbstorecnt = 0;
 
-    if (decalVAO) {
-        glDeleteVertexArrays(1, &decalVAO);
-        decalVAO = 0;
-    }
-    if (decalVBO) {
-        glDeleteBuffers(1, &decalVBO);
-        decalVBO = 0;
-    }
+    _decalBuffer.reset();
     numdecalverts = 0;
 
-    if (forceperVAO) {
-        glDeleteVertexArrays(1, &forceperVAO);
-        forceperVAO = 0;
-    }
-    if (forceperVBO) {
-        glDeleteBuffers(1, &forceperVBO);
-        forceperVBO = 0;
-    }
+    _forcePerBuffer.reset();
     forceperstorecnt = 0;
 
     const std::initializer_list<std::tuple<OpenGLShader *, std::string_view, std::string_view>> shaders = {
@@ -4353,30 +4070,13 @@ void OpenGLRenderer::DrawTwodVerts() {
     Recti savedClipRect = this->clipRect;
     render->ResetUIClipRect();
 
-    if (twodVAO == 0) {
-        glGenVertexArrays(1, &twodVAO);
-        glGenBuffers(1, &twodVBO);
-
-        glBindVertexArray(twodVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, twodVBO);
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(twodshaderstore), twodshaderstore, GL_DYNAMIC_DRAW);
-
-        // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, pos));
-        glEnableVertexAttribArray(0);
-        // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, texuv));
-        glEnableVertexAttribArray(1);
-        // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, color));
-        glEnableVertexAttribArray(2);
-        // texid
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, texid));
-        glEnableVertexAttribArray(3);
-        // paletteid
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, paletteid));
-        glEnableVertexAttribArray(4);
+    if (!_twodBuffer) {
+        _twodBuffer.reset(GL_DYNAMIC_DRAW,
+            &TwoDVertex::pos,
+            &TwoDVertex::texuv,
+            &TwoDVertex::color,
+            &TwoDVertex::texid,
+            &TwoDVertex::paletteid);
     }
 
     constexpr GLint paltex2D_id = 1;
@@ -4391,17 +4091,8 @@ void OpenGLRenderer::DrawTwodVerts() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
-    // update buffer
-    glBindBuffer(GL_ARRAY_BUFFER, twodVBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(twodverts) * twodvertscnt, twodshaderstore);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(twodVAO);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
-    glEnableVertexAttribArray(4);
+    _twodBuffer.update({twodshaderstore.data(), static_cast<size_t>(twodvertscnt)});
+    _twodBuffer.bind();
 
     twodshader.use();
 
@@ -4452,15 +4143,7 @@ void OpenGLRenderer::DrawTwodVerts() {
     }
 
     glUseProgram(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
-    glDisableVertexAttribArray(4);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
+    _twodBuffer.unbind();
 
     twodvertscnt = 0;
     render->SetUIClipRect(savedClipRect);

@@ -7,19 +7,18 @@ set(ENGINE_GRAPHICS_RENDERER_SOURCES
         OpenGLShader.cpp
         Renderer.cpp
         RendererEnums.cpp
-        RendererFactory.cpp
-        )
+        RendererFactory.cpp)
 
 set(ENGINE_GRAPHICS_RENDERER_HEADERS
         BaseRenderer.h
+        OpenGLVertexBuffer.h
         NullRenderer.h
         OpenGLRenderer.h
         OpenGLShader.h
         Renderer.h
         RendererEnums.h
         RendererFactory.h
-        TextureRenderId.h
-        )
+        TextureRenderId.h)
 
 add_library(engine_graphics_renderer STATIC ${ENGINE_GRAPHICS_RENDERER_SOURCES} ${ENGINE_GRAPHICS_RENDERER_HEADERS})
 target_check_style(engine_graphics_renderer)

@@ -12,10 +12,52 @@
 #include "BaseRenderer.h"
 
 #include "Library/Color/Colorf.h"
+#include "Library/Geometry/Vec.h"
 
+#include "OpenGLVertexBuffer.h"
 #include "OpenGLShader.h"
 
 class PlatformOpenGLContext;
+
+struct LineVertex {
+    Vec2f pos;
+    Colorf color;
+};
+
+struct ForcePerVertex {
+    Vec3f pos;
+    GLfloat w;
+    Vec2f texuv;
+    GLfloat texw;
+    GLfloat screenspace;
+    Colorf color;
+    GLfloat texid;
+};
+
+struct TwoDVertex {
+    Vec3f pos;
+    Vec2f texuv;
+    Colorf color;
+    GLfloat texid;
+    GLfloat paletteid;
+};
+
+struct DecalVertex {
+    Vec3f pos;
+    Vec2f texuv;
+    GLfloat texunit;
+    Colorf color;
+};
+
+struct BillboardVertex {
+    Vec3f pos;
+    Vec2f texuv;
+    Colorf color;
+    GLfloat screenspace;
+    GLfloat texid;
+    GLfloat blend;
+    GLfloat paletteId;
+};
 
 class OpenGLRenderer : public BaseRenderer {
  public:
@@ -161,25 +203,25 @@ class OpenGLRenderer : public BaseRenderer {
     unsigned int bsptextureheights[16]{};
     std::map<std::string, int> bsptexmap;
 
-    // text shader
-    GLuint textVBO{}, textVAO{};
-    GLuint texmain{}, texshadow{};
+    // line shader
+    OpenGLVertexBuffer<LineVertex> _lineBuffer;
 
-    // lines shader
-    GLuint lineVBO{}, lineVAO{};
+    // forced perspective shader
+    OpenGLVertexBuffer<ForcePerVertex> _forcePerBuffer;
 
     // two d shader
-    GLuint twodVBO{}, twodVAO{};
+    OpenGLVertexBuffer<TwoDVertex> _twodBuffer;
+
+    // text shader
+    OpenGLVertexBuffer<TwoDVertex> _textBuffer;
+    GLuint texmain{}, texshadow{};
 
     // billboards shader
-    GLuint billbVBO{}, billbVAO{};
+    OpenGLVertexBuffer<BillboardVertex> _billboardBuffer;
     GLuint paltex2D{};
 
     // decal shader
-    GLuint decalVBO{}, decalVAO{};
-
-    // forced perspective shader
-    GLuint forceperVBO{}, forceperVAO{};
+    OpenGLVertexBuffer<DecalVertex> _decalBuffer;
 
     // Fog parameters
     Colorf fog;
