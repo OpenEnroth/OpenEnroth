@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <memory>
 #include <string>
 #include <map>
@@ -57,6 +58,14 @@ struct BillboardVertex {
     GLfloat texid;
     GLfloat blend;
     GLfloat paletteId;
+};
+
+struct ShaderVertex {
+    Vec3f pos;
+    Vec2f texuv;
+    GLfloat texturelayer;
+    Vec3f normal;
+    GLfloat attribs;
 };
 
 class OpenGLRenderer : public BaseRenderer {
@@ -180,7 +189,7 @@ class OpenGLRenderer : public BaseRenderer {
     OpenGLShader forcepershader;
 
     // terrain shader
-    GLuint terrainVBO{}, terrainVAO{};
+    OpenGLVertexBuffer<ShaderVertex> _terrainBuffer;
     // all terrain textures are square
     GLuint terraintextures[8]{};
     unsigned int numterraintexloaded[8]{};
@@ -188,7 +197,8 @@ class OpenGLRenderer : public BaseRenderer {
     std::map<std::string, int> terraintexmap;
 
     // outside building shader
-    GLuint outbuildVBO[16]{}, outbuildVAO[16]{};
+    std::array<OpenGLVertexBuffer<ShaderVertex>, 16> _outbuildBuffers;
+    std::array<std::vector<ShaderVertex>, 16> _outbuildVertices;
     GLuint outbuildtextures[16]{};
     unsigned int numoutbuildtexloaded[16]{};
     unsigned int outbuildtexturewidths[16]{};
@@ -196,7 +206,8 @@ class OpenGLRenderer : public BaseRenderer {
     std::map<std::string, int> outbuildtexmap;
 
     // indoors bsp shader
-    GLuint bspVBO[16]{}, bspVAO[16]{};
+    std::array<OpenGLVertexBuffer<ShaderVertex>, 16> _bspBuffers;
+    std::array<std::vector<ShaderVertex>, 16> _bspVertices;
     GLuint bsptextures[16]{};
     unsigned int bsptexloaded[16]{};
     unsigned int bsptexturewidths[16]{};

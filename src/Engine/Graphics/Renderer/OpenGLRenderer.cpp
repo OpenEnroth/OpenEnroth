@@ -994,16 +994,7 @@ void OpenGLRenderer::_set_ortho_modelview() {
 const int terrain_block_scale = 512;
 const int terrain_height_scale = 32;
 
-// struct for storing vert data for gpu submit
-struct GLshaderverts {
-    Vec3f pos;
-    Vec2f texuv;
-    GLfloat texturelayer;
-    Vec3f normal;
-    GLfloat attribs;
-};
-
-std::array<GLshaderverts, 127 * 127 * 6> terrshaderstore = {};
+std::array<ShaderVertex, 127 * 127 * 6> terrshaderstore = {};
 
 void OpenGLRenderer::DrawOutdoorTerrain() {
     _initWaterTiles();
@@ -1023,7 +1014,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
     // TODO(pskelton): move this to map loading
     // generate array and populate data
-    if (terrainVAO == 0) {
+    if (!_terrainBuffer) {
         static RenderVertexSoft pTerrainVertices[128 * 128];
 
         // generate vertex locations
@@ -1145,31 +1136,11 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
             }
         }
 
-        // generate VAO
-        glGenVertexArrays(1, &terrainVAO);
-        glGenBuffers(1, &terrainVBO);
-
-        glBindVertexArray(terrainVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
-
-        // submit vert data
-        glBufferData(GL_ARRAY_BUFFER, sizeof(terrshaderstore), terrshaderstore.data(), GL_STATIC_DRAW);
-        // submit data layout
-        // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, pos));
-        glEnableVertexAttribArray(0);
-        // tex uv attribute
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texuv));
-        glEnableVertexAttribArray(1);
-        // tex array layer attribute
-        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texturelayer));
-        glEnableVertexAttribArray(2);
-        // normals
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normal));
-        glEnableVertexAttribArray(3);
-        // attribs
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
-        glEnableVertexAttribArray(4);
+        // generate VAO/VBO
+        _terrainBuffer.reset(GL_STATIC_DRAW,
+            &ShaderVertex::pos, &ShaderVertex::texuv, &ShaderVertex::texturelayer,
+            &ShaderVertex::normal, &ShaderVertex::attribs);
+        _terrainBuffer.update(terrshaderstore);
 
         // texture set up - load in all previously found
         for (int unit = 0; unit < 8; unit++) {
@@ -1235,12 +1206,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     }
 
     // load terrain verts
-    glBindVertexArray(terrainVAO);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
-    glEnableVertexAttribArray(4);
+    _terrainBuffer.bind();
 
     // use the terrain shader
     terrainshader.use();
@@ -2393,9 +2359,6 @@ void OpenGLRenderer::Present() {
     swapBuffers();
 }
 
-GLshaderverts *outbuildshaderstore[16] = { nullptr };
-int numoutbuildverts[16] = { 0 };
-
 void OpenGLRenderer::DrawOutdoorBuildings() {
     _initWaterTiles();
     // shader
@@ -2412,30 +2375,10 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     _set_3d_projection_matrix();
     _set_3d_modelview_matrix();
 
-    if (outbuildVAO[0] == 0) {
-        // count all triangles
-        // make out build shader store
-        int verttotals = 0;
-
+    if (!_outbuildBuffers[0]) {
+        // initialize vertex vectors
         for (int i = 0; i < 16; i++) {
-            numoutbuildverts[i] = 0;
-
-            //for (BSPModel &model : pOutdoor->pBModels) {
-            //    //int reachable;
-            //    //if (IsBModelVisible(&model, &reachable)) {
-            //    //model.field_40 |= 1;
-            //    if (!model.pFaces.empty()) {
-            //        for (ODMFace &face : model.pFaces) {
-            //            if (!face.Invisible()) {
-            //                numoutbuildverts += 3 * (face.uNumVertices - 2);
-            //            }
-            //        }
-            //    }
-            //}
-
-            free(outbuildshaderstore[i]);
-            outbuildshaderstore[i] = nullptr;
-            outbuildshaderstore[i] = (GLshaderverts *)malloc(sizeof(GLshaderverts) * 20000);
+            _outbuildVertices[i].clear();
         }
 
         // reserve first 7 layers for water tiles in unit 0
@@ -2573,29 +2516,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         }
 
         for (int l = 0; l < 16; l++) {
-            glGenVertexArrays(1, &outbuildVAO[l]);
-            glGenBuffers(1, &outbuildVBO[l]);
-
-            glBindVertexArray(outbuildVAO[l]);
-            glBindBuffer(GL_ARRAY_BUFFER, outbuildVBO[l]);
-
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, outbuildshaderstore[l], GL_DYNAMIC_DRAW);
-
-            // position attribute
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, pos));
-            glEnableVertexAttribArray(0);
-            // tex uv attribute
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texuv));
-            glEnableVertexAttribArray(1);
-            // tex array layer attribute
-            glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texturelayer));
-            glEnableVertexAttribArray(2);
-            // normals
-            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normal));
-            glEnableVertexAttribArray(3);
-            // attribs
-            glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
-            glEnableVertexAttribArray(4);
+            _outbuildBuffers[l].reset(GL_DYNAMIC_DRAW,
+                &ShaderVertex::pos, &ShaderVertex::texuv, &ShaderVertex::texturelayer,
+                &ShaderVertex::normal, &ShaderVertex::attribs);
         }
 
         // texture set up
@@ -2660,7 +2583,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
         // else update verts - blank store
         for (int i = 0; i < 16; i++) {
-            numoutbuildverts[i] = 0;
+            _outbuildVertices[i].clear();
         }
 
         for (BSPModel &model : pOutdoor->pBModels) {
@@ -2728,30 +2651,28 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 // load up verts here
                                 for (int z = 0; z < (face.uNumVertices - 2); z++) {
                                     // 123, 134, 145, 156..
-                                    GLshaderverts *thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
 
                                     // copy first
-                                    thisvert->pos = model.pVertices[face.pVertexIDs[0]];
-                                    thisvert->texuv = Vec2f(face.pTextureUIDs[0] + face.sTextureDeltaU,
-                                                            face.pTextureVIDs[0] + face.sTextureDeltaV); // TODO(captainurist): adding in IDs?
-                                    thisvert->texturelayer = texlayer;
-                                    thisvert->normal = face.facePlane.normal;
-                                    thisvert->attribs = attribflags;
-                                    thisvert++;
+                                    ShaderVertex &v0 = _outbuildVertices[texunit].emplace_back();
+                                    v0.pos = model.pVertices[face.pVertexIDs[0]];
+                                    v0.texuv = Vec2f(face.pTextureUIDs[0] + face.sTextureDeltaU,
+                                                     face.pTextureVIDs[0] + face.sTextureDeltaV);
+                                    v0.texturelayer = texlayer;
+                                    v0.normal = face.facePlane.normal;
+                                    v0.attribs = attribflags;
 
                                     // copy other two (z+1)(z+2)
                                     for (unsigned i = 1; i < 3; ++i) {
-                                        thisvert->pos = model.pVertices[face.pVertexIDs[z + i]];
-                                        thisvert->texuv = Vec2f(face.pTextureUIDs[z + i] + face.sTextureDeltaU,
-                                                                face.pTextureVIDs[z + i] + face.sTextureDeltaV); // TODO(captainurist): adding in IDs?
-                                        thisvert->texturelayer = texlayer;
-                                        thisvert->normal = face.facePlane.normal;
-                                        thisvert->attribs = attribflags;
-                                        thisvert++;
+                                        ShaderVertex &v = _outbuildVertices[texunit].emplace_back();
+                                        v.pos = model.pVertices[face.pVertexIDs[z + i]];
+                                        v.texuv = Vec2f(face.pTextureUIDs[z + i] + face.sTextureDeltaU,
+                                                        face.pTextureVIDs[z + i] + face.sTextureDeltaV);
+                                        v.texturelayer = texlayer;
+                                        v.normal = face.facePlane.normal;
+                                        v.attribs = attribflags;
                                     }
 
-                                    numoutbuildverts[texunit] += 3;
-                                    assert(numoutbuildverts[texunit] <= 9999);
+                                    assert(_outbuildVertices[texunit].size() <= 9999);
                                 }
                             }
                         }
@@ -2761,16 +2682,10 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         }
 
         for (int l = 0; l < 16; l++) {
-            if (numoutbuildverts[l]) {
-                glBindBuffer(GL_ARRAY_BUFFER, outbuildVBO[l]);
-                // orphan buffer
-                glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
-                // update buffer
-                glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLshaderverts) * numoutbuildverts[l], outbuildshaderstore[l]);
+            if (!_outbuildVertices[l].empty()) {
+                _outbuildBuffers[l].update(_outbuildVertices[l]);
             }
         }
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // terrain debug
     if (config->debug.Terrain.value())
@@ -2924,8 +2839,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
             // draw each set of triangles
             glBindTexture(GL_TEXTURE_2D_ARRAY, outbuildtextures[unit]);
-            glBindVertexArray(outbuildVAO[unit]);
-            glDrawArrays(GL_TRIANGLES, 0, (numoutbuildverts[unit]));
+            _outbuildBuffers[unit].bind();
+            glDrawArrays(GL_TRIANGLES, 0, _outbuildVertices[unit].size());
             drawcalls++;
         //}
     }
@@ -3001,9 +2916,6 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     ///////////////// shader end
 }
 
-GLshaderverts *BSPshaderstore[16] = { nullptr };
-int numBSPverts[16] = { 0 };
-
 void OpenGLRenderer::DrawIndoorFaces() {
     _initWaterTiles();
     // void RenderOpenGL::DrawIndoorBSP() {
@@ -3023,7 +2935,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
         _set_3d_projection_matrix();
         _set_3d_modelview_matrix();
 
-        if (bspVAO[0] == 0) {
+        if (!_bspBuffers[0]) {
             // lights setup
             int cntnosect = 0;
 
@@ -3039,11 +2951,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
             if (cntnosect)
                 logger->warning("{} lights - sector not found", cntnosect);
 
+            // initialize vertex vectors
             for (int i = 0; i < 16; i++) {
-                numBSPverts[i] = 0;
-                free(BSPshaderstore[i]);
-                BSPshaderstore[i] = nullptr;
-                BSPshaderstore[i] = (GLshaderverts*)malloc(sizeof(GLshaderverts) * 20000);
+                _bspVertices[i].clear();
             }
 
 
@@ -3152,29 +3062,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
             }
 
             for (int l = 0; l < 16; l++) {
-                glGenVertexArrays(1, &bspVAO[l]);
-                glGenBuffers(1, &bspVBO[l]);
-
-                glBindVertexArray(bspVAO[l]);
-                glBindBuffer(GL_ARRAY_BUFFER, bspVBO[l]);
-
-                glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
-
-                // position attribute
-                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, pos));
-                glEnableVertexAttribArray(0);
-                // tex uv attribute
-                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texuv));
-                glEnableVertexAttribArray(1);
-                // tex array layer attribute
-                glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texturelayer));
-                glEnableVertexAttribArray(2);
-                // normals
-                glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normal));
-                glEnableVertexAttribArray(3);
-                // attribs
-                glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
-                glEnableVertexAttribArray(4);
+                _bspBuffers[l].reset(GL_DYNAMIC_DRAW,
+                    &ShaderVertex::pos, &ShaderVertex::texuv, &ShaderVertex::texturelayer,
+                    &ShaderVertex::normal, &ShaderVertex::attribs);
             }
 
             // texture set up
@@ -3228,9 +3118,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 
             // update verts - blank store
-
             for (int i = 0; i < 16; i++) {
-                numBSPverts[i] = 0;
+                _bspVertices[i].clear();
             }
 
             bool drawnsky = false;
@@ -3306,50 +3195,44 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 for (int z = 0; z < (face->uNumVertices - 2); z++) {
                     // 123, 134, 145, 156..
-                    GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
 
                     // copy first
-                    thisvert->pos = pIndoor->pVertices[face->pVertexIDs[0]];
+                    ShaderVertex &v0 = _bspVertices[texunit].emplace_back();
+                    v0.pos = pIndoor->pVertices[face->pVertexIDs[0]];
                     // TODO(captainurist): adding in IDs below?
-                    thisvert->texuv = Vec2f(face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU /*+ face->sTextureDeltaU*/,
-                                            face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV /*+ face->sTextureDeltaV*/);
+                    v0.texuv = Vec2f(face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU,
+                                     face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV);
                     if (face->Indoor_sky()) {
-                        thisvert->texuv.x = (skymodtimex + thisvert->texuv.x) * 0.25f;
-                        thisvert->texuv.y = (skymodtimey + thisvert->texuv.y) * 0.25f;
+                        v0.texuv.x = (skymodtimex + v0.texuv.x) * 0.25f;
+                        v0.texuv.y = (skymodtimey + v0.texuv.y) * 0.25f;
                     }
-                    thisvert->texturelayer = texlayer;
-                    thisvert->normal = face->facePlane.normal;
-                    thisvert->attribs = attribflags;
-                    thisvert++;
+                    v0.texturelayer = texlayer;
+                    v0.normal = face->facePlane.normal;
+                    v0.attribs = attribflags;
 
                     // copy other two (z+1)(z+2)
                     for (unsigned i = 1; i < 3; ++i) {
-                        thisvert->pos = pIndoor->pVertices[face->pVertexIDs[z + i]];
+                        ShaderVertex &v = _bspVertices[texunit].emplace_back();
+                        v.pos = pIndoor->pVertices[face->pVertexIDs[z + i]];
                         // TODO(captainurist): adding in IDs???
-                        thisvert->texuv = Vec2f(face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU /*+ face->sTextureDeltaU*/,
-                                                face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV /*+ face->sTextureDeltaV*/);
+                        v.texuv = Vec2f(face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU,
+                                        face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV);
                         if (face->Indoor_sky()) {
-                            thisvert->texuv.x = (skymodtimex + thisvert->texuv.x) * 0.25f;
-                            thisvert->texuv.y = (skymodtimey + thisvert->texuv.y) * 0.25f;
+                            v.texuv.x = (skymodtimex + v.texuv.x) * 0.25f;
+                            v.texuv.y = (skymodtimey + v.texuv.y) * 0.25f;
                         }
-                        thisvert->texturelayer = texlayer;
-                        thisvert->normal = face->facePlane.normal;
-                        thisvert->attribs = attribflags;
-                        thisvert++;
+                        v.texturelayer = texlayer;
+                        v.normal = face->facePlane.normal;
+                        v.attribs = attribflags;
                     }
 
-                    numBSPverts[texunit] += 3;
-                    assert(numBSPverts[texunit] <= 19999);
+                    assert(_bspVertices[texunit].size() <= 19999);
                 }
             }
 
             for (int l = 0; l < 16; l++) {
-                if (numBSPverts[l]) {
-                    glBindBuffer(GL_ARRAY_BUFFER, bspVBO[l]);
-                    // orphan buffer
-                    glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
-                    // update buffer
-                    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLshaderverts) * numBSPverts[l], BSPshaderstore[l]);
+                if (!_bspVertices[l].empty()) {
+                    _bspBuffers[l].update(_bspVertices[l]);
                 }
             }
 
@@ -3562,8 +3445,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             // draw each set of triangles
             glBindTexture(GL_TEXTURE_2D_ARRAY, bsptextures[unit]);
-            glBindVertexArray(bspVAO[unit]);
-            glDrawArrays(GL_TRIANGLES, 0, (numBSPverts[unit]));
+            _bspBuffers[unit].bind();
+            glDrawArrays(GL_TRIANGLES, 0, _bspVertices[unit].size());
             drawcalls++;
             //}
         }
@@ -3954,11 +3837,7 @@ void OpenGLRenderer::ReleaseTerrain() {
         terraintexturesizes[i] = 0;
     }
 
-    glDeleteBuffers(1, &terrainVBO);
-    glDeleteVertexArrays(1, &terrainVAO);
-
-    terrainVBO = 0;
-    terrainVAO = 0;
+    _terrainBuffer.reset();
 
     /*GLuint outbuildVBO, outbuildVAO;
     GLuint outbuildtextures[8];
@@ -3975,14 +3854,8 @@ void OpenGLRenderer::ReleaseTerrain() {
         numoutbuildtexloaded[i] = 0;
         outbuildtexturewidths[i] = 0;
         outbuildtextureheights[i] = 0;
-        glDeleteBuffers(1, &outbuildVBO[i]);
-        glDeleteVertexArrays(1, &outbuildVAO[i]);
-        outbuildVBO[i] = 0;
-        outbuildVAO[i] = 0;
-        if (outbuildshaderstore[i]) {
-            free(outbuildshaderstore[i]);
-            outbuildshaderstore[i] = nullptr;
-        }
+        _outbuildBuffers[i].reset();
+        _outbuildVertices[i].clear();
     }
 }
 
@@ -4002,14 +3875,8 @@ void OpenGLRenderer::ReleaseBSP() {
         bsptexloaded[i] = 0;
         bsptexturewidths[i] = 0;
         bsptextureheights[i] = 0;
-        glDeleteBuffers(1, &bspVBO[i]);
-        glDeleteVertexArrays(1, &bspVAO[i]);
-        bspVAO[i] = 0;
-        bspVBO[i] = 0;
-        if (BSPshaderstore[i]) {
-            free(BSPshaderstore[i]);
-            BSPshaderstore[i] = nullptr;
-        }
+        _bspBuffers[i].reset();
+        _bspVertices[i].clear();
     }
 }
 
