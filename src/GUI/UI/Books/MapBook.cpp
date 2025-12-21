@@ -290,7 +290,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         if (PartyDirection <= 384) ArrowOctant = 0;
         if (PartyDirection < 128 || PartyDirection > 1920) ArrowOctant = 7;
 
-        render->DrawTransparentRedShade(ArrowXPos / 640.0f, ArrowYPos / 480.0f, game_ui_minimap_dirs[ArrowOctant]);
+        render->DrawMasked(ArrowXPos / 640.0f, ArrowYPos / 480.0f, game_ui_minimap_dirs[ArrowOctant], 0, colorTable.Red);
     }
 
     if (!pLevelDecorations.empty()) {

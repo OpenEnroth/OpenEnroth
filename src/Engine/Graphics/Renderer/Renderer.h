@@ -103,9 +103,6 @@ class Renderer {
     virtual void DrawMasked(float u, float v, GraphicsImage *img,
                             int color_dimming_level,
                             Color mask = colorTable.White) = 0;
-    virtual void DrawTextureGrayShade(float u, float v, GraphicsImage *a4) = 0;
-    virtual void DrawTransparentRedShade(float u, float v, GraphicsImage *a4) = 0;
-    virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) = 0;
 
     virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) = 0;
     virtual void EndTextNew() = 0;

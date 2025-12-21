@@ -553,18 +553,6 @@ float BaseRenderer::GetGamma() {
     return base + mult * level;
 }
 
-void BaseRenderer::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
-    DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey);
-}
-
-void BaseRenderer::DrawTransparentRedShade(float u, float v, GraphicsImage *a4) {
-    DrawMasked(u, v, a4, 0, colorTable.Red);
-}
-
-void BaseRenderer::DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) {
-    DrawMasked(u, v, pTexture, 0, colorTable.Green);
-}
-
 void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int color_dimming_level, Color mask) {
     int b = mask.b & (0xFF >> color_dimming_level);
     int g = mask.g & (0xFF >> color_dimming_level);
