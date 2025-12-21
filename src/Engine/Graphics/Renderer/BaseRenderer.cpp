@@ -553,15 +553,6 @@ float BaseRenderer::GetGamma() {
     return base + mult * level;
 }
 
-void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int color_dimming_level, Color mask) {
-    int b = mask.b & (0xFF >> color_dimming_level);
-    int g = mask.g & (0xFF >> color_dimming_level);
-    int r = mask.r & (0xFF >> color_dimming_level);
-    mask = Color(r, g, b);
-
-    DrawTextureNew(u, v, pTexture, mask);
-}
-
 //----- (004A4CC9) ---------------------------------------
 void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) {
     // fireball / implosion sphere

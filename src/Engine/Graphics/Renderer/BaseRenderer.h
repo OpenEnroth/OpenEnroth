@@ -28,8 +28,6 @@ class BaseRenderer : public Renderer {
                                               int angle) override;
     virtual float GetGamma() override;
 
-    virtual void DrawMasked(float u, float v, GraphicsImage *img,
-                            int color_dimming_level, Color mask = colorTable.White) override;
     virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) override;
     virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) override;
