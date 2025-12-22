@@ -471,7 +471,6 @@ void OpenGLRenderer::ScreenFade(Color color, float t) {
     v5.texid = gltexid;
     v5.paletteid = 0;
 
-    if (_twodVertices.size() > 490) DrawTwodVerts();
     return;
 }
 
@@ -559,7 +558,6 @@ void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int palett
     v5.texid = gltexid;
     v5.paletteid = paletteid;
 
-    if (_twodVertices.size() > 490) DrawTwodVerts();
     return;
 }
 
@@ -1905,13 +1903,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             v5.blend = thisblend;
             v5.paletteId = paletteId;
         }
-
-        if (_billboardVertices.size() > 990) {
-            DrawBillboards();
-        }
     }
-
-    // uNumBillboardsToDraw = 0;
 
     DrawBillboards();
 
@@ -2141,8 +2133,6 @@ void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, co
     vert5.color = cf;
     vert5.texid = gltexid;
     vert5.paletteid = 0;
-
-    if (_twodVertices.size() > 490) DrawTwodVerts();
 }
 
 void OpenGLRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
@@ -2293,8 +2283,6 @@ void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float
     vert5.color = cf;
     vert5.texid = isshadow;
     vert5.paletteid = 0;
-
-    if (_textVertices.size() > 9990) EndTextNew();
 }
 
 void OpenGLRenderer::flushAndScale() {
@@ -2666,8 +2654,6 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                         v.normal = face.facePlane.normal;
                                         v.attribs = attribflags;
                                     }
-
-                                    assert(_outbuildVertices[texunit].size() <= 9999);
                                 }
                             }
                         }
@@ -3220,8 +3206,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         v.normal = face->facePlane.normal;
                         v.attribs = attribflags;
                     }
-
-                    assert(_bspVertices[texunit].size() <= 19999);
                 }
             }
 
