@@ -203,6 +203,8 @@ class OpenGLRenderer : public BaseRenderer {
     unsigned int bsptextureheights[16]{};
     std::map<std::string, int> bsptexmap;
 
+    // TODO(captainurist): reserve the buffers here, then adjust the flush checks to use reserved size?
+
     // line shader
     OpenGLVertexBuffer<LineVertex> _lineBuffer;
     std::vector<LineVertex> _lineVertices;
