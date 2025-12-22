@@ -49,3 +49,8 @@ dist
 .gradle
 .cxx
 local.properties
+
+# .claude
+.claude/settings.local.json
+.claude/plans
+
