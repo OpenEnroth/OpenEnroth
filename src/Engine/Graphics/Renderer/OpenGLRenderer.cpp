@@ -230,11 +230,8 @@ void OpenGLRenderer::ClearTarget(Color uColor) {
     return;
 }
 
-std::array<LineVertex, 2000> lineshaderstore = {};
-int linevertscnt = 0;
-
 void OpenGLRenderer::BeginLines2D() {
-    if (linevertscnt)
+    if (!_lineVertices.empty())
         logger->trace("BeginLines with points still stored in buffer");
 
     DrawTwodVerts();
@@ -247,9 +244,9 @@ void OpenGLRenderer::BeginLines2D() {
 }
 
 void OpenGLRenderer::EndLines2D() {
-    if (!linevertscnt) return;
+    if (_lineVertices.empty()) return;
 
-    _lineBuffer.update({lineshaderstore.data(), static_cast<size_t>(linevertscnt)});
+    _lineBuffer.update(_lineVertices);
     _lineBuffer.bind();
 
     lineshader.use();
@@ -257,26 +254,23 @@ void OpenGLRenderer::EndLines2D() {
     glUniformMatrix4fv(lineshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
     glUniformMatrix4fv(lineshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
-    glDrawArrays(GL_LINES, 0, (linevertscnt));
+    glDrawArrays(GL_LINES, 0, _lineVertices.size());
     drawcalls++;
 
     glUseProgram(0);
     _lineBuffer.unbind();
 
-    linevertscnt = 0;
+    _lineVertices.clear();
 }
 
 void OpenGLRenderer::RasterLine2D(Pointi a, Pointi b, Color acolor, Color bcolor) {
-    lineshaderstore[linevertscnt].pos = a.toFloat();
-    lineshaderstore[linevertscnt].color = acolor.toColorf();
-    linevertscnt++;
+    LineVertex &v1 = _lineVertices.emplace_back();
+    v1.pos = a.toFloat();
+    v1.color = acolor.toColorf();
 
-    lineshaderstore[linevertscnt].pos = b.toFloat();
-    lineshaderstore[linevertscnt].color = bcolor.toColorf();
-    linevertscnt++;
-
-    // draw if buffer full
-    if (linevertscnt == 2000) EndLines2D();
+    LineVertex &v2 = _lineVertices.emplace_back();
+    v2.pos = b.toFloat();
+    v2.color = bcolor.toColorf();
 }
 
 void OpenGLRenderer::BeginScene3D() {
@@ -302,10 +296,6 @@ void OpenGLRenderer::BeginScene3D() {
     SetFogParametersGL();
     gamma = GetGamma();
 }
-
-std::array<ForcePerVertex, 10000> forceperstore = {};
-int forceperstorecnt = 0;
-
 
 void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, float srcfovoworldview,
                                     float dstX, float dstY, float dstworldview, float dstfovoworldview,
@@ -389,31 +379,27 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
     // load up poly
     for (int z = 0; z < 2; z++) {
         // 123, 134, 145, 156..
-        ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
-
         // copy first
-        thisvert->pos = v29[0].pos;
-        thisvert->w = 1.0f;
-        thisvert->texuv = v29[0].texcoord;
-        thisvert->texw = v29[0].rhw;
-        thisvert->screenspace = srcworldview;
-        thisvert->color = colorTable.White.toColorf();
-        thisvert->texid = texid;
-        thisvert++;
+        ForcePerVertex &v0 = _forcePerVertices.emplace_back();
+        v0.pos = v29[0].pos;
+        v0.w = 1.0f;
+        v0.texuv = v29[0].texcoord;
+        v0.texw = v29[0].rhw;
+        v0.screenspace = srcworldview;
+        v0.color = colorTable.White.toColorf();
+        v0.texid = texid;
 
         // copy other two (z+1)(z+2)
         for (unsigned i = 1; i < 3; ++i) {
-            thisvert->pos = v29[z + i].pos;
-            thisvert->w = 1.0f;
-            thisvert->texuv = v29[z + i].texcoord;
-            thisvert->texw = v29[z + i].rhw;
-            thisvert->screenspace = (z + i == 3) ? srcworldview: dstworldview;
-            thisvert->color = colorTable.White.toColorf();
-            thisvert->texid = texid;
-            thisvert++;
+            ForcePerVertex &v = _forcePerVertices.emplace_back();
+            v.pos = v29[z + i].pos;
+            v.w = 1.0f;
+            v.texuv = v29[z + i].texcoord;
+            v.texw = v29[z + i].rhw;
+            v.screenspace = (z + i == 3) ? srcworldview: dstworldview;
+            v.color = colorTable.White.toColorf();
+            v.texid = texid;
         }
-
-        forceperstorecnt += 3;
     }
 
     // TODO(pskelton): do these need batching?
@@ -426,9 +412,6 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
     glDepthMask(GL_TRUE);
     glEnable(GL_CULL_FACE);
 }
-
-std::array<TwoDVertex, 500> twodshaderstore = {};
-int twodvertscnt = 0;
 
 void OpenGLRenderer::ScreenFade(Color color, float t) {
     Colorf cf = color.toColorf();
@@ -444,51 +427,51 @@ void OpenGLRenderer::ScreenFade(Color color, float t) {
 
     // 0 1 2 / 0 2 3
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &v0 = _twodVertices.emplace_back();
+    v0.pos = Vec3f(drawx, drawy, 0);
+    v0.texuv = Vec2f(0.5f, 0.5f);
+    v0.color = cf;
+    v0.texid = gltexid;
+    v0.paletteid = 0;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, drawy, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &v1 = _twodVertices.emplace_back();
+    v1.pos = Vec3f(drawz, drawy, 0);
+    v1.texuv = Vec2f(0.5f, 0.5f);
+    v1.color = cf;
+    v1.texid = gltexid;
+    v1.paletteid = 0;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &v2 = _twodVertices.emplace_back();
+    v2.pos = Vec3f(drawz, draww, 0);
+    v2.texuv = Vec2f(0.5f, 0.5f);
+    v2.color = cf;
+    v2.texid = gltexid;
+    v2.paletteid = 0;
 
     ////////////////////////////////
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = 0;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &v3 = _twodVertices.emplace_back();
+    v3.pos = Vec3f(drawx, drawy, 0);
+    v3.texuv = Vec2f(0.5f, 0.5f);
+    v3.color = cf;
+    v3.texid = 0;
+    v3.paletteid = 0;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &v4 = _twodVertices.emplace_back();
+    v4.pos = Vec3f(drawz, draww, 0);
+    v4.texuv = Vec2f(0.5f, 0.5f);
+    v4.color = cf;
+    v4.texid = gltexid;
+    v4.paletteid = 0;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, draww, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(0.5f, 0.5f);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &v5 = _twodVertices.emplace_back();
+    v5.pos = Vec3f(drawx, draww, 0);
+    v5.texuv = Vec2f(0.5f, 0.5f);
+    v5.color = cf;
+    v5.texid = gltexid;
+    v5.paletteid = 0;
 
-    if (twodvertscnt > 490) DrawTwodVerts();
+    if (_twodVertices.size() > 490) DrawTwodVerts();
     return;
 }
 
@@ -532,51 +515,51 @@ void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int palett
 
     // 0 1 2 / 0 2 3
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(texx, texy);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = paletteid;
-    twodvertscnt++;
+    TwoDVertex &v0 = _twodVertices.emplace_back();
+    v0.pos = Vec3f(drawx, drawy, 0);
+    v0.texuv = Vec2f(texx, texy);
+    v0.color = cf;
+    v0.texid = gltexid;
+    v0.paletteid = paletteid;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, drawy, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(texz, texy);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = paletteid;
-    twodvertscnt++;
+    TwoDVertex &v1 = _twodVertices.emplace_back();
+    v1.pos = Vec3f(drawz, drawy, 0);
+    v1.texuv = Vec2f(texz, texy);
+    v1.color = cf;
+    v1.texid = gltexid;
+    v1.paletteid = paletteid;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(texz, texw);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = paletteid;
-    twodvertscnt++;
+    TwoDVertex &v2 = _twodVertices.emplace_back();
+    v2.pos = Vec3f(drawz, draww, 0);
+    v2.texuv = Vec2f(texz, texw);
+    v2.color = cf;
+    v2.texid = gltexid;
+    v2.paletteid = paletteid;
 
     ////////////////////////////////
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(texx, texy);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = paletteid;
-    twodvertscnt++;
+    TwoDVertex &v3 = _twodVertices.emplace_back();
+    v3.pos = Vec3f(drawx, drawy, 0);
+    v3.texuv = Vec2f(texx, texy);
+    v3.color = cf;
+    v3.texid = gltexid;
+    v3.paletteid = paletteid;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(texz, texw);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = paletteid;
-    twodvertscnt++;
+    TwoDVertex &v4 = _twodVertices.emplace_back();
+    v4.pos = Vec3f(drawz, draww, 0);
+    v4.texuv = Vec2f(texz, texw);
+    v4.color = cf;
+    v4.texid = gltexid;
+    v4.paletteid = paletteid;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, draww, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(texx, texw);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = paletteid;
-    twodvertscnt++;
+    TwoDVertex &v5 = _twodVertices.emplace_back();
+    v5.pos = Vec3f(drawx, draww, 0);
+    v5.texuv = Vec2f(texx, texw);
+    v5.color = cf;
+    v5.texid = gltexid;
+    v5.paletteid = paletteid;
 
-    if (twodvertscnt > 490) DrawTwodVerts();
+    if (_twodVertices.size() > 490) DrawTwodVerts();
     return;
 }
 
@@ -751,34 +734,31 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
     // load up poly
     for (int z = 0; z < (uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
-        ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
         float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
         float thisdepth = (oneoz - oneon) / (oneof - oneon);
         // copy first
-        thisvert->pos = Vec3f(VertexRenderList[0].vWorldViewProj.x, VertexRenderList[0].vWorldViewProj.y, thisdepth);
-        thisvert->w = VertexRenderList[0]._rhw;
-        thisvert->texuv = Vec2f(VertexRenderList[0].u, VertexRenderList[0].v);
-        thisvert->texw = 1.0f;
-        thisvert->screenspace = scrspace;
-        thisvert->color = uTint;
-        thisvert->texid = texid;
-        thisvert++;
+        ForcePerVertex &v0 = _forcePerVertices.emplace_back();
+        v0.pos = Vec3f(VertexRenderList[0].vWorldViewProj.x, VertexRenderList[0].vWorldViewProj.y, thisdepth);
+        v0.w = VertexRenderList[0]._rhw;
+        v0.texuv = Vec2f(VertexRenderList[0].u, VertexRenderList[0].v);
+        v0.texw = 1.0f;
+        v0.screenspace = scrspace;
+        v0.color = uTint;
+        v0.texid = texid;
 
         // copy other two (z+1)(z+2)
         for (unsigned i = 1; i < 3; ++i) {
             oneoz = 1.0f / VertexRenderList[z + i].vWorldViewPosition.x;
             thisdepth = (oneoz - oneon) / (oneof - oneon);
-            thisvert->pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, thisdepth);
-            thisvert->w = VertexRenderList[z + i]._rhw;
-            thisvert->texuv = Vec2f(VertexRenderList[z + i].u, VertexRenderList[z + i].v);
-            thisvert->texw = 1.0f;
-            thisvert->screenspace = scrspace;
-            thisvert->color = uTint;
-            thisvert->texid = texid;
-            thisvert++;
+            ForcePerVertex &v = _forcePerVertices.emplace_back();
+            v.pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, thisdepth);
+            v.w = VertexRenderList[z + i]._rhw;
+            v.texuv = Vec2f(VertexRenderList[z + i].u, VertexRenderList[z + i].v);
+            v.texw = 1.0f;
+            v.screenspace = scrspace;
+            v.color = uTint;
+            v.texid = texid;
         }
-
-        forceperstorecnt += 3;
         // TODO (pskelton): should force drawing if buffer is full
     }
 }
@@ -826,10 +806,6 @@ RgbaImage OpenGLRenderer::MakeFullScreenshot() {
     return flipVertically(ReadScreenPixels());
 }
 
-std::array<DecalVertex, 10000> decalshaderstore = {};
-int numdecalverts{ 0 };
-
-
 void OpenGLRenderer::BeginDecals() {
     GraphicsImage *texture = assets->getBitmap("hwsplat04");
     glBindTexture(GL_TEXTURE_2D, texture->renderId().value());
@@ -849,13 +825,13 @@ void OpenGLRenderer::BeginDecals() {
             &DecalVertex::color);
     }
 
-    numdecalverts = 0;
+    _decalVertices.clear();
 }
 
 void OpenGLRenderer::EndDecals() {
-    if (!numdecalverts) return;
+    if (_decalVertices.empty()) return;
 
-    _decalBuffer.update({decalshaderstore.data(), static_cast<size_t>(numdecalverts)});
+    _decalBuffer.update(_decalVertices);
 
     // ?
     _set_3d_projection_matrix();
@@ -884,7 +860,7 @@ void OpenGLRenderer::EndDecals() {
     glBindTexture(GL_TEXTURE_2D, texture->renderId().value());
 
     _decalBuffer.bind();
-    glDrawArrays(GL_TRIANGLES, 0, numdecalverts);
+    glDrawArrays(GL_TRIANGLES, 0, _decalVertices.size());
     drawcalls++;
 
     // unload
@@ -917,7 +893,6 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
 
     for (int z = 0; z < (pDecal->uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
-        DecalVertex *thisvert = &decalshaderstore[numdecalverts];
         Colorf uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[0].vWorldViewPosition.x, 0, nullptr).toColorf();
 
         float uFinalR = uTint.r * color_mult * decalColorMult.r;
@@ -925,11 +900,11 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
         float uFinalB = uTint.b * color_mult * decalColorMult.b;
 
         // copy first
-        thisvert->pos = pDecal->pVertices[0].vWorldPosition;
-        thisvert->texuv = Vec2f(pDecal->pVertices[0].u, pDecal->pVertices[0].v);
-        thisvert->texunit = 0;
-        thisvert->color = Colorf(uFinalR, uFinalG, uFinalB, 1.0f);
-        thisvert++;
+        DecalVertex &v0 = _decalVertices.emplace_back();
+        v0.pos = pDecal->pVertices[0].vWorldPosition;
+        v0.texuv = Vec2f(pDecal->pVertices[0].u, pDecal->pVertices[0].v);
+        v0.texunit = 0;
+        v0.color = Colorf(uFinalR, uFinalG, uFinalB, 1.0f);
 
         // copy other two (z+1)(z+2)
         for (unsigned i = 1; i < 3; ++i) {
@@ -938,15 +913,12 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
             uFinalG = uTint.g * color_mult * decalColorMult.g;
             uFinalB = uTint.b * color_mult * decalColorMult.b;
 
-            thisvert->pos = pDecal->pVertices[z + i].vWorldPosition;
-            thisvert->texuv = Vec2f(pDecal->pVertices[z + i].u, pDecal->pVertices[z + i].v);
-            thisvert->texunit = 0;
-            thisvert->color = Colorf(uFinalR, uFinalG, uFinalB, 1.0f);
-            thisvert++;
+            DecalVertex &v = _decalVertices.emplace_back();
+            v.pos = pDecal->pVertices[z + i].vWorldPosition;
+            v.texuv = Vec2f(pDecal->pVertices[z + i].u, pDecal->pVertices[z + i].v);
+            v.texunit = 0;
+            v.color = Colorf(uFinalR, uFinalG, uFinalB, 1.0f);
         }
-
-        numdecalverts += 3;
-        assert(numdecalverts <= 9999);
     }
 }
 
@@ -1652,36 +1624,30 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
     Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
 
-
-
     // load up poly
     for (int z = 0; z < (numVertices - 2); z++) {
         // 123, 134, 145, 156..
-        ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
-
         // copy first
-        thisvert->pos = Vec3f(VertexRenderList[0].vWorldViewProj.x, VertexRenderList[0].vWorldViewProj.y, 1.0f);
-        thisvert->w = VertexRenderList[0]._rhw;
-        thisvert->texuv = Vec2f(VertexRenderList[0].u, VertexRenderList[0].v);
-        thisvert->texw = 1.0f;
-        thisvert->screenspace = scrspace;
-        thisvert->color = uTint;
-        thisvert->texid = texid;
-        thisvert++;
+        ForcePerVertex &v0 = _forcePerVertices.emplace_back();
+        v0.pos = Vec3f(VertexRenderList[0].vWorldViewProj.x, VertexRenderList[0].vWorldViewProj.y, 1.0f);
+        v0.w = VertexRenderList[0]._rhw;
+        v0.texuv = Vec2f(VertexRenderList[0].u, VertexRenderList[0].v);
+        v0.texw = 1.0f;
+        v0.screenspace = scrspace;
+        v0.color = uTint;
+        v0.texid = texid;
 
         // copy other two (z+1)(z+2)
         for (unsigned i = 1; i < 3; ++i) {
-            thisvert->pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, 1.0f);
-            thisvert->w = VertexRenderList[z + i]._rhw;
-            thisvert->texuv = Vec2f(VertexRenderList[z + i].u, VertexRenderList[z + i].v);
-            thisvert->texw = 1.0f;
-            thisvert->screenspace = scrspace;
-            thisvert->color = uTint;
-            thisvert->texid = texid;
-            thisvert++;
+            ForcePerVertex &v = _forcePerVertices.emplace_back();
+            v.pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, 1.0f);
+            v.w = VertexRenderList[z + i]._rhw;
+            v.texuv = Vec2f(VertexRenderList[z + i].u, VertexRenderList[z + i].v);
+            v.texw = 1.0f;
+            v.screenspace = scrspace;
+            v.color = uTint;
+            v.texid = texid;
         }
-
-        forceperstorecnt += 3;
     }
 
     if (config->graphics.Fog.value()) {
@@ -1689,64 +1655,56 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
         // load up poly
         for (int z = 4; z < 6; z++) {
             // 456, 467..
-            ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
-
             // copy first
-            thisvert->pos = Vec3f(VertexRenderList[4].vWorldViewProj.x, VertexRenderList[4].vWorldViewProj.y, 1.0f);
-            thisvert->w = 1.0f;
-            thisvert->texuv = Vec2f(0.5f, 0.5f);
-            thisvert->texw = 1.0f;
-            thisvert->screenspace = scrspace;
-            thisvert->color = uTint;
-            thisvert->color.a = 0;
-            thisvert->texid = texidsolid;
-            thisvert++;
+            ForcePerVertex &v0 = _forcePerVertices.emplace_back();
+            v0.pos = Vec3f(VertexRenderList[4].vWorldViewProj.x, VertexRenderList[4].vWorldViewProj.y, 1.0f);
+            v0.w = 1.0f;
+            v0.texuv = Vec2f(0.5f, 0.5f);
+            v0.texw = 1.0f;
+            v0.screenspace = scrspace;
+            v0.color = uTint;
+            v0.color.a = 0;
+            v0.texid = texidsolid;
 
             // copy other two (z+1)(z+2)
             for (unsigned i = 1; i < 3; ++i) {
-                thisvert->pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, 1.0f);
-                thisvert->w = 1.0f;
-                thisvert->texuv = Vec2f(0.5f, 0.5f);
-                thisvert->texw = 1.0f;
-                thisvert->screenspace = scrspace;
-                thisvert->color = uTint;
-                thisvert->color.a = ((z + i) == 7) ? 0.0f : 1.0f;
-                thisvert->texid = texidsolid;
-                thisvert++;
+                ForcePerVertex &v = _forcePerVertices.emplace_back();
+                v.pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, 1.0f);
+                v.w = 1.0f;
+                v.texuv = Vec2f(0.5f, 0.5f);
+                v.texw = 1.0f;
+                v.screenspace = scrspace;
+                v.color = uTint;
+                v.color.a = ((z + i) == 7) ? 0.0f : 1.0f;
+                v.texid = texidsolid;
             }
-
-            forceperstorecnt += 3;
         }
 
         // draw sub sky
         // load up poly
         for (int z = 8; z < 10; z++) {
             // 456, 467..
-            ForcePerVertex *thisvert = &forceperstore[forceperstorecnt];
-
             // copy first
-            thisvert->pos = Vec3f(VertexRenderList[8].vWorldViewProj.x, VertexRenderList[8].vWorldViewProj.y, 1.0f);
-            thisvert->w = 1.0f;
-            thisvert->texuv = Vec2f(0.5f, 0.5f);
-            thisvert->texw = 1.0f;
-            thisvert->screenspace = scrspace;
-            thisvert->color = uTint;
-            thisvert->texid = texidsolid;
-            thisvert++;
+            ForcePerVertex &v0 = _forcePerVertices.emplace_back();
+            v0.pos = Vec3f(VertexRenderList[8].vWorldViewProj.x, VertexRenderList[8].vWorldViewProj.y, 1.0f);
+            v0.w = 1.0f;
+            v0.texuv = Vec2f(0.5f, 0.5f);
+            v0.texw = 1.0f;
+            v0.screenspace = scrspace;
+            v0.color = uTint;
+            v0.texid = texidsolid;
 
             // copy other two (z+1)(z+2)
             for (unsigned i = 1; i < 3; ++i) {
-                thisvert->pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, 1.0f);
-                thisvert->w = 1.0f;
-                thisvert->texuv = Vec2f(0.5f, 0.5f);
-                thisvert->texw = 1.0f;
-                thisvert->screenspace = scrspace;
-                thisvert->color = uTint;
-                thisvert->texid = texidsolid;
-                thisvert++;
+                ForcePerVertex &v = _forcePerVertices.emplace_back();
+                v.pos = Vec3f(VertexRenderList[z + i].vWorldViewProj.x, VertexRenderList[z + i].vWorldViewProj.y, 1.0f);
+                v.w = 1.0f;
+                v.texuv = Vec2f(0.5f, 0.5f);
+                v.texw = 1.0f;
+                v.screenspace = scrspace;
+                v.color = uTint;
+                v.texid = texidsolid;
             }
-
-            forceperstorecnt += 3;
         }
     }
 
@@ -1754,7 +1712,7 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
 }
 
 void OpenGLRenderer::DrawForcePerVerts() {
-    if (!forceperstorecnt) return;
+    if (_forcePerVertices.empty()) return;
 
     if (!_forcePerBuffer) {
         _forcePerBuffer.reset(GL_DYNAMIC_DRAW,
@@ -1766,7 +1724,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
             &ForcePerVertex::color);
     }
 
-    _forcePerBuffer.update({forceperstore.data(), static_cast<size_t>(forceperstorecnt)});
+    _forcePerBuffer.update(_forcePerVertices);
     _forcePerBuffer.bind();
 
     forcepershader.use();
@@ -1799,7 +1757,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
             fpfogstart = pCamera3D->GetFarClip();
             fpfogmiddle = 0.0f;
             fpfogend = fpfogstart + 1;
-            fpfogr = fpfogg = fpfogb = forceperstore[0].color.r;
+            fpfogr = fpfogg = fpfogb = _forcePerVertices[0].color.r;
         }
     } else {
         fpfogstart = pCamera3D->GetFarClip();
@@ -1814,20 +1772,19 @@ void OpenGLRenderer::DrawForcePerVerts() {
     glUniform1f(forcepershader.uniformLocation("fog.fogend"), GLfloat(fpfogend));
 
     // draw all similar textures in batches
-    int offset = 0;
-    while (offset < forceperstorecnt) {
+    size_t offset = 0;
+    while (offset < _forcePerVertices.size()) {
         // set texture
-        GLfloat thistex = forceperstore[offset].texid;
+        GLfloat thistex = _forcePerVertices[offset].texid;
         glBindTexture(GL_TEXTURE_2D, thistex);
 
-        int cnt = 0;
+        size_t cnt = 0;
         do {
             cnt++;
-            if (offset + (3 * cnt) > forceperstorecnt) {
-                --cnt;
+            if (offset + (3 * cnt) >= _forcePerVertices.size()) {
                 break;
             }
-        } while (forceperstore[offset + (cnt * 3)].texid == thistex);
+        } while (_forcePerVertices[offset + (cnt * 3)].texid == thistex);
 
         glDrawArrays(GL_TRIANGLES, offset, (3 * cnt));
         drawcalls++;
@@ -1838,7 +1795,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
     glUseProgram(0);
     _forcePerBuffer.unbind();
 
-    forceperstorecnt = 0;
+    _forcePerVertices.clear();
 }
 
 // TODO(pskelton): move ?
@@ -1870,9 +1827,6 @@ void OpenGLRenderer::SetFogParametersGL() {
     }
 }
 
-std::array<BillboardVertex, 1000> billbstore = {};
-int billbstorecnt = 0;
-
 //----- (004A1C1E) --------------------------------------------------------
 void OpenGLRenderer::DoRenderBillboards_D3D() {
     glEnable(GL_BLEND);
@@ -1882,7 +1836,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
     _set_ortho_projection(1);
     _set_ortho_modelview();
 
-    if (billbstorecnt)
+    if (!_billboardVertices.empty())
         logger->trace("Billboard shader store isnt empty!");
 
     // track loaded tex
@@ -1928,70 +1882,70 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         float thisblend = static_cast<float>(billboard->opacity);
 
         // Triangle 1: vertices 0, 1, 2
-        billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[0].pos.x, billboard->pQuads[0].pos.y, thisdepth);
-        billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f),
-                                                 std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f));
-        billbstore[billbstorecnt].color = billboard->pQuads[0].diffuse.toColorf();
-        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
-        billbstore[billbstorecnt].texid = gltexid;
-        billbstore[billbstorecnt].blend = thisblend;
-        billbstore[billbstorecnt].paletteId = paletteId;
-        billbstorecnt++;
+        BillboardVertex &v0 = _billboardVertices.emplace_back();
+        v0.pos = Vec3f(billboard->pQuads[0].pos.x, billboard->pQuads[0].pos.y, thisdepth);
+        v0.texuv = Vec2f(std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f),
+                         std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f));
+        v0.color = billboard->pQuads[0].diffuse.toColorf();
+        v0.screenspace = billboard->screen_space_z;
+        v0.texid = gltexid;
+        v0.blend = thisblend;
+        v0.paletteId = paletteId;
 
-        billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[1].pos.x, billboard->pQuads[1].pos.y, thisdepth);
-        billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f),
-                                                 std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f));
-        billbstore[billbstorecnt].color = billboard->pQuads[1].diffuse.toColorf();
-        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
-        billbstore[billbstorecnt].texid = gltexid;
-        billbstore[billbstorecnt].blend = thisblend;
-        billbstore[billbstorecnt].paletteId = paletteId;
-        billbstorecnt++;
+        BillboardVertex &v1 = _billboardVertices.emplace_back();
+        v1.pos = Vec3f(billboard->pQuads[1].pos.x, billboard->pQuads[1].pos.y, thisdepth);
+        v1.texuv = Vec2f(std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f),
+                         std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f));
+        v1.color = billboard->pQuads[1].diffuse.toColorf();
+        v1.screenspace = billboard->screen_space_z;
+        v1.texid = gltexid;
+        v1.blend = thisblend;
+        v1.paletteId = paletteId;
 
-        billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[2].pos.x, billboard->pQuads[2].pos.y, thisdepth);
-        billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f),
-                                                 std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f));
-        billbstore[billbstorecnt].color = billboard->pQuads[2].diffuse.toColorf();
-        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
-        billbstore[billbstorecnt].texid = gltexid;
-        billbstore[billbstorecnt].blend = thisblend;
-        billbstore[billbstorecnt].paletteId = paletteId;
-        billbstorecnt++;
+        BillboardVertex &v2 = _billboardVertices.emplace_back();
+        v2.pos = Vec3f(billboard->pQuads[2].pos.x, billboard->pQuads[2].pos.y, thisdepth);
+        v2.texuv = Vec2f(std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f),
+                         std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f));
+        v2.color = billboard->pQuads[2].diffuse.toColorf();
+        v2.screenspace = billboard->screen_space_z;
+        v2.texid = gltexid;
+        v2.blend = thisblend;
+        v2.paletteId = paletteId;
 
         // Triangle 2: vertices 0, 2, 3 (if quad has 4 vertices)
         if (billboard->pQuads[3].pos.x != 0.0f && billboard->pQuads[3].pos.y != 0.0f && billboard->pQuads[3].pos.z != 0.0f) {
-            billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[0].pos.x, billboard->pQuads[0].pos.y, thisdepth);
-            billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f),
-                                                     std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f));
-            billbstore[billbstorecnt].color = billboard->pQuads[0].diffuse.toColorf();
-            billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
-            billbstore[billbstorecnt].texid = gltexid;
-            billbstore[billbstorecnt].blend = thisblend;
-            billbstore[billbstorecnt].paletteId = paletteId;
-            billbstorecnt++;
+            BillboardVertex &v3 = _billboardVertices.emplace_back();
+            v3.pos = Vec3f(billboard->pQuads[0].pos.x, billboard->pQuads[0].pos.y, thisdepth);
+            v3.texuv = Vec2f(std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f),
+                             std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f));
+            v3.color = billboard->pQuads[0].diffuse.toColorf();
+            v3.screenspace = billboard->screen_space_z;
+            v3.texid = gltexid;
+            v3.blend = thisblend;
+            v3.paletteId = paletteId;
 
-            billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[2].pos.x, billboard->pQuads[2].pos.y, thisdepth);
-            billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f),
-                                                     std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f));
-            billbstore[billbstorecnt].color = billboard->pQuads[2].diffuse.toColorf();
-            billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
-            billbstore[billbstorecnt].texid = gltexid;
-            billbstore[billbstorecnt].blend = thisblend;
-            billbstore[billbstorecnt].paletteId = paletteId;
-            billbstorecnt++;
+            BillboardVertex &v4 = _billboardVertices.emplace_back();
+            v4.pos = Vec3f(billboard->pQuads[2].pos.x, billboard->pQuads[2].pos.y, thisdepth);
+            v4.texuv = Vec2f(std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f),
+                             std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f));
+            v4.color = billboard->pQuads[2].diffuse.toColorf();
+            v4.screenspace = billboard->screen_space_z;
+            v4.texid = gltexid;
+            v4.blend = thisblend;
+            v4.paletteId = paletteId;
 
-            billbstore[billbstorecnt].pos = Vec3f(billboard->pQuads[3].pos.x, billboard->pQuads[3].pos.y, thisdepth);
-            billbstore[billbstorecnt].texuv = Vec2f(std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f),
-                                                     std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f));
-            billbstore[billbstorecnt].color = billboard->pQuads[3].diffuse.toColorf();
-            billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
-            billbstore[billbstorecnt].texid = gltexid;
-            billbstore[billbstorecnt].blend = thisblend;
-            billbstore[billbstorecnt].paletteId = paletteId;
-            billbstorecnt++;
+            BillboardVertex &v5 = _billboardVertices.emplace_back();
+            v5.pos = Vec3f(billboard->pQuads[3].pos.x, billboard->pQuads[3].pos.y, thisdepth);
+            v5.texuv = Vec2f(std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f),
+                             std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f));
+            v5.color = billboard->pQuads[3].diffuse.toColorf();
+            v5.screenspace = billboard->screen_space_z;
+            v5.texid = gltexid;
+            v5.blend = thisblend;
+            v5.paletteId = paletteId;
         }
 
-        if (billbstorecnt > 990) {
+        if (_billboardVertices.size() > 990) {
             DrawBillboards();
         }
     }
@@ -2006,7 +1960,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
 
 // name better
 void OpenGLRenderer::DrawBillboards() {
-    if (!billbstorecnt) return;
+    if (_billboardVertices.empty()) return;
 
     if (!_billboardBuffer) {
         _billboardBuffer.reset(GL_DYNAMIC_DRAW,
@@ -2030,7 +1984,7 @@ void OpenGLRenderer::DrawBillboards() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
-    _billboardBuffer.update({billbstore.data(), static_cast<size_t>(billbstorecnt)});
+    _billboardBuffer.update(_billboardVertices);
     _billboardBuffer.bind();
 
     billbshader.use();
@@ -2059,12 +2013,12 @@ void OpenGLRenderer::DrawBillboards() {
     glUniform1f(billbshader.uniformLocation("fog.fogmiddle"), GLfloat(fogmiddle));
     glUniform1f(billbshader.uniformLocation("fog.fogend"), GLfloat(fogend));
 
-    int offset = 0;
-    while (offset < billbstorecnt) {
+    size_t offset = 0;
+    while (offset < _billboardVertices.size()) {
         // set texture
-        GLfloat thistex = billbstore[offset].texid;
-        glBindTexture(GL_TEXTURE_2D, billbstore[offset].texid);
-        if (billbstore[offset].paletteId) {
+        GLfloat thistex = _billboardVertices[offset].texid;
+        glBindTexture(GL_TEXTURE_2D, _billboardVertices[offset].texid);
+        if (_billboardVertices[offset].paletteId) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         } else {
@@ -2072,7 +2026,7 @@ void OpenGLRenderer::DrawBillboards() {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
 
-        GLfloat thisblend = billbstore[offset].blend;
+        GLfloat thisblend = _billboardVertices[offset].blend;
         if (thisblend == 0.0) {
             // disable alpha blending and enable fog for opaque items
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -2084,14 +2038,13 @@ void OpenGLRenderer::DrawBillboards() {
         }
 
 
-        int cnt = 0;
+        size_t cnt = 0;
         do {
             cnt++;
-            if (offset + (3 * cnt) > billbstorecnt) {
-                --cnt;
+            if (offset + (3 * cnt) >= _billboardVertices.size()) {
                 break;
             }
-        } while (billbstore[offset + (cnt * 3)].texid == thistex && billbstore[offset + (cnt * 3)].blend == thisblend);
+        } while (_billboardVertices[offset + (cnt * 3)].texid == thistex && _billboardVertices[offset + (cnt * 3)].blend == thisblend);
 
         glDrawArrays(GL_TRIANGLES, offset, (3 * cnt));
         drawcalls++;
@@ -2101,7 +2054,7 @@ void OpenGLRenderer::DrawBillboards() {
 
     glUseProgram(0);
     _billboardBuffer.unbind();
-    billbstorecnt = 0;
+    _billboardVertices.clear();
 }
 
 //----- (004A1DA8) --------------------------------------------------------
@@ -2185,58 +2138,55 @@ void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, co
     float draww = clippedDst.y + clippedDst.h;
 
     // Triangle 1: top-left, top-right, bottom-right
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(u1, v1);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &vert0 = _twodVertices.emplace_back();
+    vert0.pos = Vec3f(drawx, drawy, 0);
+    vert0.texuv = Vec2f(u1, v1);
+    vert0.color = cf;
+    vert0.texid = gltexid;
+    vert0.paletteid = 0;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, drawy, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(u2, v1);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &vert1 = _twodVertices.emplace_back();
+    vert1.pos = Vec3f(drawz, drawy, 0);
+    vert1.texuv = Vec2f(u2, v1);
+    vert1.color = cf;
+    vert1.texid = gltexid;
+    vert1.paletteid = 0;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(u2, v2);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &vert2 = _twodVertices.emplace_back();
+    vert2.pos = Vec3f(drawz, draww, 0);
+    vert2.texuv = Vec2f(u2, v2);
+    vert2.color = cf;
+    vert2.texid = gltexid;
+    vert2.paletteid = 0;
 
     // Triangle 2: top-left, bottom-right, bottom-left
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, drawy, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(u1, v1);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &vert3 = _twodVertices.emplace_back();
+    vert3.pos = Vec3f(drawx, drawy, 0);
+    vert3.texuv = Vec2f(u1, v1);
+    vert3.color = cf;
+    vert3.texid = gltexid;
+    vert3.paletteid = 0;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawz, draww, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(u2, v2);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &vert4 = _twodVertices.emplace_back();
+    vert4.pos = Vec3f(drawz, draww, 0);
+    vert4.texuv = Vec2f(u2, v2);
+    vert4.color = cf;
+    vert4.texid = gltexid;
+    vert4.paletteid = 0;
 
-    twodshaderstore[twodvertscnt].pos = Vec3f(drawx, draww, 0);
-    twodshaderstore[twodvertscnt].texuv = Vec2f(u1, v2);
-    twodshaderstore[twodvertscnt].color = cf;
-    twodshaderstore[twodvertscnt].texid = gltexid;
-    twodshaderstore[twodvertscnt].paletteid = 0;
-    twodvertscnt++;
+    TwoDVertex &vert5 = _twodVertices.emplace_back();
+    vert5.pos = Vec3f(drawx, draww, 0);
+    vert5.texuv = Vec2f(u1, v2);
+    vert5.color = cf;
+    vert5.texid = gltexid;
+    vert5.paletteid = 0;
 
-    if (twodvertscnt > 490) DrawTwodVerts();
+    if (_twodVertices.size() > 490) DrawTwodVerts();
 }
-
-std::array<TwoDVertex, 10000> textshaderstore = {};
-int textvertscnt = 0;
 
 void OpenGLRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
     // draw any images in buffer
-    if (twodvertscnt) {
+    if (!_twodVertices.empty()) {
         DrawTwodVerts();
     }
 
@@ -2259,9 +2209,9 @@ void OpenGLRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
 }
 
 void OpenGLRenderer::EndTextNew() {
-    if (!textvertscnt) return;
+    if (_textVertices.empty()) return;
 
-    if (twodvertscnt) {
+    if (!_twodVertices.empty()) {
         DrawTwodVerts();
     }
 
@@ -2273,7 +2223,7 @@ void OpenGLRenderer::EndTextNew() {
             &TwoDVertex::texid);
     }
 
-    _textBuffer.update({textshaderstore.data(), static_cast<size_t>(textvertscnt)});
+    _textBuffer.update(_textVertices);
     _textBuffer.bind();
 
     textshader.use();
@@ -2297,7 +2247,7 @@ void OpenGLRenderer::EndTextNew() {
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, texshadow);
 
-    glDrawArrays(GL_TRIANGLES, 0, textvertscnt);
+    glDrawArrays(GL_TRIANGLES, 0, _textVertices.size());
     drawcalls++;
 
     glUseProgram(0);
@@ -2307,7 +2257,7 @@ void OpenGLRenderer::EndTextNew() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    textvertscnt = 0;
+    _textVertices.clear();
     // texmain = 0;
     // texshadow = 0;
     return;
@@ -2334,57 +2284,56 @@ void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float
     float draww = static_cast<float>(w);
     float drawz = static_cast<float>(z);
 
-    float depth = 0;
     float texx = u1;
     float texy = v1;
     float texz = u2;
     float texw = v2;
 
     // Triangle 1: top-left, top-right, bottom-right
-    textshaderstore[textvertscnt].pos = Vec3f(drawx, drawy, 0);
-    textshaderstore[textvertscnt].texuv = Vec2f(texx, texy);
-    textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = isshadow;
-    textshaderstore[textvertscnt].paletteid = 0;
-    textvertscnt++;
+    TwoDVertex &vert0 = _textVertices.emplace_back();
+    vert0.pos = Vec3f(drawx, drawy, 0);
+    vert0.texuv = Vec2f(texx, texy);
+    vert0.color = cf;
+    vert0.texid = isshadow;
+    vert0.paletteid = 0;
 
-    textshaderstore[textvertscnt].pos = Vec3f(drawz, drawy, 0);
-    textshaderstore[textvertscnt].texuv = Vec2f(texz, texy);
-    textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = isshadow;
-    textshaderstore[textvertscnt].paletteid = 0;
-    textvertscnt++;
+    TwoDVertex &vert1 = _textVertices.emplace_back();
+    vert1.pos = Vec3f(drawz, drawy, 0);
+    vert1.texuv = Vec2f(texz, texy);
+    vert1.color = cf;
+    vert1.texid = isshadow;
+    vert1.paletteid = 0;
 
-    textshaderstore[textvertscnt].pos = Vec3f(drawz, draww, 0);
-    textshaderstore[textvertscnt].texuv = Vec2f(texz, texw);
-    textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = isshadow;
-    textshaderstore[textvertscnt].paletteid = 0;
-    textvertscnt++;
+    TwoDVertex &vert2 = _textVertices.emplace_back();
+    vert2.pos = Vec3f(drawz, draww, 0);
+    vert2.texuv = Vec2f(texz, texw);
+    vert2.color = cf;
+    vert2.texid = isshadow;
+    vert2.paletteid = 0;
 
     // Triangle 2: top-left, bottom-right, bottom-left
-    textshaderstore[textvertscnt].pos = Vec3f(drawx, drawy, 0);
-    textshaderstore[textvertscnt].texuv = Vec2f(texx, texy);
-    textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = isshadow;
-    textshaderstore[textvertscnt].paletteid = 0;
-    textvertscnt++;
+    TwoDVertex &vert3 = _textVertices.emplace_back();
+    vert3.pos = Vec3f(drawx, drawy, 0);
+    vert3.texuv = Vec2f(texx, texy);
+    vert3.color = cf;
+    vert3.texid = isshadow;
+    vert3.paletteid = 0;
 
-    textshaderstore[textvertscnt].pos = Vec3f(drawz, draww, 0);
-    textshaderstore[textvertscnt].texuv = Vec2f(texz, texw);
-    textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = isshadow;
-    textshaderstore[textvertscnt].paletteid = 0;
-    textvertscnt++;
+    TwoDVertex &vert4 = _textVertices.emplace_back();
+    vert4.pos = Vec3f(drawz, draww, 0);
+    vert4.texuv = Vec2f(texz, texw);
+    vert4.color = cf;
+    vert4.texid = isshadow;
+    vert4.paletteid = 0;
 
-    textshaderstore[textvertscnt].pos = Vec3f(drawx, draww, 0);
-    textshaderstore[textvertscnt].texuv = Vec2f(texx, texw);
-    textshaderstore[textvertscnt].color = cf;
-    textshaderstore[textvertscnt].texid = isshadow;
-    textshaderstore[textvertscnt].paletteid = 0;
-    textvertscnt++;
+    TwoDVertex &vert5 = _textVertices.emplace_back();
+    vert5.pos = Vec3f(drawx, draww, 0);
+    vert5.texuv = Vec2f(texx, texw);
+    vert5.color = cf;
+    vert5.texid = isshadow;
+    vert5.paletteid = 0;
 
-    if (textvertscnt > 9990) EndTextNew();
+    if (_textVertices.size() > 9990) EndTextNew();
 }
 
 void OpenGLRenderer::flushAndScale() {
@@ -3625,7 +3574,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
         glBindTexture(GL_TEXTURE_2D, 0);
 
         // indoor sky drawing
-        if (forceperstorecnt) {
+        if (!_forcePerVertices.empty()) {
             // set forced matrixs
             _set_ortho_projection(1);
             _set_ortho_modelview();
@@ -3929,13 +3878,13 @@ bool OpenGLRenderer::ReloadShaders() {
     ReleaseBSP();
 
     _textBuffer.reset();
-    textvertscnt = 0;
+    _textVertices.clear();
 
     _lineBuffer.reset();
-    linevertscnt = 0;
+    _lineVertices.clear();
 
     _twodBuffer.reset();
-    twodvertscnt = 0;
+    _twodVertices.clear();
 
     _billboardBuffer.reset();
     if (paltex2D) {
@@ -3943,13 +3892,14 @@ bool OpenGLRenderer::ReloadShaders() {
         paltex2D = 0;
     }
 
-    billbstorecnt = 0;
+    _billboardBuffer.reset();
+    _billboardVertices.clear();
 
     _decalBuffer.reset();
-    numdecalverts = 0;
+    _decalVertices.clear();
 
     _forcePerBuffer.reset();
-    forceperstorecnt = 0;
+    _forcePerVertices.clear();
 
     const std::initializer_list<std::tuple<OpenGLShader *, std::string_view, std::string_view>> shaders = {
         {&terrainshader,    "glterrain",        "Terrain"},
@@ -4065,7 +4015,7 @@ void OpenGLRenderer::ReleaseBSP() {
 
 
 void OpenGLRenderer::DrawTwodVerts() {
-    if (!twodvertscnt) return;
+    if (_twodVertices.empty()) return;
 
     Recti savedClipRect = this->clipRect;
     render->ResetUIClipRect();
@@ -4091,7 +4041,7 @@ void OpenGLRenderer::DrawTwodVerts() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
-    _twodBuffer.update({twodshaderstore.data(), static_cast<size_t>(twodvertscnt)});
+    _twodBuffer.update(_twodVertices);
     _twodBuffer.bind();
 
     twodshader.use();
@@ -4114,12 +4064,12 @@ void OpenGLRenderer::DrawTwodVerts() {
     //// set view
     glUniformMatrix4fv(twodshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
-    int offset = 0;
-    while (offset < twodvertscnt) {
+    size_t offset = 0;
+    while (offset < _twodVertices.size()) {
         // set texture
-        GLfloat thistex = twodshaderstore[offset].texid;
-        glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(twodshaderstore[offset].texid));
-        if (twodshaderstore[offset].paletteid) {
+        GLfloat thistex = _twodVertices[offset].texid;
+        glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(_twodVertices[offset].texid));
+        if (_twodVertices[offset].paletteid) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         } else {
@@ -4127,14 +4077,13 @@ void OpenGLRenderer::DrawTwodVerts() {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
 
-        int cnt = 0;
+        size_t cnt = 0;
         do {
             cnt++;
-            if (offset + (6 * cnt) > twodvertscnt) {
-                --cnt;
+            if (offset + (6 * cnt) >= _twodVertices.size()) {
                 break;
             }
-        } while (twodshaderstore[offset + (cnt * 6)].texid == thistex);
+        } while (_twodVertices[offset + (cnt * 6)].texid == thistex);
 
         glDrawArrays(GL_TRIANGLES, offset, (6*cnt));
         drawcalls++;
@@ -4145,7 +4094,7 @@ void OpenGLRenderer::DrawTwodVerts() {
     glUseProgram(0);
     _twodBuffer.unbind();
 
-    twodvertscnt = 0;
+    _twodVertices.clear();
     render->SetUIClipRect(savedClipRect);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
