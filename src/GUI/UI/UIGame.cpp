@@ -1311,7 +1311,7 @@ void GameUI_DrawPortraits() {
         if (pPlayer->IsEradicated()) {
             pPortrait = game_ui_player_face_eradicated;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                render->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 387 / 480.0f, pPortrait); // was 388
+                render->DrawTextureNew(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 387 / 480.0f, pPortrait, colorTable.MediumGrey); // was 388
             else
                 render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 387 / 480.0f, pPortrait); // was 388
             continue;
@@ -1319,9 +1319,9 @@ void GameUI_DrawPortraits() {
         if (pPlayer->IsDead()) {
             pPortrait = game_ui_player_face_dead;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                render->DrawTextureGrayShade(
+                render->DrawTextureNew(
                     pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
-                    388 / 480.0f, pPortrait);
+                    388 / 480.0f, pPortrait, colorTable.MediumGrey);
             else
                 render->DrawTextureNew(
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f,
@@ -1339,9 +1339,9 @@ void GameUI_DrawPortraits() {
             pPlayer->portraitImageIndex = faceTextureIndex - 1;
             pPortrait = game_ui_player_faces[i][pPlayer->portraitImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                render->DrawTextureGrayShade(
+                render->DrawTextureNew(
                     pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
-                    388 / 480.0f, pPortrait);
+                    388 / 480.0f, pPortrait, colorTable.MediumGrey);
             else
                 render->DrawTextureNew(
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f,

@@ -57,16 +57,6 @@ void Renderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *img, int
     DrawQuad2D(img, srcRect, dstRect, colorTable.White);
 }
 
-void Renderer::DrawTextureOffset(int x, int y, int offsetX, int offsetY, GraphicsImage *img) {
-    if (!img)
-        return;
-
-    Sizei renderDims = GetRenderDimensions();
-    float u = static_cast<float>(x - offsetX) / renderDims.w;
-    float v = static_cast<float>(y - offsetY) / renderDims.h;
-    DrawTextureNew(u, v, img);
-}
-
 void Renderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {
     if (!texture)
         return;
@@ -75,13 +65,14 @@ void Renderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect,
     DrawQuad2D(texture, srcRect, dstRect, color);
 }
 
-void Renderer::FillRectFast(int x, int y, int width, int height, Color color) {
+GraphicsImage *Renderer::solidFillTexture() {
     if (!_solidFillTexture)
         _solidFillTexture = GraphicsImage::Create(RgbaImage::solid(1, 1, colorTable.White));
-    if (!_solidFillTexture)
-        return;
+    return _solidFillTexture;
+}
 
+void Renderer::FillRectFast(int x, int y, int width, int height, Color color) {
     Recti srcRect(0, 0, 1, 1);
     Recti dstRect(x, y, width, height);
-    DrawQuad2D(_solidFillTexture, srcRect, dstRect, color);
+    DrawQuad2D(solidFillTexture(), srcRect, dstRect, color);
 }

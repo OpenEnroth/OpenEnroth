@@ -7,8 +7,6 @@
 #include "Engine/Pid.h"
 #include "Engine/Time/Duration.h"
 
-#include "Utility/Memory/Blob.h"
-
 // TODO(pskelton): Overlays in MM7/ MM8 are blank so most of this isnt used. MM6 does have overlays - investigate if needed
 
 struct ActiveOverlay {

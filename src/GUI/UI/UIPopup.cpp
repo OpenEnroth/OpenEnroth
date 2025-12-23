@@ -424,9 +424,9 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         iteminfo_window.uFrameW =
             iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
 
-        render->DrawTransparentRedShade(
+        render->DrawTextureNew(
             (iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
-            (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
+            (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image, colorTable.Red);
 
         iteminfo_window.DrawTitleText(assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary, inspect_item->GetDisplayName(), 3);
         iteminfo_window.DrawTitleText(assets->pFontArrus.get(), 0x64u,

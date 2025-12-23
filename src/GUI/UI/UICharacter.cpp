@@ -1341,9 +1341,9 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
         // TODO(pskelton): #time check tickcount usage here
         render->BlendTextures(x, y, item_texture, enchantment_texture, platform->tickCount() / 10, 0, 255);
     } else if (item->IsBroken()) {
-        render->DrawTransparentRedShade(x / 640.0f, y / 480.0f, item_texture);
+        render->DrawTextureNew(x / 640.0f, y / 480.0f, item_texture, colorTable.Red);
     } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.value() || id)) { // TODO(captainurist): after my changes id==0 is a valid item id
-        render->DrawTransparentGreenShade(x / 640.0f, y / 480.0f, item_texture);
+        render->DrawTextureNew(x / 640.0f, y / 480.0f, item_texture, colorTable.Green);
     } else {
         render->DrawTextureNew(x / 640.0f, y / 480.0f, item_texture);
     }

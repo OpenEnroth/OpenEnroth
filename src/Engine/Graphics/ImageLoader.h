@@ -5,7 +5,6 @@
 
 #include "Library/Color/Color.h"
 #include "Library/Image/Image.h"
-#include "Library/Image/Palette.h"
 
 class LodSpriteCache;
 class LodTextureCache;

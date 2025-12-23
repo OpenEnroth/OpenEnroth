@@ -91,7 +91,6 @@ class Renderer {
 
     void DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask = colorTable.White);
     void DrawTextureCustomHeight(float u, float v, GraphicsImage *img, int height);
-    void DrawTextureOffset(int x, int y, int offset_x, int offset_y, GraphicsImage *img);
     void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color);
     void FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32);
 
@@ -100,13 +99,6 @@ class Renderer {
 
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
     virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
-
-    virtual void DrawMasked(float u, float v, GraphicsImage *img,
-                            int color_dimming_level,
-                            Color mask = colorTable.White) = 0;
-    virtual void DrawTextureGrayShade(float u, float v, GraphicsImage *a4) = 0;
-    virtual void DrawTransparentRedShade(float u, float v, GraphicsImage *a4) = 0;
-    virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) = 0;
 
     virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) = 0;
     virtual void EndTextNew() = 0;
@@ -174,14 +166,18 @@ class Renderer {
 
     int drawcalls;
 
+    /**
+     * @returns                         1x1 white texture for solid color fills. Initialized lazily on first use.
+     */
+    GraphicsImage *solidFillTexture();
+
  protected:
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
 
-    // Cached texture for FillRectFast solid color fills.
-    // Initialized lazily on first use.
+ private:
     GraphicsImage *_solidFillTexture = nullptr;
 };
 

@@ -186,9 +186,9 @@ void Io::Mouse::DrawPickedItem() {
     float posY = (mousePos.y + pickedItemOffset.y) / 480.0f;
 
     if (pParty->pPickedItem.IsBroken()) {
-        render->DrawTransparentRedShade(posX, posY, pTexture);
+        render->DrawTextureNew(posX, posY, pTexture, colorTable.Red);
     } else if (!pParty->pPickedItem.IsIdentified()) {
-        render->DrawTransparentGreenShade(posX, posY, pTexture);
+        render->DrawTextureNew(posX, posY, pTexture, colorTable.Green);
     } else {
         render->DrawTextureNew(posX, posY, pTexture);
     }
