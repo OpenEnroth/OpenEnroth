@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b984a54</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;beb98cb</span>
    </div>
   </td>
  </tr>
@@ -74,6 +74,7 @@ $(function() {
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classRenderer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">Renderer Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
@@ -146,8 +147,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aac4f00342773673534b01dff7b03ae52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a631e15d9f8250ab4548985b734d6e7cb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a631e15d9f8250ab4548985b734d6e7cb">DrawTextureCustomHeight</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *img, int height)</td></tr>
 <tr class="separator:a631e15d9f8250ab4548985b734d6e7cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4b720d0a383fcd44191bcc6563016a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#aa4b720d0a383fcd44191bcc6563016a8">DrawTextureOffset</a> (int x, int y, int offset_x, int offset_y, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *img)</td></tr>
-<tr class="separator:aa4b720d0a383fcd44191bcc6563016a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e83cc6f49a8660b489f50095a0bcd79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a8e83cc6f49a8660b489f50095a0bcd79">DrawFromSpriteSheet</a> (<a class="el" href="classGraphicsImage.html">GraphicsImage</a> *texture, const <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &amp;srcRect, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> targetPoint, <a class="el" href="structColor.html">Color</a> color)</td></tr>
 <tr class="separator:a8e83cc6f49a8660b489f50095a0bcd79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78fb22667acefa0d3e20b9070dd6d851"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a78fb22667acefa0d3e20b9070dd6d851">FillRectFast</a> (int uX, int uY, int uWidth, int uHeight, <a class="el" href="structColor.html">Color</a> uColor32)</td></tr>
@@ -158,14 +157,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a965a8fdcf5040bd1896edc8676ac146b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4da9c0c67fb869deaaac15af314f89f4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a4da9c0c67fb869deaaac15af314f89f4">DrawMonsterPortrait</a> (const <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &amp;rc, <a class="el" href="classSpriteFrame.html">SpriteFrame</a> *Portrait_Sprite, int Y_Offset)=0</td></tr>
 <tr class="separator:a4da9c0c67fb869deaaac15af314f89f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63cd70e894d26c2b62f493520e14439e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a63cd70e894d26c2b62f493520e14439e">DrawMasked</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *img, int color_dimming_level, <a class="el" href="structColor.html">Color</a> mask=colorTable.White)=0</td></tr>
-<tr class="separator:a63cd70e894d26c2b62f493520e14439e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5530a3d4b88c5b19b828bb6cc9ea22ba"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a5530a3d4b88c5b19b828bb6cc9ea22ba">DrawTextureGrayShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *a4)=0</td></tr>
-<tr class="separator:a5530a3d4b88c5b19b828bb6cc9ea22ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae53659ea6821b5a1f6a90584c5f9e771"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ae53659ea6821b5a1f6a90584c5f9e771">DrawTransparentRedShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *a4)=0</td></tr>
-<tr class="separator:ae53659ea6821b5a1f6a90584c5f9e771"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc21659fe12fa7f375181311f884dcf5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#acc21659fe12fa7f375181311f884dcf5">DrawTransparentGreenShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *pTexture)=0</td></tr>
-<tr class="separator:acc21659fe12fa7f375181311f884dcf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43bad45c2e05ecf3c8d3e9d5b52318f7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a43bad45c2e05ecf3c8d3e9d5b52318f7">BeginTextNew</a> (<a class="el" href="classGraphicsImage.html">GraphicsImage</a> *<a class="el" href="LodTool_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *shadow)=0</td></tr>
 <tr class="separator:a43bad45c2e05ecf3c8d3e9d5b52318f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad77be756a97d4d9a96e3531ccdfabb38"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ad77be756a97d4d9a96e3531ccdfabb38">EndTextNew</a> ()=0</td></tr>
@@ -228,6 +219,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a52300164a61221e3c031a33c029023d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5185558453a75a81ceb101b631482e10"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a5185558453a75a81ceb101b631482e10">endOverlays</a> ()=0</td></tr>
 <tr class="separator:a5185558453a75a81ceb101b631482e10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15e8ef69b3e72e015cae7354871d75d7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a15e8ef69b3e72e015cae7354871d75d7">solidFillTexture</a> ()</td></tr>
+<tr class="separator:a15e8ef69b3e72e015cae7354871d75d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -259,6 +252,9 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a519cbc3d3f3b9955eb574fe9e9ab571c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ac79b2a2a7b33647b55389ac1805503"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classVis.html">Vis</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a7ac79b2a2a7b33647b55389ac1805503">vis</a> = nullptr</td></tr>
 <tr class="separator:a7ac79b2a2a7b33647b55389ac1805503"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
 <tr class="memitem:a1672f17cdc5803e6c245e99c906ba5e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a1672f17cdc5803e6c245e99c906ba5e4">_solidFillTexture</a> = nullptr</td></tr>
 <tr class="separator:a1672f17cdc5803e6c245e99c906ba5e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -945,62 +941,6 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a63cd70e894d26c2b62f493520e14439e" name="a63cd70e894d26c2b62f493520e14439e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a63cd70e894d26c2b62f493520e14439e">&#9670;&#160;</a></span>DrawMasked()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void Renderer::DrawMasked </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td>
-          <td class="paramname"><em>img</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>color_dimming_level</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
-          <td class="paramname"><em>mask</em> = <code>colorTable.White</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classBaseRenderer.html#aab2e56e43fdc0857fc257970670afa30">BaseRenderer</a>.</p>
-
-</div>
-</div>
 <a id="a4da9c0c67fb869deaaac15af314f89f4" name="a4da9c0c67fb869deaaac15af314f89f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4da9c0c67fb869deaaac15af314f89f4">&#9670;&#160;</a></span>DrawMonsterPortrait()</h2>
 
@@ -1457,50 +1397,6 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a5530a3d4b88c5b19b828bb6cc9ea22ba" name="a5530a3d4b88c5b19b828bb6cc9ea22ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5530a3d4b88c5b19b828bb6cc9ea22ba">&#9670;&#160;</a></span>DrawTextureGrayShade()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void Renderer::DrawTextureGrayShade </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td>
-          <td class="paramname"><em>a4</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classBaseRenderer.html#a43f9017f743de02c4286db05f313f50f">BaseRenderer</a>.</p>
-
-</div>
-</div>
 <a id="aac4f00342773673534b01dff7b03ae52" name="aac4f00342773673534b01dff7b03ae52"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aac4f00342773673534b01dff7b03ae52">&#9670;&#160;</a></span>DrawTextureNew()</h2>
 
@@ -1538,140 +1434,6 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa4b720d0a383fcd44191bcc6563016a8" name="aa4b720d0a383fcd44191bcc6563016a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4b720d0a383fcd44191bcc6563016a8">&#9670;&#160;</a></span>DrawTextureOffset()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Renderer::DrawTextureOffset </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>offset_x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>offset_y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td>
-          <td class="paramname"><em>img</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="acc21659fe12fa7f375181311f884dcf5" name="acc21659fe12fa7f375181311f884dcf5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc21659fe12fa7f375181311f884dcf5">&#9670;&#160;</a></span>DrawTransparentGreenShade()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void Renderer::DrawTransparentGreenShade </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td>
-          <td class="paramname"><em>pTexture</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classBaseRenderer.html#aa7f1db1558aa406b2750b034d803569f">BaseRenderer</a>.</p>
-
-</div>
-</div>
-<a id="ae53659ea6821b5a1f6a90584c5f9e771" name="ae53659ea6821b5a1f6a90584c5f9e771"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae53659ea6821b5a1f6a90584c5f9e771">&#9670;&#160;</a></span>DrawTransparentRedShade()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void Renderer::DrawTransparentRedShade </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td>
-          <td class="paramname"><em>a4</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classBaseRenderer.html#a495a0d031572e0c3dc84f0d0c9093779">BaseRenderer</a>.</p>
 
 </div>
 </div>
@@ -2574,6 +2336,24 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a15e8ef69b3e72e015cae7354871d75d7" name="a15e8ef69b3e72e015cae7354871d75d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15e8ef69b3e72e015cae7354871d75d7">&#9670;&#160;</a></span>solidFillTexture()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> * Renderer::solidFillTexture </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>1x1 white texture for solid color fills. Initialized lazily on first use. </dd></dl>
+
+</div>
+</div>
 <a id="a154be94882d36db597ed4b0530125abe" name="a154be94882d36db597ed4b0530125abe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a154be94882d36db597ed4b0530125abe">&#9670;&#160;</a></span>swapBuffers()</h2>
 
@@ -2644,7 +2424,7 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
