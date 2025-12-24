@@ -36,33 +36,21 @@ struct RenderBillboard {
     SpriteFrame *pSpriteFrame;
 };
 
-/*   88 */
 struct ODMRenderParams {
-    ODMRenderParams() {
-        this->shading_dist_shade = 0x800;
-        shading_dist_shademist = 0x1000;
-        this->bNoSky = 0;
-        this->bDoNotRenderDecorations = 0;
-        this->field_5C = 0;
-        this->field_60 = 0;
-        this->outdoor_no_wavy_water = 0;
-        this->outdoor_no_mist = 0;
-    }
-
-    int shading_dist_shade;
-    int shading_dist_shademist;
+    int shading_dist_shade = 0x800;
+    int shading_dist_shademist = 0x1000;
     int uNumPolygons = 0;
     unsigned int _unused_uNumEdges = 0;
     unsigned int _unused_uNumSurfs = 0;
     unsigned int _unused_uNumSpans = 0;
     unsigned int uNumBillboards = 0;
     float field_40 = 0;
-    unsigned int bNoSky;
-    unsigned int bDoNotRenderDecorations;
-    int field_5C;
-    int field_60;
-    int outdoor_no_wavy_water;
-    int outdoor_no_mist;
+    unsigned int bNoSky = 0;
+    unsigned int bDoNotRenderDecorations = 0;
+    int field_5C = 0;
+    int field_60 = 0;
+    int outdoor_no_wavy_water = 0;
+    int outdoor_no_mist = 0;
     int building_gamme = 0;
     int terrain_gamma = 0;
 };
@@ -81,24 +69,14 @@ struct RenderVertexSoft {
 };
 
 struct RenderVertexD3D3 {
-    Vec3f pos {};
+    Vec3f pos;
     float rhw = 0;
     Color diffuse;
     Color specular;
-    Vec2f texcoord {};
+    Vec2f texcoord;
 };
 
 struct RenderBillboardD3D {
-    inline RenderBillboardD3D()
-        : texture(nullptr),
-          uNumVertices(4),
-          z_order(0.f),
-          opacity(Transparent),
-          field_90(-1),
-          screen_space_z(0),
-          sParentBillboardID(-1),
-          paletteId(0) {}
-
     enum class OpacityType : uint32_t {
         Transparent = 0,
         Opaque_1 = 1,
@@ -108,41 +86,28 @@ struct RenderBillboardD3D {
     };
     using enum OpacityType;
 
-    GraphicsImage *texture;
-    unsigned int uNumVertices;
+    GraphicsImage *texture = nullptr;
+    unsigned int uNumVertices = 4;
     std::array<RenderVertexD3D3, 4> pQuads;
-    float z_order;
-    OpacityType opacity;
-    int field_90;
+    float z_order = 0.f;
+    OpacityType opacity = Transparent;
 
     Pid object_pid;
-    int screen_space_z;
-    int sParentBillboardID;
-
-    //int PaletteID;
-    int paletteId;
+    int screen_space_z = 0;
+    int sParentBillboardID = -1;
+    int paletteId = 0;
 };
 
 // TODO(pskelton): Simplify/remove/combine different billboard structs
 struct SoftwareBillboard {
-    void *pTarget;
-    int screen_space_x;
-    int screen_space_y;
-    int screen_space_z;
-    float screenspace_projection_factor_x;
-    float screenspace_projection_factor_y;
-    char field_18[8];
-    uint16_t *pPalette;
-    uint16_t *pPalette2;
+    int screen_space_x = 0;
+    int screen_space_y = 0;
+    int screen_space_z = 0;
+    float screenspace_projection_factor_x = 0;
+    float screenspace_projection_factor_y = 0;
     BillboardFlags uFlags;
-    unsigned int uTargetPitch;
-    unsigned int uViewportX;
-    unsigned int uViewportY;
-    unsigned int uViewportZ;
-    unsigned int uViewportW;
-    int field_44;
-    int sParentBillboardID;
+    int sParentBillboardID = -1;
     Color sTintColor;
     Pid object_pid;
-    int paletteID;
+    int paletteID = 0;
 };
