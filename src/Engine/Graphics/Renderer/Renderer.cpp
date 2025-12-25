@@ -47,8 +47,7 @@ GraphicsImage *Renderer::solidFillTexture() {
     return _solidFillTexture;
 }
 
-void Renderer::FillRectFast(int x, int y, int width, int height, Color color) {
+void Renderer::FillRect(const Recti &rect, Color color) {
     Recti srcRect(0, 0, 1, 1);
-    Recti dstRect(x, y, width, height);
-    DrawQuad2D(solidFillTexture(), srcRect, dstRect, color);
+    DrawQuad2D(solidFillTexture(), srcRect, rect, color);
 }

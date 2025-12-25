@@ -1311,7 +1311,7 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i gridOffset) {
         );
         Sizei itemSize = pParty->pPickedItem.inventorySize();
 
-        render->FillRectFast(inventoryPos.x * 32 + gridOffset.x, inventoryPos.y * 32 + gridOffset.y, itemSize.w * 32, itemSize.h * 32, Color(96, 96, 96, 128));
+        render->FillRect(Recti(inventoryPos.x * 32 + gridOffset.x, inventoryPos.y * 32 + gridOffset.y, itemSize.w * 32, itemSize.h * 32), Color(96, 96, 96, 128));
     }
 }
 

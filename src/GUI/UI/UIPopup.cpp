@@ -709,7 +709,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
 
             // Draw portrait border
             render->ResetUIClipRect();
-            render->FillRectFast(doll_rect.x, doll_rect.y, SIZE_DOLL, SIZE_DOLL, colorTable.Black);
+            render->FillRect(doll_rect, colorTable.Black);
 
             Recti frameRect(doll_rect.topLeft() - Pointi(1, 1), doll_rect.bottomRight() + Pointi(1, 1));
             render->BeginLines2D();

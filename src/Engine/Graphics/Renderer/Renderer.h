@@ -91,7 +91,7 @@ class Renderer {
     void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color = colorTable.White);
     void DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color = colorTable.White);
 
-    void FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32);
+    void FillRect(const Recti &rect, Color color);
 
     // TODO(captainurist): DrawImage uses palette, should be refactored to use a separate palette shader.
     virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask32 = colorTable.White) = 0;
