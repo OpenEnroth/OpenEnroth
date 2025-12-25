@@ -28,21 +28,6 @@ Renderer::Renderer(
 
 Renderer::~Renderer() = default;
 
-void Renderer::DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask) {
-    if (!img)
-        return;
-
-    Sizei renderDims = GetRenderDimensions();
-    int x = static_cast<int>(u * renderDims.w);
-    int y = static_cast<int>(v * renderDims.h + 0.5f);
-    int width = img->width();
-    int height = img->height();
-
-    Recti srcRect(0, 0, width, height);
-    Recti dstRect(x, y, width, height);
-    DrawQuad2D(img, srcRect, dstRect, colourmask);
-}
-
 void Renderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color) {
     Recti dstRect(dstPoint.x, dstPoint.y, srcRect.w, srcRect.h);
     DrawQuad2D(texture, srcRect, dstRect, color);
