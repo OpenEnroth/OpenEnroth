@@ -48,6 +48,14 @@ void Renderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi d
     DrawQuad2D(texture, srcRect, dstRect, color);
 }
 
+void Renderer::DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color) {
+    int width = texture->width();
+    int height = texture->height();
+    Recti srcRect(0, 0, width, height);
+    Recti dstRect(dstPoint.x, dstPoint.y, width, height);
+    DrawQuad2D(texture, srcRect, dstRect, color);
+}
+
 GraphicsImage *Renderer::solidFillTexture() {
     if (!_solidFillTexture)
         _solidFillTexture = GraphicsImage::Create(RgbaImage::solid(1, 1, colorTable.White));
