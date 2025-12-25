@@ -48,7 +48,7 @@ void GUIWindow_BranchlessDialogue::Update() {
         pTextHeight = assets->pFontCreate->CalcTextHeight(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12) + 7;
     }
 
-    render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
+    render->DrawTextureCustomHeight(8, 352 - pTextHeight, ui_leather_mm7, pTextHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
     pGUIWindow_BranchlessDialogue->DrawText(pFont, {12, 354 - pTextHeight}, colorTable.White,
                                             pFont->WrapText(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12));

@@ -263,7 +263,7 @@ void GUIWindow_Dialogue::Update() {
         }
 
         if (ui_leather_mm7)
-            render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
+            render->DrawTextureCustomHeight(8, 352 - pTextHeight, ui_leather_mm7, pTextHeight);
 
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         pDialogueWindow->DrawText(font, {13, 354 - pTextHeight}, colorTable.White, font->WrapText(dialogue_string, window.uFrameWidth, 13));
