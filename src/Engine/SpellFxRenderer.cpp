@@ -1169,9 +1169,7 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
         }
 
         GraphicsImage *icon = pIconsFrameTable->animationFrame(buff->uSpellIconID, buff->uSpellAnimTimeElapsed);
-        render->DrawTextureNew(
-            pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
-            385 / 480.0f, icon);
+        render->DrawQuad2D(icon, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i], 385});
     }
 }
 
