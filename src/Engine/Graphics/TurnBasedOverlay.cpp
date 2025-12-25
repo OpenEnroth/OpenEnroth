@@ -73,7 +73,7 @@ void TurnBasedOverlay::draw() {
     if (_state == TURN_BASED_OVERLAY_NONE)
         return;
 
-    render->DrawTextureNew(394 / 640.0f, 288 / 480.0f, currentIcon());
+    render->DrawQuad2D(currentIcon(), {394, 288});
 }
 
 GraphicsImage *TurnBasedOverlay::currentIcon() const {

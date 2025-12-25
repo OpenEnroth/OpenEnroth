@@ -37,7 +37,7 @@ GUICredits::~GUICredits() {
 }
 
 void GUICredits::Update() {
-    render->DrawTextureNew(0, 0, _mm6TitleTexture);
+    render->DrawQuad2D(_mm6TitleTexture, {0, 0});
     render->SetUIClipRect(creditsRect);
     Sizei renderDims = render->GetRenderDimensions();
     render->DrawTextureNew(creditsRect.x / static_cast<float>(renderDims.w),

@@ -1323,7 +1323,7 @@ char PlayerTurn(int player_num) {
 void DrawGameUI(int animation_stage) {
     render->BeginScene2D();
     // draw background
-    render->DrawTextureNew(0, 0, pArcomageGame->pGameBackground);
+    render->DrawQuad2D(pArcomageGame->pGameBackground, {0, 0});
 
     // draw gui items
     DrawRectanglesForText();
@@ -2881,7 +2881,7 @@ void ArcomageGame::PrepareArcomage() {
     // load in background pic and render
     render->BeginScene2D();
     pArcomageGame->pGameBackground = assets->getImage_PCXFromIconsLOD("layout.pcx");
-    render->DrawTextureNew(0, 0, pArcomageGame->pGameBackground);
+    render->DrawQuad2D(pArcomageGame->pGameBackground, {0, 0});
     render->Present();
 
     // load in layout pic containing all AM sprites and set fonts
