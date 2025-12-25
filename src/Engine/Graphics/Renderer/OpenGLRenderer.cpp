@@ -258,7 +258,7 @@ void OpenGLRenderer::EndLines2D() {
     glDrawArrays(GL_LINES, 0, _lineVertices.size());
     drawcalls++;
 
-    glUseProgram(0);
+    lineshader.unuse();
     _lineBuffer.unbind();
 
     _lineVertices.clear();
@@ -862,7 +862,7 @@ void OpenGLRenderer::EndDecals() {
     drawcalls++;
 
     // unload
-    glUseProgram(0);
+    decalshader.unuse();
     _decalBuffer.unbind();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -1345,8 +1345,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     drawcalls++;
 
     // unload
-    glUseProgram(0);
-    glBindVertexArray(0);
+    terrainshader.unuse();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -1749,7 +1748,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
         offset += (3 * cnt);
     }
 
-    glUseProgram(0);
+    forcepershader.unuse();
     _forcePerBuffer.unbind();
 
     _forcePerVertices.clear();
@@ -2003,7 +2002,7 @@ void OpenGLRenderer::DrawBillboards() {
         offset += (3 * cnt);
     }
 
-    glUseProgram(0);
+    billbshader.unuse();
     _billboardBuffer.unbind();
     _billboardVertices.clear();
 }
@@ -2199,7 +2198,7 @@ void OpenGLRenderer::EndTextNew() {
     glDrawArrays(GL_TRIANGLES, 0, _textVertices.size());
     drawcalls++;
 
-    glUseProgram(0);
+    textshader.unuse();
     _textBuffer.unbind();
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -2824,8 +2823,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     }
 
     // unload
-    glUseProgram(0);
-    glBindVertexArray(0);
+    outbuildshader.unuse();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -3424,8 +3422,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             //}
         }
 
-        glUseProgram(0);
-        glBindVertexArray(0);
+        bspshader.unuse();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -3726,9 +3723,6 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
 
 bool OpenGLRenderer::ReloadShaders() {
     logger->info("Reloading shaders...");
-    glUseProgram(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 
     ReleaseTerrain();
     ReleaseBSP();
@@ -3933,7 +3927,7 @@ void OpenGLRenderer::DrawTwodVerts() {
         offset += (6*cnt);
     }
 
-    glUseProgram(0);
+    twodshader.unuse();
     _twodBuffer.unbind();
 
     _twodVertices.clear();
