@@ -27,6 +27,7 @@ class OpenGLShader {
     [[nodiscard]] int attribLocation(const char *name);
 
     void use();
+    void unuse();
 
  private:
     [[nodiscard]] unsigned loadShader(const Blob &source, int type, bool openGLES);
