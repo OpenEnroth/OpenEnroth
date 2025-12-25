@@ -336,14 +336,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
 }
 
 void BaseRenderer::TransformBillboardsAndSetPalettesODM() {
-    SoftwareBillboard billboard = {0};
-    billboard.sParentBillboardID = -1;
-    //  billboard.pTarget = render->pTargetSurface;
-    //  billboard.uTargetPitch = render->uTargetSurfacePitch;
-    billboard.uViewportX = pViewport->viewportTL_X;
-    billboard.uViewportY = pViewport->viewportTL_Y;
-    billboard.uViewportZ = pViewport->viewportBR_X - 1;
-    billboard.uViewportW = pViewport->viewportBR_Y;
+    SoftwareBillboard billboard;
     pODMRenderParams->uNumBillboards = ::uNumBillboardsToDraw;
 
     for (unsigned int i = 0; i < ::uNumBillboardsToDraw; ++i) {
@@ -461,7 +454,6 @@ void BaseRenderer::TransformBillboard(const SoftwareBillboard *pSoftBillboard, c
 
     billboard->texture = pSprite->texture;
     billboard->z_order = pSoftBillboard->screen_space_z;
-    billboard->field_90 = pSoftBillboard->field_44;
     billboard->screen_space_z = pSoftBillboard->screen_space_z;
     billboard->object_pid = pSoftBillboard->object_pid;
     billboard->sParentBillboardID = pSoftBillboard->sParentBillboardID;
@@ -476,7 +468,6 @@ void BaseRenderer::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
     billboard->opacity = RenderBillboardD3D::Opaque_1;
-    billboard->field_90 = a2->field_44;
     billboard->screen_space_z = a2->screen_space_z;
     billboard->object_pid = a2->object_pid;
     billboard->sParentBillboardID = a2->sParentBillboardID;
@@ -570,10 +561,9 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     }
 
     unsigned int v5 = NextBillboardIndex();
-    pBillboardRenderListD3D[v5].field_90 = 0;
     pBillboardRenderListD3D[v5].sParentBillboardID = -1;
     pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
-    pBillboardRenderListD3D[v5].texture = 0;
+    pBillboardRenderListD3D[v5].texture = nullptr;
     pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
     pBillboardRenderListD3D[v5].z_order = depth;
     pBillboardRenderListD3D[v5].paletteId = 0;

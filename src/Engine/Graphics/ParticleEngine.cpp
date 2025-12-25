@@ -236,9 +236,7 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
 }
 
 void ParticleEngine::DrawParticles_BLV() {
-    SoftwareBillboard v15 {};  // [sp+Ch] [bp-58h]@1
-
-    v15.sParentBillboardID = -1;
+    SoftwareBillboard v15;
 
     for (unsigned int i = uStartParticle; i <= uEndParticle; ++i) {
         Particle *p = &pParticles[i];
