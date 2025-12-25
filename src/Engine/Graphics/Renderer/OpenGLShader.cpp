@@ -105,6 +105,10 @@ void OpenGLShader::use() {
     glUseProgram(_id);
 }
 
+void OpenGLShader::unuse() {
+    glUseProgram(0);
+}
+
 unsigned OpenGLShader::loadShader(const Blob &source, int type, bool openGLES) {
     std::string_view version;
     if (!openGLES)
