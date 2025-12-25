@@ -32,7 +32,7 @@ void Weather::DrawSnow() {
             Screen_Coord[i].x = pViewport->viewportTL_X + vrng->random(pViewport->viewportBR_X - pViewport->viewportTL_X - size);
         }
 
-        render->FillRectFast(Screen_Coord[i].x, Screen_Coord[i].y, size, size, colorTable.White);
+        render->FillRect(Recti(Screen_Coord[i].x, Screen_Coord[i].y, size, size), colorTable.White);
     }
 }
 

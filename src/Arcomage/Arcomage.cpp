@@ -452,12 +452,12 @@ void DrawSparks() {
                         if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
                             if (j % 2) {
                                 // draw single pixel
-                                render->FillRectFast(am_effects_array[i].effect_sparks[j].spark_position.x,
-                                    am_effects_array[i].effect_sparks[j].spark_position.y, 1, 1, rgb_pixel_color);
+                                render->FillRect(Recti(am_effects_array[i].effect_sparks[j].spark_position.x,
+                                    am_effects_array[i].effect_sparks[j].spark_position.y, 1, 1), rgb_pixel_color);
                             } else {
                                 // draw square
-                                render->FillRectFast(am_effects_array[i].effect_sparks[j].spark_position.x,
-                                    am_effects_array[i].effect_sparks[j].spark_position.y, 2, 2, rgb_pixel_color);
+                                render->FillRect(Recti(am_effects_array[i].effect_sparks[j].spark_position.x,
+                                    am_effects_array[i].effect_sparks[j].spark_position.y, 2, 2), rgb_pixel_color);
                             }
                         }
                     }
@@ -2956,7 +2956,7 @@ void am_DrawText(std::string_view str, Pointi *pXY) {
 
 void DrawRect(Recti *pRect, Color uColor, char bSolidFill) {
     if (bSolidFill) {
-        render->FillRectFast(pRect->x, pRect->y, pRect->w, pRect->h, uColor);
+        render->FillRect(*pRect, uColor);
     } else {
         render->BeginLines2D();
         render->RasterLine2D(pRect->topLeft(), pRect->topRight(), uColor);

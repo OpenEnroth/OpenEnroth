@@ -1422,7 +1422,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        render->FillRectFast(rect.x, rect.y, rect.w, rect.h, colorTable.NavyBlue);
+        render->FillRect(rect, colorTable.NavyBlue);
         uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();
         for (unsigned i = 0; i < (unsigned)pIndoor->pMapOutlines.size(); ++i) {
