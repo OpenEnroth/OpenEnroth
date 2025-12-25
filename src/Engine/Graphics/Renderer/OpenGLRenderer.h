@@ -17,56 +17,9 @@
 
 #include "OpenGLVertexBuffer.h"
 #include "OpenGLShader.h"
+#include "OpenGLShaderParams.h"
 
 class PlatformOpenGLContext;
-
-struct LineVertex {
-    Vec2f pos;
-    Colorf color;
-};
-
-struct ForcePerVertex {
-    Vec3f pos;
-    GLfloat w;
-    Vec2f texuv;
-    GLfloat texw;
-    GLfloat screenspace;
-    Colorf color;
-    GLfloat texid;
-};
-
-struct TwoDVertex {
-    Vec3f pos;
-    Vec2f texuv;
-    Colorf color;
-    GLfloat texid;
-    GLfloat paletteid;
-};
-
-struct DecalVertex {
-    Vec3f pos;
-    Vec2f texuv;
-    GLfloat texunit;
-    Colorf color;
-};
-
-struct BillboardVertex {
-    Vec3f pos;
-    Vec2f texuv;
-    Colorf color;
-    GLfloat screenspace;
-    GLfloat texid;
-    GLfloat blend;
-    GLfloat paletteId;
-};
-
-struct ShaderVertex {
-    Vec3f pos;
-    Vec2f texuv;
-    GLfloat texturelayer;
-    Vec3f normal;
-    GLfloat attribs;
-};
 
 class OpenGLRenderer : public BaseRenderer {
  public:

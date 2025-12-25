@@ -75,13 +75,13 @@ void OpenGLShader::release() {
     _id = 0;
 }
 
-int OpenGLShader::uniformLocation(const char *name) {
+int OpenGLShader::uniformLocation(const char *name) const {
     assert(isValid());
 
     return glGetUniformLocation(_id, name);
 }
 
-int OpenGLShader::attribLocation(const char *name) {
+int OpenGLShader::attribLocation(const char *name) const {
     assert(isValid());
 
     return glGetAttribLocation(_id, name);

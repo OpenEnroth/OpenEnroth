@@ -22,8 +22,8 @@ class OpenGLShader {
     [[nodiscard]] bool load(const Blob &vertSource, const Blob &fragSource, bool openGLES, const FileSystem *pwd);
     void release();
 
-    [[nodiscard]] int uniformLocation(const char *name);
-    [[nodiscard]] int attribLocation(const char *name);
+    [[nodiscard]] int uniformLocation(const char *name) const;
+    [[nodiscard]] int attribLocation(const char *name) const;
 
     void use();
     void unuse();
