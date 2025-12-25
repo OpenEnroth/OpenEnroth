@@ -170,7 +170,7 @@ void GUIWindow_Spellbook::Update() {
                 pX_coord = texture_tab_coord0[page][0];
                 pY_coord = texture_tab_coord0[page][1];
             }
-            render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pPageTexture);
+            render->DrawQuad2D(pPageTexture, {pX_coord, pY_coord});
 
             Pointi mousePos = mouse->position();
 
@@ -189,10 +189,10 @@ void GUIWindow_Spellbook::Update() {
                             Recti iconRect = Recti(pX_coord, pY_coord, pTexture->width(), pTexture->height());
                             if (iconRect.contains(mousePos)) { // mouseover highlight
                                 if (SBPageCSpellsTextureList[index + 1]) {
-                                    render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, SBPageCSpellsTextureList[index + 1]);
+                                    render->DrawQuad2D(SBPageCSpellsTextureList[index + 1], {pX_coord, pY_coord});
                                 }
                             } else {
-                                render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pTexture);
+                                render->DrawQuad2D(pTexture, {pX_coord, pY_coord});
                             }
                         }
                     }
@@ -235,10 +235,10 @@ void GUIWindow_Spellbook::drawCurrentSchoolBackground() {
     if (pParty->hasActiveCharacter()) {
         page = pParty->activeCharacter().lastOpenedSpellbookPage;
     }
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_spellbook_school_backgrounds[page]);
+    render->DrawQuad2D(ui_spellbook_school_backgrounds[page], {8, 8});
 
-    render->DrawTextureNew(476 / 640.0f, 450 / 480.0f, ui_spellbook_btn_quckspell);
-    render->DrawTextureNew(561 / 640.0f, 450 / 480.0f, ui_spellbook_btn_close);
+    render->DrawQuad2D(ui_spellbook_btn_quckspell, {476, 450});
+    render->DrawQuad2D(ui_spellbook_btn_close, {561, 450});
 }
 
 void GUIWindow_Spellbook::initializeTextures() {

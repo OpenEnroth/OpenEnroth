@@ -112,21 +112,15 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
     unsigned int uX = window->uFrameX + (signed int)(window->uFrameWidth - bar_length) / 2;
 
     render->SetUIClipRect(Recti(uX, window->uFrameY + 32, bar_length, 20));
-    render->DrawTextureNew(uX / 640.0f, (window->uFrameY + 32) / 480.0f,
-                                game_ui_monster_hp_background);
+    render->DrawQuad2D(game_ui_monster_hp_background, {static_cast<int>(uX), window->uFrameY + 32});
 
     render->SetUIClipRect(Recti(uX, window->uFrameY + 32, bar_filled_length, 20));
-    render->DrawTextureNew(uX / 640.0f, (window->uFrameY + 34) / 480.0f,
-                                bar_image);
+    render->DrawQuad2D(bar_image, {static_cast<int>(uX), window->uFrameY + 34});
 
     // draw hp bar ends
     render->ResetUIClipRect();
-    render->DrawTextureNew((uX - 5) / 640.0f,
-                                (window->uFrameY + 32) / 480.0f,
-                                game_ui_monster_hp_border_left);
-    render->DrawTextureNew((uX + bar_length) / 640.0f,
-                                (window->uFrameY + 32) / 480.0f,
-                                game_ui_monster_hp_border_right);
+    render->DrawQuad2D(game_ui_monster_hp_border_left, {static_cast<int>(uX) - 5, window->uFrameY + 32});
+    render->DrawQuad2D(game_ui_monster_hp_border_right, {static_cast<int>(uX + bar_length), window->uFrameY + 32});
 }
 
 void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {

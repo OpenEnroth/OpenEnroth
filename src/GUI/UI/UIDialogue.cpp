@@ -184,10 +184,10 @@ void GUIWindow_Dialogue::Update() {
     NpcType npcType = getNPCType(speakingNpcId);
     window.uFrameWidth -= 10;
     window.uFrameZ -= 10;
-    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, houseNpcs[0].icon);
+    render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
+    render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
+    render->DrawQuad2D(game_ui_evtnpc, {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
+    render->DrawQuad2D(houseNpcs[0].icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
 
     window.DrawTitleText(assets->pFontArrus.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3);
 
@@ -320,7 +320,7 @@ void GUIWindow_Dialogue::Update() {
             window.DrawTitleText(assets->pFontArrus.get(), 0, pButton->uY, pTextColor, pButton->sLabel, 3);
         }
     }
-    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 }
 
 void BuildHireableNpcDialogue() {
