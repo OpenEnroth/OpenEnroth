@@ -44,7 +44,7 @@ void GUIWindow_QuickReference::Update() {
     Color pTextColor;
     int pFontHeight = assets->pFontArrus->GetHeight() + 1;
 
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_game_quickref_background);
+    render->DrawQuad2D(ui_game_quickref_background, {8, 8});
 
     pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, 18}, colorTable.White, localization->str(LSTR_NAME), 60, 0);
     pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, 47}, colorTable.White, localization->str(LSTR_LEVEL), 60, 0);
