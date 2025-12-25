@@ -43,11 +43,8 @@ void Renderer::DrawTextureNew(float u, float v, GraphicsImage *img, Color colour
     DrawQuad2D(img, srcRect, dstRect, colourmask);
 }
 
-void Renderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {
-    if (!texture)
-        return;
-
-    Recti dstRect(targetPoint.x, targetPoint.y, srcRect.w, srcRect.h);
+void Renderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color) {
+    Recti dstRect(dstPoint.x, dstPoint.y, srcRect.w, srcRect.h);
     DrawQuad2D(texture, srcRect, dstRect, color);
 }
 
