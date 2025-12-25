@@ -360,7 +360,8 @@ void GUIWindow::DrawDialoguePanel(std::string_view text) {
         textHeight = font->CalcTextHeight(text, frameWidth, indent) + 7;
     }
 
-    render->DrawTextureCustomHeight(8, 352 - textHeight, ui_leather_mm7, textHeight);
+    int leatherWidth = ui_leather_mm7->width();
+    render->DrawQuad2D(ui_leather_mm7, Recti(0, 0, leatherWidth, textHeight), Recti(8, 352 - textHeight, leatherWidth, textHeight), colorTable.White);
     render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
     DrawText(font, {indent, 354 - textHeight}, colorTable.White, font->WrapText(text, frameWidth, indent));
 }
