@@ -41,7 +41,7 @@ GUIWindow_MainMenu::~GUIWindow_MainMenu() {
 }
 
 void GUIWindow_MainMenu::Update() {
-    render->DrawQuad2D(main_menu_background, {0, 0}, colorTable.White);
+    render->DrawQuad2D(main_menu_background, {0, 0});
 
     Pointi pt = mouse->position();
 
@@ -68,7 +68,7 @@ void GUIWindow_MainMenu::Update() {
                     pY = 337;
                     break;
             }
-            render->DrawQuad2D(pTexture, {495, pY}, colorTable.White);
+            render->DrawQuad2D(pTexture, {495, pY});
         }
     }
 }
