@@ -254,47 +254,30 @@ static void CharacterUI_DrawTooltip(std::string_view title, std::string_view con
 }
 
 //----- (004151D9) --------------------------------------------------------
-void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
-                     unsigned int uHeight) {
-    unsigned int uNumTiles;  // [sp+2Ch] [bp-Ch]@6
-    int coord_x;             // [sp+2Ch] [bp-Ch]@3
-    int coord_y;             // [sp+34h] [bp-4h]@5
-
+void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight) {
     if (!parchment) return;
 
     render->SetUIClipRect(Recti(uX, uY, uWidth, uHeight));
 
-    Sizei renderdims = render->GetRenderDimensions();
-    float renwidth = renderdims.w;
-    float renheight = renderdims.h;
+    int parchment_width = parchment->width();
+    int parchment_height = parchment->height();
 
-    unsigned int parchment_width = parchment->width();
-    unsigned int parchment_height = parchment->height();
-
-    uNumTiles = uWidth / parchment_width;
+    int uNumTiles = uWidth / parchment_width;
     if (uWidth % parchment_width) ++uNumTiles;
-    coord_y = uY;
-    for (unsigned j = 0; j <= uHeight / parchment_height; j++) {
-        coord_x = uX - parchment_width;
-        for (unsigned i = uNumTiles + 1; i; --i) {
+    int coord_y = uY;
+    for (int j = 0; j <= uHeight / parchment_height; j++) {
+        int coord_x = uX - parchment_width;
+        for (int i = uNumTiles + 1; i; --i) {
             coord_x += parchment_width;
-            render->DrawTextureNew(coord_x / renwidth, coord_y / renheight,
-                                   parchment);
+            render->DrawQuad2D(parchment, {coord_x, coord_y});
         }
         coord_y += parchment_height;
     }
 
-    render->DrawTextureNew(uX / renwidth, uY / renheight, messagebox_corner_x);
-    render->DrawTextureNew(
-        uX / renwidth, (uY + uHeight - messagebox_corner_y->height()) / renheight,
-        messagebox_corner_y);
-    render->DrawTextureNew(
-        (uX + uWidth - messagebox_corner_z->width()) / renwidth, uY / renheight,
-        messagebox_corner_z);
-    render->DrawTextureNew(
-        (uX + uWidth - messagebox_corner_z->width()) / renwidth,
-        (uY + uHeight - messagebox_corner_y->height()) / renheight,
-        messagebox_corner_w);
+    render->DrawQuad2D(messagebox_corner_x, {uX, uY});
+    render->DrawQuad2D(messagebox_corner_y, {uX, static_cast<int>(uY + uHeight - messagebox_corner_y->height())});
+    render->DrawQuad2D(messagebox_corner_z, {static_cast<int>(uX + uWidth - messagebox_corner_z->width()), uY});
+    render->DrawQuad2D(messagebox_corner_w, {static_cast<int>(uX + uWidth - messagebox_corner_z->width()), static_cast<int>(uY + uHeight - messagebox_corner_y->height())});
 
     if (uWidth > messagebox_corner_x->width() + messagebox_corner_z->width()) {
         render->SetUIClipRect(Recti(uX + messagebox_corner_x->width(), uY,
@@ -302,15 +285,11 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
                               uHeight));
 
         // horizontal borders
-        for (unsigned int x = uX + messagebox_corner_x->width();
+        for (int x = uX + messagebox_corner_x->width();
              x < uX + uWidth - messagebox_corner_x->width();
              x += messagebox_border_top->width()) {
-            render->DrawTextureNew(x / renwidth, uY / renheight,
-                                        messagebox_border_top);
-            render->DrawTextureNew(
-                x / renwidth,
-                (uY + uHeight - messagebox_border_bottom->height()) / renheight,
-                messagebox_border_bottom);
+            render->DrawQuad2D(messagebox_border_top, {x, uY});
+            render->DrawQuad2D(messagebox_border_bottom, {x, static_cast<int>(uY + uHeight - messagebox_border_bottom->height())});
         }
     }
 
@@ -320,15 +299,11 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
                               uWidth,
                               uHeight - messagebox_corner_y->height() - messagebox_corner_x->height()));
 
-        for (unsigned int y = uY + messagebox_corner_x->height();
+        for (int y = uY + messagebox_corner_x->height();
              y < uY + uHeight - messagebox_corner_y->height();
              y += messagebox_border_right->height()) {
-            render->DrawTextureNew(uX / renwidth, y / renheight,
-                                        messagebox_border_left);
-            render->DrawTextureNew(
-                (uX + uWidth - messagebox_border_right->width() - 1) /
-                renwidth,
-                y / renheight, messagebox_border_right);
+            render->DrawQuad2D(messagebox_border_left, {uX, y});
+            render->DrawQuad2D(messagebox_border_right, {static_cast<int>(uX + uWidth - messagebox_border_right->width() - 1), y});
         }
     }
     render->ResetUIClipRect();
@@ -424,9 +399,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         iteminfo_window.uFrameW =
             iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
 
-        render->DrawTextureNew(
-            (iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
-            (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image, colorTable.Red);
+        render->DrawQuad2D(inspect_item_image, {iteminfo_window.uFrameX + itemXspacing, itemYspacing + iteminfo_window.uFrameY + 30}, colorTable.Red);
 
         iteminfo_window.DrawTitleText(assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary, inspect_item->GetDisplayName(), 3);
         iteminfo_window.DrawTitleText(assets->pFontArrus.get(), 0x64u,
@@ -453,9 +426,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
             iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
         iteminfo_window.uFrameW =
             iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-        render->DrawTextureNew(
-            (iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
-            (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
+        render->DrawQuad2D(inspect_item_image, {iteminfo_window.uFrameX + itemXspacing, itemYspacing + iteminfo_window.uFrameY + 30});
         iteminfo_window.DrawTitleText(
             assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary,
             pItemTable->items[inspect_item->itemId].unidentifiedName, 3);
@@ -592,9 +563,8 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
     iteminfo_window.uFrameW =
         iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-    render->DrawTextureNew((iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
-                           (iteminfo_window.uFrameY + (float)(iteminfo_window.uFrameHeight - inspect_item_image->height()) / 2.) / 480.0f,
-                                inspect_item_image);
+    render->DrawQuad2D(inspect_item_image, {iteminfo_window.uFrameX + itemXspacing,
+                                           iteminfo_window.uFrameY + static_cast<int>(iteminfo_window.uFrameHeight - inspect_item_image->height()) / 2});
 
     v34 = (int)(v85 + 35);
 
@@ -1734,7 +1704,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
         v13 = game_ui_player_faces[characterIndex][faceTextureIndex - 1];
     }
 
-    render->DrawTextureNew((window->uFrameX + 24) / 640.0f, (window->uFrameY + 24) / 480.0f, v13);
+    render->DrawQuad2D(v13, {window->uFrameX + 24, window->uFrameY + 24});
 
     // TODO(captainurist): do a 2nd rewrite here
     auto str =
@@ -1813,10 +1783,8 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.DrawMessageBox(0);
 
                 auto tex_name = fmt::format("NPC{:03}", pNPC->uPortraitID);
-                render->DrawTextureNew(
-                    (popup_window.uFrameX + 22) / 640.0f,
-                    (popup_window.uFrameY + 36) / 480.0f,
-                    assets->getImage_ColorKey(tex_name));
+                render->DrawQuad2D(assets->getImage_ColorKey(tex_name),
+                                   {popup_window.uFrameX + 22, popup_window.uFrameY + 36});
 
                 popup_window.DrawTitleText(assets->pFontArrus.get(), 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
