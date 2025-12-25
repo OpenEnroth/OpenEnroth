@@ -90,7 +90,6 @@ class Renderer {
     virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) = 0;
 
     void DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask = colorTable.White);
-    void DrawTextureCustomHeight(float u, float v, GraphicsImage *img, int height);
     void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color);
     void FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32);
 

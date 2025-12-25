@@ -346,6 +346,26 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
     }
 }
 
+void GUIWindow::DrawDialoguePanel(std::string_view text) {
+    if (text.empty())
+        return;
+
+    int frameWidth = pViewport->viewportWidth;
+    int indent = 12;
+
+    GUIFont *font = assets->pFontArrus.get();
+    int textHeight = font->CalcTextHeight(text, frameWidth, indent) + 7;
+    if (352 - textHeight < 8) {
+        font = assets->pFontCreate.get();
+        textHeight = font->CalcTextHeight(text, frameWidth, indent) + 7;
+    }
+
+    int leatherWidth = ui_leather_mm7->width();
+    render->DrawQuad2D(ui_leather_mm7, Recti(0, 0, leatherWidth, textHeight), Recti(8, 352 - textHeight, leatherWidth, textHeight), colorTable.White);
+    render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
+    DrawText(font, {indent, 354 - textHeight}, colorTable.White, font->WrapText(text, frameWidth, indent));
+}
+
 //----- (0044CE08) --------------------------------------------------------
 void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, int maxY, Color shadowColor) {
     if (engine->callObserver) {

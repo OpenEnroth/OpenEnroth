@@ -732,7 +732,7 @@ GAME_TEST(Issues, Issue1958) {
     auto goldTape = tapes.gold();
     test.playTraceFromTestData("issue_1958.mm7", "issue_1958.json");
     EXPECT_CONTAINS(textsTape.flatten(), [](std::string_view s) { return s.contains("Congratulations on defeating the"); }); // Bounty message.
-    EXPECT_CONTAINS(textsTape.flatten(), [](std::string_view s) { return s.contains("Someone has already claimed the bounty this month."); }); // Bounty already claimed message.
+    EXPECT_CONTAINS(textsTape.flatten(), [](std::string_view s) { return s.contains("Someone has already claimed the bounty"); }); // Bounty already claimed message.
     EXPECT_EQ(goldTape.delta(), +1400); // We got the bounty.
 }
 

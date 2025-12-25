@@ -249,25 +249,8 @@ void GUIWindow_Dialogue::Update() {
             break;
     }
 
-    int pTextHeight = 0;
-
-    // Message window(Окно сообщения)----
-    if (!dialogue_string.empty()) {
-        window.uFrameWidth = pViewport->viewportWidth;
-        window.uFrameZ = 452;
-        GUIFont *font = assets->pFontArrus.get();
-        pTextHeight = assets->pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
-        if (352 - pTextHeight < 8) {
-            font = assets->pFontCreate.get();
-            pTextHeight = assets->pFontCreate->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
-        }
-
-        if (ui_leather_mm7)
-            render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
-
-        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        pDialogueWindow->DrawText(font, {13, 354 - pTextHeight}, colorTable.White, font->WrapText(dialogue_string, window.uFrameWidth, 13));
-    }
+    // Message window
+    pDialogueWindow->DrawDialoguePanel(dialogue_string);
 
     // Right panel(Правая панель)-------
     window = *pDialogueWindow;
@@ -326,7 +309,7 @@ void GUIWindow_Dialogue::Update() {
             if (!pButton)
                 break;
             pButton->uY = (unsigned int)(v45 + v42);
-            pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
+            int pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
             pButton->uHeight = pTextHeight;
             v42 = pButton->uY + pTextHeight - 1;
             pButton->uW = v42;

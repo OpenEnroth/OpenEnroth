@@ -55,40 +55,11 @@ void GUIWindow_Tavern::arcomageMainDialogue() {
 }
 
 void GUIWindow_Tavern::arcomageRulesDialogue() {
-    GUIWindow dialog_window = *this;
-    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
-    GUIFont *font;
-    std::string str = pNPCTopics[354].pText;
-    dialog_window.uFrameWidth = pViewport->viewportWidth;
-    dialog_window.uFrameZ = 452;
-    int pTextHeight = assets->pFontArrus->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
-    if (352 - pTextHeight < 8) {
-        font = assets->pFontCreate.get();
-        pTextHeight = assets->pFontCreate->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
-    } else {
-        return; // TODO(captainurist): what's going on here?
-    }
-    render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
-    render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    DrawText(font, {12, 354 - pTextHeight}, colorTable.White, font->WrapText(str, dialog_window.uFrameWidth, 12));
+    DrawDialoguePanel(pNPCTopics[354].pText);
 }
 
 void GUIWindow_Tavern::arcomageVictoryCondDialogue() {
-    GUIWindow dialog_window = *this;
-    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
-    std::string label = pNPCTopics[arcomageTopicForTavern(houseId())].pText;
-    dialog_window.uFrameWidth = pViewport->viewportWidth;
-    dialog_window.uFrameZ = 452;
-    int pTextHeight = assets->pFontArrus->CalcTextHeight(label, dialog_window.uFrameWidth, 12) + 7;
-    render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
-    render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    DrawText(assets->pFontArrus.get(), {12, 354 - pTextHeight}, colorTable.White, assets->pFontArrus->WrapText(label, dialog_window.uFrameWidth, 12));
+    DrawDialoguePanel(pNPCTopics[arcomageTopicForTavern(houseId())].pText);
 }
 
 void GUIWindow_Tavern::arcomageResultDialogue() {
