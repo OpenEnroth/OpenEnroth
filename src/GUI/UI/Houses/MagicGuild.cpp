@@ -154,15 +154,15 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+    render->DrawQuad2D(shop_ui_background, {8, 8});
     int itemxind = 0;
 
     for (int pX = 32; pX < 452; pX += 70) {  // top row
         if (pParty->spellBooksInGuilds[houseId()][itemxind].itemId != ITEM_NULL) {
-            render->DrawTextureNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[itemxind]);
+            render->DrawQuad2D(shop_ui_items_in_store[itemxind], {pX, 90});
         }
         if (pParty->spellBooksInGuilds[houseId()][itemxind + 6].itemId != ITEM_NULL) {
-            render->DrawTextureNew(pX / 640.0f, 250 / 480.0f, shop_ui_items_in_store[itemxind + 6]);
+            render->DrawQuad2D(shop_ui_items_in_store[itemxind + 6], {pX, 250});
         }
 
         ++itemxind;
