@@ -377,13 +377,14 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+    render->DrawQuad2D(shop_ui_background, {8, 8});
     int item_X = 0;
 
     for (int i = 0; i < 6; ++i) {
         bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         if (itemPresent) {
-            render->DrawTextureNew(((60 - (shop_ui_items_in_store[i]->width() / 2)) + item_X) / 640.0f, (weaponYPos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
+            int itemPosX = 60 - shop_ui_items_in_store[i]->width() / 2 + item_X;
+            render->DrawQuad2D(shop_ui_items_in_store[i], {itemPosX, weaponYPos[i] + 30});
         }
 
         item_X += 70;
@@ -444,7 +445,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
     dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+    render->DrawQuad2D(shop_ui_background, {8, 8});
     int item_x = 0;
 
     for (int i = 0; i < 8; ++i) {
@@ -452,11 +453,12 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
 
         if (itemPresent) {
             if (i >= 4) {
-                render->DrawTextureNew(((90 - (shop_ui_items_in_store[i]->width() / 2)) + item_x - 420) / 640.0f, 126 / 480.0f, shop_ui_items_in_store[i]);
+                int itemPosX = 90 - shop_ui_items_in_store[i]->width() / 2 + item_x - 420;
+                render->DrawQuad2D(shop_ui_items_in_store[i], {itemPosX, 126});
             } else {
                 int x = ((86 - (shop_ui_items_in_store[i]->width() / 2)) + item_x);
                 int y = (98 - (shop_ui_items_in_store[i]->height()));
-                render->DrawTextureNew(x / 640.0f, y / 480.0f, shop_ui_items_in_store[i]);
+                render->DrawQuad2D(shop_ui_items_in_store[i], {x, y});
             }
         }
         item_x += 105;
@@ -531,7 +533,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
     dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+    render->DrawQuad2D(shop_ui_background, {8, 8});
 
     for (int i = 0; i < 12; ++i) {
         bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
@@ -561,7 +563,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                 }
             }
 
-            render->DrawTextureNew(itemx / 640.0f, itemy / 480.0f, shop_ui_items_in_store[i]);
+            render->DrawQuad2D(shop_ui_items_in_store[i], {itemx, itemy});
         }
     }
 

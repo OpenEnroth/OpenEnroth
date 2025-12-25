@@ -119,15 +119,15 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags
 }
 
 void GUIWindow_TownPortalBook::Update() {
-    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     GUIWindow townPortalWindow;
     Pointi cursorPos = mouse->position();
     bool townPortalCheats = engine->config->debug.TownPortal.value();
     int count = townPortalCheats ? TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS : TOWN_PORTAL_DESTINATION_COUNT;
 
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_book_townportal_background);
-    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawQuad2D(ui_book_townportal_background, {8, 8});
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     townPortalWindow.uFrameWidth = pViewport->viewportWidth;
     townPortalWindow.uFrameHeight = pViewport->viewportHeight;
@@ -140,9 +140,7 @@ void GUIWindow_TownPortalBook::Update() {
         // draw grey icons for cheat locations
         // ordinary locations are in the background image already
         for (int i = TOWN_PORTAL_DESTINATION_COUNT; i < TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS; ++i) {
-            render->DrawTextureNew(townPortalButtonsPos[i].x / 640.0f,
-                                   townPortalButtonsPos[i].y / 480.0f,
-                                   ui_townportal_cheat_destination_icon);
+            render->DrawQuad2D(ui_townportal_cheat_destination_icon, townPortalButtonsPos[i].topLeft());
         }
     }
 
@@ -150,9 +148,7 @@ void GUIWindow_TownPortalBook::Update() {
     for (int i = 0; i < count; ++i) {
         if (townPortalCheats || pParty->_questBits[townPortalList[i].qBit]) {
             if (townPortalButtonsPos[i].contains(cursorPos)) {
-                render->DrawTextureNew(townPortalButtonsPos[i].x / 640.0f,
-                                       townPortalButtonsPos[i].y / 480.0f,
-                                       ui_book_townportal_icons[i]);
+                render->DrawQuad2D(ui_book_townportal_icons[i], townPortalButtonsPos[i].topLeft());
             }
         }
     }
@@ -219,7 +215,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
 
 void GUIWindow_TownPortalBook::hintTown(int townId) {
     if (!engine->config->debug.TownPortal.value() && !pParty->_questBits[townPortalList[townId].qBit]) {
-        render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar); // TODO(captainurist): engine->_statusBar->smthSmth()???
+        render->DrawQuad2D(game_ui_statusbar, {0, 352}); // TODO(captainurist): engine->_statusBar->smthSmth()???
         return;
     }
 
