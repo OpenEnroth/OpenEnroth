@@ -872,8 +872,8 @@ void GUIWindow_House::houseDialogManager() {
     GUIWindow pWindow = *this;
     pWindow.uFrameWidth -= 18;
     pWindow.uFrameZ -= 18;
-    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
+    render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
 
     if (currentHouseNpc == -1 || houseNpcs[currentHouseNpc].type != HOUSE_TRANSITION) {
         // Draw house title
@@ -892,7 +892,7 @@ void GUIWindow_House::houseDialogManager() {
     pWindow.uFrameZ += 8;
     if (currentHouseNpc == -1) {
         // Either house have no residents or current screen is for selecting resident to begin dialogue
-        render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
         if (buildingType() == HOUSE_TYPE_JAIL) {
             houseSpecificDialogue();
@@ -901,10 +901,10 @@ void GUIWindow_House::houseDialogManager() {
         DrawDialoguePanel(current_npc_text);
 
         for (int i = 0; i < houseNpcs.size(); ++i) {
-            render->DrawTextureNew((pNPCPortraits_x[houseNpcs.size() - 1][i] - 4) / 640.0f,
-                                   (pNPCPortraits_y[houseNpcs.size() - 1][i] - 4) / 480.0f, game_ui_evtnpc);
-            render->DrawTextureNew(pNPCPortraits_x[houseNpcs.size() - 1][i] / 640.0f,
-                                   pNPCPortraits_y[houseNpcs.size() - 1][i] / 480.0f, houseNpcs[i].icon);
+            int portraitX = pNPCPortraits_x[houseNpcs.size() - 1][i];
+            int portraitY = pNPCPortraits_y[houseNpcs.size() - 1][i];
+            render->DrawQuad2D(game_ui_evtnpc, {portraitX - 4, portraitY - 4});
+            render->DrawQuad2D(houseNpcs[i].icon, {portraitX, portraitY});
             if (houseNpcs.size() < 4) {
                 std::string pTitleText = "";
                 int yPos = 0;
@@ -928,11 +928,11 @@ void GUIWindow_House::houseDialogManager() {
         return;
     }
 
-    render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, houseNpcs[currentHouseNpc].icon);
+    render->DrawQuad2D(game_ui_evtnpc, {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
+    render->DrawQuad2D(houseNpcs[currentHouseNpc].icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
     if (current_screen_type == SCREEN_SHOP_INVENTORY) {
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
-        render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
         return;
     }
     if (currentHouseNpc || houseNpcs[0].type != HOUSE_PROPRIETOR) {
@@ -944,10 +944,10 @@ void GUIWindow_House::houseDialogManager() {
         houseSpecificDialogue();
     }
     if (currentHouseNpc != -1 && houseNpcs[currentHouseNpc].type == HOUSE_TRANSITION) {
-        render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-        render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+        render->DrawQuad2D(dialogue_ui_x_x_u, {556, 451});
+        render->DrawQuad2D(dialogue_ui_x_ok_u, {476, 451});
     } else {
-        render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
     }
 }
 
