@@ -88,9 +88,9 @@ class Renderer {
      *                                  tinting. RGB components scale the texture colors, alpha controls transparency.
      */
     virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) = 0;
+    void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color);
 
     void DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask = colorTable.White);
-    void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color);
     void FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32);
 
     // TODO(captainurist): DrawImage uses palette, should be refactored to use a separate palette shader.

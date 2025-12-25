@@ -1261,7 +1261,7 @@ void GameUI_DrawPartySpells() {
             point.x = pPartySpellbuffsUI_XYs[i][0];
             point.y = pPartySpellbuffsUI_XYs[i][1];
 
-            render->DrawFromSpriteSheet(party_buff_icons[i], rect, point, colorTable.White);
+            render->DrawQuad2D(party_buff_icons[i], rect, point, colorTable.White);
         }
     }
 
