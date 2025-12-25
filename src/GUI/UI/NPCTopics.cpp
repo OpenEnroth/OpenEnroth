@@ -270,11 +270,6 @@ void prepareArenaFight(ArenaLevel level) {
     pParty->arenaState = ARENA_STATE_FIGHTING;
     pParty->arenaLevel = level;
 
-    GUIWindow window = *pDialogueWindow;
-    window.uFrameWidth = pViewport->viewportWidth;
-    window.uFrameZ = 452;
-    int textHeight = assets->pFontArrus->CalcTextHeight(localization->str(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13) + 7;
-
     // TODO(pskelton): This doesnt work properly and we dont want draw calls here
     render->BeginScene3D();
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
@@ -283,11 +278,8 @@ void prepareArenaFight(ArenaLevel level) {
         pOutdoor->Draw();
     }
     render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
-     render->BeginScene2D();
-    render->DrawTextureCustomHeight(8, 352 - textHeight, ui_leather_mm7, textHeight);
-    render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
-    std::string text = assets->pFontArrus->WrapText(localization->str(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13);
-    pDialogueWindow->DrawText(assets->pFontArrus.get(), {13, 354 - textHeight}, colorTable.White, text);
+    render->BeginScene2D();
+    pDialogueWindow->DrawDialoguePanel(localization->str(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS));
     render->Present();
 
     pParty->pos = Vec3f(3849, 5770, 1); // TODO(pskelton) :: extract this common teleport to func

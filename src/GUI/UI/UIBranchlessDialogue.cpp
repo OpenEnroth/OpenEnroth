@@ -34,24 +34,10 @@ void GUIWindow_BranchlessDialogue::Release() {
 }
 
 void GUIWindow_BranchlessDialogue::Update() {
-    GUIFont *pFont = assets->pFontArrus.get();
-
     if (current_npc_text.length() > 0 && branchless_dialogue_str.empty())
         branchless_dialogue_str = current_npc_text;
 
-    GUIWindow BranchlessDlg_window;
-    BranchlessDlg_window.uFrameWidth = pViewport->viewportWidth;
-    BranchlessDlg_window.uFrameZ = 452;
-    int pTextHeight = assets->pFontArrus->CalcTextHeight(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12) + 7;
-    if (352 - pTextHeight < 8) {
-        pFont = assets->pFontCreate.get();
-        pTextHeight = assets->pFontCreate->CalcTextHeight(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12) + 7;
-    }
-
-    render->DrawTextureCustomHeight(8, 352 - pTextHeight, ui_leather_mm7, pTextHeight);
-    render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    pGUIWindow_BranchlessDialogue->DrawText(pFont, {12, 354 - pTextHeight}, colorTable.White,
-                                            pFont->WrapText(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12));
+    pGUIWindow_BranchlessDialogue->DrawDialoguePanel(branchless_dialogue_str);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
 
     // TODO(Nik-RE-dev): this code related to text input in MM6/MM8, revisit

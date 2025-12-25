@@ -741,19 +741,12 @@ void GUIWindow_House::drawNpcHouseGreetingMessage(NPCData *npcData) {
         if (current_npc_text.length() == 0 && _currentDialogue == DIALOGUE_MAIN) {
             if (npcData->greet) {
                 std::string greetString;
-
-                int uFrameWidth = pViewport->viewportWidth;
-                int uFrameZ = 452;
                 if (npcData->uFlags & NPC_GREETED_SECOND) {
                     greetString = pNPCStats->pNPCGreetings[npcData->greet].pGreeting2;
                 } else {
                     greetString = pNPCStats->pNPCGreetings[npcData->greet].pGreeting1;
                 }
-
-                int textHeight = assets->pFontArrus->CalcTextHeight(greetString, uFrameWidth, 13) + 7;
-                render->DrawTextureCustomHeight(8, 352 - textHeight, ui_leather_mm7, textHeight);
-                render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
-                DrawText(assets->pFontArrus.get(), { 13, 354 - textHeight }, colorTable.White, assets->pFontArrus->WrapText(greetString, uFrameWidth, 13));
+                DrawDialoguePanel(greetString);
             }
         }
     }
@@ -779,19 +772,7 @@ void GUIWindow_House::drawNpcHouseDialogueOptions(NPCData* npcData) const {
 }
 
 void GUIWindow_House::drawNpcHouseDialogueResponse() {
-    if (current_npc_text.length() > 0) {
-        int frameWidth = 458;
-        int frameZ = 457;
-        GUIFont *pTextFont = assets->pFontArrus.get();
-        int pTextHeight = assets->pFontArrus->CalcTextHeight(current_npc_text, frameWidth, 13) + 7;
-        if (352 - pTextHeight < 8) {
-            pTextFont = assets->pFontCreate.get();
-            pTextHeight = assets->pFontCreate->CalcTextHeight(current_npc_text, frameZ, 13) + 7;
-        }
-        render->DrawTextureCustomHeight(8, 352 - pTextHeight, ui_leather_mm7, pTextHeight);
-        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        DrawText(pTextFont, { 13, 354 - pTextHeight }, colorTable.White, pTextFont->WrapText(current_npc_text, frameWidth, 13));
-    }
+    DrawDialoguePanel(current_npc_text);
 }
 
 void GUIWindow_House::reinitDialogueWindow() {
@@ -917,17 +898,7 @@ void GUIWindow_House::houseDialogManager() {
             houseSpecificDialogue();
             return;
         }
-        if (!current_npc_text.empty()) {
-            // TODO(Nik-RE-dev): separate text field drawing and merge with similar code from other places
-            GUIWindow pDialogWindow;
-            pDialogWindow.uFrameWidth = 458;
-            pDialogWindow.uFrameZ = 457;
-            int pTextHeight = assets->pFontArrus->CalcTextHeight(current_npc_text, pDialogWindow.uFrameWidth, 13);
-            int pTextBackgroundHeight = pTextHeight + 7;
-            render->DrawTextureCustomHeight(8, 352 - pTextBackgroundHeight, ui_leather_mm7, pTextBackgroundHeight);
-            render->DrawTextureNew(8 / 640.0f, (347 - pTextBackgroundHeight) / 480.0f, _591428_endcap);
-            DrawText(assets->pFontArrus.get(), {13, 354 - pTextBackgroundHeight}, colorTable.White, assets->pFontArrus->WrapText(current_npc_text, pDialogWindow.uFrameWidth, 13));
-        }
+        DrawDialoguePanel(current_npc_text);
 
         for (int i = 0; i < houseNpcs.size(); ++i) {
             render->DrawTextureNew((pNPCPortraits_x[houseNpcs.size() - 1][i] - 4) / 640.0f,

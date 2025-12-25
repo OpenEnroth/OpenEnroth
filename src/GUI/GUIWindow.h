@@ -68,6 +68,14 @@ class GUIWindow {
 
     void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing);
 
+    /**
+     * Draws the dialogue panel with background, e.g. for showing Arcomage rules in a tavern. Automatically switches
+     * to smaller font if text is too tall.
+     *
+     * @param text                  Text to display in the panel. If empty, nothing is drawn.
+     */
+    void DrawDialoguePanel(std::string_view text);
+
     void DrawShops_next_generation_time_string(Duration time);
     void DrawMessageBox(bool inside_game_viewport);
     GUIButton *GetControl(unsigned int uID);

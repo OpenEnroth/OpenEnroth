@@ -53,18 +53,7 @@ void GUIWindow_TownHall::bountyHuntDialogue() {
     townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
 
     current_npc_text = bountyHuntingText();
-    GUIWindow window = *pDialogueWindow;
-    window.uFrameWidth = 458;
-    window.uFrameZ = 457;
-    GUIFont *pOutString = assets->pFontArrus.get();
-    int pTextHeight = assets->pFontArrus->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
-    if (352 - pTextHeight < 8) {
-        pOutString = assets->pFontCreate.get();
-        pTextHeight = assets->pFontCreate->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
-    }
-    render->DrawTextureCustomHeight(8, 352 - pTextHeight, ui_leather_mm7, pTextHeight);
-    render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    window.DrawText(pOutString, {13, 354 - pTextHeight}, colorTable.White, current_npc_text);
+    DrawDialoguePanel(current_npc_text);
 }
 
 void GUIWindow_TownHall::payFineDialogue() {
