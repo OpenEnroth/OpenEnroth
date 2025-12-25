@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3f22dff</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;13aafbf</span>
    </div>
   </td>
  </tr>
@@ -141,6 +141,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0c0a0661271c717b5f3fbc335a1291c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a985394e6abcfd35a3d2db3c093a8377b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow.html#a985394e6abcfd35a3d2db3c093a8377b">DrawTitleText</a> (<a class="el" href="classGUIFont.html">GUIFont</a> *font, int horizontalMargin, int verticalMargin, <a class="el" href="structColor.html">Color</a> color, std::string_view text, int lineSpacing)</td></tr>
 <tr class="separator:a985394e6abcfd35a3d2db3c093a8377b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51b04958a839bcede96adee15a90eca8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow.html#a51b04958a839bcede96adee15a90eca8">DrawDialoguePanel</a> (std::string_view text)</td></tr>
+<tr class="separator:a51b04958a839bcede96adee15a90eca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeada653edb8f75ab07cb48e9a2f4ee8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow.html#aeada653edb8f75ab07cb48e9a2f4ee8b">DrawShops_next_generation_time_string</a> (<a class="el" href="classDuration.html">Duration</a> time)</td></tr>
 <tr class="separator:aeada653edb8f75ab07cb48e9a2f4ee8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0c28c954e40c6f2c7feb7022ece8052"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow.html#ac0c28c954e40c6f2c7feb7022ece8052">DrawMessageBox</a> (bool inside_game_viewport)</td></tr>
@@ -474,6 +476,31 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a51b04958a839bcede96adee15a90eca8" name="a51b04958a839bcede96adee15a90eca8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51b04958a839bcede96adee15a90eca8">&#9670;&#160;</a></span>DrawDialoguePanel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GUIWindow::DrawDialoguePanel </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Draws the dialogue panel with background, e.g. for showing Arcomage rules in a tavern. Automatically switches to smaller font if text is too tall.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>Text to display in the panel. If empty, nothing is drawn. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
