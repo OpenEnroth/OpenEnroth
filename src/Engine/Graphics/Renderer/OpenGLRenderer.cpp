@@ -3205,7 +3205,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             uniforms.pointLights[num_lights].type = 1.0f;
             uniforms.pointLights[num_lights].position = test.vPosition;
-            uniforms.pointLights[num_lights].sector = test.uSectorID;
             uniforms.pointLights[num_lights].ambient = color;
             uniforms.pointLights[num_lights].diffuse = color;
             uniforms.pointLights[num_lights].specular = Colorf(0.0f, 0.0f, 0.0f);

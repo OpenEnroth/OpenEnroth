@@ -69,7 +69,6 @@ static void submitPointLight(const OpenGLShader &shader, const PointLightUniform
     std::string prefix = "fspointlights[" + std::to_string(index) + "].";
     glUniform1f(shader.uniformLocation((prefix + "type").c_str()), light.type);
     glUniform3f(shader.uniformLocation((prefix + "position").c_str()), light.position.x, light.position.y, light.position.z);
-    glUniform1f(shader.uniformLocation((prefix + "sector").c_str()), light.sector);
     glUniform3f(shader.uniformLocation((prefix + "ambient").c_str()), light.ambient.r, light.ambient.g, light.ambient.b);
     glUniform3f(shader.uniformLocation((prefix + "diffuse").c_str()), light.diffuse.r, light.diffuse.g, light.diffuse.b);
     glUniform3f(shader.uniformLocation((prefix + "specular").c_str()), light.specular.r, light.specular.g, light.specular.b);
@@ -125,8 +124,6 @@ void BSPUniforms::submit(const OpenGLShader &shader) const {
     glUniform1i(shader.uniformLocation("flowtimer"), flowtimer);
     glUniform1i(shader.uniformLocation("flowtimerms"), flowtimerms);
     glUniform1i(shader.uniformLocation("textureArray0"), textureArray0);
-    glUniform1i(shader.uniformLocation("textureArray1"), textureArray1);
-    glUniform1i(shader.uniformLocation("textureArray2"), textureArray2);
     submitSunLight(shader, sun);
     submitPointLights(shader, pointLights);
 }

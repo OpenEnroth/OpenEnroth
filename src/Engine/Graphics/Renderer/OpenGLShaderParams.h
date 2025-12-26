@@ -124,7 +124,6 @@ struct ShaderVertex {
 struct PointLightUniform {
     float type = 0; // 0 = unused, 1 = stationary, 2 = mobile
     Vec3f position;
-    float sector = 0;
     Colorf ambient;
     Colorf diffuse;
     Colorf specular;
@@ -187,8 +186,6 @@ struct BSPUniforms {
     int flowtimer = 0;
     int flowtimerms = 0;
     int textureArray0 = 0;
-    int textureArray1 = 1;
-    int textureArray2 = 2;
 
     SunLightUniform sun;
     std::array<PointLightUniform, 40> pointLights;

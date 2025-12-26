@@ -24,7 +24,7 @@ class OpenGLShader {
     void release();
 
     [[nodiscard]] int uniformLocation(const char *name) const;
-    [[nodiscard]] int attribLocation(const char *name) const;
+    // No attribLocation() - use vertex buffers.
 
     void use();
     void unuse();
@@ -34,4 +34,5 @@ class OpenGLShader {
 
  private:
     unsigned _id = 0;
+    std::string _paths;
 };
