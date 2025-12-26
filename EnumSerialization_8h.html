@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ea8e353</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e3ef65</span>
    </div>
   </td>
  </tr>
@@ -83,7 +83,7 @@ $(function() {
 <code>#include &lt;type_traits&gt;</code><br />
 <code>#include &lt;functional&gt;</code><br />
 <code>#include &lt;magic_enum.hpp&gt;</code><br />
-<code>#include &quot;<a class="el" href="Preprocessor_8h.html">Utility/Preprocessor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Utility_2Preprocessor_8h.html">Utility/Preprocessor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Serialization_8h.html">Serialization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SerializationExceptions_8h.html">SerializationExceptions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EnumSerializer_8h.html">EnumSerializer.h</a>&quot;</code><br />
@@ -94,7 +94,7 @@ Macros</h2></td></tr>
 <tr class="separator:a04478a8f6e74ba88296c303ca5d9ee29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60b5d28d5f88bcb69e8f0f868f5d32fb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EnumSerialization_8h.html#a60b5d28d5f88bcb69e8f0f868f5d32fb">MAGIC_ENUM_RANGE_MAX</a>&#160;&#160;&#160;(255)</td></tr>
 <tr class="separator:a60b5d28d5f88bcb69e8f0f868f5d32fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d7940ef229ff77ee6be852958b1fc00"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EnumSerialization_8h.html#a9d7940ef229ff77ee6be852958b1fc00">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</a>(ENUM,  CASE_SENSITIVITY, ...)&#160;&#160;&#160;    <a class="el" href="EnumSerialization_8h.html#a56fbfc41376f4dbf28c4df97a844189f">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_I</a>(ENUM, CASE_SENSITIVITY, <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(globalEnumSerializer, __LINE__), __VA_ARGS__)</td></tr>
+<tr class="memitem:a9d7940ef229ff77ee6be852958b1fc00"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EnumSerialization_8h.html#a9d7940ef229ff77ee6be852958b1fc00">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</a>(ENUM,  CASE_SENSITIVITY, ...)&#160;&#160;&#160;    <a class="el" href="EnumSerialization_8h.html#a56fbfc41376f4dbf28c4df97a844189f">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_I</a>(ENUM, CASE_SENSITIVITY, <a class="el" href="Utility_2Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(globalEnumSerializer, __LINE__), __VA_ARGS__)</td></tr>
 <tr class="separator:a9d7940ef229ff77ee6be852958b1fc00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56fbfc41376f4dbf28c4df97a844189f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EnumSerialization_8h.html#a56fbfc41376f4dbf28c4df97a844189f">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_I</a>(ENUM,  CASE_SENSITIVITY,  SERIALIZER, ...)</td></tr>
 <tr class="separator:a56fbfc41376f4dbf28c4df97a844189f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,7 +206,7 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;    <a class="el" href="EnumSerialization_8h.html#a56fbfc41376f4dbf28c4df97a844189f">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_I</a>(ENUM, CASE_SENSITIVITY, <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(globalEnumSerializer, __LINE__), __VA_ARGS__)</td>
+          <td></td><td>&#160;&#160;&#160;    <a class="el" href="EnumSerialization_8h.html#a56fbfc41376f4dbf28c4df97a844189f">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_I</a>(ENUM, CASE_SENSITIVITY, <a class="el" href="Utility_2Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(globalEnumSerializer, __LINE__), __VA_ARGS__)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -334,7 +334,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> <a class="code hl_define" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(globalFlagsCheck, __LINE__) = [] {                                                      \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> <a class="code hl_define" href="Utility_2Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(globalFlagsCheck, __LINE__) = [] {                                                      \</div>
 <div class="line">        assert(serializer(std::type_identity&lt;typename FLAGS::enumeration_type&gt;()).isUsableWithFlags());                 \</div>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;                                                                                                    \</div>
 <div class="line">    }();                                                                                                                \</div>
@@ -348,7 +348,7 @@ Macros</h2></td></tr>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
 <div class="line">    MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS_VIA_TRY_FUNCTIONS_I(FLAGS)</div>
-<div class="ttc" id="aPreprocessor_8h_html_a28514c385ffb7a29b325a2c209ec2da7"><div class="ttname"><a href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a></div><div class="ttdeci">#define MM_PP_CAT(x, y)</div><div class="ttdef"><b>Definition:</b> Preprocessor.h:6</div></div>
+<div class="ttc" id="aUtility_2Preprocessor_8h_html_a28514c385ffb7a29b325a2c209ec2da7"><div class="ttname"><a href="Utility_2Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a></div><div class="ttdeci">#define MM_PP_CAT(x, y)</div><div class="ttdef"><b>Definition:</b> Preprocessor.h:6</div></div>
 </div><!-- fragment --><p >This macro provides a limited support for lexical serialization of <code><a class="el" href="classFlags.html">Flags</a>&lt;T&gt;</code>. It can only be used after an invocation of <code>MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</code> for the underlying enum type.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
