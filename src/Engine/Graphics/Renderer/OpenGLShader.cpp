@@ -6,6 +6,7 @@
 #include <glad/gl.h> // NOLINT: this is not a C system include.
 
 #include "Library/Logger/Logger.h"
+#include "Library/Preprocessor/Preprocessor.h"
 
 static std::string compileErrors(int shader) {
     GLint success = 1;
@@ -35,25 +36,12 @@ OpenGLShader::~OpenGLShader() {
     release();
 }
 
-bool OpenGLShader::load(std::string_view vertPath, std::string_view fragPath, bool openGLES) {
-    Blob vertSource, fragSource;
-    try {
-        vertSource = Blob::fromFile(vertPath);
-        fragSource = Blob::fromFile(fragPath);
-    } catch (const std::exception &e) {
-        logger->error("Could not read shader source: {}", e.what()); // e.what() will contain file path.
-        return false;
-    }
-
-    return load(vertSource, fragSource, openGLES);
-}
-
-bool OpenGLShader::load(const Blob &vertSource, const Blob &fragSource, bool openGLES) {
-    GLuint vertex = loadShader(vertSource, GL_VERTEX_SHADER, openGLES);
+bool OpenGLShader::load(const Blob &vertSource, const Blob &fragSource, bool openGLES, const FileSystem *pwd) {
+    GLuint vertex = loadShader(vertSource, GL_VERTEX_SHADER, openGLES, pwd);
     if (vertex == 0)
         return false;
 
-    GLuint fragment = loadShader(fragSource, GL_FRAGMENT_SHADER, openGLES);
+    GLuint fragment = loadShader(fragSource, GL_FRAGMENT_SHADER, openGLES, pwd);
     if (fragment == 0) {
         glDeleteShader(vertex);
         return false;
@@ -105,19 +93,26 @@ void OpenGLShader::use() {
     glUseProgram(_id);
 }
 
-unsigned OpenGLShader::loadShader(const Blob &source, int type, bool openGLES) {
-    std::string_view version;
-    if (!openGLES)
-        version = "#version 410 core\n";
-    else
-        version = "#version 320 es\n";
+unsigned OpenGLShader::loadShader(const Blob &source, int type, bool openGLES, const FileSystem *pwd) {
+    assert(pwd);
 
-    // compile shader
-    const char *sources[2] = {version.data(), static_cast<const char *>(source.data())};
-    const GLint lengths[2] = {static_cast<GLint>(version.size()), static_cast<GLint>(source.size())};
+    // Preprocess source with version and GL_ES define in preamble.
+    std::string_view preamble = openGLES ? "#version 320 es\n#define GL_ES\n" : "#version 410 core\n";
+    Blob preprocessedSource;
+    try {
+        static constexpr std::string_view glslDirectives[] = {"version", "extension"};
+        preprocessedSource = pp::preprocess(source, pwd, preamble, glslDirectives);
+    } catch (const std::exception &e) {
+        logger->error("Could not preprocess shader '{}': {}", source.displayPath(), e.what());
+        return 0;
+    }
+
+    // Compile shader.
+    const char *sources[1] = {static_cast<const char *>(preprocessedSource.data())};
+    const GLint lengths[1] = {static_cast<GLint>(preprocessedSource.size())};
 
     GLuint result = glCreateShader(type);
-    glShaderSource(result, 2, sources, lengths);
+    glShaderSource(result, 1, sources, lengths);
     glCompileShader(result);
 
     std::string errors = compileErrors(result);

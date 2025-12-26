@@ -42,6 +42,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
 
+#include "Library/FileSystem/Sub/SubFileSystem.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Color/Colorf.h"
@@ -1273,7 +1274,6 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
         glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
         glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), 0);
         glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
         glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
         glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
@@ -2736,7 +2736,6 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
         glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
         glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), 0);
         glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
         glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
         glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
@@ -3308,7 +3307,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), 0);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
@@ -3366,7 +3364,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 1.0f);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), test.uSectorID);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
@@ -3392,7 +3389,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), 0);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
             glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
@@ -3773,9 +3769,11 @@ bool OpenGLRenderer::ReloadShaders() {
         {&forcepershader,   "glforcepershader", "Forced perspective"}
     };
 
+    SubFileSystem shadersFs("shaders", dfs);
+
     for (const auto &[shader, fileName, readableName] : shaders) {
-        if (!shader->load(dfs->read(fmt::format("shaders/{}.vert", fileName)),
-                          dfs->read(fmt::format("shaders/{}.frag", fileName)), OpenGLES)) {
+        if (!shader->load(shadersFs.read(fmt::format("{}.vert", fileName)),
+                          shadersFs.read(fmt::format("{}.frag", fileName)), OpenGLES, &shadersFs)) {
             platform->showMessageBox("CRITICAL ERROR: shader compilation failure",
                                      fmt::format("{} shader failed to compile!\nPlease consult the log and consider issuing a bug report!", readableName));
             return false;
