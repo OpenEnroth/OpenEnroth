@@ -35,4 +35,6 @@ target_link_libraries(engine_graphics_renderer
         OpenGL::GL
         engine_graphics
         PRIVATE
-        glad)
+        glad
+        library_filesystem_sub
+        library_preprocessor)

@@ -1,7 +1,4 @@
-#ifdef GL_ES
-    precision highp int;
-    precision highp float;
-#endif
+#include "precision.glsl"
 
 in vec4 colour;
 in vec2 texuv;

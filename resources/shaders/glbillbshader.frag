@@ -1,8 +1,5 @@
-#ifdef GL_ES
-    precision highp int;
-    precision highp float;
-    precision highp sampler2D;
-#endif
+#include "precision.glsl"
+#include "fog.glsl"
 
 in vec4 colour;
 in vec2 texuv;
@@ -11,19 +8,10 @@ flat in int paletteid;
 
 out vec4 FragColour;
 
-struct FogParam {
-    vec3 color;
-    float fogstart;
-    float fogmiddle;
-    float fogend;
-};
-
 uniform sampler2D texture0;
 uniform sampler2D paltex2D;
 uniform FogParam fog;
 uniform float gamma;
-
-float getFogRatio(FogParam fogpar, float dist);
 
 void main() {
     vec4 fragcol = texture(texture0, texuv);
@@ -51,14 +39,4 @@ void main() {
 
     FragColour = mix(fragcol, vec4(fog.color, alpha), fograt);
     FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));
-}
-
-float getFogRatio(FogParam fogpar, float dist) {
-    float result = 0.0;
-    if (fogpar.fogstart < fogpar.fogmiddle) {
-       result = 0.25 + smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist) * 0.60 + smoothstep(fogpar.fogmiddle, fogpar.fogend, dist) * 0.15;
-    } else {
-        result = smoothstep(fogpar.fogstart, fogpar.fogend, dist);
-    }
-    return result;
 }

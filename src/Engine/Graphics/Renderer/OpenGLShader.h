@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
-
 #include "Utility/Memory/Blob.h"
+
+class FileSystem;
 
 /**
  * Class for loading in and building gl shaders.
@@ -19,8 +19,7 @@ class OpenGLShader {
        return _id != 0;
     }
 
-    [[nodiscard]] bool load(std::string_view vertPath, std::string_view fragPath, bool openGLES);
-    [[nodiscard]] bool load(const Blob &vertSource, const Blob &fragSource, bool openGLES);
+    [[nodiscard]] bool load(const Blob &vertSource, const Blob &fragSource, bool openGLES, const FileSystem *pwd);
     void release();
 
     [[nodiscard]] int uniformLocation(const char *name);
@@ -29,7 +28,7 @@ class OpenGLShader {
     void use();
 
  private:
-    [[nodiscard]] unsigned loadShader(const Blob &source, int type, bool openGLES);
+    [[nodiscard]] unsigned loadShader(const Blob &source, int type, bool openGLES, const FileSystem *pwd);
 
  private:
     unsigned _id = 0;

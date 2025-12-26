@@ -42,6 +42,11 @@ add_library(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_cpp/include/ini
 target_include_directories(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_cpp/include)
 add_library(inicpp::inicpp ALIAS inicpp)
 
+# tcpp (header-only C preprocessor)
+add_library(tcpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tcpp/source/tcppLibrary.hpp)
+target_include_directories(tcpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tcpp/source)
+add_library(tcpp::tcpp ALIAS tcpp)
+
 # small_vector
 add_subdirectory(small_vector EXCLUDE_FROM_ALL)
 
