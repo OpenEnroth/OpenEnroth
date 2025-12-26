@@ -624,7 +624,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 
         // draw image
         GraphicsImage *temp = GraphicsImage::Create(std::move(dstImage));
-        render->DrawTextureNew(x / float(outputRender.w), y / float(outputRender.h), temp);
+        render->DrawQuad2D(temp, {x, y});
 
         render->DrawTwodVerts();
 

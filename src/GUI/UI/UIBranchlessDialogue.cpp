@@ -38,7 +38,7 @@ void GUIWindow_BranchlessDialogue::Update() {
         branchless_dialogue_str = current_npc_text;
 
     pGUIWindow_BranchlessDialogue->DrawDialoguePanel(branchless_dialogue_str);
-    render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
+    render->DrawQuad2D(game_ui_statusbar, {0, 352});
 
     // TODO(Nik-RE-dev): this code related to text input in MM6/MM8, revisit
     // this functionality when it's time to support it.

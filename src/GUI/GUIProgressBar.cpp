@@ -98,15 +98,15 @@ void GUIProgressBar::Draw() {
         GUI_UpdateWindows();
         pParty->updateCharactersAndHirelingsEmotions();
 
-        render->DrawTextureNew(80 / 640.0f, 122 / 480.0f, progressbar_dungeon);
-        render->DrawTextureNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->animationFrame(turnHourIconId, 0_ticks));
-        render->FillRectFast(174, 164, floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) + 0.5f), 16, colorTable.Red);
+        render->DrawQuad2D(progressbar_dungeon, {80, 122});
+        render->DrawQuad2D(pIconsFrameTable->animationFrame(turnHourIconId, 0_ticks), {100, 146});
+        render->FillRect(Recti(174, 164, floorf((double)(113 * uProgressCurrent) / (double)uProgressMax + 0.5f), 16), colorTable.Red);
     } else {
         if (loading_bg) {
-            render->DrawTextureNew(0, 0, loading_bg);
+            render->DrawQuad2D(loading_bg, {0, 0});
         }
-        render->SetUIClipRect(Recti(172, 459, (int)((double)(300 * uProgressCurrent) / (double)uProgressMax), 12));
-        render->DrawTextureNew(172 / 640.0f, 459 / 480.0f, progressbar_loading);
+        render->SetUIClipRect(Recti(172, 459, (double)(300 * uProgressCurrent) / (double)uProgressMax, 12));
+        render->DrawQuad2D(progressbar_loading, {172, 459});
         render->ResetUIClipRect();
     }
 

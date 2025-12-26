@@ -113,13 +113,13 @@ void Io::Mouse::DrawCursor() {
             pos.x -= (this->cursor_img->width()) / 2;
             pos.y -= (this->cursor_img->height()) / 2;
 
-            render->DrawTextureNew(pos.x / 640., pos.y / 480., this->cursor_img);
+            render->DrawQuad2D(this->cursor_img, pos);
         } else if (_mouseLook) {
             platform->setCursorShown(false);
             auto pointer = assets->getImage_ColorKey("MICON2", colorTable.Black /*colorTable.TealMask*/);
             int x = pViewport->viewportCenterX - pointer->width() / 2;
             int y = pViewport->viewportCenterY - pointer->height() / 2;
-            render->DrawTextureNew(x / 640., y / 480., pointer);
+            render->DrawQuad2D(pointer, {x, y});
         } else {
             platform->setCursorShown(true);
         }
@@ -182,15 +182,14 @@ void Io::Mouse::DrawPickedItem() {
     if (!pTexture) return;
 
     Pointi mousePos = this->position();
-    float posX = (mousePos.x + pickedItemOffset.x) / 640.0f;
-    float posY = (mousePos.y + pickedItemOffset.y) / 480.0f;
+    Pointi drawPos = {mousePos.x + pickedItemOffset.x, mousePos.y + pickedItemOffset.y};
 
     if (pParty->pPickedItem.IsBroken()) {
-        render->DrawTextureNew(posX, posY, pTexture, colorTable.Red);
+        render->DrawQuad2D(pTexture, drawPos, colorTable.Red);
     } else if (!pParty->pPickedItem.IsIdentified()) {
-        render->DrawTextureNew(posX, posY, pTexture, colorTable.Green);
+        render->DrawQuad2D(pTexture, drawPos, colorTable.Green);
     } else {
-        render->DrawTextureNew(posX, posY, pTexture);
+        render->DrawQuad2D(pTexture, drawPos);
     }
 }
 

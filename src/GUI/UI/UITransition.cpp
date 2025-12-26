@@ -109,11 +109,11 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_Travel, SCREE
 void GUIWindow_Travel::Update() {
     MapId destinationMap = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
 
-    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
-    render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-    render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
+    render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
+    render->DrawQuad2D(transition_ui_icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
+    render->DrawQuad2D(dialogue_ui_x_x_u, {556, 451});
+    render->DrawQuad2D(dialogue_ui_x_ok_u, {476, 451});
     if (destinationMap != MAP_INVALID) {
         GUIWindow travel_window = *pPrimaryWindow;
         travel_window.uFrameX = 493;
@@ -188,12 +188,12 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
 }
 
 void GUIWindow_IndoorEntryExit::Update() {
-    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
-    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-    render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
+    render->DrawQuad2D(game_ui_evtnpc, {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
+    render->DrawQuad2D(transition_ui_icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
+    render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
+    render->DrawQuad2D(dialogue_ui_x_x_u, {556, 451});
+    render->DrawQuad2D(dialogue_ui_x_ok_u, {476, 451});
 
     MapId map_id = engine->_currentLoadedMapId;
     // TODO(captainurist): mm7 map names never starts with ' ', what is this check?

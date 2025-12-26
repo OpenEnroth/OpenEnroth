@@ -39,7 +39,7 @@ GraphicsImage *CreateWinnerCertificate() {
     render->Present();
     render->BeginScene2D();
     GraphicsImage *background = assets->getImage_PCXFromIconsLOD("winbg.pcx");
-    render->DrawTextureNew(0, 0, background);
+    render->DrawQuad2D(background, {0, 0});
 
     GUIWindow *tempwindow_SpeakInHouse = new GUIWindow(WINDOW_Unknown, { 0, 0 }, render->GetRenderDimensions());
     GUIWindow pWindow;

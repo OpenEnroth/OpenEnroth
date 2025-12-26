@@ -37,12 +37,9 @@ GUICredits::~GUICredits() {
 }
 
 void GUICredits::Update() {
-    render->DrawTextureNew(0, 0, _mm6TitleTexture);
+    render->DrawQuad2D(_mm6TitleTexture, {0, 0});
     render->SetUIClipRect(creditsRect);
-    Sizei renderDims = render->GetRenderDimensions();
-    render->DrawTextureNew(creditsRect.x / static_cast<float>(renderDims.w),
-                           (creditsRect.y - _moveY) / renderDims.h,
-                           _creditsTexture);
+    render->DrawQuad2D(_creditsTexture, {creditsRect.x, static_cast<int>(creditsRect.y - _moveY)});
     render->ResetUIClipRect();
 
     _moveY += 0.25; // TODO(captainurist): #time gotta be dt-based.

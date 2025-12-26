@@ -66,11 +66,11 @@ static std::string getDayPart(int hour) {
 }
 
 void GUIWindow_CalendarBook::Update() {
-    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     GUIWindow calendar_window;
 
-    render->DrawTextureNew(pViewport->viewportTL_X / 640.0f, pViewport->viewportTL_Y / 480.0f, ui_book_calendar_background);
+    render->DrawQuad2D(ui_book_calendar_background, {pViewport->viewportTL_X, pViewport->viewportTL_Y});
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
 
     calendar_window.uFrameWidth = pViewport->viewportWidth;

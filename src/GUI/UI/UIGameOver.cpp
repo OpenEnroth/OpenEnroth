@@ -27,7 +27,7 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(W
 void GUIWindow_GameOver::Update() {
     // draw winners certificate background
     assert(_winnerCert);
-    render->DrawTextureNew(0, 0, _winnerCert);
+    render->DrawQuad2D(_winnerCert, {0, 0});
 
     // draw pop up box
     if (_showPopUp) {

@@ -108,8 +108,8 @@ void GUIWindow_Rest::Update() {
     }
 
     if (liveCharacters) {
-        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);
-        render->DrawTextureNew(16 / 640.0f, 26 / 480.0f, rest_ui_sky_frame_current);
+        render->DrawQuad2D(rest_ui_restmain, {8, 8});
+        render->DrawQuad2D(rest_ui_sky_frame_current, {16, 26});
         if (rest_ui_hourglass_frame_current) {
             rest_ui_hourglass_frame_current->release();
             rest_ui_hourglass_frame_current = nullptr;
@@ -126,7 +126,7 @@ void GUIWindow_Rest::Update() {
         }
 
         rest_ui_hourglass_frame_current = assets->getImage_ColorKey(fmt::format("hglas{:03}", hourglass_icon_idx));
-        render->DrawTextureNew(267 / 640.0f, 159 / 480.0f, rest_ui_hourglass_frame_current);
+        render->DrawQuad2D(rest_ui_hourglass_frame_current, {267, 159});
 
         tmp_button.uX = 24;
         tmp_button.uY = 154;

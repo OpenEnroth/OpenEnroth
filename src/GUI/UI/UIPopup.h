@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight);  // idb
+void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight);  // idb
 
 class GraphicsImage;
 

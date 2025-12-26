@@ -80,10 +80,10 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
 }
 
 void GUIWindow_LloydsBook::Update() {
-    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     Character *pPlayer = &pParty->pCharacters[_casterPid.id()];
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[_recallingBeacon ? 1 : 0]);
+    render->DrawQuad2D(ui_book_lloyds_backgrounds[_recallingBeacon ? 1 : 0], {8, 8});
     std::string pText = localization->str(LSTR_RECALL_BEACON);
 
     GUIWindow pWindow;
@@ -100,11 +100,11 @@ void GUIWindow_LloydsBook::Update() {
 
     pWindow.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, pText, 3);
     if (_recallingBeacon) {
-        render->DrawTextureNew(pBtn_Book_1->uX / 640.0f, pBtn_Book_1->uY / 480.0f, ui_book_button1_on);
-        render->DrawTextureNew(pBtn_Book_2->uX / 640.0f, pBtn_Book_2->uY / 480.0f, ui_book_button1_off);
+        render->DrawQuad2D(ui_book_button1_on, {pBtn_Book_1->uX, pBtn_Book_1->uY});
+        render->DrawQuad2D(ui_book_button1_off, {pBtn_Book_2->uX, pBtn_Book_2->uY});
     } else {
-        render->DrawTextureNew(pBtn_Book_1->uX / 640.0f, pBtn_Book_1->uY / 480.0f, ui_book_button1_off);
-        render->DrawTextureNew(pBtn_Book_2->uX / 640.0f, pBtn_Book_2->uY / 480.0f, ui_book_button1_on);
+        render->DrawQuad2D(ui_book_button1_off, {pBtn_Book_1->uX, pBtn_Book_1->uY});
+        render->DrawQuad2D(ui_book_button1_on, {pBtn_Book_2->uX, pBtn_Book_2->uY});
     }
 
     for (size_t beaconId = 0; beaconId < _maxBeacons; beaconId++) {
@@ -119,11 +119,11 @@ void GUIWindow_LloydsBook::Update() {
         pWindow.uFrameW = pWindow.uFrameY + 67;
         pWindow.uFrameZ = lloydsBeaconsPreviewXs[beaconId] + 91;
 
-        render->DrawTextureNew(lloydsBeacons_SomeXs[beaconId] / 640.0f, lloydsBeacons_SomeYs[beaconId] / 480.0f, ui_book_lloyds_border);
+        render->DrawQuad2D(ui_book_lloyds_border, {lloydsBeacons_SomeXs[beaconId], lloydsBeacons_SomeYs[beaconId]});
 
         if (pPlayer->vBeacons[beaconId]) {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId].value();
-            render->DrawTextureNew(lloydsBeaconsPreviewXs[beaconId] / 640.0f, lloydsBeaconsPreviewYs[beaconId] / 480.0f, beacon.image);
+            render->DrawQuad2D(beacon.image, {lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId]});
             std::string Str = pMapStats->pInfos[beacon.mapId].name;
             int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
             pWindow.uFrameY -= 6 + pTextHeight;

@@ -28,26 +28,16 @@ Renderer::Renderer(
 
 Renderer::~Renderer() = default;
 
-void Renderer::DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask) {
-    if (!img)
-        return;
-
-    Sizei renderDims = GetRenderDimensions();
-    int x = static_cast<int>(u * renderDims.w);
-    int y = static_cast<int>(v * renderDims.h + 0.5f);
-    int width = img->width();
-    int height = img->height();
-
-    Recti srcRect(0, 0, width, height);
-    Recti dstRect(x, y, width, height);
-    DrawQuad2D(img, srcRect, dstRect, colourmask);
+void Renderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color) {
+    Recti dstRect(dstPoint.x, dstPoint.y, srcRect.w, srcRect.h);
+    DrawQuad2D(texture, srcRect, dstRect, color);
 }
 
-void Renderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {
-    if (!texture)
-        return;
-
-    Recti dstRect(targetPoint.x, targetPoint.y, srcRect.w, srcRect.h);
+void Renderer::DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color) {
+    int width = texture->width();
+    int height = texture->height();
+    Recti srcRect(0, 0, width, height);
+    Recti dstRect(dstPoint.x, dstPoint.y, width, height);
     DrawQuad2D(texture, srcRect, dstRect, color);
 }
 
@@ -57,8 +47,7 @@ GraphicsImage *Renderer::solidFillTexture() {
     return _solidFillTexture;
 }
 
-void Renderer::FillRectFast(int x, int y, int width, int height, Color color) {
+void Renderer::FillRect(const Recti &rect, Color color) {
     Recti srcRect(0, 0, 1, 1);
-    Recti dstRect(x, y, width, height);
-    DrawQuad2D(solidFillTexture(), srcRect, dstRect, color);
+    DrawQuad2D(solidFillTexture(), srcRect, rect, color);
 }

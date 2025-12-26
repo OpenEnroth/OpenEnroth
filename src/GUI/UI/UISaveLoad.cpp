@@ -113,10 +113,10 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
 
 void GUIWindow_Save::Update() {
     if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
-        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
-        render->DrawTextureNew(241 / 640.0f, 302 / 480.0f, saveload_ui_saveu);
-        render->DrawTextureNew(18 / 640.0f, 139 / 480.0f, saveload_ui_save_up);
-        render->DrawTextureNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+        render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
+        render->DrawQuad2D(saveload_ui_saveu, {241, 302});
+        render->DrawQuad2D(saveload_ui_save_up, {18, 139});
+        render->DrawQuad2D(saveload_ui_x_u, {351, 302});
     }
     UI_DrawSaveLoad(true);
 }
@@ -132,12 +132,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
     main_menu_background = nullptr;
     if (!ingame) {
         main_menu_background = assets->getImage_PCXFromIconsLOD("lsave640.pcx");
-        render->DrawTextureNew(0, 0, main_menu_background);
+        render->DrawQuad2D(main_menu_background, {0, 0});
     } else {
-        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
-        render->DrawTextureNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
-        render->DrawTextureNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
-        render->DrawTextureNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+        render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
+        render->DrawQuad2D(saveload_ui_loadu, {241, 302});
+        render->DrawQuad2D(saveload_ui_load_up, {18, 139});
+        render->DrawQuad2D(saveload_ui_x_u, {351, 302});
     }
 
     // GUIWindow::GUIWindow
@@ -225,13 +225,13 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
 
 void GUIWindow_Load::Update() {
     if (main_menu_background != nullptr) {
-        render->DrawTextureNew(0, 0, main_menu_background);
+        render->DrawQuad2D(main_menu_background, {0, 0});
     }
     if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
-        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
-        render->DrawTextureNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
-        render->DrawTextureNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
-        render->DrawTextureNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+        render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
+        render->DrawQuad2D(saveload_ui_loadu, {241, 302});
+        render->DrawQuad2D(saveload_ui_load_up, {18, 139});
+        render->DrawQuad2D(saveload_ui_x_u, {351, 302});
     }
     UI_DrawSaveLoad(false);
 }
@@ -246,8 +246,8 @@ static void UI_DrawSaveLoad(bool save) {
         save_load_window.uFrameHeight = assets->pFontSmallnum->GetHeight();
         save_load_window.uFrameW = assets->pFontSmallnum->GetHeight() + save_load_window.uFrameY - 1;
         if (pSavegameList->pSavegameThumbnails[pSavegameList->selectedSlot]) {
-            render->DrawTextureNew((pGUIWindow_CurrentMenu->uFrameX + 276) / 640.0f, (pGUIWindow_CurrentMenu->uFrameY + 171) / 480.0f,
-                                   pSavegameList->pSavegameThumbnails[pSavegameList->selectedSlot]);
+            render->DrawQuad2D(pSavegameList->pSavegameThumbnails[pSavegameList->selectedSlot],
+                               {pGUIWindow_CurrentMenu->uFrameX + 276, pGUIWindow_CurrentMenu->uFrameY + 171});
         }
         // Draw map name
         save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
@@ -306,7 +306,7 @@ static void UI_DrawSaveLoad(bool save) {
         if (pSavegameList->saveListPosition > maxSaveFiles - 7) {
             stopPos = 89;
         }
-        render->DrawTextureNew((216 + framex) / 640.f, (217 + framey + stopPos) / 480.f, scrollstop);
+        render->DrawQuad2D(scrollstop, {216 + framex, static_cast<int>(217 + framey + stopPos)});
 
         int slot_Y = 199;
         for (int i = pSavegameList->saveListPosition; i < maxSaveFiles; ++i) {

@@ -44,23 +44,23 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() {
 }
 
 void GUIWindow_QuestBook::Update() {
-    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     int pTextHeight;
     GUIWindow questbook_window;
 
-    render->DrawTextureNew(pViewport->viewportTL_X / 640.0f, pViewport->viewportTL_Y / 480.0f, ui_book_quests_background);
+    render->DrawQuad2D(ui_book_quests_background, {pViewport->viewportTL_X, pViewport->viewportTL_Y});
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingQuestIdx) {
-        render->DrawTextureNew((pViewport->viewportTL_X + 407) / 640.0f, (pViewport->viewportTL_Y + 2) / 480.0f, ui_book_button1_off);
+        render->DrawQuad2D(ui_book_button1_off, {pViewport->viewportTL_X + 407, pViewport->viewportTL_Y + 2});
     } else {
-        render->DrawTextureNew((pViewport->viewportTL_X + 398) / 640.0f, (pViewport->viewportTL_Y + 1) / 480.0f, ui_book_button1_on);
+        render->DrawQuad2D(ui_book_button1_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 1});
     }
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || (_startingQuestIdx + _currentPageQuests) >= _activeQuestsIdx.size()) {
-        render->DrawTextureNew((pViewport->viewportTL_X + 407) / 640.0f, (pViewport->viewportTL_Y + 38) / 480.0f, ui_book_button2_off);
+        render->DrawQuad2D(ui_book_button2_off, {pViewport->viewportTL_X + 407, pViewport->viewportTL_Y + 38});
     } else {
-        render->DrawTextureNew((pViewport->viewportTL_X + 398) / 640.0f, (pViewport->viewportTL_Y + 38) / 480.0f, ui_book_button2_on);
+        render->DrawQuad2D(ui_book_button2_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 38});
     }
 
     // for title
@@ -107,7 +107,7 @@ void GUIWindow_QuestBook::Update() {
             break;
         }
 
-        render->DrawTextureNew(100 / 640.0f, ((questbook_window.uFrameY + pTextHeight) + 12) / 480.0f, ui_book_quest_div_bar);
+        render->DrawQuad2D(ui_book_quest_div_bar, {100, (questbook_window.uFrameY + pTextHeight) + 12});
         questbook_window.uFrameY = (questbook_window.uFrameY + pTextHeight) + 24;
     }
 }
