@@ -124,8 +124,6 @@ void BSPUniforms::submit(const OpenGLShader &shader) const {
     glUniform1i(shader.uniformLocation("flowtimer"), flowtimer);
     glUniform1i(shader.uniformLocation("flowtimerms"), flowtimerms);
     glUniform1i(shader.uniformLocation("textureArray0"), textureArray0);
-    glUniform1i(shader.uniformLocation("textureArray1"), textureArray1);
-    glUniform1i(shader.uniformLocation("textureArray2"), textureArray2);
     submitSunLight(shader, sun);
     submitPointLights(shader, pointLights);
 }

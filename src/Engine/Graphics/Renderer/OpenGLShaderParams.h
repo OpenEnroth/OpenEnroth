@@ -186,8 +186,6 @@ struct BSPUniforms {
     int flowtimer = 0;
     int flowtimerms = 0;
     int textureArray0 = 0;
-    int textureArray1 = 1;
-    int textureArray2 = 2;
 
     SunLightUniform sun;
     std::array<PointLightUniform, 40> pointLights;
