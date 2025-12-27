@@ -22,10 +22,7 @@ class BaseRenderer : public Renderer {
     virtual void TransformBillboardsAndSetPalettesODM() override;
     virtual void DrawSpriteObjects() override;
     virtual void PrepareDecorationsRenderList_ODM() override;
-    virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
-                                              GraphicsImage *texture,
-                                              Color uDiffuse,
-                                              int angle) override;
+    virtual void MakeParticleBillboardAndPush(const Particle& p) override;
     virtual float GetGamma() override;
 
     virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) override;

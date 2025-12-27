@@ -10,6 +10,7 @@
 #include "Engine/HitMap.h"
 
 #include "TextureRenderId.h"
+#include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/RenderEntities.h"
 
 class Actor;
@@ -55,10 +56,7 @@ class Renderer {
 
     virtual void BeginScene3D() = 0;
 
-    virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
-                                              GraphicsImage *texture,
-                                              Color uDiffuse,
-                                              int angle) = 0;
+    virtual void MakeParticleBillboardAndPush(const Particle& p) = 0;
     virtual float GetGamma() = 0;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
