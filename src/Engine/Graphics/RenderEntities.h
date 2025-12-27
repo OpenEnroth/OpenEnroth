@@ -97,17 +97,3 @@ struct RenderBillboardD3D {
     int sParentBillboardID = -1;
     int paletteId = 0;
 };
-
-// TODO(pskelton): Simplify/remove/combine different billboard structs
-struct SoftwareBillboard {
-    int screen_space_x = 0;
-    int screen_space_y = 0;
-    int screen_space_z = 0;
-    float screenspace_projection_factor_x = 0;
-    float screenspace_projection_factor_y = 0;
-    BillboardFlags uFlags;
-    int sParentBillboardID = -1;
-    Color sTintColor;
-    Pid object_pid;
-    int paletteID = 0;
-};

@@ -18,7 +18,6 @@ class GraphicsImage;
 class GameConfig;
 class Sprite;
 class SpriteFrame;
-struct SoftwareBillboard;
 struct DecalBuilder;
 class ParticleEngine;
 struct SpellFxRenderer;
