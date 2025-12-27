@@ -335,7 +335,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
     }
 }
 
-void BaseRenderer::TransformBillboardsAndSetPalettesODM() {
+void BaseRenderer::TransformBillboards() {
     pODMRenderParams->uNumBillboards = ::uNumBillboardsToDraw;
 
     for (unsigned int i = 0; i < ::uNumBillboardsToDraw; ++i) {

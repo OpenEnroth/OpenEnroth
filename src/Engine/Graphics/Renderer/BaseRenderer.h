@@ -19,7 +19,7 @@ class BaseRenderer : public Renderer {
 
     virtual bool Initialize() override;
 
-    virtual void TransformBillboardsAndSetPalettesODM() override;
+    virtual void TransformBillboards() override;
     virtual void DrawSpriteObjects() override;
     virtual void PrepareDecorationsRenderList_ODM() override;
     virtual void MakeParticleBillboardAndPush(const Particle& p) override;
