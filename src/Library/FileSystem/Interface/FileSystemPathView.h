@@ -93,10 +93,6 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
     }
 }
 
-[[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAt(detail::SplitViewIterator pos) const {
-    return pos == detail::SplitViewSentinel() ? FileSystemPathView() : tailAt(*pos);
-}
-
 inline FileSystemPathView FileSystemPathComponents::prefix() const {
     return FileSystemPathView::fromNormalized(_path.substr(0, _prefixEnd));
 }

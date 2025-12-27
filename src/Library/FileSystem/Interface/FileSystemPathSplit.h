@@ -7,8 +7,8 @@
 
 class FileSystemPathView;
 
-class FileSystemPathSplit : public detail::SplitView {
-    using base_type = detail::SplitView;
+class FileSystemPathSplit : public detail::SplitView<detail::CharSplitter> {
+    using base_type = detail::SplitView<detail::CharSplitter>;
  public:
     FileSystemPathSplit() = default;
 
@@ -19,11 +19,9 @@ class FileSystemPathSplit : public detail::SplitView {
     [[nodiscard]] inline FileSystemPathView tailAt(std::same_as<std::string_view> auto chunk) const;
     [[nodiscard]] inline FileSystemPathView tailAfter(std::same_as<std::string_view> auto chunk) const;
 
-    [[nodiscard]] inline FileSystemPathView tailAt(detail::SplitViewIterator pos) const;
-
  private:
     friend class FileSystemPathView;
-    explicit FileSystemPathSplit(std::string_view s) : base_type(s.empty() ? base_type() : base_type(s, '/')) {}
+    explicit FileSystemPathSplit(std::string_view s) : base_type(s.empty() ? base_type() : base_type(s, detail::CharSplitter('/'))) {}
 };
 
 #ifndef __DOXYGEN__ // Doxygen chokes here...
