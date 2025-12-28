@@ -89,10 +89,8 @@ struct RenderBillboardD3D {
     GraphicsImage *texture = nullptr;
     unsigned int uNumVertices = 4;
     std::array<RenderVertexD3D3, 4> pQuads;
-    float z_order = 0.f;
     OpacityType opacity = Transparent;
 
-    Pid object_pid;
     int screen_space_z = 0;
     int sParentBillboardID = -1;
     int paletteId = 0;
