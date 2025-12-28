@@ -32,7 +32,7 @@ var searchData=
   ['haveskills_29',['haveSkills',['../classCharacterTapeRecorder.html#a16d57314110439355588e2b3f723d1ed',1,'CharacterTapeRecorder']]],
   ['heal_30',['Heal',['../classCharacter.html#a2a81adb16e8e076853656840ee1ac36b',1,'Character']]],
   ['healdialogue_31',['healDialogue',['../classGUIWindow__Temple.html#afa532135d57cafc2e7a06a9ed9b08d0f',1,'GUIWindow_Temple']]],
-  ['height_32',['height',['../classLodFont.html#ac333cb3ab9daec912c939f3291e920aa',1,'LodFont::height()'],['../classdetail_1_1ImageBase.html#a01dead01a94343849bde7815bebccad4',1,'detail::ImageBase::height()'],['../classGraphicsImage.html#ad3ed745021d2449f0e0de916e482d808',1,'GraphicsImage::height()']]],
+  ['height_32',['height',['../classLodFont.html#ac333cb3ab9daec912c939f3291e920aa',1,'LodFont::height()'],['../classdetail_1_1ImageBase.html#a7048600e0de59e12896a350ba599bc75',1,'detail::ImageBase::height()'],['../classGraphicsImage.html#a17cfdbbe90057b3898f60c8182494496',1,'GraphicsImage::height()']]],
   ['heightbygrid_33',['heightByGrid',['../classOutdoorTerrain.html#ac6e349d3c4917b758dbc48f5373cd68c',1,'OutdoorTerrain']]],
   ['heightbypos_34',['heightByPos',['../classOutdoorTerrain.html#ae222f0c118364009c03e79266972b728',1,'OutdoorTerrain']]],
   ['hint_35',['hint',['../classEvtProgram.html#ab72d0f7c1df2b0d9a2e8e63714a93d7c',1,'EvtProgram']]],

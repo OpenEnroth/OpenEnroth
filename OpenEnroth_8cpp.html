@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9c1b1f6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ed46492</span>
    </div>
   </td>
  </tr>
@@ -105,15 +105,14 @@ $(function() {
 <code>#include &quot;<a class="el" href="UnicodeCrt_8h.html">Utility/UnicodeCrt.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Transformations_8h.html">Utility/String/Transformations.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Split_8h.html">Utility/String/Split.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Types_8h.html">Utility/Types.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OpenEnrothOptions_8h.html">OpenEnrothOptions.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a8f83dd125cf40cfa51935bced7fbf5fb"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a8f83dd125cf40cfa51935bced7fbf5fb">normalizeText</a> (std::string_view text)</td></tr>
 <tr class="separator:a8f83dd125cf40cfa51935bced7fbf5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07aec9820e428e19c1ba4fb9a3524e9b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a07aec9820e428e19c1ba4fb9a3524e9b">printLines</a> (const std::vector&lt; std::string_view &gt; &amp;lines, ssize_t line, ssize_t delta)</td></tr>
-<tr class="separator:a07aec9820e428e19c1ba4fb9a3524e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc96e0098bcdc65cb7e3e2dae2dd1dc4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#acc96e0098bcdc65cb7e3e2dae2dd1dc4">printLines</a> (const std::vector&lt; std::string_view &gt; &amp;lines, size_t line, size_t delta)</td></tr>
+<tr class="separator:acc96e0098bcdc65cb7e3e2dae2dd1dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a62f3198bd8683c9b1994da8344f6f4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a9a62f3198bd8683c9b1994da8344f6f4">printTraceDiff</a> (std::string_view current, std::string_view canonical)</td></tr>
 <tr class="separator:a9a62f3198bd8683c9b1994da8344f6f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a459777cebcfa1d2254d841fcb80274ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a459777cebcfa1d2254d841fcb80274ec">migrateTrace</a> (<a class="el" href="structOpenEnrothOptions.html#acf5c187a7f1935df0f59fdc5d7a2bc39">OpenEnrothOptions::Migration</a> migration, <a class="el" href="structEventTrace.html">EventTrace</a> *trace)</td></tr>
@@ -249,8 +248,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a07aec9820e428e19c1ba4fb9a3524e9b" name="a07aec9820e428e19c1ba4fb9a3524e9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07aec9820e428e19c1ba4fb9a3524e9b">&#9670;&#160;</a></span>printLines()</h2>
+<a id="acc96e0098bcdc65cb7e3e2dae2dd1dc4" name="acc96e0098bcdc65cb7e3e2dae2dd1dc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc96e0098bcdc65cb7e3e2dae2dd1dc4">&#9670;&#160;</a></span>printLines()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -267,13 +266,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>line</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">ssize_t&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>delta</em>&#160;</td>
         </tr>
         <tr>

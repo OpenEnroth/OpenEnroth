@@ -55,6 +55,5 @@ var searchData=
   ['turnbasedoverlay_2eh_52',['TurnBasedOverlay.h',['../TurnBasedOverlay_8h.html',1,'']]],
   ['turnengine_2ecpp_53',['TurnEngine.cpp',['../TurnEngine_8cpp.html',1,'']]],
   ['turnengine_2eh_54',['TurnEngine.h',['../TurnEngine_8h.html',1,'']]],
-  ['turnengineenums_2eh_55',['TurnEngineEnums.h',['../TurnEngineEnums_8h.html',1,'']]],
-  ['types_2eh_56',['Types.h',['../Types_8h.html',1,'']]]
+  ['turnengineenums_2eh_55',['TurnEngineEnums.h',['../TurnEngineEnums_8h.html',1,'']]]
 ];

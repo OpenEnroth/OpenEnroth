@@ -8,7 +8,7 @@ var searchData=
   ['image_5',['image',['../classLodFont.html#a93f4cec66ee691e1ad581d5a0a388d82',1,'LodFont']]],
   ['image_6',['Image',['../classImage.html#a330df4259a3b908b3a16447ec7dc3227',1,'Image::Image()=default'],['../classImage.html#a8f420873cb7577a0b517b66a38def6ae',1,'Image::Image(const Image &amp;)=delete'],['../classImage.html#a8bfb4fc74f65fa65ea211c1c5ea1f771',1,'Image::Image(Image &amp;&amp;)=default']]],
   ['image16bit_5flod_5floader_7',['Image16bit_LOD_Loader',['../classImage16bit__LOD__Loader.html#ae786a88f0aea961910a491f8fe5d67fe',1,'Image16bit_LOD_Loader']]],
-  ['imageview_8',['ImageView',['../classImageView.html#a7c919fa1eac146e7a274367f037899dc',1,'ImageView::ImageView(const Image&lt; T &gt; &amp;image)'],['../classImageView.html#a8fad1d4328bfa9fcb03e984c97bcd816',1,'ImageView::ImageView(const T *pixels, ssize_t width, ssize_t height)'],['../classImageView.html#ae9e11bf6a772594fce464fcaf1efa59e',1,'ImageView::ImageView()=default']]],
+  ['imageview_8',['ImageView',['../classImageView.html#a7c919fa1eac146e7a274367f037899dc',1,'ImageView::ImageView(const Image&lt; T &gt; &amp;image)'],['../classImageView.html#a5886cd7af2cfc52544e82695f3359210',1,'ImageView::ImageView(const T *pixels, int width, int height)'],['../classImageView.html#ae9e11bf6a772594fce464fcaf1efa59e',1,'ImageView::ImageView()=default']]],
   ['imguialigntexttoframepadding_9',['imGuiAlignTextToFramePadding',['../ImGuiBindings_8cpp.html#a50447650a9af63130b6706bc597035ba',1,'ImGuiBindings.cpp']]],
   ['imguibegin_10',['imGuiBegin',['../ImGuiBindings_8cpp.html#a8f0349d378e92136b5ffa6aabd9a4606',1,'ImGuiBindings.cpp']]],
   ['imguibeginchild_11',['imGuiBeginChild',['../ImGuiBindings_8cpp.html#ad5d2f22be106bd7e59e8bec3d71543e4',1,'ImGuiBindings.cpp']]],

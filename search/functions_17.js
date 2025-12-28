@@ -18,7 +18,7 @@ var searchData=
   ['wetsuiton_15',['WetsuitOn',['../UICharacter_8cpp.html#af327c22f94105c762c6f128c54a51286',1,'UICharacter.cpp']]],
   ['wheelevent_16',['wheelEvent',['../classPlatformEventHandler.html#a6c234c5588cda7f556991d4cdb0174ec',1,'PlatformEventHandler::wheelEvent()'],['../classPlatformEventFilter.html#a6d2ceb2951b04d99b1b100eb1ddb926e',1,'PlatformEventFilter::wheelEvent()'],['../classOverlayEventHandler.html#aba3d01d39de8f413c7908de117db5b9e',1,'OverlayEventHandler::wheelEvent()'],['../classGameWindowHandler.html#a5f80b8a600f2253aebfe25f9a6d5b5d6',1,'GameWindowHandler::wheelEvent()']]],
   ['which_5fplayer_5fto_5fattack_17',['which_player_to_attack',['../structstru319.html#a933b24bd5d5d683b7c1604d2a0d929d0',1,'stru319']]],
-  ['width_18',['width',['../classdetail_1_1ImageBase.html#a5f879dd409493908028eea79cf5d58a0',1,'detail::ImageBase::width()'],['../classGraphicsImage.html#a80f399fe757a76a6b91e0bc5fef429f4',1,'GraphicsImage::width()']]],
+  ['width_18',['width',['../classdetail_1_1ImageBase.html#afac4374ec71f22e5b1150ac42df5204e',1,'detail::ImageBase::width()'],['../classGraphicsImage.html#a0cfdf1d34b53716118630029eaa53e27',1,'GraphicsImage::width()']]],
   ['window_19',['Window',['../classGameConfig_1_1Window.html#a8b0d616a2192f3afd7153ef8ef56689c',1,'GameConfig::Window']]],
   ['window_20',['window',['../classPlatformApplication.html#a26f76cd527f0952fbc83ff46d746af77',1,'PlatformApplication::window()'],['../classSdlPlatformSharedState.html#a5f975d2b8f08e301486d2162304318eb',1,'SdlPlatformSharedState::window()']]],
   ['windowmanager_21',['WindowManager',['../classWindowManager.html#a3a283b34c19aaa20296befaabad4d29b',1,'WindowManager']]],

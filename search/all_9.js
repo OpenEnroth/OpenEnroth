@@ -44,7 +44,7 @@ var searchData=
   ['imageloader_2ecpp_41',['ImageLoader.cpp',['../ImageLoader_8cpp.html',1,'']]],
   ['imageloader_2eh_42',['ImageLoader.h',['../ImageLoader_8h.html',1,'']]],
   ['images_43',['images',['../classAssetsManager.html#a8e6fc1fedbb5f14488fd94f6e6d27ece',1,'AssetsManager']]],
-  ['imageview_44',['ImageView',['../classImageView.html',1,'ImageView&lt; T &gt;'],['../classImageView.html#a7c919fa1eac146e7a274367f037899dc',1,'ImageView::ImageView(const Image&lt; T &gt; &amp;image)'],['../classImageView.html#a8fad1d4328bfa9fcb03e984c97bcd816',1,'ImageView::ImageView(const T *pixels, ssize_t width, ssize_t height)'],['../classImageView.html#ae9e11bf6a772594fce464fcaf1efa59e',1,'ImageView::ImageView()=default']]],
+  ['imageview_44',['ImageView',['../classImageView.html',1,'ImageView&lt; T &gt;'],['../classImageView.html#a7c919fa1eac146e7a274367f037899dc',1,'ImageView::ImageView(const Image&lt; T &gt; &amp;image)'],['../classImageView.html#a5886cd7af2cfc52544e82695f3359210',1,'ImageView::ImageView(const T *pixels, int width, int height)'],['../classImageView.html#ae9e11bf6a772594fce464fcaf1efa59e',1,'ImageView::ImageView()=default']]],
   ['imguialigntexttoframepadding_45',['imGuiAlignTextToFramePadding',['../ImGuiBindings_8cpp.html#a50447650a9af63130b6706bc597035ba',1,'ImGuiBindings.cpp']]],
   ['imguibegin_46',['imGuiBegin',['../ImGuiBindings_8cpp.html#a8f0349d378e92136b5ffa6aabd9a4606',1,'ImGuiBindings.cpp']]],
   ['imguibeginchild_47',['imGuiBeginChild',['../ImGuiBindings_8cpp.html#ad5d2f22be106bd7e59e8bec3d71543e4',1,'ImGuiBindings.cpp']]],
