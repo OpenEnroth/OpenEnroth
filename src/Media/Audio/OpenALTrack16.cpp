@@ -58,7 +58,13 @@ bool OpenALTrack16::Play() {
         return true;
     }
 
-    if (!Update()) {
+    bool updateSucceeded;
+    {
+        std::lock_guard<std::mutex> lock(_mutex);
+        updateSucceeded = Update();
+    }
+
+    if (!updateSucceeded) {
         Close();
         return false;
     }
@@ -68,7 +74,10 @@ bool OpenALTrack16::Play() {
         return false;
     }
 
-    updater.Start(10, [this]() { Update(); });
+    updater.Start(10, [this]() {
+        std::lock_guard<std::mutex> lock(_mutex);
+        Update();
+    });
 
     return true;
 }
@@ -128,8 +137,12 @@ float OpenALTrack16::GetVolume() {
 
 void OpenALTrack16::Close() {
     updater.Stop();
-    if (pDataSource) {
-        pDataSource->Close();
+
+    {
+        std::lock_guard<std::mutex> lock(_mutex);
+        if (pDataSource) {
+            pDataSource->Close();
+        }
     }
 
     if (alIsSource(al_source) != 0) {
@@ -148,31 +161,26 @@ void OpenALTrack16::Close() {
 void OpenALTrack16::DrainBuffers() {
     ALint num_processed_buffers = 0;
     alGetSourcei(al_source, AL_BUFFERS_PROCESSED, &num_processed_buffers);
-    if (num_processed_buffers <= 0) {
+    if (checkOpenALError()) {
+        logger->warning("OpenAL: Failed to get played buffers");
         return;
     }
 
-    ALuint *processed_buffer_ids = new ALuint[num_processed_buffers];
-    if (checkOpenALError()) {
-        logger->warning("OpenAL: Failed to get played buffers");
-    } else {
-        for (ALint i = 0; i < num_processed_buffers; i++) {
-            ALuint buffer = processed_buffer_ids[i];
-            alSourceUnqueueBuffers(al_source, 1, &buffer);
+    for (ALint i = 0; i < num_processed_buffers; i++) {
+        ALuint buffer;
+        alSourceUnqueueBuffers(al_source, 1, &buffer);
+        if (checkOpenALError()) {
+            logger->warning("OpenAL: Failed to unqueue played buffer");
+        } else {
+            ALint size = 0;
+            alGetBufferi(buffer, AL_SIZE, &size);
+            uiReservedData -= size;
+            alDeleteBuffers(1, &buffer);
             if (checkOpenALError()) {
-                logger->warning("OpenAL: Failed to unqueue played buffer");
-            } else {
-                ALint size = 0;
-                alGetBufferi(buffer, AL_SIZE, &size);
-                uiReservedData -= size;
-                alDeleteBuffers(1, &buffer);
-                if (checkOpenALError()) {
-                    logger->warning("OpenAL: Failed to delete played buffer");
-                }
+                logger->warning("OpenAL: Failed to delete played buffer");
             }
         }
     }
-    delete[] processed_buffer_ids;
 }
 
 bool OpenALTrack16::Update() {
