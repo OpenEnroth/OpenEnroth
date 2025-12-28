@@ -2,7 +2,7 @@ var searchData=
 [
   ['r_0',['r',['../structColor.html#aecbc1a4121c21990512e7c10544d6ece',1,'Color::r()'],['../structParticle__sw.html#a8de6a23ba04bd5a0a32eb69a8a4ac372',1,'Particle_sw::r()'],['../structColorf.html#a05b3170aa0ebbfea85200a9054707847',1,'Colorf::r()']]],
   ['race_1',['race',['../structMonsterData.html#acf96a951f08ea24ccc03437f477966df',1,'MonsterData']]],
-  ['radius_2',['radius',['../structBloodsplat.html#ad0b8866f68b836b7faa917922d7fd697',1,'Bloodsplat::radius()'],['../classActor.html#a0abf489a40d22722f74fe39cf0c426e2',1,'Actor::radius()'],['../structParty.html#a679d943d5f5a2147e2d83d57638cbb6e',1,'Party::radius()'],['../structParty__MM7.html#a137e2cfdc7d1b80950d8d33beaeccd37',1,'Party_MM7::radius()']]],
+  ['radius_2',['radius',['../structBloodsplat.html#ad0b8866f68b836b7faa917922d7fd697',1,'Bloodsplat::radius()'],['../structPointLightUniform.html#a0a662cf0e68c74aa00b6aedce44b4505',1,'PointLightUniform::radius()'],['../classActor.html#a0abf489a40d22722f74fe39cf0c426e2',1,'Actor::radius()'],['../structParty.html#a679d943d5f5a2147e2d83d57638cbb6e',1,'Party::radius()'],['../structParty__MM7.html#a137e2cfdc7d1b80950d8d33beaeccd37',1,'Party_MM7::radius()']]],
   ['radius_5fhi_3',['radius_hi',['../structCollisionState.html#a65f8b2eadc96fffe84779020a30da612',1,'CollisionState']]],
   ['radius_5flo_4',['radius_lo',['../structCollisionState.html#a75bf78e37808d9bdef22e8794bf572d0',1,'CollisionState']]],
   ['ramfsuserdata_5',['ramFsUserData',['../structGameStarterOptions.html#a56081b972e1dfe0e589807a5cdd0947c',1,'GameStarterOptions']]],

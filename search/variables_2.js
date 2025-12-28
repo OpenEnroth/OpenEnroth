@@ -31,7 +31,7 @@ var searchData=
   ['bitmapid_28',['bitmapId',['../structTileData__MM7.html#ab32d21527cc66686d5f48ad5102366b4',1,'TileData_MM7::bitmapId()'],['../structBLVFace__MM7.html#a1b53aecf5b50100c33c273d7d8cbc94a',1,'BLVFace_MM7::bitmapId()']]],
   ['bitmaps_29',['bitmaps',['../classAssetsManager.html#aee22e571e910db19832f9c88011b7a57',1,'AssetsManager']]],
   ['black_30',['Black',['../classColorTable.html#accc8b6035a84b1308261bcde227036ff',1,'ColorTable']]],
-  ['blend_31',['blend',['../structBillboardVertex.html#a0f8c1403b8d6931e630020ad3e91b28a',1,'BillboardVertex']]],
+  ['blend_31',['blend',['../structBillboardVertex.html#a96503bb88f44bb1a2ff28184eef10d62',1,'BillboardVertex']]],
   ['bloaded_32',['bLoaded',['../structIndoorLocation.html#a8bdd7bc28b11d2aef068f1cdd342fab4',1,'IndoorLocation']]],
   ['blob_33',['blob',['../structdetail_1_1MemoryFileData.html#a0b50098388e046b2ef46b9d9a9498dc6',1,'detail::MemoryFileData']]],
   ['blob_5ffunc_34',['blob_func',['../classPCX__LOD__Compressed__Loader.html#abe839c49f46b3ecf737be641b2fd520d',1,'PCX_LOD_Compressed_Loader']]],

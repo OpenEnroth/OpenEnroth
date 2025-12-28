@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e3ef65</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d491851</span>
    </div>
   </td>
  </tr>
@@ -76,7 +76,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;OpenGLRenderer.h&gt;</code></p>
+<p><code>#include &lt;OpenGLShaderParams.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -86,10 +86,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:af08ba022b05f901f586dd3de9b5b34ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cf14d282cf1c30f84268fcb61d0cfda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColorf.html">Colorf</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTwoDVertex.html#a3cf14d282cf1c30f84268fcb61d0cfda">color</a></td></tr>
 <tr class="separator:a3cf14d282cf1c30f84268fcb61d0cfda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11f1ed07e0018d737f1b8b45672dbd44"><td class="memItemLeft" align="right" valign="top">GLfloat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTwoDVertex.html#a11f1ed07e0018d737f1b8b45672dbd44">texid</a></td></tr>
-<tr class="separator:a11f1ed07e0018d737f1b8b45672dbd44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afda8c0e7b6d404bd926846131d3da52b"><td class="memItemLeft" align="right" valign="top">GLfloat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTwoDVertex.html#afda8c0e7b6d404bd926846131d3da52b">paletteid</a></td></tr>
-<tr class="separator:afda8c0e7b6d404bd926846131d3da52b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66a35c7d9458c10bd167786432981cae"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTwoDVertex.html#a66a35c7d9458c10bd167786432981cae">texid</a> = 0</td></tr>
+<tr class="separator:a66a35c7d9458c10bd167786432981cae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fe8b0ad97f35f3c0129e829deab880d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTwoDVertex.html#a3fe8b0ad97f35f3c0129e829deab880d">paletteid</a> = 0</td></tr>
+<tr class="separator:a3fe8b0ad97f35f3c0129e829deab880d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="a3cf14d282cf1c30f84268fcb61d0cfda" name="a3cf14d282cf1c30f84268fcb61d0cfda"></a>
@@ -106,14 +106,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="afda8c0e7b6d404bd926846131d3da52b" name="afda8c0e7b6d404bd926846131d3da52b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afda8c0e7b6d404bd926846131d3da52b">&#9670;&#160;</a></span>paletteid</h2>
+<a id="a3fe8b0ad97f35f3c0129e829deab880d" name="a3fe8b0ad97f35f3c0129e829deab880d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fe8b0ad97f35f3c0129e829deab880d">&#9670;&#160;</a></span>paletteid</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">GLfloat TwoDVertex::paletteid</td>
+          <td class="memname">float TwoDVertex::paletteid = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -134,14 +134,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a11f1ed07e0018d737f1b8b45672dbd44" name="a11f1ed07e0018d737f1b8b45672dbd44"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11f1ed07e0018d737f1b8b45672dbd44">&#9670;&#160;</a></span>texid</h2>
+<a id="a66a35c7d9458c10bd167786432981cae" name="a66a35c7d9458c10bd167786432981cae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66a35c7d9458c10bd167786432981cae">&#9670;&#160;</a></span>texid</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">GLfloat TwoDVertex::texid</td>
+          <td class="memname">float TwoDVertex::texid = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -163,7 +163,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/Engine/Graphics/Renderer/<a class="el" href="OpenGLRenderer_8h.html">OpenGLRenderer.h</a></li>
+<li>src/Engine/Graphics/Renderer/<a class="el" href="OpenGLShaderParams_8h.html">OpenGLShaderParams.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

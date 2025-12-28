@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e3ef65</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d491851</span>
    </div>
   </td>
  </tr>
@@ -92,12 +92,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adef4e093f30e7f75f85ad400af308d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c05c57c3af420809c5a413c692a5341"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLShader.html#a7c05c57c3af420809c5a413c692a5341">release</a> ()</td></tr>
 <tr class="separator:a7c05c57c3af420809c5a413c692a5341"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56fb8e42de78d0a021cc75dee86a14b4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLShader.html#a56fb8e42de78d0a021cc75dee86a14b4">uniformLocation</a> (const char *name)</td></tr>
-<tr class="separator:a56fb8e42de78d0a021cc75dee86a14b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a398b23796b442d9027721d243f8bf335"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLShader.html#a398b23796b442d9027721d243f8bf335">attribLocation</a> (const char *name)</td></tr>
-<tr class="separator:a398b23796b442d9027721d243f8bf335"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7c53db02e4178585d7f50c6ca82e5e0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLShader.html#ae7c53db02e4178585d7f50c6ca82e5e0">uniformLocation</a> (const char *name) const</td></tr>
+<tr class="separator:ae7c53db02e4178585d7f50c6ca82e5e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af914c0770a47d034b61b8967417b0114"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLShader.html#af914c0770a47d034b61b8967417b0114">use</a> ()</td></tr>
 <tr class="separator:af914c0770a47d034b61b8967417b0114"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe7decadaa55b63e9828c2049b1f7bd2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLShader.html#abe7decadaa55b63e9828c2049b1f7bd2">unuse</a> ()</td></tr>
+<tr class="separator:abe7decadaa55b63e9828c2049b1f7bd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -108,6 +108,8 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:ac48bce55d80609278a618a7ebcf814c0"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLShader.html#ac48bce55d80609278a618a7ebcf814c0">_id</a> = 0</td></tr>
 <tr class="separator:ac48bce55d80609278a618a7ebcf814c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabb1a78453a23274e0baca138ba5093d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenGLShader.html#aabb1a78453a23274e0baca138ba5093d">_paths</a></td></tr>
+<tr class="separator:aabb1a78453a23274e0baca138ba5093d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Class for loading in and building gl shaders.</p>
@@ -156,24 +158,6 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a398b23796b442d9027721d243f8bf335" name="a398b23796b442d9027721d243f8bf335"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a398b23796b442d9027721d243f8bf335">&#9670;&#160;</a></span>attribLocation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int OpenGLShader::attribLocation </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a608acf404e9761fb766fb8159897add8" name="a608acf404e9761fb766fb8159897add8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a608acf404e9761fb766fb8159897add8">&#9670;&#160;</a></span>isValid()</h2>
 
@@ -304,8 +288,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a56fb8e42de78d0a021cc75dee86a14b4" name="a56fb8e42de78d0a021cc75dee86a14b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56fb8e42de78d0a021cc75dee86a14b4">&#9670;&#160;</a></span>uniformLocation()</h2>
+<a id="ae7c53db02e4178585d7f50c6ca82e5e0" name="ae7c53db02e4178585d7f50c6ca82e5e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7c53db02e4178585d7f50c6ca82e5e0">&#9670;&#160;</a></span>uniformLocation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -315,6 +299,23 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abe7decadaa55b63e9828c2049b1f7bd2" name="abe7decadaa55b63e9828c2049b1f7bd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe7decadaa55b63e9828c2049b1f7bd2">&#9670;&#160;</a></span>unuse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OpenGLShader::unuse </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -351,6 +352,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">unsigned OpenGLShader::_id = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aabb1a78453a23274e0baca138ba5093d" name="aabb1a78453a23274e0baca138ba5093d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabb1a78453a23274e0baca138ba5093d">&#9670;&#160;</a></span>_paths</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string OpenGLShader::_paths</td>
         </tr>
       </table>
   </td>
