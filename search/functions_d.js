@@ -14,7 +14,7 @@ var searchData=
   ['makegamestate_11',['makeGameState',['../structEngineTraceStateAccessor.html#a9342bd2df2bad6246ca03a4c117e0f8b',1,'EngineTraceStateAccessor']]],
   ['makepalettealpha_12',['MakePaletteAlpha',['../ImageLoader_8cpp.html#a2fb68ea18099b95668487bce26b1e6d7',1,'ImageLoader.cpp']]],
   ['makepalettecolorkey_13',['MakePaletteColorKey',['../ImageLoader_8cpp.html#a3a4cec4da669a8b8d0c01554638ae0c8',1,'ImageLoader.cpp']]],
-  ['makeparticlebillboardandpush_14',['MakeParticleBillboardAndPush',['../classRenderer.html#a365d8bfd43e66071dd147fe6290f585d',1,'Renderer::MakeParticleBillboardAndPush()'],['../classBaseRenderer.html#ad5b2cd584fc7b6cdbaec51951dcbd394',1,'BaseRenderer::MakeParticleBillboardAndPush()']]],
+  ['makeparticlebillboardandpush_14',['MakeParticleBillboardAndPush',['../classRenderer.html#a319892171be5091c626b859bf4e1cf61',1,'Renderer::MakeParticleBillboardAndPush()'],['../classBaseRenderer.html#ab9cbe5077f774393fa30b10b0279c165',1,'BaseRenderer::MakeParticleBillboardAndPush()']]],
   ['makergbaimage_15',['makeRgbaImage',['../ImageFunctions_8cpp.html#ac5f5b17ca75af1b22f8ab84f3193341f',1,'makeRgbaImage(GrayscaleImageView indexedImage, const Palette &amp;palette):&#160;ImageFunctions.cpp'],['../ImageFunctions_8h.html#ac5f5b17ca75af1b22f8ab84f3193341f',1,'makeRgbaImage(GrayscaleImageView indexedImage, const Palette &amp;palette):&#160;ImageFunctions.cpp']]],
   ['makesavelodinfo_16',['makeSaveLodInfo',['../SaveLoad_8cpp.html#a59eca2472eb9c320c2acc2d8527e3dd2',1,'SaveLoad.cpp']]],
   ['makevalidutf8_17',['makeValidUtf8',['../EngineTraceStateAccessor_8cpp.html#aaf0dd43106cd66365bf899ad9ca6069f',1,'EngineTraceStateAccessor.cpp']]],
