@@ -442,9 +442,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->uNumVertices = 4;
 
     billboard->texture = pSprite->texture;
-    billboard->z_order = pBillboard->screen_space_z;
     billboard->screen_space_z = pBillboard->screen_space_z;
-    billboard->object_pid = pBillboard->object_pid;
     billboard->sParentBillboardID = parent;
     billboard->paletteId = pBillboard->uPaletteId;
 }
@@ -454,7 +452,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
     billboard->opacity = RenderBillboardD3D::Opaque_1;
-    billboard->screen_space_z = billboard->z_order = p.zbuffer_depth;
+    billboard->screen_space_z = p.zbuffer_depth;
     billboard->sParentBillboardID = -1;
     billboard->texture = p.type & ParticleType_Diffuse ? nullptr : p.texture;
     billboard->paletteId = p.paletteID;
@@ -547,8 +545,8 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
     pBillboardRenderListD3D[v5].texture = nullptr;
     pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
-    pBillboardRenderListD3D[v5].z_order = depth;
     pBillboardRenderListD3D[v5].paletteId = 0;
+	pBillboardRenderListD3D[v5].screen_space_z = depth;
 
     pBillboardRenderListD3D[v5].pQuads[3].pos.x = 0.0f;
     pBillboardRenderListD3D[v5].pQuads[3].pos.y = 0.0f;
