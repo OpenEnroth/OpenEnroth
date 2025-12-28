@@ -422,12 +422,7 @@ void GUIWindow_GameVideoOptions::Update() {
             render->DrawQuad2D(gamma_preview_image, {274, 169});
 
         GUIWindow msg_window;
-        msg_window.uFrameX = 22;
-        msg_window.uFrameY = 190;
-        msg_window.uFrameWidth = 211;
-        msg_window.uFrameHeight = 79;
-        msg_window.uFrameZ = 232;
-        msg_window.uFrameW = 268;
+        msg_window.frameRect = Recti(22, 190, 211, 79);
         msg_window.DrawTitleText(
             assets->pFontSmallnum.get(), 0, 0, ui_gamemenu_video_gamma_title_color,
             localization->str(LSTR_GAMMA_CONTROLS_THE_RELATIVE_BRIGHTNESS), 3
@@ -1091,7 +1086,7 @@ void GameUI_WritePointedObjectStatusString() {
             }
             uLastPointedObjectID = Pid();
 
-            if (pWindow->uFrameHeight == 480) {
+            if (pWindow->frameRect.h == 480) {
                 // DebugBreak(); //Why is this condition here (in the original
                 // too)? Might check fullscreen windows. Let Silvo know if you
                 // find out

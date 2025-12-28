@@ -182,8 +182,7 @@ void GUIWindow_Dialogue::Update() {
     GUIWindow window = *pDialogueWindow;
     NPCData *pNPC = getNPCData(speakingNpcId);
     NpcType npcType = getNPCType(speakingNpcId);
-    window.uFrameWidth -= 10;
-    window.uFrameZ -= 10;
+    window.frameRect.w -= 10;
     render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
     render->DrawQuad2D(game_ui_evtnpc, {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
@@ -254,9 +253,8 @@ void GUIWindow_Dialogue::Update() {
 
     // Right panel(Правая панель)-------
     window = *pDialogueWindow;
-    window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
     for (int i = window.pStartingPosActiveItem; i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
         GUIButton *pButton = window.GetControl(i);
         if (!pButton) {
@@ -295,7 +293,7 @@ void GUIWindow_Dialogue::Update() {
         GUIButton *pButton = pDialogueWindow->GetControl(i);
         if (!pButton)
             break;
-        all_text_height += assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
+        all_text_height += assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.frameRect.w, 0);
         index++;
     }
 
@@ -309,7 +307,7 @@ void GUIWindow_Dialogue::Update() {
             if (!pButton)
                 break;
             pButton->uY = (unsigned int)(v45 + v42);
-            int pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
+            int pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.frameRect.w, 0);
             pButton->uHeight = pTextHeight;
             v42 = pButton->uY + pTextHeight - 1;
             pButton->uW = v42;

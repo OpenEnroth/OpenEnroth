@@ -19,25 +19,21 @@ void CreateMsgScrollWindow(ItemId mscroll_id) {
 void GUIWindow_MessageScroll::Update() {
     GUIWindow_MessageScroll &a1 = *pGUIWindow_ScrollWindow;
     a1.sHint.clear();
-    a1.uFrameX = 1;
-    a1.uFrameY = 1;
-    a1.uFrameWidth = 468;
-    int textHeight = assets->pFontSmallnum->CalcTextHeight(pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type], a1.uFrameWidth, 0);
+    a1.frameRect.x = 1;
+    a1.frameRect.y = 1;
+    a1.frameRect.w = 468;
+    int textHeight = assets->pFontSmallnum->CalcTextHeight(pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type], a1.frameRect.w, 0);
     unsigned int v0 = textHeight + 2 * (unsigned char)assets->pFontCreate->GetHeight() + 24;
-    a1.uFrameHeight = v0;
-    if ((v0 + a1.uFrameY) > 479) {
-        v0 = 479 - a1.uFrameY;
-        a1.uFrameHeight = 479 - a1.uFrameY;
+    a1.frameRect.h = v0;
+    if ((v0 + a1.frameRect.y) > 479) {
+        v0 = 479 - a1.frameRect.y;
+        a1.frameRect.h = 479 - a1.frameRect.y;
     }
-    a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
-    a1.uFrameW = v0 + a1.uFrameY - 1;
     a1.DrawMessageBox(0);
-    a1.uFrameX += 12;
-    a1.uFrameWidth -= 28;
-    a1.uFrameY += 12;
-    a1.uFrameHeight -= 12;
-    a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
-    a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
+    a1.frameRect.x += 12;
+    a1.frameRect.w -= 28;
+    a1.frameRect.y += 12;
+    a1.frameRect.h -= 12;
 
     const std::string &name = pItemTable->items[pGUIWindow_ScrollWindow->scroll_type].name;
 

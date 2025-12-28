@@ -64,9 +64,8 @@ void GUIWindow_Tavern::arcomageVictoryCondDialogue() {
 
 void GUIWindow_Tavern::arcomageResultDialogue() {
     GUIWindow dialog_window = *this;
-    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    dialog_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    dialog_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     if (!pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
@@ -85,7 +84,7 @@ void GUIWindow_Tavern::arcomageResultDialogue() {
     } else {
         pText = localization->str(LSTR_A_TIE);
     }
-    int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(pText, dialog_window.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+    int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(pText, dialog_window.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
     dialog_window.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.PaleCanary, pText, 3);
 }
 

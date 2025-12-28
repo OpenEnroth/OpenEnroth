@@ -141,12 +141,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
     }
 
     // GUIWindow::GUIWindow
-    this->uFrameX = saveload_dlg_xs[ingame ? 1 : 0];
-    this->uFrameY = saveload_dlg_ys[ingame ? 1 : 0];
-    this->uFrameWidth = saveload_dlg_zs[ingame ? 1 : 0];
-    this->uFrameHeight = saveload_dlg_ws[ingame ? 1 : 0];
-    this->uFrameZ = uFrameX + uFrameWidth - 1;
-    this->uFrameW = uFrameY + uFrameHeight - 1;
+    this->frameRect = Recti(saveload_dlg_xs[ingame ? 1 : 0], saveload_dlg_ys[ingame ? 1 : 0],
+                            saveload_dlg_zs[ingame ? 1 : 0], saveload_dlg_ws[ingame ? 1 : 0]);
 
     DrawText(assets->pFontSmallnum.get(), {25, 199}, colorTable.White, localization->str(LSTR_READING));
     render->Present();
@@ -239,15 +235,13 @@ void GUIWindow_Load::Update() {
 static void UI_DrawSaveLoad(bool save) {
     if (pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
         GUIWindow save_load_window;
-        save_load_window.uFrameX = pGUIWindow_CurrentMenu->uFrameX + 240;
-        save_load_window.uFrameWidth = 220;
-        save_load_window.uFrameY = (pGUIWindow_CurrentMenu->uFrameY - assets->pFontSmallnum->GetHeight()) + 157;
-        save_load_window.uFrameZ = save_load_window.uFrameX + 219;
-        save_load_window.uFrameHeight = assets->pFontSmallnum->GetHeight();
-        save_load_window.uFrameW = assets->pFontSmallnum->GetHeight() + save_load_window.uFrameY - 1;
+        save_load_window.frameRect = Recti(pGUIWindow_CurrentMenu->frameRect.x + 240,
+                                           (pGUIWindow_CurrentMenu->frameRect.y - assets->pFontSmallnum->GetHeight()) + 157,
+                                           220,
+                                           assets->pFontSmallnum->GetHeight());
         if (pSavegameList->pSavegameThumbnails[pSavegameList->selectedSlot]) {
             render->DrawQuad2D(pSavegameList->pSavegameThumbnails[pSavegameList->selectedSlot],
-                               {pGUIWindow_CurrentMenu->uFrameX + 276, pGUIWindow_CurrentMenu->uFrameY + 171});
+                               {pGUIWindow_CurrentMenu->frameRect.x + 276, pGUIWindow_CurrentMenu->frameRect.y + 171});
         }
         // Draw map name
         save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
@@ -256,7 +250,7 @@ static void UI_DrawSaveLoad(bool save) {
         // Draw date
         CivilTime time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime.toCivilTime();
 
-        save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
+        save_load_window.frameRect.y = pGUIWindow_CurrentMenu->frameRect.y + 261;
 
         std::string str = fmt::format(
             "{} {}:{:02} {}\n{} {} {}",
@@ -296,8 +290,8 @@ static void UI_DrawSaveLoad(bool save) {
 
         if (!save) {
             maxSaveFiles = pSavegameList->numSavegameFiles;
-            framex = pGUIWindow_CurrentMenu->uFrameX;
-            framey = pGUIWindow_CurrentMenu->uFrameY;
+            framex = pGUIWindow_CurrentMenu->frameRect.x;
+            framey = pGUIWindow_CurrentMenu->frameRect.y;
         }
 
         if (maxSaveFiles > 7) {
@@ -339,25 +333,25 @@ void GUIWindow_Load::slotSelected(int slotIndex) {
 }
 
 void GUIWindow_Load::loadButtonPressed() {
-    new OnSaveLoad({ pGUIWindow_CurrentMenu->uFrameX + 241, pGUIWindow_CurrentMenu->uFrameY + 302 }, { 61, 28 }, pBtnLoadSlot);
+    new OnSaveLoad({ pGUIWindow_CurrentMenu->frameRect.x + 241, pGUIWindow_CurrentMenu->frameRect.y + 302 }, { 61, 28 }, pBtnLoadSlot);
 }
 
 void GUIWindow_Load::downArrowPressed(int maxSlots) {
     if (pSavegameList->saveListPosition + 7 < maxSlots) {
         ++pSavegameList->saveListPosition;
     }
-    new OnButtonClick2({ pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323 }, { 0, 0 }, pBtnDownArrow);
+    new OnButtonClick2({ pGUIWindow_CurrentMenu->frameRect.x + 215, pGUIWindow_CurrentMenu->frameRect.y + 323 }, { 0, 0 }, pBtnDownArrow);
 }
 
 void GUIWindow_Load::upArrowPressed() {
     --pSavegameList->saveListPosition;
     if (pSavegameList->saveListPosition < 0)
         pSavegameList->saveListPosition = 0;
-    new OnButtonClick2({ pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197 }, { 0, 0 }, pBtnArrowUp);
+    new OnButtonClick2({ pGUIWindow_CurrentMenu->frameRect.x + 215, pGUIWindow_CurrentMenu->frameRect.y + 197 }, { 0, 0 }, pBtnArrowUp);
 }
 
 void GUIWindow_Load::cancelButtonPressed() {
-    new OnCancel3({ pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302 }, { 61, 28 }, pBtnCancel);
+    new OnCancel3({ pGUIWindow_CurrentMenu->frameRect.x + 350, pGUIWindow_CurrentMenu->frameRect.y + 302 }, { 61, 28 }, pBtnCancel);
 }
 
 void GUIWindow_Load::scroll(int maxSlots) {

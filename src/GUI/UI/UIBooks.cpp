@@ -110,5 +110,5 @@ GUIWindow_BooksButtonOverlay::GUIWindow_BooksButtonOverlay(Pointi position, Size
 {}
 
 void GUIWindow_BooksButtonOverlay::Update() {
-    render->DrawQuad2D(_button->vTextures[0], {uFrameY, uFrameX});
+    render->DrawQuad2D(_button->vTextures[0], {frameRect.y, frameRect.x});
 }

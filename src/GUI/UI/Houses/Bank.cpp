@@ -18,9 +18,8 @@ using Io::TextInputType;
 
 void GUIWindow_Bank::mainDialogue() {
     GUIWindow bank_window = *this;
-    bank_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    bank_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    bank_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    bank_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    bank_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     std::vector<std::string> optionsText = {localization->str(LSTR_DEPOSIT), localization->str(LSTR_WITHDRAW)};
     std::string balance_str = fmt::format("{}: {}", localization->str(LSTR_BALANCE), pParty->uNumGoldInBank);
@@ -31,9 +30,8 @@ void GUIWindow_Bank::mainDialogue() {
 
 void GUIWindow_Bank::putGoldDialogue() {
     GUIWindow bank_window = *this;
-    bank_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    bank_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    bank_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    bank_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    bank_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
     bank_window.DrawTitleText(assets->pFontArrus.get(), 0, 220, colorTable.PaleCanary,
                               fmt::format("{}: {}", localization->str(LSTR_BALANCE), pParty->uNumGoldInBank), 3);
 
@@ -72,9 +70,8 @@ void GUIWindow_Bank::putGoldDialogue() {
 
 void GUIWindow_Bank::getGoldDialogue() {
     GUIWindow bank_window = *this;
-    bank_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    bank_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    bank_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    bank_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    bank_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
     bank_window.DrawTitleText(assets->pFontArrus.get(), 0, 220, colorTable.PaleCanary,
                               fmt::format("{}: {}", localization->str(LSTR_BALANCE), pParty->uNumGoldInBank), 3);
 

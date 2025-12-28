@@ -276,9 +276,8 @@ void GUIWindow_Shop::displayEquipmentDialogue() {
 void GUIWindow_Shop::sellDialogue() {
     // TODO(pskelton): extract common code around shop item picking
     GUIWindow dialogwin = *this;
-    dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
@@ -295,7 +294,7 @@ void GUIWindow_Shop::sellDialogue() {
         if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos)) {
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(entry.get(), buildingType(), houseId(), SHOP_SCREEN_SELL);
             std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, entry.get(), houseId(), SHOP_SCREEN_SELL);
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
         }
     }
@@ -304,9 +303,8 @@ void GUIWindow_Shop::sellDialogue() {
 void GUIWindow_Shop::identifyDialogue() {
     // TODO(pskelton): extract common code around shop item picking
     GUIWindow dialogwin = *this;
-    dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
@@ -331,7 +329,7 @@ void GUIWindow_Shop::identifyDialogue() {
                 str = BuildDialogueString("%24", pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_IDENTIFY);
             }
 
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
         }
     }
@@ -340,9 +338,8 @@ void GUIWindow_Shop::identifyDialogue() {
 void GUIWindow_Shop::repairDialogue() {
     // TODO(pskelton): extract common code around shop item picking
     GUIWindow dialogwin = *this;
-    dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
@@ -364,7 +361,7 @@ void GUIWindow_Shop::repairDialogue() {
             Item *item = entry.get();
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_REPAIR);
             std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_REPAIR);
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
         }
     }
@@ -373,9 +370,8 @@ void GUIWindow_Shop::repairDialogue() {
 void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     // TODO(pskelton): extract common code around shop item picking
     GUIWindow dialogwin = *this;
-    dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     render->DrawQuad2D(shop_ui_background, {8, 8});
     int item_X = 0;
@@ -426,7 +422,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                             } else {
                                 str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
-                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
                         }
                     }
@@ -441,9 +437,8 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
 void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
     // TODO(pskelton): extract common code around shop item picking
     GUIWindow dialogwin = *this;
-    dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     render->DrawQuad2D(shop_ui_background, {8, 8});
     int item_x = 0;
@@ -514,7 +509,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
                             } else {
                                 str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
-                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
                         }
                     }
@@ -529,9 +524,8 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
 void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
     // TODO(pskelton): extract common code around shop item picking
     GUIWindow dialogwin = *this;
-    dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     render->DrawQuad2D(shop_ui_background, {8, 8});
 
@@ -618,7 +612,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                             } else {
                                 str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
-                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
                         }
                     }

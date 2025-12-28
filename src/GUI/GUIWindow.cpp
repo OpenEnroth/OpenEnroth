@@ -152,8 +152,8 @@ GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
         }
 
         int width = render->GetPresentDimensions().w;
-        if (pWindow->uFrameX == 0 && pWindow->uFrameY == 0 &&
-            pWindow->uFrameWidth == width && pWindow->uFrameHeight == width) {
+        if (pWindow->frameRect.x == 0 && pWindow->frameRect.y == 0 &&
+            pWindow->frameRect.w == width && pWindow->frameRect.h == width) {
             break;
         }
     }
@@ -224,61 +224,54 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
     }
 
     Pointi cursor = mouse->position();
-    if ((int)this->uFrameX >= x) {
-        if ((int)(this->uFrameWidth + this->uFrameX) > z) {
-            this->uFrameX = z - this->uFrameWidth;
-            this->uFrameY = cursor.y + 30;
+    if (frameRect.x >= x) {
+        if (frameRect.w + frameRect.x > z) {
+            frameRect.x = z - frameRect.w;
+            frameRect.y = cursor.y + 30;
         }
     } else {
-        this->uFrameX = x;
-        this->uFrameY = cursor.y + 30;
+        frameRect.x = x;
+        frameRect.y = cursor.y + 30;
     }
 
-    if ((int)this->uFrameY >= y) {
-        if ((int)(this->uFrameY + this->uFrameHeight) > w) {
-            this->uFrameY = cursor.y - this->uFrameHeight - 30;
+    if (frameRect.y >= y) {
+        if (frameRect.y + frameRect.h > w) {
+            frameRect.y = cursor.y - frameRect.h - 30;
         }
     } else {
-        this->uFrameY = cursor.y + 30;
+        frameRect.y = cursor.y + 30;
     }
-    if ((signed int)this->uFrameY < y) {
-        this->uFrameY = y;
+    if (frameRect.y < y) {
+        frameRect.y = y;
     }
-    if ((signed int)this->uFrameX < x) {
-        this->uFrameX = x;
+    if (frameRect.x < x) {
+        frameRect.x = x;
     }
-    this->uFrameZ = this->uFrameWidth + this->uFrameX - 1;
-    this->uFrameW = this->uFrameHeight + this->uFrameY - 1;
 
     GUIWindow current_window = *this;
-    current_window.uFrameX += 12;
-    current_window.uFrameWidth -= 28;
-    current_window.uFrameY += 12;
-    current_window.uFrameHeight -= 12;
-    current_window.uFrameZ =
-        current_window.uFrameWidth + current_window.uFrameX - 1;
-    current_window.uFrameW =
-        current_window.uFrameHeight + current_window.uFrameY - 1;
+    current_window.frameRect.x += 12;
+    current_window.frameRect.w -= 28;
+    current_window.frameRect.y += 12;
+    current_window.frameRect.h -= 12;
     unsigned int uBoxHeight;
     if (!sHint.empty()) {
         uBoxHeight =
-            assets->pFontLucida->CalcTextHeight(sHint, current_window.uFrameWidth, 0) +
+            assets->pFontLucida->CalcTextHeight(sHint, current_window.frameRect.w, 0) +
             24;
     } else {
-        uBoxHeight = uFrameHeight;
+        uBoxHeight = frameRect.h;
     }
     if (uBoxHeight < 64) {
         uBoxHeight = 64;
     }
-    if ((int)(uBoxHeight + this->uFrameY) > 479) {
-        uBoxHeight = 479 - this->uFrameY;
+    if ((int)(uBoxHeight + frameRect.y) > 479) {
+        uBoxHeight = 479 - frameRect.y;
     }
-    DrawPopupWindow(this->uFrameX, this->uFrameY, this->uFrameWidth,
-        uBoxHeight);
+    DrawPopupWindow(frameRect.x, frameRect.y, frameRect.w, uBoxHeight);
     if (!sHint.empty()) {
         current_window.DrawTitleText(
             assets->pFontLucida.get(),
-            0, (int)(uBoxHeight - assets->pFontLucida->CalcTextHeight(this->sHint, current_window.uFrameWidth, 0)) / 2 - 14,
+            0, (int)(uBoxHeight - assets->pFontLucida->CalcTextHeight(this->sHint, current_window.frameRect.w, 0)) / 2 - 14,
             colorTable.White, this->sHint, 3);
     }
 }
@@ -324,7 +317,7 @@ std::string MakeDateTimeString(Duration time) {
 //----- (004B1854) --------------------------------------------------------
 void GUIWindow::DrawShops_next_generation_time_string(Duration time) {
     auto str = MakeDateTimeString(time);
-    this->DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary, localization->str(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
+    this->DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, frameRect.w, 0)) / 2 + 101, colorTable.PaleCanary, localization->str(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
 }
 
 //----- (0044D406) --------------------------------------------------------
@@ -332,12 +325,12 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
     if (engine->callObserver) {
         engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
     }
-    int width = this->uFrameWidth - horizontalMargin;
-    std::string resString = pFont->WrapText(text, this->uFrameWidth, horizontalMargin);
+    int width = frameRect.w - horizontalMargin;
+    std::string resString = pFont->WrapText(text, frameRect.w, horizontalMargin);
     std::istringstream stream(resString);
     std::string line;
-    int x = horizontalMargin + this->uFrameX;
-    int y = verticalMargin + this->uFrameY;
+    int x = horizontalMargin + frameRect.x;
+    int y = verticalMargin + frameRect.y;
     Color lastcolor = color;
     while (std::getline(stream, line)) {
         int x_offset = pFont->AlignText_Center(width, line);
@@ -371,14 +364,14 @@ void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, std::strin
     if (engine->callObserver) {
         engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
     }
-    font->DrawText(frameRect(), position, color, text, maxY, shadowColor);
+    font->DrawText(frameRect, position, color, text, maxY, shadowColor);
 }
 
 //----- (0044CB4F) --------------------------------------------------------
 int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
                               Color uColor, std::string_view text, int rect_width,
                               int reverse_text) {
-    return pFont->DrawTextInRect(frameRect(), position, uColor, text, rect_width, reverse_text);
+    return pFont->DrawTextInRect(frameRect, position, uColor, text, rect_width, reverse_text);
 }
 
 GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
@@ -397,8 +390,8 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
     }
 
     pButton->uButtonType = uButtonType;
-    pButton->uX = position.x + this->uFrameX;
-    pButton->uY = position.y + this->uFrameY;
+    pButton->uX = position.x + frameRect.x;
+    pButton->uY = position.y + frameRect.y;
     pButton->uZ = pButton->uX + dimensions.w;
     pButton->uW = pButton->uY + dimensions.h;
     pButton->field_2C_is_pushed = false;
@@ -423,7 +416,7 @@ GUIButton *GUIWindow::CreateButton(std::string id, Pointi position, Sizei dimens
 }
 
 bool GUIWindow::Contains(unsigned int x, unsigned int y) {
-    return (x >= uFrameX && x <= uFrameZ && y >= uFrameY && y <= uFrameW);
+    return frameRect.contains(Pointi(x, y));
 }
 
 void GUIWindow::InitializeGUI() {
@@ -449,13 +442,7 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, s
 
     logger->trace("New window: {}", toString(windowType));
     lWindowList.push_front(this);
-    this->uFrameWidth = dimensions.w;
-    this->uFrameHeight = dimensions.h;
-
-    this->uFrameX = position.x;
-    this->uFrameY = position.y;
-    this->uFrameZ = position.x + dimensions.w - 1;
-    this->uFrameW = position.y + dimensions.h - 1;
+    frameRect = Recti(position.x, position.y, dimensions.w, dimensions.h);
 
     this->sHint = hint;
 
@@ -476,7 +463,7 @@ void OnButtonClick::Update() {
     if (_playSound) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[0], {uFrameX, uFrameY});
+    render->DrawQuad2D(_button->vTextures[0], {frameRect.x, frameRect.y});
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -492,7 +479,7 @@ void OnButtonClick2::Update() {
     Sizei renDims = render->GetRenderDimensions();
     if (_button->uX >= 0 && _button->uX <= renDims.w) {
         if (_button->uY >= 0 && _button->uY <= renDims.h) {
-            render->DrawQuad2D(_button->vTextures[0], {uFrameX, uFrameY});
+            render->DrawQuad2D(_button->vTextures[0], {frameRect.x, frameRect.y});
         }
     }
     if (!sHint.empty()) {
@@ -506,7 +493,7 @@ void OnButtonClick2::Update() {
 void OnButtonClick3::Update() {
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 
-    render->DrawQuad2D(_button->vTextures[1], {uFrameX, uFrameY});
+    render->DrawQuad2D(_button->vTextures[1], {frameRect.x, frameRect.y});
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -519,7 +506,7 @@ void OnButtonClick4::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[1], {uFrameX, uFrameY});
+    render->DrawQuad2D(_button->vTextures[1], {frameRect.x, frameRect.y});
 
     Release();
 
@@ -530,7 +517,7 @@ void OnSaveLoad::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[0], {uFrameX, uFrameY});
+    render->DrawQuad2D(_button->vTextures[0], {frameRect.x, frameRect.y});
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -549,7 +536,7 @@ void OnCancel::Update() {
     if (sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[0], {uFrameX, uFrameY});
+    render->DrawQuad2D(_button->vTextures[0], {frameRect.x, frameRect.y});
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -564,7 +551,7 @@ void OnCancel2::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[1], {uFrameX, uFrameY});
+    render->DrawQuad2D(_button->vTextures[1], {frameRect.x, frameRect.y});
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -580,7 +567,7 @@ void OnCancel3::Update() {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
 
-    render->DrawQuad2D(_button->vTextures[0], {uFrameX, uFrameY});
+    render->DrawQuad2D(_button->vTextures[0], {frameRect.x, frameRect.y});
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
