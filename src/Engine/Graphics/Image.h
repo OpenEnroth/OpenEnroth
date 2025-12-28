@@ -9,19 +9,17 @@
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
 
-#include "Utility/Types.h"
-
 class ImageLoader;
 
 class GraphicsImage {
  public:
     static GraphicsImage *Create(RgbaImage image);
-    static GraphicsImage *Create(ssize_t width, ssize_t height);
+    static GraphicsImage *Create(int width, int height);
     static GraphicsImage *Create(Sizei size);
     static GraphicsImage *Create(std::unique_ptr<ImageLoader> loader);
 
-    ssize_t width();
-    ssize_t height();
+    int width();
+    int height();
     Sizei size();
 
     RgbaImage &rgba();

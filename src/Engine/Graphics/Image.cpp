@@ -20,7 +20,7 @@ GraphicsImage *GraphicsImage::Create(RgbaImage image) {
     return result;
 }
 
-GraphicsImage *GraphicsImage::Create(ssize_t width, ssize_t height) {
+GraphicsImage *GraphicsImage::Create(int width, int height) {
     assert(width > 0 && height > 0);
     return Create(RgbaImage::solid(width, height, Color()));
 }
@@ -36,11 +36,11 @@ GraphicsImage *GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
     return result;
 }
 
-ssize_t GraphicsImage::width() {
+int GraphicsImage::width() {
     return rgba().width();
 }
 
-ssize_t GraphicsImage::height() {
+int GraphicsImage::height() {
     return rgba().height();
 }
 
