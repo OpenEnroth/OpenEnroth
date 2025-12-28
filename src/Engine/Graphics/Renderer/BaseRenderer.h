@@ -19,13 +19,10 @@ class BaseRenderer : public Renderer {
 
     virtual bool Initialize() override;
 
-    virtual void TransformBillboardsAndSetPalettesODM() override;
+    virtual void TransformBillboards() override;
     virtual void DrawSpriteObjects() override;
     virtual void PrepareDecorationsRenderList_ODM() override;
-    virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
-                                              GraphicsImage *texture,
-                                              Color uDiffuse,
-                                              int angle) override;
+    virtual void MakeParticleBillboardAndPush(const Particle& p) override;
     virtual float GetGamma() override;
 
     virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) override;
@@ -45,7 +42,7 @@ class BaseRenderer : public Renderer {
  protected:
     unsigned int NextBillboardIndex();
     void SortBillboards();
-    void TransformBillboard(const SoftwareBillboard *a2, const RenderBillboard *pBillboard);
+    void TransformBillboard(const RenderBillboard *pBillboard, int parent);
 
  protected:
     Sizei outputRender = {0, 0};

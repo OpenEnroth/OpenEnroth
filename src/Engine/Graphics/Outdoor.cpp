@@ -204,7 +204,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
         render->PrepareDecorationsRenderList_ODM();
 
     render->DrawSpriteObjects();
-    render->TransformBillboardsAndSetPalettesODM();
+    render->TransformBillboards();
 
     // temp hack to show snow every third day in winter
     switch (pParty->uCurrentMonth) {

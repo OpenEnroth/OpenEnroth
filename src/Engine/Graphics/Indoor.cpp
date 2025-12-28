@@ -203,7 +203,7 @@ void IndoorLocation::Draw() {
     PrepareDrawLists_BLV();
     if (pBLVRenderParams->uPartySectorID)
         DrawIndoorFaces(true);
-    render->TransformBillboardsAndSetPalettesODM();
+    render->TransformBillboards();
     engine->DrawParticles();
     trail_particle_generator.UpdateParticles();
 }

@@ -14,28 +14,6 @@ class Sprite;
 class SpriteFrame;
 class GraphicsImage;
 
-struct RenderBillboard {
-    float screenspace_projection_factor_x;
-    float screenspace_projection_factor_y;
-    float fov_x;
-    float fov_y;
-    int field_14_actor_id;
-    Sprite *hwsprite;  // int16_t HwSpriteID;
-    int16_t uPaletteId;
-    int uIndoorSectorID;
-    BillboardFlags flags;  // flags
-    int16_t world_x;
-    int16_t world_y;
-    int16_t world_z;
-    int16_t screen_space_x;
-    int16_t screen_space_y;
-    int32_t screen_space_z;
-    Pid object_pid;
-    uint16_t dimming_level;
-    Color sTintColor;
-    SpriteFrame *pSpriteFrame;
-};
-
 struct ODMRenderParams {
     int shading_dist_shade = 0x800;
     int shading_dist_shademist = 0x1000;
@@ -76,6 +54,28 @@ struct RenderVertexD3D3 {
     Vec2f texcoord;
 };
 
+struct RenderBillboard {
+    float screenspace_projection_factor_x;
+    float screenspace_projection_factor_y;
+    float fov_x;
+    float fov_y;
+    int field_14_actor_id;
+    Sprite* hwsprite;  // int16_t HwSpriteID;
+    int16_t uPaletteId;
+    int uIndoorSectorID;
+    BillboardFlags flags;  // flags
+    int16_t world_x;
+    int16_t world_y;
+    int16_t world_z;
+    int16_t screen_space_x;
+    int16_t screen_space_y;
+    int32_t screen_space_z;
+    Pid object_pid;
+    uint16_t dimming_level;
+    Color sTintColor;
+    SpriteFrame* pSpriteFrame;
+};
+
 struct RenderBillboardD3D {
     enum class OpacityType : uint32_t {
         Transparent = 0,
@@ -96,18 +96,4 @@ struct RenderBillboardD3D {
     int screen_space_z = 0;
     int sParentBillboardID = -1;
     int paletteId = 0;
-};
-
-// TODO(pskelton): Simplify/remove/combine different billboard structs
-struct SoftwareBillboard {
-    int screen_space_x = 0;
-    int screen_space_y = 0;
-    int screen_space_z = 0;
-    float screenspace_projection_factor_x = 0;
-    float screenspace_projection_factor_y = 0;
-    BillboardFlags uFlags;
-    int sParentBillboardID = -1;
-    Color sTintColor;
-    Pid object_pid;
-    int paletteID = 0;
 };

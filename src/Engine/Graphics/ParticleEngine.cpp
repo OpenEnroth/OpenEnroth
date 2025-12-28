@@ -236,80 +236,40 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
 }
 
 void ParticleEngine::DrawParticles_BLV() {
-    SoftwareBillboard v15;
-
     for (unsigned int i = uStartParticle; i <= uEndParticle; ++i) {
         Particle *p = &pParticles[i];
 
         if (p->type == ParticleType_Invalid) continue;
-
         if (!ViewProject_TrueIfStillVisible_BLV(i)) continue;
 
         // TODO(pskelton): reinstate this guard check
-        // TODO(Nik-RE-dev): all types except for Line appear to behave identically
         if (true) {
             /*p->uScreenSpaceX >= pBLVRenderParams->uViewportX &&
             p->uScreenSpaceX < pBLVRenderParams->uViewportZ &&
             p->uScreenSpaceY >= pBLVRenderParams->uViewportY &&
             p->uScreenSpaceY < pBLVRenderParams->uViewportW) { */
-            if (p->type & ParticleType_Diffuse) {
-                // v14 = &pParticles[i];
-                v15.screenspace_projection_factor_x = p->screenspace_scale;
-                v15.screenspace_projection_factor_y = p->screenspace_scale;
-                v15.screen_space_x = p->uScreenSpaceX;
-                v15.screen_space_y = p->uScreenSpaceY;
-                v15.screen_space_z = p->zbuffer_depth;
-                v15.paletteID = p->paletteID;
-                render->MakeParticleBillboardAndPush(
-                    &v15, 0, p->uLightColor_bgr, p->angle);
+            if (p->type & ParticleType_Bitmap || p->type & ParticleType_Sprite || p->type & ParticleType_Diffuse) {
+                render->MakeParticleBillboardAndPush(*p);
             } else if (p->type & ParticleType_Line) {  // type doesnt appear to be used
                 if (pLines.uNumLines < 100) {
-                    pLines.pLineVertices[2 * pLines.uNumLines].pos.x =
-                        p->uScreenSpaceX;
-                    pLines.pLineVertices[2 * pLines.uNumLines].pos.y =
-                        p->uScreenSpaceY;
-                    pLines.pLineVertices[2 * pLines.uNumLines].pos.z =
-                        1.0 - 1.0 / (p->zbuffer_depth * 0.061758894);
+                    pLines.pLineVertices[2 * pLines.uNumLines].pos.x = p->uScreenSpaceX;
+                    pLines.pLineVertices[2 * pLines.uNumLines].pos.y = p->uScreenSpaceY;
+                    pLines.pLineVertices[2 * pLines.uNumLines].pos.z = 1.0 - 1.0 / (p->zbuffer_depth * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines].rhw = 1.0;
-                    pLines.pLineVertices[2 * pLines.uNumLines].diffuse =
-                        p->uLightColor_bgr;
+                    pLines.pLineVertices[2 * pLines.uNumLines].diffuse = p->uLightColor_bgr;
                     pLines.pLineVertices[2 * pLines.uNumLines].specular = Color();
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.x = 0.0;
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.y = 0.0;
 
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.x =
-                        p->uScreenSpaceZ;  // where is this set?
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.y =
-                        p->uScreenSpaceW;
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.z =
-                        1.0 - 1.0 / ((short)p->sZValue2 * 0.061758894);
+                    pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.x = p->uScreenSpaceZ;  // where is this set?
+                    pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.y = p->uScreenSpaceW;
+                    pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.z = 1.0 - 1.0 / ((short)p->sZValue2 * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].rhw = 1.0;
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].diffuse =
-                        p->uLightColor_bgr;
+                    pLines.pLineVertices[2 * pLines.uNumLines + 1].diffuse = p->uLightColor_bgr;
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].specular = Color();
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].texcoord.x =
-                        0.0;
-                    pLines.pLineVertices[2 * pLines.uNumLines++ + 1]
-                        .texcoord.y = 0.0;
+                    pLines.pLineVertices[2 * pLines.uNumLines + 1].texcoord.x = 0.0;
+                    pLines.pLineVertices[2 * pLines.uNumLines++ + 1].texcoord.y = 0.0;
                 }
-            } else if (p->type & ParticleType_Bitmap) {
-                v15.screenspace_projection_factor_x = p->screenspace_scale;
-                v15.screenspace_projection_factor_y = p->screenspace_scale;
-                v15.screen_space_x = p->uScreenSpaceX;
-                v15.screen_space_y = p->uScreenSpaceY;
-                v15.screen_space_z = p->zbuffer_depth;
-                v15.paletteID = p->paletteID;
-                render->MakeParticleBillboardAndPush(
-                    &v15, p->texture, p->uLightColor_bgr, p->angle);
-            } else if (p->type & ParticleType_Sprite) {
-                v15.screenspace_projection_factor_x = p->screenspace_scale;
-                v15.screenspace_projection_factor_y = p->screenspace_scale;
-                v15.screen_space_x = p->uScreenSpaceX;
-                v15.screen_space_y = p->uScreenSpaceY;
-                v15.screen_space_z = p->zbuffer_depth;
-                v15.paletteID = p->paletteID;
-                render->MakeParticleBillboardAndPush(
-                    &v15, p->texture, p->uLightColor_bgr, p->angle);
             }
         }
     }
