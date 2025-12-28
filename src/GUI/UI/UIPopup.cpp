@@ -275,9 +275,9 @@ void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight) {
     }
 
     render->DrawQuad2D(messagebox_corner_x, {uX, uY});
-    render->DrawQuad2D(messagebox_corner_y, {uX, static_cast<int>(uY + uHeight - messagebox_corner_y->height())});
-    render->DrawQuad2D(messagebox_corner_z, {static_cast<int>(uX + uWidth - messagebox_corner_z->width()), uY});
-    render->DrawQuad2D(messagebox_corner_w, {static_cast<int>(uX + uWidth - messagebox_corner_z->width()), static_cast<int>(uY + uHeight - messagebox_corner_y->height())});
+    render->DrawQuad2D(messagebox_corner_y, {uX, uY + uHeight - messagebox_corner_y->height()});
+    render->DrawQuad2D(messagebox_corner_z, {uX + uWidth - messagebox_corner_z->width(), uY});
+    render->DrawQuad2D(messagebox_corner_w, {uX + uWidth - messagebox_corner_z->width(), uY + uHeight - messagebox_corner_y->height()});
 
     if (uWidth > messagebox_corner_x->width() + messagebox_corner_z->width()) {
         render->SetUIClipRect(Recti(uX + messagebox_corner_x->width(), uY,
@@ -289,7 +289,7 @@ void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight) {
              x < uX + uWidth - messagebox_corner_x->width();
              x += messagebox_border_top->width()) {
             render->DrawQuad2D(messagebox_border_top, {x, uY});
-            render->DrawQuad2D(messagebox_border_bottom, {x, static_cast<int>(uY + uHeight - messagebox_border_bottom->height())});
+            render->DrawQuad2D(messagebox_border_bottom, {x, uY + uHeight - messagebox_border_bottom->height()});
         }
     }
 
@@ -303,7 +303,7 @@ void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight) {
              y < uY + uHeight - messagebox_corner_y->height();
              y += messagebox_border_right->height()) {
             render->DrawQuad2D(messagebox_border_left, {uX, y});
-            render->DrawQuad2D(messagebox_border_right, {static_cast<int>(uX + uWidth - messagebox_border_right->width() - 1), y});
+            render->DrawQuad2D(messagebox_border_right, {uX + uWidth - messagebox_border_right->width() - 1, y});
         }
     }
     render->ResetUIClipRect();
@@ -403,7 +403,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
 
         iteminfo_window.DrawTitleText(assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary, inspect_item->GetDisplayName(), 3);
         iteminfo_window.DrawTitleText(assets->pFontArrus.get(), 0x64u,
-            ((signed int)iteminfo_window.uFrameHeight >> 1) - assets->pFontArrus->CalcTextHeight(localization->str(LSTR_BROKEN_ITEM), iteminfo_window.uFrameWidth, 0) / 2,
+            (iteminfo_window.uFrameHeight >> 1) - assets->pFontArrus->CalcTextHeight(localization->str(LSTR_BROKEN_ITEM), iteminfo_window.uFrameWidth, 0) / 2,
                                       colorTable.TorchRed, localization->str(LSTR_BROKEN_ITEM), 3);
         render->ResetUIClipRect();
 
@@ -564,7 +564,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     iteminfo_window.uFrameW =
         iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
     render->DrawQuad2D(inspect_item_image, {iteminfo_window.uFrameX + itemXspacing,
-                                           iteminfo_window.uFrameY + static_cast<int>(iteminfo_window.uFrameHeight - inspect_item_image->height()) / 2});
+                                           iteminfo_window.uFrameY + (iteminfo_window.uFrameHeight - inspect_item_image->height()) / 2});
 
     v34 = (int)(v85 + 35);
 

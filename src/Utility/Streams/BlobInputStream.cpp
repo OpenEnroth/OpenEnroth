@@ -55,19 +55,19 @@ std::string BlobInputStream::displayPath() const {
     return _blob.displayPath();
 }
 
-void BlobInputStream::seek(ssize_t pos) {
+void BlobInputStream::seek(size_t pos) {
     assert(_pos);
 
-    _pos = static_cast<const char *>(_blob.data()) + std::clamp<ssize_t>(pos, 0, size());
+    _pos = static_cast<const char *>(_blob.data()) + std::clamp<size_t>(pos, 0, size());
 }
 
-ssize_t BlobInputStream::position() const {
+size_t BlobInputStream::position() const {
     assert(_pos);
 
     return _pos - static_cast<const char *>(_blob.data());
 }
 
-ssize_t BlobInputStream::size() const {
+size_t BlobInputStream::size() const {
     assert(_pos);
 
     return _blob.size();

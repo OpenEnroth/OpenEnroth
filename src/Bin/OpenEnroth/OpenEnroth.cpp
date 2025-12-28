@@ -30,7 +30,6 @@
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String/Transformations.h"
 #include "Utility/String/Split.h"
-#include "Utility/Types.h"
 
 #include "OpenEnrothOptions.h"
 
@@ -45,8 +44,9 @@ static std::string normalizeText(std::string_view text) {
     return result;
 }
 
-static void printLines(const std::vector<std::string_view> &lines, ssize_t line, ssize_t delta) {
-    for (size_t i = std::max(static_cast<ssize_t>(0), line - delta); i < std::min(std::ssize(lines), line + delta + 1); i++)
+static void printLines(const std::vector<std::string_view> &lines, size_t line, size_t delta) {
+    // TODO(captainurist): #cpp26 use std::sat_sub
+    for (size_t i = line > delta ? line - delta : 0; i < std::min(lines.size(), line + delta + 1); i++)
         fmt::println(stderr, "{:>5}: {}", i + 1, lines[i]);
 }
 

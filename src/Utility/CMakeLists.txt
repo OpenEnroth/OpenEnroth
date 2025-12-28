@@ -24,7 +24,6 @@ set(UTILITY_HEADERS
         Flags.h
         Hash.h
         String/Format.h
-        Types.h
         IndexedArray.h
         IndexedBitset.h
         Lambda.h
