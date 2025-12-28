@@ -88,7 +88,7 @@ void AudioBaseDataSource::Close() {
     }
 
     if (pCodecContext) {
-        avcodec_close(pCodecContext);
+        avcodec_free_context(&pCodecContext);
         pCodecContext = nullptr;
     }
 

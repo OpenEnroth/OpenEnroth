@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <string>
 
 #include <al.h> // NOLINT: not a C system header.
@@ -35,6 +36,7 @@ class OpenALTrack16 : public IAudioTrack {
     ALsizei al_sample_rate;
     size_t uiReservedData;
     size_t uiReservedDataMinimum;
+    std::mutex _mutex;  // Protects pDataSource access.
 };
 
 PAudioTrack CreateAudioTrack(Blob data);
