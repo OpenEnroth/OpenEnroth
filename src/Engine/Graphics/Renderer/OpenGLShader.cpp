@@ -58,12 +58,13 @@ bool OpenGLShader::load(const Blob &vertSource, const Blob &fragSource, bool ope
 
     std::string errors = compileErrors(result);
     if (!errors.empty()) {
-        logger->error("Could not link shader program ['{}', '{}']:\n{}", vertSource.displayPath(), fragSource.displayPath(), errors);
+        logger->error("Could not link shader program '{}+{}':\n{}", vertSource.displayPath(), fragSource.displayPath(), errors);
         glDeleteProgram(result);
         return false;
     }
 
     _id = result;
+    _paths = fmt::format("{}+{}", vertSource.displayPath(), fragSource.displayPath());
     return true;
 }
 
@@ -75,22 +76,23 @@ void OpenGLShader::release() {
     _id = 0;
 }
 
-int OpenGLShader::uniformLocation(const char *name) {
+int OpenGLShader::uniformLocation(const char *name) const {
     assert(isValid());
 
-    return glGetUniformLocation(_id, name);
-}
-
-int OpenGLShader::attribLocation(const char *name) {
-    assert(isValid());
-
-    return glGetAttribLocation(_id, name);
+    int location = glGetUniformLocation(_id, name);
+    if (location == -1)
+        logger->error("Uniform '{}' not found in shader program '{}'", name, _paths);
+    return location;
 }
 
 void OpenGLShader::use() {
     assert(isValid());
 
     glUseProgram(_id);
+}
+
+void OpenGLShader::unuse() {
+    glUseProgram(0);
 }
 
 unsigned OpenGLShader::loadShader(const Blob &source, int type, bool openGLES, const FileSystem *pwd) {

@@ -5,6 +5,7 @@ set(ENGINE_GRAPHICS_RENDERER_SOURCES
         NullRenderer.cpp
         OpenGLRenderer.cpp
         OpenGLShader.cpp
+        OpenGLShaderParams.cpp
         Renderer.cpp
         RendererEnums.cpp
         RendererFactory.cpp)
@@ -15,6 +16,7 @@ set(ENGINE_GRAPHICS_RENDERER_HEADERS
         NullRenderer.h
         OpenGLRenderer.h
         OpenGLShader.h
+        OpenGLShaderParams.h
         Renderer.h
         RendererEnums.h
         RendererFactory.h
