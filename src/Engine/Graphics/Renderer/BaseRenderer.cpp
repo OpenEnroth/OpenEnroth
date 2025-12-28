@@ -546,7 +546,7 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     pBillboardRenderListD3D[v5].texture = nullptr;
     pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
     pBillboardRenderListD3D[v5].paletteId = 0;
-	pBillboardRenderListD3D[v5].screen_space_z = depth;
+    pBillboardRenderListD3D[v5].screen_space_z = depth;
 
     pBillboardRenderListD3D[v5].pQuads[3].pos.x = 0.0f;
     pBillboardRenderListD3D[v5].pQuads[3].pos.y = 0.0f;
