@@ -152,6 +152,7 @@ GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
         }
 
         int width = render->GetPresentDimensions().w;
+        // TODO(captainurist): Sus. Comparing height to width?
         if (pWindow->frameRect.x == 0 && pWindow->frameRect.y == 0 &&
             pWindow->frameRect.w == width && pWindow->frameRect.h == width) {
             break;
