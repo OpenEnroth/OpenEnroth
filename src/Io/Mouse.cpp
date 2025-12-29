@@ -234,6 +234,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                         continue;
                     }
                     if (control->uButtonType == 2) {  // adventurers portraits click (circular button)
+                        // TODO(captainurist): actual shape is oval, this check is bugged.
                         int dx = x - control->rect.x;
                         int dy = y - control->rect.y;
                         if (std::sqrt((double)(dx * dx + dy * dy)) < (double)control->rect.w) {
