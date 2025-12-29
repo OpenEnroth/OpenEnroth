@@ -87,7 +87,7 @@ void GUIWindow_LloydsBook::Update() {
     std::string pText = localization->str(LSTR_RECALL_BEACON);
 
     GUIWindow pWindow;
-    pWindow.frameRect = Recti(pViewport->viewportTL_X, pViewport->viewportTL_Y, 428, pViewport->viewportHeight);
+    pWindow.frameRect = Recti(pViewport->rect.x, pViewport->rect.y, 428, pViewport->rect.h);
 
     if (!_recallingBeacon) {
         pText = localization->str(LSTR_SET_BEACON);

@@ -214,10 +214,10 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
     int y = 0;
     int z, w;
     if (inside_game_viewport) {
-        x = pViewport->viewportTL_X;
-        z = pViewport->viewportBR_X;
-        y = pViewport->viewportTL_Y;
-        w = pViewport->viewportBR_Y;
+        x = pViewport->rect.x;
+        z = pViewport->rect.x + pViewport->rect.w - 1;
+        y = pViewport->rect.y;
+        w = pViewport->rect.y + pViewport->rect.h - 1;
     } else {
         Sizei renDims = render->GetRenderDimensions();
         z = renDims.w;
@@ -344,7 +344,7 @@ void GUIWindow::DrawDialoguePanel(std::string_view text) {
     if (text.empty())
         return;
 
-    int frameWidth = pViewport->viewportWidth;
+    int frameWidth = pViewport->rect.w;
     int indent = 12;
 
     GUIFont *font = assets->pFontArrus.get();

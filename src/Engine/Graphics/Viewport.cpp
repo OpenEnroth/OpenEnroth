@@ -27,26 +27,17 @@
 
 //----- (004C0262) --------------------------------------------------------
 void Viewport::SetViewport(int topLeft_X, int topLeft_Y, int bottomRight_X, int bottomRight_Y) {
-    unsigned int tl_x = std::min(topLeft_X, bottomRight_X);
-    unsigned int br_x = std::max(topLeft_X, bottomRight_X);
+    int tl_x = std::min(topLeft_X, bottomRight_X);
+    int br_x = std::max(topLeft_X, bottomRight_X);
+    int tl_y = std::min(topLeft_Y, bottomRight_Y);
+    int br_y = std::max(topLeft_Y, bottomRight_Y);
 
-    unsigned int tl_y = std::min(topLeft_Y, bottomRight_Y);
-    unsigned int br_y = std::max(topLeft_Y, bottomRight_Y);
-
-    this->viewportTL_Y = tl_y;
-    this->viewportTL_X = tl_x;
-    this->viewportBR_X = br_x;
-    this->viewportBR_Y = br_y;
-
-    this->viewportWidth = br_x - tl_x + 1;
-    this->viewportHeight = br_y - tl_y + 1;
-    this->viewportCenterX = (signed int)(br_x + tl_x) / 2;
-    this->viewportCenterY = (signed int)(br_y + tl_y) / 2;
+    // Convert from inclusive bounds (BR is inside) to Recti (exclusive BR).
+    rect = Recti(tl_x, tl_y, br_x - tl_x + 1, br_y - tl_y + 1);
 }
 
 bool Viewport::Contains(unsigned int x, unsigned int y) {
-    return ((int)x >= viewportTL_X && (int)x <= viewportBR_X &&
-            (int)y >= viewportTL_Y && (int)y <= viewportBR_Y);
+    return rect.contains(Pointi(x, y));
 }
 
 //----- (00443219) --------------------------------------------------------

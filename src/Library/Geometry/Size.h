@@ -8,9 +8,11 @@ struct Size {
     constexpr Size() = default;
     constexpr Size(T w, T h): w(w), h(h) {}
 
-    bool operator==(const Size &c) const {
-        return c.h == h && c.w == w;
+    [[nodiscard]] constexpr friend Size operator/(Size l, T r) {
+        return {l.w / r, l.h / r};
     }
+
+    [[nodiscard]] constexpr friend bool operator==(const Size &l, const Size &r) = default;
 };
 
 using Sizei = Size<int>;

@@ -805,9 +805,9 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 int screen_space_half_width = static_cast<int>(proj_scale * frame->sprites[Sprite_Octant]->uWidth / 2.0f);
                 int screen_space_height = static_cast<int>(proj_scale * frame->sprites[Sprite_Octant]->uHeight);
 
-                if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
-                    projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
-                    if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) { // test
+                if (projected_x + screen_space_half_width >= pViewport->rect.x &&
+                    projected_x - screen_space_half_width <= pViewport->rect.x + pViewport->rect.w - 1) {
+                    if (projected_y >= pViewport->rect.y && (projected_y - screen_space_height) <= pViewport->rect.y + pViewport->rect.h - 1) { // test
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 

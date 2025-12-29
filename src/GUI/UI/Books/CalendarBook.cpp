@@ -70,10 +70,10 @@ void GUIWindow_CalendarBook::Update() {
 
     GUIWindow calendar_window;
 
-    render->DrawQuad2D(ui_book_calendar_background, {pViewport->viewportTL_X, pViewport->viewportTL_Y});
+    render->DrawQuad2D(ui_book_calendar_background, pViewport->rect.topLeft());
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
 
-    calendar_window.frameRect = Recti(pViewport->viewportTL_X, pViewport->viewportTL_Y, pViewport->viewportWidth, pViewport->viewportHeight);
+    calendar_window.frameRect = pViewport->rect;
     calendar_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_calendar_title_color, localization->str(LSTR_TIME_IN_ERATHIA), 3);
 
     std::string str = fmt::format("{}\t100:\t110{}:{:02} {} - {}", localization->str(LSTR_TIME), time.hourAmPm,

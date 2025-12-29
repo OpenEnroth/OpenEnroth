@@ -33,9 +33,9 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
     ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
     ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
 
-    pBtn_Book_1 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 1}, ui_book_button1_on->size(), 1, 0,
+    pBtn_Book_1 = CreateButton(pViewport->rect.topLeft() + Pointi(398, 1), ui_book_button1_on->size(), 1, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_UP), {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 38}, ui_book_button2_on->size(), 1, 0,
+    pBtn_Book_2 = CreateButton(pViewport->rect.topLeft() + Pointi(398, 38), ui_book_button2_on->size(), 1, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
     journal_window.frameRect = Recti(48, 70, 360, 264);
@@ -62,21 +62,21 @@ void GUIWindow_JournalBook::Update() {
 
     GUIWindow journal_window;
 
-    render->DrawQuad2D(ui_book_journal_background, {pViewport->viewportTL_X, pViewport->viewportTL_Y});
+    render->DrawQuad2D(ui_book_journal_background, pViewport->rect.topLeft());
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_currentIdx) {
-        render->DrawQuad2D(ui_book_button1_off, {pViewport->viewportTL_X + 407, pViewport->viewportTL_Y + 2});
+        render->DrawQuad2D(ui_book_button1_off, pViewport->rect.topLeft() + Pointi(407, 2));
     } else {
-        render->DrawQuad2D(ui_book_button1_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 1});
+        render->DrawQuad2D(ui_book_button1_on, pViewport->rect.topLeft() + Pointi(398, 1));
     }
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || (_currentIdx + 1) >= _journalIdx.size()) {
-        render->DrawQuad2D(ui_book_button2_off, {pViewport->viewportTL_X + 407, pViewport->viewportTL_Y + 38});
+        render->DrawQuad2D(ui_book_button2_off, pViewport->rect.topLeft() + Pointi(407, 38));
     } else {
-        render->DrawQuad2D(ui_book_button2_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 38});
+        render->DrawQuad2D(ui_book_button2_on, pViewport->rect.topLeft() + Pointi(398, 38));
     }
 
     if (_journalIdx.size() && !_journalEntryPage[_currentIdx]) {  // for title
-        journal_window.frameRect = Recti(pViewport->viewportTL_X, pViewport->viewportTL_Y, pViewport->viewportWidth, pViewport->viewportHeight);
+        journal_window.frameRect = pViewport->rect;
 
         if (!pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle.empty()) {
             journal_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle, 3);

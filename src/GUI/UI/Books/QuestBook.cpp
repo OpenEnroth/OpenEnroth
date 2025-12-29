@@ -31,9 +31,9 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() {
     ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
     ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
 
-    pBtn_Book_1 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 1}, ui_book_button1_on->size(), 1, 0,
+    pBtn_Book_1 = CreateButton(pViewport->rect.topLeft() + Pointi(398, 1), ui_book_button1_on->size(), 1, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_UP), {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 38}, ui_book_button2_on->size(), 1, 0,
+    pBtn_Book_2 = CreateButton(pViewport->rect.topLeft() + Pointi(398, 38), ui_book_button2_on->size(), 1, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
     for (auto i : pQuestTable.indices()) {
@@ -49,22 +49,22 @@ void GUIWindow_QuestBook::Update() {
     int pTextHeight;
     GUIWindow questbook_window;
 
-    render->DrawQuad2D(ui_book_quests_background, {pViewport->viewportTL_X, pViewport->viewportTL_Y});
+    render->DrawQuad2D(ui_book_quests_background, pViewport->rect.topLeft());
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingQuestIdx) {
-        render->DrawQuad2D(ui_book_button1_off, {pViewport->viewportTL_X + 407, pViewport->viewportTL_Y + 2});
+        render->DrawQuad2D(ui_book_button1_off, pViewport->rect.topLeft() + Pointi(407, 2));
     } else {
-        render->DrawQuad2D(ui_book_button1_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 1});
+        render->DrawQuad2D(ui_book_button1_on, pViewport->rect.topLeft() + Pointi(398, 1));
     }
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || (_startingQuestIdx + _currentPageQuests) >= _activeQuestsIdx.size()) {
-        render->DrawQuad2D(ui_book_button2_off, {pViewport->viewportTL_X + 407, pViewport->viewportTL_Y + 38});
+        render->DrawQuad2D(ui_book_button2_off, pViewport->rect.topLeft() + Pointi(407, 38));
     } else {
-        render->DrawQuad2D(ui_book_button2_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 38});
+        render->DrawQuad2D(ui_book_button2_on, pViewport->rect.topLeft() + Pointi(398, 38));
     }
 
     // for title
-    questbook_window.frameRect = Recti(pViewport->viewportTL_X, pViewport->viewportTL_Y, pViewport->viewportWidth, pViewport->viewportHeight);
+    questbook_window.frameRect = pViewport->rect;
     questbook_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_quests_title_color, localization->str(LSTR_CURRENT_QUESTS), 3);
 
     // for other text

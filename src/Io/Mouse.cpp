@@ -117,9 +117,7 @@ void Io::Mouse::DrawCursor() {
         } else if (_mouseLook) {
             platform->setCursorShown(false);
             auto pointer = assets->getImage_ColorKey("MICON2", colorTable.Black /*colorTable.TealMask*/);
-            int x = pViewport->viewportCenterX - pointer->width() / 2;
-            int y = pViewport->viewportCenterY - pointer->height() / 2;
-            render->DrawQuad2D(pointer, {x, y});
+            render->DrawQuad2D(pointer, pViewport->rect.center() - pointer->size() / 2);
         } else {
             platform->setCursorShown(true);
         }
@@ -286,7 +284,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 
 void Io::Mouse::SetMouseLook(bool enable) {
     if (_mouseLook != enable) {
-        _position = { pViewport->viewportCenterX, pViewport->viewportCenterY };
+        _position = pViewport->rect.center();
         warpMouse(_position);
         window->setMouseRelative(enable);
     }
