@@ -173,17 +173,12 @@ void BLVRenderParams::Reset() {
     }
 
 
-    {
-        this->uViewportX = pViewport->viewportTL_X;
-        this->uViewportY = pViewport->viewportTL_Y;
-        this->uViewportZ = pViewport->viewportBR_X;
-        this->uViewportW = pViewport->viewportBR_Y;
-
-        this->uViewportWidth = uViewportZ - uViewportX + 1;
-        this->uViewportHeight = uViewportW - uViewportY + 1;
-        this->uViewportCenterX = (uViewportZ + uViewportX) / 2;
-        this->uViewportCenterY = (uViewportY + uViewportW) / 2;
-    }
+    this->viewportRect = Recti(
+        pViewport->viewportTL_X,
+        pViewport->viewportTL_Y,
+        pViewport->viewportWidth,
+        pViewport->viewportHeight
+    );
 
     this->uTargetWidth = render->GetRenderDimensions().w;
     this->uTargetHeight = render->GetRenderDimensions().h;

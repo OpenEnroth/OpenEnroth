@@ -653,14 +653,14 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     // lowers clouds as party goes up
     float  blv_horizon_height_offset = ((pCamera3D->ViewPlaneDistPixels * pCamera3D->vCameraPos.z)
         / (pCamera3D->ViewPlaneDistPixels + pCamera3D->GetFarClip())
-        + (pBLVRenderParams->uViewportCenterY));
+        + (pBLVRenderParams->viewportRect.center().y));
 
     double cam_y_rot_rad = (double)pCamera3D->_viewPitch * rot_to_rads;
 
     float depth_to_far_clip = std::cos(pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
     float height_to_far_clip = std::sin(pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
 
-    float blv_bottom_y_proj = ((pBLVRenderParams->uViewportCenterY) -
+    float blv_bottom_y_proj = ((pBLVRenderParams->viewportRect.center().y) -
         pCamera3D->ViewPlaneDistPixels /
         (depth_to_far_clip + 0.0000001f) *
         (height_to_far_clip - pCamera3D->vCameraPos.z));
@@ -693,7 +693,7 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     unsigned _507D30_idx = 0;
     for (; _507D30_idx < uNumVertices; _507D30_idx++) {
         // outbound screen x dist
-        float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - VertexRenderList[_507D30_idx].vWorldViewProj.x);
+        float x_dist = inv_viewplanedist * (pBLVRenderParams->viewportRect.center().x - VertexRenderList[_507D30_idx].vWorldViewProj.x);
         // outbound screen y dist
         float y_dist = inv_viewplanedist * (blv_horizon_height_offset - VertexRenderList[_507D30_idx].vWorldViewProj.y);
 
