@@ -306,16 +306,15 @@ void GUIWindow_Dialogue::Update() {
             GUIButton *pButton = pDialogueWindow->GetControl(i);
             if (!pButton)
                 break;
-            pButton->uY = (unsigned int)(v45 + v42);
+            pButton->rect.y = v45 + v42;
             int pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.frameRect.w, 0);
-            pButton->uHeight = pTextHeight;
-            v42 = pButton->uY + pTextHeight - 1;
-            pButton->uW = v42;
+            pButton->rect.h = pTextHeight + 1;
+            v42 = pButton->rect.y + pTextHeight - 1;
             Color pTextColor = ui_game_dialogue_option_normal_color;
             if (pDialogueWindow->pCurrentPosActiveItem == i) {
                 pTextColor = ui_game_dialogue_option_highlight_color;
             }
-            window.DrawTitleText(assets->pFontArrus.get(), 0, pButton->uY, pTextColor, pButton->sLabel, 3);
+            window.DrawTitleText(assets->pFontArrus.get(), 0, pButton->rect.y, pTextColor, pButton->sLabel, 3);
         }
     }
     render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});

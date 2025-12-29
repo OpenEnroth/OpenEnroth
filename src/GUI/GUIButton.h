@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "Library/Geometry/Rect.h"
+
 #include "GUI/GUIWindow.h"
 
 class GraphicsImage;
@@ -16,15 +18,11 @@ class GUIButton {
 
     void DrawLabel(std::string_view text, GUIFont *font, Color color, Color shadowColor = colorTable.Black);
     bool Contains(unsigned int x, unsigned int y);
+    bool Contains(Pointi position);
     void Release();
 
     std::string id = {}; // Button id, so that buttons can be referenced from tests.
-    int uX = 0;
-    int uY = 0;
-    int uWidth = 0;
-    int uHeight = 0;
-    int uZ = 0; // = uX + uWidth
-    int uW = 0; // = uY + uHeight
+    Recti rect;
     int uButtonType = 0;
     int uData = 0;  // may be pMessageType
     UIMessageType msg = UIMSG_0;

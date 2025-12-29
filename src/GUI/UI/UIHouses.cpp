@@ -842,20 +842,18 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
         if (!optionsText[i].empty()) {
             Color textColor = (pDialogueWindow->pCurrentPosActiveItem == buttonIndex) ? selectColor : colorTable.White;
             int textHeight = assets->pFontArrus->CalcTextHeight(optionsText[i], window.frameRect.w, 0);
-            button->uY = spacing + offset;
-            button->uHeight = textHeight;
-            button->uW = button->uY + textHeight - 1 + 6;
+            button->rect.y = spacing + offset;
+            button->rect.h = textHeight + 6;
             button->sLabel = optionsText[i];
             if (denseSpacing) {
                 offset += assets->pFontArrus->GetHeight() - 3 + textHeight;
             } else {
-                offset = button->uW;
+                offset = button->rect.y + textHeight - 1 + 6;
             }
-            window.DrawTitleText(assets->pFontArrus.get(), 0, button->uY, textColor, optionsText[i], 3);
+            window.DrawTitleText(assets->pFontArrus.get(), 0, button->rect.y, textColor, optionsText[i], 3);
         } else if (button) {
-            button->uW = 0;
-            button->uHeight = 0;
-            button->uY = 0;
+            button->rect.y = 0;
+            button->rect.h = 0;
             button->sLabel.clear();
         }
     }

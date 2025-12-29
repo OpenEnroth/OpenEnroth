@@ -95,11 +95,11 @@ void GUIWindow_LloydsBook::Update() {
 
     pWindow.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, pText, 3);
     if (_recallingBeacon) {
-        render->DrawQuad2D(ui_book_button1_on, {pBtn_Book_1->uX, pBtn_Book_1->uY});
-        render->DrawQuad2D(ui_book_button1_off, {pBtn_Book_2->uX, pBtn_Book_2->uY});
+        render->DrawQuad2D(ui_book_button1_on, pBtn_Book_1->rect.topLeft());
+        render->DrawQuad2D(ui_book_button1_off, pBtn_Book_2->rect.topLeft());
     } else {
-        render->DrawQuad2D(ui_book_button1_off, {pBtn_Book_1->uX, pBtn_Book_1->uY});
-        render->DrawQuad2D(ui_book_button1_on, {pBtn_Book_2->uX, pBtn_Book_2->uY});
+        render->DrawQuad2D(ui_book_button1_off, pBtn_Book_1->rect.topLeft());
+        render->DrawQuad2D(ui_book_button1_on, pBtn_Book_2->rect.topLeft());
     }
 
     for (size_t beaconId = 0; beaconId < _maxBeacons; beaconId++) {

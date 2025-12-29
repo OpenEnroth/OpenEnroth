@@ -1073,8 +1073,7 @@ void CharacterUI_SkillsTab_ShowHint() {
 
     if (pX < 24 || pX > 455 || pY < 18 || pY > 36) {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
-            if (pButton->msg == UIMSG_SkillUp && pX >= pButton->uX &&
-                pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
+            if (pButton->msg == UIMSG_SkillUp && pButton->Contains(pX, pY)) {
                 Skill skill = static_cast<Skill>(pButton->msg_param);
                 std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill);
                 CharacterUI_DrawTooltip(localization->skillName(skill), pSkillDescText);
@@ -1442,7 +1441,7 @@ void ShowPopupShopSkills() {
 
     if (pDialogueWindow && pDialogueWindow->pNumPresenceButton != 0) {
         for (GUIButton *pButton : pDialogueWindow->vButtons) {
-            if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
+            if (pButton->Contains(pX, pY)) {
                 if (IsSkillLearningDialogue((DialogueId)pButton->msg_param)) {
                     auto skill_id = GetLearningDialogueSkill((DialogueId)pButton->msg_param);
                     if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != MASTERY_NONE &&
@@ -1915,10 +1914,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             pStr = "";
             for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
                 if (pButton->uButtonType == 1 && pButton->uButtonType != 3 &&
-                    (signed int)pX > (signed int)pButton->uX &&
-                    (signed int)pX < (signed int)pButton->uZ &&
-                    (signed int)pY > (signed int)pButton->uY &&
-                    (signed int)pY < (signed int)pButton->uW) {
+                    pButton->Contains(pX, pY)) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
                             popup_window.sHint = localization->attributeDescription(static_cast<Attribute>(pButton->msg_param % 7));
