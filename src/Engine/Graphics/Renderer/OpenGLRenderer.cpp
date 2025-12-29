@@ -807,9 +807,6 @@ RgbaImage OpenGLRenderer::MakeFullScreenshot() {
 }
 
 void OpenGLRenderer::BeginDecals() {
-    GraphicsImage *texture = assets->getBitmap("hwsplat04");
-    glBindTexture(GL_TEXTURE_2D, texture->renderId().value());
-
     glDisable(GL_CULL_FACE);
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);

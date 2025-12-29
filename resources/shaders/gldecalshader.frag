@@ -23,6 +23,6 @@ void main() {
 
     float fograt = getFogRatio(fog, abs(viewspace.z/ viewspace.w));
     if (fragcol.a < 0.004) fograt = 0.0;
-
-    FragColour = mix(fragcol, vec4(fog.color, 0.0), fograt);
+    
+    FragColour = mix(fragcol, vec4(0.0), fograt);
 }

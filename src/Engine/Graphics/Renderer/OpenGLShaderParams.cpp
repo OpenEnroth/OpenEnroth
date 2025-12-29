@@ -38,7 +38,8 @@ void TextUniforms::submit(const OpenGLShader &shader) const {
 void DecalUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
-    glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
+    // Fog color is optimised out in decal shader
+    // glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
     glUniform1f(shader.uniformLocation("fog.fogstart"), fogStart);
     glUniform1f(shader.uniformLocation("fog.fogmiddle"), fogMiddle);
     glUniform1f(shader.uniformLocation("fog.fogend"), fogEnd);
