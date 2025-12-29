@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;819052e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d909d4f</span>
    </div>
   </td>
  </tr>
@@ -102,12 +102,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:af764e53b5247e4cc00a8978df6944aee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4af66e549bd75fa66224a4446c652cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structRenderBillboardD3D.html#aefe0c017fb0e2d7f0e2a603c19647016">OpacityType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderBillboardD3D.html#af4af66e549bd75fa66224a4446c652cb">opacity</a> = <a class="el" href="structRenderBillboardD3D.html#aefe0c017fb0e2d7f0e2a603c19647016a3d971943089a3388c01fb297a32d9ba7">Transparent</a></td></tr>
 <tr class="separator:af4af66e549bd75fa66224a4446c652cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e5edaa6d892277354fff860429fcc5d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderBillboardD3D.html#a7e5edaa6d892277354fff860429fcc5d">screen_space_z</a> = 0</td></tr>
-<tr class="separator:a7e5edaa6d892277354fff860429fcc5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4dc9874f799ce2df8e97d7983f4ae4e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderBillboardD3D.html#aa4dc9874f799ce2df8e97d7983f4ae4e">view_space_z</a> = 0</td></tr>
+<tr class="separator:aa4dc9874f799ce2df8e97d7983f4ae4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb651325cde85599885dba5297272071"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderBillboardD3D.html#acb651325cde85599885dba5297272071">sParentBillboardID</a> = -1</td></tr>
 <tr class="separator:acb651325cde85599885dba5297272071"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a998218c5b6725772090cf337914a47a1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderBillboardD3D.html#a998218c5b6725772090cf337914a47a1">paletteId</a> = 0</td></tr>
 <tr class="separator:a998218c5b6725772090cf337914a47a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48cf11346fc21320a131e05aca382900"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderBillboardD3D.html#a48cf11346fc21320a131e05aca382900">view_space_L2</a> = 0.0f</td></tr>
+<tr class="separator:a48cf11346fc21320a131e05aca382900"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="aefe0c017fb0e2d7f0e2a603c19647016" name="aefe0c017fb0e2d7f0e2a603c19647016"></a>
@@ -182,20 +184,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a7e5edaa6d892277354fff860429fcc5d" name="a7e5edaa6d892277354fff860429fcc5d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e5edaa6d892277354fff860429fcc5d">&#9670;&#160;</a></span>screen_space_z</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int RenderBillboardD3D::screen_space_z = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="acb651325cde85599885dba5297272071" name="acb651325cde85599885dba5297272071"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acb651325cde85599885dba5297272071">&#9670;&#160;</a></span>sParentBillboardID</h2>
 
@@ -232,6 +220,34 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">unsigned int RenderBillboardD3D::uNumVertices = 4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a48cf11346fc21320a131e05aca382900" name="a48cf11346fc21320a131e05aca382900"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48cf11346fc21320a131e05aca382900">&#9670;&#160;</a></span>view_space_L2</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float RenderBillboardD3D::view_space_L2 = 0.0f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa4dc9874f799ce2df8e97d7983f4ae4e" name="aa4dc9874f799ce2df8e97d7983f4ae4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4dc9874f799ce2df8e97d7983f4ae4e">&#9670;&#160;</a></span>view_space_z</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RenderBillboardD3D::view_space_z = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;819052e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d909d4f</span>
    </div>
   </td>
  </tr>
@@ -122,10 +122,12 @@ Public Attributes</h2></td></tr>
 <tr class="separator:acf117d7fbd425d5eac523c2bf516459e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a946d0b1aa41d0179d15330da24a34595"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParticle.html#a946d0b1aa41d0179d15330da24a34595">uScreenSpaceW</a> = 0</td></tr>
 <tr class="separator:a946d0b1aa41d0179d15330da24a34595"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae448c25f0d57488acd2d2955aa08a022"><td class="memItemLeft" align="right" valign="top">short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParticle.html#ae448c25f0d57488acd2d2955aa08a022">zbuffer_depth</a></td></tr>
-<tr class="separator:ae448c25f0d57488acd2d2955aa08a022"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc6f5d2fb8ff4f4f3d9d4f742da073ff"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParticle.html#afc6f5d2fb8ff4f4f3d9d4f742da073ff">sZValue2</a> = 0</td></tr>
-<tr class="separator:afc6f5d2fb8ff4f4f3d9d4f742da073ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b1424dbb2a1d71eaab228a00a409c33"><td class="memItemLeft" align="right" valign="top">short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParticle.html#a0b1424dbb2a1d71eaab228a00a409c33">view_space_z</a></td></tr>
+<tr class="separator:a0b1424dbb2a1d71eaab228a00a409c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ca983f7162602751ee044ee4e46eebd"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParticle.html#a1ca983f7162602751ee044ee4e46eebd">view_space_L2</a> = 0.0f</td></tr>
+<tr class="separator:a1ca983f7162602751ee044ee4e46eebd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ff27ac65cc3621373c54eb92b0369c6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParticle.html#a3ff27ac65cc3621373c54eb92b0369c6">view_space_z_lineEnd</a> = 0</td></tr>
+<tr class="separator:a3ff27ac65cc3621373c54eb92b0369c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70d7872544a10db9d8fb642bd20f1d3d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParticle.html#a70d7872544a10db9d8fb642bd20f1d3d">screenspace_scale</a> = 1.0</td></tr>
 <tr class="separator:a70d7872544a10db9d8fb642bd20f1d3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd14e2e6d997cd040f3cf839577ba1a6"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParticle.html#acd14e2e6d997cd040f3cf839577ba1a6">fov_x</a> = 0</td></tr>
@@ -302,20 +304,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="afc6f5d2fb8ff4f4f3d9d4f742da073ff" name="afc6f5d2fb8ff4f4f3d9d4f742da073ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc6f5d2fb8ff4f4f3d9d4f742da073ff">&#9670;&#160;</a></span>sZValue2</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int Particle::sZValue2 = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ad7e4e69cf8abbc6148b603cd3db58e3c" name="ad7e4e69cf8abbc6148b603cd3db58e3c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad7e4e69cf8abbc6148b603cd3db58e3c">&#9670;&#160;</a></span>texture</h2>
 
@@ -442,6 +430,48 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a1ca983f7162602751ee044ee4e46eebd" name="a1ca983f7162602751ee044ee4e46eebd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ca983f7162602751ee044ee4e46eebd">&#9670;&#160;</a></span>view_space_L2</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float Particle::view_space_L2 = 0.0f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0b1424dbb2a1d71eaab228a00a409c33" name="a0b1424dbb2a1d71eaab228a00a409c33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b1424dbb2a1d71eaab228a00a409c33">&#9670;&#160;</a></span>view_space_z</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">short Particle::view_space_z</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3ff27ac65cc3621373c54eb92b0369c6" name="a3ff27ac65cc3621373c54eb92b0369c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ff27ac65cc3621373c54eb92b0369c6">&#9670;&#160;</a></span>view_space_z_lineEnd</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Particle::view_space_z_lineEnd = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad4143dd85b447270cf6c5234cf1916b0" name="ad4143dd85b447270cf6c5234cf1916b0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad4143dd85b447270cf6c5234cf1916b0">&#9670;&#160;</a></span>x</h2>
 
@@ -478,20 +508,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float Particle::z = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae448c25f0d57488acd2d2955aa08a022" name="ae448c25f0d57488acd2d2955aa08a022"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae448c25f0d57488acd2d2955aa08a022">&#9670;&#160;</a></span>zbuffer_depth</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">short Particle::zbuffer_depth</td>
         </tr>
       </table>
 </div><div class="memdoc">
