@@ -69,7 +69,7 @@ struct RenderBillboard {
     int16_t world_z;
     int16_t screen_space_x;
     int16_t screen_space_y;
-    int32_t screen_space_z;
+    int32_t view_space_z;
     Pid object_pid;
     uint16_t dimming_level;
     Color sTintColor;
@@ -91,7 +91,7 @@ struct RenderBillboardD3D {
     std::array<RenderVertexD3D3, 4> pQuads;
     OpacityType opacity = Transparent;
 
-    int screen_space_z = 0;
+    int view_space_z = 0;
     int sParentBillboardID = -1;
     int paletteId = 0;
 };
