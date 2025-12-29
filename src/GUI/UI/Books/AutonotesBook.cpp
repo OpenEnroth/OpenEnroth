@@ -57,21 +57,21 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     ui_book_button7_off = assets->getImage_Alpha("tab-an-4a");
     ui_book_button8_off = assets->getImage_Alpha("tab-an-8a");
 
-    pBtn_Book_1 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 1}, {50, 34}, 1, 0,
+    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 38}, {50, 34}, 1, 0,
+    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_UP), {ui_book_button2_on});
-    pBtn_Book_3 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 113}, {50, 34}, 1, 0,
+    pBtn_Book_3 = CreateButton(pViewport.topLeft() + Pointi(398, 113), {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_POTION), INPUT_ACTION_INVALID, localization->str(LSTR_POTION_NOTES), {ui_book_button3_on});
-    pBtn_Book_4 = CreateButton({pViewport->viewportTL_X + 399, pViewport->viewportTL_Y + 150}, {50, 34}, 1, 0,
+    pBtn_Book_4 = CreateButton(pViewport.topLeft() + Pointi(399, 150), {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_FOUNTAIN), INPUT_ACTION_INVALID, localization->str(LSTR_FOUNTAIN_NOTES), {ui_book_button4_on});
-    pBtn_Book_5 = CreateButton({pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 188}, {50, 34}, 1, 0,
+    pBtn_Book_5 = CreateButton(pViewport.topLeft() + Pointi(397, 188), {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_OBELISK), INPUT_ACTION_INVALID, localization->str(LSTR_OBELISK_NOTES), {ui_book_button5_on});
-    pBtn_Book_6 = CreateButton({pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 226}, {50, 34}, 1, 0,
+    pBtn_Book_6 = CreateButton(pViewport.topLeft() + Pointi(397, 226), {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_SEER), INPUT_ACTION_INVALID, localization->str(LSTR_SEER_NOTES), {ui_book_button6_on});
-    pBtn_Autonotes_Misc = CreateButton({pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 264}, {50, 34}, 1, 0,
+    pBtn_Autonotes_Misc = CreateButton(pViewport.topLeft() + Pointi(397, 264), {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_MISC), INPUT_ACTION_INVALID, localization->str(LSTR_MISCELLANEOUS_NOTES), {ui_book_button7_on});
-    pBtn_Autonotes_Instructors = CreateButton({pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 302}, {50, 34}, 1, 0,
+    pBtn_Autonotes_Instructors = CreateButton(pViewport.topLeft() + Pointi(397, 302), {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_INSTRUCTORS), INPUT_ACTION_INVALID, localization->str(LSTR_INSTRUCTORS), {ui_book_button8_on});
 
     recalculateCurrentNotesTypePages();
@@ -84,123 +84,123 @@ void GUIWindow_AutonotesBook::Update() {
     bool noteTypeChanged = false;
     GUIWindow autonotes_window;
 
-    render->DrawQuad2D(ui_book_autonotes_background, {pViewport->viewportTL_X, pViewport->viewportTL_Y});
+    render->DrawQuad2D(ui_book_autonotes_background, pViewport.topLeft());
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingNotesIdx) {
-        render->DrawQuad2D(ui_book_button1_off, {pViewport->viewportTL_X + 407, pViewport->viewportTL_Y + 2});
+        render->DrawQuad2D(ui_book_button1_off, pViewport.topLeft() + Pointi(407, 2));
     } else {
-        render->DrawQuad2D(ui_book_button1_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 1});
+        render->DrawQuad2D(ui_book_button1_on, pViewport.topLeft() + Pointi(398, 1));
     }
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || (_startingNotesIdx + _currentPageNotes) >= _activeNotesIdx.size()) {
-        render->DrawQuad2D(ui_book_button2_off, {pViewport->viewportTL_X + 407, pViewport->viewportTL_Y + 38});
+        render->DrawQuad2D(ui_book_button2_off, pViewport.topLeft() + Pointi(407, 38));
     } else {
-        render->DrawQuad2D(ui_book_button2_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 38});
+        render->DrawQuad2D(ui_book_button2_on, pViewport.topLeft() + Pointi(398, 38));
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_POTION) {
         if (autonoteBookDisplayType == AUTONOTE_POTION_RECIPE) {
-            render->DrawQuad2D(ui_book_button3_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 113});
+            render->DrawQuad2D(ui_book_button3_on, pViewport.topLeft() + Pointi(398, 113));
         } else {
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             autonoteBookDisplayType = AUTONOTE_POTION_RECIPE;
             noteTypeChanged = true;
-            render->DrawQuad2D(ui_book_button3_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 113});
+            render->DrawQuad2D(ui_book_button3_on, pViewport.topLeft() + Pointi(398, 113));
         }
     } else {
         if (autonoteBookDisplayType == AUTONOTE_POTION_RECIPE) {
-            render->DrawQuad2D(ui_book_button3_on, {pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 113});
+            render->DrawQuad2D(ui_book_button3_on, pViewport.topLeft() + Pointi(398, 113));
         } else {
-            render->DrawQuad2D(ui_book_button3_off, {pViewport->viewportTL_X + 408, pViewport->viewportTL_Y + 113});
+            render->DrawQuad2D(ui_book_button3_off, pViewport.topLeft() + Pointi(408, 113));
         }
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_FOUNTAIN) {
         if (autonoteBookDisplayType == AUTONOTE_STAT_HINT) {
-            render->DrawQuad2D(ui_book_button4_on, {pViewport->viewportTL_X + 399, pViewport->viewportTL_Y + 150});
+            render->DrawQuad2D(ui_book_button4_on, pViewport.topLeft() + Pointi(399, 150));
         } else {
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             autonoteBookDisplayType = AUTONOTE_STAT_HINT;
             noteTypeChanged = true;
-            render->DrawQuad2D(ui_book_button4_on, {pViewport->viewportTL_X + 399, pViewport->viewportTL_Y + 150});
+            render->DrawQuad2D(ui_book_button4_on, pViewport.topLeft() + Pointi(399, 150));
         }
     } else {
         if (autonoteBookDisplayType == AUTONOTE_STAT_HINT) {
-            render->DrawQuad2D(ui_book_button4_on, {pViewport->viewportTL_X + 399, pViewport->viewportTL_Y + 150});
+            render->DrawQuad2D(ui_book_button4_on, pViewport.topLeft() + Pointi(399, 150));
         } else {
-            render->DrawQuad2D(ui_book_button4_off, {pViewport->viewportTL_X + 408, pViewport->viewportTL_Y + 150});
+            render->DrawQuad2D(ui_book_button4_off, pViewport.topLeft() + Pointi(408, 150));
         }
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_OBELISK) {
         if (autonoteBookDisplayType == AUTONOTE_OBELISK) {
-            render->DrawQuad2D(ui_book_button5_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 188});
+            render->DrawQuad2D(ui_book_button5_on, pViewport.topLeft() + Pointi(397, 188));
         } else {
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             autonoteBookDisplayType = AUTONOTE_OBELISK;
             noteTypeChanged = true;
-            render->DrawQuad2D(ui_book_button5_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 188});
+            render->DrawQuad2D(ui_book_button5_on, pViewport.topLeft() + Pointi(397, 188));
         }
     } else {
         if (autonoteBookDisplayType == AUTONOTE_OBELISK) {
-            render->DrawQuad2D(ui_book_button5_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 188});
+            render->DrawQuad2D(ui_book_button5_on, pViewport.topLeft() + Pointi(397, 188));
         } else {
-            render->DrawQuad2D(ui_book_button5_off, {pViewport->viewportTL_X + 408, pViewport->viewportTL_Y + 188});
+            render->DrawQuad2D(ui_book_button5_off, pViewport.topLeft() + Pointi(408, 188));
         }
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_SEER) {
         if (autonoteBookDisplayType == AUTONOTE_SEER) {
-            render->DrawQuad2D(ui_book_button6_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 226});
+            render->DrawQuad2D(ui_book_button6_on, pViewport.topLeft() + Pointi(397, 226));
         } else {
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             autonoteBookDisplayType = AUTONOTE_SEER;
             noteTypeChanged = true;
-            render->DrawQuad2D(ui_book_button6_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 226});
+            render->DrawQuad2D(ui_book_button6_on, pViewport.topLeft() + Pointi(397, 226));
         }
     } else {
         if (autonoteBookDisplayType == AUTONOTE_SEER) {
-            render->DrawQuad2D(ui_book_button6_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 226});
+            render->DrawQuad2D(ui_book_button6_on, pViewport.topLeft() + Pointi(397, 226));
         } else {
-            render->DrawQuad2D(ui_book_button6_off, {pViewport->viewportTL_X + 408, pViewport->viewportTL_Y + 226});
+            render->DrawQuad2D(ui_book_button6_off, pViewport.topLeft() + Pointi(408, 226));
         }
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_MISC) {
         if (autonoteBookDisplayType == AUTONOTE_MISC) {
-            render->DrawQuad2D(ui_book_button7_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 264});
+            render->DrawQuad2D(ui_book_button7_on, pViewport.topLeft() + Pointi(397, 264));
         } else {
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             autonoteBookDisplayType = AUTONOTE_MISC;
             noteTypeChanged = true;
-            render->DrawQuad2D(ui_book_button7_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 264});
+            render->DrawQuad2D(ui_book_button7_on, pViewport.topLeft() + Pointi(397, 264));
         }
     } else {
         if (autonoteBookDisplayType == AUTONOTE_MISC) {
-            render->DrawQuad2D(ui_book_button7_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 264});
+            render->DrawQuad2D(ui_book_button7_on, pViewport.topLeft() + Pointi(397, 264));
         } else {
-            render->DrawQuad2D(ui_book_button7_off, {pViewport->viewportTL_X + 408, pViewport->viewportTL_Y + 263});
+            render->DrawQuad2D(ui_book_button7_off, pViewport.topLeft() + Pointi(408, 263));
         }
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_INSTRUCTORS) {
         if (autonoteBookDisplayType == AUTONOTE_TEACHER) {
-            render->DrawQuad2D(ui_book_button8_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 302});
+            render->DrawQuad2D(ui_book_button8_on, pViewport.topLeft() + Pointi(397, 302));
         } else {
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             autonoteBookDisplayType = AUTONOTE_TEACHER;
             noteTypeChanged = true;
-            render->DrawQuad2D(ui_book_button8_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 302});
+            render->DrawQuad2D(ui_book_button8_on, pViewport.topLeft() + Pointi(397, 302));
         }
     } else {
         if (autonoteBookDisplayType == AUTONOTE_TEACHER) {
-            render->DrawQuad2D(ui_book_button8_on, {pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 302});
+            render->DrawQuad2D(ui_book_button8_on, pViewport.topLeft() + Pointi(397, 302));
         } else {
-            render->DrawQuad2D(ui_book_button8_off, {pViewport->viewportTL_X + 408, pViewport->viewportTL_Y + 302});
+            render->DrawQuad2D(ui_book_button8_off, pViewport.topLeft() + Pointi(408, 302));
         }
     }
 
     // for title
-    autonotes_window.frameRect = Recti(pViewport->viewportTL_X, pViewport->viewportTL_Y, pViewport->viewportWidth, pViewport->viewportHeight);
+    autonotes_window.frameRect = pViewport;
 
     autonotes_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_autonotes_title_color, localization->str(LSTR_AUTO_NOTES), 3);
 

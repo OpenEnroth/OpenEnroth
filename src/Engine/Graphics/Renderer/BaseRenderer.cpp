@@ -151,9 +151,9 @@ void BaseRenderer::DrawSpriteObjects() {
                     int screen_space_half_width = static_cast<int>(billb_scale * frame->sprites[octant]->uWidth / 2.0f);
                     int screen_space_height = static_cast<int>(billb_scale * frame->sprites[octant]->uHeight);
 
-                    if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
-                        projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
-                        if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
+                    if (projected_x + screen_space_half_width >= pViewport.x &&
+                        projected_x - screen_space_half_width <= pViewport.x + pViewport.w - 1) {
+                        if (projected_y >= pViewport.y && (projected_y - screen_space_height) <= pViewport.y + pViewport.h - 1) {
                             object->uAttributes |= SPRITE_VISIBLE;
                             pBillboardRenderList[::uNumBillboardsToDraw].uPaletteId = frame->paletteId;
                             pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
@@ -287,9 +287,9 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                             int screen_space_half_width = static_cast<int>(_v41 * frame->sprites[(int64_t)v37]->uWidth / 2.0f);
                             int screen_space_height = static_cast<int>(_v41 * frame->sprites[(int64_t)v37]->uHeight);
 
-                            if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
-                                projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
-                                if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
+                            if (projected_x + screen_space_half_width >= pViewport.x &&
+                                projected_x - screen_space_half_width <= pViewport.x + pViewport.w - 1) {
+                                if (projected_y >= pViewport.y && (projected_y - screen_space_height) <= pViewport.y + pViewport.h - 1) {
                                     ::uNumBillboardsToDraw++;
                                     ++uNumDecorationsDrawnThisFrame;
 
@@ -597,12 +597,8 @@ void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, i
 }
 
 void BaseRenderer::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
-    Recti targetrect{};
-    targetrect.x = pViewport->viewportTL_X;
-    targetrect.y = pViewport->viewportTL_Y;
-    targetrect.w = pViewport->viewportBR_X - pViewport->viewportTL_X;
-    targetrect.h = pViewport->viewportBR_Y - pViewport->viewportTL_Y;
-
+    // TODO(captainurist): Old code used BR - TL (one less than actual width/height), preserving that behavior for now.
+    Recti targetrect(pViewport.x, pViewport.y, pViewport.w - 1, pViewport.h - 1);
     DrawImage(texture, targetrect, palette, colorTable.MediumGrey);
 }
 
@@ -663,10 +659,12 @@ void BaseRenderer::updateRenderDimensions() {
     else
         outputRender = outputPresent;
 
-    pViewport->SetViewport(config->graphics.ViewPortX1.value(), // 8 in vanilla
-                           config->graphics.ViewPortY1.value(), // 8 in vanilla
-                           outputRender.w - config->graphics.ViewPortX2.value(),  // 468 in vanilla
-                           outputRender.h - config->graphics.ViewPortY2.value()); // 352 in vanilla
+    // Set viewport from config values (inclusive TL/BR coordinates).
+    int tlX = config->graphics.ViewPortX1.value();  // 8 in vanilla
+    int tlY = config->graphics.ViewPortY1.value();  // 8 in vanilla
+    int brX = outputRender.w - config->graphics.ViewPortX2.value();  // 468 in vanilla
+    int brY = outputRender.h - config->graphics.ViewPortY2.value();  // 352 in vanilla
+    pViewport = Recti(tlX, tlY, brX - tlX + 1, brY - tlY + 1);
 }
 
 Pointi BaseRenderer::MapToRender(Pointi position) {

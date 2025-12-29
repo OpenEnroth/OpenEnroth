@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Vec.h"
 
 template<class T>

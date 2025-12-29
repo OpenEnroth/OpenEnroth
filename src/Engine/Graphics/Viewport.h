@@ -3,26 +3,12 @@
 #include <cstdint>
 
 #include "Library/Color/Color.h"
+#include "Library/Geometry/Rect.h"
 #include "Library/Geometry/Size.h"
 
 class GraphicsImage;
 
-struct Viewport {
-    void SetViewport(int topLeft_X, int topLeft_Y, int bottomRight_X, int bottomRight_Y);
-    bool Contains(unsigned int x, unsigned int y);
-
-    int viewportTL_X;
-    int viewportTL_Y;
-    int viewportBR_X;
-    int viewportBR_Y;
-
-    int viewportWidth;
-    int viewportHeight;
-    int viewportCenterX;
-    int viewportCenterY;
-};
-
-extern Viewport *pViewport;
+extern Recti pViewport;
 
 struct ViewingParams {
     inline ViewingParams() {

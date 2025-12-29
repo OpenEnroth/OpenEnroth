@@ -204,7 +204,7 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
 void GUIWindow_GameMenu::Update() {
     // -----------------------------------
     // 004156F0 GUI_UpdateWindows --- part
-    render->DrawQuad2D(game_ui_menu_options, {pViewport->viewportTL_X, pViewport->viewportTL_Y});
+    render->DrawQuad2D(game_ui_menu_options, pViewport.topLeft());
 }
 
 //----- (00491CB5) --------------------------------------------------------
@@ -824,7 +824,7 @@ void GameUI_DrawLifeManaBars() {
 
 //----- (0041B3B6) --------------------------------------------------------
 void GameUI_DrawRightPanel() {
-    render->DrawQuad2D(game_ui_right_panel_frame, {pViewport->viewportBR_X, 0});
+    render->DrawQuad2D(game_ui_right_panel_frame, {pViewport.x + pViewport.w - 1, 0});
 }
 
 //----- (0041B3E2) --------------------------------------------------------
@@ -868,7 +868,7 @@ void GameUI_WritePointedObjectStatusString() {
     if (current_screen_type == SCREEN_GAME) {
         if (pX <= (renDims.w - 1) * 0.73125 &&
             pY <= (renDims.h - 1) * 0.73125) {
-            if (!pViewport->Contains(pX, pY)) {
+            if (!pViewport.contains(Pointi(pX, pY))) {
                 if (uLastPointedObjectID) {
                     engine->_statusBar->clearPermanent();
                 }
@@ -1410,10 +1410,10 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
             // draw image
             minimaptemp = GraphicsImage::Create(std::move(minimapImage));
-            render->DrawQuad2D(minimaptemp, {rect.x, rect.y});
+            render->DrawQuad2D(minimaptemp, rect.topLeft());
         } else {
             // no need to update map - just redraw
-            render->DrawQuad2D(minimaptemp, {rect.x, rect.y});
+            render->DrawQuad2D(minimaptemp, rect.topLeft());
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
