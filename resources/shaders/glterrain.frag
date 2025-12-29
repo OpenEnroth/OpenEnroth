@@ -68,7 +68,7 @@ void main() {
         return;
     }
 
-    float dist = abs(viewspace.z / viewspace.w);
+    float dist = length(viewspace);
     float alpha = 0.0;
     if (fog.fogmiddle > fog.fogstart) {
         alpha = smoothstep(fog.fogend, (fog.fogend + fog.fogmiddle) / 2.0, dist);

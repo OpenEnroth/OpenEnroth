@@ -117,7 +117,7 @@ void main() {
         return;
     }
 
-    float dist = abs(viewspace.z / viewspace.w);
+    float dist = length(viewspace);
     float alpha = 0.0;
 
     if (fog.fogmiddle > fog.fogstart) {
@@ -125,7 +125,7 @@ void main() {
     }
 
     vec4 inter = vec4(clamps, vertexColour.a) * vec4(dull,1); // result, 1.0);
-    float fograt = getFogRatio(fog, abs(viewspace.z/ viewspace.w));
+    float fograt = getFogRatio(fog, dist);
     FragColour = mix(inter, vec4(fog.color, alpha), fograt);
     FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));
 }
