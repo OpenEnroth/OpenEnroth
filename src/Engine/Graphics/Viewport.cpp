@@ -25,20 +25,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-//----- (004C0262) --------------------------------------------------------
-void Viewport::SetViewport(int topLeft_X, int topLeft_Y, int bottomRight_X, int bottomRight_Y) {
-    int tl_x = std::min(topLeft_X, bottomRight_X);
-    int br_x = std::max(topLeft_X, bottomRight_X);
-    int tl_y = std::min(topLeft_Y, bottomRight_Y);
-    int br_y = std::max(topLeft_Y, bottomRight_Y);
-
-    // Convert from inclusive bounds (BR is inside) to Recti (exclusive BR).
-    rect = Recti(tl_x, tl_y, br_x - tl_x + 1, br_y - tl_y + 1);
-}
-
-bool Viewport::Contains(unsigned int x, unsigned int y) {
-    return rect.contains(Pointi(x, y));
-}
+Recti pViewport;
+ViewingParams *viewparams = new ViewingParams;
 
 //----- (00443219) --------------------------------------------------------
 void ViewingParams::MapViewUp() {

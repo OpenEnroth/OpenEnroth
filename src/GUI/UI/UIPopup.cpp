@@ -1295,7 +1295,7 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     );
     if ((signed int)spell_info_window.frameRect.h < 150)
         spell_info_window.frameRect.h = 150;
-    spell_info_window.frameRect.w = pViewport->rect.w;
+    spell_info_window.frameRect.w = pViewport.w;
     spell_info_window.DrawMessageBox(false);
     spell_info_window.frameRect.w -= 12;
     spell_info_window.frameRect.h -= 12;
@@ -1421,7 +1421,7 @@ void showSpellbookInfo(ItemId spellbook) {
     if (popup.frameRect.h < 150) {
         popup.frameRect.h = 150;
     }
-    popup.frameRect.w = pViewport->rect.w;
+    popup.frameRect.w = pViewport.w;
     popup.DrawMessageBox(false);
     popup.frameRect.w -= 12;
     popup.frameRect.h -= 12;
@@ -1816,14 +1816,14 @@ void UI_OnMouseRightClick(Pointi mousePos) {
         {
             if (GetCurrentMenuID() > MENU_MAIN) break;
 
-            if ((signed int)pY > pViewport->rect.y + pViewport->rect.h - 1) {
+            if ((signed int)pY > pViewport.y + pViewport.h - 1) {
                 int characterIndex = pX / 118;
                 if (characterIndex < 4) { // portaits zone
                     popup_window.sHint.clear();
                     popup_window.frameRect = Recti(38, 60, 400, 200);
                     GameUI_CharacterQuickRecord_Draw(&popup_window, characterIndex);
                 }
-            } else if ((int)pX > pViewport->rect.x + pViewport->rect.w - 1) {
+            } else if ((int)pX > pViewport.x + pViewport.w - 1) {
                 if (pY >= 130) {
                     if (pX >= 476 && pX <= 636 && pY >= 240 && pY <= 300) {  // buff_tooltip zone
                         drawBuffPopupWindow();
@@ -1868,7 +1868,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
         }
         case SCREEN_BOOKS: {
             if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MapsBook ||
-                !pViewport->rect.contains(mousePos) ||
+                !pViewport.contains(mousePos) ||
                 ((popup_window.sHint = GetMapBookHintText(mousePos.x, mousePos.y)).empty())) {
                 break;
             }

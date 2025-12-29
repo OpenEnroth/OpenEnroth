@@ -173,7 +173,7 @@ void BLVRenderParams::Reset() {
     }
 
 
-    this->viewportRect = pViewport->rect;
+    this->viewportRect = pViewport;
 
     this->uTargetWidth = render->GetRenderDimensions().w;
     this->uTargetHeight = render->GetRenderDimensions().h;
@@ -1259,9 +1259,9 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
             int screen_space_half_width = static_cast<int>(billb_scale * v11->sprites[(int64_t)v9]->uWidth / 2.0f);
             int screen_space_height = static_cast<int>(billb_scale * v11->sprites[(int64_t)v9]->uHeight);
 
-            if (projected_x + screen_space_half_width >= pViewport->rect.x &&
-                projected_x - screen_space_half_width <= pViewport->rect.x + pViewport->rect.w - 1) {
-                if (projected_y >= pViewport->rect.y && (projected_y - screen_space_height) <= pViewport->rect.y + pViewport->rect.h - 1) {
+            if (projected_x + screen_space_half_width >= pViewport.x &&
+                projected_x - screen_space_half_width <= pViewport.x + pViewport.w - 1) {
+                if (projected_y >= pViewport.y && (projected_y - screen_space_height) <= pViewport.y + pViewport.h - 1) {
                     assert(uNumBillboardsToDraw < 500);
                     ++uNumBillboardsToDraw;
                     ++uNumDecorationsDrawnThisFrame;

@@ -202,21 +202,21 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         halfFovTan = std::tan(blv_fov_rad / 2.0);
 
-    ViewPlaneDistPixels = (double)pViewport->rect.w * 0.5 / halfFovTan;
+    ViewPlaneDistPixels = (double)pViewport.w * 0.5 / halfFovTan;
 
     // calculate vertical FOV in degrees for GL rendering
-    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((pViewport->rect.h / 2.0) / pCamera3D->ViewPlaneDistPixels);
+    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels);
 
-    screenCenterX = (double)pViewport->rect.center().x;
-    screenCenterY = (double)pViewport->rect.center().y - pViewport->rect.y;
+    screenCenterX = (double)pViewport.center().x;
+    screenCenterY = (double)pViewport.center().y - pViewport.y;
 
-    aspect = float(pViewport->rect.w / float(pViewport->rect.h));
+    aspect = float(pViewport.w / float(pViewport.h));
 }
 
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
     float HalfAngleX = (pi / 2.0) - (odm_fov_rad / 2.0);
-    float HalfAngleY = (pi / 2.0) - (std::atan((pViewport->rect.h / 2.0) / pCamera3D->ViewPlaneDistPixels));
+    float HalfAngleY = (pi / 2.0) - (std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels));
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         HalfAngleX = (pi / 2.0) - (blv_fov_rad / 2.0);
@@ -401,18 +401,18 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
         v->_rhw = RHW;
         viewscalefactor = RHW * ViewPlaneDistPixels;
 
-        v->vWorldViewProj.x = (double)pViewport->rect.center().x -
+        v->vWorldViewProj.x = (double)pViewport.center().x -
                              viewscalefactor * (double)v->vWorldViewPosition.y;
-        v->vWorldViewProj.y = (double)pViewport->rect.center().y -
+        v->vWorldViewProj.y = (double)pViewport.center().y -
                              viewscalefactor * (double)v->vWorldViewPosition.z;
 
         if (fit_into_viewport) {
-            fitted_x = (double)(pViewport->rect.x + pViewport->rect.w - 1);
+            fitted_x = (double)(pViewport.x + pViewport.w - 1);
             if (fitted_x >= pVertices[i].vWorldViewProj.x)
                 temp_r = pVertices[i].vWorldViewProj.x;
             else
                 temp_r = fitted_x;
-            temp_l = (double)pViewport->rect.x;
+            temp_l = (double)pViewport.x;
             if (temp_l <= temp_r) {
                 if (fitted_x >= pVertices[i].vWorldViewProj.x)
                     fitted_x = pVertices[i].vWorldViewProj.x;
@@ -421,12 +421,12 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
             }
             pVertices[i].vWorldViewProj.x = fitted_x;
 
-            fitted_y = (double)(pViewport->rect.y + pViewport->rect.h - 1);
+            fitted_y = (double)(pViewport.y + pViewport.h - 1);
             if (fitted_y >= pVertices[i].vWorldViewProj.y)
                 temp_b = pVertices[i].vWorldViewProj.y;
             else
                 temp_b = fitted_y;
-            temp_t = (double)pViewport->rect.y;
+            temp_t = (double)pViewport.y;
             if (temp_t <= temp_b) {
                 if (fitted_y >= pVertices[i].vWorldViewProj.y)
                     fitted_y = pVertices[i].vWorldViewProj.y;

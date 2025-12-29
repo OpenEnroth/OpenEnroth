@@ -8,14 +8,7 @@
 
 class GraphicsImage;
 
-struct Viewport {
-    void SetViewport(int topLeft_X, int topLeft_Y, int bottomRight_X, int bottomRight_Y);
-    bool Contains(unsigned int x, unsigned int y);
-
-    Recti rect;
-};
-
-extern Viewport *pViewport;
+extern Recti pViewport;
 
 struct ViewingParams {
     inline ViewingParams() {

@@ -22,14 +22,14 @@ void Weather::DrawSnow() {
 
         Screen_Coord[i].x += vrng->random(base) - base / 2;
         Screen_Coord[i].y += vrng->random(size) + size;
-        if (Screen_Coord[i].x < pViewport->rect.x) {
-            Screen_Coord[i].x = pViewport->rect.x + vrng->random(base);
-        } else if (Screen_Coord[i].x >= (pViewport->rect.x + pViewport->rect.w - 1 - size)) {
-            Screen_Coord[i].x = pViewport->rect.x + pViewport->rect.w - 1 - vrng->random(base);
+        if (Screen_Coord[i].x < pViewport.x) {
+            Screen_Coord[i].x = pViewport.x + vrng->random(base);
+        } else if (Screen_Coord[i].x >= (pViewport.x + pViewport.w - 1 - size)) {
+            Screen_Coord[i].x = pViewport.x + pViewport.w - 1 - vrng->random(base);
         }
-        if (Screen_Coord[i].y >= (pViewport->rect.y + pViewport->rect.h - 1 - size)) {
-            Screen_Coord[i].y = pViewport->rect.y;
-            Screen_Coord[i].x = pViewport->rect.x + vrng->random(pViewport->rect.w - 1 - size);
+        if (Screen_Coord[i].y >= (pViewport.y + pViewport.h - 1 - size)) {
+            Screen_Coord[i].y = pViewport.y;
+            Screen_Coord[i].x = pViewport.x + vrng->random(pViewport.w - 1 - size);
         }
 
         render->FillRect(Recti(Screen_Coord[i].x, Screen_Coord[i].y, size, size), colorTable.White);
@@ -37,11 +37,11 @@ void Weather::DrawSnow() {
 }
 
 void Weather::Initialize() {
-    int width = pViewport->rect.w - 1;
-    int height = pViewport->rect.h - 1;
+    int width = pViewport.w - 1;
+    int height = pViewport.h - 1;
     for (Pointi &point : Screen_Coord) {
-        point.x = pViewport->rect.x + vrng->random(width);
-        point.y = pViewport->rect.y + vrng->random(height);
+        point.x = pViewport.x + vrng->random(width);
+        point.y = pViewport.y + vrng->random(height);
     }
 }
 
@@ -56,12 +56,12 @@ bool Weather::OnPlayerTurn(int dangle) {
         return false;
     }
 
-    unsigned int screen_width = pViewport->rect.w - 1;
+    unsigned int screen_width = pViewport.w - 1;
 
     for (Pointi &point : Screen_Coord) {
         point.x += dangle;
-        if (point.x < pViewport->rect.x + pViewport->rect.w - 1) {
-            if (point.x >= pViewport->rect.x) {
+        if (point.x < pViewport.x + pViewport.w - 1) {
+            if (point.x >= pViewport.x) {
                 continue;
             }
             point.x += screen_width;

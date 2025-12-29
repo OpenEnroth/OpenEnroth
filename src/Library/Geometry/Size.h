@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Point.h"
+
 template<class T>
 struct Size {
     T w = 0;
@@ -10,6 +12,14 @@ struct Size {
 
     [[nodiscard]] constexpr friend Size operator/(Size l, T r) {
         return {l.w / r, l.h / r};
+    }
+
+    [[nodiscard]] constexpr friend Point<T> operator+(Point<T> l, Size r) {
+        return {l.x + r.w, l.y + r.h};
+    }
+
+    [[nodiscard]] constexpr friend Point<T> operator-(Point<T> l, Size r) {
+        return {l.x - r.w, l.y - r.h};
     }
 
     [[nodiscard]] constexpr friend bool operator==(const Size &l, const Size &r) = default;

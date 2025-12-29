@@ -3,12 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "Engine/Graphics/Viewport.h"
-
 #include "Library/Geometry/Vec.h"
-
-Viewport *pViewport = new Viewport;
-ViewingParams *viewparams = new ViewingParams;
 
 // TODO(pskelton): move me - to spellfxrendere.h?
 std::array<Vec3f, 66> sphereVertPos = {  // vertices for spheres

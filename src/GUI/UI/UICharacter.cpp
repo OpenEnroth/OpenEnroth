@@ -559,24 +559,24 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, Scree
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = screen;
 
-    pCharacterScreen_StatsBtn = CreateButton(pViewport->rect.topLeft() + Pointi(12, 308),
+    pCharacterScreen_StatsBtn = CreateButton(pViewport.topLeft() + Pointi(12, 308),
                                              paperdoll_dbrds[9]->size(), 1, 0,
                                              UIMSG_ClickStatsBtn, 0, INPUT_ACTION_OPEN_STATS, localization->str(LSTR_STATS),
                                              {{paperdoll_dbrds[10], paperdoll_dbrds[9]}});
-    pCharacterScreen_SkillsBtn = CreateButton(pViewport->rect.topLeft() + Pointi(102, 308),
+    pCharacterScreen_SkillsBtn = CreateButton(pViewport.topLeft() + Pointi(102, 308),
                                               paperdoll_dbrds[7]->size(), 1, 0,
                                               UIMSG_ClickSkillsBtn, 0, INPUT_ACTION_OPEN_SKILLS, localization->str(LSTR_SKILLS),
                                               {{paperdoll_dbrds[8], paperdoll_dbrds[7]}});
-    pCharacterScreen_InventoryBtn = CreateButton(pViewport->rect.topLeft() + Pointi(192, 308),
+    pCharacterScreen_InventoryBtn = CreateButton(pViewport.topLeft() + Pointi(192, 308),
                                                  paperdoll_dbrds[5]->size(), 1, 0,
                                                  UIMSG_ClickInventoryBtn, 0, INPUT_ACTION_OPEN_INVENTORY,
                                                  localization->str(LSTR_INVENTORY),
                                                  {{paperdoll_dbrds[6], paperdoll_dbrds[5]}});
-    pCharacterScreen_AwardsBtn = CreateButton(pViewport->rect.topLeft() + Pointi(282, 308),
+    pCharacterScreen_AwardsBtn = CreateButton(pViewport.topLeft() + Pointi(282, 308),
                                               paperdoll_dbrds[3]->size(), 1, 0,
                                               UIMSG_ClickAwardsBtn, 0, INPUT_ACTION_OPEN_AWARDS, localization->str(LSTR_AWARDS),
                                               {{paperdoll_dbrds[4], paperdoll_dbrds[3]}});
-    pCharacterScreen_ExitBtn = CreateButton(pViewport->rect.topLeft() + Pointi(371, 308),
+    pCharacterScreen_ExitBtn = CreateButton(pViewport.topLeft() + Pointi(371, 308),
                                             paperdoll_dbrds[1]->size(), 1, 0,
                                             UIMSG_ClickExitCharacterWindowBtn, 0, INPUT_ACTION_INVALID,
                                             localization->str(LSTR_EXIT_DIALOGUE),

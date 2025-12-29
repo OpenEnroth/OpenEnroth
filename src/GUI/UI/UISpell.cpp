@@ -38,7 +38,7 @@ TargetedSpellUI_Character::TargetedSpellUI_Character(Pointi position, Sizei dime
 
 TargetedSpellUI_Actor::TargetedSpellUI_Actor(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-    CreateButton(pViewport->rect.topLeft(), pViewport->rect.size(), 1, 0, UIMSG_CastSpell_TargetActor, 0);
+    CreateButton(pViewport.topLeft(), pViewport.size(), 1, 0, UIMSG_CastSpell_TargetActor, 0);
 }
 
 TargetedSpellUI_ActorOrCharacter::TargetedSpellUI_ActorOrCharacter(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
@@ -47,10 +47,10 @@ TargetedSpellUI_ActorOrCharacter::TargetedSpellUI_ActorOrCharacter(Pointi positi
     CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 1, INPUT_ACTION_SELECT_CHAR_2);
     CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 2, INPUT_ACTION_SELECT_CHAR_3);
     CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 3, INPUT_ACTION_SELECT_CHAR_4);
-    CreateButton(pViewport->rect.topLeft(), pViewport->rect.size(), 1, 0, UIMSG_CastSpell_TargetActorBuff, 0);
+    CreateButton(pViewport.topLeft(), pViewport.size(), 1, 0, UIMSG_CastSpell_TargetActorBuff, 0);
 }
 
 TargetedSpellUI_Telekinesis::TargetedSpellUI_Telekinesis(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-    CreateButton(pViewport->rect.topLeft(), pViewport->rect.size(), 1, 0, UIMSG_CastSpell_Telekinesis, 0);
+    CreateButton(pViewport.topLeft(), pViewport.size(), 1, 0, UIMSG_CastSpell_Telekinesis, 0);
 }

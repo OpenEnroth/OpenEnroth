@@ -444,7 +444,7 @@ void Engine::LogEngineBuildInfo() {
 //----- (0044EA5E) --------------------------------------------------------
 Vis_PIDAndDepth Engine::PickMouse(float fPickDepth, int uMouseX, int uMouseY,
                                   Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
-    if (pViewport->Contains(uMouseX, uMouseY)) {
+    if (pViewport.contains(Pointi(uMouseX, uMouseY))) {
         return vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
     } else {
         return Vis_PIDAndDepth();
