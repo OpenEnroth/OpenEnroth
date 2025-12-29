@@ -110,3 +110,13 @@ UNIT_TEST(StringSplit, BorrowedRange) {
     EXPECT_EQ(*mismatch.in1, "c");
     EXPECT_EQ(*mismatch.in2, "z");
 }
+
+UNIT_TEST(StringSplit, AssignToVector) {
+    // Test that assignment to vector works (not just initialization).
+    std::vector<std::string_view> v;
+    v = split("a,b,c", ',');
+    EXPECT_EQ(v, std::vector<std::string_view>({"a", "b", "c"}));
+
+    v = split("x.y", '.');
+    EXPECT_EQ(v, std::vector<std::string_view>({"x", "y"}));
+}

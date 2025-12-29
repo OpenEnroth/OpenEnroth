@@ -9,6 +9,15 @@
 #include <ranges>
 
 namespace detail {
+template<class T>
+struct is_initializer_list : std::false_type {};
+
+template<class T>
+struct is_initializer_list<std::initializer_list<T>> : std::true_type {};
+
+template<class T>
+inline constexpr bool is_initializer_list_v = is_initializer_list<T>::value;
+
 class SplitViewSentinel {};
 
 class SplitViewIterator {
@@ -91,9 +100,26 @@ class SplitView : public std::ranges::view_interface<SplitView> {
         return _sep;
     }
 
-    template<class Container> requires std::is_same_v<std::remove_cv_t<typename Container::value_type::value_type>, char>
+    /**
+     * Converts this view to a container of string-like elements.
+     *
+     * This operator enables implicit conversion to various container types (e.g., `std::vector<std::string>`,
+     * `std::set<std::string_view>`) for convenient use in initialization and assignment contexts.
+     *
+     * The `initializer_list` exclusion in the requires clause is necessary to prevent ambiguous overload resolution
+     * when assigning to containers. Without it, `v = split(...)` would be ambiguous because `std::vector::operator=`
+     * has overloads for both `const vector&` and `initializer_list<value_type>`. Since `initializer_list<string_view>`
+     * technically satisfies the `Container::value_type::value_type == char` constraint, the compiler would consider
+     * both conversion paths and fail with an ambiguity error.
+     *
+     * @tparam Container                    Target container type. Must hold string-like elements.
+     * @return                              Container populated with the string chunks from this view.
+     */
+    template<class Container> requires
+        std::is_same_v<std::remove_cv_t<typename Container::value_type::value_type>, char> &&
+        (!is_initializer_list_v<Container>)
     operator Container() const {
-        // Shamelessly stolen from std::ranges::to implementation. Only our code works for std::set, and
+        // Shamelessly stolen from std::ranges::to implementation. Our code works for std::set too, and
         // std::ranges::to doesn't.
         auto insert = []<class Element>(auto &container, Element &&element) {
             if constexpr (requires { container.emplace_back(std::forward<Element>(element)); }) {
@@ -125,9 +151,6 @@ class SplitView : public std::ranges::view_interface<SplitView> {
 template<>
 inline constexpr bool std::ranges::enable_borrowed_range<detail::SplitView> = true;
 #endif
-
-// TODO(captainurist): drop!
-std::vector<char*> tokenize(char *input, const char separator);
 
 /**
  * Splits the provided string `s` using separator `sep`, returning a range of `std::string_view` chunks.

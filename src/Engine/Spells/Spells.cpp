@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
@@ -503,7 +504,7 @@ void SpellStats::Initialize(const Blob &spells) {
         }
         test_string = strtok(NULL, "\r") + 1;
 
-        auto tokens = tokenize(test_string, '\t');
+        std::vector<std::string_view> tokens = split(test_string, '\t');
 
         pInfos[uSpellID].name = removeQuotes(tokens[2]);
         pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, tokens[3], DAMAGE_PHYSICAL);
@@ -513,10 +514,10 @@ void SpellStats::Initialize(const Blob &spells) {
         pInfos[uSpellID].pExpertSkillDesc = removeQuotes(tokens[7]);
         pInfos[uSpellID].pMasterSkillDesc = removeQuotes(tokens[8]);
         pInfos[uSpellID].pGrandmasterSkillDesc = removeQuotes(tokens[9]);
-        pSpellDatas[uSpellID].flags |= strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlag();
-        pSpellDatas[uSpellID].flags |= strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? SPELL_CASTABLE_BY_EVENT : SpellFlag();
-        pSpellDatas[uSpellID].flags |= strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();
-        pSpellDatas[uSpellID].flags |= strchr(tokens[10], 'x') || strchr(tokens[10], 'X') ? SPELL_FLAG_8 : SpellFlag();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('m') || tokens[10].contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlag();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('e') || tokens[10].contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlag();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('x') || tokens[10].contains('X') ? SPELL_FLAG_8 : SpellFlag();
     }
 }
 
