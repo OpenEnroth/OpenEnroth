@@ -498,7 +498,7 @@ void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int palett
         return;
 
     // check for overlap
-    Recti clippedRect = rect.intersection(this->clipRect);
+    Recti clippedRect = rect & this->clipRect;
     if (clippedRect.isEmpty())
         return;
 
@@ -1986,7 +1986,7 @@ void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, co
         return;
 
     // Clip destination rect against clip rect.
-    Recti clippedDst = dstRect.intersection(this->clipRect);
+    Recti clippedDst = dstRect & this->clipRect;
     if (clippedDst.isEmpty())
         return;
 

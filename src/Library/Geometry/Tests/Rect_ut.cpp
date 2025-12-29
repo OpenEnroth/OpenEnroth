@@ -53,10 +53,30 @@ UNIT_TEST(Rect, Intersects) {
 }
 
 UNIT_TEST(Rect, Intersection) {
-    EXPECT_TRUE(Recti(0, 0, 1, 1).intersection(Recti(1, 1, 1, 1)).isEmpty());
+    EXPECT_TRUE((Recti(0, 0, 1, 1) & Recti(1, 1, 1, 1)).isEmpty());
 
-    EXPECT_EQ(Recti(0, 0, 2, 2).intersection(Recti(1, 1, 2, 2)), Recti(1, 1, 1, 1));
-    EXPECT_EQ(Recti(1, 1, 2, 2).intersection(Recti(0, 0, 2, 2)), Recti(1, 1, 1, 1));
-    EXPECT_EQ(Recti(0, 1, 2, 2).intersection(Recti(1, 0, 2, 2)), Recti(1, 1, 1, 1));
-    EXPECT_EQ(Recti(1, 0, 2, 2).intersection(Recti(0, 1, 2, 2)), Recti(1, 1, 1, 1));
+    EXPECT_EQ(Recti(0, 0, 2, 2) & Recti(1, 1, 2, 2), Recti(1, 1, 1, 1));
+    EXPECT_EQ(Recti(1, 1, 2, 2) & Recti(0, 0, 2, 2), Recti(1, 1, 1, 1));
+    EXPECT_EQ(Recti(0, 1, 2, 2) & Recti(1, 0, 2, 2), Recti(1, 1, 1, 1));
+    EXPECT_EQ(Recti(1, 0, 2, 2) & Recti(0, 1, 2, 2), Recti(1, 1, 1, 1));
+}
+
+UNIT_TEST(Rect, IntersectsCrossType) {
+    // Recti with Rectf
+    EXPECT_FALSE(Recti().intersects(Rectf())); // Empty rect intersects nothing.
+    EXPECT_FALSE(Rectf().intersects(Recti()));
+
+    EXPECT_TRUE(Recti(0, 0, 10, 10).intersects(Rectf(5.5f, 5.5f, 2.0f, 2.0f)));
+    EXPECT_TRUE(Rectf(5.5f, 5.5f, 2.0f, 2.0f).intersects(Recti(0, 0, 10, 10)));
+
+    // Partial overlap with fractional coordinates.
+    EXPECT_TRUE(Recti(0, 0, 10, 10).intersects(Rectf(9.5f, 9.5f, 2.0f, 2.0f)));
+    EXPECT_TRUE(Recti(0, 0, 10, 10).intersects(Rectf(-1.5f, -1.5f, 2.0f, 2.0f)));
+
+    // No overlap - float rect just outside int rect.
+    EXPECT_FALSE(Recti(0, 0, 10, 10).intersects(Rectf(10.0f, 0.0f, 2.0f, 2.0f)));
+    EXPECT_FALSE(Recti(0, 0, 10, 10).intersects(Rectf(0.0f, 10.0f, 2.0f, 2.0f)));
+
+    // Float rect entirely inside int rect.
+    EXPECT_TRUE(Recti(0, 0, 100, 100).intersects(Rectf(25.5f, 25.5f, 10.25f, 10.25f)));
 }

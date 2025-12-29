@@ -49,22 +49,37 @@ struct Rect {
         return {w, h};
     }
 
-    [[nodiscard]] bool intersects(const Rect<T> &other) const {
+    template<class U>
+    [[nodiscard]] bool intersects(const Rect<U> &other) const {
         // Rect, unlike BBox, doesn't include its bottom/right border. So an empty rect (w=0, h=0) intersects nothing.
         return
             x < other.x + other.w && x + w > other.x &&
             y < other.y + other.h && y + h > other.y;
     }
 
-    [[nodiscard]] Rect<T> intersection(const Rect<T> &other) const {
-        T x1 = std::max(x, other.x);
-        T y1 = std::max(y, other.y);
-        T x2 = std::min(x + w, other.x + other.w);
-        T y2 = std::min(y + h, other.y + other.h);
-
-        return Rect<T>{x1, y1, x2 - x1, y2 - y1}; // Can return an empty rect with negative size.
+    /**
+     * @param l                         First rectangle.
+     * @param r                         Second rectangle.
+     * @return                          Intersection of two rectangles. Can return an empty rect with negative size
+     *                                  if the rectangles don't intersect.
+     */
+    [[nodiscard]] friend Rect<T> operator&(const Rect<T> &l, const Rect<T> &r) {
+        T x1 = std::max(l.x, r.x);
+        T y1 = std::max(l.y, r.y);
+        T x2 = std::min(l.x + l.w, r.x + r.w);
+        T y2 = std::min(l.y + l.h, r.y + r.h);
+        return Rect<T>{x1, y1, x2 - x1, y2 - y1};
     }
 
+    Rect<T>& operator&=(const Rect<T> &other) {
+        return *this = *this & other;
+    }
+
+    /**
+     * @param l                         First rectangle.
+     * @param r                         Second rectangle.
+     * @return                          Bounding box of two rectangles (smallest rectangle that contains both).
+     */
     [[nodiscard]] friend Rect<T> operator|(const Rect<T> &l, const Rect<T> &r) {
         T x1 = std::min(l.x, r.x);
         T y1 = std::min(l.y, r.y);
@@ -85,3 +100,4 @@ struct Rect {
 };
 
 using Recti = Rect<int>;
+using Rectf = Rect<float>;
