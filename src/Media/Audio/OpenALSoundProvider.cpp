@@ -171,28 +171,6 @@ void OpenALSoundProvider::DeleteStreamingTrack(StreamingTrackBuffer **buffer) {
     *buffer = nullptr;
 }
 
-void OpenALSoundProvider::DeleteBuffer16(TrackBuffer **buffer) {
-    alDeleteBuffers(1, &(*buffer)->buffer_id);
-    checkOpenALError();
-
-    delete *buffer;
-    *buffer = nullptr;
-}
-
-float OpenALSoundProvider::alBufferLength(unsigned int buffer) {
-    int size, bits, channels, freq;
-
-    alGetBufferi(buffer, AL_SIZE, &size);
-    alGetBufferi(buffer, AL_BITS, &bits);
-    alGetBufferi(buffer, AL_CHANNELS, &channels);
-    alGetBufferi(buffer, AL_FREQUENCY, &freq);
-    if (checkOpenALError()) {
-        return 0.f;
-    }
-
-    return (ALfloat)((ALuint)size / channels / (bits / 8)) / (ALfloat)freq;
-}
-
 OpenALSoundProvider::StreamingTrackBuffer *
 OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
                                             int bytes_per_sample) {
@@ -281,100 +259,6 @@ void OpenALSoundProvider::Stream16(StreamingTrackBuffer *buffer,
                              (int *)&status);
             } while (status == AL_PLAYING);
         }
-    }
-}
-
-OpenALSoundProvider::TrackBuffer *OpenALSoundProvider::CreateTrack16(
-    int num_channels, int sample_rate, const void *data, size_t size) {
-    ALenum sound_format;
-    switch (num_channels) {
-        case 1: {
-            sound_format = AL_FORMAT_MONO16;
-            break;
-        }
-        case 2: {
-            sound_format = AL_FORMAT_STEREO16;
-            break;
-        }
-        default: {
-            if (alIsExtensionPresent("AL_EXT_MCFORMATS")) {
-                switch (num_channels) {
-                    case 4:
-                        sound_format = alGetEnumValue("AL_FORMAT_QUAD16");
-                        break;
-                    case 6:
-                        sound_format = alGetEnumValue("AL_FORMAT_51CHN16");
-                        break;
-                    case 7:
-                        sound_format = alGetEnumValue("AL_FORMAT_61CHN16");
-                        break;
-                    case 8:
-                        sound_format = alGetEnumValue("AL_FORMAT_71CHN16");
-                        break;
-                }
-            }
-            logger->error("Unsupported number of audio channels: {}", num_channels);
-        }
-    }
-
-    ALuint al_source = -1;
-    alGenSources((ALuint)1, &al_source);
-    if (checkOpenALError()) {
-        return nullptr;
-    }
-
-    setSourceDefaults(al_source);
-
-    ALuint al_buffer = -1;
-    alGenBuffers(1, &al_buffer);
-    if (checkOpenALError()) {
-        alDeleteSources(1, &al_source);
-        return nullptr;
-    }
-
-    alBufferData(al_buffer, sound_format, data, size, sample_rate);
-    if (checkOpenALError()) {
-        alDeleteSources(1, &al_source);
-        alDeleteBuffers(1, &al_buffer);
-        return nullptr;
-    }
-
-    alSourcei(al_source, AL_BUFFER, al_buffer);
-    if (checkOpenALError()) {
-        alDeleteSources(1, &al_source);
-        alDeleteBuffers(1, &al_buffer);
-        return nullptr;
-    }
-
-    TrackBuffer *ret = new TrackBuffer;
-    ret->source_id = al_source;
-    ret->buffer_id = al_buffer;
-    return ret;
-}
-
-void OpenALSoundProvider::PlayTrack16(TrackBuffer *buffer, bool loop,
-                                      bool wait) {
-    int status;
-    alGetSourcei(buffer->source_id, AL_SOURCE_STATE, (int *)&status);
-    if (status == AL_PLAYING) {
-        return;
-    }
-
-    alSourcei(buffer->source_id, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
-    alSourcePlay(buffer->source_id);
-    if (checkOpenALError()) {
-        assert(false);
-    }
-
-    if (wait && !loop) {
-        float track_length = alBufferLength(buffer->buffer_id);
-        do {
-            float track_offset = 0;
-            alGetSourcef(buffer->source_id, AL_SEC_OFFSET, &track_offset);
-            logger->info("OpenAL: playing {:.4f}/{:.4f}\n", track_offset, track_length);
-
-            alGetSourcei(buffer->source_id, AL_SOURCE_STATE, (int *)&status);
-        } while (status == AL_PLAYING);
     }
 }
 
