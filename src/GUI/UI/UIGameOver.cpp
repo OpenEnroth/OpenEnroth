@@ -33,12 +33,7 @@ void GUIWindow_GameOver::Update() {
     if (_showPopUp) {
         GUIWindow pWindow;
         pWindow.sHint = fmt::format("{}\n \n{}", pGameOverWindow->sHint, localization->str(LSTR_PRESS_ESCAPE));
-        pWindow.uFrameWidth = 400;
-        pWindow.uFrameHeight = 100;
-        pWindow.uFrameX = 120;
-        pWindow.uFrameY = 140;
-        pWindow.uFrameZ = 519;
-        pWindow.uFrameW = 239;
+        pWindow.frameRect = Recti(120, 140, 400, 100);
         pWindow.DrawMessageBox(0);
     }
 }

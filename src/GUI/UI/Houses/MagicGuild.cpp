@@ -102,13 +102,12 @@ static constexpr IndexedArray<Mastery, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC
 
 void GUIWindow_MagicGuild::mainDialogue() {
     GUIWindow working_window = *this;
-    working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    working_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    working_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     if (!pParty->activeCharacter()._achievedAwardsBits[membershipAwardForGuild(houseId())]) {
         // you must be a member
-        int textHeight = assets->pFontArrus->CalcTextHeight(pNPCTopics[121].pText, working_window.uFrameWidth, 0);
+        int textHeight = assets->pFontArrus->CalcTextHeight(pNPCTopics[121].pText, working_window.frameRect.w, 0);
         working_window.DrawTitleText(assets->pFontArrus.get(), 0, (212 - textHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[121].pText, 3);
         pDialogueWindow->pNumPresenceButton = 0;
         return;
@@ -150,9 +149,8 @@ void GUIWindow_MagicGuild::mainDialogue() {
 void GUIWindow_MagicGuild::buyBooksDialogue() {
     // TODO(pskelton): Extract common item picking code
     GUIWindow working_window = *this;
-    working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    working_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    working_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     render->DrawQuad2D(shop_ui_background, {8, 8});
     int itemxind = 0;
@@ -204,7 +202,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                     if ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) || (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))) {
                         MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, HOUSE_TYPE_MAGIC_SHOP, houseId(), SHOP_SCREEN_BUY);
                         std::string str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
-                        int textHeight = assets->pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
+                        int textHeight = assets->pFontArrus->CalcTextHeight(str, working_window.frameRect.w, 0);
                         working_window.DrawTitleText(assets->pFontArrus.get(), 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
                         return;
                     }

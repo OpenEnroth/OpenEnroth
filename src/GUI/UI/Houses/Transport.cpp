@@ -98,9 +98,8 @@ static constexpr IndexedArray<std::array<int, 4>, HOUSE_FIRST_TRANSPORT, HOUSE_L
 
 void GUIWindow_Transport::mainDialogue() {
     GUIWindow travel_window = *this;
-    travel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    travel_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    travel_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    travel_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    travel_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->activeCharacterIndex() = 0 and crash
 
@@ -111,7 +110,7 @@ void GUIWindow_Transport::mainDialogue() {
     std::vector<std::string> optionsText;
     int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
     std::string travelCost = localization->format(LSTR_TRAVEL_COST_D_GOLD, price);
-    int startingOffset = assets->pFontArrus->CalcTextHeight(travelCost, travel_window.uFrameWidth, 0) + (assets->pFontArrus->GetHeight() - 3) + 146;
+    int startingOffset = assets->pFontArrus->CalcTextHeight(travelCost, travel_window.frameRect.w, 0) + (assets->pFontArrus->GetHeight() - 3) + 146;
     int lastsched = 255;
     bool hasActiveRoute = false;
 
@@ -138,7 +137,7 @@ void GUIWindow_Transport::mainDialogue() {
         travel_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, travelCost, 3);
         drawOptions(optionsText, colorTable.PaleCanary, startingOffset, true);
     } else {
-        int textHeight = assets->pFontArrus->CalcTextHeight(localization->str(LSTR_SORRY_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0);
+        int textHeight = assets->pFontArrus->CalcTextHeight(localization->str(LSTR_SORRY_COME_BACK_ANOTHER_DAY), travel_window.frameRect.w, 0);
         int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
         travel_window.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, localization->str(LSTR_SORRY_COME_BACK_ANOTHER_DAY), 3);
     }

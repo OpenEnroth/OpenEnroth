@@ -17,9 +17,8 @@ std::array<AwardId, 49> word_4F0754;
 
 void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
     GUIWindow dialog_window = *this;
-    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    dialog_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    dialog_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     /**
      * archiving this code just in case
@@ -36,7 +35,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
     if (_currentDialogue == DIALOGUE_MAIN) {
         if (!pParty->activeCharacter()._achievedAwardsBits[word_4F0754[2 * std::to_underlying(window_SpeakInHouse->houseId())]]) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6
-            int pTextHeight = assets->pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
+            int pTextHeight = assets->pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.frameRect.w, 0);
             dialog_window.DrawTitleText(assets->pFontArrus.get(), 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[171].pText, 3);
             pDialogueWindow->pNumPresenceButton = 0;
             return;

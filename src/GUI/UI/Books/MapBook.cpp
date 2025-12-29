@@ -137,12 +137,7 @@ void GUIWindow_MapBook::Update() {
     render->ResetUIClipRect();
 
     GUIWindow map_window;
-    map_window.uFrameWidth = pViewport->viewportWidth;
-    map_window.uFrameHeight = pViewport->viewportHeight;
-    map_window.uFrameX = pViewport->viewportTL_X;
-    map_window.uFrameY = pViewport->viewportTL_Y;
-    map_window.uFrameZ = pViewport->viewportBR_X;
-    map_window.uFrameW = pViewport->viewportBR_Y;
+    map_window.frameRect = Recti(pViewport->viewportTL_X, pViewport->viewportTL_Y, pViewport->viewportWidth, pViewport->viewportHeight);
 
     if (engine->_currentLoadedMapId != MAP_INVALID) {
         map_window.DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[engine->_currentLoadedMapId].name, 3);
@@ -150,7 +145,7 @@ void GUIWindow_MapBook::Update() {
 
     auto party_coordinates = localization->format(LSTR_X_D_Y_D, static_cast<int>(pParty->pos.x), static_cast<int>(pParty->pos.y));
 
-    map_window.uFrameX = 0;
+    map_window.frameRect.x = 0;
     map_window.DrawTitleText(assets->pFontComic.get(), 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);
 }
 

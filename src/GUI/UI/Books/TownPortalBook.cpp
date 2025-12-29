@@ -129,12 +129,7 @@ void GUIWindow_TownPortalBook::Update() {
     render->DrawQuad2D(ui_book_townportal_background, {8, 8});
     render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
-    townPortalWindow.uFrameWidth = pViewport->viewportWidth;
-    townPortalWindow.uFrameHeight = pViewport->viewportHeight;
-    townPortalWindow.uFrameX = pViewport->viewportTL_X;
-    townPortalWindow.uFrameY = pViewport->viewportTL_Y;
-    townPortalWindow.uFrameZ = pViewport->viewportBR_X;
-    townPortalWindow.uFrameW = pViewport->viewportBR_Y;
+    townPortalWindow.frameRect = Recti(pViewport->viewportTL_X, pViewport->viewportTL_Y, pViewport->viewportWidth, pViewport->viewportHeight);
 
     if (townPortalCheats) {
         // draw grey icons for cheat locations

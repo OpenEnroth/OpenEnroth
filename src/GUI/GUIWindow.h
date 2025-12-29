@@ -91,16 +91,7 @@ class GUIWindow {
 
     static void InitializeGUI();
 
-    [[nodiscard]] Recti frameRect() const {
-        return {uFrameX, uFrameY, uFrameWidth, uFrameHeight};
-    }
-
-    int uFrameWidth = 0;
-    int uFrameHeight = 0; // TODO(captainurist): frameRect
-    int uFrameX = 0;
-    int uFrameY = 0;
-    int uFrameZ = 0;
-    int uFrameW = 0;
+    Recti frameRect;
     WindowType eWindowType = WINDOW_null;
     int field_24 = 0;
     int pNumPresenceButton = 0;

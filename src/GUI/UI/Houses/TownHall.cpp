@@ -28,9 +28,8 @@ using Io::TextInputType;
 
 void GUIWindow_TownHall::mainDialogue() {
     GUIWindow townHall_window = *this;
-    townHall_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    townHall_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    townHall_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     std::vector<std::string> optionsText = {localization->str(LSTR_BOUNTY_HUNT)};
     std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
@@ -45,9 +44,8 @@ void GUIWindow_TownHall::mainDialogue() {
 
 void GUIWindow_TownHall::bountyHuntDialogue() {
     GUIWindow townHall_window = *this;
-    townHall_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    townHall_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    townHall_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
@@ -58,9 +56,8 @@ void GUIWindow_TownHall::bountyHuntDialogue() {
 
 void GUIWindow_TownHall::payFineDialogue() {
     GUIWindow townHall_window = *this;
-    townHall_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    townHall_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
+    townHall_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
 
     std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);

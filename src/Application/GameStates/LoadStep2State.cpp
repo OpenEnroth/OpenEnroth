@@ -44,22 +44,18 @@ void LoadStep2State::exit() {
 
 void LoadStep2State::_drawMM7CopyrightWindow() {
     GUIWindow window;
-    window.uFrameWidth = 624;
-    window.uFrameHeight = 256;
-    window.uFrameX = 8;
-    window.uFrameY = 30;
-    window.uFrameHeight = assets->pFontSmallnum->CalcTextHeight(localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), window.uFrameWidth, 24);
-    window.uFrameHeight += 2 * assets->pFontSmallnum->GetHeight() + 24;
-    window.uFrameY = 470 - window.uFrameHeight;
-    window.uFrameZ = window.uFrameX + window.uFrameWidth - 1;
-    window.uFrameW = 469;
+    window.frameRect.w = 624;
+    window.frameRect.h = 256;
+    window.frameRect.x = 8;
+    window.frameRect.y = 30;
+    window.frameRect.h = assets->pFontSmallnum->CalcTextHeight(localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), window.frameRect.w, 24);
+    window.frameRect.h += 2 * assets->pFontSmallnum->GetHeight() + 24;
+    window.frameRect.y = 470 - window.frameRect.h;
     window.DrawMessageBox(0);
 
-    window.uFrameWidth -= 28;
-    window.uFrameX += 12;
-    window.uFrameY += 12;
-    window.uFrameHeight -= 12;
-    window.uFrameZ = window.uFrameX + window.uFrameWidth - 1;
-    window.uFrameW = window.uFrameY + window.uFrameHeight - 1;
+    window.frameRect.w -= 28;
+    window.frameRect.x += 12;
+    window.frameRect.y += 12;
+    window.frameRect.h -= 12;
     window.DrawTitleText(assets->pFontSmallnum.get(), 0, 12, ui_mainmenu_copyright_color, localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), 3);
 }
