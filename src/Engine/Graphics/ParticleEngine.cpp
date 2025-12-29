@@ -230,7 +230,8 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
         /*fixed::FromFloat*/(pParticle->fov_x) / /*fixed::FromInt*/(xt);
 
     /*pParticle->zbuffer_depth = x.GetInt();*/
-    pParticle->zbuffer_depth = xt;
+    pParticle->view_space_z = xt;
+    pParticle->view_space_L2 = Vec3f(xt, yt, zt).length();
 
     return true;
 }
@@ -254,7 +255,7 @@ void ParticleEngine::DrawParticles_BLV() {
                 if (pLines.uNumLines < 100) {
                     pLines.pLineVertices[2 * pLines.uNumLines].pos.x = p->uScreenSpaceX;
                     pLines.pLineVertices[2 * pLines.uNumLines].pos.y = p->uScreenSpaceY;
-                    pLines.pLineVertices[2 * pLines.uNumLines].pos.z = 1.0 - 1.0 / (p->zbuffer_depth * 0.061758894);
+                    pLines.pLineVertices[2 * pLines.uNumLines].pos.z = 1.0 - 1.0 / (p->view_space_z * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines].rhw = 1.0;
                     pLines.pLineVertices[2 * pLines.uNumLines].diffuse = p->uLightColor_bgr;
                     pLines.pLineVertices[2 * pLines.uNumLines].specular = Color();
@@ -263,7 +264,7 @@ void ParticleEngine::DrawParticles_BLV() {
 
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.x = p->uScreenSpaceZ;  // where is this set?
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.y = p->uScreenSpaceW;
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.z = 1.0 - 1.0 / ((short)p->sZValue2 * 0.061758894);
+                    pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.z = 1.0 - 1.0 / ((short)p->view_space_z_lineEnd * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].rhw = 1.0;
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].diffuse = p->uLightColor_bgr;
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].specular = Color();

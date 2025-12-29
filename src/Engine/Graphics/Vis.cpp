@@ -137,8 +137,8 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
         if (IsPointInsideD3DBillboard(billboard, x, y)) {
             if (v13 == -1)
                 v13 = i;
-            else if (pBillboardRenderList[billboard->sParentBillboardID].screen_space_z <
-                     pBillboardRenderList[render->pSortedBillboardRenderListD3D[v13]->sParentBillboardID].screen_space_z)
+            else if (pBillboardRenderList[billboard->sParentBillboardID].view_space_z <
+                     pBillboardRenderList[render->pSortedBillboardRenderListD3D[v13]->sParentBillboardID].view_space_z)
                 v13 = i;
         }
     }
@@ -236,7 +236,7 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
                 if (pid.type() == OBJECT_Sprite && pSpriteObjects[pid.id()].uObjectDescID == 0)
                     continue; // Sprite object already removed.
 
-                list->AddObject(VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
+                list->AddObject(VisObjectType_Sprite, billboard->view_space_z, billboard->object_pid);
             }
         }
     }
@@ -731,7 +731,7 @@ void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
             if (DoesRayIntersectBillboard(pick_depth, i)) {
                 RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
-                list->AddObject(VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
+                list->AddObject(VisObjectType_Sprite, billboard->view_space_z, billboard->object_pid);
             }
         }
     }
@@ -828,14 +828,14 @@ bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_Selectio
 //----- (004C091D) --------------------------------------------------------
 bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx) {
     // Too deep so never hit anyway
-    if (render->pSortedBillboardRenderListD3D[uD3DBillboardIdx]->screen_space_z > fDepth)
+    if (render->pSortedBillboardRenderListD3D[uD3DBillboardIdx]->view_space_z > fDepth)
         return false;
 
     int billboardId = render->pSortedBillboardRenderListD3D[uD3DBillboardIdx]->sParentBillboardID;
     if (billboardId == -1)
         return false;
 
-    if (pBillboardRenderList[billboardId].screen_space_z > fDepth)
+    if (pBillboardRenderList[billboardId].view_space_z > fDepth)
         return false;
 
     // billboard will be visible somewhere on screen - clamp billboard corners to screen viewport
@@ -848,20 +848,20 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
     // test visible polygon center first
     float test_x = (bbVisibleLeft + bbVisibleRight) * 0.5f;
     float test_y = (bbVisibleTop + bbVisibleBottom) * 0.5f;
-    if (DoesRayMissLevelGeom(test_x, test_y, fDepth, pBillboardRenderList[billboardId].screen_space_z))
+    if (DoesRayMissLevelGeom(test_x, test_y, fDepth, pBillboardRenderList[billboardId].view_space_z))
         return true;
 
     // test visible four corners of quad
-    if (DoesRayMissLevelGeom(bbVisibleLeft, bbVisibleTop, fDepth, pBillboardRenderList[billboardId].screen_space_z) ||
-        DoesRayMissLevelGeom(bbVisibleLeft, bbVisibleBottom, fDepth, pBillboardRenderList[billboardId].screen_space_z) ||
-        DoesRayMissLevelGeom(bbVisibleRight, bbVisibleTop, fDepth, pBillboardRenderList[billboardId].screen_space_z) ||
-        DoesRayMissLevelGeom(bbVisibleRight, bbVisibleBottom, fDepth, pBillboardRenderList[billboardId].screen_space_z))
+    if (DoesRayMissLevelGeom(bbVisibleLeft, bbVisibleTop, fDepth, pBillboardRenderList[billboardId].view_space_z) ||
+        DoesRayMissLevelGeom(bbVisibleLeft, bbVisibleBottom, fDepth, pBillboardRenderList[billboardId].view_space_z) ||
+        DoesRayMissLevelGeom(bbVisibleRight, bbVisibleTop, fDepth, pBillboardRenderList[billboardId].view_space_z) ||
+        DoesRayMissLevelGeom(bbVisibleRight, bbVisibleBottom, fDepth, pBillboardRenderList[billboardId].view_space_z))
         return true;
 
     // test visible center bottom
     test_x = (bbVisibleLeft + bbVisibleRight) * 0.5f;
     test_y = bbVisibleBottom;
-    if (DoesRayMissLevelGeom(test_x, test_y, fDepth, pBillboardRenderList[billboardId].screen_space_z))
+    if (DoesRayMissLevelGeom(test_x, test_y, fDepth, pBillboardRenderList[billboardId].view_space_z))
         return true;
 
     return false;

@@ -833,7 +833,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = view_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;

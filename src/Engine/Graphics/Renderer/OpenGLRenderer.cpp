@@ -1770,7 +1770,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         //}
 
 
-        float oneoz = 1.0f / billboard->screen_space_z;
+        float oneoz = 1.0f / billboard->view_space_z;
         float thisdepth = (oneoz - oneon) / (oneof - oneon);
 
         float thisblend = static_cast<float>(billboard->opacity);
@@ -1781,7 +1781,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         v0.texuv = Vec2f(std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f),
                          std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f));
         v0.color = billboard->pQuads[0].diffuse.toColorf();
-        v0.screenspace = billboard->screen_space_z;
+        v0.screenspace = billboard->view_space_L2;
         v0.texid = gltexid;
         v0.blend = thisblend;
         v0.paletteId = paletteId;
@@ -1791,7 +1791,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         v1.texuv = Vec2f(std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f),
                          std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f));
         v1.color = billboard->pQuads[1].diffuse.toColorf();
-        v1.screenspace = billboard->screen_space_z;
+        v1.screenspace = billboard->view_space_L2;
         v1.texid = gltexid;
         v1.blend = thisblend;
         v1.paletteId = paletteId;
@@ -1801,7 +1801,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         v2.texuv = Vec2f(std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f),
                          std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f));
         v2.color = billboard->pQuads[2].diffuse.toColorf();
-        v2.screenspace = billboard->screen_space_z;
+        v2.screenspace = billboard->view_space_L2;
         v2.texid = gltexid;
         v2.blend = thisblend;
         v2.paletteId = paletteId;
@@ -1813,7 +1813,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             v3.texuv = Vec2f(std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f),
                              std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f));
             v3.color = billboard->pQuads[0].diffuse.toColorf();
-            v3.screenspace = billboard->screen_space_z;
+            v3.screenspace = billboard->view_space_L2;
             v3.texid = gltexid;
             v3.blend = thisblend;
             v3.paletteId = paletteId;
@@ -1823,7 +1823,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             v4.texuv = Vec2f(std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f),
                              std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f));
             v4.color = billboard->pQuads[2].diffuse.toColorf();
-            v4.screenspace = billboard->screen_space_z;
+            v4.screenspace = billboard->view_space_L2;
             v4.texid = gltexid;
             v4.blend = thisblend;
             v4.paletteId = paletteId;
@@ -1833,7 +1833,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             v5.texuv = Vec2f(std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f),
                              std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f));
             v5.color = billboard->pQuads[3].diffuse.toColorf();
-            v5.screenspace = billboard->screen_space_z;
+            v5.screenspace = billboard->view_space_L2;
             v5.texid = gltexid;
             v5.blend = thisblend;
             v5.paletteId = paletteId;
