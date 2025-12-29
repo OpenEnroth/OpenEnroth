@@ -231,6 +231,7 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
 
     /*pParticle->zbuffer_depth = x.GetInt();*/
     pParticle->view_space_z = xt;
+    pParticle->view_space_L2 = Vec3f(xt, yt, zt).length();
 
     return true;
 }

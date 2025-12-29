@@ -170,6 +170,7 @@ void BaseRenderer::DrawSpriteObjects() {
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = projected_x;
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
                             pBillboardRenderList[::uNumBillboardsToDraw].view_space_z = view_x;
+                            pBillboardRenderList[::uNumBillboardsToDraw].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
 
                             pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Sprite, i);
                             pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
@@ -299,6 +300,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_x = projected_x;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_y = projected_y;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_z = view_x;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v41;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v41;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
@@ -441,6 +443,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
 
     billboard->texture = pSprite->texture;
     billboard->view_space_z = pBillboard->view_space_z;
+    billboard->view_space_L2 = pBillboard->view_space_L2;
     billboard->sParentBillboardID = parent;
     billboard->paletteId = pBillboard->uPaletteId;
 }
@@ -451,11 +454,13 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
 
     billboard->opacity = RenderBillboardD3D::Opaque_1;
     billboard->view_space_z = p.view_space_z;
+    billboard->view_space_L2 = p.view_space_L2;
     billboard->sParentBillboardID = -1;
     billboard->texture = p.type & ParticleType_Diffuse ? nullptr : p.texture;
     billboard->paletteId = p.paletteID;
     billboard->uNumVertices = 4;
 
+    // TODO(pskelton): no point setting rhw and z wrong calc corrected later
     float rhw = 1.f / p.view_space_z;
     float z = 1.f - 1.f / (p.view_space_z * 1000.f / pCamera3D->GetFarClip());
 
@@ -532,11 +537,14 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     }
 
     float depth = 1000000.0;
+    int index = 0;
     for (unsigned i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
         if (a1->field_104[i].pos.z < depth) {
             depth = a1->field_104[i].pos.z;
+            index = i;
         }
     }
+    float view_space_L2 = a1->field_104[index].pos.length();
 
     unsigned int v5 = NextBillboardIndex();
     pBillboardRenderListD3D[v5].sParentBillboardID = -1;
@@ -545,6 +553,7 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
     pBillboardRenderListD3D[v5].paletteId = 0;
     pBillboardRenderListD3D[v5].view_space_z = depth;
+    pBillboardRenderListD3D[v5].view_space_L2 = view_space_L2;
 
     pBillboardRenderListD3D[v5].pQuads[3].pos.x = 0.0f;
     pBillboardRenderListD3D[v5].pQuads[3].pos.y = 0.0f;

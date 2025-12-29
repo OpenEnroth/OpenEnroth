@@ -70,6 +70,7 @@ struct RenderBillboard {
     int16_t screen_space_x;
     int16_t screen_space_y;
     int32_t view_space_z;
+    float view_space_L2 = 0.0f;
     Pid object_pid;
     uint16_t dimming_level;
     Color sTintColor;
@@ -94,4 +95,5 @@ struct RenderBillboardD3D {
     int view_space_z = 0;
     int sParentBillboardID = -1;
     int paletteId = 0;
+    float view_space_L2 = 0.0f;
 };

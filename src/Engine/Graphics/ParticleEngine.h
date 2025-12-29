@@ -69,6 +69,7 @@ struct Particle {
     int uScreenSpaceZ = 0;  // line end x
     int uScreenSpaceW = 0;  // line end y
     short view_space_z;
+    float view_space_L2 = 0.0f;
     int view_space_z_lineEnd = 0;             // line end z
     float screenspace_scale = 1.0;  // fixed screenspace_scale {};  // int _screenspace_scale;
     float fov_x = 0;
