@@ -801,55 +801,51 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 int projected_y = 0;
                 pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-                float proj_scale = frame->scale * (pCamera3D->ViewPlaneDistPixels) / (view_x);
-                int screen_space_half_width = static_cast<int>(proj_scale * frame->sprites[Sprite_Octant]->uWidth / 2.0f);
-                int screen_space_height = static_cast<int>(proj_scale * frame->sprites[Sprite_Octant]->uHeight);
+                float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / view_x;
+                float billboardWidth = billb_scale * frame->sprites[Sprite_Octant]->uWidth;
+                float billboardHeight = billb_scale * frame->sprites[Sprite_Octant]->uHeight;
+                Rectf billboardRect(projected_x - billboardWidth / 2, projected_y - billboardHeight, billboardWidth, billboardHeight);
 
-                if (projected_x + screen_space_half_width >= pViewport.x &&
-                    projected_x - screen_space_half_width <= pViewport.x + pViewport.w - 1) {
-                    if (projected_y >= pViewport.y && (projected_y - screen_space_height) <= pViewport.y + pViewport.h - 1) { // test
-                        ++uNumBillboardsToDraw;
-                        ++uNumSpritesDrawnThisFrame;
+                if (pViewport.intersects(billboardRect)) {
+                    ++uNumBillboardsToDraw;
+                    ++uNumSpritesDrawnThisFrame;
 
-                        pActors[i].attributes |= ACTOR_VISIBLE;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = frame->sprites[Sprite_Octant];
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].sectorId;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
+                    pActors[i].attributes |= ACTOR_VISIBLE;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = frame->sprites[Sprite_Octant];
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].sectorId;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = proj_scale;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = proj_scale;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
 
-                        if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Active() &&
-                            pActors[i].buffs[ACTOR_BUFF_SHRINK].power > 0) {
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .screenspace_projection_factor_y = 1.0f / pActors[i].buffs[ACTOR_BUFF_SHRINK].power *
-                                                                   pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .screenspace_projection_factor_y;
-                        } else if (pActors[i].massDistortionTime) {
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
-                                spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
-                                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
-                        }
+                    if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Active() &&
+                        pActors[i].buffs[ACTOR_BUFF_SHRINK].power > 0) {
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                            1.0f / pActors[i].buffs[ACTOR_BUFF_SHRINK].power *
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                    } else if (pActors[i].massDistortionTime) {
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                            spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                    }
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = view_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Actor, i);
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = view_x;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Actor, i);
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].flags = flags | BILLBOARD_0X200;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
-                            pMonsterList->monsters[pActors[i].monsterInfo.id].tintColor;  // *((int *)&v35[v36] - 36);
-                        if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].flags =
-                                flags | BILLBOARD_STONED;
-                        }
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].flags = flags | BILLBOARD_0X200;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
+                        pMonsterList->monsters[pActors[i].monsterInfo.id].tintColor;
+                    if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].flags = flags | BILLBOARD_STONED;
                     }
                 }
             }

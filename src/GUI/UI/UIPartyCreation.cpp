@@ -99,7 +99,7 @@ void CreateParty_EventLoop() {
             } while (pParty->pCharacters[param].GetSexByVoice() != sex);
             auto pButton = pCreationUI_BtnPressLeft2[param];
 
-            new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
+            new OnButtonClick(pButton->rect.topLeft(), {0, 0}, pButton, std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             pAudioPlayer->stopVoiceSounds();
             pParty->pCharacters[param].playReaction(SPEECH_PICK_ME);
@@ -113,7 +113,7 @@ void CreateParty_EventLoop() {
                     (pParty->pCharacters[param].uVoiceID + 1) % 20;
             } while (pParty->pCharacters[param].GetSexByVoice() != sex);
             auto pButton = pCreationUI_BtnPressRight2[param];
-            new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
+            new OnButtonClick(pButton->rect.topLeft(), {0, 0}, pButton, std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             pAudioPlayer->stopVoiceSounds();
             pParty->pCharacters[param].playReaction(SPEECH_PICK_ME);
@@ -136,7 +136,7 @@ void CreateParty_EventLoop() {
                 7 +
                 pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
             uPlayerCreationUI_SelectedCharacter = param;
-            new OnButtonClick({pCreationUI_BtnPressLeft[param]->uX, pCreationUI_BtnPressLeft[param]->uY}, {0, 0},
+            new OnButtonClick(pCreationUI_BtnPressLeft[param]->rect.topLeft(), {0, 0},
                 pCreationUI_BtnPressLeft[param], std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             pAudioPlayer->stopVoiceSounds();
@@ -158,7 +158,7 @@ void CreateParty_EventLoop() {
                 7 +
                 pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
             uPlayerCreationUI_SelectedCharacter = param;
-            new OnButtonClick({pCreationUI_BtnPressRight[param]->uX, pCreationUI_BtnPressRight[param]->uY}, {0, 0},
+            new OnButtonClick(pCreationUI_BtnPressRight[param]->rect.topLeft(), {0, 0},
                 pCreationUI_BtnPressRight[param], std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             pAudioPlayer->stopVoiceSounds();
@@ -327,8 +327,8 @@ void GUIWindow_PartyCreation::Update() {
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     // cycle arrows backwards
     int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (pMiscTimer->time().realtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
-    render->DrawQuad2D(ui_partycreation_arrow_l[arrowAnimTextureNum], {uPosActiveItem->uZ - 4, uPosActiveItem->uY});
-    render->DrawQuad2D(ui_partycreation_arrow_r[arrowAnimTextureNum], {uPosActiveItem->uX - 12, uPosActiveItem->uY});
+    render->DrawQuad2D(ui_partycreation_arrow_l[arrowAnimTextureNum], {uPosActiveItem->rect.x + uPosActiveItem->rect.w - 4, uPosActiveItem->rect.y});
+    render->DrawQuad2D(ui_partycreation_arrow_r[arrowAnimTextureNum], {uPosActiveItem->rect.x - 12, uPosActiveItem->rect.y});
 
     pText = localization->str(LSTR_SKILLS);
     for (int i = pText.size() - 1; i >= 0; i--)

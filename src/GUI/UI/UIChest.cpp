@@ -30,7 +30,7 @@ void GUIWindow_Chest::Update() {
     if (current_screen_type == SCREEN_CHEST_INVENTORY) {
         draw_leather();
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
-        render->DrawQuad2D(ui_exit_cancel_button_background, {pBtn_ExitCancel->uX, pBtn_ExitCancel->uY});
+        render->DrawQuad2D(ui_exit_cancel_button_background, pBtn_ExitCancel->rect.topLeft());
     } else if (current_screen_type == SCREEN_CHEST) {
         int uChestID = _chestId;
         int chestDescId = vChests[uChestID].chestTypeId;
@@ -61,6 +61,6 @@ void GUIWindow_Chest::Update() {
             render->DrawQuad2D(item_texture, {itemPixelPosX, itemPixelPosY});
         }
 
-        render->DrawQuad2D(ui_exit_cancel_button_background, {pBtn_ExitCancel->uX, pBtn_ExitCancel->uY});
+        render->DrawQuad2D(ui_exit_cancel_button_background, pBtn_ExitCancel->rect.topLeft());
     }
 }

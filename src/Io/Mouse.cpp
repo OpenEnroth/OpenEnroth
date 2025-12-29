@@ -233,10 +233,11 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                         }
                         continue;
                     }
-                    if (control->uButtonType == 2) {  // adventurers portraits click
-                        if (std::sqrt(
-                                (double)((x - control->uX) * (x - control->uX) +
-                                         (y - control->uY) * (y - control->uY))) < (double)control->uWidth) {
+                    if (control->uButtonType == 2) {  // adventurers portraits click (circular button)
+                        // TODO(captainurist): actual shape is oval, this check is bugged.
+                        int dx = x - control->rect.x;
+                        int dy = y - control->rect.y;
+                        if (std::sqrt((double)(dx * dx + dy * dy)) < (double)control->rect.w) {
                             control->field_2C_is_pushed = true;
                             engine->_messageQueue->clear();
                             engine->_messageQueue->addMessageCurrentFrame(control->msg, control->msg_param, 0);
@@ -362,10 +363,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             if (v4 < v4 + win->pNumPresenceButton) {
                 while (true) {
                     GUIButton *pButton = win->GetControl(v4);
-                    if (uClickX >= pButton->uX  // test for StatsTab in
-                                                // PlayerCreation Window
-                        && uClickX <= pButton->uZ &&
-                        uClickY >= pButton->uY && uClickY <= pButton->uW)
+                    if (pButton->Contains(uClickX, uClickY))  // test for StatsTab in PlayerCreation Window
                         break;
                     ++v4;
                     if (v4 >= v28) {
@@ -407,8 +405,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                     GUIButton *pButton = win->GetControl(v4);
                     if (!pButton)
                         continue;
-                    if (uClickX >= pButton->uX && uClickX <= pButton->uZ &&
-                        uClickY >= pButton->uY && uClickY <= pButton->uW) {
+                    if (pButton->Contains(uClickX, uClickY)) {
                         win->pCurrentPosActiveItem = v4;
                         return true;
                     }

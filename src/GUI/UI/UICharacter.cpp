@@ -547,10 +547,7 @@ static GraphicsImage *scrollstop = nullptr;
 
 std::array<GraphicsImage *, 16> paperdoll_dbrds;
 
-int savedInventoryLeftClickButtonW;
-int savedInventoryLeftClickButtonZ;
-int savedInventoryLeftClickButtonY;
-int savedInventoryLeftClickButtonX;
+Recti savedInventoryLeftClickButtonRect;
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, ScreenType screen)
     : GUIWindow(WINDOW_CharacterRecord, {0, 0}, render->GetRenderDimensions()) {
@@ -612,10 +609,7 @@ void GUIWindow_CharacterRecord::releaseAwardsScrollBar() {
         pBtn_Up = 0;
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_InventoryLeftClick) {
-                pButton->uX = savedInventoryLeftClickButtonX;
-                pButton->uY = savedInventoryLeftClickButtonY;
-                pButton->uZ = savedInventoryLeftClickButtonZ;
-                pButton->uW = savedInventoryLeftClickButtonW;
+                pButton->rect = savedInventoryLeftClickButtonRect;
             }
         }
     }
@@ -626,14 +620,8 @@ void GUIWindow_CharacterRecord::createAwardsScrollBar() {
         _awardsScrollBarCreated = true;
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_InventoryLeftClick) {
-                savedInventoryLeftClickButtonX = pButton->uX;
-                savedInventoryLeftClickButtonY = pButton->uY;
-                savedInventoryLeftClickButtonZ = pButton->uZ;
-                savedInventoryLeftClickButtonW = pButton->uW;
-                pButton->uW = 0;
-                pButton->uZ = 0;
-                pButton->uY = 0;
-                pButton->uX = 0;
+                savedInventoryLeftClickButtonRect = pButton->rect;
+                pButton->rect = {};
             }
         }
         pBtn_Up = pGUIWindow_CurrentMenu->CreateButton({438, 46}, ui_ar_up_up->size(), 1, 0,
@@ -652,7 +640,7 @@ void GUIWindow_CharacterRecord::Update() {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_StatsTab_Draw(player);
-            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd1-d"), {pCharacterScreen_StatsBtn->uX, pCharacterScreen_StatsBtn->uY});
+            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd1-d"), pCharacterScreen_StatsBtn->rect.topLeft());
             break;
         }
         case WINDOW_CharacterWindow_Skills: {
@@ -662,21 +650,21 @@ void GUIWindow_CharacterRecord::Update() {
             }
             releaseAwardsScrollBar();
             CharacterUI_SkillsTab_Draw(player);
-            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd2-d"), {pCharacterScreen_SkillsBtn->uX, pCharacterScreen_SkillsBtn->uY});
+            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd2-d"), pCharacterScreen_SkillsBtn->rect.topLeft());
             break;
         }
         case WINDOW_CharacterWindow_Awards: {
             CharacterUI_ReleaseButtons();
             createAwardsScrollBar();
             CharacterUI_AwardsTab_Draw(player);
-            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd4-d"), {pCharacterScreen_AwardsBtn->uX, pCharacterScreen_AwardsBtn->uY});
+            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd4-d"), pCharacterScreen_AwardsBtn->rect.topLeft());
             break;
         }
         case WINDOW_CharacterWindow_Inventory: {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_InventoryTab_Draw(player, false);
-            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd3-d"), {pCharacterScreen_InventoryBtn->uX, pCharacterScreen_InventoryBtn->uY});
+            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd3-d"), pCharacterScreen_InventoryBtn->rect.topLeft());
             break;
         }
         default:
@@ -695,7 +683,7 @@ void GUIWindow_CharacterRecord::ShowStatsTab() {
     CharacterUI_ReleaseButtons();
     releaseAwardsScrollBar();
     new OnButtonClick3(WINDOW_CharacterWindow_Stats,
-        {pCharacterScreen_StatsBtn->uX, pCharacterScreen_StatsBtn->uY}, {0, 0}, pCharacterScreen_StatsBtn);
+        pCharacterScreen_StatsBtn->rect.topLeft(), {0, 0}, pCharacterScreen_StatsBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowSkillsTab() {
@@ -704,7 +692,7 @@ void GUIWindow_CharacterRecord::ShowSkillsTab() {
     releaseAwardsScrollBar();
     CharacterUI_SkillsTab_CreateButtons();
     new OnButtonClick3(WINDOW_CharacterWindow_Skills,
-        {pCharacterScreen_SkillsBtn->uX, pCharacterScreen_SkillsBtn->uY}, {0, 0}, pCharacterScreen_SkillsBtn);
+        pCharacterScreen_SkillsBtn->rect.topLeft(), {0, 0}, pCharacterScreen_SkillsBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowInventoryTab() {
@@ -712,7 +700,7 @@ void GUIWindow_CharacterRecord::ShowInventoryTab() {
     releaseAwardsScrollBar();
     CharacterUI_ReleaseButtons();
     new OnButtonClick3(WINDOW_CharacterWindow_Inventory,
-        {pCharacterScreen_InventoryBtn->uX, pCharacterScreen_InventoryBtn->uY}, {0, 0}, pCharacterScreen_InventoryBtn);
+        pCharacterScreen_InventoryBtn->rect.topLeft(), {0, 0}, pCharacterScreen_InventoryBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowAwardsTab() {
@@ -721,7 +709,7 @@ void GUIWindow_CharacterRecord::ShowAwardsTab() {
     createAwardsScrollBar();
     current_character_screen_window = WINDOW_CharacterWindow_Awards;
     new OnButtonClick3(WINDOW_CharacterWindow_Awards,
-        {pCharacterScreen_AwardsBtn->uX, pCharacterScreen_AwardsBtn->uY}, {0, 0}, pCharacterScreen_AwardsBtn);
+        pCharacterScreen_AwardsBtn->rect.topLeft(), {0, 0}, pCharacterScreen_AwardsBtn);
     fillAwardsData();
 }
 
@@ -788,7 +776,7 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
             }
 
             ++num_skills_drawn;
-            y_offset = button->uY;
+            y_offset = button->rect.y;
 
             int skill_level = player->getSkillValue(skill).level();
 
@@ -798,7 +786,7 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
                 skill_color = ui_character_skill_upgradeable_color;
             }
 
-            if (pt.x >= button->uX && pt.x < button->uZ && pt.y >= button->uY && pt.y < button->uW) {
+            if (button->Contains(pt)) {
                 if (player->uSkillPoints > skill_level && skills_max_level[skill] > skill_level && skills_max_level[skill] != 1) {
                     skill_mastery_color = ui_character_bonus_text_color;
                 } else {
@@ -815,7 +803,7 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
                 } else {
                     Strsk = fmt::format("{}\r{:03}{}", localization->skillName(skill), right_margin, skill_level);
                 }
-                pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
+                pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->rect.y}, skill_color, Strsk);
             } else {
                 std::string skill_level_str = skill_mastery == MASTERY_NOVICE ? "" : localization->masteryName(skill_mastery);
 
@@ -825,7 +813,7 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
 
                 auto Strsk = fmt::format("{} {::}{}{::}\r{:03}{}",
                         localization->skillName(skill), skill_mastery_color.tag(), skill_level_str, skill_color.tag(), right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
+                pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->rect.y}, skill_color, Strsk);
             }
         }
     }
@@ -934,9 +922,9 @@ void GUIWindow_CharacterRecord::clickAwardsScroll(int yPos) {
         return;
     }
 
-    int segmentHeight = pBtn_Scroll->uHeight / _scrollableAwardSteps;
+    int segmentHeight = pBtn_Scroll->rect.h / _scrollableAwardSteps;
 
-    _startAwardElem = std::clamp((int)std::round((float)(yPos - pBtn_Scroll->uY) / segmentHeight), 0, _scrollableAwardSteps);
+    _startAwardElem = std::clamp((int)std::round((float)(yPos - pBtn_Scroll->rect.y) / segmentHeight), 0, _scrollableAwardSteps);
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
@@ -1351,7 +1339,7 @@ void CharacterUI_DrawPaperdollWithRingOverlay(Character *player) {
 
     render->DrawQuad2D(ui_character_inventory_paperdoll_rings_background, {473, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
-    render->DrawQuad2D(ui_exit_cancel_button_background, {pCharacterScreen_DetalizBtn->uX, pCharacterScreen_DetalizBtn->uY});
+    render->DrawQuad2D(ui_exit_cancel_button_background, pCharacterScreen_DetalizBtn->rect.topLeft());
 
     for (unsigned i = 0; i < 6; ++i) {
         InventoryEntry entry = player->inventory.entry(ringSlot(i));
@@ -1443,14 +1431,8 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     dword_507CC0_activ_ch = pParty->activeCharacterIndex();
     for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
         if (pButton->msg == UIMSG_InventoryLeftClick) {
-            savedInventoryLeftClickButtonX = pButton->uX;
-            savedInventoryLeftClickButtonY = pButton->uY;
-            savedInventoryLeftClickButtonZ = pButton->uZ;
-            savedInventoryLeftClickButtonW = pButton->uW;
-            pButton->uW = 0;
-            pButton->uZ = 0;
-            pButton->uY = 0;
-            pButton->uX = 0;
+            savedInventoryLeftClickButtonRect = pButton->rect;
+            pButton->rect = {};
         }
         buttons_count++;
     }
@@ -2187,10 +2169,7 @@ void CharacterUI_ReleaseButtons() {
         }
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_InventoryLeftClick) {
-                pButton->uX = savedInventoryLeftClickButtonX;
-                pButton->uY = savedInventoryLeftClickButtonY;
-                pButton->uZ = savedInventoryLeftClickButtonZ;
-                pButton->uW = savedInventoryLeftClickButtonW;
+                pButton->rect = savedInventoryLeftClickButtonRect;
             }
         }
     }

@@ -128,12 +128,7 @@ void GUIWindow_Rest::Update() {
         rest_ui_hourglass_frame_current = assets->getImage_ColorKey(fmt::format("hglas{:03}", hourglass_icon_idx));
         render->DrawQuad2D(rest_ui_hourglass_frame_current, {267, 159});
 
-        tmp_button.uX = 24;
-        tmp_button.uY = 154;
-        tmp_button.uZ = 194;
-        tmp_button.uW = 190;
-        tmp_button.uWidth = 171;
-        tmp_button.uHeight = 37;
+        tmp_button.rect = Recti(24, 154, 171, 37);
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
         tmp_button.DrawLabel(localization->str(LSTR_REST_HEAL_8_HOURS), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         tmp_button.pParent = 0;
@@ -145,14 +140,7 @@ void GUIWindow_Rest::Update() {
         pButton_RestUI_Wait1Hour->DrawLabel(localization->str(LSTR_WAIT_1_HOUR), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         pButton_RestUI_Wait5Minutes->DrawLabel(localization->str(LSTR_WAIT_5_MINUTES), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         pButton_RestUI_Exit->DrawLabel(localization->str(LSTR_EXIT_REST), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
-        tmp_button.uX = 45;
-        tmp_button.uY = 199;
-
-        tmp_button.uZ = 229;
-        tmp_button.uW = 228;
-
-        tmp_button.uWidth = 185;
-        tmp_button.uHeight = 30;
+        tmp_button.rect = Recti(45, 199, 185, 30);
 
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
         tmp_button.DrawLabel(localization->str(LSTR_WAIT_WITHOUT_HEALING), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
@@ -172,6 +160,6 @@ void GUIWindow_Rest::Update() {
             Party::restOneFrame();
         }
     } else {
-        new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->str(LSTR_EXIT_REST));
+        new OnCancel(pButton_RestUI_Exit->rect.topLeft(), {0, 0}, pButton_RestUI_Exit, localization->str(LSTR_EXIT_REST));
     }
 }

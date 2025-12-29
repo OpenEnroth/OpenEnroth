@@ -383,18 +383,14 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
     GUIButton *pButton = new GUIButton();
 
     pButton->pParent = this;
-    pButton->uWidth = dimensions.w;
-    pButton->uHeight = dimensions.h;
 
-    if (uButtonType == 2 && !dimensions.h) {
-        pButton->uHeight = dimensions.w;
-    }
+    // For button type 2, if height is 0, use width for height (circular button).
+    int height = (uButtonType == 2 && !dimensions.h) ? dimensions.w : dimensions.h;
 
+    // Original code used closed intervals [uX, uZ] where uZ = uX + uWidth, so the button covered
+    // uWidth + 1 pixels. With standard half-open Rect semantics [x, x+w), we store w + 1 to match.
+    pButton->rect = Recti(position.x + frameRect.x, position.y + frameRect.y, dimensions.w + 1, height + 1);
     pButton->uButtonType = uButtonType;
-    pButton->uX = position.x + frameRect.x;
-    pButton->uY = position.y + frameRect.y;
-    pButton->uZ = pButton->uX + dimensions.w;
-    pButton->uW = pButton->uY + dimensions.h;
     pButton->field_2C_is_pushed = false;
     pButton->uData = uData;
     pButton->msg = msg;
@@ -477,11 +473,8 @@ void OnButtonClick2::Update() {
     if (_playSound) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    Sizei renDims = render->GetRenderDimensions();
-    if (_button->uX >= 0 && _button->uX <= renDims.w) {
-        if (_button->uY >= 0 && _button->uY <= renDims.h) {
-            render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
-        }
+    if (Recti({}, render->GetRenderDimensions()).intersects(_button->rect)) {
+        render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
     }
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);

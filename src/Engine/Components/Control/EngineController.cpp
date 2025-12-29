@@ -146,7 +146,8 @@ void EngineController::pressAndReleaseButton(PlatformMouseButton button, int x, 
 
 void EngineController::pressGuiButton(std::string_view buttonId) {
     GUIButton *button = existingButton(buttonId);
-    pressAndReleaseButton(BUTTON_LEFT, button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
+    Pointi center = button->rect.center();
+    pressAndReleaseButton(BUTTON_LEFT, center.x, center.y);
 }
 
 void EngineController::goToGame() {
@@ -394,11 +395,11 @@ GUIButton *EngineController::existingButton(std::string_view buttonId) {
         throw Exception("GUI button '{}' not found", buttonId);
 
     auto checkButton = [](GUIButton *button) {
-        Pointi point = Pointi(button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
+        Pointi point = button->rect.center();
 
         for (GUIWindow *window : lWindowList) {
             for (GUIButton *otherButton : window->vButtons) {
-                if (otherButton->Contains(point.x, point.y)) {
+                if (otherButton->Contains(point)) {
                     if (button != otherButton)
                         throw Exception("Coundn't press GUI button '{}' because it's overlapping with another GUI button", button->id);
                     return;

@@ -1037,16 +1037,16 @@ void GameUI_WritePointedObjectStatusString() {
                             }
                             break;
                         case 2:  // hovering over portraits
-                            if (pButton->uWidth != 0 && pButton->uHeight != 0) {
-                                unsigned distW = pX - pButton->uX;
-                                unsigned distY = pY - pButton->uY;
+                            if (!pButton->rect.isEmpty()) {
+                                int distW = mousePos.x - pButton->rect.x;
+                                int distY = mousePos.y - pButton->rect.y;
 
                                 double ratioX =
                                     1.0 * (distW * distW) /
-                                    (pButton->uWidth * pButton->uWidth);
+                                    (pButton->rect.w * pButton->rect.w);
                                 double ratioY =
                                     1.0 * (distY * distY) /
-                                    (pButton->uHeight * pButton->uHeight);
+                                    (pButton->rect.h * pButton->rect.h);
 
                                 if (ratioX + ratioY < 1.0) {
                                     engine->_statusBar->setPermanent(pButton->sLabel);  // for character name
@@ -1134,8 +1134,7 @@ void GameUI_WritePointedObjectStatusString() {
             for (GUIButton *pButton : win->vButtons) {
                 switch (pButton->uButtonType) {
                     case 1:
-                        if (pX >= pButton->uX && pX <= pButton->uZ &&
-                            pY >= pButton->uY && pY <= pButton->uW) {
+                        if (pButton->Contains(mousePos)) {
                             pMessageType3 = (UIMessageType)pButton->uData;
                             if (pMessageType3 == 0) {  // For books
                                 engine->_statusBar->setPermanent(pButton->sLabel);
@@ -1147,15 +1146,15 @@ void GameUI_WritePointedObjectStatusString() {
                         }
                         break;
                     case 2:  // hovering over portraits
-                        if (pButton->uWidth != 0 && pButton->uHeight != 0) {
-                            unsigned distW = pX - pButton->uX;
-                            unsigned distY = pY - pButton->uY;
+                        if (!pButton->rect.isEmpty()) {
+                            int distW = mousePos.x - pButton->rect.x;
+                            int distY = mousePos.y - pButton->rect.y;
 
                             double ratioX = 1.0 * (distW * distW) /
-                                            (pButton->uWidth * pButton->uWidth);
+                                            (pButton->rect.w * pButton->rect.w);
                             double ratioY =
                                 1.0 * (distY * distY) /
-                                (pButton->uHeight * pButton->uHeight);
+                                (pButton->rect.h * pButton->rect.h);
 
                             if (ratioX + ratioY < 1.0) {
                                 engine->_statusBar->setPermanent(pButton->sLabel);  // for character name

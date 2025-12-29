@@ -1029,7 +1029,7 @@ void Game::processQueuedMessages() {
                     Character::_42ECB5_CharacterAttacksActor();
                 continue;
             case UIMSG_ExitRest:
-                new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->str(LSTR_EXIT_REST));
+                new OnCancel(pButton_RestUI_Exit->rect.topLeft(), {0, 0}, pButton_RestUI_Exit, localization->str(LSTR_EXIT_REST));
                 continue;
             case UIMSG_Wait5Minutes:
                 if (currentRestType == REST_HEAL) {
@@ -1037,7 +1037,7 @@ void Game::processQueuedMessages() {
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
-                new OnButtonClick2({pButton_RestUI_Wait5Minutes->uX, pButton_RestUI_Wait5Minutes->uY}, {0, 0}, pButton_RestUI_Wait5Minutes,
+                new OnButtonClick2(pButton_RestUI_Wait5Minutes->rect.topLeft(), {0, 0}, pButton_RestUI_Wait5Minutes,
                     localization->str(LSTR_WAIT_5_MINUTES));
                 currentRestType = REST_WAIT;
                 remainingRestTime = Duration::fromMinutes(5);
@@ -1048,7 +1048,7 @@ void Game::processQueuedMessages() {
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
-                new OnButtonClick2({pButton_RestUI_Wait1Hour->uX, pButton_RestUI_Wait1Hour->uY}, {0, 0}, pButton_RestUI_Wait1Hour,
+                new OnButtonClick2(pButton_RestUI_Wait1Hour->rect.topLeft(), {0, 0}, pButton_RestUI_Wait1Hour,
                     localization->str(LSTR_WAIT_1_HOUR));
                 currentRestType = REST_WAIT;
                 remainingRestTime = Duration::fromHours(1);
@@ -1189,14 +1189,14 @@ void Game::processQueuedMessages() {
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
-                new OnButtonClick2({pButton_RestUI_WaitUntilDawn->uX, pButton_RestUI_WaitUntilDawn->uY}, {0, 0}, pButton_RestUI_WaitUntilDawn,
+                new OnButtonClick2(pButton_RestUI_WaitUntilDawn->rect.topLeft(), {0, 0}, pButton_RestUI_WaitUntilDawn,
                                    localization->str(LSTR_WAIT_UNTIL_DAWN));
                 currentRestType = REST_WAIT;
                 remainingRestTime = timeUntilDawn();
                 continue;
 
             case UIMSG_ClickInstallRemoveQuickSpellBtn: {
-                new OnButtonClick2({pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY}, {0, 0}, pBtn_InstallRemoveSpell);
+                new OnButtonClick2(pBtn_InstallRemoveSpell->rect.topLeft(), {0, 0}, pBtn_InstallRemoveSpell);
                 if (!pParty->hasActiveCharacter())
                     continue;
                 Character *character = &pParty->activeCharacter();
@@ -1362,11 +1362,11 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_ClickAwardsUpBtn:
-                new OnButtonClick3(WINDOW_CharacterWindow_Awards, {pBtn_Up->uX, pBtn_Up->uY}, {0, 0}, pBtn_Up);
+                new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Up->rect.topLeft(), {0, 0}, pBtn_Up);
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsUp();
                 continue;
             case UIMSG_ClickAwardsDownBtn:
-                new OnButtonClick3(WINDOW_CharacterWindow_Awards, {pBtn_Down->uX, pBtn_Down->uY}, {0, 0}, pBtn_Down);
+                new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Down->rect.topLeft(), {0, 0}, pBtn_Down);
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsDown();
                 continue;
             case UIMSG_ChangeDetaliz:
@@ -1409,7 +1409,7 @@ void Game::processQueuedMessages() {
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowAwardsTab();
                 continue;
             case UIMSG_ClickExitCharacterWindowBtn:
-                new OnCancel2({pCharacterScreen_ExitBtn->uX, pCharacterScreen_ExitBtn->uY}, {0, 0}, pCharacterScreen_ExitBtn);
+                new OnCancel2(pCharacterScreen_ExitBtn->rect.topLeft(), {0, 0}, pCharacterScreen_ExitBtn);
                 continue;
             case UIMSG_ClickBooksBtn:
                 switch (BookButtonAction(uMessageParam)) {
