@@ -1255,50 +1255,36 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
             pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
             float billb_scale = v11->scale * pCamera3D->ViewPlaneDistPixels / view_x;
+            float billboardWidth = billb_scale * v11->sprites[(int64_t)v9]->uWidth;
+            float billboardHeight = billb_scale * v11->sprites[(int64_t)v9]->uHeight;
+            Rectf billboardRect(projected_x - billboardWidth / 2, projected_y - billboardHeight, billboardWidth, billboardHeight);
 
-            int screen_space_half_width = static_cast<int>(billb_scale * v11->sprites[(int64_t)v9]->uWidth / 2.0f);
-            int screen_space_height = static_cast<int>(billb_scale * v11->sprites[(int64_t)v9]->uHeight);
+            if (pViewport.intersects(billboardRect)) {
+                assert(uNumBillboardsToDraw < 500);
+                ++uNumBillboardsToDraw;
+                ++uNumDecorationsDrawnThisFrame;
 
-            if (projected_x + screen_space_half_width >= pViewport.x &&
-                projected_x - screen_space_half_width <= pViewport.x + pViewport.w - 1) {
-                if (projected_y >= pViewport.y && (projected_y - screen_space_height) <= pViewport.y + pViewport.h - 1) {
-                    assert(uNumBillboardsToDraw < 500);
-                    ++uNumBillboardsToDraw;
-                    ++uNumDecorationsDrawnThisFrame;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v11->sprites[v9];
 
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite =
-                        v11->sprites[v9];
+                if (v11->sprites[v9]->texture->height() == 0 || v11->sprites[v9]->texture->width() == 0)
+                    assert(false);
 
-                    if (v11->sprites[v9]->texture->height() == 0 || v11->sprites[v9]->texture->width() == 0)
-                        assert(false);
-
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = v11->paletteId;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID =
-                        uSectorID;
-
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x =
-                        pCamera3D->ViewPlaneDistPixels;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].flags = v30;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_x =
-                        pLevelDecorations[uDecorationID].vPosition.x;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_y =
-                        pLevelDecorations[uDecorationID].vPosition.y;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_z =
-                        pLevelDecorations[uDecorationID].vPosition.z;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x =
-                        projected_x;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y =
-                        projected_y;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = view_x;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid =
-                        Pid(OBJECT_Decoration, uDecorationID);
-
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = Color();
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v11;
-                }
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = v11->paletteId;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pCamera3D->ViewPlaneDistPixels;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].flags = v30;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pLevelDecorations[uDecorationID].vPosition.x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pLevelDecorations[uDecorationID].vPosition.y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pLevelDecorations[uDecorationID].vPosition.z;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = view_x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
+                pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, uDecorationID);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = Color();
+                pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v11;
             }
         }
     }
