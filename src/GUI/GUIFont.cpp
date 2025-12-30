@@ -42,30 +42,29 @@ std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile) {
 // TODO(pskelton): Save built atlas so it doesnt get recalcualted on reload?
 void GUIFont::CreateFontTex() {
     ReleaseFontTex();
+
+    _layout = AtlasLayout({16, 16}, {32, 32});
+
     // create blank textures
-    RgbaImage main = RgbaImage::solid(512, 512, Color(0, 0, 0, 0));
-    RgbaImage shadow = RgbaImage::solid(512, 512, Color(0, 0, 0, 0));
-    Color *pPixelsfont = main.pixels().data();
-    Color *pPixelsshadow = shadow.pixels().data();
+    RgbaImage main = RgbaImage::solid(Color(), _layout.geometry().size());
+    RgbaImage shadow = RgbaImage::solid(Color(), _layout.geometry().size());
 
     // load in char pixels into squares within texture
-    for (int l = 0; l < 256; l++) {
-        int xsq = l % 16;
-        int ysq = l / 16;
-        int offset = 32 * xsq + 32 * ysq * 512;
+    for (size_t l = 0; l < _layout.size(); l++) {
+        Recti cell = _layout[l];
         GrayscaleImageView image = _font.image(l);
         const uint8_t *pCharPixels = image.pixels().data();
 
-        for (unsigned y = 0; y < image.height(); ++y) {
-            for (unsigned x = 0; x < image.width(); ++x) {
+        for (int y = 0; y < image.height(); ++y) {
+            for (int x = 0; x < image.width(); ++x) {
                 if (*pCharPixels) {
                     if (*pCharPixels != 1) {
                         // add to normal
-                        pPixelsfont[offset + x + y * 512] = colorTable.White;
+                        main[cell.y + y][cell.x + x] = colorTable.White;
                     }
                     if (*pCharPixels == 1) {
                         // add to shadow
-                        pPixelsshadow[offset + x + y * 512] = colorTable.White;
+                        shadow[cell.y + y][cell.x + x] = colorTable.White;
                     }
                 }
                 ++pCharPixels;
@@ -219,15 +218,12 @@ Color GUIFont::DrawTextLine(std::string_view text, Color startColor, Color defau
             if (i > 0)
                 x += _font.metrics(c).leftSpacing;
 
-            int xsq = c % 16;
-            int ysq = c / 16;
-            float u1 = (xsq * 32.0f) / 512.0f;
-            float u2 = (xsq * 32.0f + _font.metrics(c).width) / 512.0f;
-            float v1 = (ysq * 32.0f) / 512.0f;
-            float v2 = (ysq * 32.0f + _font.height()) / 512.0f;
+            Recti cell = _layout[static_cast<uint8_t>(c)];
+            Recti srcRect(cell.x, cell.y, charWidth, _font.height());
+            Recti dstRect(x, position.y, charWidth, _font.height());
 
-            render->DrawTextNew(x, position.y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 1, colorTable.Black);
-            render->DrawTextNew(x, position.y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 0, color);
+            render->DrawTextNew(srcRect, dstRect, true, colorTable.Black);
+            render->DrawTextNew(srcRect, dstRect, false, color);
 
             x += charWidth;
             if (i < len - 1)
@@ -459,15 +455,12 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
                 out_x += _font.metrics(c).leftSpacing;
             }
 
-            int xsq = c % 16;
-            int ysq = c / 16;
-            float u1 = (xsq * 32.0f) / 512.0f;
-            float u2 = (xsq * 32.0f + _font.metrics(c).width) / 512.0f;
-            float v1 = (ysq * 32.0f) / 512.0f;
-            float v2 = (ysq * 32.0f + _font.height()) / 512.0f;
+            Recti cell = _layout[c];
+            Recti srcRect(cell.x, cell.y, _font.metrics(c).width, _font.height());
+            Recti dstRect(out_x, out_y, _font.metrics(c).width, _font.height());
 
-            render->DrawTextNew(out_x, out_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 1, shadowColor);
-            render->DrawTextNew(out_x, out_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 0, draw_color);
+            render->DrawTextNew(srcRect, dstRect, true, shadowColor);
+            render->DrawTextNew(srcRect, dstRect, false, draw_color);
 
             out_x += _font.metrics(c).width;
             if (i < len - 1) {

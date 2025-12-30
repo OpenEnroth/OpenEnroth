@@ -98,7 +98,7 @@ class Renderer {
 
     virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) = 0;
     virtual void EndTextNew() = 0;
-    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) = 0;
+    virtual void DrawTextNew(const Recti &srcRect, const Recti &dstRect, bool isShadow, Color color) = 0;
 
     virtual void DrawOutdoorBuildings() = 0;
 

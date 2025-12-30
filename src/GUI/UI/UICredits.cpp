@@ -24,7 +24,7 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
 
     int height = _fontQuick->GetStringHeightWithSecondFont(_fontCChar.get(), text, creditsRect.w, 0) + 2 * creditsRect.h;
 
-    RgbaImage credits = RgbaImage::solid(creditsRect.w, height, Color(0, 0, 0, 0));
+    RgbaImage credits = RgbaImage::solid(Color(), creditsRect.w, height);
     _fontQuick->DrawCreditsEntry(_fontCChar.get(), 0, creditsRect.h, creditsRect.w, height, colorTable.CornFlowerBlue, colorTable.Primrose, colorTable.Black, text, &credits);
     _creditsTexture = GraphicsImage::Create(std::move(credits));
 

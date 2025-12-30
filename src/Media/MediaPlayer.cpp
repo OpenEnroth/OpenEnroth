@@ -536,7 +536,7 @@ class Movie : public IMovie {
                     tex->release();
                 }
                 // TODO(captainurist): no need to copy here.
-                RgbaImage frameImage = RgbaImage::copy(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), static_cast<const Color *>(video.last_frame.data()));
+                RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(video.last_frame.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
                 tex = GraphicsImage::Create(std::move(frameImage));
 
                 render->DrawImage(tex, calculateVideoRectangle(*pMovie_Track));
@@ -688,7 +688,7 @@ class Movie : public IMovie {
             _texture->release();
         }
         // TODO(captainurist): no need to copy here.
-        RgbaImage frameImage = RgbaImage::copy(GetWidth(), GetHeight(), static_cast<const Color *>(buffer.data()));
+        RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(buffer.data()), GetWidth(), GetHeight());
         _texture = GraphicsImage::Create(std::move(frameImage));
 
         render->DrawImage(_texture, calculateVideoRectangle(*this));
@@ -775,7 +775,7 @@ void MPlayer::HouseMovieLoop() {
             tex->release();
         }
         // TODO(captainurist): no need to copy here.
-        RgbaImage frameImage = RgbaImage::copy(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), static_cast<const Color *>(buffer.data()));
+        RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(buffer.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
         tex = GraphicsImage::Create(std::move(frameImage));
 
         render->DrawImage(tex, rect);
@@ -860,7 +860,7 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
                 tex->release();
             }
             // TODO(captainurist): no need to copy here.
-            RgbaImage frameImage = RgbaImage::copy(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), static_cast<const Color *>(buffer.data()));
+            RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(buffer.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
             tex = GraphicsImage::Create(std::move(frameImage));
 
             render->DrawImage(tex, calculateVideoRectangle(*pMovie_Track));

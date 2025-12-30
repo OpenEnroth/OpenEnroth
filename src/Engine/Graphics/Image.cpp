@@ -22,7 +22,7 @@ GraphicsImage *GraphicsImage::Create(RgbaImage image) {
 
 GraphicsImage *GraphicsImage::Create(int width, int height) {
     assert(width > 0 && height > 0);
-    return Create(RgbaImage::solid(width, height, Color()));
+    return Create(RgbaImage::solid(Color(), width, height));
 }
 
 GraphicsImage *GraphicsImage::Create(Sizei size) {

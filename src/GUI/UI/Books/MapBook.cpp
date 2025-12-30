@@ -181,7 +181,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
             minimaptemp->release();
         }
 
-        RgbaImage minimapImage = RgbaImage::solid(screenWidth, screenHeight, Color());
+        RgbaImage minimapImage = RgbaImage::solid(Color(), screenWidth, screenHeight);
         Color *minitempix = minimapImage.pixels().data();
         const Color *minimap_pixels = viewparams->location_minimap->rgba().pixels().data();
         int textr_width = viewparams->location_minimap->width();

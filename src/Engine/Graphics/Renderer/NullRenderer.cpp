@@ -17,7 +17,7 @@ bool NullRenderer::Reinitialize(bool firstInit) {
 }
 
 RgbaImage NullRenderer::ReadScreenPixels() {
-    return RgbaImage::solid(640, 480, Color());
+    return RgbaImage::solid(Color(), 640, 480);
 }
 
 void NullRenderer::ClearTarget(Color uColor) {}
@@ -63,7 +63,7 @@ void NullRenderer::BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImag
 
 void NullRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {}
 void NullRenderer::EndTextNew() {}
-void NullRenderer::DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) {}
+void NullRenderer::DrawTextNew(const Recti &srcRect, const Recti &dstRect, bool isShadow, Color color) {}
 
 void NullRenderer::DrawOutdoorBuildings() {}
 
@@ -72,11 +72,11 @@ void NullRenderer::DrawOutdoorSky() {}
 void NullRenderer::DrawOutdoorTerrain() {}
 
 RgbaImage NullRenderer::MakeViewportScreenshot(const int width, const int height) {
-    return RgbaImage::solid(width, height, Color());
+    return RgbaImage::solid(Color(), width, height);
 }
 
 RgbaImage NullRenderer::MakeFullScreenshot() {
-    return RgbaImage::solid(640, 480, Color());
+    return RgbaImage::solid(Color(), 640, 480);
 }
 
 void NullRenderer::BeginDecals() {}

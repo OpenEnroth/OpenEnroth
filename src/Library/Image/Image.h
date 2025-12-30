@@ -55,8 +55,8 @@ class ImageBase {
         return {_width, _height};
     }
 
-    [[nodiscard]] Recti rect() const {
-        return Recti(Pointi(0, 0), size());
+    [[nodiscard]] Recti geometry() const {
+        return {0, 0, _width, _height};
     }
 
     [[nodiscard]] std::span<T> operator[](size_t y) {
@@ -139,33 +139,45 @@ class Image : public detail::ImageBase<T, std::unique_ptr<T, FreeDeleter>> {
         return result;
     }
 
+    static Image uninitialized(Sizei size) {
+        return uninitialized(size.w, size.h);
+    }
+
     /**
      * Creates a solid-filled image of given size.
      *
+     * @param color                     Color to use to fill the image.
      * @param width                     Required image width.
      * @param height                    Required image height.
-     * @param color                     Color to use to fill the image.
      * @return                          Solid-filled image of given size. If width or height is zero, then returns an
      *                                  empty image.
      */
-    static Image solid(int width, int height, T color) {
+    static Image solid(T color, int width, int height) {
         Image result = uninitialized(width, height);
         std::fill_n(result.pixels().data(), result.pixels().size(), color);
         return result;
     }
 
+    static Image solid(T color, Sizei size) {
+        return solid(color, size.w, size.h);
+    }
+
     /**
      * Creates an image by copying the provided pixel buffer.
      *
+     * @param pixels                    Pixel buffer to copy.
      * @param width                     Pixel buffer width.
      * @param height                    Pixel buffer height.
-     * @param pixels                    Pixel buffer to copy.
      * @return                          Newly allocated `Image` containing a copy of the provided pixel buffer.
      */
-    static Image copy(int width, int height, const T *pixels) {
+    static Image copy(const T *pixels, int width, int height) {
         Image result = uninitialized(width, height);
         std::copy_n(pixels, result.pixels().size(), result.pixels().data());
         return result;
+    }
+
+    static Image copy(const T *pixels, Sizei size) {
+        return copy(pixels, size.w, size.h);
     }
 
     /**
@@ -175,7 +187,7 @@ class Image : public detail::ImageBase<T, std::unique_ptr<T, FreeDeleter>> {
      * @return                          Newly allocated `Image` containing a copy of `other`.
      */
     static Image copy(const Image &other) {
-        return copy(other.width(), other.height(), other.pixels().data());
+        return copy(other.pixels().data(), other.size());
     }
 
     // The rest is inherited from ImageBase.
@@ -200,6 +212,8 @@ class ImageView : public detail::ImageBase<const T, detail::ViewPointer<const T>
         this->_height = height;
         this->_pixels.reset(pixels);
     }
+
+    ImageView(const T *pixels, Sizei size) : ImageView(pixels, size.w, size.h) {}
 
     ImageView(const Image<T> &image) { // NOLINT: intentionally implicit.
         this->_width = image.width();

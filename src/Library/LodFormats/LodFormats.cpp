@@ -223,7 +223,7 @@ LodImage lod::decodeImage(const Blob &blob) {
 
     // TODO(captainurist): just store blob in GrayscaleImage, no need to copy here.
     if (pixels)
-        result.image = GrayscaleImage::copy(header.width, header.height, static_cast<const uint8_t *>(pixels.data())); // NOLINT: this is not std::copy.
+        result.image = GrayscaleImage::copy(static_cast<const uint8_t *>(pixels.data()), header.width, header.height); // NOLINT: this is not std::copy.
     return result;
 }
 
@@ -255,7 +255,7 @@ LodSprite lod::decodeSprite(const Blob &blob) {
 
     LodSprite result;
     result.paletteId = header.paletteId;
-    result.image = GrayscaleImage::solid(header.width, header.height, 0);
+    result.image = GrayscaleImage::solid(0, header.width, header.height);
 
     for (size_t y = 0; y < header.height; y++) {
         const LodSpriteLine_MM6 &line = lines[y];

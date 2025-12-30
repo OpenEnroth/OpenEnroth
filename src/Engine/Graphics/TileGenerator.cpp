@@ -73,7 +73,7 @@ RgbaImage TileGenerator::generateTile(Tileset tileset, TileVariant variant) {
         RgbaImageView layer = loadTile(tileset, spanningVariant);
 
         if (!result) {
-            result = RgbaImage::copy(layer.width(), layer.height(), layer.pixels().data());
+            result = RgbaImage::copy(layer.pixels().data(), layer.width(), layer.height());
         } else {
             blendTile(base, dirt, layer, &result);
         }

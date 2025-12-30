@@ -43,7 +43,7 @@ void Renderer::DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color) 
 
 GraphicsImage *Renderer::solidFillTexture() {
     if (!_solidFillTexture)
-        _solidFillTexture = GraphicsImage::Create(RgbaImage::solid(1, 1, colorTable.White));
+        _solidFillTexture = GraphicsImage::Create(RgbaImage::solid(colorTable.White, 1, 1));
     return _solidFillTexture;
 }
 

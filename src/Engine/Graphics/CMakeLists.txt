@@ -29,6 +29,7 @@ set(ENGINE_GRAPHICS_SOURCES
         Weather.cpp)
 
 set(ENGINE_GRAPHICS_HEADERS
+        AtlasLayout.h
         BSPModel.h
         BspRenderer.h
         Camera.h

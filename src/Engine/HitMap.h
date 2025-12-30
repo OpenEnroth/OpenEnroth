@@ -63,7 +63,7 @@ class HitMap {
             const Entry &entry = *it;
             
             Pointi relativePos = point - entry.position;
-            if (entry.image->rgba().rect().contains(relativePos)) {
+            if (entry.image->rgba().geometry().contains(relativePos)) {
                 Color color = entry.image->rgba()[relativePos];
                 if (color.a > 0)
                     return entry.value;
