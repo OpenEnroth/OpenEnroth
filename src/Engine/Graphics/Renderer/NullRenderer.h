@@ -42,7 +42,7 @@ class NullRenderer : public BaseRenderer {
 
     virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) override;
     virtual void EndTextNew() override;
-    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) override;
+    virtual void DrawTextNew(const Recti &srcRect, const Recti &dstRect, bool isShadow, Color color) override;
 
     virtual void DrawOutdoorBuildings() override;
 

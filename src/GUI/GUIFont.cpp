@@ -219,14 +219,11 @@ Color GUIFont::DrawTextLine(std::string_view text, Color startColor, Color defau
                 x += _font.metrics(c).leftSpacing;
 
             Recti cell = _layout[static_cast<uint8_t>(c)];
-            Sizei atlasSize = _layout.geometry().size();
-            float u1 = static_cast<float>(cell.x) / atlasSize.w;
-            float u2 = static_cast<float>(cell.x + _font.metrics(c).width) / atlasSize.w;
-            float v1 = static_cast<float>(cell.y) / atlasSize.h;
-            float v2 = static_cast<float>(cell.y + _font.height()) / atlasSize.h;
+            Recti srcRect(cell.x, cell.y, charWidth, _font.height());
+            Recti dstRect(x, position.y, charWidth, _font.height());
 
-            render->DrawTextNew(x, position.y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 1, colorTable.Black);
-            render->DrawTextNew(x, position.y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 0, color);
+            render->DrawTextNew(srcRect, dstRect, true, colorTable.Black);
+            render->DrawTextNew(srcRect, dstRect, false, color);
 
             x += charWidth;
             if (i < len - 1)
@@ -459,14 +456,11 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
             }
 
             Recti cell = _layout[c];
-            Sizei atlasSize = _layout.geometry().size();
-            float u1 = static_cast<float>(cell.x) / atlasSize.w;
-            float u2 = static_cast<float>(cell.x + _font.metrics(c).width) / atlasSize.w;
-            float v1 = static_cast<float>(cell.y) / atlasSize.h;
-            float v2 = static_cast<float>(cell.y + _font.height()) / atlasSize.h;
+            Recti srcRect(cell.x, cell.y, _font.metrics(c).width, _font.height());
+            Recti dstRect(out_x, out_y, _font.metrics(c).width, _font.height());
 
-            render->DrawTextNew(out_x, out_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 1, shadowColor);
-            render->DrawTextNew(out_x, out_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 0, draw_color);
+            render->DrawTextNew(srcRect, dstRect, true, shadowColor);
+            render->DrawTextNew(srcRect, dstRect, false, draw_color);
 
             out_x += _font.metrics(c).width;
             if (i < len - 1) {

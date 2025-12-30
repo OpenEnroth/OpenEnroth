@@ -2077,14 +2077,8 @@ void OpenGLRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
     }
 
     texmain = main->renderId().value();
-
     texshadow = shadow->renderId().value();
-
-    // set up buffers
-    // set up counts
-    // set up textures
-
-    return;
+    _textAtlasSize = main->size();
 }
 
 void OpenGLRenderer::EndTextNew() {
@@ -2137,52 +2131,52 @@ void OpenGLRenderer::EndTextNew() {
     return;
 }
 
-void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) {
-    Colorf cf = colour.toColorf();
+void OpenGLRenderer::DrawTextNew(const Recti &srcRect, const Recti &dstRect, bool isShadow, Color color) {
+    Colorf cf = color.toColorf();
     // not 100% sure why this is required but it is
     if (cf.r == 0.0f)
         cf.r = 0.00392f;
 
-    int z = x + width;
-    int w = y + h;
-
     // check bounds
-    if (x >= outputRender.w || y >= outputRender.h)
+    if (dstRect.x >= outputRender.w || dstRect.y >= outputRender.h)
         return;
 
     // check for overlap
-    if (!Recti(x, y, width, h).intersects(this->clipRect)) return;
+    if (!dstRect.intersects(this->clipRect))
+        return;
 
-    float drawx = static_cast<float>(x);
-    float drawy = static_cast<float>(y);
-    float draww = static_cast<float>(w);
-    float drawz = static_cast<float>(z);
+    float drawx = static_cast<float>(dstRect.x);
+    float drawy = static_cast<float>(dstRect.y);
+    float drawz = static_cast<float>(dstRect.x + dstRect.w);
+    float draww = static_cast<float>(dstRect.y + dstRect.h);
 
-    float texx = u1;
-    float texy = v1;
-    float texz = u2;
-    float texw = v2;
+    float texx = static_cast<float>(srcRect.x) / _textAtlasSize.w;
+    float texy = static_cast<float>(srcRect.y) / _textAtlasSize.h;
+    float texz = static_cast<float>(srcRect.x + srcRect.w) / _textAtlasSize.w;
+    float texw = static_cast<float>(srcRect.y + srcRect.h) / _textAtlasSize.h;
+
+    int texid = isShadow ? 1 : 0;
 
     // Triangle 1: top-left, top-right, bottom-right
     TwoDVertex &vert0 = _textVertices.emplace_back();
     vert0.pos = Vec3f(drawx, drawy, 0);
     vert0.texuv = Vec2f(texx, texy);
     vert0.color = cf;
-    vert0.texid = isshadow;
+    vert0.texid = texid;
     vert0.paletteid = 0;
 
     TwoDVertex &vert1 = _textVertices.emplace_back();
     vert1.pos = Vec3f(drawz, drawy, 0);
     vert1.texuv = Vec2f(texz, texy);
     vert1.color = cf;
-    vert1.texid = isshadow;
+    vert1.texid = texid;
     vert1.paletteid = 0;
 
     TwoDVertex &vert2 = _textVertices.emplace_back();
     vert2.pos = Vec3f(drawz, draww, 0);
     vert2.texuv = Vec2f(texz, texw);
     vert2.color = cf;
-    vert2.texid = isshadow;
+    vert2.texid = texid;
     vert2.paletteid = 0;
 
     // Triangle 2: top-left, bottom-right, bottom-left
@@ -2190,21 +2184,21 @@ void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float
     vert3.pos = Vec3f(drawx, drawy, 0);
     vert3.texuv = Vec2f(texx, texy);
     vert3.color = cf;
-    vert3.texid = isshadow;
+    vert3.texid = texid;
     vert3.paletteid = 0;
 
     TwoDVertex &vert4 = _textVertices.emplace_back();
     vert4.pos = Vec3f(drawz, draww, 0);
     vert4.texuv = Vec2f(texz, texw);
     vert4.color = cf;
-    vert4.texid = isshadow;
+    vert4.texid = texid;
     vert4.paletteid = 0;
 
     TwoDVertex &vert5 = _textVertices.emplace_back();
     vert5.pos = Vec3f(drawx, draww, 0);
     vert5.texuv = Vec2f(texx, texw);
     vert5.color = cf;
-    vert5.texid = isshadow;
+    vert5.texid = texid;
     vert5.paletteid = 0;
 }
 

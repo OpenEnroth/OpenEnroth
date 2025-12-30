@@ -63,7 +63,7 @@ void NullRenderer::BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImag
 
 void NullRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {}
 void NullRenderer::EndTextNew() {}
-void NullRenderer::DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) {}
+void NullRenderer::DrawTextNew(const Recti &srcRect, const Recti &dstRect, bool isShadow, Color color) {}
 
 void NullRenderer::DrawOutdoorBuildings() {}
 
