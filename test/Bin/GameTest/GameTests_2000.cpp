@@ -765,3 +765,39 @@ GAME_TEST(Issues, Issue2317) {
     EXPECT_LT(chestItemsTape.delta(), 0);
     EXPECT_GT(partyItemsTape.delta(), 0);
 }
+
+GAME_TEST(Issues, Issue2318) {
+    // Error message in party creation persists when leaving and re-entering the menu.
+    test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL); // 10ms per frame, so that the timers won't expire.
+    auto messagesTape = tapes.messageBoxes();
+
+    game.goToMainMenu();
+    test.startTaping();
+
+    // Enter party creation.
+    game.pressGuiButton("MainMenu_NewGame");
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_PARTY_CREATION);
+
+    // Uncheck a couple skills.
+    game.pressGuiButton("PartyCreation_RemoveSkill3_0");
+    game.tick();
+    game.pressGuiButton("PartyCreation_RemoveSkill4_0");
+    game.tick();
+
+    // Click OK without proper skills - this should trigger an error message.
+    game.pressGuiButton("PartyCreation_OK");
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_PARTY_CREATION); // Nah, still in party creation.
+    ASSERT_FALSE(messagesTape.back().empty());
+    EXPECT_CONTAINS(messagesTape.back().front(), "Create Party cannot be completed"); // Error message appeared.
+
+    // Leave & re-enter party creation.
+    game.goToMainMenu();
+    game.pressGuiButton("MainMenu_NewGame");
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_PARTY_CREATION);
+    EXPECT_TRUE(messagesTape.back().empty()); // No error messages.
+    game.tick(1);
+    EXPECT_TRUE(messagesTape.back().empty()); // Still no error messages.
+}

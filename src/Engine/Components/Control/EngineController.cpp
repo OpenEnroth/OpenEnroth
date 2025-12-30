@@ -371,7 +371,7 @@ void EngineController::goToGameOrMainMenu() {
     }
 
     // Leave to game screen if we're in the game, or to main menu if we're in menus.
-    while (current_screen_type != SCREEN_GAME && GetCurrentMenuID() != MENU_MAIN) {
+    while (current_screen_type != SCREEN_GAME || (GetCurrentMenuID() != MENU_MAIN && GetCurrentMenuID() != MENU_NONE)) {
         pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         ticker.tick(2); // Somehow tick(1) is not enough when we're trying to leave the game loading menu.
     }
