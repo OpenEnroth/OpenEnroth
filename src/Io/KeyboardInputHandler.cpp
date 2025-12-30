@@ -58,27 +58,7 @@ static bool PartyMove(PartyAction direction) {
 }
 
 
-void Io::KeyboardInputHandler::GeneratePausedActions() {
-    for (auto action : allInputActions()) {
-        bool isTriggered = false;
-        for (PlatformKey key : {actionMapping->keyFor(action), actionMapping->gamepadKeyFor(action)}) {
-            if (triggerModeForInputAction(action) == TRIGGER_ONCE)
-                isTriggered = controller->isKeyPressedThisFrame(key);
-            else
-                isTriggered = controller->isKeyDownThisFrame(key);
-
-            if (isTriggered) {
-                break;
-            }
-        }
-
-        if (isTriggered)
-            ProcessPausedAction(action);
-    }
-}
-
-void Io::KeyboardInputHandler::GenerateGameplayActions() {
-    // delay press timer
+void Io::KeyboardInputHandler::GenerateActions(bool isPaused) {
     bool resettimer = true;
     for (InputAction action : allInputActions()) {
         bool isTriggered = false;
@@ -92,16 +72,13 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                 isTriggered = controller->isKeyDownThisFrame(key);
                 break;
             case TRIGGER_WITH_KEYREPEAT:
-                // TODO(captainurist): This logic breaks down if we press & release a key every frame.
-                //                     Better way to implement this would be to generate the input actions from inside
-                //                     the event handler.
                 if (controller->isKeyDownThisFrame(key)) {
                     if (controller->isKeyPressedThisFrame(key)) {
                         isTriggered = true;
                     } else {
                         resettimer = false;
                     }
-                    // big delay after first press then small delay
+                    // Big delay after first press, then small delay for repeat.
                     if (this->keydelaytimer >= DELAY_TOGGLE_TIME_FIRST) {
                         isTriggered = true;
                         this->keydelaytimer -= DELAY_TOGGLE_TIME_PERIOD;
@@ -115,15 +92,19 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             }
         }
 
-        if (isTriggered)
-            ProcessGameplayAction(action);
+        if (isTriggered) {
+            if (isPaused)
+                ProcessPausedAction(action);
+            else
+                ProcessGameplayAction(action);
+        }
     }
 
     if (resettimer) {
         this->keydelaytimer = pEventTimer->dt();
     } else {
-        // use timer so pacing is consistent across framerates
-        if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) this->keydelaytimer += pEventTimer->dt();
+        if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST)
+            this->keydelaytimer += pEventTimer->dt();
     }
 }
 
@@ -386,11 +367,7 @@ void Io::KeyboardInputHandler::GenerateInputActions() {
         }
     }
 
-    if (pEventTimer->isPaused()) {
-        GeneratePausedActions();
-    } else {
-        GenerateGameplayActions();
-    }
+    GenerateActions(pEventTimer->isPaused());
 }
 
 //----- (00459E5A) --------------------------------------------------------

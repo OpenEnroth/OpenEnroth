@@ -12,6 +12,7 @@
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIChest.h"
 #include "Io/Mouse.h"
 
 void prepareForBattleTest() {
@@ -717,4 +718,50 @@ GAME_TEST(Issues, Issue2298) {
 
     EXPECT_EQ(pickedItemTape, tape(ITEM_NULL, ITEM_LEATHER_ARMOR, ITEM_NULL));
     EXPECT_EQ(mouseCursorTape, tape("micon1", "item066", "micon1"));
+}
+
+// 2300
+
+GAME_TEST(Issues, Issue2317) {
+    // Opening a chest with spacebar insta-collects several items from the chest.
+    // The bug was that key repeat in paused mode triggered every frame while the key was held,
+    // causing multiple item pickups when spacebar was used to open a chest.
+    test.prepareForNextTest(30, RANDOM_ENGINE_SEQUENTIAL);
+
+    auto screenTape = tapes.screen();
+    auto partyItemsTape = tapes.totalItemCount();
+    auto chestItemsTape = tapes.custom([] {
+        int result = 0;
+        for (const Chest &chest : vChests)
+            result += chest.inventory.size();
+        return result;
+    });
+    auto chestIdTape = tapes.custom([] { return current_screen_type == SCREEN_CHEST ? pGUIWindow_CurrentChest->chestId() : -1; });
+
+    game.startNewGame();
+    test.startTaping();
+
+    // Move next to a chest.
+    pParty->pos = Vec3f(8600, 5200, 1);
+    game.tick();
+
+    // Press spacebar and HOLD it for several frames to simulate the bug condition.
+    // The keyrepeat delay is 500ms. At 30ms/frame, holding for 10 frames (300ms)
+    // should NOT trigger any item pickups - only the chest should open.
+    // Before the fix, items would be picked up immediately.
+    game.pressKey(PlatformKey::KEY_SPACE);
+    game.tick(10);
+
+    // Verify chest opened but no items were auto-grabbed.
+    ASSERT_EQ(chestIdTape.size(), 2);
+    EXPECT_EQ(screenTape.back(), SCREEN_CHEST);
+    EXPECT_GT(vChests[chestIdTape.back()].inventory.size(), 0); // Chest had items.
+    EXPECT_EQ(chestItemsTape.delta(), 0); // Chest items unchanged.
+    EXPECT_EQ(partyItemsTape.delta(), 0); // Party items unchanged.
+
+    // Now check that keyrepeat actually works.
+    // We wait for another 450ms, so keyrepeat should now kick in.
+    game.tick(15);
+    EXPECT_LT(chestItemsTape.delta(), 0);
+    EXPECT_GT(partyItemsTape.delta(), 0);
 }
