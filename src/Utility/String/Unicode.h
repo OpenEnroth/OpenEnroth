@@ -25,7 +25,7 @@ std::string wideToUtf8(std::wstring_view wstr);
  * @param str                           UTF-8 string to convert.
  * @return                              Wide string.
  */
-std::wstring utf8toWide(std::string_view str);
+std::wstring utf8ToWide(std::string_view str);
 
 
 } // namespace unicode

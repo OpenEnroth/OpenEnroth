@@ -19,7 +19,7 @@ std::string unicode::wideToUtf8(std::wstring_view wstr) {
     }
 }
 
-std::wstring unicode::utf8toWide(std::string_view str) {
+std::wstring unicode::utf8ToWide(std::string_view str) {
     // Use span to ensure proper boundary handling with ztd::text.
     std::span<const char> input(str.data(), str.size());
     if constexpr (sizeof(wchar_t) == 2) {
