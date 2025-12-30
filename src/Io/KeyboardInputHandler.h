@@ -55,8 +55,7 @@ class KeyboardInputHandler {
     void SetTextInput(std::string_view text);
 
  private:
-    void GeneratePausedActions();
-    void GenerateGameplayActions();
+    void GenerateActions(bool isPaused);
     void ProcessPausedAction(InputAction action);
     void ProcessGameplayAction(InputAction action);
 
