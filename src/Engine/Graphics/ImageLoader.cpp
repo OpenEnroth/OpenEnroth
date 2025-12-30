@@ -7,6 +7,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Graphics/AtlasLayout.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/TileGenerator.h"
@@ -134,7 +135,8 @@ bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
     // This used to be done on draw, we're just generating a texture atlas. Alternative is to do this in-shader,
     // but generating an atlas is easier to do.
 
-    RgbaImage result = RgbaImage::uninitialized(tex->image.width() * 16, tex->image.height() * 8);
+    AtlasLayout layout({16, 8}, tex->image.size());
+    RgbaImage result = RgbaImage::uninitialized(layout.geometry().size());
 
     for (int i = 0; i < 126; i++) {
         Palette palette;
@@ -146,11 +148,10 @@ bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
             palette.colors[index] = tex->palette.colors[remap];
         }
 
-        int dx = (i % 16) * tex->image.width();
-        int dy = (i / 16) * tex->image.height();
-        for (int y = 0, maxy = tex->image.height(); y < maxy; y++)
-            for (int x = 0, maxx = tex->image.width(); x < maxx; x++)
-                result[y + dy][x + dx] = palette.colors[tex->image[y][x]];
+        Recti cell = layout[i];
+        for (int y = 0; y < cell.h; y++)
+            for (int x = 0; x < cell.w; x++)
+                result[y + cell.y][x + cell.x] = palette.colors[tex->image[y][x]];
     }
 
     *rgbaImage = std::move(result);

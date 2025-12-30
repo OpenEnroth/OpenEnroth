@@ -18,6 +18,7 @@
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/AtlasLayout.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
@@ -62,21 +63,21 @@ extern const int pHealthManaBarYPos = 402;
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX = {{489, 559}};
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY = {{152, 152}};
 
-std::array<std::array<int, 2>, 14> pPartySpellbuffsUI_XYs = {{
-    {{477, 247}},
-    {{497, 247}},
-    {{522, 247}},
-    {{542, 247}},
-    {{564, 247}},
-    {{581, 247}},
-    {{614, 247}},
-    {{477, 279}},
-    {{497, 279}},
-    {{522, 279}},
-    {{542, 279}},
-    {{564, 279}},
-    {{589, 279}},
-    {{612, 279}}
+std::array<Pointi, 14> pPartySpellbuffsUI_XYs = {{
+    {477, 247},
+    {497, 247},
+    {522, 247},
+    {542, 247},
+    {564, 247},
+    {581, 247},
+    {614, 247},
+    {477, 279},
+    {497, 279},
+    {522, 279},
+    {542, 279},
+    {564, 279},
+    {589, 279},
+    {612, 279}
 }};
 
 std::array<uint8_t, 14> pPartySpellbuffsUI_smthns = {
@@ -1215,19 +1216,10 @@ void GameUI_DrawCharacterSelectionFrame() {
 void GameUI_DrawPartySpells() {
     for (int i = 0; i < spellBuffsAtRightPanel.size(); ++i) {
         if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
-            int time = (pMiscTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]) % 126;
-
-            Recti rect;
-            rect.w = party_buff_icons[i]->width() / 16;
-            rect.h = party_buff_icons[i]->height() / 8;
-            rect.x = time % 16 * rect.w;
-            rect.y = time / 16 * rect.h;
-
-            Pointi point;
-            point.x = pPartySpellbuffsUI_XYs[i][0];
-            point.y = pPartySpellbuffsUI_XYs[i][1];
-
-            render->DrawQuad2D(party_buff_icons[i], rect, point);
+            GraphicsImage *icon = party_buff_icons[i];
+            AtlasLayout layout({16, 8}, {icon->width() / 16, icon->height() / 8});
+            int frame = (pMiscTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]) % 126;
+            render->DrawQuad2D(icon, layout[frame], pPartySpellbuffsUI_XYs[i]);
         }
     }
 

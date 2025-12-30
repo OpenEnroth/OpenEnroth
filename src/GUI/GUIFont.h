@@ -3,6 +3,8 @@
 #include <string>
 #include <memory>
 
+#include "Engine/Graphics/AtlasLayout.h"
+
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Point.h"
 #include "Library/LodFormats/LodFont.h"
@@ -105,6 +107,7 @@ class GUIFont {
 
  private:
     LodFont _font;
+    AtlasLayout _layout;
     GraphicsImage *_mainTexture = nullptr;
     GraphicsImage *_shadowTexture = nullptr;
 };
