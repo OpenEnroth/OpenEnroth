@@ -569,6 +569,7 @@ void GUIWindow_PartyCreation::Update() {
 GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     GUIWindow(WINDOW_CharacterCreation, {0, 0}, render->GetRenderDimensions()) {
     engine->_messageQueue->clear();
+    errorMessageExpireTime = Duration(); // Clear any lingering error popup from previous session.
 
     main_menu_background = assets->getImage_PCXFromIconsLOD("makeme.pcx");
 
@@ -639,8 +640,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     for (int characterIndex = 0 ; characterIndex < 4; characterIndex++) {
         CreateButton({uX, 308}, {150, v0}, 1, 0, UIMSG_48, characterIndex);
         CreateButton({uX, v0 + 308}, {150, v0}, 1, 0, UIMSG_49, characterIndex);
-        CreateButton({uX, 2 * v0 + 308}, {150, v0}, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, characterIndex);
-        CreateButton({uX, 3 * v0 + 308}, {150, v0}, 1, 0, UIMSG_PlayerCreationRemoveDownSkill, characterIndex);
+        CreateButton(fmt::format("PartyCreation_RemoveSkill3_{}", characterIndex), {uX, 2 * v0 + 308}, {150, v0}, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, characterIndex);
+        CreateButton(fmt::format("PartyCreation_RemoveSkill4_{}", characterIndex), {uX, 3 * v0 + 308}, {150, v0}, 1, 0, UIMSG_PlayerCreationRemoveDownSkill, characterIndex);
         uX += 158;
     }
 
