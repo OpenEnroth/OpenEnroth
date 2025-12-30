@@ -5,7 +5,7 @@
 #include "Utility/String/Unicode.h"
 
 UNIT_TEST(Unicode, InvalidUtf8) {
-    EXPECT_EQ(unicode::utf8toWide("\xc3\x28"), L"\xfffd(");
+    EXPECT_EQ(unicode::utf8ToWide("\xc3\x28"), L"\xfffd(");
 }
 
 UNIT_TEST(Unicode, InvalidUtf16) {
@@ -16,7 +16,7 @@ UNIT_TEST(Unicode, InvalidUtf16) {
 }
 
 UNIT_TEST(Unicode, Empty) {
-    EXPECT_EQ(unicode::utf8toWide(""), L"");
+    EXPECT_EQ(unicode::utf8ToWide(""), L"");
     EXPECT_EQ(unicode::wideToUtf8(L""), "");
 }
 
@@ -25,7 +25,7 @@ UNIT_TEST(Unicode, Substring) {
     // This catches issues where the transcoding might read past the substring boundaries.
     std::string fullString = "Hello, World!";
     std::string_view substring = std::string_view(fullString).substr(0, 5);  // "Hello"
-    EXPECT_EQ(unicode::utf8toWide(substring), L"Hello");
+    EXPECT_EQ(unicode::utf8ToWide(substring), L"Hello");
 
     std::wstring fullWideString = L"Hello, World!";
     std::wstring_view wideSubstring = std::wstring_view(fullWideString).substr(0, 5);  // L"Hello"

@@ -81,7 +81,7 @@ static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *pat
 }
 
 std::string WinEnvironment::queryRegistry(const std::string &path) const {
-    return unicode::wideToUtf8(OS_GetAppStringRecursive(NULL, unicode::wideToUtf16(path).c_str(), 0));
+    return unicode::wideToUtf8(OS_GetAppStringRecursive(NULL, unicode::utf8ToWide(path).c_str(), 0));
 }
 
 std::string WinEnvironment::path(EnvironmentPath path) const {
@@ -105,14 +105,14 @@ std::string WinEnvironment::path(EnvironmentPath path) const {
 }
 
 std::string WinEnvironment::getenv(const std::string &key) const {
-    const wchar_t *result = _wgetenv(unicode::wideToUtf16(key).c_str());
+    const wchar_t *result = _wgetenv(unicode::utf8ToWide(key).c_str());
     if (result)
         return unicode::wideToUtf8(result);
     return {};
 }
 
 void WinEnvironment::setenv(const std::string &key, const std::string &value) const {
-    _wputenv_s(unicode::wideToUtf16(key).c_str(), unicode::wideToUtf16(value).c_str()); // Errors are ignored.
+    _wputenv_s(unicode::utf8ToWide(key).c_str(), unicode::utf8ToWide(value).c_str()); // Errors are ignored.
 }
 
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {
