@@ -177,7 +177,7 @@ var searchData=
   ['drawtextinrect_174',['DrawTextInRect',['../classGUIFont.html#af397110a985be639833bc82bc18f82f4',1,'GUIFont::DrawTextInRect()'],['../classGUIWindow.html#ab52b7194b0adfd236e10170a7e4819a9',1,'GUIWindow::DrawTextInRect()']]],
   ['drawtextline_175',['DrawTextLine',['../classGUIFont.html#a2b1e81b9a962363771d1d9a52f28aa2c',1,'GUIFont']]],
   ['drawtextlinetobuff_176',['DrawTextLineToBuff',['../classGUIFont.html#aba4dcd19e44989397ffa5e5aabc5839c',1,'GUIFont']]],
-  ['drawtextnew_177',['DrawTextNew',['../classNullRenderer.html#a65651e44b39ec5a067688c1b0401e5a3',1,'NullRenderer::DrawTextNew()'],['../classOpenGLRenderer.html#a482430013f47be518af99d60c245945b',1,'OpenGLRenderer::DrawTextNew()'],['../classRenderer.html#a8529630ebddddb4fb22853ccce10ffc9',1,'Renderer::DrawTextNew()']]],
+  ['drawtextnew_177',['DrawTextNew',['../classNullRenderer.html#a3fbfde9648f7e422c9da93774d419f4e',1,'NullRenderer::DrawTextNew()'],['../classOpenGLRenderer.html#abad2aecd0619af0244e3575734d18dce',1,'OpenGLRenderer::DrawTextNew()'],['../classRenderer.html#a9efe809f1b3c55e81599cd9fd92138e3',1,'Renderer::DrawTextNew()']]],
   ['drawtitletext_178',['DrawTitleText',['../classGUIWindow.html#a985394e6abcfd35a3d2db3c093a8377b',1,'GUIWindow']]],
   ['drawtwodverts_179',['DrawTwodVerts',['../classNullRenderer.html#af834aeffc5610ce4d9b2a283bf5df135',1,'NullRenderer::DrawTwodVerts()'],['../classOpenGLRenderer.html#aaad4c7dcca97b5ca6a5fc05a43bb234b',1,'OpenGLRenderer::DrawTwodVerts()'],['../classRenderer.html#ae879e1e244a797c8f0da65482e6c53f1',1,'Renderer::DrawTwodVerts()']]],
   ['drawworld_180',['drawWorld',['../classEngine.html#a01f2f47484993e77f2787b8fd1d989f9',1,'Engine']]],

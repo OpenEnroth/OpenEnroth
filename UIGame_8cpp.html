@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2b6c607</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e3ae02f</span>
    </div>
   </td>
  </tr>
@@ -97,6 +97,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Objects/Decoration.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Outdoor_8h.html">Engine/Graphics/Outdoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AtlasLayout_8h.html">Engine/Graphics/AtlasLayout.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Renderer_8h.html">Engine/Graphics/Renderer/Renderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Sprites_8h.html">Engine/Graphics/Sprites.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Viewport_8h.html">Engine/Graphics/Viewport.h</a>&quot;</code><br />
@@ -194,8 +195,8 @@ Variables</h2></td></tr>
 <tr class="separator:a515c4d8d435b979a19ccfcd1a06c807a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44c42557b24f3ea430144f465906873f"><td class="memItemLeft" align="right" valign="top">std::array&lt; unsigned int, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a44c42557b24f3ea430144f465906873f">pHiredNPCsIconsOffsetsY</a> = {{152, 152}}</td></tr>
 <tr class="separator:a44c42557b24f3ea430144f465906873f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c53cb5ec1c444f03260028ac21df72a"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::array&lt; int, 2 &gt;, 14 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a9c53cb5ec1c444f03260028ac21df72a">pPartySpellbuffsUI_XYs</a></td></tr>
-<tr class="separator:a9c53cb5ec1c444f03260028ac21df72a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6aee28431935c2b6659eb9fd100d0e2"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>, 14 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#ac6aee28431935c2b6659eb9fd100d0e2">pPartySpellbuffsUI_XYs</a></td></tr>
+<tr class="separator:ac6aee28431935c2b6659eb9fd100d0e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60b4dc613aacfb8ea52fecc2e6a39069"><td class="memItemLeft" align="right" valign="top">std::array&lt; uint8_t, 14 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a60b4dc613aacfb8ea52fecc2e6a39069">pPartySpellbuffsUI_smthns</a></td></tr>
 <tr class="separator:a60b4dc613aacfb8ea52fecc2e6a39069"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78cb0cc31e1f4396624b3ccbd06e11ce"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="PartyEnums_8h.html#ac5d5059fad462cad214d66803c3f61cf">PartyBuff</a>, 14 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a78cb0cc31e1f4396624b3ccbd06e11ce">spellBuffsAtRightPanel</a></td></tr>
@@ -1882,32 +1883,32 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a9c53cb5ec1c444f03260028ac21df72a" name="a9c53cb5ec1c444f03260028ac21df72a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c53cb5ec1c444f03260028ac21df72a">&#9670;&#160;</a></span>pPartySpellbuffsUI_XYs</h2>
+<a id="ac6aee28431935c2b6659eb9fd100d0e2" name="ac6aee28431935c2b6659eb9fd100d0e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6aee28431935c2b6659eb9fd100d0e2">&#9670;&#160;</a></span>pPartySpellbuffsUI_XYs</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;std::array&lt;int, 2&gt;, 14&gt; pPartySpellbuffsUI_XYs</td>
+          <td class="memname">std::array&lt;<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>, 14&gt; pPartySpellbuffsUI_XYs</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
-<div class="line">    {{477, 247}},</div>
-<div class="line">    {{497, 247}},</div>
-<div class="line">    {{522, 247}},</div>
-<div class="line">    {{542, 247}},</div>
-<div class="line">    {{564, 247}},</div>
-<div class="line">    {{581, 247}},</div>
-<div class="line">    {{614, 247}},</div>
-<div class="line">    {{477, 279}},</div>
-<div class="line">    {{497, 279}},</div>
-<div class="line">    {{522, 279}},</div>
-<div class="line">    {{542, 279}},</div>
-<div class="line">    {{564, 279}},</div>
-<div class="line">    {{589, 279}},</div>
-<div class="line">    {{612, 279}}</div>
+<div class="line">    {477, 247},</div>
+<div class="line">    {497, 247},</div>
+<div class="line">    {522, 247},</div>
+<div class="line">    {542, 247},</div>
+<div class="line">    {564, 247},</div>
+<div class="line">    {581, 247},</div>
+<div class="line">    {614, 247},</div>
+<div class="line">    {477, 279},</div>
+<div class="line">    {497, 279},</div>
+<div class="line">    {522, 279},</div>
+<div class="line">    {542, 279},</div>
+<div class="line">    {564, 279},</div>
+<div class="line">    {589, 279},</div>
+<div class="line">    {612, 279}</div>
 <div class="line">}}</div>
 </div><!-- fragment -->
 </div>
