@@ -1399,7 +1399,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
             // TODO(pskelton): could stretch texture rather than rescale
             assert(rect.w == 137 && rect.h == 117);
 
-            RgbaImage minimapImage = RgbaImage::solid(rect.w, rect.h, Color());
+            RgbaImage minimapImage = RgbaImage::solid(Color(), rect.size());
             int step16 = (1 << 16) * imageWidth / zoom;
             for (int dstY = 0, srcY16 = starty16; dstY < rect.h; ++dstY, srcY16 += step16) {
                 std::span<Color> dstLine = minimapImage[dstY];

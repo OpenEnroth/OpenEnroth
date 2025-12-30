@@ -17,7 +17,7 @@ bool NullRenderer::Reinitialize(bool firstInit) {
 }
 
 RgbaImage NullRenderer::ReadScreenPixels() {
-    return RgbaImage::solid(640, 480, Color());
+    return RgbaImage::solid(Color(), 640, 480);
 }
 
 void NullRenderer::ClearTarget(Color uColor) {}
@@ -72,11 +72,11 @@ void NullRenderer::DrawOutdoorSky() {}
 void NullRenderer::DrawOutdoorTerrain() {}
 
 RgbaImage NullRenderer::MakeViewportScreenshot(const int width, const int height) {
-    return RgbaImage::solid(width, height, Color());
+    return RgbaImage::solid(Color(), width, height);
 }
 
 RgbaImage NullRenderer::MakeFullScreenshot() {
-    return RgbaImage::solid(640, 480, Color());
+    return RgbaImage::solid(Color(), 640, 480);
 }
 
 void NullRenderer::BeginDecals() {}

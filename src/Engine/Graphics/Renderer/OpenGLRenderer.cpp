@@ -575,9 +575,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
         const RgbaImage &itemImage = imgin->rgba();
         const RgbaImage &maskImage = imgblend->rgba();
 
-        int w = imgin->width();
-        int h = imgin->height();
-        RgbaImage dstImage = RgbaImage::solid(w, h, Color());
+        RgbaImage dstImage = RgbaImage::solid(Color(), imgin->size());
 
         Color c = maskImage.pixels()[2700];  // guess at brightest pixel
         unsigned int rmax = c.r;
@@ -592,6 +590,8 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
         unsigned int gstep = (gmax - gmin) / 128;
         unsigned int rstep = (rmax - rmin) / 128;
 
+        int w = imgin->width();
+        int h = imgin->height();
         for (int ydraw = 0; ydraw < h; ++ydraw) {
             for (int xdraw = 0; xdraw < w; ++xdraw) {
                 // should go blue -> black -> blue reverse
@@ -789,7 +789,7 @@ RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int heig
     float interval_x = static_cast<float>(pViewport.w) / width;
     float interval_y = static_cast<float>(pViewport.h) / height;
 
-    RgbaImage pPixels = RgbaImage::solid(width, height, Color());
+    RgbaImage pPixels = RgbaImage::solid(Color(), width, height);
 
     if (uCurrentlyLoadedLevelType != LEVEL_NULL) {
         for (int y = 0; y < height; ++y) {

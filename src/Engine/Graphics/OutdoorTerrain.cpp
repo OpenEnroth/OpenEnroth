@@ -11,10 +11,10 @@
 
 OutdoorTerrain::OutdoorTerrain() {
     // Map is 127x127 squares.
-    _heightMap = Image<uint8_t>::solid(128, 128, 0);
-    _tileMap = Image<int16_t>::solid(127, 127, 0);
-    _originalTileMap = Image<int16_t>::solid(127, 127, 0);
-    _normalMap = Image<std::array<Vec3f, 2>>::solid(127, 127, {Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
+    _heightMap = Image<uint8_t>::solid(0, 128, 128);
+    _tileMap = Image<int16_t>::solid(0, 127, 127);
+    _originalTileMap = Image<int16_t>::solid(0, 127, 127);
+    _normalMap = Image<std::array<Vec3f, 2>>::solid({Vec3f(0, 0, 1), Vec3f(0, 0, 1)}, 127, 127);
 }
 
 void OutdoorTerrain::createDebugTerrain() {
@@ -44,7 +44,7 @@ void OutdoorTerrain::changeSeason(int month) {
 }
 
 float OutdoorTerrain::heightByGrid(Pointi gridPos) const {
-    if (!_heightMap.rect().contains(gridPos))
+    if (!_heightMap.geometry().contains(gridPos))
         return 0;
 
     return 32 * _heightMap[gridPos];
@@ -90,7 +90,7 @@ float OutdoorTerrain::heightByPos(const Vec3f &pos) const {
 }
 
 int OutdoorTerrain::tileIdByGrid(Pointi gridPos) const {
-    if (!_tileMap.rect().contains(gridPos))
+    if (!_tileMap.geometry().contains(gridPos))
         return 0;
 
     return _tileMap[gridPos];
@@ -101,7 +101,7 @@ const TileData &OutdoorTerrain::tileDataByGrid(Pointi gridPos) const {
 }
 
 Tileset OutdoorTerrain::tilesetByGrid(Pointi gridPos) const {
-    if (!_tileMap.rect().contains(gridPos))
+    if (!_tileMap.geometry().contains(gridPos))
         return TILESET_INVALID;
 
     return pTileTable->tile(_tileMap[gridPos]).tileset;
@@ -125,7 +125,7 @@ bool OutdoorTerrain::isWaterOrShoreByGrid(Pointi gridPos) const {
 
 Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     Pointi gridPos = worldToGrid(pos);
-    if (!_normalMap.rect().contains(gridPos))
+    if (!_normalMap.geometry().contains(gridPos))
         return Vec3f(0, 0, 1);
 
     Vec2i o = gridToWorld(gridPos);

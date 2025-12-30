@@ -43,8 +43,8 @@ std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile) {
 void GUIFont::CreateFontTex() {
     ReleaseFontTex();
     // create blank textures
-    RgbaImage main = RgbaImage::solid(512, 512, Color(0, 0, 0, 0));
-    RgbaImage shadow = RgbaImage::solid(512, 512, Color(0, 0, 0, 0));
+    RgbaImage main = RgbaImage::solid(Color(), 512, 512);
+    RgbaImage shadow = RgbaImage::solid(Color(), 512, 512);
     Color *pPixelsfont = main.pixels().data();
     Color *pPixelsshadow = shadow.pixels().data();
 

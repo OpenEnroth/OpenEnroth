@@ -283,7 +283,7 @@ bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage) {
     size_t w = pSprite->sprite_header->image.width();
     size_t h = pSprite->sprite_header->image.height();
 
-    *rgbaImage = RgbaImage::solid(w, h, Color());
+    *rgbaImage = RgbaImage::solid(Color(), w, h);
 
     for (size_t y = 0; y < h; y++) {
         for (size_t x = 0; x < w; x++) {
