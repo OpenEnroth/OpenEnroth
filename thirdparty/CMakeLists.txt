@@ -87,3 +87,23 @@ add_subdirectory(lambda2)
 # ztd.text
 set(ZTD_IDK_EXCLUDE_FROM_ALL ON)
 add_subdirectory(ztd_text EXCLUDE_FROM_ALL)
+
+# uchardet
+set(BUILD_BINARY OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+add_subdirectory(uchardet EXCLUDE_FROM_ALL)
+# Disable -Werror flags for uchardet as it has missing override specifiers.
+if(TARGET libuchardet AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(libuchardet PRIVATE -Wno-suggest-override -Wno-inconsistent-missing-override)
+endif()
+# Disable sanitizers for uchardet. Its CMakeLists.txt unconditionally enables ASan in Debug mode via
+# add_compile_options("-fsanitize=address"), and this causes ASan runtime linkage issues on Linux &
+# MacOS, and LNK2038 annotation mismatches (annotate_string / annotate_vector) on Windows.
+if(TARGET libuchardet)
+    get_target_property(_opts libuchardet COMPILE_OPTIONS)
+    list(REMOVE_ITEM _opts "-fsanitize=address")
+    set_target_properties(libuchardet PROPERTIES COMPILE_OPTIONS "${_opts}")
+    get_target_property(_opts libuchardet LINK_OPTIONS)
+    list(REMOVE_ITEM _opts "-fsanitize=address")
+    set_target_properties(libuchardet PROPERTIES LINK_OPTIONS "${_opts}")
+endif()
