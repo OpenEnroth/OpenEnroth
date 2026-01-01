@@ -31,51 +31,30 @@ float Camera3D::GetFarClip() const {
     return engine->config->graphics.ClipFarDistance.value();
 }
 
-// ViewTransformAndClipTest
-bool Camera3D::ViewClip(int x, int y, int z, int *transformed_x,
-                               int *transformed_y, int *transformed_z,
-                               bool dont_show) {
-    this->ViewTransform(x, y, z, transformed_x, transformed_y, transformed_z);
+bool Camera3D::ViewClip(const Vec3f& pos, Vec3f* outPos) const {
+    *outPos = ViewTransform(&pos);
 
-    if (dont_show) {
-        return false;
-    }
-    return *transformed_x >= this->GetNearClip() &&
-           *transformed_x <= this->GetFarClip();
-}
-
-void Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z) {
-    RenderVertexSoft v;
-    v.vWorldPosition.x = x;
-    v.vWorldPosition.y = y;
-    v.vWorldPosition.z = z;
-
-    this->ViewTransform(&v, 1);
-    if (transformed_x)
-        *transformed_x = std::round(v.vWorldViewPosition.x + 0.5f);
-
-    if (transformed_y)
-        *transformed_y = std::round(v.vWorldViewPosition.y + 0.5f);
-
-    if (transformed_z)
-        *transformed_z = std::round(v.vWorldViewPosition.z + 0.5f);
+    return outPos->x >= this->GetNearClip() && outPos->x <= this->GetFarClip();
 }
 
 //----- (00436523) --------------------------------------------------------
-void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
+void Camera3D::ViewTransform(RenderVertexSoft *vertex, int uNumVertices) const {
     for (unsigned i = 0; i < uNumVertices; ++i) {
-        RenderVertexSoft *a1 = &a1a[i];
-
-        double vCamToVertexX = (double)a1->vWorldPosition.x - (double)pCamera3D->vCameraPos.x;
-        double vCamToVertexY = (double)a1->vWorldPosition.y - (double)pCamera3D->vCameraPos.y;
-        double vCamToVertexZ = (double)a1->vWorldPosition.z - (double)pCamera3D->vCameraPos.z;
-
-        glm::vec3 camtovert(vCamToVertexX, vCamToVertexY, vCamToVertexZ);
-        camtovert = camtovert * ViewMatrix;
-        a1->vWorldViewPosition.x = camtovert.x;
-        a1->vWorldViewPosition.y = camtovert.y;
-        a1->vWorldViewPosition.z = camtovert.z;
+        RenderVertexSoft *a1 = &vertex[i];
+        a1->vWorldViewPosition = ViewTransform(&a1->vWorldPosition);
     }
+}
+
+Vec3f Camera3D::ViewTransform(const Vec3f* pos) const {
+    float vCamToVertexX = pos->x - pCamera3D->vCameraPos.x;
+    float vCamToVertexY = pos->y - pCamera3D->vCameraPos.y;
+    float vCamToVertexZ = pos->z - pCamera3D->vCameraPos.z;
+
+    glm::vec3 camtovert(vCamToVertexX, vCamToVertexY, vCamToVertexZ);
+    camtovert = camtovert * ViewMatrix;
+
+    // TODO(pskelton): swap components to match expectation - eg x is depth make it z
+    return Vec3f(camtovert.x, camtovert.y, camtovert.z);
 }
 
 //----- (00436932) --------------------------------------------------------

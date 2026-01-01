@@ -1316,20 +1316,10 @@ int SpellFX_Billboard::SpellFXFarClipAdjust(float farclip) {  // far clip adjust
 }
 
 //----- (00477C61) --------------------------------------------------------
-int SpellFX_Billboard::SpellFXViewTransform() {  // view transform
-    int ViewPosX;
-    int ViewPosY;
-    int ViewPosZ;
-
+int SpellFX_Billboard::SpellFXViewTransform() {
     if (this->uNumVertices > 0) {
         for (int v2 = 0; v2 < this->uNumVertices; ++v2) {
-            // view tranfrom
-            pCamera3D->ViewTransform(field_14[v2].pos.x, field_14[v2].pos.y, field_14[v2].pos.z, &ViewPosX, &ViewPosY, &ViewPosZ);
-
-            // load into field 64
-            field_64[v2].pos.x = ViewPosX;
-            field_64[v2].pos.y = ViewPosY;
-            field_64[v2].pos.z = ViewPosZ;
+            field_64[v2].pos = pCamera3D->ViewTransform(&field_14[v2].pos);
             field_64[v2].diffuse = field_14[v2].diffuse;
         }
     }

@@ -12,11 +12,10 @@ struct ODMFace;
 struct BLVFace;
 
 struct Camera3D {
-    void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);
-    void ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices);
+    Vec3f ViewTransform(const Vec3f* pos) const;
+    void ViewTransform(RenderVertexSoft *vertex, int uNumVertices) const;
 
-    bool ViewClip(int x, int y, int z, int *transformed_x, int *transformed_y,
-                  int *transformed_z, bool dont_show = false);
+    bool ViewClip(const Vec3f& pos, Vec3f* outPos) const;
 
     void Project(int x, int y, int z, int *screenspace_x, int *screenspace_y);
     void Project(RenderVertexSoft *pVertices, unsigned int uNumVertices,

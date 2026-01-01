@@ -199,39 +199,18 @@ void ParticleEngine::UpdateParticles() {
 
 bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID) {
     Particle *pParticle;  // esi@1
-    int y_int_;           // [sp+10h] [bp-40h]@2
-    int x_int;            // [sp+20h] [bp-30h]@2
-    int z_int_;           // [sp+24h] [bp-2Ch]@2
 
     pParticle = &this->pParticles[uParticleID];
     if (pParticle->type == ParticleType_Invalid) return 0;
-    // uParticleID = LODWORD(pParticle->x);
-    // v56 = *(float *)&uParticleID + 6.7553994e15;
-    x_int = floorf(pParticle->x + 0.5f);
-    // uParticleID = LODWORD(pParticle->y);
-    // y_int_ = *(float *)&uParticleID + 6.7553994e15;
-    y_int_ = floorf(pParticle->y + 0.5f);
-    // uParticleID = LODWORD(pParticle->z);
-    // z_int_ = *(float *)&uParticleID + 6.7553994e15;
-    z_int_ = floorf(pParticle->z + 0.5f);
 
-    /*fixed x, y, z;*/
-    int xt, yt, zt;
-
-    if (!pCamera3D->ViewClip(x_int, y_int_, z_int_, &xt, &yt, &zt, 0)) return false;
-    pCamera3D->Project(xt, yt, zt, &pParticle->uScreenSpaceX, &pParticle->uScreenSpaceY);
+    Vec3f viewSpace;
+    if (!pCamera3D->ViewClip({pParticle->x, pParticle->y, pParticle->z}, &viewSpace)) return false;
+    pCamera3D->Project(viewSpace.x, viewSpace.y, viewSpace.z, &pParticle->uScreenSpaceX, &pParticle->uScreenSpaceY);
 
     pParticle->fov_x = pCamera3D->ViewPlaneDistPixels;
-
-    /*pParticle->screenspace_scale = fixed::FromFloat(pParticle->particle_size) *
-                                   fixed::FromFloat(pParticle->fov_x) / x;*/
-
-    pParticle->screenspace_scale = /*fixed::FromFloat*/(pParticle->particle_size) *
-        /*fixed::FromFloat*/(pParticle->fov_x) / /*fixed::FromInt*/(xt);
-
-    /*pParticle->zbuffer_depth = x.GetInt();*/
-    pParticle->view_space_z = xt;
-    pParticle->view_space_L2 = Vec3f(xt, yt, zt).length();
+    pParticle->screenspace_scale = (pParticle->particle_size) * (pParticle->fov_x) / (viewSpace.x);
+    pParticle->view_space_z = viewSpace.x;
+    pParticle->view_space_L2 = viewSpace.length();
 
     return true;
 }
