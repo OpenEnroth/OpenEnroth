@@ -1243,14 +1243,11 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     bool visible = pCamera3D->ViewClip(pLevelDecorations[uDecorationID].vPosition, &viewSpace);
 
     if (visible) {
-        int projected_x = 0;
-        int projected_y = 0;
-        pCamera3D->Project(viewSpace.x, viewSpace.y, viewSpace.z, &projected_x, &projected_y);
-
+        Vec2f projected = pCamera3D->Project(viewSpace);
         float billb_scale = v11->scale * pCamera3D->ViewPlaneDistPixels / viewSpace.x;
         float billboardWidth = billb_scale * v11->sprites[(int64_t)v9]->uWidth;
         float billboardHeight = billb_scale * v11->sprites[(int64_t)v9]->uHeight;
-        Rectf billboardRect(projected_x - billboardWidth / 2, projected_y - billboardHeight, billboardWidth, billboardHeight);
+        Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
 
         if (pViewport.intersects(billboardRect)) {
             assert(uNumBillboardsToDraw < 500);
@@ -1271,8 +1268,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pLevelDecorations[uDecorationID].vPosition.x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pLevelDecorations[uDecorationID].vPosition.y;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pLevelDecorations[uDecorationID].vPosition.z;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected.x;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected.y;
             pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
             pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, uDecorationID);

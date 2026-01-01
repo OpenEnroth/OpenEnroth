@@ -792,14 +792,11 @@ void OutdoorLocation::PrepareActorsDrawList() {
         bool visible = pCamera3D->ViewClip(posMod, &viewSpace);
 
         if (visible) {
-            int projected_x = 0;
-            int projected_y = 0;
-            pCamera3D->Project(viewSpace.x, viewSpace.y, viewSpace.z, &projected_x, &projected_y);
-
+            Vec2f projected = pCamera3D->Project(viewSpace);
             float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / viewSpace.x;
             float billboardWidth = billb_scale * frame->sprites[Sprite_Octant]->uWidth;
             float billboardHeight = billb_scale * frame->sprites[Sprite_Octant]->uHeight;
-            Rectf billboardRect(projected_x - billboardWidth / 2, projected_y - billboardHeight, billboardWidth, billboardHeight);
+            Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
 
             if (pViewport.intersects(billboardRect)) {
                 ++uNumBillboardsToDraw;
@@ -824,8 +821,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
                 }
 
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected.x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected.y;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
                 pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = posMod.x;

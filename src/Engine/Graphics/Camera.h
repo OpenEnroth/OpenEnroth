@@ -17,9 +17,10 @@ struct Camera3D {
 
     bool ViewClip(const Vec3f& pos, Vec3f* outPos) const;
 
-    void Project(int x, int y, int z, int *screenspace_x, int *screenspace_y);
+    Vec2f Project(const Vec3f& pos) const;
     void Project(RenderVertexSoft *pVertices, unsigned int uNumVertices,
                  bool fit_into_viewport = false);
+    Vec2f FitToViewport(const Vec2f& projPos) const;
 
     bool CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
         int *pOutNumVertices,

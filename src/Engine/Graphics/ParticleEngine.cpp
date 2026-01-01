@@ -205,8 +205,9 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
 
     Vec3f viewSpace;
     if (!pCamera3D->ViewClip({pParticle->x, pParticle->y, pParticle->z}, &viewSpace)) return false;
-    pCamera3D->Project(viewSpace.x, viewSpace.y, viewSpace.z, &pParticle->uScreenSpaceX, &pParticle->uScreenSpaceY);
-
+    Vec2f projected = pCamera3D->Project(viewSpace);
+    pParticle->uScreenSpaceX = projected.x;
+    pParticle->uScreenSpaceY = projected.y;
     pParticle->fov_x = pCamera3D->ViewPlaneDistPixels;
     pParticle->screenspace_scale = (pParticle->particle_size) * (pParticle->fov_x) / (viewSpace.x);
     pParticle->view_space_z = viewSpace.x;

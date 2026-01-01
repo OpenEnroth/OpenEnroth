@@ -136,14 +136,11 @@ void BaseRenderer::DrawSpriteObjects() {
             bool visible = pCamera3D->ViewClip(posMod, &viewSpace);
 
             if (visible) {
-                int projected_x = 0;
-                int projected_y = 0;
-                pCamera3D->Project(viewSpace.x, viewSpace.y, viewSpace.z, &projected_x, &projected_y);
-
+                Vec2f projected = pCamera3D->Project(viewSpace);
                 float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / viewSpace.x;
                 float billboardWidth = billb_scale * frame->sprites[octant]->uWidth;
                 float billboardHeight = billb_scale * frame->sprites[octant]->uHeight;
-                Rectf billboardRect(projected_x - billboardWidth / 2, projected_y - billboardHeight, billboardWidth, billboardHeight);
+                Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
 
                 if (pViewport.intersects(billboardRect)) {
                     object->uAttributes |= SPRITE_VISIBLE;
@@ -159,8 +156,8 @@ void BaseRenderer::DrawSpriteObjects() {
                     pBillboardRenderList[::uNumBillboardsToDraw].world_y = posMod.y;
                     pBillboardRenderList[::uNumBillboardsToDraw].world_z = posMod.z;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = projected_x;
-                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = projected.x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected.y;
                     pBillboardRenderList[::uNumBillboardsToDraw].view_space_z = viewSpace.x;
                     pBillboardRenderList[::uNumBillboardsToDraw].view_space_L2 = viewSpace.length();
                     pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Sprite, i);
@@ -260,14 +257,11 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     bool visible = pCamera3D->ViewClip(pLevelDecorations[i].vPosition, &viewSpace);
 
                     if (visible) {
-                        int projected_x = 0;
-                        int projected_y = 0;
-                        pCamera3D->Project(viewSpace.x, viewSpace.y, viewSpace.z, &projected_x, &projected_y);
-
+                        Vec2f projected = pCamera3D->Project(viewSpace);
                         float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / viewSpace.x;
                         float billboardWidth = billb_scale * frame->sprites[(int64_t)v37]->uWidth;
                         float billboardHeight = billb_scale * frame->sprites[(int64_t)v37]->uHeight;
-                        Rectf billboardRect(projected_x - billboardWidth / 2, projected_y - billboardHeight, billboardWidth, billboardHeight);
+                        Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
 
                         if (pViewport.intersects(billboardRect)) {
                             ::uNumBillboardsToDraw++;
@@ -277,8 +271,8 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].world_x = pLevelDecorations[i].vPosition.x;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].world_y = pLevelDecorations[i].vPosition.y;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].world_z = pLevelDecorations[i].vPosition.z;
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_x = projected_x;
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_x = projected.x;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_y = projected.y;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;

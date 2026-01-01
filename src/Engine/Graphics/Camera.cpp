@@ -361,76 +361,29 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     return VertsAdjusted;
 }
 
+Vec2f Camera3D::Project(const Vec3f& pos) const {
+    float viewscalefactor = ViewPlaneDistPixels / pos.x;
+    return { pViewport.center().x - viewscalefactor * pos.y , pViewport.center().y - viewscalefactor * pos.z };
+}
+
+Vec2f Camera3D::FitToViewport(const Vec2f& projPos) const {
+    float minX = (float)pViewport.x;
+    float maxX = (float)(pViewport.x + pViewport.w - 1);
+    float minY = (float)pViewport.y;
+    float maxY = (float)(pViewport.y + pViewport.h - 1);
+
+    return { std::clamp(projPos.x, minX, maxX), std::clamp(projPos.y, minY, maxY) };
+}
 
 //----- (00436BB7) --------------------------------------------------------
 void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, bool fit_into_viewport) {
-    double fitted_x;
-    double temp_r;
-    double temp_l;
-    double fitted_y;
-    double temp_b;
-    double temp_t;
-    double RHW;
-    double viewscalefactor;
-
     for (unsigned i = 0; i < uNumVertices; ++i) {
         auto v = pVertices + i;
 
-        RHW = 1.0 / (v->vWorldViewPosition.x + 0.0000001);
-        v->_rhw = RHW;
-        viewscalefactor = RHW * ViewPlaneDistPixels;
-
-        v->vWorldViewProj.x = (double)pViewport.center().x -
-                             viewscalefactor * (double)v->vWorldViewPosition.y;
-        v->vWorldViewProj.y = (double)pViewport.center().y -
-                             viewscalefactor * (double)v->vWorldViewPosition.z;
-
+        v->vWorldViewProj = Project(v->vWorldViewPosition);
         if (fit_into_viewport) {
-            fitted_x = (double)(pViewport.x + pViewport.w - 1);
-            if (fitted_x >= pVertices[i].vWorldViewProj.x)
-                temp_r = pVertices[i].vWorldViewProj.x;
-            else
-                temp_r = fitted_x;
-            temp_l = (double)pViewport.x;
-            if (temp_l <= temp_r) {
-                if (fitted_x >= pVertices[i].vWorldViewProj.x)
-                    fitted_x = pVertices[i].vWorldViewProj.x;
-            } else {
-                fitted_x = temp_l;
-            }
-            pVertices[i].vWorldViewProj.x = fitted_x;
-
-            fitted_y = (double)(pViewport.y + pViewport.h - 1);
-            if (fitted_y >= pVertices[i].vWorldViewProj.y)
-                temp_b = pVertices[i].vWorldViewProj.y;
-            else
-                temp_b = fitted_y;
-            temp_t = (double)pViewport.y;
-            if (temp_t <= temp_b) {
-                if (fitted_y >= pVertices[i].vWorldViewProj.y)
-                    fitted_y = pVertices[i].vWorldViewProj.y;
-            } else {
-                fitted_y = temp_t;
-            }
-            pVertices[i].vWorldViewProj.y = fitted_y;
+            v->vWorldViewProj = FitToViewport(v->vWorldViewProj);
         }
-    }
-}
-
-void Camera3D::Project(int x, int y, int z, int *screenspace_x, int *screenspace_y) {
-    RenderVertexSoft v;
-    v.vWorldViewPosition.x = x;
-    v.vWorldViewPosition.y = y;
-    v.vWorldViewPosition.z = z;
-
-    this->Project(&v, 1, false);
-
-    if (screenspace_x) {
-        *screenspace_x = floorf(v.vWorldViewProj.x + 0.5f);
-    }
-
-    if (screenspace_y) {
-        *screenspace_y = floorf(v.vWorldViewProj.y + 0.5f);
     }
 }
 
