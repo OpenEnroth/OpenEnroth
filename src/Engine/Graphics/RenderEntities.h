@@ -55,26 +55,18 @@ struct RenderVertexD3D3 {
 };
 
 struct RenderBillboard {
-    float screenspace_projection_factor_x;
-    float screenspace_projection_factor_y;
-    float fov_x;
-    float fov_y;
-    int field_14_actor_id;
-    Sprite* hwsprite;  // int16_t HwSpriteID;
+    Vec2f screenspace_projection_factor;
+    Sprite* hwsprite;
     int16_t uPaletteId;
     int uIndoorSectorID;
-    BillboardFlags flags;  // flags
-    int16_t world_x;
-    int16_t world_y;
-    int16_t world_z;
-    int16_t screen_space_x;
-    int16_t screen_space_y;
+    BillboardFlags flags;
+    Vec3f worldPos;
+    Vec2f screenPos;
     int32_t view_space_z;
     float view_space_L2 = 0.0f;
     Pid object_pid;
     uint16_t dimming_level;
     Color sTintColor;
-    SpriteFrame* pSpriteFrame;
 };
 
 struct RenderBillboardD3D {

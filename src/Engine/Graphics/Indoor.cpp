@@ -1261,20 +1261,14 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
             pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = v11->paletteId;
             pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pCamera3D->ViewPlaneDistPixels;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor = { billb_scale, billb_scale };
             pBillboardRenderList[uNumBillboardsToDraw - 1].flags = v30;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pLevelDecorations[uDecorationID].vPosition.x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pLevelDecorations[uDecorationID].vPosition.y;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pLevelDecorations[uDecorationID].vPosition.z;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected.x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected.y;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].worldPos = pLevelDecorations[uDecorationID].vPosition;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenPos = projected;
             pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
             pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, uDecorationID);
             pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = Color();
-            pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v11;
         }
     }
 }

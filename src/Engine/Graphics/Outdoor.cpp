@@ -807,33 +807,27 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].sectorId;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
 
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor = { billb_scale, billb_scale };
 
                 if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Active() &&
                     pActors[i].buffs[ACTOR_BUFF_SHRINK].power > 0) {
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor.y =
                         1.0f / pActors[i].buffs[ACTOR_BUFF_SHRINK].power *
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor.y;
                 } else if (pActors[i].massDistortionTime) {
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor.y =
                         spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor.y;
                 }
 
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected.x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected.y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenPos = projected;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
-                pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = posMod.x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = posMod.y;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = posMod.z;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].worldPos = posMod;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Actor, i);
-                pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
 
                 pBillboardRenderList[uNumBillboardsToDraw - 1].flags = flags | BILLBOARD_0X200;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
                     pMonsterList->monsters[pActors[i].monsterInfo.id].tintColor;
                 if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {

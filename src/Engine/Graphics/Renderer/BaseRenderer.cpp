@@ -146,18 +146,13 @@ void BaseRenderer::DrawSpriteObjects() {
                     object->uAttributes |= SPRITE_VISIBLE;
                     pBillboardRenderList[::uNumBillboardsToDraw].uPaletteId = frame->paletteId;
                     pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
-                    pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = billb_scale;
-                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = billb_scale;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor = { billb_scale, billb_scale };
 
                     pBillboardRenderList[::uNumBillboardsToDraw].flags = setflags;
-                    pBillboardRenderList[::uNumBillboardsToDraw].world_x = posMod.x;
-                    pBillboardRenderList[::uNumBillboardsToDraw].world_y = posMod.y;
-                    pBillboardRenderList[::uNumBillboardsToDraw].world_z = posMod.z;
+                    pBillboardRenderList[::uNumBillboardsToDraw].worldPos = posMod;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = projected.x;
-                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected.y;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenPos = projected;
                     pBillboardRenderList[::uNumBillboardsToDraw].view_space_z = viewSpace.x;
                     pBillboardRenderList[::uNumBillboardsToDraw].view_space_L2 = viewSpace.length();
                     pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Sprite, i);
@@ -249,9 +244,6 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                        // pCamera3D->vCameraPos.x) << 16; v40 =
                        // (pLevelDecorations[i].vPosition.y -
                        // pCamera3D->vCameraPos.y) << 16;
-                    int party_to_decor_x = static_cast<int>(pLevelDecorations[i].vPosition.x - pCamera3D->vCameraPos.x);
-                    int party_to_decor_y = static_cast<int>(pLevelDecorations[i].vPosition.y - pCamera3D->vCameraPos.y);
-                    int party_to_decor_z = static_cast<int>(pLevelDecorations[i].vPosition.z - pCamera3D->vCameraPos.z);
 
                     Vec3f viewSpace;
                     bool visible = pCamera3D->ViewClip(pLevelDecorations[i].vPosition, &viewSpace);
@@ -268,21 +260,16 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                             ++uNumDecorationsDrawnThisFrame;
 
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].hwsprite = frame->sprites[(int64_t)v37];
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].world_x = pLevelDecorations[i].vPosition.x;
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].world_y = pLevelDecorations[i].vPosition.y;
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].world_z = pLevelDecorations[i].vPosition.z;
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_x = projected.x;
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_y = projected.y;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].worldPos = pLevelDecorations[i].vPosition;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screenPos = projected;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor = { billb_scale, billb_scale };
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].flags = v38 | BILLBOARD_0X200;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, i);
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].dimming_level = 0;
-                            pBillboardRenderList[::uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                             pBillboardRenderList[::uNumBillboardsToDraw - 1].sTintColor = Color();
                         }
                     }
@@ -337,8 +324,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     unsigned int billboard_index = NextBillboardIndex();
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
-    float scr_proj_x = pBillboard->screenspace_projection_factor_x;
-    float scr_proj_y = pBillboard->screenspace_projection_factor_y;
+    float scr_proj_x = pBillboard->screenspace_projection_factor.x;
+    float scr_proj_y = pBillboard->screenspace_projection_factor.y;
 
     int dimming_level = pBillboard->dimming_level;
     Color diffuse = ::GetActorTintColor(dimming_level, 0, pBillboard->view_space_z, 0, pBillboard);
@@ -367,8 +354,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     float point_y = pSprite->uHeight - pSprite->uAreaY;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[0].diffuse = diffuse;
-    billboard->pQuads[0].pos.x = pBillboard->screen_space_x - point_x * scr_proj_x;
-    billboard->pQuads[0].pos.y = pBillboard->screen_space_y - point_y * scr_proj_y;
+    billboard->pQuads[0].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
+    billboard->pQuads[0].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[0].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f  / pCamera3D->GetFarClip()); // TODO(pskelton): no point in setting this
     billboard->pQuads[0].rhw = 1.f / pBillboard->view_space_z; // TODO(pskelton): no point in setting this
     billboard->pQuads[0].specular = specular;
@@ -380,8 +367,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x = point_x * -1.f;
     billboard->pQuads[1].specular = specular;
     billboard->pQuads[1].diffuse = diffuse;
-    billboard->pQuads[1].pos.x = pBillboard->screen_space_x - point_x * scr_proj_x;
-    billboard->pQuads[1].pos.y = pBillboard->screen_space_y - point_y * scr_proj_y;
+    billboard->pQuads[1].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
+    billboard->pQuads[1].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[1].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[1].rhw = 1.f / pBillboard->view_space_z;
     billboard->pQuads[1].texcoord.x = 0.f;
@@ -392,8 +379,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[2].diffuse = diffuse;
     billboard->pQuads[2].specular = specular;
-    billboard->pQuads[2].pos.x = pBillboard->screen_space_x + point_x * scr_proj_x;
-    billboard->pQuads[2].pos.y = pBillboard->screen_space_y - point_y * scr_proj_y;
+    billboard->pQuads[2].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
+    billboard->pQuads[2].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[2].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[2].rhw = 1.f / pBillboard->view_space_z;
     billboard->pQuads[2].texcoord.x = 1.f;
@@ -404,8 +391,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[3].diffuse = diffuse;
     billboard->pQuads[3].specular = specular;
-    billboard->pQuads[3].pos.x = pBillboard->screen_space_x + point_x * scr_proj_x;
-    billboard->pQuads[3].pos.y = pBillboard->screen_space_y - point_y * scr_proj_y;
+    billboard->pQuads[3].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
+    billboard->pQuads[3].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[3].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[3].rhw = 1.f / pBillboard->view_space_z;
     billboard->pQuads[3].texcoord.x = 1.f;
