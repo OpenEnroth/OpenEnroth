@@ -170,7 +170,7 @@ var searchData=
   ['processtextinput_167',['ProcessTextInput',['../classIo_1_1KeyboardInputHandler.html#a024dae2e3d6b98d4f3b7ca434c2021e2',1,'Io::KeyboardInputHandler']]],
   ['processtransparentpixel_168',['ProcessTransparentPixel',['../ImageLoader_8cpp.html#af45b8670c5c0ea11b5b1e961906d7739',1,'ImageLoader.cpp']]],
   ['progress_169',['Progress',['../classGUIProgressBar.html#a8a0d7cdea6661ca839e19289013d4d6f',1,'GUIProgressBar']]],
-  ['project_170',['Project',['../structCamera3D.html#ac321d34626e6ab96b6b7cdbad476f46b',1,'Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, bool fit_into_viewport=false)'],['../structCamera3D.html#ae4a66866af86023accaedd9b49dfbe06',1,'Camera3D::Project(int x, int y, int z, int *screenspace_x, int *screenspace_y)']]],
+  ['project_170',['Project',['../structCamera3D.html#ac321d34626e6ab96b6b7cdbad476f46b',1,'Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, bool fit_into_viewport=false)'],['../structCamera3D.html#a0811658b383ff23bddf595c01e4fdd21',1,'Camera3D::Project(const Vec3f &amp;pos) const']]],
   ['promotionsforclass_171',['promotionsForClass',['../CharacterEnumFunctions_8h.html#a4a267e3d268f2710c5fb00ca841bd7df',1,'CharacterEnumFunctions.h']]],
   ['proxybase_172',['ProxyBase',['../classProxyBase.html#a79b240aecfb48a7b55613635647db708',1,'ProxyBase']]],
   ['proxyeventloop_173',['ProxyEventLoop',['../classProxyEventLoop.html#a42c82400be7849595f3ce19ad1e2a096',1,'ProxyEventLoop']]],

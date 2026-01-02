@@ -37,10 +37,10 @@ var searchData=
   ['videostate_34',['VideoState',['../classVideoState.html#a78b3cfe6ea56e278941b4be499d29227',1,'VideoState']]],
   ['vidreader_35',['VidReader',['../classVidReader.html#aceb1d25a7fac3fd390049777e21441cf',1,'VidReader::VidReader(Blob blob)'],['../classVidReader.html#aa31279935fe55f50670e590f00c202da',1,'VidReader::VidReader(std::string_view path)'],['../classVidReader.html#a1ac61e07471619a83575c77ebc6920b9',1,'VidReader::VidReader()']]],
   ['view_36',['view',['../classBlob.html#a14c523d7452abe45c8d25bd7db76f41d',1,'Blob::view(const void *data, size_t size)'],['../classBlob.html#ad738cfac6bf6406c04784fd7689d24af',1,'Blob::view(std::string_view data)']]],
-  ['viewclip_37',['ViewClip',['../structCamera3D.html#aa7c2b7d9c37b4025b0f46741e947ffed',1,'Camera3D']]],
+  ['viewclip_37',['ViewClip',['../structCamera3D.html#aa76c1e92d1da0489acdc9792df8983e7',1,'Camera3D']]],
   ['viewingparams_38',['ViewingParams',['../structViewingParams.html#a3e14ff3b831e0e7a77d6113cd0090465',1,'ViewingParams']]],
   ['viewproject_5ftrueifstillvisible_5fblv_39',['ViewProject_TrueIfStillVisible_BLV',['../classParticleEngine.html#ad63c7069319085019cf0c086e38cce06',1,'ParticleEngine']]],
-  ['viewtransform_40',['ViewTransform',['../structCamera3D.html#a525586eca7cf9a04905be7702dae1625',1,'Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)'],['../structCamera3D.html#ab3c08c9e2fe1391ce8a21fb5ae8ae504',1,'Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices)']]],
+  ['viewtransform_40',['ViewTransform',['../structCamera3D.html#af90e774af671f3615105e0d14cbca9bd',1,'Camera3D::ViewTransform(const Vec3f *pos) const'],['../structCamera3D.html#a6248ab7ad008d476af307e87887f7b2a',1,'Camera3D::ViewTransform(RenderVertexSoft *vertex, int uNumVertices) const']]],
   ['visible_41',['Visible',['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()'],['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()']]],
   ['visit_42',['visit',['../classPlatformIntrospection.html#a83040febef70b51af271589ae4c1f532',1,'PlatformIntrospection']]],
   ['visitinternal_43',['visitInternal',['../classPlatformIntrospection.html#a1a984691e737325e8abf75d978b6b574',1,'PlatformIntrospection']]]
