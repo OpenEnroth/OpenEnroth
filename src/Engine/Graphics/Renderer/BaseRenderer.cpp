@@ -354,8 +354,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[0].diffuse = diffuse;
     billboard->pQuads[0].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
     billboard->pQuads[0].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
-    billboard->pQuads[0].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f  / pCamera3D->GetFarClip()); // TODO(pskelton): no point in setting this
-    billboard->pQuads[0].rhw = 1.f / pBillboard->view_space_z; // TODO(pskelton): no point in setting this
+    billboard->pQuads[0].pos.z = pBillboard->view_space_z;
     billboard->pQuads[0].texcoord.x = 0.f;
     billboard->pQuads[0].texcoord.y = 0.f;
 
@@ -365,8 +364,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[1].diffuse = diffuse;
     billboard->pQuads[1].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
     billboard->pQuads[1].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
-    billboard->pQuads[1].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
-    billboard->pQuads[1].rhw = 1.f / pBillboard->view_space_z;
+    billboard->pQuads[1].pos.z = pBillboard->view_space_z;
     billboard->pQuads[1].texcoord.x = 0.f;
     billboard->pQuads[1].texcoord.y = 1.f;
 
@@ -376,8 +374,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[2].diffuse = diffuse;
     billboard->pQuads[2].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
     billboard->pQuads[2].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
-    billboard->pQuads[2].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
-    billboard->pQuads[2].rhw = 1.f / pBillboard->view_space_z;
+    billboard->pQuads[2].pos.z = pBillboard->view_space_z;
     billboard->pQuads[2].texcoord.x = 1.f;
     billboard->pQuads[2].texcoord.y = 1.f;
 
@@ -387,8 +384,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[3].diffuse = diffuse;
     billboard->pQuads[3].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
     billboard->pQuads[3].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
-    billboard->pQuads[3].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
-    billboard->pQuads[3].rhw = 1.f / pBillboard->view_space_z;
+    billboard->pQuads[3].pos.z = pBillboard->view_space_z;
     billboard->pQuads[3].texcoord.x = 1.f;
     billboard->pQuads[3].texcoord.y = 0.f;
 
@@ -413,10 +409,6 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
     billboard->paletteId = p.paletteID;
     billboard->uNumVertices = 4;
 
-    // TODO(pskelton): no point setting rhw and z wrong calc corrected later
-    float rhw = 1.f / p.view_space_z;
-    float z = 1.f - 1.f / (p.view_space_z * 1000.f / pCamera3D->GetFarClip());
-
     float acos = std::cos(p.angle); // TODO(captainurist): taking cos of an INT angle? WTF?
     float asin = std::sin(p.angle);
 
@@ -425,9 +417,8 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         float v17 = -12.f;
         billboard->pQuads[0].pos.x = (acos * v16 - asin * v17) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[0].pos.y = (acos * v17 + asin * v16 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
-        billboard->pQuads[0].pos.z = z;
+        billboard->pQuads[0].pos.z = p.view_space_z;
         billboard->pQuads[0].diffuse = p.uLightColor_bgr;
-        billboard->pQuads[0].rhw = rhw;
         billboard->pQuads[0].texcoord.x = 0.f;
         billboard->pQuads[0].texcoord.y = 0.f;
     }
@@ -437,9 +428,8 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         float v32 = 12;
         billboard->pQuads[1].pos.x = (acos * v31 - asin * v32) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[1].pos.y = (acos * v32 + asin * v31 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
-        billboard->pQuads[1].pos.z = z;
+        billboard->pQuads[1].pos.z = p.view_space_z;
         billboard->pQuads[1].diffuse = p.uLightColor_bgr;
-        billboard->pQuads[1].rhw = rhw;
         billboard->pQuads[1].texcoord.x = 0.0;
         billboard->pQuads[1].texcoord.y = 1.0;
     }
@@ -449,9 +439,8 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         float v24 = 12;
         billboard->pQuads[2].pos.x = (acos * v23 - asin * v24) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[2].pos.y = (acos * v24 + asin * v23 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
-        billboard->pQuads[2].pos.z = z;
+        billboard->pQuads[2].pos.z = p.view_space_z;
         billboard->pQuads[2].diffuse = p.uLightColor_bgr;
-        billboard->pQuads[2].rhw = rhw;
         billboard->pQuads[2].texcoord.x = 1.0;
         billboard->pQuads[2].texcoord.y = 1.0;
     }
@@ -461,9 +450,8 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         float v40 = -12;
         billboard->pQuads[3].pos.x = (acos * v39 - asin * v40) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[3].pos.y = (acos * v40 + asin * v39 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
-        billboard->pQuads[3].pos.z = z;
+        billboard->pQuads[3].pos.z = p.view_space_z;
         billboard->pQuads[3].diffuse = p.uLightColor_bgr;
-        billboard->pQuads[3].rhw = rhw;
         billboard->pQuads[3].texcoord.x = 1.0;
         billboard->pQuads[3].texcoord.y = 0.0;
     }
@@ -510,14 +498,6 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
 
     for (unsigned int i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
         pBillboardRenderListD3D[v5].pQuads[i].pos = a1->field_104[i].pos;
-
-        float rhw = 1.f / a1->field_104[i].pos.z;
-        float z = 1.f - 1.f / (a1->field_104[i].pos.z * 1000.f / pCamera3D->GetFarClip());
-
-        double v10 = a1->field_104[i].pos.z;
-        v10 *= 1000.f / pCamera3D->GetFarClip();
-
-        pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;
 
         Color v12;
         if (diffuse.a) {
