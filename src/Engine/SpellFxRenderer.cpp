@@ -1316,20 +1316,10 @@ int SpellFX_Billboard::SpellFXFarClipAdjust(float farclip) {  // far clip adjust
 }
 
 //----- (00477C61) --------------------------------------------------------
-int SpellFX_Billboard::SpellFXViewTransform() {  // view transform
-    int ViewPosX;
-    int ViewPosY;
-    int ViewPosZ;
-
+int SpellFX_Billboard::SpellFXViewTransform() {
     if (this->uNumVertices > 0) {
         for (int v2 = 0; v2 < this->uNumVertices; ++v2) {
-            // view tranfrom
-            pCamera3D->ViewTransform(field_14[v2].pos.x, field_14[v2].pos.y, field_14[v2].pos.z, &ViewPosX, &ViewPosY, &ViewPosZ);
-
-            // load into field 64
-            field_64[v2].pos.x = ViewPosX;
-            field_64[v2].pos.y = ViewPosY;
-            field_64[v2].pos.z = ViewPosZ;
+            field_64[v2].pos = pCamera3D->ViewTransform(&field_14[v2].pos);
             field_64[v2].diffuse = field_14[v2].diffuse;
         }
     }
@@ -1382,16 +1372,11 @@ bool SpellFX_Billboard::SpellFXViewClip() {
 //----- (0047802A) --------------------------------------------------------
 int SpellFX_Billboard::SpellFXProject() {  // project to billboard coords
     int Result = 0;
-    int Xproj, Yproj;
 
     for (int i = 0; i < this->uNumVertices; i++) {
-        pCamera3D->Project(
-            round_to_int(this->field_B4[i].pos.x),
-            round_to_int(this->field_B4[i].pos.y),
-            round_to_int(this->field_B4[i].pos.z), &Yproj, &Xproj);
-
-        field_104[i].pos.x = (float)Yproj;
-        field_104[i].pos.y = (float)Xproj;
+        Vec2f screenPos = pCamera3D->Project(this->field_B4[i].pos);
+        field_104[i].pos.x = screenPos.x;
+        field_104[i].pos.y = screenPos.y;
         field_104[i].pos.z = field_B4[i].pos.x;
         field_104[i].diffuse = field_B4[i].diffuse;
 

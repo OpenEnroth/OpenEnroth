@@ -76,10 +76,6 @@ void BaseRenderer::DrawSpriteObjects() {
             continue;
         }
 
-        int x = object->vPosition.x;
-        int y = object->vPosition.y;
-        int z = object->vPosition.z;
-
         // view culling
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             bool onlist = false;
@@ -106,7 +102,7 @@ void BaseRenderer::DrawSpriteObjects() {
             }
 
             // sprite angle to camera
-            unsigned int angle = TrigLUT.atan2(x - pCamera3D->vCameraPos.x, y - pCamera3D->vCameraPos.y);
+            unsigned int angle = TrigLUT.atan2(object->vPosition.x - pCamera3D->vCameraPos.x, object->vPosition.y - pCamera3D->vCameraPos.y);
             int octant = ((TrigLUT.uIntegerPi + (TrigLUT.uIntegerPi >> 3) + object->uFacing - angle) >> 8) & 7;
 
             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->sprites[octant];
@@ -116,9 +112,10 @@ void BaseRenderer::DrawSpriteObjects() {
                 continue;
             }
 
+            Vec3f posMod = object->vPosition;
             // centre sprite
             if (frame->flags & SPRITE_FRAME_CENTER) {
-                z -= (frame->scale * frame->sprites[octant]->uHeight) / 2;
+                posMod.z -= (frame->scale * frame->sprites[octant]->uHeight) / 2;
             }
 
             BillboardFlags setflags = billboardFlagsForSprite(frame->flags, octant);
@@ -135,48 +132,36 @@ void BaseRenderer::DrawSpriteObjects() {
                                              object->uSectorID, lightradius, color, _4E94D3_light_type);
             }
 
-            int view_x = 0;
-            int view_y = 0;
-            int view_z = 0;
-            bool visible = pCamera3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+            Vec3f viewSpace;
+            bool visible = pCamera3D->ViewClip(posMod, &viewSpace);
 
             if (visible) {
-                if (2 * std::abs(view_x) >= std::abs(view_y)) {
-                    int projected_x = 0;
-                    int projected_y = 0;
-                    pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+                Vec2f projected = pCamera3D->Project(viewSpace);
+                float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / viewSpace.x;
+                float billboardWidth = billb_scale * frame->sprites[octant]->uWidth;
+                float billboardHeight = billb_scale * frame->sprites[octant]->uHeight;
+                Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
 
-                    float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / view_x;
-                    float billboardWidth = billb_scale * frame->sprites[octant]->uWidth;
-                    float billboardHeight = billb_scale * frame->sprites[octant]->uHeight;
-                    Rectf billboardRect(projected_x - billboardWidth / 2, projected_y - billboardHeight, billboardWidth, billboardHeight);
+                if (pViewport.intersects(billboardRect)) {
+                    object->uAttributes |= SPRITE_VISIBLE;
+                    pBillboardRenderList[::uNumBillboardsToDraw].uPaletteId = frame->paletteId;
+                    pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
 
-                    if (pViewport.intersects(billboardRect)) {
-                        object->uAttributes |= SPRITE_VISIBLE;
-                        pBillboardRenderList[::uNumBillboardsToDraw].uPaletteId = frame->paletteId;
-                        pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
-                        pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor = { billb_scale, billb_scale };
 
-                        pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = billb_scale;
-                        pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = billb_scale;
+                    pBillboardRenderList[::uNumBillboardsToDraw].flags = setflags;
+                    pBillboardRenderList[::uNumBillboardsToDraw].worldPos = posMod;
 
-                        pBillboardRenderList[::uNumBillboardsToDraw].flags = setflags;
-                        pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
-                        pBillboardRenderList[::uNumBillboardsToDraw].world_y = y;
-                        pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenPos = projected;
+                    pBillboardRenderList[::uNumBillboardsToDraw].view_space_z = viewSpace.x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].view_space_L2 = viewSpace.length();
+                    pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Sprite, i);
+                    pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
+                    pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = Color();
 
-                        pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = projected_x;
-                        pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
-                        pBillboardRenderList[::uNumBillboardsToDraw].view_space_z = view_x;
-                        pBillboardRenderList[::uNumBillboardsToDraw].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
-                        pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Sprite, i);
-                        pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
-                        pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = Color();
-
-                        assert(::uNumBillboardsToDraw < 500);
-                        ++::uNumBillboardsToDraw;
-                        ++uNumSpritesDrawnThisFrame;
-                    }
+                    assert(::uNumBillboardsToDraw < 500);
+                    ++::uNumBillboardsToDraw;
+                    ++uNumSpritesDrawnThisFrame;
                 }
             }
         }
@@ -259,52 +244,33 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                        // pCamera3D->vCameraPos.x) << 16; v40 =
                        // (pLevelDecorations[i].vPosition.y -
                        // pCamera3D->vCameraPos.y) << 16;
-                    int party_to_decor_x = static_cast<int>(pLevelDecorations[i].vPosition.x - pCamera3D->vCameraPos.x);
-                    int party_to_decor_y = static_cast<int>(pLevelDecorations[i].vPosition.y - pCamera3D->vCameraPos.y);
-                    int party_to_decor_z = static_cast<int>(pLevelDecorations[i].vPosition.z - pCamera3D->vCameraPos.z);
 
-                    int view_x = 0;
-                    int view_y = 0;
-                    int view_z = 0;
-                    bool visible = pCamera3D->ViewClip(
-                        pLevelDecorations[i].vPosition.x,
-                        pLevelDecorations[i].vPosition.y,
-                        pLevelDecorations[i].vPosition.z, &view_x, &view_y,
-                        &view_z);
+                    Vec3f viewSpace;
+                    bool visible = pCamera3D->ViewClip(pLevelDecorations[i].vPosition, &viewSpace);
 
                     if (visible) {
-                        if (2 * std::abs(view_x) >= std::abs(view_y)) {
-                            int projected_x = 0;
-                            int projected_y = 0;
-                            pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+                        Vec2f projected = pCamera3D->Project(viewSpace);
+                        float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / viewSpace.x;
+                        float billboardWidth = billb_scale * frame->sprites[(int64_t)v37]->uWidth;
+                        float billboardHeight = billb_scale * frame->sprites[(int64_t)v37]->uHeight;
+                        Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
 
-                            float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / view_x;
-                            float billboardWidth = billb_scale * frame->sprites[(int64_t)v37]->uWidth;
-                            float billboardHeight = billb_scale * frame->sprites[(int64_t)v37]->uHeight;
-                            Rectf billboardRect(projected_x - billboardWidth / 2, projected_y - billboardHeight, billboardWidth, billboardHeight);
+                        if (pViewport.intersects(billboardRect)) {
+                            ::uNumBillboardsToDraw++;
+                            ++uNumDecorationsDrawnThisFrame;
 
-                            if (pViewport.intersects(billboardRect)) {
-                                ::uNumBillboardsToDraw++;
-                                ++uNumDecorationsDrawnThisFrame;
-
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].hwsprite = frame->sprites[(int64_t)v37];
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].world_x = pLevelDecorations[i].vPosition.x;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].world_y = pLevelDecorations[i].vPosition.y;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].world_z = pLevelDecorations[i].vPosition.z;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_x = projected_x;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_y = projected_y;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_z = view_x;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].flags = v38 | BILLBOARD_0X200;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, i);
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].dimming_level = 0;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].pSpriteFrame = frame;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1].sTintColor = Color();
-                            }
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].hwsprite = frame->sprites[(int64_t)v37];
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].worldPos = pLevelDecorations[i].vPosition;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screenPos = projected;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor = { billb_scale, billb_scale };
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].flags = v38 | BILLBOARD_0X200;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, i);
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].dimming_level = 0;
+                            pBillboardRenderList[::uNumBillboardsToDraw - 1].sTintColor = Color();
                         }
                     }
                 }
@@ -358,8 +324,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     unsigned int billboard_index = NextBillboardIndex();
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
-    float scr_proj_x = pBillboard->screenspace_projection_factor_x;
-    float scr_proj_y = pBillboard->screenspace_projection_factor_y;
+    float scr_proj_x = pBillboard->screenspace_projection_factor.x;
+    float scr_proj_y = pBillboard->screenspace_projection_factor.y;
 
     int dimming_level = pBillboard->dimming_level;
     Color diffuse = ::GetActorTintColor(dimming_level, 0, pBillboard->view_space_z, 0, pBillboard);
@@ -388,8 +354,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     float point_y = pSprite->uHeight - pSprite->uAreaY;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[0].diffuse = diffuse;
-    billboard->pQuads[0].pos.x = pBillboard->screen_space_x - point_x * scr_proj_x;
-    billboard->pQuads[0].pos.y = pBillboard->screen_space_y - point_y * scr_proj_y;
+    billboard->pQuads[0].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
+    billboard->pQuads[0].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[0].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f  / pCamera3D->GetFarClip()); // TODO(pskelton): no point in setting this
     billboard->pQuads[0].rhw = 1.f / pBillboard->view_space_z; // TODO(pskelton): no point in setting this
     billboard->pQuads[0].specular = specular;
@@ -401,8 +367,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x = point_x * -1.f;
     billboard->pQuads[1].specular = specular;
     billboard->pQuads[1].diffuse = diffuse;
-    billboard->pQuads[1].pos.x = pBillboard->screen_space_x - point_x * scr_proj_x;
-    billboard->pQuads[1].pos.y = pBillboard->screen_space_y - point_y * scr_proj_y;
+    billboard->pQuads[1].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
+    billboard->pQuads[1].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[1].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[1].rhw = 1.f / pBillboard->view_space_z;
     billboard->pQuads[1].texcoord.x = 0.f;
@@ -413,8 +379,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[2].diffuse = diffuse;
     billboard->pQuads[2].specular = specular;
-    billboard->pQuads[2].pos.x = pBillboard->screen_space_x + point_x * scr_proj_x;
-    billboard->pQuads[2].pos.y = pBillboard->screen_space_y - point_y * scr_proj_y;
+    billboard->pQuads[2].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
+    billboard->pQuads[2].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[2].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[2].rhw = 1.f / pBillboard->view_space_z;
     billboard->pQuads[2].texcoord.x = 1.f;
@@ -425,8 +391,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[3].diffuse = diffuse;
     billboard->pQuads[3].specular = specular;
-    billboard->pQuads[3].pos.x = pBillboard->screen_space_x + point_x * scr_proj_x;
-    billboard->pQuads[3].pos.y = pBillboard->screen_space_y - point_y * scr_proj_y;
+    billboard->pQuads[3].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
+    billboard->pQuads[3].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[3].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[3].rhw = 1.f / pBillboard->view_space_z;
     billboard->pQuads[3].texcoord.x = 1.f;

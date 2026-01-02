@@ -201,5 +201,5 @@ int _43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightL
         }
     }
 
-    return GetLightLevelAtPoint(v3, a1->uIndoorSectorID, a1->world_x, a1->world_y, a1->world_z);
+    return GetLightLevelAtPoint(v3, a1->uIndoorSectorID, a1->worldPos.x, a1->worldPos.y, a1->worldPos.z);
 }

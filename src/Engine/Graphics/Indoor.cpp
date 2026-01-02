@@ -1239,53 +1239,36 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
     v30 = billboardFlagsForSprite(v11->flags, v9);
 
-    int view_x = 0;
-    int view_y = 0;
-    int view_z = 0;
-    bool visible =
-        pCamera3D->ViewClip(pLevelDecorations[uDecorationID].vPosition.x,
-                                   pLevelDecorations[uDecorationID].vPosition.y,
-                                   pLevelDecorations[uDecorationID].vPosition.z,
-                                   &view_x, &view_y, &view_z);
+    Vec3f viewSpace;
+    bool visible = pCamera3D->ViewClip(pLevelDecorations[uDecorationID].vPosition, &viewSpace);
 
     if (visible) {
-        if (2 * std::abs(view_x) >= std::abs(view_y)) {
-            int projected_x = 0;
-            int projected_y = 0;
-            pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+        Vec2f projected = pCamera3D->Project(viewSpace);
+        float billb_scale = v11->scale * pCamera3D->ViewPlaneDistPixels / viewSpace.x;
+        float billboardWidth = billb_scale * v11->sprites[(int64_t)v9]->uWidth;
+        float billboardHeight = billb_scale * v11->sprites[(int64_t)v9]->uHeight;
+        Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
 
-            float billb_scale = v11->scale * pCamera3D->ViewPlaneDistPixels / view_x;
-            float billboardWidth = billb_scale * v11->sprites[(int64_t)v9]->uWidth;
-            float billboardHeight = billb_scale * v11->sprites[(int64_t)v9]->uHeight;
-            Rectf billboardRect(projected_x - billboardWidth / 2, projected_y - billboardHeight, billboardWidth, billboardHeight);
+        if (pViewport.intersects(billboardRect)) {
+            assert(uNumBillboardsToDraw < 500);
+            ++uNumBillboardsToDraw;
+            ++uNumDecorationsDrawnThisFrame;
 
-            if (pViewport.intersects(billboardRect)) {
-                assert(uNumBillboardsToDraw < 500);
-                ++uNumBillboardsToDraw;
-                ++uNumDecorationsDrawnThisFrame;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v11->sprites[v9];
 
-                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v11->sprites[v9];
+            if (v11->sprites[v9]->texture->height() == 0 || v11->sprites[v9]->texture->width() == 0)
+                assert(false);
 
-                if (v11->sprites[v9]->texture->height() == 0 || v11->sprites[v9]->texture->width() == 0)
-                    assert(false);
-
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = v11->paletteId;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pCamera3D->ViewPlaneDistPixels;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].flags = v30;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pLevelDecorations[uDecorationID].vPosition.x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pLevelDecorations[uDecorationID].vPosition.y;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pLevelDecorations[uDecorationID].vPosition.z;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = view_x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = Vec3f(view_x, view_y, view_z).length();
-                pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, uDecorationID);
-                pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = Color();
-                pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v11;
-            }
+            pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = v11->paletteId;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor = { billb_scale, billb_scale };
+            pBillboardRenderList[uNumBillboardsToDraw - 1].flags = v30;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].worldPos = pLevelDecorations[uDecorationID].vPosition;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenPos = projected;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
+            pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, uDecorationID);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = Color();
         }
     }
 }
