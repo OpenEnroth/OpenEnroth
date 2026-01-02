@@ -238,7 +238,6 @@ void ParticleEngine::DrawParticles_BLV() {
                     pLines.pLineVertices[2 * pLines.uNumLines].pos.z = 1.0 - 1.0 / (p->view_space_z * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines].rhw = 1.0;
                     pLines.pLineVertices[2 * pLines.uNumLines].diffuse = p->uLightColor_bgr;
-                    pLines.pLineVertices[2 * pLines.uNumLines].specular = Color();
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.x = 0.0;
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.y = 0.0;
 
@@ -247,7 +246,6 @@ void ParticleEngine::DrawParticles_BLV() {
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.z = 1.0 - 1.0 / ((short)p->view_space_z_lineEnd * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].rhw = 1.0;
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].diffuse = p->uLightColor_bgr;
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].specular = Color();
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].texcoord.x = 0.0;
                     pLines.pLineVertices[2 * pLines.uNumLines++ + 1].texcoord.y = 0.0;
                 }

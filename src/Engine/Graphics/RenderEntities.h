@@ -50,7 +50,6 @@ struct RenderVertexD3D3 {
     Vec3f pos;
     float rhw = 0;
     Color diffuse;
-    Color specular;
     Vec2f texcoord;
 };
 

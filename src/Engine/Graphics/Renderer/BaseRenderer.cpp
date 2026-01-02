@@ -348,8 +348,6 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     else
         billboard->opacity = RenderBillboardD3D::Transparent;
 
-    Color specular;
-
     float point_x = pSprite->uWidth / 2 - pSprite->uAreaX;
     float point_y = pSprite->uHeight - pSprite->uAreaY;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
@@ -358,14 +356,12 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[0].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[0].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f  / pCamera3D->GetFarClip()); // TODO(pskelton): no point in setting this
     billboard->pQuads[0].rhw = 1.f / pBillboard->view_space_z; // TODO(pskelton): no point in setting this
-    billboard->pQuads[0].specular = specular;
     billboard->pQuads[0].texcoord.x = 0.f;
     billboard->pQuads[0].texcoord.y = 0.f;
 
     point_x = pSprite->uWidth / 2 - pSprite->uAreaX;
     point_y = -pSprite->uAreaY;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x = point_x * -1.f;
-    billboard->pQuads[1].specular = specular;
     billboard->pQuads[1].diffuse = diffuse;
     billboard->pQuads[1].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
     billboard->pQuads[1].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
@@ -378,7 +374,6 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     point_y = -pSprite->uAreaY;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[2].diffuse = diffuse;
-    billboard->pQuads[2].specular = specular;
     billboard->pQuads[2].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
     billboard->pQuads[2].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[2].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
@@ -390,7 +385,6 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     point_y = pSprite->uHeight - pSprite->uAreaY;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[3].diffuse = diffuse;
-    billboard->pQuads[3].specular = specular;
     billboard->pQuads[3].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
     billboard->pQuads[3].pos.y = pBillboard->screenPos.y - point_y * scr_proj_y;
     billboard->pQuads[3].pos.z = 1.f - 1.f / (pBillboard->view_space_z * 1000.f / pCamera3D->GetFarClip());
@@ -432,7 +426,6 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         billboard->pQuads[0].pos.x = (acos * v16 - asin * v17) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[0].pos.y = (acos * v17 + asin * v16 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
         billboard->pQuads[0].pos.z = z;
-        billboard->pQuads[0].specular = Color();
         billboard->pQuads[0].diffuse = p.uLightColor_bgr;
         billboard->pQuads[0].rhw = rhw;
         billboard->pQuads[0].texcoord.x = 0.f;
@@ -445,7 +438,6 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         billboard->pQuads[1].pos.x = (acos * v31 - asin * v32) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[1].pos.y = (acos * v32 + asin * v31 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
         billboard->pQuads[1].pos.z = z;
-        billboard->pQuads[1].specular = Color();
         billboard->pQuads[1].diffuse = p.uLightColor_bgr;
         billboard->pQuads[1].rhw = rhw;
         billboard->pQuads[1].texcoord.x = 0.0;
@@ -458,7 +450,6 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         billboard->pQuads[2].pos.x = (acos * v23 - asin * v24) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[2].pos.y = (acos * v24 + asin * v23 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
         billboard->pQuads[2].pos.z = z;
-        billboard->pQuads[2].specular = Color();
         billboard->pQuads[2].diffuse = p.uLightColor_bgr;
         billboard->pQuads[2].rhw = rhw;
         billboard->pQuads[2].texcoord.x = 1.0;
@@ -471,7 +462,6 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         billboard->pQuads[3].pos.x = (acos * v39 - asin * v40) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[3].pos.y = (acos * v40 + asin * v39 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
         billboard->pQuads[3].pos.z = z;
-        billboard->pQuads[3].specular = Color();
         billboard->pQuads[3].diffuse = p.uLightColor_bgr;
         billboard->pQuads[3].rhw = rhw;
         billboard->pQuads[3].texcoord.x = 1.0;
@@ -536,7 +526,6 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
             v12 = diffuse;
         }
         pBillboardRenderListD3D[v5].pQuads[i].diffuse = v12;
-        pBillboardRenderListD3D[v5].pQuads[i].specular = Color();
 
         pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.5;
         pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.5;

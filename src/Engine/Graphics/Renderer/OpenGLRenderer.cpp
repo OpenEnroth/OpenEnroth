@@ -335,7 +335,6 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
     v29[0].pos.z = srcz;
     v29[0].rhw = srcrhw;
     v29[0].diffuse = colorTable.White;
-    v29[0].specular = Color();
     v29[0].texcoord.x = 1.0;
     v29[0].texcoord.y = 0.0;
 
@@ -344,7 +343,6 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
     v29[1].pos.z = dstz;
     v29[1].rhw = dstrhw;
     v29[1].diffuse = colorTable.White;
-    v29[1].specular = Color();
     v29[1].texcoord.x = 1.0;
     v29[1].texcoord.y = 1.0;
 
@@ -353,7 +351,6 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
     v29[2].pos.z = dstz;
     v29[2].rhw = dstrhw;
     v29[2].diffuse = colorTable.White;
-    v29[2].specular = Color();
     v29[2].texcoord.x = 0.0;
     v29[2].texcoord.y = 1.0;
 
@@ -362,7 +359,6 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
     v29[3].pos.z = srcz;
     v29[3].rhw = srcrhw;
     v29[3].diffuse = colorTable.White;
-    v29[3].specular = Color();
     v29[3].texcoord.x = 0.0;
     v29[3].texcoord.y = 0.0;
 
