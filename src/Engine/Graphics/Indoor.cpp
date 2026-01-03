@@ -1210,9 +1210,9 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         particle.x = (double)pLevelDecorations[uDecorationID].vPosition.x;
         particle.y = (double)pLevelDecorations[uDecorationID].vPosition.y;
         particle.z = (double)pLevelDecorations[uDecorationID].vPosition.z;
-        particle.r = 0.0;
-        particle.g = 0.0;
-        particle.b = 0.0;
+        particle.shiftX = 0.0;
+        particle.shiftY = 0.0;
+        particle.shiftZ = 0.0;
         particle.particle_size = 1.0;
         particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
         particle.texture = spell_fx_renderer->effpar01;

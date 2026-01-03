@@ -31,9 +31,9 @@ struct Particle_sw {
     float x{};
     float y{};
     float z{};
-    float r{};
-    float g{};
-    float b{};
+    float shiftX{};
+    float shiftY{};
+    float shiftZ{};
     Color uDiffuse{};
     Duration timeToLive{};
     GraphicsImage *texture{ nullptr };

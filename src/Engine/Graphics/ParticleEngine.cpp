@@ -81,9 +81,9 @@ void ParticleEngine::AddParticle(Particle_sw *particle) {
             freeParticle->_x = particle->x;
             freeParticle->_y = particle->y;
             freeParticle->_z = particle->z;
-            freeParticle->shift_x = particle->r; // TODO: seems Particle_sw struct fields are mixed up here
-            freeParticle->shift_y = particle->g;
-            freeParticle->shift_z = particle->b;
+            freeParticle->shift_x = particle->shiftX;
+            freeParticle->shift_y = particle->shiftY;
+            freeParticle->shift_z = particle->shiftZ;
             freeParticle->uParticleColor = particle->uDiffuse;
             freeParticle->uLightColor_bgr = particle->uDiffuse;
             // v6 = (v4->uType & 4) == 0;
