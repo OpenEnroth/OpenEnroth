@@ -61,6 +61,7 @@ class Renderer {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
     virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) = 0;
     virtual void TransformBillboards() = 0;
+    virtual bool AddBillboardIfVisible(Sprite* spr, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector = 0) = 0;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
@@ -179,9 +180,9 @@ class Renderer {
 
 extern Renderer *render;
 
-extern int uNumDecorationsDrawnThisFrame;
 extern RenderBillboard pBillboardRenderList[500];
-extern unsigned int uNumBillboardsToDraw;
+extern int uNumBillboardsToDraw;
+extern int uNumDecorationsDrawnThisFrame;
 extern int uNumSpritesDrawnThisFrame;
 
 extern RenderVertexSoft VertexRenderList[50];

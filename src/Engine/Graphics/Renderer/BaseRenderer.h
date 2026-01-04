@@ -20,6 +20,8 @@ class BaseRenderer : public Renderer {
     virtual bool Initialize() override;
 
     virtual void TransformBillboards() override;
+    virtual bool AddBillboardIfVisible(Sprite* spr, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector = 0) override;
+
     virtual void DrawSpriteObjects() override;
     virtual void PrepareDecorationsRenderList_ODM() override;
     virtual void MakeParticleBillboardAndPush(const Particle& p) override;

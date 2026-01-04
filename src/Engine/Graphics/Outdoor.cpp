@@ -778,62 +778,32 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
         // no sprite frame to draw
         if (frame->animationName == "null") continue;
-        if (frame->sprites[Sprite_Octant]->texture->height() == 0 || frame->sprites[Sprite_Octant]->texture->width() == 0)
-            assert(false);
 
-        BillboardFlags flags = billboardFlagsForSprite(frame->flags, Sprite_Octant);
 
         if (frame->glowRadius) {
             pMobileLightsStack->AddLight(posMod, pActors[i].sectorId, frame->glowRadius, colorTable.White,
                                          _4E94D3_light_type);
         }
 
-        Vec3f viewSpace;
-        bool visible = pCamera3D->ViewClip(posMod, &viewSpace);
+        BillboardFlags flags = billboardFlagsForSprite(frame->flags, Sprite_Octant);
+        if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
+            flags |= BILLBOARD_STONED;
+        }
 
-        if (visible) {
-            Vec2f projected = pCamera3D->Project(viewSpace);
-            float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / viewSpace.x;
-            float billboardWidth = billb_scale * frame->sprites[Sprite_Octant]->uWidth;
-            float billboardHeight = billb_scale * frame->sprites[Sprite_Octant]->uHeight;
-            Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
+        Vec2f billScale = { frame->scale, frame->scale };
+        if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].buffs[ACTOR_BUFF_SHRINK].power > 0) {
+            billScale.y /= pActors[i].buffs[ACTOR_BUFF_SHRINK].power;
+        } else if (pActors[i].massDistortionTime) {
+            billScale.y *= spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]);
+        }
 
-            if (pViewport.intersects(billboardRect)) {
-                ++uNumBillboardsToDraw;
-                ++uNumSpritesDrawnThisFrame;
-
-                pActors[i].attributes |= ACTOR_VISIBLE;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = frame->sprites[Sprite_Octant];
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].sectorId;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
-
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor = { billb_scale, billb_scale };
-
-                if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Active() &&
-                    pActors[i].buffs[ACTOR_BUFF_SHRINK].power > 0) {
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor.y =
-                        1.0f / pActors[i].buffs[ACTOR_BUFF_SHRINK].power *
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor.y;
-                } else if (pActors[i].massDistortionTime) {
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor.y =
-                        spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor.y;
-                }
-
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenPos = projected;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
-                pBillboardRenderList[uNumBillboardsToDraw - 1].worldPos = posMod;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Actor, i);
-
-                pBillboardRenderList[uNumBillboardsToDraw - 1].flags = flags | BILLBOARD_0X200;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
-                    pMonsterList->monsters[pActors[i].monsterInfo.id].tintColor;
-                if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].flags = flags | BILLBOARD_STONED;
-                }
-            }
+        if (render->AddBillboardIfVisible(frame->sprites[Sprite_Octant], frame->paletteId, posMod, billScale, flags, Pid(OBJECT_Actor, i), pActors[i].sectorId)) {
+            ++uNumSpritesDrawnThisFrame;
+            pActors[i].attributes |= ACTOR_VISIBLE;
+            // TODO(pskelton): drop tint color anyway?
+            pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->monsters[pActors[i].monsterInfo.id].tintColor;
+            // TODO(pskelton): what is this for?
+            pBillboardRenderList[uNumBillboardsToDraw - 1].flags |= BILLBOARD_0X200;
         }
     }
 }

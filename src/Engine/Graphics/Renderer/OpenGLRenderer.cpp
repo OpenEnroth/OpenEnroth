@@ -63,9 +63,9 @@ static constexpr int DEFAULT_AMBIENT_LIGHT_LEVEL = 0;
 
 // globals
 //TODO(pskelton): Combine and contain
-int uNumDecorationsDrawnThisFrame;
 RenderBillboard pBillboardRenderList[500];
-unsigned int uNumBillboardsToDraw;
+int uNumBillboardsToDraw;
+int uNumDecorationsDrawnThisFrame;
 int uNumSpritesDrawnThisFrame;
 RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
