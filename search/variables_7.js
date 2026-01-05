@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['g_0',['g',['../structColor.html#a23331f00b02491a901873b5085461d99',1,'Color::g()'],['../structColorf.html#a78a63e0f8a3e3c076b01dd8256124ad5',1,'Colorf::g()'],['../structParticle__sw.html#a40047b52ad61460c7680a0fcf8656ca1',1,'Particle_sw::g()']]],
+  ['g_0',['g',['../structColorf.html#a78a63e0f8a3e3c076b01dd8256124ad5',1,'Colorf::g()'],['../structColor.html#a23331f00b02491a901873b5085461d99',1,'Color::g()']]],
   ['game_1',['game',['../classGameTest.html#aa0244276a149f58d175c4d42da1dba03',1,'GameTest']]],
   ['game_5fseconds_5fin_5frealtime_5fsecond_2',['GAME_SECONDS_IN_REALTIME_SECOND',['../classDuration.html#abfbf2141a3b1afbf877b6a06fdf50ca9',1,'Duration']]],
   ['game_5fstarting_5fyear_3',['game_starting_year',['../Time_8h.html#a2ad26c3f2b5e54993203668a354ea997',1,'Time.h']]],
@@ -28,7 +28,7 @@ var searchData=
   ['game_5fui_5fmenu_5foptions_5fvideo_5fgamma_5fpositions_25',['game_ui_menu_options_video_gamma_positions',['../UIGame_8cpp.html#a7165ba9b009f1fb7f53cb47c762e0173',1,'UIGame.cpp']]],
   ['game_5fui_5fmenu_5foptions_5fvideo_5ftinting_26',['game_ui_menu_options_video_tinting',['../UIGame_8cpp.html#a8900a7b42efa15b1ca798d63d3e09c5f',1,'UIGame.cpp']]],
   ['game_5fui_5fmenu_5fquit_27',['game_ui_menu_quit',['../UIGame_8h.html#a5d84042488df2a88c400ad46b26c0154',1,'game_ui_menu_quit():&#160;UIGame.cpp'],['../UIGame_8cpp.html#a5d84042488df2a88c400ad46b26c0154',1,'game_ui_menu_quit():&#160;UIGame.cpp']]],
-  ['game_5fui_5fmenu_5fresume_28',['game_ui_menu_resume',['../UIGame_8h.html#a3846d912298dbc37000c3ef039a8dde7',1,'game_ui_menu_resume():&#160;UIGame.cpp'],['../UIGame_8cpp.html#a3846d912298dbc37000c3ef039a8dde7',1,'game_ui_menu_resume():&#160;UIGame.cpp']]],
+  ['game_5fui_5fmenu_5fresume_28',['game_ui_menu_resume',['../UIGame_8cpp.html#a3846d912298dbc37000c3ef039a8dde7',1,'game_ui_menu_resume():&#160;UIGame.cpp'],['../UIGame_8h.html#a3846d912298dbc37000c3ef039a8dde7',1,'game_ui_menu_resume():&#160;UIGame.cpp']]],
   ['game_5fui_5fmenu_5fsave_29',['game_ui_menu_save',['../UIGame_8h.html#a11642185652443b0bcb46e61c628a095',1,'game_ui_menu_save():&#160;UIGame.cpp'],['../UIGame_8cpp.html#a11642185652443b0bcb46e61c628a095',1,'game_ui_menu_save():&#160;UIGame.cpp']]],
   ['game_5fui_5fminimap_5fcompass_30',['game_ui_minimap_compass',['../UIGame_8h.html#a4828d0676869889cf882017fbb57472d',1,'game_ui_minimap_compass():&#160;UIGame.cpp'],['../UIGame_8cpp.html#a4828d0676869889cf882017fbb57472d',1,'game_ui_minimap_compass():&#160;UIGame.cpp']]],
   ['game_5fui_5fminimap_5fdirs_31',['game_ui_minimap_dirs',['../UIGame_8cpp.html#a61088c6e63d12c08bb24a519433bd795',1,'game_ui_minimap_dirs():&#160;UIGame.cpp'],['../UIGame_8h.html#a61088c6e63d12c08bb24a519433bd795',1,'game_ui_minimap_dirs():&#160;UIGame.cpp']]],

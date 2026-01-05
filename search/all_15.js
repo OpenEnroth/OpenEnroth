@@ -554,7 +554,7 @@ var searchData=
   ['unumarenawins_551',['uNumArenaWins',['../structParty.html#a9bb7a5349fa512ce80123eefe19f6059',1,'Party']]],
   ['unumarmageddoncasts_552',['uNumArmageddonCasts',['../classCharacter.html#abc0f18b6f8c10b7930d79b2592c13b07',1,'Character']]],
   ['unumbillboards_553',['uNumBillboards',['../structODMRenderParams.html#a3c5668a315610cc788f06fa06be6f707',1,'ODMRenderParams']]],
-  ['unumbillboardstodraw_554',['uNumBillboardsToDraw',['../OpenGLRenderer_8cpp.html#a6febe181f878f6fbcaff79909f3cd767',1,'uNumBillboardsToDraw():&#160;OpenGLRenderer.cpp'],['../Renderer_8h.html#a6febe181f878f6fbcaff79909f3cd767',1,'uNumBillboardsToDraw():&#160;OpenGLRenderer.cpp'],['../classRenderer.html#a31aabb552aa94c72768f457d83c323b3',1,'Renderer::uNumBillboardsToDraw()']]],
+  ['unumbillboardstodraw_554',['uNumBillboardsToDraw',['../OpenGLRenderer_8cpp.html#a41dc90a80510a01050cda9b234fd99d8',1,'uNumBillboardsToDraw():&#160;OpenGLRenderer.cpp'],['../Renderer_8h.html#a41dc90a80510a01050cda9b234fd99d8',1,'uNumBillboardsToDraw():&#160;OpenGLRenderer.cpp'],['../classRenderer.html#a31aabb552aa94c72768f457d83c323b3',1,'Renderer::uNumBillboardsToDraw()']]],
   ['unumbloodsplats_555',['uNumBloodsplats',['../structBloodsplatContainer.html#a8f009784f16602293893533c8f3d04d0',1,'BloodsplatContainer']]],
   ['unumbluefacesinblvminimap_556',['uNumBlueFacesInBLVMinimap',['../mm7__data_8cpp.html#a635f50ee8f03b2425d661c15f2ddc476',1,'uNumBlueFacesInBLVMinimap():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a635f50ee8f03b2425d661c15f2ddc476',1,'uNumBlueFacesInBLVMinimap():&#160;mm7_data.cpp']]],
   ['unumbountiescollected_557',['uNumBountiesCollected',['../structParty.html#a693534bffb198f69ceb9f8d3928a06a0',1,'Party']]],

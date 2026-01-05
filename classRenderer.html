@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;675ff75</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2ef3484</span>
    </div>
   </td>
  </tr>
@@ -127,6 +127,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aca3d9ace9a450ed3c6c3aa5ff79de260"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49616919e827c63bbd9d5bc9955ffb87"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a49616919e827c63bbd9d5bc9955ffb87">TransformBillboards</a> ()=0</td></tr>
 <tr class="separator:a49616919e827c63bbd9d5bc9955ffb87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ff59e78051bc8d6b385945e047e778b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a9ff59e78051bc8d6b385945e047e778b">AddBillboardIfVisible</a> (<a class="el" href="classSprite.html">Sprite</a> *spr, int palette, const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos, const <a class="el" href="Vec_8h.html#a0a204091a6626c84fd980a6c492469f6">Vec2f</a> &amp;scale, BillboardFlags flags, <a class="el" href="classPid.html">Pid</a> id, int sector=0)=0</td></tr>
+<tr class="separator:a9ff59e78051bc8d6b385945e047e778b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62bb378339c5888c9cf9a9db0c56f082"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a62bb378339c5888c9cf9a9db0c56f082">DrawProjectile</a> (float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *texture)=0</td></tr>
 <tr class="separator:a62bb378339c5888c9cf9a9db0c56f082"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbff36e3c59ca503db1fa3824f1a675a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classTextureRenderId.html">TextureRenderId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#adbff36e3c59ca503db1fa3824f1a675a">CreateTexture</a> (<a class="el" href="Library_2Image_2Image_8h.html#ab46117a6bb4ec93c50bc59858278d567">RgbaImageView</a> image)=0</td></tr>
@@ -329,6 +331,74 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9ff59e78051bc8d6b385945e047e778b" name="a9ff59e78051bc8d6b385945e047e778b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ff59e78051bc8d6b385945e047e778b">&#9670;&#160;</a></span>AddBillboardIfVisible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool Renderer::AddBillboardIfVisible </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classSprite.html">Sprite</a> *&#160;</td>
+          <td class="paramname"><em>spr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>palette</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;&#160;</td>
+          <td class="paramname"><em>pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="Vec_8h.html#a0a204091a6626c84fd980a6c492469f6">Vec2f</a> &amp;&#160;</td>
+          <td class="paramname"><em>scale</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">BillboardFlags&#160;</td>
+          <td class="paramname"><em>flags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>sector</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classBaseRenderer.html#a21f39a885512f3f019d6f85b2948e393">BaseRenderer</a>.</p>
+
+</div>
+</div>
 <a id="a846ee084b8d767cdeba943f65c07246b" name="a846ee084b8d767cdeba943f65c07246b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a846ee084b8d767cdeba943f65c07246b">&#9670;&#160;</a></span>BeginDecals()</h2>
 

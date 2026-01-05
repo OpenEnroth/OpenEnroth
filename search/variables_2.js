@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['b_0',['b',['../structColor.html#a78ede410fb277ade36fbb157f0235d6f',1,'Color::b()'],['../structColorf.html#a1b36e45d68f97229da79a61c390e3e52',1,'Colorf::b()'],['../structPlaneZCalcf.html#a83295d1c05ce64d3b7fc2ce3d7d367b5',1,'PlaneZCalcf::b()'],['../structTestPair.html#a29b703b6f9257651a0aac1647ec5a7d9',1,'TestPair::b()'],['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()']]],
+  ['b_0',['b',['../structColorf.html#a1b36e45d68f97229da79a61c390e3e52',1,'Colorf::b()'],['../structPlaneZCalcf.html#a83295d1c05ce64d3b7fc2ce3d7d367b5',1,'PlaneZCalcf::b()'],['../structTestPair.html#a29b703b6f9257651a0aac1647ec5a7d9',1,'TestPair::b()'],['../structColor.html#a78ede410fb277ade36fbb157f0235d6f',1,'Color::b()']]],
   ['backpack_1',['backpack',['../structEventTraceCharacterState.html#ae86a0dca97fdde5fb4a86476923629b8',1,'EventTraceCharacterState']]],
   ['backsectorid_2',['backSectorId',['../structBLVFace__MM7.html#a88e3634fe2739596cad493cac67673a8',1,'BLVFace_MM7']]],
   ['backward_3',['Backward',['../classGameConfig_1_1Gamepad.html#aa2d0abf232213ea4f898086c8eac8095',1,'GameConfig::Gamepad::Backward()'],['../classGameConfig_1_1Keybindings.html#aa038beb5da59cbf22fd2555762e9099e',1,'GameConfig::Keybindings::Backward()']]],
@@ -85,7 +85,7 @@ var searchData=
   ['buffer_5fstart_82',['buffer_start',['../structbstreamer.html#a07ce03b5323036ba9302037fe850330b',1,'bstreamer']]],
   ['buffs_83',['buffs',['../classActor.html#a54110025d368f9e1a90dde532714f5c0',1,'Actor']]],
   ['building_5fgamme_84',['building_gamme',['../structODMRenderParams.html#a7fbc6fd236f96f7c1cbb9b1008f9f18e',1,'ODMRenderParams']]],
-  ['button_85',['button',['../structHouseNpcDesc.html#aae0393e74fb01fdeabc553e764a315ca',1,'HouseNpcDesc::button()'],['../classPlatformMouseEvent.html#af17e75fe234639b3fac26fb425fca2f5',1,'PlatformMouseEvent::button()']]],
+  ['button_85',['button',['../classPlatformMouseEvent.html#af17e75fe234639b3fac26fb425fca2f5',1,'PlatformMouseEvent::button()'],['../structHouseNpcDesc.html#aae0393e74fb01fdeabc553e764a315ca',1,'HouseNpcDesc::button()']]],
   ['buttons_86',['buttons',['../classPlatformMouseEvent.html#a07f8dacd42bce1c04d64f9e90ca969c5',1,'PlatformMouseEvent']]],
   ['bvisible_87',['bVisible',['../structODMFace__MM7.html#a2b3462dec80a5eb7f98ef46efde2dac1',1,'ODMFace_MM7::bVisible()'],['../structODMFace.html#a58b2f9f03de81c6646ea70fe9fa23c0f',1,'ODMFace::bVisible()']]],
   ['byte_5f4ecf08_88',['byte_4ECF08',['../mm7__data_8cpp.html#ae312e333acdc4d62e19030e47b21f065',1,'byte_4ECF08():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ae312e333acdc4d62e19030e47b21f065',1,'byte_4ECF08():&#160;mm7_data.cpp']]],
