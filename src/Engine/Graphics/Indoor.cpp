@@ -1204,15 +1204,16 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[uDecorationID].uDecorationDescID);
 
     if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
+        // TODO(pskelton): common emit fire code
         memset(&particle, 0, sizeof(Particle_sw));  // fire,  like at the Pit's tavern
         particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
         particle.uDiffuse = colorTable.OrangeyRed;
         particle.x = (double)pLevelDecorations[uDecorationID].vPosition.x;
         particle.y = (double)pLevelDecorations[uDecorationID].vPosition.y;
         particle.z = (double)pLevelDecorations[uDecorationID].vPosition.z;
-        particle.r = 0.0;
-        particle.g = 0.0;
-        particle.b = 0.0;
+        particle.shiftX = 0.0;
+        particle.shiftY = 0.0;
+        particle.shiftZ = 0.0;
         particle.particle_size = 1.0;
         particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
         particle.texture = spell_fx_renderer->effpar01;
@@ -1239,38 +1240,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
     v30 = billboardFlagsForSprite(v11->flags, v9);
 
-    Vec3f viewSpace;
-    bool visible = pCamera3D->ViewClip(pLevelDecorations[uDecorationID].vPosition, &viewSpace);
-
-    if (visible) {
-        Vec2f projected = pCamera3D->Project(viewSpace);
-        float billb_scale = v11->scale * pCamera3D->ViewPlaneDistPixels / viewSpace.x;
-        float billboardWidth = billb_scale * v11->sprites[(int64_t)v9]->uWidth;
-        float billboardHeight = billb_scale * v11->sprites[(int64_t)v9]->uHeight;
-        Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
-
-        if (pViewport.intersects(billboardRect)) {
-            assert(uNumBillboardsToDraw < 500);
-            ++uNumBillboardsToDraw;
-            ++uNumDecorationsDrawnThisFrame;
-
-            pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v11->sprites[v9];
-
-            if (v11->sprites[v9]->texture->height() == 0 || v11->sprites[v9]->texture->width() == 0)
-                assert(false);
-
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = v11->paletteId;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor = { billb_scale, billb_scale };
-            pBillboardRenderList[uNumBillboardsToDraw - 1].flags = v30;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].worldPos = pLevelDecorations[uDecorationID].vPosition;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenPos = projected;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_z = viewSpace.x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].view_space_L2 = viewSpace.length();
-            pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, uDecorationID);
-            pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = Color();
-        }
-    }
+    if (render->AddBillboardIfVisible(v11->sprites[v9], v11->paletteId, pLevelDecorations[uDecorationID].vPosition, {v11->scale, v11->scale}, v30, Pid(OBJECT_Decoration, uDecorationID), uSectorID))
+        ++uNumDecorationsDrawnThisFrame;
 }
 
 //----- (00407A1C) --------------------------------------------------------

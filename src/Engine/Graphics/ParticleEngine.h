@@ -31,18 +31,14 @@ struct Particle_sw {
     float x{};
     float y{};
     float z{};
-    float r{};
-    float g{};
-    float b{};
+    float shiftX{};
+    float shiftY{};
+    float shiftZ{};
     Color uDiffuse{};
     Duration timeToLive{};
     GraphicsImage *texture{ nullptr };
     int paletteID{ 0 };
     float particle_size{};
-    int field_2C{};
-    int field_30{};
-    int field_34{};
-    int field_38[12]{};
 };
 
 struct Particle {

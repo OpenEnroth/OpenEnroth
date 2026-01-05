@@ -81,9 +81,9 @@ void ParticleEngine::AddParticle(Particle_sw *particle) {
             freeParticle->_x = particle->x;
             freeParticle->_y = particle->y;
             freeParticle->_z = particle->z;
-            freeParticle->shift_x = particle->r; // TODO: seems Particle_sw struct fields are mixed up here
-            freeParticle->shift_y = particle->g;
-            freeParticle->shift_z = particle->b;
+            freeParticle->shift_x = particle->shiftX;
+            freeParticle->shift_y = particle->shiftY;
+            freeParticle->shift_z = particle->shiftZ;
             freeParticle->uParticleColor = particle->uDiffuse;
             freeParticle->uLightColor_bgr = particle->uDiffuse;
             // v6 = (v4->uType & 4) == 0;
@@ -238,7 +238,6 @@ void ParticleEngine::DrawParticles_BLV() {
                     pLines.pLineVertices[2 * pLines.uNumLines].pos.z = 1.0 - 1.0 / (p->view_space_z * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines].rhw = 1.0;
                     pLines.pLineVertices[2 * pLines.uNumLines].diffuse = p->uLightColor_bgr;
-                    pLines.pLineVertices[2 * pLines.uNumLines].specular = Color();
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.x = 0.0;
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.y = 0.0;
 
@@ -247,7 +246,6 @@ void ParticleEngine::DrawParticles_BLV() {
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.z = 1.0 - 1.0 / ((short)p->view_space_z_lineEnd * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].rhw = 1.0;
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].diffuse = p->uLightColor_bgr;
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].specular = Color();
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].texcoord.x = 0.0;
                     pLines.pLineVertices[2 * pLines.uNumLines++ + 1].texcoord.y = 0.0;
                 }

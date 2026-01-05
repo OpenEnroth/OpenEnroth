@@ -48,9 +48,8 @@ struct RenderVertexSoft {
 
 struct RenderVertexD3D3 {
     Vec3f pos;
-    float rhw = 0;
+    float rhw = 0.0f;
     Color diffuse;
-    Color specular;
     Vec2f texcoord;
 };
 

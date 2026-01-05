@@ -217,9 +217,9 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         local_0.x = x + 4.0;
         local_0.y = y;
         local_0.z = z;
-        local_0.r = 0.0;
-        local_0.g = 0.0;
-        local_0.b = 0.0;
+        local_0.shiftX = 0.0;
+        local_0.shiftY = 0.0;
+        local_0.shiftZ = 0.0;
         local_0.timeToLive = Duration::randomRealtimeMilliseconds(vrng, 750, 1250); // was either 750 or 1250 ms, we made it into [750, 1250).
         local_0.texture = texture;
         local_0.particle_size = 1.0f;
@@ -246,9 +246,9 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         local_0.x = v10 + 4.0f;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
-        local_0.r = 0.0f;
-        local_0.g = 0.0f;
-        local_0.b = 0.0f;
+        local_0.shiftX = 0.0f;
+        local_0.shiftY = 0.0f;
+        local_0.shiftZ = 0.0f;
         local_0.particle_size = 1.0f;
         local_0.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2);
         local_0.texture = texture;
@@ -277,9 +277,9 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
     local_0.texture = texture;
     local_0.particle_size = 1.0f;
     do {
-        local_0.r = (float) vrng->random(0x200) - 255.0f;
-        local_0.g = (float) vrng->random(0x200) - 255.0f;
-        local_0.b = (float) vrng->random(0x200) - 255.0f;
+        local_0.shiftX = (float) vrng->random(0x200) - 255.0f;
+        local_0.shiftY = (float) vrng->random(0x200) - 255.0f;
+        local_0.shiftZ = (float) vrng->random(0x200) - 255.0f;
         particle_engine->AddParticle(&local_0);
         --v5;
     } while (v5);
@@ -305,9 +305,9 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
 
     // 10 fireball sparks
     for (unsigned int i = 0; i < 10; ++i) {
-        local_0.r = vrng->random(0x200) - 255;
-        local_0.g = vrng->random(0x200) - 255;
-        local_0.b = vrng->random(0x200) - 255;
+        local_0.shiftX = vrng->random(0x200) - 255;
+        local_0.shiftY = vrng->random(0x200) - 255;
+        local_0.shiftZ = vrng->random(0x200) - 255;
         particle_engine->AddParticle(&local_0);
     }
 
@@ -341,9 +341,9 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Dst.particle_size = 1.0;
     Dst.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2);
     for (int i = 0; i < 10; i++) {
-        Dst.r = (float) vrng->random(0x200) - 255.0f;
-        Dst.g = (float) vrng->random(0x200) - 255.0f;
-        Dst.b = (float) vrng->random(0x200) - 255.0f;
+        Dst.shiftX = (float) vrng->random(0x200) - 255.0f;
+        Dst.shiftY = (float) vrng->random(0x200) - 255.0f;
+        Dst.shiftZ = (float) vrng->random(0x200) - 255.0f;
         particle_engine->AddParticle(&Dst);
     }
 }
@@ -382,43 +382,43 @@ void SpellFxRenderer::
     local_0.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2);
     local_0.texture = texture;
     a1a = v7;
-    local_0.r = v7;
-    local_0.g = a4;
-    local_0.b = a4;
+    local_0.shiftX = v7;
+    local_0.shiftY = a4;
+    local_0.shiftZ = a4;
     particle_engine->AddParticle(&local_0);
     v8 = 0.70710677 * a4;
     uDiffusea = v8;
-    local_0.r = v8;
-    local_0.g = v8;
-    local_0.b = a4;
+    local_0.shiftX = v8;
+    local_0.shiftY = v8;
+    local_0.shiftZ = a4;
     particle_engine->AddParticle(&local_0);
-    local_0.g = a1a;
-    local_0.r = a4;
-    local_0.b = a4;
+    local_0.shiftY = a1a;
+    local_0.shiftX = a4;
+    local_0.shiftZ = a4;
     particle_engine->AddParticle(&local_0);
-    local_0.r = uDiffusea;
-    local_0.b = a4;
+    local_0.shiftX = uDiffusea;
+    local_0.shiftZ = a4;
     v9 = -uDiffusea;
     uTextureIDa = v9;
-    local_0.g = v9;
+    local_0.shiftY = v9;
     particle_engine->AddParticle(&local_0);
     v10 = -1.0 * a4;
-    local_0.r = a1a;
+    local_0.shiftX = a1a;
     v12 = v10;
-    local_0.g = v10;
-    local_0.b = a4;
+    local_0.shiftY = v10;
+    local_0.shiftZ = a4;
     particle_engine->AddParticle(&local_0);
-    local_0.b = a4;
-    local_0.r = uTextureIDa;
-    local_0.g = uTextureIDa;
+    local_0.shiftZ = a4;
+    local_0.shiftX = uTextureIDa;
+    local_0.shiftY = uTextureIDa;
     particle_engine->AddParticle(&local_0);
-    local_0.r = v12;
-    local_0.g = a1a;
-    local_0.b = a4;
+    local_0.shiftX = v12;
+    local_0.shiftY = a1a;
+    local_0.shiftZ = a4;
     particle_engine->AddParticle(&local_0);
-    local_0.r = uTextureIDa;
-    local_0.g = uDiffusea;
-    local_0.b = a4;
+    local_0.shiftX = uTextureIDa;
+    local_0.shiftY = uDiffusea;
+    local_0.shiftZ = a4;
     particle_engine->AddParticle(&local_0);
 }
 
@@ -432,9 +432,9 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.x = ((float)a2->vPosition.x - v6->flt_0_x) * 0.5f + v6->flt_0_x;
         local_0.y = ((float)a2->vPosition.y - v6->flt_4_y) * 0.5f + v6->flt_4_y;
         local_0.z = ((float)a2->vPosition.z - v6->flt_8_z) * 0.5f + v6->flt_8_z;
-        local_0.r = 0.0f;
-        local_0.g = 0.0f;
-        local_0.b = 0.0f;
+        local_0.shiftX = 0.0f;
+        local_0.shiftY = 0.0f;
+        local_0.shiftZ = 0.0f;
 
         local_0.particle_size = 3.0;
         local_0.timeToLive = Duration::randomRealtimeMilliseconds(vrng, 500, 1000);
@@ -461,9 +461,9 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
-        local_0.r = 0.0f;
-        local_0.g = 0.0f;
-        local_0.b = 0.0f;
+        local_0.shiftX = 0.0f;
+        local_0.shiftY = 0.0f;
+        local_0.shiftZ = 0.0f;
         local_0.timeToLive = Duration::randomRealtimeMilliseconds(vrng, 500, 1000);
         local_0.texture = a2->getSpriteFrame()->sprites[0]->texture;
         local_0.paletteID = a2->getSpriteFrame()->paletteId;
@@ -533,9 +533,9 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
         z1 = (float)z;
         local_0.z = z1;
         local_0.y = vrng->randomFloat() * 40.0f - 20.0f + v11;
-        local_0.r = vrng->randomFloat() * 400.0f - 200.0f;
-        local_0.g = vrng->randomFloat() * 400.0f - 200.0f;
-        local_0.b = vrng->randomFloat() * 150.0f + 50.0f;
+        local_0.shiftX = vrng->randomFloat() * 400.0f - 200.0f;
+        local_0.shiftY = vrng->randomFloat() * 400.0f - 200.0f;
+        local_0.shiftZ = vrng->randomFloat() * 150.0f + 50.0f;
         particle_engine->AddParticle(&local_0);
         --v6;
     } while (v6);
