@@ -38,9 +38,12 @@ class Mouse {
 
     void UI_OnMouseLeftClick();
 
-    void SetMouseLook(bool look);
+    enum class MouseLookState { Disabled, Enabled, TempDisabled };
+    using enum MouseLookState;
+    void SetMouseLook(MouseLookState look);
     void ToggleMouseLook();
     void DoMouseLook(Pointi relChange);
+    void RestoreMouseLook();
 
     Pid uPointingObjectID;
     int field_8 = 0;
@@ -54,7 +57,7 @@ class Mouse {
     std::string cursor_name;
     Pointi _position;
 
-    bool _mouseLook = false;
+    MouseLookState _mouseLook = MouseLookState::Disabled;
 };
 }  // namespace Io
 

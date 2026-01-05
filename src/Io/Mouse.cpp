@@ -114,7 +114,7 @@ void Io::Mouse::DrawCursor() {
             pos.y -= (this->cursor_img->height()) / 2;
 
             render->DrawQuad2D(this->cursor_img, pos);
-        } else if (_mouseLook) {
+        } else if (_mouseLook == MouseLookState::Enabled) {
             platform->setCursorShown(false);
             auto pointer = assets->getImage_ColorKey("MICON2", colorTable.Black /*colorTable.TealMask*/);
             render->DrawQuad2D(pointer, pViewport.center() - pointer->size() / 2);
@@ -283,31 +283,41 @@ void Io::Mouse::UI_OnMouseLeftClick() {
     }
 }
 
-void Io::Mouse::SetMouseLook(bool enable) {
-    if (_mouseLook != enable) {
+void Io::Mouse::SetMouseLook(MouseLookState look) {
+    if (_mouseLook != look) {
         _position = pViewport.center();
         warpMouse(_position);
-        window->setMouseRelative(enable);
+        window->setMouseRelative(look == MouseLookState::Enabled);
     }
-    _mouseLook = enable;
+    _mouseLook = look;
 }
 
 void Io::Mouse::ToggleMouseLook() {
-    SetMouseLook(!_mouseLook);
+    // Toggle between enabled and disabled - temporary disabled is treated as enabled
+    if (_mouseLook == MouseLookState::Disabled) {
+        SetMouseLook(MouseLookState::Enabled);
+    } else {
+        SetMouseLook(MouseLookState::Disabled);
+    }
 }
 
 void Io::Mouse::DoMouseLook(Pointi relChange) {
-    if (!_mouseLook) {
+    if (_mouseLook != MouseLookState::Enabled) {
         return;
     }
 
-    const float sensitivity = 2.5f; // TODO(pskelton): move to config value
-    float modX = relChange.x * sensitivity;
-    float modY = relChange.y * sensitivity;
+    float modX = relChange.x * engine->config->settings.MouseLookSensitivity.value();
+    float modY = relChange.y * engine->config->settings.MouseLookSensitivity.value();
     pParty->_viewPitch -= modY;
     pParty->_viewPitch = std::clamp(pParty->_viewPitch, -320, 320);
     pParty->_viewYaw -= modX;
     pParty->_viewYaw &= TrigLUT.uDoublePiMask;
+}
+
+void Io::Mouse::RestoreMouseLook() {
+    if (_mouseLook == MouseLookState::TempDisabled) {
+        SetMouseLook(MouseLookState::Enabled);
+    }
 }
 
 // TODO(pskelton): Move this to keyboard

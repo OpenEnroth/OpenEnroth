@@ -480,7 +480,7 @@ Vis_PIDAndDepth Engine::PickMouseNormal() {
 void Engine::toggleOverlays() {
     bool isEnabled = _overlaySystem.isEnabled();
     _overlaySystem.setEnabled(!isEnabled);
-    mouse->SetMouseLook(false);
+    mouse->SetMouseLook(Io::Mouse::MouseLookState::Disabled);
 }
 
 void Engine::disableOverlays() {

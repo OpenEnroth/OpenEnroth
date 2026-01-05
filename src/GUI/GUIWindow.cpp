@@ -430,12 +430,12 @@ void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
 
 GUIWindow::GUIWindow() {
     this->mouse = EngineIocContainer::ResolveMouse();
-    this->mouse->SetMouseLook(false);
+    this->mouse->SetMouseLook(Io::Mouse::MouseLookState::TempDisabled);
 }
 
 GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType) {
     this->mouse = EngineIocContainer::ResolveMouse();
-    this->mouse->SetMouseLook(false);
+    this->mouse->SetMouseLook(Io::Mouse::MouseLookState::TempDisabled);
 
     logger->trace("New window: {}", toString(windowType));
     lWindowList.push_front(this);

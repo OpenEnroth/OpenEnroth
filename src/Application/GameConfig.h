@@ -613,6 +613,8 @@ class GameConfig : public Config {
 
         Bool ExtendedMonsterInfo = {this, "extended_monster_info", true, "Display second and special attack in the Monster Info popup."};
 
+        Float MouseLookSensitivity = { this, "mouse_look_sens", 2.5f, "Mouse sensitivty in mouse look mode." };
+
      private:
         static int ValidateLevel(int level) {
             return std::clamp(level, 0, 9);

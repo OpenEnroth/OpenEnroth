@@ -264,6 +264,7 @@ void Game::onEscape() {
     }
     pEventTimer->setPaused(false);
     current_screen_type = SCREEN_GAME;
+    mouse->RestoreMouseLook();
 }
 
 bool IsWindowSwitchable() {
