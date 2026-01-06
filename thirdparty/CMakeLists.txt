@@ -83,3 +83,7 @@ add_subdirectory(generator EXCLUDE_FROM_ALL)
 
 # lambda2
 add_subdirectory(lambda2)
+
+# ztd.text
+set(ZTD_IDK_EXCLUDE_FROM_ALL ON)
+add_subdirectory(ztd_text EXCLUDE_FROM_ALL)
