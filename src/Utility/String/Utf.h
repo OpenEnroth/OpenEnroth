@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-namespace unicode {
+namespace utf {
 
 /**
  * Convert a wide string to UTF-8.
@@ -27,5 +27,4 @@ std::string wideToUtf8(std::wstring_view wstr);
  */
 std::wstring utf8ToWide(std::string_view str);
 
-
-} // namespace unicode
+} // namespace utf

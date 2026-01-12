@@ -15,7 +15,7 @@ set(UTILITY_SOURCES
         String/Ascii.cpp
         String/Split.cpp
         String/Transformations.cpp
-        String/Unicode.cpp
+        String/Utf.cpp
         UnicodeCrt.cpp
         String/Wrap.cpp)
 
@@ -49,7 +49,7 @@ set(UTILITY_HEADERS
         String/Split.h
         String/TransparentFunctors.h
         String/Transformations.h
-        String/Unicode.h
+        String/Utf.h
         Unaligned.h
         UnicodeCrt.h
         SmallVector.h

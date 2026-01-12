@@ -10,7 +10,7 @@
 #   include <clocale>
 #   include <memory>
 
-#   include "Utility/String/Unicode.h"
+#   include "Utility/String/Utf.h"
 #   include "Utility/Exception.h"
 
 struct LocalFreeDeleter {
@@ -37,7 +37,7 @@ UnicodeCrt::UnicodeCrt(int &argc, char **&argv) {
     std::unique_ptr<LPWSTR[], LocalFreeDeleter> argvw(CommandLineToArgvW(GetCommandLineW(), &argc)); // NOLINT
 
     for (int i = 0; i < argc; i++)
-        _storage.push_back(unicode::wideToUtf8(argvw[i]));
+        _storage.push_back(utf::wideToUtf8(argvw[i]));
     for (int i = 0; i < argc; i++)
         _argv.push_back(_storage[i].data());
     _argv.push_back(nullptr);
