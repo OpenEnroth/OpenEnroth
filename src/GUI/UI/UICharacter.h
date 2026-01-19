@@ -45,7 +45,6 @@ class GUIWindow_CharacterRecord : public GUIWindow {
     void fillAwardsData();
 
     std::string getAchievedAwardsString(int idx);
-    GUIWindow prepareAwardsWindow();
 
  private:
     bool _awardsScrollBarCreated = false;

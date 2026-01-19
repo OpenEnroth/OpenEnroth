@@ -136,17 +136,16 @@ void GUIWindow_MapBook::Update() {
     DrawBook_Map_sub(97, 49, 361, 313);
     render->ResetUIClipRect();
 
-    GUIWindow map_window;
-    map_window.frameRect = pViewport;
 
+    Recti map_window = pViewport;
     if (engine->_currentLoadedMapId != MAP_INVALID) {
-        map_window.DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[engine->_currentLoadedMapId].name, 3);
+        DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[engine->_currentLoadedMapId].name, 3, map_window);
     }
 
     auto party_coordinates = localization->format(LSTR_X_D_Y_D, static_cast<int>(pParty->pos.x), static_cast<int>(pParty->pos.y));
 
-    map_window.frameRect.x = 0;
-    map_window.DrawTitleText(assets->pFontComic.get(), 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);
+    map_window.x = 0;
+    DrawTitleText(assets->pFontComic.get(), 0, 320, ui_book_map_coordinates_color, party_coordinates, 0, map_window);
 }
 
 //----- (00442955) --------------------------------------------------------

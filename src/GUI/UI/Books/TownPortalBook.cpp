@@ -121,15 +121,12 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags
 void GUIWindow_TownPortalBook::Update() {
     render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
-    GUIWindow townPortalWindow;
     Pointi cursorPos = mouse->position();
     bool townPortalCheats = engine->config->debug.TownPortal.value();
     int count = townPortalCheats ? TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS : TOWN_PORTAL_DESTINATION_COUNT;
 
     render->DrawQuad2D(ui_book_townportal_background, {8, 8});
     render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
-
-    townPortalWindow.frameRect = pViewport;
 
     if (townPortalCheats) {
         // draw grey icons for cheat locations
@@ -148,7 +145,7 @@ void GUIWindow_TownPortalBook::Update() {
         }
     }
 
-    townPortalWindow.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, localization->str(LSTR_TOWN_PORTAL), 3);
+    DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, localization->str(LSTR_TOWN_PORTAL), 3, pViewport);
 }
 
 void GUIWindow_TownPortalBook::clickTown(int townId) {

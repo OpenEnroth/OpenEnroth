@@ -27,14 +27,13 @@
 using Io::TextInputType;
 
 void GUIWindow_TownHall::mainDialogue() {
-    GUIWindow townHall_window = *this;
-    townHall_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    townHall_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
+    Recti townHall_window = this->frameRect;
+    townHall_window.x = SIDE_TEXT_BOX_POS_X;
+    townHall_window.w = SIDE_TEXT_BOX_WIDTH;
 
     std::vector<std::string> optionsText = {localization->str(LSTR_BOUNTY_HUNT)};
     std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
-    townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
-
+    DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3, townHall_window);
     if (pParty->uFine > 0) {
         optionsText.push_back(localization->str(LSTR_PAY_FINE));
     }
@@ -43,30 +42,30 @@ void GUIWindow_TownHall::mainDialogue() {
 }
 
 void GUIWindow_TownHall::bountyHuntDialogue() {
-    GUIWindow townHall_window = *this;
-    townHall_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    townHall_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
+    Recti townHall_window = this->frameRect;
+    townHall_window.x = SIDE_TEXT_BOX_POS_X;
+    townHall_window.w = SIDE_TEXT_BOX_WIDTH;
 
     std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
-    townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
+    DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3, townHall_window);
 
     current_npc_text = bountyHuntingText();
     DrawDialoguePanel(current_npc_text);
 }
 
 void GUIWindow_TownHall::payFineDialogue() {
-    GUIWindow townHall_window = *this;
-    townHall_window.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    townHall_window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
+    Recti townHall_window = this->frameRect;
+    townHall_window.x = SIDE_TEXT_BOX_POS_X;
+    townHall_window.w = SIDE_TEXT_BOX_WIDTH;
 
     std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
-    townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
+    DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3, townHall_window);
 
     if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
-        townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.PaleCanary,
-                                      fmt::format("{}\n{}", localization->str(LSTR_PAY), localization->str(LSTR_HOW_MUCH)), 3);
-        townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3);
-        townHall_window.DrawFlashingInputCursor(assets->pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, assets->pFontArrus.get());
+        DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.PaleCanary,
+                                      fmt::format("{}\n{}", localization->str(LSTR_PAY), localization->str(LSTR_HOW_MUCH)), 3, townHall_window);
+        DrawTitleText(assets->pFontArrus.get(), 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3, townHall_window);
+        DrawFlashingInputCursor(assets->pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, assets->pFontArrus.get(), townHall_window);
         return;
     } else if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         int sum = atoi(keyboardInputHandler->GetTextInput().c_str());

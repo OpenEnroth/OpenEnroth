@@ -31,10 +31,8 @@ void GUIWindow_GameOver::Update() {
 
     // draw pop up box
     if (_showPopUp) {
-        GUIWindow pWindow;
-        pWindow.sHint = fmt::format("{}\n \n{}", pGameOverWindow->sHint, localization->str(LSTR_PRESS_ESCAPE));
-        pWindow.frameRect = Recti(120, 140, 400, 100);
-        pWindow.DrawMessageBox(0);
+        Recti popupRect(120, 140, 400, 100);
+        DrawMessageBox(0, popupRect, fmt::format("{}\n \n{}", pGameOverWindow->sHint, localization->str(LSTR_PRESS_ESCAPE)));
     }
 }
 

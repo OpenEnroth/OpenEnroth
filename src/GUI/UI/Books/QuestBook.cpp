@@ -47,8 +47,6 @@ void GUIWindow_QuestBook::Update() {
     render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     int pTextHeight;
-    GUIWindow questbook_window;
-
     render->DrawQuad2D(ui_book_quests_background, pViewport.topLeft());
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingQuestIdx) {
@@ -64,11 +62,10 @@ void GUIWindow_QuestBook::Update() {
     }
 
     // for title
-    questbook_window.frameRect = pViewport;
-    questbook_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_quests_title_color, localization->str(LSTR_CURRENT_QUESTS), 3);
+    DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_quests_title_color, localization->str(LSTR_CURRENT_QUESTS), 3, pViewport);
 
     // for other text
-    questbook_window.frameRect = Recti(48, 70, 360, 264);
+    Recti questbook_window(48, 70, 360, 264);
 
     if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
@@ -91,13 +88,13 @@ void GUIWindow_QuestBook::Update() {
     for (int i = _startingQuestIdx; i < _activeQuestsIdx.size(); ++i) {
         _currentPageQuests++;
 
-        questbook_window.DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_quests_text_color, pQuestTable[_activeQuestsIdx[i]]);
-        pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(pQuestTable[_activeQuestsIdx[i]], questbook_window.frameRect.w, 1);
-        if ((questbook_window.frameRect.y + pTextHeight) > questbook_window.frameRect.h) {
+        DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_quests_text_color, pQuestTable[_activeQuestsIdx[i]], questbook_window);
+        pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(pQuestTable[_activeQuestsIdx[i]], questbook_window.w, 1);
+        if ((questbook_window.y + pTextHeight) > questbook_window.h) {
             break;
         }
 
-        render->DrawQuad2D(ui_book_quest_div_bar, {100, (questbook_window.frameRect.y + pTextHeight) + 12});
-        questbook_window.frameRect.y = (questbook_window.frameRect.y + pTextHeight) + 24;
+        render->DrawQuad2D(ui_book_quest_div_bar, {100, (questbook_window.y + pTextHeight) + 12});
+        questbook_window.y = (questbook_window.y + pTextHeight) + 24;
     }
 }

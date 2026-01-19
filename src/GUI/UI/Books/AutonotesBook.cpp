@@ -82,7 +82,6 @@ void GUIWindow_AutonotesBook::Update() {
 
     int pTextHeight;
     bool noteTypeChanged = false;
-    GUIWindow autonotes_window;
 
     render->DrawQuad2D(ui_book_autonotes_background, pViewport.topLeft());
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingNotesIdx) {
@@ -200,12 +199,10 @@ void GUIWindow_AutonotesBook::Update() {
     }
 
     // for title
-    autonotes_window.frameRect = pViewport;
-
-    autonotes_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_autonotes_title_color, localization->str(LSTR_AUTO_NOTES), 3);
+    DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_autonotes_title_color, localization->str(LSTR_AUTO_NOTES), 3, pViewport);
 
     // for other text
-    autonotes_window.frameRect = Recti(48, 70, 360, 264);
+    Recti autonotes_frameRect(48, 70, 360, 264);
 
     if (_bookButtonClicked == 10) {
         if (_bookButtonAction >= BOOK_NOTES_POTION && _bookButtonAction <= BOOK_NOTES_INSTRUCTORS) {
@@ -235,13 +232,13 @@ void GUIWindow_AutonotesBook::Update() {
     for (int i = _startingNotesIdx; i < _activeNotesIdx.size(); ++i) {
         _currentPageNotes++;
 
-        autonotes_window.DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_autonotes_text_color, pAutonoteTxt[_activeNotesIdx[i]].pText);
-        pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(pAutonoteTxt[_activeNotesIdx[i]].pText, autonotes_window.frameRect.w, 1);
-        if ((autonotes_window.frameRect.y + pTextHeight) > autonotes_window.frameRect.h) {
+        DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_autonotes_text_color, pAutonoteTxt[_activeNotesIdx[i]].pText, autonotes_frameRect);
+        pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(pAutonoteTxt[_activeNotesIdx[i]].pText, autonotes_frameRect.w, 1);
+        if ((autonotes_frameRect.y + pTextHeight) > autonotes_frameRect.h) {
             break;
         }
 
-        render->DrawQuad2D(ui_book_quest_div_bar, {100, autonotes_window.frameRect.y + pTextHeight + 12});
-        autonotes_window.frameRect.y = (autonotes_window.frameRect.y + pTextHeight) + 24;
+        render->DrawQuad2D(ui_book_quest_div_bar, {100, autonotes_frameRect.y + pTextHeight + 12});
+        autonotes_frameRect.y = (autonotes_frameRect.y + pTextHeight) + 24;
     }
 }

@@ -301,9 +301,8 @@ void Io::Mouse::DoMouseLook(Pointi relChange) {
         return;
     }
 
-    const float sensitivity = 2.5f; // TODO(pskelton): move to config value
-    float modX = relChange.x * sensitivity;
-    float modY = relChange.y * sensitivity;
+    float modX = relChange.x * engine->config->settings.MouseLookSensitivity.value();
+    float modY = relChange.y * engine->config->settings.MouseLookSensitivity.value();
     pParty->_viewPitch -= modY;
     pParty->_viewPitch = std::clamp(pParty->_viewPitch, -320, 320);
     pParty->_viewYaw -= modX;

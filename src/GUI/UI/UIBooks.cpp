@@ -72,6 +72,8 @@ void GUIWindow_Book::Release() {
 
     if (pChildBooksOverlay) {
         pChildBooksOverlay->Release();
+        delete pChildBooksOverlay;
+        pChildBooksOverlay = nullptr;
     }
 
     GUIWindow::Release();

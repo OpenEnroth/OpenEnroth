@@ -349,13 +349,13 @@ void GUIWindow_GameKeyBindings::Update() {
 
     for (int i = 0; i < 7; ++i) {
         InputAction action1 = (InputAction)(base_controls_offset + i);
-        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1));
-        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]));
+        DrawText(assets->pFontLucida.get(), {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1), pGUIWindow_CurrentMenu->frameRect);
+        DrawText(assets->pFontLucida.get(), {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]), pGUIWindow_CurrentMenu->frameRect);
 
         int j = i + 7;
         InputAction action2 = (InputAction)(base_controls_offset + j);
-        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2));
-        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]));
+        DrawText(assets->pFontLucida.get(), {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2), pGUIWindow_CurrentMenu->frameRect);
+        DrawText(assets->pFontLucida.get(), {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]), pGUIWindow_CurrentMenu->frameRect);
     }
 }
 
@@ -422,11 +422,10 @@ void GUIWindow_GameVideoOptions::Update() {
         if (gamma_preview_image)
             render->DrawQuad2D(gamma_preview_image, {274, 169});
 
-        GUIWindow msg_window;
-        msg_window.frameRect = Recti(22, 190, 211, 79);
-        msg_window.DrawTitleText(
+        Recti msg_window(22, 190, 211, 79);
+        DrawTitleText(
             assets->pFontSmallnum.get(), 0, 0, ui_gamemenu_video_gamma_title_color,
-            localization->str(LSTR_GAMMA_CONTROLS_THE_RELATIVE_BRIGHTNESS), 3
+            localization->str(LSTR_GAMMA_CONTROLS_THE_RELATIVE_BRIGHTNESS), 3, msg_window
         );
     }
 
@@ -769,8 +768,8 @@ void GameUI_DrawFoodAndGold() {
     if (uGameState != GAME_STATE_FINAL_WINDOW) {
         text_y = _44100D_should_alter_right_panel() != 0 ? 381 : 322;
 
-        pPrimaryWindow->DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", toCompactString(pParty->GetFood())), 0, uGameUIFontShadow);
-        pPrimaryWindow->DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", toCompactString(pParty->GetGold())), 0, uGameUIFontShadow);
+        GUIWindow::DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", toCompactString(pParty->GetFood())), pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
+        GUIWindow::DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", toCompactString(pParty->GetGold())), pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
         // force to render all queued text now so it wont be delayed and drawn over things it isn't supposed to, like item in hand or nuklear
         render->EndTextNew();
     }

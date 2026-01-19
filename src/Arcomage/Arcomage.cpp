@@ -2951,7 +2951,7 @@ void SetStartConditions() {
 }
 
 void am_DrawText(std::string_view str, Pointi *pXY) {
-    pPrimaryWindow->DrawText(assets->pFontComic.get(), {pXY->x, pXY->y - ((assets->pFontComic->GetHeight() - 3) / 2) + 3}, colorTable.White, str);
+    GUIWindow::DrawText(assets->pFontComic.get(), {pXY->x, pXY->y - ((assets->pFontComic->GetHeight() - 3) / 2) + 3}, colorTable.White, str, pPrimaryWindow->frameRect);
 }
 
 void DrawRect(Recti *pRect, Color uColor, char bSolidFill) {

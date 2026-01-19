@@ -42,8 +42,7 @@ GraphicsImage *CreateWinnerCertificate() {
     render->DrawQuad2D(background, {0, 0});
 
     GUIWindow *tempwindow_SpeakInHouse = new GUIWindow(WINDOW_Unknown, { 0, 0 }, render->GetRenderDimensions());
-    GUIWindow pWindow;
-    pWindow.frameRect = Recti(75, 60, 469, 338);
+    Recti frameRect(75, 60, 469, 338);
     std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt");
 
     std::string pInString;
@@ -65,13 +64,13 @@ GraphicsImage *CreateWinnerCertificate() {
     int months = duration.months;
     int days = duration.days;
 
-    pWindow.DrawTitleText(
-        pFont.get(), 1, 0x23, colorTable.Black, localization->str(LSTR_CONGRATULATIONS), 3
+    GUIWindow::DrawTitleText(
+        pFont.get(), 1, 0x23, colorTable.Black, localization->str(LSTR_CONGRATULATIONS), 3, frameRect
     );
     uint64_t v23 = 0ull;
     int v20 = 0;
     for (int i = 0; i < 4; i++) {
-        pWindow.DrawTitleText(
+        GUIWindow::DrawTitleText(
             pFont.get(), 1,
             i * (pFont->GetHeight() - 2) + pFont->GetHeight() + 46,
             colorTable.Black,
@@ -80,12 +79,12 @@ GraphicsImage *CreateWinnerCertificate() {
                 pParty->pCharacters[i].name,
                 pParty->pCharacters[i].GetBaseLevel(),
                 localization->className(pParty->pCharacters[i].classType)),
-            3);
+            3, frameRect);
         v23 += pParty->pCharacters[i].experience;
     }
     v23 = (int64_t)v23 / totalDays;
-    std::string v6 = pFont->WrapText(pInString, pWindow.frameRect.w, 12);
-    pWindow.DrawTitleText(pFont.get(), 1, 5 * (pFont->GetHeight() + 11), colorTable.Black, v6, 0);
+    std::string v6 = pFont->WrapText(pInString, frameRect.w, 12);
+    GUIWindow::DrawTitleText(pFont.get(), 1, 5 * (pFont->GetHeight() + 11), colorTable.Black, v6, 0, frameRect);
 
     std::string v7 = localization->str(LSTR_DAY_CAPITALIZED);
     if (days != 1) v7 = localization->str(LSTR_DAYS);
@@ -96,13 +95,12 @@ GraphicsImage *CreateWinnerCertificate() {
     std::string v9 = localization->str(LSTR_YEAR);
     if (years != 1) v9 = localization->str(LSTR_YEARS);
 
-    pWindow.DrawTitleText(
-        pFont.get(), 1, pWindow.frameRect.h - 2 * pFont->GetHeight() - 5, colorTable.Black,
-        fmt::format("{} {} {}, {} {}, {} {} ", localization->str(LSTR_TOTAL_TIME), years, v9, months, v8, days, v7), 3);
+    GUIWindow::DrawTitleText(
+        pFont.get(), 1, frameRect.h - 2 * pFont->GetHeight() - 5, colorTable.Black,
+        fmt::format("{} {} {}, {} {}, {} {} ", localization->str(LSTR_TOTAL_TIME), years, v9, months, v8, days, v7), 3, frameRect);
 
-    pWindow.DrawTitleText(pFont.get(), 1, pWindow.frameRect.h, colorTable.Black,
-        localization->format(LSTR_YOUR_SCORE_LU, v23), 3);
-
+    GUIWindow::DrawTitleText(pFont.get(), 1, frameRect.h, colorTable.Black,
+        localization->format(LSTR_YOUR_SCORE_LU, v23), 3, frameRect);
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
     // flush draw buffer so cert is drawn

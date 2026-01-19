@@ -86,14 +86,12 @@ void GUIWindow_LloydsBook::Update() {
     render->DrawQuad2D(ui_book_lloyds_backgrounds[_recallingBeacon ? 1 : 0], {8, 8});
     std::string pText = localization->str(LSTR_RECALL_BEACON);
 
-    GUIWindow pWindow;
-    pWindow.frameRect = Recti(pViewport.x, pViewport.y, 428, pViewport.h);
-
     if (!_recallingBeacon) {
         pText = localization->str(LSTR_SET_BEACON);
     }
 
-    pWindow.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, pText, 3);
+    Recti pWindow(pViewport.x, pViewport.y, 428, pViewport.h);
+    DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, pText, 3, pWindow);
     if (_recallingBeacon) {
         render->DrawQuad2D(ui_book_button1_on, pBtn_Book_1->rect.topLeft());
         render->DrawQuad2D(ui_book_button1_off, pBtn_Book_2->rect.topLeft());
@@ -107,7 +105,7 @@ void GUIWindow_LloydsBook::Update() {
             continue;
         }
 
-        pWindow.frameRect = Recti(lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId], 92, 68);
+        pWindow = Recti(lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId], 92, 68);
 
         render->DrawQuad2D(ui_book_lloyds_border, {lloydsBeacons_SomeXs[beaconId], lloydsBeacons_SomeYs[beaconId]});
 
@@ -115,11 +113,11 @@ void GUIWindow_LloydsBook::Update() {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId].value();
             render->DrawQuad2D(beacon.image, {lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId]});
             std::string Str = pMapStats->pInfos[beacon.mapId].name;
-            int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.frameRect.w, 0);
-            pWindow.frameRect.y -= 6 + pTextHeight;
-            pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, Str, 3);
+            int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.w, 0);
+            pWindow.y -= 6 + pTextHeight;
+            DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, Str, 3, pWindow);
 
-            pWindow.frameRect.y = lloydsBeaconsPreviewYs[beaconId];
+            pWindow.y = lloydsBeaconsPreviewYs[beaconId];
             Duration remainingTime = beacon.uBeaconTime - pParty->GetPlayingTime();
             CivilDuration d = remainingTime.toCivilDuration();
             std::string str;
@@ -130,11 +128,11 @@ void GUIWindow_LloydsBook::Update() {
             } else {
                 str = fmt::format("{} {}", d.minutes, localization->str(d.minutes == 1 ? LSTR_MINUTE : LSTR_MINUTES));
             }
-            pWindow.frameRect.y = pWindow.frameRect.y + pWindow.frameRect.h + 4;
-            pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, str, 3);
+            pWindow.y = pWindow.y + pWindow.h + 4;
+            DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, str, 3, pWindow);
         } else {
-            int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(localization->str(LSTR_AVAILABLE), pWindow.frameRect.w, 0);
-            pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, (int)pWindow.frameRect.h / 2 - pTextHeight / 2, colorTable.Black, localization->str(LSTR_AVAILABLE), 3);
+            int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(localization->str(LSTR_AVAILABLE), pWindow.w, 0);
+            DrawTitleText(assets->pFontBookLloyds.get(), 0, (int)pWindow.h / 2 - pTextHeight / 2, colorTable.Black, localization->str(LSTR_AVAILABLE), 3, pWindow);
         }
     }
 }

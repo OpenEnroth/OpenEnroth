@@ -260,6 +260,7 @@ void Game::onEscape() {
     }
     if (pGUIWindow_CurrentMenu != nullptr) {
         pGUIWindow_CurrentMenu->Release();  // check this
+        delete pGUIWindow_CurrentMenu;
         pGUIWindow_CurrentMenu = nullptr;
     }
     pEventTimer->setPaused(false);

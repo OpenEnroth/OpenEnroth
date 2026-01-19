@@ -47,9 +47,12 @@ struct Item;
 
 class GUIWindow {
  public:
-    GUIWindow();
     GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint = {});
-    virtual ~GUIWindow() = default;
+    virtual ~GUIWindow();
+
+    // no copying
+    GUIWindow(const GUIWindow& other) = delete;
+    GUIWindow& operator=(const GUIWindow& other) = delete;
 
     GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
                             UIMessageType msg, unsigned int msg_param, InputAction action = INPUT_ACTION_INVALID, std::string_view label = {},
@@ -60,13 +63,17 @@ class GUIWindow {
                             const std::vector<GraphicsImage *> &textures = {});
 
     bool Contains(unsigned int x, unsigned int y);
-    void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
 
     int DrawTextInRect(GUIFont *font, Pointi position, Color color, std::string_view text, int rect_width, int reverse_text);
 
-    void DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, int maxY = 0, Color shadowColor = colorTable.Black);
-
-    void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing);
+    static void InitializeGUI();
+    static void DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, Recti frameRect, int maxY = 0, Color shadowColor = colorTable.Black);
+    static void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing, Recti frameRect);
+    static void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2, Recti frameRect);
+    static void DrawShops_next_generation_time_string(Duration time, Recti frameRect);
+    // TODO(pskelton): string_view or ref?
+    // TODO(pskelton): inside_game_viewport used anywhere?
+    static void DrawMessageBox(bool inside_game_viewport, Recti& frameRect, std::string hint);
 
     /**
      * Draws the dialogue panel with background, e.g. for showing Arcomage rules in a tavern. Automatically switches
@@ -76,8 +83,6 @@ class GUIWindow {
      */
     void DrawDialoguePanel(std::string_view text);
 
-    void DrawShops_next_generation_time_string(Duration time);
-    void DrawMessageBox(bool inside_game_viewport);
     GUIButton *GetControl(unsigned int uID);
 
     /**
@@ -89,7 +94,6 @@ class GUIWindow {
     virtual void Release();
     void DeleteButtons();
 
-    static void InitializeGUI();
 
     Recti frameRect;
     WindowType eWindowType = WINDOW_null;
@@ -278,7 +282,7 @@ Color UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int base_pos
 int GetSizeInInventorySlots(int uNumPixels);
 GUIButton *GUI_HandleHotkey(PlatformKey hotkey);
 void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall);
-void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
+void DrawBuff_remaining_time_string(int uY, Recti window,
                                     Duration remaining_time, GUIFont *Font);
 void SetUserInterface(PartyAlignment alignment);
 void CreateMsgScrollWindow(ItemId mscroll_id);

@@ -53,6 +53,7 @@ extern std::array<int, 4> pHealthBarPos;
 extern std::array<int, 4> pManaBarPos;
 extern const int pHealthManaBarYPos;
 
+// TODO(pskelton): making this unique_ptr causes headless to stall
 GUIWindow *pPrimaryWindow;
 
 GUIWindow *pGUIWindow_CurrentMenu;
@@ -178,15 +179,8 @@ void GUIWindow::setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int 
 }
 
 void GUIWindow::Release() {
-    if (!this || this->eWindowType == WINDOW_null) {
-        // added the check to avoid releasing
-        // windows already released
-        return;
-    }
     DeleteButtons();
-
     lWindowList.remove(this);
-
     logger->trace("Release window: {}", toString(eWindowType));
 }
 
@@ -204,7 +198,7 @@ GUIButton *GUIWindow::GetControl(unsigned int uID) {
     return vButtons[uID];
 }
 
-void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
+void GUIWindow::DrawMessageBox(bool inside_game_viewport, Recti& frameRect, std::string sHint) {
     // TODO(pskelton): Derived Messagebox types for different kinds of popup boxes
     if (engine->callObserver) {
         engine->callObserver->notify(CALL_DRAW_MESSAGE_BOX, sHint);
@@ -224,7 +218,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         w = renDims.h;
     }
 
-    Pointi cursor = mouse->position();
+    Pointi cursor = EngineIocContainer::ResolveMouse()->position();
     if (frameRect.x >= x) {
         if (frameRect.w + frameRect.x > z) {
             frameRect.x = z - frameRect.w;
@@ -249,16 +243,14 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         frameRect.x = x;
     }
 
-    GUIWindow current_window = *this;
-    current_window.frameRect.x += 12;
-    current_window.frameRect.w -= 28;
-    current_window.frameRect.y += 12;
-    current_window.frameRect.h -= 12;
+    Recti current_window = frameRect;
+    current_window.x += 12;
+    current_window.w -= 28;
+    current_window.y += 12;
+    current_window.h -= 12;
     unsigned int uBoxHeight;
     if (!sHint.empty()) {
-        uBoxHeight =
-            assets->pFontLucida->CalcTextHeight(sHint, current_window.frameRect.w, 0) +
-            24;
+        uBoxHeight = assets->pFontLucida->CalcTextHeight(sHint, current_window.w, 0) + 24;
     } else {
         uBoxHeight = frameRect.h;
     }
@@ -270,10 +262,10 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
     }
     DrawPopupWindow(frameRect.x, frameRect.y, frameRect.w, uBoxHeight);
     if (!sHint.empty()) {
-        current_window.DrawTitleText(
+        DrawTitleText(
             assets->pFontLucida.get(),
-            0, (int)(uBoxHeight - assets->pFontLucida->CalcTextHeight(this->sHint, current_window.frameRect.w, 0)) / 2 - 14,
-            colorTable.White, this->sHint, 3);
+            0, (int)(uBoxHeight - assets->pFontLucida->CalcTextHeight(sHint, current_window.w, 0)) / 2 - 14,
+            colorTable.White, sHint, 3, current_window);
     }
 }
 
@@ -316,13 +308,13 @@ std::string MakeDateTimeString(Duration time) {
 }
 
 //----- (004B1854) --------------------------------------------------------
-void GUIWindow::DrawShops_next_generation_time_string(Duration time) {
+void GUIWindow::DrawShops_next_generation_time_string(Duration time, Recti frameRect) {
     auto str = MakeDateTimeString(time);
-    this->DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, frameRect.w, 0)) / 2 + 101, colorTable.PaleCanary, localization->str(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
+    DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, frameRect.w, 0)) / 2 + 101, colorTable.PaleCanary, localization->str(LSTR_PLEASE_TRY_BACK_IN) + str, 3, frameRect);
 }
 
 //----- (0044D406) --------------------------------------------------------
-void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing) {
+void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing, Recti frameRect) {
     if (engine->callObserver) {
         engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
     }
@@ -357,11 +349,11 @@ void GUIWindow::DrawDialoguePanel(std::string_view text) {
     int leatherWidth = ui_leather_mm7->width();
     render->DrawQuad2D(ui_leather_mm7, Recti(0, 0, leatherWidth, textHeight), Recti(8, 352 - textHeight, leatherWidth, textHeight));
     render->DrawQuad2D(_591428_endcap, {8, 347 - textHeight});
-    DrawText(font, {indent, 354 - textHeight}, colorTable.White, font->WrapText(text, frameWidth, indent));
+    DrawText(font, {indent, 354 - textHeight}, colorTable.White, font->WrapText(text, frameWidth, indent), frameRect);
 }
 
 //----- (0044CE08) --------------------------------------------------------
-void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, int maxY, Color shadowColor) {
+void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, Recti frameRect, int maxY, Color shadowColor) {
     if (engine->callObserver) {
         engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
     }
@@ -421,16 +413,11 @@ void GUIWindow::InitializeGUI() {
     MainMenuUI_LoadFontsAndSomeStuff();
 }
 
-void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
+void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2, Recti frameRect) {
     // TODO(pskelton): check tickcount usage here
     if (platform->tickCount() % 1000 > 500) {
-        DrawText(a2, {uX, uY}, colorTable.White, "_");
+        DrawText(a2, {uX, uY}, colorTable.White, "_", frameRect);
     }
-}
-
-GUIWindow::GUIWindow() {
-    this->mouse = EngineIocContainer::ResolveMouse();
-    this->mouse->SetMouseLook(false);
 }
 
 GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType) {
@@ -444,6 +431,10 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, s
     this->sHint = hint;
 
     this->receives_keyboard_input = false;
+}
+
+GUIWindow::~GUIWindow() {
+    Release();
 }
 
 void DialogueEnding() {
@@ -764,8 +755,8 @@ void SetUserInterface(PartyAlignment align) {
     UI_Create();
 }
 
-void DrawBuff_remaining_time_string(int uY, GUIWindow *window, Duration remaining_time, GUIFont *Font) {
-    window->DrawText(Font, {32, uY}, colorTable.White, "\r020" + MakeDateTimeString(remaining_time));
+void DrawBuff_remaining_time_string(int uY, Recti window, Duration remaining_time, GUIFont *Font) {
+    GUIWindow::DrawText(Font, {32, uY}, colorTable.White, "\r020" + MakeDateTimeString(remaining_time), window);
 }
 
 bool isHoldingMouseRightButton() {
@@ -1113,7 +1104,10 @@ void UI_Create() {
     dialogue_ui_x_ok_u = assets->getImage_ColorKey("x_ok_u");
     ui_buttyes2 = assets->getImage_Alpha("BUTTYES2");
 
-    if (pPrimaryWindow) pPrimaryWindow->Release();
+    if (pPrimaryWindow) {
+        pPrimaryWindow->Release();
+        delete pPrimaryWindow;
+    }
 
     pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions());
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_MouseLeftClickInGame, 0);

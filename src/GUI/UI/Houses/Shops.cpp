@@ -275,9 +275,9 @@ void GUIWindow_Shop::displayEquipmentDialogue() {
 
 void GUIWindow_Shop::sellDialogue() {
     // TODO(pskelton): extract common code around shop item picking
-    GUIWindow dialogwin = *this;
-    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
+    Recti dialogwin = this->frameRect;
+    dialogwin.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.w = SIDE_TEXT_BOX_WIDTH;
 
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
@@ -285,7 +285,7 @@ void GUIWindow_Shop::sellDialogue() {
     if (checkIfPlayerCanInteract()) {
         engine->_statusBar->drawForced(localization->str(LSTR_SELECT_THE_ITEM_TO_SELL), colorTable.White);
 
-        Pointi pt = dialogwin.mouse->position();
+        Pointi pt = mouse->position();
         if (pt.x <= 13 || pt.x >= 462)
             return;
 
@@ -294,18 +294,17 @@ void GUIWindow_Shop::sellDialogue() {
         if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos)) {
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(entry.get(), buildingType(), houseId(), SHOP_SCREEN_SELL);
             std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, entry.get(), houseId(), SHOP_SCREEN_SELL);
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
+            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+            DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
         }
     }
 }
 
 void GUIWindow_Shop::identifyDialogue() {
     // TODO(pskelton): extract common code around shop item picking
-    GUIWindow dialogwin = *this;
-    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
-
+    Recti dialogwin = this->frameRect;
+    dialogwin.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.w = SIDE_TEXT_BOX_WIDTH;
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
@@ -329,17 +328,17 @@ void GUIWindow_Shop::identifyDialogue() {
                 str = BuildDialogueString("%24", pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_IDENTIFY);
             }
 
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
+            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+            DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
         }
     }
 }
 
 void GUIWindow_Shop::repairDialogue() {
     // TODO(pskelton): extract common code around shop item picking
-    GUIWindow dialogwin = *this;
-    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
+    Recti dialogwin = this->frameRect;
+    dialogwin.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.w = SIDE_TEXT_BOX_WIDTH;
 
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
@@ -347,7 +346,7 @@ void GUIWindow_Shop::repairDialogue() {
     if (checkIfPlayerCanInteract()) {
         engine->_statusBar->drawForced(localization->str(LSTR_SELECT_THE_ITEM_TO_REPAIR), colorTable.White);
 
-        Pointi pt = dialogwin.mouse->position();
+        Pointi pt = mouse->position();
         if (pt.x <= 13 || pt.x >= 462)
             return;
 
@@ -361,17 +360,17 @@ void GUIWindow_Shop::repairDialogue() {
             Item *item = entry.get();
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_REPAIR);
             std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_REPAIR);
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
+            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+            DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
         }
     }
 }
 
 void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     // TODO(pskelton): extract common code around shop item picking
-    GUIWindow dialogwin = *this;
-    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
+    Recti dialogwin = this->frameRect;
+    dialogwin.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.w = SIDE_TEXT_BOX_WIDTH;
 
     render->DrawQuad2D(shop_ui_background, {8, 8});
     int item_X = 0;
@@ -422,23 +421,23 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                             } else {
                                 str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
-                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-                            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
+                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                            DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
                         }
                     }
                 }
             }
         } else {
-            dialogwin.DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime());
+            DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime(), dialogwin);
         }
     }
 }
 
 void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
     // TODO(pskelton): extract common code around shop item picking
-    GUIWindow dialogwin = *this;
-    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
+    Recti dialogwin = this->frameRect;
+    dialogwin.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.w = SIDE_TEXT_BOX_WIDTH;
 
     render->DrawQuad2D(shop_ui_background, {8, 8});
     int item_x = 0;
@@ -509,23 +508,23 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
                             } else {
                                 str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
-                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-                            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
+                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                            DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
                         }
                     }
                 }
             }
         } else {
-            dialogwin.DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime());
+            DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime(), dialogwin);
         }
     }
 }
 
 void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
     // TODO(pskelton): extract common code around shop item picking
-    GUIWindow dialogwin = *this;
-    dialogwin.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    dialogwin.frameRect.w = SIDE_TEXT_BOX_WIDTH;
+    Recti dialogwin = this->frameRect;
+    dialogwin.x = SIDE_TEXT_BOX_POS_X;
+    dialogwin.w = SIDE_TEXT_BOX_WIDTH;
 
     render->DrawQuad2D(shop_ui_background, {8, 8});
 
@@ -612,14 +611,14 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                             } else {
                                 str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
-                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.frameRect.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-                            dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
+                            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                            DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
                         }
                     }
                 }
             }
         } else {
-            dialogwin.DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime());
+            DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime(), dialogwin);
         }
     }
 }

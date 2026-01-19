@@ -24,7 +24,6 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({600, 361}, {0, 0}, pBtn_History);
     bFlashHistoryBook = false;
 
-    GUIWindow journal_window;
 
     ui_book_journal_background = assets->getImage_ColorKey("sbplayrnot");
 
@@ -38,16 +37,16 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
     pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), ui_book_button2_on->size(), 1, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
-    journal_window.frameRect = Recti(48, 70, 360, 264);
-    journal_window.frameRect.h = (assets->pFontBookOnlyShadow->GetHeight() - 3) * 264 / assets->pFontBookOnlyShadow->GetHeight() - 3;
+    Recti journal_window(48, 70, 360, 264);
+    journal_window.h = (assets->pFontBookOnlyShadow->GetHeight() - 3) * 264 / assets->pFontBookOnlyShadow->GetHeight() - 3;
 
     for (int i = 0; i < pParty->PartyTimes.HistoryEventTimes.size(); i++) {
         if (pParty->PartyTimes.HistoryEventTimes[i].isValid()) {
             if (!pHistoryTable->historyLines[i + 1].pText.empty()) {
                 NPCData dummyNpc;
                 std::string str = BuildDialogueString(pHistoryTable->historyLines[i + 1].pText, 0, &dummyNpc, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[i]);
-                int pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(str, journal_window.frameRect.w, 1);
-                int pages = ((pTextHeight - (assets->pFontBookOnlyShadow->GetHeight() - 3)) / (signed int)journal_window.frameRect.h) + 1;
+                int pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(str, journal_window.w, 1);
+                int pages = ((pTextHeight - (assets->pFontBookOnlyShadow->GetHeight() - 3)) / (signed int)journal_window.h) + 1;
                 for (int j = 0; j < pages; ++j) {
                     _journalIdx.push_back(i + 1);
                     _journalEntryPage.push_back(j);
@@ -59,8 +58,6 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
 
 void GUIWindow_JournalBook::Update() {
     render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
-
-    GUIWindow journal_window;
 
     render->DrawQuad2D(ui_book_journal_background, pViewport.topLeft());
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_currentIdx) {
@@ -76,15 +73,13 @@ void GUIWindow_JournalBook::Update() {
     }
 
     if (_journalIdx.size() && !_journalEntryPage[_currentIdx]) {  // for title
-        journal_window.frameRect = pViewport;
-
         if (!pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle.empty()) {
-            journal_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle, 3);
+            DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle, 3, pViewport);
         }
     }
 
     // for other text
-    journal_window.frameRect = Recti(48, 70, 360, 264);
+    Recti journal_window(48, 70, 360, 264);
 
     if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_NEXT_PAGE && (_currentIdx + 1) < _journalIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
@@ -102,8 +97,8 @@ void GUIWindow_JournalBook::Update() {
         NPCData dummyNpc;
         std::string str = BuildDialogueString(pHistoryTable->historyLines[_journalIdx[_currentIdx]].pText, 0, &dummyNpc, 0, HOUSE_INVALID,
                                               SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
-        std::string pStringOnPage = assets->pFontBookOnlyShadow->GetPageText(str, {journal_window.frameRect.w, journal_window.frameRect.h}, 1, _journalEntryPage[_currentIdx]);
-        journal_window.DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_journal_text_color, pStringOnPage,
-                                journal_window.frameRect.y + journal_window.frameRect.h, ui_book_journal_text_shadow);
+        std::string pStringOnPage = assets->pFontBookOnlyShadow->GetPageText(str, {journal_window.w, journal_window.h}, 1, _journalEntryPage[_currentIdx]);
+        DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_journal_text_color, pStringOnPage, journal_window,
+                                journal_window.y + journal_window.h, ui_book_journal_text_shadow);
     }
 }
