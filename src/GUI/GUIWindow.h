@@ -109,6 +109,7 @@ class GUIWindow {
     std::vector<GUIButton*> vButtons;
 
     std::shared_ptr<Io::Mouse> mouse = nullptr;
+    bool _requireMousePointer = false;
 };
 
 class OnButtonClick : public GUIWindow {
