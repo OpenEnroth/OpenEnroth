@@ -144,7 +144,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
     this->frameRect = Recti(saveload_dlg_xs[ingame ? 1 : 0], saveload_dlg_ys[ingame ? 1 : 0],
                             saveload_dlg_zs[ingame ? 1 : 0], saveload_dlg_ws[ingame ? 1 : 0]);
 
-    DrawText(assets->pFontSmallnum.get(), {25, 199}, colorTable.White, localization->str(LSTR_READING));
+    DrawText(assets->pFontSmallnum.get(), {25, 199}, colorTable.White, localization->str(LSTR_READING), this->frameRect);
     render->Present();
 
     pSavegameList->Initialize();
@@ -234,8 +234,7 @@ void GUIWindow_Load::Update() {
 
 static void UI_DrawSaveLoad(bool save) {
     if (pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
-        GUIWindow save_load_window;
-        save_load_window.frameRect = Recti(pGUIWindow_CurrentMenu->frameRect.x + 240,
+        Recti frameRect(pGUIWindow_CurrentMenu->frameRect.x + 240,
                                            (pGUIWindow_CurrentMenu->frameRect.y - assets->pFontSmallnum->GetHeight()) + 157,
                                            220,
                                            assets->pFontSmallnum->GetHeight());
@@ -244,13 +243,13 @@ static void UI_DrawSaveLoad(bool save) {
                                {pGUIWindow_CurrentMenu->frameRect.x + 276, pGUIWindow_CurrentMenu->frameRect.y + 171});
         }
         // Draw map name
-        save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
-                                       pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].name, 3);
+        GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
+                                       pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].name, 3, frameRect);
 
         // Draw date
         CivilTime time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime.toCivilTime();
 
-        save_load_window.frameRect.y = pGUIWindow_CurrentMenu->frameRect.y + 261;
+        frameRect.y = pGUIWindow_CurrentMenu->frameRect.y + 261;
 
         std::string str = fmt::format(
             "{} {}:{:02} {}\n{} {} {}",
@@ -261,7 +260,7 @@ static void UI_DrawSaveLoad(bool save) {
             time.day,
             localization->monthName(time.month - 1),
             time.year);
-        save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White, str, 3);
+        GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White, str, 3, frameRect);
     }
 
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
@@ -274,15 +273,15 @@ static void UI_DrawSaveLoad(bool save) {
     }
 
     if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
-        pGUIWindow_CurrentMenu->DrawText(assets->pFontSmallnum.get(),
+        GUIWindow::DrawText(assets->pFontSmallnum.get(),
             {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_LOADING)) + 25, 220}, colorTable.White,
-            localization->str(LSTR_LOADING));
+            localization->str(LSTR_LOADING), pGUIWindow_CurrentMenu->frameRect);
         pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontSmallnum.get(),
                                                {assets->pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name) + 25, 262}, colorTable.White,
                                                pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name, 185, 0);
-        pGUIWindow_CurrentMenu->DrawText(assets->pFontSmallnum.get(),
+        GUIWindow::DrawText(assets->pFontSmallnum.get(),
             {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_PLEASE_WAIT)) + 25, 304}, colorTable.White,
-            localization->str(LSTR_PLEASE_WAIT));
+            localization->str(LSTR_PLEASE_WAIT), pGUIWindow_CurrentMenu->frameRect);
     } else {
         int maxSaveFiles = MAX_SAVE_SLOTS;
         int framex = 0, framey = 0;
@@ -311,8 +310,8 @@ static void UI_DrawSaveLoad(bool save) {
                 pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y}, i == pSavegameList->selectedSlot ? colorTable.LaserLemon : colorTable.White,
                                                        pSavegameList->pSavegameHeader[i].name, 185, 0);
             } else {
-                pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y},
-                    i == pSavegameList->selectedSlot ? colorTable.LaserLemon : colorTable.White, keyboardInputHandler->GetTextInput(), 175, 1) + 27, slot_Y, assets->pFontSmallnum.get());
+                GUIWindow::DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y},
+                    i == pSavegameList->selectedSlot ? colorTable.LaserLemon : colorTable.White, keyboardInputHandler->GetTextInput(), 175, 1) + 27, slot_Y, assets->pFontSmallnum.get(), pGUIWindow_CurrentMenu->frameRect);
             }
             slot_Y += 21;
         }

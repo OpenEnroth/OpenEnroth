@@ -94,9 +94,9 @@ void GUIButton::Release() {
 }
 
 void GUIButton::DrawLabel(std::string_view text, GUIFont *font, Color color, Color shadowColor) {
-    return pParent->DrawText(font,
+    return GUIWindow::DrawText(font,
                              {rect.x + (rect.w - font->GetLineWidth(text)) / 2, rect.y + (rect.h - font->GetHeight()) / 2},
-                             color, text, 0, shadowColor);
+                             color, text, pParent->frameRect, 0, shadowColor);
 }
 
 bool GUIButton::Contains(unsigned int x, unsigned int y) {

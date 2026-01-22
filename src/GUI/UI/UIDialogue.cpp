@@ -179,17 +179,18 @@ void GUIWindow_Dialogue::Update() {
     }
 
     // Window title(Заголовок окна)----
-    GUIWindow window = *pDialogueWindow;
     NPCData *pNPC = getNPCData(speakingNpcId);
     NpcType npcType = getNPCType(speakingNpcId);
-    window.frameRect.w -= 10;
     render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
     render->DrawQuad2D(game_ui_evtnpc, {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
     render->DrawQuad2D(houseNpcs[0].icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
 
-    window.DrawTitleText(assets->pFontArrus.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3);
+    Recti titleWindow = pDialogueWindow->frameRect;
+    titleWindow.w -= 10;
+    DrawTitleText(assets->pFontArrus.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3, titleWindow);
 
+    // TODO(pskelton): nothing done with fame here?
     pParty->getPartyFame();
 
     std::string dialogue_string;
@@ -252,11 +253,8 @@ void GUIWindow_Dialogue::Update() {
     pDialogueWindow->DrawDialoguePanel(dialogue_string);
 
     // Right panel(Правая панель)-------
-    window = *pDialogueWindow;
-    window.frameRect.x = SIDE_TEXT_BOX_POS_X;
-    window.frameRect.w = SIDE_TEXT_BOX_WIDTH;
-    for (int i = window.pStartingPosActiveItem; i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
-        GUIButton *pButton = window.GetControl(i);
+    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i) {
+        GUIButton *pButton = pDialogueWindow->GetControl(i);
         if (!pButton) {
             break;
         }
@@ -287,13 +285,16 @@ void GUIWindow_Dialogue::Update() {
     }
 
     // Install Buttons(Установка кнопок)--------
+    Recti window = pDialogueWindow->frameRect;
+    window.x = SIDE_TEXT_BOX_POS_X;
+    window.w = SIDE_TEXT_BOX_WIDTH;
     int index = 0;
     int all_text_height = 0;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i) {
         GUIButton *pButton = pDialogueWindow->GetControl(i);
         if (!pButton)
             break;
-        all_text_height += assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.frameRect.w, 0);
+        all_text_height += assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.w, 0);
         index++;
     }
 
@@ -307,14 +308,14 @@ void GUIWindow_Dialogue::Update() {
             if (!pButton)
                 break;
             pButton->rect.y = v45 + v42;
-            int pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.frameRect.w, 0);
+            int pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.w, 0);
             pButton->rect.h = pTextHeight + 1;
             v42 = pButton->rect.y + pTextHeight - 1;
             Color pTextColor = ui_game_dialogue_option_normal_color;
             if (pDialogueWindow->pCurrentPosActiveItem == i) {
                 pTextColor = ui_game_dialogue_option_highlight_color;
             }
-            window.DrawTitleText(assets->pFontArrus.get(), 0, pButton->rect.y, pTextColor, pButton->sLabel, 3);
+            DrawTitleText(assets->pFontArrus.get(), 0, pButton->rect.y, pTextColor, pButton->sLabel, 3, window);
         }
     }
     render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});

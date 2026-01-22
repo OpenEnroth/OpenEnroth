@@ -86,7 +86,7 @@ bool ShouldMonsterPlayAttackAnim(SpellId spell_id) {
 }
 
 //----- (0041AF52) --------------------------------------------------------
-void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
+void Actor::DrawHealthBar(Actor *actor, Recti window) {
     // bar length
     unsigned int bar_length;
     if (actor->monsterInfo.hp <= 25)
@@ -109,18 +109,18 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
         bar_filled_length = (bar_length * actor->currentHP) / actor->monsterInfo.hp;
 
     // centralise for clipping and draw
-    unsigned int uX = window->frameRect.x + (signed int)(window->frameRect.w - bar_length) / 2;
+    unsigned int uX = window.x + (signed int)(window.w - bar_length) / 2;
 
-    render->SetUIClipRect(Recti(uX, window->frameRect.y + 32, bar_length, 20));
-    render->DrawQuad2D(game_ui_monster_hp_background, {static_cast<int>(uX), window->frameRect.y + 32});
+    render->SetUIClipRect(Recti(uX, window.y + 32, bar_length, 20));
+    render->DrawQuad2D(game_ui_monster_hp_background, {static_cast<int>(uX), window.y + 32});
 
-    render->SetUIClipRect(Recti(uX, window->frameRect.y + 32, bar_filled_length, 20));
-    render->DrawQuad2D(bar_image, {static_cast<int>(uX), window->frameRect.y + 34});
+    render->SetUIClipRect(Recti(uX, window.y + 32, bar_filled_length, 20));
+    render->DrawQuad2D(bar_image, {static_cast<int>(uX), window.y + 34});
 
     // draw hp bar ends
     render->ResetUIClipRect();
-    render->DrawQuad2D(game_ui_monster_hp_border_left, {static_cast<int>(uX) - 5, window->frameRect.y + 32});
-    render->DrawQuad2D(game_ui_monster_hp_border_right, {static_cast<int>(uX + bar_length), window->frameRect.y + 32});
+    render->DrawQuad2D(game_ui_monster_hp_border_left, {static_cast<int>(uX) - 5, window.y + 32});
+    render->DrawQuad2D(game_ui_monster_hp_border_right, {static_cast<int>(uX + bar_length), window.y + 32});
 }
 
 void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {

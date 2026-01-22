@@ -252,26 +252,26 @@ void Engine::DrawGUI() {
 
     if (engine->config->debug.ShowFPS.value()) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(assets->pFontArrus.get(), {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate));
+            GUIWindow::DrawText(assets->pFontArrus.get(), {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate), pPrimaryWindow->frameRect);
         }
 
-        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls));
+        GUIWindow::DrawText(assets->pFontArrus.get(), {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls), pPrimaryWindow->frameRect);
         render->drawcalls = 0;
 
 
         int debug_info_offset = 16;
-        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
-                                 fmt::format("Party position:         {:.2f} {:.2f} {:.2f}", pParty->pos.x, pParty->pos.y, pParty->pos.z));
+        GUIWindow::DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
+                                 fmt::format("Party position:         {:.2f} {:.2f} {:.2f}", pParty->pos.x, pParty->pos.y, pParty->pos.z), pPrimaryWindow->frameRect);
         debug_info_offset += 16;
 
-        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
-                                 fmt::format("Party yaw/pitch:     {} {}", pParty->_viewYaw, pParty->_viewPitch));
+        GUIWindow::DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
+                                 fmt::format("Party yaw/pitch:     {} {}", pParty->_viewYaw, pParty->_viewPitch), pPrimaryWindow->frameRect);
         debug_info_offset += 16;
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int sector_id = pBLVRenderParams->uPartySectorID;
-            pPrimaryWindow->DrawText(assets->pFontArrus.get(), { 16, debug_info_offset }, colorTable.White,
-                                     fmt::format("Party Sector ID:       {}/{} ({})\n", sector_id, pIndoor->pSectors.size(), pBLVRenderParams->uPartyEyeSectorID));
+            GUIWindow::DrawText(assets->pFontArrus.get(), { 16, debug_info_offset }, colorTable.White,
+                                     fmt::format("Party Sector ID:       {}/{} ({})\n", sector_id, pIndoor->pSectors.size(), pBLVRenderParams->uPartyEyeSectorID), pPrimaryWindow->frameRect);
             debug_info_offset += 16;
         }
 
@@ -297,7 +297,7 @@ void Engine::DrawGUI() {
             );
         }
 
-        pPrimaryWindow->DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White, floor_level_str);
+        GUIWindow::DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White, floor_level_str, pPrimaryWindow->frameRect);
     }
 }
 
@@ -741,9 +741,6 @@ void Engine::SecondaryInitialization() {
     //    pUIAnims[i]->x = _4E98D0[i][0];
     //    pUIAnims[i]->y = _4E98D0[i][2];
     //}
-
-    // TODO(pskelton): dropping this causes std::bad_alloc in headless mode
-    UI_Create();
 
     spell_fx_renedrer->LoadAnimations();
 

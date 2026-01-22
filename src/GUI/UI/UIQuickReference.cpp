@@ -138,7 +138,7 @@ void GUIWindow_QuickReference::Update() {
     }
 
     std::string rep = fmt::format("{}: {::}{}\f00000", localization->str(LSTR_REPUTATION), pTextColor.tag(), GetReputationString(pParty->GetPartyReputation()));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {22, 323}, colorTable.White, rep);
+    GUIWindow::DrawText(assets->pFontArrus.get(), {22, 323}, colorTable.White, rep, pGUIWindow_CurrentMenu->frameRect);
     std::string fame = fmt::format("\r261{}: {}", localization->str(LSTR_FAME), pParty->getPartyFame());
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {0, 323}, colorTable.White, fame);
+    GUIWindow::DrawText(assets->pFontArrus.get(), {0, 323}, colorTable.White, fame, pGUIWindow_CurrentMenu->frameRect);
 }

@@ -11,6 +11,7 @@
 
 #include "Media/Audio/SoundEnums.h"
 
+#include "Library/Geometry/Rect.h"
 #include "Library/Geometry/Vec.h"
 
 #include "Utility/IndexedArray.h"
@@ -159,7 +160,7 @@ class Actor {
      */
     static void toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bToggle);
     static void ApplyFineForKillingPeasant(unsigned int uActorID);
-    static void DrawHealthBar(Actor *actor, GUIWindow *window);
+    static void DrawHealthBar(Actor *actor, Recti window);
     int _43B3E0_CalcDamage(ActorAbility dmgSource);
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 

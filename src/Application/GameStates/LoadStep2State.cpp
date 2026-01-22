@@ -43,19 +43,15 @@ void LoadStep2State::exit() {
 }
 
 void LoadStep2State::_drawMM7CopyrightWindow() {
-    GUIWindow window;
-    window.frameRect.w = 624;
-    window.frameRect.h = 256;
-    window.frameRect.x = 8;
-    window.frameRect.y = 30;
-    window.frameRect.h = assets->pFontSmallnum->CalcTextHeight(localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), window.frameRect.w, 24);
-    window.frameRect.h += 2 * assets->pFontSmallnum->GetHeight() + 24;
-    window.frameRect.y = 470 - window.frameRect.h;
-    window.DrawMessageBox(0);
+    Recti window(8, 30, 624, 256);
+    window.h = assets->pFontSmallnum->CalcTextHeight(localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), window.w, 24);
+    window.h += 2 * assets->pFontSmallnum->GetHeight() + 24;
+    window.y = 470 - window.h;
+    GUIWindow::DrawMessageBox(0, window, "");
 
-    window.frameRect.w -= 28;
-    window.frameRect.x += 12;
-    window.frameRect.y += 12;
-    window.frameRect.h -= 12;
-    window.DrawTitleText(assets->pFontSmallnum.get(), 0, 12, ui_mainmenu_copyright_color, localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), 3);
+    window.w -= 28;
+    window.x += 12;
+    window.y += 12;
+    window.h -= 12;
+    GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 12, ui_mainmenu_copyright_color, localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), 3, window);
 }
