@@ -198,6 +198,7 @@ GUIButton *GUIWindow::GetControl(unsigned int uID) {
     return vButtons[uID];
 }
 
+// TODO(pskelton): this function may modify frameRect - extract out
 void GUIWindow::DrawMessageBox(bool inside_game_viewport, Recti& frameRect, std::string sHint) {
     // TODO(pskelton): Derived Messagebox types for different kinds of popup boxes
     if (engine->callObserver) {
