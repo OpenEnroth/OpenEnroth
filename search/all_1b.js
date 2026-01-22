@@ -41,7 +41,7 @@ var searchData=
   ['_7egraphicsimage_38',['~GraphicsImage',['../classGraphicsImage.html#ab1f7b2b8400787132c4759c3fbdfd832',1,'GraphicsImage']]],
   ['_7eguicredits_39',['~GUICredits',['../classGUICredits.html#aa0c66234bc9cfc5d27fed0bb9187076c',1,'GUICredits']]],
   ['_7eguifont_40',['~GUIFont',['../classGUIFont.html#a3570135cc8d630396ccd8e2d0ed3097e',1,'GUIFont']]],
-  ['_7eguiwindow_41',['~GUIWindow',['../classGUIWindow.html#a128001b8c20994f3b6b19271d11e5ec7',1,'GUIWindow']]],
+  ['_7eguiwindow_41',['~GUIWindow',['../classGUIWindow.html#a9c6d4277ffc74763b0a19fcdf15a5b7c',1,'GUIWindow']]],
   ['_7eguiwindow_5falchemyshop_42',['~GUIWindow_AlchemyShop',['../classGUIWindow__AlchemyShop.html#a36e878514de5cb97b6d8c9a81fa35e8c',1,'GUIWindow_AlchemyShop']]],
   ['_7eguiwindow_5farmorshop_43',['~GUIWindow_ArmorShop',['../classGUIWindow__ArmorShop.html#a4343cef93534a62eaf86cfe150385e43',1,'GUIWindow_ArmorShop']]],
   ['_7eguiwindow_5fautonotesbook_44',['~GUIWindow_AutonotesBook',['../structGUIWindow__AutonotesBook.html#ae303390e8718a3e1bbdd18d4fa5e352d',1,'GUIWindow_AutonotesBook']]],

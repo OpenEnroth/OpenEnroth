@@ -83,7 +83,7 @@ var searchData=
   ['modulatecolor_80',['ModulateColor',['../SpellFxRenderer_8cpp.html#adfdca3528ea63b77b0ae62825f5a1d7b',1,'SpellFxRenderer.cpp']]],
   ['monsterdata_81',['MonsterData',['../structMonsterData.html#afa829cea5ef52e039e34a6b1c34ca4d9',1,'MonsterData::MonsterData(Sex sex, Race race, bool appearsInArena)'],['../structMonsterData.html#aea175349492c683a4d74811511f45362',1,'MonsterData::MonsterData()=default']]],
   ['monsteridsformonstertype_82',['monsterIdsForMonsterType',['../MonsterEnumFunctions_8h.html#a01ea0bd2c0c21dcc7e8fb0942dea1a18',1,'MonsterEnumFunctions.h']]],
-  ['monsterpopup_5fdraw_83',['MonsterPopup_Draw',['../UIPopup_8cpp.html#a46be69ef84fea42fa8732526bc6cfc8f',1,'UIPopup.cpp']]],
+  ['monsterpopup_5fdraw_83',['MonsterPopup_Draw',['../UIPopup_8cpp.html#a9927c890fa617ea85c0cde196ba9ac71',1,'UIPopup.cpp']]],
   ['monsterspecialabilityname_84',['monsterSpecialAbilityName',['../classLocalization.html#a88dfc604b9d213b35a791adda7e968c1',1,'Localization']]],
   ['monstertierformonsterid_85',['monsterTierForMonsterId',['../MonsterEnumFunctions_8h.html#a914830ebb264f5e441f2e82d2aa088f0',1,'MonsterEnumFunctions.h']]],
   ['monstertypeformonsterid_86',['monsterTypeForMonsterId',['../MonsterEnumFunctions_8h.html#a4ad786465d667cc39d2b26fd9f7ec4af',1,'MonsterEnumFunctions.h']]],
