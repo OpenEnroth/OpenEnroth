@@ -87,3 +87,13 @@ add_subdirectory(lambda2)
 # ztd.text
 set(ZTD_IDK_EXCLUDE_FROM_ALL ON)
 add_subdirectory(ztd_text EXCLUDE_FROM_ALL)
+
+# uchardet
+set(BUILD_BINARY OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+add_subdirectory(uchardet EXCLUDE_FROM_ALL)
+# Disable -Werror flags for uchardet as it has missing override specifiers, and disable sanitizers
+# to avoid ASan runtime linkage issues on Linux & MacOS.
+if(TARGET libuchardet AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(libuchardet PRIVATE -Wno-suggest-override -Wno-inconsistent-missing-override -fno-sanitize=all)
+endif()

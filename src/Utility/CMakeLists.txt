@@ -15,7 +15,6 @@ set(UTILITY_SOURCES
         String/Ascii.cpp
         String/Split.cpp
         String/Transformations.cpp
-        String/Utf.cpp
         UnicodeCrt.cpp
         String/Wrap.cpp)
 
@@ -49,7 +48,7 @@ set(UTILITY_HEADERS
         String/Split.h
         String/TransparentFunctors.h
         String/Transformations.h
-        String/Utf.h
+        String/Unicode.h
         Unaligned.h
         UnicodeCrt.h
         SmallVector.h
@@ -63,7 +62,6 @@ target_link_libraries(utility
         fmt::fmt
         gch::small_vector
         Boost::lambda2
-        ztd::text
         PRIVATE
         mio::mio)
 
@@ -84,7 +82,6 @@ if(OE_BUILD_TESTS)
             String/Tests/Ascii_ut.cpp
             String/Tests/Split_ut.cpp
             String/Tests/Join_ut.cpp
-            String/Tests/Unicode_ut.cpp
             String/Tests/Wrap_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})

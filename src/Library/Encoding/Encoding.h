@@ -3,7 +3,9 @@
 #include <string>
 #include <string_view>
 
-namespace utf {
+#include "EncodingEnums.h"
+
+namespace txt {
 
 /**
  * Convert a wide string to UTF-8.
@@ -27,4 +29,8 @@ std::string wideToUtf8(std::wstring_view wstr);
  */
 std::wstring utf8ToWide(std::string_view str);
 
-} // namespace utf
+std::string encodedToUtf8(std::string_view str, TextEncoding encoding);
+
+std::string utf8ToEncoded(std::string_view str, TextEncoding encoding);
+
+} // namespace txt
