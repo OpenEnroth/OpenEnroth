@@ -12,19 +12,19 @@
 class TargetedSpellUI;
 
 namespace CastSpellInfoHelpers {
-    /**
-     * Cast spell processing.
-     *
-     * @offset 0x00427E01
-     */
-    void castSpell();
+/**
+ * Cast spell processing.
+ *
+ * @offset 0x00427E01
+ */
+void castSpell();
 
-    /**
-     * Remove all targeted spells from spell queue.
-     *
-     * @offset 0x00427D48
-     */
-    void cancelSpellCastInProgress();
+/**
+ * Remove all targeted spells from spell queue.
+ *
+ * @offset 0x00427D48
+ */
+void cancelSpellCastInProgress();
 };  // namespace CastSpellInfoHelpers
 
 class GUIWindow;
