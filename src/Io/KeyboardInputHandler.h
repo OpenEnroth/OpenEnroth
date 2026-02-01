@@ -14,7 +14,6 @@ enum class WindowInputStatus : int32_t {
     WINDOW_INPUT_NONE = 0,
     WINDOW_INPUT_IN_PROGRESS = 1,
     WINDOW_INPUT_CONFIRMED = 2,
-    WINDOW_INPUT_CANCELLED = 3,
 };
 using enum WindowInputStatus;
 
@@ -42,7 +41,6 @@ class KeyboardInputHandler {
 
     void GenerateInputActions();
 
-    void SetWindowInputStatus(WindowInputStatus status);
     inline PlatformKey LastPressedKey() const {
         return lastKeyPressed;
     }
@@ -55,6 +53,7 @@ class KeyboardInputHandler {
     void SetTextInput(std::string_view text);
 
  private:
+    void SetWindowInputStatus(WindowInputStatus status);
     void GenerateActions(bool isPaused);
     void ProcessPausedAction(InputAction action);
     void ProcessGameplayAction(InputAction action);

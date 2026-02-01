@@ -3,10 +3,6 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 # Use upper-case <PACKAGENAME>_ROOT variables in find_package().
 cmake_policy(SET CMP0144 NEW)
 
-# Use /Z7 instead of /Zi for MSVC debug information, this puts debug info into .obj files. This is needed for ccache
-# to work. Note that for the binaries we're still getting debug info in .pdb files.
-set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
-
 project("OpenEnroth")
 
 set(CMAKE_CXX_STANDARD 23)
@@ -52,43 +48,11 @@ endif()
 
 # Find ccache / sccache.
 if(OE_USE_CCACHE)
-    message(STATUS "Find ccache.")
     find_program(CCACHE_FOUND ccache)
     if(CCACHE_FOUND)
-        # Check for if we detected a shim
-        file(SIZE ${CCACHE_FOUND} FILE_SIZE_IN_BYTES)
-        if(FILE_SIZE_IN_BYTES GREATER 500000)
-            # MSVC requires ccache to be setup this way https://github.com/ccache/ccache/wiki/MS-Visual-Studio
-            if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-
-                message(STATUS "Using ccache at ${CCACHE_FOUND}.")
-                set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
-                set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
-
-                file(COPY_FILE
-                    ${CCACHE_FOUND} ${CMAKE_BINARY_DIR}/cl.exe
-                    ONLY_IF_DIFFERENT)
-
-                # By default Visual Studio generators will use /Zi which is not compatible
-                # with ccache, so tell Visual Studio to use /Z7 instead.
-                message(STATUS "Setting MSVC debug information format to 'Embedded'")
-                set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
-
-                set(CMAKE_VS_GLOBALS
-                    "CLToolExe=cl.exe"
-                    "CLToolPath=${CMAKE_BINARY_DIR}"
-                    "UseMultiToolTask=true"
-                    "DebugInformationFormat=OldStyle"
-                )
-
-            else()
-                message(STATUS "Using ccache at ${CCACHE_FOUND}.")
-                set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
-                set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
-            endif()
-        else()
-            message(WARNING "ccache shim detected if you are using chocolatey you need to copy the exe from 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools' to 'C:\\ProgramData\\chocolatey\\bin'.")
-        endif()
+        message(STATUS "Using ccache at ${CCACHE_FOUND}.")
+        set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
+        set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
     else()
         message(STATUS "ccache is not found.")
     endif()
@@ -183,24 +147,28 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 elseif((CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC") OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG>) # Enable assertions in libcxx.
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC"))
-    add_compile_definitions(NOMINMAX) # Please don't pull in these macros from <Windows.h>
-    add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
-    add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise
-    add_compile_definitions(_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS) # These are also useless
-    add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
-    add_compile_options(/MP) # Multi-threaded build
-    add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
+    add_compile_definitions(NOMINMAX) # Please don't pull in these macros from <Windows.h>.
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise.
+    add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise.
+    add_compile_definitions(_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS) # These are also useless.
+    add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines.
+    add_compile_options(/MP) # Multi-threaded build.
+    add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor.
     add_link_options(/OPT:REF) # Eliminate unreferenced data & functions.
     add_link_options(/OPT:ICF) # Enable COMDAT folding, should decrease binary sizes?
     if (OE_BUILD_ARCHITECTURE STREQUAL "x86")
-        add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds
-        add_link_options(/SAFESEH:NO) # /SAFESEH is x86-only, don't produce safe exception handler tables
+        add_link_options(/LARGEADDRESSAWARE) # Enable heap size over 2gb for x86 builds.
+        add_link_options(/SAFESEH:NO) # /SAFESEH is x86-only, don't produce safe exception handler tables.
     endif()
 
-    # Allow the compiler to package individual functions in the form of packaged functions (COMDATs)
+    # Use /Z7 instead of /Zi for debug information. This puts debug info into .obj files, which is needed for ccache
+    # to work. Note that we're still getting debug info in .pdb files for the final binaries.
+    set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+
+    # Allow the compiler to package individual functions in the form of packaged functions (COMDATs).
     add_compile_options("$<$<CONFIG:RELEASE>:/Gy>")
 
-    # Retains almost all relevant debug information for debugging, but makes a very big difference in performance and is debug safe
+    # Retains almost all relevant debug information for debugging, but makes a very big difference in performance and is debug safe.
     # /Ob controls inline expansions and /Ob2 expands any function not explicitly marked for no inlining.
     string(REPLACE "/Ob0" "/Ob2" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE "/Ob0" "/Ob2" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")

@@ -362,11 +362,6 @@ void GUIWindow_PartyCreation::Update() {
                     pParty->pCharacters[i].name = keyboardInputHandler->GetTextInput();
                 pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontCreate.get(), {pIntervalX, 124}, colorTable.White, pParty->pCharacters[i].name, 130, 0);
                 break;
-            case WINDOW_INPUT_CANCELLED:  // press escape
-                pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
-                pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontCreate.get(), {pIntervalX, 124}, colorTable.White, pParty->pCharacters[i].name, 130, 0);
-                SetCurrentMenuID(MENU_NAMEPANELESC);
-                break;
             default:
                 break;
             }

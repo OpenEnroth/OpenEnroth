@@ -267,9 +267,6 @@ static void UI_DrawSaveLoad(bool save) {
         pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
         pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name = keyboardInputHandler->GetTextInput();
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
-    } else {
-        if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CANCELLED)
-            pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
     }
 
     if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
@@ -321,7 +318,7 @@ static void UI_DrawSaveLoad(bool save) {
 void GUIWindow_Load::slotSelected(int slotIndex) {
     // main menu save/load wnd   clicking on savegame lines
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
-        keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+        keyboardInputHandler->EndTextInput();
     assert(current_screen_type != SCREEN_SAVEGAME); // No savegame in main menu
     if (isLoadSlotClicked && pSavegameList->selectedSlot == slotIndex + pSavegameList->saveListPosition) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
