@@ -1,6 +1,7 @@
 #include "Blob.h"
 
 #include <cstdio>
+#include <algorithm>
 #include <string>
 #include <memory>
 #include <utility>
