@@ -293,7 +293,7 @@ static constexpr IndexedArray<const char *, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_M
 bool enterHouse(HouseId uHouseID) {
     engine->_statusBar->clearAll();
     engine->_messageQueue->clear();
-    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->EndTextInput();
 
     if (uHouseID == HOUSE_THRONEROOM_WIN_GOOD || uHouseID == HOUSE_THRONEROOM_WIN_EVIL) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_ShowGameOverWindow, 0, 0);
@@ -558,7 +558,7 @@ void selectProprietorDialogueOption(DialogueId option) {
 
 bool houseDialogPressEscape() {
     engine->_messageQueue->clear();
-    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->EndTextInput();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
     pParty->placeHeldItemInInventoryOrDrop();
