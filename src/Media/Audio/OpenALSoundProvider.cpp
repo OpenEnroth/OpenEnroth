@@ -146,7 +146,7 @@ void OpenALSoundProvider::DeleteBuffers(StreamingTrackBuffer *track, int type) {
 }
 
 void OpenALSoundProvider::DeleteStreamingTrack(StreamingTrackBuffer **buffer) {
-    if (!buffer && !*buffer) return;
+    if (!buffer || !*buffer) return;
     StreamingTrackBuffer *track = *buffer;
 
     int status;
