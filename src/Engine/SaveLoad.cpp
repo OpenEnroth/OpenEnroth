@@ -69,10 +69,17 @@ void LoadGame(int uSlot) {
     pSave_LOD->close();
     pSave_LOD->open(Blob::copy(ufs->read(filename)), LOD_ALLOW_DUPLICATES);
 
-    SaveGameHeader header;
-    deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
+    SaveGameState state;
+    deserialize(*pSave_LOD, &state, tags::via<SaveGameState_MM7>);
 
-    // Patch up event timer, which was updated by the deserialize call above.
+    // Move loaded state to global variables.
+    *pParty = std::move(state.party);
+    *pEventTimer = std::move(state.eventTimer);
+    *pActiveOverlayList = std::move(state.overlays);
+    pNPCStats->pNPCData = std::move(state.npcData);
+    pNPCStats->pGroups = std::move(state.npcGroups);
+
+    // Patch up event timer.
     pEventTimer->setPaused(true); // We're loading the game now => event timer is paused.
     pEventTimer->setTurnBased(false);
 
@@ -123,11 +130,11 @@ void LoadGame(int uSlot) {
 
     SetUserInterface(pParty->alignment);
 
-    if (!pGames_LOD->exists(header.locationName)) {
-        logger->error("Unable to find: {}!", header.locationName);
+    if (!pGames_LOD->exists(state.header.locationName)) {
+        logger->error("Unable to find: {}!", state.header.locationName);
     }
 
-    engine->_transitionMapId = pMapStats->GetMapInfo(header.locationName);
+    engine->_transitionMapId = pMapStats->GetMapInfo(state.header.locationName);
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_SKIP_WORLD_UPDATE;
 
@@ -186,10 +193,19 @@ std::pair<SaveGameHeader, Blob> CreateSaveData(bool resetWorld, std::string_view
 
     lodWriter.write("image.pcx", pcx::encode(render->MakeViewportScreenshot(150, 112)));
 
-    resultHeader.name = title;
-    resultHeader.locationName = currentMapName;
-    resultHeader.playingTime = pParty->GetPlayingTime();
-    serialize(resultHeader, &lodWriter, tags::via<SaveGame_MM7>);
+    // Populate SaveGameState from global variables.
+    SaveGameState state;
+    state.header.name = title;
+    state.header.locationName = currentMapName;
+    state.header.playingTime = pParty->GetPlayingTime();
+    state.party = *pParty;
+    state.eventTimer = *pEventTimer;
+    state.overlays = *pActiveOverlayList;
+    state.npcData = pNPCStats->pNPCData;
+    state.npcGroups = pNPCStats->pGroups;
+
+    serialize(state, &lodWriter, tags::via<SaveGameState_MM7>);
+    resultHeader = state.header;
 
     // TODO(captainurist): incapsulate this too
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
