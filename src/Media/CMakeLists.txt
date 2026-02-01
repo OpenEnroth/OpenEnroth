@@ -22,9 +22,8 @@ set(MEDIA_HEADERS
         VideoDataSource.h)
 
 add_library(media STATIC ${MEDIA_SOURCES} ${MEDIA_HEADERS})
+target_link_libraries(media PRIVATE FFmpeg::avformat FFmpeg::avcodec FFmpeg::avutil FFmpeg::swscale FFmpeg::swresample)
 target_link_libraries(media PUBLIC media_audio library_logger library_vid utility application)
-target_link_libraries(media PRIVATE ${AVFORMAT_LIBRARIES} ${AVCODEC_LIBRARIES} ${AVUTIL_LIBRARIES} ${SWSCALE_LIBRARIES} ${SWRESAMPLE_LIBRARIES})
-target_include_directories(media PRIVATE ${FFMPEG_INCLUDE_DIRS})
 
 target_check_style(media)
 
