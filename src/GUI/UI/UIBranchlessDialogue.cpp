@@ -28,7 +28,7 @@ GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event) : GU
 
 void GUIWindow_BranchlessDialogue::Release() {
     current_screen_type = prev_screen_type;
-    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->EndTextInput();
 
     GUIWindow::Release();
 }
@@ -47,13 +47,9 @@ void GUIWindow_BranchlessDialogue::Update() {
         if (pGUIWindow_BranchlessDialogue->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
             pGUIWindow_BranchlessDialogue->keyboard_input_status = WINDOW_INPUT_NONE;
             GameUI_StatusBar_OnInput(keyboardInputHandler->GetTextInput());
-            releaseBranchlessDialogue();
-            return;
+        } else {
+            GameUI_StatusBar_ClearInputString();
         }
-        if (pGUIWindow_BranchlessDialogue->keyboard_input_status != WINDOW_INPUT_CANCELLED)
-            return;
-        pGUIWindow_BranchlessDialogue->keyboard_input_status = WINDOW_INPUT_NONE;
-        GameUI_StatusBar_ClearInputString();
         releaseBranchlessDialogue();
         return;
     }
@@ -68,7 +64,7 @@ void GUIWindow_BranchlessDialogue::Update() {
 
     // Close branchless dialog on any keypress
     if (!keyboardInputHandler->GetTextInput().empty()) {
-        keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+        keyboardInputHandler->EndTextInput();
         releaseBranchlessDialogue();
         return;
     }

@@ -412,7 +412,7 @@ bool Io::KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
         } else if (key == PlatformKey::KEY_RETURN) {
             SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
         } else if (key == PlatformKey::KEY_ESCAPE) {
-            SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+            SetWindowInputStatus(WINDOW_INPUT_NONE);
         } else if (key == PlatformKey::KEY_SPACE && pPressedKeysBuffer.size() < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
                 pPressedKeysBuffer.push_back(' ');
