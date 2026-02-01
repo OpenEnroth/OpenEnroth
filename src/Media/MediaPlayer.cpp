@@ -507,7 +507,8 @@ class Movie : public IMovie {
             } while (lastvideopts == desired_frame_number);
 
             // ignore audio packets
-            if (packet.stream_index == audio.stream_idx) { continue; }
+            if (packet.stream_index == audio.stream_idx)
+                continue;
 
             if (packet.stream_index == video.stream_idx) {
                 // check if anymore sound frames still in decoder

@@ -15,12 +15,17 @@
 #   - AVUTIL
 #   - POSTPROC
 #   - SWSCALE
+#   - SWRESAMPLE
 # the following variables will be defined
 #  <component>_FOUND        - System has <component>
 #  <component>_INCLUDE_DIRS - Include directory necessary for using the <component> headers
 #  <component>_LIBRARIES    - Link these to use <component>
 #  <component>_DEFINITIONS  - Compiler switches required for using <component>
 #  <component>_VERSION      - The components version
+#
+# Additionally, IMPORTED targets are created for each found component:
+#  FFmpeg::avcodec, FFmpeg::avformat, FFmpeg::avdevice, FFmpeg::avutil,
+#  FFmpeg::avfilter, FFmpeg::swscale, FFmpeg::postproc, FFmpeg::swresample
 #
 # Copyright (c) 2006, Matthias Kretz, <kretz@kde.org>
 # Copyright (c) 2008, Alexander Neundorf, <neundorf@kde.org>
@@ -48,6 +53,26 @@ macro(set_component_found _component )
   else ()
     # message(STATUS "  - ${_component} not found.")
   endif ()
+endmacro()
+
+#
+### Macro: create_imported_target
+#
+# Creates an IMPORTED target FFmpeg::<target_name> for the given component.
+#
+macro(create_imported_target _component _target_name)
+  if (${_component}_FOUND AND NOT TARGET FFmpeg::${_target_name})
+    add_library(FFmpeg::${_target_name} STATIC IMPORTED)
+    set_target_properties(FFmpeg::${_target_name} PROPERTIES
+      IMPORTED_LOCATION "${${_component}_LIBRARIES}"
+      INTERFACE_INCLUDE_DIRECTORIES "${${_component}_INCLUDE_DIRS}"
+    )
+    if (${_component}_DEFINITIONS)
+      set_target_properties(FFmpeg::${_target_name} PROPERTIES
+        INTERFACE_COMPILE_DEFINITIONS "${${_component}_DEFINITIONS}"
+      )
+    endif()
+  endif()
 endmacro()
 
 #
@@ -137,9 +162,19 @@ if (NOT FFMPEG_LIBRARIES)
 endif ()
 
 # Now set the noncached _FOUND vars for the components.
-foreach (_component AVCODEC AVDEVICE AVFORMAT AVUTIL POSTPROCESS SWSCALE)
+foreach (_component AVCODEC AVDEVICE AVFORMAT AVFILTER AVUTIL POSTPROC SWSCALE SWRESAMPLE)
   set_component_found(${_component})
 endforeach ()
+
+# Create IMPORTED targets for found components.
+create_imported_target(AVCODEC avcodec)
+create_imported_target(AVFORMAT avformat)
+create_imported_target(AVDEVICE avdevice)
+create_imported_target(AVUTIL avutil)
+create_imported_target(AVFILTER avfilter)
+create_imported_target(SWSCALE swscale)
+create_imported_target(POSTPROC postproc)
+create_imported_target(SWRESAMPLE swresample)
 
 # Compile the list of required vars
 set(_FFmpeg_REQUIRED_VARS FFMPEG_LIBRARIES FFMPEG_INCLUDE_DIRS)
