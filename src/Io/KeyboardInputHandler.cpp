@@ -386,6 +386,7 @@ void Io::KeyboardInputHandler::StartTextInput(TextInputType type, int max_string
 void Io::KeyboardInputHandler::EndTextInput() {
     if (window != nullptr) {
         window->keyboard_input_status = WINDOW_INPUT_NONE;
+        window = nullptr;
     }
 }
 
