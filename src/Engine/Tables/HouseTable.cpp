@@ -19,7 +19,7 @@ void initializeHouses(const Blob &houses) {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw(houses.string_view());
+    std::string txtRaw(houses.str());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 

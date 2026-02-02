@@ -32,7 +32,7 @@ bool Localization::initialize() {
     int temp_str_len;  // ecx@5
     bool string_end;   // [sp+14h] [bp-4h]@4
 
-    this->_localizationRaw = engine->resources()->eventsData("global.txt").string_view();
+    this->_localizationRaw = engine->resources()->eventsData("global.txt").str();
     if (this->_localizationRaw.empty()) {
         return false;
     }
@@ -334,7 +334,7 @@ void Localization::initializeSkillNames() {
     //    "But there is not much room to improve finesse or mastery for such a rudimentary weapon though. "
     //    "So don't expect to become thwonking killer and devastating anyone beyond weaklings.";
 
-    _skillDescRaw = engine->resources()->eventsData("skilldes.txt").string_view();
+    _skillDescRaw = engine->resources()->eventsData("skilldes.txt").str();
     strtok(_skillDescRaw.data(), "\r");
     for (Skill i : allVisibleSkills()) {
         char *test_string = strtok(NULL, "\r") + 1;
@@ -398,7 +398,7 @@ void Localization::initializeClassNames() {
     this->_classNames[CLASS_ARCHAMGE] = this->_localizationStrings[LSTR_ARCHMAGE];
     this->_classNames[CLASS_LICH] = this->_localizationStrings[LSTR_LICH];
 
-    this->_classDescRaw = engine->resources()->eventsData("class.txt").string_view();
+    this->_classDescRaw = engine->resources()->eventsData("class.txt").str();
     strtok(this->_classDescRaw.data(), "\r");
     for (Class i : _classDescriptions.indices()) {
         char *test_string = strtok(NULL, "\r") + 1;
@@ -476,7 +476,7 @@ void Localization::initializeAttributeNames() {
     this->_attributeNames[ATTRIBUTE_SPEED]        = this->_localizationStrings[LSTR_SPEED];
     this->_attributeNames[ATTRIBUTE_LUCK]         = this->_localizationStrings[LSTR_LUCK];
 
-    this->_attributeDescRaw = engine->resources()->eventsData("stats.txt").string_view();
+    this->_attributeDescRaw = engine->resources()->eventsData("stats.txt").str();
     strtok(this->_attributeDescRaw.data(), "\r");
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;

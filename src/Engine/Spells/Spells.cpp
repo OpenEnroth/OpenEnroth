@@ -495,7 +495,7 @@ void SpellStats::Initialize(const Blob &spells) {
 
     char *test_string;
 
-    std::string txtRaw(spells.string_view());
+    std::string txtRaw(spells.str());
 
     strtok(txtRaw.data(), "\r");
     for (SpellId uSpellID : allRegularSpells()) {

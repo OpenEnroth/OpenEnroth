@@ -73,7 +73,7 @@ class FileSystemDumper {
             _target->push_back(FileSystemDumpEntry(path.string(), FILE_REGULAR, std::move(content)));
         } else {
             if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS) {
-                fmt::println(_stream, "{}: \"{}\" ", path.string(), ascii::toPrintable(content.string_view(), '_'));
+                fmt::println(_stream, "{}: \"{}\" ", path.string(), ascii::toPrintable(content.str(), '_'));
             } else {
                 fmt::println(_stream, "{}", path.string());
             }
@@ -106,5 +106,5 @@ void PrintTo(const FileSystemDumpEntry &entry, std::ostream *stream) {
     // Symmetric to `FileSystemDumper::writeOut*`.
     *stream << std::quoted(entry.path);
     if (entry.type == FILE_REGULAR)
-        *stream << ": " << std::quoted(entry.content.string_view());
+        *stream << ": " << std::quoted(entry.content.str());
 }

@@ -27,7 +27,7 @@ void NPCStats::InitializeNPCText(const Blob &npcText) {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw(npcText.string_view());
+    std::string txtRaw(npcText.str());
     strtok(txtRaw.data(), "\r");
 
     for (i = 0; i < 789; ++i) {
@@ -57,7 +57,7 @@ void NPCStats::InitializeNPCText(const Blob &npcText) {
 }
 
 void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
-    std::string txtRaw(npcTopics.string_view());
+    std::string txtRaw(npcTopics.str());
     strtok(txtRaw.data(), "\r");
 
     char *test_string;
@@ -94,7 +94,7 @@ void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
 }
 
 void NPCStats::InitializeNPCDist(const Blob &npcDist) {
-    std::string txtRaw(npcDist.string_view());
+    std::string txtRaw(npcDist.str());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
@@ -164,7 +164,7 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw(npcData.string_view());
+    std::string txtRaw(npcData.str());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
@@ -231,7 +231,7 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
 }
 
 void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
-    std::string txtRaw(npcGreets.string_view());
+    std::string txtRaw(npcGreets.str());
     strtok(txtRaw.data(), "\r");
 
     char *test_string;
@@ -272,7 +272,7 @@ void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
 }
 
 void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
-    std::string txtRaw(npcGroups.string_view());
+    std::string txtRaw(npcGroups.str());
     strtok(txtRaw.data(), "\r");
 
     char *test_string;
@@ -308,7 +308,7 @@ void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
 }
 
 void NPCStats::InitializeNPCNews(const Blob &npcNews) {
-    std::string txtRaw(npcNews.string_view());
+    std::string txtRaw(npcNews.str());
     strtok(txtRaw.data(), "\r");
 
     char *test_string;
@@ -357,7 +357,7 @@ void NPCStats::Initialize(ResourceManager *resourceManager) {
 }
 
 void NPCStats::InitializeNPCNames(const Blob &npcNames) {
-    std::string txtRaw(npcNames.string_view());
+    std::string txtRaw(npcNames.str());
     strtok(txtRaw.data(), "\r");
 
     int i;
@@ -407,7 +407,7 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
 }
 
 void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
-    std::string txtRaw(npcProfs.string_view());
+    std::string txtRaw(npcProfs.str());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");

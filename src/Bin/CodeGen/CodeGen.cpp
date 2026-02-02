@@ -499,7 +499,7 @@ int runSpeechPortraitsCodegen(const CodeGenOptions &options, ResourceManager *re
 int runLstrCodegen(const CodeGenOptions &options, ResourceManager *resourceManager) {
     CodeGenMap map;
 
-    std::string txt = std::string(resourceManager->eventsData("global.txt").string_view());
+    std::string txt = std::string(resourceManager->eventsData("global.txt").str());
 
     std::vector<std::string_view> lines = split(txt, '\n');
     for (std::string_view &line : lines)

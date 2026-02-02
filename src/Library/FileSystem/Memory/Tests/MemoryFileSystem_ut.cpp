@@ -54,7 +54,7 @@ UNIT_TEST(MemoryFileSystem, ReadWrite) {
     EXPECT_ANY_THROW(fs.write("a/b", Blob()));
 
     fs.write("b", Blob::fromString("123"));
-    EXPECT_EQ(fs.read("b").string_view(), "123");
+    EXPECT_EQ(fs.read("b").str(), "123");
 }
 
 UNIT_TEST(MemoryFileSystem, ReadDir) {
@@ -94,13 +94,13 @@ UNIT_TEST(MemoryFileSystem, Streaming) {
     output0->close();
     EXPECT_TRUE(fs.exists("a"));
     EXPECT_EQ(fs.stat("a"), FileStat(FILE_REGULAR, 3));
-    EXPECT_EQ(fs.read("a").string_view(), "123");
+    EXPECT_EQ(fs.read("a").str(), "123");
 
     std::unique_ptr<InputStream> input0 = fs.openForReading("a");
     std::unique_ptr<InputStream> input1 = fs.openForReading("a");
     EXPECT_ANY_THROW((void) fs.openForWriting("a"));
     EXPECT_ANY_THROW(fs.write("a", Blob()));
-    EXPECT_EQ(fs.read("a").string_view(), "123"); // read() works even when readers are active.
+    EXPECT_EQ(fs.read("a").str(), "123"); // read() works even when readers are active.
 
     EXPECT_EQ(input0->readAll(), "123");
     EXPECT_EQ(input1->readAll(), "123");
@@ -188,7 +188,7 @@ UNIT_TEST(MemoryFileSystem, Overwrite) {
     output->write("A");
     output->close();
 
-    EXPECT_EQ(fs.read("a").string_view(), "A");
+    EXPECT_EQ(fs.read("a").str(), "A");
 }
 
 UNIT_TEST(MemoryFileSystem, DisplayPath) {

@@ -14,7 +14,7 @@ IndexedArray<AwardData, AWARD_FIRST, AWARD_LAST> pAwards;
 
 void initializeAwards(const Blob &awards) {
     std::vector<std::string_view> chunks;
-    for (std::string_view line : split(awards.string_view(), '\n') | std::views::drop(1)) {
+    for (std::string_view line : split(awards.str(), '\n') | std::views::drop(1)) {
         if (line.ends_with('\r'))
             line = line.substr(0, line.size() - 1);
 

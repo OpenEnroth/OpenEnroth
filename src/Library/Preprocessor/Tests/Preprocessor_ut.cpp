@@ -9,7 +9,7 @@ UNIT_TEST(Preprocessor, NoIncludes) {
 
     Blob result = pp::preprocess(source, &fs);
 
-    EXPECT_CONTAINS(result.string_view(), "int x = 1");
+    EXPECT_CONTAINS(result.str(), "int x = 1");
 }
 
 UNIT_TEST(Preprocessor, SimpleInclude) {
@@ -19,8 +19,8 @@ UNIT_TEST(Preprocessor, SimpleInclude) {
 
     Blob result = pp::preprocess(source, &fs);
 
-    EXPECT_CONTAINS(result.string_view(), "float PI = 3.14");
-    EXPECT_CONTAINS(result.string_view(), "int x = 1");
+    EXPECT_CONTAINS(result.str(), "float PI = 3.14");
+    EXPECT_CONTAINS(result.str(), "int x = 1");
 }
 
 UNIT_TEST(Preprocessor, DefineAndIfdef) {
@@ -29,7 +29,7 @@ UNIT_TEST(Preprocessor, DefineAndIfdef) {
 
     Blob result = pp::preprocess(source, &fs);
 
-    EXPECT_CONTAINS(result.string_view(), "int x = 1");
+    EXPECT_CONTAINS(result.str(), "int x = 1");
 }
 
 UNIT_TEST(Preprocessor, IfdefNotDefined) {
@@ -38,8 +38,8 @@ UNIT_TEST(Preprocessor, IfdefNotDefined) {
 
     Blob result = pp::preprocess(source, &fs);
 
-    EXPECT_MISSES(result.string_view(), "int x = 1");
-    EXPECT_CONTAINS(result.string_view(), "int y = 2");
+    EXPECT_MISSES(result.str(), "int x = 1");
+    EXPECT_CONTAINS(result.str(), "int y = 2");
 }
 
 UNIT_TEST(Preprocessor, IncludeNotFound) {
@@ -57,8 +57,8 @@ UNIT_TEST(Preprocessor, NestedInclude) {
 
     Blob result = pp::preprocess(source, &fs);
 
-    EXPECT_CONTAINS(result.string_view(), "int a = 1");
-    EXPECT_CONTAINS(result.string_view(), "int b = 2");
+    EXPECT_CONTAINS(result.str(), "int a = 1");
+    EXPECT_CONTAINS(result.str(), "int b = 2");
 }
 
 UNIT_TEST(Preprocessor, Preamble) {
@@ -67,11 +67,11 @@ UNIT_TEST(Preprocessor, Preamble) {
 
     // Without preamble, GL_ES is not defined.
     Blob resultWithout = pp::preprocess(source, &fs);
-    EXPECT_MISSES(resultWithout.string_view(), "int x = 1");
+    EXPECT_MISSES(resultWithout.str(), "int x = 1");
 
     // With preamble defining GL_ES.
     Blob resultWith = pp::preprocess(source, &fs, "#define GL_ES\n");
-    EXPECT_CONTAINS(resultWith.string_view(), "int x = 1");
+    EXPECT_CONTAINS(resultWith.str(), "int x = 1");
 }
 
 UNIT_TEST(Preprocessor, GlslDirectivesPassThrough) {
@@ -83,7 +83,7 @@ UNIT_TEST(Preprocessor, GlslDirectivesPassThrough) {
     static constexpr std::string_view directives[] = {"version", "extension"};
     Blob result = pp::preprocess(source, &fs, {}, directives);
 
-    EXPECT_CONTAINS(result.string_view(), "#version 410 core");
-    EXPECT_CONTAINS(result.string_view(), "#extension GL_ARB_foo : enable");
-    EXPECT_CONTAINS(result.string_view(), "void main()");
+    EXPECT_CONTAINS(result.str(), "#version 410 core");
+    EXPECT_CONTAINS(result.str(), "#extension GL_ARB_foo : enable");
+    EXPECT_CONTAINS(result.str(), "void main()");
 }

@@ -143,7 +143,7 @@ int runDump(const LodToolOptions &options) {
 
         std::string line;
         for (size_t offset = 0; offset < data.size(); offset += 16) {
-            std::string_view chunk = data.string_view().substr(offset, 16);
+            std::string_view chunk = data.str().substr(offset, 16);
 
             fmt::println("    {:08X}: {: <40}  {}", offset, toHexDump(chunk), ascii::toPrintable(chunk, '.'));
         }

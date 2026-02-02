@@ -41,7 +41,7 @@ const char *location_type[] = {
 };
 
 void MapStats::Initialize(const Blob &mapStats) {
-    std::string pMapStatsTXT(mapStats.string_view());
+    std::string pMapStatsTXT(mapStats.str());
     std::stringstream stream(pMapStatsTXT);
     std::string tmpString;
     std::getline(stream, tmpString);

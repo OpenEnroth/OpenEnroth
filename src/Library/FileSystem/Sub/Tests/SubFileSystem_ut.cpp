@@ -13,7 +13,7 @@ UNIT_TEST(SubFileSystem, ReadFile) {
 
     EXPECT_TRUE(sub.exists("file.txt"));
     Blob content = sub.read("file.txt");
-    EXPECT_EQ(content.string_view(), "hello");
+    EXPECT_EQ(content.str(), "hello");
 }
 
 UNIT_TEST(SubFileSystem, FileNotFound) {
@@ -42,7 +42,7 @@ UNIT_TEST(SubFileSystem, NestedDirectory) {
 
     EXPECT_TRUE(sub.exists("include/common.vert"));
     Blob content = sub.read("include/common.vert");
-    EXPECT_EQ(content.string_view(), "common");
+    EXPECT_EQ(content.str(), "common");
 }
 
 UNIT_TEST(SubFileSystem, DisplayPath) {
