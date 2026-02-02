@@ -421,9 +421,10 @@ void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2, Recti frame
     }
 }
 
-GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType) {
+GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType), _requireMousePointer(true) {
     this->mouse = EngineIocContainer::ResolveMouse();
-    this->mouse->SetMouseLook(false);
+    if (_requireMousePointer)
+        this->mouse->IncrementMousePointerTracker();
 
     logger->trace("New window: {}", toString(windowType));
     lWindowList.push_front(this);
@@ -436,6 +437,8 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, s
 
 GUIWindow::~GUIWindow() {
     Release();
+    if (_requireMousePointer)
+        this->mouse->DecrementMousePointerTracker();
 }
 
 void DialogueEnding() {
