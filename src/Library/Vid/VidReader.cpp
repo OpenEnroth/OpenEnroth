@@ -37,7 +37,7 @@ void VidReader::open(Blob blob) {
     BlobInputStream stream(blob);
 
     std::vector<VidEntry> entries;
-    deserialize(stream, &entries, tags::via<VidEntry_MM7>);
+    deserialize(stream, &entries, tags::via_each<VidEntry_MM7>);
     std::ranges::sort(entries, std::ranges::less(), &VidEntry::offset);
 
     std::unordered_map<std::string, VidRegion> files;

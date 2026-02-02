@@ -9,19 +9,14 @@
 
 #include "BinaryConcepts.h"
 
-template<>
-struct is_proxy_binary_sink<Blob> : std::true_type {};
-template<>
-struct is_proxy_binary_source<Blob> : std::true_type {};
-
-template<class Src, class... Tags>
+template<class Src, class... Tags> requires (!starts_with_v<is_greedy_tag, Tags...>)
 void serialize(const Src &src, Blob *dst, const Tags &... tags) {
     BlobOutputStream stream(dst);
     serialize(src, &stream, tags...);
     stream.close(); // Flush data into a Blob.
 }
 
-template<class Dst, class... Tags>
+template<class Dst, class... Tags> requires (!starts_with_v<is_greedy_tag, Tags...>)
 void deserialize(const Blob &src, Dst *dst, const Tags &... tags) {
     // Using MemoryInputStream and not BlobInputStream is intentional. BlobInputStream is heavier, and we don't need
     // its functionality here.
