@@ -36,7 +36,7 @@ void SndReader::open(Blob blob) {
     BlobInputStream stream(blob);
 
     std::vector<SndEntry> entries;
-    deserialize(stream, &entries, tags::via<SndEntry_MM7>);
+    deserialize(stream, &entries, tags::via_each<SndEntry_MM7>);
 
     std::unordered_map<std::string, SndEntry> files;
     for (SndEntry &entry : entries) {

@@ -52,9 +52,9 @@ static LodEntry parseDirectoryEntry(InputStream &stream, LodVersion version, siz
 static std::vector<LodEntry> parseFileEntries(InputStream &stream, const LodEntry &directoryEntry, LodVersion version) {
     std::vector<LodEntry> result;
     if (version == LOD_VERSION_MM8) {
-        deserialize(stream, &result, tags::presized(directoryEntry.numItems), tags::via<LodFileEntry_MM8>);
+        deserialize(stream, &result, tags::presized(directoryEntry.numItems), tags::via_each<LodFileEntry_MM8>);
     } else {
-        deserialize(stream, &result, tags::presized(directoryEntry.numItems), tags::via<LodEntry_MM6>);
+        deserialize(stream, &result, tags::presized(directoryEntry.numItems), tags::via_each<LodEntry_MM6>);
     }
 
     for (const LodEntry &entry : result) {

@@ -25,21 +25,21 @@
 
 void deserialize(const Blob &src, PortraitFrameTable *dst) {
     dst->pFrames.clear();
-    deserialize(src, &dst->pFrames, tags::append, tags::via<PortraitFrameData_MM7>);
+    deserialize(src, &dst->pFrames, tags::append, tags::via_each<PortraitFrameData_MM7>);
 
     assert(!dst->pFrames.empty());
 }
 
 void deserialize(const Blob &src, DecorationList *dst) {
     dst->pDecorations.clear();
-    deserialize(src, &dst->pDecorations, tags::append, tags::via<DecorationDesc_MM7>);
+    deserialize(src, &dst->pDecorations, tags::append, tags::via_each<DecorationDesc_MM7>);
 
     assert(!dst->pDecorations.empty());
 }
 
 void deserialize(const Blob &src, IconFrameTable *dst) {
     dst->_frames.clear();
-    deserialize(src, &dst->_frames, tags::append, tags::via<IconFrameData_MM7>);
+    deserialize(src, &dst->_frames, tags::append, tags::via_each<IconFrameData_MM7>);
     dst->_textures.resize(dst->_frames.size());
 
     assert(!dst->_frames.empty());
@@ -48,7 +48,7 @@ void deserialize(const Blob &src, IconFrameTable *dst) {
 void deserialize(const Blob &src, MonsterList *dst) {
     std::vector<MonsterDesc> monsters;
 
-    deserialize(src, &monsters, tags::append, tags::via<MonsterDesc_MM7>);
+    deserialize(src, &monsters, tags::append, tags::via_each<MonsterDesc_MM7>);
 
     if (monsters.size() != 277)
         throw Exception("Invalid monster list size, expected {}, got {}", 277, monsters.size());
@@ -62,14 +62,14 @@ void deserialize(const Blob &src, MonsterList *dst) {
 
 void deserialize(const Blob &src, ObjectList *dst) {
     dst->pObjects.clear();
-    deserialize(src, &dst->pObjects, tags::append, tags::via<ObjectDesc_MM7>);
+    deserialize(src, &dst->pObjects, tags::append, tags::via_each<ObjectDesc_MM7>);
 
     assert(!dst->pObjects.empty());
 }
 
 void deserialize(const Blob &src, OverlayList *dst) {
     dst->pOverlays.clear();
-    deserialize(src, &dst->pOverlays, tags::append, tags::via<OverlayDesc_MM7>);
+    deserialize(src, &dst->pOverlays, tags::append, tags::via_each<OverlayDesc_MM7>);
 
     assert(!dst->pOverlays.empty());
 }
@@ -79,7 +79,7 @@ void deserialize(const Blob &src, SpriteFrameTable *dst) {
 }
 
 void deserialize(const Blob &src, TextureFrameTable *dst) {
-    deserialize(src, &dst->_frames, tags::append, tags::via<TextureFrameData_MM7>);
+    deserialize(src, &dst->_frames, tags::append, tags::via_each<TextureFrameData_MM7>);
     dst->_textures.resize(dst->_frames.size());
 
     assert(!dst->_frames.empty());
@@ -87,7 +87,7 @@ void deserialize(const Blob &src, TextureFrameTable *dst) {
 
 void deserialize(const Blob &src, SoundList *dst) {
     std::vector<SoundInfo> sounds;
-    deserialize(src, &sounds, tags::append, tags::via<SoundInfo_MM7>);
+    deserialize(src, &sounds, tags::append, tags::via_each<SoundInfo_MM7>);
 
     assert(!sounds.empty());
 
@@ -97,7 +97,7 @@ void deserialize(const Blob &src, SoundList *dst) {
 }
 
 void deserialize(const Blob &src, TileTable *dst) {
-    deserialize(src, &dst->_tiles, tags::append, tags::via<TileData_MM7>);
+    deserialize(src, &dst->_tiles, tags::append, tags::via_each<TileData_MM7>);
 
     // Fill in the tileId map.
     for (size_t i = 0; i < dst->_tiles.size(); i++) {
