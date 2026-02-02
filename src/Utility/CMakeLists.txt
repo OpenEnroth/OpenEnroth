@@ -19,7 +19,6 @@ set(UTILITY_SOURCES
         String/Wrap.cpp)
 
 set(UTILITY_HEADERS
-        Embedded.h
         Exception.h
         Flags.h
         Hash.h

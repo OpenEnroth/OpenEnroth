@@ -2,20 +2,26 @@
 
 #include <string>
 
-#include "Utility/Embedded.h"
 #include "Utility/Memory/Blob.h"
 
-#include "StringOutputStream.h"
+#include "OutputStream.h"
 
-class BlobOutputStream : private Embedded<std::string>, public StringOutputStream {
-    using base_type = StringOutputStream;
+/**
+ * Output stream that writes into a `Blob`.
+ *
+ * Data is accumulated in an internal buffer and transferred to the target `Blob` when `close()` is called.
+ * Calling `flush()` also transfers data but makes a copy instead of moving.
+ */
+class BlobOutputStream : public OutputStream {
  public:
-    BlobOutputStream();
+    BlobOutputStream() = default;
     explicit BlobOutputStream(Blob *target, std::string_view displayPath = {});
     virtual ~BlobOutputStream();
 
     void open(Blob *target, std::string_view displayPath = {});
 
+    virtual void write(const void *data, size_t size) override;
+    using OutputStream::write;
     virtual void flush() override;
     virtual void close() override;
     [[nodiscard]] virtual std::string displayPath() const override;
@@ -25,5 +31,6 @@ class BlobOutputStream : private Embedded<std::string>, public StringOutputStrea
 
  private:
     Blob *_target = nullptr;
-    std::string _displayPath; // TODO(captainurist): Use StringOutputStream's _displayPath instead.
+    std::string _buffer;
+    std::string _displayPath;
 };
