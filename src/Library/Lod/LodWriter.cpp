@@ -80,9 +80,9 @@ void LodWriter::close() {
     }
 
     if (_info.version == LOD_VERSION_MM8) {
-        serialize(fileEntries, _stream, tags::unsized, tags::via<LodFileEntry_MM8>);
+        serialize(fileEntries, _stream, tags::unsized, tags::via_each<LodFileEntry_MM8>);
     } else {
-        serialize(fileEntries, _stream, tags::unsized, tags::via<LodEntry_MM6>);
+        serialize(fileEntries, _stream, tags::unsized, tags::via_each<LodEntry_MM6>);
     }
 
     for (const auto &[_, data] : _files)

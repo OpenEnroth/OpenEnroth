@@ -17,6 +17,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Data/TileEnumFunctions.h"
 #include "Engine/Tables/TileTable.h"
 
@@ -611,25 +612,25 @@ void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLoca
     deserialize(src, &dst->locationTime);
 }
 
-void snapshot(const SaveGameHeader &src, SaveGame_MM7 *dst) {
-    snapshot(src, &dst->header);
-    snapshot(*pParty, &dst->party);
-    snapshot(*pEventTimer, &dst->eventTimer);
-    snapshot(*pActiveOverlayList, &dst->overlays);
-    snapshot(pNPCStats->pNPCData, &dst->npcData);
-    snapshot(pNPCStats->pGroups, &dst->npcGroups);
+void snapshot(const SaveGameState &src, SaveGameState_MM7 *dst) {
+    snapshot(src.header, &dst->header);
+    snapshot(src.party, &dst->party);
+    snapshot(src.eventTimer, &dst->eventTimer);
+    snapshot(src.overlays, &dst->overlays);
+    snapshot(src.npcData, &dst->npcData);
+    snapshot(src.npcGroups, &dst->npcGroups);
 }
 
-void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst) {
-    reconstruct(src.header, dst);
-    reconstruct(src.party, pParty);
-    reconstruct(src.eventTimer, pEventTimer);
-    reconstruct(src.overlays, pActiveOverlayList);
-    reconstruct(src.npcData, &pNPCStats->pNPCData);
-    reconstruct(src.npcGroups, &pNPCStats->pGroups);
+void reconstruct(const SaveGameState_MM7 &src, SaveGameState *dst) {
+    reconstruct(src.header, &dst->header);
+    reconstruct(src.party, &dst->party);
+    reconstruct(src.eventTimer, &dst->eventTimer);
+    reconstruct(src.overlays, &dst->overlays);
+    reconstruct(src.npcData, &dst->npcData);
+    reconstruct(src.npcGroups, &dst->npcGroups);
 }
 
-void serialize(const SaveGame_MM7 &src, LodWriter *dst) {
+void serialize(const SaveGameState_MM7 &src, LodWriter *dst) {
     dst->write("header.bin", toBlob(src.header));
     dst->write("party.bin", toBlob(src.party));
     dst->write("clock.bin", toBlob(src.eventTimer));
@@ -638,7 +639,7 @@ void serialize(const SaveGame_MM7 &src, LodWriter *dst) {
     dst->write("npcgroup.bin", toBlob(src.npcGroups));
 }
 
-void deserialize(const LodReader &src, SaveGame_MM7 *dst) {
+void deserialize(const LodReader &src, SaveGameState_MM7 *dst) {
     deserialize(src.read("header.bin"), &dst->header);
     deserialize(src.read("party.bin"), &dst->party);
     deserialize(src.read("clock.bin"), &dst->eventTimer);

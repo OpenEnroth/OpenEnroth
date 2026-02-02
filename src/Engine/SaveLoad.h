@@ -4,7 +4,11 @@
 #include <string>
 #include <utility>
 
+#include "Engine/Graphics/Overlays.h"
+#include "Engine/Party.h"
+#include "Engine/Tables/NPCTable.h"
 #include "Engine/Time/Time.h"
+#include "Engine/Time/Timer.h"
 
 #include "Utility/Memory/Blob.h"
 
@@ -16,6 +20,15 @@ struct SaveGameHeader {
     std::string name; // Save name, as displayed in the save list in-game.
     std::string locationName; // Name of the map, e.g. "out01.odm".
     Time playingTime; // Game time of the save.
+};
+
+struct SaveGameState {
+    SaveGameHeader header;
+    Party party;
+    Timer eventTimer;
+    ActiveOverlayList overlays;
+    std::array<NPCData, 501> npcData;
+    std::array<uint16_t, 51> npcGroups;
 };
 
 struct SavegameList {

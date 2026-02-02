@@ -18,6 +18,7 @@ class BSPModel;
 struct IndoorLocation;
 struct OutdoorLocation;
 class OutdoorTerrain;
+struct SaveGameState;
 struct SpriteFrameTable;
 class LodReader;
 class LodWriter;
@@ -123,7 +124,7 @@ void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx);
 
 
-struct SaveGame_MM7 {
+struct SaveGameState_MM7 {
     SaveGameHeader_MM7 header; // In header.bin.
     Party_MM7 party; // In party.bin.
     Timer_MM7 eventTimer; // In clock.bin.
@@ -132,11 +133,10 @@ struct SaveGame_MM7 {
     std::array<uint16_t, 51> npcGroups; // in npcgroup.bin.
 };
 
-// TODO(captainurist): header here is essentially the whole savegame. Redo properly.
-void snapshot(const SaveGameHeader &src, SaveGame_MM7 *dst);
-void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst);
-void serialize(const SaveGame_MM7 &src, LodWriter *dst);
-void deserialize(const LodReader &src, SaveGame_MM7 *dst);
+void snapshot(const SaveGameState &src, SaveGameState_MM7 *dst);
+void reconstruct(const SaveGameState_MM7 &src, SaveGameState *dst);
+void serialize(const SaveGameState_MM7 &src, LodWriter *dst);
+void deserialize(const LodReader &src, SaveGameState_MM7 *dst);
 
 
 struct SpriteFrameTable_MM7 {
