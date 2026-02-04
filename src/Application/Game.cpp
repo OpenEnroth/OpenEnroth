@@ -236,8 +236,7 @@ void Game::closeTargetedSpellWindow() {
         if (current_screen_type == SCREEN_CHARACTERS) {
             mouse->SetCursorImage("MICON2");
         } else {
-            pGUIWindow_CastTargetedSpell->Release();  // test to fix enchanting issue
-            pGUIWindow_CastTargetedSpell = nullptr;  // test to fix enchanting issue
+            pGUIWindow_CastTargetedSpell = nullptr;
             mouse->SetCursorImage("MICON1");
             engine->_statusBar->clearEvent();
             IsEnchantingInProgress = false;
@@ -491,8 +490,7 @@ void Game::processQueuedMessages() {
                         engine->_messageQueue->clear();
                         _menu->MenuLoop();
                     } else {
-                        pGUIWindow_CastTargetedSpell->Release();
-                        pGUIWindow_CastTargetedSpell = 0;
+                        pGUIWindow_CastTargetedSpell = nullptr;
                         mouse->SetCursorImage("MICON1");
                         engine->_statusBar->clearEvent();
                         IsEnchantingInProgress = false;

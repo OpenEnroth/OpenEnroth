@@ -213,7 +213,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 
     if (GetCurrentMenuID() != MENU_NONE || current_screen_type != SCREEN_GAME ||
         !keyboardInputHandler->IsStealingToggled() || !pViewport.contains(Pointi(x, y))) {
-        std::list<GUIWindow*> targetedSpellUI = {pGUIWindow_CastTargetedSpell};
+        std::list<GUIWindow*> targetedSpellUI = {pGUIWindow_CastTargetedSpell.get()};
         std::list<GUIWindow*> *checkWindowList = &lWindowList;
         if (pGUIWindow_CastTargetedSpell) {
             // Block regular UI if targeted spell casting is active

@@ -318,7 +318,7 @@ extern GUIWindow *ptr_507BC8;
 extern GUIWindow *pGUIWindow_CurrentMenu;
 extern GUIWindow_Chest *pGUIWindow_CurrentChest;
 //extern GUIWindow *ptr_507BD0;
-extern TargetedSpellUI *pGUIWindow_CastTargetedSpell;
+extern std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;
 extern std::unique_ptr<GUIWindow_GameOver> pGameOverWindow;
 extern std::unique_ptr<GUIWindow_BranchlessDialogue> pGUIWindow_BranchlessDialogue;
 
