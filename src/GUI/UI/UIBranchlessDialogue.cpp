@@ -29,8 +29,6 @@ GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event) : GU
 void GUIWindow_BranchlessDialogue::Release() {
     current_screen_type = prev_screen_type;
     keyboardInputHandler->EndTextInput();
-
-    GUIWindow::Release();
 }
 
 void GUIWindow_BranchlessDialogue::Update() {

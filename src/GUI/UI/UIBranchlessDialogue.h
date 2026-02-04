@@ -9,7 +9,7 @@
 class GUIWindow_BranchlessDialogue : public GUIWindow {
  public:
     explicit GUIWindow_BranchlessDialogue(EvtOpcode event);
-    virtual ~GUIWindow_BranchlessDialogue() {}
+    virtual ~GUIWindow_BranchlessDialogue() { Release(); }
 
     virtual void Update() override;
     virtual void Release() override;

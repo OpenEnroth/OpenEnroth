@@ -202,8 +202,6 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 
     if (pGameOverWindow) {
         if (pGameOverWindow->toggleAndTestFinished()) {
-            pGameOverWindow->Release();
-            delete pGameOverWindow;
             pGameOverWindow = nullptr;
         }
         return;

@@ -479,8 +479,6 @@ void Game::processQueuedMessages() {
 
                 if (pGameOverWindow) {
                     if (pGameOverWindow->toggleAndTestFinished()) {
-                        pGameOverWindow->Release();
-                        delete pGameOverWindow;
                         pGameOverWindow = nullptr;
                     }
                     continue;
@@ -892,7 +890,7 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_ShowGameOverWindow: {
-                pGameOverWindow = new GUIWindow_GameOver();
+                pGameOverWindow = std::make_unique<GUIWindow_GameOver>();
                 uGameState = GAME_STATE_FINAL_WINDOW;
                 continue;
             }

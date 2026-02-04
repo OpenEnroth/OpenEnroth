@@ -5,7 +5,7 @@
 class GUIWindow_GameOver : public GUIWindow {
  public:
     explicit GUIWindow_GameOver(UIMessageType releaseEvent = UIMSG_OnGameOverWindowClose);
-    virtual ~GUIWindow_GameOver() {}
+    virtual ~GUIWindow_GameOver() { Release(); }
 
     virtual void Update() override;
     virtual void Release() override;

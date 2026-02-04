@@ -319,8 +319,7 @@ extern GUIWindow *pGUIWindow_CurrentMenu;
 extern GUIWindow_Chest *pGUIWindow_CurrentChest;
 //extern GUIWindow *ptr_507BD0;
 extern TargetedSpellUI *pGUIWindow_CastTargetedSpell;
-extern GUIWindow_GameOver *pGameOverWindow;
-//extern GUIWindow *pGUIWindow_EscMessageWindow;
+extern std::unique_ptr<GUIWindow_GameOver> pGameOverWindow;
 extern std::unique_ptr<GUIWindow_BranchlessDialogue> pGUIWindow_BranchlessDialogue;
 
 extern Color ui_mainmenu_copyright_color;
