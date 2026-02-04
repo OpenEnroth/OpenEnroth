@@ -38,6 +38,7 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UIBranchlessDialogue.h"
 
 #include "Io/InputEnums.h"
 #include "Io/KeyboardInputHandler.h"
@@ -64,7 +65,7 @@ GUIWindow_MessageScroll *pGUIWindow_ScrollWindow; // reading a message scroll
 GUIWindow *ptr_507BC8;  // screen 19 - not used?
 TargetedSpellUI *pGUIWindow_CastTargetedSpell;
 GUIWindow_GameOver *pGameOverWindow; // UIMSG_ShowGameOverWindow
-GUIWindow_BranchlessDialogue *pGUIWindow_BranchlessDialogue; // branchless dialougue
+std::unique_ptr<GUIWindow_BranchlessDialogue> pGUIWindow_BranchlessDialogue; // branchless dialougue
 
 enum WindowType current_character_screen_window = WINDOW_CharacterWindow_Stats;
 std::list<GUIWindow*> lWindowList;

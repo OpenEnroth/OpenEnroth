@@ -83,7 +83,7 @@ void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
         savedEventID = eventid;
         savedEventStep = entryline;
         savedDecoration = activeLevelDecoration;
-        pGUIWindow_BranchlessDialogue = new GUIWindow_BranchlessDialogue(type);
+        pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(type);
     }
 }
 
