@@ -41,6 +41,7 @@
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIGameOver.h"
 #include "GUI/UI/UISpell.h"
+#include "GUI/UI/UIMessageScroll.h"
 
 #include "Io/InputEnums.h"
 #include "Io/KeyboardInputHandler.h"
@@ -63,7 +64,7 @@ GUIWindow *pGUIWindow_CurrentMenu;
 GUIWindow_Chest *pGUIWindow_CurrentChest;
 GUIWindow *pDialogueWindow;
 GUIWindow_House *window_SpeakInHouse;
-GUIWindow_MessageScroll *pGUIWindow_ScrollWindow; // reading a message scroll
+std::unique_ptr<GUIWindow_MessageScroll> pGUIWindow_ScrollWindow; // reading a message scroll
 GUIWindow *ptr_507BC8;  // screen 19 - not used?
 std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;
 std::unique_ptr<GUIWindow_GameOver> pGameOverWindow;
