@@ -65,7 +65,6 @@ GUIWindow_Chest *pGUIWindow_CurrentChest;
 GUIWindow *pDialogueWindow;
 GUIWindow_House *window_SpeakInHouse;
 std::unique_ptr<GUIWindow_MessageScroll> pGUIWindow_ScrollWindow; // reading a message scroll
-GUIWindow *ptr_507BC8;  // screen 19 - not used?
 std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;
 std::unique_ptr<GUIWindow_GameOver> pGameOverWindow;
 std::unique_ptr<GUIWindow_BranchlessDialogue> pGUIWindow_BranchlessDialogue;
@@ -1043,7 +1042,6 @@ void WindowManager::DeleteAllVisibleWindows() {
     pDialogueWindow = nullptr;
     window_SpeakInHouse = nullptr;
     pGUIWindow_ScrollWindow = nullptr; // reading a message scroll
-    ptr_507BC8 = nullptr;  // screen 19 - not used?
     pGUIWindow_CastTargetedSpell = nullptr;
     pGameOverWindow = nullptr; // UIMSG_ShowGameOverWindow
     pGUIWindow_BranchlessDialogue = nullptr; // branchless dialougue

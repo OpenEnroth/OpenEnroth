@@ -551,13 +551,6 @@ void Game::processQueuedMessages() {
                                     current_screen_type = SCREEN_GAME;
                                     pEventTimer->setPaused(false);
                                     continue;
-                                case SCREEN_19:
-                                    assert(false);
-                                    pWindow2 = ptr_507BC8;
-                                    pWindow2->Release();
-                                    current_screen_type = SCREEN_GAME;
-                                    pEventTimer->setPaused(false);
-                                    continue;
                                 case SCREEN_REST:  // close rest screen
                                     if (currentRestType != REST_NONE) {
                                         Rest(remainingRestTime);
