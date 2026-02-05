@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <unordered_map>
 #include <string>
 #include <utility>
 
@@ -22,14 +23,24 @@ struct SaveGameHeader {
     Time playingTime; // Game time of the save.
 };
 
-struct SaveGameState {
+struct SaveGame {
     SaveGameHeader header;
     Party party;
     Timer eventTimer;
     ActiveOverlayList overlays;
     std::array<NPCData, 501> npcData;
     std::array<uint16_t, 51> npcGroups;
+    std::unordered_map<std::string, Blob> mapDeltas;
+    Blob thumbnail;
 };
+
+struct SaveGameLite {
+    SaveGameHeader header;
+    Blob thumbnail;
+};
+
+/** Runtime storage for map deltas from the currently loaded save. */
+extern std::unordered_map<std::string, Blob> pMapDeltas;
 
 struct SavegameList {
     static void Initialize();
@@ -48,17 +59,16 @@ struct SavegameList {
     std::string lastLoadedSave{};
 };
 
-void LoadGame(int uSlot);
-std::pair<SaveGameHeader, Blob> CreateSaveData(bool resetWorld, std::string_view title);
-SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title = {});
-void AutoSave();
-void DoSavegame(int uSlot);
-bool Initialize_GamesLOD_NewLOD();
-void SaveNewGame();
+void loadGame(int uSlot);
+std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view title);
+SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title = {});
+void autoSave();
+void doSavegame(int uSlot);
+void saveNewGame();
 
-void QuickSaveGame();
-int GetQuickSaveSlot();
-void QuickLoadGame();
-std::string GetCurrentQuickSave();
+void quickSaveGame();
+int getQuickSaveSlot();
+void quickLoadGame();
+std::string getCurrentQuickSave();
 
 extern SavegameList *pSavegameList;

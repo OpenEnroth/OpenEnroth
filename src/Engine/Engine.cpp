@@ -19,7 +19,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/BspRenderer.h"
-#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -64,6 +63,7 @@
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Resources/LOD.h"
 #include "Graphics/TileGenerator.h"
 
 #include "GUI/GUIProgressBar.h"
@@ -1469,7 +1469,7 @@ void Transition_StopSound_Autosave(std::string_view pMapName,
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
     if (engine->_currentLoadedMapId != pMapStats->GetMapInfo(pMapName)) {
-        AutoSave();
+        autoSave();
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
