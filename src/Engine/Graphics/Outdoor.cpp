@@ -38,6 +38,7 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Resources/LOD.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Seasons.h"
 #include "Engine/Data/TileEnumFunctions.h"
 
@@ -480,7 +481,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
     OutdoorDelta_MM7 delta;
-    if (Blob blob = lod::decodeMaybeCompressed(pSave_LOD->read(ddm_filename))) {
+    if (Blob blob = lod::decodeMaybeCompressed(pMapDeltas.at(ddm_filename))) {
         try {
             deserialize(blob, &delta, tags::context(location));
 

@@ -159,7 +159,7 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_LoadGame:
                 if (pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
-                    LoadGame(pSavegameList->selectedSlot);
+                    loadGame(pSavegameList->selectedSlot);
                     uGameState = GAME_STATE_LOADING_GAME;
                 }
                 continue;
@@ -169,7 +169,7 @@ void Menu::EventLoop() {
                     pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name = keyboardInputHandler->GetTextInput();
                     keyboardInputHandler->EndTextInput();
                 }
-                DoSavegame(pSavegameList->selectedSlot);
+                doSavegame(pSavegameList->selectedSlot);
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
                 if (engine->_currentLoadedMapId == MAP_ARENA) {
@@ -436,7 +436,7 @@ void Menu::EventLoop() {
                 }
                 continue;
             case UIMSG_QuickLoad:
-                QuickLoadGame();
+                quickLoadGame();
                 break;
             default:
                 break;

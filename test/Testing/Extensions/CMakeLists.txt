@@ -13,7 +13,7 @@ if(OE_BUILD_TESTS)
             ScopedTestFileSlot.h)
 
     add_library(testing_extensions ${TESTING_EXTENSIONS_SOURCES} ${TESTING_EXTENSIONS_HEADERS})
-    target_link_libraries(testing_extensions PUBLIC GTest::gtest)
+    target_link_libraries(testing_extensions PUBLIC GTest::gtest utility)
 
     target_check_style(testing_extensions)
 endif()

@@ -223,7 +223,7 @@ Blob EngineController::saveGame() {
     // the control thread. One option is to unbind every time we switch to control thread, but this is slow, and not
     // needed 99% of the time. So we just call back into the game thread.
     Blob result;
-    runGameRoutine([&] { result = CreateSaveData(false, "").second; });
+    runGameRoutine([&] { result = createSaveData(false, "").second; });
     return result;
 }
 

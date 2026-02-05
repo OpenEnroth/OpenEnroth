@@ -1,9 +1,14 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <tuple>
+#include <unordered_map>
 
 #include "EntitySnapshots.h"
+
+#include "Utility/Memory/Blob.h"
+#include "Utility/Hash.h"
 
 /**
  * @file
@@ -18,10 +23,9 @@ class BSPModel;
 struct IndoorLocation;
 struct OutdoorLocation;
 class OutdoorTerrain;
-struct SaveGameState;
+struct SaveGame;
+struct SaveGameLite;
 struct SpriteFrameTable;
-class LodReader;
-class LodWriter;
 
 struct IndoorLocation_MM7 {
     BLVHeader_MM7 header;
@@ -124,19 +128,31 @@ void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx);
 
 
-struct SaveGameState_MM7 {
+struct SaveGame_MM7 {
     SaveGameHeader_MM7 header; // In header.bin.
     Party_MM7 party; // In party.bin.
     Timer_MM7 eventTimer; // In clock.bin.
     ActiveOverlayList_MM7 overlays; // In overlay.bin.
-    std::array<NPCData_MM7, 501> npcData; // in npcdata.bin.
-    std::array<uint16_t, 51> npcGroups; // in npcgroup.bin.
+    std::array<NPCData_MM7, 501> npcData; // In npcdata.bin.
+    std::array<uint16_t, 51> npcGroups; // In npcgroup.bin.
+    std::unordered_map<std::string, Blob> mapDeltas; // Map deltas by name (e.g. "out01.ddm", "d29.dlv").
+    std::unordered_map<std::pair<int, int>, Blob> lloydImages; // Lloyd's Beacon images as PCX blobs, by {playerIndex, beaconIndex}.
+    Blob thumbnail; // In image.pcx - save thumbnail.
 };
 
-void snapshot(const SaveGameState &src, SaveGameState_MM7 *dst);
-void reconstruct(const SaveGameState_MM7 &src, SaveGameState *dst);
-void serialize(const SaveGameState_MM7 &src, LodWriter *dst);
-void deserialize(const LodReader &src, SaveGameState_MM7 *dst);
+void snapshot(const SaveGame &src, SaveGame_MM7 *dst);
+void reconstruct(const SaveGame_MM7 &src, SaveGame *dst);
+void serialize(const SaveGame_MM7 &src, Blob *dst);
+void deserialize(const Blob &src, SaveGame_MM7 *dst);
+
+
+struct SaveGameLite_MM7 {
+    SaveGameHeader_MM7 header;
+    Blob thumbnail;
+};
+
+void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst);
+void deserialize(const Blob &src, SaveGameLite_MM7 *dst);
 
 
 struct SpriteFrameTable_MM7 {

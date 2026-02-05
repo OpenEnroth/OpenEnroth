@@ -158,7 +158,7 @@ void GUIWindow_Transport::transportDialogue() {
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
         if (engine->_currentLoadedMapId != pTravel->uMapInfoID) {
-            AutoSave();
+            autoSave();
             engine->_transitionMapId = pTravel->uMapInfoID;
 
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;

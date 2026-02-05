@@ -12,8 +12,6 @@
 #include <spdlog/sinks/msvc_sink.h> // NOLINT
 #include <spdlog/sinks/stdout_color_sinks.h> // NOLINT
 
-#include "Utility/Win/Unicode.h"
-
 #include "LogEnumFunctions.h"
 
 template<class BaseSink>

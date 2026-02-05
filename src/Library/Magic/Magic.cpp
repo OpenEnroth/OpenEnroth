@@ -44,8 +44,6 @@ bool detect(const Blob &data) {
 
     return true;
 }
-
-
 } // namespace wav
 
 MagicFileFormat magic(const Blob &data) {

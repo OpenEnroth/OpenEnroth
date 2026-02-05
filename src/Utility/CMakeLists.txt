@@ -48,16 +48,12 @@ set(UTILITY_HEADERS
         String/Split.h
         String/TransparentFunctors.h
         String/Transformations.h
+        String/Unicode.h
         Unaligned.h
         UnicodeCrt.h
         SmallVector.h
         ScopedRollback.h
         String/Wrap.h)
-
-if(OE_BUILD_PLATFORM STREQUAL "windows")
-    list(APPEND UTILITY_HEADERS Win/Unicode.h)
-    list(APPEND UTILITY_SOURCES Win/Unicode.cpp)
-endif()
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
 target_check_style(utility)
@@ -87,10 +83,6 @@ if(OE_BUILD_TESTS)
             String/Tests/Split_ut.cpp
             String/Tests/Join_ut.cpp
             String/Tests/Wrap_ut.cpp)
-
-    if(OE_BUILD_PLATFORM STREQUAL "windows")
-        list(APPEND TEST_UTILITY_SOURCES Win/Tests/Unicode_ut.cpp)
-    endif()
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)

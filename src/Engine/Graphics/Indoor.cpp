@@ -36,6 +36,7 @@
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Resources/LOD.h"
+#include "Engine/SaveLoad.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -292,7 +293,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
     IndoorDelta_MM7 delta;
-    if (Blob blob = lod::decodeMaybeCompressed(pSave_LOD->read(dlv_filename))) {
+    if (Blob blob = lod::decodeMaybeCompressed(pMapDeltas.at(dlv_filename))) {
         try {
             deserialize(blob, &delta, tags::context(location));
 

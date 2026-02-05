@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <unordered_map>
 #include <string>
 #include <memory>
 #include <utility>
@@ -14,7 +15,6 @@
 #include "Engine/MapInfo.h"
 #include "Engine/Time/Timer.h"
 
-#include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
@@ -34,20 +34,13 @@
 #include "Library/Image/Pcx.h"
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
-#include "Library/Lod/LodWriter.h"
+
 #include "TurnEngine/TurnEngine.h"
 
 SavegameList *pSavegameList = new SavegameList;
+std::unordered_map<std::string, Blob> pMapDeltas;
 
-static LodInfo makeSaveLodInfo() {
-    LodInfo result;
-    result.version = LOD_VERSION_MM7;
-    result.rootName = "chapter";
-    result.description = "newmaps for MMVII";
-    return result;
-}
-
-void LoadGame(int uSlot) {
+void loadGame(int uSlot) {
     if (!pSavegameList->pSavegameUsedSlots[uSlot]) {
         pAudioPlayer->playUISound(SOUND_error);
         logger->warning("LoadGame: slot {} is empty", uSlot);
@@ -65,12 +58,8 @@ void LoadGame(int uSlot) {
 
     std::string filename = fmt::format("saves/{}", pSavegameList->pFileList[uSlot]);
 
-    // Note that we're using Blob::copy so that the memory mapping for the savefile is not held by the LOD reader.
-    pSave_LOD->close();
-    pSave_LOD->open(Blob::copy(ufs->read(filename)), LOD_ALLOW_DUPLICATES);
-
-    SaveGameState state;
-    deserialize(*pSave_LOD, &state, tags::via<SaveGameState_MM7>);
+    SaveGame state;
+    deserialize(ufs->read(filename), &state, tags::via<SaveGame_MM7>);
 
     // Move loaded state to global variables.
     *pParty = std::move(state.party);
@@ -78,26 +67,14 @@ void LoadGame(int uSlot) {
     *pActiveOverlayList = std::move(state.overlays);
     pNPCStats->pNPCData = std::move(state.npcData);
     pNPCStats->pGroups = std::move(state.npcGroups);
+    pMapDeltas = std::move(state.mapDeltas);
 
     // Patch up event timer.
     pEventTimer->setPaused(true); // We're loading the game now => event timer is paused.
     pEventTimer->setTurnBased(false);
 
-    // TODO(captainurist): incapsulate this too
-    pParty->bTurnBasedModeOn = false; // We always start in realtime after loading a game.
-    for (size_t i = 0; i < 4; i++) {
-        Character *player = &pParty->pCharacters[i];
-        for (size_t j = 0; j < 5; j++) {
-            if (!player->vBeacons[j]) {
-                continue;
-            }
-            LloydBeacon &beacon = *player->vBeacons[j];
-            std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
-            //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
-            beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pSave_LOD.get(), str));
-            beacon.image->rgba(); // Force load!
-        }
-    }
+    // We always start in realtime after loading a game.
+    pParty->bTurnBasedModeOn = false;
 
     pParty->setActiveCharacterIndex(0);
     pParty->setActiveToFirstCanAct();
@@ -156,23 +133,31 @@ void LoadGame(int uSlot) {
     bFlashHistoryBook = false;
 }
 
-std::pair<SaveGameHeader, Blob> CreateSaveData(bool resetWorld, std::string_view title) {
-    std::pair<SaveGameHeader, Blob> result;
-    auto &[resultHeader, resultBlob] = result;
-    BlobOutputStream lodStream(&resultBlob);
-    LodWriter lodWriter(&lodStream, makeSaveLodInfo());
-
+std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view title) {
     std::string currentMapName = pMapStats->pInfos[engine->_currentLoadedMapId].fileName;
 
+    // Populate SaveGameState from global variables.
+    SaveGame state;
+    state.header.name = title;
+    state.header.locationName = currentMapName;
+    state.header.playingTime = pParty->GetPlayingTime();
+    state.party = *pParty;
+    state.eventTimer = *pEventTimer;
+    state.overlays = *pActiveOverlayList;
+    state.npcData = pNPCStats->pNPCData;
+    state.npcGroups = pNPCStats->pGroups;
+
+    // Populate map deltas.
     if (resetWorld) {
-        // New game - copy ddm & dlv files.
+        // New game - copy ddm & dlv files from games.lod.
         for (const std::string &name : pGames_LOD->ls())
             if (name.ends_with(".ddm") || name.ends_with(".dlv"))
-                lodWriter.write(name, pGames_LOD->read(name));
+                state.mapDeltas[name] = pGames_LOD->read(name);
     } else {
-        // Location change - copy map data from the old save & serialize current location delta.
-        for (const std::string &name : pSave_LOD->ls())
-            lodWriter.write(name, pSave_LOD->read(name));
+        // Location change - copy from current save & serialize current location delta.
+        // Blob is move-only, so we need explicit copies.
+        for (const auto &[key, value] : pMapDeltas)
+            state.mapDeltas[key] = Blob::share(value);
 
         currentLocationTime().last_visit = pParty->GetPlayingTime();
         CompactLayingItemsList();
@@ -185,56 +170,25 @@ std::pair<SaveGameHeader, Blob> CreateSaveData(bool resetWorld, std::string_view
             serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>);
         }
 
-        std::string file_name = currentMapName;
-        size_t pos = file_name.find_last_of(".");
-        file_name[pos + 1] = 'd';
-        lodWriter.write(file_name, lod::encodeCompressed(uncompressed));
+        std::string deltaName = currentMapName;
+        size_t pos = deltaName.find_last_of('.');
+        deltaName[pos + 1] = 'd';
+        state.mapDeltas[deltaName] = lod::encodeCompressed(uncompressed);
     }
 
-    lodWriter.write("image.pcx", pcx::encode(render->MakeViewportScreenshot(150, 112)));
+    // Capture thumbnail.
+    state.thumbnail = pcx::encode(render->MakeViewportScreenshot(150, 112));
 
-    // Populate SaveGameState from global variables.
-    SaveGameState state;
-    state.header.name = title;
-    state.header.locationName = currentMapName;
-    state.header.playingTime = pParty->GetPlayingTime();
-    state.party = *pParty;
-    state.eventTimer = *pEventTimer;
-    state.overlays = *pActiveOverlayList;
-    state.npcData = pNPCStats->pNPCData;
-    state.npcGroups = pNPCStats->pGroups;
+    Blob blob;
+    serialize(state, &blob, tags::via<SaveGame_MM7>);
 
-    serialize(state, &lodWriter, tags::via<SaveGameState_MM7>);
-    resultHeader = state.header;
+    // Update pMapDeltas global with new state.
+    pMapDeltas = std::move(state.mapDeltas);
 
-    // TODO(captainurist): incapsulate this too
-    for (size_t i = 0; i < 4; ++i) {  // 4 - players
-        Character *player = &pParty->pCharacters[i];
-        for (size_t j = 0; j < 5; ++j) {  // 5 - images
-            if (!player->vBeacons[j]) {
-                continue;
-            }
-            LloydBeacon &beacon = *player->vBeacons[j];
-            GraphicsImage *image = beacon.image;
-            if (beacon.uBeaconTime.isValid() && image != nullptr) {
-                assert(image->rgba());
-                std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
-                lodWriter.write(str, pcx::encode(image->rgba()));
-            }
-        }
-    }
-
-    // Apparently vanilla had two bugs canceling each other out:
-    // 1. Broken binary search implementation when looking up LOD entries.
-    // 2. Writing additional duplicate entry at the end of a saves LOD file.
-    // Our code doesn't support duplicate entries, so we just add a dummy entry
-    lodWriter.write("z.bin", Blob::fromString("dummy"));
-    lodWriter.close();
-    lodStream.close();
-    return result;
+    return {state.header, std::move(blob)};
 }
 
-SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title) {
+SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title) {
     assert(isAutoSave || !title.empty());
     assert(engine->_currentLoadedMapId != MAP_ARENA || isAutoSave); // No manual saves in Arena.
 
@@ -256,23 +210,21 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
     //    render->Present();
     //}
 
-    auto [header, blob] = CreateSaveData(resetWorld, title);
+    auto [header, blob] = createSaveData(resetWorld, title);
 
     ufs->write(path, blob);
 
-    pSave_LOD->open(std::move(blob), LOD_ALLOW_DUPLICATES);
-
-    return std::move(header);
+    return header;
 }
 
-void AutoSave() {
-    SaveGame(true, false, "saves/autosave.mm7");
+void autoSave() {
+    saveGame(true, false, "saves/autosave.mm7");
 }
 
-void DoSavegame(int uSlot) {
+void doSavegame(int uSlot) {
     assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
 
-    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, fmt::format("saves/save{:03}.mm7", uSlot),
+    pSavegameList->pSavegameHeader[uSlot] = saveGame(false, false, fmt::format("saves/save{:03}.mm7", uSlot),
                                                      pSavegameList->pSavegameHeader[uSlot].name);
 
     pSavegameList->selectedSlot = uSlot;
@@ -327,7 +279,7 @@ void SavegameList::Reset() {
     saveListPosition = 0;
 }
 
-void SaveNewGame() {
+void saveNewGame() {
     engine->_currentLoadedMapId = MAP_EMERALD_ISLAND;
     pParty->lastPos.x = 12552;
     pParty->lastPos.y = 800;
@@ -345,15 +297,15 @@ void SaveNewGame() {
     pParty->_viewPitch = 0;
     pParty->_viewYaw = 512;
 
-    SaveGame(true, true, "saves/autosave.mm7");
+    saveGame(true, true, "saves/autosave.mm7");
 }
 
-void QuickSaveGame() {
+void quickSaveGame() {
     assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
     pSavegameList->Initialize();
 
     engine->config->gameplay.QuickSavesCount.cycleIncrement();
-    std::string quickSaveName = GetCurrentQuickSave();
+    std::string quickSaveName = getCurrentQuickSave();
 
     int uSlot = -1;
     // find QuickSave slot
@@ -383,15 +335,15 @@ void QuickSaveGame() {
     }
 
     pSavegameList->pSavegameHeader[uSlot].name = "Quicksave";
-    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, fmt::format("saves/{}", quickSaveName),
+    pSavegameList->pSavegameHeader[uSlot] = saveGame(false, false, fmt::format("saves/{}", quickSaveName),
                                                      pSavegameList->pSavegameHeader[uSlot].name);
     engine->_statusBar->setEvent(LSTR_GAME_SAVED);
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 }
 
-int GetQuickSaveSlot() {
+int getQuickSaveSlot() {
     pSavegameList->Initialize();
-    std::string quickSaveName = GetCurrentQuickSave();
+    std::string quickSaveName = getCurrentQuickSave();
 
     int uSlot = -1;
     // find QuickSave slot
@@ -407,11 +359,11 @@ int GetQuickSaveSlot() {
     return uSlot;
 }
 
-void QuickLoadGame() {
-    int uSlot = GetQuickSaveSlot();
+void quickLoadGame() {
+    int uSlot = getQuickSaveSlot();
 
     if (uSlot != -1) {
-        LoadGame(uSlot);
+        loadGame(uSlot);
         uGameState = GAME_STATE_LOADING_GAME;
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     } else {
@@ -420,6 +372,6 @@ void QuickLoadGame() {
     }
 }
 
-std::string GetCurrentQuickSave() {
+std::string getCurrentQuickSave() {
     return fmt::format("{}{}.mm7", engine->config->gameplay.QuickSaveName.value(), engine->config->gameplay.QuickSavesCount.value());
 }

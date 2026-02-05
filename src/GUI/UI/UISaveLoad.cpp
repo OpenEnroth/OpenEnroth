@@ -16,6 +16,7 @@
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Snapshots/CompositeSnapshots.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -25,6 +26,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
+#include "Library/Image/Pcx.h"
 
 #include "Library/Lod/LodReader.h"
 #include "Library/Logger/Logger.h"
@@ -67,8 +69,9 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
             pSavegameList->pSavegameUsedSlots[i] = false;
             pSavegameList->pSavegameHeader[i].name = localization->str(LSTR_EMPTY_SAVE);
         } else {
-            pLODFile.open(ufs->read(str), LOD_ALLOW_DUPLICATES);
-            deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
+            SaveGameLite save;
+            deserialize(ufs->read(str), &save, tags::via<SaveGameLite_MM7>);
+            pSavegameList->pSavegameHeader[i] = save.header;
 
             if (pSavegameList->pSavegameHeader[i].name.empty()) {
                 // blank so add something - suspect quicksaves
@@ -77,7 +80,7 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
                 pSavegameList->pSavegameHeader[i].name = test;
             }
 
-            pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(&pLODFile, "image.pcx"));
+            pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
             if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
                 pSavegameList->pSavegameThumbnails[i]->release();
                 pSavegameList->pSavegameThumbnails[i] = nullptr;
@@ -149,7 +152,6 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
 
     pSavegameList->Initialize();
 
-    LodReader pLODFile;
     for (int i = 0; i < pSavegameList->numSavegameFiles; ++i) {
         std::string str = fmt::format("saves/{}", pSavegameList->pFileList[i]);
         if (!ufs->exists(str)) {
@@ -166,8 +168,9 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
             }
         }
 
-        pLODFile.open(ufs->read(str), LOD_ALLOW_DUPLICATES);
-        deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
+        SaveGameLite save;
+        deserialize(ufs->read(str), &save, tags::via<SaveGameLite_MM7>);
+        pSavegameList->pSavegameHeader[i] = save.header;
 
         if (ascii::noCaseEquals(pSavegameList->pFileList[i], localization->str(LSTR_AUTOSAVE_MM7))) { // TODO(captainurist): #unicode might not be ascii
             pSavegameList->pSavegameHeader[i].name = localization->str(LSTR_AUTOSAVE);
@@ -180,7 +183,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
             pSavegameList->pSavegameHeader[i].name = test;
         }
 
-        pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(&pLODFile, "image.pcx"));
+        pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
 
         if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
             pSavegameList->pSavegameThumbnails[i]->release();
@@ -369,7 +372,7 @@ void GUIWindow_Load::scroll(int maxSlots) {
 }
 
 void GUIWindow_Load::quickLoad() {
-    int slot = GetQuickSaveSlot();
+    int slot = getQuickSaveSlot();
     if (slot != -1) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
         pSavegameList->selectedSlot = slot;
