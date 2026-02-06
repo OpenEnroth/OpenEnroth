@@ -1005,8 +1005,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestData_MM7)
 
 
 struct DecorationDesc_MM6 {
-    std::array<char, 32> name;
-    std::array<char, 32> type;
+    std::array<char, 32> id;
+    std::array<char, 32> hint;
     int16_t uType;
     uint16_t uDecorationHeight;
     int16_t uRadius;

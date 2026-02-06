@@ -1675,8 +1675,8 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
 }
 
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
-    reconstruct(src.name, &dst->name);
-    reconstruct(src.type, &dst->type);
+    reconstruct(src.id, &dst->id);
+    reconstruct(src.hint, &dst->hint);
     dst->uType = src.uType;
     dst->uDecorationHeight = src.uDecorationHeight;
     dst->uRadius = src.uRadius;

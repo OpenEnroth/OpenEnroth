@@ -446,25 +446,25 @@ int runDecorationsCodegen(const CodeGenOptions &options, ResourceManager *resour
         DecorationId i = static_cast<DecorationId>(index);
         const DecorationDesc& dd = pDecorationList->pDecorations[index];
 
-        if (dd.name.empty()) {
+        if (dd.id.empty()) {
             map.insert(i, "", "Unused.");
             continue;
         }
 
         std::string enumName;
-        if (dd.name == "fount1") {
+        if (dd.id == "fount1") {
             enumName = "FOUNTAIN";
-        } else if (dd.name.starts_with("dec")) {
-            enumName = dd.type;
+        } else if (dd.id.starts_with("dec")) {
+            enumName = dd.hint;
         } else {
-            enumName = dd.name;
+            enumName = dd.id;
         }
         std::smatch match;
         if (std::regex_search(enumName, match, tailRegex))
             enumName = match[1].str();
         enumName = fmt::format("{}_{}", enumName, index);
 
-        std::string description =  dd.name + ", " + dd.type;
+        std::string description =  dd.id + ", " + dd.hint;
         if (dd.uLightRadius)
             description += fmt::format(", light_r={}", dd.uLightRadius);
         if (dd.uColoredLight.r + dd.uColoredLight.g + dd.uColoredLight.b > 0)
