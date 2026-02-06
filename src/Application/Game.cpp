@@ -132,6 +132,10 @@ int Game::run() {
         }
     } while (true);
 
+    // Clean up primary window should be the only one left now
+    assert(lWindowList.size() == 1);
+    pPrimaryWindow = nullptr;
+
     return 0;
 }
 

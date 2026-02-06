@@ -57,8 +57,7 @@ extern std::array<int, 4> pHealthBarPos;
 extern std::array<int, 4> pManaBarPos;
 extern const int pHealthManaBarYPos;
 
-// TODO(pskelton): making this unique_ptr causes headless to stall
-GUIWindow *pPrimaryWindow;
+std::unique_ptr<GUIWindow> pPrimaryWindow;
 
 GUIWindow *pGUIWindow_CurrentMenu;
 GUIWindow_Chest *pGUIWindow_CurrentChest;
@@ -1107,12 +1106,7 @@ void UI_Create() {
     dialogue_ui_x_ok_u = assets->getImage_ColorKey("x_ok_u");
     ui_buttyes2 = assets->getImage_Alpha("BUTTYES2");
 
-    if (pPrimaryWindow) {
-        pPrimaryWindow->Release();
-        delete pPrimaryWindow;
-    }
-
-    pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions());
+    pPrimaryWindow = std::make_unique<GUIWindow>(WINDOW_GameUI, Pointi{0, 0}, render->GetRenderDimensions());
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 
     pPrimaryWindow->CreateButton("Game_Character1", {61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);  // buttons for portraits

@@ -310,7 +310,8 @@ std::string NameAndTitle(NPCData *npc);
 
 std::string GetDisplayName(Actor *actor);
 
-extern GUIWindow *pPrimaryWindow;
+extern std::unique_ptr<GUIWindow> pPrimaryWindow;
+
 extern GUIWindow *pDialogueWindow;
 extern GUIWindow_House *window_SpeakInHouse;
 extern GUIWindow *pGUIWindow_CurrentMenu;
