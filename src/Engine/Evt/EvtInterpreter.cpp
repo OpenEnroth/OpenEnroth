@@ -190,7 +190,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 if (engine->_indoor->filename == "d20.blv" && _eventId == 501)
                     ir.data.move_map_descr.z = 3088;
 
-                pDialogueWindow = new GUIWindow_IndoorEntryExit(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
+                pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
                                                                 Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                                 ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
                 savedEventID = _eventId;

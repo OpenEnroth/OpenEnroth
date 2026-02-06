@@ -446,7 +446,7 @@ void NPCHireableDialogPrepare() {
     NPCData *v1 = houseNpcs[currentHouseNpc].npc;
 
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350});
+    pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetRenderDimensions().w, 350));
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
         UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
@@ -521,7 +521,7 @@ void updateHouseNPCTopics(int npc) {
     if (houseNpcs[npc].type == HOUSE_TRANSITION) {
         pDialogueWindow->Release();
         // TODO(Nik-RE-dev): can use GUIWindow_Transition
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions());
+        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), render->GetRenderDimensions());
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_TRANSITION_NO, localization->str(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_HouseTransitionConfirmation, 1,
@@ -576,15 +576,12 @@ bool houseDialogPressEscape() {
     if (window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_NULL ||
         window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_MAIN) {
         currentHouseNpc = -1;
-        if (pDialogueWindow) {
-            pDialogueWindow->Release();
-        }
         if (shop_ui_background) {
             shop_ui_background->release();
             shop_ui_background = nullptr;
         }
         window_SpeakInHouse->updateDialogueOnEscape();
-        pDialogueWindow = nullptr;
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_CloseDialogueWindow, 0, 0);
 
         if (houseNpcs.size() == 1) {
             return false;
@@ -774,10 +771,15 @@ void GUIWindow_House::drawNpcHouseDialogueResponse() {
 
 void GUIWindow_House::reinitDialogueWindow() {
     if (pDialogueWindow) {
-        pDialogueWindow->Release();
+		// reset dialogue window to default state, so it can be reused for different NPCs dialogues without creating new one
+		pDialogueWindow->frameRect = { 0, 0, render->GetPresentDimensions().w, 345 };
+        pDialogueWindow->sHint = "";
+		pDialogueWindow->receives_keyboard_input = false;
+		pDialogueWindow->DeleteButtons();
+    } else {
+        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetPresentDimensions().w, 345));
     }
 
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345});
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
         localization->str(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
     pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0, INPUT_ACTION_INVALID, "");

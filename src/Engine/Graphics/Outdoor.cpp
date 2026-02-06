@@ -900,7 +900,7 @@ void ODM_UpdateUserInputAndOther() {
             pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
             pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);
         } else {
-            pDialogueWindow = new GUIWindow_Travel();  // TravelUI_Load();
+            pDialogueWindow = std::make_unique<GUIWindow_Travel>();  // TravelUI_Load();
         }
     }
 

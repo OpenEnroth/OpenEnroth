@@ -338,6 +338,9 @@ void Game::processQueuedMessages() {
             case UIMSG_SelectNPCDialogueOption:
                 selectNPCDialogueOption((DialogueId)uMessageParam);
                 continue;
+            case UIMSG_CloseDialogueWindow:
+				pDialogueWindow = nullptr;
+                continue;
             case UIMSG_ClickHouseNPCPortrait:
                 updateHouseNPCTopics(uMessageParam);
                 continue;

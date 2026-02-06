@@ -97,7 +97,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
     if (speakingNpcId < 0) v9 = 4;
 #endif
 
-    pDialogueWindow = new GUIWindow_Dialogue(DIALOG_WINDOW_FULL);
+    pDialogueWindow = std::make_unique<GUIWindow_Dialogue>(DIALOG_WINDOW_FULL);
 
     if (bPlayerSaysHello && pParty->hasActiveCharacter() && !pNPCInfo->Hired()) {
         if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21) {
@@ -324,13 +324,13 @@ void GUIWindow_Dialogue::Update() {
 void BuildHireableNpcDialogue() {
     pDialogueWindow->eWindowType = WINDOW_MainMenu;
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow_Dialogue(DIALOG_WINDOW_HIRE_FIRE_SHORT);
+    pDialogueWindow = std::make_unique<GUIWindow_Dialogue>(DIALOG_WINDOW_HIRE_FIRE_SHORT);
 }
 
 void selectNPCDialogueOption(DialogueId option) {
     NPCData *speakingNPC = getNPCData(speakingNpcId);
 
-    ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(option);
+    ((GUIWindow_Dialogue*)pDialogueWindow.get())->setDisplayedDialogueType(option);
 
     if (!speakingNPC->uFlags) {
         speakingNPC->uFlags = NPC_GREETED_FIRST;
@@ -341,7 +341,7 @@ void selectNPCDialogueOption(DialogueId option) {
 
         if (newTopic != DIALOGUE_MAIN) {
             std::vector<DialogueId> topics = listNPCDialogueOptions(newTopic);
-            ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(newTopic);
+            ((GUIWindow_Dialogue*)pDialogueWindow.get())->setDisplayedDialogueType(newTopic);
             pDialogueWindow->DeleteButtons();
             pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                                             localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});

@@ -32,7 +32,7 @@ void GameOver_Setup() {
     if (window_SpeakInHouse) window_SpeakInHouse->Release();
     window_SpeakInHouse = nullptr;
     if (pDialogueWindow) pDialogueWindow->Release();
-    window_SpeakInHouse = nullptr;
+    pDialogueWindow = nullptr;
 }
 
 GraphicsImage *CreateWinnerCertificate() {

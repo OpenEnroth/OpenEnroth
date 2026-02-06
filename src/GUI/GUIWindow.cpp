@@ -59,10 +59,12 @@ extern const int pHealthManaBarYPos;
 
 std::unique_ptr<GUIWindow> pPrimaryWindow;
 
+// used for many different windows
 GUIWindow *pGUIWindow_CurrentMenu;
 GUIWindow_Chest *pGUIWindow_CurrentChest;
-GUIWindow *pDialogueWindow;
 GUIWindow_House *window_SpeakInHouse;
+
+std::unique_ptr<GUIWindow> pDialogueWindow;
 std::unique_ptr<GUIWindow_MessageScroll> pGUIWindow_ScrollWindow; // reading a message scroll
 std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;
 std::unique_ptr<GUIWindow_GameOver> pGameOverWindow;
@@ -1021,6 +1023,12 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
 WindowManager windowManager;
 
 void WindowManager::DeleteAllVisibleWindows() {
+    pDialogueWindow = nullptr;
+    pGUIWindow_ScrollWindow = nullptr;
+    pGUIWindow_CastTargetedSpell = nullptr;
+    pGameOverWindow = nullptr;
+    pGUIWindow_BranchlessDialogue = nullptr;
+
     while (lWindowList.size() > 1) {
         GUIWindow *pWindow = lWindowList.front();
         // game ui should never be released and should always be at the back of the window list
@@ -1038,12 +1046,8 @@ void WindowManager::DeleteAllVisibleWindows() {
 
     // reset screen state after deleting all windows
     pGUIWindow_CurrentMenu = nullptr;
-    pDialogueWindow = nullptr;
     window_SpeakInHouse = nullptr;
-    pGUIWindow_ScrollWindow = nullptr; // reading a message scroll
-    pGUIWindow_CastTargetedSpell = nullptr;
-    pGameOverWindow = nullptr; // UIMSG_ShowGameOverWindow
-    pGUIWindow_BranchlessDialogue = nullptr; // branchless dialougue
+    
 
     current_screen_type = SCREEN_GAME;
     engine->_messageQueue->clearAll();
