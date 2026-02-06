@@ -164,7 +164,7 @@ bool Game::loop() {
 
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
-            SaveNewGame();
+            saveNewGame();
             if (engine->config->debug.NoMargaret.value()) {
                 pParty->_questBits.set(QBIT_EMERALD_ISLAND_MARGARETH_OFF);
             }
@@ -759,7 +759,7 @@ void Game::processQueuedMessages() {
                     DialogueEnding();
                     pAudioPlayer->stopSounds();
                     pEventTimer->setPaused(true);
-                    AutoSave();
+                    autoSave();
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     engine->_transitionMapId = travelMapId;
                     // TODO(Nik-RE-dev): rest and heal uncoditionally even if party does not have food?
@@ -845,7 +845,7 @@ void Game::processQueuedMessages() {
                 assert(false);
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                AutoSave();
+                autoSave();
                 engine->_transitionMapId = houseNpcs[currentHouseNpc].targetMapID;
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
@@ -898,7 +898,7 @@ void Game::processQueuedMessages() {
             }
             case UIMSG_OnGameOverWindowClose:
                 pAudioPlayer->stopSounds();
-                AutoSave();
+                autoSave();
 
                 pParty->pos = Vec3f(-17331, 12547, 465); // respawn point in Harmondale
                 pParty->velocity = Vec3f();
@@ -1541,11 +1541,11 @@ void Game::processQueuedMessages() {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_THE_ARENA);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
-                    QuickSaveGame();
+                    quickSaveGame();
                 }
                 continue;
             case UIMSG_QuickLoad:
-                QuickLoadGame();
+                quickLoadGame();
                 continue;
             default:
                 logger->warning("Game::processQueuedMessages - Unhandled message type: {}", static_cast<int>(uMessage));
@@ -1583,7 +1583,7 @@ void Game::gameLoop() {
     SetCurrentMenuID(MENU_NONE);
     if (bLoading) {
         uGameState = GAME_STATE_PLAYING;
-        LoadGame(pSavegameList->selectedSlot);
+        loadGame(pSavegameList->selectedSlot);
     }
 
     extern bool use_music_folder;

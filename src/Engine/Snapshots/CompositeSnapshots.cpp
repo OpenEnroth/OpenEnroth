@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <tuple>
+#include <utility>
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -26,6 +27,12 @@
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Lod/LodWriter.h"
 #include "Library/Lod/LodReader.h"
+#include "Library/Lod/LodEnums.h"
+#include "Library/Image/Pcx.h"
+
+#include "Utility/Streams/BlobOutputStream.h"
+
+#include "Engine/Graphics/Image.h"
 
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->pVertices);
@@ -612,40 +619,130 @@ void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLoca
     deserialize(src, &dst->locationTime);
 }
 
-void snapshot(const SaveGameState &src, SaveGameState_MM7 *dst) {
+void snapshot(const SaveGame &src, SaveGame_MM7 *dst) {
     snapshot(src.header, &dst->header);
     snapshot(src.party, &dst->party);
     snapshot(src.eventTimer, &dst->eventTimer);
     snapshot(src.overlays, &dst->overlays);
     snapshot(src.npcData, &dst->npcData);
     snapshot(src.npcGroups, &dst->npcGroups);
+
+    // Share map deltas.
+    dst->mapDeltas.clear();
+    for (const auto &[key, value] : src.mapDeltas)
+        dst->mapDeltas[key] = Blob::share(value);
+
+    // Encode Lloyd's Beacon images from party.
+    dst->lloydImages.clear();
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (!src.party.pCharacters[i].vBeacons[j])
+                continue;
+            const LloydBeacon &beacon = *src.party.pCharacters[i].vBeacons[j];
+            if (beacon.uBeaconTime.isValid() && beacon.image != nullptr)
+                dst->lloydImages[{i, j}] = pcx::encode(beacon.image->rgba());
+        }
+    }
+
+    dst->thumbnail = Blob::share(src.thumbnail);
 }
 
-void reconstruct(const SaveGameState_MM7 &src, SaveGameState *dst) {
+void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
     reconstruct(src.header, &dst->header);
     reconstruct(src.party, &dst->party);
     reconstruct(src.eventTimer, &dst->eventTimer);
     reconstruct(src.overlays, &dst->overlays);
     reconstruct(src.npcData, &dst->npcData);
     reconstruct(src.npcGroups, &dst->npcGroups);
+
+    // Share map deltas.
+    dst->mapDeltas.clear();
+    for (const auto &[key, value] : src.mapDeltas)
+        dst->mapDeltas[key] = Blob::share(value);
+
+    // Decode Lloyd's Beacon images into party.
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (!dst->party.pCharacters[i].vBeacons[j])
+                continue;
+            LloydBeacon &beacon = *dst->party.pCharacters[i].vBeacons[j];
+            beacon.image = GraphicsImage::Create(pcx::decode(src.lloydImages.at({i, j})));
+        }
+    }
+
+    dst->thumbnail = Blob::share(src.thumbnail);
 }
 
-void serialize(const SaveGameState_MM7 &src, LodWriter *dst) {
-    dst->write("header.bin", toBlob(src.header));
-    dst->write("party.bin", toBlob(src.party));
-    dst->write("clock.bin", toBlob(src.eventTimer));
-    dst->write("overlay.bin", toBlob(src.overlays));
-    dst->write("npcdata.bin", toBlob(src.npcData));
-    dst->write("npcgroup.bin", toBlob(src.npcGroups));
+void serialize(const SaveGame_MM7 &src, Blob *dst) {
+    LodInfo lodInfo;
+    lodInfo.version = LOD_VERSION_MM7;
+    lodInfo.rootName = "chapter";
+    lodInfo.description = "newmaps for MMVII";
+
+    BlobOutputStream stream(dst);
+    LodWriter lodWriter(&stream, std::move(lodInfo));
+
+    lodWriter.write("header.bin", toBlob(src.header));
+    lodWriter.write("party.bin", toBlob(src.party));
+    lodWriter.write("clock.bin", toBlob(src.eventTimer));
+    lodWriter.write("overlay.bin", toBlob(src.overlays));
+    lodWriter.write("npcdata.bin", toBlob(src.npcData));
+    lodWriter.write("npcgroup.bin", toBlob(src.npcGroups));
+
+    for (const auto &[name, blob] : src.mapDeltas)
+        lodWriter.write(name, blob);
+
+    for (const auto &[key, blob] : src.lloydImages)
+        lodWriter.write(fmt::format("lloyd{}{}.pcx", key.first + 1, key.second + 1), blob);
+
+    lodWriter.write("image.pcx", src.thumbnail);
+
+    // Apparently vanilla had two bugs canceling each other out:
+    // 1. Broken binary search implementation when looking up LOD entries.
+    // 2. Writing additional duplicate entry at the end of a saves LOD file.
+    // Our code doesn't support duplicate entries, so we just add a dummy entry.
+    lodWriter.write("z.bin", Blob::fromString("dummy"));
+
+    lodWriter.close();
+    stream.close();
 }
 
-void deserialize(const LodReader &src, SaveGameState_MM7 *dst) {
-    deserialize(src.read("header.bin"), &dst->header);
-    deserialize(src.read("party.bin"), &dst->party);
-    deserialize(src.read("clock.bin"), &dst->eventTimer);
-    deserialize(src.read("overlay.bin"), &dst->overlays);
-    deserialize(src.read("npcdata.bin"), &dst->npcData);
-    deserialize(src.read("npcgroup.bin"), &dst->npcGroups);
+void deserialize(const Blob &src, SaveGame_MM7 *dst) {
+    LodReader lodReader(Blob::share(src), LOD_ALLOW_DUPLICATES);
+
+    deserialize(lodReader.read("header.bin"), &dst->header);
+    deserialize(lodReader.read("party.bin"), &dst->party);
+    deserialize(lodReader.read("clock.bin"), &dst->eventTimer);
+    deserialize(lodReader.read("overlay.bin"), &dst->overlays);
+    deserialize(lodReader.read("npcdata.bin"), &dst->npcData);
+    deserialize(lodReader.read("npcgroup.bin"), &dst->npcGroups);
+
+    dst->mapDeltas.clear();
+    for (const std::string &name : lodReader.ls())
+        if (name.ends_with(".ddm") || name.ends_with(".dlv"))
+            dst->mapDeltas[name] = lodReader.read(name);
+
+    dst->lloydImages.clear();
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 5; j++) {
+            std::string name = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
+            if (lodReader.exists(name))
+                dst->lloydImages[{i, j}] = lodReader.read(name);
+        }
+    }
+
+    dst->thumbnail = lodReader.read("image.pcx");
+}
+
+void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst) {
+    reconstruct(src.header, &dst->header);
+    dst->thumbnail = Blob::share(src.thumbnail);
+}
+
+void deserialize(const Blob &src, SaveGameLite_MM7 *dst) {
+    LodReader lodReader(Blob::share(src), LOD_ALLOW_DUPLICATES);
+    deserialize(lodReader.read("header.bin"), &dst->header);
+    dst->thumbnail = lodReader.read("image.pcx");
 }
 
 void reconstruct(const SpriteFrameTable_MM7 &src, SpriteFrameTable *dst) {
