@@ -24,13 +24,21 @@ else()
         set(MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
         set(MACOSX_BUNDLE_COPYRIGHT "GPLv3")
         set(MACOSX_BUNDLE_GUI_IDENTIFIER "OpenEnroth")
-        set(MACOSX_BUNDLE_ICON_FILE "OpenEnroth")
+        set(MACOSX_BUNDLE_ICON_FILE "OpenEnroth")  # Legacy .icns for pre-Tahoe macOS
         set(MACOSX_BUNDLE_INFO_STRING "Open reimplementation of Might and Magic 6 7 8 game engine.")
         set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PROJECT_VERSION}")
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
+
+        # Legacy .icns icon (for macOS < 26)
         set(OpenEnroth_ICON ${CMAKE_CURRENT_SOURCE_DIR}/OpenEnroth.icns)
         set_source_files_properties(${OpenEnroth_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
-        add_executable(OpenEnroth MACOSX_BUNDLE ${OpenEnroth_ICON} ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
+
+        # Assets.car for macOS 26+ (Tahoe)
+        set(OpenEnroth_ASSETS_CAR ${CMAKE_CURRENT_SOURCE_DIR}/Assets.car)
+        set_source_files_properties(${OpenEnroth_ASSETS_CAR} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+
+        add_executable(OpenEnroth MACOSX_BUNDLE ${OpenEnroth_ICON} ${OpenEnroth_ASSETS_CAR} ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
+        set_target_properties(OpenEnroth PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)
 
         # Can't make install on OSX due to signing, dmg generation, etc
     else ()
