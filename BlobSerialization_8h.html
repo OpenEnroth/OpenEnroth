@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3d41500</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;61651f8</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">BlobSerialization.h File Reference</div></div>
 </div><!--header-->
@@ -86,30 +85,26 @@ $(function() {
 <code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BinaryConcepts_8h.html">BinaryConcepts.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structis__proxy__binary__sink_3_01Blob_01_4.html">is_proxy_binary_sink&lt; Blob &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structis__proxy__binary__source_3_01Blob_01_4.html">is_proxy_binary_source&lt; Blob &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a25d75a4048484d1672d92798b7c7eeaa"><td class="memTemplParams" colspan="2">template&lt;class Src , class... Tags&gt; </td></tr>
-<tr class="memitem:a25d75a4048484d1672d92798b7c7eeaa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BlobSerialization_8h.html#a25d75a4048484d1672d92798b7c7eeaa">serialize</a> (const Src &amp;src, <a class="el" href="classBlob.html">Blob</a> *dst, const Tags &amp;... tags)</td></tr>
-<tr class="separator:a25d75a4048484d1672d92798b7c7eeaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4c50c33f25477e04d31f2583909fb46"><td class="memTemplParams" colspan="2">template&lt;class Dst , class... Tags&gt; </td></tr>
-<tr class="memitem:ae4c50c33f25477e04d31f2583909fb46"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BlobSerialization_8h.html#ae4c50c33f25477e04d31f2583909fb46">deserialize</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;src, Dst *dst, const Tags &amp;... tags)</td></tr>
-<tr class="separator:ae4c50c33f25477e04d31f2583909fb46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc412255914e0db7af3ee3ac3dd5f0aa"><td class="memTemplParams" colspan="2">template&lt;class Src , class... Tags&gt; <br />
+requires (!<a class="el" href="BinaryConcepts_8h.html#a0b2bbbebae0afded69acf60a5bebeaa1">starts_with_v</a>&lt;<a class="el" href="structis__greedy__tag.html">is_greedy_tag</a>, Tags...&gt;)</td></tr>
+<tr class="memitem:adc412255914e0db7af3ee3ac3dd5f0aa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BlobSerialization_8h.html#adc412255914e0db7af3ee3ac3dd5f0aa">serialize</a> (const Src &amp;src, <a class="el" href="classBlob.html">Blob</a> *dst, const Tags &amp;... tags)</td></tr>
+<tr class="separator:adc412255914e0db7af3ee3ac3dd5f0aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe75f392b6710e2349e476627a42b5bd"><td class="memTemplParams" colspan="2">template&lt;class Dst , class... Tags&gt; <br />
+requires (!<a class="el" href="BinaryConcepts_8h.html#a0b2bbbebae0afded69acf60a5bebeaa1">starts_with_v</a>&lt;<a class="el" href="structis__greedy__tag.html">is_greedy_tag</a>, Tags...&gt;)</td></tr>
+<tr class="memitem:abe75f392b6710e2349e476627a42b5bd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BlobSerialization_8h.html#abe75f392b6710e2349e476627a42b5bd">deserialize</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;src, Dst *dst, const Tags &amp;... tags)</td></tr>
+<tr class="separator:abe75f392b6710e2349e476627a42b5bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ae4c50c33f25477e04d31f2583909fb46" name="ae4c50c33f25477e04d31f2583909fb46"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4c50c33f25477e04d31f2583909fb46">&#9670;&#160;</a></span>deserialize()</h2>
+<a id="abe75f392b6710e2349e476627a42b5bd" name="abe75f392b6710e2349e476627a42b5bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe75f392b6710e2349e476627a42b5bd">&#9670;&#160;</a></span>deserialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Dst , class... Tags&gt; </div>
+template&lt;class Dst , class... Tags&gt; <br />
+requires (!<a class="el" href="BinaryConcepts_8h.html#a0b2bbbebae0afded69acf60a5bebeaa1">starts_with_v</a>&lt;<a class="el" href="structis__greedy__tag.html">is_greedy_tag</a>, Tags...&gt;)</div>
       <table class="memname">
         <tr>
           <td class="memname">void deserialize </td>
@@ -139,13 +134,14 @@ template&lt;class Dst , class... Tags&gt; </div>
 
 </div>
 </div>
-<a id="a25d75a4048484d1672d92798b7c7eeaa" name="a25d75a4048484d1672d92798b7c7eeaa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25d75a4048484d1672d92798b7c7eeaa">&#9670;&#160;</a></span>serialize()</h2>
+<a id="adc412255914e0db7af3ee3ac3dd5f0aa" name="adc412255914e0db7af3ee3ac3dd5f0aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc412255914e0db7af3ee3ac3dd5f0aa">&#9670;&#160;</a></span>serialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Src , class... Tags&gt; </div>
+template&lt;class Src , class... Tags&gt; <br />
+requires (!<a class="el" href="BinaryConcepts_8h.html#a0b2bbbebae0afded69acf60a5bebeaa1">starts_with_v</a>&lt;<a class="el" href="structis__greedy__tag.html">is_greedy_tag</a>, Tags...&gt;)</div>
       <table class="memname">
         <tr>
           <td class="memname">void serialize </td>

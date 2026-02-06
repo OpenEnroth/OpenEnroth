@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3d41500</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;61651f8</span>
    </div>
   </td>
  </tr>
@@ -76,7 +76,8 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#concepts">Concepts</a>  </div>
+<a href="#concepts">Concepts</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">BinaryConcepts.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -85,11 +86,7 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structis__proxy__binary__source.html">is_proxy_binary_source&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structis__proxy__binary__sink.html">is_proxy_binary_sink&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structis__proxy__binarizable.html">is_proxy_binarizable&lt; T &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structis__greedy__tag.html">is_greedy_tag&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1is__span.html">detail::is_span&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,17 +100,78 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
 Concepts</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptRegularBinarySource.html">RegularBinarySource</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptRegularBinarySink.html">RegularBinarySink</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptRegularBinarizable.html">RegularBinarizable</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptResizableContiguousContainer.html">ResizableContiguousContainer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptStdSpan.html">StdSpan</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a0b2bbbebae0afded69acf60a5bebeaa1"><td class="memTemplParams" colspan="2">template&lt;template&lt; class &gt; class Condition, typename... Args&gt; </td></tr>
+<tr class="memitem:a0b2bbbebae0afded69acf60a5bebeaa1"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BinaryConcepts_8h.html#a0b2bbbebae0afded69acf60a5bebeaa1">starts_with_v</a> = false</td></tr>
+<tr class="separator:a0b2bbbebae0afded69acf60a5bebeaa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a939639f25591f138cd98d7d96037a45f"><td class="memTemplParams" colspan="2">template&lt;template&lt; class &gt; class Condition, class First , class... Rest&gt; </td></tr>
+<tr class="memitem:a939639f25591f138cd98d7d96037a45f"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BinaryConcepts_8h.html#a939639f25591f138cd98d7d96037a45f">starts_with_v&lt; Condition, First, Rest... &gt;</a> = <a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a>&lt;std::remove_cvref_t&lt;First&gt;&gt;::value</td></tr>
+<tr class="separator:a939639f25591f138cd98d7d96037a45f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a0b2bbbebae0afded69acf60a5bebeaa1" name="a0b2bbbebae0afded69acf60a5bebeaa1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b2bbbebae0afded69acf60a5bebeaa1">&#9670;&#160;</a></span>starts_with_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; class &gt; class Condition, typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool starts_with_v = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Checks if the first type in a parameter pack satisfies a given type trait.</p>
+<p >Returns <code>false</code> for an empty pack, otherwise returns <code>Condition&lt;First&gt;::value</code> where <code>First</code> is the first type in the pack (with cv-ref qualifiers removed).</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Condition</td><td>Type trait to check, e.g. <code><a class="el" href="structis__greedy__tag.html">is_greedy_tag</a></code>. </td></tr>
+    <tr><td class="paramname">Args</td><td>Parameter pack to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a939639f25591f138cd98d7d96037a45f" name="a939639f25591f138cd98d7d96037a45f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a939639f25591f138cd98d7d96037a45f">&#9670;&#160;</a></span>starts_with_v&lt; Condition, First, Rest... &gt;</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; class &gt; class Condition, class First , class... Rest&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool <a class="el" href="BinaryConcepts_8h.html#a0b2bbbebae0afded69acf60a5bebeaa1">starts_with_v</a>&lt; <a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a>, First, Rest... &gt; = <a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a>&lt;std::remove_cvref_t&lt;First&gt;&gt;::value</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

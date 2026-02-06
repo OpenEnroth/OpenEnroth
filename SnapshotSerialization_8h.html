@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3d41500</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;61651f8</span>
    </div>
   </td>
  </tr>
@@ -81,13 +81,16 @@ $(function() {
   <div class="headertitle"><div class="title">SnapshotSerialization.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;type_traits&gt;</code><br />
+<div class="textblock"><code>#include &lt;type_traits&gt;</code><br />
 <code>#include &quot;<a class="el" href="BinarySerialization_8h.html">Library/Binary/BinarySerialization.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViaTag.html">ViaTag&lt; Via &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViaEachTag.html">ViaEachTag&lt; Via &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structis__greedy__tag_3_01ViaTag_3_01Via_01_4_01_4.html">is_greedy_tag&lt; ViaTag&lt; Via &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -97,40 +100,41 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9a924fefec992a1dd351a795f4ee27db"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptRegularBinarySource.html">RegularBinarySource</a> Src, <a class="el" href="conceptRegularBinarizable.html">RegularBinarizable</a> Dst, class Via &gt; <br />
-requires (!<a class="el" href="conceptStdSpan.html">StdSpan</a>&lt;Dst&gt;)</td></tr>
-<tr class="memitem:a9a924fefec992a1dd351a795f4ee27db"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="SnapshotSerialization_8h.html#a9a924fefec992a1dd351a795f4ee27db">deserialize</a> (Src &amp;src, Dst *dst, <a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt;)</td></tr>
-<tr class="separator:a9a924fefec992a1dd351a795f4ee27db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4848195eca27216a4bcd93922f6bbebf"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptRegularBinarizable.html">RegularBinarizable</a> Src, <a class="el" href="conceptRegularBinarySink.html">RegularBinarySink</a> Dst, class Via &gt; <br />
-requires (!<a class="el" href="conceptStdSpan.html">StdSpan</a>&lt;Src&gt;)</td></tr>
-<tr class="memitem:a4848195eca27216a4bcd93922f6bbebf"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="SnapshotSerialization_8h.html#a4848195eca27216a4bcd93922f6bbebf">serialize</a> (const Src &amp;src, Dst *dst, <a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt;)</td></tr>
-<tr class="separator:a4848195eca27216a4bcd93922f6bbebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaebd5f8af57ab6fc673550df80f8dc1d"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptRegularBinarySource.html">RegularBinarySource</a> Src, <a class="el" href="conceptStdSpan.html">StdSpan</a> Dst, class Via &gt; </td></tr>
-<tr class="memitem:aaebd5f8af57ab6fc673550df80f8dc1d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="SnapshotSerialization_8h.html#aaebd5f8af57ab6fc673550df80f8dc1d">deserialize</a> (Src &amp;src, Dst *dst, <a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt; tag)</td></tr>
-<tr class="separator:aaebd5f8af57ab6fc673550df80f8dc1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae60c22d5e92437063502d11a680efd01"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptStdSpan.html">StdSpan</a> Src, <a class="el" href="conceptRegularBinarySink.html">RegularBinarySink</a> Dst, class Via &gt; </td></tr>
-<tr class="memitem:ae60c22d5e92437063502d11a680efd01"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="SnapshotSerialization_8h.html#ae60c22d5e92437063502d11a680efd01">serialize</a> (const Src &amp;src, Dst *dst, <a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt; tag)</td></tr>
-<tr class="separator:ae60c22d5e92437063502d11a680efd01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07a4c24974a62b0fca378427e08db337"><td class="memTemplParams" colspan="2">template&lt;class Src , class Dst , class Via &gt; </td></tr>
+<tr class="memitem:a07a4c24974a62b0fca378427e08db337"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="SnapshotSerialization_8h.html#a07a4c24974a62b0fca378427e08db337">deserialize</a> (Src &amp;&amp;src, Dst *dst, <a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt;)</td></tr>
+<tr class="separator:a07a4c24974a62b0fca378427e08db337"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5fb077cf61a3feedd17cc56dcf2763c"><td class="memTemplParams" colspan="2">template&lt;class Src , class Dst , class Via &gt; </td></tr>
+<tr class="memitem:aa5fb077cf61a3feedd17cc56dcf2763c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="SnapshotSerialization_8h.html#aa5fb077cf61a3feedd17cc56dcf2763c">serialize</a> (const Src &amp;src, Dst *dst, <a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt;)</td></tr>
+<tr class="separator:aa5fb077cf61a3feedd17cc56dcf2763c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a413a90335e4f650f5bcefdea062e2a6d"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptStdSpan.html">StdSpan</a> Dst, class Via &gt; </td></tr>
+<tr class="memitem:a413a90335e4f650f5bcefdea062e2a6d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="SnapshotSerialization_8h.html#a413a90335e4f650f5bcefdea062e2a6d">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, Dst *dst, <a class="el" href="structViaEachTag.html">ViaEachTag</a>&lt; Via &gt;)</td></tr>
+<tr class="separator:a413a90335e4f650f5bcefdea062e2a6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a714035f91814a26a5b84a3414240e3a5"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptStdSpan.html">StdSpan</a> Src, class Via &gt; </td></tr>
+<tr class="memitem:a714035f91814a26a5b84a3414240e3a5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="SnapshotSerialization_8h.html#a714035f91814a26a5b84a3414240e3a5">serialize</a> (const Src &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst, <a class="el" href="structViaEachTag.html">ViaEachTag</a>&lt; Via &gt;)</td></tr>
+<tr class="separator:a714035f91814a26a5b84a3414240e3a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:ad49790c2169c7de26b5e6d855f9cea79"><td class="memTemplParams" colspan="2">template&lt;class Via &gt; </td></tr>
 <tr class="memitem:ad49790c2169c7de26b5e6d855f9cea79"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetags.html#ad49790c2169c7de26b5e6d855f9cea79">tags::via</a></td></tr>
 <tr class="separator:ad49790c2169c7de26b5e6d855f9cea79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a507abccbfe98e44c123e02b9b6a44d6d"><td class="memTemplParams" colspan="2">template&lt;class Via &gt; </td></tr>
+<tr class="memitem:a507abccbfe98e44c123e02b9b6a44d6d"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structViaEachTag.html">ViaEachTag</a>&lt; Via &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetags.html#a507abccbfe98e44c123e02b9b6a44d6d">tags::via_each</a></td></tr>
+<tr class="separator:a507abccbfe98e44c123e02b9b6a44d6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aaebd5f8af57ab6fc673550df80f8dc1d" name="aaebd5f8af57ab6fc673550df80f8dc1d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaebd5f8af57ab6fc673550df80f8dc1d">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/2]</span></h2>
+<a id="a413a90335e4f650f5bcefdea062e2a6d" name="a413a90335e4f650f5bcefdea062e2a6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a413a90335e4f650f5bcefdea062e2a6d">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="conceptRegularBinarySource.html">RegularBinarySource</a> Src, <a class="el" href="conceptStdSpan.html">StdSpan</a> Dst, class Via &gt; </div>
+template&lt;<a class="el" href="conceptStdSpan.html">StdSpan</a> Dst, class Via &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void deserialize </td>
           <td>(</td>
-          <td class="paramtype">Src &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
@@ -142,8 +146,8 @@ template&lt;<a class="el" href="conceptRegularBinarySource.html">RegularBinarySo
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt;&#160;</td>
-          <td class="paramname"><em>tag</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="structViaEachTag.html">ViaEachTag</a>&lt; Via &gt;&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -155,19 +159,18 @@ template&lt;<a class="el" href="conceptRegularBinarySource.html">RegularBinarySo
 
 </div>
 </div>
-<a id="a9a924fefec992a1dd351a795f4ee27db" name="a9a924fefec992a1dd351a795f4ee27db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a924fefec992a1dd351a795f4ee27db">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/2]</span></h2>
+<a id="a07a4c24974a62b0fca378427e08db337" name="a07a4c24974a62b0fca378427e08db337"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07a4c24974a62b0fca378427e08db337">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="conceptRegularBinarySource.html">RegularBinarySource</a> Src, <a class="el" href="conceptRegularBinarizable.html">RegularBinarizable</a> Dst, class Via &gt; <br />
-requires (!<a class="el" href="conceptStdSpan.html">StdSpan</a>&lt;Dst&gt;)</div>
+template&lt;class Src , class Dst , class Via &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void deserialize </td>
           <td>(</td>
-          <td class="paramtype">Src &amp;&#160;</td>
+          <td class="paramtype">Src &amp;&amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
@@ -192,13 +195,13 @@ requires (!<a class="el" href="conceptStdSpan.html">StdSpan</a>&lt;Dst&gt;)</div
 
 </div>
 </div>
-<a id="ae60c22d5e92437063502d11a680efd01" name="ae60c22d5e92437063502d11a680efd01"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae60c22d5e92437063502d11a680efd01">&#9670;&#160;</a></span>serialize() <span class="overload">[1/2]</span></h2>
+<a id="aa5fb077cf61a3feedd17cc56dcf2763c" name="aa5fb077cf61a3feedd17cc56dcf2763c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5fb077cf61a3feedd17cc56dcf2763c">&#9670;&#160;</a></span>serialize() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="conceptStdSpan.html">StdSpan</a> Src, <a class="el" href="conceptRegularBinarySink.html">RegularBinarySink</a> Dst, class Via &gt; </div>
+template&lt;class Src , class Dst , class Via &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void serialize </td>
@@ -216,7 +219,7 @@ template&lt;<a class="el" href="conceptStdSpan.html">StdSpan</a> Src, <a class="
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt;&#160;</td>
-          <td class="paramname"><em>tag</em>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -228,14 +231,13 @@ template&lt;<a class="el" href="conceptStdSpan.html">StdSpan</a> Src, <a class="
 
 </div>
 </div>
-<a id="a4848195eca27216a4bcd93922f6bbebf" name="a4848195eca27216a4bcd93922f6bbebf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4848195eca27216a4bcd93922f6bbebf">&#9670;&#160;</a></span>serialize() <span class="overload">[2/2]</span></h2>
+<a id="a714035f91814a26a5b84a3414240e3a5" name="a714035f91814a26a5b84a3414240e3a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a714035f91814a26a5b84a3414240e3a5">&#9670;&#160;</a></span>serialize() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="conceptRegularBinarizable.html">RegularBinarizable</a> Src, <a class="el" href="conceptRegularBinarySink.html">RegularBinarySink</a> Dst, class Via &gt; <br />
-requires (!<a class="el" href="conceptStdSpan.html">StdSpan</a>&lt;Src&gt;)</div>
+template&lt;<a class="el" href="conceptStdSpan.html">StdSpan</a> Src, class Via &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void serialize </td>
@@ -246,13 +248,13 @@ requires (!<a class="el" href="conceptStdSpan.html">StdSpan</a>&lt;Src&gt;)</div
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Dst *&#160;</td>
+          <td class="paramtype"><a class="el" href="classOutputStream.html">OutputStream</a> *&#160;</td>
           <td class="paramname"><em>dst</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structViaTag.html">ViaTag</a>&lt; Via &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="structViaEachTag.html">ViaEachTag</a>&lt; Via &gt;&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
