@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;61651f8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d7fe95e</span>
    </div>
   </td>
  </tr>
@@ -79,13 +79,9 @@ $(function() {
   <div class="headertitle"><div class="title">CompositeSnapshots.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;string&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
+<div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;tuple&gt;</code><br />
-<code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &quot;<a class="el" href="EntitySnapshots_8h.html">EntitySnapshots.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Hash_8h.html">Utility/Hash.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -99,9 +95,7 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorDelta__MM7.html">OutdoorDelta_MM7</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSaveGameLite__MM7.html">SaveGameLite_MM7</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSaveGameState__MM7.html">SaveGameState_MM7</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteFrameTable__MM7.html">SpriteFrameTable_MM7</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,18 +130,14 @@ Functions</h2></td></tr>
 <tr class="separator:a902519fa6796e8517e7c2947a67be434"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae684d4b0d3ce5e9750a739ed886ec61c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#ae684d4b0d3ce5e9750a739ed886ec61c">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structOutdoorDelta__MM7.html">OutdoorDelta_MM7</a> *dst, <a class="el" href="classContextTag.html">ContextTag</a>&lt; <a class="el" href="structOutdoorLocation__MM7.html">OutdoorLocation_MM7</a> &gt; ctx)</td></tr>
 <tr class="separator:ae684d4b0d3ce5e9750a739ed886ec61c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d10dcb8968668797b7795bc163c2a0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#a1d10dcb8968668797b7795bc163c2a0e">snapshot</a> (const <a class="el" href="structSaveGame.html">SaveGame</a> &amp;src, <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> *dst)</td></tr>
-<tr class="separator:a1d10dcb8968668797b7795bc163c2a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36e1b14f0763ad618b2c91219c7e8f46"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#a36e1b14f0763ad618b2c91219c7e8f46">reconstruct</a> (const <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> &amp;src, <a class="el" href="structSaveGame.html">SaveGame</a> *dst)</td></tr>
-<tr class="separator:a36e1b14f0763ad618b2c91219c7e8f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b6842692a9f7fcc899689026fe8d101"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#a1b6842692a9f7fcc899689026fe8d101">serialize</a> (const <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> &amp;src, <a class="el" href="classBlob.html">Blob</a> *dst)</td></tr>
-<tr class="separator:a1b6842692a9f7fcc899689026fe8d101"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4edebe79b3ccb43a0edb6f4d604ab9bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#a4edebe79b3ccb43a0edb6f4d604ab9bc">deserialize</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;src, <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> *dst)</td></tr>
-<tr class="separator:a4edebe79b3ccb43a0edb6f4d604ab9bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a924c9af13a7f2b52f14eb03b39baeb66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#a924c9af13a7f2b52f14eb03b39baeb66">reconstruct</a> (const <a class="el" href="structSaveGameLite__MM7.html">SaveGameLite_MM7</a> &amp;src, <a class="el" href="structSaveGameLite.html">SaveGameLite</a> *dst)</td></tr>
-<tr class="separator:a924c9af13a7f2b52f14eb03b39baeb66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf93370eb9302ec8bec9bc44583dea04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#aaf93370eb9302ec8bec9bc44583dea04">deserialize</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;src, <a class="el" href="structSaveGameLite__MM7.html">SaveGameLite_MM7</a> *dst)</td></tr>
-<tr class="separator:aaf93370eb9302ec8bec9bc44583dea04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf33cf1c56e68b65b866965d0729d866"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#acf33cf1c56e68b65b866965d0729d866">snapshot</a> (const <a class="el" href="structSaveGameState.html">SaveGameState</a> &amp;src, <a class="el" href="structSaveGameState__MM7.html">SaveGameState_MM7</a> *dst)</td></tr>
+<tr class="separator:acf33cf1c56e68b65b866965d0729d866"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38010bf93e5efd19cad720f14ede2c40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#a38010bf93e5efd19cad720f14ede2c40">reconstruct</a> (const <a class="el" href="structSaveGameState__MM7.html">SaveGameState_MM7</a> &amp;src, <a class="el" href="structSaveGameState.html">SaveGameState</a> *dst)</td></tr>
+<tr class="separator:a38010bf93e5efd19cad720f14ede2c40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ec0ac85f6da8924a7f03fb88a2f1194"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#a3ec0ac85f6da8924a7f03fb88a2f1194">serialize</a> (const <a class="el" href="structSaveGameState__MM7.html">SaveGameState_MM7</a> &amp;src, <a class="el" href="classLodWriter.html">LodWriter</a> *dst)</td></tr>
+<tr class="separator:a3ec0ac85f6da8924a7f03fb88a2f1194"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22ca79604230b5a9b810535852805e35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#a22ca79604230b5a9b810535852805e35">deserialize</a> (const <a class="el" href="classLodReader.html">LodReader</a> &amp;src, <a class="el" href="structSaveGameState__MM7.html">SaveGameState_MM7</a> *dst)</td></tr>
+<tr class="separator:a22ca79604230b5a9b810535852805e35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a790fcc96860e16ba6a7d1ed81acd9ae9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#a790fcc96860e16ba6a7d1ed81acd9ae9">reconstruct</a> (const <a class="el" href="structSpriteFrameTable__MM7.html">SpriteFrameTable_MM7</a> &amp;src, <a class="el" href="structSpriteFrameTable.html">SpriteFrameTable</a> *dst)</td></tr>
 <tr class="separator:a790fcc96860e16ba6a7d1ed81acd9ae9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb8d696e850792c919f7921d35c864db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CompositeSnapshots_8h.html#adb8d696e850792c919f7921d35c864db">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structSpriteFrameTable__MM7.html">SpriteFrameTable_MM7</a> *dst)</td></tr>
@@ -157,8 +147,8 @@ Functions</h2></td></tr>
 <div class="textblock"><p >Snapshots in this header are representations of game binary files, one struct per single file.</p>
 <p >Struct fields are laid out in the order in which they are laid out in binary files. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a4edebe79b3ccb43a0edb6f4d604ab9bc" name="a4edebe79b3ccb43a0edb6f4d604ab9bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4edebe79b3ccb43a0edb6f4d604ab9bc">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/7]</span></h2>
+<a id="a22ca79604230b5a9b810535852805e35" name="a22ca79604230b5a9b810535852805e35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22ca79604230b5a9b810535852805e35">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -166,41 +156,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void deserialize </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classLodReader.html">LodReader</a> &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aaf93370eb9302ec8bec9bc44583dea04" name="aaf93370eb9302ec8bec9bc44583dea04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf93370eb9302ec8bec9bc44583dea04">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/7]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void deserialize </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structSaveGameLite__MM7.html">SaveGameLite_MM7</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structSaveGameState__MM7.html">SaveGameState_MM7</a> *&#160;</td>
           <td class="paramname"><em>dst</em>&#160;</td>
         </tr>
         <tr>
@@ -214,7 +176,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a3b90681c899941367d33326c49fcff63" name="a3b90681c899941367d33326c49fcff63"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b90681c899941367d33326c49fcff63">&#9670;&#160;</a></span>deserialize() <span class="overload">[3/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b90681c899941367d33326c49fcff63">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -248,7 +210,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a19304568664873e32a8849fbf0496588" name="a19304568664873e32a8849fbf0496588"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19304568664873e32a8849fbf0496588">&#9670;&#160;</a></span>deserialize() <span class="overload">[4/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a19304568664873e32a8849fbf0496588">&#9670;&#160;</a></span>deserialize() <span class="overload">[3/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -276,7 +238,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ae684d4b0d3ce5e9750a739ed886ec61c" name="ae684d4b0d3ce5e9750a739ed886ec61c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae684d4b0d3ce5e9750a739ed886ec61c">&#9670;&#160;</a></span>deserialize() <span class="overload">[5/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae684d4b0d3ce5e9750a739ed886ec61c">&#9670;&#160;</a></span>deserialize() <span class="overload">[4/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -310,7 +272,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a4a28a33e25155e3caa65ec1071bffbc3" name="a4a28a33e25155e3caa65ec1071bffbc3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a28a33e25155e3caa65ec1071bffbc3">&#9670;&#160;</a></span>deserialize() <span class="overload">[6/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a28a33e25155e3caa65ec1071bffbc3">&#9670;&#160;</a></span>deserialize() <span class="overload">[5/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -338,7 +300,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="adb8d696e850792c919f7921d35c864db" name="adb8d696e850792c919f7921d35c864db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb8d696e850792c919f7921d35c864db">&#9670;&#160;</a></span>deserialize() <span class="overload">[7/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adb8d696e850792c919f7921d35c864db">&#9670;&#160;</a></span>deserialize() <span class="overload">[6/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -366,7 +328,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a93340419d29a7087b750832d9cc1cf99" name="a93340419d29a7087b750832d9cc1cf99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a93340419d29a7087b750832d9cc1cf99">&#9670;&#160;</a></span>reconstruct() <span class="overload">[1/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a93340419d29a7087b750832d9cc1cf99">&#9670;&#160;</a></span>reconstruct() <span class="overload">[1/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -394,7 +356,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ac993c766381b2bcdd701a5a96e14042a" name="ac993c766381b2bcdd701a5a96e14042a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac993c766381b2bcdd701a5a96e14042a">&#9670;&#160;</a></span>reconstruct() <span class="overload">[2/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac993c766381b2bcdd701a5a96e14042a">&#9670;&#160;</a></span>reconstruct() <span class="overload">[2/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -422,7 +384,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a8cada8b20e49996ee9197ef280051dde" name="a8cada8b20e49996ee9197ef280051dde"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8cada8b20e49996ee9197ef280051dde">&#9670;&#160;</a></span>reconstruct() <span class="overload">[3/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cada8b20e49996ee9197ef280051dde">&#9670;&#160;</a></span>reconstruct() <span class="overload">[3/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -450,7 +412,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a895df73b4d5e7f9e9a470772bdb5eab4" name="a895df73b4d5e7f9e9a470772bdb5eab4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a895df73b4d5e7f9e9a470772bdb5eab4">&#9670;&#160;</a></span>reconstruct() <span class="overload">[4/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a895df73b4d5e7f9e9a470772bdb5eab4">&#9670;&#160;</a></span>reconstruct() <span class="overload">[4/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -478,7 +440,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ac95aa490a84c051de3c875ab132c92c7" name="ac95aa490a84c051de3c875ab132c92c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac95aa490a84c051de3c875ab132c92c7">&#9670;&#160;</a></span>reconstruct() <span class="overload">[5/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac95aa490a84c051de3c875ab132c92c7">&#9670;&#160;</a></span>reconstruct() <span class="overload">[5/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -505,8 +467,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a36e1b14f0763ad618b2c91219c7e8f46" name="a36e1b14f0763ad618b2c91219c7e8f46"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36e1b14f0763ad618b2c91219c7e8f46">&#9670;&#160;</a></span>reconstruct() <span class="overload">[6/9]</span></h2>
+<a id="a38010bf93e5efd19cad720f14ede2c40" name="a38010bf93e5efd19cad720f14ede2c40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38010bf93e5efd19cad720f14ede2c40">&#9670;&#160;</a></span>reconstruct() <span class="overload">[6/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -514,41 +476,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void reconstruct </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structSaveGameState__MM7.html">SaveGameState_MM7</a> &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structSaveGame.html">SaveGame</a> *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a924c9af13a7f2b52f14eb03b39baeb66" name="a924c9af13a7f2b52f14eb03b39baeb66"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a924c9af13a7f2b52f14eb03b39baeb66">&#9670;&#160;</a></span>reconstruct() <span class="overload">[7/9]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void reconstruct </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structSaveGameLite__MM7.html">SaveGameLite_MM7</a> &amp;&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structSaveGameLite.html">SaveGameLite</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structSaveGameState.html">SaveGameState</a> *&#160;</td>
           <td class="paramname"><em>dst</em>&#160;</td>
         </tr>
         <tr>
@@ -562,7 +496,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a790fcc96860e16ba6a7d1ed81acd9ae9" name="a790fcc96860e16ba6a7d1ed81acd9ae9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a790fcc96860e16ba6a7d1ed81acd9ae9">&#9670;&#160;</a></span>reconstruct() <span class="overload">[8/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a790fcc96860e16ba6a7d1ed81acd9ae9">&#9670;&#160;</a></span>reconstruct() <span class="overload">[7/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -590,7 +524,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a16777986e5e88ecf7a50f1aac1acb6cf" name="a16777986e5e88ecf7a50f1aac1acb6cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a16777986e5e88ecf7a50f1aac1acb6cf">&#9670;&#160;</a></span>reconstruct() <span class="overload">[9/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a16777986e5e88ecf7a50f1aac1acb6cf">&#9670;&#160;</a></span>reconstruct() <span class="overload">[8/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -673,8 +607,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a1b6842692a9f7fcc899689026fe8d101" name="a1b6842692a9f7fcc899689026fe8d101"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1b6842692a9f7fcc899689026fe8d101">&#9670;&#160;</a></span>serialize() <span class="overload">[3/3]</span></h2>
+<a id="a3ec0ac85f6da8924a7f03fb88a2f1194" name="a3ec0ac85f6da8924a7f03fb88a2f1194"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ec0ac85f6da8924a7f03fb88a2f1194">&#9670;&#160;</a></span>serialize() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -682,13 +616,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void serialize </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structSaveGameState__MM7.html">SaveGameState_MM7</a> &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="classLodWriter.html">LodWriter</a> *&#160;</td>
           <td class="paramname"><em>dst</em>&#160;</td>
         </tr>
         <tr>
@@ -757,8 +691,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a1d10dcb8968668797b7795bc163c2a0e" name="a1d10dcb8968668797b7795bc163c2a0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d10dcb8968668797b7795bc163c2a0e">&#9670;&#160;</a></span>snapshot() <span class="overload">[3/3]</span></h2>
+<a id="acf33cf1c56e68b65b866965d0729d866" name="acf33cf1c56e68b65b866965d0729d866"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf33cf1c56e68b65b866965d0729d866">&#9670;&#160;</a></span>snapshot() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -766,13 +700,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void snapshot </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structSaveGame.html">SaveGame</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structSaveGameState.html">SaveGameState</a> &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structSaveGame__MM7.html">SaveGame_MM7</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structSaveGameState__MM7.html">SaveGameState_MM7</a> *&#160;</td>
           <td class="paramname"><em>dst</em>&#160;</td>
         </tr>
         <tr>
