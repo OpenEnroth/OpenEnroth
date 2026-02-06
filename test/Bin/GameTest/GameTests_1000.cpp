@@ -283,7 +283,7 @@ GAME_TEST(Issues, Issue1226b) {
     test.startTaping();
 
     NPCData &dragon = pNPCStats->pNPCData[57];
-    dragon.uFlags |= NPC_HIRED;
+    dragon.flags |= NPC_HIRED;
     pParty->pHirelings[1] = dragon;
     pParty->pHireling2Name = dragon.name;
     game.tick(1);

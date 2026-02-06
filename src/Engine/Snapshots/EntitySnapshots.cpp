@@ -255,8 +255,8 @@ void reconstruct(const Planei_MM7 &src, Planef *dst) {
 }
 
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
-    reconstruct(src.animationName, &dst->animationName);
-    dst->animationName = ascii::toLower(dst->animationName);
+    reconstruct(src.spriteName, &dst->spriteName);
+    dst->spriteName = ascii::toLower(dst->spriteName);
 
     reconstruct(src.textureName, &dst->textureName);
     dst->textureName = ascii::toLower(dst->textureName);
@@ -290,16 +290,16 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
 }
 
 void reconstruct(const TileData_MM7 &src, TileData *dst) {
-    reconstruct(src.tileName, &dst->name);
-    dst->name = ascii::toLower(dst->name);
+    reconstruct(src.textureName, &dst->textureName);
+    dst->textureName = ascii::toLower(dst->textureName);
 
-    if (ascii::noCaseStartsWith(dst->name, "wtrdr"))
-        dst->name.insert(0, "h"); // animated water only works with hwtrdr* tiles.
+    if (ascii::noCaseStartsWith(dst->textureName, "wtrdr"))
+        dst->textureName.insert(0, "h"); // animated water only works with hwtrdr* tiles.
 
     // We just ignore src.tileId & src.bitmapId.
 
     reconstruct(src.tileset, &dst->tileset);
-    reconstruct(src.variant, &dst->variant, tags::context(isRoad(dst->tileset)), tags::context(dst->name));
+    reconstruct(src.variant, &dst->variant, tags::context(isRoad(dst->tileset)), tags::context(dst->textureName));
     dst->flags = static_cast<TileFlags>(src.flags);
 }
 
@@ -344,14 +344,14 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     memzero(dst);
 
     dst->name = !src.name.empty();
-    dst->portraitId = src.uPortraitID;
-    dst->flags = std::to_underlying(src.uFlags);
+    dst->portraitId = src.portraitId;
+    dst->flags = std::to_underlying(src.flags);
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->location2d = std::to_underlying(src.Location2D);
+    dst->house = std::to_underlying(src.house);
     dst->profession = std::to_underlying(src.profession);
-    dst->greet = src.greet;
-    dst->joins = src.is_joinable;
+    dst->greetingIndex = src.greetingIndex;
+    dst->canJoin = src.canJoin;
     dst->field_24 = src.field_24;
     dst->evt_A = src.dialogue_1_evt_id;
     dst->evt_B = src.dialogue_2_evt_id;
@@ -359,21 +359,21 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     dst->evt_D = src.dialogue_4_evt_id;
     dst->evt_E = src.dialogue_5_evt_id;
     dst->evt_F = src.dialogue_6_evt_id;
-    dst->sex = std::to_underlying(src.uSex);
-    dst->hasUsedAbility = src.bHasUsedTheAbility;
-    dst->newsTopic = src.news_topic;
+    dst->sex = std::to_underlying(src.sex);
+    dst->hasUsedAbility = src.hasUsedAbility;
+    dst->newsTopic = src.newsTopic;
 }
 
 void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
-    dst->name = src.name ? "Dummy" : "";
-    dst->uPortraitID = src.portraitId;
-    dst->uFlags = NpcFlags(src.flags);
+    dst->name = src.name ? "Dummy" : ""; // Names are set elsewhere.
+    dst->portraitId = src.portraitId;
+    dst->flags = NpcFlags(src.flags);
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->Location2D = static_cast<HouseId>(src.location2d);
+    dst->house = static_cast<HouseId>(src.house);
     dst->profession = static_cast<NpcProfession>(src.profession);
-    dst->greet = src.greet;
-    dst->is_joinable = src.joins;
+    dst->greetingIndex = src.greetingIndex;
+    dst->canJoin = src.canJoin;
     dst->field_24 = src.field_24;
     dst->dialogue_1_evt_id = src.evt_A;
     dst->dialogue_2_evt_id = src.evt_B;
@@ -381,9 +381,9 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->dialogue_4_evt_id = src.evt_D;
     dst->dialogue_5_evt_id = src.evt_E;
     dst->dialogue_6_evt_id = src.evt_F;
-    dst->uSex = static_cast<Sex>(src.sex);
-    dst->bHasUsedTheAbility = src.hasUsedAbility;
-    dst->news_topic = src.newsTopic;
+    dst->sex = static_cast<Sex>(src.sex);
+    dst->hasUsedAbility = src.hasUsedAbility;
+    dst->newsTopic = src.newsTopic;
 }
 
 void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {

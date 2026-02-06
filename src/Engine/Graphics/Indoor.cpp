@@ -1237,7 +1237,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + Duration::fromTicks(v10));
 
     // error catching
-    if (v11->animationName == "null") assert(false);
+    if (v11->spriteName == "null") assert(false);
 
     v30 = billboardFlagsForSprite(v11->flags, v9);
 

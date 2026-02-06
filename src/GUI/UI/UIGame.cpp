@@ -1613,7 +1613,7 @@ void GameUI_DrawHiredNPCs() {
         buf.Prepare();
 
         for (int i = pParty->hirelingScrollPosition, count = 0; i < buf.Size() && count < 2; i++, count++) {
-            std::string pContainer = fmt::format("NPC{:03}", buf.Get(i)->uPortraitID);
+            std::string pContainer = fmt::format("NPC{:03}", buf.Get(i)->portraitId);
             int npcX = pHiredNPCsIconsOffsetsX[count];
             int npcY = pHiredNPCsIconsOffsetsY[count];
             render->DrawQuad2D(assets->getImage_ColorKey(pContainer), {npcX, npcY});

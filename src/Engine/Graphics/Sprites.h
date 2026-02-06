@@ -30,7 +30,7 @@ class Sprite {
 
 class SpriteFrame {
  public:
-    std::string animationName;
+    std::string spriteName;
     std::string textureName;
     std::array<Sprite *, 8> sprites = {{}};
     float scale = 1.0;

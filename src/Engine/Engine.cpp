@@ -1019,11 +1019,11 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     // New day dawns at 3am.
     Time next3am = Time::fromDurationSinceSilence((oldTime.toDurationSinceSilence() - Duration::fromHours(3)).roundedUp(Duration::fromDays(1)) + Duration::fromHours(3));
     if (oldTime < next3am && newTime >= next3am) {
-        pParty->pHirelings[0].bHasUsedTheAbility = false;
-        pParty->pHirelings[1].bHasUsedTheAbility = false;
+        pParty->pHirelings[0].hasUsedAbility = false;
+        pParty->pHirelings[1].hasUsedAbility = false;
 
         for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i)
-            pNPCStats->pNPCData[i].bHasUsedTheAbility = false;
+            pNPCStats->pNPCData[i].hasUsedAbility = false;
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {

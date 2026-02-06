@@ -57,7 +57,7 @@ bool CheckHiredNPCSpeciality(NpcProfession prof) {
 
     for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNPCData[i].profession == prof &&
-            (pNPCStats->pNPCData[i].uFlags & NPC_HIRED)) {
+            (pNPCStats->pNPCData[i].flags & NPC_HIRED)) {
             return true;
         }
     }

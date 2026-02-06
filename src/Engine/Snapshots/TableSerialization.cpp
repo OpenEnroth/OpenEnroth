@@ -102,7 +102,7 @@ void deserialize(const Blob &src, TileTable *dst) {
     // Fill in the tileId map.
     for (size_t i = 0; i < dst->_tiles.size(); i++) {
         const TileData &tileData = dst->_tiles[i];
-        if (tileData.tileset == TILESET_INVALID || tileData.variant == TILE_VARIANT_INVALID || tileData.name.empty())
+        if (tileData.tileset == TILESET_INVALID || tileData.variant == TILE_VARIANT_INVALID || tileData.textureName.empty())
             continue;
 
         std::pair key(tileData.tileset, tileData.variant);

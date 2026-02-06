@@ -399,21 +399,21 @@ void prepareHouse(HouseId house) {
 
     // NPCs of this house
     for (int i = 1; i < pNPCStats->uNumNewNPCs; ++i) {
-        if (pNPCStats->pNPCData[i].Location2D == house) {
-            if (!(pNPCStats->pNPCData[i].uFlags & NPC_HIRED)) {
+        if (pNPCStats->pNPCData[i].house == house) {
+            if (!(pNPCStats->pNPCData[i].flags & NPC_HIRED)) {
                 HouseNpcDesc desc;
                 desc.type = HOUSE_NPC;
                 desc.label = localization->format(LSTR_CONVERSE_WITH_S, pNPCStats->pNPCData[i].name);
-                desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNPCData[i].uPortraitID));
+                desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNPCData[i].portraitId));
                 desc.npc = &pNPCStats->pNPCData[i];
 
                 houseNpcs.push_back(desc);
-                if (!(pNPCStats->pNPCData[i].uFlags & NPC_GREETED_SECOND)) {
-                    if (pNPCStats->pNPCData[i].uFlags & NPC_GREETED_FIRST) {
-                        pNPCStats->pNPCData[i].uFlags &= ~NPC_GREETED_FIRST;
-                        pNPCStats->pNPCData[i].uFlags |= NPC_GREETED_SECOND;
+                if (!(pNPCStats->pNPCData[i].flags & NPC_GREETED_SECOND)) {
+                    if (pNPCStats->pNPCData[i].flags & NPC_GREETED_FIRST) {
+                        pNPCStats->pNPCData[i].flags &= ~NPC_GREETED_FIRST;
+                        pNPCStats->pNPCData[i].flags |= NPC_GREETED_SECOND;
                     } else {
-                        pNPCStats->pNPCData[i].uFlags |= NPC_GREETED_FIRST;
+                        pNPCStats->pNPCData[i].flags |= NPC_GREETED_FIRST;
                     }
                 }
             }
@@ -736,12 +736,12 @@ void GUIWindow_House::drawNpcHouseNameAndTitle(NPCData *npcData) {
 void GUIWindow_House::drawNpcHouseGreetingMessage(NPCData *npcData) {
     if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
         if (current_npc_text.length() == 0 && _currentDialogue == DIALOGUE_MAIN) {
-            if (npcData->greet) {
+            if (npcData->greetingIndex) {
                 std::string greetString;
-                if (npcData->uFlags & NPC_GREETED_SECOND) {
-                    greetString = pNPCStats->pNPCGreetings[npcData->greet].pGreeting2;
+                if (npcData->flags & NPC_GREETED_SECOND) {
+                    greetString = pNPCStats->pNPCGreetings[npcData->greetingIndex].pGreeting2;
                 } else {
-                    greetString = pNPCStats->pNPCGreetings[npcData->greet].pGreeting1;
+                    greetString = pNPCStats->pNPCGreetings[npcData->greetingIndex].pGreeting1;
                 }
                 DrawDialoguePanel(greetString);
             }

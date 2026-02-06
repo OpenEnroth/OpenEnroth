@@ -127,7 +127,8 @@ void reconstruct(const Planei_MM7 &src, Planef *dst);
  * @see https://github.com/GrayFace/MMExtension/blob/a2ab9b12705de7576aecf8111168666d6398f830/Scripts/Structs/01%20common%20structs.lua#L2405
  */
 struct SpriteFrame_MM6 {
-    std::array<char, 12> animationName; // Only set for the 1st frame in an animated sequence.
+    std::array<char, 12> spriteName; // E.g. "spell11", only used to look up sprites by name. Only set for the 1st
+                                     // frame in an animated sequence.
     std::array<char, 12> textureName; // Texture name in sprites.lod w/o rotational suffixes.
     std::array<int16_t, 8> hwSpriteIds;
     int32_t scale;
@@ -180,7 +181,7 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst);
 
 
 struct TileData_MM7 {
-    std::array<char, 16> tileName;
+    std::array<char, 16> textureName; // E.g. "dirttyl", texture name in bitmaps.lod.
     uint16_t tileId; // Seems to be always 0 in mm7 data files.
     uint16_t bitmapId; // Also seems to be always 0.
     Tileset_MM7 tileset;
@@ -194,7 +195,7 @@ void reconstruct(const TileData_MM7 &src, TileData *dst);
 
 
 struct TextureFrameData_MM7 {
-    std::array<char, 12> textureName;
+    std::array<char, 12> textureName; // Texture name in bitmaps.lod.
     int16_t textureId;
     int16_t frameLength; // Frame duration, in 1/16th of a real-time second.
     int16_t animationLength; // Total animation time, set only on the 1st frame, in 1/16th of a real-time second.
@@ -207,26 +208,25 @@ void reconstruct(const TextureFrameData_MM7 &src, TextureFrameData *dst);
 
 
 struct NPCData_MM7 {
-    /* 00 */ int32_t name;  // char *pName;
-    /* 04 */ uint32_t portraitId;
-    /* 08 */ uint32_t flags;  // & 0x80    no greeting on dialogue start; looks like hired
-    /* 0C */ int32_t fame;
-    /* 10 */ int32_t rep;
-    /* 14 */ uint32_t location2d;
-    /* 18 */ uint32_t profession;
-    /* 1C */ int32_t greet;
-    /* 20 */ int32_t joins;
-    /* 24 */ int32_t field_24;
-    /* 28 */ uint32_t evt_A;
-    /* 2C */ uint32_t evt_B;
-    /* 30 */ uint32_t evt_C;
-    /* 34 */ uint32_t evt_D;
-    /* 38 */ uint32_t evt_E;
-    /* 3C */ uint32_t evt_F;
-    /* 40 */ uint32_t sex;
-    /* 44 */ int32_t hasUsedAbility;
-    /* 48 */ int32_t newsTopic;
-    /* 4C */
+    int32_t name;
+    uint32_t portraitId; // Portrait texture is "npcXXX" in icons.lod.
+    uint32_t flags;
+    int32_t fame;
+    int32_t rep;
+    uint32_t house;
+    uint32_t profession;
+    int32_t greetingIndex;
+    int32_t canJoin;
+    int32_t field_24;
+    uint32_t evt_A;
+    uint32_t evt_B;
+    uint32_t evt_C;
+    uint32_t evt_D;
+    uint32_t evt_E;
+    uint32_t evt_F;
+    uint32_t sex;
+    int32_t hasUsedAbility;
+    int32_t newsTopic;
 };
 static_assert(sizeof(NPCData_MM7) == 0x4C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(NPCData_MM7)

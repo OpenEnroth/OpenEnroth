@@ -778,7 +778,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
 
         // no sprite frame to draw
-        if (frame->animationName == "null") continue;
+        if (frame->spriteName == "null") continue;
 
 
         if (frame->glowRadius) {

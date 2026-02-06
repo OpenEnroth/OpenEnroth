@@ -1716,7 +1716,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                     popup_window.h = 130;
                 popup_window.w = 400;
                 GUIWindow::DrawMessageBox(0, popup_window, "");
-                auto tex_name = fmt::format("NPC{:03}", pNPC->uPortraitID);
+                auto tex_name = fmt::format("NPC{:03}", pNPC->portraitId);
                 render->DrawQuad2D(assets->getImage_ColorKey(tex_name),
                                    {popup_window.x + 22, popup_window.y + 36});
 

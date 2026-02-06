@@ -1021,10 +1021,10 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 const auto &tile = pOutdoor->pTerrain.tileDataByGrid({x, y});
                 int tileunit = 0;
                 int tilelayer = 0;
-                bool isWater = (tile.name == "wtrtyl");
+                bool isWater = (tile.textureName == "wtrtyl");
 
                 // check if tile->name is already in list
-                auto mapiter = terraintexmap.find(tile.name);
+                auto mapiter = terraintexmap.find(tile.textureName);
                 if (mapiter != terraintexmap.end()) {
                     // if so, extract unit and layer
                     int unitlayer = mapiter->second;
@@ -1035,7 +1035,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     tilelayer = 0;
                 } else {
                     // else need to add it
-                    auto thistexture = assets->getBitmap(tile.name, tile.flags & TILE_GENERATED_TRANSITION);
+                    auto thistexture = assets->getBitmap(tile.textureName, tile.flags & TILE_GENERATED_TRANSITION);
                     int width = thistexture->width();
                     // check size to see what unit it needs
                     int i;
@@ -1057,7 +1057,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                         if (numterraintexloaded[i] < 256) {
                             // intsert into tex map
-                            terraintexmap.insert(std::make_pair(tile.name, encode));
+                            terraintexmap.insert(std::make_pair(tile.textureName, encode));
                             numterraintexloaded[i]++;
                         } else {
                             logger->warning("Texture layer full - draw terrain!");
