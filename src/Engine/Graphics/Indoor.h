@@ -32,14 +32,14 @@ struct BLVLight {
     int16_t uBrightness = 0;
 };
 
-struct BLVDoor {  // 50h
-    DoorAttributes uAttributes;
-    uint32_t uDoorID;
-    Duration uTimeSinceTriggered;
-    Vec3f vDirection; // Float direction vector
-    int32_t uMoveLength;
-    int32_t uOpenSpeed; // In map units per real-time second.
-    int32_t uCloseSpeed; // In map units per real-time second.
+struct BLVDoor {
+    DoorAttributes attributes;
+    uint32_t doorId;
+    Duration timeSinceTriggered;
+    Vec3f direction; // Float direction vector
+    int32_t moveLength;
+    int32_t openSpeed; // In map units per real-time second.
+    int32_t closeSpeed; // In map units per real-time second.
     int16_t *pVertexIDs;
     int16_t *pFaceIDs;
     int16_t *pSectorIDs;
@@ -48,11 +48,11 @@ struct BLVDoor {  // 50h
     int16_t *pXOffsets;
     int16_t *pYOffsets;
     int16_t *pZOffsets;
-    uint16_t uNumVertices;
-    uint16_t uNumFaces;
-    uint16_t uNumSectors;
-    uint16_t uNumOffsets;
-    DoorState uState;
+    uint16_t numVertices;
+    uint16_t numFaces;
+    uint16_t numSectors;
+    uint16_t numOffsets;
+    DoorState state;
 };
 
 struct BLVMapOutline {  // 0C
@@ -174,7 +174,6 @@ struct BLVSector {  // 0x74
     uint16_t uNumNonBSPFaces;
     uint16_t *pFaceIDs;
     uint16_t uNumCylinderFaces;
-    int32_t pCylinderFaces;
     uint16_t uNumCogs;
     uint16_t *pCogs;
     uint16_t uNumDecorations;

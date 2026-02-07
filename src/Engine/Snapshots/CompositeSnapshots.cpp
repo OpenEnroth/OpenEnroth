@@ -281,28 +281,28 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         BLVDoor *pDoor = &dst->pDoors[i];
 
         pDoor->pVertexIDs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumVertices;
+        j += pDoor->numVertices;
 
         pDoor->pFaceIDs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumFaces;
+        j += pDoor->numFaces;
 
         pDoor->pSectorIDs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumSectors;
+        j += pDoor->numSectors;
 
         pDoor->pDeltaUs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumFaces;
+        j += pDoor->numFaces;
 
         pDoor->pDeltaVs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumFaces;
+        j += pDoor->numFaces;
 
         pDoor->pXOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumOffsets;
+        j += pDoor->numOffsets;
 
         pDoor->pYOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumOffsets;
+        j += pDoor->numOffsets;
 
         pDoor->pZOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumOffsets;
+        j += pDoor->numOffsets;
 
         assert(j <= dst->ptr_0002B4_doors_ddata.size());
     }
@@ -310,7 +310,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0; i < dst->pDoors.size(); ++i) {
         BLVDoor *pDoor = &dst->pDoors[i];
 
-        for (unsigned j = 0; j < pDoor->uNumFaces; ++j) {
+        for (unsigned j = 0; j < pDoor->numFaces; ++j) {
             BLVFace *pFace = &dst->pFaces[pDoor->pFaceIDs[j]];
             BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
 

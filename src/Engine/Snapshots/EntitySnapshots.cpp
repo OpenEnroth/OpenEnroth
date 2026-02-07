@@ -343,7 +343,7 @@ void reconstruct(const Timer_MM7 &src, Timer *dst) {
 void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     memzero(dst);
 
-    dst->name = !src.name.empty();
+    dst->name.value = !src.name.empty(); // TODO(captainurist): Can drop? Need to check that vanilla doesn't choke here.
     dst->portraitId = src.portraitId;
     dst->flags = std::to_underlying(src.flags);
     dst->fame = src.fame;
@@ -365,7 +365,7 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
 }
 
 void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
-    dst->name = src.name ? "Dummy" : ""; // Names are set elsewhere.
+    dst->name = src.name.value ? "Dummy" : ""; // TODO(captainurist): can drop?
     dst->portraitId = src.portraitId;
     dst->flags = NpcFlags(src.flags);
     dst->fame = src.fame;
@@ -1508,33 +1508,33 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
 void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
     memzero(dst);
 
-    dst->uAttributes = std::to_underlying(src.uAttributes);
-    dst->uDoorID = src.uDoorID;
-    dst->uTimeSinceTriggered = src.uTimeSinceTriggered.ticks();
-    dst->vDirection = src.vDirection.toFixpoint();
-    dst->uMoveLength = src.uMoveLength;
-    dst->uOpenSpeed = src.uOpenSpeed;
-    dst->uCloseSpeed = src.uCloseSpeed;
-    dst->uNumVertices = src.uNumVertices;
-    dst->uNumFaces = src.uNumFaces;
-    dst->uNumSectors = src.uNumSectors;
-    dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = std::to_underlying(src.uState);
+    dst->attributes = std::to_underlying(src.attributes);
+    dst->doorId = src.doorId;
+    dst->timeSinceTriggered = src.timeSinceTriggered.ticks();
+    dst->direction = src.direction.toFixpoint();
+    dst->moveLength = src.moveLength;
+    dst->openSpeed = src.openSpeed;
+    dst->closeSpeed = src.closeSpeed;
+    dst->numVertices = src.numVertices;
+    dst->numFaces = src.numFaces;
+    dst->numSectors = src.numSectors;
+    dst->numOffsets = src.numOffsets;
+    dst->state = std::to_underlying(src.state);
 }
 
 void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
-    dst->uAttributes = static_cast<DoorAttributes>(src.uAttributes);
-    dst->uDoorID = src.uDoorID;
-    dst->uTimeSinceTriggered = Duration::fromTicks(src.uTimeSinceTriggered);
-    dst->vDirection = src.vDirection.toFloatFromFixpoint();
-    dst->uMoveLength = src.uMoveLength;
-    dst->uOpenSpeed = src.uOpenSpeed;
-    dst->uCloseSpeed = src.uCloseSpeed;
-    dst->uNumVertices = src.uNumVertices;
-    dst->uNumFaces = src.uNumFaces;
-    dst->uNumSectors = src.uNumSectors;
-    dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = static_cast<DoorState>(src.uState);
+    dst->attributes = static_cast<DoorAttributes>(src.attributes);
+    dst->doorId = src.doorId;
+    dst->timeSinceTriggered = Duration::fromTicks(src.timeSinceTriggered);
+    dst->direction = src.direction.toFloatFromFixpoint();
+    dst->moveLength = src.moveLength;
+    dst->openSpeed = src.openSpeed;
+    dst->closeSpeed = src.closeSpeed;
+    dst->numVertices = src.numVertices;
+    dst->numFaces = src.numFaces;
+    dst->numSectors = src.numSectors;
+    dst->numOffsets = src.numOffsets;
+    dst->state = static_cast<DoorState>(src.state);
 }
 
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
@@ -1549,7 +1549,6 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
     dst->uNumFaces = src.uNumFaces;
     dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
     dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->pCylinderFaces = src.pCylinderFaces;
     dst->uNumCogs = src.uNumCogs;
     dst->uNumDecorations = src.uNumDecorations;
     dst->uNumMarkers = src.uNumMarkers;
@@ -1573,7 +1572,6 @@ void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->uNumFaces = src.uNumFaces;
     dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
     dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->pCylinderFaces = src.pCylinderFaces;
     dst->uNumCogs = src.uNumCogs;
     dst->uNumDecorations = src.uNumDecorations;
     dst->uNumMarkers = src.uNumMarkers;

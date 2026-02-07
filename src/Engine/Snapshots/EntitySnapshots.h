@@ -84,6 +84,13 @@ void reconstruct(const Vec3i &src, Vec3f *dst);
 
 #pragma pack(push, 1)
 
+struct Pointer_MM7 {
+    int32_t value;
+};
+static_assert(sizeof(Pointer_MM7) == 4);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Pointer_MM7)
+
+
 struct BBoxs_MM7 {
     int16_t x1;
     int16_t x2;
@@ -97,9 +104,9 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs_MM7)
 
 void snapshot(const BBoxi &src, BBoxs_MM7 *dst);
 void reconstruct(const BBoxs_MM7 &src, BBoxi *dst);
-
 void snapshot(const BBoxf &src, BBoxs_MM7 *dst);
 void reconstruct(const BBoxs_MM7 &src, BBoxf *dst);
+
 
 struct Planef_MM7 {
     Vec3f normal;
@@ -159,12 +166,12 @@ struct BLVFace_MM7 {
     int32_t zCalc2;
     int32_t zCalc3;
     uint32_t attributes;
-    int32_t vertexIDs;
-    int32_t xInterceptDisplacements;
-    int32_t yInterceptDisplacements;
-    int32_t zInterceptDisplacements;
-    int32_t vertexUIds;
-    int32_t vertexVIds;
+    Pointer_MM7 vertexIDs;
+    Pointer_MM7 xInterceptDisplacements;
+    Pointer_MM7 yInterceptDisplacements;
+    Pointer_MM7 zInterceptDisplacements;
+    Pointer_MM7 vertexUIds;
+    Pointer_MM7 vertexVIds;
     uint16_t faceExtraId;
     uint16_t bitmapId;
     uint16_t sectorId;
@@ -208,7 +215,7 @@ void reconstruct(const TextureFrameData_MM7 &src, TextureFrameData *dst);
 
 
 struct NPCData_MM7 {
-    int32_t name; // Originally char *, actual name is set elsewhere.
+    Pointer_MM7 name;
     uint32_t portraitId;
     uint32_t flags;
     int32_t fame;
@@ -652,8 +659,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(UIAnimation_MM6)
 
 
 struct MonsterInfo_MM7 {
-    int32_t name; // Originally char *, actual name is set elsewhere.
-    int32_t textureName;
+    Pointer_MM7 name; // Originally char *, actual name is set elsewhere.
+    Pointer_MM7 textureName;
     uint8_t level;
     uint8_t treasureDropChance;
     uint8_t goldDiceRolls;
@@ -814,26 +821,26 @@ void reconstruct(const Actor_MM7 &src, Actor *dst);
 
 
 struct BLVDoor_MM7 {
-    uint32_t uAttributes;
-    uint32_t uDoorID;
-    uint32_t uTimeSinceTriggered;
-    Vec3i vDirection;
-    uint32_t uMoveLength;
-    uint32_t uOpenSpeed;
-    uint32_t uCloseSpeed;
-    uint32_t pVertexIDs;
-    uint32_t pFaceIDs;
-    uint32_t pSectorIDs;
-    int32_t pDeltaUs;
-    int32_t pDeltaVs;
-    uint32_t pXOffsets;
-    uint32_t pYOffsets;
-    uint32_t pZOffsets;
-    uint16_t uNumVertices;
-    uint16_t uNumFaces;
-    uint16_t uNumSectors;
-    uint16_t uNumOffsets;
-    uint16_t uState;
+    uint32_t attributes;
+    uint32_t doorId;
+    uint32_t timeSinceTriggered;
+    Vec3i direction;
+    uint32_t moveLength;
+    uint32_t openSpeed;
+    uint32_t closeSpeed;
+    Pointer_MM7 vertexIds;
+    Pointer_MM7 faceIds;
+    Pointer_MM7 sectorIds;
+    Pointer_MM7 deltaUs;
+    Pointer_MM7 deltaVs;
+    Pointer_MM7 xOffsets;
+    Pointer_MM7 yOffsets;
+    Pointer_MM7 zOffsets;
+    uint16_t numVertices;
+    uint16_t numFaces;
+    uint16_t numSectors;
+    uint16_t numOffsets;
+    uint16_t state;
     int16_t _pad;
 };
 static_assert(sizeof(BLVDoor_MM7) == 0x50);
@@ -847,37 +854,37 @@ struct BLVSector_MM7 {
     int32_t field_0;
     uint16_t uNumFloors;
     int16_t _pad0;
-    uint32_t pFloors;
+    Pointer_MM7 pFloors;
     uint16_t uNumWalls;
     int16_t _pad1;
-    uint32_t pWalls;
+    Pointer_MM7 pWalls;
     uint16_t uNumCeilings;
     int16_t _pad2;
-    uint32_t pCeilings;
+    Pointer_MM7 pCeilings;
     uint16_t uNumFluids;
     int16_t _pad3;
-    uint32_t pFluids;
+    Pointer_MM7 pFluids;
     int16_t uNumPortals;
     int16_t _pad4;
-    uint32_t pPortals;
+    Pointer_MM7 pPortals;
     uint16_t uNumFaces;
     uint16_t uNumNonBSPFaces;
-    uint32_t pFaceIDs;
+    Pointer_MM7 pFaceIDs;
     uint16_t uNumCylinderFaces;
     int16_t _pad5;
-    int32_t pCylinderFaces;
+    Pointer_MM7 pCylinderFaces;
     uint16_t uNumCogs;
     int16_t _pad6;
-    uint32_t pCogs;
+    Pointer_MM7 pCogs;
     uint16_t uNumDecorations;
     int16_t _pad7;
-    uint32_t pDecorationIDs;
+    Pointer_MM7 pDecorationIDs;
     uint16_t uNumMarkers;
     int16_t _pad8;
-    uint32_t pMarkers;
+    Pointer_MM7 pMarkers;
     uint16_t uNumLights;
     int16_t _pad9;
-    uint32_t pLights;
+    Pointer_MM7 pLights;
     int16_t uWaterLevel;
     int16_t uMistLevel;
     int16_t uLightDistanceMultiplier;
@@ -1206,13 +1213,13 @@ struct BSPModelData_MM7 {
     std::array<char, 32> pModelName2;
     int32_t field_40;
     uint32_t uNumVertices;
-    uint32_t ppVertices;
+    Pointer_MM7 ppVertices;
     uint32_t uNumFaces;
     uint32_t uNumConvexFaces;
-    uint32_t ppFaces;
-    uint32_t ppFacesOrdering;
+    Pointer_MM7 ppFaces;
+    Pointer_MM7 ppFacesOrdering;
     uint32_t uNumNodes;
-    uint32_t ppNodes;
+    Pointer_MM7 ppNodes;
     uint32_t uNumDecorations;
     int32_t sCenterX;
     int32_t sCenterY;
@@ -1313,10 +1320,10 @@ void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst);
 
 struct BLVHeader_MM7 {
     std::array<char, 104> field_0;
-    unsigned int uFaces_fdata_Size;
-    unsigned int uSector_rdata_Size;
-    unsigned int uSector_lrdata_Size;
-    unsigned int uDoors_ddata_Size;
+    int32_t uFaces_fdata_Size;
+    int32_t uSector_rdata_Size;
+    int32_t uSector_lrdata_Size;
+    int32_t uDoors_ddata_Size;
     std::array<char, 16> field_78;
 };
 static_assert(sizeof(BLVHeader_MM7) == 136);
@@ -1334,8 +1341,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorTileType_MM7)
 
 
 struct SaveGameHeader_MM7 {
-    std::array<char, 20> name;
-    std::array<char, 20> locationName;
+    std::array<char, 20> name; // Savegame as displayed in the save/load menu.
+    std::array<char, 20> locationName; // E.g. "out06.odm".
     int64_t playingTime;
     std::array<char, 52> field_30;
 };
