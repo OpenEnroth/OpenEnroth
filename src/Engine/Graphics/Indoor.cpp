@@ -202,14 +202,14 @@ void IndoorLocation::Draw() {
 //----- (004C0EF2) --------------------------------------------------------
 void BLVFace::FromODM(ODMFace *face) {
     this->facePlane = face->facePlane;
-    this->uAttributes = face->uAttributes;
-    this->pBounding = face->pBoundingBox;
+    this->uAttributes = face->attributes;
+    this->pBounding = face->boundingBox;
     this->zCalc = face->zCalc;
-    this->uPolygonType = face->uPolygonType;
-    this->uNumVertices = face->uNumVertices;
+    this->uPolygonType = face->polygonType;
+    this->uNumVertices = face->numVertices;
     this->texture = face->texture;
     this->animationId = face->animationId;
-    this->pVertexIDs = face->pVertexIDs.data();
+    this->pVertexIDs = face->vertexIds.data();
 }
 
 //----- (004AE5BA) --------------------------------------------------------
@@ -1369,7 +1369,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
                     continue;
 
                 // bounds check
-                if (!bbox.intersects(face.pBoundingBox))
+                if (!bbox.intersects(face.boundingBox))
                     continue;
 
                 // point target plane distacne
@@ -1466,12 +1466,12 @@ char DoInteractionWithTopmostZObject(Pid pid) {
 
                 ODMFace &model = pOutdoor->pBModels[bmodel_id].pFaces[face_id];
 
-                if (model.uAttributes & FACE_HAS_EVENT || model.sCogTriggeredID == 0) {
+                if (model.attributes & FACE_HAS_EVENT || model.eventId == 0) {
                     return 1;
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor(pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID, pid, 1);
+                    eventProcessor(pOutdoor->pBModels[bmodel_id].pFaces[face_id].eventId, pid, 1);
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }

@@ -377,25 +377,25 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     // TODO(pskelton): This code is common to ODM/BLV faces
     // Face plane normals have come from fixed point values - recalculate them.
     for (auto& face : dst->pFaces) {
-        if (face.uNumVertices < 3) continue;
-        Vec3f dir1 = (dst->pVertices[face.pVertexIDs[1]] - dst->pVertices[face.pVertexIDs[0]]);
+        if (face.numVertices < 3) continue;
+        Vec3f dir1 = (dst->pVertices[face.vertexIds[1]] - dst->pVertices[face.vertexIds[0]]);
         Vec3f dir2, norm;
         int i = 2;
-        for (; i < face.uNumVertices; i++) {
-            dir2 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[0]]);
+        for (; i < face.numVertices; i++) {
+            dir2 = (dst->pVertices[face.vertexIds[i]] - dst->pVertices[face.vertexIds[0]]);
             if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
                 break; // Found a non-parallel edge.
             }
         }
 
-        if (i == face.uNumVertices) {
+        if (i == face.numVertices) {
             // If we didn't find a non-parallel edge, lets just round what were given.
             // TODO(pskelton):  This shouldnt ever happen - test and drop
             face.facePlane.normal /= face.facePlane.normal.length();
         } else {
             face.facePlane.normal = norm / norm.length();
         }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.pVertexIDs[0]]);
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.vertexIds[0]]);
         face.zCalc.init(face.facePlane);
     }
 
@@ -411,11 +411,11 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
         reconstruct(srcExtras.faceTextures[i], &textureName);
         dst->pFaces[i].SetTexture(textureName);
 
-        if (dst->pFaces[i].sCogTriggeredID) {
+        if (dst->pFaces[i].eventId) {
             if (dst->pFaces[i].HasEventHint())
-                dst->pFaces[i].uAttributes |= FACE_HAS_EVENT;
+                dst->pFaces[i].attributes |= FACE_HAS_EVENT;
             else
-                dst->pFaces[i].uAttributes &= ~FACE_HAS_EVENT;
+                dst->pFaces[i].attributes &= ~FACE_HAS_EVENT;
         }
     }
 }
@@ -540,7 +540,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
         for (const ODMFace &face : model.pFaces)
-            dst->faceAttributes.push_back(std::to_underlying(face.uAttributes & ~FACE_HAS_EVENT));
+            dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~FACE_HAS_EVENT));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -562,8 +562,8 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
         for (ODMFace &face : model.pFaces) {
-            face.uAttributes &= FACE_HAS_EVENT; // TODO(captainurist): skip FACE_TEXTURE_FRAME here too?
-            face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~FACE_HAS_EVENT;
+            face.attributes &= FACE_HAS_EVENT; // TODO(captainurist): skip FACE_TEXTURE_FRAME here too?
+            face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~FACE_HAS_EVENT;
         }
     }
 

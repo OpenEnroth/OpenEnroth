@@ -2321,22 +2321,22 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         int texlayer = 0;
                         int attribflags = 0;
 
-                        if (face.uAttributes & FACE_IsFluid)
+                        if (face.attributes & FACE_IsFluid)
                             attribflags |= 2;
-                        if (face.uAttributes & FACE_INDOOR_SKY)
+                        if (face.attributes & FACE_INDOOR_SKY)
                             attribflags |= 0x400;
 
-                        if (face.uAttributes & FACE_FlowDown)
+                        if (face.attributes & FACE_FlowDown)
                             attribflags |= 0x400;
-                        else if (face.uAttributes & FACE_FlowUp)
+                        else if (face.attributes & FACE_FlowUp)
                             attribflags |= 0x800;
 
-                        if (face.uAttributes & FACE_FlowRight)
+                        if (face.attributes & FACE_FlowRight)
                             attribflags |= 0x2000;
-                        else if (face.uAttributes & FACE_FlowLeft)
+                        else if (face.attributes & FACE_FlowLeft)
                             attribflags |= 0x1000;
 
-                        if (face.uAttributes & FACE_IsLava)
+                        if (face.attributes & FACE_IsLava)
                             attribflags |= 0x4000;
 
                         // loop while running down animlength with frame animtimes
@@ -2487,7 +2487,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 if (!model.pFaces.empty()) {
                     for (ODMFace &face : model.pFaces) {
                         if (!face.Invisible()) {
-                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]];
+                            array_73D150[0].vWorldPosition = model.pVertices[face.vertexIds[0]];
 
                             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                                 int texunit = 0;
@@ -2520,36 +2520,36 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                                 int attribflags = 0;
 
-                                if (face.uAttributes & FACE_IsFluid)
+                                if (face.attributes & FACE_IsFluid)
                                     attribflags |= 2;
-                                if (face.uAttributes & FACE_INDOOR_SKY)
+                                if (face.attributes & FACE_INDOOR_SKY)
                                     attribflags |= 0x400;
 
-                                if (face.uAttributes & FACE_FlowDown)
+                                if (face.attributes & FACE_FlowDown)
                                     attribflags |= 0x400;
-                                else if (face.uAttributes & FACE_FlowUp)
+                                else if (face.attributes & FACE_FlowUp)
                                     attribflags |= 0x800;
 
-                                if (face.uAttributes & FACE_FlowRight)
+                                if (face.attributes & FACE_FlowRight)
                                     attribflags |= 0x2000;
-                                else if (face.uAttributes & FACE_FlowLeft)
+                                else if (face.attributes & FACE_FlowLeft)
                                     attribflags |= 0x1000;
 
-                                if (face.uAttributes & FACE_IsLava)
+                                if (face.attributes & FACE_IsLava)
                                     attribflags |= 0x4000;
 
-                                if (face.uAttributes & FACE_OUTLINED || (face.uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
+                                if (face.attributes & FACE_OUTLINED || (face.attributes & FACE_IsSecret) && engine->is_saturate_faces)
                                     attribflags |= 0x00010000;
 
                                 // load up verts here
-                                for (int z = 0; z < (face.uNumVertices - 2); z++) {
+                                for (int z = 0; z < (face.numVertices - 2); z++) {
                                     // 123, 134, 145, 156..
 
                                     // copy first
                                     ShaderVertex &v0 = _outbuildVertices[texunit].emplace_back();
-                                    v0.pos = model.pVertices[face.pVertexIDs[0]];
-                                    v0.texuv = Vec2f(face.pTextureUIDs[0] + face.sTextureDeltaU,
-                                                     face.pTextureVIDs[0] + face.sTextureDeltaV);
+                                    v0.pos = model.pVertices[face.vertexIds[0]];
+                                    v0.texuv = Vec2f(face.textureUs[0] + face.textureDeltaU,
+                                                     face.textureVs[0] + face.textureDeltaV);
                                     v0.texturelayer = texlayer;
                                     v0.normal = face.facePlane.normal;
                                     v0.attribs = attribflags;
@@ -2557,9 +2557,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                     // copy other two (z+1)(z+2)
                                     for (unsigned i = 1; i < 3; ++i) {
                                         ShaderVertex &v = _outbuildVertices[texunit].emplace_back();
-                                        v.pos = model.pVertices[face.pVertexIDs[z + i]];
-                                        v.texuv = Vec2f(face.pTextureUIDs[z + i] + face.sTextureDeltaU,
-                                                        face.pTextureVIDs[z + i] + face.sTextureDeltaV);
+                                        v.pos = model.pVertices[face.vertexIds[z + i]];
+                                        v.texuv = Vec2f(face.textureUs[z + i] + face.textureDeltaU,
+                                                        face.textureVs[z + i] + face.textureDeltaV);
                                         v.texturelayer = texlayer;
                                         v.normal = face.facePlane.normal;
                                         v.attribs = attribflags;
@@ -2730,16 +2730,16 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x + face.facePlane.normal.y * pOutdoor->vSunlight.y + face.facePlane.normal.z * pOutdoor->vSunlight.z;
             int dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f1 + 0.5f)), 0, 31);
 
-            for (unsigned vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
+            for (unsigned vertex_id = 1; vertex_id <= face.numVertices; vertex_id++) {
                 array_73D150[vertex_id - 1].vWorldPosition.x =
-                    model.pVertices[face.pVertexIDs[vertex_id - 1]].x;
+                    model.pVertices[face.vertexIds[vertex_id - 1]].x;
                 array_73D150[vertex_id - 1].vWorldPosition.y =
-                    model.pVertices[face.pVertexIDs[vertex_id - 1]].y;
+                    model.pVertices[face.vertexIds[vertex_id - 1]].y;
                 array_73D150[vertex_id - 1].vWorldPosition.z =
-                    model.pVertices[face.pVertexIDs[vertex_id - 1]].z;
+                    model.pVertices[face.vertexIds[vertex_id - 1]].z;
             }
 
-            for (int vertex_id = 0; vertex_id < face.uNumVertices; ++vertex_id) {
+            for (int vertex_id = 0; vertex_id < face.numVertices; ++vertex_id) {
                 memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
                 VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
             }
@@ -2749,7 +2749,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 decal_builder->BuildAndApplyDecals(
                     31 - dimming_level, LocationBuildings,
                     face.facePlane,
-                    face.uNumVertices, VertexRenderList, 0, -1);
+                    face.numVertices, VertexRenderList, 0, -1);
             }
         }
     }

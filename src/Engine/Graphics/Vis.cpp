@@ -371,7 +371,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
         }
 
         for (ODMFace &face : model.pFaces) {
-            face.uAttributes &= ~FACE_OUTLINED;
+            face.attributes &= ~FACE_OUTLINED;
 
             if (isFacePartOfSelection(&face, nullptr, filter)) {
                 BLVFace blv_face;
@@ -388,7 +388,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
                     list->AddObject(VisObjectType_Face, intersection.vWorldViewPosition.x, pid);
 
                     if (engine->config->debug.ShowPickedFace.value())
-                        face.uAttributes |= FACE_OUTLINED;
+                        face.attributes |= FACE_OUTLINED;
                 }
             }
         }
@@ -808,8 +808,8 @@ bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_Selectio
     FaceAttributes face_attrib;
     bool no_event = true;
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        no_event = odmFace->sCogTriggeredID == 0;
-        face_attrib = odmFace->uAttributes;
+        no_event = odmFace->eventId == 0;
+        face_attrib = odmFace->attributes;
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         no_event = pIndoor->faceExtras[bvlFace->uFaceExtraID].uEventID == 0;
         face_attrib = bvlFace->uAttributes;

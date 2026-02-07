@@ -297,11 +297,11 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         if (collision_state.pid.type() == OBJECT_Face) {
             const BSPModel *bmodel = &pOutdoor->model(collision_state.pid);
             const ODMFace *face = &pOutdoor->face(collision_state.pid);
-            if (face->uPolygonType == POLYGON_Floor) {
-                pSpriteObjects[uLayingItemID].vPosition.z = bmodel->pVertices[face->pVertexIDs[0]].z + 1;
+            if (face->polygonType == POLYGON_Floor) {
+                pSpriteObjects[uLayingItemID].vPosition.z = bmodel->pVertices[face->vertexIds[0]].z + 1;
                 if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() >= 400) {
-                    if (face->uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(face->sCogTriggeredID, Pid(), 1);
+                    if (face->attributes & FACE_TriggerByObject) {
+                        eventProcessor(face->eventId, Pid(), 1);
                     }
                 } else {
                     pSpriteObjects[uLayingItemID].vVelocity = Vec3f(0, 0, 0);
@@ -319,8 +319,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                     newZVel = 0.48828125f * newZVel;
                 }
                 pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
-                if (face->uAttributes & FACE_TriggerByObject) {
-                    eventProcessor(face->sCogTriggeredID, Pid(), 1);
+                if (face->attributes & FACE_TriggerByObject) {
+                    eventProcessor(face->eventId, Pid(), 1);
                 }
             }
         }

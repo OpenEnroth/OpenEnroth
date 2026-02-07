@@ -1570,22 +1570,19 @@ void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
 void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
-    dst->uAttributes = FaceAttributes(src.attributes);
-    dst->pVertexIDs = src.pVertexIDs;
-    dst->pTextureUIDs = src.pTextureUIDs;
-    dst->pTextureVIDs = src.pTextureVIDs;
+    dst->attributes = FaceAttributes(src.attributes);
+    dst->vertexIds = src.vertexIds;
+    dst->textureUs = src.textureUs;
+    dst->textureVs = src.textureVs;
     dst->texture = nullptr;
     dst->animationId = 0;
-    dst->sTextureDeltaU = src.sTextureDeltaU;
-    dst->sTextureDeltaV = src.sTextureDeltaV;
-    reconstruct(src.pBoundingBox, &dst->pBoundingBox);
-    dst->sCogNumber = src.sCogNumber;
-    dst->sCogTriggeredID = src.sCogTriggeredID;
-    dst->sCogTriggerType = src.sCogTriggerType;
-    dst->uNumVertices = src.uNumVertices;
-    dst->uPolygonType = static_cast<PolygonType>(src.uPolygonType);
-    dst->uShadeType = src.uShadeType;
-    dst->bVisible = src.bVisible;
+    dst->textureDeltaU = src.textureDeltaU;
+    dst->textureDeltaV = src.textureDeltaV;
+    reconstruct(src.boundingBox, &dst->boundingBox);
+    dst->cogNumber = src.cogNumber;
+    dst->eventId = src.eventId;
+    dst->numVertices = src.numVertices;
+    dst->polygonType = static_cast<PolygonType>(src.polygonType);
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {

@@ -893,33 +893,34 @@ void reconstruct(const BLVSector_MM7 &src, BLVSector *dst);
 
 struct ODMFace_MM7 {
     Planei_MM7 facePlane;
-    int32_t zCalc1;
+    int32_t zCalc1; // Fixpoint face plane zcalc values. We recalculate these on load from face plane equation.
     int32_t zCalc2;
     int32_t zCalc3;
     uint32_t attributes;
-    std::array<int16_t, 20> pVertexIDs;
-    std::array<int16_t, 20> pTextureUIDs;
-    std::array<int16_t, 20> pTextureVIDs;
-    std::array<int16_t, 20> pXInterceptDisplacements;
-    std::array<int16_t, 20> pYInterceptDisplacements;
-    std::array<int16_t, 20> pZInterceptDisplacements;
-    int16_t uTextureID;
-    int16_t sTextureDeltaU;
-    int16_t sTextureDeltaV;
-    BBoxs_MM7 pBoundingBox;
-    int16_t sCogNumber;
-    int16_t sCogTriggeredID;
-    int16_t sCogTriggerType;
+    std::array<int16_t, 20> vertexIds;
+    std::array<int16_t, 20> textureUs;
+    std::array<int16_t, 20> textureVs;
+    std::array<int16_t, 20> xInterceptDisplacements;
+    std::array<int16_t, 20> yInterceptDisplacements;
+    std::array<int16_t, 20> zInterceptDisplacements;
+    int16_t textureId;
+    int16_t textureDeltaU;
+    int16_t textureDeltaV;
+    BBoxs_MM7 boundingBox;
+    int16_t cogNumber; // Used to identify vertices by this number. Why "cog"? No idea.
+    int16_t eventId;
+    int16_t eventTriggerType; // Always 0 in MM7, unused in OpenEnroth.
     char field_128;
     char field_129;
-    uint8_t uGradientVertex1; // Not sure what these are, unused in OpenEnroth.
-    uint8_t uGradientVertex2;
-    uint8_t uGradientVertex3;
-    uint8_t uGradientVertex4;
-    uint8_t uNumVertices;
-    uint8_t uPolygonType;
-    uint8_t uShadeType;
-    uint8_t bVisible;
+    uint8_t gradientVertex1; // Not sure what these are, unused in OpenEnroth.
+    uint8_t gradientVertex2;
+    uint8_t gradientVertex3;
+    uint8_t gradientVertex4;
+    uint8_t numVertices;
+    uint8_t polygonType;
+    uint8_t shadeType; // Is in [0, 24] in MM7 data, unused in OpenEnroth.
+                       // TODO(captainurist): What is this? Could be minimum shade?
+    uint8_t visible; // Always 0 in MM7 data, unused in OpenEnroth.
     char field_132;
     char field_133;
 };

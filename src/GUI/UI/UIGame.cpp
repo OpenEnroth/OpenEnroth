@@ -692,9 +692,9 @@ std::string GameUI_GetMinimapHintText() {
                 std::abs((int)model.vBoundingCenter.y - global_coord_Y), 0);
             if (v7 < 2 * model.sBoundingRadius) {
                 for (ODMFace &face : model.pFaces) {
-                    if (face.sCogTriggeredID) {
-                        if (!(face.uAttributes & FACE_HAS_EVENT)) {
-                            std::string hintString = getEventHintString(face.sCogTriggeredID);
+                    if (face.eventId) {
+                        if (!(face.attributes & FACE_HAS_EVENT)) {
+                            std::string hintString = getEventHintString(face.eventId);
                             if (!hintString.empty())
                                 result = hintString;
                         }
@@ -913,10 +913,10 @@ void GameUI_WritePointedObjectStatusString() {
                     std::string newString;
                     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {
                         v18b = pickedObject.pid.id() >> 6;
-                        short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
+                        short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].eventId;
                         if (triggeredId != 0) {
                             newString = getEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F]
-                                    .sCogTriggeredID);
+                                    .eventId);
                         }
                     } else {
                         pFace = &pIndoor->faces[pickedObjectID];

@@ -831,13 +831,13 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
             if (face.Ethereal())
                 continue;
 
-            if (face.uNumVertices == 0)
+            if (face.numVertices == 0)
                 continue;
 
-            if (face.uPolygonType != POLYGON_Floor && face.uPolygonType != POLYGON_InBetweenFloorAndWall)
+            if (face.polygonType != POLYGON_Floor && face.polygonType != POLYGON_InBetweenFloorAndWall)
                 continue;
 
-            if (!face.pBoundingBox.containsXY(pos.x, pos.y))
+            if (!face.boundingBox.containsXY(pos.x, pos.y))
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.value();
@@ -845,8 +845,8 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
                 continue;
 
             int floor_level;
-            if (face.uPolygonType == POLYGON_Floor) {
-                floor_level = model.pVertices[face.pVertexIDs[0]].z;
+            if (face.polygonType == POLYGON_Floor) {
+                floor_level = model.pVertices[face.vertexIds[0]].z;
             } else {
                 floor_level = face.zCalc.calculate(pos.x, pos.y);
             }
@@ -1003,8 +1003,8 @@ void ODM_ProcessPartyActions() {
             int BModel_id = floorFaceId >> 6;
             if (BModel_id < pOutdoor->pBModels.size()) {
                 int face_id = floorFaceId & 0x3F;
-                if (pOutdoor->pBModels[BModel_id].pFaces[face_id].uAttributes & FACE_PRESSURE_PLATE) {
-                    triggerID = pOutdoor->pBModels[BModel_id].pFaces[face_id].sCogTriggeredID;
+                if (pOutdoor->pBModels[BModel_id].pFaces[face_id].attributes & FACE_PRESSURE_PLATE) {
+                    triggerID = pOutdoor->pBModels[BModel_id].pFaces[face_id].eventId;
                 }
             }
         }
@@ -1547,10 +1547,10 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
             if (face.Ethereal())
                 continue;
 
-            if (face.uPolygonType != POLYGON_Ceiling && face.uPolygonType != POLYGON_InBetweenCeilingAndWall)
+            if (face.polygonType != POLYGON_Ceiling && face.polygonType != POLYGON_InBetweenCeilingAndWall)
                 continue;
 
-            if (!face.pBoundingBox.containsXY(Party_X, Party_Y))
+            if (!face.boundingBox.containsXY(Party_X, Party_Y))
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.value();
@@ -1561,8 +1561,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
                 break;
 
             int height_level;
-            if (face.uPolygonType == POLYGON_Ceiling)
-                height_level = model.pVertices[face.pVertexIDs[0]].z;
+            if (face.polygonType == POLYGON_Ceiling)
+                height_level = model.pVertices[face.vertexIds[0]].z;
             else
                 height_level = face.zCalc.calculate(Party_X, Party_Y);
 

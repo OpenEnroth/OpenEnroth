@@ -2213,7 +2213,7 @@ void CastSpellInfoHelpers::castSpell() {
                         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                             event = pIndoor->faceExtras[pIndoor->faces[obj_id].uFaceExtraID].uEventID;
                         } else {
-                            event = pOutdoor->face(spell_targeted_at).sCogTriggeredID;
+                            event = pOutdoor->face(spell_targeted_at).eventId;
                         }
                         eventProcessor(event, spell_targeted_at, 1);
                     }

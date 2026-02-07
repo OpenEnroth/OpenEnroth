@@ -311,7 +311,7 @@ void Engine::onGameViewportClick() {
                 }
                 return;
             } else {
-                eventId = model.sCogTriggeredID;
+                eventId = model.eventId;
             }
         }
 
