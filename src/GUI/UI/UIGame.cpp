@@ -688,10 +688,10 @@ std::string GameUI_GetMinimapHintText() {
     } else {
         for (BSPModel &model : pOutdoor->pBModels) {
             v7 = int_get_vector_length(
-                std::abs((int)model.vBoundingCenter.x - global_coord_X),
-                std::abs((int)model.vBoundingCenter.y - global_coord_Y), 0);
-            if (v7 < 2 * model.sBoundingRadius) {
-                for (ODMFace &face : model.pFaces) {
+                std::abs((int)model.boundingCenter.x - global_coord_X),
+                std::abs((int)model.boundingCenter.y - global_coord_Y), 0);
+            if (v7 < 2 * model.boundingRadius) {
+                for (ODMFace &face : model.faces) {
                     if (face.eventId) {
                         if (!(face.attributes & FACE_HAS_EVENT)) {
                             std::string hintString = getEventHintString(face.eventId);
@@ -913,9 +913,9 @@ void GameUI_WritePointedObjectStatusString() {
                     std::string newString;
                     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {
                         v18b = pickedObject.pid.id() >> 6;
-                        short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].eventId;
+                        short triggeredId = pOutdoor->pBModels[v18b].faces[pickedObjectID & 0x3F].eventId;
                         if (triggeredId != 0) {
-                            newString = getEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F]
+                            newString = getEventHintString(pOutdoor->pBModels[v18b].faces[pickedObjectID & 0x3F]
                                     .eventId);
                         }
                     } else {

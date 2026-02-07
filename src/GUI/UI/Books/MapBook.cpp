@@ -336,10 +336,10 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
         !pOutdoor->pBModels.empty()) {
         for (BSPModel &model : pOutdoor->pBModels) {
             if (int_get_vector_length(
-                    std::abs((int)model.vBoundingCenter.x - global_coord_X),
-                    std::abs((int)model.vBoundingCenter.y - global_coord_Y),
-                    0) < model.sBoundingRadius) {
-                for (ODMFace &face : model.pFaces) {
+                    std::abs((int)model.boundingCenter.x - global_coord_X),
+                    std::abs((int)model.boundingCenter.y - global_coord_Y),
+                    0) < model.boundingRadius) {
+                for (ODMFace &face : model.faces) {
                     if (face.eventId) {
                         if (!(face.attributes & FACE_HAS_EVENT)) {
                             std::string hintString = getEventHintString(face.eventId);

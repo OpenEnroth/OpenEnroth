@@ -72,7 +72,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        const std::vector<Vec3f> &v = pOutdoor->model(pid).pVertices;
+        const std::vector<Vec3f> &v = pOutdoor->model(pid).vertices;
         for (unsigned i = 0; i < face->uNumVertices; ++i)
             static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]];
     } else {
@@ -307,17 +307,17 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
 
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // approx distance - for reachable checks
-    float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
-    float rayy = model->vBoundingCenter.y - pCamera3D->vCameraPos.y;
+    float rayx = model->boundingCenter.x - pCamera3D->vCameraPos.x;
+    float rayy = model->boundingCenter.y - pCamera3D->vCameraPos.y;
     int dist = int_get_vector_length(std::abs(static_cast<int>(rayx)), std::abs(static_cast<int>(rayy)), 0);
     *reachable = false;
-    if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
+    if (dist < model->boundingRadius + reachable_depth) *reachable = true;
 
     // to avoid small objects not showing up give a more generous radius
-    float radius{ model->sBoundingRadius };
+    float radius{ model->boundingRadius };
     if (radius < 512.0f) radius = 512.0f;
 
-    return IsSphereInFrustum(model->vBoundingCenter, radius);
+    return IsSphereInFrustum(model->boundingCenter, radius);
 }
 
 bool IsSphereInFrustum(Vec3f center, float radius, Planef *frustum) {
@@ -370,7 +370,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
             continue;
         }
 
-        for (ODMFace &face : model.pFaces) {
+        for (ODMFace &face : model.faces) {
             face.attributes &= ~FACE_OUTLINED;
 
             if (isFacePartOfSelection(&face, nullptr, filter)) {
@@ -911,7 +911,7 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
         bool reachable;
         if (IsBModelVisible(&model, pick_depth, &reachable)) {
             if (reachable) {
-                for (ODMFace &face : model.pFaces) {
+                for (ODMFace &face : model.faces) {
                     if (isFacePartOfSelection(&face, nullptr, filter)) {
                         BLVFace blv_face;
                         blv_face.FromODM(&face);

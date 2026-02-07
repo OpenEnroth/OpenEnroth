@@ -84,21 +84,13 @@ class BSPModel {
  public:
     int index = 0;
     int32_t field_40 = 0; // visibility flag TODO(pskelton): use for map tooltip checking or remove
-    int32_t sCenterX = 0;
-    int32_t sCenterY = 0;
-    Vec3f vPosition {};
-    BBoxi pBoundingBox = {0, 0, 0, 0, 0, 0};
-    int32_t sSomeOtherMinX = 0;
-    int32_t sSomeOtherMinY = 0;
-    int32_t sSomeOtherMinZ = 0;
-    int32_t sSomeOtherMaxX = 0;
-    int32_t sSomeOtherMaxY = 0;
-    int32_t sSomeOtherMaxZ = 0;
-    Vec3f vBoundingCenter {};
-    float sBoundingRadius = 0;
+    Vec3f position {};
+    BBoxi boundingBox = {0, 0, 0, 0, 0, 0};
+    Vec3f boundingCenter {};
+    float boundingRadius = 0;
 
-    std::vector<Vec3f> pVertices;
-    std::vector<ODMFace> pFaces;
-    std::vector<uint16_t> pFacesOrdering;
-    std::vector<BSPNode> pNodes;
+    std::vector<Vec3f> vertices;
+    std::vector<ODMFace> faces;
+    std::vector<uint16_t> facesOrdering;
+    std::vector<BSPNode> nodes;
 };

@@ -862,6 +862,7 @@ struct BLVSector_MM7 {
     uint16_t numNonBspFaces;
     Pointer_MM7 faceIds;
     uint16_t numCylinderFaces; // Always 0 in MM7, not used by the engine.
+                               // TODO(captainurist): I feel this was supposed to be named numConvexFaces?
     int16_t _pad5;
     Pointer_MM7 cylinderFaces;
     uint16_t numCogs; // Always 0 in MM7, not used by the engine.
@@ -1161,7 +1162,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
 
 
 struct ObjectDesc_MM6 {
-    std::array<char, 32> name;
+    std::array<char, 32> nameUnused;
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
@@ -1201,41 +1202,41 @@ void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst);
 
 
 struct BSPModelData_MM7 {
-    std::array<char, 32> pModelName; // Seems to be a unique (?) internal model name, e.g. "FireGuild_E", maybe a
-                                     // remnant of the mapping software that was used by NWC. Not used by the engine.
-    std::array<char, 32> pModelName2; // Sometimes different from the first model name, mainly for boats and chests.
-                                      // Why? No idea.
+    std::array<char, 32> modelName; // Seems to be a unique (?) internal model name, e.g. "FireGuild_E", maybe a
+                                    // remnant of the mapping software that was used by NWC. Not used by the engine.
+    std::array<char, 32> modelName2; // Sometimes different from the first model name, mainly for boats and chests.
+                                     // Why? No idea.
     int32_t field_40;
-    uint32_t uNumVertices;
-    Pointer_MM7 ppVertices;
-    uint32_t uNumFaces;
-    uint32_t uNumConvexFaces;
-    Pointer_MM7 ppFaces;
-    Pointer_MM7 ppFacesOrdering;
-    uint32_t uNumNodes;
-    Pointer_MM7 ppNodes;
-    uint32_t uNumDecorations;
-    int32_t sCenterX;
-    int32_t sCenterY;
-    Vec3i vPosition;
-    int32_t sMinX;
-    int32_t sMinY;
-    int32_t sMinZ;
-    int32_t sMaxX;
-    int32_t sMaxY;
-    int32_t sMaxZ;
-    int32_t sSomeOtherMinX;
-    int32_t sSomeOtherMinY;
-    int32_t sSomeOtherMinZ;
-    int32_t sSomeOtherMaxX;
-    int32_t sSomeOtherMaxY;
-    int32_t sSomeOtherMaxZ;
-    Vec3i vBoundingCenter;
-    int32_t sBoundingRadius;
+    uint32_t numVertices;
+    Pointer_MM7 vertices;
+    uint32_t numFaces;
+    uint32_t numConvexFaces;
+    Pointer_MM7 faces;
+    Pointer_MM7 facesOrdering;
+    uint32_t numNodes;
+    Pointer_MM7 nodes;
+    uint32_t numDecorations;
+    int32_t centerX; // Always 0 in MM7 data. Unused in OpenEnroth.
+    int32_t centerY; // Always 0 in MM7 data. Unused in OpenEnroth.
+    Vec3i position;
+    int32_t minX;
+    int32_t minY;
+    int32_t minZ;
+    int32_t maxX;
+    int32_t maxY;
+    int32_t maxZ;
+    int32_t otherMinX; // These are not used in OpenEnroth.
+    int32_t otherMinY;
+    int32_t otherMinZ;
+    int32_t otherMaxX;
+    int32_t otherMaxY;
+    int32_t otherMaxZ;
+    Vec3i boundingCenter;
+    int32_t boundingRadius;
 };
 static_assert(sizeof(BSPModelData_MM7) == 188);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BSPModelData_MM7)
-// Note: serialization code is in CompositeImages.h
+// Note: serialization code is in CompositeSnapshots.h
 
 struct LocationTime_MM7 {
     int64_t last_visit;

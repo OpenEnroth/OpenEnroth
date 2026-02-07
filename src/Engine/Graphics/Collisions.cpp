@@ -162,7 +162,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         if (model_idx == MODEL_INDOOR) {
             vertPos = pIndoor->vertices[face->pVertexIDs[i]];
         } else {
-            vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
+            vertPos = pOutdoor->pBModels[model_idx].vertices[face->pVertexIDs[i]];
         }
 
         b = 2.0f * (dot(dir, pos - vertPos));
@@ -183,8 +183,8 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
             vert1 = pIndoor->vertices[face->pVertexIDs[i]];
             vert2 = pIndoor->vertices[face->pVertexIDs[i2]];
         } else {
-            vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
-            vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]];
+            vert1 = pOutdoor->pBModels[model_idx].vertices[face->pVertexIDs[i]];
+            vert2 = pOutdoor->pBModels[model_idx].vertices[face->pVertexIDs[i2]];
         }
 
         // collide with line between the two verts
@@ -451,10 +451,10 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 
 void CollideOutdoorWithModels(bool ignore_ethereal) {
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (!collision_state.bbox.intersects(model.pBoundingBox))
+        if (!collision_state.bbox.intersects(model.boundingBox))
             continue;
 
-        for (ODMFace &mface : model.pFaces) {
+        for (ODMFace &mface : model.faces) {
             if (!collision_state.bbox.intersects(mface.boundingBox))
                 continue;
 
@@ -1194,7 +1194,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
             if (pODMFace->polygonType == POLYGON_Floor) {
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
-                float newZ = pOutdoor->pBModels[collision_state.pid.id() >> 6].pVertices[pODMFace->vertexIds[0]].z;
+                float newZ = pOutdoor->pBModels[collision_state.pid.id() >> 6].vertices[pODMFace->vertexIds[0]].z;
                 if (pParty->velocity.z > 0.0f && (newZ - pParty->pos.z) < 128)
                     pParty->pos.z = newZ;
             }

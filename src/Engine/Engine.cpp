@@ -915,7 +915,7 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
 void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
                                     std::string_view filename) {
     for (BSPModel &model : pOutdoor->pBModels) {
-        for (ODMFace &face : model.pFaces) {
+        for (ODMFace &face : model.faces) {
             if (face.cogNumber == uFaceCog) {
                 face.SetTexture(filename);
             }
@@ -955,7 +955,7 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
             }
         } else {
             for (BSPModel &model : pOutdoor->pBModels) {
-                for (ODMFace &face : model.pFaces) {
+                for (ODMFace &face : model.faces) {
                     if (face.cogNumber == sCogNumber) {
                         if (on) {
                             face.attributes |= bit;

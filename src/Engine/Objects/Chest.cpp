@@ -380,7 +380,7 @@ void UpdateChestPositions() {
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         for (const BSPModel &model : pOutdoor->pBModels)
-            for (const ODMFace &face : model.pFaces)
+            for (const ODMFace &face : model.faces)
                 if (face.eventId)
                     processEvent(face.eventId, face.boundingBox.center());
     } else {

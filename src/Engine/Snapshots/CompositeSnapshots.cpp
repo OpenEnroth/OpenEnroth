@@ -353,36 +353,28 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
 
     // dst->index is set externally.
     dst->field_40 = srcData.field_40;
-    dst->sCenterX = srcData.sCenterX;
-    dst->sCenterY = srcData.sCenterY;
-    dst->vPosition = srcData.vPosition.toFloat();
-    dst->pBoundingBox.x1 = srcData.sMinX;
-    dst->pBoundingBox.y1 = srcData.sMinY;
-    dst->pBoundingBox.z1 = srcData.sMinZ;
-    dst->pBoundingBox.x2 = srcData.sMaxX;
-    dst->pBoundingBox.y2 = srcData.sMaxY;
-    dst->pBoundingBox.z2 = srcData.sMaxZ;
-    dst->sSomeOtherMinX = srcData.sSomeOtherMinX;
-    dst->sSomeOtherMinY = srcData.sSomeOtherMinY;
-    dst->sSomeOtherMinZ = srcData.sSomeOtherMinZ;
-    dst->sSomeOtherMaxX = srcData.sSomeOtherMaxX;
-    dst->sSomeOtherMaxY = srcData.sSomeOtherMaxY;
-    dst->sSomeOtherMaxZ = srcData.sSomeOtherMaxZ;
-    dst->vBoundingCenter = srcData.vBoundingCenter.toFloat();
-    dst->sBoundingRadius = srcData.sBoundingRadius;
+    dst->position = srcData.position.toFloat();
+    dst->boundingBox.x1 = srcData.minX;
+    dst->boundingBox.y1 = srcData.minY;
+    dst->boundingBox.z1 = srcData.minZ;
+    dst->boundingBox.x2 = srcData.maxX;
+    dst->boundingBox.y2 = srcData.maxY;
+    dst->boundingBox.z2 = srcData.maxZ;
+    dst->boundingCenter = srcData.boundingCenter.toFloat();
+    dst->boundingRadius = srcData.boundingRadius;
 
-    reconstruct(srcExtras.vertices, &dst->pVertices);
-    reconstruct(srcExtras.faces, &dst->pFaces);
+    reconstruct(srcExtras.vertices, &dst->vertices);
+    reconstruct(srcExtras.faces, &dst->faces);
 
     // TODO(pskelton): This code is common to ODM/BLV faces
     // Face plane normals have come from fixed point values - recalculate them.
-    for (auto& face : dst->pFaces) {
+    for (auto& face : dst->faces) {
         if (face.numVertices < 3) continue;
-        Vec3f dir1 = (dst->pVertices[face.vertexIds[1]] - dst->pVertices[face.vertexIds[0]]);
+        Vec3f dir1 = (dst->vertices[face.vertexIds[1]] - dst->vertices[face.vertexIds[0]]);
         Vec3f dir2, norm;
         int i = 2;
         for (; i < face.numVertices; i++) {
-            dir2 = (dst->pVertices[face.vertexIds[i]] - dst->pVertices[face.vertexIds[0]]);
+            dir2 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[0]]);
             if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
                 break; // Found a non-parallel edge.
             }
@@ -395,27 +387,27 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
         } else {
             face.facePlane.normal = norm / norm.length();
         }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.vertexIds[0]]);
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.vertexIds[0]]);
         face.zCalc.init(face.facePlane);
     }
 
-    for (size_t i = 0; i < dst->pFaces.size(); i++)
-        dst->pFaces[i].index = i;
+    for (size_t i = 0; i < dst->faces.size(); i++)
+        dst->faces[i].index = i;
 
-    dst->pFacesOrdering = srcExtras.faceOrdering;
+    dst->facesOrdering = srcExtras.faceOrdering;
 
-    reconstruct(srcExtras.bspNodes, &dst->pNodes);
+    reconstruct(srcExtras.bspNodes, &dst->nodes);
 
     std::string textureName;
-    for (size_t i = 0; i < dst->pFaces.size(); ++i) {
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
         reconstruct(srcExtras.faceTextures[i], &textureName);
-        dst->pFaces[i].SetTexture(textureName);
+        dst->faces[i].SetTexture(textureName);
 
-        if (dst->pFaces[i].eventId) {
-            if (dst->pFaces[i].HasEventHint())
-                dst->pFaces[i].attributes |= FACE_HAS_EVENT;
+        if (dst->faces[i].eventId) {
+            if (dst->faces[i].HasEventHint())
+                dst->faces[i].attributes |= FACE_HAS_EVENT;
             else
-                dst->pFaces[i].attributes &= ~FACE_HAS_EVENT;
+                dst->faces[i].attributes &= ~FACE_HAS_EVENT;
         }
     }
 }
@@ -475,8 +467,8 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
         reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model);
 
         // Recalculate bounding spheres, the ones stored in data files are borked.
-        model.vBoundingCenter = model.pBoundingBox.center().toFloat();
-        model.sBoundingRadius = model.pBoundingBox.size().toFloat().length() / 2.0f;
+        model.boundingCenter = model.boundingBox.center().toFloat();
+        model.boundingRadius = model.boundingBox.size().toFloat().length() / 2.0f;
     }
 
     reconstruct(src.decorations, &pLevelDecorations);
@@ -511,11 +503,11 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     dst->modelExtras.clear();
     for (const BSPModelData_MM7 &model : dst->models) {
         BSPModelExtras_MM7 &extra = dst->modelExtras.emplace_back();
-        deserialize(src, &extra.vertices, tags::presized(model.uNumVertices));
-        deserialize(src, &extra.faces, tags::presized(model.uNumFaces));
-        deserialize(src, &extra.faceOrdering, tags::presized(model.uNumFaces));
-        deserialize(src, &extra.bspNodes, tags::presized(model.uNumNodes));
-        deserialize(src, &extra.faceTextures, tags::presized(model.uNumFaces));
+        deserialize(src, &extra.vertices, tags::presized(model.numVertices));
+        deserialize(src, &extra.faces, tags::presized(model.numFaces));
+        deserialize(src, &extra.faceOrdering, tags::presized(model.numFaces));
+        deserialize(src, &extra.bspNodes, tags::presized(model.numNodes));
+        deserialize(src, &extra.faceTextures, tags::presized(model.numFaces));
     }
 
     deserialize(src, &dst->decorations);
@@ -529,7 +521,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     snapshot(src.ddm, &dst->header.info);
     dst->header.totalFacesCount = 0;
     for (const BSPModel &model : src.pBModels)
-        dst->header.totalFacesCount += model.pFaces.size();
+        dst->header.totalFacesCount += model.faces.size();
     dst->header.bmodelCount = src.pBModels.size();
     dst->header.decorationCount = pLevelDecorations.size();
 
@@ -539,7 +531,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - no all attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
-        for (const ODMFace &face : model.pFaces)
+        for (const ODMFace &face : model.faces)
             dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~FACE_HAS_EVENT));
 
     dst->decorationFlags.clear();
@@ -561,7 +553,7 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
-        for (ODMFace &face : model.pFaces) {
+        for (ODMFace &face : model.faces) {
             face.attributes &= FACE_HAS_EVENT; // TODO(captainurist): skip FACE_TEXTURE_FRAME here too?
             face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~FACE_HAS_EVENT;
         }
@@ -600,7 +592,7 @@ void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst) {
 void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx) {
     size_t totalFaces = 0;
     for (const BSPModelData_MM7 &model : ctx->models)
-        totalFaces += model.uNumFaces;
+        totalFaces += model.numFaces;
 
     deserialize(src, &dst->header);
     deserialize(src, &dst->fullyRevealedCells);

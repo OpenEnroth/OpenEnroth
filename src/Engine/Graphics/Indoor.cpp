@@ -549,7 +549,7 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
         });
     } else {
         do_flatten([&](int index) -> const auto &{
-            return pOutdoor->pBModels[model_idx].pVertices[this->pVertexIDs[index]];
+            return pOutdoor->pBModels[model_idx].vertices[this->pVertexIDs[index]];
         });
     }
 }
@@ -1359,8 +1359,8 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
     BBoxf bbox = BBoxf::forPoints(from, target);
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
-            for (ODMFace &face : model.pFaces) {
+        if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.position.x, model.position.y) <= model.boundingRadius + 128) {
+            for (ODMFace &face : model.faces) {
                 if (face.Ethereal()) continue;
 
                 float dirDotNormal = dot(dir, face.facePlane.normal);
@@ -1464,14 +1464,14 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     return 1;
                 }
 
-                ODMFace &model = pOutdoor->pBModels[bmodel_id].pFaces[face_id];
+                ODMFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
 
                 if (model.attributes & FACE_HAS_EVENT || model.eventId == 0) {
                     return 1;
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor(pOutdoor->pBModels[bmodel_id].pFaces[face_id].eventId, pid, 1);
+                    eventProcessor(pOutdoor->pBModels[bmodel_id].faces[face_id].eventId, pid, 1);
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
@@ -1837,10 +1837,10 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {
-                dist_y = std::abs(enc_spawn_point.vPosition.y - model.vBoundingCenter.y);
-                dist_x = std::abs(enc_spawn_point.vPosition.x - model.vBoundingCenter.x);
+                dist_y = std::abs(enc_spawn_point.vPosition.y - model.boundingCenter.y);
+                dist_x = std::abs(enc_spawn_point.vPosition.x - model.boundingCenter.x);
                 if (int_get_vector_length(dist_x, dist_y, 0) <
-                    model.sBoundingRadius + 256) {
+                    model.boundingRadius + 256) {
                     not_in_model = 1;
                     break;
                 }
