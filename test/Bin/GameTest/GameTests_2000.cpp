@@ -1,19 +1,30 @@
+#include <string>
 #include <tuple>
 #include <vector>
 
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/Engine.h"
+#include "Engine/MapEnumFunctions.h"
 #include "Engine/MapEnums.h"
+#include "Engine/MapInfo.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Resources/LOD.h"
+#include "Engine/Snapshots/CompositeSnapshots.h"
+
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIChest.h"
+
+#include "Library/LodFormats/LodFormats.h"
+
 #include "Io/Mouse.h"
+
+#include "Utility/Segment.h"
 
 void prepareForBattleTest() {
     assert(engine->_currentLoadedMapId == MAP_EMERALD_ISLAND);
@@ -800,4 +811,38 @@ GAME_TEST(Issues, Issue2318) {
     EXPECT_TRUE(messagesTape.back().empty()); // No error messages.
     game.tick(1);
     EXPECT_TRUE(messagesTape.back().empty()); // Still no error messages.
+}
+
+GAME_TEST(Prs, Pr2354) {
+    // Verify that all levels (indoor & outdoor) and their default deltas can be deserialized and reconstructed.
+    for (MapId mapId : Segment(MAP_FIRST, MAP_LAST)) {
+        std::string_view fileName = pMapStats->pInfos[mapId].fileName;
+        std::string_view baseName = fileName.substr(0, fileName.size() - 4);
+
+        if (isMapIndoor(mapId)) {
+            // Deserialize and reconstruct the base indoor location (.blv).
+            IndoorLocation_MM7 rawLocation;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(fileName)), &rawLocation);
+            IndoorLocation location;
+            reconstruct(rawLocation, &location);
+
+            // Deserialize and reconstruct the default delta (.dlv).
+            std::string dlvFilename = fmt::format("{}.dlv", baseName);
+            IndoorDelta_MM7 rawDelta;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlvFilename)), &rawDelta, tags::context(rawLocation));
+            reconstruct(rawDelta, &location);
+        } else if (isMapOutdoor(mapId)) {
+            // Deserialize and reconstruct the base outdoor location (.odm).
+            OutdoorLocation_MM7 rawLocation;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(fileName)), &rawLocation);
+            OutdoorLocation location;
+            reconstruct(rawLocation, &location);
+
+            // Deserialize and reconstruct the default delta (.ddm).
+            std::string ddmFilename = fmt::format("{}.ddm", baseName);
+            OutdoorDelta_MM7 rawDelta;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddmFilename)), &rawDelta, tags::context(rawLocation));
+            reconstruct(rawDelta, &location);
+        }
+    }
 }
