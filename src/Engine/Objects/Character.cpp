@@ -5860,9 +5860,9 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
             AIState actorState = actorPtr->aiState;
             if (actorState != Dying && actorState != Dead) {
                 int reflectedDamage = actorPtr->CalcMagicalDamageToActor(damageType, dmgToReceive);
-                actorPtr->currentHP -= reflectedDamage;
+                actorPtr->hp -= reflectedDamage;
                 if (reflectedDamage >= 0) {
-                    if (actorPtr->currentHP >= 1) {
+                    if (actorPtr->hp >= 1) {
                         Actor::AI_Stun(uActorID, Pid(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
                                     // once Actor::functions are changed to
                                     // nonstatic actor functions
@@ -6027,10 +6027,10 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                 AIState actorState = actorPtr->aiState;
                 if (actorState != Dying && actorState != Dead) {
                     recvdMagicDmg = actorPtr->CalcMagicalDamageToActor(damageType, reflectedDmg);
-                    actorPtr->currentHP -= recvdMagicDmg;
+                    actorPtr->hp -= recvdMagicDmg;
 
                     if (recvdMagicDmg >= 0) {
-                        if (actorPtr->currentHP >= 1) {
+                        if (actorPtr->hp >= 1) {
                             Actor::AI_Stun(uActorID, Pid(OBJECT_Character, targetchar), 0);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {

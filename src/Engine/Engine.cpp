@@ -1149,7 +1149,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
             continue;
         }
 
-        if (!pBuff->isGMBuff) {
+        if (!pBuff->isGM) {
             if (!pParty->pCharacters[pBuff->caster - 1].CanAct()) {
                 pBuff->Reset();
                 if (buffIdx == PARTY_BUFF_FLY) {
@@ -1270,7 +1270,7 @@ void RegeneratePartyHealthMana() {
 
     // Mana drain from flying
     // GM does not drain
-    if (!engine->config->debug.AllMagic.value() && pParty->FlyActive() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff) {
+    if (!engine->config->debug.AllMagic.value() && pParty->FlyActive() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM) {
         if (pParty->bFlying) {
             int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1;
             pParty->pCharacters[caster].mana = std::max(0, pParty->pCharacters[caster].mana - ticks5);
@@ -1279,7 +1279,7 @@ void RegeneratePartyHealthMana() {
 
     // Mana drain from water walk
     // GM does not drain
-    if (!engine->config->debug.AllMagic.value() && pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff) {
+    if (!engine->config->debug.AllMagic.value() && pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM) {
         if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
             int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1;
 

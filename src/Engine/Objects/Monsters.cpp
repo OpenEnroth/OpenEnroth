@@ -974,7 +974,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
 //----- (0044FA08) --------------------------------------------------------
 MonsterId MonsterList::GetMonsterIDByName(std::string_view pMonsterName) {
     for (MonsterId i : monsters.indices()) {
-        if (ascii::noCaseEquals(monsters[i].monsterName, pMonsterName))
+        if (ascii::noCaseEquals(monsters[i].internalMonsterName, pMonsterName))
             return i;
     }
     logger->error("Monster not found: {}", pMonsterName);

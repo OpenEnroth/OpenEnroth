@@ -1060,7 +1060,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
             pActors[i].monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
             if (pActors[i].monsterInfo.field_3E != 11 &&
                 pActors[i].monsterInfo.field_3E != 19 &&
-                (!pActors[i].currentHP || !pActors[i].monsterInfo.hp)) {
+                (!pActors[i].hp || !pActors[i].monsterInfo.hp)) {
                 pActors[i].monsterInfo.field_3E = 5;
                 pActors[i].UpdateAnimation();
             }

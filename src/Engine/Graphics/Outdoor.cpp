@@ -651,7 +651,7 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                     pActors[i].aiState = AIState::Disabled;
                 if (pActors[i].aiState != AIState::Removed &&
                     pActors[i].aiState != AIState::Disabled &&
-                    (pActors[i].currentHP == 0 ||
+                    (pActors[i].hp == 0 ||
                      pActors[i].monsterInfo.hp == 0))
                     pActors[i].aiState = AIState::Dead;
                 pActors[i].velocity.x = 0;
@@ -675,7 +675,7 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                 pActors[i].aiState = AIState::Disabled;
             if (pActors[i].aiState != AIState::Removed &&
                 pActors[i].aiState != AIState::Disabled &&
-                (pActors[i].currentHP == 0 ||
+                (pActors[i].hp == 0 ||
                  pActors[i].monsterInfo.hp == 0))
                 pActors[i].aiState = AIState::Dead;
             pActors[i].velocity.x = 0;
@@ -950,8 +950,8 @@ void ODM_ProcessPartyActions() {
     pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
     if (pParty->WaterWalkActive()) {
         waterWalkActive = true;
-        engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
-        if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff &&
+        engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] |= 1;
+        if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM &&
             pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1].mana <= 0)
             waterWalkActive = false;
     }
@@ -1035,7 +1035,7 @@ void ODM_ProcessPartyActions() {
 
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
-                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
+                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM ||
                     (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                     if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value() || partyNotTouchingFloor) {
                         pParty->bFlying = true;
@@ -1250,7 +1250,7 @@ void ODM_ProcessPartyActions() {
         if (pParty->FlyActive() || engine->IsUnderwater()) {
             pParty->bFlying = false;
             if (engine->IsUnderwater() ||
-                pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
+                pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM ||
                 (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                 partyOldFlightZ = pParty->pos.z;
                 partyInputSpeed.z = -pParty->walkSpeed * 4;
@@ -1279,7 +1279,7 @@ void ODM_ProcessPartyActions() {
         }
 
         if (pParty->FlyActive())
-            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] &= 0xFE;
+            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayId + 119] &= 0xFE;
         pParty->uFallStartZ = partyNewPos.z;
     } else if (partyNewPos.z < currentGroundLevel) {
         partyNewPos.z = currentGroundLevel;
@@ -1287,11 +1287,11 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewPos.z;
         if (pParty->FlyActive())
-            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] |= 1;
+            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayId + 119] |= 1;
     } else {
         partyOldFlightZ = partyNewPos.z;
         if (pParty->FlyActive())
-            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] |= 1;
+            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayId + 119] |= 1;
     }
     //------------------------------------------
 
@@ -1405,11 +1405,11 @@ void ODM_ProcessPartyActions() {
         if (waterMoveY || waterMoveX) {
             if (waterWalkActive) {
                 pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
-                engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
+                engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] |= 1;
                 if (!partyNewXOnLand || !partyNewYOnLand) {
                     if (!pParty->bFlying) {
                         pParty->uFlags |= PARTY_FLAG_STANDING_ON_WATER;
-                        engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] &= 0xFFFE;
+                        engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] &= 0xFFFE;
                     }
                 }
             }

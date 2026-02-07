@@ -208,10 +208,12 @@ class Actor {
     bool DoesDmgTypeDoDamage(DamageType uType);
 
     int id = -1; // Actor index in pActors array.
-    std::string name;
+    std::string name; // Actor name as displayed in-game.
+                      // TODO(captainurist): This should actually be dropped, we should use GetDisplayName(Actor *actor)
+                      //                     everywhere instead.
     int16_t npcId = 0;
     ActorAttributes attributes = 0;
-    int16_t currentHP = 0;
+    int16_t hp = 0;
     MonsterInfo monsterInfo;
     int16_t word_000084_range_attack = 0;
     MonsterId word_000086_some_monster_id = MONSTER_INVALID;  // base monster class monsterlist id

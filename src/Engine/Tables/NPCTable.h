@@ -38,7 +38,7 @@ struct NPCData {  // 4Ch
     inline bool Hired() { return flags & NPC_HIRED; }
 
     std::string name; // Actual NPC name as displayed in-game.
-    unsigned int portraitId = 0;
+    unsigned int portraitId = 0; // Portrait texture is "npcXXX" in icons.lod.
     NpcFlags flags = 0;
     int fame = 0; // Fame requirement for NPC to talk to the party, unused.
     int rep = 0; // NPC's reputation, is it even used in the game?

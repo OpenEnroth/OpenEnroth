@@ -1173,7 +1173,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pParty->GetPlayingTime() + Duration::fromHours(spell_level),
                             spell_mastery, 0, 0,
                             pCastSpell->casterCharacterIndex + 1);
-                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = (spell_mastery == MASTERY_GRANDMASTER);
+                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM = (spell_mastery == MASTERY_GRANDMASTER);
                     break;
                 }
 
@@ -1339,7 +1339,7 @@ void CastSpellInfoHelpers::castSpell() {
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
                         .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, pCastSpell->casterCharacterIndex + 1);
-                    pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = (spell_mastery == MASTERY_GRANDMASTER);
+                    pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM = (spell_mastery == MASTERY_GRANDMASTER);
                     break;
                 }
 
@@ -2281,9 +2281,9 @@ void CastSpellInfoHelpers::castSpell() {
                             pActors[monster_id].aiState != Dying &&
                             pActors[monster_id].aiState != Disabled &&
                             pActors[monster_id].aiState != Removed) {
-                            pActors[monster_id].currentHP += heal_amount;
-                            if (pActors[monster_id].currentHP > pActors[monster_id].monsterInfo.hp) {
-                                pActors[monster_id].currentHP = pActors[monster_id].monsterInfo.hp;
+                            pActors[monster_id].hp += heal_amount;
+                            if (pActors[monster_id].hp > pActors[monster_id].monsterInfo.hp) {
+                                pActors[monster_id].hp = pActors[monster_id].monsterInfo.hp;
                             }
                         }
                     }
@@ -2660,7 +2660,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
-                    if (pActors[monster_id].currentHP > 0 || pActors[monster_id].aiState != Dead && pActors[monster_id].aiState != Dying) {
+                    if (pActors[monster_id].hp > 0 || pActors[monster_id].aiState != Dead && pActors[monster_id].aiState != Dying) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
@@ -2678,8 +2678,8 @@ void CastSpellInfoHelpers::castSpell() {
                         break;
                     }
                     Actor::resurrect(monster_id);
-                    if (pActors[monster_id].currentHP > zombie_hp_limit) {
-                        pActors[monster_id].currentHP = zombie_hp_limit;
+                    if (pActors[monster_id].hp > zombie_hp_limit) {
+                        pActors[monster_id].hp = zombie_hp_limit;
                     }
                     break;
                 }

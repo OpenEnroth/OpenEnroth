@@ -310,7 +310,7 @@ GAME_TEST(Issues, Issue1226c) {
 
 GAME_TEST(Issues, Issue1251a) {
     // Part A - test that wand damage matches vanilla damage should be in range (d6 per skill) 8-48 for novice 8 fireball wand
-    auto dragonhealth = tapes.custom([] { return pActors[0].currentHP; });
+    auto dragonhealth = tapes.custom([] { return pActors[0].hp; });
     test.playTraceFromTestData("issue_1251a.mm7", "issue_1251a.json");
 
     auto damageRange = dragonhealth.reverse().adjacentDeltas().minMax();
