@@ -80,7 +80,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     objectPos = pOutdoor->face(objectPid).pBoundingBox.center();
                 } else {
-                    objectPos = pIndoor->pFaces[objId].pBounding.center();
+                    objectPos = pIndoor->faces[objId].pBounding.center();
                 }
             }
 
@@ -384,9 +384,9 @@ void UpdateChestPositions() {
                 if (face.sCogTriggeredID)
                     processEvent(face.sCogTriggeredID, face.pBoundingBox.center());
     } else {
-        for (const BLVFace &face : pIndoor->pFaces)
+        for (const BLVFace &face : pIndoor->faces)
             if (face.uFaceExtraID)
-                if (int eventId = pIndoor->pFaceExtras[face.uFaceExtraID].uEventID)
+                if (int eventId = pIndoor->faceExtras[face.uFaceExtraID].uEventID)
                     processEvent(eventId, face.pBounding.center());
     }
 

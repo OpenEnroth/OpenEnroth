@@ -271,7 +271,7 @@ void Engine::DrawGUI() {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int sector_id = pBLVRenderParams->uPartySectorID;
             GUIWindow::DrawText(assets->pFontArrus.get(), { 16, debug_info_offset }, colorTable.White,
-                                     fmt::format("Party Sector ID:       {}/{} ({})\n", sector_id, pIndoor->pSectors.size(), pBLVRenderParams->uPartyEyeSectorID), pPrimaryWindow->frameRect);
+                                     fmt::format("Party Sector ID:       {}/{} ({})\n", sector_id, pIndoor->sectors.size(), pBLVRenderParams->uPartyEyeSectorID), pPrimaryWindow->frameRect);
             debug_info_offset += 16;
         }
 
@@ -903,10 +903,10 @@ int GetGravityStrength() {
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
                                    std::string_view filename) {
-    for (unsigned i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
-        auto extra = &pIndoor->pFaceExtras[i];
+    for (unsigned i = 1; i < pIndoor->faceExtras.size(); ++i) {
+        auto extra = &pIndoor->faceExtras[i];
         if (extra->sCogNumber == uFaceCog) {
-            auto face = &pIndoor->pFaces[extra->face_id];
+            auto face = &pIndoor->faces[extra->face_id];
             face->SetTexture(filename);
         }
     }
@@ -943,13 +943,13 @@ void setTexture(unsigned int uFaceCog, std::string_view pFilename) {
 void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            for (unsigned i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
-                if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber) {
+            for (unsigned i = 1; i < (unsigned int)pIndoor->faceExtras.size(); ++i) {
+                if (pIndoor->faceExtras[i].sCogNumber == sCogNumber) {
                     if (on)
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id]
+                        pIndoor->faces[pIndoor->faceExtras[i].face_id]
                             .uAttributes |= bit;
                     else
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id]
+                        pIndoor->faces[pIndoor->faceExtras[i].face_id]
                             .uAttributes &= ~bit;
                 }
             }

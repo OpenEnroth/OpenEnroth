@@ -919,13 +919,13 @@ void GameUI_WritePointedObjectStatusString() {
                                     .sCogTriggeredID);
                         }
                     } else {
-                        pFace = &pIndoor->pFaces[pickedObjectID];
+                        pFace = &pIndoor->faces[pickedObjectID];
                         if (pFace->uAttributes & FACE_INDICATE) {
                             unsigned short eventId =
-                                pIndoor->pFaceExtras[pFace->uFaceExtraID]
+                                pIndoor->faceExtras[pFace->uFaceExtraID]
                                     .uEventID;
                             if (eventId != 0) {
-                                newString = getEventHintString(pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID);
+                                newString = getEventHintString(pIndoor->faceExtras[pFace->uFaceExtraID].uEventID);
                             }
                         }
                     }
@@ -1410,20 +1410,20 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
         render->FillRect(rect, colorTable.NavyBlue);
         uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();
-        for (unsigned i = 0; i < (unsigned)pIndoor->pMapOutlines.size(); ++i) {
-            BLVMapOutline *pOutline = &pIndoor->pMapOutlines[i];
+        for (unsigned i = 0; i < (unsigned)pIndoor->mapOutlines.size(); ++i) {
+            BLVMapOutline *pOutline = &pIndoor->mapOutlines[i];
 
-            if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
-                pIndoor->pFaces[pOutline->uFace2ID].Visible()) {
-                if (pOutline->uFlags & 1 || pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_SeenByParty ||
-                    pIndoor->pFaces[pOutline->uFace2ID].uAttributes & FACE_SeenByParty) {
+            if (pIndoor->faces[pOutline->uFace1ID].Visible() &&
+                pIndoor->faces[pOutline->uFace2ID].Visible()) {
+                if (pOutline->uFlags & 1 || pIndoor->faces[pOutline->uFace1ID].uAttributes & FACE_SeenByParty ||
+                    pIndoor->faces[pOutline->uFace2ID].uAttributes & FACE_SeenByParty) {
                     pOutline->uFlags = pOutline->uFlags | 1;
                     pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
 
                     // Outdoor map size is 65536 x 65536, so we're normalizing the coords the same way it's done for
                     // outdoor maps.
-                    Vec2f Vert1 = (pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID] - pParty->pos).xy() / 65536.0f;
-                    Vec2f Vert2 = (pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID] - pParty->pos).xy() / 65536.0f;
+                    Vec2f Vert1 = (pIndoor->vertices[pIndoor->mapOutlines[i].uVertex1ID] - pParty->pos).xy() / 65536.0f;
+                    Vec2f Vert2 = (pIndoor->vertices[pIndoor->mapOutlines[i].uVertex2ID] - pParty->pos).xy() / 65536.0f;
 
                     // In-game VS screen-space Y are flipped.
                     Vert1.y = -Vert1.y;
@@ -1433,10 +1433,10 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                     Vec2i lineb = center + (zoom * Vert2).toInt();
 
                     if (bWizardEyeActive && uWizardEyeSkillLevel >= MASTERY_MASTER &&
-                        (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
-                            pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
-                        (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
-                            pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID].uFaceExtraID].uEventID)) {
+                        (pIndoor->faces[pOutline->uFace1ID].Clickable() ||
+                            pIndoor->faces[pOutline->uFace2ID].Clickable()) &&
+                        (pIndoor->faceExtras[pIndoor->faces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
+                            pIndoor->faceExtras[pIndoor->faces[pOutline->uFace2ID].uFaceExtraID].uEventID)) {
                         if (uNumBlueFacesInBLVMinimap < 49) {
                             pBlueFacesInBLVMinimapIDs[uNumBlueFacesInBLVMinimap++] = i;
                             continue;
@@ -1451,11 +1451,11 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
         }
 
         for (unsigned i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
-            BLVMapOutline *pOutline = &pIndoor->pMapOutlines[pBlueFacesInBLVMinimapIDs[i]];
-            int pX = center.x + zoom * (pIndoor->pVertices[pOutline->uVertex1ID].x - pParty->pos.x) / 65536.0f;
-            int pY = center.y - zoom * (pIndoor->pVertices[pOutline->uVertex1ID].y - pParty->pos.y) / 65536.0f;
-            int pZ = center.x + zoom * (pIndoor->pVertices[pOutline->uVertex2ID].x - pParty->pos.x) / 65536.0f;
-            int pW = center.y - zoom * (pIndoor->pVertices[pOutline->uVertex2ID].y - pParty->pos.y) / 65536.0f;
+            BLVMapOutline *pOutline = &pIndoor->mapOutlines[pBlueFacesInBLVMinimapIDs[i]];
+            int pX = center.x + zoom * (pIndoor->vertices[pOutline->uVertex1ID].x - pParty->pos.x) / 65536.0f;
+            int pY = center.y - zoom * (pIndoor->vertices[pOutline->uVertex1ID].y - pParty->pos.y) / 65536.0f;
+            int pZ = center.x + zoom * (pIndoor->vertices[pOutline->uVertex2ID].x - pParty->pos.x) / 65536.0f;
+            int pW = center.y - zoom * (pIndoor->vertices[pOutline->uVertex2ID].y - pParty->pos.y) / 65536.0f;
             render->RasterLine2D(Pointi(pX, pY), Pointi(pZ, pW), ui_game_minimap_outline_color);
         }
     }

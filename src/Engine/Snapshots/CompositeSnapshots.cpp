@@ -35,15 +35,15 @@
 #include "Engine/Graphics/Image.h"
 
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
-    reconstruct(src.vertices, &dst->pVertices);
-    reconstruct(src.faces, &dst->pFaces);
+    reconstruct(src.vertices, &dst->vertices);
+    reconstruct(src.faces, &dst->faces);
 
-    reconstruct(src.faceData, &dst->pLFaces);
+    reconstruct(src.faceData, &dst->faceData);
 
-    for (size_t i = 0, j = 0; i < dst->pFaces.size(); ++i) {
-        BLVFace *pFace = &dst->pFaces[i];
+    for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
+        BLVFace *pFace = &dst->faces[i];
 
-        pFace->pVertexIDs = dst->pLFaces.data() + j;
+        pFace->pVertexIDs = dst->faceData.data() + j;
         j += pFace->uNumVertices + 1;
 
         // Skipping pXInterceptDisplacements.
@@ -55,29 +55,29 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         // Skipping pZInterceptDisplacements.
         j += pFace->uNumVertices + 1;
 
-        pFace->pVertexUIDs = dst->pLFaces.data() + j;
+        pFace->pVertexUs = dst->faceData.data() + j;
         j += pFace->uNumVertices + 1;
 
-        pFace->pVertexVIDs = dst->pLFaces.data() + j;
+        pFace->pVertexVs = dst->faceData.data() + j;
         j += pFace->uNumVertices + 1;
 
-        assert(j <= dst->pLFaces.size());
+        assert(j <= dst->faceData.size());
     }
 
     // Face plane normals have come from fixed point values - recalculate them.
-    for (auto& face : dst->pFaces) {
+    for (auto& face : dst->faces) {
         if (face.uNumVertices < 3) continue;
-        Vec3f dir1 = (dst->pVertices[face.pVertexIDs[1]] - dst->pVertices[face.pVertexIDs[0]]);
+        Vec3f dir1 = (dst->vertices[face.pVertexIDs[1]] - dst->vertices[face.pVertexIDs[0]]);
         int i = 2;
         // dir1 can be a 0 vec when first edge is degenerate - skip forwards
         while (dir1.length() < 1e-6f && i < face.uNumVertices) {
-            dir1 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[i-1]]);
+            dir1 = (dst->vertices[face.pVertexIDs[i]] - dst->vertices[face.pVertexIDs[i-1]]);
             i++;
         }
 
         Vec3f dir2, recalcNorm;
         for (; i < face.uNumVertices; i++) {
-            dir2 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[0]]);
+            dir2 = (dst->vertices[face.pVertexIDs[i]] - dst->vertices[face.pVertexIDs[0]]);
             if (recalcNorm = cross(dir1, dir2); recalcNorm.length() > 1e-6f) {
                 recalcNorm /= recalcNorm.length();
                 // Check that our new normal is pointing in the same direction as the original
@@ -94,33 +94,33 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         } else {
             face.facePlane.normal = recalcNorm;
         }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.pVertexIDs[0]]);
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.pVertexIDs[0]]);
         face.zCalc.init(face.facePlane);
     }
 
-    for (size_t i = 0; i < dst->pFaces.size(); ++i) {
-        BLVFace *pFace = &dst->pFaces[i];
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
+        BLVFace *pFace = &dst->faces[i];
 
         std::string texName;
         reconstruct(src.faceTextures[i], &texName);
         pFace->SetTexture(texName);
     }
 
-    reconstruct(src.faceExtras, &dst->pFaceExtras);
+    reconstruct(src.faceExtras, &dst->faceExtras);
 
     std::string textureName;
-    for (unsigned i = 0; i < dst->pFaceExtras.size(); ++i) {
+    for (unsigned i = 0; i < dst->faceExtras.size(); ++i) {
         reconstruct(src.faceExtraTextures[i], &textureName);
 
         if (textureName.empty())
-            dst->pFaceExtras[i].uAdditionalBitmapID = -1;
+            dst->faceExtras[i].uAdditionalBitmapID = -1;
         else
-            dst->pFaceExtras[i].uAdditionalBitmapID = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
+            dst->faceExtras[i].uAdditionalBitmapID = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
     }
 
-    for (size_t i = 0; i < dst->pFaces.size(); ++i) {
-        BLVFace *pFace = &dst->pFaces[i];
-        BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
+        BLVFace *pFace = &dst->faces[i];
+        BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->uFaceExtraID];
 
         if (pFaceExtra->uEventID) {
             if (pFaceExtra->HasEventHint())
@@ -130,51 +130,51 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    reconstruct(src.sectors, &dst->pSectors);
-    reconstruct(src.sectorData, &dst->ptr_0002B0_sector_rdata);
+    reconstruct(src.sectors, &dst->sectors);
+    reconstruct(src.sectorData, &dst->sectorData);
 
-    for (size_t i = 0, j = 0; i < dst->pSectors.size(); ++i) {
-        BLVSector *pSector = &dst->pSectors[i];
+    for (size_t i = 0, j = 0; i < dst->sectors.size(); ++i) {
+        BLVSector *pSector = &dst->sectors[i];
 
-        pSector->pFloors = dst->ptr_0002B0_sector_rdata.data() + j;
+        pSector->pFloors = dst->sectorData.data() + j;
         j += pSector->uNumFloors;
 
-        pSector->pWalls = dst->ptr_0002B0_sector_rdata.data() + j;
+        pSector->pWalls = dst->sectorData.data() + j;
         j += pSector->uNumWalls;
 
-        pSector->pCeilings = dst->ptr_0002B0_sector_rdata.data() + j;
+        pSector->pCeilings = dst->sectorData.data() + j;
         j += pSector->uNumCeilings;
 
-        pSector->pFluids = dst->ptr_0002B0_sector_rdata.data() + j;
+        pSector->pFluids = dst->sectorData.data() + j;
         j += pSector->uNumFluids;
 
-        pSector->pPortals = dst->ptr_0002B0_sector_rdata.data() + j;
+        pSector->pPortals = dst->sectorData.data() + j;
         j += pSector->uNumPortals;
 
-        pSector->pFaceIDs = dst->ptr_0002B0_sector_rdata.data() + j;
+        pSector->pFaceIDs = dst->sectorData.data() + j;
         j += pSector->uNumFaces;
 
-        pSector->pCogs = dst->ptr_0002B0_sector_rdata.data() + j;
+        pSector->pCogs = dst->sectorData.data() + j;
         j += pSector->uNumCogs;
 
-        pSector->pDecorationIDs = dst->ptr_0002B0_sector_rdata.data() + j;
+        pSector->pDecorationIDs = dst->sectorData.data() + j;
         j += pSector->uNumDecorations;
 
-        pSector->pMarkers = dst->ptr_0002B0_sector_rdata.data() + j;
+        pSector->pMarkers = dst->sectorData.data() + j;
         j += pSector->uNumMarkers;
 
-        assert(j <= dst->ptr_0002B0_sector_rdata.size());
+        assert(j <= dst->sectorData.size());
     }
 
-    reconstruct(src.sectorLightData, &dst->ptr_0002B8_sector_lrdata);
+    reconstruct(src.sectorLightData, &dst->sectorLightData);
 
-    for (unsigned i = 0, j = 0; i < dst->pSectors.size(); ++i) {
-        BLVSector *pSector = &dst->pSectors[i];
+    for (unsigned i = 0, j = 0; i < dst->sectors.size(); ++i) {
+        BLVSector *pSector = &dst->sectors[i];
 
-        pSector->pLights = dst->ptr_0002B8_sector_lrdata.data() + j;
+        pSector->pLights = dst->sectorLightData.data() + j;
         j += pSector->uNumLights;
 
-        assert(j <= dst->ptr_0002B8_sector_lrdata.size());
+        assert(j <= dst->sectorLightData.size());
     }
 
     reconstruct(src.decorations, &pLevelDecorations);
@@ -185,23 +185,23 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(decorationName);
     }
 
-    reconstruct(src.lights, &dst->pLights);
-    reconstruct(src.bspNodes, &dst->pNodes);
+    reconstruct(src.lights, &dst->lights);
+    reconstruct(src.bspNodes, &dst->nodes);
     reconstruct(src.spawnPoints, &dst->pSpawnPoints);
-    reconstruct(src.mapOutlines, &dst->pMapOutlines);
+    reconstruct(src.mapOutlines, &dst->mapOutlines);
 }
 
 void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
     deserialize(src, &dst->header);
     deserialize(src, &dst->vertices);
     deserialize(src, &dst->faces);
-    deserialize(src, &dst->faceData, tags::presized(dst->header.uFaces_fdata_Size / sizeof(uint16_t)));
+    deserialize(src, &dst->faceData, tags::presized(dst->header.faceDataSizeBytes / sizeof(uint16_t)));
     deserialize(src, &dst->faceTextures, tags::presized(dst->faces.size()));
     deserialize(src, &dst->faceExtras);
     deserialize(src, &dst->faceExtraTextures, tags::presized(dst->faceExtras.size()));
     deserialize(src, &dst->sectors);
-    deserialize(src, &dst->sectorData, tags::presized(dst->header.uSector_rdata_Size / sizeof(uint16_t)));
-    deserialize(src, &dst->sectorLightData, tags::presized(dst->header.uSector_lrdata_Size / sizeof(uint16_t)));
+    deserialize(src, &dst->sectorData, tags::presized(dst->header.sectorDataSizeBytes / sizeof(uint16_t)));
+    deserialize(src, &dst->sectorLightData, tags::presized(dst->header.sectorLightDataSizeBytes / sizeof(uint16_t)));
     deserialize(src, &dst->doorCount);
     deserialize(src, &dst->decorations);
     deserialize(src, &dst->decorationNames, tags::presized(dst->decorations.size()));
@@ -213,7 +213,7 @@ void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
 
 void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     snapshot(src.dlv, &dst->header.info);
-    dst->header.totalFacesCount = src.pFaces.size();
+    dst->header.totalFacesCount = src.faces.size();
     dst->header.bmodelCount = 0;
     dst->header.decorationCount = pLevelDecorations.size();
 
@@ -221,7 +221,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
 
     // Symmetric to what's happening in reconstruct - not all of the attributes need to be saved in a delta.
     dst->faceAttributes.clear();
-    for (const BLVFace &pFace : pIndoor->pFaces)
+    for (const BLVFace &pFace : pIndoor->faces)
         dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes & ~(FACE_HAS_EVENT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
@@ -231,8 +231,8 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     snapshot(pActors, &dst->actors);
     snapshot(pSpriteObjects, &dst->spriteObjects);
     snapshot(vChests, &dst->chests);
-    snapshot(src.pDoors, &dst->doors);
-    snapshot(src.ptr_0002B4_doors_ddata, &dst->doorsData);
+    snapshot(src.doors, &dst->doors);
+    snapshot(src.doorsData, &dst->doorsData);
     snapshot(engine->_persistentVariables, &dst->eventVariables);
     snapshot(src.stru1, &dst->locationTime);
 }
@@ -241,15 +241,15 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.header.info, &dst->dlv); // XXX
     reconstruct(src.visibleOutlines, &dst->_visible_outlines);
 
-    for (size_t i = 0; i < dst->pMapOutlines.size(); ++i) {
-        BLVMapOutline *pVertex = &dst->pMapOutlines[i];
+    for (size_t i = 0; i < dst->mapOutlines.size(); ++i) {
+        BLVMapOutline *pVertex = &dst->mapOutlines[i];
         if ((uint8_t)(1 << (7 - i % 8)) & dst->_visible_outlines[i / 8])
             pVertex->uFlags |= 1;
     }
 
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
-    for (BLVFace &face : dst->pFaces) {
+    for (BLVFace &face : dst->faces) {
         face.uAttributes &= FACE_ANIMATED | FACE_HAS_EVENT;
         face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_ANIMATED);
     }
@@ -274,45 +274,45 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0; i < src.chests.size(); ++i)
         reconstruct(src.chests[i], &vChests[i], tags::context<int>(i));
 
-    reconstruct(src.doors, &dst->pDoors);
-    reconstruct(src.doorsData, &dst->ptr_0002B4_doors_ddata);
+    reconstruct(src.doors, &dst->doors);
+    reconstruct(src.doorsData, &dst->doorsData);
 
-    for (unsigned i = 0, j = 0; i < dst->pDoors.size(); ++i) {
-        BLVDoor *pDoor = &dst->pDoors[i];
+    for (unsigned i = 0, j = 0; i < dst->doors.size(); ++i) {
+        BLVDoor *pDoor = &dst->doors[i];
 
-        pDoor->pVertexIDs = dst->ptr_0002B4_doors_ddata.data() + j;
+        pDoor->pVertexIDs = dst->doorsData.data() + j;
         j += pDoor->numVertices;
 
-        pDoor->pFaceIDs = dst->ptr_0002B4_doors_ddata.data() + j;
+        pDoor->pFaceIDs = dst->doorsData.data() + j;
         j += pDoor->numFaces;
 
-        pDoor->pSectorIDs = dst->ptr_0002B4_doors_ddata.data() + j;
+        pDoor->pSectorIDs = dst->doorsData.data() + j;
         j += pDoor->numSectors;
 
-        pDoor->pDeltaUs = dst->ptr_0002B4_doors_ddata.data() + j;
+        pDoor->pDeltaUs = dst->doorsData.data() + j;
         j += pDoor->numFaces;
 
-        pDoor->pDeltaVs = dst->ptr_0002B4_doors_ddata.data() + j;
+        pDoor->pDeltaVs = dst->doorsData.data() + j;
         j += pDoor->numFaces;
 
-        pDoor->pXOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
+        pDoor->pXOffsets = dst->doorsData.data() + j;
         j += pDoor->numOffsets;
 
-        pDoor->pYOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
+        pDoor->pYOffsets = dst->doorsData.data() + j;
         j += pDoor->numOffsets;
 
-        pDoor->pZOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
+        pDoor->pZOffsets = dst->doorsData.data() + j;
         j += pDoor->numOffsets;
 
-        assert(j <= dst->ptr_0002B4_doors_ddata.size());
+        assert(j <= dst->doorsData.size());
     }
 
-    for (size_t i = 0; i < dst->pDoors.size(); ++i) {
-        BLVDoor *pDoor = &dst->pDoors[i];
+    for (size_t i = 0; i < dst->doors.size(); ++i) {
+        BLVDoor *pDoor = &dst->doors[i];
 
         for (unsigned j = 0; j < pDoor->numFaces; ++j) {
-            BLVFace *pFace = &dst->pFaces[pDoor->pFaceIDs[j]];
-            BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
+            BLVFace *pFace = &dst->faces[pDoor->pFaceIDs[j]];
+            BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->uFaceExtraID];
 
             pDoor->pDeltaUs[j] = pFaceExtra->sTextureDeltaU;
             pDoor->pDeltaVs[j] = pFaceExtra->sTextureDeltaV;
@@ -346,7 +346,7 @@ void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocati
     deserialize(src, &dst->spriteObjects);
     deserialize(src, &dst->chests);
     deserialize(src, &dst->doors, tags::presized(ctx->doorCount));
-    deserialize(src, &dst->doorsData, tags::presized(ctx->header.uDoors_ddata_Size / sizeof(int16_t)));
+    deserialize(src, &dst->doorsData, tags::presized(ctx->header.doorsDataSizeBytes / sizeof(int16_t)));
     deserialize(src, &dst->eventVariables);
     deserialize(src, &dst->locationTime);
 }

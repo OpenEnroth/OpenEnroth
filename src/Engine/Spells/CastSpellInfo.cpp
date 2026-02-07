@@ -2211,7 +2211,7 @@ void CastSpellInfoHelpers::castSpell() {
                         int event;
                         OpenedTelekinesis = true;
                         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                            event = pIndoor->pFaceExtras[pIndoor->pFaces[obj_id].uFaceExtraID].uEventID;
+                            event = pIndoor->faceExtras[pIndoor->faces[obj_id].uFaceExtraID].uEventID;
                         } else {
                             event = pOutdoor->face(spell_targeted_at).sCogTriggeredID;
                         }

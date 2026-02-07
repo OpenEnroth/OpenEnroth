@@ -149,7 +149,7 @@ static_assert(sizeof(SpriteFrame_MM6) == 56);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpriteFrame_MM6)
 
 
-struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
+struct SpriteFrame_MM7 : SpriteFrame_MM6 {
     int16_t animationLength;
     int16_t _pad;
 };
@@ -1020,7 +1020,7 @@ struct DecorationDesc_MM6 {
 static_assert(sizeof(DecorationDesc_MM6) == 80);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(DecorationDesc_MM6)
 
-struct DecorationDesc_MM7 : public DecorationDesc_MM6 {
+struct DecorationDesc_MM7 : DecorationDesc_MM6 {
     uint8_t uColoredLightRed;
     uint8_t uColoredLightGreen;
     uint8_t uColoredLightBlue;
@@ -1261,18 +1261,18 @@ void reconstruct(const LocationTime_MM7 &src, LocationTime *dst);
 
 
 struct SoundInfo_MM6 {
-    std::array<char, 32> pSoundName; // File name in audio.snd.
-    uint32_t uSoundID;
-    uint32_t eType;
-    uint32_t uFlags;
-    std::array<uint32_t, 17> pSoundDataID;
+    std::array<char, 32> name; // File name in audio.snd.
+    uint32_t soundId;
+    uint32_t type;
+    uint32_t flags;
+    std::array<uint32_t, 17> soundData; // Always 0 in MM7 data.
 };
 static_assert(sizeof(SoundInfo_MM6) == 112);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM6)
 
-struct SoundInfo_MM7 : public SoundInfo_MM6 {
-    uint32_t p3DSoundID;
-    uint32_t bDecompressed;
+struct SoundInfo_MM7 : SoundInfo_MM6 {
+    uint32_t sound3dId; // Always 0 in MM7 data.
+    uint32_t decompressed; // Always 0 in MM7 data.
 };
 static_assert(sizeof(SoundInfo_MM7) == 120);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM7)
@@ -1322,10 +1322,10 @@ void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst);
 
 struct BLVHeader_MM7 {
     std::array<char, 104> field_0;
-    int32_t uFaces_fdata_Size;
-    int32_t uSector_rdata_Size;
-    int32_t uSector_lrdata_Size;
-    int32_t uDoors_ddata_Size;
+    int32_t faceDataSizeBytes;
+    int32_t sectorDataSizeBytes;
+    int32_t sectorLightDataSizeBytes;
+    int32_t doorsDataSizeBytes;
     std::array<char, 16> field_78;
 };
 static_assert(sizeof(BLVHeader_MM7) == 136);

@@ -899,7 +899,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out1 = pIndoor->pFaces[id1].pBounding.center();
+                out1 = pIndoor->faces[id1].pBounding.center();
             }
             break;
         }
@@ -931,7 +931,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out2 = pIndoor->pFaces[id2].pBounding.center();
+                out2 = pIndoor->faces[id2].pBounding.center();
             }
             break;
         }
@@ -4077,9 +4077,9 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     Vec3f *portalverts;
 
     // loop through portals
-    for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {
-        portalface = &pIndoor->pFaces[pIndoor->pSectors[current_sector].pPortals[current_portal]];
-        portalverts = &pIndoor->pVertices[*portalface->pVertexIDs];
+    for (int current_portal = 0; current_portal < pIndoor->sectors[current_sector].uNumPortals; current_portal++) {
+        portalface = &pIndoor->faces[pIndoor->sectors[current_sector].pPortals[current_portal]];
+        portalverts = &pIndoor->vertices[*portalface->pVertexIDs];
 
         // ray ob1 to portal dot normal
         float obj1portaldot = dot(portalface->facePlane.normal, *portalverts - pos1);
@@ -4142,7 +4142,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 
             // did we hit limit for portals?
             // does the next room have portals?
-            if (sectors_visited < 30 && pIndoor->pSectors[current_sector].uNumPortals > 0) {
+            if (sectors_visited < 30 && pIndoor->sectors[current_sector].uNumPortals > 0) {
                 current_portal = -1;
                 continue;
             } else {

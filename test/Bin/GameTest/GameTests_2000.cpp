@@ -653,7 +653,7 @@ GAME_TEST(Issues, Issue2233) {
     EXPECT_GT(posTape.back().y, 7400);
     EXPECT_GT(posTape.back().x, -9200);
     // and spot check a known problem face
-    EXPECT_GT(dot(pIndoor->pFaces[6301].facePlane.normal, Vec3f(0.659, -0.742, 0.123)), 0.99f);
+    EXPECT_GT(dot(pIndoor->faces[6301].facePlane.normal, Vec3f(0.659, -0.742, 0.123)), 0.99f);
 }
 
 GAME_TEST(Issues, Issue2244) {

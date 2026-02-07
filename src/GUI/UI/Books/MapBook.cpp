@@ -218,20 +218,20 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         minimaptemp = GraphicsImage::Create(std::move(minimapImage));
         render->DrawQuad2D(minimaptemp, {tl_x, tl_y});
     } else {  // indoors
-        if (!pIndoor->pMapOutlines.empty()) {
+        if (!pIndoor->mapOutlines.empty()) {
             render->BeginLines2D();
-            for (unsigned i = 0; i < pIndoor->pMapOutlines.size(); ++i) {
-                BLVMapOutline *pOutline = &pIndoor->pMapOutlines[i];
+            for (unsigned i = 0; i < pIndoor->mapOutlines.size(); ++i) {
+                BLVMapOutline *pOutline = &pIndoor->mapOutlines[i];
 
-                if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
-                    pIndoor->pFaces[pOutline->uFace2ID].Visible()) {
-                    if (pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_SeenByParty ||
-                        pIndoor->pFaces[pOutline->uFace2ID].uAttributes & FACE_SeenByParty) {
+                if (pIndoor->faces[pOutline->uFace1ID].Visible() &&
+                    pIndoor->faces[pOutline->uFace2ID].Visible()) {
+                    if (pIndoor->faces[pOutline->uFace1ID].uAttributes & FACE_SeenByParty ||
+                        pIndoor->faces[pOutline->uFace2ID].uAttributes & FACE_SeenByParty) {
                         pOutline->uFlags = pOutline->uFlags | 1;
                         pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
 
-                        Vec2f Vert1 = (pIndoor->pVertices[pOutline->uVertex1ID].xy() - center) / 65536.0f;
-                        Vec2f Vert2 = (pIndoor->pVertices[pOutline->uVertex2ID].xy() - center) / 65536.0f;
+                        Vec2f Vert1 = (pIndoor->vertices[pOutline->uVertex1ID].xy() - center) / 65536.0f;
+                        Vec2f Vert2 = (pIndoor->vertices[pOutline->uVertex2ID].xy() - center) / 65536.0f;
 
                         Vert1.y = -Vert1.y;
                         Vert2.y = -Vert2.y;

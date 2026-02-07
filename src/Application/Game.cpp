@@ -805,9 +805,9 @@ void Game::processQueuedMessages() {
                         ODMFace *pODMFace = &pOutdoor->pBModels[id >> 6].pFaces[id & 0x3F];
                         interactionPossible = (pODMFace->Clickable() && pODMFace->sCogTriggeredID);
                     } else { // Indoor
-                        BLVFace *pBLVFace = &pIndoor->pFaces[id];
+                        BLVFace *pBLVFace = &pIndoor->faces[id];
                         if (pBLVFace->Clickable()) {
-                            interactionPossible = pIndoor->pFaceExtras[pBLVFace->uFaceExtraID].uEventID != 0;
+                            interactionPossible = pIndoor->faceExtras[pBLVFace->uFaceExtraID].uEventID != 0;
                         }
                     }
                 }

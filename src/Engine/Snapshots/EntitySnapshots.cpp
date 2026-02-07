@@ -277,8 +277,8 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->zCalc.init(dst->facePlane);
     dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
     dst->pVertexIDs = nullptr;
-    dst->pVertexUIDs = nullptr;
-    dst->pVertexVIDs = nullptr;
+    dst->pVertexUs = nullptr;
+    dst->pVertexVs = nullptr;
     dst->uFaceExtraID = src.faceExtraId;
     dst->texture = nullptr;
     dst->animationId = 0;
@@ -1877,10 +1877,10 @@ void reconstruct(const LocationTime_MM7 &src, LocationTime *dst) {
 }
 
 void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst) {
-    reconstruct(src.pSoundName, &dst->sName);
-    dst->uSoundID = static_cast<SoundId>(src.uSoundID);
-    dst->eType = static_cast<SoundType>(src.eType);
-    dst->uFlags = static_cast<SoundFlags>(src.uFlags);
+    reconstruct(src.name, &dst->name);
+    dst->soundId = static_cast<SoundId>(src.soundId);
+    dst->type = static_cast<SoundType>(src.type);
+    dst->flags = static_cast<SoundFlags>(src.flags);
 }
 
 void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst) {

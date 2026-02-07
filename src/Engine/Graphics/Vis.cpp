@@ -62,13 +62,13 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
             for (int i = 0; i < face->uNumVertices; i++) {
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.x =
-                    (float)pIndoor->pVertices[face->pVertexIDs[i]].x;
+                    (float)pIndoor->vertices[face->pVertexIDs[i]].x;
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.y =
-                    (float)pIndoor->pVertices[face->pVertexIDs[i]].y;
+                    (float)pIndoor->vertices[face->pVertexIDs[i]].y;
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.z =
-                    (float)pIndoor->pVertices[face->pVertexIDs[i]].z;
+                    (float)pIndoor->vertices[face->pVertexIDs[i]].z;
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
@@ -286,13 +286,13 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
     RenderVertexSoft a1;
 
     // clear the debug attribute
-    for (auto &face : pIndoor->pFaces) {
+    for (auto &face : pIndoor->faces) {
         face.uAttributes &= ~FACE_OUTLINED;
     }
 
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
         int faceId = pBspRenderer->faces[i].uFaceID;
-        BLVFace *face = &pIndoor->pFaces[faceId];
+        BLVFace *face = &pIndoor->faces[faceId];
 
         if (isFacePartOfSelection(nullptr, face, filter)) {
             if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
@@ -811,7 +811,7 @@ bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_Selectio
         no_event = odmFace->sCogTriggeredID == 0;
         face_attrib = odmFace->uAttributes;
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        no_event = pIndoor->pFaceExtras[bvlFace->uFaceExtraID].uEventID == 0;
+        no_event = pIndoor->faceExtras[bvlFace->uFaceExtraID].uEventID == 0;
         face_attrib = bvlFace->uAttributes;
     } else {
         assert(false);
@@ -896,7 +896,7 @@ bool Vis::DoesRayMissLevelGeom(float test_x, float test_y, float fDepth, float f
 void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter) {
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
         int pFaceID = pBspRenderer->faces[i].uFaceID;
-        BLVFace *pFace = &pIndoor->pFaces[pFaceID];
+        BLVFace *pFace = &pIndoor->faces[pFaceID];
         if (isFacePartOfSelection(nullptr, pFace, filter)) {
             Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, Pid(OBJECT_Face, pFaceID), pick_depth);
             if (v8)

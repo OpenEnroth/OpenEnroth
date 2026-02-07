@@ -127,15 +127,15 @@ void ViewingParams::_443365() {
 
         maximum_x = -0x40000000;
         maximum_y = -0x40000000;
-        for (int i = 0; i < pIndoor->pMapOutlines.size(); ++i) {
-            v3 = &pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID];
+        for (int i = 0; i < pIndoor->mapOutlines.size(); ++i) {
+            v3 = &pIndoor->vertices[pIndoor->mapOutlines[i].uVertex1ID];
 
             if (v3->x < minimum_x) minimum_x = v3->x;
             if (v3->x > maximum_x) maximum_x = v3->x;
             if (v3->y < minimum_y) minimum_y = v3->x;
             if (v3->y > maximum_y) maximum_y = v3->x;
 
-            v6 = &pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID];
+            v6 = &pIndoor->vertices[pIndoor->mapOutlines[i].uVertex2ID];
 
             if (v6->x < minimum_x) minimum_x = v3->x;
             if (v6->x > maximum_x) maximum_x = v3->x;
@@ -291,7 +291,7 @@ void Engine::onGameViewportClick() {
         int eventId = 0;
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            if (!pIndoor->pFaces[pid.id()].Clickable()) {
+            if (!pIndoor->faces[pid.id()].Clickable()) {
                 if (pParty->pPickedItem.itemId == ITEM_NULL) {
                     engine->_statusBar->nothingHere();
                 } else {
@@ -299,7 +299,7 @@ void Engine::onGameViewportClick() {
                 }
                 return;
             } else {
-                eventId = pIndoor->pFaceExtras[pIndoor->pFaces[pid.id()].uFaceExtraID].uEventID;
+                eventId = pIndoor->faceExtras[pIndoor->faces[pid.id()].uFaceExtraID].uEventID;
             }
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             const ODMFace &model = pOutdoor->face(pid);

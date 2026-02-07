@@ -633,7 +633,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
-    BLVFace *pFace = &pIndoor->pFaces[uFaceID];
+    BLVFace *pFace = &pIndoor->faces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
     // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
@@ -672,11 +672,11 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
 
     // copy to buff in
     for (unsigned i = 0; i < pFace->uNumVertices; ++i) {
-        originalVertices[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-        originalVertices[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-        originalVertices[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
-        originalVertices[i].u = (signed short)pFace->pVertexUIDs[i];
-        originalVertices[i].v = (signed short)pFace->pVertexVIDs[i];
+        originalVertices[i].vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[i]].x;
+        originalVertices[i].vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[i]].y;
+        originalVertices[i].vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[i]].z;
+        originalVertices[i].u = (signed short)pFace->pVertexUs[i];
+        originalVertices[i].v = (signed short)pFace->pVertexVs[i];
     }
 
     // clip accurately to camera
@@ -2816,8 +2816,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
             }
 
 
-            for (int test = 0; test < pIndoor->pFaces.size(); test++) {
-                BLVFace *face = &pIndoor->pFaces[test];
+            for (int test = 0; test < pIndoor->faces.size(); test++) {
+                BLVFace *face = &pIndoor->faces[test];
 
                 if (face->isPortal())
                     continue;
@@ -2971,7 +2971,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             for (unsigned i = 0; i < pBspRenderer->num_faces; ++i) {
                 int uFaceID = pBspRenderer->faces[i].uFaceID;
-                BLVFace *face = &pIndoor->pFaces[uFaceID];
+                BLVFace *face = &pIndoor->faces[uFaceID];
 
                 float skymodtimex{};
                 float skymodtimey{};
@@ -3043,10 +3043,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                     // copy first
                     ShaderVertex &v0 = _bspVertices[texunit].emplace_back();
-                    v0.pos = pIndoor->pVertices[face->pVertexIDs[0]];
+                    v0.pos = pIndoor->vertices[face->pVertexIDs[0]];
                     // TODO(captainurist): adding in IDs below?
-                    v0.texuv = Vec2f(face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU,
-                                     face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV);
+                    v0.texuv = Vec2f(face->pVertexUs[0] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaU,
+                                     face->pVertexVs[0] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaV);
                     if (face->Indoor_sky()) {
                         v0.texuv.x = (skymodtimex + v0.texuv.x) * 0.25f;
                         v0.texuv.y = (skymodtimey + v0.texuv.y) * 0.25f;
@@ -3058,10 +3058,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     // copy other two (z+1)(z+2)
                     for (unsigned i = 1; i < 3; ++i) {
                         ShaderVertex &v = _bspVertices[texunit].emplace_back();
-                        v.pos = pIndoor->pVertices[face->pVertexIDs[z + i]];
+                        v.pos = pIndoor->vertices[face->pVertexIDs[z + i]];
                         // TODO(captainurist): adding in IDs???
-                        v.texuv = Vec2f(face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU,
-                                        face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV);
+                        v.texuv = Vec2f(face->pVertexUs[z + i] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaU,
+                                        face->pVertexVs[z + i] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaV);
                         if (face->Indoor_sky()) {
                             v.texuv.x = (skymodtimex + v.texuv.x) * 0.25f;
                             v.texuv.y = (skymodtimey + v.texuv.y) * 0.25f;
@@ -3119,8 +3119,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
         // lighting stuff
         int16_t mintest = 0;
-        for (int i = 0; i < pIndoor->pSectors.size(); i++) {
-            mintest = std::max(mintest, pIndoor->pSectors[i].uMinAmbientLightLevel);
+        for (int i = 0; i < pIndoor->sectors.size(); i++) {
+            mintest = std::max(mintest, pIndoor->sectors[i].uMinAmbientLightLevel);
         }
         int uCurrentAmbientLightLevel = (DEFAULT_AMBIENT_LIGHT_LEVEL + mintest);
         float ambient = (248.0f - (uCurrentAmbientLightLevel << 3)) / 255.0f;
@@ -3168,7 +3168,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             // does light sphere collide with current sector
             // expanded current sector
             bool fromexpanded{ false };
-            if (pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.intersectsCube(test.vPosition, test.uRadius)) {
+            if (pIndoor->sectors[pBLVRenderParams->uPartySectorID].pBounding.intersectsCube(test.vPosition, test.uRadius)) {
                 onlist = true;
                 fromexpanded = true;
             }
@@ -3273,8 +3273,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
         static RenderVertexSoft static_vertices_buff_in[64];  // buff in
 
         // loop over faces
-        for (int test = 0; test < pIndoor->pFaces.size(); test++) {
-            BLVFace *pface = &pIndoor->pFaces[test];
+        for (int test = 0; test < pIndoor->faces.size(); test++) {
+            BLVFace *pface = &pIndoor->faces[test];
 
             if (pface->isPortal()) continue;
             // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
@@ -3298,13 +3298,13 @@ void OpenGLRenderer::DrawIndoorFaces() {
             // copy to buff in
             for (unsigned i = 0; i < pface->uNumVertices; ++i) {
                 static_vertices_buff_in[i].vWorldPosition.x =
-                    pIndoor->pVertices[pface->pVertexIDs[i]].x;
+                    pIndoor->vertices[pface->pVertexIDs[i]].x;
                 static_vertices_buff_in[i].vWorldPosition.y =
-                    pIndoor->pVertices[pface->pVertexIDs[i]].y;
+                    pIndoor->vertices[pface->pVertexIDs[i]].y;
                 static_vertices_buff_in[i].vWorldPosition.z =
-                    pIndoor->pVertices[pface->pVertexIDs[i]].z;
-                static_vertices_buff_in[i].u = (signed short)pface->pVertexUIDs[i];
-                static_vertices_buff_in[i].v = (signed short)pface->pVertexVIDs[i];
+                    pIndoor->vertices[pface->pVertexIDs[i]].z;
+                static_vertices_buff_in[i].u = pface->pVertexUs[i];
+                static_vertices_buff_in[i].v = pface->pVertexVs[i];
             }
 
             // blood draw

@@ -93,7 +93,7 @@ void deserialize(const Blob &src, SoundList *dst) {
 
     // TODO(captainurist): there are duplicate ids in the sounds array, look into it.
     for (const SoundInfo &sound : sounds)
-        dst->_mapSounds[sound.uSoundID] = sound;
+        dst->_mapSounds[sound.soundId] = sound;
 }
 
 void deserialize(const Blob &src, TileTable *dst) {

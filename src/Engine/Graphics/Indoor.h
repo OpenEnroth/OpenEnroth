@@ -130,9 +130,20 @@ struct BLVFace {  // 60h
     Planef facePlane;
     PlaneZCalcf zCalc;
     FaceAttributes uAttributes;
+
+    /** Array of indices into the vertex array for this face's vertices. Points into `IndoorLocation::pVertices` for
+     * indoor faces, or `BSPModel::pVertices` for outdoor faces. Has `uNumVertices + 1` elements, where the last element
+     * repeats the first vertex to close the polygon. */
     int16_t *pVertexIDs = nullptr;
-    int16_t *pVertexUIDs = nullptr;
-    int16_t *pVertexVIDs = nullptr;
+
+    /** Array of U (horizontal) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
+     * matching `pVertexIDs`. */
+    int16_t *pVertexUs = nullptr;
+
+    /** Array of V (vertical) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
+     * matching `pVertexIDs`. */
+    int16_t *pVertexVs = nullptr;
+
     uint16_t uFaceExtraID = 0;
     GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.
     int animationId = 0; // Index into pTextureFrameTable for animated faces.
@@ -226,18 +237,18 @@ struct IndoorLocation {
 
     std::string filename;
     unsigned int bLoaded = 0;
-    std::vector<Vec3f> pVertices;
-    std::vector<BLVFace> pFaces;
-    std::vector<BLVFaceExtra> pFaceExtras;
-    std::vector<BLVSector> pSectors;
-    std::vector<BLVLight> pLights;
-    std::vector<BLVDoor> pDoors;
-    std::vector<BSPNode> pNodes;
-    std::vector<BLVMapOutline> pMapOutlines;
-    std::vector<int16_t> pLFaces;
-    std::vector<uint16_t> ptr_0002B0_sector_rdata;
-    std::vector<int16_t> ptr_0002B4_doors_ddata;
-    std::vector<uint16_t> ptr_0002B8_sector_lrdata;
+    std::vector<Vec3f> vertices;
+    std::vector<BLVFace> faces;
+    std::vector<BLVFaceExtra> faceExtras;
+    std::vector<BLVSector> sectors;
+    std::vector<BLVLight> lights;
+    std::vector<BLVDoor> doors;
+    std::vector<BSPNode> nodes;
+    std::vector<BLVMapOutline> mapOutlines;
+    std::vector<int16_t> faceData;
+    std::vector<uint16_t> sectorData;
+    std::vector<int16_t> doorsData;
+    std::vector<uint16_t> sectorLightData;
     std::vector<SpawnPoint> pSpawnPoints;
     LocationInfo dlv;
     LocationTime stru1;

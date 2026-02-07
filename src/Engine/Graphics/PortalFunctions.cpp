@@ -131,27 +131,27 @@ void CalcPolygonLimits(const BLVFace *pFace, RenderVertexSoft *pOutVertices) {
     }
 
     RenderVertexSoft v1;  // [sp+30Ch] [bp-54h]@24
-    v1.vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[x_min_idx]].x;
-    v1.vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[x_min_idx]].y;
-    v1.vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[x_min_idx]].z;
+    v1.vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[x_min_idx]].x;
+    v1.vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[x_min_idx]].y;
+    v1.vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[x_min_idx]].z;
     pOutVertices[0] = v1;
 
     RenderVertexSoft v2;  // [sp+30Ch] [bp-54h]@24
-    v2.vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[y_min_idx]].x;
-    v2.vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[y_min_idx]].y;
-    v2.vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[y_min_idx]].z;
+    v2.vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[y_min_idx]].x;
+    v2.vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[y_min_idx]].y;
+    v2.vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[y_min_idx]].z;
     pOutVertices[1] = v2;
 
     RenderVertexSoft v3;  // [sp+30Ch] [bp-54h]@24
-    v3.vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[x_max_idx]].x;
-    v3.vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[x_max_idx]].y;
-    v3.vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[x_max_idx]].z;
+    v3.vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[x_max_idx]].x;
+    v3.vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[x_max_idx]].y;
+    v3.vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[x_max_idx]].z;
     pOutVertices[2] = v3;
 
     RenderVertexSoft v4;  // [sp+30Ch] [bp-54h]@24
-    v4.vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[y_max_idx]].x;
-    v4.vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[y_max_idx]].y;
-    v4.vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[y_max_idx]].z;
+    v4.vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[y_max_idx]].x;
+    v4.vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[y_max_idx]].y;
+    v4.vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[y_max_idx]].z;
     pOutVertices[3] = v4;
 }
 

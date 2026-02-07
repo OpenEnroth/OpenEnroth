@@ -160,7 +160,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     for (int i = 0; i < face->uNumVertices; ++i) {
         Vec3f vertPos;
         if (model_idx == MODEL_INDOOR) {
-            vertPos = pIndoor->pVertices[face->pVertexIDs[i]];
+            vertPos = pIndoor->vertices[face->pVertexIDs[i]];
         } else {
             vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
         }
@@ -180,8 +180,8 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         Vec3f vert1, vert2;
         int i2 = (i + 1) % face->uNumVertices;
         if (model_idx == MODEL_INDOOR) {
-            vert1 = pIndoor->pVertices[face->pVertexIDs[i]];
-            vert2 = pIndoor->pVertices[face->pVertexIDs[i2]];
+            vert1 = pIndoor->vertices[face->pVertexIDs[i]];
+            vert2 = pIndoor->vertices[face->pVertexIDs[i2]];
         } else {
             vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
             vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]];
@@ -411,9 +411,9 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
     int totalSectors = 1;
 
     // See if we're touching portals. If we do, we need to add corresponding sectors to the sectors array.
-    BLVSector *pSector = &pIndoor->pSectors[collision_state.uSectorID];
+    BLVSector *pSector = &pIndoor->sectors[collision_state.uSectorID];
     for (int j = 0; j < pSector->uNumPortals; ++j) {
-        BLVFace *pFace = &pIndoor->pFaces[pSector->pPortals[j]];
+        BLVFace *pFace = &pIndoor->faces[pSector->pPortals[j]];
         if (!collision_state.bbox.intersects(pFace->pBounding))
             continue;
 
@@ -427,12 +427,12 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
     }
 
     for (int i = 0; i < totalSectors; i++) {
-        pSector = &pIndoor->pSectors[pSectorsArray[i]];
+        pSector = &pIndoor->sectors[pSectorsArray[i]];
 
         int totalFaces = pSector->uNumFloors + pSector->uNumWalls + pSector->uNumCeilings;
         for (int j = 0; j < totalFaces; j++) {
             int face_id = pSector->pFloors[j];
-            BLVFace *face = &pIndoor->pFaces[face_id];
+            BLVFace *face = &pIndoor->faces[face_id];
             if (face->isPortal() || !collision_state.bbox.intersects(face->pBounding))
                 continue;
 
@@ -472,7 +472,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
 }
 
 void CollideIndoorWithDecorations() {
-    BLVSector *sector = &pIndoor->pSectors[collision_state.uSectorID];
+    BLVSector *sector = &pIndoor->sectors[collision_state.uSectorID];
     for (unsigned int i = 0; i < sector->uNumDecorations; ++i)
         CollideWithDecoration(sector->pDecorationIDs[i]);
 }
@@ -504,8 +504,8 @@ bool CollideIndoorWithPortals() {
 
     int portal_id = 0;            // [sp+10h] [bp-4h]@15
     float min_move_distance = std::numeric_limits<float>::max();
-    for (unsigned int i = 0; i < pIndoor->pSectors[collision_state.uSectorID].uNumPortals; ++i) {
-        BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[collision_state.uSectorID].pPortals[i]];
+    for (unsigned int i = 0; i < pIndoor->sectors[collision_state.uSectorID].uNumPortals; ++i) {
+        BLVFace *face = &pIndoor->faces[pIndoor->sectors[collision_state.uSectorID].pPortals[i]];
         if (!collision_state.bbox.intersects(face->pBounding))
             continue;
 
@@ -517,15 +517,15 @@ bool CollideIndoorWithPortals() {
             CollidePointWithFace(face, collision_state.position_lo, collision_state.direction, &move_distance, MODEL_INDOOR) &&
             move_distance < min_move_distance) {
             min_move_distance = move_distance;
-            portal_id = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
+            portal_id = pIndoor->sectors[collision_state.uSectorID].pPortals[i];
         }
     }
 
     if (collision_state.adjusted_move_distance >= min_move_distance && min_move_distance <= collision_state.move_distance) {
-        if (pIndoor->pFaces[portal_id].uSectorID == collision_state.uSectorID) {
-            collision_state.uSectorID = pIndoor->pFaces[portal_id].uBackSectorID;
+        if (pIndoor->faces[portal_id].uSectorID == collision_state.uSectorID) {
+            collision_state.uSectorID = pIndoor->faces[portal_id].uBackSectorID;
         } else {
-            collision_state.uSectorID = pIndoor->pFaces[portal_id].uSectorID;
+            collision_state.uSectorID = pIndoor->faces[portal_id].uSectorID;
         }
         collision_state.adjusted_move_distance = collision_state.move_distance;
         return false;
@@ -631,7 +631,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         if (newFloorZ == -30000 || newFloorZ - actor.pos.z > 128)
             break; // New pos is out of bounds, running more iterations won't help.
 
-        if (pIndoor->pFaces[newFaceID].uAttributes & FACE_INDOOR_SKY) {
+        if (pIndoor->faces[newFaceID].uAttributes & FACE_INDOOR_SKY) {
             if (actor.aiState == Dead) {
                 actor.aiState = Removed;
                 break; // Actor removed, no point in running more iterations.
@@ -701,7 +701,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
 
         if (type == OBJECT_Face) {
-            BLVFace *face = &pIndoor->pFaces[id];
+            BLVFace *face = &pIndoor->faces[id];
             bool bFaceSlopeTooSteep = face->facePlane.normal.z > 0.0f && face->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
             // TODO(pskelton): Do actors need same exclusions as party?
@@ -731,11 +731,11 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             // set movement speed along sliding plane
             actor.velocity = newDirection * dot(newDirection, actor.velocity);
 
-            if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
-                eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
+            if (pIndoor->faces[id].uAttributes & FACE_TriggerByMonster)
+                eventProcessor(pIndoor->faceExtras[pIndoor->faces[id].uFaceExtraID].uEventID, Pid(), 1);
 
-            if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
-                float new_floor_z_tmp = pIndoor->pVertices[*face->pVertexIDs].z;
+            if (pIndoor->faces[id].uPolygonType == POLYGON_Floor) {
+                float new_floor_z_tmp = pIndoor->vertices[*face->pVertexIDs].z;
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
                 if (actor.velocity.z > 0.0f && (new_floor_z_tmp - actor.pos.z) < 128)
@@ -955,7 +955,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
-            BLVFace *pFace = &pIndoor->pFaces[collision_state.pid.id()];
+            BLVFace *pFace = &pIndoor->faces[collision_state.pid.id()];
             bool bFaceSlopeTooSteep = pFace->facePlane.normal.z > 0.0f && pFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
             // TODO(pskelton): Better way to do this? Maybe add a climbable attribute
@@ -1006,10 +1006,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             pParty->velocity = newDirection * dot(newDirection, pParty->velocity);
 
             if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
-                *faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+                *faceEvent = pIndoor->faceExtras[pFace->uFaceExtraID].uEventID;
 
             if (pFace->uPolygonType == POLYGON_Floor) {
-                float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z;
+                float new_party_z_tmp = pIndoor->vertices[*pFace->pVertexIDs].z;
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
                 if (pParty->velocity.z > 0.0f && (new_party_z_tmp - pParty->pos.z) < 128)
