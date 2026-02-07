@@ -189,19 +189,19 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
                         pOriginalNPCData[i + 1].name = pNPCUnicNames[i];
                         break;
                     case 2:
-                        pOriginalNPCData[i + 1].uPortraitID = atoi(test_string);
+                        pOriginalNPCData[i + 1].portraitId = atoi(test_string);
                         break;
                     case 6:
-                        pOriginalNPCData[i + 1].Location2D = static_cast<HouseId>(atoi(test_string));
+                        pOriginalNPCData[i + 1].house = static_cast<HouseId>(atoi(test_string));
                         break;
                     case 7:
                         pOriginalNPCData[i + 1].profession = static_cast<NpcProfession>(atoi(test_string));
                         break;
                     case 8:
-                        pOriginalNPCData[i + 1].greet = atoi(test_string);
+                        pOriginalNPCData[i + 1].greetingIndex = atoi(test_string);
                         break;
                     case 9:
-                        pOriginalNPCData[i + 1].is_joinable = (*test_string == 'y') ? 1 : 0;
+                        pOriginalNPCData[i + 1].canJoin = (*test_string == 'y') ? 1 : 0;
                         break;
                     case 10:
                         pOriginalNPCData[i + 1].dialogue_1_evt_id = atoi(test_string);
@@ -484,7 +484,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     MonsterType monsterType = monsterTypeForMonsterId(npc_uid);
     Sex uNPCSex = sexForMonsterType(monsterType);
     uRace = raceForMonsterType(monsterType);
-    pNPCDataBuff->uSex = uNPCSex;
+    pNPCDataBuff->sex = uNPCSex;
     pNPCDataBuff->name = pNPCNames[grng->random(uNumNPCNames[uNPCSex])][uNPCSex];
 
     gen_attempts = 0;
@@ -541,8 +541,8 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
         }
     } while (!break_gen);
 
-    pNPCDataBuff->uPortraitID = uGeneratedPortret;
-    pNPCDataBuff->uFlags = 0;
+    pNPCDataBuff->portraitId = uGeneratedPortret;
+    pNPCDataBuff->flags = 0;
     pNPCDataBuff->fame = 0;
     // generate reputation
     rep_gen = grng->random(100) + 1;
@@ -575,9 +575,9 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
         } while (test_prof_summ < max_prof_cap);
     }
     pNPCDataBuff->profession = (NpcProfession)(gen_profession - 1);
-    pNPCDataBuff->Location2D = uLocation2D;
+    pNPCDataBuff->house = uLocation2D;
     pNPCDataBuff->field_24 = 1;
-    pNPCDataBuff->is_joinable = 1;
+    pNPCDataBuff->canJoin = 1;
     pNPCDataBuff->dialogue_1_evt_id = 0;
     pNPCDataBuff->dialogue_2_evt_id = 0;
     pNPCDataBuff->dialogue_3_evt_id = 0;

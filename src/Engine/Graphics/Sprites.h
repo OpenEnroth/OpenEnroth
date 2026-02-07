@@ -30,8 +30,9 @@ class Sprite {
 
 class SpriteFrame {
  public:
-    std::string animationName;
-    std::string textureName;
+    std::string spriteName; // E.g. "spell11", only used to look up sprites by name. Only set for the 1st
+                            // frame in an animated sequence.
+    std::string textureName; // Texture name in sprites.lod w/o rotational suffixes.
     std::array<Sprite *, 8> sprites = {{}};
     float scale = 1.0;
     SpriteFrameFlags flags;

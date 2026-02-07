@@ -98,15 +98,15 @@ void Actor::DrawHealthBar(Actor *actor, Recti window) {
 
     // bar colour
     GraphicsImage *bar_image = game_ui_monster_hp_green;
-    if (actor->currentHP <= (0.34 * actor->monsterInfo.hp))
+    if (actor->hp <= (0.34 * actor->monsterInfo.hp))
         bar_image = game_ui_monster_hp_red;
-    else if (actor->currentHP <= (0.67 * actor->monsterInfo.hp))
+    else if (actor->hp <= (0.67 * actor->monsterInfo.hp))
         bar_image = game_ui_monster_hp_yellow;
 
     // how much of bar is filled
     unsigned int bar_filled_length = bar_length;
-    if (actor->currentHP < (int)actor->monsterInfo.hp)
-        bar_filled_length = (bar_length * actor->currentHP) / actor->monsterInfo.hp;
+    if (actor->hp < (int)actor->monsterInfo.hp)
+        bar_filled_length = (bar_length * actor->hp) / actor->monsterInfo.hp;
 
     // centralise for clipping and draw
     unsigned int uX = window.x + (signed int)(window.w - bar_length) / 2;
@@ -527,9 +527,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             break;
 
         case SPELL_BODY_POWER_CURE:
-            actorPtr->currentHP += 5 * realPoints + 10;
-            if (actorPtr->currentHP >= actorPtr->monsterInfo.hp) {
-                actorPtr->currentHP = actorPtr->monsterInfo.hp;
+            actorPtr->hp += 5 * realPoints + 10;
+            if (actorPtr->hp >= actorPtr->monsterInfo.hp) {
+                actorPtr->hp = actorPtr->monsterInfo.hp;
             }
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam);
             pAudioPlayer->playSound(SOUND_Fate, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
@@ -899,7 +899,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out1 = pIndoor->pFaces[id1].pBounding.center();
+                out1 = pIndoor->faces[id1].pBounding.center();
             }
             break;
         }
@@ -931,7 +931,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out2 = pIndoor->pFaces[id2].pBounding.center();
+                out2 = pIndoor->faces[id2].pBounding.center();
             }
             break;
         }
@@ -1749,7 +1749,7 @@ void Actor::resurrect(unsigned int uActorID) {
     pActor->currentActionLength =
         pSpriteFrameTable->pSpriteSFrames[pActor->spriteIds[ANIM_Dying]]
                 .animationLength;
-    pActor->currentHP = (short)pActor->monsterInfo.hp;
+    pActor->hp = (short)pActor->monsterInfo.hp;
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     pActor->UpdateAnimation();
 
@@ -1775,7 +1775,7 @@ void Actor::Die(unsigned int uActorID) {
     actor->currentActionTime = 0_ticks;
     actor->aiState = Dying;
     actor->currentActionAnimation = ANIM_Dying;
-    actor->currentHP = 0;
+    actor->hp = 0;
     actor->currentActionLength =
         pSpriteFrameTable->pSpriteSFrames[actor->spriteIds[ANIM_Dying]]
                 .animationLength;
@@ -2348,9 +2348,9 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                 }
                 finalDmg = pActors[actor_id].CalcMagicalDamageToActor(
                     v12, dmgToRecv);
-                pActors[actor_id].currentHP -= finalDmg;
+                pActors[actor_id].hp -= finalDmg;
                 if (finalDmg) {
-                    if (pActors[actor_id].currentHP > 0)
+                    if (pActors[actor_id].hp > 0)
                         Actor::AI_Stun(actor_id, attacker_id, 0);
                     else
                         Actor::Die(actor_id);
@@ -2429,9 +2429,9 @@ void Actor::SummonMinion(int summonerId) {
 
     v9 = &pMonsterStats->infos[summonMonsterBaseType];
     actor->name = v9->name;
-    actor->currentHP = v9->hp;
+    actor->hp = v9->hp;
     actor->monsterInfo = *v9;
-    actor->word_000086_some_monster_id = summonMonsterBaseType;
+    actor->monsterId = summonMonsterBaseType;
     actor->radius = pMonsterList->monsters[summonMonsterBaseType].monsterRadius;
     actor->height = pMonsterList->monsters[summonMonsterBaseType].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;
@@ -2507,7 +2507,7 @@ void Actor::UpdateActorAI() {
             continue;
 
         // Kill actor if HP == 0
-        if (!pActor->currentHP && pActor->aiState != Dying)
+        if (!pActor->hp && pActor->aiState != Dying)
             Actor::Die(i);
 
         // Kill buffs if expired
@@ -2585,7 +2585,7 @@ void Actor::UpdateActorAI() {
             pActor->aiState == Disabled || pActor->aiState == Summoned)
             continue;
 
-        if (!pActor->currentHP)
+        if (!pActor->hp)
             Actor::Die(actor_id);
 
         for (ActorBuff i : pActor->buffs.indices())
@@ -2696,7 +2696,7 @@ void Actor::UpdateActorAI() {
                         v43 = pActor->monsterInfo.hp * 0.2;
                     if (pActor->monsterInfo.aiType == MONSTER_AI_AGGRESSIVE)
                         v43 = pActor->monsterInfo.hp * 0.1;
-                    v42 = pActor->currentHP;
+                    v42 = pActor->hp;
                     if (v43 > v42 && distanceToTarget < 10240) {
                         Actor::AI_Flee(actor_id, target_pid, 0_ticks, pDir);
                         continue;
@@ -2941,7 +2941,7 @@ void Actor::InitializeActors() {
             actor->pos.x = actor->initialPosition.x;
             actor->pos.y = actor->initialPosition.y;
             actor->pos.z = actor->initialPosition.z;
-            actor->currentHP = actor->monsterInfo.hp;
+            actor->hp = actor->monsterInfo.hp;
             if (actor->aiState != Disabled) {
                 Actor::AI_Stand(i, ai_near_actors_targets_pid[i],
                                 actor->monsterInfo.recoveryTime, 0);
@@ -3074,7 +3074,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
                 attackElement = pSpellStats->pInfos[SPELL_EARTH_BLADES].damageType;
                 uDamageAmount = CalcSpellDamage(
                     SPELL_EARTH_BLADES, projectileSprite->spell_level,
-                    projectileSprite->spell_skill, pMonster->currentHP);
+                    projectileSprite->spell_skill, pMonster->hp);
                 if (pMonster->buffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = false;
@@ -3095,7 +3095,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             case SPELL_BOW_ARROW:
                 attackElement = DAMAGE_PHYSICAL;
                 uDamageAmount = character->CalculateRangedDamageTo(
-                    pMonster->word_000086_some_monster_id);
+                    pMonster->monsterId);
                 if (pMonster->buffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount /= 2;
                 IsAdditionalDamagePossible = true;
@@ -3114,7 +3114,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
                 uDamageAmount = CalcSpellDamage(
                     projectileSprite->uSpellID,
                     projectileSprite->spell_level,
-                    projectileSprite->spell_skill, pMonster->currentHP);
+                    projectileSprite->spell_skill, pMonster->hp);
                 break;
         }
     }
@@ -3134,7 +3134,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             skillLevel =
                 projectileSprite->containing_item._439DF3_get_additional_damage(
                     &attackElement, &isLifeStealing);
-            if (isLifeStealing && pMonster->currentHP > 0) {
+            if (isLifeStealing && pMonster->hp > 0) {
                 character->health += v61 / 5;
                 if (character->health > character->GetMaxHealth())
                     character->health = character->GetMaxHealth();
@@ -3146,7 +3146,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
                 if (InventoryEntry item = character->inventory.functionalEntry(i)) {
                     skillLevel = item->_439DF3_get_additional_damage(&attackElement,
                                                              &isLifeStealing);
-                    if (isLifeStealing && pMonster->currentHP > 0) {
+                    if (isLifeStealing && pMonster->hp > 0) {
                         character->health += v61 / 5;
                         if (character->health > character->GetMaxHealth())
                             character->health = character->GetMaxHealth();
@@ -3157,12 +3157,12 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             }
         }
     }
-    pMonster->currentHP -= uDamageAmount;
+    pMonster->hp -= uDamageAmount;
     if (uDamageAmount == 0 && !hit_will_stun) {
         character->playReaction(SPEECH_ATTACK_MISS);
         return 0;
     }
-    if (pMonster->currentHP > 0) {
+    if (pMonster->hp > 0) {
         Actor::AI_Stun(uActorID_Monster, a1, 0);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
         if (engine->config->settings.ShowHits.value()) {
@@ -3229,9 +3229,9 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
         v16 = pIndoor->GetSector(pos);
 
     actor->name = pMonsterStats->infos[monster_id].name;
-    actor->currentHP = (short)pMonsterStats->infos[monster_id].hp;
+    actor->hp = (short)pMonsterStats->infos[monster_id].hp;
     actor->monsterInfo = pMonsterStats->infos[monster_id];
-    actor->word_000086_some_monster_id = monster_id;
+    actor->monsterId = monster_id;
     actor->radius = pMonsterList->monsters[monster_id].monsterRadius;
     actor->height = pMonsterList->monsters[monster_id].monsterHeight;
     actor->moveSpeed = pMonsterList->monsters[monster_id].movementSpeed;
@@ -3599,7 +3599,7 @@ void Actor::LootActor() {
 bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
     switch (spell) {
         case SPELL_BODY_POWER_CURE: { // TODO(pskelton): Only cure below half health?
-            if (this->currentHP >= this->monsterInfo.hp) return false;
+            if (this->hp >= this->monsterInfo.hp) return false;
             return true;
         }
 
@@ -4077,9 +4077,9 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     Vec3f *portalverts;
 
     // loop through portals
-    for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {
-        portalface = &pIndoor->pFaces[pIndoor->pSectors[current_sector].pPortals[current_portal]];
-        portalverts = &pIndoor->pVertices[*portalface->pVertexIDs];
+    for (int current_portal = 0; current_portal < pIndoor->sectors[current_sector].numPortals; current_portal++) {
+        portalface = &pIndoor->faces[pIndoor->sectors[current_sector].portals[current_portal]];
+        portalverts = &pIndoor->vertices[*portalface->pVertexIDs];
 
         // ray ob1 to portal dot normal
         float obj1portaldot = dot(portalface->facePlane.normal, *portalverts - pos1);
@@ -4142,7 +4142,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 
             // did we hit limit for portals?
             // does the next room have portals?
-            if (sectors_visited < 30 && pIndoor->pSectors[current_sector].uNumPortals > 0) {
+            if (sectors_visited < 30 && pIndoor->sectors[current_sector].numPortals > 0) {
                 current_portal = -1;
                 continue;
             } else {
@@ -4180,9 +4180,9 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
     int angle = grng->random(2048);
 
     actor->name = pMonsterStats->infos[uMonsterID].name;
-    actor->currentHP = pMonsterStats->infos[uMonsterID].hp;
+    actor->hp = pMonsterStats->infos[uMonsterID].hp;
     actor->monsterInfo = pMonsterStats->infos[uMonsterID];
-    actor->word_000086_some_monster_id = uMonsterID;
+    actor->monsterId = uMonsterID;
     actor->radius = pMonsterList->monsters[uMonsterID].monsterRadius;
     actor->height = pMonsterList->monsters[uMonsterID].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;
@@ -4335,9 +4335,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
 
         MonsterInfo* Src = &pMonsterStats->infos[monster];
         pMonster->name = Src->name;
-        pMonster->currentHP = Src->hp;
+        pMonster->hp = Src->hp;
         pMonster->monsterInfo = pMonsterStats->infos[monster];
-        pMonster->word_000086_some_monster_id = monsterDescID;
+        pMonster->monsterId = monsterDescID;
         pMonster->radius = monsterDesc->monsterRadius;
         pMonster->height = monsterDesc->monsterHeight;
         pMonster->moveSpeed = monsterDesc->movementSpeed;
@@ -4527,12 +4527,12 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVeloci
                     pSpriteObjects[uObjID.id()].uSpellID,
                     pSpriteObjects[uObjID.id()].spell_level,
                     pSpriteObjects[uObjID.id()].spell_skill,
-                    pActors[uActorID].currentHP);
+                    pActors[uActorID].hp);
                 int damage = pActors[uActorID].CalcMagicalDamageToActor(DAMAGE_FIRE, spellDamage);
-                pActors[uActorID].currentHP -= damage;
+                pActors[uActorID].hp -= damage;
 
                 if (damage > 0) {
-                    if (pActors[uActorID].currentHP > 0)
+                    if (pActors[uActorID].hp > 0)
                         Actor::AI_Stun(uActorID, uObjID, 0);
                     else
                         Actor::Die(uActorID);

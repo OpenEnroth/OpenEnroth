@@ -815,7 +815,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
         hpStr = acStr = localization->str(LSTR_UNKNOWN_VALUE);
     }
     if (showCurrentHp && extended)
-        hpStr = fmt::format("{} / {}", pActors[uActorID].currentHP, hpStr);
+        hpStr = fmt::format("{} / {}", pActors[uActorID].hp, hpStr);
     if (pWindow) {
         GUIWindow::DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->str(LSTR_HIT_POINTS), *pWindow);
         GUIWindow::DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, hpStr, *pWindow);
@@ -1003,7 +1003,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
     // cast spell: Detect life
     if (showCurrentHp && !extended) {
         if (pWindow) {
-            std::string str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].currentHP);
+            std::string str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].hp);
             GUIWindow::DrawTitleText(font, 0, pTextHeight, colorTable.White, str, 3, *pWindow);
         }
         pTextHeight += lineAdvance;
@@ -1716,7 +1716,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                     popup_window.h = 130;
                 popup_window.w = 400;
                 GUIWindow::DrawMessageBox(0, popup_window, "");
-                auto tex_name = fmt::format("NPC{:03}", pNPC->uPortraitID);
+                auto tex_name = fmt::format("NPC{:03}", pNPC->portraitId);
                 render->DrawQuad2D(assets->getImage_ColorKey(tex_name),
                                    {popup_window.x + 22, popup_window.y + 36});
 

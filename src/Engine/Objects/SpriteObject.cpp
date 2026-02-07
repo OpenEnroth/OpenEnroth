@@ -297,11 +297,11 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         if (collision_state.pid.type() == OBJECT_Face) {
             const BSPModel *bmodel = &pOutdoor->model(collision_state.pid);
             const ODMFace *face = &pOutdoor->face(collision_state.pid);
-            if (face->uPolygonType == POLYGON_Floor) {
-                pSpriteObjects[uLayingItemID].vPosition.z = bmodel->pVertices[face->pVertexIDs[0]].z + 1;
+            if (face->polygonType == POLYGON_Floor) {
+                pSpriteObjects[uLayingItemID].vPosition.z = bmodel->vertices[face->vertexIds[0]].z + 1;
                 if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() >= 400) {
-                    if (face->uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(face->sCogTriggeredID, Pid(), 1);
+                    if (face->attributes & FACE_TriggerByObject) {
+                        eventProcessor(face->eventId, Pid(), 1);
                     }
                 } else {
                     pSpriteObjects[uLayingItemID].vVelocity = Vec3f(0, 0, 0);
@@ -319,8 +319,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                     newZVel = 0.48828125f * newZVel;
                 }
                 pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
-                if (face->uAttributes & FACE_TriggerByObject) {
-                    eventProcessor(face->sCogTriggeredID, Pid(), 1);
+                if (face->attributes & FACE_TriggerByObject) {
+                    eventProcessor(face->eventId, Pid(), 1);
                 }
             }
         }
@@ -389,10 +389,10 @@ LABEL_25:
                     }
 
                     // not sure:
-                    // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
+                    // pMonsterList->pMonsters[v39b->monsterId-1].uToHitRadius
                     int radius = 0;
-                    if (pActors[actloop].word_000086_some_monster_id != MONSTER_INVALID) {  // not always filled in from scripted monsters
-                        radius = pMonsterList->monsters[pActors[actloop].word_000086_some_monster_id].toHitRadius;
+                    if (pActors[actloop].monsterId != MONSTER_INVALID) {  // not always filled in from scripted monsters
+                        radius = pMonsterList->monsters[pActors[actloop].monsterId].toHitRadius;
                     }
                     CollideWithActor(actloop, radius);
                 }
@@ -437,22 +437,22 @@ LABEL_25:
             }
 
             if (collision_state.pid.type() == OBJECT_Face) {
-                if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
+                if (pIndoor->faces[pidId].uPolygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
-                    float dotFix = std::abs(dot(pIndoor->pFaces[pidId].facePlane.normal, pSpriteObject->vVelocity));
+                    float dotFix = std::abs(dot(pIndoor->faces[pidId].facePlane.normal, pSpriteObject->vVelocity));
                     dotFix = std::max(dotFix, collision_state.speed / 8);
-                    pSpriteObject->vVelocity.x += 2 * dotFix * pIndoor->pFaces[pidId].facePlane.normal.x;
-                    pSpriteObject->vVelocity.y += 2 * dotFix * pIndoor->pFaces[pidId].facePlane.normal.y;
-                    float newZVel = dotFix * pIndoor->pFaces[pidId].facePlane.normal.z;
-                    if (pIndoor->pFaces[pidId].facePlane.normal.z <= 0.48828125f) { // was 32000 fixpoint
+                    pSpriteObject->vVelocity.x += 2 * dotFix * pIndoor->faces[pidId].facePlane.normal.x;
+                    pSpriteObject->vVelocity.y += 2 * dotFix * pIndoor->faces[pidId].facePlane.normal.y;
+                    float newZVel = dotFix * pIndoor->faces[pidId].facePlane.normal.z;
+                    if (pIndoor->faces[pidId].facePlane.normal.z <= 0.48828125f) { // was 32000 fixpoint
                         newZVel = 2 * newZVel;
                     } else {
                         pSpriteObject->vVelocity.z += newZVel;
                         newZVel = 0.48828125f * newZVel;
                     }
                     pSpriteObject->vVelocity.z += newZVel;
-                    if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, Pid(), 1);
+                    if (pIndoor->faces[pidId].uAttributes & FACE_TriggerByObject) {
+                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].uFaceExtraID].uEventID, Pid(), 1);
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
@@ -462,22 +462,22 @@ LABEL_25:
                     if (pSpriteObject->vVelocity.z < 10) {
                         pSpriteObject->vVelocity.z = 0;
                     }
-                    if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, Pid(), 1);
+                    if (pIndoor->faces[pidId].uAttributes & FACE_TriggerByObject) {
+                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].uFaceExtraID].uEventID, Pid(), 1);
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
                 }
                 pSpriteObject->vVelocity.z = 0;
                 if (pSpriteObject->vVelocity.xy().lengthSqr() >= 400) {
-                    if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, Pid(), 1);
+                    if (pIndoor->faces[pidId].uAttributes & FACE_TriggerByObject) {
+                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].uFaceExtraID].uEventID, Pid(), 1);
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
                 }
                 pSpriteObject->vVelocity = Vec3f(0, 0, 0);
-                pSpriteObject->vPosition.z = pIndoor->pVertices[*pIndoor->pFaces[pidId].pVertexIDs].z + 1;
+                pSpriteObject->vPosition.z = pIndoor->vertices[*pIndoor->faces[pidId].pVertexIDs].z + 1;
             }
             pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
         }
@@ -486,10 +486,10 @@ LABEL_25:
 
     if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) || processSpellImpact(uLayingItemID, Pid())) {
         pSpriteObject->vPosition.z = floor_lvl + 1;
-        if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
+        if (pIndoor->faces[uFaceID].uPolygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
         } else {
-            if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
+            if (pIndoor->faces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
                 pSpriteObject->vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
             }
         }

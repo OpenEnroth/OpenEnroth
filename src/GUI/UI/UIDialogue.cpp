@@ -47,12 +47,12 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
     speakingNpcId = npcId;
     currentSpeakingActor = actor;
     NPCData *pNPCInfo = getNPCData(npcId);
-    if (!(pNPCInfo->uFlags & NPC_GREETED_SECOND)) {
-        if (pNPCInfo->uFlags & NPC_GREETED_FIRST) {
-            pNPCInfo->uFlags &= ~NPC_GREETED_FIRST;
-            pNPCInfo->uFlags |= NPC_GREETED_SECOND;
+    if (!(pNPCInfo->flags & NPC_GREETED_SECOND)) {
+        if (pNPCInfo->flags & NPC_GREETED_FIRST) {
+            pNPCInfo->flags &= ~NPC_GREETED_FIRST;
+            pNPCInfo->flags |= NPC_GREETED_SECOND;
         } else {
-            pNPCInfo->uFlags |= NPC_GREETED_FIRST;
+            pNPCInfo->flags |= NPC_GREETED_FIRST;
         }
     }
 
@@ -63,7 +63,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
     HouseNpcDesc desc;
     desc.type = HOUSE_NPC;
     desc.label = localization->format(LSTR_CONVERSE_WITH_S, pNPCInfo->name);
-    desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCInfo->uPortraitID));
+    desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCInfo->portraitId));
     desc.npc = pNPCInfo;
 
     houseNpcs.push_back(desc);
@@ -73,9 +73,9 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
 #if 0
     int pNumberContacts = 0;
     int v9 = 0;
-    if (!pNPCInfo->Hired() && pNPCInfo->Location2D >= 0) {
+    if (!pNPCInfo->Hired() && pNPCInfo->house >= 0) {
         if (pParty->getPartyFame() <= pNPCInfo->fame ||
-            (pNumberContacts = pNPCInfo->uFlags & 0xFFFFFF7F,
+            (pNumberContacts = pNPCInfo->flags & 0xFFFFFF7F,
              (pNumberContacts & 0x80000000u) != 0)) {
             v9 = 1;
         } else {
@@ -121,10 +121,10 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
     if (type == DIALOG_WINDOW_FULL) {
         if (getNPCType(speakingNpcId) == NPC_TYPE_QUEST) {
             optionList = prepareScriptedNPCDialogueTopics(speakingNPC);
-        } else if (speakingNPC->is_joinable) {
+        } else if (speakingNPC->canJoin) {
             optionList = {DIALOGUE_PROFESSION_DETAILS, DIALOGUE_HIRE_FIRE};
         }
-        if (speakingNPC->Hired() && !speakingNPC->bHasUsedTheAbility) {
+        if (speakingNPC->Hired() && !speakingNPC->hasUsedAbility) {
             if (speakingNPC->profession == Healer || speakingNPC->profession == ExpertHealer ||
                 speakingNPC->profession == MasterHealer || speakingNPC->profession == Cook ||
                 speakingNPC->profession == Chef || speakingNPC->profession == WindMaster ||
@@ -231,11 +231,11 @@ void GUIWindow_Dialogue::Update() {
                 branchless_dialogue_str.empty()) {
                 dialogue_string = current_npc_text;
             } else if (npcType == NPC_TYPE_QUEST) {
-                if (pNPC->greet) {
-                    if (pNPC->uFlags & NPC_GREETED_SECOND)
-                        dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
+                if (pNPC->greetingIndex) {
+                    if (pNPC->flags & NPC_GREETED_SECOND)
+                        dialogue_string = pNPCStats->pNPCGreetings[pNPC->greetingIndex].pGreeting2;
                     else
-                        dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
+                        dialogue_string = pNPCStats->pNPCGreetings[pNPC->greetingIndex].pGreeting1;
                 }
             } else if (npcType == NPC_TYPE_HIREABLE) {
                 NPCProfession *prof = &pNPCStats->pProfessions[pNPC->profession];
@@ -332,8 +332,8 @@ void selectNPCDialogueOption(DialogueId option) {
 
     ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(option);
 
-    if (!speakingNPC->uFlags) {
-        speakingNPC->uFlags = NPC_GREETED_FIRST;
+    if (!speakingNPC->flags) {
+        speakingNPC->flags = NPC_GREETED_FIRST;
     }
 
     if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
@@ -367,7 +367,7 @@ void selectNPCDialogueOption(DialogueId option) {
         } else {
             for (unsigned i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
                 if (pNPCStats->pNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNPCData[i].name)
-                    pNPCStats->pNPCData[i].uFlags &= ~NPC_HIRED;
+                    pNPCStats->pNPCData[i].flags &= ~NPC_HIRED;
             }
             if (ascii::noCaseEquals(pParty->pHirelings[0].name, speakingNPC->name)) // TODO(captainurist): #unicode this is not ascii
                 pParty->pHirelings[0] = NPCData();

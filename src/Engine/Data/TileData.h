@@ -6,7 +6,7 @@
 #include "TileEnums.h"
 
 struct TileData {
-    std::string name;
+    std::string textureName;
     Tileset tileset = TILESET_INVALID;
     TileVariant variant = TILE_VARIANT_BASE1;
     TileFlags flags;

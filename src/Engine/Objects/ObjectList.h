@@ -34,7 +34,6 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ObjectDescFlags)
 struct ObjectDesc {
     inline bool NoSprite() const { return uFlags & OBJECT_DESC_NO_SPRITE; }
 
-    std::string name; // TODO(captainurist): why is this unused?
     SpriteId uObjectID;
     int16_t uRadius;
     int16_t uHeight;

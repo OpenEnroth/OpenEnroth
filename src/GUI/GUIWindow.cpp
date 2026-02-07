@@ -846,7 +846,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 }
                 break;
             case 9:
-                if (npc->uSex == SEX_FEMALE)
+                if (npc->sex == SEX_FEMALE)
                     result += localization->str(LSTR_HER);
                 else
                     result += localization->str(LSTR_HIS);
@@ -867,7 +867,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 result += pNPCStats->sub_495366_MispronounceName(pPlayer->name[0], pPlayer->uSex);
                 break;
             case 14:
-                if (npc->uSex == SEX_FEMALE)
+                if (npc->sex == SEX_FEMALE)
                     result += localization->str(LSTR_SISTER);
                 else
                     result += localization->str(LSTR_BROTHER);
@@ -876,7 +876,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 result += localization->str(LSTR_DAUGHTER);
                 break;
             case 16:
-                if (npc->uSex == SEX_FEMALE)
+                if (npc->sex == SEX_FEMALE)
                     result += localization->str(LSTR_SISTER);
                 else
                     result += localization->str(LSTR_BROTHER);

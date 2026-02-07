@@ -621,7 +621,7 @@ std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
 std::vector<DialogueId> prepareScriptedNPCDialogueTopics(NPCData *npcData) {
     std::vector<DialogueId> optionList;
 
-    if (npcData->is_joinable) {
+    if (npcData->canJoin) {
         optionList.push_back(DIALOGUE_13_hiring_related);
     }
 
@@ -781,7 +781,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         assert(hirelingId < pParty->pHirelings.size());
         if (UseNPCSkill(npcData->profession, hirelingId) == 0) {
             if (npcData->profession != GateMaster) {
-                npcData->bHasUsedTheAbility = 1;
+                npcData->hasUsedAbility = 1;
             }
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         } else {
@@ -792,7 +792,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
             if (pNPCStats->uNumNewNPCs > 0) {
                 for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
                     if (pNPCStats->pNPCData[i].Hired() && npcData->name == pNPCStats->pNPCData[i].name) {
-                        pNPCStats->pNPCData[i].uFlags &= ~NPC_HIRED;
+                        pNPCStats->pNPCData[i].flags &= ~NPC_HIRED;
                     }
                 }
             }
@@ -822,7 +822,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
                 }
                 pParty->TakeGold(pNPCStats->pProfessions[npcData->profession].uHirePrice);
             }
-            npcData->uFlags |= NPC_HIRED;
+            npcData->flags |= NPC_HIRED;
             if (!pParty->pHirelings[0].name.empty()) {
                 pParty->pHirelings[1] = *npcData;
                 pParty->pHireling2Name = npcData->name;

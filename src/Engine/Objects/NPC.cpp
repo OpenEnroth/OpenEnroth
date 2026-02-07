@@ -57,7 +57,7 @@ bool CheckHiredNPCSpeciality(NpcProfession prof) {
 
     for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNPCData[i].profession == prof &&
-            (pNPCStats->pNPCData[i].uFlags & NPC_HIRED)) {
+            (pNPCStats->pNPCData[i].flags & NPC_HIRED)) {
             return true;
         }
     }
@@ -166,7 +166,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
                 pParty->pPartyBuffs[PARTY_BUFF_FLY]
                     .Apply(pParty->GetPlayingTime() + Duration::fromHours(2), MASTERY_MASTER, 0, 0, 0);
                 // Mark buff as GM because NPC buff does not drain mana
-                pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = true;
+                pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM = true;
                 pAudioPlayer->playSpellSound(SPELL_AIR_FLY, false, SOUND_MODE_UI);
             }
         } break;
@@ -175,7 +175,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
                 .Apply(pParty->GetPlayingTime() + Duration::fromHours(3), MASTERY_MASTER, 0, 0, 0);
             // Mark buff as GM because NPC buff does not drain mana
-            pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = true;
+            pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM = true;
             pAudioPlayer->playSpellSound(SPELL_WATER_WATER_WALK, false, SOUND_MODE_UI);
         } break;
 

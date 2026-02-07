@@ -154,10 +154,10 @@ void PrepareDrawLists_BLV() {
 
      for (unsigned i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
          int sectorId = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
-         BLVSector *sector = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
+         BLVSector *sector = &pIndoor->sectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
 
-        for (unsigned j = 0; j < sector->uNumDecorations; ++j)
-            pIndoor->PrepareDecorationsRenderList_BLV(sector->pDecorationIDs[j], sectorId);
+        for (unsigned j = 0; j < sector->numDecorations; ++j)
+            pIndoor->PrepareDecorationsRenderList_BLV(sector->decorationIds[j], sectorId);
      }
 
     FindBillboardsLightLevels_BLV();
@@ -202,14 +202,14 @@ void IndoorLocation::Draw() {
 //----- (004C0EF2) --------------------------------------------------------
 void BLVFace::FromODM(ODMFace *face) {
     this->facePlane = face->facePlane;
-    this->uAttributes = face->uAttributes;
-    this->pBounding = face->pBoundingBox;
+    this->uAttributes = face->attributes;
+    this->pBounding = face->boundingBox;
     this->zCalc = face->zCalc;
-    this->uPolygonType = face->uPolygonType;
-    this->uNumVertices = face->uNumVertices;
+    this->uPolygonType = face->polygonType;
+    this->uNumVertices = face->numVertices;
     this->texture = face->texture;
     this->animationId = face->animationId;
-    this->pVertexIDs = face->pVertexIDs.data();
+    this->pVertexIDs = face->vertexIds.data();
 }
 
 //----- (004AE5BA) --------------------------------------------------------
@@ -240,19 +240,19 @@ void BLVFace::SetTexture(std::string_view filename) {
 
 //----- (00498B15) --------------------------------------------------------
 void IndoorLocation::Release() {
-    this->ptr_0002B4_doors_ddata.clear();
-    this->ptr_0002B0_sector_rdata.clear();
-    this->ptr_0002B8_sector_lrdata.clear();
-    this->pLFaces.clear();
+    this->doorsData.clear();
+    this->sectorData.clear();
+    this->sectorLightData.clear();
+    this->faceData.clear();
     this->pSpawnPoints.clear();
-    this->pSectors.clear();
-    this->pFaces.clear();
-    this->pFaceExtras.clear();
-    this->pVertices.clear();
-    this->pNodes.clear();
-    this->pDoors.clear();
-    this->pLights.clear();
-    this->pMapOutlines.clear();
+    this->sectors.clear();
+    this->faces.clear();
+    this->faceExtras.clear();
+    this->vertices.clear();
+    this->nodes.clear();
+    this->doors.clear();
+    this->lights.clear();
+    this->mapOutlines.clear();
 
     render->ReleaseBSP();
 
@@ -261,11 +261,11 @@ void IndoorLocation::Release() {
 
 void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
-        (sLightID <= pIndoor->pLights.size() - 1) && (sLightID >= 0)) {
+        (sLightID <= pIndoor->lights.size() - 1) && (sLightID >= 0)) {
         if (bToggle)
-            pIndoor->pLights[sLightID].uAtributes &= 0xFFFFFFF7;
+            pIndoor->lights[sLightID].uAtributes &= 0xFFFFFFF7;
         else
-            pIndoor->pLights[sLightID].uAtributes |= 8;
+            pIndoor->lights[sLightID].uAtributes |= 8;
     }
 }
 
@@ -299,7 +299,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
 
             // Level was changed externally and we have a save there? Don't crash, just respawn.
             if (delta.header.totalFacesCount > 0 && delta.header.decorationCount > 0 &&
-                (delta.header.totalFacesCount != pFaces.size() || delta.header.decorationCount != pLevelDecorations.size()))
+                (delta.header.totalFacesCount != faces.size() || delta.header.decorationCount != pLevelDecorations.size()))
                 respawnInitial = true;
 
             // Entering the level for the 1st time?
@@ -346,7 +346,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR)
         return 0;
 
-    if (pSectors.size() < 2) {
+    if (sectors.size() < 2) {
         // assert(false);
         return 0;
     }
@@ -359,21 +359,21 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
     bool singleSectorFound = false;
 
     // loop through sectors
-    for (unsigned i = 1; i < pSectors.size(); ++i) {
+    for (unsigned i = 1; i < sectors.size(); ++i) {
         if (NumFoundFaceStore >= 5) break;
 
-        BLVSector *pSector = &pSectors[i];
+        BLVSector *pSector = &sectors[i];
 
-        if (!pSector->pBounding.intersectsCuboid(Vec3f(sX, sY, sZ), Vec3f(5, 5, 64)))
+        if (!pSector->boundingBox.intersectsCuboid(Vec3f(sX, sY, sZ), Vec3f(5, 5, 64)))
             continue;  // outside sector bounding
 
         if (!backupboundingsector) backupboundingsector = i;
 
-        int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
+        int FloorsAndPortals = pSector->numFloors + pSector->numPortals;
 
         // nothing in sector to check against so skip
         if (!FloorsAndPortals) continue;
-        if (!pSector->pFloors) continue;
+        if (!pSector->floors) continue;
 
         if (!foundSector) {
             foundSector = i;
@@ -385,12 +385,12 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         // loop over check faces
         for (unsigned z = 0; z < FloorsAndPortals; ++z) {
             int uFaceID;
-            if (z < pSector->uNumFloors)
-                uFaceID = pSector->pFloors[z];
+            if (z < pSector->numFloors)
+                uFaceID = pSector->floors[z];
             else
-                uFaceID = pSector->pPortals[z - pSector->uNumFloors];
+                uFaceID = pSector->portals[z - pSector->numFloors];
 
-            BLVFace *pFace = &pFaces[uFaceID];
+            BLVFace *pFace = &faces[uFaceID];
             if (pFace->uPolygonType != POLYGON_Floor && pFace->uPolygonType != POLYGON_InBetweenFloorAndWall)
                 continue;
 
@@ -404,7 +404,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
     // only one face found
     if (NumFoundFaceStore == 1)
-        return this->pFaces[FoundFaceStore[0]].uSectorID;
+        return this->faces[FoundFaceStore[0]].uSectorID;
 
     // only one sector found
     if (singleSectorFound) return *foundSector;
@@ -427,19 +427,19 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         int CalcZDist = MinZDist;
         for (int s = 0; s < NumFoundFaceStore; ++s) {
             // calc distance between this face and party
-            if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_Floor)
-                CalcZDist = sZ - this->pVertices[*this->pFaces[FoundFaceStore[s]].pVertexIDs].z;
-            if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                CalcZDist = sZ - this->pFaces[FoundFaceStore[s]].zCalc.calculate(sX, sY);
+            if (this->faces[FoundFaceStore[s]].uPolygonType == POLYGON_Floor)
+                CalcZDist = sZ - this->vertices[*this->faces[FoundFaceStore[s]].pVertexIDs].z;
+            if (this->faces[FoundFaceStore[s]].uPolygonType == POLYGON_InBetweenFloorAndWall) {
+                CalcZDist = sZ - this->faces[FoundFaceStore[s]].zCalc.calculate(sX, sY);
             }
 
             // use this face if its smaller than the current min - prefer faces below party
             if (CalcZDist < MinZDist) {
                 if (CalcZDist >= 0) {
-                    pSectorID = this->pFaces[FoundFaceStore[s]].uSectorID;
+                    pSectorID = this->faces[FoundFaceStore[s]].uSectorID;
                     MinZDist = CalcZDist;
                 } else {
-                    backupID = this->pFaces[FoundFaceStore[s]].uSectorID;
+                    backupID = this->faces[FoundFaceStore[s]].uSectorID;
                     backupDist = std::abs(CalcZDist);
                 }
             }
@@ -448,7 +448,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         if (pSectorID == 0) {
             if (backupID == 0) {
                 assert(false); // doesnt choose - so default to first - SHOULDNT GET HERE
-                pSectorID = this->pFaces[FoundFaceStore[0]].uSectorID;
+                pSectorID = this->faces[FoundFaceStore[0]].uSectorID;
             } else {
                 // there is a face above the party to use
                 pSectorID = backupID;
@@ -545,11 +545,11 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
 
     if (model_idx == MODEL_INDOOR) {
         do_flatten([&](int index) -> const auto &{
-            return pIndoor->pVertices[this->pVertexIDs[index]];
+            return pIndoor->vertices[this->pVertexIDs[index]];
         });
     } else {
         do_flatten([&](int index) -> const auto &{
-            return pOutdoor->pBModels[model_idx].pVertices[this->pVertexIDs[index]];
+            return pOutdoor->pBModels[model_idx].vertices[this->pVertexIDs[index]];
         });
     }
 }
@@ -639,24 +639,24 @@ bool BLVFaceExtra::HasEventHint() {
 }
 
 void BLV_InitialiseDoors() {
-    for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
-        auto *door = &pIndoor->pDoors[i];
+    for (unsigned i = 0; i < pIndoor->doors.size(); ++i) {
+        auto *door = &pIndoor->doors[i];
         int distance = 0;
-        if (door->uState == DOOR_OPEN) {
+        if (door->state == DOOR_OPEN) {
             distance = 0;
-        } else if (door->uState == DOOR_OPENING) {
-            distance = door->uMoveLength - (door->uTimeSinceTriggered.realtimeMilliseconds() * door->uOpenSpeed / 1000);
+        } else if (door->state == DOOR_OPENING) {
+            distance = door->moveLength - (door->timeSinceTriggered.realtimeMilliseconds() * door->openSpeed / 1000);
             if (distance <= 0) {
                 distance = 0;
-                door->uState = DOOR_OPEN;
+                door->state = DOOR_OPEN;
             }
-        } else if (door->uState == DOOR_CLOSED || door->uAttributes & DOOR_TRIGGERED) {
-            distance = door->uMoveLength;
-        } else if (door->uState == DOOR_CLOSING) {
-            distance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uCloseSpeed / 1000;
-            if (distance >= door->uMoveLength) {
-                distance = door->uMoveLength;
-                door->uState = DOOR_CLOSED;
+        } else if (door->state == DOOR_CLOSED || door->attributes & DOOR_TRIGGERED) {
+            distance = door->moveLength;
+        } else if (door->state == DOOR_CLOSING) {
+            distance = door->timeSinceTriggered.realtimeMilliseconds() * door->closeSpeed / 1000;
+            if (distance >= door->moveLength) {
+                distance = door->moveLength;
+                door->state = DOOR_CLOSED;
             }
         } else {
             assert(false && "Invalid door state when initalising doors - please provide a save game");
@@ -672,41 +672,41 @@ void BLV_UpdateDoors() {
         eDoorSoundID = pDoorSoundIDsByLocationID[engine->_currentLoadedMapId];
 
     // loop over all doors
-    for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
-        BLVDoor *door = &pIndoor->pDoors[i];
+    for (unsigned i = 0; i < pIndoor->doors.size(); ++i) {
+        BLVDoor *door = &pIndoor->doors[i];
 
         // door not moving currently
-        if (door->uState == DOOR_OPEN || door->uState == DOOR_CLOSED) {
+        if (door->state == DOOR_OPEN || door->state == DOOR_CLOSED) {
             continue;
         }
 
-        bool shouldPlaySound = !(door->uAttributes & DOOR_NOSOUND) && door->uNumVertices != 0;
+        bool shouldPlaySound = !(door->attributes & DOOR_NOSOUND) && door->numVertices != 0;
 
-        door->uTimeSinceTriggered += pEventTimer->dt();
+        door->timeSinceTriggered += pEventTimer->dt();
 
         int closeDistance = 0;     // [sp+60h] [bp-4h]@6
-        if (door->uState == DOOR_CLOSING) {
-            closeDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uCloseSpeed / 1000;
+        if (door->state == DOOR_CLOSING) {
+            closeDistance = door->timeSinceTriggered.realtimeMilliseconds() * door->closeSpeed / 1000;
 
-            if (closeDistance >= door->uMoveLength) {
-                closeDistance = door->uMoveLength;
-                door->uState = DOOR_CLOSED;
+            if (closeDistance >= door->moveLength) {
+                closeDistance = door->moveLength;
+                door->state = DOOR_CLOSED;
                 if (shouldPlaySound)
                     pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else if (shouldPlaySound) {
                 pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
         } else {
-            assert(door->uState == DOOR_OPENING);
+            assert(door->state == DOOR_OPENING);
 
-            int openDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uOpenSpeed / 1000;
-            if (openDistance >= door->uMoveLength) {
+            int openDistance = door->timeSinceTriggered.realtimeMilliseconds() * door->openSpeed / 1000;
+            if (openDistance >= door->moveLength) {
                 closeDistance = 0;
-                door->uState = DOOR_OPEN;
+                door->state = DOOR_OPEN;
                 if (shouldPlaySound)
                     pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else {
-                closeDistance = door->uMoveLength - openDistance;
+                closeDistance = door->moveLength - openDistance;
                 if (shouldPlaySound)
                     pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
@@ -718,22 +718,22 @@ void BLV_UpdateDoors() {
 
 void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
     // adjust verts to how open the door is
-    for (int j = 0; j < door->uNumVertices; ++j) {
-        pIndoor->pVertices[door->pVertexIDs[j]].x = door->vDirection.x * distance + door->pXOffsets[j];
-        pIndoor->pVertices[door->pVertexIDs[j]].y = door->vDirection.y * distance + door->pYOffsets[j];
-        pIndoor->pVertices[door->pVertexIDs[j]].z = door->vDirection.z * distance + door->pZOffsets[j];
+    for (int j = 0; j < door->numVertices; ++j) {
+        pIndoor->vertices[door->pVertexIDs[j]].x = door->direction.x * distance + door->pXOffsets[j];
+        pIndoor->vertices[door->pVertexIDs[j]].y = door->direction.y * distance + door->pYOffsets[j];
+        pIndoor->vertices[door->pVertexIDs[j]].z = door->direction.z * distance + door->pZOffsets[j];
     }
 
-    for (int j = 0; j < door->uNumFaces; ++j) {
-        BLVFace* face = &pIndoor->pFaces[door->pFaceIDs[j]];
-        const Vec3f& facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
+    for (int j = 0; j < door->numFaces; ++j) {
+        BLVFace* face = &pIndoor->faces[door->pFaceIDs[j]];
+        const Vec3f& facePoint = pIndoor->vertices[face->pVertexIDs[0]];
         face->facePlane.dist = -dot(facePoint, face->facePlane.normal);
         face->zCalc.init(face->facePlane);
 
         Vec3f v;
         Vec3f u;
         face->_get_normals(&u, &v);
-        BLVFaceExtra* extras = &pIndoor->pFaceExtras[face->uFaceExtraID];
+        BLVFaceExtra* extras = &pIndoor->faceExtras[face->uFaceExtraID];
         extras->sTextureDeltaU = 0;
         extras->sTextureDeltaV = 0;
 
@@ -742,15 +742,15 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         float maxU = -std::numeric_limits<float>::infinity();
         float maxV = -std::numeric_limits<float>::infinity();
         for (unsigned k = 0; k < face->uNumVertices; ++k) {
-            Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]];
+            Vec3f point = pIndoor->vertices[face->pVertexIDs[k]];
             float pointU = dot(point, u);
             float pointV = dot(point, v);
             minU = std::min(minU, pointU);
             minV = std::min(minV, pointV);
             maxU = std::max(maxU, pointU);
             maxV = std::max(maxV, pointV);
-            face->pVertexUIDs[k] = pointU;
-            face->pVertexVIDs[k] = pointV;
+            face->pVertexUs[k] = pointU;
+            face->pVertexVs[k] = pointV;
         }
 
         if (face->uAttributes & FACE_TexAlignLeft) {
@@ -766,8 +766,8 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         }
 
         if (face->uAttributes & FACE_TexMoveByDoor) {
-            float udot = dot(door->vDirection, u);
-            float vdot = dot(door->vDirection, v);
+            float udot = dot(door->direction, u);
+            float vdot = dot(door->direction, v);
             extras->sTextureDeltaU = -udot * distance + door->pDeltaUs[j];
             extras->sTextureDeltaV = -vdot * distance + door->pDeltaVs[j];
         }
@@ -775,8 +775,8 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
 }
 
 void switchDoorAnimation(unsigned int uDoorID, DoorAction action) {
-    auto pos = std::ranges::find(pIndoor->pDoors, uDoorID, &BLVDoor::uDoorID);
-    if (pos == pIndoor->pDoors.end()) {
+    auto pos = std::ranges::find(pIndoor->doors, uDoorID, &BLVDoor::doorId);
+    if (pos == pIndoor->doors.end()) {
         logger->error("Unable to find Door ID: {}!", uDoorID);
         return;
     }
@@ -784,43 +784,43 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction action) {
     BLVDoor& door = *pos;
 
     if (action == DOOR_ACTION_TRIGGER) {
-        if (door.uState == DOOR_OPENING || door.uState == DOOR_CLOSING)
+        if (door.state == DOOR_OPENING || door.state == DOOR_CLOSING)
             return;
 
-        door.uTimeSinceTriggered = 0_ticks;
+        door.timeSinceTriggered = 0_ticks;
 
-        if (door.uState == DOOR_CLOSED) {
-            door.uState = DOOR_OPENING;
+        if (door.state == DOOR_CLOSED) {
+            door.state = DOOR_OPENING;
         } else {
-            assert(door.uState == DOOR_OPEN);
-            door.uState = DOOR_CLOSING;
+            assert(door.state == DOOR_OPEN);
+            door.state = DOOR_CLOSING;
         }
     } else if (action == DOOR_ACTION_OPEN) {
-        if (door.uState == DOOR_OPEN || door.uState == DOOR_OPENING)
+        if (door.state == DOOR_OPEN || door.state == DOOR_OPENING)
             return;
 
-        if (door.uState == DOOR_CLOSED) {
-            door.uTimeSinceTriggered = 0_ticks;
+        if (door.state == DOOR_CLOSED) {
+            door.timeSinceTriggered = 0_ticks;
         } else {
-            assert(door.uState == DOOR_CLOSING);
-            int totalTimeMs = 1000 * door.uMoveLength / door.uOpenSpeed;
-            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uCloseSpeed / door.uOpenSpeed;
-            door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
+            assert(door.state == DOOR_CLOSING);
+            int totalTimeMs = 1000 * door.moveLength / door.openSpeed;
+            int timeLeftMs = door.timeSinceTriggered.realtimeMilliseconds() * door.closeSpeed / door.openSpeed;
+            door.timeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
         }
-        door.uState = DOOR_OPENING;
+        door.state = DOOR_OPENING;
     } else if (action == DOOR_ACTION_CLOSE) {
-        if (door.uState == DOOR_CLOSED || door.uState == DOOR_CLOSING)
+        if (door.state == DOOR_CLOSED || door.state == DOOR_CLOSING)
             return;
 
-        if (door.uState == DOOR_OPEN) {
-            door.uTimeSinceTriggered = 0_ticks;
+        if (door.state == DOOR_OPEN) {
+            door.timeSinceTriggered = 0_ticks;
         } else {
-            assert(door.uState == DOOR_OPENING);
-            int totalTimeMs = 1000 * door.uMoveLength / door.uCloseSpeed;
-            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uOpenSpeed / door.uCloseSpeed;
-            door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
+            assert(door.state == DOOR_OPENING);
+            int totalTimeMs = 1000 * door.moveLength / door.closeSpeed;
+            int timeLeftMs = door.timeSinceTriggered.realtimeMilliseconds() * door.openSpeed / door.closeSpeed;
+            door.timeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
         }
-        door.uState = DOOR_CLOSING;
+        door.state = DOOR_CLOSING;
     }
 }
 
@@ -903,7 +903,7 @@ void BLV_UpdateActors() {
         if (actor.velocity.xy().lengthSqr() < 400) {
             actor.velocity.x = 0;
             actor.velocity.y = 0;
-            if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
+            if (pIndoor->faces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
             }
@@ -1060,7 +1060,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
             pActors[i].monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
             if (pActors[i].monsterInfo.field_3E != 11 &&
                 pActors[i].monsterInfo.field_3E != 19 &&
-                (!pActors[i].currentHP || !pActors[i].monsterInfo.hp)) {
+                (!pActors[i].hp || !pActors[i].monsterInfo.hp)) {
                 pActors[i].monsterInfo.field_3E = 5;
                 pActors[i].UpdateAnimation();
             }
@@ -1106,14 +1106,14 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
     float blv_floor_z[5] = { 0 };
     int blv_floor_id[5] = { 0 };
 
-    BLVSector *pSector = &pIndoor->pSectors[uSectorID];
+    BLVSector *pSector = &pIndoor->sectors[uSectorID];
 
     // loop over all floor faces
-    for (unsigned i = 0; i < pSector->uNumFloors; ++i) {
+    for (unsigned i = 0; i < pSector->numFloors; ++i) {
         if (FacesFound >= 5)
             break;
 
-        BLVFace *pFloor = &pIndoor->pFaces[pSector->pFloors[i]];
+        BLVFace *pFloor = &pIndoor->faces[pSector->floors[i]];
         if (pFloor->Ethereal())
             continue;
 
@@ -1129,22 +1129,22 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         // And if this z is ceiling z, then this will place the actor above the ceiling.
         float z_calc;
         if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
-            z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z; // POLYGON_Floor has normal (0,0,1)
+            z_calc = pIndoor->vertices[pFloor->pVertexIDs[0]].z; // POLYGON_Floor has normal (0,0,1)
         } else {
             z_calc = pFloor->zCalc.calculate(pos.x, pos.y);
         }
 
         blv_floor_z[FacesFound] = z_calc;
-        blv_floor_id[FacesFound] = pSector->pFloors[i];
+        blv_floor_id[FacesFound] = pSector->floors[i];
         FacesFound++;
     }
 
     // as above but for sector portal faces
-    if (pSector->field_0 & 8) { // sector has vertical transitions
-        for (unsigned i = 0; i < pSector->uNumPortals; ++i) {
+    if (pSector->flags & 8) { // sector has vertical transitions
+        for (unsigned i = 0; i < pSector->numPortals; ++i) {
             if (FacesFound >= 5) break;
 
-            BLVFace *portal = &pIndoor->pFaces[pSector->pPortals[i]];
+            BLVFace *portal = &pIndoor->faces[pSector->portals[i]];
             if (portal->uPolygonType != POLYGON_Floor)
                 continue;
 
@@ -1152,7 +1152,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
                 continue;
 
             blv_floor_z[FacesFound] = -29000; // moving vertically through portal
-            blv_floor_id[FacesFound] = pSector->pPortals[i];
+            blv_floor_id[FacesFound] = pSector->portals[i];
             FacesFound++;
         }
     }
@@ -1237,7 +1237,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + Duration::fromTicks(v10));
 
     // error catching
-    if (v11->animationName == "null") assert(false);
+    if (v11->spriteName == "null") assert(false);
 
     v30 = billboardFlagsForSprite(v11->flags, v9);
 
@@ -1308,8 +1308,8 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // t
             SectargetrID = pIndoor->GetSector(from);
 
         // loop over sectargetr faces
-        for (int FaceLoop = 0; FaceLoop < pIndoor->pSectors[SectargetrID].uNumFaces; ++FaceLoop) {
-            BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[SectargetrID].pFaceIDs[FaceLoop]];
+        for (int FaceLoop = 0; FaceLoop < pIndoor->sectors[SectargetrID].numFaces; ++FaceLoop) {
+            BLVFace *face = &pIndoor->faces[pIndoor->sectors[SectargetrID].faceIds[FaceLoop]];
             if (face->isPortal() || face->Ethereal())
                 continue;
 
@@ -1359,8 +1359,8 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
     BBoxf bbox = BBoxf::forPoints(from, target);
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
-            for (ODMFace &face : model.pFaces) {
+        if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.position.x, model.position.y) <= model.boundingRadius + 128) {
+            for (ODMFace &face : model.faces) {
                 if (face.Ethereal()) continue;
 
                 float dirDotNormal = dot(dir, face.facePlane.normal);
@@ -1369,7 +1369,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
                     continue;
 
                 // bounds check
-                if (!bbox.intersects(face.pBoundingBox))
+                if (!bbox.intersects(face.boundingBox))
                     continue;
 
                 // point target plane distacne
@@ -1464,28 +1464,28 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     return 1;
                 }
 
-                ODMFace &model = pOutdoor->pBModels[bmodel_id].pFaces[face_id];
+                ODMFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
 
-                if (model.uAttributes & FACE_HAS_EVENT || model.sCogTriggeredID == 0) {
+                if (model.attributes & FACE_HAS_EVENT || model.eventId == 0) {
                     return 1;
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor(pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID, pid, 1);
+                    eventProcessor(pOutdoor->pBModels[bmodel_id].faces[face_id].eventId, pid, 1);
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
             } else {
-                if (!(pIndoor->pFaces[id].uAttributes & FACE_CLICKABLE)) {
+                if (!(pIndoor->faces[id].uAttributes & FACE_CLICKABLE)) {
                     engine->_statusBar->nothingHere();
                     return 1;
                 }
-                if (pIndoor->pFaces[id].uAttributes & FACE_HAS_EVENT || !pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID) {
+                if (pIndoor->faces[id].uAttributes & FACE_HAS_EVENT || !pIndoor->faceExtras[pIndoor->faces[id].uFaceExtraID].uEventID) {
                     return 1;
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, pid, 1);
+                    eventProcessor((int16_t)pIndoor->faceExtras[pIndoor->faces[id].uFaceExtraID].uEventID, pid, 1);
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
@@ -1560,15 +1560,15 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     // not hovering & stepped onto a new face => activate potential pressure plate.
     if (!isAboveGround && pParty->floor_face_id != 0 && pParty->floor_face_id != faceId) {
-        if (pIndoor->pFaces[faceId].uAttributes & FACE_PRESSURE_PLATE)
-            faceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[faceId].uFaceExtraID].uEventID;
+        if (pIndoor->faces[faceId].uAttributes & FACE_PRESSURE_PLATE)
+            faceEvent = pIndoor->faceExtras[pIndoor->faces[faceId].uFaceExtraID].uEventID;
     }
 
     if (!isAboveGround)
         pParty->floor_face_id = faceId;
 
     // party is on water?
-    if (pIndoor->pFaces[faceId].isFluid())
+    if (pIndoor->faces[faceId].isFluid())
         on_water = true;
 
     // Calculate rotation in ticks (1024 ticks per 180 degree).
@@ -1736,7 +1736,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         if (walkDelta >= 4) {
                             if (on_water) {
                                 sound = SOUND_RunWaterIndoor;
-                            } else if (pIndoor->pFaces[faceId].uAttributes & FACE_INDOOR_CARPET) {
+                            } else if (pIndoor->faces[faceId].uAttributes & FACE_INDOOR_CARPET) {
                                 sound = SOUND_RunCarpet;
                             } else {
                                 // TODO(Nik-RE-dev): need to probe surface
@@ -1747,7 +1747,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         if (walkDelta >= 2) {
                             if (on_water) {
                                 sound = SOUND_WalkWaterIndoor;
-                            } else if (pIndoor->pFaces[faceId].uAttributes & FACE_INDOOR_CARPET) {
+                            } else if (pIndoor->faces[faceId].uAttributes & FACE_INDOOR_CARPET) {
                                 sound = SOUND_WalkCarpet;
                             } else {
                                 // TODO(Nik-RE-dev): need to probe surface
@@ -1780,7 +1780,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
     if (faceId >= 0) // TODO(pskelton): investigate why this happens
-        if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
+        if (!isAboveGround && pIndoor->faces[faceId].uAttributes & FACE_IsLava)
             pParty->uFlags |= PARTY_FLAG_BURNING;
 
     if (faceEvent)
@@ -1837,10 +1837,10 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {
-                dist_y = std::abs(enc_spawn_point.vPosition.y - model.vBoundingCenter.y);
-                dist_x = std::abs(enc_spawn_point.vPosition.x - model.vBoundingCenter.x);
+                dist_y = std::abs(enc_spawn_point.vPosition.y - model.boundingCenter.y);
+                dist_x = std::abs(enc_spawn_point.vPosition.x - model.boundingCenter.x);
                 if (int_get_vector_length(dist_x, dist_y, 0) <
-                    model.sBoundingRadius + 256) {
+                    model.boundingRadius + 256) {
                     not_in_model = 1;
                     break;
                 }

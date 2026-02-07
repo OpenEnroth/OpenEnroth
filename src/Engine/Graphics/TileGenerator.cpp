@@ -36,11 +36,11 @@ void TileGenerator::fillTable() {
 
         for (TileVariant variant : allGeneratedTileVariants()) {
             TileData tileData;
-            tileData.name = fmt::format("generated/tiles/{}_{}.png", toString(tileset), toString(variant));
+            tileData.textureName = fmt::format("generated/tiles/{}_{}.png", toString(tileset), toString(variant));
             tileData.tileset = tileset;
             tileData.variant = variant;
             tileData.flags = TILE_TRANSITION | TILE_GENERATED_TRANSITION;
-            _tilesetVariantByName.emplace(tileData.name, std::pair(tileset, variant));
+            _tilesetVariantByName.emplace(tileData.textureName, std::pair(tileset, variant));
             pTileTable->addTile(std::move(tileData));
         }
     }
@@ -90,7 +90,7 @@ RgbaImageView TileGenerator::loadTile(Tileset tileset, TileVariant variant) {
         return *result;
 
     // Need to load directly from LOD, caching layer contains desaturated images.
-    LodImage image = lod::decodeImage(pBitmaps_LOD->read(pTileTable->tile(pTileTable->tileId(tileset, variant)).name));
+    LodImage image = lod::decodeImage(pBitmaps_LOD->read(pTileTable->tile(pTileTable->tileId(tileset, variant)).textureName));
     return _tileByTilesetVariant.emplace(key, makeRgbaImage(image.image, image.palette)).first->second;
 }
 

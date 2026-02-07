@@ -98,7 +98,7 @@ struct MonsterDesc {
     int16_t toHitRadius;
     Color tintColor;
     IndexedArray<SoundId, ACTOR_SOUND_FIRST, ACTOR_SOUND_LAST> soundSampleIds;
-    std::string monsterName;
+    std::string internalMonsterName; // Internal monster name, e.g. "Angel A".
     IndexedArray<std::string, ANIM_First, ANIM_Last> spriteNames;
 };
 

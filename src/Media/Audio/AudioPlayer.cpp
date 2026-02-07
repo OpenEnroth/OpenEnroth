@@ -244,11 +244,11 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
         switch (object_type) {
             case OBJECT_Door: {
                 assert(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
-                assert((int)object_id < pIndoor->pDoors.size());
+                assert((int)object_id < pIndoor->doors.size());
 
-                sample->SetPosition(pIndoor->pDoors[object_id].pXOffsets[0],
-                                    pIndoor->pDoors[object_id].pYOffsets[0],
-                                    pIndoor->pDoors[object_id].pZOffsets[0], MAX_SOUND_DIST);
+                sample->SetPosition(pIndoor->doors[object_id].pXOffsets[0],
+                                    pIndoor->doors[object_id].pYOffsets[0],
+                                    pIndoor->doors[object_id].pZOffsets[0], MAX_SOUND_DIST);
 
                 result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid, true);
 
@@ -321,24 +321,24 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
 
     switch (result) {
         case SOUND_PLAYBACK_FAILED:
-            if (si->sName.empty()) {
-                logger->warning("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->sName);
+            if (si->name.empty()) {
+                logger->warning("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->name);
             } else {
                 logger->warning("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
             }
             break;
         case SOUND_PLAYBACK_SKIPPED:
-            if (si->sName.empty()) {
+            if (si->name.empty()) {
                 logger->trace("AudioPlayer: skipped playing sound {}", std::to_underlying(eSoundID));
             } else {
-                logger->trace("AudioPlayer: skipped playing sound {} with name '{}'", std::to_underlying(eSoundID), si->sName);
+                logger->trace("AudioPlayer: skipped playing sound {} with name '{}'", std::to_underlying(eSoundID), si->name);
             }
             break;
         case SOUND_PLAYBACK_SUCCEEDED:
-            if (si->sName.empty()) {
+            if (si->name.empty()) {
                 logger->trace("AudioPlayer: playing sound {}", std::to_underlying(eSoundID));
             } else {
-                logger->trace("AudioPlayer: playing sound {} with name '{}'", std::to_underlying(eSoundID), si->sName);
+                logger->trace("AudioPlayer: playing sound {} with name '{}'", std::to_underlying(eSoundID), si->name);
             }
             break;
         default:
@@ -350,21 +350,21 @@ bool AudioPlayer::loadSoundDataSource(SoundInfo* si) {
     if (!si->dataSource) {
         Blob buffer;
 
-        if (si->sName == "") {  // enable this for bonus sound effects
+        if (si->name == "") {  // enable this for bonus sound effects
             //logger->Info("AudioPlayer: trying to load bonus sound {}", eSoundID);
             //buffer = LoadSound(int(eSoundID));
         } else {
-            buffer = LoadSound(si->sName);
+            buffer = LoadSound(si->name);
         }
 
         if (!buffer) {
-            logger->warning("AudioPlayer: failed to load sound {} ({})", std::to_underlying(si->uSoundID), si->sName);
+            logger->warning("AudioPlayer: failed to load sound {} ({})", std::to_underlying(si->soundId), si->name);
             return false;
         }
 
         si->dataSource = CreateAudioBufferDataSource(std::move(buffer));
         if (!si->dataSource) {
-            logger->warning("AudioPlayer: failed to create sound data source {} ({})", std::to_underlying(si->uSoundID), si->sName);
+            logger->warning("AudioPlayer: failed to create sound data source {} ({})", std::to_underlying(si->soundId), si->name);
             return false;
         }
 

@@ -12,9 +12,9 @@ BspRenderer *pBspRenderer = new BspRenderer();
 
 //----- (004B0EA8) --------------------------------------------------------
 void BspRenderer::AddFace(const int node_id, const int uFaceID) {
-    assert(uFaceID > -1 && uFaceID < pIndoor->pFaces.size() && "please report with a nearby save file");
+    assert(uFaceID > -1 && uFaceID < pIndoor->faces.size() && "please report with a nearby save file");
 
-    BLVFace *pFace = &pIndoor->pFaces[uFaceID];
+    BLVFace *pFace = &pIndoor->faces[uFaceID];
     pFace->uAttributes |= FACE_SeenByParty;
 
     // NOTE(yoctozepto): the below happens, e.g., on various stairs
@@ -33,9 +33,9 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
 
     // TODO(yoctozepto): are face vertices consecutive? are face vertices shared/overlapping?
     for (unsigned k = 0; k < pFace->uNumVertices; ++k) {
-        originalFaceVertices[k].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[k]].x;
-        originalFaceVertices[k].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[k]].y;
-        originalFaceVertices[k].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[k]].z;
+        originalFaceVertices[k].vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[k]].x;
+        originalFaceVertices[k].vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[k]].y;
+        originalFaceVertices[k].vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[k]].z;
     }
 
     unsigned int pNewNumVertices = pFace->uNumVertices;
@@ -227,13 +227,13 @@ void BspRenderer::AddNode() {
     const int node_id = num_nodes;
     num_nodes++;
 
-    BLVSector *pSector = &pIndoor->pSectors[nodes[node_id].uSectorID];
+    BLVSector *pSector = &pIndoor->sectors[nodes[node_id].uSectorID];
 
-    for (unsigned i = 0; i < pSector->uNumNonBSPFaces; ++i)
-        AddFace(node_id, pSector->pFaceIDs[i]);  // can recurse back to this function
+    for (unsigned i = 0; i < pSector->numNonBspFaces; ++i)
+        AddFace(node_id, pSector->faceIds[i]);  // can recurse back to this function
 
-    if (pSector->field_0 & 0x10) {
-        AddBSPFaces(node_id, pSector->uFirstBSPNode);  // can recurse back to this function through AddFace
+    if (pSector->flags & 0x10) {
+        AddBSPFaces(node_id, pSector->firstBspNode);  // can recurse back to this function through AddFace
     }
 }
 
@@ -251,9 +251,9 @@ void BspRenderer::AddBSPFaces(const int node_id, const int initialBSPNodeId) {
     //                   normally, this BSP node exploration is recursive on two branches but the second recursion can be optimised
     //                   because it's in the tail call position - in here, it has been optimised explicitly through the following loop
     do {
-        pSector = &pIndoor->pSectors[node->uSectorID];
-        bspNode = &pIndoor->pNodes[bspNodeId];
-        pFace = &pIndoor->pFaces[pSector->pFaceIDs[bspNode->uBSPFaceIDOffset]];
+        pSector = &pIndoor->sectors[node->uSectorID];
+        bspNode = &pIndoor->nodes[bspNodeId];
+        pFace = &pIndoor->faces[pSector->faceIds[bspNode->uBSPFaceIDOffset]];
 
         bool isFaceFront = pCamera3D->is_face_faced_to_cameraBLV(pFace);
         // NOTE(yoctozepto): if the face is a portal going from a different sector, then its normal is inverted, so invert the computed value
@@ -266,7 +266,7 @@ void BspRenderer::AddBSPFaces(const int node_id, const int initialBSPNodeId) {
             AddBSPFaces(node_id, otherBSPNodeId);
 
         for (int i = 0; i < bspNode->uNumBSPFaces; i++) {
-            AddFace(node_id, pSector->pFaceIDs[bspNode->uBSPFaceIDOffset + i]);  // can recurse back to this function through AddNode
+            AddFace(node_id, pSector->faceIds[bspNode->uBSPFaceIDOffset + i]);  // can recurse back to this function through AddNode
         }
 
         // tail recursion optimised call

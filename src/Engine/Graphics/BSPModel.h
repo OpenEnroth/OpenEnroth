@@ -23,29 +23,29 @@ struct ODMFace {
     bool HasEventHint();
 
     inline bool Invisible() const {
-        return uAttributes & FACE_IsInvisible;
+        return attributes & FACE_IsInvisible;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return uAttributes & FACE_IsPortal; }
-    inline bool Fluid() const { return uAttributes & FACE_IsFluid; }
+    inline bool Portal() const { return attributes & FACE_IsPortal; }
+    inline bool Fluid() const { return attributes & FACE_IsFluid; }
     inline bool Indoor_sky() const {
-        return uAttributes & FACE_INDOOR_SKY;
+        return attributes & FACE_INDOOR_SKY;
     }
     inline bool Clickable() const {
-        return uAttributes & FACE_CLICKABLE;
+        return attributes & FACE_CLICKABLE;
     }
     inline bool Pressure_Plate() const {
-        return uAttributes & FACE_PRESSURE_PLATE;
+        return attributes & FACE_PRESSURE_PLATE;
     }
-    inline bool Ethereal() const { return uAttributes & FACE_ETHEREAL; }
+    inline bool Ethereal() const { return attributes & FACE_ETHEREAL; }
 
     inline bool IsAnimated() {
-        return this->uAttributes & FACE_ANIMATED;
+        return this->attributes & FACE_ANIMATED;
     }
     inline void ToggleIsAnimated() {
-        this->uAttributes = this->uAttributes & FACE_ANIMATED
-                                ? this->uAttributes & ~FACE_ANIMATED
-                                : this->uAttributes | FACE_ANIMATED;
+        this->attributes = this->attributes & FACE_ANIMATED
+                                ? this->attributes & ~FACE_ANIMATED
+                                : this->attributes | FACE_ANIMATED;
     }
 
     void SetTexture(std::string_view filename);
@@ -60,10 +60,10 @@ struct ODMFace {
     int index = 0;
     Planef facePlane;
     PlaneZCalcf zCalc;
-    FaceAttributes uAttributes = 0;
-    std::array<int16_t, 20> pVertexIDs = {{}};
-    std::array<int16_t, 20> pTextureUIDs = {{}};
-    std::array<int16_t, 20> pTextureVIDs = {{}};
+    FaceAttributes attributes = 0;
+    std::array<int16_t, 20> vertexIds = {{}};
+    std::array<int16_t, 20> textureUs = {{}};
+    std::array<int16_t, 20> textureVs = {{}};
 
     // details store for array texture
     GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.
@@ -71,39 +71,26 @@ struct ODMFace {
     int texunit = -1;
     int texlayer = -1;
 
-    int16_t sTextureDeltaU = 0;
-    int16_t sTextureDeltaV = 0;
-    BBoxf pBoundingBox;
-    int16_t sCogNumber = 0;
-    int16_t sCogTriggeredID = 0;
-    int16_t sCogTriggerType = 0;
-    uint8_t uNumVertices = 0;
-    PolygonType uPolygonType = POLYGON_Invalid;
-    uint8_t uShadeType = 0;  // could be minimum shade
-    uint8_t bVisible = 0;
+    int16_t textureDeltaU = 0;
+    int16_t textureDeltaV = 0;
+    BBoxf boundingBox;
+    int16_t cogNumber = 0;
+    int16_t eventId = 0;
+    uint8_t numVertices = 0;
+    PolygonType polygonType = POLYGON_Invalid;
 };
 
 class BSPModel {
  public:
     int index = 0;
-    std::string pModelName;
-    std::string pModelName2;
     int32_t field_40 = 0; // visibility flag TODO(pskelton): use for map tooltip checking or remove
-    int32_t sCenterX = 0;
-    int32_t sCenterY = 0;
-    Vec3f vPosition {};
-    BBoxi pBoundingBox = {0, 0, 0, 0, 0, 0};
-    int32_t sSomeOtherMinX = 0;
-    int32_t sSomeOtherMinY = 0;
-    int32_t sSomeOtherMinZ = 0;
-    int32_t sSomeOtherMaxX = 0;
-    int32_t sSomeOtherMaxY = 0;
-    int32_t sSomeOtherMaxZ = 0;
-    Vec3f vBoundingCenter {};
-    float sBoundingRadius = 0;
+    Vec3f position {};
+    BBoxi boundingBox = {0, 0, 0, 0, 0, 0};
+    Vec3f boundingCenter {};
+    float boundingRadius = 0;
 
-    std::vector<Vec3f> pVertices;
-    std::vector<ODMFace> pFaces;
-    std::vector<uint16_t> pFacesOrdering;
-    std::vector<BSPNode> pNodes;
+    std::vector<Vec3f> vertices;
+    std::vector<ODMFace> faces;
+    std::vector<uint16_t> facesOrdering;
+    std::vector<BSPNode> nodes;
 };

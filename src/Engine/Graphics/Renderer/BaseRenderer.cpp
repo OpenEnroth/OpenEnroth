@@ -96,7 +96,7 @@ void BaseRenderer::DrawSpriteObjects() {
              (object->uType < SPRITE_PROJECTILE_AIR_BOLT || object->uType >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
              (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) { // Not a trap.
             SpriteFrame *frame = object->getSpriteFrame();
-            if (frame->animationName == "null" || frame->textureName == "null") {
+            if (frame->spriteName == "null" || frame->textureName == "null") {
                 logger->trace("Trying to draw sprite with null frame");
                 continue;
             }

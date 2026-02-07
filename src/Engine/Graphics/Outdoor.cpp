@@ -487,7 +487,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
 
             size_t totalFaces = 0;
             for (BSPModel &model : pBModels)
-                totalFaces += model.pFaces.size();
+                totalFaces += model.faces.size();
 
             // Level was changed externally and we have a save there? Don't crash, just respawn.
             if (delta.header.totalFacesCount && delta.header.bmodelCount && delta.header.decorationCount &&
@@ -651,7 +651,7 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                     pActors[i].aiState = AIState::Disabled;
                 if (pActors[i].aiState != AIState::Removed &&
                     pActors[i].aiState != AIState::Disabled &&
-                    (pActors[i].currentHP == 0 ||
+                    (pActors[i].hp == 0 ||
                      pActors[i].monsterInfo.hp == 0))
                     pActors[i].aiState = AIState::Dead;
                 pActors[i].velocity.x = 0;
@@ -675,7 +675,7 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                 pActors[i].aiState = AIState::Disabled;
             if (pActors[i].aiState != AIState::Removed &&
                 pActors[i].aiState != AIState::Disabled &&
-                (pActors[i].currentHP == 0 ||
+                (pActors[i].hp == 0 ||
                  pActors[i].monsterInfo.hp == 0))
                 pActors[i].aiState = AIState::Dead;
             pActors[i].velocity.x = 0;
@@ -778,7 +778,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
 
         // no sprite frame to draw
-        if (frame->animationName == "null") continue;
+        if (frame->spriteName == "null") continue;
 
 
         if (frame->glowRadius) {
@@ -821,23 +821,23 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
     int surface_count = 1;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (!model.pBoundingBox.containsXY(pos.x, pos.y))
+        if (!model.boundingBox.containsXY(pos.x, pos.y))
             continue;
 
-        if (model.pFaces.empty())
+        if (model.faces.empty())
             continue;
 
-        for (ODMFace &face : model.pFaces) {
+        for (ODMFace &face : model.faces) {
             if (face.Ethereal())
                 continue;
 
-            if (face.uNumVertices == 0)
+            if (face.numVertices == 0)
                 continue;
 
-            if (face.uPolygonType != POLYGON_Floor && face.uPolygonType != POLYGON_InBetweenFloorAndWall)
+            if (face.polygonType != POLYGON_Floor && face.polygonType != POLYGON_InBetweenFloorAndWall)
                 continue;
 
-            if (!face.pBoundingBox.containsXY(pos.x, pos.y))
+            if (!face.boundingBox.containsXY(pos.x, pos.y))
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.value();
@@ -845,8 +845,8 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
                 continue;
 
             int floor_level;
-            if (face.uPolygonType == POLYGON_Floor) {
-                floor_level = model.pVertices[face.pVertexIDs[0]].z;
+            if (face.polygonType == POLYGON_Floor) {
+                floor_level = model.vertices[face.vertexIds[0]].z;
             } else {
                 floor_level = face.zCalc.calculate(pos.x, pos.y);
             }
@@ -884,7 +884,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
         *faceId = current_Face_id[current_idx] | (current_BModel_id[current_idx] << 6);
 
     if (current_idx)
-        *pIsOnWater = pOutdoor->pBModels[current_BModel_id[current_idx]].pFaces[current_Face_id[current_idx]].Fluid();
+        *pIsOnWater = pOutdoor->pBModels[current_BModel_id[current_idx]].faces[current_Face_id[current_idx]].Fluid();
 
     return std::max(odm_floor_level[0], odm_floor_level[current_idx]);
 }
@@ -950,8 +950,8 @@ void ODM_ProcessPartyActions() {
     pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
     if (pParty->WaterWalkActive()) {
         waterWalkActive = true;
-        engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
-        if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff &&
+        engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] |= 1;
+        if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM &&
             pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1].mana <= 0)
             waterWalkActive = false;
     }
@@ -1003,8 +1003,8 @@ void ODM_ProcessPartyActions() {
             int BModel_id = floorFaceId >> 6;
             if (BModel_id < pOutdoor->pBModels.size()) {
                 int face_id = floorFaceId & 0x3F;
-                if (pOutdoor->pBModels[BModel_id].pFaces[face_id].uAttributes & FACE_PRESSURE_PLATE) {
-                    triggerID = pOutdoor->pBModels[BModel_id].pFaces[face_id].sCogTriggeredID;
+                if (pOutdoor->pBModels[BModel_id].faces[face_id].attributes & FACE_PRESSURE_PLATE) {
+                    triggerID = pOutdoor->pBModels[BModel_id].faces[face_id].eventId;
                 }
             }
         }
@@ -1035,7 +1035,7 @@ void ODM_ProcessPartyActions() {
 
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
-                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
+                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM ||
                     (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                     if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value() || partyNotTouchingFloor) {
                         pParty->bFlying = true;
@@ -1250,7 +1250,7 @@ void ODM_ProcessPartyActions() {
         if (pParty->FlyActive() || engine->IsUnderwater()) {
             pParty->bFlying = false;
             if (engine->IsUnderwater() ||
-                pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
+                pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM ||
                 (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                 partyOldFlightZ = pParty->pos.z;
                 partyInputSpeed.z = -pParty->walkSpeed * 4;
@@ -1279,7 +1279,7 @@ void ODM_ProcessPartyActions() {
         }
 
         if (pParty->FlyActive())
-            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] &= 0xFE;
+            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayId + 119] &= 0xFE;
         pParty->uFallStartZ = partyNewPos.z;
     } else if (partyNewPos.z < currentGroundLevel) {
         partyNewPos.z = currentGroundLevel;
@@ -1287,11 +1287,11 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewPos.z;
         if (pParty->FlyActive())
-            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] |= 1;
+            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayId + 119] |= 1;
     } else {
         partyOldFlightZ = partyNewPos.z;
         if (pParty->FlyActive())
-            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] |= 1;
+            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayId + 119] |= 1;
     }
     //------------------------------------------
 
@@ -1405,11 +1405,11 @@ void ODM_ProcessPartyActions() {
         if (waterMoveY || waterMoveX) {
             if (waterWalkActive) {
                 pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
-                engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
+                engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] |= 1;
                 if (!partyNewXOnLand || !partyNewYOnLand) {
                     if (!pParty->bFlying) {
                         pParty->uFlags |= PARTY_FLAG_STANDING_ON_WATER;
-                        engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] &= 0xFFFE;
+                        engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] &= 0xFFFE;
                     }
                 }
             }
@@ -1493,7 +1493,7 @@ void ODM_ProcessPartyActions() {
                 if (!partyNotTouchingFloor || partyCloseToGround) {
                     int modelId = pParty->floor_face_id >> 6;
                     int faceId = pParty->floor_face_id & 0x3F;
-                    bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].pFaces[faceId].Visible();
+                    bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].faces[faceId].Visible();
                     SoundId sound = SOUND_Invalid;
                     if (partyIsRunning) {
                         if (walkDelta >= 4) {
@@ -1540,17 +1540,17 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
     int ceiling_count = 1;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (!model.pBoundingBox.containsXY(Party_X, Party_Y))
+        if (!model.boundingBox.containsXY(Party_X, Party_Y))
             continue;
 
-        for (ODMFace &face : model.pFaces) {
+        for (ODMFace &face : model.faces) {
             if (face.Ethereal())
                 continue;
 
-            if (face.uPolygonType != POLYGON_Ceiling && face.uPolygonType != POLYGON_InBetweenCeilingAndWall)
+            if (face.polygonType != POLYGON_Ceiling && face.polygonType != POLYGON_InBetweenCeilingAndWall)
                 continue;
 
-            if (!face.pBoundingBox.containsXY(Party_X, Party_Y))
+            if (!face.boundingBox.containsXY(Party_X, Party_Y))
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.value();
@@ -1561,8 +1561,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
                 break;
 
             int height_level;
-            if (face.uPolygonType == POLYGON_Ceiling)
-                height_level = model.pVertices[face.pVertexIDs[0]].z;
+            if (face.polygonType == POLYGON_Ceiling)
+                height_level = model.vertices[face.vertexIds[0]].z;
             else
                 height_level = face.zCalc.calculate(Party_X, Party_Y);
 

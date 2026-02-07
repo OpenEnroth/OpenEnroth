@@ -66,7 +66,7 @@ struct OutdoorLocation {
 
     ODMFace &face(Pid pid) {
         assert(pid.type() == OBJECT_Face);
-        return pBModels[pid.id() >> 6].pFaces[pid.id() & 0x3F];
+        return pBModels[pid.id() >> 6].faces[pid.id() & 0x3F];
     }
 
     BSPModel &model(Pid pid) {

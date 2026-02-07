@@ -62,17 +62,17 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
             for (int i = 0; i < face->uNumVertices; i++) {
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.x =
-                    (float)pIndoor->pVertices[face->pVertexIDs[i]].x;
+                    (float)pIndoor->vertices[face->pVertexIDs[i]].x;
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.y =
-                    (float)pIndoor->pVertices[face->pVertexIDs[i]].y;
+                    (float)pIndoor->vertices[face->pVertexIDs[i]].y;
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.z =
-                    (float)pIndoor->pVertices[face->pVertexIDs[i]].z;
+                    (float)pIndoor->vertices[face->pVertexIDs[i]].z;
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        const std::vector<Vec3f> &v = pOutdoor->model(pid).pVertices;
+        const std::vector<Vec3f> &v = pOutdoor->model(pid).vertices;
         for (unsigned i = 0; i < face->uNumVertices; ++i)
             static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]];
     } else {
@@ -286,13 +286,13 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
     RenderVertexSoft a1;
 
     // clear the debug attribute
-    for (auto &face : pIndoor->pFaces) {
+    for (auto &face : pIndoor->faces) {
         face.uAttributes &= ~FACE_OUTLINED;
     }
 
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
         int faceId = pBspRenderer->faces[i].uFaceID;
-        BLVFace *face = &pIndoor->pFaces[faceId];
+        BLVFace *face = &pIndoor->faces[faceId];
 
         if (isFacePartOfSelection(nullptr, face, filter)) {
             if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
@@ -307,17 +307,17 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
 
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // approx distance - for reachable checks
-    float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
-    float rayy = model->vBoundingCenter.y - pCamera3D->vCameraPos.y;
+    float rayx = model->boundingCenter.x - pCamera3D->vCameraPos.x;
+    float rayy = model->boundingCenter.y - pCamera3D->vCameraPos.y;
     int dist = int_get_vector_length(std::abs(static_cast<int>(rayx)), std::abs(static_cast<int>(rayy)), 0);
     *reachable = false;
-    if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
+    if (dist < model->boundingRadius + reachable_depth) *reachable = true;
 
     // to avoid small objects not showing up give a more generous radius
-    float radius{ model->sBoundingRadius };
+    float radius{ model->boundingRadius };
     if (radius < 512.0f) radius = 512.0f;
 
-    return IsSphereInFrustum(model->vBoundingCenter, radius);
+    return IsSphereInFrustum(model->boundingCenter, radius);
 }
 
 bool IsSphereInFrustum(Vec3f center, float radius, Planef *frustum) {
@@ -370,8 +370,8 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
             continue;
         }
 
-        for (ODMFace &face : model.pFaces) {
-            face.uAttributes &= ~FACE_OUTLINED;
+        for (ODMFace &face : model.faces) {
+            face.attributes &= ~FACE_OUTLINED;
 
             if (isFacePartOfSelection(&face, nullptr, filter)) {
                 BLVFace blv_face;
@@ -388,7 +388,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
                     list->AddObject(VisObjectType_Face, intersection.vWorldViewPosition.x, pid);
 
                     if (engine->config->debug.ShowPickedFace.value())
-                        face.uAttributes |= FACE_OUTLINED;
+                        face.attributes |= FACE_OUTLINED;
                 }
             }
         }
@@ -808,10 +808,10 @@ bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_Selectio
     FaceAttributes face_attrib;
     bool no_event = true;
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        no_event = odmFace->sCogTriggeredID == 0;
-        face_attrib = odmFace->uAttributes;
+        no_event = odmFace->eventId == 0;
+        face_attrib = odmFace->attributes;
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        no_event = pIndoor->pFaceExtras[bvlFace->uFaceExtraID].uEventID == 0;
+        no_event = pIndoor->faceExtras[bvlFace->uFaceExtraID].uEventID == 0;
         face_attrib = bvlFace->uAttributes;
     } else {
         assert(false);
@@ -896,7 +896,7 @@ bool Vis::DoesRayMissLevelGeom(float test_x, float test_y, float fDepth, float f
 void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter) {
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
         int pFaceID = pBspRenderer->faces[i].uFaceID;
-        BLVFace *pFace = &pIndoor->pFaces[pFaceID];
+        BLVFace *pFace = &pIndoor->faces[pFaceID];
         if (isFacePartOfSelection(nullptr, pFace, filter)) {
             Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, Pid(OBJECT_Face, pFaceID), pick_depth);
             if (v8)
@@ -911,7 +911,7 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
         bool reachable;
         if (IsBModelVisible(&model, pick_depth, &reachable)) {
             if (reachable) {
-                for (ODMFace &face : model.pFaces) {
+                for (ODMFace &face : model.faces) {
                     if (isFacePartOfSelection(&face, nullptr, filter)) {
                         BLVFace blv_face;
                         blv_face.FromODM(&face);
