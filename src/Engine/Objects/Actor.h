@@ -215,8 +215,7 @@ class Actor {
     ActorAttributes attributes = 0;
     int16_t hp = 0;
     MonsterInfo monsterInfo;
-    int16_t word_000084_range_attack = 0;
-    MonsterId word_000086_some_monster_id = MONSTER_INVALID;  // base monster class monsterlist id
+    MonsterId monsterId = MONSTER_INVALID;
     uint16_t radius = 32;
     uint16_t height = 128;
     uint16_t moveSpeed = 200;

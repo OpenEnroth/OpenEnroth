@@ -473,8 +473,8 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
 
 void CollideIndoorWithDecorations() {
     BLVSector *sector = &pIndoor->sectors[collision_state.uSectorID];
-    for (unsigned int i = 0; i < sector->uNumDecorations; ++i)
-        CollideWithDecoration(sector->pDecorationIDs[i]);
+    for (unsigned int i = 0; i < sector->numDecorations; ++i)
+        CollideWithDecoration(sector->decorationIds[i]);
 }
 
 void CollideOutdoorWithDecorations(Vec2i gridPos) {

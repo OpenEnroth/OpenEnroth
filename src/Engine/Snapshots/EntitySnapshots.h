@@ -329,17 +329,8 @@ struct Character_MM7 {
     uint16_t level;
     int16_t levelModifier;
     int16_t ageModifier;
-    int32_t timer_E0; // These look like some timers. In the original binary they were decremented by ticks
-                      // elapsed on each frame, but weren't used anywhere. Not used in OE.
-    int32_t timer_E4;
-    int32_t timer_E8;
-    int32_t timer_EC;
-    int32_t timer_F0;
-    int32_t timer_F4;
-    int32_t timer_F8;
-    int32_t timer_FC;
-    int32_t timer_100;
-    int32_t timer_104;
+    std::array<int32_t, 10> timers; // These look like some timers. In the original binary they were decremented by
+                                    // ticks elapsed on each frame, but weren't used anywhere. Not used in OE.
     std::array<uint16_t, 37> activeSkills;
     std::array<uint8_t, 64> achievedAwardsBits;
     std::array<bool, 99> haveSpell;
@@ -780,8 +771,8 @@ struct Actor_MM7 {
     int16_t hp;
     std::array<char, 2> _pad;
     MonsterInfo_MM7 monsterInfo;
-    int16_t word_000084_range_attack;
-    int16_t word_000086_some_monster_id;  // base monster class monsterlist id
+    int16_t field_84; // Supposedly has smth to do with actor ranged attack? Always 0 in MM7.
+    int16_t monsterId;
     uint16_t radius;
     uint16_t height;
     uint16_t moveSpeed;
@@ -800,7 +791,7 @@ struct Actor_MM7 {
     std::array<char, 2> _pad2;
     uint32_t currentActionTime;
     std::array<uint16_t, 8> spriteIds;
-    std::array<uint16_t, 4> soundSampleIds;  // 1 die     3 bored
+    std::array<uint16_t, 4> soundSampleIds;
     SpellBuff_MM7 actorBuffZeroUnused; // An artifact of the original memory layout, zero is ACTOR_BUFF_NONE.
                                        // It's not used for anything in vanilla and simply dropped in OE.
     std::array<SpellBuff_MM7, 21> buffs;
@@ -852,46 +843,46 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst);
 
 struct BLVSector_MM7 {
     int32_t field_0;
-    uint16_t uNumFloors;
+    uint16_t numFloors;
     int16_t _pad0;
-    Pointer_MM7 pFloors;
-    uint16_t uNumWalls;
+    Pointer_MM7 floors;
+    uint16_t numWalls;
     int16_t _pad1;
-    Pointer_MM7 pWalls;
-    uint16_t uNumCeilings;
+    Pointer_MM7 walls;
+    uint16_t numCeilings;
     int16_t _pad2;
-    Pointer_MM7 pCeilings;
-    uint16_t uNumFluids;
+    Pointer_MM7 ceilings;
+    uint16_t numFluids;
     int16_t _pad3;
-    Pointer_MM7 pFluids;
-    int16_t uNumPortals;
+    Pointer_MM7 fluids;
+    int16_t numPortals;
     int16_t _pad4;
-    Pointer_MM7 pPortals;
-    uint16_t uNumFaces;
-    uint16_t uNumNonBSPFaces;
-    Pointer_MM7 pFaceIDs;
-    uint16_t uNumCylinderFaces;
+    Pointer_MM7 portals;
+    uint16_t numFaces;
+    uint16_t numNonBspFaces;
+    Pointer_MM7 faceIds;
+    uint16_t numCylinderFaces;
     int16_t _pad5;
-    Pointer_MM7 pCylinderFaces;
-    uint16_t uNumCogs;
+    Pointer_MM7 cylinderFaces;
+    uint16_t numCogs;
     int16_t _pad6;
-    Pointer_MM7 pCogs;
-    uint16_t uNumDecorations;
+    Pointer_MM7 cogs;
+    uint16_t numDecorations;
     int16_t _pad7;
-    Pointer_MM7 pDecorationIDs;
-    uint16_t uNumMarkers;
+    Pointer_MM7 decorationIds;
+    uint16_t numMarkers;
     int16_t _pad8;
-    Pointer_MM7 pMarkers;
-    uint16_t uNumLights;
+    Pointer_MM7 markers;
+    uint16_t numLights;
     int16_t _pad9;
-    Pointer_MM7 pLights;
-    int16_t uWaterLevel;
-    int16_t uMistLevel;
-    int16_t uLightDistanceMultiplier;
-    int16_t uMinAmbientLightLevel;
-    int16_t uFirstBSPNode;
-    int16_t exit_tag;
-    BBoxs_MM7 pBounding;
+    Pointer_MM7 lights;
+    int16_t waterLevel;
+    int16_t mistLevel;
+    int16_t lightDistanceMultiplier;
+    int16_t minAmbientLightLevel;
+    int16_t firstBspNode;
+    int16_t exitTag; // Always 0 in MM7, not used by the engine.
+    BBoxs_MM7 boundingBox;
 };
 static_assert(sizeof(BLVSector_MM7) == 0x74);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVSector_MM7)

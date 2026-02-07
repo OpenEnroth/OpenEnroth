@@ -3120,7 +3120,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
         // lighting stuff
         int16_t mintest = 0;
         for (int i = 0; i < pIndoor->sectors.size(); i++) {
-            mintest = std::max(mintest, pIndoor->sectors[i].uMinAmbientLightLevel);
+            mintest = std::max(mintest, pIndoor->sectors[i].minAmbientLightLevel);
         }
         int uCurrentAmbientLightLevel = (DEFAULT_AMBIENT_LIGHT_LEVEL + mintest);
         float ambient = (248.0f - (uCurrentAmbientLightLevel << 3)) / 255.0f;
@@ -3168,7 +3168,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             // does light sphere collide with current sector
             // expanded current sector
             bool fromexpanded{ false };
-            if (pIndoor->sectors[pBLVRenderParams->uPartySectorID].pBounding.intersectsCube(test.vPosition, test.uRadius)) {
+            if (pIndoor->sectors[pBLVRenderParams->uPartySectorID].boundingBox.intersectsCube(test.vPosition, test.uRadius)) {
                 onlist = true;
                 fromexpanded = true;
             }

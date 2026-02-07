@@ -1377,8 +1377,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->monsterInfo.baseSpeed = src.monsterInfo.baseSpeed;
     dst->monsterInfo.recoveryTime = src.monsterInfo.recoveryTime.ticks();
     dst->monsterInfo.attackPreferences = std::to_underlying(src.monsterInfo.attackPreferences);
-    dst->word_000084_range_attack = src.word_000084_range_attack;
-    dst->word_000086_some_monster_id = std::to_underlying(src.word_000086_some_monster_id);  // base monster class monsterlist id
+    dst->monsterId = std::to_underlying(src.monsterId);
     dst->radius = src.radius;
     dst->height = src.height;
     dst->moveSpeed = src.moveSpeed;
@@ -1471,8 +1470,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.baseSpeed = src.monsterInfo.baseSpeed;
     dst->monsterInfo.recoveryTime = Duration::fromTicks(src.monsterInfo.recoveryTime);
     dst->monsterInfo.attackPreferences = static_cast<MonsterAttackPreferences>(src.monsterInfo.attackPreferences);
-    dst->word_000084_range_attack = src.word_000084_range_attack;
-    dst->word_000086_some_monster_id = static_cast<MonsterId>(src.word_000086_some_monster_id);  // base monster class monsterlist id
+    dst->monsterId = static_cast<MonsterId>(src.monsterId);
     dst->radius = src.radius;
     dst->height = src.height;
     dst->moveSpeed = src.moveSpeed;
@@ -1541,48 +1539,46 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
     memzero(dst);
 
     dst->field_0 = src.field_0;
-    dst->uNumFloors = src.uNumFloors;
-    dst->uNumWalls = src.uNumWalls;
-    dst->uNumCeilings = src.uNumCeilings;
-    dst->uNumFluids = src.uNumFluids;
-    dst->uNumPortals = src.uNumPortals;
-    dst->uNumFaces = src.uNumFaces;
-    dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
-    dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->uNumCogs = src.uNumCogs;
-    dst->uNumDecorations = src.uNumDecorations;
-    dst->uNumMarkers = src.uNumMarkers;
-    dst->uNumLights = src.uNumLights;
-    dst->uWaterLevel = src.uWaterLevel;
-    dst->uMistLevel = src.uMistLevel;
-    dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
-    dst->uMinAmbientLightLevel = src.uMinAmbientLightLevel;
-    dst->uFirstBSPNode = src.uFirstBSPNode;
-    dst->exit_tag = src.exit_tag;
-    snapshot(src.pBounding, &dst->pBounding);
+    dst->numFloors = src.uNumFloors;
+    dst->numWalls = src.uNumWalls;
+    dst->numCeilings = src.uNumCeilings;
+    dst->numFluids = src.uNumFluids;
+    dst->numPortals = src.uNumPortals;
+    dst->numFaces = src.uNumFaces;
+    dst->numNonBspFaces = src.uNumNonBSPFaces;
+    dst->numCylinderFaces = src.numCylinderFaces;
+    dst->numCogs = src.numCogs;
+    dst->numDecorations = src.numDecorations;
+    dst->numMarkers = src.numMarkers;
+    dst->numLights = src.numLights;
+    dst->waterLevel = src.waterLevel;
+    dst->mistLevel = src.mistLevel;
+    dst->lightDistanceMultiplier = src.lightDistanceMultiplier;
+    dst->minAmbientLightLevel = src.minAmbientLightLevel;
+    dst->firstBspNode = src.firstBspNode;
+    snapshot(src.boundingBox, &dst->boundingBox);
 }
 
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->field_0 = src.field_0;
-    dst->uNumFloors = src.uNumFloors;
-    dst->uNumWalls = src.uNumWalls;
-    dst->uNumCeilings = src.uNumCeilings;
-    dst->uNumFluids = src.uNumFluids;
-    dst->uNumPortals = src.uNumPortals;
-    dst->uNumFaces = src.uNumFaces;
-    dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
-    dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->uNumCogs = src.uNumCogs;
-    dst->uNumDecorations = src.uNumDecorations;
-    dst->uNumMarkers = src.uNumMarkers;
-    dst->uNumLights = src.uNumLights;
-    dst->uWaterLevel = src.uWaterLevel;
-    dst->uMistLevel = src.uMistLevel;
-    dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
-    dst->uMinAmbientLightLevel = src.uMinAmbientLightLevel;
-    dst->uFirstBSPNode = src.uFirstBSPNode;
-    dst->exit_tag = src.exit_tag;
-    reconstruct(src.pBounding, &dst->pBounding);
+    dst->uNumFloors = src.numFloors;
+    dst->uNumWalls = src.numWalls;
+    dst->uNumCeilings = src.numCeilings;
+    dst->uNumFluids = src.numFluids;
+    dst->uNumPortals = src.numPortals;
+    dst->uNumFaces = src.numFaces;
+    dst->uNumNonBSPFaces = src.numNonBspFaces;
+    dst->numCylinderFaces = src.numCylinderFaces;
+    dst->numCogs = src.numCogs;
+    dst->numDecorations = src.numDecorations;
+    dst->numMarkers = src.numMarkers;
+    dst->numLights = src.numLights;
+    dst->waterLevel = src.waterLevel;
+    dst->mistLevel = src.mistLevel;
+    dst->lightDistanceMultiplier = src.lightDistanceMultiplier;
+    dst->minAmbientLightLevel = src.minAmbientLightLevel;
+    dst->firstBspNode = src.firstBspNode;
+    reconstruct(src.boundingBox, &dst->boundingBox);
 }
 
 void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {

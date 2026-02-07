@@ -151,17 +151,17 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         pSector->pPortals = dst->sectorData.data() + j;
         j += pSector->uNumPortals;
 
-        pSector->pFaceIDs = dst->sectorData.data() + j;
+        pSector->faceIds = dst->sectorData.data() + j;
         j += pSector->uNumFaces;
 
-        pSector->pCogs = dst->sectorData.data() + j;
-        j += pSector->uNumCogs;
+        pSector->cogs = dst->sectorData.data() + j;
+        j += pSector->numCogs;
 
-        pSector->pDecorationIDs = dst->sectorData.data() + j;
-        j += pSector->uNumDecorations;
+        pSector->decorationIds = dst->sectorData.data() + j;
+        j += pSector->numDecorations;
 
-        pSector->pMarkers = dst->sectorData.data() + j;
-        j += pSector->uNumMarkers;
+        pSector->markers = dst->sectorData.data() + j;
+        j += pSector->numMarkers;
 
         assert(j <= dst->sectorData.size());
     }
@@ -171,8 +171,8 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     for (unsigned i = 0, j = 0; i < dst->sectors.size(); ++i) {
         BLVSector *pSector = &dst->sectors[i];
 
-        pSector->pLights = dst->sectorLightData.data() + j;
-        j += pSector->uNumLights;
+        pSector->lights = dst->sectorLightData.data() + j;
+        j += pSector->numLights;
 
         assert(j <= dst->sectorLightData.size());
     }

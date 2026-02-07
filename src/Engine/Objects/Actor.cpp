@@ -2431,7 +2431,7 @@ void Actor::SummonMinion(int summonerId) {
     actor->name = v9->name;
     actor->hp = v9->hp;
     actor->monsterInfo = *v9;
-    actor->word_000086_some_monster_id = summonMonsterBaseType;
+    actor->monsterId = summonMonsterBaseType;
     actor->radius = pMonsterList->monsters[summonMonsterBaseType].monsterRadius;
     actor->height = pMonsterList->monsters[summonMonsterBaseType].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;
@@ -3095,7 +3095,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             case SPELL_BOW_ARROW:
                 attackElement = DAMAGE_PHYSICAL;
                 uDamageAmount = character->CalculateRangedDamageTo(
-                    pMonster->word_000086_some_monster_id);
+                    pMonster->monsterId);
                 if (pMonster->buffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount /= 2;
                 IsAdditionalDamagePossible = true;
@@ -3231,7 +3231,7 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
     actor->name = pMonsterStats->infos[monster_id].name;
     actor->hp = (short)pMonsterStats->infos[monster_id].hp;
     actor->monsterInfo = pMonsterStats->infos[monster_id];
-    actor->word_000086_some_monster_id = monster_id;
+    actor->monsterId = monster_id;
     actor->radius = pMonsterList->monsters[monster_id].monsterRadius;
     actor->height = pMonsterList->monsters[monster_id].monsterHeight;
     actor->moveSpeed = pMonsterList->monsters[monster_id].movementSpeed;
@@ -4182,7 +4182,7 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
     actor->name = pMonsterStats->infos[uMonsterID].name;
     actor->hp = pMonsterStats->infos[uMonsterID].hp;
     actor->monsterInfo = pMonsterStats->infos[uMonsterID];
-    actor->word_000086_some_monster_id = uMonsterID;
+    actor->monsterId = uMonsterID;
     actor->radius = pMonsterList->monsters[uMonsterID].monsterRadius;
     actor->height = pMonsterList->monsters[uMonsterID].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;
@@ -4337,7 +4337,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
         pMonster->name = Src->name;
         pMonster->hp = Src->hp;
         pMonster->monsterInfo = pMonsterStats->infos[monster];
-        pMonster->word_000086_some_monster_id = monsterDescID;
+        pMonster->monsterId = monsterDescID;
         pMonster->radius = monsterDesc->monsterRadius;
         pMonster->height = monsterDesc->monsterHeight;
         pMonster->moveSpeed = monsterDesc->movementSpeed;

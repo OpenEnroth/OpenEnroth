@@ -156,8 +156,8 @@ void PrepareDrawLists_BLV() {
          int sectorId = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
          BLVSector *sector = &pIndoor->sectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
 
-        for (unsigned j = 0; j < sector->uNumDecorations; ++j)
-            pIndoor->PrepareDecorationsRenderList_BLV(sector->pDecorationIDs[j], sectorId);
+        for (unsigned j = 0; j < sector->numDecorations; ++j)
+            pIndoor->PrepareDecorationsRenderList_BLV(sector->decorationIds[j], sectorId);
      }
 
     FindBillboardsLightLevels_BLV();
@@ -364,7 +364,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
         BLVSector *pSector = &sectors[i];
 
-        if (!pSector->pBounding.intersectsCuboid(Vec3f(sX, sY, sZ), Vec3f(5, 5, 64)))
+        if (!pSector->boundingBox.intersectsCuboid(Vec3f(sX, sY, sZ), Vec3f(5, 5, 64)))
             continue;  // outside sector bounding
 
         if (!backupboundingsector) backupboundingsector = i;
@@ -1309,7 +1309,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // t
 
         // loop over sectargetr faces
         for (int FaceLoop = 0; FaceLoop < pIndoor->sectors[SectargetrID].uNumFaces; ++FaceLoop) {
-            BLVFace *face = &pIndoor->faces[pIndoor->sectors[SectargetrID].pFaceIDs[FaceLoop]];
+            BLVFace *face = &pIndoor->faces[pIndoor->sectors[SectargetrID].faceIds[FaceLoop]];
             if (face->isPortal() || face->Ethereal())
                 continue;
 

@@ -389,10 +389,10 @@ LABEL_25:
                     }
 
                     // not sure:
-                    // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
+                    // pMonsterList->pMonsters[v39b->monsterId-1].uToHitRadius
                     int radius = 0;
-                    if (pActors[actloop].word_000086_some_monster_id != MONSTER_INVALID) {  // not always filled in from scripted monsters
-                        radius = pMonsterList->monsters[pActors[actloop].word_000086_some_monster_id].toHitRadius;
+                    if (pActors[actloop].monsterId != MONSTER_INVALID) {  // not always filled in from scripted monsters
+                        radius = pMonsterList->monsters[pActors[actloop].monsterId].toHitRadius;
                     }
                     CollideWithActor(actloop, radius);
                 }

@@ -230,10 +230,10 @@ void BspRenderer::AddNode() {
     BLVSector *pSector = &pIndoor->sectors[nodes[node_id].uSectorID];
 
     for (unsigned i = 0; i < pSector->uNumNonBSPFaces; ++i)
-        AddFace(node_id, pSector->pFaceIDs[i]);  // can recurse back to this function
+        AddFace(node_id, pSector->faceIds[i]);  // can recurse back to this function
 
     if (pSector->field_0 & 0x10) {
-        AddBSPFaces(node_id, pSector->uFirstBSPNode);  // can recurse back to this function through AddFace
+        AddBSPFaces(node_id, pSector->firstBspNode);  // can recurse back to this function through AddFace
     }
 }
 
@@ -253,7 +253,7 @@ void BspRenderer::AddBSPFaces(const int node_id, const int initialBSPNodeId) {
     do {
         pSector = &pIndoor->sectors[node->uSectorID];
         bspNode = &pIndoor->nodes[bspNodeId];
-        pFace = &pIndoor->faces[pSector->pFaceIDs[bspNode->uBSPFaceIDOffset]];
+        pFace = &pIndoor->faces[pSector->faceIds[bspNode->uBSPFaceIDOffset]];
 
         bool isFaceFront = pCamera3D->is_face_faced_to_cameraBLV(pFace);
         // NOTE(yoctozepto): if the face is a portal going from a different sector, then its normal is inverted, so invert the computed value
@@ -266,7 +266,7 @@ void BspRenderer::AddBSPFaces(const int node_id, const int initialBSPNodeId) {
             AddBSPFaces(node_id, otherBSPNodeId);
 
         for (int i = 0; i < bspNode->uNumBSPFaces; i++) {
-            AddFace(node_id, pSector->pFaceIDs[bspNode->uBSPFaceIDOffset + i]);  // can recurse back to this function through AddNode
+            AddFace(node_id, pSector->faceIds[bspNode->uBSPFaceIDOffset + i]);  // can recurse back to this function through AddNode
         }
 
         // tail recursion optimised call

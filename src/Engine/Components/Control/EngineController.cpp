@@ -288,7 +288,7 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
     actor->attributes |= ACTOR_AGGRESSOR; // Make the monster unconditionally hostile.
     actor->hp = pMonsterStats->infos[id].hp;
     actor->monsterInfo = pMonsterStats->infos[id];
-    actor->word_000086_some_monster_id = id;
+    actor->monsterId = id;
     actor->radius = pMonsterList->monsters[id].monsterRadius;
     actor->height = pMonsterList->monsters[id].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;

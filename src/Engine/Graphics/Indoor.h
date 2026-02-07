@@ -183,26 +183,24 @@ struct BLVSector {  // 0x74
     uint16_t *pPortals;
     uint16_t uNumFaces;
     uint16_t uNumNonBSPFaces;
-    uint16_t *pFaceIDs;
-    uint16_t uNumCylinderFaces;
-    uint16_t uNumCogs;
-    uint16_t *pCogs;
-    uint16_t uNumDecorations;
-    uint16_t *pDecorationIDs;
-    uint16_t uNumMarkers;
-    uint16_t *pMarkers;
-    uint16_t uNumLights;
-    uint16_t *pLights;
-    int16_t uWaterLevel;
-    int16_t uMistLevel;
-    int16_t uLightDistanceMultiplier;
-    int16_t uMinAmbientLightLevel;  // might be supposed to be max ambient dim actually
-    int16_t uFirstBSPNode;
-    int16_t exit_tag;
-    BBoxf pBounding;
+    uint16_t *faceIds;
+    uint16_t numCylinderFaces;
+    uint16_t numCogs;
+    uint16_t *cogs;
+    uint16_t numDecorations;
+    uint16_t *decorationIds;
+    uint16_t numMarkers;
+    uint16_t *markers;
+    uint16_t numLights;
+    uint16_t *lights;
+    int16_t waterLevel;
+    int16_t mistLevel;
+    int16_t lightDistanceMultiplier;
+    int16_t minAmbientLightLevel; // might be supposed to be max ambient dim actually
+    int16_t firstBspNode;
+    BBoxf boundingBox;
 };
 
-/*   89 */
 struct IndoorLocation {
     //----- (00462592) --------------------------------------------------------
     inline IndoorLocation() {
