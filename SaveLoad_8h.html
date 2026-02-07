@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d7fe95e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ae62fb1</span>
    </div>
   </td>
  </tr>
@@ -81,6 +81,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;array&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="Overlays_8h.html">Engine/Graphics/Overlays.h</a>&quot;</code><br />
@@ -94,52 +95,54 @@ $(function() {
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSaveGameState.html">SaveGameState</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSaveGame.html">SaveGame</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSaveGameLite.html">SaveGameLite</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSavegameList.html">SavegameList</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4624a5ffa8c0619a2fd547e03cb15428"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a4624a5ffa8c0619a2fd547e03cb15428">LoadGame</a> (int uSlot)</td></tr>
-<tr class="separator:a4624a5ffa8c0619a2fd547e03cb15428"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd321221d37a21b0016b5806059329de"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>, <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#acd321221d37a21b0016b5806059329de">CreateSaveData</a> (bool resetWorld, std::string_view title)</td></tr>
-<tr class="separator:acd321221d37a21b0016b5806059329de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a862f593c7e6f2bfe5254757737dfbcc0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a862f593c7e6f2bfe5254757737dfbcc0">SaveGame</a> (bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title={})</td></tr>
-<tr class="separator:a862f593c7e6f2bfe5254757737dfbcc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d696d7aae29bcc73c41974e78db95b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a0d696d7aae29bcc73c41974e78db95b8">AutoSave</a> ()</td></tr>
-<tr class="separator:a0d696d7aae29bcc73c41974e78db95b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8dde6af8c013f767d15f2fc43e25095f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a8dde6af8c013f767d15f2fc43e25095f">DoSavegame</a> (int uSlot)</td></tr>
-<tr class="separator:a8dde6af8c013f767d15f2fc43e25095f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5f6c27c016c3c4c5cc60702a578c538"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#ac5f6c27c016c3c4c5cc60702a578c538">Initialize_GamesLOD_NewLOD</a> ()</td></tr>
-<tr class="separator:ac5f6c27c016c3c4c5cc60702a578c538"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab496492a832e3fe2f04f9a23bdf3dd2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#ab496492a832e3fe2f04f9a23bdf3dd2a">SaveNewGame</a> ()</td></tr>
-<tr class="separator:ab496492a832e3fe2f04f9a23bdf3dd2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad73be4fc4c1b5b157e35ce88af02d5b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#ad73be4fc4c1b5b157e35ce88af02d5b8">QuickSaveGame</a> ()</td></tr>
-<tr class="separator:ad73be4fc4c1b5b157e35ce88af02d5b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf0d04fb805f15a3462b2b329e714191"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#aaf0d04fb805f15a3462b2b329e714191">GetQuickSaveSlot</a> ()</td></tr>
-<tr class="separator:aaf0d04fb805f15a3462b2b329e714191"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03bbbe134f08767194337a05316439cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a03bbbe134f08767194337a05316439cc">QuickLoadGame</a> ()</td></tr>
-<tr class="separator:a03bbbe134f08767194337a05316439cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3fce08cbe4e8898ad7a5a559ccc18b5f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a3fce08cbe4e8898ad7a5a559ccc18b5f">GetCurrentQuickSave</a> ()</td></tr>
-<tr class="separator:a3fce08cbe4e8898ad7a5a559ccc18b5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6eecd1a46da3a0f97243eb96f5e8cd83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a6eecd1a46da3a0f97243eb96f5e8cd83">loadGame</a> (int uSlot)</td></tr>
+<tr class="separator:a6eecd1a46da3a0f97243eb96f5e8cd83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ba6eb14e226a77d8a0fe860f210fd8d"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>, <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a6ba6eb14e226a77d8a0fe860f210fd8d">createSaveData</a> (bool resetWorld, std::string_view title)</td></tr>
+<tr class="separator:a6ba6eb14e226a77d8a0fe860f210fd8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af36ea2e4dcff1ed823efc0269cbd4551"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#af36ea2e4dcff1ed823efc0269cbd4551">saveGame</a> (bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title={})</td></tr>
+<tr class="separator:af36ea2e4dcff1ed823efc0269cbd4551"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfa7ef978f2414993bee29a2df2c767c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#acfa7ef978f2414993bee29a2df2c767c">autoSave</a> ()</td></tr>
+<tr class="separator:acfa7ef978f2414993bee29a2df2c767c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad209c49bd83046ae7243e557aca2f0f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#ad209c49bd83046ae7243e557aca2f0f1">doSavegame</a> (int uSlot)</td></tr>
+<tr class="separator:ad209c49bd83046ae7243e557aca2f0f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58449c5cb9ed873b0ea527153214a4ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a58449c5cb9ed873b0ea527153214a4ad">saveNewGame</a> ()</td></tr>
+<tr class="separator:a58449c5cb9ed873b0ea527153214a4ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b94e83609656bfb71a14150c68ac9e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a7b94e83609656bfb71a14150c68ac9e7">quickSaveGame</a> ()</td></tr>
+<tr class="separator:a7b94e83609656bfb71a14150c68ac9e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad19f5eebcf49d30a78e03d424688e23f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#ad19f5eebcf49d30a78e03d424688e23f">getQuickSaveSlot</a> ()</td></tr>
+<tr class="separator:ad19f5eebcf49d30a78e03d424688e23f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69126a9d1d483bfe1886f7fe0f084467"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a69126a9d1d483bfe1886f7fe0f084467">quickLoadGame</a> ()</td></tr>
+<tr class="separator:a69126a9d1d483bfe1886f7fe0f084467"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac13c287d9633c6fde72c77de8f83d162"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#ac13c287d9633c6fde72c77de8f83d162">getCurrentQuickSave</a> ()</td></tr>
+<tr class="separator:ac13c287d9633c6fde72c77de8f83d162"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:ab69a4569f0310b41d56e3083b3ed297f"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#ab69a4569f0310b41d56e3083b3ed297f">MAX_SAVE_SLOTS</a> = 45</td></tr>
 <tr class="separator:ab69a4569f0310b41d56e3083b3ed297f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a728ebd4f2bc899e71eb7decb301b0d41"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a728ebd4f2bc899e71eb7decb301b0d41">pMapDeltas</a></td></tr>
+<tr class="separator:a728ebd4f2bc899e71eb7decb301b0d41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a142206282ee1132c47d5785c21ad8f3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSavegameList.html">SavegameList</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8h.html#a142206282ee1132c47d5785c21ad8f3c">pSavegameList</a></td></tr>
 <tr class="separator:a142206282ee1132c47d5785c21ad8f3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a0d696d7aae29bcc73c41974e78db95b8" name="a0d696d7aae29bcc73c41974e78db95b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d696d7aae29bcc73c41974e78db95b8">&#9670;&#160;</a></span>AutoSave()</h2>
+<a id="acfa7ef978f2414993bee29a2df2c767c" name="acfa7ef978f2414993bee29a2df2c767c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfa7ef978f2414993bee29a2df2c767c">&#9670;&#160;</a></span>autoSave()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void AutoSave </td>
+          <td class="memname">void autoSave </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -149,14 +152,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="acd321221d37a21b0016b5806059329de" name="acd321221d37a21b0016b5806059329de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acd321221d37a21b0016b5806059329de">&#9670;&#160;</a></span>CreateSaveData()</h2>
+<a id="a6ba6eb14e226a77d8a0fe860f210fd8d" name="a6ba6eb14e226a77d8a0fe860f210fd8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ba6eb14e226a77d8a0fe860f210fd8d">&#9670;&#160;</a></span>createSaveData()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::pair&lt; <a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>, <a class="el" href="classBlob.html">Blob</a> &gt; CreateSaveData </td>
+          <td class="memname">std::pair&lt; <a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>, <a class="el" href="classBlob.html">Blob</a> &gt; createSaveData </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>resetWorld</em>, </td>
@@ -177,14 +180,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a8dde6af8c013f767d15f2fc43e25095f" name="a8dde6af8c013f767d15f2fc43e25095f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8dde6af8c013f767d15f2fc43e25095f">&#9670;&#160;</a></span>DoSavegame()</h2>
+<a id="ad209c49bd83046ae7243e557aca2f0f1" name="ad209c49bd83046ae7243e557aca2f0f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad209c49bd83046ae7243e557aca2f0f1">&#9670;&#160;</a></span>doSavegame()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void DoSavegame </td>
+          <td class="memname">void doSavegame </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>uSlot</em></td><td>)</td>
@@ -195,14 +198,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a3fce08cbe4e8898ad7a5a559ccc18b5f" name="a3fce08cbe4e8898ad7a5a559ccc18b5f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3fce08cbe4e8898ad7a5a559ccc18b5f">&#9670;&#160;</a></span>GetCurrentQuickSave()</h2>
+<a id="ac13c287d9633c6fde72c77de8f83d162" name="ac13c287d9633c6fde72c77de8f83d162"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac13c287d9633c6fde72c77de8f83d162">&#9670;&#160;</a></span>getCurrentQuickSave()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string GetCurrentQuickSave </td>
+          <td class="memname">std::string getCurrentQuickSave </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -212,14 +215,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="aaf0d04fb805f15a3462b2b329e714191" name="aaf0d04fb805f15a3462b2b329e714191"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf0d04fb805f15a3462b2b329e714191">&#9670;&#160;</a></span>GetQuickSaveSlot()</h2>
+<a id="ad19f5eebcf49d30a78e03d424688e23f" name="ad19f5eebcf49d30a78e03d424688e23f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad19f5eebcf49d30a78e03d424688e23f">&#9670;&#160;</a></span>getQuickSaveSlot()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int GetQuickSaveSlot </td>
+          <td class="memname">int getQuickSaveSlot </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -229,31 +232,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ac5f6c27c016c3c4c5cc60702a578c538" name="ac5f6c27c016c3c4c5cc60702a578c538"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac5f6c27c016c3c4c5cc60702a578c538">&#9670;&#160;</a></span>Initialize_GamesLOD_NewLOD()</h2>
+<a id="a6eecd1a46da3a0f97243eb96f5e8cd83" name="a6eecd1a46da3a0f97243eb96f5e8cd83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6eecd1a46da3a0f97243eb96f5e8cd83">&#9670;&#160;</a></span>loadGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Initialize_GamesLOD_NewLOD </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4624a5ffa8c0619a2fd547e03cb15428" name="a4624a5ffa8c0619a2fd547e03cb15428"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4624a5ffa8c0619a2fd547e03cb15428">&#9670;&#160;</a></span>LoadGame()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void LoadGame </td>
+          <td class="memname">void loadGame </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>uSlot</em></td><td>)</td>
@@ -264,14 +250,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a03bbbe134f08767194337a05316439cc" name="a03bbbe134f08767194337a05316439cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03bbbe134f08767194337a05316439cc">&#9670;&#160;</a></span>QuickLoadGame()</h2>
+<a id="a69126a9d1d483bfe1886f7fe0f084467" name="a69126a9d1d483bfe1886f7fe0f084467"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69126a9d1d483bfe1886f7fe0f084467">&#9670;&#160;</a></span>quickLoadGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void QuickLoadGame </td>
+          <td class="memname">void quickLoadGame </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -281,14 +267,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ad73be4fc4c1b5b157e35ce88af02d5b8" name="ad73be4fc4c1b5b157e35ce88af02d5b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad73be4fc4c1b5b157e35ce88af02d5b8">&#9670;&#160;</a></span>QuickSaveGame()</h2>
+<a id="a7b94e83609656bfb71a14150c68ac9e7" name="a7b94e83609656bfb71a14150c68ac9e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b94e83609656bfb71a14150c68ac9e7">&#9670;&#160;</a></span>quickSaveGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void QuickSaveGame </td>
+          <td class="memname">void quickSaveGame </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -298,14 +284,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a862f593c7e6f2bfe5254757737dfbcc0" name="a862f593c7e6f2bfe5254757737dfbcc0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a862f593c7e6f2bfe5254757737dfbcc0">&#9670;&#160;</a></span>SaveGame()</h2>
+<a id="af36ea2e4dcff1ed823efc0269cbd4551" name="af36ea2e4dcff1ed823efc0269cbd4551"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af36ea2e4dcff1ed823efc0269cbd4551">&#9670;&#160;</a></span>saveGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a> SaveGame </td>
+          <td class="memname"><a class="el" href="structSaveGameHeader.html">SaveGameHeader</a> saveGame </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>isAutoSave</em>, </td>
@@ -338,14 +324,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ab496492a832e3fe2f04f9a23bdf3dd2a" name="ab496492a832e3fe2f04f9a23bdf3dd2a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab496492a832e3fe2f04f9a23bdf3dd2a">&#9670;&#160;</a></span>SaveNewGame()</h2>
+<a id="a58449c5cb9ed873b0ea527153214a4ad" name="a58449c5cb9ed873b0ea527153214a4ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58449c5cb9ed873b0ea527153214a4ad">&#9670;&#160;</a></span>saveNewGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void SaveNewGame </td>
+          <td class="memname">void saveNewGame </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -375,6 +361,29 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a728ebd4f2bc899e71eb7decb301b0d41" name="a728ebd4f2bc899e71eb7decb301b0d41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a728ebd4f2bc899e71eb7decb301b0d41">&#9670;&#160;</a></span>pMapDeltas</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;std::string, <a class="el" href="classBlob.html">Blob</a>&gt; pMapDeltas</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Runtime storage for map deltas from the currently loaded save. </p>
 
 </div>
 </div>
