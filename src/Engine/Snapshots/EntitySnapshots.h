@@ -842,7 +842,7 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst);
 
 
 struct BLVSector_MM7 {
-    int32_t field_0;
+    int32_t flags;
     uint16_t numFloors;
     int16_t _pad0;
     Pointer_MM7 floors;
@@ -852,7 +852,7 @@ struct BLVSector_MM7 {
     uint16_t numCeilings;
     int16_t _pad2;
     Pointer_MM7 ceilings;
-    uint16_t numFluids;
+    uint16_t numFluids; // Always 0 in MM7, not used by the engine.
     int16_t _pad3;
     Pointer_MM7 fluids;
     int16_t numPortals;
@@ -861,24 +861,24 @@ struct BLVSector_MM7 {
     uint16_t numFaces;
     uint16_t numNonBspFaces;
     Pointer_MM7 faceIds;
-    uint16_t numCylinderFaces;
+    uint16_t numCylinderFaces; // Always 0 in MM7, not used by the engine.
     int16_t _pad5;
     Pointer_MM7 cylinderFaces;
-    uint16_t numCogs;
+    uint16_t numCogs; // Always 0 in MM7, not used by the engine.
     int16_t _pad6;
     Pointer_MM7 cogs;
     uint16_t numDecorations;
     int16_t _pad7;
     Pointer_MM7 decorationIds;
-    uint16_t numMarkers;
+    uint16_t numMarkers; // Always 0 in MM7, not used by the engine.
     int16_t _pad8;
     Pointer_MM7 markers;
     uint16_t numLights;
     int16_t _pad9;
     Pointer_MM7 lights;
-    int16_t waterLevel;
-    int16_t mistLevel;
-    int16_t lightDistanceMultiplier;
+    int16_t waterLevel; // Always -30000 in MM7, not used by the engine.
+    int16_t mistLevel; // Always 0 in MM7, not used by the engine.
+    int16_t lightDistanceMultiplier; // Always 0 in MM7, not used by the engine.
     int16_t minAmbientLightLevel;
     int16_t firstBspNode;
     int16_t exitTag; // Always 0 in MM7, not used by the engine.

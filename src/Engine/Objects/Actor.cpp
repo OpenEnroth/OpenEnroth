@@ -4077,8 +4077,8 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     Vec3f *portalverts;
 
     // loop through portals
-    for (int current_portal = 0; current_portal < pIndoor->sectors[current_sector].uNumPortals; current_portal++) {
-        portalface = &pIndoor->faces[pIndoor->sectors[current_sector].pPortals[current_portal]];
+    for (int current_portal = 0; current_portal < pIndoor->sectors[current_sector].numPortals; current_portal++) {
+        portalface = &pIndoor->faces[pIndoor->sectors[current_sector].portals[current_portal]];
         portalverts = &pIndoor->vertices[*portalface->pVertexIDs];
 
         // ray ob1 to portal dot normal
@@ -4142,7 +4142,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 
             // did we hit limit for portals?
             // does the next room have portals?
-            if (sectors_visited < 30 && pIndoor->sectors[current_sector].uNumPortals > 0) {
+            if (sectors_visited < 30 && pIndoor->sectors[current_sector].numPortals > 0) {
                 current_portal = -1;
                 continue;
             } else {

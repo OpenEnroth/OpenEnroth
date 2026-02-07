@@ -170,32 +170,22 @@ struct BLVFaceExtra {
 
 /*   95 */
 struct BLVSector {  // 0x74
-    int32_t field_0;  // flags?? &8 is for check floor level against portals &10 is for adding additonal node faces
-    uint16_t uNumFloors;
-    uint16_t *pFloors;
-    uint16_t uNumWalls;
-    uint16_t *pWalls;
-    uint16_t uNumCeilings;
-    uint16_t *pCeilings;
-    uint16_t uNumFluids;
-    uint16_t *pFluids;
-    int16_t uNumPortals;
-    uint16_t *pPortals;
-    uint16_t uNumFaces;
-    uint16_t uNumNonBSPFaces;
+    int32_t flags;  // & 8 is for check floor level against portals & 10 is for adding additonal node faces
+    uint16_t numFloors;
+    uint16_t *floors;
+    uint16_t numWalls;
+    uint16_t *walls;
+    uint16_t numCeilings;
+    uint16_t *ceilings;
+    int16_t numPortals;
+    uint16_t *portals;
+    uint16_t numFaces;
+    uint16_t numNonBspFaces;
     uint16_t *faceIds;
-    uint16_t numCylinderFaces;
-    uint16_t numCogs;
-    uint16_t *cogs;
     uint16_t numDecorations;
     uint16_t *decorationIds;
-    uint16_t numMarkers;
-    uint16_t *markers;
     uint16_t numLights;
     uint16_t *lights;
-    int16_t waterLevel;
-    int16_t mistLevel;
-    int16_t lightDistanceMultiplier;
     int16_t minAmbientLightLevel; // might be supposed to be max ambient dim actually
     int16_t firstBspNode;
     BBoxf boundingBox;

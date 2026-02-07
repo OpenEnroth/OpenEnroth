@@ -136,32 +136,29 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0, j = 0; i < dst->sectors.size(); ++i) {
         BLVSector *pSector = &dst->sectors[i];
 
-        pSector->pFloors = dst->sectorData.data() + j;
-        j += pSector->uNumFloors;
+        pSector->floors = dst->sectorData.data() + j;
+        j += pSector->numFloors;
 
-        pSector->pWalls = dst->sectorData.data() + j;
-        j += pSector->uNumWalls;
+        pSector->walls = dst->sectorData.data() + j;
+        j += pSector->numWalls;
 
-        pSector->pCeilings = dst->sectorData.data() + j;
-        j += pSector->uNumCeilings;
+        pSector->ceilings = dst->sectorData.data() + j;
+        j += pSector->numCeilings;
 
-        pSector->pFluids = dst->sectorData.data() + j;
-        j += pSector->uNumFluids;
+        // Fluids came next in original binary, but we dropped them.
 
-        pSector->pPortals = dst->sectorData.data() + j;
-        j += pSector->uNumPortals;
+        pSector->portals = dst->sectorData.data() + j;
+        j += pSector->numPortals;
 
         pSector->faceIds = dst->sectorData.data() + j;
-        j += pSector->uNumFaces;
+        j += pSector->numFaces;
 
-        pSector->cogs = dst->sectorData.data() + j;
-        j += pSector->numCogs;
+        // Cogs came next in original binary, but we dropped them.
 
         pSector->decorationIds = dst->sectorData.data() + j;
         j += pSector->numDecorations;
 
-        pSector->markers = dst->sectorData.data() + j;
-        j += pSector->numMarkers;
+        // Markers came next in original binary, but we dropped them.
 
         assert(j <= dst->sectorData.size());
     }

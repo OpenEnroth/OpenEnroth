@@ -1538,44 +1538,30 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
     memzero(dst);
 
-    dst->field_0 = src.field_0;
-    dst->numFloors = src.uNumFloors;
-    dst->numWalls = src.uNumWalls;
-    dst->numCeilings = src.uNumCeilings;
-    dst->numFluids = src.uNumFluids;
-    dst->numPortals = src.uNumPortals;
-    dst->numFaces = src.uNumFaces;
-    dst->numNonBspFaces = src.uNumNonBSPFaces;
-    dst->numCylinderFaces = src.numCylinderFaces;
-    dst->numCogs = src.numCogs;
+    dst->flags = src.flags;
+    dst->numFloors = src.numFloors;
+    dst->numWalls = src.numWalls;
+    dst->numCeilings = src.numCeilings;
+    dst->numPortals = src.numPortals;
+    dst->numFaces = src.numFaces;
+    dst->numNonBspFaces = src.numNonBspFaces;
     dst->numDecorations = src.numDecorations;
-    dst->numMarkers = src.numMarkers;
     dst->numLights = src.numLights;
-    dst->waterLevel = src.waterLevel;
-    dst->mistLevel = src.mistLevel;
-    dst->lightDistanceMultiplier = src.lightDistanceMultiplier;
     dst->minAmbientLightLevel = src.minAmbientLightLevel;
     dst->firstBspNode = src.firstBspNode;
     snapshot(src.boundingBox, &dst->boundingBox);
 }
 
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
-    dst->field_0 = src.field_0;
-    dst->uNumFloors = src.numFloors;
-    dst->uNumWalls = src.numWalls;
-    dst->uNumCeilings = src.numCeilings;
-    dst->uNumFluids = src.numFluids;
-    dst->uNumPortals = src.numPortals;
-    dst->uNumFaces = src.numFaces;
-    dst->uNumNonBSPFaces = src.numNonBspFaces;
-    dst->numCylinderFaces = src.numCylinderFaces;
-    dst->numCogs = src.numCogs;
+    dst->flags = src.flags;
+    dst->numFloors = src.numFloors;
+    dst->numWalls = src.numWalls;
+    dst->numCeilings = src.numCeilings;
+    dst->numPortals = src.numPortals;
+    dst->numFaces = src.numFaces;
+    dst->numNonBspFaces = src.numNonBspFaces;
     dst->numDecorations = src.numDecorations;
-    dst->numMarkers = src.numMarkers;
     dst->numLights = src.numLights;
-    dst->waterLevel = src.waterLevel;
-    dst->mistLevel = src.mistLevel;
-    dst->lightDistanceMultiplier = src.lightDistanceMultiplier;
     dst->minAmbientLightLevel = src.minAmbientLightLevel;
     dst->firstBspNode = src.firstBspNode;
     reconstruct(src.boundingBox, &dst->boundingBox);

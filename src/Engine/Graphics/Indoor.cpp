@@ -369,11 +369,11 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
         if (!backupboundingsector) backupboundingsector = i;
 
-        int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
+        int FloorsAndPortals = pSector->numFloors + pSector->numPortals;
 
         // nothing in sector to check against so skip
         if (!FloorsAndPortals) continue;
-        if (!pSector->pFloors) continue;
+        if (!pSector->floors) continue;
 
         if (!foundSector) {
             foundSector = i;
@@ -385,10 +385,10 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         // loop over check faces
         for (unsigned z = 0; z < FloorsAndPortals; ++z) {
             int uFaceID;
-            if (z < pSector->uNumFloors)
-                uFaceID = pSector->pFloors[z];
+            if (z < pSector->numFloors)
+                uFaceID = pSector->floors[z];
             else
-                uFaceID = pSector->pPortals[z - pSector->uNumFloors];
+                uFaceID = pSector->portals[z - pSector->numFloors];
 
             BLVFace *pFace = &faces[uFaceID];
             if (pFace->uPolygonType != POLYGON_Floor && pFace->uPolygonType != POLYGON_InBetweenFloorAndWall)
@@ -1109,11 +1109,11 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
     BLVSector *pSector = &pIndoor->sectors[uSectorID];
 
     // loop over all floor faces
-    for (unsigned i = 0; i < pSector->uNumFloors; ++i) {
+    for (unsigned i = 0; i < pSector->numFloors; ++i) {
         if (FacesFound >= 5)
             break;
 
-        BLVFace *pFloor = &pIndoor->faces[pSector->pFloors[i]];
+        BLVFace *pFloor = &pIndoor->faces[pSector->floors[i]];
         if (pFloor->Ethereal())
             continue;
 
@@ -1135,16 +1135,16 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         }
 
         blv_floor_z[FacesFound] = z_calc;
-        blv_floor_id[FacesFound] = pSector->pFloors[i];
+        blv_floor_id[FacesFound] = pSector->floors[i];
         FacesFound++;
     }
 
     // as above but for sector portal faces
-    if (pSector->field_0 & 8) { // sector has vertical transitions
-        for (unsigned i = 0; i < pSector->uNumPortals; ++i) {
+    if (pSector->flags & 8) { // sector has vertical transitions
+        for (unsigned i = 0; i < pSector->numPortals; ++i) {
             if (FacesFound >= 5) break;
 
-            BLVFace *portal = &pIndoor->faces[pSector->pPortals[i]];
+            BLVFace *portal = &pIndoor->faces[pSector->portals[i]];
             if (portal->uPolygonType != POLYGON_Floor)
                 continue;
 
@@ -1152,7 +1152,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
                 continue;
 
             blv_floor_z[FacesFound] = -29000; // moving vertically through portal
-            blv_floor_id[FacesFound] = pSector->pPortals[i];
+            blv_floor_id[FacesFound] = pSector->portals[i];
             FacesFound++;
         }
     }
@@ -1308,7 +1308,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // t
             SectargetrID = pIndoor->GetSector(from);
 
         // loop over sectargetr faces
-        for (int FaceLoop = 0; FaceLoop < pIndoor->sectors[SectargetrID].uNumFaces; ++FaceLoop) {
+        for (int FaceLoop = 0; FaceLoop < pIndoor->sectors[SectargetrID].numFaces; ++FaceLoop) {
             BLVFace *face = &pIndoor->faces[pIndoor->sectors[SectargetrID].faceIds[FaceLoop]];
             if (face->isPortal() || face->Ethereal())
                 continue;

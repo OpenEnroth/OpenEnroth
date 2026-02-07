@@ -229,10 +229,10 @@ void BspRenderer::AddNode() {
 
     BLVSector *pSector = &pIndoor->sectors[nodes[node_id].uSectorID];
 
-    for (unsigned i = 0; i < pSector->uNumNonBSPFaces; ++i)
+    for (unsigned i = 0; i < pSector->numNonBspFaces; ++i)
         AddFace(node_id, pSector->faceIds[i]);  // can recurse back to this function
 
-    if (pSector->field_0 & 0x10) {
+    if (pSector->flags & 0x10) {
         AddBSPFaces(node_id, pSector->firstBspNode);  // can recurse back to this function through AddFace
     }
 }
