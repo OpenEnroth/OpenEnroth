@@ -519,7 +519,7 @@ GAME_TEST(Issues, Issue1340) {
         // Harmondale should not have been visited - check that the dlv data is the same as what's in games.lod.
         const Blob &saveHarmondale = pMapDeltas.at("d29.dlv");
         Blob origHarmondale = pGames_LOD->read("d29.dlv");
-        EXPECT_EQ(saveHarmondale.string_view(), origHarmondale.string_view());
+        EXPECT_EQ(saveHarmondale.str(), origHarmondale.str());
     });
 
     // Emerald Isle -> Castle Harmondale. Map change is important because we want to trigger map respawn on first visit.

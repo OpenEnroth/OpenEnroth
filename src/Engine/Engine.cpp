@@ -1436,9 +1436,9 @@ void initLevelStrings(const Blob &blob) {
 
     int offs = 0;
     while (offs < blob.size()) {
-        const char *nextNullTerm = (const char*)memchr(&blob.string_view()[offs], '\0', blob.size() - offs);
-        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.string_view()[offs]) : (blob.size() - offs);
-        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob.string_view()[offs], stringSize)));
+        const char *nextNullTerm = (const char*)memchr(&blob.str()[offs], '\0', blob.size() - offs);
+        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.str()[offs]) : (blob.size() - offs);
+        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob.str()[offs], stringSize)));
         offs += stringSize + 1;
     }
 }

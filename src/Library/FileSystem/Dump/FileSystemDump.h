@@ -40,7 +40,7 @@ struct FileSystemDumpEntry {
     }
 
     friend bool operator==(const FileSystemDumpEntry &l, const FileSystemDumpEntry &r) {
-        return l.path == r.path && l.type == r.type && l.content.string_view() == r.content.string_view();
+        return l.path == r.path && l.type == r.type && l.content.str() == r.content.str();
     }
 };
 

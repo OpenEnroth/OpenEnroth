@@ -38,7 +38,7 @@ Blob preprocess(const Blob &source, const FileSystem *pwd, std::string_view prea
             errorMessage = fmt::format("Include file '{}' not found", source.displayPath(), path);
             return std::make_unique<tcpp::StringInputStream>(""); // Return empty stream, tcpp asserts on nullptr.
         }
-        return std::make_unique<tcpp::StringInputStream>(std::string(pwd->read(path).string_view()));
+        return std::make_unique<tcpp::StringInputStream>(std::string(pwd->read(path).str()));
     };
 
     tcpp::Preprocessor preprocessor(lexer, config);

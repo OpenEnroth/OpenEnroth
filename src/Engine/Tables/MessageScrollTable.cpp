@@ -16,7 +16,7 @@ void initializeMessageScrolls(const Blob &scrolls) {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw(scrolls.string_view());
+    std::string txtRaw(scrolls.str());
     strtok(txtRaw.data(), "\r");
     for (ItemId i : pMessageScrolls.indices()) {
         test_string = strtok(NULL, "\r") + 1;

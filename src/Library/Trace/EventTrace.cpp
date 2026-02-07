@@ -228,7 +228,7 @@ Blob EventTrace::toJsonBlob(const EventTrace &trace) {
 }
 
 EventTrace EventTrace::fromJsonBlob(const Blob &blob, PlatformWindow *window) {
-    Json json = Json::parse(blob.string_view());
+    Json json = Json::parse(blob.str());
 
     EventTrace result;
     from_json(json, result);

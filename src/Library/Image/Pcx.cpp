@@ -247,7 +247,7 @@ bool pcx::detect(const Blob &data) {
     // - s[1] should be one of the valid version numbers (0x00, 0x02, 0x03, 0x04, 0x05)
     // - s[2] should be 0x01 (indicating RLE encoding)
     // - s[3] should be one of the common bits per pixel values (0x01, 0x02, 0x04, 0x08)
-    std::string_view s = data.string_view();
+    std::string_view s = data.str();
     if (s[0] != '\x0A')
         return false;
     if (s[1] != '\x00' && s[1] != '\x02' && s[1] != '\x03' && s[1] != '\x04' && s[1] != '\x05')

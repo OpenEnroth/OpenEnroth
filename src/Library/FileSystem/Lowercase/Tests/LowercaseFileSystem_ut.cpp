@@ -107,9 +107,9 @@ UNIT_TEST(LowercaseFileSystem, Lowercase) {
     fs0.write("a/C/C/1.bin", Blob::fromString("111"));
 
     LowercaseFileSystem fs(&fs0);
-    EXPECT_EQ(fs.read("a.bin").string_view(), "123");
-    EXPECT_EQ(fs.read("a/b/c/1.bin").string_view(), "321");
-    EXPECT_EQ(fs.read("a/c/c/1.bin").string_view(), "111");
+    EXPECT_EQ(fs.read("a.bin").str(), "123");
+    EXPECT_EQ(fs.read("a/b/c/1.bin").str(), "321");
+    EXPECT_EQ(fs.read("a/c/c/1.bin").str(), "111");
 }
 
 UNIT_TEST(LowercaseFileSystem, Shenanigans) {
@@ -141,8 +141,8 @@ UNIT_TEST(LowercaseFileSystem, Write) {
     EXPECT_EQ(fs.ls("a"), std::vector<DirectoryEntry>({{"a.bin", FILE_REGULAR}}));
     EXPECT_EQ(fs.ls("b"), std::vector<DirectoryEntry>({{"b.bin", FILE_REGULAR}}));
 
-    EXPECT_EQ(fs0.read("a/a.bin").string_view(), "a");
-    EXPECT_EQ(fs0.read("B/B.bin").string_view(), "bbb");
+    EXPECT_EQ(fs0.read("a/a.bin").str(), "a");
+    EXPECT_EQ(fs0.read("B/B.bin").str(), "bbb");
 }
 
 UNIT_TEST(LowercaseFileSystem, PruneRemove) {
@@ -166,11 +166,11 @@ UNIT_TEST(LowercaseFileSystem, PruneRename) {
 
     EXPECT_FALSE(fs.exists("a")); // Pruning happened.
     EXPECT_TRUE(fs.exists("b"));
-    EXPECT_EQ(fs.read("b/b/b").string_view(), "123");
+    EXPECT_EQ(fs.read("b/b/b").str(), "123");
 
     EXPECT_FALSE(fs0.exists("A"));
     EXPECT_TRUE(fs0.exists("b"));
-    EXPECT_EQ(fs0.read("b/b/b").string_view(), "123");
+    EXPECT_EQ(fs0.read("b/b/b").str(), "123");
 }
 
 UNIT_TEST(LowercaseFileSystem, RenameReplace) {
@@ -183,11 +183,11 @@ UNIT_TEST(LowercaseFileSystem, RenameReplace) {
 
     EXPECT_FALSE(fs.exists("a"));
     EXPECT_TRUE(fs.exists("b"));
-    EXPECT_EQ(fs.read("b/b/b").string_view(), "AAA");
+    EXPECT_EQ(fs.read("b/b/b").str(), "AAA");
 
     EXPECT_FALSE(fs0.exists("A"));
     EXPECT_TRUE(fs0.exists("B"));
-    EXPECT_EQ(fs0.read("B/B/B").string_view(), "AAA");
+    EXPECT_EQ(fs0.read("B/B/B").str(), "AAA");
 }
 
 UNIT_TEST(LowercaseFileSystem, RenameFolder) {
@@ -204,7 +204,7 @@ UNIT_TEST(LowercaseFileSystem, RenameFolder) {
 
     EXPECT_FALSE(fs0.exists("A"));
     EXPECT_TRUE(fs0.exists("B/b/A/A"));
-    EXPECT_EQ(fs0.read("B/b/A/A").string_view(), "AAAA");
+    EXPECT_EQ(fs0.read("B/b/A/A").str(), "AAAA");
 }
 
 UNIT_TEST(LowercaseFileSystem, WriteUppercase) {
@@ -227,10 +227,10 @@ UNIT_TEST(LowercaseFileSystem, RenameRepeatedly) {
     fs.rename("e/f/g/h", "a");
 
     EXPECT_TRUE(fs.exists("a"));
-    EXPECT_EQ(fs.read("a").string_view(), "A");
+    EXPECT_EQ(fs.read("a").str(), "A");
     EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
     EXPECT_FALSE(fs0.exists("A"));
-    EXPECT_EQ(fs0.read("a").string_view(), "A");
+    EXPECT_EQ(fs0.read("a").str(), "A");
     EXPECT_EQ(fs0.ls(""), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
 }
 
@@ -241,7 +241,7 @@ UNIT_TEST(LowercaseFileSystem, RenameUppercase) {
     LowercaseFileSystem fs(&fs0);
     EXPECT_ANY_THROW(fs.rename("a", "B"));
     EXPECT_TRUE(fs.exists("a"));
-    EXPECT_EQ(fs.read("a").string_view(), "A");
+    EXPECT_EQ(fs.read("a").str(), "A");
 }
 
 UNIT_TEST(LowercaseFileSystem, RemoveRepeatedly) {

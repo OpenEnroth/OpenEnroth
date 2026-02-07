@@ -21,7 +21,7 @@ void FactionTable::Initialize(const Blob &factions) {
     for (auto &line : relations)
         line.fill(HOSTILITY_FRIENDLY);
 
-    std::string txtRaw(factions.string_view());
+    std::string txtRaw(factions.str());
     strtok(txtRaw.data(), "\r");
     for (i = 0; i < 89; ++i) {
         test_string = strtok(NULL, "\r") + 1;

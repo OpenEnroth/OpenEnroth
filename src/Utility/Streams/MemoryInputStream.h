@@ -10,7 +10,7 @@ class MemoryInputStream: public InputStream {
     MemoryInputStream(const void *data, size_t size, std::string_view displayPath = {});
     virtual ~MemoryInputStream();
 
-    void reset(const void *data, size_t size, std::string_view displayPath = {});
+    void open(const void *data, size_t size, std::string_view displayPath = {});
 
     virtual size_t read(void *data, size_t size) override;
     virtual size_t skip(size_t size) override;

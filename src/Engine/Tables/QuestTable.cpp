@@ -16,7 +16,7 @@ void initializeQuests(const Blob &quests) {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw(quests.string_view());
+    std::string txtRaw(quests.str());
     strtok(txtRaw.data(), "\r");
     memset(pQuestTable.data(), 0, sizeof(pQuestTable));
     for (auto i : pQuestTable.indices()) {

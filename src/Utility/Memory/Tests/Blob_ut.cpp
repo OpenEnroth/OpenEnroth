@@ -21,7 +21,7 @@ UNIT_TEST(Blob, FromFile) {
     output.close();
 
     blob = Blob::fromFile(fileName);
-    EXPECT_EQ(blob.string_view(), fileContents);
+    EXPECT_EQ(blob.str(), fileContents);
 }
 
 UNIT_TEST(Blob, FromEmptyFile) {
@@ -39,13 +39,13 @@ UNIT_TEST(Blob, SharedFromFile) {
     ScopedTestFile tmp(fileName, fileContents);
 
     Blob blob = Blob::fromFile(fileName);
-    EXPECT_EQ(blob.string_view(), fileContents);
+    EXPECT_EQ(blob.str(), fileContents);
 
     Blob subBlob = blob.subBlob(5, 5);
-    EXPECT_EQ(subBlob.string_view(), "56789");
+    EXPECT_EQ(subBlob.str(), "56789");
 
     blob = Blob(); // Release original blob.
-    EXPECT_EQ(subBlob.string_view(), "56789");
+    EXPECT_EQ(subBlob.str(), "56789");
 }
 
 UNIT_TEST(Blob, DisplayPathCopyShare) {

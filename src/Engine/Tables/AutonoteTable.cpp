@@ -17,7 +17,7 @@ void initializeAutonotes(const Blob &autonotes) {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw(autonotes.string_view());
+    std::string txtRaw(autonotes.str());
     strtok(txtRaw.data(), "\r");
 
     for (int i = 1; i < pAutonoteTxt.size(); ++i) {

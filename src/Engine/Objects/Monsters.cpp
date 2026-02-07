@@ -314,7 +314,7 @@ void MonsterStats::InitializePlacements(const Blob &placements) {
     int decode_step;
     //  int item_counter;
 
-    std::string txtRaw(placements.string_view());
+    std::string txtRaw(placements.str());
     strtok(txtRaw.data(), "\r");
     for (i = 1; i < 31; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -358,7 +358,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
     FrameTableTxtLine parsed_field;
     std::string str;
 
-    std::string txtRaw(monsters.string_view());
+    std::string txtRaw(monsters.str());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");

@@ -4,10 +4,7 @@
 #include <string>
 #include <utility>
 
-BlobOutputStream::BlobOutputStream() {}
-
-
-BlobOutputStream::BlobOutputStream(Blob *target, std::string_view displayPath) : BlobOutputStream() {
+BlobOutputStream::BlobOutputStream(Blob *target, std::string_view displayPath) {
     open(target, displayPath);
 }
 
@@ -19,19 +16,22 @@ void BlobOutputStream::open(Blob *target, std::string_view displayPath) {
     assert(target);
 
     closeInternal();
-    assert(Embedded::get().empty());
 
     _target = target;
     _displayPath = displayPath;
-    base_type::open(&Embedded::get());
+}
+
+void BlobOutputStream::write(const void *data, size_t size) {
+    assert(_target);
+
+    _buffer.append(static_cast<const char *>(data), size);
 }
 
 void BlobOutputStream::flush() {
-    assert(_target); // Should be open.
+    assert(_target);
 
-    // Flushing does the only sane thing, which is just making a copy. Shouldn't really be necessary in any of the
-    // possible use cases.
-    *_target = Blob::fromString(Embedded::get()).withDisplayPath(_displayPath);
+    // Flushing copies the data. Use close() to move instead.
+    *_target = Blob::fromString(_buffer).withDisplayPath(_displayPath);
 }
 
 void BlobOutputStream::close() {
@@ -46,8 +46,8 @@ void BlobOutputStream::closeInternal() {
     if (!_target)
         return;
 
-    base_type::close();
-    *_target = Blob::fromString(std::move(Embedded::get())).withDisplayPath(_displayPath);
+    *_target = Blob::fromString(std::move(_buffer)).withDisplayPath(_displayPath);
     _target = nullptr;
+    _buffer = {};
     _displayPath = {};
 }
