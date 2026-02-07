@@ -19,7 +19,7 @@ DecorationId DecorationList::GetDecorIdByName(std::string_view pName) {
 
     if (pDecorations.size() > 1) {
         for (unsigned uID = 1; uID < pDecorations.size(); ++uID) {
-            if (ascii::noCaseEquals(pName, pDecorations[uID].id))
+            if (ascii::noCaseEquals(pName, pDecorations[uID].internalName))
                 return static_cast<DecorationId>(uID);
         }
     }

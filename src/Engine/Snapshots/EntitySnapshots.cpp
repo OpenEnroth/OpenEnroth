@@ -1673,7 +1673,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
 }
 
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
-    reconstruct(src.id, &dst->id);
+    reconstruct(src.internalName, &dst->internalName);
     reconstruct(src.hint, &dst->hint);
     dst->uType = src.uType;
     dst->uDecorationHeight = src.uDecorationHeight;
@@ -1835,7 +1835,6 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
 }
 
 void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
-    reconstruct(src.name, &dst->name);
     dst->uObjectID = static_cast<SpriteId>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
@@ -1848,7 +1847,6 @@ void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
 }
 
 void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
-    reconstruct(src.name, &dst->name);
     dst->uObjectID = static_cast<SpriteId>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;

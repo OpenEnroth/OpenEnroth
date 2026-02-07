@@ -538,8 +538,8 @@ struct Party_MM7 {
     std::array<std::array<Item_MM7, 12>, 52> specialItemsInShops;
     std::array<std::array<Item_MM7, 12>, 32> spellBooksInGuilds;
     std::array<char, 24> field_1605C;
-    std::array<char, 100> hireling1Name;
-    std::array<char, 100> hireling2Name;
+    std::array<char, 100> hireling1Name; // 1st hireling name as displayed in-game.
+    std::array<char, 100> hireling2Name; // 2nd hireling name as displayed in-game.
     int32_t armageddonTimer;
     int32_t armageddonDamage;
     std::array<int32_t, 4> turnBasedPlayerRecoveryTimes;
@@ -630,8 +630,8 @@ void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
 
 
 struct IconFrameData_MM7 {
-    std::array<char, 12> animationName;
-    std::array<char, 12> textureName;
+    std::array<char, 12> animationName; // Animation name (e.g. "turnstart"), set only on the 1st frame.
+    std::array<char, 12> textureName; // Texture name in icons.lod.
     int16_t frameLength;
     int16_t animationLength;
     int16_t flags;
@@ -1006,7 +1006,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestData_MM7)
 
 
 struct DecorationDesc_MM6 {
-    std::array<char, 32> id;
+    std::array<char, 32> internalName; // Internal name of the decoration (e.g. "dec03").
     std::array<char, 32> hint;
     int16_t uType;
     uint16_t uDecorationHeight;
@@ -1187,7 +1187,7 @@ static_assert(sizeof(ObjectDesc_MM6) == 52);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ObjectDesc_MM6)
 
 struct ObjectDesc_MM7 {
-    std::array<char, 32> name;
+    std::array<char, 32> nameUnused; // Object name, not used by the engine, doesn't always match item names.
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
@@ -1209,8 +1209,10 @@ void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst);
 
 
 struct BSPModelData_MM7 {
-    std::array<char, 32> pModelName;
-    std::array<char, 32> pModelName2;
+    std::array<char, 32> pModelName; // Seems to be a unique (?) internal model name, e.g. "FireGuild_E", maybe a
+                                     // remnant of the mapping software that was used by NWC. Not used by the engine.
+    std::array<char, 32> pModelName2; // Sometimes different from the first model name, mainly for boats and chests.
+                                      // Why? No idea.
     int32_t field_40;
     uint32_t uNumVertices;
     Pointer_MM7 ppVertices;
@@ -1245,7 +1247,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BSPModelData_MM7)
 
 struct LocationTime_MM7 {
     int64_t last_visit;
-    std::array<char, 12> sky_texture_name;
+    std::array<char, 12> sky_texture_name; // Texture name in bitmaps.lod.
     int32_t day_attrib;
     int32_t day_fogrange_1;
     int32_t day_fogrange_2;
@@ -1259,7 +1261,7 @@ void reconstruct(const LocationTime_MM7 &src, LocationTime *dst);
 
 
 struct SoundInfo_MM6 {
-    std::array<char, 32> pSoundName;
+    std::array<char, 32> pSoundName; // File name in audio.snd.
     uint32_t uSoundID;
     uint32_t eType;
     uint32_t uFlags;

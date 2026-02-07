@@ -86,8 +86,6 @@ struct ODMFace {
 class BSPModel {
  public:
     int index = 0;
-    std::string pModelName;
-    std::string pModelName2;
     int32_t field_40 = 0; // visibility flag TODO(pskelton): use for map tooltip checking or remove
     int32_t sCenterX = 0;
     int32_t sCenterY = 0;
