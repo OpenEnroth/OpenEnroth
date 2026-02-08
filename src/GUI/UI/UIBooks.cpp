@@ -72,7 +72,6 @@ void GUIWindow_Book::Release() {
     pAudioPlayer->playUISound(SOUND_closebook);
 
     pChildBooksOverlay = nullptr;
-    GUIWindow::Release();
 }
 
 GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions()) {

@@ -171,7 +171,6 @@ void GUIWindow_Dialogue::Release() {
     current_screen_type = prev_screen_type;
     currentSpeakingActor = nullptr;
     pParty->switchToNextActiveCharacter();
-    GUIWindow::Release();
 }
 
 void GUIWindow_Dialogue::Update() {
@@ -323,8 +322,6 @@ void GUIWindow_Dialogue::Update() {
 }
 
 void BuildHireableNpcDialogue() {
-    pDialogueWindow->eWindowType = WINDOW_MainMenu;
-    pDialogueWindow->Release();
     pDialogueWindow = std::make_unique<GUIWindow_Dialogue>(DIALOG_WINDOW_HIRE_FIRE_SHORT);
 }
 

@@ -88,7 +88,6 @@ void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
 }
 
 void releaseBranchlessDialogue() {
-    pGUIWindow_BranchlessDialogue->Release();
     pGUIWindow_BranchlessDialogue = nullptr;
     if (savedEventID) {
         // Do not run event engine whith no event, it may happen when you close talk window

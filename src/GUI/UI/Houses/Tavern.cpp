@@ -100,8 +100,7 @@ void GUIWindow_Tavern::restDialogue() {
         pMediaPlayer->Unload();
 
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_RentRoom, std::to_underlying(houseId()), 1);
-        Release();
-        window_SpeakInHouse = 0;
+        window_SpeakInHouse = nullptr;
         return;
     }
     engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);

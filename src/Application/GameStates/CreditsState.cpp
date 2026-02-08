@@ -36,7 +36,6 @@ FsmAction CreditsState::update() {
 }
 
 void CreditsState::exit() {
-    _uiCredits->Release();
     _uiCredits.reset();
 
     pAudioPlayer->MusicStop();

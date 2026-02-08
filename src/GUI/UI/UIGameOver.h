@@ -8,7 +8,6 @@ class GUIWindow_GameOver : public GUIWindow {
     virtual ~GUIWindow_GameOver() { Release(); }
 
     virtual void Update() override;
-    virtual void Release() override;
 
     bool toggleAndTestFinished();
 
@@ -16,4 +15,6 @@ class GUIWindow_GameOver : public GUIWindow {
     UIMessageType _releaseEvent = UIMSG_0;
     bool _showPopUp = false;
     GraphicsImage *_winnerCert = nullptr;
+ private:
+    void Release();
 };

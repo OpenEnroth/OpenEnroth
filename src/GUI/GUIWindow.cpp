@@ -436,15 +436,8 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, s
     this->receives_keyboard_input = false;
 }
 
-GUIWindow::~GUIWindow() {
-    Release();
-}
-
 void DialogueEnding() {
     speakingNpcId = 0;
-    if (pDialogueWindow) {
-        pDialogueWindow->Release();
-    }
     pDialogueWindow = nullptr;
     pMiscTimer->setPaused(false);
     pEventTimer->setPaused(false);
@@ -458,7 +451,6 @@ void OnButtonClick::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     delete this;
 }
@@ -473,7 +465,6 @@ void OnButtonClick2::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     delete this;
 }
@@ -485,7 +476,6 @@ void OnButtonClick3::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     delete this;
 }
@@ -495,8 +485,6 @@ void OnButtonClick4::Update() {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
     render->DrawQuad2D(_button->vTextures[1], frameRect.topLeft());
-
-    Release();
 
     delete this;
 }
@@ -509,7 +497,6 @@ void OnSaveLoad::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     if (current_screen_type == SCREEN_SAVEGAME) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
@@ -528,7 +515,6 @@ void OnCancel::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
@@ -543,7 +529,6 @@ void OnCancel2::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
@@ -559,7 +544,6 @@ void OnCancel3::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
@@ -1030,22 +1014,8 @@ void WindowManager::DeleteAllVisibleWindows() {
     pGUIWindow_CurrentChest = nullptr;
     pGUIWindow_CurrentMenu = nullptr;
 
-    assert(lWindowList.size() == 1);
-    // TODO(pskelton): can drop below now
-    while (lWindowList.size() > 1) {
-        GUIWindow *pWindow = lWindowList.front();
-        // game ui should never be released and should always be at the back of the window list
-        if (pWindow->eWindowType == WINDOW_GameUI) {
-            assert(false && "WINDOW_GameUI is not at back of lWindowList");
-        }
-        // Child books button should be deleted by parent
-        if (pWindow->eWindowType == WINDOW_BooksButtonOverlay) {
-            lWindowList.pop_front();
-            continue;
-        }
-        pWindow->Release();
-        delete pWindow;
-    }
+    // Only primary window should be left now
+    assert(lWindowList.size() == 1 && "Leaking GUIWindows");
 
     // reset screen state after deleting all windows
     current_screen_type = SCREEN_GAME;

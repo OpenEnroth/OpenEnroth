@@ -456,8 +456,6 @@ void Menu::MenuLoop() {
         EventLoop();
     }
 
-    pGUIWindow_CurrentMenu->Release();
-    // delete pGUIWindow_CurrentMenu;
     pGUIWindow_CurrentMenu = nullptr;
 
     if (gamma_preview_image) {

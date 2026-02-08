@@ -88,8 +88,6 @@ void GUIWindow_Transition::Release() {
     }
 
     current_screen_type = prev_screen_type;
-
-    GUIWindow::Release();
 }
 
 GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_Travel, SCREEN_CHANGE_LOCATION) {

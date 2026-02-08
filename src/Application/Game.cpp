@@ -347,7 +347,7 @@ void Game::processQueuedMessages() {
                 // Game_QuitGameWhilePlaying(uMessageParam); continue;
             case UIMSG_80:
                 assert(false);
-                pGUIWindow_CurrentMenu->Release();
+                pGUIWindow_CurrentMenu = nullptr;
                 current_screen_type = SCREEN_OPTIONS;
                 // pGUIWindow_CurrentMenu =
                 // GUIWindow::Create(0, 0,
@@ -579,7 +579,7 @@ void Game::processQueuedMessages() {
                                     onEscape();
                                     continue;
                                 case SCREEN_SHOP_INVENTORY:
-                                    pGUIWindow_CurrentMenu->Release();
+                                    pGUIWindow_CurrentMenu = nullptr;
                                     current_screen_type = SCREEN_HOUSE;
                                     continue;
                                 case SCREEN_HOUSE:
@@ -1255,7 +1255,7 @@ void Game::processQueuedMessages() {
                 SpellId selectedSpell = static_cast<SpellId>(uMessageParam);
                 if (character->bHaveSpell[selectedSpell] || engine->config->debug.AllMagic.value()) {
                     if (spellbookSelectedSpell == selectedSpell) {
-                        pGUIWindow_CurrentMenu->Release();  // spellbook close
+                        pGUIWindow_CurrentMenu = nullptr;  // spellbook close
                         pEventTimer->setPaused(false);
                         current_screen_type = SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
@@ -1335,7 +1335,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_GameMenuButton:
                 if (current_screen_type != SCREEN_GAME) {
-                    pGUIWindow_CurrentMenu->Release();
+                    pGUIWindow_CurrentMenu = nullptr;
                     pEventTimer->setPaused(false);
                     current_screen_type = SCREEN_GAME;
                 }

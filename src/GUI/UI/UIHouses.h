@@ -76,10 +76,9 @@ struct HouseNpcDesc {
 class GUIWindow_House : public GUIWindow {
  public:
     explicit GUIWindow_House(HouseId houseId);
-    virtual ~GUIWindow_House() {}
+    virtual ~GUIWindow_House() { Release(); }
 
     virtual void Update() override;
-    virtual void Release() override;
 
     HouseType buildingType() const {
         return houseTable[houseId()].uType;
@@ -121,6 +120,8 @@ class GUIWindow_House : public GUIWindow {
     void drawNpcHouseGreetingMessage(NPCData *npcData);
     void drawNpcHouseDialogueOptions(NPCData *npcData) const;
     void drawNpcHouseDialogueResponse();
+
+    void Release();
 
  protected:
     void learnSkillsDialogue(Color selectColor);

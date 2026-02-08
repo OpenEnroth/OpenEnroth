@@ -223,14 +223,10 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                         while (houseDialogPressEscape()) {}
                         pMediaPlayer->Unload();
-                        window_SpeakInHouse->Release();
                         window_SpeakInHouse = nullptr;
                         engine->_messageQueue->clear();
                         current_screen_type = SCREEN_GAME;
-                        if (pDialogueWindow) {
-                            pDialogueWindow->Release();
-                            pDialogueWindow = 0;
-                        }
+                        pDialogueWindow = nullptr;
                     }
                     return -1;
                 }
@@ -436,7 +432,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             if (ir.data.npc_topic_descr.npc_id == 8) {
                 if (ir.data.npc_topic_descr.event_id == 78) {
                     houseDialogPressEscape();
-                    window_SpeakInHouse->Release();
+                    window_SpeakInHouse = nullptr;
                     if (enterHouse(HOUSE_DARK_GUILD_PIT)) {
                         createHouseUI(HOUSE_DARK_GUILD_PIT);
                         current_npc_text = pNPCTopics[90].pText;

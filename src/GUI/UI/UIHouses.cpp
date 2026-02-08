@@ -446,7 +446,6 @@ void NPCHireableDialogPrepare() {
     int v0 = 0;
     NPCData *v1 = houseNpcs[currentHouseNpc].npc;
 
-    pDialogueWindow->Release();
     pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetRenderDimensions().w, 350));
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
         UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_CANCEL), {ui_exit_cancel_button_background}
@@ -520,7 +519,6 @@ void updateHouseNPCTopics(int npc) {
 
     currentHouseNpc = npc;
     if (houseNpcs[npc].type == HOUSE_TRANSITION) {
-        pDialogueWindow->Release();
         // TODO(Nik-RE-dev): can use GUIWindow_Transition
         pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), render->GetRenderDimensions());
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_TRANSITION_NO, localization->str(LSTR_CANCEL), {ui_buttdesc2});
@@ -582,6 +580,7 @@ bool houseDialogPressEscape() {
             shop_ui_background = nullptr;
         }
         window_SpeakInHouse->updateDialogueOnEscape();
+        // we are in the middle of the update windows loop, so we need to delay closing the dialogue window until the end of the frame
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_CloseDialogueWindow, 0, 0);
 
         if (houseNpcs.size() == 1) {
@@ -1098,8 +1097,6 @@ void GUIWindow_House::Release() {
         pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);
         pCamera3D->_viewYaw = pParty->_viewYaw;
     }
-
-    GUIWindow::Release();
 }
 
 void GUIWindow_House::houseDialogueOptionSelected(DialogueId option) {

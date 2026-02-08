@@ -599,7 +599,6 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ui_partycreation_arrow_r[i] = assets->getImage_Alpha(fmt::format("arrowr{}", i + 1));
     }
 
-    // pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight());
     int uX = 8;
     for (int characterIndex = 0; characterIndex < 4; characterIndex++) {
         CreateButton({uX, 120}, {145, 25}, 1, 0, UIMSG_PlayerCreationChangeName, characterIndex);

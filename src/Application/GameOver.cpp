@@ -29,9 +29,7 @@ void GameOver_Setup() {
     pAudioPlayer->stopSounds();
 
     // break out of house and dialogue
-    if (window_SpeakInHouse) window_SpeakInHouse->Release();
     window_SpeakInHouse = nullptr;
-    if (pDialogueWindow) pDialogueWindow->Release();
     pDialogueWindow = nullptr;
 }
 
@@ -41,7 +39,7 @@ GraphicsImage *CreateWinnerCertificate() {
     GraphicsImage *background = assets->getImage_PCXFromIconsLOD("winbg.pcx");
     render->DrawQuad2D(background, {0, 0});
 
-    GUIWindow *tempwindow_SpeakInHouse = new GUIWindow(WINDOW_Unknown, { 0, 0 }, render->GetRenderDimensions());
+    std::unique_ptr<GUIWindow> tempwindow_SpeakInHouse = std::make_unique<GUIWindow>(WINDOW_Unknown, Pointi{ 0, 0 }, render->GetRenderDimensions());
     Recti frameRect(75, 60, 469, 338);
     std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt");
 
@@ -114,7 +112,6 @@ GraphicsImage *CreateWinnerCertificate() {
 
     background->release();
     background = nullptr;
-    tempwindow_SpeakInHouse->Release();
 
     return result;
 }

@@ -9,10 +9,9 @@
 class GUIWindow_Spellbook : public GUIWindow {
  public:
     GUIWindow_Spellbook();
-    virtual ~GUIWindow_Spellbook() {}
+    virtual ~GUIWindow_Spellbook() { Release(); }
 
     virtual void Update() override;
-    virtual void Release() override;
 
     void openSpellbookPage(MagicSchool page);
 
@@ -34,6 +33,9 @@ class GUIWindow_Spellbook : public GUIWindow {
 
     std::array<GraphicsImage *, 12> SBPageCSpellsTextureList{};
     std::array<GraphicsImage *, 12> SBPageSSpellsTextureList{};
+
+ private:
+    void Release();
 };
 
 extern SpellId spellbookSelectedSpell;

@@ -12,13 +12,13 @@ class GUIWindow_BranchlessDialogue : public GUIWindow {
     virtual ~GUIWindow_BranchlessDialogue() { Release(); }
 
     virtual void Update() override;
-    virtual void Release() override;
 
     EvtOpcode event() const {
         return _event;
     }
 
  private:
+    void Release();
     EvtOpcode _event = EVENT_Invalid;
 };
 

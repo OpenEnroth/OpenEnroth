@@ -30,9 +30,7 @@ RestType currentRestType;
 
 static void prepareToLoadRestUI() {
     if (current_screen_type != SCREEN_GAME) {
-        if (pGUIWindow_CurrentMenu) {
-            pGUIWindow_CurrentMenu->Release();
-        }
+        pGUIWindow_CurrentMenu = nullptr;
         current_screen_type = SCREEN_GAME;
     }
     pEventTimer->setPaused(true);
@@ -88,8 +86,6 @@ GUIWindow_Rest::GUIWindow_Rest()
 
     OutdoorLocation::LoadActualSkyFrame();
 
-    // auto wnd = new GUIWindow_Rest(0, 0, window->GetWidth(),
-    // window->GetHeight());
     pButton_RestUI_Exit = CreateButton({280, 297}, {154, 37}, 1, 0, UIMSG_ExitRest, 0, INPUT_ACTION_INVALID, "", {rest_ui_btn_exit});
     pButton_RestUI_Main = CreateButton("Rest_RestAndHeal", {24, 154}, {225, 37}, 1, 0, UIMSG_Rest8Hour, 0, INPUT_ACTION_REST_HEAL, "", {rest_ui_btn_4});
     pButton_RestUI_WaitUntilDawn = CreateButton({61, 232}, {154, 33}, 1, 0, UIMSG_WaitTillDawn, 0, INPUT_ACTION_REST_WAIT_TILL_DAWN, "", {rest_ui_btn_1});

@@ -205,8 +205,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
             pParty->_viewPitch = beacon._partyViewPitch;
         }
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-        pGUIWindow_CurrentMenu->Release();
-        pGUIWindow_CurrentMenu = 0;
+        pGUIWindow_CurrentMenu = nullptr;
     } else {
         character.setBeacon(beaconId, Duration::fromDays(7 * _spellLevel));
         engine->_messageQueue->addMessageNextFrame(UIMSG_CloseAfterInstallBeacon, 0, 0);

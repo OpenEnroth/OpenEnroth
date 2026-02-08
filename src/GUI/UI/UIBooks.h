@@ -28,12 +28,7 @@ using enum BookButtonAction;
 class GUIWindow_Book : public GUIWindow {
  public:
     GUIWindow_Book();
-    virtual ~GUIWindow_Book() {}
-
-    /**
-     * @offset 0x411597
-     */
-    virtual void Release() override;
+    virtual ~GUIWindow_Book() { Release(); }
 
     void bookButtonClicked(BookButtonAction action);
 
@@ -68,6 +63,10 @@ class GUIWindow_Book : public GUIWindow {
      * @offset 0x411AAA
      */
     void initializeFonts();
+    /**
+     * @offset 0x411597
+     */
+    void Release();
 };
 
 

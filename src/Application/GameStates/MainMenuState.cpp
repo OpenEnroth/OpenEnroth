@@ -84,6 +84,5 @@ FsmAction MainMenuState::update() {
 }
 
 void MainMenuState::exit() {
-    _mainMenuUI->Release();
     _mainMenuUI = nullptr;
 }

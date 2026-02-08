@@ -48,7 +48,7 @@ struct Item;
 class GUIWindow {
  public:
     GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint = {});
-    virtual ~GUIWindow();
+    virtual ~GUIWindow() { Release(); }
 
     // no copying
     GUIWindow(const GUIWindow& other) = delete;
@@ -91,7 +91,6 @@ class GUIWindow {
     void setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int selectStep, int initialPosition);
 
     virtual void Update() {}
-    virtual void Release();
     void DeleteButtons();
 
 
@@ -109,6 +108,9 @@ class GUIWindow {
     std::vector<GUIButton*> vButtons;
 
     std::shared_ptr<Io::Mouse> mouse = nullptr;
+
+ private:
+    void Release();
 };
 
 class OnButtonClick : public GUIWindow {
