@@ -148,7 +148,9 @@ bool Chest::open(int uChestID, Pid objectPid) {
         }
     }
     OpenedTelekinesis = false;
-    pGUIWindow_CurrentMenu = pGUIWindow_CurrentChest = new GUIWindow_Chest(uChestID);
+
+    pGUIWindow_CurrentChest = std::make_unique<GUIWindow_Chest>(uChestID);
+
     return true;
 }
 

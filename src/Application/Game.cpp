@@ -69,6 +69,7 @@
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpell.h"
+#include "GUI/UI/UIChest.h"
 
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
@@ -552,8 +553,7 @@ void Game::processQueuedMessages() {
                                     current_screen_type = SCREEN_CHEST;
                                     continue;
                                 case SCREEN_CHEST:
-                                    pWindow2 = pGUIWindow_CurrentMenu;
-                                    pWindow2->Release();
+                                    pGUIWindow_CurrentChest = nullptr;
                                     current_screen_type = SCREEN_GAME;
                                     pEventTimer->setPaused(false);
                                     continue;

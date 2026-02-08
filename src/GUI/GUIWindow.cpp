@@ -42,6 +42,7 @@
 #include "GUI/UI/UIGameOver.h"
 #include "GUI/UI/UISpell.h"
 #include "GUI/UI/UIMessageScroll.h"
+#include "GUI/UI/UIChest.h"
 
 #include "Io/InputEnums.h"
 #include "Io/KeyboardInputHandler.h"
@@ -61,8 +62,8 @@ std::unique_ptr<GUIWindow> pPrimaryWindow;
 
 // used for many different windows
 GUIWindow *pGUIWindow_CurrentMenu;
-GUIWindow_Chest *pGUIWindow_CurrentChest;
 
+std::unique_ptr<GUIWindow_Chest> pGUIWindow_CurrentChest;
 std::unique_ptr<GUIWindow_House> window_SpeakInHouse;
 std::unique_ptr<GUIWindow> pDialogueWindow;
 std::unique_ptr<GUIWindow_MessageScroll> pGUIWindow_ScrollWindow; // reading a message scroll
@@ -1029,6 +1030,7 @@ void WindowManager::DeleteAllVisibleWindows() {
     pGameOverWindow = nullptr;
     pGUIWindow_BranchlessDialogue = nullptr;
     window_SpeakInHouse = nullptr;
+    pGUIWindow_CurrentChest = nullptr;
 
     while (lWindowList.size() > 1) {
         GUIWindow *pWindow = lWindowList.front();
