@@ -369,6 +369,20 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     reconstruct(srcExtras.vertices, &dst->vertices);
     reconstruct(srcExtras.faces, &dst->faces);
 
+    // Drop duplicate consecutive vertices in faces. This does happen in MM7 data.
+    for (ODMFace &face : dst->faces) {
+        int writeIdx = 0;
+        for (int readIdx = 0; readIdx < face.numVertices; readIdx++) {
+            if (face.vertexIds[readIdx] != face.vertexIds[(readIdx + 1) % face.numVertices]) {
+                face.vertexIds[writeIdx] = face.vertexIds[readIdx];
+                face.textureUs[writeIdx] = face.textureUs[readIdx];
+                face.textureVs[writeIdx] = face.textureVs[readIdx];
+                writeIdx++;
+            }
+        }
+        face.numVertices = writeIdx;
+    }
+
     // TODO(pskelton): This code is common to ODM/BLV faces
     // Face plane normals have come from fixed point values - recalculate them.
     for (auto& face : dst->faces) {

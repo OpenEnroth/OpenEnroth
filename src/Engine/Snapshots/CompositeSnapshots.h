@@ -74,7 +74,7 @@ void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocati
 struct BSPModelExtras_MM7 {
     std::vector<Vec3i> vertices;
     std::vector<ODMFace_MM7> faces;
-    std::vector<uint16_t> faceOrdering;
+    std::vector<uint16_t> faceOrdering; // Seems to be filled either with zeros or garbage, not used in OE.
     std::vector<BSPNode_MM7> bspNodes;
     std::vector<std::array<char, 10>> faceTextures;
 };
