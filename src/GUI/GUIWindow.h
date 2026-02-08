@@ -311,9 +311,7 @@ std::string NameAndTitle(NPCData *npc);
 std::string GetDisplayName(Actor *actor);
 
 extern std::unique_ptr<GUIWindow> pPrimaryWindow;
-
-extern GUIWindow *pGUIWindow_CurrentMenu;
-
+extern std::unique_ptr<GUIWindow> pGUIWindow_CurrentMenu;
 extern std::unique_ptr<GUIWindow_Chest> pGUIWindow_CurrentChest;
 extern std::unique_ptr<GUIWindow_House> window_SpeakInHouse;
 extern std::unique_ptr<GUIWindow> pDialogueWindow;

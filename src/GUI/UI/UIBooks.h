@@ -37,7 +37,7 @@ class GUIWindow_Book : public GUIWindow {
     void bookButtonClicked(BookButtonAction action);
 
  protected:
-    GUIWindow *pChildBooksOverlay{ nullptr };
+    std::unique_ptr<GUIWindow> pChildBooksOverlay;
 
     GraphicsImage *ui_book_button8_off{ nullptr };
     GraphicsImage *ui_book_button8_on{ nullptr };

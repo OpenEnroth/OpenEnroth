@@ -219,7 +219,7 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationChangeName:
             pAudioPlayer->playUISound(SOUND_ClickSkill);
             uPlayerCreationUI_NameEditCharacter = param;
-            keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu);
+            keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu.get());
             break;
         case UIMSG_Escape:
             if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000)) break;
@@ -257,7 +257,7 @@ bool PartyCreationUI_Loop() {
     pNPCStats->pGroups = pNPCStats->pOriginalGroups;
     pNPCStats->pNPCData[3].uFlags |= NPC_HIRED; // Lady Margaret.
 
-    pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
+    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_PartyCreation>();
     return !PartyCreationUI_LoopInternal();
 }
 
@@ -726,8 +726,6 @@ bool PartyCreationUI_LoopInternal() {
         }
     }
 
-    pGUIWindow_CurrentMenu->Release();
-    delete pGUIWindow_CurrentMenu;
     pGUIWindow_CurrentMenu = nullptr;
 
     item.Reset();

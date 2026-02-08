@@ -59,10 +59,7 @@ extern std::array<int, 4> pManaBarPos;
 extern const int pHealthManaBarYPos;
 
 std::unique_ptr<GUIWindow> pPrimaryWindow;
-
-// used for many different windows
-GUIWindow *pGUIWindow_CurrentMenu;
-
+std::unique_ptr<GUIWindow> pGUIWindow_CurrentMenu;
 std::unique_ptr<GUIWindow_Chest> pGUIWindow_CurrentChest;
 std::unique_ptr<GUIWindow_House> window_SpeakInHouse;
 std::unique_ptr<GUIWindow> pDialogueWindow;
@@ -1031,7 +1028,10 @@ void WindowManager::DeleteAllVisibleWindows() {
     pGUIWindow_BranchlessDialogue = nullptr;
     window_SpeakInHouse = nullptr;
     pGUIWindow_CurrentChest = nullptr;
+    pGUIWindow_CurrentMenu = nullptr;
 
+    assert(lWindowList.size() == 1);
+    // TODO(pskelton): can drop below now
     while (lWindowList.size() > 1) {
         GUIWindow *pWindow = lWindowList.front();
         // game ui should never be released and should always be at the back of the window list
@@ -1048,9 +1048,6 @@ void WindowManager::DeleteAllVisibleWindows() {
     }
 
     // reset screen state after deleting all windows
-    pGUIWindow_CurrentMenu = nullptr;
-    
-
     current_screen_type = SCREEN_GAME;
     engine->_messageQueue->clearAll();
 

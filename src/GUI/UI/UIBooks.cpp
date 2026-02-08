@@ -70,12 +70,7 @@ void GUIWindow_Book::Release() {
 
     pAudioPlayer->playUISound(SOUND_closebook);
 
-    if (pChildBooksOverlay) {
-        pChildBooksOverlay->Release();
-        delete pChildBooksOverlay;
-        pChildBooksOverlay = nullptr;
-    }
-
+    pChildBooksOverlay = nullptr;
     GUIWindow::Release();
 }
 
