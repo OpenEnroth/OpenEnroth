@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <span>
 
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
@@ -69,38 +70,37 @@ struct FlatFace {
     std::array<float, 104> v;
 };
 
-/*   93 */
-struct BLVFace {  // 60h
+struct BLVFace {
     void _get_normals(Vec3f *outU, Vec3f *outV);
-    void FromODM(ODMFace *face);
+    void FromODM(const ODMFace *face);
 
     void SetTexture(std::string_view filename);
     GraphicsImage *GetTexture() const;
 
     inline bool Invisible() const {
-        return uAttributes & FACE_IsInvisible;
+        return attributes & FACE_IsInvisible;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool isPortal() const { return uAttributes & FACE_IsPortal; }
-    inline bool isFluid() const { return uAttributes & FACE_IsFluid; }
+    inline bool isPortal() const { return attributes & FACE_IsPortal; }
+    inline bool isFluid() const { return attributes & FACE_IsFluid; }
     inline bool Indoor_sky() const {
-        return uAttributes & FACE_INDOOR_SKY;
+        return attributes & FACE_INDOOR_SKY;
     }
     inline bool Clickable() const {
-        return uAttributes & FACE_CLICKABLE;
+        return attributes & FACE_CLICKABLE;
     }
     inline bool Pressure_Plate() const {
-        return uAttributes & FACE_PRESSURE_PLATE;
+        return attributes & FACE_PRESSURE_PLATE;
     }
-    inline bool Ethereal() const { return uAttributes & FACE_ETHEREAL; }
+    inline bool Ethereal() const { return attributes & FACE_ETHEREAL; }
 
     inline bool IsAnimated() const {
-        return this->uAttributes & FACE_ANIMATED;
+        return this->attributes & FACE_ANIMATED;
     }
     inline void ToggleIsAnimated() {
-        this->uAttributes = this->uAttributes & FACE_ANIMATED
-                                ? this->uAttributes & ~FACE_ANIMATED
-                                : this->uAttributes | FACE_ANIMATED;
+        this->attributes = this->attributes & FACE_ANIMATED
+                                ? this->attributes & ~FACE_ANIMATED
+                                : this->attributes | FACE_ANIMATED;
     }
 
     /**
@@ -129,66 +129,58 @@ struct BLVFace {  // 60h
 
     Planef facePlane;
     PlaneZCalcf zCalc;
-    FaceAttributes uAttributes;
+    FaceAttributes attributes;
 
-    /** Array of indices into the vertex array for this face's vertices. Points into `IndoorLocation::pVertices` for
-     * indoor faces, or `BSPModel::pVertices` for outdoor faces. Has `uNumVertices + 1` elements, where the last element
-     * repeats the first vertex to close the polygon. */
-    int16_t *pVertexIDs = nullptr;
+    /** Indices into the vertex array for this face's vertices. Points into `IndoorLocation::pVertices` for
+     * indoor faces. Has `numVertices` elements. */
+    std::span<int16_t> vertexIds;
 
-    /** Array of U (horizontal) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
-     * matching `pVertexIDs`. */
-    int16_t *pVertexUs = nullptr;
+    /** U (horizontal) texture coordinates for each vertex, in texture pixels. Has `numVertices` elements. */
+    std::span<int16_t> textureUs;
 
-    /** Array of V (vertical) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
-     * matching `pVertexIDs`. */
-    int16_t *pVertexVs = nullptr;
+    /** V (vertical) texture coordinates for each vertex, in texture pixels. Has `numVertices` elements. */
+    std::span<int16_t> textureVs;
 
-    uint16_t uFaceExtraID = 0;
+    uint16_t faceExtraId = 0;
     GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.
     int animationId = 0; // Index into pTextureFrameTable for animated faces.
     int texunit = -1;
     int texlayer = -1;
 
-    int uSectorID = 0;
-    int uBackSectorID = 0;
-    BBoxf pBounding;
-    PolygonType uPolygonType = POLYGON_Invalid;
-    uint8_t uNumVertices = 0;
+    int sectorId = 0;
+    int backSectorId = 0;
+    BBoxf boundingBox;
+    PolygonType polygonType = POLYGON_Invalid;
+    uint8_t numVertices = 0;
 };
 
 struct BLVFaceExtra {
     bool HasEventHint();
 
-    int face_id;
-    uint16_t uAdditionalBitmapID; // TODO(captainurist): why is this one unused?
-    int16_t sTextureDeltaU;
-    int16_t sTextureDeltaV;
-    int16_t sCogNumber;
-    uint16_t uEventID;
+    int faceId;
+    uint16_t additionalBitmapId; // TODO(captainurist): why is this one unused?
+    int16_t textureDeltaU;
+    int16_t textureDeltaV;
+    int16_t cogNumber;
+    uint16_t eventId;
 };
 
-/*   95 */
-struct BLVSector {  // 0x74
-    int32_t flags;  // & 8 is for check floor level against portals & 10 is for adding additonal node faces
-    uint16_t numFloors;
-    uint16_t *floors;
-    uint16_t numWalls;
-    uint16_t *walls;
-    uint16_t numCeilings;
-    uint16_t *ceilings;
-    int16_t numPortals;
-    uint16_t *portals;
-    uint16_t numFaces;
-    uint16_t numNonBspFaces;
-    uint16_t *faceIds;
-    uint16_t numDecorations;
-    uint16_t *decorationIds;
-    uint16_t numLights;
-    uint16_t *lights;
-    int16_t minAmbientLightLevel; // might be supposed to be max ambient dim actually
-    int16_t firstBspNode;
-    BBoxf boundingBox;
+struct BLVSector {
+    // Note that all spans below point into `IndoorLocation::sectorData` or `IndoorLocation::sectorLightData`.
+
+    // TODO(captainurist): #enum
+    int flags; // &8 checks floor level against portals, &0x10 adds additional node faces.
+    std::span<uint16_t> floorIds; // Indices into `IndoorLocation::faces` for floor faces.
+    std::span<uint16_t> wallIds; // Indices into `IndoorLocation::faces` for wall faces.
+    std::span<uint16_t> ceilingIds; // Indices into `IndoorLocation::faces` for ceiling faces.
+    std::span<uint16_t> portalIds; // Indices into `IndoorLocation::faces` for portal faces.
+    std::span<uint16_t> nonBspFaceIds; // Subspan of `faceIds` for faces not in BSP tree, stored first in `faceIds`.
+    std::span<uint16_t> faceIds; // Indices into `IndoorLocation::faces` for BSP traversal.
+    std::span<uint16_t> decorationIds; // Indices into `pLevelDecorations`.
+    std::span<uint16_t> lightIds; // Indices into `IndoorLocation::lights`.
+    int16_t minAmbientLightLevel; // Minimum ambient light level, might actually be max ambient dim.
+    int16_t firstBspNode; // Index into `IndoorLocation::nodes`, or -1 if none.
+    BBoxf boundingBox; // Axis-aligned bounding box of this sector.
 };
 
 struct IndoorLocation {

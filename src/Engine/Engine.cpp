@@ -375,7 +375,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     float v14;  // [sp+1Ch] [bp+10h]@8
     float v15;  // [sp+1Ch] [bp+10h]@10
 
-    if (engine->IsSaturateFaces() && a2->uAttributes & FACE_IsSecret) {
+    if (engine->IsSaturateFaces() && a2->attributes & FACE_IsSecret) {
         v4 = (double)a4;
         v11 = v4;
         *a3 |= 2u;
@@ -905,8 +905,8 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
                                    std::string_view filename) {
     for (unsigned i = 1; i < pIndoor->faceExtras.size(); ++i) {
         auto extra = &pIndoor->faceExtras[i];
-        if (extra->sCogNumber == uFaceCog) {
-            auto face = &pIndoor->faces[extra->face_id];
+        if (extra->cogNumber == uFaceCog) {
+            auto face = &pIndoor->faces[extra->faceId];
             face->SetTexture(filename);
         }
     }
@@ -944,13 +944,13 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             for (unsigned i = 1; i < (unsigned int)pIndoor->faceExtras.size(); ++i) {
-                if (pIndoor->faceExtras[i].sCogNumber == sCogNumber) {
+                if (pIndoor->faceExtras[i].cogNumber == sCogNumber) {
                     if (on)
-                        pIndoor->faces[pIndoor->faceExtras[i].face_id]
-                            .uAttributes |= bit;
+                        pIndoor->faces[pIndoor->faceExtras[i].faceId]
+                            .attributes |= bit;
                     else
-                        pIndoor->faces[pIndoor->faceExtras[i].face_id]
-                            .uAttributes &= ~bit;
+                        pIndoor->faces[pIndoor->faceExtras[i].faceId]
+                            .attributes &= ~bit;
                 }
             }
         } else {

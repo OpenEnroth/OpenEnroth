@@ -34,6 +34,88 @@
 
 #include "Engine/Graphics/Image.h"
 
+template<class Face>
+static void dropDuplicateFaceVertices(Face *face) {
+    auto copyVertex = [&](int src, int dst) {
+        face->vertexIds[dst] = face->vertexIds[src];
+        face->textureUs[dst] = face->textureUs[src];
+        face->textureVs[dst] = face->textureVs[src];
+    };
+
+    // First pass - collapse everything that doesn't wrap around.
+    int writeIdx = 0;
+    for (int readIdx = 0; readIdx < face->numVertices; readIdx++) {
+        if (writeIdx > 0 && face->vertexIds[readIdx] == face->vertexIds[writeIdx - 1])
+            continue; // AA -> A.
+        if (writeIdx > 1 && face->vertexIds[readIdx] == face->vertexIds[writeIdx - 2]) {
+            writeIdx--;
+            continue; // ABA -> A.
+        }
+        if (readIdx != writeIdx)
+            copyVertex(readIdx, writeIdx);
+        writeIdx++;
+    }
+
+    // Second pass - collapse sequences that wrap around.
+    int l = 0;
+    int r = writeIdx - 1;
+    while (l <= r) {
+        if (face->vertexIds[l] == face->vertexIds[r]) {
+            r--; // A***A -> A***.
+        } else if (r - l > 1 && face->vertexIds[l] == face->vertexIds[r - 1]) {
+            r -= 2; // A***AB -> A***.
+        } else if (r - l > 1 && face->vertexIds[l + 1] == face->vertexIds[r]) {
+            l += 2; // BA***A -> ***A.
+        } else {
+            break; // No new sequences to collapse.
+        }
+    }
+
+    // Final pass - shift if needed.
+    if (l != 0) {
+        for (int i = l; i <= r; i++)
+            copyVertex(i, i - l);
+    }
+
+    face->numVertices = r - l + 1;
+
+    // BLVFace uses spans, resize them to match the new vertex count.
+    if constexpr (std::is_same_v<Face, BLVFace>) {
+        face->vertexIds = face->vertexIds.first(face->numVertices);
+        face->textureUs = face->textureUs.first(face->numVertices);
+        face->textureVs = face->textureVs.first(face->numVertices);
+    }
+}
+
+// Face plane normals have come from fixed point values - recalculate them.
+template<class Face>
+static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices) {
+    if (face->numVertices < 3) return;
+    Vec3f dir1 = (vertices[face->vertexIds[1]] - vertices[face->vertexIds[0]]);
+    Vec3f dir2, norm;
+    int i = 2;
+    for (; i < face->numVertices; i++) {
+        dir2 = (vertices[face->vertexIds[i]] - vertices[face->vertexIds[0]]);
+        if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
+            norm /= norm.length();
+            // Check that our new normal is pointing in the same direction as the original
+            constexpr float tolerance = 0.95f; // TODO(pskelton): may need tuning
+            if (dot(norm, face->facePlane.normal) > tolerance)
+                break;
+        }
+    }
+
+    if (i == face->numVertices) {
+        // If we didn't find a non-parallel edge, lets just round what were given.
+        // TODO(pskelton):  This shouldnt ever happen - test and drop
+        face->facePlane.normal /= face->facePlane.normal.length();
+    } else {
+        face->facePlane.normal = norm;
+    }
+    face->facePlane.dist = -dot(face->facePlane.normal, vertices[face->vertexIds[0]]);
+    face->zCalc.init(face->facePlane);
+}
+
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->vertices);
     reconstruct(src.faces, &dst->faces);
@@ -43,59 +125,30 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
 
-        pFace->pVertexIDs = dst->faceData.data() + j;
-        j += pFace->uNumVertices + 1;
+        pFace->vertexIds = std::span(dst->faceData.data() + j, pFace->numVertices);
+        j += pFace->numVertices + 1; // +1 to skip closing vertex in source data.
 
         // Skipping pXInterceptDisplacements.
-        j += pFace->uNumVertices + 1;
+        j += pFace->numVertices + 1;
 
         // Skipping pYInterceptDisplacements.
-        j += pFace->uNumVertices + 1;
+        j += pFace->numVertices + 1;
 
         // Skipping pZInterceptDisplacements.
-        j += pFace->uNumVertices + 1;
+        j += pFace->numVertices + 1;
 
-        pFace->pVertexUs = dst->faceData.data() + j;
-        j += pFace->uNumVertices + 1;
+        pFace->textureUs = std::span(dst->faceData.data() + j, pFace->numVertices);
+        j += pFace->numVertices + 1;
 
-        pFace->pVertexVs = dst->faceData.data() + j;
-        j += pFace->uNumVertices + 1;
+        pFace->textureVs = std::span(dst->faceData.data() + j, pFace->numVertices);
+        j += pFace->numVertices + 1;
 
         assert(j <= dst->faceData.size());
     }
 
-    // Face plane normals have come from fixed point values - recalculate them.
-    for (auto& face : dst->faces) {
-        if (face.uNumVertices < 3) continue;
-        Vec3f dir1 = (dst->vertices[face.pVertexIDs[1]] - dst->vertices[face.pVertexIDs[0]]);
-        int i = 2;
-        // dir1 can be a 0 vec when first edge is degenerate - skip forwards
-        while (dir1.length() < 1e-6f && i < face.uNumVertices) {
-            dir1 = (dst->vertices[face.pVertexIDs[i]] - dst->vertices[face.pVertexIDs[i-1]]);
-            i++;
-        }
-
-        Vec3f dir2, recalcNorm;
-        for (; i < face.uNumVertices; i++) {
-            dir2 = (dst->vertices[face.pVertexIDs[i]] - dst->vertices[face.pVertexIDs[0]]);
-            if (recalcNorm = cross(dir1, dir2); recalcNorm.length() > 1e-6f) {
-                recalcNorm /= recalcNorm.length();
-                // Check that our new normal is pointing in the same direction as the original
-                constexpr float tolerance = 0.95f; // TODO(pskelton): may need tuning
-                if (dot(recalcNorm, face.facePlane.normal) > tolerance)
-                    break;
-            }
-        }
-
-        if (i == face.uNumVertices) {
-            // If we didn't find a non-parallel edge, lets just round what were given.
-            // TODO(pskelton):  This shouldnt ever happen - test and drop
-            face.facePlane.normal /= face.facePlane.normal.length();
-        } else {
-            face.facePlane.normal = recalcNorm;
-        }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.pVertexIDs[0]]);
-        face.zCalc.init(face.facePlane);
+    for (BLVFace &face : dst->faces) {
+        dropDuplicateFaceVertices(&face);
+        repairFaceNormal(&face, dst->vertices);
     }
 
     for (size_t i = 0; i < dst->faces.size(); ++i) {
@@ -113,20 +166,20 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         reconstruct(src.faceExtraTextures[i], &textureName);
 
         if (textureName.empty())
-            dst->faceExtras[i].uAdditionalBitmapID = -1;
+            dst->faceExtras[i].additionalBitmapId = -1;
         else
-            dst->faceExtras[i].uAdditionalBitmapID = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
+            dst->faceExtras[i].additionalBitmapId = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
     }
 
     for (size_t i = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
-        BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->uFaceExtraID];
+        BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->faceExtraId];
 
-        if (pFaceExtra->uEventID) {
+        if (pFaceExtra->eventId) {
             if (pFaceExtra->HasEventHint())
-                pFace->uAttributes |= FACE_HAS_EVENT;
+                pFace->attributes |= FACE_HAS_EVENT;
             else
-                pFace->uAttributes &= ~FACE_HAS_EVENT;
+                pFace->attributes &= ~FACE_HAS_EVENT;
         }
     }
 
@@ -134,44 +187,47 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.sectorData, &dst->sectorData);
 
     for (size_t i = 0, j = 0; i < dst->sectors.size(); ++i) {
-        BLVSector *pSector = &dst->sectors[i];
+        BLVSector *dstSector = &dst->sectors[i];
+        const BLVSector_MM7 &srcSector = src.sectors[i];
 
-        pSector->floors = dst->sectorData.data() + j;
-        j += pSector->numFloors;
+        dstSector->floorIds = std::span(dst->sectorData.data() + j, srcSector.numFloors);
+        j += srcSector.numFloors;
 
-        pSector->walls = dst->sectorData.data() + j;
-        j += pSector->numWalls;
+        dstSector->wallIds = std::span(dst->sectorData.data() + j, srcSector.numWalls);
+        j += srcSector.numWalls;
 
-        pSector->ceilings = dst->sectorData.data() + j;
-        j += pSector->numCeilings;
+        dstSector->ceilingIds = std::span(dst->sectorData.data() + j, srcSector.numCeilings);
+        j += srcSector.numCeilings;
 
-        // Fluids came next in original binary, but we dropped them.
+        j += srcSector.numFluids; // Fluids not used in OE, skip.
 
-        pSector->portals = dst->sectorData.data() + j;
-        j += pSector->numPortals;
+        dstSector->portalIds = std::span(dst->sectorData.data() + j, srcSector.numPortals);
+        j += srcSector.numPortals;
 
-        pSector->faceIds = dst->sectorData.data() + j;
-        j += pSector->numFaces;
+        dstSector->faceIds = std::span(dst->sectorData.data() + j, srcSector.numFaces);
+        dstSector->nonBspFaceIds = dstSector->faceIds.subspan(0, srcSector.numNonBspFaces);
+        j += srcSector.numFaces;
 
-        // Cogs came next in original binary, but we dropped them.
+        j += srcSector.numCogs; // Cogs not used in OE, skip.
 
-        pSector->decorationIds = dst->sectorData.data() + j;
-        j += pSector->numDecorations;
+        dstSector->decorationIds = std::span(dst->sectorData.data() + j, srcSector.numDecorations);
+        j += srcSector.numDecorations;
 
-        // Markers came next in original binary, but we dropped them.
+        j += srcSector.numMarkers; // Markers not used in OE, skip.
 
-        assert(j <= dst->sectorData.size());
+        assert(j <= dst->sectorData.size()); // TODO(captainurist): exception, not an assertion?
     }
 
     reconstruct(src.sectorLightData, &dst->sectorLightData);
 
-    for (unsigned i = 0, j = 0; i < dst->sectors.size(); ++i) {
-        BLVSector *pSector = &dst->sectors[i];
+    for (size_t i = 0, j = 0; i < dst->sectors.size(); ++i) {
+        BLVSector *dstSector = &dst->sectors[i];
+        const BLVSector_MM7 &srcSector = src.sectors[i];
 
-        pSector->lights = dst->sectorLightData.data() + j;
-        j += pSector->numLights;
+        dstSector->lightIds = std::span(dst->sectorLightData.data() + j, srcSector.numLights);
+        j += srcSector.numLights;
 
-        assert(j <= dst->sectorLightData.size());
+        assert(j <= dst->sectorLightData.size()); // TODO(captainurist): exception, not an assertion?
     }
 
     reconstruct(src.decorations, &pLevelDecorations);
@@ -219,7 +275,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - not all of the attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BLVFace &pFace : pIndoor->faces)
-        dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes & ~(FACE_HAS_EVENT | FACE_ANIMATED)));
+        dst->faceAttributes.push_back(std::to_underlying(pFace.attributes & ~(FACE_HAS_EVENT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -247,8 +303,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BLVFace &face : dst->faces) {
-        face.uAttributes &= FACE_ANIMATED | FACE_HAS_EVENT;
-        face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_ANIMATED);
+        face.attributes &= FACE_ANIMATED | FACE_HAS_EVENT;
+        face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_ANIMATED);
     }
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
@@ -309,10 +365,10 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
 
         for (unsigned j = 0; j < pDoor->numFaces; ++j) {
             BLVFace *pFace = &dst->faces[pDoor->pFaceIDs[j]];
-            BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->uFaceExtraID];
+            BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->faceExtraId];
 
-            pDoor->pDeltaUs[j] = pFaceExtra->sTextureDeltaU;
-            pDoor->pDeltaVs[j] = pFaceExtra->sTextureDeltaV;
+            pDoor->pDeltaUs[j] = pFaceExtra->textureDeltaU;
+            pDoor->pDeltaVs[j] = pFaceExtra->textureDeltaV;
         }
     }
 
@@ -366,35 +422,13 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     reconstruct(srcExtras.vertices, &dst->vertices);
     reconstruct(srcExtras.faces, &dst->faces);
 
-    // TODO(pskelton): This code is common to ODM/BLV faces
-    // Face plane normals have come from fixed point values - recalculate them.
-    for (auto& face : dst->faces) {
-        if (face.numVertices < 3) continue;
-        Vec3f dir1 = (dst->vertices[face.vertexIds[1]] - dst->vertices[face.vertexIds[0]]);
-        Vec3f dir2, norm;
-        int i = 2;
-        for (; i < face.numVertices; i++) {
-            dir2 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[0]]);
-            if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
-                break; // Found a non-parallel edge.
-            }
-        }
-
-        if (i == face.numVertices) {
-            // If we didn't find a non-parallel edge, lets just round what were given.
-            // TODO(pskelton):  This shouldnt ever happen - test and drop
-            face.facePlane.normal /= face.facePlane.normal.length();
-        } else {
-            face.facePlane.normal = norm / norm.length();
-        }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.vertexIds[0]]);
-        face.zCalc.init(face.facePlane);
+    for (ODMFace &face : dst->faces) {
+        dropDuplicateFaceVertices(&face);
+        repairFaceNormal(&face, dst->vertices);
     }
 
     for (size_t i = 0; i < dst->faces.size(); i++)
         dst->faces[i].index = i;
-
-    dst->facesOrdering = srcExtras.faceOrdering;
 
     reconstruct(srcExtras.bspNodes, &dst->nodes);
 
@@ -454,9 +488,6 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
 }
 
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
-    reconstruct(src.name, &dst->level_filename);
-    reconstruct(src.fileName, &dst->location_filename);
-    reconstruct(src.desciption, &dst->location_file_description);
     reconstruct(src.skyTexture, &dst->sky_texture_filename);
     reconstruct(src, &dst->pTerrain);
 
@@ -487,7 +518,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
 void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     deserialize(src, &dst->name);
     deserialize(src, &dst->fileName);
-    deserialize(src, &dst->desciption);
+    deserialize(src, &dst->description);
     deserialize(src, &dst->skyTexture);
     deserialize(src, &dst->groundTilesetUnused);
     deserialize(src, &dst->tileTypes);
@@ -505,7 +536,7 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
         BSPModelExtras_MM7 &extra = dst->modelExtras.emplace_back();
         deserialize(src, &extra.vertices, tags::presized(model.numVertices));
         deserialize(src, &extra.faces, tags::presized(model.numFaces));
-        deserialize(src, &extra.faceOrdering, tags::presized(model.numFaces));
+        deserialize(src, &extra.facesOrdering, tags::presized(model.numFaces));
         deserialize(src, &extra.bspNodes, tags::presized(model.numNodes));
         deserialize(src, &extra.faceTextures, tags::presized(model.numFaces));
     }
