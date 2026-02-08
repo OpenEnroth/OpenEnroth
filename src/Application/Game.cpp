@@ -611,7 +611,7 @@ void Game::processQueuedMessages() {
                                     pMediaPlayer->Unload();
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;
-                                        pNPCStats->pNPCData[npcIdToDismissAfterDialogue].uFlags &= ~NPC_HIRED;
+                                        pNPCStats->pNPCData[npcIdToDismissAfterDialogue].flags &= ~NPC_HIRED;
                                         pParty->CountHirelings();
                                         npcIdToDismissAfterDialogue = 0;
                                     }
@@ -621,7 +621,7 @@ void Game::processQueuedMessages() {
                                 case SCREEN_NPC_DIALOGUE:  // click escape
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;
-                                        pNPCStats->pNPCData[npcIdToDismissAfterDialogue].uFlags &= ~NPC_HIRED;
+                                        pNPCStats->pNPCData[npcIdToDismissAfterDialogue].flags &= ~NPC_HIRED;
                                         pParty->CountHirelings();
                                         npcIdToDismissAfterDialogue = 0;
                                     }
@@ -802,12 +802,12 @@ void Game::processQueuedMessages() {
                 }
                 if (type == OBJECT_Face) {
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                        ODMFace *pODMFace = &pOutdoor->pBModels[id >> 6].pFaces[id & 0x3F];
-                        interactionPossible = (pODMFace->Clickable() && pODMFace->sCogTriggeredID);
+                        ODMFace *pODMFace = &pOutdoor->pBModels[id >> 6].faces[id & 0x3F];
+                        interactionPossible = (pODMFace->Clickable() && pODMFace->eventId);
                     } else { // Indoor
-                        BLVFace *pBLVFace = &pIndoor->pFaces[id];
+                        BLVFace *pBLVFace = &pIndoor->faces[id];
                         if (pBLVFace->Clickable()) {
-                            interactionPossible = pIndoor->pFaceExtras[pBLVFace->uFaceExtraID].uEventID != 0;
+                            interactionPossible = pIndoor->faceExtras[pBLVFace->uFaceExtraID].uEventID != 0;
                         }
                     }
                 }
@@ -1697,7 +1697,7 @@ void Game::gameLoop() {
                 pParty->pHirelings[1] = NPCData();
                 for (int i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
                     if (pNPCStats->pNPCData[i].field_24)
-                        pNPCStats->pNPCData[i].uFlags &= ~NPC_HIRED;
+                        pNPCStats->pNPCData[i].flags &= ~NPC_HIRED;
                 }
                 pMediaPlayer->PlayFullscreenMovie("losegame");
                 if (pMovie_Track)

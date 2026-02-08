@@ -255,8 +255,8 @@ void reconstruct(const Planei_MM7 &src, Planef *dst) {
 }
 
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
-    reconstruct(src.animationName, &dst->animationName);
-    dst->animationName = ascii::toLower(dst->animationName);
+    reconstruct(src.spriteName, &dst->spriteName);
+    dst->spriteName = ascii::toLower(dst->spriteName);
 
     reconstruct(src.textureName, &dst->textureName);
     dst->textureName = ascii::toLower(dst->textureName);
@@ -277,8 +277,8 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->zCalc.init(dst->facePlane);
     dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
     dst->pVertexIDs = nullptr;
-    dst->pVertexUIDs = nullptr;
-    dst->pVertexVIDs = nullptr;
+    dst->pVertexUs = nullptr;
+    dst->pVertexVs = nullptr;
     dst->uFaceExtraID = src.faceExtraId;
     dst->texture = nullptr;
     dst->animationId = 0;
@@ -290,16 +290,16 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
 }
 
 void reconstruct(const TileData_MM7 &src, TileData *dst) {
-    reconstruct(src.tileName, &dst->name);
-    dst->name = ascii::toLower(dst->name);
+    reconstruct(src.textureName, &dst->textureName);
+    dst->textureName = ascii::toLower(dst->textureName);
 
-    if (ascii::noCaseStartsWith(dst->name, "wtrdr"))
-        dst->name.insert(0, "h"); // animated water only works with hwtrdr* tiles.
+    if (ascii::noCaseStartsWith(dst->textureName, "wtrdr"))
+        dst->textureName.insert(0, "h"); // animated water only works with hwtrdr* tiles.
 
     // We just ignore src.tileId & src.bitmapId.
 
     reconstruct(src.tileset, &dst->tileset);
-    reconstruct(src.variant, &dst->variant, tags::context(isRoad(dst->tileset)), tags::context(dst->name));
+    reconstruct(src.variant, &dst->variant, tags::context(isRoad(dst->tileset)), tags::context(dst->textureName));
     dst->flags = static_cast<TileFlags>(src.flags);
 }
 
@@ -343,15 +343,15 @@ void reconstruct(const Timer_MM7 &src, Timer *dst) {
 void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     memzero(dst);
 
-    dst->name = !src.name.empty();
-    dst->portraitId = src.uPortraitID;
-    dst->flags = std::to_underlying(src.uFlags);
+    dst->name.value = !src.name.empty(); // TODO(captainurist): Can drop? Need to check that vanilla doesn't choke here.
+    dst->portraitId = src.portraitId;
+    dst->flags = std::to_underlying(src.flags);
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->location2d = std::to_underlying(src.Location2D);
+    dst->house = std::to_underlying(src.house);
     dst->profession = std::to_underlying(src.profession);
-    dst->greet = src.greet;
-    dst->joins = src.is_joinable;
+    dst->greetingIndex = src.greetingIndex;
+    dst->canJoin = src.canJoin;
     dst->field_24 = src.field_24;
     dst->evt_A = src.dialogue_1_evt_id;
     dst->evt_B = src.dialogue_2_evt_id;
@@ -359,21 +359,21 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     dst->evt_D = src.dialogue_4_evt_id;
     dst->evt_E = src.dialogue_5_evt_id;
     dst->evt_F = src.dialogue_6_evt_id;
-    dst->sex = std::to_underlying(src.uSex);
-    dst->hasUsedAbility = src.bHasUsedTheAbility;
-    dst->newsTopic = src.news_topic;
+    dst->sex = std::to_underlying(src.sex);
+    dst->hasUsedAbility = src.hasUsedAbility;
+    dst->newsTopic = src.newsTopic;
 }
 
 void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
-    dst->name = src.name ? "Dummy" : "";
-    dst->uPortraitID = src.portraitId;
-    dst->uFlags = NpcFlags(src.flags);
+    dst->name = src.name.value ? "Dummy" : ""; // TODO(captainurist): can drop?
+    dst->portraitId = src.portraitId;
+    dst->flags = NpcFlags(src.flags);
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->Location2D = static_cast<HouseId>(src.location2d);
+    dst->house = static_cast<HouseId>(src.house);
     dst->profession = static_cast<NpcProfession>(src.profession);
-    dst->greet = src.greet;
-    dst->is_joinable = src.joins;
+    dst->greetingIndex = src.greetingIndex;
+    dst->canJoin = src.canJoin;
     dst->field_24 = src.field_24;
     dst->dialogue_1_evt_id = src.evt_A;
     dst->dialogue_2_evt_id = src.evt_B;
@@ -381,9 +381,9 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->dialogue_4_evt_id = src.evt_D;
     dst->dialogue_5_evt_id = src.evt_E;
     dst->dialogue_6_evt_id = src.evt_F;
-    dst->uSex = static_cast<Sex>(src.sex);
-    dst->bHasUsedTheAbility = src.hasUsedAbility;
-    dst->news_topic = src.newsTopic;
+    dst->sex = static_cast<Sex>(src.sex);
+    dst->hasUsedAbility = src.hasUsedAbility;
+    dst->newsTopic = src.newsTopic;
 }
 
 void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
@@ -429,18 +429,18 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
     snapshot(src.expireTime, &dst->expireTime);
     dst->power = src.power;
     dst->skillMastery = std::to_underlying(src.skillMastery);
-    dst->overlayId = src.overlayID;
+    dst->overlayId = src.overlayId;
     dst->caster = src.caster;
-    dst->flags = src.isGMBuff;
+    dst->isGM = src.isGM;
 }
 
 void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
     reconstruct(src.expireTime, &dst->expireTime);
     dst->power = src.power;
     dst->skillMastery = static_cast<Mastery>(src.skillMastery);
-    dst->overlayID = src.overlayId;
+    dst->overlayId = src.overlayId;
     dst->caster = src.caster;
-    dst->isGMBuff = src.flags;
+    dst->isGM = src.isGM;
 }
 
 void snapshot(const Item &src, Item_MM7 *dst, ContextTag<ItemSlot> slot) {
@@ -1264,7 +1264,7 @@ void reconstruct(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
     dst->toHitRadius = src.toHitRadius;
     dst->tintColor = colorTable.White;
     reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
-    reconstruct(src.monsterName, &dst->monsterName);
+    reconstruct(src.internalMonsterName, &dst->internalMonsterName);
     reconstruct(src.spriteNames, &dst->spriteNames);
 }
 
@@ -1277,7 +1277,7 @@ void snapshot(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     dst->toHitRadius = src.toHitRadius;
     dst->tintColor = src.tintColor.c32();
     snapshot(src.soundSampleIds, &dst->soundSampleIds, tags::cast<SoundId, uint16_t>);
-    snapshot(src.monsterName, &dst->monsterName);
+    snapshot(src.internalMonsterName, &dst->internalMonsterName);
     snapshot(src.spriteNames, &dst->spriteNames);
     dst->spriteNamesUnused[0].fill('\0');
     dst->spriteNamesUnused[1].fill('\0');
@@ -1290,7 +1290,7 @@ void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     dst->toHitRadius = src.toHitRadius;
     dst->tintColor = Color::fromC32(src.tintColor);
     reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
-    reconstruct(src.monsterName, &dst->monsterName);
+    reconstruct(src.internalMonsterName, &dst->internalMonsterName);
     reconstruct(src.spriteNames, &dst->spriteNames);
 }
 
@@ -1317,295 +1317,272 @@ void reconstruct(const ActorJob_MM7 &src, ActorJob *dst) {
 void snapshot(const Actor &src, Actor_MM7 *dst) {
     memzero(dst);
 
-    snapshot(src.name, &dst->pActorName);
+    snapshot(src.name, &dst->name);
 
-    dst->sNPC_ID = src.npcId;
-    dst->uAttributes = std::to_underlying(src.attributes);
-    dst->sCurrentHP = src.currentHP;
+    dst->npcId = src.npcId;
+    dst->attributes = std::to_underlying(src.attributes);
+    dst->hp = src.hp;
 
-    dst->pMonsterInfo.level = src.monsterInfo.level;
-    dst->pMonsterInfo.treasureDropChance = src.monsterInfo.treasureDropChance;
-    dst->pMonsterInfo.goldDiceRolls = src.monsterInfo.goldDiceRolls;
-    dst->pMonsterInfo.goldDiceSides = src.monsterInfo.goldDiceSides;
-    dst->pMonsterInfo.treasureLevel = std::to_underlying(src.monsterInfo.treasureLevel);
-    dst->pMonsterInfo.treasureType = std::to_underlying(src.monsterInfo.treasureType);
-    dst->pMonsterInfo.flying = src.monsterInfo.flying;
-    dst->pMonsterInfo.movementType = std::to_underlying(src.monsterInfo.movementType);
-    dst->pMonsterInfo.aiType = std::to_underlying(src.monsterInfo.aiType);
-    dst->pMonsterInfo.hostilityType = std::to_underlying(src.monsterInfo.hostilityType);
-    dst->pMonsterInfo.specialAttackType = std::to_underlying(src.monsterInfo.specialAttackType);
-    dst->pMonsterInfo.specialAttackLevel = src.monsterInfo.specialAttackLevel;
-    dst->pMonsterInfo.attack1Type = std::to_underlying(src.monsterInfo.attack1Type);
-    dst->pMonsterInfo.attack1DamageDiceRolls = src.monsterInfo.attack1DamageDiceRolls;
-    dst->pMonsterInfo.attack1DamageDiceSides = src.monsterInfo.attack1DamageDiceSides;
-    dst->pMonsterInfo.attack1DamageBonus = src.monsterInfo.attack1DamageBonus;
-    dst->pMonsterInfo.attack1MissileType = std::to_underlying(src.monsterInfo.attack1MissileType);
-    dst->pMonsterInfo.attack2Chance = src.monsterInfo.attack2Chance;
-    dst->pMonsterInfo.attack2Type = std::to_underlying(src.monsterInfo.attack2Type);
-    dst->pMonsterInfo.attack2DamageDiceRolls = src.monsterInfo.attack2DamageDiceRolls;
-    dst->pMonsterInfo.attack2DamageDiceSides = src.monsterInfo.attack2DamageDiceSides;
-    dst->pMonsterInfo.attack2DamageBonus = src.monsterInfo.attack2DamageBonus;
-    dst->pMonsterInfo.attack2MissileType = std::to_underlying(src.monsterInfo.attack2MissileType);
-    dst->pMonsterInfo.spell1UseChance = src.monsterInfo.spell1UseChance;
-    dst->pMonsterInfo.spell1Id = std::to_underlying(src.monsterInfo.spell1Id);
-    dst->pMonsterInfo.spell2UseChance = src.monsterInfo.spell2UseChance;
-    dst->pMonsterInfo.spell2Id = std::to_underlying(src.monsterInfo.spell2Id);
-    dst->pMonsterInfo.resFire = src.monsterInfo.resFire;
-    dst->pMonsterInfo.resAir = src.monsterInfo.resAir;
-    dst->pMonsterInfo.resWater = src.monsterInfo.resWater;
-    dst->pMonsterInfo.resEarth = src.monsterInfo.resEarth;
-    dst->pMonsterInfo.resMind = src.monsterInfo.resMind;
-    dst->pMonsterInfo.resSpirit = src.monsterInfo.resSpirit;
-    dst->pMonsterInfo.resBody = src.monsterInfo.resBody;
-    dst->pMonsterInfo.resLight = src.monsterInfo.resLight;
-    dst->pMonsterInfo.resDark = src.monsterInfo.resDark;
-    dst->pMonsterInfo.resPhysical = src.monsterInfo.resPhysical;
-    dst->pMonsterInfo.specialAbilityType = std::to_underlying(src.monsterInfo.specialAbilityType);
-    dst->pMonsterInfo.specialAbilityDamageDiceRolls = src.monsterInfo.specialAbilityDamageDiceRolls;
-    dst->pMonsterInfo.specialAbilityDamageDiceSides = src.monsterInfo.specialAbilityDamageDiceSides;
-    dst->pMonsterInfo.specialAbilityDamageDiceBonus = src.monsterInfo.specialAbilityDamageDiceBonus;
-    dst->pMonsterInfo.numCharactersAttackedPerSpecialAbility = src.monsterInfo.numCharactersAttackedPerSpecialAbility;
-    dst->pMonsterInfo.id = std::to_underlying(src.monsterInfo.id);
-    dst->pMonsterInfo.bloodSplatOnDeath = src.monsterInfo.bloodSplatOnDeath;
-    snapshot(src.monsterInfo.spell1SkillMastery, &dst->pMonsterInfo.spell1SkillMastery);
-    snapshot(src.monsterInfo.spell2SkillMastery, &dst->pMonsterInfo.spell2SkillMastery);
-    dst->pMonsterInfo.field_3C_some_special_attack = src.monsterInfo.field_3C_some_special_attack;
-    dst->pMonsterInfo.field_3E = src.monsterInfo.field_3E;
-    dst->pMonsterInfo.hp = src.monsterInfo.hp;
-    dst->pMonsterInfo.ac = src.monsterInfo.ac;
-    dst->pMonsterInfo.exp = src.monsterInfo.exp;
-    dst->pMonsterInfo.baseSpeed = src.monsterInfo.baseSpeed;
-    dst->pMonsterInfo.recoveryTime = src.monsterInfo.recoveryTime.ticks();
-    dst->pMonsterInfo.attackPreferences = std::to_underlying(src.monsterInfo.attackPreferences);
-    dst->word_000084_range_attack = src.word_000084_range_attack;
-    dst->word_000086_some_monster_id = std::to_underlying(src.word_000086_some_monster_id);  // base monster class monsterlist id
-    dst->uActorRadius = src.radius;
-    dst->uActorHeight = src.height;
-    dst->uMovementSpeed = src.moveSpeed;
-    snapshot(src.pos, &dst->vPosition);
-    snapshot(src.velocity, &dst->vVelocity);
-    dst->uYawAngle = src.yawAngle;
-    dst->uPitchAngle = src.pitchAngle;
-    dst->uSectorID = src.sectorId;
-    dst->uCurrentActionLength = src.currentActionLength.ticks();
-    snapshot(src.initialPosition, &dst->vInitialPosition);
-    snapshot(src.guardingPosition, &dst->vGuardingPosition);
-    dst->uTetherDistance = src.tetherDistance;
-    dst->uAIState = std::to_underlying(src.aiState);
-    dst->uCurrentActionAnimation = std::to_underlying(src.currentActionAnimation);
-    dst->uCarriedItemID = std::to_underlying(src.carriedItemId);
-    dst->uCurrentActionTime = src.currentActionTime.ticks();
+    dst->monsterInfo.level = src.monsterInfo.level;
+    dst->monsterInfo.treasureDropChance = src.monsterInfo.treasureDropChance;
+    dst->monsterInfo.goldDiceRolls = src.monsterInfo.goldDiceRolls;
+    dst->monsterInfo.goldDiceSides = src.monsterInfo.goldDiceSides;
+    dst->monsterInfo.treasureLevel = std::to_underlying(src.monsterInfo.treasureLevel);
+    dst->monsterInfo.treasureType = std::to_underlying(src.monsterInfo.treasureType);
+    dst->monsterInfo.flying = src.monsterInfo.flying;
+    dst->monsterInfo.movementType = std::to_underlying(src.monsterInfo.movementType);
+    dst->monsterInfo.aiType = std::to_underlying(src.monsterInfo.aiType);
+    dst->monsterInfo.hostilityType = std::to_underlying(src.monsterInfo.hostilityType);
+    dst->monsterInfo.specialAttackType = std::to_underlying(src.monsterInfo.specialAttackType);
+    dst->monsterInfo.specialAttackLevel = src.monsterInfo.specialAttackLevel;
+    dst->monsterInfo.attack1Type = std::to_underlying(src.monsterInfo.attack1Type);
+    dst->monsterInfo.attack1DamageDiceRolls = src.monsterInfo.attack1DamageDiceRolls;
+    dst->monsterInfo.attack1DamageDiceSides = src.monsterInfo.attack1DamageDiceSides;
+    dst->monsterInfo.attack1DamageBonus = src.monsterInfo.attack1DamageBonus;
+    dst->monsterInfo.attack1MissileType = std::to_underlying(src.monsterInfo.attack1MissileType);
+    dst->monsterInfo.attack2Chance = src.monsterInfo.attack2Chance;
+    dst->monsterInfo.attack2Type = std::to_underlying(src.monsterInfo.attack2Type);
+    dst->monsterInfo.attack2DamageDiceRolls = src.monsterInfo.attack2DamageDiceRolls;
+    dst->monsterInfo.attack2DamageDiceSides = src.monsterInfo.attack2DamageDiceSides;
+    dst->monsterInfo.attack2DamageBonus = src.monsterInfo.attack2DamageBonus;
+    dst->monsterInfo.attack2MissileType = std::to_underlying(src.monsterInfo.attack2MissileType);
+    dst->monsterInfo.spell1UseChance = src.monsterInfo.spell1UseChance;
+    dst->monsterInfo.spell1Id = std::to_underlying(src.monsterInfo.spell1Id);
+    dst->monsterInfo.spell2UseChance = src.monsterInfo.spell2UseChance;
+    dst->monsterInfo.spell2Id = std::to_underlying(src.monsterInfo.spell2Id);
+    dst->monsterInfo.resFire = src.monsterInfo.resFire;
+    dst->monsterInfo.resAir = src.monsterInfo.resAir;
+    dst->monsterInfo.resWater = src.monsterInfo.resWater;
+    dst->monsterInfo.resEarth = src.monsterInfo.resEarth;
+    dst->monsterInfo.resMind = src.monsterInfo.resMind;
+    dst->monsterInfo.resSpirit = src.monsterInfo.resSpirit;
+    dst->monsterInfo.resBody = src.monsterInfo.resBody;
+    dst->monsterInfo.resLight = src.monsterInfo.resLight;
+    dst->monsterInfo.resDark = src.monsterInfo.resDark;
+    dst->monsterInfo.resPhysical = src.monsterInfo.resPhysical;
+    dst->monsterInfo.specialAbilityType = std::to_underlying(src.monsterInfo.specialAbilityType);
+    dst->monsterInfo.specialAbilityDamageDiceRolls = src.monsterInfo.specialAbilityDamageDiceRolls;
+    dst->monsterInfo.specialAbilityDamageDiceSides = src.monsterInfo.specialAbilityDamageDiceSides;
+    dst->monsterInfo.specialAbilityDamageDiceBonus = src.monsterInfo.specialAbilityDamageDiceBonus;
+    dst->monsterInfo.numCharactersAttackedPerSpecialAbility = src.monsterInfo.numCharactersAttackedPerSpecialAbility;
+    dst->monsterInfo.id = std::to_underlying(src.monsterInfo.id);
+    dst->monsterInfo.bloodSplatOnDeath = src.monsterInfo.bloodSplatOnDeath;
+    snapshot(src.monsterInfo.spell1SkillMastery, &dst->monsterInfo.spell1SkillMastery);
+    snapshot(src.monsterInfo.spell2SkillMastery, &dst->monsterInfo.spell2SkillMastery);
+    dst->monsterInfo.field_3C_some_special_attack = src.monsterInfo.field_3C_some_special_attack;
+    dst->monsterInfo.field_3E = src.monsterInfo.field_3E;
+    dst->monsterInfo.hp = src.monsterInfo.hp;
+    dst->monsterInfo.ac = src.monsterInfo.ac;
+    dst->monsterInfo.exp = src.monsterInfo.exp;
+    dst->monsterInfo.baseSpeed = src.monsterInfo.baseSpeed;
+    dst->monsterInfo.recoveryTime = src.monsterInfo.recoveryTime.ticks();
+    dst->monsterInfo.attackPreferences = std::to_underlying(src.monsterInfo.attackPreferences);
+    dst->monsterId = std::to_underlying(src.monsterId);
+    dst->radius = src.radius;
+    dst->height = src.height;
+    dst->moveSpeed = src.moveSpeed;
+    snapshot(src.pos, &dst->pos);
+    snapshot(src.velocity, &dst->velocity);
+    dst->yawAngle = src.yawAngle;
+    dst->pitchAngle = src.pitchAngle;
+    dst->sectorId = src.sectorId;
+    dst->currentActionLength = src.currentActionLength.ticks();
+    snapshot(src.initialPosition, &dst->initialPosition);
+    snapshot(src.guardingPosition, &dst->guardingPosition);
+    dst->tetherDistance = src.tetherDistance;
+    dst->aiState = std::to_underlying(src.aiState);
+    dst->currentActionAnimation = std::to_underlying(src.currentActionAnimation);
+    dst->carriedItemId = std::to_underlying(src.carriedItemId);
+    dst->currentActionTime = src.currentActionTime.ticks();
 
-    snapshot(src.spriteIds, &dst->pSpriteIDs);
-    snapshot(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<SoundId, uint16_t>);
-    snapshot(src.buffs, &dst->pActorBuffs);
-    snapshot(src.items, &dst->ActorHasItems, tags::context(ITEM_SLOT_INVALID));
+    snapshot(src.spriteIds, &dst->spriteIds);
+    snapshot(src.soundSampleIds, &dst->soundSampleIds, tags::cast<SoundId, uint16_t>);
+    snapshot(src.buffs, &dst->buffs);
+    snapshot(src.items, &dst->items, tags::context(ITEM_SLOT_INVALID));
 
-    dst->uGroup = src.group;
-    dst->uAlly = std::to_underlying(src.ally);
+    dst->group = src.group;
+    dst->ally = std::to_underlying(src.ally);
 
-    snapshot(src.scheduledJobs, &dst->pScheduledJobs);
+    snapshot(src.scheduledJobs, &dst->scheduledJobs);
 
-    dst->uSummonerID = src.summonerId.packed();
-    dst->uLastCharacterIDToHit = src.lastCharacterIdToHit.packed();
-    dst->dword_000334_unique_name = src.uniqueNameIndex;
+    dst->summonerId = src.summonerId.packed();
+    dst->lastCharacterIdToHit = src.lastCharacterIdToHit.packed();
+    dst->uniqueNameIndex = src.uniqueNameIndex;
 }
 
 void reconstruct(const Actor_MM7 &src, Actor *dst) {
-    reconstruct(src.pActorName, &dst->name);
-    dst->npcId = src.sNPC_ID;
-    dst->attributes = ActorAttributes(src.uAttributes);
-    dst->currentHP = src.sCurrentHP;
+    reconstruct(src.name, &dst->name);
+    dst->npcId = src.npcId;
+    dst->attributes = ActorAttributes(src.attributes);
+    dst->hp = src.hp;
 
-    dst->monsterInfo.level = src.pMonsterInfo.level;
-    dst->monsterInfo.treasureDropChance = src.pMonsterInfo.treasureDropChance;
-    dst->monsterInfo.goldDiceRolls = src.pMonsterInfo.goldDiceRolls;
-    dst->monsterInfo.goldDiceSides = src.pMonsterInfo.goldDiceSides;
-    dst->monsterInfo.treasureLevel = static_cast<ItemTreasureLevel>(src.pMonsterInfo.treasureLevel);
-    dst->monsterInfo.treasureType = static_cast<RandomItemType>(src.pMonsterInfo.treasureType);
-    dst->monsterInfo.flying = src.pMonsterInfo.flying;
-    dst->monsterInfo.movementType = static_cast<MonsterMovementType>(src.pMonsterInfo.movementType);
-    dst->monsterInfo.aiType = static_cast<MonsterAiType>(src.pMonsterInfo.aiType);
-    dst->monsterInfo.hostilityType = static_cast<MonsterHostility>(src.pMonsterInfo.hostilityType);
-    dst->monsterInfo.specialAttackType = static_cast<MonsterSpecialAttack>(src.pMonsterInfo.specialAttackType);
-    dst->monsterInfo.specialAttackLevel = src.pMonsterInfo.specialAttackLevel;
-    dst->monsterInfo.attack1Type = static_cast<DamageType>(src.pMonsterInfo.attack1Type);
-    dst->monsterInfo.attack1DamageDiceRolls = src.pMonsterInfo.attack1DamageDiceRolls;
-    dst->monsterInfo.attack1DamageDiceSides = src.pMonsterInfo.attack1DamageDiceSides;
-    dst->monsterInfo.attack1DamageBonus = src.pMonsterInfo.attack1DamageBonus;
-    dst->monsterInfo.attack1MissileType = static_cast<MonsterProjectile>(src.pMonsterInfo.attack1MissileType);
-    dst->monsterInfo.attack2Chance = src.pMonsterInfo.attack2Chance;
-    dst->monsterInfo.attack2Type = static_cast<DamageType>(src.pMonsterInfo.attack2Type);
-    dst->monsterInfo.attack2DamageDiceRolls = src.pMonsterInfo.attack2DamageDiceRolls;
-    dst->monsterInfo.attack2DamageDiceSides = src.pMonsterInfo.attack2DamageDiceSides;
-    dst->monsterInfo.attack2DamageBonus = src.pMonsterInfo.attack2DamageBonus;
-    dst->monsterInfo.attack2MissileType = static_cast<MonsterProjectile>(src.pMonsterInfo.attack2MissileType);
-    dst->monsterInfo.spell1UseChance = src.pMonsterInfo.spell1UseChance;
-    dst->monsterInfo.spell1Id = static_cast<SpellId>(src.pMonsterInfo.spell1Id);
-    dst->monsterInfo.spell2UseChance = src.pMonsterInfo.spell2UseChance;
-    dst->monsterInfo.spell2Id = static_cast<SpellId>(src.pMonsterInfo.spell2Id);
-    dst->monsterInfo.resFire = src.pMonsterInfo.resFire;
-    dst->monsterInfo.resAir = src.pMonsterInfo.resAir;
-    dst->monsterInfo.resWater = src.pMonsterInfo.resWater;
-    dst->monsterInfo.resEarth = src.pMonsterInfo.resEarth;
-    dst->monsterInfo.resMind = src.pMonsterInfo.resMind;
-    dst->monsterInfo.resSpirit = src.pMonsterInfo.resSpirit;
-    dst->monsterInfo.resBody = src.pMonsterInfo.resBody;
-    dst->monsterInfo.resLight = src.pMonsterInfo.resLight;
-    dst->monsterInfo.resDark = src.pMonsterInfo.resDark;
-    dst->monsterInfo.resPhysical = src.pMonsterInfo.resPhysical;
-    dst->monsterInfo.specialAbilityType = static_cast<MonsterSpecialAbility>(src.pMonsterInfo.specialAbilityType);
-    dst->monsterInfo.specialAbilityDamageDiceRolls = src.pMonsterInfo.specialAbilityDamageDiceRolls;
-    dst->monsterInfo.specialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
-    dst->monsterInfo.specialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;
-    dst->monsterInfo.numCharactersAttackedPerSpecialAbility = src.pMonsterInfo.numCharactersAttackedPerSpecialAbility;
-    dst->monsterInfo.id = static_cast<MonsterId>(src.pMonsterInfo.id);
-    dst->monsterInfo.bloodSplatOnDeath = src.pMonsterInfo.bloodSplatOnDeath;
-    reconstruct(src.pMonsterInfo.spell1SkillMastery, &dst->monsterInfo.spell1SkillMastery);
-    reconstruct(src.pMonsterInfo.spell2SkillMastery, &dst->monsterInfo.spell2SkillMastery);
-    dst->monsterInfo.field_3C_some_special_attack = src.pMonsterInfo.field_3C_some_special_attack;
-    dst->monsterInfo.field_3E = src.pMonsterInfo.field_3E;
-    dst->monsterInfo.hp = src.pMonsterInfo.hp;
-    dst->monsterInfo.ac = src.pMonsterInfo.ac;
-    dst->monsterInfo.exp = src.pMonsterInfo.exp;
-    dst->monsterInfo.baseSpeed = src.pMonsterInfo.baseSpeed;
-    dst->monsterInfo.recoveryTime = Duration::fromTicks(src.pMonsterInfo.recoveryTime);
-    dst->monsterInfo.attackPreferences = static_cast<MonsterAttackPreferences>(src.pMonsterInfo.attackPreferences);
-    dst->word_000084_range_attack = src.word_000084_range_attack;
-    dst->word_000086_some_monster_id = static_cast<MonsterId>(src.word_000086_some_monster_id);  // base monster class monsterlist id
-    dst->radius = src.uActorRadius;
-    dst->height = src.uActorHeight;
-    dst->moveSpeed = src.uMovementSpeed;
-    reconstruct(src.vPosition, &dst->pos);
-    reconstruct(src.vVelocity, &dst->velocity);
-    dst->yawAngle = src.uYawAngle;
-    dst->pitchAngle = src.uPitchAngle;
-    dst->sectorId = src.uSectorID;
-    dst->currentActionLength = Duration::fromTicks(src.uCurrentActionLength);
-    reconstruct(src.vInitialPosition, &dst->initialPosition);
-    reconstruct(src.vGuardingPosition, &dst->guardingPosition);
-    dst->tetherDistance = src.uTetherDistance;
-    dst->aiState = static_cast<AIState>(src.uAIState);
-    dst->currentActionAnimation = static_cast<ActorAnimation>(src.uCurrentActionAnimation);
-    dst->carriedItemId = ItemId(src.uCarriedItemID);
-    dst->currentActionTime = Duration::fromTicks(src.uCurrentActionTime);
+    dst->monsterInfo.level = src.monsterInfo.level;
+    dst->monsterInfo.treasureDropChance = src.monsterInfo.treasureDropChance;
+    dst->monsterInfo.goldDiceRolls = src.monsterInfo.goldDiceRolls;
+    dst->monsterInfo.goldDiceSides = src.monsterInfo.goldDiceSides;
+    dst->monsterInfo.treasureLevel = static_cast<ItemTreasureLevel>(src.monsterInfo.treasureLevel);
+    dst->monsterInfo.treasureType = static_cast<RandomItemType>(src.monsterInfo.treasureType);
+    dst->monsterInfo.flying = src.monsterInfo.flying;
+    dst->monsterInfo.movementType = static_cast<MonsterMovementType>(src.monsterInfo.movementType);
+    dst->monsterInfo.aiType = static_cast<MonsterAiType>(src.monsterInfo.aiType);
+    dst->monsterInfo.hostilityType = static_cast<MonsterHostility>(src.monsterInfo.hostilityType);
+    dst->monsterInfo.specialAttackType = static_cast<MonsterSpecialAttack>(src.monsterInfo.specialAttackType);
+    dst->monsterInfo.specialAttackLevel = src.monsterInfo.specialAttackLevel;
+    dst->monsterInfo.attack1Type = static_cast<DamageType>(src.monsterInfo.attack1Type);
+    dst->monsterInfo.attack1DamageDiceRolls = src.monsterInfo.attack1DamageDiceRolls;
+    dst->monsterInfo.attack1DamageDiceSides = src.monsterInfo.attack1DamageDiceSides;
+    dst->monsterInfo.attack1DamageBonus = src.monsterInfo.attack1DamageBonus;
+    dst->monsterInfo.attack1MissileType = static_cast<MonsterProjectile>(src.monsterInfo.attack1MissileType);
+    dst->monsterInfo.attack2Chance = src.monsterInfo.attack2Chance;
+    dst->monsterInfo.attack2Type = static_cast<DamageType>(src.monsterInfo.attack2Type);
+    dst->monsterInfo.attack2DamageDiceRolls = src.monsterInfo.attack2DamageDiceRolls;
+    dst->monsterInfo.attack2DamageDiceSides = src.monsterInfo.attack2DamageDiceSides;
+    dst->monsterInfo.attack2DamageBonus = src.monsterInfo.attack2DamageBonus;
+    dst->monsterInfo.attack2MissileType = static_cast<MonsterProjectile>(src.monsterInfo.attack2MissileType);
+    dst->monsterInfo.spell1UseChance = src.monsterInfo.spell1UseChance;
+    dst->monsterInfo.spell1Id = static_cast<SpellId>(src.monsterInfo.spell1Id);
+    dst->monsterInfo.spell2UseChance = src.monsterInfo.spell2UseChance;
+    dst->monsterInfo.spell2Id = static_cast<SpellId>(src.monsterInfo.spell2Id);
+    dst->monsterInfo.resFire = src.monsterInfo.resFire;
+    dst->monsterInfo.resAir = src.monsterInfo.resAir;
+    dst->monsterInfo.resWater = src.monsterInfo.resWater;
+    dst->monsterInfo.resEarth = src.monsterInfo.resEarth;
+    dst->monsterInfo.resMind = src.monsterInfo.resMind;
+    dst->monsterInfo.resSpirit = src.monsterInfo.resSpirit;
+    dst->monsterInfo.resBody = src.monsterInfo.resBody;
+    dst->monsterInfo.resLight = src.monsterInfo.resLight;
+    dst->monsterInfo.resDark = src.monsterInfo.resDark;
+    dst->monsterInfo.resPhysical = src.monsterInfo.resPhysical;
+    dst->monsterInfo.specialAbilityType = static_cast<MonsterSpecialAbility>(src.monsterInfo.specialAbilityType);
+    dst->monsterInfo.specialAbilityDamageDiceRolls = src.monsterInfo.specialAbilityDamageDiceRolls;
+    dst->monsterInfo.specialAbilityDamageDiceSides = src.monsterInfo.specialAbilityDamageDiceSides;
+    dst->monsterInfo.specialAbilityDamageDiceBonus = src.monsterInfo.specialAbilityDamageDiceBonus;
+    dst->monsterInfo.numCharactersAttackedPerSpecialAbility = src.monsterInfo.numCharactersAttackedPerSpecialAbility;
+    dst->monsterInfo.id = static_cast<MonsterId>(src.monsterInfo.id);
+    dst->monsterInfo.bloodSplatOnDeath = src.monsterInfo.bloodSplatOnDeath;
+    reconstruct(src.monsterInfo.spell1SkillMastery, &dst->monsterInfo.spell1SkillMastery);
+    reconstruct(src.monsterInfo.spell2SkillMastery, &dst->monsterInfo.spell2SkillMastery);
+    dst->monsterInfo.field_3C_some_special_attack = src.monsterInfo.field_3C_some_special_attack;
+    dst->monsterInfo.field_3E = src.monsterInfo.field_3E;
+    dst->monsterInfo.hp = src.monsterInfo.hp;
+    dst->monsterInfo.ac = src.monsterInfo.ac;
+    dst->monsterInfo.exp = src.monsterInfo.exp;
+    dst->monsterInfo.baseSpeed = src.monsterInfo.baseSpeed;
+    dst->monsterInfo.recoveryTime = Duration::fromTicks(src.monsterInfo.recoveryTime);
+    dst->monsterInfo.attackPreferences = static_cast<MonsterAttackPreferences>(src.monsterInfo.attackPreferences);
+    dst->monsterId = static_cast<MonsterId>(src.monsterId);
+    dst->radius = src.radius;
+    dst->height = src.height;
+    dst->moveSpeed = src.moveSpeed;
+    reconstruct(src.pos, &dst->pos);
+    reconstruct(src.velocity, &dst->velocity);
+    dst->yawAngle = src.yawAngle;
+    dst->pitchAngle = src.pitchAngle;
+    dst->sectorId = src.sectorId;
+    dst->currentActionLength = Duration::fromTicks(src.currentActionLength);
+    reconstruct(src.initialPosition, &dst->initialPosition);
+    reconstruct(src.guardingPosition, &dst->guardingPosition);
+    dst->tetherDistance = src.tetherDistance;
+    dst->aiState = static_cast<AIState>(src.aiState);
+    dst->currentActionAnimation = static_cast<ActorAnimation>(src.currentActionAnimation);
+    dst->carriedItemId = static_cast<ItemId>(src.carriedItemId);
+    dst->currentActionTime = Duration::fromTicks(src.currentActionTime);
 
-    reconstruct(src.pSpriteIDs, &dst->spriteIds);
-    reconstruct(src.pSoundSampleIDs, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
-    reconstruct(src.pActorBuffs, &dst->buffs);
-    reconstruct(src.ActorHasItems, &dst->items);
+    reconstruct(src.spriteIds, &dst->spriteIds);
+    reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
+    reconstruct(src.buffs, &dst->buffs);
+    reconstruct(src.items, &dst->items);
 
-    dst->group = src.uGroup;
-    dst->ally = static_cast<MonsterType>(src.uAlly);
+    dst->group = src.group;
+    dst->ally = static_cast<MonsterType>(src.ally);
 
-    reconstruct(src.pScheduledJobs, &dst->scheduledJobs);
+    reconstruct(src.scheduledJobs, &dst->scheduledJobs);
 
-    dst->summonerId = Pid::fromPacked(src.uSummonerID);
-    dst->lastCharacterIdToHit = Pid::fromPacked(src.uLastCharacterIDToHit);
-    dst->uniqueNameIndex = src.dword_000334_unique_name;
+    dst->summonerId = Pid::fromPacked(src.summonerId);
+    dst->lastCharacterIdToHit = Pid::fromPacked(src.lastCharacterIdToHit);
+    dst->uniqueNameIndex = src.uniqueNameIndex;
 }
 
 void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
     memzero(dst);
 
-    dst->uAttributes = std::to_underlying(src.uAttributes);
-    dst->uDoorID = src.uDoorID;
-    dst->uTimeSinceTriggered = src.uTimeSinceTriggered.ticks();
-    dst->vDirection = src.vDirection.toFixpoint();
-    dst->uMoveLength = src.uMoveLength;
-    dst->uOpenSpeed = src.uOpenSpeed;
-    dst->uCloseSpeed = src.uCloseSpeed;
-    dst->uNumVertices = src.uNumVertices;
-    dst->uNumFaces = src.uNumFaces;
-    dst->uNumSectors = src.uNumSectors;
-    dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = std::to_underlying(src.uState);
+    dst->attributes = std::to_underlying(src.attributes);
+    dst->doorId = src.doorId;
+    dst->timeSinceTriggered = src.timeSinceTriggered.ticks();
+    dst->direction = src.direction.toFixpoint();
+    dst->moveLength = src.moveLength;
+    dst->openSpeed = src.openSpeed;
+    dst->closeSpeed = src.closeSpeed;
+    dst->numVertices = src.numVertices;
+    dst->numFaces = src.numFaces;
+    dst->numSectors = src.numSectors;
+    dst->numOffsets = src.numOffsets;
+    dst->state = std::to_underlying(src.state);
 }
 
 void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
-    dst->uAttributes = static_cast<DoorAttributes>(src.uAttributes);
-    dst->uDoorID = src.uDoorID;
-    dst->uTimeSinceTriggered = Duration::fromTicks(src.uTimeSinceTriggered);
-    dst->vDirection = src.vDirection.toFloatFromFixpoint();
-    dst->uMoveLength = src.uMoveLength;
-    dst->uOpenSpeed = src.uOpenSpeed;
-    dst->uCloseSpeed = src.uCloseSpeed;
-    dst->uNumVertices = src.uNumVertices;
-    dst->uNumFaces = src.uNumFaces;
-    dst->uNumSectors = src.uNumSectors;
-    dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = static_cast<DoorState>(src.uState);
+    dst->attributes = static_cast<DoorAttributes>(src.attributes);
+    dst->doorId = src.doorId;
+    dst->timeSinceTriggered = Duration::fromTicks(src.timeSinceTriggered);
+    dst->direction = src.direction.toFloatFromFixpoint();
+    dst->moveLength = src.moveLength;
+    dst->openSpeed = src.openSpeed;
+    dst->closeSpeed = src.closeSpeed;
+    dst->numVertices = src.numVertices;
+    dst->numFaces = src.numFaces;
+    dst->numSectors = src.numSectors;
+    dst->numOffsets = src.numOffsets;
+    dst->state = static_cast<DoorState>(src.state);
 }
 
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
     memzero(dst);
 
-    dst->field_0 = src.field_0;
-    dst->uNumFloors = src.uNumFloors;
-    dst->uNumWalls = src.uNumWalls;
-    dst->uNumCeilings = src.uNumCeilings;
-    dst->uNumFluids = src.uNumFluids;
-    dst->uNumPortals = src.uNumPortals;
-    dst->uNumFaces = src.uNumFaces;
-    dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
-    dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->pCylinderFaces = src.pCylinderFaces;
-    dst->uNumCogs = src.uNumCogs;
-    dst->uNumDecorations = src.uNumDecorations;
-    dst->uNumMarkers = src.uNumMarkers;
-    dst->uNumLights = src.uNumLights;
-    dst->uWaterLevel = src.uWaterLevel;
-    dst->uMistLevel = src.uMistLevel;
-    dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
-    dst->uMinAmbientLightLevel = src.uMinAmbientLightLevel;
-    dst->uFirstBSPNode = src.uFirstBSPNode;
-    dst->exit_tag = src.exit_tag;
-    snapshot(src.pBounding, &dst->pBounding);
+    dst->flags = src.flags;
+    dst->numFloors = src.numFloors;
+    dst->numWalls = src.numWalls;
+    dst->numCeilings = src.numCeilings;
+    dst->numPortals = src.numPortals;
+    dst->numFaces = src.numFaces;
+    dst->numNonBspFaces = src.numNonBspFaces;
+    dst->numDecorations = src.numDecorations;
+    dst->numLights = src.numLights;
+    dst->minAmbientLightLevel = src.minAmbientLightLevel;
+    dst->firstBspNode = src.firstBspNode;
+    snapshot(src.boundingBox, &dst->boundingBox);
 }
 
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
-    dst->field_0 = src.field_0;
-    dst->uNumFloors = src.uNumFloors;
-    dst->uNumWalls = src.uNumWalls;
-    dst->uNumCeilings = src.uNumCeilings;
-    dst->uNumFluids = src.uNumFluids;
-    dst->uNumPortals = src.uNumPortals;
-    dst->uNumFaces = src.uNumFaces;
-    dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
-    dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->pCylinderFaces = src.pCylinderFaces;
-    dst->uNumCogs = src.uNumCogs;
-    dst->uNumDecorations = src.uNumDecorations;
-    dst->uNumMarkers = src.uNumMarkers;
-    dst->uNumLights = src.uNumLights;
-    dst->uWaterLevel = src.uWaterLevel;
-    dst->uMistLevel = src.uMistLevel;
-    dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
-    dst->uMinAmbientLightLevel = src.uMinAmbientLightLevel;
-    dst->uFirstBSPNode = src.uFirstBSPNode;
-    dst->exit_tag = src.exit_tag;
-    reconstruct(src.pBounding, &dst->pBounding);
+    dst->flags = src.flags;
+    dst->numFloors = src.numFloors;
+    dst->numWalls = src.numWalls;
+    dst->numCeilings = src.numCeilings;
+    dst->numPortals = src.numPortals;
+    dst->numFaces = src.numFaces;
+    dst->numNonBspFaces = src.numNonBspFaces;
+    dst->numDecorations = src.numDecorations;
+    dst->numLights = src.numLights;
+    dst->minAmbientLightLevel = src.minAmbientLightLevel;
+    dst->firstBspNode = src.firstBspNode;
+    reconstruct(src.boundingBox, &dst->boundingBox);
 }
 
 void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
-    dst->uAttributes = FaceAttributes(src.attributes);
-    dst->pVertexIDs = src.pVertexIDs;
-    dst->pTextureUIDs = src.pTextureUIDs;
-    dst->pTextureVIDs = src.pTextureVIDs;
+    dst->attributes = FaceAttributes(src.attributes);
+    dst->vertexIds = src.vertexIds;
+    dst->textureUs = src.textureUs;
+    dst->textureVs = src.textureVs;
     dst->texture = nullptr;
     dst->animationId = 0;
-    dst->sTextureDeltaU = src.sTextureDeltaU;
-    dst->sTextureDeltaV = src.sTextureDeltaV;
-    reconstruct(src.pBoundingBox, &dst->pBoundingBox);
-    dst->sCogNumber = src.sCogNumber;
-    dst->sCogTriggeredID = src.sCogTriggeredID;
-    dst->sCogTriggerType = src.sCogTriggerType;
-    dst->uNumVertices = src.uNumVertices;
-    dst->uPolygonType = static_cast<PolygonType>(src.uPolygonType);
-    dst->uShadeType = src.uShadeType;
-    dst->bVisible = src.bVisible;
+    dst->textureDeltaU = src.textureDeltaU;
+    dst->textureDeltaV = src.textureDeltaV;
+    reconstruct(src.boundingBox, &dst->boundingBox);
+    dst->cogNumber = src.cogNumber;
+    dst->eventId = src.eventId;
+    dst->numVertices = src.numVertices;
+    dst->polygonType = static_cast<PolygonType>(src.polygonType);
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
@@ -1675,8 +1652,8 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
 }
 
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
-    reconstruct(src.name, &dst->name);
-    reconstruct(src.type, &dst->type);
+    reconstruct(src.internalName, &dst->internalName);
+    reconstruct(src.hint, &dst->hint);
     dst->uType = src.uType;
     dst->uDecorationHeight = src.uDecorationHeight;
     dst->uRadius = src.uRadius;
@@ -1837,7 +1814,6 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
 }
 
 void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
-    reconstruct(src.name, &dst->name);
     dst->uObjectID = static_cast<SpriteId>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
@@ -1850,7 +1826,6 @@ void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
 }
 
 void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
-    reconstruct(src.name, &dst->name);
     dst->uObjectID = static_cast<SpriteId>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
@@ -1881,10 +1856,10 @@ void reconstruct(const LocationTime_MM7 &src, LocationTime *dst) {
 }
 
 void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst) {
-    reconstruct(src.pSoundName, &dst->sName);
-    dst->uSoundID = static_cast<SoundId>(src.uSoundID);
-    dst->eType = static_cast<SoundType>(src.eType);
-    dst->uFlags = static_cast<SoundFlags>(src.uFlags);
+    reconstruct(src.name, &dst->name);
+    dst->soundId = static_cast<SoundId>(src.soundId);
+    dst->type = static_cast<SoundType>(src.type);
+    dst->flags = static_cast<SoundFlags>(src.flags);
 }
 
 void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst) {

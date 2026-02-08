@@ -41,8 +41,8 @@ struct SpellBuff {
 
     Time expireTime;
     uint16_t power = 0; // Spell power, semantics are spell-specific.
-    Mastery skillMastery = MASTERY_NONE; // 1-4, normal to grandmaster.
-    uint16_t overlayID = 0;
-    uint8_t caster = 0;
-    bool isGMBuff = false; // Buff was casted at grandmaster mastery
+    Mastery skillMastery = MASTERY_NONE;
+    uint16_t overlayId = 0;
+    uint8_t caster = 0; // 1-based character index.
+    bool isGM = false; // Buff was casted at grandmaster mastery
 };

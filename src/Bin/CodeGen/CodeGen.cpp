@@ -294,7 +294,7 @@ int runMonsterIdCodeGen(const CodeGenOptions &options, ResourceManager *resource
     for (const MonsterId i : allMonsters()) {
         const MonsterDesc &desc = pMonsterList->monsters[i];
         const MonsterInfo &info = monsterStats.infos[i];
-        std::string enumName = cleanupMonsterIdEnumName(toUpperCaseEnum(desc.monsterName));
+        std::string enumName = cleanupMonsterIdEnumName(toUpperCaseEnum(desc.internalMonsterName));
 
         std::string comment = info.name;
         if (comment == "peasant")
@@ -333,7 +333,7 @@ int runMonsterTypeCodeGen(const CodeGenOptions &options, ResourceManager *resour
             continue;
 
         const MonsterDesc &desc = pMonsterList->monsters[i];
-        std::string enumName = cleanupMonsterTypeEnumName(toUpperCaseEnum(desc.monsterName));
+        std::string enumName = cleanupMonsterTypeEnumName(toUpperCaseEnum(desc.internalMonsterName));
 
         map.insert(monsterTypeForMonsterId(i), enumName, "");
     }
@@ -446,25 +446,25 @@ int runDecorationsCodegen(const CodeGenOptions &options, ResourceManager *resour
         DecorationId i = static_cast<DecorationId>(index);
         const DecorationDesc& dd = pDecorationList->pDecorations[index];
 
-        if (dd.name.empty()) {
+        if (dd.internalName.empty()) {
             map.insert(i, "", "Unused.");
             continue;
         }
 
         std::string enumName;
-        if (dd.name == "fount1") {
+        if (dd.internalName == "fount1") {
             enumName = "FOUNTAIN";
-        } else if (dd.name.starts_with("dec")) {
-            enumName = dd.type;
+        } else if (dd.internalName.starts_with("dec")) {
+            enumName = dd.hint;
         } else {
-            enumName = dd.name;
+            enumName = dd.internalName;
         }
         std::smatch match;
         if (std::regex_search(enumName, match, tailRegex))
             enumName = match[1].str();
         enumName = fmt::format("{}_{}", enumName, index);
 
-        std::string description =  dd.name + ", " + dd.type;
+        std::string description =  dd.internalName + ", " + dd.hint;
         if (dd.uLightRadius)
             description += fmt::format(", light_r={}", dd.uLightRadius);
         if (dd.uColoredLight.r + dd.uColoredLight.g + dd.uColoredLight.b > 0)

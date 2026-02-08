@@ -11,12 +11,12 @@
 
 class SoundInfo {
  public:
-    bool Is3D() { return uFlags & SOUND_FLAG_3D; }
+    bool Is3D() { return flags & SOUND_FLAG_3D; }
 
  public:
-    std::string sName;
-    SoundType eType;
-    SoundId uSoundID;
-    SoundFlags uFlags;
+    std::string name;
+    SoundType type;
+    SoundId soundId;
+    SoundFlags flags;
     PAudioDataSource dataSource;
 };

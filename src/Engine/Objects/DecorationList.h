@@ -11,8 +11,8 @@
 #include "DecorationEnums.h"
 
 struct DecorationDesc {
-    std::string name; // Internal name (e.g. "dec03").
-    std::string type; // Type of the decoration (e.g. "campfire", "cauldron"). This text is shown in the status bar
+    std::string internalName; // Internal name of the decoration (e.g. "dec03").
+    std::string hint; // Hint for the decoration (e.g. "campfire", "cauldron"). This text is shown in the status bar
                       // when clicking on the decoration if it's not scripted.
     int16_t uType;
     uint16_t uDecorationHeight;

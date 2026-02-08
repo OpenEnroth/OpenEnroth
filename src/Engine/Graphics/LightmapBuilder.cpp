@@ -134,10 +134,10 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
 
     // sector lights
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        BLVSector *pSector = &pIndoor->pSectors[uSectorID];
+        BLVSector *pSector = &pIndoor->sectors[uSectorID];
 
-        for (unsigned i = 0; i < pSector->uNumLights; ++i) {
-            BLVLight *this_light = &pIndoor->pLights[pSector->pLights[i]];
+        for (unsigned i = 0; i < pSector->numLights; ++i) {
+            BLVLight *this_light = &pIndoor->lights[pSector->lights[i]];
             light_radius = this_light->uRadius;
 
             if (~this_light->uAtributes & 8) {
@@ -192,7 +192,7 @@ int _43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightL
     int v3 = 0;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        v3 = pIndoor->pSectors[a1->uIndoorSectorID].uMinAmbientLightLevel;
+        v3 = pIndoor->sectors[a1->uIndoorSectorID].minAmbientLightLevel;
     } else {
         if (uBaseLightLevel == -1) {
             v3 = a1->dimming_level;
