@@ -4,7 +4,7 @@ var searchData=
   ['y1_1',['y1',['../structBBoxs__MM7.html#acbf8e7958bd7c7cd5a406c9661f58a4f',1,'BBoxs_MM7::y1()'],['../structBBox.html#a2d27e15f98db454850c399be928fe92a',1,'BBox::y1()']]],
   ['y2_2',['y2',['../structBBoxs__MM7.html#ae476d11e2f51f085e4417e81eb3ad2ac',1,'BBoxs_MM7::y2()'],['../structBBox.html#a4094e6598f42bf024db360df681455c1',1,'BBox::y2()']]],
   ['yaw_3',['yaw',['../classEvtInstruction.html#adcc21d2d28e5a208ca062371ea13c6af',1,'EvtInstruction']]],
-  ['yawangle_4',['yawAngle',['../classActor.html#ab0d92e1dd9d656671141cba756a95f16',1,'Actor']]],
+  ['yawangle_4',['yawAngle',['../structActor__MM7.html#a3944bd777c24cbd6220e7ce41f13ff7e',1,'Actor_MM7::yawAngle()'],['../classActor.html#ab0d92e1dd9d656671141cba756a95f16',1,'Actor::yawAngle()']]],
   ['yawgranularity_5',['yawGranularity',['../structParty__MM7.html#ada9767ba776b4e94084105a957acf819',1,'Party_MM7']]],
   ['yawrotationspeed_6',['yawRotationSpeed',['../structParty__MM7.html#a5a415838ba6ba927fdd537fc42ec433b',1,'Party_MM7']]],
   ['year_7',['year',['../structCivilTime.html#a2e3c51d4d8b362e1f9a6015d0571f1f3',1,'CivilTime']]],
@@ -12,8 +12,9 @@ var searchData=
   ['yell_9',['Yell',['../classGameConfig_1_1Gamepad.html#a9ddbf0b834ae4eac40e7a2b0072c4992',1,'GameConfig::Gamepad::Yell()'],['../classGameConfig_1_1Keybindings.html#a8042ccfbe0fc5667eca414014cff4514',1,'GameConfig::Keybindings::Yell()']]],
   ['yellow_10',['Yellow',['../classColorTable.html#a36e3a516b2bff2826c880784e86fde19',1,'ColorTable']]],
   ['yes_11',['Yes',['../classGameConfig_1_1Gamepad.html#a8c6f76cfd6c2a034073d44a69358d1c8',1,'GameConfig::Gamepad::Yes()'],['../classGameConfig_1_1Keybindings.html#a2e8bad2abfb7831a9dd3151f5cb2a074',1,'GameConfig::Keybindings::Yes()']]],
-  ['yinterceptdisplacements_12',['yInterceptDisplacements',['../structBLVFace__MM7.html#ae7daa1c0188a60fadacc7d3b802f302b',1,'BLVFace_MM7']]],
+  ['yinterceptdisplacements_12',['yInterceptDisplacements',['../structBLVFace__MM7.html#a253b704d09ad9e4bdd8a92b114cb789c',1,'BLVFace_MM7::yInterceptDisplacements()'],['../structODMFace__MM7.html#a04077e2671a40eef3292a59421187d88',1,'ODMFace_MM7::yInterceptDisplacements()']]],
   ['ymax_13',['ymax',['../structPCXHeader.html#ae7da24b0de134476f17b922e25987619',1,'PCXHeader']]],
   ['ymin_14',['ymin',['../structPCXHeader.html#a37ffbcf2e56608f929895daa104721dd',1,'PCXHeader']]],
-  ['ypos_15',['Ypos',['../structSpellBookIconPos.html#aa94e5152a5ffcd7498f6abd26381fdc8',1,'SpellBookIconPos']]]
+  ['yoffsets_15',['yOffsets',['../structBLVDoor__MM7.html#ab7d74d8924e74310cfe3e80a78b644f3',1,'BLVDoor_MM7']]],
+  ['ypos_16',['Ypos',['../structSpellBookIconPos.html#aa94e5152a5ffcd7498f6abd26381fdc8',1,'SpellBookIconPos']]]
 ];

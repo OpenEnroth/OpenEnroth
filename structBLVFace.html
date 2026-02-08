@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ae62fb1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3ae11ea</span>
    </div>
   </td>
  </tr>
@@ -124,10 +124,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:af504281d8242754aa994fe611c443366"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9bd6612af14c23471ff2eb5371e8f44"><td class="memItemLeft" align="right" valign="top">int16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#ac9bd6612af14c23471ff2eb5371e8f44">pVertexIDs</a> = nullptr</td></tr>
 <tr class="separator:ac9bd6612af14c23471ff2eb5371e8f44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae34d7420a330cd89f4b14df034e22dbf"><td class="memItemLeft" align="right" valign="top">int16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#ae34d7420a330cd89f4b14df034e22dbf">pVertexUIDs</a> = nullptr</td></tr>
-<tr class="separator:ae34d7420a330cd89f4b14df034e22dbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a628539caca064812d94435087ed52e6a"><td class="memItemLeft" align="right" valign="top">int16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a628539caca064812d94435087ed52e6a">pVertexVIDs</a> = nullptr</td></tr>
-<tr class="separator:a628539caca064812d94435087ed52e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a25952cc24ce7b1e8b4009f046958ed"><td class="memItemLeft" align="right" valign="top">int16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a6a25952cc24ce7b1e8b4009f046958ed">pVertexUs</a> = nullptr</td></tr>
+<tr class="separator:a6a25952cc24ce7b1e8b4009f046958ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a2593e088ba729b9b90fef63192b102"><td class="memItemLeft" align="right" valign="top">int16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a5a2593e088ba729b9b90fef63192b102">pVertexVs</a> = nullptr</td></tr>
+<tr class="separator:a5a2593e088ba729b9b90fef63192b102"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2e1207585b39e211d18feeae872159a"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#ab2e1207585b39e211d18feeae872159a">uFaceExtraID</a> = 0</td></tr>
 <tr class="separator:ab2e1207585b39e211d18feeae872159a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4216ad3221a22adf0cee645558a99dea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a4216ad3221a22adf0cee645558a99dea">texture</a> = nullptr</td></tr>
@@ -628,34 +628,37 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Array of indices into the vertex array for this face's vertices. Points into <code>IndoorLocation::pVertices</code> for indoor faces, or <code>BSPModel::pVertices</code> for outdoor faces. Has <code>uNumVertices + 1</code> elements, where the last element repeats the first vertex to close the polygon. </p>
 
 </div>
 </div>
-<a id="ae34d7420a330cd89f4b14df034e22dbf" name="ae34d7420a330cd89f4b14df034e22dbf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae34d7420a330cd89f4b14df034e22dbf">&#9670;&#160;</a></span>pVertexUIDs</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int16_t* BLVFace::pVertexUIDs = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a628539caca064812d94435087ed52e6a" name="a628539caca064812d94435087ed52e6a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a628539caca064812d94435087ed52e6a">&#9670;&#160;</a></span>pVertexVIDs</h2>
+<a id="a6a25952cc24ce7b1e8b4009f046958ed" name="a6a25952cc24ce7b1e8b4009f046958ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a25952cc24ce7b1e8b4009f046958ed">&#9670;&#160;</a></span>pVertexUs</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int16_t* BLVFace::pVertexVIDs = nullptr</td>
+          <td class="memname">int16_t* BLVFace::pVertexUs = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Array of U (horizontal) texture coordinates for each vertex, in texture pixels. Has <code>uNumVertices + 1</code> elements, matching <code>pVertexIDs</code>. </p>
+
+</div>
+</div>
+<a id="a5a2593e088ba729b9b90fef63192b102" name="a5a2593e088ba729b9b90fef63192b102"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a2593e088ba729b9b90fef63192b102">&#9670;&#160;</a></span>pVertexVs</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int16_t* BLVFace::pVertexVs = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Array of V (vertical) texture coordinates for each vertex, in texture pixels. Has <code>uNumVertices + 1</code> elements, matching <code>pVertexIDs</code>. </p>
 
 </div>
 </div>
