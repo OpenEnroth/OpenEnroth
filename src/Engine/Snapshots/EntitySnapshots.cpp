@@ -275,18 +275,18 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
 void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
-    dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
-    dst->pVertexIDs = nullptr;
-    dst->pVertexUs = nullptr;
-    dst->pVertexVs = nullptr;
-    dst->uFaceExtraID = src.faceExtraId;
+    dst->attributes = static_cast<FaceAttributes>(src.attributes);
+    dst->vertexIds = nullptr;
+    dst->textureUs = nullptr;
+    dst->textureVs = nullptr;
+    dst->faceExtraId = src.faceExtraId;
     dst->texture = nullptr;
     dst->animationId = 0;
-    dst->uSectorID = src.sectorId;
-    dst->uBackSectorID = src.backSectorId;
-    reconstruct(src.bounding, &dst->pBounding);
-    dst->uPolygonType = static_cast<PolygonType>(src.polygonType);
-    dst->uNumVertices = src.numVertices;
+    dst->sectorId = src.sectorId;
+    dst->backSectorId = src.backSectorId;
+    reconstruct(src.bounding, &dst->boundingBox);
+    dst->polygonType = static_cast<PolygonType>(src.polygonType);
+    dst->numVertices = src.numVertices;
 }
 
 void reconstruct(const TileData_MM7 &src, TileData *dst) {

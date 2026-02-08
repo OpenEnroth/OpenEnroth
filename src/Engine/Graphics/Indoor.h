@@ -70,8 +70,7 @@ struct FlatFace {
     std::array<float, 104> v;
 };
 
-/*   93 */
-struct BLVFace {  // 60h
+struct BLVFace {
     void _get_normals(Vec3f *outU, Vec3f *outV);
     void FromODM(ODMFace *face);
 
@@ -79,29 +78,29 @@ struct BLVFace {  // 60h
     GraphicsImage *GetTexture() const;
 
     inline bool Invisible() const {
-        return uAttributes & FACE_IsInvisible;
+        return attributes & FACE_IsInvisible;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool isPortal() const { return uAttributes & FACE_IsPortal; }
-    inline bool isFluid() const { return uAttributes & FACE_IsFluid; }
+    inline bool isPortal() const { return attributes & FACE_IsPortal; }
+    inline bool isFluid() const { return attributes & FACE_IsFluid; }
     inline bool Indoor_sky() const {
-        return uAttributes & FACE_INDOOR_SKY;
+        return attributes & FACE_INDOOR_SKY;
     }
     inline bool Clickable() const {
-        return uAttributes & FACE_CLICKABLE;
+        return attributes & FACE_CLICKABLE;
     }
     inline bool Pressure_Plate() const {
-        return uAttributes & FACE_PRESSURE_PLATE;
+        return attributes & FACE_PRESSURE_PLATE;
     }
-    inline bool Ethereal() const { return uAttributes & FACE_ETHEREAL; }
+    inline bool Ethereal() const { return attributes & FACE_ETHEREAL; }
 
     inline bool IsAnimated() const {
-        return this->uAttributes & FACE_ANIMATED;
+        return this->attributes & FACE_ANIMATED;
     }
     inline void ToggleIsAnimated() {
-        this->uAttributes = this->uAttributes & FACE_ANIMATED
-                                ? this->uAttributes & ~FACE_ANIMATED
-                                : this->uAttributes | FACE_ANIMATED;
+        this->attributes = this->attributes & FACE_ANIMATED
+                                ? this->attributes & ~FACE_ANIMATED
+                                : this->attributes | FACE_ANIMATED;
     }
 
     /**
@@ -130,32 +129,32 @@ struct BLVFace {  // 60h
 
     Planef facePlane;
     PlaneZCalcf zCalc;
-    FaceAttributes uAttributes;
+    FaceAttributes attributes;
 
     /** Array of indices into the vertex array for this face's vertices. Points into `IndoorLocation::pVertices` for
      * indoor faces, or `BSPModel::pVertices` for outdoor faces. Has `uNumVertices + 1` elements, where the last element
      * repeats the first vertex to close the polygon. */
-    int16_t *pVertexIDs = nullptr;
+    int16_t *vertexIds = nullptr;
 
     /** Array of U (horizontal) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
      * matching `pVertexIDs`. */
-    int16_t *pVertexUs = nullptr;
+    int16_t *textureUs = nullptr;
 
     /** Array of V (vertical) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
      * matching `pVertexIDs`. */
-    int16_t *pVertexVs = nullptr;
+    int16_t *textureVs = nullptr;
 
-    uint16_t uFaceExtraID = 0;
+    uint16_t faceExtraId = 0;
     GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.
     int animationId = 0; // Index into pTextureFrameTable for animated faces.
     int texunit = -1;
     int texlayer = -1;
 
-    int uSectorID = 0;
-    int uBackSectorID = 0;
-    BBoxf pBounding;
-    PolygonType uPolygonType = POLYGON_Invalid;
-    uint8_t uNumVertices = 0;
+    int sectorId = 0;
+    int backSectorId = 0;
+    BBoxf boundingBox;
+    PolygonType polygonType = POLYGON_Invalid;
+    uint8_t numVertices = 0;
 };
 
 struct BLVFaceExtra {

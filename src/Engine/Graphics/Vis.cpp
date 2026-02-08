@@ -58,44 +58,44 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        if ((signed int)face->uNumVertices > 0) {
-            for (int i = 0; i < face->uNumVertices; i++) {
+        if ((signed int)face->numVertices > 0) {
+            for (int i = 0; i < face->numVertices; i++) {
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.x =
-                    (float)pIndoor->vertices[face->pVertexIDs[i]].x;
+                    (float)pIndoor->vertices[face->vertexIds[i]].x;
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.y =
-                    (float)pIndoor->vertices[face->pVertexIDs[i]].y;
+                    (float)pIndoor->vertices[face->vertexIds[i]].y;
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.z =
-                    (float)pIndoor->vertices[face->pVertexIDs[i]].z;
+                    (float)pIndoor->vertices[face->vertexIds[i]].z;
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         const std::vector<Vec3f> &v = pOutdoor->model(pid).vertices;
-        for (unsigned i = 0; i < face->uNumVertices; ++i)
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]];
+        for (unsigned i = 0; i < face->numVertices; ++i)
+            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->vertexIds[i]];
     } else {
         assert(false);
     }
 
     pCamera3D->ViewTransform(
-        static_DetermineFacetIntersection_array_F8F200, face->uNumVertices);
+        static_DetermineFacetIntersection_array_F8F200, face->numVertices);
     pCamera3D->Project(static_DetermineFacetIntersection_array_F8F200,
-                              face->uNumVertices, 1);
+                              face->numVertices, 1);
 
     SortVectors_x(static_DetermineFacetIntersection_array_F8F200, 0,
-                  face->uNumVertices - 1);
+                  face->numVertices - 1);
     if (static_DetermineFacetIntersection_array_F8F200[0].vWorldViewPosition.x >
         pick_depth)
         return nullptr;
 
     float screenspace_center_x, screenspace_center_y;
     GetPolygonScreenSpaceCenter(static_DetermineFacetIntersection_array_F8F200,
-                                face->uNumVertices, &screenspace_center_x,
+                                face->numVertices, &screenspace_center_x,
                                 &screenspace_center_y);
     if (IsPolygonOccludedByBillboard(
-            static_DetermineFacetIntersection_array_F8F200, face->uNumVertices,
+            static_DetermineFacetIntersection_array_F8F200, face->numVertices,
             screenspace_center_x, screenspace_center_y))
         return nullptr;
 
@@ -287,7 +287,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
 
     // clear the debug attribute
     for (auto &face : pIndoor->faces) {
-        face.uAttributes &= ~FACE_OUTLINED;
+        face.attributes &= ~FACE_OUTLINED;
     }
 
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
@@ -299,7 +299,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
                 pCamera3D->ViewTransform(&a1, 1);
                 list->AddObject(VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceId));
                 if (engine->config->debug.ShowPickedFace.value())
-                    face->uAttributes |= FACE_OUTLINED;
+                    face->attributes |= FACE_OUTLINED;
             }
         }
     }
@@ -476,7 +476,7 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
 
 //----- (004C1D2B) --------------------------------------------------------
 bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sModelID) {
-    if (!pFace->pBounding.contains(IntersectPoint))
+    if (!pFace->boundingBox.contains(IntersectPoint))
         return false;
 
     // sModelID == -1 means we're indoor, and -1 == MODEL_INDOOR, so this call just works.
@@ -811,8 +811,8 @@ bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_Selectio
         no_event = odmFace->eventId == 0;
         face_attrib = odmFace->attributes;
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        no_event = pIndoor->faceExtras[bvlFace->uFaceExtraID].uEventID == 0;
-        face_attrib = bvlFace->uAttributes;
+        no_event = pIndoor->faceExtras[bvlFace->faceExtraId].uEventID == 0;
+        face_attrib = bvlFace->attributes;
     } else {
         assert(false);
     }

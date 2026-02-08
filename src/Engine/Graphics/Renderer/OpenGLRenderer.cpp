@@ -634,13 +634,13 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     BLVFace *pFace = &pIndoor->faces[uFaceID];
-    if (pFace->uNumVertices <= 0) return;
+    if (pFace->numVertices <= 0) return;
 
     // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
     if (!pFace->GetTexture()) return;
 
     int dimming_level = 0;
-    unsigned int uNumVertices = pFace->uNumVertices;
+    unsigned int uNumVertices = pFace->numVertices;
 
 
     // TODO(pskelton): repeated maths could be saved when calculating sky planes
@@ -671,12 +671,12 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     RenderVertexSoft originalVertices[50];
 
     // copy to buff in
-    for (unsigned i = 0; i < pFace->uNumVertices; ++i) {
-        originalVertices[i].vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[i]].x;
-        originalVertices[i].vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[i]].y;
-        originalVertices[i].vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[i]].z;
-        originalVertices[i].u = (signed short)pFace->pVertexUs[i];
-        originalVertices[i].v = (signed short)pFace->pVertexVs[i];
+    for (unsigned i = 0; i < pFace->numVertices; ++i) {
+        originalVertices[i].vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[i]].x;
+        originalVertices[i].vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[i]].y;
+        originalVertices[i].vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[i]].z;
+        originalVertices[i].u = (signed short)pFace->textureUs[i];
+        originalVertices[i].v = (signed short)pFace->textureVs[i];
     }
 
     // clip accurately to camera
@@ -2976,9 +2976,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 float skymodtimex{};
                 float skymodtimey{};
                 if (face->Indoor_sky()) {
-                    if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
+                    if (face->polygonType != POLYGON_InBetweenFloorAndWall && face->polygonType != POLYGON_Floor) {
                         // draw forced perspective sky
-                        DrawIndoorSky(face->uNumVertices, uFaceID);
+                        DrawIndoorSky(face->numVertices, uFaceID);
                         continue;
                     } else {
                         // TODO(pskelton): check tickcount usage here
@@ -2993,23 +2993,23 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 int texunit = 0;
                 int attribflags = 0;
 
-                if (face->uAttributes & FACE_IsFluid)
+                if (face->attributes & FACE_IsFluid)
                     attribflags |= 2;
 
-                if (face->uAttributes & FACE_FlowDown)
+                if (face->attributes & FACE_FlowDown)
                     attribflags |= 0x400;
-                else if (face->uAttributes & FACE_FlowUp)
+                else if (face->attributes & FACE_FlowUp)
                     attribflags |= 0x800;
 
-                if (face->uAttributes & FACE_FlowRight)
+                if (face->attributes & FACE_FlowRight)
                     attribflags |= 0x2000;
-                else if (face->uAttributes & FACE_FlowLeft)
+                else if (face->attributes & FACE_FlowLeft)
                     attribflags |= 0x1000;
 
-                if (face->uAttributes & FACE_IsLava)
+                if (face->attributes & FACE_IsLava)
                     attribflags |= 0x4000;
 
-                if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
+                if (face->attributes & FACE_OUTLINED || (face->attributes & FACE_IsSecret) && engine->is_saturate_faces)
                     attribflags |= 0x00010000;
 
                 if (face->IsAnimated()) {
@@ -3038,15 +3038,15 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 }
 
 
-                for (int z = 0; z < (face->uNumVertices - 2); z++) {
+                for (int z = 0; z < (face->numVertices - 2); z++) {
                     // 123, 134, 145, 156..
 
                     // copy first
                     ShaderVertex &v0 = _bspVertices[texunit].emplace_back();
-                    v0.pos = pIndoor->vertices[face->pVertexIDs[0]];
+                    v0.pos = pIndoor->vertices[face->vertexIds[0]];
                     // TODO(captainurist): adding in IDs below?
-                    v0.texuv = Vec2f(face->pVertexUs[0] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaU,
-                                     face->pVertexVs[0] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaV);
+                    v0.texuv = Vec2f(face->textureUs[0] + pIndoor->faceExtras[face->faceExtraId].sTextureDeltaU,
+                                     face->textureVs[0] + pIndoor->faceExtras[face->faceExtraId].sTextureDeltaV);
                     if (face->Indoor_sky()) {
                         v0.texuv.x = (skymodtimex + v0.texuv.x) * 0.25f;
                         v0.texuv.y = (skymodtimey + v0.texuv.y) * 0.25f;
@@ -3058,10 +3058,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     // copy other two (z+1)(z+2)
                     for (unsigned i = 1; i < 3; ++i) {
                         ShaderVertex &v = _bspVertices[texunit].emplace_back();
-                        v.pos = pIndoor->vertices[face->pVertexIDs[z + i]];
+                        v.pos = pIndoor->vertices[face->vertexIds[z + i]];
                         // TODO(captainurist): adding in IDs???
-                        v.texuv = Vec2f(face->pVertexUs[z + i] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaU,
-                                        face->pVertexVs[z + i] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaV);
+                        v.texuv = Vec2f(face->textureUs[z + i] + pIndoor->faceExtras[face->faceExtraId].sTextureDeltaU,
+                                        face->textureVs[z + i] + pIndoor->faceExtras[face->faceExtraId].sTextureDeltaV);
                         if (face->Indoor_sky()) {
                             v.texuv.x = (skymodtimex + v.texuv.x) * 0.25f;
                             v.texuv.y = (skymodtimey + v.texuv.y) * 0.25f;
@@ -3284,7 +3284,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             bool onlist = false;
             for (unsigned i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
                 int listsector = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
-                if (pface->uSectorID == listsector) {
+                if (pface->sectorId == listsector) {
                     onlist = true;
                     break;
                 }
@@ -3296,21 +3296,21 @@ void OpenGLRenderer::DrawIndoorFaces() {
             if (!decal_builder->uNumSplatsThisFace) continue;
 
             // copy to buff in
-            for (unsigned i = 0; i < pface->uNumVertices; ++i) {
+            for (unsigned i = 0; i < pface->numVertices; ++i) {
                 static_vertices_buff_in[i].vWorldPosition.x =
-                    pIndoor->vertices[pface->pVertexIDs[i]].x;
+                    pIndoor->vertices[pface->vertexIds[i]].x;
                 static_vertices_buff_in[i].vWorldPosition.y =
-                    pIndoor->vertices[pface->pVertexIDs[i]].y;
+                    pIndoor->vertices[pface->vertexIds[i]].y;
                 static_vertices_buff_in[i].vWorldPosition.z =
-                    pIndoor->vertices[pface->pVertexIDs[i]].z;
-                static_vertices_buff_in[i].u = pface->pVertexUs[i];
-                static_vertices_buff_in[i].v = pface->pVertexVs[i];
+                    pIndoor->vertices[pface->vertexIds[i]].z;
+                static_vertices_buff_in[i].u = pface->textureUs[i];
+                static_vertices_buff_in[i].v = pface->textureVs[i];
             }
 
             // blood draw
             decal_builder->BuildAndApplyDecals(uCurrentAmbientLightLevel, LocationIndoors, pface->facePlane,
-                pface->uNumVertices, static_vertices_buff_in,
-                0, pface->uSectorID);
+                pface->numVertices, static_vertices_buff_in,
+                0, pface->sectorId);
         }
 
 

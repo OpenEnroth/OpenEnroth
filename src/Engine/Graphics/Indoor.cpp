@@ -202,14 +202,14 @@ void IndoorLocation::Draw() {
 //----- (004C0EF2) --------------------------------------------------------
 void BLVFace::FromODM(ODMFace *face) {
     this->facePlane = face->facePlane;
-    this->uAttributes = face->attributes;
-    this->pBounding = face->boundingBox;
+    this->attributes = face->attributes;
+    this->boundingBox = face->boundingBox;
     this->zCalc = face->zCalc;
-    this->uPolygonType = face->polygonType;
-    this->uNumVertices = face->numVertices;
+    this->polygonType = face->polygonType;
+    this->numVertices = face->numVertices;
     this->texture = face->texture;
     this->animationId = face->animationId;
-    this->pVertexIDs = face->vertexIds.data();
+    this->vertexIds = face->vertexIds.data();
 }
 
 //----- (004AE5BA) --------------------------------------------------------
@@ -382,7 +382,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         // loop over floor and portal faces
         for (uint16_t faceId : std::array{pSector->floorIds, pSector->portalIds} | std::views::join) {
             BLVFace *pFace = &faces[faceId];
-            if (pFace->uPolygonType != POLYGON_Floor && pFace->uPolygonType != POLYGON_InBetweenFloorAndWall)
+            if (pFace->polygonType != POLYGON_Floor && pFace->polygonType != POLYGON_InBetweenFloorAndWall)
                 continue;
 
             // add found faces into store
@@ -396,7 +396,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
     // only one face found
     if (NumFoundFaceStore == 1)
-        return this->faces[FoundFaceStore[0]].uSectorID;
+        return this->faces[FoundFaceStore[0]].sectorId;
 
     // only one sector found
     if (singleSectorFound) return *foundSector;
@@ -419,19 +419,19 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         int CalcZDist = MinZDist;
         for (int s = 0; s < NumFoundFaceStore; ++s) {
             // calc distance between this face and party
-            if (this->faces[FoundFaceStore[s]].uPolygonType == POLYGON_Floor)
-                CalcZDist = sZ - this->vertices[*this->faces[FoundFaceStore[s]].pVertexIDs].z;
-            if (this->faces[FoundFaceStore[s]].uPolygonType == POLYGON_InBetweenFloorAndWall) {
+            if (this->faces[FoundFaceStore[s]].polygonType == POLYGON_Floor)
+                CalcZDist = sZ - this->vertices[*this->faces[FoundFaceStore[s]].vertexIds].z;
+            if (this->faces[FoundFaceStore[s]].polygonType == POLYGON_InBetweenFloorAndWall) {
                 CalcZDist = sZ - this->faces[FoundFaceStore[s]].zCalc.calculate(sX, sY);
             }
 
             // use this face if its smaller than the current min - prefer faces below party
             if (CalcZDist < MinZDist) {
                 if (CalcZDist >= 0) {
-                    pSectorID = this->faces[FoundFaceStore[s]].uSectorID;
+                    pSectorID = this->faces[FoundFaceStore[s]].sectorId;
                     MinZDist = CalcZDist;
                 } else {
-                    backupID = this->faces[FoundFaceStore[s]].uSectorID;
+                    backupID = this->faces[FoundFaceStore[s]].sectorId;
                     backupDist = std::abs(CalcZDist);
                 }
             }
@@ -440,7 +440,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         if (pSectorID == 0) {
             if (backupID == 0) {
                 assert(false); // doesnt choose - so default to first - SHOULDNT GET HERE
-                pSectorID = this->faces[FoundFaceStore[0]].uSectorID;
+                pSectorID = this->faces[FoundFaceStore[0]].sectorId;
             } else {
                 // there is a face above the party to use
                 pSectorID = backupID;
@@ -455,7 +455,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
     // TODO(pskelton): these arent face normals - they are texture shift vectors
     // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
-    if (this->uPolygonType == POLYGON_VerticalWall) {
+    if (this->polygonType == POLYGON_VerticalWall) {
         outU->x = -this->facePlane.normal.y;
         outU->y = this->facePlane.normal.x;
         outU->z = 0;
@@ -464,8 +464,8 @@ void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
         outV->y = 0;
         outV->z = -1;
 
-    } else if (this->uPolygonType == POLYGON_Floor ||
-               this->uPolygonType == POLYGON_Ceiling) {
+    } else if (this->polygonType == POLYGON_Floor ||
+               this->polygonType == POLYGON_Ceiling) {
         outU->x = 1;
         outU->y = 0;
         outU->z = 0;
@@ -474,7 +474,7 @@ void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
         outV->y = -1;
         outV->z = 0;
 
-    } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall || this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
+    } else if (this->polygonType == POLYGON_InBetweenFloorAndWall || this->polygonType == POLYGON_InBetweenCeilingAndWall) {
         if (std::abs(this->facePlane.normal.z) < 0.70863342285f) { // Was 46441 fixpoint
             outU->x = -this->facePlane.normal.y;
             outU->y = this->facePlane.normal.x;
@@ -495,12 +495,12 @@ void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
         }
     }
     // LABEL_12:
-    if (this->uAttributes & FACE_FlipNormalU) {
+    if (this->attributes & FACE_FlipNormalU) {
         outU->x = -outU->x;
         outU->y = -outU->y;
         outU->z = -outU->z;
     }
-    if (this->uAttributes & FACE_FlipNormalV) {
+    if (this->attributes & FACE_FlipNormalV) {
         outV->x = -outV->x;
         outV->y = -outV->y;
         outV->z = -outV->z;
@@ -514,21 +514,21 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
 
     FaceAttributes plane = override_plane;
     if (!plane)
-        plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
+        plane = this->attributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
 
     auto do_flatten = [&](auto &&vertex_accessor) {
         if (plane & FACE_XY_PLANE) {
-            for (int i = 0; i < this->uNumVertices; i++) {
+            for (int i = 0; i < this->numVertices; i++) {
                 points->u[i] = vertex_accessor(i).x;
                 points->v[i] = vertex_accessor(i).y;
             }
         } else if (plane & FACE_XZ_PLANE) {
-            for (int i = 0; i < this->uNumVertices; i++) {
+            for (int i = 0; i < this->numVertices; i++) {
                 points->u[i] = vertex_accessor(i).x;
                 points->v[i] = vertex_accessor(i).z;
             }
         } else {
-            for (int i = 0; i < this->uNumVertices; i++) {
+            for (int i = 0; i < this->numVertices; i++) {
                 points->u[i] = vertex_accessor(i).y;
                 points->v[i] = vertex_accessor(i).z;
             }
@@ -537,11 +537,11 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
 
     if (model_idx == MODEL_INDOOR) {
         do_flatten([&](int index) -> const auto &{
-            return pIndoor->vertices[this->pVertexIDs[index]];
+            return pIndoor->vertices[this->vertexIds[index]];
         });
     } else {
         do_flatten([&](int index) -> const auto &{
-            return pOutdoor->pBModels[model_idx].vertices[this->pVertexIDs[index]];
+            return pOutdoor->pBModels[model_idx].vertices[this->vertexIds[index]];
         });
     }
 }
@@ -554,12 +554,12 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
     // float d = std::abs(this->facePlane.signedDistanceTo(pos.toFloat()));
     // assert(d < 0.01f);
 
-    if (this->uNumVertices < 3)
+    if (this->numVertices < 3)
         return false; // This does happen.
 
     FaceAttributes plane = override_plane;
     if (!plane)
-        plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
+        plane = this->attributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
 
     FlatFace points;
     Flatten(&points, model_idx, plane);
@@ -580,7 +580,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
 #if 0
     // Old algo for reference.
     bool inside = false;
-    for (int i = 0, j = this->uNumVertices - 1; i < this->uNumVertices; j = i++) {
+    for (int i = 0, j = this->numVertices - 1; i < this->numVertices; j = i++) {
         if ((points.v[i] > v) == (points.v[j] > v))
             continue;
 
@@ -594,7 +594,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
     // The polygons we're dealing with are convex, so instead of the usual ray casting algorithm we can simply
     // check that the point in question lies on the same side relative to all of the polygon's edges.
     int sign = 0;
-    for (int i = 0, j = this->uNumVertices - 1; i < this->uNumVertices; j = i++) {
+    for (int i = 0, j = this->numVertices - 1; i < this->numVertices; j = i++) {
         float a_u = points.u[j] - points.u[i];
         float a_v = points.v[j] - points.v[i];
         float b_u = u - points.u[i];
@@ -718,14 +718,14 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
 
     for (int j = 0; j < door->numFaces; ++j) {
         BLVFace* face = &pIndoor->faces[door->pFaceIDs[j]];
-        const Vec3f& facePoint = pIndoor->vertices[face->pVertexIDs[0]];
+        const Vec3f& facePoint = pIndoor->vertices[face->vertexIds[0]];
         face->facePlane.dist = -dot(facePoint, face->facePlane.normal);
         face->zCalc.init(face->facePlane);
 
         Vec3f v;
         Vec3f u;
         face->_get_normals(&u, &v);
-        BLVFaceExtra* extras = &pIndoor->faceExtras[face->uFaceExtraID];
+        BLVFaceExtra* extras = &pIndoor->faceExtras[face->faceExtraId];
         extras->sTextureDeltaU = 0;
         extras->sTextureDeltaV = 0;
 
@@ -733,31 +733,31 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         float minV = std::numeric_limits<float>::infinity();
         float maxU = -std::numeric_limits<float>::infinity();
         float maxV = -std::numeric_limits<float>::infinity();
-        for (unsigned k = 0; k < face->uNumVertices; ++k) {
-            Vec3f point = pIndoor->vertices[face->pVertexIDs[k]];
+        for (unsigned k = 0; k < face->numVertices; ++k) {
+            Vec3f point = pIndoor->vertices[face->vertexIds[k]];
             float pointU = dot(point, u);
             float pointV = dot(point, v);
             minU = std::min(minU, pointU);
             minV = std::min(minV, pointV);
             maxU = std::max(maxU, pointU);
             maxV = std::max(maxV, pointV);
-            face->pVertexUs[k] = pointU;
-            face->pVertexVs[k] = pointV;
+            face->textureUs[k] = pointU;
+            face->textureVs[k] = pointV;
         }
 
-        if (face->uAttributes & FACE_TexAlignLeft) {
+        if (face->attributes & FACE_TexAlignLeft) {
             extras->sTextureDeltaU -= minU;
-        } else if (face->uAttributes & FACE_TexAlignRight) {
+        } else if (face->attributes & FACE_TexAlignRight) {
             extras->sTextureDeltaU -= maxU + face->GetTexture()->width();
         }
 
-        if (face->uAttributes & FACE_TexAlignDown) {
+        if (face->attributes & FACE_TexAlignDown) {
             extras->sTextureDeltaV -= minV;
-        } else if (face->uAttributes & FACE_TexAlignBottom) {
+        } else if (face->attributes & FACE_TexAlignBottom) {
             extras->sTextureDeltaV -= maxV + face->GetTexture()->height();
         }
 
-        if (face->uAttributes & FACE_TexMoveByDoor) {
+        if (face->attributes & FACE_TexMoveByDoor) {
             float udot = dot(door->direction, u);
             float vdot = dot(door->direction, v);
             extras->sTextureDeltaU = -udot * distance + door->pDeltaUs[j];
@@ -895,7 +895,7 @@ void BLV_UpdateActors() {
         if (actor.velocity.xy().lengthSqr() < 400) {
             actor.velocity.x = 0;
             actor.velocity.y = 0;
-            if (pIndoor->faces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
+            if (pIndoor->faces[uFaceID].attributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
             }
@@ -1120,8 +1120,8 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         //
         // And if this z is ceiling z, then this will place the actor above the ceiling.
         float z_calc;
-        if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
-            z_calc = pIndoor->vertices[pFloor->pVertexIDs[0]].z; // POLYGON_Floor has normal (0,0,1)
+        if (pFloor->polygonType == POLYGON_Floor || pFloor->polygonType == POLYGON_Ceiling) {
+            z_calc = pIndoor->vertices[pFloor->vertexIds[0]].z; // POLYGON_Floor has normal (0,0,1)
         } else {
             z_calc = pFloor->zCalc.calculate(pos.x, pos.y);
         }
@@ -1137,7 +1137,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
             if (FacesFound >= 5) break;
 
             BLVFace *portal = &pIndoor->faces[portalId];
-            if (portal->uPolygonType != POLYGON_Floor)
+            if (portal->polygonType != POLYGON_Floor)
                 continue;
 
             if (!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
@@ -1313,7 +1313,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // t
                 continue;
 
             // skip further checks
-            if (!bbox.intersects(face->pBounding))
+            if (!bbox.intersects(face->boundingBox))
                 continue;
 
             float NegFacePlaceDist = -face->facePlane.signedDistanceTo(target);
@@ -1468,16 +1468,16 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
             } else {
-                if (!(pIndoor->faces[id].uAttributes & FACE_CLICKABLE)) {
+                if (!(pIndoor->faces[id].attributes & FACE_CLICKABLE)) {
                     engine->_statusBar->nothingHere();
                     return 1;
                 }
-                if (pIndoor->faces[id].uAttributes & FACE_HAS_EVENT || !pIndoor->faceExtras[pIndoor->faces[id].uFaceExtraID].uEventID) {
+                if (pIndoor->faces[id].attributes & FACE_HAS_EVENT || !pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].uEventID) {
                     return 1;
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor((int16_t)pIndoor->faceExtras[pIndoor->faces[id].uFaceExtraID].uEventID, pid, 1);
+                    eventProcessor((int16_t)pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].uEventID, pid, 1);
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
@@ -1552,8 +1552,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     // not hovering & stepped onto a new face => activate potential pressure plate.
     if (!isAboveGround && pParty->floor_face_id != 0 && pParty->floor_face_id != faceId) {
-        if (pIndoor->faces[faceId].uAttributes & FACE_PRESSURE_PLATE)
-            faceEvent = pIndoor->faceExtras[pIndoor->faces[faceId].uFaceExtraID].uEventID;
+        if (pIndoor->faces[faceId].attributes & FACE_PRESSURE_PLATE)
+            faceEvent = pIndoor->faceExtras[pIndoor->faces[faceId].faceExtraId].uEventID;
     }
 
     if (!isAboveGround)
@@ -1728,7 +1728,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         if (walkDelta >= 4) {
                             if (on_water) {
                                 sound = SOUND_RunWaterIndoor;
-                            } else if (pIndoor->faces[faceId].uAttributes & FACE_INDOOR_CARPET) {
+                            } else if (pIndoor->faces[faceId].attributes & FACE_INDOOR_CARPET) {
                                 sound = SOUND_RunCarpet;
                             } else {
                                 // TODO(Nik-RE-dev): need to probe surface
@@ -1739,7 +1739,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         if (walkDelta >= 2) {
                             if (on_water) {
                                 sound = SOUND_WalkWaterIndoor;
-                            } else if (pIndoor->faces[faceId].uAttributes & FACE_INDOOR_CARPET) {
+                            } else if (pIndoor->faces[faceId].attributes & FACE_INDOOR_CARPET) {
                                 sound = SOUND_WalkCarpet;
                             } else {
                                 // TODO(Nik-RE-dev): need to probe surface
@@ -1772,7 +1772,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
     if (faceId >= 0) // TODO(pskelton): investigate why this happens
-        if (!isAboveGround && pIndoor->faces[faceId].uAttributes & FACE_IsLava)
+        if (!isAboveGround && pIndoor->faces[faceId].attributes & FACE_IsLava)
             pParty->uFlags |= PARTY_FLAG_BURNING;
 
     if (faceEvent)

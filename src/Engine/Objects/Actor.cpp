@@ -899,7 +899,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out1 = pIndoor->faces[id1].pBounding.center();
+                out1 = pIndoor->faces[id1].boundingBox.center();
             }
             break;
         }
@@ -931,7 +931,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out2 = pIndoor->faces[id2].pBounding.center();
+                out2 = pIndoor->faces[id2].boundingBox.center();
             }
             break;
         }
@@ -4079,13 +4079,13 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 
         for (uint16_t portalId : sector.portalIds) {
             BLVFace *portalface = &pIndoor->faces[portalId];
-            Vec3f *portalverts = &pIndoor->vertices[*portalface->pVertexIDs];
+            Vec3f *portalverts = &pIndoor->vertices[*portalface->vertexIds];
 
             // ray obj1 to portal dot normal
             float obj1portaldot = dot(portalface->facePlane.normal, *portalverts - pos1);
 
             // flip norm if we are not looking out from current sector
-            if (current_sector != portalface->uSectorID)
+            if (current_sector != portalface->sectorId)
                 obj1portaldot = -obj1portaldot;
 
             // obj1 sees back of, but is not on the portal so skip
@@ -4093,7 +4093,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
                 continue;
 
             // bounds check
-            if (!bbox.intersects(portalface->pBounding))
+            if (!bbox.intersects(portalface->boundingBox))
                 continue;
 
             // dot plane normal with obj ray
@@ -4123,10 +4123,10 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
                 continue;
 
             // get next sector through portal
-            if (portalface->uSectorID == current_sector)
-                next_sector = portalface->uBackSectorID;
+            if (portalface->sectorId == current_sector)
+                next_sector = portalface->backSectorId;
             else
-                next_sector = portalface->uSectorID;
+                next_sector = portalface->sectorId;
             break;
         }
 

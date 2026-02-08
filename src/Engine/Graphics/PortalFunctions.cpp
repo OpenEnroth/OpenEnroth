@@ -75,17 +75,17 @@ void _49CE9E(const BLVFace *pFace, RenderVertexSoft *pVertices,
     RenderVertexSoft pLimits[64];
     CalcPolygonLimits(pFace, pLimits);
 
-    if (pFace->uAttributes & FACE_XY_PLANE) {
+    if (pFace->attributes & FACE_XY_PLANE) {
         pOutLimits[0] = pVertices[_49CE9E_sub0_x(pVertices, uNumVertices, pLimits[0].vWorldPosition.x)];
         pOutLimits[2] = pVertices[_49CE9E_sub0_x(pVertices, uNumVertices, pLimits[2].vWorldPosition.x)];
         pOutLimits[1] = pVertices[_49CE9E_sub0_y(pVertices, uNumVertices, pLimits[1].vWorldPosition.y)];
         pOutLimits[3] = pVertices[_49CE9E_sub0_y(pVertices, uNumVertices, pLimits[3].vWorldPosition.y)];
-    } else if (pFace->uAttributes & FACE_XZ_PLANE) {
+    } else if (pFace->attributes & FACE_XZ_PLANE) {
         pOutLimits[0] = pVertices[_49CE9E_sub0_x(pVertices, uNumVertices, pLimits[0].vWorldPosition.x)];
         pOutLimits[2] = pVertices[_49CE9E_sub0_x(pVertices, uNumVertices, pLimits[2].vWorldPosition.x)];
         pOutLimits[1] = pVertices[_49CE9E_sub0_z(pVertices, uNumVertices, pLimits[1].vWorldPosition.z)];
         pOutLimits[3] = pVertices[_49CE9E_sub0_z(pVertices, uNumVertices, pLimits[3].vWorldPosition.z)];
-    } else if (pFace->uAttributes & FACE_YZ_PLANE) {
+    } else if (pFace->attributes & FACE_YZ_PLANE) {
         pOutLimits[0] = pVertices[_49CE9E_sub0_y(pVertices, uNumVertices, pLimits[0].vWorldPosition.y)];
         pOutLimits[2] = pVertices[_49CE9E_sub0_y(pVertices, uNumVertices, pLimits[2].vWorldPosition.y)];
         pOutLimits[1] = pVertices[_49CE9E_sub0_z(pVertices, uNumVertices, pLimits[1].vWorldPosition.z)];
@@ -110,7 +110,7 @@ void CalcPolygonLimits(const BLVFace *pFace, RenderVertexSoft *pOutVertices) {
     float y_max = points.v[0];
     unsigned y_max_idx = 0;
 
-    for (unsigned i = 0; i < pFace->uNumVertices; ++i) {
+    for (unsigned i = 0; i < pFace->numVertices; ++i) {
         if (points.u[i] < x_min) {
             x_min = points.u[i];
             x_min_idx = i;
@@ -131,27 +131,27 @@ void CalcPolygonLimits(const BLVFace *pFace, RenderVertexSoft *pOutVertices) {
     }
 
     RenderVertexSoft v1;  // [sp+30Ch] [bp-54h]@24
-    v1.vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[x_min_idx]].x;
-    v1.vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[x_min_idx]].y;
-    v1.vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[x_min_idx]].z;
+    v1.vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[x_min_idx]].x;
+    v1.vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[x_min_idx]].y;
+    v1.vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[x_min_idx]].z;
     pOutVertices[0] = v1;
 
     RenderVertexSoft v2;  // [sp+30Ch] [bp-54h]@24
-    v2.vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[y_min_idx]].x;
-    v2.vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[y_min_idx]].y;
-    v2.vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[y_min_idx]].z;
+    v2.vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[y_min_idx]].x;
+    v2.vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[y_min_idx]].y;
+    v2.vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[y_min_idx]].z;
     pOutVertices[1] = v2;
 
     RenderVertexSoft v3;  // [sp+30Ch] [bp-54h]@24
-    v3.vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[x_max_idx]].x;
-    v3.vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[x_max_idx]].y;
-    v3.vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[x_max_idx]].z;
+    v3.vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[x_max_idx]].x;
+    v3.vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[x_max_idx]].y;
+    v3.vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[x_max_idx]].z;
     pOutVertices[2] = v3;
 
     RenderVertexSoft v4;  // [sp+30Ch] [bp-54h]@24
-    v4.vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[y_max_idx]].x;
-    v4.vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[y_max_idx]].y;
-    v4.vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[y_max_idx]].z;
+    v4.vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[y_max_idx]].x;
+    v4.vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[y_max_idx]].y;
+    v4.vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[y_max_idx]].z;
     pOutVertices[3] = v4;
 }
 
@@ -167,7 +167,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     float var_28;
     float var_24;
     // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
-    switch (pFace->uPolygonType) {
+    switch (pFace->polygonType) {
         case POLYGON_VerticalWall:
             a1.x = -pFace->facePlane.normal.y;  // направление полигона
             a1.y = pFace->facePlane.normal.x;
@@ -199,7 +199,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     float a3 = 0;
     float var_8 = 0;
 
-    if (pFace->uAttributes & FACE_XY_PLANE) {
+    if (pFace->attributes & FACE_XY_PLANE) {
         face_center_x = (pFaceLimits[0].vWorldPosition.x +
                          pFaceLimits[2].vWorldPosition.x) /
                         2;
@@ -213,7 +213,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         a3 = face_center_x - pFaceLimits[0].vWorldPosition.x;
         var_8 = face_center_y - pFaceLimits[1].vWorldPosition.y;
     }
-    if (pFace->uAttributes & FACE_XZ_PLANE) {
+    if (pFace->attributes & FACE_XZ_PLANE) {
         face_center_x = (pFaceLimits[0].vWorldPosition.x +
                          pFaceLimits[2].vWorldPosition.x) /
                         2;  // центр полигона
@@ -229,9 +229,9 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         var_8 = face_center_z -
                 pFaceLimits[1].vWorldPosition.z;  // высота от центра
 
-        if (pFace->uPolygonType == POLYGON_VerticalWall) a3 /= a1.x;
+        if (pFace->polygonType == POLYGON_VerticalWall) a3 /= a1.x;
     }
-    if (pFace->uAttributes & FACE_YZ_PLANE) {
+    if (pFace->attributes & FACE_YZ_PLANE) {
         face_center_x = (pFaceLimits[0].vWorldPosition.x +
                          pFaceLimits[2].vWorldPosition.x) /
                         2;
@@ -245,7 +245,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         a3 = face_center_y - pFaceLimits[0].vWorldPosition.y;
         var_8 = face_center_z - pFaceLimits[1].vWorldPosition.z;
         // [0.5]
-        if (pFace->uPolygonType == POLYGON_VerticalWall) {
+        if (pFace->polygonType == POLYGON_VerticalWall) {
             if (a1.x != 1.0f) a3 /= a1.y;
         }
     }

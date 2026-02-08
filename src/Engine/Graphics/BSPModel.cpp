@@ -39,8 +39,8 @@ bool ODMFace::HasEventHint() {
 
 bool ODMFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttributes override_plane) const {
     BLVFace face;
-    face.uAttributes = this->attributes;
-    face.uNumVertices = this->numVertices;
-    face.pVertexIDs = const_cast<int16_t *>(this->vertexIds.data());
+    face.attributes = this->attributes;
+    face.numVertices = this->numVertices;
+    face.vertexIds = const_cast<int16_t *>(this->vertexIds.data());
     return face.Contains(pos, model_idx, slack, override_plane);
 }

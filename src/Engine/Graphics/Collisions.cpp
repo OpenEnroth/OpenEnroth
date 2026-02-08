@@ -101,7 +101,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     if (ignore_ethereal && face->Ethereal())
         return false;
 
-    if (face->uNumVertices < 3)
+    if (face->numVertices < 3)
         return false; // Apparently this happens.
 
     float dir_normal_projection = dot(dir, face->facePlane.normal);
@@ -157,12 +157,12 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
 
     // now collide with vertices - point sphere collision
     a = dir.lengthSqr();
-    for (int i = 0; i < face->uNumVertices; ++i) {
+    for (int i = 0; i < face->numVertices; ++i) {
         Vec3f vertPos;
         if (model_idx == MODEL_INDOOR) {
-            vertPos = pIndoor->vertices[face->pVertexIDs[i]];
+            vertPos = pIndoor->vertices[face->vertexIds[i]];
         } else {
-            vertPos = pOutdoor->pBModels[model_idx].vertices[face->pVertexIDs[i]];
+            vertPos = pOutdoor->pBModels[model_idx].vertices[face->vertexIds[i]];
         }
 
         b = 2.0f * (dot(dir, pos - vertPos));
@@ -176,15 +176,15 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     }
 
     // now collide with edges
-    for (int i = 0; i < face->uNumVertices; ++i) {
+    for (int i = 0; i < face->numVertices; ++i) {
         Vec3f vert1, vert2;
-        int i2 = (i + 1) % face->uNumVertices;
+        int i2 = (i + 1) % face->numVertices;
         if (model_idx == MODEL_INDOOR) {
-            vert1 = pIndoor->vertices[face->pVertexIDs[i]];
-            vert2 = pIndoor->vertices[face->pVertexIDs[i2]];
+            vert1 = pIndoor->vertices[face->vertexIds[i]];
+            vert2 = pIndoor->vertices[face->vertexIds[i2]];
         } else {
-            vert1 = pOutdoor->pBModels[model_idx].vertices[face->pVertexIDs[i]];
-            vert2 = pOutdoor->pBModels[model_idx].vertices[face->pVertexIDs[i2]];
+            vert1 = pOutdoor->pBModels[model_idx].vertices[face->vertexIds[i]];
+            vert2 = pOutdoor->pBModels[model_idx].vertices[face->vertexIds[i2]];
         }
 
         // collide with line between the two verts
@@ -228,7 +228,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     if (fuzzyIsNull(cos_dir_normal, COLLISIONS_EPS))
         return false; // dir is perpendicular to face normal.
 
-    if (face->uAttributes & FACE_ETHEREAL)
+    if (face->attributes & FACE_ETHEREAL)
         return false;
 
     if (cos_dir_normal > 0 && !face->isPortal())
@@ -303,7 +303,7 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
     collide_once(midPos, newMidPos, collision_state.direction, collision_state.radius_hi, midPos.z - collision_state.position_lo.z);
 
     // Try and test the center of the face if its within our cylinder and not too close to the midpoint
-    float zCent = face->pBounding.center().z;
+    float zCent = face->boundingBox.center().z;
     if (zCent > collision_state.position_lo.z && zCent < collision_state.position_hi.z && std::abs(midPos.z - zCent) > 10) {
         float diff = zCent - collision_state.position_lo.z;
         midPos.z = zCent;
@@ -414,7 +414,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
     BLVSector *pSector = &pIndoor->sectors[collision_state.uSectorID];
     for (uint16_t portalId : pSector->portalIds) {
         BLVFace *pFace = &pIndoor->faces[portalId];
-        if (!collision_state.bbox.intersects(pFace->pBounding))
+        if (!collision_state.bbox.intersects(pFace->boundingBox))
             continue;
 
         float distance = std::abs(pFace->facePlane.signedDistanceTo(collision_state.position_lo));
@@ -422,7 +422,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             continue;
 
         pSectorsArray[totalSectors++] =
-            pFace->uSectorID == collision_state.uSectorID ? pFace->uBackSectorID : pFace->uSectorID;
+            pFace->sectorId == collision_state.uSectorID ? pFace->backSectorId : pFace->sectorId;
         break;
     }
 
@@ -430,7 +430,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
         pSector = &pIndoor->sectors[pSectorsArray[i]];
         for (uint16_t face_id : std::array{pSector->floorIds, pSector->wallIds, pSector->ceilingIds} | std::views::join) {
             BLVFace *face = &pIndoor->faces[face_id];
-            if (face->isPortal() || !collision_state.bbox.intersects(face->pBounding))
+            if (face->isPortal() || !collision_state.bbox.intersects(face->boundingBox))
                 continue;
 
             // TODO(pskelton): Modify game data face attribs to ethereal eventually - hack so that secret tunnel under prison bed can be accessed
@@ -503,7 +503,7 @@ bool CollideIndoorWithPortals() {
     float min_move_distance = std::numeric_limits<float>::max();
     for (uint16_t portalFaceId : pIndoor->sectors[collision_state.uSectorID].portalIds) {
         BLVFace *face = &pIndoor->faces[portalFaceId];
-        if (!collision_state.bbox.intersects(face->pBounding))
+        if (!collision_state.bbox.intersects(face->boundingBox))
             continue;
 
         float distance_lo_old = face->facePlane.signedDistanceTo(collision_state.position_lo);
@@ -519,10 +519,10 @@ bool CollideIndoorWithPortals() {
     }
 
     if (collision_state.adjusted_move_distance >= min_move_distance && min_move_distance <= collision_state.move_distance) {
-        if (pIndoor->faces[portal_id].uSectorID == collision_state.uSectorID) {
-            collision_state.uSectorID = pIndoor->faces[portal_id].uBackSectorID;
+        if (pIndoor->faces[portal_id].sectorId == collision_state.uSectorID) {
+            collision_state.uSectorID = pIndoor->faces[portal_id].backSectorId;
         } else {
-            collision_state.uSectorID = pIndoor->faces[portal_id].uSectorID;
+            collision_state.uSectorID = pIndoor->faces[portal_id].sectorId;
         }
         collision_state.adjusted_move_distance = collision_state.move_distance;
         return false;
@@ -628,7 +628,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         if (newFloorZ == -30000 || newFloorZ - actor.pos.z > 128)
             break; // New pos is out of bounds, running more iterations won't help.
 
-        if (pIndoor->faces[newFaceID].uAttributes & FACE_INDOOR_SKY) {
+        if (pIndoor->faces[newFaceID].attributes & FACE_INDOOR_SKY) {
             if (actor.aiState == Dead) {
                 actor.aiState = Removed;
                 break; // Actor removed, no point in running more iterations.
@@ -704,7 +704,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             // TODO(pskelton): Do actors need same exclusions as party?
 
             // TODO(pskelton): This 'catch all' is probably unsafe - would be better as above
-            if (bFaceSlopeTooSteep && face->Invisible() && face->uPolygonType == PolygonType::POLYGON_InBetweenFloorAndWall)
+            if (bFaceSlopeTooSteep && face->Invisible() && face->polygonType == PolygonType::POLYGON_InBetweenFloorAndWall)
                 bFaceSlopeTooSteep = false;
 
             // new sliding plane - drag collision down to correct level for slide direction
@@ -728,11 +728,11 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             // set movement speed along sliding plane
             actor.velocity = newDirection * dot(newDirection, actor.velocity);
 
-            if (pIndoor->faces[id].uAttributes & FACE_TriggerByMonster)
-                eventProcessor(pIndoor->faceExtras[pIndoor->faces[id].uFaceExtraID].uEventID, Pid(), 1);
+            if (pIndoor->faces[id].attributes & FACE_TriggerByMonster)
+                eventProcessor(pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].uEventID, Pid(), 1);
 
-            if (pIndoor->faces[id].uPolygonType == POLYGON_Floor) {
-                float new_floor_z_tmp = pIndoor->vertices[*face->pVertexIDs].z;
+            if (pIndoor->faces[id].polygonType == POLYGON_Floor) {
+                float new_floor_z_tmp = pIndoor->vertices[*face->vertexIds].z;
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
                 if (actor.velocity.z > 0.0f && (new_floor_z_tmp - actor.pos.z) < 128)
@@ -978,7 +978,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             }
 
             // TODO(pskelton): This 'catch all' is probably unsafe - would be better as above
-            if (bFaceSlopeTooSteep && pFace->Invisible() && pFace->uPolygonType == PolygonType::POLYGON_InBetweenFloorAndWall)
+            if (bFaceSlopeTooSteep && pFace->Invisible() && pFace->polygonType == PolygonType::POLYGON_InBetweenFloorAndWall)
                 bFaceSlopeTooSteep = false;
 
             // new sliding plane - drag collision down to correct level for slide direction
@@ -1003,10 +1003,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             pParty->velocity = newDirection * dot(newDirection, pParty->velocity);
 
             if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
-                *faceEvent = pIndoor->faceExtras[pFace->uFaceExtraID].uEventID;
+                *faceEvent = pIndoor->faceExtras[pFace->faceExtraId].uEventID;
 
-            if (pFace->uPolygonType == POLYGON_Floor) {
-                float new_party_z_tmp = pIndoor->vertices[*pFace->pVertexIDs].z;
+            if (pFace->polygonType == POLYGON_Floor) {
+                float new_party_z_tmp = pIndoor->vertices[*pFace->vertexIds].z;
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
                 if (pParty->velocity.z > 0.0f && (new_party_z_tmp - pParty->pos.z) < 128)

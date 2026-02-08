@@ -299,7 +299,7 @@ void Engine::onGameViewportClick() {
                 }
                 return;
             } else {
-                eventId = pIndoor->faceExtras[pIndoor->faces[pid.id()].uFaceExtraID].uEventID;
+                eventId = pIndoor->faceExtras[pIndoor->faces[pid.id()].faceExtraId].uEventID;
             }
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             const ODMFace &model = pOutdoor->face(pid);

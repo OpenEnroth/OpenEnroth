@@ -920,12 +920,12 @@ void GameUI_WritePointedObjectStatusString() {
                         }
                     } else {
                         pFace = &pIndoor->faces[pickedObjectID];
-                        if (pFace->uAttributes & FACE_INDICATE) {
+                        if (pFace->attributes & FACE_INDICATE) {
                             unsigned short eventId =
-                                pIndoor->faceExtras[pFace->uFaceExtraID]
+                                pIndoor->faceExtras[pFace->faceExtraId]
                                     .uEventID;
                             if (eventId != 0) {
-                                newString = getEventHintString(pIndoor->faceExtras[pFace->uFaceExtraID].uEventID);
+                                newString = getEventHintString(pIndoor->faceExtras[pFace->faceExtraId].uEventID);
                             }
                         }
                     }
@@ -1415,8 +1415,8 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
             if (pIndoor->faces[pOutline->uFace1ID].Visible() &&
                 pIndoor->faces[pOutline->uFace2ID].Visible()) {
-                if (pOutline->uFlags & 1 || pIndoor->faces[pOutline->uFace1ID].uAttributes & FACE_SeenByParty ||
-                    pIndoor->faces[pOutline->uFace2ID].uAttributes & FACE_SeenByParty) {
+                if (pOutline->uFlags & 1 || pIndoor->faces[pOutline->uFace1ID].attributes & FACE_SeenByParty ||
+                    pIndoor->faces[pOutline->uFace2ID].attributes & FACE_SeenByParty) {
                     pOutline->uFlags = pOutline->uFlags | 1;
                     pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
 
@@ -1435,8 +1435,8 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                     if (bWizardEyeActive && uWizardEyeSkillLevel >= MASTERY_MASTER &&
                         (pIndoor->faces[pOutline->uFace1ID].Clickable() ||
                             pIndoor->faces[pOutline->uFace2ID].Clickable()) &&
-                        (pIndoor->faceExtras[pIndoor->faces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
-                            pIndoor->faceExtras[pIndoor->faces[pOutline->uFace2ID].uFaceExtraID].uEventID)) {
+                        (pIndoor->faceExtras[pIndoor->faces[pOutline->uFace1ID].faceExtraId].uEventID ||
+                            pIndoor->faceExtras[pIndoor->faces[pOutline->uFace2ID].faceExtraId].uEventID)) {
                         if (uNumBlueFacesInBLVMinimap < 49) {
                             pBlueFacesInBLVMinimapIDs[uNumBlueFacesInBLVMinimap++] = i;
                             continue;

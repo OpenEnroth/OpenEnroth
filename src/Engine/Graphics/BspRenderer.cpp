@@ -15,12 +15,12 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     assert(uFaceID > -1 && uFaceID < pIndoor->faces.size() && "please report with a nearby save file");
 
     BLVFace *pFace = &pIndoor->faces[uFaceID];
-    pFace->uAttributes |= FACE_SeenByParty;
+    pFace->attributes |= FACE_SeenByParty;
 
     // NOTE(yoctozepto): the below happens, e.g., on various stairs
     // TODO(yoctozepto): might be nice to check if the vertices actually form a plane and not a line;
     //                   this could be done when loading the location and filtering out such broken faces
-    if (pFace->uNumVertices < 3) {
+    if (pFace->numVertices < 3) {
         return;  // nothing to render
     }
 
@@ -32,13 +32,13 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     static RenderVertexSoft clippedFaceVertices[64];
 
     // TODO(yoctozepto): are face vertices consecutive? are face vertices shared/overlapping?
-    for (unsigned k = 0; k < pFace->uNumVertices; ++k) {
-        originalFaceVertices[k].vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[k]].x;
-        originalFaceVertices[k].vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[k]].y;
-        originalFaceVertices[k].vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[k]].z;
+    for (unsigned k = 0; k < pFace->numVertices; ++k) {
+        originalFaceVertices[k].vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[k]].x;
+        originalFaceVertices[k].vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[k]].y;
+        originalFaceVertices[k].vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[k]].z;
     }
 
-    unsigned int pNewNumVertices = pFace->uNumVertices;
+    unsigned int pNewNumVertices = pFace->numVertices;
 
     // TODO(yoctozepto): original vertices could have been just Vec3f
     // clip to current viewing node frustum
@@ -88,7 +88,7 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     if (currentNode->uFaceID == uFaceID)
         return;
 
-    const bool isPortalFlipped = currentNode->uSectorID != pFace->uSectorID;
+    const bool isPortalFlipped = currentNode->uSectorID != pFace->sectorId;
 
     // NOTE(yoctozepto): (2) ignore a portal if it would be processed backwards to the party
     //                   as this might result in infinite loops;
@@ -129,7 +129,7 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     }
 
     // new node should have new sector; use the back one if the front one is current
-    newNode->uSectorID = isPortalFlipped ? pFace->uSectorID : pFace->uBackSectorID;
+    newNode->uSectorID = isPortalFlipped ? pFace->sectorId : pFace->backSectorId;
     newNode->uFaceID = uFaceID;
     newNode->parentNodeId = node_id;
 
@@ -170,7 +170,7 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     //                   because it is likely to clip the view too much and miss to render the faces behind it
     //                   (2) normal in z (1/-1) does not work too well - similar issue happens, e.g., in "Temple of Light" when looking at the indoor sky ceiling
     //                   behind a portal in the big room before the hidden stairs
-    if (/* (1) */(node_id == 0 && pFace->pBounding.intersectsCube(Vec3f(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z), boundingslack))
+    if (/* (1) */(node_id == 0 && pFace->boundingBox.intersectsCube(Vec3f(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z), boundingslack))
         || /* (2) */(pFace->facePlane.normal.z == 1.0 || pFace->facePlane.normal.z == -1.0)) {
         newNode->SetFrustumToCamera();
     }
@@ -257,7 +257,7 @@ void BspRenderer::AddBSPFaces(const int node_id, const int initialBSPNodeId) {
 
         bool isFaceFront = pCamera3D->is_face_faced_to_cameraBLV(pFace);
         // NOTE(yoctozepto): if the face is a portal going from a different sector, then its normal is inverted, so invert the computed value
-        if (pFace->isPortal() && pFace->uSectorID != node->uSectorID)
+        if (pFace->isPortal() && pFace->sectorId != node->uSectorID)
             isFaceFront = !isFaceFront;
 
         int otherBSPNodeId = isFaceFront ? bspNode->uBack : bspNode->uFront;

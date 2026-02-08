@@ -43,41 +43,41 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
 
-        pFace->pVertexIDs = dst->faceData.data() + j;
-        j += pFace->uNumVertices + 1;
+        pFace->vertexIds = dst->faceData.data() + j;
+        j += pFace->numVertices + 1;
 
         // Skipping pXInterceptDisplacements.
-        j += pFace->uNumVertices + 1;
+        j += pFace->numVertices + 1;
 
         // Skipping pYInterceptDisplacements.
-        j += pFace->uNumVertices + 1;
+        j += pFace->numVertices + 1;
 
         // Skipping pZInterceptDisplacements.
-        j += pFace->uNumVertices + 1;
+        j += pFace->numVertices + 1;
 
-        pFace->pVertexUs = dst->faceData.data() + j;
-        j += pFace->uNumVertices + 1;
+        pFace->textureUs = dst->faceData.data() + j;
+        j += pFace->numVertices + 1;
 
-        pFace->pVertexVs = dst->faceData.data() + j;
-        j += pFace->uNumVertices + 1;
+        pFace->textureVs = dst->faceData.data() + j;
+        j += pFace->numVertices + 1;
 
         assert(j <= dst->faceData.size());
     }
 
     // Face plane normals have come from fixed point values - recalculate them.
     for (auto& face : dst->faces) {
-        if (face.uNumVertices < 3) continue;
-        Vec3f dir1 = (dst->vertices[face.pVertexIDs[1]] - dst->vertices[face.pVertexIDs[0]]);
+        if (face.numVertices < 3) continue;
+        Vec3f dir1 = (dst->vertices[face.vertexIds[1]] - dst->vertices[face.vertexIds[0]]);
         int i = 2;
         // dir1 can be a 0 vec when first edge is degenerate - skip forwards
-        while (dir1.length() < 1e-6f && i < face.uNumVertices) {
-            dir1 = (dst->vertices[face.pVertexIDs[i]] - dst->vertices[face.pVertexIDs[i-1]]);
+        while (dir1.length() < 1e-6f && i < face.numVertices) {
+            dir1 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[i-1]]);
             i++;
         }
 
         Vec3f dir2, recalcNorm;
-        for (; i < face.uNumVertices; i++) {
-            dir2 = (dst->vertices[face.pVertexIDs[i]] - dst->vertices[face.pVertexIDs[0]]);
+        for (; i < face.numVertices; i++) {
+            dir2 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[0]]);
             if (recalcNorm = cross(dir1, dir2); recalcNorm.length() > 1e-6f) {
                 recalcNorm /= recalcNorm.length();
                 // Check that our new normal is pointing in the same direction as the original
@@ -87,14 +87,14 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
             }
         }
 
-        if (i == face.uNumVertices) {
+        if (i == face.numVertices) {
             // If we didn't find a non-parallel edge, lets just round what were given.
             // TODO(pskelton):  This shouldnt ever happen - test and drop
             face.facePlane.normal /= face.facePlane.normal.length();
         } else {
             face.facePlane.normal = recalcNorm;
         }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.pVertexIDs[0]]);
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.vertexIds[0]]);
         face.zCalc.init(face.facePlane);
     }
 
@@ -120,13 +120,13 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
     for (size_t i = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
-        BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->uFaceExtraID];
+        BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->faceExtraId];
 
         if (pFaceExtra->uEventID) {
             if (pFaceExtra->HasEventHint())
-                pFace->uAttributes |= FACE_HAS_EVENT;
+                pFace->attributes |= FACE_HAS_EVENT;
             else
-                pFace->uAttributes &= ~FACE_HAS_EVENT;
+                pFace->attributes &= ~FACE_HAS_EVENT;
         }
     }
 
@@ -222,7 +222,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - not all of the attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BLVFace &pFace : pIndoor->faces)
-        dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes & ~(FACE_HAS_EVENT | FACE_ANIMATED)));
+        dst->faceAttributes.push_back(std::to_underlying(pFace.attributes & ~(FACE_HAS_EVENT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -250,8 +250,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BLVFace &face : dst->faces) {
-        face.uAttributes &= FACE_ANIMATED | FACE_HAS_EVENT;
-        face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_ANIMATED);
+        face.attributes &= FACE_ANIMATED | FACE_HAS_EVENT;
+        face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_ANIMATED);
     }
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
@@ -312,7 +312,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
 
         for (unsigned j = 0; j < pDoor->numFaces; ++j) {
             BLVFace *pFace = &dst->faces[pDoor->pFaceIDs[j]];
-            BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->uFaceExtraID];
+            BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->faceExtraId];
 
             pDoor->pDeltaUs[j] = pFaceExtra->sTextureDeltaU;
             pDoor->pDeltaVs[j] = pFaceExtra->sTextureDeltaV;

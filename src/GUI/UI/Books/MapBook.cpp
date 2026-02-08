@@ -225,8 +225,8 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
 
                 if (pIndoor->faces[pOutline->uFace1ID].Visible() &&
                     pIndoor->faces[pOutline->uFace2ID].Visible()) {
-                    if (pIndoor->faces[pOutline->uFace1ID].uAttributes & FACE_SeenByParty ||
-                        pIndoor->faces[pOutline->uFace2ID].uAttributes & FACE_SeenByParty) {
+                    if (pIndoor->faces[pOutline->uFace1ID].attributes & FACE_SeenByParty ||
+                        pIndoor->faces[pOutline->uFace2ID].attributes & FACE_SeenByParty) {
                         pOutline->uFlags = pOutline->uFlags | 1;
                         pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
 

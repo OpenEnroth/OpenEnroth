@@ -437,7 +437,7 @@ LABEL_25:
             }
 
             if (collision_state.pid.type() == OBJECT_Face) {
-                if (pIndoor->faces[pidId].uPolygonType != POLYGON_Floor) {
+                if (pIndoor->faces[pidId].polygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
                     float dotFix = std::abs(dot(pIndoor->faces[pidId].facePlane.normal, pSpriteObject->vVelocity));
                     dotFix = std::max(dotFix, collision_state.speed / 8);
@@ -451,8 +451,8 @@ LABEL_25:
                         newZVel = 0.48828125f * newZVel;
                     }
                     pSpriteObject->vVelocity.z += newZVel;
-                    if (pIndoor->faces[pidId].uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].uFaceExtraID].uEventID, Pid(), 1);
+                    if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
+                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].faceExtraId].uEventID, Pid(), 1);
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
@@ -462,22 +462,22 @@ LABEL_25:
                     if (pSpriteObject->vVelocity.z < 10) {
                         pSpriteObject->vVelocity.z = 0;
                     }
-                    if (pIndoor->faces[pidId].uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].uFaceExtraID].uEventID, Pid(), 1);
+                    if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
+                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].faceExtraId].uEventID, Pid(), 1);
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
                 }
                 pSpriteObject->vVelocity.z = 0;
                 if (pSpriteObject->vVelocity.xy().lengthSqr() >= 400) {
-                    if (pIndoor->faces[pidId].uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].uFaceExtraID].uEventID, Pid(), 1);
+                    if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
+                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].faceExtraId].uEventID, Pid(), 1);
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
                 }
                 pSpriteObject->vVelocity = Vec3f(0, 0, 0);
-                pSpriteObject->vPosition.z = pIndoor->vertices[*pIndoor->faces[pidId].pVertexIDs].z + 1;
+                pSpriteObject->vPosition.z = pIndoor->vertices[*pIndoor->faces[pidId].vertexIds].z + 1;
             }
             pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
         }
@@ -486,7 +486,7 @@ LABEL_25:
 
     if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) || processSpellImpact(uLayingItemID, Pid())) {
         pSpriteObject->vPosition.z = floor_lvl + 1;
-        if (pIndoor->faces[uFaceID].uPolygonType == POLYGON_Floor) {
+        if (pIndoor->faces[uFaceID].polygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
         } else {
             if (pIndoor->faces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
