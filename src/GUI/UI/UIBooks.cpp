@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <memory>
 
 #include "Engine/Localization.h"
 #include "Engine/AssetsManager.h"

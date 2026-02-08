@@ -1,6 +1,7 @@
 #include "UIHouses.h"
 
 #include <cstdlib>
+#include <memory>
 #include <vector>
 #include <utility>
 #include <string>
@@ -771,11 +772,11 @@ void GUIWindow_House::drawNpcHouseDialogueResponse() {
 
 void GUIWindow_House::reinitDialogueWindow() {
     if (pDialogueWindow) {
-		// reset dialogue window to default state, so it can be reused for different NPCs dialogues without creating new one
-		pDialogueWindow->frameRect = { 0, 0, render->GetPresentDimensions().w, 345 };
+        // reset dialogue window to default state, so it can be reused for different NPCs dialogues without creating new one
+        pDialogueWindow->frameRect = { 0, 0, render->GetPresentDimensions().w, 345 };
         pDialogueWindow->sHint = "";
-		pDialogueWindow->receives_keyboard_input = false;
-		pDialogueWindow->DeleteButtons();
+        pDialogueWindow->receives_keyboard_input = false;
+        pDialogueWindow->DeleteButtons();
     } else {
         pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetPresentDimensions().w, 345));
     }

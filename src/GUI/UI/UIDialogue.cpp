@@ -1,5 +1,6 @@
 #include "UIDialogue.h"
 
+#include <memory>
 #include <vector>
 #include <string>
 

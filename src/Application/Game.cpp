@@ -261,7 +261,7 @@ void Game::onEscape() {
 
     window_SpeakInHouse = nullptr;
     pGUIWindow_CurrentMenu = nullptr;
-    
+
     pEventTimer->setPaused(false);
     current_screen_type = SCREEN_GAME;
 }
@@ -335,7 +335,7 @@ void Game::processQueuedMessages() {
                 selectNPCDialogueOption((DialogueId)uMessageParam);
                 continue;
             case UIMSG_CloseDialogueWindow:
-				pDialogueWindow = nullptr;
+                pDialogueWindow = nullptr;
                 continue;
             case UIMSG_ClickHouseNPCPortrait:
                 updateHouseNPCTopics(uMessageParam);

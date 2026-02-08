@@ -1,7 +1,8 @@
 #include "MapBook.h"
 
-#include <string>
 #include <bit>
+#include <memory>
+#include <string>
 #include <utility>
 
 #include "Engine/AssetsManager.h"

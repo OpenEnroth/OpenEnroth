@@ -1,5 +1,6 @@
 #include "UIMessageScroll.h"
 
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"

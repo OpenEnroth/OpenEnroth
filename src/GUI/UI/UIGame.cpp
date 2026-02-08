@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <utility>
+#include <memory>
 
 #include "GUI/UI/UIGame.h"
 

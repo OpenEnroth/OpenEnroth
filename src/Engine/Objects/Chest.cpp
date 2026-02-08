@@ -1,5 +1,6 @@
 #include "Engine/Objects/Chest.h"
 
+#include <memory>
 #include <numeric>
 #include <unordered_map>
 #include <vector>

@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "UIBranchlessDialogue.h"
 
 #include "Engine/AssetsManager.h"

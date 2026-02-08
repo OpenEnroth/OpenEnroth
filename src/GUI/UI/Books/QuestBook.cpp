@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"

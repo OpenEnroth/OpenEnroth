@@ -1,11 +1,12 @@
 #include "UICharacter.h"
 
-#include <cstdio>
 #include <algorithm>
-#include <vector>
-#include <string>
 #include <array>
+#include <cstdio>
+#include <memory>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
