@@ -386,7 +386,7 @@ void UpdateChestPositions() {
     } else {
         for (const BLVFace &face : pIndoor->faces)
             if (face.faceExtraId)
-                if (int eventId = pIndoor->faceExtras[face.faceExtraId].uEventID)
+                if (int eventId = pIndoor->faceExtras[face.faceExtraId].eventId)
                     processEvent(eventId, face.boundingBox.center());
     }
 

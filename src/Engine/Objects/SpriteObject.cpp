@@ -452,7 +452,7 @@ LABEL_25:
                     }
                     pSpriteObject->vVelocity.z += newZVel;
                     if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].faceExtraId].uEventID, Pid(), 1);
+                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].faceExtraId].eventId, Pid(), 1);
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
@@ -463,7 +463,7 @@ LABEL_25:
                         pSpriteObject->vVelocity.z = 0;
                     }
                     if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].faceExtraId].uEventID, Pid(), 1);
+                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].faceExtraId].eventId, Pid(), 1);
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
@@ -471,7 +471,7 @@ LABEL_25:
                 pSpriteObject->vVelocity.z = 0;
                 if (pSpriteObject->vVelocity.xy().lengthSqr() >= 400) {
                     if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].faceExtraId].uEventID, Pid(), 1);
+                        eventProcessor(pIndoor->faceExtras[pIndoor->faces[pidId].faceExtraId].eventId, Pid(), 1);
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;

@@ -113,16 +113,16 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         reconstruct(src.faceExtraTextures[i], &textureName);
 
         if (textureName.empty())
-            dst->faceExtras[i].uAdditionalBitmapID = -1;
+            dst->faceExtras[i].additionalBitmapId = -1;
         else
-            dst->faceExtras[i].uAdditionalBitmapID = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
+            dst->faceExtras[i].additionalBitmapId = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
     }
 
     for (size_t i = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
         BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->faceExtraId];
 
-        if (pFaceExtra->uEventID) {
+        if (pFaceExtra->eventId) {
             if (pFaceExtra->HasEventHint())
                 pFace->attributes |= FACE_HAS_EVENT;
             else
@@ -314,8 +314,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
             BLVFace *pFace = &dst->faces[pDoor->pFaceIDs[j]];
             BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->faceExtraId];
 
-            pDoor->pDeltaUs[j] = pFaceExtra->sTextureDeltaU;
-            pDoor->pDeltaVs[j] = pFaceExtra->sTextureDeltaV;
+            pDoor->pDeltaUs[j] = pFaceExtra->textureDeltaU;
+            pDoor->pDeltaVs[j] = pFaceExtra->textureDeltaV;
         }
     }
 

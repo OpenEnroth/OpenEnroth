@@ -811,7 +811,7 @@ bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_Selectio
         no_event = odmFace->eventId == 0;
         face_attrib = odmFace->attributes;
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        no_event = pIndoor->faceExtras[bvlFace->faceExtraId].uEventID == 0;
+        no_event = pIndoor->faceExtras[bvlFace->faceExtraId].eventId == 0;
         face_attrib = bvlFace->attributes;
     } else {
         assert(false);

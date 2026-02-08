@@ -3045,8 +3045,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     ShaderVertex &v0 = _bspVertices[texunit].emplace_back();
                     v0.pos = pIndoor->vertices[face->vertexIds[0]];
                     // TODO(captainurist): adding in IDs below?
-                    v0.texuv = Vec2f(face->textureUs[0] + pIndoor->faceExtras[face->faceExtraId].sTextureDeltaU,
-                                     face->textureVs[0] + pIndoor->faceExtras[face->faceExtraId].sTextureDeltaV);
+                    v0.texuv = Vec2f(face->textureUs[0] + pIndoor->faceExtras[face->faceExtraId].textureDeltaU,
+                                     face->textureVs[0] + pIndoor->faceExtras[face->faceExtraId].textureDeltaV);
                     if (face->Indoor_sky()) {
                         v0.texuv.x = (skymodtimex + v0.texuv.x) * 0.25f;
                         v0.texuv.y = (skymodtimey + v0.texuv.y) * 0.25f;
@@ -3060,8 +3060,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         ShaderVertex &v = _bspVertices[texunit].emplace_back();
                         v.pos = pIndoor->vertices[face->vertexIds[z + i]];
                         // TODO(captainurist): adding in IDs???
-                        v.texuv = Vec2f(face->textureUs[z + i] + pIndoor->faceExtras[face->faceExtraId].sTextureDeltaU,
-                                        face->textureVs[z + i] + pIndoor->faceExtras[face->faceExtraId].sTextureDeltaV);
+                        v.texuv = Vec2f(face->textureUs[z + i] + pIndoor->faceExtras[face->faceExtraId].textureDeltaU,
+                                        face->textureVs[z + i] + pIndoor->faceExtras[face->faceExtraId].textureDeltaV);
                         if (face->Indoor_sky()) {
                             v.texuv.x = (skymodtimex + v.texuv.x) * 0.25f;
                             v.texuv.y = (skymodtimey + v.texuv.y) * 0.25f;

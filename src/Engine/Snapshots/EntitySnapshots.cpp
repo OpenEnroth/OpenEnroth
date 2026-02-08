@@ -1782,12 +1782,12 @@ void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
 }
 
 void reconstruct(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst) {
-    dst->face_id = src.face_id;
-    dst->uAdditionalBitmapID = src.uAdditionalBitmapID;
-    dst->sTextureDeltaU = src.sTextureDeltaU;
-    dst->sTextureDeltaV = src.sTextureDeltaV;
-    dst->sCogNumber = src.sCogNumber;
-    dst->uEventID = src.uEventID;
+    dst->faceId = src.face_id;
+    dst->additionalBitmapId = src.uAdditionalBitmapID;
+    dst->textureDeltaU = src.sTextureDeltaU;
+    dst->textureDeltaV = src.sTextureDeltaV;
+    dst->cogNumber = src.sCogNumber;
+    dst->eventId = src.uEventID;
 }
 
 void reconstruct(const BSPNode_MM7 &src, BSPNode *dst) {

@@ -160,12 +160,12 @@ struct BLVFace {
 struct BLVFaceExtra {
     bool HasEventHint();
 
-    int face_id;
-    uint16_t uAdditionalBitmapID; // TODO(captainurist): why is this one unused?
-    int16_t sTextureDeltaU;
-    int16_t sTextureDeltaV;
-    int16_t sCogNumber;
-    uint16_t uEventID;
+    int faceId;
+    uint16_t additionalBitmapId; // TODO(captainurist): why is this one unused?
+    int16_t textureDeltaU;
+    int16_t textureDeltaV;
+    int16_t cogNumber;
+    uint16_t eventId;
 };
 
 struct BLVSector {

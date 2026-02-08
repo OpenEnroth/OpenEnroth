@@ -923,9 +923,9 @@ void GameUI_WritePointedObjectStatusString() {
                         if (pFace->attributes & FACE_INDICATE) {
                             unsigned short eventId =
                                 pIndoor->faceExtras[pFace->faceExtraId]
-                                    .uEventID;
+                                    .eventId;
                             if (eventId != 0) {
-                                newString = getEventHintString(pIndoor->faceExtras[pFace->faceExtraId].uEventID);
+                                newString = getEventHintString(pIndoor->faceExtras[pFace->faceExtraId].eventId);
                             }
                         }
                     }
@@ -1435,8 +1435,8 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                     if (bWizardEyeActive && uWizardEyeSkillLevel >= MASTERY_MASTER &&
                         (pIndoor->faces[pOutline->uFace1ID].Clickable() ||
                             pIndoor->faces[pOutline->uFace2ID].Clickable()) &&
-                        (pIndoor->faceExtras[pIndoor->faces[pOutline->uFace1ID].faceExtraId].uEventID ||
-                            pIndoor->faceExtras[pIndoor->faces[pOutline->uFace2ID].faceExtraId].uEventID)) {
+                        (pIndoor->faceExtras[pIndoor->faces[pOutline->uFace1ID].faceExtraId].eventId ||
+                            pIndoor->faceExtras[pIndoor->faces[pOutline->uFace2ID].faceExtraId].eventId)) {
                         if (uNumBlueFacesInBLVMinimap < 49) {
                             pBlueFacesInBLVMinimapIDs[uNumBlueFacesInBLVMinimap++] = i;
                             continue;

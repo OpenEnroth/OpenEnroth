@@ -729,7 +729,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             actor.velocity = newDirection * dot(newDirection, actor.velocity);
 
             if (pIndoor->faces[id].attributes & FACE_TriggerByMonster)
-                eventProcessor(pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].uEventID, Pid(), 1);
+                eventProcessor(pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].eventId, Pid(), 1);
 
             if (pIndoor->faces[id].polygonType == POLYGON_Floor) {
                 float new_floor_z_tmp = pIndoor->vertices[*face->vertexIds].z;
@@ -1003,7 +1003,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             pParty->velocity = newDirection * dot(newDirection, pParty->velocity);
 
             if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
-                *faceEvent = pIndoor->faceExtras[pFace->faceExtraId].uEventID;
+                *faceEvent = pIndoor->faceExtras[pFace->faceExtraId].eventId;
 
             if (pFace->polygonType == POLYGON_Floor) {
                 float new_party_z_tmp = pIndoor->vertices[*pFace->vertexIds].z;

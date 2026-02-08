@@ -2211,7 +2211,7 @@ void CastSpellInfoHelpers::castSpell() {
                         int event;
                         OpenedTelekinesis = true;
                         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                            event = pIndoor->faceExtras[pIndoor->faces[obj_id].faceExtraId].uEventID;
+                            event = pIndoor->faceExtras[pIndoor->faces[obj_id].faceExtraId].eventId;
                         } else {
                             event = pOutdoor->face(spell_targeted_at).eventId;
                         }

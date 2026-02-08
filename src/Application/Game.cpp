@@ -807,7 +807,7 @@ void Game::processQueuedMessages() {
                     } else { // Indoor
                         BLVFace *pBLVFace = &pIndoor->faces[id];
                         if (pBLVFace->Clickable()) {
-                            interactionPossible = pIndoor->faceExtras[pBLVFace->faceExtraId].uEventID != 0;
+                            interactionPossible = pIndoor->faceExtras[pBLVFace->faceExtraId].eventId != 0;
                         }
                     }
                 }

@@ -905,8 +905,8 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
                                    std::string_view filename) {
     for (unsigned i = 1; i < pIndoor->faceExtras.size(); ++i) {
         auto extra = &pIndoor->faceExtras[i];
-        if (extra->sCogNumber == uFaceCog) {
-            auto face = &pIndoor->faces[extra->face_id];
+        if (extra->cogNumber == uFaceCog) {
+            auto face = &pIndoor->faces[extra->faceId];
             face->SetTexture(filename);
         }
     }
@@ -944,12 +944,12 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             for (unsigned i = 1; i < (unsigned int)pIndoor->faceExtras.size(); ++i) {
-                if (pIndoor->faceExtras[i].sCogNumber == sCogNumber) {
+                if (pIndoor->faceExtras[i].cogNumber == sCogNumber) {
                     if (on)
-                        pIndoor->faces[pIndoor->faceExtras[i].face_id]
+                        pIndoor->faces[pIndoor->faceExtras[i].faceId]
                             .attributes |= bit;
                     else
-                        pIndoor->faces[pIndoor->faceExtras[i].face_id]
+                        pIndoor->faces[pIndoor->faceExtras[i].faceId]
                             .attributes &= ~bit;
                 }
             }

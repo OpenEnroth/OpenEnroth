@@ -627,7 +627,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
 
 //----- (0044C23B) --------------------------------------------------------
 bool BLVFaceExtra::HasEventHint() {
-    return hasEventHint(this->uEventID);
+    return hasEventHint(this->eventId);
 }
 
 void BLV_InitialiseDoors() {
@@ -726,8 +726,8 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         Vec3f u;
         face->_get_normals(&u, &v);
         BLVFaceExtra* extras = &pIndoor->faceExtras[face->faceExtraId];
-        extras->sTextureDeltaU = 0;
-        extras->sTextureDeltaV = 0;
+        extras->textureDeltaU = 0;
+        extras->textureDeltaV = 0;
 
         float minU = std::numeric_limits<float>::infinity();
         float minV = std::numeric_limits<float>::infinity();
@@ -746,22 +746,22 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         }
 
         if (face->attributes & FACE_TexAlignLeft) {
-            extras->sTextureDeltaU -= minU;
+            extras->textureDeltaU -= minU;
         } else if (face->attributes & FACE_TexAlignRight) {
-            extras->sTextureDeltaU -= maxU + face->GetTexture()->width();
+            extras->textureDeltaU -= maxU + face->GetTexture()->width();
         }
 
         if (face->attributes & FACE_TexAlignDown) {
-            extras->sTextureDeltaV -= minV;
+            extras->textureDeltaV -= minV;
         } else if (face->attributes & FACE_TexAlignBottom) {
-            extras->sTextureDeltaV -= maxV + face->GetTexture()->height();
+            extras->textureDeltaV -= maxV + face->GetTexture()->height();
         }
 
         if (face->attributes & FACE_TexMoveByDoor) {
             float udot = dot(door->direction, u);
             float vdot = dot(door->direction, v);
-            extras->sTextureDeltaU = -udot * distance + door->pDeltaUs[j];
-            extras->sTextureDeltaV = -vdot * distance + door->pDeltaVs[j];
+            extras->textureDeltaU = -udot * distance + door->pDeltaUs[j];
+            extras->textureDeltaV = -vdot * distance + door->pDeltaVs[j];
         }
     }
 }
@@ -1472,12 +1472,12 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     engine->_statusBar->nothingHere();
                     return 1;
                 }
-                if (pIndoor->faces[id].attributes & FACE_HAS_EVENT || !pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].uEventID) {
+                if (pIndoor->faces[id].attributes & FACE_HAS_EVENT || !pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].eventId) {
                     return 1;
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor((int16_t)pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].uEventID, pid, 1);
+                    eventProcessor((int16_t)pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].eventId, pid, 1);
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
@@ -1553,7 +1553,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     // not hovering & stepped onto a new face => activate potential pressure plate.
     if (!isAboveGround && pParty->floor_face_id != 0 && pParty->floor_face_id != faceId) {
         if (pIndoor->faces[faceId].attributes & FACE_PRESSURE_PLATE)
-            faceEvent = pIndoor->faceExtras[pIndoor->faces[faceId].faceExtraId].uEventID;
+            faceEvent = pIndoor->faceExtras[pIndoor->faces[faceId].faceExtraId].eventId;
     }
 
     if (!isAboveGround)
