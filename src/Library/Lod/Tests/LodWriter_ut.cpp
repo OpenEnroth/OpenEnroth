@@ -40,8 +40,8 @@ UNIT_TEST(LodWriter, TestWrite) {
     EXPECT_TRUE(reader.exists("2"));
     EXPECT_TRUE(reader.exists("3"));
     EXPECT_TRUE(reader.exists("4"));
-    EXPECT_EQ(reader.read("1").string_view(), file1);
-    EXPECT_EQ(reader.read("2").string_view(), file2);
-    EXPECT_EQ(reader.read("3").string_view(), file3);
-    EXPECT_EQ(reader.read("4").string_view(), file4);
+    EXPECT_EQ(reader.read("1").str(), file1);
+    EXPECT_EQ(reader.read("2").str(), file2);
+    EXPECT_EQ(reader.read("3").str(), file3);
+    EXPECT_EQ(reader.read("4").str(), file4);
 }

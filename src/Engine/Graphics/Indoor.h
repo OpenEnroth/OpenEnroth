@@ -32,14 +32,14 @@ struct BLVLight {
     int16_t uBrightness = 0;
 };
 
-struct BLVDoor {  // 50h
-    DoorAttributes uAttributes;
-    uint32_t uDoorID;
-    Duration uTimeSinceTriggered;
-    Vec3f vDirection; // Float direction vector
-    int32_t uMoveLength;
-    int32_t uOpenSpeed; // In map units per real-time second.
-    int32_t uCloseSpeed; // In map units per real-time second.
+struct BLVDoor {
+    DoorAttributes attributes;
+    uint32_t doorId;
+    Duration timeSinceTriggered;
+    Vec3f direction; // Float direction vector
+    int32_t moveLength;
+    int32_t openSpeed; // In map units per real-time second.
+    int32_t closeSpeed; // In map units per real-time second.
     int16_t *pVertexIDs;
     int16_t *pFaceIDs;
     int16_t *pSectorIDs;
@@ -48,11 +48,11 @@ struct BLVDoor {  // 50h
     int16_t *pXOffsets;
     int16_t *pYOffsets;
     int16_t *pZOffsets;
-    uint16_t uNumVertices;
-    uint16_t uNumFaces;
-    uint16_t uNumSectors;
-    uint16_t uNumOffsets;
-    DoorState uState;
+    uint16_t numVertices;
+    uint16_t numFaces;
+    uint16_t numSectors;
+    uint16_t numOffsets;
+    DoorState state;
 };
 
 struct BLVMapOutline {  // 0C
@@ -130,9 +130,20 @@ struct BLVFace {  // 60h
     Planef facePlane;
     PlaneZCalcf zCalc;
     FaceAttributes uAttributes;
+
+    /** Array of indices into the vertex array for this face's vertices. Points into `IndoorLocation::pVertices` for
+     * indoor faces, or `BSPModel::pVertices` for outdoor faces. Has `uNumVertices + 1` elements, where the last element
+     * repeats the first vertex to close the polygon. */
     int16_t *pVertexIDs = nullptr;
-    int16_t *pVertexUIDs = nullptr;
-    int16_t *pVertexVIDs = nullptr;
+
+    /** Array of U (horizontal) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
+     * matching `pVertexIDs`. */
+    int16_t *pVertexUs = nullptr;
+
+    /** Array of V (vertical) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
+     * matching `pVertexIDs`. */
+    int16_t *pVertexVs = nullptr;
+
     uint16_t uFaceExtraID = 0;
     GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.
     int animationId = 0; // Index into pTextureFrameTable for animated faces.
@@ -159,40 +170,27 @@ struct BLVFaceExtra {
 
 /*   95 */
 struct BLVSector {  // 0x74
-    int32_t field_0;  // flags?? &8 is for check floor level against portals &10 is for adding additonal node faces
-    uint16_t uNumFloors;
-    uint16_t *pFloors;
-    uint16_t uNumWalls;
-    uint16_t *pWalls;
-    uint16_t uNumCeilings;
-    uint16_t *pCeilings;
-    uint16_t uNumFluids;
-    uint16_t *pFluids;
-    int16_t uNumPortals;
-    uint16_t *pPortals;
-    uint16_t uNumFaces;
-    uint16_t uNumNonBSPFaces;
-    uint16_t *pFaceIDs;
-    uint16_t uNumCylinderFaces;
-    int32_t pCylinderFaces;
-    uint16_t uNumCogs;
-    uint16_t *pCogs;
-    uint16_t uNumDecorations;
-    uint16_t *pDecorationIDs;
-    uint16_t uNumMarkers;
-    uint16_t *pMarkers;
-    uint16_t uNumLights;
-    uint16_t *pLights;
-    int16_t uWaterLevel;
-    int16_t uMistLevel;
-    int16_t uLightDistanceMultiplier;
-    int16_t uMinAmbientLightLevel;  // might be supposed to be max ambient dim actually
-    int16_t uFirstBSPNode;
-    int16_t exit_tag;
-    BBoxf pBounding;
+    int32_t flags;  // & 8 is for check floor level against portals & 10 is for adding additonal node faces
+    uint16_t numFloors;
+    uint16_t *floors;
+    uint16_t numWalls;
+    uint16_t *walls;
+    uint16_t numCeilings;
+    uint16_t *ceilings;
+    int16_t numPortals;
+    uint16_t *portals;
+    uint16_t numFaces;
+    uint16_t numNonBspFaces;
+    uint16_t *faceIds;
+    uint16_t numDecorations;
+    uint16_t *decorationIds;
+    uint16_t numLights;
+    uint16_t *lights;
+    int16_t minAmbientLightLevel; // might be supposed to be max ambient dim actually
+    int16_t firstBspNode;
+    BBoxf boundingBox;
 };
 
-/*   89 */
 struct IndoorLocation {
     //----- (00462592) --------------------------------------------------------
     inline IndoorLocation() {
@@ -227,18 +225,18 @@ struct IndoorLocation {
 
     std::string filename;
     unsigned int bLoaded = 0;
-    std::vector<Vec3f> pVertices;
-    std::vector<BLVFace> pFaces;
-    std::vector<BLVFaceExtra> pFaceExtras;
-    std::vector<BLVSector> pSectors;
-    std::vector<BLVLight> pLights;
-    std::vector<BLVDoor> pDoors;
-    std::vector<BSPNode> pNodes;
-    std::vector<BLVMapOutline> pMapOutlines;
-    std::vector<int16_t> pLFaces;
-    std::vector<uint16_t> ptr_0002B0_sector_rdata;
-    std::vector<int16_t> ptr_0002B4_doors_ddata;
-    std::vector<uint16_t> ptr_0002B8_sector_lrdata;
+    std::vector<Vec3f> vertices;
+    std::vector<BLVFace> faces;
+    std::vector<BLVFaceExtra> faceExtras;
+    std::vector<BLVSector> sectors;
+    std::vector<BLVLight> lights;
+    std::vector<BLVDoor> doors;
+    std::vector<BSPNode> nodes;
+    std::vector<BLVMapOutline> mapOutlines;
+    std::vector<int16_t> faceData;
+    std::vector<uint16_t> sectorData;
+    std::vector<int16_t> doorsData;
+    std::vector<uint16_t> sectorLightData;
     std::vector<SpawnPoint> pSpawnPoints;
     LocationInfo dlv;
     LocationTime stru1;

@@ -114,8 +114,8 @@ int runRetrace(const OpenEnrothOptions &options) {
             auto endTime = std::chrono::steady_clock::now();
             fmt::println(stderr, "Retraced in {}ms.", std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count());
 
-            std::string oldTraceJson = normalizeText(oldTraceBlob.string_view());
-            std::string newTraceJson = normalizeText(recording.trace.string_view());
+            std::string oldTraceJson = normalizeText(oldTraceBlob.str());
+            std::string newTraceJson = normalizeText(recording.trace.str());
             if (oldTraceJson != newTraceJson) {
                 if (!options.retrace.checkCanonical) {
                     oldTraceBlob = Blob(); // Close old trace file

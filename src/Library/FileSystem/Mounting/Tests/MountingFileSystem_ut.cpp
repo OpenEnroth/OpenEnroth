@@ -110,8 +110,8 @@ UNIT_TEST(MountingFileSystem, ReadWriteThrough) {
 
     EXPECT_EQ(mfs.stat("b"), FileStat(FILE_REGULAR, 3));
     EXPECT_EQ(fs.stat("a/b"), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.read("x/b").string_view(), "123");
-    EXPECT_EQ(fs.read("a/b/b").string_view(), "123");
+    EXPECT_EQ(fs.read("x/b").str(), "123");
+    EXPECT_EQ(fs.read("a/b/b").str(), "123");
 }
 
 UNIT_TEST(MountingFileSystem, Remove) {
@@ -137,8 +137,8 @@ UNIT_TEST(MountingFileSystem, RenameSameFs) {
 
     fs.rename("a/a", "a/b");
 
-    EXPECT_EQ(mfs.read("b").string_view(), "123");
-    EXPECT_EQ(fs.read("a/b").string_view(), "123");
+    EXPECT_EQ(mfs.read("b").str(), "123");
+    EXPECT_EQ(fs.read("a/b").str(), "123");
     EXPECT_EQ(fs.ls("a"), std::vector<DirectoryEntry>({{"b", FILE_REGULAR}}));
 }
 
@@ -156,7 +156,7 @@ UNIT_TEST(MountingFileSystem, RenameDifferentFs) {
 
     EXPECT_FALSE(mfs1.exists("a"));
     EXPECT_TRUE(mfs2.exists("a"));
-    EXPECT_EQ(mfs2.read("a").string_view(), "123");
+    EXPECT_EQ(mfs2.read("a").str(), "123");
 }
 
 UNIT_TEST(MountingFileSystem, Binary) {

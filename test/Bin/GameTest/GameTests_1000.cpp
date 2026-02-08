@@ -18,6 +18,7 @@
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 #include "Engine/Resources/LOD.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -282,7 +283,7 @@ GAME_TEST(Issues, Issue1226b) {
     test.startTaping();
 
     NPCData &dragon = pNPCStats->pNPCData[57];
-    dragon.uFlags |= NPC_HIRED;
+    dragon.flags |= NPC_HIRED;
     pParty->pHirelings[1] = dragon;
     pParty->pHireling2Name = dragon.name;
     game.tick(1);
@@ -309,7 +310,7 @@ GAME_TEST(Issues, Issue1226c) {
 
 GAME_TEST(Issues, Issue1251a) {
     // Part A - test that wand damage matches vanilla damage should be in range (d6 per skill) 8-48 for novice 8 fireball wand
-    auto dragonhealth = tapes.custom([] { return pActors[0].currentHP; });
+    auto dragonhealth = tapes.custom([] { return pActors[0].hp; });
     test.playTraceFromTestData("issue_1251a.mm7", "issue_1251a.json");
 
     auto damageRange = dragonhealth.reverse().adjacentDeltas().minMax();
@@ -516,9 +517,9 @@ GAME_TEST(Issues, Issue1340) {
     auto screenTape = tapes.screen();
     test.playTraceFromTestData("issue_1340.mm7", "issue_1340.json", [] {
         // Harmondale should not have been visited - check that the dlv data is the same as what's in games.lod.
-        Blob saveHarmondale = pSave_LOD->read("d29.dlv");
+        const Blob &saveHarmondale = pMapDeltas.at("d29.dlv");
         Blob origHarmondale = pGames_LOD->read("d29.dlv");
-        EXPECT_EQ(saveHarmondale.string_view(), origHarmondale.string_view());
+        EXPECT_EQ(saveHarmondale.str(), origHarmondale.str());
     });
 
     // Emerald Isle -> Castle Harmondale. Map change is important because we want to trigger map respawn on first visit.

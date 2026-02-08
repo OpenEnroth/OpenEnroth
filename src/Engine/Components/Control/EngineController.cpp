@@ -223,7 +223,7 @@ Blob EngineController::saveGame() {
     // the control thread. One option is to unbind every time we switch to control thread, but this is slow, and not
     // needed 99% of the time. So we just call back into the game thread.
     Blob result;
-    runGameRoutine([&] { result = CreateSaveData(false, "").second; });
+    runGameRoutine([&] { result = createSaveData(false, "").second; });
     return result;
 }
 
@@ -286,9 +286,9 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
 
     actor->name = pMonsterStats->infos[id].name;
     actor->attributes |= ACTOR_AGGRESSOR; // Make the monster unconditionally hostile.
-    actor->currentHP = pMonsterStats->infos[id].hp;
+    actor->hp = pMonsterStats->infos[id].hp;
     actor->monsterInfo = pMonsterStats->infos[id];
-    actor->word_000086_some_monster_id = id;
+    actor->monsterId = id;
     actor->radius = pMonsterList->monsters[id].monsterRadius;
     actor->height = pMonsterList->monsters[id].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;

@@ -74,7 +74,7 @@ GAME_TEST(Issues, Issue504) {
     // Going to prison doesn't recharge hirelings.
     auto yearsTape = tapes.custom([] { return pParty->GetPlayingTime().toYears(); });
     auto heroismTape = tapes.custom([] { return pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active(); });
-    auto castsTape = tapes.custom([] { return pParty->pHirelings[0].bHasUsedTheAbility; });
+    auto castsTape = tapes.custom([] { return pParty->pHirelings[0].hasUsedAbility; });
     test.playTraceFromTestData("issue_504.mm7", "issue_504.json");
     EXPECT_EQ(yearsTape.delta(), +1); // A year spent in prison.
     EXPECT_EQ(heroismTape, tape(false, true, false, true)); // Two casts, before & after prison.

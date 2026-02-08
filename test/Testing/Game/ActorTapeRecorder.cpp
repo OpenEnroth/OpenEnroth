@@ -19,7 +19,7 @@ TestTape<int> ActorTapeRecorder::totalHp() {
     return _controller->recordTape([] {
         int result = 0;
         for (const Actor &actor : pActors)
-            result += std::max(0, static_cast<int>(actor.currentHP));
+            result += std::max(0, static_cast<int>(actor.hp));
         return result;
     });
 }
@@ -55,11 +55,11 @@ TestMultiTape<int> ActorTapeRecorder::indicesByState(AIState state) {
 }
 
 TestTape<int> ActorTapeRecorder::hp(int actorIndex) {
-    return custom(actorIndex, std::bind<int>(&Actor::currentHP, _1));
+    return custom(actorIndex, std::bind<int>(&Actor::hp, _1));
 }
 
 TestMultiTape<int> ActorTapeRecorder::hps(std::initializer_list<int> actorIndices) {
-    return custom(actorIndices, std::bind<int>(&Actor::currentHP, _1));
+    return custom(actorIndices, std::bind<int>(&Actor::hp, _1));
 }
 
 TestTape<AIState> ActorTapeRecorder::aiState(int actorIndex) {

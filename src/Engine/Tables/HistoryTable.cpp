@@ -13,7 +13,7 @@ HistoryTable *pHistoryTable;
 
 //----- (00453E6D) --------------------------------------------------------
 void HistoryTable::Initialize(const Blob &history) {
-    std::string txtRaw(history.string_view());
+    std::string txtRaw(history.str());
     strtok(txtRaw.data(), "\r");
 
     historyLines[0].pText = "";

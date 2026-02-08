@@ -79,9 +79,9 @@ bool Chest::open(int uChestID, Pid objectPid) {
                     Vec3f(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             } else if (objectPid.type() == OBJECT_Face) {
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    objectPos = pOutdoor->face(objectPid).pBoundingBox.center();
+                    objectPos = pOutdoor->face(objectPid).boundingBox.center();
                 } else {
-                    objectPos = pIndoor->pFaces[objId].pBounding.center();
+                    objectPos = pIndoor->faces[objId].pBounding.center();
                 }
             }
 
@@ -383,13 +383,13 @@ void UpdateChestPositions() {
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         for (const BSPModel &model : pOutdoor->pBModels)
-            for (const ODMFace &face : model.pFaces)
-                if (face.sCogTriggeredID)
-                    processEvent(face.sCogTriggeredID, face.pBoundingBox.center());
+            for (const ODMFace &face : model.faces)
+                if (face.eventId)
+                    processEvent(face.eventId, face.boundingBox.center());
     } else {
-        for (const BLVFace &face : pIndoor->pFaces)
+        for (const BLVFace &face : pIndoor->faces)
             if (face.uFaceExtraID)
-                if (int eventId = pIndoor->pFaceExtras[face.uFaceExtraID].uEventID)
+                if (int eventId = pIndoor->faceExtras[face.uFaceExtraID].uEventID)
                     processEvent(eventId, face.pBounding.center());
     }
 

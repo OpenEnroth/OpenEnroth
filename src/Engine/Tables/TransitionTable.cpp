@@ -16,7 +16,7 @@ void initializeTransitions(const Blob &transitions) {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw(transitions.string_view());
+    std::string txtRaw(transitions.str());
     strtok(txtRaw.data(), "\r");
 
     pTransitionStrings[0] = "";

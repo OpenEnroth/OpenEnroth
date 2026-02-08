@@ -162,7 +162,7 @@ class Blob final {
         return !empty();
     }
 
-    [[nodiscard]] std::string_view string_view() const {
+    [[nodiscard]] std::string_view str() const {
         return {static_cast<const char *>(_data), _size};
     }
 

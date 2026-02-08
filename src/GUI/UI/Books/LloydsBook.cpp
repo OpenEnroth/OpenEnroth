@@ -192,7 +192,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
         LloydBeacon &beacon = *character.vBeacons[beaconId];
         if (engine->_currentLoadedMapId != beacon.mapId) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
-            AutoSave();
+            autoSave();
             onMapLeave();
             engine->_transitionMapId = beacon.mapId;
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;

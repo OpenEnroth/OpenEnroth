@@ -439,10 +439,10 @@ void SpellBuff::Reset() {
     power = 0;
     expireTime = Time();
     caster = 0;
-    isGMBuff = false;
-    if (overlayID) {
-        pActiveOverlayList->pOverlays[overlayID - 1].Reset();
-        overlayID = 0;
+    isGM = false;
+    if (overlayId) {
+        pActiveOverlayList->pOverlays[overlayId - 1].Reset();
+        overlayId = 0;
     }
 }
 
@@ -451,7 +451,7 @@ bool SpellBuff::IsBuffExpiredToTime(Time time) {
         expireTime.SetExpired();
         power = 0;
         skillMastery = MASTERY_NONE;
-        overlayID = 0;
+        overlayId = 0;
         return true;
     }
     return false;
@@ -470,11 +470,11 @@ bool SpellBuff::Apply(Time expire_time, Mastery uSkillMastery,
     this->skillMastery = uSkillMastery;
     this->power = uPower;
     this->expireTime = expire_time;
-    if (this->overlayID && this->overlayID != uOverlayID) {
-        pActiveOverlayList->pOverlays[this->overlayID - 1].Reset();
-        this->overlayID = 0;
+    if (this->overlayId && this->overlayId != uOverlayID) {
+        pActiveOverlayList->pOverlays[this->overlayId - 1].Reset();
+        this->overlayId = 0;
     }
-    this->overlayID = uOverlayID;
+    this->overlayId = uOverlayID;
     this->caster = caster;
 
     return true;
@@ -495,7 +495,7 @@ void SpellStats::Initialize(const Blob &spells) {
 
     char *test_string;
 
-    std::string txtRaw(spells.string_view());
+    std::string txtRaw(spells.str());
 
     strtok(txtRaw.data(), "\r");
     for (SpellId uSpellID : allRegularSpells()) {
@@ -856,9 +856,9 @@ void armageddonProgress() {
 
         int incomingDamage = actor.CalcMagicalDamageToActor(DAMAGE_MAGIC, outgoingDamage);
         if (incomingDamage > 0) {
-            actor.currentHP -= incomingDamage;
+            actor.hp -= incomingDamage;
 
-            if (actor.currentHP >= 0) {
+            if (actor.hp >= 0) {
                 Actor::AI_Stun(actor.id, Pid::character(0), 0);
             } else {
                 Actor::Die(actor.id);

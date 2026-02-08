@@ -35,7 +35,7 @@ UNIT_TEST(EmbeddedFileSystem, Read) {
     const char *needle = "123456789012345678901234567890";
 
     Blob data = fs.read("Tests/EmbeddedFileSystem_ut.cpp");
-    EXPECT_CONTAINS(data.string_view(), needle);
+    EXPECT_CONTAINS(data.str(), needle);
 
     std::unique_ptr<InputStream> input = fs.openForReading("Tests/EmbeddedFileSystem_ut.cpp");
     EXPECT_CONTAINS(input->readAll(), needle);

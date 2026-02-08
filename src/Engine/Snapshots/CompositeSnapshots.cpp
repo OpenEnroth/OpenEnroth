@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <tuple>
+#include <utility>
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -26,17 +27,23 @@
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Lod/LodWriter.h"
 #include "Library/Lod/LodReader.h"
+#include "Library/Lod/LodEnums.h"
+#include "Library/Image/Pcx.h"
+
+#include "Utility/Streams/BlobOutputStream.h"
+
+#include "Engine/Graphics/Image.h"
 
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
-    reconstruct(src.vertices, &dst->pVertices);
-    reconstruct(src.faces, &dst->pFaces);
+    reconstruct(src.vertices, &dst->vertices);
+    reconstruct(src.faces, &dst->faces);
 
-    reconstruct(src.faceData, &dst->pLFaces);
+    reconstruct(src.faceData, &dst->faceData);
 
-    for (size_t i = 0, j = 0; i < dst->pFaces.size(); ++i) {
-        BLVFace *pFace = &dst->pFaces[i];
+    for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
+        BLVFace *pFace = &dst->faces[i];
 
-        pFace->pVertexIDs = dst->pLFaces.data() + j;
+        pFace->pVertexIDs = dst->faceData.data() + j;
         j += pFace->uNumVertices + 1;
 
         // Skipping pXInterceptDisplacements.
@@ -48,29 +55,29 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         // Skipping pZInterceptDisplacements.
         j += pFace->uNumVertices + 1;
 
-        pFace->pVertexUIDs = dst->pLFaces.data() + j;
+        pFace->pVertexUs = dst->faceData.data() + j;
         j += pFace->uNumVertices + 1;
 
-        pFace->pVertexVIDs = dst->pLFaces.data() + j;
+        pFace->pVertexVs = dst->faceData.data() + j;
         j += pFace->uNumVertices + 1;
 
-        assert(j <= dst->pLFaces.size());
+        assert(j <= dst->faceData.size());
     }
 
     // Face plane normals have come from fixed point values - recalculate them.
-    for (auto& face : dst->pFaces) {
+    for (auto& face : dst->faces) {
         if (face.uNumVertices < 3) continue;
-        Vec3f dir1 = (dst->pVertices[face.pVertexIDs[1]] - dst->pVertices[face.pVertexIDs[0]]);
+        Vec3f dir1 = (dst->vertices[face.pVertexIDs[1]] - dst->vertices[face.pVertexIDs[0]]);
         int i = 2;
         // dir1 can be a 0 vec when first edge is degenerate - skip forwards
         while (dir1.length() < 1e-6f && i < face.uNumVertices) {
-            dir1 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[i-1]]);
+            dir1 = (dst->vertices[face.pVertexIDs[i]] - dst->vertices[face.pVertexIDs[i-1]]);
             i++;
         }
 
         Vec3f dir2, recalcNorm;
         for (; i < face.uNumVertices; i++) {
-            dir2 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[0]]);
+            dir2 = (dst->vertices[face.pVertexIDs[i]] - dst->vertices[face.pVertexIDs[0]]);
             if (recalcNorm = cross(dir1, dir2); recalcNorm.length() > 1e-6f) {
                 recalcNorm /= recalcNorm.length();
                 // Check that our new normal is pointing in the same direction as the original
@@ -87,33 +94,33 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         } else {
             face.facePlane.normal = recalcNorm;
         }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.pVertexIDs[0]]);
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.pVertexIDs[0]]);
         face.zCalc.init(face.facePlane);
     }
 
-    for (size_t i = 0; i < dst->pFaces.size(); ++i) {
-        BLVFace *pFace = &dst->pFaces[i];
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
+        BLVFace *pFace = &dst->faces[i];
 
         std::string texName;
         reconstruct(src.faceTextures[i], &texName);
         pFace->SetTexture(texName);
     }
 
-    reconstruct(src.faceExtras, &dst->pFaceExtras);
+    reconstruct(src.faceExtras, &dst->faceExtras);
 
     std::string textureName;
-    for (unsigned i = 0; i < dst->pFaceExtras.size(); ++i) {
+    for (unsigned i = 0; i < dst->faceExtras.size(); ++i) {
         reconstruct(src.faceExtraTextures[i], &textureName);
 
         if (textureName.empty())
-            dst->pFaceExtras[i].uAdditionalBitmapID = -1;
+            dst->faceExtras[i].uAdditionalBitmapID = -1;
         else
-            dst->pFaceExtras[i].uAdditionalBitmapID = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
+            dst->faceExtras[i].uAdditionalBitmapID = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
     }
 
-    for (size_t i = 0; i < dst->pFaces.size(); ++i) {
-        BLVFace *pFace = &dst->pFaces[i];
-        BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
+        BLVFace *pFace = &dst->faces[i];
+        BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->uFaceExtraID];
 
         if (pFaceExtra->uEventID) {
             if (pFaceExtra->HasEventHint())
@@ -123,51 +130,48 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    reconstruct(src.sectors, &dst->pSectors);
-    reconstruct(src.sectorData, &dst->ptr_0002B0_sector_rdata);
+    reconstruct(src.sectors, &dst->sectors);
+    reconstruct(src.sectorData, &dst->sectorData);
 
-    for (size_t i = 0, j = 0; i < dst->pSectors.size(); ++i) {
-        BLVSector *pSector = &dst->pSectors[i];
+    for (size_t i = 0, j = 0; i < dst->sectors.size(); ++i) {
+        BLVSector *pSector = &dst->sectors[i];
 
-        pSector->pFloors = dst->ptr_0002B0_sector_rdata.data() + j;
-        j += pSector->uNumFloors;
+        pSector->floors = dst->sectorData.data() + j;
+        j += pSector->numFloors;
 
-        pSector->pWalls = dst->ptr_0002B0_sector_rdata.data() + j;
-        j += pSector->uNumWalls;
+        pSector->walls = dst->sectorData.data() + j;
+        j += pSector->numWalls;
 
-        pSector->pCeilings = dst->ptr_0002B0_sector_rdata.data() + j;
-        j += pSector->uNumCeilings;
+        pSector->ceilings = dst->sectorData.data() + j;
+        j += pSector->numCeilings;
 
-        pSector->pFluids = dst->ptr_0002B0_sector_rdata.data() + j;
-        j += pSector->uNumFluids;
+        // Fluids came next in original binary, but we dropped them.
 
-        pSector->pPortals = dst->ptr_0002B0_sector_rdata.data() + j;
-        j += pSector->uNumPortals;
+        pSector->portals = dst->sectorData.data() + j;
+        j += pSector->numPortals;
 
-        pSector->pFaceIDs = dst->ptr_0002B0_sector_rdata.data() + j;
-        j += pSector->uNumFaces;
+        pSector->faceIds = dst->sectorData.data() + j;
+        j += pSector->numFaces;
 
-        pSector->pCogs = dst->ptr_0002B0_sector_rdata.data() + j;
-        j += pSector->uNumCogs;
+        // Cogs came next in original binary, but we dropped them.
 
-        pSector->pDecorationIDs = dst->ptr_0002B0_sector_rdata.data() + j;
-        j += pSector->uNumDecorations;
+        pSector->decorationIds = dst->sectorData.data() + j;
+        j += pSector->numDecorations;
 
-        pSector->pMarkers = dst->ptr_0002B0_sector_rdata.data() + j;
-        j += pSector->uNumMarkers;
+        // Markers came next in original binary, but we dropped them.
 
-        assert(j <= dst->ptr_0002B0_sector_rdata.size());
+        assert(j <= dst->sectorData.size());
     }
 
-    reconstruct(src.sectorLightData, &dst->ptr_0002B8_sector_lrdata);
+    reconstruct(src.sectorLightData, &dst->sectorLightData);
 
-    for (unsigned i = 0, j = 0; i < dst->pSectors.size(); ++i) {
-        BLVSector *pSector = &dst->pSectors[i];
+    for (unsigned i = 0, j = 0; i < dst->sectors.size(); ++i) {
+        BLVSector *pSector = &dst->sectors[i];
 
-        pSector->pLights = dst->ptr_0002B8_sector_lrdata.data() + j;
-        j += pSector->uNumLights;
+        pSector->lights = dst->sectorLightData.data() + j;
+        j += pSector->numLights;
 
-        assert(j <= dst->ptr_0002B8_sector_lrdata.size());
+        assert(j <= dst->sectorLightData.size());
     }
 
     reconstruct(src.decorations, &pLevelDecorations);
@@ -178,23 +182,23 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(decorationName);
     }
 
-    reconstruct(src.lights, &dst->pLights);
-    reconstruct(src.bspNodes, &dst->pNodes);
+    reconstruct(src.lights, &dst->lights);
+    reconstruct(src.bspNodes, &dst->nodes);
     reconstruct(src.spawnPoints, &dst->pSpawnPoints);
-    reconstruct(src.mapOutlines, &dst->pMapOutlines);
+    reconstruct(src.mapOutlines, &dst->mapOutlines);
 }
 
 void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
     deserialize(src, &dst->header);
     deserialize(src, &dst->vertices);
     deserialize(src, &dst->faces);
-    deserialize(src, &dst->faceData, tags::presized(dst->header.uFaces_fdata_Size / sizeof(uint16_t)));
+    deserialize(src, &dst->faceData, tags::presized(dst->header.faceDataSizeBytes / sizeof(uint16_t)));
     deserialize(src, &dst->faceTextures, tags::presized(dst->faces.size()));
     deserialize(src, &dst->faceExtras);
     deserialize(src, &dst->faceExtraTextures, tags::presized(dst->faceExtras.size()));
     deserialize(src, &dst->sectors);
-    deserialize(src, &dst->sectorData, tags::presized(dst->header.uSector_rdata_Size / sizeof(uint16_t)));
-    deserialize(src, &dst->sectorLightData, tags::presized(dst->header.uSector_lrdata_Size / sizeof(uint16_t)));
+    deserialize(src, &dst->sectorData, tags::presized(dst->header.sectorDataSizeBytes / sizeof(uint16_t)));
+    deserialize(src, &dst->sectorLightData, tags::presized(dst->header.sectorLightDataSizeBytes / sizeof(uint16_t)));
     deserialize(src, &dst->doorCount);
     deserialize(src, &dst->decorations);
     deserialize(src, &dst->decorationNames, tags::presized(dst->decorations.size()));
@@ -206,7 +210,7 @@ void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
 
 void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     snapshot(src.dlv, &dst->header.info);
-    dst->header.totalFacesCount = src.pFaces.size();
+    dst->header.totalFacesCount = src.faces.size();
     dst->header.bmodelCount = 0;
     dst->header.decorationCount = pLevelDecorations.size();
 
@@ -214,7 +218,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
 
     // Symmetric to what's happening in reconstruct - not all of the attributes need to be saved in a delta.
     dst->faceAttributes.clear();
-    for (const BLVFace &pFace : pIndoor->pFaces)
+    for (const BLVFace &pFace : pIndoor->faces)
         dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes & ~(FACE_HAS_EVENT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
@@ -224,8 +228,8 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     snapshot(pActors, &dst->actors);
     snapshot(pSpriteObjects, &dst->spriteObjects);
     snapshot(vChests, &dst->chests);
-    snapshot(src.pDoors, &dst->doors);
-    snapshot(src.ptr_0002B4_doors_ddata, &dst->doorsData);
+    snapshot(src.doors, &dst->doors);
+    snapshot(src.doorsData, &dst->doorsData);
     snapshot(engine->_persistentVariables, &dst->eventVariables);
     snapshot(src.stru1, &dst->locationTime);
 }
@@ -234,15 +238,15 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.header.info, &dst->dlv); // XXX
     reconstruct(src.visibleOutlines, &dst->_visible_outlines);
 
-    for (size_t i = 0; i < dst->pMapOutlines.size(); ++i) {
-        BLVMapOutline *pVertex = &dst->pMapOutlines[i];
+    for (size_t i = 0; i < dst->mapOutlines.size(); ++i) {
+        BLVMapOutline *pVertex = &dst->mapOutlines[i];
         if ((uint8_t)(1 << (7 - i % 8)) & dst->_visible_outlines[i / 8])
             pVertex->uFlags |= 1;
     }
 
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
-    for (BLVFace &face : dst->pFaces) {
+    for (BLVFace &face : dst->faces) {
         face.uAttributes &= FACE_ANIMATED | FACE_HAS_EVENT;
         face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_ANIMATED);
     }
@@ -267,45 +271,45 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0; i < src.chests.size(); ++i)
         reconstruct(src.chests[i], &vChests[i], tags::context<int>(i));
 
-    reconstruct(src.doors, &dst->pDoors);
-    reconstruct(src.doorsData, &dst->ptr_0002B4_doors_ddata);
+    reconstruct(src.doors, &dst->doors);
+    reconstruct(src.doorsData, &dst->doorsData);
 
-    for (unsigned i = 0, j = 0; i < dst->pDoors.size(); ++i) {
-        BLVDoor *pDoor = &dst->pDoors[i];
+    for (unsigned i = 0, j = 0; i < dst->doors.size(); ++i) {
+        BLVDoor *pDoor = &dst->doors[i];
 
-        pDoor->pVertexIDs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumVertices;
+        pDoor->pVertexIDs = dst->doorsData.data() + j;
+        j += pDoor->numVertices;
 
-        pDoor->pFaceIDs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumFaces;
+        pDoor->pFaceIDs = dst->doorsData.data() + j;
+        j += pDoor->numFaces;
 
-        pDoor->pSectorIDs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumSectors;
+        pDoor->pSectorIDs = dst->doorsData.data() + j;
+        j += pDoor->numSectors;
 
-        pDoor->pDeltaUs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumFaces;
+        pDoor->pDeltaUs = dst->doorsData.data() + j;
+        j += pDoor->numFaces;
 
-        pDoor->pDeltaVs = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumFaces;
+        pDoor->pDeltaVs = dst->doorsData.data() + j;
+        j += pDoor->numFaces;
 
-        pDoor->pXOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumOffsets;
+        pDoor->pXOffsets = dst->doorsData.data() + j;
+        j += pDoor->numOffsets;
 
-        pDoor->pYOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumOffsets;
+        pDoor->pYOffsets = dst->doorsData.data() + j;
+        j += pDoor->numOffsets;
 
-        pDoor->pZOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
-        j += pDoor->uNumOffsets;
+        pDoor->pZOffsets = dst->doorsData.data() + j;
+        j += pDoor->numOffsets;
 
-        assert(j <= dst->ptr_0002B4_doors_ddata.size());
+        assert(j <= dst->doorsData.size());
     }
 
-    for (size_t i = 0; i < dst->pDoors.size(); ++i) {
-        BLVDoor *pDoor = &dst->pDoors[i];
+    for (size_t i = 0; i < dst->doors.size(); ++i) {
+        BLVDoor *pDoor = &dst->doors[i];
 
-        for (unsigned j = 0; j < pDoor->uNumFaces; ++j) {
-            BLVFace *pFace = &dst->pFaces[pDoor->pFaceIDs[j]];
-            BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
+        for (unsigned j = 0; j < pDoor->numFaces; ++j) {
+            BLVFace *pFace = &dst->faces[pDoor->pFaceIDs[j]];
+            BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->uFaceExtraID];
 
             pDoor->pDeltaUs[j] = pFaceExtra->sTextureDeltaU;
             pDoor->pDeltaVs[j] = pFaceExtra->sTextureDeltaV;
@@ -339,7 +343,7 @@ void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocati
     deserialize(src, &dst->spriteObjects);
     deserialize(src, &dst->chests);
     deserialize(src, &dst->doors, tags::presized(ctx->doorCount));
-    deserialize(src, &dst->doorsData, tags::presized(ctx->header.uDoors_ddata_Size / sizeof(int16_t)));
+    deserialize(src, &dst->doorsData, tags::presized(ctx->header.doorsDataSizeBytes / sizeof(int16_t)));
     deserialize(src, &dst->eventVariables);
     deserialize(src, &dst->locationTime);
 }
@@ -348,72 +352,62 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     const auto &[srcData, srcExtras] = src;
 
     // dst->index is set externally.
-    reconstruct(srcData.pModelName, &dst->pModelName);
-    reconstruct(srcData.pModelName2, &dst->pModelName2);
     dst->field_40 = srcData.field_40;
-    dst->sCenterX = srcData.sCenterX;
-    dst->sCenterY = srcData.sCenterY;
-    dst->vPosition = srcData.vPosition.toFloat();
-    dst->pBoundingBox.x1 = srcData.sMinX;
-    dst->pBoundingBox.y1 = srcData.sMinY;
-    dst->pBoundingBox.z1 = srcData.sMinZ;
-    dst->pBoundingBox.x2 = srcData.sMaxX;
-    dst->pBoundingBox.y2 = srcData.sMaxY;
-    dst->pBoundingBox.z2 = srcData.sMaxZ;
-    dst->sSomeOtherMinX = srcData.sSomeOtherMinX;
-    dst->sSomeOtherMinY = srcData.sSomeOtherMinY;
-    dst->sSomeOtherMinZ = srcData.sSomeOtherMinZ;
-    dst->sSomeOtherMaxX = srcData.sSomeOtherMaxX;
-    dst->sSomeOtherMaxY = srcData.sSomeOtherMaxY;
-    dst->sSomeOtherMaxZ = srcData.sSomeOtherMaxZ;
-    dst->vBoundingCenter = srcData.vBoundingCenter.toFloat();
-    dst->sBoundingRadius = srcData.sBoundingRadius;
+    dst->position = srcData.position.toFloat();
+    dst->boundingBox.x1 = srcData.minX;
+    dst->boundingBox.y1 = srcData.minY;
+    dst->boundingBox.z1 = srcData.minZ;
+    dst->boundingBox.x2 = srcData.maxX;
+    dst->boundingBox.y2 = srcData.maxY;
+    dst->boundingBox.z2 = srcData.maxZ;
+    dst->boundingCenter = srcData.boundingCenter.toFloat();
+    dst->boundingRadius = srcData.boundingRadius;
 
-    reconstruct(srcExtras.vertices, &dst->pVertices);
-    reconstruct(srcExtras.faces, &dst->pFaces);
+    reconstruct(srcExtras.vertices, &dst->vertices);
+    reconstruct(srcExtras.faces, &dst->faces);
 
     // TODO(pskelton): This code is common to ODM/BLV faces
     // Face plane normals have come from fixed point values - recalculate them.
-    for (auto& face : dst->pFaces) {
-        if (face.uNumVertices < 3) continue;
-        Vec3f dir1 = (dst->pVertices[face.pVertexIDs[1]] - dst->pVertices[face.pVertexIDs[0]]);
+    for (auto& face : dst->faces) {
+        if (face.numVertices < 3) continue;
+        Vec3f dir1 = (dst->vertices[face.vertexIds[1]] - dst->vertices[face.vertexIds[0]]);
         Vec3f dir2, norm;
         int i = 2;
-        for (; i < face.uNumVertices; i++) {
-            dir2 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[0]]);
+        for (; i < face.numVertices; i++) {
+            dir2 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[0]]);
             if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
                 break; // Found a non-parallel edge.
             }
         }
 
-        if (i == face.uNumVertices) {
+        if (i == face.numVertices) {
             // If we didn't find a non-parallel edge, lets just round what were given.
             // TODO(pskelton):  This shouldnt ever happen - test and drop
             face.facePlane.normal /= face.facePlane.normal.length();
         } else {
             face.facePlane.normal = norm / norm.length();
         }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.pVertexIDs[0]]);
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.vertexIds[0]]);
         face.zCalc.init(face.facePlane);
     }
 
-    for (size_t i = 0; i < dst->pFaces.size(); i++)
-        dst->pFaces[i].index = i;
+    for (size_t i = 0; i < dst->faces.size(); i++)
+        dst->faces[i].index = i;
 
-    dst->pFacesOrdering = srcExtras.faceOrdering;
+    dst->facesOrdering = srcExtras.faceOrdering;
 
-    reconstruct(srcExtras.bspNodes, &dst->pNodes);
+    reconstruct(srcExtras.bspNodes, &dst->nodes);
 
     std::string textureName;
-    for (size_t i = 0; i < dst->pFaces.size(); ++i) {
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
         reconstruct(srcExtras.faceTextures[i], &textureName);
-        dst->pFaces[i].SetTexture(textureName);
+        dst->faces[i].SetTexture(textureName);
 
-        if (dst->pFaces[i].sCogTriggeredID) {
-            if (dst->pFaces[i].HasEventHint())
-                dst->pFaces[i].uAttributes |= FACE_HAS_EVENT;
+        if (dst->faces[i].eventId) {
+            if (dst->faces[i].HasEventHint())
+                dst->faces[i].attributes |= FACE_HAS_EVENT;
             else
-                dst->pFaces[i].uAttributes &= ~FACE_HAS_EVENT;
+                dst->faces[i].attributes &= ~FACE_HAS_EVENT;
         }
     }
 }
@@ -473,8 +467,8 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
         reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model);
 
         // Recalculate bounding spheres, the ones stored in data files are borked.
-        model.vBoundingCenter = model.pBoundingBox.center().toFloat();
-        model.sBoundingRadius = model.pBoundingBox.size().toFloat().length() / 2.0f;
+        model.boundingCenter = model.boundingBox.center().toFloat();
+        model.boundingRadius = model.boundingBox.size().toFloat().length() / 2.0f;
     }
 
     reconstruct(src.decorations, &pLevelDecorations);
@@ -509,11 +503,11 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     dst->modelExtras.clear();
     for (const BSPModelData_MM7 &model : dst->models) {
         BSPModelExtras_MM7 &extra = dst->modelExtras.emplace_back();
-        deserialize(src, &extra.vertices, tags::presized(model.uNumVertices));
-        deserialize(src, &extra.faces, tags::presized(model.uNumFaces));
-        deserialize(src, &extra.faceOrdering, tags::presized(model.uNumFaces));
-        deserialize(src, &extra.bspNodes, tags::presized(model.uNumNodes));
-        deserialize(src, &extra.faceTextures, tags::presized(model.uNumFaces));
+        deserialize(src, &extra.vertices, tags::presized(model.numVertices));
+        deserialize(src, &extra.faces, tags::presized(model.numFaces));
+        deserialize(src, &extra.faceOrdering, tags::presized(model.numFaces));
+        deserialize(src, &extra.bspNodes, tags::presized(model.numNodes));
+        deserialize(src, &extra.faceTextures, tags::presized(model.numFaces));
     }
 
     deserialize(src, &dst->decorations);
@@ -527,7 +521,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     snapshot(src.ddm, &dst->header.info);
     dst->header.totalFacesCount = 0;
     for (const BSPModel &model : src.pBModels)
-        dst->header.totalFacesCount += model.pFaces.size();
+        dst->header.totalFacesCount += model.faces.size();
     dst->header.bmodelCount = src.pBModels.size();
     dst->header.decorationCount = pLevelDecorations.size();
 
@@ -537,8 +531,8 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - no all attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
-        for (const ODMFace &face : model.pFaces)
-            dst->faceAttributes.push_back(std::to_underlying(face.uAttributes & ~FACE_HAS_EVENT));
+        for (const ODMFace &face : model.faces)
+            dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~FACE_HAS_EVENT));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -559,9 +553,9 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
-        for (ODMFace &face : model.pFaces) {
-            face.uAttributes &= FACE_HAS_EVENT; // TODO(captainurist): skip FACE_TEXTURE_FRAME here too?
-            face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~FACE_HAS_EVENT;
+        for (ODMFace &face : model.faces) {
+            face.attributes &= FACE_HAS_EVENT; // TODO(captainurist): skip FACE_TEXTURE_FRAME here too?
+            face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~FACE_HAS_EVENT;
         }
     }
 
@@ -598,7 +592,7 @@ void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst) {
 void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx) {
     size_t totalFaces = 0;
     for (const BSPModelData_MM7 &model : ctx->models)
-        totalFaces += model.uNumFaces;
+        totalFaces += model.numFaces;
 
     deserialize(src, &dst->header);
     deserialize(src, &dst->fullyRevealedCells);
@@ -612,40 +606,130 @@ void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLoca
     deserialize(src, &dst->locationTime);
 }
 
-void snapshot(const SaveGameState &src, SaveGameState_MM7 *dst) {
+void snapshot(const SaveGame &src, SaveGame_MM7 *dst) {
     snapshot(src.header, &dst->header);
     snapshot(src.party, &dst->party);
     snapshot(src.eventTimer, &dst->eventTimer);
     snapshot(src.overlays, &dst->overlays);
     snapshot(src.npcData, &dst->npcData);
     snapshot(src.npcGroups, &dst->npcGroups);
+
+    // Share map deltas.
+    dst->mapDeltas.clear();
+    for (const auto &[key, value] : src.mapDeltas)
+        dst->mapDeltas[key] = Blob::share(value);
+
+    // Encode Lloyd's Beacon images from party.
+    dst->lloydImages.clear();
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (!src.party.pCharacters[i].vBeacons[j])
+                continue;
+            const LloydBeacon &beacon = *src.party.pCharacters[i].vBeacons[j];
+            if (beacon.uBeaconTime.isValid() && beacon.image != nullptr)
+                dst->lloydImages[{i, j}] = pcx::encode(beacon.image->rgba());
+        }
+    }
+
+    dst->thumbnail = Blob::share(src.thumbnail);
 }
 
-void reconstruct(const SaveGameState_MM7 &src, SaveGameState *dst) {
+void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
     reconstruct(src.header, &dst->header);
     reconstruct(src.party, &dst->party);
     reconstruct(src.eventTimer, &dst->eventTimer);
     reconstruct(src.overlays, &dst->overlays);
     reconstruct(src.npcData, &dst->npcData);
     reconstruct(src.npcGroups, &dst->npcGroups);
+
+    // Share map deltas.
+    dst->mapDeltas.clear();
+    for (const auto &[key, value] : src.mapDeltas)
+        dst->mapDeltas[key] = Blob::share(value);
+
+    // Decode Lloyd's Beacon images into party.
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (!dst->party.pCharacters[i].vBeacons[j])
+                continue;
+            LloydBeacon &beacon = *dst->party.pCharacters[i].vBeacons[j];
+            beacon.image = GraphicsImage::Create(pcx::decode(src.lloydImages.at({i, j})));
+        }
+    }
+
+    dst->thumbnail = Blob::share(src.thumbnail);
 }
 
-void serialize(const SaveGameState_MM7 &src, LodWriter *dst) {
-    dst->write("header.bin", toBlob(src.header));
-    dst->write("party.bin", toBlob(src.party));
-    dst->write("clock.bin", toBlob(src.eventTimer));
-    dst->write("overlay.bin", toBlob(src.overlays));
-    dst->write("npcdata.bin", toBlob(src.npcData));
-    dst->write("npcgroup.bin", toBlob(src.npcGroups));
+void serialize(const SaveGame_MM7 &src, Blob *dst) {
+    LodInfo lodInfo;
+    lodInfo.version = LOD_VERSION_MM7;
+    lodInfo.rootName = "chapter";
+    lodInfo.description = "newmaps for MMVII";
+
+    BlobOutputStream stream(dst);
+    LodWriter lodWriter(&stream, std::move(lodInfo));
+
+    lodWriter.write("header.bin", toBlob(src.header));
+    lodWriter.write("party.bin", toBlob(src.party));
+    lodWriter.write("clock.bin", toBlob(src.eventTimer));
+    lodWriter.write("overlay.bin", toBlob(src.overlays));
+    lodWriter.write("npcdata.bin", toBlob(src.npcData));
+    lodWriter.write("npcgroup.bin", toBlob(src.npcGroups));
+
+    for (const auto &[name, blob] : src.mapDeltas)
+        lodWriter.write(name, blob);
+
+    for (const auto &[key, blob] : src.lloydImages)
+        lodWriter.write(fmt::format("lloyd{}{}.pcx", key.first + 1, key.second + 1), blob);
+
+    lodWriter.write("image.pcx", src.thumbnail);
+
+    // Apparently vanilla had two bugs canceling each other out:
+    // 1. Broken binary search implementation when looking up LOD entries.
+    // 2. Writing additional duplicate entry at the end of a saves LOD file.
+    // Our code doesn't support duplicate entries, so we just add a dummy entry.
+    lodWriter.write("z.bin", Blob::fromString("dummy"));
+
+    lodWriter.close();
+    stream.close();
 }
 
-void deserialize(const LodReader &src, SaveGameState_MM7 *dst) {
-    deserialize(src.read("header.bin"), &dst->header);
-    deserialize(src.read("party.bin"), &dst->party);
-    deserialize(src.read("clock.bin"), &dst->eventTimer);
-    deserialize(src.read("overlay.bin"), &dst->overlays);
-    deserialize(src.read("npcdata.bin"), &dst->npcData);
-    deserialize(src.read("npcgroup.bin"), &dst->npcGroups);
+void deserialize(const Blob &src, SaveGame_MM7 *dst) {
+    LodReader lodReader(Blob::share(src), LOD_ALLOW_DUPLICATES);
+
+    deserialize(lodReader.read("header.bin"), &dst->header);
+    deserialize(lodReader.read("party.bin"), &dst->party);
+    deserialize(lodReader.read("clock.bin"), &dst->eventTimer);
+    deserialize(lodReader.read("overlay.bin"), &dst->overlays);
+    deserialize(lodReader.read("npcdata.bin"), &dst->npcData);
+    deserialize(lodReader.read("npcgroup.bin"), &dst->npcGroups);
+
+    dst->mapDeltas.clear();
+    for (const std::string &name : lodReader.ls())
+        if (name.ends_with(".ddm") || name.ends_with(".dlv"))
+            dst->mapDeltas[name] = lodReader.read(name);
+
+    dst->lloydImages.clear();
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 5; j++) {
+            std::string name = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
+            if (lodReader.exists(name))
+                dst->lloydImages[{i, j}] = lodReader.read(name);
+        }
+    }
+
+    dst->thumbnail = lodReader.read("image.pcx");
+}
+
+void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst) {
+    reconstruct(src.header, &dst->header);
+    dst->thumbnail = Blob::share(src.thumbnail);
+}
+
+void deserialize(const Blob &src, SaveGameLite_MM7 *dst) {
+    LodReader lodReader(Blob::share(src), LOD_ALLOW_DUPLICATES);
+    deserialize(lodReader.read("header.bin"), &dst->header);
+    dst->thumbnail = lodReader.read("image.pcx");
 }
 
 void reconstruct(const SpriteFrameTable_MM7 &src, SpriteFrameTable *dst) {

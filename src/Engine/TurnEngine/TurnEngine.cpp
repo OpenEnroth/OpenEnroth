@@ -912,7 +912,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
             }
             if (pActors[uActorID].monsterInfo.aiType == MONSTER_AI_NORMAL) {
                 if (((double)pActors[uActorID].monsterInfo.hp * 0.2) >
-                    (double)pActors[uActorID].currentHP &&
+                    (double)pActors[uActorID].hp &&
                     (v11 < 10240)) {
                     if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                         Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);
@@ -925,7 +925,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
             }
             if (pActors[uActorID].monsterInfo.aiType == MONSTER_AI_AGGRESSIVE) {
                 if (((double)pActors[uActorID].monsterInfo.hp * 0.1) >
-                    (double)pActors[uActorID].currentHP &&
+                    (double)pActors[uActorID].hp &&
                     (v11 < 10240)) {
                     if (pActors[uActorID].monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                         Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32_ticks, 0);

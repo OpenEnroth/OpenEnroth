@@ -633,7 +633,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
-    BLVFace *pFace = &pIndoor->pFaces[uFaceID];
+    BLVFace *pFace = &pIndoor->faces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
     // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
@@ -672,11 +672,11 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
 
     // copy to buff in
     for (unsigned i = 0; i < pFace->uNumVertices; ++i) {
-        originalVertices[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-        originalVertices[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-        originalVertices[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
-        originalVertices[i].u = (signed short)pFace->pVertexUIDs[i];
-        originalVertices[i].v = (signed short)pFace->pVertexVIDs[i];
+        originalVertices[i].vWorldPosition.x = pIndoor->vertices[pFace->pVertexIDs[i]].x;
+        originalVertices[i].vWorldPosition.y = pIndoor->vertices[pFace->pVertexIDs[i]].y;
+        originalVertices[i].vWorldPosition.z = pIndoor->vertices[pFace->pVertexIDs[i]].z;
+        originalVertices[i].u = (signed short)pFace->pVertexUs[i];
+        originalVertices[i].v = (signed short)pFace->pVertexVs[i];
     }
 
     // clip accurately to camera
@@ -1021,10 +1021,10 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 const auto &tile = pOutdoor->pTerrain.tileDataByGrid({x, y});
                 int tileunit = 0;
                 int tilelayer = 0;
-                bool isWater = (tile.name == "wtrtyl");
+                bool isWater = (tile.textureName == "wtrtyl");
 
                 // check if tile->name is already in list
-                auto mapiter = terraintexmap.find(tile.name);
+                auto mapiter = terraintexmap.find(tile.textureName);
                 if (mapiter != terraintexmap.end()) {
                     // if so, extract unit and layer
                     int unitlayer = mapiter->second;
@@ -1035,7 +1035,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     tilelayer = 0;
                 } else {
                     // else need to add it
-                    auto thistexture = assets->getBitmap(tile.name, tile.flags & TILE_GENERATED_TRANSITION);
+                    auto thistexture = assets->getBitmap(tile.textureName, tile.flags & TILE_GENERATED_TRANSITION);
                     int width = thistexture->width();
                     // check size to see what unit it needs
                     int i;
@@ -1057,7 +1057,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                         if (numterraintexloaded[i] < 256) {
                             // intsert into tex map
-                            terraintexmap.insert(std::make_pair(tile.name, encode));
+                            terraintexmap.insert(std::make_pair(tile.textureName, encode));
                             numterraintexloaded[i]++;
                         } else {
                             logger->warning("Texture layer full - draw terrain!");
@@ -2295,8 +2295,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             //int reachable;
             //if (IsBModelVisible(&model, &reachable)) {
             model.field_40 |= 1;
-            if (!model.pFaces.empty()) {
-                for (ODMFace &face : model.pFaces) {
+            if (!model.faces.empty()) {
+                for (ODMFace &face : model.faces) {
                     if (!face.Invisible()) {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
@@ -2321,22 +2321,22 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         int texlayer = 0;
                         int attribflags = 0;
 
-                        if (face.uAttributes & FACE_IsFluid)
+                        if (face.attributes & FACE_IsFluid)
                             attribflags |= 2;
-                        if (face.uAttributes & FACE_INDOOR_SKY)
+                        if (face.attributes & FACE_INDOOR_SKY)
                             attribflags |= 0x400;
 
-                        if (face.uAttributes & FACE_FlowDown)
+                        if (face.attributes & FACE_FlowDown)
                             attribflags |= 0x400;
-                        else if (face.uAttributes & FACE_FlowUp)
+                        else if (face.attributes & FACE_FlowUp)
                             attribflags |= 0x800;
 
-                        if (face.uAttributes & FACE_FlowRight)
+                        if (face.attributes & FACE_FlowRight)
                             attribflags |= 0x2000;
-                        else if (face.uAttributes & FACE_FlowLeft)
+                        else if (face.attributes & FACE_FlowLeft)
                             attribflags |= 0x1000;
 
-                        if (face.uAttributes & FACE_IsLava)
+                        if (face.attributes & FACE_IsLava)
                             attribflags |= 0x4000;
 
                         // loop while running down animlength with frame animtimes
@@ -2484,10 +2484,10 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             if (IsBModelVisible(&model, 256, &reachable)) {
                 //if (model.index == 35) continue;
                 model.field_40 |= 1;
-                if (!model.pFaces.empty()) {
-                    for (ODMFace &face : model.pFaces) {
+                if (!model.faces.empty()) {
+                    for (ODMFace &face : model.faces) {
                         if (!face.Invisible()) {
-                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]];
+                            array_73D150[0].vWorldPosition = model.vertices[face.vertexIds[0]];
 
                             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                                 int texunit = 0;
@@ -2520,36 +2520,36 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                                 int attribflags = 0;
 
-                                if (face.uAttributes & FACE_IsFluid)
+                                if (face.attributes & FACE_IsFluid)
                                     attribflags |= 2;
-                                if (face.uAttributes & FACE_INDOOR_SKY)
+                                if (face.attributes & FACE_INDOOR_SKY)
                                     attribflags |= 0x400;
 
-                                if (face.uAttributes & FACE_FlowDown)
+                                if (face.attributes & FACE_FlowDown)
                                     attribflags |= 0x400;
-                                else if (face.uAttributes & FACE_FlowUp)
+                                else if (face.attributes & FACE_FlowUp)
                                     attribflags |= 0x800;
 
-                                if (face.uAttributes & FACE_FlowRight)
+                                if (face.attributes & FACE_FlowRight)
                                     attribflags |= 0x2000;
-                                else if (face.uAttributes & FACE_FlowLeft)
+                                else if (face.attributes & FACE_FlowLeft)
                                     attribflags |= 0x1000;
 
-                                if (face.uAttributes & FACE_IsLava)
+                                if (face.attributes & FACE_IsLava)
                                     attribflags |= 0x4000;
 
-                                if (face.uAttributes & FACE_OUTLINED || (face.uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
+                                if (face.attributes & FACE_OUTLINED || (face.attributes & FACE_IsSecret) && engine->is_saturate_faces)
                                     attribflags |= 0x00010000;
 
                                 // load up verts here
-                                for (int z = 0; z < (face.uNumVertices - 2); z++) {
+                                for (int z = 0; z < (face.numVertices - 2); z++) {
                                     // 123, 134, 145, 156..
 
                                     // copy first
                                     ShaderVertex &v0 = _outbuildVertices[texunit].emplace_back();
-                                    v0.pos = model.pVertices[face.pVertexIDs[0]];
-                                    v0.texuv = Vec2f(face.pTextureUIDs[0] + face.sTextureDeltaU,
-                                                     face.pTextureVIDs[0] + face.sTextureDeltaV);
+                                    v0.pos = model.vertices[face.vertexIds[0]];
+                                    v0.texuv = Vec2f(face.textureUs[0] + face.textureDeltaU,
+                                                     face.textureVs[0] + face.textureDeltaV);
                                     v0.texturelayer = texlayer;
                                     v0.normal = face.facePlane.normal;
                                     v0.attribs = attribflags;
@@ -2557,9 +2557,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                     // copy other two (z+1)(z+2)
                                     for (unsigned i = 1; i < 3; ++i) {
                                         ShaderVertex &v = _outbuildVertices[texunit].emplace_back();
-                                        v.pos = model.pVertices[face.pVertexIDs[z + i]];
-                                        v.texuv = Vec2f(face.pTextureUIDs[z + i] + face.sTextureDeltaU,
-                                                        face.pTextureVIDs[z + i] + face.sTextureDeltaV);
+                                        v.pos = model.vertices[face.vertexIds[z + i]];
+                                        v.texuv = Vec2f(face.textureUs[z + i] + face.textureDeltaU,
+                                                        face.textureVs[z + i] + face.textureDeltaV);
                                         v.texturelayer = texlayer;
                                         v.normal = face.facePlane.normal;
                                         v.attribs = attribflags;
@@ -2707,7 +2707,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     if (!decal_builder->bloodsplat_container->uNumBloodsplats) return;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (model.pFaces.empty()) {
+        if (model.faces.empty()) {
             continue;
         }
 
@@ -2715,14 +2715,14 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         bool found{ false };
         for (int splat = 0; splat < decal_builder->bloodsplat_container->uNumBloodsplats; ++splat) {
             Bloodsplat *thissplat = &decal_builder->bloodsplat_container->pBloodsplats_to_apply[splat];
-            if (model.pBoundingBox.intersectsCube(thissplat->pos, thissplat->radius)) {
+            if (model.boundingBox.intersectsCube(thissplat->pos, thissplat->radius)) {
                 found = true;
                 break;
             }
         }
         if (!found) continue;
 
-        for (ODMFace &face : model.pFaces) {
+        for (ODMFace &face : model.faces) {
             if (face.Invisible()) {
                 continue;
             }
@@ -2730,16 +2730,16 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x + face.facePlane.normal.y * pOutdoor->vSunlight.y + face.facePlane.normal.z * pOutdoor->vSunlight.z;
             int dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f1 + 0.5f)), 0, 31);
 
-            for (unsigned vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
+            for (unsigned vertex_id = 1; vertex_id <= face.numVertices; vertex_id++) {
                 array_73D150[vertex_id - 1].vWorldPosition.x =
-                    model.pVertices[face.pVertexIDs[vertex_id - 1]].x;
+                    model.vertices[face.vertexIds[vertex_id - 1]].x;
                 array_73D150[vertex_id - 1].vWorldPosition.y =
-                    model.pVertices[face.pVertexIDs[vertex_id - 1]].y;
+                    model.vertices[face.vertexIds[vertex_id - 1]].y;
                 array_73D150[vertex_id - 1].vWorldPosition.z =
-                    model.pVertices[face.pVertexIDs[vertex_id - 1]].z;
+                    model.vertices[face.vertexIds[vertex_id - 1]].z;
             }
 
-            for (int vertex_id = 0; vertex_id < face.uNumVertices; ++vertex_id) {
+            for (int vertex_id = 0; vertex_id < face.numVertices; ++vertex_id) {
                 memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
                 VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
             }
@@ -2749,7 +2749,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 decal_builder->BuildAndApplyDecals(
                     31 - dimming_level, LocationBuildings,
                     face.facePlane,
-                    face.uNumVertices, VertexRenderList, 0, -1);
+                    face.numVertices, VertexRenderList, 0, -1);
             }
         }
     }
@@ -2816,8 +2816,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
             }
 
 
-            for (int test = 0; test < pIndoor->pFaces.size(); test++) {
-                BLVFace *face = &pIndoor->pFaces[test];
+            for (int test = 0; test < pIndoor->faces.size(); test++) {
+                BLVFace *face = &pIndoor->faces[test];
 
                 if (face->isPortal())
                     continue;
@@ -2971,7 +2971,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             for (unsigned i = 0; i < pBspRenderer->num_faces; ++i) {
                 int uFaceID = pBspRenderer->faces[i].uFaceID;
-                BLVFace *face = &pIndoor->pFaces[uFaceID];
+                BLVFace *face = &pIndoor->faces[uFaceID];
 
                 float skymodtimex{};
                 float skymodtimey{};
@@ -3043,10 +3043,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                     // copy first
                     ShaderVertex &v0 = _bspVertices[texunit].emplace_back();
-                    v0.pos = pIndoor->pVertices[face->pVertexIDs[0]];
+                    v0.pos = pIndoor->vertices[face->pVertexIDs[0]];
                     // TODO(captainurist): adding in IDs below?
-                    v0.texuv = Vec2f(face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU,
-                                     face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV);
+                    v0.texuv = Vec2f(face->pVertexUs[0] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaU,
+                                     face->pVertexVs[0] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaV);
                     if (face->Indoor_sky()) {
                         v0.texuv.x = (skymodtimex + v0.texuv.x) * 0.25f;
                         v0.texuv.y = (skymodtimey + v0.texuv.y) * 0.25f;
@@ -3058,10 +3058,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     // copy other two (z+1)(z+2)
                     for (unsigned i = 1; i < 3; ++i) {
                         ShaderVertex &v = _bspVertices[texunit].emplace_back();
-                        v.pos = pIndoor->pVertices[face->pVertexIDs[z + i]];
+                        v.pos = pIndoor->vertices[face->pVertexIDs[z + i]];
                         // TODO(captainurist): adding in IDs???
-                        v.texuv = Vec2f(face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU,
-                                        face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV);
+                        v.texuv = Vec2f(face->pVertexUs[z + i] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaU,
+                                        face->pVertexVs[z + i] + pIndoor->faceExtras[face->uFaceExtraID].sTextureDeltaV);
                         if (face->Indoor_sky()) {
                             v.texuv.x = (skymodtimex + v.texuv.x) * 0.25f;
                             v.texuv.y = (skymodtimey + v.texuv.y) * 0.25f;
@@ -3119,8 +3119,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
         // lighting stuff
         int16_t mintest = 0;
-        for (int i = 0; i < pIndoor->pSectors.size(); i++) {
-            mintest = std::max(mintest, pIndoor->pSectors[i].uMinAmbientLightLevel);
+        for (int i = 0; i < pIndoor->sectors.size(); i++) {
+            mintest = std::max(mintest, pIndoor->sectors[i].minAmbientLightLevel);
         }
         int uCurrentAmbientLightLevel = (DEFAULT_AMBIENT_LIGHT_LEVEL + mintest);
         float ambient = (248.0f - (uCurrentAmbientLightLevel << 3)) / 255.0f;
@@ -3168,7 +3168,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             // does light sphere collide with current sector
             // expanded current sector
             bool fromexpanded{ false };
-            if (pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.intersectsCube(test.vPosition, test.uRadius)) {
+            if (pIndoor->sectors[pBLVRenderParams->uPartySectorID].boundingBox.intersectsCube(test.vPosition, test.uRadius)) {
                 onlist = true;
                 fromexpanded = true;
             }
@@ -3273,8 +3273,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
         static RenderVertexSoft static_vertices_buff_in[64];  // buff in
 
         // loop over faces
-        for (int test = 0; test < pIndoor->pFaces.size(); test++) {
-            BLVFace *pface = &pIndoor->pFaces[test];
+        for (int test = 0; test < pIndoor->faces.size(); test++) {
+            BLVFace *pface = &pIndoor->faces[test];
 
             if (pface->isPortal()) continue;
             // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
@@ -3298,13 +3298,13 @@ void OpenGLRenderer::DrawIndoorFaces() {
             // copy to buff in
             for (unsigned i = 0; i < pface->uNumVertices; ++i) {
                 static_vertices_buff_in[i].vWorldPosition.x =
-                    pIndoor->pVertices[pface->pVertexIDs[i]].x;
+                    pIndoor->vertices[pface->pVertexIDs[i]].x;
                 static_vertices_buff_in[i].vWorldPosition.y =
-                    pIndoor->pVertices[pface->pVertexIDs[i]].y;
+                    pIndoor->vertices[pface->pVertexIDs[i]].y;
                 static_vertices_buff_in[i].vWorldPosition.z =
-                    pIndoor->pVertices[pface->pVertexIDs[i]].z;
-                static_vertices_buff_in[i].u = (signed short)pface->pVertexUIDs[i];
-                static_vertices_buff_in[i].v = (signed short)pface->pVertexVIDs[i];
+                    pIndoor->vertices[pface->pVertexIDs[i]].z;
+                static_vertices_buff_in[i].u = pface->pVertexUs[i];
+                static_vertices_buff_in[i].v = pface->pVertexVs[i];
             }
 
             // blood draw

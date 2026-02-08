@@ -446,7 +446,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         }
         case EVENT_MoveNPC:
-            pNPCStats->pNPCData[ir.data.npc_move_descr.npc_id].Location2D = ir.data.npc_move_descr.location_id;
+            pNPCStats->pNPCData[ir.data.npc_move_descr.npc_id].house = ir.data.npc_move_descr.location_id;
             // TODO(Nik-RE-dev): Looks like it's artifact of MM6
 #if 0
             if (window_SpeakInHouse) {
@@ -508,9 +508,9 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             npcSetItem(ir.data.npc_item_descr.id, ir.data.npc_item_descr.item, ir.data.npc_item_descr.is_give);
             break;
         case EVENT_SetNPCGreeting:
-            pNPCStats->pNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_FIRST;
-            pNPCStats->pNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_SECOND;
-            pNPCStats->pNPCData[ir.data.npc_descr.npc_id].greet = ir.data.npc_descr.greeting;
+            pNPCStats->pNPCData[ir.data.npc_descr.npc_id].flags &= ~NPC_GREETED_FIRST;
+            pNPCStats->pNPCData[ir.data.npc_descr.npc_id].flags &= ~NPC_GREETED_SECOND;
+            pNPCStats->pNPCData[ir.data.npc_descr.npc_id].greetingIndex = ir.data.npc_descr.greeting;
             break;
         case EVENT_IsActorKilled:
             if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {

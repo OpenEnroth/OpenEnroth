@@ -84,6 +84,13 @@ void reconstruct(const Vec3i &src, Vec3f *dst);
 
 #pragma pack(push, 1)
 
+struct Pointer_MM7 {
+    int32_t value;
+};
+static_assert(sizeof(Pointer_MM7) == 4);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Pointer_MM7)
+
+
 struct BBoxs_MM7 {
     int16_t x1;
     int16_t x2;
@@ -97,9 +104,9 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs_MM7)
 
 void snapshot(const BBoxi &src, BBoxs_MM7 *dst);
 void reconstruct(const BBoxs_MM7 &src, BBoxi *dst);
-
 void snapshot(const BBoxf &src, BBoxs_MM7 *dst);
 void reconstruct(const BBoxs_MM7 &src, BBoxf *dst);
+
 
 struct Planef_MM7 {
     Vec3f normal;
@@ -127,7 +134,8 @@ void reconstruct(const Planei_MM7 &src, Planef *dst);
  * @see https://github.com/GrayFace/MMExtension/blob/a2ab9b12705de7576aecf8111168666d6398f830/Scripts/Structs/01%20common%20structs.lua#L2405
  */
 struct SpriteFrame_MM6 {
-    std::array<char, 12> animationName; // Only set for the 1st frame in an animated sequence.
+    std::array<char, 12> spriteName; // E.g. "spell11", only used to look up sprites by name. Only set for the 1st
+                                     // frame in an animated sequence.
     std::array<char, 12> textureName; // Texture name in sprites.lod w/o rotational suffixes.
     std::array<int16_t, 8> hwSpriteIds;
     int32_t scale;
@@ -141,7 +149,7 @@ static_assert(sizeof(SpriteFrame_MM6) == 56);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpriteFrame_MM6)
 
 
-struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
+struct SpriteFrame_MM7 : SpriteFrame_MM6 {
     int16_t animationLength;
     int16_t _pad;
 };
@@ -158,12 +166,12 @@ struct BLVFace_MM7 {
     int32_t zCalc2;
     int32_t zCalc3;
     uint32_t attributes;
-    int32_t vertexIDs;
-    int32_t xInterceptDisplacements;
-    int32_t yInterceptDisplacements;
-    int32_t zInterceptDisplacements;
-    int32_t vertexUIds;
-    int32_t vertexVIds;
+    Pointer_MM7 vertexIDs;
+    Pointer_MM7 xInterceptDisplacements;
+    Pointer_MM7 yInterceptDisplacements;
+    Pointer_MM7 zInterceptDisplacements;
+    Pointer_MM7 vertexUIds;
+    Pointer_MM7 vertexVIds;
     uint16_t faceExtraId;
     uint16_t bitmapId;
     uint16_t sectorId;
@@ -180,7 +188,7 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst);
 
 
 struct TileData_MM7 {
-    std::array<char, 16> tileName;
+    std::array<char, 16> textureName; // E.g. "dirttyl", texture name in bitmaps.lod.
     uint16_t tileId; // Seems to be always 0 in mm7 data files.
     uint16_t bitmapId; // Also seems to be always 0.
     Tileset_MM7 tileset;
@@ -194,7 +202,7 @@ void reconstruct(const TileData_MM7 &src, TileData *dst);
 
 
 struct TextureFrameData_MM7 {
-    std::array<char, 12> textureName;
+    std::array<char, 12> textureName; // Texture name in bitmaps.lod.
     int16_t textureId;
     int16_t frameLength; // Frame duration, in 1/16th of a real-time second.
     int16_t animationLength; // Total animation time, set only on the 1st frame, in 1/16th of a real-time second.
@@ -207,26 +215,25 @@ void reconstruct(const TextureFrameData_MM7 &src, TextureFrameData *dst);
 
 
 struct NPCData_MM7 {
-    /* 00 */ int32_t name;  // char *pName;
-    /* 04 */ uint32_t portraitId;
-    /* 08 */ uint32_t flags;  // & 0x80    no greeting on dialogue start; looks like hired
-    /* 0C */ int32_t fame;
-    /* 10 */ int32_t rep;
-    /* 14 */ uint32_t location2d;
-    /* 18 */ uint32_t profession;
-    /* 1C */ int32_t greet;
-    /* 20 */ int32_t joins;
-    /* 24 */ int32_t field_24;
-    /* 28 */ uint32_t evt_A;
-    /* 2C */ uint32_t evt_B;
-    /* 30 */ uint32_t evt_C;
-    /* 34 */ uint32_t evt_D;
-    /* 38 */ uint32_t evt_E;
-    /* 3C */ uint32_t evt_F;
-    /* 40 */ uint32_t sex;
-    /* 44 */ int32_t hasUsedAbility;
-    /* 48 */ int32_t newsTopic;
-    /* 4C */
+    Pointer_MM7 name;
+    uint32_t portraitId;
+    uint32_t flags;
+    int32_t fame;
+    int32_t rep;
+    uint32_t house;
+    uint32_t profession;
+    int32_t greetingIndex;
+    int32_t canJoin;
+    int32_t field_24;
+    uint32_t evt_A;
+    uint32_t evt_B;
+    uint32_t evt_C;
+    uint32_t evt_D;
+    uint32_t evt_E;
+    uint32_t evt_F;
+    uint32_t sex;
+    int32_t hasUsedAbility;
+    int32_t newsTopic;
 };
 static_assert(sizeof(NPCData_MM7) == 0x4C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(NPCData_MM7)
@@ -256,13 +263,12 @@ void reconstruct(const Item_MM7 &src, Item *dst);
 
 
 struct SpellBuff_MM7 {
-    /* 00 */ int64_t expireTime;
-    /* 08 */ uint16_t power;
-    /* 0A */ uint16_t skillMastery;
-    /* 0C */ uint16_t overlayId;
-    /* 0E */ uint8_t caster;
-    /* 0F */ uint8_t flags;
-    /* 10 */
+    int64_t expireTime;
+    uint16_t power;
+    uint16_t skillMastery;
+    uint16_t overlayId;
+    uint8_t caster;
+    uint8_t isGM;
 };
 static_assert(sizeof(SpellBuff_MM7) == 0x10);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpellBuff_MM7)
@@ -298,125 +304,115 @@ void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst);
 
 
 struct Character_MM7 {
-    /* 0000 */ CharacterConditions_MM7 conditions;
-    /* 00A0 */ uint64_t experience;
-    /* 00A8 */ std::array<char, 16> name;
-    /* 00B8 */ uint8_t sex;
-    /* 00B9 */ uint8_t classType;
-    /* 00BA */ uint8_t currentFace;
-    /* 00BB */ uint8_t _pad;
-    /* 00BC */ uint16_t might;
-    /* 00BE */ uint16_t mightBonus;
-    /* 00C0 */ uint16_t intelligence;
-    /* 00C2 */ uint16_t intelligenceBonus;
-    /* 00C4 */ uint16_t personality;
-    /* 00C6 */ uint16_t personalityBonus;
-    /* 00C8 */ uint16_t endurance;
-    /* 00CA */ uint16_t enduranceBonus;
-    /* 00CC */ uint16_t speed;
-    /* 00CE */ uint16_t speedBonus;
-    /* 00D0 */ uint16_t accuracy;
-    /* 00D2 */ uint16_t accuracyBonus;
-    /* 00D4 */ uint16_t luck;
-    /* 00D6 */ uint16_t luckBonus;
-    /* 00D8 */ int16_t acModifier;
-    /* 00DA */ uint16_t level;
-    /* 00DC */ int16_t levelModifier;
-    /* 00DE */ int16_t ageModifier;
-    /* 00E0 */ int32_t timer_E0; // These look like some timers. In the original binary they were decremented by ticks
-                                 // elapsed on each frame, but weren't used anywhere. Not used in OE.
-    /* 00E4 */ int32_t timer_E4;
-    /* 00E8 */ int32_t timer_E8;
-    /* 00EC */ int32_t timer_EC;
-    /* 00F0 */ int32_t timer_F0;
-    /* 00F4 */ int32_t timer_F4;
-    /* 00F8 */ int32_t timer_F8;
-    /* 00FC */ int32_t timer_FC;
-    /* 0100 */ int32_t timer_100;
-    /* 0104 */ int32_t timer_104;
-    /* 0108 */ std::array<uint16_t, 37> activeSkills;
-    /* 0152 */ std::array<uint8_t, 64> achievedAwardsBits;
-    /* 0192 */ std::array<bool, 99> haveSpell;
-    /* .... */ std::array<char, 3> _pad2;
-    /* 01F8 */ int32_t pureLuckUsed;
-    /* 01FC */ int32_t pureSpeedUsed;
-    /* 0200 */ int32_t pureIntellectUsed;
-    /* 0204 */ int32_t pureEnduranceUsed;
-    /* 0208 */ int32_t purePersonalityUsed;
-    /* 020C */ int32_t pureAccuracyUsed;
-    /* 0210 */ int32_t pureMightUsed;
-    /* 0214 */ std::array<Item_MM7, 126> inventoryItems;
-    /* .... */ std::array<Item_MM7, 12> unusedItems;
-    /* 157C */ std::array<int32_t, 126> inventoryMatrix;
-    /* 1774 */ int16_t resFireBase;
-    /* 1776 */ int16_t resAirBase;
-    /* 1778 */ int16_t resWaterBase;
-    /* 177A */ int16_t resEarthBase;
-    /* 177C */ int16_t resPhysicalBase;
-    /* 177E */ int16_t resMagicBase;
-    /* 1780 */ int16_t resSpiritBase;
-    /* 1782 */ int16_t resMindBase;
-    /* 1784 */ int16_t resBodyBase;
-    /* 1786 */ int16_t resLightBase;
-    /* 1788 */ int16_t resDarkBase;
-    /* 178A */ int16_t resFireBonus;
-    /* 178C */ int16_t resAirBonus;
-    /* 178E */ int16_t resWaterBonus;
-    /* 1790 */ int16_t resEarthBonus;
-    /* 1792 */ int16_t resPhysicalBonus;
-    /* 1794 */ int16_t resMagicBonus;
-    /* 1796 */ int16_t resSpiritBonus;
-    /* 1798 */ int16_t resMindBonus;
-    /* 179A */ int16_t resBodyBonus;
-    /* 179C */ int16_t resLightBonus;
-    /* 179E */ int16_t resDarkBonus;
-    /* 17A0 */ std::array<SpellBuff_MM7, 24> playerBuffs;
-    /* 1920 */ uint32_t voiceId;
-    /* 1924 */ int32_t prevVoiceId;
-    /* 1928 */ int32_t prevFace;
-    /* 192C */ int32_t field_192C;
-    /* 1930 */ int32_t field_1930;
-    /* 1934 */ int16_t timeToRecovery; // Time left for the character to recover, in game ticks. Will overflow if
-                                       // recovery is around 1 in-game hour, which never happens.
-    /* 1936 */ char field_1936;
-    /* 1937 */ char field_1937;
-    /* 1938 */ uint32_t skillPoints;
-    /* 193C */ int32_t health;
-    /* 1940 */ int32_t mana;
-    /* 1944 */ uint32_t birthYear;
-    /* 1948 */ std::array<uint32_t, 16> equipment;
-    /* 1988 */ std::array<int32_t, 49> field_1988; // field_1988[27] was set to 1 in party creation when character
-                                                   // name was changed. We just set everything to zero.
-    /* 1A4C */ char field_1A4C;
-    /* 1A4D */ char field_1A4D;
-    /* 1A4E */ char lastOpenedSpellbookPage;
-    /* 1A4F */ uint8_t quickSpell;
-    /* 1A50 */ std::array<uint8_t, 64> playerEventBits;
-    /* 1A90 */ char someAttackBonus;
-    /* 1A91 */ char field_1A91;
-    /* 1A92 */ char meleeDmgBonus;
-    /* 1A93 */ char field_1A93;
-    /* 1A94 */ char rangedAttackBonus;
-    /* 1A95 */ char field_1A95;
-    /* 1A96 */ char rangedDmgBonus;
-    /* 1A97 */ char field_1A97;
-    /* 1A98 */ char fullHealthBonus;
-    /* 1A99 */ char healthRelated;
-    /* 1A9A */ char fullManaBonus;
-    /* 1A9B */ char manaRelated;
-    /* 1A9C */ uint16_t portrait;
-    /* 1A9E */ uint16_t portraitTimePassed;
-    /* 1AA0 */ uint16_t portraitTimeLength;
-    /* 1AA2 */ int16_t portraitImageIndex;
-    /* 1AA4 */ int32_t talkAnimTime; // In OE we always set this to 0. Makes little sense to save & restore speech
-                                     // animation state since we don't restart speech sounds when loading a saved game.
-    /* 1AA8 */ int32_t talkFrameSet;
-    /* 1AAC */ std::array<LloydBeacon_MM7, 5> installedBeacons;
-    /* 1B38 */ char numDivineInterventionCasts;
-    /* 1B39 */ char numArmageddonCasts;
-    /* 1B3A */ char numFireSpikeCasts;
-    /* 1B3B */ char field_1B3B;
-    /* 1B3C */
+    CharacterConditions_MM7 conditions;
+    uint64_t experience;
+    std::array<char, 16> name; // Character name as displayed in-game.
+    uint8_t sex;
+    uint8_t classType;
+    uint8_t currentFace;
+    uint8_t _pad;
+    uint16_t might;
+    uint16_t mightBonus;
+    uint16_t intelligence;
+    uint16_t intelligenceBonus;
+    uint16_t personality;
+    uint16_t personalityBonus;
+    uint16_t endurance;
+    uint16_t enduranceBonus;
+    uint16_t speed;
+    uint16_t speedBonus;
+    uint16_t accuracy;
+    uint16_t accuracyBonus;
+    uint16_t luck;
+    uint16_t luckBonus;
+    int16_t acModifier;
+    uint16_t level;
+    int16_t levelModifier;
+    int16_t ageModifier;
+    std::array<int32_t, 10> timers; // These look like some timers. In the original binary they were decremented by
+                                    // ticks elapsed on each frame, but weren't used anywhere. Not used in OE.
+    std::array<uint16_t, 37> activeSkills;
+    std::array<uint8_t, 64> achievedAwardsBits;
+    std::array<bool, 99> haveSpell;
+    std::array<char, 3> _pad2;
+    int32_t pureLuckUsed;
+    int32_t pureSpeedUsed;
+    int32_t pureIntellectUsed;
+    int32_t pureEnduranceUsed;
+    int32_t purePersonalityUsed;
+    int32_t pureAccuracyUsed;
+    int32_t pureMightUsed;
+    std::array<Item_MM7, 126> inventoryItems;
+    std::array<Item_MM7, 12> unusedItems;
+    std::array<int32_t, 126> inventoryMatrix;
+    int16_t resFireBase;
+    int16_t resAirBase;
+    int16_t resWaterBase;
+    int16_t resEarthBase;
+    int16_t resPhysicalBase;
+    int16_t resMagicBase;
+    int16_t resSpiritBase;
+    int16_t resMindBase;
+    int16_t resBodyBase;
+    int16_t resLightBase;
+    int16_t resDarkBase;
+    int16_t resFireBonus;
+    int16_t resAirBonus;
+    int16_t resWaterBonus;
+    int16_t resEarthBonus;
+    int16_t resPhysicalBonus;
+    int16_t resMagicBonus;
+    int16_t resSpiritBonus;
+    int16_t resMindBonus;
+    int16_t resBodyBonus;
+    int16_t resLightBonus;
+    int16_t resDarkBonus;
+    std::array<SpellBuff_MM7, 24> playerBuffs;
+    uint32_t voiceId;
+    int32_t prevVoiceId;
+    int32_t prevFace;
+    int32_t field_192C;
+    int32_t field_1930;
+    int16_t timeToRecovery; // Time left for the character to recover, in game ticks. Will overflow if
+                            // recovery is around 1 in-game hour, which never happens.
+    char field_1936;
+    char field_1937;
+    uint32_t skillPoints;
+    int32_t health;
+    int32_t mana;
+    uint32_t birthYear;
+    std::array<uint32_t, 16> equipment;
+    std::array<int32_t, 49> field_1988; // field_1988[27] was set to 1 in party creation when character
+                                        // name was changed. We just set everything to zero.
+    char field_1A4C;
+    char field_1A4D;
+    char lastOpenedSpellbookPage;
+    uint8_t quickSpell;
+    std::array<uint8_t, 64> playerEventBits;
+    char someAttackBonus;
+    char field_1A91;
+    char meleeDmgBonus;
+    char field_1A93;
+    char rangedAttackBonus;
+    char field_1A95;
+    char rangedDmgBonus;
+    char field_1A97;
+    char fullHealthBonus;
+    char healthRelated;
+    char fullManaBonus;
+    char manaRelated;
+    uint16_t portrait;
+    uint16_t portraitTimePassed;
+    uint16_t portraitTimeLength;
+    int16_t portraitImageIndex;
+    int32_t talkAnimTime; // In OE we always set this to 0. Makes little sense to save & restore speech
+                          // animation state since we don't restart speech sounds when loading a saved game.
+    int32_t talkFrameSet;
+    std::array<LloydBeacon_MM7, 5> installedBeacons;
+    char numDivineInterventionCasts;
+    char numArmageddonCasts;
+    char numFireSpikeCasts;
+    char field_1B3B;
 };
 static_assert(sizeof(Character_MM7) == 0x1B3C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Character_MM7)
@@ -428,128 +424,125 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
 
 
 struct PartyTimeStruct_MM7 {
-    /* 000 */ std::array<int64_t, 5> bountyHuntingNextGenerationTime;
-              std::array<int64_t, 5> bountyHuntingNextGenerationTimeUnused; // Only first five elements are actually used, these are always zero.
-    // Originally was one array
-    /* 050 */ int64_t shopsNextGenerationTime0; // shop generation time for house id 0 which is invalid value
-              std::array<int64_t, 52> shopsNextGenerationTime;
-              std::array<int64_t, 32> guildsNextGenerationTime;
-              int64_t shopBanTime0;
-    /* 2F8 */ std::array<int64_t, 52> shopBanTimes;
-    /* 4A0 */ std::array<int64_t, 10> counterEventValues;
-    /* 4F0 */ std::array<int64_t, 29> historyEventTimes;
-    /* 5D8 */ std::array<int64_t, 20> someOtherTimes;
-    /* 678 */
+    std::array<int64_t, 5> bountyHuntingNextGenerationTime;
+    std::array<int64_t, 5> bountyHuntingNextGenerationTimeUnused; // Only first five elements are actually used, these are always zero.
+    int64_t shopsNextGenerationTime0; // Shop generation time for house id 0 which is invalid value.
+    std::array<int64_t, 52> shopsNextGenerationTime;
+    std::array<int64_t, 32> guildsNextGenerationTime;
+    int64_t shopBanTime0;
+    std::array<int64_t, 52> shopBanTimes;
+    std::array<int64_t, 10> counterEventValues;
+    std::array<int64_t, 29> historyEventTimes;
+    std::array<int64_t, 20> someOtherTimes;
 };
 static_assert(sizeof(PartyTimeStruct_MM7) == 0x678);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(PartyTimeStruct_MM7)
 
 
 struct Party_MM7 {
-    /* 00000 */ int32_t field_0; // Was set to 25 in Party::Reset & Party::Zero, not used for anything.
-    /* 00004 */ uint32_t partyHeight;
-    /* 00008 */ uint32_t defaultPartyHeight; // Unused in OE.
-    /* 0000C */ int32_t eyeLevel;
-    /* 00010 */ uint32_t defaultEyeLevel; // Unused in OE.
-    /* 00014 */ int32_t radius;
-    /* 00018 */ int32_t yawGranularity;
-    /* 0001C */ uint32_t walkSpeed;
-    /* 00020 */ int32_t yawRotationSpeed;  // deg/s
-    /* 00024 */ int32_t jumpStrength;
-    /* 00028 */ int32_t field_28;
-    /* 0002C */ int64_t timePlayed;
-    /* 00034 */ int64_t lastRegenerationTime;
-    /* 0003C */ PartyTimeStruct_MM7 partyTimes;
-    /* 006B4 */ Vec3i position;
-    /* 006C0 */ int32_t viewYaw;
-    /* 006C4 */ int32_t viewPitch;
-    /* 006C8 */ Vec3i prevPosition;
-    /* 006D4 */ int32_t viewPrevYaw;
-    /* 006D8 */ int32_t viewPrevPitch;
-    /* 006DC */ int32_t prevEyeLevel;
-    /* 006E0 */ int32_t field_6E0; // Party old x/y?
-    /* 006E4 */ int32_t field_6E4; // Party old x/y?
-    /* 006E8 */ int32_t fallSpeed;
-    /* 006EC */ int32_t field_6EC;
-    /* 006F0 */ int32_t savedFlightZ;
-    /* 006F4 */ int32_t floorFacePidUnused; // Face the party is standing at. Face id indoors, face pid outdoors.
-                                            // Always set to zero on level loading, so in OE we are just saving 0 and
-                                            // not using it when loading a savegame.
-    /* 006F8 */ int32_t walkSoundTimerUnused; // This was removed in OE and we're just saving 0 in this field.
-    /* 006FC */ int32_t waterLavaTimer; // Next game time when water/lava damage should be processed. This value will
-                                        // overflow after ~16 in-game years, and then the lava logic will trigger on
-                                        // the 1st frame after loading the game. We are OK with that.
-    /* 00700 */ int32_t fallStartZ;
-    /* 00704 */ uint32_t flying;
-    /* 00708 */ char field_708; // Was set to 15 in Party::Reset & Party::Zero, not used for anything.
-    /* 00709 */ uint8_t hirelingScrollPosition;
-    /* 0070A */ char field_70A;
-    /* 0070B */ char field_70B;
-    /* 0070C */ uint32_t currentYear;
-    /* 00710 */ uint32_t currentMonth;
-    /* 00714 */ uint32_t currentMonthWeek;
-    /* 00718 */ uint32_t currentDayOfMonth;
-    /* 0071C */ uint32_t currentHour;
-    /* 00720 */ uint32_t currentMinute;
-    /* 00724 */ uint32_t currentTimeSecond;
-    /* 00728 */ uint32_t numFoodRations;
-    /* 0072C */ int32_t field_72C;
-    /* 00730 */ int32_t field_730;
-    /* 00734 */ uint32_t numGold;
-    /* 00738 */ uint32_t numGoldInBank;
-    /* 0073C */ uint32_t numDeaths;
-    /* 00740 */ int32_t field_740;
-    /* 00744 */ int32_t numPrisonTerms;
-    /* 00748 */ uint32_t numBountiesCollected;
-    /* 0074C */ int field_74C;
-    /* 00750 */ std::array<int16_t, 5> monsterIdForHunting;
-    /* 0075A */ std::array<int16_t, 5> monsterForHuntingKilled;
-    /* 00764 */ uint8_t daysPlayedWithoutRest;
-    /* 00765 */ std::array<uint8_t, 64> questBits;
-    /* 007A5 */ std::array<bool, 13> arcomageWins;
-                std::array<bool, 3> arcomageWinsUnused; // Original array was 16 elements long, but we only have 13 taverns.
-    /* 007B5 */ int8_t field_7B5_in_arena_quest; // -1 for a win, 0 for initial state, otherwise dialogue id for the
-                                                 // arena level being fought.
-    /* 007B6 */ std::array<uint8_t, 4> numArenaWins;
-    /* 007BA */ std::array<bool, 29> isArtifactFound;  // 7ba
-    /* 007D7 */ std::array<char, 39> field_7d7;
-    /* 007FE */ std::array<uint8_t, 26> autonoteBits;
-    /* 00818 */ std::array<char, 60> field_818;
-    /* 00854 */ std::array<char, 32> randomNumbersUnused; // Array of random numbers, was filled during party creation
-                                                          // and not used for anything. Probably a remnant of the old
-                                                          // party creation code that randomized stats?
-    /* 00874 */ int32_t numArcomageWins;
-    /* 00878 */ int32_t numArcomageLoses;
-    /* 0087C */ uint32_t turnBasedModeOn;
-    /* 00880 */ int32_t field_880;
-    /* 00884 */ int32_t flags2;
-    /* 00888 */ uint32_t alignment;
-    /* 0088C */ std::array<SpellBuff_MM7, 20> partyBuffs;
-    /* 00954 */ std::array<Character_MM7, 4> players;
-    /* 07644 */ std::array<NPCData_MM7, 2> hirelings;
-    /* 07754 */ Item_MM7 pickedItem;
-    /* 07778 */ uint32_t flags;
-    /* 0777C */ std::array<Item_MM7, 12> standartItemsInShop0;
-                std::array<std::array<Item_MM7, 12>, 52> standartItemsInShops;
-    /* 0D0EC */ std::array<Item_MM7, 12> specialItemsInShop0;
-                std::array<std::array<Item_MM7, 12>, 52> specialItemsInShops;
-    /* 12A5C */ std::array<std::array<Item_MM7, 12>, 32> spellBooksInGuilds;
-    /* 1605C */ std::array<char, 24> field_1605C;
-    /* 16074 */ std::array<char, 100> hireling1Name;
-    /* 160D8 */ std::array<char, 100> hireling2Name;
-    /* 1613C */ int32_t armageddonTimer;
-    /* 16140 */ int32_t armageddonDamage;
-    /* 16144 */ std::array<int32_t, 4> turnBasedPlayerRecoveryTimes;
-                int32_t inTheShopFlag0; // Unused flag for HOUSE_INVALID.
-    /* 16154 */ std::array<int32_t, 52> inTheShopFlags;
-    /* 16228 */ int32_t fine;
+    int32_t field_0; // Was set to 25 in Party::Reset & Party::Zero, not used for anything.
+    uint32_t partyHeight;
+    uint32_t defaultPartyHeight; // Unused in OE.
+    int32_t eyeLevel;
+    uint32_t defaultEyeLevel; // Unused in OE.
+    int32_t radius;
+    int32_t yawGranularity;
+    uint32_t walkSpeed;
+    int32_t yawRotationSpeed; // Deg/s.
+    int32_t jumpStrength;
+    int32_t field_28;
+    int64_t timePlayed;
+    int64_t lastRegenerationTime;
+    PartyTimeStruct_MM7 partyTimes;
+    Vec3i position;
+    int32_t viewYaw;
+    int32_t viewPitch;
+    Vec3i prevPosition;
+    int32_t viewPrevYaw;
+    int32_t viewPrevPitch;
+    int32_t prevEyeLevel;
+    int32_t field_6E0; // Party old x/y?
+    int32_t field_6E4; // Party old x/y?
+    int32_t fallSpeed;
+    int32_t field_6EC;
+    int32_t savedFlightZ;
+    int32_t floorFacePidUnused; // Face the party is standing at. Face id indoors, face pid outdoors.
+                                // Always set to zero on level loading, so in OE we are just saving 0 and
+                                // not using it when loading a savegame.
+    int32_t walkSoundTimerUnused; // This was removed in OE and we're just saving 0 in this field.
+    int32_t waterLavaTimer; // Next game time when water/lava damage should be processed. This value will
+                            // overflow after ~16 in-game years, and then the lava logic will trigger on
+                            // the 1st frame after loading the game. We are OK with that.
+    int32_t fallStartZ;
+    uint32_t flying;
+    char field_708; // Was set to 15 in Party::Reset & Party::Zero, not used for anything.
+    uint8_t hirelingScrollPosition;
+    char field_70A;
+    char field_70B;
+    uint32_t currentYear;
+    uint32_t currentMonth;
+    uint32_t currentMonthWeek;
+    uint32_t currentDayOfMonth;
+    uint32_t currentHour;
+    uint32_t currentMinute;
+    uint32_t currentTimeSecond;
+    uint32_t numFoodRations;
+    int32_t field_72C;
+    int32_t field_730;
+    uint32_t numGold;
+    uint32_t numGoldInBank;
+    uint32_t numDeaths;
+    int32_t field_740;
+    int32_t numPrisonTerms;
+    uint32_t numBountiesCollected;
+    int field_74C;
+    std::array<int16_t, 5> monsterIdForHunting;
+    std::array<int16_t, 5> monsterForHuntingKilled;
+    uint8_t daysPlayedWithoutRest;
+    std::array<uint8_t, 64> questBits;
+    std::array<bool, 13> arcomageWins;
+    std::array<bool, 3> arcomageWinsUnused; // Original array was 16 elements long, but we only have 13 taverns.
+    int8_t field_7B5_in_arena_quest; // -1 for a win, 0 for initial state, otherwise dialogue id for the
+                                     // arena level being fought.
+    std::array<uint8_t, 4> numArenaWins;
+    std::array<bool, 29> isArtifactFound;  // 7ba
+    std::array<char, 39> field_7d7;
+    std::array<uint8_t, 26> autonoteBits;
+    std::array<char, 60> field_818;
+    std::array<char, 32> randomNumbersUnused; // Array of random numbers, was filled during party creation
+                                              // and not used for anything. Probably a remnant of the old
+                                              // party creation code that randomized stats?
+    int32_t numArcomageWins;
+    int32_t numArcomageLoses;
+    uint32_t turnBasedModeOn;
+    int32_t field_880;
+    int32_t flags2;
+    uint32_t alignment;
+    std::array<SpellBuff_MM7, 20> partyBuffs;
+    std::array<Character_MM7, 4> players;
+    std::array<NPCData_MM7, 2> hirelings;
+    Item_MM7 pickedItem;
+    uint32_t flags;
+    std::array<Item_MM7, 12> standartItemsInShop0;
+    std::array<std::array<Item_MM7, 12>, 52> standartItemsInShops;
+    std::array<Item_MM7, 12> specialItemsInShop0;
+    std::array<std::array<Item_MM7, 12>, 52> specialItemsInShops;
+    std::array<std::array<Item_MM7, 12>, 32> spellBooksInGuilds;
+    std::array<char, 24> field_1605C;
+    std::array<char, 100> hireling1Name; // 1st hireling name as displayed in-game.
+    std::array<char, 100> hireling2Name; // 2nd hireling name as displayed in-game.
+    int32_t armageddonTimer;
+    int32_t armageddonDamage;
+    std::array<int32_t, 4> turnBasedPlayerRecoveryTimes;
+    int32_t inTheShopFlag0; // Unused flag for HOUSE_INVALID.
+    std::array<int32_t, 52> inTheShopFlags;
+    int32_t fine;
 
     // Not sure why torchlight color is even stored in savegames in vanilla. Testing it on old savegames, it seems
     // it's always set to zero. But maybe savegames made in hardware mode differ from ones made in software mode,
     // and hardware mode actually sets torchlight color? Not sure how to check.
     // Anyway, reading torchlight color from a savegame makes very little sense, so we don't.
-    /* 1622C */ std::array<float, 3> torchLightColorRgbUnused;
-    /* 16238 */
+    std::array<float, 3> torchLightColorRgbUnused;
 };
 static_assert(sizeof(Party_MM7) == 0x16238);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Party_MM7)
@@ -598,16 +591,15 @@ void reconstruct(const Timer_MM7 &src, Timer *dst);
 
 
 struct ActiveOverlay_MM7 {
-    /* 00 */ int16_t field_0;
-    /* 02 */ int16_t indexToOverlayList;
-    /* 04 */ int16_t spriteFrameTime;
-    /* 06 */ int16_t animLength;
-    /* 08 */ int16_t screenSpaceX;
-    /* 0A */ int16_t screenSpaceY;
-    /* 0C */ uint16_t pid;
-    /* 0E */ int16_t projSize;
-    /* 10 */ int32_t fpDamageMod;
-    /* 14 */
+    int16_t field_0;
+    int16_t indexToOverlayList;
+    int16_t spriteFrameTime;
+    int16_t animLength;
+    int16_t screenSpaceX;
+    int16_t screenSpaceY;
+    uint16_t pid;
+    int16_t projSize;
+    int32_t fpDamageMod;
 };
 static_assert(sizeof(ActiveOverlay_MM7) == 0x14);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ActiveOverlay_MM7)
@@ -617,10 +609,9 @@ void reconstruct(const ActiveOverlay_MM7 &src, ActiveOverlay *dst);
 
 
 struct ActiveOverlayList_MM7 {
-    /* 000 */ std::array<ActiveOverlay_MM7, 50> overlays;
-    /* 3E8 */ int32_t field_3E8;
-    /* 3EC */ int32_t redraw;
-    /* 3F0 */
+    std::array<ActiveOverlay_MM7, 50> overlays;
+    int32_t field_3E8;
+    int32_t redraw;
 };
 static_assert(sizeof(ActiveOverlayList_MM7) == 0x3F0);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ActiveOverlayList_MM7)
@@ -630,8 +621,8 @@ void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
 
 
 struct IconFrameData_MM7 {
-    std::array<char, 12> animationName;
-    std::array<char, 12> textureName;
+    std::array<char, 12> animationName; // Animation name (e.g. "turnstart"), set only on the 1st frame.
+    std::array<char, 12> textureName; // Texture name in icons.lod.
     int16_t frameLength;
     int16_t animationLength;
     int16_t flags;
@@ -644,23 +635,23 @@ void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst);
 void reconstruct(const IconFrameData_MM7 &src, IconFrameData *dst);
 
 
-// This seems to be an MM6-only struct, not really used in MM7.
+// This seems to be an MM6-only struct, not used in MM7.
 struct UIAnimation_MM6 {
-    /* 000 */ uint16_t iconId;
-    /* 002 */ int16_t field_2;
-    /* 004 */ int16_t animTime;
-    /* 006 */ int16_t animLength;
-    /* 008 */ int16_t x;
-    /* 00A */ int16_t y;
-    /* 00C */ char field_C;
+    uint16_t iconId;
+    int16_t field_2;
+    int16_t animTime;
+    int16_t animLength;
+    int16_t x;
+    int16_t y;
+    char field_C;
 };
 static_assert(sizeof(UIAnimation_MM6) == 0xD);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(UIAnimation_MM6)
 
 
 struct MonsterInfo_MM7 {
-    int32_t name;
-    int32_t textureName;
+    Pointer_MM7 name; // Originally char *, actual name is set elsewhere.
+    Pointer_MM7 textureName;
     uint8_t level;
     uint8_t treasureDropChance;
     uint8_t goldDiceRolls;
@@ -728,8 +719,8 @@ struct MonsterDesc_MM6 {
     uint16_t movementSpeed;
     int16_t toHitRadius;
     std::array<uint16_t, 4> soundSampleIds;
-    std::array<char, 32> monsterName;
-    std::array<std::array<char, 10>, 8> spriteNames;
+    std::array<char, 32> internalMonsterName; // Internal monster name, e.g. "Angel A".
+    std::array<std::array<char, 10>, 8> spriteNames; // Sprite names, to be looked up in sprite frame table.
     std::array<std::array<char, 10>, 2> spriteNamesUnused;
 };
 static_assert(sizeof(MonsterDesc_MM6) == 148);
@@ -745,8 +736,8 @@ struct MonsterDesc_MM7 {
     int16_t toHitRadius;
     uint32_t tintColor;
     std::array<uint16_t, 4> soundSampleIds;
-    std::array<char, 32> monsterName;
-    std::array<std::array<char, 10>, 8> spriteNames;
+    std::array<char, 32> internalMonsterName; // Internal monster name, e.g. "Angel A".
+    std::array<std::array<char, 10>, 8> spriteNames; // Sprite names, to be looked up in sprite frame table.
     std::array<std::array<char, 10>, 2> spriteNamesUnused;
 };
 static_assert(sizeof(MonsterDesc_MM7) == 152);
@@ -772,44 +763,45 @@ void reconstruct(const ActorJob_MM7 &src, ActorJob *dst);
 
 
 struct Actor_MM7 {
-    std::array<char, 32> pActorName;
-    int16_t sNPC_ID;
+    std::array<char, 32> name; // Actor name as displayed in-game. Not in popups though, popups take actor names
+                               // from game data tables.
+    int16_t npcId;
     int16_t field_22;
-    uint32_t uAttributes;
-    int16_t sCurrentHP;
-    std::array<char, 2> padding_unused;
-    MonsterInfo_MM7 pMonsterInfo;
-    int16_t word_000084_range_attack;
-    int16_t word_000086_some_monster_id;  // base monster class monsterlist id
-    uint16_t uActorRadius;
-    uint16_t uActorHeight;
-    uint16_t uMovementSpeed;
-    Vec3s vPosition;
-    Vec3s vVelocity;
-    uint16_t uYawAngle;
-    uint16_t uPitchAngle;
-    int16_t uSectorID;
-    uint16_t uCurrentActionLength;
-    Vec3s vInitialPosition;
-    Vec3s vGuardingPosition;
-    uint16_t uTetherDistance;
-    int16_t uAIState;
-    uint16_t uCurrentActionAnimation;
-    uint16_t uCarriedItemID;
-    uint16_t _pad;
-    uint32_t uCurrentActionTime;
-    std::array<uint16_t, 8> pSpriteIDs;
-    std::array<uint16_t, 4> pSoundSampleIDs;  // 1 die     3 bored
+    uint32_t attributes;
+    int16_t hp;
+    std::array<char, 2> _pad;
+    MonsterInfo_MM7 monsterInfo;
+    int16_t field_84; // Supposedly has smth to do with actor ranged attack? Always 0 in MM7.
+    int16_t monsterId;
+    uint16_t radius;
+    uint16_t height;
+    uint16_t moveSpeed;
+    Vec3s pos;
+    Vec3s velocity;
+    uint16_t yawAngle;
+    uint16_t pitchAngle;
+    int16_t sectorId;
+    uint16_t currentActionLength;
+    Vec3s initialPosition;
+    Vec3s guardingPosition;
+    uint16_t tetherDistance;
+    int16_t aiState;
+    uint16_t currentActionAnimation;
+    uint16_t carriedItemId;
+    std::array<char, 2> _pad2;
+    uint32_t currentActionTime;
+    std::array<uint16_t, 8> spriteIds;
+    std::array<uint16_t, 4> soundSampleIds;
     SpellBuff_MM7 actorBuffZeroUnused; // An artifact of the original memory layout, zero is ACTOR_BUFF_NONE.
                                        // It's not used for anything in vanilla and simply dropped in OE.
-    std::array<SpellBuff_MM7, 21> pActorBuffs;
-    std::array<Item_MM7, 4> ActorHasItems;
-    uint32_t uGroup;
-    uint32_t uAlly;
-    std::array<ActorJob_MM7, 8> pScheduledJobs;
-    uint32_t uSummonerID;
-    uint32_t uLastCharacterIDToHit;
-    int32_t dword_000334_unique_name;
+    std::array<SpellBuff_MM7, 21> buffs;
+    std::array<Item_MM7, 4> items;
+    uint32_t group;
+    uint32_t ally;
+    std::array<ActorJob_MM7, 8> scheduledJobs;
+    uint32_t summonerId;
+    uint32_t lastCharacterIdToHit;
+    int32_t uniqueNameIndex;
     std::array<char, 12> field_338;
 };
 static_assert(sizeof(Actor_MM7) == 0x344);
@@ -820,26 +812,26 @@ void reconstruct(const Actor_MM7 &src, Actor *dst);
 
 
 struct BLVDoor_MM7 {
-    uint32_t uAttributes;
-    uint32_t uDoorID;
-    uint32_t uTimeSinceTriggered;
-    Vec3i vDirection;
-    uint32_t uMoveLength;
-    uint32_t uOpenSpeed;
-    uint32_t uCloseSpeed;
-    uint32_t pVertexIDs;
-    uint32_t pFaceIDs;
-    uint32_t pSectorIDs;
-    int32_t pDeltaUs;
-    int32_t pDeltaVs;
-    uint32_t pXOffsets;
-    uint32_t pYOffsets;
-    uint32_t pZOffsets;
-    uint16_t uNumVertices;
-    uint16_t uNumFaces;
-    uint16_t uNumSectors;
-    uint16_t uNumOffsets;
-    uint16_t uState;
+    uint32_t attributes;
+    uint32_t doorId;
+    uint32_t timeSinceTriggered;
+    Vec3i direction;
+    uint32_t moveLength;
+    uint32_t openSpeed;
+    uint32_t closeSpeed;
+    Pointer_MM7 vertexIds;
+    Pointer_MM7 faceIds;
+    Pointer_MM7 sectorIds;
+    Pointer_MM7 deltaUs;
+    Pointer_MM7 deltaVs;
+    Pointer_MM7 xOffsets;
+    Pointer_MM7 yOffsets;
+    Pointer_MM7 zOffsets;
+    uint16_t numVertices;
+    uint16_t numFaces;
+    uint16_t numSectors;
+    uint16_t numOffsets;
+    uint16_t state;
     int16_t _pad;
 };
 static_assert(sizeof(BLVDoor_MM7) == 0x50);
@@ -850,47 +842,48 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst);
 
 
 struct BLVSector_MM7 {
-    int32_t field_0;
-    uint16_t uNumFloors;
+    int32_t flags;
+    uint16_t numFloors;
     int16_t _pad0;
-    uint32_t pFloors;
-    uint16_t uNumWalls;
+    Pointer_MM7 floors;
+    uint16_t numWalls;
     int16_t _pad1;
-    uint32_t pWalls;
-    uint16_t uNumCeilings;
+    Pointer_MM7 walls;
+    uint16_t numCeilings;
     int16_t _pad2;
-    uint32_t pCeilings;
-    uint16_t uNumFluids;
+    Pointer_MM7 ceilings;
+    uint16_t numFluids; // Always 0 in MM7, not used by the engine.
     int16_t _pad3;
-    uint32_t pFluids;
-    int16_t uNumPortals;
+    Pointer_MM7 fluids;
+    int16_t numPortals;
     int16_t _pad4;
-    uint32_t pPortals;
-    uint16_t uNumFaces;
-    uint16_t uNumNonBSPFaces;
-    uint32_t pFaceIDs;
-    uint16_t uNumCylinderFaces;
+    Pointer_MM7 portals;
+    uint16_t numFaces;
+    uint16_t numNonBspFaces;
+    Pointer_MM7 faceIds;
+    uint16_t numCylinderFaces; // Always 0 in MM7, not used by the engine.
+                               // TODO(captainurist): I feel this was supposed to be named numConvexFaces?
     int16_t _pad5;
-    int32_t pCylinderFaces;
-    uint16_t uNumCogs;
+    Pointer_MM7 cylinderFaces;
+    uint16_t numCogs; // Always 0 in MM7, not used by the engine.
     int16_t _pad6;
-    uint32_t pCogs;
-    uint16_t uNumDecorations;
+    Pointer_MM7 cogs;
+    uint16_t numDecorations;
     int16_t _pad7;
-    uint32_t pDecorationIDs;
-    uint16_t uNumMarkers;
+    Pointer_MM7 decorationIds;
+    uint16_t numMarkers; // Always 0 in MM7, not used by the engine.
     int16_t _pad8;
-    uint32_t pMarkers;
-    uint16_t uNumLights;
+    Pointer_MM7 markers;
+    uint16_t numLights;
     int16_t _pad9;
-    uint32_t pLights;
-    int16_t uWaterLevel;
-    int16_t uMistLevel;
-    int16_t uLightDistanceMultiplier;
-    int16_t uMinAmbientLightLevel;
-    int16_t uFirstBSPNode;
-    int16_t exit_tag;
-    BBoxs_MM7 pBounding;
+    Pointer_MM7 lights;
+    int16_t waterLevel; // Always -30000 in MM7, not used by the engine.
+    int16_t mistLevel; // Always 0 in MM7, not used by the engine.
+    int16_t lightDistanceMultiplier; // Always 0 in MM7, not used by the engine.
+    int16_t minAmbientLightLevel;
+    int16_t firstBspNode;
+    int16_t exitTag; // Always 0 in MM7, not used by the engine.
+    BBoxs_MM7 boundingBox;
 };
 static_assert(sizeof(BLVSector_MM7) == 0x74);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVSector_MM7)
@@ -901,33 +894,34 @@ void reconstruct(const BLVSector_MM7 &src, BLVSector *dst);
 
 struct ODMFace_MM7 {
     Planei_MM7 facePlane;
-    int32_t zCalc1;
+    int32_t zCalc1; // Fixpoint face plane zcalc values. We recalculate these on load from face plane equation.
     int32_t zCalc2;
     int32_t zCalc3;
     uint32_t attributes;
-    std::array<int16_t, 20> pVertexIDs;
-    std::array<int16_t, 20> pTextureUIDs;
-    std::array<int16_t, 20> pTextureVIDs;
-    std::array<int16_t, 20> pXInterceptDisplacements;
-    std::array<int16_t, 20> pYInterceptDisplacements;
-    std::array<int16_t, 20> pZInterceptDisplacements;
-    int16_t uTextureID;
-    int16_t sTextureDeltaU;
-    int16_t sTextureDeltaV;
-    BBoxs_MM7 pBoundingBox;
-    int16_t sCogNumber;
-    int16_t sCogTriggeredID;
-    int16_t sCogTriggerType;
+    std::array<int16_t, 20> vertexIds;
+    std::array<int16_t, 20> textureUs;
+    std::array<int16_t, 20> textureVs;
+    std::array<int16_t, 20> xInterceptDisplacements;
+    std::array<int16_t, 20> yInterceptDisplacements;
+    std::array<int16_t, 20> zInterceptDisplacements;
+    int16_t textureId;
+    int16_t textureDeltaU;
+    int16_t textureDeltaV;
+    BBoxs_MM7 boundingBox;
+    int16_t cogNumber; // Used to identify vertices by this number. Why "cog"? No idea.
+    int16_t eventId;
+    int16_t eventTriggerType; // Always 0 in MM7, unused in OpenEnroth.
     char field_128;
     char field_129;
-    uint8_t uGradientVertex1; // Not sure what these are, unused in OpenEnroth.
-    uint8_t uGradientVertex2;
-    uint8_t uGradientVertex3;
-    uint8_t uGradientVertex4;
-    uint8_t uNumVertices;
-    uint8_t uPolygonType;
-    uint8_t uShadeType;
-    uint8_t bVisible;
+    uint8_t gradientVertex1; // Not sure what these are, unused in OpenEnroth.
+    uint8_t gradientVertex2;
+    uint8_t gradientVertex3;
+    uint8_t gradientVertex4;
+    uint8_t numVertices;
+    uint8_t polygonType;
+    uint8_t shadeType; // Is in [0, 24] in MM7 data, unused in OpenEnroth.
+                       // TODO(captainurist): What is this? Could be minimum shade?
+    uint8_t visible; // Always 0 in MM7 data, unused in OpenEnroth.
     char field_132;
     char field_133;
 };
@@ -1005,8 +999,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestData_MM7)
 
 
 struct DecorationDesc_MM6 {
-    std::array<char, 32> name;
-    std::array<char, 32> type;
+    std::array<char, 32> internalName; // Internal name of the decoration (e.g. "dec03").
+    std::array<char, 32> hint;
     int16_t uType;
     uint16_t uDecorationHeight;
     int16_t uRadius;
@@ -1019,7 +1013,7 @@ struct DecorationDesc_MM6 {
 static_assert(sizeof(DecorationDesc_MM6) == 80);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(DecorationDesc_MM6)
 
-struct DecorationDesc_MM7 : public DecorationDesc_MM6 {
+struct DecorationDesc_MM7 : DecorationDesc_MM6 {
     uint8_t uColoredLightRed;
     uint8_t uColoredLightGreen;
     uint8_t uColoredLightBlue;
@@ -1168,7 +1162,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
 
 
 struct ObjectDesc_MM6 {
-    std::array<char, 32> name;
+    std::array<char, 32> nameUnused;
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
@@ -1186,7 +1180,7 @@ static_assert(sizeof(ObjectDesc_MM6) == 52);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ObjectDesc_MM6)
 
 struct ObjectDesc_MM7 {
-    std::array<char, 32> name;
+    std::array<char, 32> nameUnused; // Object name, not used by the engine, doesn't always match item names.
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
@@ -1208,43 +1202,45 @@ void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst);
 
 
 struct BSPModelData_MM7 {
-    std::array<char, 32> pModelName;
-    std::array<char, 32> pModelName2;
+    std::array<char, 32> modelName; // Seems to be a unique (?) internal model name, e.g. "FireGuild_E", maybe a
+                                    // remnant of the mapping software that was used by NWC. Not used by the engine.
+    std::array<char, 32> modelName2; // Sometimes different from the first model name, mainly for boats and chests.
+                                     // Why? No idea.
     int32_t field_40;
-    uint32_t uNumVertices;
-    uint32_t ppVertices;
-    uint32_t uNumFaces;
-    uint32_t uNumConvexFaces;
-    uint32_t ppFaces;
-    uint32_t ppFacesOrdering;
-    uint32_t uNumNodes;
-    uint32_t ppNodes;
-    uint32_t uNumDecorations;
-    int32_t sCenterX;
-    int32_t sCenterY;
-    Vec3i vPosition;
-    int32_t sMinX;
-    int32_t sMinY;
-    int32_t sMinZ;
-    int32_t sMaxX;
-    int32_t sMaxY;
-    int32_t sMaxZ;
-    int32_t sSomeOtherMinX;
-    int32_t sSomeOtherMinY;
-    int32_t sSomeOtherMinZ;
-    int32_t sSomeOtherMaxX;
-    int32_t sSomeOtherMaxY;
-    int32_t sSomeOtherMaxZ;
-    Vec3i vBoundingCenter;
-    int32_t sBoundingRadius;
+    uint32_t numVertices;
+    Pointer_MM7 vertices;
+    uint32_t numFaces;
+    uint32_t numConvexFaces;
+    Pointer_MM7 faces;
+    Pointer_MM7 facesOrdering;
+    uint32_t numNodes;
+    Pointer_MM7 nodes;
+    uint32_t numDecorations;
+    int32_t centerX; // Always 0 in MM7 data. Unused in OpenEnroth.
+    int32_t centerY; // Always 0 in MM7 data. Unused in OpenEnroth.
+    Vec3i position;
+    int32_t minX;
+    int32_t minY;
+    int32_t minZ;
+    int32_t maxX;
+    int32_t maxY;
+    int32_t maxZ;
+    int32_t otherMinX; // These are not used in OpenEnroth.
+    int32_t otherMinY;
+    int32_t otherMinZ;
+    int32_t otherMaxX;
+    int32_t otherMaxY;
+    int32_t otherMaxZ;
+    Vec3i boundingCenter;
+    int32_t boundingRadius;
 };
 static_assert(sizeof(BSPModelData_MM7) == 188);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BSPModelData_MM7)
-// Note: serialization code is in CompositeImages.h
+// Note: serialization code is in CompositeSnapshots.h
 
 struct LocationTime_MM7 {
     int64_t last_visit;
-    std::array<char, 12> sky_texture_name;
+    std::array<char, 12> sky_texture_name; // Texture name in bitmaps.lod.
     int32_t day_attrib;
     int32_t day_fogrange_1;
     int32_t day_fogrange_2;
@@ -1258,18 +1254,18 @@ void reconstruct(const LocationTime_MM7 &src, LocationTime *dst);
 
 
 struct SoundInfo_MM6 {
-    std::array<char, 32> pSoundName;
-    uint32_t uSoundID;
-    uint32_t eType;
-    uint32_t uFlags;
-    std::array<uint32_t, 17> pSoundDataID;
+    std::array<char, 32> name; // File name in audio.snd.
+    uint32_t soundId;
+    uint32_t type;
+    uint32_t flags;
+    std::array<uint32_t, 17> soundData; // Always 0 in MM7 data.
 };
 static_assert(sizeof(SoundInfo_MM6) == 112);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM6)
 
-struct SoundInfo_MM7 : public SoundInfo_MM6 {
-    uint32_t p3DSoundID;
-    uint32_t bDecompressed;
+struct SoundInfo_MM7 : SoundInfo_MM6 {
+    uint32_t sound3dId; // Always 0 in MM7 data.
+    uint32_t decompressed; // Always 0 in MM7 data.
 };
 static_assert(sizeof(SoundInfo_MM7) == 120);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM7)
@@ -1319,10 +1315,10 @@ void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst);
 
 struct BLVHeader_MM7 {
     std::array<char, 104> field_0;
-    unsigned int uFaces_fdata_Size;
-    unsigned int uSector_rdata_Size;
-    unsigned int uSector_lrdata_Size;
-    unsigned int uDoors_ddata_Size;
+    int32_t faceDataSizeBytes;
+    int32_t sectorDataSizeBytes;
+    int32_t sectorLightDataSizeBytes;
+    int32_t doorsDataSizeBytes;
     std::array<char, 16> field_78;
 };
 static_assert(sizeof(BLVHeader_MM7) == 136);
@@ -1340,8 +1336,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorTileType_MM7)
 
 
 struct SaveGameHeader_MM7 {
-    std::array<char, 20> name;
-    std::array<char, 20> locationName;
+    std::array<char, 20> name; // Savegame as displayed in the save/load menu.
+    std::array<char, 20> locationName; // E.g. "out06.odm".
     int64_t playingTime;
     std::array<char, 52> field_30;
 };

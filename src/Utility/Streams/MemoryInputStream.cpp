@@ -6,16 +6,16 @@
 #include <string>
 
 MemoryInputStream::MemoryInputStream() {
-    reset(nullptr, 0);
+    open(nullptr, 0);
 }
 
 MemoryInputStream::MemoryInputStream(const void *data, size_t size, std::string_view displayPath) {
-    reset(data, size, displayPath);
+    open(data, size, displayPath);
 }
 
 MemoryInputStream::~MemoryInputStream() {}
 
-void MemoryInputStream::reset(const void *data, size_t size, std::string_view displayPath) {
+void MemoryInputStream::open(const void *data, size_t size, std::string_view displayPath) {
     _begin = static_cast<const char *>(data);
     _pos = _begin;
     _end = _pos + size;
@@ -41,7 +41,7 @@ size_t MemoryInputStream::skip(size_t size) {
 }
 
 void MemoryInputStream::close() {
-    reset(nullptr, 0);
+    open(nullptr, 0);
 }
 
 std::string MemoryInputStream::displayPath() const {

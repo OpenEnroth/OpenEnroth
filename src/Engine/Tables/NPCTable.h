@@ -35,17 +35,17 @@ struct NPCTopic {
 };
 
 struct NPCData {  // 4Ch
-    inline bool Hired() { return uFlags & NPC_HIRED; }
+    inline bool Hired() { return flags & NPC_HIRED; }
 
-    std::string name;               // 0
-    unsigned int uPortraitID = 0;  // 4
-    NpcFlags uFlags = 0;  // 8
-    int fame = 0;                  // c
-    int rep = 0;                   // 10
-    HouseId Location2D = HOUSE_INVALID;   // 14  house_id
-    NpcProfession profession = NoProfession;  // 18
-    int greet = 0;                 // 1c
-    int is_joinable = 0;           // 20
+    std::string name; // Actual NPC name as displayed in-game.
+    unsigned int portraitId = 0; // Portrait texture is "npcXXX" in icons.lod.
+    NpcFlags flags = 0;
+    int fame = 0; // Fame requirement for NPC to talk to the party, unused.
+    int rep = 0; // NPC's reputation, is it even used in the game?
+    HouseId house = HOUSE_INVALID; // House where this NPC is in.
+    NpcProfession profession = NoProfession;
+    int greetingIndex = 0; // Index into "npcgreet.txt" for this NPC's greeting.
+    bool canJoin = false;
     int field_24 = 0;
     unsigned int dialogue_1_evt_id = 0;  // dialogue options that are defined by script
     unsigned int dialogue_2_evt_id = 0;  // = 0  == unused
@@ -53,9 +53,9 @@ struct NPCData {  // 4Ch
     unsigned int dialogue_4_evt_id = 0;  // and absolutely crazy stuff when it's in party hierlings (npc2)
     unsigned int dialogue_5_evt_id = 0;
     unsigned int dialogue_6_evt_id = 0;
-    Sex uSex = SEX_MALE;       // 40
-    int bHasUsedTheAbility = 0;  // 44
-    int news_topic = 0;          // 48
+    Sex sex = SEX_MALE;
+    int hasUsedAbility = 0;
+    int newsTopic = 0;
 };
 
 struct NPCSacrificeStatus {

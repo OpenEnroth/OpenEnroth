@@ -774,8 +774,8 @@ void Rest(Duration restTime) {
 void restAndHeal(Duration restTime) {
     pParty->GetPlayingTime() += restTime;
 
-    pParty->pHirelings[0].bHasUsedTheAbility = false;
-    pParty->pHirelings[1].bHasUsedTheAbility = false;
+    pParty->pHirelings[0].hasUsedAbility = false;
+    pParty->pHirelings[1].hasUsedAbility = false;
 
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
 

@@ -19,7 +19,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/BspRenderer.h"
-#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -64,6 +63,7 @@
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Resources/LOD.h"
 #include "Graphics/TileGenerator.h"
 
 #include "GUI/GUIProgressBar.h"
@@ -271,7 +271,7 @@ void Engine::DrawGUI() {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int sector_id = pBLVRenderParams->uPartySectorID;
             GUIWindow::DrawText(assets->pFontArrus.get(), { 16, debug_info_offset }, colorTable.White,
-                                     fmt::format("Party Sector ID:       {}/{} ({})\n", sector_id, pIndoor->pSectors.size(), pBLVRenderParams->uPartyEyeSectorID), pPrimaryWindow->frameRect);
+                                     fmt::format("Party Sector ID:       {}/{} ({})\n", sector_id, pIndoor->sectors.size(), pBLVRenderParams->uPartyEyeSectorID), pPrimaryWindow->frameRect);
             debug_info_offset += 16;
         }
 
@@ -903,10 +903,10 @@ int GetGravityStrength() {
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
                                    std::string_view filename) {
-    for (unsigned i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
-        auto extra = &pIndoor->pFaceExtras[i];
+    for (unsigned i = 1; i < pIndoor->faceExtras.size(); ++i) {
+        auto extra = &pIndoor->faceExtras[i];
         if (extra->sCogNumber == uFaceCog) {
-            auto face = &pIndoor->pFaces[extra->face_id];
+            auto face = &pIndoor->faces[extra->face_id];
             face->SetTexture(filename);
         }
     }
@@ -915,8 +915,8 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
 void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
                                     std::string_view filename) {
     for (BSPModel &model : pOutdoor->pBModels) {
-        for (ODMFace &face : model.pFaces) {
-            if (face.sCogNumber == uFaceCog) {
+        for (ODMFace &face : model.faces) {
+            if (face.cogNumber == uFaceCog) {
                 face.SetTexture(filename);
             }
         }
@@ -943,24 +943,24 @@ void setTexture(unsigned int uFaceCog, std::string_view pFilename) {
 void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            for (unsigned i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
-                if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber) {
+            for (unsigned i = 1; i < (unsigned int)pIndoor->faceExtras.size(); ++i) {
+                if (pIndoor->faceExtras[i].sCogNumber == sCogNumber) {
                     if (on)
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id]
+                        pIndoor->faces[pIndoor->faceExtras[i].face_id]
                             .uAttributes |= bit;
                     else
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id]
+                        pIndoor->faces[pIndoor->faceExtras[i].face_id]
                             .uAttributes &= ~bit;
                 }
             }
         } else {
             for (BSPModel &model : pOutdoor->pBModels) {
-                for (ODMFace &face : model.pFaces) {
-                    if (face.sCogNumber == sCogNumber) {
+                for (ODMFace &face : model.faces) {
+                    if (face.cogNumber == sCogNumber) {
                         if (on) {
-                            face.uAttributes |= bit;
+                            face.attributes |= bit;
                         } else {
-                            face.uAttributes &= ~bit;
+                            face.attributes &= ~bit;
                         }
                     }
                 }
@@ -1019,11 +1019,11 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     // New day dawns at 3am.
     Time next3am = Time::fromDurationSinceSilence((oldTime.toDurationSinceSilence() - Duration::fromHours(3)).roundedUp(Duration::fromDays(1)) + Duration::fromHours(3));
     if (oldTime < next3am && newTime >= next3am) {
-        pParty->pHirelings[0].bHasUsedTheAbility = false;
-        pParty->pHirelings[1].bHasUsedTheAbility = false;
+        pParty->pHirelings[0].hasUsedAbility = false;
+        pParty->pHirelings[1].hasUsedAbility = false;
 
         for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i)
-            pNPCStats->pNPCData[i].bHasUsedTheAbility = false;
+            pNPCStats->pNPCData[i].hasUsedAbility = false;
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {
@@ -1149,7 +1149,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
             continue;
         }
 
-        if (!pBuff->isGMBuff) {
+        if (!pBuff->isGM) {
             if (!pParty->pCharacters[pBuff->caster - 1].CanAct()) {
                 pBuff->Reset();
                 if (buffIdx == PARTY_BUFF_FLY) {
@@ -1270,7 +1270,7 @@ void RegeneratePartyHealthMana() {
 
     // Mana drain from flying
     // GM does not drain
-    if (!engine->config->debug.AllMagic.value() && pParty->FlyActive() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff) {
+    if (!engine->config->debug.AllMagic.value() && pParty->FlyActive() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM) {
         if (pParty->bFlying) {
             int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1;
             pParty->pCharacters[caster].mana = std::max(0, pParty->pCharacters[caster].mana - ticks5);
@@ -1279,7 +1279,7 @@ void RegeneratePartyHealthMana() {
 
     // Mana drain from water walk
     // GM does not drain
-    if (!engine->config->debug.AllMagic.value() && pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff) {
+    if (!engine->config->debug.AllMagic.value() && pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM) {
         if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
             int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1;
 
@@ -1436,9 +1436,9 @@ void initLevelStrings(const Blob &blob) {
 
     int offs = 0;
     while (offs < blob.size()) {
-        const char *nextNullTerm = (const char*)memchr(&blob.string_view()[offs], '\0', blob.size() - offs);
-        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.string_view()[offs]) : (blob.size() - offs);
-        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob.string_view()[offs], stringSize)));
+        const char *nextNullTerm = (const char*)memchr(&blob.str()[offs], '\0', blob.size() - offs);
+        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.str()[offs]) : (blob.size() - offs);
+        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob.str()[offs], stringSize)));
         offs += stringSize + 1;
     }
 }
@@ -1469,7 +1469,7 @@ void Transition_StopSound_Autosave(std::string_view pMapName,
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
     if (engine->_currentLoadedMapId != pMapStats->GetMapInfo(pMapName)) {
-        AutoSave();
+        autoSave();
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;

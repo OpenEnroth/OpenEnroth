@@ -27,7 +27,7 @@ void NPCStats::InitializeNPCText(const Blob &npcText) {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw(npcText.string_view());
+    std::string txtRaw(npcText.str());
     strtok(txtRaw.data(), "\r");
 
     for (i = 0; i < 789; ++i) {
@@ -57,7 +57,7 @@ void NPCStats::InitializeNPCText(const Blob &npcText) {
 }
 
 void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
-    std::string txtRaw(npcTopics.string_view());
+    std::string txtRaw(npcTopics.str());
     strtok(txtRaw.data(), "\r");
 
     char *test_string;
@@ -94,7 +94,7 @@ void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
 }
 
 void NPCStats::InitializeNPCDist(const Blob &npcDist) {
-    std::string txtRaw(npcDist.string_view());
+    std::string txtRaw(npcDist.str());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
@@ -164,7 +164,7 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw(npcData.string_view());
+    std::string txtRaw(npcData.str());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
@@ -189,19 +189,19 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
                         pOriginalNPCData[i + 1].name = pNPCUnicNames[i];
                         break;
                     case 2:
-                        pOriginalNPCData[i + 1].uPortraitID = atoi(test_string);
+                        pOriginalNPCData[i + 1].portraitId = atoi(test_string);
                         break;
                     case 6:
-                        pOriginalNPCData[i + 1].Location2D = static_cast<HouseId>(atoi(test_string));
+                        pOriginalNPCData[i + 1].house = static_cast<HouseId>(atoi(test_string));
                         break;
                     case 7:
                         pOriginalNPCData[i + 1].profession = static_cast<NpcProfession>(atoi(test_string));
                         break;
                     case 8:
-                        pOriginalNPCData[i + 1].greet = atoi(test_string);
+                        pOriginalNPCData[i + 1].greetingIndex = atoi(test_string);
                         break;
                     case 9:
-                        pOriginalNPCData[i + 1].is_joinable = (*test_string == 'y') ? 1 : 0;
+                        pOriginalNPCData[i + 1].canJoin = (*test_string == 'y') ? 1 : 0;
                         break;
                     case 10:
                         pOriginalNPCData[i + 1].dialogue_1_evt_id = atoi(test_string);
@@ -231,7 +231,7 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
 }
 
 void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
-    std::string txtRaw(npcGreets.string_view());
+    std::string txtRaw(npcGreets.str());
     strtok(txtRaw.data(), "\r");
 
     char *test_string;
@@ -272,7 +272,7 @@ void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
 }
 
 void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
-    std::string txtRaw(npcGroups.string_view());
+    std::string txtRaw(npcGroups.str());
     strtok(txtRaw.data(), "\r");
 
     char *test_string;
@@ -308,7 +308,7 @@ void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
 }
 
 void NPCStats::InitializeNPCNews(const Blob &npcNews) {
-    std::string txtRaw(npcNews.string_view());
+    std::string txtRaw(npcNews.str());
     strtok(txtRaw.data(), "\r");
 
     char *test_string;
@@ -357,7 +357,7 @@ void NPCStats::Initialize(ResourceManager *resourceManager) {
 }
 
 void NPCStats::InitializeNPCNames(const Blob &npcNames) {
-    std::string txtRaw(npcNames.string_view());
+    std::string txtRaw(npcNames.str());
     strtok(txtRaw.data(), "\r");
 
     int i;
@@ -407,7 +407,7 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
 }
 
 void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
-    std::string txtRaw(npcProfs.string_view());
+    std::string txtRaw(npcProfs.str());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -484,7 +484,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     MonsterType monsterType = monsterTypeForMonsterId(npc_uid);
     Sex uNPCSex = sexForMonsterType(monsterType);
     uRace = raceForMonsterType(monsterType);
-    pNPCDataBuff->uSex = uNPCSex;
+    pNPCDataBuff->sex = uNPCSex;
     pNPCDataBuff->name = pNPCNames[grng->random(uNumNPCNames[uNPCSex])][uNPCSex];
 
     gen_attempts = 0;
@@ -541,8 +541,8 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
         }
     } while (!break_gen);
 
-    pNPCDataBuff->uPortraitID = uGeneratedPortret;
-    pNPCDataBuff->uFlags = 0;
+    pNPCDataBuff->portraitId = uGeneratedPortret;
+    pNPCDataBuff->flags = 0;
     pNPCDataBuff->fame = 0;
     // generate reputation
     rep_gen = grng->random(100) + 1;
@@ -575,9 +575,9 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
         } while (test_prof_summ < max_prof_cap);
     }
     pNPCDataBuff->profession = (NpcProfession)(gen_profession - 1);
-    pNPCDataBuff->Location2D = uLocation2D;
+    pNPCDataBuff->house = uLocation2D;
     pNPCDataBuff->field_24 = 1;
-    pNPCDataBuff->is_joinable = 1;
+    pNPCDataBuff->canJoin = 1;
     pNPCDataBuff->dialogue_1_evt_id = 0;
     pNPCDataBuff->dialogue_2_evt_id = 0;
     pNPCDataBuff->dialogue_3_evt_id = 0;

@@ -94,7 +94,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
 
     std::string txtRaw;
 
-    txtRaw = resourceManager->eventsData("stditems.txt").string_view();
+    txtRaw = resourceManager->eventsData("stditems.txt").str();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     // Standard Bonuses by Group
@@ -121,7 +121,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
         standardEnchantmentRangeByTreasureLevel[i] = Segment(svtoi(tokens[2]), svtoi(tokens[3]));
     }
 
-    txtRaw = resourceManager->eventsData("spcitems.txt").string_view();
+    txtRaw = resourceManager->eventsData("spcitems.txt").str();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     for (ItemEnchantment i : specialEnchantments.indices()) {
@@ -149,7 +149,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
         specialEnchantments[i].iTreasureLevel = (tolower(tokens[15][0]) - 'a') | mask;
     }
 
-    txtRaw = resourceManager->eventsData("items.txt").string_view();
+    txtRaw = resourceManager->eventsData("items.txt").str();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(1);
     for (size_t line = 0; line < 799; line++) {
@@ -217,7 +217,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
         items[item_counter].description = removeQuotes(tokens[16]);
     }
 
-    txtRaw = resourceManager->eventsData("rnditems.txt").string_view();
+    txtRaw = resourceManager->eventsData("rnditems.txt").str();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     for(size_t line = 0; line < 618; line++) {
@@ -287,7 +287,7 @@ void ItemTable::LoadPotions(const Blob &potions) {
     ItemId potion_value;
 
     std::vector<std::string_view> tokens;
-    std::string txtRaw(potions.string_view());
+    std::string txtRaw(potions.str());
     test_string = strtok(txtRaw.data(), "\r") + 1;
     while (test_string) {
         tokens = split(test_string, '\t');
@@ -330,7 +330,7 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
     char *test_string;
 
     std::vector<std::string_view> tokens;
-    std::string txtRaw(potionNotes.string_view());
+    std::string txtRaw(potionNotes.str());
     test_string = strtok(txtRaw.data(), "\r") + 1;
     while (test_string) {
         tokens = split(test_string, '\t');

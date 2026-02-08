@@ -155,7 +155,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
     }
 
     // begin TP
-    AutoSave();
+    autoSave();
     // if in current map
     // TODO(Nik-RE-dev): need separate function for teleportation to other maps
     if (engine->_currentLoadedMapId == townPortalList[townId].mapInfoID) {
@@ -199,7 +199,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
         }
     } else {
         // Town portal cast by hireling
-        pParty->pHirelings[casterId - pParty->pCharacters.size()].bHasUsedTheAbility = 1;
+        pParty->pHirelings[casterId - pParty->pCharacters.size()].hasUsedAbility = 1;
     }
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);

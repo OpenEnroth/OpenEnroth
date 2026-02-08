@@ -56,7 +56,7 @@ FsmAction MainMenuState::update() {
             transition = "exitGame";
             break;
         case UIMSG_QuickLoad: {
-            int slot = GetQuickSaveSlot();
+            int slot = getQuickSaveSlot();
             if (slot != -1) {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 pSavegameList->selectedSlot = slot;
