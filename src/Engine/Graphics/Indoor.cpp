@@ -380,7 +380,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         }
 
         // loop over floor and portal faces
-        for (uint16_t faceId : std::array{pSector->floorIds, pSector->portalIds} | std::views::join) {
+        for (uint16_t faceId : std::array {pSector->floorIds, pSector->portalIds} | std::views::join) {
             BLVFace *pFace = &faces[faceId];
             if (pFace->polygonType != POLYGON_Floor && pFace->polygonType != POLYGON_InBetweenFloorAndWall)
                 continue;

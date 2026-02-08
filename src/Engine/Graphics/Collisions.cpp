@@ -428,7 +428,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 
     for (int i = 0; i < totalSectors; i++) {
         pSector = &pIndoor->sectors[pSectorsArray[i]];
-        for (uint16_t face_id : std::array{pSector->floorIds, pSector->wallIds, pSector->ceilingIds} | std::views::join) {
+        for (uint16_t face_id : std::array {pSector->floorIds, pSector->wallIds, pSector->ceilingIds} | std::views::join) {
             BLVFace *face = &pIndoor->faces[face_id];
             if (face->isPortal() || !collision_state.bbox.intersects(face->boundingBox))
                 continue;

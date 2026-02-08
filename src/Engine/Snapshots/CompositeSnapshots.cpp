@@ -34,6 +34,59 @@
 
 #include "Engine/Graphics/Image.h"
 
+template<class Face>
+static void dropDuplicateFaceVertices(Face *face) {
+    auto copyVertex = [&](int src, int dst) {
+        face->vertexIds[dst] = face->vertexIds[src];
+        face->textureUs[dst] = face->textureUs[src];
+        face->textureVs[dst] = face->textureVs[src];
+    };
+
+    // First pass - collapse everything that doesn't wrap around.
+    int writeIdx = 0;
+    for (int readIdx = 0; readIdx < face->numVertices; readIdx++) {
+        if (writeIdx > 0 && face->vertexIds[readIdx] == face->vertexIds[writeIdx - 1])
+            continue; // AA -> A.
+        if (writeIdx > 1 && face->vertexIds[readIdx] == face->vertexIds[writeIdx - 2]) {
+            writeIdx--;
+            continue; // ABA -> A.
+        }
+        if (readIdx != writeIdx)
+            copyVertex(readIdx, writeIdx);
+        writeIdx++;
+    }
+
+    // Second pass - collapse sequences that wrap around.
+    int l = 0;
+    int r = writeIdx - 1;
+    while (l <= r) {
+        if (face->vertexIds[l] == face->vertexIds[r]) {
+            r--; // A***A -> A***.
+        } else if (r - l > 1 && face->vertexIds[l] == face->vertexIds[r - 1]) {
+            r -= 2; // A***AB -> A***.
+        } else if (r - l > 1 && face->vertexIds[l + 1] == face->vertexIds[r]) {
+            l += 2; // BA***A -> ***A.
+        } else {
+            break; // No new sequences to collapse.
+        }
+    }
+
+    // Final pass - shift if needed.
+    if (l != 0) {
+        for (int i = l; i <= r; i++)
+            copyVertex(i, i - l);
+    }
+
+    face->numVertices = r - l + 1;
+
+    // BLVFace uses spans, resize them to match the new vertex count.
+    if constexpr (std::is_same_v<Face, BLVFace>) {
+        face->vertexIds = face->vertexIds.first(face->numVertices);
+        face->textureUs = face->textureUs.first(face->numVertices);
+        face->textureVs = face->textureVs.first(face->numVertices);
+    }
+}
+
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->vertices);
     reconstruct(src.faces, &dst->faces);
@@ -64,8 +117,11 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         assert(j <= dst->faceData.size());
     }
 
+    for (BLVFace& face : dst->faces)
+        dropDuplicateFaceVertices(&face);
+
     // Face plane normals have come from fixed point values - recalculate them.
-    for (auto& face : dst->faces) {
+    for (BLVFace& face : dst->faces) {
         if (face.numVertices < 3) continue;
         Vec3f dir1 = (dst->vertices[face.vertexIds[1]] - dst->vertices[face.vertexIds[0]]);
         int i = 2;
@@ -369,19 +425,8 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     reconstruct(srcExtras.vertices, &dst->vertices);
     reconstruct(srcExtras.faces, &dst->faces);
 
-    // Drop duplicate consecutive vertices in faces. This does happen in MM7 data.
-    for (ODMFace &face : dst->faces) {
-        int writeIdx = 0;
-        for (int readIdx = 0; readIdx < face.numVertices; readIdx++) {
-            if (face.vertexIds[readIdx] != face.vertexIds[(readIdx + 1) % face.numVertices]) {
-                face.vertexIds[writeIdx] = face.vertexIds[readIdx];
-                face.textureUs[writeIdx] = face.textureUs[readIdx];
-                face.textureVs[writeIdx] = face.textureVs[readIdx];
-                writeIdx++;
-            }
-        }
-        face.numVertices = writeIdx;
-    }
+    for (ODMFace &face : dst->faces)
+        dropDuplicateFaceVertices(&face);
 
     // TODO(pskelton): This code is common to ODM/BLV faces
     // Face plane normals have come from fixed point values - recalculate them.
