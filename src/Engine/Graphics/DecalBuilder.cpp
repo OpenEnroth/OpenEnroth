@@ -192,7 +192,7 @@ bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(int uFaceID) {
     if (pFace->Indoor_sky() || pFace->isFluid()) return true;
     for (unsigned i = 0; i < bloodsplat_container->uNumBloodsplats; ++i) {
         Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
-        if (pFace->pBounding.intersectsCube(pBloodsplat->pos, pBloodsplat->radius)) {
+        if (pFace->boundingBox.intersectsCube(pBloodsplat->pos, pBloodsplat->radius)) {
             double dotdist = dot(pFace->facePlane.normal, pBloodsplat->pos) + pFace->facePlane.dist;
             if (dotdist <= pBloodsplat->radius) {
                 // store splat

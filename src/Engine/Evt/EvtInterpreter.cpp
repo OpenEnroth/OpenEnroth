@@ -342,7 +342,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_SpeakNPC:
             if (_canShowMessages) {
                 // TODO(pskeltonm): Fix #2223 stop tutorial message spam - should be data mod
-                if (engine->_outdoor->level_filename == "out01.odm" && _eventId >= 200 && _eventId <= 218) {
+                if (engine->_currentLoadedMapId == MAP_EMERALD_ISLAND && _eventId >= 200 && _eventId <= 218) {
                     if (engine->_OE_transientVariables[_eventId - 200]) {
                         break;
                     }

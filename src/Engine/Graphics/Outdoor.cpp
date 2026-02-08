@@ -412,10 +412,6 @@ void OutdoorLocation::SetFog() {
 
 //----- (0047CDE2) --------------------------------------------------------
 void OutdoorLocation::CreateDebugLocation() {
-    this->level_filename = "blank";
-    this->location_filename = "i6.odm";
-    this->location_file_description = "MM6 Outdoor v1.00";
-
     this->pTerrain.createDebugTerrain();
     this->pSpawnPoints.clear();
 
@@ -427,9 +423,6 @@ void OutdoorLocation::CreateDebugLocation() {
 
 //----- (0047CF9C) --------------------------------------------------------
 void OutdoorLocation::Release() {
-    this->level_filename = "blank";
-    this->location_filename = "default.odm";
-    this->location_file_description = "MM6 Outdoor v1.00";
     this->sky_texture_filename = "sky043";
 
     pBModels.clear();
@@ -1817,7 +1810,6 @@ static void loadAndPrepareODMInternal(MapId mapid) {
     pOutdoor->PrepareDecorations();
     pOutdoor->ArrangeSpriteObjects();
     pOutdoor->InitalizeActors(mapid);
-    pOutdoor->level_filename = mapFilename;
     pWeather->Initialize();
     pCamera3D->_viewYaw = pParty->_viewYaw;
     pCamera3D->_viewPitch = pParty->_viewPitch;

@@ -74,9 +74,6 @@ struct OutdoorLocation {
         return pBModels[pid.id() >> 6];
     }
 
-    std::string level_filename;
-    std::string location_filename;
-    std::string location_file_description;
     std::string sky_texture_filename;
     OutdoorTerrain pTerrain;
     std::vector<BSPModel> pBModels;

@@ -136,8 +136,8 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         BLVSector *pSector = &pIndoor->sectors[uSectorID];
 
-        for (unsigned i = 0; i < pSector->numLights; ++i) {
-            BLVLight *this_light = &pIndoor->lights[pSector->lights[i]];
+        for (uint16_t lightId : pSector->lightIds) {
+            BLVLight *this_light = &pIndoor->lights[lightId];
             light_radius = this_light->uRadius;
 
             if (~this_light->uAtributes & 8) {

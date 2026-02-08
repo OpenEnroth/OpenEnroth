@@ -74,7 +74,7 @@ void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocati
 struct BSPModelExtras_MM7 {
     std::vector<Vec3i> vertices;
     std::vector<ODMFace_MM7> faces;
-    std::vector<uint16_t> faceOrdering;
+    std::vector<uint16_t> facesOrdering; // Seems to be filled either with zeros or garbage, not used in OE.
     std::vector<BSPNode_MM7> bspNodes;
     std::vector<std::array<char, 10>> faceTextures;
 };
@@ -83,9 +83,9 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
 
 
 struct OutdoorLocation_MM7 {
-    std::array<char, 32> name;
-    std::array<char, 32> fileName;
-    std::array<char, 32> desciption;
+    std::array<char, 32> name; // Always "blank" in MM7 data.
+    std::array<char, 32> fileName; // Always "default.odm" in MM7 data.
+    std::array<char, 32> description; // Always "MM6 Outdoor v1.00" or "MM6 Outdoor v7.00" in MM7 data.
     std::array<char, 32> skyTexture;
     std::array<char, 32> groundTilesetUnused;
     std::array<OutdoorTileType_MM7, 4> tileTypes;

@@ -91,6 +91,5 @@ class BSPModel {
 
     std::vector<Vec3f> vertices;
     std::vector<ODMFace> faces;
-    std::vector<uint16_t> facesOrdering;
     std::vector<BSPNode> nodes;
 };

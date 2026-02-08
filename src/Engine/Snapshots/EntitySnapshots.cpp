@@ -275,18 +275,18 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
 void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
-    dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
-    dst->pVertexIDs = nullptr;
-    dst->pVertexUs = nullptr;
-    dst->pVertexVs = nullptr;
-    dst->uFaceExtraID = src.faceExtraId;
+    dst->attributes = static_cast<FaceAttributes>(src.attributes);
+    dst->vertexIds = {};
+    dst->textureUs = {};
+    dst->textureVs = {};
+    dst->faceExtraId = src.faceExtraId;
     dst->texture = nullptr;
     dst->animationId = 0;
-    dst->uSectorID = src.sectorId;
-    dst->uBackSectorID = src.backSectorId;
-    reconstruct(src.bounding, &dst->pBounding);
-    dst->uPolygonType = static_cast<PolygonType>(src.polygonType);
-    dst->uNumVertices = src.numVertices;
+    dst->sectorId = src.sectorId;
+    dst->backSectorId = src.backSectorId;
+    reconstruct(src.bounding, &dst->boundingBox);
+    dst->polygonType = static_cast<PolygonType>(src.polygonType);
+    dst->numVertices = src.numVertices;
 }
 
 void reconstruct(const TileData_MM7 &src, TileData *dst) {
@@ -1539,14 +1539,14 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
     memzero(dst);
 
     dst->flags = src.flags;
-    dst->numFloors = src.numFloors;
-    dst->numWalls = src.numWalls;
-    dst->numCeilings = src.numCeilings;
-    dst->numPortals = src.numPortals;
-    dst->numFaces = src.numFaces;
-    dst->numNonBspFaces = src.numNonBspFaces;
-    dst->numDecorations = src.numDecorations;
-    dst->numLights = src.numLights;
+    dst->numFloors = src.floorIds.size();
+    dst->numWalls = src.wallIds.size();
+    dst->numCeilings = src.ceilingIds.size();
+    dst->numPortals = src.portalIds.size();
+    dst->numFaces = src.faceIds.size();
+    dst->numNonBspFaces = src.nonBspFaceIds.size();
+    dst->numDecorations = src.decorationIds.size();
+    dst->numLights = src.lightIds.size();
     dst->minAmbientLightLevel = src.minAmbientLightLevel;
     dst->firstBspNode = src.firstBspNode;
     snapshot(src.boundingBox, &dst->boundingBox);
@@ -1554,14 +1554,7 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
 
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->flags = src.flags;
-    dst->numFloors = src.numFloors;
-    dst->numWalls = src.numWalls;
-    dst->numCeilings = src.numCeilings;
-    dst->numPortals = src.numPortals;
-    dst->numFaces = src.numFaces;
-    dst->numNonBspFaces = src.numNonBspFaces;
-    dst->numDecorations = src.numDecorations;
-    dst->numLights = src.numLights;
+    // Spans (floorIds, wallIds, etc.) are set up in CompositeSnapshots.cpp after sectorData is reconstructed.
     dst->minAmbientLightLevel = src.minAmbientLightLevel;
     dst->firstBspNode = src.firstBspNode;
     reconstruct(src.boundingBox, &dst->boundingBox);
@@ -1789,12 +1782,12 @@ void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
 }
 
 void reconstruct(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst) {
-    dst->face_id = src.face_id;
-    dst->uAdditionalBitmapID = src.uAdditionalBitmapID;
-    dst->sTextureDeltaU = src.sTextureDeltaU;
-    dst->sTextureDeltaV = src.sTextureDeltaV;
-    dst->sCogNumber = src.sCogNumber;
-    dst->uEventID = src.uEventID;
+    dst->faceId = src.face_id;
+    dst->additionalBitmapId = src.uAdditionalBitmapID;
+    dst->textureDeltaU = src.sTextureDeltaU;
+    dst->textureDeltaV = src.sTextureDeltaV;
+    dst->cogNumber = src.sCogNumber;
+    dst->eventId = src.uEventID;
 }
 
 void reconstruct(const BSPNode_MM7 &src, BSPNode *dst) {
