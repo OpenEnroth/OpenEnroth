@@ -477,7 +477,7 @@ LABEL_25:
                     continue;
                 }
                 pSpriteObject->vVelocity = Vec3f(0, 0, 0);
-                pSpriteObject->vPosition.z = pIndoor->vertices[*pIndoor->faces[pidId].vertexIds].z + 1;
+                pSpriteObject->vPosition.z = pIndoor->vertices[pIndoor->faces[pidId].vertexIds[0]].z + 1;
             }
             pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
         }

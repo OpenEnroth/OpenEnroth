@@ -200,7 +200,7 @@ void IndoorLocation::Draw() {
 }
 
 //----- (004C0EF2) --------------------------------------------------------
-void BLVFace::FromODM(ODMFace *face) {
+void BLVFace::FromODM(const ODMFace *face) {
     this->facePlane = face->facePlane;
     this->attributes = face->attributes;
     this->boundingBox = face->boundingBox;
@@ -209,7 +209,7 @@ void BLVFace::FromODM(ODMFace *face) {
     this->numVertices = face->numVertices;
     this->texture = face->texture;
     this->animationId = face->animationId;
-    this->vertexIds = face->vertexIds.data();
+    this->vertexIds = std::span(const_cast<int16_t *>(face->vertexIds.data()), face->numVertices);
 }
 
 //----- (004AE5BA) --------------------------------------------------------
@@ -420,7 +420,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         for (int s = 0; s < NumFoundFaceStore; ++s) {
             // calc distance between this face and party
             if (this->faces[FoundFaceStore[s]].polygonType == POLYGON_Floor)
-                CalcZDist = sZ - this->vertices[*this->faces[FoundFaceStore[s]].vertexIds].z;
+                CalcZDist = sZ - this->vertices[this->faces[FoundFaceStore[s]].vertexIds[0]].z;
             if (this->faces[FoundFaceStore[s]].polygonType == POLYGON_InBetweenFloorAndWall) {
                 CalcZDist = sZ - this->faces[FoundFaceStore[s]].zCalc.calculate(sX, sY);
             }

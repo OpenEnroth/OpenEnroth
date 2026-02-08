@@ -43,8 +43,8 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
 
-        pFace->vertexIds = dst->faceData.data() + j;
-        j += pFace->numVertices + 1;
+        pFace->vertexIds = std::span(dst->faceData.data() + j, pFace->numVertices);
+        j += pFace->numVertices + 1; // +1 to skip closing vertex in source data.
 
         // Skipping pXInterceptDisplacements.
         j += pFace->numVertices + 1;
@@ -55,10 +55,10 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         // Skipping pZInterceptDisplacements.
         j += pFace->numVertices + 1;
 
-        pFace->textureUs = dst->faceData.data() + j;
+        pFace->textureUs = std::span(dst->faceData.data() + j, pFace->numVertices);
         j += pFace->numVertices + 1;
 
-        pFace->textureVs = dst->faceData.data() + j;
+        pFace->textureVs = std::span(dst->faceData.data() + j, pFace->numVertices);
         j += pFace->numVertices + 1;
 
         assert(j <= dst->faceData.size());

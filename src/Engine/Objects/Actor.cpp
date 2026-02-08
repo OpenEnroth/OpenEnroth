@@ -4079,7 +4079,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 
         for (uint16_t portalId : sector.portalIds) {
             BLVFace *portalface = &pIndoor->faces[portalId];
-            Vec3f *portalverts = &pIndoor->vertices[*portalface->vertexIds];
+            Vec3f *portalverts = &pIndoor->vertices[portalface->vertexIds[0]];
 
             // ray obj1 to portal dot normal
             float obj1portaldot = dot(portalface->facePlane.normal, *portalverts - pos1);

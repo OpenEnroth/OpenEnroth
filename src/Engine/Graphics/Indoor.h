@@ -72,7 +72,7 @@ struct FlatFace {
 
 struct BLVFace {
     void _get_normals(Vec3f *outU, Vec3f *outV);
-    void FromODM(ODMFace *face);
+    void FromODM(const ODMFace *face);
 
     void SetTexture(std::string_view filename);
     GraphicsImage *GetTexture() const;
@@ -131,18 +131,15 @@ struct BLVFace {
     PlaneZCalcf zCalc;
     FaceAttributes attributes;
 
-    /** Array of indices into the vertex array for this face's vertices. Points into `IndoorLocation::pVertices` for
-     * indoor faces, or `BSPModel::pVertices` for outdoor faces. Has `uNumVertices + 1` elements, where the last element
-     * repeats the first vertex to close the polygon. */
-    int16_t *vertexIds = nullptr;
+    /** Indices into the vertex array for this face's vertices. Points into `IndoorLocation::pVertices` for
+     * indoor faces. Has `numVertices` elements. */
+    std::span<int16_t> vertexIds;
 
-    /** Array of U (horizontal) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
-     * matching `pVertexIDs`. */
-    int16_t *textureUs = nullptr;
+    /** U (horizontal) texture coordinates for each vertex, in texture pixels. Has `numVertices` elements. */
+    std::span<int16_t> textureUs;
 
-    /** Array of V (vertical) texture coordinates for each vertex, in texture pixels. Has `uNumVertices + 1` elements,
-     * matching `pVertexIDs`. */
-    int16_t *textureVs = nullptr;
+    /** V (vertical) texture coordinates for each vertex, in texture pixels. Has `numVertices` elements. */
+    std::span<int16_t> textureVs;
 
     uint16_t faceExtraId = 0;
     GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.

@@ -276,9 +276,9 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
     dst->attributes = static_cast<FaceAttributes>(src.attributes);
-    dst->vertexIds = nullptr;
-    dst->textureUs = nullptr;
-    dst->textureVs = nullptr;
+    dst->vertexIds = {};
+    dst->textureUs = {};
+    dst->textureVs = {};
     dst->faceExtraId = src.faceExtraId;
     dst->texture = nullptr;
     dst->animationId = 0;
