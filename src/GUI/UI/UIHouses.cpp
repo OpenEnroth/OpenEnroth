@@ -619,47 +619,47 @@ void createHouseUI(HouseId houseId) {
       case HOUSE_TYPE_ELEMENTAL_GUILD:
       case HOUSE_TYPE_SELF_GUILD:
       case HOUSE_TYPE_MIRRORED_PATH_GUILD:
-        window_SpeakInHouse = new GUIWindow_MagicGuild(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_MagicGuild>(houseId);
         break;
       case HOUSE_TYPE_BANK:
-        window_SpeakInHouse = new GUIWindow_Bank(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Bank>(houseId);
         break;
       case HOUSE_TYPE_TEMPLE:
-        window_SpeakInHouse = new GUIWindow_Temple(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Temple>(houseId);
         break;
       case HOUSE_TYPE_TAVERN:
-        window_SpeakInHouse = new GUIWindow_Tavern(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Tavern>(houseId);
         break;
       case HOUSE_TYPE_TRAINING_GROUND:
-        window_SpeakInHouse = new GUIWindow_Training(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Training>(houseId);
         break;
       case HOUSE_TYPE_STABLE:
       case HOUSE_TYPE_BOAT:
-        window_SpeakInHouse = new GUIWindow_Transport(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Transport>(houseId);
         break;
       case HOUSE_TYPE_TOWN_HALL:
-        window_SpeakInHouse = new GUIWindow_TownHall(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_TownHall>(houseId);
         break;
       case HOUSE_TYPE_JAIL:
-        window_SpeakInHouse = new GUIWindow_Jail(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Jail>(houseId);
         break;
       case HOUSE_TYPE_MERCENARY_GUILD:
-        window_SpeakInHouse = new GUIWindow_MercenaryGuild(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_MercenaryGuild>(houseId);
         break;
       case HOUSE_TYPE_WEAPON_SHOP:
-        window_SpeakInHouse = new GUIWindow_WeaponShop(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_WeaponShop>(houseId);
         break;
       case HOUSE_TYPE_ARMOR_SHOP:
-        window_SpeakInHouse = new GUIWindow_ArmorShop(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_ArmorShop>(houseId);
         break;
       case HOUSE_TYPE_MAGIC_SHOP:
-        window_SpeakInHouse = new GUIWindow_MagicShop(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_MagicShop>(houseId);
         break;
       case HOUSE_TYPE_ALCHEMY_SHOP:
-        window_SpeakInHouse = new GUIWindow_AlchemyShop(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_AlchemyShop>(houseId);
         break;
       default:
-        window_SpeakInHouse = new GUIWindow_House(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_House>(houseId);
         break;
     }
 

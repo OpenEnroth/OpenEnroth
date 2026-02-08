@@ -258,9 +258,8 @@ void Game::onEscape() {
                                            // shops with characters who couldnt
                                            // act sctive
 
-    if (pGUIWindow_CurrentMenu == window_SpeakInHouse) {
-        window_SpeakInHouse = nullptr;
-    }
+    window_SpeakInHouse = nullptr;
+    
     if (pGUIWindow_CurrentMenu != nullptr) {
         pGUIWindow_CurrentMenu->Release();  // check this
         delete pGUIWindow_CurrentMenu;
@@ -597,7 +596,7 @@ void Game::processQueuedMessages() {
                                     window_SpeakInHouse->playHouseGoodbyeSpeech();
                                     pAudioPlayer->playHouseSound(SOUND_WoodDoorClosing, false);
                                     pMediaPlayer->Unload();
-                                    pGUIWindow_CurrentMenu = window_SpeakInHouse;
+                                    /*pGUIWindow_CurrentMenu = window_SpeakInHouse;*/
 
                                     onEscape();
                                     continue;

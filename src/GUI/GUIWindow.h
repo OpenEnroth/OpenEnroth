@@ -312,10 +312,10 @@ std::string GetDisplayName(Actor *actor);
 
 extern std::unique_ptr<GUIWindow> pPrimaryWindow;
 
-extern GUIWindow_House *window_SpeakInHouse;
 extern GUIWindow *pGUIWindow_CurrentMenu;
 extern GUIWindow_Chest *pGUIWindow_CurrentChest;
 
+extern std::unique_ptr<GUIWindow_House> window_SpeakInHouse;
 extern std::unique_ptr<GUIWindow> pDialogueWindow;
 extern std::unique_ptr<GUIWindow_MessageScroll> pGUIWindow_ScrollWindow;
 extern std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;

@@ -62,8 +62,8 @@ std::unique_ptr<GUIWindow> pPrimaryWindow;
 // used for many different windows
 GUIWindow *pGUIWindow_CurrentMenu;
 GUIWindow_Chest *pGUIWindow_CurrentChest;
-GUIWindow_House *window_SpeakInHouse;
 
+std::unique_ptr<GUIWindow_House> window_SpeakInHouse;
 std::unique_ptr<GUIWindow> pDialogueWindow;
 std::unique_ptr<GUIWindow_MessageScroll> pGUIWindow_ScrollWindow; // reading a message scroll
 std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;
@@ -1028,6 +1028,7 @@ void WindowManager::DeleteAllVisibleWindows() {
     pGUIWindow_CastTargetedSpell = nullptr;
     pGameOverWindow = nullptr;
     pGUIWindow_BranchlessDialogue = nullptr;
+    window_SpeakInHouse = nullptr;
 
     while (lWindowList.size() > 1) {
         GUIWindow *pWindow = lWindowList.front();
@@ -1046,7 +1047,6 @@ void WindowManager::DeleteAllVisibleWindows() {
 
     // reset screen state after deleting all windows
     pGUIWindow_CurrentMenu = nullptr;
-    window_SpeakInHouse = nullptr;
     
 
     current_screen_type = SCREEN_GAME;
