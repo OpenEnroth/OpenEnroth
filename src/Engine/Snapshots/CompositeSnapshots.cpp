@@ -87,6 +87,35 @@ static void dropDuplicateFaceVertices(Face *face) {
     }
 }
 
+// Face plane normals have come from fixed point values - recalculate them.
+template<class Face>
+static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices) {
+    if (face->numVertices < 3) return;
+    Vec3f dir1 = (vertices[face->vertexIds[1]] - vertices[face->vertexIds[0]]);
+    Vec3f dir2, norm;
+    int i = 2;
+    for (; i < face->numVertices; i++) {
+        dir2 = (vertices[face->vertexIds[i]] - vertices[face->vertexIds[0]]);
+        if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
+            norm /= norm.length();
+            // Check that our new normal is pointing in the same direction as the original
+            constexpr float tolerance = 0.95f; // TODO(pskelton): may need tuning
+            if (dot(norm, face->facePlane.normal) > tolerance)
+                break;
+        }
+    }
+
+    if (i == face->numVertices) {
+        // If we didn't find a non-parallel edge, lets just round what were given.
+        // TODO(pskelton):  This shouldnt ever happen - test and drop
+        face->facePlane.normal /= face->facePlane.normal.length();
+    } else {
+        face->facePlane.normal = norm;
+    }
+    face->facePlane.dist = -dot(face->facePlane.normal, vertices[face->vertexIds[0]]);
+    face->zCalc.init(face->facePlane);
+}
+
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->vertices);
     reconstruct(src.faces, &dst->faces);
@@ -117,35 +146,9 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         assert(j <= dst->faceData.size());
     }
 
-    for (BLVFace& face : dst->faces)
-        dropDuplicateFaceVertices(&face);
-
-    // Face plane normals have come from fixed point values - recalculate them.
     for (BLVFace &face : dst->faces) {
-        if (face.numVertices < 3) continue;
-        Vec3f dir1 = (dst->vertices[face.vertexIds[1]] - dst->vertices[face.vertexIds[0]]);
-        Vec3f dir2, norm;
-        int i = 2;
-        for (; i < face.numVertices; i++) {
-            dir2 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[0]]);
-            if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
-                norm /= norm.length();
-                // Check that our new normal is pointing in the same direction as the original
-                constexpr float tolerance = 0.95f; // TODO(pskelton): may need tuning
-                if (dot(norm, face.facePlane.normal) > tolerance)
-                    break;
-            }
-        }
-
-        if (i == face.numVertices) {
-            // If we didn't find a non-parallel edge, lets just round what were given.
-            // TODO(pskelton):  This shouldnt ever happen - test and drop
-            face.facePlane.normal /= face.facePlane.normal.length();
-        } else {
-            face.facePlane.normal = norm;
-        }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.vertexIds[0]]);
-        face.zCalc.init(face.facePlane);
+        dropDuplicateFaceVertices(&face);
+        repairFaceNormal(&face, dst->vertices);
     }
 
     for (size_t i = 0; i < dst->faces.size(); ++i) {
@@ -419,36 +422,9 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     reconstruct(srcExtras.vertices, &dst->vertices);
     reconstruct(srcExtras.faces, &dst->faces);
 
-    for (ODMFace &face : dst->faces)
-        dropDuplicateFaceVertices(&face);
-
-    // TODO(pskelton): This code is common to ODM/BLV faces
-    // Face plane normals have come from fixed point values - recalculate them.
     for (ODMFace &face : dst->faces) {
-        if (face.numVertices < 3) continue;
-        Vec3f dir1 = (dst->vertices[face.vertexIds[1]] - dst->vertices[face.vertexIds[0]]);
-        Vec3f dir2, norm;
-        int i = 2;
-        for (; i < face.numVertices; i++) {
-            dir2 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[0]]);
-            if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
-                norm /= norm.length();
-                // Check that our new normal is pointing in the same direction as the original
-                constexpr float tolerance = 0.95f; // TODO(pskelton): may need tuning
-                if (dot(norm, face.facePlane.normal) > tolerance)
-                    break;
-            }
-        }
-
-        if (i == face.numVertices) {
-            // If we didn't find a non-parallel edge, lets just round what were given.
-            // TODO(pskelton):  This shouldnt ever happen - test and drop
-            face.facePlane.normal /= face.facePlane.normal.length();
-        } else {
-            face.facePlane.normal = norm / norm.length();
-        }
-        face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.vertexIds[0]]);
-        face.zCalc.init(face.facePlane);
+        dropDuplicateFaceVertices(&face);
+        repairFaceNormal(&face, dst->vertices);
     }
 
     for (size_t i = 0; i < dst->faces.size(); i++)
