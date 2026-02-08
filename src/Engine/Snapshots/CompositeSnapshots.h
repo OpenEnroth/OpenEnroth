@@ -83,9 +83,9 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
 
 
 struct OutdoorLocation_MM7 {
-    std::array<char, 32> name;
-    std::array<char, 32> fileName;
-    std::array<char, 32> desciption;
+    std::array<char, 32> name; // Always "blank" in MM7 data.
+    std::array<char, 32> fileName; // Always "default.odm" in MM7 data.
+    std::array<char, 32> description; // Always "MM6 Outdoor v1.00" or "MM6 Outdoor v7.00" in MM7 data.
     std::array<char, 32> skyTexture;
     std::array<char, 32> groundTilesetUnused;
     std::array<OutdoorTileType_MM7, 4> tileTypes;

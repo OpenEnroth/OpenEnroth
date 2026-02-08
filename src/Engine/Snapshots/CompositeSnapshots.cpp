@@ -488,9 +488,6 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
 }
 
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
-    reconstruct(src.name, &dst->level_filename);
-    reconstruct(src.fileName, &dst->location_filename);
-    reconstruct(src.desciption, &dst->location_file_description);
     reconstruct(src.skyTexture, &dst->sky_texture_filename);
     reconstruct(src, &dst->pTerrain);
 
@@ -521,7 +518,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
 void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     deserialize(src, &dst->name);
     deserialize(src, &dst->fileName);
-    deserialize(src, &dst->desciption);
+    deserialize(src, &dst->description);
     deserialize(src, &dst->skyTexture);
     deserialize(src, &dst->groundTilesetUnused);
     deserialize(src, &dst->tileTypes);
