@@ -121,24 +121,18 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         dropDuplicateFaceVertices(&face);
 
     // Face plane normals have come from fixed point values - recalculate them.
-    for (BLVFace& face : dst->faces) {
+    for (BLVFace &face : dst->faces) {
         if (face.numVertices < 3) continue;
         Vec3f dir1 = (dst->vertices[face.vertexIds[1]] - dst->vertices[face.vertexIds[0]]);
+        Vec3f dir2, norm;
         int i = 2;
-        // dir1 can be a 0 vec when first edge is degenerate - skip forwards
-        while (dir1.length() < 1e-6f && i < face.numVertices) {
-            dir1 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[i-1]]);
-            i++;
-        }
-
-        Vec3f dir2, recalcNorm;
         for (; i < face.numVertices; i++) {
             dir2 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[0]]);
-            if (recalcNorm = cross(dir1, dir2); recalcNorm.length() > 1e-6f) {
-                recalcNorm /= recalcNorm.length();
+            if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
+                norm /= norm.length();
                 // Check that our new normal is pointing in the same direction as the original
                 constexpr float tolerance = 0.95f; // TODO(pskelton): may need tuning
-                if (dot(recalcNorm, face.facePlane.normal) > tolerance)
+                if (dot(norm, face.facePlane.normal) > tolerance)
                     break;
             }
         }
@@ -148,7 +142,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
             // TODO(pskelton):  This shouldnt ever happen - test and drop
             face.facePlane.normal /= face.facePlane.normal.length();
         } else {
-            face.facePlane.normal = recalcNorm;
+            face.facePlane.normal = norm;
         }
         face.facePlane.dist = -dot(face.facePlane.normal, dst->vertices[face.vertexIds[0]]);
         face.zCalc.init(face.facePlane);
@@ -430,7 +424,7 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
 
     // TODO(pskelton): This code is common to ODM/BLV faces
     // Face plane normals have come from fixed point values - recalculate them.
-    for (auto& face : dst->faces) {
+    for (ODMFace &face : dst->faces) {
         if (face.numVertices < 3) continue;
         Vec3f dir1 = (dst->vertices[face.vertexIds[1]] - dst->vertices[face.vertexIds[0]]);
         Vec3f dir2, norm;
@@ -438,7 +432,11 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
         for (; i < face.numVertices; i++) {
             dir2 = (dst->vertices[face.vertexIds[i]] - dst->vertices[face.vertexIds[0]]);
             if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
-                break; // Found a non-parallel edge.
+                norm /= norm.length();
+                // Check that our new normal is pointing in the same direction as the original
+                constexpr float tolerance = 0.95f; // TODO(pskelton): may need tuning
+                if (dot(norm, face.facePlane.normal) > tolerance)
+                    break;
             }
         }
 
