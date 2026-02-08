@@ -84,7 +84,7 @@ var searchData=
   ['fromminutes_81',['fromMinutes',['../classTime.html#ab61433d48ab4deeb9484895c348f99c0',1,'Time::fromMinutes()'],['../classDuration.html#a28c52f2148670f760e90a5c5bb1e23a2',1,'Duration::fromMinutes()']]],
   ['frommonths_82',['fromMonths',['../classTime.html#a475c38b4ccbbcf7d093e195115e2380d',1,'Time::fromMonths()'],['../classDuration.html#ad75609b3c8e1851a6bc0584cef3ed048',1,'Duration::fromMonths()']]],
   ['fromnormalized_83',['fromNormalized',['../classFileSystemPathView.html#ad2565f8b6770634aead456f2cfb1356c',1,'FileSystemPathView::fromNormalized()'],['../classFileSystemPath.html#a0ae6813892ebbaa4b992c1c57ae652dd',1,'FileSystemPath::fromNormalized()']]],
-  ['fromodm_84',['FromODM',['../structBLVFace.html#a6c252582beef6bd506b412ea21c48b14',1,'BLVFace']]],
+  ['fromodm_84',['FromODM',['../structBLVFace.html#a64eb5ab23c228f4deaf64b472dfce896',1,'BLVFace']]],
   ['frompacked_85',['fromPacked',['../classPid.html#a0995aa9672496e68ebc56f86778df7c1',1,'Pid']]],
   ['frompolar_86',['fromPolar',['../structVec3.html#ab4fd7b365cb15c25d81898bd80c36262',1,'Vec3']]],
   ['fromrealtimemilliseconds_87',['fromRealtimeMilliseconds',['../classDuration.html#af659e160f232ea8460b8f2c34021ee33',1,'Duration']]],
