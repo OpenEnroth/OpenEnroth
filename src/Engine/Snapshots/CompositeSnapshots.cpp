@@ -411,8 +411,6 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     for (size_t i = 0; i < dst->faces.size(); i++)
         dst->faces[i].index = i;
 
-    dst->facesOrdering = srcExtras.faceOrdering;
-
     reconstruct(srcExtras.bspNodes, &dst->nodes);
 
     std::string textureName;
@@ -522,7 +520,7 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
         BSPModelExtras_MM7 &extra = dst->modelExtras.emplace_back();
         deserialize(src, &extra.vertices, tags::presized(model.numVertices));
         deserialize(src, &extra.faces, tags::presized(model.numFaces));
-        deserialize(src, &extra.faceOrdering, tags::presized(model.numFaces));
+        deserialize(src, &extra.facesOrdering, tags::presized(model.numFaces));
         deserialize(src, &extra.bspNodes, tags::presized(model.numNodes));
         deserialize(src, &extra.faceTextures, tags::presized(model.numFaces));
     }
