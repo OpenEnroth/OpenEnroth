@@ -1539,14 +1539,14 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
     memzero(dst);
 
     dst->flags = src.flags;
-    dst->numFloors = src.numFloors;
-    dst->numWalls = src.numWalls;
-    dst->numCeilings = src.numCeilings;
-    dst->numPortals = src.numPortals;
-    dst->numFaces = src.numFaces;
-    dst->numNonBspFaces = src.numNonBspFaces;
-    dst->numDecorations = src.numDecorations;
-    dst->numLights = src.numLights;
+    dst->numFloors = src.floorIds.size();
+    dst->numWalls = src.wallIds.size();
+    dst->numCeilings = src.ceilingIds.size();
+    dst->numPortals = src.portalIds.size();
+    dst->numFaces = src.faceIds.size();
+    dst->numNonBspFaces = src.nonBspFaceIds.size();
+    dst->numDecorations = src.decorationIds.size();
+    dst->numLights = src.lightIds.size();
     dst->minAmbientLightLevel = src.minAmbientLightLevel;
     dst->firstBspNode = src.firstBspNode;
     snapshot(src.boundingBox, &dst->boundingBox);
@@ -1554,14 +1554,7 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
 
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->flags = src.flags;
-    dst->numFloors = src.numFloors;
-    dst->numWalls = src.numWalls;
-    dst->numCeilings = src.numCeilings;
-    dst->numPortals = src.numPortals;
-    dst->numFaces = src.numFaces;
-    dst->numNonBspFaces = src.numNonBspFaces;
-    dst->numDecorations = src.numDecorations;
-    dst->numLights = src.numLights;
+    // Spans (floorIds, wallIds, etc.) are set up in CompositeSnapshots.cpp after sectorData is reconstructed.
     dst->minAmbientLightLevel = src.minAmbientLightLevel;
     dst->firstBspNode = src.firstBspNode;
     reconstruct(src.boundingBox, &dst->boundingBox);

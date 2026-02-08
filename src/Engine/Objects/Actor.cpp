@@ -4069,86 +4069,77 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     // extents for boundary checks
     BBoxf bbox = BBoxf::forPoints(pos1, pos2);
 
-    // search starts for object
+    // Trace ray through portals from obj1_sector towards obj2_sector.
     int sectors_visited = 0;
     int current_sector = obj1_sector;
-    int next_sector = 0;
-    BLVFace *portalface;
-    Vec3f *portalverts;
 
-    // loop through portals
-    for (int current_portal = 0; current_portal < pIndoor->sectors[current_sector].numPortals; current_portal++) {
-        portalface = &pIndoor->faces[pIndoor->sectors[current_sector].portals[current_portal]];
-        portalverts = &pIndoor->vertices[*portalface->pVertexIDs];
+    while (sectors_visited < 30) {
+        const BLVSector &sector = pIndoor->sectors[current_sector];
+        int next_sector = 0;
 
-        // ray ob1 to portal dot normal
-        float obj1portaldot = dot(portalface->facePlane.normal, *portalverts - pos1);
+        for (uint16_t portalId : sector.portalIds) {
+            BLVFace *portalface = &pIndoor->faces[portalId];
+            Vec3f *portalverts = &pIndoor->vertices[*portalface->pVertexIDs];
 
-        // flip norm if we are not looking out from current sector
-        if (current_sector != portalface->uSectorID) obj1portaldot = -obj1portaldot;
+            // ray obj1 to portal dot normal
+            float obj1portaldot = dot(portalface->facePlane.normal, *portalverts - pos1);
 
-        // obj1 sees back of, but is not on the portal so skip
-        if (obj1portaldot >= 0 && portalverts->x != pos1.x && portalverts->y != pos1.y && portalverts->z != pos1.z)
-            continue;
+            // flip norm if we are not looking out from current sector
+            if (current_sector != portalface->uSectorID)
+                obj1portaldot = -obj1portaldot;
 
-        // bounds check
-        if (!bbox.intersects(portalface->pBounding)) {
-            continue;
-        }
+            // obj1 sees back of, but is not on the portal so skip
+            if (obj1portaldot >= 0 && portalverts->x != pos1.x && portalverts->y != pos1.y && portalverts->z != pos1.z)
+                continue;
 
-        // dot plane normal with obj ray
-        float v32 = portalface->facePlane.normal.x * rayxnorm;
-        float v34 = portalface->facePlane.normal.y * rayynorm;
-        float v33 = portalface->facePlane.normal.z * rayznorm;
+            // bounds check
+            if (!bbox.intersects(portalface->pBounding))
+                continue;
 
-        // if face is parallel == 0 dont check LOS  -- add epsilon?
-        float facenotparallel = v32 + v33 + v34;
-        if (facenotparallel) {
-            // point to plance distance
+            // dot plane normal with obj ray
+            float facenotparallel = dot(portalface->facePlane.normal, Vec3f(rayxnorm, rayynorm, rayznorm));
+
+            // if face is parallel == 0 dont check LOS  -- add epsilon?
+            if (!facenotparallel)
+                continue;
+
+            // point to plane distance
             float pointplanedist = -portalface->facePlane.signedDistanceTo(pos1);
 
             // epsilon check?
-            if (std::abs(pointplanedist) / 16384.0 > std::abs(facenotparallel)) continue;
+            if (std::abs(pointplanedist) / 16384.0 > std::abs(facenotparallel))
+                continue;
 
             // how far along line intersection is
             float intersect = pointplanedist / facenotparallel;
 
             // less than zero and intersection is behind target
-            if (intersect < 0) continue;
+            if (intersect < 0)
+                continue;
 
             // check if point along ray is in portal face
             Vec3f pos = pos1 + Vec3f(rayxnorm, rayynorm, rayznorm) * intersect;
-            if (!portalface->Contains(pos, MODEL_INDOOR)) {
-                // not visible through this portal
+            if (!portalface->Contains(pos, MODEL_INDOOR))
                 continue;
-            }
 
-            // if there is no next sector turn back
+            // get next sector through portal
             if (portalface->uSectorID == current_sector)
                 next_sector = portalface->uBackSectorID;
             else
                 next_sector = portalface->uSectorID;
-
-            // no more portals, quit
-            if (next_sector == current_sector) break;
-
-            ++sectors_visited;
-            current_sector = next_sector;
-
-            // found object / player / monster, quit
-            if (next_sector == obj2_sector) return 1;
-
-            current_sector = next_sector;
-
-            // did we hit limit for portals?
-            // does the next room have portals?
-            if (sectors_visited < 30 && pIndoor->sectors[current_sector].numPortals > 0) {
-                current_portal = -1;
-                continue;
-            } else {
-                break;
-            }
+            break;
         }
+
+        // no portal found leading further
+        if (next_sector == 0 || next_sector == current_sector)
+            break;
+
+        ++sectors_visited;
+        current_sector = next_sector;
+
+        // found object / player / monster
+        if (current_sector == obj2_sector)
+            return 1;
     }
     // did we stop in the sector where object is?
     if (current_sector != obj2_sector) return 0;

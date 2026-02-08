@@ -134,44 +134,47 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.sectorData, &dst->sectorData);
 
     for (size_t i = 0, j = 0; i < dst->sectors.size(); ++i) {
-        BLVSector *pSector = &dst->sectors[i];
+        BLVSector *dstSector = &dst->sectors[i];
+        const BLVSector_MM7 &srcSector = src.sectors[i];
 
-        pSector->floors = dst->sectorData.data() + j;
-        j += pSector->numFloors;
+        dstSector->floorIds = std::span(dst->sectorData.data() + j, srcSector.numFloors);
+        j += srcSector.numFloors;
 
-        pSector->walls = dst->sectorData.data() + j;
-        j += pSector->numWalls;
+        dstSector->wallIds = std::span(dst->sectorData.data() + j, srcSector.numWalls);
+        j += srcSector.numWalls;
 
-        pSector->ceilings = dst->sectorData.data() + j;
-        j += pSector->numCeilings;
+        dstSector->ceilingIds = std::span(dst->sectorData.data() + j, srcSector.numCeilings);
+        j += srcSector.numCeilings;
 
-        // Fluids came next in original binary, but we dropped them.
+        j += srcSector.numFluids; // Fluids not used in OE, skip.
 
-        pSector->portals = dst->sectorData.data() + j;
-        j += pSector->numPortals;
+        dstSector->portalIds = std::span(dst->sectorData.data() + j, srcSector.numPortals);
+        j += srcSector.numPortals;
 
-        pSector->faceIds = dst->sectorData.data() + j;
-        j += pSector->numFaces;
+        dstSector->faceIds = std::span(dst->sectorData.data() + j, srcSector.numFaces);
+        dstSector->nonBspFaceIds = dstSector->faceIds.subspan(0, srcSector.numNonBspFaces);
+        j += srcSector.numFaces;
 
-        // Cogs came next in original binary, but we dropped them.
+        j += srcSector.numCogs; // Cogs not used in OE, skip.
 
-        pSector->decorationIds = dst->sectorData.data() + j;
-        j += pSector->numDecorations;
+        dstSector->decorationIds = std::span(dst->sectorData.data() + j, srcSector.numDecorations);
+        j += srcSector.numDecorations;
 
-        // Markers came next in original binary, but we dropped them.
+        j += srcSector.numMarkers; // Markers not used in OE, skip.
 
-        assert(j <= dst->sectorData.size());
+        assert(j <= dst->sectorData.size()); // TODO(captainurist): exception, not an assertion?
     }
 
     reconstruct(src.sectorLightData, &dst->sectorLightData);
 
-    for (unsigned i = 0, j = 0; i < dst->sectors.size(); ++i) {
-        BLVSector *pSector = &dst->sectors[i];
+    for (size_t i = 0, j = 0; i < dst->sectors.size(); ++i) {
+        BLVSector *dstSector = &dst->sectors[i];
+        const BLVSector_MM7 &srcSector = src.sectors[i];
 
-        pSector->lights = dst->sectorLightData.data() + j;
-        j += pSector->numLights;
+        dstSector->lightIds = std::span(dst->sectorLightData.data() + j, srcSector.numLights);
+        j += srcSector.numLights;
 
-        assert(j <= dst->sectorLightData.size());
+        assert(j <= dst->sectorLightData.size()); // TODO(captainurist): exception, not an assertion?
     }
 
     reconstruct(src.decorations, &pLevelDecorations);

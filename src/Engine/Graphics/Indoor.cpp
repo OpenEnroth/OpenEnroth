@@ -156,8 +156,8 @@ void PrepareDrawLists_BLV() {
          int sectorId = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
          BLVSector *sector = &pIndoor->sectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
 
-        for (unsigned j = 0; j < sector->numDecorations; ++j)
-            pIndoor->PrepareDecorationsRenderList_BLV(sector->decorationIds[j], sectorId);
+        for (uint16_t decorationId : sector->decorationIds)
+            pIndoor->PrepareDecorationsRenderList_BLV(decorationId, sectorId);
      }
 
     FindBillboardsLightLevels_BLV();
@@ -369,11 +369,8 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
         if (!backupboundingsector) backupboundingsector = i;
 
-        int FloorsAndPortals = pSector->numFloors + pSector->numPortals;
-
         // nothing in sector to check against so skip
-        if (!FloorsAndPortals) continue;
-        if (!pSector->floors) continue;
+        if (pSector->floorIds.empty() && pSector->portalIds.empty()) continue;
 
         if (!foundSector) {
             foundSector = i;
@@ -382,21 +379,16 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
             singleSectorFound = false;
         }
 
-        // loop over check faces
-        for (unsigned z = 0; z < FloorsAndPortals; ++z) {
-            int uFaceID;
-            if (z < pSector->numFloors)
-                uFaceID = pSector->floors[z];
-            else
-                uFaceID = pSector->portals[z - pSector->numFloors];
-
-            BLVFace *pFace = &faces[uFaceID];
+        // loop over floor and portal faces
+        for (uint16_t faceId : std::array{pSector->floorIds, pSector->portalIds} | std::views::join) {
+            BLVFace *pFace = &faces[faceId];
             if (pFace->uPolygonType != POLYGON_Floor && pFace->uPolygonType != POLYGON_InBetweenFloorAndWall)
                 continue;
 
             // add found faces into store
             if (pFace->Contains(Vec3f(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
-                FoundFaceStore[NumFoundFaceStore++] = uFaceID;
+                FoundFaceStore[NumFoundFaceStore++] = faceId;
+
             if (NumFoundFaceStore >= 5)
                 break; // TODO(captainurist): we do get here sometimes (e.g. in dragon cave), increase limit?
         }
@@ -1109,11 +1101,11 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
     BLVSector *pSector = &pIndoor->sectors[uSectorID];
 
     // loop over all floor faces
-    for (unsigned i = 0; i < pSector->numFloors; ++i) {
+    for (uint16_t floorId : pSector->floorIds) {
         if (FacesFound >= 5)
             break;
 
-        BLVFace *pFloor = &pIndoor->faces[pSector->floors[i]];
+        BLVFace *pFloor = &pIndoor->faces[floorId];
         if (pFloor->Ethereal())
             continue;
 
@@ -1135,24 +1127,24 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         }
 
         blv_floor_z[FacesFound] = z_calc;
-        blv_floor_id[FacesFound] = pSector->floors[i];
+        blv_floor_id[FacesFound] = floorId;
         FacesFound++;
     }
 
     // as above but for sector portal faces
     if (pSector->flags & 8) { // sector has vertical transitions
-        for (unsigned i = 0; i < pSector->numPortals; ++i) {
+        for (uint16_t portalId : pSector->portalIds) {
             if (FacesFound >= 5) break;
 
-            BLVFace *portal = &pIndoor->faces[pSector->portals[i]];
+            BLVFace *portal = &pIndoor->faces[portalId];
             if (portal->uPolygonType != POLYGON_Floor)
                 continue;
 
-            if(!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
+            if (!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 continue;
 
             blv_floor_z[FacesFound] = -29000; // moving vertically through portal
-            blv_floor_id[FacesFound] = pSector->portals[i];
+            blv_floor_id[FacesFound] = portalId;
             FacesFound++;
         }
     }
@@ -1307,9 +1299,10 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // t
         else
             SectargetrID = pIndoor->GetSector(from);
 
-        // loop over sectargetr faces
-        for (int FaceLoop = 0; FaceLoop < pIndoor->sectors[SectargetrID].numFaces; ++FaceLoop) {
-            BLVFace *face = &pIndoor->faces[pIndoor->sectors[SectargetrID].faceIds[FaceLoop]];
+        // loop over sector faces
+        const BLVSector &sector = pIndoor->sectors[SectargetrID];
+        for (uint16_t faceId : sector.faceIds) {
+            BLVFace *face = &pIndoor->faces[faceId];
             if (face->isPortal() || face->Ethereal())
                 continue;
 
@@ -1340,9 +1333,8 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // t
                 // greater than dist means intersection is behind the caster
                 if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
                     Vec3f pos = target + (IntersectionDist * dir);
-                    if (face->Contains(pos, MODEL_INDOOR)) {
+                    if (face->Contains(pos, MODEL_INDOOR))
                         return true;
-                    }
                 }
             }
         }

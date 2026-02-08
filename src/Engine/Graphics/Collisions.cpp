@@ -412,8 +412,8 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 
     // See if we're touching portals. If we do, we need to add corresponding sectors to the sectors array.
     BLVSector *pSector = &pIndoor->sectors[collision_state.uSectorID];
-    for (int j = 0; j < pSector->numPortals; ++j) {
-        BLVFace *pFace = &pIndoor->faces[pSector->portals[j]];
+    for (uint16_t portalId : pSector->portalIds) {
+        BLVFace *pFace = &pIndoor->faces[portalId];
         if (!collision_state.bbox.intersects(pFace->pBounding))
             continue;
 
@@ -428,10 +428,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 
     for (int i = 0; i < totalSectors; i++) {
         pSector = &pIndoor->sectors[pSectorsArray[i]];
-
-        int totalFaces = pSector->numFloors + pSector->numWalls + pSector->numCeilings;
-        for (int j = 0; j < totalFaces; j++) {
-            int face_id = pSector->floors[j];
+        for (uint16_t face_id : std::array{pSector->floorIds, pSector->wallIds, pSector->ceilingIds} | std::views::join) {
             BLVFace *face = &pIndoor->faces[face_id];
             if (face->isPortal() || !collision_state.bbox.intersects(face->pBounding))
                 continue;
@@ -473,8 +470,8 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
 
 void CollideIndoorWithDecorations() {
     BLVSector *sector = &pIndoor->sectors[collision_state.uSectorID];
-    for (unsigned int i = 0; i < sector->numDecorations; ++i)
-        CollideWithDecoration(sector->decorationIds[i]);
+    for (uint16_t decorationId : sector->decorationIds)
+        CollideWithDecoration(decorationId);
 }
 
 void CollideOutdoorWithDecorations(Vec2i gridPos) {
@@ -504,8 +501,8 @@ bool CollideIndoorWithPortals() {
 
     int portal_id = 0;            // [sp+10h] [bp-4h]@15
     float min_move_distance = std::numeric_limits<float>::max();
-    for (unsigned int i = 0; i < pIndoor->sectors[collision_state.uSectorID].numPortals; ++i) {
-        BLVFace *face = &pIndoor->faces[pIndoor->sectors[collision_state.uSectorID].portals[i]];
+    for (uint16_t portalFaceId : pIndoor->sectors[collision_state.uSectorID].portalIds) {
+        BLVFace *face = &pIndoor->faces[portalFaceId];
         if (!collision_state.bbox.intersects(face->pBounding))
             continue;
 
@@ -517,7 +514,7 @@ bool CollideIndoorWithPortals() {
             CollidePointWithFace(face, collision_state.position_lo, collision_state.direction, &move_distance, MODEL_INDOOR) &&
             move_distance < min_move_distance) {
             min_move_distance = move_distance;
-            portal_id = pIndoor->sectors[collision_state.uSectorID].portals[i];
+            portal_id = portalFaceId;
         }
     }
 

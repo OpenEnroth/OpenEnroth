@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <span>
 
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
@@ -168,27 +169,22 @@ struct BLVFaceExtra {
     uint16_t uEventID;
 };
 
-/*   95 */
-struct BLVSector {  // 0x74
-    int32_t flags;  // & 8 is for check floor level against portals & 10 is for adding additonal node faces
-    uint16_t numFloors;
-    uint16_t *floors;
-    uint16_t numWalls;
-    uint16_t *walls;
-    uint16_t numCeilings;
-    uint16_t *ceilings;
-    int16_t numPortals;
-    uint16_t *portals;
-    uint16_t numFaces;
-    uint16_t numNonBspFaces;
-    uint16_t *faceIds;
-    uint16_t numDecorations;
-    uint16_t *decorationIds;
-    uint16_t numLights;
-    uint16_t *lights;
-    int16_t minAmbientLightLevel; // might be supposed to be max ambient dim actually
-    int16_t firstBspNode;
-    BBoxf boundingBox;
+struct BLVSector {
+    // Note that all spans below point into `IndoorLocation::sectorData` or `IndoorLocation::sectorLightData`.
+
+    // TODO(captainurist): #enum
+    int flags; // &8 checks floor level against portals, &0x10 adds additional node faces.
+    std::span<uint16_t> floorIds; // Indices into `IndoorLocation::faces` for floor faces.
+    std::span<uint16_t> wallIds; // Indices into `IndoorLocation::faces` for wall faces.
+    std::span<uint16_t> ceilingIds; // Indices into `IndoorLocation::faces` for ceiling faces.
+    std::span<uint16_t> portalIds; // Indices into `IndoorLocation::faces` for portal faces.
+    std::span<uint16_t> nonBspFaceIds; // Subspan of `faceIds` for faces not in BSP tree, stored first in `faceIds`.
+    std::span<uint16_t> faceIds; // Indices into `IndoorLocation::faces` for BSP traversal.
+    std::span<uint16_t> decorationIds; // Indices into `pLevelDecorations`.
+    std::span<uint16_t> lightIds; // Indices into `IndoorLocation::lights`.
+    int16_t minAmbientLightLevel; // Minimum ambient light level, might actually be max ambient dim.
+    int16_t firstBspNode; // Index into `IndoorLocation::nodes`, or -1 if none.
+    BBoxf boundingBox; // Axis-aligned bounding box of this sector.
 };
 
 struct IndoorLocation {
