@@ -24,18 +24,10 @@ void main() {
 
     fragcol *= colour;
 
-    if (fog.fogstart == fog.fogend) {
-        FragColour = fragcol;
-        return;
-    }
-
     float fograt = getFogRatio(fog, screenspace);
     if (fragcol.a < 0.004) fograt = 0.0;
 
-    float alpha = 0.0;
-    if (fog.fogmiddle > fog.fogstart) {
-        alpha = smoothstep(fog.fogend, (fog.fogend + fog.fogmiddle) / 2.0, screenspace);
-    }
+    float alpha = getFogAlpha(fog, screenspace);
 
     FragColour = mix(fragcol, vec4(fog.color, alpha), fograt);
     FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));

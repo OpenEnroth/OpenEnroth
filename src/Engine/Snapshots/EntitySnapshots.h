@@ -1239,11 +1239,11 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BSPModelData_MM7)
 // Note: serialization code is in CompositeSnapshots.h
 
 struct LocationTime_MM7 {
-    int64_t last_visit;
-    std::array<char, 12> sky_texture_name; // Texture name in bitmaps.lod.
-    int32_t day_attrib;
-    int32_t day_fogrange_1;
-    int32_t day_fogrange_2;
+    int64_t lastVisitTime;
+    std::array<char, 12> skyTextureName; // Texture name in bitmaps.lod.
+    int32_t weatherFlags; // In MM7 we have only one flag here - for foggy weather.
+    int32_t fogWeakDistance; // Zero if no fog. Otherwise, the distance where stronger fog starts.
+    int32_t fogStrongDistance; // Zero if no fog. Otherwise, the distance where super strong fog starts.
     std::array<char, 24> field_2F4;
 };
 static_assert(sizeof(LocationTime_MM7) == 0x38);
