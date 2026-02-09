@@ -60,14 +60,14 @@ static void initSpellSprite(SpriteObject *spritePtr,
                             int spellLevel,
                             Mastery spellMastery,
                             CastSpellInfo *pCastSpell) {
-    assert(spritePtr && spritePtr->uType != SPRITE_NULL);
+    assert(spritePtr && spritePtr->spriteId != SPRITE_NULL);
     assert(pCastSpell->uSpellID != SPELL_NONE);
 
     spritePtr->containing_item.Reset();
     spritePtr->spell_level = spellLevel;
     spritePtr->uSpellID = pCastSpell->uSpellID;
     spritePtr->spell_skill = spellMastery;
-    spritePtr->uObjectDescID = pObjectList->ObjectIDByItemID(spritePtr->uType);
+    spritePtr->uObjectDescID = pObjectList->ObjectIDByItemID(spritePtr->spriteId);
     spritePtr->spell_caster_pid = Pid(OBJECT_Character, pCastSpell->casterCharacterIndex);
     spritePtr->uSoundID = pCastSpell->overrideSoundId;
 }
@@ -171,9 +171,9 @@ void CastSpellInfoHelpers::castSpell() {
             spell_targeted_at = stru_50C198.FindClosestActor(engine->config->gameplay.RangedAttackDepth.value(), 1, target_undead);
         }
 
-        pSpellSprite.uType = SpellSpriteMapping[pCastSpell->uSpellID];
+        pSpellSprite.spriteId = SpellSpriteMapping[pCastSpell->uSpellID];
 
-        if (pSpellSprite.uType != SPRITE_NULL) {
+        if (pSpellSprite.spriteId != SPRITE_NULL) {
             if (spell_targeted_at.type() == OBJECT_Actor) {
                 Pid player_pid = Pid(OBJECT_Character, pCastSpell->casterCharacterIndex + 1);
                 Actor::GetDirectionInfo(player_pid, spell_targeted_at, &target_direction, 0);  // target direciton
@@ -368,7 +368,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int spikes_active = 0;
                     for (const SpriteObject &spriteObject : pSpriteObjects) {
-                        if (spriteObject.uType != SPRITE_NULL &&
+                        if (spriteObject.spriteId != SPRITE_NULL &&
                                 spriteObject.uObjectDescID != 0 && // exploded fire spikes have no DescID
                                 spriteObject.uSpellID == SPELL_FIRE_FIRE_SPIKE &&
                                 spriteObject.spell_caster_pid == Pid(OBJECT_Character, pCastSpell->casterCharacterIndex)) {
@@ -1602,7 +1602,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
-                    pSpellSprite.uType = SPRITE_SPELL_EARTH_DEATH_BLOSSOM;
+                    pSpellSprite.spriteId = SPRITE_SPELL_EARTH_DEATH_BLOSSOM;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
@@ -1764,7 +1764,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     // ++pSpellSprite.uType;
-                    pSpellSprite.uType = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
+                    pSpellSprite.spriteId = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     for (Actor *actor : render->getActorsInViewport(4096)) {
                         if (supertypeForMonsterId(actor->monsterInfo.id) == MONSTER_SUPERTYPE_UNDEAD) {
@@ -2116,7 +2116,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     // ++pSpellSprite.uType;
-                    pSpellSprite.uType = SPRITE_SPELL_MIND_MASS_FEAR_1;
+                    pSpellSprite.spriteId = SPRITE_SPELL_MIND_MASS_FEAR_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     for (Actor *actor : render->getActorsInViewport(4096)) {
                         // Change: do not exit loop when first undead monster is found
@@ -2405,7 +2405,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     recoveryTime -= Duration::fromTicks(spell_level);
                     // ++pSpellSprite.uType;
-                    pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
+                    pSpellSprite.spriteId = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     // Spell damage processing was removed because Dispel Magic does not do damage
                     for (Actor *actor : render->getActorsInViewport(4096)) {
@@ -2496,7 +2496,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     // ++pSpellSprite.uType;
-                    pSpellSprite.uType = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
+                    pSpellSprite.spriteId = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     for (Actor *actor : render->getActorsInViewport(4096)) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
@@ -2667,7 +2667,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     // ++pSpellSprite.uType;
-                    pSpellSprite.uType = SPRITE_SPELL_DARK_REANIMATE_1;
+                    pSpellSprite.spriteId = SPRITE_SPELL_DARK_REANIMATE_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos - Vec3f(0, 0, pActors[monster_id].height * -0.8);
                     pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, monster_id);

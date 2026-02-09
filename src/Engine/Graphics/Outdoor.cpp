@@ -1791,7 +1791,7 @@ static void loadAndPrepareODMInternal(MapId mapid) {
         for (unsigned i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
             SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 
-            if (spawn->uKind == OBJECT_Actor)
+            if (spawn->type == OBJECT_Actor)
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
             else
                 SpawnRandomTreasure(map_info, spawn);
