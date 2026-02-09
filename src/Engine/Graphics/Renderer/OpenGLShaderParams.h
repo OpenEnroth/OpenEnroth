@@ -9,6 +9,17 @@
 
 class OpenGLShader;
 
+struct FogUniforms {
+    Colorf color;
+    float weakDensity = 0;
+    float strongDensity = 0;
+    float weakDistance = 0;
+    float strongDistance = 0;
+    float clipDistance = 0;
+
+    void submit(const OpenGLShader &shader) const;
+};
+
 struct LineVertex {
     Vec2f pos;
     Colorf color;
@@ -34,12 +45,7 @@ struct ForcePerVertex {
 struct ForcePerUniforms {
     glm::mat4 projection = {};
     glm::mat4 view = {};
-    Colorf fogColor;
-    float fogWeakDensity = 0;
-    float fogStrongDensity = 0;
-    float fogWeakDistance = 0;
-    float fogStrongDistance = 0;
-    float fogClipDistance = 0;
+    FogUniforms fog;
     int texture0 = 0;
 
     void submit(const OpenGLShader &shader) const;
@@ -81,12 +87,7 @@ struct DecalVertex {
 struct DecalUniforms {
     glm::mat4 projection = {};
     glm::mat4 view = {};
-    Colorf fogColor;
-    float fogWeakDensity = 0;
-    float fogStrongDensity = 0;
-    float fogWeakDistance = 0;
-    float fogStrongDistance = 0;
-    float fogClipDistance = 0;
+    FogUniforms fog;
     float decalBias = 0.002f;
     int texture0 = 0;
 
@@ -106,12 +107,7 @@ struct BillboardVertex {
 struct BillboardUniforms {
     glm::mat4 projection = {};
     glm::mat4 view = {};
-    Colorf fogColor;
-    float fogWeakDensity = 0;
-    float fogStrongDensity = 0;
-    float fogWeakDistance = 0;
-    float fogStrongDistance = 0;
-    float fogClipDistance = 0;
+    FogUniforms fog;
     float gamma = 0;
     int paltex2D = 1;
     int texture0 = 0;
@@ -147,12 +143,7 @@ struct TerrainUniforms {
     glm::mat4 projection = {};
     glm::mat4 view = {};
     Vec3f cameraPos;
-    Colorf fogColor;
-    float fogWeakDensity = 0;
-    float fogStrongDensity = 0;
-    float fogWeakDistance = 0;
-    float fogStrongDistance = 0;
-    float fogClipDistance = 0;
+    FogUniforms fog;
     float gamma = 0;
     int waterframe = 0;
     int textureArray0 = 0;
@@ -168,12 +159,7 @@ struct OutBuildUniforms {
     glm::mat4 projection = {};
     glm::mat4 view = {};
     Vec3f cameraPos;
-    Colorf fogColor;
-    float fogWeakDensity = 0;
-    float fogStrongDensity = 0;
-    float fogWeakDistance = 0;
-    float fogStrongDistance = 0;
-    float fogClipDistance = 0;
+    FogUniforms fog;
     float gamma = 0;
     int waterframe = 0;
     int flowtimer = 0;

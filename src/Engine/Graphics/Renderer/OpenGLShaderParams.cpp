@@ -6,6 +6,15 @@
 
 #include "OpenGLShader.h"
 
+void FogUniforms::submit(const OpenGLShader &shader) const {
+    glUniform3f(shader.uniformLocation("fog.color"), color.r, color.g, color.b);
+    glUniform1f(shader.uniformLocation("fog.weakDensity"), weakDensity);
+    glUniform1f(shader.uniformLocation("fog.strongDensity"), strongDensity);
+    glUniform1f(shader.uniformLocation("fog.weakDistance"), weakDistance);
+    glUniform1f(shader.uniformLocation("fog.strongDistance"), strongDistance);
+    glUniform1f(shader.uniformLocation("fog.clipDistance"), clipDistance);
+}
+
 void LineUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
@@ -14,13 +23,8 @@ void LineUniforms::submit(const OpenGLShader &shader) const {
 void ForcePerUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
-    glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
-    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
-    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
-    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
-    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1i(shader.uniformLocation("texture0"), texture0);
+    fog.submit(shader);
 }
 
 void TwoDUniforms::submit(const OpenGLShader &shader) const {
@@ -40,29 +44,18 @@ void TextUniforms::submit(const OpenGLShader &shader) const {
 void DecalUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
-    // Fog color is optimised out in decal shader
-    // glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
-    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
-    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
-    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
-    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1f(shader.uniformLocation("decalbias"), decalBias);
     glUniform1i(shader.uniformLocation("texture0"), texture0);
+    fog.submit(shader);
 }
 
 void BillboardUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
-    glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
-    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
-    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
-    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
-    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1f(shader.uniformLocation("gamma"), gamma);
     glUniform1i(shader.uniformLocation("paltex2D"), paltex2D);
     glUniform1i(shader.uniformLocation("texture0"), texture0);
+    fog.submit(shader);
 }
 
 static void submitSunLight(const OpenGLShader &shader, const SunLightUniform &sun) {
@@ -92,16 +85,11 @@ void TerrainUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
     glUniform3f(shader.uniformLocation("CameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
-    glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
-    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
-    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
-    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
-    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1f(shader.uniformLocation("gamma"), gamma);
     glUniform1i(shader.uniformLocation("waterframe"), waterframe);
     glUniform1i(shader.uniformLocation("textureArray0"), textureArray0);
     glUniform1i(shader.uniformLocation("textureArray1"), textureArray1);
+    fog.submit(shader);
     submitSunLight(shader, sun);
     submitPointLights(shader, pointLights);
 }
@@ -110,18 +98,13 @@ void OutBuildUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
     glUniform3f(shader.uniformLocation("CameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
-    glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
-    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
-    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
-    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
-    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1f(shader.uniformLocation("gamma"), gamma);
     glUniform1i(shader.uniformLocation("waterframe"), waterframe);
     glUniform1i(shader.uniformLocation("flowtimer"), flowtimer);
     glUniform1i(shader.uniformLocation("flowtimerms"), flowtimerms);
     glUniform1i(shader.uniformLocation("textureArray0"), textureArray0);
     glUniform1i(shader.uniformLocation("watertiles"), watertiles);
+    fog.submit(shader);
     submitSunLight(shader, sun);
     submitPointLights(shader, pointLights);
 }
