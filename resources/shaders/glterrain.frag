@@ -63,16 +63,9 @@ void main() {
     }
 
     vec3 clamps = result;
-    if (fog.fogstart == fog.fogend) {
-        FragColour = vec4(clamps, vertexColour.a);
-        return;
-    }
 
     float dist = length(viewspace);
-    float alpha = 0.0;
-    if (fog.fogmiddle > fog.fogstart) {
-        alpha = smoothstep(fog.fogend, (fog.fogend + fog.fogmiddle) / 2.0, dist);
-    }
+    float alpha = getFogAlpha(fog, dist);
 
     float fograt = getFogRatio(fog, dist);
     FragColour = mix(vec4(clamps, vertexColour.a), vec4(fog.color, alpha), fograt);

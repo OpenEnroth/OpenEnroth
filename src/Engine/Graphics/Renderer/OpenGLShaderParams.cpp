@@ -15,9 +15,11 @@ void ForcePerUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
     glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.fogstart"), fogStart);
-    glUniform1f(shader.uniformLocation("fog.fogmiddle"), fogMiddle);
-    glUniform1f(shader.uniformLocation("fog.fogend"), fogEnd);
+    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
+    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
+    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
+    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
+    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1i(shader.uniformLocation("texture0"), texture0);
 }
 
@@ -40,9 +42,11 @@ void DecalUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
     // Fog color is optimised out in decal shader
     // glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.fogstart"), fogStart);
-    glUniform1f(shader.uniformLocation("fog.fogmiddle"), fogMiddle);
-    glUniform1f(shader.uniformLocation("fog.fogend"), fogEnd);
+    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
+    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
+    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
+    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
+    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1f(shader.uniformLocation("decalbias"), decalBias);
     glUniform1i(shader.uniformLocation("texture0"), texture0);
 }
@@ -51,9 +55,11 @@ void BillboardUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
     glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.fogstart"), fogStart);
-    glUniform1f(shader.uniformLocation("fog.fogmiddle"), fogMiddle);
-    glUniform1f(shader.uniformLocation("fog.fogend"), fogEnd);
+    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
+    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
+    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
+    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
+    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1f(shader.uniformLocation("gamma"), gamma);
     glUniform1i(shader.uniformLocation("paltex2D"), paltex2D);
     glUniform1i(shader.uniformLocation("texture0"), texture0);
@@ -87,9 +93,11 @@ void TerrainUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
     glUniform3f(shader.uniformLocation("CameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
     glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.fogstart"), fogStart);
-    glUniform1f(shader.uniformLocation("fog.fogmiddle"), fogMiddle);
-    glUniform1f(shader.uniformLocation("fog.fogend"), fogEnd);
+    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
+    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
+    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
+    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
+    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1f(shader.uniformLocation("gamma"), gamma);
     glUniform1i(shader.uniformLocation("waterframe"), waterframe);
     glUniform1i(shader.uniformLocation("textureArray0"), textureArray0);
@@ -103,9 +111,11 @@ void OutBuildUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
     glUniform3f(shader.uniformLocation("CameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
     glUniform3f(shader.uniformLocation("fog.color"), fogColor.r, fogColor.g, fogColor.b);
-    glUniform1f(shader.uniformLocation("fog.fogstart"), fogStart);
-    glUniform1f(shader.uniformLocation("fog.fogmiddle"), fogMiddle);
-    glUniform1f(shader.uniformLocation("fog.fogend"), fogEnd);
+    glUniform1f(shader.uniformLocation("fog.weakDensity"), fogWeakDensity);
+    glUniform1f(shader.uniformLocation("fog.strongDensity"), fogStrongDensity);
+    glUniform1f(shader.uniformLocation("fog.weakDistance"), fogWeakDistance);
+    glUniform1f(shader.uniformLocation("fog.strongDistance"), fogStrongDistance);
+    glUniform1f(shader.uniformLocation("fog.clipDistance"), fogClipDistance);
     glUniform1f(shader.uniformLocation("gamma"), gamma);
     glUniform1i(shader.uniformLocation("waterframe"), waterframe);
     glUniform1i(shader.uniformLocation("flowtimer"), flowtimer);

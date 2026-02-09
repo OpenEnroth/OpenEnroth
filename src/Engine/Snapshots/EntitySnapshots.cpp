@@ -1833,19 +1833,19 @@ void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
 void snapshot(const LocationTime &src, LocationTime_MM7 *dst) {
     memzero(dst);
 
-    snapshot(src.last_visit, &dst->last_visit);
-    snapshot(src.sky_texture_name, &dst->sky_texture_name);
-    dst->day_attrib = std::to_underlying(src.day_attrib);
-    dst->day_fogrange_1 = src.day_fogrange_1;
-    dst->day_fogrange_2 = src.day_fogrange_2;
+    snapshot(src.lastVisitTime, &dst->lastVisitTime);
+    snapshot(src.skyTextureName, &dst->skyTextureName);
+    dst->weatherFlags = std::to_underlying(src.weatherFlags);
+    dst->fogWeakDistance = src.fogWeakDistance;
+    dst->fogStrongDistance = src.fogStrongDistance;
 }
 
 void reconstruct(const LocationTime_MM7 &src, LocationTime *dst) {
-    reconstruct(src.last_visit, &dst->last_visit);
-    reconstruct(src.sky_texture_name, &dst->sky_texture_name);
-    dst->day_attrib = static_cast<MapWeatherFlags>(src.day_attrib);
-    dst->day_fogrange_1 = src.day_fogrange_1;
-    dst->day_fogrange_2 = src.day_fogrange_2;
+    reconstruct(src.lastVisitTime, &dst->lastVisitTime);
+    reconstruct(src.skyTextureName, &dst->skyTextureName);
+    dst->weatherFlags = static_cast<MapWeatherFlags>(src.weatherFlags);
+    dst->fogWeakDistance = src.fogWeakDistance;
+    dst->fogStrongDistance = src.fogStrongDistance;
 }
 
 void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst) {

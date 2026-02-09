@@ -198,10 +198,12 @@ class OpenGLRenderer : public BaseRenderer {
     std::vector<DecalVertex> _decalVertices;
 
     // Fog parameters
-    Colorf fog;
-    int fogstart{};
-    int fogmiddle{};
-    int fogend{};
+    Colorf fogColor;
+    float fogWeakDensity = 0;
+    float fogStrongDensity = 0;
+    float fogWeakDistance = 0;
+    float fogStrongDistance = 0;
+    float fogClipDistance = 0;
 
     float gamma{};
 

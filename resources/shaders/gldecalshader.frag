@@ -16,10 +16,6 @@ uniform FogParam fog;
 
 void main() {
     vec4 fragcol = texture(texture0, texuv) * vertexColour;
-    if (fog.fogstart == fog.fogend) {
-        FragColour = fragcol;
-        return;
-    }
 
     float fograt = getFogRatio(fog, abs(viewspace.z/ viewspace.w));
     if (fragcol.a < 0.004) fograt = 0.0;

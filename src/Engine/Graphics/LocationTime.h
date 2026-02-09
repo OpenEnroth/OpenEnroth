@@ -7,9 +7,9 @@
 
 // TODO(captainurist): rename to smth like MapTime.
 struct LocationTime {
-    Time last_visit;
-    std::string sky_texture_name;
-    MapWeatherFlags day_attrib = 0;
-    int day_fogrange_1 = 0;
-    int day_fogrange_2 = 0;
+    Time lastVisitTime;
+    std::string skyTextureName;
+    MapWeatherFlags weatherFlags = 0;
+    int fogWeakDistance = 0;
+    int fogStrongDistance = 0;
 };
