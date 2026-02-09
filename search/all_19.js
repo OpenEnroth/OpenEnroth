@@ -4,7 +4,7 @@ var searchData=
   ['y1_1',['y1',['../structBBoxs__MM7.html#acbf8e7958bd7c7cd5a406c9661f58a4f',1,'BBoxs_MM7::y1()'],['../structBBox.html#a2d27e15f98db454850c399be928fe92a',1,'BBox::y1()']]],
   ['y2_2',['y2',['../structBBoxs__MM7.html#ae476d11e2f51f085e4417e81eb3ad2ac',1,'BBoxs_MM7::y2()'],['../structBBox.html#a4094e6598f42bf024db360df681455c1',1,'BBox::y2()']]],
   ['yaw_3',['yaw',['../classEvtInstruction.html#adcc21d2d28e5a208ca062371ea13c6af',1,'EvtInstruction']]],
-  ['yawangle_4',['yawAngle',['../classActor.html#ab0d92e1dd9d656671141cba756a95f16',1,'Actor::yawAngle()'],['../structActor__MM7.html#a3944bd777c24cbd6220e7ce41f13ff7e',1,'Actor_MM7::yawAngle()']]],
+  ['yawangle_4',['yawAngle',['../classActor.html#ab0d92e1dd9d656671141cba756a95f16',1,'Actor::yawAngle()'],['../structActor__MM7.html#a3944bd777c24cbd6220e7ce41f13ff7e',1,'Actor_MM7::yawAngle()'],['../structSpriteObject__MM7.html#a2fa76f8baa36e4598da764115dc5d60f',1,'SpriteObject_MM7::yawAngle()']]],
   ['yawgranularity_5',['yawGranularity',['../structParty__MM7.html#ada9767ba776b4e94084105a957acf819',1,'Party_MM7']]],
   ['yawrotationspeed_6',['yawRotationSpeed',['../structParty__MM7.html#a5a415838ba6ba927fdd537fc42ec433b',1,'Party_MM7']]],
   ['year_7',['year',['../structCivilTime.html#a2e3c51d4d8b362e1f9a6015d0571f1f3',1,'CivilTime']]],
