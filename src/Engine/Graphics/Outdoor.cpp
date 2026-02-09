@@ -268,10 +268,6 @@ bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
 
         Load(filename, days_played, respawn_interval_days, outdoors_was_respawned);
 
-        ::day_attrib = this->loc_time.day_attrib;
-        ::day_fogrange_1 = this->loc_time.day_fogrange_1;
-        ::day_fogrange_2 = this->loc_time.day_fogrange_2;
-        ::day_fogrange_3 = pCamera3D->GetFarClip();
         if (isMapUnderwater(engine->_currentLoadedMapId))
             SetUnderwaterFog();
 
@@ -380,34 +376,29 @@ void OutdoorLocation::SetFog() {
     unsigned chance = vrng->random(100);
 
     if (chance < fog_probability_table[map_id].small_fog_chance) {
-        ::day_fogrange_1 = 4096;
-        ::day_fogrange_2 = 8192;
-        ::day_attrib |= MAP_WEATHER_FOGGY;
+        loc_time.weatherFlags |= MAP_WEATHER_FOGGY;
+        loc_time.fogWeakDistance = 4096;
+        loc_time.fogStrongDistance = 8192;
     } else if (chance <
                fog_probability_table[map_id].small_fog_chance +
                    fog_probability_table[map_id].average_fog_chance) {
-        ::day_fogrange_2 = 4096;
-        ::day_fogrange_1 = 0;
-        ::day_attrib |= MAP_WEATHER_FOGGY;
+        loc_time.fogWeakDistance = 0;
+        loc_time.fogStrongDistance = 4096;
+        loc_time.weatherFlags |= MAP_WEATHER_FOGGY;
     } else if (fog_probability_table[map_id].dense_fog_chance &&
                chance <
                    fog_probability_table[map_id].small_fog_chance +
                        fog_probability_table[map_id].average_fog_chance +
                        fog_probability_table[map_id].dense_fog_chance) {
-        ::day_fogrange_2 = 2048;
-        ::day_fogrange_1 = 0;
-        ::day_attrib |= MAP_WEATHER_FOGGY;
+        loc_time.fogWeakDistance = 0;
+        loc_time.fogStrongDistance = 2048;
+        loc_time.weatherFlags |= MAP_WEATHER_FOGGY;
     } else {
-        ::day_attrib &= ~MAP_WEATHER_FOGGY;
+        loc_time.weatherFlags &= ~MAP_WEATHER_FOGGY;
     }
-
-    ::day_fogrange_3 = pCamera3D->GetFarClip();
 
     if (isMapUnderwater(map_id))
         SetUnderwaterFog();
-    pOutdoor->loc_time.day_fogrange_1 = ::day_fogrange_1;
-    pOutdoor->loc_time.day_fogrange_2 = ::day_fogrange_2;
-    pOutdoor->loc_time.day_attrib = ::day_attrib;
 }
 
 //----- (0047CDE2) --------------------------------------------------------
@@ -529,21 +520,21 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
 
     // LABEL_150:
     if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
-        loc_time.sky_texture_name = "sky19";
-    } else if (loc_time.last_visit) {
-        if (loc_time.last_visit.toDays() % 28 != pParty->uCurrentDayOfMonth) {
+        loc_time.skyTextureName = "sky19";
+    } else if (loc_time.lastVisitTime) {
+        if (loc_time.lastVisitTime.toDays() % 28 != pParty->uCurrentDayOfMonth) {
             int sky_to_use;
             if (vrng->random(100) >= 20)
                 sky_to_use = skyTexturesIds1[vrng->random(9)];
             else
                 sky_to_use = skyTexturesIds2[vrng->random(7)];
-            loc_time.sky_texture_name = fmt::format("plansky{}", sky_to_use);
+            loc_time.skyTextureName = fmt::format("plansky{}", sky_to_use);
         }
     } else {
-        loc_time.sky_texture_name = "plansky3";
+        loc_time.skyTextureName = "plansky3";
     }
 
-    this->sky_texture = assets->getBitmap(loc_time.sky_texture_name);
+    this->sky_texture = assets->getBitmap(loc_time.skyTextureName);
 
     if (engine->config->graphics.SeasonsChange.value())
         pOutdoor->pTerrain.changeSeason(pParty->uCurrentMonth);
@@ -1592,10 +1583,10 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
 }
 
 //----- (00464851) --------------------------------------------------------
-void SetUnderwaterFog() {
-    day_fogrange_1 = 50;
-    day_fogrange_2 = 2000;
-    day_fogrange_3 = 25000;
+void OutdoorLocation::SetUnderwaterFog() {
+    loc_time.fogWeakDistance = 50;
+    loc_time.fogStrongDistance = 2000;
+    // day_fogrange_3 = 25000;
 }
 
 //----- (004706C6) --------------------------------------------------------
@@ -1787,7 +1778,7 @@ static void loadAndPrepareODMInternal(MapId mapid) {
         mapFilename = "";
         map_info = nullptr;
     }
-    day_attrib &= ~MAP_WEATHER_FOGGY;
+    pOutdoor->loc_time.weatherFlags &= ~MAP_WEATHER_FOGGY;
     pOutdoor->Initialize(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
 
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
@@ -1800,7 +1791,7 @@ static void loadAndPrepareODMInternal(MapId mapid) {
         for (unsigned i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
             SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 
-            if (spawn->uKind == OBJECT_Actor)
+            if (spawn->type == OBJECT_Actor)
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
             else
                 SpawnRandomTreasure(map_info, spawn);
@@ -1839,11 +1830,13 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
 
 // returns 0xXXYYZZ fog color
 Color GetLevelFogColor() {
+    assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
+
     if (engine->IsUnderwater()) {
         return colorTable.Eucalyptus;
     }
 
-    if (day_attrib & MAP_WEATHER_FOGGY) {
+    if (pOutdoor->loc_time.weatherFlags & MAP_WEATHER_FOGGY) {
         if (pWeather->bNight) {  // night-time fog
             if (false) {
                 logger->error("decompilation can be inaccurate, please send savegame to Nomad");
@@ -1875,35 +1868,35 @@ int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
     if (engine->IsUnderwater()) isNight = false;
 
     if (pParty->armageddon_timer ||
-        !(day_attrib & MAP_WEATHER_FOGGY) && !engine->IsUnderwater())
+        !(pOutdoor->loc_time.weatherFlags & MAP_WEATHER_FOGGY) && !engine->IsUnderwater())
         return 0xFF000000;
     if (isNight) {
-        if (screen_depth < (double)day_fogrange_1) {
+        if (screen_depth < (double)pOutdoor->loc_time.fogWeakDistance) {
             v7 = 0;
             if (screen_depth == 0.0) v7 = 216;
             if (isSky) v7 = 248;
             return (255 - v7) << 24;
         } else {
-            if (screen_depth > (double)day_fogrange_2) {
+            if (screen_depth > (double)pOutdoor->loc_time.fogStrongDistance) {
                 v7 = 216;
                 if (screen_depth == 0.0) v7 = 216;
                 if (isSky) v7 = 248;
                 return (255 - v7) << 24;
             }
-            v7 = (int64_t)((screen_depth - (double)day_fogrange_1) /
-                                  ((double)day_fogrange_2 -
-                                   (double)day_fogrange_1) *
+            v7 = (int64_t)((screen_depth - (double)pOutdoor->loc_time.fogWeakDistance) /
+                                  ((double)pOutdoor->loc_time.fogStrongDistance -
+                                   (double)pOutdoor->loc_time.fogWeakDistance) *
                                   216.0);
         }
     } else {
-        if (screen_depth < (double)day_fogrange_1) {
+        if (screen_depth < (double)pOutdoor->loc_time.fogWeakDistance) {
             // no fog
             v7 = 0;
             if (screen_depth == 0.0) v7 = 216;
             if (isSky) v7 = 248;
             return (255 - v7) << 24;
         } else {
-            if (screen_depth > (double)day_fogrange_2) {
+            if (screen_depth > (double)pOutdoor->loc_time.fogStrongDistance) {
                 // full fog
                 v7 = 216;
                 if (screen_depth == 0.0) v7 = 216;
@@ -1912,8 +1905,8 @@ int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
             } else {
                 // linear interpolation
                 v7 =
-                    floorf(((screen_depth - (double)day_fogrange_1) * 216.0 /
-                    ((double)day_fogrange_2 - (double)day_fogrange_1)) +
+                    floorf(((screen_depth - (double)pOutdoor->loc_time.fogWeakDistance) * 216.0 /
+                    ((double)pOutdoor->loc_time.fogStrongDistance - (double)pOutdoor->loc_time.fogWeakDistance)) +
                         0.5f);
             }
         }

@@ -1468,7 +1468,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
     if (bWizardEyeActive) {
         if (uWizardEyeSkillLevel >= MASTERY_EXPERT) {
             for (unsigned i = 0; i < pSpriteObjects.size(); ++i) {
-                if (pSpriteObjects[i].uType == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
+                if (pSpriteObjects[i].spriteId == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
                     continue;
                 // if (uWizardEyeSkillLevel == 1
                 pPoint_X = center.x + (pSpriteObjects[i].vPosition.x - pParty->pos.x) * zoom / 65536.0f;

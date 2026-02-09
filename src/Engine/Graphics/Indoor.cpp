@@ -972,7 +972,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     if (indoor_was_respawned) {
         for (unsigned i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
-            if (spawn->uKind == OBJECT_Actor)
+            if (spawn->type == OBJECT_Actor)
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
             else
                 SpawnRandomTreasure(map_info, spawn);
@@ -1818,19 +1818,19 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             // random x,y at distance from party
             dist_from_party = grng->random(1024) + 512;
             angle_from_party = (grng->random(TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
-            enc_spawn_point.vPosition.x = pParty->pos.x + std::cos(angle_from_party) * dist_from_party;
-            enc_spawn_point.vPosition.y = pParty->pos.y + std::sin(angle_from_party) * dist_from_party;
-            enc_spawn_point.vPosition.z = pParty->pos.z;
-            enc_spawn_point.uKind = OBJECT_Actor;
-            enc_spawn_point.uMonsterIndex = enc_index;
+            enc_spawn_point.position.x = pParty->pos.x + std::cos(angle_from_party) * dist_from_party;
+            enc_spawn_point.position.y = pParty->pos.y + std::sin(angle_from_party) * dist_from_party;
+            enc_spawn_point.position.z = pParty->pos.z;
+            enc_spawn_point.type = OBJECT_Actor;
+            enc_spawn_point.monsterIndex = enc_index;
 
             // get proposed floor level
-            enc_spawn_point.vPosition.z = ODM_GetFloorLevel(enc_spawn_point.vPosition, &bInWater, &modelPID);
+            enc_spawn_point.position.z = ODM_GetFloorLevel(enc_spawn_point.position, &bInWater, &modelPID);
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {
-                dist_y = std::abs(enc_spawn_point.vPosition.y - model.boundingCenter.y);
-                dist_x = std::abs(enc_spawn_point.vPosition.x - model.boundingCenter.x);
+                dist_y = std::abs(enc_spawn_point.position.y - model.boundingCenter.y);
+                dist_x = std::abs(enc_spawn_point.position.x - model.boundingCenter.x);
                 if (int_get_vector_length(dist_x, dist_y, 0) <
                     model.boundingRadius + 256) {
                     not_in_model = 1;
@@ -1854,18 +1854,18 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             // random x,y at distance from party
             dist_from_party = grng->random(512) + 256;
             angle_from_party = (grng->random(TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
-            enc_spawn_point.vPosition.x = pParty->pos.x + std::cos(angle_from_party) * dist_from_party;
-            enc_spawn_point.vPosition.y = pParty->pos.y + std::sin(angle_from_party) * dist_from_party;
-            enc_spawn_point.vPosition.z = pParty->pos.z;
-            enc_spawn_point.uKind = OBJECT_Actor;
-            enc_spawn_point.uMonsterIndex = enc_index;
+            enc_spawn_point.position.x = pParty->pos.x + std::cos(angle_from_party) * dist_from_party;
+            enc_spawn_point.position.y = pParty->pos.y + std::sin(angle_from_party) * dist_from_party;
+            enc_spawn_point.position.z = pParty->pos.z;
+            enc_spawn_point.type = OBJECT_Actor;
+            enc_spawn_point.monsterIndex = enc_index;
 
             // get proposed sector
-            mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition);
+            mon_sectorID = pIndoor->GetSector(enc_spawn_point.position);
             if (mon_sectorID == party_sectorID) {
                 // check proposed floor level
-                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition, mon_sectorID);
-                enc_spawn_point.vPosition.z = indoor_floor_level;
+                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.position, mon_sectorID);
+                enc_spawn_point.position.z = indoor_floor_level;
                 if (indoor_floor_level != -30000) {
                     // break if spanwn point is okay
                     if (std::abs(indoor_floor_level - pParty->pos.z) <= 1024) break;
@@ -1888,8 +1888,8 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
-    a1.uType = pItemTable->items[a1.containing_item.itemId].spriteId;
-    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
+    a1.spriteId = pItemTable->items[a1.containing_item.itemId].spriteId;
+    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.spriteId);
     a1.vPosition = pos;
     a1.uFacing = facing;
     a1.uAttributes = 0;
@@ -1899,14 +1899,14 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
 }
 
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
-    assert(a2->uKind == OBJECT_Sprite);
+    assert(a2->type == OBJECT_Sprite);
 
     SpriteObject a1a;
     a1a.containing_item.Reset();
 
     int v34 = 0;
     int v5 = grng->random(100);
-    ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, mapInfo->mapTreasureLevel));
+    ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->treasureLevel, mapInfo->mapTreasureLevel));
     if (v13 != ITEM_TREASURE_LEVEL_7) {
         // [0, 20) -- nothing
         // [20, 60) -- gold
@@ -1916,31 +1916,31 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
             return;
 
         if (v5 >= 60) {
-            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->vPosition, 0);
+            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->position, 0);
             return;
         }
 
-        a1a.containing_item.generateGold(a2->uItemIndex);
-        a1a.uType = pItemTable->items[a1a.containing_item.itemId].spriteId;
-        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
+        a1a.containing_item.generateGold(a2->treasureLevel);
+        a1a.spriteId = pItemTable->items[a1a.containing_item.itemId].spriteId;
+        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.spriteId);
     } else {
         if (!a1a.containing_item.GenerateArtifact())
             return;
-        a1a.uType = pItemTable->items[a1a.containing_item.itemId].spriteId;
-        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
+        a1a.spriteId = pItemTable->items[a1a.containing_item.itemId].spriteId;
+        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.spriteId);
         a1a.containing_item.Reset();  // TODO(captainurist): this needs checking
     }
     a1a.uAttributes = 0;
     a1a.uSoundID = 0;
     a1a.uFacing = 0;
-    a1a.vPosition = a2->vPosition;
+    a1a.vPosition = a2->position;
     a1a.spell_skill = MASTERY_NONE;
     a1a.spell_level = 0;
     a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = Pid();
     a1a.spell_caster_pid = Pid();
     a1a.timeSinceCreated = 0_ticks;
-    a1a.uSectorID = pIndoor->GetSector(a2->vPosition);
+    a1a.uSectorID = pIndoor->GetSector(a2->position);
     a1a.Create(0, 0, 0, 0);
 }
 

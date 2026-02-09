@@ -6,11 +6,11 @@
 #include "Library/Geometry/Vec.h"
 
 struct SpawnPoint {
-    Vec3f vPosition;
-    uint16_t uRadius = 32;
-    ObjectType uKind = OBJECT_None;
-    ItemTreasureLevel uItemIndex = ITEM_TREASURE_LEVEL_INVALID;
-    uint16_t uMonsterIndex = 0;
-    uint16_t uAttributes = 0;
-    unsigned int uGroup = 0;
+    Vec3f position;
+    uint16_t radius = 32;
+    ObjectType type = OBJECT_None;
+    ItemTreasureLevel treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
+    uint16_t monsterIndex = 0;
+    uint16_t attributes = 0;
+    unsigned int group = 0;
 };

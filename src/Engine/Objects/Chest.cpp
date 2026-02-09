@@ -108,8 +108,8 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpellObject.spell_level = 0;
             pSpellObject.uSpellID = SPELL_NONE;
             pSpellObject.field_54 = 0;
-            pSpellObject.uType = pSpriteID[pRandom];
-            pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellObject.uType);
+            pSpellObject.spriteId = pSpriteID[pRandom];
+            pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellObject.spriteId);
 
             // adjust height to account for different sprite sizes and offset
             SpriteFrame *frame = pSpellObject.getSpriteFrame();

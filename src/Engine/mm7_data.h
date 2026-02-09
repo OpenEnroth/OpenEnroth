@@ -90,11 +90,6 @@ extern int bDialogueUI_InitializeActor_NPC_ID;
 
 extern int uDefaultTravelTime_ByFoot;
 
-extern MapWeatherFlags day_attrib;
-extern int day_fogrange_1;
-extern int day_fogrange_2;
-extern int day_fogrange_3;
-
 extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;

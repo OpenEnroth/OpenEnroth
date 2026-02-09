@@ -834,10 +834,7 @@ void OpenGLRenderer::EndDecals() {
     DecalUniforms uniforms;
     uniforms.projection = projmat;
     uniforms.view = viewmat;
-    uniforms.fogColor = fog;
-    uniforms.fogStart = fogstart;
-    uniforms.fogMiddle = fogmiddle;
-    uniforms.fogEnd = fogend;
+    uniforms.fog = fog;
     uniforms.submit(decalshader);
 
     glActiveTexture(GL_TEXTURE0);
@@ -1199,10 +1196,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     uniforms.cameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
     uniforms.cameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
     uniforms.cameraPos.z = pParty->pos.z + pParty->eyeLevel;
-    uniforms.fogColor = fog;
-    uniforms.fogStart = fogstart;
-    uniforms.fogMiddle = fogmiddle;
-    uniforms.fogEnd = fogend;
+    uniforms.fog = fog;
     uniforms.gamma = gamma;
     uniforms.waterframe = waterAnimationFrame();
 
@@ -1636,24 +1630,33 @@ void OpenGLRenderer::DrawForcePerVerts() {
     uniforms.projection = projmat;
     uniforms.view = viewmat;
 
-    Color fpfogcol = GetLevelFogColor();
     if (config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+        Color fpfogcol = GetLevelFogColor();
         if (fpfogcol != Color()) {
-            uniforms.fogStart = day_fogrange_1;
-            uniforms.fogMiddle = day_fogrange_2;
-            uniforms.fogEnd = day_fogrange_3;
-            uniforms.fogColor = Colorf(fpfogcol.r / 255.0f, fpfogcol.g / 255.0f, fpfogcol.b / 255.0f);
+            // Foggy weather.
+            uniforms.fog.weakDensity = 0.25;
+            uniforms.fog.strongDensity = 0.85;
+            uniforms.fog.weakDistance = fog.weakDistance;
+            uniforms.fog.strongDistance = fog.strongDistance;
+            uniforms.fog.clipDistance = fog.clipDistance;
+            uniforms.fog.color = Colorf(fpfogcol.r / 255.0f, fpfogcol.g / 255.0f, fpfogcol.b / 255.0f);
         } else {
-            uniforms.fogStart = pCamera3D->GetFarClip();
-            uniforms.fogMiddle = 0.0f;
-            uniforms.fogEnd = uniforms.fogStart + 1;
+            // Normal weather.
+            uniforms.fog.weakDensity = 0.0f;
+            uniforms.fog.strongDensity = 0.0f;
+            uniforms.fog.weakDistance = pCamera3D->GetFarClip();
+            uniforms.fog.strongDistance = pCamera3D->GetFarClip();
+            uniforms.fog.clipDistance = pCamera3D->GetFarClip();
             float fogVal = _forcePerVertices[0].color.r;
-            uniforms.fogColor = Colorf(fogVal, fogVal, fogVal);
+            uniforms.fog.color = Colorf(fogVal, fogVal, fogVal);
         }
     } else {
-        uniforms.fogStart = pCamera3D->GetFarClip();
-        uniforms.fogMiddle = 0.0f;
-        uniforms.fogEnd = uniforms.fogStart;
+        uniforms.fog.weakDensity = 0.0f;
+        uniforms.fog.strongDensity = 0.0f;
+        uniforms.fog.weakDistance = pCamera3D->GetFarClip();
+        uniforms.fog.strongDistance = pCamera3D->GetFarClip();
+        uniforms.fog.clipDistance = pCamera3D->GetFarClip();
+        uniforms.fog.color = Colorf();
     }
 
     uniforms.submit(forcepershader);
@@ -1687,30 +1690,34 @@ void OpenGLRenderer::DrawForcePerVerts() {
 
 // TODO(pskelton): move ?
 void OpenGLRenderer::SetFogParametersGL() {
-    Color fogcol = GetLevelFogColor();
-
     if (config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+        Color fogcol = GetLevelFogColor();
+
         if (fogcol != Color()) {
-            fogstart = day_fogrange_1;
-            fogmiddle = day_fogrange_2;
-            fogend = day_fogrange_3;
-            fog.r = fogcol.r / 255.0f;
-            fog.g = fogcol.g / 255.0f;
-            fog.b = fogcol.b / 255.0f;
+            fog.weakDensity = 0.25;
+            fog.strongDensity = 0.85;
+            fog.weakDistance = pOutdoor->loc_time.fogWeakDistance;
+            fog.strongDistance = pOutdoor->loc_time.fogStrongDistance;
+            fog.clipDistance = pCamera3D->GetFarClip();
+            fog.color = fogcol.toColorf();
         } else {
-            fogend = pCamera3D->GetFarClip();
-            fogmiddle = 0.0f;
-            fogstart = fogend * config->graphics.FogDepthRatio.value();
+            fog.weakDensity = 0;
+            fog.strongDensity = 0;
+            fog.weakDistance = pCamera3D->GetFarClip() * config->graphics.FogDepthRatio.value();
+            fog.strongDistance = pCamera3D->GetFarClip() * (1 + config->graphics.FogDepthRatio.value()) / 2;
+            fog.clipDistance = pCamera3D->GetFarClip();
 
             // grabs sky back fog colour
-            Color uTint = GetActorTintColor(31, 0, fogend, 1, 0);
-            fog.r = fog.g = fog.b = uTint.r / 255.0f;
+            Color uTint = GetActorTintColor(31, 0, fog.clipDistance, 1, 0);
+            fog.color = uTint.toColorf();
         }
     } else {
         // puts fog beyond viewclip so we never see it
-        fogstart = pCamera3D->GetFarClip();
-        fogmiddle = 0.0f;
-        fogend = pCamera3D->GetFarClip();
+        fog.weakDensity = 0;
+        fog.strongDensity = 0;
+        fog.weakDistance = pCamera3D->GetFarClip();
+        fog.strongDistance = pCamera3D->GetFarClip();
+        fog.clipDistance = pCamera3D->GetFarClip();
     }
 }
 
@@ -1879,10 +1886,7 @@ void OpenGLRenderer::DrawBillboards() {
     BillboardUniforms uniforms;
     uniforms.projection = projmat;
     uniforms.view = viewmat;
-    uniforms.fogColor = fog;
-    uniforms.fogStart = fogstart;
-    uniforms.fogMiddle = fogmiddle;
-    uniforms.fogEnd = fogend;
+    uniforms.fog = fog;
     uniforms.gamma = gamma;
     uniforms.paltex2D = paltex2D_id;
     uniforms.submit(billbshader);
@@ -1904,11 +1908,13 @@ void OpenGLRenderer::DrawBillboards() {
         if (thisblend == 0.0) {
             // disable alpha blending and enable fog for opaque items
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glUniform1f(billbshader.uniformLocation("fog.fogstart"), GLfloat(fogstart));
+            glUniform1f(billbshader.uniformLocation("fog.weakDistance"), GLfloat(fog.weakDistance));
+            glUniform1f(billbshader.uniformLocation("fog.strongDistance"), GLfloat(fog.strongDistance));
         } else {
             // enable blending and disable fog for transparent items
             glBlendFunc(GL_ONE, GL_ONE);
-            glUniform1f(billbshader.uniformLocation("fog.fogstart"), GLfloat(fogend));
+            glUniform1f(billbshader.uniformLocation("fog.weakDistance"), GLfloat(fog.clipDistance));
+            glUniform1f(billbshader.uniformLocation("fog.strongDistance"), GLfloat(fog.clipDistance));
         }
 
 
@@ -2593,10 +2599,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     uniforms.cameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f);
     uniforms.cameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f);
     uniforms.cameraPos.z = pParty->pos.z + pParty->eyeLevel;
-    uniforms.fogColor = fog;
-    uniforms.fogStart = fogstart;
-    uniforms.fogMiddle = fogmiddle;
-    uniforms.fogEnd = fogend;
+    uniforms.fog = fog;
     uniforms.gamma = gamma;
     uniforms.waterframe = waterAnimationFrame();
     uniforms.flowtimer = pMiscTimer->time().realtimeMilliseconds() >> 4;

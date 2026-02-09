@@ -115,7 +115,7 @@ GAME_TEST(Issues, Issue1532) {
 
     // count should be 9 for gm
     EXPECT_EQ(9, std::ranges::count_if(pSpriteObjects, [](const SpriteObject& object) {
-        return object.uType != SPRITE_NULL &&
+        return object.spriteId != SPRITE_NULL &&
             object.uObjectDescID != 0 && // exploded fire spikes have no DescID
             object.uSpellID == SPELL_FIRE_FIRE_SPIKE &&
             object.spell_caster_pid == Pid(OBJECT_Character, 0);
@@ -752,7 +752,7 @@ GAME_TEST(Issues, Issue1959) {
 
         std::vector<float> angles;
         for (const SpriteObject &sprite : pSpriteObjects)
-            if (sprite.uType == SPRITE_SPELL_AIR_SPARKS)
+            if (sprite.spriteId == SPRITE_SPELL_AIR_SPARKS)
                 angles.push_back(std::atan2(sprite.vPosition.y - pParty->pos.y, sprite.vPosition.x - pParty->pos.x) / M_PI * 180);
         ASSERT_EQ(angles.size(), 9);
         EXPECT_TRUE(std::ranges::is_sorted(angles));

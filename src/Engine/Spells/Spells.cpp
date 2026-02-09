@@ -559,12 +559,12 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
         case SPELL_WATER_POISON_SPRAY:
         case SPELL_AIR_SPARKS:
         case SPELL_EARTH_DEATH_BLOSSOM:
-            spell_sprites.uType = SpellSpriteMapping[uSpellID];
+            spell_sprites.spriteId = SpellSpriteMapping[uSpellID];
             spell_sprites.containing_item.Reset();
             spell_sprites.uSpellID = uSpellID;
             spell_sprites.spell_level = skillLevel;
             spell_sprites.spell_skill = skillMastery;
-            spell_sprites.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprites.uType);
+            spell_sprites.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprites.spriteId);
             spell_sprites.vPosition = from;
             spell_sprites.uAttributes = SPRITE_IGNORE_RANGE;
             spell_sprites.uSectorID = pIndoor->GetSector(from);

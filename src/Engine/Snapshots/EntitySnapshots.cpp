@@ -593,7 +593,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->alignment = align;
 
     snapshot(src.pPartyBuffs, &dst->partyBuffs);
-    snapshot(src.pCharacters, &dst->players);
+    snapshot(src.pCharacters, &dst->characters);
     snapshot(src.pHirelings, &dst->hirelings);
 
     // Vanilla stored NPC sacrifice status in NPC evt values.
@@ -722,7 +722,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 
     reconstruct(src.partyBuffs, &dst->pPartyBuffs);
     for (int i = 0; i < 4; i++)
-        reconstruct(src.players[i], &dst->pCharacters[i], tags::context(i));
+        reconstruct(src.characters[i], &dst->pCharacters[i], tags::context(i));
     reconstruct(src.hirelings, &dst->pHirelings);
 
     // Vanilla stored NPC sacrifice status in NPC evt values.
@@ -1579,29 +1579,29 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
-    dst->vPosition = src.vPosition.toFloat();
-    dst->uRadius = src.uRadius;
-    dst->uKind = static_cast<ObjectType>(src.uKind);
-    if (dst->uKind == OBJECT_Actor) {
-        dst->uItemIndex = ITEM_TREASURE_LEVEL_INVALID;
-        dst->uMonsterIndex = src.uIndex;
+    dst->position = src.position.toFloat();
+    dst->radius = src.radius;
+    dst->type = static_cast<ObjectType>(src.type);
+    if (dst->type == OBJECT_Actor) {
+        dst->treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
+        dst->monsterIndex = src.treasureLevelOrMonsterIndex;
     } else {
-        assert(dst->uKind == OBJECT_Sprite);
-        dst->uItemIndex = static_cast<ItemTreasureLevel>(src.uIndex);
-        dst->uMonsterIndex = 0;
+        assert(dst->type == OBJECT_Sprite);
+        dst->treasureLevel = static_cast<ItemTreasureLevel>(src.treasureLevelOrMonsterIndex);
+        dst->monsterIndex = 0;
     }
-    dst->uAttributes = src.uAttributes;
-    dst->uGroup = src.uGroup;
+    dst->attributes = src.attributes;
+    dst->group = src.group;
 }
 
 void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     memzero(dst);
 
-    dst->uType = std::to_underlying(src.uType);
-    dst->uObjectDescID = src.uObjectDescID;
-    dst->vPosition = src.vPosition.toInt();
-    snapshot(src.vVelocity, &dst->vVelocity);
-    dst->uFacing = src.uFacing;
+    dst->spriteId = std::to_underlying(src.spriteId);
+    dst->objectDescId = src.uObjectDescID;
+    dst->position = src.vPosition.toInt();
+    snapshot(src.vVelocity, &dst->velocity);
+    dst->yawAngle = src.uFacing;
     dst->uSoundID = src.uSoundID;
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uSectorID = src.uSectorID;
@@ -1621,11 +1621,11 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
 }
 
 void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
-    dst->uType = static_cast<SpriteId>(src.uType);
-    dst->uObjectDescID = src.uObjectDescID;
-    dst->vPosition = src.vPosition.toFloat();
-    reconstruct(src.vVelocity, &dst->vVelocity);
-    dst->uFacing = src.uFacing;
+    dst->spriteId = static_cast<SpriteId>(src.spriteId);
+    dst->uObjectDescID = src.objectDescId;
+    dst->vPosition = src.position.toFloat();
+    reconstruct(src.velocity, &dst->vVelocity);
+    dst->uFacing = src.yawAngle;
     dst->uSoundID = src.uSoundID;
     dst->uAttributes = SpriteAttributes(src.uAttributes);
     dst->uSectorID = src.uSectorID;
@@ -1833,19 +1833,19 @@ void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
 void snapshot(const LocationTime &src, LocationTime_MM7 *dst) {
     memzero(dst);
 
-    snapshot(src.last_visit, &dst->last_visit);
-    snapshot(src.sky_texture_name, &dst->sky_texture_name);
-    dst->day_attrib = std::to_underlying(src.day_attrib);
-    dst->day_fogrange_1 = src.day_fogrange_1;
-    dst->day_fogrange_2 = src.day_fogrange_2;
+    snapshot(src.lastVisitTime, &dst->lastVisitTime);
+    snapshot(src.skyTextureName, &dst->skyTextureName);
+    dst->weatherFlags = std::to_underlying(src.weatherFlags);
+    dst->fogWeakDistance = src.fogWeakDistance;
+    dst->fogStrongDistance = src.fogStrongDistance;
 }
 
 void reconstruct(const LocationTime_MM7 &src, LocationTime *dst) {
-    reconstruct(src.last_visit, &dst->last_visit);
-    reconstruct(src.sky_texture_name, &dst->sky_texture_name);
-    dst->day_attrib = static_cast<MapWeatherFlags>(src.day_attrib);
-    dst->day_fogrange_1 = src.day_fogrange_1;
-    dst->day_fogrange_2 = src.day_fogrange_2;
+    reconstruct(src.lastVisitTime, &dst->lastVisitTime);
+    reconstruct(src.skyTextureName, &dst->skyTextureName);
+    dst->weatherFlags = static_cast<MapWeatherFlags>(src.weatherFlags);
+    dst->fogWeakDistance = src.fogWeakDistance;
+    dst->fogStrongDistance = src.fogStrongDistance;
 }
 
 void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst) {

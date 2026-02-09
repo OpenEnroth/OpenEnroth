@@ -519,7 +519,7 @@ struct Party_MM7 {
     int32_t flags2;
     uint32_t alignment;
     std::array<SpellBuff_MM7, 20> partyBuffs;
-    std::array<Character_MM7, 4> players;
+    std::array<Character_MM7, 4> characters;
     std::array<NPCData_MM7, 2> hirelings;
     Item_MM7 pickedItem;
     uint32_t flags;
@@ -932,22 +932,22 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst);
 
 
 struct SpawnPoint_MM6 {
-    Vec3i vPosition;
-    uint16_t uRadius;
-    uint16_t uKind;
-    uint16_t uIndex;
-    uint16_t uAttributes;
+    Vec3i position;
+    uint16_t radius;
+    uint16_t type;
+    uint16_t treasureLevelOrMonsterIndex;
+    uint16_t attributes;
 };
 static_assert(sizeof(SpawnPoint_MM6) == 20);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpawnPoint_MM6)
 
 struct SpawnPoint_MM7 {
-    Vec3i vPosition;
-    uint16_t uRadius;
-    uint16_t uKind;
-    uint16_t uIndex;
-    uint16_t uAttributes;
-    unsigned int uGroup;
+    Vec3i position;
+    uint16_t radius;
+    uint16_t type; // Item or actor.
+    uint16_t treasureLevelOrMonsterIndex;
+    uint16_t attributes;
+    uint32_t group;
 };
 static_assert(sizeof(SpawnPoint_MM7) == 24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpawnPoint_MM7)
@@ -956,11 +956,11 @@ void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst);
 
 
 struct SpriteObject_MM7 {
-    uint16_t uType;
-    uint16_t uObjectDescID;
-    Vec3i vPosition;
-    Vec3s vVelocity;
-    uint16_t uFacing;
+    uint16_t spriteId;
+    uint16_t objectDescId;
+    Vec3i position;
+    Vec3s velocity;
+    uint16_t yawAngle;
     uint16_t uSoundID;
     uint16_t uAttributes;
     int16_t uSectorID;
@@ -968,14 +968,14 @@ struct SpriteObject_MM7 {
     int16_t tempLifetime;
     int16_t field_22_glow_radius_multiplier;
     Item_MM7 containing_item;
-    int uSpellID;
-    int spell_level;
+    int32_t uSpellID;
+    int32_t spell_level;
     int32_t spell_skill;
-    int field_54;
-    int spell_caster_pid;
-    int spell_target_pid;
-    char field_60_distance_related_prolly_lod;
-    char spellCasterAbility;
+    int32_t field_54;
+    int32_t spell_caster_pid;
+    int32_t spell_target_pid;
+    int8_t field_60_distance_related_prolly_lod;
+    int8_t spellCasterAbility;
     uint16_t _pad;
     Vec3i initialPosition;
 };
@@ -1239,11 +1239,11 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BSPModelData_MM7)
 // Note: serialization code is in CompositeSnapshots.h
 
 struct LocationTime_MM7 {
-    int64_t last_visit;
-    std::array<char, 12> sky_texture_name; // Texture name in bitmaps.lod.
-    int32_t day_attrib;
-    int32_t day_fogrange_1;
-    int32_t day_fogrange_2;
+    int64_t lastVisitTime;
+    std::array<char, 12> skyTextureName; // Texture name in bitmaps.lod.
+    int32_t weatherFlags; // In MM7 we have only one flag here - for foggy weather.
+    int32_t fogWeakDistance; // Zero if no fog. Otherwise, the distance where stronger fog starts.
+    int32_t fogStrongDistance; // Zero if no fog. Otherwise, the distance where super strong fog starts.
     std::array<char, 24> field_2F4;
 };
 static_assert(sizeof(LocationTime_MM7) == 0x38);

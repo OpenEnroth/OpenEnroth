@@ -79,11 +79,11 @@ void spawnMonsters(int16_t typeindex, int16_t level, int count,
 
     SpawnPoint pSpawnPoint;
 
-    pSpawnPoint.vPosition = pos;
-    pSpawnPoint.uGroup = group;
-    pSpawnPoint.uRadius = 32;
-    pSpawnPoint.uKind = OBJECT_Actor;
-    pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
+    pSpawnPoint.position = pos;
+    pSpawnPoint.group = group;
+    pSpawnPoint.radius = 32;
+    pSpawnPoint.type = OBJECT_Actor;
+    pSpawnPoint.monsterIndex = typeindex + 2 * level + level;
 
     AIDirection direction;
     int oldNumActors = pActors.size();

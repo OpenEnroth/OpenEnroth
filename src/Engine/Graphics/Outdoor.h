@@ -57,6 +57,7 @@ struct OutdoorLocation {
     void UpdateFog();
     int getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos);
     void SetFog();
+    void SetUnderwaterFog();
     void Draw();
 
     double GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int unumverts);
@@ -106,7 +107,6 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);
 void UpdateActors_ODM();
 void ODM_ProcessPartyActions();
-void SetUnderwaterFog();
 
 /**
  * @offset 0x4610AA
