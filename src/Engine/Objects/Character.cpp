@@ -5953,7 +5953,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
             if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
             Character *playerPtr = &pParty->pCharacters[targetchar];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
-            SpriteId spriteType = spritefrom->uType;
+            SpriteId spriteType = spritefrom->spriteId;
 
             // TODO(captainurist): should this include other projectile attacks? Vanilla only checks arrows.
             // TODO(captainurist): should we check that the character is actually unarmed? Vanilla doesn't check, apparently.
@@ -6450,12 +6450,12 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
     // a5 is range?
 
     SpriteObject a1a;
-    a1a.uType = SPRITE_OBJECT_EXPLODE;
+    a1a.spriteId = SPRITE_OBJECT_EXPLODE;
     a1a.containing_item.Reset();
     a1a.uSpellID = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;
     a1a.spell_skill = MASTERY_MASTER;
-    a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
+    a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.spriteId);
     a1a.vPosition = pos;
     a1a.uAttributes = 0;
     a1a.uSectorID = pIndoor->GetSector(pos);

@@ -242,7 +242,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_LIGHT_LIGHT_BOLT:
         case SPELL_DARK_TOXIC_CLOUD:
         case SPELL_DARK_DRAGON_BREATH:
-            sprite.uType = SpellSpriteMapping[uSpellID];
+            sprite.spriteId = SpellSpriteMapping[uSpellID];
             sprite.uObjectDescID = GetObjDescId(uSpellID);
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
@@ -324,7 +324,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     yaw = TrigLUT.atan2(j, k);
                 }
                 sprite.containing_item.Reset();
-                sprite.uType = SpellSpriteMapping[uSpellID];
+                sprite.spriteId = SpellSpriteMapping[uSpellID];
                 sprite.uObjectDescID = GetObjDescId(uSpellID);
                 sprite.spell_level = uSkillMastery.level();
                 sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
@@ -371,7 +371,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            sprite.uType = SpellSpriteMapping[uSpellID];
+            sprite.spriteId = SpellSpriteMapping[uSpellID];
             sprite.uObjectDescID = GetObjDescId(uSpellID);
             sprite.containing_item.Reset();
             sprite.uSpellID = SPELL_AIR_SPARKS;
@@ -628,7 +628,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            sprite.uType = SpellSpriteMapping[uSpellID];
+            sprite.spriteId = SpellSpriteMapping[uSpellID];
             sprite.uObjectDescID = GetObjDescId(uSpellID);
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
@@ -744,9 +744,9 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
     int v13;      // edx@28
 
     SpriteObject a1;  // [sp+Ch] [bp-74h]@1
-    a1.uType = spriteForMonsterProjectile(type);
+    a1.spriteId = spriteForMonsterProjectile(type);
 
-    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
+    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.spriteId);
     if (a1.uObjectDescID == 0) {
         logger->error("Item not found");
         return;
@@ -801,8 +801,8 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
 //----- (00404736) --------------------------------------------------------
 void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors eg gogs
     SpriteObject a1;
-    a1.uType = SPRITE_OBJECT_EXPLODE;
-    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
+    a1.spriteId = SPRITE_OBJECT_EXPLODE;
+    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.spriteId);
     a1.containing_item.Reset();
     a1.uSpellID = SPELL_NONE;
     a1.spell_level = 0;
@@ -4213,19 +4213,19 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
 
 //----- (0044F57C) --------------------------------------------------------
 void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
-    assert(spawn->uKind == OBJECT_Actor);
+    assert(spawn->type == OBJECT_Actor);
 
     char v8;               // zf@5
     if (GetAlertStatus())
-        v8 = (spawn->uAttributes & 1) == 0;
+        v8 = (spawn->attributes & 1) == 0;
     else
-        v8 = (spawn->uAttributes & 1) == 1;
+        v8 = (spawn->attributes & 1) == 1;
     if (v8) return;
 
     int NumToSpawn = 1;
     std::string baseTextureName;
     int monsterCategoryOddsSet = 0;
-    switch (spawn->uMonsterIndex - 1) {
+    switch (spawn->monsterIndex - 1) {
         case 0:
             monsterCategoryOddsSet = pMapInfo->Dif_M1;
             NumToSpawn = pMapInfo->encounter1MinCount + grng->random(pMapInfo->encounter1MaxCount - pMapInfo->encounter1MinCount + 1);
@@ -4286,7 +4286,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
 
     int pSector = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        pSector = pIndoor->GetSector(spawn->vPosition);
+        pSector = pIndoor->GetSector(spawn->position);
 
     // spawning loop
     std::string finalTextureName = baseTextureName;
@@ -4332,11 +4332,11 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
         pMonster->radius = monsterDesc->monsterRadius;
         pMonster->height = monsterDesc->monsterHeight;
         pMonster->moveSpeed = monsterDesc->movementSpeed;
-        pMonster->initialPosition = spawn->vPosition;
-        pMonster->pos = spawn->vPosition;
+        pMonster->initialPosition = spawn->position;
+        pMonster->pos = spawn->position;
         pMonster->tetherDistance = 256;
         pMonster->sectorId = pSector;
-        pMonster->group = spawn->uGroup;
+        pMonster->group = spawn->group;
         pMonster->PrepareSprites(0);
         pMonster->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
 
@@ -4345,9 +4345,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
         int distance = (((uCurrentlyLoadedLevelType != LEVEL_OUTDOOR) - 1) & 0x40) + 64; // 64 indoor or 128 outdoor
 
         Vec3f newPos;
-        newPos.x = TrigLUT.cos(randomAngle) * distance + spawn->vPosition.x;
-        newPos.y = TrigLUT.sin(randomAngle) * distance + spawn->vPosition.y;
-        newPos.z = spawn->vPosition.z;
+        newPos.x = TrigLUT.cos(randomAngle) * distance + spawn->position.x;
+        newPos.y = TrigLUT.sin(randomAngle) * distance + spawn->position.y;
+        newPos.z = spawn->position.z;
 
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             if (aggro)
@@ -4389,7 +4389,7 @@ void evaluateAoeDamage() {
             attackerId = pSpriteObjects[attackerId].spell_caster_pid.id();
             // This is triggered by the rock blast decorations Armageddon spawns.
             // If let through, they can trigger the assert near the end of the loop.
-            if (pSpriteObj->uType == SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT && attackerType == OBJECT_None)
+            if (pSpriteObj->spriteId == SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT && attackerType == OBJECT_None)
                 continue;
         }
 

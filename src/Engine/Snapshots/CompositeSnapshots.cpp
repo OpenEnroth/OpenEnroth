@@ -318,8 +318,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
 
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].containing_item.itemId != ITEM_NULL && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
-            pSpriteObjects[i].uType = static_cast<SpriteId>(pItemTable->items[pSpriteObjects[i].containing_item.itemId].spriteId);
-            pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
+            pSpriteObjects[i].spriteId = static_cast<SpriteId>(pItemTable->items[pSpriteObjects[i].containing_item.itemId].spriteId);
+            pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].spriteId);
         }
     }
 

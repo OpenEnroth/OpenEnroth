@@ -586,9 +586,9 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
 
     // assert(false); // need to refactor carefully & collect data
     // v2 = this;
-    result = a2->uType;
+    result = a2->spriteId;
 
-    switch (a2->uType) {
+    switch (a2->spriteId) {
         case SPRITE_PROJECTILE_AIR_BOLT:
         case SPRITE_PROJECTILE_SPIRIT_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(

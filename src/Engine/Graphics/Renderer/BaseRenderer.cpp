@@ -92,9 +92,9 @@ void BaseRenderer::DrawSpriteObjects() {
 
         // render as sprte 500 - 9081
         if (spell_fx_renderer->RenderAsSprite(object) ||
-            ((object->uType < SPRITE_SPELL_FIRE_TORCH_LIGHT || object->uType >= SPRITE_10000) && // Not a spell sprite.
-             (object->uType < SPRITE_PROJECTILE_AIR_BOLT || object->uType >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
-             (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) { // Not a trap.
+            ((object->spriteId < SPRITE_SPELL_FIRE_TORCH_LIGHT || object->spriteId >= SPRITE_10000) && // Not a spell sprite.
+             (object->spriteId < SPRITE_PROJECTILE_AIR_BOLT || object->spriteId >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
+             (object->spriteId < SPRITE_TRAP_FIRE || object->spriteId > SPRITE_TRAP_BODY))) { // Not a trap.
             SpriteFrame *frame = object->getSpriteFrame();
             if (frame->spriteName == "null" || frame->textureName == "null") {
                 logger->trace("Trying to draw sprite with null frame");

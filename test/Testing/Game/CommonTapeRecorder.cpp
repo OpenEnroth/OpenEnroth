@@ -155,7 +155,7 @@ TestMultiTape<SpriteId> CommonTapeRecorder::sprites() {
         AccessibleVector<SpriteId> result;
         for (const SpriteObject &sprite : pSpriteObjects)
             if (sprite.uObjectDescID != 0)
-                result.push_back(sprite.uType);
+                result.push_back(sprite.spriteId);
         return result;
     });
 }

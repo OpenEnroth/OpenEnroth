@@ -528,7 +528,7 @@ void SpriteObject::explosionTraps() {
             trapDamage += grng->randomDice(pMapInfo->trapDamageD20DiceCount, 20);
         }
         DamageType pDamageType;
-        switch (this->uType) {
+        switch (this->spriteId) {
             case SPRITE_TRAP_FIRE:
                 pDamageType = DAMAGE_FIRE;
                 break;
@@ -645,7 +645,7 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
                               bool randomRotate, SpriteAttributes attributes, Item *item) {
     SpriteObject pSpellObject;
 
-    pSpellObject.uType = sprite;
+    pSpellObject.spriteId = sprite;
     pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(sprite);
     pSpellObject.vPosition = pos;
     pSpellObject.uAttributes = attributes;
@@ -683,8 +683,8 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
 void SpriteObject::createSplashObject(Vec3f pos) {
     SpriteObject sprite;
     sprite.containing_item.Reset();
-    sprite.uType = SPRITE_WATER_SPLASH;
-    sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
+    sprite.spriteId = SPRITE_WATER_SPLASH;
+    sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.spriteId);
     sprite.vPosition = pos;
     sprite.uSectorID = pIndoor->GetSector(pos);
     int objID = sprite.Create(0, 0, 0, 0);
@@ -694,8 +694,8 @@ void SpriteObject::createSplashObject(Vec3f pos) {
 }
 
 static void updateSpriteOnImpact(SpriteObject *object) {
-    object->uType = impactSprite(object->uType);
-    object->uObjectDescID = pObjectList->ObjectIDByItemID(object->uType);
+    object->spriteId = impactSprite(object->spriteId);
+    object->uObjectDescID = pObjectList->ObjectIDByItemID(object->spriteId);
 }
 
 bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
@@ -724,7 +724,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
     }
 
-    switch (object->uType) {
+    switch (object->spriteId) {
         case SPRITE_SPELL_FIRE_FIRE_SPIKE:
         case SPRITE_SPELL_AIR_SPARKS:
         case SPRITE_SPELL_DARK_TOXIC_CLOUD: {
@@ -775,7 +775,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            if (object->uType == SPRITE_PROJECTILE_BLASTER) {
+            if (object->spriteId == SPRITE_PROJECTILE_BLASTER) {
                 // TODO(Nik-RE-dev): unreachable, these cases does not process this sprite type
                 pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             }
@@ -804,18 +804,18 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 return 0;
             }
-            object->uType = SPRITE_OBJECT_EXPLODE;
+            object->spriteId = SPRITE_OBJECT_EXPLODE;
             object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_OBJECT_EXPLODE);
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            object->uObjectDescID = pObjectList->ObjectIDByItemID(object->uType);
+            object->uObjectDescID = pObjectList->ObjectIDByItemID(object->spriteId);
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            if (object->uType != SPRITE_PROJECTILE_BLASTER) {
+            if (object->spriteId != SPRITE_PROJECTILE_BLASTER) {
                 pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 return 0;
             }
@@ -823,7 +823,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
 
         case SPRITE_OBJECT_EXPLODE: {  // actor death explode
-            object->uType = SPRITE_OBJECT_EXPLODE_IMPACT;
+            object->spriteId = SPRITE_OBJECT_EXPLODE_IMPACT;
             object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_OBJECT_EXPLODE_IMPACT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
@@ -887,7 +887,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
 
         case SPRITE_SPELL_WATER_ICE_BLAST: {
-            object->uType = SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT;
+            object->spriteId = SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT;
             object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
@@ -916,7 +916,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
 
         case SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT: {
-            object->uType = SPRITE_SPELL_WATER_ICE_BLAST_IMPACT;
+            object->spriteId = SPRITE_SPELL_WATER_ICE_BLAST_IMPACT;
             object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BLAST_IMPACT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
@@ -962,7 +962,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
 
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM: {
-            object->uType = SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT;
+            object->spriteId = SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT;
             object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
@@ -992,7 +992,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
 
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT: {
-            object->uType = SPRITE_SPELL_EARTH_DEATH_BLOSSOM_IMPACT;
+            object->spriteId = SPRITE_SPELL_EARTH_DEATH_BLOSSOM_IMPACT;
             object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_EARTH_DEATH_BLOSSOM_IMPACT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
@@ -1056,7 +1056,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //         break;
             // }
             bool isDamaged = false;
-            bool isShrinkingRayAoe = (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) && (object->spell_skill == MASTERY_GRANDMASTER);
+            bool isShrinkingRayAoe = (object->spriteId == SPRITE_SPELL_DARK_SHRINKING_RAY) && (object->spell_skill == MASTERY_GRANDMASTER);
             if (pid.type() != OBJECT_Actor) {
                 if (!isShrinkingRayAoe) {
                     SpriteObject::OnInteraction(uLayingItemID);
@@ -1090,7 +1090,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             Mastery skillMastery = object->spell_skill;
             DamageType dmgType;
             ActorBuff buffIdx;
-            switch (object->uType) {
+            switch (object->spriteId) {
                 case SPRITE_SPELL_MIND_CHARM:
                     dmgType = DAMAGE_MIND;
                     buffIdx = ACTOR_BUFF_CHARM;
@@ -1107,7 +1107,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                     assert(false);
                     break;
             }
-            if (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) {
+            if (object->spriteId == SPRITE_SPELL_DARK_SHRINKING_RAY) {
                 switch (skillMastery) {
                     case MASTERY_NOVICE:
                         shrinkPower = 2;
@@ -1130,7 +1130,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 int actorId = pid.id();
                 if (pActors[pid.id()].DoesDmgTypeDoDamage(dmgType)) {
                     isDamaged = true;
-                    if (object->uType == SPRITE_SPELL_LIGHT_PARALYZE) {
+                    if (object->spriteId == SPRITE_SPELL_LIGHT_PARALYZE) {
                         pActors[actorId].aiState = Standing;
                         pActors[actorId].UpdateAnimation();
                     }

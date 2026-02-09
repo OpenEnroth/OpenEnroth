@@ -65,7 +65,7 @@ struct SpriteObject {
     static void createSplashObject(Vec3f pos);
     static void InitializeSpriteObjects();
 
-    SpriteId uType = SPRITE_NULL;
+    SpriteId spriteId = SPRITE_NULL;
     // unsigned __int16 uType;
     uint16_t uObjectDescID = 0; // Index into pObjectList->pObjects. Zero means free slot, can reuse.
     Vec3f vPosition;
