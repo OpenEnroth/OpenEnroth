@@ -180,7 +180,7 @@ void GUIWindow::setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int 
     }
 }
 
-void GUIWindow::Release() {
+GUIWindow::~GUIWindow() {
     DeleteButtons();
     lWindowList.remove(this);
     logger->trace("Release window: {}", toString(eWindowType));

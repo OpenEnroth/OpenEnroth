@@ -28,7 +28,7 @@ GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event) : GU
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
 }
 
-void GUIWindow_BranchlessDialogue::Release() {
+GUIWindow_BranchlessDialogue::~GUIWindow_BranchlessDialogue() {
     current_screen_type = prev_screen_type;
     keyboardInputHandler->EndTextInput();
 }

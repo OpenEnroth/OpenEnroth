@@ -1080,7 +1080,7 @@ void GUIWindow_House::Update() {
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);  // banned from shop so leaving
 }
 
-void GUIWindow_House::Release() {
+GUIWindow_House::~GUIWindow_House() {
     for (HouseNpcDesc &desc : houseNpcs) {
         if (desc.icon) {
             desc.icon->release();

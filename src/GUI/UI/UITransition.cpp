@@ -73,7 +73,7 @@ void GUIWindow_Transition::createButtons(const std::string &okHint, const std::s
     CreateButton({8, 8}, {460, 344}, 1, 0, confirmMsg, 1, INPUT_ACTION_INVALID, okHint);
 }
 
-void GUIWindow_Transition::Release() {
+GUIWindow_Transition::~GUIWindow_Transition() {
     // -----------------------------------------
     // 0041C26A void GUIWindow::Release --- part
     // pVideoPlayer->Unload();

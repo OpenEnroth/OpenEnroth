@@ -15,7 +15,6 @@ LoadSlotState::~LoadSlotState() = default;
 FsmAction LoadSlotState::enter() {
     current_screen_type = SCREEN_LOADGAME;
     bool isInGame = false;
-    //_uiLoadSaveSlot = std::make_unique<GUIWindow_Load>(isInGame);
     // Unfortunately there's a need to set this global pointer if we don't want to refactor the entire SaveLoad UI ( not worth it right now )
     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Load>(isInGame);
     _uiLoadSaveSlot = static_cast<GUIWindow_Load*>(pGUIWindow_CurrentMenu.get());

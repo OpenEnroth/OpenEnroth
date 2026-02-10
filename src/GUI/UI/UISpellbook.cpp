@@ -202,7 +202,7 @@ void GUIWindow_Spellbook::Update() {
     }
 }
 
-void GUIWindow_Spellbook::Release() {
+GUIWindow_Spellbook::~GUIWindow_Spellbook() {
     onCloseSpellBookPage();
     onCloseSpellBook();
 }

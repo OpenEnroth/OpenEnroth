@@ -36,7 +36,7 @@ void GUIWindow_GameOver::Update() {
     }
 }
 
-void GUIWindow_GameOver::Release() {
+GUIWindow_GameOver::~GUIWindow_GameOver() {
     engine->_messageQueue->addMessageCurrentFrame(_releaseEvent, 0, 0);
 
     current_screen_type = prev_screen_type;

@@ -9,7 +9,7 @@
 class GUIWindow_Spellbook : public GUIWindow {
  public:
     GUIWindow_Spellbook();
-    virtual ~GUIWindow_Spellbook() { Release(); }
+    virtual ~GUIWindow_Spellbook();
 
     virtual void Update() override;
 
@@ -33,9 +33,6 @@ class GUIWindow_Spellbook : public GUIWindow {
 
     std::array<GraphicsImage *, 12> SBPageCSpellsTextureList{};
     std::array<GraphicsImage *, 12> SBPageSSpellsTextureList{};
-
- private:
-    void Release();
 };
 
 extern SpellId spellbookSelectedSpell;

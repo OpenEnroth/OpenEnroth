@@ -13,7 +13,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-void GUIWindow_Book::Release() {
+GUIWindow_Book::~GUIWindow_Book() {
     if (ui_book_map_frame) {
         ui_book_map_frame->release();
     }

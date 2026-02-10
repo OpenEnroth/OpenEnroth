@@ -157,7 +157,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
 }
 
-void GUIWindow_Dialogue::Release() {
+GUIWindow_Dialogue::~GUIWindow_Dialogue() {
     if (houseNpcs[0].icon) {
         houseNpcs[0].icon->release();
     }

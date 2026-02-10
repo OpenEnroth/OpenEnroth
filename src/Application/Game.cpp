@@ -592,7 +592,6 @@ void Game::processQueuedMessages() {
                                     window_SpeakInHouse->playHouseGoodbyeSpeech();
                                     pAudioPlayer->playHouseSound(SOUND_WoodDoorClosing, false);
                                     pMediaPlayer->Unload();
-                                    /*pGUIWindow_CurrentMenu = window_SpeakInHouse;*/
 
                                     onEscape();
                                     continue;
