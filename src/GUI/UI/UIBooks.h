@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "GUI/GUIWindow.h"
@@ -27,17 +28,12 @@ using enum BookButtonAction;
 class GUIWindow_Book : public GUIWindow {
  public:
     GUIWindow_Book();
-    virtual ~GUIWindow_Book() {}
-
-    /**
-     * @offset 0x411597
-     */
-    virtual void Release() override;
+    virtual ~GUIWindow_Book();
 
     void bookButtonClicked(BookButtonAction action);
 
  protected:
-    GUIWindow *pChildBooksOverlay{ nullptr };
+    std::unique_ptr<GUIWindow> pChildBooksOverlay;
 
     GraphicsImage *ui_book_button8_off{ nullptr };
     GraphicsImage *ui_book_button8_on{ nullptr };

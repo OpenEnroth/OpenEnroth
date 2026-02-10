@@ -3334,7 +3334,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         SpellId scrollSpellId = spellForScroll(pParty->pPickedItem.itemId);
         if (isSpellTargetsItem(scrollSpellId)) {
             pParty->takeHoldingItem();
-            pGUIWindow_CurrentMenu->Release();
+            pGUIWindow_CurrentMenu = nullptr;
             current_screen_type = SCREEN_GAME;
             pushScrollSpell(scrollSpellId, targetCharacter);
         } else {

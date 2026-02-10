@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -34,7 +36,7 @@ void GUIWindow_AutonotesBook::recalculateCurrentNotesTypePages() {
 GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     this->eWindowType = WindowType::WINDOW_AutonotesBook;
 
-    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({527, 353}, {0, 0}, pBtn_Autonotes);
+    pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{527, 353}, Sizei{0, 0}, pBtn_Autonotes);
     bFlashAutonotesBook = false;
 
     ui_book_autonotes_background = assets->getImage_ColorKey("sbautnot");

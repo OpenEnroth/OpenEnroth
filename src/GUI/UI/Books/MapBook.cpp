@@ -1,7 +1,8 @@
 #include "MapBook.h"
 
-#include <string>
 #include <bit>
+#include <memory>
+#include <string>
 #include <utility>
 
 #include "Engine/AssetsManager.h"
@@ -34,7 +35,7 @@ GUIWindow_MapBook::GUIWindow_MapBook() {
     viewparams->sViewCenterX = pParty->pos.x;
     viewparams->sViewCenterY = pParty->pos.y;
     viewparams->ClampMapViewPosition();
-    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({546, 353}, {0, 0}, pBtn_Maps);
+    pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{546, 353}, Sizei{0, 0}, pBtn_Maps);
 
     ui_book_map_background = assets->getImage_ColorKey("sbmap");
     ui_book_button1_on = assets->getImage_Alpha("zoom-on");

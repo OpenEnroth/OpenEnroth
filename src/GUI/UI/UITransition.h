@@ -10,9 +10,7 @@
 class GUIWindow_Transition : public GUIWindow {
  public:
     GUIWindow_Transition(WindowType windowType, ScreenType screenType);
-    virtual ~GUIWindow_Transition() {}
-
-    virtual void Release() override;
+    virtual ~GUIWindow_Transition();
 
  protected:
     void createButtons(const std::string &okHint, const std::string &cancelHint, UIMessageType confirmMsg, UIMessageType cancelMsg);

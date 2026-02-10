@@ -69,6 +69,7 @@
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpell.h"
+#include "GUI/UI/UIChest.h"
 
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
@@ -131,6 +132,10 @@ int Game::run() {
             startingState = "MainMenu";
         }
     } while (true);
+
+    // Clean up primary window should be the only one left now
+    assert(lWindowList.size() == 1);
+    pPrimaryWindow = nullptr;
 
     return 0;
 }
@@ -236,8 +241,7 @@ void Game::closeTargetedSpellWindow() {
         if (current_screen_type == SCREEN_CHARACTERS) {
             mouse->SetCursorImage("MICON2");
         } else {
-            pGUIWindow_CastTargetedSpell->Release();  // test to fix enchanting issue
-            pGUIWindow_CastTargetedSpell = nullptr;  // test to fix enchanting issue
+            pGUIWindow_CastTargetedSpell = nullptr;
             mouse->SetCursorImage("MICON1");
             engine->_statusBar->clearEvent();
             IsEnchantingInProgress = false;
@@ -255,14 +259,9 @@ void Game::onEscape() {
                                            // shops with characters who couldnt
                                            // act sctive
 
-    if (pGUIWindow_CurrentMenu == window_SpeakInHouse) {
-        window_SpeakInHouse = nullptr;
-    }
-    if (pGUIWindow_CurrentMenu != nullptr) {
-        pGUIWindow_CurrentMenu->Release();  // check this
-        delete pGUIWindow_CurrentMenu;
-        pGUIWindow_CurrentMenu = nullptr;
-    }
+    window_SpeakInHouse = nullptr;
+    pGUIWindow_CurrentMenu = nullptr;
+
     pEventTimer->setPaused(false);
     current_screen_type = SCREEN_GAME;
 }
@@ -335,6 +334,9 @@ void Game::processQueuedMessages() {
             case UIMSG_SelectNPCDialogueOption:
                 selectNPCDialogueOption((DialogueId)uMessageParam);
                 continue;
+            case UIMSG_CloseDialogueWindow:
+                pDialogueWindow = nullptr;
+                continue;
             case UIMSG_ClickHouseNPCPortrait:
                 updateHouseNPCTopics(uMessageParam);
                 continue;
@@ -345,7 +347,7 @@ void Game::processQueuedMessages() {
                 // Game_QuitGameWhilePlaying(uMessageParam); continue;
             case UIMSG_80:
                 assert(false);
-                pGUIWindow_CurrentMenu->Release();
+                pGUIWindow_CurrentMenu = nullptr;
                 current_screen_type = SCREEN_OPTIONS;
                 // pGUIWindow_CurrentMenu =
                 // GUIWindow::Create(0, 0,
@@ -372,7 +374,7 @@ void Game::processQueuedMessages() {
                     engine->_statusBar->clearAll();
                 }
                 // open window
-                pGUIWindow_CurrentMenu = new GUIWindow_QuestBook();
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_QuestBook>();
                 continue;
             case UIMSG_OpenAutonotes:
                 engine->_messageQueue->clear();
@@ -391,7 +393,7 @@ void Game::processQueuedMessages() {
                     engine->_statusBar->clearAll();
                 }
                 // open window
-                pGUIWindow_CurrentMenu = new GUIWindow_AutonotesBook();
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_AutonotesBook>();
                 continue;
             case UIMSG_OpenMapBook:
                 engine->_messageQueue->clear();
@@ -410,7 +412,7 @@ void Game::processQueuedMessages() {
                     engine->_statusBar->clearAll();
                 }
                 // open window;
-                pGUIWindow_CurrentMenu = new GUIWindow_MapBook();
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_MapBook>();
                 continue;
             case UIMSG_OpenCalendar:
                 engine->_messageQueue->clear();
@@ -429,7 +431,7 @@ void Game::processQueuedMessages() {
                     engine->_statusBar->clearAll();
                 }
                 // open window
-                pGUIWindow_CurrentMenu = new GUIWindow_CalendarBook();
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CalendarBook>();
                 continue;
             case UIMSG_OpenHistoryBook:
                 engine->_messageQueue->clear();
@@ -448,7 +450,7 @@ void Game::processQueuedMessages() {
                     engine->_statusBar->clearAll();
                 }
                 // open window
-                pGUIWindow_CurrentMenu = new GUIWindow_JournalBook();
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_JournalBook>();
                 continue;
             case UIMSG_Escape:  // нажатие Escape and return to game
                 back_to_game();
@@ -479,8 +481,6 @@ void Game::processQueuedMessages() {
 
                 if (pGameOverWindow) {
                     if (pGameOverWindow->toggleAndTestFinished()) {
-                        pGameOverWindow->Release();
-                        delete pGameOverWindow;
                         pGameOverWindow = nullptr;
                     }
                     continue;
@@ -493,8 +493,7 @@ void Game::processQueuedMessages() {
                         engine->_messageQueue->clear();
                         _menu->MenuLoop();
                     } else {
-                        pGUIWindow_CastTargetedSpell->Release();
-                        pGUIWindow_CastTargetedSpell = 0;
+                        pGUIWindow_CastTargetedSpell = nullptr;
                         mouse->SetCursorImage("MICON1");
                         engine->_statusBar->clearEvent();
                         IsEnchantingInProgress = false;
@@ -550,15 +549,7 @@ void Game::processQueuedMessages() {
                                     current_screen_type = SCREEN_CHEST;
                                     continue;
                                 case SCREEN_CHEST:
-                                    pWindow2 = pGUIWindow_CurrentMenu;
-                                    pWindow2->Release();
-                                    current_screen_type = SCREEN_GAME;
-                                    pEventTimer->setPaused(false);
-                                    continue;
-                                case SCREEN_19:
-                                    assert(false);
-                                    pWindow2 = ptr_507BC8;
-                                    pWindow2->Release();
+                                    pGUIWindow_CurrentChest = nullptr;
                                     current_screen_type = SCREEN_GAME;
                                     pEventTimer->setPaused(false);
                                     continue;
@@ -588,7 +579,7 @@ void Game::processQueuedMessages() {
                                     onEscape();
                                     continue;
                                 case SCREEN_SHOP_INVENTORY:
-                                    pGUIWindow_CurrentMenu->Release();
+                                    pGUIWindow_CurrentMenu = nullptr;
                                     current_screen_type = SCREEN_HOUSE;
                                     continue;
                                 case SCREEN_HOUSE:
@@ -601,7 +592,6 @@ void Game::processQueuedMessages() {
                                     window_SpeakInHouse->playHouseGoodbyeSpeech();
                                     pAudioPlayer->playHouseSound(SOUND_WoodDoorClosing, false);
                                     pMediaPlayer->Unload();
-                                    pGUIWindow_CurrentMenu = window_SpeakInHouse;
 
                                     onEscape();
                                     continue;
@@ -648,7 +638,7 @@ void Game::processQueuedMessages() {
                                     continue;
                                 case SCREEN_CHARACTERS:
                                     CharacterUI_ReleaseButtons();
-                                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->releaseAwardsScrollBar();
+                                    (dynamic_cast<GUIWindow_CharacterRecord*>(pGUIWindow_CurrentMenu.get()))->releaseAwardsScrollBar();
                                     onEscape();
                                     continue;
                                 case SCREEN_SPELL_BOOK:
@@ -861,16 +851,16 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_OnCastTownPortal:
-                pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_TownPortalBook>(Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
                 continue;
 
             case UIMSG_OnCastLloydsBeacon:
-                pGUIWindow_CurrentMenu = new GUIWindow_LloydsBook(Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_LloydsBook>(Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
                 continue;
 
             case UIMSG_LloydBookFlipButton:
                 if (pGUIWindow_CurrentMenu) {
-                    ((GUIWindow_LloydsBook *)pGUIWindow_CurrentMenu)->flipButtonClicked(uMessageParam != 0);
+                    (dynamic_cast<GUIWindow_LloydsBook*>(pGUIWindow_CurrentMenu.get()))->flipButtonClicked(uMessageParam != 0);
                 }
                 continue;
 
@@ -881,18 +871,18 @@ void Game::processQueuedMessages() {
 
             case UIMSG_InstallOrRecallBeacon:
                 if (pGUIWindow_CurrentMenu) {
-                    ((GUIWindow_LloydsBook *)pGUIWindow_CurrentMenu)->installOrRecallBeacon(uMessageParam);
+                    (dynamic_cast<GUIWindow_LloydsBook*>(pGUIWindow_CurrentMenu.get()))->installOrRecallBeacon(uMessageParam);
                 }
                 continue;
 
             case UIMSG_ClickTownInTP:
                 if (pGUIWindow_CurrentMenu) {
-                    ((GUIWindow_TownPortalBook *)pGUIWindow_CurrentMenu)->clickTown(uMessageParam);
+                    (dynamic_cast<GUIWindow_TownPortalBook*>(pGUIWindow_CurrentMenu.get()))->clickTown(uMessageParam);
                 }
                 continue;
 
             case UIMSG_ShowGameOverWindow: {
-                pGameOverWindow = new GUIWindow_GameOver();
+                pGameOverWindow = std::make_unique<GUIWindow_GameOver>();
                 uGameState = GAME_STATE_FINAL_WINDOW;
                 continue;
             }
@@ -1058,7 +1048,7 @@ void Game::processQueuedMessages() {
                 HouseId tavern = static_cast<HouseId>(uMessageParam);
                 assert(isTavern(tavern));
 
-                pGUIWindow_CurrentMenu = new GUIWindow_Rest();
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Rest>();
 
                 remainingRestTime = timeUntilDawn() + Duration::fromHours(1);
                 if (tavern == HOUSE_TAVERN_DEYJA || tavern == HOUSE_TAVERN_PIT || tavern == HOUSE_TAVERN_MOUNT_NIGHON) {
@@ -1103,7 +1093,7 @@ void Game::processQueuedMessages() {
                 }
 
                 if (!(pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER))) {
-                    pGUIWindow_CurrentMenu = new GUIWindow_Rest();
+                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Rest>();
                     continue;
                 } else {
                     if (pParty->uFlags & PARTY_FLAG_AIRBORNE)
@@ -1240,7 +1230,7 @@ void Game::processQueuedMessages() {
                         if (uAction >= skill_count)
                             uAction = 0;
                     }
-                    ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->openSpellbookPage(spellbookPages[uAction]);
+                    (dynamic_cast<GUIWindow_Spellbook*>(pGUIWindow_CurrentMenu.get()))->openSpellbookPage(spellbookPages[uAction]);
                 }
                 continue;
             }
@@ -1250,7 +1240,7 @@ void Game::processQueuedMessages() {
                     static_cast<MagicSchool>(uMessageParam) == pParty->activeCharacter().lastOpenedSpellbookPage) {
                     continue;
                 }
-                ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->openSpellbookPage(static_cast<MagicSchool>(uMessageParam));
+                (dynamic_cast<GUIWindow_Spellbook*>(pGUIWindow_CurrentMenu.get()))->openSpellbookPage(static_cast<MagicSchool>(uMessageParam));
                 continue;
             case UIMSG_SelectSpell: {
                 if (pTurnEngine->turn_stage == TE_MOVEMENT) {
@@ -1264,7 +1254,7 @@ void Game::processQueuedMessages() {
                 SpellId selectedSpell = static_cast<SpellId>(uMessageParam);
                 if (character->bHaveSpell[selectedSpell] || engine->config->debug.AllMagic.value()) {
                     if (spellbookSelectedSpell == selectedSpell) {
-                        pGUIWindow_CurrentMenu->Release();  // spellbook close
+                        pGUIWindow_CurrentMenu = nullptr;  // spellbook close
                         pEventTimer->setPaused(false);
                         current_screen_type = SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
@@ -1316,7 +1306,7 @@ void Game::processQueuedMessages() {
                             }
                             // open window
                             new OnButtonClick2({ 476, 450 }, { 0, 0 }, pBtn_CastSpell);
-                            pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
+                            pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Spellbook>();
                             continue;
                         }
                     }
@@ -1340,11 +1330,11 @@ void Game::processQueuedMessages() {
                 }
                 // open window
                 new OnButtonClick2({560, 450}, {0, 0}, pBtn_QuickReference);
-                pGUIWindow_CurrentMenu = new GUIWindow_QuickReference();
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_QuickReference>();
                 continue;
             case UIMSG_GameMenuButton:
                 if (current_screen_type != SCREEN_GAME) {
-                    pGUIWindow_CurrentMenu->Release();
+                    pGUIWindow_CurrentMenu = nullptr;
                     pEventTimer->setPaused(false);
                     current_screen_type = SCREEN_GAME;
                 }
@@ -1359,19 +1349,19 @@ void Game::processQueuedMessages() {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                 continue;
             case UIMSG_ClickAwardScrollBar:
-                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsScroll(mouse->position().y);
+                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->clickAwardsScroll(mouse->position().y);
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_ClickAwardsUpBtn:
                 new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Up->rect.topLeft(), {0, 0}, pBtn_Up);
-                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsUp();
+                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->clickAwardsUp();
                 continue;
             case UIMSG_ClickAwardsDownBtn:
                 new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Down->rect.topLeft(), {0, 0}, pBtn_Down);
-                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsDown();
+                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->clickAwardsDown();
                 continue;
             case UIMSG_ChangeDetaliz:
-                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ToggleRingsOverlay();
+                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->ToggleRingsOverlay();
                 continue;
             case UIMSG_ClickPaperdoll:
                 OnPaperdollLeftClick();
@@ -1398,16 +1388,16 @@ void Game::processQueuedMessages() {
                 continue;
             }
             case UIMSG_ClickStatsBtn:
-                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowStatsTab();
+                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->ShowStatsTab();
                 continue;
             case UIMSG_ClickSkillsBtn:
-                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowSkillsTab();
+                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->ShowSkillsTab();
                 continue;
             case UIMSG_ClickInventoryBtn:
-                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowInventoryTab();
+                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->ShowInventoryTab();
                 continue;
             case UIMSG_ClickAwardsBtn:
-                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowAwardsTab();
+                ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->ShowAwardsTab();
                 continue;
             case UIMSG_ClickExitCharacterWindowBtn:
                 new OnCancel2(pCharacterScreen_ExitBtn->rect.topLeft(), {0, 0}, pCharacterScreen_ExitBtn);
@@ -1447,7 +1437,7 @@ void Game::processQueuedMessages() {
                     default:
                         continue;
                 }
-                ((GUIWindow_Book *)pGUIWindow_CurrentMenu)->bookButtonClicked(BookButtonAction(uMessageParam));
+                ((GUIWindow_Book *)pGUIWindow_CurrentMenu.get())->bookButtonClicked(BookButtonAction(uMessageParam));
                 continue;
             case UIMSG_SelectCharacter:
                 engine->_messageQueue->clear();
@@ -1531,8 +1521,8 @@ void Game::processQueuedMessages() {
 
             case UIMSG_OpenInventory: {
                 if (pParty->hasActiveCharacter()) {
-                    pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), SCREEN_CHARACTERS);
-                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowInventoryTab();
+                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(pParty->activeCharacterIndex(), SCREEN_CHARACTERS);
+                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->ShowInventoryTab();
                 }
                 break;
             }

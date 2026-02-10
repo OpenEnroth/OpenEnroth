@@ -1,5 +1,6 @@
 #include "Engine/Objects/Chest.h"
 
+#include <memory>
 #include <numeric>
 #include <unordered_map>
 #include <vector>
@@ -148,7 +149,9 @@ bool Chest::open(int uChestID, Pid objectPid) {
         }
     }
     OpenedTelekinesis = false;
-    pGUIWindow_CurrentMenu = pGUIWindow_CurrentChest = new GUIWindow_Chest(uChestID);
+
+    pGUIWindow_CurrentChest = std::make_unique<GUIWindow_Chest>(uChestID);
+
     return true;
 }
 

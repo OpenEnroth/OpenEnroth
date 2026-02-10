@@ -32,11 +32,11 @@ void GUIWindow_GameOver::Update() {
     // draw pop up box
     if (_showPopUp) {
         Recti popupRect(120, 140, 400, 100);
-        DrawMessageBox(0, popupRect, fmt::format("{}\n \n{}", pGameOverWindow->sHint, localization->str(LSTR_PRESS_ESCAPE)));
+        DrawMessageBox(0, popupRect, fmt::format("{}\n \n{}", sHint, localization->str(LSTR_PRESS_ESCAPE)));
     }
 }
 
-void GUIWindow_GameOver::Release() {
+GUIWindow_GameOver::~GUIWindow_GameOver() {
     engine->_messageQueue->addMessageCurrentFrame(_releaseEvent, 0, 0);
 
     current_screen_type = prev_screen_type;
@@ -44,8 +44,6 @@ void GUIWindow_GameOver::Release() {
     pEventTimer->setPaused(false);
 
     _winnerCert->release();
-
-    GUIWindow::Release();
 }
 
 bool GUIWindow_GameOver::toggleAndTestFinished() {

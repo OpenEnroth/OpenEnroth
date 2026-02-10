@@ -1,5 +1,6 @@
 #include "UIMessageScroll.h"
 
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -12,7 +13,7 @@
 
 void CreateMsgScrollWindow(ItemId mscroll_id) {
     if (!pGUIWindow_ScrollWindow && isMessageScroll(mscroll_id)) {
-        pGUIWindow_ScrollWindow = new GUIWindow_MessageScroll({0, 0}, render->GetRenderDimensions(), mscroll_id, "");
+        pGUIWindow_ScrollWindow = std::make_unique<GUIWindow_MessageScroll>(Pointi(0, 0), render->GetRenderDimensions(), mscroll_id, "");
     }
 }
 

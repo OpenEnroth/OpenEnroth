@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -21,7 +22,7 @@ GraphicsImage *ui_book_journal_background = nullptr;
 GUIWindow_JournalBook::GUIWindow_JournalBook() {
     eWindowType = WINDOW_JournalBook;
 
-    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({600, 361}, {0, 0}, pBtn_History);
+    pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{600, 361}, Sizei{0, 0}, pBtn_History);
     bFlashHistoryBook = false;
 
 

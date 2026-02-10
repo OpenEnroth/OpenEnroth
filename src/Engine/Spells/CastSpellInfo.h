@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Pid.h"
@@ -58,7 +59,7 @@ static const CombinedSkillValue SCROLL_OR_NPC_SPELL_SKILL_VALUE(5, MASTERY_MASTE
 static const CombinedSkillValue WANDS_SKILL_VALUE(8, MASTERY_NOVICE);
 
 struct CastSpellInfo {
-    TargetedSpellUI *GetCastSpellInInventoryWindow();
+    std::unique_ptr<TargetedSpellUI> GetCastSpellInInventoryWindow();
 
     SpellId uSpellID = SPELL_NONE; // Spell being cast.
     int casterCharacterIndex = -1; // 0-based index of the character who cast the spell.

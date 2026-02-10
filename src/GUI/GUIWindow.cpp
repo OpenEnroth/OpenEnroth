@@ -38,6 +38,11 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UIBranchlessDialogue.h"
+#include "GUI/UI/UIGameOver.h"
+#include "GUI/UI/UISpell.h"
+#include "GUI/UI/UIMessageScroll.h"
+#include "GUI/UI/UIChest.h"
 
 #include "Io/InputEnums.h"
 #include "Io/KeyboardInputHandler.h"
@@ -53,18 +58,15 @@ extern std::array<int, 4> pHealthBarPos;
 extern std::array<int, 4> pManaBarPos;
 extern const int pHealthManaBarYPos;
 
-// TODO(pskelton): making this unique_ptr causes headless to stall
-GUIWindow *pPrimaryWindow;
-
-GUIWindow *pGUIWindow_CurrentMenu;
-GUIWindow_Chest *pGUIWindow_CurrentChest;
-GUIWindow *pDialogueWindow;
-GUIWindow_House *window_SpeakInHouse;
-GUIWindow_MessageScroll *pGUIWindow_ScrollWindow; // reading a message scroll
-GUIWindow *ptr_507BC8;  // screen 19 - not used?
-TargetedSpellUI *pGUIWindow_CastTargetedSpell;
-GUIWindow_GameOver *pGameOverWindow; // UIMSG_ShowGameOverWindow
-GUIWindow_BranchlessDialogue *pGUIWindow_BranchlessDialogue; // branchless dialougue
+std::unique_ptr<GUIWindow> pPrimaryWindow;
+std::unique_ptr<GUIWindow> pGUIWindow_CurrentMenu;
+std::unique_ptr<GUIWindow_Chest> pGUIWindow_CurrentChest;
+std::unique_ptr<GUIWindow_House> window_SpeakInHouse;
+std::unique_ptr<GUIWindow> pDialogueWindow;
+std::unique_ptr<GUIWindow_MessageScroll> pGUIWindow_ScrollWindow; // reading a message scroll
+std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;
+std::unique_ptr<GUIWindow_GameOver> pGameOverWindow;
+std::unique_ptr<GUIWindow_BranchlessDialogue> pGUIWindow_BranchlessDialogue;
 
 enum WindowType current_character_screen_window = WINDOW_CharacterWindow_Stats;
 std::list<GUIWindow*> lWindowList;
@@ -178,7 +180,7 @@ void GUIWindow::setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int 
     }
 }
 
-void GUIWindow::Release() {
+GUIWindow::~GUIWindow() {
     DeleteButtons();
     lWindowList.remove(this);
     logger->trace("Release window: {}", toString(eWindowType));
@@ -434,15 +436,8 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, s
     this->receives_keyboard_input = false;
 }
 
-GUIWindow::~GUIWindow() {
-    Release();
-}
-
 void DialogueEnding() {
     speakingNpcId = 0;
-    if (pDialogueWindow) {
-        pDialogueWindow->Release();
-    }
     pDialogueWindow = nullptr;
     pMiscTimer->setPaused(false);
     pEventTimer->setPaused(false);
@@ -456,7 +451,6 @@ void OnButtonClick::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     delete this;
 }
@@ -471,7 +465,6 @@ void OnButtonClick2::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     delete this;
 }
@@ -483,7 +476,6 @@ void OnButtonClick3::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     delete this;
 }
@@ -493,8 +485,6 @@ void OnButtonClick4::Update() {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
     render->DrawQuad2D(_button->vTextures[1], frameRect.topLeft());
-
-    Release();
 
     delete this;
 }
@@ -507,7 +497,6 @@ void OnSaveLoad::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     if (current_screen_type == SCREEN_SAVEGAME) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
@@ -526,7 +515,6 @@ void OnCancel::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
@@ -541,7 +529,6 @@ void OnCancel2::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
@@ -557,7 +544,6 @@ void OnCancel3::Update() {
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
-    Release();
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
@@ -1019,31 +1005,19 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
 WindowManager windowManager;
 
 void WindowManager::DeleteAllVisibleWindows() {
-    while (lWindowList.size() > 1) {
-        GUIWindow *pWindow = lWindowList.front();
-        // game ui should never be released and should always be at the back of the window list
-        if (pWindow->eWindowType == WINDOW_GameUI) {
-            assert(false && "WINDOW_GameUI is not at back of lWindowList");
-        }
-        // Child books button should be deleted by parent
-        if (pWindow->eWindowType == WINDOW_BooksButtonOverlay) {
-            lWindowList.pop_front();
-            continue;
-        }
-        pWindow->Release();
-        delete pWindow;
-    }
+    pDialogueWindow = nullptr;
+    pGUIWindow_ScrollWindow = nullptr;
+    pGUIWindow_CastTargetedSpell = nullptr;
+    pGameOverWindow = nullptr;
+    pGUIWindow_BranchlessDialogue = nullptr;
+    window_SpeakInHouse = nullptr;
+    pGUIWindow_CurrentChest = nullptr;
+    pGUIWindow_CurrentMenu = nullptr;
+
+    // Only primary window should be left now
+    assert(lWindowList.size() == 1 && "Leaking GUIWindows");
 
     // reset screen state after deleting all windows
-    pGUIWindow_CurrentMenu = nullptr;
-    pDialogueWindow = nullptr;
-    window_SpeakInHouse = nullptr;
-    pGUIWindow_ScrollWindow = nullptr; // reading a message scroll
-    ptr_507BC8 = nullptr;  // screen 19 - not used?
-    pGUIWindow_CastTargetedSpell = nullptr;
-    pGameOverWindow = nullptr; // UIMSG_ShowGameOverWindow
-    pGUIWindow_BranchlessDialogue = nullptr; // branchless dialougue
-
     current_screen_type = SCREEN_GAME;
     engine->_messageQueue->clearAll();
 
@@ -1105,12 +1079,7 @@ void UI_Create() {
     dialogue_ui_x_ok_u = assets->getImage_ColorKey("x_ok_u");
     ui_buttyes2 = assets->getImage_Alpha("BUTTYES2");
 
-    if (pPrimaryWindow) {
-        pPrimaryWindow->Release();
-        delete pPrimaryWindow;
-    }
-
-    pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions());
+    pPrimaryWindow = std::make_unique<GUIWindow>(WINDOW_GameUI, Pointi{0, 0}, render->GetRenderDimensions());
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 
     pPrimaryWindow->CreateButton("Game_Character1", {61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);  // buttons for portraits

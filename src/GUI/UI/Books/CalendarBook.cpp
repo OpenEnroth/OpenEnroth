@@ -1,5 +1,6 @@
 #include "GUI/UI/Books/CalendarBook.h"
 
+#include <memory>
 #include <string>
 
 #include "Engine/Localization.h"
@@ -38,7 +39,7 @@ static std::array<int, 28> pDayMoonPhase = {
 GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
     this->eWindowType = WindowType::WINDOW_CalendarBook;
 
-    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({570, 354}, {0, 0}, pBtn_Calendar);
+    pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{570, 354}, Sizei{0, 0}, pBtn_Calendar);
 
     ui_book_calendar_background = assets->getImage_ColorKey("sbdate-time");
     ui_book_calendar_moon_new = assets->getImage_ColorKey("moon_new");

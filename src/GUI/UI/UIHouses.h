@@ -76,10 +76,9 @@ struct HouseNpcDesc {
 class GUIWindow_House : public GUIWindow {
  public:
     explicit GUIWindow_House(HouseId houseId);
-    virtual ~GUIWindow_House() {}
+    virtual ~GUIWindow_House();
 
     virtual void Update() override;
-    virtual void Release() override;
 
     HouseType buildingType() const {
         return houseTable[houseId()].uType;

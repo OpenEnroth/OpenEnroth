@@ -112,6 +112,7 @@ enum UIMessageType : uint32_t {
     UIMSG_StartHireling1Dialogue = 134,
     UIMSG_StartHireling2Dialogue = 135,
     UIMSG_SelectNPCDialogueOption = 136,
+    UIMSG_CloseDialogueWindow = 137, // OE addition
 
     UIMSG_CastSpell_TargetActorBuff = 140,
     //UIMSG_CastSpell_TargetCharacter = 141, // semantics duplicates UIMSG 69

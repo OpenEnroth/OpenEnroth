@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <memory>
 
 #include "Engine/Localization.h"
 #include "Engine/AssetsManager.h"
@@ -12,7 +13,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-void GUIWindow_Book::Release() {
+GUIWindow_Book::~GUIWindow_Book() {
     if (ui_book_map_frame) {
         ui_book_map_frame->release();
     }
@@ -70,13 +71,7 @@ void GUIWindow_Book::Release() {
 
     pAudioPlayer->playUISound(SOUND_closebook);
 
-    if (pChildBooksOverlay) {
-        pChildBooksOverlay->Release();
-        delete pChildBooksOverlay;
-        pChildBooksOverlay = nullptr;
-    }
-
-    GUIWindow::Release();
+    pChildBooksOverlay = nullptr;
 }
 
 GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions()) {

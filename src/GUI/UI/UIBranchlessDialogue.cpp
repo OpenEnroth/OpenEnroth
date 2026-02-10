@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "UIBranchlessDialogue.h"
 
 #include "Engine/AssetsManager.h"
@@ -26,11 +28,9 @@ GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event) : GU
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
 }
 
-void GUIWindow_BranchlessDialogue::Release() {
+GUIWindow_BranchlessDialogue::~GUIWindow_BranchlessDialogue() {
     current_screen_type = prev_screen_type;
     keyboardInputHandler->EndTextInput();
-
-    GUIWindow::Release();
 }
 
 void GUIWindow_BranchlessDialogue::Update() {
@@ -83,12 +83,11 @@ void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
         savedEventID = eventid;
         savedEventStep = entryline;
         savedDecoration = activeLevelDecoration;
-        pGUIWindow_BranchlessDialogue = new GUIWindow_BranchlessDialogue(type);
+        pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(type);
     }
 }
 
 void releaseBranchlessDialogue() {
-    pGUIWindow_BranchlessDialogue->Release();
     pGUIWindow_BranchlessDialogue = nullptr;
     if (savedEventID) {
         // Do not run event engine whith no event, it may happen when you close talk window

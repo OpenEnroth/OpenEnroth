@@ -1,6 +1,7 @@
 #include "UIHouses.h"
 
 #include <cstdlib>
+#include <memory>
 #include <vector>
 #include <utility>
 #include <string>
@@ -445,8 +446,7 @@ void NPCHireableDialogPrepare() {
     int v0 = 0;
     NPCData *v1 = houseNpcs[currentHouseNpc].npc;
 
-    pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350});
+    pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetRenderDimensions().w, 350));
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
         UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
@@ -519,9 +519,8 @@ void updateHouseNPCTopics(int npc) {
 
     currentHouseNpc = npc;
     if (houseNpcs[npc].type == HOUSE_TRANSITION) {
-        pDialogueWindow->Release();
         // TODO(Nik-RE-dev): can use GUIWindow_Transition
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions());
+        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), render->GetRenderDimensions());
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_TRANSITION_NO, localization->str(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_HouseTransitionConfirmation, 1,
@@ -576,15 +575,13 @@ bool houseDialogPressEscape() {
     if (window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_NULL ||
         window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_MAIN) {
         currentHouseNpc = -1;
-        if (pDialogueWindow) {
-            pDialogueWindow->Release();
-        }
         if (shop_ui_background) {
             shop_ui_background->release();
             shop_ui_background = nullptr;
         }
         window_SpeakInHouse->updateDialogueOnEscape();
-        pDialogueWindow = nullptr;
+        // we are in the middle of the update windows loop, so we need to delay closing the dialogue window until the end of the frame
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_CloseDialogueWindow, 0, 0);
 
         if (houseNpcs.size() == 1) {
             return false;
@@ -622,47 +619,47 @@ void createHouseUI(HouseId houseId) {
       case HOUSE_TYPE_ELEMENTAL_GUILD:
       case HOUSE_TYPE_SELF_GUILD:
       case HOUSE_TYPE_MIRRORED_PATH_GUILD:
-        window_SpeakInHouse = new GUIWindow_MagicGuild(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_MagicGuild>(houseId);
         break;
       case HOUSE_TYPE_BANK:
-        window_SpeakInHouse = new GUIWindow_Bank(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Bank>(houseId);
         break;
       case HOUSE_TYPE_TEMPLE:
-        window_SpeakInHouse = new GUIWindow_Temple(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Temple>(houseId);
         break;
       case HOUSE_TYPE_TAVERN:
-        window_SpeakInHouse = new GUIWindow_Tavern(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Tavern>(houseId);
         break;
       case HOUSE_TYPE_TRAINING_GROUND:
-        window_SpeakInHouse = new GUIWindow_Training(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Training>(houseId);
         break;
       case HOUSE_TYPE_STABLE:
       case HOUSE_TYPE_BOAT:
-        window_SpeakInHouse = new GUIWindow_Transport(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Transport>(houseId);
         break;
       case HOUSE_TYPE_TOWN_HALL:
-        window_SpeakInHouse = new GUIWindow_TownHall(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_TownHall>(houseId);
         break;
       case HOUSE_TYPE_JAIL:
-        window_SpeakInHouse = new GUIWindow_Jail(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_Jail>(houseId);
         break;
       case HOUSE_TYPE_MERCENARY_GUILD:
-        window_SpeakInHouse = new GUIWindow_MercenaryGuild(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_MercenaryGuild>(houseId);
         break;
       case HOUSE_TYPE_WEAPON_SHOP:
-        window_SpeakInHouse = new GUIWindow_WeaponShop(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_WeaponShop>(houseId);
         break;
       case HOUSE_TYPE_ARMOR_SHOP:
-        window_SpeakInHouse = new GUIWindow_ArmorShop(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_ArmorShop>(houseId);
         break;
       case HOUSE_TYPE_MAGIC_SHOP:
-        window_SpeakInHouse = new GUIWindow_MagicShop(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_MagicShop>(houseId);
         break;
       case HOUSE_TYPE_ALCHEMY_SHOP:
-        window_SpeakInHouse = new GUIWindow_AlchemyShop(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_AlchemyShop>(houseId);
         break;
       default:
-        window_SpeakInHouse = new GUIWindow_House(houseId);
+        window_SpeakInHouse = std::make_unique<GUIWindow_House>(houseId);
         break;
     }
 
@@ -774,10 +771,15 @@ void GUIWindow_House::drawNpcHouseDialogueResponse() {
 
 void GUIWindow_House::reinitDialogueWindow() {
     if (pDialogueWindow) {
-        pDialogueWindow->Release();
+        // reset dialogue window to default state, so it can be reused for different NPCs dialogues without creating new one
+        pDialogueWindow->frameRect = { 0, 0, render->GetPresentDimensions().w, 345 };
+        pDialogueWindow->sHint = "";
+        pDialogueWindow->receives_keyboard_input = false;
+        pDialogueWindow->DeleteButtons();
+    } else {
+        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetPresentDimensions().w, 345));
     }
 
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345});
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
         localization->str(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
     pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0, INPUT_ACTION_INVALID, "");
@@ -1078,7 +1080,7 @@ void GUIWindow_House::Update() {
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);  // banned from shop so leaving
 }
 
-void GUIWindow_House::Release() {
+GUIWindow_House::~GUIWindow_House() {
     for (HouseNpcDesc &desc : houseNpcs) {
         if (desc.icon) {
             desc.icon->release();
@@ -1095,8 +1097,6 @@ void GUIWindow_House::Release() {
         pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);
         pCamera3D->_viewYaw = pParty->_viewYaw;
     }
-
-    GUIWindow::Release();
 }
 
 void GUIWindow_House::houseDialogueOptionSelected(DialogueId option) {

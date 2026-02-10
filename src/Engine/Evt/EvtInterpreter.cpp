@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -190,7 +191,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 if (engine->_indoor->filename == "d20.blv" && _eventId == 501)
                     ir.data.move_map_descr.z = 3088;
 
-                pDialogueWindow = new GUIWindow_IndoorEntryExit(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
+                pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
                                                                 Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                                 ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
                 savedEventID = _eventId;
@@ -222,14 +223,10 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                         while (houseDialogPressEscape()) {}
                         pMediaPlayer->Unload();
-                        window_SpeakInHouse->Release();
                         window_SpeakInHouse = nullptr;
                         engine->_messageQueue->clear();
                         current_screen_type = SCREEN_GAME;
-                        if (pDialogueWindow) {
-                            pDialogueWindow->Release();
-                            pDialogueWindow = 0;
-                        }
+                        pDialogueWindow = nullptr;
                     }
                     return -1;
                 }
@@ -435,7 +432,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             if (ir.data.npc_topic_descr.npc_id == 8) {
                 if (ir.data.npc_topic_descr.event_id == 78) {
                     houseDialogPressEscape();
-                    window_SpeakInHouse->Release();
+                    window_SpeakInHouse = nullptr;
                     if (enterHouse(HOUSE_DARK_GUILD_PIT)) {
                         createHouseUI(HOUSE_DARK_GUILD_PIT);
                         current_npc_text = pNPCTopics[90].pText;

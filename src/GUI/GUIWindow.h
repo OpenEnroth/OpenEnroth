@@ -91,7 +91,6 @@ class GUIWindow {
     void setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int selectStep, int initialPosition);
 
     virtual void Update() {}
-    virtual void Release();
     void DeleteButtons();
 
 
@@ -310,18 +309,15 @@ std::string NameAndTitle(NPCData *npc);
 
 std::string GetDisplayName(Actor *actor);
 
-extern GUIWindow *pPrimaryWindow;
-extern GUIWindow *pDialogueWindow;
-extern GUIWindow_House *window_SpeakInHouse;
-extern GUIWindow_MessageScroll *pGUIWindow_ScrollWindow;
-extern GUIWindow *ptr_507BC8;
-extern GUIWindow *pGUIWindow_CurrentMenu;
-extern GUIWindow_Chest *pGUIWindow_CurrentChest;
-//extern GUIWindow *ptr_507BD0;
-extern TargetedSpellUI *pGUIWindow_CastTargetedSpell;
-extern GUIWindow_GameOver *pGameOverWindow;
-//extern GUIWindow *pGUIWindow_EscMessageWindow;
-extern GUIWindow_BranchlessDialogue *pGUIWindow_BranchlessDialogue;
+extern std::unique_ptr<GUIWindow> pPrimaryWindow;
+extern std::unique_ptr<GUIWindow> pGUIWindow_CurrentMenu;
+extern std::unique_ptr<GUIWindow_Chest> pGUIWindow_CurrentChest;
+extern std::unique_ptr<GUIWindow_House> window_SpeakInHouse;
+extern std::unique_ptr<GUIWindow> pDialogueWindow;
+extern std::unique_ptr<GUIWindow_MessageScroll> pGUIWindow_ScrollWindow;
+extern std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;
+extern std::unique_ptr<GUIWindow_GameOver> pGameOverWindow;
+extern std::unique_ptr<GUIWindow_BranchlessDialogue> pGUIWindow_BranchlessDialogue;
 
 extern Color ui_mainmenu_copyright_color;
 extern Color ui_character_tooltip_header_default_color;

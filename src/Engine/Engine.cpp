@@ -991,10 +991,7 @@ void back_to_game() {
     rightClickItemActionPerformed = false;
     identifyOrRepairReactionPlayed = false;
 
-    if (pGUIWindow_ScrollWindow) {
-        pGUIWindow_ScrollWindow->Release();
-        pGUIWindow_ScrollWindow = nullptr;
-    }
+    pGUIWindow_ScrollWindow = nullptr;
 
     if (current_screen_type == SCREEN_GAME && sCurrentMenuID == MENU_NONE && !pGUIWindow_CastTargetedSpell) {
         pEventTimer->setPaused(false);

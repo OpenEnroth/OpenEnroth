@@ -15,5 +15,5 @@ class LoadSlotState : public FsmState {
     virtual void exit() override;
 
  private:
-    std::unique_ptr<GUIWindow_Load> _uiLoadSaveSlot;
+    GUIWindow_Load* _uiLoadSaveSlot;
 };

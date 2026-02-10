@@ -230,7 +230,7 @@ void doSavegame(int uSlot) {
     pSavegameList->selectedSlot = uSlot;
 
     GUI_UpdateWindows();
-    pGUIWindow_CurrentMenu->Release();
+    pGUIWindow_CurrentMenu = nullptr;
     current_screen_type = SCREEN_GAME;
 
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {

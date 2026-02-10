@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -20,7 +22,7 @@ GraphicsImage *ui_book_quests_background = nullptr;
 GUIWindow_QuestBook::GUIWindow_QuestBook() {
     this->eWindowType = WindowType::WINDOW_QuestBook;
 
-    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({493, 355}, {0, 0}, pBtn_Quests);
+    pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{493, 355}, Sizei{0, 0}, pBtn_Quests);
     bFlashQuestBook = false;
 
     ui_book_quests_background = assets->getImage_Solid("sbquiknot");

@@ -1,5 +1,6 @@
 #include "CastSpellInfo.h"
 
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -2986,8 +2987,6 @@ void CastSpellInfoHelpers::cancelSpellCastInProgress() {
             spellInfo.uSpellID = SPELL_NONE;
 
             if (pGUIWindow_CastTargetedSpell) {
-                // TODO: where object is deleted?
-                pGUIWindow_CastTargetedSpell->Release();
                 pGUIWindow_CastTargetedSpell = nullptr;
             }
             mouse->SetCursorImage("MICON1");
@@ -3156,17 +3155,17 @@ void pushSpellOrRangedAttack(SpellId spell,
     if (result != -1 && pGUIWindow_CastTargetedSpell == nullptr) {
         Sizei renDims = render->GetRenderDimensions();
         if (flags & ON_CAST_TargetedCharacter) {
-            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Character({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell = std::make_unique<TargetedSpellUI_Character>(Pointi(0, 0), renDims, &pCastSpellInfo[result]);
             pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
         if (flags & ON_CAST_TargetedActor) {
-            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Actor({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell = std::make_unique<TargetedSpellUI_Actor>(Pointi(0, 0), renDims, &pCastSpellInfo[result]);
             pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
         if (flags & ON_CAST_TargetedTelekinesis) {
-            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Telekinesis({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell = std::make_unique<TargetedSpellUI_Telekinesis>(Pointi(0, 0), renDims, &pCastSpellInfo[result]);
             pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
@@ -3178,12 +3177,12 @@ void pushSpellOrRangedAttack(SpellId spell,
             return;
         }
         if (flags & ON_CAST_TargetedActorOrCharacter) {
-            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_ActorOrCharacter({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell = std::make_unique<TargetedSpellUI_ActorOrCharacter>(Pointi(0, 0), renDims, &pCastSpellInfo[result]);
             pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
         if (flags & ON_CAST_TargetedHireling) {
-            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Hirelings({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell = std::make_unique<TargetedSpellUI_Hirelings>(Pointi(0, 0), renDims, &pCastSpellInfo[result]);
             // Next line was added to do something with picked item on Sacrifice cast
             pParty->placeHeldItemInInventoryOrDrop();
             return;

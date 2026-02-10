@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -219,7 +220,7 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationChangeName:
             pAudioPlayer->playUISound(SOUND_ClickSkill);
             uPlayerCreationUI_NameEditCharacter = param;
-            keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu);
+            keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu.get());
             break;
         case UIMSG_Escape:
             if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000)) break;
@@ -257,7 +258,7 @@ bool PartyCreationUI_Loop() {
     pNPCStats->pGroups = pNPCStats->pOriginalGroups;
     pNPCStats->pNPCData[3].flags |= NPC_HIRED; // Lady Margaret.
 
-    pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
+    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_PartyCreation>();
     return !PartyCreationUI_LoopInternal();
 }
 
@@ -598,7 +599,6 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ui_partycreation_arrow_r[i] = assets->getImage_Alpha(fmt::format("arrowr{}", i + 1));
     }
 
-    // pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight());
     int uX = 8;
     for (int characterIndex = 0; characterIndex < 4; characterIndex++) {
         CreateButton({uX, 120}, {145, 25}, 1, 0, UIMSG_PlayerCreationChangeName, characterIndex);
@@ -726,8 +726,6 @@ bool PartyCreationUI_LoopInternal() {
         }
     }
 
-    pGUIWindow_CurrentMenu->Release();
-    delete pGUIWindow_CurrentMenu;
     pGUIWindow_CurrentMenu = nullptr;
 
     item.Reset();

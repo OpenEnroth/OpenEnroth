@@ -1,3 +1,4 @@
+#include <memory>
 #include <unordered_set>
 #include <unordered_map>
 #include <string>
@@ -80,14 +81,10 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
 
 void Game_OpenLoadGameDialog() {
     engine->_messageQueue->clear();
-    pGUIWindow_CurrentMenu->Release();
-    // TODO(captainurist): uncommenting delete pGUIWindow_CurrentMenu calls in this file leads to crashes, wtf?
-    // delete pGUIWindow_CurrentMenu;
-    pGUIWindow_CurrentMenu = nullptr;
     engine->_statusBar->clearEvent();
     // LoadUI_Load(1);
     current_screen_type = SCREEN_LOADGAME;
-    pGUIWindow_CurrentMenu = new GUIWindow_Load(true);
+    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Load>(true);
     isLoadSlotClicked = false;
 }
 
@@ -143,7 +140,7 @@ void Menu::EventLoop() {
                     if (pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
                         pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
                     } else {
-                        keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
+                        keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu.get());
                         if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name != localization->str(LSTR_EMPTY_SAVE)) {
                             keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
                         }
@@ -176,12 +173,9 @@ void Menu::EventLoop() {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_THE_ARENA);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
-                    pGUIWindow_CurrentMenu->Release();
-                    // delete pGUIWindow_CurrentMenu;
                     engine->_statusBar->clearEvent();
                     current_screen_type = SCREEN_SAVEGAME;
-                    pGUIWindow_CurrentMenu = new GUIWindow_Save();
-                    // SaveUI_Load(current_screen_type = SCREEN_SAVEGAME);
+                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Save>();
                 }
                 continue;
             }
@@ -207,10 +201,7 @@ void Menu::EventLoop() {
             {
                 engine->_messageQueue->clear();
 
-                pGUIWindow_CurrentMenu->Release();
-                // delete pGUIWindow_CurrentMenu;
-                pGUIWindow_CurrentMenu = new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
-
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameOptions>();
                 current_screen_type = SCREEN_OPTIONS;
 
                 continue;
@@ -220,10 +211,7 @@ void Menu::EventLoop() {
             {
                 engine->_messageQueue->clear();
 
-                pGUIWindow_CurrentMenu->Release();
-                // delete pGUIWindow_CurrentMenu;
-                pGUIWindow_CurrentMenu = new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
-
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameKeyBindings>();  // GameMenuUI_OptionsKeymapping_Load();
                 current_screen_type = SCREEN_KEYBOARD_OPTIONS;
 
                 continue;
@@ -236,7 +224,7 @@ void Menu::EventLoop() {
                     currently_selected_action_for_binding = (InputAction)param;
                     if (KeyboardPageNum != 1)
                         currently_selected_action_for_binding = (InputAction)(param + 14);
-                    keyboardInputHandler->StartTextInput(TextInputType::Text, 1, pGUIWindow_CurrentMenu);
+                    keyboardInputHandler->StartTextInput(TextInputType::Text, 1, pGUIWindow_CurrentMenu.get());
                 }
                 continue;
             }
@@ -259,9 +247,7 @@ void Menu::EventLoop() {
             case UIMSG_OpenVideoOptions: {
                 engine->_messageQueue->clear();
 
-                pGUIWindow_CurrentMenu->Release();
-                // delete pGUIWindow_CurrentMenu;
-                pGUIWindow_CurrentMenu = new GUIWindow_GameVideoOptions();
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameVideoOptions>();
                 current_screen_type = SCREEN_VIDEO_OPTIONS;
 
                 continue;
@@ -395,23 +381,15 @@ void Menu::EventLoop() {
                     current_screen_type = SCREEN_GAME;
                 } else if (current_screen_type == SCREEN_SAVEGAME ||
                            current_screen_type == SCREEN_LOADGAME) {
-                    // crt_deconstruct_ptr_6A0118();
-
-                    pGUIWindow_CurrentMenu->Release();
-                    // delete pGUIWindow_CurrentMenu;
                     current_screen_type = SCREEN_MENU;
-                    pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
+                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
                 } else if (current_screen_type == SCREEN_OPTIONS) {
                     options_menu_skin.Release();
-                    pGUIWindow_CurrentMenu->Release();
-                    // delete pGUIWindow_CurrentMenu;
                     current_screen_type = SCREEN_MENU;
-                    pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
+                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
                 } else if (current_screen_type == SCREEN_VIDEO_OPTIONS) {
-                    pGUIWindow_CurrentMenu->Release();
-                    // delete pGUIWindow_CurrentMenu;
                     current_screen_type = SCREEN_MENU;
-                    pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
+                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
                 } else if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
                     bool hasConflicts = !key_map_conflicted.empty();
 
@@ -429,10 +407,8 @@ void Menu::EventLoop() {
                         keyboardActionMapping->applyKeybindings(curr_key_map);
                     }
 
-                    pGUIWindow_CurrentMenu->Release();
-                    // delete pGUIWindow_CurrentMenu;
                     current_screen_type = SCREEN_MENU;
-                    pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
+                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
                 }
                 continue;
             case UIMSG_QuickLoad:
@@ -448,7 +424,7 @@ void Menu::MenuLoop() {
     pEventTimer->setPaused(true);
     current_screen_type = SCREEN_MENU;
 
-    pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
+    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
     confirmationState = CONFIRM_NONE;
 
     if (gamma_preview_image) {
@@ -480,8 +456,6 @@ void Menu::MenuLoop() {
         EventLoop();
     }
 
-    pGUIWindow_CurrentMenu->Release();
-    // delete pGUIWindow_CurrentMenu;
     pGUIWindow_CurrentMenu = nullptr;
 
     if (gamma_preview_image) {

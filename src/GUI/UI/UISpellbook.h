@@ -9,10 +9,9 @@
 class GUIWindow_Spellbook : public GUIWindow {
  public:
     GUIWindow_Spellbook();
-    virtual ~GUIWindow_Spellbook() {}
+    virtual ~GUIWindow_Spellbook();
 
     virtual void Update() override;
-    virtual void Release() override;
 
     void openSpellbookPage(MagicSchool page);
 

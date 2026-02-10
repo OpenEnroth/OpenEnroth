@@ -202,11 +202,9 @@ void GUIWindow_Spellbook::Update() {
     }
 }
 
-void GUIWindow_Spellbook::Release() {
+GUIWindow_Spellbook::~GUIWindow_Spellbook() {
     onCloseSpellBookPage();
     onCloseSpellBook();
-
-    GUIWindow::Release();
 }
 
 void GUIWindow_Spellbook::loadSpellbook() {
@@ -305,5 +303,7 @@ void GUIWindow_Spellbook::onCloseSpellBookPage() {
             SBPageSSpellsTextureList[i] = nullptr;
         }
     }
-    pGUIWindow_CurrentMenu->DeleteButtons();
+
+    if (pGUIWindow_CurrentMenu)
+        pGUIWindow_CurrentMenu->DeleteButtons();
 }

@@ -5,6 +5,7 @@
 #include <Engine/SaveLoad.h>
 #include <GUI/GUIMessageQueue.h>
 #include <GUI/GUIWindow.h>
+#include <GUI/UI/UIBranchlessDialogue.h>
 #include <Library/Logger/Logger.h>
 #include <Engine/Graphics/Renderer/Renderer.h>
 
@@ -83,6 +84,5 @@ FsmAction MainMenuState::update() {
 }
 
 void MainMenuState::exit() {
-    _mainMenuUI->Release();
     _mainMenuUI = nullptr;
 }
