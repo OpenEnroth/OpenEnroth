@@ -97,7 +97,7 @@ var searchData=
   ['getbitmap_94',['getBitmap',['../classAssetsManager.html#a7cd6f3a72027c8f838156f1bf9e89746',1,'AssetsManager']]],
   ['getbodybuilding_95',['GetBodybuilding',['../classCharacter.html#aeb574d6a15fe32ff0e7cd2b398c964f4',1,'Character']]],
   ['getcardrect_96',['GetCardRect',['../structArcomageGame.html#a89410cfbe70c8b60532001e864b17c2a',1,'ArcomageGame']]],
-  ['getcastspellininventorywindow_97',['GetCastSpellInInventoryWindow',['../structCastSpellInfo.html#aa85f102f499d27659dbae89583f0fdf7',1,'CastSpellInfo']]],
+  ['getcastspellininventorywindow_97',['GetCastSpellInInventoryWindow',['../structCastSpellInfo.html#af6b197862521b72ad680bbce237e5d17',1,'CastSpellInfo']]],
   ['getceilingheight_98',['GetCeilingHeight',['../Outdoor_8h.html#abc34dfcb349a04b729e6aacb2d71f14f',1,'GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pFaceID):&#160;Outdoor.cpp'],['../Outdoor_8cpp.html#abc34dfcb349a04b729e6aacb2d71f14f',1,'GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pFaceID):&#160;Outdoor.cpp']]],
   ['getchannelcount_99',['GetChannelCount',['../classOpenALAudioDataSource.html#a75e68bce9421af4c5499a689763ced86',1,'OpenALAudioDataSource::GetChannelCount()'],['../classAudioBaseDataSource.html#a400e12c5db242ca619751182565a0968',1,'AudioBaseDataSource::GetChannelCount()'],['../classIAudioDataSource.html#a5680714e900e8ee861c9a4bd10313c40',1,'IAudioDataSource::GetChannelCount()']]],
   ['getcharacterbyindex_100',['getCharacterByIndex',['../GameBindings_8cpp.html#ab048e6606bc1c5b952a53f64969d6e88',1,'GameBindings.cpp']]],
