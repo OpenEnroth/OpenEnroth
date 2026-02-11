@@ -6,8 +6,11 @@
 
 #include "OpenGLShader.h"
 
-void FogUniforms::submit(const OpenGLShader &shader) const {
-    glUniform3f(shader.uniformLocation("fog.color"), color.r, color.g, color.b);
+void FogUniforms::submit(const OpenGLShader &shader, bool decal) const {
+    // Fog color is optimised out in decal shader
+    if (!decal) {
+        glUniform3f(shader.uniformLocation("fog.color"), color.r, color.g, color.b);
+    }
     glUniform1f(shader.uniformLocation("fog.weakDensity"), weakDensity);
     glUniform1f(shader.uniformLocation("fog.strongDensity"), strongDensity);
     glUniform1f(shader.uniformLocation("fog.weakDistance"), weakDistance);
@@ -46,7 +49,7 @@ void DecalUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
     glUniform1f(shader.uniformLocation("decalbias"), decalBias);
     glUniform1i(shader.uniformLocation("texture0"), texture0);
-    fog.submit(shader);
+    fog.submit(shader, true);
 }
 
 void BillboardUniforms::submit(const OpenGLShader &shader) const {

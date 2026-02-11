@@ -17,7 +17,7 @@ struct FogUniforms {
     float strongDistance = 0;
     float clipDistance = 0;
 
-    void submit(const OpenGLShader &shader) const;
+    void submit(const OpenGLShader &shader, bool decal = false) const;
 };
 
 struct LineVertex {
