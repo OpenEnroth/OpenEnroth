@@ -58,10 +58,6 @@ class Mouse {
     void DoMouseLook(Pointi relChange);
     void RestoreMouseLook();
     MouseLookState _mouseLook = MouseLookState::Disabled;
-
-    int _mousePointerTracker = 0;
-    void IncrementMousePointerTracker() { _mousePointerTracker++; }
-    void DecrementMousePointerTracker() { _mousePointerTracker--; }
 };
 }  // namespace Io
 

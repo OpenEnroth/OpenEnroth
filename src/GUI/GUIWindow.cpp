@@ -184,8 +184,6 @@ GUIWindow::~GUIWindow() {
     DeleteButtons();
     lWindowList.remove(this);
     logger->trace("Release window: {}", toString(eWindowType));
-    if (_requireMousePointer)
-        this->mouse->DecrementMousePointerTracker();
 }
 
 void GUIWindow::DeleteButtons() {
@@ -425,17 +423,14 @@ void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2, Recti frame
     }
 }
 
-GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType), _requireMousePointer(true) {
+GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType) {
     this->mouse = EngineIocContainer::ResolveMouse();
-    if (_requireMousePointer)
-        this->mouse->IncrementMousePointerTracker();
 
     logger->trace("New window: {}", toString(windowType));
     lWindowList.push_front(this);
     frameRect = Recti(position.x, position.y, dimensions.w, dimensions.h);
 
     this->sHint = hint;
-
     this->receives_keyboard_input = false;
 }
 

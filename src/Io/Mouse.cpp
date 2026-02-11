@@ -35,7 +35,7 @@ Pointi Io::Mouse::position() const {
 }
 
 void Io::Mouse::setPosition(Pointi position) {
-        _position = position;
+    _position = position;
 }
 
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
@@ -101,7 +101,7 @@ void Io::Mouse::DrawCursor() {
     Pointi pos = this->position();
 
     // manage mouse look state - if only game screen is active, try enable
-    if (_mousePointerTracker == 1)
+    if (lWindowList.size() == 1)
         RestoreMouseLook();
     else
         SetMouseLook(Suspended);
