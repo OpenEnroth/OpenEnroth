@@ -82,8 +82,27 @@ std::string wideToUtf8(std::wstring_view wstr);
  */
 std::wstring utf8ToWide(std::string_view str);
 
+/**
+ * Convert a string from the given encoding to UTF-8.
+ *
+ * Invalid or incomplete byte sequences are replaced the Unicode replacement character (U+FFFD).
+ *
+ * @param str                           String in the source encoding.
+ * @param encoding                      Source encoding.
+ * @return                              UTF-8 encoded string.
+ */
 std::string encodedToUtf8(std::string_view str, TextEncoding encoding);
 
+/**
+ * Convert a UTF-8 string to the given encoding.
+ *
+ * Characters that cannot be represented in the target encoding are replaced with `?` or with the Unicode replacement
+ * character (U+FFFD).
+ *
+ * @param str                           UTF-8 string to convert.
+ * @param encoding                      Target encoding.
+ * @return                              String in the target encoding.
+ */
 std::string utf8ToEncoded(std::string_view str, TextEncoding encoding);
 
 } // namespace txt

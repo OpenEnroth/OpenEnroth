@@ -476,32 +476,9 @@ UNIT_TEST(Encoding, AsciiSubset) {
     // ASCII subset (0x00-0x7F) should be preserved in all single-byte and CJK encodings.
     // UTF-16/UTF-32 excluded as they use different byte representations.
     std::string ascii = "Hello123";
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ASCII), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_UTF8), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_1), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_2), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_3), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_4), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_5), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_6), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_7), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_8), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_10), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_13), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_15), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_ISO_8859_16), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_WINDOWS_1251), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_WINDOWS_1252), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_WINDOWS_1253), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_WINDOWS_1255), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_WINDOWS_1256), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_WINDOWS_1257), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_WINDOWS_1258), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_IBM865), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_IBM866), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_BIG5), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_EUC_KR), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_GB18030), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_SHIFT_JIS), ascii);
-    EXPECT_EQ(txt::encodedToUtf8(ascii, ENCODING_KOI8_R), ascii);
+    for (TextEncoding encoding : Segment(ENCODING_FIRST, ENCODING_LAST)) {
+        if (encoding == ENCODING_UTF16_BE || encoding == ENCODING_UTF16_LE || encoding == ENCODING_UTF32_BE || encoding == ENCODING_UTF32_LE)
+            continue;
+        EXPECT_EQ(txt::encodedToUtf8(ascii, encoding), ascii) << "encoding: " << static_cast<int>(encoding);
+    }
 }
