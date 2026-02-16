@@ -9,7 +9,7 @@
 #include <memory>
 #include <string>
 
-#include "Utility/Win/Unicode.h"
+#include "Utility/String/Encoding.h"
 #include "Utility/ScopeGuard.h"
 
 // TODO(captainurist): revisit this code once I'm on a win machine.
@@ -81,7 +81,7 @@ static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *pat
 }
 
 std::string WinEnvironment::queryRegistry(const std::string &path) const {
-    return win::toUtf8(OS_GetAppStringRecursive(NULL, win::toUtf16(path).c_str(), 0));
+    return txt::wideToUtf8(OS_GetAppStringRecursive(NULL, txt::utf8ToWide(path).c_str(), 0));
 }
 
 std::string WinEnvironment::path(EnvironmentPath path) const {
@@ -98,21 +98,21 @@ std::string WinEnvironment::path(EnvironmentPath path) const {
         if (status != S_OK || path == nullptr)
             return {};
 
-        return win::toUtf8(path);
+        return txt::wideToUtf8(path);
     } else {
         return {};
     }
 }
 
 std::string WinEnvironment::getenv(const std::string &key) const {
-    const wchar_t *result = _wgetenv(win::toUtf16(key).c_str());
+    const wchar_t *result = _wgetenv(txt::utf8ToWide(key).c_str());
     if (result)
-        return win::toUtf8(result);
+        return txt::wideToUtf8(result);
     return {};
 }
 
 void WinEnvironment::setenv(const std::string &key, const std::string &value) const {
-    _wputenv_s(win::toUtf16(key).c_str(), win::toUtf16(value).c_str()); // Errors are ignored.
+    _wputenv_s(txt::utf8ToWide(key).c_str(), txt::utf8ToWide(value).c_str()); // Errors are ignored.
 }
 
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {
