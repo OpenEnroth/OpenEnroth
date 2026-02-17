@@ -1,0 +1,53 @@
+#include "EncodingEnums.h"
+
+#include "Library/Serialization/EnumSerialization.h"
+
+// This one uses iconv names, which is a sane choice. It's also a choice of uchardet.
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(TextEncoding, CASE_INSENSITIVE, {
+    {ENCODING_BYTES, "BYTES"},
+    {ENCODING_ASCII, "ASCII"},
+
+    // Unicode.
+    {ENCODING_UTF8, "UTF-8"},
+    {ENCODING_UTF16_BE, "UTF-16BE"},
+    {ENCODING_UTF16_LE, "UTF-16LE"},
+    {ENCODING_UTF32_BE, "UTF-32BE"},
+    {ENCODING_UTF32_LE, "UTF-32LE"},
+
+    // ISO-8859 family.
+    {ENCODING_ISO_8859_1, "ISO-8859-1"},
+    {ENCODING_ISO_8859_2, "ISO-8859-2"},
+    {ENCODING_ISO_8859_3, "ISO-8859-3"},
+    {ENCODING_ISO_8859_4, "ISO-8859-4"},
+    {ENCODING_ISO_8859_5, "ISO-8859-5"},
+    {ENCODING_ISO_8859_6, "ISO-8859-6"},
+    {ENCODING_ISO_8859_7, "ISO-8859-7"},
+    {ENCODING_ISO_8859_8, "ISO-8859-8"},
+    {ENCODING_ISO_8859_10, "ISO-8859-10"},
+    {ENCODING_ISO_8859_13, "ISO-8859-13"},
+    {ENCODING_ISO_8859_15, "ISO-8859-15"},
+    {ENCODING_ISO_8859_16, "ISO-8859-16"},
+
+    // Windows codepages.
+    {ENCODING_WINDOWS_1251, "WINDOWS-1251"},
+    {ENCODING_WINDOWS_1252, "WINDOWS-1252"},
+    {ENCODING_WINDOWS_1253, "WINDOWS-1253"},
+    {ENCODING_WINDOWS_1255, "WINDOWS-1255"},
+    {ENCODING_WINDOWS_1256, "WINDOWS-1256"},
+    {ENCODING_WINDOWS_1257, "WINDOWS-1257"},
+    {ENCODING_WINDOWS_1258, "WINDOWS-1258"},
+
+    // IBM codepages.
+    {ENCODING_IBM865, "IBM865"},
+    {ENCODING_IBM866, "IBM866"},
+
+    // CJK encodings.
+    {ENCODING_BIG5, "BIG5"},
+    {ENCODING_EUC_KR, "EUC-KR"},
+    {ENCODING_EUC_KR, "UHC"},
+    {ENCODING_GB18030, "GB18030"},
+    {ENCODING_SHIFT_JIS, "SHIFT_JIS"},
+
+    // Other encodings.
+    {ENCODING_KOI8_R, "KOI8-R"},
+})

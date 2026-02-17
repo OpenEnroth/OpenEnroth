@@ -13,6 +13,7 @@ set(UTILITY_SOURCES
         Streams/MemoryInputStream.cpp
         Streams/StringOutputStream.cpp
         String/Ascii.cpp
+        String/Encoding.cpp
         String/Split.cpp
         String/Transformations.cpp
         UnicodeCrt.cpp
@@ -43,20 +44,17 @@ set(UTILITY_HEADERS
         Streams/OutputStream.h
         Streams/StringOutputStream.h
         String/Ascii.h
+        String/Encoding.h
         String/Join.h
         String/Split.h
         String/TransparentFunctors.h
         String/Transformations.h
+        String/Unicode.h
         Unaligned.h
         UnicodeCrt.h
         SmallVector.h
         ScopedRollback.h
         String/Wrap.h)
-
-if(OE_BUILD_PLATFORM STREQUAL "windows")
-    list(APPEND UTILITY_HEADERS Win/Unicode.h)
-    list(APPEND UTILITY_SOURCES Win/Unicode.cpp)
-endif()
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
 target_check_style(utility)
@@ -66,6 +64,7 @@ target_link_libraries(utility
         gch::small_vector
         Boost::lambda2
         PRIVATE
+        ztd::text
         mio::mio)
 
 if(OE_BUILD_TESTS)
@@ -83,13 +82,10 @@ if(OE_BUILD_TESTS)
             String/Tests/Transformations_ut.cpp
             String/Tests/TransparentFunctors_ut.cpp
             String/Tests/Ascii_ut.cpp
+            String/Tests/Encoding_ut.cpp
             String/Tests/Split_ut.cpp
             String/Tests/Join_ut.cpp
             String/Tests/Wrap_ut.cpp)
-
-    if(OE_BUILD_PLATFORM STREQUAL "windows")
-        list(APPEND TEST_UTILITY_SOURCES Win/Tests/Unicode_ut.cpp)
-    endif()
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)
