@@ -66,3 +66,6 @@
 [submodule "thirdparty/tcpp"]
 	path = thirdparty/tcpp
 	url = https://github.com/bnoazx005/tcpp.git
+[submodule "thirdparty/ztd_text"]
+	path = thirdparty/ztd_text
+	url = https://github.com/captainurist/ztd_text.git
