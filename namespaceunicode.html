@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: win Namespace Reference</title>
+<title>OpenEnroth: unicode Namespace Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;cc437b7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0984a90</span>
    </div>
   </td>
  </tr>
@@ -71,51 +71,47 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">win Namespace Reference</div></div>
+  <div class="headertitle"><div class="title">unicode Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af9a6ca19ea88f3b5b1fc76dae6545fae"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacewin.html#af9a6ca19ea88f3b5b1fc76dae6545fae">toUtf8</a> (std::wstring_view wstr)</td></tr>
-<tr class="separator:af9a6ca19ea88f3b5b1fc76dae6545fae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a665ac8e71461c605f9f3f3de803162e4"><td class="memItemLeft" align="right" valign="top">std::wstring&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacewin.html#a665ac8e71461c605f9f3f3de803162e4">toUtf16</a> (std::string_view str)</td></tr>
-<tr class="separator:a665ac8e71461c605f9f3f3de803162e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e1a43f02e8a9b1249826cb293c4613f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceunicode.html#a8e1a43f02e8a9b1249826cb293c4613f">isSpace</a> (char32_t c)</td></tr>
+<tr class="separator:a8e1a43f02e8a9b1249826cb293c4613f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a665ac8e71461c605f9f3f3de803162e4" name="a665ac8e71461c605f9f3f3de803162e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a665ac8e71461c605f9f3f3de803162e4">&#9670;&#160;</a></span>toUtf16()</h2>
+<a id="a8e1a43f02e8a9b1249826cb293c4613f" name="a8e1a43f02e8a9b1249826cb293c4613f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e1a43f02e8a9b1249826cb293c4613f">&#9670;&#160;</a></span>isSpace()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::wstring win::toUtf16 </td>
+          <td class="memname">bool unicode::isSpace </td>
           <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>str</em></td><td>)</td>
+          <td class="paramtype">char32_t&#160;</td>
+          <td class="paramname"><em>c</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="af9a6ca19ea88f3b5b1fc76dae6545fae" name="af9a6ca19ea88f3b5b1fc76dae6545fae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af9a6ca19ea88f3b5b1fc76dae6545fae">&#9670;&#160;</a></span>toUtf8()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string win::toUtf8 </td>
-          <td>(</td>
-          <td class="paramtype">std::wstring_view&#160;</td>
-          <td class="paramname"><em>wstr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p >Check if a Unicode code point is a whitespace character.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>Unicode code point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the character is a whitespace. </dd></dl>
 
 </div>
 </div>
