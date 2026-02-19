@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0984a90</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bfa49bb</span>
    </div>
   </td>
  </tr>
@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classIo_1_1Mouse-members.html">List of all members</a>  </div>
@@ -83,6 +84,14 @@ $(function() {
 
 <p><code>#include &lt;Mouse.h&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a5abab0683aab917134c8d5b1c5f3c6fa"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6fa">MouseLookState</a> { <a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6faab9f5c797ebbf55adccdd8539a65a0241">Disabled</a>
+, <a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6faa00d23a76e43b46dae9ec7aa9dcbebb32">Enabled</a>
+, <a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6faa8bf906833cc7aea8084f552217ed9c1d">Suspended</a>
+ }</td></tr>
+<tr class="separator:a5abab0683aab917134c8d5b1c5f3c6fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1d3c5f9c2eb3a66c8efabd6a2dcd4ddd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#a1d3c5f9c2eb3a66c8efabd6a2dcd4ddd">Mouse</a> ()</td></tr>
@@ -113,12 +122,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac2f4b6cdb335b30dd1ee944b8f78270c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab668618e050f47340c5d2b833d6abe9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#ab668618e050f47340c5d2b833d6abe9e">UI_OnMouseLeftClick</a> ()</td></tr>
 <tr class="separator:ab668618e050f47340c5d2b833d6abe9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c90cae178e6d4e897e164d7b6f4261b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#a7c90cae178e6d4e897e164d7b6f4261b">SetMouseLook</a> (bool look)</td></tr>
-<tr class="separator:a7c90cae178e6d4e897e164d7b6f4261b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a367727c446a8d6864aba2d11a6004db3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#a367727c446a8d6864aba2d11a6004db3">SetMouseLook</a> (<a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6fa">MouseLookState</a> look)</td></tr>
+<tr class="separator:a367727c446a8d6864aba2d11a6004db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b4ae2d734fcb1745aa47968da01a06e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#a2b4ae2d734fcb1745aa47968da01a06e">ToggleMouseLook</a> ()</td></tr>
 <tr class="separator:a2b4ae2d734fcb1745aa47968da01a06e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c97011d16218faa91ea9ad87c670536"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#a8c97011d16218faa91ea9ad87c670536">DoMouseLook</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> relChange)</td></tr>
 <tr class="separator:a8c97011d16218faa91ea9ad87c670536"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b3e7e91a00f80d938b8c1f384609457"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#a8b3e7e91a00f80d938b8c1f384609457">RestoreMouseLook</a> ()</td></tr>
+<tr class="separator:a8b3e7e91a00f80d938b8c1f384609457"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -144,9 +155,37 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ad661c8a8930e20fa093e78957b934758"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0d5f033b924613d4a99434dc2472fef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#ac0d5f033b924613d4a99434dc2472fef">_position</a></td></tr>
 <tr class="separator:ac0d5f033b924613d4a99434dc2472fef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1538a564244e7823241d2fb27332994"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#ab1538a564244e7823241d2fb27332994">_mouseLook</a> = false</td></tr>
-<tr class="separator:ab1538a564244e7823241d2fb27332994"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adba4dbf5fdba59b1c7ad90e9824f1fa1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6fa">MouseLookState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1Mouse.html#adba4dbf5fdba59b1c7ad90e9824f1fa1">_mouseLook</a> = <a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6faab9f5c797ebbf55adccdd8539a65a0241">MouseLookState::Disabled</a></td></tr>
+<tr class="separator:adba4dbf5fdba59b1c7ad90e9824f1fa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a5abab0683aab917134c8d5b1c5f3c6fa" name="a5abab0683aab917134c8d5b1c5f3c6fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5abab0683aab917134c8d5b1c5f3c6fa">&#9670;&#160;</a></span>MouseLookState</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6fa">Io::Mouse::MouseLookState</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a5abab0683aab917134c8d5b1c5f3c6faab9f5c797ebbf55adccdd8539a65a0241" name="a5abab0683aab917134c8d5b1c5f3c6faab9f5c797ebbf55adccdd8539a65a0241"></a>Disabled&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a5abab0683aab917134c8d5b1c5f3c6faa00d23a76e43b46dae9ec7aa9dcbebb32" name="a5abab0683aab917134c8d5b1c5f3c6faa00d23a76e43b46dae9ec7aa9dcbebb32"></a>Enabled&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a5abab0683aab917134c8d5b1c5f3c6faa8bf906833cc7aea8084f552217ed9c1d" name="a5abab0683aab917134c8d5b1c5f3c6faa8bf906833cc7aea8084f552217ed9c1d"></a>Suspended&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1d3c5f9c2eb3a66c8efabd6a2dcd4ddd" name="a1d3c5f9c2eb3a66c8efabd6a2dcd4ddd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1d3c5f9c2eb3a66c8efabd6a2dcd4ddd">&#9670;&#160;</a></span>Mouse()</h2>
@@ -311,6 +350,23 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a8b3e7e91a00f80d938b8c1f384609457" name="a8b3e7e91a00f80d938b8c1f384609457"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b3e7e91a00f80d938b8c1f384609457">&#9670;&#160;</a></span>RestoreMouseLook()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Io::Mouse::RestoreMouseLook </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="adcca2f11d2efbc4ff9ec32af93a33700" name="adcca2f11d2efbc4ff9ec32af93a33700"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adcca2f11d2efbc4ff9ec32af93a33700">&#9670;&#160;</a></span>SetCurrentCursorBitmap()</h2>
 
@@ -364,8 +420,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a7c90cae178e6d4e897e164d7b6f4261b" name="a7c90cae178e6d4e897e164d7b6f4261b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c90cae178e6d4e897e164d7b6f4261b">&#9670;&#160;</a></span>SetMouseLook()</h2>
+<a id="a367727c446a8d6864aba2d11a6004db3" name="a367727c446a8d6864aba2d11a6004db3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a367727c446a8d6864aba2d11a6004db3">&#9670;&#160;</a></span>SetMouseLook()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -373,7 +429,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void Io::Mouse::SetMouseLook </td>
           <td>(</td>
-          <td class="paramtype">bool&#160;</td>
+          <td class="paramtype"><a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6fa">MouseLookState</a>&#160;</td>
           <td class="paramname"><em>look</em></td><td>)</td>
           <td></td>
         </tr>
@@ -473,14 +529,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab1538a564244e7823241d2fb27332994" name="ab1538a564244e7823241d2fb27332994"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab1538a564244e7823241d2fb27332994">&#9670;&#160;</a></span>_mouseLook</h2>
+<a id="adba4dbf5fdba59b1c7ad90e9824f1fa1" name="adba4dbf5fdba59b1c7ad90e9824f1fa1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adba4dbf5fdba59b1c7ad90e9824f1fa1">&#9670;&#160;</a></span>_mouseLook</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Io::Mouse::_mouseLook = false</td>
+          <td class="memname"><a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6fa">MouseLookState</a> Io::Mouse::_mouseLook = <a class="el" href="classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6faab9f5c797ebbf55adccdd8539a65a0241">MouseLookState::Disabled</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

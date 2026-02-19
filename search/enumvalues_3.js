@@ -367,7 +367,7 @@ var searchData=
   ['direction_5fse_364',['DIRECTION_SE',['../TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaaab7be41369cb04b0c6e05479139b7f4a',1,'TileEnums.h']]],
   ['direction_5fsw_365',['DIRECTION_SW',['../TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaa017cce17e32a08a5265f5ef9f9f2ea3e',1,'TileEnums.h']]],
   ['direction_5fw_366',['DIRECTION_W',['../TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaa8646eea383e9e02b391377d902bd2a5c',1,'TileEnums.h']]],
-  ['disabled_367',['Disabled',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedab9f5c797ebbf55adccdd8539a65a0241',1,'ActorEnums.h']]],
+  ['disabled_367',['Disabled',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedab9f5c797ebbf55adccdd8539a65a0241',1,'Disabled():&#160;ActorEnums.h'],['../classIo_1_1Mouse.html#a5abab0683aab917134c8d5b1c5f3c6faab9f5c797ebbf55adccdd8539a65a0241',1,'Io::Mouse::Disabled()']]],
   ['door_5faction_5fclose_368',['DOOR_ACTION_CLOSE',['../FaceEnums_8h.html#a2d021ad08a3c636ba315b6625bc5ef7bad4f26bedf8abfdefefe0e0a63b864471',1,'FaceEnums.h']]],
   ['door_5faction_5fopen_369',['DOOR_ACTION_OPEN',['../FaceEnums_8h.html#a2d021ad08a3c636ba315b6625bc5ef7ba41372d7f1a60165192f0869624889868',1,'FaceEnums.h']]],
   ['door_5faction_5ftrigger_370',['DOOR_ACTION_TRIGGER',['../FaceEnums_8h.html#a2d021ad08a3c636ba315b6625bc5ef7ba8f4eaa0d34d7bf56c41ef3cd87b4b985',1,'FaceEnums.h']]],
