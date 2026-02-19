@@ -813,6 +813,26 @@ GAME_TEST(Issues, Issue2318) {
     EXPECT_TRUE(messagesTape.back().empty()); // Still no error messages.
 }
 
+GAME_TEST(Issues, Issue2341) {
+    // MouseLook switches off after opening any menu
+    test.prepareForNextTest();
+    game.startNewGame();
+    test.startTaping();
+    EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Disabled);
+    game.pressAndReleaseKey(PlatformKey::KEY_F10);
+    game.tick();
+    EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    EXPECT_EQ(current_screen_type, SCREEN_MENU);
+    EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Suspended);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.tick();
+    EXPECT_EQ(current_screen_type, SCREEN_GAME);
+    EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled); // MouseLook should be re-enabled after closing the menu.
+}
+
 GAME_TEST(Prs, Pr2354) {
     // Verify that all levels (indoor & outdoor) and their default deltas can be deserialized and reconstructed.
     for (MapId mapId : Segment(MAP_FIRST, MAP_LAST)) {
