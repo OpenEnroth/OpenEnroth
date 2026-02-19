@@ -59,7 +59,7 @@ static void dropDuplicateFaceVertices(Face *face) {
     // Second pass - collapse sequences that wrap around.
     int l = 0;
     int r = writeIdx - 1;
-    while (l <= r) {
+    while (l < r) {
         if (face->vertexIds[l] == face->vertexIds[r]) {
             r--; // A***A -> A***.
         } else if (r - l > 1 && face->vertexIds[l] == face->vertexIds[r - 1]) {
@@ -87,31 +87,39 @@ static void dropDuplicateFaceVertices(Face *face) {
     }
 }
 
-// Face plane normals have come from fixed point values - recalculate them.
 template<class Face>
 static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices) {
-    if (face->numVertices < 3) return;
-    Vec3f dir1 = (vertices[face->vertexIds[1]] - vertices[face->vertexIds[0]]);
-    Vec3f dir2, norm;
-    int i = 2;
-    for (; i < face->numVertices; i++) {
-        dir2 = (vertices[face->vertexIds[i]] - vertices[face->vertexIds[0]]);
-        if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
-            norm /= norm.length();
-            // Check that our new normal is pointing in the same direction as the original
-            constexpr float tolerance = 0.95f; // TODO(pskelton): may need tuning
-            if (dot(norm, face->facePlane.normal) > tolerance)
-                break;
-        }
+    if (face->numVertices < 3)
+        return;
+
+    // Compute the normal from the first non-degenerate edge pair.
+    Vec3f normal;
+    for (int i = 0; i < face->numVertices; i++) {
+        Vec3f dir1 = vertices[face->vertexIds[(i + 1) % face->numVertices]] - vertices[face->vertexIds[i]];
+        Vec3f dir2 = vertices[face->vertexIds[(i + 2) % face->numVertices]] - vertices[face->vertexIds[(i + 1) % face->numVertices]];
+        normal = cross(dir1, dir2);
+        if (normal.lengthSqr() > 1e-12f)
+            break;
     }
 
-    if (i == face->numVertices) {
-        // If we didn't find a non-parallel edge, lets just round what were given.
-        // TODO(pskelton):  This shouldnt ever happen - test and drop
-        face->facePlane.normal /= face->facePlane.normal.length();
-    } else {
-        face->facePlane.normal = norm;
+    if (normal.lengthSqr() <= 1e-12f) {
+        face->numVertices = 2;
+        return;
     }
+
+    // TODO(captainurist): just use Newell's method for everything & retrace.
+    // For non-planar polygons a single edge pair can give a wrong normal. Check against the Newell's method
+    // normal (sum of all cross products) and use it instead if the two disagree.
+    Vec3f sumNormal;
+    for (int i = 0; i < face->numVertices; i++) {
+        Vec3f dir1 = vertices[face->vertexIds[(i + 1) % face->numVertices]] - vertices[face->vertexIds[i]];
+        Vec3f dir2 = vertices[face->vertexIds[(i + 2) % face->numVertices]] - vertices[face->vertexIds[(i + 1) % face->numVertices]];
+        sumNormal += cross(dir1, dir2);
+    }
+    if (dot(normal, sumNormal) <= 0)
+        normal = sumNormal;
+
+    face->facePlane.normal = normal / normal.length();
     face->facePlane.dist = -dot(face->facePlane.normal, vertices[face->vertexIds[0]]);
     face->zCalc.init(face->facePlane);
 }
