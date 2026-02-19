@@ -35,7 +35,7 @@ Pointi Io::Mouse::position() const {
 }
 
 void Io::Mouse::setPosition(Pointi position) {
-        _position = position;
+    _position = position;
 }
 
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
@@ -100,6 +100,12 @@ void Io::Mouse::DrawCursor() {
     // get mouse pos
     Pointi pos = this->position();
 
+    // manage mouse look state - if only game screen is active, try enable
+    if (lWindowList.size() == 1)
+        RestoreMouseLook();
+    else
+        SetMouseLook(Suspended);
+
     // for party held item
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
         DrawPickedItem();
@@ -114,7 +120,7 @@ void Io::Mouse::DrawCursor() {
             pos.y -= (this->cursor_img->height()) / 2;
 
             render->DrawQuad2D(this->cursor_img, pos);
-        } else if (_mouseLook) {
+        } else if (_mouseLook == MouseLookState::Enabled) {
             platform->setCursorShown(false);
             auto pointer = assets->getImage_ColorKey("MICON2", colorTable.Black /*colorTable.TealMask*/);
             render->DrawQuad2D(pointer, pViewport.center() - pointer->size() / 2);
@@ -281,21 +287,28 @@ void Io::Mouse::UI_OnMouseLeftClick() {
     }
 }
 
-void Io::Mouse::SetMouseLook(bool enable) {
-    if (_mouseLook != enable) {
+void Io::Mouse::SetMouseLook(MouseLookState look) {
+    if (look == MouseLookState::Suspended && _mouseLook == MouseLookState::Disabled) return;
+
+    if (_mouseLook != look) {
         _position = pViewport.center();
         warpMouse(_position);
-        window->setMouseRelative(enable);
+        window->setMouseRelative(look == MouseLookState::Enabled);
     }
-    _mouseLook = enable;
+    _mouseLook = look;
 }
 
 void Io::Mouse::ToggleMouseLook() {
-    SetMouseLook(!_mouseLook);
+    // Toggle between enabled and disabled - suspended is treated as enabled
+    if (_mouseLook == MouseLookState::Disabled) {
+        SetMouseLook(MouseLookState::Enabled);
+    } else {
+        SetMouseLook(MouseLookState::Disabled);
+    }
 }
 
 void Io::Mouse::DoMouseLook(Pointi relChange) {
-    if (!_mouseLook) {
+    if (_mouseLook != MouseLookState::Enabled) {
         return;
     }
 
@@ -305,6 +318,12 @@ void Io::Mouse::DoMouseLook(Pointi relChange) {
     pParty->_viewPitch = std::clamp(pParty->_viewPitch, -320, 320);
     pParty->_viewYaw -= modX;
     pParty->_viewYaw &= TrigLUT.uDoublePiMask;
+}
+
+void Io::Mouse::RestoreMouseLook() {
+    if (_mouseLook == MouseLookState::Suspended) {
+        SetMouseLook(MouseLookState::Enabled);
+    }
 }
 
 // TODO(pskelton): Move this to keyboard
