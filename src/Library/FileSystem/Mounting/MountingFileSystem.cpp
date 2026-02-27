@@ -3,7 +3,6 @@
 #include <vector>
 #include <memory>
 #include <ranges>
-#include <span>
 #include <string>
 #include <utility>
 
@@ -71,10 +70,11 @@ void MountingFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry
     // Need to merge in this case.
     mount->ls(tail, entries);
     std::ranges::sort(*entries);
-    std::span<DirectoryEntry> searchable = *entries;
+    size_t originalSize = entries->size();
     bool cleanupNeeded = false;
     for (const auto &[name, _] : node->children()) {
-        auto range = std::ranges::equal_range(searchable, name, std::ranges::less(), &DirectoryEntry::name);
+        auto range = std::ranges::equal_range(
+            entries->begin(), entries->begin() + originalSize, name, std::ranges::less(), &DirectoryEntry::name);
 
         size_t size = range.size();
 

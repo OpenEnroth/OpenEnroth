@@ -216,3 +216,19 @@ UNIT_TEST(MemoryFileSystem, ExceptionMessage) {
     EXPECT_THROW_MESSAGE((void) fs.openForReading("a"), "mem://a");
     EXPECT_THROW_MESSAGE((void) fs.ls("a"), "mem://a");
 }
+
+UNIT_TEST(MemoryFileSystem, SelfRename) {
+    MemoryFileSystem fs("");
+
+    fs.write("a", Blob::fromString("123"));
+    fs.rename("a", "a");
+
+    EXPECT_TRUE(fs.exists("a"));
+    EXPECT_EQ(fs.read("a").str(), "123");
+
+    fs.write("d/x", Blob::fromString("456"));
+    fs.rename("d", "d");
+
+    EXPECT_TRUE(fs.exists("d/x"));
+    EXPECT_EQ(fs.read("d/x").str(), "456");
+}
