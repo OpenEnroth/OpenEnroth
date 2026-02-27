@@ -178,7 +178,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(NonBrokenFlag1, CASE_SENSITIVE, {
 
 UNIT_TEST(Serialization, BrokenFlags) {
     EXPECT_FALSE(serializer(std::type_identity<BrokenFlag0>()).isUsableWithFlags());
-    EXPECT_FALSE(serializer(std::type_identity<BrokenFlag2>()).isUsableWithFlags());
+    EXPECT_FALSE(serializer(std::type_identity<BrokenFlag1>()).isUsableWithFlags());
     EXPECT_FALSE(serializer(std::type_identity<BrokenFlag2>()).isUsableWithFlags());
     EXPECT_TRUE(serializer(std::type_identity<NonBrokenFlag1>()).isUsableWithFlags());
 }

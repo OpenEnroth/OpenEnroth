@@ -23,7 +23,7 @@ std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const FileSyst
         entries = fs->ls(components.prefix());
         std::erase_if(entries, [&](const DirectoryEntry &entry) {
             // We're being lazy here and just checking stem & extension. Can do a regex, but that would be an overkill.
-            return !entry.name.starts_with(components.stem()) && !entry.name.ends_with(components.extension());
+            return !(entry.name.starts_with(components.stem()) && entry.name.ends_with(components.extension()));
         });
     }
 
