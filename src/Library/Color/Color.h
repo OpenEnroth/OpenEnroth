@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
 
@@ -120,9 +122,9 @@ struct fmt::formatter<ColorTag> {
 
 constexpr inline Color Colorf::toColor() const {
     Color result;
-    result.r = r * 255.0f + 0.5f;
-    result.g = g * 255.0f + 0.5f;
-    result.b = b * 255.0f + 0.5f;
-    result.a = a * 255.0f + 0.5f;
+    result.r = static_cast<uint8_t>(std::clamp(std::round(r * 255.0f), 0.0f, 255.0f));
+    result.g = static_cast<uint8_t>(std::clamp(std::round(g * 255.0f), 0.0f, 255.0f));
+    result.b = static_cast<uint8_t>(std::clamp(std::round(b * 255.0f), 0.0f, 255.0f));
+    result.a = static_cast<uint8_t>(std::clamp(std::round(a * 255.0f), 0.0f, 255.0f));
     return result;
 }

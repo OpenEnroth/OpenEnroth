@@ -91,7 +91,7 @@ void LodReader::open(Blob blob, LodOpenFlags openFlags) {
 
     size_t expectedSize = sizeof(LodHeader_MM6) + sizeof(LodEntry_MM6); // Header + directory entry.
     if (blob.size() < expectedSize)
-        throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", blob.displayPath(), expectedSize, _lod.size());
+        throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", blob.displayPath(), expectedSize, blob.size());
 
     BlobInputStream lodStream(blob);
     LodVersion version = LOD_VERSION_MM6;

@@ -90,6 +90,27 @@ UNIT_TEST(Color, DeserializeInvalid) {
     EXPECT_FALSE(tryDeserialize("#12 456", &result));
 }
 
+UNIT_TEST(Color, ColorfToColorClamping) {
+    // Normal in-range values should convert correctly.
+    EXPECT_EQ(Colorf(0.0f, 0.0f, 0.0f, 0.0f).toColor(), Color(0, 0, 0, 0));
+    EXPECT_EQ(Colorf(1.0f, 1.0f, 1.0f, 1.0f).toColor(), Color(255, 255, 255, 255));
+    EXPECT_EQ(Colorf(0.5f, 0.5f, 0.5f, 0.5f).toColor(), Color(128, 128, 128, 128));
+
+    // Values slightly above 1.0 should clamp to 255.
+    Color above = Colorf(1.1f, 1.01f, 1.001f, 2.0f).toColor();
+    EXPECT_EQ(above.r, 255);
+    EXPECT_EQ(above.g, 255);
+    EXPECT_EQ(above.b, 255);
+    EXPECT_EQ(above.a, 255);
+
+    // Negative values should clamp to 0.
+    Color below = Colorf(-0.1f, -1.0f, -0.001f, -0.5f).toColor();
+    EXPECT_EQ(below.r, 0);
+    EXPECT_EQ(below.g, 0);
+    EXPECT_EQ(below.b, 0);
+    EXPECT_EQ(below.a, 0);
+}
+
 UNIT_TEST(Color, SerializeDeserializeRoundTrip) {
     std::string serialized;
     Color result;

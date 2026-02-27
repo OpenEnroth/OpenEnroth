@@ -645,30 +645,30 @@ GAME_TEST(Issues, Issue2223) {
 }
 
 GAME_TEST(Issues, Issue2229) {
-    // cant drop into hole
+    // Cant drop into hole.
     auto zPos = tapes.custom([] { return pParty->pos.z; });
     auto sectorTape = tapes.custom([] { return pBLVRenderParams->uPartySectorID; });
     test.playTraceFromTestData("issue_2229.mm7", "issue_2229.json");
     EXPECT_GE(zPos.front(), 0.0);
-    EXPECT_LE(zPos.back(), -400.0); // dropped down the hole
-    EXPECT_NE(sectorTape.front(), sectorTape.back()); // changed sectors
+    EXPECT_LE(zPos.back(), -400.0); // Dropped down the hole.
+    EXPECT_NE(sectorTape.front(), sectorTape.back()); // Changed sectors.
 }
 
 GAME_TEST(Issues, Issue2233) {
-    // transparent walls - bad normals
+    // Transparent walls - bad normals.
     auto posTape = tapes.custom([] { return pParty->pos; });
     test.playTraceFromTestData("issue_2233.mm7", "issue_2233.json");
-    // this was previosuly impassable due to bad wall normals heading NE
+    // This was previously impassable due to bad wall normals heading NE.
     EXPECT_LT(posTape.front().y, 6200);
     EXPECT_LT(posTape.front().x, -10000);
     EXPECT_GT(posTape.back().y, 7400);
     EXPECT_GT(posTape.back().x, -9200);
-    // and spot check a known problem face
+    // And spot check a known problem face.
     EXPECT_GT(dot(pIndoor->faces[6301].facePlane.normal, Vec3f(0.659, -0.742, 0.123)), 0.99f);
 }
 
 GAME_TEST(Issues, Issue2244) {
-    // Lift restarts at bottom
+    // Lift restarts at bottom.
     auto zPos = tapes.custom([] { return pParty->pos.z; });
     auto triggerID = tapes.custom([] {return pParty->floor_face_id; });
     test.playTraceFromTestData("issue_2244.mm7", "issue_2244.json");
