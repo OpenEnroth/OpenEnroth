@@ -14,51 +14,7 @@
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/String/Ascii.h"
-
-// TODO(captainurist): doesn't belong here
-static std::string makeValidUtf8(const std::string& input) {
-    std::string output;
-    size_t i = 0;
-    const size_t len = input.size();
-
-    while (i < len) {
-        unsigned char c = input[i];
-
-        // Single-byte (ASCII)
-        if (c <= 0x7F) {
-            output += c;
-            ++i;
-        } else if ((c >> 5) == 0x6 && i + 1 < len &&          // 110xxxxx (2 bytes)
-                 (input[i + 1] & 0xC0) == 0x80) {
-            output += c;
-            output += input[i + 1];
-            i += 2;
-
-        } else if ((c >> 4) == 0xE && i + 2 < len &&          // 1110xxxx (3 bytes)
-                 (input[i + 1] & 0xC0) == 0x80 &&
-                 (input[i + 2] & 0xC0) == 0x80) {
-            output += c;
-            output += input[i + 1];
-            output += input[i + 2];
-            i += 3;
-        } else if ((c >> 3) == 0x1E && i + 3 < len &&         // 11110xxx (4 bytes)
-                 (input[i + 1] & 0xC0) == 0x80 &&
-                 (input[i + 2] & 0xC0) == 0x80 &&
-                 (input[i + 3] & 0xC0) == 0x80) {
-            output += c;
-            output += input[i + 1];
-            output += input[i + 2];
-            output += input[i + 3];
-            i += 4;
-        } else {
-            // Invalid UTF-8 byte sequence
-            output += '?';
-            ++i;
-        }
-    }
-
-    return output;
-}
+#include "Utility/String/Encoding.h"
 
 static bool shouldSkip(const GameConfig *config, const ConfigSection *section, const AnyConfigEntry *entry) {
     return
@@ -142,7 +98,8 @@ EventTraceGameState EngineTraceStateAccessor::makeGameState() {
         if (item.IsBroken())
             result += " [BROKEN]";
 
-        return makeValidUtf8(result);
+        // TODO(captainurist): drop this call once we have everything in UTF-8.
+        return txt::utf8ToEncoded(result, ENCODING_ASCII);
     };
 
     EventTraceGameState result;

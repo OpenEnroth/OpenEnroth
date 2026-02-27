@@ -1,4 +1,6 @@
+#include <array>
 #include <string>
+#include <thread>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -481,4 +483,17 @@ UNIT_TEST(Encoding, AsciiSubset) {
             continue;
         EXPECT_EQ(txt::encodedToUtf8(ascii, encoding), ascii) << "encoding: " << static_cast<int>(encoding);
     }
+}
+
+UNIT_TEST(Encoding, StackSize) {
+    std::thread thread([] {
+        // Allocate 128Kb.
+        std::array<int8_t, 1024 * 128> dummy = {{}};
+        for (int8_t value : dummy)
+            EXPECT_EQ(value, 0);
+
+        // This should not crash with stack overflow. Used to trigger in non-main threads on MacOS.
+        EXPECT_EQ(txt::encodedToUtf8("123", ENCODING_ASCII), "123");
+    });
+    thread.join();
 }
