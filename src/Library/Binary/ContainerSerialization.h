@@ -64,6 +64,23 @@ void serialize(const Span &src, OutputStream *dst) {
 
 
 //
+// std::span support with tag forwarding - doesn't write size to the stream.
+//
+
+template<StdSpan Span, class... Tags>
+void deserialize(InputStream &src, Span *dst, EachTag, const Tags &... tags) {
+    for (auto &element : *dst)
+        deserialize(src, &element, tags...);
+}
+
+template<StdSpan Span, class... Tags>
+void serialize(const Span &src, OutputStream *dst, EachTag, const Tags &... tags) {
+    for (const auto &element : src)
+        serialize(element, dst, tags...);
+}
+
+
+//
 // std::array support - doesn't write size to the stream.
 //
 
