@@ -74,10 +74,9 @@ class AVStreamWrapper {
         stream = nullptr;
         dec = nullptr;
         if (dec_ctx != nullptr) {
-            // Close the codec
-            avcodec_close(dec_ctx);
+            // Close the codec and free the context.
+            avcodec_free_context(&dec_ctx);
             logger->trace("ffmpeg: close decoder context file");
-            dec_ctx = nullptr;
         }
     }
 
