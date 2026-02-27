@@ -168,3 +168,28 @@ UNIT_TEST(MountingFileSystem, Binary) {
     EXPECT_TRUE(fs.exists("0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"));
 }
 
+UNIT_TEST(MountingFileSystem, LsMergeWithManyVirtualDirs) {
+    // MountingFileSystem::_ls used to capture a std::span from the entries vector, then push_back-ing new
+    // entries for virtual directories could cause vector reallocation, making the span dangling.
+    MemoryFileSystem base("");
+    base.write("x", Blob());
+
+    // Create many separate mount points so the trie has many children at root level.
+    // These virtual dirs don't exist in the base FS, forcing push_back for each one.
+    std::vector<std::unique_ptr<MemoryFileSystem>> mounts;
+    for (size_t i = 0; i < 100; i++)
+        mounts.push_back(std::make_unique<MemoryFileSystem>(""));
+
+    MountingFileSystem fs("");
+    fs.mount("", &base);
+    for (size_t i = 0; i < mounts.size(); i++)
+        fs.mount(std::to_string(i), mounts[i].get());
+
+    std::vector<DirectoryEntry> entries = fs.ls("");
+    EXPECT_EQ(entries.size(), 101);
+
+    for (size_t i = 0; i < mounts.size(); i++)
+        EXPECT_TRUE(std::ranges::contains(entries, DirectoryEntry(std::to_string(i), FILE_DIRECTORY)));
+    EXPECT_TRUE(std::ranges::contains(entries, DirectoryEntry("x", FILE_REGULAR)));
+}
+

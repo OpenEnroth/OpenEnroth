@@ -305,3 +305,16 @@ UNIT_TEST(LowercaseFileSystem, RenameOverConflict) {
     LowercaseFileSystem fs(&fs0);
     EXPECT_ANY_THROW(fs.rename("a", "aaa/b"));
 }
+
+UNIT_TEST(LowercaseFileSystem, SelfRename) {
+    MemoryFileSystem fs0("ram");
+    fs0.write("ABC", Blob::fromString("abc"));
+
+    LowercaseFileSystem fs(&fs0);
+
+    fs.rename("abc", "abc");
+
+    EXPECT_TRUE(fs.exists("abc"));
+    EXPECT_EQ(fs.read("abc").str(), "abc");
+    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"abc", FILE_REGULAR}}));
+}
