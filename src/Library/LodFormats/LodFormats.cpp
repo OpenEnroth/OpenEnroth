@@ -134,9 +134,9 @@ Blob lod::decodeCompressedData(const Blob &blob) {
     if (header.dataSize == blob.size()) {
         // Workaround for a bug in the original LOD writer, where header.dataSize was equal to LOD record size,
         // instead of the size of the data that followed.
-        result = stream.tail();
+        result = stream.readAllAsBlob();
     } else {
-        result = stream.readBlobOrFail(header.dataSize);
+        result = stream.readAsBlobOrFail(header.dataSize);
     }
     if (header.decompressedSize)
         result = zlib::uncompress(result, header.decompressedSize);
@@ -151,7 +151,7 @@ Blob lod::decodeCompressedPseudoImage(const Blob &blob) {
     LodImageHeader_MM6 header;
     deserialize(stream, &header);
 
-    Blob result = stream.readBlobOrFail(header.dataSize);
+    Blob result = stream.readAsBlobOrFail(header.dataSize);
     if (header.decompressedSize)
         result = zlib::uncompress(result, header.decompressedSize);
     return result.withDisplayPath(blob.displayPath());
@@ -205,7 +205,7 @@ LodImage lod::decodeImage(const Blob &blob) {
 
     Blob pixels;
     if (!isPalette) {
-        pixels = stream.readBlobOrFail(header.dataSize);
+        pixels = stream.readAsBlobOrFail(header.dataSize);
         if (header.decompressedSize)
             pixels = zlib::uncompress(pixels, header.decompressedSize);
 
@@ -249,7 +249,7 @@ LodSprite lod::decodeSprite(const Blob &blob) {
     std::vector<LodSpriteLine_MM6> lines;
     deserialize(stream, &lines, tags::presized(header.height));
 
-    Blob pixels = stream.readBlobOrFail(header.dataSize);
+    Blob pixels = stream.readAsBlobOrFail(header.dataSize);
     if (header.decompressedSize)
         pixels = zlib::uncompress(pixels, header.decompressedSize);
 
@@ -308,14 +308,14 @@ LodFont lod::decodeFont(const Blob &blob) {
         BlobInputStream stream(blob);
         deserialize(stream, &result._header, tags::via<LodFontHeader_MM7>);
         deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MM7>);
-        result._pixels = stream.tail();
+        result._pixels = stream.readAllAsBlob();
         fixAndValidateFont(blob, result);
     } catch (const std::exception &e) {
         try {
             BlobInputStream stream(blob);
             deserialize(stream, &result._header, tags::via<LodFontHeader_MM7>);
             deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MMX>);
-            result._pixels = stream.tail();
+            result._pixels = stream.readAllAsBlob();
             fixAndValidateFont(blob, result);
         } catch (const std::exception &) {
             throw e; // Re-throw outer exception if trying both formats failed.
