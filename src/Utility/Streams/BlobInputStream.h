@@ -31,12 +31,6 @@ class BlobInputStream : public InputStream {
     [[nodiscard]] size_t size() const;
 
     /**
-     * @return                          Remaining stream data, as a blob that's shared with the blob that this
-     *                                  stream is reading from.
-     */
-    [[nodiscard]] Blob tail() const;
-
-    /**
      * Same as `read`, but returns the data as a blob that's shared with the blob that this stream is reading from.
      *
      * This basically presents a way to conveniently cut a blob into subblobs using a streaming interface.
@@ -45,7 +39,7 @@ class BlobInputStream : public InputStream {
      * @return                          Subblob of the blob that this stream is reading from. Actual size might be
      *                                  less than `size` if end of stream is encountered.
      */
-    [[nodiscard]] Blob readBlob(size_t size);
+    [[nodiscard]] Blob readAsBlob(size_t size);
 
     /**
      * Same as `readOrFail`, but returns the data as a blob that's shared with the blob that this stream is
@@ -55,7 +49,14 @@ class BlobInputStream : public InputStream {
      * @return                          Subblob of the blob that this stream is reading from.
      * @throw Exception                 If there is not enough data in the stream.
      */
-    [[nodiscard]] Blob readBlobOrFail(size_t size);
+    [[nodiscard]] Blob readAsBlobOrFail(size_t size);
+
+   /**
+    * Same as `readAll`, but returns the data as a blob that's shared with the blob that this stream is reading from.
+    *
+    * @return                          Remaining stream data as a shared subblob. No copying occurs.
+    */
+    [[nodiscard]] Blob readAllAsBlob() const;
 
  private:
     [[nodiscard]] size_t remaining() const;

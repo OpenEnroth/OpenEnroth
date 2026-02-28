@@ -73,13 +73,7 @@ size_t BlobInputStream::size() const {
     return _blob.size();
 }
 
-Blob BlobInputStream::tail() const {
-    assert(_pos);
-
-    return _blob.subBlob(position());
-}
-
-Blob BlobInputStream::readBlob(size_t size) {
+Blob BlobInputStream::readAsBlob(size_t size) {
     assert(_pos);
 
     size = std::min(size, remaining());
@@ -89,7 +83,7 @@ Blob BlobInputStream::readBlob(size_t size) {
     return result;
 }
 
-Blob BlobInputStream::readBlobOrFail(size_t size) {
+Blob BlobInputStream::readAsBlobOrFail(size_t size) {
     assert(_pos);
 
     if (size > remaining())
@@ -99,6 +93,12 @@ Blob BlobInputStream::readBlobOrFail(size_t size) {
     assert(result.size() == size);
     _pos += size;
     return result;
+}
+
+Blob BlobInputStream::readAllAsBlob() const {
+    assert(_pos);
+
+    return _blob.subBlob(position());
 }
 
 size_t BlobInputStream::remaining() const {
