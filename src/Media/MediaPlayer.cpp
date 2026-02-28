@@ -35,7 +35,7 @@ extern "C" {
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
 #include "Media/FFmpegLogProxy.h"
-#include "Media/FFmpegBlobInputStream.h"
+#include "Media/FFmpegBlobIoContext.h"
 
 #include "Utility/Memory/FreeDeleter.h"
 
@@ -381,12 +381,12 @@ class Movie : public IMovie {
     }
 
     bool LoadFromLOD(const Blob &blob) {
-        _stream.open(Blob::share(blob));
+        _ioContext.reset(Blob::share(blob));
 
         if (!format_ctx) {
             format_ctx = avformat_alloc_context();
         }
-        format_ctx->pb = _stream.ioContext();
+        format_ctx->pb = _ioContext.avioContext();
         return Load(blob.displayPath());
     }
 
@@ -711,7 +711,7 @@ class Movie : public IMovie {
     bool looping;
     bool playing;
 
-    FFmpegBlobInputStream _stream;
+    FFmpegBlobIoContext _ioContext;
 
     GraphicsImage *_texture{};
 

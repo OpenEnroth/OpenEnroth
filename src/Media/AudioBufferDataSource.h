@@ -3,9 +3,7 @@
 #include <memory>
 
 #include "AudioBaseDataSource.h"
-#include "FFmpegBlobInputStream.h"
-
-struct AVIOContext;
+#include "FFmpegBlobIoContext.h"
 
 class AudioBufferDataSource : public AudioBaseDataSource {
  public:
@@ -15,7 +13,7 @@ class AudioBufferDataSource : public AudioBaseDataSource {
     virtual bool Open() override;
 
  protected:
-    FFmpegBlobInputStream stream;
+    FFmpegBlobIoContext _ioContext;
 };
 
 PAudioDataSource CreateAudioBufferDataSource(Blob buffer);
