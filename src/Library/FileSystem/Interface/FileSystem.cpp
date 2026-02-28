@@ -168,7 +168,7 @@ void FileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath)
         std::unique_ptr<OutputStream> output = openForWriting(dstPath);
 
         if (!buffer)
-            buffer = std::make_unique<char[]>(COPY_BUFFER_SIZE); // TODO(captainurist): C++23, use make_unique_for_overwrite.
+            buffer = std::make_unique_for_overwrite<char[]>(COPY_BUFFER_SIZE);
 
         while (true) {
             size_t bytes = input->read(buffer.get(), COPY_BUFFER_SIZE);
