@@ -23,9 +23,6 @@ target_compile_definitions(sol2 INTERFACE SOL_EXCEPTIONS_ALWAYS_UNSAFE=1) # Make
 # fmt
 add_subdirectory(fmt EXCLUDE_FROM_ALL)
 target_compile_definitions(fmt INTERFACE FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals.
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_definitions(fmt INTERFACE FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>.
-endif()
 
 # glad
 add_subdirectory(glad EXCLUDE_FROM_ALL)
