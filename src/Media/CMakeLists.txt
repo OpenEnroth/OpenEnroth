@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 set(MEDIA_SOURCES
         AudioBaseDataSource.cpp
         AudioBufferDataSource.cpp
-        FFmpegBlobInputStream.cpp
+        FFmpegBlobIoContext.cpp
         FFmpegLogProxy.cpp
         FFmpegLogSource.cpp
         MediaPlayer.cpp)
@@ -14,7 +14,7 @@ set(MEDIA_HEADERS
         AudioDataSource.h
         AudioSample.h
         AudioTrack.h
-        FFmpegBlobInputStream.h
+        FFmpegBlobIoContext.h
         FFmpegLogProxy.h
         FFmpegLogSource.h
         MediaPlayer.h

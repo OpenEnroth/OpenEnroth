@@ -10,7 +10,7 @@ extern "C" {
 
 #include "Library/Logger/Logger.h"
 
-AudioBufferDataSource::AudioBufferDataSource(Blob buffer) : stream(std::move(buffer)) {}
+AudioBufferDataSource::AudioBufferDataSource(Blob buffer) : _ioContext(std::move(buffer)) {}
 
 bool AudioBufferDataSource::Open() {
     if (bOpened) {
@@ -22,16 +22,13 @@ bool AudioBufferDataSource::Open() {
         return false;
     }
 
-    // TODO(pskelton): Investigate why this context reset is required - should seek to start of file rather
-    // than close and reopen source if looping music tracks
-    // Reset stream to start if already played
-    if (stream.ioContext()->pos != 0)
-        stream.resetContext();
+    // Seek to start if already played (e.g. looping music tracks).
+    avio_seek(_ioContext.avioContext(), 0, SEEK_SET);
 
-    pFormatContext->pb = stream.ioContext();
+    pFormatContext->pb = _ioContext.avioContext();
 
     // Open audio file
-    if (avformat_open_input(&pFormatContext, stream.displayPath().c_str(), nullptr, nullptr) < 0) {
+    if (avformat_open_input(&pFormatContext, _ioContext.blob().displayPath().c_str(), nullptr, nullptr) < 0) {
         logger->warning("ffmpeg: Unable to open input buffer");
         return false;
     }
