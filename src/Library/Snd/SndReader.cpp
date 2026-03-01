@@ -44,8 +44,6 @@ void SndReader::open(Blob blob) {
         if (files.contains(name))
             throw Exception("File '{}' is not a valid SND: contains duplicate entries for '{}'", blob.displayPath(), name);
 
-        assert(entry.decompressedSize >= entry.size);
-
         if (entry.offset + entry.size > blob.size())
             throw Exception("File '{}' is not a valid SND: entry '{}' points outside the SND file", blob.displayPath(), entry.name);
 
@@ -103,26 +101,27 @@ bool snd::detect(const Blob &data) {
     deserialize(stream, &entryCount);
     if (entryCount == 0)
         return false; // Empty snd file is not valid.
-    if (data.size() < 4 + entryCount * sizeof(SndEntry_MM7))
+
+    size_t headerSize = 4 + entryCount * sizeof(SndEntry_MM7);
+    if (data.size() < headerSize)
         return false;
 
-    auto checkEntry = [&](size_t offset) {
-        stream.seek(offset);
+    // Just check up to 16 entries and we're good.
+    for (size_t i = 0, count = std::min<size_t>(entryCount, 16); i < count; i++) {
         SndEntry_MM7 entry;
         deserialize(stream, &entry);
-        return static_cast<size_t>(entry.offset) + static_cast<size_t>(entry.size) <= data.size();
-    };
 
-    // Just check 16 entries and we're good.
-    size_t head = entryCount >= 8 ? 8 : entryCount;
-    size_t tail = entryCount >= 8 ? entryCount - 8 : 0;
+        if (entry.offset < headerSize)
+            return false;
 
-    for (size_t i = 0; i < head; i++)
-        if (!checkEntry(4 + i * sizeof(SndEntry_MM7)))
+        if (static_cast<size_t>(entry.offset) + static_cast<size_t>(entry.size) > data.size())
             return false;
-    for (size_t i = tail; i < entryCount; i++)
-        if (!checkEntry(4 + i * sizeof(SndEntry_MM7)))
+
+        // For compressed entries, zlib's max compression ratio is 1032:1, so anything beyond that is clearly garbage.
+        // See https://zlib.net/zlib_tech.html.
+        if (entry.size != 0 && entry.decompressedSize > static_cast<size_t>(entry.size) * 1032)
             return false;
+    }
 
     return true;
 }

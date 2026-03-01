@@ -108,14 +108,19 @@ bool vid::detect(const Blob &data) {
     deserialize(stream, &entryCount);
     if (entryCount == 0)
         return false; // Empty vid file is not valid.
-    if (data.size() < 4 + entryCount * sizeof(VidEntry_MM7))
+
+    size_t headerSize = 4 + entryCount * sizeof(VidEntry_MM7);
+    if (data.size() < headerSize)
         return false;
 
     // Just check up to 16 entries and we're good.
     size_t lastOffset = 0;
-    for (size_t i = 0, size = std::min<size_t>(entryCount, 16); i < size; i++) {
+    for (size_t i = 0, count = std::min<size_t>(entryCount, 16); i < count; i++) {
         VidEntry_MM7 entry;
         deserialize(stream, &entry);
+
+        if (entry.offset < headerSize)
+            return false;
 
         if (entry.offset > data.size())
             return false;
