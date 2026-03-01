@@ -10,7 +10,7 @@ set(UTILITY_SOURCES
         Streams/FileInputStream.cpp
         Streams/FileOutputStream.cpp
         Streams/InputStream.cpp
-        Streams/MemoryInputStream.cpp
+        Streams/OutputStream.cpp
         Streams/StringOutputStream.cpp
         String/Ascii.cpp
         String/Encoding.cpp
@@ -74,10 +74,12 @@ if(OE_BUILD_TESTS)
     set(TEST_UTILITY_SOURCES
             Math/Tests/Float_ut.cpp
             Memory/Tests/Blob_ut.cpp
+            Streams/Tests/BlobInputStream_ut.cpp
+            Streams/Tests/BlobOutputStream_ut.cpp
+            Streams/Tests/StringOutputStream_ut.cpp
             Streams/Tests/FileOutputStream_ut.cpp
             Streams/Tests/FileInputStream_ut.cpp
             Streams/Tests/InputStream_ut.cpp
-            Streams/Tests/MemoryInputStream_ut.cpp
             Tests/IndexedArray_ut.cpp
             Tests/IndexedBitset_ut.cpp
             Tests/Segment_ut.cpp

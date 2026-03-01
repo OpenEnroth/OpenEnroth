@@ -1,29 +1,36 @@
 #pragma once
 
-#include <string>
+#include <cstddef>
+#include <string_view>
 
 #include "InputStream.h"
 
-class MemoryInputStream: public InputStream {
+/**
+ * Input stream that reads from a memory region.
+ *
+ * This is a thin wrapper over `InputStream` that exposes the protected memory-backed constructors.
+ */
+class MemoryInputStream : public InputStream {
  public:
-    MemoryInputStream();
-    MemoryInputStream(const void *data, size_t size, std::string_view displayPath = {});
-    virtual ~MemoryInputStream();
+    MemoryInputStream() = default;
 
-    void open(const void *data, size_t size, std::string_view displayPath = {});
+    /**
+     * @param data                      Pointer to the data to read from.
+     * @param size                      Data size.
+     * @param displayPath               Display path for error reporting.
+     */
+    MemoryInputStream(const void *data, size_t size, std::string_view displayPath = {}) {
+        open(data, size, displayPath);
+    }
 
-    virtual size_t read(void *data, size_t size) override;
-    virtual size_t skip(size_t size) override;
-    virtual void close() override;
-    [[nodiscard]] std::string displayPath() const override;
-
-    void seek(size_t pos);
-    [[nodiscard]] size_t position() const;
-    [[nodiscard]] size_t size() const;
-
- private:
-    const char *_begin = nullptr;
-    const char *_pos = nullptr;
-    const char *_end = nullptr;
-    std::string _displayPath;
+    /**
+     * Re-initializes the stream from a new memory region.
+     *
+     * @param data                      Pointer to the data to read from.
+     * @param size                      Data size.
+     * @param displayPath               Display path for error reporting.
+     */
+    void open(const void *data, size_t size, std::string_view displayPath = {}) {
+        InputStream::open(data, static_cast<const char *>(data) + size, displayPath);
+    }
 };

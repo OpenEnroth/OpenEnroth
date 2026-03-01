@@ -4,19 +4,22 @@
 
 #include "Library/FileSystem/Trie/FileSystemTrie.h"
 
-#include "Utility/Streams/BlobInputStream.h"
+#include "Utility/Streams/InputStream.h"
 
 namespace detail {
 
 struct MemoryFileData;
 
-class MemoryFileSystemInputStream : public BlobInputStream {
+/**
+ * Input stream for reading from a memory file system entry. Manages reader counting for the memory file data.
+ */
+class MemoryFileSystemInputStream : public InputStream {
  public:
     explicit MemoryFileSystemInputStream(std::shared_ptr<MemoryFileData> data);
-    virtual ~MemoryFileSystemInputStream();
+    ~MemoryFileSystemInputStream();
 
  private:
-    virtual void close() override;
+    virtual void _close() override;
     void closeInternal();
 
  private:

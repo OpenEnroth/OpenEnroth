@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <cassert>
 #include <utility>
 
 extern "C" {

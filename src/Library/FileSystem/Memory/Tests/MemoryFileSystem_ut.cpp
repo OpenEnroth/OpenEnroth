@@ -150,6 +150,18 @@ UNIT_TEST(MemoryFileSystem, Lifetime) {
     output2->write("456");
 }
 
+UNIT_TEST(MemoryFileSystem, DestructorFlushesData) {
+    MemoryFileSystem fs("");
+
+    {
+        std::unique_ptr<OutputStream> output = fs.openForWriting("a");
+        output->write("123");
+        // No explicit close() — destructor should flush the data.
+    }
+
+    EXPECT_EQ(fs.read("a").str(), "123");
+}
+
 UNIT_TEST(MemoryFileSystem, Rename) {
     MemoryFileSystem fs("");
 

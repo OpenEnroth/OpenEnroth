@@ -1,25 +1,39 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 #include "OutputStream.h"
 
-class StringOutputStream: public OutputStream {
+/**
+ * Output stream that writes into a `std::string`.
+ */
+class StringOutputStream : public OutputStream {
  public:
     StringOutputStream() = default;
-    explicit StringOutputStream(std::string *target, std::string_view displayPath = {});
-    virtual ~StringOutputStream();
 
+    /**
+     * @param target                    String to write into. Must outlive this stream.
+     * @param displayPath               Display path for error reporting.
+     */
+    explicit StringOutputStream(std::string *target, std::string_view displayPath = {});
+    ~StringOutputStream();
+
+    /**
+     * Opens the stream for writing into the given string.
+     *
+     * @param target                    String to write into. Must outlive this stream.
+     * @param displayPath               Display path for error reporting.
+     */
     void open(std::string *target, std::string_view displayPath = {});
 
-    virtual void write(const void *data, size_t size) override;
-    virtual void flush() override;
-    virtual void close() override;
-    [[nodiscard]] virtual std::string displayPath() const override;
+ private:
+    virtual void _overflow(const void *data, size_t size, void **bufferStart, void **bufferEnd) override;
+    virtual void _flush() override;
+    virtual void _close() override;
 
-    using OutputStream::write;
+    void closeInternal();
 
  private:
     std::string *_target = nullptr;
-    std::string _displayPath;
 };

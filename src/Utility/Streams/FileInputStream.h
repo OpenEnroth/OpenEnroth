@@ -1,38 +1,55 @@
 #pragma once
 
 #include <cstdio>
+#include <memory>
 #include <string>
 #include <string_view>
 
 #include "InputStream.h"
 
+/**
+ * Input stream that reads from a file.
+ */
 class FileInputStream : public InputStream {
  public:
+    static constexpr size_t DEFAULT_BUFFER_SIZE = 1024 * 1024;
+
     FileInputStream() = default;
-    explicit FileInputStream(std::string_view path);
-    virtual ~FileInputStream();
 
-    void open(std::string_view path);
+    /**
+     * @param path                      Path to the file to open.
+     * @param bufferSize                Size of the internal read buffer.
+     * @throws Exception                On error.
+     */
+    explicit FileInputStream(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
+    ~FileInputStream();
 
-    [[nodiscard]] bool isOpen() const {
-        return _file != nullptr;
-    }
+    /**
+     * Opens a file for reading.
+     *
+     * @param path                      Path to the file to open.
+     * @param bufferSize                Size of the internal read buffer.
+     * @throws Exception                On error.
+     */
+    void open(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
 
-    [[nodiscard]] virtual size_t read(void *data, size_t size) override;
-    [[nodiscard]] virtual size_t skip(size_t size) override;
-    virtual void close() override;
-    [[nodiscard]] virtual std::string displayPath() const override;
-
-    void seek(size_t pos);
-
+    /**
+     * @return                          The underlying file handle.
+     */
     [[nodiscard]] FILE *handle() {
         return _file;
     }
 
  private:
+    virtual size_t _underflow(void *data, size_t size, const void **bufferStart, const void **bufferEnd) override;
+    virtual size_t _readAll(std::string *dst, size_t maxSize) override;
+    virtual void _close() override;
+
     void closeInternal(bool canThrow);
 
  private:
     std::string _path;
     FILE *_file = nullptr;
+    std::unique_ptr<char[]> _buf;
+    size_t _bufSize = 0;
 };

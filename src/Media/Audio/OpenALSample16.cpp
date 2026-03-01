@@ -1,5 +1,6 @@
 #include "OpenALSample16.h"
 
+#include <cassert>
 #include <memory>
 
 #include "OpenALSoundProvider.h"

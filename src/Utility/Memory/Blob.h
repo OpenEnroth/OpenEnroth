@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdio>
-#include <cassert>
 #include <utility>
 #include <memory>
 #include <string_view>
@@ -61,7 +60,11 @@ class Blob final {
      * @return                          Blob that takes ownership of the provided memory region.
      */
     [[nodiscard]] static Blob fromMalloc(const void *data, size_t size);
-    [[nodiscard]] static Blob fromMalloc(std::unique_ptr<void, FreeDeleter> data, size_t size);
+
+    template <class T> requires std::is_integral_v<T> || std::is_void_v<T>
+    [[nodiscard]] static Blob fromMalloc(std::unique_ptr<T, FreeDeleter> data, size_t size) {
+        return fromMalloc(data.release(), size);
+    }
 
     /**
      * @param path                      Path to a file.
