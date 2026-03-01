@@ -39,6 +39,7 @@ Blob uncompress(const Blob &source, size_t sizeHint) {
         res = ::uncompress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
     }
 
+    // TODO(captainurist): should probably throw on decompression error instead of silently returning an empty blob.
     return res == Z_OK ? Blob::copy(dest.get(), destLen) : Blob();
 }
 
