@@ -66,21 +66,21 @@ void reconstruct(const LodEntry_MM6 &src, LodEntry *dst);
 
 struct LodFileEntry_MM8 {
     std::array<char, 16> name;
-    std::int32_t unk_0;
-    std::int32_t unk_1;
-    std::int32_t unk_2;
-    std::int32_t unk_3;
-    std::int32_t unk_4;
-    std::int32_t unk_5;
-    std::int32_t unk_6;
-    std::int32_t unk_7;
-    std::int32_t unk_8;
-    std::int32_t unk_9;
-    std::int32_t unk_10;
-    std::int32_t unk_11;
-    std::int32_t dataOffset;
-    std::int32_t dataSize;
-    std::int32_t unk_14;
+    std::uint32_t unk_0;
+    std::uint32_t unk_1;
+    std::uint32_t unk_2;
+    std::uint32_t unk_3;
+    std::uint32_t unk_4;
+    std::uint32_t unk_5;
+    std::uint32_t unk_6;
+    std::uint32_t unk_7;
+    std::uint32_t unk_8;
+    std::uint32_t unk_9;
+    std::uint32_t unk_10;
+    std::uint32_t unk_11;
+    std::uint32_t dataOffset;
+    std::uint32_t dataSize;
+    std::uint32_t unk_14;
 };
 static_assert(sizeof(LodFileEntry_MM8) == 76);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFileEntry_MM8)
