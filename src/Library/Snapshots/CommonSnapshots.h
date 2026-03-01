@@ -11,11 +11,11 @@
 
 #include "Library/Binary/BinaryConcepts.h"
 
-#include "Utility/Segment.h"
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
 
 #include "SnapshotConcepts.h"
+#include "SnapshotTags.h"
 
 //
 // Identity snapshotting.
@@ -35,14 +35,6 @@ void reconstruct(const T &src, T *dst) {
 //
 // static_cast support.
 //
-
-template<class From, class To>
-struct CastTag {};
-
-namespace tags {
-template<class From, class To>
-constexpr CastTag<From, To> cast;
-} // namespace tags
 
 template<class T1, class T2>
 void snapshot(const T1 &src, T2 *dst, CastTag<T1, T2>) {
@@ -164,20 +156,6 @@ void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, cons
 // Crude IndexedSpan support.
 //
 
-template<auto FirstIndex, auto LastIndex>
-struct SegmentTag {
-    static constexpr size_t SIZE = static_cast<ptrdiff_t>(LastIndex) - static_cast<ptrdiff_t>(FirstIndex) + 1;
-
-    constexpr Segment<decltype(FirstIndex)> segment() const {
-        return Segment(FirstIndex, LastIndex);
-    }
-};
-
-namespace tags {
-template<auto First, auto Last>
-constexpr SegmentTag<First, Last> segment;
-} // namespace tags
-
 template<class T1, size_t N, class T2, auto L, auto H, auto LL, auto HH>
 void snapshot(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, SegmentTag<LL, HH> tag) {
     static_assert(L <= LL && HH <= H && SegmentTag<LL, HH>::SIZE == N);
@@ -197,10 +175,6 @@ void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, Segm
 // IndexedBitset support.
 // MM uses inverted bit order for serialization, we don't want to have this as default behavior, so we introduce a tag.
 //
-struct ReverseBitOrderTag {};
-namespace tags {
-constexpr ReverseBitOrderTag reverseBits;
-} // namespace tags
 
 template<size_t N, auto L, auto H>
 static void snapshot(const IndexedBitset<L, H> &src, std::array<uint8_t, N> *dst, ReverseBitOrderTag) {

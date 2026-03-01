@@ -24,6 +24,19 @@ void reconstruct(const Int_MM &src, int *dst) {
     *dst = src.value;
 }
 
+struct Offset_MM {
+    int value;
+};
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Offset_MM)
+
+void snapshot(int src, Offset_MM *dst, ContextTag<int> offset) {
+    dst->value = src + *offset;
+}
+
+void reconstruct(const Offset_MM &src, int *dst, ContextTag<int> offset) {
+    *dst = src.value - *offset;
+}
+
 static const std::vector<int> ints012 = {0, 1, 2};
 static const std::vector<int> ints345 = {3, 4, 5};
 static const std::vector<int> ints012345 = {0, 1, 2, 3, 4, 5};
@@ -31,16 +44,16 @@ static const std::vector<int> ints012345 = {0, 1, 2, 3, 4, 5};
 UNIT_TEST(Snapshots, Via) {
     Blob blob;
     std::vector<int> ref = {100, 200}; // Also test overwrite.
-    serialize(ints012, &blob, tags::via_each<Int_MM>);
-    deserialize(blob, &ref, tags::via_each<Int_MM>);
+    serialize(ints012, &blob, tags::each, tags::via<Int_MM>);
+    deserialize(blob, &ref, tags::each, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints012);
 }
 
 UNIT_TEST(Snapshots, SizedVia) {
     Blob blob;
     std::vector<int> ref = {100, 200}; // Also test overwrite.
-    serialize(ints012, &blob, tags::unsized, tags::via_each<Int_MM>);
-    deserialize(blob, &ref, tags::presized(3), tags::via_each<Int_MM>);
+    serialize(ints012, &blob, tags::unsized, tags::each, tags::via<Int_MM>);
+    deserialize(blob, &ref, tags::presized(3), tags::each, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints012);
 }
 
@@ -48,10 +61,10 @@ UNIT_TEST(Snapshots, MultiSizedVia) {
     std::string string;
     StringOutputStream output(&string);
     std::vector<int> ref = {100, 200}; // Also test overwrite.
-    serialize(ints012, &output, tags::unsized, tags::via_each<Int_MM>);
-    serialize(ints345, &output, tags::unsized, tags::via_each<Int_MM>);
+    serialize(ints012, &output, tags::unsized, tags::each, tags::via<Int_MM>);
+    serialize(ints345, &output, tags::unsized, tags::each, tags::via<Int_MM>);
     MemoryInputStream input2(string.data(), string.size());
-    deserialize(input2, &ref, tags::presized(6), tags::via_each<Int_MM>);
+    deserialize(input2, &ref, tags::presized(6), tags::each, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints012345);
 }
 
@@ -59,11 +72,11 @@ UNIT_TEST(Snapshots, AppendSizedVia) {
     std::string string;
     StringOutputStream output(&string);
     std::vector<int> ref;
-    serialize(ints012, &output, tags::unsized, tags::via_each<Int_MM>);
-    serialize(ints345, &output, tags::unsized, tags::via_each<Int_MM>);
+    serialize(ints012, &output, tags::unsized, tags::each, tags::via<Int_MM>);
+    serialize(ints345, &output, tags::unsized, tags::each, tags::via<Int_MM>);
     MemoryInputStream input3(string.data(), string.size());
-    deserialize(input3, &ref, tags::append, tags::presized(3), tags::via_each<Int_MM>);
-    deserialize(input3, &ref, tags::append, tags::presized(3), tags::via_each<Int_MM>);
+    deserialize(input3, &ref, tags::append, tags::presized(3), tags::each, tags::via<Int_MM>);
+    deserialize(input3, &ref, tags::append, tags::presized(3), tags::each, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints012345);
 }
 
@@ -71,11 +84,11 @@ UNIT_TEST(Snapshots, AppendVia) {
     std::string string;
     StringOutputStream output(&string);
     std::vector<int> ref;
-    serialize(ints012, &output, tags::via_each<Int_MM>);
-    serialize(ints345, &output, tags::via_each<Int_MM>);
+    serialize(ints012, &output, tags::each, tags::via<Int_MM>);
+    serialize(ints345, &output, tags::each, tags::via<Int_MM>);
     MemoryInputStream input4(string.data(), string.size());
-    deserialize(input4, &ref, tags::append, tags::via_each<Int_MM>);
-    deserialize(input4, &ref, tags::append, tags::via_each<Int_MM>);
+    deserialize(input4, &ref, tags::append, tags::each, tags::via<Int_MM>);
+    deserialize(input4, &ref, tags::append, tags::each, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints012345);
 }
 
@@ -84,9 +97,18 @@ UNIT_TEST(Snapshots, ArrayVia) {
 
     Blob blob;
     std::array<int, 3> ref;
-    serialize(ints123, &blob, tags::via_each<Int_MM>);
-    deserialize(blob, &ref, tags::via_each<Int_MM>);
+    serialize(ints123, &blob, tags::each, tags::via<Int_MM>);
+    deserialize(blob, &ref, tags::each, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints123);
+}
+
+UNIT_TEST(Snapshots, ViaWithTags) {
+    Blob blob;
+    int ref = 0;
+
+    serialize(10, &blob, tags::via<Offset_MM>, tags::context(100));
+    deserialize(blob, &ref, tags::via<Offset_MM>, tags::context(100));
+    EXPECT_EQ(ref, 10);
 }
 
 UNIT_TEST(Snapshots, IndexedBitset) {

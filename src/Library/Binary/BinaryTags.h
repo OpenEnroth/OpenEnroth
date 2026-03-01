@@ -29,6 +29,8 @@ class ContextTag {
     const T &_ctx;
 };
 
+class EachTag {};
+
 namespace tags {
 /**
  * Serialization tag that instructs the binary serialization framework to NOT write the vector size
@@ -71,5 +73,17 @@ template<class T>
 constexpr ContextTag<T> context(const T &ctx) {
     return ContextTag<T>(ctx);
 }
+
+/**
+ * Serialization tag that applies subsequent tags to each element of a container individually, rather than to the
+ * container as a whole. Without this tag, there is no way to pass tags down to individual container elements.
+ *
+ * Example usage:
+ * ```
+ * std::vector<Monster> monsters;
+ * deserialize(src, &monsters, tags::append, tags::each, tags::via<MonsterDesc_MM7>);
+ * ```
+ */
+constexpr EachTag each;
 
 } // namespace tags
