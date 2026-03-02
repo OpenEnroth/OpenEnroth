@@ -8,9 +8,11 @@
 /**
  * Input stream that reads from a memory region.
  *
- * This is a thin wrapper over `InputStream` that exposes the protected memory-backed constructors.
+ * This is a thin wrapper over `InputStream` that provides a public interface for constructing a memory-backed stream.
  */
 class MemoryInputStream : public InputStream {
+    using base_type = InputStream;
+
  public:
     MemoryInputStream() = default;
 
@@ -31,6 +33,9 @@ class MemoryInputStream : public InputStream {
      * @param displayPath               Display path for error reporting.
      */
     void open(const void *data, size_t size, std::string_view displayPath = {}) {
-        InputStream::open(data, static_cast<const char *>(data) + size, displayPath);
+        const char *start = static_cast<const char *>(data);
+        Buffer buffer;
+        buffer.reset(start, start, start + size);
+        base_type::open(buffer, displayPath);
     }
 };

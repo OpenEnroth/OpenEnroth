@@ -11,6 +11,8 @@
  * Input stream that reads from a file.
  */
 class FileInputStream : public InputStream {
+    using base_type = InputStream;
+
  public:
     static constexpr size_t DEFAULT_BUFFER_SIZE = 1024 * 1024;
 
@@ -41,11 +43,12 @@ class FileInputStream : public InputStream {
     }
 
  private:
-    virtual size_t _underflow(void *data, size_t size, const void **bufferStart, const void **bufferEnd) override;
+    virtual size_t _underflow(void *data, size_t size, Buffer *buffer) override;
     virtual size_t _readAll(std::string *dst, size_t maxSize) override;
     virtual void _close() override;
 
     void closeInternal(bool canThrow);
+    size_t fileRemaining();
 
  private:
     std::string _path;

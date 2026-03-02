@@ -15,9 +15,12 @@
  * Output stream that writes into a `Blob`.
  *
  * Data is accumulated in geometrically growing internal chunks (1KB up to 1MB) and transferred to the target `Blob`
- * when `close()` is called. Calling `flush()` also transfers data but makes a copy instead of moving.
+ * when `close()` is called. Calling `flush()` also transfers data but always makes a copy. `close()` can avoid the
+ * copy when all data fits in a single chunk.
  */
 class BlobOutputStream : public OutputStream {
+    using base_type = OutputStream;
+
  public:
     BlobOutputStream() = default;
 
@@ -37,8 +40,8 @@ class BlobOutputStream : public OutputStream {
     void open(Blob *target, std::string_view displayPath = {});
 
  protected:
-    virtual void _overflow(const void *data, size_t size, void **bufferStart, void **bufferEnd) override;
-    virtual void _flush() override;
+    virtual void _overflow(const void *data, size_t size, Buffer *buffer) override;
+    virtual void _flush(Buffer *buffer) override;
     virtual void _close() override;
 
  private:

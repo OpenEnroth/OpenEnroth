@@ -9,6 +9,8 @@
  * Output stream that writes into a `std::string`.
  */
 class StringOutputStream : public OutputStream {
+    using base_type = OutputStream;
+
  public:
     StringOutputStream() = default;
 
@@ -28,8 +30,8 @@ class StringOutputStream : public OutputStream {
     void open(std::string *target, std::string_view displayPath = {});
 
  private:
-    virtual void _overflow(const void *data, size_t size, void **bufferStart, void **bufferEnd) override;
-    virtual void _flush() override;
+    virtual void _overflow(const void *data, size_t size, Buffer *buffer) override;
+    virtual void _flush(Buffer *buffer) override;
     virtual void _close() override;
 
     void closeInternal();

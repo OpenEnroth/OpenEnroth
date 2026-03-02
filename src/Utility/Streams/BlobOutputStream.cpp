@@ -21,32 +21,39 @@ void BlobOutputStream::open(Blob *target, std::string_view displayPath) {
     assert(target);
     _target = target;
     _chunks.clear();
-    OutputStream::open(displayPath);
+    base_type::open({}, displayPath);
 }
 
-void BlobOutputStream::_overflow(const void *data, size_t size, void **bufferStart, void **bufferEnd) {
-    assert(bufferRemaining() == 0);
+void BlobOutputStream::_overflow(const void *data, size_t size, Buffer *buffer) {
+    assert(size > buffer->remaining());
 
-    // Geometric growth: 1KB -> 2KB -> 4KB -> ... -> 1MB (cap), but at least enough for the overflow data.
+    const char *src = static_cast<const char *>(data);
+
+    // Fill the remaining space in the current chunk.
+    size_t head = buffer->write(src, buffer->remaining());
+    src += head;
+    size -= head;
+
+    // Geometric growth: 1KB -> 2KB -> 4KB -> ... -> 1MB (cap), but at least enough for the remaining overflow data.
     size_t chunkSize = std::max(size, _chunks.empty() ? 1024 : std::min<size_t>(_chunks.back().size * 2, 1024 * 1024));
 
-    // Allocate a single chunk: overflow data at the start, remaining space is the new buffer.
+    // Allocate a new chunk: remaining overflow data at the start, rest is the new buffer.
     std::unique_ptr<char, FreeDeleter> buf(static_cast<char *>(malloc(chunkSize)));
-    memcpy(buf.get(), data, size);
+    memcpy(buf.get(), src, size);
     _chunks.push_back({std::move(buf), chunkSize});
-    *bufferStart = _chunks.back().data.get() + size;
-    *bufferEnd = _chunks.back().data.get() + chunkSize;
+    char *chunkStart = _chunks.back().data.get();
+    buffer->reset(chunkStart, chunkStart + size, chunkStart + chunkSize);
 }
 
-void BlobOutputStream::_flush() {
-    assert(isOpen());
+void BlobOutputStream::_flush(Buffer *buffer) {
     *_target = materialize();
+    buffer->chop();
 }
 
 void BlobOutputStream::_close() {
     assert(isOpen());
     closeInternal();
-    OutputStream::_close();
+    base_type::_close();
 }
 
 void BlobOutputStream::closeInternal() {
@@ -57,7 +64,7 @@ void BlobOutputStream::closeInternal() {
         *_target = Blob().withDisplayPath(displayPath());
     } else if (_chunks.size() == 1) {
         // Single chunk: move the malloc'd memory directly into the Blob, no copy needed.
-        *_target = Blob::fromMalloc(std::move(_chunks.front().data), _chunks.front().size - bufferRemaining())
+        *_target = Blob::fromMalloc(std::move(_chunks.front().data), _chunks.front().size - buffer().remaining())
             .withDisplayPath(displayPath());
     } else {
         *_target = materialize();
@@ -68,11 +75,11 @@ void BlobOutputStream::closeInternal() {
 }
 
 Blob BlobOutputStream::materialize() {
-    // Compute total used size. All chunks are fully used except the last one (the buffer chunk).
+    // Compute total used size. All chunks except the last are sealed to their used size.
     size_t total = 0;
     for (const Chunk &chunk : _chunks)
         total += chunk.size;
-    total -= bufferRemaining();
+    total -= buffer().remaining();
     if (total == 0)
         return Blob().withDisplayPath(displayPath());
 

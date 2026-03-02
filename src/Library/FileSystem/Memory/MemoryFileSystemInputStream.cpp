@@ -13,8 +13,7 @@ MemoryFileSystemInputStream::MemoryFileSystemInputStream(std::shared_ptr<MemoryF
     assert(_data->writerCount == 0);
 
     _data->readerCount++;
-    const char *start = static_cast<const char *>(_data->blob.data());
-    InputStream::open(start, start + _data->blob.size(), _data->blob.displayPath());
+    base_type::open(_data->blob);
 }
 
 MemoryFileSystemInputStream::~MemoryFileSystemInputStream() {
@@ -23,7 +22,7 @@ MemoryFileSystemInputStream::~MemoryFileSystemInputStream() {
 
 void MemoryFileSystemInputStream::_close() {
     closeInternal();
-    InputStream::_close();
+    base_type::_close();
 }
 
 void MemoryFileSystemInputStream::closeInternal() {

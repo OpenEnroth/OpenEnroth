@@ -13,6 +13,8 @@
  * with the source blob, and thus no memory copying occurs.
  */
 class BlobInputStream : public InputStream {
+    using base_type = InputStream;
+
  public:
     BlobInputStream() = default;
     explicit BlobInputStream(Blob &&blob);
@@ -48,9 +50,6 @@ class BlobInputStream : public InputStream {
     * @return                          Remaining stream data as a shared subblob. No copying occurs.
     */
     [[nodiscard]] Blob readAllAsBlob();
-
- private:
-    [[nodiscard]] size_t bufferPosition() const;
 
  private:
     Blob _blob;

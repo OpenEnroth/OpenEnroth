@@ -13,39 +13,24 @@ size_t InputStream::readAll(std::string *dst, size_t maxSize) {
     assert(dst);
     dst->clear();
 
-    // Drain the buffer first.
-    size_t result = std::min(bufferRemaining(), maxSize);
-    dst->append(_pos, result);
-    _pos += result;
-
-    // Let the subclass read the rest.
-    return result + _readAll(dst, maxSize - result);
+    size_t result = std::min(_buffer.remaining(), maxSize);
+    _buffer.read(dst, result); // Drain the buffer first.
+    return result + _readAll(dst, maxSize - result); // Let the subclass read the rest.
 }
 
-InputStream::InputStream(const void *bufferStart, const void *bufferEnd, std::string_view displayPath) {
-    open(bufferStart, bufferEnd, displayPath);
+InputStream::InputStream(Buffer buffer, std::string_view displayPath) {
+    open(buffer, displayPath);
 }
 
-void InputStream::open(const void *bufferStart, const void *bufferEnd, std::string_view displayPath) {
-    assert(bufferEnd >= bufferStart);
-
-    _pos = static_cast<const char *>(bufferStart);
-    _end = static_cast<const char *>(bufferEnd);
+void InputStream::open(Buffer buffer, std::string_view displayPath) {
+    _buffer = buffer;
     _isOpen = true;
     _displayPath = displayPath;
 }
 
-void InputStream::open(std::string_view displayPath) {
-    _pos = nullptr;
-    _end = nullptr;
-    _isOpen = true;
-    _displayPath = displayPath;
-}
-
-size_t InputStream::_underflow(void *, size_t, const void **bufferStart, const void **bufferEnd) {
-    assert(bufferRemaining() == 0);
-    *bufferStart = nullptr;
-    *bufferEnd = nullptr;
+size_t InputStream::_underflow(void *, size_t, Buffer *buffer) {
+    assert(buffer->remaining() == 0);
+    buffer->reset(nullptr, nullptr, nullptr);
     return 0;
 }
 
@@ -59,33 +44,27 @@ void InputStream::_close() {
 }
 
 void InputStream::closeInternal() {
-    _pos = nullptr;
-    _end = nullptr;
+    _buffer.reset(nullptr, nullptr, nullptr);
     _isOpen = false;
     _displayPath = {};
 }
 
 size_t InputStream::readSlow(void *data, size_t size) {
     assert(data);
-    assert(size > bufferRemaining());
+    assert(size > _buffer.remaining());
 
-    size_t result = bufferRemaining();
-    memcpy(data, _pos, result);
-    _pos = _end;
+    size_t result = _buffer.read(data, _buffer.remaining());
 
-    result += _underflow(static_cast<char *>(data) + result, size - result,
-                         reinterpret_cast<const void **>(&_pos), reinterpret_cast<const void **>(&_end));
+    result += _underflow(static_cast<char *>(data) + result, size - result, &_buffer);
     return result;
 }
 
 size_t InputStream::skipSlow(size_t size) {
-    assert(size > bufferRemaining());
+    assert(size > _buffer.remaining());
 
-    size_t result = bufferRemaining();
-    _pos = _end;
+    size_t result = _buffer.skip(_buffer.remaining());
 
-    result += _underflow(nullptr, size - result,
-                         reinterpret_cast<const void **>(&_pos), reinterpret_cast<const void **>(&_end));
+    result += _underflow(nullptr, size - result, &_buffer);
     return result;
 }
 
@@ -95,27 +74,25 @@ size_t InputStream::readUntilSlow(char delimiter, std::string *dst, size_t maxSi
     size_t result = 0;
 
     // Consume remaining buffer content (delimiter was not found in it by the fast path).
-    size_t bytes = std::min(bufferRemaining(), maxSize);
-    dst->append(_pos, bytes);
-    _pos += bytes;
+    size_t bytes = std::min(_buffer.remaining(), maxSize);
+    _buffer.read(dst, bytes);
     result += bytes;
 
     // Refill from source and search.
     while (result < maxSize) {
-        _underflow(nullptr, 0, reinterpret_cast<const void **>(&_pos), reinterpret_cast<const void **>(&_end));
-        if (_pos == _end)
+        _underflow(nullptr, 0, &_buffer);
+        if (_buffer.remaining() == 0)
             break; // No more data.
 
-        size_t available = std::min(bufferRemaining(), maxSize - result);
-        if (const char *pos = static_cast<const char *>(memchr(_pos, delimiter, available))) {
-            size_t size = pos - _pos;
-            dst->append(_pos, size);
-            _pos = pos + 1;
+        size_t available = std::min(_buffer.remaining(), maxSize - result);
+        if (const char *p = static_cast<const char *>(memchr(_buffer.pos(), delimiter, available))) {
+            size_t size = p - _buffer.pos();
+            _buffer.read(dst, size);
+            _buffer.skip(1);
             return result + size + 1;
         }
 
-        dst->append(_pos, available);
-        _pos += available;
+        _buffer.read(dst, available);
         result += available;
     }
 

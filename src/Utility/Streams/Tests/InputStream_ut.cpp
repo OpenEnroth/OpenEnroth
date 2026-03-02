@@ -4,8 +4,6 @@
 
 #include "Utility/Streams/MemoryInputStream.h"
 
-// readAll
-
 UNIT_TEST(InputStream, ReadAll) {
     std::string largeString(10000, 'a');
     MemoryInputStream input(largeString.data(), largeString.size());
@@ -46,7 +44,60 @@ UNIT_TEST(InputStream, ReadAllEmpty) {
     EXPECT_EQ(result, "");
 }
 
-// readUntil on MemoryInputStream
+UNIT_TEST(InputStream, ReadOrFailThrowsOnShortRead) {
+    MemoryInputStream input("hi", 2);
+    char buf[10];
+    EXPECT_THROW_MESSAGE(input.readOrFail(buf, 10), "10");
+}
+
+UNIT_TEST(InputStream, ReadOrFailSucceeds) {
+    MemoryInputStream input("hello", 5);
+    char buf[5];
+    EXPECT_NO_THROW(input.readOrFail(buf, 5));
+    EXPECT_EQ(std::string_view(buf, 5), "hello");
+}
+
+UNIT_TEST(InputStream, SkipOrFailThrowsOnShortSkip) {
+    MemoryInputStream input("hi", 2);
+    EXPECT_THROW_MESSAGE(input.skipOrFail(10), "10");
+}
+
+UNIT_TEST(InputStream, SkipOrFailSucceeds) {
+    MemoryInputStream input("hello", 5);
+    EXPECT_NO_THROW(input.skipOrFail(5));
+    char buf;
+    EXPECT_EQ(input.read(&buf, 1), 0u); // Stream exhausted.
+}
+
+UNIT_TEST(InputStream, ReadZeroBytes) {
+    MemoryInputStream input("hello", 5);
+    EXPECT_EQ(input.read(nullptr, 0), 0u);
+    EXPECT_EQ(input.readAll(), "hello"); // Nothing consumed.
+}
+
+UNIT_TEST(InputStream, SkipZeroBytes) {
+    MemoryInputStream input("hello", 5);
+    EXPECT_EQ(input.skip(0), 0u);
+    EXPECT_EQ(input.readAll(), "hello"); // Nothing consumed.
+}
+
+UNIT_TEST(InputStream, CloseIdempotent) {
+    MemoryInputStream input("hello", 5);
+    input.close();
+    EXPECT_FALSE(input.isOpen());
+    EXPECT_NO_THROW(input.close()); // Double close is fine.
+    EXPECT_FALSE(input.isOpen());
+}
+
+UNIT_TEST(InputStream, ReopenAfterClose) {
+    MemoryInputStream input("hello", 5);
+    EXPECT_EQ(input.readAll(), "hello");
+    input.close();
+
+    input.open("world", 5);
+    EXPECT_TRUE(input.isOpen());
+    EXPECT_EQ(input.readAll(), "world");
+}
 
 UNIT_TEST(InputStream, ReadUntilDelimiterFound) {
     MemoryInputStream input("hello\0world", 11);

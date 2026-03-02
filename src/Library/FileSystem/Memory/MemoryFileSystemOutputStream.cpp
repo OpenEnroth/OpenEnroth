@@ -13,7 +13,7 @@ MemoryFileSystemOutputStream::MemoryFileSystemOutputStream(std::shared_ptr<Memor
     assert(_data->writerCount == 0);
 
     _data->writerCount++;
-    BlobOutputStream::open(&_data->blob, displayPath);
+    base_type::open(&_data->blob, displayPath);
 }
 
 MemoryFileSystemOutputStream::~MemoryFileSystemOutputStream() {
@@ -22,7 +22,7 @@ MemoryFileSystemOutputStream::~MemoryFileSystemOutputStream() {
 
 void MemoryFileSystemOutputStream::_close() {
     closeInternal();
-    BlobOutputStream::_close();
+    base_type::_close();
 }
 
 void MemoryFileSystemOutputStream::closeInternal() {

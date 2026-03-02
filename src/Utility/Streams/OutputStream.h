@@ -7,6 +7,7 @@
 #include <string_view>
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/Streams/StreamBuffer.h"
 
 /**
  * Base class for all data output streams.
@@ -18,6 +19,8 @@
  */
 class OutputStream {
  public:
+    using Buffer = StreamBuffer<char>;
+
     virtual ~OutputStream();
 
     /**
@@ -29,14 +32,17 @@ class OutputStream {
      */
     void write(const void *data, size_t size) {
         assert(isOpen());
+        assert(data || size == 0);
 
-        if (size <= bufferRemaining()) {
-            memcpy(_pos, data, size);
-            _pos += size;
+        if (size == 0)
+            return;
+
+        if (size <= _buffer.remaining()) {
+            _buffer.write(data, size);
             return;
         }
 
-        writeSlow(data, size);
+        _overflow(data, size, &_buffer);
     }
 
     /**
@@ -66,7 +72,7 @@ class OutputStream {
      */
     void flush() {
         assert(isOpen());
-        _flush();
+        _flush(&_buffer);
     }
 
     /**
@@ -97,46 +103,44 @@ class OutputStream {
     OutputStream() = default;
 
     /**
-     * Re-initializes the stream. The first write will trigger `_overflow()` to obtain the initial buffer.
-     *
-     * @param displayPath               Display path for error reporting.
-     */
-    void open(std::string_view displayPath = {});
-
-    /**
      * Re-initializes the stream with a pre-allocated buffer.
      *
-     * @param bufferStart               Pointer to the start of the write buffer.
-     * @param bufferEnd                 Pointer past the end of the write buffer.
+     * @param buffer                    Initial buffer state.
      * @param displayPath               Display path for error reporting.
      */
-    void open(void *bufferStart, void *bufferEnd, std::string_view displayPath = {});
-
-    [[nodiscard]] char *bufferPos() const { return _pos; }
-    [[nodiscard]] char *bufferEnd() const { return _end; }
-    [[nodiscard]] size_t bufferRemaining() const { return static_cast<size_t>(_end - _pos); }
+    void open(Buffer buffer, std::string_view displayPath = {});
 
     /**
-     * Called when the write buffer is full and there is more data to write. Flushes the full buffer, writes or
-     * buffers the provided data, and provides a new writable buffer via `bufferStart` and `bufferEnd`. Override in subclasses.
+     * @return                          Current buffer state.
+     */
+    [[nodiscard]] const Buffer &buffer() const { return _buffer; }
+
+    /**
+     * Called when a write doesn't fit in the current buffer. Implementations should handle the overflow data
+     * (write it out or store it), and provide a new writable buffer via the out parameter.
      *
      * @param data                      Pointer to the overflow data to write.
-     * @param size                      Size of the overflow data.
-     * @param[out] bufferStart          Set to the new buffer write position.
-     * @param[out] bufferEnd            Set to the new buffer end.
+     * @param size                      Size of the overflow data, always greater than `buffer->remaining()`.
+     * @param[in,out] buffer            Current buffer state on input. Set to the new buffer state on output. Data in
+     *                                  `[buffer->start, buffer->pos)` is treated as dirty (not yet flushed).
      * @throws Exception                On error.
      */
-    virtual void _overflow(const void *data, size_t size, void **bufferStart, void **bufferEnd) = 0;
+    virtual void _overflow(const void *data, size_t size, Buffer *buffer) = 0;
 
     /**
-     * Flushes the current buffer and propagates the flush downstream. Override in subclasses.
+     * Flushes buffered data to the underlying target. The region `[buffer->start, buffer->pos)` contains data
+     * that has been written but not yet flushed. Implementations must advance `buffer->start` to `buffer->pos`
+     * after flushing, and may also update `buffer->pos` and `buffer->end` if the buffer storage has moved.
      *
+     * @param[in,out] buffer            Current buffer state.
      * @throws Exception                On error.
      */
-    virtual void _flush() = 0;
+    virtual void _flush(Buffer *buffer) = 0;
 
     /**
-     * Flushes the current buffer and releases any held resources. Override in subclasses.
+     * Flushes any remaining buffered data and releases held resources. The region `[buffer().start, buffer().pos)`
+     * may contain unflushed data.
+     *
      * Derived implementations should call `OutputStream::_close()` at the end.
      *
      * @throws Exception                On error.
@@ -145,11 +149,9 @@ class OutputStream {
 
  private:
     void closeInternal();
-    void writeSlow(const void *data, size_t size);
 
  private:
-    char *_pos = nullptr;
-    char *_end = nullptr;
+    Buffer _buffer;
     bool _isOpen = false;
     std::string _displayPath;
 };

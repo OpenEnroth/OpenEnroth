@@ -14,6 +14,8 @@ struct MemoryFileData;
  * and manages writer counting on top.
  */
 class MemoryFileSystemOutputStream : public BlobOutputStream {
+    using base_type = BlobOutputStream;
+
  public:
     explicit MemoryFileSystemOutputStream(std::shared_ptr<MemoryFileData> data, std::string_view displayPath);
     ~MemoryFileSystemOutputStream();

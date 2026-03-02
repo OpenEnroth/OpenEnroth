@@ -11,6 +11,8 @@
  * Output stream that writes to a file.
  */
 class FileOutputStream : public OutputStream {
+    using base_type = OutputStream;
+
  public:
     static constexpr size_t DEFAULT_BUFFER_SIZE = 1024 * 1024;
 
@@ -41,11 +43,11 @@ class FileOutputStream : public OutputStream {
     }
 
  private:
-    virtual void _overflow(const void *data, size_t size, void **bufferStart, void **bufferEnd) override;
-    virtual void _flush() override;
+    virtual void _overflow(const void *data, size_t size, Buffer *buffer) override;
+    virtual void _flush(Buffer *buffer) override;
     virtual void _close() override;
 
-    void flushBuffer();
+    void writeBuffer(const Buffer &buffer);
     void closeInternal(bool canThrow);
 
  private:

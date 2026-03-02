@@ -41,3 +41,89 @@ UNIT_TEST(FileOutputStream, WriteZero) {
     FileInputStream in(tmpfile);
     EXPECT_EQ(in.readAll(), "");
 }
+
+UNIT_TEST(FileOutputStream, FlushMidStream) {
+    const char *tmpfile = "tmp_flush_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    out.write("hello");
+    out.flush();
+
+    {
+        FileInputStream in(tmpfile);
+        EXPECT_EQ(in.readAll(), "hello");
+    }
+
+    out.write(" world");
+    out.close();
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.readAll(), "hello world");
+}
+
+UNIT_TEST(FileOutputStream, LargeWriteBypassesBuffer) {
+    // Use a small buffer so that a large write goes through the direct-write path in _overflow.
+    const char *tmpfile = "tmp_largewrite_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile, 64);
+    std::string large(1024, 'x');
+    out.write(large.data(), large.size());
+    out.close();
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.readAll(), large);
+}
+
+UNIT_TEST(FileOutputStream, MixedSmallAndLargeWrites) {
+    const char *tmpfile = "tmp_mixed_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile, 64);
+
+    std::string expected;
+
+    out.write("hello");
+    expected += "hello";
+
+    std::string large(256, 'y');
+    out.write(large.data(), large.size());
+    expected += large;
+
+    out.write(" end");
+    expected += " end";
+
+    out.close();
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.readAll(), expected);
+}
+
+UNIT_TEST(FileOutputStream, CloseIdempotent) {
+    const char *tmpfile = "tmp_closeidem_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    out.write("hello");
+    out.close();
+    EXPECT_FALSE(out.isOpen());
+    EXPECT_NO_THROW(out.close()); // Double close is fine.
+    EXPECT_FALSE(out.isOpen());
+}
+
+UNIT_TEST(FileOutputStream, ReopenAfterClose) {
+    const char *tmpfile = "tmp_reopen_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    out.write("first");
+    out.close();
+
+    out.open(tmpfile);
+    out.write("second");
+    out.close();
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.readAll(), "second"); // File is overwritten, not appended.
+}

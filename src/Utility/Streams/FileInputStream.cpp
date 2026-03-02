@@ -37,12 +37,11 @@ void FileInputStream::open(std::string_view path, size_t bufferSize) {
         Exception::throwFromErrno(_path);
 
     _bufSize = bufferSize;
-
-    InputStream::open(_path);
+    base_type::open({}, _path);
 }
 
-size_t FileInputStream::_underflow(void *data, size_t size, const void **bufferStart, const void **bufferEnd) {
-    assert(bufferRemaining() == 0);
+size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
+    assert(buffer->remaining() == 0);
 
     if (!_buf)
         _buf = std::make_unique<char[]>(_bufSize);
@@ -52,82 +51,50 @@ size_t FileInputStream::_underflow(void *data, size_t size, const void **bufferS
         size_t bytesRead = fread(_buf.get(), 1, _bufSize, _file);
         if (bytesRead == 0 && !feof(_file))
             Exception::throwFromErrno(_path);
-        size_t toCopy = std::min(size, bytesRead);
-        if (data)
-            memcpy(data, _buf.get(), toCopy);
-        *bufferStart = _buf.get() + toCopy;
-        *bufferEnd = _buf.get() + bytesRead;
-        return toCopy;
+        buffer->reset(_buf.get(), _buf.get(), _buf.get() + bytesRead);
+        if (data) {
+            return buffer->read(data, std::min(size, bytesRead));
+        } else {
+            return buffer->skip(std::min(size, bytesRead));
+        }
     }
-
-    // Large read/skip: bypass the buffer.
-    *bufferStart = nullptr;
-    *bufferEnd = nullptr;
 
     if (data) {
         // Large read: direct fread.
-        size_t bytesRead = fread(data, 1, size, _file);
-        if (bytesRead == 0 && !feof(_file))
+        size_t result = fread(data, 1, size, _file);
+        if (result == 0 && !feof(_file))
             Exception::throwFromErrno(_path);
-        return bytesRead;
+        return result;
+    } else {
+        // Large skip: seek.
+        size_t result = std::min(size, fileRemaining());
+        if (result > 0 && fseeko(_file, result, SEEK_CUR) != 0)
+            Exception::throwFromErrno(_path);
+        return result;
     }
-
-    // Large skip: seek.
-    int64_t cur = ftello(_file);
-    if (cur == -1)
-        Exception::throwFromErrno(_path);
-
-    if (fseeko(_file, 0, SEEK_END) != 0)
-        Exception::throwFromErrno(_path);
-
-    int64_t fileEnd = ftello(_file);
-    if (fileEnd == -1)
-        Exception::throwFromErrno(_path);
-
-    int64_t newPos = std::min(cur + static_cast<int64_t>(size), fileEnd);
-    if (fseeko(_file, newPos, SEEK_SET) != 0)
-        Exception::throwFromErrno(_path);
-
-    return newPos - cur;
 }
 
 size_t FileInputStream::_readAll(std::string *dst, size_t maxSize) {
     assert(isOpen());
 
-    int64_t cur = ftello(_file);
-    if (cur == -1)
-        Exception::throwFromErrno(_path);
-
-    if (fseeko(_file, 0, SEEK_END) != 0)
-        Exception::throwFromErrno(_path);
-
-    int64_t fileEnd = ftello(_file);
-    if (fileEnd == -1)
-        Exception::throwFromErrno(_path);
-
-    size_t remaining = fileEnd - cur;
-    size_t toRead = std::min(remaining, maxSize);
-
-    if (fseeko(_file, cur, SEEK_SET) != 0)
-        Exception::throwFromErrno(_path);
-
-    if (toRead == 0)
+    size_t result = std::min(fileRemaining(), maxSize);
+    if (result == 0)
         return 0;
 
     size_t oldSize = dst->size();
-    dst->resize_and_overwrite(oldSize + toRead, [&](char *buf, size_t) {
-        if (fread(buf + oldSize, toRead, 1, _file) != 1)
+    dst->resize_and_overwrite(oldSize + result, [this, oldSize, result](char *buf, size_t n) {
+        if (fread(buf + oldSize, result, 1, _file) != 1)
             Exception::throwFromErrno(_path);
-        return oldSize + toRead;
+        return n;
     });
 
-    return toRead;
+    return result;
 }
 
 void FileInputStream::_close() {
     assert(isOpen());
     closeInternal(true);
-    InputStream::_close();
+    base_type::_close();
 }
 
 void FileInputStream::closeInternal(bool canThrow) {
@@ -142,4 +109,22 @@ void FileInputStream::closeInternal(bool canThrow) {
         Exception::throwFromErrno(_path);
     // TODO(captainurist): !canThrow => log OR attach
     _path = {};
+}
+
+size_t FileInputStream::fileRemaining() {
+    int64_t cur = ftello(_file);
+    if (cur == -1)
+        Exception::throwFromErrno(_path);
+
+    if (fseeko(_file, 0, SEEK_END) != 0)
+        Exception::throwFromErrno(_path);
+
+    int64_t fileEnd = ftello(_file);
+    if (fileEnd == -1)
+        Exception::throwFromErrno(_path);
+
+    if (fseeko(_file, cur, SEEK_SET) != 0)
+        Exception::throwFromErrno(_path);
+
+    return fileEnd - cur;
 }

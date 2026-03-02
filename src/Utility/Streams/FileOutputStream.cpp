@@ -31,63 +31,50 @@ void FileOutputStream::open(std::string_view path, size_t bufferSize) {
         Exception::throwFromErrno(_path);
 
     _bufSize = bufferSize;
-
-    OutputStream::open(_path);
+    base_type::open({}, _path);
 }
 
-void FileOutputStream::_overflow(const void *data, size_t size, void **bufferStart, void **bufferEnd) {
-    assert(bufferRemaining() == 0);
+void FileOutputStream::_overflow(const void *data, size_t size, Buffer *buffer) {
+    assert(size > buffer->remaining());
 
-    if (_buf) {
-        // Flush the full buffer.
-        if (fwrite(_buf.get(), _bufSize, 1, _file) != 1)
-            Exception::throwFromErrno(_path);
-    }
+    const char *src = static_cast<const char *>(data);
 
-    if (size >= _bufSize) {
-        // Large write: write directly.
-        if (fwrite(data, size, 1, _file) != 1)
-            Exception::throwFromErrno(_path);
-        *bufferStart = _buf.get();
-        *bufferEnd = _buf.get() + _bufSize;
-    } else {
-        // Small write: copy into buffer, provide the rest.
+    if (size < _bufSize) {
+        // Small write: fill current buffer, write it all out, put the tail into a fresh buffer.
+        size_t head = buffer->write(src, buffer->remaining());
+        writeBuffer(*buffer);
         if (!_buf)
             _buf = std::make_unique<char[]>(_bufSize);
-        memcpy(_buf.get(), data, size);
-        *bufferStart = _buf.get() + size;
-        *bufferEnd = _buf.get() + _bufSize;
+        buffer->reset(_buf.get(), _buf.get(), _buf.get() + _bufSize);
+        buffer->write(src + head, size - head);
+    } else {
+        // Large write: write out current buffer, then write data directly.
+        writeBuffer(*buffer);
+        if (fwrite(src, size, 1, _file) != 1)
+            Exception::throwFromErrno(_path);
+        if (_buf)
+            buffer->reset(_buf.get(), _buf.get(), _buf.get() + _bufSize);
     }
 }
 
-void FileOutputStream::_flush() {
-    flushBuffer();
-
+void FileOutputStream::_flush(Buffer *buffer) {
+    writeBuffer(*buffer);
     if (fflush(_file) != 0)
         Exception::throwFromErrno(_path);
+    buffer->chop();
 }
 
 void FileOutputStream::_close() {
-    if (!isOpen())
-        return;
-
-    flushBuffer();
+    assert(isOpen());
+    writeBuffer(buffer());
     closeInternal(true);
-    OutputStream::_close();
+    base_type::_close();
 }
 
-void FileOutputStream::flushBuffer() {
-    assert(isOpen());
-
-    if (!_buf)
-        return;
-
-    size_t usedBytes = _bufSize - bufferRemaining();
-    if (usedBytes == 0)
-        return;
-
-    if (fwrite(_buf.get(), usedBytes, 1, _file) != 1)
-        Exception::throwFromErrno(_path);
+void FileOutputStream::writeBuffer(const Buffer &buffer) {
+    if (size_t buffered = buffer.used())
+        if (fwrite(buffer.start(), buffered, 1, _file) != 1)
+            Exception::throwFromErrno(_path);
 }
 
 void FileOutputStream::closeInternal(bool canThrow) {

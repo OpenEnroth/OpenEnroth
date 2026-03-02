@@ -6,6 +6,8 @@
 #include <string>
 #include <algorithm>
 
+#include "Utility/Streams/StreamBuffer.h"
+
 /**
  * Base class for all data input streams.
  *
@@ -17,6 +19,8 @@
  */
 class InputStream {
  public:
+    using Buffer = StreamBuffer<const char>;
+
     virtual ~InputStream();
 
     /**
@@ -28,12 +32,13 @@ class InputStream {
      */
     [[nodiscard]] size_t read(void *data, size_t size) {
         assert(isOpen());
+        assert(data || size == 0);
 
-        if (size <= bufferRemaining()) {
-            memcpy(data, _pos, size);
-            _pos += size;
-            return size;
-        }
+        if (size == 0)
+            return 0;
+
+        if (size <= _buffer.remaining())
+            return _buffer.read(data, size);
 
         return readSlow(data, size);
     }
@@ -83,10 +88,8 @@ class InputStream {
     [[nodiscard]] size_t skip(size_t size) {
         assert(isOpen());
 
-        if (size <= bufferRemaining()) {
-            _pos += size;
-            return size;
-        }
+        if (size <= _buffer.remaining())
+            return _buffer.skip(size);
 
         return skipSlow(size);
     }
@@ -118,10 +121,10 @@ class InputStream {
         assert(dst);
         dst->clear();
 
-        if (const char *pos = static_cast<const char *>(memchr(_pos, delimiter, std::min(bufferRemaining(), maxSize)))) {
-            size_t size = pos - _pos;
-            dst->append(_pos, size);
-            _pos = pos + 1;
+        if (const char *p = static_cast<const char *>(memchr(_buffer.pos(), delimiter, std::min(_buffer.remaining(), maxSize)))) {
+            size_t size = p - _buffer.pos();
+            _buffer.read(dst, size);
+            _buffer.skip(1);
             return size + 1;
         }
 
@@ -171,57 +174,49 @@ class InputStream {
     InputStream() = default;
 
     /**
-     * Initializes the stream from a memory region.
+     * Initializes the stream with the given buffer.
      *
-     * @param bufferStart               Pointer to the start of the data to read from.
-     * @param bufferEnd                 Pointer past the end of the data to read from.
+     * @param buffer                    Initial buffer state.
      * @param displayPath               Display path for error reporting.
      */
-    InputStream(const void *bufferStart, const void *bufferEnd, std::string_view displayPath = {});
+    explicit InputStream(Buffer buffer, std::string_view displayPath = {});
 
     /**
-     * Re-initializes the stream from a memory region.
+     * Re-initializes the stream with the given buffer.
      *
-     * @param bufferStart               Pointer to the start of the data to read from.
-     * @param bufferEnd                 Pointer past the end of the data to read from.
+     * @param buffer                    Initial buffer state.
      * @param displayPath               Display path for error reporting.
      */
-    void open(const void *bufferStart, const void *bufferEnd, std::string_view displayPath = {});
+    void open(Buffer buffer, std::string_view displayPath = {});
 
     /**
-     * Re-initializes the stream with an empty buffer. Data will be fetched via `_underflow()` on demand.
-     *
-     * @param displayPath               Display path for error reporting.
+     * @return                          Current buffer state.
      */
-    void open(std::string_view displayPath);
-
-    [[nodiscard]] const char *bufferPos() const { return _pos; }
-    [[nodiscard]] const char *bufferEnd() const { return _end; }
-    [[nodiscard]] size_t bufferRemaining() const { return static_cast<size_t>(_end - _pos); }
+    [[nodiscard]] const Buffer &buffer() const { return _buffer; }
 
     /**
      * Fetches more data from the underlying source. Override in subclasses that perform I/O.
      *
-     * Operates in three modes depending on the arguments:
-     * - Read mode (`data != nullptr`): reads up to `size` bytes into `data`, either directly or via internal buffer.
-     * - Skip mode (`data == nullptr, size > 0`): skips up to `size` bytes.
-     * - Refill mode (`data == nullptr, size == 0`): fills the internal buffer for scanning (used by `readUntil`).
+     * Three modes of operation:
+     * - `size == 0`: just refills the buffer without consuming any data.
+     * - `data != nullptr`: reads `size` bytes into `data`.
+     * - `data == nullptr && size > 0`: skips `size` bytes.
      *
-     * In all modes, sets `*bufferStart` and `*bufferEnd` to the new buffer window (or both to `nullptr` if no
-     * buffered data remains).
+     * In all modes, sets `*buffer` to the new buffer state.
      *
      * @param[out] data                 Buffer to read into, or `nullptr` for skip/refill.
      * @param size                      Number of bytes to read or skip.
-     * @param[out] bufferStart          Set to the new buffer read position.
-     * @param[out] bufferEnd            Set to the new buffer end.
+     * @param[in,out] buffer            Current buffer state on input (always empty). Set to the new buffer state
+     *                                  on output.
      * @return                          Number of bytes read into `data` or skipped.
      * @throws Exception                On error.
      */
-    virtual size_t _underflow(void *data, size_t size, const void **bufferStart, const void **bufferEnd);
+    virtual size_t _underflow(void *data, size_t size, Buffer *buffer);
 
     /**
-     * Reads all remaining data from the underlying source, appending to the provided string. Called by `readAll()`
-     * after the buffer has been drained. Default returns 0. Override in subclasses that perform I/O.
+     * Reads remaining data from the underlying source, appending to the provided string. Called by `readAll()`
+     * after consuming up to `maxSize` bytes from the buffer. Default returns 0. Override in subclasses that
+     * perform I/O.
      *
      * @param[out] dst                  String to append the data to.
      * @param maxSize                   Maximal number of bytes to read.
@@ -247,8 +242,7 @@ class InputStream {
     [[noreturn]] static void throwSkipError(size_t requested, size_t actual);
 
  private:
-    const char *_pos = nullptr;
-    const char *_end = nullptr;
+    Buffer _buffer;
     bool _isOpen = false;
     std::string _displayPath;
 };

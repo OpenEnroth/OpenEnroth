@@ -42,6 +42,7 @@ set(UTILITY_HEADERS
         Streams/InputStream.h
         Streams/MemoryInputStream.h
         Streams/OutputStream.h
+        Streams/StreamBuffer.h
         Streams/StringOutputStream.h
         String/Ascii.h
         String/Encoding.h
