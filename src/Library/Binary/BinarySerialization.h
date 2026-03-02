@@ -1,8 +1,7 @@
 #pragma once
 
-#include "ContainerSerialization.h"
+#include "CommonSerialization.h"
 #include "BlobSerialization.h"
-#include "MemCopySerialization.h"
 #include "BinaryConcepts.h"
 
 namespace detail {

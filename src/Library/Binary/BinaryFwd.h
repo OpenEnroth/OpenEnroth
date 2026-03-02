@@ -1,14 +1,6 @@
 #pragma once
 
-#include <string>
-#include <typeinfo>
 #include <type_traits>
-
-#include "Utility/Streams/OutputStream.h"
-#include "Utility/Streams/InputStream.h"
-
-#include "BinaryExceptions.h"
-#include "BinaryTags.h"
 
 /**
  * Type trait that's used by the binary serialization framework to check if a type can be binary-serialized with a
@@ -36,21 +28,3 @@ constexpr bool is_memcopy_serializable_v = is_memcopy_serializable<T>::value;
 #define MM_DECLARE_MEMCOPY_SERIALIZABLE(T)                                                                              \
 template<>                                                                                                              \
 struct is_memcopy_serializable<T> : std::true_type {};
-
-
-template<class T> requires is_memcopy_serializable_v<T>
-void serialize(const T &src, OutputStream *dst) {
-    dst->write(&src, sizeof(T));
-}
-
-template<class T> requires is_memcopy_serializable_v<T>
-void deserialize(InputStream &src, T *dst) {
-    size_t bytes = src.read(dst, sizeof(T));
-    if (bytes != sizeof(T))
-        throwBinarySerializationNoMoreDataError(bytes, sizeof(T), typeid(T).name());
-}
-
-// TODO(captainurist): doesn't belong to this header.
-inline void deserialize(InputStream &src, std::string *dst, NullTerminatedTag) {
-    *dst = src.readUntil('\0');
-}

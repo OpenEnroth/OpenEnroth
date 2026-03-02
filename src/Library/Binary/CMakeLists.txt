@@ -9,8 +9,7 @@ set(LIBRARY_BINARY_HEADERS
         BinarySerialization.h
         BinaryTags.h
         BlobSerialization.h
-        ContainerSerialization.h
-        MemCopySerialization.h)
+        CommonSerialization.h)
 
 add_library(library_binary STATIC ${LIBRARY_BINARY_SOURCES} ${LIBRARY_BINARY_HEADERS})
 target_link_libraries(library_binary PUBLIC utility)

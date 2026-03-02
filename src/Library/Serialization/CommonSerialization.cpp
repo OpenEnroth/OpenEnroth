@@ -1,9 +1,9 @@
-#include "StandardSerialization.h"
-
-#include <fast_float/fast_float.h>
+#include "CommonSerialization.h"
 
 #include <string>
 #include <charconv>
+
+#include <fast_float/fast_float.h> // NOLINT: not a C system header.
 
 #include "Utility/String/Format.h"
 
