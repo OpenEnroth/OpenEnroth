@@ -4,6 +4,7 @@
 #include <span>
 #include <array>
 #include <typeinfo>
+#include <string>
 
 #include "BinaryFwd.h"
 #include "BinaryTags.h"

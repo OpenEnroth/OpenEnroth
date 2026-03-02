@@ -8,7 +8,7 @@
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
-#include "Library/Binary/ContainerSerialization.h"
+#include "Library/Binary/CommonSerialization.h"
 #include "Utility/Streams/BlobInputStream.h"
 
 namespace wav {
