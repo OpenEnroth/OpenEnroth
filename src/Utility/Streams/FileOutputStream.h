@@ -7,6 +7,8 @@
 
 #include "OutputStream.h"
 
+// TODO(captainurist): just use raw file io, not FILE*
+
 /**
  * Output stream that writes to a file.
  */

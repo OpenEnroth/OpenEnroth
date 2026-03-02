@@ -7,6 +7,8 @@
 
 #include "InputStream.h"
 
+// TODO(captainurist): just use raw file io, not FILE*
+
 /**
  * Input stream that reads from a file.
  */
