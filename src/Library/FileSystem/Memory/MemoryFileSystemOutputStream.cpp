@@ -17,17 +17,14 @@ MemoryFileSystemOutputStream::MemoryFileSystemOutputStream(std::shared_ptr<Memor
 }
 
 MemoryFileSystemOutputStream::~MemoryFileSystemOutputStream() {
-    closeInternal();
+    // Must close here because members are destroyed before the base class destructor runs, and the base class
+    // destructor flushes buffered data into `_data->blob`. Without this call `_data` would be dead by then.
+    close();
 }
 
 void MemoryFileSystemOutputStream::_close() {
-    closeInternal();
+    // Must call base_type::_close() before releasing `_data` — it flushes buffered data into `_data->blob`.
     base_type::_close();
-}
-
-void MemoryFileSystemOutputStream::closeInternal() {
-    if (!_data)
-        return;
     _data->writerCount--;
     _data.reset();
 }

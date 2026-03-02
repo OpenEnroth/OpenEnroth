@@ -154,9 +154,8 @@ class InputStream {
      * @throws Exception                On error.
      */
     void close() {
-        if (!isOpen())
-            return;
-        _close();
+        if (isOpen())
+            _close();
     }
 
     /**

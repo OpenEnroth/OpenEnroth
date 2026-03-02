@@ -22,7 +22,6 @@ class MemoryFileSystemOutputStream : public BlobOutputStream {
 
  private:
     virtual void _close() override;
-    void closeInternal();
 
  private:
     std::shared_ptr<MemoryFileData> _data;
