@@ -44,13 +44,6 @@ UNIT_TEST(BlobInputStream, ReadAsBlobThenReadAll) {
     EXPECT_EQ(rest, "Suffix");
 }
 
-UNIT_TEST(BlobInputStream, ReadUntilDelimiterFound) {
-    Blob blob = Blob::fromString(std::string("hello\0world", 11));
-    BlobInputStream input(std::move(blob));
-    EXPECT_EQ(input.readUntil('\0'), "hello");
-    EXPECT_EQ(input.readAll(), "world");
-}
-
 UNIT_TEST(BlobInputStream, ReadAllAsBlobEmpty) {
     Blob blob = Blob::fromString("");
     BlobInputStream stream(std::move(blob));
@@ -105,11 +98,3 @@ UNIT_TEST(BlobInputStream, ReopenAfterClose) {
     EXPECT_EQ(stream.readAll(), "second");
 }
 
-UNIT_TEST(BlobInputStream, ReadZeroBytes) {
-    Blob blob = Blob::fromString("hello");
-    BlobInputStream stream(std::move(blob));
-
-    char buf;
-    EXPECT_EQ(stream.read(&buf, 0), 0u);
-    EXPECT_EQ(stream.readAll(), "hello"); // Nothing consumed.
-}

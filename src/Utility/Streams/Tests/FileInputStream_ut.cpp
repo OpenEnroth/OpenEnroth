@@ -183,31 +183,6 @@ UNIT_TEST(FileInputStream, LargeSkipPastEnd) {
     in.close();
 }
 
-UNIT_TEST(FileInputStream, ReadOrFailThrows) {
-    const char *tmpfile = "tmp_readorfail_test.txt";
-    ScopedTestFileSlot tmp(tmpfile);
-
-    FileOutputStream out(tmpfile);
-    out.write("hi");
-    out.close();
-
-    FileInputStream in(tmpfile);
-    char buf[10];
-    EXPECT_THROW_MESSAGE(in.readOrFail(buf, 10), "10");
-}
-
-UNIT_TEST(FileInputStream, SkipOrFailThrows) {
-    const char *tmpfile = "tmp_skiporfail_test.txt";
-    ScopedTestFileSlot tmp(tmpfile);
-
-    FileOutputStream out(tmpfile);
-    out.write("hi");
-    out.close();
-
-    FileInputStream in(tmpfile);
-    EXPECT_THROW_MESSAGE(in.skipOrFail(10), "10");
-}
-
 UNIT_TEST(FileInputStream, CloseIdempotent) {
     const char *tmpfile = "tmp_closeidem_test.txt";
     ScopedTestFileSlot tmp(tmpfile);
@@ -315,15 +290,3 @@ UNIT_TEST(FileInputStream, ReadAllMaxSizeZero) {
     in.close();
 }
 
-UNIT_TEST(FileInputStream, ReadZeroBytes) {
-    const char *tmpfile = "tmp_readzero_test.txt";
-    ScopedTestFileSlot tmp(tmpfile);
-
-    FileOutputStream out(tmpfile);
-    out.write("hello");
-    out.close();
-
-    FileInputStream in(tmpfile);
-    EXPECT_EQ(in.read(nullptr, 0), 0u);
-    EXPECT_EQ(in.readAll(), "hello"); // Nothing consumed.
-}

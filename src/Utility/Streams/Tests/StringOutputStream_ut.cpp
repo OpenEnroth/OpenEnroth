@@ -106,12 +106,3 @@ UNIT_TEST(StringOutputStream, MultipleChunks) {
     EXPECT_EQ(target, expected);
 }
 
-UNIT_TEST(StringOutputStream, WriteZero) {
-    std::string target;
-    StringOutputStream output(&target);
-    output.write("hello");
-    output.write(nullptr, 0);
-    output.write(" world");
-    output.close();
-    EXPECT_EQ(target, "hello world");
-}

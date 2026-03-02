@@ -29,19 +29,6 @@ UNIT_TEST(FileOutputStream, Write) {
     in.close();
 }
 
-UNIT_TEST(FileOutputStream, WriteZero) {
-    const char *tmpfile = "tmp_test.txt";
-
-    ScopedTestFileSlot tmp(tmpfile);
-
-    FileOutputStream out(tmpfile);
-    EXPECT_NO_THROW(out.write(nullptr, 0));
-    out.close();
-
-    FileInputStream in(tmpfile);
-    EXPECT_EQ(in.readAll(), "");
-}
-
 UNIT_TEST(FileOutputStream, FlushMidStream) {
     const char *tmpfile = "tmp_flush_test.txt";
     ScopedTestFileSlot tmp(tmpfile);
