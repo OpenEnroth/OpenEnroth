@@ -12,6 +12,8 @@ struct PresizedTag {
 
 struct AppendTag {};
 
+struct NullTerminatedTag {};
+
 template<class T>
 class ContextTag {
  public:
@@ -60,6 +62,12 @@ constexpr PresizedTag presized(size_t size) {
  * contents, but using this tag lets you accumulate the results of several `deserialize` calls instead.
  */
 constexpr AppendTag append;
+
+/**
+ * Deserialization tag that instructs the binary serialization framework to read a null-terminated string from
+ * the stream.
+ */
+constexpr NullTerminatedTag nullTerminated;
 
 /**
  * This tag is mainly for the users who want to pass additional context into their serialization routines.
