@@ -5,32 +5,26 @@ This document describes the development process we're following. It's required r
 
 ## Dependencies
 
-Main dependencies:
-* [SDL3](https://github.com/libsdl-org/SDL) — cross-platform media framework;
-* [FFmpeg](https://github.com/FFmpeg/FFmpeg) — video support;
-* [OpenAL Soft](https://github.com/kcat/openal-soft) — audio support;
-* [Zlib](https://github.com/madler/zlib) — compression.
-
-By default, we are using prebuilt dependencies, and they are resolved automatically during the cmake phase.
-
-Additional dependencies:
+The project requires:
 * [CMake 3.27+](https://cmake.org/download/).
 * [Python 3.x](https://www.python.org/downloads/) (optional, for style checks).
 
+By default, we are using prebuilt dependencies, and they are resolved automatically during the cmake phase.
+
 Minimum required compiler versions are as follows:
 * Visual Studio 2022;
-* GCC 13;
-* AppleClang 15 or Clang 15.
+* GCC 14;
+* AppleClang 16 (Xcode 16.3).
 
 The following IDEs have been tested and should work fine:
 * Visual Studio (2022 or later);
 * Visual Studio Code (2022 or later);
-* CLion (2022 or later).
+* CLion (2025 or later).
 
 
 ## Building on \*nix platforms
 
-This project uses the [CMake](https://cmake.org) build system.  Use the following commands to clone the repository and build OpenEnroth:
+This project uses the [CMake](https://cmake.org) build system. Use the following commands to clone the repository and build OpenEnroth:
 
 ```
 $ git clone --recurse-submodules --shallow-submodules https://github.com/OpenEnroth/OpenEnroth.git
@@ -43,14 +37,18 @@ To cross-compile for 32-bit x86, you can pass `-m32` via compiler flags to cmake
 
 You can also select platform dependent [generator](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html) for your favorite IDE.
 
-### Additional Notes for MacOS
-* Make sure you have the latest Xcode installed. Do this through the App Store or by downloading it from the [Apple Developer website](https://developer.apple.com/download/more/).
+
+## Building on MacOS
+
+Everything written above for \*nix platforms applies.
+
+Make sure you have the latest Xcode installed. Do this through the App Store or by downloading it from the [Apple Developer website](https://developer.apple.com/download/more/).
 
 
 ## Building on Windows
 
 * Get git (`https://git-scm.com/download/win`) and Visual Studio 2022.
-* Make sure you have Windows SDK v10.0.20348.0 or higher.
+* Make sure you have Windows SDK v10.0.17134.0 or higher (required for UTF-8 locale support).
 * Clone, fork or download the repo `https://github.com/OpenEnroth/OpenEnroth`.
 * Setup CMake:
   * either install standalone cmake from the official website,
@@ -62,8 +60,7 @@ You can also select platform dependent [generator](https://cmake.org/cmake/help/
 
 If you wish you can also disable prebuilt dependencies by turning off `OE_USE_PREBUILT_DEPENDENCIES` cmake option and pass your own dependencies source, e.g. via [vcpkg](https://github.com/microsoft/vcpkg) integration.
 
-__Be aware__ that Visual Studio has a bug with git submodules not syncing between branches.
-So when checking out the branch or switching to different branch you may need to run the following command manually: `git submodule update --init`
+__Be aware__ that Visual Studio has a bug with git submodules not syncing between branches. So when checking out the branch or switching to different branch you may need to run the following command manually: `git submodule update --init`
 
 
 ## Coding style
@@ -104,7 +101,7 @@ Language features:
   * In general, you shouldn't bother optimizing code paths where you might save an allocation by moving in an `std::string` or passing it by const reference, the performance benefits are almost always negligible.
   * Use `TransparentString*` classes if you need to index into a string map using `std::string_view` keys.
   * However, feel free to use `std::string` or `const std::string &` parameters where it makes your code simpler (e.g. by avoiding jumping through hoops if you'll need to create an intermediate `std::string` object anyway).
-  * C++ is notoriously bad when it comes to string concatenation (you can't concatenate `std::string_view` with a string literal using `operator+`, and never will). In most cases you should be fine just using `fmt::format` for this. If `fmt::format` looks like an overkill, use `join` from `Utility/String/Transformations.h`.
+  * C++ is notoriously bad when it comes to string concatenation (you can't concatenate `std::string_view` with a string literal using `operator+`, and never will). In most cases you should be fine just using `fmt::format` for this. If `fmt::format` looks like an overkill, use `join` from `Utility/String/Join.h`.
 * We generally refrain from using namespaces because OpenEnroth is a relatively small codebase, and we don't need the measures advocated by the Google style guide to prevent name clashes.
   * We don't put user-facing classes into namespaces because it ultimately leads to code where you have `ns1::Context` and `ns2::Context`, and when coupled with a bit of `using` here and there this makes the code harder to read and reason about. Please spend some time coming up with good names for your classes instead.
   * We sometimes use namespaces to group related functions, e.g. see `namespace lod`.
@@ -140,7 +137,7 @@ Our basic guidelines for code organization are:
 We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infrastructure to test game logic and small isolated classes.
 
 Tests in OpenEnroth fall into two categories:
-* Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in `src/Utility/Tests`.
+* Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in `src/Utility/Streams/Tests`.
 * Game tests. If you're familiar with how testing is done these days for complex mobile apps, then you can consider game tests a variation of UI tests that's specific to our project. Game tests need game assets to run.
 
 Game tests work by instrumenting the engine, and then running test code in between the game frames. This code usually sends events to the engine (e.g. mouse clicks), which are then processed by the engine in the next frame, but it can do pretty much anything else – all of engine's data is accessible and writable from inside the game test.
@@ -210,7 +207,7 @@ Currently, the console is only available while in-game.
 
 ## Additional Resources
 
-Old event decompiler and IDB files can be found [here](https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0). Feel free to ping `zipi#6029` on Discord for more info.
+Old event decompiler and IDB files can be found [here](https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0). Feel free to ping `zipi6616` on Discord for more info.
 
 
 ## Support
