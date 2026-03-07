@@ -98,3 +98,50 @@ UNIT_TEST(BlobInputStream, ReopenAfterClose) {
     EXPECT_EQ(stream.readAll(), "second");
 }
 
+UNIT_TEST(BlobInputStream, SizeMatchesBlobSize) {
+    Blob blob = Blob::fromString("hello world");
+    BlobInputStream stream(std::move(blob));
+    EXPECT_EQ(stream.size(), 11u);
+}
+
+UNIT_TEST(BlobInputStream, PositionStartsAtZero) {
+    Blob blob = Blob::fromString("hello");
+    BlobInputStream stream(std::move(blob));
+    EXPECT_EQ(stream.position(), 0u);
+}
+
+UNIT_TEST(BlobInputStream, PositionAdvancesOnRead) {
+    Blob blob = Blob::fromString("hello world");
+    BlobInputStream stream(std::move(blob));
+
+    Blob hello = stream.readAsBlob(5);
+    EXPECT_EQ(stream.position(), 5u);
+
+    char buf[3];
+    stream.readOrFail(buf, 3);
+    EXPECT_EQ(stream.position(), 8u);
+}
+
+UNIT_TEST(BlobInputStream, PositionAfterReadAllAsBlob) {
+    Blob blob = Blob::fromString("data");
+    BlobInputStream stream(std::move(blob));
+
+    (void) stream.readAllAsBlob();
+    EXPECT_EQ(stream.position(), 4u);
+    EXPECT_EQ(stream.position(), stream.size());
+}
+
+UNIT_TEST(BlobInputStream, PositionResetsOnReopen) {
+    Blob blob1 = Blob::fromString("first");
+    Blob blob2 = Blob::fromString("second!");
+
+    BlobInputStream stream(std::move(blob1));
+    (void) stream.skip(3);
+    EXPECT_EQ(stream.position(), 3u);
+
+    stream.close();
+    stream.open(std::move(blob2));
+    EXPECT_EQ(stream.position(), 0u);
+    EXPECT_EQ(stream.size(), 7u);
+}
+

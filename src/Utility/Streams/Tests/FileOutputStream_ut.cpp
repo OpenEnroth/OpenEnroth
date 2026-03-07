@@ -114,3 +114,62 @@ UNIT_TEST(FileOutputStream, ReopenAfterClose) {
     FileInputStream in(tmpfile);
     EXPECT_EQ(in.readAll(), "second"); // File is overwritten, not appended.
 }
+
+UNIT_TEST(FileOutputStream, PositionStartsAtZero) {
+    const char *tmpfile = "tmp_pos_start_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    EXPECT_EQ(out.position(), 0u);
+    out.close();
+}
+
+UNIT_TEST(FileOutputStream, PositionAdvancesOnWrite) {
+    const char *tmpfile = "tmp_pos_write_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    out.write("hello");
+    EXPECT_EQ(out.position(), 5u);
+    out.write(" world");
+    EXPECT_EQ(out.position(), 11u);
+    out.close();
+}
+
+UNIT_TEST(FileOutputStream, PositionAfterFlush) {
+    const char *tmpfile = "tmp_pos_flush_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    out.write("hello");
+    out.flush();
+    EXPECT_EQ(out.position(), 5u);
+    out.write(" world");
+    EXPECT_EQ(out.position(), 11u);
+    out.close();
+}
+
+UNIT_TEST(FileOutputStream, PositionAfterLargeWrite) {
+    const char *tmpfile = "tmp_pos_large_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile, 64);
+    std::string large(1024, 'x');
+    out.write(large);
+    EXPECT_EQ(out.position(), 1024u);
+    out.close();
+}
+
+UNIT_TEST(FileOutputStream, PositionResetsOnReopen) {
+    const char *tmpfile = "tmp_pos_reopen_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    out.write("hello");
+    EXPECT_EQ(out.position(), 5u);
+    out.close();
+
+    out.open(tmpfile);
+    EXPECT_EQ(out.position(), 0u);
+    out.close();
+}

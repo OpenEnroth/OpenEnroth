@@ -34,8 +34,6 @@ class MemoryInputStream : public InputStream {
      */
     void open(const void *data, size_t size, std::string_view displayPath = {}) {
         const char *start = static_cast<const char *>(data);
-        Buffer buffer;
-        buffer.reset(start, start, start + size);
-        base_type::open(buffer, displayPath);
+        base_type::open(Buffer(start, start, start + size), size, displayPath);
     }
 };

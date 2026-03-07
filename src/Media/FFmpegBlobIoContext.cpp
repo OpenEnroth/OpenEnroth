@@ -1,7 +1,6 @@
 #include "FFmpegBlobIoContext.h"
 
 #include <algorithm>
-#include <cstring>
 #include <cassert>
 #include <utility>
 
@@ -13,11 +12,9 @@ extern "C" {
 
 int ffRead(void *opaque, uint8_t *buf, int size) {
     FFmpegBlobIoContext *ctx = static_cast<FFmpegBlobIoContext *>(opaque);
-    size_t bytes = std::min(static_cast<size_t>(size), ctx->_blob.size() - ctx->_pos);
+    size_t bytes = ctx->_stream.read(buf, static_cast<size_t>(size));
     if (bytes == 0)
         return AVERROR_EOF;
-    memcpy(buf, static_cast<const char *>(ctx->_blob.data()) + ctx->_pos, bytes);
-    ctx->_pos += bytes;
     return bytes;
 }
 
@@ -27,23 +24,28 @@ int64_t ffSeek(void *opaque, int64_t offset, int whence) {
     if (whence & AVSEEK_SIZE)
         return ctx->_blob.size();
 
+    size_t pos = ctx->_stream.position();
+
     whence &= ~AVSEEK_FORCE;
     switch (whence) {
     case SEEK_SET:
-        ctx->_pos = std::clamp<size_t>(offset, 0, ctx->_blob.size());
+        pos = std::clamp<size_t>(offset, 0, ctx->_blob.size());
         break;
     case SEEK_CUR:
-        ctx->_pos = std::clamp<size_t>(ctx->_pos + offset, 0, ctx->_blob.size());
+        pos = std::clamp<size_t>(pos + offset, 0, ctx->_blob.size());
         break;
     case SEEK_END:
-        ctx->_pos = std::clamp<size_t>(ctx->_blob.size() + offset, 0, ctx->_blob.size());
+        pos = std::clamp<size_t>(ctx->_blob.size() + offset, 0, ctx->_blob.size());
         break;
     default:
         assert(false);
         return AVERROR(EIO);
     }
 
-    return ctx->_pos;
+    // Reopen stream and skip to the new position.
+    ctx->_stream.close();
+    ctx->_stream.open(ctx->_blob);
+    return ctx->_stream.skip(pos);
 }
 
 FFmpegBlobIoContext::FFmpegBlobIoContext(Blob blob) {
@@ -57,7 +59,7 @@ FFmpegBlobIoContext::~FFmpegBlobIoContext() {
 void FFmpegBlobIoContext::reset(Blob blob) {
     destroyAvioContext();
     _blob = std::move(blob);
-    _pos = 0;
+    _stream.open(_blob);
     createAvioContext();
 }
 
@@ -73,4 +75,5 @@ void FFmpegBlobIoContext::destroyAvioContext() {
     av_free(_ctx->buffer);
     av_free(_ctx);
     _ctx = nullptr;
+    _stream.close();
 }

@@ -10,7 +10,6 @@ set(UTILITY_SOURCES
         Streams/FileOutputStream.cpp
         Streams/InputStream.cpp
         Streams/OutputStream.cpp
-        Streams/StringOutputStream.cpp
         String/Ascii.cpp
         String/Encoding.cpp
         String/Split.cpp
@@ -41,7 +40,6 @@ set(UTILITY_HEADERS
         Streams/MemoryInputStream.h
         Streams/OutputStream.h
         Streams/StreamBuffer.h
-        Streams/StringOutputStream.h
         String/Ascii.h
         String/Encoding.h
         String/Join.h
@@ -75,7 +73,6 @@ if(OE_BUILD_TESTS)
             Memory/Tests/Blob_ut.cpp
             Streams/Tests/BlobInputStream_ut.cpp
             Streams/Tests/BlobOutputStream_ut.cpp
-            Streams/Tests/StringOutputStream_ut.cpp
             Streams/Tests/FileOutputStream_ut.cpp
             Streams/Tests/FileInputStream_ut.cpp
             Streams/Tests/InputStream_ut.cpp

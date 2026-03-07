@@ -27,17 +27,26 @@ void FileInputStream::open(std::string_view path, size_t bufferSize) {
     assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
     assert(bufferSize > 0);
 
-    _path = absolute(std::filesystem::path(path)).generic_string();
-    _file = fopen(_path.c_str(), "rb");
+    std::string absolutePath = absolute(std::filesystem::path(path)).generic_string();
+    _file = fopen(absolutePath.c_str(), "rb");
     if (!_file)
-        Exception::throwFromErrno(_path);
+        Exception::throwFromErrno(absolutePath);
 
     // Disable libc buffering, we manage our own buffer.
     if (setvbuf(_file, nullptr, _IONBF, 0) != 0)
-        Exception::throwFromErrno(_path);
+        Exception::throwFromErrno(absolutePath);
+
+    // Compute file size at open time.
+    if (fseeko(_file, 0, SEEK_END) != 0)
+        Exception::throwFromErrno(absolutePath);
+    int64_t fileEnd = ftello(_file);
+    if (fileEnd == -1)
+        Exception::throwFromErrno(absolutePath);
+    if (fseeko(_file, 0, SEEK_SET) != 0)
+        Exception::throwFromErrno(absolutePath);
 
     _bufSize = bufferSize;
-    base_type::open({}, _path);
+    base_type::open({}, fileEnd, absolutePath);
 }
 
 size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
@@ -50,45 +59,26 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
         // Small read/skip/refill: fill the internal buffer.
         size_t bytesRead = fread(_buf.get(), 1, _bufSize, _file);
         if (bytesRead == 0 && !feof(_file))
-            Exception::throwFromErrno(_path);
+            Exception::throwFromErrno(displayPath());
         buffer->reset(_buf.get(), _buf.get(), _buf.get() + bytesRead);
         if (data) {
             return buffer->read(data, std::min(size, bytesRead));
         } else {
             return buffer->skip(std::min(size, bytesRead));
         }
-    }
-
-    if (data) {
+    } else if (data) {
         // Large read: direct fread.
-        size_t result = fread(data, 1, size, _file);
-        if (result == 0 && !feof(_file))
-            Exception::throwFromErrno(_path);
-        return result;
+        size_t bytesRead = fread(data, 1, size, _file);
+        if (bytesRead == 0 && !feof(_file))
+            Exception::throwFromErrno(displayPath());
+        return bytesRead;
     } else {
         // Large skip: seek.
-        size_t result = std::min(size, fileRemaining());
-        if (result > 0 && fseeko(_file, result, SEEK_CUR) != 0)
-            Exception::throwFromErrno(_path);
-        return result;
+        size_t bytesToSkip = std::min(size, this->size() - position());
+        if (bytesToSkip > 0 && fseeko(_file, bytesToSkip, SEEK_CUR) != 0)
+            Exception::throwFromErrno(displayPath());
+        return bytesToSkip;
     }
-}
-
-size_t FileInputStream::_readAll(std::string *dst, size_t maxSize) {
-    assert(isOpen());
-
-    size_t result = std::min(fileRemaining(), maxSize);
-    if (result == 0)
-        return 0;
-
-    size_t oldSize = dst->size();
-    dst->resize_and_overwrite(oldSize + result, [this, oldSize, result](char *buf, size_t n) {
-        if (fread(buf + oldSize, result, 1, _file) != 1)
-            Exception::throwFromErrno(_path);
-        return n;
-    });
-
-    return result;
 }
 
 void FileInputStream::_close() {
@@ -106,25 +96,6 @@ void FileInputStream::closeInternal(bool canThrow) {
     _buf.reset();
     _bufSize = 0;
     if (status != 0 && canThrow)
-        Exception::throwFromErrno(_path);
+        Exception::throwFromErrno(displayPath());
     // TODO(captainurist): !canThrow => log OR attach
-    _path = {};
-}
-
-size_t FileInputStream::fileRemaining() {
-    int64_t cur = ftello(_file);
-    if (cur == -1)
-        Exception::throwFromErrno(_path);
-
-    if (fseeko(_file, 0, SEEK_END) != 0)
-        Exception::throwFromErrno(_path);
-
-    int64_t fileEnd = ftello(_file);
-    if (fileEnd == -1)
-        Exception::throwFromErrno(_path);
-
-    if (fseeko(_file, cur, SEEK_SET) != 0)
-        Exception::throwFromErrno(_path);
-
-    return fileEnd - cur;
 }

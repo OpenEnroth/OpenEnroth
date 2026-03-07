@@ -40,7 +40,7 @@ class BlobInputStream : public InputStream {
      *
      * @param size                      Number of bytes to read.
      * @return                          Subblob of the blob that this stream is reading from.
-     * @throw Exception                 If there is not enough data in the stream.
+     * @throws Exception                If there is not enough data in the stream.
      */
     [[nodiscard]] Blob readAsBlobOrFail(size_t size);
 

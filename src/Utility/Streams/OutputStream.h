@@ -42,7 +42,7 @@ class OutputStream {
             return;
         }
 
-        _overflow(data, size, &_buffer);
+        overflow(data, size);
     }
 
     /**
@@ -72,7 +72,9 @@ class OutputStream {
      */
     void flush() {
         assert(isOpen());
+        size_t pos = position();
         _flush(&_buffer);
+        _bufferBase = pos - _buffer.used();
     }
 
     /**
@@ -85,13 +87,23 @@ class OutputStream {
     void close() {
         if (!isOpen())
             return;
-        _close();
+        _close(&_buffer);
     }
 
     /**
      * @return                          Whether this stream is open.
      */
     [[nodiscard]] bool isOpen() const { return _isOpen; }
+
+    /**
+     * @return                          Current position in the stream, in bytes from the beginning.
+     */
+    [[nodiscard]] size_t position() const { return _bufferBase + _buffer.used(); }
+
+    /**
+     * @return                          Same as `position()`, added for API symmetry with `InputStream`.
+     */
+    [[nodiscard]] size_t size() const { return position(); }
 
     /**
      * @return                          Path to the file or resource being written, to be used for debugging and error
@@ -108,12 +120,7 @@ class OutputStream {
      * @param buffer                    Initial buffer state.
      * @param displayPath               Display path for error reporting.
      */
-    void open(Buffer buffer, std::string_view displayPath = {});
-
-    /**
-     * @return                          Current buffer state.
-     */
-    [[nodiscard]] const Buffer &buffer() const { return _buffer; }
+    void open(Buffer buffer, std::string_view displayPath);
 
     /**
      * Called when a write doesn't fit in the current buffer. Implementations should handle the overflow data
@@ -128,9 +135,7 @@ class OutputStream {
     virtual void _overflow(const void *data, size_t size, Buffer *buffer) = 0;
 
     /**
-     * Flushes buffered data to the underlying target. The region `[buffer->start, buffer->pos)` contains data
-     * that has been written but not yet flushed. Implementations must advance `buffer->start` to `buffer->pos`
-     * after flushing, and may also update `buffer->pos` and `buffer->end` if the buffer storage has moved.
+     * Flushes buffered data to the underlying target.
      *
      * @param[in,out] buffer            Current buffer state.
      * @throws Exception                On error.
@@ -138,20 +143,21 @@ class OutputStream {
     virtual void _flush(Buffer *buffer) = 0;
 
     /**
-     * Flushes any remaining buffered data and releases held resources. The region `[buffer().start, buffer().pos)`
-     * may contain unflushed data.
+     * Flushes any remaining buffered data and releases held resources.
      *
      * Derived implementations should call `OutputStream::_close()` at the end.
      *
+     * @param[in,out] buffer            Current buffer state.
      * @throws Exception                On error.
      */
-    virtual void _close() = 0;
+    virtual void _close(Buffer *buffer) = 0;
 
  private:
-    void closeInternal();
+    void overflow(const void *data, size_t size);
 
  private:
     Buffer _buffer;
+    size_t _bufferBase = 0;
     bool _isOpen = false;
     std::string _displayPath;
 };

@@ -123,3 +123,52 @@ UNIT_TEST(BlobOutputStream, WriteZero) {
     output.close();
     EXPECT_EQ(blob.str(), "hello world");
 }
+
+UNIT_TEST(BlobOutputStream, PositionStartsAtZero) {
+    Blob blob;
+    BlobOutputStream output(&blob);
+    EXPECT_EQ(output.position(), 0u);
+    output.close();
+}
+
+UNIT_TEST(BlobOutputStream, PositionAdvancesOnWrite) {
+    Blob blob;
+    BlobOutputStream output(&blob);
+    output.write("hello");
+    EXPECT_EQ(output.position(), 5u);
+    output.write(" world");
+    EXPECT_EQ(output.position(), 11u);
+    output.close();
+}
+
+UNIT_TEST(BlobOutputStream, PositionAfterFlush) {
+    Blob blob;
+    BlobOutputStream output(&blob);
+    output.write("hello");
+    output.flush();
+    EXPECT_EQ(output.position(), 5u);
+    output.write(" world");
+    EXPECT_EQ(output.position(), 11u);
+    output.close();
+}
+
+UNIT_TEST(BlobOutputStream, PositionAfterLargeWrite) {
+    Blob blob;
+    BlobOutputStream output(&blob);
+    std::string large(8192, 'x');
+    output.write(large);
+    EXPECT_EQ(output.position(), 8192u);
+    output.close();
+}
+
+UNIT_TEST(BlobOutputStream, PositionResetsOnReopen) {
+    Blob blob;
+    BlobOutputStream output(&blob);
+    output.write("hello");
+    EXPECT_EQ(output.position(), 5u);
+    output.close();
+
+    output.open(&blob);
+    EXPECT_EQ(output.position(), 0u);
+    output.close();
+}

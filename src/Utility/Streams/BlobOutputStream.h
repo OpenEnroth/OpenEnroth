@@ -4,11 +4,10 @@
 #include <memory>
 #include <string>
 #include <string_view>
-#include <vector>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/Memory/FreeDeleter.h"
 
+#include "ChunkBuffer.h"
 #include "OutputStream.h"
 
 /**
@@ -29,7 +28,8 @@ class BlobOutputStream : public OutputStream {
      * @param displayPath               Display path for error reporting.
      */
     explicit BlobOutputStream(Blob *target, std::string_view displayPath = {});
-    ~BlobOutputStream();
+
+    virtual ~BlobOutputStream();
 
     /**
      * Opens the stream for writing into the given blob.
@@ -42,18 +42,13 @@ class BlobOutputStream : public OutputStream {
  protected:
     virtual void _overflow(const void *data, size_t size, Buffer *buffer) override;
     virtual void _flush(Buffer *buffer) override;
-    virtual void _close() override;
+    virtual void _close(Buffer *buffer) override;
 
  private:
-    void closeInternal();
     Blob materialize();
+    void closeInternal();
 
  private:
-    struct Chunk {
-        std::unique_ptr<char, FreeDeleter> data;
-        size_t size = 0;
-    };
-
     Blob *_target = nullptr;
-    std::vector<Chunk> _chunks;
+    ChunkBuffer _chunks;
 };

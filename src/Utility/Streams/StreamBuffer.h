@@ -16,11 +16,15 @@
  *
  * @tparam T                            `char` for writable buffers, `const char` for read-only buffers.
  */
-template<class T>
+template<class T> requires (std::is_same_v<std::remove_const_t<T>, char>)
 class StreamBuffer {
  public:
     StreamBuffer() {
         reset(nullptr, nullptr, nullptr);
+    }
+
+    StreamBuffer(T *start, T *pos, T *end) {
+        reset(start, pos, end);
     }
 
     void reset(T *newStart, T *newPos, T *newEnd) {
@@ -43,7 +47,7 @@ class StreamBuffer {
     [[nodiscard]] size_t used() const { return static_cast<size_t>(_pos - _start); }
     [[nodiscard]] size_t remaining() const { return static_cast<size_t>(_end - _pos); }
 
-    void chop() {
+    void commit() {
         _start = _pos;
     }
 

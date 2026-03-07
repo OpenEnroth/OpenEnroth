@@ -138,6 +138,11 @@ void deserialize(InputStream &src, Dst *dst, const Tags &... tags) {
     uint32_t size;
     deserialize(src, &size);
 
+    // TODO(captainurist): can we do this better?
+    // Best-effort check - number of records required can't be larger than the number of bytes in the stream.
+    if (size > src.size() - src.position())
+        throwBinarySerializationNoMoreDataError(src.size() - src.position(), size, typeid(typename Dst::value_type).name());
+
     dst->resize(size);
     std::span span(dst->data(), dst->size());
     deserialize(src, &span, tags...);

@@ -22,9 +22,9 @@ MemoryFileSystemOutputStream::~MemoryFileSystemOutputStream() {
     close();
 }
 
-void MemoryFileSystemOutputStream::_close() {
+void MemoryFileSystemOutputStream::_close(Buffer *buffer) {
     // Must call base_type::_close() before releasing `_data` — it flushes buffered data into `_data->blob`.
-    base_type::_close();
+    base_type::_close(buffer);
     _data->writerCount--;
     _data.reset();
 }

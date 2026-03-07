@@ -276,8 +276,21 @@ UNIT_TEST(FileInputStream, ReadAllEmpty) {
     in.close();
 }
 
-UNIT_TEST(FileInputStream, ReadAllMaxSizeZero) {
-    const char *tmpfile = "tmp_readall_maxsize0_test.txt";
+UNIT_TEST(FileInputStream, SizeMatchesFileSize) {
+    const char *tmpfile = "tmp_size_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    out.write("hello world!");
+    out.close();
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.size(), 12u);
+    in.close();
+}
+
+UNIT_TEST(FileInputStream, PositionStartsAtZero) {
+    const char *tmpfile = "tmp_pos_start_test.txt";
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -285,8 +298,85 @@ UNIT_TEST(FileInputStream, ReadAllMaxSizeZero) {
     out.close();
 
     FileInputStream in(tmpfile);
-    EXPECT_EQ(in.readAll(size_t{0}), "");
-    EXPECT_EQ(in.readAll(), "hello"); // Nothing consumed.
+    EXPECT_EQ(in.position(), 0u);
+    in.close();
+}
+
+UNIT_TEST(FileInputStream, PositionAdvancesOnRead) {
+    const char *tmpfile = "tmp_pos_read_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    out.write("hello world");
+    out.close();
+
+    FileInputStream in(tmpfile);
+    char buf[5];
+    in.readOrFail(buf, 5);
+    EXPECT_EQ(in.position(), 5u);
+    in.close();
+}
+
+UNIT_TEST(FileInputStream, PositionAdvancesOnSkip) {
+    const char *tmpfile = "tmp_pos_skip_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    std::string data(2000, 'x');
+    FileOutputStream out(tmpfile);
+    out.write(data);
+    out.close();
+
+    // Use small buffer to test both buffered and seeked skips.
+    FileInputStream in(tmpfile, 128);
+
+    (void) in.skip(50);
+    EXPECT_EQ(in.position(), 50u);
+
+    (void) in.skip(200); // Large skip via seek.
+    EXPECT_EQ(in.position(), 250u);
+
+    EXPECT_EQ(in.readAll(), data.substr(250));
+    EXPECT_EQ(in.position(), in.size());
+    in.close();
+}
+
+UNIT_TEST(FileInputStream, PositionAfterReadAll) {
+    const char *tmpfile = "tmp_pos_readall_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile);
+    out.write("hello");
+    out.close();
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.readAll(), "hello");
+    EXPECT_EQ(in.position(), 5u);
+    EXPECT_EQ(in.position(), in.size());
+    in.close();
+}
+
+UNIT_TEST(FileInputStream, PositionResetsOnReopen) {
+    const char *tmpfile1 = "tmp_pos_reopen1_test.txt";
+    const char *tmpfile2 = "tmp_pos_reopen2_test.txt";
+    ScopedTestFileSlot tmp1(tmpfile1);
+    ScopedTestFileSlot tmp2(tmpfile2);
+
+    FileOutputStream out1(tmpfile1);
+    out1.write("first");
+    out1.close();
+
+    FileOutputStream out2(tmpfile2);
+    out2.write("second!");
+    out2.close();
+
+    FileInputStream in(tmpfile1);
+    (void) in.skip(3);
+    EXPECT_EQ(in.position(), 3u);
+    in.close();
+
+    in.open(tmpfile2);
+    EXPECT_EQ(in.position(), 0u);
+    EXPECT_EQ(in.size(), 7u);
     in.close();
 }
 

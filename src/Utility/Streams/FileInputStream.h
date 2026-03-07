@@ -2,7 +2,6 @@
 
 #include <cstdio>
 #include <memory>
-#include <string>
 #include <string_view>
 
 #include "InputStream.h"
@@ -26,7 +25,7 @@ class FileInputStream : public InputStream {
      * @throws Exception                On error.
      */
     explicit FileInputStream(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
-    ~FileInputStream();
+    virtual ~FileInputStream();
 
     /**
      * Opens a file for reading.
@@ -37,23 +36,13 @@ class FileInputStream : public InputStream {
      */
     void open(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
 
-    /**
-     * @return                          The underlying file handle.
-     */
-    [[nodiscard]] FILE *handle() {
-        return _file;
-    }
-
  private:
     virtual size_t _underflow(void *data, size_t size, Buffer *buffer) override;
-    virtual size_t _readAll(std::string *dst, size_t maxSize) override;
     virtual void _close() override;
 
     void closeInternal(bool canThrow);
-    size_t fileRemaining();
 
  private:
-    std::string _path;
     FILE *_file = nullptr;
     std::unique_ptr<char[]> _buf;
     size_t _bufSize = 0;

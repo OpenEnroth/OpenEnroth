@@ -2,7 +2,6 @@
 
 #include <cstdio>
 #include <memory>
-#include <string>
 #include <string_view>
 
 #include "OutputStream.h"
@@ -26,7 +25,7 @@ class FileOutputStream : public OutputStream {
      * @throws Exception                On error.
      */
     explicit FileOutputStream(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
-    ~FileOutputStream();
+    virtual ~FileOutputStream();
 
     /**
      * Opens a file for writing.
@@ -37,23 +36,15 @@ class FileOutputStream : public OutputStream {
      */
     void open(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
 
-    /**
-     * @return                          The underlying file handle.
-     */
-    [[nodiscard]] FILE *handle() {
-        return _file;
-    }
-
  private:
     virtual void _overflow(const void *data, size_t size, Buffer *buffer) override;
     virtual void _flush(Buffer *buffer) override;
-    virtual void _close() override;
+    virtual void _close(Buffer *buffer) override;
 
     void writeBuffer(const Buffer &buffer);
     void closeInternal(bool canThrow);
 
  private:
-    std::string _path;
     FILE *_file = nullptr;
     std::unique_ptr<char[]> _buf;
     size_t _bufSize = 0;
