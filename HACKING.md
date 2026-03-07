@@ -72,7 +72,7 @@ To perform a style check before pushing anything you can build `check_style` tar
 We also follow some additional style preferences, as listed below.
 
 Documentation:
-* Documentation should be in doxydoc format with `@` used for tags, and starting with `/**` comment introducer.
+* Documentation should be in doxydoc format with `@` used for tags, and starting with `/**` comment introducer. Use `@param[out]` for output parameters.
 * Documentation should be written in English.
 * Please leave original function offsets intact. If you have a chance, move them to doxygen comments using `@offset` doxygen tag (e.g. `@offset 0xCAFEBEEF`).
 
@@ -90,8 +90,12 @@ Naming:
 
 Code formatting:
 * `*` and `&` in type declarations should be preceded by a space. So it's `char *string`, and not `char* string`.
+* Sort method definitions in `.cpp` files in the same order as they appear in the `.h` file.
+* In header files, use an additional `private:` label before listing all class fields at the end of the class declaration.
+* Use `virtual` prefix for all virtual functions, even when `override` is also present.
 
 Language features:
+* We use C++23. Prefer modern alternatives where appropriate, e.g. `contains()` instead of `find() != end()`.
 * Use `using Alias = Type` instead of `typedef Type Alias`.
 * Use `enum class`es followed by `using enum` statements instead of ordinary `enum`s. This provides type safety without changing the syntax. For flags, use `Flags` class.
 * It's OK to use plain `enum`s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using `enum` values to index into some array, consider using `enum class` coupled with `IndexedArray`.
