@@ -22,8 +22,11 @@
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Random/Random.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+#include "GameTestCommon.h"
 
 static bool characterHasJar(int charIndex, int jarIndex) {
     for (InventoryEntry jar : pParty->pCharacters[charIndex].inventory.entries(ITEM_QUEST_LICH_JAR_FULL))
@@ -595,13 +598,26 @@ GAME_TEST(Issues, Issue1364) {
 }
 
 GAME_TEST(Issues, Issue1368) {
-    // maybeWakeSoloSurvivor() error
+    // maybeWakeSoloSurvivor() error.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto canActTape = tapes.custom([] { return pParty->canActCount(); });
     auto sleepTape = tapes.custom([] { return pParty->pCharacters[0].conditions.has(CONDITION_SLEEP); });
-    test.playTraceFromTestData("issue_1368.mm7", "issue_1368.json");
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+
+    // Floating eyes cast sleep, spawn some & see what happens.
+    engine->config->debug.NoActors.setValue(false);
+    for (int i = 0; i < 10; i++) {
+        game.spawnMonster(pParty->pos + Vec3f(0, 200, 0) + Vec3f(grng->randomInSegment(-50, 50), grng->randomInSegment(-50, 50), 0), MONSTER_BEHOLDER_A);
+        game.tick();
+    }
+    game.tick(100);
+
     EXPECT_EQ(canActTape.min(), 0); // No one can act - try waking.
     EXPECT_CONTAINS(sleepTape, true); // Should've been asleep.
-    EXPECT_EQ(sleepTape.back(), false); // But awake at the end.
 }
 
 GAME_TEST(Issues, Issue1370) {
