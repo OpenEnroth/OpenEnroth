@@ -298,8 +298,8 @@ MonsterSupertype supertypeForMonsterType(MonsterType monsterType) {
     case MONSTER_TYPE_ELF_SPEARMAN:
         return MONSTER_SUPERTYPE_ELF;
 
-    // TODO(captainurist): should also include mega-dragon?
     case MONSTER_TYPE_DRAGON:
+    case MONSTER_TYPE_ULTRA_DRAGON: // OE addition: In vanilla "Dragon Slaying" items didn't do x2 damage vs Mega dragon.
         return MONSTER_SUPERTYPE_DRAGON;
 
     // TODO(captainurist): This needs some reworking it seems. Water elemental supertype is about water walking,
