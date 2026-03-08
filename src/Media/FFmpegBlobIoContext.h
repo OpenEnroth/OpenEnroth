@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/Streams/BlobInputStream.h"
 
 struct AVIOContext;
 
@@ -28,6 +29,6 @@ class FFmpegBlobIoContext {
     void destroyAvioContext();
 
     Blob _blob;
-    size_t _pos = 0;
+    BlobInputStream _stream;
     AVIOContext *_ctx = nullptr;
 };

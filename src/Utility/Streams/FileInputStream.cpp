@@ -2,7 +2,8 @@
 
 #include <cassert>
 #include <cstdio>
-#include <algorithm> // For std::min.
+#include <algorithm>
+#include <memory>
 #include <string>
 #include <filesystem>
 
@@ -14,84 +15,76 @@
 #   define fseeko _fseeki64
 #endif
 
-FileInputStream::FileInputStream(std::string_view path) {
-    open(path);
+FileInputStream::FileInputStream(std::string_view path, size_t bufferSize) {
+    open(path, bufferSize);
 }
 
 FileInputStream::~FileInputStream() {
     closeInternal(false);
 }
 
-void FileInputStream::open(std::string_view path) {
+void FileInputStream::open(std::string_view path, size_t bufferSize) {
     assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
+    assert(bufferSize > 0);
 
-    _path = absolute(std::filesystem::path(path)).generic_string();
-    _file = fopen(_path.c_str(), "rb");
+    std::string absolutePath = absolute(std::filesystem::path(path)).generic_string();
+    _file = fopen(absolutePath.c_str(), "rb");
     if (!_file)
-        Exception::throwFromErrno(_path);
+        Exception::throwFromErrno(absolutePath);
+
+    // Disable libc buffering, we manage our own buffer.
+    if (setvbuf(_file, nullptr, _IONBF, 0) != 0)
+        Exception::throwFromErrno(absolutePath);
+
+    // Compute file size at open time.
+    if (fseeko(_file, 0, SEEK_END) != 0)
+        Exception::throwFromErrno(absolutePath);
+    int64_t fileEnd = ftello(_file);
+    if (fileEnd == -1)
+        Exception::throwFromErrno(absolutePath);
+    if (fseeko(_file, 0, SEEK_SET) != 0)
+        Exception::throwFromErrno(absolutePath);
+
+    _bufSize = bufferSize;
+    base_type::open({}, fileEnd, absolutePath);
 }
 
-size_t FileInputStream::read(void *data, size_t size) {
-    assert(isOpen()); // Reading from a closed stream is UB.
+size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
+    assert(buffer->remaining() == 0);
 
-    size_t result = fread(data, 1, size, _file);
-    if (result == size)
-        return result;
+    if (!_buf)
+        _buf = std::make_unique<char[]>(_bufSize);
 
-    if (feof(_file))
-        return result;
-
-    Exception::throwFromErrno(_path);
-}
-
-size_t FileInputStream::skip(size_t size) {
-    assert(isOpen());
-
-    if (size < 1024) {
-        char buf[1024];
-        return read(buf, size);
+    if (size < _bufSize) {
+        // Small read/skip/refill: fill the internal buffer.
+        size_t bytesRead = fread(_buf.get(), 1, _bufSize, _file);
+        if (bytesRead == 0 && !feof(_file))
+            Exception::throwFromErrno(displayPath());
+        buffer->reset(_buf.get(), _buf.get(), _buf.get() + bytesRead);
+        if (data) {
+            return buffer->read(data, std::min(size, bytesRead));
+        } else {
+            return buffer->skip(std::min(size, bytesRead));
+        }
+    } else if (data) {
+        // Large read: direct fread.
+        size_t bytesRead = fread(data, 1, size, _file);
+        if (bytesRead == 0 && !feof(_file))
+            Exception::throwFromErrno(displayPath());
+        return bytesRead;
+    } else {
+        // Large skip: seek.
+        size_t bytesToSkip = std::min(size, this->size() - position());
+        if (bytesToSkip > 0 && fseeko(_file, bytesToSkip, SEEK_CUR) != 0)
+            Exception::throwFromErrno(displayPath());
+        return bytesToSkip;
     }
-
-    int64_t pos = ftello(_file);
-    if (pos == -1)
-        Exception::throwFromErrno(_path);
-
-    if (fseeko(_file, 0, SEEK_END) != 0)
-        Exception::throwFromErrno(_path);
-
-    int64_t end = ftello(_file);
-    if (end == -1)
-        Exception::throwFromErrno(_path);
-
-    int64_t newPos = std::min(pos + static_cast<int64_t>(size), end);
-    if (fseeko(_file, newPos, SEEK_SET) != 0)
-        Exception::throwFromErrno(_path);
-
-    return newPos - pos;
 }
 
-void FileInputStream::close() {
-    closeInternal(true);
-}
-
-std::string FileInputStream::displayPath() const {
-    return _path;
-}
-
-void FileInputStream::seek(size_t pos) {
+void FileInputStream::_close() {
     assert(isOpen());
-
-    if (fseeko(_file, 0, SEEK_END) != 0)
-        Exception::throwFromErrno(_path);
-
-    int64_t end = ftello(_file);
-    if (end == -1)
-        Exception::throwFromErrno(_path);
-
-    pos = std::clamp<size_t>(pos, 0, end); // Seek beyond EOF just seeks to EOF.
-
-    if (fseeko(_file, pos, SEEK_SET) != 0)
-        Exception::throwFromErrno(_path);
+    closeInternal(true);
+    base_type::_close();
 }
 
 void FileInputStream::closeInternal(bool canThrow) {
@@ -100,8 +93,9 @@ void FileInputStream::closeInternal(bool canThrow) {
 
     int status = fclose(_file);
     _file = nullptr;
+    _buf.reset();
+    _bufSize = 0;
     if (status != 0 && canThrow)
-        Exception::throwFromErrno(_path);
+        Exception::throwFromErrno(displayPath());
     // TODO(captainurist): !canThrow => log OR attach
-    _path = {};
 }

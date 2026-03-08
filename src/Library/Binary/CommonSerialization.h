@@ -3,10 +3,16 @@
 #include <cassert>
 #include <span>
 #include <array>
+#include <typeinfo>
+#include <string>
 
-#include "MemCopySerialization.h"
+#include "BinaryFwd.h"
 #include "BinaryTags.h"
 #include "BinaryConcepts.h"
+#include "BinaryExceptions.h"
+
+#include "Utility/Streams/InputStream.h"
+#include "Utility/Streams/OutputStream.h"
 
 namespace detail {
 template<class Container>
@@ -33,6 +39,23 @@ struct AppendWrapper {
     size_t _initialSize = 0;
 };
 } // namespace detail
+
+
+//
+// Serialization for memcopy-able types.
+//
+
+template<class T> requires is_memcopy_serializable_v<T>
+void serialize(const T &src, OutputStream *dst) {
+    dst->write(&src, sizeof(T));
+}
+
+template<class T> requires is_memcopy_serializable_v<T>
+void deserialize(InputStream &src, T *dst) {
+    size_t bytes = src.read(dst, sizeof(T));
+    if (bytes != sizeof(T))
+        throwBinarySerializationNoMoreDataError(bytes, sizeof(T), typeid(T).name());
+}
 
 
 //
@@ -115,6 +138,11 @@ void deserialize(InputStream &src, Dst *dst, const Tags &... tags) {
     uint32_t size;
     deserialize(src, &size);
 
+    // TODO(captainurist): can we do this better?
+    // Best-effort check - number of records required can't be larger than the number of bytes in the stream.
+    if (size > src.size() - src.position())
+        throwBinarySerializationNoMoreDataError(src.size() - src.position(), size, typeid(typename Dst::value_type).name());
+
     dst->resize(size);
     std::span span(dst->data(), dst->size());
     deserialize(src, &span, tags...);
@@ -138,3 +166,11 @@ void deserialize(InputStream &src, Dst *dst, AppendTag, const Tags &... tags) {
     deserialize(src, &wrapper, tags...);
 }
 
+
+//
+// Serialization for null-terminated strings.
+//
+
+inline void deserialize(InputStream &src, std::string *dst, NullTerminatedTag) {
+    *dst = src.readUntil('\0');
+}

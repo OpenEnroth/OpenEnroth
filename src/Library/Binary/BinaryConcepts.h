@@ -2,6 +2,9 @@
 
 #include <concepts>
 #include <type_traits>
+#include <span>
+
+#include "BinaryFwd.h"
 
 /**
  * Type trait for greedy tags. Greedy tags should be processed before any source/destination conversions. Examples

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <array>
 
-#include "Library/Binary/MemCopySerialization.h"
+#include "Library/Binary/BinaryFwd.h"
 
 struct LodFontHeader;
 struct LodFontMetrics;

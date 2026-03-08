@@ -9,7 +9,7 @@
 
 #include "LodFormatSnapshots.h"
 
-#include "Library/Binary/ContainerSerialization.h"
+#include "Library/Binary/CommonSerialization.h"
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Compression/Compression.h"
 #include "Library/Serialization/EnumSerialization.h"
@@ -18,7 +18,6 @@
 #include "Utility/Streams/MemoryInputStream.h"
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/Memory/Blob.h"
-#include "Utility/String/Ascii.h"
 #include "Utility/Exception.h"
 #include "Utility/Lambda.h"
 

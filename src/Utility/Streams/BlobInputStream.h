@@ -13,6 +13,8 @@
  * with the source blob, and thus no memory copying occurs.
  */
 class BlobInputStream : public InputStream {
+    using base_type = InputStream;
+
  public:
     BlobInputStream() = default;
     explicit BlobInputStream(Blob &&blob);
@@ -20,15 +22,6 @@ class BlobInputStream : public InputStream {
 
     void open(Blob &&blob);
     void open(const Blob &blob);
-
-    virtual size_t read(void *data, size_t size) override;
-    virtual size_t skip(size_t size) override;
-    virtual void close() override;
-    [[nodiscard]] virtual std::string displayPath() const override;
-
-    void seek(size_t pos);
-    [[nodiscard]] size_t position() const;
-    [[nodiscard]] size_t size() const;
 
     /**
      * Same as `read`, but returns the data as a blob that's shared with the blob that this stream is reading from.
@@ -47,7 +40,7 @@ class BlobInputStream : public InputStream {
      *
      * @param size                      Number of bytes to read.
      * @return                          Subblob of the blob that this stream is reading from.
-     * @throw Exception                 If there is not enough data in the stream.
+     * @throws Exception                If there is not enough data in the stream.
      */
     [[nodiscard]] Blob readAsBlobOrFail(size_t size);
 
@@ -56,13 +49,8 @@ class BlobInputStream : public InputStream {
     *
     * @return                          Remaining stream data as a shared subblob. No copying occurs.
     */
-    [[nodiscard]] Blob readAllAsBlob() const;
-
- private:
-    [[nodiscard]] size_t remaining() const;
+    [[nodiscard]] Blob readAllAsBlob();
 
  private:
     Blob _blob;
-    const char *_pos = nullptr;
-    const char *_end = nullptr;
 };

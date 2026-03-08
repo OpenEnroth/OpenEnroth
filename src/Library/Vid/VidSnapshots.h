@@ -4,7 +4,7 @@
 #include <array>
 #include <string>
 
-#include "Library/Binary/MemCopySerialization.h"
+#include "Library/Binary/BinaryFwd.h"
 
 //
 // Runtime structs.

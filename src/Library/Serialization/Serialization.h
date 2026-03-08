@@ -4,7 +4,7 @@
 #include <string_view>
 
 #include "SerializationFwd.h"
-#include "StandardSerialization.h"
+#include "CommonSerialization.h"
 
 namespace detail {
 

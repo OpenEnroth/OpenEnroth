@@ -1,37 +1,51 @@
 #pragma once
 
 #include <cstdio>
-#include <string>
+#include <memory>
 #include <string_view>
 
 #include "OutputStream.h"
 
+// TODO(captainurist): just use raw file io, not FILE*
+
+/**
+ * Output stream that writes to a file.
+ */
 class FileOutputStream : public OutputStream {
+    using base_type = OutputStream;
+
  public:
+    static constexpr size_t DEFAULT_BUFFER_SIZE = 1024 * 1024;
+
     FileOutputStream() = default;
-    explicit FileOutputStream(std::string_view path);
+
+    /**
+     * @param path                      Path to the file to open.
+     * @param bufferSize                Size of the internal write buffer.
+     * @throws Exception                On error.
+     */
+    explicit FileOutputStream(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
     virtual ~FileOutputStream();
 
-    void open(std::string_view path);
-
-    [[nodiscard]] bool isOpen() const {
-        return _file != nullptr;
-    }
-
-    virtual void write(const void *data, size_t size) override;
-    using OutputStream::write;
-    virtual void flush() override;
-    virtual void close() override;
-    [[nodiscard]] virtual std::string displayPath() const override;
-
-    [[nodiscard]] FILE *handle() {
-        return _file;
-    }
+    /**
+     * Opens a file for writing.
+     *
+     * @param path                      Path to the file to open.
+     * @param bufferSize                Size of the internal write buffer.
+     * @throws Exception                On error.
+     */
+    void open(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
 
  private:
+    virtual void _overflow(const void *data, size_t size, Buffer *buffer) override;
+    virtual void _flush(Buffer *buffer) override;
+    virtual void _close(Buffer *buffer) override;
+
+    void writeBuffer(const Buffer &buffer);
     void closeInternal(bool canThrow);
 
  private:
-    std::string _path;
     FILE *_file = nullptr;
+    std::unique_ptr<char[]> _buf;
+    size_t _bufSize = 0;
 };

@@ -8,28 +8,26 @@
 
 namespace detail {
 
-MemoryFileSystemInputStream::MemoryFileSystemInputStream(std::shared_ptr<MemoryFileData> data) {
-    assert(data);
-    assert(data->writerCount == 0);
+MemoryFileSystemInputStream::MemoryFileSystemInputStream(std::shared_ptr<MemoryFileData> data) : _data(std::move(data)) {
+    assert(_data);
+    assert(_data->writerCount == 0);
 
-    _data = std::move(data);
     _data->readerCount++;
-    open(_data->blob);
+    base_type::open(_data->blob);
 }
 
 MemoryFileSystemInputStream::~MemoryFileSystemInputStream() {
     closeInternal();
 }
 
-void MemoryFileSystemInputStream::close() {
-    BlobInputStream::close();
+void MemoryFileSystemInputStream::_close() {
     closeInternal();
+    base_type::_close();
 }
 
 void MemoryFileSystemInputStream::closeInternal() {
     if (!_data)
         return;
-
     _data->readerCount--;
     _data.reset();
 }

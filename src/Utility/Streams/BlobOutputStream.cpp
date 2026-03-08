@@ -1,8 +1,11 @@
 #include "BlobOutputStream.h"
 
 #include <cassert>
-#include <string>
+#include <cstdlib>
+#include <memory>
 #include <utility>
+
+#include "Utility/Memory/FreeDeleter.h"
 
 BlobOutputStream::BlobOutputStream(Blob *target, std::string_view displayPath) {
     open(target, displayPath);
@@ -14,40 +17,49 @@ BlobOutputStream::~BlobOutputStream() {
 
 void BlobOutputStream::open(Blob *target, std::string_view displayPath) {
     assert(target);
-
-    closeInternal();
-
     _target = target;
-    _displayPath = displayPath;
+    _chunks.reset();
+    base_type::open({}, displayPath);
 }
 
-void BlobOutputStream::write(const void *data, size_t size) {
-    assert(_target);
-
-    _buffer.append(static_cast<const char *>(data), size);
+void BlobOutputStream::_overflow(const void *data, size_t size, Buffer *buffer) {
+    size_t head = buffer->write(data, buffer->remaining());
+    data = static_cast<const char *>(data) + head;
+    size -= head;
+    *buffer = _chunks.allocateChunk(size);
+    buffer->write(data, size);
 }
 
-void BlobOutputStream::flush() {
-    assert(_target);
-
-    // Flushing copies the data. Use close() to move instead.
-    *_target = Blob::fromString(_buffer).withDisplayPath(_displayPath);
+void BlobOutputStream::_flush(Buffer *buffer) {
+    *_target = materialize();
 }
 
-void BlobOutputStream::close() {
+void BlobOutputStream::_close(Buffer *buffer) {
+    assert(isOpen());
     closeInternal();
+    base_type::_close(buffer);
 }
 
-std::string BlobOutputStream::displayPath() const {
-    return _displayPath;
+Blob BlobOutputStream::materialize() {
+    size_t bytesTotal = position();
+    if (bytesTotal == 0)
+        return Blob().withDisplayPath(displayPath());
+
+    std::unique_ptr<char, FreeDeleter> result(static_cast<char *>(malloc(bytesTotal)));
+    _chunks.materialize(result.get(), bytesTotal);
+    return Blob::fromMalloc(std::move(result), bytesTotal).withDisplayPath(displayPath());
 }
 
 void BlobOutputStream::closeInternal() {
-    if (!_target)
+    if (!isOpen())
         return;
 
-    *_target = Blob::fromString(std::move(_buffer)).withDisplayPath(_displayPath);
+    if (_chunks.chunkCount() == 1) {
+        *_target = Blob::fromMalloc(_chunks.popChunk(), position()).withDisplayPath(displayPath());
+    } else {
+        *_target = materialize();
+    }
+
     _target = nullptr;
-    _buffer = {};
-    _displayPath = {};
+    _chunks.reset();
 }

@@ -12,10 +12,12 @@
 
 #include "Library/Logger/Logger.h"
 
+#include "Library/Binary/BinarySerialization.h"
+
 #include "Utility/Memory/Blob.h"
+#include "Utility/Streams/MemoryInputStream.h"
 #include "Utility/MapAccess.h"
 #include "Utility/Exception.h"
-#include "Utility/SequentialBlobReader.h"
 
 EvtProgram EvtProgram::load(const Blob &rawData) {
     EvtProgram result;
@@ -28,9 +30,9 @@ EvtProgram EvtProgram::load(const Blob &rawData) {
             throw Exception("Invalid evt record size: expected at least {}, got {}", 5, size);
         if (pos + size > end)
             throw Exception("Encountered corrupted evt binary data");
-        SequentialBlobReader sbr(pos + 1, size - 1); // offset is 1 because we are skipping the `size` byte - it was already read
-        int eventId = sbr.read<uint16_t>();
-        result.add(eventId, EvtInstruction::parse(sbr, size));
+        MemoryInputStream stream(pos + 1, size - 1); // offset is 1 because we are skipping the `size` byte - it was already read
+        uint16_t eventId = fromStream<uint16_t>(stream);
+        result.add(eventId, EvtInstruction::parse(stream, size));
         pos += size;
     }
 

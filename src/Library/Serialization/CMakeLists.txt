@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 set(LIBRARY_SERIALIZATION_SOURCES
         EnumSerializer.cpp
         SerializationExceptions.cpp
-        StandardSerialization.cpp)
+        CommonSerialization.cpp)
 
 set(LIBRARY_SERIALIZATION_HEADERS
         EnumSerialization.h
@@ -11,7 +11,7 @@ set(LIBRARY_SERIALIZATION_HEADERS
         Serialization.h
         SerializationExceptions.h
         SerializationFwd.h
-        StandardSerialization.h)
+        CommonSerialization.h)
 
 add_library(library_serialization STATIC ${LIBRARY_SERIALIZATION_SOURCES} ${LIBRARY_SERIALIZATION_HEADERS})
 target_check_style(library_serialization)

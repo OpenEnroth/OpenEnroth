@@ -4,14 +4,12 @@ set(UTILITY_SOURCES
         Exception.cpp
         Math/TrigLut.cpp
         Memory/Blob.cpp
-        SequentialBlobReader.cpp
         Streams/BlobInputStream.cpp
         Streams/BlobOutputStream.cpp
         Streams/FileInputStream.cpp
         Streams/FileOutputStream.cpp
         Streams/InputStream.cpp
-        Streams/MemoryInputStream.cpp
-        Streams/StringOutputStream.cpp
+        Streams/OutputStream.cpp
         String/Ascii.cpp
         String/Encoding.cpp
         String/Split.cpp
@@ -34,7 +32,6 @@ set(UTILITY_HEADERS
         Memory/MemSet.h
         ScopeGuard.h
         Segment.h
-        SequentialBlobReader.h
         Streams/BlobInputStream.h
         Streams/BlobOutputStream.h
         Streams/FileInputStream.h
@@ -42,7 +39,7 @@ set(UTILITY_HEADERS
         Streams/InputStream.h
         Streams/MemoryInputStream.h
         Streams/OutputStream.h
-        Streams/StringOutputStream.h
+        Streams/StreamBuffer.h
         String/Ascii.h
         String/Encoding.h
         String/Join.h
@@ -74,10 +71,11 @@ if(OE_BUILD_TESTS)
     set(TEST_UTILITY_SOURCES
             Math/Tests/Float_ut.cpp
             Memory/Tests/Blob_ut.cpp
+            Streams/Tests/BlobInputStream_ut.cpp
+            Streams/Tests/BlobOutputStream_ut.cpp
             Streams/Tests/FileOutputStream_ut.cpp
             Streams/Tests/FileInputStream_ut.cpp
             Streams/Tests/InputStream_ut.cpp
-            Streams/Tests/MemoryInputStream_ut.cpp
             Tests/IndexedArray_ut.cpp
             Tests/IndexedBitset_ut.cpp
             Tests/Segment_ut.cpp

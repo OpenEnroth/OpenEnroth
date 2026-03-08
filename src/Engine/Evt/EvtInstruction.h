@@ -14,12 +14,12 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Media/Audio/SoundEnums.h"
 
-#include "Utility/SequentialBlobReader.h"
+class InputStream;
 
 class EvtInstruction {
  public:
     std::string toString() const;
-    static EvtInstruction parse(SequentialBlobReader &sbr, const size_t size);
+    static EvtInstruction parse(InputStream &stream, size_t size);
 
     EvtOpcode opcode;
     int step;

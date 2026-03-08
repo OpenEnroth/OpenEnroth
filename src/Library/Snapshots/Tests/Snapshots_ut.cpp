@@ -1,13 +1,14 @@
+#include <cstdint>
+#include <utility>
 #include <vector>
-#include <string>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
 
-#include "Utility/Streams/StringOutputStream.h"
-#include "Utility/Streams/MemoryInputStream.h"
+#include "Utility/Streams/BlobOutputStream.h"
+#include "Utility/Streams/BlobInputStream.h"
 
 struct Int_MM {
     int dummy;
@@ -58,35 +59,38 @@ UNIT_TEST(Snapshots, SizedVia) {
 }
 
 UNIT_TEST(Snapshots, MultiSizedVia) {
-    std::string string;
-    StringOutputStream output(&string);
+    Blob blob;
+    BlobOutputStream output(&blob);
     std::vector<int> ref = {100, 200}; // Also test overwrite.
     serialize(ints012, &output, tags::unsized, tags::each, tags::via<Int_MM>);
     serialize(ints345, &output, tags::unsized, tags::each, tags::via<Int_MM>);
-    MemoryInputStream input2(string.data(), string.size());
+    output.close();
+    BlobInputStream input2(std::move(blob));
     deserialize(input2, &ref, tags::presized(6), tags::each, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints012345);
 }
 
 UNIT_TEST(Snapshots, AppendSizedVia) {
-    std::string string;
-    StringOutputStream output(&string);
+    Blob blob;
+    BlobOutputStream output(&blob);
     std::vector<int> ref;
     serialize(ints012, &output, tags::unsized, tags::each, tags::via<Int_MM>);
     serialize(ints345, &output, tags::unsized, tags::each, tags::via<Int_MM>);
-    MemoryInputStream input3(string.data(), string.size());
+    output.close();
+    BlobInputStream input3(std::move(blob));
     deserialize(input3, &ref, tags::append, tags::presized(3), tags::each, tags::via<Int_MM>);
     deserialize(input3, &ref, tags::append, tags::presized(3), tags::each, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints012345);
 }
 
 UNIT_TEST(Snapshots, AppendVia) {
-    std::string string;
-    StringOutputStream output(&string);
+    Blob blob;
+    BlobOutputStream output(&blob);
     std::vector<int> ref;
     serialize(ints012, &output, tags::each, tags::via<Int_MM>);
     serialize(ints345, &output, tags::each, tags::via<Int_MM>);
-    MemoryInputStream input4(string.data(), string.size());
+    output.close();
+    BlobInputStream input4(std::move(blob));
     deserialize(input4, &ref, tags::append, tags::each, tags::via<Int_MM>);
     deserialize(input4, &ref, tags::append, tags::each, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints012345);
@@ -164,3 +168,5 @@ UNIT_TEST(Snapshots, CastRequiresExplicitTypes) {
     EXPECT_FALSE((snapshotCastCompiles<uint8_t, int32_t>()));
     EXPECT_TRUE((snapshotCastCompiles<uint8_t, uint32_t>()));
 }
+
+

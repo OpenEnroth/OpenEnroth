@@ -36,10 +36,6 @@ Blob Blob::fromMalloc(const void *data, size_t size) {
     return result;
 }
 
-Blob Blob::fromMalloc(std::unique_ptr<void, FreeDeleter> data, size_t size) {
-    return fromMalloc(data.release(), size);
-}
-
 Blob Blob::fromFile(std::string_view path) {
     std::filesystem::path absolutePath = absolute(std::filesystem::path(path));
     std::string pathString = absolutePath.generic_string();
