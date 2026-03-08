@@ -1197,7 +1197,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
 
     assert(requireSizeCalled && "please report");
 
-    if (stream.skip(1) > 0) {
+    if (stream.position() != stream.size()) {
         throw Exception("Some evt data has not been parsed for evt type: {}", ::toString(ir.opcode));
     }
 
