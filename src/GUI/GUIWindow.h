@@ -31,7 +31,6 @@ namespace Io {
 class Mouse;
 } // namespace Io
 
-class Actor;
 class GUIFont;
 class GUIButton;
 class GUIWindow_House;

@@ -35,7 +35,6 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"
 
-#include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 
