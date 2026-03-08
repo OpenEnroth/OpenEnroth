@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(GAME_TEST_MAIN_SOURCES
+        GameTestCommon.cpp
         GameTestMain.cpp
         GameTestOptions.cpp
         GameTests_0000.cpp
@@ -9,6 +10,7 @@ set(GAME_TEST_MAIN_SOURCES
         GameTests_1500.cpp
         GameTests_2000.cpp)
 set(GAME_TEST_MAIN_HEADERS
+        GameTestCommon.h
         GameTestOptions.h)
 
 add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
