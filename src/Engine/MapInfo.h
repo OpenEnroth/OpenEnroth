@@ -16,9 +16,9 @@ class Blob;
 struct MapInfo {
     std::string name; // Display name, e.g. "The Tularean Forest".
     std::string fileName; // E.g. "out02.odm".
-    std::string encounter1MonsterTexture;
-    std::string encounter2MonsterTexture;
-    std::string encounter3MonsterTexture;
+    std::string encounter1MonsterInternalName; //
+    std::string encounter2MonsterInternalName; // E.g. "Angel", w/o the A/B/C suffix.
+    std::string encounter3MonsterInternalName; //
     unsigned int numResets; // Unused, always 0. Actual number of respawns is stored in `LocationInfo`.
     unsigned int firstVisitedAt; // Unused, always 0.
     unsigned int respawnIntervalDays;

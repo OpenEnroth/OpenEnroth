@@ -952,7 +952,7 @@ void GameUI_WritePointedObjectStatusString() {
                     uLastPointedObjectID = Pid();
                     return;
                 }
-                engine->_statusBar->setPermanent(GetDisplayName(&pActors[pickedObjectID]));
+                engine->_statusBar->setPermanent(pActors[pickedObjectID].GetDisplayName());
             }
             if (!mouse->uPointingObjectID && uLastPointedObjectID) {
                 engine->_statusBar->clearPermanent();

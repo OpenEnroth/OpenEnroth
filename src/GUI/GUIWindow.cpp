@@ -18,7 +18,6 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Random/Random.h"
-#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/OurMath.h"
@@ -1191,12 +1190,4 @@ std::string NameAndTitle(NPCData *npc) {
     }
 
     return std::string();
-}
-
-
-std::string GetDisplayName(Actor *actor) {
-    if (actor->uniqueNameIndex)
-        return pMonsterStats->uniqueNames[actor->uniqueNameIndex];
-    else
-        return pMonsterStats->infos[actor->monsterInfo.id].name;
 }

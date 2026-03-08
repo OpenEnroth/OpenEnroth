@@ -6,6 +6,8 @@
 
 #include "Utility/IndexedArray.h"
 
+class Actor;
+
 enum class DialogWindowType {
     /** This one doesn't seem to be used on MM7, only creates the profession details & hire/fire topics. */
     DIALOG_WINDOW_HIRE_FIRE_SHORT = 1,

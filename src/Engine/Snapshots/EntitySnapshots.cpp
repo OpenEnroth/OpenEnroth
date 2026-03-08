@@ -1317,7 +1317,8 @@ void reconstruct(const ActorJob_MM7 &src, ActorJob *dst) {
 void snapshot(const Actor &src, Actor_MM7 *dst) {
     memzero(dst);
 
-    snapshot(src.name, &dst->name);
+    // Need to fill actor name, even though in OE we don't have this field. This is for vanilla savegame compatibility.
+    snapshot(src.GetDisplayName(), &dst->name);
 
     dst->npcId = src.npcId;
     dst->attributes = std::to_underlying(src.attributes);
@@ -1411,11 +1412,12 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
 }
 
 void reconstruct(const Actor_MM7 &src, Actor *dst) {
-    reconstruct(src.name, &dst->name);
     dst->npcId = src.npcId;
     dst->attributes = ActorAttributes(src.attributes);
     dst->hp = src.hp;
 
+    dst->monsterInfo.name.clear();
+    dst->monsterInfo.internalName.clear();
     dst->monsterInfo.level = src.monsterInfo.level;
     dst->monsterInfo.treasureDropChance = src.monsterInfo.treasureDropChance;
     dst->monsterInfo.goldDiceRolls = src.monsterInfo.goldDiceRolls;

@@ -284,7 +284,6 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
     if (!actor)
         throw Exception("Failed to spawn monster {}", static_cast<int>(id));
 
-    actor->name = pMonsterStats->infos[id].name;
     actor->attributes |= ACTOR_AGGRESSOR; // Make the monster unconditionally hostile.
     actor->hp = pMonsterStats->infos[id].hp;
     actor->monsterInfo = pMonsterStats->infos[id];

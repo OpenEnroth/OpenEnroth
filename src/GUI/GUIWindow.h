@@ -31,7 +31,6 @@ namespace Io {
 class Mouse;
 } // namespace Io
 
-class Actor;
 class GUIFont;
 class GUIButton;
 class GUIWindow_House;
@@ -306,8 +305,6 @@ std::string NameAndTitle(std::string_view name, std::string_view title);
 std::string NameAndTitle(std::string_view name, Class class_type);
 std::string NameAndTitle(std::string_view name, NpcProfession profession);
 std::string NameAndTitle(NPCData *npc);
-
-std::string GetDisplayName(Actor *actor);
 
 extern std::unique_ptr<GUIWindow> pPrimaryWindow;
 extern std::unique_ptr<GUIWindow> pGUIWindow_CurrentMenu;

@@ -295,9 +295,9 @@ MonsterSpecialAttack ParseSpecialAttack(char *spec_att_str) {
 }
 
 //----- (004563FF) --------------------------------------------------------
-MonsterId MonsterStats::FindMonsterByTextureName(std::string_view monster_textr_name) {
+MonsterId MonsterStats::FindMonsterByInternalName(std::string_view internalName) {
     for (MonsterId i : infos.indices()) {
-        if (!infos[i].name.empty() && ascii::noCaseEquals(infos[i].textureName, monster_textr_name))
+        if (!infos[i].name.empty() && ascii::noCaseEquals(infos[i].internalName, internalName))
             return i;
     }
     return MONSTER_INVALID;
@@ -388,7 +388,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                         infos[curr_rec_num].name = removeQuotes(test_string);
                         break;
                     case 2:
-                        infos[curr_rec_num].textureName = removeQuotes(test_string);
+                        infos[curr_rec_num].internalName = removeQuotes(test_string);
                         break;
                     case 3:
                         infos[curr_rec_num].level = atoi(test_string);

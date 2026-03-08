@@ -650,8 +650,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(UIAnimation_MM6)
 
 
 struct MonsterInfo_MM7 {
-    Pointer_MM7 name; // Originally char *, actual name is set elsewhere.
-    Pointer_MM7 textureName;
+    Pointer_MM7 name;
+    Pointer_MM7 internalName;
     uint8_t level;
     uint8_t treasureDropChance;
     uint8_t goldDiceRolls;
@@ -763,8 +763,10 @@ void reconstruct(const ActorJob_MM7 &src, ActorJob *dst);
 
 
 struct Actor_MM7 {
-    std::array<char, 32> name; // Actor name as displayed in-game. Not in popups though, popups take actor names
-                               // from game data tables.
+    std::array<char, 32> name; // In MM7 this was an actor name as displayed in the status bar, but not in popups
+                               // (popups take actor names from the data tables). We don't use this field in OE and
+                               // just use the names from the data tables. This makes way more sense especially when
+                               // game data localization doesn't match the saved game's localization.
     int16_t npcId;
     int16_t field_22;
     uint32_t attributes;
