@@ -8,6 +8,7 @@ Release
 Build/Visual Studio 2015/Debug
 Build/Visual Studio 2017/Debug
 *.pcx
+.DS_Store
 
 # Visual Studio Code
 .vscode
@@ -26,9 +27,6 @@ out
 
 ## Output folder on Linux as described in HACKING
 build
-
-# 3d-party libs are auto-resolved by cmake
-lib
 
 # Doxygen
 docs
@@ -53,4 +51,4 @@ local.properties
 # .claude
 .claude/settings.local.json
 .claude/plans
-
+build-*

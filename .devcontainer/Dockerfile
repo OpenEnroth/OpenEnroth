@@ -9,6 +9,7 @@ ARG CLAUDE_CODE_VERSION=latest
 RUN apt-get update && apt-get install -y --no-install-recommends \
   less \
   git \
+  git-lfs \
   procps \
   sudo \
   fzf \
