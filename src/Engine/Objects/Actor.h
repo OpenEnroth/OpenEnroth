@@ -55,6 +55,7 @@ class Actor {
     Actor() {}
     explicit Actor(int id): id(id) {}
 
+    [[nodiscard]] std::string GetDisplayName() const;
     void SummonMinion(int summonerId);
     void Reset();
     void Remove();
@@ -208,13 +209,10 @@ class Actor {
     bool DoesDmgTypeDoDamage(DamageType uType);
 
     int id = -1; // Actor index in pActors array.
-    std::string name; // Actor name as displayed in-game.
-                      // TODO(captainurist): This should actually be dropped, we should use GetDisplayName(Actor *actor)
-                      //                     everywhere instead.
     int16_t npcId = 0;
     ActorAttributes attributes = 0;
     int16_t hp = 0;
-    MonsterInfo monsterInfo;
+    MonsterInfo monsterInfo; // Note that name & internalName are not filled & are unused.
     MonsterId monsterId = MONSTER_INVALID;
     uint16_t radius = 32;
     uint16_t height = 128;

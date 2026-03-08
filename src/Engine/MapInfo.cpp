@@ -108,7 +108,7 @@ void MapStats::Initialize(const Blob &mapStats) {
                     pInfos[i].encounter3Chance = atoi(test_string);
                     break;
                 case 16:
-                    pInfos[i].encounter1MonsterTexture = removeQuotes(test_string);
+                    pInfos[i].encounter1MonsterInternalName = removeQuotes(test_string);
                     break;
                 case 18:
                     pInfos[i].Dif_M1 = atoi(test_string);
@@ -133,7 +133,7 @@ void MapStats::Initialize(const Blob &mapStats) {
                     }
                     break;
                 case 20:
-                    pInfos[i].encounter2MonsterTexture = removeQuotes(test_string);
+                    pInfos[i].encounter2MonsterInternalName = removeQuotes(test_string);
                     break;
                 case 22:
                     pInfos[i].Dif_M2 = atoi(test_string);
@@ -158,7 +158,7 @@ void MapStats::Initialize(const Blob &mapStats) {
                     }
                     break;
                 case 24:
-                    pInfos[i].encounter3MonsterTexture = removeQuotes(test_string);
+                    pInfos[i].encounter3MonsterInternalName = removeQuotes(test_string);
                     break;
                 case 26:
                     pInfos[i].Dif_M3 = atoi(test_string);

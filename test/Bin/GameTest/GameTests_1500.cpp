@@ -82,12 +82,14 @@ GAME_TEST(Issues, Issue1521) {
 }
 
 GAME_TEST(Issues, Issue1522) {
-    // Wizards not summoning light elementals
+    // Wizards not summoning light elementals.
     auto actorsCount = actorTapes.totalCount();
-    auto lightElem = tapes.custom([]() { return std::ranges::count_if(pActors, [](const Actor& a) { return a.name.contains("Light Elemental"); }); });
+    auto lightElemCount = tapes.custom([] { return std::ranges::count_if(pActors, [](const Actor& actor) {
+        return pMonsterStats->infos[actor.monsterInfo.id].internalName.contains("Elemental Light"); });
+    });
     test.playTraceFromTestData("issue_1522.mm7", "issue_1522.json");
     EXPECT_GT(actorsCount.back(), actorsCount.front());
-    EXPECT_GT(lightElem.back(), lightElem.front());
+    EXPECT_GT(lightElemCount.back(), lightElemCount.front());
     auto summoned = std::ranges::count_if(pActors, [](const Actor& a) { return a.summonerId.type() == OBJECT_Actor; });
     EXPECT_GT(summoned, 0);
 }

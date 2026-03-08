@@ -700,9 +700,9 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
         if (pActors[uActorID].npcId) {
             str = NameAndTitle(getNPCData(pActors[uActorID].npcId));
         } else {
-            str = GetDisplayName(&pActors[uActorID]);
+            str = pActors[uActorID].GetDisplayName();
         }
-            GUIWindow::DrawTitleText(assets->pFontComic.get(), 0, 12, colorTable.PaleCanary, str, 3, *pWindow);
+        GUIWindow::DrawTitleText(assets->pFontComic.get(), 0, 12, colorTable.PaleCanary, str, 3, *pWindow);
 
         // health bar
         Actor::DrawHealthBar(&pActors[uActorID], *pWindow);

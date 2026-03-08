@@ -24,8 +24,8 @@
 class Blob;
 
 struct MonsterInfo {
-    std::string name;
-    std::string textureName;
+    std::string name; // As displayed in the game, e.g. "Archangel".
+    std::string internalName; // E.g. "Angel C".
     uint8_t level = 0;
     uint8_t treasureDropChance = 0; // Chance to drop an item, in [0, 100].
     ItemTreasureLevel treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
@@ -85,7 +85,7 @@ struct MonsterInfo {
 struct MonsterStats {
     void Initialize(const Blob &monsters);
     void InitializePlacements(const Blob &placements);
-    MonsterId FindMonsterByTextureName(std::string_view Str2);
+    MonsterId FindMonsterByInternalName(std::string_view internalName);
 
     IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> infos;
     std::array<std::string, 31> uniqueNames; // Names of unique monsters, see Actor::uniqueNameIndex. Element 0 is unused.

@@ -2371,6 +2371,13 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
     }
 }
 
+std::string Actor::GetDisplayName() const {
+    if (uniqueNameIndex)
+        return pMonsterStats->uniqueNames[uniqueNameIndex];
+    else
+        return pMonsterStats->infos[monsterInfo.id].name;
+}
+
 //----- (0044FD29) --------------------------------------------------------
 void Actor::SummonMinion(int summonerId) {
     uint8_t extraSummonLevel;  // al@1
@@ -2428,7 +2435,6 @@ void Actor::SummonMinion(int summonerId) {
         return;
 
     v9 = &pMonsterStats->infos[summonMonsterBaseType];
-    actor->name = v9->name;
     actor->hp = v9->hp;
     actor->monsterInfo = *v9;
     actor->monsterId = summonMonsterBaseType;
@@ -3167,9 +3173,9 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
         if (engine->config->settings.ShowHits.value()) {
             if (projectileSprite)
-                engine->_statusBar->setEvent(LSTR_S_SHOOTS_S_FOR_LU_POINTS, character->name, pMonster->name, uDamageAmount);
+                engine->_statusBar->setEvent(LSTR_S_SHOOTS_S_FOR_LU_POINTS, character->name, pMonster->GetDisplayName(), uDamageAmount);
             else
-                engine->_statusBar->setEvent(LSTR_S_HITS_S_FOR_LU_DAMAGE, character->name, pMonster->name, uDamageAmount);
+                engine->_statusBar->setEvent(LSTR_S_HITS_S_FOR_LU_DAMAGE, character->name, pMonster->GetDisplayName(), uDamageAmount);
         }
     } else {
         Actor::Die(uActorID_Monster);
@@ -3184,7 +3190,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         }
         character->playReaction(speech);
         if (engine->config->settings.ShowHits.value()) {
-            engine->_statusBar->setEvent(LSTR_S_INFLICTS_LU_POINTS_KILLING_S, character->name, uDamageAmount, pMonster->name);
+            engine->_statusBar->setEvent(LSTR_S_INFLICTS_LU_POINTS_KILLING_S, character->name, uDamageAmount, pMonster->GetDisplayName());
         }
     }
     if (pMonster->buffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
@@ -3198,7 +3204,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             extraRecoveryTime = debug_combat_recovery_mul * flt_debugrecmod3 * 20_ticks;
         pMonster->monsterInfo.recoveryTime += extraRecoveryTime;
         if (engine->config->settings.ShowHits.value()) {
-            engine->_statusBar->setEvent(LSTR_S_STUNS_S, character->name, pMonster->name);
+            engine->_statusBar->setEvent(LSTR_S_STUNS_S, character->name, pMonster->GetDisplayName());
         }
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
@@ -3206,7 +3212,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         CombinedSkillValue maceSkill = character->getActualSkillValue(SKILL_MACE);
         pMonster->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(maceSkill.level()), maceSkill.mastery(), 0, 0, 0);
         if (engine->config->settings.ShowHits.value()) {
-            engine->_statusBar->setEvent(LSTR_S_PARALYZES_S, character->name, pMonster->name);
+            engine->_statusBar->setEvent(LSTR_S_PARALYZES_S, character->name, pMonster->GetDisplayName());
         }
     }
     if (knockbackValue > 10) knockbackValue = 10;
@@ -3228,7 +3234,6 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         v16 = pIndoor->GetSector(pos);
 
-    actor->name = pMonsterStats->infos[monster_id].name;
     actor->hp = (short)pMonsterStats->infos[monster_id].hp;
     actor->monsterInfo = pMonsterStats->infos[monster_id];
     actor->monsterId = monster_id;
@@ -4170,7 +4175,6 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
     int radius = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? 128 : 64;
     int angle = grng->random(2048);
 
-    actor->name = pMonsterStats->infos[uMonsterID].name;
     actor->hp = pMonsterStats->infos[uMonsterID].hp;
     actor->monsterInfo = pMonsterStats->infos[uMonsterID];
     actor->monsterId = uMonsterID;
@@ -4223,56 +4227,56 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
     if (v8) return;
 
     int NumToSpawn = 1;
-    std::string baseTextureName;
+    std::string baseInternalName;
     int monsterCategoryOddsSet = 0;
     switch (spawn->monsterIndex - 1) {
         case 0:
             monsterCategoryOddsSet = pMapInfo->Dif_M1;
             NumToSpawn = pMapInfo->encounter1MinCount + grng->random(pMapInfo->encounter1MaxCount - pMapInfo->encounter1MinCount + 1);
-            baseTextureName = pMapInfo->encounter1MonsterTexture;
+            baseInternalName = pMapInfo->encounter1MonsterInternalName;
             break;
         case 1:
             monsterCategoryOddsSet = pMapInfo->Dif_M2;
             NumToSpawn = pMapInfo->encounter2MinCount + grng->random(pMapInfo->encounter2MaxCount - pMapInfo->encounter2MinCount + 1);
-            baseTextureName = pMapInfo->encounter2MonsterTexture;
+            baseInternalName = pMapInfo->encounter2MonsterInternalName;
             break;
         case 2:
             monsterCategoryOddsSet = pMapInfo->Dif_M3;
             NumToSpawn = pMapInfo->encounter3MinCount + grng->random(pMapInfo->encounter3MaxCount - pMapInfo->encounter3MinCount + 1);
-            baseTextureName = pMapInfo->encounter3MonsterTexture;
+            baseInternalName = pMapInfo->encounter3MonsterInternalName;
             break;
         case 3:
-            baseTextureName = pMapInfo->encounter1MonsterTexture + " A";
+            baseInternalName = pMapInfo->encounter1MonsterInternalName + " A";
             break;
         case 4:
-            baseTextureName = pMapInfo->encounter2MonsterTexture + " A";
+            baseInternalName = pMapInfo->encounter2MonsterInternalName + " A";
             break;
         case 5:
-            baseTextureName = pMapInfo->encounter3MonsterTexture + " A";
+            baseInternalName = pMapInfo->encounter3MonsterInternalName + " A";
             break;
         case 6:
-            baseTextureName = pMapInfo->encounter1MonsterTexture + " B";
+            baseInternalName = pMapInfo->encounter1MonsterInternalName + " B";
             break;
         case 7:
-            baseTextureName = pMapInfo->encounter2MonsterTexture + " B";
+            baseInternalName = pMapInfo->encounter2MonsterInternalName + " B";
             break;
         case 8:
-            baseTextureName = pMapInfo->encounter3MonsterTexture + " B";
+            baseInternalName = pMapInfo->encounter3MonsterInternalName + " B";
             break;
         case 9:
-            baseTextureName = pMapInfo->encounter1MonsterTexture + " C";
+            baseInternalName = pMapInfo->encounter1MonsterInternalName + " C";
             break;
         case 10:
-            baseTextureName = pMapInfo->encounter2MonsterTexture + " C";
+            baseInternalName = pMapInfo->encounter2MonsterInternalName + " C";
             break;
         case 11:
-            baseTextureName = pMapInfo->encounter3MonsterTexture + " C";
+            baseInternalName = pMapInfo->encounter3MonsterInternalName + " C";
             break;
         default:
             return;
     }
 
-    if (baseTextureName[0] == '0') return;
+    if (baseInternalName[0] == '0') return;
 
     monsterCategoryOddsSet += monsterCatMod;
     if (monsterCategoryOddsSet > 3) monsterCategoryOddsSet = 3;
@@ -4289,7 +4293,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
         pSector = pIndoor->GetSector(spawn->position);
 
     // spawning loop
-    std::string finalTextureName = baseTextureName;
+    std::string fullInternalName = baseInternalName;
     for (int i = 0; i < NumToSpawn; ++i) {
         Actor *pMonster = AllocateActor(true);
         if (!pMonster)
@@ -4309,23 +4313,22 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
             }
 
             if (finalCat == 1) {
-                finalTextureName = baseTextureName + " A";
+                fullInternalName = baseInternalName + " A";
             } else if (finalCat == 2) {
-                finalTextureName = baseTextureName + " B";
+                fullInternalName = baseInternalName + " B";
             } else {
-                finalTextureName = baseTextureName + " C";
+                fullInternalName = baseInternalName + " C";
             }
         }
 
-        MonsterId monsterDescID = pMonsterList->GetMonsterIDByName(finalTextureName);
+        MonsterId monsterDescID = pMonsterList->GetMonsterIDByName(fullInternalName);
         MonsterDesc* monsterDesc = &pMonsterList->monsters[monsterDescID];
-        MonsterId monster = pMonsterStats->FindMonsterByTextureName(finalTextureName);
+        MonsterId monster = pMonsterStats->FindMonsterByInternalName(fullInternalName);
 
         // TODO(captainurist): MONSTER_ANGEL_A is monster #1, why do we even need this check?
         if (monster == MONSTER_INVALID) monster = MONSTER_ANGEL_A;
 
         MonsterInfo* Src = &pMonsterStats->infos[monster];
-        pMonster->name = Src->name;
         pMonster->hp = Src->hp;
         pMonster->monsterInfo = pMonsterStats->infos[monster];
         pMonster->monsterId = monsterDescID;

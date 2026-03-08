@@ -307,8 +307,6 @@ std::string NameAndTitle(std::string_view name, Class class_type);
 std::string NameAndTitle(std::string_view name, NpcProfession profession);
 std::string NameAndTitle(NPCData *npc);
 
-std::string GetDisplayName(Actor *actor);
-
 extern std::unique_ptr<GUIWindow> pPrimaryWindow;
 extern std::unique_ptr<GUIWindow> pGUIWindow_CurrentMenu;
 extern std::unique_ptr<GUIWindow_Chest> pGUIWindow_CurrentChest;
