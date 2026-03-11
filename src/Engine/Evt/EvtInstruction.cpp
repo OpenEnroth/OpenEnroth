@@ -9,6 +9,7 @@
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Engine.h"
 
+#include "Library/Binary/BinaryExceptions.h"
 #include "Library/Binary/BinarySerialization.h"
 #include "Library/Serialization/Serialization.h"
 
@@ -1197,9 +1198,8 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
 
     assert(requireSizeCalled && "please report");
 
-    if (stream.position() != stream.size()) {
-        throw Exception("Some evt data has not been parsed for evt type: {}", ::toString(ir.opcode));
-    }
+    if (stream.position() != stream.size())
+        throwBinarySerializationLeftoverDataError(stream.position(), stream.size() - stream.position(), typeid(EvtInstruction).name());
 
     return ir;
 }
