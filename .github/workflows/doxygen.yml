@@ -19,17 +19,15 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
 
       - name: Install Doxygen
-        run: >
-          # sudo apt-get install doxygen -y
-
-          curl https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz | tar
-          xzf - --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
+        run: |
+          curl -fsSL --retry 3 -o doxygen.tar.gz https://github.com/doxygen/doxygen/releases/download/Release_1_9_5/doxygen-1.9.5.linux.bin.tar.gz
+          tar xzf doxygen.tar.gz --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
 
       - name: Generate Documentation
         run: |
@@ -42,16 +40,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Install Doxygen
-        run: >
-          # sudo apt-get install doxygen -y
-
-          curl https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz | tar
-          xzf - --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
+        run: |
+          curl -fsSL --retry 3 -o doxygen.tar.gz https://github.com/doxygen/doxygen/releases/download/Release_1_9_5/doxygen-1.9.5.linux.bin.tar.gz
+          tar xzf doxygen.tar.gz --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
 
       - name: Generate Documentation
         run: |
