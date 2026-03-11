@@ -11,8 +11,7 @@ Blob compress(const Blob &source);
 
 /**
  * @param source                       Blob to decompress.
- * @param sizeHint                     Expected decompressed size. If zero or less than `source.size()`, a default
- *                                     heuristic is used.
+ * @param sizeHint                     Expected decompressed size. If zero, a default heuristic is used.
  * @return                             Decompressed blob.
  * @throws Exception                   On decompression error.
  */
