@@ -30,6 +30,7 @@
 #include "Library/Lod/LodEnums.h"
 #include "Library/Image/Pcx.h"
 
+#include "Utility/Exception.h"
 #include "Utility/Streams/BlobOutputStream.h"
 
 #include "Engine/Graphics/Image.h"
@@ -151,7 +152,8 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         pFace->textureVs = std::span(dst->faceData.data() + j, pFace->numVertices);
         j += pFace->numVertices + 1;
 
-        assert(j <= dst->faceData.size());
+        if (j > dst->faceData.size())
+            throw Exception("BLV face data overflow: offset {} exceeds size {}", j, dst->faceData.size());
     }
 
     for (BLVFace &face : dst->faces) {
@@ -223,7 +225,8 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
         j += srcSector.numMarkers; // Markers not used in OE, skip.
 
-        assert(j <= dst->sectorData.size()); // TODO(captainurist): exception, not an assertion?
+        if (j > dst->sectorData.size())
+            throw Exception("BLV sector data overflow: offset {} exceeds size {}", j, dst->sectorData.size());
     }
 
     reconstruct(src.sectorLightData, &dst->sectorLightData);
@@ -235,7 +238,8 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         dstSector->lightIds = std::span(dst->sectorLightData.data() + j, srcSector.numLights);
         j += srcSector.numLights;
 
-        assert(j <= dst->sectorLightData.size()); // TODO(captainurist): exception, not an assertion?
+        if (j > dst->sectorLightData.size())
+            throw Exception("BLV sector light data overflow: offset {} exceeds size {}", j, dst->sectorLightData.size());
     }
 
     reconstruct(src.decorations, &pLevelDecorations);
@@ -365,7 +369,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         pDoor->pZOffsets = dst->doorsData.data() + j;
         j += pDoor->numOffsets;
 
-        assert(j <= dst->doorsData.size());
+        if (j > dst->doorsData.size())
+            throw Exception("BLV door data overflow: offset {} exceeds size {}", j, dst->doorsData.size());
     }
 
     for (size_t i = 0; i < dst->doors.size(); ++i) {
