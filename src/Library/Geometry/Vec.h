@@ -116,12 +116,6 @@ struct Vec3 {
         return Vec3<int>(std::round(x), std::round(y), std::round(z));
     }
 
-    // TODO(captainurist): We introduced this one because we couldn't easily retrace old traces.
-    //                     Drop once we switch over to fp everywhere.
-    [[nodiscard]] Vec3<int> toIntTrunc() const requires std::is_floating_point_v<T> {
-        return Vec3<int>(std::trunc(x), std::trunc(y), std::trunc(z));
-    }
-
     [[nodiscard]] Vec3<int> toFixpoint() const requires std::is_floating_point_v<T> {
         return Vec3<int>(std::round(x * 65536.0), std::round(y * 65536.0), std::round(z * 65536.0));
     }
