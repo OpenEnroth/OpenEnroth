@@ -535,8 +535,8 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->viewYaw = src._viewYaw;
     dst->viewPitch = src._viewPitch;
     dst->prevPosition = src.pos.toInt();
-    dst->viewPrevYaw = src._viewPrevYaw;
-    dst->viewPrevPitch = src._viewPrevPitch;
+    dst->viewPrevYaw = src._viewYaw;
+    dst->viewPrevPitch = src._viewPitch;
     dst->prevEyeLevel = src.eyeLevel;
     dst->fallSpeed = src.velocity.z;
     dst->savedFlightZ = src.sPartySavedFlightZ;
@@ -651,8 +651,6 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->pos = src.position.toFloat();
     dst->_viewYaw = src.viewYaw;
     dst->_viewPitch = src.viewPitch;
-    dst->_viewPrevYaw = src.viewPrevYaw;
-    dst->_viewPrevPitch = src.viewPrevPitch;
     dst->velocity = Vec3f(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
     dst->_6FC_water_lava_timer = Time::fromTicks(src.waterLavaTimer);

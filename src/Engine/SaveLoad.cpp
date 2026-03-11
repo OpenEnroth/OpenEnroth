@@ -287,9 +287,6 @@ void saveNewGame() {
 
     pParty->uFallStartZ = 193;
 
-    pParty->_viewPrevPitch = 0;
-    pParty->_viewPrevYaw = 512;
-
     pParty->_viewPitch = 0;
     pParty->_viewYaw = 512;
 

@@ -147,8 +147,6 @@ void Engine::drawWorld() {
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         }*/
     } else {
-        pParty->_viewPrevYaw = pParty->_viewYaw;
-        pParty->_viewPrevPitch = pParty->_viewPitch;
         render->BeginScene3D();
 
         // if ( !render->pRenderD3D )

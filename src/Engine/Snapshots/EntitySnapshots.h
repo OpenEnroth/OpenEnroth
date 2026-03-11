@@ -458,8 +458,8 @@ struct Party_MM7 {
     int32_t viewYaw;
     int32_t viewPitch;
     Vec3i prevPosition; // Unused in OE.
-    int32_t viewPrevYaw;
-    int32_t viewPrevPitch;
+    int32_t viewPrevYaw; // Unused in OE.
+    int32_t viewPrevPitch; // Unused in OE.
     int32_t prevEyeLevel; // Unused in OE.
     int32_t field_6E0; // Party old x/y?
     int32_t field_6E4; // Party old x/y?

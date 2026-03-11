@@ -78,8 +78,8 @@ void Party::Zero() {
     PartyTimes._s_times.fill(Time());
     pos = Vec3f();
     velocity = Vec3f();
-    _viewYaw = _viewPrevYaw = 0;
-    _viewPitch = _viewPrevPitch = 0;
+    _viewYaw = 0;
+    _viewPitch = 0;
     sPartySavedFlightZ = 0;
     floor_face_id = 0;
     currentWalkingSound = SOUND_Invalid;
