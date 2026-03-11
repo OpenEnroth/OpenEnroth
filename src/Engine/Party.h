@@ -290,10 +290,8 @@ struct Party {
                  // Note that only z component is preserved between frames, x & y are fully determined by the keys pressed.
     int _viewYaw; // View yaw in polar coordinates, 0 is positive X, 512 (pi/2) is positive Y.
     int _viewPitch; // View pitch in polar coordinates, 0 is horizontal, positive is looking up, negative is looking down.
-    Vec3f lastPos; // TODO(captainurist): drop
     int _viewPrevYaw;
     int _viewPrevPitch;
-    int lastEyeLevel; // TODO(captainurist): drop
     int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
     int floor_face_id;  // face we are standing at
     SoundId currentWalkingSound; // previously was 'walk_sound_timer'

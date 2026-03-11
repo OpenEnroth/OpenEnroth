@@ -534,10 +534,10 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->position = src.pos.toInt();
     dst->viewYaw = src._viewYaw;
     dst->viewPitch = src._viewPitch;
-    dst->prevPosition = src.lastPos.toInt();
+    dst->prevPosition = src.pos.toInt();
     dst->viewPrevYaw = src._viewPrevYaw;
     dst->viewPrevPitch = src._viewPrevPitch;
-    dst->prevEyeLevel = src.lastEyeLevel;
+    dst->prevEyeLevel = src.eyeLevel;
     dst->fallSpeed = src.velocity.z;
     dst->savedFlightZ = src.sPartySavedFlightZ;
     dst->waterLavaTimer = src._6FC_water_lava_timer.ticks(); // Can overflow and that's OK.
@@ -651,10 +651,8 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->pos = src.position.toFloat();
     dst->_viewYaw = src.viewYaw;
     dst->_viewPitch = src.viewPitch;
-    dst->lastPos = src.prevPosition.toFloat();
     dst->_viewPrevYaw = src.viewPrevYaw;
     dst->_viewPrevPitch = src.viewPrevPitch;
-    dst->lastEyeLevel = src.prevEyeLevel;
     dst->velocity = Vec3f(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
     dst->_6FC_water_lava_timer = Time::fromTicks(src.waterLavaTimer);

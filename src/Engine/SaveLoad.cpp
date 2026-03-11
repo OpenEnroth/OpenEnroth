@@ -281,10 +281,6 @@ void SavegameList::Reset() {
 
 void saveNewGame() {
     engine->_currentLoadedMapId = MAP_EMERALD_ISLAND;
-    pParty->lastPos.x = 12552;
-    pParty->lastPos.y = 800;
-    pParty->lastPos.z = 193;
-
     pParty->pos.x = 12552;
     pParty->pos.y = 800;
     pParty->pos.z = 193;

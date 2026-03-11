@@ -76,11 +76,10 @@ void Party::Zero() {
     PartyTimes.guildNextRefreshTime.fill(Time());
     PartyTimes.shopBanTimes.fill(Time());
     PartyTimes._s_times.fill(Time());
-    pos = lastPos = Vec3f();
+    pos = Vec3f();
     velocity = Vec3f();
     _viewYaw = _viewPrevYaw = 0;
     _viewPitch = _viewPrevPitch = 0;
-    lastEyeLevel = 0;
     sPartySavedFlightZ = 0;
     floor_face_id = 0;
     currentWalkingSound = SOUND_Invalid;
