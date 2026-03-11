@@ -485,9 +485,8 @@ void Party::Reset() {
     alignment = PartyAlignment::PartyAlignment_Neutral;
     SetUserInterface(alignment);
 
-    // game begins at 9 am
-    playing_time = Time(0, 0, 9);
-    last_regenerated = Time(0, 0, 9);
+    playing_time = gameStartingTime;
+    last_regenerated = gameStartingTime;
     uCurrentHour = 9;
 
     bTurnBasedModeOn = false;
