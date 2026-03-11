@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -32,7 +33,6 @@
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Memory/MemSet.h"
-#include <unordered_set>
 
 bool BaseRenderer::Initialize() {
     updateRenderDimensions();
@@ -209,11 +209,11 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                             DECORATION_MAGIC_PEDASTAL_210, DECORATION_MAGIC_PEDASTAL_211, DECORATION_MAGIC_PEDASTAL_212, DECORATION_MAGIC_PEDASTAL_213, DECORATION_MAGIC_PEDASTAL_214,
                             DECORATION_MAGIC_PEDASTAL_215, DECORATION_MAGIC_PEDASTAL_216, DECORATION_MAGIC_PEDASTAL_217, DECORATION_MAGIC_PEDASTAL_218, DECORATION_MAGIC_PEDASTAL_219,
                             DECORATION_MAGIC_PEDASTAL_220, DECORATION_MAGIC_PEDASTAL_221
-						};
+                        };
 
                         if (lightEmittingDecorations.contains(pLevelDecorations[i].uDecorationDescID)) {
                              frame->glowRadius = engine->config->graphics.DefaultLightRadius.value();
-						}
+                        }
                     }
 
                     Color defaultLightColor = engine->config->graphics.DefaultLightColor.value();
@@ -222,7 +222,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         if (render->config->graphics.ColoredLights.value()) {
                             color = decor_desc->uColoredLight;
                             // to avoid black lights
-                            if (color == Color(0,0,0)) {
+                            if (color == Color(0, 0, 0)) {
                                 color = defaultLightColor;
                             }
                         }
