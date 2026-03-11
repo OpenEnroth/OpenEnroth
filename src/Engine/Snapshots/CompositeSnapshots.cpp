@@ -576,7 +576,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
         for (const ODMFace &face : model.faces)
-            dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~FACE_HAS_HINT));
+            dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_HAS_HINT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -598,8 +598,8 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
         for (ODMFace &face : model.faces) {
-            face.attributes &= FACE_HAS_HINT; // TODO(captainurist): skip FACE_TEXTURE_FRAME here too?
-            face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~FACE_HAS_HINT;
+            face.attributes &= FACE_ANIMATED | FACE_HAS_HINT;
+            face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_HINT | FACE_ANIMATED);
         }
     }
 
