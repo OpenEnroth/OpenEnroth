@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <memory>
 
+#include "Utility/Exception.h"
 #include "Utility/Memory/FreeDeleter.h"
 
 namespace zlib {
@@ -39,8 +40,9 @@ Blob uncompress(const Blob &source, size_t sizeHint) {
         res = ::uncompress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
     }
 
-    // TODO(captainurist): should probably throw on decompression error instead of silently returning an empty blob.
-    return res == Z_OK ? Blob::copy(dest.get(), destLen) : Blob();
+    if (res != Z_OK)
+        throw Exception("Decompression error for '{}': {}", source.displayPath(), zError(res));
+    return Blob::copy(dest.get(), destLen);
 }
 
 };  // namespace zlib
