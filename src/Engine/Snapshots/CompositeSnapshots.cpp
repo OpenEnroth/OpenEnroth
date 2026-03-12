@@ -30,6 +30,7 @@
 #include "Library/Lod/LodEnums.h"
 #include "Library/Image/Pcx.h"
 
+#include "Utility/Exception.h"
 #include "Utility/Streams/BlobOutputStream.h"
 
 #include "Engine/Graphics/Image.h"
@@ -151,7 +152,8 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         pFace->textureVs = std::span(dst->faceData.data() + j, pFace->numVertices);
         j += pFace->numVertices + 1;
 
-        assert(j <= dst->faceData.size());
+        if (j > dst->faceData.size())
+            throw Exception("BLV face data overflow: offset {} exceeds size {}", j, dst->faceData.size());
     }
 
     for (BLVFace &face : dst->faces) {
@@ -185,9 +187,9 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
         if (pFaceExtra->eventId) {
             if (pFaceExtra->HasEventHint())
-                pFace->attributes |= FACE_HAS_EVENT;
+                pFace->attributes |= FACE_HAS_HINT;
             else
-                pFace->attributes &= ~FACE_HAS_EVENT;
+                pFace->attributes &= ~FACE_HAS_HINT;
         }
     }
 
@@ -223,7 +225,8 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
         j += srcSector.numMarkers; // Markers not used in OE, skip.
 
-        assert(j <= dst->sectorData.size()); // TODO(captainurist): exception, not an assertion?
+        if (j > dst->sectorData.size())
+            throw Exception("BLV sector data overflow: offset {} exceeds size {}", j, dst->sectorData.size());
     }
 
     reconstruct(src.sectorLightData, &dst->sectorLightData);
@@ -235,7 +238,8 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         dstSector->lightIds = std::span(dst->sectorLightData.data() + j, srcSector.numLights);
         j += srcSector.numLights;
 
-        assert(j <= dst->sectorLightData.size()); // TODO(captainurist): exception, not an assertion?
+        if (j > dst->sectorLightData.size())
+            throw Exception("BLV sector light data overflow: offset {} exceeds size {}", j, dst->sectorLightData.size());
     }
 
     reconstruct(src.decorations, &pLevelDecorations);
@@ -283,7 +287,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - not all of the attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BLVFace &pFace : pIndoor->faces)
-        dst->faceAttributes.push_back(std::to_underlying(pFace.attributes & ~(FACE_HAS_EVENT | FACE_ANIMATED)));
+        dst->faceAttributes.push_back(std::to_underlying(pFace.attributes & ~(FACE_HAS_HINT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -311,8 +315,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BLVFace &face : dst->faces) {
-        face.attributes &= FACE_ANIMATED | FACE_HAS_EVENT;
-        face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_ANIMATED);
+        face.attributes &= FACE_ANIMATED | FACE_HAS_HINT;
+        face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_HINT | FACE_ANIMATED);
     }
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
@@ -365,7 +369,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         pDoor->pZOffsets = dst->doorsData.data() + j;
         j += pDoor->numOffsets;
 
-        assert(j <= dst->doorsData.size());
+        if (j > dst->doorsData.size())
+            throw Exception("BLV door data overflow: offset {} exceeds size {}", j, dst->doorsData.size());
     }
 
     for (size_t i = 0; i < dst->doors.size(); ++i) {
@@ -447,9 +452,9 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
 
         if (dst->faces[i].eventId) {
             if (dst->faces[i].HasEventHint())
-                dst->faces[i].attributes |= FACE_HAS_EVENT;
+                dst->faces[i].attributes |= FACE_HAS_HINT;
             else
-                dst->faces[i].attributes &= ~FACE_HAS_EVENT;
+                dst->faces[i].attributes &= ~FACE_HAS_HINT;
         }
     }
 }
@@ -571,7 +576,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
         for (const ODMFace &face : model.faces)
-            dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~FACE_HAS_EVENT));
+            dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_HAS_HINT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -593,8 +598,8 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
         for (ODMFace &face : model.faces) {
-            face.attributes &= FACE_HAS_EVENT; // TODO(captainurist): skip FACE_TEXTURE_FRAME here too?
-            face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~FACE_HAS_EVENT;
+            face.attributes &= FACE_ANIMATED | FACE_HAS_HINT;
+            face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_HINT | FACE_ANIMATED);
         }
     }
 

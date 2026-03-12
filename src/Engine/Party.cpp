@@ -76,11 +76,10 @@ void Party::Zero() {
     PartyTimes.guildNextRefreshTime.fill(Time());
     PartyTimes.shopBanTimes.fill(Time());
     PartyTimes._s_times.fill(Time());
-    pos = lastPos = Vec3f();
+    pos = Vec3f();
     velocity = Vec3f();
-    _viewYaw = _viewPrevYaw = 0;
-    _viewPitch = _viewPrevPitch = 0;
-    lastEyeLevel = 0;
+    _viewYaw = 0;
+    _viewPitch = 0;
     sPartySavedFlightZ = 0;
     floor_face_id = 0;
     currentWalkingSound = SOUND_Invalid;
@@ -486,9 +485,8 @@ void Party::Reset() {
     alignment = PartyAlignment::PartyAlignment_Neutral;
     SetUserInterface(alignment);
 
-    // game begins at 9 am
-    playing_time = Time(0, 0, 9);
-    last_regenerated = Time(0, 0, 9);
+    playing_time = gameStartingTime;
+    last_regenerated = gameStartingTime;
     uCurrentHour = 9;
 
     bTurnBasedModeOn = false;
