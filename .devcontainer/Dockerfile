@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   zsh \
   man-db \
   unzip \
+  p7zip-full \
   gnupg2 \
   gh \
   iptables \
