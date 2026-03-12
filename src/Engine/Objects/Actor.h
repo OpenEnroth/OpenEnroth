@@ -263,6 +263,8 @@ class Actor {
 };
 
 extern std::deque<Actor> pActors;
+// TODO(captainurist): wrap pActors and this variable into an ActorList class.
+extern size_t nextActorReuseScanStart; // Sweeping scan position for slot reuse in AllocateActor.
 
 bool CheckActors_proximity();
 
@@ -285,16 +287,14 @@ void evaluateAoeDamage();
 double sub_43AE12(signed int a1);
 void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVelocity);
 
-// TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses
-// appendOnly=false. And this actually makes sense as actor ids can be stored in all kinds of places (e.g. inside
-// projectiles as a reference to the caster), so in practice reusing actor ids will lead to rare bugs.
-// What can we do with this?
 /**
  * Allocates a new actor in `pActors` array.
  *
- * @param appendOnly                    If true, this function doesn't try to find an empty (removed) spot in the
- *                                      actors list, and only appends new actors to the end.
+ * Appends to the end if below the actor limit, otherwise reuses a removed slot. Slot reuse is done in a sweeping
+ * fashion starting from the last reused position to minimize the chance of stale references (e.g. in projectiles or
+ * `summonerId`) still pointing to a just-removed actor.
+ *
  * @return                              Pointer to a newly allocated actor, or `nullptr` if the actor count limit
- *                                      has been hit.
+ *                                      has been hit and no removed slots are available.
  */
-Actor *AllocateActor(bool appendOnly);
+Actor *AllocateActor();

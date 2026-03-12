@@ -281,7 +281,7 @@ void EngineController::restAndHeal() {
 }
 
 Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
-    Actor *actor = AllocateActor(false);
+    Actor *actor = AllocateActor();
     if (!actor)
         throw Exception("Failed to spawn monster {}", static_cast<int>(id));
 
