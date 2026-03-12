@@ -4,6 +4,7 @@
 
 #include "Library/Serialization/Serialization.h"
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Color/Color.h"
 
 UNIT_TEST(Serialization, Standard) {
     EXPECT_EQ(fromString<int>(toString(0)), 0);

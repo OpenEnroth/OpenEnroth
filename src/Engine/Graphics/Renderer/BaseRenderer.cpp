@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -194,27 +195,41 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         7;
                     int v37 = v13;
 
-                    v38 = billboardFlagsForSprite(frame->flags, v13);
 
-                    // for light
+                    if (engine->config->graphics.AddMoreLights.value()) {
+                        // This is an attempt to make the game look more nice.
+                        // In MM7 data some sprites like a "cauldron" do not emit light.
+                        // In MM8 pedestals and campfires have large radius and bright color (too bright actually).
+                        // The following changes makes OpenEnroth look more like MM8.
+                        // OpenEnroth do not support mods and data patches right now. TODO(pskelton): data patch
+                        // So the changes are in C++ code. But it better be placed in lua scripts or binary data patches.
+                        static const std::unordered_set<DecorationId> lightEmittingDecorations = {
+                            DECORATION_CAMPFIRE_5, DECORATION_CAULDRON_6, DECORATION_BARREL_27, DECORATION_BURNED_OUT_FIRE_222, DECORATION_FIRE_184, DECORATION_MUSHROOM_187,
+                            DECORATION_MUSHROOM_190, DECORATION_BEACON_FIRE_206, DECORATION_BEACON_FIRE_207, DECORATION_BEACON_FIRE_208, DECORATION_BEACON_FIRE_209,
+                            DECORATION_MAGIC_PEDASTAL_210, DECORATION_MAGIC_PEDASTAL_211, DECORATION_MAGIC_PEDASTAL_212, DECORATION_MAGIC_PEDASTAL_213, DECORATION_MAGIC_PEDASTAL_214,
+                            DECORATION_MAGIC_PEDASTAL_215, DECORATION_MAGIC_PEDASTAL_216, DECORATION_MAGIC_PEDASTAL_217, DECORATION_MAGIC_PEDASTAL_218, DECORATION_MAGIC_PEDASTAL_219,
+                            DECORATION_MAGIC_PEDASTAL_220, DECORATION_MAGIC_PEDASTAL_221
+                        };
+
+                        if (lightEmittingDecorations.contains(pLevelDecorations[i].uDecorationDescID)) {
+                             frame->glowRadius = engine->config->graphics.DefaultLightRadius.value();
+                        }
+                    }
+
+                    Color defaultLightColor = engine->config->graphics.DefaultLightColor.value();
                     if (frame->glowRadius) {
-                        color = colorTable.White;
+                        color = defaultLightColor;
                         if (render->config->graphics.ColoredLights.value()) {
                             color = decor_desc->uColoredLight;
-                            // to avoid blank lights
-                            if (color == Color()) {
-                                color = colorTable.White;
+                            // to avoid black lights
+                            if (color == Color(0, 0, 0)) {
+                                color = defaultLightColor;
                             }
                         }
-                        pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +
-                            Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
+                        pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition + Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
                             frame->glowRadius, color, _4E94D0_light_type);
-                    }  // for light
+                    }
 
-                       // v17 = (pLevelDecorations[i].vPosition.x -
-                       // pCamera3D->vCameraPos.x) << 16; v40 =
-                       // (pLevelDecorations[i].vPosition.y -
-                       // pCamera3D->vCameraPos.y) << 16;
 
                     if (render->AddBillboardIfVisible(frame->sprites[(int64_t)v37], frame->paletteId, pLevelDecorations[i].vPosition, { frame->scale, frame->scale },
                         v38, Pid(OBJECT_Decoration, i))) {
