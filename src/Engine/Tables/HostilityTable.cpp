@@ -1,14 +1,14 @@
-#include "FactionTable.h"
+#include "HostilityTable.h"
 
 #include <cstring>
 #include <string>
 
 #include "Utility/Memory/Blob.h"
 
-FactionTable *pFactionTable;
+HostilityTable *pHostilityTable;
 
 //----- (004547E4) --------------------------------------------------------
-void FactionTable::Initialize(const Blob &factions) {
+void HostilityTable::Initialize(const Blob &factions) {
     int i;
     char *test_string;
     unsigned char c;

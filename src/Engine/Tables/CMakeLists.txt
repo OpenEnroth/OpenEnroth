@@ -4,7 +4,7 @@ set(ENGINE_TABLES_SOURCES
         AutonoteTable.cpp
         AwardTable.cpp
         ChestTable.cpp
-        FactionTable.cpp
+        HostilityTable.cpp
         FrameTableInc.cpp
         HistoryTable.cpp
         HouseTable.cpp
@@ -23,7 +23,7 @@ set(ENGINE_TABLES_HEADERS
         AutonoteTable.h
         AwardTable.h
         ChestTable.h
-        FactionTable.h
+        HostilityTable.h
         FrameTableInc.h
         HistoryTable.h
         HouseTable.h

@@ -22,6 +22,7 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
@@ -299,7 +300,7 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
     actor->sectorId = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->GetSector(position) : 0;
     actor->PrepareSprites(0);
     actor->monsterInfo.hostilityType = HOSTILITY_LONG;
-    actor->ally = MONSTER_TYPE_INVALID;
+    actor->hostilityGroup = monsterTypeForMonsterId(actor->monsterInfo.id);
     actor->group = 0;
     actor->currentActionTime = 0_ticks;
     actor->aiState = Standing;

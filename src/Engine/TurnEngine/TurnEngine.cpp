@@ -15,7 +15,7 @@
 
 #include "Engine/Random/Random.h"
 
-#include "Engine/Tables/FactionTable.h"
+#include "Engine/Tables/HostilityTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -665,7 +665,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                 // v10 = (uint8_t)*(&byte_5C8D1A[89 *
                 // (pMonsterStats->pInfos[pActors[v22.id()].pMonsterInfo.uID].uID
                 // - 1) / 3] + (v5->pMonsterInfo.uID - 1) / 3);
-                v10 = pFactionTable->relations
+                v10 = pHostilityTable->relations
                           [monsterTypeForMonsterId(pActors[v22.id()].monsterInfo.id)] // Original binary had an off by one here, was missing the first -1.
                           [monsterTypeForMonsterId(pActors[actor_id].monsterInfo.id)];
             else

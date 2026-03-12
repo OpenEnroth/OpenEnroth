@@ -8,6 +8,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -1398,7 +1399,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     snapshot(src.items, &dst->items, tags::context(ITEM_SLOT_INVALID));
 
     dst->group = src.group;
-    dst->ally = std::to_underlying(src.ally);
+    dst->hostilityGroup = src.hostilityGroup == MONSTER_TYPE_INVALID ? 9999 : std::to_underlying(src.hostilityGroup);
 
     snapshot(src.scheduledJobs, &dst->scheduledJobs);
 
@@ -1492,7 +1493,12 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     reconstruct(src.items, &dst->items);
 
     dst->group = src.group;
-    dst->ally = static_cast<MonsterType>(src.ally);
+    if (src.hostilityGroup == 9999)
+        dst->hostilityGroup = MONSTER_TYPE_INVALID;
+    else if (src.hostilityGroup == 0)
+        dst->hostilityGroup = monsterTypeForMonsterId(dst->monsterInfo.id);
+    else
+        dst->hostilityGroup = static_cast<MonsterType>(src.hostilityGroup);
 
     reconstruct(src.scheduledJobs, &dst->scheduledJobs);
 
