@@ -561,11 +561,11 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     if (engine->_currentLoadedMapId == MAP_BREEDING_ZONE || engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
-        for (unsigned i = 0; i < pActors.size(); ++i) {
+        for (Actor &actor : pActors) {
             // TODO(captainurist): shouldn't we also set uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID?
-            pActors[i].monsterInfo.treasureType = RANDOM_ITEM_ANY;
-            pActors[i].monsterInfo.goldDiceRolls = 0;
-            pActors[i].monsterInfo.exp = 0;
+            actor.monsterInfo.treasureType = RANDOM_ITEM_ANY;
+            actor.monsterInfo.goldDiceRolls = 0;
+            actor.monsterInfo.exp = 0;
         }
     }
 
@@ -837,24 +837,24 @@ void Engine::_461103_load_level_sub() {
     pParty->arenaLevel = ARENA_LEVEL_INVALID;
     pNPCStats->uNewlNPCBufPos = 0;
 
-    for (size_t i = 0; i < pActors.size(); ++i) {
-        MonsterTier tier = monsterTierForMonsterId(pActors[i].monsterInfo.id);
+    for (Actor &actor : pActors) {
+        MonsterTier tier = monsterTierForMonsterId(actor.monsterInfo.id);
         if (tier == MONSTER_TIER_A)
             continue; // Weakest peasants are just peasants.
 
-        if (pActors[i].npcId && pActors[i].npcId < 5000)
+        if (actor.npcId && actor.npcId < 5000)
             continue;
 
-        if (isPeasant(pActors[i].monsterInfo.id)) {
+        if (isPeasant(actor.monsterInfo.id)) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.id, HOUSE_INVALID, engine->_currentLoadedMapId);
-            pActors[i].npcId = pNPCStats->uNewlNPCBufPos + 5000;
+                actor.monsterInfo.id, HOUSE_INVALID, engine->_currentLoadedMapId);
+            actor.npcId = pNPCStats->uNewlNPCBufPos + 5000;
             pNPCStats->uNewlNPCBufPos++;
             continue;
         }
 
-        pActors[i].npcId = 0;
+        actor.npcId = 0;
     }
 
     pGameLoadingUI_ProgressBar->Progress();

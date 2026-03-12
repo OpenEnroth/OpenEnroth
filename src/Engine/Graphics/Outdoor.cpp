@@ -626,52 +626,52 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
                        //  int v9; // [sp+34Ch] [bp-4h]@1
 
     alert_status = false;
-    for (int i = 0; i < pActors.size(); ++i) {
-        if (!(pActors[i].attributes & ACTOR_UNKNOW7)) {
+    for (Actor &actor : pActors) {
+        if (!(actor.attributes & ACTOR_UNKNOW7)) {
             if (!alert_status) {
-                pActors[i].currentActionTime = 0_ticks;
-                pActors[i].currentActionLength = 0_ticks;
-                if (pActors[i].attributes & ACTOR_UNKNOW11)
-                    pActors[i].aiState = AIState::Disabled;
-                if (pActors[i].aiState != AIState::Removed &&
-                    pActors[i].aiState != AIState::Disabled &&
-                    (pActors[i].hp == 0 ||
-                     pActors[i].monsterInfo.hp == 0))
-                    pActors[i].aiState = AIState::Dead;
-                pActors[i].velocity.x = 0;
-                pActors[i].velocity.y = 0;
-                pActors[i].velocity.z = 0;
-                pActors[i].UpdateAnimation();
-                pActors[i].monsterInfo.hostilityType =
+                actor.currentActionTime = 0_ticks;
+                actor.currentActionLength = 0_ticks;
+                if (actor.attributes & ACTOR_UNKNOW11)
+                    actor.aiState = AIState::Disabled;
+                if (actor.aiState != AIState::Removed &&
+                    actor.aiState != AIState::Disabled &&
+                    (actor.hp == 0 ||
+                     actor.monsterInfo.hp == 0))
+                    actor.aiState = AIState::Dead;
+                actor.velocity.x = 0;
+                actor.velocity.y = 0;
+                actor.velocity.z = 0;
+                actor.UpdateAnimation();
+                actor.monsterInfo.hostilityType =
                     HOSTILITY_FRIENDLY;
-                pActors[i].PrepareSprites(0);
+                actor.PrepareSprites(0);
             } else {
-                pActors[i].aiState = AIState::Disabled;
-                pActors[i].attributes |= ACTOR_UNKNOW11;
+                actor.aiState = AIState::Disabled;
+                actor.attributes |= ACTOR_UNKNOW11;
             }
         } else if (a1 == MAP_INVALID) {
-            pActors[i].aiState = AIState::Disabled;
-            pActors[i].attributes |= ACTOR_UNKNOW11;
+            actor.aiState = AIState::Disabled;
+            actor.attributes |= ACTOR_UNKNOW11;
         } else if (alert_status) {
-            pActors[i].currentActionTime = 0_ticks;
-            pActors[i].currentActionLength = 0_ticks;
-            if (pActors[i].attributes & ACTOR_UNKNOW11)
-                pActors[i].aiState = AIState::Disabled;
-            if (pActors[i].aiState != AIState::Removed &&
-                pActors[i].aiState != AIState::Disabled &&
-                (pActors[i].hp == 0 ||
-                 pActors[i].monsterInfo.hp == 0))
-                pActors[i].aiState = AIState::Dead;
-            pActors[i].velocity.x = 0;
-            pActors[i].velocity.y = 0;
-            pActors[i].velocity.z = 0;
-            pActors[i].UpdateAnimation();
-            pActors[i].monsterInfo.hostilityType =
+            actor.currentActionTime = 0_ticks;
+            actor.currentActionLength = 0_ticks;
+            if (actor.attributes & ACTOR_UNKNOW11)
+                actor.aiState = AIState::Disabled;
+            if (actor.aiState != AIState::Removed &&
+                actor.aiState != AIState::Disabled &&
+                (actor.hp == 0 ||
+                 actor.monsterInfo.hp == 0))
+                actor.aiState = AIState::Dead;
+            actor.velocity.x = 0;
+            actor.velocity.y = 0;
+            actor.velocity.z = 0;
+            actor.UpdateAnimation();
+            actor.monsterInfo.hostilityType =
                 HOSTILITY_FRIENDLY;
-            pActors[i].PrepareSprites(0);
+            actor.PrepareSprites(0);
         } else {
-            pActors[i].aiState = AIState::Disabled;
-            pActors[i].attributes |= ACTOR_UNKNOW11;
+            actor.aiState = AIState::Disabled;
+            actor.attributes |= ACTOR_UNKNOW11;
             alert_status = GetAlertStatus();
         }
     }
@@ -1594,53 +1594,53 @@ void UpdateActors_ODM() {
     if (engine->config->debug.NoActors.value())
         return;  // uNumActors = 0;
 
-    for (unsigned int Actor_ITR = 0; Actor_ITR < pActors.size(); ++Actor_ITR) {
-        if (pActors[Actor_ITR].aiState == Removed || pActors[Actor_ITR].aiState == Disabled ||
-            pActors[Actor_ITR].aiState == Summoned || !pActors[Actor_ITR].moveSpeed)
+    for (Actor &actor : pActors) {
+        if (actor.aiState == Removed || actor.aiState == Disabled ||
+            actor.aiState == Summoned || !actor.moveSpeed)
                 continue;
 
-        bool Water_Walk = supertypeForMonsterId(pActors[Actor_ITR].monsterInfo.id) == MONSTER_SUPERTYPE_WATER_ELEMENTAL;
+        bool Water_Walk = supertypeForMonsterId(actor.monsterInfo.id) == MONSTER_SUPERTYPE_WATER_ELEMENTAL;
 
-        pActors[Actor_ITR].sectorId = 0;
+        actor.sectorId = 0;
 
-        bool uIsFlying = pActors[Actor_ITR].monsterInfo.flying;
-        if (!pActors[Actor_ITR].CanAct())
+        bool uIsFlying = actor.monsterInfo.flying;
+        if (!actor.CanAct())
             uIsFlying = 0;
 
-        bool Slope_High = pOutdoor->pTerrain.isSlopeTooHighByPos(pActors[Actor_ITR].pos);
+        bool Slope_High = pOutdoor->pTerrain.isSlopeTooHighByPos(actor.pos);
         int Model_On_PID = 0;
         bool uIsOnWater = false;
-        float Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, &uIsOnWater, &Model_On_PID);
+        float Floor_Level = ODM_GetFloorLevel(actor.pos, &uIsOnWater, &Model_On_PID);
         bool Actor_On_Terrain = Model_On_PID == 0;
 
-        bool uIsAboveFloor = (pActors[Actor_ITR].pos.z > (Floor_Level + 1));
+        bool uIsAboveFloor = (actor.pos.z > (Floor_Level + 1));
 
         // make bloodsplat when the ground is hit
-        if (!pActors[Actor_ITR].donebloodsplat) {
-            if (pActors[Actor_ITR].aiState == Dead || pActors[Actor_ITR].aiState == Dying) {
-                if (pActors[Actor_ITR].pos.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->infos[pActors[Actor_ITR].monsterInfo.id].bloodSplatOnDeath) {
+        if (!actor.donebloodsplat) {
+            if (actor.aiState == Dead || actor.aiState == Dying) {
+                if (actor.pos.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
+                    if (pMonsterStats->infos[actor.monsterInfo.id].bloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
-                            float splatRadius = pActors[Actor_ITR].radius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
+                            float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
+                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
                         }
-                        pActors[Actor_ITR].donebloodsplat = true;
+                        actor.donebloodsplat = true;
                     }
                 }
             }
         }
 
-        if (pActors[Actor_ITR].aiState == Dead && uIsOnWater && !uIsAboveFloor) {
-            pActors[Actor_ITR].aiState = Removed;
+        if (actor.aiState == Dead && uIsOnWater && !uIsAboveFloor) {
+            actor.aiState = Removed;
             continue;
         }
 
         // MOVEMENT
-        if (pActors[Actor_ITR].currentActionAnimation == ANIM_Walking) {
-            int Actor_Speed = pActors[Actor_ITR].moveSpeed;
-            if (pActors[Actor_ITR].buffs[ACTOR_BUFF_SLOWED].Active())
+        if (actor.currentActionAnimation == ANIM_Walking) {
+            int Actor_Speed = actor.moveSpeed;
+            if (actor.buffs[ACTOR_BUFF_SLOWED].Active())
                 Actor_Speed = Actor_Speed * 0.5;
-            if (pActors[Actor_ITR].aiState == Fleeing || pActors[Actor_ITR].aiState == Pursuing)
+            if (actor.aiState == Fleeing || actor.aiState == Pursuing)
                 Actor_Speed *= 2;
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT) {
                 Actor_Speed *= debug_turn_based_monster_movespeed_mul;
@@ -1648,93 +1648,93 @@ void UpdateActors_ODM() {
             if (Actor_Speed > 1000)
                 Actor_Speed = 1000;
 
-            pActors[Actor_ITR].velocity.x = TrigLUT.cos(pActors[Actor_ITR].yawAngle) * Actor_Speed;
-            pActors[Actor_ITR].velocity.y = TrigLUT.sin(pActors[Actor_ITR].yawAngle) * Actor_Speed;
+            actor.velocity.x = TrigLUT.cos(actor.yawAngle) * Actor_Speed;
+            actor.velocity.y = TrigLUT.sin(actor.yawAngle) * Actor_Speed;
             if (uIsFlying) {
-                pActors[Actor_ITR].velocity.z = TrigLUT.sin(pActors[Actor_ITR].pitchAngle) * Actor_Speed;
+                actor.velocity.z = TrigLUT.sin(actor.pitchAngle) * Actor_Speed;
             }
         } else {
-            pActors[Actor_ITR].velocity.x *= 0.83923339843f;
-            pActors[Actor_ITR].velocity.y *= 0.83923339843f;
+            actor.velocity.x *= 0.83923339843f;
+            actor.velocity.y *= 0.83923339843f;
             if (uIsFlying)
-                pActors[Actor_ITR].velocity.z *= 0.83923339843f;
+                actor.velocity.z *= 0.83923339843f;
         }
 
         // BELOW FLOOR - POP UPWARDS
-        if (pActors[Actor_ITR].pos.z < Floor_Level) {
-            pActors[Actor_ITR].pos.z = Floor_Level;
-            pActors[Actor_ITR].velocity.z = uIsFlying != 0 ? 0x14 : 0;
+        if (actor.pos.z < Floor_Level) {
+            actor.pos.z = Floor_Level;
+            actor.velocity.z = uIsFlying != 0 ? 0x14 : 0;
         }
         // GRAVITY
         if (!uIsAboveFloor || uIsFlying) {
             if (Slope_High && !uIsAboveFloor && Actor_On_Terrain) {
-                pActors[Actor_ITR].pos.z = Floor_Level;
-                Vec3f Terrain_Norm = pOutdoor->pTerrain.normalByPos(pActors[Actor_ITR].pos);
+                actor.pos.z = Floor_Level;
+                Vec3f Terrain_Norm = pOutdoor->pTerrain.normalByPos(actor.pos);
                 int Gravity = GetGravityStrength();
 
-                pActors[Actor_ITR].velocity.z += -16 * pEventTimer->dt().ticks() * Gravity; //TODO(pskelton): common gravity code extract
-                float v73 = std::abs(dot(Terrain_Norm, pActors[Actor_ITR].velocity)) * 2.0f;
+                actor.velocity.z += -16 * pEventTimer->dt().ticks() * Gravity; //TODO(pskelton): common gravity code extract
+                float v73 = std::abs(dot(Terrain_Norm, actor.velocity)) * 2.0f;
 
-                pActors[Actor_ITR].velocity.x += v73 * Terrain_Norm.x;
-                pActors[Actor_ITR].velocity.y += v73 * Terrain_Norm.y;
-                pActors[Actor_ITR].yawAngle -= 32;
-                // pActors[Actor_ITR].vVelocity.z += fixpoint_mul(v73, Terrain_Norm.z);
+                actor.velocity.x += v73 * Terrain_Norm.x;
+                actor.velocity.y += v73 * Terrain_Norm.y;
+                actor.yawAngle -= 32;
+                // actor.vVelocity.z += fixpoint_mul(v73, Terrain_Norm.z);
             }
         } else {
-            pActors[Actor_ITR].velocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
+            actor.velocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
         // ARMAGEDDON PANIC
-        if (pParty->armageddon_timer && pActors[Actor_ITR].CanAct() && pParty->armageddonForceCount > 0) {
-            pActors[Actor_ITR].velocity.x += grng->random(100) - 50;
-            pActors[Actor_ITR].velocity.y += grng->random(100) - 50;
-            pActors[Actor_ITR].velocity.z += grng->random(100) - 20;
-            pActors[Actor_ITR].aiState = Stunned;
-            pActors[Actor_ITR].yawAngle += grng->random(32) - 16;
-            pActors[Actor_ITR].UpdateAnimation();
+        if (pParty->armageddon_timer && actor.CanAct() && pParty->armageddonForceCount > 0) {
+            actor.velocity.x += grng->random(100) - 50;
+            actor.velocity.y += grng->random(100) - 50;
+            actor.velocity.z += grng->random(100) - 20;
+            actor.aiState = Stunned;
+            actor.yawAngle += grng->random(32) - 16;
+            actor.UpdateAnimation();
         }
 
         // TODO(pskelton): this cancels out the above - is this intended
         // MOVING TOO SLOW
-        if (pActors[Actor_ITR].velocity.xy().lengthSqr() < 400 && Slope_High == 0) {
-            pActors[Actor_ITR].velocity.y = 0;
-            pActors[Actor_ITR].velocity.x = 0;
+        if (actor.velocity.xy().lengthSqr() < 400 && Slope_High == 0) {
+            actor.velocity.y = 0;
+            actor.velocity.x = 0;
         }
 
         // COLLISIONS
-        ProcessActorCollisionsODM(pActors[Actor_ITR], uIsFlying);
+        ProcessActorCollisionsODM(actor, uIsFlying);
 
         // WATER TILE CHECKING
         if (!Water_Walk) {
             // tile on (1) tile heading (2)
             bool tile1IsLand, tile2IsLand;
-            tile1IsLand = !pOutdoor->pTerrain.isWaterByPos(pActors[Actor_ITR].pos);
-            tile2IsLand = !pOutdoor->pTerrain.isWaterByPos(pActors[Actor_ITR].pos + pActors[Actor_ITR].velocity);
+            tile1IsLand = !pOutdoor->pTerrain.isWaterByPos(actor.pos);
+            tile2IsLand = !pOutdoor->pTerrain.isWaterByPos(actor.pos + actor.velocity);
             if (!uIsFlying && tile1IsLand && !tile2IsLand) {
                 // approaching water - turn away
-                if (pActors[Actor_ITR].CanAct()) {
-                    pActors[Actor_ITR].yawAngle -= 32;
-                    pActors[Actor_ITR].currentActionTime = 0_ticks;
-                    pActors[Actor_ITR].currentActionLength = 128_ticks;
-                    pActors[Actor_ITR].aiState = Fleeing;
+                if (actor.CanAct()) {
+                    actor.yawAngle -= 32;
+                    actor.currentActionTime = 0_ticks;
+                    actor.currentActionLength = 128_ticks;
+                    actor.aiState = Fleeing;
                 }
             }
             if (!uIsFlying && !tile1IsLand && !uIsAboveFloor && Actor_On_Terrain) {
                 // on water and shouldnt be
                 bool tileTestLand = false;  // reset land found
-                Vec2i gridPos = worldToGrid(pActors[Actor_ITR].pos);
+                Vec2i gridPos = worldToGrid(actor.pos);
                 for (int i = gridPos.x - 1; i <= gridPos.x + 1; i++) {
                     // scan surrounding cells for land
                     for (int j = gridPos.y - 1; j <= gridPos.y + 1; j++) {
                         tileTestLand = !pOutdoor->pTerrain.isWaterByGrid({i, j});
                         if (tileTestLand) {  // found land
                             Vec2i target = gridToWorld({i, j});
-                            if (pActors[Actor_ITR].CanAct()) {  // head to land
-                                pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target.x - pActors[Actor_ITR].pos.x,
-                                                                             target.y - pActors[Actor_ITR].pos.y);
-                                pActors[Actor_ITR].currentActionTime = 0_ticks;
-                                pActors[Actor_ITR].currentActionLength = 128_ticks;
-                                pActors[Actor_ITR].aiState = Fleeing;
+                            if (actor.CanAct()) {  // head to land
+                                actor.yawAngle = TrigLUT.atan2(target.x - actor.pos.x,
+                                                                             target.y - actor.pos.y);
+                                actor.currentActionTime = 0_ticks;
+                                actor.currentActionLength = 128_ticks;
+                                actor.aiState = Fleeing;
                                 break;
                             }
                         }
@@ -1745,7 +1745,7 @@ void UpdateActors_ODM() {
                 }
                 if (!tileTestLand) {
                     // no land found so drowning damage
-                    // pActors[Actor_ITR].sCurrentHP -= 1;
+                    // actor.sCurrentHP -= 1;
                     // logger->Warning("DROWNING");
                 }
             }

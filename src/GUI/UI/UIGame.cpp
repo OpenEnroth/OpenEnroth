@@ -1503,21 +1503,21 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                 }
             }
         }
-        for (unsigned i = 0; i < pActors.size(); ++i) {  // draw actors(отрисовка монстров и нпс)
-            if (pActors[i].aiState != Removed &&
-                pActors[i].aiState != Disabled &&
-                (pActors[i].aiState == Dead || pActors[i].ActorNearby())) {
-                pPoint_X = center.x + (pActors[i].pos.x - pParty->pos.x) * zoom / 65536.0f;
-                pPoint_Y = center.y - (pActors[i].pos.y - pParty->pos.y) * zoom / 65536.0f;
+        for (const Actor &actor : pActors) {  // draw actors(отрисовка монстров и нпс)
+            if (actor.aiState != Removed &&
+                actor.aiState != Disabled &&
+                (actor.aiState == Dead || actor.ActorNearby())) {
+                pPoint_X = center.x + (actor.pos.x - pParty->pos.x) * zoom / 65536.0f;
+                pPoint_Y = center.y - (actor.pos.y - pParty->pos.y) * zoom / 65536.0f;
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z
                 //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <=
                 //  render->raster_clip_w )
                 {
                     pColor = ui_game_minimap_actor_friendly_color;
-                    if (pActors[i].attributes & ACTOR_HOSTILE)
+                    if (actor.attributes & ACTOR_HOSTILE)
                         pColor = ui_game_minimap_actor_hostile_color;
-                    if (pActors[i].aiState == Dead)
+                    if (actor.aiState == Dead)
                         pColor = ui_game_minimap_actor_corpse_color;
                     if (zoom > 1024) {
                         render->RasterLine2D(Pointi(pPoint_X - 2, pPoint_Y - 1), Pointi(pPoint_X - 2, pPoint_Y + 1 + lineadj),
