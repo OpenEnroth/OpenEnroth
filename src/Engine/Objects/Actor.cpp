@@ -30,7 +30,7 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/AttackList.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/FactionTable.h"
+#include "Engine/Tables/HostilityTable.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"
@@ -689,13 +689,8 @@ unsigned short Actor::GetObjDescId(SpellId spellId) {
 }
 
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
-    MonsterType v2 = a1->ally;
-    if (a1->ally == MONSTER_TYPE_INVALID)
-        v2 = monsterTypeForMonsterId(a1->monsterInfo.id);
-
-    MonsterType v3 = a2->ally;
-    if (a2->ally == MONSTER_TYPE_INVALID)
-        v3 = monsterTypeForMonsterId(a2->monsterInfo.id);
+    MonsterType v2 = a1->hostilityGroup;
+    MonsterType v3 = a2->hostilityGroup;
 
     if (isPeasant(v2) && isPeasant(v3) && raceForMonsterType(v2) == raceForMonsterType(v3) || v2 == v3)
         return true;
@@ -1228,10 +1223,7 @@ int Actor::_43B3E0_CalcDamage(ActorAbility dmgSource) {
 
 //----- (00438B9B) --------------------------------------------------------
 bool Actor::IsPeasant() {
-    MonsterType monsterType = this->ally;
-    if (this->ally == MONSTER_TYPE_INVALID)
-        monsterType = monsterTypeForMonsterId(this->monsterInfo.id);
-    return isPeasant(monsterType);
+    return isPeasant(this->hostilityGroup);
 }
 
 //----- (0042EBEE) --------------------------------------------------------
@@ -1759,7 +1751,7 @@ void Actor::resurrect(unsigned int uActorID) {
     pActor->monsterInfo.goldDiceSides = 0;
     pActor->monsterInfo.treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
     pActor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
-    pActor->ally = MONSTER_TYPE_9999;
+    pActor->hostilityGroup = MONSTER_TYPE_INVALID;
     pActor->ResetAggressor();  // ~0x80000
     pActor->group = 0;
     pActor->buffs[ACTOR_BUFF_BERSERK].Reset();
@@ -2134,55 +2126,49 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
 
 //----- (0040104C) --------------------------------------------------------
 MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
-    MonsterType thisGroup;  // ebp@19
-    MonsterType otherGroup;          // eax@22
-    MonsterType thisAlly;   // edx@25
-    MonsterType otherAlly;  // edx@33
+    MonsterType thisGroup;
+    MonsterType otherGroup;
 
+    // Same non-zero group = always friendly (e.g. monsters spawned together).
     if (otherActPtr) {
         if (otherActPtr->group != 0 && this->group != 0 &&
             otherActPtr->group == this->group)
             return HOSTILITY_FRIENDLY;
     }
 
+    // Resolve this actor's faction for hostility table lookup.
     if (this->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
-    thisAlly = this->ally;
-    if (this->buffs[ACTOR_BUFF_ENSLAVED].Active() || thisAlly == MONSTER_TYPE_9999)
+    if (this->buffs[ACTOR_BUFF_ENSLAVED].Active())
         thisGroup = MONSTER_TYPE_INVALID;
-    else if (thisAlly != MONSTER_TYPE_INVALID)
-        thisGroup = thisAlly;
     else
-        thisGroup = monsterTypeForMonsterId(this->monsterInfo.id);
+        thisGroup = this->hostilityGroup;
 
+    // Resolve other actor's faction, or party (MONSTER_TYPE_INVALID) if null.
     if (otherActPtr) {
         if (otherActPtr->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
-        otherAlly = otherActPtr->ally;
-        if (otherActPtr->buffs[ACTOR_BUFF_ENSLAVED].Active() || otherAlly == MONSTER_TYPE_9999)
+        if (otherActPtr->buffs[ACTOR_BUFF_ENSLAVED].Active())
             otherGroup = MONSTER_TYPE_INVALID;
-        else if (otherAlly != MONSTER_TYPE_INVALID)
-            otherGroup = otherAlly;
         else
-            otherGroup = monsterTypeForMonsterId(otherActPtr->monsterInfo.id);
+            otherGroup = otherActPtr->hostilityGroup;
     } else {
         otherGroup = MONSTER_TYPE_INVALID;
     }
 
+    // Charm: makes charmed monster friendly to the party only, doesn't make it fight other monsters.
     if (this->buffs[ACTOR_BUFF_CHARM].Active() && otherGroup == MONSTER_TYPE_INVALID ||
         otherActPtr && otherActPtr->buffs[ACTOR_BUFF_CHARM].Active() && thisGroup == MONSTER_TYPE_INVALID)
         return HOSTILITY_FRIENDLY;
     if (!this->buffs[ACTOR_BUFF_ENSLAVED].Active() && this->ActorEnemy() && otherGroup == MONSTER_TYPE_INVALID)
         return HOSTILITY_LONG;
-    if (thisGroup > MONSTER_TYPE_LAST || otherGroup > MONSTER_TYPE_LAST) return HOSTILITY_FRIENDLY;
-
     if (thisGroup == MONSTER_TYPE_INVALID) {
         if ((!otherActPtr || this->buffs[ACTOR_BUFF_ENSLAVED].Active() &&
                              otherActPtr->ActorFriend()) &&
-            pFactionTable->relations[otherGroup][MONSTER_TYPE_INVALID] == HOSTILITY_FRIENDLY)
-            return pFactionTable->relations[MONSTER_TYPE_INVALID][otherGroup];
+            pHostilityTable->relations[otherGroup][MONSTER_TYPE_INVALID] == HOSTILITY_FRIENDLY)
+            return pHostilityTable->relations[MONSTER_TYPE_INVALID][otherGroup];
         else
             return HOSTILITY_LONG;
     } else {
-        return pFactionTable->relations[thisGroup][otherGroup];
+        return pHostilityTable->relations[thisGroup][otherGroup];
     }
 }
 
@@ -2396,10 +2382,7 @@ void Actor::SummonMinion(int summonerId) {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         actorSector = pIndoor->GetSector(this->pos);
 
-    v19 = this->ally;
-    if (this->ally == MONSTER_TYPE_INVALID) {
-        v19 = monsterTypeForMonsterId(this->monsterInfo.id); // Original binary had an off by one here, forgetting the last +1.
-    }
+    v19 = this->hostilityGroup;
     v27 = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? 128 : 64;
     v13 = grng->random(2048);
     v15 = TrigLUT.cos(v13) * v27 + this->pos.x;
@@ -2455,7 +2438,7 @@ void Actor::SummonMinion(int summonerId) {
     actor->sectorId = actorSector;
     actor->PrepareSprites(0);
     actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
-    actor->ally = v19;
+    actor->hostilityGroup = v19;
     actor->currentActionTime = 0_ticks;
     actor->group = this->group;
     actor->aiState = Summoned;
@@ -2660,7 +2643,7 @@ void Actor::UpdateActorAI() {
         MonsterHostility relationToTarget;
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY) {
             if (target_pid_type == OBJECT_Actor) {
-                relationToTarget = pFactionTable->relations[monsterTypeForMonsterId(pActor->monsterInfo.id)]
+                relationToTarget = pHostilityTable->relations[monsterTypeForMonsterId(pActor->monsterInfo.id)]
                                                            [monsterTypeForMonsterId(pActors[target_pid.id()].monsterInfo.id)];
             } else {
                 relationToTarget = HOSTILITY_LONG;
@@ -3248,6 +3231,7 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
     actor->monsterInfo.goldDiceRolls = 0;
     actor->monsterInfo.treasureDropChance = 0;
     actor->tetherDistance = 256;
+    actor->hostilityGroup = monsterTypeForMonsterId(actor->monsterInfo.id);
     actor->sectorId = v16;
     actor->group = 1;
     actor->monsterInfo.hostilityType = HOSTILITY_LONG;
@@ -4191,7 +4175,7 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
     actor->sectorId = partySectorId;
     actor->PrepareSprites(0);
     actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
-    actor->ally = MONSTER_TYPE_9999;
+    actor->hostilityGroup = MONSTER_TYPE_INVALID;
     actor->group = 0;
     actor->currentActionTime = 0_ticks;
     actor->aiState = Summoned;
@@ -4338,6 +4322,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
         pMonster->pos = spawn->position;
         pMonster->tetherDistance = 256;
         pMonster->sectorId = pSector;
+        pMonster->hostilityGroup = monsterTypeForMonsterId(pMonster->monsterInfo.id);
         pMonster->group = spawn->group;
         pMonster->PrepareSprites(0);
         pMonster->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;

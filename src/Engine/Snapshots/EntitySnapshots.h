@@ -799,7 +799,7 @@ struct Actor_MM7 {
     std::array<SpellBuff_MM7, 21> buffs;
     std::array<Item_MM7, 4> items;
     uint32_t group;
-    uint32_t ally;
+    uint32_t hostilityGroup; // 0 = default (derive from monster type), 9999 = party ally, other = MonsterType value.
     std::array<ActorJob_MM7, 8> scheduledJobs;
     uint32_t summonerId;
     uint32_t lastCharacterIdToHit;

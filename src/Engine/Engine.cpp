@@ -51,7 +51,7 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/TileTable.h"
-#include "Engine/Tables/FactionTable.h"
+#include "Engine/Tables/HostilityTable.h"
 #include "Engine/Tables/HistoryTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
@@ -702,8 +702,8 @@ void Engine::SecondaryInitialization() {
     pSpellStats = new SpellStats();
     pSpellStats->Initialize(engine->resources()->eventsData("spells.txt"));
 
-    pFactionTable = new FactionTable();
-    pFactionTable->Initialize(engine->resources()->eventsData("hostile.txt"));
+    pHostilityTable = new HostilityTable();
+    pHostilityTable->Initialize(engine->resources()->eventsData("hostile.txt"));
 
     pHistoryTable = new HistoryTable();
     pHistoryTable->Initialize(engine->resources()->eventsData("history.txt"));

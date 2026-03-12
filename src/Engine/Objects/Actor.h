@@ -61,7 +61,21 @@ class Actor {
     void Remove();
     void PrepareSprites(char load_sounds_if_bit1_set);
     void UpdateAnimation();
-    MonsterHostility GetActorsRelation(Actor *a2);
+
+    /**
+     * Determines hostility between this actor and another actor (or the party if null).
+     *
+     * Hostility is resolved via the hostility table indexed by monster type, with several overrides:
+     * - Same non-zero `group` = always friendly.
+     * - Berserk buff = hostile to everyone.
+     * - Enslaved buff = temporarily acts as party faction.
+     * - Charm buff = friendly to the party only, doesn't fight other monsters on party's behalf.
+     * - `hostilityGroup == MONSTER_TYPE_INVALID` = permanently in party's faction (set by resurrect/summon).
+     *
+     * @param otherActPtr               Other actor, or null to check hostility against the party.
+     * @return                          Hostility level (aggro range) between the two.
+     */
+    MonsterHostility GetActorsRelation(Actor *otherActPtr);
     void SetRandomGoldIfTheresNoItem();
     bool CanAct() const;
     bool IsNotAlive();
@@ -236,7 +250,8 @@ class Actor {
     IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> buffs;
     std::array<Item, 4> items;
     unsigned int group = 0;
-    MonsterType ally = MONSTER_TYPE_INVALID; // TODO(captainurist): document properly, and maybe rename.
+    MonsterType hostilityGroup = MONSTER_TYPE_INVALID; // Determines which row/column of the hostility table to use
+                                                       // for this monster. MONSTER_TYPE_INVALID = party's faction.
     std::array<ActorJob, 8> scheduledJobs;
     Pid summonerId;
     Pid lastCharacterIdToHit;
