@@ -1035,11 +1035,11 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     // INDOOR initialize actors
     alertStatus = false;
 
-    for (unsigned i = 0; i < pActors.size(); ++i) {
-        if (pActors[i].attributes & ACTOR_UNKNOW7) {
+    for (Actor &actor : pActors) {
+        if (actor.attributes & ACTOR_UNKNOW7) {
             if (mapid == MAP_INVALID) {
-                pActors[i].monsterInfo.field_3E = 19;
-                pActors[i].attributes |= ACTOR_UNKNOW11;
+                actor.monsterInfo.field_3E = 19;
+                actor.attributes |= ACTOR_UNKNOW11;
                 continue;
             }
             v28 = !alertStatus;
@@ -1048,17 +1048,17 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         }
 
         if (!v28) {
-            pActors[i].PrepareSprites(0);
-            pActors[i].monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
-            if (pActors[i].monsterInfo.field_3E != 11 &&
-                pActors[i].monsterInfo.field_3E != 19 &&
-                (!pActors[i].hp || !pActors[i].monsterInfo.hp)) {
-                pActors[i].monsterInfo.field_3E = 5;
-                pActors[i].UpdateAnimation();
+            actor.PrepareSprites(0);
+            actor.monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
+            if (actor.monsterInfo.field_3E != 11 &&
+                actor.monsterInfo.field_3E != 19 &&
+                (!actor.hp || !actor.monsterInfo.hp)) {
+                actor.monsterInfo.field_3E = 5;
+                actor.UpdateAnimation();
             }
         } else {
-            pActors[i].monsterInfo.field_3E = 19;
-            pActors[i].attributes |= ACTOR_UNKNOW11;
+            actor.monsterInfo.field_3E = 19;
+            actor.attributes |= ACTOR_UNKNOW11;
         }
     }
 

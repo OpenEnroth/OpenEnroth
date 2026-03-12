@@ -2856,12 +2856,11 @@ int Actor::searchDeadActorsByGroup(int *pTotalActors, int group) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
-    for (unsigned i = 0; i < pActors.size(); i++) {
-        if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert && pActors[i].group == group) {
+    for (Actor &actor : pActors) {
+        if (!!(actor.attributes & ACTOR_UNKNOW7) == alert && actor.group == group) {
             totalActors++;
-            if (pActors[i].IsNotAlive()) {
+            if (actor.IsNotAlive())
                 result++;
-            }
         }
     }
 
@@ -2873,12 +2872,11 @@ int Actor::searchDeadActorsByMonsterID(int *pTotalActors, MonsterId monsterID) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
-    for (unsigned i = 0; i < pActors.size(); i++) {
-        if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert && pActors[i].monsterInfo.id == monsterID) {
+    for (Actor &actor : pActors) {
+        if (!!(actor.attributes & ACTOR_UNKNOW7) == alert && actor.monsterInfo.id == monsterID) {
             totalActors++;
-            if (pActors[i].IsNotAlive()) {
+            if (actor.IsNotAlive())
                 result++;
-            }
         }
     }
 
@@ -2890,12 +2888,11 @@ int Actor::searchDeadActors(int *pTotalActors) {
     int result = 0, totalActors = 0;
     bool alert = GetAlertStatus();
 
-    for (unsigned i = 0; i < pActors.size(); i++) {
-        if (!!(pActors[i].attributes & ACTOR_UNKNOW7) == alert) {
+    for (Actor &actor : pActors) {
+        if (!!(actor.attributes & ACTOR_UNKNOW7) == alert) {
             totalActors++;
-            if (pActors[i].IsNotAlive()) {
+            if (actor.IsNotAlive())
                 result++;
-            }
         }
     }
 
@@ -3458,18 +3455,18 @@ bool CheckActors_proximity() {
     distance = 5120;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) distance = 2560;
 
-    for (unsigned i = 0; i < pActors.size(); ++i) {
-        for_x = std::abs(pActors[i].pos.x - pParty->pos.x);
-        for_y = std::abs(pActors[i].pos.y - pParty->pos.y);
-        for_z = std::abs(pActors[i].pos.z - pParty->pos.z);
+    for (Actor &actor : pActors) {
+        for_x = std::abs(actor.pos.x - pParty->pos.x);
+        for_y = std::abs(actor.pos.y - pParty->pos.y);
+        for_z = std::abs(actor.pos.z - pParty->pos.z);
         if (int_get_vector_length(for_x, for_y, for_z) < distance) {
-            if (pActors[i].aiState != Dead) {
-                if (pActors[i].aiState != Dying &&
-                    pActors[i].aiState != Removed &&
-                    pActors[i].aiState != Disabled &&
-                    pActors[i].aiState != Summoned &&
-                    (pActors[i].ActorEnemy() ||
-                     pActors[i].GetActorsRelation(0) != HOSTILITY_FRIENDLY))
+            if (actor.aiState != Dead) {
+                if (actor.aiState != Dying &&
+                    actor.aiState != Removed &&
+                    actor.aiState != Disabled &&
+                    actor.aiState != Summoned &&
+                    (actor.ActorEnemy() ||
+                     actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY))
                     return true;
             }
         }

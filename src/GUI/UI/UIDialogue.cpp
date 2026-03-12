@@ -267,14 +267,13 @@ void GUIWindow_Dialogue::Update() {
 
         if (pParty->arenaState == ARENA_STATE_FIGHTING) {
             int num_dead_actors = 0;
-            for (int i = 0; i < pActors.size(); ++i) {
-                if (pActors[i].aiState == Dead ||
-                    pActors[i].aiState == Removed ||
-                    pActors[i].aiState == Disabled) {
+            for (const Actor &actor : pActors) {
+                if (actor.aiState == Dead ||
+                    actor.aiState == Removed ||
+                    actor.aiState == Disabled) {
                     ++num_dead_actors;
                 } else {
-                    ObjectType sumonner_type = pActors[i].summonerId.type();
-                    if (sumonner_type == OBJECT_Character)
+                    if (actor.summonerId.type() == OBJECT_Character)
                         ++num_dead_actors;
                 }
             }
