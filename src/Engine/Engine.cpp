@@ -827,8 +827,10 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
 
 //----- (00461103) --------------------------------------------------------
 void Engine::_461103_load_level_sub() {
-    if (engine->config->debug.NoActors.value())
+    if (engine->config->debug.NoActors.value()) {
         pActors.clear();
+        nextActorReuseScanStart = 0;
+    }
 
     GenerateItemsInChest();
     UpdateChestPositions();
@@ -861,8 +863,10 @@ void Engine::_461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    if (engine->config->debug.NoActors.value())
+    if (engine->config->debug.NoActors.value()) {
         pActors.clear();
+        nextActorReuseScanStart = 0;
+    }
     if (engine->config->debug.NoDecorations.value())
         pLevelDecorations.clear();
     initDecorationEvents();

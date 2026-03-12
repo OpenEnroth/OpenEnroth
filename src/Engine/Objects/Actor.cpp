@@ -47,8 +47,8 @@
 // should be injected into Actor but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
-// Using deque for pointer stability
-std::deque<Actor> pActors;
+std::deque<Actor> pActors; // Using deque for pointer stability.
+size_t nextActorReuseScanStart = 0;
 
 stru319 stru_50C198;  // idb
 
@@ -2429,7 +2429,7 @@ void Actor::SummonMinion(int summonerId) {
         else if (v5 >= 60)
             summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + 1);
     }
-    Actor *actor = AllocateActor(true);
+    Actor *actor = AllocateActor();
     if (!actor)
         return;
 
@@ -3225,7 +3225,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
 
 //----- (004BBF61) --------------------------------------------------------
 void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
-    Actor *actor = AllocateActor(true);
+    Actor *actor = AllocateActor();
     if (!actor)
         return;
 
@@ -4163,7 +4163,7 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
         cMonsterName = "Elemental Light A";
     MonsterId uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
 
-    Actor *actor = AllocateActor(false);
+    Actor *actor = AllocateActor();
     if (!actor)
         return; // Too many actors.
 
@@ -4283,9 +4283,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
     if (countOverride) NumToSpawn = countOverride;
     if (NumToSpawn <= 0) return;
 
-    // Config multiplier now
-    NumToSpawn = std::ceil(NumToSpawn * engine->config->gameplay.SpawnCountMultiplier.value());
-    NumToSpawn = std::clamp(NumToSpawn, 1, engine->config->gameplay.MaxActors.value());
+    NumToSpawn = std::max(1, static_cast<int>(std::ceil(NumToSpawn * engine->config->gameplay.SpawnCountMultiplier.value())));
 
     int pSector = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
@@ -4294,7 +4292,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
     // spawning loop
     std::string fullInternalName = baseInternalName;
     for (int i = 0; i < NumToSpawn; ++i) {
-        Actor *pMonster = AllocateActor(true);
+        Actor *pMonster = AllocateActor();
         if (!pMonster)
             continue;
 
@@ -4545,18 +4543,22 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVeloci
     }
 }
 
-Actor *AllocateActor(bool appendOnly) {
-    if (!appendOnly) {
-        for (size_t i = 0; i < pActors.size(); i++) {
-            if (pActors[i].aiState == Removed) {
-                pActors[i].Reset();
-                return &pActors[i];
-            }
+Actor *AllocateActor() {
+    if (pActors.size() < engine->config->gameplay.MaxActors.value())
+        return &pActors.emplace_back(Actor(pActors.size()));
+
+    // At the actor limit, try to reuse a removed slot. We scan starting from where we left off last time so that
+    // a freshly removed slot isn't immediately reused — this gives stale references (in projectiles, summonerId, etc.)
+    // more time to expire naturally.
+    size_t size = pActors.size();
+    for (size_t j = 0; j < size; j++) {
+        size_t i = (nextActorReuseScanStart + j) % size;
+        if (pActors[i].aiState == Removed) {
+            nextActorReuseScanStart = i + 1;
+            pActors[i].Reset();
+            return &pActors[i];
         }
     }
 
-    if (pActors.size() >= engine->config->gameplay.MaxActors.value())
-        return nullptr; // Too many actors.
-
-    return &pActors.emplace_back(Actor(pActors.size()));
+    return nullptr;
 }

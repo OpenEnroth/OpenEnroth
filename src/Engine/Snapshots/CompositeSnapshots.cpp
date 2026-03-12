@@ -323,7 +323,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
 
     reconstruct(src.actors, &pActors);
-    for(size_t i = 0; i < pActors.size(); i++)
+    nextActorReuseScanStart = 0;
+    for (size_t i = 0; i < pActors.size(); i++)
         pActors[i].id = i;
 
     reconstruct(src.spriteObjects, &pSpriteObjects);
@@ -607,7 +608,8 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
         pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
 
     reconstruct(src.actors, &pActors);
-    for(size_t i = 0; i < pActors.size(); i++)
+    nextActorReuseScanStart = 0;
+    for (size_t i = 0; i < pActors.size(); i++)
         pActors[i].id = i;
 
     reconstruct(src.spriteObjects, &pSpriteObjects);

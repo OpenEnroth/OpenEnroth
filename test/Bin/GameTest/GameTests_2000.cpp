@@ -547,7 +547,8 @@ GAME_TEST(Issues, Issue2186b) {
     // Load in the save and drop actors through the transition
     test.loadGameFromTestData("issue_2186.mm7");
 
-    pActors.clear(); // clear all old actors
+    pActors.clear();
+    nextActorReuseScanStart = 0;
     // add new actors above the transition and tick
     for (int i = -500; i <= 500; i+=250) {
         for (int j = 300; j <= 1300; j+=250)
