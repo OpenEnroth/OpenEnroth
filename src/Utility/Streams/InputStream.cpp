@@ -6,9 +6,7 @@
 #include "Utility/Exception.h"
 #include "Utility/Streams/ChunkBuffer.h"
 
-InputStream::~InputStream() {
-    // No need to do any cleanup here, thus we don't have a separate closeInternal() method.
-}
+InputStream::~InputStream() = default;
 
 size_t InputStream::readAll(std::string *dst) {
     assert(isOpen());
@@ -52,7 +50,7 @@ size_t InputStream::_underflow(void *, size_t, Buffer *buffer) {
     return 0;
 }
 
-void InputStream::_close() {
+void InputStream::_close(bool /*canThrow*/) {
     assert(isOpen());
     _buffer.reset(nullptr, nullptr, nullptr);
     _bufferBase = 0;

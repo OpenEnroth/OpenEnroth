@@ -20,7 +20,7 @@ FileInputStream::FileInputStream(std::string_view path, size_t bufferSize) {
 }
 
 FileInputStream::~FileInputStream() {
-    closeInternal(false);
+    destroy();
 }
 
 void FileInputStream::open(std::string_view path, size_t bufferSize) {
@@ -81,15 +81,8 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
     }
 }
 
-void FileInputStream::_close() {
+void FileInputStream::_close(bool canThrow) {
     assert(isOpen());
-    closeInternal(true);
-    base_type::_close();
-}
-
-void FileInputStream::closeInternal(bool canThrow) {
-    if (!isOpen())
-        return;
 
     int status = fclose(_file);
     _file = nullptr;
@@ -98,4 +91,6 @@ void FileInputStream::closeInternal(bool canThrow) {
     if (status != 0 && canThrow)
         Exception::throwFromErrno(displayPath());
     // TODO(captainurist): !canThrow => log OR attach
+
+    base_type::_close(canThrow);
 }

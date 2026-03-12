@@ -87,7 +87,7 @@ class OutputStream {
     void close() {
         if (!isOpen())
             return;
-        _close(&_buffer);
+        _close(&_buffer, true);
     }
 
     /**
@@ -126,13 +126,13 @@ class OutputStream {
      * Called when a write doesn't fit in the current buffer. Implementations should handle the overflow data
      * (write it out or store it), and provide a new writable buffer via the out parameter.
      *
-     * @param data                      Pointer to the overflow data to write.
-     * @param size                      Size of the overflow data, always greater than `buffer->remaining()`.
      * @param[in,out] buffer            Current buffer state on input. Set to the new buffer state on output. Data in
      *                                  `[buffer->start, buffer->pos)` is treated as dirty (not yet flushed).
+     * @param data                      Pointer to the overflow data to write.
+     * @param size                      Size of the overflow data, always greater than `buffer->remaining()`.
      * @throws Exception                On error.
      */
-    virtual void _overflow(const void *data, size_t size, Buffer *buffer) = 0;
+    virtual void _overflow(Buffer *buffer, const void *data, size_t size) = 0;
 
     /**
      * Flushes buffered data to the underlying target.
@@ -148,9 +148,20 @@ class OutputStream {
      * Derived implementations should call `OutputStream::_close()` at the end.
      *
      * @param[in,out] buffer            Current buffer state.
-     * @throws Exception                On error.
+     * @param canThrow                  Whether the implementation is allowed to throw. When called from a destructor
+     *                                  via `destroy()`, this is `false` and the implementation should do best-effort
+     *                                  cleanup without throwing.
+     * @throws Exception                On error, only if `canThrow` is `true`.
      */
-    virtual void _close(Buffer *buffer) = 0;
+    virtual void _close(Buffer *buffer, bool canThrow) = 0;
+
+    /**
+     * Non-throwing close for use in derived destructors. Calls `_close` with `canThrow=false`.
+     */
+    void destroy() noexcept {
+        if (isOpen())
+            _close(&_buffer, false);
+    }
 
  private:
     void overflow(const void *data, size_t size);

@@ -40,13 +40,12 @@ class BlobOutputStream : public OutputStream {
     void open(Blob *target, std::string_view displayPath = {});
 
  protected:
-    virtual void _overflow(const void *data, size_t size, Buffer *buffer) override;
+    virtual void _overflow(Buffer *buffer, const void *data, size_t size) override;
     virtual void _flush(Buffer *buffer) override;
-    virtual void _close(Buffer *buffer) override;
+    virtual void _close(Buffer *buffer, bool canThrow) override;
 
  private:
     Blob materialize();
-    void closeInternal();
 
  private:
     Blob *_target = nullptr;

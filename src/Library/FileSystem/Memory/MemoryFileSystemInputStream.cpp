@@ -17,19 +17,14 @@ MemoryFileSystemInputStream::MemoryFileSystemInputStream(std::shared_ptr<MemoryF
 }
 
 MemoryFileSystemInputStream::~MemoryFileSystemInputStream() {
-    closeInternal();
+    destroy();
 }
 
-void MemoryFileSystemInputStream::_close() {
-    closeInternal();
-    base_type::_close();
-}
-
-void MemoryFileSystemInputStream::closeInternal() {
-    if (!_data)
-        return;
+void MemoryFileSystemInputStream::_close(bool canThrow) {
+    assert(_data);
     _data->readerCount--;
     _data.reset();
+    base_type::_close(canThrow);
 }
 
 } // namespace detail
