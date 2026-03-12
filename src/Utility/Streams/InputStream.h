@@ -149,7 +149,7 @@ class InputStream {
      */
     void close() {
         if (isOpen())
-            _close();
+            _close(true);
     }
 
     /**
@@ -207,9 +207,20 @@ class InputStream {
      * Closes the underlying source, releasing any held resources. Override in subclasses that need cleanup.
      * Derived implementations should call `InputStream::_close()` at the end.
      *
-     * @throws Exception                On error.
+     * @param canThrow                  Whether the implementation is allowed to throw. When called from a destructor
+     *                                  via `destroy()`, this is `false` and the implementation should do best-effort
+     *                                  cleanup without throwing.
+     * @throws Exception                On error, only if `canThrow` is `true`.
      */
-    virtual void _close();
+    virtual void _close(bool canThrow);
+
+    /**
+     * Non-throwing close for use in derived destructors. Calls `_close` with `canThrow=false`.
+     */
+    void destroy() noexcept {
+        if (isOpen())
+            _close(false);
+    }
 
     [[noreturn]] void throwReadError(size_t requested, size_t actual) const;
     [[noreturn]] void throwSkipError(size_t requested, size_t actual) const;

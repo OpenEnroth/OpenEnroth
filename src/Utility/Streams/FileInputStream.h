@@ -38,9 +38,7 @@ class FileInputStream : public InputStream {
 
  private:
     virtual size_t _underflow(void *data, size_t size, Buffer *buffer) override;
-    virtual void _close() override;
-
-    void closeInternal(bool canThrow);
+    virtual void _close(bool canThrow) override;
 
  private:
     FILE *_file = nullptr;

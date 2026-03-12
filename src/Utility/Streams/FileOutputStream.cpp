@@ -14,7 +14,7 @@ FileOutputStream::FileOutputStream(std::string_view path, size_t bufferSize) {
 }
 
 FileOutputStream::~FileOutputStream() {
-    closeInternal(false);
+    destroy();
 }
 
 void FileOutputStream::open(std::string_view path, size_t bufferSize) {
@@ -62,22 +62,10 @@ void FileOutputStream::_flush(Buffer *buffer) {
         Exception::throwFromErrno(displayPath());
 }
 
-void FileOutputStream::_close(Buffer *buffer) {
+void FileOutputStream::_close(Buffer *buffer, bool canThrow) {
     assert(isOpen());
-    writeBuffer(*buffer);
-    closeInternal(true);
-    base_type::_close(buffer);
-}
 
-void FileOutputStream::writeBuffer(const Buffer &buffer) {
-    if (size_t bytesBuffered = buffer.used())
-        if (fwrite(buffer.start(), bytesBuffered, 1, _file) != 1)
-            Exception::throwFromErrno(displayPath());
-}
-
-void FileOutputStream::closeInternal(bool canThrow) {
-    if (!isOpen())
-        return;
+    writeBuffer(*buffer, canThrow);
 
     int status = fclose(_file);
     if (status != 0 && canThrow) // TODO(captainurist): !canThrow => log OR attach
@@ -85,4 +73,12 @@ void FileOutputStream::closeInternal(bool canThrow) {
     _file = nullptr;
     _buf.reset();
     _bufSize = 0;
+
+    base_type::_close(buffer, canThrow);
+}
+
+void FileOutputStream::writeBuffer(const Buffer &buffer, bool canThrow) {
+    if (size_t bytesBuffered = buffer.used())
+        if (fwrite(buffer.start(), bytesBuffered, 1, _file) != 1 && canThrow)
+            Exception::throwFromErrno(displayPath());
 }

@@ -160,6 +160,20 @@ UNIT_TEST(FileOutputStream, PositionAfterLargeWrite) {
     out.close();
 }
 
+UNIT_TEST(FileOutputStream, DestructorFlushesBuffer) {
+    const char *tmpfile = "tmp_dtor_flush_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    {
+        FileOutputStream out(tmpfile);
+        out.write("hello");
+        // No explicit close() - destructor should flush.
+    }
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.readAll(), "hello");
+}
+
 UNIT_TEST(FileOutputStream, PositionResetsOnReopen) {
     const char *tmpfile = "tmp_pos_reopen_test.txt";
     ScopedTestFileSlot tmp(tmpfile);

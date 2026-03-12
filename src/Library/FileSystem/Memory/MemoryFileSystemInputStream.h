@@ -21,8 +21,7 @@ class MemoryFileSystemInputStream : public BlobInputStream {
     ~MemoryFileSystemInputStream();
 
  private:
-    virtual void _close() override;
-    void closeInternal();
+    virtual void _close(bool canThrow) override;
 
  private:
     std::shared_ptr<MemoryFileData> _data;
