@@ -24,7 +24,6 @@ class PlatformEventLoop {
      */
     virtual void quit() = 0;
 
-    // TODO(captainurist): count parameter should be dropped.
     /**
      * Processes the messages that are currently in the message queue, and returns. Returns immediately if there are
      * no messages in the message queue.

@@ -19,8 +19,6 @@ class Sprite {
 
     std::string pName;
     GraphicsImage *texture = nullptr;
-    int uAreaX = 0; // TODO(captainurist): always zero,
-    int uAreaY = 0; // TODO(captainurist): was intended to support sprite maps?
     int uWidth = 0; // Same as texture->width().
     int uHeight = 0;
     LodSprite *sprite_header = nullptr;

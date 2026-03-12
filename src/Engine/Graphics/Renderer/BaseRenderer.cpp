@@ -297,8 +297,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     else
         billboard->opacity = RenderBillboardD3D::Transparent;
 
-    float point_x = pSprite->uWidth / 2 - pSprite->uAreaX;
-    float point_y = pSprite->uHeight - pSprite->uAreaY;
+    float point_x = pSprite->uWidth / 2;
+    float point_y = pSprite->uHeight;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[0].diffuse = diffuse;
     billboard->pQuads[0].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
@@ -307,8 +307,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[0].texcoord.x = 0.f;
     billboard->pQuads[0].texcoord.y = 0.f;
 
-    point_x = pSprite->uWidth / 2 - pSprite->uAreaX;
-    point_y = -pSprite->uAreaY;
+    point_x = pSprite->uWidth / 2;
+    point_y = 0;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x = point_x * -1.f;
     billboard->pQuads[1].diffuse = diffuse;
     billboard->pQuads[1].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
@@ -317,8 +317,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[1].texcoord.x = 0.f;
     billboard->pQuads[1].texcoord.y = 1.f;
 
-    point_x = pSprite->uWidth / 2 + pSprite->uAreaX;
-    point_y = -pSprite->uAreaY;
+    point_x = pSprite->uWidth / 2;
+    point_y = 0;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[2].diffuse = diffuse;
     billboard->pQuads[2].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
@@ -327,8 +327,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[2].texcoord.x = 1.f;
     billboard->pQuads[2].texcoord.y = 1.f;
 
-    point_x = pSprite->uWidth / 2 + pSprite->uAreaX;
-    point_y = pSprite->uHeight - pSprite->uAreaY;
+    point_x = pSprite->uWidth / 2;
+    point_y = pSprite->uHeight;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[3].diffuse = diffuse;
     billboard->pQuads[3].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
@@ -498,8 +498,8 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
 
 void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
-    rct.x = rc.x + 64 + Portrait->sprites[0]->uAreaX - Portrait->sprites[0]->uWidth / 2;
-    rct.y = rc.y + Y_Offset + Portrait->sprites[0]->uAreaY;
+    rct.x = rc.x + 64 - Portrait->sprites[0]->uWidth / 2;
+    rct.y = rc.y + Y_Offset;
     rct.w = Portrait->sprites[0]->uWidth;
     rct.h = Portrait->sprites[0]->uHeight;
 

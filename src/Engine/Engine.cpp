@@ -147,16 +147,6 @@ void Engine::drawWorld() {
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         }*/
     } else {
-        if (pParty->pos != pParty->lastPos ||
-            pParty->_viewYaw != pParty->_viewPrevYaw ||
-            pParty->_viewPitch != pParty->_viewPrevPitch ||
-            pParty->eyeLevel != pParty->lastEyeLevel)
-            pParty->lastPos = pParty->pos;
-        // v0 = &render;
-        pParty->_viewPrevYaw = pParty->_viewYaw;
-        pParty->_viewPrevPitch = pParty->_viewPitch;
-
-        pParty->lastEyeLevel = pParty->eyeLevel;
         render->BeginScene3D();
 
         // if ( !render->pRenderD3D )

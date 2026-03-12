@@ -1458,7 +1458,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
 
                 ODMFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
 
-                if (model.attributes & FACE_HAS_EVENT || model.eventId == 0) {
+                if (model.attributes & FACE_HAS_HINT || model.eventId == 0) {
                     return 1;
                 }
 
@@ -1472,7 +1472,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     engine->_statusBar->nothingHere();
                     return 1;
                 }
-                if (pIndoor->faces[id].attributes & FACE_HAS_EVENT || !pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].eventId) {
+                if (pIndoor->faces[id].attributes & FACE_HAS_HINT || !pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].eventId) {
                     return 1;
                 }
 

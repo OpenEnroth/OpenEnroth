@@ -4,7 +4,7 @@
 
 #include "Duration.h"
 
-const int game_starting_year = 1168;
+const int gameStartingYear = 1168;
 
 struct CivilTime {
     int year = 0; // Since the Silence.
@@ -22,17 +22,18 @@ struct CivilTime {
 class Time {
  public:
     Time() = default;
+
     Time(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
         _ticks = seconds + 60ll * minutes + 3600ll * hours + 86400ll * days + 604800ll * weeks + 2419200ll * months + 29030400ll * years;
         _ticks = _ticks * Duration::TICKS_PER_REALTIME_SECOND / Duration::GAME_SECONDS_IN_REALTIME_SECOND;
     }
 
     Duration toDurationSinceSilence() const {
-        return Duration::fromYears(game_starting_year) + Duration::fromTicks(_ticks);
+        return Duration::fromYears(gameStartingYear) + Duration::fromTicks(_ticks);
     }
 
     static Time fromDurationSinceSilence(Duration duration) {
-        return Time::fromTicks((duration - Duration::fromYears(game_starting_year)).ticks());
+        return Time::fromTicks((duration - Duration::fromYears(gameStartingYear)).ticks());
     }
 
     static Time fromTicks(int64_t ticks) {
@@ -59,7 +60,7 @@ class Time {
 
     CivilTime toCivilTime() const {
         CivilTime result;
-        result.year = game_starting_year + toYears();
+        result.year = gameStartingYear + toYears();
         result.month = 1 + toMonths() % 12;
         result.week = 1 + toWeeks() % 4;
         result.day = 1 + toDays() % 28;
@@ -114,3 +115,5 @@ inline Time operator-(Time l, Duration r) {
 inline Duration operator-(Time l, Time r) {
     return Duration::fromTicks(l.ticks() - r.ticks());
 }
+
+const inline Time gameStartingTime = Time(0, 0, 9); // Game starts at 9am.

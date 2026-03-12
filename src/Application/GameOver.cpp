@@ -51,8 +51,7 @@ GraphicsImage *CreateWinnerCertificate() {
     else
         assert(false);
 
-    // TODO(captainurist): Introduce a constant here, for game start time.
-    Duration play_time = pParty->GetPlayingTime() - Time() -  Duration::fromHours(9); // game begins at 9 am
+    Duration play_time = pParty->GetPlayingTime() - gameStartingTime;
 
     int totalDays = play_time.days();
     if (!totalDays) totalDays = 1;

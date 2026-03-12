@@ -1883,7 +1883,7 @@ int Character::GetActualAC() const {
 
 //----- (0048E6DC) --------------------------------------------------------
 int Character::GetBaseAge() const {
-    return pParty->GetPlayingTime().toYears() - this->uBirthYear + game_starting_year;
+    return pParty->GetPlayingTime().toYears() - this->uBirthYear + gameStartingYear;
 }
 
 //----- (0048E72C) --------------------------------------------------------

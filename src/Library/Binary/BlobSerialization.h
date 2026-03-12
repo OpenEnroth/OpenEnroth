@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <typeinfo>
 #include <utility>
 
 #include "Utility/Streams/MemoryInputStream.h"
@@ -8,6 +9,7 @@
 #include "Utility/Memory/Blob.h"
 
 #include "BinaryConcepts.h"
+#include "BinaryExceptions.h"
 
 template<class Src, class... Tags> requires (!starts_with_v<is_greedy_tag, Tags...>)
 void serialize(const Src &src, Blob *dst, const Tags &... tags) {
@@ -22,5 +24,6 @@ void deserialize(const Blob &src, Dst *dst, const Tags &... tags) {
     // its functionality here.
     MemoryInputStream stream(src.data(), src.size());
     deserialize(stream, dst, tags...);
-    // TODO(captainurist): check that there's no data left in the stream.
+    if (stream.position() != stream.size())
+        throwBinarySerializationLeftoverDataError(stream.position(), stream.size() - stream.position(), typeid(Dst).name());
 }
