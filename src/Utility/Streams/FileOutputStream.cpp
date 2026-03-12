@@ -34,7 +34,7 @@ void FileOutputStream::open(std::string_view path, size_t bufferSize) {
     base_type::open({}, absPath);
 }
 
-void FileOutputStream::_overflow(const void *data, size_t size, Buffer *buffer) {
+void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) {
     if (size < _bufSize) {
         // Small write: fill current buffer, write it all out, put the tail into a fresh buffer.
         size_t head = buffer->write(data, buffer->remaining());

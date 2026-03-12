@@ -22,7 +22,7 @@ void BlobOutputStream::open(Blob *target, std::string_view displayPath) {
     base_type::open({}, displayPath);
 }
 
-void BlobOutputStream::_overflow(const void *data, size_t size, Buffer *buffer) {
+void BlobOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) {
     size_t head = buffer->write(data, buffer->remaining());
     data = static_cast<const char *>(data) + head;
     size -= head;

@@ -37,7 +37,7 @@ class FileOutputStream : public OutputStream {
     void open(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
 
  private:
-    virtual void _overflow(const void *data, size_t size, Buffer *buffer) override;
+    virtual void _overflow(Buffer *buffer, const void *data, size_t size) override;
     virtual void _flush(Buffer *buffer) override;
     virtual void _close(Buffer *buffer, bool canThrow) override;
 
