@@ -293,6 +293,8 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     for (const LevelDecoration &decoration : pLevelDecorations)
         dst->decorationFlags.push_back(std::to_underlying(decoration.uFlags));
 
+    // TODO(captainurist): vanilla MM7 only allocated memory for 500 actors, 1000 sprite objects, and 20 chests at
+    //                     runtime. We should either cap these or fail gracefully on save to maintain compatibility.
     snapshot(pActors, &dst->actors);
     snapshot(pSpriteObjects, &dst->spriteObjects);
     snapshot(vChests, &dst->chests);
@@ -582,6 +584,8 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     for (const LevelDecoration &decoration : pLevelDecorations)
         dst->decorationFlags.push_back(std::to_underlying(decoration.uFlags));
 
+    // TODO(captainurist): vanilla MM7 only allocated memory for 500 actors, 1000 sprite objects, and 20 chests at
+    //                     runtime. We should either cap these or fail gracefully on save to maintain compatibility.
     snapshot(pActors, &dst->actors);
     snapshot(pSpriteObjects, &dst->spriteObjects);
     snapshot(vChests, &dst->chests);
