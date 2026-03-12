@@ -59,7 +59,6 @@ void InputStream::_close(bool /*canThrow*/) {
     _displayPath = {};
 }
 
-
 size_t InputStream::underflow(void *data, size_t size) {
     assert(size > _buffer.remaining());
 

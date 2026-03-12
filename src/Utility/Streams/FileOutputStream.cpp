@@ -38,7 +38,7 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
     if (size < _bufSize) {
         // Small write: fill current buffer, write it all out, put the tail into a fresh buffer.
         size_t head = buffer->write(data, buffer->remaining());
-        writeBuffer(*buffer);
+        writeBuffer(*buffer, true);
         data = static_cast<const char *>(data) + head;
         size -= head;
         if (!_buf)
@@ -47,7 +47,7 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
         buffer->write(data, size);
     } else {
         // Large write: write out current buffer, then write data directly.
-        writeBuffer(*buffer);
+        writeBuffer(*buffer, true);
         if (fwrite(data, size, 1, _file) != 1)
             Exception::throwFromErrno(displayPath());
         if (_buf)
@@ -56,7 +56,7 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
 }
 
 void FileOutputStream::_flush(Buffer *buffer) {
-    writeBuffer(*buffer);
+    writeBuffer(*buffer, true);
     buffer->commit();
     if (fflush(_file) != 0)
         Exception::throwFromErrno(displayPath());

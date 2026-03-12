@@ -41,7 +41,7 @@ class FileOutputStream : public OutputStream {
     virtual void _flush(Buffer *buffer) override;
     virtual void _close(Buffer *buffer, bool canThrow) override;
 
-    void writeBuffer(const Buffer &buffer, bool canThrow = true);
+    void writeBuffer(const Buffer &buffer, bool canThrow);
 
  private:
     FILE *_file = nullptr;
