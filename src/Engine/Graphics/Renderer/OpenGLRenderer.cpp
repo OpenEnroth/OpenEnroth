@@ -1559,7 +1559,7 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
             v0.texw = 1.0f;
             v0.screenspace = scrspace;
             v0.color = uTint;
-            v0.color.a = 0;
+            v0.color.a = 0.0f;
             v0.texid = texidsolid;
 
             // copy other two (z+1)(z+2)
@@ -1634,8 +1634,8 @@ void OpenGLRenderer::DrawForcePerVerts() {
         Color fpfogcol = GetLevelFogColor();
         if (fpfogcol != Color()) {
             // Foggy weather.
-            uniforms.fog.weakDensity = 0.25;
-            uniforms.fog.strongDensity = 0.85;
+            uniforms.fog.weakDensity = 0.25f;
+            uniforms.fog.strongDensity = 0.85f;
             uniforms.fog.weakDistance = fog.weakDistance;
             uniforms.fog.strongDistance = fog.strongDistance;
             uniforms.fog.clipDistance = fog.clipDistance;
@@ -1656,7 +1656,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
         uniforms.fog.weakDistance = pCamera3D->GetFarClip();
         uniforms.fog.strongDistance = pCamera3D->GetFarClip();
         uniforms.fog.clipDistance = pCamera3D->GetFarClip();
-        uniforms.fog.color = Colorf();
+        uniforms.fog.color = colorTable.Red.toColorf(); // Should never see this, make it obvious if it does happen.
     }
 
     uniforms.submit(forcepershader);
