@@ -37,58 +37,69 @@ iptables -A INPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
 iptables -A OUTPUT -o lo -j ACCEPT
 
-# Create ipset with CIDR support
-ipset create allowed-domains hash:net
+# Create ipset for individual IPs (dnsmasq adds IPs, not CIDRs)
+ipset create allowed-domains hash:ip
 
-# Resolve and add allowed domains via DNS
-for domain in \
-    "github.com" \
-    "api.github.com" \
-    "objects.githubusercontent.com" \
-    "results-receiver.actions.githubusercontent.com" \
-    "productionresultssa1.blob.core.windows.net" \
-    "productionresultssa2.blob.core.windows.net" \
-    "productionresultssa3.blob.core.windows.net" \
-    "productionresultssa4.blob.core.windows.net" \
-    "productionresultssa5.blob.core.windows.net" \
-    "productionresultssa6.blob.core.windows.net" \
-    "productionresultssa7.blob.core.windows.net" \
-    "productionresultssa8.blob.core.windows.net" \
-    "productionresultssa9.blob.core.windows.net" \
-    "productionresultssa10.blob.core.windows.net" \
-    "productionresultssa11.blob.core.windows.net" \
-    "productionresultssa12.blob.core.windows.net" \
-    "productionresultssa13.blob.core.windows.net" \
-    "productionresultssa14.blob.core.windows.net" \
-    "productionresultssa15.blob.core.windows.net" \
-    "productionresultssa16.blob.core.windows.net" \
-    "productionresultssa17.blob.core.windows.net" \
-    "productionresultssa18.blob.core.windows.net" \
-    "productionresultssa19.blob.core.windows.net" \
-    "registry.npmjs.org" \
-    "api.anthropic.com" \
-    "sentry.io" \
-    "statsig.anthropic.com" \
-    "statsig.com" \
-    "marketplace.visualstudio.com" \
-    "vscode.blob.core.windows.net" \
-    "update.code.visualstudio.com"; do
-    echo "Resolving $domain..."
-    ips=$(dig +noall +answer A "$domain" | awk '$4 == "A" {print $5}')
-    if [ -z "$ips" ]; then
-        echo "ERROR: Failed to resolve $domain"
-        exit 1
-    fi
-    
-    while read -r ip; do
-        if [[ ! "$ip" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-            echo "ERROR: Invalid IP from DNS for $domain: $ip"
-            exit 1
-        fi
-        echo "Adding $ip for $domain"
-        ipset add allowed-domains "$ip" -exist
-    done < <(echo "$ips")
+# Allowed domains — dnsmasq matches these as suffixes, so e.g. "github.com"
+# covers api.github.com, *.github.com, etc.
+ALLOWED_DOMAINS=(
+    github.com              # api.github.com, *.github.com
+    githubusercontent.com   # raw content, avatars, user content
+    blob.core.windows.net   # productionresultssa{1-19}, vscode, etc.
+    npmjs.org               # registry.npmjs.org
+    anthropic.com           # api.anthropic.com, statsig.anthropic.com
+    sentry.io
+    statsig.com
+    visualstudio.com        # marketplace.visualstudio.com
+    code.visualstudio.com   # update.code.visualstudio.com
+)
+
+# Build the dnsmasq --ipset directive: /domain1/domain2/.../ipset_name
+IPSET_DIRECTIVE="/"
+for domain in "${ALLOWED_DOMAINS[@]}"; do
+    IPSET_DIRECTIVE+="${domain}/"
 done
+IPSET_DIRECTIVE+="allowed-domains"
+
+# Capture the upstream DNS server before we overwrite resolv.conf.
+# On the default bridge network this is the host/VM DNS (e.g. 192.168.65.7),
+# not Docker's embedded DNS at 127.0.0.11 (which only exists in user-defined networks).
+UPSTREAM_DNS=$(awk '/^nameserver/ {print $2; exit}' /etc/resolv.conf)
+if [ -z "$UPSTREAM_DNS" ]; then
+    echo "ERROR: No nameserver found in /etc/resolv.conf"
+    exit 1
+fi
+echo "Upstream DNS: $UPSTREAM_DNS"
+
+# Set up dnsmasq as a forwarding DNS resolver that populates the ipset.
+# For listed domains, dnsmasq automatically adds resolved IPs to the ipset,
+# handling IP rotation without needing the GitHub meta API.
+echo "Starting dnsmasq..."
+dnsmasq \
+    --no-resolv \
+    --server="$UPSTREAM_DNS" \
+    --listen-address=127.0.0.1 \
+    --bind-interfaces \
+    --user=root \
+    --ipset="$IPSET_DIRECTIVE"
+
+# Verify dnsmasq is actually running (it daemonizes, so a successful exit code
+# from the parent doesn't guarantee the child is alive).
+if ! pgrep -x dnsmasq >/dev/null; then
+    echo "ERROR: dnsmasq failed to start"
+    exit 1
+fi
+
+# Point DNS resolution at dnsmasq
+echo "nameserver 127.0.0.1" > /etc/resolv.conf
+
+# Verify dnsmasq is working by doing a test resolution
+echo "Verifying dnsmasq is resolving..."
+if ! dig +short +timeout=5 @127.0.0.1 api.github.com >/dev/null 2>&1; then
+    echo "ERROR: dnsmasq is not resolving queries"
+    exit 1
+fi
+echo "dnsmasq is working"
 
 # Get host IP from default route
 HOST_IP=$(ip route | grep default | cut -d" " -f3)
