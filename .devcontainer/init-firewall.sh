@@ -40,37 +40,36 @@ iptables -A OUTPUT -o lo -j ACCEPT
 # Create ipset with CIDR support
 ipset create allowed-domains hash:net
 
-# Fetch GitHub meta information and aggregate + add their IP ranges
-echo "Fetching GitHub IP ranges..."
-gh_ranges=$(curl -s https://api.github.com/meta)
-if [ -z "$gh_ranges" ]; then
-    echo "ERROR: Failed to fetch GitHub IP ranges"
-    exit 1
-fi
-
-if ! echo "$gh_ranges" | jq -e '.web and .api and .git' >/dev/null; then
-    echo "ERROR: GitHub API response missing required fields"
-    exit 1
-fi
-
-echo "Processing GitHub IPs..."
-while read -r cidr; do
-    if [[ ! "$cidr" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/[0-9]{1,2}$ ]]; then
-        echo "ERROR: Invalid CIDR range from GitHub meta: $cidr"
-        exit 1
-    fi
-    echo "Adding GitHub range $cidr"
-    ipset add allowed-domains "$cidr" -exist
-done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
-
-# Resolve and add other allowed domains
+# Resolve and add allowed domains via DNS
 for domain in \
+    "github.com" \
+    "api.github.com" \
+    "objects.githubusercontent.com" \
+    "results-receiver.actions.githubusercontent.com" \
+    "productionresultssa1.blob.core.windows.net" \
+    "productionresultssa2.blob.core.windows.net" \
+    "productionresultssa3.blob.core.windows.net" \
+    "productionresultssa4.blob.core.windows.net" \
+    "productionresultssa5.blob.core.windows.net" \
+    "productionresultssa6.blob.core.windows.net" \
+    "productionresultssa7.blob.core.windows.net" \
+    "productionresultssa8.blob.core.windows.net" \
+    "productionresultssa9.blob.core.windows.net" \
+    "productionresultssa10.blob.core.windows.net" \
+    "productionresultssa11.blob.core.windows.net" \
+    "productionresultssa12.blob.core.windows.net" \
+    "productionresultssa13.blob.core.windows.net" \
+    "productionresultssa14.blob.core.windows.net" \
+    "productionresultssa15.blob.core.windows.net" \
+    "productionresultssa16.blob.core.windows.net" \
+    "productionresultssa17.blob.core.windows.net" \
+    "productionresultssa18.blob.core.windows.net" \
+    "productionresultssa19.blob.core.windows.net" \
     "registry.npmjs.org" \
     "api.anthropic.com" \
     "sentry.io" \
     "statsig.anthropic.com" \
     "statsig.com" \
-    "objects.githubusercontent.com" \
     "marketplace.visualstudio.com" \
     "vscode.blob.core.windows.net" \
     "update.code.visualstudio.com"; do

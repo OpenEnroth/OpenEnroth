@@ -23,7 +23,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   ipset \
   iproute2 \
   dnsutils \
-  aggregate \
   jq \
   nano \
   vim \
