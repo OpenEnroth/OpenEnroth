@@ -1703,8 +1703,9 @@ void OpenGLRenderer::SetFogParametersGL() {
         } else {
             fog.weakDensity = 0;
             fog.strongDensity = 0;
-            fog.weakDistance = pCamera3D->GetFarClip() * config->graphics.FogDepthRatio.value();
-            fog.strongDistance = pCamera3D->GetFarClip() * (1 + config->graphics.FogDepthRatio.value()) / 2;
+            // weakDistance=0 avoids degenerate smoothstep; fog onset matches old fogstart = FogDepthRatio * farClip.
+            fog.weakDistance = 0;
+            fog.strongDistance = pCamera3D->GetFarClip() * config->graphics.FogDepthRatio.value();
             fog.clipDistance = pCamera3D->GetFarClip();
 
             // grabs sky back fog colour

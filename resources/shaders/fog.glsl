@@ -10,6 +10,10 @@ struct FogParam {
 };
 
 float getFogRatio(FogParam fog, float dist) {
+    // Guard against degenerate smoothstep (GLSL undefined behavior when edge0 >= edge1).
+    // Check fog params directly (not dist) to avoid floating-point interpolation precision issues.
+    if (fog.weakDistance >= fog.clipDistance)
+        return fog.weakDensity;
     return
         fog.weakDensity +
         (fog.strongDensity - fog.weakDensity) * smoothstep(fog.weakDistance, fog.strongDistance, dist) +
@@ -17,5 +21,7 @@ float getFogRatio(FogParam fog, float dist) {
 }
 
 float getFogAlpha(FogParam fog, float dist) {
+    if (fog.strongDistance >= fog.clipDistance)
+        return 1.0;
     return 1.0 - smoothstep(fog.strongDistance, fog.clipDistance, dist);
 }
