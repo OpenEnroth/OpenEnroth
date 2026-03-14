@@ -696,12 +696,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
         pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->dt();
 
         // Draw name and profession
-        std::string str;
-        if (pActors[uActorID].npcId) {
-            str = NameAndTitle(getNPCData(pActors[uActorID].npcId));
-        } else {
-            str = pActors[uActorID].GetDisplayName();
-        }
+        std::string str = pActors[uActorID].GetDisplayName();
         GUIWindow::DrawTitleText(assets->pFontComic.get(), 0, 12, colorTable.PaleCanary, str, 3, *pWindow);
 
         // health bar

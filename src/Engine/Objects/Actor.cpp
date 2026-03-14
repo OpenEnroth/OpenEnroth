@@ -2364,7 +2364,7 @@ std::string Actor::GetDisplayName() const {
         NPCData *npc = getNPCData(npcId);
         std::string_view title = localization->npcProfessionName(npc->profession);
         if (!title.empty())
-            return fmt::format("{} the {}", npc->name, title);
+            return localization->format(LSTR_S_THE_S, npc->name, title);
         return npc->name;
     }
     return pMonsterStats->infos[monsterInfo.id].name;
