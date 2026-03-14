@@ -323,7 +323,15 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
  * @return                              Whether there is a collision.
  */
 static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, Pid pid, bool jagged_top) {
+    // If the cylinder base is above the collision state's full sweep, extend it downward so the bbox
+    // check doesn't miss it. This handles flying actors hovering above the party's head height.
+    float bottom = center_lo.z;
     BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height);
+    if (center_lo.z > collision_state.bbox.z2) {
+        bottom = collision_state.position_lo.z - collision_state.radius_lo;
+        bbox = BBoxf::forCylinder(Vec3f(center_lo.x, center_lo.y, bottom), radius, center_lo.z - bottom + height);
+    }
+
     if (!collision_state.bbox.intersects(bbox))
         return false;
 
@@ -339,8 +347,8 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
 
     Vec3f pos = collision_state.position_lo;
     radius += collision_state.radius_lo;
-    // add radius to treat bottom of collison state as flat
-    Vec3f vert1 = center_lo, vert2 = center_lo + Vec3f(0, 0, height + collision_state.radius_lo);
+    Vec3f vert1 = Vec3f(center_lo.x, center_lo.y, bottom);
+    Vec3f vert2 = center_lo + Vec3f(0, 0, height + collision_state.radius_lo);
 
     float newdist, intersection;
     if (CollideWithLine(vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection, true)) {
@@ -1229,11 +1237,6 @@ bool hasShorterSolution(const float a, const float b, const float c, const float
         // TODO(pskelton): inside cylinder collisions (eg actor actor overlap) cause issues - disable for now.
         // Consider if theres any instances where this could be reintroduced and useful.
         return false;
-        // We are inside and colliding - for cylinder
-        if (alpha1 < 0.0f && alpha2 >= 0.0f) {
-            *outNewSoln = 0.0f;
-            return true;
-        }
     }
 
     if (alpha2 > 0.0f && alpha2 < curSoln) {
