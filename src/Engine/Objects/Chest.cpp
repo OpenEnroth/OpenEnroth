@@ -329,7 +329,6 @@ void GenerateItemsInChest() {
             if (!isRandomItem(entry->itemId))
                 continue;
 
-            int itemCount = grng->randomInSegment(1, 5); // TODO(captainurist): move down & retrace.
             ItemTreasureLevel resultTreasureLevel = grng->randomSample(
                 RemapTreasureLevel(randomItemTreasureLevel(entry->itemId), currMapInfo->mapTreasureLevel));
 
@@ -344,6 +343,7 @@ void GenerateItemsInChest() {
                 continue;
             }
 
+            int itemCount = grng->randomInSegment(1, 5);
             for (int k = 0; k < itemCount; k++) {
                 Item item;
                 int whatToGenerateProb = grng->random(100);
