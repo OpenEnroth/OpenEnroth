@@ -6,9 +6,7 @@
 #include <memory>
 
 #include "Library/LodFormats/LodFormats.h"
-#include "Library/Logger/Logger.h"
 
-#include "Utility/Exception.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
@@ -68,11 +66,6 @@ bool LodSpriteCache::LoadSpriteFromFile(LodSprite *pSprite, std::string_view pCo
     if (!_reader.exists(pContainer))
         return false;
 
-    try {
-        *pSprite = lod::decodeSprite(_reader.read(pContainer));
-    } catch (const Exception &e) {
-        logger->warning("Failed to decode sprite '{}': {}", pContainer, e.what());
-        return false;
-    }
+    *pSprite = lod::decodeSprite(_reader.read(pContainer));
     return true;
 }

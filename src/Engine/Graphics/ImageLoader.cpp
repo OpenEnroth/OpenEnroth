@@ -280,8 +280,6 @@ bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
 
 bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage) {
     Sprite *pSprite = lod->loadSprite(this->resource_name);
-    if (!pSprite)
-        return false;
 
     size_t w = pSprite->sprite_header->image.width();
     size_t h = pSprite->sprite_header->image.height();
