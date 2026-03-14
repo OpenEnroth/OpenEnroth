@@ -6,6 +6,7 @@
 
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
+#include "Engine/Tables/NPCTable.h"
 #include "Engine/Resources/ResourceManager.h"
 
 #include "Utility/String/Transformations.h"
@@ -1429,3 +1430,35 @@ Soon the world will bow to your every whim!  Still, you can't help but wonder
 what was beyond the Gate the other side was trying so hard to build."" unsigned
 char *
 */
+
+std::string NameAndTitle(std::string_view name, std::string_view title) {
+    return localization->format(LSTR_S_THE_S, name, title);
+}
+
+
+std::string NameAndTitle(std::string_view name, Class class_type) {
+    return NameAndTitle(
+        name,
+        localization->className(class_type)
+    );
+}
+
+
+std::string NameAndTitle(std::string_view name, NpcProfession profession) {
+    return NameAndTitle(
+        name,
+        localization->npcProfessionName(profession)
+    );
+}
+
+
+std::string NameAndTitle(NPCData *npc) {
+    if (!npc->name.empty()) {
+        if (npc->profession != NoProfession)
+            return NameAndTitle(npc->name, npc->profession);
+
+        return npc->name;
+    }
+
+    return std::string();
+}

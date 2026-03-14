@@ -2360,13 +2360,8 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
 std::string Actor::GetDisplayName() const {
     if (uniqueNameIndex)
         return pMonsterStats->uniqueNames[uniqueNameIndex];
-    if (npcId) {
-        NPCData *npc = getNPCData(npcId);
-        std::string_view title = localization->npcProfessionName(npc->profession);
-        if (!title.empty())
-            return localization->format(LSTR_S_THE_S, npc->name, title);
-        return npc->name;
-    }
+    if (npcId)
+        return NameAndTitle(getNPCData(npcId));
     return pMonsterStats->infos[monsterInfo.id].name;
 }
 
