@@ -60,7 +60,7 @@ static constexpr IndexedArray<int, HOSTILITY_FIRST, HOSTILITY_LAST> _4DF380_host
     {HOSTILITY_LONG, 10240}
 };
 
-std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};  // level spawn monster levels ABC
+std::array<int16_t, 18> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30, 20, 30, 40, 30, 10, 50, 40}};  // level spawn monster levels ABC
 
 //----- (0042FB5C) --------------------------------------------------------
 // True if monster should play attack animation when casting this spell.
@@ -4259,7 +4259,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
     if (baseInternalName[0] == '0') return;
 
     monsterCategoryOddsSet += monsterCatMod;
-    if (monsterCategoryOddsSet > 3) monsterCategoryOddsSet = 3;
+    if (monsterCategoryOddsSet > 5) monsterCategoryOddsSet = 5;
 
     if (countOverride) NumToSpawn = countOverride;
     if (NumToSpawn <= 0) return;
