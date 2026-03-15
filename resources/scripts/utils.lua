@@ -146,6 +146,13 @@ function stringToEnum(enumTable, valueStr)
         end
     end
 
+    local lowerStr = string.lower(valueStr)
+    for k, v in pairs(enumTable) do
+        if string.lower(k) == lowerStr then
+            return v
+        end
+    end
+
     return nil
 end
 
