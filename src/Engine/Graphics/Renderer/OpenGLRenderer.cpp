@@ -1641,12 +1641,12 @@ void OpenGLRenderer::DrawForcePerVerts() {
             uniforms.fog.clipDistance = fog.clipDistance;
             uniforms.fog.color = Colorf(fpfogcol.r / 255.0f, fpfogcol.g / 255.0f, fpfogcol.b / 255.0f);
         } else {
-            // Normal weather.
+            // Normal weather. Push distances beyond far clip so sky polygons at screenspace=farClip get zero fog ratio.
             uniforms.fog.weakDensity = 0.0f;
             uniforms.fog.strongDensity = 0.0f;
             uniforms.fog.weakDistance = pCamera3D->GetFarClip();
             uniforms.fog.strongDistance = pCamera3D->GetFarClip();
-            uniforms.fog.clipDistance = pCamera3D->GetFarClip();
+            uniforms.fog.clipDistance = pCamera3D->GetFarClip() * 2.0f;
             float fogVal = _forcePerVertices[0].color.r;
             uniforms.fog.color = Colorf(fogVal, fogVal, fogVal);
         }
@@ -1655,7 +1655,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
         uniforms.fog.strongDensity = 0.0f;
         uniforms.fog.weakDistance = pCamera3D->GetFarClip();
         uniforms.fog.strongDistance = pCamera3D->GetFarClip();
-        uniforms.fog.clipDistance = pCamera3D->GetFarClip();
+        uniforms.fog.clipDistance = pCamera3D->GetFarClip() * 2.0f;
         uniforms.fog.color = Colorf();
     }
 
