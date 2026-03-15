@@ -323,8 +323,10 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
  * @return                              Whether there is a collision.
  */
 static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, Pid pid, bool jagged_top) {
-    // If the cylinder base is above the collision state's full sweep, extend it downward so the bbox
-    // check doesn't miss it. This handles flying actors hovering above the party's head height.
+    // If the cylinder base is above the top of the collision state's bounding box, extend it
+    // downward so that CollideWithLine's segment projection covers the party's full body.
+    // Without this, a flying actor hovering above the party's head produces f<0 in the segment
+    // check and registers no collision.
     float bottom = center_lo.z;
     BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height);
     if (center_lo.z > collision_state.bbox.z2) {
