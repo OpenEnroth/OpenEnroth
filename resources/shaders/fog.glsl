@@ -9,10 +9,12 @@ struct FogParam {
     float clipDistance; // Density = 1.0, alpha = 0.0.
 };
 
-// smoothstep with undefined behavior (edge0 >= edge1) replaced by a step: returns 1.0 when edge0 >= edge1.
+// smoothstep with undefined behavior (edge0 >= edge1) replaced by a clamp: returns 0.0 when edge0 >= edge1,
+// meaning x is treated as "before the transition starts". This matches the no-fog semantics where all
+// distances are equal to the far clip — the transition never starts so fog contribution is zero.
 float safeSmooth(float edge0, float edge1, float x) {
     if (edge0 >= edge1)
-        return 1.0;
+        return 0.0;
     return smoothstep(edge0, edge1, x);
 }
 
