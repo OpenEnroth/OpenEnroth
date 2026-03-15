@@ -312,6 +312,10 @@ void Io::Mouse::DoMouseLook(Pointi relChange) {
         return;
     }
 
+    // Crosshair is drawn at viewport center; keep _position in sync so that picking
+    // and interaction hit-testing use the same point the player is aiming at.
+    _position = pViewport.center();
+
     float modX = relChange.x * engine->config->settings.MouseLookSensitivity.value();
     float modY = relChange.y * engine->config->settings.MouseLookSensitivity.value();
     pParty->_viewPitch -= modY;
