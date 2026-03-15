@@ -1,6 +1,7 @@
 #include "SaveLoad.h"
 
 #include <cassert>
+#include <stdexcept>
 #include <algorithm>
 #include <unordered_map>
 #include <string>
@@ -218,7 +219,12 @@ SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path,
 }
 
 void autoSave() {
-    saveGame(true, false, "saves/autosave.mm7");
+    // Per HACKING.md: use Logger for recoverable errors. Autosave failure is recoverable — the game can continue.
+    try {
+        saveGame(true, false, "saves/autosave.mm7");
+    } catch (const std::exception &e) {
+        logger->warning("autoSave: failed to write autosave: {}", e.what());
+    }
 }
 
 void doSavegame(int uSlot) {
