@@ -388,6 +388,16 @@ void GameWindowHandler::OnDeactivated() {
 
 void GameWindowHandler::OnToggleWindowMode() {
     PlatformWindowMode mode = window->windowMode();
+
+    // Save windowed size before entering fullscreen. Resize events fired during the mode transition
+    // may arrive while the window is still fullscreen-sized but the mode flag already shows windowed,
+    // which would cause the resize handler to overwrite Width/Height with fullscreen dimensions.
+    if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
+        Sizei size = window->size();
+        engine->config->window.Width.setValue(size.w);
+        engine->config->window.Height.setValue(size.h);
+    }
+
     switch (mode) {
         case WINDOW_MODE_WINDOWED:
             mode = WINDOW_MODE_BORDERLESS;
