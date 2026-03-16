@@ -17,6 +17,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/EngineIocContainer.h"
+#include "Engine/Party.h"
 #include "Engine/Time/Timer.h"
 
 #include "GUI/GUIWindow.h"
@@ -473,6 +474,12 @@ bool GameWindowHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
 }
 
 bool GameWindowHandler::wheelEvent(const PlatformWheelEvent *event) {
+    if (engine->config->settings.ScrollFly.value() && current_screen_type == SCREEN_GAME && !pParty->bTurnBasedModeOn && pParty->FlyActive()) {
+        if (event->angleDelta.y > 0)
+            keyboardInputHandler->addScrollFly(1);
+        else if (event->angleDelta.y < 0)
+            keyboardInputHandler->addScrollFly(-1);
+    }
     return false;
 }
 

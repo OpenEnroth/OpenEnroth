@@ -41,6 +41,12 @@ class KeyboardInputHandler {
 
     void GenerateInputActions();
 
+    /**
+     * Called from the scroll wheel event handler to initiate a scroll-fly burst.
+     * @param dir   +1 to fly up, -1 to fly down.
+     */
+    void addScrollFly(int dir);
+
     inline PlatformKey LastPressedKey() const {
         return lastKeyPressed;
     }
@@ -60,6 +66,9 @@ class KeyboardInputHandler {
 
     KeyboardController *controller;
     std::shared_ptr<KeyboardActionMapping> actionMapping;
+
+    int _scrollFlyDir = 0;           // +1 up, -1 down, 0 inactive
+    int _scrollFlyFramesLeft = 0;    // Frames remaining for scroll-fly burst
 
     PlatformKey lastKeyPressed;
     Duration keydelaytimer;
