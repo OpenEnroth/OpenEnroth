@@ -40,6 +40,7 @@ static constexpr std::initializer_list<const char *> defaultCommands = {
     "xp party 20000 | Give 20k xp",
     "sp add 20 | Add 20 Skill points",
     "skills learn_all | Learn all Skills",
+    "skills grandmaster_all | Grandmaster all Skills",
     "alignment cycle | Cycle Alignment",
     "class lich | Become Lich",
     "condition set Dead | Become Dead",
