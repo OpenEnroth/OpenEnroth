@@ -176,7 +176,7 @@ local subCommands = {
     {
         name = "grandmaster_all",
         callback = grandmasterAll,
-        description = "Set all learnable skills to Grandmaster level 20 for the whole party."
+        description = "Set all skills to Grandmaster level 20 for the whole party, including skills not normally available to each character's class."
     },
 }
 
