@@ -19,6 +19,7 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -2359,8 +2360,9 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
 std::string Actor::GetDisplayName() const {
     if (uniqueNameIndex)
         return pMonsterStats->uniqueNames[uniqueNameIndex];
-    else
-        return pMonsterStats->infos[monsterInfo.id].name;
+    if (npcId)
+        return NameAndTitle(getNPCData(npcId));
+    return pMonsterStats->infos[monsterInfo.id].name;
 }
 
 //----- (0044FD29) --------------------------------------------------------
