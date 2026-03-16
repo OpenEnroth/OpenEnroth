@@ -94,6 +94,9 @@ void Io::Mouse::Initialize() {
     SetCursorImage("MICON3");
     SetCursorImage("MICON2");
     SetCursorImage("MICON1");
+
+    if (engine->config->settings.MouseLookEnabled.value())
+        SetMouseLook(MouseLookState::Enabled);
 }
 
 void Io::Mouse::DrawCursor() {
@@ -305,6 +308,7 @@ void Io::Mouse::ToggleMouseLook() {
     } else {
         SetMouseLook(MouseLookState::Disabled);
     }
+    engine->config->settings.MouseLookEnabled.setValue(_mouseLook == MouseLookState::Enabled);
 }
 
 void Io::Mouse::DoMouseLook(Pointi relChange) {
