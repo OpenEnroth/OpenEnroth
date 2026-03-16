@@ -100,8 +100,8 @@ void Io::Mouse::DrawCursor() {
     // get mouse pos
     Pointi pos = this->position();
 
-    // manage mouse look state - if only game screen is active, try enable
-    if (lWindowList.size() == 1)
+    // manage mouse look state - if only game screen is active and no overlay (console) is open, try enable
+    if (lWindowList.size() == 1 && !engine->isOverlayOpen())
         RestoreMouseLook();
     else
         SetMouseLook(Suspended);
