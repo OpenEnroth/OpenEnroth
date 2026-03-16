@@ -59,6 +59,14 @@ static bool PartyMove(PartyAction direction) {
 
 
 void Io::KeyboardInputHandler::GenerateActions(bool isPaused) {
+    // Process scroll-fly burst — simulate held PageUp/PageDown for a few frames per scroll notch.
+    if (_scrollFlyFramesLeft > 0 && !isPaused && current_screen_type == SCREEN_GAME && !pParty->bTurnBasedModeOn && pParty->FlyActive()) {
+        pPartyActionQueue->Add(_scrollFlyDir > 0 ? PARTY_FlyUp : PARTY_FlyDown);
+        --_scrollFlyFramesLeft;
+    } else if (_scrollFlyFramesLeft > 0 && (isPaused || current_screen_type != SCREEN_GAME)) {
+        _scrollFlyFramesLeft = 0; // cancel if we leave game screen
+    }
+
     bool resettimer = true;
     for (InputAction action : allInputActions()) {
         bool isTriggered = false;
@@ -352,6 +360,11 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
 }
 
 //----- (0042FC4E) --------------------------------------------------------
+void Io::KeyboardInputHandler::addScrollFly(int dir) {
+    _scrollFlyDir = dir;
+    _scrollFlyFramesLeft = 20; // ~1/3 second at 60fps per scroll notch
+}
+
 void Io::KeyboardInputHandler::GenerateInputActions() {
     if (!engine->config->settings.AlwaysRun.value()) {
         if (IsRunKeyToggled()) {
