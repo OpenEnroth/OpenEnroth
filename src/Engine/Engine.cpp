@@ -470,7 +470,11 @@ Vis_PIDAndDepth Engine::PickMouseNormal() {
 void Engine::toggleOverlays() {
     bool isEnabled = _overlaySystem.isEnabled();
     _overlaySystem.setEnabled(!isEnabled);
-    mouse->SetMouseLook(Io::Mouse::MouseLookState::Disabled);
+    // Suspend mouselook while the overlay is open; DrawCursor will restore it when the overlay closes.
+    // Using Suspended (not Disabled) so that mouselook is re-enabled on close if it was on before.
+    // SetMouseLook(Suspended) is a no-op when mouselook was already Disabled, so users who had it
+    // off before opening the console will not have it unexpectedly re-enabled.
+    mouse->SetMouseLook(Io::Mouse::MouseLookState::Suspended);
 }
 
 void Engine::disableOverlays() {
