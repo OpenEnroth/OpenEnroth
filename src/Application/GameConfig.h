@@ -624,6 +624,8 @@ class GameConfig : public Config {
 
         Bool ScrollFly = {this, "scroll_fly", true, "Use scroll wheel to ascend/descend while flying."};
 
+        Bool MiddleMouseLand = {this, "middle_mouse_land", true, "Click middle mouse button to land while flying."};
+
      private:
         static int ValidateLevel(int level) {
             return std::clamp(level, 0, 9);

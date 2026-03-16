@@ -460,6 +460,9 @@ bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
         } else {
             OnMouseRightClick(position);
         }
+    } else if (event->button == BUTTON_MIDDLE) {
+        if (engine->config->settings.MiddleMouseLand.value() && current_screen_type == SCREEN_GAME && pParty->FlyActive())
+            pPartyActionQueue->Add(PARTY_Land);
     }
     return false;
 }
