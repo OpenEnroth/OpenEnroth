@@ -1,0 +1,34 @@
+cc_library(
+    name = "library_filesystem_embedded",
+    srcs = [
+        "EmbeddedFileSystem.cpp",
+    ],
+    hdrs = [
+        "EmbeddedFileSystem.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+        # cmrc::base — TODO: define //bazel/rules:cmrc.bzl and the cmrc base library
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# TODO: The test for library_filesystem_embedded uses cmrc_add_resource_library
+# to embed test sources as a resource library (test_library_filesystem_embedded_resources).
+# This requires a custom Bazel rule in //bazel/rules:cmrc.bzl (to be written).
+# Once that rule is available, add a cmrc_resource_library target here and link
+# it into test_library_filesystem_embedded.
+cc_library(
+    name = "test_library_filesystem_embedded",
+    srcs = [
+        "Tests/EmbeddedFileSystem_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_filesystem_embedded",
+        # TODO: add embedded resource library target once cmrc.bzl is defined
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,37 @@
+cc_library(
+    name = "application_startup",
+    srcs = [
+        "PathResolver.cpp",
+        "GameStarter.cpp",
+        "LogStarter.cpp",
+        "FileSystemStarter.cpp",
+    ],
+    hdrs = [
+        "PathResolver.h",
+        "GameStarter.h",
+        "GameStarterOptions.h",
+        "LogStarter.h",
+        "FileSystemStarter.h",
+    ],
+    deps = [
+        "//src/Engine:engine",
+        "//src/Engine/Components/Control:engine_components_control",
+        "//src/Engine/Components/Deterministic:engine_components_deterministic",
+        "//src/Engine/Components/Trace:engine_components_trace",
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Engine/Graphics/Renderer:engine_graphics_renderer",
+        "//src/GUI:gui",
+        "//src/Library/Config:library_config",
+        "//src/Library/Fsm:library_fsm",
+        "//src/Library/Platform/Null:library_platform_null",
+        # library_platform_implementation → //src/Library/Platform/Sdl:library_platform_sdl (via alias)
+        "//src/Library/Platform/Sdl:library_platform_sdl",
+        "//src/Library/Platform/Application:library_platform_application",
+        # library_environment_implementation → platform-specific, see Environment subdirs
+        "//src/Library/Environment/Interface:library_environment_interface",
+        "//src/Library/Logger:library_logger",
+        "//src/Scripting:scripting",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

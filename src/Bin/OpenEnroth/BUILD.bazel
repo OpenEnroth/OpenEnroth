@@ -1,0 +1,19 @@
+cc_binary(
+    name = "OpenEnroth",
+    srcs = [
+        "OpenEnroth.cpp",
+        "OpenEnrothOptions.cpp",
+        "OpenEnrothOptions.h",
+    ] + select({
+        "@platforms//os:windows": ["OpenEnroth.rc"],
+        "//conditions:default": [],
+    }),
+    deps = [
+        "//src/Application:application",
+        "//src/Library/Cli:library_cli",
+        # library_platform_main is an OBJECT lib providing SDL main; include sdl platform
+        "//src/Library/Platform/Sdl:library_platform_sdl",
+        "//src/Library/StackTrace:library_stack_trace",
+    ],
+    visibility = ["//visibility:public"],
+)

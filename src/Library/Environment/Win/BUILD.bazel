@@ -1,0 +1,14 @@
+cc_library(
+    name = "library_environment_win",
+    srcs = [
+        "WinEnvironment.cpp",
+    ],
+    hdrs = [
+        "WinEnvironment.h",
+    ],
+    deps = [
+        "//src/Library/Environment/Interface:library_environment_interface",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

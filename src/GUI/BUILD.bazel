@@ -1,0 +1,26 @@
+cc_library(
+    name = "gui",
+    srcs = [
+        "GUIButton.cpp",
+        "GUIEnums.cpp",
+        "GUIFont.cpp",
+        "GUIProgressBar.cpp",
+        "GUIMessageQueue.cpp",
+        "GUIWindow.cpp",
+    ],
+    hdrs = [
+        "GUIButton.h",
+        "GUIDialogues.h",
+        "GUIEnums.h",
+        "GUIFont.h",
+        "GUIProgressBar.h",
+        "GUIMessageQueue.h",
+        "GUIWindow.h",
+    ],
+    deps = [
+        "//src/GUI/UI:gui_ui",
+        "//src/Engine:engine",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

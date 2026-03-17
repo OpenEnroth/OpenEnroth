@@ -1,0 +1,15 @@
+cc_library(
+    name = "library_environment_android",
+    srcs = [
+        "AndroidEnvironment.cpp",
+    ],
+    hdrs = [
+        "AndroidEnvironment.h",
+    ],
+    deps = [
+        "//src/Library/Environment/Interface:library_environment_interface",
+        # SDL3 — Phase 5 TODO
+        "//bazel/system:sdl3",
+    ],
+    visibility = ["//visibility:public"],
+)

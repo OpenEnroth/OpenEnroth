@@ -1,0 +1,24 @@
+cc_library(
+    name = "engine_resources",
+    srcs = [
+        "EngineFileSystem.cpp",
+        "LOD.cpp",
+        "LodSpriteCache.cpp",
+        "LodTextureCache.cpp",
+        "ResourceManager.cpp",
+    ],
+    hdrs = [
+        "EngineFileSystem.h",
+        "LOD.h",
+        "LodSpriteCache.h",
+        "LodTextureCache.h",
+        "ResourceManager.h",
+    ],
+    deps = [
+        "//src/Library/Lod:library_lod",
+        "//src/Library/LodFormats:library_lod_formats",
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

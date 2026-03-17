@@ -1,0 +1,13 @@
+cc_library(
+    name = "library_environment_posix",
+    srcs = [
+        "PosixEnvironment.cpp",
+    ],
+    hdrs = [
+        "PosixEnvironment.h",
+    ],
+    deps = [
+        "//src/Library/Environment/Interface:library_environment_interface",
+    ],
+    visibility = ["//visibility:public"],
+)

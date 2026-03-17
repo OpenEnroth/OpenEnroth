@@ -1,0 +1,45 @@
+cc_library(
+    name = "library_logger",
+    srcs = [
+        "LogCategory.cpp",
+        "LogEnums.cpp",
+        "Logger.cpp",
+        "LogSink.cpp",
+        "DistLogSink.cpp",
+        "StreamLogSink.cpp",
+        "RotatingLogSink.cpp",
+    ],
+    hdrs = [
+        "BufferLogSink.h",
+        "LogCategory.h",
+        "LogEnums.h",
+        "Logger.h",
+        "LogSink.h",
+        "DistLogSink.h",
+        "LogSource.h",
+        "StreamLogSink.h",
+        "LogEnumFunctions.h",
+        "RotatingLogSink.h",
+    ],
+    deps = [
+        "//src/Library/Serialization:library_serialization",
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+        # spdlog is PRIVATE
+        "@spdlog//:spdlog",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_logger",
+    srcs = [
+        "Tests/RotatingLogSink_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_logger",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

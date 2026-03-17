@@ -1,0 +1,24 @@
+cc_library(
+    name = "library_platform_interface",
+    srcs = [
+        "PlatformEventHandler.cpp",
+    ],
+    hdrs = [
+        "Platform.h",
+        "PlatformEnumFunctions.h",
+        "PlatformEnums.h",
+        "PlatformEventHandler.h",
+        "PlatformEventLoop.h",
+        "PlatformEvents.h",
+        "PlatformGamepad.h",
+        "PlatformOpenGLContext.h",
+        "PlatformOpenGLOptions.h",
+        "PlatformWindow.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Logger:library_logger",
+        "//src/Library/Geometry:library_geometry",
+    ],
+    visibility = ["//visibility:public"],
+)

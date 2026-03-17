@@ -1,0 +1,11 @@
+# The CMake build defines an INTERFACE library called "scripts" that lists all
+# Lua script files as sources so that target_check_lua_style() can run on them.
+# There is no compiled output — the scripts are embedded via the cmrc resources
+# target defined in //resources:resources.
+#
+# In Bazel, Lua style checking is not yet wired up.  This file is a placeholder.
+filegroup(
+    name = "scripts",
+    srcs = glob(["**/*.lua"]),
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,30 @@
+cc_library(
+    name = "library_json",
+    srcs = [
+        "JsonExceptions.cpp",
+    ],
+    hdrs = [
+        "Json.h",
+        "JsonExceptions.h",
+        "JsonFwd.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Serialization:library_serialization",
+        "@nlohmann_json//:nlohmann_json",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_json",
+    srcs = [
+        "Tests/Json_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_json",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

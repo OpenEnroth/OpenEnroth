@@ -1,0 +1,12 @@
+cc_library(
+    name = "library_random",
+    srcs = [
+        "RandomEngine.cpp",
+    ],
+    hdrs = [
+        "MersenneTwisterRandomEngine.h",
+        "SequentialRandomEngine.h",
+        "RandomEngine.h",
+    ],
+    visibility = ["//visibility:public"],
+)

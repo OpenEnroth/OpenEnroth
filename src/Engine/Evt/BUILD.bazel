@@ -1,0 +1,25 @@
+# CMake target name: engine_events
+# Bazel label: //src/Engine/Evt:engine_evt
+cc_library(
+    name = "engine_evt",
+    srcs = [
+        "EvtEnums.cpp",
+        "EvtInstruction.cpp",
+        "EvtProgram.cpp",
+        "EvtInterpreter.cpp",
+        "Processor.cpp",
+    ],
+    hdrs = [
+        "EvtInstruction.h",
+        "EvtProgram.h",
+        "EvtInterpreter.h",
+        "EvtEnums.h",
+        "Processor.h",
+        "EvtEnumFunctions.h",
+    ],
+    deps = [
+        "//src/Engine:engine",
+        "@generator//:generator",
+    ],
+    visibility = ["//visibility:public"],
+)
