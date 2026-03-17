@@ -196,7 +196,72 @@ http_archive(
     # sha256 = "",  # TODO: fill in
 )
 
-# System deps (SDL3, OpenAL, ZLIB, PNG, FFmpeg) — Phase 5 -------------------
-# TODO: Replace with http_archive pointing to OpenEnroth_Dependencies releases
-# or with rules_foreign_cc source builds.
-# For now, these are resolved by the platform toolchain / sysroot.
+# System deps — prebuilt zips from OpenEnroth_Dependencies (Phase 5) --------
+# Tag: deps_r7_master. Release builds only; Debug variants follow same pattern.
+# sha256 fields left empty — fill in after first download for hermeticity.
+
+_DEPS_TAG = "deps_r7_master"
+_DEPS_BASE = "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/" + _DEPS_TAG + "/"
+
+http_archive(
+    name = "oe_deps_linux_x86_64",
+    url = _DEPS_BASE + "linux_Release_x86_64.zip",
+    build_file = "//bazel/system:prebuilt_posix.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "oe_deps_linux_x86",
+    url = _DEPS_BASE + "linux_Release_x86.zip",
+    build_file = "//bazel/system:prebuilt_posix.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "oe_deps_darwin_arm64",
+    url = _DEPS_BASE + "darwin_Release_arm64.zip",
+    build_file = "//bazel/system:prebuilt_posix.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "oe_deps_darwin_x86_64",
+    url = _DEPS_BASE + "darwin_Release_x86_64.zip",
+    build_file = "//bazel/system:prebuilt_posix.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "oe_deps_windows_x86_64",
+    url = _DEPS_BASE + "windows_Release_x86_64.zip",
+    build_file = "//bazel/system:prebuilt_windows.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "oe_deps_windows_x86",
+    url = _DEPS_BASE + "windows_Release_x86.zip",
+    build_file = "//bazel/system:prebuilt_windows.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "oe_deps_android_arm64",
+    url = _DEPS_BASE + "android_Release_arm64.zip",
+    build_file = "//bazel/system:prebuilt_android.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "oe_deps_android_arm32",
+    url = _DEPS_BASE + "android_Release_arm32.zip",
+    build_file = "//bazel/system:prebuilt_android.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "oe_deps_android_x86_64",
+    url = _DEPS_BASE + "android_Release_x86_64.zip",
+    build_file = "//bazel/system:prebuilt_android.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
