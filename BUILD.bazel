@@ -1,0 +1,8 @@
+# Root BUILD file — top-level aliases for convenience.
+# The main binary lives at //src/Bin/OpenEnroth.
+# Phase 6: uncomment once src/ BUILD files are written.
+
+# alias(
+#     name = "OpenEnroth",
+#     actual = "//src/Bin/OpenEnroth",
+# )
