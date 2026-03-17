@@ -1,0 +1,16 @@
+cc_library(
+    name = "testing_unit",
+    srcs = [
+        "UnitTest.cpp",
+    ],
+    hdrs = [
+        "UnitTest.h",
+    ],
+    deps = [
+        "//test/Testing/Extensions:testing_extensions",
+        "@googletest//:gtest",
+        "@googletest//:gmock",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)
