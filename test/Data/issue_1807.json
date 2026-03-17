@@ -1,0 +1,905 @@
+{
+    "header": {
+        "afterLoadRandomState": 854299,
+        "config": [
+            {
+                "key": "lightmap_decals",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "portal_outlines",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "mersenne_twister"
+            },
+            {
+                "key": "wizard_eye",
+                "section": "debug",
+                "value": "true"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 81,
+                    "backpack": [
+                        "Wizards' Gilded Belt",
+                        "Blaster",
+                        "Lieutenant's Cutlass",
+                        "Blaster",
+                        "Blaster",
+                        "Arcane Wand of Paralyzing [16/21]",
+                        "Magic Potion [77]",
+                        "Blaster",
+                        "Blaster",
+                        "Blaster",
+                        "Remove Fear Potion [34]",
+                        "Blaster",
+                        "Mash",
+                        "Blaster",
+                        "Temple in a Bottle",
+                        "Ghost Ring",
+                        "Glory Shield",
+                        "Eyeball Amulet of Dark Magic",
+                        "Scroll of Day of the Gods",
+                        "Sewer Key",
+                        "Dazzling Ring of Body Magic",
+                        "Forge Gauntlets",
+                        "Blaster",
+                        "Scroll of Day of Protection",
+                        "Mogred Helm of The Unicorn",
+                        "Scroll of Divine Intervention",
+                        "Moon Cloak",
+                        "Lady's Escort",
+                        "Hermes' Sandals"
+                    ],
+                    "endurance": 78,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Ideal Crossbow of Carnage",
+                        "Golden Chain Mail of Defense [+21]"
+                    ],
+                    "hp": 397,
+                    "intelligence": 71,
+                    "luck": 79,
+                    "might": 88,
+                    "mp": 585,
+                    "personality": 149,
+                    "speed": 91
+                },
+                {
+                    "accuracy": 129,
+                    "backpack": [
+                        "Divine Cure Potion [102]",
+                        "Divine Cure Potion [102]",
+                        "Divine Cure Potion [102]",
+                        "Divine Cure Potion [102]",
+                        "Divine Power Potion [102]",
+                        "Divine Power Potion [102]",
+                        "Divine Power Potion [102]",
+                        "Divine Power Potion [99]",
+                        "Divine Power Potion [102]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Divine Restoration Potion [48]",
+                        "Divine Restoration Potion [29]",
+                        "Divine Restoration Potion [38]",
+                        "Cure Insanity Potion [38]",
+                        "Cure Insanity Potion [37]",
+                        "Cure Insanity Potion [31]",
+                        "Remove Fear Potion [7]",
+                        "Remove Fear Potion [21]",
+                        "Remove Curse Potion [10]",
+                        "Remove Curse Potion [8]",
+                        "Remove Curse Potion [7]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Scroll of Raise Dead"
+                    ],
+                    "endurance": 76,
+                    "equipment": [
+                        "Old Nick",
+                        "Blaster Rifle",
+                        "The Perfect Bow",
+                        "Golden Chain Mail of Health [+24]",
+                        "Mind's Eye",
+                        "Gilded Belt of The Sky",
+                        "Elegant Cloak of Disarming [+12]",
+                        "Mogred Gauntlets of Defense [+19]",
+                        "Ranger Boots of The Sky",
+                        "Death's Head Pendant of Protection",
+                        "Wizard Ring of Magic [+15]",
+                        "Angel's Ring of Disarming [+25]",
+                        "Angel's Ring of Fire Magic",
+                        "Warlock's Ring of Defense [+9]",
+                        "Wizard Ring of Life"
+                    ],
+                    "hp": 628,
+                    "intelligence": 104,
+                    "luck": 69,
+                    "might": 105,
+                    "mp": 270,
+                    "personality": 40,
+                    "speed": 101
+                },
+                {
+                    "accuracy": 112,
+                    "backpack": [
+                        "Water Breathing Potion [12]",
+                        "Stoneskin Potion [5]",
+                        "Dragon's Eye",
+                        "Philosopher's Stone",
+                        "Dragon's Eye",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Mekorig's Hammer",
+                        "Dragon's Eye",
+                        "Philosopher's Stone",
+                        "Potion Bottle",
+                        "Shield Potion [5]",
+                        "Preservation Potion [4]",
+                        "Recharge Item Potion [8]",
+                        "Dragon's Eye",
+                        "Philosopher's Stone",
+                        "Dragon's Eye",
+                        "Philosopher's Stone",
+                        "Potion Bottle",
+                        "Heroism Potion [6]",
+                        "Haste Potion [6]",
+                        "Bless Potion [4]",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Potion Bottle",
+                        "Remove Curse Potion [10]",
+                        "Remove Fear Potion [7]",
+                        "Cure Insanity Potion [16]",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Potion Bottle",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye"
+                    ],
+                    "endurance": 141,
+                    "equipment": [
+                        "Majestic Shield of Earth",
+                        "Blaster Rifle",
+                        "Griffin Bow of Infernos",
+                        "Royal Leather of the Storm",
+                        "Mogred Helm of Magic [+19]",
+                        "Hero's Belt",
+                        "Glorious Cloak of The Stars",
+                        "Mogred Gauntlets of Life",
+                        "Paladin Boots of Alchemy [+17]",
+                        "Death's Head Pendant of Fire Magic",
+                        "Dazzling Ring of Water Magic",
+                        "Enchanted Ring of The Eclipse",
+                        "Faerie Ring",
+                        "Angel's Ring of Health [+20]",
+                        "Angel's Ring of Health [+22]",
+                        "Wizard Ring of Health [+18]"
+                    ],
+                    "hp": 404,
+                    "intelligence": 42,
+                    "luck": 69,
+                    "might": 106,
+                    "mp": 549,
+                    "personality": 107,
+                    "speed": 91
+                },
+                {
+                    "accuracy": 84,
+                    "backpack": [
+                        "Mystic Wand of Distortion [10/18]",
+                        "Mystic Wand of Shrapmetal [19/19]",
+                        "Mystic Wand of Shrapmetal [16/16]",
+                        "Griffin Bow of The Sky",
+                        "Wizard Staff of Thunderbolts",
+                        "Lloyd's Beacon",
+                        "Incinerate",
+                        "Mass Distortion",
+                        "Recharge Item Potion [75]"
+                    ],
+                    "endurance": 149,
+                    "equipment": [
+                        "Blaster",
+                        "Royal Leather of Life",
+                        "Mogred Helm of The Golem",
+                        "Silver Belt of Items [+24]",
+                        "Moon Cloak",
+                        "Mogred Gauntlets of Earth",
+                        "Paladin Boots of The Eclipse",
+                        "Sun Amulet of Magic [+25]",
+                        "Enchanted Ring of Fire Magic",
+                        "Enchanted Ring of Earth Magic",
+                        "Enchanted Ring of Water Magic",
+                        "Emerald Ring of Protection",
+                        "Platinum Ring of The Troll"
+                    ],
+                    "hp": 314,
+                    "intelligence": 114,
+                    "luck": 69,
+                    "might": 85,
+                    "mp": 430,
+                    "personality": 23,
+                    "speed": 97
+                }
+            ],
+            "locationName": "out02.odm",
+            "partyPosition": {
+                "x": -5295,
+                "y": 13334,
+                "z": 1
+            }
+        },
+        "saveFileSize": 602812,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 81,
+                    "backpack": [
+                        "Wizards' Gilded Belt",
+                        "Blaster",
+                        "Lieutenant's Cutlass",
+                        "Blaster",
+                        "Blaster",
+                        "Arcane Wand of Paralyzing [16/21]",
+                        "Magic Potion [77]",
+                        "Blaster",
+                        "Blaster",
+                        "Blaster",
+                        "Remove Fear Potion [34]",
+                        "Blaster",
+                        "Mash",
+                        "Blaster",
+                        "Temple in a Bottle",
+                        "Ghost Ring",
+                        "Glory Shield",
+                        "Eyeball Amulet of Dark Magic",
+                        "Scroll of Day of the Gods",
+                        "Sewer Key",
+                        "Dazzling Ring of Body Magic",
+                        "Forge Gauntlets",
+                        "Blaster",
+                        "Scroll of Day of Protection",
+                        "Mogred Helm of The Unicorn",
+                        "Scroll of Divine Intervention",
+                        "Moon Cloak",
+                        "Lady's Escort",
+                        "Hermes' Sandals"
+                    ],
+                    "endurance": 78,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Ideal Crossbow of Carnage",
+                        "Golden Chain Mail of Defense [+21]"
+                    ],
+                    "hp": 397,
+                    "intelligence": 71,
+                    "luck": 79,
+                    "might": 88,
+                    "mp": 585,
+                    "personality": 149,
+                    "speed": 91
+                },
+                {
+                    "accuracy": 129,
+                    "backpack": [
+                        "Divine Cure Potion [102]",
+                        "Divine Cure Potion [102]",
+                        "Divine Cure Potion [102]",
+                        "Divine Cure Potion [102]",
+                        "Divine Power Potion [102]",
+                        "Divine Power Potion [102]",
+                        "Divine Power Potion [102]",
+                        "Divine Power Potion [99]",
+                        "Divine Power Potion [102]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Magic Potion [77]",
+                        "Divine Restoration Potion [48]",
+                        "Divine Restoration Potion [29]",
+                        "Divine Restoration Potion [38]",
+                        "Cure Insanity Potion [38]",
+                        "Cure Insanity Potion [37]",
+                        "Cure Insanity Potion [31]",
+                        "Remove Fear Potion [7]",
+                        "Remove Fear Potion [21]",
+                        "Remove Curse Potion [10]",
+                        "Remove Curse Potion [8]",
+                        "Remove Curse Potion [7]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Cure Wounds Potion [77]",
+                        "Scroll of Raise Dead"
+                    ],
+                    "endurance": 76,
+                    "equipment": [
+                        "Old Nick",
+                        "Blaster Rifle",
+                        "The Perfect Bow",
+                        "Golden Chain Mail of Health [+24]",
+                        "Mind's Eye",
+                        "Gilded Belt of The Sky",
+                        "Elegant Cloak of Disarming [+12]",
+                        "Mogred Gauntlets of Defense [+19]",
+                        "Ranger Boots of The Sky",
+                        "Death's Head Pendant of Protection",
+                        "Wizard Ring of Magic [+15]",
+                        "Angel's Ring of Disarming [+25]",
+                        "Angel's Ring of Fire Magic",
+                        "Warlock's Ring of Defense [+9]",
+                        "Wizard Ring of Life"
+                    ],
+                    "hp": 628,
+                    "intelligence": 104,
+                    "luck": 69,
+                    "might": 105,
+                    "mp": 269,
+                    "personality": 40,
+                    "speed": 101
+                },
+                {
+                    "accuracy": 112,
+                    "backpack": [
+                        "Water Breathing Potion [12]",
+                        "Stoneskin Potion [5]",
+                        "Dragon's Eye",
+                        "Philosopher's Stone",
+                        "Dragon's Eye",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Mekorig's Hammer",
+                        "Dragon's Eye",
+                        "Philosopher's Stone",
+                        "Potion Bottle",
+                        "Shield Potion [5]",
+                        "Preservation Potion [4]",
+                        "Recharge Item Potion [8]",
+                        "Dragon's Eye",
+                        "Philosopher's Stone",
+                        "Dragon's Eye",
+                        "Philosopher's Stone",
+                        "Potion Bottle",
+                        "Heroism Potion [6]",
+                        "Haste Potion [6]",
+                        "Bless Potion [4]",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Potion Bottle",
+                        "Remove Curse Potion [10]",
+                        "Remove Fear Potion [7]",
+                        "Cure Insanity Potion [16]",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Potion Bottle",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Dragon's Eye"
+                    ],
+                    "endurance": 141,
+                    "equipment": [
+                        "Majestic Shield of Earth",
+                        "Blaster Rifle",
+                        "Griffin Bow of Infernos",
+                        "Royal Leather of the Storm",
+                        "Mogred Helm of Magic [+19]",
+                        "Hero's Belt",
+                        "Glorious Cloak of The Stars",
+                        "Mogred Gauntlets of Life",
+                        "Paladin Boots of Alchemy [+17]",
+                        "Death's Head Pendant of Fire Magic",
+                        "Dazzling Ring of Water Magic",
+                        "Enchanted Ring of The Eclipse",
+                        "Faerie Ring",
+                        "Angel's Ring of Health [+20]",
+                        "Angel's Ring of Health [+22]",
+                        "Wizard Ring of Health [+18]"
+                    ],
+                    "hp": 402,
+                    "intelligence": 42,
+                    "luck": 69,
+                    "might": 106,
+                    "mp": 549,
+                    "personality": 107,
+                    "speed": 91
+                },
+                {
+                    "accuracy": 84,
+                    "backpack": [
+                        "Mystic Wand of Distortion [10/18]",
+                        "Mystic Wand of Shrapmetal [19/19]",
+                        "Mystic Wand of Shrapmetal [16/16]",
+                        "Griffin Bow of The Sky",
+                        "Wizard Staff of Thunderbolts",
+                        "Lloyd's Beacon",
+                        "Incinerate",
+                        "Mass Distortion",
+                        "Recharge Item Potion [75]"
+                    ],
+                    "endurance": 149,
+                    "equipment": [
+                        "Blaster",
+                        "Royal Leather of Life",
+                        "Mogred Helm of The Golem",
+                        "Silver Belt of Items [+24]",
+                        "Moon Cloak",
+                        "Mogred Gauntlets of Earth",
+                        "Paladin Boots of The Eclipse",
+                        "Sun Amulet of Magic [+25]",
+                        "Enchanted Ring of Fire Magic",
+                        "Enchanted Ring of Earth Magic",
+                        "Enchanted Ring of Water Magic",
+                        "Emerald Ring of Protection",
+                        "Platinum Ring of The Troll"
+                    ],
+                    "hp": 312,
+                    "intelligence": 114,
+                    "luck": 69,
+                    "might": 85,
+                    "mp": 430,
+                    "personality": 23,
+                    "speed": 97
+                }
+            ],
+            "locationName": "out02.odm",
+            "partyPosition": {
+                "x": -5295,
+                "y": 13334,
+                "z": 1
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 854299,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 180,
+                "y": 243
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 210,
+                "y": 239
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 232,
+                "y": 233
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 290,
+                "y": 228
+            },
+            "type": "mouseMove"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SPACE",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SPACE",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 385,
+                "y": 251
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 501,
+                "y": 286
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 519,
+                "y": 294
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 539,
+                "y": 301
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 542,
+                "y": 304
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 542,
+                "y": 308
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 542,
+                "y": 315
+            },
+            "type": "mouseMove"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 542,
+                "y": 315
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 542,
+                "y": 315
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "ESCAPE",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "ESCAPE",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "ESCAPE",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "ESCAPE",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3500,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3700,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 3900,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 4100,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 4200,
+            "type": "paint"
+        }
+    ]
+}

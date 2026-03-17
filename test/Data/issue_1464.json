@@ -1,0 +1,1027 @@
+{
+    "header": {
+        "afterLoadRandomState": 168,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 24,
+                    "backpack": [
+                        "Journal Fragment",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Phylt-laced ore",
+                        "Stone to Flesh",
+                        "Dispel Magic",
+                        "Abbey Normal Golem Head",
+                        "Arcomage Deck",
+                        "Letter to Hairbaugh",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Phylt-laced ore",
+                        "Medusa's Mirror",
+                        "Letter",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Siertal-laced ore",
+                        "Phylt-laced ore",
+                        "Faerie Key",
+                        "Wealthy Hat",
+                        "Angel Statue Painting",
+                        "Journal Excerpt",
+                        "Remains of a Journal",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Siertal-laced ore",
+                        "Phylt-laced ore",
+                        "Vase",
+                        "Fragment of Soldier's Diary",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Journal Entry, 2nd January",
+                        "Journal Entry, 11th December",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Horseshoe",
+                        "Bill of Sale",
+                        "Genie Lamp",
+                        "Journal Entry",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Genie Lamp",
+                        "Letter from Mr. Stantley",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Genie Lamp",
+                        "Letter from Gavin Magnus",
+                        "Orders from Steadwick",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Iron-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Letter from Mr. Stantley"
+                    ],
+                    "endurance": 20,
+                    "equipment": [
+                        "Charele",
+                        "Griffin Bow of Acid",
+                        "Resplendent Chain Mail of Mind Resistance [+7]",
+                        "Phynaxian Helm",
+                        "Leather Belt of The Moon",
+                        "Huntsman's Cloak of Thought [+2]",
+                        "Silver Mesh Gauntlets of Disarming [+6]",
+                        "Knight's Boots of Speed [+21]",
+                        "Bronze Amulet of Precision [+8]",
+                        "Faerie Ring",
+                        "Pearl Ring of Disarming [+2]"
+                    ],
+                    "hp": 134,
+                    "intelligence": 44,
+                    "luck": 33,
+                    "might": 21,
+                    "mp": 65,
+                    "personality": 9,
+                    "speed": 38
+                },
+                {
+                    "accuracy": 15,
+                    "backpack": [
+                        "Crossbow"
+                    ],
+                    "endurance": 18,
+                    "equipment": [
+                        "Alloyed Shield of Earth Resistance [+7]",
+                        "Supreme Flail",
+                        "Griffin Bow",
+                        "Noble Plate Armor",
+                        "Phynaxian Helm of Arms [+2]",
+                        "Leather Cloak of Might [+6]",
+                        "Gauntlets of Might [+12]",
+                        "Steel Plated Boots of Defense [+5]",
+                        "Eyeball Amulet of Luck [+3]"
+                    ],
+                    "hp": 155,
+                    "intelligence": 11,
+                    "luck": 26,
+                    "might": 32,
+                    "mp": 69,
+                    "personality": 20,
+                    "speed": 19
+                },
+                {
+                    "accuracy": 17,
+                    "backpack": [
+                        "Poppysnaps",
+                        "Scroll of Ice Bolt",
+                        "Officer's Leather",
+                        "Crude Longsword",
+                        "Halberd",
+                        "Wooden Shield",
+                        "Iron Core Staff",
+                        "Wooden Shield",
+                        "Leather Boots",
+                        "Steel Gauntlets of Thought [+2]",
+                        "Swift Steel club",
+                        "Long Dagger",
+                        "Dwarven Dagger",
+                        "Leather Boots",
+                        "Resplendent Chain Mail",
+                        "Dwarven Dagger",
+                        "Huntsman's Cloak of Vigor [+2]",
+                        "Brass Ring",
+                        "Scroll of Fireball"
+                    ],
+                    "endurance": 25,
+                    "equipment": [
+                        "Phynaxian Shield of Defense [+23]",
+                        "Supreme Flail",
+                        "Griffin Bow",
+                        "Resplendent Chain Mail of Health [+7] [BROKEN]",
+                        "Full Helm",
+                        "Fine Belt of Thought [+5]",
+                        "Glorious Cloak of Vigor [+7]",
+                        "Mogred Gauntlets",
+                        "Knight's Boots",
+                        "Eyeball Amulet of Charm [+5]",
+                        "Brass Ring of Charm [+5]",
+                        "Pearl Ring of Magic [+4]"
+                    ],
+                    "hp": 79,
+                    "intelligence": 16,
+                    "luck": 23,
+                    "might": 20,
+                    "mp": 125,
+                    "personality": 30,
+                    "speed": 17
+                },
+                {
+                    "accuracy": 14,
+                    "backpack": [
+                        "Remove Fear Potion [7]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [15]",
+                        "Cure Wounds Potion [17]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [17]",
+                        "Cure Insanity Potion [15]",
+                        "Cure Wounds Potion [6]",
+                        "Shield Potion [10]",
+                        "Catalyst Potion [11]",
+                        "Cure Poison Potion [8]",
+                        "Glorious Cloak of Thought [+7] [UNID]",
+                        "Meteorite Fragment",
+                        "Harpy Feather",
+                        "Bless Potion [12]",
+                        "Heroism Potion [14]",
+                        "Cure Wounds Potion [5]",
+                        "Cure Weakness Potion [9]",
+                        "Cure Weakness Potion [9]",
+                        "Cure Wounds Potion [11]",
+                        "Catalyst Potion [11]",
+                        "Catalyst Potion [11]",
+                        "Bless Potion [24]",
+                        "Cure Wounds Potion [12]",
+                        "Potion Bottle",
+                        "Harden Item Potion [9]",
+                        "Cure Wounds Potion [14]",
+                        "Poppysnaps",
+                        "Stone to Flesh Potion [9]",
+                        "Cure Paralysis Potion [17]",
+                        "Cure Paralysis Potion [13]",
+                        "Cure Wounds Potion [18]",
+                        "Magic Potion [6]",
+                        "Haste Potion [10]",
+                        "Stoneskin Potion [8]",
+                        "Preservation Potion [11]",
+                        "Recharge Item Potion [9]",
+                        "Remove Curse Potion [5]",
+                        "Cure Wounds Potion [10]",
+                        "Remove Curse Potion [11]",
+                        "Cure Insanity Potion [7]",
+                        "Sulfur",
+                        "Meteorite Fragment",
+                        "Vial of Ooze Endoplasm",
+                        "Elvish Toadstool",
+                        "Vial of Troll Blood",
+                        "Potion Bottle",
+                        "Cure Disease Potion [12]",
+                        "Cure Weakness Potion [9]",
+                        "Remove Curse Potion [8]",
+                        "Cure Disease Potion [14]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [19]",
+                        "Remove Curse Potion [9]",
+                        "Remove Curse Potion [5]",
+                        "Water Breathing Potion [6]",
+                        "Meteorite Fragment",
+                        "Vial of Troll Blood",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Elvish Toadstool",
+                        "Widowsweep Berries",
+                        "Poppysnaps",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Dragon's Eye",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 26,
+                    "equipment": [
+                        "Iron Core Staff Of David",
+                        "Griffin Bow",
+                        "Royal Leather of Magic [+23]",
+                        "Mogred Helm",
+                        "Leather Belt of Items [+4]",
+                        "Glorious Cloak of Monsters [+22]",
+                        "Mogred Gauntlets of Earth Resistance [+22]",
+                        "Steel Plated Boots of Magic [+8]",
+                        "Eyeball Amulet of Vigor [+4]",
+                        "Pearl Ring of Luck [+5]",
+                        "Brass Ring of Defense [+5]",
+                        "Pearl Ring of Vigor [+4]",
+                        "Pearl Ring of Monsters [+2]",
+                        "Brass Ring of Items [+5]"
+                    ],
+                    "hp": 72,
+                    "intelligence": 36,
+                    "luck": 28,
+                    "might": 17,
+                    "mp": 154,
+                    "personality": 9,
+                    "speed": 17
+                }
+            ],
+            "locationName": "out13.odm",
+            "partyPosition": {
+                "x": 2836,
+                "y": -8889,
+                "z": 382
+            }
+        },
+        "saveFileSize": 507755,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 24,
+                    "backpack": [
+                        "Journal Fragment",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Phylt-laced ore",
+                        "Stone to Flesh",
+                        "Dispel Magic",
+                        "Abbey Normal Golem Head",
+                        "Arcomage Deck",
+                        "Letter to Hairbaugh",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Phylt-laced ore",
+                        "Medusa's Mirror",
+                        "Letter",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Siertal-laced ore",
+                        "Phylt-laced ore",
+                        "Faerie Key",
+                        "Wealthy Hat",
+                        "Angel Statue Painting",
+                        "Journal Excerpt",
+                        "Remains of a Journal",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Siertal-laced ore",
+                        "Phylt-laced ore",
+                        "Vase",
+                        "Fragment of Soldier's Diary",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Journal Entry, 2nd January",
+                        "Journal Entry, 11th December",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Horseshoe",
+                        "Bill of Sale",
+                        "Genie Lamp",
+                        "Journal Entry",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Genie Lamp",
+                        "Letter from Mr. Stantley",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Genie Lamp",
+                        "Letter from Gavin Magnus",
+                        "Orders from Steadwick",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Iron-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Letter from Mr. Stantley"
+                    ],
+                    "endurance": 20,
+                    "equipment": [
+                        "Charele",
+                        "Griffin Bow of Acid",
+                        "Resplendent Chain Mail of Mind Resistance [+7]",
+                        "Phynaxian Helm",
+                        "Leather Belt of The Moon",
+                        "Huntsman's Cloak of Thought [+2]",
+                        "Silver Mesh Gauntlets of Disarming [+6]",
+                        "Knight's Boots of Speed [+21]",
+                        "Bronze Amulet of Precision [+8]",
+                        "Faerie Ring",
+                        "Pearl Ring of Disarming [+2]"
+                    ],
+                    "hp": 134,
+                    "intelligence": 44,
+                    "luck": 33,
+                    "might": 21,
+                    "mp": 65,
+                    "personality": 9,
+                    "speed": 38
+                },
+                {
+                    "accuracy": 15,
+                    "backpack": [
+                        "Crossbow"
+                    ],
+                    "endurance": 18,
+                    "equipment": [
+                        "Alloyed Shield of Earth Resistance [+7]",
+                        "Supreme Flail",
+                        "Griffin Bow",
+                        "Noble Plate Armor",
+                        "Phynaxian Helm of Arms [+2]",
+                        "Leather Cloak of Might [+6]",
+                        "Gauntlets of Might [+12]",
+                        "Steel Plated Boots of Defense [+5]",
+                        "Eyeball Amulet of Luck [+3]"
+                    ],
+                    "hp": 155,
+                    "intelligence": 11,
+                    "luck": 26,
+                    "might": 32,
+                    "mp": 69,
+                    "personality": 20,
+                    "speed": 19
+                },
+                {
+                    "accuracy": 17,
+                    "backpack": [
+                        "Poppysnaps",
+                        "Scroll of Ice Bolt",
+                        "Officer's Leather",
+                        "Crude Longsword",
+                        "Halberd",
+                        "Wooden Shield",
+                        "Iron Core Staff",
+                        "Wooden Shield",
+                        "Leather Boots",
+                        "Steel Gauntlets of Thought [+2]",
+                        "Swift Steel club",
+                        "Long Dagger",
+                        "Dwarven Dagger",
+                        "Leather Boots",
+                        "Resplendent Chain Mail",
+                        "Dwarven Dagger",
+                        "Huntsman's Cloak of Vigor [+2]",
+                        "Brass Ring",
+                        "Scroll of Fireball"
+                    ],
+                    "endurance": 25,
+                    "equipment": [
+                        "Phynaxian Shield of Defense [+23]",
+                        "Supreme Flail",
+                        "Griffin Bow",
+                        "Resplendent Chain Mail of Health [+7] [BROKEN]",
+                        "Full Helm",
+                        "Fine Belt of Thought [+5]",
+                        "Glorious Cloak of Vigor [+7]",
+                        "Mogred Gauntlets",
+                        "Knight's Boots",
+                        "Eyeball Amulet of Charm [+5]",
+                        "Brass Ring of Charm [+5]",
+                        "Pearl Ring of Magic [+4]"
+                    ],
+                    "hp": 79,
+                    "intelligence": 16,
+                    "luck": 23,
+                    "might": 20,
+                    "mp": 125,
+                    "personality": 30,
+                    "speed": 17
+                },
+                {
+                    "accuracy": 14,
+                    "backpack": [
+                        "Remove Fear Potion [7]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [15]",
+                        "Cure Wounds Potion [17]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [17]",
+                        "Cure Insanity Potion [15]",
+                        "Cure Wounds Potion [6]",
+                        "Shield Potion [10]",
+                        "Catalyst Potion [11]",
+                        "Cure Poison Potion [8]",
+                        "Glorious Cloak of Thought [+7] [UNID]",
+                        "Meteorite Fragment",
+                        "Harpy Feather",
+                        "Bless Potion [12]",
+                        "Heroism Potion [14]",
+                        "Cure Wounds Potion [5]",
+                        "Cure Weakness Potion [9]",
+                        "Cure Weakness Potion [9]",
+                        "Cure Wounds Potion [11]",
+                        "Catalyst Potion [11]",
+                        "Catalyst Potion [11]",
+                        "Bless Potion [24]",
+                        "Cure Wounds Potion [12]",
+                        "Potion Bottle",
+                        "Harden Item Potion [9]",
+                        "Cure Wounds Potion [14]",
+                        "Poppysnaps",
+                        "Stone to Flesh Potion [9]",
+                        "Cure Paralysis Potion [17]",
+                        "Cure Paralysis Potion [13]",
+                        "Cure Wounds Potion [18]",
+                        "Magic Potion [6]",
+                        "Haste Potion [10]",
+                        "Stoneskin Potion [8]",
+                        "Preservation Potion [11]",
+                        "Recharge Item Potion [9]",
+                        "Remove Curse Potion [5]",
+                        "Cure Wounds Potion [10]",
+                        "Remove Curse Potion [11]",
+                        "Cure Insanity Potion [7]",
+                        "Sulfur",
+                        "Meteorite Fragment",
+                        "Vial of Ooze Endoplasm",
+                        "Elvish Toadstool",
+                        "Vial of Troll Blood",
+                        "Potion Bottle",
+                        "Cure Disease Potion [12]",
+                        "Cure Weakness Potion [9]",
+                        "Remove Curse Potion [8]",
+                        "Cure Disease Potion [14]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [19]",
+                        "Remove Curse Potion [9]",
+                        "Remove Curse Potion [5]",
+                        "Water Breathing Potion [6]",
+                        "Meteorite Fragment",
+                        "Vial of Troll Blood",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Elvish Toadstool",
+                        "Widowsweep Berries",
+                        "Poppysnaps",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Dragon's Eye",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 26,
+                    "equipment": [
+                        "Iron Core Staff Of David",
+                        "Griffin Bow",
+                        "Royal Leather of Magic [+23]",
+                        "Mogred Helm",
+                        "Leather Belt of Items [+4]",
+                        "Glorious Cloak of Monsters [+22]",
+                        "Mogred Gauntlets of Earth Resistance [+22]",
+                        "Steel Plated Boots of Magic [+8]",
+                        "Eyeball Amulet of Vigor [+4]",
+                        "Pearl Ring of Luck [+5]",
+                        "Brass Ring of Defense [+5]",
+                        "Pearl Ring of Vigor [+4]",
+                        "Pearl Ring of Monsters [+2]",
+                        "Brass Ring of Items [+5]"
+                    ],
+                    "hp": 72,
+                    "intelligence": 36,
+                    "luck": 28,
+                    "might": 17,
+                    "mp": 154,
+                    "personality": 9,
+                    "speed": 17
+                }
+            ],
+            "locationName": "out13.odm",
+            "partyPosition": {
+                "x": 2836,
+                "y": -8889,
+                "z": 380
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 8,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 8,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 14,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 33,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 44,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 44,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 44,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "randomState": 44,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 44,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 49,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 522,
+                "y": 195
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 62,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": true,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 62,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 62,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 65,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": true,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 110,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 115,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 123,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": true,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 523,
+                "y": 191
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 123,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "randomState": 131,
+            "tickCount": 3500,
+            "type": "paint"
+        },
+        {
+            "randomState": 131,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 137,
+            "tickCount": 3700,
+            "type": "paint"
+        },
+        {
+            "randomState": 156,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "randomState": 170,
+            "tickCount": 3900,
+            "type": "paint"
+        },
+        {
+            "randomState": 170,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "randomState": 171,
+            "tickCount": 4100,
+            "type": "paint"
+        },
+        {
+            "randomState": 171,
+            "tickCount": 4200,
+            "type": "paint"
+        },
+        {
+            "randomState": 172,
+            "tickCount": 4300,
+            "type": "paint"
+        },
+        {
+            "randomState": 178,
+            "tickCount": 4400,
+            "type": "paint"
+        },
+        {
+            "randomState": 192,
+            "tickCount": 4500,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift|ctrl",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 193,
+            "tickCount": 4600,
+            "type": "paint"
+        },
+        {
+            "randomState": 198,
+            "tickCount": 4700,
+            "type": "paint"
+        },
+        {
+            "randomState": 201,
+            "tickCount": 4800,
+            "type": "paint"
+        },
+        {
+            "randomState": 201,
+            "tickCount": 4900,
+            "type": "paint"
+        },
+        {
+            "randomState": 211,
+            "tickCount": 5000,
+            "type": "paint"
+        },
+        {
+            "randomState": 231,
+            "tickCount": 5100,
+            "type": "paint"
+        },
+        {
+            "randomState": 241,
+            "tickCount": 5200,
+            "type": "paint"
+        }
+    ]
+}
