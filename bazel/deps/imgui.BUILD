@@ -21,9 +21,6 @@ cc_library(
 )
 
 # SDL3 + OpenGL3 backend — the combination used by OpenEnroth.
-# Depends on SDL3 and OpenGL being available on the platform.
-# TODO Phase 5: replace :sdl3 and :opengl deps with proper targets once system
-# deps are declared.
 cc_library(
     name = "imgui",
     srcs = [
@@ -36,6 +33,11 @@ cc_library(
         "backends/imgui_impl_opengl3_loader.h",
     ],
     includes = ["backends"],
-    deps = [":imgui_core"],
+    deps = [
+        ":imgui_core",
+        "//bazel/system:sdl3",
+        "//bazel/system:opengl",
+        "//thirdparty/glad:glad",
+    ],
     visibility = ["//visibility:public"],
 )
