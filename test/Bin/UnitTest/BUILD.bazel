@@ -1,0 +1,11 @@
+cc_binary(
+    name = "OpenEnroth_UnitTest",
+    srcs = [
+        "UnitTestMain.cpp",
+    ],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        "//src/Library/StackTrace:library_stack_trace",
+    ],
+    visibility = ["//visibility:public"],
+)

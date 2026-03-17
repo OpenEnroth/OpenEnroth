@@ -1,0 +1,25 @@
+cc_binary(
+    name = "OpenEnroth_GameTest",
+    srcs = [
+        "GameTestCommon.cpp",
+        "GameTestMain.cpp",
+        "GameTestOptions.cpp",
+        "GameTests_0000.cpp",
+        "GameTests_0500.cpp",
+        "GameTests_1000.cpp",
+        "GameTests_1500.cpp",
+        "GameTests_2000.cpp",
+    ],
+    hdrs = [
+        "GameTestCommon.h",
+        "GameTestOptions.h",
+    ],
+    deps = [
+        "//src/Application:application",
+        "//src/Library/Cli:library_cli",
+        "//src/Library/Platform/Sdl:library_platform_main",
+        "//src/Library/StackTrace:library_stack_trace",
+        "//test/Testing/Game:testing_game",
+    ],
+    visibility = ["//visibility:public"],
+)
