@@ -1,0 +1,27 @@
+cc_library(
+    name = "library_filesystem_directory",
+    srcs = [
+        "DirectoryFileSystem.cpp",
+    ],
+    hdrs = [
+        "DirectoryFileSystem.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_filesystem_directory",
+    srcs = [
+        "Tests/DirectoryFileSystem_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_filesystem_directory",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,46 @@
+# library_platform_main is the SDL main entry-point object library.
+# In CMake it is an OBJECT library; in Bazel we model it as a cc_library so it
+# can be listed as a dep of cc_binary targets.
+cc_library(
+    name = "library_platform_main",
+    srcs = [
+        "SdlMain.cpp",
+    ],
+    deps = [
+        # SDL3 — Phase 5 TODO
+        "//bazel/system:sdl3",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "library_platform_sdl",
+    srcs = [
+        "SdlEnumTranslation.cpp",
+        "SdlEventLoop.cpp",
+        "SdlGamepad.cpp",
+        "SdlLogSource.cpp",
+        "SdlOpenGLContext.cpp",
+        "SdlPlatform.cpp",
+        "SdlPlatformSharedState.cpp",
+        "SdlWindow.cpp",
+    ],
+    hdrs = [
+        "SdlEnumTranslation.h",
+        "SdlEventLoop.h",
+        "SdlGamepad.h",
+        "SdlLogSource.h",
+        "SdlOpenGLContext.h",
+        "SdlPlatform.h",
+        "SdlPlatformSharedState.h",
+        "SdlWindow.h",
+        "SdlFreeDeleter.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Logger:library_logger",
+        # SDL3 — Phase 5 TODO
+        "//bazel/system:sdl3",
+    ],
+    visibility = ["//visibility:public"],
+)

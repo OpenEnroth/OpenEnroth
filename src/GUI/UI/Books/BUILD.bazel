@@ -1,0 +1,25 @@
+cc_library(
+    name = "gui_ui_books",
+    srcs = [
+        "AutonotesBook.cpp",
+        "CalendarBook.cpp",
+        "JournalBook.cpp",
+        "LloydsBook.cpp",
+        "MapBook.cpp",
+        "QuestBook.cpp",
+        "TownPortalBook.cpp",
+    ],
+    hdrs = [
+        "AutonotesBook.h",
+        "CalendarBook.h",
+        "JournalBook.h",
+        "LloydsBook.h",
+        "MapBook.h",
+        "QuestBook.h",
+        "TownPortalBook.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

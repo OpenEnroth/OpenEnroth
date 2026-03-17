@@ -1,0 +1,29 @@
+cc_library(
+    name = "library_filesystem_masking",
+    srcs = [
+        "MaskingFileSystem.cpp",
+    ],
+    hdrs = [
+        "MaskingFileSystem.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Library/FileSystem/Proxy:library_filesystem_proxy",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_filesystem_masking",
+    srcs = [
+        "Tests/MaskingFileSystem_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_filesystem_masking",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

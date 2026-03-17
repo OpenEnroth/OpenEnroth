@@ -1,0 +1,31 @@
+cc_library(
+    name = "library_snd",
+    srcs = [
+        "SndReader.cpp",
+        "SndSnapshots.cpp",
+    ],
+    hdrs = [
+        "SndReader.h",
+        "SndSnapshots.h",
+    ],
+    deps = [
+        "//src/Library/Binary:library_binary",
+        "//src/Library/Snapshots:library_snapshots",
+        "//src/Library/Compression:library_compression",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_snd",
+    srcs = [
+        "Tests/SndReader_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_snd",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

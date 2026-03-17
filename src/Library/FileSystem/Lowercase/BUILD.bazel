@@ -1,0 +1,30 @@
+cc_library(
+    name = "library_filesystem_lowercase",
+    srcs = [
+        "LowercaseFileSystem.cpp",
+    ],
+    hdrs = [
+        "LowercaseFileSystem.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Library/FileSystem/Trie:library_filesystem_trie",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_filesystem_lowercase",
+    srcs = [
+        "Tests/LowercaseFileSystem_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_filesystem_lowercase",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//src/Library/FileSystem/Directory:library_filesystem_directory",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

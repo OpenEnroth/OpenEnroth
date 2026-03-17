@@ -1,0 +1,29 @@
+cc_library(
+    name = "library_preprocessor",
+    srcs = [
+        "Preprocessor.cpp",
+    ],
+    hdrs = [
+        "Preprocessor.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        # tcpp is PRIVATE
+        "@tcpp//:tcpp",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_preprocessor",
+    srcs = [
+        "Tests/Preprocessor_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_preprocessor",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

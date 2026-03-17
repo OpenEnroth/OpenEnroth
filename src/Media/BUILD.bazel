@@ -1,0 +1,34 @@
+cc_library(
+    name = "media",
+    srcs = [
+        "AudioBaseDataSource.cpp",
+        "AudioBufferDataSource.cpp",
+        "FFmpegBlobIoContext.cpp",
+        "FFmpegLogProxy.cpp",
+        "FFmpegLogSource.cpp",
+        "MediaPlayer.cpp",
+    ],
+    hdrs = [
+        "AudioBaseDataSource.h",
+        "AudioBufferDataSource.h",
+        "AudioDataSource.h",
+        "AudioSample.h",
+        "AudioTrack.h",
+        "FFmpegBlobIoContext.h",
+        "FFmpegLogProxy.h",
+        "FFmpegLogSource.h",
+        "MediaPlayer.h",
+        "Movie.h",
+        "VideoDataSource.h",
+    ],
+    deps = [
+        "//src/Media/Audio:media_audio",
+        "//src/Library/Logger:library_logger",
+        "//src/Library/Vid:library_vid",
+        "//src/Utility:utility",
+        "//src/Application:application",
+        # FFmpeg — Phase 5 TODO
+        "//bazel/system:ffmpeg",
+    ],
+    visibility = ["//visibility:public"],
+)

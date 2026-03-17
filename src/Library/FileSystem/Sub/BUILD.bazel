@@ -1,0 +1,27 @@
+cc_library(
+    name = "library_filesystem_sub",
+    srcs = [
+        "SubFileSystem.cpp",
+    ],
+    hdrs = [
+        "SubFileSystem.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_filesystem_sub",
+    srcs = [
+        "Tests/SubFileSystem_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_filesystem_sub",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,13 @@
+cc_library(
+    name = "test_library_environment",
+    srcs = [
+        "Environment_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        # library_environment_implementation resolves to the platform-specific lib
+        "//src/Library/Environment:library_environment",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

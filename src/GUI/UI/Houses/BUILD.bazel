@@ -1,0 +1,32 @@
+cc_library(
+    name = "gui_ui_houses",
+    srcs = [
+        "Tavern.cpp",
+        "Temple.cpp",
+        "Training.cpp",
+        "Transport.cpp",
+        "Bank.cpp",
+        "Jail.cpp",
+        "MagicGuild.cpp",
+        "TownHall.cpp",
+        "MercenaryGuild.cpp",
+        "Shops.cpp",
+    ],
+    hdrs = [
+        "Tavern.h",
+        "Temple.h",
+        "Training.h",
+        "Transport.h",
+        "Bank.h",
+        "Jail.h",
+        "MagicGuild.h",
+        "TownHall.h",
+        "MercenaryGuild.h",
+        "Shops.h",
+    ],
+    deps = [
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

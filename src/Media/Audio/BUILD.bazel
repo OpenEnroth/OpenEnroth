@@ -1,0 +1,32 @@
+cc_library(
+    name = "media_audio",
+    srcs = [
+        "AudioPlayer.cpp",
+        "AudioSamplePool.cpp",
+        "OpenALAudioDataSource.cpp",
+        "OpenALSoundProvider.cpp",
+        "OpenALTrack16.cpp",
+        "OpenALSample16.cpp",
+        "SoundList.cpp",
+    ],
+    hdrs = [
+        "AudioPlayer.h",
+        "AudioSamplePool.h",
+        "OpenALAudioDataSource.h",
+        "OpenALSoundProvider.h",
+        "OpenALTrack16.h",
+        "OpenALSample16.h",
+        "OpenALUpdateThread.h",
+        "SoundEnums.h",
+        "SoundInfo.h",
+        "SoundList.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Snd:library_snd",
+        "//src/Application:application",
+        # OpenAL — Phase 5 TODO
+        "//bazel/system:openal",
+    ],
+    visibility = ["//visibility:public"],
+)

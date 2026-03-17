@@ -1,0 +1,14 @@
+cc_library(
+    name = "engine_turn_engine",
+    srcs = [
+        "TurnEngine.cpp",
+    ],
+    hdrs = [
+        "TurnEngine.h",
+        "TurnEngineEnums.h",
+    ],
+    deps = [
+        "//src/Engine:engine",
+    ],
+    visibility = ["//visibility:public"],
+)

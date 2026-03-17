@@ -1,0 +1,19 @@
+# TODO: The CMake build uses cmrc_add_resource_library to embed all files under
+# scripts/, shaders/, and images/ into a C++ library called "resources" with
+# namespace "openenroth".  In Bazel this requires a custom rule defined in
+# //bazel/rules:cmrc.bzl (to be written).
+#
+# Once that rule exists, replace this comment with something like:
+#
+#   load("//bazel/rules:cmrc.bzl", "cmrc_resource_library")
+#
+#   cmrc_resource_library(
+#       name = "resources",
+#       namespace = "openenroth",
+#       srcs = glob(["scripts/**", "shaders/**", "images/**"]),
+#       visibility = ["//visibility:public"],
+#   )
+#
+# The engine target (//src/Engine:engine) already lists this target as a
+# dependency (currently commented out) and should be un-commented once the rule
+# is available.

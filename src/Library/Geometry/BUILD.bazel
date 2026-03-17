@@ -1,0 +1,29 @@
+cc_library(
+    name = "library_geometry",
+    hdrs = [
+        "BBox.h",
+        "Margins.h",
+        "Plane.h",
+        "Point.h",
+        "Rect.h",
+        "Size.h",
+        "Vec.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_geometry",
+    srcs = [
+        "Tests/Rect_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_geometry",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,24 @@
+cc_library(
+    name = "gui_overlay",
+    srcs = [
+        "OverlayEventHandler.cpp",
+        "OverlaySystem.cpp",
+        "ExampleOverlay.cpp",
+        "ScriptedOverlay.cpp",
+    ],
+    hdrs = [
+        "Overlay.h",
+        "OverlayEventHandler.h",
+        "OverlaySystem.h",
+        "ExampleOverlay.h",
+        "ScriptedOverlay.h",
+    ],
+    deps = [
+        "//src/Engine:engine",
+        "//src/Utility:utility",
+        # PRIVATE deps:
+        "@imgui//:imgui",
+        "//src/Scripting:scripting",
+    ],
+    visibility = ["//visibility:public"],
+)
