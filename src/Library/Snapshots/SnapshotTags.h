@@ -5,11 +5,13 @@
 #include "Utility/String/Encoding.h"
 #include "Utility/Segment.h"
 
-template<class Via>
-struct ViaTag {};
-
-template<class Via>
-struct is_greedy_tag<ViaTag<Via>> : std::true_type {};
+class EncodingTag {
+ public:
+    constexpr explicit EncodingTag(TextEncoding encoding) : _encoding(encoding) {}
+    constexpr TextEncoding operator*() const { return _encoding; }
+ private:
+    TextEncoding _encoding;
+};
 
 template<class From, class To>
 struct CastTag {};
@@ -27,20 +29,15 @@ struct ReverseBitOrderTag {};
 
 namespace tags {
 /**
- * Serialization tag that instructs the binary serialization framework to first read a `Via` object
- * from a stream, and then use it to reconstruct the target object. All tags that follow `tags::via` in
- * the argument list are forwarded to the `snapshot` / `reconstruct` call on the intermediate type.
+ * Snapshot tag specifying text encoding. Used to convert strings between in-memory UTF-8
+ * representation and legacy encodings during snapshot/reconstruct.
  *
- * Example usage:
- * ```
- * SaveGameHeader header;
- * deserialize(headerBlob, &header, tags::via<SaveGameHeader_MM7>, tags::encoding(ENCODING_ASCII));
- * ```
- *
- * @tparam Via                          Intermediate type to read from the stream.
+ * @param enc                           Encoding to use for conversion.
+ * @return                              Encoding tag object.
  */
-template<class Via>
-constexpr ViaTag<Via> via;
+constexpr EncodingTag encoding(TextEncoding enc) {
+    return EncodingTag(enc);
+}
 
 /**
  * Snapshot tag that performs a `static_cast` between source and destination types during snapshot/reconstruct.

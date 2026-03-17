@@ -9,31 +9,31 @@
 void snapshot(const LodHeader &src, LodHeader_MM6 *dst) {
     memzero(dst);
 
-    snapshot(src.signature, &dst->signature);
-    snapshot(src.version, &dst->version);
-    snapshot(src.description, &dst->description);
+    snapshot(src.signature, &dst->signature, tags::encoding(ENCODING_ASCII));
+    snapshot(src.version, &dst->version, tags::encoding(ENCODING_ASCII));
+    snapshot(src.description, &dst->description, tags::encoding(ENCODING_ASCII));
     dst->size = 100;
     dst->numDirectories = src.numDirectories;
 }
 
 void reconstruct(const LodHeader_MM6 &src, LodHeader *dst) {
-    reconstruct(src.signature, &dst->signature);
-    reconstruct(src.version, &dst->version);
-    reconstruct(src.description, &dst->description);
+    reconstruct(src.signature, &dst->signature, tags::encoding(ENCODING_ASCII));
+    reconstruct(src.version, &dst->version, tags::encoding(ENCODING_ASCII));
+    reconstruct(src.description, &dst->description, tags::encoding(ENCODING_ASCII));
     dst->numDirectories = src.numDirectories;
 }
 
 void snapshot(const LodEntry &src, LodEntry_MM6 *dst) {
     memzero(dst);
 
-    snapshot(src.name, &dst->name);
+    snapshot(src.name, &dst->name, tags::encoding(ENCODING_ASCII));
     dst->dataOffset = src.dataOffset;
     dst->dataSize = src.dataSize;
     dst->numItems = src.numItems;
 }
 
 void reconstruct(const LodEntry_MM6 &src, LodEntry *dst) {
-    reconstruct(src.name, &dst->name);
+    reconstruct(src.name, &dst->name, tags::encoding(ENCODING_ASCII));
     dst->dataOffset = src.dataOffset;
     dst->dataSize = src.dataSize;
     dst->numItems = src.numItems;
@@ -44,13 +44,13 @@ void snapshot(const LodEntry &src, LodFileEntry_MM8 *dst) {
 
     memzero(dst);
 
-    snapshot(src.name, &dst->name);
+    snapshot(src.name, &dst->name, tags::encoding(ENCODING_ASCII));
     dst->dataOffset = src.dataOffset;
     dst->dataSize = src.dataSize;
 }
 
 void reconstruct(const LodFileEntry_MM8 &src, LodEntry *dst) {
-    reconstruct(src.name, &dst->name);
+    reconstruct(src.name, &dst->name, tags::encoding(ENCODING_ASCII));
     dst->dataOffset = src.dataOffset;
     dst->dataSize = src.dataSize;
     dst->numItems = 0;
