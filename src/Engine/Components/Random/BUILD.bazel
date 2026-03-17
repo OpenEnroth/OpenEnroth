@@ -1,0 +1,18 @@
+cc_library(
+    name = "engine_components_random",
+    srcs = [
+        "EngineRandomComponent.cpp",
+        "TracingRandomEngine.cpp",
+    ],
+    hdrs = [
+        "EngineRandomComponent.h",
+        "TracingRandomEngine.h",
+    ],
+    deps = [
+        "//src/Engine/Random:engine_random",
+        "//src/Library/Random:library_random",
+        "//src/Library/StackTrace:library_stack_trace",
+        "//src/Library/Platform/Application:library_platform_application",
+    ],
+    visibility = ["//visibility:public"],
+)

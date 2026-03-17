@@ -1,0 +1,14 @@
+cc_library(
+    name = "library_filesystem_null",
+    srcs = [
+        "NullFileSystem.cpp",
+    ],
+    hdrs = [
+        "NullFileSystem.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

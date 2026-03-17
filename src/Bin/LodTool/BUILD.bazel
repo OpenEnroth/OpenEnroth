@@ -1,0 +1,19 @@
+cc_binary(
+    name = "LodTool",
+    srcs = [
+        "ArchiveReader.cpp",
+        "LodTool.cpp",
+        "LodToolOptions.cpp",
+        "ArchiveReader.h",
+        "LodToolOptions.h",
+    ],
+    deps = [
+        "//src/Library/Lod:library_lod",
+        "//src/Library/LodFormats:library_lod_formats",
+        "//src/Library/Image:library_image",
+        "//src/Library/Magic:library_magic",
+        "//src/Library/FileSystem/Directory:library_filesystem_directory",
+        "//src/Library/Cli:library_cli",
+    ],
+    visibility = ["//visibility:public"],
+)

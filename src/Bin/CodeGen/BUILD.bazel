@@ -1,0 +1,19 @@
+cc_binary(
+    name = "CodeGen",
+    srcs = [
+        "CodeGen.cpp",
+        "CodeGenOptions.cpp",
+        "CodeGenEnums.cpp",
+        "CodeGenOptions.h",
+        "CodeGenEnums.h",
+        "CodeGenFunctions.h",
+        "CodeGenMap.h",
+    ],
+    deps = [
+        "//src/Application:application",
+        "//src/Library/Cli:library_cli",
+        # library_platform_main provides SDL main entry point
+        "//src/Library/Platform/Sdl:library_platform_sdl",
+    ],
+    visibility = ["//visibility:public"],
+)

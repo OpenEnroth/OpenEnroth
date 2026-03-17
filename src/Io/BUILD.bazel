@@ -1,0 +1,22 @@
+cc_library(
+    name = "io",
+    srcs = [
+        "KeyboardController.cpp",
+        "InputEnumFunctions.cpp",
+        "KeyboardActionMapping.cpp",
+        "KeyboardInputHandler.cpp",
+        "Mouse.cpp",
+    ],
+    hdrs = [
+        "KeyboardController.h",
+        "InputEnums.h",
+        "InputEnumFunctions.h",
+        "KeyboardActionMapping.h",
+        "KeyboardInputHandler.h",
+        "Mouse.h",
+    ],
+    deps = [
+        "//src/Library/Serialization:library_serialization",
+    ],
+    visibility = ["//visibility:public"],
+)

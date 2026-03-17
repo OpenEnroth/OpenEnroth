@@ -1,0 +1,18 @@
+cc_library(
+    name = "arcomage",
+    srcs = [
+        "Arcomage.cpp",
+        "ArcomageCards.cpp",
+    ],
+    hdrs = [
+        "Arcomage.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Engine:engine",
+        "//src/GUI:gui",
+        "//src/Media:media",
+        "//src/Library/Color:library_color",
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,17 @@
+cc_library(
+    name = "engine_time",
+    srcs = [
+        "Duration.cpp",
+        "Timer.cpp",
+    ],
+    hdrs = [
+        "Timer.h",
+        "Time.h",
+        "Duration.h",
+    ],
+    deps = [
+        "//src/Engine:engine",
+        "//src/Library/Snapshots:library_snapshots",
+    ],
+    visibility = ["//visibility:public"],
+)

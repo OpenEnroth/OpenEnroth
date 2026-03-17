@@ -1,0 +1,37 @@
+cc_library(
+    name = "library_filesystem_interface",
+    srcs = [
+        "FileSystem.cpp",
+        "FileSystemPath.cpp",
+        "FileSystemException.cpp",
+        "ReadOnlyFileSystem.cpp",
+    ],
+    hdrs = [
+        "FileSystem.h",
+        "FileSystemPath.h",
+        "FileSystemEnums.h",
+        "FileSystemException.h",
+        "ReadOnlyFileSystem.h",
+        "FileSystemFwd.h",
+        "FileSystemPathView.h",
+        "FileSystemPathSplit.h",
+        "FileSystemPathComponents.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_filesystem_interface",
+    srcs = [
+        "Tests/FileSystemPath_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_filesystem_interface",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

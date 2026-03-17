@@ -1,0 +1,20 @@
+cc_library(
+    name = "library_magic",
+    srcs = [
+        "Magic.cpp",
+        "MagicEnumFunctions.cpp",
+    ],
+    hdrs = [
+        "Magic.h",
+        "MagicEnums.h",
+        "MagicEnumFunctions.h",
+    ],
+    deps = [
+        "//src/Library/LodFormats:library_lod_formats",
+        "//src/Library/Image:library_image",
+        "//src/Library/Lod:library_lod",
+        "//src/Library/Snd:library_snd",
+        "//src/Library/Vid:library_vid",
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,30 @@
+cc_library(
+    name = "library_filesystem_merging",
+    srcs = [
+        "MergingFileSystem.cpp",
+    ],
+    hdrs = [
+        "MergingFileSystem.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Library/FileSystem/Null:library_filesystem_null",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_filesystem_merging",
+    srcs = [
+        "Tests/MergingFileSystem_ut.cpp",
+    ],
+    deps = [
+        "//test/Bin/UnitTest:testing_unit",
+        ":library_filesystem_merging",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//src/Library/FileSystem/Dump:library_filesystem_dump",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,23 @@
+# CMake target name: engine_serialization
+# Bazel label: //src/Engine/Snapshots:engine_snapshots
+cc_library(
+    name = "engine_snapshots",
+    srcs = [
+        "CompositeSnapshots.cpp",
+        "EntitySnapshots.cpp",
+        "EnumSnapshots.cpp",
+        "TableSerialization.cpp",
+    ],
+    hdrs = [
+        "CompositeSnapshots.h",
+        "EntitySnapshots.h",
+        "EnumSnapshots.h",
+        "TableSerialization.h",
+    ],
+    deps = [
+        "//src/Engine:engine",
+        "//src/Library/Binary:library_binary",
+        "//src/Library/Snapshots:library_snapshots",
+    ],
+    visibility = ["//visibility:public"],
+)

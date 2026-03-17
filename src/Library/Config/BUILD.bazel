@@ -1,0 +1,25 @@
+cc_library(
+    name = "library_config",
+    srcs = [
+        "AnyConfigEntry.cpp",
+        "Config.cpp",
+        "ConfigSection.cpp",
+        "ConfigPatch.cpp",
+    ],
+    hdrs = [
+        "AnyConfigEntry.h",
+        "AnyHandler.h",
+        "Config.h",
+        "ConfigFwd.h",
+        "ConfigSection.h",
+        "ConfigEntry.h",
+        "ConfigPatch.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Serialization:library_serialization",
+        # inicpp is PRIVATE
+        "@inifile_cpp//:inifile_cpp",
+    ],
+    visibility = ["//visibility:public"],
+)
