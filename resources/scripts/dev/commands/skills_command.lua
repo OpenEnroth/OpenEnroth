@@ -174,7 +174,7 @@ local subCommands = {
         description = "Learn all skills available for each character in the party."
     },
     {
-        name = "grandmaster_all",
+        name = "cheat_gm_skills",
         callback = grandmasterAll,
         description = "Set all skills to Grandmaster level 20 for the whole party, including skills not normally available to each character's class."
     },
