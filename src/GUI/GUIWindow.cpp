@@ -1159,35 +1159,3 @@ void UI_Create() {
     LoadPartyBuffIcons();
 }
 
-
-std::string NameAndTitle(std::string_view name, std::string_view title) {
-    return localization->format(LSTR_S_THE_S, name, title);
-}
-
-
-std::string NameAndTitle(std::string_view name, Class class_type) {
-    return NameAndTitle(
-        name,
-        localization->className(class_type)
-    );
-}
-
-
-std::string NameAndTitle(std::string_view name, NpcProfession profession) {
-    return NameAndTitle(
-        name,
-        localization->npcProfessionName(profession)
-    );
-}
-
-
-std::string NameAndTitle(NPCData *npc) {
-    if (!npc->name.empty()) {
-        if (npc->profession != NoProfession)
-            return NameAndTitle(npc->name, npc->profession);
-
-        return npc->name;
-    }
-
-    return std::string();
-}

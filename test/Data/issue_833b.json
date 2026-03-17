@@ -1,0 +1,450 @@
+{
+    "header": {
+        "afterLoadRandomState": 161940,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "override_built_in_resources",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "mersenne_twister"
+            },
+            {
+                "key": "wizard_eye",
+                "section": "debug",
+                "value": "true"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Brass Ring",
+                        "Leather Armor",
+                        "Staff"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 5,
+                    "luck": 7,
+                    "might": 30,
+                    "mp": 6,
+                    "personality": 5,
+                    "speed": 14
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Brass Ring of Earth Resistance [+2]",
+                        "Leather Armor",
+                        "Staff"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 9,
+                    "luck": 13,
+                    "might": 13,
+                    "mp": 12,
+                    "personality": 9,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 7,
+                    "backpack": [
+                        "Pearl Ring",
+                        "Leather Armor",
+                        "Staff"
+                    ],
+                    "endurance": 22,
+                    "equipment": [],
+                    "hp": 30,
+                    "intelligence": 9,
+                    "luck": 7,
+                    "might": 12,
+                    "mp": 12,
+                    "personality": 20,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring of Alchemy [+5]",
+                        "Leather Armor",
+                        "Staff"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 30,
+                    "luck": 7,
+                    "might": 5,
+                    "mp": 36,
+                    "personality": 9,
+                    "speed": 13
+                }
+            ],
+            "locationName": "out01.odm",
+            "partyPosition": {
+                "x": 11223,
+                "y": 7029,
+                "z": 97
+            }
+        },
+        "saveFileSize": 402001,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Brass Ring",
+                        "Leather Armor",
+                        "Staff"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 5,
+                    "luck": 7,
+                    "might": 30,
+                    "mp": 6,
+                    "personality": 5,
+                    "speed": 14
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Brass Ring of Earth Resistance [+2]",
+                        "Leather Armor",
+                        "Staff"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 9,
+                    "luck": 13,
+                    "might": 13,
+                    "mp": 12,
+                    "personality": 9,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 7,
+                    "backpack": [
+                        "Pearl Ring",
+                        "Leather Armor",
+                        "Staff"
+                    ],
+                    "endurance": 22,
+                    "equipment": [],
+                    "hp": 30,
+                    "intelligence": 9,
+                    "luck": 7,
+                    "might": 12,
+                    "mp": 12,
+                    "personality": 20,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring of Alchemy [+5]",
+                        "Leather Armor",
+                        "Staff"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 30,
+                    "luck": 7,
+                    "might": 5,
+                    "mp": 36,
+                    "personality": 9,
+                    "speed": 13
+                }
+            ],
+            "locationName": "out01.odm",
+            "partyPosition": {
+                "x": 11223,
+                "y": 7029,
+                "z": 97
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 854299,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 875569,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 343,
+                "y": 378
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 875569,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 228,
+                "y": 368
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 875569,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 156,
+                "y": 345
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 875569,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 143,
+                "y": 334
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 875569,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 100,
+                "y": 315
+            },
+            "type": "mouseMove"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|num",
+            "type": "keyPress"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 100,
+                "y": 314
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 830689,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 82,
+                "y": 284
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 1006100,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 81,
+                "y": 276
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 1006100,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 81,
+                "y": 276
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 1006100,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 81,
+                "y": 276
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 1006100,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1006100,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 836688,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 331927,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 331927,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 101850,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 101850,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 101850,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 101850,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 165735,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 314396,
+            "tickCount": 2200,
+            "type": "paint"
+        }
+    ]
+}

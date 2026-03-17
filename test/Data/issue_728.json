@@ -1,0 +1,1550 @@
+{
+    "header": {
+        "afterLoadRandomState": 1,
+        "config": [
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "50"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 24,
+                    "backpack": [
+                        "Widowsweep Berries",
+                        "Siertal-laced ore",
+                        "Red Apple",
+                        "Scroll of Shrinking Ray",
+                        "Cure Wounds Potion [13]",
+                        "Scroll of Town Portal",
+                        "Mercury",
+                        "Scroll of Cure Paralysis",
+                        "Elixir",
+                        "Telekinesis",
+                        "Lloyd's Beacon",
+                        "Kergar-laced ore",
+                        "Cure Poison Potion [3]",
+                        "Rock Blast",
+                        "Invisibility",
+                        "Phylt-laced ore",
+                        "Bronze Amulet",
+                        "Telekinesis",
+                        "Faerie Key",
+                        "Garnet",
+                        "Meteorite Fragment",
+                        "Vial of Troll Blood",
+                        "Magic Potion [4]",
+                        "Rock Blast",
+                        "Cure Wounds Potion [16]",
+                        "Cure Wounds Potion [11]",
+                        "Scroll of Stone to Flesh",
+                        "Dragon's Eye",
+                        "Fae Dust",
+                        "Vial of Troll Blood",
+                        "Arcomage Deck",
+                        "Scroll of Destroy Undead",
+                        "Red Apple",
+                        "Cure Wounds Potion [14]",
+                        "Mercury",
+                        "Elvish Toadstool",
+                        "Red Apple",
+                        "Poppysnaps",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Elvish Toadstool"
+                    ],
+                    "endurance": 32,
+                    "equipment": [
+                        "Assassin's Dagger",
+                        "Dwarven Dagger",
+                        "Elven Longbow",
+                        "Officer's Leather of The Moon",
+                        "Conscript's Helm of Defense [+11]",
+                        "Silver Belt of Vigor [+6]",
+                        "Elegant Cloak of Mind Resistance [+9]",
+                        "Silver Mesh Gauntlets of The Stars",
+                        "Ranger Boots",
+                        "Pearl Ring of Earth Resistance [+3]",
+                        "Wizard Ring of Mana",
+                        "Warlock's Ring of Disarming [+8]"
+                    ],
+                    "hp": 83,
+                    "intelligence": 27,
+                    "luck": 33,
+                    "might": 22,
+                    "mp": 126,
+                    "personality": 5,
+                    "speed": 24
+                },
+                {
+                    "accuracy": 26,
+                    "backpack": [
+                        "Worn Belt",
+                        "Cure Wounds Potion [4]",
+                        "Vial of Troll Blood",
+                        "Red Apple",
+                        "Meteorite Fragment",
+                        "Garnet",
+                        "Potion Bottle",
+                        "Journal Entry, 19th September",
+                        "Cure Disease Potion [14]",
+                        "Pearl Ring"
+                    ],
+                    "endurance": 16,
+                    "equipment": [
+                        "Long Dagger",
+                        "Long Dagger",
+                        "Ideal Crossbow",
+                        "Officer's Leather of Defense [+4]",
+                        "Phynaxian Helm",
+                        "Strong Belt of Precision [+8]",
+                        "Glorious Cloak of the Fist [+6]",
+                        "Mogred Gauntlets",
+                        "Ranger Boots",
+                        "Warlock's Ring of Magic [+8]"
+                    ],
+                    "hp": 68,
+                    "intelligence": 24,
+                    "luck": 23,
+                    "might": 24,
+                    "mp": 118,
+                    "personality": 9,
+                    "speed": 16
+                },
+                {
+                    "accuracy": 21,
+                    "backpack": [
+                        "Widowsweep Berries",
+                        "Magic Potion [10]",
+                        "Potion Bottle",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Remove Curse Potion [15]",
+                        "Noble Crown of Body Resistance [+5]",
+                        "Widowsweep Berries",
+                        "Conscript's Helm",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 32,
+                    "equipment": [
+                        "Sterling Shield of Health [+5]",
+                        "Supreme Flail",
+                        "Elven Longbow",
+                        "Resplendent Chain Mail of Arms [+6]",
+                        "Full Helm",
+                        "Huntsman's Cloak of Charm [+11]",
+                        "Dragon Hide Gauntlets of The Eclipse",
+                        "Knight's Boots",
+                        "Pearl Ring of Health [+2]",
+                        "Warlock's Ring of Immunity",
+                        "Sapphire Ring of Mind Resistance [+10]"
+                    ],
+                    "hp": 101,
+                    "intelligence": 11,
+                    "luck": 25,
+                    "might": 22,
+                    "mp": 116,
+                    "personality": 41,
+                    "speed": 15
+                },
+                {
+                    "accuracy": 22,
+                    "backpack": [
+                        "Phirna Root",
+                        "Potion Bottle",
+                        "Magic Potion [8]",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment",
+                        "Cure Wounds Potion [13]",
+                        "Catalyst Potion [12]",
+                        "Cure Wounds Potion [5]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Cure Wounds Potion [8]",
+                        "Catalyst Potion [10]",
+                        "Widowsweep Berries",
+                        "Obsidian",
+                        "Moonstone",
+                        "Meteorite Fragment",
+                        "Moonstone",
+                        "Moonstone",
+                        "Widowsweep Berries",
+                        "Sulfur",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Catalyst Potion [5]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Fae Dust",
+                        "Cure Poison Potion [6]",
+                        "Cure Wounds Potion [6]",
+                        "Garnet",
+                        "Elvish Toadstool",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Cure Disease Potion [14]",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Cure Weakness Potion [14]",
+                        "Moonstone",
+                        "Widowsweep Berries",
+                        "Moonstone",
+                        "Widowsweep Berries",
+                        "Dragon's Eye",
+                        "Vial of Troll Blood",
+                        "Phirna Root",
+                        "Awaken Potion [8]",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Obsidian",
+                        "Harden Item Potion [16]",
+                        "Meteorite Fragment",
+                        "Harden Item Potion [10]",
+                        "Meteorite Fragment",
+                        "Potion Bottle",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Moonstone",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Meteorite Fragment",
+                        "Elvish Toadstool",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Elvish Toadstool",
+                        "Meteorite Fragment",
+                        "Widowsweep Berries",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Potion Bottle",
+                        "Fae Dust",
+                        "Moonstone",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment"
+                    ],
+                    "endurance": 57,
+                    "equipment": [
+                        "Dwarven Dagger",
+                        "Dwarven Dagger",
+                        "Elven Longbow",
+                        "Officer's Leather of The Troll",
+                        "Full Helm of Health [+7]",
+                        "Fine Belt of Vigor [+6]",
+                        "Elegant Cloak",
+                        "Steel Gauntlets of Alchemy [+5]",
+                        "Paladin Boots of Vigor [+19]",
+                        "Faerie Ring",
+                        "Angel's Ring of Alchemy [+11]"
+                    ],
+                    "hp": 99,
+                    "intelligence": 36,
+                    "luck": 21,
+                    "might": 15,
+                    "mp": 109,
+                    "personality": 9,
+                    "speed": 15
+                }
+            ],
+            "locationName": "mdk01.blv",
+            "partyPosition": {
+                "x": 129,
+                "y": -1161,
+                "z": 1
+            }
+        },
+        "saveFileSize": 482624,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 24,
+                    "backpack": [
+                        "Widowsweep Berries",
+                        "Siertal-laced ore",
+                        "Red Apple",
+                        "Scroll of Shrinking Ray",
+                        "Cure Wounds Potion [13]",
+                        "Scroll of Town Portal",
+                        "Mercury",
+                        "Scroll of Cure Paralysis",
+                        "Elixir",
+                        "Telekinesis",
+                        "Lloyd's Beacon",
+                        "Kergar-laced ore",
+                        "Cure Poison Potion [3]",
+                        "Rock Blast",
+                        "Invisibility",
+                        "Phylt-laced ore",
+                        "Bronze Amulet",
+                        "Telekinesis",
+                        "Faerie Key",
+                        "Garnet",
+                        "Meteorite Fragment",
+                        "Vial of Troll Blood",
+                        "Magic Potion [4]",
+                        "Rock Blast",
+                        "Cure Wounds Potion [16]",
+                        "Cure Wounds Potion [11]",
+                        "Scroll of Stone to Flesh",
+                        "Dragon's Eye",
+                        "Fae Dust",
+                        "Vial of Troll Blood",
+                        "Arcomage Deck",
+                        "Scroll of Destroy Undead",
+                        "Red Apple",
+                        "Cure Wounds Potion [14]",
+                        "Mercury",
+                        "Elvish Toadstool",
+                        "Red Apple",
+                        "Poppysnaps",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Elvish Toadstool"
+                    ],
+                    "endurance": 32,
+                    "equipment": [
+                        "Assassin's Dagger",
+                        "Dwarven Dagger",
+                        "Elven Longbow",
+                        "Officer's Leather of The Moon",
+                        "Conscript's Helm of Defense [+11]",
+                        "Silver Belt of Vigor [+6]",
+                        "Elegant Cloak of Mind Resistance [+9]",
+                        "Silver Mesh Gauntlets of The Stars",
+                        "Ranger Boots",
+                        "Pearl Ring of Earth Resistance [+3]",
+                        "Wizard Ring of Mana",
+                        "Warlock's Ring of Disarming [+8]"
+                    ],
+                    "hp": 83,
+                    "intelligence": 27,
+                    "luck": 33,
+                    "might": 22,
+                    "mp": 125,
+                    "personality": 5,
+                    "speed": 24
+                },
+                {
+                    "accuracy": 26,
+                    "backpack": [
+                        "Worn Belt",
+                        "Cure Wounds Potion [4]",
+                        "Vial of Troll Blood",
+                        "Red Apple",
+                        "Meteorite Fragment",
+                        "Garnet",
+                        "Potion Bottle",
+                        "Journal Entry, 19th September",
+                        "Cure Disease Potion [14]",
+                        "Pearl Ring"
+                    ],
+                    "endurance": 16,
+                    "equipment": [
+                        "Long Dagger",
+                        "Long Dagger",
+                        "Ideal Crossbow",
+                        "Officer's Leather of Defense [+4]",
+                        "Phynaxian Helm",
+                        "Strong Belt of Precision [+8]",
+                        "Glorious Cloak of the Fist [+6]",
+                        "Mogred Gauntlets",
+                        "Ranger Boots",
+                        "Warlock's Ring of Magic [+8]"
+                    ],
+                    "hp": 68,
+                    "intelligence": 24,
+                    "luck": 23,
+                    "might": 24,
+                    "mp": 118,
+                    "personality": 9,
+                    "speed": 16
+                },
+                {
+                    "accuracy": 21,
+                    "backpack": [
+                        "Widowsweep Berries",
+                        "Magic Potion [10]",
+                        "Potion Bottle",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Remove Curse Potion [15]",
+                        "Noble Crown of Body Resistance [+5]",
+                        "Widowsweep Berries",
+                        "Conscript's Helm",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 32,
+                    "equipment": [
+                        "Sterling Shield of Health [+5]",
+                        "Supreme Flail",
+                        "Elven Longbow",
+                        "Resplendent Chain Mail of Arms [+6]",
+                        "Full Helm",
+                        "Huntsman's Cloak of Charm [+11]",
+                        "Dragon Hide Gauntlets of The Eclipse",
+                        "Knight's Boots",
+                        "Pearl Ring of Health [+2]",
+                        "Warlock's Ring of Immunity",
+                        "Sapphire Ring of Mind Resistance [+10]"
+                    ],
+                    "hp": 101,
+                    "intelligence": 11,
+                    "luck": 25,
+                    "might": 22,
+                    "mp": 115,
+                    "personality": 41,
+                    "speed": 15
+                },
+                {
+                    "accuracy": 22,
+                    "backpack": [
+                        "Phirna Root",
+                        "Potion Bottle",
+                        "Magic Potion [8]",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment",
+                        "Cure Wounds Potion [13]",
+                        "Catalyst Potion [12]",
+                        "Cure Wounds Potion [5]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Cure Wounds Potion [8]",
+                        "Catalyst Potion [10]",
+                        "Widowsweep Berries",
+                        "Obsidian",
+                        "Moonstone",
+                        "Meteorite Fragment",
+                        "Moonstone",
+                        "Moonstone",
+                        "Widowsweep Berries",
+                        "Sulfur",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Catalyst Potion [5]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Fae Dust",
+                        "Cure Poison Potion [6]",
+                        "Cure Wounds Potion [6]",
+                        "Garnet",
+                        "Elvish Toadstool",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Cure Disease Potion [14]",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Cure Weakness Potion [14]",
+                        "Moonstone",
+                        "Widowsweep Berries",
+                        "Moonstone",
+                        "Widowsweep Berries",
+                        "Dragon's Eye",
+                        "Vial of Troll Blood",
+                        "Phirna Root",
+                        "Awaken Potion [8]",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Obsidian",
+                        "Harden Item Potion [16]",
+                        "Meteorite Fragment",
+                        "Harden Item Potion [10]",
+                        "Meteorite Fragment",
+                        "Potion Bottle",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Moonstone",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Meteorite Fragment",
+                        "Elvish Toadstool",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Elvish Toadstool",
+                        "Meteorite Fragment",
+                        "Widowsweep Berries",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Potion Bottle",
+                        "Fae Dust",
+                        "Moonstone",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment"
+                    ],
+                    "endurance": 57,
+                    "equipment": [
+                        "Dwarven Dagger",
+                        "Dwarven Dagger",
+                        "Elven Longbow",
+                        "Officer's Leather of The Troll",
+                        "Full Helm of Health [+7]",
+                        "Fine Belt of Vigor [+6]",
+                        "Elegant Cloak",
+                        "Steel Gauntlets of Alchemy [+5]",
+                        "Paladin Boots of Vigor [+19]",
+                        "Faerie Ring",
+                        "Angel's Ring of Alchemy [+11]"
+                    ],
+                    "hp": 99,
+                    "intelligence": 36,
+                    "luck": 21,
+                    "might": 15,
+                    "mp": 109,
+                    "personality": 9,
+                    "speed": 15
+                }
+            ],
+            "locationName": "mdk01.blv",
+            "partyPosition": {
+                "x": 129,
+                "y": -1161,
+                "z": 1
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 50,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 150,
+            "type": "paint"
+        },
+        {
+            "randomState": 7,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 7,
+            "tickCount": 250,
+            "type": "paint"
+        },
+        {
+            "randomState": 7,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 7,
+            "tickCount": 350,
+            "type": "paint"
+        },
+        {
+            "randomState": 9,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 10,
+            "tickCount": 450,
+            "type": "paint"
+        },
+        {
+            "randomState": 10,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 10,
+            "tickCount": 550,
+            "type": "paint"
+        },
+        {
+            "randomState": 10,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 650,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 228,
+                "y": 180
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 750,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 228,
+                "y": 183
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 850,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 228,
+                "y": 186
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 16,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 227,
+                "y": 190
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 17,
+            "tickCount": 950,
+            "type": "paint"
+        },
+        {
+            "randomState": 17,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 17,
+            "tickCount": 1050,
+            "type": "paint"
+        },
+        {
+            "randomState": 17,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 227,
+                "y": 192
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 17,
+            "tickCount": 1150,
+            "type": "paint"
+        },
+        {
+            "randomState": 18,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 18,
+            "tickCount": 1250,
+            "type": "paint"
+        },
+        {
+            "randomState": 18,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 18,
+            "tickCount": 1350,
+            "type": "paint"
+        },
+        {
+            "randomState": 21,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 22,
+            "tickCount": 1450,
+            "type": "paint"
+        },
+        {
+            "randomState": 22,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 22,
+            "tickCount": 1550,
+            "type": "paint"
+        },
+        {
+            "randomState": 22,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 24,
+            "tickCount": 1650,
+            "type": "paint"
+        },
+        {
+            "randomState": 24,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 24,
+            "tickCount": 1750,
+            "type": "paint"
+        },
+        {
+            "randomState": 24,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 24,
+            "tickCount": 1850,
+            "type": "paint"
+        },
+        {
+            "randomState": 29,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 31,
+            "tickCount": 1950,
+            "type": "paint"
+        },
+        {
+            "randomState": 31,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 31,
+            "tickCount": 2050,
+            "type": "paint"
+        },
+        {
+            "randomState": 31,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 34,
+            "tickCount": 2150,
+            "type": "paint"
+        },
+        {
+            "randomState": 36,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 226,
+                "y": 192
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 36,
+            "tickCount": 2250,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 226,
+                "y": 193
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 36,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 36,
+            "tickCount": 2350,
+            "type": "paint"
+        },
+        {
+            "randomState": 38,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 38,
+            "tickCount": 2450,
+            "type": "paint"
+        },
+        {
+            "randomState": 38,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 38,
+            "tickCount": 2550,
+            "type": "paint"
+        },
+        {
+            "randomState": 38,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 2650,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 2750,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 2850,
+            "type": "paint"
+        },
+        {
+            "randomState": 47,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 226,
+                "y": 193
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 52,
+            "tickCount": 2950,
+            "type": "paint"
+        },
+        {
+            "randomState": 52,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "randomState": 52,
+            "tickCount": 3050,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 226,
+                "y": 193
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 52,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "randomState": 52,
+            "tickCount": 3150,
+            "type": "paint"
+        },
+        {
+            "randomState": 52,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "randomState": 52,
+            "tickCount": 3250,
+            "type": "paint"
+        },
+        {
+            "randomState": 52,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "randomState": 52,
+            "tickCount": 3350,
+            "type": "paint"
+        },
+        {
+            "randomState": 55,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "randomState": 56,
+            "tickCount": 3450,
+            "type": "paint"
+        },
+        {
+            "randomState": 56,
+            "tickCount": 3500,
+            "type": "paint"
+        },
+        {
+            "randomState": 56,
+            "tickCount": 3550,
+            "type": "paint"
+        },
+        {
+            "randomState": 56,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 59,
+            "tickCount": 3650,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 3700,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 3750,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 3850,
+            "type": "paint"
+        },
+        {
+            "randomState": 63,
+            "tickCount": 3900,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 3950,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 4050,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 4100,
+            "type": "paint"
+        },
+        {
+            "randomState": 66,
+            "tickCount": 4150,
+            "type": "paint"
+        },
+        {
+            "randomState": 68,
+            "tickCount": 4200,
+            "type": "paint"
+        },
+        {
+            "randomState": 68,
+            "tickCount": 4250,
+            "type": "paint"
+        },
+        {
+            "randomState": 68,
+            "tickCount": 4300,
+            "type": "paint"
+        },
+        {
+            "randomState": 68,
+            "tickCount": 4350,
+            "type": "paint"
+        },
+        {
+            "randomState": 71,
+            "tickCount": 4400,
+            "type": "paint"
+        },
+        {
+            "randomState": 72,
+            "tickCount": 4450,
+            "type": "paint"
+        },
+        {
+            "randomState": 72,
+            "tickCount": 4500,
+            "type": "paint"
+        },
+        {
+            "randomState": 72,
+            "tickCount": 4550,
+            "type": "paint"
+        },
+        {
+            "randomState": 72,
+            "tickCount": 4600,
+            "type": "paint"
+        },
+        {
+            "randomState": 74,
+            "tickCount": 4650,
+            "type": "paint"
+        },
+        {
+            "randomState": 75,
+            "tickCount": 4700,
+            "type": "paint"
+        },
+        {
+            "randomState": 78,
+            "tickCount": 4750,
+            "type": "paint"
+        },
+        {
+            "randomState": 78,
+            "tickCount": 4800,
+            "type": "paint"
+        },
+        {
+            "randomState": 78,
+            "tickCount": 4850,
+            "type": "paint"
+        },
+        {
+            "randomState": 83,
+            "tickCount": 4900,
+            "type": "paint"
+        },
+        {
+            "randomState": 85,
+            "tickCount": 4950,
+            "type": "paint"
+        },
+        {
+            "randomState": 85,
+            "tickCount": 5000,
+            "type": "paint"
+        },
+        {
+            "randomState": 85,
+            "tickCount": 5050,
+            "type": "paint"
+        },
+        {
+            "randomState": 85,
+            "tickCount": 5100,
+            "type": "paint"
+        },
+        {
+            "randomState": 85,
+            "tickCount": 5150,
+            "type": "paint"
+        },
+        {
+            "randomState": 86,
+            "tickCount": 5200,
+            "type": "paint"
+        },
+        {
+            "randomState": 86,
+            "tickCount": 5250,
+            "type": "paint"
+        },
+        {
+            "randomState": 86,
+            "tickCount": 5300,
+            "type": "paint"
+        },
+        {
+            "randomState": 86,
+            "tickCount": 5350,
+            "type": "paint"
+        },
+        {
+            "randomState": 90,
+            "tickCount": 5400,
+            "type": "paint"
+        },
+        {
+            "randomState": 90,
+            "tickCount": 5450,
+            "type": "paint"
+        },
+        {
+            "randomState": 90,
+            "tickCount": 5500,
+            "type": "paint"
+        },
+        {
+            "randomState": 90,
+            "tickCount": 5550,
+            "type": "paint"
+        },
+        {
+            "randomState": 90,
+            "tickCount": 5600,
+            "type": "paint"
+        },
+        {
+            "randomState": 93,
+            "tickCount": 5650,
+            "type": "paint"
+        },
+        {
+            "randomState": 94,
+            "tickCount": 5700,
+            "type": "paint"
+        },
+        {
+            "randomState": 94,
+            "tickCount": 5750,
+            "type": "paint"
+        },
+        {
+            "randomState": 94,
+            "tickCount": 5800,
+            "type": "paint"
+        },
+        {
+            "randomState": 94,
+            "tickCount": 5850,
+            "type": "paint"
+        },
+        {
+            "randomState": 98,
+            "tickCount": 5900,
+            "type": "paint"
+        },
+        {
+            "randomState": 99,
+            "tickCount": 5950,
+            "type": "paint"
+        },
+        {
+            "randomState": 99,
+            "tickCount": 6000,
+            "type": "paint"
+        },
+        {
+            "randomState": 99,
+            "tickCount": 6050,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SPACE",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SPACE",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 99,
+            "tickCount": 6100,
+            "type": "paint"
+        },
+        {
+            "randomState": 103,
+            "tickCount": 6150,
+            "type": "paint"
+        },
+        {
+            "randomState": 104,
+            "tickCount": 6200,
+            "type": "paint"
+        },
+        {
+            "randomState": 104,
+            "tickCount": 6250,
+            "type": "paint"
+        },
+        {
+            "randomState": 104,
+            "tickCount": 6300,
+            "type": "paint"
+        },
+        {
+            "randomState": 104,
+            "tickCount": 6350,
+            "type": "paint"
+        },
+        {
+            "randomState": 109,
+            "tickCount": 6400,
+            "type": "paint"
+        },
+        {
+            "randomState": 110,
+            "tickCount": 6450,
+            "type": "paint"
+        },
+        {
+            "randomState": 110,
+            "tickCount": 6500,
+            "type": "paint"
+        },
+        {
+            "randomState": 110,
+            "tickCount": 6550,
+            "type": "paint"
+        },
+        {
+            "randomState": 110,
+            "tickCount": 6600,
+            "type": "paint"
+        },
+        {
+            "randomState": 111,
+            "tickCount": 6650,
+            "type": "paint"
+        },
+        {
+            "randomState": 112,
+            "tickCount": 6700,
+            "type": "paint"
+        },
+        {
+            "randomState": 112,
+            "tickCount": 6750,
+            "type": "paint"
+        },
+        {
+            "randomState": 112,
+            "tickCount": 6800,
+            "type": "paint"
+        },
+        {
+            "randomState": 112,
+            "tickCount": 6850,
+            "type": "paint"
+        },
+        {
+            "randomState": 117,
+            "tickCount": 6900,
+            "type": "paint"
+        },
+        {
+            "randomState": 119,
+            "tickCount": 6950,
+            "type": "paint"
+        },
+        {
+            "randomState": 119,
+            "tickCount": 7000,
+            "type": "paint"
+        },
+        {
+            "randomState": 119,
+            "tickCount": 7050,
+            "type": "paint"
+        },
+        {
+            "randomState": 119,
+            "tickCount": 7100,
+            "type": "paint"
+        },
+        {
+            "randomState": 120,
+            "tickCount": 7150,
+            "type": "paint"
+        },
+        {
+            "randomState": 121,
+            "tickCount": 7200,
+            "type": "paint"
+        },
+        {
+            "randomState": 121,
+            "tickCount": 7250,
+            "type": "paint"
+        },
+        {
+            "randomState": 121,
+            "tickCount": 7300,
+            "type": "paint"
+        },
+        {
+            "randomState": 121,
+            "tickCount": 7350,
+            "type": "paint"
+        },
+        {
+            "randomState": 124,
+            "tickCount": 7400,
+            "type": "paint"
+        },
+        {
+            "randomState": 125,
+            "tickCount": 7450,
+            "type": "paint"
+        },
+        {
+            "randomState": 125,
+            "tickCount": 7500,
+            "type": "paint"
+        },
+        {
+            "randomState": 125,
+            "tickCount": 7550,
+            "type": "paint"
+        },
+        {
+            "randomState": 125,
+            "tickCount": 7600,
+            "type": "paint"
+        },
+        {
+            "randomState": 128,
+            "tickCount": 7650,
+            "type": "paint"
+        },
+        {
+            "randomState": 129,
+            "tickCount": 7700,
+            "type": "paint"
+        },
+        {
+            "randomState": 129,
+            "tickCount": 7750,
+            "type": "paint"
+        },
+        {
+            "randomState": 129,
+            "tickCount": 7800,
+            "type": "paint"
+        },
+        {
+            "randomState": 129,
+            "tickCount": 7850,
+            "type": "paint"
+        },
+        {
+            "randomState": 132,
+            "tickCount": 7900,
+            "type": "paint"
+        },
+        {
+            "randomState": 133,
+            "tickCount": 7950,
+            "type": "paint"
+        },
+        {
+            "randomState": 133,
+            "tickCount": 8000,
+            "type": "paint"
+        },
+        {
+            "randomState": 133,
+            "tickCount": 8050,
+            "type": "paint"
+        },
+        {
+            "randomState": 136,
+            "tickCount": 8100,
+            "type": "paint"
+        },
+        {
+            "randomState": 138,
+            "tickCount": 8150,
+            "type": "paint"
+        },
+        {
+            "randomState": 138,
+            "tickCount": 8200,
+            "type": "paint"
+        },
+        {
+            "randomState": 138,
+            "tickCount": 8250,
+            "type": "paint"
+        },
+        {
+            "randomState": 138,
+            "tickCount": 8300,
+            "type": "paint"
+        },
+        {
+            "randomState": 138,
+            "tickCount": 8350,
+            "type": "paint"
+        },
+        {
+            "randomState": 143,
+            "tickCount": 8400,
+            "type": "paint"
+        },
+        {
+            "randomState": 143,
+            "tickCount": 8450,
+            "type": "paint"
+        },
+        {
+            "randomState": 143,
+            "tickCount": 8500,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 143,
+            "tickCount": 8550,
+            "type": "paint"
+        },
+        {
+            "randomState": 143,
+            "tickCount": 8600,
+            "type": "paint"
+        },
+        {
+            "randomState": 146,
+            "tickCount": 8650,
+            "type": "paint"
+        },
+        {
+            "randomState": 146,
+            "tickCount": 8700,
+            "type": "paint"
+        }
+    ]
+}

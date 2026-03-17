@@ -70,7 +70,6 @@ ItemId itemDropForMonsterType(MonsterType monsterType);
 // MonsterTier
 //
 
-// TODO(captainurist): add a unit test here.
 inline MonsterTier monsterTierForMonsterId(MonsterId monsterId) {
     return static_cast<MonsterTier>((std::to_underlying(monsterId) - std::to_underlying(MONSTER_FIRST)) % 3);
 }
