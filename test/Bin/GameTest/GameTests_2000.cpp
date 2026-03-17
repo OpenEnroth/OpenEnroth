@@ -438,12 +438,11 @@ GAME_TEST(Issues, Issue2142) {
         engine->config->debug.NoActors.setValue(true);
         game.startNewGame();
         test.startTaping();
-        pParty->pCharacters[0].setSkillValue(SKILL_BODYBUILDING, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // EXTRA CHONKS.
         prepareForBattleTest();
 
         // Spawn monsters and wait.
         engine->config->debug.NoActors.setValue(false);
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 10; i++)
             game.spawnMonster(pParty->pos + Vec3f(0, 700, 0), monsterId);
         game.tick(200);
 

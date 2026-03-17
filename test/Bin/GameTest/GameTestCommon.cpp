@@ -21,7 +21,9 @@ void prepareForBattleTest() {
 
     // We want char0 chonky.
     Character &char0 = pParty->pCharacters[0];
-    char0.sLevelModifier = 400;
-    char0.health = pParty->pCharacters[0].GetMaxHealth();
+    char0.sLevelModifier = 5000;
+    char0._stats[ATTRIBUTE_ENDURANCE] = 500;
+    char0.setSkillValue(SKILL_BODYBUILDING, CombinedSkillValue(63, MASTERY_GRANDMASTER));
+    char0.health = char0.GetMaxHealth();
     char0._stats[ATTRIBUTE_LUCK] = 0; // We don't want luck rolls that decrease damage dealt.
 }
