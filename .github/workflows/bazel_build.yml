@@ -1,0 +1,103 @@
+name: Bazel Build
+
+on:
+  pull_request: null
+  workflow_dispatch:
+
+env:
+  NDK_VERSION: 28.1.13356709
+  BAZEL_VERSION: 8.x
+
+jobs:
+  bazel_build:
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - windows_x86_64
+          - darwin_arm64
+          - darwin_x86_64
+          - linux_x86_64
+          - linux_x86
+          - android_arm64_v8a
+          - android_armeabi_v7a
+          - android_x86_64
+    runs-on: >-
+      ${{
+        startsWith(matrix.target, 'windows_') && 'windows-2022' ||
+        startsWith(matrix.target, 'darwin_')  && 'macos-15'     ||
+        'ubuntu-24.04'
+      }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: 'Initialize matrix vars'
+        run: |
+          set -euo pipefail
+          target="${{matrix.target}}"
+          case "$target" in
+            windows_x86_64)      platform=windows; bazel_config=windows_x86_64;;
+            linux_x86_64)        platform=linux;   bazel_config=linux_x86_64;;
+            linux_x86)           platform=linux;   bazel_config=linux_x86;;
+            darwin_arm64)        platform=darwin;  bazel_config=darwin_arm64;;
+            darwin_x86_64)       platform=darwin;  bazel_config=darwin_x86_64;;
+            android_arm64_v8a)   platform=android; bazel_config=android_arm64_v8a;;
+            android_armeabi_v7a) platform=android; bazel_config=android_armeabi_v7a;;
+            android_x86_64)      platform=android; bazel_config=android_x86_64;;
+            *) echo "Unknown target: $target" >&2; exit 1;;
+          esac
+          echo "MATRIX_PLATFORM=$platform" >> "$GITHUB_ENV"
+          echo "MATRIX_BAZEL_CONFIG=$bazel_config" >> "$GITHUB_ENV"
+
+      - name: '[linux/android] Configure fast APT mirror'
+        if: env.MATRIX_PLATFORM == 'linux' || env.MATRIX_PLATFORM == 'android'
+        uses: vegardit/fast-apt-mirror.sh@v1
+
+      - name: '[darwin] Set up Xcode'
+        if: env.MATRIX_PLATFORM == 'darwin'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: 16.3
+
+      - name: 'Checkout'
+        uses: actions/checkout@v5.0.0
+        with:
+          submodules: recursive
+
+      - name: '[android] Install NDK'
+        if: env.MATRIX_PLATFORM == 'android'
+        run: |
+          /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "ndk;$NDK_VERSION"
+          echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/$NDK_VERSION" >> "$GITHUB_ENV"
+
+      - name: '[linux] Install dependencies'
+        if: env.MATRIX_PLATFORM == 'linux'
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            if [ "${{env.MATRIX_BAZEL_CONFIG}}" = "linux_x86" ]; then
+              sudo dpkg --add-architecture i386
+              sudo apt-get update
+              sudo apt-get install -y gcc-14-multilib g++-14-multilib lld
+              sudo apt-get install -y libglu1-mesa-dev:i386 libdwarf-dev:i386 libelf-dev:i386
+            else
+              sudo apt-get update
+              sudo apt-get install -y gcc-14 g++-14 lld
+              sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev
+            fi
+
+      - name: 'Set up Bazel'
+        uses: bazel-contrib/setup-bazel@0.14.0
+        with:
+          bazelisk-version: 1.x
+          bazelisk-cache: true
+          disk-cache: '${{github.workflow}}-${{matrix.target}}'
+          repository-cache: true
+
+      - name: 'Build'
+        run: |
+          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //src/Bin/OpenEnroth:openenroth
