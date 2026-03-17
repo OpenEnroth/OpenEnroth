@@ -57,6 +57,13 @@ build:windows_x86 --cpu=x64_x86_windows
 build:windows_x86_64 --config=windows
 
 # Android — NDK version 28.1.13356709 (matches CI)
+# android_base: common flags inherited by all android_* configs
+build:android_base --cxxopt=-std=c++23
+build:android_base --host_cxxopt=-std=c++23
+build:android_base --copt=-fPIC
+build:android_base --copt=-Wall
+build:android_base --copt=-Wno-error
+
 build:android --config=android_base
 build:android_arm64_v8a --config=android
 build:android_arm64_v8a --android_platforms=//bazel/platforms:android_arm64_v8a
