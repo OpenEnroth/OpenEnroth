@@ -511,7 +511,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
         *outdoors_was_respawned = false;
     }
 
-    reconstruct(delta, this);
+    reconstruct(delta, this, tags::encoding(engine->gameDataEncoding()));
 
     if (respawnTimed || respawnInitial)
         ddm.lastRespawnDay = days_played;

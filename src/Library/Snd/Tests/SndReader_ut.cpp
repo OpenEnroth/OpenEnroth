@@ -22,7 +22,7 @@ static Blob makeSndBlob(int entryCount) {
 
     for (int i = 0; i < entryCount; i++) {
         SndEntry_MM7 entry = {};
-        snapshot(fmt::format("sound{}.wav", i), &entry.name);
+        snapshot(fmt::format("sound{}.wav", i), &entry.name, tags::encoding(ENCODING_BYTES));
         entry.offset = headerSize + i * dataSize;
         entry.size = dataSize;
         entry.decompressedSize = 0; // Uncompressed.
@@ -67,7 +67,7 @@ UNIT_TEST(SndDetect, OffsetInsideHeader) {
     serialize(uint32_t(1), &stream);
 
     SndEntry_MM7 entry = {};
-    snapshot(std::string("test.wav"), &entry.name);
+    snapshot(std::string("test.wav"), &entry.name, tags::encoding(ENCODING_BYTES));
     entry.offset = 0; // Points inside header.
     entry.size = 10;
     entry.decompressedSize = 0;
@@ -87,7 +87,7 @@ UNIT_TEST(SndDetect, GarbageDecompressedSize) {
     serialize(uint32_t(1), &stream);
 
     SndEntry_MM7 entry = {};
-    snapshot(std::string("test.wav"), &entry.name);
+    snapshot(std::string("test.wav"), &entry.name, tags::encoding(ENCODING_BYTES));
     entry.offset = headerSize;
     entry.size = 100;
     entry.decompressedSize = 0x776B656B; // "kekw" as a little-endian int - obvious garbage.
@@ -105,7 +105,7 @@ UNIT_TEST(SndDetect, OffsetPastEnd) {
     serialize(uint32_t(1), &stream);
 
     SndEntry_MM7 entry = {};
-    snapshot(std::string("test.wav"), &entry.name);
+    snapshot(std::string("test.wav"), &entry.name, tags::encoding(ENCODING_BYTES));
     entry.offset = 4 + sizeof(SndEntry_MM7);
     entry.size = 9999; // Way past end.
     entry.decompressedSize = 0;

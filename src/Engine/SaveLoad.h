@@ -11,6 +11,8 @@
 #include "Engine/Time/Time.h"
 #include "Engine/Time/Timer.h"
 
+#include "Utility/String/Encoding.h"
+
 #include "Utility/Memory/Blob.h"
 
 class GraphicsImage;
@@ -23,6 +25,10 @@ struct SaveGameHeader {
     Time playingTime; // Game time of the save.
 };
 
+struct SaveGameExtension {
+    TextEncoding encoding = ENCODING_UTF8;
+};
+
 struct SaveGame {
     SaveGameHeader header;
     Party party;
@@ -32,6 +38,7 @@ struct SaveGame {
     std::array<uint16_t, 51> npcGroups;
     std::unordered_map<std::string, Blob> mapDeltas;
     Blob thumbnail;
+    SaveGameExtension extension;
 };
 
 struct SaveGameLite {

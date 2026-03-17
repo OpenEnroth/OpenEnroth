@@ -12,6 +12,6 @@ set(ENGINE_SERIALIZATION_HEADERS
         EnumSnapshots.h
         TableSerialization.h)
 
-add_library(engine_serialization STATIC ${ENGINE_SERIALIZATION_SOURCES} ${ENGINE_SERIALIZATION_HEADERS})
-target_link_libraries(engine_serialization PUBLIC engine library_binary library_snapshots)
-target_check_style(engine_serialization)
+add_library(engine_snapshots STATIC ${ENGINE_SERIALIZATION_SOURCES} ${ENGINE_SERIALIZATION_HEADERS})
+target_link_libraries(engine_snapshots PUBLIC engine library_binary library_snapshots library_encoding_detector library_json)
+target_check_style(engine_snapshots)

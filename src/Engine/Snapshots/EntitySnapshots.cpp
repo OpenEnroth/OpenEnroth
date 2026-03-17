@@ -256,10 +256,10 @@ void reconstruct(const Planei_MM7 &src, Planef *dst) {
 }
 
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
-    reconstruct(src.spriteName, &dst->spriteName);
+    reconstruct(src.spriteName, &dst->spriteName, tags::encoding(ENCODING_ASCII));
     dst->spriteName = ascii::toLower(dst->spriteName);
 
-    reconstruct(src.textureName, &dst->textureName);
+    reconstruct(src.textureName, &dst->textureName, tags::encoding(ENCODING_ASCII));
     dst->textureName = ascii::toLower(dst->textureName);
 
     dst->sprites.fill(nullptr);
@@ -291,7 +291,7 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
 }
 
 void reconstruct(const TileData_MM7 &src, TileData *dst) {
-    reconstruct(src.textureName, &dst->textureName);
+    reconstruct(src.textureName, &dst->textureName, tags::encoding(ENCODING_ASCII));
     dst->textureName = ascii::toLower(dst->textureName);
 
     if (ascii::noCaseStartsWith(dst->textureName, "wtrdr"))
@@ -305,7 +305,7 @@ void reconstruct(const TileData_MM7 &src, TileData *dst) {
 }
 
 void reconstruct(const TextureFrameData_MM7 &src, TextureFrameData *dst) {
-    reconstruct(src.textureName, &dst->textureName);
+    reconstruct(src.textureName, &dst->textureName, tags::encoding(ENCODING_ASCII));
 
     dst->animationLength = Duration::fromTicks(src.animationLength * 8);
     dst->frameLength = Duration::fromTicks(src.frameLength * 8);
@@ -501,7 +501,7 @@ void reconstruct(const Item_MM7 &src, Item *dst) {
     reconstruct(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
 }
 
-void snapshot(const Party &src, Party_MM7 *dst) {
+void snapshot(const Party &src, Party_MM7 *dst, EncodingTag encoding) {
     memzero(dst);
 
     dst->field_0 = 25; // Vanilla set this to 25, so we're doing the same just in case.
@@ -594,7 +594,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->alignment = align;
 
     snapshot(src.pPartyBuffs, &dst->partyBuffs);
-    snapshot(src.pCharacters, &dst->characters);
+    snapshot(src.pCharacters, &dst->characters, encoding);
     snapshot(src.pHirelings, &dst->hirelings);
 
     // Vanilla stored NPC sacrifice status in NPC evt values.
@@ -616,8 +616,8 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src.specialItemsInShops, &dst->specialItemsInShops, tags::context(ITEM_SLOT_INVALID));
     snapshot(src.spellBooksInGuilds, &dst->spellBooksInGuilds, tags::context(ITEM_SLOT_INVALID));
 
-    snapshot(src.pHireling1Name, &dst->hireling1Name);
-    snapshot(src.pHireling2Name, &dst->hireling2Name);
+    snapshot(src.pHireling1Name, &dst->hireling1Name, encoding);
+    snapshot(src.pHireling2Name, &dst->hireling2Name, encoding);
 
     dst->armageddonTimer = src.armageddon_timer.ticks();
     dst->armageddonDamage = src.armageddonDamage;
@@ -628,7 +628,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->fine = src.uFine;
 }
 
-void reconstruct(const Party_MM7 &src, Party *dst) {
+void reconstruct(const Party_MM7 &src, Party *dst, EncodingTag encoding) {
     dst->Zero();
 
     dst->height = src.partyHeight;
@@ -719,7 +719,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 
     reconstruct(src.partyBuffs, &dst->pPartyBuffs);
     for (int i = 0; i < 4; i++)
-        reconstruct(src.characters[i], &dst->pCharacters[i], tags::context(i));
+        reconstruct(src.characters[i], &dst->pCharacters[i], encoding, tags::context(i));
     reconstruct(src.hirelings, &dst->pHirelings);
 
     // Vanilla stored NPC sacrifice status in NPC evt values.
@@ -742,8 +742,8 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.specialItemsInShops, &dst->specialItemsInShops);
     reconstruct(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
 
-    reconstruct(src.hireling1Name, &dst->pHireling1Name);
-    reconstruct(src.hireling2Name, &dst->pHireling2Name);
+    reconstruct(src.hireling1Name, &dst->pHireling1Name, encoding);
+    reconstruct(src.hireling2Name, &dst->pHireling2Name, encoding);
 
     dst->armageddon_timer = Duration::fromTicks(src.armageddonTimer);
     dst->armageddonDamage = src.armageddonDamage;
@@ -764,14 +764,14 @@ void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst) {
     reconstruct(src.times, &dst->_times);
 }
 
-void snapshot(const Character &src, Character_MM7 *dst) {
+void snapshot(const Character &src, Character_MM7 *dst, EncodingTag encoding) {
     memzero(dst);
 
     snapshot(src.conditions, &dst->conditions);
 
     dst->experience = src.experience;
 
-    snapshot(src.name, &dst->name);
+    snapshot(src.name, &dst->name, encoding);
 
     dst->sex = std::to_underlying(src.uSex);
     dst->classType = std::to_underlying(src.classType);
@@ -881,13 +881,13 @@ void snapshot(const Character &src, Character_MM7 *dst) {
     dst->numFireSpikeCasts = src.uNumFireSpikeCasts;
 }
 
-void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> characterIndex) {
+void reconstruct(const Character_MM7 &src, Character *dst, EncodingTag encoding, ContextTag<int> characterIndex) {
     dst->Zero();
     reconstruct(src.conditions, &dst->conditions);
 
     dst->experience = src.experience;
 
-    reconstruct(src.name, &dst->name);
+    reconstruct(src.name, &dst->name, encoding);
 
     switch (src.sex) {
     case 0:
@@ -1239,17 +1239,17 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
 void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst) {
     memzero(dst);
 
-    snapshot(src.animationName, &dst->animationName);
+    snapshot(src.animationName, &dst->animationName, tags::encoding(ENCODING_ASCII));
     dst->animationLength = src.animationLength.ticks() / 8;
-    snapshot(src.textureName, &dst->textureName);
+    snapshot(src.textureName, &dst->textureName, tags::encoding(ENCODING_ASCII));
     dst->frameLength = src.frameLength.ticks() / 8;
     dst->flags = std::to_underlying(src.flags);
 }
 
 void reconstruct(const IconFrameData_MM7 &src, IconFrameData *dst) {
-    reconstruct(src.animationName, &dst->animationName);
+    reconstruct(src.animationName, &dst->animationName, tags::encoding(ENCODING_ASCII));
     dst->animationLength = Duration::fromTicks(8 * src.animationLength);
-    reconstruct(src.textureName, &dst->textureName);
+    reconstruct(src.textureName, &dst->textureName, tags::encoding(ENCODING_ASCII));
     dst->frameLength = Duration::fromTicks(8 * src.frameLength);
     dst->flags = static_cast<FrameFlags>(src.flags);
 }
@@ -1261,8 +1261,8 @@ void reconstruct(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
     dst->toHitRadius = src.toHitRadius;
     dst->tintColor = colorTable.White;
     reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
-    reconstruct(src.internalMonsterName, &dst->internalMonsterName);
-    reconstruct(src.spriteNames, &dst->spriteNames);
+    reconstruct(src.internalMonsterName, &dst->internalMonsterName, tags::encoding(ENCODING_ASCII));
+    reconstruct(src.spriteNames, &dst->spriteNames, tags::encoding(ENCODING_ASCII));
 }
 
 void snapshot(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
@@ -1274,8 +1274,8 @@ void snapshot(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     dst->toHitRadius = src.toHitRadius;
     dst->tintColor = src.tintColor.c32();
     snapshot(src.soundSampleIds, &dst->soundSampleIds, tags::cast<SoundId, uint16_t>);
-    snapshot(src.internalMonsterName, &dst->internalMonsterName);
-    snapshot(src.spriteNames, &dst->spriteNames);
+    snapshot(src.internalMonsterName, &dst->internalMonsterName, tags::encoding(ENCODING_ASCII));
+    snapshot(src.spriteNames, &dst->spriteNames, tags::encoding(ENCODING_ASCII));
     dst->spriteNamesUnused[0].fill('\0');
     dst->spriteNamesUnused[1].fill('\0');
 }
@@ -1287,8 +1287,8 @@ void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     dst->toHitRadius = src.toHitRadius;
     dst->tintColor = Color::fromC32(src.tintColor);
     reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
-    reconstruct(src.internalMonsterName, &dst->internalMonsterName);
-    reconstruct(src.spriteNames, &dst->spriteNames);
+    reconstruct(src.internalMonsterName, &dst->internalMonsterName, tags::encoding(ENCODING_ASCII));
+    reconstruct(src.spriteNames, &dst->spriteNames, tags::encoding(ENCODING_ASCII));
 }
 
 void snapshot(const ActorJob &src, ActorJob_MM7 *dst) {
@@ -1311,11 +1311,11 @@ void reconstruct(const ActorJob_MM7 &src, ActorJob *dst) {
     dst->uMonth = src.month;
 }
 
-void snapshot(const Actor &src, Actor_MM7 *dst) {
+void snapshot(const Actor &src, Actor_MM7 *dst, EncodingTag encoding) {
     memzero(dst);
 
     // Need to fill actor name, even though in OE we don't have this field. This is for vanilla savegame compatibility.
-    snapshot(src.GetDisplayName(), &dst->name);
+    snapshot(src.GetDisplayName(), &dst->name, encoding);
 
     dst->npcId = src.npcId;
     dst->attributes = std::to_underlying(src.attributes);
@@ -1408,7 +1408,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uniqueNameIndex = src.uniqueNameIndex;
 }
 
-void reconstruct(const Actor_MM7 &src, Actor *dst) {
+void reconstruct(const Actor_MM7 &src, Actor *dst, EncodingTag encoding) {
     dst->npcId = src.npcId;
     dst->attributes = ActorAttributes(src.attributes);
     dst->hp = src.hp;
@@ -1648,9 +1648,9 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->initialPosition = src.initialPosition.toFloat();
 }
 
-void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
-    reconstruct(src.internalName, &dst->internalName);
-    reconstruct(src.hint, &dst->hint);
+void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst, EncodingTag encoding) {
+    reconstruct(src.internalName, &dst->internalName, tags::encoding(ENCODING_ASCII));
+    reconstruct(src.hint, &dst->hint, encoding);
     dst->uType = src.uType;
     dst->uDecorationHeight = src.uDecorationHeight;
     dst->uRadius = src.uRadius;
@@ -1665,8 +1665,8 @@ void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     dst->uColoredLight.a = 255;
 }
 
-void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
-    reconstruct(static_cast<const DecorationDesc_MM6 &>(src), dst);
+void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst, EncodingTag encoding) {
+    reconstruct(static_cast<const DecorationDesc_MM6 &>(src), dst, encoding);
 
     dst->uColoredLight.r = src.uColoredLightRed;
     dst->uColoredLight.g = src.uColoredLightGreen;
@@ -1838,7 +1838,7 @@ void snapshot(const LocationTime &src, LocationTime_MM7 *dst) {
     memzero(dst);
 
     snapshot(src.lastVisitTime, &dst->lastVisitTime);
-    snapshot(src.skyTextureName, &dst->skyTextureName);
+    snapshot(src.skyTextureName, &dst->skyTextureName, tags::encoding(ENCODING_ASCII));
     dst->weatherFlags = std::to_underlying(src.weatherFlags);
     dst->fogWeakDistance = src.fogWeakDistance;
     dst->fogStrongDistance = src.fogStrongDistance;
@@ -1846,14 +1846,14 @@ void snapshot(const LocationTime &src, LocationTime_MM7 *dst) {
 
 void reconstruct(const LocationTime_MM7 &src, LocationTime *dst) {
     reconstruct(src.lastVisitTime, &dst->lastVisitTime);
-    reconstruct(src.skyTextureName, &dst->skyTextureName);
+    reconstruct(src.skyTextureName, &dst->skyTextureName, tags::encoding(ENCODING_ASCII));
     dst->weatherFlags = static_cast<MapWeatherFlags>(src.weatherFlags);
     dst->fogWeakDistance = src.fogWeakDistance;
     dst->fogStrongDistance = src.fogStrongDistance;
 }
 
 void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst) {
-    reconstruct(src.name, &dst->name);
+    reconstruct(src.name, &dst->name, tags::encoding(ENCODING_ASCII));
     dst->soundId = static_cast<SoundId>(src.soundId);
     dst->type = static_cast<SoundType>(src.type);
     dst->flags = static_cast<SoundFlags>(src.flags);
@@ -1891,17 +1891,17 @@ void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst) {
     dst->decorVars = src.decorVars;
 }
 
-void snapshot(const SaveGameHeader &src, SaveGameHeader_MM7 *dst) {
+void snapshot(const SaveGameHeader &src, SaveGameHeader_MM7 *dst, EncodingTag encoding) {
     memzero(dst);
 
-    snapshot(src.name, &dst->name);
-    snapshot(src.locationName, &dst->locationName);
+    snapshot(src.name, &dst->name, encoding);
+    snapshot(src.locationName, &dst->locationName, tags::encoding(ENCODING_ASCII));
     snapshot(src.playingTime, &dst->playingTime);
 }
 
-void reconstruct(const SaveGameHeader_MM7 &src, SaveGameHeader *dst) {
-    reconstruct(src.name, &dst->name);
-    reconstruct(src.locationName, &dst->locationName);
+void reconstruct(const SaveGameHeader_MM7 &src, SaveGameHeader *dst, EncodingTag encoding) {
+    reconstruct(src.name, &dst->name, encoding);
+    reconstruct(src.locationName, &dst->locationName, tags::encoding(ENCODING_ASCII));
     reconstruct(src.playingTime, &dst->playingTime);
     // field_30 is ignored.
 }

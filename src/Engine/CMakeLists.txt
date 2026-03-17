@@ -56,7 +56,7 @@ target_link_libraries(engine
         engine_graphics
         engine_graphics_renderer
         engine_objects
-        engine_serialization
+        engine_snapshots
         engine_spells
         engine_tables
         engine_turn_engine
@@ -65,6 +65,7 @@ target_link_libraries(engine
         engine_time
         engine_resources
         library_compression
+        library_encoding_detector
         library_logger
         library_serialization
         library_color

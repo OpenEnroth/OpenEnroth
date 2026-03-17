@@ -12,8 +12,11 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Objects/Monsters.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
@@ -27,6 +30,185 @@
 #include "Utility/Segment.h"
 
 #include "GameTestCommon.h"
+
+GAME_TEST(Issues, Issue1) {
+    // Helper to report name mismatches and compare all monsterInfo stats against the template.
+    auto reportMismatch = [](std::string_view fileName, MapId mapId, std::string_view locationType,
+                              const Actor &actor, const MonsterInfo &templateInfo) {
+        const MonsterInfo &a = actor.monsterInfo;
+        const MonsterInfo &t = templateInfo;
+        bool headerPrinted = false;
+        auto ensureHeader = [&] {
+            if (!headerPrinted) {
+                fmt::println(stderr, "{} [{}] ({}): actor '{}' vs type '{}'", fileName, pMapStats->pInfos[mapId].name, locationType, actor.GetDisplayName(), templateInfo.name);
+                headerPrinted = true;
+            }
+        };
+        if (actor.GetDisplayName() != templateInfo.name)
+            ensureHeader();
+
+        // CMP for numeric fields (unary + promotes uint8_t to int for printing).
+#define CMP(field) \
+    do { \
+        if (a.field != t.field) { \
+            ensureHeader(); \
+            fmt::println(stderr, "  " #field ": {} vs {}", +a.field, +t.field); \
+        } \
+    } while (0)
+
+        // CMP_ENUM for enum fields.
+#define CMP_ENUM(field) \
+    do { \
+        if (a.field != t.field) { \
+            ensureHeader(); \
+            fmt::println(stderr, "  " #field ": {} vs {}", std::to_underlying(a.field), std::to_underlying(t.field)); \
+        } \
+    } while (0)
+
+        // Combat.
+        CMP(level);
+        CMP(hp);
+        CMP(ac);
+        CMP(exp);
+        CMP(baseSpeed);
+        if (a.recoveryTime != t.recoveryTime) {
+            ensureHeader();
+            fmt::println(stderr, "  recoveryTime: {} vs {}", a.recoveryTime.ticks(), t.recoveryTime.ticks());
+        }
+
+        // Attack 1.
+        CMP_ENUM(attack1Type);
+        CMP(attack1DamageDiceRolls);
+        CMP(attack1DamageDiceSides);
+        CMP(attack1DamageBonus);
+        CMP_ENUM(attack1MissileType);
+
+        // Attack 2.
+        CMP(attack2Chance);
+        CMP_ENUM(attack2Type);
+        CMP(attack2DamageDiceRolls);
+        CMP(attack2DamageDiceSides);
+        CMP(attack2DamageBonus);
+        CMP_ENUM(attack2MissileType);
+
+        // Spells.
+        CMP(spell1UseChance);
+        CMP_ENUM(spell1Id);
+        if (a.spell1SkillMastery != t.spell1SkillMastery) {
+            ensureHeader();
+            fmt::println(stderr, "  spell1SkillMastery: {} vs {}", a.spell1SkillMastery.joined(), t.spell1SkillMastery.joined());
+        }
+        CMP(spell2UseChance);
+        CMP_ENUM(spell2Id);
+        if (a.spell2SkillMastery != t.spell2SkillMastery) {
+            ensureHeader();
+            fmt::println(stderr, "  spell2SkillMastery: {} vs {}", a.spell2SkillMastery.joined(), t.spell2SkillMastery.joined());
+        }
+
+        // Special.
+        CMP_ENUM(specialAttackType);
+        CMP(specialAttackLevel);
+        CMP_ENUM(specialAbilityType);
+        CMP(specialAbilityDamageDiceRolls);
+        CMP(specialAbilityDamageDiceSides);
+        CMP(specialAbilityDamageDiceBonus);
+        CMP(numCharactersAttackedPerSpecialAbility);
+
+        // Resistances.
+        CMP(resFire);
+        CMP(resAir);
+        CMP(resWater);
+        CMP(resEarth);
+        CMP(resMind);
+        CMP(resSpirit);
+        CMP(resBody);
+        CMP(resLight);
+        CMP(resDark);
+        CMP(resPhysical);
+
+        // Loot.
+        CMP(treasureDropChance);
+        CMP_ENUM(treasureLevel);
+        CMP_ENUM(treasureType);
+        CMP(goldDiceRolls);
+        CMP(goldDiceSides);
+
+        // Behavior.
+        CMP(flying);
+        CMP_ENUM(movementType);
+        CMP_ENUM(aiType);
+        CMP_ENUM(hostilityType);
+        if (a.attackPreferences != t.attackPreferences) {
+            ensureHeader();
+            fmt::println(stderr, "  attackPreferences: {} vs {}",
+                         static_cast<MonsterAttackPreferences::underlying_type>(a.attackPreferences),
+                         static_cast<MonsterAttackPreferences::underlying_type>(t.attackPreferences));
+        }
+
+        // Actor-level fields (not in monsterInfo).
+        if (actor.npcId != 0) {
+            ensureHeader();
+            const std::string &npcName = pNPCStats->pOriginalNPCData[actor.npcId].name;
+            fmt::println(stderr, "  npcId: {} ('{}')", actor.npcId, npcName);
+        }
+        if (actor.carriedItemId != ITEM_NULL) {
+            ensureHeader();
+            fmt::println(stderr, "  carriedItemId: {}", std::to_underlying(actor.carriedItemId));
+        }
+        for (int i = 0; i < 4; i++) {
+            if (actor.items[i].itemId != ITEM_NULL) {
+                ensureHeader();
+                fmt::println(stderr, "  items[{}]: {}", i, std::to_underlying(actor.items[i].itemId));
+            }
+        }
+
+#undef CMP
+#undef CMP_ENUM
+    };
+
+    for (MapId mapId : Segment(MAP_FIRST, MAP_LAST)) {
+        std::string_view fileName = pMapStats->pInfos[mapId].fileName;
+        std::string_view baseName = fileName.substr(0, fileName.size() - 4);
+
+        if (isMapIndoor(mapId)) {
+            IndoorLocation_MM7 rawLocation;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(fileName)), &rawLocation);
+            IndoorLocation location;
+            reconstruct(rawLocation, &location);
+
+            std::string dlvFilename = fmt::format("{}.dlv", baseName);
+            IndoorDelta_MM7 rawDelta;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlvFilename)), &rawDelta, tags::context(rawLocation));
+
+            for (const auto &actorSnap : rawDelta.actors) {
+                Actor actor;
+                reconstruct(actorSnap, &actor, tags::encoding(engine->gameDataEncoding()));
+                if (actor.uniqueNameIndex == 0 && actor.monsterInfo.id != MONSTER_INVALID) {
+                    const MonsterInfo &templateInfo = pMonsterStats->infos[actor.monsterInfo.id];
+                    reportMismatch(fileName, mapId, "indoor", actor, templateInfo);
+                }
+            }
+        } else if (isMapOutdoor(mapId)) {
+            OutdoorLocation_MM7 rawLocation;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(fileName)), &rawLocation);
+            OutdoorLocation location;
+            reconstruct(rawLocation, &location);
+
+            std::string ddmFilename = fmt::format("{}.ddm", baseName);
+            OutdoorDelta_MM7 rawDelta;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddmFilename)), &rawDelta, tags::context(rawLocation));
+
+            for (const auto &actorSnap : rawDelta.actors) {
+                Actor actor;
+                reconstruct(actorSnap, &actor, tags::encoding(engine->gameDataEncoding()));
+                if (actor.uniqueNameIndex == 0 && actor.monsterInfo.id != MONSTER_INVALID) {
+                    const MonsterInfo &templateInfo = pMonsterStats->infos[actor.monsterInfo.id];
+                    reportMismatch(fileName, mapId, "outdoor", actor, templateInfo);
+                }
+            }
+        }
+    }
+}
 
 // 2000
 
@@ -831,7 +1013,7 @@ GAME_TEST(Prs, Pr2354) {
             std::string dlvFilename = fmt::format("{}.dlv", baseName);
             IndoorDelta_MM7 rawDelta;
             deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlvFilename)), &rawDelta, tags::context(rawLocation));
-            reconstruct(rawDelta, &location);
+            reconstruct(rawDelta, &location, tags::encoding(engine->gameDataEncoding()));
         } else if (isMapOutdoor(mapId)) {
             // Deserialize and reconstruct the base outdoor location (.odm).
             OutdoorLocation_MM7 rawLocation;
@@ -843,7 +1025,7 @@ GAME_TEST(Prs, Pr2354) {
             std::string ddmFilename = fmt::format("{}.ddm", baseName);
             OutdoorDelta_MM7 rawDelta;
             deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddmFilename)), &rawDelta, tags::context(rawLocation));
-            reconstruct(rawDelta, &location);
+            reconstruct(rawDelta, &location, tags::encoding(engine->gameDataEncoding()));
         }
     }
 }

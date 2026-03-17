@@ -14,6 +14,7 @@
 #include "Engine/Time/Time.h"
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/String/Encoding.h"
 
 namespace Io {
 class Mouse;
@@ -72,6 +73,8 @@ class Engine {
     ResourceManager *resources() const {
         return _resourceManager.get();
     }
+
+    TextEncoding gameDataEncoding() const { return _gameDataEncoding; }
 
     void Initialize();
     Vis_PIDAndDepth PickMouse(float fPickDepth, int uMouseX, int uMouseY,
@@ -144,6 +147,7 @@ class Engine {
     std::unique_ptr<LightsStack_MobileLight_> _mobileLights;
 
  private:
+    TextEncoding _gameDataEncoding = ENCODING_ASCII;
     std::unique_ptr<ResourceManager> _resourceManager;
 };
 
