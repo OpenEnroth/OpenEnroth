@@ -1,0 +1,1117 @@
+{
+    "header": {
+        "afterLoadRandomState": 1,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            },
+            {
+                "key": "wizard_eye",
+                "section": "debug",
+                "value": "true"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 27,
+                    "backpack": [
+                        "Genie Lamp",
+                        "Remains of a Journal",
+                        "Cruel Spear",
+                        "Plate Armor",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Faerie Ring",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Silver Mesh Gauntlets",
+                        "Faerie Key",
+                        "Kergar-laced ore",
+                        "Scroll of Jump"
+                    ],
+                    "endurance": 17,
+                    "equipment": [
+                        "Steel Broadsword of Sparks",
+                        "Duelist Blade of Frost",
+                        "Elven Longbow",
+                        "Royal Leather",
+                        "Phynaxian Helm of Luck [+8]",
+                        "Huntsman's Cloak of Might [+4]",
+                        "Mogred Gauntlets of Disarming [+12]",
+                        "Steel Plated Boots",
+                        "Pearl Ring of Protection",
+                        "Warlock's Ring of Life"
+                    ],
+                    "hp": 197,
+                    "intelligence": 11,
+                    "luck": 27,
+                    "might": 27,
+                    "mp": 0,
+                    "personality": 21,
+                    "speed": 19
+                },
+                {
+                    "accuracy": 21,
+                    "backpack": [
+                        "Cure Paralysis Potion [14]",
+                        "Cure Disease Potion [6]",
+                        "Potion Bottle",
+                        "Cure Disease Potion [13]",
+                        "Cure Paralysis Potion [13]",
+                        "Cure Poison Potion [8]",
+                        "Plate Armor",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cure Weakness Potion [4]",
+                        "Cure Paralysis Potion [8]",
+                        "Remove Curse Potion [12]",
+                        "Cure Poison Potion [4]",
+                        "Remove Curse Potion [10]",
+                        "Cure Wounds Potion [15]",
+                        "Cure Paralysis Potion [8]",
+                        "Heroism Potion [24]",
+                        "Fae Dust",
+                        "Fae Dust",
+                        "Cure Paralysis Potion [19]",
+                        "Magic Potion [7]",
+                        "Cure Wounds Potion [14]",
+                        "Cure Wounds Potion [12]",
+                        "Cure Wounds Potion [18]",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Stone to Flesh Potion [16]",
+                        "Cure Wounds Potion [15]",
+                        "Awaken Potion [10]",
+                        "Cure Disease Potion [12]",
+                        "Cure Wounds Potion [5]",
+                        "Crushed Rose Petals",
+                        "Angel Statue Painting",
+                        "Scroll of Haste",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 28,
+                    "equipment": [
+                        "War Trident",
+                        "Elven Longbow",
+                        "Regnan Leather of The Troll",
+                        "Full Helm",
+                        "Huntsman's Cloak of Speed [+1]",
+                        "Mogred Gauntlets",
+                        "Steel Plated Boots"
+                    ],
+                    "hp": 208,
+                    "intelligence": 11,
+                    "luck": 15,
+                    "might": 21,
+                    "mp": 0,
+                    "personality": 11,
+                    "speed": 16
+                },
+                {
+                    "accuracy": 21,
+                    "backpack": [
+                        "Potion Bottle",
+                        "Cure Wounds Potion [18]",
+                        "Potion Bottle",
+                        "Widowsweep Berries",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [18]",
+                        "Cure Wounds Potion [17]",
+                        "Cure Wounds Potion [7]",
+                        "Cure Wounds Potion [16]",
+                        "Plate Armor",
+                        "Barbed Trident of Flame",
+                        "Widowsweep Berries",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [16]",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Cure Wounds Potion [12]",
+                        "Catalyst Potion [7]",
+                        "Cure Disease Potion [8]",
+                        "Remove Fear Potion [12]",
+                        "Cure Wounds Potion [5]",
+                        "Crushed Rose Petals",
+                        "Cure Wounds Potion [6]",
+                        "Cure Wounds Potion [7]",
+                        "Cure Disease Potion [9]",
+                        "Cure Wounds Potion [6]",
+                        "Arcomage Deck",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Cure Poison Potion [6]",
+                        "Cure Poison Potion [10]",
+                        "Cure Wounds Potion [18]",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [5]",
+                        "Cure Wounds Potion [13]",
+                        "Cure Wounds Potion [11]",
+                        "Widowsweep Berries",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cure Poison Potion [5]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [9]",
+                        "Cure Wounds Potion [7]",
+                        "Cure Wounds Potion [6]",
+                        "Cure Wounds Potion [9]",
+                        "Cure Disease Potion [12]",
+                        "Cure Disease Potion [5]",
+                        "Cure Disease Potion [16]"
+                    ],
+                    "endurance": 26,
+                    "equipment": [
+                        "Cruel Spear",
+                        "Heavy Crossbow",
+                        "Plate Armor of The Troll",
+                        "Phynaxian Helm",
+                        "Huntsman's Cloak",
+                        "Dragon Hide Gauntlets",
+                        "Steel Plated Boots"
+                    ],
+                    "hp": 208,
+                    "intelligence": 11,
+                    "luck": 15,
+                    "might": 21,
+                    "mp": 0,
+                    "personality": 9,
+                    "speed": 15
+                },
+                {
+                    "accuracy": 21,
+                    "backpack": [
+                        "Scroll of Body Resistance",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Telepathy",
+                        "Fragment of Soldier's Diary",
+                        "Scroll of Torch Light",
+                        "Scroll of Fire Aura",
+                        "Potion Bottle",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Fate",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Water Walk",
+                        "Scroll of Shield",
+                        "Scroll of Awaken",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Torch Light",
+                        "Scroll of Cure Paralysis",
+                        "Scroll of Bless",
+                        "Scroll of Awaken",
+                        "Water Breathing Potion [9]",
+                        "Scroll of Detect Life",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Fire Resistance",
+                        "Scroll of Water Walk",
+                        "Scroll of Telekinesis",
+                        "Scroll of Cure Paralysis",
+                        "Scroll of Feather Fall",
+                        "Scroll of Torch Light",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Bless",
+                        "Scroll of Enchant Item",
+                        "Cure Paralysis Potion [12]",
+                        "Remove Curse Potion [13]",
+                        "Dagger [UNID]",
+                        "Scroll of Slow",
+                        "Scroll of Bless",
+                        "Scroll of Deadly Swarm",
+                        "Scroll of Fireball",
+                        "Scroll of Torch Light",
+                        "Scroll of Fate",
+                        "Scroll of Torch Light",
+                        "Scroll of Fire Bolt",
+                        "Scroll of Turn Undead",
+                        "Scroll of Water Walk",
+                        "Horseshoe",
+                        "Siertal-laced ore",
+                        "Scroll of Power Cure",
+                        "Scroll of Torch Light",
+                        "Worn Belt",
+                        "Scroll of Fire Bolt",
+                        "Scroll of Torch Light",
+                        "Scroll of Fly",
+                        "Scroll of Torch Light",
+                        "Scroll of Poison Spray",
+                        "Scroll of Recharge Item",
+                        "Scroll of Water Walk",
+                        "Scroll of Wizard Eye"
+                    ],
+                    "endurance": 11,
+                    "equipment": [
+                        "Sublime Spear of Poison",
+                        "Elven Longbow",
+                        "Royal Leather of Defense [+14]",
+                        "Phynaxian Helm",
+                        "Huntsman's Cloak",
+                        "Silver Mesh Gauntlets",
+                        "Leather Boots"
+                    ],
+                    "hp": 166,
+                    "intelligence": 11,
+                    "luck": 13,
+                    "might": 21,
+                    "mp": 0,
+                    "personality": 9,
+                    "speed": 15
+                }
+            ],
+            "locationName": "d21.blv",
+            "partyPosition": {
+                "x": 2581,
+                "y": 5110,
+                "z": -108
+            }
+        },
+        "saveFileSize": 509415,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 27,
+                    "backpack": [
+                        "Genie Lamp",
+                        "Remains of a Journal",
+                        "Cruel Spear",
+                        "Plate Armor",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Faerie Ring",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Silver Mesh Gauntlets",
+                        "Faerie Key",
+                        "Kergar-laced ore",
+                        "Scroll of Jump"
+                    ],
+                    "endurance": 17,
+                    "equipment": [
+                        "Steel Broadsword of Sparks",
+                        "Duelist Blade of Frost",
+                        "Elven Longbow",
+                        "Royal Leather",
+                        "Phynaxian Helm of Luck [+8]",
+                        "Huntsman's Cloak of Might [+4]",
+                        "Mogred Gauntlets of Disarming [+12]",
+                        "Steel Plated Boots",
+                        "Pearl Ring of Protection",
+                        "Warlock's Ring of Life"
+                    ],
+                    "hp": 197,
+                    "intelligence": 11,
+                    "luck": 27,
+                    "might": 27,
+                    "mp": 0,
+                    "personality": 21,
+                    "speed": 19
+                },
+                {
+                    "accuracy": 21,
+                    "backpack": [
+                        "Cure Paralysis Potion [14]",
+                        "Cure Disease Potion [6]",
+                        "Potion Bottle",
+                        "Cure Disease Potion [13]",
+                        "Cure Paralysis Potion [13]",
+                        "Cure Poison Potion [8]",
+                        "Plate Armor",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cure Weakness Potion [4]",
+                        "Cure Paralysis Potion [8]",
+                        "Remove Curse Potion [12]",
+                        "Cure Poison Potion [4]",
+                        "Remove Curse Potion [10]",
+                        "Cure Wounds Potion [15]",
+                        "Cure Paralysis Potion [8]",
+                        "Heroism Potion [24]",
+                        "Fae Dust",
+                        "Fae Dust",
+                        "Cure Paralysis Potion [19]",
+                        "Magic Potion [7]",
+                        "Cure Wounds Potion [14]",
+                        "Cure Wounds Potion [12]",
+                        "Cure Wounds Potion [18]",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Stone to Flesh Potion [16]",
+                        "Cure Wounds Potion [15]",
+                        "Awaken Potion [10]",
+                        "Cure Disease Potion [12]",
+                        "Cure Wounds Potion [5]",
+                        "Crushed Rose Petals",
+                        "Angel Statue Painting",
+                        "Scroll of Haste",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 28,
+                    "equipment": [
+                        "War Trident",
+                        "Elven Longbow",
+                        "Regnan Leather of The Troll",
+                        "Full Helm",
+                        "Huntsman's Cloak of Speed [+1]",
+                        "Mogred Gauntlets",
+                        "Steel Plated Boots"
+                    ],
+                    "hp": 208,
+                    "intelligence": 11,
+                    "luck": 15,
+                    "might": 21,
+                    "mp": 0,
+                    "personality": 11,
+                    "speed": 16
+                },
+                {
+                    "accuracy": 21,
+                    "backpack": [
+                        "Potion Bottle",
+                        "Cure Wounds Potion [18]",
+                        "Potion Bottle",
+                        "Widowsweep Berries",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [18]",
+                        "Cure Wounds Potion [17]",
+                        "Cure Wounds Potion [7]",
+                        "Cure Wounds Potion [16]",
+                        "Plate Armor",
+                        "Barbed Trident of Flame",
+                        "Widowsweep Berries",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [16]",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Cure Wounds Potion [12]",
+                        "Catalyst Potion [7]",
+                        "Cure Disease Potion [8]",
+                        "Remove Fear Potion [12]",
+                        "Cure Wounds Potion [5]",
+                        "Crushed Rose Petals",
+                        "Cure Wounds Potion [6]",
+                        "Cure Wounds Potion [7]",
+                        "Cure Disease Potion [9]",
+                        "Cure Wounds Potion [6]",
+                        "Arcomage Deck",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Cure Poison Potion [6]",
+                        "Cure Poison Potion [10]",
+                        "Cure Wounds Potion [18]",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [5]",
+                        "Cure Wounds Potion [13]",
+                        "Cure Wounds Potion [11]",
+                        "Widowsweep Berries",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cure Poison Potion [5]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [9]",
+                        "Cure Wounds Potion [7]",
+                        "Cure Wounds Potion [6]",
+                        "Cure Wounds Potion [9]",
+                        "Cure Disease Potion [12]",
+                        "Cure Disease Potion [5]",
+                        "Cure Disease Potion [16]"
+                    ],
+                    "endurance": 26,
+                    "equipment": [
+                        "Cruel Spear",
+                        "Heavy Crossbow",
+                        "Plate Armor of The Troll",
+                        "Phynaxian Helm",
+                        "Huntsman's Cloak",
+                        "Dragon Hide Gauntlets",
+                        "Steel Plated Boots"
+                    ],
+                    "hp": 208,
+                    "intelligence": 11,
+                    "luck": 15,
+                    "might": 21,
+                    "mp": 0,
+                    "personality": 9,
+                    "speed": 15
+                },
+                {
+                    "accuracy": 21,
+                    "backpack": [
+                        "Scroll of Body Resistance",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Telepathy",
+                        "Fragment of Soldier's Diary",
+                        "Scroll of Torch Light",
+                        "Scroll of Fire Aura",
+                        "Potion Bottle",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Fate",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Water Walk",
+                        "Scroll of Shield",
+                        "Scroll of Awaken",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Torch Light",
+                        "Scroll of Cure Paralysis",
+                        "Scroll of Bless",
+                        "Scroll of Awaken",
+                        "Water Breathing Potion [9]",
+                        "Scroll of Detect Life",
+                        "Scroll of Wizard Eye",
+                        "Scroll of Fire Resistance",
+                        "Scroll of Water Walk",
+                        "Scroll of Telekinesis",
+                        "Scroll of Cure Paralysis",
+                        "Scroll of Feather Fall",
+                        "Scroll of Torch Light",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Bless",
+                        "Scroll of Enchant Item",
+                        "Cure Paralysis Potion [12]",
+                        "Remove Curse Potion [13]",
+                        "Dagger [UNID]",
+                        "Scroll of Slow",
+                        "Scroll of Bless",
+                        "Scroll of Deadly Swarm",
+                        "Scroll of Fireball",
+                        "Scroll of Torch Light",
+                        "Scroll of Fate",
+                        "Scroll of Torch Light",
+                        "Scroll of Fire Bolt",
+                        "Scroll of Turn Undead",
+                        "Scroll of Water Walk",
+                        "Horseshoe",
+                        "Siertal-laced ore",
+                        "Scroll of Power Cure",
+                        "Scroll of Torch Light",
+                        "Worn Belt",
+                        "Scroll of Fire Bolt",
+                        "Scroll of Torch Light",
+                        "Scroll of Fly",
+                        "Scroll of Torch Light",
+                        "Scroll of Poison Spray",
+                        "Scroll of Recharge Item",
+                        "Scroll of Water Walk",
+                        "Scroll of Wizard Eye"
+                    ],
+                    "endurance": 11,
+                    "equipment": [
+                        "Sublime Spear of Poison",
+                        "Elven Longbow",
+                        "Royal Leather of Defense [+14]",
+                        "Phynaxian Helm",
+                        "Huntsman's Cloak",
+                        "Silver Mesh Gauntlets",
+                        "Leather Boots"
+                    ],
+                    "hp": 166,
+                    "intelligence": 11,
+                    "luck": 13,
+                    "might": 21,
+                    "mp": 0,
+                    "personality": 9,
+                    "speed": 15
+                }
+            ],
+            "locationName": "d21.blv",
+            "partyPosition": {
+                "x": 3143,
+                "y": 5343,
+                "z": -107
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 2,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 6,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 6,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 7,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 7,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 69,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 74,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 77,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 100,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 112,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 146,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 147,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 147,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 147,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 148,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 206,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 206,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 206,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 213,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 213,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 213,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 215,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 215,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 215,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 216,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 216,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 216,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "randomState": 216,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 216,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "randomState": 216,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 216,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "randomState": 262,
+            "tickCount": 3500,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 262,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 262,
+            "tickCount": 3700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 3900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 4100,
+            "type": "paint"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 4200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 4300,
+            "type": "paint"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 4400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 4500,
+            "type": "paint"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 4600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "S",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 4700,
+            "type": "paint"
+        },
+        {
+            "randomState": 264,
+            "tickCount": 4800,
+            "type": "paint"
+        },
+        {
+            "randomState": 264,
+            "tickCount": 4900,
+            "type": "paint"
+        },
+        {
+            "randomState": 267,
+            "tickCount": 5000,
+            "type": "paint"
+        },
+        {
+            "randomState": 267,
+            "tickCount": 5100,
+            "type": "paint"
+        },
+        {
+            "randomState": 267,
+            "tickCount": 5200,
+            "type": "paint"
+        },
+        {
+            "randomState": 267,
+            "tickCount": 5300,
+            "type": "paint"
+        },
+        {
+            "randomState": 267,
+            "tickCount": 5400,
+            "type": "paint"
+        },
+        {
+            "randomState": 267,
+            "tickCount": 5500,
+            "type": "paint"
+        },
+        {
+            "randomState": 267,
+            "tickCount": 5600,
+            "type": "paint"
+        },
+        {
+            "randomState": 267,
+            "tickCount": 5700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 268,
+            "tickCount": 5800,
+            "type": "paint"
+        },
+        {
+            "randomState": 268,
+            "tickCount": 5900,
+            "type": "paint"
+        },
+        {
+            "randomState": 268,
+            "tickCount": 6000,
+            "type": "paint"
+        },
+        {
+            "randomState": 268,
+            "tickCount": 6100,
+            "type": "paint"
+        },
+        {
+            "randomState": 268,
+            "tickCount": 6200,
+            "type": "paint"
+        },
+        {
+            "randomState": 268,
+            "tickCount": 6300,
+            "type": "paint"
+        },
+        {
+            "randomState": 268,
+            "tickCount": 6400,
+            "type": "paint"
+        }
+    ]
+}

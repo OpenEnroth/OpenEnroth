@@ -1,0 +1,548 @@
+{
+    "header": {
+        "afterLoadRandomState": 122,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 47,
+                    "backpack": [],
+                    "endurance": 97,
+                    "equipment": [
+                        "Horseman's Shield of Arms [+3]",
+                        "Vampiric Supreme Flail",
+                        "Griffin Bow",
+                        "Noble Plate Armor of Freedom",
+                        "Mogred Helm",
+                        "Leather Belt of Plenty",
+                        "Sun Cloak",
+                        "Forge Gauntlets",
+                        "Knight's Boots of Precision [+11]",
+                        "Eyeball Amulet of Mana",
+                        "Brass Ring of Magic [+12]",
+                        "Emerald Ring of Protection",
+                        "Ghost Ring",
+                        "Warlock's Ring of Mind Magic"
+                    ],
+                    "hp": 167,
+                    "intelligence": 25,
+                    "luck": 31,
+                    "might": 107,
+                    "mp": 197,
+                    "personality": 79,
+                    "speed": 40
+                },
+                {
+                    "accuracy": 33,
+                    "backpack": [],
+                    "endurance": 40,
+                    "equipment": [
+                        "Mage Dagger",
+                        "Exquisite Long Dagger",
+                        "The Perfect Bow",
+                        "Royal Leather",
+                        "Shadow's Mask",
+                        "Vampire's Cape",
+                        "Dragon Hide Gauntlets of Arms [+7]",
+                        "Paladin Boots of Earth",
+                        "Sun Amulet of The Eclipse",
+                        "Brass Ring of Disarming [+8]",
+                        "Sapphire Ring of Items [+12]"
+                    ],
+                    "hp": 257,
+                    "intelligence": 35,
+                    "luck": 39,
+                    "might": 98,
+                    "mp": 59,
+                    "personality": 71,
+                    "speed": 40
+                },
+                {
+                    "accuracy": 49,
+                    "backpack": [],
+                    "endurance": 34,
+                    "equipment": [
+                        "Headsman's Poleaxe",
+                        "Ideal Crossbow of Carnage",
+                        "Elven Chainmail",
+                        "Mogred Helm of the Ocean",
+                        "Moon Cloak",
+                        "Mogred Gauntlets",
+                        "Ranger Boots",
+                        "Eyeball Amulet of Monsters [+8]",
+                        "Sapphire Ring of Mana"
+                    ],
+                    "hp": 149,
+                    "intelligence": 75,
+                    "luck": 29,
+                    "might": 90,
+                    "mp": 189,
+                    "personality": 75,
+                    "speed": 51
+                },
+                {
+                    "accuracy": 26,
+                    "backpack": [
+                        "Arcomage Deck",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Armageddon",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cipher",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Scroll of Lloyd's Beacon",
+                        "Blaster",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Haste Potion [18]",
+                        "Potion Bottle",
+                        "Scroll of Dragon Breath",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Knight Statuette",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Catherine's Key",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Sulfur",
+                        "Crushed Rose Petals",
+                        "Scroll of Day of Protection",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Poppysnaps",
+                        "Crushed Rose Petals",
+                        "Scroll of Hour of Power",
+                        "Pure Speed Recipe",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 32,
+                    "equipment": [
+                        "Assassin's Dagger",
+                        "Assassin's Dagger",
+                        "Griffin Bow",
+                        "Royal Leather",
+                        "Mind's Eye",
+                        "Strong Belt of Regeneration",
+                        "Glorious Cloak of Defense [+16]",
+                        "Mogred Gauntlets",
+                        "Paladin Boots",
+                        "Medusa's Mirror",
+                        "Faerie Ring",
+                        "Wizards' Platinum Ring",
+                        "Enchanted Ring of Luck [+19]"
+                    ],
+                    "hp": -9,
+                    "intelligence": 112,
+                    "luck": 46,
+                    "might": 77,
+                    "mp": 90,
+                    "personality": 110,
+                    "speed": 38
+                }
+            ],
+            "locationName": "out10.odm",
+            "partyPosition": {
+                "x": -6351,
+                "y": 17202,
+                "z": 1012
+            }
+        },
+        "saveFileSize": 562835,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 47,
+                    "backpack": [],
+                    "endurance": 97,
+                    "equipment": [
+                        "Horseman's Shield of Arms [+3]",
+                        "Vampiric Supreme Flail",
+                        "Griffin Bow",
+                        "Noble Plate Armor of Freedom",
+                        "Mogred Helm",
+                        "Leather Belt of Plenty",
+                        "Sun Cloak",
+                        "Forge Gauntlets",
+                        "Knight's Boots of Precision [+11]",
+                        "Eyeball Amulet of Mana",
+                        "Brass Ring of Magic [+12]",
+                        "Emerald Ring of Protection",
+                        "Ghost Ring",
+                        "Warlock's Ring of Mind Magic"
+                    ],
+                    "hp": 167,
+                    "intelligence": 25,
+                    "luck": 31,
+                    "might": 107,
+                    "mp": 197,
+                    "personality": 79,
+                    "speed": 40
+                },
+                {
+                    "accuracy": 33,
+                    "backpack": [],
+                    "endurance": 40,
+                    "equipment": [
+                        "Mage Dagger",
+                        "Exquisite Long Dagger",
+                        "The Perfect Bow",
+                        "Royal Leather",
+                        "Shadow's Mask",
+                        "Vampire's Cape",
+                        "Dragon Hide Gauntlets of Arms [+7]",
+                        "Paladin Boots of Earth",
+                        "Sun Amulet of The Eclipse",
+                        "Brass Ring of Disarming [+8]",
+                        "Sapphire Ring of Items [+12]"
+                    ],
+                    "hp": 257,
+                    "intelligence": 35,
+                    "luck": 39,
+                    "might": 98,
+                    "mp": 59,
+                    "personality": 71,
+                    "speed": 40
+                },
+                {
+                    "accuracy": 49,
+                    "backpack": [],
+                    "endurance": 34,
+                    "equipment": [
+                        "Headsman's Poleaxe",
+                        "Ideal Crossbow of Carnage",
+                        "Elven Chainmail",
+                        "Mogred Helm of the Ocean",
+                        "Moon Cloak",
+                        "Mogred Gauntlets",
+                        "Ranger Boots",
+                        "Eyeball Amulet of Monsters [+8]",
+                        "Sapphire Ring of Mana"
+                    ],
+                    "hp": 149,
+                    "intelligence": 75,
+                    "luck": 29,
+                    "might": 90,
+                    "mp": 189,
+                    "personality": 75,
+                    "speed": 51
+                },
+                {
+                    "accuracy": 26,
+                    "backpack": [
+                        "Arcomage Deck",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Armageddon",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cipher",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Scroll of Lloyd's Beacon",
+                        "Blaster",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Haste Potion [18]",
+                        "Potion Bottle",
+                        "Scroll of Dragon Breath",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Knight Statuette",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Catherine's Key",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Sulfur",
+                        "Crushed Rose Petals",
+                        "Scroll of Day of Protection",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Poppysnaps",
+                        "Crushed Rose Petals",
+                        "Scroll of Hour of Power",
+                        "Pure Speed Recipe",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 32,
+                    "equipment": [
+                        "Assassin's Dagger",
+                        "Assassin's Dagger",
+                        "Griffin Bow",
+                        "Royal Leather",
+                        "Mind's Eye",
+                        "Strong Belt of Regeneration",
+                        "Glorious Cloak of Defense [+16]",
+                        "Mogred Gauntlets",
+                        "Paladin Boots",
+                        "Medusa's Mirror",
+                        "Faerie Ring",
+                        "Wizards' Platinum Ring",
+                        "Enchanted Ring of Luck [+19]"
+                    ],
+                    "hp": 36,
+                    "intelligence": 112,
+                    "luck": 46,
+                    "might": 77,
+                    "mp": 90,
+                    "personality": 110,
+                    "speed": 38
+                }
+            ],
+            "locationName": "out10.odm",
+            "partyPosition": {
+                "x": -6351,
+                "y": 17202,
+                "z": 1012
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 40,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 40,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 40,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 49,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "3",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "3",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 49,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 49,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "button": "right",
+            "buttons": "right",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 206,
+                "y": 199
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "button": "right",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 206,
+                "y": 199
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 60,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 80,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 80,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 97,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 97,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 97,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 114,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "randomState": 114,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 161,
+            "tickCount": 2900,
+            "type": "paint"
+        }
+    ]
+}

@@ -1,0 +1,2919 @@
+{
+    "header": {
+        "afterLoadRandomState": 1011758,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "lightmap_decals",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "200"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "mersenne_twister"
+            },
+            {
+                "key": "destroy_discharged_wands",
+                "section": "gameplay",
+                "value": "true"
+            },
+            {
+                "key": "screenshot",
+                "section": "keybindings",
+                "value": "PRINT SCREEN"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 136,
+                    "backpack": [
+                        "Arcomage Deck",
+                        "Angel Statuette",
+                        "Heart of the Wood",
+                        "Zokarr IV's Skull",
+                        "Personality Boost Potion [50]",
+                        "Personality Boost Potion [50]"
+                    ],
+                    "endurance": 121,
+                    "equipment": [
+                        "Wizard Staff of Darkness",
+                        "Griffin Bow of The Dragon",
+                        "Royal Leather of The Phoenix",
+                        "Phynaxian Helm of Luck [+24]",
+                        "Elegant Cloak of Earth",
+                        "Dragon Hide Gauntlets of The Gods",
+                        "Paladin Boots of Earth",
+                        "Witch's Amulet of The Golem",
+                        "Enchanted Ring of Precision [+18]",
+                        "Wizard Ring of the Fist [+11]",
+                        "Wizard Ring of Stealing [+20]",
+                        "Angel's Ring of Water Resistance [+20]",
+                        "Enchanted Ring of Vigor [+22]",
+                        "Angel's Ring of Precision [+15]"
+                    ],
+                    "hp": 427,
+                    "intelligence": 35,
+                    "luck": 67,
+                    "might": 171,
+                    "mp": 60,
+                    "personality": 83,
+                    "speed": 47
+                },
+                {
+                    "accuracy": 159,
+                    "backpack": [
+                        "War Hammer [UNID]"
+                    ],
+                    "endurance": 57,
+                    "equipment": [
+                        "Phynaxian Shield of The Sun",
+                        "Supreme Flail of Thunderbolts",
+                        "Griffin Bow of Sparks",
+                        "Golden Chain Mail of The Phoenix",
+                        "Mogred Helm of The Phoenix",
+                        "Silver Belt of Luck [+21]",
+                        "Glorious Cloak of Health [+15]",
+                        "Mogred Gauntlets of Precision [+24]",
+                        "Hermes' Sandals",
+                        "Death's Head Pendant of The Gods",
+                        "Ghost Ring",
+                        "Wizard Ring of Mind Magic",
+                        "Emerald Ring of The Eclipse",
+                        "Emerald Ring of The Golem",
+                        "Angel's Ring of Body Resistance [+24]",
+                        "Angel's Ring of Might [+19]"
+                    ],
+                    "hp": 220,
+                    "intelligence": 35,
+                    "luck": 118,
+                    "might": 76,
+                    "mp": 272,
+                    "personality": 142,
+                    "speed": 193
+                },
+                {
+                    "accuracy": 27,
+                    "backpack": [
+                        "Potion Bottle",
+                        "Arcane Wand of Paralyzing [16/18]",
+                        "Arcane Wand of Clouds [23/23]",
+                        "Mystic Wand of Shrinking [18/20]",
+                        "Mystic Wand of Shrapmetal [19/19]",
+                        "Arcane Wand of Paralyzing [22/22]",
+                        "Arcane Wand of Paralyzing [17/21]",
+                        "Scroll of Divine Intervention",
+                        "Scroll of Starburst",
+                        "Scroll of Enslave",
+                        "Scroll of Day of Protection",
+                        "Scroll of Shrapmetal",
+                        "Scroll of Starburst",
+                        "Scroll of Armageddon",
+                        "Scroll of Starburst",
+                        "Scroll of Sunray",
+                        "Scroll of Armageddon"
+                    ],
+                    "endurance": 75,
+                    "equipment": [
+                        "Warriors' Wizard Staff",
+                        "Griffin Bow of Sparks",
+                        "Royal Leather of Protection",
+                        "Mogred Helm of The Moon",
+                        "Elegant Cloak of Earth",
+                        "Dragon Hide Gauntlets of The Sky",
+                        "Paladin Boots of Earth",
+                        "Witch's Amulet of The Golem",
+                        "Faerie Ring",
+                        "Enchanted Ring of Earth Magic",
+                        "Dazzling Ring of Air Resistance [+23]",
+                        "Emerald Ring of The Eclipse",
+                        "Angel's Ring of The Sky",
+                        "Dazzling Ring of The Sky"
+                    ],
+                    "hp": 220,
+                    "intelligence": 156,
+                    "luck": 101,
+                    "might": 34,
+                    "mp": 311,
+                    "personality": 27,
+                    "speed": 111
+                },
+                {
+                    "accuracy": 69,
+                    "backpack": [
+                        "Elvish Toadstool",
+                        "Elvish Toadstool",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Speed Boost Potion [60]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Catalyst Potion [65]",
+                        "Potion Bottle",
+                        "Cure Weakness Potion [56]",
+                        "Cure Weakness Potion [65]",
+                        "Cure Weakness Potion [60]",
+                        "Cure Weakness Potion [60]",
+                        "Witch's Amulet of The Golem",
+                        "Divine Power Potion [120]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Catalyst Potion [75]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cure Weakness Potion [65]",
+                        "Cure Weakness Potion [65]",
+                        "Cure Weakness Potion [60]",
+                        "Potion Bottle",
+                        "Divine Power Potion [114]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Catalyst Potion [75]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Mind Resistance Potion [60]",
+                        "Divine Power Potion [115]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Catalyst Potion [75]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Body Resistance Potion [60]",
+                        "Divine Cure Potion [115]"
+                    ],
+                    "endurance": 84,
+                    "equipment": [
+                        "Wizard Staff of Poison",
+                        "Griffin Bow of Sparks",
+                        "Royal Leather of The Gods",
+                        "Mogred Helm of Defense [+20]",
+                        "Elegant Cloak of The Golem",
+                        "Mogred Gauntlets of The Gods",
+                        "Knight's Boots of The Gods",
+                        "Clanker's Amulet [+15]",
+                        "Platinum Ring of The Gods",
+                        "Emerald Ring of The Eclipse",
+                        "Warlock's Ring of The Sky",
+                        "Wizard Ring of Alchemy [+20]",
+                        "Wizard Ring of The Sky",
+                        "Wizard Ring of Monsters [+23]"
+                    ],
+                    "hp": 200,
+                    "intelligence": 164,
+                    "luck": 81,
+                    "might": 67,
+                    "mp": 301,
+                    "personality": 67,
+                    "speed": 89
+                }
+            ],
+            "locationName": "d04.blv",
+            "partyPosition": {
+                "x": 386,
+                "y": 4369,
+                "z": -1584
+            }
+        },
+        "saveFileSize": 548017,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 136,
+                    "backpack": [
+                        "Arcomage Deck",
+                        "Angel Statuette",
+                        "Heart of the Wood",
+                        "Zokarr IV's Skull",
+                        "Personality Boost Potion [50]",
+                        "Personality Boost Potion [50]"
+                    ],
+                    "endurance": 121,
+                    "equipment": [
+                        "Wizard Staff of Darkness",
+                        "Griffin Bow of The Dragon",
+                        "Royal Leather of The Phoenix",
+                        "Phynaxian Helm of Luck [+24]",
+                        "Elegant Cloak of Earth",
+                        "Dragon Hide Gauntlets of The Gods",
+                        "Paladin Boots of Earth",
+                        "Witch's Amulet of The Golem",
+                        "Enchanted Ring of Precision [+18]",
+                        "Wizard Ring of the Fist [+11]",
+                        "Wizard Ring of Stealing [+20]",
+                        "Angel's Ring of Water Resistance [+20]",
+                        "Enchanted Ring of Vigor [+22]",
+                        "Angel's Ring of Precision [+15]"
+                    ],
+                    "hp": 427,
+                    "intelligence": 35,
+                    "luck": 67,
+                    "might": 171,
+                    "mp": 60,
+                    "personality": 83,
+                    "speed": 47
+                },
+                {
+                    "accuracy": 159,
+                    "backpack": [
+                        "War Hammer [UNID]"
+                    ],
+                    "endurance": 57,
+                    "equipment": [
+                        "Phynaxian Shield of The Sun",
+                        "Supreme Flail of Thunderbolts",
+                        "Griffin Bow of Sparks",
+                        "Golden Chain Mail of The Phoenix",
+                        "Mogred Helm of The Phoenix",
+                        "Silver Belt of Luck [+21]",
+                        "Glorious Cloak of Health [+15]",
+                        "Mogred Gauntlets of Precision [+24]",
+                        "Hermes' Sandals",
+                        "Death's Head Pendant of The Gods",
+                        "Ghost Ring",
+                        "Wizard Ring of Mind Magic",
+                        "Emerald Ring of The Eclipse",
+                        "Emerald Ring of The Golem",
+                        "Angel's Ring of Body Resistance [+24]",
+                        "Angel's Ring of Might [+19]"
+                    ],
+                    "hp": 220,
+                    "intelligence": 35,
+                    "luck": 118,
+                    "might": 76,
+                    "mp": 272,
+                    "personality": 142,
+                    "speed": 193
+                },
+                {
+                    "accuracy": 27,
+                    "backpack": [
+                        "Potion Bottle",
+                        "Arcane Wand of Paralyzing [16/18]",
+                        "Arcane Wand of Clouds [23/23]",
+                        "Mystic Wand of Shrinking [18/20]",
+                        "Mystic Wand of Shrapmetal [19/19]",
+                        "Arcane Wand of Paralyzing [22/22]",
+                        "Arcane Wand of Paralyzing [17/21]",
+                        "Scroll of Divine Intervention",
+                        "Scroll of Starburst",
+                        "Scroll of Enslave",
+                        "Scroll of Day of Protection",
+                        "Scroll of Shrapmetal",
+                        "Scroll of Starburst",
+                        "Scroll of Armageddon",
+                        "Scroll of Starburst",
+                        "Scroll of Sunray",
+                        "Scroll of Armageddon"
+                    ],
+                    "endurance": 75,
+                    "equipment": [
+                        "Warriors' Wizard Staff",
+                        "Griffin Bow of Sparks",
+                        "Royal Leather of Protection",
+                        "Mogred Helm of The Moon",
+                        "Elegant Cloak of Earth",
+                        "Dragon Hide Gauntlets of The Sky",
+                        "Paladin Boots of Earth",
+                        "Witch's Amulet of The Golem",
+                        "Faerie Ring",
+                        "Enchanted Ring of Earth Magic",
+                        "Dazzling Ring of Air Resistance [+23]",
+                        "Emerald Ring of The Eclipse",
+                        "Angel's Ring of The Sky",
+                        "Dazzling Ring of The Sky"
+                    ],
+                    "hp": 220,
+                    "intelligence": 156,
+                    "luck": 101,
+                    "might": 34,
+                    "mp": 311,
+                    "personality": 27,
+                    "speed": 111
+                },
+                {
+                    "accuracy": 69,
+                    "backpack": [
+                        "Elvish Toadstool",
+                        "Elvish Toadstool",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Philosopher's Stone",
+                        "Speed Boost Potion [60]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Catalyst Potion [65]",
+                        "Potion Bottle",
+                        "Cure Weakness Potion [56]",
+                        "Cure Weakness Potion [65]",
+                        "Cure Weakness Potion [60]",
+                        "Cure Weakness Potion [60]",
+                        "Witch's Amulet of The Golem",
+                        "Divine Power Potion [120]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Catalyst Potion [75]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Cure Weakness Potion [65]",
+                        "Cure Weakness Potion [65]",
+                        "Cure Weakness Potion [60]",
+                        "Potion Bottle",
+                        "Divine Power Potion [114]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Catalyst Potion [75]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Mind Resistance Potion [60]",
+                        "Divine Power Potion [115]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Catalyst Potion [75]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Body Resistance Potion [60]",
+                        "Divine Cure Potion [115]"
+                    ],
+                    "endurance": 84,
+                    "equipment": [
+                        "Wizard Staff of Poison",
+                        "Griffin Bow of Sparks",
+                        "Royal Leather of The Gods",
+                        "Mogred Helm of Defense [+20]",
+                        "Elegant Cloak of The Golem",
+                        "Mogred Gauntlets of The Gods",
+                        "Knight's Boots of The Gods",
+                        "Clanker's Amulet [+15]",
+                        "Platinum Ring of The Gods",
+                        "Emerald Ring of The Eclipse",
+                        "Warlock's Ring of The Sky",
+                        "Wizard Ring of Alchemy [+20]",
+                        "Wizard Ring of The Sky",
+                        "Wizard Ring of Monsters [+23]"
+                    ],
+                    "hp": 200,
+                    "intelligence": 164,
+                    "luck": 81,
+                    "might": 67,
+                    "mp": 301,
+                    "personality": 67,
+                    "speed": 89
+                }
+            ],
+            "locationName": "d04.blv",
+            "partyPosition": {
+                "x": 2073,
+                "y": 4272,
+                "z": -1407
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 292026,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 670840,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 33379,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 460056,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 743822,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 601625,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 860713,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 366984,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 369898,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 832867,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 750886,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 530053,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 1008623,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 272493,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 152608,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 713332,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "randomState": 799456,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "randomState": 259887,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 138384,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "randomState": 424653,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 505,
+                "y": 161
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 310714,
+            "tickCount": 4200,
+            "type": "paint"
+        },
+        {
+            "randomState": 397849,
+            "tickCount": 4400,
+            "type": "paint"
+        },
+        {
+            "randomState": 570221,
+            "tickCount": 4600,
+            "type": "paint"
+        },
+        {
+            "randomState": 217833,
+            "tickCount": 4800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 179000,
+            "tickCount": 5000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 663815,
+            "tickCount": 5200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 232518,
+            "tickCount": 5400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 361053,
+            "tickCount": 5600,
+            "type": "paint"
+        },
+        {
+            "randomState": 512646,
+            "tickCount": 5800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 158937,
+            "tickCount": 6000,
+            "type": "paint"
+        },
+        {
+            "randomState": 526358,
+            "tickCount": 6200,
+            "type": "paint"
+        },
+        {
+            "randomState": 754944,
+            "tickCount": 6400,
+            "type": "paint"
+        },
+        {
+            "randomState": 277323,
+            "tickCount": 6600,
+            "type": "paint"
+        },
+        {
+            "randomState": 929575,
+            "tickCount": 6800,
+            "type": "paint"
+        },
+        {
+            "randomState": 783185,
+            "tickCount": 7000,
+            "type": "paint"
+        },
+        {
+            "randomState": 546989,
+            "tickCount": 7200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 543786,
+            "tickCount": 7400,
+            "type": "paint"
+        },
+        {
+            "randomState": 953089,
+            "tickCount": 7600,
+            "type": "paint"
+        },
+        {
+            "randomState": 207742,
+            "tickCount": 7800,
+            "type": "paint"
+        },
+        {
+            "randomState": 773700,
+            "tickCount": 8000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 735155,
+            "tickCount": 8200,
+            "type": "paint"
+        },
+        {
+            "randomState": 706963,
+            "tickCount": 8400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 522053,
+            "tickCount": 8600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 449055,
+            "tickCount": 8800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1030397,
+            "tickCount": 9000,
+            "type": "paint"
+        },
+        {
+            "randomState": 273393,
+            "tickCount": 9200,
+            "type": "paint"
+        },
+        {
+            "randomState": 413902,
+            "tickCount": 9400,
+            "type": "paint"
+        },
+        {
+            "randomState": 335124,
+            "tickCount": 9600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 716142,
+            "tickCount": 9800,
+            "type": "paint"
+        },
+        {
+            "randomState": 303106,
+            "tickCount": 10000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 534887,
+            "tickCount": 10200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 319462,
+            "tickCount": 10400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 636893,
+            "tickCount": 10600,
+            "type": "paint"
+        },
+        {
+            "randomState": 15615,
+            "tickCount": 10800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 943741,
+            "tickCount": 11000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 616433,
+            "tickCount": 11200,
+            "type": "paint"
+        },
+        {
+            "randomState": 559131,
+            "tickCount": 11400,
+            "type": "paint"
+        },
+        {
+            "randomState": 873376,
+            "tickCount": 11600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1011825,
+            "tickCount": 11800,
+            "type": "paint"
+        },
+        {
+            "randomState": 998868,
+            "tickCount": 12000,
+            "type": "paint"
+        },
+        {
+            "randomState": 581234,
+            "tickCount": 12200,
+            "type": "paint"
+        },
+        {
+            "randomState": 550926,
+            "tickCount": 12400,
+            "type": "paint"
+        },
+        {
+            "type": "windowDeactivate"
+        },
+        {
+            "type": "windowActivate"
+        },
+        {
+            "randomState": 883518,
+            "tickCount": 12600,
+            "type": "paint"
+        },
+        {
+            "randomState": 124147,
+            "tickCount": 12800,
+            "type": "paint"
+        },
+        {
+            "randomState": 77744,
+            "tickCount": 13000,
+            "type": "paint"
+        },
+        {
+            "randomState": 6263,
+            "tickCount": 13200,
+            "type": "paint"
+        },
+        {
+            "randomState": 343477,
+            "tickCount": 13400,
+            "type": "paint"
+        },
+        {
+            "randomState": 539412,
+            "tickCount": 13600,
+            "type": "paint"
+        },
+        {
+            "randomState": 819988,
+            "tickCount": 13800,
+            "type": "paint"
+        },
+        {
+            "randomState": 974765,
+            "tickCount": 14000,
+            "type": "paint"
+        },
+        {
+            "randomState": 35203,
+            "tickCount": 14200,
+            "type": "paint"
+        },
+        {
+            "randomState": 98723,
+            "tickCount": 14400,
+            "type": "paint"
+        },
+        {
+            "randomState": 583234,
+            "tickCount": 14600,
+            "type": "paint"
+        },
+        {
+            "randomState": 135825,
+            "tickCount": 14800,
+            "type": "paint"
+        },
+        {
+            "randomState": 772247,
+            "tickCount": 15000,
+            "type": "paint"
+        },
+        {
+            "randomState": 728931,
+            "tickCount": 15200,
+            "type": "paint"
+        },
+        {
+            "randomState": 916379,
+            "tickCount": 15400,
+            "type": "paint"
+        },
+        {
+            "randomState": 174546,
+            "tickCount": 15600,
+            "type": "paint"
+        },
+        {
+            "randomState": 773683,
+            "tickCount": 15800,
+            "type": "paint"
+        },
+        {
+            "randomState": 32390,
+            "tickCount": 16000,
+            "type": "paint"
+        },
+        {
+            "randomState": 85013,
+            "tickCount": 16200,
+            "type": "paint"
+        },
+        {
+            "randomState": 942131,
+            "tickCount": 16400,
+            "type": "paint"
+        },
+        {
+            "randomState": 393241,
+            "tickCount": 16600,
+            "type": "paint"
+        },
+        {
+            "randomState": 911173,
+            "tickCount": 16800,
+            "type": "paint"
+        },
+        {
+            "randomState": 491224,
+            "tickCount": 17000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 293123,
+            "tickCount": 17200,
+            "type": "paint"
+        },
+        {
+            "randomState": 411329,
+            "tickCount": 17400,
+            "type": "paint"
+        },
+        {
+            "randomState": 106608,
+            "tickCount": 17600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 487126,
+            "tickCount": 17800,
+            "type": "paint"
+        },
+        {
+            "randomState": 691651,
+            "tickCount": 18000,
+            "type": "paint"
+        },
+        {
+            "randomState": 301965,
+            "tickCount": 18200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 637393,
+            "tickCount": 18400,
+            "type": "paint"
+        },
+        {
+            "randomState": 871084,
+            "tickCount": 18600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 234250,
+            "tickCount": 18800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 909042,
+            "tickCount": 19000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 84658,
+            "tickCount": 19200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 319555,
+            "tickCount": 19400,
+            "type": "paint"
+        },
+        {
+            "randomState": 206066,
+            "tickCount": 19600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 54629,
+            "tickCount": 19800,
+            "type": "paint"
+        },
+        {
+            "randomState": 676980,
+            "tickCount": 20000,
+            "type": "paint"
+        },
+        {
+            "randomState": 730262,
+            "tickCount": 20200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 758039,
+            "tickCount": 20400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 627703,
+            "tickCount": 20600,
+            "type": "paint"
+        },
+        {
+            "randomState": 582733,
+            "tickCount": 20800,
+            "type": "paint"
+        },
+        {
+            "randomState": 174277,
+            "tickCount": 21000,
+            "type": "paint"
+        },
+        {
+            "randomState": 898105,
+            "tickCount": 21200,
+            "type": "paint"
+        },
+        {
+            "randomState": 969128,
+            "tickCount": 21400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 601770,
+            "tickCount": 21600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 1011315,
+            "tickCount": 21800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 801005,
+            "tickCount": 22000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 103304,
+            "tickCount": 22200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 698004,
+            "tickCount": 22400,
+            "type": "paint"
+        },
+        {
+            "randomState": 189517,
+            "tickCount": 22600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 833259,
+            "tickCount": 22800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 364054,
+            "tickCount": 23000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 419515,
+            "tickCount": 23200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 908853,
+            "tickCount": 23400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 882439,
+            "tickCount": 23600,
+            "type": "paint"
+        },
+        {
+            "randomState": 671210,
+            "tickCount": 23800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 237721,
+            "tickCount": 24000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 603450,
+            "tickCount": 24200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 444015,
+            "tickCount": 24400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 942674,
+            "tickCount": 24600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 916458,
+            "tickCount": 24800,
+            "type": "paint"
+        },
+        {
+            "randomState": 353054,
+            "tickCount": 25000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 451741,
+            "tickCount": 25200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 371756,
+            "tickCount": 25400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 553289,
+            "tickCount": 25600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 29392,
+            "tickCount": 25800,
+            "type": "paint"
+        },
+        {
+            "randomState": 654014,
+            "tickCount": 26000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "type": "windowDeactivate"
+        },
+        {
+            "type": "windowActivate"
+        },
+        {
+            "randomState": 804175,
+            "tickCount": 26200,
+            "type": "paint"
+        },
+        {
+            "randomState": 848434,
+            "tickCount": 26400,
+            "type": "paint"
+        },
+        {
+            "randomState": 659474,
+            "tickCount": 26600,
+            "type": "paint"
+        },
+        {
+            "randomState": 859623,
+            "tickCount": 26800,
+            "type": "paint"
+        },
+        {
+            "randomState": 309723,
+            "tickCount": 27000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 4217,
+            "tickCount": 27200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1000524,
+            "tickCount": 27400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 619298,
+            "tickCount": 27600,
+            "type": "paint"
+        },
+        {
+            "randomState": 107314,
+            "tickCount": 27800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 823248,
+            "tickCount": 28000,
+            "type": "paint"
+        },
+        {
+            "randomState": 699526,
+            "tickCount": 28200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 127947,
+            "tickCount": 28400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 975218,
+            "tickCount": 28600,
+            "type": "paint"
+        },
+        {
+            "randomState": 204972,
+            "tickCount": 28800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 879723,
+            "tickCount": 29000,
+            "type": "paint"
+        },
+        {
+            "randomState": 171972,
+            "tickCount": 29200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 22602,
+            "tickCount": 29400,
+            "type": "paint"
+        },
+        {
+            "randomState": 587314,
+            "tickCount": 29600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 782659,
+            "tickCount": 29800,
+            "type": "paint"
+        },
+        {
+            "randomState": 979082,
+            "tickCount": 30000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 85193,
+            "tickCount": 30200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 352780,
+            "tickCount": 30400,
+            "type": "paint"
+        },
+        {
+            "randomState": 524633,
+            "tickCount": 30600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 408972,
+            "tickCount": 30800,
+            "type": "paint"
+        },
+        {
+            "randomState": 430320,
+            "tickCount": 31000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 566131,
+            "tickCount": 31200,
+            "type": "paint"
+        },
+        {
+            "randomState": 828804,
+            "tickCount": 31400,
+            "type": "paint"
+        },
+        {
+            "randomState": 592763,
+            "tickCount": 31600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 163281,
+            "tickCount": 31800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 919755,
+            "tickCount": 32000,
+            "type": "paint"
+        },
+        {
+            "randomState": 629892,
+            "tickCount": 32200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 447171,
+            "tickCount": 32400,
+            "type": "paint"
+        },
+        {
+            "randomState": 585316,
+            "tickCount": 32600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 521677,
+            "tickCount": 32800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 407871,
+            "tickCount": 33000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 273710,
+            "tickCount": 33200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 86992,
+            "tickCount": 33400,
+            "type": "paint"
+        },
+        {
+            "randomState": 462038,
+            "tickCount": 33600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 580792,
+            "tickCount": 33800,
+            "type": "paint"
+        },
+        {
+            "type": "windowDeactivate"
+        },
+        {
+            "type": "windowActivate"
+        },
+        {
+            "randomState": 607045,
+            "tickCount": 34000,
+            "type": "paint"
+        },
+        {
+            "randomState": 450255,
+            "tickCount": 34200,
+            "type": "paint"
+        },
+        {
+            "randomState": 698705,
+            "tickCount": 34400,
+            "type": "paint"
+        },
+        {
+            "randomState": 985011,
+            "tickCount": 34600,
+            "type": "paint"
+        },
+        {
+            "randomState": 549223,
+            "tickCount": 34800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 676466,
+            "tickCount": 35000,
+            "type": "paint"
+        },
+        {
+            "randomState": 762246,
+            "tickCount": 35200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 723874,
+            "tickCount": 35400,
+            "type": "paint"
+        },
+        {
+            "randomState": 423474,
+            "tickCount": 35600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 253232,
+            "tickCount": 35800,
+            "type": "paint"
+        },
+        {
+            "randomState": 760107,
+            "tickCount": 36000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 314425,
+            "tickCount": 36200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 207795,
+            "tickCount": 36400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 637417,
+            "tickCount": 36600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 610764,
+            "tickCount": 36800,
+            "type": "paint"
+        },
+        {
+            "randomState": 351763,
+            "tickCount": 37000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 416398,
+            "tickCount": 37200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 291483,
+            "tickCount": 37400,
+            "type": "paint"
+        },
+        {
+            "randomState": 209141,
+            "tickCount": 37600,
+            "type": "paint"
+        },
+        {
+            "randomState": 212946,
+            "tickCount": 37800,
+            "type": "paint"
+        },
+        {
+            "randomState": 63550,
+            "tickCount": 38000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 474173,
+            "tickCount": 38200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 722996,
+            "tickCount": 38400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 63993,
+            "tickCount": 38600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 464026,
+            "tickCount": 38800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 457116,
+            "tickCount": 39000,
+            "type": "paint"
+        },
+        {
+            "randomState": 844169,
+            "tickCount": 39200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 681698,
+            "tickCount": 39400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 795624,
+            "tickCount": 39600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 410147,
+            "tickCount": 39800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 585965,
+            "tickCount": 40000,
+            "type": "paint"
+        },
+        {
+            "randomState": 423101,
+            "tickCount": 40200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 840655,
+            "tickCount": 40400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 747021,
+            "tickCount": 40600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 269311,
+            "tickCount": 40800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 1026531,
+            "tickCount": 41000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 942086,
+            "tickCount": 41200,
+            "type": "paint"
+        },
+        {
+            "randomState": 806738,
+            "tickCount": 41400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 979691,
+            "tickCount": 41600,
+            "type": "paint"
+        },
+        {
+            "randomState": 20395,
+            "tickCount": 41800,
+            "type": "paint"
+        },
+        {
+            "randomState": 591755,
+            "tickCount": 42000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 858584,
+            "tickCount": 42200,
+            "type": "paint"
+        },
+        {
+            "randomState": 703115,
+            "tickCount": 42400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 574758,
+            "tickCount": 42600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 130050,
+            "tickCount": 42800,
+            "type": "paint"
+        },
+        {
+            "randomState": 202829,
+            "tickCount": 43000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 668371,
+            "tickCount": 43200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 610814,
+            "tickCount": 43400,
+            "type": "paint"
+        },
+        {
+            "randomState": 959465,
+            "tickCount": 43600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 338885,
+            "tickCount": 43800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 307618,
+            "tickCount": 44000,
+            "type": "paint"
+        },
+        {
+            "randomState": 135020,
+            "tickCount": 44200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 557286,
+            "tickCount": 44400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 369474,
+            "tickCount": 44600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1004056,
+            "tickCount": 44800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 131634,
+            "tickCount": 45000,
+            "type": "paint"
+        },
+        {
+            "randomState": 545509,
+            "tickCount": 45200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 372671,
+            "tickCount": 45400,
+            "type": "paint"
+        },
+        {
+            "randomState": 866977,
+            "tickCount": 45600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 234316,
+            "tickCount": 45800,
+            "type": "paint"
+        },
+        {
+            "randomState": 234429,
+            "tickCount": 46000,
+            "type": "paint"
+        },
+        {
+            "randomState": 778535,
+            "tickCount": 46200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 652553,
+            "tickCount": 46400,
+            "type": "paint"
+        },
+        {
+            "randomState": 526140,
+            "tickCount": 46600,
+            "type": "paint"
+        },
+        {
+            "randomState": 273283,
+            "tickCount": 46800,
+            "type": "paint"
+        },
+        {
+            "randomState": 736348,
+            "tickCount": 47000,
+            "type": "paint"
+        },
+        {
+            "randomState": 298439,
+            "tickCount": 47200,
+            "type": "paint"
+        },
+        {
+            "randomState": 690861,
+            "tickCount": 47400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1000107,
+            "tickCount": 47600,
+            "type": "paint"
+        },
+        {
+            "randomState": 781870,
+            "tickCount": 47800,
+            "type": "paint"
+        },
+        {
+            "randomState": 808176,
+            "tickCount": 48000,
+            "type": "paint"
+        },
+        {
+            "randomState": 465914,
+            "tickCount": 48200,
+            "type": "paint"
+        },
+        {
+            "randomState": 341472,
+            "tickCount": 48400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 577912,
+            "tickCount": 48600,
+            "type": "paint"
+        },
+        {
+            "randomState": 349624,
+            "tickCount": 48800,
+            "type": "paint"
+        },
+        {
+            "randomState": 657028,
+            "tickCount": 49000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 345651,
+            "tickCount": 49200,
+            "type": "paint"
+        },
+        {
+            "randomState": 753672,
+            "tickCount": 49400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 187561,
+            "tickCount": 49600,
+            "type": "paint"
+        },
+        {
+            "randomState": 224919,
+            "tickCount": 49800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 292593,
+            "tickCount": 50000,
+            "type": "paint"
+        },
+        {
+            "randomState": 200176,
+            "tickCount": 50200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 686694,
+            "tickCount": 50400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 126785,
+            "tickCount": 50600,
+            "type": "paint"
+        },
+        {
+            "randomState": 628107,
+            "tickCount": 50800,
+            "type": "paint"
+        },
+        {
+            "randomState": 797652,
+            "tickCount": 51000,
+            "type": "paint"
+        },
+        {
+            "randomState": 769384,
+            "tickCount": 51200,
+            "type": "paint"
+        },
+        {
+            "randomState": 514106,
+            "tickCount": 51400,
+            "type": "paint"
+        },
+        {
+            "randomState": 498572,
+            "tickCount": 51600,
+            "type": "paint"
+        },
+        {
+            "randomState": 846865,
+            "tickCount": 51800,
+            "type": "paint"
+        },
+        {
+            "type": "windowDeactivate"
+        },
+        {
+            "type": "windowActivate"
+        },
+        {
+            "randomState": 878816,
+            "tickCount": 52000,
+            "type": "paint"
+        },
+        {
+            "randomState": 244710,
+            "tickCount": 52200,
+            "type": "paint"
+        },
+        {
+            "randomState": 100148,
+            "tickCount": 52400,
+            "type": "paint"
+        },
+        {
+            "randomState": 138831,
+            "tickCount": 52600,
+            "type": "paint"
+        },
+        {
+            "randomState": 913207,
+            "tickCount": 52800,
+            "type": "paint"
+        },
+        {
+            "randomState": 424629,
+            "tickCount": 53000,
+            "type": "paint"
+        },
+        {
+            "randomState": 431407,
+            "tickCount": 53200,
+            "type": "paint"
+        },
+        {
+            "type": "windowDeactivate"
+        },
+        {
+            "type": "windowActivate"
+        },
+        {
+            "randomState": 177075,
+            "tickCount": 53400,
+            "type": "paint"
+        },
+        {
+            "randomState": 856593,
+            "tickCount": 53600,
+            "type": "paint"
+        },
+        {
+            "randomState": 430953,
+            "tickCount": 53800,
+            "type": "paint"
+        },
+        {
+            "randomState": 344872,
+            "tickCount": 54000,
+            "type": "paint"
+        },
+        {
+            "randomState": 702416,
+            "tickCount": 54200,
+            "type": "paint"
+        },
+        {
+            "randomState": 150614,
+            "tickCount": 54400,
+            "type": "paint"
+        },
+        {
+            "randomState": 584363,
+            "tickCount": 54600,
+            "type": "paint"
+        },
+        {
+            "randomState": 268395,
+            "tickCount": 54800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1008839,
+            "tickCount": 55000,
+            "type": "paint"
+        },
+        {
+            "randomState": 232463,
+            "tickCount": 55200,
+            "type": "paint"
+        },
+        {
+            "randomState": 636842,
+            "tickCount": 55400,
+            "type": "paint"
+        },
+        {
+            "randomState": 926065,
+            "tickCount": 55600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift|ctrl",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 168224,
+            "tickCount": 55800,
+            "type": "paint"
+        },
+        {
+            "randomState": 551256,
+            "tickCount": 56000,
+            "type": "paint"
+        },
+        {
+            "randomState": 98018,
+            "tickCount": 56200,
+            "type": "paint"
+        },
+        {
+            "randomState": 312999,
+            "tickCount": 56400,
+            "type": "paint"
+        },
+        {
+            "randomState": 617791,
+            "tickCount": 56600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "type": "windowDeactivate"
+        },
+        {
+            "type": "windowActivate"
+        },
+        {
+            "randomState": 36080,
+            "tickCount": 56800,
+            "type": "paint"
+        },
+        {
+            "randomState": 490639,
+            "tickCount": 57000,
+            "type": "paint"
+        },
+        {
+            "randomState": 746308,
+            "tickCount": 57200,
+            "type": "paint"
+        },
+        {
+            "randomState": 553054,
+            "tickCount": 57400,
+            "type": "paint"
+        },
+        {
+            "randomState": 100082,
+            "tickCount": 57600,
+            "type": "paint"
+        },
+        {
+            "randomState": 922606,
+            "tickCount": 57800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift|ctrl",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 632988,
+            "tickCount": 58000,
+            "type": "paint"
+        },
+        {
+            "randomState": 738051,
+            "tickCount": 58200,
+            "type": "paint"
+        }
+    ]
+}

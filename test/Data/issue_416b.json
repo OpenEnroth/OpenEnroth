@@ -1,0 +1,674 @@
+{
+    "header": {
+        "afterLoadRandomState": 1,
+        "config": [
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "50"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 99,
+                    "backpack": [
+                        "Journal Fragment",
+                        "Arcomage Deck",
+                        "Mogred Helm",
+                        "Villain's Blade",
+                        "Griffin Bow of Frost",
+                        "Orders from Steadwick",
+                        "Letter from Xenofex",
+                        "Fine Belt of Arms [+1]",
+                        "Heroism Potion [15]",
+                        "Fragment of Soldier's Diary",
+                        "Cure Disease Potion [14]",
+                        "Air Resistance Potion [20]",
+                        "Remains of a Journal",
+                        "Lieutenant's Cutlass",
+                        "Mogred Gauntlets of Dodging [+8]",
+                        "Body Resistance Potion [25]",
+                        "Divine Restoration Potion [25]",
+                        "Might Boost Potion [20]",
+                        "Remove Curse Potion [7]",
+                        "Noble Plate Armor of Monsters [+23]",
+                        "Platinum Ring of The Sun",
+                        "Enchanted Ring of Might [+25]",
+                        "Knight's Boots of Precision [+18]",
+                        "Cure Disease Potion [10]",
+                        "Cure Disease Potion [12]",
+                        "Haste Potion [18]",
+                        "Cure Disease Potion [6]",
+                        "Cloak of the Sheep",
+                        "Emerald Ring of Might [+12]",
+                        "Angel's Ring of Precision [+25]"
+                    ],
+                    "endurance": 23,
+                    "equipment": [
+                        "Blaster",
+                        "Wetsuit"
+                    ],
+                    "hp": 1085,
+                    "intelligence": 21,
+                    "luck": 23,
+                    "might": 74,
+                    "mp": 0,
+                    "personality": 17,
+                    "speed": 82
+                },
+                {
+                    "accuracy": 103,
+                    "backpack": [
+                        "Letter",
+                        "Noxious Potion [10]",
+                        "Majestic Shield of Monsters [+19]",
+                        "Phynaxian Helm of Freedom",
+                        "Angel's Ring of Precision [+14]",
+                        "Dazzling Ring of Stealing [+23]",
+                        "Glorious Cloak of Fire Resistance [+3]",
+                        "Mushroom",
+                        "Water Breathing Potion [21]",
+                        "Wizard Ring of Alarms",
+                        "Pearl Ring of Stealing [+4]",
+                        "Sapphire Ring of Disarming [+6]",
+                        "Platinum Ring of Vigor [+3]",
+                        "Sun Amulet [UNID]",
+                        "Scroll of Telekinesis",
+                        "Thieves' Dragon Hide Gauntlets",
+                        "Griffin Bow",
+                        "Vial of Ooze Endoplasm",
+                        "Poppysnaps",
+                        "Remove Curse Potion [18]",
+                        "Blaster",
+                        "Remove Fear Potion [6]",
+                        "Silver Belt of Speed [+23]",
+                        "Cure Disease Potion [19]",
+                        "Endurance Boost Potion [40]",
+                        "Mage Dagger of Thunderbolts",
+                        "Royal Leather of Air Resistance [+25]",
+                        "Garnet",
+                        "Paladin Boots of Disarming [+18]",
+                        "Scroll of Fly",
+                        "Scroll of Psychic Shock",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Ice Blast"
+                    ],
+                    "endurance": 29,
+                    "equipment": [
+                        "Blaster",
+                        "Wetsuit"
+                    ],
+                    "hp": 747,
+                    "intelligence": 19,
+                    "luck": 75,
+                    "might": 15,
+                    "mp": 77,
+                    "personality": 21,
+                    "speed": 29
+                },
+                {
+                    "accuracy": 17,
+                    "backpack": [
+                        "Remove Curse Potion [18]",
+                        "Wizard Ring",
+                        "Letter to Hairbaugh",
+                        "Magic Potion [14]",
+                        "Royal Leather of Health [+17]",
+                        "Mogred Helm of Thought [+9]",
+                        "Griffin Bow of Darkness",
+                        "Potion Bottle",
+                        "Zokarr IV's Skull",
+                        "Wizard Ring of Defense [+18]",
+                        "Blaster",
+                        "Remove Curse Potion [17]",
+                        "Might Boost Potion [25]",
+                        "Awaken Potion [6]",
+                        "Warlock's Ring of Thought [+6]",
+                        "Forge Gauntlets",
+                        "Wizards' Ranger's Cloak",
+                        "Journal Entry, 23rd April",
+                        "Strong Belt of The Sun",
+                        "Eyeball Amulet",
+                        "Diamond",
+                        "Warlock's Ring of Air Resistance [+17]",
+                        "Supreme Flail of Thunderbolts",
+                        "Knight's Boots of Earth",
+                        "Ruby",
+                        "Pearl Ring of Defense [+4]",
+                        "Amythest",
+                        "Temple in a Bottle",
+                        "Emerald Ring",
+                        "Philosopher's Stone",
+                        "Wizard Ring of Charm [+22]",
+                        "Platinum Ring of Thought [+10]",
+                        "Medusa's Mirror",
+                        "Pearl Ring of Charm [+5]",
+                        "Warlock's Ring of Vigor [+6]"
+                    ],
+                    "endurance": 84,
+                    "equipment": [
+                        "Blaster",
+                        "Wetsuit"
+                    ],
+                    "hp": 217,
+                    "intelligence": 25,
+                    "luck": 71,
+                    "might": 14,
+                    "mp": 470,
+                    "personality": 112,
+                    "speed": 91
+                },
+                {
+                    "accuracy": 23,
+                    "backpack": [
+                        "Scroll of Armageddon",
+                        "Stalt-laced ore",
+                        "Scroll of Lloyd's Beacon",
+                        "Recharge Item Potion [6]",
+                        "Full Helm of The Unicorn",
+                        "Catherine's Key",
+                        "Letter from Mr. Stantley",
+                        "Scroll of Mass Distortion",
+                        "Scroll of Sacrifice",
+                        "Remove Curse Potion [15]",
+                        "Royal Leather of Mind Resistance [+17]",
+                        "Stalt-laced ore",
+                        "Catalyst Potion [4]",
+                        "Dragon's Eye",
+                        "Scroll of Lightning Bolt",
+                        "Basic Cryptography",
+                        "Mogred Gauntlets of Vigor [+15]",
+                        "Scroll of Berserk",
+                        "Shield Potion [18]",
+                        "Blaster",
+                        "Blaster",
+                        "Silver Belt of Thought [+22]",
+                        "Body Resistance Potion [24]",
+                        "Harden Item Potion [6]",
+                        "Sapphire Ring of The Unicorn",
+                        "Sapphire Ring of Items [+7]",
+                        "Ranger Boots of Life",
+                        "Stoneskin Potion [9]",
+                        "Scroll of Mass Fear",
+                        "Pearl Ring of Defense [+3]",
+                        "Pearl Ring of The Sun",
+                        "Sun Cloak",
+                        "Stalt-laced ore",
+                        "Scroll of Blades",
+                        "Enchanted Ring of Defense [+12]",
+                        "Dazzling Ring of Items [+21]"
+                    ],
+                    "endurance": 33,
+                    "equipment": [
+                        "Blaster",
+                        "Wetsuit"
+                    ],
+                    "hp": 131,
+                    "intelligence": 114,
+                    "luck": 23,
+                    "might": 19,
+                    "mp": 525,
+                    "personality": 79,
+                    "speed": 35
+                }
+            ],
+            "locationName": "d23.blv",
+            "partyPosition": {
+                "x": 182,
+                "y": 1497,
+                "z": 225
+            }
+        },
+        "saveFileSize": 580639,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 99,
+                    "backpack": [
+                        "Journal Fragment",
+                        "Arcomage Deck",
+                        "Mogred Helm",
+                        "Villain's Blade",
+                        "Griffin Bow of Frost",
+                        "Orders from Steadwick",
+                        "Letter from Xenofex",
+                        "Fine Belt of Arms [+1]",
+                        "Heroism Potion [15]",
+                        "Fragment of Soldier's Diary",
+                        "Cure Disease Potion [14]",
+                        "Air Resistance Potion [20]",
+                        "Remains of a Journal",
+                        "Lieutenant's Cutlass",
+                        "Mogred Gauntlets of Dodging [+8]",
+                        "Body Resistance Potion [25]",
+                        "Divine Restoration Potion [25]",
+                        "Might Boost Potion [20]",
+                        "Remove Curse Potion [7]",
+                        "Noble Plate Armor of Monsters [+23]",
+                        "Platinum Ring of The Sun",
+                        "Enchanted Ring of Might [+25]",
+                        "Knight's Boots of Precision [+18]",
+                        "Cure Disease Potion [10]",
+                        "Cure Disease Potion [12]",
+                        "Haste Potion [18]",
+                        "Cure Disease Potion [6]",
+                        "Cloak of the Sheep",
+                        "Emerald Ring of Might [+12]",
+                        "Angel's Ring of Precision [+25]"
+                    ],
+                    "endurance": 23,
+                    "equipment": [
+                        "Blaster",
+                        "Wetsuit"
+                    ],
+                    "hp": 1085,
+                    "intelligence": 21,
+                    "luck": 23,
+                    "might": 74,
+                    "mp": 0,
+                    "personality": 17,
+                    "speed": 82
+                },
+                {
+                    "accuracy": 103,
+                    "backpack": [
+                        "Letter",
+                        "Noxious Potion [10]",
+                        "Majestic Shield of Monsters [+19]",
+                        "Phynaxian Helm of Freedom",
+                        "Angel's Ring of Precision [+14]",
+                        "Dazzling Ring of Stealing [+23]",
+                        "Glorious Cloak of Fire Resistance [+3]",
+                        "Mushroom",
+                        "Water Breathing Potion [21]",
+                        "Wizard Ring of Alarms",
+                        "Pearl Ring of Stealing [+4]",
+                        "Sapphire Ring of Disarming [+6]",
+                        "Platinum Ring of Vigor [+3]",
+                        "Sun Amulet [UNID]",
+                        "Scroll of Telekinesis",
+                        "Thieves' Dragon Hide Gauntlets",
+                        "Griffin Bow",
+                        "Vial of Ooze Endoplasm",
+                        "Poppysnaps",
+                        "Remove Curse Potion [18]",
+                        "Blaster",
+                        "Remove Fear Potion [6]",
+                        "Silver Belt of Speed [+23]",
+                        "Cure Disease Potion [19]",
+                        "Endurance Boost Potion [40]",
+                        "Mage Dagger of Thunderbolts",
+                        "Royal Leather of Air Resistance [+25]",
+                        "Garnet",
+                        "Paladin Boots of Disarming [+18]",
+                        "Scroll of Fly",
+                        "Scroll of Psychic Shock",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Ice Blast"
+                    ],
+                    "endurance": 29,
+                    "equipment": [
+                        "Blaster",
+                        "Wetsuit"
+                    ],
+                    "hp": 747,
+                    "intelligence": 19,
+                    "luck": 75,
+                    "might": 15,
+                    "mp": 77,
+                    "personality": 21,
+                    "speed": 29
+                },
+                {
+                    "accuracy": 17,
+                    "backpack": [
+                        "Remove Curse Potion [18]",
+                        "Wizard Ring",
+                        "Letter to Hairbaugh",
+                        "Magic Potion [14]",
+                        "Royal Leather of Health [+17]",
+                        "Mogred Helm of Thought [+9]",
+                        "Griffin Bow of Darkness",
+                        "Potion Bottle",
+                        "Zokarr IV's Skull",
+                        "Wizard Ring of Defense [+18]",
+                        "Blaster",
+                        "Remove Curse Potion [17]",
+                        "Might Boost Potion [25]",
+                        "Awaken Potion [6]",
+                        "Warlock's Ring of Thought [+6]",
+                        "Forge Gauntlets",
+                        "Wizards' Ranger's Cloak",
+                        "Journal Entry, 23rd April",
+                        "Strong Belt of The Sun",
+                        "Eyeball Amulet",
+                        "Diamond",
+                        "Warlock's Ring of Air Resistance [+17]",
+                        "Supreme Flail of Thunderbolts",
+                        "Knight's Boots of Earth",
+                        "Ruby",
+                        "Pearl Ring of Defense [+4]",
+                        "Amythest",
+                        "Temple in a Bottle",
+                        "Emerald Ring",
+                        "Philosopher's Stone",
+                        "Wizard Ring of Charm [+22]",
+                        "Platinum Ring of Thought [+10]",
+                        "Medusa's Mirror",
+                        "Pearl Ring of Charm [+5]",
+                        "Warlock's Ring of Vigor [+6]"
+                    ],
+                    "endurance": 84,
+                    "equipment": [
+                        "Blaster",
+                        "Wetsuit"
+                    ],
+                    "hp": 227,
+                    "intelligence": 25,
+                    "luck": 71,
+                    "might": 14,
+                    "mp": 470,
+                    "personality": 112,
+                    "speed": 91
+                },
+                {
+                    "accuracy": 23,
+                    "backpack": [
+                        "Scroll of Armageddon",
+                        "Stalt-laced ore",
+                        "Scroll of Lloyd's Beacon",
+                        "Recharge Item Potion [6]",
+                        "Full Helm of The Unicorn",
+                        "Catherine's Key",
+                        "Letter from Mr. Stantley",
+                        "Scroll of Mass Distortion",
+                        "Scroll of Sacrifice",
+                        "Remove Curse Potion [15]",
+                        "Royal Leather of Mind Resistance [+17]",
+                        "Stalt-laced ore",
+                        "Catalyst Potion [4]",
+                        "Dragon's Eye",
+                        "Scroll of Lightning Bolt",
+                        "Basic Cryptography",
+                        "Mogred Gauntlets of Vigor [+15]",
+                        "Scroll of Berserk",
+                        "Shield Potion [18]",
+                        "Blaster",
+                        "Blaster",
+                        "Silver Belt of Thought [+22]",
+                        "Body Resistance Potion [24]",
+                        "Harden Item Potion [6]",
+                        "Sapphire Ring of The Unicorn",
+                        "Sapphire Ring of Items [+7]",
+                        "Ranger Boots of Life",
+                        "Stoneskin Potion [9]",
+                        "Scroll of Mass Fear",
+                        "Pearl Ring of Defense [+3]",
+                        "Pearl Ring of The Sun",
+                        "Sun Cloak",
+                        "Stalt-laced ore",
+                        "Scroll of Blades",
+                        "Enchanted Ring of Defense [+12]",
+                        "Dazzling Ring of Items [+21]"
+                    ],
+                    "endurance": 33,
+                    "equipment": [
+                        "Blaster",
+                        "Wetsuit"
+                    ],
+                    "hp": 179,
+                    "intelligence": 114,
+                    "luck": 23,
+                    "might": 19,
+                    "mp": 525,
+                    "personality": 79,
+                    "speed": 35
+                }
+            ],
+            "locationName": "d23.blv",
+            "partyPosition": {
+                "x": 182,
+                "y": 1497,
+                "z": 225
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 50,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 150,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 250,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 350,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 17,
+            "tickCount": 450,
+            "type": "paint"
+        },
+        {
+            "randomState": 32,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 32,
+            "tickCount": 550,
+            "type": "paint"
+        },
+        {
+            "randomState": 32,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 32,
+            "tickCount": 650,
+            "type": "paint"
+        },
+        {
+            "randomState": 32,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 750,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 47,
+            "tickCount": 850,
+            "type": "paint"
+        },
+        {
+            "randomState": 47,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 47,
+            "tickCount": 950,
+            "type": "paint"
+        },
+        {
+            "randomState": 57,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 57,
+            "tickCount": 1050,
+            "type": "paint"
+        },
+        {
+            "randomState": 57,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "randomState": 57,
+            "tickCount": 1150,
+            "type": "paint"
+        },
+        {
+            "randomState": 57,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 70,
+            "tickCount": 1250,
+            "type": "paint"
+        },
+        {
+            "randomState": 70,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 70,
+            "tickCount": 1350,
+            "type": "paint"
+        },
+        {
+            "randomState": 70,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 70,
+            "tickCount": 1450,
+            "type": "paint"
+        },
+        {
+            "randomState": 79,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 94,
+            "tickCount": 1550,
+            "type": "paint"
+        },
+        {
+            "randomState": 109,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 109,
+            "tickCount": 1650,
+            "type": "paint"
+        },
+        {
+            "randomState": 109,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 118,
+            "tickCount": 1750,
+            "type": "paint"
+        },
+        {
+            "randomState": 118,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 118,
+            "tickCount": 1850,
+            "type": "paint"
+        },
+        {
+            "randomState": 118,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 118,
+            "tickCount": 1950,
+            "type": "paint"
+        },
+        {
+            "randomState": 130,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 130,
+            "tickCount": 2050,
+            "type": "paint"
+        },
+        {
+            "randomState": 132,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 132,
+            "tickCount": 2150,
+            "type": "paint"
+        }
+    ]
+}

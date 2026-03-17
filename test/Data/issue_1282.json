@@ -1,0 +1,385 @@
+{
+    "header": {
+        "afterLoadRandomState": 185,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Brass Ring of Stealing [+1]",
+                        "Crossbow",
+                        "Leather Armor",
+                        "Crude Longsword"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 45,
+                    "intelligence": 5,
+                    "luck": 7,
+                    "might": 30,
+                    "mp": 0,
+                    "personality": 5,
+                    "speed": 14
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring",
+                        "Potion Bottle",
+                        "Dagger",
+                        "Widowsweep Berries"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 39,
+                    "intelligence": 9,
+                    "luck": 13,
+                    "might": 13,
+                    "mp": 0,
+                    "personality": 9,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 7,
+                    "backpack": [
+                        "Pearl Ring of Precision [+1]",
+                        "Heal",
+                        "Mace"
+                    ],
+                    "endurance": 22,
+                    "equipment": [],
+                    "hp": 35,
+                    "intelligence": 9,
+                    "luck": 7,
+                    "might": 12,
+                    "mp": 22,
+                    "personality": 20,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring of Vigor [+4]",
+                        "Staff",
+                        "Fire Bolt",
+                        "Feather Fall"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 30,
+                    "luck": 7,
+                    "might": 5,
+                    "mp": 36,
+                    "personality": 9,
+                    "speed": 13
+                }
+            ],
+            "locationName": "out01.odm",
+            "partyPosition": {
+                "x": 12334,
+                "y": 3223,
+                "z": 74
+            }
+        },
+        "saveFileSize": 412540,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Brass Ring of Stealing [+1]",
+                        "Crossbow",
+                        "Crude Longsword"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 45,
+                    "intelligence": 5,
+                    "luck": 7,
+                    "might": 30,
+                    "mp": 0,
+                    "personality": 5,
+                    "speed": 14
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring",
+                        "Potion Bottle",
+                        "Dagger",
+                        "Widowsweep Berries"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 39,
+                    "intelligence": 9,
+                    "luck": 13,
+                    "might": 13,
+                    "mp": 0,
+                    "personality": 9,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 7,
+                    "backpack": [
+                        "Pearl Ring of Precision [+1]",
+                        "Heal",
+                        "Mace"
+                    ],
+                    "endurance": 22,
+                    "equipment": [],
+                    "hp": 35,
+                    "intelligence": 9,
+                    "luck": 7,
+                    "might": 12,
+                    "mp": 22,
+                    "personality": 20,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring of Vigor [+4]",
+                        "Staff",
+                        "Fire Bolt",
+                        "Feather Fall"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 30,
+                    "luck": 7,
+                    "might": 5,
+                    "mp": 36,
+                    "personality": 9,
+                    "speed": 13
+                }
+            ],
+            "locationName": "out01.odm",
+            "partyPosition": {
+                "x": 12334,
+                "y": 3223,
+                "z": 74
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 220,
+                "y": 298
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 209,
+                "y": 298
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 206,
+                "y": 298
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 39,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SPACE",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SPACE",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 46,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 66,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 66,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 68,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 68,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 71,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 71,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 143,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 151,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 154,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 154,
+            "tickCount": 2400,
+            "type": "paint"
+        }
+    ]
+}
