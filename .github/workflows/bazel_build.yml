@@ -100,7 +100,7 @@ jobs:
 
       - name: 'Build'
         run: |
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //src/Bin/OpenEnroth:openenroth
+          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //src/Bin/OpenEnroth:OpenEnroth
 
       - name: '[non-android] Build unit test'
         if: env.MATRIX_PLATFORM != 'android'
