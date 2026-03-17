@@ -8,6 +8,7 @@
 #include <string>
 
 #include "Engine/Data/HouseEnums.h"
+#include "Engine/Localization.h"
 #include "Engine/PartyEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ItemEnums.h"
@@ -300,11 +301,6 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                                 Item *item = nullptr, HouseId houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
                                 Time *a6 = nullptr);
 
-
-std::string NameAndTitle(std::string_view name, std::string_view title);
-std::string NameAndTitle(std::string_view name, Class class_type);
-std::string NameAndTitle(std::string_view name, NpcProfession profession);
-std::string NameAndTitle(NPCData *npc);
 
 extern std::unique_ptr<GUIWindow> pPrimaryWindow;
 extern std::unique_ptr<GUIWindow> pGUIWindow_CurrentMenu;
