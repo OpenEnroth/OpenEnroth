@@ -1,0 +1,76 @@
+# OpenEnroth Bazel configuration
+
+# ─── Bzlmod ──────────────────────────────────────────────────────────────────
+
+common --enable_bzlmod
+
+# ─── C++23 ───────────────────────────────────────────────────────────────────
+
+build --cxxopt=-std=c++23
+build --host_cxxopt=-std=c++23
+
+# Windows/MSVC uses a different flag
+build:windows --cxxopt=/std:c++latest
+build:windows --host_cxxopt=/std:c++latest
+build:windows --cxxopt=/Zc:__cplusplus  # Make __cplusplus reflect actual standard
+
+# ─── Warnings ────────────────────────────────────────────────────────────────
+
+build:linux --copt=-Wall --copt=-Wno-error
+build:macos --copt=-Wall --copt=-Wno-error
+# Note: HACKING.md mandates warnings-as-errors. Enable --copt=-Werror once all
+# BUILD files are written and clean.
+
+# ─── Platform configs ────────────────────────────────────────────────────────
+
+build --enable_platform_specific_config
+
+# Linux
+build:linux --copt=-fPIC
+
+# Linux x86 (32-bit)
+build:linux_x86 --config=linux
+build:linux_x86 --copt=-m32
+build:linux_x86 --linkopt=-m32
+
+# Linux x86_64
+build:linux_x86_64 --config=linux
+
+# macOS
+build:macos --apple_platform_type=macos
+
+# macOS arm64
+build:darwin_arm64 --config=macos
+build:darwin_arm64 --cpu=darwin_arm64
+build:darwin_arm64 --macos_minimum_os=11.0
+
+# macOS x86_64
+build:darwin_x86_64 --config=macos
+build:darwin_x86_64 --cpu=darwin_x86_64
+build:darwin_x86_64 --macos_minimum_os=10.15
+
+# Windows x86
+build:windows_x86 --config=windows
+build:windows_x86 --cpu=x64_x86_windows
+
+# Windows x86_64
+build:windows_x86_64 --config=windows
+
+# Android — NDK version 28.1.13356709 (matches CI)
+build:android --config=android_base
+build:android_arm64_v8a --config=android
+build:android_arm64_v8a --android_platforms=//bazel/platforms:android_arm64_v8a
+build:android_armeabi_v7a --config=android
+build:android_armeabi_v7a --android_platforms=//bazel/platforms:android_armeabi_v7a
+build:android_x86_64 --config=android
+build:android_x86_64 --android_platforms=//bazel/platforms:android_x86_64
+
+# ─── Remote cache (GitHub Actions / Buildbuddy) ──────────────────────────────
+# Uncomment and configure once CI is set up:
+# build --remote_cache=grpc://...
+# build --remote_upload_local_results=true
+
+# ─── Convenience ─────────────────────────────────────────────────────────────
+
+build --verbose_failures
+test --test_output=errors
