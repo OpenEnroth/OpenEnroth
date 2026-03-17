@@ -20,26 +20,26 @@ target_check_style(OpenEnroth_GameTest)
 
 add_custom_target(Run_GameTest
         OpenEnroth_GameTest --test-path ${OE_TESTDATA_PATH}
-        DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
+        DEPENDS OpenEnroth_GameTest
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         USES_TERMINAL) # USES_TERMINAL makes the command print progress as it goes.
 
 add_custom_target(Run_GameTest_Headless
         OpenEnroth_GameTest --test-path ${OE_TESTDATA_PATH} --headless
-        DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
+        DEPENDS OpenEnroth_GameTest
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         USES_TERMINAL)
 
 add_custom_target(Run_GameTest_Parallel
         Python::Interpreter ${CMAKE_SOURCE_DIR}/thirdparty/gtest_parallel/gtest-parallel --print_test_times
             $<TARGET_FILE:OpenEnroth_GameTest> -- --test-path ${OE_TESTDATA_PATH}
-        DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
+        DEPENDS OpenEnroth_GameTest
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         USES_TERMINAL)
 
 add_custom_target(Run_GameTest_Headless_Parallel
         Python::Interpreter ${CMAKE_SOURCE_DIR}/thirdparty/gtest_parallel/gtest-parallel --print_test_times
             $<TARGET_FILE:OpenEnroth_GameTest> -- --test-path ${OE_TESTDATA_PATH} --headless
-        DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
+        DEPENDS OpenEnroth_GameTest
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         USES_TERMINAL)

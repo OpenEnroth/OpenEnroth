@@ -1,0 +1,512 @@
+{
+    "header": {
+        "afterLoadRandomState": 156,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_margareth",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "50"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring",
+                        "Crossbow",
+                        "Leather Armor",
+                        "Crude Longsword"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 45,
+                    "intelligence": 5,
+                    "luck": 7,
+                    "might": 30,
+                    "mp": 0,
+                    "personality": 5,
+                    "speed": 14
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Brass Ring",
+                        "Potion Bottle",
+                        "Dagger",
+                        "Leather Armor",
+                        "Poppysnaps"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 39,
+                    "intelligence": 9,
+                    "luck": 13,
+                    "might": 13,
+                    "mp": 0,
+                    "personality": 9,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 7,
+                    "backpack": [
+                        "Pearl Ring of Defense [+3]",
+                        "Heal",
+                        "Mace",
+                        "Leather Armor"
+                    ],
+                    "endurance": 22,
+                    "equipment": [],
+                    "hp": 35,
+                    "intelligence": 9,
+                    "luck": 7,
+                    "might": 12,
+                    "mp": 22,
+                    "personality": 20,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring of Might [+3]",
+                        "Leather Armor",
+                        "Staff",
+                        "Fire Bolt",
+                        "Feather Fall"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 30,
+                    "luck": 7,
+                    "might": 5,
+                    "mp": 36,
+                    "personality": 9,
+                    "speed": 13
+                }
+            ],
+            "locationName": "out01.odm",
+            "partyPosition": {
+                "x": 11274,
+                "y": 649,
+                "z": 449
+            }
+        },
+        "saveFileSize": 396141,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring",
+                        "Crossbow",
+                        "Leather Armor",
+                        "Crude Longsword"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 45,
+                    "intelligence": 5,
+                    "luck": 7,
+                    "might": 30,
+                    "mp": 0,
+                    "personality": 5,
+                    "speed": 14
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Brass Ring",
+                        "Potion Bottle",
+                        "Dagger",
+                        "Leather Armor",
+                        "Poppysnaps"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 39,
+                    "intelligence": 9,
+                    "luck": 13,
+                    "might": 13,
+                    "mp": 0,
+                    "personality": 9,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 7,
+                    "backpack": [
+                        "Pearl Ring of Defense [+3]",
+                        "Heal",
+                        "Mace",
+                        "Leather Armor"
+                    ],
+                    "endurance": 22,
+                    "equipment": [],
+                    "hp": 35,
+                    "intelligence": 9,
+                    "luck": 7,
+                    "might": 12,
+                    "mp": 22,
+                    "personality": 20,
+                    "speed": 13
+                },
+                {
+                    "accuracy": 13,
+                    "backpack": [
+                        "Pearl Ring of Might [+3]",
+                        "Leather Armor",
+                        "Staff",
+                        "Fire Bolt",
+                        "Feather Fall"
+                    ],
+                    "endurance": 13,
+                    "equipment": [],
+                    "hp": 22,
+                    "intelligence": 30,
+                    "luck": 7,
+                    "might": 5,
+                    "mp": 36,
+                    "personality": 9,
+                    "speed": 13
+                }
+            ],
+            "locationName": "out01.odm",
+            "partyPosition": {
+                "x": 11300,
+                "y": -162,
+                "z": 202
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 50,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 150,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 250,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 350,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 450,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 550,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 650,
+            "type": "paint"
+        },
+        {
+            "randomState": 34,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 34,
+            "tickCount": 750,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 850,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 950,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 1050,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 1150,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 41,
+            "tickCount": 1250,
+            "type": "paint"
+        },
+        {
+            "randomState": 44,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 61,
+            "tickCount": 1350,
+            "type": "paint"
+        },
+        {
+            "randomState": 61,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 61,
+            "tickCount": 1450,
+            "type": "paint"
+        },
+        {
+            "randomState": 61,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 1550,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 1650,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 1750,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 1850,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 64,
+            "tickCount": 1950,
+            "type": "paint"
+        },
+        {
+            "randomState": 72,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 125,
+            "tickCount": 2050,
+            "type": "paint"
+        },
+        {
+            "randomState": 125,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 125,
+            "tickCount": 2150,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 125,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "shift|ctrl|num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 125,
+            "tickCount": 2250,
+            "type": "paint"
+        },
+        {
+            "randomState": 127,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 127,
+            "tickCount": 2350,
+            "type": "paint"
+        },
+        {
+            "randomState": 127,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 127,
+            "tickCount": 2450,
+            "type": "paint"
+        },
+        {
+            "randomState": 127,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 129,
+            "tickCount": 2550,
+            "type": "paint"
+        },
+        {
+            "randomState": 129,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 133,
+            "tickCount": 2650,
+            "type": "paint"
+        },
+        {
+            "randomState": 164,
+            "tickCount": 2700,
+            "type": "paint"
+        }
+    ]
+}
