@@ -28,13 +28,10 @@ build:windows --copt=/Isrc --copt=/Itest
 build:android_base --copt=-Isrc
 
 # ─── Disable strict header dep tracking ─────────────────────────────────────
-# The codebase uses CMake-style global include paths; Bazel's header tracking
-# via /showIncludes (MSVC) and .d files (GCC/Clang) would reject headers that
-# are found via -Isrc but not declared as explicit deps. Disable these checks
-# so the build matches CMake's behavior.
+# MSVC's /showIncludes causes Bazel to reject headers found via /Isrc but not
+# declared as explicit deps. Disable on Windows only; GCC/Clang .d file tracking
+# works correctly (all headers are declared in BUILD hdrs).
 build:windows --features=-parse_showincludes
-build:linux --features=-dependency_file
-build:macos --features=-dependency_file
 
 # ─── Warnings ────────────────────────────────────────────────────────────────
 
