@@ -33,14 +33,21 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
-# These srcs need Engine.h (from //src/Engine:engine) but are compiled as part of //src/Engine:engine
-# to avoid the engine <-> engine_objects circular dependency.
+# These srcs need Engine.h or GUI/Media headers. They are compiled as part of
+# //src/Engine:engine_impl to avoid circular dependencies.
 exports_files(
     [
+        "Actor.cpp",
+        "Character.cpp",
+        "Chest.cpp",
         "Decoration.cpp",
         "DecorationList.cpp",
+        "Item.cpp",
         "ItemEnumFunctions.cpp",
+        "Monsters.cpp",
+        "NPC.cpp",
         "ObjectList.cpp",
+        "SpriteObject.cpp",
         "TalkAnimation.cpp",
     ],
     visibility = ["//src/Engine:__pkg__"],
@@ -49,16 +56,9 @@ exports_files(
 cc_library(
     name = "engine_objects",
     srcs = [
-        "Actor.cpp",
-        "Chest.cpp",
-        "Item.cpp",
-        "MonsterEnumFunctions.cpp",
-        "Monsters.cpp",
-        "NPC.cpp",
-        "Character.cpp",
         "CharacterEnumFunctions.cpp",
-        "SpriteObject.cpp",
         "Inventory.cpp",
+        "MonsterEnumFunctions.cpp",
     ],
     hdrs = [
         "Actor.h",
@@ -85,8 +85,10 @@ cc_library(
         ":engine_objects_enums",
         "//src/Engine:engine_base",
         "//src/Engine/Data:engine_data",
+        "//src/Engine/Evt:engine_evt_enums",
         "//src/Engine/Spells:engine_spells",
         "//src/Engine/Time:engine_time",
+        "//src/GUI:gui_enums",
         "//src/Library/Random:library_random",
         "//src/Library/Color:library_color",
         "//src/Library/Geometry:library_geometry",

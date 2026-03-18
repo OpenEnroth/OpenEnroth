@@ -1,8 +1,11 @@
+exports_files(
+    ["TurnEngine.cpp"],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
 cc_library(
     name = "engine_turn_engine",
-    srcs = [
-        "TurnEngine.cpp",
-    ],
+    srcs = [],
     hdrs = [
         "TurnEngine.h",
         "TurnEngineEnums.h",
