@@ -9,8 +9,6 @@ cc_library(
     ],
     deps = [
         "//src/Utility:utility",
-        "//src/Engine:engine",
-        "//src/GUI:gui",
         "//src/Media:media",
         "//src/Library/Color:library_color",
     ],

@@ -7,13 +7,13 @@ module(
 
 # ─── Core Bazel rules ────────────────────────────────────────────────────────
 
-bazel_dep(name = "rules_cc", version = "0.0.9")
-bazel_dep(name = "platforms", version = "0.0.10")
-bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "rules_cc", version = "0.2.17")
+bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
 
 # ─── Testing ─────────────────────────────────────────────────────────────────
 
-bazel_dep(name = "googletest", version = "1.15.2")
+bazel_dep(name = "googletest", version = "1.17.0")
 
 # ─── rules_foreign_cc — wraps CMake/Make deps (used for LuaJIT, SDL3, etc.) ──
 
@@ -29,6 +29,7 @@ bazel_dep(name = "rules_android", version = "0.6.0")
 # Fill them in to make the build hermetic.
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+new_local_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:local.bzl", "new_local_repository")
 
 # Header-only deps ----------------------------------------------------------
 
@@ -178,6 +179,43 @@ http_archive(
     # sha256 = "",  # TODO: fill in
 )
 
+# ztd.idk + companion libraries — all required by ztd_text (all header-only)
+http_archive(
+    name = "ztd_idk",
+    url = "https://github.com/soasis/idk/archive/a8f2f9dfe6afc68e28d7bc40254259743b48bb45.tar.gz",
+    strip_prefix = "idk-a8f2f9dfe6afc68e28d7bc40254259743b48bb45",
+    build_file = "//bazel/deps:ztd_idk.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+http_archive(
+    name = "ztd_platform",
+    url = "https://github.com/soasis/platform/archive/d03b15049adb00ffb67c0f46b888f2a611ecf21f.tar.gz",
+    strip_prefix = "platform-d03b15049adb00ffb67c0f46b888f2a611ecf21f",
+    build_file = "//bazel/deps:ztd_platform.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+http_archive(
+    name = "ztd_encoding_tables",
+    url = "https://github.com/soasis/encoding_tables/archive/c0c5de5a45dee2fc3a8a3c6831d7070acae435ad.tar.gz",
+    strip_prefix = "encoding_tables-c0c5de5a45dee2fc3a8a3c6831d7070acae435ad",
+    build_file = "//bazel/deps:ztd_encoding_tables.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+http_archive(
+    name = "ztd_cuneicode",
+    url = "https://github.com/soasis/cuneicode/archive/8ed6b88ee41a0edc398db8dbc53d61a6bf6a8f8f.tar.gz",
+    strip_prefix = "cuneicode-8ed6b88ee41a0edc398db8dbc53d61a6bf6a8f8f",
+    build_file = "//bazel/deps:ztd_cuneicode.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+http_archive(
+    name = "ztd_inline_containers",
+    url = "https://github.com/soasis/inline_containers/archive/80c5acbe8256c1802b3b0c006cbc0e0f61fea534.tar.gz",
+    strip_prefix = "inline_containers-80c5acbe8256c1802b3b0c006cbc0e0f61fea534",
+    build_file = "//bazel/deps:ztd_inline_containers.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
 # LuaJIT — two-stage build (buildvm host → target bytecode) -----------------
 
 http_archive(
@@ -194,6 +232,16 @@ http_archive(
     strip_prefix = "luajit-cmake-64462217e05164b46ca44c10ed1d12918eee8fa5",
     build_file = "//bazel/deps:luajit_cmake.BUILD",
     # sha256 = "",  # TODO: fill in
+)
+
+# LuaJIT Windows prebuilt — wraps CMake-built lib + submodule headers.
+# path = "." maps to the workspace root, giving access to both
+# thirdparty/luajit/src/*.h and build/thirdparty/Debug/libluajit.lib.
+# Requires a prior CMake build on Windows; unused on other platforms.
+new_local_repository(
+    name = "luajit_windows",
+    path = ".",
+    build_file = "//bazel/deps:luajit_windows.BUILD",
 )
 
 # System deps — prebuilt zips from OpenEnroth_Dependencies (Phase 5) --------

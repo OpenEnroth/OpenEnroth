@@ -10,7 +10,8 @@ cc_library(
         "Duration.h",
     ],
     deps = [
-        "//src/Engine:engine",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Random:library_random",
         "//src/Library/Snapshots:library_snapshots",
     ],
     visibility = ["//visibility:public"],

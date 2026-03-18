@@ -18,8 +18,10 @@ cc_library(
         "EvtEnumFunctions.h",
     ],
     deps = [
-        "//src/Engine:engine",
         "@generator//:generator",
+        "//src/Utility:utility",
+        "//src/Library/Serialization:library_serialization",
+        "@glm//:glm",
     ],
     visibility = ["//visibility:public"],
 )

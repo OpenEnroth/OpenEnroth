@@ -25,8 +25,9 @@ cc_library(
         "Shops.h",
     ],
     deps = [
-        "//src/Engine/Graphics:engine_graphics",
         "//src/Utility:utility",
+        "//src/Library/Serialization:library_serialization",
+        "@glm//:glm",
     ],
     visibility = ["//visibility:public"],
 )

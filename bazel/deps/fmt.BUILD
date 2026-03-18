@@ -1,6 +1,6 @@
 cc_library(
     name = "fmt",
-    srcs = glob(["src/*.cc"]),
+    srcs = glob(["src/*.cc"], exclude = ["src/fmt.cc"]),  # fmt.cc is a C++ module interface, exclude for non-module builds
     hdrs = glob(["include/fmt/*.h"]),
     includes = ["include"],
     # FMT_USE_NONTYPE_TEMPLATE_ARGS enables _cf literals used throughout OE.
