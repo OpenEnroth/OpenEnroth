@@ -19,7 +19,7 @@ cc_library(
         "Tests/FileSystemDump_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         ":library_filesystem_dump",
         "//src/Library/FileSystem/Memory:library_filesystem_memory",
         "//src/Library/FileSystem/Null:library_filesystem_null",

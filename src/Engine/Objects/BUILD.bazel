@@ -65,7 +65,7 @@ cc_library(
         "Tests/Inventory_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         ":engine_objects",
     ],
     testonly = True,

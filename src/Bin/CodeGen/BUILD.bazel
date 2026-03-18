@@ -12,8 +12,12 @@ cc_binary(
     deps = [
         "//src/Application:application",
         "//src/Library/Cli:library_cli",
-        # library_platform_main provides SDL main entry point
-        "//src/Library/Platform/Sdl:library_platform_sdl",
+        "//src/Library/Platform/Sdl:library_platform_main",
+        "//src/Library/Environment:library_environment",
     ],
+    target_compatible_with = select({
+        "@platforms//os:android": ["@platforms//:incompatible"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
 )

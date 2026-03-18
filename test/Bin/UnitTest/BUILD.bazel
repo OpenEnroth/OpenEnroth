@@ -7,5 +7,6 @@ cc_binary(
         "//test/Testing/Unit:testing_unit",
         "//src/Library/StackTrace:library_stack_trace",
     ],
+    testonly = True,
     visibility = ["//visibility:public"],
 )

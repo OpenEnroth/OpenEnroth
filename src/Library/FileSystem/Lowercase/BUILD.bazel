@@ -20,7 +20,7 @@ cc_library(
         "Tests/LowercaseFileSystem_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         ":library_filesystem_lowercase",
         "//src/Library/FileSystem/Memory:library_filesystem_memory",
         "//src/Library/FileSystem/Directory:library_filesystem_directory",

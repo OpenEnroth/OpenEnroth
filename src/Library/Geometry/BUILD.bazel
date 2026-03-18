@@ -21,7 +21,7 @@ cc_library(
         "Tests/Rect_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         ":library_geometry",
     ],
     testonly = True,

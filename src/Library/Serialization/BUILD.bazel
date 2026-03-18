@@ -28,7 +28,7 @@ cc_library(
         "Tests/Serialization_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         ":library_serialization",
     ],
     testonly = True,
