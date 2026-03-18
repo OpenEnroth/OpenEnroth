@@ -39,6 +39,7 @@ cc_library(
     deps = [
         "//src/Utility:utility",
         "//src/Library/Logger:library_logger",
+        "//src/Library/Platform/Interface:library_platform_interface",
         # SDL3 — Phase 5 TODO
         "//bazel/system:sdl3",
     ],

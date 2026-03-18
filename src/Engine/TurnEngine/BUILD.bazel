@@ -8,6 +8,7 @@ cc_library(
         "TurnEngineEnums.h",
     ],
     deps = [
+        "//src/Engine/Time:engine_time",
         "//src/Utility:utility",
         "//src/Library/Serialization:library_serialization",
         "@glm//:glm",

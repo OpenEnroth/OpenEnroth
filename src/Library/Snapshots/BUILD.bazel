@@ -4,6 +4,7 @@ cc_library(
         "CommonSnapshots.h",
         "SnapshotSerialization.h",
         "SnapshotConcepts.h",
+        "SnapshotTags.h",
     ],
     deps = [
         "//src/Library/Binary:library_binary",

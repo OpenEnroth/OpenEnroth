@@ -16,6 +16,12 @@ cc_library(
         "Mouse.h",
     ],
     deps = [
+        "//src/Engine:engine",
+        "//src/Engine/Objects:engine_objects",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Platform/Filters:library_platform_filters",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Platform/Proxy:library_platform_proxy",
         "//src/Library/Serialization:library_serialization",
     ],
     visibility = ["//visibility:public"],

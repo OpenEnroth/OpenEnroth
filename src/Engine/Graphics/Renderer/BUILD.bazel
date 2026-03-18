@@ -24,6 +24,7 @@ cc_library(
     ],
     deps = [
         "//src/Utility:utility",
+        "//src/Library/Logger:library_logger",
         "//src/Library/Serialization:library_serialization",
         "//src/Library/Color:library_color",
         "//src/Library/Image:library_image",

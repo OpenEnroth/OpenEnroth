@@ -19,6 +19,11 @@ cc_library(
         "VideoState.h",
     ],
     deps = [
+        "//src/Engine:engine",
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Engine/Graphics/Renderer:engine_graphics_renderer",
+        "//src/GUI:gui",
+        "//src/GUI/UI:gui_ui",
         "//src/Library/Fsm:library_fsm",
         "//src/Media:media",
         "//src/Utility:utility",

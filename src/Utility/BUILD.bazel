@@ -96,6 +96,7 @@ cc_library(
     deps = [
         "//test/Testing/Unit:testing_unit",
         ":utility",
+        "//src/Library/Serialization:library_serialization",
     ],
     testonly = True,
     visibility = ["//visibility:public"],

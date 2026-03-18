@@ -22,6 +22,7 @@ cc_library(
         "VideoDataSource.h",
     ],
     deps = [
+        "//src/Engine:engine",
         "//src/Media/Audio:media_audio",
         "//src/Library/Logger:library_logger",
         "//src/Library/Vid:library_vid",
