@@ -62,7 +62,6 @@ cc_library(
         "Weather.h",
     ],
     deps = [
-        "//src/Engine:engine",
         "//src/Engine/Graphics/Renderer:engine_graphics_renderer",
         "//src/Utility:utility",
         "//src/Library/Serialization:library_serialization",
@@ -70,7 +69,7 @@ cc_library(
         "//src/Library/Image:library_image",
         "@glm//:glm",
         "//bazel/system:opengl",
-        "@luajit//:luajit",
+        "//bazel/system:luajit",
         "@sol2//:sol2",
         # glad is PRIVATE
         "//thirdparty/glad:glad",

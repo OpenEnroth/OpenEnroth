@@ -23,14 +23,13 @@ cc_library(
         "TextureRenderId.h",
     ],
     deps = [
-        "//src/Engine:engine",
-        "//src/Engine/Graphics:engine_graphics",
         "//src/Utility:utility",
         "//src/Library/Serialization:library_serialization",
         "//src/Library/Color:library_color",
         "//src/Library/Image:library_image",
         "@glm//:glm",
         "//bazel/system:opengl",
+        "@imgui//:imgui",
         # PRIVATE deps below
         "//thirdparty/glad:glad",
         "//src/Library/FileSystem/Sub:library_filesystem_sub",

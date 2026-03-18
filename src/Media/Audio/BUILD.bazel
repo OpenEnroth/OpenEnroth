@@ -24,7 +24,6 @@ cc_library(
     deps = [
         "//src/Utility:utility",
         "//src/Library/Snd:library_snd",
-        "//src/Application:application",
         # OpenAL — Phase 5 TODO
         "//bazel/system:openal",
     ],

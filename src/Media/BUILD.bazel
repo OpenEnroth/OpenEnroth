@@ -26,7 +26,6 @@ cc_library(
         "//src/Library/Logger:library_logger",
         "//src/Library/Vid:library_vid",
         "//src/Utility:utility",
-        "//src/Application:application",
         # FFmpeg — Phase 5 TODO
         "//bazel/system:ffmpeg",
     ],

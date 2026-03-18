@@ -32,9 +32,9 @@ cc_library(
     deps = [
         "//src/Engine:engine",
         "//src/Library/Logger:library_logger",
-        "//src/GUI/Overlay:gui_overlay",
+        "//src/GUI/Overlay:gui_overlay_hdrs",
         # PRIVATE deps:
-        "@luajit//:luajit",
+        "//bazel/system:luajit",
         "@sol2//:sol2",
     ],
     visibility = ["//visibility:public"],
