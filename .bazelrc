@@ -27,6 +27,14 @@ build:macos --copt=-Isrc --copt=-Itest
 build:windows --copt=/Isrc --copt=/Itest
 build:android_base --copt=-Isrc
 
+# ─── Compiler selection ───────────────────────────────────────────────────────
+# Linux: The codebase uses C++23 "deducing this" (P0847R7) which requires
+# GCC >= 13 or Clang >= 18. The default GCC on Debian 12 is GCC 12. Use clang-18.
+# On Ubuntu 24.04+ GCC 14 is default and works fine without these overrides.
+build:linux --action_env=CC=/usr/bin/clang-18
+build:linux --action_env=CXX=/usr/bin/clang++-18
+# Note: to use GCC instead, set --action_env=CC=gcc-13 --action_env=CXX=g++-13
+
 # ─── Disable strict header dep tracking ─────────────────────────────────────
 # MSVC's /showIncludes causes Bazel to reject headers found via /Isrc but not
 # declared as explicit deps. Disable on Windows only; GCC/Clang .d file tracking
