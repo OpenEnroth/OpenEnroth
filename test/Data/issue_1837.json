@@ -1,0 +1,687 @@
+{
+    "header": {
+        "afterLoadRandomState": 946566,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "portal_outlines",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "mersenne_twister"
+            },
+            {
+                "key": "console",
+                "section": "keybindings",
+                "value": "P"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 40,
+                    "backpack": [
+                        "Brass Ring of Magic [+12]",
+                        "Noble Plate Armor of Freedom",
+                        "Horseman's Shield of Arms [+3]",
+                        "Temple in a Bottle",
+                        "Griffin Bow of Infernos",
+                        "Eyeball Amulet of Mana",
+                        "Mogred Helm",
+                        "Vampiric Supreme Flail",
+                        "Knight's Boots of Precision [+11]",
+                        "Forge Gauntlets",
+                        "Leather Belt of Plenty",
+                        "Emerald Ring of Protection",
+                        "Ghost Ring",
+                        "Sun Cloak",
+                        "Wizard Ring of Dark Magic",
+                        "Wizard Ring of Mind Magic"
+                    ],
+                    "endurance": 84,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Wetsuit"
+                    ],
+                    "hp": 636,
+                    "intelligence": 29,
+                    "luck": 81,
+                    "might": 92,
+                    "mp": 269,
+                    "personality": 89,
+                    "speed": 100
+                },
+                {
+                    "accuracy": 85,
+                    "backpack": [
+                        "Royal Leather of The Gods",
+                        "The Perfect Bow",
+                        "Paladin Boots of Earth",
+                        "Exquisite Long Dagger of Infernos",
+                        "Exquisite Long Dagger of Infernos",
+                        "Mogred Helm of The Phoenix",
+                        "Sun Amulet of Air Resistance [+25]",
+                        "Water Resistance Potion [20]",
+                        "Noble Plate Armor of Luck [+18]",
+                        "Vampire's Cape",
+                        "Warlock's Ring of Mind Magic",
+                        "Sapphire Ring of Items [+12]",
+                        "Lady's Escort",
+                        "Royal Leather",
+                        "Diamond",
+                        "Pure Might Potion [35]",
+                        "Brass Ring of Disarming [+8]",
+                        "Dragon Hide Gauntlets of Arms [+7]",
+                        "Silver Mesh Gauntlets of Earth Resistance [+13]",
+                        "Shadow's Mask",
+                        "Glorious Cloak of Plenty",
+                        "Sun Amulet of The Eclipse"
+                    ],
+                    "endurance": 30,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Wetsuit"
+                    ],
+                    "hp": 707,
+                    "intelligence": 31,
+                    "luck": 79,
+                    "might": 100,
+                    "mp": 76,
+                    "personality": 71,
+                    "speed": 94
+                },
+                {
+                    "accuracy": 36,
+                    "backpack": [
+                        "Moon Cloak",
+                        "Ideal Crossbow of Carnage",
+                        "Sapphire Ring of Mana",
+                        "Mogred Helm of the Ocean",
+                        "Griffin Bow",
+                        "Hero's Belt",
+                        "Amuck",
+                        "Elven Chainmail",
+                        "Knight's Boots of The Gods",
+                        "Eyeball Amulet of Monsters [+8]",
+                        "Mogred Gauntlets"
+                    ],
+                    "endurance": 36,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Wetsuit"
+                    ],
+                    "hp": 576,
+                    "intelligence": 75,
+                    "luck": 79,
+                    "might": 100,
+                    "mp": 273,
+                    "personality": 75,
+                    "speed": 36
+                },
+                {
+                    "accuracy": 30,
+                    "backpack": [
+                        "Arcomage Deck",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Armageddon",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Regnan Leather of Mana",
+                        "Mage Dagger of Infernos",
+                        "Potion Bottle",
+                        "Cipher",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Scroll of Lloyd's Beacon",
+                        "Philosopher's Stone",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Haste Potion [18]",
+                        "Cure Poison Potion [12]",
+                        "Scroll of Body Resistance",
+                        "Potion Bottle",
+                        "Scroll of Dragon Breath",
+                        "Philosopher's Stone",
+                        "Clanker's Amulet [+15]",
+                        "Crushed Rose Petals",
+                        "Scroll of Resurrection",
+                        "Assassin's Dagger of Infernos",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Fae Dust",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Cure Disease Potion [12]",
+                        "Cure Disease Potion [14]",
+                        "Glorious Cloak of Defense [+16]",
+                        "Faerie Ring",
+                        "Mogred Gauntlets",
+                        "Catherine's Key",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Enchanted Ring of Luck [+19]",
+                        "Paladin Boots",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Cure Poison Potion [8]",
+                        "Potion Bottle",
+                        "Wizards' Platinum Ring",
+                        "Mind's Eye",
+                        "Scroll of Day of Protection",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Wizard Ring of Earth Magic",
+                        "Scroll of Hour of Power",
+                        "Pure Speed Recipe",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Scroll of Power Cure",
+                        "Strong Belt of Regeneration",
+                        "Medusa's Mirror"
+                    ],
+                    "endurance": 34,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Wetsuit"
+                    ],
+                    "hp": 324,
+                    "intelligence": 92,
+                    "luck": 77,
+                    "might": 79,
+                    "mp": 710,
+                    "personality": 90,
+                    "speed": 40
+                }
+            ],
+            "locationName": "out11.odm",
+            "partyPosition": {
+                "x": 14968,
+                "y": 20600,
+                "z": 1
+            }
+        },
+        "saveFileSize": 572327,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 70,
+                    "backpack": [
+                        "Brass Ring of Magic [+12]",
+                        "Noble Plate Armor of Freedom",
+                        "Horseman's Shield of Arms [+3]",
+                        "Temple in a Bottle",
+                        "Griffin Bow of Infernos",
+                        "Eyeball Amulet of Mana",
+                        "Mogred Helm",
+                        "Vampiric Supreme Flail",
+                        "Knight's Boots of Precision [+11]",
+                        "Forge Gauntlets",
+                        "Leather Belt of Plenty",
+                        "Emerald Ring of Protection",
+                        "Ghost Ring",
+                        "Sun Cloak",
+                        "Wizard Ring of Dark Magic",
+                        "Wizard Ring of Mind Magic"
+                    ],
+                    "endurance": 114,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Wetsuit"
+                    ],
+                    "hp": 642,
+                    "intelligence": 59,
+                    "luck": 111,
+                    "might": 122,
+                    "mp": 224,
+                    "personality": 119,
+                    "speed": 130
+                },
+                {
+                    "accuracy": 115,
+                    "backpack": [
+                        "Royal Leather of The Gods",
+                        "The Perfect Bow",
+                        "Paladin Boots of Earth",
+                        "Exquisite Long Dagger of Infernos",
+                        "Exquisite Long Dagger of Infernos",
+                        "Mogred Helm of The Phoenix",
+                        "Sun Amulet of Air Resistance [+25]",
+                        "Water Resistance Potion [20]",
+                        "Noble Plate Armor of Luck [+18]",
+                        "Vampire's Cape",
+                        "Warlock's Ring of Mind Magic",
+                        "Sapphire Ring of Items [+12]",
+                        "Lady's Escort",
+                        "Royal Leather",
+                        "Diamond",
+                        "Pure Might Potion [35]",
+                        "Brass Ring of Disarming [+8]",
+                        "Dragon Hide Gauntlets of Arms [+7]",
+                        "Silver Mesh Gauntlets of Earth Resistance [+13]",
+                        "Shadow's Mask",
+                        "Glorious Cloak of Plenty",
+                        "Sun Amulet of The Eclipse"
+                    ],
+                    "endurance": 60,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Wetsuit"
+                    ],
+                    "hp": 731,
+                    "intelligence": 61,
+                    "luck": 109,
+                    "might": 130,
+                    "mp": 88,
+                    "personality": 101,
+                    "speed": 124
+                },
+                {
+                    "accuracy": 66,
+                    "backpack": [
+                        "Moon Cloak",
+                        "Ideal Crossbow of Carnage",
+                        "Sapphire Ring of Mana",
+                        "Mogred Helm of the Ocean",
+                        "Griffin Bow",
+                        "Hero's Belt",
+                        "Amuck",
+                        "Elven Chainmail",
+                        "Knight's Boots of The Gods",
+                        "Eyeball Amulet of Monsters [+8]",
+                        "Mogred Gauntlets"
+                    ],
+                    "endurance": 66,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Wetsuit"
+                    ],
+                    "hp": 588,
+                    "intelligence": 105,
+                    "luck": 109,
+                    "might": 130,
+                    "mp": 273,
+                    "personality": 105,
+                    "speed": 66
+                },
+                {
+                    "accuracy": 60,
+                    "backpack": [
+                        "Arcomage Deck",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Armageddon",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Regnan Leather of Mana",
+                        "Mage Dagger of Infernos",
+                        "Potion Bottle",
+                        "Cipher",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Scroll of Lloyd's Beacon",
+                        "Philosopher's Stone",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Haste Potion [18]",
+                        "Cure Poison Potion [12]",
+                        "Scroll of Body Resistance",
+                        "Potion Bottle",
+                        "Scroll of Dragon Breath",
+                        "Philosopher's Stone",
+                        "Clanker's Amulet [+15]",
+                        "Crushed Rose Petals",
+                        "Scroll of Resurrection",
+                        "Assassin's Dagger of Infernos",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Fae Dust",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Cure Disease Potion [12]",
+                        "Cure Disease Potion [14]",
+                        "Glorious Cloak of Defense [+16]",
+                        "Faerie Ring",
+                        "Mogred Gauntlets",
+                        "Catherine's Key",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Enchanted Ring of Luck [+19]",
+                        "Paladin Boots",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Potion Bottle",
+                        "Crushed Rose Petals",
+                        "Cure Poison Potion [8]",
+                        "Potion Bottle",
+                        "Wizards' Platinum Ring",
+                        "Mind's Eye",
+                        "Scroll of Day of Protection",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Wizard Ring of Earth Magic",
+                        "Scroll of Hour of Power",
+                        "Pure Speed Recipe",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Scroll of Power Cure",
+                        "Strong Belt of Regeneration",
+                        "Medusa's Mirror"
+                    ],
+                    "endurance": 64,
+                    "equipment": [
+                        "Blaster Rifle",
+                        "Wetsuit"
+                    ],
+                    "hp": 336,
+                    "intelligence": 122,
+                    "luck": 107,
+                    "might": 109,
+                    "mp": 144,
+                    "personality": 120,
+                    "speed": 70
+                }
+            ],
+            "locationName": "out02.odm",
+            "partyPosition": {
+                "x": -2652,
+                "y": -22528,
+                "z": 1
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 854299,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 854299,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 695840,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 695840,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 860713,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 860713,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 314396,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 206145,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SPACE",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SPACE",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 398926,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 518178,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 13147,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 13147,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 845625,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 845625,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 845625,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 845625,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "randomState": 845625,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 658397,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "randomState": 658397,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "randomState": 658397,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "randomState": 658397,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "randomState": 658397,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "randomState": 160396,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "randomState": 160396,
+            "tickCount": 3500,
+            "type": "paint"
+        },
+        {
+            "randomState": 160396,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 160396,
+            "tickCount": 3700,
+            "type": "paint"
+        },
+        {
+            "randomState": 206625,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 918810,
+            "tickCount": 3900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 918810,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "randomState": 918810,
+            "tickCount": 4100,
+            "type": "paint"
+        },
+        {
+            "randomState": 918810,
+            "tickCount": 4200,
+            "type": "paint"
+        }
+    ]
+}

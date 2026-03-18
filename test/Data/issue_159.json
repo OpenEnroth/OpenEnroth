@@ -1,0 +1,3578 @@
+{
+    "header": {
+        "afterLoadRandomState": 116,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "16"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 89,
+                    "backpack": [
+                        "Enchanted Ring of Luck [+25]",
+                        "Bless Potion [24]",
+                        "Arcane Wand of Rocks [706/0]",
+                        "Alacorn Wand of Acid [500/0]",
+                        "Alacorn Wand of Fireballs [0/0]",
+                        "Cure Poison Potion [12]",
+                        "Remove Curse Potion [12]",
+                        "Ghoulsbane",
+                        "Mystic Wand of Incineration [117/0]",
+                        "Shield Potion [9]",
+                        "Cure Poison Potion [4]",
+                        "Sun Amulet of Items [+19]",
+                        "Message from Erathia",
+                        "Remove Curse Potion [12]",
+                        "Lieutenant's Cutlass",
+                        "Corsair",
+                        "Flaming Potion [17]",
+                        "Stone to Flesh Potion [13]",
+                        "Death's Head Pendant of Fire Resistance [+11]",
+                        "Mystic Wand of Implosion [829/0]",
+                        "Preservation Potion [15]",
+                        "Cure Poison Potion [4]",
+                        "Pure Luck Potion [20]",
+                        "Vial of Troll Blood",
+                        "Heroism Potion [21]",
+                        "Scroll of Waves",
+                        "Wizard Ring of Magic [+15]",
+                        "Vial of Troll Blood",
+                        "Cure Poison Potion [14]",
+                        "Elegant Cloak of Precision [+15]",
+                        "Harden Item Potion [18]",
+                        "Remove Fear Potion [24]",
+                        "Cure Poison Potion [4]",
+                        "Knight Statuette",
+                        "Scroll of Day of Protection",
+                        "Shield Potion [12]",
+                        "Moon Cloak",
+                        "Silver Belt of Disarming [+17]"
+                    ],
+                    "endurance": 85,
+                    "equipment": [
+                        "Puck",
+                        "Minotaur's Axe",
+                        "The Perfect Bow",
+                        "Noble Plate Armor of Defense [+16]",
+                        "Full Helm of Freedom",
+                        "Leather Belt of Speed [+17]",
+                        "Glorious Cloak of Disarming [+17]",
+                        "Dragon Hide Gauntlets of the Fist [+12]",
+                        "Ranger Boots of The Sun",
+                        "Eyeball Amulet of Water Walking",
+                        "Brass Ring of Health [+3700]",
+                        "Angel's Ring of Earth Resistance [+18]",
+                        "Enchanted Ring of Thought [+17]",
+                        "Emerald Ring of Protection",
+                        "Wizard Ring of Air Resistance [+19]",
+                        "Wizard Ring of Mind Resistance [+15]"
+                    ],
+                    "hp": 4838,
+                    "intelligence": 94,
+                    "luck": 73,
+                    "might": 64,
+                    "mp": 0,
+                    "personality": 41,
+                    "speed": 153
+                },
+                {
+                    "accuracy": 47,
+                    "backpack": [
+                        "Angel's Ring of Freedom",
+                        "Magic Potion [63]",
+                        "Cure Poison Potion [21]",
+                        "Sublime Spear of The Dragon",
+                        "Riverstride Plans",
+                        "Mystic Wand of Incineration [143/0]",
+                        "Mystic Wand of Distortion [432/0]",
+                        "Alacorn Wand of Blades [915/0]",
+                        "Arcane Wand of Paralyzing [500/0]",
+                        "Death's Head Pendant of Earth Resistance [+17]",
+                        "Scroll of Day of Protection",
+                        "Scroll of Hour of Power",
+                        "Clanker's Amulet",
+                        "Enchanted Ring of Precision [+15]",
+                        "Scroll of Hour of Power",
+                        "Vial of Troll Blood",
+                        "Mystic Wand of Shrinking [16/16]",
+                        "Scroll of Hour of Power",
+                        "Scroll of Enslave",
+                        "Scroll of Divine Intervention",
+                        "Blaster",
+                        "Supreme Flail of Infernos",
+                        "Dragon Egg",
+                        "Witch's Amulet of Alchemy [+16]",
+                        "Sun Amulet of Precision [+25]",
+                        "Arcane Wand of Rocks [24/24]",
+                        "Scroll of Sunray",
+                        "Blaster",
+                        "Scroll of Raise Dead",
+                        "Leather Belt [UNID]",
+                        "Scroll of Hour of Power",
+                        "Dragon Egg",
+                        "Remove Curse Potion [9]",
+                        "Magic Potion [16]",
+                        "Leather Belt [UNID]",
+                        "Leather Belt [UNID]",
+                        "Scroll of Day of the Gods",
+                        "Scroll of Prismatic Light",
+                        "Death's Head Pendant of Magic [+19]",
+                        "Hermes' Sandals",
+                        "Angel's Ring of Might [+14]",
+                        "Leather Belt [UNID]",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Starburst"
+                    ],
+                    "endurance": 117,
+                    "equipment": [
+                        "Phynaxian Shield of Defense [+21]",
+                        "Wallace",
+                        "Assassins' Elven Longbow",
+                        "Royal Leather of Arms [+11]",
+                        "Phynaxian Helm of Might [+20]",
+                        "Gilded Belt of Health [+3700]",
+                        "Glorious Cloak",
+                        "Silver Mesh Gauntlets of The Stars",
+                        "Ranger Boots of Alchemy [+10]",
+                        "Sun Amulet of Items [+23]",
+                        "Angel's Ring of Might [+25]",
+                        "Enchanted Ring of Stealing [+22]",
+                        "Dazzling Ring of The Medusa",
+                        "Enchanted Ring of The Sky",
+                        "Angel's Ring of Body Resistance [+15]",
+                        "Dazzling Ring of Magic [+22]"
+                    ],
+                    "hp": 4391,
+                    "intelligence": 109,
+                    "luck": 75,
+                    "might": 104,
+                    "mp": 106,
+                    "personality": 81,
+                    "speed": 63
+                },
+                {
+                    "accuracy": 106,
+                    "backpack": [
+                        "Heroism Potion [12]",
+                        "Cure Poison Potion [14]",
+                        "Divine Power Potion [10]",
+                        "Cipher",
+                        "Basic Cryptography",
+                        "Arcane Wand of Clouds [610/0]",
+                        "Mystic Wand of Shrinking [0/0]",
+                        "Arcane Wand of Paralyzing [969/0]",
+                        "Alacorn Wand of Lightning [999/0]",
+                        "Cure Wounds Potion [63]",
+                        "Vial of Troll Blood",
+                        "Arcane Wand of Rocks [526/0]",
+                        "Vial of Troll Blood",
+                        "Arcane Wand of Blasting [492/0]",
+                        "Altar Piece",
+                        "Blue Quartz",
+                        "Blaster",
+                        "Zokarr IV's Skull",
+                        "Cure Poison Potion [12]",
+                        "Bless Potion [12]",
+                        "Water Breathing Potion [18]",
+                        "Warlock's Ring of Vigor [+11]",
+                        "Sun Amulet of Body Magic",
+                        "Eagle Statuette",
+                        "Death's Head Pendant of Air Resistance [+17]",
+                        "Fragment of Soldier's Diary",
+                        "Cure Insanity Potion [5]",
+                        "Blaster",
+                        "Shadow's Mask",
+                        "Cure Insanity Potion [9]",
+                        "Scroll of Enslave"
+                    ],
+                    "endurance": 138,
+                    "equipment": [
+                        "Majestic Shield of The Medusa",
+                        "Mash",
+                        "Griffin Bow of Infernos",
+                        "Governor's Armor",
+                        "Mogred Helm of Air Resistance [+21]",
+                        "Fine Belt of Precision [+13]",
+                        "Cloak of the Sheep",
+                        "Mogred Gauntlets of Charm [+16]",
+                        "Paladin Boots of The Moon",
+                        "Death's Head Pendant of Monsters [+24]",
+                        "Enchanted Ring of Vigor [+21]",
+                        "Pearl Ring of Health [+3700]",
+                        "Sapphire Ring of Alchemy [+8]",
+                        "Warlock's Ring of Charm [+12]",
+                        "Sapphire Ring of Mana",
+                        "Platinum Ring of Vigor [+17]"
+                    ],
+                    "hp": 3641,
+                    "intelligence": 41,
+                    "luck": 91,
+                    "might": 240,
+                    "mp": 480,
+                    "personality": 72,
+                    "speed": 49
+                },
+                {
+                    "accuracy": 91,
+                    "backpack": [
+                        "Cure Wounds Potion [34]",
+                        "Scroll of Hour of Power",
+                        "Faerie Ring",
+                        "Cure Wounds Potion [34]",
+                        "Divine Cure Potion [39]",
+                        "Divine Cure Potion [99]",
+                        "Arcane Wand of Paralyzing [900/0]",
+                        "Cure Wounds Potion [34]",
+                        "Cure Wounds Potion [12]",
+                        "Freezing Potion [18]",
+                        "Arcane Wand of Clouds [618/25]",
+                        "Ethric's Staff",
+                        "Divine Power Potion [29]",
+                        "Divine Cure Potion [21]",
+                        "Divine Power Potion [14]",
+                        "Cure Wounds Potion [34]",
+                        "Divine Power Potion [25]",
+                        "Exquisite Long Dagger of The Dragon",
+                        "Divine Power Potion [20]",
+                        "Potion Bottle",
+                        "Divine Cure Potion [38]",
+                        "Speed Boost Potion [7]",
+                        "Ghost Ring",
+                        "Cure Wounds Potion [34]",
+                        "Cure Wounds Potion [34]",
+                        "Cure Wounds Potion [34]",
+                        "Arcomage Deck",
+                        "Divine Cure Potion [92]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [34]",
+                        "Divine Cure Potion [19]",
+                        "Colony Zod Key",
+                        "Erudine-laced ore",
+                        "Divine Cure Potion [41]",
+                        "Cure Wounds Potion [34]",
+                        "Cure Wounds Potion [34]",
+                        "Potion Bottle",
+                        "Haste Potion [21]",
+                        "Potion Bottle",
+                        "Divine Cure Potion [33]",
+                        "Potion Bottle",
+                        "Divine Cure Potion [27]",
+                        "Cure Wounds Potion [74]",
+                        "Medusa's Mirror",
+                        "Journal Entry",
+                        "Colony Zod Key",
+                        "Divine Power Potion [27]",
+                        "Divine Cure Potion [44]",
+                        "Divine Cure Potion [25]",
+                        "Divine Cure Potion [10]",
+                        "Heroism Potion [91]",
+                        "Moonstone",
+                        "Sun Cloak",
+                        "Scroll of Divine Intervention",
+                        "Kergar-laced ore"
+                    ],
+                    "endurance": 105,
+                    "equipment": [
+                        "Alloyed Shield of The Phoenix",
+                        "Exquisite Long Dagger of The Dragon",
+                        "Griffin Bow of Infernos",
+                        "Royal Leather of Charm [+22]",
+                        "Mogred Helm of Speed [+20]",
+                        "Fine Belt of The Stars",
+                        "Elegant Cloak of The Sky",
+                        "Dragon Hide Gauntlets of Air Resistance [+12]",
+                        "Paladin Boots of Speed [+23]",
+                        "Death's Head Pendant of Water Magic",
+                        "Angel's Ring of Alchemy [+17]",
+                        "Angel's Ring of Earth Resistance [+21]",
+                        "Sapphire Ring of Health [+3700]",
+                        "Angel's Ring of Items [+21]",
+                        "Dazzling Ring of Air Magic",
+                        "Wizard Ring of Water Resistance [+23]"
+                    ],
+                    "hp": 3905,
+                    "intelligence": 126,
+                    "luck": 71,
+                    "might": 104,
+                    "mp": 438,
+                    "personality": 105,
+                    "speed": 84
+                }
+            ],
+            "locationName": "out13.odm",
+            "partyPosition": {
+                "x": -19112,
+                "y": 2248,
+                "z": 49
+            }
+        },
+        "saveFileSize": 632386,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 89,
+                    "backpack": [
+                        "Enchanted Ring of Luck [+25]",
+                        "Bless Potion [24]",
+                        "Arcane Wand of Rocks [706/0]",
+                        "Alacorn Wand of Acid [500/0]",
+                        "Alacorn Wand of Fireballs [0/0]",
+                        "Cure Poison Potion [12]",
+                        "Remove Curse Potion [12]",
+                        "Ghoulsbane",
+                        "Mystic Wand of Incineration [117/0]",
+                        "Shield Potion [9]",
+                        "Cure Poison Potion [4]",
+                        "Sun Amulet of Items [+19]",
+                        "Message from Erathia",
+                        "Remove Curse Potion [12]",
+                        "Lieutenant's Cutlass",
+                        "Corsair",
+                        "Flaming Potion [17]",
+                        "Stone to Flesh Potion [13]",
+                        "Death's Head Pendant of Fire Resistance [+11]",
+                        "Mystic Wand of Implosion [829/0]",
+                        "Preservation Potion [15]",
+                        "Cure Poison Potion [4]",
+                        "Pure Luck Potion [20]",
+                        "Vial of Troll Blood",
+                        "Heroism Potion [21]",
+                        "Scroll of Waves",
+                        "Wizard Ring of Magic [+15]",
+                        "Vial of Troll Blood",
+                        "Cure Poison Potion [14]",
+                        "Elegant Cloak of Precision [+15]",
+                        "Harden Item Potion [18]",
+                        "Remove Fear Potion [24]",
+                        "Cure Poison Potion [4]",
+                        "Knight Statuette",
+                        "Scroll of Day of Protection",
+                        "Shield Potion [12]",
+                        "Moon Cloak",
+                        "Silver Belt of Disarming [+17]"
+                    ],
+                    "endurance": 85,
+                    "equipment": [
+                        "Puck",
+                        "Minotaur's Axe",
+                        "The Perfect Bow",
+                        "Noble Plate Armor of Defense [+16]",
+                        "Full Helm of Freedom",
+                        "Leather Belt of Speed [+17]",
+                        "Glorious Cloak of Disarming [+17]",
+                        "Dragon Hide Gauntlets of the Fist [+12]",
+                        "Ranger Boots of The Sun",
+                        "Eyeball Amulet of Water Walking",
+                        "Brass Ring of Health [+3700]",
+                        "Angel's Ring of Earth Resistance [+18]",
+                        "Enchanted Ring of Thought [+17]",
+                        "Emerald Ring of Protection",
+                        "Wizard Ring of Air Resistance [+19]",
+                        "Wizard Ring of Mind Resistance [+15]"
+                    ],
+                    "hp": 4838,
+                    "intelligence": 94,
+                    "luck": 73,
+                    "might": 64,
+                    "mp": 0,
+                    "personality": 41,
+                    "speed": 153
+                },
+                {
+                    "accuracy": 47,
+                    "backpack": [
+                        "Angel's Ring of Freedom",
+                        "Magic Potion [63]",
+                        "Cure Poison Potion [21]",
+                        "Sublime Spear of The Dragon",
+                        "Riverstride Plans",
+                        "Mystic Wand of Incineration [143/0]",
+                        "Mystic Wand of Distortion [432/0]",
+                        "Alacorn Wand of Blades [915/0]",
+                        "Arcane Wand of Paralyzing [500/0]",
+                        "Death's Head Pendant of Earth Resistance [+17]",
+                        "Scroll of Day of Protection",
+                        "Scroll of Hour of Power",
+                        "Clanker's Amulet",
+                        "Enchanted Ring of Precision [+15]",
+                        "Scroll of Hour of Power",
+                        "Vial of Troll Blood",
+                        "Mystic Wand of Shrinking [16/16]",
+                        "Scroll of Hour of Power",
+                        "Scroll of Enslave",
+                        "Scroll of Divine Intervention",
+                        "Blaster",
+                        "Supreme Flail of Infernos",
+                        "Dragon Egg",
+                        "Witch's Amulet of Alchemy [+16]",
+                        "Sun Amulet of Precision [+25]",
+                        "Arcane Wand of Rocks [24/24]",
+                        "Scroll of Sunray",
+                        "Blaster",
+                        "Scroll of Raise Dead",
+                        "Leather Belt [UNID]",
+                        "Scroll of Hour of Power",
+                        "Dragon Egg",
+                        "Remove Curse Potion [9]",
+                        "Magic Potion [16]",
+                        "Leather Belt [UNID]",
+                        "Leather Belt [UNID]",
+                        "Scroll of Day of the Gods",
+                        "Scroll of Prismatic Light",
+                        "Death's Head Pendant of Magic [+19]",
+                        "Hermes' Sandals",
+                        "Angel's Ring of Might [+14]",
+                        "Leather Belt [UNID]",
+                        "Scroll of Dragon Breath",
+                        "Scroll of Starburst"
+                    ],
+                    "endurance": 117,
+                    "equipment": [
+                        "Phynaxian Shield of Defense [+21]",
+                        "Wallace",
+                        "Assassins' Elven Longbow",
+                        "Royal Leather of Arms [+11]",
+                        "Phynaxian Helm of Might [+20]",
+                        "Gilded Belt of Health [+3700]",
+                        "Glorious Cloak",
+                        "Silver Mesh Gauntlets of The Stars",
+                        "Ranger Boots of Alchemy [+10]",
+                        "Sun Amulet of Items [+23]",
+                        "Angel's Ring of Might [+25]",
+                        "Enchanted Ring of Stealing [+22]",
+                        "Dazzling Ring of The Medusa",
+                        "Enchanted Ring of The Sky",
+                        "Angel's Ring of Body Resistance [+15]",
+                        "Dazzling Ring of Magic [+22]"
+                    ],
+                    "hp": 4391,
+                    "intelligence": 109,
+                    "luck": 75,
+                    "might": 104,
+                    "mp": 106,
+                    "personality": 81,
+                    "speed": 63
+                },
+                {
+                    "accuracy": 106,
+                    "backpack": [
+                        "Heroism Potion [12]",
+                        "Cure Poison Potion [14]",
+                        "Divine Power Potion [10]",
+                        "Cipher",
+                        "Basic Cryptography",
+                        "Arcane Wand of Clouds [610/0]",
+                        "Mystic Wand of Shrinking [0/0]",
+                        "Arcane Wand of Paralyzing [969/0]",
+                        "Alacorn Wand of Lightning [999/0]",
+                        "Cure Wounds Potion [63]",
+                        "Vial of Troll Blood",
+                        "Arcane Wand of Rocks [526/0]",
+                        "Vial of Troll Blood",
+                        "Arcane Wand of Blasting [492/0]",
+                        "Altar Piece",
+                        "Blue Quartz",
+                        "Blaster",
+                        "Zokarr IV's Skull",
+                        "Cure Poison Potion [12]",
+                        "Bless Potion [12]",
+                        "Water Breathing Potion [18]",
+                        "Warlock's Ring of Vigor [+11]",
+                        "Sun Amulet of Body Magic",
+                        "Eagle Statuette",
+                        "Death's Head Pendant of Air Resistance [+17]",
+                        "Fragment of Soldier's Diary",
+                        "Cure Insanity Potion [5]",
+                        "Blaster",
+                        "Shadow's Mask",
+                        "Cure Insanity Potion [9]",
+                        "Scroll of Enslave"
+                    ],
+                    "endurance": 138,
+                    "equipment": [
+                        "Majestic Shield of The Medusa",
+                        "Mash",
+                        "Griffin Bow of Infernos",
+                        "Governor's Armor",
+                        "Mogred Helm of Air Resistance [+21]",
+                        "Fine Belt of Precision [+13]",
+                        "Cloak of the Sheep",
+                        "Mogred Gauntlets of Charm [+16]",
+                        "Paladin Boots of The Moon",
+                        "Death's Head Pendant of Monsters [+24]",
+                        "Enchanted Ring of Vigor [+21]",
+                        "Pearl Ring of Health [+3700]",
+                        "Sapphire Ring of Alchemy [+8]",
+                        "Warlock's Ring of Charm [+12]",
+                        "Sapphire Ring of Mana",
+                        "Platinum Ring of Vigor [+17]"
+                    ],
+                    "hp": 3641,
+                    "intelligence": 41,
+                    "luck": 91,
+                    "might": 240,
+                    "mp": 480,
+                    "personality": 72,
+                    "speed": 49
+                },
+                {
+                    "accuracy": 91,
+                    "backpack": [
+                        "Cure Wounds Potion [34]",
+                        "Scroll of Hour of Power",
+                        "Faerie Ring",
+                        "Cure Wounds Potion [34]",
+                        "Divine Cure Potion [39]",
+                        "Divine Cure Potion [99]",
+                        "Arcane Wand of Paralyzing [900/0]",
+                        "Cure Wounds Potion [34]",
+                        "Cure Wounds Potion [12]",
+                        "Freezing Potion [18]",
+                        "Arcane Wand of Clouds [618/25]",
+                        "Ethric's Staff",
+                        "Divine Power Potion [29]",
+                        "Divine Cure Potion [21]",
+                        "Divine Power Potion [14]",
+                        "Cure Wounds Potion [34]",
+                        "Divine Power Potion [25]",
+                        "Exquisite Long Dagger of The Dragon",
+                        "Divine Power Potion [20]",
+                        "Potion Bottle",
+                        "Divine Cure Potion [38]",
+                        "Speed Boost Potion [7]",
+                        "Ghost Ring",
+                        "Cure Wounds Potion [34]",
+                        "Cure Wounds Potion [34]",
+                        "Cure Wounds Potion [34]",
+                        "Arcomage Deck",
+                        "Divine Cure Potion [92]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [34]",
+                        "Divine Cure Potion [19]",
+                        "Colony Zod Key",
+                        "Erudine-laced ore",
+                        "Divine Cure Potion [41]",
+                        "Cure Wounds Potion [34]",
+                        "Cure Wounds Potion [34]",
+                        "Potion Bottle",
+                        "Haste Potion [21]",
+                        "Potion Bottle",
+                        "Divine Cure Potion [33]",
+                        "Potion Bottle",
+                        "Divine Cure Potion [27]",
+                        "Cure Wounds Potion [74]",
+                        "Medusa's Mirror",
+                        "Journal Entry",
+                        "Colony Zod Key",
+                        "Divine Power Potion [27]",
+                        "Divine Cure Potion [44]",
+                        "Divine Cure Potion [25]",
+                        "Divine Cure Potion [10]",
+                        "Heroism Potion [91]",
+                        "Moonstone",
+                        "Sun Cloak",
+                        "Scroll of Divine Intervention",
+                        "Kergar-laced ore"
+                    ],
+                    "endurance": 105,
+                    "equipment": [
+                        "Alloyed Shield of The Phoenix",
+                        "Exquisite Long Dagger of The Dragon",
+                        "Griffin Bow of Infernos",
+                        "Royal Leather of Charm [+22]",
+                        "Mogred Helm of Speed [+20]",
+                        "Fine Belt of The Stars",
+                        "Elegant Cloak of The Sky",
+                        "Dragon Hide Gauntlets of Air Resistance [+12]",
+                        "Paladin Boots of Speed [+23]",
+                        "Death's Head Pendant of Water Magic",
+                        "Angel's Ring of Alchemy [+17]",
+                        "Angel's Ring of Earth Resistance [+21]",
+                        "Sapphire Ring of Health [+3700]",
+                        "Angel's Ring of Items [+21]",
+                        "Dazzling Ring of Air Magic",
+                        "Wizard Ring of Water Resistance [+23]"
+                    ],
+                    "hp": 3905,
+                    "intelligence": 126,
+                    "luck": 71,
+                    "might": 104,
+                    "mp": 438,
+                    "personality": 105,
+                    "speed": 84
+                }
+            ],
+            "locationName": "out13.odm",
+            "partyPosition": {
+                "x": -19334,
+                "y": 2306,
+                "z": 1
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 16,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 32,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 295,
+                "y": 187
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 48,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 292,
+                "y": 186
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 64,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 290,
+                "y": 185
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 80,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 289,
+                "y": 185
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 96,
+            "type": "paint"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 112,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 286,
+                "y": 185
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 1,
+            "tickCount": 128,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 283,
+                "y": 185
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 3,
+            "tickCount": 144,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 279,
+                "y": 185
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 3,
+            "tickCount": 160,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 276,
+                "y": 185
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 3,
+            "tickCount": 176,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 274,
+                "y": 186
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 3,
+            "tickCount": 192,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 274,
+                "y": 187
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 3,
+            "tickCount": 208,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 273,
+                "y": 188
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 3,
+            "tickCount": 224,
+            "type": "paint"
+        },
+        {
+            "randomState": 3,
+            "tickCount": 240,
+            "type": "paint"
+        },
+        {
+            "randomState": 3,
+            "tickCount": 256,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 272,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 288,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 272,
+                "y": 188
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 304,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 320,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 336,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 352,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 368,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 384,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 416,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 432,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 448,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 464,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 480,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 496,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 512,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 528,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 272,
+                "y": 188
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 544,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 560,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 576,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 592,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 272,
+                "y": 188
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 608,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 624,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 640,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 656,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 672,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 688,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 704,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 720,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 736,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 752,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 768,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 784,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 816,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 832,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 848,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 864,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 880,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 896,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 912,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 928,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 944,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 960,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 976,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 992,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1008,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1024,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1040,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1056,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1072,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1088,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1104,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 272,
+                "y": 188
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1120,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1136,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1152,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1168,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1184,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1216,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1232,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1248,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 272,
+                "y": 188
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1264,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1280,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1296,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1312,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1328,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1344,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1360,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1376,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1392,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1408,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1424,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1440,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1456,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1472,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1488,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1504,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1520,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1536,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1552,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1568,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1584,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1616,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1632,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1648,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1664,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1680,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1696,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1712,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1728,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1744,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1760,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1776,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1792,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1808,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1824,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1840,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1856,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1872,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1888,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1904,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1920,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1936,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1952,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1968,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 1984,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2016,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2032,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2048,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2064,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2080,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2096,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2112,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2128,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2144,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2160,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2176,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2192,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2208,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2224,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2240,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2256,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2272,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2288,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2304,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2320,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2336,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2352,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2368,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2384,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2416,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2432,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2448,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2464,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2480,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2496,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2512,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2528,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2544,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2560,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2576,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2592,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2608,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2624,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2640,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2656,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2672,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2688,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2704,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2720,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2736,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2752,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2768,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2784,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2816,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2832,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2848,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2864,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2880,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2896,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2912,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2928,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2944,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2960,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2976,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 2992,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3008,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3024,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3040,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3056,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3072,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3088,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3104,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3120,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3136,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3152,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3168,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3184,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3216,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3232,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3248,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3264,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3280,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3296,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3312,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3328,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3344,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3360,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3376,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3392,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3408,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3424,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3440,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3456,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3472,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3488,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3504,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3520,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3536,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3552,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3568,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3584,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3616,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3632,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3648,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3664,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3680,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3696,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3712,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3728,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3744,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3760,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3776,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3792,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3808,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3824,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3840,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3856,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3872,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3888,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3904,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3920,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3936,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3952,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3968,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 3984,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4016,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4032,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4048,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4064,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4080,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4096,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4112,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4128,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4144,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4160,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4176,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4192,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4208,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4224,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4240,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4256,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4272,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4288,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4304,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4320,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4336,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4352,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4368,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4384,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4400,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4416,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4432,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4448,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4464,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4480,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4496,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4512,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4528,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4544,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4560,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4576,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4592,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4608,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4624,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4640,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4656,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4672,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4688,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4704,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4720,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4736,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4752,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4768,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4784,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4800,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4816,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4832,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4848,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4864,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4880,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4896,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4912,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4928,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4944,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4960,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4976,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 4992,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5008,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5024,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5040,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5056,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5072,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5088,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5104,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5120,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5136,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5152,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5168,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5184,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5200,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5216,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5232,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5248,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5264,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5280,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5296,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5312,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5328,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5344,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5360,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5376,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5392,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5408,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5424,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5440,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5456,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5472,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5488,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5504,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5520,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5536,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5552,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5568,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5584,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5600,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5616,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5632,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5648,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5664,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5680,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5696,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5712,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5728,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5744,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5760,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5776,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5792,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5808,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5824,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5840,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5856,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5872,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5888,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5904,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5920,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5936,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5952,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5968,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 5984,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6000,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6016,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6032,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6048,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6064,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6080,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6096,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6112,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6128,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6144,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6160,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6176,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6192,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6208,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6224,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6240,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6256,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6272,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6288,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6304,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6320,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6336,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6352,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6368,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6384,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6400,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6416,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6432,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6448,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6464,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6480,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6496,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6512,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6528,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6544,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6560,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6576,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6592,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6608,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6624,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6640,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6656,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6672,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6688,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6704,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6720,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6736,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6752,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 271,
+                "y": 188
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6768,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 267,
+                "y": 189
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6784,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 265,
+                "y": 190
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6800,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 261,
+                "y": 191
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6816,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 256,
+                "y": 191
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6832,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 251,
+                "y": 192
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6848,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 250,
+                "y": 192
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6864,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6880,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6896,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6912,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6928,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6944,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6960,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6976,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 6992,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7008,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7024,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7040,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7056,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7072,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7088,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7104,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7120,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7136,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7152,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7168,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7184,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 250,
+                "y": 192
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7200,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7216,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7232,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7248,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7264,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 250,
+                "y": 192
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7280,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7296,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7312,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7328,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7344,
+            "type": "paint"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7360,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": true,
+            "pos": {
+                "x": 250,
+                "y": 192
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 5,
+            "tickCount": 7376,
+            "type": "paint"
+        },
+        {
+            "randomState": 51,
+            "tickCount": 7392,
+            "type": "paint"
+        },
+        {
+            "randomState": 51,
+            "tickCount": 7408,
+            "type": "paint"
+        },
+        {
+            "randomState": 51,
+            "tickCount": 7424,
+            "type": "paint"
+        },
+        {
+            "randomState": 51,
+            "tickCount": 7440,
+            "type": "paint"
+        },
+        {
+            "randomState": 119,
+            "tickCount": 7456,
+            "type": "paint"
+        },
+        {
+            "randomState": 119,
+            "tickCount": 7472,
+            "type": "paint"
+        },
+        {
+            "randomState": 119,
+            "tickCount": 7488,
+            "type": "paint"
+        },
+        {
+            "randomState": 119,
+            "tickCount": 7504,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 250,
+                "y": 192
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 244,
+                "y": 194
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 165,
+            "tickCount": 7520,
+            "type": "paint"
+        },
+        {
+            "randomState": 165,
+            "tickCount": 7536,
+            "type": "paint"
+        },
+        {
+            "randomState": 165,
+            "tickCount": 7552,
+            "type": "paint"
+        },
+        {
+            "randomState": 165,
+            "tickCount": 7568,
+            "type": "paint"
+        },
+        {
+            "randomState": 165,
+            "tickCount": 7584,
+            "type": "paint"
+        },
+        {
+            "randomState": 165,
+            "tickCount": 7600,
+            "type": "paint"
+        },
+        {
+            "randomState": 165,
+            "tickCount": 7616,
+            "type": "paint"
+        },
+        {
+            "randomState": 165,
+            "tickCount": 7632,
+            "type": "paint"
+        },
+        {
+            "randomState": 167,
+            "tickCount": 7648,
+            "type": "paint"
+        },
+        {
+            "randomState": 167,
+            "tickCount": 7664,
+            "type": "paint"
+        },
+        {
+            "randomState": 167,
+            "tickCount": 7680,
+            "type": "paint"
+        },
+        {
+            "randomState": 167,
+            "tickCount": 7696,
+            "type": "paint"
+        },
+        {
+            "randomState": 167,
+            "tickCount": 7712,
+            "type": "paint"
+        },
+        {
+            "randomState": 167,
+            "tickCount": 7728,
+            "type": "paint"
+        },
+        {
+            "randomState": 167,
+            "tickCount": 7744,
+            "type": "paint"
+        },
+        {
+            "randomState": 167,
+            "tickCount": 7760,
+            "type": "paint"
+        },
+        {
+            "randomState": 168,
+            "tickCount": 7776,
+            "type": "paint"
+        },
+        {
+            "randomState": 168,
+            "tickCount": 7792,
+            "type": "paint"
+        },
+        {
+            "randomState": 168,
+            "tickCount": 7808,
+            "type": "paint"
+        },
+        {
+            "randomState": 168,
+            "tickCount": 7824,
+            "type": "paint"
+        },
+        {
+            "randomState": 168,
+            "tickCount": 7840,
+            "type": "paint"
+        },
+        {
+            "randomState": 168,
+            "tickCount": 7856,
+            "type": "paint"
+        },
+        {
+            "randomState": 168,
+            "tickCount": 7872,
+            "type": "paint"
+        },
+        {
+            "randomState": 168,
+            "tickCount": 7888,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 7904,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 7920,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 7936,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 7952,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 7968,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 7984,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 8000,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 8016,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 8032,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 8048,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 8064,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 8080,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 8096,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 8112,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 8128,
+            "type": "paint"
+        },
+        {
+            "randomState": 174,
+            "tickCount": 8144,
+            "type": "paint"
+        },
+        {
+            "randomState": 174,
+            "tickCount": 8160,
+            "type": "paint"
+        },
+        {
+            "randomState": 174,
+            "tickCount": 8176,
+            "type": "paint"
+        },
+        {
+            "randomState": 174,
+            "tickCount": 8192,
+            "type": "paint"
+        }
+    ]
+}
