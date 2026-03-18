@@ -16,6 +16,7 @@ cc_library(
     ],
     hdrs = [
         "AudioBindings.h",
+        "IBindings.h",
         "ConfigBindings.h",
         "OverlayBindings.h",
         "ImGuiBindings.h",
