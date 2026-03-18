@@ -30,7 +30,7 @@ cc_library(
         "Tests/EmbeddedFileSystem_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         ":library_filesystem_embedded",
         ":test_library_filesystem_embedded_resources",
     ],

@@ -9,7 +9,6 @@ cc_library(
     deps = [
         "//test/Testing/Extensions:testing_extensions",
         "@googletest//:gtest",
-        "@googletest//:gmock",
     ],
     testonly = True,
     visibility = ["//visibility:public"],

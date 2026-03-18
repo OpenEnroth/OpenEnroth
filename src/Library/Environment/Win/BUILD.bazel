@@ -10,5 +10,6 @@ cc_library(
         "//src/Library/Environment/Interface:library_environment_interface",
         "//src/Utility:utility",
     ],
+    target_compatible_with = ["@platforms//os:windows"],
     visibility = ["//visibility:public"],
 )
