@@ -1,6 +1,10 @@
-cc_library(
-    name = "engine_graphics",
-    srcs = [
+# All engine_graphics .cpp files are compiled in //src/Engine:engine_impl
+# to break the circular dependency:
+#   engine_graphics.cpp -> Engine/Engine.h (from :engine) or Renderer/Renderer.h (from engine_graphics_renderer)
+#   engine -> engine_graphics (headers)
+#   engine_graphics_renderer -> engine_graphics (headers)
+exports_files(
+    [
         "BSPModel.cpp",
         "BspRenderer.cpp",
         "Camera.cpp",
@@ -27,6 +31,12 @@ cc_library(
         "Vis.cpp",
         "Weather.cpp",
     ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_graphics",
+    srcs = [],
     hdrs = [
         "AtlasLayout.h",
         "BSPModel.h",
@@ -62,6 +72,7 @@ cc_library(
         "Weather.h",
     ],
     deps = [
+        "//src/Engine:engine_base",
         "//src/Engine/Graphics/Renderer:engine_texture_id",
         "//src/Engine/Time:engine_time",
         "//src/Utility:utility",

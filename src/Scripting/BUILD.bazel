@@ -32,11 +32,17 @@ cc_library(
     ],
     deps = [
         "//src/Engine:engine",
+        "//src/GUI:gui",
+        "//src/Media/Audio:media_audio",
         "//src/Library/Logger:library_logger",
         "//src/GUI/Overlay:gui_overlay_hdrs",
         # PRIVATE deps:
         "//bazel/system:luajit",
         "@sol2//:sol2",
     ],
+    # alwayslink: scripting objects (OverlayBindings.cpp) reference gui_overlay (ScriptedOverlay)
+    # which is also alwayslink. Both need to be alwayslink so the gold linker can resolve their
+    # cross-references without rescanning start-lib groups.
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )
