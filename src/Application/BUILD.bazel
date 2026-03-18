@@ -11,6 +11,7 @@ cc_library(
     hdrs = [
         "Game.h",
         "GameConfig.h",
+        "KeyConfigEntry.h",
         "GameMenu.h",
         "GameOver.h",
         "GameTraceHandler.h",

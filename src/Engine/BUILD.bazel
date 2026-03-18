@@ -25,6 +25,10 @@ cc_library(
     hdrs = [
         "ArenaEnumFunctions.h",
         "ArenaEnums.h",
+        "HitMap.h",
+        "LocalizationEnums.h",
+        "MapEnumFunctions.h",
+        "SpawnPoint.h",
         "AssetsManager.h",
         "AttackList.h",
         "Conditions.h",
