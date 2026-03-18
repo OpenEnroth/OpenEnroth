@@ -40,6 +40,10 @@ cc_library(
     ],
     deps = [
         "//src/Engine/Data:engine_data",
+        "//src/Engine/Objects:engine_objects",
+        "//src/Engine/Random:engine_random",
+        "//src/Engine/Time:engine_time",
+        "//src/Utility:utility",
     ],
     visibility = ["//visibility:public"],
 )

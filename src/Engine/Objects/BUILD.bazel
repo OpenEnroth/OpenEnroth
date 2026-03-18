@@ -50,8 +50,12 @@ cc_library(
         "Inventory.h",
     ],
     deps = [
+        "//src/Engine/Data:engine_data",
+        "//src/Engine/Spells:engine_spells",
+        "//src/Engine/Time:engine_time",
         "//src/Library/Random:library_random",
         "//src/Library/Color:library_color",
+        "//src/Library/Geometry:library_geometry",
         "//src/Library/Serialization:library_serialization",
         "//src/Utility:utility",
         "@glm//:glm",
@@ -65,6 +69,7 @@ cc_library(
         "Tests/Inventory_ut.cpp",
     ],
     deps = [
+        "//test/Testing/Game:testing_game",
         "//test/Testing/Unit:testing_unit",
         ":engine_objects",
     ],

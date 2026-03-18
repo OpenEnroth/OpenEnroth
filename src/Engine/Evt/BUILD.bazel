@@ -18,6 +18,10 @@ cc_library(
         "EvtEnumFunctions.h",
     ],
     deps = [
+        "//src/Engine/Data:engine_data",
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Engine/Objects:engine_objects",
+        "//src/Library/Geometry:library_geometry",
         "@generator//:generator",
         "//src/Utility:utility",
         "//src/Library/Serialization:library_serialization",

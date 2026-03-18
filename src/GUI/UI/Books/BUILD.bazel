@@ -19,6 +19,10 @@ cc_library(
         "TownPortalBook.h",
     ],
     deps = [
+        "//src/Engine:engine",
+        "//src/Engine/Data:engine_data",
+        "//src/Engine/Objects:engine_objects",
+        "//src/Engine/Time:engine_time",
         "//src/Utility:utility",
     ],
     visibility = ["//visibility:public"],

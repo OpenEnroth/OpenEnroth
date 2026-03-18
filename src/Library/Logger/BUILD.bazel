@@ -39,6 +39,7 @@ cc_library(
     deps = [
         "//test/Testing/Unit:testing_unit",
         ":library_logger",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
     ],
     testonly = True,
     visibility = ["//visibility:public"],
