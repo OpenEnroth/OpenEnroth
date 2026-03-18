@@ -1,4 +1,11 @@
 cc_library(
+    name = "gui_enums",
+    hdrs = ["GUIEnums.h"],
+    deps = ["//src/Library/Serialization:library_serialization"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "gui",
     srcs = [
         "GUIButton.cpp",

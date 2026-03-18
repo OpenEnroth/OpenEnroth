@@ -9,6 +9,7 @@ cc_binary(
     ],
     deps = [
         "//src/Application:application",
+        "//src/Engine:engine_impl",
         "//src/Library/Cli:library_cli",
         "//src/Library/Platform/Sdl:library_platform_main",
         "//src/Library/StackTrace:library_stack_trace",

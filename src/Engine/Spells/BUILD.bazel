@@ -10,12 +10,14 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
+exports_files(
+    ["CastSpellInfo.cpp", "Spells.cpp"],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
 cc_library(
     name = "engine_spells",
-    srcs = [
-        "CastSpellInfo.cpp",
-        "Spells.cpp",
-    ],
+    srcs = [],
     hdrs = [
         "CastSpellInfo.h",
         "SpellBuff.h",

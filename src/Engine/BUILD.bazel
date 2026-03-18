@@ -62,6 +62,9 @@ cc_library(
         "//src/Engine/Tables:TextureFrameTable.cpp",
         "//src/Engine/Time:Timer.cpp",
         "//src/Engine/Graphics/Renderer:RendererFactory.cpp",
+        "//src/Engine/Spells:Spells.cpp",
+        "//src/Engine/Tables:NPCTable.cpp",
+        "//src/Engine/TurnEngine:TurnEngine.cpp",
     ],
     hdrs = [
         "ArenaEnumFunctions.h",
@@ -123,5 +126,31 @@ cc_library(
         "//resources:resources",
         "//src/Utility:utility",
     ],
+    visibility = ["//visibility:public"],
+)
+
+# Files that need both engine headers AND gui/media headers. Compiled separately to avoid
+# the engine <-> gui circular dependency. Must be added as a dep wherever the binary is built.
+cc_library(
+    name = "engine_impl",
+    srcs = [
+        "//src/Engine/Objects:Actor.cpp",
+        "//src/Engine/Objects:Character.cpp",
+        "//src/Engine/Objects:Chest.cpp",
+        "//src/Engine/Objects:Item.cpp",
+        "//src/Engine/Objects:Monsters.cpp",
+        "//src/Engine/Objects:NPC.cpp",
+        "//src/Engine/Objects:SpriteObject.cpp",
+        "//src/Engine/Spells:CastSpellInfo.cpp",
+        "//src/Engine/Tables:ItemTable.cpp",
+    ],
+    deps = [
+        ":engine",
+        "//src/GUI:gui",
+        "//src/GUI/UI:gui_ui",
+        "//src/Io:io",
+        "//src/Media/Audio:media_audio",
+    ],
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )
