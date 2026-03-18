@@ -1,55 +1,89 @@
 cc_library(
+    name = "engine_objects_enums",
+    hdrs = [
+        "ActorEnums.h",
+        "CharacterEnums.h",
+        "ChestEnums.h",
+        "DecorationEnums.h",
+        "ItemEnums.h",
+        "MonsterEnums.h",
+        "NPCEnums.h",
+        "NPCEnumFunctions.h",
+        "SpriteEnums.h",
+        "SpriteEnumFunctions.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "engine_objects_base",
+    srcs = [
+        "CombinedSkillValue.cpp",
+    ],
+    hdrs = [
+        "CombinedSkillValue.h",
+    ],
+    deps = [
+        ":engine_objects_enums",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# These srcs need Engine.h (from //src/Engine:engine) but are compiled as part of //src/Engine:engine
+# to avoid the engine <-> engine_objects circular dependency.
+exports_files(
+    [
+        "Decoration.cpp",
+        "DecorationList.cpp",
+        "ItemEnumFunctions.cpp",
+        "ObjectList.cpp",
+        "TalkAnimation.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
     name = "engine_objects",
     srcs = [
         "Actor.cpp",
         "Chest.cpp",
-        "CombinedSkillValue.cpp",
-        "Decoration.cpp",
-        "DecorationList.cpp",
-        "ItemEnumFunctions.cpp",
         "Item.cpp",
         "MonsterEnumFunctions.cpp",
         "Monsters.cpp",
         "NPC.cpp",
-        "ObjectList.cpp",
         "Character.cpp",
         "CharacterEnumFunctions.cpp",
         "SpriteObject.cpp",
-        "TalkAnimation.cpp",
         "Inventory.cpp",
     ],
     hdrs = [
         "Actor.h",
-        "ActorEnums.h",
         "ActorEnumFunctions.h",
         "Chest.h",
-        "ChestEnums.h",
-        "CombinedSkillValue.h",
         "Decoration.h",
         "DecorationList.h",
-        "DecorationEnums.h",
         "ItemEnchantment.h",
-        "ItemEnums.h",
         "ItemEnumFunctions.h",
         "Item.h",
         "Monsters.h",
-        "MonsterEnums.h",
         "MonsterEnumFunctions.h",
         "NPC.h",
-        "NPCEnums.h",
-        "NPCEnumFunctions.h",
         "ObjectList.h",
         "Character.h",
         "CharacterConditions.h",
-        "CharacterEnums.h",
         "CharacterEnumFunctions.h",
         "SpriteObject.h",
-        "SpriteEnums.h",
-        "SpriteEnumFunctions.h",
         "TalkAnimation.h",
         "Inventory.h",
     ],
     deps = [
+        ":engine_objects_base",
+        ":engine_objects_enums",
+        "//src/Engine:engine_base",
         "//src/Engine/Data:engine_data",
         "//src/Engine/Spells:engine_spells",
         "//src/Engine/Time:engine_time",
@@ -57,6 +91,7 @@ cc_library(
         "//src/Library/Color:library_color",
         "//src/Library/Geometry:library_geometry",
         "//src/Library/Serialization:library_serialization",
+        "//src/Media/Audio:media_audio_sound_enums",
         "//src/Utility:utility",
         "@glm//:glm",
     ],

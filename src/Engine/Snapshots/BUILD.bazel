@@ -1,12 +1,27 @@
 # CMake target name: engine_serialization
 # Bazel label: //src/Engine/Snapshots:engine_snapshots
+
+# These srcs need Engine/Engine.h (from //src/Engine:engine) and are compiled as part of
+# //src/Engine:engine to avoid circular dependency.
+exports_files(
+    [
+        "CompositeSnapshots.cpp",
+        "EntitySnapshots.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+# TableSerialization.cpp needs Media/Audio/SoundList.h which is in media_audio (which depends on
+# engine), creating an engine <-> media circular dep. It must be compiled at a higher level.
+exports_files(
+    ["TableSerialization.cpp"],
+    visibility = ["//visibility:public"],
+)
+
 cc_library(
     name = "engine_snapshots",
     srcs = [
-        "CompositeSnapshots.cpp",
-        "EntitySnapshots.cpp",
         "EnumSnapshots.cpp",
-        "TableSerialization.cpp",
     ],
     hdrs = [
         "CompositeSnapshots.h",
@@ -20,6 +35,7 @@ cc_library(
         "//src/Engine/Tables:engine_tables",
         "//src/Library/Binary:library_binary",
         "//src/Library/Snapshots:library_snapshots",
+        "//src/Utility:utility",
     ],
     visibility = ["//visibility:public"],
 )
