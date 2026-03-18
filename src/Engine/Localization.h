@@ -297,3 +297,10 @@ class Localization {
 };
 
 extern Localization *localization;
+
+struct NPCData;
+
+std::string NameAndTitle(std::string_view name, std::string_view title);
+std::string NameAndTitle(std::string_view name, Class class_type);
+std::string NameAndTitle(std::string_view name, NpcProfession profession);
+std::string NameAndTitle(NPCData *npc);
