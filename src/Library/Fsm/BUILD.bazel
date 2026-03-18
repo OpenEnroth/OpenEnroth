@@ -28,7 +28,7 @@ cc_library(
         "Tests/Fsm_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         "//src/Utility:utility",
         ":library_fsm",
     ],

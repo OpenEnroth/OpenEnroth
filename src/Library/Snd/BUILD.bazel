@@ -23,7 +23,7 @@ cc_library(
         "Tests/SndReader_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         ":library_snd",
     ],
     testonly = True,

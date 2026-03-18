@@ -11,5 +11,6 @@ cc_library(
         # SDL3 — Phase 5 TODO
         "//bazel/system:sdl3",
     ],
+    target_compatible_with = ["@platforms//os:android"],
     visibility = ["//visibility:public"],
 )

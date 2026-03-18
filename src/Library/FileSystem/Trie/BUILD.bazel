@@ -16,7 +16,7 @@ cc_library(
         "Tests/FileSystemTrie_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         ":library_filesystem_trie",
     ],
     testonly = True,

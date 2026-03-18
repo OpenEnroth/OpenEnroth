@@ -54,6 +54,10 @@ cc_library(
         "String/Wrap.h",
     ],
     local_defines = ["ZTD_INTERMEDIATE_BUFFER_SUGGESTED_BYTE_SIZE=65536"],
+    linkopts = select({
+        "@platforms//os:windows": ["shell32.lib"],
+        "//conditions:default": [],
+    }),
     deps = [
         "@fmt//:fmt",
         "@small_vector//:small_vector",
@@ -87,7 +91,7 @@ cc_library(
         "String/Tests/Wrap_ut.cpp",
     ],
     deps = [
-        "//test/Bin/UnitTest:testing_unit",
+        "//test/Testing/Unit:testing_unit",
         ":utility",
     ],
     testonly = True,
