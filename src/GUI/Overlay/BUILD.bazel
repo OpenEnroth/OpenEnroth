@@ -30,5 +30,9 @@ cc_library(
         ":gui_overlay_hdrs",
         "//src/Scripting:scripting",
     ],
+    # alwayslink: ScriptedOverlay is referenced by scripting/OverlayBindings.cpp which is in a
+    # later start-lib group. The gold linker won't rescan gui_overlay's start-lib group after
+    # scripting is pulled in, leaving ScriptedOverlay::ScriptedOverlay() unresolved.
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

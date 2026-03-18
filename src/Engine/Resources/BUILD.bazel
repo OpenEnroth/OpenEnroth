@@ -1,11 +1,20 @@
-cc_library(
-    name = "engine_resources",
-    srcs = [
-        "EngineFileSystem.cpp",
+exports_files(
+    [
         "LOD.cpp",
         "LodSpriteCache.cpp",
         "LodTextureCache.cpp",
         "ResourceManager.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_resources",
+    srcs = [
+        "EngineFileSystem.cpp",
+        # LOD.cpp, LodSpriteCache.cpp, LodTextureCache.cpp, ResourceManager.cpp need
+        # Engine/AssetsManager.h (via ../AssetsManager.h) and are compiled in
+        # //src/Engine:engine_impl to break the circular dependency.
     ],
     hdrs = [
         "EngineFileSystem.h",

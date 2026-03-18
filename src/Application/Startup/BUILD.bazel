@@ -14,6 +14,7 @@ cc_library(
         "FileSystemStarter.h",
     ],
     deps = [
+        "//src/Application:application_base",
         "//src/Engine:engine",
         "//src/Engine/Components/Control:engine_components_control",
         "//src/Engine/Components/Deterministic:engine_components_deterministic",

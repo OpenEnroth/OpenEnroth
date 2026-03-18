@@ -11,6 +11,7 @@ cc_binary(
     ],
     deps = [
         "//src/Application:application",
+        "//src/Engine:engine_impl",
         "//src/Library/Cli:library_cli",
         "//src/Library/Platform/Sdl:library_platform_main",
         "//src/Library/Environment:library_environment",

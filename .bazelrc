@@ -29,15 +29,11 @@ build:android_base --copt=-Isrc
 
 # ─── Compiler selection ───────────────────────────────────────────────────────
 # Linux: The codebase uses C++23 "deducing this" (P0847R7) which requires
-# GCC >= 13 or Clang >= 18. The default GCC on Debian 12 is GCC 12. Use clang-18.
+# GCC >= 14 or Clang >= 18. The default GCC on Debian 12 is GCC 12.
+# Use GCC 14 (from Debian testing) which has full C++23 support incl. std::ranges::contains.
 # On Ubuntu 24.04+ GCC 14 is default and works fine without these overrides.
-build:linux --action_env=CC=/usr/bin/clang-18
-build:linux --action_env=CXX=/usr/bin/clang++-18
-build:linux --copt=-stdlib=libc++          # Use libc++ (supports full C++23 incl. ranges::contains)
-build:linux --cxxopt=-stdlib=libc++
-build:linux --linkopt=-stdlib=libc++
-# Note: to use GCC >= 13 instead, override with --action_env=CC=gcc-13 --action_env=CXX=g++-13
-# (and remove the stdlib=libc++ flags)
+build:linux --action_env=CC=/usr/bin/gcc-14
+build:linux --action_env=CXX=/usr/bin/g++-14
 
 # ─── Disable strict header dep tracking ─────────────────────────────────────
 # MSVC's /showIncludes causes Bazel to reject headers found via /Isrc but not
@@ -58,6 +54,8 @@ build --enable_platform_specific_config
 
 # Linux
 build:linux --copt=-fPIC
+# Use ld.bfd instead of ld.gold — gold linker can't find libstdc++.so from the versioned GCC dir
+build:linux --features=-use_gold_linker
 
 # Linux x86 (32-bit)
 build:linux_x86 --config=linux

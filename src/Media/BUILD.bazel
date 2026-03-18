@@ -1,4 +1,34 @@
 cc_library(
+    name = "media_interfaces",
+    hdrs = [
+        "AudioDataSource.h",
+        "AudioSample.h",
+        "AudioTrack.h",
+    ],
+    deps = ["//src/Utility:utility"],
+    visibility = ["//visibility:public"],
+)
+
+# Header-only target: base datasource headers without depending on media_audio.
+# Needed by media_audio (OpenALTrack16.cpp needs AudioBufferDataSource.h), but
+# media depends on media_audio — so extract these headers to break the cycle.
+cc_library(
+    name = "media_datasource_base",
+    hdrs = [
+        "AudioBaseDataSource.h",
+        "AudioBufferDataSource.h",
+        "FFmpegBlobIoContext.h",
+    ],
+    deps = [
+        ":media_interfaces",
+        "//src/Utility:utility",
+        # FFmpeg — Phase 5 TODO
+        "//bazel/system:ffmpeg",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "media",
     srcs = [
         "AudioBaseDataSource.cpp",
@@ -11,9 +41,6 @@ cc_library(
     hdrs = [
         "AudioBaseDataSource.h",
         "AudioBufferDataSource.h",
-        "AudioDataSource.h",
-        "AudioSample.h",
-        "AudioTrack.h",
         "FFmpegBlobIoContext.h",
         "FFmpegLogProxy.h",
         "FFmpegLogSource.h",
@@ -22,7 +49,11 @@ cc_library(
         "VideoDataSource.h",
     ],
     deps = [
+        ":media_datasource_base",
+        ":media_interfaces",
         "//src/Engine:engine",
+        "//src/GUI:gui_message_queue_base",
+        "//src/GUI:gui_window_base",
         "//src/Media/Audio:media_audio",
         "//src/Library/Logger:library_logger",
         "//src/Library/Vid:library_vid",

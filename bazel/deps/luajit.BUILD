@@ -20,7 +20,10 @@ filegroup(
 make(
     name = "luajit",
     lib_source = ":all_srcs",
-    out_static_libs = ["libluajit.a"],
+    out_static_libs = ["libluajit-5.1.a"],
+    # LuaJIT installs headers to include/luajit-2.1/; expose that subdirectory
+    # so #include <lua.h> works (matching CMake's include_directories behaviour).
+    out_include_dir = "include/luajit-2.1",
     env = select({
         # All Android targets share the same HOST_CC; CROSS is set
         # per-architecture by the Android NDK toolchain wrapper.
