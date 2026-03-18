@@ -1,6 +1,7 @@
-cc_library(
-    name = "gui_ui_houses",
-    srcs = [
+# Houses .cpp files include GUI/UI headers (UIStatusBar.h, UIGame.h, etc.) — circular with
+# gui_ui depending on gui_ui_houses. Compile them in gui_ui instead.
+exports_files(
+    [
         "Tavern.cpp",
         "Temple.cpp",
         "Training.cpp",
@@ -12,6 +13,12 @@ cc_library(
         "MercenaryGuild.cpp",
         "Shops.cpp",
     ],
+    visibility = ["//src/GUI/UI:__pkg__"],
+)
+
+cc_library(
+    name = "gui_ui_houses",
+    srcs = [],
     hdrs = [
         "Tavern.h",
         "Temple.h",
@@ -29,6 +36,7 @@ cc_library(
         "//src/Engine/Data:engine_data",
         "//src/Engine/Objects:engine_objects",
         "//src/Engine/Tables:engine_tables",
+        "//src/GUI/UI:gui_ui_house_base",
         "//src/Utility:utility",
         "//src/Library/Serialization:library_serialization",
         "@glm//:glm",

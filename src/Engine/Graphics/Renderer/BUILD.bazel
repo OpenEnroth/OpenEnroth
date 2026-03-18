@@ -1,7 +1,14 @@
 # RendererFactory.cpp needs Engine/EngineIocContainer.h (from //src/Engine:engine) and is compiled
 # as part of //src/Engine:engine to avoid circular dependency.
+# BaseRenderer.cpp, NullRenderer.cpp, OpenGLRenderer.cpp also need Engine/Engine.h and are
+# compiled in //src/Engine:engine_impl.
 exports_files(
-    ["RendererFactory.cpp"],
+    [
+        "RendererFactory.cpp",
+        "BaseRenderer.cpp",
+        "NullRenderer.cpp",
+        "OpenGLRenderer.cpp",
+    ],
     visibility = ["//src/Engine:__pkg__"],
 )
 
@@ -14,13 +21,12 @@ cc_library(
 cc_library(
     name = "engine_graphics_renderer",
     srcs = [
-        "BaseRenderer.cpp",
-        "NullRenderer.cpp",
-        "OpenGLRenderer.cpp",
         "OpenGLShader.cpp",
         "OpenGLShaderParams.cpp",
         "Renderer.cpp",
         "RendererEnums.cpp",
+        # BaseRenderer.cpp, NullRenderer.cpp, OpenGLRenderer.cpp need Engine/Engine.h
+        # and are compiled in //src/Engine:engine_impl to break the circular dependency.
     ],
     hdrs = [
         "BaseRenderer.h",

@@ -33,7 +33,7 @@ cc_library(
         "AssetsManager.cpp",
         "AttackList.cpp",
         "Conditions.cpp",
-        "Engine.cpp",
+        # Engine.cpp needs GUI/UI headers — compiled in engine_impl
         "EngineGlobals.cpp",
         "EngineIocContainer.cpp",
         "GpuHints.cpp",
@@ -41,10 +41,10 @@ cc_library(
         "MapEnums.cpp",
         "MapInfo.cpp",
         "OurMath.cpp",
-        "Party.cpp",
+        # Party.cpp needs GUI/UI headers — compiled in engine_impl
         "PartyEnums.cpp",
         "PriceCalculator.cpp",
-        "SaveLoad.cpp",
+        # SaveLoad.cpp needs GUI/UI headers — compiled in engine_impl
         "SpellFxRenderer.cpp",
         "TeleportPoint.cpp",
         "mm7_data.cpp",
@@ -62,9 +62,8 @@ cc_library(
         "//src/Engine/Tables:TextureFrameTable.cpp",
         "//src/Engine/Time:Timer.cpp",
         "//src/Engine/Graphics/Renderer:RendererFactory.cpp",
-        "//src/Engine/Spells:Spells.cpp",
+        # Spells.cpp/TurnEngine.cpp need Media/Audio/AudioPlayer.h — compiled in engine_impl
         "//src/Engine/Tables:NPCTable.cpp",
-        "//src/Engine/TurnEngine:TurnEngine.cpp",
     ],
     hdrs = [
         "ArenaEnumFunctions.h",
@@ -99,6 +98,11 @@ cc_library(
     deps = [
         ":engine_base",
         ":engine_hitmap",
+        "//src/Application:application_config",
+        "//src/GUI:gui_dialogues",
+        "//src/GUI:gui_font",
+        "//src/Io:io_mouse",
+        "//src/Media/Audio:media_audio_sound_info",
         "//src/Engine/Data:engine_data",
         "//src/Engine/Graphics:engine_graphics",
         "//src/Engine/Graphics/Renderer:engine_graphics_renderer",
@@ -113,6 +117,7 @@ cc_library(
         "//src/Engine/Resources:engine_resources",
         "//src/Library/Compression:library_compression",
         "//src/Library/Logger:library_logger",
+        "//src/Library/Platform/Application:library_platform_application",
         "//src/Library/Serialization:library_serialization",
         "//src/Library/Color:library_color",
         "//src/Library/LodFormats:library_lod_formats",
@@ -129,11 +134,38 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
-# Files that need both engine headers AND gui/media headers. Compiled separately to avoid
-# the engine <-> gui circular dependency. Must be added as a dep wherever the binary is built.
+# Files that need both engine headers AND gui/media/renderer headers. Compiled separately to
+# avoid circular dependencies. Must be added as a dep wherever the binary is built.
 cc_library(
     name = "engine_impl",
     srcs = [
+        # engine_graphics .cpp files (need engine + renderer headers — circular with engine_graphics)
+        "//src/Engine/Graphics:BSPModel.cpp",
+        "//src/Engine/Graphics:BspRenderer.cpp",
+        "//src/Engine/Graphics:Camera.cpp",
+        "//src/Engine/Graphics:ClippingFunctions.cpp",
+        "//src/Engine/Graphics:Collisions.cpp",
+        "//src/Engine/Graphics:DecalBuilder.cpp",
+        "//src/Engine/Graphics:FrameLimiter.cpp",
+        "//src/Engine/Graphics:Image.cpp",
+        "//src/Engine/Graphics:ImageLoader.cpp",
+        "//src/Engine/Graphics:Indoor.cpp",
+        "//src/Engine/Graphics:LightmapBuilder.cpp",
+        "//src/Engine/Graphics:LightsStack.cpp",
+        "//src/Engine/Graphics:LocationFunctions.cpp",
+        "//src/Engine/Graphics:Outdoor.cpp",
+        "//src/Engine/Graphics:OutdoorTerrain.cpp",
+        "//src/Engine/Graphics:Overlays.cpp",
+        "//src/Engine/Graphics:PaletteManager.cpp",
+        "//src/Engine/Graphics:ParticleEngine.cpp",
+        "//src/Engine/Graphics:PortalFunctions.cpp",
+        "//src/Engine/Graphics:Sprites.cpp",
+        "//src/Engine/Graphics:TileGenerator.cpp",
+        "//src/Engine/Graphics:TurnBasedOverlay.cpp",
+        "//src/Engine/Graphics:Viewport.cpp",
+        "//src/Engine/Graphics:Vis.cpp",
+        "//src/Engine/Graphics:Weather.cpp",
+        # engine_objects .cpp files (need engine + gui/media headers — circular with engine_objects)
         "//src/Engine/Objects:Actor.cpp",
         "//src/Engine/Objects:Character.cpp",
         "//src/Engine/Objects:Chest.cpp",
@@ -143,10 +175,47 @@ cc_library(
         "//src/Engine/Objects:SpriteObject.cpp",
         "//src/Engine/Spells:CastSpellInfo.cpp",
         "//src/Engine/Tables:ItemTable.cpp",
+        # engine_evt .cpp files (need Engine/Engine.h — circular with engine_evt)
+        "//src/Engine/Evt:EvtInstruction.cpp",
+        "//src/Engine/Evt:EvtProgram.cpp",
+        "//src/Engine/Evt:EvtInterpreter.cpp",
+        "//src/Engine/Evt:Processor.cpp",
+        # engine_graphics_renderer .cpp files (need Engine/Engine.h)
+        "//src/Engine/Graphics/Renderer:BaseRenderer.cpp",
+        "//src/Engine/Graphics/Renderer:NullRenderer.cpp",
+        "//src/Engine/Graphics/Renderer:OpenGLRenderer.cpp",
+        # engine_resources .cpp files (need ../AssetsManager.h — circular with engine_resources)
+        "//src/Engine/Resources:LOD.cpp",
+        "//src/Engine/Resources:LodSpriteCache.cpp",
+        "//src/Engine/Resources:LodTextureCache.cpp",
+        "//src/Engine/Resources:ResourceManager.cpp",
+        # engine_snapshots .cpp files (need Media/Audio/SoundList.h — circular with media_audio -> engine)
+        "//src/Engine/Snapshots:TableSerialization.cpp",
+        # engine sub-package .cpp files (need media/gui headers — circular with those deps on engine)
+        "//src/Engine/Spells:Spells.cpp",
+        "//src/Engine/TurnEngine:TurnEngine.cpp",
+        # engine .cpp files (need GUI/UI headers — circular with gui -> gui_ui -> io -> engine)
+        "Engine.cpp",
+        "Party.cpp",
+        "SaveLoad.cpp",
+        # io .cpp files (need GUI headers — circular with gui -> gui_ui -> io)
+        "//src/Io:KeyboardInputHandler.cpp",
+        "//src/Io:Mouse.cpp",
+        # media_audio .cpp files (need GUI headers — circular with gui -> gui_ui -> media_audio)
+        "//src/Media/Audio:AudioPlayer.cpp",
+    ],
+    local_defines = [
+        'PROJECT_VERSION=\\"0.0.0\\"',
+        'OE_BUILD_COMPILER=\\"unknown\\"',
+        'OE_BUILD_PLATFORM=\\"unknown\\"',
+        'OE_BUILD_ARCHITECTURE=\\"unknown\\"',
     ],
     deps = [
         ":engine",
+        "//src/Engine/Graphics/Renderer:engine_graphics_renderer",
+        "//src/Engine/Evt:engine_evt",
         "//src/GUI:gui",
+        "//src/GUI/Overlay:gui_overlay_hdrs",
         "//src/GUI/UI:gui_ui",
         "//src/Io:io",
         "//src/Media/Audio:media_audio",

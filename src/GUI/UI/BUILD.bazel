@@ -1,3 +1,31 @@
+# Header-only target: UIHouses.h is the base class for gui_ui_houses, but gui_ui depends on
+# gui_ui_houses — so extract the base header into a leaf target to break the cycle.
+cc_library(
+    name = "gui_ui_house_base",
+    hdrs = [
+        "UIHouseEnums.h",
+        "UIHouses.h",
+    ],
+    deps = [
+        "//src/Engine/Tables:engine_tables",
+        "//src/GUI:gui_window_base",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# Header-only target: UIBooks.h (base for all books) without gui_ui dep.
+# Books headers include UIBooks.h, which includes GUIWindow.h — only needs gui_window_base.
+# Needed to break the cycle: gui_ui -> gui_ui_books -> UIBooks.h -> gui_ui.
+cc_library(
+    name = "gui_ui_books_base",
+    hdrs = ["UIBooks.h"],
+    deps = [
+        "//src/GUI:gui_window_base",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 cc_library(
     name = "gui_ui",
     srcs = [
@@ -24,6 +52,25 @@ cc_library(
         "UIStatusBar.cpp",
         "UITransition.cpp",
         "UIMessageScroll.cpp",
+        # Books .cpp files need GUI/UI headers — compiled here to break cycle with gui_ui_books
+        "//src/GUI/UI/Books:AutonotesBook.cpp",
+        "//src/GUI/UI/Books:CalendarBook.cpp",
+        "//src/GUI/UI/Books:JournalBook.cpp",
+        "//src/GUI/UI/Books:LloydsBook.cpp",
+        "//src/GUI/UI/Books:MapBook.cpp",
+        "//src/GUI/UI/Books:QuestBook.cpp",
+        "//src/GUI/UI/Books:TownPortalBook.cpp",
+        # Houses .cpp files need GUI/UI headers — compiled here to break cycle with gui_ui_houses
+        "//src/GUI/UI/Houses:Tavern.cpp",
+        "//src/GUI/UI/Houses:Temple.cpp",
+        "//src/GUI/UI/Houses:Training.cpp",
+        "//src/GUI/UI/Houses:Transport.cpp",
+        "//src/GUI/UI/Houses:Bank.cpp",
+        "//src/GUI/UI/Houses:Jail.cpp",
+        "//src/GUI/UI/Houses:MagicGuild.cpp",
+        "//src/GUI/UI/Houses:TownHall.cpp",
+        "//src/GUI/UI/Houses:MercenaryGuild.cpp",
+        "//src/GUI/UI/Houses:Shops.cpp",
     ],
     hdrs = [
         "ItemGrid.h",
@@ -37,8 +84,6 @@ cc_library(
         "UIBranchlessDialogue.h",
         "UIGame.h",
         "UIGameOver.h",
-        "UIHouseEnums.h",
-        "UIHouses.h",
         "UIInventory.h",
         "UIMainMenu.h",
         "UIPartyCreation.h",
@@ -52,6 +97,9 @@ cc_library(
         "UIMessageScroll.h",
     ],
     deps = [
+        ":gui_ui_books_base",
+        ":gui_ui_house_base",
+        "//src/Application:application_base",
         "//src/Engine:engine",
         "//src/Engine/Data:engine_data",
         "//src/Engine/Evt:engine_evt",

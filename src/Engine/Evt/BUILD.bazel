@@ -11,14 +11,23 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
-cc_library(
-    name = "engine_evt",
-    srcs = [
-        "EvtEnums.cpp",
+exports_files(
+    [
         "EvtInstruction.cpp",
         "EvtProgram.cpp",
         "EvtInterpreter.cpp",
         "Processor.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_evt",
+    srcs = [
+        "EvtEnums.cpp",
+        # EvtInstruction.cpp, EvtProgram.cpp, EvtInterpreter.cpp, Processor.cpp need
+        # Engine/Engine.h and are compiled in //src/Engine:engine_impl to break the
+        # circular dependency (engine depends on engine_evt).
     ],
     hdrs = [
         "EvtInstruction.h",
