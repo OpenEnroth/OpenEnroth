@@ -19,7 +19,6 @@ cc_library(
     ],
     deps = [
         "//src/GUI/UI:gui_ui",
-        "//src/Engine:engine",
         "//src/Utility:utility",
     ],
     visibility = ["//visibility:public"],

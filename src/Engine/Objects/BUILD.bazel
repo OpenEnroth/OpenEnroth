@@ -50,11 +50,11 @@ cc_library(
         "Inventory.h",
     ],
     deps = [
-        "//src/Engine:engine",
-        "//src/GUI:gui",
         "//src/Library/Random:library_random",
         "//src/Library/Color:library_color",
+        "//src/Library/Serialization:library_serialization",
         "//src/Utility:utility",
+        "@glm//:glm",
     ],
     visibility = ["//visibility:public"],
 )

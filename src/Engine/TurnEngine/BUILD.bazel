@@ -8,7 +8,9 @@ cc_library(
         "TurnEngineEnums.h",
     ],
     deps = [
-        "//src/Engine:engine",
+        "//src/Utility:utility",
+        "//src/Library/Serialization:library_serialization",
+        "@glm//:glm",
     ],
     visibility = ["//visibility:public"],
 )

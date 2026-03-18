@@ -13,6 +13,28 @@ build --host_cxxopt=-std=c++23
 build:windows --cxxopt=/std:c++latest
 build:windows --host_cxxopt=/std:c++latest
 build:windows --cxxopt=/Zc:__cplusplus  # Make __cplusplus reflect actual standard
+build:windows --copt=/Zc:preprocessor  # Use standard-compliant preprocessor (required for NLOHMANN_JSON_PASTE variadic macros)
+build:windows --copt=/D_USE_MATH_DEFINES  # Pull in M_PI and other <cmath> defines (MSVC extension)
+build:windows --copt=/utf-8  # fmt and other libs require UTF-8 source encoding
+build:windows --copt=/D_WINDOWS  # CMake adds this automatically for Windows targets; enables _fseeki64/_ftelli64 aliases
+build:windows --features=static_link_msvcrt  # Use /MT instead of /MD to match prebuilt dep libs (CMake uses MultiThreaded runtime)
+
+# ─── Global include paths (mirrors CMake's include_directories(src test)) ────
+# Allows #include "Engine/..." and #include "Testing/..." without explicit deps.
+# GCC/Clang use -I, MSVC uses /I.
+build:linux --copt=-Isrc --copt=-Itest
+build:macos --copt=-Isrc --copt=-Itest
+build:windows --copt=/Isrc --copt=/Itest
+build:android_base --copt=-Isrc
+
+# ─── Disable strict header dep tracking ─────────────────────────────────────
+# The codebase uses CMake-style global include paths; Bazel's header tracking
+# via /showIncludes (MSVC) and .d files (GCC/Clang) would reject headers that
+# are found via -Isrc but not declared as explicit deps. Disable these checks
+# so the build matches CMake's behavior.
+build:windows --features=-parse_showincludes
+build:linux --features=-dependency_file
+build:macos --features=-dependency_file
 
 # ─── Warnings ────────────────────────────────────────────────────────────────
 
