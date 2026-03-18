@@ -1,4 +1,33 @@
 cc_library(
+    name = "engine_base",
+    hdrs = [
+        "ArenaEnums.h",
+        "LocalizationEnums.h",
+        "MapEnumFunctions.h",
+        "MapEnums.h",
+        "PartyEnums.h",
+        "Pid.h",
+    ],
+    deps = [
+        "//src/Library/Serialization:library_serialization",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "engine_hitmap",
+    hdrs = [
+        "HitMap.h",
+    ],
+    deps = [
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Library/Geometry:library_geometry",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "engine",
     srcs = [
         "AssetsManager.cpp",
@@ -21,14 +50,21 @@ cc_library(
         "mm7_data.cpp",
         "mm7text_ru.cpp",
         "Seasons.cpp",
+        # Srcs from sub-packages that need engine headers (avoids engine <-> sub-package cycle):
+        "//src/Engine/Objects:Decoration.cpp",
+        "//src/Engine/Objects:DecorationList.cpp",
+        "//src/Engine/Objects:ItemEnumFunctions.cpp",
+        "//src/Engine/Objects:ObjectList.cpp",
+        "//src/Engine/Objects:TalkAnimation.cpp",
+        "//src/Engine/Snapshots:CompositeSnapshots.cpp",
+        "//src/Engine/Snapshots:EntitySnapshots.cpp",
+        "//src/Engine/Tables:IconFrameTable.cpp",
+        "//src/Engine/Tables:TextureFrameTable.cpp",
+        "//src/Engine/Time:Timer.cpp",
+        "//src/Engine/Graphics/Renderer:RendererFactory.cpp",
     ],
     hdrs = [
         "ArenaEnumFunctions.h",
-        "ArenaEnums.h",
-        "HitMap.h",
-        "LocalizationEnums.h",
-        "MapEnumFunctions.h",
-        "SpawnPoint.h",
         "AssetsManager.h",
         "AttackList.h",
         "Conditions.h",
@@ -37,14 +73,12 @@ cc_library(
         "EngineGlobals.h",
         "EngineIocContainer.h",
         "Localization.h",
-        "MapEnums.h",
         "MapInfo.h",
         "OurMath.h",
         "Party.h",
-        "PartyEnums.h",
-        "Pid.h",
         "PriceCalculator.h",
         "SaveLoad.h",
+        "SpawnPoint.h",
         "SpellFxRenderer.h",
         "TeleportPoint.h",
         "mm7_data.h",
@@ -60,6 +94,8 @@ cc_library(
         'OE_BUILD_ARCHITECTURE=\\"unknown\\"',
     ],
     deps = [
+        ":engine_base",
+        ":engine_hitmap",
         "//src/Engine/Data:engine_data",
         "//src/Engine/Graphics:engine_graphics",
         "//src/Engine/Graphics/Renderer:engine_graphics_renderer",

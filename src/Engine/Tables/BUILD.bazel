@@ -1,3 +1,13 @@
+# These srcs need Engine/AssetsManager.h (from //src/Engine:engine) and are compiled as part of
+# //src/Engine:engine to avoid circular dependency.
+exports_files(
+    [
+        "IconFrameTable.cpp",
+        "TextureFrameTable.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
 cc_library(
     name = "engine_tables",
     srcs = [
@@ -8,14 +18,12 @@ cc_library(
         "FrameTableInc.cpp",
         "HistoryTable.cpp",
         "HouseTable.cpp",
-        "IconFrameTable.cpp",
         "ItemTable.cpp",
         "MerchantTable.cpp",
         "MessageScrollTable.cpp",
         "NPCTable.cpp",
         "PortraitFrameTable.cpp",
         "QuestTable.cpp",
-        "TextureFrameTable.cpp",
         "TileTable.cpp",
         "TransitionTable.cpp",
     ],
@@ -39,6 +47,7 @@ cc_library(
         "TransitionTable.h",
     ],
     deps = [
+        "//src/Engine:engine_base",
         "//src/Engine/Data:engine_data",
         "//src/Engine/Objects:engine_objects",
         "//src/Engine/Random:engine_random",

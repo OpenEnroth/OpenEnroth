@@ -1,3 +1,16 @@
+# RendererFactory.cpp needs Engine/EngineIocContainer.h (from //src/Engine:engine) and is compiled
+# as part of //src/Engine:engine to avoid circular dependency.
+exports_files(
+    ["RendererFactory.cpp"],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_texture_id",
+    hdrs = ["TextureRenderId.h"],
+    visibility = ["//visibility:public"],
+)
+
 cc_library(
     name = "engine_graphics_renderer",
     srcs = [
@@ -8,7 +21,6 @@ cc_library(
         "OpenGLShaderParams.cpp",
         "Renderer.cpp",
         "RendererEnums.cpp",
-        "RendererFactory.cpp",
     ],
     hdrs = [
         "BaseRenderer.h",
@@ -20,9 +32,11 @@ cc_library(
         "Renderer.h",
         "RendererEnums.h",
         "RendererFactory.h",
-        "TextureRenderId.h",
     ],
     deps = [
+        ":engine_texture_id",
+        "//src/Engine:engine_hitmap",
+        "//src/Engine/Graphics:engine_graphics",
         "//src/Utility:utility",
         "//src/Library/Logger:library_logger",
         "//src/Library/Serialization:library_serialization",
