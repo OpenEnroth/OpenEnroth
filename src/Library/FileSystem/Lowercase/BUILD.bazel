@@ -8,6 +8,7 @@ cc_library(
     ],
     deps = [
         "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Library/FileSystem/Proxy:library_filesystem_proxy",
         "//src/Library/FileSystem/Trie:library_filesystem_trie",
         "//src/Utility:utility",
     ],

@@ -17,6 +17,7 @@ cc_library(
     ],
     deps = [
         "//src/Utility:utility",
+        "//src/Library/Image:library_image",
         "//src/Library/Logger:library_logger",
         "//src/Library/Geometry:library_geometry",
     ],

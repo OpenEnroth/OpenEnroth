@@ -15,6 +15,8 @@ cc_library(
         "ResourceManager.h",
     ],
     deps = [
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Library/Image:library_image",
         "//src/Library/Lod:library_lod",
         "//src/Library/LodFormats:library_lod_formats",
         "//src/Library/FileSystem/Interface:library_filesystem_interface",

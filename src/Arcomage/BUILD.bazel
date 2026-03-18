@@ -8,6 +8,9 @@ cc_library(
         "Arcomage.h",
     ],
     deps = [
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Platform/Interface:library_platform_interface",
         "//src/Utility:utility",
         "//src/Media:media",
         "//src/Library/Color:library_color",

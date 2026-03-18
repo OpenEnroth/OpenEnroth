@@ -30,6 +30,7 @@ cc_library(
     deps = [
         "//test/Testing/Unit:testing_unit",
         ":library_serialization",
+        "//src/Library/Color:library_color",
     ],
     testonly = True,
     visibility = ["//visibility:public"],
