@@ -3,6 +3,8 @@
 exports_files(
     [
         "IconFrameTable.cpp",
+        "ItemTable.cpp",
+        "NPCTable.cpp",
         "TextureFrameTable.cpp",
     ],
     visibility = ["//src/Engine:__pkg__"],
@@ -18,10 +20,8 @@ cc_library(
         "FrameTableInc.cpp",
         "HistoryTable.cpp",
         "HouseTable.cpp",
-        "ItemTable.cpp",
         "MerchantTable.cpp",
         "MessageScrollTable.cpp",
-        "NPCTable.cpp",
         "PortraitFrameTable.cpp",
         "QuestTable.cpp",
         "TileTable.cpp",
