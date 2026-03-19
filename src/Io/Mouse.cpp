@@ -34,8 +34,16 @@ Pointi Io::Mouse::position() const {
     return _position;
 }
 
-void Io::Mouse::setPosition(Pointi position) {
-    _position = position;
+Pointi Io::Mouse::setPosition(Pointi position) {
+    // Crosshair is drawn at viewport center; keep _position in sync so that picking
+    // and interaction hit-testing use the same point the player is aiming at.
+    if (_mouseLook == MouseLookState::Enabled) {
+        _position = pViewport.center();
+    } else {
+        _position = position;
+    }
+
+    return _position;
 }
 
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
@@ -311,10 +319,6 @@ void Io::Mouse::DoMouseLook(Pointi relChange) {
     if (_mouseLook != MouseLookState::Enabled) {
         return;
     }
-
-    // Crosshair is drawn at viewport center; keep _position in sync so that picking
-    // and interaction hit-testing use the same point the player is aiming at.
-    _position = pViewport.center();
 
     float modX = relChange.x * engine->config->settings.MouseLookSensitivity.value();
     float modY = relChange.y * engine->config->settings.MouseLookSensitivity.value();
