@@ -695,6 +695,12 @@ GAME_TEST(Issues, Issue2255) {
     EXPECT_MISSES(spritesTape.flatten(), SPRITE_PROJECTILE_ARROW); // No arrows were fired, only fire bolts.
 }
 
+GAME_TEST(Issues, Issue2279) {
+    // Game crashed when opening inventory while holding the attack key.
+    test.playTraceFromTestData("issue_2279.mm7", "issue_2279.json");
+    // Test passes if no crash occurred.
+}
+
 GAME_TEST(Issues, Issue2298) {
     // Holding an item when entering a shop = it can not be dropped after
     // This tests that the mouse cursor updates correctly when dropping an item
