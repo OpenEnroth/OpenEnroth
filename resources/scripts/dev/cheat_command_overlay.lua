@@ -6,6 +6,8 @@ local Audio = require "bindings.audio"
 local Console = require "console"
 local Utilities = require "utils"
 
+local DefaultCommands = require "dev.cheat_commands_list"
+
 local CheatOverlay = {}
 
 ---@private
@@ -67,11 +69,24 @@ local function createCheatCommandEntry(configValue)
 end
 
 CheatOverlay.init = function ()
+    -- Built-in commands from the Lua list (add/reorder here, no config renumbering needed).
+    local builtinSet = {}
+    for _, command in ipairs(DefaultCommands) do
+        local entry = createCheatCommandEntry(command)
+        builtinSet[entry.command] = true
+        table.insert(availableCommands, entry)
+    end
+
+    -- User-defined extra commands from [cheat_commands] in openenroth.ini.
+    -- Skip any that duplicate a built-in (handles old configs that stored the defaults).
     local numberOfCommands = 40
     for i = 1, numberOfCommands do
         local command = Config.entry("cheat_commands", string.format("command%02d", i)).value
         if command and not Utilities.isEmpty(command) then
-            table.insert(availableCommands, createCheatCommandEntry(command))
+            local entry = createCheatCommandEntry(command)
+            if not builtinSet[entry.command] then
+                table.insert(availableCommands, entry)
+            end
         end
     end
 end
