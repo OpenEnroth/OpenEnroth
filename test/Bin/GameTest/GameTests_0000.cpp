@@ -649,7 +649,7 @@ GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works.
     auto chibisTape = actorTapes.countByBuff(ACTOR_BUFF_SHRINK);
     test.playTraceFromTestData("issue_489.mm7", "issue_489.json");
-    EXPECT_EQ(chibisTape, tape(0, 14));
+    EXPECT_EQ(chibisTape, tape(0, 20)); // Flying actors are now properly hit by AOE spells (was 14 before fix for issue #498).
 }
 
 GAME_TEST(Issues, Issue490) {

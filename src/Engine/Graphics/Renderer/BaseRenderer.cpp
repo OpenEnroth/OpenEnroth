@@ -530,8 +530,8 @@ void BaseRenderer::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
 }
 
 void BaseRenderer::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
+    render->DoRenderBillboards_D3D(); // Sets ortho projection — debug outlines must come after.
     engine->draw_debug_outlines();
-    render->DoRenderBillboards_D3D();
     spell_fx_renderer->RenderSpecialEffects();
 }
 

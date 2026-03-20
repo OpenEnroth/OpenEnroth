@@ -342,11 +342,43 @@ void Engine::StackPartyTorchLight() {
 }
 
 //----- (0044EE7C) --------------------------------------------------------
+static void drawDebugCylinder(Vec3f center_lo, float radius, float height, Color color) {
+    static constexpr int SEGMENTS = 12;
+    RenderVertexSoft prev_lo, prev_hi, cur_lo, cur_hi;
+    for (int i = 0; i <= SEGMENTS; ++i) {
+        float angle = 2.0f * M_PI * i / SEGMENTS;
+        float dx = radius * std::cos(angle);
+        float dy = radius * std::sin(angle);
+        cur_lo.vWorldPosition = Vec3f(center_lo.x + dx, center_lo.y + dy, center_lo.z);
+        cur_hi.vWorldPosition = Vec3f(center_lo.x + dx, center_lo.y + dy, center_lo.z + height);
+        if (i > 0) {
+            pCamera3D->do_draw_debug_line_sw(&prev_lo, color, &cur_lo, color, 0);
+            pCamera3D->do_draw_debug_line_sw(&prev_hi, color, &cur_hi, color, 0);
+        }
+        if (i % (SEGMENTS / 4) == 0)
+            pCamera3D->do_draw_debug_line_sw(&cur_lo, color, &cur_hi, color, 0);
+        prev_lo = cur_lo;
+        prev_hi = cur_hi;
+    }
+}
+
 bool Engine::draw_debug_outlines() {
     if (/*uFlags & 0x04*/ engine->config->debug.LightmapDecals.value()) {
         DrawLightsDebugOutlines(-1);
         decal_builder->DrawDecalDebugOutlines();
     }
+
+    if (engine->config->debug.ActorCollision.value()) {
+        for (const Actor &actor : pActors) {
+            if (actor.aiState == Removed || actor.aiState == Disabled || actor.aiState == Summoned)
+                continue;
+            Color col = actor.monsterInfo.flying ? colorTable.Yellow : colorTable.NeonGreen;
+            drawDebugCylinder(actor.pos, actor.radius, actor.height, col);
+        }
+        // Party cylinder.
+        drawDebugCylinder(pParty->pos, pParty->radius, pParty->height, colorTable.Azure);
+    }
+
     return true;
 }
 
