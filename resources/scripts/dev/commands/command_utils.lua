@@ -145,13 +145,13 @@ CommandUtilities.showProperty = function (get, propName, serializer)
 end
 
 --- Provide a valid character index. If the input is nil it returns the active character in the party
----@param charIndex? integer
+---@param charIndex? integer|string
 ---@return integer
 CommandUtilities.characterOrCurrent = function (charIndex)
     if charIndex == nil then
         return Game.party.getActiveCharacter()
     end
-    return charIndex
+    return tonumber(charIndex)
 end
 
 CommandUtilities.renderCharacterIndexParam = function (name, value)
