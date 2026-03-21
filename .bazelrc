@@ -65,6 +65,11 @@ build:linux --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_
 build:linux_x86 --config=linux
 build:linux_x86 --copt=-m32
 build:linux_x86 --linkopt=-m32
+# lld rejects 32-bit ELF objects when called via -fuse-ld=lld + -m32 (GCC doesn't
+# properly forward -m elf_i386 to lld). Use bfd which handles 32-bit x86 natively.
+# Appending -fuse-ld=bfd after the toolchain-injected -fuse-ld=lld overrides it
+# (GCC uses the last -fuse-ld=X seen on the command line).
+build:linux_x86 --linkopt=-fuse-ld=bfd
 
 # Linux x86_64
 build:linux_x86_64 --config=linux
@@ -74,6 +79,9 @@ build:macos --apple_platform_type=macos
 # Use system cmake (available via Xcode command-line tools) instead of rules_foreign_cc's
 # bundled cmake 3.23.2. Required for OpenAL-soft 1.24.3's BUILD_LOCAL_INTERFACE usage.
 build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
+# Use system make instead of rules_foreign_cc's bundled make binary, which segfaults when
+# processing LuaJIT's src/Makefile on macOS runners.
+build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
 
 # macOS arm64
 build:darwin_arm64 --config=macos

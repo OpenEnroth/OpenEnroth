@@ -24,43 +24,41 @@ make(
     # LuaJIT installs headers to include/luajit-2.1/; expose that subdirectory
     # so #include <lua.h> works (matching CMake's include_directories behaviour).
     out_include_dir = "include/luajit-2.1",
-    env = select({
-        # All Android targets share the same HOST_CC; CROSS is set
-        # per-architecture by the Android NDK toolchain wrapper.
-        "@platforms//os:android": {
-            "HOST_CC": "gcc",
-        },
-        # On Linux, Bazel injects all --copt flags (including -m32 for linux_x86)
-        # into CC via its cc_wrapper. LuaJIT's HOST tools (minilua, buildvm) must
-        # run on the BUILD HOST (always x86_64), not the target. Setting HOST_CC
-        # to bare gcc-14 avoids injecting -m32 into the host tool compilation.
-        "@platforms//os:linux": {
-            "HOST_CC": "gcc-14",
-        },
-        # On macOS, Bazel's cc_wrapper injects arch-specific flags. For
-        # darwin_x86_64 builds on arm64 runners the default HOSTCC would produce
-        # an x86_64 buildvm that segfaults on the arm64 host. Use bare 'cc'
-        # (system clang) so HOST tools are compiled for the host CPU (arm64).
-        "@platforms//os:macos": {
-            "HOST_CC": "cc",
-        },
-        "//conditions:default": {},
-    }),
-    # Override HOSTCFLAGS/HOSTLDFLAGS to strip Bazel-injected flags from HOST
-    # tool compilation. LuaJIT's Makefile defaults HOSTCFLAGS to $(CFLAGS) and
-    # HOSTLDFLAGS to $(LDFLAGS). On linux_x86 these contain -m32/-fuse-ld=lld
-    # (injected by Bazel for the TARGET), which would make the HOST tools 32-bit.
-    # On macOS they contain arch-specific flags from Bazel's cc_wrapper.
-    # HOST tools only need to be runnable on the build machine; -O2 is enough.
+    # HOST_CC must be passed as a make command-line variable (not env) because
+    # LuaJIT's src/Makefile unconditionally assigns `HOST_CC= $(CC)`, which
+    # overrides environment variables. Command-line make variables have the
+    # highest precedence and do override Makefile assignments.
+    #
+    # HOST_CFLAGS and HOST_LDFLAGS are used in:
+    #   HOST_ACFLAGS = $(CCOPTIONS) $(HOST_XCFLAGS) $(TARGET_ARCH) $(HOST_CFLAGS)
+    #   HOST_ALDFLAGS = $(LDOPTIONS) $(HOST_XLDFLAGS) $(HOST_LDFLAGS)
+    # Note: CCOPTIONS includes $(CFLAGS) (Bazel-injected) which may contain -m32
+    # or arch-specific flags. HOST_CFLAGS=-O2 adds optimization; HOST_LDFLAGS=
+    # prevents injected LDFLAGS from conflicting with HOST tool link.
     args = select({
-        "@platforms//os:android": [],
-        "@platforms//os:linux": [
-            "HOSTCFLAGS=-O2",
-            "HOSTLDFLAGS=",
+        # Android: HOST tools (buildvm, minilua) must run on the Linux build host.
+        # Use bare gcc as HOST_CC so host tools are compiled for the build machine.
+        "@platforms//os:android": [
+            "HOST_CC=gcc",
         ],
+        # Linux: HOST_CC=gcc-14 (bare, no Bazel toolchain wrapper) ensures HOST
+        # tools are compiled by the host compiler. On linux_x86, Bazel injects -m32
+        # via cc_wrapper, making HOST tools 32-bit. They still run on x86_64 since
+        # gcc-14-multilib provides 32-bit runtime support.
+        "@platforms//os:linux": [
+            "HOST_CC=gcc-14",
+            "HOST_CFLAGS=-O2",
+            "HOST_LDFLAGS=",
+        ],
+        # macOS: Use bare 'cc' (system clang) so HOST tools are compiled without
+        # arch-specific flags from Bazel's cc_wrapper. darwin_x86_64 builds run on
+        # arm64 runners (macos-15), so HOST tools must be arm64, not x86_64.
+        # Note: preinstalled_make_toolchain is also enabled (see .bazelrc) to avoid
+        # the bundled rules_foreign_cc make binary segfaulting on LuaJIT's Makefile.
         "@platforms//os:macos": [
-            "HOSTCFLAGS=-O2",
-            "HOSTLDFLAGS=",
+            "HOST_CC=cc",
+            "HOST_CFLAGS=-O2",
+            "HOST_LDFLAGS=",
         ],
         "//conditions:default": [],
     }),
