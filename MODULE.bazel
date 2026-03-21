@@ -36,6 +36,10 @@ single_version_override(
         # under Bazel 8 Bzlmod. That canonical form is not resolvable from within the
         # same module in $(location ...) expressions.
         "//bazel/patches:rules_foreign_cc_fix_full_label.patch",
+        # Bug 3: pkgconfig_build.bzl accesses make_data.target.files unconditionally.
+        # When preinstalled_make_toolchain is used, make_data.target is None (the make
+        # binary is on PATH, not a Bazel target). This crashes with NoneType error.
+        "//bazel/patches:rules_foreign_cc_fix_pkgconfig.patch",
     ],
     patch_strip = 1,
 )
@@ -43,6 +47,15 @@ single_version_override(
 # ─── Android ─────────────────────────────────────────────────────────────────
 
 bazel_dep(name = "rules_android", version = "0.6.0")
+
+# rules_android_ndk provides the Android NDK C++ toolchain for cc_binary cross-compilation.
+# It reads ANDROID_NDK_HOME from the environment and registers toolchains for all ABIs
+# (arm64-v8a, armeabi-v7a, x86_64). Required for --platforms=//bazel/platforms:android_*
+# targets to find a CC toolchain.
+bazel_dep(name = "rules_android_ndk", version = "0.1.2")
+android_ndk_repository_extension = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
+use_repo(android_ndk_repository_extension, "androidndk")
+register_toolchains("@androidndk//:all")
 
 # ─── Non-BCR deps via http_archive ───────────────────────────────────────────
 
