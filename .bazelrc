@@ -106,6 +106,14 @@ build:android_armeabi_v7a --android_platforms=//bazel/platforms:android_armeabi_
 build:android_x86_64 --config=android
 build:android_x86_64 --android_platforms=//bazel/platforms:android_x86_64
 
+# ─── Local disk cache ────────────────────────────────────────────────────────
+# Content-addressed cache on local disk. Avoids rebuilding cmake() deps (zlib,
+# libpng, SDL3, OpenAL) and other expensive actions when sources haven't changed.
+# Shared across workspaces and Bazel versions on the same machine.
+build --disk_cache=~/.cache/bazel
+# Caches downloaded http_archive tarballs (avoids re-downloading on every clean).
+build --repository_cache=~/.cache/bazel-repo
+
 # ─── Remote cache (GitHub Actions / Buildbuddy) ──────────────────────────────
 # Uncomment and configure once CI is set up:
 # build --remote_cache=grpc://...
