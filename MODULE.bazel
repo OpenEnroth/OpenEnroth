@@ -53,6 +53,19 @@ bazel_dep(name = "rules_android", version = "0.6.0")
 # (arm64-v8a, armeabi-v7a, x86_64). Required for --platforms=//bazel/platforms:android_*
 # targets to find a CC toolchain.
 bazel_dep(name = "rules_android_ndk", version = "0.1.3")
+
+# Patch rules_android_ndk to create a stub repo (instead of fail()) when
+# ANDROID_NDK_HOME is not set. This lets Windows/macOS/Linux non-Android builds
+# succeed even though they don't have an NDK; register_toolchains("@androidndk//:all")
+# resolves to the empty set for the stub. Android CI builds set ANDROID_NDK_HOME
+# before invoking Bazel, so they get the real toolchains.
+single_version_override(
+    module_name = "rules_android_ndk",
+    version = "0.1.3",
+    patches = ["//bazel/patches:rules_android_ndk_stub_no_ndk.patch"],
+    patch_strip = 1,
+)
+
 android_ndk_repository_extension = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
 use_repo(android_ndk_repository_extension, "androidndk")
 register_toolchains("@androidndk//:all")

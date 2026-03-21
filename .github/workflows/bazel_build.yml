@@ -53,9 +53,10 @@ jobs:
           # On Windows CI runners, ANDROID_HOME is pre-set to C:\Android\android-sdk which
           # contains NDK 27.x. rules_android_ndk auto-discovers it and then fails with Bazel 8
           # sandbox enforcement: "Cannot write outside of the repository directory".
-          # Clear Android env vars for Windows so rules_android_ndk can't find any NDK;
-          # Android builds run on Linux runners where the correct NDK 28.x is installed instead.
-          if [ "$RUNNER_OS" = "Windows" ]; then
+          # Clear Android env vars for all non-Android platforms so rules_android_ndk falls
+          # through to the stub path (no NDK = empty @androidndk with no toolchains).
+          # Android builds set ANDROID_NDK_HOME explicitly in [android] Install NDK step.
+          if [ "$platform" != "android" ]; then
             echo "ANDROID_HOME=" >> "$GITHUB_ENV"
             echo "ANDROID_NDK_HOME=" >> "$GITHUB_ENV"
           fi
