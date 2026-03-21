@@ -27,11 +27,16 @@ cmake(
         # CMAKE_MSVC_RUNTIME_LIBRARY. Without this, cmake's Release config
         # adds /MD which overrides the /MT we set above.
         "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
-        # Don't build the shared zlib (libz.so). Without this, cmake builds both
-        # static and shared; on Linux the shared build fails with an lld version
-        # script error for internal symbols (gz_intmax).
-        "BUILD_SHARED_LIBS": "OFF",
     },
+    # Only build the static target. zlib 1.2.13 builds both SHARED and STATIC
+    # unconditionally and the shared build fails on Linux/lld with a version
+    # script error (gz_intmax not exported). The zlib_exclude_shared.patch adds
+    # EXCLUDE_FROM_ALL to the shared target, but cmake's explicit --target
+    # zlibstatic is the most reliable way to skip it entirely.
+    build_args = select({
+        "@platforms//os:windows": [],  # Windows needs default build (both targets; shared install is OPTIONAL)
+        "//conditions:default": ["--target", "zlibstatic"],
+    }),
     # cmake's FindZLIB.cmake searches for lib names "z", "zlib", "zdll", "zlib_static" —
     # not "zlibstatic". Copy the installed lib to the expected name so that downstream
     # cmake deps (e.g. libpng) can find it via find_package(ZLIB REQUIRED).

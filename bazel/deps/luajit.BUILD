@@ -46,5 +46,23 @@ make(
         },
         "//conditions:default": {},
     }),
+    # Override HOSTCFLAGS/HOSTLDFLAGS to strip Bazel-injected flags from HOST
+    # tool compilation. LuaJIT's Makefile defaults HOSTCFLAGS to $(CFLAGS) and
+    # HOSTLDFLAGS to $(LDFLAGS). On linux_x86 these contain -m32/-fuse-ld=lld
+    # (injected by Bazel for the TARGET), which would make the HOST tools 32-bit.
+    # On macOS they contain arch-specific flags from Bazel's cc_wrapper.
+    # HOST tools only need to be runnable on the build machine; -O2 is enough.
+    args = select({
+        "@platforms//os:android": [],
+        "@platforms//os:linux": [
+            "HOSTCFLAGS=-O2",
+            "HOSTLDFLAGS=",
+        ],
+        "@platforms//os:macos": [
+            "HOSTCFLAGS=-O2",
+            "HOSTLDFLAGS=",
+        ],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
 )
