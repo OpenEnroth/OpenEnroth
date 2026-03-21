@@ -74,9 +74,6 @@ build:macos --apple_platform_type=macos
 # Use system cmake (available via Xcode command-line tools) instead of rules_foreign_cc's
 # bundled cmake 3.23.2. Required for OpenAL-soft 1.24.3's BUILD_LOCAL_INTERFACE usage.
 build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
-# Use system make instead of rules_foreign_cc's bundled make binary.
-# The bundled make segfaults on macOS when processing LuaJIT's Makefile.
-build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
 
 # macOS arm64
 build:darwin_arm64 --config=macos
