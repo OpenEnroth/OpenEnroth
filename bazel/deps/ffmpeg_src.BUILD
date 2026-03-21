@@ -44,6 +44,8 @@ configure_make(
     alwayslink = True,
     linkopts = select({
         "@platforms//os:linux": ["-lm", "-lpthread"],
+        # macOS: iconv is needed by some FFmpeg demuxers; CoreFoundation for system codecs.
+        "@platforms//os:macos": ["-liconv", "-framework CoreFoundation"],
         "//conditions:default": [],
     }),
     visibility = ["//visibility:public"],

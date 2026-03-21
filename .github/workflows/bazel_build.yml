@@ -64,7 +64,9 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v5.0.0
         with:
-          submodules: recursive
+          # Submodules are only needed on Windows: thirdparty/luajit/ headers are referenced
+          # by the @luajit_windows prebuilt wrapper. All other platforms fetch deps via http_archive.
+          submodules: ${{ env.MATRIX_PLATFORM == 'windows' && 'recursive' || 'false' }}
 
       - name: '[android] Install NDK'
         if: env.MATRIX_PLATFORM == 'android'
@@ -89,6 +91,22 @@ jobs:
               sudo apt-get install -y gcc-14 g++-14 lld
               sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev
             fi
+
+      - name: '[windows] Set up MSVC'
+        if: env.MATRIX_PLATFORM == 'windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: '[windows] Build LuaJIT via CMake'
+        if: env.MATRIX_PLATFORM == 'windows'
+        # The Bazel @luajit_windows wrapper references CMake-built artifacts:
+        #   build/thirdparty/Debug/libluajit.lib
+        #   build/thirdparty/luajit.h
+        # LuaJIT's GNU Makefile requires GCC, so we use the luajit-cmake wrapper to build
+        # it with MSVC. The cmake configure step also downloads the prebuilt SDL3/OpenAL/etc.
+        # archives (needed to satisfy find_package), but Bazel uses its own source builds for those.
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build --config Debug --target libluajit
 
       - name: 'Set up Bazel'
         uses: bazel-contrib/setup-bazel@0.14.0
