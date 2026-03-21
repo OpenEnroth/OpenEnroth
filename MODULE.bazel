@@ -265,9 +265,11 @@ new_local_repository(
     build_file = "//bazel/deps:luajit_windows.BUILD",
 )
 
-# System deps — source builds via rules_foreign_cc cmake() ------------------
+# System deps — source builds via rules_foreign_cc cmake()/configure_make() -
 # These replace the prebuilt zips from OpenEnroth_Dependencies.
-# FFmpeg is kept as prebuilt for now (autoconf-based, non-trivial on Windows).
+# FFmpeg (Linux/macOS): configure_make() source build.
+# FFmpeg (Windows): prebuilt — configure requires bash/MSYS2 (deferred).
+# FFmpeg (Android): prebuilt — NDK cross-compilation not yet configured.
 
 http_archive(
     name = "zlib_src",
@@ -309,6 +311,16 @@ http_archive(
     # OpenAL-soft's own cmake build.
     patches = ["//bazel/patches:openal_strip_injected_flags.patch"],
     patch_args = ["-p1"],
+    # sha256 = "",  # TODO: fill in
+)
+
+# FFmpeg n7.0 — libavcodec 61.3.100 (same version as the prebuilt archives).
+# Used on Linux and macOS via configure_make(); Windows/Android stay on prebuilt.
+http_archive(
+    name = "ffmpeg_src",
+    url = "https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.0.tar.gz",
+    strip_prefix = "FFmpeg-n7.0",
+    build_file = "//bazel/deps:ffmpeg_src.BUILD",
     # sha256 = "",  # TODO: fill in
 )
 
