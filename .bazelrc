@@ -85,6 +85,11 @@ build:windows_x86 --cpu=x64_x86_windows
 # Windows x86_64
 build:windows_x86_64 --config=windows
 
+# Use the system cmake (Visual Studio ships cmake 3.31+) instead of rules_foreign_cc's
+# auto-downloaded cmake 3.23.2. Required for OpenAL-soft 1.24.3 which uses
+# $<BUILD_LOCAL_INTERFACE> generator expressions added in cmake 3.26.
+build:windows --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
+
 # Android — NDK version 28.1.13356709 (matches CI)
 # android_base: common flags inherited by all android_* configs
 build:android_base --cxxopt=-std=c++23
