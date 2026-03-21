@@ -86,11 +86,29 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y gcc-14-multilib g++-14-multilib lld
               sudo apt-get install -y libglu1-mesa-dev:i386 libdwarf-dev:i386 libelf-dev:i386
+              # SDL3 source build requires X11/Wayland headers (32-bit for linux_x86).
+              sudo apt-get install -y libx11-dev:i386 libxext-dev:i386 libxrandr-dev:i386 \
+                libxcursor-dev:i386 libxi-dev:i386 libxfixes-dev:i386 \
+                libwayland-dev:i386 libxkbcommon-dev:i386
             else
               sudo apt-get update
               sudo apt-get install -y gcc-14 g++-14 lld
               sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev
+              # SDL3 source build requires X11/Wayland dev headers.
+              sudo apt-get install -y libx11-dev libxext-dev libxrandr-dev \
+                libxcursor-dev libxi-dev libxfixes-dev \
+                libwayland-dev libxkbcommon-dev
             fi
+
+      - name: '[android] Install SDL3 dev dependencies'
+        if: env.MATRIX_PLATFORM == 'android'
+        run: |
+          # SDL3 cmake() is invoked in the host (linux) config during Android
+          # cross-compilation and requires X11/Wayland headers to configure.
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev libxext-dev libxrandr-dev \
+            libxcursor-dev libxi-dev libxfixes-dev \
+            libwayland-dev libxkbcommon-dev
 
       - name: '[windows] Set up MSVC'
         if: env.MATRIX_PLATFORM == 'windows'
