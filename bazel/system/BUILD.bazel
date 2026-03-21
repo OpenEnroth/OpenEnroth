@@ -8,6 +8,7 @@
 cc_library(
     name = "sdl3",
     deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:sdl3"],
         "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:sdl3"],
         "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:sdl3"],
         "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:sdl3"],
@@ -22,6 +23,7 @@ cc_library(
 cc_library(
     name = "openal",
     deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:openal"],
         "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:openal"],
         "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:openal"],
         "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:openal"],
@@ -36,6 +38,7 @@ cc_library(
 cc_library(
     name = "zlib",
     deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:zlib"],
         "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:zlib"],
         "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:zlib"],
         "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:zlib"],
@@ -50,6 +53,7 @@ cc_library(
 cc_library(
     name = "png",
     deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:png"],
         "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:png"],
         "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:png"],
         "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:png"],
@@ -66,6 +70,7 @@ cc_library(
 cc_library(
     name = "ffmpeg",
     deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:ffmpeg"],
         "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:ffmpeg"],
         "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:ffmpeg"],
         "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:ffmpeg"],

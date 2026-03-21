@@ -52,7 +52,7 @@ bazel_dep(name = "rules_android", version = "0.6.0")
 # It reads ANDROID_NDK_HOME from the environment and registers toolchains for all ABIs
 # (arm64-v8a, armeabi-v7a, x86_64). Required for --platforms=//bazel/platforms:android_*
 # targets to find a CC toolchain.
-bazel_dep(name = "rules_android_ndk", version = "0.1.2")
+bazel_dep(name = "rules_android_ndk", version = "0.1.3")
 android_ndk_repository_extension = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
 use_repo(android_ndk_repository_extension, "androidndk")
 register_toolchains("@androidndk//:all")
@@ -286,11 +286,16 @@ http_archive(
     url = "https://github.com/madler/zlib/archive/04f42ceca40f73e2978b50e93806c2a18c1281fc.tar.gz",
     strip_prefix = "zlib-04f42ceca40f73e2978b50e93806c2a18c1281fc",
     build_file = "//bazel/deps:zlib_src.BUILD",
-    # Patch: mark the shared lib EXCLUDE_FROM_ALL so it isn't built by default,
-    # and add OPTIONAL to its install() so cmake --install doesn't fail when the
-    # shared lib wasn't built. zlib 1.2.13 always builds both SHARED and STATIC
-    # unconditionally; this patch respects BUILD_SHARED_LIBS=OFF.
-    patches = ["//bazel/patches:zlib_exclude_shared.patch"],
+    patches = [
+        # Patch 1: mark the shared lib EXCLUDE_FROM_ALL so it isn't built by default,
+        # and add OPTIONAL to its install() so cmake --install doesn't fail when the
+        # shared lib wasn't built. zlib 1.2.13 always builds both SHARED and STATIC
+        # unconditionally; this patch respects BUILD_SHARED_LIBS=OFF.
+        "//bazel/patches:zlib_exclude_shared.patch",
+        # Patch 2: strip Bazel timestamp-redaction flags (-D__DATE__=redacted etc.)
+        # that conflict with macOS Xcode 16.3 system headers (_stdio.h:318).
+        "//bazel/patches:zlib_strip_injected_flags.patch",
+    ],
     patch_args = ["-p1"],
     sha256 = "90f43a9c998740e8a0db24b0af0147033db2aaaa99423129abbd76640757cac9",
 )
