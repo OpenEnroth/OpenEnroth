@@ -308,6 +308,10 @@ http_archive(
         # Patch 2: strip Bazel timestamp-redaction flags (-D__DATE__=redacted etc.)
         # that conflict with macOS Xcode 16.3 system headers (_stdio.h:318).
         "//bazel/patches:zlib_strip_injected_flags.patch",
+        # Patch 3: zutil.h defines fdopen(fd,mode)=NULL on TARGET_OS_MAC, but macOS
+        # always has fdopen. The macro causes _stdio.h:318 to fail when fdopen() is
+        # declared after the macro is defined. Add !defined(__APPLE__) guard.
+        "//bazel/patches:zlib_fix_fdopen_apple.patch",
     ],
     patch_args = ["-p1"],
     sha256 = "90f43a9c998740e8a0db24b0af0147033db2aaaa99423129abbd76640757cac9",
