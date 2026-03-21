@@ -1,6 +1,6 @@
 --- a/foreign_cc/built_tools/pkgconfig_build.bzl
 +++ b/foreign_cc/built_tools/pkgconfig_build.bzl
-@@ -79,7 +79,10 @@
+@@ -79,6 +79,9 @@
      ]
 
 -    additional_tools = depset(transitive = [make_data.target.files])
