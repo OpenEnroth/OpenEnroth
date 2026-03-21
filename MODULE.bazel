@@ -283,6 +283,35 @@ http_archive(
     # sha256 = "",  # TODO: fill in
 )
 
+http_archive(
+    name = "libpng_src",
+    url = "https://github.com/glennrp/libpng/archive/f5e92d76973a7a53f517579bc95d61483bf108c0.tar.gz",
+    strip_prefix = "libpng-f5e92d76973a7a53f517579bc95d61483bf108c0",
+    build_file = "//bazel/deps:libpng_src.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "sdl3_src",
+    url = "https://github.com/libsdl-org/SDL/archive/a96677bdf6b4acb84af4ec294e5f60a4e8cbbe03.tar.gz",
+    strip_prefix = "SDL-a96677bdf6b4acb84af4ec294e5f60a4e8cbbe03",
+    build_file = "//bazel/deps:sdl3_src.BUILD",
+    # sha256 = "",  # TODO: fill in
+)
+
+http_archive(
+    name = "openal_src",
+    url = "https://github.com/kcat/openal-soft/archive/dc7d7054a5b4f3bec1dc23a42fd616a0847af948.tar.gz",
+    strip_prefix = "openal-soft-dc7d7054a5b4f3bec1dc23a42fd616a0847af948",
+    build_file = "//bazel/deps:openal_src.BUILD",
+    # Patch: strip Bazel-injected CXXFLAGS (/Zc:preprocessor, -Isrc, etc.) that
+    # rules_foreign_cc exports via the CXXFLAGS env var and that conflict with
+    # OpenAL-soft's own cmake build.
+    patches = ["//bazel/patches:openal_strip_injected_flags.patch"],
+    patch_args = ["-p1"],
+    # sha256 = "",  # TODO: fill in
+)
+
 # System deps — prebuilt zips from OpenEnroth_Dependencies (Phase 5) --------
 # Tag: deps_r7_master. Release builds only; Debug variants follow same pattern.
 # sha256 fields left empty — fill in after first download for hermeticity.
