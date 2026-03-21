@@ -111,11 +111,13 @@ build:android_base --copt=-Wno-error
 
 build:android --config=android_base
 build:android_arm64_v8a --config=android
-build:android_arm64_v8a --android_platforms=//bazel/platforms:android_arm64_v8a_platform
+# --platforms sets the TARGET platform for cc_binary() cross-compilation.
+# --android_platforms only applies to android_binary() rules (APK builds).
+build:android_arm64_v8a --platforms=//bazel/platforms:android_arm64_v8a_platform
 build:android_armeabi_v7a --config=android
-build:android_armeabi_v7a --android_platforms=//bazel/platforms:android_armeabi_v7a_platform
+build:android_armeabi_v7a --platforms=//bazel/platforms:android_armeabi_v7a_platform
 build:android_x86_64 --config=android
-build:android_x86_64 --android_platforms=//bazel/platforms:android_x86_64_platform
+build:android_x86_64 --platforms=//bazel/platforms:android_x86_64_platform
 
 # ─── Local disk cache ────────────────────────────────────────────────────────
 # Content-addressed cache on local disk. Avoids rebuilding cmake() deps (zlib,
