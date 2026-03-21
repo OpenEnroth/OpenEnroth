@@ -1,0 +1,15 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,3 +1,11 @@
+ cmake_minimum_required(VERSION 2.4.4)
++# rules_foreign_cc cmake() unconditionally exports CFLAGS env var containing
++# all Bazel --copt flags. Some flags conflict with macOS Xcode 16.3 system headers:
++#   -D__DATE__=redacted et al  redefine __DATE__ as an identifier → breaks _stdio.h:318
++# Strip these injected flags before zlib's own CMakeLists logic runs.
++foreach(_flag "-D__DATE__=redacted" "-D__TIMESTAMP__=redacted" "-D__TIME__=redacted" "-Wno-builtin-macro-redefined")
++    string(REPLACE "${_flag}" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
++endforeach()
++set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "C flags" FORCE)
++
+ set(ZLIB_VERSION "1.2.13")
+ set(ZLIB_SOVERSION "1")
