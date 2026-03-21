@@ -30,6 +30,20 @@ make(
         "@platforms//os:android": {
             "HOST_CC": "gcc",
         },
+        # On Linux, Bazel injects all --copt flags (including -m32 for linux_x86)
+        # into CC via its cc_wrapper. LuaJIT's HOST tools (minilua, buildvm) must
+        # run on the BUILD HOST (always x86_64), not the target. Setting HOST_CC
+        # to bare gcc-14 avoids injecting -m32 into the host tool compilation.
+        "@platforms//os:linux": {
+            "HOST_CC": "gcc-14",
+        },
+        # On macOS, Bazel's cc_wrapper injects arch-specific flags. For
+        # darwin_x86_64 builds on arm64 runners the default HOSTCC would produce
+        # an x86_64 buildvm that segfaults on the arm64 host. Use bare 'cc'
+        # (system clang) so HOST tools are compiled for the host CPU (arm64).
+        "@platforms//os:macos": {
+            "HOST_CC": "cc",
+        },
         "//conditions:default": {},
     }),
     visibility = ["//visibility:public"],

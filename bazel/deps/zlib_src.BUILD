@@ -27,6 +27,10 @@ cmake(
         # CMAKE_MSVC_RUNTIME_LIBRARY. Without this, cmake's Release config
         # adds /MD which overrides the /MT we set above.
         "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+        # Don't build the shared zlib (libz.so). Without this, cmake builds both
+        # static and shared; on Linux the shared build fails with an lld version
+        # script error for internal symbols (gz_intmax).
+        "BUILD_SHARED_LIBS": "OFF",
     },
     # cmake's FindZLIB.cmake searches for lib names "z", "zlib", "zdll", "zlib_static" —
     # not "zlibstatic". Copy the installed lib to the expected name so that downstream
