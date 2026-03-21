@@ -65,6 +65,9 @@ build:linux --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_
 build:linux_x86 --config=linux
 build:linux_x86 --copt=-m32
 build:linux_x86 --linkopt=-m32
+# Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
+# We can't use --platforms= here (no 32-bit toolchain registered), so use --define instead.
+build:linux_x86 --define=oe_build_arch=x86_32
 # lld rejects 32-bit ELF objects when called via -fuse-ld=lld + -m32 (GCC doesn't
 # properly forward -m elf_i386 to lld). Use bfd which handles 32-bit x86 natively.
 # Appending -fuse-ld=bfd after the toolchain-injected -fuse-ld=lld overrides it

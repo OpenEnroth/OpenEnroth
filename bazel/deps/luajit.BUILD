@@ -12,6 +12,24 @@
 
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "make")
 
+# Per-ABI config_settings for Android cross-compilation args below.
+# Note: //bazel/platforms:* labels can't be used in injected BUILD files (they live
+# in the main repo), so we define local config_settings using @platforms// labels.
+config_setting(
+    name = "_android_arm64",
+    constraint_values = ["@platforms//os:android", "@platforms//cpu:arm64"],
+)
+
+config_setting(
+    name = "_android_armv7",
+    constraint_values = ["@platforms//os:android", "@platforms//cpu:armv7"],
+)
+
+config_setting(
+    name = "_android_x86_64",
+    constraint_values = ["@platforms//os:android", "@platforms//cpu:x86_64"],
+)
+
 filegroup(
     name = "all_srcs",
     srcs = glob(["**"], exclude = ["BUILD.bazel"]),
@@ -35,11 +53,19 @@ make(
     # Note: CCOPTIONS includes $(CFLAGS) (Bazel-injected) which may contain -m32
     # or arch-specific flags. HOST_CFLAGS=-O2 adds optimization; HOST_LDFLAGS=
     # prevents injected LDFLAGS from conflicting with HOST tool link.
+    # Two select()s are concatenated (Bazel 7+ supports list select() addition).
+    # First: OS-level flags. Second: per-ABI Android TARGET_FLAGS.
     args = select({
         # Android: HOST tools (buildvm, minilua) must run on the Linux build host.
-        # Use bare gcc as HOST_CC so host tools are compiled for the build machine.
+        # CFLAGS/LDFLAGS contain Android NDK-specific flags (--target=aarch64-... etc.)
+        # that HOST_CC=gcc cannot handle. Clear them here; the NDK target triple is
+        # supplied per-ABI via TARGET_FLAGS in the second select() below.
+        # TARGET_LJARCH is set per-ABI to bypass LuaJIT's auto-detect (which runs CC
+        # without --target and would misdetect the host arch when CFLAGS is empty).
         "@platforms//os:android": [
             "HOST_CC=gcc",
+            "CFLAGS=",
+            "LDFLAGS=",
         ],
         # Linux: HOST_CC=gcc-14 (bare, no Bazel toolchain wrapper) ensures HOST
         # tools are compiled by the host compiler. On linux_x86, Bazel injects -m32
@@ -59,6 +85,31 @@ make(
             "HOST_CC=cc",
             "HOST_CFLAGS=-O2",
             "HOST_LDFLAGS=",
+        ],
+        "//conditions:default": [],
+    }) + select({
+        # Per-ABI Android args: TARGET_LJARCH bypasses auto-detection (NDK raw clang
+        # without --target would detect host arch), TARGET_FLAGS supplies the NDK
+        # --target triple so CC (NDK clang) targets the correct Android ABI.
+        # API 31 matches the CI NDK 28.1.13356709 configuration.
+        ":_android_arm64": [
+            "TARGET_LJARCH=arm64",
+            "TARGET_SYS=Linux",
+            "TARGET_FLAGS=--target=aarch64-linux-android31 -fPIC",
+        ],
+        ":_android_armv7": [
+            "TARGET_LJARCH=arm",
+            "TARGET_SYS=Linux",
+            # LuaJIT sets TARGET_ARCH=-march=armv7-a -mfpu=vfpv3-d16 for arm, which
+            # ends up in HOST_ACFLAGS and breaks x86_64 gcc. Clear it and fold the
+            # arch flags into TARGET_FLAGS (used only for target compilation).
+            "TARGET_ARCH=",
+            "TARGET_FLAGS=--target=armv7a-linux-androideabi31 -march=armv7-a -mfpu=vfpv3-d16 -fPIC",
+        ],
+        ":_android_x86_64": [
+            "TARGET_LJARCH=x64",
+            "TARGET_SYS=Linux",
+            "TARGET_FLAGS=--target=x86_64-linux-android31 -fPIC",
         ],
         "//conditions:default": [],
     }),
