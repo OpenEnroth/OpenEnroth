@@ -39,6 +39,8 @@ dist
 *.rej
 *.diff
 *.patch
+# ...except intentional Bazel override patches committed to source:
+!bazel/patches/*.patch
 
 # Clang formatter file for Visual Studio
 .clang-format

@@ -1,0 +1,8 @@
+--- a/foreign_cc/utils.bzl
++++ b/foreign_cc/utils.bzl
+@@ -3,4 +3,4 @@
+ def full_label(label):
+-    return native.repository_name() + "//" + native.package_name() + ":" + label
++    return "//" + native.package_name() + ":" + label
+
+ def runnable_binary(name, binary, foreign_cc_target, match_binary_name = False, **kwargs):
