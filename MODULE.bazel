@@ -19,6 +19,27 @@ bazel_dep(name = "googletest", version = "1.17.0")
 
 bazel_dep(name = "rules_foreign_cc", version = "0.11.1")
 
+# Patch rules_foreign_cc to remove an unused `load("@rules_cc//cc:defs.bzl", "cc_library")`
+# from the glib_dev build_file_content. That load fails under Bazel 8 / Bzlmod because
+# rules_foreign_cc 0.11.1 doesn't declare rules_cc as a bazel_dep, so @rules_cc is not
+# visible from the glib_dev synthetic repository. The load is completely unused (only
+# cc_import is present, which is a native Bazel rule).
+single_version_override(
+    module_name = "rules_foreign_cc",
+    version = "0.11.1",
+    patches = [
+        # Bug 1: glib_dev build_file_content has an unused load("@rules_cc//...") that
+        # fails under Bazel 8 because rules_foreign_cc 0.11.1 doesn't declare rules_cc
+        # as a non-dev bazel_dep (it's only a dev_dependency).
+        "//bazel/patches:rules_foreign_cc_fix_glib.patch",
+        # Bug 2: full_label() uses native.repository_name() which returns @@module+
+        # under Bazel 8 Bzlmod. That canonical form is not resolvable from within the
+        # same module in $(location ...) expressions.
+        "//bazel/patches:rules_foreign_cc_fix_full_label.patch",
+    ],
+    patch_strip = 1,
+)
+
 # ─── Android ─────────────────────────────────────────────────────────────────
 
 bazel_dep(name = "rules_android", version = "0.6.0")
@@ -242,6 +263,24 @@ new_local_repository(
     name = "luajit_windows",
     path = ".",
     build_file = "//bazel/deps:luajit_windows.BUILD",
+)
+
+# System deps — source builds via rules_foreign_cc cmake() ------------------
+# These replace the prebuilt zips from OpenEnroth_Dependencies.
+# FFmpeg is kept as prebuilt for now (autoconf-based, non-trivial on Windows).
+
+http_archive(
+    name = "zlib_src",
+    url = "https://github.com/madler/zlib/archive/04f42ceca40f73e2978b50e93806c2a18c1281fc.tar.gz",
+    strip_prefix = "zlib-04f42ceca40f73e2978b50e93806c2a18c1281fc",
+    build_file = "//bazel/deps:zlib_src.BUILD",
+    # Patch: mark the shared lib EXCLUDE_FROM_ALL so it isn't built by default,
+    # and add OPTIONAL to its install() so cmake --install doesn't fail when the
+    # shared lib wasn't built. zlib 1.2.13 always builds both SHARED and STATIC
+    # unconditionally; this patch respects BUILD_SHARED_LIBS=OFF.
+    patches = ["//bazel/patches:zlib_exclude_shared.patch"],
+    patch_args = ["-p1"],
+    # sha256 = "",  # TODO: fill in
 )
 
 # System deps — prebuilt zips from OpenEnroth_Dependencies (Phase 5) --------
