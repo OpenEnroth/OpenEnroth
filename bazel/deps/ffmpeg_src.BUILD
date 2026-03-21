@@ -43,7 +43,12 @@ configure_make(
     # --start-group/--end-group — the same technique used by the prebuilt POSIX build.
     alwayslink = True,
     linkopts = select({
-        "@platforms//os:linux": ["-lm", "-lpthread"],
+        # alwayslink=True forces --whole-archive which is needed to resolve avformat↔avcodec
+        # circular references. lld (unlike gold) errors on duplicate symbols that arise from
+        # --whole-archive on FFmpeg (libswscale and libavcodec both define ff_init_half2float_tables).
+        # --allow-multiple-definition tells lld to use the first definition and continue,
+        # matching gold's default behavior.
+        "@platforms//os:linux": ["-Wl,--allow-multiple-definition", "-lm", "-lpthread"],
         # macOS: iconv is needed by some FFmpeg demuxers; CoreFoundation for system codecs.
         "@platforms//os:macos": ["-liconv", "-framework CoreFoundation"],
         "//conditions:default": [],
