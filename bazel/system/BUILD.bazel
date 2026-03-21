@@ -59,19 +59,19 @@ cc_library(
 )
 
 # ─── FFmpeg ──────────────────────────────────────────────────────────────────
+# Linux / macOS: source build via configure_make().
+# Windows: prebuilt (FFmpeg configure requires bash/MSYS2 — deferred).
+# Android: prebuilt (NDK cross-compilation not yet configured).
 
 cc_library(
     name = "ffmpeg",
     deps = select({
-        "//bazel/platforms:linux_x86_64":      ["@oe_deps_linux_x86_64//:ffmpeg"],
-        "//bazel/platforms:linux_x86":         ["@oe_deps_linux_x86//:ffmpeg"],
-        "//bazel/platforms:darwin_arm64":      ["@oe_deps_darwin_arm64//:ffmpeg"],
-        "//bazel/platforms:darwin_x86_64":     ["@oe_deps_darwin_x86_64//:ffmpeg"],
-        "//bazel/platforms:windows_x86_64":    ["@oe_deps_windows_x86_64//:ffmpeg"],
-        "//bazel/platforms:windows_x86":       ["@oe_deps_windows_x86//:ffmpeg"],
-        "//bazel/platforms:android_arm64_v8a": ["@oe_deps_android_arm64//:ffmpeg"],
+        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:ffmpeg"],
         "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:ffmpeg"],
-        "//bazel/platforms:android_x86_64":    ["@oe_deps_android_x86_64//:ffmpeg"],
+        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:ffmpeg"],
+        "//bazel/platforms:windows_x86_64":      ["@oe_deps_windows_x86_64//:ffmpeg"],
+        "//bazel/platforms:windows_x86":         ["@oe_deps_windows_x86//:ffmpeg"],
+        "//conditions:default":                  ["@ffmpeg_src//:ffmpeg"],
     }),
     visibility = ["//visibility:public"],
 )
