@@ -50,6 +50,15 @@ cmake(
     defines = ["AL_LIBTYPE_STATIC"],
     linkopts = select({
         "@platforms//os:windows": ["avrt.lib", "winmm.lib", "ole32.lib"],
+        # OpenAL-soft on macOS links against system audio frameworks. cmake() builds
+        # the static lib but doesn't propagate these transitive link deps to Bazel;
+        # add them explicitly so downstream targets link successfully.
+        "@platforms//os:macos": [
+            "-framework CoreAudio",
+            "-framework AudioUnit",
+            "-framework CoreFoundation",
+            "-framework AudioToolbox",
+        ],
         "//conditions:default": [],
     }),
     visibility = ["//visibility:public"],

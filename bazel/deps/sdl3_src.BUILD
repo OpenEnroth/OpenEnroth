@@ -30,8 +30,10 @@ cmake(
         # adds /MD which overrides the /MT we set above.
         "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
     },
-    # Windows system libraries required by the SDL3 static build.
-    # On Linux SDL3 links against system X11/Wayland/etc. which cmake detects automatically.
+    # System libraries required by the SDL3 static build. cmake() builds the static lib
+    # but doesn't propagate transitive link deps to Bazel; add them explicitly here.
+    # On Linux, SDL3 links against system X11/Wayland/etc. via cmake's pkg-config detection
+    # and these are captured in SDL3's installed cmake targets — not needed here.
     linkopts = select({
         "@platforms//os:windows": [
             "kernel32.lib",
@@ -47,6 +49,17 @@ cmake(
             "setupapi.lib",
             "shell32.lib",
             "dinput8.lib",
+        ],
+        "@platforms//os:macos": [
+            "-framework Cocoa",
+            "-framework IOKit",
+            "-framework CoreFoundation",
+            "-framework CoreAudio",
+            "-framework AudioToolbox",
+            "-framework Metal",
+            "-framework QuartzCore",
+            "-framework GameController",
+            "-framework CoreHaptics",
         ],
         "//conditions:default": [],
     }),
