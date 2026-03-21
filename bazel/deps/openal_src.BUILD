@@ -54,10 +54,12 @@ cmake(
         # the static lib but doesn't propagate these transitive link deps to Bazel;
         # add them explicitly so downstream targets link successfully.
         "@platforms//os:macos": [
-            "-framework CoreAudio",
-            "-framework AudioUnit",
-            "-framework CoreFoundation",
-            "-framework AudioToolbox",
+            # In Bazel 8+, linkopts strings are not shell-split; each list entry is
+            # one argument. -framework <Name> must be two separate list entries.
+            "-framework", "CoreAudio",
+            "-framework", "AudioUnit",
+            "-framework", "CoreFoundation",
+            "-framework", "AudioToolbox",
         ],
         "//conditions:default": [],
     }),
