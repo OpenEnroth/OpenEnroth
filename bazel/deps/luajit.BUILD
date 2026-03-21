@@ -30,6 +30,15 @@ config_setting(
     constraint_values = ["@platforms//os:android", "@platforms//cpu:x86_64"],
 )
 
+# linux_x86: identified by --define=oe_build_arch=x86_32 (set in .bazelrc for
+# --config=linux_x86). Can't use constraint_values/@platforms//cpu:x86_32 because
+# --config=linux_x86 uses the host platform (x86_64) with -m32 flags, not a 32-bit
+# target platform.
+config_setting(
+    name = "_linux_x86",
+    define_values = {"oe_build_arch": "x86_32"},
+)
+
 filegroup(
     name = "all_srcs",
     srcs = glob(["**"], exclude = ["BUILD.bazel"]),
@@ -92,25 +101,39 @@ make(
         # without --target would detect host arch), TARGET_FLAGS supplies the NDK
         # --target triple so CC (NDK clang) targets the correct Android ABI.
         # API 31 matches the CI NDK 28.1.13356709 configuration.
+        # BUILDMODE=static: LuaJIT's default (mixed) also builds libluajit.so which
+        # requires Android linker flags we cleared with LDFLAGS=. Static-only avoids
+        # the DYNLINK step entirely.
+        # Note: TARGET_FLAGS must NOT contain spaces — rules_foreign_cc passes each
+        # args[] element as one shell word, and make splits on spaces, treating anything
+        # after the first space in "VAR=val flags" as a separate make target.
         ":_android_arm64": [
             "TARGET_LJARCH=arm64",
             "TARGET_SYS=Linux",
-            "TARGET_FLAGS=--target=aarch64-linux-android31 -fPIC",
+            "TARGET_FLAGS=--target=aarch64-linux-android31",
+            "BUILDMODE=static",
         ],
         ":_android_armv7": [
             "TARGET_LJARCH=arm",
             "TARGET_SYS=Linux",
-            # LuaJIT sets TARGET_ARCH=-march=armv7-a -mfpu=vfpv3-d16 for arm, which
-            # ends up in HOST_ACFLAGS and breaks x86_64 gcc. Clear it and fold the
-            # arch flags into TARGET_FLAGS (used only for target compilation).
+            # LuaJIT sets TARGET_ARCH=-march=armv7-a for arm, which ends up in
+            # HOST_ACFLAGS and breaks x86_64 gcc. Clear it; the NDK clang triple
+            # (--target=armv7a-linux-androideabi31) implies the right march. LuaJIT
+            # also adds -mfpu=vfpv3-d16 to TARGET_XCFLAGS automatically for arm.
             "TARGET_ARCH=",
-            "TARGET_FLAGS=--target=armv7a-linux-androideabi31 -march=armv7-a -mfpu=vfpv3-d16 -fPIC",
+            "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
+            "BUILDMODE=static",
         ],
         ":_android_x86_64": [
             "TARGET_LJARCH=x64",
             "TARGET_SYS=Linux",
-            "TARGET_FLAGS=--target=x86_64-linux-android31 -fPIC",
+            "TARGET_FLAGS=--target=x86_64-linux-android31",
+            "BUILDMODE=static",
         ],
+        # linux_x86: LuaJIT default (mixed) builds libluajit.so which tries to link
+        # against 32-bit libstdc++.so — not always available. Use static-only to skip
+        # the shared lib link step entirely.
+        ":_linux_x86": ["BUILDMODE=static"],
         "//conditions:default": [],
     }),
     visibility = ["//visibility:public"],
