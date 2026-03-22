@@ -42,10 +42,10 @@ cmake(
     # openal-soft sets -DNTDDI_VERSION=NTDDI_VISTA (0x06000000) but not _WIN32_WINNT.
     # Windows SDK 10.0.26100 requires both to be defined consistently; without
     # _WIN32_WINNT, sdkddkver.h(302) errors: "NTDDI_VERSION setting conflicts with
-    # _WIN32_WINNT setting". Add _WIN32_WINNT=0x0600 (Vista) via cmake_options so
+    # _WIN32_WINNT setting". Add _WIN32_WINNT=0x0600 (Vista) via generate_args so
     # it overrides the space-valued CMAKE_C_FLAGS from cache_entries above
     # (cmake uses the last -D value when the same variable is set multiple times).
-    cmake_options = select({
+    generate_args = select({
         "@platforms//os:windows": [
             "-DCMAKE_C_FLAGS=/D_WIN32_WINNT=0x0600",
             "-DCMAKE_CXX_FLAGS=/D_WIN32_WINNT=0x0600",
