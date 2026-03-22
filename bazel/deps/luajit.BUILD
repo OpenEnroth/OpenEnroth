@@ -145,16 +145,20 @@ make(
             "TARGET_ARCH=",
             "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
             "BUILDMODE=static",
-            # HOST_CFLAGS=-DLUAJIT_NUMMODE=2: vm_arm.dasc emits '#if !LJ_DUALNUM #error'
-            # into host/buildvm_arch.h. This is a C preprocessor check evaluated when
-            # the HOST x86_64 compiler compiles host/buildvm.c. lj_arch.h sets LJ_DUALNUM
-            # based on architecture detection: for x86_64 HOST, LJ_DUALNUM=0, so #error
-            # fires. With LUAJIT_NUMMODE=2, lj_arch.h's condition
-            #   (LJ_ARCH_NUMMODE==LJ_NUMMODE_SINGLE_DUAL && LUAJIT_NUMMODE==2)
-            # becomes true for x86_64, making LJ_DUALNUM=1. For ARM target this is a
-            # no-op (ARM already uses LJ_NUMMODE_DUAL, so LJ_DUALNUM=1 regardless).
-            # No spaces in value: make command-line args are split on spaces by the shell.
-            "HOST_CFLAGS=-DLUAJIT_NUMMODE=2",
+            # HOST_CFLAGS=-DLUAJIT_TARGET=LUAJIT_ARCH_arm: LuaJIT's Makefile adds
+            # -DLUAJIT_TARGET=LUAJIT_ARCH_arm to HOST buildvm via TARGET_ARCH+= (line
+            # 286). But passing TARGET_ARCH= on the command line prevents all Makefile
+            # TARGET_ARCH+= operations (GNU make ignores += for command-line variables).
+            # Without this define, HOST buildvm detects native x86_64 arch, giving
+            # 64-bit struct sizes. The 64-bit DISPATCH_GL offsets etc. cannot be
+            # encoded as ARM 12-bit rotated immediates, causing:
+            #   Error: DASM error 1100169f  (DASM_S_RANGE_I, immediate out of range)
+            # With -DLUAJIT_TARGET=LUAJIT_ARCH_arm, lj_arch.h sets for HOST buildvm:
+            #   LJ_ARCH_BITS=32 => GCRef=uint32_t => 32-bit struct offsets (valid ARM imm)
+            #   LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL => LJ_DUALNUM=1 (fixes #if !LJ_DUALNUM)
+            #   LJ_ABI_SOFTFP=1 (from !__ARM_PCS_VFP on x86_64 host), LJ_ARCH_HASFPU=1
+            # No spaces: make command-line args are split on spaces by the shell.
+            "HOST_CFLAGS=-DLUAJIT_TARGET=LUAJIT_ARCH_arm",
         ],
         ":_android_x86_64": [
             "TARGET_LJARCH=x64",
