@@ -68,12 +68,18 @@ make(
         # Android: HOST tools (buildvm, minilua) must run on the Linux build host.
         # CFLAGS/LDFLAGS contain Android NDK-specific flags (--target=aarch64-... etc.).
         # Clear CFLAGS/LDFLAGS so NDK flags don't leak into HOST tool compilation.
-        # HOST_CC is left unset so it defaults to $(CC) = NDK_clang (base). NDK_clang
-        # invoked without --target compiles for the x86_64 host, so HOST tools build
-        # correctly. The NDK target triple is supplied per-ABI via TARGET_FLAGS below.
+        #
+        # CC=$CC: LuaJIT's Makefile has "CC = $(DEFAULT_CC)" (defaults to "gcc"),
+        # which overrides the CC environment variable that rules_foreign_cc sets to NDK
+        # clang. Passing CC=$CC as a make command-line variable (highest precedence)
+        # ensures the NDK clang binary is used. The shell expands $CC to the full NDK
+        # clang path at build time. Without --target, NDK clang targets the x86_64 host,
+        # so HOST_CC = $(CC) = NDK_clang also compiles HOST tools correctly for the host.
+        # The NDK target triple is supplied per-ABI via TARGET_FLAGS below.
         # TARGET_LJARCH is set per-ABI to bypass LuaJIT's auto-detect (which runs CC
         # without --target and would misdetect the host arch when CFLAGS is empty).
         "@platforms//os:android": [
+            "CC=$CC",
             "CFLAGS=",
             "LDFLAGS=",
         ],
