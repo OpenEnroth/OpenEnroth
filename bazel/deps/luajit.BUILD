@@ -144,13 +144,6 @@ make(
             # also adds -mfpu=vfpv3-d16 to TARGET_XCFLAGS automatically for arm.
             "TARGET_ARCH=",
             "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
-            # armeabi-v7a has VFP hardware but uses softfp ABI (LJ_ARCH_SOFTFP=1),
-            # so LuaJIT's auto-detection sets TARGET_DUALNUM=0 (float-only mode).
-            # vm_arm.dasc requires DUALNUM mode and errors:
-            #   "Only dual-number mode supported for ARM target"
-            # Override with TARGET_DUALNUM=1: command-line vars take highest precedence
-            # in GNU make, so this overrides the Makefile's TARGET_DUALNUM = 0 detection.
-            "TARGET_DUALNUM=1",
             "BUILDMODE=static",
         ],
         ":_android_x86_64": [
@@ -168,6 +161,17 @@ make(
         # produce 32-bit output, avoiding the i386/x86-64 arch mismatch error.
         ":_linux_x86": ["BUILDMODE=static", "LDFLAGS=-m32"],
         "//conditions:default": [],
+    }),
+    # armeabi-v7a: DASM_XFLAGS injects -D DUALNUM into dynasm directly, bypassing
+    # the TARGET_TESTARCH detection. DUALNUM is required for all 32-bit ARM targets
+    # (lj_arch.h sets LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL unconditionally for ARM 32-bit,
+    # but rules_foreign_cc's Bazel CC wrapper may prevent the lj_arch.h preprocessing
+    # shell test from running). The env attr is shell-quoted ("value"), so spaces in
+    # the value are preserved; combined with the -e arg, env overrides the Makefile's
+    # DASM_XFLAGS= assignment and injects -D DUALNUM into DASM_FLAGS.
+    env = select({
+        ":_android_armv7": {"DASM_XFLAGS": "-D DUALNUM"},
+        "//conditions:default": {},
     }),
     visibility = ["//visibility:public"],
 )
