@@ -80,10 +80,14 @@ make(
         # tools are compiled by the host compiler. On linux_x86, Bazel injects -m32
         # via cc_wrapper, making HOST tools 32-bit. They still run on x86_64 since
         # gcc-14-multilib provides 32-bit runtime support.
+        # LDFLAGS= clears Bazel-injected linker flags for the luajit executable link
+        # step. On linux_x86, those flags include -L paths to gcc-13 multilib dirs
+        # that don't have 32-bit libstdc++, causing link failure.
         "@platforms//os:linux": [
             "HOST_CC=gcc-14",
             "HOST_CFLAGS=-O2",
             "HOST_LDFLAGS=",
+            "LDFLAGS=",
         ],
         # macOS: Use bare 'cc' (system clang) so HOST tools are compiled without
         # arch-specific flags from Bazel's cc_wrapper. darwin_x86_64 builds run on
