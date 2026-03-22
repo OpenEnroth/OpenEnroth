@@ -53,13 +53,13 @@ cmake(
         # OpenAL-soft on macOS links against system audio frameworks. cmake() builds
         # the static lib but doesn't propagate these transitive link deps to Bazel;
         # add them explicitly so downstream targets link successfully.
+        # Use -Wl,-framework,Name (single string) to avoid two-entry pair ordering
+        # issues in Bazel 8+ linkopts handling.
         "@platforms//os:macos": [
-            # In Bazel 8+, linkopts strings are not shell-split; each list entry is
-            # one argument. -framework <Name> must be two separate list entries.
-            "-framework", "CoreAudio",
-            "-framework", "AudioUnit",
-            "-framework", "CoreFoundation",
-            "-framework", "AudioToolbox",
+            "-Wl,-framework,CoreAudio",
+            "-Wl,-framework,AudioUnit",
+            "-Wl,-framework,CoreFoundation",
+            "-Wl,-framework,AudioToolbox",
         ],
         "//conditions:default": [],
     }),
