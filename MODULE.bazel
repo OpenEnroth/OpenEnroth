@@ -268,34 +268,6 @@ http_archive(
     strip_prefix = "LuaJIT-97813fb924edf822455f91a5fbbdfdb349e5984f",
     build_file = "//bazel/deps:luajit.BUILD",
     sha256 = "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7",
-    # armeabi-v7a: LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL is set unconditionally for 32-bit ARM
-    # in lj_arch.h, which requires DUALNUM in the dynasm step. LuaJIT detects this via
-    # TARGET_TESTARCH (runs CC to grep lj_arch.h), but Bazel's CC wrapper prevents the
-    # detection shell command from working correctly in cross-compilation mode, leaving
-    # TARGET_TESTARCH empty and DASM_AFLAGS without -D DUALNUM.
-    #
-    # Patch src/Makefile to insert `ifeq (arm,$(TARGET_LJARCH)) / DASM_AFLAGS+= -D DUALNUM`
-    # just before the DASM_FLAGS definition. `ifeq` is a Makefile directive evaluated at
-    # parse time using the TARGET_LJARCH=arm command-line variable we pass; it is safe for
-    # all other targets (arm64, x64) where ifeq(arm,...) is false.
-    # LuaJIT's own Makefile already uses `ifeq (arm,$(TARGET_LJARCH))` at line 332, so
-    # this syntax is proven to work with the same Makefile.
-    patch_cmds = [
-        """python3 - << 'PYEOF'
-content = open("src/Makefile").read()
-# Clean up any previous $(if ...) suffix added by an earlier patch attempt.
-# The repository cache may have a previously patched Makefile that we need to
-# handle gracefully before applying the ifeq directive approach.
-content = content.replace(" $(if $(filter arm,$(TARGET_LJARCH)),-D DUALNUM,)", "")
-# Insert ifeq block before DASM_FLAGS= if not already present (idempotent).
-ifeq_block = "ifeq (arm,$(TARGET_LJARCH))\\nDASM_AFLAGS+= -D DUALNUM\\nendif\\n"
-marker = "DASM_FLAGS= $(DASM_XFLAGS) $(DASM_AFLAGS)"
-if ifeq_block not in content:
-    assert marker in content, "DASM_FLAGS marker not found in src/Makefile"
-    content = content.replace(marker, ifeq_block + marker, 1)
-open("src/Makefile", "w").write(content)
-PYEOF""",
-    ],
 )
 
 http_archive(

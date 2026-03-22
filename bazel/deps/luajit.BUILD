@@ -145,6 +145,13 @@ make(
             "TARGET_ARCH=",
             "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
             "BUILDMODE=static",
+            # LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL is unconditionally set for 32-bit ARM
+            # in lj_arch.h, requiring DUALNUM in the dynasm step. LuaJIT detects this
+            # via TARGET_TESTARCH (runs CC to grep lj_arch.h), but Bazel's CC wrapper
+            # prevents the detection shell command from running in cross-compilation.
+            # Pass DASM_AFLAGS as a make command-line variable (highest precedence,
+            # propagated to sub-makes via MAKEFLAGS) to force the flag unconditionally.
+            "DASM_AFLAGS=-D DUALNUM",
         ],
         ":_android_x86_64": [
             "TARGET_LJARCH=x64",
