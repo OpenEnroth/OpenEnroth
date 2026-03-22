@@ -695,6 +695,13 @@ GAME_TEST(Issues, Issue2255) {
     EXPECT_MISSES(spritesTape.flatten(), SPRITE_PROJECTILE_ARROW); // No arrows were fired, only fire bolts.
 }
 
+GAME_TEST(Issues, Issue2289) {
+    // Monsters were skipping their turns in turn-based mode when their action length was zero.
+    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
+    test.playTraceFromTestData("issue_2289.mm7", "issue_2289.json");
+    EXPECT_CONTAINS(turnBasedTape, true); // We were in turn-based combat.
+}
+
 GAME_TEST(Issues, Issue2298) {
     // Holding an item when entering a shop = it can not be dropped after
     // This tests that the mouse cursor updates correctly when dropping an item
