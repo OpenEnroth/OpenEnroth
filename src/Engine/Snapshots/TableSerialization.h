@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Library/Snapshots/SnapshotTags.h"
+
 #include "Utility/Memory/Blob.h"
 
 class DecorationList;
@@ -21,7 +23,7 @@ void deserialize(const Blob &src, PortraitFrameTable *dst);
 /**
  * @offset 0x0045864C
  */
-void deserialize(const Blob &src, DecorationList *dst);
+void deserialize(const Blob &src, DecorationList *dst, EncodingTag encoding);
 
 /**
  * @offset 0x00495056

@@ -23,7 +23,7 @@ static Blob makeVidBlob(int entryCount) {
 
     for (int i = 0; i < entryCount; i++) {
         VidEntry_MM7 entry = {};
-        snapshot(fmt::format("video{}.smk", i), &entry.name);
+        snapshot(fmt::format("video{}.smk", i), &entry.name, tags::encoding(ENCODING_BYTES));
         entry.offset = headerSize + i * dataSize;
         serialize(entry, &stream);
     }
@@ -66,7 +66,7 @@ UNIT_TEST(VidDetect, OffsetInsideHeader) {
     serialize(uint32_t(1), &stream);
 
     VidEntry_MM7 entry = {};
-    snapshot(std::string("test.smk"), &entry.name);
+    snapshot(std::string("test.smk"), &entry.name, tags::encoding(ENCODING_BYTES));
     entry.offset = 0; // Points inside header.
     serialize(entry, &stream);
 
@@ -84,12 +84,12 @@ UNIT_TEST(VidDetect, NonMonotonicOffsets) {
     serialize(uint32_t(2), &stream);
 
     VidEntry_MM7 entry0 = {};
-    snapshot(std::string("a.smk"), &entry0.name);
+    snapshot(std::string("a.smk"), &entry0.name, tags::encoding(ENCODING_BYTES));
     entry0.offset = headerSize + 100;
     serialize(entry0, &stream);
 
     VidEntry_MM7 entry1 = {};
-    snapshot(std::string("b.smk"), &entry1.name);
+    snapshot(std::string("b.smk"), &entry1.name, tags::encoding(ENCODING_BYTES));
     entry1.offset = headerSize; // Less than entry0, non-monotonic.
     serialize(entry1, &stream);
 
