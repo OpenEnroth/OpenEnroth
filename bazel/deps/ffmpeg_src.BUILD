@@ -52,7 +52,12 @@ configure_make(
         # macOS: iconv is needed by some FFmpeg demuxers; CoreFoundation for system codecs.
         # Use -Wl,-framework,Name (single string) to avoid two-entry pair ordering
         # issues in Bazel 8+ linkopts handling.
-        "@platforms//os:macos": ["-liconv", "-Wl,-framework,CoreFoundation"],
+        # alwayslink=True causes -force_load for each archive. The new Apple linker
+        # (Xcode 15+) errors on duplicate symbols that arise from -force_load:
+        # (libswscale and libavcodec both compile half2float.c → duplicate
+        # _ff_init_half2float_tables). -ld_classic falls back to the old ld64 which
+        # treats duplicate symbols as warnings, matching gold/GNU ld behavior.
+        "@platforms//os:macos": ["-liconv", "-Wl,-framework,CoreFoundation", "-Wl,-ld_classic"],
         "//conditions:default": [],
     }),
     visibility = ["//visibility:public"],
