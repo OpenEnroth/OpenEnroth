@@ -118,6 +118,10 @@ build:windows --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmak
 
 # Android — NDK version 28.1.13356709 (matches CI)
 # android_base: common flags inherited by all android_* configs
+# Use system make instead of rules_foreign_cc's bundled make binary.
+# The bundled make binary has issues with LuaJIT's src/Makefile on Linux too
+# ($(if $(filter ...)) expansion fails in cross-compilation mode).
+build:android_base --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
 build:android_base --cxxopt=-std=c++23
 build:android_base --host_cxxopt=-std=c++23
 build:android_base --copt=-fPIC

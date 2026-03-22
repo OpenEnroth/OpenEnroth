@@ -274,17 +274,19 @@ http_archive(
     # detection shell command from working correctly in cross-compilation mode, leaving
     # TARGET_TESTARCH empty and DASM_AFLAGS without -D DUALNUM.
     #
-    # Patch src/Makefile (line 470) to append $(if $(filter arm,$(TARGET_LJARCH)),-D DUALNUM,)
-    # to the DASM_FLAGS definition. The $(if ...) function is evaluated by make at build
-    # time using the TARGET_LJARCH=arm command-line variable we pass; it is safe for all
-    # other targets (arm64, x86_64) where $(filter arm,...) is empty.
+    # Patch src/Makefile to insert `ifeq (arm,$(TARGET_LJARCH)) / DASM_AFLAGS+= -D DUALNUM`
+    # just before the DASM_FLAGS definition. `ifeq` is a Makefile directive evaluated at
+    # parse time using the TARGET_LJARCH=arm command-line variable we pass; it is safe for
+    # all other targets (arm64, x64) where ifeq(arm,...) is false.
+    # LuaJIT's own Makefile already uses `ifeq (arm,$(TARGET_LJARCH))` at line 332, so
+    # this syntax is proven to work with the same Makefile.
     patch_cmds = [
         """python3 - << 'PYEOF'
 content = open("src/Makefile").read()
-old = "DASM_FLAGS= $(DASM_XFLAGS) $(DASM_AFLAGS)"
-new = "DASM_FLAGS= $(DASM_XFLAGS) $(DASM_AFLAGS) $(if $(filter arm,$(TARGET_LJARCH)),-D DUALNUM,)"
-assert old in content, "Pattern not found in src/Makefile: " + repr(old)
-open("src/Makefile", "w").write(content.replace(old, new, 1))
+marker = "DASM_FLAGS= $(DASM_XFLAGS) $(DASM_AFLAGS)"
+insert = "ifeq (arm,$(TARGET_LJARCH))\nDASM_AFLAGS+= -D DUALNUM\nendif\n"
+assert marker in content, "Pattern not found in src/Makefile: " + repr(marker)
+open("src/Makefile", "w").write(content.replace(marker, insert + marker, 1))
 PYEOF""",
     ],
 )
