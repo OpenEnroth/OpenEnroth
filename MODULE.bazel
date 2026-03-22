@@ -282,13 +282,13 @@ http_archive(
     # The patch is idempotent: re-running on an already-patched file is a no-op.
     patch_cmds = [
         """python3 - << 'PYEOF'
-content = open('dynasm/dynasm.lua').read()
+content = open('dynasm/dynasm.lua').read().replace('\\r\\n', '\\n')
 inject = '  -- Auto-define DUALNUM for ARM (Bazel cross-compile fix).\\n  if g_fname and g_fname:match("vm_arm%.dasc$") then map_def["DUALNUM"] = "1" end\\n'
 marker = '  readfile(fin)\\n'
 if inject not in content:
     assert marker in content, 'readfile(fin) not found in dynasm/dynasm.lua'
     content = content.replace(marker, inject + marker, 1)
-    open('dynasm/dynasm.lua', 'w').write(content)
+open('dynasm/dynasm.lua', 'w').write(content)
 PYEOF""",
     ],
 )
