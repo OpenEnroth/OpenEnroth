@@ -151,7 +151,11 @@ make(
             # prevents the detection shell command from running in cross-compilation.
             # Pass DASM_AFLAGS as a make command-line variable (highest precedence,
             # propagated to sub-makes via MAKEFLAGS) to force the flag unconditionally.
-            "DASM_AFLAGS=-D DUALNUM",
+            # No space in "-DDUALNUM": rules_foreign_cc passes each args[] element as one
+            # shell word but make still splits on spaces, so "-D DUALNUM" would treat
+            # "DUALNUM" as a make target. DynASM's Lua arg parser handles "-DSYM"
+            # (flag == "-D", rest = "SYM") the same as "-D SYM", so no space is needed.
+            "DASM_AFLAGS=-DDUALNUM",
         ],
         ":_android_x86_64": [
             "TARGET_LJARCH=x64",
