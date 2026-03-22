@@ -145,19 +145,35 @@ make(
             "TARGET_ARCH=",
             "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
             "BUILDMODE=static",
-            # HOST_CFLAGS=-DLUAJIT_TARGET=LUAJIT_ARCH_arm: LuaJIT's Makefile adds
-            # -DLUAJIT_TARGET=LUAJIT_ARCH_arm to HOST buildvm via TARGET_ARCH+= (line
-            # 286). But passing TARGET_ARCH= on the command line prevents all Makefile
-            # TARGET_ARCH+= operations (GNU make ignores += for command-line variables).
-            # Without this define, HOST buildvm detects native x86_64 arch, giving
-            # 64-bit struct sizes. The 64-bit DISPATCH_GL offsets etc. cannot be
-            # encoded as ARM 12-bit rotated immediates, causing:
-            #   Error: DASM error 1100169f  (DASM_S_RANGE_I, immediate out of range)
-            # With -DLUAJIT_TARGET=LUAJIT_ARCH_arm, lj_arch.h sets for HOST buildvm:
-            #   LJ_ARCH_BITS=32 => GCRef=uint32_t => 32-bit struct offsets (valid ARM imm)
-            #   LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL => LJ_DUALNUM=1 (fixes #if !LJ_DUALNUM)
-            #   LJ_ABI_SOFTFP=1 (from !__ARM_PCS_VFP on x86_64 host), LJ_ARCH_HASFPU=1
-            # No spaces: make command-line args are split on spaces by the shell.
+            # HOST tools (buildvm, minilua) must be compiled as 32-bit to match the
+            # ARM 32-bit target layout. The required make args work together as follows:
+            #
+            # HOST_CC=gcc-14: use system GCC (not NDK clang) for HOST compilation;
+            #   NDK clang without --target is x86_64 native and cannot cross-compile to
+            #   32-bit x86 without special flags. System gcc-14 with -m32 does so cleanly.
+            #   Requires gcc-14-multilib on the build host (installed in CI workflow).
+            #
+            # HOST_XCFLAGS=-m32: HOST_ACFLAGS=$(CCOPTIONS) $(HOST_XCFLAGS) $(TARGET_ARCH)
+            #   $(HOST_CFLAGS), so -m32 reaches the HOST compiler (no spaces allowed in
+            #   individual make command-line args — each arg is one shell word).
+            #
+            # HOST_LDFLAGS=-m32: HOST_ALDFLAGS=$(LDOPTIONS) $(HOST_XLDFLAGS) $(HOST_LDFLAGS),
+            #   so -m32 reaches the HOST linker step as well.
+            #
+            # HOST_CFLAGS=-DLUAJIT_TARGET=LUAJIT_ARCH_arm: LuaJIT's Makefile adds this
+            #   define to HOST buildvm via TARGET_ARCH+= (line 286). But TARGET_ARCH= on
+            #   the command line suppresses ALL += for that variable (GNU make ignores +=
+            #   for command-line overrides). Without this define, HOST buildvm auto-detects
+            #   x86_64 (or x86_32 with -m32) and generates wrong ARM code:
+            #     Error: DASM error 1100169f  (DASM_S_RANGE_I, immediate out of range)
+            #   With -DLUAJIT_TARGET=LUAJIT_ARCH_arm AND -m32, lj_arch.h sets:
+            #     LJ_ARCH_BITS=32 => GCRef=uint32_t => 32-bit struct offsets (valid ARM imm)
+            #     LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL => LJ_DUALNUM=1
+            #   And sizeof(void*)=4 (from -m32) matches LJ_32=1, passing buildvm.c line 449:
+            #     if (sizeof(void *) != 4*LJ_32+8*LJ_64) => 4 == 4*1+8*0 = 4 ✓
+            "HOST_CC=gcc-14",
+            "HOST_XCFLAGS=-m32",
+            "HOST_LDFLAGS=-m32",
             "HOST_CFLAGS=-DLUAJIT_TARGET=LUAJIT_ARCH_arm",
         ],
         ":_android_x86_64": [

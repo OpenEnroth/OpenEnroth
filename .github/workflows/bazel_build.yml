@@ -119,6 +119,12 @@ jobs:
           sudo apt-get install -y libx11-dev libxext-dev libxrandr-dev \
             libxcursor-dev libxi-dev libxfixes-dev \
             libwayland-dev libxkbcommon-dev
+          # android_armeabi_v7a: LuaJIT HOST tools (buildvm, minilua) must be compiled
+          # as 32-bit x86 (gcc-14 -m32) to match the 32-bit ARM target struct layout.
+          # gcc-14-multilib provides the 32-bit runtime and headers for gcc -m32.
+          if [ "${{matrix.target}}" = "android_armeabi_v7a" ]; then
+            sudo apt-get install -y gcc-14-multilib
+          fi
 
       - name: '[windows] Set up MSVC'
         if: env.MATRIX_PLATFORM == 'windows'
