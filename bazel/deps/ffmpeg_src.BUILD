@@ -42,22 +42,19 @@ configure_make(
     # every symbol unconditionally, resolving the circular dependency without
     # --start-group/--end-group — the same technique used by the prebuilt POSIX build.
     alwayslink = True,
+    # After install, remove half2float.o from libswscale.a to eliminate the duplicate
+    # _ff_init_half2float_tables symbol. Both libavcodec and libswscale compile half2float.c
+    # independently. With alwayslink=True (--whole-archive / -force_load), both copies
+    # land in the final binary, causing a duplicate symbol error in lld and Apple ld.
+    # Removing it from libswscale is safe: the binary still includes libavcodec.a with
+    # the symbol, satisfying any swscale references at final link time.
+    postfix_script = "ar d $INSTALLDIR/lib/libswscale.a half2float.o || true",
     linkopts = select({
-        # alwayslink=True forces --whole-archive which is needed to resolve avformat↔avcodec
-        # circular references. lld (unlike gold) errors on duplicate symbols that arise from
-        # --whole-archive on FFmpeg (libswscale and libavcodec both define ff_init_half2float_tables).
-        # --allow-multiple-definition tells lld to use the first definition and continue,
-        # matching gold's default behavior.
-        "@platforms//os:linux": ["-Wl,--allow-multiple-definition", "-lm", "-lpthread"],
+        "@platforms//os:linux": ["-lm", "-lpthread"],
         # macOS: iconv is needed by some FFmpeg demuxers; CoreFoundation for system codecs.
         # Use -Wl,-framework,Name (single string) to avoid two-entry pair ordering
         # issues in Bazel 8+ linkopts handling.
-        # alwayslink=True causes -force_load for each archive. The new Apple linker
-        # (Xcode 15+) errors on duplicate symbols that arise from -force_load:
-        # (libswscale and libavcodec both compile half2float.c → duplicate
-        # _ff_init_half2float_tables). -ld_classic falls back to the old ld64 which
-        # treats duplicate symbols as warnings, matching gold/GNU ld behavior.
-        "@platforms//os:macos": ["-liconv", "-Wl,-framework,CoreFoundation", "-Wl,-ld_classic"],
+        "@platforms//os:macos": ["-liconv", "-Wl,-framework,CoreFoundation"],
         "//conditions:default": [],
     }),
     visibility = ["//visibility:public"],
