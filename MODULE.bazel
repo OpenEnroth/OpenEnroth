@@ -283,10 +283,17 @@ http_archive(
     patch_cmds = [
         """python3 - << 'PYEOF'
 content = open("src/Makefile").read()
+# Clean up any previous $(if ...) suffix added by an earlier patch attempt.
+# The repository cache may have a previously patched Makefile that we need to
+# handle gracefully before applying the ifeq directive approach.
+content = content.replace(" $(if $(filter arm,$(TARGET_LJARCH)),-D DUALNUM,)", "")
+# Insert ifeq block before DASM_FLAGS= if not already present (idempotent).
+ifeq_block = "ifeq (arm,$(TARGET_LJARCH))\nDASM_AFLAGS+= -D DUALNUM\nendif\n"
 marker = "DASM_FLAGS= $(DASM_XFLAGS) $(DASM_AFLAGS)"
-insert = "ifeq (arm,$(TARGET_LJARCH))\nDASM_AFLAGS+= -D DUALNUM\nendif\n"
-assert marker in content, "Pattern not found in src/Makefile: " + repr(marker)
-open("src/Makefile", "w").write(content.replace(marker, insert + marker, 1))
+if ifeq_block not in content:
+    assert marker in content, "DASM_FLAGS marker not found in src/Makefile"
+    content = content.replace(marker, ifeq_block + marker, 1)
+open("src/Makefile", "w").write(content)
 PYEOF""",
     ],
 )
