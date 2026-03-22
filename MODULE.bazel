@@ -268,29 +268,6 @@ http_archive(
     strip_prefix = "LuaJIT-97813fb924edf822455f91a5fbbdfdb349e5984f",
     build_file = "//bazel/deps:luajit.BUILD",
     sha256 = "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7",
-    # armeabi-v7a: LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL is set unconditionally for 32-bit ARM
-    # in lj_arch.h, requiring DUALNUM in the dynasm step. LuaJIT detects this via
-    # TARGET_TESTARCH (runs CC to preprocess lj_arch.h in a $(shell ...) call), but
-    # Bazel's cross-compilation sandbox prevents this from working, leaving DASM_AFLAGS
-    # without -D DUALNUM and dynasm.lua without the DUALNUM define.
-    #
-    # Fix: patch dynasm/dynasm.lua to auto-define DUALNUM before processing vm_arm.dasc.
-    # This is the most reliable approach: it operates at the Lua script level, completely
-    # bypassing the Make variable system and host-shell detection that fails in Bazel.
-    # Insertion point: just before readfile(fin) in translate(), where g_fname is already
-    # set to the input file path and map_def is the global defines table.
-    # The patch is idempotent: re-running on an already-patched file is a no-op.
-    patch_cmds = [
-        """python3 - << 'PYEOF'
-content = open('dynasm/dynasm.lua').read().replace('\\r\\n', '\\n')
-inject = '  -- Auto-define DUALNUM for ARM (Bazel cross-compile fix).\\n  if g_fname and g_fname:match("vm_arm%.dasc$") then map_def["DUALNUM"] = "1" end\\n'
-marker = '  readfile(fin)\\n'
-if inject not in content:
-    assert marker in content, 'readfile(fin) not found in dynasm/dynasm.lua'
-    content = content.replace(marker, inject + marker, 1)
-open('dynasm/dynasm.lua', 'w').write(content)
-PYEOF""",
-    ],
 )
 
 http_archive(
