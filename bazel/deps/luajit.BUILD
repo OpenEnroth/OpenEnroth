@@ -66,13 +66,14 @@ make(
     # First: OS-level flags. Second: per-ABI Android TARGET_FLAGS.
     args = select({
         # Android: HOST tools (buildvm, minilua) must run on the Linux build host.
-        # CFLAGS/LDFLAGS contain Android NDK-specific flags (--target=aarch64-... etc.)
-        # that HOST_CC=gcc cannot handle. Clear them here; the NDK target triple is
-        # supplied per-ABI via TARGET_FLAGS in the second select() below.
+        # CFLAGS/LDFLAGS contain Android NDK-specific flags (--target=aarch64-... etc.).
+        # Clear CFLAGS/LDFLAGS so NDK flags don't leak into HOST tool compilation.
+        # HOST_CC is left unset so it defaults to $(CC) = NDK_clang (base). NDK_clang
+        # invoked without --target compiles for the x86_64 host, so HOST tools build
+        # correctly. The NDK target triple is supplied per-ABI via TARGET_FLAGS below.
         # TARGET_LJARCH is set per-ABI to bypass LuaJIT's auto-detect (which runs CC
         # without --target and would misdetect the host arch when CFLAGS is empty).
         "@platforms//os:android": [
-            "HOST_CC=gcc",
             "CFLAGS=",
             "LDFLAGS=",
         ],
@@ -83,6 +84,9 @@ make(
         # LDFLAGS= clears Bazel-injected linker flags for the luajit executable link
         # step. On linux_x86, those flags include -L paths to gcc-13 multilib dirs
         # that don't have 32-bit libstdc++, causing link failure.
+        # linux_x86 additionally sets LDFLAGS=-m32 in the second select() below to
+        # restore the -m32 flag needed for 32-bit linking (GNU make uses the last
+        # command-line assignment, so it overrides this empty LDFLAGS= value).
         "@platforms//os:linux": [
             "HOST_CC=gcc-14",
             "HOST_CFLAGS=-O2",
@@ -137,7 +141,11 @@ make(
         # linux_x86: LuaJIT default (mixed) builds libluajit.so which tries to link
         # against 32-bit libstdc++.so — not always available. Use static-only to skip
         # the shared lib link step entirely.
-        ":_linux_x86": ["BUILDMODE=static"],
+        # LDFLAGS=-m32 overrides the LDFLAGS= from the linux OS section above (GNU
+        # make uses the last command-line assignment). This restores the -m32 flag so
+        # both HOST (minilua.o compiled 32-bit via CCOPTIONS) and TARGET link steps
+        # produce 32-bit output, avoiding the i386/x86-64 arch mismatch error.
+        ":_linux_x86": ["BUILDMODE=static", "LDFLAGS=-m32"],
         "//conditions:default": [],
     }),
     visibility = ["//visibility:public"],
