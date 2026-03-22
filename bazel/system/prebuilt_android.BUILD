@@ -9,9 +9,12 @@ cc_library(name = "sdl3",          includes = ["include"], deps = [":_sdl3_lib"]
 # Headers (<zlib.h>, <zconf.h>) come from the NDK sysroot automatically.
 cc_library(name = "zlib", linkopts = ["-lz"], visibility = ["//visibility:public"])
 
-# OpenAL on Android is provided by the NDK -- stub that links against the system lib.
+cc_import(name = "_openal_lib",    static_library = "lib/libopenal.a",    hdrs = glob(["include/AL/**"]))
 cc_library(
     name = "openal",
+    includes = ["include/AL"],
+    deps = [":_openal_lib"],
+    # openal-soft on Android uses OpenSLES as its audio backend.
     linkopts = ["-lOpenSLES"],
     visibility = ["//visibility:public"],
 )
