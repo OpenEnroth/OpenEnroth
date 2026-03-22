@@ -69,17 +69,21 @@ make(
         # CFLAGS/LDFLAGS contain Android NDK-specific flags (--target=aarch64-... etc.).
         # Clear CFLAGS/LDFLAGS so NDK flags don't leak into HOST tool compilation.
         #
-        # CC=$CC: LuaJIT's Makefile has "CC = $(DEFAULT_CC)" (defaults to "gcc"),
+        # "-e": LuaJIT's Makefile has "CC = $(DEFAULT_CC)" (defaults to "gcc"),
         # which overrides the CC environment variable that rules_foreign_cc sets to NDK
-        # clang. Passing CC=$CC as a make command-line variable (highest precedence)
-        # ensures the NDK clang binary is used. The shell expands $CC to the full NDK
-        # clang path at build time. Without --target, NDK clang targets the x86_64 host,
-        # so HOST_CC = $(CC) = NDK_clang also compiles HOST tools correctly for the host.
-        # The NDK target triple is supplied per-ABI via TARGET_FLAGS below.
+        # clang. The -e flag (--environment-overrides) tells make to let environment
+        # variables take precedence over Makefile variable assignments. Since
+        # rules_foreign_cc exports CC=/path/to/ndk/clang in the build environment
+        # BEFORE invoking make, -e ensures LuaJIT uses NDK clang instead of gcc.
+        # Command-line variables (CFLAGS=, LDFLAGS=, TARGET_FLAGS=...) still have
+        # highest precedence and override both env and Makefile (make semantics).
+        # Without --target, NDK clang targets the x86_64 host, so HOST_CC = $(CC)
+        # also compiles HOST tools correctly. The NDK target triple is supplied
+        # per-ABI via TARGET_FLAGS below.
         # TARGET_LJARCH is set per-ABI to bypass LuaJIT's auto-detect (which runs CC
         # without --target and would misdetect the host arch when CFLAGS is empty).
         "@platforms//os:android": [
-            "CC=$CC",
+            "-e",
             "CFLAGS=",
             "LDFLAGS=",
         ],
