@@ -75,6 +75,10 @@ build:linux_x86 --define=oe_build_arch=x86_32
 # Appending -fuse-ld=bfd after the toolchain-injected -fuse-ld=lld overrides it
 # (GCC uses the last -fuse-ld=X seen on the command line).
 build:linux_x86 --linkopt=-fuse-ld=bfd
+# Bazel's start_end_lib feature passes --start-lib/--end-lib to the linker for thin
+# archives. bfd doesn't support these flags (only lld and gold do). Disable so that
+# archives are passed directly to bfd without --start-lib wrappers.
+build:linux_x86 --features=-start_end_lib
 
 # Linux x86_64
 build:linux_x86_64 --config=linux
