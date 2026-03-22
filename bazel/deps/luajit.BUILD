@@ -144,6 +144,12 @@ make(
             # also adds -mfpu=vfpv3-d16 to TARGET_XCFLAGS automatically for arm.
             "TARGET_ARCH=",
             "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
+            # NDK clang --target=armv7a-linux-androideabi31 makes -dumpmachine output
+            # "armv7a-linux-androideabi31", so LuaJIT's cut-d--f3 gives "androideabi31"
+            # instead of "androideabi". The ifeq check fails, __ARM_PCS_VFP is not
+            # defined, SOFTFP is detected, DUALNUM=0, and vm_arm.dasc errors.
+            # Set TARGET_ABI explicitly so LuaJIT adds -D__ARM_PCS_VFP and DUALNUM=1.
+            "TARGET_ABI=androideabi",
             "BUILDMODE=static",
         ],
         ":_android_x86_64": [
