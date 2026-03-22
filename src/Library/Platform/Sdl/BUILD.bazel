@@ -6,8 +6,15 @@ cc_library(
     srcs = [
         "SdlMain.cpp",
     ],
+    # SDL_main.h renames main() to SDL_main() on Android so libSDL3.so (loaded by
+    # the Java activity layer) can call it. For cc_binary (standalone NDK executable,
+    # not APK), the binary needs a regular main() entry point. SDL_MAIN_HANDLED tells
+    # SDL3 not to rename main, preserving the standard main() for the linker.
+    defines = select({
+        "@platforms//os:android": ["SDL_MAIN_HANDLED"],
+        "//conditions:default": [],
+    }),
     deps = [
-        # SDL3 — Phase 5 TODO
         "//bazel/system:sdl3",
     ],
     visibility = ["//visibility:public"],
