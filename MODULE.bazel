@@ -271,36 +271,24 @@ http_archive(
     # armeabi-v7a: LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL is set unconditionally for 32-bit ARM
     # in lj_arch.h, requiring DUALNUM in the dynasm step. LuaJIT detects this via
     # TARGET_TESTARCH (runs CC to preprocess lj_arch.h in a $(shell ...) call), but
-    # Bazel's CC wrapper fails outside of Bazel's normal compilation flow, leaving
-    # TARGET_TESTARCH empty and DASM_AFLAGS without -D DUALNUM.
+    # Bazel's cross-compilation sandbox prevents this from working, leaving DASM_AFLAGS
+    # without -D DUALNUM and dynasm.lua without the DUALNUM define.
     #
-    # Fix: patch the dynasm recipe in src/Makefile to inject
-    # $(if $(filter arm,$(DASM_ARCH)),-D DUALNUM) directly at the invocation site.
-    # DASM_ARCH= $(TARGET_LJARCH), and we pass TARGET_LJARCH=arm on the make
-    # command line, so $(filter arm,arm) = arm (non-empty), and the $(if) expands
-    # to -D DUALNUM for armeabi-v7a only. For all other targets (arm64, x64) it
-    # expands to empty.
-    #
-    # This approach avoids DASM_AFLAGS variable scoping issues (ifeq blocks interact
-    # with command-line variable precedence in complex ways). The recipe expansion
-    # is straightforward and guaranteed to work with system GNU make 4.x.
-    #
-    # The patch is idempotent: if the recipe is already patched (cache hit from a
-    # previous run), the assert confirms it and we skip the write.
-    # Also cleans up any $(if ...) suffix previously appended to DASM_FLAGS.
+    # Fix: patch dynasm/dynasm.lua to auto-define DUALNUM before processing vm_arm.dasc.
+    # This is the most reliable approach: it operates at the Lua script level, completely
+    # bypassing the Make variable system and host-shell detection that fails in Bazel.
+    # Insertion point: just before readfile(fin) in translate(), where g_fname is already
+    # set to the input file path and map_def is the global defines table.
+    # The patch is idempotent: re-running on an already-patched file is a no-op.
     patch_cmds = [
         """python3 - << 'PYEOF'
-content = open("src/Makefile").read()
-# Clean up any $(if ...) suffix appended to DASM_FLAGS by an earlier patch attempt.
-content = content.replace(" $(if $(filter arm,$(TARGET_LJARCH)),-D DUALNUM,)", "")
-# Patch the dynasm invocation to inject -D DUALNUM for ARM targets.
-old_dasm = "\\t$(Q)$(DASM) $(DASM_FLAGS) -o $@ $(DASM_DASC)"
-new_dasm = "\\t$(Q)$(DASM) $(DASM_FLAGS) $(if $(filter arm,$(DASM_ARCH)),-D DUALNUM) -o $@ $(DASM_DASC)"
-if old_dasm not in content:
-    assert new_dasm in content, "DASM invocation not found in src/Makefile"
-else:
-    content = content.replace(old_dasm, new_dasm, 1)
-    open("src/Makefile", "w").write(content)
+content = open('dynasm/dynasm.lua').read()
+inject = '  -- Auto-define DUALNUM for ARM (Bazel cross-compile fix).\\n  if g_fname and g_fname:match("vm_arm%.dasc$") then map_def["DUALNUM"] = "1" end\\n'
+marker = '  readfile(fin)\\n'
+if inject not in content:
+    assert marker in content, 'readfile(fin) not found in dynasm/dynasm.lua'
+    content = content.replace(marker, inject + marker, 1)
+    open('dynasm/dynasm.lua', 'w').write(content)
 PYEOF""",
     ],
 )
