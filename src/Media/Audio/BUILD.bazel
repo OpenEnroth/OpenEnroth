@@ -1,0 +1,66 @@
+cc_library(
+    name = "media_audio_sound_enums",
+    hdrs = ["SoundEnums.h"],
+    deps = [
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# Header-only target: SoundInfo.h without full media_audio dep.
+# Needed by engine (EntitySnapshots.cpp) — media_audio depends on engine, so cycle.
+cc_library(
+    name = "media_audio_sound_info",
+    hdrs = ["SoundInfo.h"],
+    deps = [
+        ":media_audio_sound_enums",
+        "//src/Media:media_interfaces",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# AudioPlayer.cpp needs GUI/GUIWindow.h — circular with gui -> gui_ui -> media_audio.
+# Compiled in //src/Engine:engine_impl which depends on both media_audio and gui.
+exports_files(
+    ["AudioPlayer.cpp"],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "media_audio",
+    srcs = [
+        # AudioPlayer.cpp compiled in //src/Engine:engine_impl (needs GUI headers — circular)
+        "AudioSamplePool.cpp",
+        "OpenALAudioDataSource.cpp",
+        "OpenALSoundProvider.cpp",
+        "OpenALTrack16.cpp",
+        "OpenALSample16.cpp",
+        "SoundList.cpp",
+    ],
+    hdrs = [
+        "AudioPlayer.h",
+        "AudioSamplePool.h",
+        "OpenALAudioDataSource.h",
+        "OpenALSoundProvider.h",
+        "OpenALTrack16.h",
+        "OpenALSample16.h",
+        "OpenALUpdateThread.h",
+        "SoundInfo.h",
+        "SoundList.h",
+    ],
+    deps = [
+        ":media_audio_sound_enums",
+        ":media_audio_sound_info",
+        "//src/Engine:engine",
+        "//src/Media:media_datasource_base",
+        "//src/Media:media_interfaces",
+        "//src/Engine/Spells:engine_spells",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Utility:utility",
+        "//src/Library/Snd:library_snd",
+        # OpenAL — Phase 5 TODO
+        "//bazel/system:openal",
+    ],
+    visibility = ["//visibility:public"],
+)

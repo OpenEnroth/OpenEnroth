@@ -1,0 +1,58 @@
+# These srcs need Engine/AssetsManager.h (from //src/Engine:engine) and are compiled as part of
+# //src/Engine:engine to avoid circular dependency.
+exports_files(
+    [
+        "IconFrameTable.cpp",
+        "ItemTable.cpp",
+        "NPCTable.cpp",
+        "TextureFrameTable.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_tables",
+    srcs = [
+        "AutonoteTable.cpp",
+        "AwardTable.cpp",
+        "ChestTable.cpp",
+        "HostilityTable.cpp",
+        "FrameTableInc.cpp",
+        "HistoryTable.cpp",
+        "HouseTable.cpp",
+        "MerchantTable.cpp",
+        "MessageScrollTable.cpp",
+        "PortraitFrameTable.cpp",
+        "QuestTable.cpp",
+        "TileTable.cpp",
+        "TransitionTable.cpp",
+    ],
+    hdrs = [
+        "AutonoteTable.h",
+        "AwardTable.h",
+        "ChestTable.h",
+        "HostilityTable.h",
+        "FrameTableInc.h",
+        "HistoryTable.h",
+        "HouseTable.h",
+        "IconFrameTable.h",
+        "ItemTable.h",
+        "MerchantTable.h",
+        "MessageScrollTable.h",
+        "NPCTable.h",
+        "PortraitFrameTable.h",
+        "QuestTable.h",
+        "TextureFrameTable.h",
+        "TileTable.h",
+        "TransitionTable.h",
+    ],
+    deps = [
+        "//src/Engine:engine_base",
+        "//src/Engine/Data:engine_data",
+        "//src/Engine/Objects:engine_objects",
+        "//src/Engine/Random:engine_random",
+        "//src/Engine/Time:engine_time",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

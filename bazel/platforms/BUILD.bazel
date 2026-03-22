@@ -1,0 +1,105 @@
+# Platform config_settings (OS + CPU) used by select() in //bazel/system.
+# Also defines Android platform() targets for --android_platforms.
+# NDK version: 28.1.13356709
+
+# ─── Config settings ─────────────────────────────────────────────────────────
+
+config_setting(
+    name = "linux_x86_64",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "linux_x86",
+    # --config=linux_x86 sets --define=oe_build_arch=x86_32 (see .bazelrc).
+    # We can't use constraint_values here because --config=linux_x86 doesn't set
+    # --platforms= (it uses the host platform with -m32 copt/linkopt flags);
+    # the host platform has @platforms//cpu:x86_64, not x86_32.
+    constraint_values = ["@platforms//os:linux"],
+    define_values = {"oe_build_arch": "x86_32"},
+)
+
+config_setting(
+    name = "darwin_arm64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:arm64",
+    ],
+)
+
+config_setting(
+    name = "darwin_x86_64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "windows_x86_64",
+    constraint_values = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "windows_x86",
+    constraint_values = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_32",
+    ],
+)
+
+config_setting(
+    name = "android_arm64_v8a",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:arm64",
+    ],
+)
+
+config_setting(
+    name = "android_armeabi_v7a",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:armv7",
+    ],
+)
+
+config_setting(
+    name = "android_x86_64",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+# ─── Android platform() targets for --android_platforms ──────────────────────
+
+platform(
+    name = "android_arm64_v8a_platform",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:arm64",
+    ],
+)
+
+platform(
+    name = "android_armeabi_v7a_platform",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:armv7",
+    ],
+)
+
+platform(
+    name = "android_x86_64_platform",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_64",
+    ],
+)

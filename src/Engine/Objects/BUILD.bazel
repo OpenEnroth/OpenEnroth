@@ -1,0 +1,115 @@
+cc_library(
+    name = "engine_objects_enums",
+    hdrs = [
+        "ActorEnums.h",
+        "CharacterEnums.h",
+        "ChestEnums.h",
+        "DecorationEnums.h",
+        "ItemEnums.h",
+        "MonsterEnums.h",
+        "NPCEnums.h",
+        "NPCEnumFunctions.h",
+        "SpriteEnums.h",
+        "SpriteEnumFunctions.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "engine_objects_base",
+    srcs = [
+        "CombinedSkillValue.cpp",
+    ],
+    hdrs = [
+        "CombinedSkillValue.h",
+    ],
+    deps = [
+        ":engine_objects_enums",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# These srcs need Engine.h or GUI/Media headers. They are compiled as part of
+# //src/Engine:engine_impl to avoid circular dependencies.
+exports_files(
+    [
+        "Actor.cpp",
+        "Character.cpp",
+        "Chest.cpp",
+        "Decoration.cpp",
+        "DecorationList.cpp",
+        "Item.cpp",
+        "ItemEnumFunctions.cpp",
+        "Monsters.cpp",
+        "NPC.cpp",
+        "ObjectList.cpp",
+        "SpriteObject.cpp",
+        "TalkAnimation.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_objects",
+    srcs = [
+        "CharacterEnumFunctions.cpp",
+        "Inventory.cpp",
+        "MonsterEnumFunctions.cpp",
+    ],
+    hdrs = [
+        "Actor.h",
+        "ActorEnumFunctions.h",
+        "Chest.h",
+        "Decoration.h",
+        "DecorationList.h",
+        "ItemEnchantment.h",
+        "ItemEnumFunctions.h",
+        "Item.h",
+        "Monsters.h",
+        "MonsterEnumFunctions.h",
+        "NPC.h",
+        "ObjectList.h",
+        "Character.h",
+        "CharacterConditions.h",
+        "CharacterEnumFunctions.h",
+        "SpriteObject.h",
+        "TalkAnimation.h",
+        "Inventory.h",
+    ],
+    deps = [
+        ":engine_objects_base",
+        ":engine_objects_enums",
+        "//src/Engine:engine_base",
+        "//src/Engine/Data:engine_data",
+        "//src/Engine/Evt:engine_evt_enums",
+        "//src/Engine/Spells:engine_spells",
+        "//src/Engine/Time:engine_time",
+        "//src/GUI:gui_enums",
+        "//src/Library/Random:library_random",
+        "//src/Library/Color:library_color",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Serialization:library_serialization",
+        "//src/Media/Audio:media_audio_sound_enums",
+        "//src/Utility:utility",
+        "@glm//:glm",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_engine_objects",
+    srcs = [
+        "Tests/Inventory_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Game:testing_game",
+        "//test/Testing/Unit:testing_unit",
+        ":engine_objects",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

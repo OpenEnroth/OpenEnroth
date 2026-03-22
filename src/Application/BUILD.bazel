@@ -1,0 +1,89 @@
+# Header-only target: Game.h without full application dep (which depends on gui -> gui_ui -> application).
+cc_library(
+    name = "application_base",
+    hdrs = [
+        "Game.h",
+        "GameOver.h",
+        "GameTraceHandler.h",
+        "GameWindowHandler.h",
+    ],
+    deps = [
+        ":application_config",
+        "//src/Io:io_keyboard_base",
+        "//src/Io:io_mouse",
+        "//src/Library/Fsm:library_fsm",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Platform/Application:library_platform_application",
+        "//src/Library/Platform/Filters:library_platform_filters",
+        "//src/Library/Platform/Interface:library_platform_interface",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# Standalone GameConfig target — no engine dep, so engine can depend on it.
+# Engine.h includes Application/GameConfig.h, creating a potential cycle if
+# GameConfig lived in the main "application" target (which depends on engine).
+cc_library(
+    name = "application_config",
+    srcs = ["GameConfig.cpp"],
+    hdrs = [
+        "GameConfig.h",
+        "KeyConfigEntry.h",
+    ],
+    deps = [
+        "//src/Engine/Graphics/Renderer:engine_graphics_renderer",
+        "//src/Engine/Random:engine_random",
+        "//src/Io:io_input_enums",
+        "//src/Library/Config:library_config",
+        "//src/Library/Color:library_color",
+        "//src/Library/Logger:library_logger",
+        "//src/Library/Serialization:library_serialization",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "application",
+    srcs = [
+        "Game.cpp",
+        "GameMenu.cpp",
+        "GameOver.cpp",
+        "GameTraceHandler.cpp",
+        "GameWindowHandler.cpp",
+    ],
+    hdrs = [
+        "Game.h",
+        "GameMenu.h",
+        "GameOver.h",
+        "GameTraceHandler.h",
+        "GameWindowHandler.h",
+    ],
+    deps = [
+        ":application_config",
+        "//src/Engine:engine",
+        "//src/Engine/Components/Control:engine_components_control",
+        "//src/Engine/Components/Trace:engine_components_trace",
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Engine/Graphics/Renderer:engine_graphics_renderer",
+        "//src/Application/GameStates:application_game_states",
+        "//src/Application/Startup:application_startup",
+        "//src/GUI:gui",
+        "//src/Io:io",
+        "//src/Library/Config:library_config",
+        "//src/Library/Fsm:library_fsm",
+        "//src/Library/Lod:library_lod",
+        "//src/Media:media",
+        "//src/Library/Platform/Application:library_platform_application",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Scripting:scripting",
+        "//src/Utility:utility",
+        "@imgui//:imgui",
+    ],
+    # alwayslink: application objects define global vars (gamma_preview_image, currently_selected_action_for_binding
+    # etc.) and implementations (Game::run, GameWindowHandler::*) referenced by engine_impl alwayslink objects.
+    # Without alwayslink, the gold linker does not rescan start-lib groups after alwayslink objects are added,
+    # leaving these symbols unresolved.
+    alwayslink = True,
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,37 @@
+# Books .cpp files include GUI/UI headers (UIStatusBar.h, UIGame.h, etc.) — circular with
+# gui_ui depending on gui_ui_books. Compile them in gui_ui instead.
+exports_files(
+    [
+        "AutonotesBook.cpp",
+        "CalendarBook.cpp",
+        "JournalBook.cpp",
+        "LloydsBook.cpp",
+        "MapBook.cpp",
+        "QuestBook.cpp",
+        "TownPortalBook.cpp",
+    ],
+    visibility = ["//src/GUI/UI:__pkg__"],
+)
+
+cc_library(
+    name = "gui_ui_books",
+    srcs = [],
+    hdrs = [
+        "AutonotesBook.h",
+        "CalendarBook.h",
+        "JournalBook.h",
+        "LloydsBook.h",
+        "MapBook.h",
+        "QuestBook.h",
+        "TownPortalBook.h",
+    ],
+    deps = [
+        "//src/Engine:engine",
+        "//src/Engine/Data:engine_data",
+        "//src/Engine/Objects:engine_objects",
+        "//src/Engine/Time:engine_time",
+        "//src/GUI/UI:gui_ui_books_base",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

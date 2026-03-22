@@ -1,0 +1,32 @@
+cc_library(
+    name = "library_binary",
+    srcs = [
+        "BinaryExceptions.cpp",
+    ],
+    hdrs = [
+        "BinaryConcepts.h",
+        "BinaryExceptions.h",
+        "BinaryFwd.h",
+        "BinarySerialization.h",
+        "BinaryTags.h",
+        "BlobSerialization.h",
+        "CommonSerialization.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_binary",
+    srcs = [
+        "Tests/Binary_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        ":library_binary",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,19 @@
+cc_binary(
+    name = "OpenEnroth",
+    srcs = [
+        "OpenEnroth.cpp",
+        "OpenEnrothOptions.cpp",
+        "OpenEnrothOptions.h",
+        # OpenEnroth.rc omitted: Windows resource files not supported by cc_binary in Bazel.
+        # The binary works without it (no custom icon/version metadata).
+    ],
+    deps = [
+        "//src/Application:application",
+        "//src/Engine:engine_impl",
+        "//src/Library/Cli:library_cli",
+        "//src/Library/Platform/Sdl:library_platform_main",
+        "//src/Library/StackTrace:library_stack_trace",
+        "//src/Library/Environment:library_environment",  # createStandardEnvironment() impl
+    ],
+    visibility = ["//visibility:public"],
+)

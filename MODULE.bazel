@@ -1,0 +1,427 @@
+"""OpenEnroth Bazel module definition."""
+
+module(
+    name = "openenroth",
+    version = "0.0.0",
+)
+
+# ─── Core Bazel rules ────────────────────────────────────────────────────────
+
+bazel_dep(name = "rules_cc", version = "0.2.17")
+bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+
+# ─── Testing ─────────────────────────────────────────────────────────────────
+
+bazel_dep(name = "googletest", version = "1.17.0")
+
+# ─── rules_foreign_cc — wraps CMake/Make deps (used for LuaJIT, SDL3, etc.) ──
+
+bazel_dep(name = "rules_foreign_cc", version = "0.11.1")
+
+# Patch rules_foreign_cc to remove an unused `load("@rules_cc//cc:defs.bzl", "cc_library")`
+# from the glib_dev build_file_content. That load fails under Bazel 8 / Bzlmod because
+# rules_foreign_cc 0.11.1 doesn't declare rules_cc as a bazel_dep, so @rules_cc is not
+# visible from the glib_dev synthetic repository. The load is completely unused (only
+# cc_import is present, which is a native Bazel rule).
+single_version_override(
+    module_name = "rules_foreign_cc",
+    version = "0.11.1",
+    patches = [
+        # Bug 1: glib_dev build_file_content has an unused load("@rules_cc//...") that
+        # fails under Bazel 8 because rules_foreign_cc 0.11.1 doesn't declare rules_cc
+        # as a non-dev bazel_dep (it's only a dev_dependency).
+        "//bazel/patches:rules_foreign_cc_fix_glib.patch",
+        # Bug 2: full_label() uses native.repository_name() which returns @@module+
+        # under Bazel 8 Bzlmod. That canonical form is not resolvable from within the
+        # same module in $(location ...) expressions.
+        "//bazel/patches:rules_foreign_cc_fix_full_label.patch",
+        # Bug 3: pkgconfig_build.bzl accesses make_data.target.files unconditionally.
+        # When preinstalled_make_toolchain is used, make_data.target is None (the make
+        # binary is on PATH, not a Bazel target). This crashes with NoneType error.
+        "//bazel/patches:rules_foreign_cc_fix_pkgconfig.patch",
+    ],
+    patch_strip = 1,
+)
+
+# ─── Android ─────────────────────────────────────────────────────────────────
+
+bazel_dep(name = "rules_android", version = "0.6.0")
+
+# rules_android_ndk provides the Android NDK C++ toolchain for cc_binary cross-compilation.
+# It reads ANDROID_NDK_HOME from the environment and registers toolchains for all ABIs
+# (arm64-v8a, armeabi-v7a, x86_64). Required for --platforms=//bazel/platforms:android_*
+# targets to find a CC toolchain.
+bazel_dep(name = "rules_android_ndk", version = "0.1.3")
+
+# Patch rules_android_ndk to create a stub repo (instead of fail()) when
+# ANDROID_NDK_HOME is not set. This lets Windows/macOS/Linux non-Android builds
+# succeed even though they don't have an NDK; register_toolchains("@androidndk//:all")
+# resolves to the empty set for the stub. Android CI builds set ANDROID_NDK_HOME
+# before invoking Bazel, so they get the real toolchains.
+single_version_override(
+    module_name = "rules_android_ndk",
+    version = "0.1.3",
+    patches = ["//bazel/patches:rules_android_ndk_stub_no_ndk.patch"],
+    patch_strip = 1,
+)
+
+android_ndk_repository_extension = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
+use_repo(android_ndk_repository_extension, "androidndk")
+register_toolchains("@androidndk//:all")
+
+# ─── Non-BCR deps via http_archive ───────────────────────────────────────────
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+new_local_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:local.bzl", "new_local_repository")
+
+# Header-only deps ----------------------------------------------------------
+
+http_archive(
+    name = "glm",
+    url = "https://github.com/g-truc/glm/archive/0af55ccecd98d4e5a8d1fad7de25ba429d60e863.tar.gz",
+    strip_prefix = "glm-0af55ccecd98d4e5a8d1fad7de25ba429d60e863",
+    build_file = "//bazel/deps:glm.BUILD",
+    sha256 = "e7f187d83523f505eb38dd25d297ea6c0d4ed856d733e808f18253f5a8fa88a0",
+)
+
+http_archive(
+    name = "magic_enum",
+    url = "https://github.com/Neargye/magic_enum/archive/d01a4f90a63444e910e66c796b93df25abffcfe0.tar.gz",
+    strip_prefix = "magic_enum-d01a4f90a63444e910e66c796b93df25abffcfe0",
+    build_file = "//bazel/deps:magic_enum.BUILD",
+    sha256 = "264dcdbacb31e916d02098b62cba0a4702ecf23a3ede243eef5d42f6edccf5f2",
+)
+
+http_archive(
+    name = "fast_float",
+    url = "https://github.com/fastfloat/fast_float/archive/1ea4f27b2aeee2859a1354a3c24cff52a116cad1.tar.gz",
+    strip_prefix = "fast_float-1ea4f27b2aeee2859a1354a3c24cff52a116cad1",
+    build_file = "//bazel/deps:fast_float.BUILD",
+    sha256 = "06f860e3adb994b9c8523bb53a76a335c4182e27fe5a077246146d283efdc9da",
+)
+
+http_archive(
+    name = "mio",
+    url = "https://github.com/mandreyel/mio/archive/8b6b7d878c89e81614d05edca7936de41ccdd2da.tar.gz",
+    strip_prefix = "mio-8b6b7d878c89e81614d05edca7936de41ccdd2da",
+    build_file = "//bazel/deps:mio.BUILD",
+    sha256 = "86248113bb2f1484f9cd44a260fe09beaa911307073c6f21fa9e765588d54b4b",
+)
+
+http_archive(
+    name = "nlohmann_json",
+    url = "https://github.com/nlohmann/json/archive/55f93686c01528224f448c19128836e7df245f72.tar.gz",
+    strip_prefix = "json-55f93686c01528224f448c19128836e7df245f72",
+    build_file = "//bazel/deps:nlohmann_json.BUILD",
+    sha256 = "67f4cdd9ca930c9c1e130af4a437c7fc98fab77a2846fc2d2a14b4943831f8ef",
+)
+
+http_archive(
+    name = "cli11",
+    url = "https://github.com/CLIUtils/CLI11/archive/95324820650117a2668ed63b095007068fd0c475.tar.gz",
+    strip_prefix = "CLI11-95324820650117a2668ed63b095007068fd0c475",
+    build_file = "//bazel/deps:cli11.BUILD",
+    sha256 = "edbc669c4c578e220cc6b0fbe5a1bf5047692289c0f7e38231c9ae248e0f0bdd",
+)
+
+http_archive(
+    name = "inifile_cpp",
+    url = "https://github.com/Rookfighter/inifile-cpp/archive/7bb1ec3534768e0d1fd9893d01027468b72af5ec.tar.gz",
+    strip_prefix = "inifile-cpp-7bb1ec3534768e0d1fd9893d01027468b72af5ec",
+    build_file = "//bazel/deps:inifile_cpp.BUILD",
+    sha256 = "7587e9eb93e07e7cff5647c96f14e0d103c0e16a2d0ef0efcc9df8bdd0846d26",
+)
+
+http_archive(
+    name = "tcpp",
+    url = "https://github.com/bnoazx005/tcpp/archive/8041d013d3ad97c95c1e857f0bd3f8008becb72e.tar.gz",
+    strip_prefix = "tcpp-8041d013d3ad97c95c1e857f0bd3f8008becb72e",
+    build_file = "//bazel/deps:tcpp.BUILD",
+    sha256 = "b9940749fb2fba55699ba1c0f2c1682289bb93425a85208b9b2b5a376de13ff2",
+)
+
+http_archive(
+    name = "small_vector",
+    url = "https://github.com/gharveymn/small_vector/archive/e8e63fe12ef578528ca5e954bc91321967e76393.tar.gz",
+    strip_prefix = "small_vector-e8e63fe12ef578528ca5e954bc91321967e76393",
+    build_file = "//bazel/deps:small_vector.BUILD",
+    sha256 = "ad63d9437ebefb33404ed0b93c5e4f8a3e061ae20c89e2e80ec1cdabf4c0324b",
+)
+
+http_archive(
+    name = "lambda2",
+    url = "https://github.com/boostorg/lambda2/archive/dddfec608515f5a4f51f86d9b8efc01c7ad816cc.tar.gz",
+    strip_prefix = "lambda2-dddfec608515f5a4f51f86d9b8efc01c7ad816cc",
+    build_file = "//bazel/deps:lambda2.BUILD",
+    sha256 = "b2a74a4ec1a588d3110fbfbae921b9f97d6e8071c496f070c878a75ea7cd2347",
+)
+
+http_archive(
+    name = "generator",
+    url = "https://github.com/TartanLlama/generator/archive/2a912502de4f97dcba4f95c958ee0ddf7bc22cf5.tar.gz",
+    strip_prefix = "generator-2a912502de4f97dcba4f95c958ee0ddf7bc22cf5",
+    build_file = "//bazel/deps:generator.BUILD",
+    sha256 = "44e50a7f15976195c6eba36c226b9f95a90d2c46fedd0efb009b7aca2a88f402",
+)
+
+http_archive(
+    name = "gtest_parallel",
+    url = "https://github.com/google/gtest-parallel/archive/96f4f904922f9bf66689e749c40f314845baaac8.tar.gz",
+    strip_prefix = "gtest-parallel-96f4f904922f9bf66689e749c40f314845baaac8",
+    build_file = "//bazel/deps:gtest_parallel.BUILD",
+    sha256 = "6cffbe413d10ad6e7a93b50ffa05a01f9a4d52ff04310f680a17be0b66eda950",
+)
+
+# Built deps -----------------------------------------------------------------
+
+http_archive(
+    name = "fmt",
+    url = "https://github.com/fmtlib/fmt/archive/e3ddede6c4ee818825c4e5a6dfa1d384860c27d9.tar.gz",
+    strip_prefix = "fmt-e3ddede6c4ee818825c4e5a6dfa1d384860c27d9",
+    build_file = "//bazel/deps:fmt.BUILD",
+    sha256 = "ae49fbb0f538242cebbc7241d1a466ae386f326ed2b76575ae91a559a9319121",
+)
+
+http_archive(
+    name = "spdlog",
+    url = "https://github.com/gabime/spdlog/archive/79524ddd08a4ec981b7fea76afd08ee05f83755d.tar.gz",
+    strip_prefix = "spdlog-79524ddd08a4ec981b7fea76afd08ee05f83755d",
+    build_file = "//bazel/deps:spdlog.BUILD",
+    sha256 = "c6dee844e35a54cc80e3ab76aae2310763e0b49c7397549dfa4d4657d9737138",
+)
+
+http_archive(
+    name = "sol2",
+    url = "https://github.com/ThePhD/sol2/archive/336f76c3772c84e347a7f4ffb246d8c0e2d5f426.tar.gz",
+    strip_prefix = "sol2-336f76c3772c84e347a7f4ffb246d8c0e2d5f426",
+    build_file = "//bazel/deps:sol2.BUILD",
+    sha256 = "679230074b411c58d802f8fdd6793523f4bbfa6acb2cc42a7d1bf43474fdef61",
+)
+
+http_archive(
+    name = "imgui",
+    url = "https://github.com/ocornut/imgui/archive/1f7f1f54af38b0350d8c0008b096a9af6de299c7.tar.gz",
+    strip_prefix = "imgui-1f7f1f54af38b0350d8c0008b096a9af6de299c7",
+    build_file = "//bazel/deps:imgui.BUILD",
+    sha256 = "94862c296d4930f122902e4b2194eca198efc8d5a196965cff6a326534e76027",
+)
+
+http_archive(
+    name = "backward_cpp",
+    url = "https://github.com/OpenEnroth/backward-cpp/archive/51f0700452cf71c57d43c2d028277b24cde32502.tar.gz",
+    strip_prefix = "backward-cpp-51f0700452cf71c57d43c2d028277b24cde32502",
+    build_file = "//bazel/deps:backward_cpp.BUILD",
+    sha256 = "7e22344518c9ee15b7c3be1d6a597a3e9408a3c1e43c754f446d0001d5f80fe1",
+)
+
+http_archive(
+    name = "ztd_text",
+    url = "https://github.com/captainurist/ztd_text/archive/c7b7cd6c97db63042037c14b0e96302c4eb1888e.tar.gz",
+    strip_prefix = "ztd_text-c7b7cd6c97db63042037c14b0e96302c4eb1888e",
+    build_file = "//bazel/deps:ztd_text.BUILD",
+    sha256 = "fbdd87ce2de34da97e2a6dda893ed7844717f3802d291c9359bb2d67df9d96ac",
+)
+
+# ztd.idk + companion libraries — all required by ztd_text (all header-only)
+http_archive(
+    name = "ztd_idk",
+    url = "https://github.com/soasis/idk/archive/a8f2f9dfe6afc68e28d7bc40254259743b48bb45.tar.gz",
+    strip_prefix = "idk-a8f2f9dfe6afc68e28d7bc40254259743b48bb45",
+    build_file = "//bazel/deps:ztd_idk.BUILD",
+    sha256 = "dcadf4a26aed59671f81c812e70bb3ec9897a5ba3a57f19e179b4cef726cae03",
+)
+http_archive(
+    name = "ztd_platform",
+    url = "https://github.com/soasis/platform/archive/d03b15049adb00ffb67c0f46b888f2a611ecf21f.tar.gz",
+    strip_prefix = "platform-d03b15049adb00ffb67c0f46b888f2a611ecf21f",
+    build_file = "//bazel/deps:ztd_platform.BUILD",
+    sha256 = "f41c1bb5b53534b4c7d4807539cb87b164fedff4eabff4b2c84af8bf22fdf216",
+)
+http_archive(
+    name = "ztd_encoding_tables",
+    url = "https://github.com/soasis/encoding_tables/archive/c0c5de5a45dee2fc3a8a3c6831d7070acae435ad.tar.gz",
+    strip_prefix = "encoding_tables-c0c5de5a45dee2fc3a8a3c6831d7070acae435ad",
+    build_file = "//bazel/deps:ztd_encoding_tables.BUILD",
+    sha256 = "34f962f230772bad8c5e1ec686bfd8dffdbd145faf3711efff8b3ff581511f99",
+)
+http_archive(
+    name = "ztd_cuneicode",
+    url = "https://github.com/soasis/cuneicode/archive/8ed6b88ee41a0edc398db8dbc53d61a6bf6a8f8f.tar.gz",
+    strip_prefix = "cuneicode-8ed6b88ee41a0edc398db8dbc53d61a6bf6a8f8f",
+    build_file = "//bazel/deps:ztd_cuneicode.BUILD",
+    sha256 = "395b68cf5820ebf7e7c78c680a53392b726f2cdba3cb29f90994366ceb70b123",
+)
+http_archive(
+    name = "ztd_inline_containers",
+    url = "https://github.com/soasis/inline_containers/archive/80c5acbe8256c1802b3b0c006cbc0e0f61fea534.tar.gz",
+    strip_prefix = "inline_containers-80c5acbe8256c1802b3b0c006cbc0e0f61fea534",
+    build_file = "//bazel/deps:ztd_inline_containers.BUILD",
+    sha256 = "83e8a6db073df17b41e4e82c919dc679790050796e271361abd42dd4685daa9e",
+)
+
+# LuaJIT — two-stage build (buildvm host → target bytecode) -----------------
+
+http_archive(
+    name = "luajit",
+    url = "https://github.com/LuaJIT/LuaJIT/archive/97813fb924edf822455f91a5fbbdfdb349e5984f.tar.gz",
+    strip_prefix = "LuaJIT-97813fb924edf822455f91a5fbbdfdb349e5984f",
+    build_file = "//bazel/deps:luajit.BUILD",
+    sha256 = "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7",
+)
+
+http_archive(
+    name = "luajit_cmake",
+    url = "https://github.com/zhaozg/luajit-cmake/archive/64462217e05164b46ca44c10ed1d12918eee8fa5.tar.gz",
+    strip_prefix = "luajit-cmake-64462217e05164b46ca44c10ed1d12918eee8fa5",
+    build_file = "//bazel/deps:luajit_cmake.BUILD",
+    sha256 = "02b4a642ef33ad3da30850397050fc40aee15196440bd211fc445bb1e6edf35d",
+)
+
+# LuaJIT Windows prebuilt — wraps CMake-built lib + submodule headers.
+# path = "." maps to the workspace root, giving access to both
+# thirdparty/luajit/src/*.h and build/thirdparty/Debug/libluajit.lib.
+# Requires a prior CMake build on Windows; unused on other platforms.
+new_local_repository(
+    name = "luajit_windows",
+    path = ".",
+    build_file = "//bazel/deps:luajit_windows.BUILD",
+)
+
+# System deps — source builds via rules_foreign_cc cmake()/configure_make() -
+# These replace the prebuilt zips from OpenEnroth_Dependencies.
+# FFmpeg (Linux/macOS): configure_make() source build.
+# FFmpeg (Windows): prebuilt — configure requires bash/MSYS2 (deferred).
+# FFmpeg (Android): prebuilt — NDK cross-compilation not yet configured.
+
+http_archive(
+    name = "zlib_src",
+    url = "https://github.com/madler/zlib/archive/04f42ceca40f73e2978b50e93806c2a18c1281fc.tar.gz",
+    strip_prefix = "zlib-04f42ceca40f73e2978b50e93806c2a18c1281fc",
+    build_file = "//bazel/deps:zlib_src.BUILD",
+    patches = [
+        # Patch 1: mark the shared lib EXCLUDE_FROM_ALL so it isn't built by default,
+        # and add OPTIONAL to its install() so cmake --install doesn't fail when the
+        # shared lib wasn't built. zlib 1.2.13 always builds both SHARED and STATIC
+        # unconditionally; this patch respects BUILD_SHARED_LIBS=OFF.
+        "//bazel/patches:zlib_exclude_shared.patch",
+        # Patch 2: strip Bazel timestamp-redaction flags (-D__DATE__=redacted etc.)
+        # that conflict with macOS Xcode 16.3 system headers (_stdio.h:318).
+        "//bazel/patches:zlib_strip_injected_flags.patch",
+        # Patch 3: zutil.h defines fdopen(fd,mode)=NULL on TARGET_OS_MAC, but macOS
+        # always has fdopen. The macro causes _stdio.h:318 to fail when fdopen() is
+        # declared after the macro is defined. Add !defined(__APPLE__) guard.
+        "//bazel/patches:zlib_fix_fdopen_apple.patch",
+    ],
+    patch_args = ["-p1"],
+    sha256 = "90f43a9c998740e8a0db24b0af0147033db2aaaa99423129abbd76640757cac9",
+)
+
+http_archive(
+    name = "libpng_src",
+    url = "https://github.com/glennrp/libpng/archive/f5e92d76973a7a53f517579bc95d61483bf108c0.tar.gz",
+    strip_prefix = "libpng-f5e92d76973a7a53f517579bc95d61483bf108c0",
+    build_file = "//bazel/deps:libpng_src.BUILD",
+    sha256 = "3689d30176661b821ce02c92baf801050bc3849d3428ff99c8afeb1ef4390c8c",
+)
+
+http_archive(
+    name = "sdl3_src",
+    url = "https://github.com/libsdl-org/SDL/archive/a96677bdf6b4acb84af4ec294e5f60a4e8cbbe03.tar.gz",
+    strip_prefix = "SDL-a96677bdf6b4acb84af4ec294e5f60a4e8cbbe03",
+    build_file = "//bazel/deps:sdl3_src.BUILD",
+    sha256 = "9f3a6dabc12c5f04894e0a70359ac448eb9cbe4065fde09e0ab4cf013ff39dd9",
+)
+
+http_archive(
+    name = "openal_src",
+    url = "https://github.com/kcat/openal-soft/archive/dc7d7054a5b4f3bec1dc23a42fd616a0847af948.tar.gz",
+    strip_prefix = "openal-soft-dc7d7054a5b4f3bec1dc23a42fd616a0847af948",
+    build_file = "//bazel/deps:openal_src.BUILD",
+    # Patch: strip Bazel-injected CXXFLAGS (/Zc:preprocessor, -Isrc, etc.) that
+    # rules_foreign_cc exports via the CXXFLAGS env var and that conflict with
+    # OpenAL-soft's own cmake build.
+    patches = ["//bazel/patches:openal_strip_injected_flags.patch"],
+    patch_args = ["-p1"],
+    sha256 = "dd733d74c33b106b90f83a0e0e9917b39aa401162ff8da23d7948615dcb92ef7",
+)
+
+# FFmpeg n7.0 — libavcodec 61.3.100 (same version as the prebuilt archives).
+# Used on Linux and macOS via configure_make(); Windows/Android stay on prebuilt.
+http_archive(
+    name = "ffmpeg_src",
+    url = "https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.0.tar.gz",
+    strip_prefix = "FFmpeg-n7.0",
+    build_file = "//bazel/deps:ffmpeg_src.BUILD",
+    sha256 = "a68fbc06a645cc93e5c877adbaa592cffc40e8595ba50eb716807c4a35bf0f03",
+)
+
+# System deps — prebuilt zips from OpenEnroth_Dependencies (Phase 5) --------
+# Tag: deps_r7_master. Release builds only; Debug variants follow same pattern.
+# sha256 fields left empty — fill in after first download for hermeticity.
+
+_DEPS_TAG = "deps_r7_master"
+_DEPS_BASE = "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/" + _DEPS_TAG + "/"
+
+http_archive(
+    name = "oe_deps_linux_x86_64",
+    url = _DEPS_BASE + "linux_Release_x86_64.zip",
+    build_file = "//bazel/system:prebuilt_posix.BUILD",
+    sha256 = "012fe020d10ff0642a3a993305475b74eed5ac69bf5472b62ef801a2006a0c3b",
+)
+
+http_archive(
+    name = "oe_deps_linux_x86",
+    url = _DEPS_BASE + "linux_Release_x86.zip",
+    build_file = "//bazel/system:prebuilt_posix.BUILD",
+    sha256 = "049edcfaf248e6744b6066f3b661952cf4bd29e125680437e83dbfc17f729d1e",
+)
+
+http_archive(
+    name = "oe_deps_darwin_arm64",
+    url = _DEPS_BASE + "darwin_Release_arm64.zip",
+    build_file = "//bazel/system:prebuilt_posix.BUILD",
+    sha256 = "f765ea21c804f066ac2439a9985e3eb755248997ff1023ea79e92d2fc4a5340f",
+)
+
+http_archive(
+    name = "oe_deps_darwin_x86_64",
+    url = _DEPS_BASE + "darwin_Release_x86_64.zip",
+    build_file = "//bazel/system:prebuilt_posix.BUILD",
+    sha256 = "8c46e5cd20ea9ce8bbe6d9351743f5f3267f7ac22c2ac216228feb73063d8eef",
+)
+
+http_archive(
+    name = "oe_deps_windows_x86_64",
+    url = _DEPS_BASE + "windows_Release_x86_64.zip",
+    build_file = "//bazel/system:prebuilt_windows.BUILD",
+    sha256 = "b19cddebdc905ad9856a95dedb48fe4e91fc34ce814c0ba440266509b9d1838d",
+)
+
+http_archive(
+    name = "oe_deps_windows_x86",
+    url = _DEPS_BASE + "windows_Release_x86.zip",
+    build_file = "//bazel/system:prebuilt_windows.BUILD",
+    sha256 = "83551e19acd4cec5bf9985e36129f44e85f0e8ed26a04872a3208b03df54fea4",
+)
+
+http_archive(
+    name = "oe_deps_android_arm64",
+    url = _DEPS_BASE + "android_Release_arm64.zip",
+    build_file = "//bazel/system:prebuilt_android.BUILD",
+    sha256 = "ed9c63d6911793d52541d77318c8fc7bea8c4d4ff02cf454fdd13a64b193b741",
+)
+
+http_archive(
+    name = "oe_deps_android_arm32",
+    url = _DEPS_BASE + "android_Release_arm32.zip",
+    build_file = "//bazel/system:prebuilt_android.BUILD",
+    sha256 = "1fcbc2508ef7c5eb7bb90ad45963f3c82b1643e4a1ebb1cb05c11b184b25baa2",
+)
+
+http_archive(
+    name = "oe_deps_android_x86_64",
+    url = _DEPS_BASE + "android_Release_x86_64.zip",
+    build_file = "//bazel/system:prebuilt_android.BUILD",
+    sha256 = "76b7cd20001c06a6cc663be4f00466ee9922b83f9185fa15d524abc32d4cee78",
+)
