@@ -162,16 +162,5 @@ make(
         ":_linux_x86": ["BUILDMODE=static", "LDFLAGS=-m32"],
         "//conditions:default": [],
     }),
-    # armeabi-v7a: DASM_XFLAGS injects -D DUALNUM into dynasm directly, bypassing
-    # the TARGET_TESTARCH detection. DUALNUM is required for all 32-bit ARM targets
-    # (lj_arch.h sets LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL unconditionally for ARM 32-bit,
-    # but rules_foreign_cc's Bazel CC wrapper may prevent the lj_arch.h preprocessing
-    # shell test from running). The env attr is shell-quoted ("value"), so spaces in
-    # the value are preserved; combined with the -e arg, env overrides the Makefile's
-    # DASM_XFLAGS= assignment and injects -D DUALNUM into DASM_FLAGS.
-    env = select({
-        ":_android_armv7": {"DASM_XFLAGS": "-D DUALNUM"},
-        "//conditions:default": {},
-    }),
     visibility = ["//visibility:public"],
 )
