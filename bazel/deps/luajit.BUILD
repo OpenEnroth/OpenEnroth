@@ -145,14 +145,10 @@ make(
             "TARGET_ARCH=",
             "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
             "BUILDMODE=static",
-            # DUALNUM is handled via the patch_cmds ifeq block in MODULE.bazel, which
-            # inserts `ifeq (arm,$(TARGET_LJARCH)) / DASM_AFLAGS+= -D DUALNUM / endif`
-            # into src/Makefile before DASM_FLAGS=. With TARGET_LJARCH=arm on the
-            # command line, make evaluates the ifeq at parse time and appends -D DUALNUM.
-            # We do NOT pass DASM_AFLAGS on the command line: GNU make ignores +=
-            # in Makefiles when the variable was set on the command line (per the manual,
-            # "overriding variables can only be changed with another override"), so a
-            # command-line DASM_AFLAGS would suppress the Makefile's += entirely.
+            # DUALNUM is handled via patch_cmds in MODULE.bazel, which patches
+            # dynasm/dynasm.lua to auto-define DUALNUM when processing vm_arm.dasc.
+            # This bypasses the Make variable system (TARGET_TESTARCH detection fails
+            # in Bazel's cross-compilation sandbox). No command-line DASM_AFLAGS needed.
         ],
         ":_android_x86_64": [
             "TARGET_LJARCH=x64",
