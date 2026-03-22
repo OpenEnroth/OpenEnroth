@@ -50,18 +50,19 @@ cmake(
             "shell32.lib",
             "dinput8.lib",
         ],
+        # Use -Wl,-framework,Name (single string) rather than ["-framework", "Name"]
+        # (two strings). Bazel 8 does not shell-split linkopts strings, so two-entry
+        # pairs can lose ordering; -Wl passes the flag pair directly to ld.
         "@platforms//os:macos": [
-            # In Bazel 8+, linkopts strings are not shell-split; each list entry is
-            # one argument. -framework <Name> must be two separate list entries.
-            "-framework", "Cocoa",
-            "-framework", "IOKit",
-            "-framework", "CoreFoundation",
-            "-framework", "CoreAudio",
-            "-framework", "AudioToolbox",
-            "-framework", "Metal",
-            "-framework", "QuartzCore",
-            "-framework", "GameController",
-            "-framework", "CoreHaptics",
+            "-Wl,-framework,Cocoa",
+            "-Wl,-framework,IOKit",
+            "-Wl,-framework,CoreFoundation",
+            "-Wl,-framework,CoreAudio",
+            "-Wl,-framework,AudioToolbox",
+            "-Wl,-framework,Metal",
+            "-Wl,-framework,QuartzCore",
+            "-Wl,-framework,GameController",
+            "-Wl,-framework,CoreHaptics",
         ],
         "//conditions:default": [],
     }),

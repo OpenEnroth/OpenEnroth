@@ -50,9 +50,9 @@ configure_make(
         # matching gold's default behavior.
         "@platforms//os:linux": ["-Wl,--allow-multiple-definition", "-lm", "-lpthread"],
         # macOS: iconv is needed by some FFmpeg demuxers; CoreFoundation for system codecs.
-        # In Bazel 8+, linkopts strings are not shell-split; each list entry is
-        # one argument. -framework <Name> must be two separate list entries.
-        "@platforms//os:macos": ["-liconv", "-framework", "CoreFoundation"],
+        # Use -Wl,-framework,Name (single string) to avoid two-entry pair ordering
+        # issues in Bazel 8+ linkopts handling.
+        "@platforms//os:macos": ["-liconv", "-Wl,-framework,CoreFoundation"],
         "//conditions:default": [],
     }),
     visibility = ["//visibility:public"],

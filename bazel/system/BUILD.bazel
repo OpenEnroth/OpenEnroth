@@ -101,9 +101,9 @@ cc_library(
     name = "opengl",
     linkopts = select({
         "@platforms//os:linux":   ["-lGL"],
-        # In Bazel 8+, linkopts strings are not shell-split; each list entry is
-        # one argument. -framework <Name> must be two separate list entries.
-        "@platforms//os:macos":   ["-framework", "OpenGL"],
+        # Use -Wl,-framework,Name (single string) to avoid two-entry pair ordering
+        # issues in Bazel 8+ linkopts handling.
+        "@platforms//os:macos":   ["-Wl,-framework,OpenGL"],
         "@platforms//os:windows": ["opengl32.lib"],
         "@platforms//os:android": ["-lGLESv2", "-lEGL"],
         "//conditions:default":   [],
