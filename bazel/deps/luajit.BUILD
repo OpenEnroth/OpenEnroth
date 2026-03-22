@@ -145,10 +145,16 @@ make(
             "TARGET_ARCH=",
             "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
             "BUILDMODE=static",
-            # DUALNUM is handled via patch_cmds in MODULE.bazel, which patches
-            # dynasm/dynasm.lua to auto-define DUALNUM when processing vm_arm.dasc.
-            # This bypasses the Make variable system (TARGET_TESTARCH detection fails
-            # in Bazel's cross-compilation sandbox). No command-line DASM_AFLAGS needed.
+            # HOST_CFLAGS=-DLUAJIT_NUMMODE=2: vm_arm.dasc emits '#if !LJ_DUALNUM #error'
+            # into host/buildvm_arch.h. This is a C preprocessor check evaluated when
+            # the HOST x86_64 compiler compiles host/buildvm.c. lj_arch.h sets LJ_DUALNUM
+            # based on architecture detection: for x86_64 HOST, LJ_DUALNUM=0, so #error
+            # fires. With LUAJIT_NUMMODE=2, lj_arch.h's condition
+            #   (LJ_ARCH_NUMMODE==LJ_NUMMODE_SINGLE_DUAL && LUAJIT_NUMMODE==2)
+            # becomes true for x86_64, making LJ_DUALNUM=1. For ARM target this is a
+            # no-op (ARM already uses LJ_NUMMODE_DUAL, so LJ_DUALNUM=1 regardless).
+            # No spaces in value: make command-line args are split on spaces by the shell.
+            "HOST_CFLAGS=-DLUAJIT_NUMMODE=2",
         ],
         ":_android_x86_64": [
             "TARGET_LJARCH=x64",
