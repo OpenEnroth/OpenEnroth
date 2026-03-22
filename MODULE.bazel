@@ -270,14 +270,22 @@ http_archive(
     sha256 = "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7",
     # armeabi-v7a: LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL is set unconditionally for 32-bit ARM
     # in lj_arch.h, which requires DUALNUM in the dynasm step. LuaJIT detects this via
-    # TARGET_TESTARCH (runs CC to grep arch headers), but Bazel's CC wrapper may prevent
-    # the detection from running correctly in cross-compilation mode.
-    # Patch DASM_XFLAGS in src/Makefile directly: after the 'DASM_XFLAGS=' assignment,
-    # insert a conditional that sets DASM_XFLAGS+= -D DUALNUM when TARGET_LJARCH=arm.
-    # awk inserts three lines after the exact 'DASM_XFLAGS=' line; D="$" avoids awk
-    # interpreting $ as a field reference.
+    # TARGET_TESTARCH (runs CC to grep lj_arch.h), but Bazel's CC wrapper prevents the
+    # detection shell command from working correctly in cross-compilation mode, leaving
+    # TARGET_TESTARCH empty and DASM_AFLAGS without -D DUALNUM.
+    #
+    # Patch src/Makefile (line 470) to append $(if $(filter arm,$(TARGET_LJARCH)),-D DUALNUM,)
+    # to the DASM_FLAGS definition. The $(if ...) function is evaluated by make at build
+    # time using the TARGET_LJARCH=arm command-line variable we pass; it is safe for all
+    # other targets (arm64, x86_64) where $(filter arm,...) is empty.
     patch_cmds = [
-        "awk 'BEGIN{D=\"$\"} {print} /^DASM_XFLAGS=$/{print \"ifneq (,\" D \"(filter arm,\" D \"(TARGET_LJARCH)))\"; print \"  DASM_XFLAGS+= -D DUALNUM\"; print \"endif\"}' src/Makefile > src/Makefile.tmp && mv src/Makefile.tmp src/Makefile",
+        """python3 - << 'PYEOF'
+content = open("src/Makefile").read()
+old = "DASM_FLAGS= $(DASM_XFLAGS) $(DASM_AFLAGS)"
+new = "DASM_FLAGS= $(DASM_XFLAGS) $(DASM_AFLAGS) $(if $(filter arm,$(TARGET_LJARCH)),-D DUALNUM,)"
+assert old in content, "Pattern not found in src/Makefile: " + repr(old)
+open("src/Makefile", "w").write(content.replace(old, new, 1))
+PYEOF""",
     ],
 )
 
