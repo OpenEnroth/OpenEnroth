@@ -145,17 +145,14 @@ make(
             "TARGET_ARCH=",
             "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
             "BUILDMODE=static",
-            # LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL is unconditionally set for 32-bit ARM
-            # in lj_arch.h, requiring DUALNUM in the dynasm step. LuaJIT detects this
-            # via TARGET_TESTARCH (runs CC to grep lj_arch.h), but Bazel's CC wrapper
-            # prevents the detection shell command from running in cross-compilation.
-            # Pass DASM_AFLAGS as a make command-line variable (highest precedence,
-            # propagated to sub-makes via MAKEFLAGS) to force the flag unconditionally.
-            # No space in "-DDUALNUM": rules_foreign_cc passes each args[] element as one
-            # shell word but make still splits on spaces, so "-D DUALNUM" would treat
-            # "DUALNUM" as a make target. DynASM's Lua arg parser handles "-DSYM"
-            # (flag == "-D", rest = "SYM") the same as "-D SYM", so no space is needed.
-            "DASM_AFLAGS=-DDUALNUM",
+            # DUALNUM is handled via the patch_cmds ifeq block in MODULE.bazel, which
+            # inserts `ifeq (arm,$(TARGET_LJARCH)) / DASM_AFLAGS+= -D DUALNUM / endif`
+            # into src/Makefile before DASM_FLAGS=. With TARGET_LJARCH=arm on the
+            # command line, make evaluates the ifeq at parse time and appends -D DUALNUM.
+            # We do NOT pass DASM_AFLAGS on the command line: GNU make ignores +=
+            # in Makefiles when the variable was set on the command line (per the manual,
+            # "overriding variables can only be changed with another override"), so a
+            # command-line DASM_AFLAGS would suppress the Makefile's += entirely.
         ],
         ":_android_x86_64": [
             "TARGET_LJARCH=x64",
