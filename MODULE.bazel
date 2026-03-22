@@ -288,7 +288,7 @@ content = open("src/Makefile").read()
 # handle gracefully before applying the ifeq directive approach.
 content = content.replace(" $(if $(filter arm,$(TARGET_LJARCH)),-D DUALNUM,)", "")
 # Insert ifeq block before DASM_FLAGS= if not already present (idempotent).
-ifeq_block = "ifeq (arm,$(TARGET_LJARCH))\nDASM_AFLAGS+= -D DUALNUM\nendif\n"
+ifeq_block = "ifeq (arm,$(TARGET_LJARCH))\\nDASM_AFLAGS+= -D DUALNUM\\nendif\\n"
 marker = "DASM_FLAGS= $(DASM_XFLAGS) $(DASM_AFLAGS)"
 if ifeq_block not in content:
     assert marker in content, "DASM_FLAGS marker not found in src/Makefile"
