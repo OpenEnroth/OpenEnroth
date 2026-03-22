@@ -108,8 +108,15 @@ void Io::Mouse::DrawCursor() {
     // get mouse pos
     Pointi pos = this->position();
 
-    // manage mouse look state - if only game screen is active, try enable
-    if (lWindowList.size() == 1)
+    // Apply saved mouselook state once on the first in-game frame (not at main menu).
+    if (!_mouseLookConfigApplied && current_screen_type == SCREEN_GAME) {
+        _mouseLookConfigApplied = true;
+        if (engine->config->settings.MouseLookEnabled.value())
+            SetMouseLook(MouseLookState::Enabled);
+    }
+
+    // manage mouse look state - if only game screen is active and no overlay (console) is open, try enable
+    if (lWindowList.size() == 1 && !engine->isOverlayOpen())
         RestoreMouseLook();
     else
         SetMouseLook(Suspended);
@@ -313,6 +320,7 @@ void Io::Mouse::ToggleMouseLook() {
     } else {
         SetMouseLook(MouseLookState::Disabled);
     }
+    engine->config->settings.MouseLookEnabled.setValue(_mouseLook == MouseLookState::Enabled);
 }
 
 void Io::Mouse::DoMouseLook(Pointi relChange) {

@@ -58,6 +58,7 @@ class Mouse {
     void DoMouseLook(Pointi relChange);
     void RestoreMouseLook();
     MouseLookState _mouseLook = MouseLookState::Disabled;
+    bool _mouseLookConfigApplied = false; // True after initial config state has been applied on first gameplay frame.
 };
 }  // namespace Io
 

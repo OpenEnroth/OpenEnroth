@@ -622,6 +622,8 @@ class GameConfig : public Config {
 
         Float MouseLookSensitivity = { this, "mouse_look_sens", 2.5f, "Mouse sensitivty in mouse look mode." };
 
+        Bool MouseLookEnabled = {this, "mouse_look_enabled", false, "Whether mouse look is enabled. Persisted between sessions."};
+
      private:
         static int ValidateLevel(int level) {
             return std::clamp(level, 0, 9);
