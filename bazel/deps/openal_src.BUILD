@@ -39,6 +39,19 @@ cmake(
         "CMAKE_CXX_FLAGS": " ",
         "CMAKE_C_FLAGS": " ",
     },
+    # openal-soft sets -DNTDDI_VERSION=NTDDI_VISTA (0x06000000) but not _WIN32_WINNT.
+    # Windows SDK 10.0.26100 requires both to be defined consistently; without
+    # _WIN32_WINNT, sdkddkver.h(302) errors: "NTDDI_VERSION setting conflicts with
+    # _WIN32_WINNT setting". Add _WIN32_WINNT=0x0600 (Vista) via cmake_options so
+    # it overrides the space-valued CMAKE_C_FLAGS from cache_entries above
+    # (cmake uses the last -D value when the same variable is set multiple times).
+    cmake_options = select({
+        "@platforms//os:windows": [
+            "-DCMAKE_C_FLAGS=/D_WIN32_WINNT=0x0600",
+            "-DCMAKE_CXX_FLAGS=/D_WIN32_WINNT=0x0600",
+        ],
+        "//conditions:default": [],
+    }),
     # Don't generate a Bazel crosstool cmake toolchain file. The default crosstool
     # injects Bazel's --copt flags which conflict with OpenAL-soft's own compile
     # settings. cmake auto-detects the MSVC compiler from the build environment.
