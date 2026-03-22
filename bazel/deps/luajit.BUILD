@@ -86,6 +86,10 @@ make(
             "-e",
             "CFLAGS=",
             "LDFLAGS=",
+            # LuaJIT also builds a 'luajit' executable for the TARGET (ARM64 Android).
+            # Host 'strip' can't handle ARM64 ELF: "Unable to recognise the format".
+            # We only need libluajit-5.1.a, not the executable, so make strip a no-op.
+            "TARGET_STRIP=true",
         ],
         # Linux: HOST_CC=gcc-14 (bare, no Bazel toolchain wrapper) ensures HOST
         # tools are compiled by the host compiler. On linux_x86, Bazel injects -m32
