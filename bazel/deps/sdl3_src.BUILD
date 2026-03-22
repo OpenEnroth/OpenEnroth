@@ -73,6 +73,8 @@ cmake(
             # SDL3 3.x clipboard support uses UTType (UniformTypeIdentifiers, macOS 11+).
             # Linked weakly via @available guards; symbols resolved at runtime on 11+.
             "-Wl,-framework,UniformTypeIdentifiers",
+            # SDL3 joystick/haptics use IOKit ForceFeedback APIs (FFCreateDevice etc.)
+            "-Wl,-framework,ForceFeedback",
         ],
         "//conditions:default": [],
     }),
