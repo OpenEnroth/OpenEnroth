@@ -16,8 +16,9 @@ cc_library(
     name = "openal",
     includes = ["include/AL"],
     deps = [":_openal_lib"],
-    # openal-soft on Android uses OpenSLES as its audio backend.
-    linkopts = ["-lOpenSLES"],
+    # openal-soft on Android uses OpenSLES as its audio backend and Android logging
+    # (logging.cpp calls __android_log_print which is in liblog).
+    linkopts = ["-lOpenSLES", "-llog"],
     visibility = ["//visibility:public"],
 )
 
