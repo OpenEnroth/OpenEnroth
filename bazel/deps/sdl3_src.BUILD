@@ -63,6 +63,16 @@ cmake(
             "-Wl,-framework,QuartzCore",
             "-Wl,-framework,GameController",
             "-Wl,-framework,CoreHaptics",
+            # SDL3 3.x keyboard support: TIS (Text Input Source) APIs live in Carbon.
+            "-Wl,-framework,Carbon",
+            # SDL3 3.x camera support (SDL_camera_coremedia.m) uses AVFoundation,
+            # CoreMedia, and CoreVideo for capture session and pixel buffer handling.
+            "-Wl,-framework,AVFoundation",
+            "-Wl,-framework,CoreMedia",
+            "-Wl,-framework,CoreVideo",
+            # SDL3 3.x clipboard support uses UTType (UniformTypeIdentifiers, macOS 11+).
+            # Linked weakly via @available guards; symbols resolved at runtime on 11+.
+            "-Wl,-framework,UniformTypeIdentifiers",
         ],
         "//conditions:default": [],
     }),

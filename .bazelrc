@@ -70,15 +70,11 @@ build:linux_x86 --linkopt=-m32
 # Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
 # We can't use --platforms= here (no 32-bit toolchain registered), so use --define instead.
 build:linux_x86 --define=oe_build_arch=x86_32
-# lld rejects 32-bit ELF objects when called via -fuse-ld=lld + -m32 (GCC doesn't
-# properly forward -m elf_i386 to lld). Use bfd which handles 32-bit x86 natively.
-# Appending -fuse-ld=bfd after the toolchain-injected -fuse-ld=lld overrides it
-# (GCC uses the last -fuse-ld=X seen on the command line).
-build:linux_x86 --linkopt=-fuse-ld=bfd
-# Bazel's start_end_lib feature passes --start-lib/--end-lib to the linker for thin
-# archives. bfd doesn't support these flags (only lld and gold do). Disable so that
-# archives are passed directly to bfd without --start-lib wrappers.
-build:linux_x86 --features=-start_end_lib
+# Use gold for linux_x86. bfd doesn't support --start-lib/--end-lib (Bazel's
+# start_end_lib feature), and lld rejects 32-bit ELF when called via -fuse-ld=lld
+# (GCC doesn't properly forward -m elf_i386 to lld). Gold supports both --start-lib
+# and 32-bit ELF (elf_i386) natively.
+build:linux_x86 --linkopt=-fuse-ld=gold
 
 # Linux x86_64
 build:linux_x86_64 --config=linux
