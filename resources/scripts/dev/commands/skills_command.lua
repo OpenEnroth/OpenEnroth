@@ -80,6 +80,21 @@ local function learnAllSkills()
     return "", true
 end
 
+local function cheatGmAll()
+    local count = Game.party.getPartySize()
+    for charIndex = 1, count do
+        for _, skillType in pairs(Game.SkillType) do
+            Game.party.setCharacterInfo(charIndex, {
+                skill = { id = skillType, mastery = Game.SkillMastery.Grandmaster, level = 20 }
+            })
+        end
+        -- Refill HP and mana now that Body Building / Meditation have been boosted.
+        local info = Game.party.getCharacterInfo(charIndex, { "maxHp", "maxMana" })
+        Game.party.setCharacterInfo(charIndex, { hp = info.maxHp, mana = info.maxMana })
+    end
+    return "All skills set to Grandmaster level 20, HP and mana restored", true
+end
+
 local subCommands = {
     {
         name = "set",
@@ -157,6 +172,11 @@ local subCommands = {
         name = "learn_all",
         callback = learnAllSkills,
         description = "Learn all skills available for each character in the party."
+    },
+    {
+        name = "cheat_gm_all",
+        callback = cheatGmAll,
+        description = "Set all skills to Grandmaster level 20 for the whole party, including skills not normally available to each character's class."
     },
 }
 
