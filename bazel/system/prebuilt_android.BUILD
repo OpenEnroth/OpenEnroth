@@ -1,12 +1,14 @@
 # Injected BUILD file for Android prebuilt dep archives.
-# Like prebuilt_posix.BUILD but zlib and openal use NDK system libraries
-# instead of prebuilt archives (the archives don't bundle them).
+# Like prebuilt_posix.BUILD but:
+# - SDL3 is a shared library (.so) on Android (not static)
+# - zlib uses NDK system library (not bundled in archives)
 
-cc_import(name = "_sdl3_lib",      static_library = "lib/libSDL3.a",      hdrs = glob(["include/SDL3/**"]))
+# SDL3 is built as a shared library for Android (required for Android Java integration).
+cc_import(name = "_sdl3_lib",      shared_library = "lib/libSDL3.so",     hdrs = glob(["include/SDL3/**"]))
 cc_library(name = "sdl3",          includes = ["include"], deps = [":_sdl3_lib"],      visibility = ["//visibility:public"])
 
 # Android NDK provides zlib in the sysroot; link against it with -lz.
-# Headers (<zlib.h>, <zconf.h>) come from the NDK sysroot automatically.
+# The archives don't bundle zlib; headers come from the NDK sysroot automatically.
 cc_library(name = "zlib", linkopts = ["-lz"], visibility = ["//visibility:public"])
 
 cc_import(name = "_openal_lib",    static_library = "lib/libopenal.a",    hdrs = glob(["include/AL/**"]))
