@@ -721,7 +721,7 @@ GAME_TEST(Issues, Issue1430) {
 
     game.startNewGame();
     test.startTaping();
-    game.tick(200); // 20k realtime seconds = 600k in-game seconds = 166 in-game hours, enough to die once.
+    game.tick(300); // 30k realtime seconds, enough for exhaustion death and revival.
 
     EXPECT_EQ(deathsTape.delta(), 1);
     EXPECT_EQ(hpsTape.back(), tape(1, 1, 1, 1));
