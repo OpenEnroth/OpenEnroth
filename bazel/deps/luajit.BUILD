@@ -145,35 +145,24 @@ make(
             "TARGET_ARCH=",
             "TARGET_FLAGS=--target=armv7a-linux-androideabi31",
             "BUILDMODE=static",
-            # HOST tools (buildvm, minilua) must be compiled as 32-bit to match the
-            # ARM 32-bit target layout. The required make args work together as follows:
-            #
-            # HOST_CC=gcc-14: use system GCC (not NDK clang) for HOST compilation;
-            #   NDK clang without --target is x86_64 native and cannot cross-compile to
-            #   32-bit x86 without special flags. System gcc-14 with -m32 does so cleanly.
-            #   Requires gcc-14-multilib on the build host (installed in CI workflow).
-            #
-            # HOST_XCFLAGS=-m32: HOST_ACFLAGS=$(CCOPTIONS) $(HOST_XCFLAGS) $(TARGET_ARCH)
-            #   $(HOST_CFLAGS), so -m32 reaches the HOST compiler (no spaces allowed in
-            #   individual make command-line args — each arg is one shell word).
-            #
-            # HOST_LDFLAGS=-m32: HOST_ALDFLAGS=$(LDOPTIONS) $(HOST_XLDFLAGS) $(HOST_LDFLAGS),
-            #   so -m32 reaches the HOST linker step as well.
-            #
-            # HOST_CFLAGS=-DLUAJIT_TARGET=LUAJIT_ARCH_arm: LuaJIT's Makefile adds this
-            #   define to HOST buildvm via TARGET_ARCH+= (line 286). But TARGET_ARCH= on
-            #   the command line suppresses ALL += for that variable (GNU make ignores +=
-            #   for command-line overrides). Without this define, HOST buildvm auto-detects
-            #   x86_64 (or x86_32 with -m32) and generates wrong ARM code:
-            #     Error: DASM error 1100169f  (DASM_S_RANGE_I, immediate out of range)
-            #   With -DLUAJIT_TARGET=LUAJIT_ARCH_arm AND -m32, lj_arch.h sets:
-            #     LJ_ARCH_BITS=32 => GCRef=uint32_t => 32-bit struct offsets (valid ARM imm)
-            #     LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL => LJ_DUALNUM=1
-            #   And sizeof(void*)=4 (from -m32) matches LJ_32=1, passing buildvm.c line 449:
-            #     if (sizeof(void *) != 4*LJ_32+8*LJ_64) => 4 == 4*1+8*0 = 4 ✓
-            "HOST_CC=gcc-14",
-            "HOST_XCFLAGS=-m32",
-            "HOST_LDFLAGS=-m32",
+            # HOST_CFLAGS=-DLUAJIT_TARGET=LUAJIT_ARCH_arm: LuaJIT's Makefile adds
+            # this define to HOST buildvm via TARGET_ARCH+= (line 286). But TARGET_ARCH=
+            # on the command line suppresses ALL += for that variable (GNU make ignores
+            # += for command-line overrides). Without this define, HOST buildvm
+            # auto-detects x86 (32-bit via env HOST_CC "gcc-14 -m32") and generates
+            # wrong ARM code:
+            #   Error: DASM error 1100169f  (DASM_S_RANGE_I, immediate out of range)
+            # With -DLUAJIT_TARGET=LUAJIT_ARCH_arm AND 32-bit HOST_CC, lj_arch.h sets:
+            #   LJ_ARCH_BITS=32 => GCRef=uint32_t => 32-bit struct offsets (valid ARM imm)
+            #   LJ_ARCH_NUMMODE=LJ_NUMMODE_DUAL => LJ_DUALNUM=1
+            # And sizeof(void*)=4 (32-bit HOST) matches LJ_32=1, passing buildvm.c:
+            #   if (sizeof(void *) != 4*LJ_32+8*LJ_64) => 4 == 4*1+8*0 = 4 ✓
+            # HOST_CC is set via env (see env attr below), not make args, to allow
+            # spaces in the value ("gcc-14 -m32"). env vars with -e take precedence
+            # over the Makefile's HOST_CC= $(CC) assignment; unlike make command-line
+            # args, they don't suppress Makefile += operations like HOST_XCFLAGS+= ...
+            # so HOST_XCFLAGS= -I. (Makefile line 200) stays in effect — required for
+            # HOST buildvm.c compilation to find lj_def.h via -I.
             "HOST_CFLAGS=-DLUAJIT_TARGET=LUAJIT_ARCH_arm",
         ],
         ":_android_x86_64": [
@@ -191,6 +180,17 @@ make(
         # produce 32-bit output, avoiding the i386/x86-64 arch mismatch error.
         ":_linux_x86": ["BUILDMODE=static", "LDFLAGS=-m32"],
         "//conditions:default": [],
+    }),
+    # HOST_CC for android_armeabi_v7a must be "gcc-14 -m32" (32-bit x86 HOST tools)
+    # so sizeof(void*)=4 matches the ARM 32-bit target layout. Spaces in the value
+    # are allowed in env vars but not in make command-line args (rules_foreign_cc
+    # splits args on spaces). With the -e flag already set in the android OS args,
+    # this env var overrides the Makefile's HOST_CC= $(CC) assignment. HOST_XCFLAGS=
+    # -I. (Makefile line 200) is preserved because env vars don't suppress Makefile
+    # +=, unlike command-line make variables. Requires gcc-14-multilib on the runner.
+    env = select({
+        ":_android_armv7": {"HOST_CC": "gcc-14 -m32"},
+        "//conditions:default": {},
     }),
     visibility = ["//visibility:public"],
 )
