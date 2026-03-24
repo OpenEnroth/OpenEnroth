@@ -51,7 +51,9 @@ class LodFont {
     /**
      * @param c                         Character to get image for, must be in `[0, 255]`.
      * @return                          Character image. Pixels are `0` for background, `1` for shadow, `255` for text.
-     *                                  Will return an empty image for chars that are not supported.
+     *                                  Will return an empty image for chars that are not supported. Note that some of
+     *                                  MM7 fonts have blank images for some of the characters, e.g. `book.fnt` has
+     *                                  a blank 2-pixel wide image for U+00B9 (Superscript One).
      */
     [[nodiscard]] GrayscaleImageView image(char c) const {
         return GrayscaleImageView(
