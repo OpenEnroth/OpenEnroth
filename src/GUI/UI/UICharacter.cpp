@@ -634,6 +634,8 @@ void GUIWindow_CharacterRecord::createAwardsScrollBar() {
 }
 
 void GUIWindow_CharacterRecord::Update() {
+    if (!pParty->hasActiveCharacter())
+        return;
     auto player = &pParty->activeCharacter();
 
     switch (current_character_screen_window) {
