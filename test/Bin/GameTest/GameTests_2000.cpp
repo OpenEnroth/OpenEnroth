@@ -853,3 +853,16 @@ GAME_TEST(Prs, Pr2354) {
         }
     }
 }
+
+// 2400
+
+GAME_TEST(Issues, Issue2425) {
+    //Segmentation fault when trying to buy Fire Guild membership on Emerald Island
+    auto screenTape = tapes.screen();
+    auto airMem = tapes.custom([] -> bool { return pParty->activeCharacter()._achievedAwardsBits[AWARD_MEMBERSHIP_AIR_GUILD]; });
+    auto fireMem = tapes.custom([] -> bool { return pParty->activeCharacter()._achievedAwardsBits[AWARD_MEMBERSHIP_FIRE_GUILD]; });
+    test.playTraceFromTestData("issue_2425.mm7", "issue_2425.json");
+    EXPECT_EQ(screenTape.size(), 3); // game / house / game
+    EXPECT_EQ(airMem, tape(false, true) ); // and weve bought both memberships
+    EXPECT_EQ(fireMem, tape(false, true) );
+}
