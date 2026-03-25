@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Resources/LOD.h"
@@ -818,6 +819,18 @@ GAME_TEST(Issues, Issue2341) {
     game.tick();
     EXPECT_EQ(current_screen_type, SCREEN_GAME);
     EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled); // MouseLook should be re-enabled after closing the menu.
+}
+
+GAME_TEST(Issues, Issue2409) {
+    // Mouse not centered when mouselooking - interaction position drifted from crosshair.
+    test.prepareForNextTest();
+    game.startNewGame();
+    game.pressAndReleaseKey(PlatformKey::KEY_F10); // Enable mouselook.
+    game.tick();
+    EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled);
+    game.moveMouse(100, 100); // Move cursor away from center.
+    game.tick();
+    EXPECT_EQ(mouse->position(), pViewport.center()); // Interaction position must stay at crosshair center.
 }
 
 GAME_TEST(Prs, Pr2354) {
