@@ -438,12 +438,11 @@ GAME_TEST(Issues, Issue2142) {
         engine->config->debug.NoActors.setValue(true);
         game.startNewGame();
         test.startTaping();
-        pParty->pCharacters[0].setSkillValue(SKILL_BODYBUILDING, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // EXTRA CHONKS.
         prepareForBattleTest();
 
         // Spawn monsters and wait.
         engine->config->debug.NoActors.setValue(false);
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 10; i++)
             game.spawnMonster(pParty->pos + Vec3f(0, 700, 0), monsterId);
         game.tick(200);
 
@@ -694,6 +693,12 @@ GAME_TEST(Issues, Issue2255) {
     EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT);
     EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT);
     EXPECT_MISSES(spritesTape.flatten(), SPRITE_PROJECTILE_ARROW); // No arrows were fired, only fire bolts.
+}
+
+GAME_TEST(Issues, Issue2279) {
+    // Game crashed when opening inventory while holding the attack key.
+    test.playTraceFromTestData("issue_2279.mm7", "issue_2279.json");
+    // Test passes if no crash occurred.
 }
 
 GAME_TEST(Issues, Issue2298) {

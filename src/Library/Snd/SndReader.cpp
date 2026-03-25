@@ -76,9 +76,10 @@ Blob SndReader::read(std::string_view filename) const {
     const SndEntry &entry = pos->second;
 
     Blob result = _snd.subBlob(entry.offset, entry.size);
+    std::string path = fmt::format("{}/{}", _snd.displayPath(), filename);
     if (entry.decompressedSize && entry.decompressedSize != entry.size)
-        result = zlib::uncompress(result, entry.decompressedSize);
-    return result.withDisplayPath(fmt::format("{}/{}", _snd.displayPath(), filename));
+        result = zlib::uncompress(result.withDisplayPath(path), entry.decompressedSize); // TODO(captainurist): handle decompression errors at SndReader level.
+    return result.withDisplayPath(path);
 }
 
 std::vector<std::string> SndReader::ls() const {

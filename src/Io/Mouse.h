@@ -19,7 +19,7 @@ class Mouse {
     }
 
     Pointi position() const;
-    void setPosition(Pointi position);
+    Pointi setPosition(Pointi position);
     /**
      * Moves the mouse pointer.
      * @param position                  Position in render coordinates to move mouse pointer to.

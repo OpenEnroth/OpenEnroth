@@ -1,0 +1,937 @@
+{
+    "header": {
+        "afterLoadRandomState": 53,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 193,
+                    "backpack": [
+                        "Emerald",
+                        "Platinum Ring [UNID]",
+                        "Noble Crown of Fire Resistance [+16]",
+                        "Swift Graceful Sword",
+                        "Leather Boots of Water Walking",
+                        "Dragon Hide Gauntlets [UNID]",
+                        "Fine Chain Mail of the Storm",
+                        "Griffin Bow of Acid",
+                        "Warlock's Ring of Speed [+4]",
+                        "Vial of Troll Blood",
+                        "Antique Wizard Ring [UNID]",
+                        "Phynaxian Helm of Magic [+7]",
+                        "Alloyed Shield of Fire Resistance [+17]",
+                        "Brass Ring [UNID]",
+                        "Brass Ring [UNID]",
+                        "Pearl Ring of Body Resistance [+5] [UNID]",
+                        "Witch's Amulet",
+                        "Emerald",
+                        "Blue Quartz",
+                        "Ruby",
+                        "Eyeball Amulet",
+                        "Huntsman's Cloak of Health [+11]",
+                        "Death's Head Pendant of Stealing [+18]",
+                        "Knight's Boots of The Moon",
+                        "Topaz",
+                        "Emerald Ring",
+                        "Eyeball Amulet",
+                        "Leather Boots of Speed [+10]",
+                        "Diamond",
+                        "Knight's Boots of The Sun",
+                        "Gauntlets of The Golem",
+                        "Vial of Troll Blood",
+                        "Platinum Ring of Air Resistance [+11] [UNID]",
+                        "Emerald Ring of Identifying [UNID]",
+                        "Death's Head Pendant",
+                        "Ruby",
+                        "Rose Crystal",
+                        "Emerald",
+                        "Brass Ring of Precision [+4]",
+                        "Diamond",
+                        "Emerald",
+                        "Ranger's Cloak of Air Resistance [+10]",
+                        "Gilded Belt of Disarming [+17]",
+                        "Scroll of Divine Intervention [UNID]",
+                        "Scroll of Heroism [UNID]",
+                        "Wizard Ring of Might [+16] [UNID]"
+                    ],
+                    "endurance": 201,
+                    "equipment": [
+                        "Majestic Shield of Defense [+16]",
+                        "Supreme Flail of Acid",
+                        "Griffin Bow of The Dragon",
+                        "Noble Plate Armor of Earth",
+                        "Phynaxian Helm",
+                        "Strong Belt of Plenty",
+                        "Glorious Cloak of The Unicorn",
+                        "Dragon Hide Gauntlets of Mind Resistance [+4]",
+                        "Paladin Boots",
+                        "Witch's Amulet of Mind Resistance [+7]",
+                        "Platinum Ring of Mana",
+                        "Ghost Ring",
+                        "Angel's Ring of Body Magic",
+                        "Angel's Ring of Charm [+20]",
+                        "Brass Ring of Charm [+11]",
+                        "Dazzling Ring of Speed [+17]"
+                    ],
+                    "hp": 545,
+                    "intelligence": 189,
+                    "luck": 198,
+                    "might": 225,
+                    "mp": 301,
+                    "personality": 233,
+                    "speed": 214
+                },
+                {
+                    "accuracy": 248,
+                    "backpack": [
+                        "Genie Lamp",
+                        "Zokarr's Axe",
+                        "Blaster",
+                        "Minotaur's Axe [+25]",
+                        "Stone to Flesh",
+                        "Champion Sword [UNID]",
+                        "Sublime Spear of Cold",
+                        "Golden Chain Mail of Speed [+16] [UNID]",
+                        "Blaster",
+                        "Heroism Potion [15]",
+                        "Witch's Amulet [UNID]",
+                        "Vial of Devil Ichor",
+                        "Fire Spike",
+                        "Vial of Devil Ichor",
+                        "Emerald",
+                        "Rogues' Gauntlets [UNID]",
+                        "Blue Quartz",
+                        "Stalt-laced ore",
+                        "Vial of Devil Ichor",
+                        "Sapphire Ring [UNID]",
+                        "Dragon's Eye",
+                        "Hammerhands",
+                        "Day of the Gods",
+                        "Vial of Devil Ichor",
+                        "Splendid Plate Armor of Mind Resistance [+10]",
+                        "Twilight",
+                        "Torn Page",
+                        "Blades",
+                        "Rejuvenation Potion [30]",
+                        "Resurrection [UNID]",
+                        "Blaster",
+                        "Bronze Amulet of Light Magic",
+                        "Arcomage Deck"
+                    ],
+                    "endurance": 195,
+                    "equipment": [
+                        "Gibbet",
+                        "Ullyses",
+                        "Golden Chain Mail of Fire Resistance [+22]",
+                        "Mogred Helm of Mana",
+                        "Titan's Belt",
+                        "Sun Cloak",
+                        "Mogred Gauntlets",
+                        "Knight's Boots of The Moon",
+                        "Witch's Amulet of Thought [+8]",
+                        "Platinum Ring of Thought [+7]",
+                        "Faerie Ring",
+                        "Platinum Ring of Speed [+6]",
+                        "Brass Ring of Health [+8]",
+                        "Sapphire Ring of Fire Resistance [+10]",
+                        "Brass Ring of Mind Resistance [+3]"
+                    ],
+                    "hp": 456,
+                    "intelligence": 227,
+                    "luck": 193,
+                    "might": 270,
+                    "mp": 335,
+                    "personality": 183,
+                    "speed": 159
+                },
+                {
+                    "accuracy": 197,
+                    "backpack": [
+                        "Magic Potion [51]",
+                        "Cure Paralysis Potion [7]",
+                        "Magic Potion [51]",
+                        "Vial of Devil Ichor",
+                        "Plate Armor of Mind Resistance [+8]",
+                        "Ranger's Cloak of The Sun",
+                        "Divine Cure Potion [25]",
+                        "Divine Power Potion [20]",
+                        "Divine Power Potion [13]",
+                        "Crown of Mana",
+                        "Magic Potion [51]",
+                        "Magic Potion [5]",
+                        "Freezing Potion [9]",
+                        "Intellect Boost Potion [8]",
+                        "Blaster",
+                        "Cure Wounds Potion [3]",
+                        "Death's Head Pendant",
+                        "Plate Armor of Charm [+9]",
+                        "Magic Potion [51]",
+                        "Luck Boost Potion [24]",
+                        "Divine Cure Potion [18]",
+                        "Rejuvenation Potion [24]",
+                        "Green Garnet",
+                        "Hareck's Leather",
+                        "Crushed Rose Petals",
+                        "Dragon's Eye",
+                        "Intellect Boost Potion [40]",
+                        "Ruby",
+                        "Paladin Boots of Water Walking",
+                        "Scroll of Divine Intervention",
+                        "Alloyed Shield of Arms [+9]",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Blaster",
+                        "Blaster",
+                        "Blaster",
+                        "Swift Potion [40]",
+                        "Moonstone",
+                        "Dragon's Eye",
+                        "Stalt-laced ore"
+                    ],
+                    "endurance": 233,
+                    "equipment": [
+                        "Phynaxian Shield of The Sky",
+                        "Minotaur Axe of The Dragon",
+                        "The Perfect Bow",
+                        "Golden Chain Mail of Freedom",
+                        "Mogred Helm of Defense [+16]",
+                        "Silver Belt of The Gods",
+                        "Cloak of the Sheep",
+                        "Mogred Gauntlets of Water Resistance [+18]",
+                        "Paladin Boots of Earth Resistance [+19]",
+                        "Death's Head Pendant of Monsters [+14]",
+                        "Warlock's Ring of Vigor [+11]",
+                        "Emerald Ring of The Troll",
+                        "Warlock's Ring of Items [+12]",
+                        "Angel's Ring of Earth Resistance [+19]",
+                        "Sapphire Ring of Luck [+9]",
+                        "Sapphire Ring of Items [+7]"
+                    ],
+                    "hp": 523,
+                    "intelligence": 217,
+                    "luck": 202,
+                    "might": 237,
+                    "mp": 259,
+                    "personality": 180,
+                    "speed": 222
+                },
+                {
+                    "accuracy": 195,
+                    "backpack": [
+                        "Scroll of Invisibility",
+                        "Scroll of Regeneration",
+                        "Mystic Wand of Shrinking [17/17]",
+                        "Scroll of Sacrifice",
+                        "Wand of Stunning [36/36]",
+                        "Pure Accuracy Potion [14]",
+                        "Arcane Wand of Blasting [21/21]",
+                        "Wizard Staff",
+                        "Scroll of Death Blossom",
+                        "Scroll of Recharge Item",
+                        "Scroll of Enslave",
+                        "Scroll of Enslave",
+                        "Scroll of Paralyze",
+                        "Scroll of Enchant Item",
+                        "Scroll of Dispel Magic",
+                        "Vial of Devil Ichor",
+                        "Scroll of Fly",
+                        "Scroll of Protection from Magic",
+                        "Scroll of Destroy Undead",
+                        "Scroll of Body Resistance",
+                        "Scroll of Fly",
+                        "Scroll of Regeneration",
+                        "Scroll of Reanimate",
+                        "Scroll of Resurrection",
+                        "Cure Wounds Potion [7]",
+                        "Arcane Wand of Paralyzing [23/23]",
+                        "Fairy Wand of Lashing [32/32]",
+                        "Scroll of Starburst",
+                        "Scroll of Pain Reflection",
+                        "Scroll of Enslave",
+                        "Scroll of Stone Skin",
+                        "Scroll of Sacrifice",
+                        "Scroll of Day of the Gods",
+                        "Scroll of Shield",
+                        "Scroll of Day of the Gods",
+                        "Scroll of Lloyd's Beacon",
+                        "Pure Accuracy Potion [15]",
+                        "Scroll of Day of Protection",
+                        "Scroll of Starburst",
+                        "Scroll of Recharge Item",
+                        "Scroll of Sacrifice",
+                        "Scroll of Hammerhands",
+                        "Scroll of Pain Reflection",
+                        "Scroll of Incinerate",
+                        "Scroll of Day of the Gods",
+                        "Scroll of Enslave",
+                        "Dragon's Eye",
+                        "Genie Lamp"
+                    ],
+                    "endurance": 225,
+                    "equipment": [
+                        "Ideal Crossbow",
+                        "Royal Leather of The Troll",
+                        "Mogred Helm",
+                        "Gilded Belt of Dodging [+12]",
+                        "Glorious Cloak of Defense [+11]",
+                        "Silver Mesh Gauntlets of The Troll",
+                        "Paladin Boots",
+                        "Witch's Amulet of The Sun",
+                        "Brass Ring of Disarming [+20]",
+                        "Brass Ring of Charm [+8]",
+                        "Brass Ring of Shielding",
+                        "Dazzling Ring of Luck [+9]",
+                        "Warriors' Emerald Ring",
+                        "Brass Ring of Fire Resistance [+11]"
+                    ],
+                    "hp": 686,
+                    "intelligence": 187,
+                    "luck": 192,
+                    "might": 205,
+                    "mp": 71,
+                    "personality": 241,
+                    "speed": 195
+                }
+            ],
+            "locationName": "d26.blv",
+            "partyPosition": {
+                "x": -1797,
+                "y": -3478,
+                "z": 65
+            }
+        },
+        "saveFileSize": 613888,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 193,
+                    "backpack": [
+                        "Emerald",
+                        "Platinum Ring [UNID]",
+                        "Noble Crown of Fire Resistance [+16]",
+                        "Swift Graceful Sword",
+                        "Leather Boots of Water Walking",
+                        "Dragon Hide Gauntlets [UNID]",
+                        "Fine Chain Mail of the Storm",
+                        "Griffin Bow of Acid",
+                        "Warlock's Ring of Speed [+4]",
+                        "Vial of Troll Blood",
+                        "Antique Wizard Ring [UNID]",
+                        "Phynaxian Helm of Magic [+7]",
+                        "Alloyed Shield of Fire Resistance [+17]",
+                        "Brass Ring [UNID]",
+                        "Brass Ring [UNID]",
+                        "Pearl Ring of Body Resistance [+5] [UNID]",
+                        "Witch's Amulet",
+                        "Emerald",
+                        "Blue Quartz",
+                        "Ruby",
+                        "Eyeball Amulet",
+                        "Huntsman's Cloak of Health [+11]",
+                        "Death's Head Pendant of Stealing [+18]",
+                        "Knight's Boots of The Moon",
+                        "Topaz",
+                        "Emerald Ring",
+                        "Eyeball Amulet",
+                        "Leather Boots of Speed [+10]",
+                        "Diamond",
+                        "Knight's Boots of The Sun",
+                        "Gauntlets of The Golem",
+                        "Vial of Troll Blood",
+                        "Platinum Ring of Air Resistance [+11] [UNID]",
+                        "Emerald Ring of Identifying [UNID]",
+                        "Death's Head Pendant",
+                        "Ruby",
+                        "Rose Crystal",
+                        "Emerald",
+                        "Brass Ring of Precision [+4]",
+                        "Diamond",
+                        "Emerald",
+                        "Ranger's Cloak of Air Resistance [+10]",
+                        "Gilded Belt of Disarming [+17]",
+                        "Scroll of Divine Intervention [UNID]",
+                        "Scroll of Heroism [UNID]",
+                        "Wizard Ring of Might [+16] [UNID]"
+                    ],
+                    "endurance": 201,
+                    "equipment": [
+                        "Majestic Shield of Defense [+16]",
+                        "Supreme Flail of Acid",
+                        "Griffin Bow of The Dragon",
+                        "Noble Plate Armor of Earth",
+                        "Phynaxian Helm",
+                        "Strong Belt of Plenty",
+                        "Glorious Cloak of The Unicorn",
+                        "Dragon Hide Gauntlets of Mind Resistance [+4]",
+                        "Paladin Boots",
+                        "Witch's Amulet of Mind Resistance [+7]",
+                        "Platinum Ring of Mana",
+                        "Ghost Ring",
+                        "Angel's Ring of Body Magic",
+                        "Angel's Ring of Charm [+20]",
+                        "Brass Ring of Charm [+11]",
+                        "Dazzling Ring of Speed [+17]"
+                    ],
+                    "hp": 533,
+                    "intelligence": 189,
+                    "luck": 198,
+                    "might": 225,
+                    "mp": 265,
+                    "personality": 233,
+                    "speed": 214
+                },
+                {
+                    "accuracy": 248,
+                    "backpack": [
+                        "Genie Lamp",
+                        "Zokarr's Axe",
+                        "Blaster",
+                        "Minotaur's Axe [+25]",
+                        "Stone to Flesh",
+                        "Champion Sword [UNID]",
+                        "Sublime Spear of Cold",
+                        "Golden Chain Mail of Speed [+16] [UNID]",
+                        "Blaster",
+                        "Heroism Potion [15]",
+                        "Witch's Amulet [UNID]",
+                        "Vial of Devil Ichor",
+                        "Fire Spike",
+                        "Vial of Devil Ichor",
+                        "Emerald",
+                        "Rogues' Gauntlets [UNID]",
+                        "Blue Quartz",
+                        "Stalt-laced ore",
+                        "Vial of Devil Ichor",
+                        "Sapphire Ring [UNID]",
+                        "Dragon's Eye",
+                        "Hammerhands",
+                        "Day of the Gods",
+                        "Vial of Devil Ichor",
+                        "Splendid Plate Armor of Mind Resistance [+10]",
+                        "Twilight",
+                        "Torn Page",
+                        "Blades",
+                        "Rejuvenation Potion [30]",
+                        "Resurrection [UNID]",
+                        "Blaster",
+                        "Bronze Amulet of Light Magic",
+                        "Arcomage Deck"
+                    ],
+                    "endurance": 195,
+                    "equipment": [
+                        "Gibbet",
+                        "Ullyses",
+                        "Golden Chain Mail of Fire Resistance [+22]",
+                        "Mogred Helm of Mana",
+                        "Titan's Belt",
+                        "Sun Cloak",
+                        "Mogred Gauntlets",
+                        "Knight's Boots of The Moon",
+                        "Witch's Amulet of Thought [+8]",
+                        "Platinum Ring of Thought [+7]",
+                        "Faerie Ring",
+                        "Platinum Ring of Speed [+6]",
+                        "Brass Ring of Health [+8]",
+                        "Sapphire Ring of Fire Resistance [+10]",
+                        "Brass Ring of Mind Resistance [+3]"
+                    ],
+                    "hp": 456,
+                    "intelligence": 227,
+                    "luck": 193,
+                    "might": 270,
+                    "mp": 325,
+                    "personality": 183,
+                    "speed": 159
+                },
+                {
+                    "accuracy": 197,
+                    "backpack": [
+                        "Magic Potion [51]",
+                        "Cure Paralysis Potion [7]",
+                        "Magic Potion [51]",
+                        "Vial of Devil Ichor",
+                        "Plate Armor of Mind Resistance [+8]",
+                        "Ranger's Cloak of The Sun",
+                        "Divine Cure Potion [25]",
+                        "Divine Power Potion [20]",
+                        "Divine Power Potion [13]",
+                        "Crown of Mana",
+                        "Magic Potion [51]",
+                        "Magic Potion [5]",
+                        "Freezing Potion [9]",
+                        "Intellect Boost Potion [8]",
+                        "Blaster",
+                        "Cure Wounds Potion [3]",
+                        "Death's Head Pendant",
+                        "Plate Armor of Charm [+9]",
+                        "Magic Potion [51]",
+                        "Luck Boost Potion [24]",
+                        "Divine Cure Potion [18]",
+                        "Rejuvenation Potion [24]",
+                        "Green Garnet",
+                        "Hareck's Leather",
+                        "Crushed Rose Petals",
+                        "Dragon's Eye",
+                        "Intellect Boost Potion [40]",
+                        "Ruby",
+                        "Paladin Boots of Water Walking",
+                        "Scroll of Divine Intervention",
+                        "Alloyed Shield of Arms [+9]",
+                        "Dragon's Eye",
+                        "Dragon's Eye",
+                        "Blaster",
+                        "Blaster",
+                        "Blaster",
+                        "Swift Potion [40]",
+                        "Moonstone",
+                        "Dragon's Eye",
+                        "Stalt-laced ore"
+                    ],
+                    "endurance": 233,
+                    "equipment": [
+                        "Phynaxian Shield of The Sky",
+                        "Minotaur Axe of The Dragon",
+                        "The Perfect Bow",
+                        "Golden Chain Mail of Freedom",
+                        "Mogred Helm of Defense [+16]",
+                        "Silver Belt of The Gods",
+                        "Cloak of the Sheep",
+                        "Mogred Gauntlets of Water Resistance [+18]",
+                        "Paladin Boots of Earth Resistance [+19]",
+                        "Death's Head Pendant of Monsters [+14]",
+                        "Warlock's Ring of Vigor [+11]",
+                        "Emerald Ring of The Troll",
+                        "Warlock's Ring of Items [+12]",
+                        "Angel's Ring of Earth Resistance [+19]",
+                        "Sapphire Ring of Luck [+9]",
+                        "Sapphire Ring of Items [+7]"
+                    ],
+                    "hp": 511,
+                    "intelligence": 217,
+                    "luck": 202,
+                    "might": 237,
+                    "mp": 259,
+                    "personality": 180,
+                    "speed": 222
+                },
+                {
+                    "accuracy": 195,
+                    "backpack": [
+                        "Scroll of Invisibility",
+                        "Scroll of Regeneration",
+                        "Mystic Wand of Shrinking [17/17]",
+                        "Scroll of Sacrifice",
+                        "Wand of Stunning [36/36]",
+                        "Pure Accuracy Potion [14]",
+                        "Arcane Wand of Blasting [21/21]",
+                        "Wizard Staff",
+                        "Scroll of Death Blossom",
+                        "Scroll of Recharge Item",
+                        "Scroll of Enslave",
+                        "Scroll of Enslave",
+                        "Scroll of Paralyze",
+                        "Scroll of Enchant Item",
+                        "Scroll of Dispel Magic",
+                        "Vial of Devil Ichor",
+                        "Scroll of Fly",
+                        "Scroll of Protection from Magic",
+                        "Scroll of Destroy Undead",
+                        "Scroll of Body Resistance",
+                        "Scroll of Fly",
+                        "Scroll of Regeneration",
+                        "Scroll of Reanimate",
+                        "Scroll of Resurrection",
+                        "Cure Wounds Potion [7]",
+                        "Arcane Wand of Paralyzing [23/23]",
+                        "Fairy Wand of Lashing [32/32]",
+                        "Scroll of Starburst",
+                        "Scroll of Pain Reflection",
+                        "Scroll of Enslave",
+                        "Scroll of Stone Skin",
+                        "Scroll of Sacrifice",
+                        "Scroll of Day of the Gods",
+                        "Scroll of Shield",
+                        "Scroll of Day of the Gods",
+                        "Scroll of Lloyd's Beacon",
+                        "Pure Accuracy Potion [15]",
+                        "Scroll of Day of Protection",
+                        "Scroll of Starburst",
+                        "Scroll of Recharge Item",
+                        "Scroll of Sacrifice",
+                        "Scroll of Hammerhands",
+                        "Scroll of Pain Reflection",
+                        "Scroll of Incinerate",
+                        "Scroll of Day of the Gods",
+                        "Scroll of Enslave",
+                        "Dragon's Eye",
+                        "Genie Lamp"
+                    ],
+                    "endurance": 225,
+                    "equipment": [
+                        "Ideal Crossbow",
+                        "Royal Leather of The Troll",
+                        "Mogred Helm",
+                        "Gilded Belt of Dodging [+12]",
+                        "Glorious Cloak of Defense [+11]",
+                        "Silver Mesh Gauntlets of The Troll",
+                        "Paladin Boots",
+                        "Witch's Amulet of The Sun",
+                        "Brass Ring of Disarming [+20]",
+                        "Brass Ring of Charm [+8]",
+                        "Brass Ring of Shielding",
+                        "Dazzling Ring of Luck [+9]",
+                        "Warriors' Emerald Ring",
+                        "Brass Ring of Fire Resistance [+11]"
+                    ],
+                    "hp": 662,
+                    "intelligence": 187,
+                    "luck": 192,
+                    "might": 205,
+                    "mp": 71,
+                    "personality": 241,
+                    "speed": 195
+                }
+            ],
+            "locationName": "d26.blv",
+            "partyPosition": {
+                "x": -1797,
+                "y": -3478,
+                "z": 65
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 7,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 7,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "R",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "R",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 132,
+                "y": 262
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 143,
+                "y": 276
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 147,
+                "y": 279
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "left",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 147,
+                "y": 279
+            },
+            "type": "mouseButtonPress"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "button": "left",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 147,
+                "y": 279
+            },
+            "type": "mouseButtonRelease"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "ESCAPE",
+            "mods": "0",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "ESCAPE",
+            "mods": "0",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "randomState": 14,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "randomState": 15,
+            "tickCount": 3500,
+            "type": "paint"
+        },
+        {
+            "randomState": 15,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 15,
+            "tickCount": 3700,
+            "type": "paint"
+        },
+        {
+            "randomState": 16,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "randomState": 22,
+            "tickCount": 3900,
+            "type": "paint"
+        },
+        {
+            "randomState": 23,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift|ctrl",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 29,
+            "tickCount": 4100,
+            "type": "paint"
+        },
+        {
+            "randomState": 30,
+            "tickCount": 4200,
+            "type": "paint"
+        },
+        {
+            "randomState": 31,
+            "tickCount": 4300,
+            "type": "paint"
+        }
+    ]
+}

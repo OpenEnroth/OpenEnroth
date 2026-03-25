@@ -1,0 +1,1026 @@
+{
+    "header": {
+        "afterLoadRandomState": 3,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_margareth",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "50"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 24,
+                    "backpack": [
+                        "Widowsweep Berries",
+                        "Horseshoe",
+                        "Red Apple",
+                        "Scroll of Shrinking Ray",
+                        "Cure Wounds Potion [13]",
+                        "Long Dagger",
+                        "Vial of Troll Blood",
+                        "Letter",
+                        "Scroll of Town Portal",
+                        "Mercury",
+                        "Letter to Hairbaugh",
+                        "Remains of a Journal",
+                        "Scroll of Fly",
+                        "Lloyd's Beacon",
+                        "Dragon Hide Gauntlets",
+                        "Horseshoe",
+                        "Vial of Troll Blood",
+                        "Genie Lamp",
+                        "Invisibility",
+                        "Horseshoe",
+                        "Genie Lamp",
+                        "Telekinesis",
+                        "Faerie Key",
+                        "Horseshoe",
+                        "Elvish Toadstool",
+                        "Journal Entry, 2nd January",
+                        "Speed Boost Potion [8]",
+                        "Vial of Troll Blood",
+                        "Golem head",
+                        "Cure Disease Potion [8]",
+                        "Cure Wounds Potion [16]",
+                        "Silver Belt",
+                        "Brass Ring of Water Resistance [+2]",
+                        "Genie Lamp",
+                        "Fragment of Soldier's Diary",
+                        "Arcomage Deck",
+                        "Vial of Troll Blood",
+                        "Vial of Troll Blood",
+                        "Cure Wounds Potion [11]",
+                        "Mercury",
+                        "Genie Lamp",
+                        "Scroll of Destroy Undead",
+                        "Red Apple",
+                        "Journal Fragment",
+                        "Conscript's Helm",
+                        "Cure Wounds Potion [14]",
+                        "Mercury",
+                        "Elvish Toadstool",
+                        "Red Apple",
+                        "Horseshoe",
+                        "Siertal-laced ore",
+                        "Elvish Toadstool",
+                        "Horseshoe",
+                        "Fine Belt",
+                        "Moonstone",
+                        "Elvish Toadstool"
+                    ],
+                    "endurance": 26,
+                    "equipment": [
+                        "Long Dagger",
+                        "Dwarven Dagger",
+                        "Elven Longbow",
+                        "Officer's Leather of The Moon [BROKEN]",
+                        "Full Helm",
+                        "Elegant Cloak of Mind Resistance [+9]",
+                        "Silver Mesh Gauntlets of The Stars",
+                        "Ranger Boots",
+                        "Pearl Ring of Earth Resistance [+3]",
+                        "Wizard Ring of Mana",
+                        "Warlock's Ring of Disarming [+8]"
+                    ],
+                    "hp": 54,
+                    "intelligence": 15,
+                    "luck": 23,
+                    "might": 22,
+                    "mp": 62,
+                    "personality": 5,
+                    "speed": 24
+                },
+                {
+                    "accuracy": 23,
+                    "backpack": [
+                        "Worn Belt",
+                        "Cure Wounds Potion [4]",
+                        "Golem left leg",
+                        "Horseshoe",
+                        "Horseshoe",
+                        "Heavy Crossbow",
+                        "Red Apple",
+                        "Gauntlets",
+                        "Green Garnet",
+                        "Golem right leg",
+                        "Genie Lamp",
+                        "Magic Potion [6]",
+                        "Potion Bottle",
+                        "Cure Disease Potion [8]",
+                        "Journal Entry, 19th September",
+                        "Genie Lamp",
+                        "Magic Potion [8]",
+                        "Bill of Sale",
+                        "Genie Lamp",
+                        "Horseshoe",
+                        "Scroll of Protection from Magic"
+                    ],
+                    "endurance": 17,
+                    "equipment": [
+                        "Long Dagger",
+                        "Long Dagger",
+                        "Elven Longbow",
+                        "Officer's Leather of Defense [+4]",
+                        "Phynaxian Helm",
+                        "Strong Belt of Precision [+8]",
+                        "Glorious Cloak of the Fist [+6]",
+                        "Mogred Gauntlets",
+                        "Steel Plated Boots of Doom",
+                        "Warlock's Ring of Magic [+8]"
+                    ],
+                    "hp": 49,
+                    "intelligence": 21,
+                    "luck": 24,
+                    "might": 23,
+                    "mp": 51,
+                    "personality": 10,
+                    "speed": 15
+                },
+                {
+                    "accuracy": 19,
+                    "backpack": [
+                        "Widowsweep Berries",
+                        "Gauntlets [UNID]",
+                        "Steel Chain Mail",
+                        "Huntsman's Cloak",
+                        "Conscript's Helm",
+                        "Crushed Rose Petals",
+                        "Ranger's Cloak",
+                        "Steel Plated Boots",
+                        "Bless Potion [9]",
+                        "Widowsweep Berries",
+                        "War Hammer",
+                        "Berserk",
+                        "Golem right arm",
+                        "Steel Gauntlets of Precision [+4]",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 32,
+                    "equipment": [
+                        "Sterling Shield of Health [+5]",
+                        "Dwarven Morningstar",
+                        "Elven Longbow",
+                        "Resplendent Chain Mail",
+                        "Full Helm",
+                        "Huntsman's Cloak of Charm [+11]",
+                        "Dragon Hide Gauntlets of The Eclipse",
+                        "Knight's Boots",
+                        "Pearl Ring of Health [+2]",
+                        "Warlock's Ring of Immunity",
+                        "Sapphire Ring of Mind Resistance [+10]"
+                    ],
+                    "hp": 70,
+                    "intelligence": 9,
+                    "luck": 25,
+                    "might": 22,
+                    "mp": 59,
+                    "personality": 39,
+                    "speed": 15
+                },
+                {
+                    "accuracy": 20,
+                    "backpack": [
+                        "Phirna Root",
+                        "Poppysnaps",
+                        "Potion Bottle",
+                        "Poppysnaps",
+                        "Crushed Rose Petals",
+                        "Poppysnaps",
+                        "Cure Wounds Potion [13]",
+                        "Harpy Feather",
+                        "Harpy Feather",
+                        "Harpy Feather",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Magic Potion [10]",
+                        "Potion Bottle",
+                        "Widowsweep Berries",
+                        "Poppysnaps",
+                        "Poppysnaps",
+                        "Obsidian",
+                        "Moonstone",
+                        "Potion Bottle",
+                        "Magic Potion [8]",
+                        "Widowsweep Berries",
+                        "Poppysnaps",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Catalyst Potion [5]",
+                        "Harpy Feather",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Cure Poison Potion [6]",
+                        "Cure Wounds Potion [6]",
+                        "Fae Dust",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Cure Disease Potion [14]",
+                        "Harpy Feather",
+                        "Phirna Root",
+                        "Cure Weakness Potion [14]",
+                        "Magic Potion [16]",
+                        "Widowsweep Berries",
+                        "Moonstone",
+                        "Widowsweep Berries",
+                        "Vial of Troll Blood",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Cure Weakness Potion [4]",
+                        "Elvish Toadstool",
+                        "Obsidian",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Awaken Potion [5]",
+                        "Mushroom",
+                        "Obsidian",
+                        "Crushed Rose Petals",
+                        "Elvish Toadstool",
+                        "Potion Bottle",
+                        "Meteorite Fragment",
+                        "Poppysnaps",
+                        "Phirna Root",
+                        "Potion Bottle",
+                        "Cure Weakness Potion [2]",
+                        "Obsidian",
+                        "Harpy Feather",
+                        "Potion Bottle",
+                        "Elvish Toadstool",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment",
+                        "Widowsweep Berries",
+                        "Meteorite Fragment",
+                        "Poppysnaps",
+                        "Poppysnaps",
+                        "Potion Bottle",
+                        "Moonstone",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Obsidian",
+                        "Phirna Root",
+                        "Poppysnaps",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Phirna Root",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 13,
+                    "equipment": [
+                        "Dwarven Dagger",
+                        "Long Dagger",
+                        "Elven Longbow",
+                        "Studded Leather of Defense [+8]",
+                        "Full Helm of Health [+7]",
+                        "Elegant Cloak",
+                        "Steel Gauntlets of Alchemy [+5]",
+                        "Steel Plated Boots",
+                        "Faerie Ring"
+                    ],
+                    "hp": 51,
+                    "intelligence": 30,
+                    "luck": 21,
+                    "might": 15,
+                    "mp": 59,
+                    "personality": 9,
+                    "speed": 13
+                }
+            ],
+            "locationName": "d17.blv",
+            "partyPosition": {
+                "x": 361,
+                "y": 6118,
+                "z": 641
+            }
+        },
+        "saveFileSize": 451869,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 24,
+                    "backpack": [
+                        "Widowsweep Berries",
+                        "Horseshoe",
+                        "Red Apple",
+                        "Scroll of Shrinking Ray",
+                        "Cure Wounds Potion [13]",
+                        "Long Dagger",
+                        "Vial of Troll Blood",
+                        "Letter",
+                        "Scroll of Town Portal",
+                        "Mercury",
+                        "Letter to Hairbaugh",
+                        "Remains of a Journal",
+                        "Scroll of Fly",
+                        "Lloyd's Beacon",
+                        "Dragon Hide Gauntlets",
+                        "Horseshoe",
+                        "Vial of Troll Blood",
+                        "Genie Lamp",
+                        "Invisibility",
+                        "Horseshoe",
+                        "Genie Lamp",
+                        "Telekinesis",
+                        "Faerie Key",
+                        "Horseshoe",
+                        "Elvish Toadstool",
+                        "Journal Entry, 2nd January",
+                        "Speed Boost Potion [8]",
+                        "Vial of Troll Blood",
+                        "Golem head",
+                        "Cure Disease Potion [8]",
+                        "Cure Wounds Potion [16]",
+                        "Silver Belt",
+                        "Brass Ring of Water Resistance [+2]",
+                        "Genie Lamp",
+                        "Fragment of Soldier's Diary",
+                        "Arcomage Deck",
+                        "Vial of Troll Blood",
+                        "Vial of Troll Blood",
+                        "Cure Wounds Potion [11]",
+                        "Mercury",
+                        "Genie Lamp",
+                        "Scroll of Destroy Undead",
+                        "Red Apple",
+                        "Journal Fragment",
+                        "Conscript's Helm",
+                        "Cure Wounds Potion [14]",
+                        "Mercury",
+                        "Elvish Toadstool",
+                        "Red Apple",
+                        "Horseshoe",
+                        "Siertal-laced ore",
+                        "Elvish Toadstool",
+                        "Horseshoe",
+                        "Fine Belt",
+                        "Moonstone",
+                        "Elvish Toadstool"
+                    ],
+                    "endurance": 26,
+                    "equipment": [
+                        "Long Dagger",
+                        "Dwarven Dagger",
+                        "Elven Longbow",
+                        "Officer's Leather of The Moon [BROKEN]",
+                        "Full Helm",
+                        "Elegant Cloak of Mind Resistance [+9]",
+                        "Silver Mesh Gauntlets of The Stars",
+                        "Ranger Boots",
+                        "Pearl Ring of Earth Resistance [+3]",
+                        "Wizard Ring of Mana",
+                        "Warlock's Ring of Disarming [+8]"
+                    ],
+                    "hp": 54,
+                    "intelligence": 15,
+                    "luck": 23,
+                    "might": 22,
+                    "mp": 62,
+                    "personality": 5,
+                    "speed": 24
+                },
+                {
+                    "accuracy": 23,
+                    "backpack": [
+                        "Worn Belt",
+                        "Cure Wounds Potion [4]",
+                        "Golem left leg",
+                        "Horseshoe",
+                        "Horseshoe",
+                        "Heavy Crossbow",
+                        "Red Apple",
+                        "Gauntlets",
+                        "Green Garnet",
+                        "Golem right leg",
+                        "Genie Lamp",
+                        "Magic Potion [6]",
+                        "Potion Bottle",
+                        "Cure Disease Potion [8]",
+                        "Journal Entry, 19th September",
+                        "Genie Lamp",
+                        "Magic Potion [8]",
+                        "Bill of Sale",
+                        "Genie Lamp",
+                        "Horseshoe",
+                        "Scroll of Protection from Magic"
+                    ],
+                    "endurance": 17,
+                    "equipment": [
+                        "Long Dagger",
+                        "Long Dagger",
+                        "Elven Longbow",
+                        "Officer's Leather of Defense [+4]",
+                        "Phynaxian Helm",
+                        "Strong Belt of Precision [+8]",
+                        "Glorious Cloak of the Fist [+6]",
+                        "Mogred Gauntlets",
+                        "Steel Plated Boots of Doom",
+                        "Warlock's Ring of Magic [+8]"
+                    ],
+                    "hp": 49,
+                    "intelligence": 21,
+                    "luck": 24,
+                    "might": 23,
+                    "mp": 51,
+                    "personality": 10,
+                    "speed": 15
+                },
+                {
+                    "accuracy": 19,
+                    "backpack": [
+                        "Widowsweep Berries",
+                        "Gauntlets [UNID]",
+                        "Steel Chain Mail",
+                        "Huntsman's Cloak",
+                        "Conscript's Helm",
+                        "Crushed Rose Petals",
+                        "Ranger's Cloak",
+                        "Steel Plated Boots",
+                        "Bless Potion [9]",
+                        "Widowsweep Berries",
+                        "War Hammer",
+                        "Berserk",
+                        "Golem right arm",
+                        "Steel Gauntlets of Precision [+4]",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 32,
+                    "equipment": [
+                        "Sterling Shield of Health [+5]",
+                        "Dwarven Morningstar",
+                        "Elven Longbow",
+                        "Resplendent Chain Mail",
+                        "Full Helm",
+                        "Huntsman's Cloak of Charm [+11]",
+                        "Dragon Hide Gauntlets of The Eclipse",
+                        "Knight's Boots",
+                        "Pearl Ring of Health [+2]",
+                        "Warlock's Ring of Immunity",
+                        "Sapphire Ring of Mind Resistance [+10]"
+                    ],
+                    "hp": 70,
+                    "intelligence": 9,
+                    "luck": 25,
+                    "might": 22,
+                    "mp": 59,
+                    "personality": 39,
+                    "speed": 15
+                },
+                {
+                    "accuracy": 20,
+                    "backpack": [
+                        "Phirna Root",
+                        "Poppysnaps",
+                        "Potion Bottle",
+                        "Poppysnaps",
+                        "Crushed Rose Petals",
+                        "Poppysnaps",
+                        "Cure Wounds Potion [13]",
+                        "Harpy Feather",
+                        "Harpy Feather",
+                        "Harpy Feather",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Magic Potion [10]",
+                        "Potion Bottle",
+                        "Widowsweep Berries",
+                        "Poppysnaps",
+                        "Poppysnaps",
+                        "Obsidian",
+                        "Moonstone",
+                        "Potion Bottle",
+                        "Magic Potion [8]",
+                        "Widowsweep Berries",
+                        "Poppysnaps",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Catalyst Potion [5]",
+                        "Harpy Feather",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Cure Poison Potion [6]",
+                        "Cure Wounds Potion [6]",
+                        "Fae Dust",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Cure Disease Potion [14]",
+                        "Harpy Feather",
+                        "Phirna Root",
+                        "Cure Weakness Potion [14]",
+                        "Magic Potion [16]",
+                        "Widowsweep Berries",
+                        "Moonstone",
+                        "Widowsweep Berries",
+                        "Vial of Troll Blood",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Phirna Root",
+                        "Cure Weakness Potion [4]",
+                        "Elvish Toadstool",
+                        "Obsidian",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Awaken Potion [5]",
+                        "Mushroom",
+                        "Obsidian",
+                        "Crushed Rose Petals",
+                        "Elvish Toadstool",
+                        "Potion Bottle",
+                        "Meteorite Fragment",
+                        "Poppysnaps",
+                        "Phirna Root",
+                        "Potion Bottle",
+                        "Cure Weakness Potion [2]",
+                        "Obsidian",
+                        "Harpy Feather",
+                        "Potion Bottle",
+                        "Elvish Toadstool",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment",
+                        "Widowsweep Berries",
+                        "Meteorite Fragment",
+                        "Poppysnaps",
+                        "Poppysnaps",
+                        "Potion Bottle",
+                        "Moonstone",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Obsidian",
+                        "Phirna Root",
+                        "Poppysnaps",
+                        "Crushed Rose Petals",
+                        "Phirna Root",
+                        "Phirna Root",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 13,
+                    "equipment": [
+                        "Dwarven Dagger",
+                        "Long Dagger",
+                        "Elven Longbow",
+                        "Studded Leather of Defense [+8]",
+                        "Full Helm of Health [+7]",
+                        "Elegant Cloak",
+                        "Steel Gauntlets of Alchemy [+5]",
+                        "Steel Plated Boots",
+                        "Faerie Ring"
+                    ],
+                    "hp": 51,
+                    "intelligence": 30,
+                    "luck": 21,
+                    "might": 15,
+                    "mp": 59,
+                    "personality": 9,
+                    "speed": 13
+                }
+            ],
+            "locationName": "d17.blv",
+            "partyPosition": {
+                "x": -463,
+                "y": 5509,
+                "z": 641
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 50,
+            "type": "paint"
+        },
+        {
+            "randomState": 2,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 2,
+            "tickCount": 150,
+            "type": "paint"
+        },
+        {
+            "randomState": 2,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 4,
+            "tickCount": 250,
+            "type": "paint"
+        },
+        {
+            "randomState": 6,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 6,
+            "tickCount": 350,
+            "type": "paint"
+        },
+        {
+            "randomState": 8,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 8,
+            "tickCount": 450,
+            "type": "paint"
+        },
+        {
+            "randomState": 9,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 10,
+            "tickCount": 550,
+            "type": "paint"
+        },
+        {
+            "randomState": 10,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 11,
+            "tickCount": 650,
+            "type": "paint"
+        },
+        {
+            "randomState": 11,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 750,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 12,
+            "tickCount": 850,
+            "type": "paint"
+        },
+        {
+            "randomState": 15,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 16,
+            "tickCount": 950,
+            "type": "paint"
+        },
+        {
+            "randomState": 16,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 18,
+            "tickCount": 1050,
+            "type": "paint"
+        },
+        {
+            "randomState": 18,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 18,
+            "tickCount": 1150,
+            "type": "paint"
+        },
+        {
+            "randomState": 18,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 26,
+            "tickCount": 1250,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "X",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 27,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 32,
+            "tickCount": 1350,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 1450,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 1550,
+            "type": "paint"
+        },
+        {
+            "randomState": 42,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 43,
+            "tickCount": 1650,
+            "type": "paint"
+        },
+        {
+            "randomState": 43,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 44,
+            "tickCount": 1750,
+            "type": "paint"
+        },
+        {
+            "randomState": 45,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 46,
+            "tickCount": 1850,
+            "type": "paint"
+        },
+        {
+            "randomState": 47,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 48,
+            "tickCount": 1950,
+            "type": "paint"
+        },
+        {
+            "randomState": 48,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 53,
+            "tickCount": 2050,
+            "type": "paint"
+        },
+        {
+            "randomState": 57,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 58,
+            "tickCount": 2150,
+            "type": "paint"
+        },
+        {
+            "randomState": 63,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 65,
+            "tickCount": 2250,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 66,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 66,
+            "tickCount": 2350,
+            "type": "paint"
+        },
+        {
+            "randomState": 67,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 67,
+            "tickCount": 2450,
+            "type": "paint"
+        },
+        {
+            "randomState": 68,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 69,
+            "tickCount": 2550,
+            "type": "paint"
+        },
+        {
+            "randomState": 69,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 71,
+            "tickCount": 2650,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 72,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "randomState": 73,
+            "tickCount": 2750,
+            "type": "paint"
+        },
+        {
+            "randomState": 81,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 82,
+            "tickCount": 2850,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 83,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "randomState": 83,
+            "tickCount": 2950,
+            "type": "paint"
+        },
+        {
+            "randomState": 83,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 87,
+            "tickCount": 3050,
+            "type": "paint"
+        },
+        {
+            "randomState": 87,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "randomState": 87,
+            "tickCount": 3150,
+            "type": "paint"
+        },
+        {
+            "randomState": 87,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "randomState": 89,
+            "tickCount": 3250,
+            "type": "paint"
+        },
+        {
+            "randomState": 93,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "randomState": 98,
+            "tickCount": 3350,
+            "type": "paint"
+        },
+        {
+            "randomState": 98,
+            "tickCount": 3400,
+            "type": "paint"
+        }
+    ]
+}

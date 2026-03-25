@@ -1,0 +1,1773 @@
+{
+    "header": {
+        "afterLoadRandomState": 142057,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "full_monster_id",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "override_built_in_resources",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "mersenne_twister"
+            },
+            {
+                "key": "wizard_eye",
+                "section": "debug",
+                "value": "true"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 159,
+                    "backpack": [
+                        "Journal Entry, 11th December",
+                        "Plate Armor of Earth Resistance [+3]",
+                        "Broadsword [UNID]",
+                        "Elven Saber [UNID]",
+                        "Staff [UNID]",
+                        "Remove Curse Potion [14]",
+                        "Elven Saber [UNID]",
+                        "Cure Disease Potion [5]",
+                        "Signet Ring",
+                        "Arcane Wand of Paralyzing [23/26]",
+                        "Letter to Hairbaugh",
+                        "Elixir",
+                        "Letter",
+                        "Cure Wounds Potion [17]",
+                        "Cure Wounds Potion [5]",
+                        "Scroll of Protection from Magic",
+                        "Rose Crystal",
+                        "Scroll of Earth Resistance",
+                        "Cure Wounds Potion [11]",
+                        "Arcomage Deck",
+                        "Scroll of Implosion",
+                        "Pearl Ring",
+                        "Topaz",
+                        "Cure Wounds Potion [6]",
+                        "Cure Wounds Potion [8]",
+                        "Cure Wounds Potion [5]",
+                        "Letter from Norbert Thrush to Lord Markham",
+                        "Scroll of Fly",
+                        "Dwarven Dagger",
+                        "Brass Ring of Defense [+2]",
+                        "Leather Cloak",
+                        "Letter from Mr. Stantley",
+                        "Rose Crystal",
+                        "Leather Cloak",
+                        "Cure Wounds Potion [13]",
+                        "Cure Disease Potion [9]",
+                        "Cure Disease Potion [17]",
+                        "Cure Wounds Potion [16]",
+                        "Cure Wounds Potion [11]",
+                        "Genie Lamp",
+                        "Journal Entry",
+                        "Cure Disease Potion [18]",
+                        "Cure Disease Potion [5]",
+                        "Cure Wounds Potion [5]",
+                        "Genie Lamp",
+                        "Remains of a Journal",
+                        "Pearl Ring",
+                        "Pearl Ring [UNID]",
+                        "Pearl Ring [UNID]",
+                        "Pearl Ring of Vigor [+2] [UNID]",
+                        "Genie Lamp"
+                    ],
+                    "endurance": 156,
+                    "equipment": [
+                        "Alloyed Shield of Arms [+6]",
+                        "Vampiric Duelist Blade",
+                        "Composite Bow of Fire",
+                        "Royal Leather of Luck [+16]",
+                        "Mogred Helm of Speed [+12]",
+                        "Silver Belt of Precision [+25]",
+                        "Glorious Cloak",
+                        "Silver Mesh Gauntlets",
+                        "Knight's Boots of Disarming [+21]",
+                        "Death's Head Pendant of Mind Resistance [+25]",
+                        "Platinum Ring of The Troll",
+                        "Platinum Ring of The Unicorn",
+                        "Platinum Ring of The Stars",
+                        "Platinum Ring of The Golem",
+                        "Pearl Ring of Disarming [+25]",
+                        "Pearl Ring of Arms [+8]"
+                    ],
+                    "hp": 229,
+                    "intelligence": 117,
+                    "luck": 137,
+                    "might": 174,
+                    "mp": 0,
+                    "personality": 122,
+                    "speed": 116
+                },
+                {
+                    "accuracy": 140,
+                    "backpack": [
+                        "Longbow",
+                        "Staff [UNID]",
+                        "Cure Wounds Potion [9]",
+                        "Alacorn Wand of Acid [28/28]",
+                        "Alacorn Wand of Fireballs [20/31]",
+                        "Alacorn Wand of Lightning [30/30]",
+                        "Angel Statue Painting",
+                        "Cure Wounds Potion [5]",
+                        "Ice Blast",
+                        "Alacorn Wand of Acid [28/28]",
+                        "Fairy Wand of Light [32/32]",
+                        "Power Cure",
+                        "Cure Disease Potion [16]",
+                        "Cure Wounds Potion [6]",
+                        "Cure Paralysis Potion [14]",
+                        "Cure Paralysis Potion [15]",
+                        "Brass Ring [UNID]"
+                    ],
+                    "endurance": 130,
+                    "equipment": [
+                        "War Trident",
+                        "Ideal Crossbow of Acid",
+                        "Golden Chain Mail of Freedom",
+                        "Mogred Helm of Precision [+10]",
+                        "Strong Belt of Vigor [+12]",
+                        "Ranger's Cloak of Earth Resistance [+7]",
+                        "Dragon Hide Gauntlets",
+                        "Steel Plated Boots of Thought [+4]",
+                        "Eyeball Amulet of Health [+17]",
+                        "Platinum Ring of The Troll",
+                        "Platinum Ring of The Unicorn",
+                        "Platinum Ring of The Sky",
+                        "Pearl Ring of Luck [+3]",
+                        "Pearl Ring of Air Resistance [+5]",
+                        "Emerald Ring of Defense [+7]"
+                    ],
+                    "hp": 125,
+                    "intelligence": 163,
+                    "luck": 123,
+                    "might": 149,
+                    "mp": 35,
+                    "personality": 124,
+                    "speed": 106
+                },
+                {
+                    "accuracy": 128,
+                    "backpack": [
+                        "Cure Wounds Potion [7]",
+                        "Endurance Boost Potion [47]",
+                        "Divine Cure Potion [52]",
+                        "Accuracy Boost Potion [47]",
+                        "Endurance Boost Potion [47]",
+                        "Divine Power Potion [49]",
+                        "Might Boost Potion [39]",
+                        "Divine Power Potion [57]",
+                        "Speed Boost Potion [47]",
+                        "Earth Resistance Potion [47]",
+                        "Might Boost Potion [43]",
+                        "Divine Cure Potion [54]"
+                    ],
+                    "endurance": 128,
+                    "equipment": [
+                        "Elven Spear",
+                        "Ideal Crossbow of Fire",
+                        "Golden Chain Mail of Earth",
+                        "Mogred Helm of Luck [+8]",
+                        "Fine Belt of Might [+7]",
+                        "Glorious Cloak",
+                        "Dragon Hide Gauntlets of Body Resistance [+8]",
+                        "Knight's Boots",
+                        "Bronze Amulet of Might [+8]",
+                        "Platinum Ring of The Troll",
+                        "Platinum Ring of The Unicorn",
+                        "Platinum Ring of The Moon",
+                        "Platinum Ring of The Eclipse",
+                        "Brass Ring of Charm [+4]",
+                        "Brass Ring of Monsters [+4]"
+                    ],
+                    "hp": 118,
+                    "intelligence": 159,
+                    "luck": 138,
+                    "might": 164,
+                    "mp": 35,
+                    "personality": 128,
+                    "speed": 94
+                },
+                {
+                    "accuracy": 111,
+                    "backpack": [
+                        "Catalyst Potion [52]",
+                        "Catalyst Potion [52]",
+                        "Catalyst Potion [52]",
+                        "Magic Potion [47]",
+                        "Potion Bottle",
+                        "Obsidian",
+                        "Obsidian",
+                        "Scroll of Town Portal",
+                        "Cure Wounds Potion [7]",
+                        "Cure Wounds Potion [9]",
+                        "Divine Power Potion [52]",
+                        "Divine Power Potion [47]",
+                        "Divine Power Potion [47]",
+                        "Obsidian",
+                        "Obsidian",
+                        "Phirna Root",
+                        "Catalyst Potion [52]",
+                        "Catalyst Potion [52]",
+                        "Magic Potion [47]",
+                        "Magic Potion [47]",
+                        "Potion Bottle",
+                        "Obsidian",
+                        "Obsidian",
+                        "Scroll of Souldrinker",
+                        "Cure Wounds Potion [16]",
+                        "Awaken Potion [5]",
+                        "Luck Boost Potion [52]",
+                        "Divine Power Potion [47]",
+                        "Divine Power Potion [47]",
+                        "Obsidian",
+                        "Obsidian",
+                        "Scroll of Souldrinker",
+                        "Cure Weakness Potion [47]",
+                        "Magic Potion [43]",
+                        "Magic Potion [43]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Obsidian",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [19]",
+                        "Magic Potion [4]",
+                        "Cure Wounds Potion [10]",
+                        "Cure Wounds Potion [5]",
+                        "Intellect Boost Potion [45]",
+                        "Divine Cure Potion [51]",
+                        "Divine Power Potion [47]",
+                        "Obsidian",
+                        "Catalyst Potion [47]",
+                        "Magic Potion [43]",
+                        "Catalyst Potion [52]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Obsidian",
+                        "Potion Bottle",
+                        "Magic Potion [5]",
+                        "Catalyst Potion [6]",
+                        "Cure Wounds Potion [13]",
+                        "Accuracy Boost Potion [47]",
+                        "Endurance Boost Potion [47]",
+                        "Personality Boost Potion [45]",
+                        "Obsidian",
+                        "Magic Potion [10]",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Obsidian",
+                        "Obsidian",
+                        "Obsidian",
+                        "Obsidian",
+                        "Crushed Rose Petals",
+                        "Obsidian",
+                        "Obsidian",
+                        "Obsidian"
+                    ],
+                    "endurance": 169,
+                    "equipment": [
+                        "Wooden Shield",
+                        "Dwarven Hammer",
+                        "Ideal Crossbow",
+                        "Governor's Armor",
+                        "Mogred Helm of Freedom",
+                        "Gilded Belt of Earth",
+                        "Huntsman's Cloak of Alchemy [+9]",
+                        "Mogred Gauntlets of Air Resistance [+7]",
+                        "Knight's Boots of Charm [+19]",
+                        "Bronze Amulet of Protection",
+                        "Pearl Ring of Items [+25]",
+                        "Pearl Ring of Alchemy [+25]",
+                        "Platinum Ring of The Troll",
+                        "Platinum Ring of The Unicorn",
+                        "Platinum Ring of The Sun",
+                        "Ghost Ring"
+                    ],
+                    "hp": 81,
+                    "intelligence": 129,
+                    "luck": 130,
+                    "might": 204,
+                    "mp": 82,
+                    "personality": 191,
+                    "speed": 109
+                }
+            ],
+            "locationName": "mdr02.blv",
+            "partyPosition": {
+                "x": -470,
+                "y": 515,
+                "z": 1
+            }
+        },
+        "saveFileSize": 502107,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 159,
+                    "backpack": [
+                        "Journal Entry, 11th December",
+                        "Plate Armor of Earth Resistance [+3]",
+                        "Broadsword [UNID]",
+                        "Elven Saber [UNID]",
+                        "Staff [UNID]",
+                        "Remove Curse Potion [14]",
+                        "Elven Saber [UNID]",
+                        "Cure Disease Potion [5]",
+                        "Signet Ring",
+                        "Arcane Wand of Paralyzing [23/26]",
+                        "Letter to Hairbaugh",
+                        "Elixir",
+                        "Letter",
+                        "Cure Wounds Potion [17]",
+                        "Cure Wounds Potion [5]",
+                        "Scroll of Protection from Magic",
+                        "Rose Crystal",
+                        "Scroll of Earth Resistance",
+                        "Cure Wounds Potion [11]",
+                        "Arcomage Deck",
+                        "Scroll of Implosion",
+                        "Pearl Ring",
+                        "Topaz",
+                        "Cure Wounds Potion [6]",
+                        "Cure Wounds Potion [8]",
+                        "Cure Wounds Potion [5]",
+                        "Letter from Norbert Thrush to Lord Markham",
+                        "Scroll of Fly",
+                        "Dwarven Dagger",
+                        "Brass Ring of Defense [+2]",
+                        "Leather Cloak",
+                        "Letter from Mr. Stantley",
+                        "Rose Crystal",
+                        "Leather Cloak",
+                        "Cure Wounds Potion [13]",
+                        "Cure Disease Potion [9]",
+                        "Cure Disease Potion [17]",
+                        "Cure Wounds Potion [16]",
+                        "Cure Wounds Potion [11]",
+                        "Genie Lamp",
+                        "Journal Entry",
+                        "Cure Disease Potion [18]",
+                        "Cure Disease Potion [5]",
+                        "Cure Wounds Potion [5]",
+                        "Genie Lamp",
+                        "Remains of a Journal",
+                        "Pearl Ring",
+                        "Pearl Ring [UNID]",
+                        "Pearl Ring [UNID]",
+                        "Pearl Ring of Vigor [+2] [UNID]",
+                        "Genie Lamp"
+                    ],
+                    "endurance": 156,
+                    "equipment": [
+                        "Alloyed Shield of Arms [+6]",
+                        "Vampiric Duelist Blade",
+                        "Composite Bow of Fire",
+                        "Royal Leather of Luck [+16]",
+                        "Mogred Helm of Speed [+12]",
+                        "Silver Belt of Precision [+25]",
+                        "Glorious Cloak",
+                        "Silver Mesh Gauntlets",
+                        "Knight's Boots of Disarming [+21]",
+                        "Death's Head Pendant of Mind Resistance [+25]",
+                        "Platinum Ring of The Troll",
+                        "Platinum Ring of The Unicorn",
+                        "Platinum Ring of The Stars",
+                        "Platinum Ring of The Golem",
+                        "Pearl Ring of Disarming [+25]",
+                        "Pearl Ring of Arms [+8]"
+                    ],
+                    "hp": 229,
+                    "intelligence": 117,
+                    "luck": 137,
+                    "might": 174,
+                    "mp": 0,
+                    "personality": 122,
+                    "speed": 116
+                },
+                {
+                    "accuracy": 140,
+                    "backpack": [
+                        "Longbow",
+                        "Staff [UNID]",
+                        "Cure Wounds Potion [9]",
+                        "Alacorn Wand of Acid [28/28]",
+                        "Alacorn Wand of Fireballs [20/31]",
+                        "Alacorn Wand of Lightning [30/30]",
+                        "Angel Statue Painting",
+                        "Cure Wounds Potion [5]",
+                        "Ice Blast",
+                        "Alacorn Wand of Acid [28/28]",
+                        "Fairy Wand of Light [32/32]",
+                        "Power Cure",
+                        "Cure Disease Potion [16]",
+                        "Cure Wounds Potion [6]",
+                        "Cure Paralysis Potion [14]",
+                        "Cure Paralysis Potion [15]",
+                        "Brass Ring [UNID]"
+                    ],
+                    "endurance": 130,
+                    "equipment": [
+                        "War Trident",
+                        "Ideal Crossbow of Acid",
+                        "Golden Chain Mail of Freedom",
+                        "Mogred Helm of Precision [+10]",
+                        "Strong Belt of Vigor [+12]",
+                        "Ranger's Cloak of Earth Resistance [+7]",
+                        "Dragon Hide Gauntlets",
+                        "Steel Plated Boots of Thought [+4]",
+                        "Eyeball Amulet of Health [+17]",
+                        "Platinum Ring of The Troll",
+                        "Platinum Ring of The Unicorn",
+                        "Platinum Ring of The Sky",
+                        "Pearl Ring of Luck [+3]",
+                        "Pearl Ring of Air Resistance [+5]",
+                        "Emerald Ring of Defense [+7]"
+                    ],
+                    "hp": 125,
+                    "intelligence": 163,
+                    "luck": 123,
+                    "might": 149,
+                    "mp": 35,
+                    "personality": 124,
+                    "speed": 106
+                },
+                {
+                    "accuracy": 128,
+                    "backpack": [
+                        "Cure Wounds Potion [7]",
+                        "Endurance Boost Potion [47]",
+                        "Divine Cure Potion [52]",
+                        "Accuracy Boost Potion [47]",
+                        "Endurance Boost Potion [47]",
+                        "Divine Power Potion [49]",
+                        "Might Boost Potion [39]",
+                        "Divine Power Potion [57]",
+                        "Speed Boost Potion [47]",
+                        "Earth Resistance Potion [47]",
+                        "Might Boost Potion [43]",
+                        "Divine Cure Potion [54]"
+                    ],
+                    "endurance": 128,
+                    "equipment": [
+                        "Elven Spear",
+                        "Ideal Crossbow of Fire",
+                        "Golden Chain Mail of Earth",
+                        "Mogred Helm of Luck [+8]",
+                        "Fine Belt of Might [+7]",
+                        "Glorious Cloak",
+                        "Dragon Hide Gauntlets of Body Resistance [+8]",
+                        "Knight's Boots",
+                        "Bronze Amulet of Might [+8]",
+                        "Platinum Ring of The Troll",
+                        "Platinum Ring of The Unicorn",
+                        "Platinum Ring of The Moon",
+                        "Platinum Ring of The Eclipse",
+                        "Brass Ring of Charm [+4]",
+                        "Brass Ring of Monsters [+4]"
+                    ],
+                    "hp": 118,
+                    "intelligence": 159,
+                    "luck": 138,
+                    "might": 164,
+                    "mp": 35,
+                    "personality": 128,
+                    "speed": 94
+                },
+                {
+                    "accuracy": 111,
+                    "backpack": [
+                        "Catalyst Potion [52]",
+                        "Catalyst Potion [52]",
+                        "Catalyst Potion [52]",
+                        "Magic Potion [47]",
+                        "Potion Bottle",
+                        "Obsidian",
+                        "Obsidian",
+                        "Scroll of Town Portal",
+                        "Cure Wounds Potion [7]",
+                        "Cure Wounds Potion [9]",
+                        "Divine Power Potion [52]",
+                        "Divine Power Potion [47]",
+                        "Divine Power Potion [47]",
+                        "Obsidian",
+                        "Obsidian",
+                        "Phirna Root",
+                        "Catalyst Potion [52]",
+                        "Catalyst Potion [52]",
+                        "Magic Potion [47]",
+                        "Magic Potion [47]",
+                        "Potion Bottle",
+                        "Obsidian",
+                        "Obsidian",
+                        "Scroll of Souldrinker",
+                        "Cure Wounds Potion [16]",
+                        "Awaken Potion [5]",
+                        "Luck Boost Potion [52]",
+                        "Divine Power Potion [47]",
+                        "Divine Power Potion [47]",
+                        "Obsidian",
+                        "Obsidian",
+                        "Scroll of Souldrinker",
+                        "Cure Weakness Potion [47]",
+                        "Magic Potion [43]",
+                        "Magic Potion [43]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Obsidian",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [19]",
+                        "Magic Potion [4]",
+                        "Cure Wounds Potion [10]",
+                        "Cure Wounds Potion [5]",
+                        "Intellect Boost Potion [45]",
+                        "Divine Cure Potion [51]",
+                        "Divine Power Potion [47]",
+                        "Obsidian",
+                        "Catalyst Potion [47]",
+                        "Magic Potion [43]",
+                        "Catalyst Potion [52]",
+                        "Potion Bottle",
+                        "Potion Bottle",
+                        "Obsidian",
+                        "Potion Bottle",
+                        "Magic Potion [5]",
+                        "Catalyst Potion [6]",
+                        "Cure Wounds Potion [13]",
+                        "Accuracy Boost Potion [47]",
+                        "Endurance Boost Potion [47]",
+                        "Personality Boost Potion [45]",
+                        "Obsidian",
+                        "Magic Potion [10]",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Obsidian",
+                        "Obsidian",
+                        "Obsidian",
+                        "Obsidian",
+                        "Crushed Rose Petals",
+                        "Obsidian",
+                        "Obsidian",
+                        "Obsidian"
+                    ],
+                    "endurance": 169,
+                    "equipment": [
+                        "Wooden Shield",
+                        "Dwarven Hammer",
+                        "Ideal Crossbow",
+                        "Governor's Armor",
+                        "Mogred Helm of Freedom",
+                        "Gilded Belt of Earth",
+                        "Huntsman's Cloak of Alchemy [+9]",
+                        "Mogred Gauntlets of Air Resistance [+7]",
+                        "Knight's Boots of Charm [+19]",
+                        "Bronze Amulet of Protection",
+                        "Pearl Ring of Items [+25]",
+                        "Pearl Ring of Alchemy [+25]",
+                        "Platinum Ring of The Troll",
+                        "Platinum Ring of The Unicorn",
+                        "Platinum Ring of The Sun",
+                        "Ghost Ring"
+                    ],
+                    "hp": 81,
+                    "intelligence": 129,
+                    "luck": 130,
+                    "might": 204,
+                    "mp": 82,
+                    "personality": 191,
+                    "speed": 109
+                }
+            ],
+            "locationName": "mdr02.blv",
+            "partyPosition": {
+                "x": -365,
+                "y": 614,
+                "z": 1
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 854299,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 142057,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 949791,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 949791,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 949791,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 875569,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 875569,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 133155,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 133155,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 957744,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 957744,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "randomState": 957744,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 231770,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 323136,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 323136,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 323136,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 323136,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 102278,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 102278,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 573802,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 573802,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 292026,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 197532,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 197532,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 573446,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1041111,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 1041111,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1004018,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1004018,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1011758,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 1011758,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1014701,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 761097,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1028768,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 1028768,
+            "tickCount": 3500,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 1028768,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1028768,
+            "tickCount": 3700,
+            "type": "paint"
+        },
+        {
+            "randomState": 836874,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "randomState": 836874,
+            "tickCount": 3900,
+            "type": "paint"
+        },
+        {
+            "randomState": 311457,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "randomState": 311457,
+            "tickCount": 4100,
+            "type": "paint"
+        },
+        {
+            "randomState": 311457,
+            "tickCount": 4200,
+            "type": "paint"
+        },
+        {
+            "randomState": 442248,
+            "tickCount": 4300,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 442248,
+            "tickCount": 4400,
+            "type": "paint"
+        },
+        {
+            "randomState": 117927,
+            "tickCount": 4500,
+            "type": "paint"
+        },
+        {
+            "randomState": 670840,
+            "tickCount": 4600,
+            "type": "paint"
+        },
+        {
+            "randomState": 670840,
+            "tickCount": 4700,
+            "type": "paint"
+        },
+        {
+            "randomState": 921101,
+            "tickCount": 4800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 1006100,
+            "tickCount": 4900,
+            "type": "paint"
+        },
+        {
+            "randomState": 836688,
+            "tickCount": 5000,
+            "type": "paint"
+        },
+        {
+            "randomState": 37446,
+            "tickCount": 5100,
+            "type": "paint"
+        },
+        {
+            "randomState": 378844,
+            "tickCount": 5200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 418107,
+            "tickCount": 5300,
+            "type": "paint"
+        },
+        {
+            "randomState": 418107,
+            "tickCount": 5400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 418107,
+            "tickCount": 5500,
+            "type": "paint"
+        },
+        {
+            "randomState": 418107,
+            "tickCount": 5600,
+            "type": "paint"
+        },
+        {
+            "randomState": 418107,
+            "tickCount": 5700,
+            "type": "paint"
+        },
+        {
+            "randomState": 776624,
+            "tickCount": 5800,
+            "type": "paint"
+        },
+        {
+            "randomState": 779230,
+            "tickCount": 5900,
+            "type": "paint"
+        },
+        {
+            "randomState": 779230,
+            "tickCount": 6000,
+            "type": "paint"
+        },
+        {
+            "randomState": 779230,
+            "tickCount": 6100,
+            "type": "paint"
+        },
+        {
+            "randomState": 411279,
+            "tickCount": 6200,
+            "type": "paint"
+        },
+        {
+            "randomState": 442591,
+            "tickCount": 6300,
+            "type": "paint"
+        },
+        {
+            "randomState": 442591,
+            "tickCount": 6400,
+            "type": "paint"
+        },
+        {
+            "randomState": 687318,
+            "tickCount": 6500,
+            "type": "paint"
+        },
+        {
+            "randomState": 182310,
+            "tickCount": 6600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 182310,
+            "tickCount": 6700,
+            "type": "paint"
+        },
+        {
+            "randomState": 182310,
+            "tickCount": 6800,
+            "type": "paint"
+        },
+        {
+            "randomState": 179502,
+            "tickCount": 6900,
+            "type": "paint"
+        },
+        {
+            "randomState": 331927,
+            "tickCount": 7000,
+            "type": "paint"
+        },
+        {
+            "randomState": 101850,
+            "tickCount": 7100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 1042356,
+            "tickCount": 7200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 1042356,
+            "tickCount": 7300,
+            "type": "paint"
+        },
+        {
+            "randomState": 863458,
+            "tickCount": 7400,
+            "type": "paint"
+        },
+        {
+            "randomState": 863458,
+            "tickCount": 7500,
+            "type": "paint"
+        },
+        {
+            "randomState": 863458,
+            "tickCount": 7600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 861828,
+            "tickCount": 7700,
+            "type": "paint"
+        },
+        {
+            "randomState": 131263,
+            "tickCount": 7800,
+            "type": "paint"
+        },
+        {
+            "randomState": 800849,
+            "tickCount": 7900,
+            "type": "paint"
+        },
+        {
+            "randomState": 996380,
+            "tickCount": 8000,
+            "type": "paint"
+        },
+        {
+            "randomState": 996380,
+            "tickCount": 8100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 514419,
+            "tickCount": 8200,
+            "type": "paint"
+        },
+        {
+            "randomState": 36119,
+            "tickCount": 8300,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 695840,
+            "tickCount": 8400,
+            "type": "paint"
+        },
+        {
+            "randomState": 132012,
+            "tickCount": 8500,
+            "type": "paint"
+        },
+        {
+            "randomState": 400093,
+            "tickCount": 8600,
+            "type": "paint"
+        },
+        {
+            "randomState": 400093,
+            "tickCount": 8700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 400093,
+            "tickCount": 8800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 220420,
+            "tickCount": 8900,
+            "type": "paint"
+        },
+        {
+            "randomState": 480236,
+            "tickCount": 9000,
+            "type": "paint"
+        },
+        {
+            "randomState": 480236,
+            "tickCount": 9100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 467230,
+            "tickCount": 9200,
+            "type": "paint"
+        },
+        {
+            "randomState": 467230,
+            "tickCount": 9300,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 677708,
+            "tickCount": 9400,
+            "type": "paint"
+        },
+        {
+            "randomState": 832543,
+            "tickCount": 9500,
+            "type": "paint"
+        },
+        {
+            "randomState": 743822,
+            "tickCount": 9600,
+            "type": "paint"
+        },
+        {
+            "randomState": 791346,
+            "tickCount": 9700,
+            "type": "paint"
+        },
+        {
+            "randomState": 2955,
+            "tickCount": 9800,
+            "type": "paint"
+        },
+        {
+            "randomState": 124778,
+            "tickCount": 9900,
+            "type": "paint"
+        },
+        {
+            "randomState": 124778,
+            "tickCount": 10000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 124778,
+            "tickCount": 10100,
+            "type": "paint"
+        },
+        {
+            "randomState": 356920,
+            "tickCount": 10200,
+            "type": "paint"
+        },
+        {
+            "randomState": 919346,
+            "tickCount": 10300,
+            "type": "paint"
+        },
+        {
+            "randomState": 919346,
+            "tickCount": 10400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 919346,
+            "tickCount": 10500,
+            "type": "paint"
+        },
+        {
+            "randomState": 613697,
+            "tickCount": 10600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 613697,
+            "tickCount": 10700,
+            "type": "paint"
+        },
+        {
+            "randomState": 847433,
+            "tickCount": 10800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 234683,
+            "tickCount": 10900,
+            "type": "paint"
+        },
+        {
+            "randomState": 267486,
+            "tickCount": 11000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 860713,
+            "tickCount": 11100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 530534,
+            "tickCount": 11200,
+            "type": "paint"
+        },
+        {
+            "randomState": 985739,
+            "tickCount": 11300,
+            "type": "paint"
+        },
+        {
+            "randomState": 733035,
+            "tickCount": 11400,
+            "type": "paint"
+        },
+        {
+            "randomState": 733035,
+            "tickCount": 11500,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 1005889,
+            "tickCount": 11600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1005889,
+            "tickCount": 11700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 609177,
+            "tickCount": 11800,
+            "type": "paint"
+        },
+        {
+            "randomState": 609177,
+            "tickCount": 11900,
+            "type": "paint"
+        },
+        {
+            "randomState": 156546,
+            "tickCount": 12000,
+            "type": "paint"
+        },
+        {
+            "randomState": 266634,
+            "tickCount": 12100,
+            "type": "paint"
+        },
+        {
+            "randomState": 348597,
+            "tickCount": 12200,
+            "type": "paint"
+        },
+        {
+            "randomState": 853839,
+            "tickCount": 12300,
+            "type": "paint"
+        },
+        {
+            "randomState": 314396,
+            "tickCount": 12400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "DOWN",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 314396,
+            "tickCount": 12500,
+            "type": "paint"
+        },
+        {
+            "randomState": 255354,
+            "tickCount": 12600,
+            "type": "paint"
+        },
+        {
+            "randomState": 255354,
+            "tickCount": 12700,
+            "type": "paint"
+        },
+        {
+            "randomState": 255354,
+            "tickCount": 12800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 255354,
+            "tickCount": 12900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "LEFT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 974403,
+            "tickCount": 13000,
+            "type": "paint"
+        },
+        {
+            "randomState": 206145,
+            "tickCount": 13100,
+            "type": "paint"
+        },
+        {
+            "randomState": 263280,
+            "tickCount": 13200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1035426,
+            "tickCount": 13300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1035426,
+            "tickCount": 13400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1035426,
+            "tickCount": 13500,
+            "type": "paint"
+        },
+        {
+            "randomState": 368741,
+            "tickCount": 13600,
+            "type": "paint"
+        },
+        {
+            "randomState": 368741,
+            "tickCount": 13700,
+            "type": "paint"
+        },
+        {
+            "randomState": 368741,
+            "tickCount": 13800,
+            "type": "paint"
+        },
+        {
+            "randomState": 368741,
+            "tickCount": 13900,
+            "type": "paint"
+        },
+        {
+            "randomState": 368741,
+            "tickCount": 14000,
+            "type": "paint"
+        },
+        {
+            "randomState": 623382,
+            "tickCount": 14100,
+            "type": "paint"
+        },
+        {
+            "randomState": 712842,
+            "tickCount": 14200,
+            "type": "paint"
+        },
+        {
+            "randomState": 793981,
+            "tickCount": 14300,
+            "type": "paint"
+        },
+        {
+            "randomState": 793981,
+            "tickCount": 14400,
+            "type": "paint"
+        },
+        {
+            "randomState": 793981,
+            "tickCount": 14500,
+            "type": "paint"
+        },
+        {
+            "randomState": 790342,
+            "tickCount": 14600,
+            "type": "paint"
+        },
+        {
+            "randomState": 552989,
+            "tickCount": 14700,
+            "type": "paint"
+        },
+        {
+            "randomState": 79538,
+            "tickCount": 14800,
+            "type": "paint"
+        },
+        {
+            "randomState": 79538,
+            "tickCount": 14900,
+            "type": "paint"
+        },
+        {
+            "randomState": 56570,
+            "tickCount": 15000,
+            "type": "paint"
+        },
+        {
+            "randomState": 56570,
+            "tickCount": 15100,
+            "type": "paint"
+        },
+        {
+            "randomState": 56570,
+            "tickCount": 15200,
+            "type": "paint"
+        },
+        {
+            "randomState": 56570,
+            "tickCount": 15300,
+            "type": "paint"
+        },
+        {
+            "randomState": 369898,
+            "tickCount": 15400,
+            "type": "paint"
+        },
+        {
+            "randomState": 817016,
+            "tickCount": 15500,
+            "type": "paint"
+        },
+        {
+            "randomState": 161940,
+            "tickCount": 15600,
+            "type": "paint"
+        },
+        {
+            "randomState": 161940,
+            "tickCount": 15700,
+            "type": "paint"
+        },
+        {
+            "randomState": 596454,
+            "tickCount": 15800,
+            "type": "paint"
+        },
+        {
+            "randomState": 596454,
+            "tickCount": 15900,
+            "type": "paint"
+        },
+        {
+            "randomState": 762267,
+            "tickCount": 16000,
+            "type": "paint"
+        },
+        {
+            "randomState": 457302,
+            "tickCount": 16100,
+            "type": "paint"
+        },
+        {
+            "randomState": 457302,
+            "tickCount": 16200,
+            "type": "paint"
+        },
+        {
+            "randomState": 457302,
+            "tickCount": 16300,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 457302,
+            "tickCount": 16400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 457302,
+            "tickCount": 16500,
+            "type": "paint"
+        },
+        {
+            "randomState": 457302,
+            "tickCount": 16600,
+            "type": "paint"
+        },
+        {
+            "randomState": 457302,
+            "tickCount": 16700,
+            "type": "paint"
+        },
+        {
+            "randomState": 650494,
+            "tickCount": 16800,
+            "type": "paint"
+        },
+        {
+            "randomState": 650494,
+            "tickCount": 16900,
+            "type": "paint"
+        },
+        {
+            "randomState": 125354,
+            "tickCount": 17000,
+            "type": "paint"
+        }
+    ]
+}
