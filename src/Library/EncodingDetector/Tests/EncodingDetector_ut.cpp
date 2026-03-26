@@ -1,5 +1,3 @@
-#include <optional>
-
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/EncodingDetector/EncodingDetector.h"
@@ -7,7 +5,7 @@
 static TextEncoding detect(std::string_view text) {
     EncodingDetector detector;
     detector.write(text);
-    return detector.finish().encoding;
+    return detector.finish();
 }
 
 UNIT_TEST(EncodingDetector, Cp1251) {

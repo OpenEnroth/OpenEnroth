@@ -7,11 +7,6 @@
 
 struct uchardet;
 
-struct EncodingDetectionResult {
-    TextEncoding encoding = ENCODING_BYTES;
-    float confidence = 0.0f;
-};
-
 /**
  * RAII wrapper for uchardet charset detection library.
  */
@@ -29,9 +24,9 @@ class EncodingDetector {
     void write(std::string_view data);
 
     /**
-     * @return                          Detection result. `ENCODING_BYTES` in case of a failure.
+     * @return                          Detected encoding, or `ENCODING_BYTES` in case of a failure.
      */
-    EncodingDetectionResult finish();
+    TextEncoding finish();
 
  private:
     std::unique_ptr<uchardet, void (*)(uchardet *)> _handle;
