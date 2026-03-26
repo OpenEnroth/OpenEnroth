@@ -977,7 +977,7 @@ void GameUI_WritePointedObjectStatusString() {
         if (current_screen_type == SCREEN_CHARACTERS) {
             if (current_character_screen_window ==
                 WINDOW_CharacterWindow_Inventory) {
-                if (pY > 0 && pY < 350 && pX >= 13 &&
+                if (pParty->hasActiveCharacter() && pY > 0 && pY < 350 && pX >= 13 &&
                     pX <= 462) {  // inventory poitned
                     // inventoryYCoord = (pY - 17) / 32;
                     // inventoryXCoord = (pX - 14) / 32;
