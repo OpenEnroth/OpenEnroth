@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <cstring> // For memchr, memcmp.
 #include <utility> // For std::forward.
 #include <string>
 #include <type_traits>
@@ -45,30 +46,50 @@ class CharSplitter {
     char _sep = '\0';
 };
 
-class CrLfSplitter {
+/**
+ * Splitter for multi-character separators, e.g. `"\r\n"`.
+ *
+ * Uses `memchr` for the first character followed by `memcmp` for the rest. We're not using `std::search` here because
+ * `memchr` is SIMD-optimized and ~2x faster on the data sizes we care about.
+ *
+ * String searching can be done way more efficiently (e.g. see Volnitsky algo as used in ClickHouse), but what we have
+ * here is already good enough.
+ */
+class StringSplitter {
  public:
-    using result_type = std::pair<const char *, const char *>;
+    using result_type = const char *;
 
-    CrLfSplitter() = default;
+    StringSplitter() = default;
+
+    explicit StringSplitter(std::string_view sep) : _sep(sep) {
+        assert(!sep.empty());
+    }
 
     result_type split(const char *begin, const char *end) const {
         assert(begin <= end);
-        const char *l = std::find(begin, end, '\n');
-        const char *r = l + 1;
-        if (l > begin && *(l - 1) == '\r')
-            l--;
-        return {l, r};
+        while (begin <= end - static_cast<std::ptrdiff_t>(_sep.size())) {
+            const char *p = static_cast<const char *>(memchr(begin, _sep[0], end - begin));
+            if (!p || p > end - static_cast<std::ptrdiff_t>(_sep.size()))
+                return end;
+            if (memcmp(p, _sep.data(), _sep.size()) == 0)
+                return p;
+            begin = p + 1;
+        }
+        return end;
     }
 
     const char *begin(result_type result) const {
-        return result.first;
+        return result;
     }
 
     const char *end(result_type result) const {
-        return result.second;
+        return result + _sep.size();
     }
 
-    friend bool operator==(const CrLfSplitter &l, const CrLfSplitter &r) = default;
+    friend bool operator==(const StringSplitter &l, const StringSplitter &r) = default;
+
+ private:
+    std::string_view _sep;
 };
 
 class SplitViewSentinel {};
@@ -108,7 +129,7 @@ class SplitViewIterator {
     }
 
     friend bool operator==(const SplitViewIterator &l, const SplitViewSentinel &r) {
-        return l._pos == l._end + 1;
+        return l._pos > l._end;
     }
 
     friend bool operator==(const SplitViewIterator &l, const SplitViewIterator &r) {
@@ -123,10 +144,9 @@ class SplitViewIterator {
 };
 
 /**
- * We use C++ and this is why we can't have nice things. It's 2024, we still can't split a string w/o jumping through
- * hoops. Just look at this: https://cplusplus.github.io/LWG/issue4017. One option is to use `std::views::drop` in a
- * hacky way to fix this. But then we run into the fact that `std::views::split` isn't even implemented in
- * AppleClang 14...
+ * We use C++ and this is why we can't have nice things. Just look at this: https://cplusplus.github.io/LWG/issue4017. 
+ * One option is to use `std::views::drop` in a hacky way to fix this. But then we run into the fact that 
+ * `std::views::split` isn't even implemented in AppleClang 14...
  *
  * So here is our own implementation. More user-friendly, and more efficient.
  */
@@ -213,8 +233,8 @@ class SplitProxy {
         return SplitView(_s, CharSplitter(sep));
     }
 
-    [[nodiscard]] auto byCrLf() const {
-        return SplitView(_s, CrLfSplitter());
+    [[nodiscard]] auto by(std::string_view sep) const {
+        return SplitView(_s, StringSplitter(sep));
     }
 
  private:
@@ -229,11 +249,11 @@ inline constexpr bool std::ranges::enable_borrowed_range<detail::SplitView<Split
 #endif
 
 /**
- * Splits the provided string `s`, returning a proxy object with `.by(char)` and `.byCrLf()` methods.
+ * Splits the provided string `s`, returning a proxy object with `.by(char)` and `.by(std::string_view)` methods.
  *
  * Usage:
- * - `split(s).by('c')` - split by character separator.
- * - `split(s).byCrLf()` - split by line endings (`\\n` or `\\r\\n`).
+ * - `split(s).by('c')` - split by a single character separator.
+ * - `split(s).by("\\r\\n")` - split by a multi-character separator.
  *
  * Splitting a string doesn't discard empty chunks, so the resulting range will never be empty. Splitting an empty
  * string will produce a single empty chunk.

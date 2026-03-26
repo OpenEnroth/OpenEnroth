@@ -12,9 +12,9 @@
 static_assert(std::ranges::view<detail::SplitView<detail::CharSplitter>>);
 static_assert(std::ranges::viewable_range<detail::SplitView<detail::CharSplitter>>);
 static_assert(std::ranges::forward_range<detail::SplitView<detail::CharSplitter>>);
-static_assert(std::ranges::view<detail::SplitView<detail::CrLfSplitter>>);
-static_assert(std::ranges::viewable_range<detail::SplitView<detail::CrLfSplitter>>);
-static_assert(std::ranges::forward_range<detail::SplitView<detail::CrLfSplitter>>);
+static_assert(std::ranges::view<detail::SplitView<detail::StringSplitter>>);
+static_assert(std::ranges::viewable_range<detail::SplitView<detail::StringSplitter>>);
+static_assert(std::ranges::forward_range<detail::SplitView<detail::StringSplitter>>);
 
 UNIT_TEST(StringSplit, SplitToVector) {
     std::vector<std::string_view> v;
@@ -124,54 +124,54 @@ UNIT_TEST(StringSplit, AssignToVector) {
     EXPECT_EQ(v, std::vector<std::string_view>({"x", "y"}));
 }
 
-UNIT_TEST(StringSplit, CrLf) {
+UNIT_TEST(StringSplit, StringSeparator) {
     std::vector<std::string_view> v;
 
-    // Unix line endings (\n only)
-    split("line1\nline2\nline3").byCrLf().to(&v);
+    // Basic \r\n splitting.
+    split("line1\r\nline2\r\nline3").by("\r\n").to(&v);
     EXPECT_EQ(v, std::vector<std::string_view>({"line1", "line2", "line3"}));
 
-    // Windows line endings (\r\n)
-    split("line1\r\nline2\r\nline3").byCrLf().to(&v);
-    EXPECT_EQ(v, std::vector<std::string_view>({"line1", "line2", "line3"}));
+    // Lone \n is NOT a separator.
+    split("line1\nline2\r\nline3").by("\r\n").to(&v);
+    EXPECT_EQ(v, std::vector<std::string_view>({"line1\nline2", "line3"}));
 
-    // Mixed line endings
-    split("line1\nline2\r\nline3").byCrLf().to(&v);
-    EXPECT_EQ(v, std::vector<std::string_view>({"line1", "line2", "line3"}));
+    // Lone \r is NOT a separator.
+    split("line1\rline2\r\nline3").by("\r\n").to(&v);
+    EXPECT_EQ(v, std::vector<std::string_view>({"line1\rline2", "line3"}));
 
-    // Empty string
-    split("").byCrLf().to(&v);
+    // Empty string.
+    split("").by("\r\n").to(&v);
     EXPECT_EQ(v, std::vector<std::string_view>({""}));
 
-    // Single newline
-    split("\n").byCrLf().to(&v);
+    // Single \r\n.
+    split("\r\n").by("\r\n").to(&v);
     EXPECT_EQ(v, std::vector<std::string_view>({"", ""}));
 
-    // Single CRLF
-    split("\r\n").byCrLf().to(&v);
-    EXPECT_EQ(v, std::vector<std::string_view>({"", ""}));
-
-    // Trailing newline
-    split("line1\nline2\n").byCrLf().to(&v);
+    // Trailing \r\n.
+    split("line1\r\nline2\r\n").by("\r\n").to(&v);
     EXPECT_EQ(v, std::vector<std::string_view>({"line1", "line2", ""}));
 
-    // Trailing CRLF
-    split("line1\r\nline2\r\n").byCrLf().to(&v);
-    EXPECT_EQ(v, std::vector<std::string_view>({"line1", "line2", ""}));
-
-    // Multiple consecutive newlines
-    split("line1\n\nline2").byCrLf().to(&v);
+    // Multiple consecutive \r\n.
+    split("line1\r\n\r\nline2").by("\r\n").to(&v);
     EXPECT_EQ(v, std::vector<std::string_view>({"line1", "", "line2"}));
 
-    // Multiple consecutive CRLFs
-    split("line1\r\n\r\nline2").byCrLf().to(&v);
-    EXPECT_EQ(v, std::vector<std::string_view>({"line1", "", "line2"}));
-
-    // String with no newlines
-    split("single line").byCrLf().to(&v);
+    // No separator found.
+    split("single line").by("\r\n").to(&v);
     EXPECT_EQ(v, std::vector<std::string_view>({"single line"}));
 
-    // Lone \r characters (should not be treated as line ending)
-    split("line1\rline2\nline3").byCrLf().to(&v);
-    EXPECT_EQ(v, std::vector<std::string_view>({"line1\rline2", "line3"}));
+    // Multi-char separator other than \r\n.
+    split("a::b::c").by("::").to(&v);
+    EXPECT_EQ(v, std::vector<std::string_view>({"a", "b", "c"}));
+
+    // Separator at start.
+    split("::a::b").by("::").to(&v);
+    EXPECT_EQ(v, std::vector<std::string_view>({"", "a", "b"}));
+
+    // Separator longer than 2 chars.
+    split("a<=>b<=>c").by("<=>").to(&v);
+    EXPECT_EQ(v, std::vector<std::string_view>({"a", "b", "c"}));
+
+    // Partial match of separator.
+    split("a<=b<=>c").by("<=>").to(&v);
+    EXPECT_EQ(v, std::vector<std::string_view>({"a<=b", "c"}));
 }
