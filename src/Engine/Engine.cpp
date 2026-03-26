@@ -377,6 +377,15 @@ bool Engine::draw_debug_outlines() {
         }
         // Party cylinder.
         drawDebugCylinder(pParty->pos, pParty->radius, pParty->height, colorTable.Azure);
+
+        for (const LevelDecoration &decor : pLevelDecorations) {
+            if (decor.uFlags & LEVEL_DECORATION_INVISIBLE)
+                continue;
+            const DecorationDesc *desc = pDecorationList->GetDecoration(decor.uDecorationDescID);
+            if (desc->CanMoveThrough())
+                continue;
+            drawDebugCylinder(decor.vPosition, desc->uRadius, desc->uDecorationHeight, colorTable.OrangeRed);
+        }
     }
 
     return true;
