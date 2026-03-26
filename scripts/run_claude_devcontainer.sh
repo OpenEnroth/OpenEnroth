@@ -1,11 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 if ! command -v devcontainer &>/dev/null; then
     echo "Error: 'devcontainer' CLI not found."
     echo "Install it with: npm install -g @devcontainers/cli"
+    exit 1
+fi
+
+if ! docker info &>/dev/null; then
+    echo "Error: Docker is not running. Please start Docker and try again."
     exit 1
 fi
 
