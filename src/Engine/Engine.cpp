@@ -350,7 +350,7 @@ static void drawDebugCylinder(Vec3f center_lo, float radius, float height, Color
         float dx = radius * std::cos(angle);
         float dy = radius * std::sin(angle);
         cur_lo.vWorldPosition = Vec3f(center_lo.x + dx, center_lo.y + dy, center_lo.z);
-        cur_hi.vWorldPosition = Vec3f(center_lo.x + dx, center_lo.y + dy, center_lo.z + height);
+        cur_hi.vWorldPosition = Vec3f(center_lo.x + dx, center_lo.y + dy, center_lo.z + height + radius);
         if (i > 0) {
             pCamera3D->do_draw_debug_line_sw(&prev_lo, color, &cur_lo, color, 0);
             pCamera3D->do_draw_debug_line_sw(&prev_hi, color, &cur_hi, color, 0);
@@ -370,7 +370,7 @@ bool Engine::draw_debug_outlines() {
 
     if (engine->config->debug.ActorCollision.value()) {
         for (const Actor &actor : pActors) {
-            if (actor.aiState == Removed || actor.aiState == Disabled || actor.aiState == Summoned)
+            if (actor.aiState == Removed || actor.aiState == Disabled || actor.aiState == Summoned || actor.aiState == Dead)
                 continue;
             Color col = actor.monsterInfo.flying ? colorTable.Yellow : colorTable.NeonGreen;
             drawDebugCylinder(actor.pos, actor.radius, actor.height, col);
