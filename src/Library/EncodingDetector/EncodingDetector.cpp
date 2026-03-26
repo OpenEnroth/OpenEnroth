@@ -12,22 +12,21 @@ void EncodingDetector::write(std::string_view data) {
         throw std::bad_alloc();
 }
 
-EncodingDetectionResult EncodingDetector::finish() {
+TextEncoding EncodingDetector::finish() {
     uchardet_data_end(_handle.get());
 
     for (size_t i = 0, count = uchardet_get_n_candidates(_handle.get()); i < count; i++) {
-        EncodingDetectionResult result;
+        TextEncoding result;
 
         // Some of the uchardet encodings are not present in std::text_encoding or not supported by ztd.text,
         // we just skip these.
-        if (!tryDeserialize(uchardet_get_encoding(_handle.get(), i), &result.encoding))
+        if (!tryDeserialize(uchardet_get_encoding(_handle.get(), i), &result))
             continue;
-        result.confidence = uchardet_get_confidence(_handle.get(), i);
 
         return result;
     }
 
     uchardet_reset(_handle.get());
 
-    return {};
+    return ENCODING_BYTES;
 }

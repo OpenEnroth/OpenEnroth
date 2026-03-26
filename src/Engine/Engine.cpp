@@ -646,8 +646,8 @@ void Engine::MM7_Initialize() {
     {
         EncodingDetector detector;
         detector.write(resources()->eventsData("history.txt").str());
-        auto result = detector.finish();
-        _gameDataEncoding = (result.encoding != ENCODING_BYTES) ? result.encoding : ENCODING_ASCII;
+        TextEncoding result = detector.finish();
+        _gameDataEncoding = (result != ENCODING_BYTES) ? result : ENCODING_ASCII;
     }
 
     localization = new Localization();
