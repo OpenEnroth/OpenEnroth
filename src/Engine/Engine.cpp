@@ -384,7 +384,7 @@ bool Engine::draw_debug_outlines() {
             const DecorationDesc *desc = pDecorationList->GetDecoration(decor.uDecorationDescID);
             if (desc->CanMoveThrough())
                 continue;
-            drawDebugCylinder(decor.vPosition, desc->uRadius, desc->uDecorationHeight, colorTable.OrangeRed);
+            drawDebugCylinder(decor.vPosition, desc->uRadius, desc->uDecorationHeight, colorTable.OrangeyRed);
         }
     }
 
