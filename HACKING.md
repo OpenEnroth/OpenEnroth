@@ -13,7 +13,7 @@ By default, we are using prebuilt dependencies, and they are resolved automatica
 
 Minimum required compiler versions are as follows:
 * Visual Studio 2022;
-* GCC 14;
+* GCC 15;
 * AppleClang 16 (Xcode 16.3).
 
 The following IDEs have been tested and should work fine:
