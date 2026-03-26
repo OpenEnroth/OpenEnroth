@@ -1,0 +1,601 @@
+{
+    "header": {
+        "afterLoadRandomState": 1004018,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "mersenne_twister"
+            },
+            {
+                "key": "wizard_eye",
+                "section": "debug",
+                "value": "true"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 95,
+                    "backpack": [
+                        "Ghoulsbane",
+                        "Gibbet",
+                        "Charele",
+                        "Ghoulsbane",
+                        "Ruler's Ring",
+                        "Letter from Xenofex",
+                        "Red Apple",
+                        "Angel's Ring of Protection",
+                        "Twilight",
+                        "Taledon's Helm",
+                        "Elfbane",
+                        "Glorious Cloak of Protection",
+                        "Justice"
+                    ],
+                    "endurance": 135,
+                    "equipment": [
+                        "Glory Shield",
+                        "Mekorig's Hammer",
+                        "Griffin Bow of The Dragon",
+                        "Governor's Armor [BROKEN]",
+                        "Regal Crown of Protection",
+                        "Gilded Belt of The Gods",
+                        "Sun Cloak",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of Protection",
+                        "Sun Amulet of The Gods",
+                        "Lady's Escort",
+                        "Angel's Ring of The Unicorn",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection"
+                    ],
+                    "hp": 67,
+                    "intelligence": 93,
+                    "luck": 116,
+                    "might": 228,
+                    "mp": 70,
+                    "personality": 107,
+                    "speed": 95
+                },
+                {
+                    "accuracy": 197,
+                    "backpack": [
+                        "Forge Gauntlets",
+                        "Moon Cloak",
+                        "Old Nick",
+                        "Lady Carmine's Dagger",
+                        "Mash",
+                        "Puck",
+                        "Villain's Blade",
+                        "Iron Feather",
+                        "Minotaur's Axe [+25]",
+                        "Regnan Cutlass of Darkness",
+                        "Horseshoe",
+                        "Horseshoe",
+                        "Clanker's Amulet [+15]",
+                        "Scholar's Cap",
+                        "Ghost Ring",
+                        "Horseshoe",
+                        "Kelebrim",
+                        "Elven Chainmail",
+                        "Splitter",
+                        "Shadow's Mask",
+                        "Mind's Eye",
+                        "Faerie Ring",
+                        "Medusa's Mirror"
+                    ],
+                    "endurance": 162,
+                    "equipment": [
+                        "Wallace",
+                        "Ullyses",
+                        "Yoruba",
+                        "Regal Crown of the Storm",
+                        "Titan's Belt",
+                        "Glorious Cloak of Protection",
+                        "Mogred Gauntlets of The Gods",
+                        "Hermes' Sandals",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of The Gods",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 155,
+                    "intelligence": 99,
+                    "luck": 111,
+                    "might": 197,
+                    "mp": 0,
+                    "personality": 139,
+                    "speed": 159
+                },
+                {
+                    "accuracy": 228,
+                    "backpack": [
+                        "Grognard's Cutlass",
+                        "Lieutenant's Cutlass",
+                        "Corsair",
+                        "Zokarr's Axe",
+                        "Amuck",
+                        "Ethric's Staff",
+                        "Vampire's Cape",
+                        "Regnan Cutlass of Darkness",
+                        "Seven League Boots",
+                        "Hareck's Leather"
+                    ],
+                    "endurance": 97,
+                    "equipment": [
+                        "Regnan Cutlass of The Dragon",
+                        "Ania Selving",
+                        "Noble Plate Armor of the Storm [BROKEN]",
+                        "Regal Crown of The Gods",
+                        "Gilded Belt of The Gods",
+                        "Glorious Cloak of Protection",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of The Gods",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of The Gods",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 140,
+                    "intelligence": 96,
+                    "luck": 141,
+                    "might": 107,
+                    "mp": 0,
+                    "personality": 96,
+                    "speed": 78
+                },
+                {
+                    "accuracy": 107,
+                    "backpack": [
+                        "Hands of the Master",
+                        "Phynaxian Crown",
+                        "Parson's Quill",
+                        "Regnan Cutlass of Darkness",
+                        "Worn Belt"
+                    ],
+                    "endurance": 147,
+                    "equipment": [
+                        "Regnan Cutlass of The Dragon",
+                        "Griffin Bow of The Dragon",
+                        "Noble Plate Armor of the Storm [BROKEN]",
+                        "Regal Crown of The Gods",
+                        "Hero's Belt",
+                        "Cloak of the Sheep",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of The Gods",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 150,
+                    "intelligence": 89,
+                    "luck": 121,
+                    "might": 197,
+                    "mp": 0,
+                    "personality": 89,
+                    "speed": 109
+                }
+            ],
+            "locationName": "d04.blv",
+            "partyPosition": {
+                "x": -91,
+                "y": -38,
+                "z": -3074
+            }
+        },
+        "saveFileSize": 450201,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 95,
+                    "backpack": [
+                        "Ghoulsbane",
+                        "Gibbet",
+                        "Charele",
+                        "Ghoulsbane",
+                        "Ruler's Ring",
+                        "Letter from Xenofex",
+                        "Red Apple",
+                        "Angel's Ring of Protection",
+                        "Twilight",
+                        "Taledon's Helm",
+                        "Elfbane",
+                        "Glorious Cloak of Protection",
+                        "Justice"
+                    ],
+                    "endurance": 135,
+                    "equipment": [
+                        "Glory Shield",
+                        "Mekorig's Hammer",
+                        "Griffin Bow of The Dragon",
+                        "Governor's Armor [BROKEN]",
+                        "Regal Crown of Protection",
+                        "Gilded Belt of The Gods",
+                        "Sun Cloak",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of Protection",
+                        "Sun Amulet of The Gods",
+                        "Lady's Escort",
+                        "Angel's Ring of The Unicorn",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection"
+                    ],
+                    "hp": 67,
+                    "intelligence": 93,
+                    "luck": 116,
+                    "might": 228,
+                    "mp": 70,
+                    "personality": 107,
+                    "speed": 95
+                },
+                {
+                    "accuracy": 197,
+                    "backpack": [
+                        "Forge Gauntlets",
+                        "Moon Cloak",
+                        "Old Nick",
+                        "Lady Carmine's Dagger",
+                        "Mash",
+                        "Puck",
+                        "Villain's Blade",
+                        "Iron Feather",
+                        "Minotaur's Axe [+25]",
+                        "Regnan Cutlass of Darkness",
+                        "Horseshoe",
+                        "Horseshoe",
+                        "Clanker's Amulet [+15]",
+                        "Scholar's Cap",
+                        "Ghost Ring",
+                        "Horseshoe",
+                        "Kelebrim",
+                        "Elven Chainmail",
+                        "Splitter",
+                        "Shadow's Mask",
+                        "Mind's Eye",
+                        "Faerie Ring",
+                        "Medusa's Mirror"
+                    ],
+                    "endurance": 162,
+                    "equipment": [
+                        "Wallace",
+                        "Ullyses",
+                        "Yoruba",
+                        "Regal Crown of the Storm",
+                        "Titan's Belt",
+                        "Glorious Cloak of Protection",
+                        "Mogred Gauntlets of The Gods",
+                        "Hermes' Sandals",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of The Gods",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 155,
+                    "intelligence": 99,
+                    "luck": 111,
+                    "might": 197,
+                    "mp": 0,
+                    "personality": 139,
+                    "speed": 159
+                },
+                {
+                    "accuracy": 228,
+                    "backpack": [
+                        "Grognard's Cutlass",
+                        "Lieutenant's Cutlass",
+                        "Corsair",
+                        "Zokarr's Axe",
+                        "Amuck",
+                        "Ethric's Staff",
+                        "Vampire's Cape",
+                        "Regnan Cutlass of Darkness",
+                        "Seven League Boots",
+                        "Hareck's Leather"
+                    ],
+                    "endurance": 97,
+                    "equipment": [
+                        "Regnan Cutlass of The Dragon",
+                        "Ania Selving",
+                        "Noble Plate Armor of the Storm [BROKEN]",
+                        "Regal Crown of The Gods",
+                        "Gilded Belt of The Gods",
+                        "Glorious Cloak of Protection",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of The Gods",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of The Gods",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 140,
+                    "intelligence": 96,
+                    "luck": 141,
+                    "might": 107,
+                    "mp": 0,
+                    "personality": 96,
+                    "speed": 78
+                },
+                {
+                    "accuracy": 107,
+                    "backpack": [
+                        "Hands of the Master",
+                        "Phynaxian Crown",
+                        "Parson's Quill",
+                        "Regnan Cutlass of Darkness",
+                        "Worn Belt"
+                    ],
+                    "endurance": 147,
+                    "equipment": [
+                        "Regnan Cutlass of The Dragon",
+                        "Griffin Bow of The Dragon",
+                        "Noble Plate Armor of the Storm [BROKEN]",
+                        "Regal Crown of The Gods",
+                        "Hero's Belt",
+                        "Cloak of the Sheep",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of The Gods",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 150,
+                    "intelligence": 89,
+                    "luck": 121,
+                    "might": 197,
+                    "mp": 0,
+                    "personality": 89,
+                    "speed": 109
+                }
+            ],
+            "locationName": "d04.blv",
+            "partyPosition": {
+                "x": -91,
+                "y": -38,
+                "z": -3073
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1004018,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 117927,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 499,
+                "y": 351
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 711705,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 496,
+                "y": 352
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 33379,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 36119,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 677708,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 124778,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 860713,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 270016,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 263280,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 712842,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "randomState": 161940,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 494882,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 527632,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 633582,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 857004,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 692185,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 81324,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 799456,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1029411,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 943774,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1001330,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 424653,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 310714,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 701796,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 570221,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 499791,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 489,
+                "y": 352
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 462656,
+            "tickCount": 2800,
+            "type": "paint"
+        }
+    ]
+}

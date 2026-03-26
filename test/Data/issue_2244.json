@@ -1,0 +1,1445 @@
+{
+    "header": {
+        "afterLoadRandomState": 1011758,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "show_fps",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "town_portal",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "mersenne_twister"
+            },
+            {
+                "key": "wizard_eye",
+                "section": "debug",
+                "value": "true"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 95,
+                    "backpack": [
+                        "Ghoulsbane",
+                        "Gibbet",
+                        "Charele",
+                        "Ghoulsbane",
+                        "Ruler's Ring",
+                        "Letter from Xenofex",
+                        "Red Apple",
+                        "Angel's Ring of Protection",
+                        "Twilight",
+                        "Taledon's Helm",
+                        "Elfbane",
+                        "Glorious Cloak of Protection",
+                        "Justice"
+                    ],
+                    "endurance": 135,
+                    "equipment": [
+                        "Glory Shield",
+                        "Mekorig's Hammer",
+                        "Griffin Bow of The Dragon",
+                        "Governor's Armor [BROKEN]",
+                        "Regal Crown of Protection",
+                        "Gilded Belt of The Gods",
+                        "Sun Cloak",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of Protection",
+                        "Sun Amulet of The Gods",
+                        "Lady's Escort",
+                        "Angel's Ring of The Unicorn",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection"
+                    ],
+                    "hp": 67,
+                    "intelligence": 93,
+                    "luck": 116,
+                    "might": 228,
+                    "mp": 70,
+                    "personality": 107,
+                    "speed": 95
+                },
+                {
+                    "accuracy": 197,
+                    "backpack": [
+                        "Forge Gauntlets",
+                        "Moon Cloak",
+                        "Old Nick",
+                        "Lady Carmine's Dagger",
+                        "Mash",
+                        "Puck",
+                        "Villain's Blade",
+                        "Iron Feather",
+                        "Minotaur's Axe [+25]",
+                        "Regnan Cutlass of Darkness",
+                        "Horseshoe",
+                        "Horseshoe",
+                        "Clanker's Amulet [+15]",
+                        "Scholar's Cap",
+                        "Ghost Ring",
+                        "Horseshoe",
+                        "Kelebrim",
+                        "Elven Chainmail",
+                        "Splitter",
+                        "Shadow's Mask",
+                        "Mind's Eye",
+                        "Faerie Ring",
+                        "Medusa's Mirror"
+                    ],
+                    "endurance": 162,
+                    "equipment": [
+                        "Wallace",
+                        "Ullyses",
+                        "Yoruba",
+                        "Regal Crown of the Storm",
+                        "Titan's Belt",
+                        "Glorious Cloak of Protection",
+                        "Mogred Gauntlets of The Gods",
+                        "Hermes' Sandals",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of The Gods",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 155,
+                    "intelligence": 99,
+                    "luck": 111,
+                    "might": 197,
+                    "mp": 0,
+                    "personality": 139,
+                    "speed": 159
+                },
+                {
+                    "accuracy": 228,
+                    "backpack": [
+                        "Grognard's Cutlass",
+                        "Lieutenant's Cutlass",
+                        "Corsair",
+                        "Zokarr's Axe",
+                        "Amuck",
+                        "Ethric's Staff",
+                        "Vampire's Cape",
+                        "Regnan Cutlass of Darkness",
+                        "Seven League Boots",
+                        "Hareck's Leather"
+                    ],
+                    "endurance": 97,
+                    "equipment": [
+                        "Regnan Cutlass of The Dragon",
+                        "Ania Selving",
+                        "Noble Plate Armor of the Storm [BROKEN]",
+                        "Regal Crown of The Gods",
+                        "Gilded Belt of The Gods",
+                        "Glorious Cloak of Protection",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of The Gods",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of The Gods",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 140,
+                    "intelligence": 96,
+                    "luck": 141,
+                    "might": 107,
+                    "mp": 0,
+                    "personality": 96,
+                    "speed": 78
+                },
+                {
+                    "accuracy": 107,
+                    "backpack": [
+                        "Hands of the Master",
+                        "Phynaxian Crown",
+                        "Parson's Quill",
+                        "Regnan Cutlass of Darkness",
+                        "Worn Belt"
+                    ],
+                    "endurance": 147,
+                    "equipment": [
+                        "Regnan Cutlass of The Dragon",
+                        "Griffin Bow of The Dragon",
+                        "Noble Plate Armor of the Storm [BROKEN]",
+                        "Regal Crown of The Gods",
+                        "Hero's Belt",
+                        "Cloak of the Sheep",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of The Gods",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 150,
+                    "intelligence": 89,
+                    "luck": 121,
+                    "might": 197,
+                    "mp": 0,
+                    "personality": 89,
+                    "speed": 109
+                }
+            ],
+            "locationName": "d04.blv",
+            "partyPosition": {
+                "x": -58,
+                "y": -100,
+                "z": -3074
+            }
+        },
+        "saveFileSize": 453488,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 95,
+                    "backpack": [
+                        "Ghoulsbane",
+                        "Gibbet",
+                        "Charele",
+                        "Ghoulsbane",
+                        "Ruler's Ring",
+                        "Letter from Xenofex",
+                        "Red Apple",
+                        "Angel's Ring of Protection",
+                        "Twilight",
+                        "Taledon's Helm",
+                        "Elfbane",
+                        "Glorious Cloak of Protection",
+                        "Justice"
+                    ],
+                    "endurance": 135,
+                    "equipment": [
+                        "Glory Shield",
+                        "Mekorig's Hammer",
+                        "Griffin Bow of The Dragon",
+                        "Governor's Armor [BROKEN]",
+                        "Regal Crown of Protection",
+                        "Gilded Belt of The Gods",
+                        "Sun Cloak",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of Protection",
+                        "Sun Amulet of The Gods",
+                        "Lady's Escort",
+                        "Angel's Ring of The Unicorn",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection"
+                    ],
+                    "hp": 67,
+                    "intelligence": 93,
+                    "luck": 116,
+                    "might": 228,
+                    "mp": 70,
+                    "personality": 107,
+                    "speed": 95
+                },
+                {
+                    "accuracy": 197,
+                    "backpack": [
+                        "Forge Gauntlets",
+                        "Moon Cloak",
+                        "Old Nick",
+                        "Lady Carmine's Dagger",
+                        "Mash",
+                        "Puck",
+                        "Villain's Blade",
+                        "Iron Feather",
+                        "Minotaur's Axe [+25]",
+                        "Regnan Cutlass of Darkness",
+                        "Horseshoe",
+                        "Horseshoe",
+                        "Clanker's Amulet [+15]",
+                        "Scholar's Cap",
+                        "Ghost Ring",
+                        "Horseshoe",
+                        "Kelebrim",
+                        "Elven Chainmail",
+                        "Splitter",
+                        "Shadow's Mask",
+                        "Mind's Eye",
+                        "Faerie Ring",
+                        "Medusa's Mirror"
+                    ],
+                    "endurance": 162,
+                    "equipment": [
+                        "Wallace",
+                        "Ullyses",
+                        "Yoruba",
+                        "Regal Crown of the Storm",
+                        "Titan's Belt",
+                        "Glorious Cloak of Protection",
+                        "Mogred Gauntlets of The Gods",
+                        "Hermes' Sandals",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of The Gods",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 155,
+                    "intelligence": 99,
+                    "luck": 111,
+                    "might": 197,
+                    "mp": 0,
+                    "personality": 139,
+                    "speed": 159
+                },
+                {
+                    "accuracy": 228,
+                    "backpack": [
+                        "Grognard's Cutlass",
+                        "Lieutenant's Cutlass",
+                        "Corsair",
+                        "Zokarr's Axe",
+                        "Amuck",
+                        "Ethric's Staff",
+                        "Vampire's Cape",
+                        "Regnan Cutlass of Darkness",
+                        "Seven League Boots",
+                        "Hareck's Leather"
+                    ],
+                    "endurance": 97,
+                    "equipment": [
+                        "Regnan Cutlass of The Dragon",
+                        "Ania Selving",
+                        "Noble Plate Armor of the Storm [BROKEN]",
+                        "Regal Crown of The Gods",
+                        "Gilded Belt of The Gods",
+                        "Glorious Cloak of Protection",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of The Gods",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of The Gods",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 140,
+                    "intelligence": 96,
+                    "luck": 141,
+                    "might": 107,
+                    "mp": 0,
+                    "personality": 96,
+                    "speed": 78
+                },
+                {
+                    "accuracy": 107,
+                    "backpack": [
+                        "Hands of the Master",
+                        "Phynaxian Crown",
+                        "Parson's Quill",
+                        "Regnan Cutlass of Darkness",
+                        "Worn Belt"
+                    ],
+                    "endurance": 147,
+                    "equipment": [
+                        "Regnan Cutlass of The Dragon",
+                        "Griffin Bow of The Dragon",
+                        "Noble Plate Armor of the Storm [BROKEN]",
+                        "Regal Crown of The Gods",
+                        "Hero's Belt",
+                        "Cloak of the Sheep",
+                        "Mogred Gauntlets of The Gods",
+                        "Paladin Boots of The Gods",
+                        "Sun Amulet of The Gods",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Troll",
+                        "Angel's Ring of Protection",
+                        "Angel's Ring of The Gods"
+                    ],
+                    "hp": 150,
+                    "intelligence": 89,
+                    "luck": 121,
+                    "might": 197,
+                    "mp": 0,
+                    "personality": 89,
+                    "speed": 109
+                }
+            ],
+            "locationName": "d04.blv",
+            "partyPosition": {
+                "x": -32,
+                "y": -631,
+                "z": 1
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1011758,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 830689,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 687318,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 800849,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 480236,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 919346,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 443720,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 314396,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 368741,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 56570,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 353498,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "randomState": 631223,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 957703,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 81972,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 812552,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 452370,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "UP",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 142678,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 894467,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 799456,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 863455,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 34884,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 514118,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 767266,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 656008,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 512352,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 675616,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 17323,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "randomState": 943910,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 326214,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "randomState": 741680,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "randomState": 745763,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 819891,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 765807,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "randomState": 199130,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "randomState": 806609,
+            "tickCount": 3500,
+            "type": "paint"
+        },
+        {
+            "randomState": 712746,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 732688,
+            "tickCount": 3700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 640592,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "RIGHT",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 325222,
+            "tickCount": 3900,
+            "type": "paint"
+        },
+        {
+            "randomState": 44492,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "randomState": 157145,
+            "tickCount": 4100,
+            "type": "paint"
+        },
+        {
+            "randomState": 139639,
+            "tickCount": 4200,
+            "type": "paint"
+        },
+        {
+            "randomState": 189602,
+            "tickCount": 4300,
+            "type": "paint"
+        },
+        {
+            "randomState": 390499,
+            "tickCount": 4400,
+            "type": "paint"
+        },
+        {
+            "randomState": 174795,
+            "tickCount": 4500,
+            "type": "paint"
+        },
+        {
+            "randomState": 735155,
+            "tickCount": 4600,
+            "type": "paint"
+        },
+        {
+            "randomState": 706963,
+            "tickCount": 4700,
+            "type": "paint"
+        },
+        {
+            "randomState": 164002,
+            "tickCount": 4800,
+            "type": "paint"
+        },
+        {
+            "randomState": 783633,
+            "tickCount": 4900,
+            "type": "paint"
+        },
+        {
+            "randomState": 113004,
+            "tickCount": 5000,
+            "type": "paint"
+        },
+        {
+            "randomState": 445916,
+            "tickCount": 5100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1022104,
+            "tickCount": 5200,
+            "type": "paint"
+        },
+        {
+            "randomState": 335124,
+            "tickCount": 5300,
+            "type": "paint"
+        },
+        {
+            "randomState": 716142,
+            "tickCount": 5400,
+            "type": "paint"
+        },
+        {
+            "randomState": 479644,
+            "tickCount": 5500,
+            "type": "paint"
+        },
+        {
+            "randomState": 708965,
+            "tickCount": 5600,
+            "type": "paint"
+        },
+        {
+            "randomState": 700273,
+            "tickCount": 5700,
+            "type": "paint"
+        },
+        {
+            "randomState": 405558,
+            "tickCount": 5800,
+            "type": "paint"
+        },
+        {
+            "randomState": 494253,
+            "tickCount": 5900,
+            "type": "paint"
+        },
+        {
+            "randomState": 898705,
+            "tickCount": 6000,
+            "type": "paint"
+        },
+        {
+            "randomState": 958104,
+            "tickCount": 6100,
+            "type": "paint"
+        },
+        {
+            "randomState": 27219,
+            "tickCount": 6200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1021223,
+            "tickCount": 6300,
+            "type": "paint"
+        },
+        {
+            "randomState": 11736,
+            "tickCount": 6400,
+            "type": "paint"
+        },
+        {
+            "randomState": 885896,
+            "tickCount": 6500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1041974,
+            "tickCount": 6600,
+            "type": "paint"
+        },
+        {
+            "randomState": 581234,
+            "tickCount": 6700,
+            "type": "paint"
+        },
+        {
+            "randomState": 145620,
+            "tickCount": 6800,
+            "type": "paint"
+        },
+        {
+            "randomState": 704046,
+            "tickCount": 6900,
+            "type": "paint"
+        },
+        {
+            "randomState": 791604,
+            "tickCount": 7000,
+            "type": "paint"
+        },
+        {
+            "randomState": 463790,
+            "tickCount": 7100,
+            "type": "paint"
+        },
+        {
+            "randomState": 450805,
+            "tickCount": 7200,
+            "type": "paint"
+        },
+        {
+            "randomState": 613510,
+            "tickCount": 7300,
+            "type": "paint"
+        },
+        {
+            "randomState": 452716,
+            "tickCount": 7400,
+            "type": "paint"
+        },
+        {
+            "randomState": 670453,
+            "tickCount": 7500,
+            "type": "paint"
+        },
+        {
+            "randomState": 199398,
+            "tickCount": 7600,
+            "type": "paint"
+        },
+        {
+            "randomState": 892036,
+            "tickCount": 7700,
+            "type": "paint"
+        },
+        {
+            "randomState": 317729,
+            "tickCount": 7800,
+            "type": "paint"
+        },
+        {
+            "randomState": 238910,
+            "tickCount": 7900,
+            "type": "paint"
+        },
+        {
+            "randomState": 656366,
+            "tickCount": 8000,
+            "type": "paint"
+        },
+        {
+            "randomState": 973406,
+            "tickCount": 8100,
+            "type": "paint"
+        },
+        {
+            "randomState": 219577,
+            "tickCount": 8200,
+            "type": "paint"
+        },
+        {
+            "randomState": 772247,
+            "tickCount": 8300,
+            "type": "paint"
+        },
+        {
+            "randomState": 129952,
+            "tickCount": 8400,
+            "type": "paint"
+        },
+        {
+            "randomState": 419147,
+            "tickCount": 8500,
+            "type": "paint"
+        },
+        {
+            "randomState": 118701,
+            "tickCount": 8600,
+            "type": "paint"
+        },
+        {
+            "randomState": 979794,
+            "tickCount": 8700,
+            "type": "paint"
+        },
+        {
+            "randomState": 688440,
+            "tickCount": 8800,
+            "type": "paint"
+        },
+        {
+            "randomState": 332208,
+            "tickCount": 8900,
+            "type": "paint"
+        },
+        {
+            "randomState": 364777,
+            "tickCount": 9000,
+            "type": "paint"
+        },
+        {
+            "randomState": 62510,
+            "tickCount": 9100,
+            "type": "paint"
+        },
+        {
+            "randomState": 487420,
+            "tickCount": 9200,
+            "type": "paint"
+        },
+        {
+            "randomState": 559617,
+            "tickCount": 9300,
+            "type": "paint"
+        },
+        {
+            "randomState": 452318,
+            "tickCount": 9400,
+            "type": "paint"
+        },
+        {
+            "randomState": 370157,
+            "tickCount": 9500,
+            "type": "paint"
+        },
+        {
+            "randomState": 13928,
+            "tickCount": 9600,
+            "type": "paint"
+        },
+        {
+            "randomState": 348224,
+            "tickCount": 9700,
+            "type": "paint"
+        },
+        {
+            "randomState": 94258,
+            "tickCount": 9800,
+            "type": "paint"
+        },
+        {
+            "randomState": 782566,
+            "tickCount": 9900,
+            "type": "paint"
+        },
+        {
+            "randomState": 819333,
+            "tickCount": 10000,
+            "type": "paint"
+        },
+        {
+            "randomState": 109904,
+            "tickCount": 10100,
+            "type": "paint"
+        },
+        {
+            "randomState": 53825,
+            "tickCount": 10200,
+            "type": "paint"
+        },
+        {
+            "randomState": 953538,
+            "tickCount": 10300,
+            "type": "paint"
+        },
+        {
+            "randomState": 731372,
+            "tickCount": 10400,
+            "type": "paint"
+        },
+        {
+            "randomState": 319555,
+            "tickCount": 10500,
+            "type": "paint"
+        },
+        {
+            "randomState": 208008,
+            "tickCount": 10600,
+            "type": "paint"
+        },
+        {
+            "randomState": 305575,
+            "tickCount": 10700,
+            "type": "paint"
+        },
+        {
+            "randomState": 794924,
+            "tickCount": 10800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1048430,
+            "tickCount": 10900,
+            "type": "paint"
+        },
+        {
+            "randomState": 706000,
+            "tickCount": 11000,
+            "type": "paint"
+        },
+        {
+            "randomState": 730262,
+            "tickCount": 11100,
+            "type": "paint"
+        },
+        {
+            "randomState": 687418,
+            "tickCount": 11200,
+            "type": "paint"
+        },
+        {
+            "randomState": 627703,
+            "tickCount": 11300,
+            "type": "paint"
+        },
+        {
+            "randomState": 81104,
+            "tickCount": 11400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1035924,
+            "tickCount": 11500,
+            "type": "paint"
+        },
+        {
+            "randomState": 770228,
+            "tickCount": 11600,
+            "type": "paint"
+        },
+        {
+            "randomState": 305098,
+            "tickCount": 11700,
+            "type": "paint"
+        },
+        {
+            "randomState": 474577,
+            "tickCount": 11800,
+            "type": "paint"
+        },
+        {
+            "randomState": 130938,
+            "tickCount": 11900,
+            "type": "paint"
+        },
+        {
+            "randomState": 480128,
+            "tickCount": 12000,
+            "type": "paint"
+        },
+        {
+            "randomState": 560481,
+            "tickCount": 12100,
+            "type": "paint"
+        },
+        {
+            "randomState": 183511,
+            "tickCount": 12200,
+            "type": "paint"
+        },
+        {
+            "randomState": 519672,
+            "tickCount": 12300,
+            "type": "paint"
+        },
+        {
+            "randomState": 968544,
+            "tickCount": 12400,
+            "type": "paint"
+        },
+        {
+            "randomState": 461410,
+            "tickCount": 12500,
+            "type": "paint"
+        },
+        {
+            "randomState": 749954,
+            "tickCount": 12600,
+            "type": "paint"
+        },
+        {
+            "randomState": 827403,
+            "tickCount": 12700,
+            "type": "paint"
+        },
+        {
+            "randomState": 964147,
+            "tickCount": 12800,
+            "type": "paint"
+        },
+        {
+            "randomState": 978667,
+            "tickCount": 12900,
+            "type": "paint"
+        },
+        {
+            "randomState": 671210,
+            "tickCount": 13000,
+            "type": "paint"
+        },
+        {
+            "randomState": 657820,
+            "tickCount": 13100,
+            "type": "paint"
+        },
+        {
+            "randomState": 472408,
+            "tickCount": 13200,
+            "type": "paint"
+        },
+        {
+            "randomState": 843526,
+            "tickCount": 13300,
+            "type": "paint"
+        },
+        {
+            "randomState": 19060,
+            "tickCount": 13400,
+            "type": "paint"
+        },
+        {
+            "randomState": 144566,
+            "tickCount": 13500,
+            "type": "paint"
+        },
+        {
+            "randomState": 646387,
+            "tickCount": 13600,
+            "type": "paint"
+        },
+        {
+            "randomState": 991511,
+            "tickCount": 13700,
+            "type": "paint"
+        },
+        {
+            "randomState": 389264,
+            "tickCount": 13800,
+            "type": "paint"
+        },
+        {
+            "randomState": 786977,
+            "tickCount": 13900,
+            "type": "paint"
+        },
+        {
+            "randomState": 668461,
+            "tickCount": 14000,
+            "type": "paint"
+        },
+        {
+            "randomState": 446245,
+            "tickCount": 14100,
+            "type": "paint"
+        },
+        {
+            "randomState": 884173,
+            "tickCount": 14200,
+            "type": "paint"
+        },
+        {
+            "randomState": 235171,
+            "tickCount": 14300,
+            "type": "paint"
+        },
+        {
+            "randomState": 292088,
+            "tickCount": 14400,
+            "type": "paint"
+        },
+        {
+            "randomState": 596412,
+            "tickCount": 14500,
+            "type": "paint"
+        },
+        {
+            "randomState": 534933,
+            "tickCount": 14600,
+            "type": "paint"
+        },
+        {
+            "randomState": 482479,
+            "tickCount": 14700,
+            "type": "paint"
+        },
+        {
+            "randomState": 804468,
+            "tickCount": 14800,
+            "type": "paint"
+        },
+        {
+            "randomState": 947849,
+            "tickCount": 14900,
+            "type": "paint"
+        },
+        {
+            "randomState": 728491,
+            "tickCount": 15000,
+            "type": "paint"
+        },
+        {
+            "randomState": 842855,
+            "tickCount": 15100,
+            "type": "paint"
+        },
+        {
+            "randomState": 49864,
+            "tickCount": 15200,
+            "type": "paint"
+        },
+        {
+            "randomState": 265634,
+            "tickCount": 15300,
+            "type": "paint"
+        },
+        {
+            "randomState": 383943,
+            "tickCount": 15400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1010334,
+            "tickCount": 15500,
+            "type": "paint"
+        },
+        {
+            "randomState": 650409,
+            "tickCount": 15600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "R",
+            "mods": "num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "R",
+            "mods": "shift|ctrl|num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 242470,
+            "tickCount": 15700,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|num",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 159628,
+            "tickCount": 15800,
+            "type": "paint"
+        },
+        {
+            "randomState": 771716,
+            "tickCount": 15900,
+            "type": "paint"
+        },
+        {
+            "randomState": 96176,
+            "tickCount": 16000,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "ctrl|num",
+            "type": "keyRelease"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "num",
+            "type": "keyRelease"
+        },
+        {
+            "randomState": 839250,
+            "tickCount": 16100,
+            "type": "paint"
+        },
+        {
+            "randomState": 136831,
+            "tickCount": 16200,
+            "type": "paint"
+        },
+        {
+            "randomState": 322694,
+            "tickCount": 16300,
+            "type": "paint"
+        },
+        {
+            "randomState": 437411,
+            "tickCount": 16400,
+            "type": "paint"
+        },
+        {
+            "randomState": 736298,
+            "tickCount": 16500,
+            "type": "paint"
+        },
+        {
+            "randomState": 869828,
+            "tickCount": 16600,
+            "type": "paint"
+        },
+        {
+            "randomState": 75551,
+            "tickCount": 16700,
+            "type": "paint"
+        },
+        {
+            "randomState": 793509,
+            "tickCount": 16800,
+            "type": "paint"
+        },
+        {
+            "randomState": 476831,
+            "tickCount": 16900,
+            "type": "paint"
+        },
+        {
+            "randomState": 984695,
+            "tickCount": 17000,
+            "type": "paint"
+        },
+        {
+            "randomState": 939732,
+            "tickCount": 17100,
+            "type": "paint"
+        },
+        {
+            "randomState": 639243,
+            "tickCount": 17200,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 467,
+                "y": 298
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 19516,
+            "tickCount": 17300,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 412,
+                "y": 280
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 340635,
+            "tickCount": 17400,
+            "type": "paint"
+        },
+        {
+            "button": "none",
+            "buttons": "none",
+            "isDoubleClick": false,
+            "pos": {
+                "x": 400,
+                "y": 274
+            },
+            "type": "mouseMove"
+        },
+        {
+            "randomState": 102065,
+            "tickCount": 17500,
+            "type": "paint"
+        },
+        {
+            "randomState": 63404,
+            "tickCount": 17600,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 100005,
+            "tickCount": 17700,
+            "type": "paint"
+        },
+        {
+            "randomState": 580430,
+            "tickCount": 17800,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 457373,
+            "tickCount": 17900,
+            "type": "paint"
+        },
+        {
+            "randomState": 528314,
+            "tickCount": 18000,
+            "type": "paint"
+        }
+    ]
+}
