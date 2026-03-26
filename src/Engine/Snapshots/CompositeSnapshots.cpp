@@ -714,16 +714,14 @@ void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
 
         // TODO(captainurist): Can also use actor names from level deltas.
 
-        EncodingDetectionResult detectionResult = detector.finish();
+        TextEncoding detectedEncoding = detector.finish();
 
-        if (detectionResult.encoding == ENCODING_BYTES) {
+        if (detectedEncoding == ENCODING_BYTES) {
             logger->info("Failed to detect savegame encoding.");
             dst->extension.encoding = ENCODING_WINDOWS_1252;
         } else {
-            logger->info("Savegame encoding '{}' detected with confidence={}.",
-                         toString(detectionResult.encoding),
-                         detectionResult.confidence);
-            dst->extension.encoding = detectionResult.encoding;
+            logger->info("Savegame encoding '{}' detected.", toString(detectedEncoding));
+            dst->extension.encoding = detectedEncoding;
         }
     }
 
