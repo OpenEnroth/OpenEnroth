@@ -47,7 +47,8 @@ static constexpr std::initializer_list<const char *> defaultCommands = {
     "inventory addrandom | Add Random Item",
     "inventory addrandomspecial | Add Special Item",
     "reload_shaders | Reload Shaders",
-    "hp full_heal | Full Heal"
+    "hp full_heal | Full Heal",
+    "skills cheat_gm_all | GM All Skills"
 };
 
 GameConfig::CheatCommands::CheatCommands(GameConfig *config) : ConfigSection(config, "cheat_commands") {
