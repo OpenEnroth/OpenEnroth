@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Resources/LOD.h"
@@ -827,6 +828,18 @@ GAME_TEST(Issues, Issue2341) {
     EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled); // MouseLook should be re-enabled after closing the menu.
 }
 
+GAME_TEST(Issues, Issue2409) {
+    // Mouse not centered when mouselooking - interaction position drifted from crosshair.
+    test.prepareForNextTest();
+    game.startNewGame();
+    game.pressAndReleaseKey(PlatformKey::KEY_F10); // Enable mouselook.
+    game.tick();
+    EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled);
+    game.moveMouse(100, 100); // Move cursor away from center.
+    game.tick();
+    EXPECT_EQ(mouse->position(), pViewport.center()); // Interaction position must stay at crosshair center.
+}
+
 GAME_TEST(Prs, Pr2354) {
     // Verify that all levels (indoor & outdoor) and their default deltas can be deserialized and reconstructed.
     for (MapId mapId : Segment(MAP_FIRST, MAP_LAST)) {
@@ -859,4 +872,17 @@ GAME_TEST(Prs, Pr2354) {
             reconstruct(rawDelta, &location);
         }
     }
+}
+
+// 2400
+
+GAME_TEST(Issues, Issue2425) {
+    //Segmentation fault when trying to buy Fire Guild membership on Emerald Island
+    auto screenTape = tapes.screen();
+    auto airMem = tapes.custom([] -> bool { return pParty->activeCharacter()._achievedAwardsBits[AWARD_MEMBERSHIP_AIR_GUILD]; });
+    auto fireMem = tapes.custom([] -> bool { return pParty->activeCharacter()._achievedAwardsBits[AWARD_MEMBERSHIP_FIRE_GUILD]; });
+    test.playTraceFromTestData("issue_2425.mm7", "issue_2425.json");
+    EXPECT_EQ(screenTape.size(), 3); // game / house / game
+    EXPECT_EQ(airMem, tape(false, true) ); // and weve bought both memberships
+    EXPECT_EQ(fireMem, tape(false, true) );
 }
