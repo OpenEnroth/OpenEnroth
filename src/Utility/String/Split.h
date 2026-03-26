@@ -168,7 +168,7 @@ class SplitView : public std::ranges::view_interface<SplitView<Splitter>> {
         return SplitViewSentinel();
     }
 
-    [[nodiscard]] std::string_view string() const {
+    [[nodiscard]] std::string_view str() const {
         return std::string_view(_begin, _end);
     }
 
@@ -200,7 +200,8 @@ class SplitView : public std::ranges::view_interface<SplitView<Splitter>> {
         (!is_initializer_list_v<Container>)
     operator Container() const {
         // Shamelessly stolen from std::ranges::to implementation. Our code works for std::set too, and
-        // std::ranges::to doesn't.
+        // std::ranges::to in gcc-14 doesn't (it routes through emplace(iterator, args) which doesn't exist
+        // for associative containers). This is fixed in gcc-15 via assign_range. See LWG4016.
         auto insert = []<class Element>(auto &container, Element &&element) {
             if constexpr (requires { container.emplace_back(std::forward<Element>(element)); }) {
                 container.emplace_back(std::forward<Element>(element));
