@@ -73,6 +73,8 @@ class Engine {
         return _resourceManager.get();
     }
 
+    bool isOverlayOpen() const;
+
     void Initialize();
     Vis_PIDAndDepth PickMouse(float fPickDepth, int uMouseX, int uMouseY,
                               Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);

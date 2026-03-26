@@ -502,7 +502,17 @@ Vis_PIDAndDepth Engine::PickMouseNormal() {
 void Engine::toggleOverlays() {
     bool isEnabled = _overlaySystem.isEnabled();
     _overlaySystem.setEnabled(!isEnabled);
-    mouse->SetMouseLook(Io::Mouse::MouseLookState::Disabled);
+    if (!isEnabled) {
+        // Opening overlay: suspend mouselook. No-op if it was already Disabled.
+        mouse->SetMouseLook(Io::Mouse::MouseLookState::Suspended);
+    } else {
+        // Closing overlay: restore mouselook if it was suspended before we opened.
+        mouse->RestoreMouseLook();
+    }
+}
+
+bool Engine::isOverlayOpen() const {
+    return _overlaySystem.isEnabled();
 }
 
 void Engine::disableOverlays() {

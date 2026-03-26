@@ -752,12 +752,14 @@ void GUIWindow_House::drawNpcHouseDialogueOptions(NPCData* npcData) const {
     int buttonLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonLimit; ++i) {
         GUIButton *pButton = pDialogueWindow->GetControl(i);
-        DialogueId topic = (DialogueId)pButton->msg_param;
-        std::string str = npcDialogueOptionString(topic, npcData);
-        if (str.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
-            pButton->msg_param = 0;
+        if (pButton) {
+            DialogueId topic = (DialogueId)pButton->msg_param;
+            std::string str = npcDialogueOptionString(topic, npcData);
+            if (str.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
+                pButton->msg_param = 0;
+            }
+            optionsText.push_back(str);
         }
-        optionsText.push_back(str);
     }
 
     if (optionsText.size()) {

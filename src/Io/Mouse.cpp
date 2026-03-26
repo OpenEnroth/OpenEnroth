@@ -34,8 +34,16 @@ Pointi Io::Mouse::position() const {
     return _position;
 }
 
-void Io::Mouse::setPosition(Pointi position) {
-    _position = position;
+Pointi Io::Mouse::setPosition(Pointi position) {
+    // Crosshair is drawn at viewport center; keep _position in sync so that picking
+    // and interaction hit-testing use the same point the player is aiming at.
+    if (_mouseLook == MouseLookState::Enabled) {
+        _position = pViewport.center();
+    } else {
+        _position = position;
+    }
+
+    return _position;
 }
 
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
@@ -94,14 +102,17 @@ void Io::Mouse::Initialize() {
     SetCursorImage("MICON3");
     SetCursorImage("MICON2");
     SetCursorImage("MICON1");
+
+    if (engine->config->settings.MouseLookEnabled.value())
+        SetMouseLook(MouseLookState::Suspended);
 }
 
 void Io::Mouse::DrawCursor() {
     // get mouse pos
     Pointi pos = this->position();
 
-    // manage mouse look state - if only game screen is active, try enable
-    if (lWindowList.size() == 1)
+    // manage mouse look state - if only game screen is active and no overlay (console) is open, try enable
+    if (lWindowList.size() == 1 && !engine->isOverlayOpen())
         RestoreMouseLook();
     else
         SetMouseLook(Suspended);
@@ -305,16 +316,13 @@ void Io::Mouse::ToggleMouseLook() {
     } else {
         SetMouseLook(MouseLookState::Disabled);
     }
+    engine->config->settings.MouseLookEnabled.setValue(_mouseLook == MouseLookState::Enabled);
 }
 
 void Io::Mouse::DoMouseLook(Pointi relChange) {
     if (_mouseLook != MouseLookState::Enabled) {
         return;
     }
-
-    // Crosshair is drawn at viewport center; keep _position in sync so that picking
-    // and interaction hit-testing use the same point the player is aiming at.
-    _position = pViewport.center();
 
     float modX = relChange.x * engine->config->settings.MouseLookSensitivity.value();
     float modY = relChange.y * engine->config->settings.MouseLookSensitivity.value();
