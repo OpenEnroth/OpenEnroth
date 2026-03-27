@@ -137,16 +137,19 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
 
         std::string_view token14 = tokens[14];
         int res = svtoi(token14);
-        int mask = 0;
+        bool isMul = false;
         if (!res) {
             token14.remove_prefix(1);
-            while (!token14.empty() && token14[0] == ' ')  // fix X 2 case
+            while (!token14.empty() && token14[0] == ' ')  // fix "X 2" case
                 token14.remove_prefix(1);
             res = svtoi(token14);
-            mask = 4;  // bit encode for when we need to multiply value
+            isMul = true;
         }
-        specialEnchantments[i].additionalValue = res;
-        specialEnchantments[i].iTreasureLevel = (tolower(tokens[15][0]) - 'a') | mask;
+        if (isMul)
+            specialEnchantments[i].valueMul = res;
+        else
+            specialEnchantments[i].valueAdd = res;
+        specialEnchantments[i].enchantmentLevel = tolower(tokens[15][0]) - 'a';
     }
 
     txtRaw = resourceManager->eventsData("items.txt").str();
@@ -512,7 +515,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
     cumulativeWeights.clear();
     weightSum = 0;
     for (ItemEnchantment ench : specialEnchantments.indices()) {
-        int tr_lv = (specialEnchantments[ench].iTreasureLevel) & 3;
+        int tr_lv = specialEnchantments[ench].enchantmentLevel;
 
         // tr_lv  0 = treasure level 3/4
         // tr_lv  1 = treasure level 3/4/5
