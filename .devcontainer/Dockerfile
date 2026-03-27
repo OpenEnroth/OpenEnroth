@@ -1,4 +1,4 @@
-FROM debian:trixie
+FROM ubuntu:24.04
 
 ARG TZ
 ENV TZ="$TZ"
@@ -6,7 +6,11 @@ ENV TZ="$TZ"
 ARG CLAUDE_CODE_VERSION=latest
 
 # Install basic development tools, iptables/ipset, and C++ build toolchain.
+# PPA needed for gcc-15 which isn't in ubuntu-24.04 repos.
 RUN apt-get update && apt-get install -y --no-install-recommends \
+  software-properties-common \
+  && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
+  && apt-get update && apt-get install -y --no-install-recommends \
   less \
   git \
   git-lfs \
@@ -30,9 +34,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   wget \
   ca-certificates \
   curl \
-  gcc \
-  g++ \
-  cmake \
+  gcc-15 \
+  g++-15 \
   ninja-build \
   mold \
   libgl-dev \
@@ -42,17 +45,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   ccache \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Install fresh CMake (ztd_text requires >= 3.31).
+RUN wget -qO /tmp/cmake.sh "https://github.com/Kitware/CMake/releases/download/v4.3.0/cmake-4.3.0-linux-$(uname -m).sh" && \
+  sh /tmp/cmake.sh --skip-license --prefix=/usr/local && \
+  rm /tmp/cmake.sh
+
+# Make gcc-15/g++-15 the default gcc/g++.
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 100 && \
+  update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-15 100
+
 # Install Node.js 20 (needed for Claude Code).
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
   apt-get install -y --no-install-recommends nodejs && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user to match the original devcontainer.
-ARG USERNAME=node
-RUN groupadd --gid 1000 $USERNAME && \
-  useradd --uid 1000 --gid 1000 -m $USERNAME
+ARG USERNAME=ubuntu
 
-# Ensure default node user has access to /usr/local/share
+# Ensure default user has access to /usr/local/share
 RUN mkdir -p /usr/local/share/npm-global && \
   chown -R $USERNAME:$USERNAME /usr/local/share
 
