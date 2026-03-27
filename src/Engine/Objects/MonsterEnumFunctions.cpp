@@ -51,7 +51,7 @@ static constexpr IndexedArray<MonsterData, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST
     {MONSTER_TYPE_HYDRA,                    {SEX_MALE,      RACE_HUMAN,     true}},
     {MONSTER_TYPE_LICH,                     {SEX_MALE,      RACE_HUMAN,     true}},
     {MONSTER_TYPE_MAGE,                     {SEX_MALE,      RACE_HUMAN,     true}},
-    {MONSTER_TYPE_MANTICORE,                {SEX_MALE,      RACE_HUMAN,     true}},
+    {MONSTER_TYPE_MANTICORE,                {SEX_MALE,      RACE_HUMAN,     false}}, // v1.1: "No invisible monsters will spawn in the Arena."
     {MONSTER_TYPE_MEDUSA,                   {SEX_MALE,      RACE_HUMAN,     true}},
     {MONSTER_TYPE_MINOTAUR,                 {SEX_MALE,      RACE_HUMAN,     true}},
     {MONSTER_TYPE_MONK,                     {SEX_MALE,      RACE_HUMAN,     true}},
