@@ -79,11 +79,17 @@ Blob SndReader::read(std::string_view filename) const {
     Blob result = _snd.subBlob(entry.offset, entry.size);
     std::string path = fmt::format("{}/{}", _snd.displayPath(), filename);
     if (entry.decompressedSize && entry.decompressedSize != entry.size) {
+        Blob compressed = result.withDisplayPath(path);
         try {
-            result = zlib::uncompress(result.withDisplayPath(path), entry.decompressedSize);
+            result = zlib::uncompress(compressed, entry.decompressedSize);
         } catch (const Exception &e) {
-            logger->warning("SndReader: failed to decompress '{}', skipping: {}", path, e.what());
-            return Blob();
+            result = zlib::uncompressBestEffort(compressed, entry.decompressedSize);
+            if (!result) {
+                logger->warning("SndReader: failed to decompress '{}', skipping: {}", path, e.what());
+                return Blob();
+            }
+            logger->warning("SndReader: '{}' has corrupt checksum, recovered {} of {} expected bytes",
+                            path, result.size(), entry.decompressedSize);
         }
     }
     return result.withDisplayPath(path);

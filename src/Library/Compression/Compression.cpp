@@ -57,4 +57,40 @@ Blob uncompress(const Blob &source, size_t sizeHint) {
     return Blob::fromMalloc(std::move(dest), destLen);
 }
 
+Blob uncompressBestEffort(const Blob &source, size_t sizeHint) {
+    z_stream stream = {};
+    stream.next_in = const_cast<Bytef *>(static_cast<const Bytef *>(source.data()));
+    stream.avail_in = static_cast<uInt>(source.size());
+
+    if (inflateInit(&stream) != Z_OK)
+        return Blob();
+
+    size_t allocatedSize = sizeHint ? sizeHint : source.size() * 4;
+    std::unique_ptr<void, FreeDeleter> dest(malloc(allocatedSize));
+    stream.next_out = static_cast<Bytef *>(dest.get());
+    stream.avail_out = static_cast<uInt>(allocatedSize);
+
+    int res;
+    do {
+        if (stream.avail_out == 0) {
+            uLong prevTotal = stream.total_out;
+            allocatedSize *= 2;
+            dest.reset(realloc(dest.release(), allocatedSize));
+            stream.next_out = static_cast<Bytef *>(dest.get()) + prevTotal;
+            stream.avail_out = static_cast<uInt>(allocatedSize - prevTotal);
+        }
+        res = inflate(&stream, Z_NO_FLUSH);
+    } while (res == Z_OK);
+
+    uLong outputSize = stream.total_out;
+    inflateEnd(&stream);
+
+    if (outputSize == 0)
+        return Blob();
+
+    if (outputSize < allocatedSize)
+        dest.reset(realloc(dest.release(), outputSize));
+    return Blob::fromMalloc(std::move(dest), outputSize).withDisplayPath(source.displayPath());
+}
+
 };  // namespace zlib
