@@ -1,6 +1,7 @@
 #include "Monsters.h"
 
 #include <cstring>
+#include <map>
 #include <string>
 #include <utility>
 
@@ -9,6 +10,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/Serialization.h"
 
+#include "Utility/MapAccess.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/Exception.h"
@@ -22,102 +24,60 @@ void ParseDamage(char *damage_str, uint8_t *dice_rolls,
 MonsterProjectile ParseMissleAttackType(const char *missle_attack_str);
 MonsterSpecialAttack ParseSpecialAttack(const char *spec_att_str);
 
+struct MonsterSpellEntry {
+    SpellId spell;
+    int extraTokens; // Number of extra tokens to skip (for multi-word spell names like "Day of Protection").
+};
+
 //----- (004548E2) --------------------------------------------------------
 SpellId ParseSpellType(FrameTableTxtLine *tbl, int *next_token) {
+    static const std::map<std::string, MonsterSpellEntry, ascii::NoCaseLess> monsterSpellMap = {
+        {"Dispel", {SPELL_LIGHT_DISPEL_MAGIC, 1}},
+        {"Day", {SPELL_LIGHT_DAY_OF_PROTECTION, 2}},
+        {"Hour", {SPELL_LIGHT_HOUR_OF_POWER, 2}},
+        {"Shield", {SPELL_AIR_SHIELD, 0}},
+        {"Spirit", {SPELL_SPIRIT_SPIRIT_LASH, 1}},
+        {"Power", {SPELL_BODY_POWER_CURE, 1}},
+        {"Meteor", {SPELL_FIRE_METEOR_SHOWER, 1}},
+        {"Lightning", {SPELL_AIR_LIGHTNING_BOLT, 1}},
+        {"Implosion", {SPELL_AIR_IMPLOSION, 0}},
+        {"Stone", {SPELL_EARTH_STONESKIN, 1}},
+        {"Haste", {SPELL_FIRE_HASTE, 0}},
+        {"Heroism", {SPELL_SPIRIT_HEROISM, 0}},
+        {"Pain", {SPELL_DARK_PAIN_REFLECTION, 1}},
+        {"Sparks", {SPELL_AIR_SPARKS, 0}},
+        {"Light", {SPELL_LIGHT_LIGHT_BOLT, 1}},
+        {"Toxic", {SPELL_DARK_TOXIC_CLOUD, 1}},
+        {"ShrapMetal", {SPELL_DARK_SHARPMETAL, 0}},
+        {"Paralyze", {SPELL_LIGHT_PARALYZE, 0}},
+        {"Fireball", {SPELL_FIRE_FIREBALL, 0}},
+        {"Incinerate", {SPELL_FIRE_INCINERATE, 0}},
+        {"Fire", {SPELL_FIRE_FIRE_BOLT, 1}},
+        {"Rock", {SPELL_EARTH_ROCK_BLAST, 1}},
+        {"Mass", {SPELL_EARTH_MASS_DISTORTION, 1}},
+        {"Ice", {SPELL_WATER_ICE_BOLT, 1}},
+        {"Acid", {SPELL_WATER_ACID_BURST, 1}},
+        {"Bless", {SPELL_SPIRIT_BLESS, 0}},
+        {"Dragon", {SPELL_DARK_DRAGON_BREATH, 1}},
+        {"Reanimate", {SPELL_DARK_REANIMATE, 0}},
+        {"Summon", {SPELL_LIGHT_SUMMON_ELEMENTAL, 1}},
+        {"Fate", {SPELL_SPIRIT_FATE, 0}},
+        {"Harm", {SPELL_BODY_HARM, 0}},
+        {"Mind", {SPELL_MIND_MIND_BLAST, 1}},
+        {"Blades", {SPELL_EARTH_BLADES, 0}},
+        {"Psychic", {SPELL_MIND_PSYCHIC_SHOCK, 1}},
+        {"Hammerhands", {SPELL_BODY_HAMMERHANDS, 0}},
+    };
+
     if (!tbl->pProperties[0]) {
         ++*next_token;
         return SPELL_NONE;
     }
-    if (ascii::noCaseEquals(tbl->pProperties[0], "Dispel")) {  // dispel magic
-        ++*next_token;
-        return SPELL_LIGHT_DISPEL_MAGIC;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Day")) {  // day of protection
-        *next_token += 2;
-        return SPELL_LIGHT_DAY_OF_PROTECTION;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Hour")) {  // hour  of power
-        *next_token += 2;
-        return SPELL_LIGHT_HOUR_OF_POWER;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Shield")) {
-        return SPELL_AIR_SHIELD;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Spirit")) {
-        ++*next_token;
-        return SPELL_SPIRIT_SPIRIT_LASH;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Power")) {  // power cure
-        ++*next_token;
-        return SPELL_BODY_POWER_CURE;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Meteor")) {  // meteot shower
-        ++*next_token;
-        return SPELL_FIRE_METEOR_SHOWER;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Lightning")) {  // Lightning bolt
-        ++*next_token;
-        return SPELL_AIR_LIGHTNING_BOLT;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Implosion")) {
-        return SPELL_AIR_IMPLOSION;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Stone")) {
-        ++*next_token;
-        return SPELL_EARTH_STONESKIN;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Haste")) {
-        return SPELL_FIRE_HASTE;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Heroism")) {
-        return SPELL_SPIRIT_HEROISM;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Pain")) {  // pain reflection
-        ++*next_token;
-        return SPELL_DARK_PAIN_REFLECTION;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Sparks")) {
-        return SPELL_AIR_SPARKS;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Light")) {
-        ++*next_token;
-        return SPELL_LIGHT_LIGHT_BOLT;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Toxic")) {  // toxic cloud
-        ++*next_token;
-        return SPELL_DARK_TOXIC_CLOUD;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "ShrapMetal")) {
-        return SPELL_DARK_SHARPMETAL;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Paralyze")) {
-        return SPELL_LIGHT_PARALYZE;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Fireball")) {
-        return SPELL_FIRE_FIREBALL;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Incinerate")) {
-        return SPELL_FIRE_INCINERATE;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Fire")) {
-        ++*next_token;
-        return SPELL_FIRE_FIRE_BOLT;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Rock")) {
-        ++*next_token;
-        return SPELL_EARTH_ROCK_BLAST;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Mass")) {
-        ++*next_token;
-        return SPELL_EARTH_MASS_DISTORTION;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Ice")) {
-        ++*next_token;
-        return SPELL_WATER_ICE_BOLT;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Acid")) {
-        ++*next_token;
-        return SPELL_WATER_ACID_BURST;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Bless")) {
-        return SPELL_SPIRIT_BLESS;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Dragon")) {
-        ++*next_token;
-        return SPELL_DARK_DRAGON_BREATH;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Reanimate")) {
-        return SPELL_DARK_REANIMATE;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Summon")) {
-        ++*next_token;
-        return SPELL_LIGHT_SUMMON_ELEMENTAL;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Fate")) {
-        return SPELL_SPIRIT_FATE;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Harm")) {
-        return SPELL_BODY_HARM;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Mind")) {
-        ++*next_token;
-        return SPELL_MIND_MIND_BLAST;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Blades")) {
-        return SPELL_EARTH_BLADES;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Psychic")) {
-        ++*next_token;
-        return SPELL_MIND_PSYCHIC_SHOCK;
-    } else if (ascii::noCaseEquals(tbl->pProperties[0], "Hammerhands")) {
-        return SPELL_BODY_HAMMERHANDS;
+
+    auto it = monsterSpellMap.find(tbl->pProperties[0]);
+    if (it != monsterSpellMap.end()) {
+        *next_token += it->second.extraTokens;
+        return it->second.spell;
     } else {
         logger->warning("Unknown monster spell {}", tbl->pProperties[0]);
         ++*next_token;

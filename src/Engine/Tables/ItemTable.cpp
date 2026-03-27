@@ -42,50 +42,53 @@ static int svtoi(std::string_view s) {
 
 //----- (00456D84) --------------------------------------------------------
 void ItemTable::Initialize(ResourceManager *resourceManager) {
-    std::map<std::string, ItemType, ascii::NoCaseLess> equipStatMap; // TODO(captainurist): #enum use enum serialization
-    equipStatMap["weapon"] = ITEM_TYPE_SINGLE_HANDED;
-    equipStatMap["weapon2"] = ITEM_TYPE_TWO_HANDED;
-    equipStatMap["weapon1or2"] = ITEM_TYPE_SINGLE_HANDED;
-    equipStatMap["missile"] = ITEM_TYPE_BOW;
-    equipStatMap["bow"] = ITEM_TYPE_BOW;
-    equipStatMap["armor"] = ITEM_TYPE_ARMOUR;
-    equipStatMap["shield"] = ITEM_TYPE_SHIELD;
-    equipStatMap["helm"] = ITEM_TYPE_HELMET;
-    equipStatMap["belt"] = ITEM_TYPE_BELT;
-    equipStatMap["cloak"] = ITEM_TYPE_CLOAK;
-    equipStatMap["gauntlets"] = ITEM_TYPE_GAUNTLETS;
-    equipStatMap["boots"] = ITEM_TYPE_BOOTS;
-    equipStatMap["ring"] = ITEM_TYPE_RING;
-    equipStatMap["amulet"] = ITEM_TYPE_AMULET;
-    equipStatMap["weaponw"] = ITEM_TYPE_WAND;
-    equipStatMap["herb"] = ITEM_TYPE_REAGENT;
-    equipStatMap["reagent"] = ITEM_TYPE_REAGENT;
-    equipStatMap["bottle"] = ITEM_TYPE_POTION;
-    equipStatMap["sscroll"] = ITEM_TYPE_SPELL_SCROLL;
-    equipStatMap["book"] = ITEM_TYPE_BOOK;
-    equipStatMap["mscroll"] = ITEM_TYPE_MESSAGE_SCROLL;
-    equipStatMap["gold"] = ITEM_TYPE_GOLD;
-    equipStatMap["gem"] = ITEM_TYPE_GEM;
+    static const std::map<std::string, ItemType, ascii::NoCaseLess> equipStatMap = { // TODO(captainurist): #enum use enum serialization
+        {"weapon", ITEM_TYPE_SINGLE_HANDED},
+        {"weapon2", ITEM_TYPE_TWO_HANDED},
+        {"weapon1or2", ITEM_TYPE_SINGLE_HANDED},
+        {"missile", ITEM_TYPE_BOW},
+        {"bow", ITEM_TYPE_BOW},
+        {"armor", ITEM_TYPE_ARMOUR},
+        {"shield", ITEM_TYPE_SHIELD},
+        {"helm", ITEM_TYPE_HELMET},
+        {"belt", ITEM_TYPE_BELT},
+        {"cloak", ITEM_TYPE_CLOAK},
+        {"gauntlets", ITEM_TYPE_GAUNTLETS},
+        {"boots", ITEM_TYPE_BOOTS},
+        {"ring", ITEM_TYPE_RING},
+        {"amulet", ITEM_TYPE_AMULET},
+        {"weaponw", ITEM_TYPE_WAND},
+        {"herb", ITEM_TYPE_REAGENT},
+        {"reagent", ITEM_TYPE_REAGENT},
+        {"bottle", ITEM_TYPE_POTION},
+        {"sscroll", ITEM_TYPE_SPELL_SCROLL},
+        {"book", ITEM_TYPE_BOOK},
+        {"mscroll", ITEM_TYPE_MESSAGE_SCROLL},
+        {"gold", ITEM_TYPE_GOLD},
+        {"gem", ITEM_TYPE_GEM},
+    };
 
-    std::map<std::string, Skill, ascii::NoCaseLess> equipSkillMap;
-    equipSkillMap["staff"] = SKILL_STAFF;
-    equipSkillMap["sword"] = SKILL_SWORD;
-    equipSkillMap["dagger"] = SKILL_DAGGER;
-    equipSkillMap["axe"] = SKILL_AXE;
-    equipSkillMap["spear"] = SKILL_SPEAR;
-    equipSkillMap["bow"] = SKILL_BOW;
-    equipSkillMap["mace"] = SKILL_MACE;
-    equipSkillMap["blaster"] = SKILL_BLASTER;
-    equipSkillMap["shield"] = SKILL_SHIELD;
-    equipSkillMap["leather"] = SKILL_LEATHER;
-    equipSkillMap["chain"] = SKILL_CHAIN;
-    equipSkillMap["plate"] = SKILL_PLATE;
-    equipSkillMap["club"] = SKILL_CLUB;
+    static const std::map<std::string, Skill, ascii::NoCaseLess> equipSkillMap = {
+        {"staff", SKILL_STAFF},
+        {"sword", SKILL_SWORD},
+        {"dagger", SKILL_DAGGER},
+        {"axe", SKILL_AXE},
+        {"spear", SKILL_SPEAR},
+        {"bow", SKILL_BOW},
+        {"mace", SKILL_MACE},
+        {"blaster", SKILL_BLASTER},
+        {"shield", SKILL_SHIELD},
+        {"leather", SKILL_LEATHER},
+        {"chain", SKILL_CHAIN},
+        {"plate", SKILL_PLATE},
+        {"club", SKILL_CLUB},
+    };
 
-    std::map<std::string, ItemRarity, ascii::NoCaseLess> materialMap;
-    materialMap["artifact"] = RARITY_ARTIFACT;
-    materialMap["relic"] = RARITY_RELIC;
-    materialMap["special"] = RARITY_SPECIAL;
+    static const std::map<std::string, ItemRarity, ascii::NoCaseLess> materialMap = {
+        {"artifact", RARITY_ARTIFACT},
+        {"relic", RARITY_RELIC},
+        {"special", RARITY_SPECIAL},
+    };
 
     char *lineContent;
 
