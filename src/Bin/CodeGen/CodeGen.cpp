@@ -501,7 +501,7 @@ int runLstrCodegen(const CodeGenOptions &options, ResourceManager *resourceManag
 
     std::string txt = std::string(resourceManager->eventsData("global.txt").str());
 
-    std::vector<std::string_view> lines = split(txt).byCrLf();
+    std::vector<std::string_view> lines = split(txt).by("\r\n");
 
     std::vector<std::string_view> chunks;
     for (std::string_view line : std::views::drop(lines, 1)) {
