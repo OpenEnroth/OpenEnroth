@@ -192,7 +192,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
                 pSavegameList->pSavegameThumbnails[i] = nullptr;
             }
         } catch (const Exception &e) {
-            // swallow it - bad pcx thumbnail is fine
+            logger->debug("pSavegameList thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
             pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
 
