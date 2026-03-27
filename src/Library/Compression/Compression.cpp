@@ -58,11 +58,18 @@ Blob uncompress(const Blob &source, size_t sizeHint) {
 }
 
 Blob uncompressBestEffort(const Blob &source, size_t sizeHint) {
-    z_stream stream = {};
-    stream.next_in = const_cast<Bytef *>(static_cast<const Bytef *>(source.data()));
-    stream.avail_in = static_cast<uInt>(source.size());
+    // Use raw deflate mode (inflateInit2 with negative window bits) so we can skip the
+    // 2-byte zlib header and feed all remaining bytes directly as deflate input, without
+    // expecting or verifying a trailing Adler-32 checksum. This recovers data from entries
+    // where the zlib framing is corrupt or absent but the deflate content itself is valid.
+    if (source.size() < 2)
+        return Blob();
 
-    if (inflateInit(&stream) != Z_OK)
+    z_stream stream = {};
+    stream.next_in = const_cast<Bytef *>(static_cast<const Bytef *>(source.data())) + 2; // skip zlib header
+    stream.avail_in = static_cast<uInt>(source.size() - 2);
+
+    if (inflateInit2(&stream, -MAX_WBITS) != Z_OK)
         return Blob();
 
     size_t allocatedSize = sizeHint ? sizeHint : source.size() * 4;

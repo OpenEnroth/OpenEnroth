@@ -17,7 +17,7 @@ if(OE_BUILD_TESTS)
             Tests/SndReader_ut.cpp)
 
     add_library(test_library_snd OBJECT ${TEST_LIBRARY_SND_SOURCES})
-    target_link_libraries(test_library_snd PUBLIC testing_unit library_snd)
+    target_link_libraries(test_library_snd PUBLIC testing_unit library_snd library_compression)
 
     target_check_style(test_library_snd)
 
