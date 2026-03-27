@@ -2,21 +2,12 @@
 
 #include <cassert>
 #include <cstring> // For memchr, memcmp.
-#include <string>
-#include <type_traits>
 #include <algorithm> // For std::find.
-#include <vector>
-#include <ranges>
+#include <string>
+
+#include "Utility/View.h"
 
 namespace detail {
-template<class T>
-struct is_initializer_list : std::false_type {};
-
-template<class T>
-struct is_initializer_list<std::initializer_list<T>> : std::true_type {};
-
-template<class T>
-inline constexpr bool is_initializer_list_v = is_initializer_list<T>::value;
 
 class CharSplitter {
  public:
@@ -150,7 +141,7 @@ class SplitViewIterator {
  * So here is our own implementation. More user-friendly, and more efficient.
  */
 template<class Splitter>
-class SplitView : public std::ranges::view_interface<SplitView<Splitter>> {
+class SplitView : public ViewInterface<SplitView<Splitter>> {
  public:
     SplitView() {
         // Construct an empty SplitView. Note that a SplitView with _begin == _end is non-empty.
@@ -159,55 +150,16 @@ class SplitView : public std::ranges::view_interface<SplitView<Splitter>> {
 
     SplitView(std::string_view s, Splitter splitter) : _splitter(splitter), _begin(s.data()), _end(s.data() + s.size()) {}
 
-    [[nodiscard]] auto begin() const {
+    [[nodiscard]] auto begin() {
         return SplitViewIterator<Splitter>(_begin, _end, _splitter);
     }
 
-    [[nodiscard]] auto end() const {
+    [[nodiscard]] auto end() {
         return SplitViewSentinel();
     }
 
     [[nodiscard]] std::string_view str() const {
         return std::string_view(_begin, _end);
-    }
-
-    template<class Container>
-    void to(Container *container) const {
-        // We can't use assign_range / insert_range / std::ranges::to here because:
-        // - assign_range / insert_range require implicit convertibility, and string_view -> string is explicit.
-        // - on top of that, std::ranges::to would enter infinite recursion through operator Container() below.
-        // So we use a manual loop with emplace_back / emplace.
-        container->clear();
-        for (std::string_view chunk : *this) {
-            if constexpr (requires { container->emplace_back(chunk); })
-                container->emplace_back(chunk);
-            else
-                container->emplace(chunk);
-        }
-    }
-
-    /**
-     * Converts this view to a container of string-like elements.
-     *
-     * This operator enables implicit conversion to various container types (e.g., `std::vector<std::string>`,
-     * `std::set<std::string_view>`) for convenient use in initialization and assignment contexts.
-     *
-     * The `initializer_list` exclusion in the requires clause is necessary to prevent ambiguous overload resolution
-     * when assigning to containers. Without it, `v = split(...)` would be ambiguous because `std::vector::operator=`
-     * has overloads for both `const vector&` and `initializer_list<value_type>`. Since `initializer_list<string_view>`
-     * technically satisfies the `Container::value_type::value_type == char` constraint, the compiler would consider
-     * both conversion paths and fail with an ambiguity error.
-     *
-     * @tparam Container                    Target container type. Must hold string-like elements.
-     * @return                              Container populated with the string chunks from this view.
-     */
-    template<class Container> requires
-        std::is_same_v<std::remove_cv_t<typename Container::value_type::value_type>, char> &&
-        (!is_initializer_list_v<Container>)
-    operator Container() const {
-        Container result;
-        to(&result);
-        return result;
     }
 
  private:
@@ -247,7 +199,7 @@ inline constexpr bool std::ranges::enable_borrowed_range<detail::SplitView<Split
  * - `split(s).by("\\r\\n")` - split by a multi-character separator.
  *
  * Splitting a string doesn't discard empty chunks, so the resulting range will never be empty. Splitting an empty
- * string will produce a single empty chunk.
+ * string will produce a single empty chunk. Use `skipEmpty()` to filter out empty chunks.
  *
  * If you need to store a result in a container there are two options:
  * - `split(s).by(';').to(&vector)` - reuses preallocated vector.

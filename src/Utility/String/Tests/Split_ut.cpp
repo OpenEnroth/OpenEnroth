@@ -189,3 +189,9 @@ UNIT_TEST(StringSplit, StringSeparator) {
     split("a<=b<=>c").by("<=>").to(&v);
     EXPECT_EQ(v, std::vector<std::string_view>({"a<=b", "c"}));
 }
+
+UNIT_TEST(StringSplit, ViewInterfaceMethods) {
+    std::vector<std::string_view> r;
+    split("header;a;b;c").by(';').drop(1).to(&r);
+    EXPECT_EQ(r, std::vector<std::string_view>({"a", "b", "c"}));
+}

@@ -30,6 +30,7 @@ set(UTILITY_HEADERS
         Memory/Blob.h
         Memory/FreeDeleter.h
         Memory/MemSet.h
+        View.h
         ScopeGuard.h
         Segment.h
         Streams/BlobInputStream.h
@@ -78,6 +79,7 @@ if(OE_BUILD_TESTS)
             Streams/Tests/InputStream_ut.cpp
             Tests/IndexedArray_ut.cpp
             Tests/IndexedBitset_ut.cpp
+            Tests/View_ut.cpp
             Tests/Segment_ut.cpp
             Tests/UnicodeCrt_ut.cpp
             String/Tests/Transformations_ut.cpp
