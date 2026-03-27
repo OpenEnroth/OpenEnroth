@@ -124,6 +124,20 @@ UNIT_TEST(StringSplit, AssignToVector) {
     EXPECT_EQ(v, std::vector<std::string_view>({"x", "y"}));
 }
 
+UNIT_TEST(StringSplit, SplitToStringVector) {
+    // Test that to() works with std::vector<std::string> (explicit string_view -> string conversion).
+    std::vector<std::string> v;
+
+    split("aa;bb;cc").by(';').to(&v);
+    EXPECT_EQ(v, std::vector<std::string>({"aa", "bb", "cc"}));
+
+    split("ABC").by(';').to(&v);
+    EXPECT_EQ(v, std::vector<std::string>({"ABC"}));
+
+    split("").by(';').to(&v);
+    EXPECT_EQ(v, std::vector<std::string>({""}));
+}
+
 UNIT_TEST(StringSplit, StringSeparator) {
     std::vector<std::string_view> v;
 

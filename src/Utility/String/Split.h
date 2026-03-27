@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <cstring> // For memchr, memcmp.
-#include <utility> // For std::forward.
 #include <string>
 #include <type_traits>
 #include <algorithm> // For std::find.
@@ -172,12 +171,19 @@ class SplitView : public std::ranges::view_interface<SplitView<Splitter>> {
         return std::string_view(_begin, _end);
     }
 
-    // TODO(captainurist): #cpp23 this can go once we switch over to gcc-15, just use assign_range
     template<class Container>
     void to(Container *container) const {
+        // We can't use assign_range / insert_range / std::ranges::to here because:
+        // - assign_range / insert_range require implicit convertibility, and string_view -> string is explicit.
+        // - on top of that, std::ranges::to would enter infinite recursion through operator Container() below.
+        // So we use a manual loop with emplace_back / emplace.
         container->clear();
-        for (std::string_view s : *this)
-            container->emplace_back(s);
+        for (std::string_view chunk : *this) {
+            if constexpr (requires { container->emplace_back(chunk); })
+                container->emplace_back(chunk);
+            else
+                container->emplace(chunk);
+        }
     }
 
     /**
@@ -199,24 +205,8 @@ class SplitView : public std::ranges::view_interface<SplitView<Splitter>> {
         std::is_same_v<std::remove_cv_t<typename Container::value_type::value_type>, char> &&
         (!is_initializer_list_v<Container>)
     operator Container() const {
-        // Shamelessly stolen from std::ranges::to implementation. Our code works for std::set too, and
-        // std::ranges::to in gcc-14 doesn't (it routes through emplace(iterator, args) which doesn't exist
-        // for associative containers). This is fixed in gcc-15 via assign_range. See LWG4016.
-        auto insert = []<class Element>(auto &container, Element &&element) {
-            if constexpr (requires { container.emplace_back(std::forward<Element>(element)); }) {
-                container.emplace_back(std::forward<Element>(element));
-            } else if constexpr (requires { container.push_back(std::forward<Element>(element)); }) {
-                container.push_back(std::forward<Element>(element));
-            } else if constexpr (requires { container.emplace(std::forward<Element>(element)); }) {
-                container.emplace(std::forward<Element>(element));
-            } else {
-                container.insert(std::forward<Element>(element));
-            }
-        }; // NOLINT
-
         Container result;
-        for (std::string_view chunk : *this)
-            insert(result, chunk);
+        to(&result);
         return result;
     }
 
