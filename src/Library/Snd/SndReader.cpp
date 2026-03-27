@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Library/Compression/Compression.h"
+#include "Library/Logger/Logger.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/Streams/BlobInputStream.h"
@@ -77,8 +78,14 @@ Blob SndReader::read(std::string_view filename) const {
 
     Blob result = _snd.subBlob(entry.offset, entry.size);
     std::string path = fmt::format("{}/{}", _snd.displayPath(), filename);
-    if (entry.decompressedSize && entry.decompressedSize != entry.size)
-        result = zlib::uncompress(result.withDisplayPath(path), entry.decompressedSize); // TODO(captainurist): handle decompression errors at SndReader level.
+    if (entry.decompressedSize && entry.decompressedSize != entry.size) {
+        try {
+            result = zlib::uncompress(result.withDisplayPath(path), entry.decompressedSize);
+        } catch (const Exception &e) {
+            logger->warning("SndReader: failed to decompress '{}', skipping: {}", path, e.what());
+            return Blob();
+        }
+    }
     return result.withDisplayPath(path);
 }
 
