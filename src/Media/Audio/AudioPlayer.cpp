@@ -24,8 +24,6 @@
 
 #include "Library/Logger/Logger.h"
 
-#include "Utility/Exception.h"
-
 #include "SoundList.h"
 #include "OpenALTrack16.h"
 #include "OpenALSample16.h"
@@ -473,12 +471,7 @@ Blob AudioPlayer::LoadSound(std::string_view pSoundName) {
         return Blob();
     }
 
-    try {
-        return _sndReader.read(pSoundName);
-    } catch (const Exception &e) {
-        logger->warning("AudioPlayer: failed to decompress sound '{}': {}", pSoundName, e.what());
-        return Blob();
-    }
+    return _sndReader.read(pSoundName);
 }
 
 void AudioPlayer::playSpellSound(SpellId spell, bool is_impact, SoundPlaybackMode mode, Pid pid) {

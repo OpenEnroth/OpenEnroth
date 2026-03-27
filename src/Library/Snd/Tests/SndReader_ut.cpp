@@ -1,9 +1,13 @@
 #include <string>
+#include <utility>
 
 #include "Utility/String/Format.h"
 
 #include "Testing/Unit/UnitTest.h"
 
+#include "Library/Compression/Compression.h"
+#include "Library/Logger/BufferLogSink.h"
+#include "Library/Logger/Logger.h"
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Snd/SndReader.h"
 #include "Library/Snd/SndSnapshots.h"
@@ -96,6 +100,46 @@ UNIT_TEST(SndDetect, GarbageDecompressedSize) {
     stream.write(std::string(100, '\0'));
     stream.close();
     EXPECT_FALSE(snd::detect(result));
+}
+
+static Blob makeSndBlobWithCorruptCompressedEntry(std::string_view content) {
+    // Compress content, then corrupt the Adler-32 checksum.
+    Blob compressed = zlib::compress(Blob::fromString(std::string(content)));
+    auto *bytes = static_cast<uint8_t *>(const_cast<void *>(compressed.data()));
+    bytes[compressed.size() - 1] ^= 0xFF;
+    bytes[compressed.size() - 2] ^= 0xFF;
+
+    size_t headerSize = 4 + sizeof(SndEntry_MM7);
+    Blob result;
+    BlobOutputStream stream(&result);
+
+    serialize(uint32_t(1), &stream);
+
+    SndEntry_MM7 entry = {};
+    snapshot(std::string("corrupt.wav"), &entry.name);
+    entry.offset = headerSize;
+    entry.size = compressed.size();
+    entry.decompressedSize = content.size(); // deliberately wrong checksum in payload
+    serialize(entry, &stream);
+
+    stream.write(compressed);
+    stream.close();
+    return result;
+}
+
+UNIT_TEST(SndReader, CorruptChecksumReturnsPartialData) {
+    // SND entries with a corrupt zlib checksum should return recovered data, not an empty blob.
+    // This mirrors the real-world case of 02Flame01.wav in the GOG version of MM7.
+    BufferLogSink sink;
+    Logger testLogger(LOG_TRACE, &sink);
+
+    std::string original(1000, 'B');
+    Blob snd = makeSndBlobWithCorruptCompressedEntry(original);
+
+    SndReader reader(std::move(snd));
+    Blob result = reader.read("corrupt.wav");
+    ASSERT_EQ(result.size(), original.size());
+    EXPECT_EQ(std::string_view(static_cast<const char *>(result.data()), result.size()), original);
 }
 
 UNIT_TEST(SndDetect, OffsetPastEnd) {

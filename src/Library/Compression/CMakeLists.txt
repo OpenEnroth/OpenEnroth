@@ -13,3 +13,15 @@ target_link_libraries(library_compression
         utility
         PRIVATE
         ZLIB::ZLIB)
+
+if(OE_BUILD_TESTS)
+    set(TEST_LIBRARY_COMPRESSION_SOURCES
+            Tests/Compression_ut.cpp)
+
+    add_library(test_library_compression OBJECT ${TEST_LIBRARY_COMPRESSION_SOURCES})
+    target_link_libraries(test_library_compression PUBLIC testing_unit library_compression)
+
+    target_check_style(test_library_compression)
+
+    target_link_libraries(OpenEnroth_UnitTest PUBLIC test_library_compression)
+endif()
