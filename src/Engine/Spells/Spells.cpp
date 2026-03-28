@@ -481,17 +481,18 @@ bool SpellBuff::Apply(Time expire_time, Mastery uSkillMastery,
 }
 
 void SpellStats::Initialize(const Blob &spells) {
-    std::map<std::string, DamageType, ascii::NoCaseLess> spellSchoolMaps; // TODO(captainurist): #enum, use enum serialization
-    spellSchoolMaps["fire"] = DAMAGE_FIRE;
-    spellSchoolMaps["air"] = DAMAGE_AIR;
-    spellSchoolMaps["water"] = DAMAGE_WATER;
-    spellSchoolMaps["earth"] = DAMAGE_EARTH;
-    spellSchoolMaps["spirit"] = DAMAGE_SPIRIT;
-    spellSchoolMaps["mind"] = DAMAGE_MIND;
-    spellSchoolMaps["body"] = DAMAGE_BODY;
-    spellSchoolMaps["light"] = DAMAGE_LIGHT;
-    spellSchoolMaps["dark"] = DAMAGE_DARK;
-    spellSchoolMaps["magic"] = DAMAGE_MAGIC;
+    static const std::map<std::string, DamageType, ascii::NoCaseLess> spellSchoolMaps = { // TODO(captainurist): #enum, use enum serialization
+        {"fire", DAMAGE_FIRE},
+        {"air", DAMAGE_AIR},
+        {"water", DAMAGE_WATER},
+        {"earth", DAMAGE_EARTH},
+        {"spirit", DAMAGE_SPIRIT},
+        {"mind", DAMAGE_MIND},
+        {"body", DAMAGE_BODY},
+        {"light", DAMAGE_LIGHT},
+        {"dark", DAMAGE_DARK},
+        {"magic", DAMAGE_MAGIC},
+    };
 
     char *test_string;
 
