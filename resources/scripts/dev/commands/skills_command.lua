@@ -50,25 +50,13 @@ local function getSkills()
     return message, true
 end
 
----@param skills table<SkillType, SkillEntry>
----@param skillId SkillType
----@return SkillMastery
-local function getSkillMastery(skills, skillId)
-    for _, skill in pairs(skills) do
-        if skill.id == skillId then
-            return skill.mastery
-        end
-    end
-    return Game.SkillMastery.None
-end
-
 local function learnAllSkills()
     local count = Game.party.getPartySize()
     for charIndex = 1, count do
         local info = Game.party.getCharacterInfo(charIndex, { "skills", "class" })
         for _, skillType in pairs(Game.SkillType) do
             if Game.misc.canClassLearn(info.class, skillType) then
-                if getSkillMastery(info.skills, skillType) == Game.SkillMastery.None then
+                if not info.skills[skillType] then
                     Game.party.setCharacterInfo(charIndex, {
                         skill = { id = skillType, mastery = Game.SkillMastery.Novice, level = 1 }
                     })

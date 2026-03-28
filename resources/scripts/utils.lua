@@ -140,12 +140,6 @@ end
 ---@return any
 function stringToEnum(enumTable, valueStr)
     ---@cast enumTable table<string, any>
-    for k, v in pairs(enumTable) do
-        if k == valueStr then
-            return v
-        end
-    end
-
     local lowerStr = string.lower(valueStr)
     for k, v in pairs(enumTable) do
         if string.lower(k) == lowerStr then
