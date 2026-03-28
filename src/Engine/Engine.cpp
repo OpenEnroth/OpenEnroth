@@ -370,7 +370,7 @@ bool Engine::draw_debug_outlines() {
 
     if (engine->config->debug.ActorCollision.value()) {
         for (const Actor &actor : pActors) {
-            if (actor.aiState == Removed || actor.aiState == Disabled || actor.aiState == Summoned || actor.aiState == Dead)
+            if (actor.aiState == Removed || actor.aiState == Disabled || actor.aiState == Summoned || actor.aiState == Dead || actor.aiState == Dying)
                 continue;
             Color col = actor.monsterInfo.flying ? colorTable.Yellow : colorTable.NeonGreen;
             drawDebugCylinder(actor.pos, actor.radius, actor.height, col);
