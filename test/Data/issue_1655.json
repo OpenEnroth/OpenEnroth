@@ -1,0 +1,2072 @@
+{
+    "header": {
+        "afterLoadRandomState": 1,
+        "config": [
+            {
+                "key": "all_magic",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "no_damage",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_frame_time_ms",
+                "section": "debug",
+                "value": "100"
+            },
+            {
+                "key": "trace_no_party_actor_collisions",
+                "section": "debug",
+                "value": "false"
+            },
+            {
+                "key": "trace_no_video",
+                "section": "debug",
+                "value": "true"
+            },
+            {
+                "key": "trace_random_engine",
+                "section": "debug",
+                "value": "sequential"
+            }
+        ],
+        "endState": {
+            "characters": [
+                {
+                    "accuracy": 24,
+                    "backpack": [
+                        "Journal Fragment",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Phylt-laced ore",
+                        "Stone to Flesh",
+                        "Dispel Magic",
+                        "Abbey Normal Golem Head",
+                        "Arcomage Deck",
+                        "Letter to Hairbaugh",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Phylt-laced ore",
+                        "Medusa's Mirror",
+                        "Letter",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Siertal-laced ore",
+                        "Phylt-laced ore",
+                        "Faerie Key",
+                        "Wealthy Hat",
+                        "Angel Statue Painting",
+                        "Remains of a Journal",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Siertal-laced ore",
+                        "Phylt-laced ore",
+                        "Fragment of Soldier's Diary",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Journal Entry, 2nd January",
+                        "Journal Entry, 11th December",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Horseshoe",
+                        "Bill of Sale",
+                        "Genie Lamp",
+                        "Journal Entry",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Genie Lamp",
+                        "Letter from Mr. Stantley",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Genie Lamp",
+                        "Letter from Gavin Magnus",
+                        "Orders from Steadwick",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Iron-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Letter from Mr. Stantley"
+                    ],
+                    "endurance": 20,
+                    "equipment": [
+                        "Charele",
+                        "Griffin Bow of Acid",
+                        "Resplendent Chain Mail of Mind Resistance [+7]",
+                        "Phynaxian Helm",
+                        "Leather Belt of The Moon",
+                        "Huntsman's Cloak of Thought [+2]",
+                        "Silver Mesh Gauntlets of Disarming [+6]",
+                        "Knight's Boots of Speed [+21]",
+                        "Bronze Amulet of Precision [+8]",
+                        "Faerie Ring",
+                        "Pearl Ring of Disarming [+2]"
+                    ],
+                    "hp": 60,
+                    "intelligence": 44,
+                    "luck": 33,
+                    "might": 71,
+                    "mp": 35,
+                    "personality": 9,
+                    "speed": 38
+                },
+                {
+                    "accuracy": 15,
+                    "backpack": [
+                        "Temple in a Bottle"
+                    ],
+                    "endurance": 18,
+                    "equipment": [
+                        "Alloyed Shield of Earth Resistance [+7]",
+                        "Supreme Flail",
+                        "Griffin Bow",
+                        "Noble Plate Armor",
+                        "Phynaxian Helm of Arms [+2]",
+                        "Leather Cloak of Might [+6]",
+                        "Gauntlets of Might [+12]",
+                        "Steel Plated Boots of Defense [+5]",
+                        "Eyeball Amulet of Luck [+3]"
+                    ],
+                    "hp": 86,
+                    "intelligence": 11,
+                    "luck": 26,
+                    "might": 82,
+                    "mp": 67,
+                    "personality": 20,
+                    "speed": 19
+                },
+                {
+                    "accuracy": 17,
+                    "backpack": [],
+                    "endurance": 25,
+                    "equipment": [
+                        "Phynaxian Shield of Defense [+23]",
+                        "Supreme Flail",
+                        "Griffin Bow",
+                        "Resplendent Chain Mail of Health [+7]",
+                        "Full Helm",
+                        "Fine Belt of Thought [+5]",
+                        "Glorious Cloak of Vigor [+7]",
+                        "Mogred Gauntlets",
+                        "Knight's Boots",
+                        "Eyeball Amulet of Charm [+5]",
+                        "Brass Ring of Charm [+5]",
+                        "Pearl Ring of Magic [+4]"
+                    ],
+                    "hp": 37,
+                    "intelligence": 16,
+                    "luck": 23,
+                    "might": 70,
+                    "mp": 115,
+                    "personality": 30,
+                    "speed": 17
+                },
+                {
+                    "accuracy": 14,
+                    "backpack": [
+                        "Remove Fear Potion [7]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [15]",
+                        "Cure Wounds Potion [17]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [17]",
+                        "Cure Insanity Potion [15]",
+                        "Cure Wounds Potion [6]",
+                        "Shield Potion [10]",
+                        "Catalyst Potion [11]",
+                        "Cure Poison Potion [8]",
+                        "Harpy Feather",
+                        "Bless Potion [12]",
+                        "Heroism Potion [14]",
+                        "Cure Wounds Potion [5]",
+                        "Cure Weakness Potion [9]",
+                        "Cure Weakness Potion [9]",
+                        "Cure Wounds Potion [11]",
+                        "Catalyst Potion [11]",
+                        "Catalyst Potion [11]",
+                        "Bless Potion [24]",
+                        "Cure Wounds Potion [12]",
+                        "Potion Bottle",
+                        "Harden Item Potion [9]",
+                        "Cure Wounds Potion [14]",
+                        "Poppysnaps",
+                        "Stone to Flesh Potion [9]",
+                        "Cure Paralysis Potion [17]",
+                        "Cure Paralysis Potion [13]",
+                        "Cure Wounds Potion [18]",
+                        "Magic Potion [6]",
+                        "Haste Potion [10]",
+                        "Stoneskin Potion [8]",
+                        "Preservation Potion [11]",
+                        "Recharge Item Potion [9]",
+                        "Remove Curse Potion [5]",
+                        "Cure Wounds Potion [10]",
+                        "Remove Curse Potion [11]",
+                        "Cure Insanity Potion [7]",
+                        "Sulfur",
+                        "Meteorite Fragment",
+                        "Vial of Ooze Endoplasm",
+                        "Elvish Toadstool",
+                        "Vial of Troll Blood",
+                        "Potion Bottle",
+                        "Cure Disease Potion [12]",
+                        "Cure Weakness Potion [9]",
+                        "Remove Curse Potion [8]",
+                        "Cure Disease Potion [14]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [19]",
+                        "Remove Curse Potion [9]",
+                        "Remove Curse Potion [5]",
+                        "Water Breathing Potion [6]",
+                        "Meteorite Fragment",
+                        "Vial of Troll Blood",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Elvish Toadstool",
+                        "Widowsweep Berries",
+                        "Poppysnaps",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Dragon's Eye",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 26,
+                    "equipment": [
+                        "Iron Core Staff Of David",
+                        "Griffin Bow",
+                        "Royal Leather of Magic [+23]",
+                        "Mogred Helm",
+                        "Leather Belt of Items [+4]",
+                        "Glorious Cloak of Monsters [+22]",
+                        "Mogred Gauntlets of Earth Resistance [+22]",
+                        "Steel Plated Boots of Magic [+8]",
+                        "Eyeball Amulet of Vigor [+4]",
+                        "Pearl Ring of Luck [+5]",
+                        "Brass Ring of Defense [+5]",
+                        "Pearl Ring of Vigor [+4]",
+                        "Pearl Ring of Monsters [+2]",
+                        "Brass Ring of Items [+5]"
+                    ],
+                    "hp": 49,
+                    "intelligence": 36,
+                    "luck": 28,
+                    "might": 67,
+                    "mp": 147,
+                    "personality": 9,
+                    "speed": 17
+                }
+            ],
+            "locationName": "nwc.blv",
+            "partyPosition": {
+                "x": -348,
+                "y": -1015,
+                "z": 1
+            }
+        },
+        "saveFileSize": 572410,
+        "startState": {
+            "characters": [
+                {
+                    "accuracy": 24,
+                    "backpack": [
+                        "Journal Fragment",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Phylt-laced ore",
+                        "Stone to Flesh",
+                        "Dispel Magic",
+                        "Abbey Normal Golem Head",
+                        "Arcomage Deck",
+                        "Letter to Hairbaugh",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Phylt-laced ore",
+                        "Medusa's Mirror",
+                        "Letter",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Siertal-laced ore",
+                        "Phylt-laced ore",
+                        "Faerie Key",
+                        "Wealthy Hat",
+                        "Angel Statue Painting",
+                        "Remains of a Journal",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Siertal-laced ore",
+                        "Phylt-laced ore",
+                        "Fragment of Soldier's Diary",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Phylt-laced ore",
+                        "Journal Entry, 2nd January",
+                        "Journal Entry, 11th December",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Horseshoe",
+                        "Bill of Sale",
+                        "Genie Lamp",
+                        "Journal Entry",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Genie Lamp",
+                        "Letter from Mr. Stantley",
+                        "Red Apple",
+                        "Red Apple",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Erudine-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Genie Lamp",
+                        "Letter from Gavin Magnus",
+                        "Orders from Steadwick",
+                        "Kergar-laced ore",
+                        "Kergar-laced ore",
+                        "Iron-laced ore",
+                        "Iron-laced ore",
+                        "Genie Lamp",
+                        "Letter from Mr. Stantley"
+                    ],
+                    "endurance": 20,
+                    "equipment": [
+                        "Charele",
+                        "Griffin Bow of Acid",
+                        "Resplendent Chain Mail of Mind Resistance [+7]",
+                        "Phynaxian Helm",
+                        "Leather Belt of The Moon",
+                        "Huntsman's Cloak of Thought [+2]",
+                        "Silver Mesh Gauntlets of Disarming [+6]",
+                        "Knight's Boots of Speed [+21]",
+                        "Bronze Amulet of Precision [+8]",
+                        "Faerie Ring",
+                        "Pearl Ring of Disarming [+2]"
+                    ],
+                    "hp": 60,
+                    "intelligence": 44,
+                    "luck": 33,
+                    "might": 71,
+                    "mp": 35,
+                    "personality": 9,
+                    "speed": 38
+                },
+                {
+                    "accuracy": 15,
+                    "backpack": [
+                        "Temple in a Bottle"
+                    ],
+                    "endurance": 18,
+                    "equipment": [
+                        "Alloyed Shield of Earth Resistance [+7]",
+                        "Supreme Flail",
+                        "Griffin Bow",
+                        "Noble Plate Armor",
+                        "Phynaxian Helm of Arms [+2]",
+                        "Leather Cloak of Might [+6]",
+                        "Gauntlets of Might [+12]",
+                        "Steel Plated Boots of Defense [+5]",
+                        "Eyeball Amulet of Luck [+3]"
+                    ],
+                    "hp": 86,
+                    "intelligence": 11,
+                    "luck": 26,
+                    "might": 82,
+                    "mp": 67,
+                    "personality": 20,
+                    "speed": 19
+                },
+                {
+                    "accuracy": 17,
+                    "backpack": [],
+                    "endurance": 25,
+                    "equipment": [
+                        "Phynaxian Shield of Defense [+23]",
+                        "Supreme Flail",
+                        "Griffin Bow",
+                        "Resplendent Chain Mail of Health [+7]",
+                        "Full Helm",
+                        "Fine Belt of Thought [+5]",
+                        "Glorious Cloak of Vigor [+7]",
+                        "Mogred Gauntlets",
+                        "Knight's Boots",
+                        "Eyeball Amulet of Charm [+5]",
+                        "Brass Ring of Charm [+5]",
+                        "Pearl Ring of Magic [+4]"
+                    ],
+                    "hp": 37,
+                    "intelligence": 16,
+                    "luck": 23,
+                    "might": 70,
+                    "mp": 115,
+                    "personality": 30,
+                    "speed": 17
+                },
+                {
+                    "accuracy": 14,
+                    "backpack": [
+                        "Remove Fear Potion [7]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [15]",
+                        "Cure Wounds Potion [17]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [17]",
+                        "Cure Insanity Potion [15]",
+                        "Cure Wounds Potion [6]",
+                        "Shield Potion [10]",
+                        "Catalyst Potion [11]",
+                        "Cure Poison Potion [8]",
+                        "Harpy Feather",
+                        "Bless Potion [12]",
+                        "Heroism Potion [14]",
+                        "Cure Wounds Potion [5]",
+                        "Cure Weakness Potion [9]",
+                        "Cure Weakness Potion [9]",
+                        "Cure Wounds Potion [11]",
+                        "Catalyst Potion [11]",
+                        "Catalyst Potion [11]",
+                        "Bless Potion [24]",
+                        "Cure Wounds Potion [12]",
+                        "Potion Bottle",
+                        "Harden Item Potion [9]",
+                        "Cure Wounds Potion [14]",
+                        "Poppysnaps",
+                        "Stone to Flesh Potion [9]",
+                        "Cure Paralysis Potion [17]",
+                        "Cure Paralysis Potion [13]",
+                        "Cure Wounds Potion [18]",
+                        "Magic Potion [6]",
+                        "Haste Potion [10]",
+                        "Stoneskin Potion [8]",
+                        "Preservation Potion [11]",
+                        "Recharge Item Potion [9]",
+                        "Remove Curse Potion [5]",
+                        "Cure Wounds Potion [10]",
+                        "Remove Curse Potion [11]",
+                        "Cure Insanity Potion [7]",
+                        "Sulfur",
+                        "Meteorite Fragment",
+                        "Vial of Ooze Endoplasm",
+                        "Elvish Toadstool",
+                        "Vial of Troll Blood",
+                        "Potion Bottle",
+                        "Cure Disease Potion [12]",
+                        "Cure Weakness Potion [9]",
+                        "Remove Curse Potion [8]",
+                        "Cure Disease Potion [14]",
+                        "Potion Bottle",
+                        "Cure Wounds Potion [19]",
+                        "Remove Curse Potion [9]",
+                        "Remove Curse Potion [5]",
+                        "Water Breathing Potion [6]",
+                        "Meteorite Fragment",
+                        "Vial of Troll Blood",
+                        "Meteorite Fragment",
+                        "Crushed Rose Petals",
+                        "Crushed Rose Petals",
+                        "Elvish Toadstool",
+                        "Widowsweep Berries",
+                        "Poppysnaps",
+                        "Meteorite Fragment",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Crushed Rose Petals",
+                        "Meteorite Fragment",
+                        "Obsidian",
+                        "Dragon's Eye",
+                        "Crushed Rose Petals"
+                    ],
+                    "endurance": 26,
+                    "equipment": [
+                        "Iron Core Staff Of David",
+                        "Griffin Bow",
+                        "Royal Leather of Magic [+23]",
+                        "Mogred Helm",
+                        "Leather Belt of Items [+4]",
+                        "Glorious Cloak of Monsters [+22]",
+                        "Mogred Gauntlets of Earth Resistance [+22]",
+                        "Steel Plated Boots of Magic [+8]",
+                        "Eyeball Amulet of Vigor [+4]",
+                        "Pearl Ring of Luck [+5]",
+                        "Brass Ring of Defense [+5]",
+                        "Pearl Ring of Vigor [+4]",
+                        "Pearl Ring of Monsters [+2]",
+                        "Brass Ring of Items [+5]"
+                    ],
+                    "hp": 49,
+                    "intelligence": 36,
+                    "luck": 28,
+                    "might": 67,
+                    "mp": 147,
+                    "personality": 9,
+                    "speed": 17
+                }
+            ],
+            "locationName": "nwc.blv",
+            "partyPosition": {
+                "x": -348,
+                "y": -1015,
+                "z": 1
+            }
+        }
+    },
+    "trace": [
+        {
+            "randomState": 1,
+            "tickCount": 100,
+            "type": "paint"
+        },
+        {
+            "randomState": 10,
+            "tickCount": 200,
+            "type": "paint"
+        },
+        {
+            "randomState": 13,
+            "tickCount": 300,
+            "type": "paint"
+        },
+        {
+            "randomState": 23,
+            "tickCount": 400,
+            "type": "paint"
+        },
+        {
+            "randomState": 31,
+            "tickCount": 500,
+            "type": "paint"
+        },
+        {
+            "randomState": 38,
+            "tickCount": 600,
+            "type": "paint"
+        },
+        {
+            "randomState": 47,
+            "tickCount": 700,
+            "type": "paint"
+        },
+        {
+            "randomState": 49,
+            "tickCount": 800,
+            "type": "paint"
+        },
+        {
+            "randomState": 51,
+            "tickCount": 900,
+            "type": "paint"
+        },
+        {
+            "randomState": 62,
+            "tickCount": 1000,
+            "type": "paint"
+        },
+        {
+            "randomState": 66,
+            "tickCount": 1100,
+            "type": "paint"
+        },
+        {
+            "randomState": 70,
+            "tickCount": 1200,
+            "type": "paint"
+        },
+        {
+            "randomState": 75,
+            "tickCount": 1300,
+            "type": "paint"
+        },
+        {
+            "randomState": 77,
+            "tickCount": 1400,
+            "type": "paint"
+        },
+        {
+            "randomState": 84,
+            "tickCount": 1500,
+            "type": "paint"
+        },
+        {
+            "randomState": 86,
+            "tickCount": 1600,
+            "type": "paint"
+        },
+        {
+            "randomState": 104,
+            "tickCount": 1700,
+            "type": "paint"
+        },
+        {
+            "randomState": 109,
+            "tickCount": 1800,
+            "type": "paint"
+        },
+        {
+            "randomState": 120,
+            "tickCount": 1900,
+            "type": "paint"
+        },
+        {
+            "randomState": 127,
+            "tickCount": 2000,
+            "type": "paint"
+        },
+        {
+            "randomState": 128,
+            "tickCount": 2100,
+            "type": "paint"
+        },
+        {
+            "randomState": 132,
+            "tickCount": 2200,
+            "type": "paint"
+        },
+        {
+            "randomState": 138,
+            "tickCount": 2300,
+            "type": "paint"
+        },
+        {
+            "randomState": 145,
+            "tickCount": 2400,
+            "type": "paint"
+        },
+        {
+            "randomState": 149,
+            "tickCount": 2500,
+            "type": "paint"
+        },
+        {
+            "randomState": 153,
+            "tickCount": 2600,
+            "type": "paint"
+        },
+        {
+            "randomState": 169,
+            "tickCount": 2700,
+            "type": "paint"
+        },
+        {
+            "randomState": 174,
+            "tickCount": 2800,
+            "type": "paint"
+        },
+        {
+            "randomState": 176,
+            "tickCount": 2900,
+            "type": "paint"
+        },
+        {
+            "randomState": 189,
+            "tickCount": 3000,
+            "type": "paint"
+        },
+        {
+            "randomState": 193,
+            "tickCount": 3100,
+            "type": "paint"
+        },
+        {
+            "randomState": 202,
+            "tickCount": 3200,
+            "type": "paint"
+        },
+        {
+            "randomState": 210,
+            "tickCount": 3300,
+            "type": "paint"
+        },
+        {
+            "randomState": 212,
+            "tickCount": 3400,
+            "type": "paint"
+        },
+        {
+            "randomState": 216,
+            "tickCount": 3500,
+            "type": "paint"
+        },
+        {
+            "randomState": 220,
+            "tickCount": 3600,
+            "type": "paint"
+        },
+        {
+            "randomState": 236,
+            "tickCount": 3700,
+            "type": "paint"
+        },
+        {
+            "randomState": 240,
+            "tickCount": 3800,
+            "type": "paint"
+        },
+        {
+            "randomState": 249,
+            "tickCount": 3900,
+            "type": "paint"
+        },
+        {
+            "randomState": 256,
+            "tickCount": 4000,
+            "type": "paint"
+        },
+        {
+            "randomState": 260,
+            "tickCount": 4100,
+            "type": "paint"
+        },
+        {
+            "randomState": 263,
+            "tickCount": 4200,
+            "type": "paint"
+        },
+        {
+            "randomState": 271,
+            "tickCount": 4300,
+            "type": "paint"
+        },
+        {
+            "randomState": 277,
+            "tickCount": 4400,
+            "type": "paint"
+        },
+        {
+            "randomState": 283,
+            "tickCount": 4500,
+            "type": "paint"
+        },
+        {
+            "randomState": 286,
+            "tickCount": 4600,
+            "type": "paint"
+        },
+        {
+            "randomState": 291,
+            "tickCount": 4700,
+            "type": "paint"
+        },
+        {
+            "randomState": 299,
+            "tickCount": 4800,
+            "type": "paint"
+        },
+        {
+            "randomState": 303,
+            "tickCount": 4900,
+            "type": "paint"
+        },
+        {
+            "randomState": 314,
+            "tickCount": 5000,
+            "type": "paint"
+        },
+        {
+            "randomState": 318,
+            "tickCount": 5100,
+            "type": "paint"
+        },
+        {
+            "randomState": 324,
+            "tickCount": 5200,
+            "type": "paint"
+        },
+        {
+            "randomState": 331,
+            "tickCount": 5300,
+            "type": "paint"
+        },
+        {
+            "randomState": 334,
+            "tickCount": 5400,
+            "type": "paint"
+        },
+        {
+            "randomState": 337,
+            "tickCount": 5500,
+            "type": "paint"
+        },
+        {
+            "randomState": 344,
+            "tickCount": 5600,
+            "type": "paint"
+        },
+        {
+            "randomState": 361,
+            "tickCount": 5700,
+            "type": "paint"
+        },
+        {
+            "randomState": 365,
+            "tickCount": 5800,
+            "type": "paint"
+        },
+        {
+            "randomState": 369,
+            "tickCount": 5900,
+            "type": "paint"
+        },
+        {
+            "randomState": 373,
+            "tickCount": 6000,
+            "type": "paint"
+        },
+        {
+            "randomState": 378,
+            "tickCount": 6100,
+            "type": "paint"
+        },
+        {
+            "randomState": 383,
+            "tickCount": 6200,
+            "type": "paint"
+        },
+        {
+            "randomState": 391,
+            "tickCount": 6300,
+            "type": "paint"
+        },
+        {
+            "randomState": 396,
+            "tickCount": 6400,
+            "type": "paint"
+        },
+        {
+            "randomState": 405,
+            "tickCount": 6500,
+            "type": "paint"
+        },
+        {
+            "randomState": 408,
+            "tickCount": 6600,
+            "type": "paint"
+        },
+        {
+            "randomState": 422,
+            "tickCount": 6700,
+            "type": "paint"
+        },
+        {
+            "randomState": 426,
+            "tickCount": 6800,
+            "type": "paint"
+        },
+        {
+            "randomState": 432,
+            "tickCount": 6900,
+            "type": "paint"
+        },
+        {
+            "randomState": 439,
+            "tickCount": 7000,
+            "type": "paint"
+        },
+        {
+            "randomState": 443,
+            "tickCount": 7100,
+            "type": "paint"
+        },
+        {
+            "randomState": 448,
+            "tickCount": 7200,
+            "type": "paint"
+        },
+        {
+            "randomState": 453,
+            "tickCount": 7300,
+            "type": "paint"
+        },
+        {
+            "randomState": 457,
+            "tickCount": 7400,
+            "type": "paint"
+        },
+        {
+            "randomState": 461,
+            "tickCount": 7500,
+            "type": "paint"
+        },
+        {
+            "randomState": 468,
+            "tickCount": 7600,
+            "type": "paint"
+        },
+        {
+            "randomState": 486,
+            "tickCount": 7700,
+            "type": "paint"
+        },
+        {
+            "randomState": 495,
+            "tickCount": 7800,
+            "type": "paint"
+        },
+        {
+            "randomState": 499,
+            "tickCount": 7900,
+            "type": "paint"
+        },
+        {
+            "randomState": 505,
+            "tickCount": 8000,
+            "type": "paint"
+        },
+        {
+            "randomState": 509,
+            "tickCount": 8100,
+            "type": "paint"
+        },
+        {
+            "randomState": 515,
+            "tickCount": 8200,
+            "type": "paint"
+        },
+        {
+            "randomState": 521,
+            "tickCount": 8300,
+            "type": "paint"
+        },
+        {
+            "randomState": 526,
+            "tickCount": 8400,
+            "type": "paint"
+        },
+        {
+            "randomState": 532,
+            "tickCount": 8500,
+            "type": "paint"
+        },
+        {
+            "randomState": 536,
+            "tickCount": 8600,
+            "type": "paint"
+        },
+        {
+            "randomState": 549,
+            "tickCount": 8700,
+            "type": "paint"
+        },
+        {
+            "randomState": 553,
+            "tickCount": 8800,
+            "type": "paint"
+        },
+        {
+            "randomState": 560,
+            "tickCount": 8900,
+            "type": "paint"
+        },
+        {
+            "randomState": 568,
+            "tickCount": 9000,
+            "type": "paint"
+        },
+        {
+            "randomState": 573,
+            "tickCount": 9100,
+            "type": "paint"
+        },
+        {
+            "randomState": 579,
+            "tickCount": 9200,
+            "type": "paint"
+        },
+        {
+            "randomState": 584,
+            "tickCount": 9300,
+            "type": "paint"
+        },
+        {
+            "randomState": 587,
+            "tickCount": 9400,
+            "type": "paint"
+        },
+        {
+            "randomState": 592,
+            "tickCount": 9500,
+            "type": "paint"
+        },
+        {
+            "randomState": 598,
+            "tickCount": 9600,
+            "type": "paint"
+        },
+        {
+            "randomState": 607,
+            "tickCount": 9700,
+            "type": "paint"
+        },
+        {
+            "randomState": 617,
+            "tickCount": 9800,
+            "type": "paint"
+        },
+        {
+            "randomState": 621,
+            "tickCount": 9900,
+            "type": "paint"
+        },
+        {
+            "randomState": 626,
+            "tickCount": 10000,
+            "type": "paint"
+        },
+        {
+            "randomState": 630,
+            "tickCount": 10100,
+            "type": "paint"
+        },
+        {
+            "randomState": 636,
+            "tickCount": 10200,
+            "type": "paint"
+        },
+        {
+            "randomState": 643,
+            "tickCount": 10300,
+            "type": "paint"
+        },
+        {
+            "randomState": 647,
+            "tickCount": 10400,
+            "type": "paint"
+        },
+        {
+            "randomState": 652,
+            "tickCount": 10500,
+            "type": "paint"
+        },
+        {
+            "randomState": 658,
+            "tickCount": 10600,
+            "type": "paint"
+        },
+        {
+            "randomState": 664,
+            "tickCount": 10700,
+            "type": "paint"
+        },
+        {
+            "randomState": 668,
+            "tickCount": 10800,
+            "type": "paint"
+        },
+        {
+            "randomState": 674,
+            "tickCount": 10900,
+            "type": "paint"
+        },
+        {
+            "randomState": 681,
+            "tickCount": 11000,
+            "type": "paint"
+        },
+        {
+            "randomState": 687,
+            "tickCount": 11100,
+            "type": "paint"
+        },
+        {
+            "randomState": 694,
+            "tickCount": 11200,
+            "type": "paint"
+        },
+        {
+            "randomState": 697,
+            "tickCount": 11300,
+            "type": "paint"
+        },
+        {
+            "randomState": 702,
+            "tickCount": 11400,
+            "type": "paint"
+        },
+        {
+            "randomState": 710,
+            "tickCount": 11500,
+            "type": "paint"
+        },
+        {
+            "randomState": 716,
+            "tickCount": 11600,
+            "type": "paint"
+        },
+        {
+            "randomState": 726,
+            "tickCount": 11700,
+            "type": "paint"
+        },
+        {
+            "randomState": 732,
+            "tickCount": 11800,
+            "type": "paint"
+        },
+        {
+            "randomState": 739,
+            "tickCount": 11900,
+            "type": "paint"
+        },
+        {
+            "randomState": 743,
+            "tickCount": 12000,
+            "type": "paint"
+        },
+        {
+            "randomState": 747,
+            "tickCount": 12100,
+            "type": "paint"
+        },
+        {
+            "randomState": 754,
+            "tickCount": 12200,
+            "type": "paint"
+        },
+        {
+            "randomState": 761,
+            "tickCount": 12300,
+            "type": "paint"
+        },
+        {
+            "randomState": 766,
+            "tickCount": 12400,
+            "type": "paint"
+        },
+        {
+            "randomState": 770,
+            "tickCount": 12500,
+            "type": "paint"
+        },
+        {
+            "randomState": 774,
+            "tickCount": 12600,
+            "type": "paint"
+        },
+        {
+            "randomState": 789,
+            "tickCount": 12700,
+            "type": "paint"
+        },
+        {
+            "randomState": 795,
+            "tickCount": 12800,
+            "type": "paint"
+        },
+        {
+            "randomState": 801,
+            "tickCount": 12900,
+            "type": "paint"
+        },
+        {
+            "randomState": 807,
+            "tickCount": 13000,
+            "type": "paint"
+        },
+        {
+            "randomState": 817,
+            "tickCount": 13100,
+            "type": "paint"
+        },
+        {
+            "randomState": 824,
+            "tickCount": 13200,
+            "type": "paint"
+        },
+        {
+            "randomState": 828,
+            "tickCount": 13300,
+            "type": "paint"
+        },
+        {
+            "randomState": 835,
+            "tickCount": 13400,
+            "type": "paint"
+        },
+        {
+            "randomState": 841,
+            "tickCount": 13500,
+            "type": "paint"
+        },
+        {
+            "randomState": 847,
+            "tickCount": 13600,
+            "type": "paint"
+        },
+        {
+            "randomState": 855,
+            "tickCount": 13700,
+            "type": "paint"
+        },
+        {
+            "randomState": 859,
+            "tickCount": 13800,
+            "type": "paint"
+        },
+        {
+            "randomState": 863,
+            "tickCount": 13900,
+            "type": "paint"
+        },
+        {
+            "randomState": 867,
+            "tickCount": 14000,
+            "type": "paint"
+        },
+        {
+            "randomState": 874,
+            "tickCount": 14100,
+            "type": "paint"
+        },
+        {
+            "randomState": 883,
+            "tickCount": 14200,
+            "type": "paint"
+        },
+        {
+            "randomState": 890,
+            "tickCount": 14300,
+            "type": "paint"
+        },
+        {
+            "randomState": 895,
+            "tickCount": 14400,
+            "type": "paint"
+        },
+        {
+            "randomState": 902,
+            "tickCount": 14500,
+            "type": "paint"
+        },
+        {
+            "randomState": 906,
+            "tickCount": 14600,
+            "type": "paint"
+        },
+        {
+            "randomState": 916,
+            "tickCount": 14700,
+            "type": "paint"
+        },
+        {
+            "randomState": 922,
+            "tickCount": 14800,
+            "type": "paint"
+        },
+        {
+            "randomState": 928,
+            "tickCount": 14900,
+            "type": "paint"
+        },
+        {
+            "randomState": 935,
+            "tickCount": 15000,
+            "type": "paint"
+        },
+        {
+            "randomState": 940,
+            "tickCount": 15100,
+            "type": "paint"
+        },
+        {
+            "randomState": 943,
+            "tickCount": 15200,
+            "type": "paint"
+        },
+        {
+            "randomState": 947,
+            "tickCount": 15300,
+            "type": "paint"
+        },
+        {
+            "randomState": 951,
+            "tickCount": 15400,
+            "type": "paint"
+        },
+        {
+            "randomState": 958,
+            "tickCount": 15500,
+            "type": "paint"
+        },
+        {
+            "randomState": 968,
+            "tickCount": 15600,
+            "type": "paint"
+        },
+        {
+            "randomState": 982,
+            "tickCount": 15700,
+            "type": "paint"
+        },
+        {
+            "randomState": 987,
+            "tickCount": 15800,
+            "type": "paint"
+        },
+        {
+            "randomState": 994,
+            "tickCount": 15900,
+            "type": "paint"
+        },
+        {
+            "randomState": 997,
+            "tickCount": 16000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1002,
+            "tickCount": 16100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1010,
+            "tickCount": 16200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1016,
+            "tickCount": 16300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1023,
+            "tickCount": 16400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1027,
+            "tickCount": 16500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1031,
+            "tickCount": 16600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1047,
+            "tickCount": 16700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1053,
+            "tickCount": 16800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1058,
+            "tickCount": 16900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1064,
+            "tickCount": 17000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1068,
+            "tickCount": 17100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1072,
+            "tickCount": 17200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1076,
+            "tickCount": 17300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1081,
+            "tickCount": 17400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1086,
+            "tickCount": 17500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1093,
+            "tickCount": 17600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1107,
+            "tickCount": 17700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1111,
+            "tickCount": 17800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1116,
+            "tickCount": 17900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1121,
+            "tickCount": 18000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1128,
+            "tickCount": 18100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1134,
+            "tickCount": 18200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1140,
+            "tickCount": 18300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1145,
+            "tickCount": 18400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1149,
+            "tickCount": 18500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1153,
+            "tickCount": 18600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1168,
+            "tickCount": 18700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1174,
+            "tickCount": 18800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1179,
+            "tickCount": 18900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1188,
+            "tickCount": 19000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1192,
+            "tickCount": 19100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1198,
+            "tickCount": 19200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1202,
+            "tickCount": 19300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1208,
+            "tickCount": 19400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1213,
+            "tickCount": 19500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1220,
+            "tickCount": 19600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1226,
+            "tickCount": 19700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1230,
+            "tickCount": 19800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1233,
+            "tickCount": 19900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1239,
+            "tickCount": 20000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1247,
+            "tickCount": 20100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1252,
+            "tickCount": 20200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1258,
+            "tickCount": 20300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1264,
+            "tickCount": 20400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1268,
+            "tickCount": 20500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1272,
+            "tickCount": 20600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1289,
+            "tickCount": 20700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1295,
+            "tickCount": 20800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1301,
+            "tickCount": 20900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1309,
+            "tickCount": 21000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1313,
+            "tickCount": 21100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1318,
+            "tickCount": 21200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1322,
+            "tickCount": 21300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1328,
+            "tickCount": 21400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1334,
+            "tickCount": 21500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1340,
+            "tickCount": 21600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1352,
+            "tickCount": 21700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1356,
+            "tickCount": 21800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1360,
+            "tickCount": 21900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1366,
+            "tickCount": 22000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1375,
+            "tickCount": 22100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1380,
+            "tickCount": 22200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1389,
+            "tickCount": 22300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1394,
+            "tickCount": 22400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1398,
+            "tickCount": 22500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1404,
+            "tickCount": 22600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1418,
+            "tickCount": 22700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1425,
+            "tickCount": 22800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1432,
+            "tickCount": 22900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1436,
+            "tickCount": 23000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1440,
+            "tickCount": 23100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1444,
+            "tickCount": 23200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1448,
+            "tickCount": 23300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1453,
+            "tickCount": 23400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1459,
+            "tickCount": 23500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1467,
+            "tickCount": 23600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1484,
+            "tickCount": 23700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1488,
+            "tickCount": 23800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1491,
+            "tickCount": 23900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1497,
+            "tickCount": 24000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1501,
+            "tickCount": 24100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1507,
+            "tickCount": 24200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1512,
+            "tickCount": 24300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1518,
+            "tickCount": 24400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1523,
+            "tickCount": 24500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1530,
+            "tickCount": 24600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1536,
+            "tickCount": 24700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1546,
+            "tickCount": 24800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1551,
+            "tickCount": 24900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1556,
+            "tickCount": 25000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1560,
+            "tickCount": 25100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1566,
+            "tickCount": 25200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1572,
+            "tickCount": 25300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1578,
+            "tickCount": 25400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1583,
+            "tickCount": 25500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1591,
+            "tickCount": 25600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1603,
+            "tickCount": 25700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1607,
+            "tickCount": 25800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1611,
+            "tickCount": 25900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1616,
+            "tickCount": 26000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1621,
+            "tickCount": 26100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1626,
+            "tickCount": 26200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1629,
+            "tickCount": 26300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1634,
+            "tickCount": 26400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1639,
+            "tickCount": 26500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1645,
+            "tickCount": 26600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1660,
+            "tickCount": 26700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1669,
+            "tickCount": 26800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1677,
+            "tickCount": 26900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1681,
+            "tickCount": 27000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1684,
+            "tickCount": 27100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1689,
+            "tickCount": 27200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1695,
+            "tickCount": 27300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1699,
+            "tickCount": 27400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1705,
+            "tickCount": 27500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1710,
+            "tickCount": 27600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1718,
+            "tickCount": 27700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1722,
+            "tickCount": 27800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1727,
+            "tickCount": 27900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1732,
+            "tickCount": 28000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1739,
+            "tickCount": 28100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1744,
+            "tickCount": 28200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1751,
+            "tickCount": 28300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1755,
+            "tickCount": 28400,
+            "type": "paint"
+        },
+        {
+            "randomState": 1760,
+            "tickCount": 28500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1765,
+            "tickCount": 28600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1772,
+            "tickCount": 28700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1778,
+            "tickCount": 28800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1789,
+            "tickCount": 28900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1796,
+            "tickCount": 29000,
+            "type": "paint"
+        },
+        {
+            "randomState": 1802,
+            "tickCount": 29100,
+            "type": "paint"
+        },
+        {
+            "randomState": 1806,
+            "tickCount": 29200,
+            "type": "paint"
+        },
+        {
+            "randomState": 1812,
+            "tickCount": 29300,
+            "type": "paint"
+        },
+        {
+            "randomState": 1817,
+            "tickCount": 29400,
+            "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift",
+            "type": "keyPress"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "shift|ctrl",
+            "type": "keyPress"
+        },
+        {
+            "randomState": 1824,
+            "tickCount": 29500,
+            "type": "paint"
+        },
+        {
+            "randomState": 1828,
+            "tickCount": 29600,
+            "type": "paint"
+        },
+        {
+            "randomState": 1844,
+            "tickCount": 29700,
+            "type": "paint"
+        },
+        {
+            "randomState": 1850,
+            "tickCount": 29800,
+            "type": "paint"
+        },
+        {
+            "randomState": 1854,
+            "tickCount": 29900,
+            "type": "paint"
+        },
+        {
+            "randomState": 1859,
+            "tickCount": 30000,
+            "type": "paint"
+        }
+    ]
+}

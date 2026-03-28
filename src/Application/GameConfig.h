@@ -620,7 +620,9 @@ class GameConfig : public Config {
 
         Bool ExtendedMonsterInfo = {this, "extended_monster_info", true, "Display second and special attack in the Monster Info popup."};
 
-        Float MouseLookSensitivity = { this, "mouse_look_sens", 2.5f, "Mouse sensitivty in mouse look mode." };
+        Float MouseLookSensitivity = { this, "mouse_look_sens", 2.5f, "Mouse sensitivity in mouse look mode." };
+
+        Bool MouseLookEnabled = {this, "mouse_look_enabled", false, "Whether mouse look is enabled. Persisted between sessions."};
 
      private:
         static int ValidateLevel(int level) {

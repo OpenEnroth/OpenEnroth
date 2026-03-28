@@ -161,12 +161,8 @@ int Item::GetValue() const {
         return uBaseValue + 100 * standardEnchantmentStrength;
 
     if (specialEnchantment != ITEM_ENCHANTMENT_NULL) {
-        int mod = (pItemTable->specialEnchantments[specialEnchantment].iTreasureLevel & 4);
-        int bonus = pItemTable->specialEnchantments[specialEnchantment].additionalValue;
-        if (!mod)
-            return uBaseValue + bonus;
-        else
-            return uBaseValue * bonus;
+        const SpecialEnchantmentData &data = pItemTable->specialEnchantments[specialEnchantment];
+        return uBaseValue * data.valueMul + data.valueAdd;
     }
     return uBaseValue;
 }

@@ -27,7 +27,7 @@ GUIWindow_Chest::GUIWindow_Chest(int chestId) : GUIWindow(WINDOW_Chest, {0, 0}, 
 }
 
 void GUIWindow_Chest::Update() {
-    if (current_screen_type == SCREEN_CHEST_INVENTORY) {
+    if (current_screen_type == SCREEN_CHEST_INVENTORY && pParty->hasActiveCharacter()) {
         draw_leather();
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
         render->DrawQuad2D(ui_exit_cancel_button_background, pBtn_ExitCancel->rect.topLeft());

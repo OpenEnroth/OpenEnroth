@@ -80,7 +80,7 @@ local function learnAllSkills()
     return "", true
 end
 
-local function grandmasterAll()
+local function cheatGmAll()
     local count = Game.party.getPartySize()
     for charIndex = 1, count do
         for _, skillType in pairs(Game.SkillType) do
@@ -174,9 +174,9 @@ local subCommands = {
         description = "Learn all skills available for each character in the party."
     },
     {
-        name = "grandmaster_all",
-        callback = grandmasterAll,
-        description = "Set all learnable skills to Grandmaster level 20 for the whole party."
+        name = "cheat_gm_all",
+        callback = cheatGmAll,
+        description = "Set all skills to Grandmaster level 20 for the whole party, including skills not normally available to each character's class."
     },
 }
 
