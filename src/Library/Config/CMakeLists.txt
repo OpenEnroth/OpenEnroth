@@ -22,4 +22,5 @@ target_link_libraries(library_config
         utility
         library_serialization
         PRIVATE
-        inicpp::inicpp)
+        inicpp::inicpp
+        library_logger)
