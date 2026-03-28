@@ -504,7 +504,7 @@ void SpellStats::Initialize(const Blob &spells) {
         }
         test_string = strtok(NULL, "\r") + 1;
 
-        std::vector<std::string_view> tokens = split(test_string, '\t');
+        std::vector<std::string_view> tokens = split(test_string).by('\t');
 
         pInfos[uSpellID].name = removeQuotes(tokens[2]);
         pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, tokens[3], DAMAGE_PHYSICAL);

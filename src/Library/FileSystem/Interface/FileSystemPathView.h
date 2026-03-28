@@ -71,14 +71,14 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
 };
 
 [[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAt(std::same_as<std::string_view> auto chunk) const {
-    std::string_view path = string();
+    std::string_view path = str();
     assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
     size_t offset = chunk.data() - path.data();
     return FileSystemPathView::fromNormalized(path.substr(offset));
 }
 
 [[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAfter(std::same_as<std::string_view> auto chunk) const {
-    std::string_view path = string(); // NOLINT: not std::string.
+    std::string_view path = str(); // NOLINT: not std::string.
 
     if (chunk.empty())
         return FileSystemPathView::fromNormalized(path);
@@ -91,10 +91,6 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
         size_t offset = chunk.data() + chunk.size() - path.data() + 1;
         return FileSystemPathView::fromNormalized(path.substr(offset));
     }
-}
-
-[[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAt(detail::SplitViewIterator pos) const {
-    return pos == detail::SplitViewSentinel() ? FileSystemPathView() : tailAt(*pos);
 }
 
 inline FileSystemPathView FileSystemPathComponents::prefix() const {
