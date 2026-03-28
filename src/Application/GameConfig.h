@@ -115,7 +115,7 @@ class GameConfig : public Config {
         Bool NoMargaret = {this, "no_margareth", false,
             "Disable Margaret's tour messages on Emerald Island."};
 
-        Bool ActorCollision = {this, "actor_collision", false,
+        Bool CollisionOutlines = {this, "collision_outlines", false,
             "Draw actor and decoration collision cylinders for debugging."};
 
         ConfigEntry<::LogLevel> LogLevel = {this, "log_level", LOG_INFO,

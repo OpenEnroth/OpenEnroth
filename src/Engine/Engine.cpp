@@ -368,7 +368,7 @@ bool Engine::draw_debug_outlines() {
         decal_builder->DrawDecalDebugOutlines();
     }
 
-    if (engine->config->debug.ActorCollision.value()) {
+    if (engine->config->debug.CollisionOutlines.value()) {
         for (const Actor &actor : pActors) {
             if (actor.aiState == Removed || actor.aiState == Disabled || actor.aiState == Summoned || actor.aiState == Dead || actor.aiState == Dying)
                 continue;
