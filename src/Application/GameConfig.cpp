@@ -33,7 +33,6 @@ static constexpr std::initializer_list<const char *> defaultCommands = {
     "config toggle show_fps | Show FPS",
     "config toggle show_picked_face | Picked Face",
     "config toggle portal_outlines | Portal Outlines",
-    "config toggle actor_collision | Actor Collision",
     "gold add 10000 | Add 10k Gold",
     "gold set 0 | Remove all Gold",
     "food add 20 | Add 20 Food",
@@ -48,7 +47,8 @@ static constexpr std::initializer_list<const char *> defaultCommands = {
     "inventory addrandom | Add Random Item",
     "inventory addrandomspecial | Add Special Item",
     "reload_shaders | Reload Shaders",
-    "hp full_heal | Full Heal"
+    "hp full_heal | Full Heal",
+    "skills cheat_gm_all | GM All Skills"
 };
 
 GameConfig::CheatCommands::CheatCommands(GameConfig *config) : ConfigSection(config, "cheat_commands") {
