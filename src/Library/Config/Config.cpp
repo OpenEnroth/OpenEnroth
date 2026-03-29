@@ -7,6 +7,8 @@
 
 #include <inicpp.h> // NOLINT: this is not a C system header.
 
+#include "Library/Logger/Logger.h"
+
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/MapAccess.h"
@@ -30,11 +32,20 @@ void Config::load(InputStream *stream) {
     ini.setCommentChar(';'); // Use ini comment char, not '#'.
     ini.decode(stdStream); // This can throw.
 
-    for (const auto &[sectionName, iniSection] : ini)
-        if (ConfigSection *section = this->section(sectionName))
-            for (const auto &[entryName, iniValue] : iniSection)
-                if (AnyConfigEntry *entry = section->entry(entryName))
-                    entry->setString(iniValue.as<std::string_view>());
+    for (const auto &[sectionName, iniSection] : ini) {
+        if (ConfigSection *section = this->section(sectionName)) {
+            for (const auto &[entryName, iniValue] : iniSection) {
+                if (AnyConfigEntry *entry = section->entry(entryName)) {
+                    try {
+                        entry->setString(iniValue.as<std::string_view>());
+                    } catch (const std::exception &e) {
+                        logger->warning("Could not load config entry '[{}]/{}': {}. Value unchanged.",
+                                        sectionName, entryName, e.what());
+                    }
+                }
+            }
+        }
+    }
 }
 
 void Config::save(OutputStream *stream) const {
