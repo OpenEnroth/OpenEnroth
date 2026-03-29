@@ -17,6 +17,7 @@
 #include "GUI/GUIMessageQueue.h"
 
 #include "InputEnumFunctions.h"
+#include "Mouse.h"
 
 // Delayed keyrepeat registers after 500ms.
 static constexpr Duration DELAY_TOGGLE_TIME_FIRST = Duration::fromRealtimeMilliseconds(500);
@@ -450,7 +451,7 @@ bool Io::KeyboardInputHandler::IsRunKeyToggled() const {
 }
 
 bool Io::KeyboardInputHandler::IsTurnStrafingToggled() const {
-    return controller->isKeyDownThisFrame(PlatformKey::KEY_CONTROL);
+    return controller->isKeyDownThisFrame(PlatformKey::KEY_CONTROL) || mouse->_mouseLook == Io::Mouse::MouseLookState::Enabled;
 }
 
 bool Io::KeyboardInputHandler::IsStealingToggled() const {
