@@ -1,0 +1,32 @@
+cc_library(
+    name = "library_color",
+    srcs = [
+        "Color.cpp",
+        "Colorf.cpp",
+        "HsvColorf.cpp",
+    ],
+    hdrs = [
+        "Color.h",
+        "Colorf.h",
+        "ColorTable.h",
+        "HsvColorf.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Serialization:library_serialization",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_color",
+    srcs = [
+        "Tests/Color_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        ":library_color",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

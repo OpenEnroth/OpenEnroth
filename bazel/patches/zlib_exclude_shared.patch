@@ -1,0 +1,27 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -149,4 +149,4 @@
+
+-add_library(zlib SHARED ${ZLIB_SRCS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
++add_library(zlib SHARED EXCLUDE_FROM_ALL ${ZLIB_SRCS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+ add_library(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+ set_target_properties(zlib PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
+@@ -176,5 +176,5 @@
+ if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
+-    install(TARGETS zlib zlibstatic
++    install(TARGETS zlib zlibstatic OPTIONAL
+         RUNTIME DESTINATION "${INSTALL_BIN_DIR}"
+         ARCHIVE DESTINATION "${INSTALL_LIB_DIR}"
+         LIBRARY DESTINATION "${INSTALL_LIB_DIR}" )
+@@ -197,4 +197,4 @@
+-add_executable(example test/example.c)
++add_executable(example EXCLUDE_FROM_ALL test/example.c)
+ target_link_libraries(example zlib)
+ add_test(example example)
+
+@@ -201,4 +201,4 @@
+-add_executable(minigzip test/minigzip.c)
++add_executable(minigzip EXCLUDE_FROM_ALL test/minigzip.c)
+ target_link_libraries(minigzip zlib)
+
+ if(HAVE_OFF64_T)

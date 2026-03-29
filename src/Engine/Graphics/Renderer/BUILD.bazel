@@ -1,0 +1,60 @@
+# RendererFactory.cpp needs Engine/EngineIocContainer.h (from //src/Engine:engine) and is compiled
+# as part of //src/Engine:engine to avoid circular dependency.
+# BaseRenderer.cpp, NullRenderer.cpp, OpenGLRenderer.cpp also need Engine/Engine.h and are
+# compiled in //src/Engine:engine_impl.
+exports_files(
+    [
+        "RendererFactory.cpp",
+        "BaseRenderer.cpp",
+        "NullRenderer.cpp",
+        "OpenGLRenderer.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_texture_id",
+    hdrs = ["TextureRenderId.h"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "engine_graphics_renderer",
+    srcs = [
+        "OpenGLShader.cpp",
+        "OpenGLShaderParams.cpp",
+        "Renderer.cpp",
+        "RendererEnums.cpp",
+        # BaseRenderer.cpp, NullRenderer.cpp, OpenGLRenderer.cpp need Engine/Engine.h
+        # and are compiled in //src/Engine:engine_impl to break the circular dependency.
+    ],
+    hdrs = [
+        "BaseRenderer.h",
+        "OpenGLVertexBuffer.h",
+        "NullRenderer.h",
+        "OpenGLRenderer.h",
+        "OpenGLShader.h",
+        "OpenGLShaderParams.h",
+        "Renderer.h",
+        "RendererEnums.h",
+        "RendererFactory.h",
+    ],
+    deps = [
+        ":engine_texture_id",
+        "//src/Engine:engine_hitmap",
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Utility:utility",
+        "//src/Library/Logger:library_logger",
+        "//src/Library/Serialization:library_serialization",
+        "//src/Library/Color:library_color",
+        "//src/Library/Image:library_image",
+        "@glm//:glm",
+        "//bazel/system:opengl",
+        "@imgui//:imgui",
+        # PRIVATE deps below
+        "//thirdparty/glad:glad",
+        "//src/Library/FileSystem/Sub:library_filesystem_sub",
+        "//src/Library/Preprocessor:library_preprocessor",
+    ],
+    visibility = ["//visibility:public"],
+)

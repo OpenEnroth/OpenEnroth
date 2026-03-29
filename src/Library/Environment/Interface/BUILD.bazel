@@ -1,0 +1,8 @@
+cc_library(
+    name = "library_environment_interface",
+    hdrs = [
+        "Environment.h",
+        "EnvironmentEnums.h",
+    ],
+    visibility = ["//visibility:public"],
+)

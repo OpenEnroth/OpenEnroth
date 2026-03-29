@@ -1,0 +1,30 @@
+cc_library(
+    name = "library_vid",
+    srcs = [
+        "VidReader.cpp",
+        "VidSnapshots.cpp",
+    ],
+    hdrs = [
+        "VidReader.h",
+        "VidSnapshots.h",
+    ],
+    deps = [
+        "//src/Library/Binary:library_binary",
+        "//src/Library/Snapshots:library_snapshots",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_vid",
+    srcs = [
+        "Tests/VidReader_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        ":library_vid",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

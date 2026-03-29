@@ -1,0 +1,21 @@
+cc_library(
+    name = "library_trace",
+    srcs = [
+        "EventTrace.cpp",
+        "EventTraceMigrations.cpp",
+    ],
+    hdrs = [
+        "EventTrace.h",
+        "EventTraceMigrations.h",
+        "PaintEvent.h",
+    ],
+    deps = [
+        "//src/Io:io",
+        "//src/Library/Serialization:library_serialization",
+        "//src/Library/Json:library_json",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Config:library_config",
+        "//src/Library/Geometry:library_geometry",
+    ],
+    visibility = ["//visibility:public"],
+)

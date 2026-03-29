@@ -1,0 +1,37 @@
+cc_library(
+    name = "library_serialization",
+    srcs = [
+        "EnumSerializer.cpp",
+        "SerializationExceptions.cpp",
+        "CommonSerialization.cpp",
+    ],
+    hdrs = [
+        "EnumSerialization.h",
+        "EnumSerializer.h",
+        "Serialization.h",
+        "SerializationExceptions.h",
+        "SerializationFwd.h",
+        "CommonSerialization.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "@magic_enum//:magic_enum",
+        # fast_float is PRIVATE
+        "@fast_float//:fast_float",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_serialization",
+    srcs = [
+        "Tests/Serialization_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        ":library_serialization",
+        "//src/Library/Color:library_color",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

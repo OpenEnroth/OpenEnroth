@@ -1,0 +1,20 @@
+cc_library(
+    name = "testing_extensions",
+    srcs = [
+        "ScopedTestFile.cpp",
+        "ScopedTestFileSlot.cpp",
+        "ThrowingAssertions.cpp",
+    ],
+    hdrs = [
+        "ExpectExtensions.h",
+        "ScopedTestFile.h",
+        "ScopedTestFileSlot.h",
+        "ThrowingAssertions.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "@googletest//:gtest",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

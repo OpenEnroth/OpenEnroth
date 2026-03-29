@@ -1,0 +1,38 @@
+# Header-only target: exposes the Overlay interface without depending on scripting.
+# scripting depends on this to break the mutual cycle.
+cc_library(
+    name = "gui_overlay_hdrs",
+    hdrs = [
+        "Overlay.h",
+        "OverlayEventHandler.h",
+        "OverlaySystem.h",
+        "ExampleOverlay.h",
+        "ScriptedOverlay.h",
+    ],
+    deps = [
+        "//src/Engine:engine",
+        "//src/Utility:utility",
+        "@imgui//:imgui",
+        "@sol2//:sol2",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "gui_overlay",
+    srcs = [
+        "OverlayEventHandler.cpp",
+        "OverlaySystem.cpp",
+        "ExampleOverlay.cpp",
+        "ScriptedOverlay.cpp",
+    ],
+    deps = [
+        ":gui_overlay_hdrs",
+        "//src/Scripting:scripting",
+    ],
+    # alwayslink: ScriptedOverlay is referenced by scripting/OverlayBindings.cpp which is in a
+    # later start-lib group. The gold linker won't rescan gui_overlay's start-lib group after
+    # scripting is pulled in, leaving ScriptedOverlay::ScriptedOverlay() unresolved.
+    alwayslink = True,
+    visibility = ["//visibility:public"],
+)
