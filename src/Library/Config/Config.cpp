@@ -39,8 +39,8 @@ void Config::load(InputStream *stream) {
                     try {
                         entry->setString(iniValue.as<std::string_view>());
                     } catch (const std::exception &e) {
-                        logger->warning("Could not load config entry '[{}]/{}': {}. Using default '{}' instead.",
-                                        sectionName, entryName, e.what(), entry->defaultString());
+                        logger->warning("Could not load config entry '[{}]/{}': {}. Value unchanged.",
+                                        sectionName, entryName, e.what());
                     }
                 }
             }
