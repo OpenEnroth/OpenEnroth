@@ -702,6 +702,15 @@ GAME_TEST(Issues, Issue2279) {
     // Test passes if no crash occurred.
 }
 
+GAME_TEST(Issues, Issue2289) {
+    // Monsters were skipping their turns in turn-based mode when their action length was zero.
+    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
+    auto meleeAttacksTape = actorTapes.countByState(AttackingMelee);
+    test.playTraceFromTestData("issue_2289.mm7", "issue_2289.json");
+    EXPECT_CONTAINS(turnBasedTape, true); // We were in turn-based combat.
+    EXPECT_GT(meleeAttacksTape.max(), 0); // Monsters actually attacked.
+}
+
 GAME_TEST(Issues, Issue2298) {
     // Holding an item when entering a shop = it can not be dropped after
     // This tests that the mouse cursor updates correctly when dropping an item
