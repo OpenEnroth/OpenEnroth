@@ -212,7 +212,15 @@ SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path,
 
     auto [header, blob] = createSaveData(resetWorld, title);
 
-    ufs->write(path, blob);
+    try {
+        ufs->write(path, blob);
+    } catch (const std::exception &e) {
+        if (isAutoSave) {
+            logger->warning("saveGame: failed to write autosave: {}", e.what());
+            return {};
+        }
+        throw;
+    }
 
     return header;
 }

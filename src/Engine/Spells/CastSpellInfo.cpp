@@ -1496,10 +1496,10 @@ void CastSpellInfoHelpers::castSpell() {
                                     for (ItemEnchantment spec_ench_loop : pItemTable->specialEnchantments.indices()) {
                                         const std::string &bonusStatement = pItemTable->specialEnchantments[spec_ench_loop].description;
                                         if (!bonusStatement.empty()) {
-                                            if (pItemTable->specialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
+                                            if (pItemTable->specialEnchantments[spec_ench_loop].enchantmentLevel == 3) {
                                                 continue;
                                             }
-                                            if (spell_mastery == MASTERY_MASTER && (pItemTable->specialEnchantments[spec_ench_loop].iTreasureLevel != 0)) {
+                                            if (spell_mastery == MASTERY_MASTER && (pItemTable->specialEnchantments[spec_ench_loop].enchantmentLevel != 0)) {
                                                 continue;
                                             }
                                             int this_to_apply = pItemTable->specialEnchantments[spec_ench_loop].chanceByItemType[this_equip_type];

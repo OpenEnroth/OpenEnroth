@@ -13,7 +13,7 @@ By default, we are using prebuilt dependencies, and they are resolved automatica
 
 Minimum required compiler versions are as follows:
 * Visual Studio 2022;
-* GCC 14;
+* GCC 15;
 * AppleClang 16 (Xcode 16.3).
 
 The following IDEs have been tested and should work fine:
@@ -152,8 +152,7 @@ As typing out all the events to send inside the test code can be pretty tedious,
 * Press `Ctrl+Shift+R` to start recording an event trace. Check logs to make sure that trace recording has started.
 * Perform the steps that used to reproduce the bug.
 * Press `Ctrl+Shift+R` again to stop trace recording. You will get two files generated in the current folder – `trace.json` and `trace.mm7`.
-* Rename them into something more suiting (e.g. `issue_XXX.json` and `issue_XXX.mm7`) and create a PR to the [OpenEnroth_TestData](https://github.com/OpenEnroth/OpenEnroth_TestData) repo. 
-* Once it's merged update the reference tag in the corresponding [CMakeLists.txt](https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/CMakeLists.txt) in the main repo.
+* Rename them into something more suiting (e.g. `issue_XXX.json` and `issue_XXX.mm7`) and place them into `test/Data/`.
 * Create a new test case in one of the game test files in [the game tests folder](https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Bin/GameTest).
 * Use `TestController::playTraceFromTestData` to play back your trace, and add the necessary checks around it.
 
@@ -161,20 +160,16 @@ If you need to record a trace with non-standard FPS (e.g. if an issue doesn't re
 
 To run all unit tests locally, build a `OpenEnroth_UnitTest` cmake target and run `<build-dir>/test/Bin/UnitTest/OpenEnroth_UnitTest`.
 
-To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `Run_GameTest_Headless_Parallel` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line. Run `OpenEnroth_GameTest --help` for a list of options. Note that you can pass `--headless` to run tests in headless mode. You can use the test data from `<build-dir>/test/Bin/test_data/data`, which is automatically downloaded and updated by the `OpenEnroth_TestData` cmake target. Alternatively, if you cloned the OpenEnroth_TestData repository, you can use that.
+To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `Run_GameTest_Headless_Parallel` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line. Run `OpenEnroth_GameTest --help` for a list of options. Note that you can pass `--headless` to run tests in headless mode. Test data is located in `test/Data/`.
 
 If you need to look closely at the recorded trace, you can play it by running `OpenEnroth play --speed 0.5 <path-to-trace.json>`. Alternatively, if you already have a unit test that runs the recorded trace, you can run `OpenEnroth_GameTest --speed 0.5 --gtest_filter=<test-suite-name>.<test-name> --test-path <path-to-test-data-folder>`. Note that `--gtest_filter` needs that `=` and won't work if you try passing the test name after a space. 
 
 
 ## How to deal with `Random state desynchronized`
 
-Changing game logic might result in failures in game tests because they check the random number generator state after each frame, and this will show as `Random state desynchronized when playing back trace` message in test logs. This is intentional – we don't want accidental game logic changes. **If** the change was actually intentional, then you will need to either retrace or re-record the traces for the failing tests as follows. These instructions assume your change is already submitted as PR backed from your fork, or will be.
-* Prepare to submit a PR to the [OpenEnroth_TestData](https://github.com/OpenEnroth/OpenEnroth_TestData) repo: Fork and clone it if you haven't done so already.
-* Reminder: Make sure your test data clone is up to date and has no uncommitted local changes, and create a branch.
-* To retrace, run `OpenEnroth retrace <path-to-trace.json>`. Note that you can pass multiple trace paths to this command. Use paths into your clone of the test data (if you retrace the copies in `<build-dir>/test/Bin/test_data/data` you'll need to copy them over).
-* Commit, push and PR the changes made by the retrace to OpenEnroth_TestData.
-* Back in the main OpenEnroth clone, paste the commit hash into the `GIT_TAG` key in `test/Bin/CMakeLists.txt`, replacing the one already there, and update the `GIT_REPOSITORY` to point to your clone of OpenEnroth_TestData.
-* Commit this to your main PR's branch and push it. The checks this push triggers should now succeed.
+Changing game logic might result in failures in game tests because they check the random number generator state after each frame, and this will show as `Random state desynchronized when playing back trace` message in test logs. This is intentional – we don't want accidental game logic changes. **If** the change was actually intentional, then you will need to either retrace or re-record the failing traces:
+* To retrace, run `OpenEnroth retrace <path-to-trace.json>`. Note that you can pass multiple trace paths to this command. Use paths into `test/Data/` directly.
+* Commit the updated traces alongside your code changes in the same PR.
 
 
 ## Scripting

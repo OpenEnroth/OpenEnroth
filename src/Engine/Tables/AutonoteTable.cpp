@@ -1,8 +1,10 @@
 #include "AutonoteTable.h"
 
 #include <cstring>
+#include <map>
 #include <string>
 
+#include "Utility/MapAccess.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Transformations.h"
@@ -10,6 +12,14 @@
 std::array<AutonoteData, 196> pAutonoteTxt;
 
 void initializeAutonotes(const Blob &autonotes) {
+    static const std::map<std::string, AutonoteType, ascii::NoCaseLess> autonoteTypeMap = {
+        {"potion", AUTONOTE_POTION_RECIPE},
+        {"stat", AUTONOTE_STAT_HINT},
+        {"seer", AUTONOTE_SEER},
+        {"obelisk", AUTONOTE_OBELISK},
+        {"teacher", AUTONOTE_TEACHER},
+    };
+
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -39,30 +49,9 @@ void initializeAutonotes(const Blob &autonotes) {
                     case 1:
                         pAutonoteTxt[i].pText = removeQuotes(test_string);
                         break;
-                    case 2: {
-                        if (ascii::noCaseEquals(test_string, "potion")) {
-                            pAutonoteTxt[i].eType = AUTONOTE_POTION_RECIPE;
-                            break;
-                        }
-                        if (ascii::noCaseEquals(test_string, "stat")) {
-                            pAutonoteTxt[i].eType = AUTONOTE_STAT_HINT;
-                            break;
-                        }
-                        if (ascii::noCaseEquals(test_string, "seer")) {
-                            pAutonoteTxt[i].eType = AUTONOTE_SEER;
-                            break;
-                        }
-                        if (ascii::noCaseEquals(test_string, "obelisk")) {
-                            pAutonoteTxt[i].eType = AUTONOTE_OBELISK;
-                            break;
-                        }
-                        if (ascii::noCaseEquals(test_string, "teacher")) {
-                            pAutonoteTxt[i].eType = AUTONOTE_TEACHER;
-                            break;
-                        }
-                        pAutonoteTxt[i].eType = AUTONOTE_MISC;
+                    case 2:
+                        pAutonoteTxt[i].eType = valueOr(autonoteTypeMap, test_string, AUTONOTE_MISC);
                         break;
-                    }
                 }
             } else {
                 break_loop = true;

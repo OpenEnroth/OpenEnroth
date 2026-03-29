@@ -75,8 +75,8 @@ jobs:
             windows_x86_64)     platform=windows; architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="";;
             darwin_arm64)       platform=darwin;  architecture=arm64;       ccache_architecture=arm64;     ccache_size=400M;  cmake_args="-DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11";;
             darwin_x86_64)      platform=darwin;  architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="-DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15";;
-            linux_x86)          platform=linux;   architecture=x86;         ccache_architecture=x86;       ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32";;
-            linux_x86_64)       platform=linux;   architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14";;
+            linux_x86)          platform=linux;   architecture=x86;         ccache_architecture=x86;       ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-15 -DCMAKE_CXX_COMPILER=g++-15 -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32";;
+            linux_x86_64)       platform=linux;   architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-15 -DCMAKE_CXX_COMPILER=g++-15";;
             android_universal)  platform=android; architecture=universal;   ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
             android_arm64_v8a)  platform=android; architecture=arm64-v8a;   ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
             android_arm32_v7a)  platform=android; architecture=armeabi-v7a; ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
@@ -132,8 +132,10 @@ jobs:
           attempt_delay: 5000
           command: |
             if [[ "${{env.MATRIX_ARCHITECTURE}}" = "universal" || "${{env.MATRIX_ARCHITECTURE}}" = "armeabi-v7a" ]]; then
+              # PPA needed for gcc-15 which isn't in ubuntu-24.04 repos.
+              sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
               sudo apt-get update
-              sudo apt-get install -y gcc-14-multilib g++-14-multilib
+              sudo apt-get install -y gcc-15-multilib g++-15-multilib
             fi
 
       - name: '[android] Setup Java'
@@ -153,14 +155,16 @@ jobs:
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
               sudo dpkg --add-architecture i386
             fi
+            # PPA needed for gcc-15 which isn't in ubuntu-24.04 repos.
+            sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
             sudo apt-get update
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
-              sudo apt-get install -y gcc-14-multilib g++-14-multilib lld
+              sudo apt-get install -y gcc-15-multilib g++-15-multilib lld
               sudo apt-get install -y libglu1-mesa-dev:i386
               sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
             fi
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86_64" ]; then
-              sudo apt-get install -y gcc-14 g++-14 lld
+              sudo apt-get install -y gcc-15 g++-15 lld
               sudo apt-get install -y libglu1-mesa-dev
               sudo apt-get install -y libdwarf-dev libelf-dev
             fi
