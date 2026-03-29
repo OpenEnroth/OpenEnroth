@@ -869,6 +869,36 @@ GAME_TEST(Prs, Pr2354) {
 
 // 2400
 
+GAME_TEST(Issues, Issue2408) {
+    // Turn left/right should strafe when mouselook is active.
+    test.prepareForNextTest();
+    game.startNewGame();
+    test.startTaping();
+
+    // Without mouselook: KEY_LEFT turns (yaw changes, position doesn't).
+    int yawBefore = pParty->_viewYaw;
+    Vec3f posBefore = pParty->pos;
+    game.pressKey(PlatformKey::KEY_LEFT);
+    game.tick(5);
+    game.releaseKey(PlatformKey::KEY_LEFT);
+    game.tick(1);
+    EXPECT_NE(pParty->_viewYaw, yawBefore);   // Yaw changed.
+    EXPECT_EQ(pParty->pos, posBefore);         // Position unchanged.
+
+    // With mouselook: KEY_LEFT strafes (position changes, yaw doesn't).
+    game.pressAndReleaseKey(PlatformKey::KEY_F10); // Enable mouselook.
+    game.tick(1);
+    EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled);
+    yawBefore = pParty->_viewYaw;
+    posBefore = pParty->pos;
+    game.pressKey(PlatformKey::KEY_LEFT);
+    game.tick(5);
+    game.releaseKey(PlatformKey::KEY_LEFT);
+    game.tick(1);
+    EXPECT_EQ(pParty->_viewYaw, yawBefore);   // Yaw unchanged.
+    EXPECT_NE(pParty->pos, posBefore);         // Position changed (strafed).
+}
+
 GAME_TEST(Issues, Issue2425) {
     //Segmentation fault when trying to buy Fire Guild membership on Emerald Island
     auto screenTape = tapes.screen();
