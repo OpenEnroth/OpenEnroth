@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -647,6 +648,13 @@ GAME_TEST(Issues, Issue2233) {
     EXPECT_GT(posTape.back().x, -9200);
     // And spot check a known problem face.
     EXPECT_GT(dot(pIndoor->faces[6301].facePlane.normal, Vec3f(0.659, -0.742, 0.123)), 0.99f);
+}
+
+GAME_TEST(Issues, Issue2236) {
+    // Minotaur (actor #55) was falling through indoor floors.
+    auto actorZTape = actorTapes.custom(55, [](const Actor &a) { return static_cast<int>(a.pos.z); });
+    test.playTraceFromTestData("issue_2236.mm7", "issue_2236.json");
+    EXPECT_GT(actorZTape.min(), 3200); // Minotaur should not fall through the floor.
 }
 
 GAME_TEST(Issues, Issue2244) {
