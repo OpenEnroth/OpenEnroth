@@ -33,6 +33,7 @@
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/String/Ascii.h"
+#include "Utility/Exception.h"
 
 using Io::TextInputType;
 
@@ -183,10 +184,15 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
             pSavegameList->pSavegameHeader[i].name = test;
         }
 
-        pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
+        try {
+            pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
 
-        if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
-            pSavegameList->pSavegameThumbnails[i]->release();
+            if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
+                pSavegameList->pSavegameThumbnails[i]->release();
+                pSavegameList->pSavegameThumbnails[i] = nullptr;
+            }
+        } catch (const Exception &e) {
+            logger->debug("pSavegameList thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
             pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
 
