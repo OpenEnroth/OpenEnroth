@@ -16,7 +16,7 @@ return {
     "config toggle show_fps | Show FPS",
     "config toggle show_picked_face | Picked Face",
     "config toggle portal_outlines | Portal Outlines",
-    "config toggle actor_collision | Actor Collision",
+    "config toggle collision_outlines | Collision Outlines",
     "gold add 10000 | Add 10k Gold",
     "gold set 0 | Remove all Gold",
     "food add 20 | Add 20 Food",
