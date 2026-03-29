@@ -74,6 +74,23 @@ static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, 
             *intersection = f;
             return true;
         }
+
+        // f is out of range - check nearest endpoint (handles cylinder end caps,
+        // e.g. actor floating above party with cylinder base above collision bbox).
+        f = std::clamp(f, 0.0f, 1.0f);
+        Vec3f toEndpoint = (p1 + edge * f) - pos;
+        float tc = dot(toEndpoint, dir);
+        if (tc > 0.0f) {
+            float distSqr = std::max(0.0f, toEndpoint.lengthSqr() - tc * tc);
+            if (distSqr <= radius * radius) {
+                float newDist = tc - std::sqrt(radius * radius - distSqr);
+                if (newDist > 0.0f && newDist < currentmovedist) {
+                    *newmovedist = newDist;
+                    *intersection = f;
+                    return true;
+                }
+            }
+        }
     }
 
     return false;
@@ -323,7 +340,8 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
  * @return                              Whether there is a collision.
  */
 static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, Pid pid, bool jagged_top) {
-    BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height);
+    BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height + radius);
+
     if (!collision_state.bbox.intersects(bbox))
         return false;
 
@@ -339,8 +357,8 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
 
     Vec3f pos = collision_state.position_lo;
     radius += collision_state.radius_lo;
-    // add radius to treat bottom of collison state as flat
-    Vec3f vert1 = center_lo, vert2 = center_lo + Vec3f(0, 0, height + collision_state.radius_lo);
+    Vec3f vert1 = center_lo;
+    Vec3f vert2 = center_lo + Vec3f(0, 0, height + collision_state.radius_lo);
 
     float newdist, intersection;
     if (CollideWithLine(vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection, true)) {
