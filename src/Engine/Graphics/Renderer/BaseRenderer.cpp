@@ -530,8 +530,8 @@ void BaseRenderer::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
 }
 
 void BaseRenderer::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
-    engine->draw_debug_outlines();
     render->DoRenderBillboards_D3D();
+    engine->draw_debug_outlines();
     spell_fx_renderer->RenderSpecialEffects();
 }
 
