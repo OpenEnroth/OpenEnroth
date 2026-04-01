@@ -24,3 +24,5 @@ target_link_libraries(library_config
         PRIVATE
         inicpp::inicpp
         library_logger)
+
+add_subdirectory(Tests)
