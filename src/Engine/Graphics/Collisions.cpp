@@ -31,6 +31,7 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
 //
 
 /**
+ * @param pos                           Position of the sphere.
  * @param p1                            Starting point of line.
  * @param p2                            End point of line.
  * @param radius                        Radius to use.
@@ -41,12 +42,11 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
  *                                      returns false.
  * @param inside                        Whether collisions should happen when inside radius
  *
- * @return                              Whether the sphere of radius at position of collision state 'lo', can collide with the
+ * @return                              Whether the sphere of radius at position `pos`, can collide with the
  *                                      line p1 to p2 if moving along the `dir` axis AND the distance required to move for that
  *                                      collision is less than the current distance.
  */
-static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection, bool inside) {
-    Vec3f pos = collision_state.position_lo;
+static bool CollideSphereWithLine(const Vec3f pos, const Vec3f p1, const Vec3f p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection, bool inside) {
     Vec3f dir = collision_state.direction;
     Vec3f edge = p2 - p1;
     Vec3f sphereToVertex = p1 - pos;
@@ -73,23 +73,6 @@ static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, 
         if (f >= 0.0f && f <= 1.0f) {
             *intersection = f;
             return true;
-        }
-
-        // f is out of range - check nearest endpoint (handles cylinder end caps,
-        // e.g. actor floating above party with cylinder base above collision bbox).
-        f = std::clamp(f, 0.0f, 1.0f);
-        Vec3f toEndpoint = (p1 + edge * f) - pos;
-        float tc = dot(toEndpoint, dir);
-        if (tc > 0.0f) {
-            float distSqr = std::max(0.0f, toEndpoint.lengthSqr() - tc * tc);
-            if (distSqr <= radius * radius) {
-                float newDist = tc - std::sqrt(radius * radius - distSqr);
-                if (newDist > 0.0f && newDist < currentmovedist) {
-                    *newmovedist = newDist;
-                    *intersection = f;
-                    return true;
-                }
-            }
         }
     }
 
@@ -206,7 +189,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
 
         // collide with line between the two verts
         float intersectionDist;
-        if (CollideWithLine(vert1, vert2, radius, startingDist, &newDist, &intersectionDist, false)) {
+        if (CollideSphereWithLine(pos, vert1, vert2, radius, startingDist, &newDist, &intersectionDist, false)) {
             startingDist = newDist;
             collidingWithFace = true;
             new_collision_pos = vert1 + intersectionDist * (vert2 - vert1);
@@ -355,13 +338,18 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
         return false; // We're moving away from the cylinder.
     }
 
-    Vec3f pos = collision_state.position_lo;
     radius += collision_state.radius_lo;
     Vec3f vert1 = center_lo;
     Vec3f vert2 = center_lo + Vec3f(0, 0, height + collision_state.radius_lo);
 
+    // For upright cylinders, pick the optimal Z to test against: clamp the sphere's Z
+    // between the cylinder's Z extents. This avoids f<0 / f>1 misses when the party is
+    // entirely above or below the cylinder (e.g. a flying actor hovering overhead).
+    float opt_z = std::clamp(collision_state.position_lo.z, vert1.z, vert2.z);
+    Vec3f pos = Vec3f(collision_state.position_lo.x, collision_state.position_lo.y, opt_z);
+
     float newdist, intersection;
-    if (CollideWithLine(vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection, true)) {
+    if (CollideSphereWithLine(pos, vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection, true)) {
         Vec3f newPos = collision_state.position_lo + dir * newdist;
         Vec3f dirC = center_lo - newPos;
         dirC.normalize();

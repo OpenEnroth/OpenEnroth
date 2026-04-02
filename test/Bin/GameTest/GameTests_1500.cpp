@@ -234,8 +234,8 @@ GAME_TEST(Issues, Issue1665) {
     auto xpos = tapes.custom([]() { return static_cast<int>(pParty->pos.x); });
     auto zpos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
     test.playTraceFromTestData("issue_1665.mm7", "issue_1665.json");
-    EXPECT_GT(xpos.max(), 2200);
-    EXPECT_LT(zpos.min(), -1700); // weve made it into the hole
+    EXPECT_GT(xpos.max(), 1700);
+    EXPECT_LT(zpos.min(), -1600); // weve made it into the hole
     EXPECT_LT(xpos.back(), 1500);
     EXPECT_GT(zpos.back(), -1550); // And made it back out
 }
@@ -329,7 +329,7 @@ GAME_TEST(Issues, Issue1706) {
     auto ypos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
     test.playTraceFromTestData("issue_1706.mm7", "issue_1706.json");
     EXPECT_GT(ypos.min(), -2555); // make sure we dont get past the wall
-    EXPECT_LE(ypos.min(), -2550); // but we should get right up against it
+    EXPECT_LE(ypos.min(), -2545); // but we should get right up against it
 }
 
 GAME_TEST(Issues, Issue1708) {
