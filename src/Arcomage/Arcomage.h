@@ -129,7 +129,7 @@ struct ArcomagePlayer {
     int resource_bricks = 0;
     int resource_gems = 0;
     int resource_beasts = 0;
-    int cards_at_hand[10] {};
+    int cards_at_hand[10] {}; // TODO(pskelton): make vector ?
     Pointi card_shift[10] {};
 };
 
@@ -148,8 +148,8 @@ using enum ArcomageMessageType;
 
 struct ArcomageGame_InputMSG {
     ArcomageMessageType am_input_type{ ARCO_MSG_NULL };
-    int field_4{};
-    int am_input_key{};  // waht other key
+    PlatformKey am_input_key{ PlatformKey::KEY_NONE };
+    int field_4{}; // unsused
 };
 
 class GUIFont;
@@ -201,7 +201,6 @@ struct ArcomageGame {
 
 extern ArcomageGame *pArcomageGame;
 extern ArcomageCard pCards[87];
-extern void set_stru1_field_8_InArcomage(int inValue);
 
 struct spark_point_struct {
     int spark_remaining_life = 0;
