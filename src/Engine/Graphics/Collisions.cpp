@@ -46,7 +46,7 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
  *                                      line p1 to p2 if moving along the `dir` axis AND the distance required to move for that
  *                                      collision is less than the current distance.
  */
-static bool CollideSphereWithLine(const Vec3f pos, const Vec3f p1, const Vec3f p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection, bool inside) {
+static bool CollideSphereWithLine(const Vec3f &pos, const Vec3f &p1, const Vec3f &p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection, bool inside) {
     Vec3f dir = collision_state.direction;
     Vec3f edge = p2 - p1;
     Vec3f sphereToVertex = p1 - pos;
