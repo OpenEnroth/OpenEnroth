@@ -56,8 +56,6 @@ int new_explosion_effect(Pointi *startXY, int effect_value);
 int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
-void HandleKeyPress(PlatformKey key);
-
 void am_DrawText(std::string_view str, Pointi *pXY);
 void DrawRect(Recti *pRect, Color uColor, char bSolidFill);
 
@@ -172,21 +170,11 @@ struct arcomage_mouse {
 
     int x = 0;
     int y = 0;
-    char curr_mouse_left = 0;
-    char mouse_left_state_changed = 0;
-    char curr_mouse_right = 0;
-    char mouse_right_state_changed = 0;
 };
 
 bool arcomage_mouse::Update() {
     this->x = pArcomageGame->mouse_x;
     this->y = pArcomageGame->mouse_y;
-    this->curr_mouse_left = pArcomageGame->mouse_left;
-    this->mouse_left_state_changed = (pArcomageGame->mouse_left == pArcomageGame->prev_mouse_left);
-    this->curr_mouse_right = pArcomageGame->mouse_right;
-    this->mouse_right_state_changed = (pArcomageGame->mouse_right == pArcomageGame->prev_mouse_right);
-    pArcomageGame->prev_mouse_left = pArcomageGame->mouse_left;
-    pArcomageGame->prev_mouse_right = pArcomageGame->mouse_right;
     return true;
 }
 
@@ -197,26 +185,14 @@ bool arcomage_mouse::Inside(Recti *pRect) {
 
 void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
     mouseControl = true;
-
-    if (right_left)
-        pArcomageGame->mouse_right = bDown;
-    else
-        pArcomageGame->mouse_left = bDown;
-
     // only accept one message input
     if (pArcomageGame->stru1.am_input_type == ARCO_MSG_NULL) {
         if (bDown) {
             pArcomageGame->check_exit = 0;
             if (!right_left) {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_LM_DOWN;
+                pArcomageGame->stru1.am_input_type = ARCO_MSG_PLAYCARD;
             } else {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_RM_DOWN;
-            }
-        } else {
-            if (!right_left) {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_LM_UP;
-            } else {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_RM_UP;
+                pArcomageGame->stru1.am_input_type = ARCO_MSG_DISCARD;
             }
         }
     }
@@ -236,8 +212,21 @@ void ArcomageGame::onKeyPress(PlatformKey key) {
             pArcomageGame->stru1.am_input_key = PlatformKey::KEY_NONE;
         } else if (pArcomageGame->check_exit == 1) {
             pArcomageGame->check_exit = 0; // absorb the keypress and reset the check status
-        } else {
-            pArcomageGame->stru1.am_input_type = ARCO_MSG_KEYDOWN;
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_PLAY_CARD, key)) {
+            mouseControl = false;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_PLAYCARD;
+            pArcomageGame->stru1.am_input_key = key;
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_DISCARD, key)) {
+            mouseControl = false;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_DISCARD;
+            pArcomageGame->stru1.am_input_key = key;
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_LEFT, key)) {
+            mouseControl = false;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_LEFT;
+            pArcomageGame->stru1.am_input_key = key;
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_RIGHT, key)) {
+            mouseControl = false;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_RIGHT;
             pArcomageGame->stru1.am_input_key = key;
         }
     }
@@ -1240,9 +1229,22 @@ char PlayerTurn(int player_num) {
                     pArcomageGame->check_exit = 1;
                 }
                 break;
-            case ARCO_MSG_KEYDOWN:
-                HandleKeyPress(get_message.am_input_key);
+            case ARCO_MSG_LEFT: {
+                int maxIndex = GetPlayerHandCardCount(0) - 1;
+                if (current_card_slot_index <= 0)
+                    current_card_slot_index = maxIndex;
+                else
+                    current_card_slot_index--;
                 break;
+            }
+            case ARCO_MSG_RIGHT: {
+                int maxIndex = GetPlayerHandCardCount(0) - 1;
+                if (current_card_slot_index == -1 || current_card_slot_index >= maxIndex)
+                    current_card_slot_index = 0;
+                else
+                    current_card_slot_index++;
+                break;
+            }
             default:
                 break;
         }
@@ -1290,9 +1292,7 @@ char PlayerTurn(int player_num) {
             // can play cards
             if (need_to_discard_card) {
                 // any mouse - try and discard
-                if ((get_message.am_input_type == ARCO_MSG_LM_DOWN || get_message.am_input_type == ARCO_MSG_RM_DOWN ||
-                    (get_message.am_input_type == ARCO_MSG_KEYDOWN && get_message.am_input_key == PlatformKey::KEY_SPACE) ||
-                    (get_message.am_input_type == ARCO_MSG_KEYDOWN && get_message.am_input_key == PlatformKey::KEY_CONTROL)) && DiscardCard(player_num, current_card_slot_index)) {
+                if ((get_message.am_input_type == ARCO_MSG_PLAYCARD || get_message.am_input_type == ARCO_MSG_DISCARD) && DiscardCard(player_num, current_card_slot_index)) {
                     if (hide_card_anim_start) hide_card_anim_runnning = 1;
                     if (num_cards_to_discard > 0) {
                         --num_cards_to_discard;
@@ -1301,15 +1301,15 @@ char PlayerTurn(int player_num) {
                     playdiscard_anim_start = 1;
                 }
             } else {
-                if (get_message.am_input_type == ARCO_MSG_LM_DOWN || (get_message.am_input_type == ARCO_MSG_KEYDOWN && get_message.am_input_key == PlatformKey::KEY_SPACE)) {
-                    // left mouse - try and play card
+                if (get_message.am_input_type == ARCO_MSG_PLAYCARD) {
+                    // try and play card
                     if (PlayCard(player_num, current_card_slot_index)) {
                         playdiscard_anim_start = 1;
                         if (hide_card_anim_start) hide_card_anim_runnning = 1;
                     }
                 }
-                if (get_message.am_input_type == ARCO_MSG_RM_DOWN || (get_message.am_input_type == ARCO_MSG_KEYDOWN && get_message.am_input_key == PlatformKey::KEY_CONTROL)) {
-                    // right mouse - try and discard card
+                if (get_message.am_input_type == ARCO_MSG_DISCARD) {
+                    // try and discard card
                     if (DiscardCard(player_num, current_card_slot_index)) {
                         playdiscard_anim_start = 1;
                         if (hide_card_anim_start) hide_card_anim_runnning = 1;
@@ -2884,28 +2884,6 @@ void GameResultsApply() {
         ++pParty->uNumArcomageLoses;
         if (pParty->uNumArcomageLoses > 1000000)
             pParty->uNumArcomageLoses = 1000000;
-    }
-}
-
-void HandleKeyPress(PlatformKey key) {
-    int maxIndex = GetPlayerHandCardCount(0) - 1;
-    switch (key) {
-        case PlatformKey::KEY_LEFT:
-            mouseControl = false;
-            if (current_card_slot_index <= 0)
-                current_card_slot_index = maxIndex;
-            else
-                current_card_slot_index--;
-            break;
-        case PlatformKey::KEY_RIGHT:
-            mouseControl = false;
-            if (current_card_slot_index == -1 || current_card_slot_index >= maxIndex)
-                current_card_slot_index = 0;
-            else
-                current_card_slot_index++;
-            break;
-        default:
-            break;
     }
 }
 

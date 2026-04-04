@@ -133,8 +133,10 @@ struct ArcomagePlayer {
     Pointi card_shift[10] {};
 };
 
+// TODO(pskelton): cleanup unused
 enum class ArcomageMessageType {
     ARCO_MSG_NULL,
+
     ARCO_MSG_KEYDOWN,
     ARCO_MSG_FORCEQUIT,
     ARCO_MSG_LM_UP,
@@ -142,7 +144,12 @@ enum class ArcomageMessageType {
     ARCO_MSG_LM_DOWN,
     ARCO_MSG_RM_DOWN,
     ARCO_MSG_SWITCH_FULLSCREEN, // Not used in Arcomage
-    ARCO_MSG_ESCAPE
+
+    ARCO_MSG_ESCAPE,
+    ARCO_MSG_PLAYCARD,
+    ARCO_MSG_DISCARD,
+    ARCO_MSG_LEFT,
+    ARCO_MSG_RIGHT,
 };
 using enum ArcomageMessageType;
 
@@ -177,9 +184,7 @@ struct ArcomageGame {
 
     int mouse_x = 0;
     int mouse_y = 0;
-    char mouse_left = 0;
     char field_39 = 0;
-    char mouse_right = 0;
     char field_3B = 0;
     GUIFont *pfntComic = nullptr;  // ptr_48;
     GUIFont *pfntArrus = nullptr;  // ptr_4C;
