@@ -905,10 +905,9 @@ void ArcomageGame::Loop() {
             ArcomageGame::MsgLoop(20, &v10);
             if (v10.am_input_type == ARCO_MSG_KEYDOWN) {
                 if (v10.field_4) break;
-                if (v10.am_input_key == PlatformKey::KEY_SPACE) break;
                 continue;
             }
-            if ((v10.am_input_type == ARCO_MSG_LM_DOWN) || (v10.am_input_type == ARCO_MSG_RM_DOWN)) break;
+            if ((v10.am_input_type == ARCO_MSG_PLAYCARD) || (v10.am_input_type == ARCO_MSG_DISCARD)) break;
             if (v10.am_input_type == ARCO_MSG_ESCAPE) break;
 
             Pointi explos_coords;
