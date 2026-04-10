@@ -338,13 +338,15 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
         return false; // We're moving away from the cylinder.
     }
 
-    radius += collision_state.radius_lo;
     Vec3f vert1 = center_lo;
-    Vec3f vert2 = center_lo + Vec3f(0, 0, height + collision_state.radius_lo);
+    Vec3f vert2 = center_lo + Vec3f(0, 0, height + radius);
+    radius += collision_state.radius_lo;
 
-    // For upright cylinders, find the optimal Z to test at: clamp the sphere's Z to within the cylinder's Z range.
-    // This ensures the distance check is purely in XY when there is vertical overlap, which is geometrically correct.
-    float opt_z = std::clamp(collision_state.position_lo.z, vert1.z, vert2.z);
+    // For upright cylinders, find the optimal Z to test at: clamp the midpoint of the cylinder's Z range
+    // to within the sphere's reachable Z extents. This avoids testing outside the sphere's actual reach.
+    float opt_z = std::clamp((vert1.z + vert2.z) / 2,
+                             collision_state.position_lo.z - collision_state.radius_lo,
+                             collision_state.position_hi.z + collision_state.radius_hi);
     Vec3f pos = Vec3f(collision_state.position_lo.x, collision_state.position_lo.y, opt_z);
 
     float newdist, intersection;
