@@ -12,7 +12,7 @@ original games on modern platforms. It uses the original game data, so you will 
 Currently only MM7 is playable. MM6 and MM8 support is planned — check the
 [milestones](https://github.com/OpenEnroth/OpenEnroth/milestones) to see where we're at.
 
-Supported platforms: **Windows**, **Linux**, **macOS**, and **Android** (experimental — UI is not yet optimized for touch).
+Supported platforms: **Windows**, **Linux**, **macOS**, and **Android** (experimental).
 
 ![screenshot_main](https://user-images.githubusercontent.com/24377109/79051217-491a7800-7c2f-11ea-85c7-f9120b7d79dd.png)
 
@@ -40,10 +40,6 @@ You can buy Might and Magic VII from [GOG.com](https://www.gog.com/en/game/might
 Copies from other sources (e.g. an original retail disc) should also work.
 
 At the very least, OpenEnroth requires the `ANIMS`, `DATA`, `MUSIC` and `SOUNDS` directories from the game data.
-
-OpenEnroth can load save files created by the original MM7 game, as long as both are pointing at the same save
-directory. On Windows, if the original game is installed in `Program Files`, Windows may redirect its saves to
-`AppData\Local\VirtualStore` — installing MM7 outside `Program Files` (e.g. `C:\Games`) avoids this.
 
 ### Non-GOG versions
 
@@ -123,36 +119,17 @@ control over install location. Requires Ubuntu 24.04 or a distribution with comp
 
 ### Android (Experimental)
 
-Android support is available but the UI is not yet optimized for touch screens — expect a rough experience.
+Android is not actively tested by the dev team — expect issues and be prepared to troubleshoot.
 
 1. Download `openenroth-release.apk` from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
 2. Install the APK on your device (you will need to allow installation from unknown sources in your device settings).
-3. Copy the game data (`ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) to your device and set `OPENENROTH_MM7_PATH` to
-   point to them, or place them in the app's expected data directory.
+3. Copy the game data (`ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) to
+   `/sdcard/Android/data/io.github.openenroth.openenroth/files/` on your device.
 
 
 # Development
 
 See [HACKING.md](HACKING.md) for build instructions, code style guidelines, and contribution guidelines.
-
-See the auto-generated [code documentation](https://openenroth.github.io/OpenEnroth/index.html).
-
-## Testing
-
-OpenEnroth has two kinds of tests:
-
-* **Unit tests** — standard Google Test tests covering isolated logic. Build `OpenEnroth_UnitTest` and run it.
-* **Game tests** — integration tests that run code between game frames, simulating input and checking game state.
-  These require the original game data. Build `Run_GameTest_Headless_Parallel` to run them all, or
-  `OpenEnroth_GameTest` to run a specific test (`--gtest_filter`, `--headless`, `--test-path`).
-
-To create a game test for a bug fix, record a trace in-game with `Ctrl+Shift+R`, then write a test that plays
-it back using `TestController::playTraceFromTestData`. See [HACKING.md](HACKING.md) for the full workflow.
-
-## Debug Console
-
-Press `~` while in-game to open the debug console. It accepts Lua commands and can be used to inspect and
-modify game state at runtime.
 
 
 # Screenshots
