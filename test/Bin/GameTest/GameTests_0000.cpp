@@ -19,6 +19,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Spells/CastSpellInfo.h"
 
 #include "Utility/ScopeGuard.h"
@@ -583,6 +584,7 @@ GAME_TEST(Issues, Issue414) {
     pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue::none(), 0, 0);
     game.tick(1);
     int manaSpentOnFailure = 100 - character.mana;
+    EXPECT_EQ(engine->_statusBar->get(), "Spell failed"); // Status bar shows failure message.
 
     // Cast while not cursed — spell succeeds.
     character.conditions.reset(CONDITION_CURSED);
@@ -590,6 +592,10 @@ GAME_TEST(Issues, Issue414) {
     pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue::none(), 0, 0);
     game.tick(1);
     int manaSpentOnSuccess = 100 - character.mana;
+    int fireSpikeCount = std::ranges::count_if(pSpriteObjects, [](const SpriteObject &obj) {
+        return obj.uSpellID == SPELL_FIRE_FIRE_SPIKE && obj.uObjectDescID != 0;
+    });
+    EXPECT_EQ(fireSpikeCount, 1); // One fire spike projectile was created.
 
     test.stopTaping();
 
