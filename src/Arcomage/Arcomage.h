@@ -129,12 +129,14 @@ struct ArcomagePlayer {
     int resource_bricks = 0;
     int resource_gems = 0;
     int resource_beasts = 0;
-    int cards_at_hand[10] {};
+    int cards_at_hand[10] {}; // TODO(pskelton): make vector ?
     Pointi card_shift[10] {};
 };
 
+// TODO(pskelton): cleanup unused
 enum class ArcomageMessageType {
     ARCO_MSG_NULL,
+
     ARCO_MSG_KEYDOWN,
     ARCO_MSG_FORCEQUIT,
     ARCO_MSG_LM_UP,
@@ -142,14 +144,19 @@ enum class ArcomageMessageType {
     ARCO_MSG_LM_DOWN,
     ARCO_MSG_RM_DOWN,
     ARCO_MSG_SWITCH_FULLSCREEN, // Not used in Arcomage
-    ARCO_MSG_ESCAPE
+
+    ARCO_MSG_ESCAPE,
+    ARCO_MSG_PLAYCARD,
+    ARCO_MSG_DISCARD,
+    ARCO_MSG_LEFT,
+    ARCO_MSG_RIGHT,
 };
 using enum ArcomageMessageType;
 
 struct ArcomageGame_InputMSG {
     ArcomageMessageType am_input_type{ ARCO_MSG_NULL };
-    int field_4{};
-    int am_input_key{};  // waht other key
+    PlatformKey am_input_key{ PlatformKey::KEY_NONE };
+    int field_4{}; // unsused
 };
 
 class GUIFont;
@@ -177,9 +184,7 @@ struct ArcomageGame {
 
     int mouse_x = 0;
     int mouse_y = 0;
-    char mouse_left = 0;
     char field_39 = 0;
-    char mouse_right = 0;
     char field_3B = 0;
     GUIFont *pfntComic = nullptr;  // ptr_48;
     GUIFont *pfntArrus = nullptr;  // ptr_4C;
@@ -201,7 +206,6 @@ struct ArcomageGame {
 
 extern ArcomageGame *pArcomageGame;
 extern ArcomageCard pCards[87];
-extern void set_stru1_field_8_InArcomage(int inValue);
 
 struct spark_point_struct {
     int spark_remaining_life = 0;

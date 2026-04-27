@@ -19,6 +19,8 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Spells/CastSpellInfo.h"
 
 #include "Utility/ScopeGuard.h"
 
@@ -563,6 +565,42 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     };
     // NB vanilla gets wrong count for character index 2 (13) - doesnt count learning
     checkSkills({ {0, 10}, {1, 11}, {2, 14}, {3, 9} });
+}
+
+GAME_TEST(Issues, Issue414) {
+    // Spell failure due to curse should spend the same mana as a successful cast.
+    test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    Character &character = pParty->pCharacters[0];
+    character.pActiveSkills[SKILL_FIRE] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
+    character.mana = 100;
+
+    // Cast while cursed — sequential RNG returns 0 for grng->random(100), which is < 50,
+    // so the spell always fails due to curse.
+    character.conditions.set(CONDITION_CURSED, Time::fromTicks(1));
+    pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue::none(), 0, 0);
+    game.tick(1);
+    int manaSpentOnFailure = 100 - character.mana;
+    EXPECT_EQ(engine->_statusBar->get(), "Spell failed"); // Status bar shows failure message.
+
+    // Cast while not cursed — spell succeeds.
+    character.conditions.reset(CONDITION_CURSED);
+    character.mana = 100;
+    pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue::none(), 0, 0);
+    game.tick(1);
+    int manaSpentOnSuccess = 100 - character.mana;
+    int fireSpikeCount = std::ranges::count_if(pSpriteObjects, [](const SpriteObject &obj) {
+        return obj.uSpellID == SPELL_FIRE_FIRE_SPIKE && obj.uObjectDescID != 0;
+    });
+    EXPECT_EQ(fireSpikeCount, 1); // One fire spike projectile was created.
+
+    test.stopTaping();
+
+    EXPECT_GT(manaSpentOnFailure, 0); // Mana was actually spent on failure.
+    EXPECT_EQ(manaSpentOnFailure, manaSpentOnSuccess);
 }
 
 GAME_TEST(Issues, Issue416) {

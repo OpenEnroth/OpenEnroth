@@ -589,6 +589,11 @@ class GameConfig : public Config {
         Key Escape = {this, INPUT_ACTION_ESCAPE, "escape", PlatformKey::KEY_ESCAPE, "Escape key."};
         Key ToggleMouseLook = {this, INPUT_ACTION_TOGGLE_MOUSE_LOOK, "toggle_mouse_look", PlatformKey::KEY_F10, "Toggle mouse look key."};
         Key ToggleWindowMode = {this, INPUT_ACTION_TOGGLE_WINDOW_MODE, "toggle_window_mode", PlatformKey::KEY_F11, "Toggle window mode key."};
+
+        Key ArcomagePlayCard = { this, INPUT_ACTION_ARCOMAGE_PLAY_CARD, "arcomage_play", PlatformKey::KEY_SPACE, "Play currently selected card." };
+        Key ArcomageDiscard = { this, INPUT_ACTION_ARCOMAGE_DISCARD, "arcomage_discard", PlatformKey::KEY_CONTROL, "Discard currently selected card." };
+        Key ArcomageLeft = { this, INPUT_ACTION_ARCOMAGE_LEFT, "arcomage_left", PlatformKey::KEY_LEFT, "Select next card to left." };
+        Key ArcomageRight = { this, INPUT_ACTION_ARCOMAGE_RIGHT, "arcomage_right", PlatformKey::KEY_RIGHT, "Select next card to right." };
     };
 
     Keybindings keybindings{this};

@@ -1,5 +1,6 @@
 #include "Arcomage.h"
 
+#include <algorithm>
 #include <string>
 
 #include "Engine/EngineGlobals.h"
@@ -135,11 +136,12 @@ int max_resources_amount = 100;
 int opponent_mastery = 1;
 char opponents_turn;
 char See_Opponents_Cards = 0;
-int current_player_num;
+int current_player_num; // 0 human 1 ai
 
 char need_to_discard_card;
 
-int current_card_slot_index;
+bool mouseControl = true;
+int current_card_slot_index; // currently hovered/selected card slot index for human player, -1 if not hovering any card slot
 int played_card_id;
 int discarded_card_id;
 
@@ -168,54 +170,36 @@ struct arcomage_mouse {
 
     int x = 0;
     int y = 0;
-    char curr_mouse_left = 0;
-    char mouse_left_state_changed = 0;
-    char curr_mouse_right = 0;
-    char mouse_right_state_changed = 0;
 };
 
 bool arcomage_mouse::Update() {
     this->x = pArcomageGame->mouse_x;
     this->y = pArcomageGame->mouse_y;
-    this->curr_mouse_left = pArcomageGame->mouse_left;
-    this->mouse_left_state_changed = (pArcomageGame->mouse_left == pArcomageGame->prev_mouse_left);
-    this->curr_mouse_right = pArcomageGame->mouse_right;
-    this->mouse_right_state_changed = (pArcomageGame->mouse_right == pArcomageGame->prev_mouse_right);
-    pArcomageGame->prev_mouse_left = pArcomageGame->mouse_left;
-    pArcomageGame->prev_mouse_right = pArcomageGame->mouse_right;
     return true;
 }
 
+// TODO(pskelton): duplicate of Rect::contains?
 bool arcomage_mouse::Inside(Recti *pRect) {
     return (x >= pRect->x) && (x <= pRect->x + pRect->h) && (y >= pRect->y) && (y <= pRect->y + pRect->w);
 }
 
 void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
-    if (right_left)
-        pArcomageGame->mouse_right = bDown;
-    else
-        pArcomageGame->mouse_left = bDown;
-
+    mouseControl = true;
     // only accept one message input
     if (pArcomageGame->stru1.am_input_type == ARCO_MSG_NULL) {
         if (bDown) {
             pArcomageGame->check_exit = 0;
             if (!right_left) {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_LM_DOWN;
+                pArcomageGame->stru1.am_input_type = ARCO_MSG_PLAYCARD;
             } else {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_RM_DOWN;
-            }
-        } else {
-            if (!right_left) {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_LM_UP;
-            } else {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_RM_UP;
+                pArcomageGame->stru1.am_input_type = ARCO_MSG_DISCARD;
             }
         }
     }
 }
 
 void ArcomageGame::OnMouseMove(int x, int y) {
+    mouseControl = true;
     pArcomageGame->mouse_x = x;
     pArcomageGame->mouse_y = y;
 }
@@ -223,13 +207,27 @@ void ArcomageGame::OnMouseMove(int x, int y) {
 void ArcomageGame::onKeyPress(PlatformKey key) {
     // only accept one message input
     if (pArcomageGame->stru1.am_input_type == ARCO_MSG_NULL) {
-        pArcomageGame->stru1.am_input_type = ARCO_MSG_KEYDOWN;
-
-        set_stru1_field_8_InArcomage(0);
         if (keyboardActionMapping->isBound(INPUT_ACTION_ESCAPE, key)) {
             pArcomageGame->stru1.am_input_type = ARCO_MSG_ESCAPE;
-        } else if (pArcomageGame->check_exit) {
-            pArcomageGame->check_exit = 0;
+            pArcomageGame->stru1.am_input_key = PlatformKey::KEY_NONE;
+        } else if (pArcomageGame->check_exit == 1) {
+            pArcomageGame->check_exit = 0; // absorb the keypress and reset the check status
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_PLAY_CARD, key)) {
+            mouseControl = false;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_PLAYCARD;
+            pArcomageGame->stru1.am_input_key = key;
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_DISCARD, key)) {
+            mouseControl = false;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_DISCARD;
+            pArcomageGame->stru1.am_input_key = key;
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_LEFT, key)) {
+            mouseControl = false;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_LEFT;
+            pArcomageGame->stru1.am_input_key = key;
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_RIGHT, key)) {
+            mouseControl = false;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_RIGHT;
+            pArcomageGame->stru1.am_input_key = key;
         }
     }
 }
@@ -543,6 +541,7 @@ void ArcomageGame::playSound(int event_id) {
 bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
     // blank message input
     pArcomageGame->stru1.am_input_type = ARCO_MSG_NULL;
+    pArcomageGame->stru1.am_input_key = PlatformKey::KEY_NONE;
 
     eventLoop->processMessages(eventHandler);
 
@@ -908,7 +907,7 @@ void ArcomageGame::Loop() {
                 if (v10.field_4) break;
                 continue;
             }
-            if ((v10.am_input_type == ARCO_MSG_LM_DOWN) || (v10.am_input_type == ARCO_MSG_RM_DOWN)) break;
+            if ((v10.am_input_type == ARCO_MSG_PLAYCARD) || (v10.am_input_type == ARCO_MSG_DISCARD)) break;
             if (v10.am_input_type == ARCO_MSG_ESCAPE) break;
 
             Pointi explos_coords;
@@ -1212,13 +1211,11 @@ char PlayerTurn(int player_num) {
         ArcomageGame::MsgLoop(0, &get_message);
         switch (get_message.am_input_type) {
             case ARCO_MSG_FORCEQUIT:
-                if (get_message.field_4 == 129 && get_message.am_input_key == 1) {
+                if (get_message.field_4 == 129 && get_message.am_input_key == PlatformKey::KEY_ESCAPE) { // TODO(pskelton): was 1 - what was this meant to do? Check for dual key press??
                     num_actions_left = 0;
                     break_loop = true;
                     pArcomageGame->force_am_exit = 1;
                 }
-                break;
-            case ARCO_MSG_SWITCH_FULLSCREEN:
                 break;
             case ARCO_MSG_ESCAPE:
                 if (pArcomageGame->check_exit == 1) {
@@ -1231,6 +1228,22 @@ char PlayerTurn(int player_num) {
                     pArcomageGame->check_exit = 1;
                 }
                 break;
+            case ARCO_MSG_LEFT: {
+                int maxIndex = GetPlayerHandCardCount(0) - 1;
+                if (current_card_slot_index <= 0)
+                    current_card_slot_index = maxIndex;
+                else
+                    current_card_slot_index--;
+                break;
+            }
+            case ARCO_MSG_RIGHT: {
+                int maxIndex = GetPlayerHandCardCount(0) - 1;
+                if (current_card_slot_index == -1 || current_card_slot_index >= maxIndex)
+                    current_card_slot_index = 0;
+                else
+                    current_card_slot_index++;
+                break;
+            }
             default:
                 break;
         }
@@ -1278,7 +1291,7 @@ char PlayerTurn(int player_num) {
             // can play cards
             if (need_to_discard_card) {
                 // any mouse - try and discard
-                if ((get_message.am_input_type == ARCO_MSG_LM_DOWN || get_message.am_input_type == ARCO_MSG_RM_DOWN) && DiscardCard(player_num, current_card_slot_index)) {
+                if ((get_message.am_input_type == ARCO_MSG_PLAYCARD || get_message.am_input_type == ARCO_MSG_DISCARD) && DiscardCard(player_num, current_card_slot_index)) {
                     if (hide_card_anim_start) hide_card_anim_runnning = 1;
                     if (num_cards_to_discard > 0) {
                         --num_cards_to_discard;
@@ -1287,15 +1300,15 @@ char PlayerTurn(int player_num) {
                     playdiscard_anim_start = 1;
                 }
             } else {
-                if (get_message.am_input_type == ARCO_MSG_LM_DOWN) {
-                    // left mouse - try and play card
+                if (get_message.am_input_type == ARCO_MSG_PLAYCARD) {
+                    // try and play card
                     if (PlayCard(player_num, current_card_slot_index)) {
                         playdiscard_anim_start = 1;
                         if (hide_card_anim_start) hide_card_anim_runnning = 1;
                     }
                 }
-                if (get_message.am_input_type == ARCO_MSG_RM_DOWN) {
-                    // right mouse - try and discard card
+                if (get_message.am_input_type == ARCO_MSG_DISCARD) {
+                    // try and discard card
                     if (DiscardCard(player_num, current_card_slot_index)) {
                         playdiscard_anim_start = 1;
                         if (hide_card_anim_start) hide_card_anim_runnning = 1;
@@ -1329,7 +1342,9 @@ void DrawGameUI(int animation_stage) {
     DrawPlayersText();    //рисуем текст
 
     DrawCardAnimation(animation_stage);
-    current_card_slot_index = DrawCardsRectangles(current_player_num);
+
+    if (current_player_num == 0)
+        current_card_slot_index = DrawCardsRectangles(current_player_num);
 
     // update explosion effects
     for (int i = 0; i < 10; ++i) {
@@ -2028,7 +2043,7 @@ signed int DrawCardsRectangles(int player_num) {
                     }
 
                     // see if mouse is hovering
-                    if (get_mouse.Inside(&pRect)) {
+                    if (mouseControl && get_mouse.Inside(&pRect) || mouseControl == false && current_card_slot_index == hand_index) {
                         if (CanCardBePlayed(player_num, hand_index))
                             color = colorTable.White;  //белый цвет - white frame
                         else
@@ -2054,6 +2069,8 @@ signed int DrawCardsRectangles(int player_num) {
             }
         }
     }
+
+    if (mouseControl == false) return std::max(current_card_slot_index - 1, 0);
     // no card hovered
     return -1;
 }
@@ -2960,74 +2977,5 @@ void DrawRect(Recti *pRect, Color uColor, char bSolidFill) {
         render->RasterLine2D(pRect->bottomRight(), pRect->bottomLeft(), uColor);
         render->RasterLine2D(pRect->bottomLeft(), pRect->topLeft(), uColor);
         render->EndLines2D();
-    }
-}
-
-// TODO(pskelton): restore this using PlatformKey so can play with keyboard?
-void set_stru1_field_8_InArcomage(int inValue) {  // keyboard input - broken atm
-    switch (inValue) {
-        case 91:
-            pArcomageGame->stru1.am_input_key = 123;
-            break;
-        case 92:
-            pArcomageGame->stru1.am_input_key = 124;
-            break;
-        case 93:
-            pArcomageGame->stru1.am_input_key = 125;
-            break;
-        case 96:
-            pArcomageGame->stru1.am_input_key = 126;
-            break;
-        case 61:
-            pArcomageGame->stru1.am_input_key = 43;
-            break;
-        case 55:
-            pArcomageGame->stru1.am_input_key = 38;
-            break;
-        case 56:
-            pArcomageGame->stru1.am_input_key = 42;
-            break;
-        case 57:
-            pArcomageGame->stru1.am_input_key = 40;
-            break;
-        case 59:
-            pArcomageGame->stru1.am_input_key = 58;
-            break;
-        case 54:
-            pArcomageGame->stru1.am_input_key = 94;
-            break;
-        case 50:
-            pArcomageGame->stru1.am_input_key = 64;
-            break;
-        case 51:
-            pArcomageGame->stru1.am_input_key = 35;
-            break;
-        case 52:
-            pArcomageGame->stru1.am_input_key = 36;
-            break;
-        case 53:
-            pArcomageGame->stru1.am_input_key = 37;
-            break;
-        case 49:
-            pArcomageGame->stru1.am_input_key = 33;
-            break;
-        case 39:
-            pArcomageGame->stru1.am_input_key = 34;
-            break;
-        case 44:
-            pArcomageGame->stru1.am_input_key = 60;
-            break;
-        case 46:
-            pArcomageGame->stru1.am_input_key = 62;
-            break;
-        case 47:
-            pArcomageGame->stru1.am_input_key = 63;
-            break;
-        case 48:
-            pArcomageGame->stru1.am_input_key = 41;
-            break;
-        default:
-            pArcomageGame->stru1.am_input_key = inValue;
-            break;
     }
 }
