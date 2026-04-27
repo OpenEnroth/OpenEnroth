@@ -2123,7 +2123,7 @@ void OnPaperdollLeftClick() {
                 pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
                 pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
                 pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
-                pSpellInfo->targetInventoryIndex = v34 - 1;
+                pSpellInfo->targetInventoryIndex = entry.index();
 
                 ptr_50C9A4_ItemToEnchant = entry.get();
                 IsEnchantingInProgress = false;
