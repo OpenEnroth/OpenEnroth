@@ -1069,6 +1069,7 @@ void CharacterUI_SkillsTab_ShowHint() {
                 Skill skill = static_cast<Skill>(pButton->msg_param);
                 std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill);
                 CharacterUI_DrawTooltip(localization->skillName(skill), pSkillDescText);
+                return;
             }
         }
     } else {
@@ -1435,6 +1436,7 @@ void ShowPopupShopSkills() {
                         // is this skill visible
                         std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill_id);
                         CharacterUI_DrawTooltip(localization->skillName(skill_id), pSkillDescText);
+                        return;
                     }
                 }
             }
