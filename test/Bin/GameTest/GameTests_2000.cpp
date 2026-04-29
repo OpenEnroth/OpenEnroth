@@ -25,7 +25,6 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIChest.h"
-#include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Library/LodFormats/LodFormats.h"
@@ -988,24 +987,28 @@ GAME_TEST(Issues, Issue2451b) {
 
 GAME_TEST(Issues, Issue2452) {
     // Right-clicking on skills tab could draw multiple overlapping tooltips per frame.
+    auto messageBoxesTape = tapes.messageBoxes();
     game.startNewGame();
     game.goToInventory(1);
     game.pressAndReleaseKey(PlatformKey::KEY_S);
     game.tick(2);
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
 
+    test.startTaping();
+
     // Sweep through skill list Y positions and verify at most one tooltip per frame.
-    int maxTooltips = 0;
     for (int y = 40; y < 200; y++) {
         game.pressButton(BUTTON_RIGHT, 100, y);
         game.tick(1);
-        maxTooltips = std::max(maxTooltips, tooltipDrawCount);
         game.releaseButton(BUTTON_RIGHT, 100, y);
         game.tick(1);
     }
 
-    EXPECT_GT(maxTooltips, 0);
-    EXPECT_LE(maxTooltips, 1);
+    auto flatMessageBoxes = messageBoxesTape.flatten();
+    EXPECT_GT(flatMessageBoxes.size(), 0u);
+    for (const auto &frame : messageBoxesTape) {
+        EXPECT_LE(frame.size(), 1u);
+    }
 }
 
 GAME_TEST(Issues, Issue2453) {

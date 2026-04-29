@@ -61,7 +61,6 @@ GraphicsImage *messagebox_border_right = nullptr;   // 5076A0
 bool holdingMouseRightButton = false;
 bool rightClickItemActionPerformed = false;
 bool identifyOrRepairReactionPlayed = false;
-int tooltipDrawCount = 0;
 
 struct stat_coord {
     int16_t x;
@@ -229,7 +228,6 @@ uint64_t GetExperienceRequiredForLevel(int level);
  * @offset 0x4179BC
  */
 static void CharacterUI_DrawTooltip(std::string_view title, std::string_view content) {
-    tooltipDrawCount++;
     Pointi pt = mouse->position();
 
     Recti popup_window(128, pt.y + 30, 384, 256);
@@ -1730,8 +1728,6 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
 
 //----- (00416D62) --------------------------------------------------------
 void UI_OnMouseRightClick(Pointi mousePos) {
-    tooltipDrawCount = 0;
-
     if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
         return;
 
