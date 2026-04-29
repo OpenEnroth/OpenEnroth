@@ -7,6 +7,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/MapEnumFunctions.h"
+#include "Engine/mm7_data.h"
 #include "Engine/MapEnums.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
@@ -19,10 +20,12 @@
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
+#include "Engine/Spells/CastSpellInfo.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
+#include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIStatusBar.h"
 
@@ -929,6 +932,49 @@ GAME_TEST(Issues, Issue2425) {
     EXPECT_EQ(screenTape.size(), 3); // game / house / game
     EXPECT_EQ(airMem, tape(false, true) ); // and weve bought both memberships
     EXPECT_EQ(fireMem, tape(false, true) );
+}
+
+GAME_TEST(Issues, Issue2451) {
+    // Enchantment spells (Fire Aura, etc.) failed on equipped items due to off-by-one in inventory index.
+    test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
+    game.startNewGame();
+
+    Character &character = pParty->pCharacters[0];
+    character.pActiveSkills[SKILL_FIRE] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
+    character.mana = 200;
+
+    // Clear existing main hand weapon and equip a plain broadsword.
+    if (character.inventory.entry(ITEM_SLOT_MAIN_HAND))
+        character.inventory.take(character.inventory.entry(ITEM_SLOT_MAIN_HAND));
+    character.pActiveSkills[SKILL_SWORD] = CombinedSkillValue(1, MASTERY_NOVICE);
+    character.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BROADSWORD));
+    ASSERT_TRUE(!!character.inventory.entry(ITEM_SLOT_MAIN_HAND));
+    EXPECT_EQ(character.inventory.entry(ITEM_SLOT_MAIN_HAND)->specialEnchantment, ITEM_ENCHANTMENT_NULL);
+
+    // Cast Fire Aura — this opens the enchantment targeting UI.
+    pushSpellOrRangedAttack(SPELL_FIRE_FIRE_AURA, 0, CombinedSkillValue::none(), 0, 0);
+    game.tick(5);
+    ASSERT_TRUE(IsEnchantingInProgress);
+
+    // Find the weapon on the paperdoll via the hit map and click it.
+    int weaponIndex = character.inventory.entry(ITEM_SLOT_MAIN_HAND).index();
+    Pointi clickPos;
+    bool found = false;
+    for (int x = 476; x < 640 && !found; x += 2) {
+        for (int y = 0; y < 345 && !found; y += 2) {
+            if (equipmentHitMap.query({x, y}, -1) == weaponIndex) {
+                clickPos = {x, y};
+                found = true;
+            }
+        }
+    }
+    ASSERT_TRUE(found);
+    game.pressAndReleaseButton(BUTTON_LEFT, clickPos.x, clickPos.y);
+    game.tick(5);
+
+    EXPECT_FALSE(IsEnchantingInProgress);
+    ASSERT_TRUE(!!character.inventory.entry(ITEM_SLOT_MAIN_HAND));
+    EXPECT_EQ(character.inventory.entry(ITEM_SLOT_MAIN_HAND)->specialEnchantment, ITEM_ENCHANTMENT_OF_FIRE);
 }
 
 GAME_TEST(Issues, Issue2453) {
