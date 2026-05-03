@@ -73,8 +73,8 @@ struct NPCProfession {
 };
 
 struct NPCProfessionChance {
-    unsigned int uTotalprofChance{};     // summ
-    char professionChancePerArea[60]{};  // prof position
+    IndexedArray<int, NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID> chanceByProfession = {{}};
+    int total = 0;
 };
 
 struct NPCGreeting {
@@ -108,11 +108,11 @@ struct NPCStats {
     std::array<NPCData, 501> pOriginalNPCData; // NPC data as read from npcdata.txt.
     std::array<NPCData, 501> pNPCData; // NPC data used during the game.
     std::array<IndexedArray<std::string, SEX_FIRST, SEX_LAST>, 540> pNPCNames = {};
-    IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {};  // count from 1
+    IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {};
     std::array<NPCData, 100> pAdditionalNPC = {{}};
     std::array<std::string, 52> pCatchPhrases{};   // 15CA4h
     std::array<std::string, 500> pNPCUnicNames{};  // from first batch
-    NPCProfessionChance pProfessionChance[77];  // 16544h profession chance in each area // TODO(captainurist): IndexedArray
+    IndexedArray<NPCProfessionChance, MAP_FIRST, MAP_LAST> pProfessionChance;
     int field_17884 = 0;
     int field_17888 = 0;
     NPCGreeting pNPCGreetings[206];

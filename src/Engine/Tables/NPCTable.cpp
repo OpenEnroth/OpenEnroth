@@ -6,6 +6,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
+#include "Engine/Objects/NPCEnumFunctions.h"
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Random/Random.h"
 
@@ -105,7 +106,7 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
     char *tmp_pos;
     int decode_step;
 
-    for (int i = 1; i < 59; ++i) {
+    for (NpcProfession i : allValidNpcProfessions()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -121,9 +122,7 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if ((decode_step > 0) && (decode_step < 77)) {
-                    pProfessionChance[decode_step].professionChancePerArea[i] = atoi(test_string);
-                } else if (decode_step == 0) {
-                    pProfessionChance[0].professionChancePerArea[i] = 10;
+                    pProfessionChance[static_cast<MapId>(decode_step)].chanceByProfession[i] = atoi(test_string);
                 }
             } else {
                 break_loop = true;
@@ -133,14 +132,9 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
         } while ((decode_step < 78) && !break_loop);
     }
 
-    for (int i = 0; i < 77; ++i) {
-        pProfessionChance[i].uTotalprofChance = 0;
-        for (int ii = 1; ii < 59; ++ii) {
-            pProfessionChance[i].uTotalprofChance += pProfessionChance[i].professionChancePerArea[ii];
-        }
-        pProfessionChance[i].professionChancePerArea[0] = 0;
-        pProfessionChance[i].professionChancePerArea[59] = 0;
-    }
+    for (MapId i : Segment(MAP_FIRST, MAP_LAST))
+        for (NpcProfession ii : allValidNpcProfessions())
+            pProfessionChance[i].total += pProfessionChance[i].chanceByProfession[ii];
 }
 
 // TODO(Nik-RE-dev): move out of table back to Engine/Objects/NPC.cpp
@@ -421,7 +415,7 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
     char *tmp_pos = nullptr;
     int decode_step;
 
-    for (NpcProfession i : Segment(NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID)) {
+    for (NpcProfession i : allValidNpcProfessions()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -472,7 +466,6 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     int rep_gen;
     int uGeneratedPortret;    // ecx@23
     int test_prof_summ;       // ecx@37
-    int gen_profession;       // eax@37
     int max_prof_cap;         // edx@37
                               // signed int result; // eax@39
     Race uRace;                // [sp+Ch] [bp-Ch]@1
@@ -564,17 +557,16 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
         pNPCDataBuff->rep = 0;
     }
 
-    max_prof_cap = grng->random(pProfessionChance[std::to_underlying(uMapId)].uTotalprofChance) + 1;
+    max_prof_cap = grng->random(pProfessionChance[uMapId].total);
     test_prof_summ = 0;
-    gen_profession = 0;
-
-    if (max_prof_cap > 0) {
-        do {
-            test_prof_summ += pProfessionChance[std::to_underlying(uMapId)]
-                .professionChancePerArea[gen_profession++];
-        } while (test_prof_summ < max_prof_cap);
+    pNPCDataBuff->profession = NPC_PROFESSION_LAST_VALID;
+    for (NpcProfession i : allValidNpcProfessions()) {
+        test_prof_summ += pProfessionChance[uMapId].chanceByProfession[i];
+        if (test_prof_summ > max_prof_cap) {
+            pNPCDataBuff->profession = i;
+            break;
+        }
     }
-    pNPCDataBuff->profession = (NpcProfession)(gen_profession - 1);
     pNPCDataBuff->house = uLocation2D;
     pNPCDataBuff->field_24 = 1;
     pNPCDataBuff->canJoin = 1;
