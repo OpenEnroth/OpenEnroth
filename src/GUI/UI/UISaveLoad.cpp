@@ -81,9 +81,16 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
                 pSavegameList->pSavegameHeader[i].name = test;
             }
 
-            pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
-            if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
-                pSavegameList->pSavegameThumbnails[i]->release();
+            try {
+                pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
+
+                if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
+                    pSavegameList->pSavegameThumbnails[i]->release();
+                    pSavegameList->pSavegameThumbnails[i] = nullptr;
+                }
+            }
+            catch (const Exception& e) {
+                logger->debug("pSavegameList thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
                 pSavegameList->pSavegameThumbnails[i] = nullptr;
             }
 

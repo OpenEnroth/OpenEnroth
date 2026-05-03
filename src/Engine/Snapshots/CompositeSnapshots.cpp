@@ -695,7 +695,7 @@ void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
     // Share map deltas.
     dst->mapDeltas.clear();
     for (const auto &[key, value] : src.mapDeltas)
-        dst->mapDeltas[key] = Blob::share(value);
+        dst->mapDeltas[key] = Blob::copy(value);
 
     // Decode Lloyd's Beacon images into party.
     for (int i = 0; i < 4; i++) {
@@ -707,7 +707,7 @@ void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
         }
     }
 
-    dst->thumbnail = Blob::share(src.thumbnail);
+    dst->thumbnail = Blob::copy(src.thumbnail);
 }
 
 void serialize(const SaveGame_MM7 &src, Blob *dst) {
