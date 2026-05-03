@@ -76,10 +76,34 @@ GAME_TEST(Issues, Issue1038) {
     // Crash while fighting Eyes in Nighon Tunnels.
     // Was due to how iterating over a table of items blocking specific conditions was implemented, was tripping
     // either on CONDITION_SLEEP or CONDITION_INSANE - exact condition that used to trigger the bug is now lost to time.
+    test.prepareForNextTest();
+    game.startNewGame();
     auto conditionsTape = charTapes.conditions();
-    test.playTraceFromTestData("issue_1038.mm7", "issue_1038.json");
-    EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_INSANE, CONDITION_GOOD, CONDITION_INSANE},
-                                               {CONDITION_SLEEP, CONDITION_UNCONSCIOUS, CONDITION_GOOD, CONDITION_UNCONSCIOUS}));
+    test.startTaping();
+    game.tick();
+    pParty->pCharacters[0].SetCondition(CONDITION_SLEEP, 1);
+    pParty->pCharacters[1].SetCondition(CONDITION_INSANE, 1);
+    game.tick();
+    pParty->pCharacters[0].SetCondition(CONDITION_INSANE, 1);
+    pParty->pCharacters[1].SetCondition(CONDITION_SLEEP, 1);
+    game.tick();
+    pParty->pCharacters[0].receiveDamage(1, DAMAGE_FIRE);
+    game.tick();
+    pParty->pCharacters[0].SetCondition(CONDITION_INSANE, 1);
+    pParty->pCharacters[1].SetCondition(CONDITION_SLEEP, 1);
+    game.tick();
+    pParty->pCharacters[0].SetCondition(CONDITION_SLEEP, 1);
+    pParty->pCharacters[1].SetCondition(CONDITION_INSANE, 1);
+    game.tick();
+    pParty->pCharacters[1].SetCondition(CONDITION_UNCONSCIOUS, 1);
+    game.tick();
+    pParty->pCharacters[1].SetCondition(CONDITION_INSANE, 1);
+    game.tick();
+    pParty->pCharacters[1].SetCondition(CONDITION_SLEEP, 1);
+    game.tick();
+
+    EXPECT_EQ(conditionsTape.frontBack(), tape({ CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD },
+                                                { CONDITION_SLEEP, CONDITION_UNCONSCIOUS, CONDITION_GOOD, CONDITION_GOOD }));
 }
 
 GAME_TEST(Issues, Issue1040) {
