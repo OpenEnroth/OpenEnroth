@@ -116,18 +116,49 @@ UNIT_TEST(MemoryFileSystem, Streaming) {
     EXPECT_EQ(fs.stat("a"), FileStat(FILE_REGULAR, 0));
 }
 
+UNIT_TEST(MemoryFileSystem, ReadBlobBlocksWriting) {
+    // A Blob returned by read() shares the underlying memory with the file, so we treat it like an active reader -
+    // any attempt to write to the same path must fail until the Blob is destroyed.
+    MemoryFileSystem fs("");
+    fs.write("a", Blob::fromString("123"));
+
+    Blob blob0 = fs.read("a");
+    EXPECT_EQ(blob0.str(), "123");
+    EXPECT_ANY_THROW(fs.write("a", Blob::fromString("456")));
+    EXPECT_ANY_THROW((void) fs.openForWriting("a"));
+
+    // Sharing / sub-blobbing extends the lifetime, so writes must still fail.
+    Blob blob1 = Blob::share(blob0);
+    Blob blob2 = blob0.subBlob(0, 1);
+    blob0 = {};
+    EXPECT_ANY_THROW(fs.write("a", Blob::fromString("456")));
+
+    blob1 = {};
+    EXPECT_ANY_THROW(fs.write("a", Blob::fromString("456")));
+
+    // Once the last shared copy is gone, writing works again.
+    blob2 = {};
+    fs.write("a", Blob::fromString("456"));
+    EXPECT_EQ(fs.read("a").str(), "456");
+}
+
 UNIT_TEST(MemoryFileSystem, Remove) {
     MemoryFileSystem fs("");
 
     fs.write("a", Blob::fromString("123"));
+    fs.write("b", Blob::fromString("456"));
     std::unique_ptr<InputStream> input = fs.openForReading("a");
+    Blob blob = fs.read("b");
 
     EXPECT_TRUE(fs.remove("a"));
+    EXPECT_TRUE(fs.remove("b"));
     EXPECT_FALSE(fs.exists("a"));
+    EXPECT_FALSE(fs.exists("b"));
     EXPECT_EQ(fs.ls("").size(), 0);
 
     EXPECT_EQ(input->readAll(), "123"); // Input stream still readable, even though the file was removed.
     input->close();
+    EXPECT_EQ(blob.str(), "456"); // Blob from read() still readable, even though the file was removed.
 }
 
 UNIT_TEST(MemoryFileSystem, Lifetime) {
