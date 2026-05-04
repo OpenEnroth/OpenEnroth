@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
