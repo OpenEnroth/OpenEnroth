@@ -307,7 +307,7 @@ GAME_TEST(Issues, Issue626) {
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_LoadGame");
-    game.tick(10);
+    game.tick(3);
     game.pressGuiButton("LoadMenu_Slot1");
     game.tick(2);
     game.pressGuiButton("LoadMenu_Load");
@@ -318,7 +318,7 @@ GAME_TEST(Issues, Issue626) {
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_LoadGame");
-    game.tick(10);
+    game.tick(3);
 
     EXPECT_EQ(pSavegameList->selectedSlot, 1);
 }
@@ -480,7 +480,7 @@ GAME_TEST(Issues, Issue689) {
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_LoadGame");
-    game.tick(10);
+    game.tick(3);
     game.pressGuiButton("LoadMenu_Scroll"); // Should not crash.
     game.tick(2);
     game.pressGuiButton("LoadMenu_Slot0");

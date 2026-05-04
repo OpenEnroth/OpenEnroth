@@ -48,7 +48,11 @@ void MemoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
 }
 
 Blob MemoryFileSystem::_read(FileSystemPathView path) const {
-    return Blob::share(nodeForReading(path)->value()->blob);
+    // We mimic how Windows handles file mapping here - treating mapped files as if they are open for reading.
+    std::shared_ptr<MemoryFileData> data = nodeForReading(path)->value();
+    data->readerCount++;
+    std::shared_ptr<void> guard(nullptr, [data](void *) { data->readerCount--; });
+    return Blob::custom(data->blob.data(), data->blob.size(), std::move(guard)).withDisplayPath(displayPath(path));
 }
 
 void MemoryFileSystem::_write(FileSystemPathView path, const Blob &data) {

@@ -16,9 +16,11 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
+#include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIChest.h"
 
@@ -54,7 +56,7 @@ GAME_TEST(Issues, Issue2002) {
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_LoadGame");
-    game.tick(10);
+    game.tick(3);
     game.pressGuiButton("LoadMenu_Slot0");
     game.tick(2);
     game.pressGuiButton("LoadMenu_Load");
@@ -917,7 +919,7 @@ GAME_TEST(Issues, Issue2408) {
 }
 
 GAME_TEST(Issues, Issue2425) {
-    //Segmentation fault when trying to buy Fire Guild membership on Emerald Island
+    // Segmentation fault when trying to buy Fire Guild membership on Emerald Island.
     auto screenTape = tapes.screen();
     auto airMem = tapes.custom([] -> bool { return pParty->activeCharacter()._achievedAwardsBits[AWARD_MEMBERSHIP_AIR_GUILD]; });
     auto fireMem = tapes.custom([] -> bool { return pParty->activeCharacter()._achievedAwardsBits[AWARD_MEMBERSHIP_FIRE_GUILD]; });
@@ -925,4 +927,55 @@ GAME_TEST(Issues, Issue2425) {
     EXPECT_EQ(screenTape.size(), 3); // game / house / game
     EXPECT_EQ(airMem, tape(false, true) ); // and weve bought both memberships
     EXPECT_EQ(fireMem, tape(false, true) );
+}
+
+GAME_TEST(Issues, Issue2453) {
+    // Overwriting the last loaded save will crash to desktop.
+    auto loadingTape = tapes.custom([] { return pGameLoadingUI_ProgressBar->IsActive(); });
+    game.startNewGame();
+    test.startTaping();
+
+    // Drop autosave so it doesn't mess things up for us.
+    ufs->remove("saves/autosave.mm7");
+
+    // First save into slot 0.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Slot0");
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_0);
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Save");
+    game.tick(10);
+    EXPECT_EQ(ufs->ls("saves").size(), 1);
+    Blob firstSave = ufs->read("saves/save000.mm7");
+
+    // Load it back.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_LoadGame");
+    game.tick(3);
+    game.pressGuiButton("LoadMenu_Slot0");
+    game.tick(2);
+    game.pressGuiButton("LoadMenu_Load");
+    game.tick(2);
+    game.skipLoadingScreen();
+    game.tick(2);
+
+    // Save over the same slot — the existing title should be preserved, no need to retype.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Slot0");
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Save");
+    game.tick(10);
+    EXPECT_EQ(ufs->ls("saves").size(), 1);
+    Blob secondSave = ufs->read("saves/save000.mm7");
+    EXPECT_NE(firstSave.str(), secondSave.str()); // Save was actually overwritten.
+
+    EXPECT_GE(loadingTape.count(true), 1); // Loading screen was shown.
 }

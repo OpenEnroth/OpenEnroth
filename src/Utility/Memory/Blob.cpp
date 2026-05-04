@@ -150,3 +150,11 @@ Blob Blob::share(const Blob &other) {
     result._displayPath = other._displayPath;
     return result;
 }
+
+Blob Blob::custom(const void *data, size_t size, std::shared_ptr<void> state) {
+    Blob result;
+    result._data = data;
+    result._size = size;
+    result._state = std::move(state);
+    return result;
+}

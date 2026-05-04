@@ -48,6 +48,8 @@ class Blob final {
      * Also, this function doesn't throw `std::out_of_range` if `offset` is larger than the blob's size, returning
      * an empty blob in this case instead.
      *
+     * Note that the source blob's display path is NOT copied - call `withDisplayPath` on the result to set one.
+     *
      * @param offset                    Offset in the blob.
      * @param size                      Size of the subblob.
      * @return                          Subblob that shares the ownership of the underlying memory with this blob.
@@ -136,6 +138,16 @@ class Blob final {
      * @return                          Blob that shares the memory ownership with `other`.
      */
     [[nodiscard]] static Blob share(const Blob &other);
+
+    /**
+     * Constructs a `Blob` from raw `data`/`size` with caller-provided lifetime state. The caller is responsible for
+     * ensuring that `state` keeps `data` valid. Call `withDisplayPath` on the result to set a display path.
+     *
+     * @param data                      Memory region pointer.
+     * @param size                      Memory region size.
+     * @param state                     Lifetime guard for `data`. May be null for non-owning views.
+     */
+    [[nodiscard]] static Blob custom(const void *data, size_t size, std::shared_ptr<void> state);
 
     friend void swap(Blob &l, Blob &r) {
         using std::swap;
