@@ -29,6 +29,22 @@ UNIT_TEST(View, Drop) {
     EXPECT_EQ(r4, std::vector<int>({}));
 }
 
+UNIT_TEST(View, Take) {
+    std::vector<int> v = {1, 2, 3, 4, 5};
+
+    std::vector<int> r1 = view(v).take(2);
+    EXPECT_EQ(r1, std::vector<int>({1, 2}));
+
+    std::vector<int> r2 = view(v).take(0);
+    EXPECT_EQ(r2, std::vector<int>({}));
+
+    std::vector<int> r3 = view(v).take(5);
+    EXPECT_EQ(r3, std::vector<int>({1, 2, 3, 4, 5}));
+
+    std::vector<int> r4 = view(v).take(100);
+    EXPECT_EQ(r4, std::vector<int>({1, 2, 3, 4, 5}));
+}
+
 UNIT_TEST(View, Skip) {
     std::vector<std::string_view> v = {"hello", "", "world", "", "", "!"};
 

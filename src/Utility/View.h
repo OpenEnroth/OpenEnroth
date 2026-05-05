@@ -87,7 +87,7 @@ class ResizeView {
  * CRTP mixin that provides a fluent range API on top of `std::ranges::view_interface`.
  *
  * Any class that inherits `ViewInterface<Derived>` and provides `begin()`/`end()` gets:
- * - `drop(n)`, `skip(value)`, `replace(from, to)`, `resize(n, value)`, `zip(other)` — chainable range transformations.
+ * - `drop(n)`, `take(n)`, `skip(value)`, `replace(from, to)`, `resize(n, value)`, `zip(other)` — chainable range transformations.
  * - `to(&container)` — populate an existing container.
  * - `operator Container()` — implicit conversion to a container.
  * - `empty()`, `size()`, `operator bool` — from `view_interface`.
@@ -104,6 +104,10 @@ class ViewInterface : public std::ranges::view_interface<Derived> {
  public:
     [[nodiscard]] auto drop(size_t n) {
         return detail::ViewWrapper(std::views::drop(derived(), n));
+    }
+
+    [[nodiscard]] auto take(size_t n) {
+        return detail::ViewWrapper(std::views::take(derived(), n));
     }
 
     [[nodiscard]] auto skip(auto value) {
