@@ -124,6 +124,7 @@ jobs:
           /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "ndk;$NDK_VERSION"
 
       # We need gcc-multilib for host-side tools (luajit's buildvm) when building for armeabi-v7a. Why? No idea.
+      # buildvm is plain C, so any gcc works - we don't need gcc-15.
       - name: '[android] Install dependencies'
         if: env.MATRIX_PLATFORM == 'android'
         uses: Wandalen/wretry.action@master
@@ -132,8 +133,6 @@ jobs:
           attempt_delay: 5000
           command: |
             if [[ "${{env.MATRIX_ARCHITECTURE}}" = "universal" || "${{env.MATRIX_ARCHITECTURE}}" = "armeabi-v7a" ]]; then
-              # Multilib needed for luajit's buildvm which has to match the target's pointer size (-m32 on a 64-bit
-              # host). buildvm is plain C, so any gcc works - we don't need gcc-15.
               sudo apt-get update
               sudo apt-get install -y gcc-multilib g++-multilib
             fi
