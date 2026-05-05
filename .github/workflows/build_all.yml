@@ -155,9 +155,9 @@ jobs:
               sudo dpkg --add-architecture i386
             fi
             sudo apt-get update
-            # gcc-multilib gives us 32-bit libc/libstdc++ headers needed by both:
-            # - the gcc-15 build below (--enable-multilib), and
-            # - luajit's host-side buildvm when targeting 32-bit.
+            # gcc-multilib pulls in libc6-dev-i386 (32-bit C headers/libs), which the gcc-15 build below
+            # needs to compile its 32-bit libgcc and libstdc++ when --enable-multilib is on. gcc itself
+            # doesn't bundle libc.
             # libgmp/mpfr/mpc/isl + flex + bison are gcc-15 build prerequisites.
             sudo apt-get install -y gcc-multilib g++-multilib lld libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
