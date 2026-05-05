@@ -180,7 +180,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/gcc-15
-          key: gcc-15-${{runner.os}}-${{hashFiles('scripts/build_gcc_15.sh')}}
+          key: gcc-15-${{env.ImageOS}}-${{runner.arch}}-${{hashFiles('scripts/build_gcc_15.sh')}}
 
       - name: '[linux] Build gcc-15'
         if: env.MATRIX_PLATFORM == 'linux' && steps.gcc-cache.outputs.cache-hit != 'true'
