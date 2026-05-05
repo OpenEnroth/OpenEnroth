@@ -58,8 +58,9 @@ void loadGame(int uSlot) {
 
     std::string filename = fmt::format("saves/{}", pSavegameList->pFileList[uSlot]);
 
+    // Blob::copy below detaches from the underlying file so subsequent saves to the same path are not blocked.
     SaveGame state;
-    deserialize(ufs->read(filename), &state, tags::via<SaveGame_MM7>);
+    deserialize(Blob::copy(ufs->read(filename)), &state, tags::via<SaveGame_MM7>);
 
     // Move loaded state to global variables.
     *pParty = std::move(state.party);
