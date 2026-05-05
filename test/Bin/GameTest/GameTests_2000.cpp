@@ -950,7 +950,7 @@ GAME_TEST(Issues, Issue2453) {
     game.pressGuiButton("SaveMenu_Save");
     game.tick(10);
     EXPECT_EQ(ufs->ls("saves").size(), 1);
-    Blob firstSave = ufs->read("saves/save000.mm7");
+    Blob firstSave = Blob::copy(ufs->read("saves/save000.mm7"));
 
     // Load it back.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
@@ -974,7 +974,7 @@ GAME_TEST(Issues, Issue2453) {
     game.pressGuiButton("SaveMenu_Save");
     game.tick(10);
     EXPECT_EQ(ufs->ls("saves").size(), 1);
-    Blob secondSave = ufs->read("saves/save000.mm7");
+    Blob secondSave = Blob::copy(ufs->read("saves/save000.mm7"));
     EXPECT_NE(firstSave.str(), secondSave.str()); // Save was actually overwritten.
 
     EXPECT_GE(loadingTape.count(true), 1); // Loading screen was shown.
