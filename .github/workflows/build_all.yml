@@ -155,19 +155,43 @@ jobs:
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
               sudo dpkg --add-architecture i386
             fi
-            # PPA needed for gcc-15 which isn't in ubuntu-24.04 repos.
-            sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
             sudo apt-get update
+            # gcc-multilib gives us 32-bit libc/libstdc++ headers needed by both:
+            # - the gcc-15 build below (--enable-multilib), and
+            # - luajit's host-side buildvm when targeting 32-bit.
+            # libgmp/mpfr/mpc/isl + flex + bison are gcc-15 build prerequisites.
+            sudo apt-get install -y gcc-multilib g++-multilib lld libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
-              sudo apt-get install -y gcc-15-multilib g++-15-multilib lld
               sudo apt-get install -y libglu1-mesa-dev:i386
               sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
             fi
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86_64" ]; then
-              sudo apt-get install -y gcc-15 g++-15 lld
               sudo apt-get install -y libglu1-mesa-dev
               sudo apt-get install -y libdwarf-dev libelf-dev
             fi
+
+      # gcc-15 from source, cached. ubuntu-24.04 ships gcc-13 which is too old for our C++23 usage,
+      # and the only apt source for gcc-15 on noble is ppa:ubuntu-toolchain-r/test - a single-region,
+      # uncached, throttled launchpad service that frequently stalls or fails CI runs. Cache hits
+      # restore in seconds; misses pay ~30 min once per cache-key (gcc version / build script) change.
+      # See scripts/build_gcc_15.sh.
+      - name: '[linux] Restore gcc-15 cache'
+        if: env.MATRIX_PLATFORM == 'linux'
+        id: gcc-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/gcc-15
+          key: gcc-15-${{runner.os}}-${{hashFiles('scripts/build_gcc_15.sh')}}
+
+      - name: '[linux] Build gcc-15'
+        if: env.MATRIX_PLATFORM == 'linux' && steps.gcc-cache.outputs.cache-hit != 'true'
+        run: bash scripts/build_gcc_15.sh
+
+      - name: '[linux] Add gcc-15 to PATH'
+        if: env.MATRIX_PLATFORM == 'linux'
+        run: |
+          echo "$HOME/gcc-15/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=$HOME/gcc-15/lib64:$HOME/gcc-15/lib32${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> $GITHUB_ENV
 
       - name: '[windows] Setup MSVC environment'
         if: env.MATRIX_PLATFORM == 'windows'
