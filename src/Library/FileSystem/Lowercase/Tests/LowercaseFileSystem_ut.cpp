@@ -267,6 +267,7 @@ UNIT_TEST(LowercaseFileSystem, DisplayPath) {
 
     Blob blob = fs.read("a/a");
     EXPECT_EQ(blob.displayPath(), "ram://A/A");
+    blob = {};
 
     std::unique_ptr<InputStream> input = fs.openForReading("a/a");
     EXPECT_EQ(input->displayPath(), "ram://A/A");
