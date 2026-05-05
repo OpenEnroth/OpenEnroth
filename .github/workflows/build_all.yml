@@ -174,23 +174,27 @@ jobs:
       # uncached, throttled launchpad service that frequently stalls or fails CI runs. Cache hits
       # restore in seconds; misses pay ~30 min once per cache-key (gcc version / build script) change.
       # See scripts/build_gcc_15.sh.
+      - name: '[linux] Set GCC_PREFIX'
+        if: env.MATRIX_PLATFORM == 'linux'
+        run: echo "GCC_PREFIX=$HOME/gcc-15" >> "$GITHUB_ENV"
+
       - name: '[linux] Restore gcc-15 cache'
         if: env.MATRIX_PLATFORM == 'linux'
         id: gcc-cache
         uses: actions/cache@v4
         with:
-          path: ~/gcc-15
+          path: ${{env.GCC_PREFIX}}
           key: gcc-15-${{env.ImageOS}}-${{runner.arch}}-${{hashFiles('scripts/build_gcc_15.sh')}}
 
       - name: '[linux] Build gcc-15'
         if: env.MATRIX_PLATFORM == 'linux' && steps.gcc-cache.outputs.cache-hit != 'true'
-        run: bash scripts/build_gcc_15.sh
+        run: bash scripts/build_gcc_15.sh "$GCC_PREFIX"
 
       - name: '[linux] Add gcc-15 to PATH'
         if: env.MATRIX_PLATFORM == 'linux'
         run: |
-          echo "$HOME/gcc-15/bin" >> $GITHUB_PATH
-          echo "LD_LIBRARY_PATH=$HOME/gcc-15/lib64:$HOME/gcc-15/lib32${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> $GITHUB_ENV
+          echo "$GCC_PREFIX/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=$GCC_PREFIX/lib64:$GCC_PREFIX/lib32${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       - name: '[windows] Setup MSVC environment'
         if: env.MATRIX_PLATFORM == 'windows'

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds gcc-15 from source and installs to $HOME/gcc-15.
+# Builds gcc-15 from source and installs to the path passed as $1.
 #
 # Why? ubuntu-24.04 (the runner OS we use) ships gcc-13, which is too old for the C++23 features
 # OpenEnroth uses. The only apt source for gcc-15 on noble is the ubuntu-toolchain-r/test PPA, which
@@ -8,7 +8,9 @@
 # refusals). Building gcc-15 once and caching the install directory is more reliable than depending
 # on the PPA every run.
 #
-# Output: $HOME/gcc-15/{bin,lib,...} with binaries named gcc-15 / g++-15 (matching the existing
+# Usage: scripts/build_gcc_15.sh <prefix>
+#
+# Produces <prefix>/{bin,lib,...} with binaries named gcc-15 / g++-15 (matching the existing
 # CMAKE_C_COMPILER / CMAKE_CXX_COMPILER values in build_all.yml).
 #
 # `--enable-multilib` so the same install serves both x86_64 and x86 (32-bit) targets.
@@ -16,8 +18,13 @@
 # 3-stage bootstrap; we don't need a self-hosting compiler in CI).
 set -euxo pipefail
 
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <prefix>" >&2
+    exit 1
+fi
+
+PREFIX="$1"
 GCC_VERSION="${GCC_VERSION:-15.2.0}"
-PREFIX="${PREFIX:-$HOME/gcc-15}"
 
 WORKDIR="$(mktemp -d)"
 cd "${WORKDIR}"
