@@ -2,6 +2,7 @@
 
 #include <string>
 #include <array>
+#include <vector>
 
 #include "Engine/Data/HouseEnums.h"
 #include "Engine/Objects/NPCEnums.h"
@@ -83,10 +84,6 @@ struct NPCGreeting {
 };
 
 struct NPCStats {
-    inline NPCStats() {
-        uNumNPCNames[SEX_MALE] = uNumNPCNames[SEX_FEMALE] = 0;
-    }
-
     void Initialize(ResourceManager *resourceManager);
     void InitializeNPCNames(const Blob &npcNames);
     void InitializeNPCProfs(const Blob &npcProfs);
@@ -103,11 +100,28 @@ struct NPCStats {
      * @offset 0x476C60
      */
     void setNPCNamesOnLoad();
-    const std::string &sub_495366_MispronounceName(uint8_t firstLetter, Sex genderId);
+
+    /**
+     * Returns a random NPC name of the given gender starting with the same letter as `firstLetter`. Backs the
+     * `%13` placeholder in `BuildDialogueString` - NPC dialogue templates that address the player by a similar-
+     * sounding (mispronounced) name, e.g. "O Ho! %13! Er, %13. I think. Whatever...".
+     *
+     * The picked name is cached per `firstLetter`, so within a session an NPC mispronounces the player's name
+     * the same way every time, and consecutive `%13` substitutions in the same template are consistent.
+     *
+     * Note: `%13` is only used by MM6's `npcbtb.txt`. MM7 has no templates that invoke this function.
+     *
+     * @param firstLetter               First letter of the player's name (case-insensitive).
+     * @param gender                    Player's gender. Determines which name pool to draw from.
+     * @return                          A name from `pNPCNames[gender]` that starts with `firstLetter`, or any
+     *                                  random name from that pool if no name with that letter exists.
+     * @offset 0x00495366
+     */
+    const std::string &sub_495366_MispronounceName(char firstLetter, Sex gender);
 
     std::array<NPCData, 501> pOriginalNPCData; // NPC data as read from npcdata.txt.
     std::array<NPCData, 501> pNPCData; // NPC data used during the game.
-    std::array<IndexedArray<std::string, SEX_FIRST, SEX_LAST>, 540> pNPCNames = {};
+    IndexedArray<std::vector<std::string>, SEX_FIRST, SEX_LAST> pNPCNames = {};
     IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {};
     std::array<NPCData, 100> pAdditionalNPC = {{}};
     std::array<std::string, 52> pCatchPhrases{};   // 15CA4h
@@ -122,7 +136,6 @@ struct NPCStats {
     int uNumNewNPCs = 0;
     int field_17FC8 = 0;
     int uNumNPCProfessions = 0;
-    IndexedArray<int, SEX_FIRST, SEX_LAST> uNumNPCNames = {};
 
     static int dword_AE336C_LastMispronouncedNameFirstLetter;
     static int dword_AE3370_LastMispronouncedNameResult;
