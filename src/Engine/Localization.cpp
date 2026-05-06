@@ -206,7 +206,6 @@ void Localization::initializeSpellNames() {
 }
 
 void Localization::initializeNpcProfessionNames() {
-    this->_npcProfessionNames[NoProfession]    = this->_localizationStrings[LSTR_NONE];
     this->_npcProfessionNames[Smith]           = this->_localizationStrings[LSTR_SMITH];
     this->_npcProfessionNames[Armorer]         = this->_localizationStrings[LSTR_ARMORER];
     this->_npcProfessionNames[Alchemist]       = this->_localizationStrings[LSTR_ALCHEMIST];
