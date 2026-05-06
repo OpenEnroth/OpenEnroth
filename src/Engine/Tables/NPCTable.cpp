@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <string>
+#include <vector>
 
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -354,7 +355,6 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
     std::string txtRaw(npcNames.str());
     strtok(txtRaw.data(), "\r");
 
-    int i;
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -364,17 +364,16 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
 
     uNewlNPCBufPos = 0;
 
-    for (i = 0; i < 540; ++i) {
+    pNPCNames.fill({});
+
+    for (int i = 0; i < 540; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
         do {
             c = *(unsigned char *)test_string;
             temp_str_len = 0;
-            if (c == '\t') {
-                if ((decode_step == 1) && (!uNumNPCNames[SEX_FEMALE]))
-                    uNumNPCNames[SEX_FEMALE] = i;
-            } else {
+            if (c != '\t') {
                 while ((c != '\n') && (c != '\t') && (c > 0)) {
                     ++temp_str_len;
                     c = test_string[temp_str_len];
@@ -385,19 +384,15 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
                 if (temp_str_len) {
                     *tmp_pos = 0;
                     if (decode_step == 0)
-                        pNPCNames[i][SEX_MALE] = removeQuotes(test_string);
+                        pNPCNames[SEX_MALE].emplace_back(removeQuotes(test_string));
                     else if (decode_step == 1)
-                        pNPCNames[i][SEX_FEMALE] = removeQuotes(test_string);
-                } else {
-                    if ((decode_step == 1) && (!uNumNPCNames[SEX_FEMALE]))
-                        uNumNPCNames[SEX_FEMALE] = i;
+                        pNPCNames[SEX_FEMALE].emplace_back(removeQuotes(test_string));
                 }
             }
             ++decode_step;
             test_string = tmp_pos + 1;
         } while ((decode_step < 2) && !break_loop);
     }
-    uNumNPCNames[SEX_MALE] = i;
 }
 
 void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
@@ -478,7 +473,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     Sex uNPCSex = sexForMonsterType(monsterType);
     uRace = raceForMonsterType(monsterType);
     pNPCDataBuff->sex = uNPCSex;
-    pNPCDataBuff->name = pNPCNames[grng->random(uNumNPCNames[uNPCSex])][uNPCSex];
+    pNPCDataBuff->name = grng->randomSample(pNPCNames[uNPCSex]);
 
     gen_attempts = 0;
     break_gen = false;
@@ -579,33 +574,28 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
 }
 
 //----- (00495366) --------------------------------------------------------
-const std::string &NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, Sex genderId) {
-    int pickedName;  // edx@2
+const std::string &NPCStats::sub_495366_MispronounceName(char firstLetter, Sex gender) {
+    int pickedName;
+
+    // TODO(captainurist): Caching in kinda wrong? Revisit when working on #mm6.
+    //                     See "O Ho! %13! Er, %13. I think. Whatever..."
 
     if (firstLetter == dword_AE336C_LastMispronouncedNameFirstLetter) {
         pickedName = dword_AE3370_LastMispronouncedNameResult;
     } else {
         dword_AE336C_LastMispronouncedNameFirstLetter = firstLetter;
-        if (this->uNumNPCNames[genderId] == 0) {
-            pickedName = vrng->random(this->uNumNPCNames[genderId == SEX_MALE ? SEX_FEMALE : SEX_MALE]);
-            // originally unmodified genderId was passed, but this will assert.
-        } else {
-            int rangeBottom = 0;
-            int rangeTop = 0;
-            for (int i = 0; i < this->uNumNPCNames[genderId]; ++i) {
-                if (tolower(this->pNPCNames[i][genderId][0])) {
-                    if (rangeBottom)
-                        rangeTop = i;
-                    else
-                        rangeBottom = i;
-                }
-            }
-            if (rangeTop != 0)
-                pickedName = rangeBottom + vrng->random(rangeTop - rangeBottom);
-            else
-                pickedName = vrng->random(this->uNumNPCNames[genderId]);
-        }
+        const std::vector<std::string> &names = this->pNPCNames[gender];
+
+        std::vector<int> matches;
+        for (int i = 0; i < static_cast<int>(names.size()); ++i)
+            if (tolower(names[i][0]) == tolower(firstLetter))
+                matches.push_back(i);
+
+        if (!matches.empty())
+            pickedName = vrng->randomSample(matches);
+        else
+            pickedName = vrng->random(names.size()); // No name with this letter - pick any.
     }
     dword_AE3370_LastMispronouncedNameResult = pickedName;
-    return this->pNPCNames[pickedName][genderId];
+    return this->pNPCNames[gender][pickedName];
 }

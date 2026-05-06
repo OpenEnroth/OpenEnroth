@@ -2020,7 +2020,7 @@ void Character::SetRecoveryTime(Duration rec) {
 //----- (0048E9B7) --------------------------------------------------------
 void Character::RandomizeName() {
     if (!portraitTimePassed)
-        name = pNPCStats->pNPCNames[grng->random(pNPCStats->uNumNPCNames[uSex])][uSex];
+        name = grng->randomSample(pNPCStats->pNPCNames[uSex]);
 }
 
 //----- (0048E9F4) --------------------------------------------------------
