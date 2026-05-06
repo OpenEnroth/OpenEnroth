@@ -1,47 +1,28 @@
 #include "QuestTable.h"
 
-#include <cstring>
+#include <cassert>
 #include <string>
+#include <vector>
+
+#include "Library/Serialization/Serialization.h"
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/String/Split.h"
 #include "Utility/String/Transformations.h"
 
 IndexedArray<std::string, QBIT_FIRST, QBIT_LAST> pQuestTable;
 
 void initializeQuests(const Blob &quests) {
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
+    // quests.txt table structure: quest bit | text (localized) | dev notes (not used) |
+    //                             quest giver name (not localized, not used).
+    pQuestTable.fill({});
 
-    std::string txtRaw(quests.str());
-    strtok(txtRaw.data(), "\r");
-    memset(pQuestTable.data(), 0, sizeof(pQuestTable));
-    for (auto i : pQuestTable.indices()) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                if (decode_step == 1)
-                    pQuestTable[i] = removeQuotes(test_string);
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 2) && !break_loop);
+    std::vector<std::string_view> tokens;
+    for (std::string_view line : split(quests.str()).by("\r\n").drop(1).skip("")) {
+        split(line).by('\t').to(&tokens);
+        assert(tokens.size() >= 2 && "Invalid number of tokens"); // TODO(captainurist): should not be an assert.
+
+        QuestBit qbit = static_cast<QuestBit>(fromString<int>(tokens[0]));
+        pQuestTable[qbit] = removeQuotes(tokens[1]);
     }
 }
-
