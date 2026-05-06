@@ -108,5 +108,7 @@ struct MonsterList {
     IndexedArray<MonsterDesc, MONSTER_FIRST, MONSTER_LAST> monsters;
 };
 
+MonsterId GetBaseMonsterId(MonsterId monsterId);
+
 extern MonsterStats *pMonsterStats;
 extern MonsterList *pMonsterList;
