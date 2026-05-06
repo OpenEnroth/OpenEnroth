@@ -9,7 +9,7 @@
 namespace detail {
 
 /**
- * Splitter for single-character separators, e.g. `'\t'`. Uses SIMD-optimized `memchr`.
+ * Splitter for single-character separators, e.g. `'\\t'`. Uses SIMD-optimized `memchr`.
  */
 class CharSplitter {
  public:
@@ -40,7 +40,7 @@ class CharSplitter {
 };
 
 /**
- * Splitter for multi-character separators, e.g. `"\r\n"`.
+ * Splitter for multi-character separators, e.g. `"\\r\\n"`.
  *
  * Uses `memchr` for the first character followed by `memcmp` for the rest. We're not using `std::search` here because
  * `memchr` is SIMD-optimized and ~2x faster on the data sizes we care about.
