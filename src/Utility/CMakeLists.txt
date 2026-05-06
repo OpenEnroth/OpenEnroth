@@ -12,7 +12,6 @@ set(UTILITY_SOURCES
         Streams/OutputStream.cpp
         String/Ascii.cpp
         String/Encoding.cpp
-        String/Split.cpp
         String/Transformations.cpp
         UnicodeCrt.cpp
         String/Wrap.cpp)

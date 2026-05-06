@@ -2,13 +2,15 @@
 
 #include <cassert>
 #include <cstring> // For memchr, memcmp.
-#include <algorithm> // For std::find.
 #include <string>
 
 #include "Utility/View.h"
 
 namespace detail {
 
+/**
+ * Splitter for single-character separators, e.g. `'\t'`. Uses SIMD-optimized `memchr`.
+ */
 class CharSplitter {
  public:
     using result_type = const char *;
@@ -19,7 +21,8 @@ class CharSplitter {
 
     result_type split(const char *begin, const char *end) const {
         assert(begin <= end);
-        return std::find(begin, end, _sep);
+        const char *p = static_cast<const char *>(memchr(begin, static_cast<unsigned char>(_sep), end - begin));
+        return p ? p : end;
     }
 
     const char *begin(result_type result) const {
@@ -168,6 +171,9 @@ class SplitView : public ViewInterface<SplitView<Splitter>> {
     const char *_end = nullptr;
 };
 
+/**
+ * Intermediate object returned by `split(s)` that exposes the `.by(...)` separator-selection step.
+ */
 class SplitProxy {
  public:
     explicit SplitProxy(std::string_view s) : _s(s) {}

@@ -176,10 +176,6 @@ class ViewWrapper : public ViewInterface<ViewWrapper<Range>> {
     Range _range;
 };
 
-// CTAD.
-template<class Range>
-ViewWrapper(Range) -> ViewWrapper<Range>;
-
 } // namespace detail
 
 #ifndef __DOXYGEN__ // Doxygen chokes here...
@@ -189,7 +185,8 @@ inline constexpr bool std::ranges::enable_borrowed_range<detail::ViewWrapper<Ran
 #endif
 
 /**
- * Wraps a range into a `ViewWrapper` with fluent view methods (`drop`, `skip`, `zip`, `to`).
+ * Wraps a range into a `ViewWrapper` with fluent view methods (`drop`, `take`, `skip`, `replace`, `resize`,
+ * `zip`, `to`, plus implicit conversion to a container).
  *
  * @param range                          Range to wrap.
  */
