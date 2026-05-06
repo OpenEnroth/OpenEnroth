@@ -218,7 +218,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     collision_state.total_move_distance = 0;
     for (int i = 0; i < 100; i++) {
         collision_state.uSectorID = 0;
-        collision_state.position_lo = pSpriteObjects[uLayingItemID].vPosition + Vec3f(0, 0, collision_state.radius_lo + 1);
+        collision_state.position_lo = pSpriteObjects[uLayingItemID].vPosition + Vec3f(0, 0, collision_state.radius_lo);
         collision_state.position_hi = collision_state.position_lo;
         collision_state.velocity = pSpriteObjects[uLayingItemID].vVelocity;
         if (collision_state.PrepareAndCheckIfStationary()) {
@@ -363,7 +363,7 @@ LABEL_25:
         collision_state.radius_hi = 0;
         collision_state.total_move_distance = 0;
         for (int loop = 0; loop < 100; loop++) {
-            collision_state.position_hi = pSpriteObject->vPosition + Vec3f(0, 0, collision_state.radius_lo + 1);
+            collision_state.position_hi = pSpriteObject->vPosition + Vec3f(0, 0, collision_state.radius_lo);
             collision_state.position_lo = collision_state.position_hi;
             collision_state.velocity = pSpriteObject->vVelocity;
             collision_state.uSectorID = pSpriteObject->uSectorID;

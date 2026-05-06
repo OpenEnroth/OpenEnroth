@@ -517,7 +517,7 @@ GAME_TEST(Issues, Issue1331) {
     EXPECT_EQ(pParty->pCharacters[2].inventory.entry(ITEM_SLOT_BOW)->specialEnchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reverse().adjacentDeltas().flatten().filter([] (int damage) { return damage > 0; }).minMax();
-    EXPECT_EQ(damageRange, tape(3, (43 + 12/*13*/) * 2)); // titan got lucky
+    EXPECT_EQ(damageRange, tape(2, (43 + 15) * 2)); // titan got lucky
     auto totalDamages = hpsTape.reverse().delta();
     EXPECT_TRUE(std::ranges::all_of(totalDamages, [](int damage) { return damage > 300; })); // Both titans are now pin cushions.
 }
