@@ -29,3 +29,7 @@ inline bool isMapUnderwater(MapId mapid) {
 inline bool isHirelingsBlockedOnMap(MapId mapid) {
     return (mapid == MAP_SHOALS) || (mapid == MAP_LINCOLN);
 }
+
+inline Segment<MapId> allMaps() {
+    return {MAP_FIRST, MAP_LAST};
+}

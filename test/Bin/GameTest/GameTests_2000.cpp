@@ -854,7 +854,7 @@ GAME_TEST(Issues, Issue2409) {
 
 GAME_TEST(Prs, Pr2354) {
     // Verify that all levels (indoor & outdoor) and their default deltas can be deserialized and reconstructed.
-    for (MapId mapId : Segment(MAP_FIRST, MAP_LAST)) {
+    for (MapId mapId : allMaps()) {
         std::string_view fileName = pMapStats->pInfos[mapId].fileName;
         std::string_view baseName = fileName.substr(0, fileName.size() - 4);
 

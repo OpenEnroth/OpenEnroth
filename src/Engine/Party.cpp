@@ -167,8 +167,6 @@ void ActionQueue::Add(PartyAction action) {
 
 bool Party::checkPartyPerceptionAgainstCurrentMap() {
     int maxPerception = 0;
-    bool result = 0;
-
     for (Character &player : this->pCharacters) {
         if (player.CanAct()) {
             int playerPerception = player.GetPerception();
@@ -176,9 +174,7 @@ bool Party::checkPartyPerceptionAgainstCurrentMap() {
                 maxPerception = playerPerception;
         }
     }
-    if (engine->_currentLoadedMapId >= MAP_FIRST && engine->_currentLoadedMapId <= MAP_LAST)
-        result = maxPerception >= 2 * pMapStats->pInfos[engine->_currentLoadedMapId].perceptionDifficulty;
-    return result;
+    return maxPerception >= 2 * pMapStats->pInfos[engine->_currentLoadedMapId].perceptionDifficulty;
 }
 
 int Party::canActCount() const {

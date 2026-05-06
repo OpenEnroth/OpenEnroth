@@ -921,7 +921,7 @@ void Game::processQueuedMessages() {
                 std::string status_string;
                 if (frameTableTxtLine.uPropCount == 1) {
                     MapId map_index = static_cast<MapId>(atoi(frameTableTxtLine.pProperties[0]));
-                    if (map_index < MAP_FIRST || map_index > MAP_LAST)
+                    if (!allMaps().contains(map_index))
                         continue;
                     engine->_transitionMapId = map_index;
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
