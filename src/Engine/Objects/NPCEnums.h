@@ -85,10 +85,7 @@ enum class NpcProfession : int32_t {
     Sage = 57,   // Monster ID: +6
     Hunter = 58,  // Monster ID: +6
 
-    NPC_PROFESSION_FIRST = NoProfession,
-    NPC_PROFESSION_LAST = Hunter,
-
-    NPC_PROFESSION_FIRST_VALID = Smith,
-    NPC_PROFESSION_LAST_VALID = NPC_PROFESSION_LAST
+    NPC_PROFESSION_FIRST = Smith,
+    NPC_PROFESSION_LAST = Hunter
 };
 using enum NpcProfession;

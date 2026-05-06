@@ -107,7 +107,7 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
     char *tmp_pos;
     int decode_step;
 
-    for (NpcProfession i : allValidNpcProfessions()) {
+    for (NpcProfession i : allNpcProfessions()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -134,7 +134,7 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
     }
 
     for (MapId i : Segment(MAP_FIRST, MAP_LAST))
-        for (NpcProfession ii : allValidNpcProfessions())
+        for (NpcProfession ii : allNpcProfessions())
             pProfessionChance[i].total += pProfessionChance[i].chanceByProfession[ii];
 }
 
@@ -410,7 +410,7 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
     char *tmp_pos = nullptr;
     int decode_step;
 
-    for (NpcProfession i : allValidNpcProfessions()) {
+    for (NpcProfession i : allNpcProfessions()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -554,8 +554,8 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
 
     max_prof_cap = grng->random(pProfessionChance[uMapId].total);
     test_prof_summ = 0;
-    pNPCDataBuff->profession = NPC_PROFESSION_LAST_VALID;
-    for (NpcProfession i : allValidNpcProfessions()) {
+    pNPCDataBuff->profession = NPC_PROFESSION_LAST;
+    for (NpcProfession i : allNpcProfessions()) {
         test_prof_summ += pProfessionChance[uMapId].chanceByProfession[i];
         if (test_prof_summ > max_prof_cap) {
             pNPCDataBuff->profession = i;
