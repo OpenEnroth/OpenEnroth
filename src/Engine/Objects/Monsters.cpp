@@ -891,7 +891,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                         }
                                         if (!pMonsterList->monsters.empty()) {
                                             infos[curr_rec_num].field_3C_some_special_attack =
-                                                std::to_underlying(pMonsterList->GetBaseMonsterIDByName(str));
+                                                std::to_underlying(GetBaseMonsterId(pMonsterList->GetMonsterIDByName(str)));
                                         }
                                         infos[curr_rec_num]
                                             .specialAbilityDamageDiceSides = 0;
@@ -941,11 +941,8 @@ MonsterId MonsterList::GetMonsterIDByName(std::string_view pMonsterName) {
     return MONSTER_INVALID;
 }
 
-MonsterId MonsterList::GetBaseMonsterIDByName(std::string_view pBaseMonsterName) {
-    MonsterId Id = GetMonsterIDByName(pBaseMonsterName);
-    if (Id == MONSTER_INVALID) {
-        return MONSTER_INVALID;
-    }
+MonsterId GetBaseMonsterId(MonsterId monsterId) {
+    if (monsterId == MONSTER_INVALID) return MONSTER_INVALID;
     // Base monster IDs are always the first in their group of 3 (e.g. MONSTER_ANGEL_A, MONSTER_ANGEL_B, MONSTER_ANGEL_C).
-    return MonsterId(std::to_underlying(Id) - ((std::to_underlying(Id) - 1) % 3));
+    return MonsterId(std::to_underlying(monsterId) - ((std::to_underlying(monsterId) - 1) % 3));
 }

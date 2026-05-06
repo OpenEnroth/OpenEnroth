@@ -104,10 +104,11 @@ struct MonsterDesc {
 
 struct MonsterList {
     MonsterId GetMonsterIDByName(std::string_view pMonsterName);
-    MonsterId GetBaseMonsterIDByName(std::string_view pMonsterName);
 
     IndexedArray<MonsterDesc, MONSTER_FIRST, MONSTER_LAST> monsters;
 };
+
+MonsterId GetBaseMonsterId(MonsterId monsterId);
 
 extern MonsterStats *pMonsterStats;
 extern MonsterList *pMonsterList;
