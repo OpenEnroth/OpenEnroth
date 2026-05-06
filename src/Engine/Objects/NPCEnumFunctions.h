@@ -8,6 +8,6 @@ inline Segment<MerchantPhrase> allMerchantPhrases() {
     return {MERCHANT_PHRASE_NOT_ENOUGH_GOLD, MERCAHNT_PHRASE_STOLEN_ITEM};
 }
 
-inline Segment<NpcProfession> allValidNpcProfessions() {
-    return {NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID};
+inline Segment<NpcProfession> allNpcProfessions() {
+    return {NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST};
 }

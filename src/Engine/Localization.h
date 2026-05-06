@@ -270,7 +270,7 @@ class Localization {
     IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptionsMaster;
     IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptionsGrand;
     IndexedArray<std::string, CONDITION_FIRST, CONDITION_LAST> _characterConditions;
-    IndexedArray<std::string, NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID> _npcProfessionNames;
+    IndexedArray<std::string, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> _npcProfessionNames;
     IndexedArray<std::string, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> _specialAttackNames;
     IndexedArray<std::string, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> _monsterSpecialAbilityNames;
     IndexedArray<std::string, MASTERY_FIRST, MASTERY_LAST> _skillValueShortTemplates;

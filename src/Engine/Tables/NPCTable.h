@@ -74,7 +74,7 @@ struct NPCProfession {
 };
 
 struct NPCProfessionChance {
-    IndexedArray<int, NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID> chanceByProfession = {{}};
+    IndexedArray<int, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> chanceByProfession = {{}};
     int total = 0;
 };
 

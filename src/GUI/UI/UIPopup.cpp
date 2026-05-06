@@ -1697,12 +1697,13 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
             std::string pText;
 
             if (pNPC) {
-                if (pNPC->name == "Baby Dragon")
-                    pText = pNPCTopics[512].pText;  // Baby dragon
-                else
+                // TODO(captainurist): we need a saner check for baby dragon, comparing pointers here is questionable.
+                if (pNPC == &pNPCStats->pNPCData[57]) {
+                    pText = pNPCTopics[512].pText; // Baby dragon text.
+                } else if (pNPC->profession != NoProfession) {
                     pText = pNPCStats->pProfessions[pNPC->profession].pBenefits;
-                if (pText.empty()) {
-                    pText = pNPCStats->pProfessions[pNPC->profession].pJoinText;
+                    if (pText.empty())
+                        pText = pNPCStats->pProfessions[pNPC->profession].pJoinText;
                 }
 
                 Recti popup_window(38, 60, 276, 0);
