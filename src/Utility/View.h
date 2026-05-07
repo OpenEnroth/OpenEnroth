@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <ranges>
 #include <string>
 #include <type_traits>
@@ -16,6 +17,9 @@ struct is_initializer_list<std::initializer_list<T>> : std::true_type {};
 
 template<class T>
 inline constexpr bool is_initializer_list_v = is_initializer_list<T>::value;
+
+template<class Container, class Element>
+concept Emplaceable = requires (Container &c, Element &e) { c.emplace_back(e); } || requires (Container &c, Element &e) { c.emplace(e); };
 
 template<class Range>
 class ViewWrapper;
@@ -88,8 +92,10 @@ class ResizeView {
  *
  * Any class that inherits `ViewInterface<Derived>` and provides `begin()`/`end()` gets:
  * - `drop(n)`, `take(n)`, `skip(value)`, `replace(from, to)`, `resize(n, value)`, `zip(other)` — chainable range transformations.
- * - `to(&container)` — populate an existing container.
- * - `operator Container()` — implicit conversion to a container.
+ * - `to(&container)` — populate an existing container. For dynamic containers (`std::vector`, `std::set`, ...)
+ *   the container is cleared and refilled. For `std::array<T, N>` the first N elements are written, extras are
+ *   dropped, and the tail (if the range yielded fewer than N elements) is reset to default-constructed `T()`.
+ * - `operator Container()` — implicit conversion to a container; same array semantics as `to`.
  * - `empty()`, `size()`, `operator bool` — from `view_interface`.
  *
  * All methods are non-const, following the standard library convention for views. Standard view types like
@@ -127,7 +133,9 @@ class ViewInterface : public std::ranges::view_interface<Derived> {
         return detail::ViewWrapper(std::views::zip(derived(), std::forward<R>(other)));
     }
 
-    template<class Container>
+    template<class Container> requires
+        std::constructible_from<std::ranges::range_value_t<Container>, std::ranges::range_value_t<Derived>> &&
+        detail::Emplaceable<Container, std::ranges::range_value_t<Derived>>
     void to(Container *container) {
         // We can't use assign_range / insert_range / std::ranges::to here because:
         // - assign_range / insert_range require implicit convertibility, and some conversions are explicit
@@ -143,6 +151,20 @@ class ViewInterface : public std::ranges::view_interface<Derived> {
         }
     }
 
+    template<class T, size_t N> requires
+        std::constructible_from<T, std::ranges::range_value_t<Derived>>
+    void to(std::array<T, N> *container) {
+        // Fixed-size container: fill up to N, default-construct the tail, drop extras.
+        size_t i = 0;
+        for (auto &&element : derived()) {
+            if (i >= N)
+                break;
+            (*container)[i++] = element;
+        }
+        for (; i < N; ++i)
+            (*container)[i] = T();
+    }
+
     /**
      * Implicit conversion to a container type.
      *
@@ -151,7 +173,7 @@ class ViewInterface : public std::ranges::view_interface<Derived> {
      * has overloads for both `const vector&` and `initializer_list<value_type>`.
      */
     template<class Container> requires
-        std::constructible_from<typename Container::value_type, std::ranges::range_reference_t<Derived>> &&
+        std::constructible_from<std::ranges::range_value_t<Container>, std::ranges::range_value_t<Derived>> &&
         (!detail::is_initializer_list_v<Container>)
     operator Container() {
         Container result;
