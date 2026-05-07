@@ -1,3 +1,4 @@
+#include <array>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -98,6 +99,37 @@ UNIT_TEST(View, To) {
     std::vector<int> r;
     view(v).to(&r);
     EXPECT_EQ(r, std::vector<int>({1, 2, 3}));
+}
+
+UNIT_TEST(View, ToArrayExact) {
+    std::vector<int> v = {1, 2, 3};
+
+    std::array<int, 3> r{};
+    view(v).to(&r);
+    EXPECT_EQ(r, (std::array<int, 3>{1, 2, 3}));
+}
+
+UNIT_TEST(View, ToArrayShort) {
+    std::vector<int> v = {1, 2};
+
+    std::array<int, 4> r = {7, 7, 7, 7};
+    view(v).to(&r);
+    EXPECT_EQ(r, (std::array<int, 4>{1, 2, 0, 0})); // Tail reset to default-constructed.
+}
+
+UNIT_TEST(View, ToArrayLong) {
+    std::vector<int> v = {1, 2, 3, 4, 5};
+
+    std::array<int, 3> r{};
+    view(v).to(&r);
+    EXPECT_EQ(r, (std::array<int, 3>{1, 2, 3})); // Extras dropped.
+}
+
+UNIT_TEST(View, ConvertToArray) {
+    std::vector<int> v = {1, 2};
+
+    std::array<int, 4> r = view(v);
+    EXPECT_EQ(r, (std::array<int, 4>{1, 2, 0, 0}));
 }
 
 UNIT_TEST(View, ConvertToContainer) {
