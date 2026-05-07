@@ -11,4 +11,4 @@ class Blob;
  */
 void initializeAutonotes(const Blob &autonotes);
 
-extern std::array<AutonoteData, 196> pAutonoteTxt;
+extern std::array<AutonoteData, 300> pAutonoteTxt;
