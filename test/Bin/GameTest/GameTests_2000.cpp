@@ -840,18 +840,6 @@ GAME_TEST(Issues, Issue2341) {
     EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled); // MouseLook should be re-enabled after closing the menu.
 }
 
-GAME_TEST(Issues, Issue2409) {
-    // Mouse not centered when mouselooking - interaction position drifted from crosshair.
-    test.prepareForNextTest();
-    game.startNewGame();
-    game.pressAndReleaseKey(PlatformKey::KEY_F10); // Enable mouselook.
-    game.tick();
-    EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled);
-    game.moveMouse(100, 100); // Move cursor away from center.
-    game.tick();
-    EXPECT_EQ(mouse->position(), pViewport.center()); // Interaction position must stay at crosshair center.
-}
-
 GAME_TEST(Prs, Pr2354) {
     // Verify that all levels (indoor & outdoor) and their default deltas can be deserialized and reconstructed.
     for (MapId mapId : allMaps()) {
@@ -916,6 +904,18 @@ GAME_TEST(Issues, Issue2408) {
     game.tick(1);
     EXPECT_EQ(pParty->_viewYaw, yawBefore);   // Yaw unchanged.
     EXPECT_NE(pParty->pos, posBefore);         // Position changed (strafed).
+}
+
+GAME_TEST(Issues, Issue2409) {
+    // Mouse not centered when mouselooking - interaction position drifted from crosshair.
+    test.prepareForNextTest();
+    game.startNewGame();
+    game.pressAndReleaseKey(PlatformKey::KEY_F10); // Enable mouselook.
+    game.tick();
+    EXPECT_EQ(mouse->_mouseLook, Io::Mouse::MouseLookState::Enabled);
+    game.moveMouse(100, 100); // Move cursor away from center.
+    game.tick();
+    EXPECT_EQ(mouse->position(), pViewport.center()); // Interaction position must stay at crosshair center.
 }
 
 GAME_TEST(Issues, Issue2425) {

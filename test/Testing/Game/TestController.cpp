@@ -17,6 +17,7 @@
 #include "GUI/GUIMessageQueue.h"
 
 #include "Io/KeyboardController.h"
+#include "Io/Mouse.h"
 
 #include "Library/FileSystem/Interface/FileSystem.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -132,6 +133,7 @@ void TestController::prepareForNextTestInternal() {
 
     _callObserver.reset();
     _tapeCallbacks.clear();
+    mouse->SetMouseLook(Io::Mouse::MouseLookState::Disabled);
     ::application->component<KeyboardController>()->reset();
     ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 
