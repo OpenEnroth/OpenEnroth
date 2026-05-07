@@ -8,16 +8,6 @@
                 "value": "inventory addrandomartifact | Add an Artifact"
             },
             {
-                "key": "command29",
-                "section": "cheat_commands",
-                "value": "reload_shaders | Reload Shaders"
-            },
-            {
-                "key": "command30",
-                "section": "cheat_commands",
-                "value": "hp full_heal | Full Heal"
-            },
-            {
                 "key": "no_intro",
                 "section": "debug",
                 "value": "true"

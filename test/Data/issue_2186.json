@@ -2176,22 +2176,22 @@
             "type": "keyPress"
         },
         {
-            "randomState": 469326,
+            "randomState": 1044522,
             "tickCount": 20100,
             "type": "paint"
         },
         {
-            "randomState": 81972,
+            "randomState": 469326,
             "tickCount": 20200,
             "type": "paint"
         },
         {
-            "randomState": 895956,
+            "randomState": 81972,
             "tickCount": 20300,
             "type": "paint"
         },
         {
-            "randomState": 633582,
+            "randomState": 464181,
             "tickCount": 20400,
             "type": "paint"
         }

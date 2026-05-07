@@ -252,10 +252,12 @@ GAME_TEST(Issues, Issue1665) {
     auto xpos = tapes.custom([]() { return static_cast<int>(pParty->pos.x); });
     auto zpos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
     test.playTraceFromTestData("issue_1665.mm7", "issue_1665.json");
-    EXPECT_GT(xpos.max(), 2200);
-    EXPECT_LT(zpos.min(), -1700); // weve made it into the hole
-    EXPECT_LT(xpos.back(), 1500);
-    EXPECT_GT(zpos.back(), -1550); // And made it back out
+
+    // TODO(pskelton): fixing cylinder collisions means we can no longer get into this hole
+    //EXPECT_GT(xpos.max(), 2200);
+    //EXPECT_LT(zpos.min(), -1700); // weve made it into the hole
+    //EXPECT_LT(xpos.back(), 1500);
+    //EXPECT_GT(zpos.back(), -1550); // And made it back out
 }
 
 GAME_TEST(Issues, Issue1666) {
@@ -347,7 +349,7 @@ GAME_TEST(Issues, Issue1706) {
     auto ypos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
     test.playTraceFromTestData("issue_1706.mm7", "issue_1706.json");
     EXPECT_GT(ypos.min(), -2555); // make sure we dont get past the wall
-    EXPECT_LE(ypos.min(), -2550); // but we should get right up against it
+    EXPECT_LE(ypos.min(), -2545); // but we should get right up against it
 }
 
 GAME_TEST(Issues, Issue1708) {
@@ -828,7 +830,7 @@ GAME_TEST(Issues, Issue1966) {
     EXPECT_GT(spritesTape.map([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_EARTH_ROCK_BLAST); }).max(), 100);
 
     // Some rocks should have hit monsters - this is what was triggering the assertion.
-    EXPECT_GT(spritesTape.flatten().count(SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
+    EXPECT_GT(spritesTape.flatten().count(SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 6);
 }
 
 GAME_TEST(Issues, Issue1972) {

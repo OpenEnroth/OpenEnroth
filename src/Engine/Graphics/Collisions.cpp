@@ -31,6 +31,7 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
 //
 
 /**
+ * @param pos                           Position of the sphere.
  * @param p1                            Starting point of line.
  * @param p2                            End point of line.
  * @param radius                        Radius to use.
@@ -41,12 +42,11 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
  *                                      returns false.
  * @param inside                        Whether collisions should happen when inside radius
  *
- * @return                              Whether the sphere of radius at position of collision state 'lo', can collide with the
+ * @return                              Whether the sphere of radius at position `pos`, can collide with the
  *                                      line p1 to p2 if moving along the `dir` axis AND the distance required to move for that
  *                                      collision is less than the current distance.
  */
-static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection, bool inside) {
-    Vec3f pos = collision_state.position_lo;
+static bool CollideSphereWithLine(const Vec3f &pos, const Vec3f &p1, const Vec3f &p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection, bool inside) {
     Vec3f dir = collision_state.direction;
     Vec3f edge = p2 - p1;
     Vec3f sphereToVertex = p1 - pos;
@@ -189,7 +189,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
 
         // collide with line between the two verts
         float intersectionDist;
-        if (CollideWithLine(vert1, vert2, radius, startingDist, &newDist, &intersectionDist, false)) {
+        if (CollideSphereWithLine(pos, vert1, vert2, radius, startingDist, &newDist, &intersectionDist, false)) {
             startingDist = newDist;
             collidingWithFace = true;
             new_collision_pos = vert1 + intersectionDist * (vert2 - vert1);
@@ -323,7 +323,8 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
  * @return                              Whether there is a collision.
  */
 static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, Pid pid, bool jagged_top) {
-    BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height);
+    BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height + radius);
+
     if (!collision_state.bbox.intersects(bbox))
         return false;
 
@@ -337,13 +338,19 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
         return false; // We're moving away from the cylinder.
     }
 
-    Vec3f pos = collision_state.position_lo;
+    Vec3f vert1 = center_lo;
+    Vec3f vert2 = center_lo + Vec3f(0, 0, height + radius);
     radius += collision_state.radius_lo;
-    // add radius to treat bottom of collison state as flat
-    Vec3f vert1 = center_lo, vert2 = center_lo + Vec3f(0, 0, height + collision_state.radius_lo);
+
+    // For upright cylinders, find the optimal Z to test at: clamp the midpoint of the cylinder's Z range
+    // to within the sphere's reachable Z extents. This avoids testing outside the sphere's actual reach.
+    float opt_z = std::clamp((vert1.z + vert2.z) / 2,
+                             collision_state.position_lo.z - collision_state.radius_lo,
+                             collision_state.position_hi.z + collision_state.radius_hi);
+    Vec3f pos = Vec3f(collision_state.position_lo.x, collision_state.position_lo.y, opt_z);
 
     float newdist, intersection;
-    if (CollideWithLine(vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection, true)) {
+    if (CollideSphereWithLine(pos, vert1, vert2, radius, collision_state.adjusted_move_distance, &newdist, &intersection, true)) {
         Vec3f newPos = collision_state.position_lo + dir * newdist;
         Vec3f dirC = center_lo - newPos;
         dirC.normalize();
@@ -556,7 +563,7 @@ void _46ED8A_collide_against_sprite_objects(Pid pid) {
         // This code is very close to what we have in CollideWithCylinder, but factoring out common parts just
         // seemed not worth it.
 
-        BBoxf bbox = BBoxf::forCylinder(pSpriteObjects[i].vPosition, object->uRadius, object->uHeight);
+        BBoxf bbox = BBoxf::forCylinder(pSpriteObjects[i].vPosition, object->uRadius, object->uHeight + object->uRadius);
         if (!collision_state.bbox.intersects(bbox))
             continue;
 
@@ -594,11 +601,11 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
     collision_state.check_hi = true;
     collision_state.uSectorID = actor.sectorId;
     // Dont bother with hi check if lo radius covers actor height anyway
-    if (actor.radius * 2 > actor.height) collision_state.check_hi = false;
+    if (actor.radius > actor.height) collision_state.check_hi = false;
 
     for (int attempt = 0; attempt < 5; attempt++) {
         collision_state.position_lo = actor.pos + Vec3f(0, 0, actor.radius);
-        collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - actor.radius);
+        collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height);
         collision_state.velocity = actor.velocity;
 
         if (collision_state.PrepareAndCheckIfStationary())
@@ -758,8 +765,8 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
     collision_state.radius_lo = actorRadius;
 
     for (int attempt = 0; attempt < 100; ++attempt) {
-        collision_state.position_lo = actor.pos + Vec3f(0, 0, actorRadius + 1);
-        collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - actorRadius - 1);
+        collision_state.position_lo = actor.pos + Vec3f(0, 0, actorRadius);
+        collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
         collision_state.velocity = actor.velocity;
         collision_state.uSectorID = 0;
@@ -875,7 +882,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     collision_state.uSectorID = sectorId;
     for (unsigned i = 0; i < 5; i++) {
         collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo);
-        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
+        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);  // TODO(pskelton): check this
         collision_state.velocity = pParty->velocity;
 
         Duration dt; // zero means use actual dt
@@ -1031,8 +1038,8 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
 
     // make 5 attempts to satisfy collisions
     for (unsigned i = 0; i < 5; i++) {
-        collision_state.position_hi = *partyNewPos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
         collision_state.position_lo = *partyNewPos + Vec3f(0, 0, collision_state.radius_lo);
+        collision_state.position_hi = *partyNewPos + Vec3f(0, 0, pParty->height - collision_state.radius_lo); // TODO(pskelton): check this
         collision_state.velocity = *partyInputSpeed;
         collision_state.uSectorID = 0;
 
@@ -1226,12 +1233,9 @@ bool hasShorterSolution(const float a, const float b, const float c, const float
     }
 
     if (inside) {
-        // TODO(pskelton): inside cylinder collisions (eg actor actor overlap) cause issues - disable for now.
-        // Consider if theres any instances where this could be reintroduced and useful.
-        return false;
         // We are inside and colliding - for cylinder
         if (alpha1 < 0.0f && alpha2 >= 0.0f) {
-            *outNewSoln = 0.0f;
+            *outNewSoln = 0.0f; // Dont move any further into the collision, but we are colliding so return true
             return true;
         }
     }
