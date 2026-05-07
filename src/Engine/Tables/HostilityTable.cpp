@@ -1,50 +1,23 @@
 #include "HostilityTable.h"
 
-#include <cstring>
 #include <string>
 
+#include "Library/Serialization/Serialization.h"
+
 #include "Utility/Memory/Blob.h"
+#include "Utility/Segment.h"
+#include "Utility/String/Split.h"
 
 HostilityTable *pHostilityTable;
 
 //----- (004547E4) --------------------------------------------------------
 void HostilityTable::Initialize(const Blob &factions) {
-    int i;
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-    //  int item_counter;
-
+    // hostile.txt table structure: monster name (localized, not used) | hostility values per monster group...
     for (auto &line : relations)
         line.fill(HOSTILITY_FRIENDLY);
 
-    std::string txtRaw(factions.str());
-    strtok(txtRaw.data(), "\r");
-    for (i = 0; i < 89; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char*)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                if (decode_step >= 1 && decode_step < 90)
-                    relations[static_cast<MonsterType>(decode_step - 1)][static_cast<MonsterType>(i)] = static_cast<MonsterHostility>(atoi(test_string));
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 92) && !break_loop);
+    for (auto [line, row] : split(factions.str()).by("\r\n").drop(1).skip("").zip(Segment(0, 88))) {
+        for (auto [cell, col] : split(line).by('\t').drop(1).zip(Segment(0, 88)))
+            relations[static_cast<MonsterType>(col)][static_cast<MonsterType>(row)] = static_cast<MonsterHostility>(fromString<int>(cell));
     }
 }
