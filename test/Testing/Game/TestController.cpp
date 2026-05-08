@@ -135,7 +135,6 @@ void TestController::prepareForNextTestInternal() {
     _tapeCallbacks.clear();
     mouse->SetMouseLook(Io::Mouse::MouseLookState::Disabled);
     ::application->component<KeyboardController>()->reset();
-    ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 
     // Clear the message queue, otherwise spells can roll over between test runs.
     // TODO(captainurist): this should really happen somewhere in the main loop. When new game is started, or a save is loaded.
@@ -143,6 +142,10 @@ void TestController::prepareForNextTestInternal() {
 
     _controller->goToMainMenu();
     adjustMaxFps(); // Set max fps AFTER going to the main menu, so that the latter one is done quickly.
+
+    // Menu transition might depend on the previous test's state and consume rng calls. We don't want that, so restart
+    // the deterministic component last.
+    ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 }
 
 void TestController::adjustMaxFps() {
