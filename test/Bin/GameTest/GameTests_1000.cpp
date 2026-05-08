@@ -26,6 +26,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Lambda.h"
+
 #include "GameTestCommon.h"
 
 static bool characterHasJar(int charIndex, int jarIndex) {
@@ -486,16 +488,27 @@ GAME_TEST(Prs, Pr1325) {
 
 GAME_TEST(Issues, Issue1331) {
     // "of David" enchanted bows should do double damage against Titans.
-    auto hpsTape = actorTapes.hps({31, 33});
-    auto deadTape = actorTapes.indicesByState(AIState::Dead);
-    auto rngTape = tapes.config(engine->config->debug.TraceRandomEngine);
+    test.prepareForNextTest(100, RANDOM_ENGINE_SEQUENTIAL);
 
-    test.loadGameFromTestData("issue_1331.mm7");
-    // stop the titans from moving around and messing with the test
     engine->config->debug.NoActors.setValue(true);
-    engine->config->debug.NoDamage.setValue(true);
-    engine->config->debug.TraceRandomEngine.setValue(RANDOM_ENGINE_SEQUENTIAL);
+    game.startNewGame();
     test.startTaping();
+    prepareForBattleTest();
+
+    // Equip Bow-of-David on char0. Expert bow shoots one arrow per shot. Haste + max speed cut recovery.
+    Character &char0 = pParty->pCharacters[0];
+    Item bow(ITEM_CROSSBOW);
+    bow.specialEnchantment = ITEM_ENCHANTMENT_TITAN_SLAYING;
+    char0.inventory.equip(ITEM_SLOT_BOW, bow);
+    char0.setSkillValue(SKILL_BOW, CombinedSkillValue(15, MASTERY_EXPERT));
+    char0._stats[ATTRIBUTE_SPEED] = 500;
+    pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 30, 0, 0);
+
+    // Spawn a stationary titan. Wipe its physical resistance so damage rolls aren't halved.
+    auto hpTape = actorTapes.hp(0);
+    Actor *titan = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_TITAN_A);
+    titan->moveSpeed = 1;
+    titan->monsterInfo.resPhysical = 0;
 
     for (int i = 0; i < 500; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
@@ -503,23 +516,11 @@ GAME_TEST(Issues, Issue1331) {
     }
     test.stopTaping();
 
-    EXPECT_EQ(deadTape.frontBack(), tape(std::initializer_list<int>{}, {31, 33})); // Both of the titans are dead.
-
-    // Damage as stated in the character sheet is 41-45. Crossbow is 4d2+7. We're using sequential rng, so
-    // 4d2+7 will always roll 13, and thus the 41-45 range is effectively compressed into 43-43. With the "of David"
-    // enchantment, the 4d2+7 part of the damage is doubled, so max damage is now 43+13=56. And then we also have to
-    // multiply the damage by two because the character shoots two arrows at a time.
-    //
-    // Min damage is so low because titans have physical resistance. Min damage can change between 2 and 3 on retrace.
-    // This just means that the Titans' physical resistance was never "lucky enough" to roll the damage down to 1 two
-    // times in a row.
-    EXPECT_EQ(rngTape, tape(RANDOM_ENGINE_SEQUENTIAL));
-    EXPECT_EQ(pParty->pCharacters[2].inventory.entry(ITEM_SLOT_BOW)->specialEnchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
-    EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
-    auto damageRange = hpsTape.reverse().adjacentDeltas().flatten().filter([] (int damage) { return damage > 0; }).minMax();
-    EXPECT_EQ(damageRange, tape(2, (43 + 15) * 2)); // titan got lucky
-    auto totalDamages = hpsTape.reverse().delta();
-    EXPECT_TRUE(std::ranges::all_of(totalDamages, [](int damage) { return damage > 300; })); // Both titans are now pin cushions.
+    // Per-shot damage is fully deterministic with sequential RNG + resPhysical=0: crossbow rolls 4d2 (always 6
+    // with sequential rng), doubled by titan-slaying = 12. Expert bow shoots one arrow per shot, so every damage
+    // delta is the same. Without titan-slaying it would be 6.
+    auto damages = hpTape.reverse().adjacentDeltas().filter(_1 > 0);
+    EXPECT_EQ(damages.minMax(), tape(12, 12));
 }
 
 GAME_TEST(Issues, Issue1338) {
