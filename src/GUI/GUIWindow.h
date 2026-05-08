@@ -70,6 +70,8 @@ class GUIWindow {
                             UIMessageType msg, unsigned int msg_param, InputAction action = INPUT_ACTION_INVALID, std::string_view label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 
+    void CreateCharacterButtons();
+
     bool Contains(unsigned int x, unsigned int y);
 
     int DrawTextInRect(GUIFont *font, Pointi position, Color color, std::string_view text, int rect_width, int reverse_text);

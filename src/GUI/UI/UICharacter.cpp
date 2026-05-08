@@ -584,10 +584,7 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, Scree
         UIMSG_ChangeDetaliz, 0, INPUT_ACTION_INVALID, localization->str(LSTR_DETAIL_TOGGLE));
     pCharacterScreen_DollBtn = CreateButton({476, 0}, {164, 345}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickPaperdoll, 0);
 
-    CreateButton({61, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);
-    CreateButton({177, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
-    CreateButton({292, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
-    CreateButton({407, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
+    CreateCharacterButtons();
 
     CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR);
     fillAwardsData();
@@ -750,10 +747,7 @@ std::unique_ptr<TargetedSpellUI> CastSpellInfo::GetCastSpellInInventoryWindow() 
     CS_inventory_window->CreateButton({0, 0}, {0x1DCu, 0x159u}, BUTTON_TYPE_NORMAL, 122, UIMSG_InventoryLeftClick, 0);
     pCharacterScreen_DollBtn = CS_inventory_window->CreateButton({0x1DCu, 0}, {0xA4u, 0x159u}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickPaperdoll, 0);
 
-    CS_inventory_window->CreateButton({61, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);
-    CS_inventory_window->CreateButton({177, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
-    CS_inventory_window->CreateButton({292, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
-    CS_inventory_window->CreateButton({407, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
+    CS_inventory_window->CreateCharacterButtons();
 
     return CS_inventory_window;
 }

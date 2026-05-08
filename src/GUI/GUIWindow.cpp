@@ -406,6 +406,23 @@ GUIButton *GUIWindow::CreateButton(std::string id, Pointi position, Sizei dimens
     return result;
 }
 
+void GUIWindow::CreateCharacterButtons() {
+    CreateButton("Game_Character1", { 61, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);  // buttons for portraits
+    CreateButton("Game_Character2", { 177, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
+    CreateButton("Game_Character3", { 292, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
+    CreateButton("Game_Character4", { 407, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
+
+    CreateButton({ pHealthBarPos[0], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 1);  // buttons for HP
+    CreateButton({ pHealthBarPos[1], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 2);
+    CreateButton({ pHealthBarPos[2], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 3);
+    CreateButton({ pHealthBarPos[3], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 4);
+
+    CreateButton({ pManaBarPos[0], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 1);  // buttons for SP
+    CreateButton({ pManaBarPos[1], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 2);
+    CreateButton({ pManaBarPos[2], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 3);
+    CreateButton({ pManaBarPos[3], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 4);
+}
+
 bool GUIWindow::Contains(unsigned int x, unsigned int y) {
     return frameRect.contains(Pointi(x, y));
 }
@@ -1079,20 +1096,7 @@ void UI_Create() {
     pPrimaryWindow = std::make_unique<GUIWindow>(WINDOW_GameUI, Pointi{0, 0}, render->GetRenderDimensions());
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, BUTTON_TYPE_NORMAL, 0, UIMSG_MouseLeftClickInGame, 0);
 
-    pPrimaryWindow->CreateButton("Game_Character1", {61, 424}, {31, 40}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);  // buttons for portraits
-    pPrimaryWindow->CreateButton("Game_Character2", {177, 424}, {31, 40}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
-    pPrimaryWindow->CreateButton("Game_Character3", {292, 424}, {31, 40}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
-    pPrimaryWindow->CreateButton("Game_Character4", {407, 424}, {31, 40}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
-
-    pPrimaryWindow->CreateButton({ pHealthBarPos[0], pHealthManaBarYPos }, {5, 49}, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 1);  // buttons for HP
-    pPrimaryWindow->CreateButton({ pHealthBarPos[1], pHealthManaBarYPos }, {5, 49}, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 2);
-    pPrimaryWindow->CreateButton({ pHealthBarPos[2], pHealthManaBarYPos }, {5, 49}, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 3);
-    pPrimaryWindow->CreateButton({ pHealthBarPos[3], pHealthManaBarYPos }, {5, 49}, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 4);
-
-    pPrimaryWindow->CreateButton({ pManaBarPos[0], pHealthManaBarYPos }, {5, 49}, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 1);  // buttons for SP
-    pPrimaryWindow->CreateButton({ pManaBarPos[1], pHealthManaBarYPos }, {5, 49}, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 2);
-    pPrimaryWindow->CreateButton({ pManaBarPos[2], pHealthManaBarYPos }, {5, 49}, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 3);
-    pPrimaryWindow->CreateButton({ pManaBarPos[3], pHealthManaBarYPos }, {5, 49}, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 4);
+    pPrimaryWindow->CreateCharacterButtons();
 
     game_ui_tome_quests = assets->getImage_ColorKey("ib-td1-A");
     pBtn_Quests = pPrimaryWindow->CreateButton({491, 353}, game_ui_tome_quests->size(), BUTTON_TYPE_NORMAL, 0,
