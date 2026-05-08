@@ -503,6 +503,7 @@ GAME_TEST(Issues, Issue1331) {
     char0.setSkillValue(SKILL_BOW, CombinedSkillValue(15, MASTERY_EXPERT));
     char0._stats[ATTRIBUTE_SPEED] = 500;
     pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 30, 0, 0);
+    EXPECT_EQ(char0.GetRangedDamageString(), "4 - 8");
 
     // Spawn a stationary titan. Wipe its physical resistance so damage rolls aren't halved.
     auto hpTape = actorTapes.hp(0);
