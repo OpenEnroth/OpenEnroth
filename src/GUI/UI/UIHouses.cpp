@@ -1060,7 +1060,6 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HouseInteri
     }
 
     CreateCharacterButtons();
-    CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
 }
 
 void GUIWindow_House::Update() {

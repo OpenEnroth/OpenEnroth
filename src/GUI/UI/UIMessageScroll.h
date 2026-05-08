@@ -16,7 +16,6 @@ class GUIWindow_MessageScroll : public GUIWindow {
 
         this->scroll_type = scroll_type;
         CreateCharacterButtons();
-        CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
     }
     virtual ~GUIWindow_MessageScroll() {}
 

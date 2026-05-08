@@ -40,7 +40,7 @@ TargetedSpellUI_Actor::TargetedSpellUI_Actor(Pointi position, Sizei dimensions, 
 
 TargetedSpellUI_ActorOrCharacter::TargetedSpellUI_ActorOrCharacter(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-	CreateButtonsTargetCharacters();
+    CreateButtonsTargetCharacters();
     CreateButton(pViewport.topLeft(), pViewport.size(), BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_TargetActorBuff, 0);
 }
 
@@ -50,7 +50,7 @@ TargetedSpellUI_Telekinesis::TargetedSpellUI_Telekinesis(Pointi position, Sizei 
 }
 
 void TargetedSpellUI::CreateButtonsTargetCharacters() {
-    // TODO(pskelton): why is size different
+    // TODO(pskelton): why is position / size different to normal character buttons
     CreateButton({52, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 0, INPUT_ACTION_SELECT_CHAR_1);
     CreateButton({165, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 1, INPUT_ACTION_SELECT_CHAR_2);
     CreateButton({280, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 2, INPUT_ACTION_SELECT_CHAR_3);

@@ -22,7 +22,6 @@ GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event) : GU
     current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;
 
     CreateCharacterButtons();
-    CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
 }
 
 GUIWindow_BranchlessDialogue::~GUIWindow_BranchlessDialogue() {

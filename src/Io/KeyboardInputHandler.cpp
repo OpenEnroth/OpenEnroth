@@ -288,13 +288,6 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
         }
         break;
 
-    case INPUT_ACTION_NEXT_CHAR:
-        if (current_screen_type != SCREEN_SPELL_BOOK) {
-            // TODO(Nik-RE-dev): why next frame?
-            engine->_messageQueue->addMessageNextFrame(UIMSG_CycleCharacters, 0, 0);
-        }
-        break;
-
     case INPUT_ACTION_LOOK_UP:
         pPartyActionQueue->Add(PARTY_LookUp);
         break;

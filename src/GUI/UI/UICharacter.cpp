@@ -586,7 +586,6 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, Scree
 
     CreateCharacterButtons();
 
-    CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR);
     fillAwardsData();
 
     ui_character_skills_background = assets->getImage_ColorKey("fr_skill");

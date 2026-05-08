@@ -151,7 +151,6 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
     setKeyboardControlGroup(optionList.size(), false, 0, 1);
 
     CreateCharacterButtons();
-    CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
 }
 
 GUIWindow_Dialogue::~GUIWindow_Dialogue() {
@@ -345,8 +344,7 @@ void selectNPCDialogueOption(DialogueId option) {
             }
             pDialogueWindow->setKeyboardControlGroup(topics.size(), false, 0, 1);
 
-			pDialogueWindow->CreateCharacterButtons();
-            pDialogueWindow->CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
+            pDialogueWindow->CreateCharacterButtons();
         }
         return;
     }

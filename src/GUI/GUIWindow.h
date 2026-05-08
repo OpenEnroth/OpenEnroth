@@ -29,7 +29,7 @@
 #include "Utility/IndexedArray.h"
 
 namespace Io {
-    class Mouse;
+class Mouse;
 } // namespace Io
 
 class GUIFont;

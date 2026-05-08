@@ -421,6 +421,8 @@ void GUIWindow::CreateCharacterButtons() {
     CreateButton({ pManaBarPos[1], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 2);
     CreateButton({ pManaBarPos[2], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 3);
     CreateButton({ pManaBarPos[3], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 4);
+
+    CreateButton({ 0, 0 }, { 0, 0 }, BUTTON_TYPE_NORMAL, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR);
 }
 
 bool GUIWindow::Contains(unsigned int x, unsigned int y) {
