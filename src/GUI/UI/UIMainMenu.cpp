@@ -22,13 +22,13 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
     ui_mainmenu_credits = assets->getImage_ColorKey("title_cred");
     ui_mainmenu_exit = assets->getImage_ColorKey("title_exit");
 
-    pBtnNew = CreateButton("MainMenu_NewGame", {495, 172}, ui_mainmenu_new->size(), 1, 0,
+    pBtnNew = CreateButton("MainMenu_NewGame", {495, 172}, ui_mainmenu_new->size(), BUTTON_TYPE_NORMAL, 0,
                            UIMSG_MainMenu_ShowPartyCreationWnd, 0, INPUT_ACTION_NEW_GAME, "", {ui_mainmenu_new});
-    pBtnLoad = CreateButton("MainMenu_LoadGame", {495, 227}, ui_mainmenu_load->size(), 1, 0,
+    pBtnLoad = CreateButton("MainMenu_LoadGame", {495, 227}, ui_mainmenu_load->size(), BUTTON_TYPE_NORMAL, 0,
                             UIMSG_MainMenu_ShowLoadWindow, 1, INPUT_ACTION_LOAD_GAME, "", {ui_mainmenu_load});
-    pBtnCredits = CreateButton("MainMenu_Credits", {495, 282}, ui_mainmenu_credits->size(), 1, 0,
+    pBtnCredits = CreateButton("MainMenu_Credits", {495, 282}, ui_mainmenu_credits->size(), BUTTON_TYPE_NORMAL, 0,
                                UIMSG_ShowCredits, 2, INPUT_ACTION_SHOW_CREDITS, "", {ui_mainmenu_credits});
-    pBtnExit = CreateButton("MainMenu_ExitGame", {495, 337}, ui_mainmenu_exit->size(), 1, 0,
+    pBtnExit = CreateButton("MainMenu_ExitGame", {495, 337}, ui_mainmenu_exit->size(), BUTTON_TYPE_NORMAL, 0,
                             UIMSG_ExitToWindows, 3, INPUT_ACTION_EXIT_GAME, "", {ui_mainmenu_exit});
 }
 

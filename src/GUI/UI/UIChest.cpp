@@ -13,15 +13,15 @@
 #include "GUI/UI/ItemGrid.h"
 
 GUIWindow_Chest::GUIWindow_Chest(int chestId) : GUIWindow(WINDOW_Chest, {0, 0}, render->GetRenderDimensions()), _chestId(chestId) {
-    CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);
-    CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
-    CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
-    CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
-    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR);
+    CreateButton({61, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);
+    CreateButton({177, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
+    CreateButton({292, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
+    CreateButton({407, 424}, {31, 0}, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
+    CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR);
 
-    pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+    pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                    localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
-    CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_CHEST_ClickItem, 0);
+    CreateButton({7, 8}, {460, 343}, BUTTON_TYPE_NORMAL, 0, UIMSG_CHEST_ClickItem, 0);
     current_screen_type = SCREEN_CHEST;
     pEventTimer->setPaused(true);
 }

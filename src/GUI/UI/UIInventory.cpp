@@ -11,7 +11,7 @@
 
 GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint) :
     TargetedSpellUI(WINDOW_CastSpell_InInventory, position, dimensions, spellInfo, hint) {
-    pBtn_ExitCancel = CreateButton({392, 318}, {75, 33}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_CANCEL), {ui_buttdesc2});
+    pBtn_ExitCancel = CreateButton({392, 318}, {75, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_CANCEL), {ui_buttdesc2});
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     current_screen_type = SCREEN_CASTING;
 }

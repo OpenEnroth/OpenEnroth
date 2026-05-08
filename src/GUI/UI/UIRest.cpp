@@ -86,11 +86,11 @@ GUIWindow_Rest::GUIWindow_Rest()
 
     OutdoorLocation::LoadActualSkyFrame();
 
-    pButton_RestUI_Exit = CreateButton({280, 297}, {154, 37}, 1, 0, UIMSG_ExitRest, 0, INPUT_ACTION_INVALID, "", {rest_ui_btn_exit});
-    pButton_RestUI_Main = CreateButton("Rest_RestAndHeal", {24, 154}, {225, 37}, 1, 0, UIMSG_Rest8Hour, 0, INPUT_ACTION_REST_HEAL, "", {rest_ui_btn_4});
-    pButton_RestUI_WaitUntilDawn = CreateButton({61, 232}, {154, 33}, 1, 0, UIMSG_WaitTillDawn, 0, INPUT_ACTION_REST_WAIT_TILL_DAWN, "", {rest_ui_btn_1});
-    pButton_RestUI_Wait1Hour = CreateButton({61, 264}, {154, 33}, 1, 0, UIMSG_Wait1Hour, 0, INPUT_ACTION_REST_WAIT_1_HOUR, "", {rest_ui_btn_2});
-    pButton_RestUI_Wait5Minutes = CreateButton({61, 296}, {154, 33}, 1, 0, UIMSG_Wait5Minutes, 0, INPUT_ACTION_REST_WAIT_5_MINUTES, "", {rest_ui_btn_3});
+    pButton_RestUI_Exit = CreateButton({280, 297}, {154, 37}, BUTTON_TYPE_NORMAL, 0, UIMSG_ExitRest, 0, INPUT_ACTION_INVALID, "", {rest_ui_btn_exit});
+    pButton_RestUI_Main = CreateButton("Rest_RestAndHeal", {24, 154}, {225, 37}, BUTTON_TYPE_NORMAL, 0, UIMSG_Rest8Hour, 0, INPUT_ACTION_REST_HEAL, "", {rest_ui_btn_4});
+    pButton_RestUI_WaitUntilDawn = CreateButton({61, 232}, {154, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_WaitTillDawn, 0, INPUT_ACTION_REST_WAIT_TILL_DAWN, "", {rest_ui_btn_1});
+    pButton_RestUI_Wait1Hour = CreateButton({61, 264}, {154, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_Wait1Hour, 0, INPUT_ACTION_REST_WAIT_1_HOUR, "", {rest_ui_btn_2});
+    pButton_RestUI_Wait5Minutes = CreateButton({61, 296}, {154, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_Wait5Minutes, 0, INPUT_ACTION_REST_WAIT_5_MINUTES, "", {rest_ui_btn_3});
 }
 
 void GUIWindow_Rest::Update() {

@@ -239,7 +239,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
         for (GUIWindow *win : *checkWindowList) {
             if (win->Contains(x, y)) {
                 for (GUIButton *control : win->vButtons) {
-                    if (control->uButtonType == 1) {
+                    if (control->uButtonType == BUTTON_TYPE_NORMAL) {
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
                             engine->_messageQueue->clear();
@@ -248,7 +248,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                         }
                         continue;
                     }
-                    if (control->uButtonType == 2) {  // adventurers portraits click (circular button)
+                    if (control->uButtonType == BUTTON_TYPE_CHARACTER) {  // adventurers portraits click (circular button)
                         // TODO(captainurist): actual shape is oval, this check is bugged.
                         int dx = x - control->rect.x;
                         int dy = y - control->rect.y;
@@ -260,7 +260,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                         }
                         continue;
                     }
-                    if (control->uButtonType == 3) {  // clicking skills
+                    if (control->uButtonType == BUTTON_TYPE_SKILLS) {  // clicking skills
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
                             engine->_messageQueue->clear();

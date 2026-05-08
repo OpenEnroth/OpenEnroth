@@ -1887,8 +1887,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             std::string sHint;
             std::string pStr;
             for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
-                if (pButton->uButtonType == 1 && pButton->uButtonType != 3 &&
-                    pButton->Contains(pX, pY)) {
+                if (pButton->uButtonType == BUTTON_TYPE_NORMAL && pButton->Contains(pX, pY)) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
                             sHint = localization->attributeDescription(static_cast<Attribute>(pButton->msg_param % 7));

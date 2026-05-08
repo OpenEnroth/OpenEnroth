@@ -187,17 +187,17 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
     game_ui_menu_resume = assets->getImage_ColorKey("resume1");
     game_ui_menu_quit = assets->getImage_ColorKey("quit1");
 
-    pBtn_NewGame = CreateButton({0x13u, 0x9Bu}, {0xD6u, 0x28u}, 1, 0,
+    pBtn_NewGame = CreateButton({0x13u, 0x9Bu}, {0xD6u, 0x28u}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_StartNewGame, 0, INPUT_ACTION_NEW_GAME, localization->str(LSTR_NEW_GAME), {game_ui_menu_new});
-    pBtn_SaveGame = CreateButton("GameMenu_SaveGame", {0x13u, 0xD1u}, {0xD6u, 0x28u}, 1, 0,
+    pBtn_SaveGame = CreateButton("GameMenu_SaveGame", {0x13u, 0xD1u}, {0xD6u, 0x28u}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_Game_OpenSaveGameDialog, 0, INPUT_ACTION_SAVE_GAME, localization->str(LSTR_SAVE_GAME), {game_ui_menu_save});
-    pBtn_LoadGame = CreateButton("GameMenu_LoadGame", {19, 263}, {0xD6u, 0x28u}, 1, 0,
+    pBtn_LoadGame = CreateButton("GameMenu_LoadGame", {19, 263}, {0xD6u, 0x28u}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_Game_OpenLoadGameDialog, 0, INPUT_ACTION_LOAD_GAME, localization->str(LSTR_LOAD_GAME), {game_ui_menu_load});
-    pBtn_GameControls = CreateButton({241, 155}, {214, 40}, 1, 0,
+    pBtn_GameControls = CreateButton({241, 155}, {214, 40}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_Game_OpenOptionsDialog, 0, INPUT_ACTION_OPEN_OPTIONS, localization->str(LSTR_SOUND_KEYBOARD_GAME_OPTIONS), {game_ui_menu_controls});
-    pBtn_QuitGame = CreateButton("GameMenu_Quit", {241, 209}, {214, 40}, 1, 0,
+    pBtn_QuitGame = CreateButton("GameMenu_Quit", {241, 209}, {214, 40}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_Quit, 0, INPUT_ACTION_EXIT_GAME, localization->str(LSTR_QUIT), {game_ui_menu_quit});
-    pBtn_Resume = CreateButton({241, 263}, {214, 40}, 1, 0,
+    pBtn_Resume = CreateButton({241, 263}, {214, 40}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_GameMenu_ReturnToGame, 0, INPUT_ACTION_BACK_TO_GAME, localization->str(LSTR_RETURN_TO_GAME), {game_ui_menu_resume});
 
     setKeyboardControlGroup(6, false, 0, 0);
@@ -275,28 +275,28 @@ GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
     game_ui_options_controls[3] = assets->getImage_ColorKey("optkb_1");
     game_ui_options_controls[4] = assets->getImage_ColorKey("optkb_2");
 
-    CreateButton({241, 302}, {214, 40}, 1, 0, UIMSG_Escape, 0);
+    CreateButton({241, 302}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0);
 
-    CreateButton({19, 302}, {108, 20}, 1, 0, UIMSG_SelectKeyPage1, 0);
-    CreateButton({127, 302}, {108, 20}, 1, 0, UIMSG_SelectKeyPage2, 0);
-    CreateButton("KeyBinding_Default", {127, 324}, {108, 20}, 1, 0, UIMSG_ResetKeyMapping, 0);
-    CreateButton({19, 324}, {108, 20}, 1, 0, UIMSG_Game_OpenOptionsDialog, 0);
+    CreateButton({19, 302}, {108, 20}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectKeyPage1, 0);
+    CreateButton({127, 302}, {108, 20}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectKeyPage2, 0);
+    CreateButton("KeyBinding_Default", {127, 324}, {108, 20}, BUTTON_TYPE_NORMAL, 0, UIMSG_ResetKeyMapping, 0);
+    CreateButton({19, 324}, {108, 20}, BUTTON_TYPE_NORMAL, 0, UIMSG_Game_OpenOptionsDialog, 0);
 
-    CreateButton({129, 148}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 0);
-    CreateButton({129, 167}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 1);
-    CreateButton({129, 186}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 2);
-    CreateButton({129, 205}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 3);
-    CreateButton({129, 224}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 4);
-    CreateButton({129, 243}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 5);
-    CreateButton({129, 262}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 6);
+    CreateButton({129, 148}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 0);
+    CreateButton({129, 167}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 1);
+    CreateButton({129, 186}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 2);
+    CreateButton({129, 205}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 3);
+    CreateButton({129, 224}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 4);
+    CreateButton({129, 243}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 5);
+    CreateButton({129, 262}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 6);
 
-    CreateButton({350, 148}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 7);
-    CreateButton({350, 167}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 8);
-    CreateButton({350, 186}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 9);
-    CreateButton({350, 205}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 10);
-    CreateButton({350, 224}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 11);
-    CreateButton({350, 243}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 12);
-    CreateButton({350, 262}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 13);
+    CreateButton({350, 148}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 7);
+    CreateButton({350, 167}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 8);
+    CreateButton({350, 186}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 9);
+    CreateButton({350, 205}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 10);
+    CreateButton({350, 224}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 11);
+    CreateButton({350, 243}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 12);
+    CreateButton({350, 262}, {70, 19}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeKeyButton, 13);
 
     currently_selected_action_for_binding = INPUT_ACTION_INVALID;
     KeyboardPageNum = 1;
@@ -386,18 +386,18 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     // not_available_tinting_texture_id = pIcons_LOD->LoadTexture("opvdG-tn",
     // TEXTURE_16BIT_PALETTE);
 
-    CreateButton({0xF1u, 0x12Eu}, {0xD6u, 0x28u}, 1, 0, UIMSG_Escape, 0);
+    CreateButton({0xF1u, 0x12Eu}, {0xD6u, 0x28u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0);
 
     // gamma buttons
-    pBtn_SliderLeft = CreateButton({21, 161}, {17, 17}, 1, 0, UIMSG_ChangeGammaLevel, 4, INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowLeft }); // -
-    CreateButton({42, 160}, {170, 17}, 1, 0, UIMSG_ChangeGammaLevel, 0);
-    pBtn_SliderRight = CreateButton({213, 161}, {17, 17}, 1, 0, UIMSG_ChangeGammaLevel, 5, INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowRight }); // +
+    pBtn_SliderLeft = CreateButton({21, 161}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeGammaLevel, 4, INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowLeft }); // -
+    CreateButton({42, 160}, {170, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeGammaLevel, 0);
+    pBtn_SliderRight = CreateButton({213, 161}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeGammaLevel, 5, INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowRight }); // +
 
     // if ( render->pRenderD3D )
     {
-        CreateButton({0x13u, 0x118u}, {0xD6u, 0x12u}, 1, 0, UIMSG_ToggleBloodsplats, 0);
-        CreateButton({0x13u, 0x12Eu}, {0xD6u, 0x12u}, 1, 0, UIMSG_ToggleColoredLights, 0);
-        CreateButton({0x13u, 0x144u}, {0xD6u, 0x12u}, 1, 0, UIMSG_ToggleTint, 0);
+        CreateButton({0x13u, 0x118u}, {0xD6u, 0x12u}, BUTTON_TYPE_NORMAL, 0, UIMSG_ToggleBloodsplats, 0);
+        CreateButton({0x13u, 0x12Eu}, {0xD6u, 0x12u}, BUTTON_TYPE_NORMAL, 0, UIMSG_ToggleColoredLights, 0);
+        CreateButton({0x13u, 0x144u}, {0xD6u, 0x12u}, BUTTON_TYPE_NORMAL, 0, UIMSG_ToggleTint, 0);
     }
 
     // update gamma preview
@@ -501,43 +501,43 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
     options_menu_skin.uTextureID_ShowDamage = assets->getImage_ColorKey("option02");
     options_menu_skin.uTextureID_WalkSound = assets->getImage_ColorKey("option01");
 
-    CreateButton({22, 270}, options_menu_skin.uTextureID_TurnSpeed[2]->size(), 1, 0,
+    CreateButton({22, 270}, options_menu_skin.uTextureID_TurnSpeed[2]->size(), BUTTON_TYPE_NORMAL, 0,
                  UIMSG_SetTurnSpeed, 0x80);
-    CreateButton({93, 270}, options_menu_skin.uTextureID_TurnSpeed[1]->size(), 1, 0,
+    CreateButton({93, 270}, options_menu_skin.uTextureID_TurnSpeed[1]->size(), BUTTON_TYPE_NORMAL, 0,
                  UIMSG_SetTurnSpeed, 0x40u);
-    CreateButton({164, 270}, options_menu_skin.uTextureID_TurnSpeed[0]->size(), 1, 0,
+    CreateButton({164, 270}, options_menu_skin.uTextureID_TurnSpeed[0]->size(), BUTTON_TYPE_NORMAL, 0,
                  UIMSG_SetTurnSpeed, 0);
 
-    CreateButton({20, 303}, options_menu_skin.uTextureID_WalkSound->size(), 1, 0,
+    CreateButton({20, 303}, options_menu_skin.uTextureID_WalkSound->size(), BUTTON_TYPE_NORMAL, 0,
                  UIMSG_ToggleWalkSound, 0);
-    CreateButton({128, 303}, options_menu_skin.uTextureID_ShowDamage->size(), 1, 0,
+    CreateButton({128, 303}, options_menu_skin.uTextureID_ShowDamage->size(), BUTTON_TYPE_NORMAL, 0,
                  UIMSG_ToggleShowDamage, 0);
-    CreateButton({20, 325}, options_menu_skin.uTextureID_AlwaysRun->size(), 1, 0,
+    CreateButton({20, 325}, options_menu_skin.uTextureID_AlwaysRun->size(), BUTTON_TYPE_NORMAL, 0,
                  UIMSG_ToggleAlwaysRun, 0);
-    CreateButton({128, 325}, options_menu_skin.uTextureID_FlipOnExit->size(), 1, 0,
+    CreateButton({128, 325}, options_menu_skin.uTextureID_FlipOnExit->size(), BUTTON_TYPE_NORMAL, 0,
                  UIMSG_ToggleFlipOnExit, 0);
 
-    pBtn_SliderLeft = CreateButton({243, 162}, {16, 16}, 1, 0, UIMSG_ChangeSoundVolume, 4, INPUT_ACTION_INVALID, "",
+    pBtn_SliderLeft = CreateButton({243, 162}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 4, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton({435, 162}, {16, 16}, 1, 0, UIMSG_ChangeSoundVolume, 5, INPUT_ACTION_INVALID, "",
+    pBtn_SliderRight = CreateButton({435, 162}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 5, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowRight});
-    CreateButton({263, 162}, {172, 17}, 1, 0, UIMSG_ChangeSoundVolume, 0);
+    CreateButton({263, 162}, {172, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 0);
 
-    pBtn_SliderLeft = CreateButton({243, 216}, {16, 16}, 1, 0, UIMSG_ChangeMusicVolume, 4, INPUT_ACTION_INVALID, "",
+    pBtn_SliderLeft = CreateButton({243, 216}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 4, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton({435, 216}, {16, 16}, 1, 0, UIMSG_ChangeMusicVolume, 5, INPUT_ACTION_INVALID, "",
+    pBtn_SliderRight = CreateButton({435, 216}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 5, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowRight});
-    CreateButton({263, 216}, {172, 17}, 1, 0, UIMSG_ChangeMusicVolume, 0);
+    CreateButton({263, 216}, {172, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 0);
 
-    pBtn_SliderLeft = CreateButton({243, 270}, {16, 16}, 1, 0, UIMSG_ChangeVoiceVolume, 4, INPUT_ACTION_INVALID, "",
+    pBtn_SliderLeft = CreateButton({243, 270}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 4, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton({435, 270}, {16, 16}, 1, 0, UIMSG_ChangeVoiceVolume, 5, INPUT_ACTION_INVALID, "",
+    pBtn_SliderRight = CreateButton({435, 270}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 5, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowRight});
-    CreateButton({263, 270}, {172, 17}, 1, 0, UIMSG_ChangeVoiceVolume, 0);
+    CreateButton({263, 270}, {172, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 0);
 
-    CreateButton({241, 302}, {214, 40}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_RETURN_TO_GAME));
-    CreateButton({19, 140}, {214, 40}, 1, 0, UIMSG_OpenKeyMappingOptions, 0, INPUT_ACTION_PASS);
-    CreateButton({19, 194}, {214, 40}, 1, 0, UIMSG_OpenVideoOptions, 0, INPUT_ACTION_OPEN_OPTIONS);
+    CreateButton({241, 302}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_RETURN_TO_GAME));
+    CreateButton({19, 140}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_OpenKeyMappingOptions, 0, INPUT_ACTION_PASS);
+    CreateButton({19, 194}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_OpenVideoOptions, 0, INPUT_ACTION_OPEN_OPTIONS);
 }
 
 void GUIWindow_GameOptions::Update() {
@@ -1026,7 +1026,7 @@ void GameUI_WritePointedObjectStatusString() {
             if (pWindow->Contains(pX, pY)) {
                 for (GUIButton *pButton : pWindow->vButtons) {
                     switch (pButton->uButtonType) {
-                        case 1:  // for dialogue window
+                        case BUTTON_TYPE_NORMAL:  // for dialogue window
                             if (pButton->Contains(pX, pY)) {
                                 engine->_statusBar->setPermanent(pButton->sLabel);
                                 pMessageType1 = (UIMessageType)pButton->uData;
@@ -1037,7 +1037,7 @@ void GameUI_WritePointedObjectStatusString() {
                                 return;
                             }
                             break;
-                        case 2:  // hovering over portraits
+                        case BUTTON_TYPE_CHARACTER:  // hovering over portraits
                             if (!pButton->rect.isEmpty()) {
                                 int distW = mousePos.x - pButton->rect.x;
                                 int distY = mousePos.y - pButton->rect.y;
@@ -1060,7 +1060,7 @@ void GameUI_WritePointedObjectStatusString() {
                                 }
                             }
                             break;
-                        case 3:  // hovering over buttons
+                        case BUTTON_TYPE_SKILLS:  // hovering over buttons
                             if (pButton->Contains(pX, pY)) {
                                 Skill skill = static_cast<Skill>(pButton->msg_param);
                                 int skillLevel = pParty->activeCharacter().getSkillValue(skill).level();
@@ -1132,9 +1132,10 @@ void GameUI_WritePointedObjectStatusString() {
     if (!lWindowList.empty()) {
         GUIWindow *win = lWindowList.back();
         if (win->Contains(pX, pY)) {
+            // TODO(pskelton): this looks duplicated extract
             for (GUIButton *pButton : win->vButtons) {
                 switch (pButton->uButtonType) {
-                    case 1:
+                    case BUTTON_TYPE_NORMAL:
                         if (pButton->Contains(mousePos)) {
                             pMessageType3 = (UIMessageType)pButton->uData;
                             if (pMessageType3 == 0) {  // For books
@@ -1146,7 +1147,7 @@ void GameUI_WritePointedObjectStatusString() {
                             return;
                         }
                         break;
-                    case 2:  // hovering over portraits
+                    case BUTTON_TYPE_CHARACTER:  // hovering over portraits
                         if (!pButton->rect.isEmpty()) {
                             int distW = mousePos.x - pButton->rect.x;
                             int distY = mousePos.y - pButton->rect.y;
@@ -1167,7 +1168,7 @@ void GameUI_WritePointedObjectStatusString() {
                             }
                         }
                         break;
-                    case 3:
+                    case BUTTON_TYPE_SKILLS:
                         // is this one needed?
                         assert(false);  // how does this work?
                              /*                if (pX >= pButton->uX && pX <=

@@ -29,7 +29,7 @@
 #include "Utility/IndexedArray.h"
 
 namespace Io {
-class Mouse;
+    class Mouse;
 } // namespace Io
 
 class GUIFont;
@@ -45,6 +45,14 @@ class GraphicsImage;
 class TargetedSpellUI;
 struct Item;
 
+// TODO(pskelton): move to button
+enum class ButtonType {
+    BUTTON_TYPE_NORMAL = 0,
+    BUTTON_TYPE_CHARACTER,
+    BUTTON_TYPE_SKILLS,
+};
+using enum ButtonType;
+
 class GUIWindow {
  public:
     GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint = {});
@@ -54,11 +62,11 @@ class GUIWindow {
     GUIWindow(const GUIWindow& other) = delete;
     GUIWindow& operator=(const GUIWindow& other) = delete;
 
-    GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
+    GUIButton *CreateButton(Pointi position, Sizei dimensions, ButtonType uButtonType, int uData,
                             UIMessageType msg, unsigned int msg_param, InputAction action = INPUT_ACTION_INVALID, std::string_view label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 
-    GUIButton *CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
+    GUIButton *CreateButton(std::string id, Pointi position, Sizei dimensions, ButtonType uButtonType, int uData,
                             UIMessageType msg, unsigned int msg_param, InputAction action = INPUT_ACTION_INVALID, std::string_view label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 

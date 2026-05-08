@@ -23,7 +23,7 @@ class GUIButton {
 
     std::string id = {}; // Button id, so that buttons can be referenced from tests.
     Recti rect;
-    int uButtonType = 0;
+    ButtonType uButtonType = BUTTON_TYPE_NORMAL;
     int uData = 0;  // may be pMessageType
     UIMessageType msg = UIMSG_0;
     unsigned int  msg_param = 0;
