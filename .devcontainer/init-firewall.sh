@@ -44,6 +44,7 @@ ipset create allowed-domains hash:ip
 # covers api.github.com, *.github.com, etc.
 ALLOWED_DOMAINS=(
     github.com              # api.github.com, *.github.com
+    github.io               # GitHub Pages, e.g. grayface.github.io
     githubusercontent.com   # raw content, avatars, user content
     blob.core.windows.net   # productionresultssa{1-19}, vscode, etc.
     npmjs.org               # registry.npmjs.org
@@ -52,6 +53,8 @@ ALLOWED_DOMAINS=(
     statsig.com
     visualstudio.com        # marketplace.visualstudio.com
     code.visualstudio.com   # update.code.visualstudio.com
+    mightandmagic.fandom.com # MM7 wiki — game data references during refactoring.
+    celestialheavens.com    # Might & Magic fan site — game data references.
 )
 
 # Build the dnsmasq --ipset directive: /domain1/domain2/.../ipset_name
