@@ -35,7 +35,7 @@ static void prepareToLoadRestUI() {
     }
     pEventTimer->setPaused(true);
     if (currentRestType != REST_HEAL) {
-        new OnButtonClick2({518, 450}, {0, 0}, pBtn_Rest);
+        new OnButtonClick({518, 450}, {0, 0}, pBtn_Rest);
     }
     remainingRestTime = Duration();
     currentRestType = REST_NONE;

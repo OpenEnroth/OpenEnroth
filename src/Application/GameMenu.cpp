@@ -115,14 +115,14 @@ void Menu::EventLoop() {
                 --pSavegameList->saveListPosition;
                 if (pSavegameList->saveListPosition < 0)
                     pSavegameList->saveListPosition = 0;
-                new OnButtonClick2({215, 199}, {17, 17}, pBtnArrowUp);
+                new OnButtonClick({215, 199}, {17, 17}, pBtnArrowUp);
                 continue;
 
             case UIMSG_DownArrow:
                 if (pSavegameList->saveListPosition + 7 < param) {
                     ++pSavegameList->saveListPosition;
                 }
-                new OnButtonClick2({215, 323}, {17, 17}, pBtnDownArrow);
+                new OnButtonClick({215, 323}, {17, 17}, pBtnDownArrow);
                 continue;
 
             case UIMSG_Cancel:
@@ -257,10 +257,10 @@ void Menu::EventLoop() {
                 int gammalevel = engine->config->graphics.Gamma.value();
                 if (param == 4) {
                     gammalevel--;
-                    new OnButtonClick2({21, 161}, {0, 0}, pBtn_SliderLeft, std::string(), false);
+                    new OnButtonClick({21, 161}, {0, 0}, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     gammalevel++;
-                    new OnButtonClick2({213, 161}, {0, 0}, pBtn_SliderRight, std::string(), false);
+                    new OnButtonClick({213, 161}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->position();
                     gammalevel = (pt.x - 42) / 17;
@@ -291,10 +291,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->settings.MusicLevel.value();
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2({243, 216}, {0, 0}, pBtn_SliderLeft, std::string(), false);
+                    new OnButtonClick({243, 216}, {0, 0}, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2({435, 216}, {0, 0}, pBtn_SliderRight, std::string(), false);
+                    new OnButtonClick({435, 216}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->position();
                     new_level = (pt.x - 263) / 17;  // for mouse
@@ -310,10 +310,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->settings.SoundLevel.value();
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2({243, 162}, {0, 0}, pBtn_SliderLeft, std::string(), false);
+                    new OnButtonClick({243, 162}, {0, 0}, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2({435, 162}, {0, 0}, pBtn_SliderRight, std::string(), false);
+                    new OnButtonClick({435, 162}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->position();
                     new_level = (pt.x - 263) / 17;
@@ -341,10 +341,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->settings.VoiceLevel.value();
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2({243, 270}, {0, 0}, pBtn_SliderLeft, std::string(), false);
+                    new OnButtonClick({243, 270}, {0, 0}, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2({435, 270}, {0, 0}, pBtn_SliderRight, std::string(), false);
+                    new OnButtonClick({435, 270}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->position();
                     new_level = (pt.x - 263) / 17;

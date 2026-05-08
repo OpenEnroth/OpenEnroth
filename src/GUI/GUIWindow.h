@@ -135,21 +135,6 @@ class OnButtonClick : public GUIWindow {
     GUIButton *_button = nullptr;
 };
 
-class OnButtonClick2 : public GUIWindow {
- public:
-    OnButtonClick2(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}, bool play_sound = true) :
-        GUIWindow(WINDOW_PressedButton2, position, dimensions, hint),
-        _playSound(play_sound),
-        _button(button)
-    {}
-
-    virtual void Update() override;
-
- private:
-    bool _playSound = false;
-    GUIButton *_button = nullptr;
-};
-
 class OnButtonClick3 : public GUIWindow {
  public:
     OnButtonClick3(WindowType windowType, Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :

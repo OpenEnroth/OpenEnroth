@@ -310,7 +310,7 @@ enum WindowType {
     WINDOW_GameOverWindow = 70,
     WINDOW_50 = 80,  // Debug
     WINDOW_59 = 89,  // Debug: Item Generation Window
-    WINDOW_PressedButton2 = 90,      // OnButtonClick2?
+    WINDOW_PressedButton2 = 90,      // OnButtonClick?
     WINDOW_CharactersPressedButton = 91,
     WINDOW_PressedButton = 92,
     WINDOW_5D = 93,

@@ -471,20 +471,6 @@ void OnButtonClick::Update() {
     delete this;
 }
 
-void OnButtonClick2::Update() {
-    if (_playSound) {
-        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    }
-    if (Recti({}, render->GetRenderDimensions()).intersects(_button->rect)) {
-        render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
-    }
-    if (!sHint.empty()) {
-        _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
-    }
-
-    delete this;
-}
-
 void OnButtonClick3::Update() {
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 

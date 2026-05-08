@@ -179,13 +179,13 @@ void CreateParty_EventLoop() {
             pParty->pCharacters[param].playReaction(SPEECH_PICK_ME);
             break;
         case UIMSG_PlayerCreationClickPlus:
-            new OnButtonClick2({613, 393}, {0, 0}, pPlayerCreationUI_BtnPlus, std::string(), false);
+            new OnButtonClick({613, 393}, {0, 0}, pPlayerCreationUI_BtnPlus, std::string(), false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].IncreaseAttribute(
                 static_cast<Attribute>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
             pAudioPlayer->playUISound(SOUND_ClickMinus);
             break;
         case UIMSG_PlayerCreationClickMinus:
-            new OnButtonClick2({523, 393}, {0, 0}, pPlayerCreationUI_BtnMinus, std::string(), false);
+            new OnButtonClick({523, 393}, {0, 0}, pPlayerCreationUI_BtnMinus, std::string(), false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].DecreaseAttribute(
                 static_cast<Attribute>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
             pAudioPlayer->playUISound(SOUND_ClickPlus);
@@ -201,7 +201,7 @@ void CreateParty_EventLoop() {
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             break;
         case UIMSG_PlayerCreationClickOK:
-            new OnButtonClick2({580, 431}, {0, 0}, pPlayerCreationUI_BtnOK);
+            new OnButtonClick({580, 431}, {0, 0}, pPlayerCreationUI_BtnOK);
             if (CharacterCreation_GetUnspentAttributePointCount() || !PlayerCreation_Choose4Skills()) {
                 errorMessageExpireTime = pMiscTimer->time() + Duration::fromRealtimeSeconds(4); // show message for 4 seconds
             } else {
@@ -209,7 +209,7 @@ void CreateParty_EventLoop() {
             }
             break;
         case UIMSG_PlayerCreationClickReset:
-            new OnButtonClick2({527, 431}, {0, 0}, pPlayerCreationUI_BtnReset);
+            new OnButtonClick({527, 431}, {0, 0}, pPlayerCreationUI_BtnReset);
             pParty->Reset();
             break;
         case UIMSG_PlayerCreationRemoveUpSkill:

@@ -352,14 +352,14 @@ void GUIWindow_Load::downArrowPressed(int maxSlots) {
     if (pSavegameList->saveListPosition + 7 < maxSlots) {
         ++pSavegameList->saveListPosition;
     }
-    new OnButtonClick2({ pGUIWindow_CurrentMenu->frameRect.x + 215, pGUIWindow_CurrentMenu->frameRect.y + 323 }, { 0, 0 }, pBtnDownArrow);
+    new OnButtonClick({ pGUIWindow_CurrentMenu->frameRect.x + 215, pGUIWindow_CurrentMenu->frameRect.y + 323 }, { 0, 0 }, pBtnDownArrow);
 }
 
 void GUIWindow_Load::upArrowPressed() {
     --pSavegameList->saveListPosition;
     if (pSavegameList->saveListPosition < 0)
         pSavegameList->saveListPosition = 0;
-    new OnButtonClick2({ pGUIWindow_CurrentMenu->frameRect.x + 215, pGUIWindow_CurrentMenu->frameRect.y + 197 }, { 0, 0 }, pBtnArrowUp);
+    new OnButtonClick({ pGUIWindow_CurrentMenu->frameRect.x + 215, pGUIWindow_CurrentMenu->frameRect.y + 197 }, { 0, 0 }, pBtnArrowUp);
 }
 
 void GUIWindow_Load::cancelButtonPressed() {

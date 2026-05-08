@@ -488,7 +488,7 @@ void Game::processQueuedMessages() {
 
                 if (current_screen_type == SCREEN_GAME) {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
-                        new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
+                        new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
 
                         engine->_messageQueue->clear();
                         _menu->MenuLoop();
@@ -667,7 +667,7 @@ void Game::processQueuedMessages() {
             case UIMSG_ScrollNPCPanel:  // Right and Left button for
                                         // NPCPanel
                 if (uMessageParam) {
-                    new OnButtonClick2({626, 179 + 2 * (pParty->alignment == PartyAlignment::PartyAlignment_Evil) }, {0, 0}, pBtn_NPCRight);
+                    new OnButtonClick({626, 179 + 2 * (pParty->alignment == PartyAlignment::PartyAlignment_Evil) }, {0, 0}, pBtn_NPCRight);
                     v37 = (!pParty->pHirelings[0].name.empty()) +
                           (!pParty->pHirelings[1].name.empty()) +
                           (uint8_t)pParty->cNonHireFollowers - 2;
@@ -676,7 +676,7 @@ void Game::processQueuedMessages() {
                         ++pParty->hirelingScrollPosition;
                     }
                 } else {
-                    new OnButtonClick2({469, 179}, {0, 0}, pBtn_NPCLeft);
+                    new OnButtonClick({469, 179}, {0, 0}, pBtn_NPCLeft);
                     if (pParty->hirelingScrollPosition > 0) {
                         --pParty->hirelingScrollPosition;
                     }
@@ -1028,7 +1028,7 @@ void Game::processQueuedMessages() {
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
-                new OnButtonClick2(pButton_RestUI_Wait5Minutes->rect.topLeft(), {0, 0}, pButton_RestUI_Wait5Minutes,
+                new OnButtonClick(pButton_RestUI_Wait5Minutes->rect.topLeft(), {0, 0}, pButton_RestUI_Wait5Minutes,
                     localization->str(LSTR_WAIT_5_MINUTES));
                 currentRestType = REST_WAIT;
                 remainingRestTime = Duration::fromMinutes(5);
@@ -1039,7 +1039,7 @@ void Game::processQueuedMessages() {
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
-                new OnButtonClick2(pButton_RestUI_Wait1Hour->rect.topLeft(), {0, 0}, pButton_RestUI_Wait1Hour,
+                new OnButtonClick(pButton_RestUI_Wait1Hour->rect.topLeft(), {0, 0}, pButton_RestUI_Wait1Hour,
                     localization->str(LSTR_WAIT_1_HOUR));
                 currentRestType = REST_WAIT;
                 remainingRestTime = Duration::fromHours(1);
@@ -1180,14 +1180,14 @@ void Game::processQueuedMessages() {
                     pAudioPlayer->playUISound(SOUND_error);
                     continue;
                 }
-                new OnButtonClick2(pButton_RestUI_WaitUntilDawn->rect.topLeft(), {0, 0}, pButton_RestUI_WaitUntilDawn,
+                new OnButtonClick(pButton_RestUI_WaitUntilDawn->rect.topLeft(), {0, 0}, pButton_RestUI_WaitUntilDawn,
                                    localization->str(LSTR_WAIT_UNTIL_DAWN));
                 currentRestType = REST_WAIT;
                 remainingRestTime = timeUntilDawn();
                 continue;
 
             case UIMSG_ClickInstallRemoveQuickSpellBtn: {
-                new OnButtonClick2(pBtn_InstallRemoveSpell->rect.topLeft(), {0, 0}, pBtn_InstallRemoveSpell);
+                new OnButtonClick(pBtn_InstallRemoveSpell->rect.topLeft(), {0, 0}, pBtn_InstallRemoveSpell);
                 if (!pParty->hasActiveCharacter())
                     continue;
                 Character *character = &pParty->activeCharacter();
@@ -1305,7 +1305,7 @@ void Game::processQueuedMessages() {
                                 engine->_statusBar->clearAll();
                             }
                             // open window
-                            new OnButtonClick2({ 476, 450 }, { 0, 0 }, pBtn_CastSpell);
+                            new OnButtonClick({ 476, 450 }, { 0, 0 }, pBtn_CastSpell);
                             pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Spellbook>();
                             continue;
                         }
@@ -1329,7 +1329,7 @@ void Game::processQueuedMessages() {
                     engine->_statusBar->clearAll();
                 }
                 // open window
-                new OnButtonClick2({560, 450}, {0, 0}, pBtn_QuickReference);
+                new OnButtonClick({560, 450}, {0, 0}, pBtn_QuickReference);
                 pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_QuickReference>();
                 continue;
             case UIMSG_GameMenuButton:
@@ -1484,7 +1484,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_ClickZoomInBtn:
                 if (!(current_screen_type == SCREEN_GAME)) continue;
-                new OnButtonClick2({519, 136}, {0, 0}, pBtn_ZoomIn);
+                new OnButtonClick({519, 136}, {0, 0}, pBtn_ZoomIn);
                 uNumSeconds = 131072;
 
                 viewparams->uMinimapZoom *= 2;
@@ -1502,7 +1502,7 @@ void Game::processQueuedMessages() {
                 break;
             case UIMSG_ClickZoomOutBtn:
                 if (!(current_screen_type == SCREEN_GAME)) continue;
-                new OnButtonClick2({574, 136}, {0, 0}, pBtn_ZoomOut);
+                new OnButtonClick({574, 136}, {0, 0}, pBtn_ZoomOut);
                 uNumSeconds = 32768;
 
                 viewparams->uMinimapZoom /= 2;
