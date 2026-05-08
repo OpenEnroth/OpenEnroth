@@ -50,6 +50,19 @@ std::array<GraphicsImage *, 22> ui_partycreation_portraits;
 std::array<GraphicsImage *, 19> ui_partycreation_arrow_r;
 std::array<GraphicsImage *, 19> ui_partycreation_arrow_l;
 
+
+std::array<GUIButton*, 4> pCreationUI_BtnPressRight2;
+std::array<GUIButton*, 4> pCreationUI_BtnPressLeft2;
+std::array<GUIButton*, 4> pCreationUI_BtnPressLeft;
+std::array<GUIButton*, 4> pCreationUI_BtnPressRight;
+
+GUIButton* pPlayerCreationUI_BtnReset;
+GUIButton* pPlayerCreationUI_BtnOK;
+GUIButton* pPlayerCreationUI_BtnPlus;
+GUIButton* pPlayerCreationUI_BtnMinus;
+
+
+
 static Duration errorMessageExpireTime; // expiration time (misc timer) of error message
 
 static const int ARROW_SPIN_PERIOD_MS = 475;

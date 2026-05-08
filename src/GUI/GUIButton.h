@@ -47,14 +47,8 @@ extern GUIButton *pBtn_Book_3;
 extern GUIButton *pBtn_Book_2;
 extern GUIButton *pBtn_Book_1;
 
-
-extern GUIButton *pPlayerCreationUI_BtnReset;
-extern GUIButton *pPlayerCreationUI_BtnOK;
 extern GUIButton *pBtn_ExitCancel;
 extern GUIButton *pBtn_YES;
-extern GUIButton *pPlayerCreationUI_BtnPlus;
-extern GUIButton *pPlayerCreationUI_BtnMinus;
-
 
 extern GUIButton *pButton_RestUI_Main;
 extern GUIButton *pButton_RestUI_Exit;
@@ -113,8 +107,3 @@ extern GUIButton *pBtnLoadSlot;
 
 extern GUIButton *pBtn_ZoomOut;
 extern GUIButton *pBtn_ZoomIn;
-
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight2;
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft2;
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft;
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight;

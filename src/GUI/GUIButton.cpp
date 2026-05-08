@@ -18,12 +18,8 @@ GUIButton *pBtn_Book_3;
 GUIButton *pBtn_Book_2;
 GUIButton *pBtn_Book_1;
 
-GUIButton *pPlayerCreationUI_BtnReset;
-GUIButton *pPlayerCreationUI_BtnOK;
 GUIButton *pBtn_ExitCancel;
 GUIButton *pBtn_YES;
-GUIButton *pPlayerCreationUI_BtnPlus;
-GUIButton *pPlayerCreationUI_BtnMinus;
 
 GUIButton *pButton_RestUI_Main;
 GUIButton *pButton_RestUI_Exit;
@@ -78,11 +74,6 @@ GUIButton *pBtnDownArrow;
 GUIButton *pBtnArrowUp;
 GUIButton *pBtnCancel;
 GUIButton *pBtnLoadSlot;
-
-std::array<GUIButton *, 4> pCreationUI_BtnPressRight2;
-std::array<GUIButton *, 4> pCreationUI_BtnPressLeft2;
-std::array<GUIButton *, 4> pCreationUI_BtnPressLeft;
-std::array<GUIButton *, 4> pCreationUI_BtnPressRight;
 
 void GUIButton::Release() {
     std::vector<GUIButton *>::iterator it =
