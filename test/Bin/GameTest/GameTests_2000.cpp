@@ -1058,3 +1058,13 @@ GAME_TEST(Issues, Issue2464) {
         }
     }
 }
+
+GAME_TEST(Issues, Issue2490) {
+    // Opening the autonotes book asserts.
+    test.prepareForNextTest();
+    game.startNewGame();
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_N); // Open autonotes.
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_BOOKS); // Book opened, no assertion.
+}

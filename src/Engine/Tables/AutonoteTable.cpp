@@ -1,8 +1,8 @@
 #include "AutonoteTable.h"
 
+#include <array>
 #include <map>
 #include <string>
-#include <vector>
 
 #include "Library/Serialization/Serialization.h"
 
@@ -26,11 +26,11 @@ void initializeAutonotes(const Blob &autonotes) {
         {"misc", AUTONOTE_MISC}
     };
 
-    std::vector<std::string_view> tokens;
     for (std::string_view line : split(autonotes.str()).by("\r\n").drop(1).skip("")) {
-        split(line).by('\t').resize(3, "").to(&tokens); // Truncated lines with just the index exist in the file.
+        std::array<std::string_view, 3> tokens = split(line).by('\t'); // Truncated lines with just the index exist, tail defaults to "".
         int i = fromString<int>(tokens[0]);
-        pAutonoteTxt[i].pText = removeQuotes(tokens[1]);
+        // TODO(captainurist): We have "0" in autonote texts, and it gets shown. Find out what it was supposed to be.
+        pAutonoteTxt[i].pText = tokens[1] == "0" ? "" : removeQuotes(tokens[1]);
         pAutonoteTxt[i].eType = valueOr(autonoteTypeMap, tokens[2], AUTONOTE_MISC);
     }
 }
