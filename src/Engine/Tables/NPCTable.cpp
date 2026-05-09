@@ -75,7 +75,7 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
         std::array<std::string_view, 16> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]); // File indices are 1-based.
         pNPCUnicNames[i - 1] = removeQuotes(tokens[1]);
-        pOriginalNPCData[i].name = pNPCUnicNames[i - 1];
+        pOriginalNPCData[i].name = pNPCUnicNames[i - 1]; // TODO(captainurist): just make this 1-based too?
         pOriginalNPCData[i].portraitId = fromString<int>(tokens[2]);
         pOriginalNPCData[i].house = static_cast<HouseId>(fromString<int>(tokens[6]));
         pOriginalNPCData[i].profession = static_cast<NpcProfession>(fromString<int>(tokens[7]));
