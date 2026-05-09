@@ -7,6 +7,7 @@
 #include "Engine/MapEnums.h"
 #include "Engine/PartyEnums.h"
 
+// TODO(captainurist): drop everything that's not used here.
 struct HouseData {
     HouseType uType = HOUSE_TYPE_INVALID;
     uint16_t uAnimationID = 0;

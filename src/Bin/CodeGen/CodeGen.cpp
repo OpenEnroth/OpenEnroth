@@ -199,7 +199,6 @@ int runHouseIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMa
     mapStats.Initialize(resourceManager->eventsData("MapStats.txt"));
 
     initializeHouses(resourceManager->eventsData("2dEvents.txt"));
-    // ^ Initializes houseTable.
 
     std::unordered_map<HouseId, std::set<std::string>> mapNamesByHouseId; // Only arbiter exists on two maps.
 
