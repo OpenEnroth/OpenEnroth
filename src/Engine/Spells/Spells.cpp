@@ -1,10 +1,9 @@
 #include "Engine/Spells/Spells.h"
 
-#include <cstring>
 #include <algorithm>
+#include <array>
 #include <map>
 #include <string>
-#include <vector>
 
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
@@ -17,9 +16,12 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 
+#include "Library/Serialization/Serialization.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
+#include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Split.h"
 #include "Utility/String/Transformations.h"
@@ -494,19 +496,14 @@ void SpellStats::Initialize(const Blob &spells) {
         {"magic", DAMAGE_MAGIC},
     };
 
-    char *test_string;
+    // spells.txt table structure: index | ... | name (localized) | school (not localized) | ...
+    // Section header lines have an empty first column and are skipped.
+    for (std::string_view line : split(spells.str()).by("\r\n").drop(2).skip("")) {
+        std::array<std::string_view, 11> tokens = split(line).by('\t');
+        if (tokens[0].empty())
+            continue; // Skip section headers.
 
-    std::string txtRaw(spells.str());
-
-    strtok(txtRaw.data(), "\r");
-    for (SpellId uSpellID : allRegularSpells()) {
-        if (((std::to_underlying(uSpellID) % 11) - 1) == 0) {
-            strtok(NULL, "\r");
-        }
-        test_string = strtok(NULL, "\r") + 1;
-
-        std::vector<std::string_view> tokens = split(test_string).by('\t');
-
+        SpellId uSpellID = static_cast<SpellId>(fromString<int>(tokens[0]));
         pInfos[uSpellID].name = removeQuotes(tokens[2]);
         pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, tokens[3], DAMAGE_PHYSICAL);
         pInfos[uSpellID].pShortName = removeQuotes(tokens[4]);
