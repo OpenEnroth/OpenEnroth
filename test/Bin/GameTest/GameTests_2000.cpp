@@ -22,7 +22,9 @@
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UIChest.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Library/LodFormats/LodFormats.h"
 
@@ -978,4 +980,91 @@ GAME_TEST(Issues, Issue2453) {
     EXPECT_NE(firstSave.str(), secondSave.str()); // Save was actually overwritten.
 
     EXPECT_GE(loadingTape.count(true), 1); // Loading screen was shown.
+}
+
+GAME_TEST(Issues, Issue2464) {
+    // Hovering on NPC dialog options displays the hovered text in the log bar.
+    auto statusTape = tapes.statusBar();
+
+    test.prepareForNextTest();
+    game.startNewGame();
+    game.tick(20);
+
+    // 1. Trigger tutorial dialog (which uses SCREEN_NPC_DIALOGUE)
+    // Vanilla behavior: Mirroring SHOULD happen for regular NPCs
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(20);
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.tick(10);
+    ASSERT_EQ(current_screen_type, SCREEN_NPC_DIALOGUE);
+    ASSERT_NE(pDialogueWindow, nullptr);
+
+    // Find \"Goodbye\" button or any button with a label
+    GUIButton *pTargetBtn = nullptr;
+    for (GUIButton *pBtn : pDialogueWindow->vButtons) {
+        if (pBtn->uButtonType == 1 && !pBtn->sLabel.empty()) {
+            pTargetBtn = pBtn;
+            break;
+        }
+    }
+    ASSERT_NE(pTargetBtn, nullptr);
+
+    // Hover over it
+    test.startTaping();
+    game.moveMouse(pTargetBtn->rect.x + pTargetBtn->rect.w / 2,
+                   pTargetBtn->rect.y + pTargetBtn->rect.h / 2);
+    game.tick(10);
+
+    // The status bar SHOULD contain the label for regular NPCs
+    EXPECT_EQ(engine->_statusBar->get(), pTargetBtn->sLabel);
+    test.stopTaping();
+
+    // Exit dialogue
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(10);
+
+    // 2. Enter a house/vendor
+    // Vanilla behavior: Mirroring SHOULD NOT happen for vendors
+    // Emerald Island Town Hall is right in front of us if we turn a bit.
+    game.pressKey(PlatformKey::KEY_LEFT);
+    game.tick(5);
+    game.releaseKey(PlatformKey::KEY_LEFT);
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(150);
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Enter house
+    game.tick(20);
+
+    if (current_screen_type == SCREEN_HOUSE) {
+        ASSERT_NE(pDialogueWindow, nullptr);
+
+        // Find a service button in the house (like \"Exit Building\")
+        GUIButton *pServiceBtn = nullptr;
+        for (GUIButton *pBtn : pDialogueWindow->vButtons) {
+            if (pBtn->uButtonType == 1 && !pBtn->sLabel.empty()) {
+                pServiceBtn = pBtn;
+                break;
+            }
+        }
+
+        if (pServiceBtn) {
+            test.startTaping();
+            game.moveMouse(pServiceBtn->rect.x + pServiceBtn->rect.w / 2,
+                           pServiceBtn->rect.y + pServiceBtn->rect.h / 2);
+            game.tick(10);
+
+            // The status bar should NOT contain the label for vendors/shops
+            EXPECT_FALSE(statusTape.contains(pServiceBtn->sLabel));
+        }
+    }
+}
+
+GAME_TEST(Issues, Issue2490) {
+    // Opening the autonotes book asserts.
+    test.prepareForNextTest();
+    game.startNewGame();
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_N); // Open autonotes.
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_BOOKS); // Book opened, no assertion.
 }

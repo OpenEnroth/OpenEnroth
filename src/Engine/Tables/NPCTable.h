@@ -129,7 +129,7 @@ struct NPCStats {
     IndexedArray<NPCProfessionChance, MAP_FIRST, MAP_LAST> pProfessionChance;
     int field_17884 = 0;
     int field_17888 = 0;
-    NPCGreeting pNPCGreetings[206];
+    std::array<NPCGreeting, 206> pNPCGreetings;
     std::array<uint16_t, 51> pOriginalGroups = {{}}; // NPC groups as read from npcgroup.txt.
     std::array<uint16_t, 51> pGroups = {{}}; // NPC groups used during the game.
     int uNewlNPCBufPos = 0;

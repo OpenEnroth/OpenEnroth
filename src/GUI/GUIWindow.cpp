@@ -182,6 +182,7 @@ void GUIWindow::setKeyboardControlGroup(int buttonsCount, bool msgOnSelect, int 
 GUIWindow::~GUIWindow() {
     DeleteButtons();
     lWindowList.remove(this);
+    // TODO(captainurist): logger can be NULL here if we're called from cxa_finalize.
     logger->trace("Release window: {}", toString(eWindowType));
 }
 

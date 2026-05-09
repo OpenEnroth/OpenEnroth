@@ -245,11 +245,7 @@ class Localization {
     void initializeNpcProfessionNames();
 
  private:
-    std::string _localizationRaw;
     IndexedArray<std::string, LSTR_FIRST, LSTR_LAST> _localizationStrings;
-    std::string _classDescRaw;
-    std::string _attributeDescRaw;
-    std::string _skillDescRaw;
 
     std::array<std::string, 14> _mm6ItemCategories;
     std::array<std::string, 12> _monthNames;

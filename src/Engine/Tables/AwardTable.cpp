@@ -1,8 +1,7 @@
 #include "AwardTable.h"
 
-#include <ranges>
+#include <array>
 #include <string>
-#include <vector>
 
 #include "Library/Serialization/Serialization.h"
 
@@ -13,11 +12,11 @@
 IndexedArray<AwardData, AWARD_FIRST, AWARD_LAST> pAwards;
 
 void initializeAwards(const Blob &awards) {
-    std::vector<std::string_view> chunks;
-    for (std::string_view line : split(awards.str()).by("\r\n") | std::views::drop(1)) {
-        split(line).by('\t').to(&chunks);
-        if (chunks.size() < 3)
-            continue;
+    // awards.txt table structure: index | text (localized) | priority.
+    for (std::string_view line : split(awards.str()).by("\r\n").drop(1).skip("")) {
+        std::array<std::string_view, 3> chunks = split(line).by('\t');
+        if (chunks[2].empty())
+            continue; // Truncated lines with just the index exist in the file.
 
         AwardId awardId = static_cast<AwardId>(fromString<int>(chunks[0]));
         pAwards[awardId].pText = removeQuotes(chunks[1]);

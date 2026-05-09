@@ -24,13 +24,9 @@ void GUIWindow_AutonotesBook::recalculateCurrentNotesTypePages() {
     _currentPage = 0;
     _currentPageNotes = 0;
     _activeNotesIdx.clear();
-    for (int i = 1; i < pAutonoteTxt.size(); ++i) {
-        if (autonoteBookDisplayType == pAutonoteTxt[i].eType) {
-            if (pParty->_autonoteBits[i] && !pAutonoteTxt[i].pText.empty()) {
-                _activeNotesIdx.push_back(i);
-            }
-        }
-    }
+    for (int i : pParty->_autonoteBits.indices())
+        if (pParty->_autonoteBits[i] && autonoteBookDisplayType == pAutonoteTxt[i].eType && !pAutonoteTxt[i].pText.empty())
+            _activeNotesIdx.push_back(i);
 }
 
 GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {

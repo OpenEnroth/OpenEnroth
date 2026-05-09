@@ -1,206 +1,93 @@
 #include "MapInfo.h"
 
-#include <cstdlib>
-#include <cstring>
-#include <sstream>
+#include <array>
+#include <map>
 #include <string>
 
+#include "Library/Serialization/Serialization.h"
+
+#include "Utility/MapAccess.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
+#include "Utility/String/Split.h"
 #include "Utility/String/Transformations.h"
 
 MapStats *pMapStats;
 
-const char *location_type[] = {
-    "GENERIC",
-    "PADDEDCELL",
-    "ROOM",
-    "BATHROOM",
-    "LIVINGROOM",
-    "STONEROOM",
-    "AUDITORIUM",
-    "CONCERTHALL",
-    "CAVE",
-    "ARENA",
-    "HANGAR",
-    "CARPETEDHALLWAY",
-    "HALLWAY",
-    "STONECORRIDOR",
-    "ALLEY",
-    "FOREST",
-    "CITY",
-    "MOUNTAIN",
-    "QUARRY",
-    "PLAINS",
-    "PARKINGLOT",
-    "SEWERPIPE",
-    "UNDERWATER",
-    "DRUGGED",
-    "DIZZY",
-    "PSYCHOTIC"
-};
-
 void MapStats::Initialize(const Blob &mapStats) {
-    std::string pMapStatsTXT(mapStats.str());
-    std::stringstream stream(pMapStatsTXT);
-    std::string tmpString;
-    std::getline(stream, tmpString);
-    std::getline(stream, tmpString);
-    std::getline(stream, tmpString);
+    // mapstats.txt table structure: map id | name (localized) | file name | ... |
+    //                               map designer (set only in mm6, not used) | dev notes | parent map (not used).
+    static const std::map<std::string, uint8_t, ascii::NoCaseLess> eaxEnvMap = {
+        {"GENERIC", 0},
+        {"PADDEDCELL", 1},
+        {"ROOM", 2},
+        {"BATHROOM", 3},
+        {"LIVINGROOM", 4},
+        {"STONEROOM", 5},
+        {"AUDITORIUM", 6},
+        {"CONCERTHALL", 7},
+        {"CAVE", 8},
+        {"ARENA", 9},
+        {"HANGAR", 10},
+        {"CARPETEDHALLWAY", 11},
+        {"HALLWAY", 12},
+        {"STONECORRIDOR", 13},
+        {"ALLEY", 14},
+        {"FOREST", 15},
+        {"CITY", 16},
+        {"MOUNTAIN", 17},
+        {"QUARRY", 18},
+        {"PLAINS", 19},
+        {"PARKINGLOT", 20},
+        {"SEWERPIPE", 21},
+        {"UNDERWATER", 22},
+        {"DRUGGED", 23},
+        {"DIZZY", 24},
+        {"PSYCHOTIC", 25},
+    };
 
-    char work_str[32];
-    int work_str_pos;
-    int work_str_len;
-
-    MapId i = MAP_FIRST;
-    while (!stream.eof()) {
-        std::getline(stream, tmpString);
-        std::stringstream line(tmpString);
-        size_t decode_step = 0;
-        while (!line.eof()) {
-            std::getline(line, tmpString, '\t');
-            char test_string[1024];
-            strncpy(test_string, tmpString.c_str(), sizeof(test_string) - 1);
-            switch (decode_step) {
-                case 1:
-                    pInfos[i].name = removeQuotes(test_string);  // randoms crashes here  // got 1 too
-                    break;
-                case 2:
-                    pInfos[i].fileName = ascii::toLower(removeQuotes(test_string));
-                    break;
-                case 3:
-                    pInfos[i].numResets = atoi(test_string);
-                    break;
-                case 4:
-                    pInfos[i].firstVisitedAt = atoi(test_string);
-                    break;
-                case 5:
-                    pInfos[i].perceptionDifficulty = atoi(test_string);
-                    break;
-                case 6:
-                    pInfos[i].respawnIntervalDays = atoi(test_string);
-                    break;
-                case 7:
-                    pInfos[i].alertDays = atoi(test_string);
-                    break;
-                case 8:
-                    pInfos[i].baseStealingFine = atoi(test_string);
-                    break;
-                case 9:
-                    pInfos[i].disarmDifficulty = atoi(test_string);
-                    break;
-                case 10:
-                    pInfos[i].trapDamageD20DiceCount = atoi(test_string);
-                    break;
-                case 11:
-                    pInfos[i].mapTreasureLevel = static_cast<MapTreasureLevel>(atoi(test_string));  // treasure levels 0-6
-                    break;
-                case 12:
-                    pInfos[i].encounterChance = atoi(test_string);
-                    break;
-                case 13:
-                    pInfos[i].encounter1Chance = atoi(test_string);
-                    break;
-                case 14:
-                    pInfos[i].encounter2Chance = atoi(test_string);
-                    break;
-                case 15:
-                    pInfos[i].encounter3Chance = atoi(test_string);
-                    break;
-                case 16:
-                    pInfos[i].encounter1MonsterInternalName = removeQuotes(test_string);
-                    break;
-                case 18:
-                    pInfos[i].Dif_M1 = atoi(test_string);
-                    break;
-                case 19:
-                    pInfos[i].encounter1MinCount = 1;
-                    pInfos[i].encounter1MaxCount = 1;
-                    strncpy(work_str, test_string, sizeof(work_str) - 1);
-                    work_str_pos = 0;
-                    work_str_len = strlen(work_str);
-                    if (work_str_len) {
-                        while (work_str[work_str_pos] != '-') {
-                            ++work_str_pos;
-                            if (work_str_pos >= work_str_len) break;
-                        }
-                        work_str[work_str_pos] = 0;
-                        pInfos[i].encounter1MinCount = atoi(work_str);
-                        if (work_str_pos < work_str_len)
-                            pInfos[i].encounter1MaxCount = atoi(&work_str[work_str_pos + 1]);
-                        else
-                            pInfos[i].encounter1MaxCount = pInfos[i].encounter1MinCount;
-                    }
-                    break;
-                case 20:
-                    pInfos[i].encounter2MonsterInternalName = removeQuotes(test_string);
-                    break;
-                case 22:
-                    pInfos[i].Dif_M2 = atoi(test_string);
-                    break;
-                case 23:
-                    pInfos[i].encounter2MinCount = 1;
-                    pInfos[i].encounter2MaxCount = 1;
-                    strncpy(work_str, test_string, sizeof(work_str) - 1);
-                    work_str_pos = 0;
-                    work_str_len = strlen(work_str);
-                    if (work_str_len) {
-                        while (work_str[work_str_pos] != '-') {
-                            ++work_str_pos;
-                            if (work_str_pos >= work_str_len) break;
-                        }
-                        work_str[work_str_pos] = 0;
-                        pInfos[i].encounter2MinCount = atoi(work_str);
-                        if (work_str_pos < work_str_len)
-                            pInfos[i].encounter2MaxCount = atoi(&work_str[work_str_pos + 1]);
-                        else
-                            pInfos[i].encounter2MaxCount = pInfos[i].encounter2MinCount;
-                    }
-                    break;
-                case 24:
-                    pInfos[i].encounter3MonsterInternalName = removeQuotes(test_string);
-                    break;
-                case 26:
-                    pInfos[i].Dif_M3 = atoi(test_string);
-                    break;
-                case 27:
-                    pInfos[i].encounter3MinCount = 1;
-                    pInfos[i].encounter3MaxCount = 1;
-                    strncpy(work_str, test_string, sizeof(work_str) - 1);
-                    work_str_pos = 0;
-                    work_str_len = strlen(work_str);
-                    if (work_str_len) {
-                        while (work_str[work_str_pos] != '-') {
-                            ++work_str_pos;
-                            if (work_str_pos >= work_str_len) break;
-                        }
-                        work_str[work_str_pos] = 0;
-                        pInfos[i].encounter3MinCount = atoi(work_str);
-                        if (work_str_pos < work_str_len)
-                            pInfos[i].encounter3MaxCount = atoi(&work_str[work_str_pos + 1]);
-                        else
-                            pInfos[i].encounter3MaxCount = pInfos[i].encounter3MinCount;
-                    }
-                    break;
-                case 28:
-                    pInfos[i].musicId = static_cast<MusicId>(atoi(test_string));
-                    break;
-                case 29: {
-                    pInfos[i].uEAXEnv = 0xff;
-                    for (int j = 0; j < 25; j++) {
-                        if (!strcmp(test_string, location_type[j])) {
-                            pInfos[i].uEAXEnv = j;
-                            break;
-                        }
-                    }
-                    if (pInfos[i].uEAXEnv == 0xff) {
-                        pInfos[i].uEAXEnv = 26;
-                    }
-                } break;
-            }
-            decode_step++;
+    auto parseRange = [](std::string_view s, uint8_t *minOut, uint8_t *maxOut) {
+        // Range cells can have leading whitespace (e.g. " 2-5"), so trim before each fromString.
+        auto dash = s.find('-');
+        if (dash == std::string_view::npos) {
+            *minOut = fromString<int>(trim(s));
+            *maxOut = *minOut;
+        } else {
+            *minOut = fromString<int>(trim(s.substr(0, dash)));
+            *maxOut = fromString<int>(trim(s.substr(dash + 1)));
         }
-        i = static_cast<MapId>(std::to_underlying(i) + 1);
+    };
+
+    for (std::string_view line : split(mapStats.str()).by("\r\n").drop(3).skip("")) {
+        std::array<std::string_view, 30> tokens = split(line).by('\t');
+        MapId mapId = static_cast<MapId>(fromString<int>(tokens[0]));
+        MapInfo &info = pInfos[mapId];
+        info.name = removeQuotes(tokens[1]);
+        info.fileName = ascii::toLower(removeQuotes(tokens[2]));
+        info.numResets = fromString<int>(tokens[3]);
+        info.firstVisitedAt = fromString<int>(tokens[4]);
+        info.perceptionDifficulty = fromString<int>(tokens[5]);
+        info.respawnIntervalDays = fromString<int>(tokens[6]);
+        info.alertDays = fromString<int>(tokens[7]);
+        info.baseStealingFine = fromString<int>(tokens[8]);
+        info.disarmDifficulty = fromString<int>(tokens[9]);
+        info.trapDamageD20DiceCount = fromString<int>(tokens[10]);
+        info.mapTreasureLevel = static_cast<MapTreasureLevel>(fromString<int>(tokens[11]));
+        info.encounterChance = fromString<int>(tokens[12]);
+        info.encounter1Chance = fromString<int>(tokens[13]);
+        info.encounter2Chance = fromString<int>(tokens[14]);
+        info.encounter3Chance = fromString<int>(tokens[15]);
+        info.encounter1MonsterInternalName = removeQuotes(tokens[16]);
+        info.Dif_M1 = fromString<int>(tokens[18]);
+        parseRange(tokens[19], &info.encounter1MinCount, &info.encounter1MaxCount);
+        info.encounter2MonsterInternalName = removeQuotes(tokens[20]);
+        info.Dif_M2 = fromString<int>(tokens[22]);
+        parseRange(tokens[23], &info.encounter2MinCount, &info.encounter2MaxCount);
+        info.encounter3MonsterInternalName = removeQuotes(tokens[24]);
+        info.Dif_M3 = fromString<int>(tokens[26]);
+        parseRange(tokens[27], &info.encounter3MinCount, &info.encounter3MaxCount);
+        info.musicId = static_cast<MusicId>(fromString<int>(tokens[28]));
+        info.uEAXEnv = valueOr(eaxEnvMap, std::string(tokens[29]), 26);
     }
 }
 

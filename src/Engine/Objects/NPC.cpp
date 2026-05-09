@@ -95,6 +95,10 @@ const std::string &GetProfessionActionText(NpcProfession prof) {
     case FallenWizard:
         return pNPCStats->pProfessions[prof].pActionText;
     default:
+        // TODO(captainurist): This looks broken.
+        // pNPCTopics[407].pTopic = "Mind Guild Membership"
+        // pNPCTopics[407].pText = "With Expert Air Magic you can learn all of the Expert spells for this element...."
+        // Double broken!
         return pNPCTopics[407].pTopic;
     }
 }

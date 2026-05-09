@@ -866,6 +866,21 @@ void GameUI_WritePointedObjectStatusString() {
     if (pX < 0 || pX > renDims.w - 1 || pY < 0 || pY > renDims.h - 1)
         return;
 
+    auto shouldMirror = [&](GUIWindow *pWindow) -> bool {
+        if (pWindow->eWindowType != WINDOW_Dialogue) {
+            return true;
+        }
+        if (current_screen_type == SCREEN_NPC_DIALOGUE) {
+            return true;
+        }
+        if (current_screen_type == SCREEN_HOUSE) {
+            if (currentHouseNpc != -1 && currentHouseNpc < (int)houseNpcs.size()) {
+                return houseNpcs[currentHouseNpc].type == HOUSE_NPC;
+            }
+        }
+        return false;
+    };
+
     if (current_screen_type == SCREEN_GAME) {
         if (pX <= (renDims.w - 1) * 0.73125 &&
             pY <= (renDims.h - 1) * 0.73125) {
@@ -1028,7 +1043,9 @@ void GameUI_WritePointedObjectStatusString() {
                     switch (pButton->uButtonType) {
                         case BUTTON_TYPE_NORMAL:  // for dialogue window
                             if (pButton->Contains(pX, pY)) {
-                                engine->_statusBar->setPermanent(pButton->sLabel);
+                                if (shouldMirror(pWindow)) {
+                                    engine->_statusBar->setPermanent(pButton->sLabel);
+                                }
                                 pMessageType1 = (UIMessageType)pButton->uData;
                                 if (pMessageType1)
                                     GameUI_handleHintMessage(pMessageType1, pButton->msg_param);
