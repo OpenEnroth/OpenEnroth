@@ -46,7 +46,7 @@ struct MapInfo {
     char field_3E;
     char field_3F;
     MusicId musicId;
-    uint8_t uEAXEnv;
+    uint8_t uEAXEnv; // TODO(captainurist): EAX audio reverb preset (0-26); set per-map - wire up to the audio backend.
     char field_42;
     char field_43;
 };
