@@ -1,8 +1,7 @@
 #include "QuestTable.h"
 
-#include <cassert>
+#include <array>
 #include <string>
-#include <vector>
 
 #include "Library/Serialization/Serialization.h"
 
@@ -17,11 +16,8 @@ void initializeQuests(const Blob &quests) {
     //                             quest giver name (not localized, not used).
     pQuestTable.fill({});
 
-    std::vector<std::string_view> tokens;
     for (std::string_view line : split(quests.str()).by("\r\n").drop(1).skip("")) {
-        split(line).by('\t').to(&tokens);
-        assert(tokens.size() >= 2 && "Invalid number of tokens"); // TODO(captainurist): should not be an assert.
-
+        std::array<std::string_view, 2> tokens = split(line).by('\t');
         QuestBit qbit = static_cast<QuestBit>(fromString<int>(tokens[0]));
         pQuestTable[qbit] = removeQuotes(tokens[1]);
     }
