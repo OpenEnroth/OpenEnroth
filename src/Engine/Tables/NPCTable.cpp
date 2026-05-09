@@ -1,9 +1,10 @@
 #include "NPCTable.h"
 
-#include <cstring>
+#include <array>
 #include <string>
 #include <vector>
 
+#include "Engine/MapEnumFunctions.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
@@ -11,6 +12,10 @@
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Random/Random.h"
 
+#include "Library/Serialization/Serialization.h"
+
+#include "Utility/Memory/Blob.h"
+#include "Utility/String/Split.h"
 #include "Utility/String/Transformations.h"
 
 std::array<NPCTopic, 789> pNPCTopics;
@@ -21,121 +26,33 @@ int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;
 
 //----- (00476977) --------------------------------------------------------
 void NPCStats::InitializeNPCText(const Blob &npcText) {
-    int i;
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    std::string txtRaw(npcText.str());
-    strtok(txtRaw.data(), "\r");
-
-    for (i = 0; i < 789; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                if (decode_step == 1)
-                    pNPCTopics[i].pText = removeQuotes(test_string);
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 2) && !break_loop);
+    // npctext.txt table structure: index | text (localized) | dev notes | npc name (localized, not used).
+    for (std::string_view line : split(npcText.str()).by("\r\n").drop(1).skip("")) {
+        std::array<std::string_view, 2> tokens = split(line).by('\t');
+        int i = fromString<int>(tokens[0]) - 1; // File indices are 1-based, array is 0-based.
+        pNPCTopics[i].pText = removeQuotes(tokens[1]);
     }
 }
 
 void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
-    std::string txtRaw(npcTopics.str());
-    strtok(txtRaw.data(), "\r");
-
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    for (int i = 1; i <= 579; ++i) {  // NPC topics count limit
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                if (decode_step == 1)
-                    pNPCTopics[i].pTopic = removeQuotes(test_string);
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 2) && !break_loop);
+    // npctopic.txt table structure: index | topic (localized) | ??? (not used) | dev notes | text index (not used) |
+    //                               npc name (not localized, not used) | npc index (not used).
+    for (std::string_view line : split(npcTopics.str()).by("\r\n").drop(1).skip("")) {
+        std::array<std::string_view, 2> tokens = split(line).by('\t');
+        int i = fromString<int>(tokens[0]);
+        pNPCTopics[i].pTopic = removeQuotes(tokens[1]);
     }
 }
 
 void NPCStats::InitializeNPCDist(const Blob &npcDist) {
-    std::string txtRaw(npcDist.str());
-    strtok(txtRaw.data(), "\r");
-    strtok(NULL, "\r");
+    // npcdist.txt table structure: profession (localized, not used) | area profession chance values...
+    for (auto [line, prof] : split(npcDist.str()).by("\r\n").drop(2).skip("").zip(allNpcProfessions()))
+        for (auto [token, map] : split(line).by('\t').drop(1).zip(allMaps()))
+            pProfessionChance[map].chanceByProfession[prof] = fromString<int>(token);
 
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    for (NpcProfession i : allNpcProfessions()) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                if ((decode_step > 0) && (decode_step < 77)) {
-                    pProfessionChance[static_cast<MapId>(decode_step)].chanceByProfession[i] = atoi(test_string);
-                }
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 78) && !break_loop);
-    }
-
-    for (MapId i : Segment(MAP_FIRST, MAP_LAST))
-        for (NpcProfession ii : allNpcProfessions())
-            pProfessionChance[i].total += pProfessionChance[i].chanceByProfession[ii];
+    for (MapId map : allMaps())
+        for (NpcProfession prof : allNpcProfessions())
+            pProfessionChance[map].total += pProfessionChance[map].chanceByProfession[prof];
 }
 
 // TODO(Nik-RE-dev): move out of table back to Engine/Objects/NPC.cpp
@@ -151,189 +68,58 @@ void NPCStats::setNPCNamesOnLoad() {
 
 //----- (00476CB5) --------------------------------------------------------
 void NPCStats::InitializeNPCData(const Blob &npcData) {
-    int i;
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    std::string txtRaw(npcData.str());
-    strtok(txtRaw.data(), "\r");
-    strtok(NULL, "\r");
-
-    for (i = 0; i < 500; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {  // i+1
-                switch (decode_step) {
-                    case 1:
-                        pNPCUnicNames[i] = removeQuotes(test_string);
-                        pOriginalNPCData[i + 1].name = pNPCUnicNames[i];
-                        break;
-                    case 2:
-                        pOriginalNPCData[i + 1].portraitId = atoi(test_string);
-                        break;
-                    case 6:
-                        pOriginalNPCData[i + 1].house = static_cast<HouseId>(atoi(test_string));
-                        break;
-                    case 7:
-                        pOriginalNPCData[i + 1].profession = static_cast<NpcProfession>(atoi(test_string));
-                        break;
-                    case 8:
-                        pOriginalNPCData[i + 1].greetingIndex = atoi(test_string);
-                        break;
-                    case 9:
-                        pOriginalNPCData[i + 1].canJoin = (*test_string == 'y') ? 1 : 0;
-                        break;
-                    case 10:
-                        pOriginalNPCData[i + 1].dialogue_1_evt_id = atoi(test_string);
-                        break;
-                    case 11:
-                        pOriginalNPCData[i + 1].dialogue_2_evt_id = atoi(test_string);
-                        break;
-                    case 12:
-                        pOriginalNPCData[i + 1].dialogue_3_evt_id = atoi(test_string);
-                        break;
-                    case 13:
-                        pOriginalNPCData[i + 1].dialogue_4_evt_id = atoi(test_string);
-                        break;
-                    case 14:
-                        pOriginalNPCData[i + 1].dialogue_5_evt_id = atoi(test_string);
-                        break;
-                    case 15:
-                        pOriginalNPCData[i + 1].dialogue_6_evt_id = atoi(test_string);
-                        break;
-                }
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 16) && !break_loop);
+    // npcdata.txt table structure: index | name (localized) | portrait id | groups (not used) | house | profession |
+    //                              greeting index | can join (y/n) | event ids 1-6 | dev notes |
+    //                              map id (optional, not used).
+    for (std::string_view line : split(npcData.str()).by("\r\n").drop(2).skip("").take(500)) {
+        std::array<std::string_view, 16> tokens = split(line).by('\t');
+        int i = fromString<int>(tokens[0]); // File indices are 1-based.
+        pNPCUnicNames[i - 1] = removeQuotes(tokens[1]);
+        pOriginalNPCData[i].name = pNPCUnicNames[i - 1];
+        pOriginalNPCData[i].portraitId = fromString<int>(tokens[2]);
+        pOriginalNPCData[i].house = static_cast<HouseId>(fromString<int>(tokens[6]));
+        pOriginalNPCData[i].profession = static_cast<NpcProfession>(fromString<int>(tokens[7]));
+        pOriginalNPCData[i].greetingIndex = fromString<int>(tokens[8]);
+        pOriginalNPCData[i].canJoin = tokens[9][0] == 'y' ? 1 : 0;
+        pOriginalNPCData[i].dialogue_1_evt_id = fromString<int>(tokens[10]);
+        pOriginalNPCData[i].dialogue_2_evt_id = fromString<int>(tokens[11]);
+        pOriginalNPCData[i].dialogue_3_evt_id = fromString<int>(tokens[12]);
+        pOriginalNPCData[i].dialogue_4_evt_id = fromString<int>(tokens[13]);
+        pOriginalNPCData[i].dialogue_5_evt_id = fromString<int>(tokens[14]);
+        pOriginalNPCData[i].dialogue_6_evt_id = fromString<int>(tokens[15]);
     }
     uNumNewNPCs = 501;
 }
 
 void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
-    std::string txtRaw(npcGreets.str());
-    strtok(txtRaw.data(), "\r");
+    // npcgreet.txt table structure: index | greeting 1 (localized) | greeting 2 (localized) |
+    //                               notes (not localized, not used) | owner (not localized, not used).
+    for (std::string_view line : split(npcGreets.str()).by("\r\n").drop(1).skip("")) {
+        std::array<std::string_view, 3> tokens = split(line).by('\t');
+        if (tokens[0].empty())
+            continue; // Trailing orphan row with no index column.
 
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    for (int i = 1; i <= 205; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {  // i+1
-                switch (decode_step) {
-                    case 1:
-                        pNPCGreetings[i].pGreeting1 = removeQuotes(test_string);
-                        break;
-                    case 2:
-                        pNPCGreetings[i].pGreeting2 = removeQuotes(test_string);
-                        break;
-                }
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 3) && !break_loop);
+        int i = fromString<int>(tokens[0]); // File indices are 1-based.
+        pNPCGreetings[i].pGreeting1 = removeQuotes(tokens[1]);
+        pNPCGreetings[i].pGreeting2 = removeQuotes(tokens[2]);
     }
 }
 
 void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
-    std::string txtRaw(npcGroups.str());
-    strtok(txtRaw.data(), "\r");
-
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    for (int i = 0; i < 51; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {  // i+1
-                if (decode_step == 1) {
-                    pOriginalGroups[i] = atoi(test_string);
-                }
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 2) && !break_loop);
+    // npcgroup.txt table structure: group index | news index | dev notes.
+    for (std::string_view line : split(npcGroups.str()).by("\r\n").drop(1).skip("")) {
+        std::array<std::string_view, 2> tokens = split(line).by('\t');
+        int i = fromString<int>(tokens[0]); // File indices are 0-based.
+        pOriginalGroups[i] = fromString<int>(tokens[1]);
     }
 }
 
 void NPCStats::InitializeNPCNews(const Blob &npcNews) {
-    std::string txtRaw(npcNews.str());
-    strtok(txtRaw.data(), "\r");
-
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    for (int i = 0; i < 51; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {  // i+1
-                if (decode_step == 1)
-                    pCatchPhrases[i] = removeQuotes(test_string);
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 2) && !break_loop);
+    // npcnews.txt table structure: index | text (localized) | dev notes.
+    for (std::string_view line : split(npcNews.str()).by("\r\n").drop(1).skip("")) {
+        std::array<std::string_view, 2> tokens = split(line).by('\t');
+        int i = fromString<int>(tokens[0]); // File indices are 0-based.
+        pCatchPhrases[i] = removeQuotes(tokens[1]);
     }
 }
 
@@ -352,105 +138,34 @@ void NPCStats::Initialize(ResourceManager *resourceManager) {
 }
 
 void NPCStats::InitializeNPCNames(const Blob &npcNames) {
-    std::string txtRaw(npcNames.str());
-    strtok(txtRaw.data(), "\r");
-
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos = nullptr;
-    int decode_step;
-
+    // npcnames.txt table structure: male name (localized) | female name (localized).
+    // Female column runs out before the male column.
     uNewlNPCBufPos = 0;
-
     pNPCNames.fill({});
-
-    for (int i = 0; i < 540; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            if (c != '\t') {
-                while ((c != '\n') && (c != '\t') && (c > 0)) {
-                    ++temp_str_len;
-                    c = test_string[temp_str_len];
-                }
-                tmp_pos = test_string + temp_str_len;
-                if (*tmp_pos == 0) break_loop = true;
-
-                if (temp_str_len) {
-                    *tmp_pos = 0;
-                    if (decode_step == 0)
-                        pNPCNames[SEX_MALE].emplace_back(removeQuotes(test_string));
-                    else if (decode_step == 1)
-                        pNPCNames[SEX_FEMALE].emplace_back(removeQuotes(test_string));
-                }
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 2) && !break_loop);
+    for (std::string_view line : split(npcNames.str()).by("\r\n").drop(1).skip("")) {
+        std::array<std::string_view, 2> tokens = split(line).by('\t');
+        if (!tokens[0].empty())
+            pNPCNames[SEX_MALE].emplace_back(removeQuotes(tokens[0]));
+        if (!tokens[1].empty())
+            pNPCNames[SEX_FEMALE].emplace_back(removeQuotes(tokens[1]));
     }
 }
 
 void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
-    std::string txtRaw(npcProfs.str());
-    strtok(txtRaw.data(), "\r");
-    strtok(NULL, "\r");
-    strtok(NULL, "\r");
-    strtok(NULL, "\r");
+    // npcprof.txt table structure: profession id | profession name (localized, not used) | hire price |
+    //                              action text (localized) | benefit description (localized) |
+    //                              join text (localized) | dismiss text (localized).
+    for (std::string_view line : split(npcProfs.str()).by("\r\n").drop(4)) {
+        std::array<std::string_view, 7> tokens = split(line).by('\t');
+        if (tokens[0].empty())
+            continue; // Trailing pure-tab orphan rows past the last entry.
 
-    int i;
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos = nullptr;
-    int decode_step;
-
-    for (NpcProfession i : allNpcProfessions()) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            // while (*test_string == '\t')  // some steps are separated by
-            // multiple \t's
-            // ++test_string;
-
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                switch (decode_step) {
-                    case 2:
-                        pProfessions[i].uHirePrice = atoi(test_string);
-                        break;
-                    case 3:
-                        pProfessions[i].pActionText = removeQuotes(test_string);
-                        break;
-                    case 4:
-                        pProfessions[i].pBenefits = removeQuotes(test_string);
-                        break;
-                    case 5:
-                        pProfessions[i].pJoinText = removeQuotes(test_string);
-                        break;
-                    case 6:
-                        pProfessions[i].pDismissText = removeQuotes(test_string);
-                }
-            } else {
-                if (!decode_step) break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 7) && !break_loop);
+        NpcProfession prof = static_cast<NpcProfession>(fromString<int>(tokens[0]));
+        pProfessions[prof].uHirePrice = fromString<int>(tokens[2]);
+        pProfessions[prof].pActionText = removeQuotes(tokens[3]);
+        pProfessions[prof].pBenefits = removeQuotes(tokens[4]);
+        pProfessions[prof].pJoinText = removeQuotes(tokens[5]);
+        pProfessions[prof].pDismissText = removeQuotes(tokens[6]);
     }
     uNumNPCProfessions = 59;
 }
