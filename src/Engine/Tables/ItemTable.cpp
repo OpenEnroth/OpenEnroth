@@ -1,7 +1,8 @@
 #include "ItemTable.h"
 
+#include <array>
 #include <cctype>
-#include <cstring>
+#include <cstdlib>
 #include <map>
 #include <vector>
 #include <string>
@@ -25,23 +26,69 @@
 
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
+#include "Utility/Memory/Blob.h"
 #include "Utility/String/Transformations.h"
 #include "Utility/String/Split.h"
 
-static void strtokSkipLines(int n) {
-    for (int i = 0; i < n; ++i) {
-        (void)strtok(nullptr, "\r");
+void ItemTable::LoadStandardEnchantments(const Blob &stditems) {
+    // stditems.txt has two sections.
+    std::vector<std::string_view> lines = split(stditems.str()).by("\r\n").drop(4).skip("");
+
+    // #1 Standard Bonuses by Group: attribute name (localized) | suffix (localized) | chance by item type....
+    standardEnchantmentChanceSumByItemType.fill(0);
+    for (auto [line, i] : view(lines).zip(allEnchantableAttributes())) {
+        std::array<std::string_view, 11> tokens = split(line).by('\t');
+        standardEnchantments[i].attributeName = removeQuotes(tokens[0]);
+        standardEnchantments[i].itemSuffix = removeQuotes(tokens[1]);
+
+        int k = 2;
+        for (ItemType equipType : standardEnchantments[i].chanceByItemType.indices()) {
+            standardEnchantments[i].chanceByItemType[equipType] = fromString<int>(tokens[k++]);
+            standardEnchantmentChanceSumByItemType[equipType] += standardEnchantments[i].chanceByItemType[equipType];
+        }
+    }
+
+    // #2 Bonus range for Standard by Level: (empty) | treasure level | min | max.
+    for (auto [line, i] : view(lines).drop(allEnchantableAttributes().size() + 3).zip(standardEnchantmentRangeByTreasureLevel.indices())) {
+        std::array<std::string_view, 4> rangeTokens = split(line).by('\t');
+        standardEnchantmentRangeByTreasureLevel[i] = Segment(fromString<int>(rangeTokens[2]), fromString<int>(rangeTokens[3]));
     }
 }
 
-// TODO(captainurist): use fromString<int> once we handle non-numeric values in data files
-static int svtoi(std::string_view s) {
-    int result = 0;
-    return tryDeserialize(s, &result) ? result : 0;
+void ItemTable::LoadSpecialEnchantments(const Blob &spcitems) {
+    // spcitems.txt table structure: description (localized) | suffix/prefix (localized) | chance by item type... | gold value | enchantment level.
+    for (auto [line, i] : split(spcitems.str()).by("\r\n").drop(4).skip("").zip(specialEnchantments.indices())) {
+        std::array<std::string_view, 17> tokens = split(line).by('\t');
+        specialEnchantments[i].description = removeQuotes(tokens[0]);
+        specialEnchantments[i].itemSuffixOrPrefix = removeQuotes(tokens[1]);
+
+        int k = 2;
+        for (ItemType j : specialEnchantments[i].chanceByItemType.indices())
+            specialEnchantments[i].chanceByItemType[j] = fromString<int>(tokens[k++]);
+
+        std::string_view token14 = tokens[14];
+        int res;
+        bool isMul = !token14.empty() && (token14[0] == 'x' || token14[0] == 'X');
+        if (isMul) {
+            // "X 2" or "x2" — strip prefix, parse number.
+            token14.remove_prefix(1);
+            while (!token14.empty() && token14[0] == ' ')
+                token14.remove_prefix(1);
+            res = fromString<int>(token14);
+        } else {
+            res = fromString<int>(token14);
+        }
+        if (isMul)
+            specialEnchantments[i].valueMul = res;
+        else
+            specialEnchantments[i].valueAdd = res;
+        specialEnchantments[i].enchantmentLevel = !tokens[15].empty() ? (tolower(tokens[15][0]) - 'a') : 0;
+    }
 }
 
-//----- (00456D84) --------------------------------------------------------
-void ItemTable::Initialize(ResourceManager *resourceManager) {
+void ItemTable::LoadItems(const Blob &itemsBlob) {
+    // items.txt table structure: index | icon | name (localized) | value | type | skill | damage | mod | material | ...
+
     static const std::map<std::string, ItemType, ascii::NoCaseLess> equipStatMap = { // TODO(captainurist): #enum use enum serialization
         {"weapon", ITEM_TYPE_SINGLE_HANDED},
         {"weapon2", ITEM_TYPE_TWO_HANDED},
@@ -90,100 +137,31 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
         {"special", RARITY_SPECIAL},
     };
 
-    char *lineContent;
-
-    LoadPotions(resourceManager->eventsData("potion.txt"));
-    LoadPotionNotes(resourceManager->eventsData("potnotes.txt"));
-
-    std::string txtRaw;
-
-    txtRaw = resourceManager->eventsData("stditems.txt").str();
-    strtok(txtRaw.data(), "\r");
-    strtokSkipLines(3);
-    // Standard Bonuses by Group
-    standardEnchantmentChanceSumByItemType.fill(0);
-    for (Attribute i : allEnchantableAttributes()) {
-        lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent).by('\t');
-        standardEnchantments[i].attributeName = removeQuotes(tokens[0]);
-        standardEnchantments[i].itemSuffix = removeQuotes(tokens[1]);
-
-        int k = 2;
-        for (ItemType equipType : standardEnchantments[i].chanceByItemType.indices()) {
-            standardEnchantments[i].chanceByItemType[equipType] = svtoi(tokens[k++]);
-            standardEnchantmentChanceSumByItemType[equipType] += standardEnchantments[i].chanceByItemType[equipType];
-        }
-    }
-
-    // Bonus range for Standard by Level
-    strtokSkipLines(5);
-    for (ItemTreasureLevel i : standardEnchantmentRangeByTreasureLevel.indices()) {  // counted from 1
-        lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent).by('\t');
-        assert(tokens.size() == 4 && "Invalid number of tokens");
-        standardEnchantmentRangeByTreasureLevel[i] = Segment(svtoi(tokens[2]), svtoi(tokens[3]));
-    }
-
-    txtRaw = resourceManager->eventsData("spcitems.txt").str();
-    strtok(txtRaw.data(), "\r");
-    strtokSkipLines(3);
-    for (ItemEnchantment i : specialEnchantments.indices()) {
-        lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent).by('\t');
-        assert(tokens.size() >= 17 && "Invalid number of tokens");
-        specialEnchantments[i].description = removeQuotes(tokens[0]);
-        specialEnchantments[i].itemSuffixOrPrefix = removeQuotes(tokens[1]);
-
-        int k = 2;
-        for (ItemType j : specialEnchantments[i].chanceByItemType.indices())
-            specialEnchantments[i].chanceByItemType[j] = svtoi(tokens[k++]);
-
-        std::string_view token14 = tokens[14];
-        int res = svtoi(token14);
-        bool isMul = false;
-        if (!res) {
-            token14.remove_prefix(1);
-            while (!token14.empty() && token14[0] == ' ')  // fix "X 2" case
-                token14.remove_prefix(1);
-            res = svtoi(token14);
-            isMul = true;
-        }
-        if (isMul)
-            specialEnchantments[i].valueMul = res;
-        else
-            specialEnchantments[i].valueAdd = res;
-        specialEnchantments[i].enchantmentLevel = tolower(tokens[15][0]) - 'a';
-    }
-
-    txtRaw = resourceManager->eventsData("items.txt").str();
-    strtok(txtRaw.data(), "\r");
-    strtokSkipLines(1);
-    for (size_t line = 0; line < 799; line++) {
-        lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent).by('\t');
-
-        ItemId item_counter = ItemId(svtoi(tokens[0]));
+    for (std::string_view line : split(itemsBlob.str()).by("\r\n").drop(2).skip("")) {
+        std::array<std::string_view, 17> tokens = split(line).by('\t');
+        ItemId item_counter = ItemId(fromString<int>(tokens[0]));
         items[item_counter].iconName = removeQuotes(tokens[1]);
         items[item_counter].name = removeQuotes(tokens[2]);
-        items[item_counter].baseValue = svtoi(tokens[3]);
+        items[item_counter].baseValue = fromString<int>(tokens[3]);
         items[item_counter].type = valueOr(equipStatMap, tokens[4], ITEM_TYPE_NONE);
         items[item_counter].skill = valueOr(equipSkillMap, tokens[5], SKILL_MISC);
-        std::vector<std::string_view> diceRollTokens = split(tokens[6]).by('d');
-        if (diceRollTokens.size() == 2) {
-            items[item_counter].damageDice = svtoi(diceRollTokens[0]);
-            items[item_counter].damageRoll = svtoi(diceRollTokens[1]);
-        } else if (tolower(diceRollTokens[0][0]) != 's') {
-            items[item_counter].damageDice = svtoi(diceRollTokens[0]);
+        std::array<std::string_view, 2> diceRollTokens = split(tokens[6]).by('d');
+        char damagePrefix = tolower(diceRollTokens[0][0]);
+        if (!diceRollTokens[1].empty()) {
+            items[item_counter].damageDice = fromString<int>(diceRollTokens[0]);
+            items[item_counter].damageRoll = fromString<int>(diceRollTokens[1]);
+        } else if (damagePrefix != 's' && damagePrefix != 'm') {
+            items[item_counter].damageDice = fromString<int>(diceRollTokens[0]);
             items[item_counter].damageRoll = 1;
         } else {
             items[item_counter].damageDice = 0;
             items[item_counter].damageRoll = 0;
         }
-        items[item_counter].damageMod = svtoi(tokens[7]);
+        items[item_counter].damageMod = fromString<int>(tokens[7]);
         items[item_counter].rarity = valueOr(materialMap, tokens[8], RARITY_COMMON);
-        items[item_counter].identifyAndRepairDifficulty = svtoi(tokens[9]);
+        items[item_counter].identifyAndRepairDifficulty = fromString<int>(tokens[9]);
         items[item_counter].unidentifiedName = removeQuotes(tokens[10]);
-        items[item_counter].spriteId = static_cast<SpriteId>(svtoi(tokens[11]));
+        items[item_counter].spriteId = static_cast<SpriteId>(fromString<int>(tokens[11]));
 
         if (items[item_counter].type == ITEM_TYPE_REAGENT) {
             items[item_counter].reagentPower = items[item_counter].damageDice;
@@ -210,7 +188,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
 
         if ((items[item_counter].rarity == RARITY_SPECIAL) &&
             (items[item_counter].standardEnchantment)) {
-            char b_s = svtoi(tokens[13]);
+            char b_s = fromString<int>(tokens[13]);
             if (b_s)
                 items[item_counter].standardEnchantmentStrength = b_s;
             else
@@ -218,66 +196,50 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
         } else {
             items[item_counter].standardEnchantmentStrength = 0;
         }
-        items[item_counter].paperdollAnchorOffset.x = svtoi(tokens[14]);
-        items[item_counter].paperdollAnchorOffset.y = svtoi(tokens[15]);
+        items[item_counter].paperdollAnchorOffset.x = fromString<int>(tokens[14]);
+        items[item_counter].paperdollAnchorOffset.y = fromString<int>(tokens[15]);
         items[item_counter].description = removeQuotes(tokens[16]);
     }
+}
 
-    txtRaw = resourceManager->eventsData("rnditems.txt").str();
-    strtok(txtRaw.data(), "\r");
-    strtokSkipLines(3);
-    for(size_t line = 0; line < 618; line++) {
-        lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent).by('\t');
-        assert(tokens.size() > 7 && "Invalid number of tokens");
+void ItemTable::LoadRandomItems(const Blob &rnditems) {
+    // rnditems.txt has two sections.
+    std::vector<std::string_view> lines = split(rnditems.str()).by("\r\n").drop(4).skip("");
+    constexpr size_t section1Size = 618;
 
-        ItemId item_counter = ItemId(svtoi(tokens[0]));
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_1] = svtoi(tokens[2]);
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_2] = svtoi(tokens[3]);
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_3] = svtoi(tokens[4]);
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_4] = svtoi(tokens[5]);
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_5] = svtoi(tokens[6]);
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_6] = svtoi(tokens[7]);
+    // #1 Per-item chances: item index | id (e.g. "ring1", not used) | chance by treasure level 1-6.
+    for (std::string_view line : view(lines).drop(0).resize(section1Size, "")) {
+        std::array<std::string_view, 8> tokens = split(line).by('\t');
+        ItemId item_counter = ItemId(fromString<int>(tokens[0]));
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_1] = fromString<int>(tokens[2]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_2] = fromString<int>(tokens[3]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_3] = fromString<int>(tokens[4]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_4] = fromString<int>(tokens[5]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_5] = fromString<int>(tokens[6]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_6] = fromString<int>(tokens[7]);
     }
-
-    // ChanceByTreasureLvl Summ - to calculate chance
     itemChanceSumByTreasureLevel.fill(0);
     for (ItemTreasureLevel i : itemChanceSumByTreasureLevel.indices())
         for (ItemId j : items.indices())
             itemChanceSumByTreasureLevel[i] += items[j].uChanceByTreasureLvl[i];
 
-    strtokSkipLines(5);
-    for (int i = 0; i < 3; ++i) {
-        lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent).by('\t');
-        assert(tokens.size() > 7 && "Invalid number of tokens");
-        switch (i) {
-            case 0:
-                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_1] = svtoi(tokens[2]);
-                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_2] = svtoi(tokens[3]);
-                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_3] = svtoi(tokens[4]);
-                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_4] = svtoi(tokens[5]);
-                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_5] = svtoi(tokens[6]);
-                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_6] = svtoi(tokens[7]);
-                break;
-            case 1:
-                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_1] = svtoi(tokens[2]);
-                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_2] = svtoi(tokens[3]);
-                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_3] = svtoi(tokens[4]);
-                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_4] = svtoi(tokens[5]);
-                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_5] = svtoi(tokens[6]);
-                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_6] = svtoi(tokens[7]);
-                break;
-            case 2:
-                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_1] = svtoi(tokens[2]);
-                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_2] = svtoi(tokens[3]);
-                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_3] = svtoi(tokens[4]);
-                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_4] = svtoi(tokens[5]);
-                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_5] = svtoi(tokens[6]);
-                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_6] = svtoi(tokens[7]);
-                break;
-        }
+    // #2: Enchantment chances by level: line type (not localized, not used) | enchantment type (not localized, not used) | chance by treasure level 1-6.
+    auto chancesArray = std::array{&standardEnchantmentChanceForEquipment, &specialEnchantmentChanceForEquipment, &specialEnchantmentChanceForWeapons};
+    for (auto [line, chances] : view(lines).drop(section1Size + 1).zip(chancesArray)) {
+        std::array<std::string_view, 8> tokens = split(line).by('\t');
+        for (ItemTreasureLevel i : chances->indices())
+            (*chances)[i] = fromString<int>(tokens[2 + std::to_underlying(i) - std::to_underlying(ITEM_TREASURE_LEVEL_FIRST_RANDOM)]);
     }
+}
+
+//----- (00456D84) --------------------------------------------------------
+void ItemTable::Initialize(ResourceManager *resourceManager) {
+    LoadPotions(resourceManager->eventsData("potion.txt"));
+    LoadPotionNotes(resourceManager->eventsData("potnotes.txt"));
+    LoadStandardEnchantments(resourceManager->eventsData("stditems.txt"));
+    LoadSpecialEnchantments(resourceManager->eventsData("spcitems.txt"));
+    LoadItems(resourceManager->eventsData("items.txt"));
+    LoadRandomItems(resourceManager->eventsData("rnditems.txt"));
 
     Item::PopulateSpecialBonusMap();
     Item::PopulateArtifactBonusMap();
@@ -289,81 +251,49 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
 
 //----- (00453B3C) --------------------------------------------------------
 void ItemTable::LoadPotions(const Blob &potions) {
-    char *test_string;
-    ItemId potion_value;
+    // potion.txt table structure: item index | name (localized) | unidentified name (localized) | effect (not localized) | mixing matrix...
+    // First rows are reagents, then real potions follow. Reagents don't have the mixing matrix values.
+    // Matrix values: item ID of result, "no" for self-mixing, "E{n}" for damage level n on invalid mix.
+    for (std::string_view line : split(potions.str()).by("\r\n").skip("").drop(1)) {
+        std::array<std::string_view, 57> tokens = split(line).by('\t'); // 7 header cells + 50 mixing-matrix cells.
+        if (tokens[0].empty())
+            continue; // Skip tab-only lines.
 
-    std::vector<std::string_view> tokens;
-    std::string txtRaw(potions.str());
-    test_string = strtok(txtRaw.data(), "\r") + 1;
-    while (test_string) {
-        tokens = split(test_string).by('\t');
-        if (tokens[0] == "222") break;
-        test_string = strtok(nullptr, "\r") + 1;
-    }
-    if (!test_string) {
-        logger->error("Error Pre-Parsing Potion Table");
-        return;
-    }
+        ItemId row = static_cast<ItemId>(fromString<int>(tokens[0]));
+        if (row < ITEM_FIRST_REAL_POTION || row > ITEM_LAST_REAL_POTION)
+            continue; // Skip reagents, catalyst, etc.
 
-    for (ItemId row : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
-        if (tokens.size() < 50) {
-            logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), tokens.size());
-            return;
-        }
         for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
-            std::string_view currValue = tokens[flatPotionId + 7];
-            if (!currValue.empty() && currValue[0] == 'E') {
-                // values like "E{x}" represent damage level {x} when using invalid potion combination
-                potion_value = static_cast<ItemId>(svtoi(currValue.substr(1)));
-            } else {
-                potion_value = static_cast<ItemId>(svtoi(currValue));
-            }
-            this->potionCombination[row][column] = potion_value;
+            std::string_view cell = tokens[flatPotionId + 7];
+            if (cell == "no")
+                potionCombination[row][column] = ITEM_NULL;
+            else if (cell[0] == 'E')
+                potionCombination[row][column] = static_cast<ItemId>(fromString<int>(cell.substr(1))); // Damage level.
+            else
+                potionCombination[row][column] = static_cast<ItemId>(fromString<int>(cell));
         }
-
-        test_string = strtok(nullptr, "\r") + 1;
-        if (!test_string) {
-            logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), 0);
-            return;
-        }
-        tokens = split(test_string).by('\t');
     }
 }
 
 //----- (00453CE5) --------------------------------------------------------
-void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
-    char *test_string;
+void ItemTable::LoadPotionNotes(const Blob &notes) {
+    // potnotes.txt has the same layout as potion.txt, but the mixing matrix contains autonote bit indices
+    // (for recipe discovery) instead of resulting item IDs.
+    for (std::string_view line : split(notes.str()).by("\r\n").skip("").drop(1)) {
+        std::array<std::string_view, 57> tokens = split(line).by('\t'); // 7 header cells + 50 mixing-matrix cells.
+        if (tokens[0].empty())
+            continue; // Skip tab-only lines.
 
-    std::vector<std::string_view> tokens;
-    std::string txtRaw(potionNotes.str());
-    test_string = strtok(txtRaw.data(), "\r") + 1;
-    while (test_string) {
-        tokens = split(test_string).by('\t');
-        if (tokens[0] == "222") break;
-        test_string = strtok(nullptr, "\r") + 1;
-    }
-    if (!test_string) {
-        logger->error("Error Pre-Parsing Potion Table");
-        return;
-    }
+        ItemId row = static_cast<ItemId>(fromString<int>(tokens[0]));
+        if (row < ITEM_FIRST_REAL_POTION || row > ITEM_LAST_REAL_POTION)
+            continue; // Skip reagents, catalyst, etc.
 
-    for (ItemId row : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
-        if (tokens.size() < 50) {
-            logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), tokens.size());
-            return;
-        }
         for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
-            this->potionNotes[row][column] = svtoi(tokens[flatPotionId + 7]);
+            std::string_view cell = tokens[flatPotionId + 7];
+            potionNotes[row][column] = cell == "no" ? 0 : fromString<int>(cell);
         }
-
-        test_string = strtok(nullptr, "\r") + 1;
-        if (!test_string) {
-            logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), 0);
-            return;
-        }
-        tokens = split(test_string).by('\t');
     }
 }
 
