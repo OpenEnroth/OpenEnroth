@@ -1,14 +1,16 @@
 #include "Localization.h"
 
-#include <cstring>
+#include <array>
 #include <string>
-#include <vector>
 
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Resources/ResourceManager.h"
 
+#include "Library/Serialization/Serialization.h"
+
+#include "Utility/Memory/Blob.h"
 #include "Utility/String/Transformations.h"
 #include "Utility/String/Split.h"
 
@@ -27,47 +29,13 @@ std::string Localization::skillValueShortString(CombinedSkillValue skillValue) c
 
 //----- (00452C49) --------------------------------------------------------
 bool Localization::initialize() {
-    char *tmp_pos;     // eax@3
-    int step;          // ebp@4
-    unsigned char c;   // dl@5
-    int temp_str_len;  // ecx@5
-    bool string_end;   // [sp+14h] [bp-4h]@4
+    Blob globalBlob = engine->resources()->eventsData("global.txt");
 
-    this->_localizationRaw = engine->resources()->eventsData("global.txt").str();
-    if (this->_localizationRaw.empty()) {
-        return false;
-    }
-
-    strtok(this->_localizationRaw.data(), "\r");
-    strtok(NULL, "\r");
-
-    for (LstrId i : Segment(LSTR_FIRST_MM7, LSTR_LAST_MM7)) {
-        char *test_string = strtok(NULL, "\r") + 1;
-        step = 0;
-        string_end = false;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            if (c != '\t') {
-                do {
-                    if (!c) break;
-                    c = *(test_string + temp_str_len + 1);
-                    temp_str_len++;
-                } while (c != '\t');
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) string_end = true;
-
-            *tmp_pos = 0;
-            if (temp_str_len == 0) {
-                string_end = true;
-            } else {
-                if (step == 1)
-                    this->_localizationStrings[i] = removeQuotes(test_string);
-            }
-            ++step;
-            test_string = tmp_pos + 1;
-        } while (step <= 2 && !string_end);
+    // global.txt table structure: index | text (localized).
+    for (std::string_view line : split(globalBlob.str()).by("\r\n").drop(2).skip("")) {
+        std::array<std::string_view, 2> tokens = split(line).by('\t');
+        LstrId i = static_cast<LstrId>(fromString<int>(tokens[0]));
+        _localizationStrings[i] = removeQuotes(tokens[1]);
     }
 
     // TODO(captainurist): should be moved to localization files eventually
@@ -334,21 +302,15 @@ void Localization::initializeSkillNames() {
     //    "But there is not much room to improve finesse or mastery for such a rudimentary weapon though. "
     //    "So don't expect to become thwonking killer and devastating anyone beyond weaklings.";
 
-    _skillDescRaw = engine->resources()->eventsData("skilldes.txt").str();
-    strtok(_skillDescRaw.data(), "\r");
-    for (Skill i : allVisibleSkills()) {
-        char *test_string = strtok(NULL, "\r") + 1;
-
-        if (test_string != NULL && strlen(test_string) > 0) {
-            std::vector<std::string_view> tokens = split(test_string).by('\t');
-            assert(tokens.size() >= 6 && "Invalid number of tokens");
-
-            this->_skillDescriptions[i] = removeQuotes(tokens[1]);
-            this->_skillDescriptionsNormal[i] = removeQuotes(tokens[2]);
-            this->_skillDescriptionsExpert[i] = removeQuotes(tokens[3]);
-            this->_skillDescriptionsMaster[i] = removeQuotes(tokens[4]);
-            this->_skillDescriptionsGrand[i] = removeQuotes(tokens[5]);
-        }
+    // skilldes.txt table structure: name | description | normal | expert | master | grandmaster (all fields localized).
+    Blob skillDesBlob = engine->resources()->eventsData("skilldes.txt");
+    for (auto [line, i] : split(skillDesBlob.str()).by("\r\n").drop(1).skip("").zip(allVisibleSkills())) {
+        std::array<std::string_view, 6> tokens = split(line).by('\t');
+        _skillDescriptions[i] = removeQuotes(tokens[1]);
+        _skillDescriptionsNormal[i] = removeQuotes(tokens[2]);
+        _skillDescriptionsExpert[i] = removeQuotes(tokens[3]);
+        _skillDescriptionsMaster[i] = removeQuotes(tokens[4]);
+        _skillDescriptionsGrand[i] = removeQuotes(tokens[5]);
     }
 }
 
@@ -398,12 +360,10 @@ void Localization::initializeClassNames() {
     this->_classNames[CLASS_ARCHAMGE] = this->_localizationStrings[LSTR_ARCHMAGE];
     this->_classNames[CLASS_LICH] = this->_localizationStrings[LSTR_LICH];
 
-    this->_classDescRaw = engine->resources()->eventsData("class.txt").str();
-    strtok(this->_classDescRaw.data(), "\r");
-    for (Class i : _classDescriptions.indices()) {
-        char *test_string = strtok(NULL, "\r") + 1;
-        std::vector<std::string_view> tokens = split(test_string).by('\t');
-        assert(tokens.size() == 3 && "Invalid number of tokens");
+    // class.txt table structure: name (localized) | description (localized) | base class name (not localized, not used).
+    Blob classBlob = engine->resources()->eventsData("class.txt");
+    for (auto [line, i] : split(classBlob.str()).by("\r\n").drop(1).skip("").zip(_classDescriptions.indices())) {
+        std::array<std::string_view, 3> tokens = split(line).by('\t');
         _classDescriptions[i] = removeQuotes(tokens[1]);
     }
 }
@@ -476,81 +436,34 @@ void Localization::initializeAttributeNames() {
     this->_attributeNames[ATTRIBUTE_SPEED]        = this->_localizationStrings[LSTR_SPEED];
     this->_attributeNames[ATTRIBUTE_LUCK]         = this->_localizationStrings[LSTR_LUCK];
 
-    this->_attributeDescRaw = engine->resources()->eventsData("stats.txt").str();
-    strtok(this->_attributeDescRaw.data(), "\r");
-    for (int i = 0; i < 26; ++i) {
-        char *test_string = strtok(NULL, "\r") + 1;
-        std::vector<std::string_view> tokens = split(test_string).by('\t');
-        assert(tokens.size() == 2 && "Invalid number of tokens");
-        switch (i) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-                this->_attributeDescriptions[static_cast<Attribute>(i)] = removeQuotes(tokens[1]);
-                break;
-            case 7:
-                this->_hpDescription = removeQuotes(tokens[1]);
-                break;
-            case 8:
-                this->_armourClassDescription = removeQuotes(tokens[1]);
-                break;
-            case 9:
-                this->_spDescription = removeQuotes(tokens[1]);
-                break;
-            case 10:
-                this->_characterConditionDescription = removeQuotes(tokens[1]);
-                break;
-            case 11:
-                this->_fastSpellDescription = removeQuotes(tokens[1]);
-                break;
-            case 12:
-                this->_ageDescription = removeQuotes(tokens[1]);
-                break;
-            case 13:
-                this->_levelDescription = removeQuotes(tokens[1]);
-                break;
-            case 14:
-                this->_expDescription = removeQuotes(tokens[1]);
-                break;
-            case 15:
-                this->_meleeAttackDescription = removeQuotes(tokens[1]);
-                break;
-            case 16:
-                this->_meleeDamageDescription = removeQuotes(tokens[1]);
-                break;
-            case 17:
-                this->_rangedAttackDescription = removeQuotes(tokens[1]);
-                break;
-            case 18:
-                this->_rangedDamageDescription = removeQuotes(tokens[1]);
-                break;
-            case 19:
-                this->_fireResDescription = removeQuotes(tokens[1]);
-                break;
-            case 20:
-                this->_airResDescription = removeQuotes(tokens[1]);
-                break;
-            case 21:
-                this->_waterResDescription = removeQuotes(tokens[1]);
-                break;
-            case 22:
-                this->_earthResDescription = removeQuotes(tokens[1]);
-                break;
-            case 23:
-                this->_mindResDescription = removeQuotes(tokens[1]);
-                break;
-            case 24:
-                this->_bodyResDescription = removeQuotes(tokens[1]);
-                break;
-            case 25:
-                this->_skillPointsDescription = removeQuotes(tokens[1]);
-                break;
-        }
+    // stats.txt table structure: name | description (all fields localized).
+    Blob statsBlob = engine->resources()->eventsData("stats.txt");
+    std::array<std::string_view, 26> statsDescs = split(statsBlob.str()).by("\r\n").drop(1).skip("");
+    for (std::string_view &line : statsDescs) {
+        std::array<std::string_view, 2> tokens = split(line).by('\t');
+        line = removeQuotes(tokens[1]);
     }
+    for (Attribute i : Segment(ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT))
+        _attributeDescriptions[i] = statsDescs[std::to_underlying(i)];
+    _hpDescription = statsDescs[7];
+    _armourClassDescription = statsDescs[8];
+    _spDescription = statsDescs[9];
+    _characterConditionDescription = statsDescs[10];
+    _fastSpellDescription = statsDescs[11];
+    _ageDescription = statsDescs[12];
+    _levelDescription = statsDescs[13];
+    _expDescription = statsDescs[14];
+    _meleeAttackDescription = statsDescs[15];
+    _meleeDamageDescription = statsDescs[16];
+    _rangedAttackDescription = statsDescs[17];
+    _rangedDamageDescription = statsDescs[18];
+    _fireResDescription = statsDescs[19];
+    _airResDescription = statsDescs[20];
+    _waterResDescription = statsDescs[21];
+    _earthResDescription = statsDescs[22];
+    _mindResDescription = statsDescs[23];
+    _bodyResDescription = statsDescs[24];
+    _skillPointsDescription = statsDescs[25];
 }
 
 //----- (00410AF5) --------------------------------------------------------
