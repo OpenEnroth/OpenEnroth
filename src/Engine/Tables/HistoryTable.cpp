@@ -1,9 +1,9 @@
 #include "HistoryTable.h"
 
-#include <cstdlib>
-#include <cstring>
+#include <array>
 #include <string>
-#include <vector>
+
+#include "Library/Serialization/Serialization.h"
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Transformations.h"
@@ -13,19 +13,14 @@ HistoryTable *pHistoryTable;
 
 //----- (00453E6D) --------------------------------------------------------
 void HistoryTable::Initialize(const Blob &history) {
-    std::string txtRaw(history.str());
-    strtok(txtRaw.data(), "\r");
-
+    // history.txt table structure: index | text (localized) | notes (localized, not used) | page title (localized).
     historyLines[0].pText = "";
     historyLines[0].pPageTitle = "";
-    historyLines[0].uTime = 0;
 
-    for (int i = 0; i < 28; ++i) {
-        char *test_string = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(test_string).by('\t');
-
-        historyLines[i + 1].pText = removeQuotes(tokens[1]);
-        historyLines[i + 1].uTime = atoi(std::string(tokens[2]).c_str());  // TODO(captainurist): strange but in text here string not digit
-        historyLines[i + 1].pPageTitle = removeQuotes(tokens[3]);
+    for (std::string_view line : split(history.str()).by("\r\n").drop(1).skip("")) {
+        std::array<std::string_view, 4> tokens = split(line).by('\t');
+        int i = fromString<int>(tokens[0]);
+        historyLines[i].pText = removeQuotes(tokens[1]);
+        historyLines[i].pPageTitle = removeQuotes(tokens[3]);
     }
 }
