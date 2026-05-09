@@ -17,8 +17,12 @@ class Blob;
 
 struct ItemTable {
     void Initialize(ResourceManager *resourceManager);
+    void LoadStandardEnchantments(const Blob &stditems);
+    void LoadSpecialEnchantments(const Blob &spcitems);
+    void LoadItems(const Blob &items);
+    void LoadRandomItems(const Blob &rnditems);
     void LoadPotions(const Blob &potions);
-    void LoadPotionNotes(const Blob &potionNotes);
+    void LoadPotionNotes(const Blob &notes);
     void LoadItemSizes();
 
     /**
@@ -44,6 +48,7 @@ struct ItemTable {
     char field_DA58[5000];
     char field_EDE0[384];
 
+    // TODO(captainurist): do a proper struct here
     /** Mapping `potion1 x potion2 => potion3`. Alchemy recipes, basically.
      *
      * `ITEM_NULL` means "can't mix even if you try", and is set for cases when `potion1 == potion2`. Item ids in
