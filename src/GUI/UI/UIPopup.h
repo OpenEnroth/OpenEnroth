@@ -16,12 +16,15 @@ void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight);  // idb
 bool tryUseItemOnPortrait(Pointi mousePos);
 
 /**
- * Renders the right-click popup for the current screen (spell description, monster info, item
- * info, character stats hint, etc.) once per frame. Must be called late in the GUI pass so the
- * popup ends up on top of every window's `Update()` output.
+ * Right-click dispatcher for the current screen. Called every frame from `GUI_UpdateWindows` while
+ * `holdingMouseRightButton` is set, as its last step, so the resulting popup lands on top of every
+ * window's `Update()` output.
  *
- * Does only rendering, logic on how right-click is handled lives in the press-event handler
- * (`GameWindowHandler::OnMouseRightClick`).
+ * Not every branch is pure rendering. Does potion mixing, identification, repair, plays the monster-id speech reaction.
+ *
+ * The decision to enter popup mode and the pre-popup side effects (event-timer pause,
+ * use-item-on-portrait) live in the press-event handler (`GameWindowHandler::OnMouseRightClick`),
+ * not here.
  *
  * @param mousePos                  Mouse position in 640x480 UI coordinates.
  * @offset 0x00416D62

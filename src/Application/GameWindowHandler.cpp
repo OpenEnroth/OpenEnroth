@@ -223,6 +223,11 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
         return;
     }
 
+    // TODO(captainurist): `UI_OnMouseRightClick` is a mixed-concern dispatcher — it both draws popups and runs actions
+    // (potion mixing, identify/repair, monster-id speech). It should be split into two functions: one for popup
+    // rendering (called from `GUI_UpdateWindows`) and one for press-time actions (called from here). When that split
+    // happens, this `tryUseItemOnPortrait` call should be folded into the actions function so all "right-click
+    // mutates something" paths sit alongside each other in the press handler.
     if (tryUseItemOnPortrait(position))
         return; // Item used on character, do not enter popup mode.
 
