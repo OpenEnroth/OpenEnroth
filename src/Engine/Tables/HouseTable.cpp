@@ -74,6 +74,9 @@ void initializeHouses(const Blob &houses) {
         // Some lines have only ~12 cols, and some cols are empty, so need both resize & replace.
         std::array<std::string_view, 24> tokens = split(line).by('\t').replace("", "0").resize(24, "0");
 
+        // TODO(captainurist): We don't check if int is in range. A better way would be to deal away with enums
+        //                     entirely, and just use typed ids. Do this once we iron out the details of how #mm6
+        //                     enums will be handled by the engine. Also apply to other table parsers.
         HouseId houseId = static_cast<HouseId>(fromString<int>(tokens[0]));
         houseTable[houseId].uType = valueOr(houseTypeMap, tokens[2], HOUSE_TYPE_MERCENARY_GUILD);
         houseTable[houseId].uAnimationID = fromString<int>(tokens[4]);
