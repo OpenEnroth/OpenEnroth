@@ -20,12 +20,10 @@
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
-#include "Engine/Spells/CastSpellInfo.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
-#include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIStatusBar.h"
 
@@ -934,47 +932,57 @@ GAME_TEST(Issues, Issue2425) {
     EXPECT_EQ(fireMem, tape(false, true) );
 }
 
-GAME_TEST(Issues, Issue2451) {
-    // Enchantment spells (Fire Aura, etc.) failed on equipped items due to off-by-one in inventory index.
+GAME_TEST(Issues, Issue2451a) {
+    // Enchantment spells failed on equipped items due to off-by-one in inventory index.
     test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
+    engine->config->debug.AllMagic.setValue(true);
     game.startNewGame();
 
-    Character &character = pParty->pCharacters[0];
-    character.pActiveSkills[SKILL_FIRE] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
-    character.mana = 200;
+    // Prepare char0 - give him a sword.
+    pParty->pCharacters[0].setSkillValue(SKILL_SWORD, CombinedSkillValue::novice());
+    InventoryEntry swordEntry = pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BROADSWORD));
+    EXPECT_EQ(swordEntry->specialEnchantment, ITEM_ENCHANTMENT_NULL);
 
-    // Clear existing main hand weapon and equip a plain broadsword.
-    if (character.inventory.entry(ITEM_SLOT_MAIN_HAND))
-        character.inventory.take(character.inventory.entry(ITEM_SLOT_MAIN_HAND));
-    character.pActiveSkills[SKILL_SWORD] = CombinedSkillValue(1, MASTERY_NOVICE);
-    character.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BROADSWORD));
-    ASSERT_TRUE(!!character.inventory.entry(ITEM_SLOT_MAIN_HAND));
-    EXPECT_EQ(character.inventory.entry(ITEM_SLOT_MAIN_HAND)->specialEnchantment, ITEM_ENCHANTMENT_NULL);
-
-    // Cast Fire Aura — this opens the enchantment targeting UI.
-    pushSpellOrRangedAttack(SPELL_FIRE_FIRE_AURA, 0, CombinedSkillValue::none(), 0, 0);
-    game.tick(5);
+    // Cast Fire Aura - this opens the enchantment targeting UI.
+    game.castSpell(1, SPELL_FIRE_FIRE_AURA);
+    game.tick();
     ASSERT_TRUE(IsEnchantingInProgress);
 
-    // Find the weapon on the paperdoll via the hit map and click it.
-    int weaponIndex = character.inventory.entry(ITEM_SLOT_MAIN_HAND).index();
-    Pointi clickPos;
-    bool found = false;
-    for (int x = 476; x < 640 && !found; x += 2) {
-        for (int y = 0; y < 345 && !found; y += 2) {
-            if (equipmentHitMap.query({x, y}, -1) == weaponIndex) {
-                clickPos = {x, y};
-                found = true;
-            }
-        }
-    }
-    ASSERT_TRUE(found);
-    game.pressAndReleaseButton(BUTTON_LEFT, clickPos.x, clickPos.y);
-    game.tick(5);
+    // Click on the broadsword on the paperdoll.
+    game.pressAndReleaseButton(BUTTON_LEFT, 521, 95);
+    game.tick();
 
     EXPECT_FALSE(IsEnchantingInProgress);
-    ASSERT_TRUE(!!character.inventory.entry(ITEM_SLOT_MAIN_HAND));
-    EXPECT_EQ(character.inventory.entry(ITEM_SLOT_MAIN_HAND)->specialEnchantment, ITEM_ENCHANTMENT_OF_FIRE);
+    EXPECT_EQ(swordEntry->specialEnchantment, ITEM_ENCHANTMENT_OF_INFERNOS); // GM Fire Aura -> OF_INFERNOS.
+}
+
+GAME_TEST(Issues, Issue2451b) {
+    // Same off-by-one as Issue2451a, but for Recharge Item targeting an equipped wand.
+    test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+
+    // Prepare char0 - equip a partly-discharged wand.
+    Item wand;
+    wand.itemId = ITEM_WAND_OF_FIRE;
+    wand.numCharges = 1;
+    wand.maxCharges = 10;
+    InventoryEntry wandEntry = pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
+    EXPECT_EQ(wandEntry->numCharges, 1);
+    EXPECT_EQ(wandEntry->maxCharges, 10);
+
+    // Cast Recharge Item - this opens the enchantment targeting UI.
+    game.castSpell(1, SPELL_WATER_RECHARGE_ITEM);
+    game.tick();
+    ASSERT_TRUE(IsEnchantingInProgress);
+
+    // Click on the wand on the paperdoll - same main-hand slot as the sword in 2451a.
+    game.pressAndReleaseButton(BUTTON_LEFT, 521, 95);
+    game.tick();
+
+    EXPECT_FALSE(IsEnchantingInProgress);
+    EXPECT_EQ(wandEntry->numCharges, 9); // GM Recharge Item -> 0.9 * 10 = 9.
+    EXPECT_EQ(wandEntry->maxCharges, 9);
 }
 
 GAME_TEST(Issues, Issue2453) {
