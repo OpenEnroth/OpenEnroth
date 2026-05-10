@@ -61,6 +61,7 @@ GraphicsImage *messagebox_border_right = nullptr;   // 5076A0
 bool holdingMouseRightButton = false;
 bool rightClickItemActionPerformed = false;
 bool identifyOrRepairReactionPlayed = false;
+bool monsterIdReactionPlayed = false;
 
 struct stat_coord {
     int16_t x;
@@ -88,6 +89,19 @@ std::array<stat_coord, 26> stat_string_coord =  // 4E2940
 
 std::array<int16_t, 4> RightClickPortraitXmin = {{20, 131, 242, 357}};
 std::array<int16_t, 4> RightClickPortraitXmax = {{83, 198, 312, 423}};
+
+bool tryUseItemOnPortrait(Pointi mousePos) {
+    if (pParty->pPickedItem.itemId == ITEM_NULL)
+        return false;
+    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+        if (mousePos.x > RightClickPortraitXmin[i] && mousePos.x < RightClickPortraitXmax[i] &&
+            mousePos.y > 375 && mousePos.y < 466) {
+            pParty->activeCharacter().useItem(i, true);
+            return true;
+        }
+    }
+    return false;
+}
 
 IndexedArray<int, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST> monster_popup_y_offsets = {
     {MONSTER_TYPE_ANGEL,                    -20},
@@ -745,9 +759,9 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
             }
         }
 
-        // Only play reaction when right click on actor initially
+        // Only play reaction once per right click.
         if (pActors[uActorID].aiState != Dead && pActors[uActorID].aiState != Dying &&
-            !holdingMouseRightButton && skill_mastery != MASTERY_NONE) {
+            !monsterIdReactionPlayed && skill_mastery != MASTERY_NONE) {
             SpeechId speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
                 if (monsterInfo.level >= pParty->activeCharacter().uLevel - 5)
@@ -758,6 +772,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
                 speech = SPEECH_ID_MONSTER_FAIL;
             }
             pParty->activeCharacter().playReaction(speech);
+            monsterIdReactionPlayed = true;
         }
     }
 
@@ -1728,37 +1743,9 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
 
 //----- (00416D62) --------------------------------------------------------
 void UI_OnMouseRightClick(Pointi mousePos) {
-    if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
-        return;
-
-
     unsigned int pX = mousePos.x;
     unsigned int pY = mousePos.y;
 
-    // if ( render->bWindowMode )
-    {
-        // Reset right click mode and restart timer if cursor went to the very edge of screen
-        // To enter it again need to release right mouse button and press it again inside game screen
-        Pointi pt = Pointi(pX, pY);
-        if (pt.x < 1 || pt.y < 1 || pt.x > 638 || pt.y > 478) {
-            back_to_game();
-            return;
-        }
-    }
-
-    if (pParty->pPickedItem.itemId != ITEM_NULL) {
-        // Use item on character portrait
-        for (int i = 0; i < pParty->pCharacters.size(); ++i) {
-            if (pX > RightClickPortraitXmin[i] && pX < RightClickPortraitXmax[i] && pY > 375 && pY < 466) {
-                pParty->activeCharacter().useItem(i, true);
-                // Do not enter right click mode
-                return;
-            }
-        }
-    }
-
-    // Otherwise pause game and enter right click mode until button will be released
-    pEventTimer->setPaused(true);
     switch (current_screen_type) {
         case SCREEN_CASTING: {
             Inventory_ItemPopupAndAlchemy();
@@ -1984,7 +1971,6 @@ void UI_OnMouseRightClick(Pointi mousePos) {
         default:
             break;
     }
-    holdingMouseRightButton = true;
 }
 
 //----- (00416196) --------------------------------------------------------

@@ -1034,6 +1034,7 @@ void back_to_game() {
     holdingMouseRightButton = false;
     rightClickItemActionPerformed = false;
     identifyOrRepairReactionPlayed = false;
+    monsterIdReactionPlayed = false;
 
     pGUIWindow_ScrollWindow = nullptr;
 
