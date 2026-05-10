@@ -107,7 +107,7 @@ void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = EVENT_MOUSE_BUTTON_PRESS;
     event->window = ::application->window();
-    event->button = BUTTON_LEFT;
+    event->button = button;
     event->pos = render->MapToPresent({ x, y });
     event->isDoubleClick = false;
     postEvent(std::move(event));
@@ -117,8 +117,8 @@ void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = EVENT_MOUSE_BUTTON_RELEASE;
     event->window = ::application->window();
-    event->button = BUTTON_LEFT;
-    event->buttons = BUTTON_LEFT;
+    event->button = button;
+    event->buttons = button;
     event->pos = render->MapToPresent({ x, y });
     event->isDoubleClick = false;
     postEvent(std::move(event));

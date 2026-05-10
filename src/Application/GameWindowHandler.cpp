@@ -7,6 +7,8 @@
 
 #include "Arcomage/Arcomage.h"
 
+#include "GUI/UI/UIPopup.h"
+
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
@@ -203,17 +205,35 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
 void GameWindowHandler::OnMouseRightClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
         ArcomageGame::OnMouseClick(1, true);
-    } else {
-        pMediaPlayer->StopMovie();
-
-        position = mouse->setPosition(position);
-
-        if (engine) {
-            engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_allsprites_filter, &vis_door_filter);
-        }
-
-        UI_OnMouseRightClick(position);
+        return;
     }
+
+    pMediaPlayer->StopMovie();
+    position = mouse->setPosition(position);
+
+    if (engine)
+        engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_allsprites_filter, &vis_door_filter);
+
+    // Decide here whether the right-press should enter "show popup" mode.
+    if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
+        return; // No popup mode on these screens.
+
+    if (position.x < 1 || position.y < 1 || position.x > 638 || position.y > 478) {
+        back_to_game(); // Explicit cancel via edge of screen.
+        return;
+    }
+
+    // TODO(captainurist): `UI_OnMouseRightClick` is a mixed-concern dispatcher — it both draws popups and runs actions
+    // (potion mixing, identify/repair, monster-id speech). It should be split into two functions: one for popup
+    // rendering (called from `GUI_UpdateWindows`) and one for press-time actions (called from here). When that split
+    // happens, this `tryUseItemOnPortrait` call should be folded into the actions function so all "right-click
+    // mutates something" paths sit alongside each other in the press handler.
+    if (tryUseItemOnPortrait(position))
+        return; // Item used on character, do not enter popup mode.
+
+    // OK, enter popup mode!
+    pEventTimer->setPaused(true);
+    holdingMouseRightButton = true;
 }
 
 void GameWindowHandler::OnMouseLeftUp() {

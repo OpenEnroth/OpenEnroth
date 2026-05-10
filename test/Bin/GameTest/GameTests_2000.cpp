@@ -985,6 +985,33 @@ GAME_TEST(Issues, Issue2451b) {
     EXPECT_EQ(wandEntry->maxCharges, 9);
 }
 
+GAME_TEST(Issues, Issue2452) {
+    // Right-clicking on skills tab could draw multiple overlapping tooltips per frame.
+    auto messageBoxesTape = tapes.messageBoxes();
+    auto guiTextTape = tapes.allGUIWindowsText();
+    game.startNewGame();
+    game.goToInventory(1);
+    game.pressAndReleaseKey(PlatformKey::KEY_S);
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
+
+    test.startTaping();
+
+    // Sweep through skill list Y positions and verify at most one tooltip per frame.
+    for (int y = 40; y < 200; y++) {
+        game.pressButton(BUTTON_RIGHT, 100, y);
+        game.tick(1);
+        game.releaseButton(BUTTON_RIGHT, 100, y);
+        game.tick(1);
+    }
+
+    EXPECT_GE(messageBoxesTape.flatten().size(), 1); // Some message boxes were shown.
+    EXPECT_EQ(messageBoxesTape.count([] (auto &&boxes) { return boxes.size() > 1; }), 0); // But no more than one at a time.
+    EXPECT_CONTAINS(guiTextTape.flatten(), [](const std::string &s) {
+        return s.starts_with("The sword skill covers most types of blades longer than a knife.");
+    }); // We did see a skill popup.
+}
+
 GAME_TEST(Issues, Issue2453) {
     // Overwriting the last loaded save will crash to desktop.
     auto loadingTape = tapes.custom([] { return pGameLoadingUI_ProgressBar->IsActive(); });

@@ -1,7 +1,31 @@
 #pragma once
+
 #include <string>
 
+#include "Library/Geometry/Point.h"
+
 void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight);  // idb
+
+/**
+ * If `mousePos` is over a character portrait, uses the picked item on that character and return true. Note that using
+ * an item can either consume that item, or display an error string (E.g. "Crossbow can not be used that way").
+ *
+ * @param mousePos                  Mouse position in 640x480 UI coordinates.
+ * @return                          Whether the picked item was consumed.
+ */
+bool tryUseItemOnPortrait(Pointi mousePos);
+
+/**
+ * Right-click dispatcher for the current screen. Called every frame from `GUI_UpdateWindows` while
+ * `holdingMouseRightButton` is set, as its last step, so the resulting popup lands on top of every
+ * window's `Update()` output.
+ *
+ * Not every branch is pure rendering. Does potion mixing, identification, repair, plays the monster-id speech reaction.
+ *
+ * @param mousePos                  Mouse position in 640x480 UI coordinates.
+ * @offset 0x00416D62
+ */
+void UI_OnMouseRightClick(Pointi mousePos);
 
 class GraphicsImage;
 
@@ -18,3 +42,4 @@ extern GraphicsImage *messagebox_border_right;   // 5076A0
 extern bool holdingMouseRightButton;
 extern bool rightClickItemActionPerformed;
 extern bool identifyOrRepairReactionPlayed;
+extern bool monsterIdReactionPlayed;
