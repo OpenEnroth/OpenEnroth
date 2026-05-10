@@ -5,7 +5,6 @@ set(ENGINE_TABLES_SOURCES
         AwardTable.cpp
         ChestTable.cpp
         HostilityTable.cpp
-        FrameTableInc.cpp
         HistoryTable.cpp
         HouseTable.cpp
         IconFrameTable.cpp
@@ -24,7 +23,6 @@ set(ENGINE_TABLES_HEADERS
         AwardTable.h
         ChestTable.h
         HostilityTable.h
-        FrameTableInc.h
         HistoryTable.h
         HouseTable.h
         IconFrameTable.h
