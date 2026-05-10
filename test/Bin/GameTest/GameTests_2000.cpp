@@ -988,6 +988,7 @@ GAME_TEST(Issues, Issue2451b) {
 GAME_TEST(Issues, Issue2452) {
     // Right-clicking on skills tab could draw multiple overlapping tooltips per frame.
     auto messageBoxesTape = tapes.messageBoxes();
+    auto guiTextTape = tapes.allGUIWindowsText();
     game.startNewGame();
     game.goToInventory(1);
     game.pressAndReleaseKey(PlatformKey::KEY_S);
@@ -1006,6 +1007,9 @@ GAME_TEST(Issues, Issue2452) {
 
     EXPECT_GE(messageBoxesTape.flatten().size(), 1); // Some message boxes were shown.
     EXPECT_EQ(messageBoxesTape.count([] (auto &&boxes) { return boxes.size() > 1; }), 0); // But no more than one at a time.
+    EXPECT_CONTAINS(guiTextTape.flatten(), [](const std::string &s) {
+        return s.starts_with("The sword skill covers most types of blades longer than a knife.");
+    }); // We did see a skill popup.
 }
 
 GAME_TEST(Issues, Issue2453) {
