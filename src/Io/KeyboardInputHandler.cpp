@@ -398,6 +398,9 @@ void Io::KeyboardInputHandler::EndTextInput() {
         window->keyboard_input_status = WINDOW_INPUT_NONE;
         window = nullptr;
     }
+
+    pPressedKeysBuffer.clear();
+    inputType = TextInputType::None;
 }
 
 //----- (00459ED1) --------------------------------------------------------
