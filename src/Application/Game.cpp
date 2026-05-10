@@ -1,7 +1,9 @@
 #include "Game.h"
 
 #include <algorithm>
+#include <array>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <memory>
 
@@ -39,7 +41,6 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
-#include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"
@@ -80,8 +81,10 @@
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Fsm/Fsm.h"
+#include "Library/Serialization/Serialization.h"
 
 #include "Utility/String/Format.h"
+#include "Utility/String/Split.h"
 #include "Utility/ScopeGuard.h"
 
 #include "GameWindowHandler.h"
@@ -914,13 +917,12 @@ void Game::processQueuedMessages() {
 
             case UIMSG_DD: {
                 assert(false);
-                // sprintf(tmp_str.data(), "%s",
-                // pKeyActionMap->pPressedKeysBuffer);
-                FrameTableTxtLine frameTableTxtLine;
-                txt_file_frametable_parser(keyboardInputHandler->GetTextInput().c_str(), &frameTableTxtLine);
+                std::array<std::string_view, 3> tokens = split(keyboardInputHandler->GetTextInput()).by(' ').skip("");
                 std::string status_string;
-                if (frameTableTxtLine.uPropCount == 1) {
-                    MapId map_index = static_cast<MapId>(atoi(frameTableTxtLine.pProperties[0]));
+                if (tokens[1].empty()) {
+                    // 1-token form: map index.
+                    if (tokens[0].empty()) continue;
+                    MapId map_index = static_cast<MapId>(fromString<int>(tokens[0]));
                     if (!allMaps().contains(map_index))
                         continue;
                     engine->_transitionMapId = map_index;
@@ -929,10 +931,11 @@ void Game::processQueuedMessages() {
                     onMapLeave();
                     continue;
                 } else {
-                    if (frameTableTxtLine.uPropCount != 3) continue;
-                    int x = atoi(frameTableTxtLine.pProperties[0]);
-                    int y = atoi(frameTableTxtLine.pProperties[1]);
-                    int z = atoi(frameTableTxtLine.pProperties[2]);
+                    // 3-token form: x y z. 2-token input is malformed.
+                    if (tokens[2].empty()) continue;
+                    int x = fromString<int>(tokens[0]);
+                    int y = fromString<int>(tokens[1]);
+                    int z = fromString<int>(tokens[2]);
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         if (pIndoor->GetSector(x, y, z)) {
                             pParty->pos = Vec3f(x, y, z);
