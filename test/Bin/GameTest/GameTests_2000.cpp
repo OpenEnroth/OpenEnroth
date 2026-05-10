@@ -1068,3 +1068,73 @@ GAME_TEST(Issues, Issue2490) {
     game.tick(2);
     EXPECT_EQ(current_screen_type, SCREEN_BOOKS); // Book opened, no assertion.
 }
+
+// 2500
+
+GAME_TEST(Issues, Issue2500a) {
+    // Attack preferences are broken. Some monsters attack archers while they should have no attack pref.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto hp0Tape = charTapes.hp(0);
+    auto hp1Tape = charTapes.hp(1);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest({{CLASS_KNIGHT, RACE_HUMAN}, {CLASS_ARCHER, RACE_HUMAN}});
+
+    // Spawn dragonflies in waves so we get plenty of attacks.
+    engine->config->debug.NoActors.setValue(false);
+    for (int i = 0; i < 8; i++) {
+        game.tick(7);
+        game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_DRAGONFLY_B);
+    }
+    game.tick(200);
+
+    EXPECT_LT(hp0Tape.back(), hp0Tape.front()); // Knight took damage too - no spurious archer preference.
+    EXPECT_LT(hp1Tape.back(), hp1Tape.front()); // Sanity: archer also took damage.
+}
+
+GAME_TEST(Issues, Issue2500b) {
+    // Attack preferences are broken. Archers are missing archer attack preference.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto hp0Tape = charTapes.hp(0);
+    auto hp1Tape = charTapes.hp(1);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest({{CLASS_KNIGHT, RACE_HUMAN}, {CLASS_ARCHER, RACE_HUMAN}});
+
+    engine->config->debug.NoActors.setValue(false);
+    for (int i = 0; i < 4; i++) {
+        game.tick(7);
+        Actor *archer = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ARCHER_A);
+        archer->moveSpeed = 1; // Stay in place & shoot.
+    }
+    game.tick(200);
+
+    EXPECT_EQ(hp0Tape.back(), hp0Tape.front()); // Knight is untouched - archer monsters target archers only.
+    EXPECT_LT(hp1Tape.back(), hp1Tape.front()); // Archer took the damage.
+}
+
+GAME_TEST(Issues, Issue2500c) {
+    // Attack preferences are broken. Dwarven Commanders are missing goblin attack preference.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto hp0Tape = charTapes.hp(0);
+    auto hp1Tape = charTapes.hp(1);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest({{CLASS_KNIGHT, RACE_HUMAN}, {CLASS_KNIGHT, RACE_GOBLIN}});
+
+    engine->config->debug.NoActors.setValue(false);
+    for (int i = 0; i < 4; i++) {
+        game.tick(7);
+        game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_DWARF_C);
+    }
+    game.tick(200);
+
+    EXPECT_EQ(hp0Tape.back(), hp0Tape.front()); // Human is untouched - Dwarven Commander targets goblins.
+    EXPECT_LT(hp1Tape.back(), hp1Tape.front()); // Goblin took the damage.
+}

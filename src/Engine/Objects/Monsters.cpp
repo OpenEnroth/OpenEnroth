@@ -278,12 +278,8 @@ void MonsterStats::Initialize(const Blob &monsters) {
         {"Aggress",  MONSTER_AI_AGGRESSIVE},
     };
 
-    // Per-character flag map for the attackPreferences cell (case 15). '0' is the only digit that
-    // means a class flag (archer); '2'/'3'/'4' set numCharactersAttackedPerSpecialAbility separately.
-    // 'f' and 'o' both map to FEMALE per the original.
     static const std::map<char, MonsterAttackPreference> attackPrefMap = {
-        {'0', ATTACK_PREFERENCE_ARCHER}, // TODO(captainurist): '0' means no preference. Confirmed with wiki.
-        // {'a', ATTACK_PREFERENCE_ARCHER}, // TODO(captainurist): And 'a' is Archer, set for e.g. other Archers.
+        {'a', ATTACK_PREFERENCE_ARCHER},
         {'c', ATTACK_PREFERENCE_CLERIC},
         {'d', ATTACK_PREFERENCE_DRUID},
         {'k', ATTACK_PREFERENCE_KNIGHT},
@@ -293,14 +289,14 @@ void MonsterStats::Initialize(const Blob &monsters) {
         {'s', ATTACK_PREFERENCE_SORCERER},
         {'t', ATTACK_PREFERENCE_THIEF},
 
-        {'f', ATTACK_PREFERENCE_FEMALE},
-        {'o', ATTACK_PREFERENCE_FEMALE},
+        {'f', ATTACK_PREFERENCE_FEMALE}, // MM6 data uses 'f'.
+        {'o', ATTACK_PREFERENCE_FEMALE}, // MM7 data uses 'o'.
         {'x', ATTACK_PREFERENCE_MALE},
 
         {'h', ATTACK_PREFERENCE_HUMAN},
         {'e', ATTACK_PREFERENCE_ELF},
         {'w', ATTACK_PREFERENCE_DWARF},
-        // {'g', ATTACK_PREFERENCE_GOBLIN}, // TODO(captainurist): This is set for Dwarven Commander.
+        {'g', ATTACK_PREFERENCE_GOBLIN},
     };
 
     static const std::map<std::string, RandomItemType, ascii::NoCaseLess> itemTypeMap = {
