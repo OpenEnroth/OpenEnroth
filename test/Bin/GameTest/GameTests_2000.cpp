@@ -1004,11 +1004,8 @@ GAME_TEST(Issues, Issue2452) {
         game.tick(1);
     }
 
-    auto flatMessageBoxes = messageBoxesTape.flatten();
-    EXPECT_GT(flatMessageBoxes.size(), 0u);
-    for (const auto &frame : messageBoxesTape) {
-        EXPECT_LE(frame.size(), 1u);
-    }
+    EXPECT_GE(messageBoxesTape.flatten().size(), 1); // Some message boxes were shown.
+    EXPECT_EQ(messageBoxesTape.count([] (auto &&boxes) { return boxes.size() > 1; }), 0); // But no more than one at a time.
 }
 
 GAME_TEST(Issues, Issue2453) {
