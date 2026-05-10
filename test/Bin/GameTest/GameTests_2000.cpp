@@ -7,6 +7,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/MapEnumFunctions.h"
+#include "Engine/mm7_data.h"
 #include "Engine/MapEnums.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
@@ -929,6 +930,59 @@ GAME_TEST(Issues, Issue2425) {
     EXPECT_EQ(screenTape.size(), 3); // game / house / game
     EXPECT_EQ(airMem, tape(false, true) ); // and weve bought both memberships
     EXPECT_EQ(fireMem, tape(false, true) );
+}
+
+GAME_TEST(Issues, Issue2451a) {
+    // Enchantment spells failed on equipped items due to off-by-one in inventory index.
+    test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+
+    // Prepare char0 - give him a sword.
+    pParty->pCharacters[0].setSkillValue(SKILL_SWORD, CombinedSkillValue::novice());
+    InventoryEntry swordEntry = pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BROADSWORD));
+    EXPECT_EQ(swordEntry->specialEnchantment, ITEM_ENCHANTMENT_NULL);
+
+    // Cast Fire Aura - this opens the enchantment targeting UI.
+    game.castSpell(1, SPELL_FIRE_FIRE_AURA);
+    game.tick();
+    ASSERT_TRUE(IsEnchantingInProgress);
+
+    // Click on the broadsword on the paperdoll.
+    game.pressAndReleaseButton(BUTTON_LEFT, 521, 95);
+    game.tick();
+
+    EXPECT_FALSE(IsEnchantingInProgress);
+    EXPECT_EQ(swordEntry->specialEnchantment, ITEM_ENCHANTMENT_OF_INFERNOS); // GM Fire Aura -> OF_INFERNOS.
+}
+
+GAME_TEST(Issues, Issue2451b) {
+    // Same off-by-one as Issue2451a, but for Recharge Item targeting an equipped wand.
+    test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+
+    // Prepare char0 - equip a partly-discharged wand.
+    Item wand;
+    wand.itemId = ITEM_WAND_OF_FIRE;
+    wand.numCharges = 1;
+    wand.maxCharges = 10;
+    InventoryEntry wandEntry = pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
+    EXPECT_EQ(wandEntry->numCharges, 1);
+    EXPECT_EQ(wandEntry->maxCharges, 10);
+
+    // Cast Recharge Item - this opens the enchantment targeting UI.
+    game.castSpell(1, SPELL_WATER_RECHARGE_ITEM);
+    game.tick();
+    ASSERT_TRUE(IsEnchantingInProgress);
+
+    // Click on the wand on the paperdoll - same main-hand slot as the sword in 2451a.
+    game.pressAndReleaseButton(BUTTON_LEFT, 521, 95);
+    game.tick();
+
+    EXPECT_FALSE(IsEnchantingInProgress);
+    EXPECT_EQ(wandEntry->numCharges, 9); // GM Recharge Item -> 0.9 * 10 = 9.
+    EXPECT_EQ(wandEntry->maxCharges, 9);
 }
 
 GAME_TEST(Issues, Issue2453) {
