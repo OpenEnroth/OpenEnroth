@@ -558,38 +558,34 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, Scree
     current_screen_type = screen;
 
     pCharacterScreen_StatsBtn = CreateButton(pViewport.topLeft() + Pointi(12, 308),
-                                             paperdoll_dbrds[9]->size(), 1, 0,
+                                             paperdoll_dbrds[9]->size(), BUTTON_TYPE_NORMAL, 0,
                                              UIMSG_ClickStatsBtn, 0, INPUT_ACTION_OPEN_STATS, localization->str(LSTR_STATS),
                                              {{paperdoll_dbrds[10], paperdoll_dbrds[9]}});
     pCharacterScreen_SkillsBtn = CreateButton(pViewport.topLeft() + Pointi(102, 308),
-                                              paperdoll_dbrds[7]->size(), 1, 0,
+                                              paperdoll_dbrds[7]->size(), BUTTON_TYPE_NORMAL, 0,
                                               UIMSG_ClickSkillsBtn, 0, INPUT_ACTION_OPEN_SKILLS, localization->str(LSTR_SKILLS),
                                               {{paperdoll_dbrds[8], paperdoll_dbrds[7]}});
     pCharacterScreen_InventoryBtn = CreateButton(pViewport.topLeft() + Pointi(192, 308),
-                                                 paperdoll_dbrds[5]->size(), 1, 0,
+                                                 paperdoll_dbrds[5]->size(), BUTTON_TYPE_NORMAL, 0,
                                                  UIMSG_ClickInventoryBtn, 0, INPUT_ACTION_OPEN_INVENTORY,
                                                  localization->str(LSTR_INVENTORY),
                                                  {{paperdoll_dbrds[6], paperdoll_dbrds[5]}});
     pCharacterScreen_AwardsBtn = CreateButton(pViewport.topLeft() + Pointi(282, 308),
-                                              paperdoll_dbrds[3]->size(), 1, 0,
+                                              paperdoll_dbrds[3]->size(), BUTTON_TYPE_NORMAL, 0,
                                               UIMSG_ClickAwardsBtn, 0, INPUT_ACTION_OPEN_AWARDS, localization->str(LSTR_AWARDS),
                                               {{paperdoll_dbrds[4], paperdoll_dbrds[3]}});
     pCharacterScreen_ExitBtn = CreateButton(pViewport.topLeft() + Pointi(371, 308),
-                                            paperdoll_dbrds[1]->size(), 1, 0,
+                                            paperdoll_dbrds[1]->size(), BUTTON_TYPE_NORMAL, 0,
                                             UIMSG_ClickExitCharacterWindowBtn, 0, INPUT_ACTION_INVALID,
                                             localization->str(LSTR_EXIT_DIALOGUE),
                                             {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
-    CreateButton({0, 0}, {476, 345}, 1, 122, UIMSG_InventoryLeftClick, 0);
-    pCharacterScreen_DetalizBtn = CreateButton({600, 300}, {30, 30}, 1, 0,
+    CreateButton({0, 0}, {476, 345}, BUTTON_TYPE_NORMAL, 122, UIMSG_InventoryLeftClick, 0);
+    pCharacterScreen_DetalizBtn = CreateButton({600, 300}, {30, 30}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ChangeDetaliz, 0, INPUT_ACTION_INVALID, localization->str(LSTR_DETAIL_TOGGLE));
-    pCharacterScreen_DollBtn = CreateButton({476, 0}, {164, 345}, 1, 0, UIMSG_ClickPaperdoll, 0);
+    pCharacterScreen_DollBtn = CreateButton({476, 0}, {164, 345}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickPaperdoll, 0);
 
-    CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);
-    CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
-    CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
-    CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
+    CreateCharacterButtons();
 
-    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR);
     fillAwardsData();
 
     ui_character_skills_background = assets->getImage_ColorKey("fr_skill");
@@ -625,11 +621,11 @@ void GUIWindow_CharacterRecord::createAwardsScrollBar() {
                 pButton->rect = {};
             }
         }
-        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton({438, 46}, ui_ar_up_up->size(), 1, 0,
+        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton({438, 46}, ui_ar_up_up->size(), BUTTON_TYPE_NORMAL, 0,
                                                        UIMSG_ClickAwardsUpBtn, 0, INPUT_ACTION_INVALID, "", {{ui_ar_up_up, ui_ar_up_dn}});
-        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton({438, 292}, ui_ar_dn_up->size(), 1, 0,
+        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton({438, 292}, ui_ar_dn_up->size(), BUTTON_TYPE_NORMAL, 0,
                                                          UIMSG_ClickAwardsDownBtn, 0, INPUT_ACTION_INVALID, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
-        pBtn_Scroll = pGUIWindow_CurrentMenu->CreateButton({440, 62}, {16, 232}, 1, 0, UIMSG_ClickAwardScrollBar, 0, INPUT_ACTION_INVALID, "");
+        pBtn_Scroll = pGUIWindow_CurrentMenu->CreateButton({440, 62}, {16, 232}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickAwardScrollBar, 0, INPUT_ACTION_INVALID, "");
     }
 }
 
@@ -733,9 +729,9 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
         y = 300;
         x = 600;
     }
-    pCharacterScreen_DetalizBtn = pGUIWindow_CurrentMenu->CreateButton({x, y}, {w, h}, 1, 0,
+    pCharacterScreen_DetalizBtn = pGUIWindow_CurrentMenu->CreateButton({x, y}, {w, h}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ChangeDetaliz, 0, INPUT_ACTION_INVALID, localization->str(LSTR_DETAIL_TOGGLE));
-    pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton({476, 0}, {164, 345}, 1, 0, UIMSG_ClickPaperdoll, 0);
+    pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton({476, 0}, {164, 345}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickPaperdoll, 0);
 }
 
 std::unique_ptr<TargetedSpellUI> CastSpellInfo::GetCastSpellInInventoryWindow() {
@@ -744,16 +740,13 @@ std::unique_ptr<TargetedSpellUI> CastSpellInfo::GetCastSpellInInventoryWindow() 
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = SCREEN_CASTING;
     std::unique_ptr<TargetedSpellUI> CS_inventory_window = std::make_unique<GUIWindow_Inventory_CastSpell>(Pointi(0, 0), render->GetRenderDimensions(), this, "");
-    pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton({394, 318}, {75, 33}, 1, 0,
+    pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton({394, 318}, {75, 33}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickExitCharacterWindowBtn, 0, INPUT_ACTION_INVALID, localization->str(LSTR_EXIT_DIALOGUE),
         {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
-    CS_inventory_window->CreateButton({0, 0}, {0x1DCu, 0x159u}, 1, 122, UIMSG_InventoryLeftClick, 0);
-    pCharacterScreen_DollBtn = CS_inventory_window->CreateButton({0x1DCu, 0}, {0xA4u, 0x159u}, 1, 0, UIMSG_ClickPaperdoll, 0);
+    CS_inventory_window->CreateButton({0, 0}, {0x1DCu, 0x159u}, BUTTON_TYPE_NORMAL, 122, UIMSG_InventoryLeftClick, 0);
+    pCharacterScreen_DollBtn = CS_inventory_window->CreateButton({0x1DCu, 0}, {0xA4u, 0x159u}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickPaperdoll, 0);
 
-    CS_inventory_window->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);
-    CS_inventory_window->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
-    CS_inventory_window->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
-    CS_inventory_window->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
+    CS_inventory_window->CreateCharacterButtons();
 
     return CS_inventory_window;
 }
@@ -1445,7 +1438,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
             ++buttons_count;
             ++first_rows;
             unsigned skill_id = std::to_underlying(skill);
-            pGUIWindow_CurrentMenu->CreateButton({24, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
+            pGUIWindow_CurrentMenu->CreateButton({24, current_Y}, {width, uCurrFontHeght - 3}, BUTTON_TYPE_SKILLS, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
@@ -1455,7 +1448,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             unsigned skill_id = std::to_underlying(skill);
-            pGUIWindow_CurrentMenu->CreateButton({24, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
+            pGUIWindow_CurrentMenu->CreateButton({24, current_Y}, {width, uCurrFontHeght - 3}, BUTTON_TYPE_SKILLS, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
     first_rows = 0;
@@ -1466,7 +1459,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
             ++buttons_count;
             ++first_rows;
             unsigned skill_id = std::to_underlying(skill);
-            pGUIWindow_CurrentMenu->CreateButton({246, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
+            pGUIWindow_CurrentMenu->CreateButton({246, current_Y}, {width, uCurrFontHeght - 3}, BUTTON_TYPE_SKILLS, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
@@ -1476,7 +1469,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             unsigned skill_id = std::to_underlying(skill);
-            pGUIWindow_CurrentMenu->CreateButton({246, current_Y}, {width, uCurrFontHeght - 3}, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
+            pGUIWindow_CurrentMenu->CreateButton({246, current_Y}, {width, uCurrFontHeght - 3}, BUTTON_TYPE_SKILLS, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
 }

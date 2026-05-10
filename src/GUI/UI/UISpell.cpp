@@ -22,35 +22,37 @@ TargetedSpellUI::TargetedSpellUI(WindowType windowType, Pointi position, Sizei d
 
 TargetedSpellUI_Hirelings::TargetedSpellUI_Hirelings(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-    CreateButton({469, 178}, ui_btn_npc_left->size(), 1, 0, UIMSG_ScrollNPCPanel, 0, INPUT_ACTION_INVALID, "", {ui_btn_npc_left});
-    CreateButton({626, 178}, ui_btn_npc_right->size(), 1, 0, UIMSG_ScrollNPCPanel, 1, INPUT_ACTION_INVALID, "", {ui_btn_npc_right});
-    CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_CastSpell_Hireling, 0, INPUT_ACTION_SELECT_NPC_1);
-    CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_CastSpell_Hireling, 1, INPUT_ACTION_SELECT_NPC_2);
+    CreateButton({469, 178}, ui_btn_npc_left->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ScrollNPCPanel, 0, INPUT_ACTION_INVALID, "", {ui_btn_npc_left});
+    CreateButton({626, 178}, ui_btn_npc_right->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ScrollNPCPanel, 1, INPUT_ACTION_INVALID, "", {ui_btn_npc_right});
+    CreateButton({491, 149}, {64, 74}, BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_Hireling, 0, INPUT_ACTION_SELECT_NPC_1);
+    CreateButton({561, 149}, {64, 74}, BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_Hireling, 1, INPUT_ACTION_SELECT_NPC_2);
 }
 
 TargetedSpellUI_Character::TargetedSpellUI_Character(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-    CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 0, INPUT_ACTION_SELECT_CHAR_1);
-    CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 1, INPUT_ACTION_SELECT_CHAR_2);
-    CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 2, INPUT_ACTION_SELECT_CHAR_3);
-    CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 3, INPUT_ACTION_SELECT_CHAR_4);
+    CreateButtonsTargetCharacters();
 }
 
 TargetedSpellUI_Actor::TargetedSpellUI_Actor(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-    CreateButton(pViewport.topLeft(), pViewport.size(), 1, 0, UIMSG_CastSpell_TargetActor, 0);
+    CreateButton(pViewport.topLeft(), pViewport.size(), BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_TargetActor, 0);
 }
 
 TargetedSpellUI_ActorOrCharacter::TargetedSpellUI_ActorOrCharacter(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-    CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 0, INPUT_ACTION_SELECT_CHAR_1);
-    CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 1, INPUT_ACTION_SELECT_CHAR_2);
-    CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 2, INPUT_ACTION_SELECT_CHAR_3);
-    CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 3, INPUT_ACTION_SELECT_CHAR_4);
-    CreateButton(pViewport.topLeft(), pViewport.size(), 1, 0, UIMSG_CastSpell_TargetActorBuff, 0);
+    CreateButtonsTargetCharacters();
+    CreateButton(pViewport.topLeft(), pViewport.size(), BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_TargetActorBuff, 0);
 }
 
 TargetedSpellUI_Telekinesis::TargetedSpellUI_Telekinesis(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-    CreateButton(pViewport.topLeft(), pViewport.size(), 1, 0, UIMSG_CastSpell_Telekinesis, 0);
+    CreateButton(pViewport.topLeft(), pViewport.size(), BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_Telekinesis, 0);
+}
+
+void TargetedSpellUI::CreateButtonsTargetCharacters() {
+    // TODO(pskelton): why is position / size different to normal character buttons
+    CreateButton({52, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 0, INPUT_ACTION_SELECT_CHAR_1);
+    CreateButton({165, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 1, INPUT_ACTION_SELECT_CHAR_2);
+    CreateButton({280, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 2, INPUT_ACTION_SELECT_CHAR_3);
+    CreateButton({390, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 3, INPUT_ACTION_SELECT_CHAR_4);
 }

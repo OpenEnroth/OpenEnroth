@@ -1002,7 +1002,7 @@ GAME_TEST(Issues, Issue2464) {
     // Find \"Goodbye\" button or any button with a label
     GUIButton *pTargetBtn = nullptr;
     for (GUIButton *pBtn : pDialogueWindow->vButtons) {
-        if (pBtn->uButtonType == 1 && !pBtn->sLabel.empty()) {
+        if (pBtn->uButtonType == BUTTON_TYPE_NORMAL && !pBtn->sLabel.empty()) {
             pTargetBtn = pBtn;
             break;
         }
@@ -1041,7 +1041,7 @@ GAME_TEST(Issues, Issue2464) {
         // Find a service button in the house (like \"Exit Building\")
         GUIButton *pServiceBtn = nullptr;
         for (GUIButton *pBtn : pDialogueWindow->vButtons) {
-            if (pBtn->uButtonType == 1 && !pBtn->sLabel.empty()) {
+            if (pBtn->uButtonType == BUTTON_TYPE_NORMAL && !pBtn->sLabel.empty()) {
                 pServiceBtn = pBtn;
                 break;
             }

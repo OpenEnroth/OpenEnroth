@@ -112,7 +112,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
 GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions()) {
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_NPC_DIALOGUE;
-    pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+    pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                    localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
     int text_line_height = assets->pFontArrus->GetHeight() - 3;
@@ -146,15 +146,11 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
         optionList.push_back(DIALOGUE_HIRE_FIRE);
     }
     for (int i = 0; i < optionList.size(); i++) {
-        CreateButton({480, 130 + i * text_line_height}, {140, text_line_height}, 1, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
+        CreateButton({480, 130 + i * text_line_height}, {140, text_line_height}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
     }
     setKeyboardControlGroup(optionList.size(), false, 0, 1);
 
-    CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1, "");
-    CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2, "");
-    CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3, "");
-    CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4, "");
-    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
+    CreateCharacterButtons();
 }
 
 GUIWindow_Dialogue::~GUIWindow_Dialogue() {
@@ -340,19 +336,15 @@ void selectNPCDialogueOption(DialogueId option) {
             std::vector<DialogueId> topics = listNPCDialogueOptions(newTopic);
             ((GUIWindow_Dialogue*)pDialogueWindow.get())->setDisplayedDialogueType(newTopic);
             pDialogueWindow->DeleteButtons();
-            pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+            pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                                             localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
             for (int i = 0; i < topics.size(); i++) {
-                pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, 1, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]), INPUT_ACTION_INVALID, "");
+                pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]), INPUT_ACTION_INVALID, "");
             }
             pDialogueWindow->setKeyboardControlGroup(topics.size(), false, 0, 1);
 
-            pDialogueWindow->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1, "");
-            pDialogueWindow->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2, "");
-            pDialogueWindow->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3, "");
-            pDialogueWindow->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4, "");
-            pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR, "");
+            pDialogueWindow->CreateCharacterButtons();
         }
         return;
     }

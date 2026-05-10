@@ -45,6 +45,14 @@ class GraphicsImage;
 class TargetedSpellUI;
 struct Item;
 
+// TODO(pskelton): move to button
+enum class ButtonType {
+    BUTTON_TYPE_NORMAL = 0,
+    BUTTON_TYPE_CHARACTER,
+    BUTTON_TYPE_SKILLS,
+};
+using enum ButtonType;
+
 class GUIWindow {
  public:
     GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint = {});
@@ -54,13 +62,15 @@ class GUIWindow {
     GUIWindow(const GUIWindow& other) = delete;
     GUIWindow& operator=(const GUIWindow& other) = delete;
 
-    GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
+    GUIButton *CreateButton(Pointi position, Sizei dimensions, ButtonType uButtonType, int uData,
                             UIMessageType msg, unsigned int msg_param, InputAction action = INPUT_ACTION_INVALID, std::string_view label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 
-    GUIButton *CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
+    GUIButton *CreateButton(std::string id, Pointi position, Sizei dimensions, ButtonType uButtonType, int uData,
                             UIMessageType msg, unsigned int msg_param, InputAction action = INPUT_ACTION_INVALID, std::string_view label = {},
                             const std::vector<GraphicsImage *> &textures = {});
+
+    void CreateCharacterButtons();
 
     bool Contains(unsigned int x, unsigned int y);
 
@@ -115,21 +125,6 @@ class OnButtonClick : public GUIWindow {
     OnButtonClick(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}, bool playSound = true) :
         GUIWindow(WINDOW_CharacterCreationBtn, position, dimensions, hint),
         _playSound(playSound),
-        _button(button)
-    {}
-
-    virtual void Update() override;
-
- private:
-    bool _playSound = false;
-    GUIButton *_button = nullptr;
-};
-
-class OnButtonClick2 : public GUIWindow {
- public:
-    OnButtonClick2(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}, bool play_sound = true) :
-        GUIWindow(WINDOW_PressedButton2, position, dimensions, hint),
-        _playSound(play_sound),
         _button(button)
     {}
 

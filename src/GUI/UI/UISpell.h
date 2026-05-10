@@ -14,6 +14,8 @@ class TargetedSpellUI : public GUIWindow {
         return _spellInfo;
     }
 
+    void CreateButtonsTargetCharacters();
+
  private:
     CastSpellInfo *_spellInfo;
 };

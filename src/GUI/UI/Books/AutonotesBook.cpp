@@ -55,21 +55,21 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     ui_book_button7_off = assets->getImage_Alpha("tab-an-4a");
     ui_book_button8_off = assets->getImage_Alpha("tab-an-8a");
 
-    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), {50, 34}, 1, 0,
+    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), {50, 34}, 1, 0,
+    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_UP), {ui_book_button2_on});
-    pBtn_Book_3 = CreateButton(pViewport.topLeft() + Pointi(398, 113), {50, 34}, 1, 0,
+    pBtn_Book_3 = CreateButton(pViewport.topLeft() + Pointi(398, 113), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_POTION), INPUT_ACTION_INVALID, localization->str(LSTR_POTION_NOTES), {ui_book_button3_on});
-    pBtn_Book_4 = CreateButton(pViewport.topLeft() + Pointi(399, 150), {50, 34}, 1, 0,
+    pBtn_Book_4 = CreateButton(pViewport.topLeft() + Pointi(399, 150), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_FOUNTAIN), INPUT_ACTION_INVALID, localization->str(LSTR_FOUNTAIN_NOTES), {ui_book_button4_on});
-    pBtn_Book_5 = CreateButton(pViewport.topLeft() + Pointi(397, 188), {50, 34}, 1, 0,
+    pBtn_Book_5 = CreateButton(pViewport.topLeft() + Pointi(397, 188), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_OBELISK), INPUT_ACTION_INVALID, localization->str(LSTR_OBELISK_NOTES), {ui_book_button5_on});
-    pBtn_Book_6 = CreateButton(pViewport.topLeft() + Pointi(397, 226), {50, 34}, 1, 0,
+    pBtn_Book_6 = CreateButton(pViewport.topLeft() + Pointi(397, 226), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_SEER), INPUT_ACTION_INVALID, localization->str(LSTR_SEER_NOTES), {ui_book_button6_on});
-    pBtn_Autonotes_Misc = CreateButton(pViewport.topLeft() + Pointi(397, 264), {50, 34}, 1, 0,
+    pBtn_Autonotes_Misc = CreateButton(pViewport.topLeft() + Pointi(397, 264), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_MISC), INPUT_ACTION_INVALID, localization->str(LSTR_MISCELLANEOUS_NOTES), {ui_book_button7_on});
-    pBtn_Autonotes_Instructors = CreateButton(pViewport.topLeft() + Pointi(397, 302), {50, 34}, 1, 0,
+    pBtn_Autonotes_Instructors = CreateButton(pViewport.topLeft() + Pointi(397, 302), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_INSTRUCTORS), INPUT_ACTION_INVALID, localization->str(LSTR_INSTRUCTORS), {ui_book_button8_on});
 
     recalculateCurrentNotesTypePages();

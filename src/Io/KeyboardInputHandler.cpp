@@ -110,14 +110,23 @@ void Io::KeyboardInputHandler::GenerateActions(bool isPaused) {
 }
 
 void Io::KeyboardInputHandler::ProcessPausedAction(InputAction action) {
-    if (action != INPUT_ACTION_INTERACT)
-        return;
-
-    if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST) {
-        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
-    }
-    if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
-        // engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+    switch (action) {
+    case INPUT_ACTION_NEXT_CHAR:
+        if (current_screen_type != SCREEN_SPELL_BOOK) {
+            // TODO(Nik-RE-dev): why next frame?
+            engine->_messageQueue->addMessageNextFrame(UIMSG_CycleCharacters, 0, 0);
+        }
+        break;
+    case INPUT_ACTION_INTERACT:
+        if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST) {
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
+        }
+        if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
+            // engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+        }
+        break;
+    default:
+        break;
     }
 }
 

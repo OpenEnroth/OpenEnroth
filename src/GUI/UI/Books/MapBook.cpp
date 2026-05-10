@@ -51,17 +51,17 @@ GUIWindow_MapBook::GUIWindow_MapBook() {
     ui_book_button5_off = assets->getImage_Alpha("tabEoff");
     ui_book_button6_off = assets->getImage_Alpha("tabWoff");
 
-    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_ZOOM_IN), INPUT_ACTION_ZOOM_IN, localization->str(LSTR_ZOOM_IN), {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_ZOOM_OUT), INPUT_ACTION_ZOOM_OUT, localization->str(LSTR_ZOOM_OUT), {ui_book_button2_on});
-    pBtn_Book_3 = CreateButton(pViewport.topLeft() + Pointi(397, 113), {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_3 = CreateButton(pViewport.topLeft() + Pointi(397, 113), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_SCROLL_UP), INPUT_ACTION_DIALOG_UP, localization->str(LSTR_SCROLL_UP), {ui_book_button3_on});
-    pBtn_Book_4 = CreateButton(pViewport.topLeft() + Pointi(397, 150), {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_4 = CreateButton(pViewport.topLeft() + Pointi(397, 150), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_SCROLL_DOWN), INPUT_ACTION_DIALOG_DOWN, localization->str(LSTR_SCROLL_DOWN), {ui_book_button4_on});
-    pBtn_Book_5 = CreateButton(pViewport.topLeft() + Pointi(397, 188), {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_5 = CreateButton(pViewport.topLeft() + Pointi(397, 188), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_SCROLL_RIGHT), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_RIGHT), {ui_book_button5_on});
-    pBtn_Book_6 = CreateButton(pViewport.topLeft() + Pointi(397, 226), {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_6 = CreateButton(pViewport.topLeft() + Pointi(397, 226), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_SCROLL_LEFT), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_LEFT), {ui_book_button6_on});
 }
 

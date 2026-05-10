@@ -54,8 +54,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
     ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
     ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
 
-    pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 0, INPUT_ACTION_INVALID, localization->str(LSTR_SET_BEACON));
-    pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 1, INPUT_ACTION_INVALID, localization->str(LSTR_RECALL_BEACON));
+    pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, BUTTON_TYPE_NORMAL, 0, UIMSG_LloydBookFlipButton, 0, INPUT_ACTION_INVALID, localization->str(LSTR_SET_BEACON));
+    pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, BUTTON_TYPE_NORMAL, 0, UIMSG_LloydBookFlipButton, 1, INPUT_ACTION_INVALID, localization->str(LSTR_RECALL_BEACON));
 
     int casterId = casterPid.id();
     assert(casterId < pParty->pCharacters.size());
@@ -72,7 +72,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
     }
 
     for (int i = 0; i < _maxBeacons; ++i) {
-        CreateButton({lloydsBeaconsPreviewXs[i], lloydsBeaconsPreviewYs[i]}, {92, 68}, 1, UIMSG_HintBeaconSlot, UIMSG_InstallOrRecallBeacon, i);
+        CreateButton({lloydsBeaconsPreviewXs[i], lloydsBeaconsPreviewYs[i]}, {92, 68}, BUTTON_TYPE_NORMAL, UIMSG_HintBeaconSlot, UIMSG_InstallOrRecallBeacon, i);
     }
 
     // purges expired beacons

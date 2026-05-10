@@ -28,7 +28,7 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
     _fontQuick->DrawCreditsEntry(_fontCChar.get(), 0, creditsRect.h, creditsRect.w, height, colorTable.CornFlowerBlue, colorTable.Primrose, colorTable.Black, text, &credits);
     _creditsTexture = GraphicsImage::Create(std::move(credits));
 
-    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_ESCAPE);
+    CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_ESCAPE);
 }
 
 GUICredits::~GUICredits() {

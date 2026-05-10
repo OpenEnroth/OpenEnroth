@@ -116,12 +116,12 @@ void GUIWindow_Spellbook::openSpellbook() {
         CreateButton(fmt::format("SpellBook_Spell{}", index),
                      {pViewport.x + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Xpos,
                      pViewport.y + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Ypos},
-                     SBPageSSpellsTextureList[index + 1]->size(), 1, UIMSG_Spellbook_ShowHightlightedSpellInfo,
+                     SBPageSSpellsTextureList[index + 1]->size(), BUTTON_TYPE_NORMAL, UIMSG_Spellbook_ShowHightlightedSpellInfo,
                      UIMSG_SelectSpell, std::to_underlying(spell));
         pageSpells++;
     }
 
-    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_SpellBook_PressTab, 0, INPUT_ACTION_NEXT_CHAR);
+    CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_SpellBook_PressTab, 0, INPUT_ACTION_NEXT_CHAR);
     if (pageSpells) {
         setKeyboardControlGroup(pageSpells, true, 0, 0);
     }
@@ -141,12 +141,12 @@ void GUIWindow_Spellbook::openSpellbook() {
     for (MagicSchool school : allMagicSchools())
         if (player.pActiveSkills[skillForMagicSchool(school)] || engine->config->debug.AllMagic.value())
             CreateButton(fmt::format("SpellBook_School{}", std::to_underlying(school)), buttonPositions[school],
-                         {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, std::to_underlying(school), INPUT_ACTION_INVALID,
+                         {50, 36}, BUTTON_TYPE_NORMAL, 0, UIMSG_OpenSpellbookPage, std::to_underlying(school), INPUT_ACTION_INVALID,
                          localization->spellSchoolName(school));
 
-    pBtn_InstallRemoveSpell = CreateButton({476, 450}, ui_spellbook_btn_quckspell->size(), 1, UIMSG_HintSelectRemoveQuickSpellBtn,
+    pBtn_InstallRemoveSpell = CreateButton({476, 450}, ui_spellbook_btn_quckspell->size(), BUTTON_TYPE_NORMAL, UIMSG_HintSelectRemoveQuickSpellBtn,
                                            UIMSG_ClickInstallRemoveQuickSpellBtn, 0, INPUT_ACTION_INVALID, "", {ui_spellbook_btn_quckspell_click});
-    pBtn_CloseBook = CreateButton({561, 450}, ui_spellbook_btn_close->size(), 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+    pBtn_CloseBook = CreateButton({561, 450}, ui_spellbook_btn_close->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                   localization->str(LSTR_EXIT_DIALOGUE), {ui_spellbook_btn_close_click});
 }
 
