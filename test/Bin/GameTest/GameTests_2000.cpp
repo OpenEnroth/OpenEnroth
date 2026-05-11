@@ -1059,6 +1059,18 @@ GAME_TEST(Issues, Issue2464) {
     }
 }
 
+GAME_TEST(Issues, Issue2479) {
+    // Character select hotkeys stop working
+    auto screenTape = tapes.screen();
+    auto activeChar = tapes.activeCharacterIndex();
+    auto branchLessCharIndex = tapes.custom([] { if (current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) return pParty->activeCharacterIndex(); return -1; });
+
+    test.playTraceFromTestData("issue_2479.mm7", "issue_2479.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_BRANCHLESS_NPC_DIALOG, SCREEN_GAME));
+    EXPECT_EQ(activeChar, tape(1, 4)); // We switched characters.
+    EXPECT_EQ(branchLessCharIndex, tape(-1, 1, -1)); // We didnt switch before the dialog closed.
+}
+
 GAME_TEST(Issues, Issue2490) {
     // Opening the autonotes book asserts.
     test.prepareForNextTest();
