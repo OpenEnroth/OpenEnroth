@@ -42,10 +42,7 @@ SpellId ParseSpellType(std::string_view name) {
         {"Haste",              SPELL_FIRE_HASTE},
         {"Heroism",            SPELL_SPIRIT_HEROISM},
         {"Hour of Power",      SPELL_LIGHT_HOUR_OF_POWER},
-        // TODO(captainurist): "Ice Blast" should map to SPELL_WATER_ICE_BLAST but the original parser only inspected
-        // the first word, so it collided with "Ice Bolt". Preserving the buggy mapping so existing trace tests still
-        // pass; fix-and-retrace separately.
-        {"Ice Blast",          SPELL_WATER_ICE_BOLT},
+        {"Ice Blast",          SPELL_WATER_ICE_BLAST},
         {"Ice Bolt",           SPELL_WATER_ICE_BOLT},
         {"Incinerate",         SPELL_FIRE_INCINERATE},
         {"Light Bolt",         SPELL_LIGHT_LIGHT_BOLT},
