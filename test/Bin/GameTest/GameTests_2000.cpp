@@ -1220,6 +1220,19 @@ GAME_TEST(Issues, Issue2500c) {
     EXPECT_LT(hp1Tape.back(), hp1Tape.front()); // Goblin took the damage.
 }
 
+GAME_TEST(Issues, Issue2503) {
+    //A new party getting weak mechanic differs from Vanilla
+    game.startNewGame();
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_R);
+    game.tick();
+    game.pressGuiButton("Rest_WaitTillDawn");
+    game.tick(30);
+    for (const auto& charac : pParty->pCharacters) {
+        EXPECT_TRUE(charac.IsWeak());
+    }
+}
+
 GAME_TEST(Issues, Issue2505) {
     // Water elementals supposed to cast ice blast, casting ice bolt.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);

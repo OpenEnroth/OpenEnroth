@@ -103,7 +103,7 @@ void Party::Zero() {
     uNumBountiesCollected = 0;
     monster_id_for_hunting.fill(MONSTER_INVALID);
     monster_for_hunting_killed.fill(false);
-    days_played_without_rest = 0;
+    days_played_without_rest = 1;
     _questBits.reset();
     pArcomageWins.fill(0);
     arenaState = ARENA_STATE_INITIAL;
