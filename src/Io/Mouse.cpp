@@ -213,7 +213,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
         return;
 
     if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->event() == EVENT_PressAnyKey) {
-        releaseBranchlessDialogue();
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         return;
     }
 
