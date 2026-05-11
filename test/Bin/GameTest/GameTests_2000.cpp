@@ -1219,3 +1219,23 @@ GAME_TEST(Issues, Issue2500c) {
     EXPECT_EQ(hp0Tape.back(), hp0Tape.front()); // Human is untouched - Dwarven Commander targets goblins.
     EXPECT_LT(hp1Tape.back(), hp1Tape.front()); // Goblin took the damage.
 }
+
+GAME_TEST(Issues, Issue2505) {
+    // Water elementals supposed to cast ice blast, casting ice bolt.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto spritesTape = tapes.sprites();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+
+    engine->config->debug.NoActors.setValue(false);
+    Actor *monster = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELEMENTAL_WATER_C);
+    monster->moveSpeed = 1; // Stay in place.
+    game.tick(300); // Cast chance is 30%, shall be enough.
+
+    auto flat = spritesTape.flatten();
+    EXPECT_CONTAINS(flat, SPRITE_SPELL_WATER_ICE_BLAST);
+    EXPECT_MISSES(flat, SPRITE_SPELL_WATER_ICE_BOLT);
+}

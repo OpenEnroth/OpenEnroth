@@ -233,6 +233,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_FIRE_INCINERATE:
         case SPELL_AIR_LIGHTNING_BOLT:
         case SPELL_WATER_ICE_BOLT:
+        case SPELL_WATER_ICE_BLAST:
         case SPELL_WATER_ACID_BURST:
         case SPELL_EARTH_BLADES:
         case SPELL_EARTH_ROCK_BLAST:
