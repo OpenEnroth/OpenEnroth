@@ -24,6 +24,7 @@ void ParseDamage(std::string_view damage_str, uint8_t *dice_rolls,
                  uint8_t *dice_sides, uint8_t *dmg_bonus);
 MonsterProjectile ParseMissleAttackType(std::string_view missle_attack_str);
 MonsterSpecialAttack ParseSpecialAttack(std::string_view spec_att_str);
+void parseSpellEntry(std::string_view cell, SpellId &outSpellId, CombinedSkillValue &outMastery);
 
 //----- (004548E2) --------------------------------------------------------
 SpellId ParseSpellType(std::string_view name) {
@@ -86,6 +87,32 @@ CombinedSkillValue ParseSkillValue(std::string_view skillString, std::string_vie
     }
 
     return CombinedSkillValue(skill, mastery);
+}
+
+// Parse one spell cell from monsters.txt. Canonical format: `"<spell name>,<mastery>,<skill>"`, e.g.
+// `"Lightning Bolt,M,10"`. A handful of vanilla cells drop the comma between the mastery letter and the
+// skill digits — Efreet's spell1 is `"Lightning Bolt,M10"`. When the third field is missing but the second
+// begins with a mastery letter, split it apart so the spell parses at the intended skill rather than
+// silently rolling 0d8 (issue #2507).
+void parseSpellEntry(std::string_view cell, SpellId &outSpellId, CombinedSkillValue &outMastery) {
+    outSpellId = SPELL_NONE;
+    outMastery = CombinedSkillValue::none();
+    if (cell.size() < 2)
+        return;
+    std::array<std::string_view, 3> parts = split(removeQuotes(cell)).by(',');
+    if (parts[0].empty())
+        return;
+    outSpellId = ParseSpellType(parts[0]);
+    std::string_view masteryString = parts[1];
+    std::string_view skillString = parts[2];
+    if (skillString.empty() && masteryString.size() > 1 &&
+            (masteryString[0] == 'N' || masteryString[0] == 'E' ||
+             masteryString[0] == 'M' || masteryString[0] == 'G')) {
+        skillString = masteryString.substr(1);
+        masteryString = masteryString.substr(0, 1);
+    }
+    if (!skillString.empty())
+        outMastery = ParseSkillValue(skillString, masteryString);
 }
 
 //----- (00454CB4) --------------------------------------------------------
@@ -367,25 +394,6 @@ void MonsterStats::Initialize(const Blob &monsters) {
             name = name.substr(0, x);
         }
         info.specialAttackType = ParseSpecialAttack(name);
-    };
-
-    // Spell cells. Format: `"<spell name>,<mastery>,<skill>"` — fields are comma-separated, surrounded by quotes.
-    // Spell names may contain spaces.
-    auto parseSpellEntry = [](std::string_view cell, SpellId &outSpellId, CombinedSkillValue &outMastery) {
-        outSpellId = SPELL_NONE;
-        outMastery = CombinedSkillValue::none();
-        if (cell.size() < 2)
-            return;
-        std::array<std::string_view, 3> parts = split(removeQuotes(cell)).by(',');
-        if (parts[0].empty())
-            return;
-        outSpellId = ParseSpellType(parts[0]);
-        // TODO(captainurist): Efreet's spell1 cell in monsters.txt is the malformed `"Lightning Bolt,M10"`
-        // (missing comma between mastery and skill), so parts[2] is empty. The original parser silently left
-        // mastery/skill at 0; we do the same. We can't edit the data file, so the proper fix is to teach this
-        // parser to split `M10` -> mastery `M`, skill `10` (will change Efreet behavior — needs retracing).
-        if (!parts[2].empty())
-            outMastery = ParseSkillValue(parts[2], parts[1]);
     };
 
     // Special-ability cell. Format is one of:
