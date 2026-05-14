@@ -1,0 +1,24 @@
+# Timer.cpp needs Engine/EngineGlobals.h (from //src/Engine:engine) and is compiled as part of
+# //src/Engine:engine to avoid circular dependency.
+exports_files(
+    ["Timer.cpp"],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_time",
+    srcs = [
+        "Duration.cpp",
+    ],
+    hdrs = [
+        "Timer.h",
+        "Time.h",
+        "Duration.h",
+    ],
+    deps = [
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Random:library_random",
+        "//src/Library/Snapshots:library_snapshots",
+    ],
+    visibility = ["//visibility:public"],
+)

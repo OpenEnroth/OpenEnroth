@@ -1,0 +1,27 @@
+cc_library(
+    name = "testing_game",
+    srcs = [
+        "ActorTapeRecorder.cpp",
+        "CharacterTapeRecorder.cpp",
+        "CommonTapeRecorder.cpp",
+        "GameTest.cpp",
+        "TestController.cpp",
+    ],
+    hdrs = [
+        "AccessibleVector.h",
+        "ActorTapeRecorder.h",
+        "CharacterTapeRecorder.h",
+        "CommonTapeRecorder.h",
+        "GameTest.h",
+        "TestCallObserver.h",
+        "TestController.h",
+        "TestTape.h",
+    ],
+    deps = [
+        "//src/Application:application",
+        "//test/Testing/Extensions:testing_extensions",
+        "@googletest//:gtest",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

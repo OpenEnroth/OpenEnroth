@@ -1,0 +1,112 @@
+# System dependency targets.
+# Each cc_library selects the correct prebuilt archive for the current platform+arch.
+# All src/ targets reference these (e.g. //bazel/system:sdl3).
+
+# ─── SDL3 ────────────────────────────────────────────────────────────────────
+# Android: keep prebuilt (complex NDK toolchain integration not yet ported).
+
+cc_library(
+    name = "sdl3",
+    deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:sdl3"],
+        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:sdl3"],
+        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:sdl3"],
+        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:sdl3"],
+        "//conditions:default":                  ["@sdl3_src//:sdl3"],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+# ─── OpenAL ──────────────────────────────────────────────────────────────────
+# Android: system OpenSLES stub via prebuilt (not openal-soft).
+
+cc_library(
+    name = "openal",
+    deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:openal"],
+        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:openal"],
+        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:openal"],
+        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:openal"],
+        "//conditions:default":                  ["@openal_src//:openal"],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+# ─── ZLIB ────────────────────────────────────────────────────────────────────
+# Android: keep prebuilt (cross-compilation toolchain not yet configured).
+
+cc_library(
+    name = "zlib",
+    deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:zlib"],
+        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:zlib"],
+        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:zlib"],
+        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:zlib"],
+        "//conditions:default":                  ["@zlib_src//:zlib"],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+# ─── PNG ─────────────────────────────────────────────────────────────────────
+# Android: keep prebuilt (cross-compilation toolchain not yet configured).
+
+cc_library(
+    name = "png",
+    deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:png"],
+        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:png"],
+        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:png"],
+        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:png"],
+        "//conditions:default":                  ["@libpng_src//:png"],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+# ─── FFmpeg ──────────────────────────────────────────────────────────────────
+# Linux / macOS: source build via configure_make().
+# Windows: prebuilt (FFmpeg configure requires bash/MSYS2 — deferred).
+# Android: prebuilt (NDK cross-compilation not yet configured).
+
+cc_library(
+    name = "ffmpeg",
+    deps = select({
+        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:ffmpeg"],
+        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:ffmpeg"],
+        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:ffmpeg"],
+        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:ffmpeg"],
+        "//bazel/platforms:windows_x86_64":      ["@oe_deps_windows_x86_64//:ffmpeg"],
+        "//bazel/platforms:windows_x86":         ["@oe_deps_windows_x86//:ffmpeg"],
+        "//conditions:default":                  ["@ffmpeg_src//:ffmpeg"],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+# ─── LuaJIT ──────────────────────────────────────────────────────────────────
+# Windows: use CMake-prebuilt lib (rules_foreign_cc make() fails on Windows/MSVC).
+# Other platforms: use source build from @luajit http_archive.
+
+cc_library(
+    name = "luajit",
+    deps = select({
+        "@platforms//os:windows": ["@luajit_windows//:luajit_prebuilt"],
+        "//conditions:default":   ["@luajit//:luajit"],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+# ─── OpenGL ──────────────────────────────────────────────────────────────────
+# System-provided on all platforms — no prebuilt archive needed.
+
+cc_library(
+    name = "opengl",
+    linkopts = select({
+        "@platforms//os:linux":   ["-lGL"],
+        # Use -Wl,-framework,Name (single string) to avoid two-entry pair ordering
+        # issues in Bazel 8+ linkopts handling.
+        "@platforms//os:macos":   ["-Wl,-framework,OpenGL"],
+        "@platforms//os:windows": ["opengl32.lib"],
+        "@platforms//os:android": ["-lGLESv2", "-lEGL"],
+        "//conditions:default":   [],
+    }),
+    visibility = ["//visibility:public"],
+)

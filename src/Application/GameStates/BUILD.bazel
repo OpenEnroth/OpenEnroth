@@ -1,0 +1,32 @@
+cc_library(
+    name = "application_game_states",
+    srcs = [
+        "CreditsState.cpp",
+        "GameFsmBuilder.cpp",
+        "LoadSlotState.cpp",
+        "LoadStep2State.cpp",
+        "MainMenuState.cpp",
+        "StartState.cpp",
+        "VideoState.cpp",
+    ],
+    hdrs = [
+        "CreditsState.h",
+        "GameFsmBuilder.h",
+        "LoadSlotState.h",
+        "LoadStep2State.h",
+        "MainMenuState.h",
+        "StartState.h",
+        "VideoState.h",
+    ],
+    deps = [
+        "//src/Engine:engine",
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Engine/Graphics/Renderer:engine_graphics_renderer",
+        "//src/GUI:gui",
+        "//src/GUI/UI:gui_ui",
+        "//src/Library/Fsm:library_fsm",
+        "//src/Media:media",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

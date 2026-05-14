@@ -1,0 +1,27 @@
+cc_library(
+    name = "library_snapshots",
+    hdrs = [
+        "CommonSnapshots.h",
+        "SnapshotSerialization.h",
+        "SnapshotConcepts.h",
+        "SnapshotTags.h",
+    ],
+    deps = [
+        "//src/Library/Binary:library_binary",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_snapshots",
+    srcs = [
+        "Tests/Snapshots_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        ":library_snapshots",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

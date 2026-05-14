@@ -1,0 +1,39 @@
+load("//bazel/rules:cmrc.bzl", "cmrc_resource_library")
+
+cc_library(
+    name = "library_filesystem_embedded",
+    srcs = [
+        "EmbeddedFileSystem.cpp",
+    ],
+    hdrs = [
+        "EmbeddedFileSystem.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+        "//bazel/cmrc:cmrc_base",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cmrc_resource_library(
+    name = "test_library_filesystem_embedded_resources",
+    namespace = "testrc",
+    srcs = ["Tests/EmbeddedFileSystem_ut.cpp"],
+    strip_prefix = "src/Library/FileSystem/Embedded",
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "test_library_filesystem_embedded",
+    srcs = [
+        "Tests/EmbeddedFileSystem_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        ":library_filesystem_embedded",
+        ":test_library_filesystem_embedded_resources",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

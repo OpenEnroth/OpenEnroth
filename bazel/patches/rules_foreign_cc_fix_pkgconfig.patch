@@ -1,0 +1,13 @@
+--- a/foreign_cc/built_tools/pkgconfig_build.bzl
++++ b/foreign_cc/built_tools/pkgconfig_build.bzl
+@@ -79,6 +79,9 @@
+     ]
+
+-    additional_tools = depset(transitive = [make_data.target.files])
++    # make_data.target is None when using preinstalled_make_toolchain (the make
++    # binary is already on PATH and has no Bazel target). Guard against None
++    # before accessing .files to avoid 'NoneType has no field files' errors.
++    additional_tools = depset(transitive = [make_data.target.files] if make_data.target else [])
+
+     return built_tool_rule_impl(
+         ctx,

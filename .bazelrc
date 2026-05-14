@@ -1,0 +1,157 @@
+# OpenEnroth Bazel configuration
+
+# ─── Bzlmod ──────────────────────────────────────────────────────────────────
+
+common --enable_bzlmod
+
+# ─── C++23 ───────────────────────────────────────────────────────────────────
+
+build --cxxopt=-std=c++23
+build --host_cxxopt=-std=c++23
+
+# Windows/MSVC uses a different flag
+build:windows --cxxopt=/std:c++latest
+build:windows --host_cxxopt=/std:c++latest
+build:windows --cxxopt=/Zc:__cplusplus  # Make __cplusplus reflect actual standard
+build:windows --copt=/Zc:preprocessor  # Use standard-compliant preprocessor (required for NLOHMANN_JSON_PASTE variadic macros)
+build:windows --copt=/D_USE_MATH_DEFINES  # Pull in M_PI and other <cmath> defines (MSVC extension)
+build:windows --copt=/utf-8  # fmt and other libs require UTF-8 source encoding
+build:windows --copt=/D_WINDOWS  # CMake adds this automatically for Windows targets; enables _fseeki64/_ftelli64 aliases
+build:windows --features=static_link_msvcrt  # Use /MT instead of /MD to match prebuilt dep libs (CMake uses MultiThreaded runtime)
+
+# ─── Global include paths (mirrors CMake's include_directories(src test)) ────
+# Allows #include "Engine/..." and #include "Testing/..." without explicit deps.
+# GCC/Clang use -I, MSVC uses /I.
+build:linux --copt=-Isrc --copt=-Itest
+build:macos --copt=-Isrc --copt=-Itest
+build:windows --copt=/Isrc --copt=/Itest
+build:android_base --copt=-Isrc
+
+# ─── Compiler selection ───────────────────────────────────────────────────────
+# Linux native builds (x86_64 and x86): Use GCC 14 for C++23 "deducing this" (P0847R7).
+# The default GCC on Debian 12 is GCC 12; Ubuntu 24.04+ defaults to GCC 14.
+# NOTE: These are NOT set on build:linux (the base config) because Android builds
+# also run on Linux CI runners and inherit build:linux via --enable_platform_specific_config.
+# With CC=gcc-14, Android cross-compilation would fail (gcc can't handle NDK --target flags).
+# Instead, set CC/CXX only for the native Linux configs where GCC 14 is explicitly wanted.
+
+# ─── Disable strict header dep tracking ─────────────────────────────────────
+# MSVC's /showIncludes causes Bazel to reject headers found via /Isrc but not
+# declared as explicit deps. Disable on Windows only; GCC/Clang .d file tracking
+# works correctly (all headers are declared in BUILD hdrs).
+build:windows --features=-parse_showincludes
+
+# ─── Warnings ────────────────────────────────────────────────────────────────
+
+build:linux --copt=-Wall --copt=-Wno-error
+build:macos --copt=-Wall --copt=-Wno-error
+# Note: HACKING.md mandates warnings-as-errors. Enable --copt=-Werror once all
+# BUILD files are written and clean.
+
+# ─── Platform configs ────────────────────────────────────────────────────────
+
+build --enable_platform_specific_config
+
+# Linux
+build:linux --copt=-fPIC
+# Use ld.bfd instead of ld.gold — gold linker can't find libstdc++.so from the versioned GCC dir
+build:linux --features=-use_gold_linker
+# Use system cmake (3.28+ on ubuntu-24.04) instead of rules_foreign_cc's bundled cmake 3.23.2.
+# Keeps the cmake version consistent across Linux and Windows, and is required for some
+# cmake() deps that use features added after 3.23 (e.g. OpenAL's BUILD_LOCAL_INTERFACE).
+build:linux --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
+
+# Linux x86 (32-bit)
+build:linux_x86 --config=linux
+build:linux_x86 --action_env=CC=/usr/bin/gcc-14
+build:linux_x86 --action_env=CXX=/usr/bin/g++-14
+build:linux_x86 --copt=-m32
+build:linux_x86 --linkopt=-m32
+# Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
+# We can't use --platforms= here (no 32-bit toolchain registered), so use --define instead.
+build:linux_x86 --define=oe_build_arch=x86_32
+# Use gold for linux_x86. bfd doesn't support --start-lib/--end-lib (Bazel's
+# start_end_lib feature), and lld rejects 32-bit ELF when called via -fuse-ld=lld
+# (GCC doesn't properly forward -m elf_i386 to lld). Gold supports both --start-lib
+# and 32-bit ELF (elf_i386) natively.
+build:linux_x86 --linkopt=-fuse-ld=gold
+
+# Linux x86_64
+build:linux_x86_64 --config=linux
+build:linux_x86_64 --action_env=CC=/usr/bin/gcc-14
+build:linux_x86_64 --action_env=CXX=/usr/bin/g++-14
+
+# macOS
+build:macos --apple_platform_type=macos
+# Use system cmake (available via Xcode command-line tools) instead of rules_foreign_cc's
+# bundled cmake 3.23.2. Required for OpenAL-soft 1.24.3's BUILD_LOCAL_INTERFACE usage.
+build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
+# Use system make instead of rules_foreign_cc's bundled make binary, which segfaults when
+# processing LuaJIT's src/Makefile on macOS runners.
+build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
+
+# macOS arm64
+build:darwin_arm64 --config=macos
+build:darwin_arm64 --cpu=darwin_arm64
+build:darwin_arm64 --macos_minimum_os=11.0
+# LuaJIT's Makefile requires MACOSX_DEPLOYMENT_TARGET as an exported env var.
+# --action_env propagates it into all build actions (including make() sandboxes).
+build:darwin_arm64 --action_env=MACOSX_DEPLOYMENT_TARGET=11.0
+
+# macOS x86_64
+build:darwin_x86_64 --config=macos
+build:darwin_x86_64 --cpu=darwin_x86_64
+build:darwin_x86_64 --macos_minimum_os=10.15
+build:darwin_x86_64 --action_env=MACOSX_DEPLOYMENT_TARGET=10.15
+
+# Windows x86
+build:windows_x86 --config=windows
+build:windows_x86 --cpu=x64_x86_windows
+
+# Windows x86_64
+build:windows_x86_64 --config=windows
+
+# Use the system cmake (Visual Studio ships cmake 3.31+) instead of rules_foreign_cc's
+# auto-downloaded cmake 3.23.2. Required for OpenAL-soft 1.24.3 which uses
+# $<BUILD_LOCAL_INTERFACE> generator expressions added in cmake 3.26.
+build:windows --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
+
+# Android — NDK version 28.1.13356709 (matches CI)
+# android_base: common flags inherited by all android_* configs
+# Use system make instead of rules_foreign_cc's bundled make binary.
+# The bundled make binary has issues with LuaJIT's src/Makefile on Linux too
+# ($(if $(filter ...)) expansion fails in cross-compilation mode).
+build:android_base --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
+build:android_base --cxxopt=-std=c++23
+build:android_base --host_cxxopt=-std=c++23
+build:android_base --copt=-fPIC
+build:android_base --copt=-Wall
+build:android_base --copt=-Wno-error
+
+build:android --config=android_base
+build:android_arm64_v8a --config=android
+# --platforms sets the TARGET platform for cc_binary() cross-compilation.
+# --android_platforms only applies to android_binary() rules (APK builds).
+build:android_arm64_v8a --platforms=//bazel/platforms:android_arm64_v8a_platform
+build:android_armeabi_v7a --config=android
+build:android_armeabi_v7a --platforms=//bazel/platforms:android_armeabi_v7a_platform
+build:android_x86_64 --config=android
+build:android_x86_64 --platforms=//bazel/platforms:android_x86_64_platform
+
+# ─── Local disk cache ────────────────────────────────────────────────────────
+# Content-addressed cache on local disk. Avoids rebuilding cmake() deps (zlib,
+# libpng, SDL3, OpenAL) and other expensive actions when sources haven't changed.
+# Shared across workspaces and Bazel versions on the same machine.
+build --disk_cache=~/.cache/bazel
+# Caches downloaded http_archive tarballs (avoids re-downloading on every clean).
+build --repository_cache=~/.cache/bazel-repo
+
+# ─── Remote cache (GitHub Actions / Buildbuddy) ──────────────────────────────
+# Uncomment and configure once CI is set up:
+# build --remote_cache=grpc://...
+# build --remote_upload_local_results=true
+
+# ─── Convenience ─────────────────────────────────────────────────────────────
+
+build --verbose_failures
+test --test_output=errors

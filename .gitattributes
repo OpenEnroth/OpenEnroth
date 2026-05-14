@@ -6,6 +6,15 @@ text eol=lf
 *.h text
 *.hpp text
 
+# Bazel build files must use LF even on Windows (shell scripts in genrules require LF)
+BUILD text eol=lf
+BUILD.bazel text eol=lf
+*.BUILD text eol=lf
+.bazelrc text eol=lf
+MODULE.bazel text eol=lf
+WORKSPACE text eol=lf
+WORKSPACE.bazel text eol=lf
+
 *.sln text eol=crlf
 *.vcxproj text eol=crlf
 *.vcxproj.filters text eol=crlf

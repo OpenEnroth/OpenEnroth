@@ -1,0 +1,22 @@
+cc_library(
+    name = "library_platform_null",
+    srcs = [
+        "NullEventLoop.cpp",
+        "NullOpenGLContext.cpp",
+        "NullPlatform.cpp",
+        "NullWindow.cpp",
+    ],
+    hdrs = [
+        "NullEventLoop.h",
+        "NullOpenGLContext.h",
+        "NullPlatform.h",
+        "NullPlatformOptions.h",
+        "NullPlatformSharedState.h",
+        "NullWindow.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Platform/Interface:library_platform_interface",
+    ],
+    visibility = ["//visibility:public"],
+)

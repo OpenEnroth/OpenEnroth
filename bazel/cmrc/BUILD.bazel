@@ -1,0 +1,30 @@
+# BUILD file for cmrc Bazel resource embedding helpers.
+
+# The runtime header — exposed so cc_library targets can depend on it.
+filegroup(
+    name = "cmrc_hpp",
+    srcs = ["cmrc.hpp"],
+    visibility = ["//visibility:public"],
+)
+
+# Header-only cc_library for transitive include of cmrc.hpp.
+cc_library(
+    name = "cmrc_base",
+    hdrs = ["cmrc.hpp"],
+    include_prefix = "cmrc",
+    visibility = ["//visibility:public"],
+)
+
+py_binary(
+    name = "generate_resource",
+    srcs = ["generate_resource.py"],
+    main = "generate_resource.py",
+    visibility = ["//bazel/rules:__pkg__"],
+)
+
+py_binary(
+    name = "generate_lib",
+    srcs = ["generate_lib.py"],
+    main = "generate_lib.py",
+    visibility = ["//bazel/rules:__pkg__"],
+)
