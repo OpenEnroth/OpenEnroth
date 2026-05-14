@@ -147,6 +147,7 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
     state.overlays = *pActiveOverlayList;
     state.npcData = pNPCStats->pNPCData;
     state.npcGroups = pNPCStats->pGroups;
+    state.extension.encoding = engine->gameDataEncoding();
 
     // Populate map deltas.
     if (resetWorld) {
@@ -165,10 +166,10 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
 
         Blob uncompressed;
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            serialize(*pIndoor, &uncompressed, tags::via<IndoorDelta_MM7>);
+            serialize(*pIndoor, &uncompressed, tags::via<IndoorDelta_MM7>, tags::encoding(state.extension.encoding));
         } else {
             assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
-            serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>);
+            serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>, tags::encoding(state.extension.encoding));
         }
 
         std::string deltaName = currentMapName;

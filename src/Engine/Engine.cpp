@@ -80,6 +80,7 @@
 
 #include "Io/Mouse.h"
 
+#include "Library/EncodingDetector/EncodingDetector.h"
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
 #include "Tables/ChestTable.h"
@@ -692,6 +693,13 @@ void Engine::MM7_Initialize() {
 
     MM7_LoadLods();
 
+    {
+        EncodingDetector detector;
+        detector.write(resources()->eventsData("history.txt").str());
+        TextEncoding result = detector.finish();
+        _gameDataEncoding = (result != ENCODING_BYTES) ? result : ENCODING_ASCII;
+    }
+
     localization = new Localization();
     localization->initialize();
 
@@ -711,7 +719,7 @@ void Engine::MM7_Initialize() {
     deserialize(engine->resources()->eventsData("dift.bin"), pIconsFrameTable);
 
     pDecorationList = new DecorationList;
-    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationList);
+    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationList, tags::encoding(engine->gameDataEncoding()));
 
     pObjectList = new ObjectList;
     deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectList);
