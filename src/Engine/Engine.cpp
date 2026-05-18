@@ -390,55 +390,6 @@ bool Engine::draw_debug_outlines() {
     return true;
 }
 
-//----- (0044ED0A) --------------------------------------------------------
-int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
-    double v4;  // st7@3
-    // double v5; // ST00_8@3
-    int v6;  // eax@4
-    // double v7; // ST00_8@5
-    int result;  // eax@7
-    // double v9; // ST00_8@8
-    // double v10; // ST00_8@10
-    float v11;  // [sp+14h] [bp+8h]@3
-    float v12;  // [sp+18h] [bp+Ch]@3
-    float v13;  // [sp+18h] [bp+Ch]@5
-    float v14;  // [sp+1Ch] [bp+10h]@8
-    float v15;  // [sp+1Ch] [bp+10h]@10
-
-    if (engine->IsSaturateFaces() && a2->attributes & FACE_IsSecret) {
-        v4 = (double)a4;
-        v11 = v4;
-        *a3 |= 2u;
-        v12 = (1.0 - this->fSaturation) * v4;
-        // v5 = v12 + 6.7553994e15;
-        if (floorf(v12 + 0.5f) /* SLODWORD(v5)*/ >= 0) {
-            v13 = (1.0 - this->fSaturation) * v11;
-            // v7 = v13 + 6.7553994e15;
-            // v6 = LODWORD(v7);
-            v6 = floorf(v13 + 0.5f);
-        } else {
-            v6 = 0;
-        }
-        if (a4 >= v6) {
-            v14 = (1.0 - fSaturation) * v11;
-            // v9 = v14 + 6.7553994e15;
-            if (floorf(v14 + 0.5f) /* SLODWORD(v9)*/ >= 0) {
-                v15 = (1.0 - fSaturation) * v11;
-                // v10 = v15 + 6.7553994e15;
-                // result = LODWORD(v10);
-                result = floorf(v15 + 0.5f);
-            } else {
-                result = 0;
-            }
-        } else {
-            result = a4;
-        }
-    } else {
-        result = -1;
-    }
-    return result;
-}
-
 //----- (0044E4B7) --------------------------------------------------------
 Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem) : _overlaySystem(overlaySystem) {
     this->config = config;

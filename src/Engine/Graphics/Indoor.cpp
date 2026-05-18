@@ -1898,50 +1898,51 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
     return a1.Create(0, 0, 0, 0);
 }
 
-void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
-    assert(a2->type == OBJECT_Sprite);
+void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *spawn) {
+    assert(spawn->type == OBJECT_Sprite);
 
-    SpriteObject a1a;
-    a1a.containing_item.Reset();
+    SpriteObject spawnedObject;
+    spawnedObject.containing_item.Reset();
 
-    int v34 = 0;
-    int v5 = grng->random(100);
-    ItemTreasureLevel v13 = grng->randomSample(RemapTreasureLevel(a2->treasureLevel, mapInfo->mapTreasureLevel));
-    if (v13 != ITEM_TREASURE_LEVEL_7) {
+    int typeRandom = grng->random(100);
+    ItemTreasureLevel levelRandom = grng->randomSample(RemapTreasureLevel(spawn->treasureLevel, mapInfo->mapTreasureLevel));
+    if (levelRandom != ITEM_TREASURE_LEVEL_7) {
+        // TODO(pskelton): configurable thresholds for treasure
         // [0, 20) -- nothing
         // [20, 60) -- gold
         // [60, 100) -- item
 
-        if (v5 < 20)
+        if (typeRandom < 20)
             return;
 
-        if (v5 >= 60) {
-            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->position, 0);
+        if (typeRandom >= 60) {
+            DropTreasureAt(levelRandom, grng->randomSample(allSpawnableRandomItemTypes()), spawn->position, 0);
             return;
         }
 
-        a1a.containing_item.generateGold(a2->treasureLevel);
-        a1a.spriteId = pItemTable->items[a1a.containing_item.itemId].spriteId;
-        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.spriteId);
+        spawnedObject.containing_item.generateGold(spawn->treasureLevel);
+        spawnedObject.spriteId = pItemTable->items[spawnedObject.containing_item.itemId].spriteId;
+        spawnedObject.uObjectDescID = pObjectList->ObjectIDByItemID(spawnedObject.spriteId);
     } else {
-        if (!a1a.containing_item.GenerateArtifact())
+        if (!spawnedObject.containing_item.GenerateArtifact())
             return;
-        a1a.spriteId = pItemTable->items[a1a.containing_item.itemId].spriteId;
-        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.spriteId);
-        a1a.containing_item.Reset();  // TODO(captainurist): this needs checking
+        spawnedObject.spriteId = pItemTable->items[spawnedObject.containing_item.itemId].spriteId;
+        spawnedObject.uObjectDescID = pObjectList->ObjectIDByItemID(spawnedObject.spriteId);
+        spawnedObject.containing_item.Reset();  // TODO(captainurist): this needs checking
     }
-    a1a.uAttributes = 0;
-    a1a.uSoundID = 0;
-    a1a.uFacing = 0;
-    a1a.vPosition = a2->position;
-    a1a.spell_skill = MASTERY_NONE;
-    a1a.spell_level = 0;
-    a1a.uSpellID = SPELL_NONE;
-    a1a.spell_target_pid = Pid();
-    a1a.spell_caster_pid = Pid();
-    a1a.timeSinceCreated = 0_ticks;
-    a1a.uSectorID = pIndoor->GetSector(a2->position);
-    a1a.Create(0, 0, 0, 0);
+
+    spawnedObject.uAttributes = 0;
+    spawnedObject.uSoundID = 0;
+    spawnedObject.uFacing = 0;
+    spawnedObject.vPosition = spawn->position;
+    spawnedObject.spell_skill = MASTERY_NONE;
+    spawnedObject.spell_level = 0;
+    spawnedObject.uSpellID = SPELL_NONE;
+    spawnedObject.spell_target_pid = Pid();
+    spawnedObject.spell_caster_pid = Pid();
+    spawnedObject.timeSinceCreated = 0_ticks;
+    spawnedObject.uSectorID = pIndoor->GetSector(spawn->position);
+    spawnedObject.Create(0, 0, 0, 0);
 }
 
 //----- (0043F515) --------------------------------------------------------
