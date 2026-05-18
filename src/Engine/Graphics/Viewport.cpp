@@ -225,8 +225,6 @@ void Engine::onGameViewportClick() {
     Pid pid = pidAndDepth.pid;
     int16_t distance = pidAndDepth.depth;
     bool in_range = distance < clickable_distance;
-    // else
-    //  v0 = render->pActiveZBuffer[v1->x + pSRZBufferLineOffsets[v1->y]];
 
     if (pid.type() == OBJECT_Sprite) {
         int item_id = pid.id();
