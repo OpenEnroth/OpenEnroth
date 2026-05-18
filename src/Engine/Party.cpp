@@ -248,18 +248,17 @@ void Party::switchToNextActiveCharacter() {
         }
     }
 
-    int v12{};
-    unsigned v8{};
+    int selectedChar = 0; // zero for none
+    int highestSpeed = 0;
     for (int i = 0; i < this->pCharacters.size(); i++) {
-        if (this->pCharacters[i].CanAct() &&
-            !this->pCharacters[i].timeToRecovery) {
-            if (v12 == 0 || this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED] > v8) {
-                v8 = this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED];
-                v12 = i + 1;
+        if (this->pCharacters[i].CanAct() && !this->pCharacters[i].timeToRecovery) {
+            if (selectedChar == 0 || this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED] > highestSpeed) {
+                highestSpeed = this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED];
+                selectedChar = i + 1;
             }
         }
     }
-    _activeCharacter = v12;
+    _activeCharacter = selectedChar;
     return;
 }
 
@@ -919,10 +918,7 @@ void Party::dropHeldItem() {
     sprite.uSectorID = pBLVRenderParams->uPartyEyeSectorID;
     sprite.timeSinceCreated = 0_ticks;
     sprite.containing_item = pPickedItem;
-
-    // extern int UnprojectX(int);
-    // v9 = UnprojectX(v1->x);
-    sprite.Create(_viewYaw, 184, 200, 0);  //+ UnprojectX(v1->x), 184, 200, 0);
+    sprite.Create(_viewYaw, 184, 200, 0);
 
     pParty->takeHoldingItem();
 }
