@@ -21,7 +21,10 @@ enum class BookButtonAction {
     BOOK_NOTES_MISC = 10,
     BOOK_NOTES_INSTRUCTORS = 11,
     BOOK_NEXT_PAGE = 12,
-    BOOK_PREV_PAGE = 13
+    BOOK_PREV_PAGE = 13,
+
+    BOOK_BUTTON_FIRST = BOOK_ZOOM_IN,
+    BOOK_BUTTON_LAST = BOOK_PREV_PAGE
 };
 using enum BookButtonAction;
 
