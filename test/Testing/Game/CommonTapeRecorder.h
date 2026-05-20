@@ -118,6 +118,13 @@ class CommonTapeRecorder {
      */
     TestMultiTape<MonsterSpecialAttack> specialAttacks();
 
+    /**
+     * Return a tape object of UIMessageTypes listing all the UI messages processed by the engine.
+     *
+     * @return                          Tape object.
+     */
+    TestMultiTape<UIMessageType> uiMessages();
+
  private:
     TestController *_controller = nullptr;
 };

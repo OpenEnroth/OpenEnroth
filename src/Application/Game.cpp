@@ -11,6 +11,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineCallObserver.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
@@ -278,25 +279,6 @@ bool IsWindowSwitchable() {
 }
 
 void Game::processQueuedMessages() {
-    GUIWindow *pWindow2;        // ecx@248
-    int v37;                    // eax@341
-    ODMFace *pODMFace;          // ecx@412
-    CastSpellInfo *pSpellInfo;  // ecx@415
-    int16_t v53;                // ax@431
-    int v54;                    // eax@432
-    GUIButton *pButton;         // eax@578
-    int v91;                    // edx@605
-    int v92;                    // eax@605
-    int v93;                    // edx@605
-    int pPlayerNum;             // edx@611
-    int uMessageParam;            // [sp+18h] [bp-5E4h]@7
-    int encounter_index;           // [sp+20h] [bp-5DCh]@23
-    int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
-    UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
-    int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
-    MapId travelMapId;
-    std::array<MagicSchool, 9> spellbookPages = {};                  // [sp+158h] [bp-4A4h]@652
-    int currHour;
     bool playButtonSoundOnEscape = true;
 
     if (bDialogueUI_InitializeActor_NPC_ID) {
@@ -304,8 +286,14 @@ void Game::processQueuedMessages() {
         bDialogueUI_InitializeActor_NPC_ID = 0;
     }
 
+    UIMessageType uMessage = UIMSG_0;
+    int uMessageParam = 0;
+    int uMessageParam2 = 0;
     while (engine->_messageQueue->haveMessages()) {
         engine->_messageQueue->popMessage(&uMessage, &uMessageParam, &uMessageParam2);
+        if (engine->callObserver) {
+            engine->callObserver->notify(CALL_PROCESS_UIMSG, uMessage);
+        }
         switch (uMessage) {
             case UIMSG_ChangeGameState:
                 uGameState = GAME_FINISHED;
@@ -667,15 +655,13 @@ void Game::processQueuedMessages() {
                 }
                 continue;
 
-            case UIMSG_ScrollNPCPanel:  // Right and Left button for
-                                        // NPCPanel
+            case UIMSG_ScrollNPCPanel:  // Right and Left button for NPCPanel
                 if (uMessageParam) {
                     new OnButtonClick({626, 179 + 2 * (pParty->alignment == PartyAlignment::PartyAlignment_Evil) }, {0, 0}, pBtn_NPCRight);
-                    v37 = (!pParty->pHirelings[0].name.empty()) +
-                          (!pParty->pHirelings[1].name.empty()) +
-                          (uint8_t)pParty->cNonHireFollowers - 2;
-                    // v37 is max scroll position
-                    if (pParty->hirelingScrollPosition < v37) {
+                    int maxScrollPosition = (!pParty->pHirelings[0].name.empty()) +
+                                            (!pParty->pHirelings[1].name.empty()) +
+                                            (uint8_t)pParty->cNonHireFollowers - 2;
+                    if (pParty->hirelingScrollPosition < maxScrollPosition) {
                         ++pParty->hirelingScrollPosition;
                     }
                 } else {
@@ -735,13 +721,13 @@ void Game::processQueuedMessages() {
                     pParty->setActiveCharacterIndex(cycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled()));
                 }
                 continue;
-            case UIMSG_OnTravelByFoot:
+            case UIMSG_OnTravelByFoot: {
                 engine->_messageQueue->clear();
                 playButtonSoundOnEscape = false;
 
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 // encounter_index = (NPCData *)getTravelTime();
-                travelMapId = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
+                MapId travelMapId = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
                 if (!engine->IsUnderwater() && pParty->bFlying || travelMapId == MAP_INVALID) {
                     PlayButtonClickSound();
                     pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
@@ -760,18 +746,19 @@ void Game::processQueuedMessages() {
                     if (pParty->GetFood() > 0) {
                         pParty->restAndHeal();
                         if (pParty->GetFood() < getTravelTime()) {
-                            for(Character &character : pParty->pCharacters)
+                            for (Character& character : pParty->pCharacters)
                                 character.SetCondition(CONDITION_WEAK, 0);
                             ++pParty->days_played_without_rest;
                         }
                         pParty->TakeFood(getTravelTime());
                     } else {
-                        for (Character &character : pParty->pCharacters)
+                        for (Character& character : pParty->pCharacters)
                             character.SetCondition(CONDITION_WEAK, 0);
                         ++pParty->days_played_without_rest;
                     }
                 }
                 continue;
+            }
             case UIMSG_CancelTravelByFoot:
                 PlayButtonClickSound();
                 pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
@@ -834,7 +821,7 @@ void Game::processQueuedMessages() {
                 }
                 continue;
 
-            case UIMSG_HouseTransitionConfirmation:
+            case UIMSG_HouseTransitionConfirmation: {
                 assert(false);
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
@@ -844,15 +831,15 @@ void Game::processQueuedMessages() {
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
                 // int)ptr_507BC0->ptr_1C];
-                v53 = std::to_underlying(houseTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
+                uint16_t v53 = std::to_underlying(houseTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
-                    v54 = std::abs(v53) - 1;
+                    int v54 = std::abs(v53) - 1;
                     engine->_teleportPoint.setTeleportTarget(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
                 }
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 continue;
-
+            }
             case UIMSG_OnCastTownPortal:
                 pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_TownPortalBook>(Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
                 continue;
@@ -1141,22 +1128,24 @@ void Game::processQueuedMessages() {
                     //    mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
                     MapInfo *pMapInfo = &pMapStats->pInfos[mapIdx];
 
-                    if (grng->random(100) + 1 <= pMapInfo->encounterChance && !engine->config->debug.NoActors.value()) {
-                        v91 = grng->random(100);
-                        v92 = pMapInfo->encounter1Chance;
-                        v93 = v91 + 1;
-                        // TODO(captainurist): this is some weird code here.
-                        if (v93 > v92)
-                            encounter_index = v93 > v92 + pMapInfo->encounter2Chance + 2;
-                        else
-                            encounter_index = 1;
+                    // Encounters when resting
+                    if ((grng->random(100) + 1) <= pMapInfo->encounterChance && !engine->config->debug.NoActors.value()) {
+                        int encRand = grng->random(100) + 1;
+                        int encIndex = 0; // 1-3 index for which monster to spawn
 
-                        if (!SpawnEncounterMonsters(pMapInfo, encounter_index))
-                            encounter_index = 0;
+                        if (encRand <= pMapInfo->encounter1Chance) {
+                            encIndex = 1;
+                        } else if (encRand <= (pMapInfo->encounter1Chance + pMapInfo->encounter2Chance)) {
+                            encIndex = 2;
+                        } else {
+                            encIndex = 3;
+                        }
 
-                        if (encounter_index) {
-                            pPlayerNum = grng->random(4);
-                            pParty->pCharacters[pPlayerNum].conditions.reset(CONDITION_SLEEP);
+                        if (!SpawnEncounterMonsters(pMapInfo, encIndex))
+                            encIndex = 0;
+
+                        if (encIndex) {
+                            pParty->pCharacters[grng->random(pParty->pCharacters.size())].conditions.reset(CONDITION_SLEEP);
                             Rest(Duration::fromHours(1) + Duration::fromMinutes(grng->random(6)));
                             remainingRestTime = Duration();
                             currentRestType = REST_NONE;
@@ -1167,6 +1156,7 @@ void Game::processQueuedMessages() {
                             continue;
                         }
                     }
+
                     pParty->TakeFood(foodRequiredToRest);
                     remainingRestTime = Duration::fromHours(8);
                     currentRestType = REST_HEAL;
@@ -1211,6 +1201,7 @@ void Game::processQueuedMessages() {
                                             //клавишей Tab
             {
                 if (!pParty->hasActiveCharacter()) continue;
+                std::array<MagicSchool, 9> spellbookPages = {};
                 int skill_count = 0;
                 int uAction = 0;
                 for (MagicSchool page : allMagicSchools()) {
@@ -1406,40 +1397,7 @@ void Game::processQueuedMessages() {
                 new OnCancel2(pCharacterScreen_ExitBtn->rect.topLeft(), {0, 0}, pCharacterScreen_ExitBtn);
                 continue;
             case UIMSG_ClickBooksBtn:
-                switch (BookButtonAction(uMessageParam)) {
-                    case BOOK_PREV_PAGE:
-                    case BOOK_ZOOM_IN:
-                        pButton = pBtn_Book_1;
-                        break;
-                    case BOOK_NEXT_PAGE:
-                    case BOOK_ZOOM_OUT:
-                        pButton = pBtn_Book_2;
-                        break;
-                    case BOOK_SCROLL_UP:
-                    case BOOK_NOTES_POTION:
-                        pButton = pBtn_Book_3;
-                        break;
-                    case BOOK_SCROLL_DOWN:
-                    case BOOK_NOTES_FOUNTAIN:
-                        pButton = pBtn_Book_4;
-                        break;
-                    case BOOK_SCROLL_RIGHT:
-                    case BOOK_NOTES_OBELISK:
-                        pButton = pBtn_Book_5;
-                        break;
-                    case BOOK_SCROLL_LEFT:
-                    case BOOK_NOTES_SEER:
-                        pButton = pBtn_Book_6;
-                        break;
-                    case BOOK_NOTES_MISC:
-                        pButton = pBtn_Autonotes_Misc;
-                        break;
-                    case BOOK_NOTES_INSTRUCTORS:
-                        pButton = pBtn_Autonotes_Instructors;
-                        break;
-                    default:
-                        continue;
-                }
+                assert(uMessageParam >= std::to_underlying(BOOK_BUTTON_FIRST) && uMessageParam <= std::to_underlying(BOOK_BUTTON_LAST) && "Invalid book button action");
                 ((GUIWindow_Book *)pGUIWindow_CurrentMenu.get())->bookButtonClicked(BookButtonAction(uMessageParam));
                 continue;
             case UIMSG_SelectCharacter:
@@ -1488,10 +1446,8 @@ void Game::processQueuedMessages() {
             case UIMSG_ClickZoomInBtn:
                 if (!(current_screen_type == SCREEN_GAME)) continue;
                 new OnButtonClick({519, 136}, {0, 0}, pBtn_ZoomIn);
-                uNumSeconds = 131072;
 
                 viewparams->uMinimapZoom *= 2;
-
                 if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                     if (viewparams->uMinimapZoom > 4096) {
                         viewparams->uMinimapZoom = 4096;
@@ -1506,10 +1462,8 @@ void Game::processQueuedMessages() {
             case UIMSG_ClickZoomOutBtn:
                 if (!(current_screen_type == SCREEN_GAME)) continue;
                 new OnButtonClick({574, 136}, {0, 0}, pBtn_ZoomOut);
-                uNumSeconds = 32768;
 
                 viewparams->uMinimapZoom /= 2;
-
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     if (viewparams->uMinimapZoom < 512) {
                         viewparams->uMinimapZoom = 512;
