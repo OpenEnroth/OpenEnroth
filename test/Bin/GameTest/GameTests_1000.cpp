@@ -58,6 +58,27 @@ GAME_TEST(Issues, Issue1020) {
     test.playTraceFromTestData("issue_1020.mm7", "issue_1020.json"); // Should not assert
 }
 
+GAME_TEST(Issues, Issue1033) {
+    // Collisions: Getting stuck before wooden paving in Tatalia.
+    // Vanilla bug where the party would be stopped by the vertical face of the paving edge instead of stepping onto
+    // the floor poly above it. The save is positioned just in front of the broken stretch of the Tatalia (Out13.odm)
+    // paving. Before the fix the party could not climb up; after the fix walking forward briefly lifts the party onto
+    // the paving floor (z=192, party z=193) as it crosses the deck.
+    auto zTape = tapes.custom([] { return pParty->pos.z; });
+    auto posTape = tapes.custom([] { return pParty->pos; });
+    test.loadGameFromTestData("issue_1033.mm7");
+    test.startTaping();
+    game.tick();
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(30);
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.tick(5);
+    // Party advanced from the starting point instead of being stuck against the paving edge.
+    EXPECT_GT((posTape.back() - posTape.front()).length(), 100.0f);
+    // And actually climbed onto the paving at some point along the way.
+    EXPECT_GE(zTape.max(), 193);
+}
+
 GAME_TEST(Issues, Issue1034) {
     // Crash when casting telekinesis outdoors.
     auto houseTape = tapes.house();
