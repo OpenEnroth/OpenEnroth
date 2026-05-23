@@ -252,6 +252,14 @@ class Character {
     bool IsParalyzed() const;
     bool IsDrunk() const;
 
+    /**
+     * @return                              `true` if the character is not dead, petrified, or eradicated.
+     *                                      Such characters cannot participate in event-driven party status checks
+     *                                      (e.g. the Haste Pedestal on Emerald Island only requires the "active"
+     *                                      party members to be rested).
+     */
+    bool isAlive() const;
+
     void SetCondWeakWithBlockCheck(int blockable);
     void SetCondInsaneWithBlockCheck(int blockable);
     void SetCondDeadWithBlockCheck(int blockable);
