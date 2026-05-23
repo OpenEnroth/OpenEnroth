@@ -59,3 +59,17 @@ GAME_TEST(Spells, PsychicShockDamageFormula) {
     }
     grng = savedGrng;
 }
+
+GAME_TEST(Issues, Issue1698) {
+    // Control Undead is a Dark Magic spell, but its vanilla description
+    // erroneously references Mind Magic. The post-load fix replaces those
+    // occurrences in any description string for SPELL_DARK_CONTROL_UNDEAD.
+    // For non-English locales the source text does not contain the English
+    // wording, so the assertions below pass vacuously.
+    const SpellInfo &controlUndead = pSpellStats->pInfos[SPELL_DARK_CONTROL_UNDEAD];
+    EXPECT_FALSE(controlUndead.pDescription.contains("Mind Magic"));
+    EXPECT_FALSE(controlUndead.pBasicSkillDesc.contains("Mind Magic"));
+    EXPECT_FALSE(controlUndead.pExpertSkillDesc.contains("Mind Magic"));
+    EXPECT_FALSE(controlUndead.pMasterSkillDesc.contains("Mind Magic"));
+    EXPECT_FALSE(controlUndead.pGrandmasterSkillDesc.contains("Mind Magic"));
+}
