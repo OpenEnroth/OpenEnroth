@@ -709,6 +709,48 @@ GAME_TEST(Issues, Issue2255) {
     EXPECT_MISSES(spritesTape.flatten(), SPRITE_PROJECTILE_ARROW); // No arrows were fired, only fire bolts.
 }
 
+GAME_TEST(Issues, Issue2267) {
+    // Bloodsplats not appearing on save reload.
+    //
+    // The save contains the actor state, but Actor::donebloodsplat is not part of the snapshot - on reload the flag
+    // should come back default-constructed (= false), letting bloodsplats fire on the next death. Before the engine
+    // fix (PR #2275) the reconstruct path on `pActors` (and on every other resizable container going through
+    // CommonSnapshots.h) did `resize()` without `clear()` first. When the in-memory deque was the same size as or
+    // larger than the snapshot vector, the existing Actor instances were retained and only the serialized fields
+    // were overwritten. donebloodsplat - which isn't serialized - stayed at whatever value the previous session
+    // left in memory, suppressing the next bloodsplat emission.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    game.startNewGame();
+    game.tick(2);
+
+    // Pre-flight sanity: Emerald Island spawns actors naturally so the reconstruct path actually has same-index
+    // collisions to fix up. The fix is a no-op when the destination container starts out empty.
+    ASSERT_FALSE(pActors.empty());
+
+    // Save while everyone is alive. Snapshot has donebloodsplat = false (it's not serialized; reconstruct produces
+    // default-constructed actors).
+    Blob save = game.saveGame();
+
+    // Simulate the user playing past the save: pretend an actor died and emitted its bloodsplat this session. The
+    // flag is what gates bloodsplat creation in Outdoor.cpp / Indoor.cpp - once set, no more bloodsplats for this
+    // Actor instance.
+    pActors[0].donebloodsplat = true;
+    int actorCountBeforeReload = pActors.size();
+
+    // Reload the save. Pre-fix this preserved the donebloodsplat = true value above; post-fix the deque is cleared
+    // before resize, so the actor at index 0 is freshly default-constructed.
+    game.loadGame(save);
+    game.tick(1);
+
+    // Regression check for #2267: the donebloodsplat flag must not survive the snapshot/reconstruct round-trip.
+    ASSERT_FALSE(pActors.empty());
+    EXPECT_FALSE(pActors[0].donebloodsplat);
+    // Sanity: actor count round-trips and indices are reassigned consistently.
+    EXPECT_EQ(static_cast<int>(pActors.size()), actorCountBeforeReload);
+    EXPECT_EQ(pActors[0].id, 0);
+}
+
 GAME_TEST(Issues, Issue2279) {
     // Game crashed when opening inventory while holding the attack key.
     test.playTraceFromTestData("issue_2279.mm7", "issue_2279.json");
