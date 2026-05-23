@@ -898,8 +898,11 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
     }
 
     // master dagger triple damage backstab
-    if (getActualSkillValue(SKILL_DAGGER).mastery() >= MASTERY_MASTER &&
-        weapon->skill() == SKILL_DAGGER && grng->random(100) < 10)
+    // Vanilla bug: chance was fixed at 10%. Per GrayFace's documentation it
+    // should scale at 1% per skill point (see issue #1721).
+    CombinedSkillValue daggerSkill = getActualSkillValue(SKILL_DAGGER);
+    if (daggerSkill.mastery() >= MASTERY_MASTER &&
+        weapon->skill() == SKILL_DAGGER && grng->random(100) < daggerSkill.level())
         totalDmg *= 3;
 
     return totalDmg;
