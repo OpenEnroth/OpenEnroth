@@ -2302,7 +2302,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             //if (IsBModelVisible(&model, &reachable)) {
             model.field_40 |= 1;
             if (!model.faces.empty()) {
-                for (ODMFace &face : model.faces) {
+                for (BLVFace &face : model.faces) {
                     if (!face.Invisible()) {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
@@ -2491,11 +2491,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 //if (model.index == 35) continue;
                 model.field_40 |= 1;
                 if (!model.faces.empty()) {
-                    for (ODMFace &face : model.faces) {
+                    for (BLVFace &face : model.faces) {
                         if (!face.Invisible()) {
-                            array_73D150[0].vWorldPosition = model.vertices[face.vertexIds[0]];
-
-                            if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
+                            if (pCamera3D->is_face_faced_to_camera(&face)) {
                                 int texunit = 0;
                                 int texlayer = 0;
 
@@ -2725,7 +2723,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         }
         if (!found) continue;
 
-        for (ODMFace &face : model.faces) {
+        for (BLVFace &face : model.faces) {
             if (face.Invisible()) {
                 continue;
             }
@@ -2747,7 +2745,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
             }
 
-            decal_builder->ApplyBloodSplat_OutdoorFace(&face);
+            decal_builder->ApplyBloodsplatDecalsToFace(&face);
             if (decal_builder->uNumSplatsThisFace > 0) {
                 decal_builder->BuildAndApplyDecals(
                     31 - dimming_level, LocationBuildings,
@@ -3048,8 +3046,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     ShaderVertex &v0 = _bspVertices[texunit].emplace_back();
                     v0.pos = pIndoor->vertices[face->vertexIds[0]];
                     // TODO(captainurist): adding in IDs below?
-                    v0.texuv = Vec2f(face->textureUs[0] + pIndoor->faceExtras[face->faceExtraId].textureDeltaU,
-                                     face->textureVs[0] + pIndoor->faceExtras[face->faceExtraId].textureDeltaV);
+                    v0.texuv = Vec2f(face->textureUs[0] + face->textureDeltaU,
+                                     face->textureVs[0] + face->textureDeltaV);
                     if (face->Indoor_sky()) {
                         v0.texuv.x = (skymodtimex + v0.texuv.x) * 0.25f;
                         v0.texuv.y = (skymodtimey + v0.texuv.y) * 0.25f;
@@ -3063,8 +3061,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         ShaderVertex &v = _bspVertices[texunit].emplace_back();
                         v.pos = pIndoor->vertices[face->vertexIds[z + i]];
                         // TODO(captainurist): adding in IDs???
-                        v.texuv = Vec2f(face->textureUs[z + i] + pIndoor->faceExtras[face->faceExtraId].textureDeltaU,
-                                        face->textureVs[z + i] + pIndoor->faceExtras[face->faceExtraId].textureDeltaV);
+                        v.texuv = Vec2f(face->textureUs[z + i] + face->textureDeltaU,
+                                        face->textureVs[z + i] + face->textureDeltaV);
                         if (face->Indoor_sky()) {
                             v.texuv.x = (skymodtimex + v.texuv.x) * 0.25f;
                             v.texuv.y = (skymodtimey + v.texuv.y) * 0.25f;
@@ -3295,7 +3293,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             if (!onlist) continue;
 
 
-            decal_builder->ApplyBloodsplatDecals_IndoorFace(test);
+            decal_builder->ApplyBloodsplatDecalsToFace(pface);
             if (!decal_builder->uNumSplatsThisFace) continue;
 
             // copy to buff in

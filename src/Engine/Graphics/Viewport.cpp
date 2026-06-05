@@ -299,10 +299,10 @@ void Engine::onGameViewportClick() {
                 }
                 return;
             } else {
-                eventId = pIndoor->faceExtras[pIndoor->faces[pid.id()].faceExtraId].eventId;
+                eventId = pIndoor->faces[pid.id()].eventId;
             }
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-            const ODMFace &model = pOutdoor->face(pid);
+            const BLVFace &model = pOutdoor->face(pid);
             if (!model.Clickable()) {
                 if (pParty->pPickedItem.itemId == ITEM_NULL) {
                     engine->_statusBar->nothingHere();

@@ -692,7 +692,7 @@ std::string GameUI_GetMinimapHintText() {
                 std::abs((int)model.boundingCenter.x - global_coord_X),
                 std::abs((int)model.boundingCenter.y - global_coord_Y), 0);
             if (v7 < 2 * model.boundingRadius) {
-                for (ODMFace &face : model.faces) {
+                for (BLVFace &face : model.faces) {
                     if (face.eventId) {
                         if (!(face.attributes & FACE_HAS_HINT)) {
                             std::string hintString = getEventHintString(face.eventId);
@@ -937,11 +937,9 @@ void GameUI_WritePointedObjectStatusString() {
                     } else {
                         pFace = &pIndoor->faces[pickedObjectID];
                         if (pFace->attributes & FACE_INDICATE) {
-                            unsigned short eventId =
-                                pIndoor->faceExtras[pFace->faceExtraId]
-                                    .eventId;
+                            unsigned short eventId = pFace->eventId;
                             if (eventId != 0) {
-                                newString = getEventHintString(pIndoor->faceExtras[pFace->faceExtraId].eventId);
+                                newString = getEventHintString(eventId);
                             }
                         }
                     }
@@ -1454,8 +1452,8 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                     if (bWizardEyeActive && uWizardEyeSkillLevel >= MASTERY_MASTER &&
                         (pIndoor->faces[pOutline->uFace1ID].Clickable() ||
                             pIndoor->faces[pOutline->uFace2ID].Clickable()) &&
-                        (pIndoor->faceExtras[pIndoor->faces[pOutline->uFace1ID].faceExtraId].eventId ||
-                            pIndoor->faceExtras[pIndoor->faces[pOutline->uFace2ID].faceExtraId].eventId)) {
+                        (pIndoor->faces[pOutline->uFace1ID].eventId ||
+                            pIndoor->faces[pOutline->uFace2ID].eventId)) {
                         if (uNumBlueFacesInBLVMinimap < 49) {
                             pBlueFacesInBLVMinimapIDs[uNumBlueFacesInBLVMinimap++] = i;
                             continue;

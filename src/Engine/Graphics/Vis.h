@@ -8,7 +8,6 @@
 #include "Utility/Flags.h"
 
 class BSPModel;
-struct ODMFace;
 struct BLVFace;
 struct RenderVertexD3D3;
 
@@ -107,7 +106,7 @@ class Vis {
                                 bool only_reachable);
 
     bool isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filter);
-    bool isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_SelectionFilter *filter);
+    bool isFacePartOfSelection(BLVFace *bvlFace, Vis_SelectionFilter *filter);
 
     Vis_ObjectInfo *DetermineFacetIntersection(BLVFace *face, Pid pid, float pick_depth);
     bool IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,

@@ -199,24 +199,11 @@ void IndoorLocation::Draw() {
     trail_particle_generator.UpdateParticles();
 }
 
-//----- (004C0EF2) --------------------------------------------------------
-void BLVFace::FromODM(const ODMFace *face) {
-    this->facePlane = face->facePlane;
-    this->attributes = face->attributes;
-    this->boundingBox = face->boundingBox;
-    this->zCalc = face->zCalc;
-    this->polygonType = face->polygonType;
-    this->numVertices = face->numVertices;
-    this->texture = face->texture;
-    this->animationId = face->animationId;
-    this->vertexIds = std::span(const_cast<int16_t *>(face->vertexIds.data()), face->numVertices);
-}
-
 //----- (004AE5BA) --------------------------------------------------------
 GraphicsImage *BLVFace::GetTexture() const {
     if (this->IsAnimated())
         // TODO(captainurist): using pEventTimer here is weird. This means that e.g. cleric in the haunted mansion is
-        //                     not animated in turn-based mode. Use misc timer? Also see ODMFace::GetTexture.
+        //                     not animated in turn-based mode. Use misc timer?
         return pTextureFrameTable->animationFrame(this->animationId, pEventTimer->time());
     else
         return this->texture;
@@ -243,11 +230,9 @@ void IndoorLocation::Release() {
     this->doorsData.clear();
     this->sectorData.clear();
     this->sectorLightData.clear();
-    this->faceData.clear();
     this->pSpawnPoints.clear();
     this->sectors.clear();
     this->faces.clear();
-    this->faceExtras.clear();
     this->vertices.clear();
     this->nodes.clear();
     this->doors.clear();
@@ -625,8 +610,8 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
     return sign != 0;
 }
 
-//----- (0044C23B) --------------------------------------------------------
-bool BLVFaceExtra::HasEventHint() {
+
+bool BLVFace::HasEventHint() {
     return hasEventHint(this->eventId);
 }
 
@@ -725,9 +710,8 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         Vec3f v;
         Vec3f u;
         face->_get_normals(&u, &v);
-        BLVFaceExtra* extras = &pIndoor->faceExtras[face->faceExtraId];
-        extras->textureDeltaU = 0;
-        extras->textureDeltaV = 0;
+        face->textureDeltaU = 0;
+        face->textureDeltaV = 0;
 
         float minU = std::numeric_limits<float>::infinity();
         float minV = std::numeric_limits<float>::infinity();
@@ -746,22 +730,22 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         }
 
         if (face->attributes & FACE_TexAlignLeft) {
-            extras->textureDeltaU -= minU;
+            face->textureDeltaU -= minU;
         } else if (face->attributes & FACE_TexAlignRight) {
-            extras->textureDeltaU -= maxU + face->GetTexture()->width();
+            face->textureDeltaU -= maxU + face->GetTexture()->width();
         }
 
         if (face->attributes & FACE_TexAlignDown) {
-            extras->textureDeltaV -= minV;
+            face->textureDeltaV -= minV;
         } else if (face->attributes & FACE_TexAlignBottom) {
-            extras->textureDeltaV -= maxV + face->GetTexture()->height();
+            face->textureDeltaV -= maxV + face->GetTexture()->height();
         }
 
         if (face->attributes & FACE_TexMoveByDoor) {
             float udot = dot(door->direction, u);
             float vdot = dot(door->direction, v);
-            extras->textureDeltaU = -udot * distance + door->pDeltaUs[j];
-            extras->textureDeltaV = -vdot * distance + door->pDeltaVs[j];
+            face->textureDeltaU = -udot * distance + door->pDeltaUs[j];
+            face->textureDeltaV = -vdot * distance + door->pDeltaVs[j];
         }
     }
 }
@@ -1352,7 +1336,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
 
     for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.position.x, model.position.y) <= model.boundingRadius + 128) {
-            for (ODMFace &face : model.faces) {
+            for (BLVFace &face : model.faces) {
                 if (face.Ethereal()) continue;
 
                 float dirDotNormal = dot(dir, face.facePlane.normal);
@@ -1456,7 +1440,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     return 1;
                 }
 
-                ODMFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
+                BLVFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
 
                 if (model.attributes & FACE_HAS_HINT || model.eventId == 0) {
                     return 1;
@@ -1472,12 +1456,12 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     engine->_statusBar->nothingHere();
                     return 1;
                 }
-                if (pIndoor->faces[id].attributes & FACE_HAS_HINT || !pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].eventId) {
+                if (pIndoor->faces[id].attributes & FACE_HAS_HINT || !pIndoor->faces[id].eventId) {
                     return 1;
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor((int16_t)pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].eventId, pid, 1);
+                    eventProcessor((int16_t)pIndoor->faces[id].eventId, pid, 1);
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
@@ -1553,7 +1537,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     // not hovering & stepped onto a new face => activate potential pressure plate.
     if (!isAboveGround && pParty->floor_face_id != 0 && pParty->floor_face_id != faceId) {
         if (pIndoor->faces[faceId].attributes & FACE_PRESSURE_PLATE)
-            faceEvent = pIndoor->faceExtras[pIndoor->faces[faceId].faceExtraId].eventId;
+            faceEvent = pIndoor->faces[faceId].eventId;
     }
 
     if (!isAboveGround)

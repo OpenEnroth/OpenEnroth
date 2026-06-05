@@ -2212,7 +2212,7 @@ void CastSpellInfoHelpers::castSpell() {
                         int event;
                         OpenedTelekinesis = true;
                         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                            event = pIndoor->faceExtras[pIndoor->faces[obj_id].faceExtraId].eventId;
+                            event = pIndoor->faces[obj_id].eventId;
                         } else {
                             event = pOutdoor->face(spell_targeted_at).eventId;
                         }

@@ -340,7 +340,7 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
                     std::abs((int)model.boundingCenter.x - global_coord_X),
                     std::abs((int)model.boundingCenter.y - global_coord_Y),
                     0) < model.boundingRadius) {
-                for (ODMFace &face : model.faces) {
+                for (BLVFace &face : model.faces) {
                     if (face.eventId) {
                         if (!(face.attributes & FACE_HAS_HINT)) {
                             std::string hintString = getEventHintString(face.eventId);

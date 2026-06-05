@@ -11,8 +11,9 @@
 #include "Engine/SpawnPoint.h"
 
 #include "Library/Geometry/Rect.h"
+#include "Library/Geometry/Plane.h"
+#include "Library/Geometry/BBox.h"
 
-#include "BSPModel.h"
 #include "LocationInfo.h"
 #include "LocationTime.h"
 #include "LocationFunctions.h"
@@ -21,6 +22,13 @@
 struct BspRenderer;
 struct IndoorLocation;
 struct MapInfo;
+
+struct BSPNode {
+    int uFront;
+    int uBack;
+    int16_t uBSPFaceIDOffset;
+    int16_t uNumBSPFaces;
+};
 
 struct BLVLight {
     Vec3f vPosition;
@@ -70,9 +78,19 @@ struct FlatFace {
     std::array<float, 104> v;
 };
 
+
+struct BLVFaceExtra {
+    int faceId; // was index into pIndoor->faces
+    uint16_t additionalBitmapId; // TODO(captainurist): why is this one unused?
+    int16_t textureDeltaU;
+    int16_t textureDeltaV;
+    int16_t cogNumber;
+    uint16_t eventId;
+};
+
+
 struct BLVFace {
     void _get_normals(Vec3f *outU, Vec3f *outV);
-    void FromODM(const ODMFace *face);
 
     void SetTexture(std::string_view filename);
     GraphicsImage *GetTexture() const;
@@ -133,15 +151,14 @@ struct BLVFace {
 
     /** Indices into the vertex array for this face's vertices. Points into `IndoorLocation::pVertices` for
      * indoor faces. Has `numVertices` elements. */
-    std::span<int16_t> vertexIds;
+    std::vector<int16_t> vertexIds;
 
     /** U (horizontal) texture coordinates for each vertex, in texture pixels. Has `numVertices` elements. */
-    std::span<int16_t> textureUs;
+    std::vector<int16_t> textureUs;
 
     /** V (vertical) texture coordinates for each vertex, in texture pixels. Has `numVertices` elements. */
-    std::span<int16_t> textureVs;
+    std::vector<int16_t> textureVs;
 
-    uint16_t faceExtraId = 0;
     GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.
     int animationId = 0; // Index into pTextureFrameTable for animated faces.
     int texunit = -1;
@@ -152,18 +169,18 @@ struct BLVFace {
     BBoxf boundingBox;
     PolygonType polygonType = POLYGON_Invalid;
     uint8_t numVertices = 0;
-};
 
-struct BLVFaceExtra {
     bool HasEventHint();
 
-    int faceId;
+    int faceId; // index into pIndoor->faces
     uint16_t additionalBitmapId; // TODO(captainurist): why is this one unused?
     int16_t textureDeltaU;
     int16_t textureDeltaV;
     int16_t cogNumber;
     uint16_t eventId;
 };
+
+
 
 struct BLVSector {
     // Note that all spans below point into `IndoorLocation::sectorData` or `IndoorLocation::sectorLightData`.
@@ -218,13 +235,11 @@ struct IndoorLocation {
     unsigned int bLoaded = 0;
     std::vector<Vec3f> vertices;
     std::vector<BLVFace> faces;
-    std::vector<BLVFaceExtra> faceExtras;
     std::vector<BLVSector> sectors;
     std::vector<BLVLight> lights;
     std::vector<BLVDoor> doors;
     std::vector<BSPNode> nodes;
     std::vector<BLVMapOutline> mapOutlines;
-    std::vector<int16_t> faceData;
     std::vector<uint16_t> sectorData;
     std::vector<int16_t> doorsData;
     std::vector<uint16_t> sectorLightData;

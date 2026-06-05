@@ -8,7 +8,7 @@
 
 #include "Utility/Flags.h"
 
-struct ODMFace;
+struct BLVFace;
 struct Planef;
 struct stru314;
 
@@ -85,8 +85,7 @@ struct DecalBuilder {
         int LightLevel, LocationFlags locationFlags, Bloodsplat *blood, float DecalRadius,
         Color uColorMultiplier, float DecalDotDist, stru314 *FacetNormals, int numfaceverts,
         RenderVertexSoft *faceverts, char uClipFlags);
-    bool ApplyBloodsplatDecals_IndoorFace(int uFaceID);
-    bool ApplyBloodSplat_OutdoorFace(ODMFace *pFace);
+    bool ApplyBloodsplatDecalsToFace(BLVFace *pFace);
 
     /**
      * @offset 0x0049BE8A

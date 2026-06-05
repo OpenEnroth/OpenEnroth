@@ -8,7 +8,6 @@
 
 #include "Library/Geometry/Plane.h"
 
-struct ODMFace;
 struct BLVFace;
 
 struct Camera3D {
@@ -47,8 +46,7 @@ struct Camera3D {
                                Color sStartDiffuse32,
                                RenderVertexSoft *pLineEnd,
                                Color sEndDiffuse32, float z_stuff);
-    bool is_face_faced_to_cameraBLV(BLVFace *pFace);
-    bool is_face_faced_to_cameraODM(ODMFace *pFace, RenderVertexSoft *a2);
+    bool is_face_faced_to_camera(BLVFace *pFace);
     static void GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV);
 
     void CullByNearClip(RenderVertexSoft *pverts, unsigned int *unumverts);

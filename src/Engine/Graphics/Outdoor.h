@@ -65,7 +65,7 @@ struct OutdoorLocation {
 
     static void LoadActualSkyFrame();
 
-    ODMFace &face(Pid pid) {
+    BLVFace &face(Pid pid) {
         assert(pid.type() == OBJECT_Face);
         return pBModels[pid.id() >> 6].faces[pid.id() & 0x3F];
     }
