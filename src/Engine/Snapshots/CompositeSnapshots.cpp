@@ -80,6 +80,10 @@ static void dropDuplicateFaceVertices(Face *face) {
     }
 
     face->numVertices = r - l + 1;
+
+    face->vertexIds.resize(face->numVertices);
+    face->textureUs.resize(face->numVertices);
+    face->textureVs.resize(face->numVertices);
 }
 
 template<class Face>
