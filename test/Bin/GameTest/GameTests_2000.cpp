@@ -1264,3 +1264,31 @@ GAME_TEST(Issues, Issue2505) {
     EXPECT_CONTAINS(flat, SPRITE_SPELL_WATER_ICE_BLAST);
     EXPECT_MISSES(flat, SPRITE_SPELL_WATER_ICE_BOLT);
 }
+
+GAME_TEST(Issues, Issue2507) {
+    // Efreet lightning bolt deals 0 damage.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto hpTape = charTapes.hp(0);
+    auto spritesTape = tapes.sprites();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+
+    engine->config->debug.NoActors.setValue(false);
+    Actor *efreet = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_GENIE_C);
+    EXPECT_EQ(efreet->monsterInfo.spell1Id, SPELL_AIR_LIGHTNING_BOLT);
+    EXPECT_EQ(efreet->monsterInfo.spell1SkillMastery.level(), 10);
+    EXPECT_EQ(efreet->monsterInfo.spell1SkillMastery.mastery(), MASTERY_MASTER);
+
+    // Pin the Efreet in place & force its spell to fire every time.
+    efreet->moveSpeed = 1;
+    efreet->monsterInfo.spell1UseChance = 100;
+    game.tick(200);
+
+    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_AIR_LIGHTNING_BOLT); // Lightning Bolt was cast.
+    auto damageRange = hpTape.reverse().adjacentDeltas().minMax();
+    EXPECT_GE(damageRange[0], 10);
+    EXPECT_LE(damageRange[1], 80); // Per-hit damage is within the 10d8 range.
+}
