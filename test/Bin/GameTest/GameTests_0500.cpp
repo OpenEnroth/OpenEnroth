@@ -172,9 +172,29 @@ GAME_TEST(Issues, Issue574) {
 
 GAME_TEST(Issues, Issue578) {
     // Check that rest & heal work after waiting
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+
     auto healthTape = tapes.totalHp();
-    test.playTraceFromTestData("issue_578.mm7", "issue_578.json");
-    EXPECT_EQ(healthTape, tape(350, 419));
+    auto screenTape = tapes.screen();
+    auto msgTape = tapes.uiMessages();
+    test.startTaping();
+    game.tick(2);
+    // set characters hp to 1 to make sure we can see the effect of rest & heal
+    for (auto& character : pParty->pCharacters) {
+        character.health = 1;
+    }
+    game.pressAndReleaseKey(PlatformKey::KEY_R); // enter rest menu
+    game.tick(2);
+    game.pressGuiButton("Rest_Wait1Hour"); // wait for 1 hour
+    game.tick(2);
+    game.pressGuiButton("Rest_RestAndHeal"); // rest and heal
+    game.tick(2);
+    EXPECT_EQ(healthTape.front(), healthTape.back()); // we should be healed
+    EXPECT_CONTAINS(healthTape, 4); // and the party was damaged
+    EXPECT_CONTAINS(msgTape.flatten(), UIMSG_Wait1Hour); // and we waited for 1 hour
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_REST)); // and we never left the rest menu
 }
 
 GAME_TEST(Issues, Issue598) {
