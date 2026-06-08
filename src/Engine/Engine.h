@@ -88,7 +88,6 @@ class Engine {
      * @offset 0x42213C
      */
     void onGameViewportClick();
-    int _44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4);
     bool draw_debug_outlines();
     void StackPartyTorchLight();
     void DrawParticles();
@@ -118,7 +117,6 @@ class Engine {
 
     std::shared_ptr<GameConfig> config;
     int uNumStationaryLights_in_pStationaryLightsStack;
-    float fSaturation;
     BloodsplatContainer *bloodsplat_container = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renedrer = nullptr;
