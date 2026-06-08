@@ -2,6 +2,7 @@
 
 #include "UIBranchlessDialogue.h"
 
+#include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -11,6 +12,7 @@
 #include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIFont.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIGame.h"
 
@@ -61,13 +63,13 @@ void GUIWindow_BranchlessDialogue::Update() {
     // Close branchless dialog on any keypress
     if (!keyboardInputHandler->GetTextInput().empty()) {
         keyboardInputHandler->EndTextInput();
-        releaseBranchlessDialogue();
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         return;
     }
 
     // Also close branchless dialog on enter
     if (pGUIWindow_BranchlessDialogue->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS) {
-        releaseBranchlessDialogue();
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         return;
     }
 }
