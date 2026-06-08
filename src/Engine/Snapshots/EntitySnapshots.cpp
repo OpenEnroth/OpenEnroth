@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "Engine/ArenaEnumFunctions.h"
 #include "Engine/Engine.h"
@@ -280,7 +281,6 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->vertexIds = {};
     dst->textureUs = {};
     dst->textureVs = {};
-    dst->faceExtraId = src.faceExtraId;
     dst->texture = nullptr;
     dst->animationId = 0;
     dst->sectorId = src.sectorId;
@@ -1564,13 +1564,13 @@ void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     reconstruct(src.boundingBox, &dst->boundingBox);
 }
 
-void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
+void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex) {
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
     dst->attributes = FaceAttributes(src.attributes);
-    dst->vertexIds = src.vertexIds;
-    dst->textureUs = src.textureUs;
-    dst->textureVs = src.textureVs;
+    dst->vertexIds = std::vector<int16_t>(src.vertexIds.begin(), src.vertexIds.begin() + src.numVertices);
+    dst->textureUs = std::vector<int16_t>(src.textureUs.begin(), src.textureUs.begin() + src.numVertices);
+    dst->textureVs = std::vector<int16_t>(src.textureVs.begin(), src.textureVs.begin() + src.numVertices);
     dst->texture = nullptr;
     dst->animationId = 0;
     dst->textureDeltaU = src.textureDeltaU;
@@ -1580,6 +1580,7 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->eventId = src.eventId;
     dst->numVertices = src.numVertices;
     dst->polygonType = static_cast<PolygonType>(src.polygonType);
+    dst->faceId = *faceIndex;
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {

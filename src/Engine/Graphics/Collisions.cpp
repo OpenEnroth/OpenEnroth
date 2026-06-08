@@ -458,19 +458,15 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
         if (!collision_state.bbox.intersects(model.boundingBox))
             continue;
 
-        for (ODMFace &mface : model.faces) {
+        for (BLVFace &mface : model.faces) {
             if (!collision_state.bbox.intersects(mface.boundingBox))
                 continue;
 
-            // TODO: we should really either merge two face classes, or template the functions down the chain call here.
-            BLVFace face;
-            face.FromODM(&mface);
-
-            if (face.Ethereal() || face.isPortal()) // TODO: this doesn't respect ignore_ethereal parameter
+            if (mface.Ethereal() || mface.isPortal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;
 
-            Pid pid = Pid::odmFace(model.index, mface.index);
-            CollideBodyWithFace(&face, pid, ignore_ethereal, model.index);
+            Pid pid = Pid::odmFace(model.index, mface.faceId);
+            CollideBodyWithFace(&mface, pid, ignore_ethereal, model.index);
         }
     }
 }
@@ -736,7 +732,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             actor.velocity = newDirection * dot(newDirection, actor.velocity);
 
             if (pIndoor->faces[id].attributes & FACE_TriggerByMonster)
-                eventProcessor(pIndoor->faceExtras[pIndoor->faces[id].faceExtraId].eventId, Pid(), 1);
+                eventProcessor(pIndoor->faces[id].eventId, Pid(), 1);
 
             if (pIndoor->faces[id].polygonType == POLYGON_Floor) {
                 float new_floor_z_tmp = pIndoor->vertices[face->vertexIds[0]].z;
@@ -845,7 +841,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Face) {
-            const ODMFace *face = &pOutdoor->face(collision_state.pid);
+            const BLVFace *face = &pOutdoor->face(collision_state.pid);
 
             if (!face->Ethereal()) {
                 if (face->polygonType == POLYGON_Floor) {
@@ -1010,7 +1006,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             pParty->velocity = newDirection * dot(newDirection, pParty->velocity);
 
             if (pParty->floor_face_id != collision_state.pid.id() && pFace->Pressure_Plate())
-                *faceEvent = pIndoor->faceExtras[pFace->faceExtraId].eventId;
+                *faceEvent = pFace->eventId;
 
             if (pFace->polygonType == POLYGON_Floor) {
                 float new_party_z_tmp = pIndoor->vertices[pFace->vertexIds[0]].z;
@@ -1150,23 +1146,23 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
-            const ODMFace* pODMFace = &pOutdoor->face(collision_state.pid);
-            bool bFaceSlopeTooSteep = pODMFace->facePlane.normal.z > 0.0f && pODMFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
+            const BLVFace* pBLVFace = &pOutdoor->face(collision_state.pid);
+            bool bFaceSlopeTooSteep = pBLVFace->facePlane.normal.z > 0.0f && pBLVFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
             if (bFaceSlopeTooSteep) { // make small slopes walkable
-                if (pODMFace->boundingBox.z2 - pODMFace->boundingBox.z1 < 128)
+                if (pBLVFace->boundingBox.z2 - pBLVFace->boundingBox.z1 < 128)
                     bFaceSlopeTooSteep = false;
             }
 
-            if (pODMFace->facePlane.normal.z > 0 && !bFaceSlopeTooSteep)
+            if (pBLVFace->facePlane.normal.z > 0 && !bFaceSlopeTooSteep)
                 *partyHasHitModel = true;
 
             if (engine->IsUnderwater())
                 bFaceSlopeTooSteep = false;
 
-            if (pParty->floor_face_id != collision_state.pid.id() && pODMFace->Pressure_Plate()) {
+            if (pParty->floor_face_id != collision_state.pid.id() && pBLVFace->Pressure_Plate()) {
                 pParty->floor_face_id = collision_state.pid.id();
-                *triggerID = pODMFace->eventId;  // this one triggers tour events / traps
+                *triggerID = pBLVFace->eventId;  // this one triggers tour events / traps
             }
 
             // new sliding plane - drag collision down to correct level for slide direction
@@ -1185,20 +1181,20 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
 
             // Push away from the surface and add a touch down for better slide
             if (bFaceSlopeTooSteep)
-                *partyInputSpeed += Vec3f(pODMFace->facePlane.normal.x, pODMFace->facePlane.normal.y, -2) * 10;
+                *partyInputSpeed += Vec3f(pBLVFace->facePlane.normal.x, pBLVFace->facePlane.normal.y, -2) * 10;
 
             // set movement speed along sliding plane
             *partyInputSpeed = newDirection * dot(newDirection, *partyInputSpeed);
 
-            if (pODMFace->polygonType == POLYGON_Floor || pODMFace->polygonType == POLYGON_InBetweenFloorAndWall) {
+            if (pBLVFace->polygonType == POLYGON_Floor || pBLVFace->polygonType == POLYGON_InBetweenFloorAndWall) {
                 pParty->bFlying = false;
                 pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
             }
 
-            if (pODMFace->polygonType == POLYGON_Floor) {
+            if (pBLVFace->polygonType == POLYGON_Floor) {
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
-                float newZ = pOutdoor->pBModels[collision_state.pid.id() >> 6].vertices[pODMFace->vertexIds[0]].z;
+                float newZ = pOutdoor->pBModels[collision_state.pid.id() >> 6].vertices[pBLVFace->vertexIds[0]].z;
                 if (pParty->velocity.z > 0.0f && (newZ - pParty->pos.z) < 128)
                     pParty->pos.z = newZ;
             }

@@ -63,7 +63,7 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
             return;  // nothing to render
         }
 
-        if (!pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
+        if (!pCamera3D->is_face_faced_to_camera(pFace)) {
             return;  // we don't see the face, no need to render
         }
 
@@ -103,7 +103,7 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     //                   where there is a ceiling portal and the room is split artificially into two sectors (just why?!)
     //                   - running without this causes the second half of the room to be "seen" both normally and via
     //                   the ceiling (because its normal is in Z and it has frustum reset to camera frustum)
-    if (/*(1)*/ node_id != 0 && /*(2)*/ isPortalFlipped == pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
+    if (/*(1)*/ node_id != 0 && /*(2)*/ isPortalFlipped == pCamera3D->is_face_faced_to_camera(pFace)) {
         return;
     }
 
@@ -255,7 +255,7 @@ void BspRenderer::AddBSPFaces(const int node_id, const int initialBSPNodeId) {
         bspNode = &pIndoor->nodes[bspNodeId];
         pFace = &pIndoor->faces[pSector->faceIds[bspNode->uBSPFaceIDOffset]];
 
-        bool isFaceFront = pCamera3D->is_face_faced_to_cameraBLV(pFace);
+        bool isFaceFront = pCamera3D->is_face_faced_to_camera(pFace);
         // NOTE(yoctozepto): if the face is a portal going from a different sector, then its normal is inverted, so invert the computed value
         if (pFace->isPortal() && pFace->sectorId != node->uSectorID)
             isFaceFront = !isFaceFront;

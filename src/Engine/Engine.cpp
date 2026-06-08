@@ -896,21 +896,17 @@ int GetGravityStrength() {
     return engine->config->gameplay.Gravity.value();
 }
 
-void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
-                                   std::string_view filename) {
-    for (unsigned i = 1; i < pIndoor->faceExtras.size(); ++i) {
-        auto extra = &pIndoor->faceExtras[i];
-        if (extra->cogNumber == uFaceCog) {
-            auto face = &pIndoor->faces[extra->faceId];
-            face->SetTexture(filename);
+void sub_44861E_set_texture_indoor(unsigned int uFaceCog, std::string_view filename) {
+    for (unsigned i = 1; i < pIndoor->faces.size(); ++i) {
+        if (pIndoor->faces[i].cogNumber == uFaceCog) {
+            pIndoor->faces[i].SetTexture(filename);
         }
     }
 }
 
-void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
-                                    std::string_view filename) {
+void sub_44861E_set_texture_outdoor(unsigned int uFaceCog, std::string_view filename) {
     for (BSPModel &model : pOutdoor->pBModels) {
-        for (ODMFace &face : model.faces) {
+        for (BLVFace &face : model.faces) {
             if (face.cogNumber == uFaceCog) {
                 face.SetTexture(filename);
             }
@@ -938,19 +934,18 @@ void setTexture(unsigned int uFaceCog, std::string_view pFilename) {
 void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            for (unsigned i = 1; i < (unsigned int)pIndoor->faceExtras.size(); ++i) {
-                if (pIndoor->faceExtras[i].cogNumber == sCogNumber) {
+            // TODO(pskelton): starts at 1?
+            for (int i = 1; i < pIndoor->faces.size(); ++i) {
+                if (pIndoor->faces[i].cogNumber == sCogNumber) {
                     if (on)
-                        pIndoor->faces[pIndoor->faceExtras[i].faceId]
-                            .attributes |= bit;
+                        pIndoor->faces[i].attributes |= bit;
                     else
-                        pIndoor->faces[pIndoor->faceExtras[i].faceId]
-                            .attributes &= ~bit;
+                        pIndoor->faces[i].attributes &= ~bit;
                 }
             }
         } else {
             for (BSPModel &model : pOutdoor->pBModels) {
-                for (ODMFace &face : model.faces) {
+                for (BLVFace &face : model.faces) {
                     if (face.cogNumber == sCogNumber) {
                         if (on) {
                             face.attributes |= bit;

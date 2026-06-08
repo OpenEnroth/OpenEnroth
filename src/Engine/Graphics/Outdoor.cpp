@@ -811,7 +811,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
         if (model.faces.empty())
             continue;
 
-        for (ODMFace &face : model.faces) {
+        for (BLVFace &face : model.faces) {
             if (face.Ethereal())
                 continue;
 
@@ -836,7 +836,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
             }
             odm_floor_level[surface_count] = floor_level;
             current_BModel_id[surface_count] = model.index;
-            current_Face_id[surface_count] = face.index;
+            current_Face_id[surface_count] = face.faceId;
             surface_count++;
 
             if (surface_count >= 20)
@@ -868,7 +868,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
         *faceId = current_Face_id[current_idx] | (current_BModel_id[current_idx] << 6);
 
     if (current_idx)
-        *pIsOnWater = pOutdoor->pBModels[current_BModel_id[current_idx]].faces[current_Face_id[current_idx]].Fluid();
+        *pIsOnWater = pOutdoor->pBModels[current_BModel_id[current_idx]].faces[current_Face_id[current_idx]].isFluid();
 
     return std::max(odm_floor_level[0], odm_floor_level[current_idx]);
 }
@@ -1527,7 +1527,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
         if (!model.boundingBox.containsXY(Party_X, Party_Y))
             continue;
 
-        for (ODMFace &face : model.faces) {
+        for (BLVFace &face : model.faces) {
             if (face.Ethereal())
                 continue;
 
@@ -1552,7 +1552,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
 
             ceiling_height_level[ceiling_count] = height_level;
             model_indices[ceiling_count] = model.index;
-            face_indices[ceiling_count] = face.index;
+            face_indices[ceiling_count] = face.faceId;
 
             ++ceiling_count;
         }

@@ -49,7 +49,6 @@ struct LocationInfo;
 struct LocationTime;
 struct MonsterDesc;
 struct NPCData;
-struct ODMFace;
 struct ObjectDesc;
 struct OutdoorTileType;
 struct OverlayDesc;
@@ -930,7 +929,7 @@ struct ODMFace_MM7 {
 static_assert(sizeof(ODMFace_MM7) == 308);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ODMFace_MM7)
 
-void reconstruct(const ODMFace_MM7 &src, ODMFace *dst);
+void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex);
 
 
 struct SpawnPoint_MM6 {

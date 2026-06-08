@@ -383,14 +383,13 @@ void UpdateChestPositions() {
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         for (const BSPModel &model : pOutdoor->pBModels)
-            for (const ODMFace &face : model.faces)
+            for (const BLVFace &face : model.faces)
                 if (face.eventId)
                     processEvent(face.eventId, face.boundingBox.center());
     } else {
         for (const BLVFace &face : pIndoor->faces)
-            if (face.faceExtraId)
-                if (int eventId = pIndoor->faceExtras[face.faceExtraId].eventId)
-                    processEvent(eventId, face.boundingBox.center());
+            if (int eventId = face.eventId)
+                processEvent(eventId, face.boundingBox.center());
     }
 
     for (const auto &[chestId, points] : pointsByChestId) {

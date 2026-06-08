@@ -104,24 +104,12 @@ void Camera3D::GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV
 
 
 //----- (00438258) --------------------------------------------------------
-bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
+bool Camera3D::is_face_faced_to_camera(BLVFace *pFace) {
     return pFace->facePlane.dist +
         pCamera3D->vCameraPos.z * pFace->facePlane.normal.z +
         pCamera3D->vCameraPos.y * pFace->facePlane.normal.y +
         pCamera3D->vCameraPos.x * pFace->facePlane.normal.x >
         0.0f;
-}
-
-bool Camera3D::is_face_faced_to_cameraODM(ODMFace *pFace, RenderVertexSoft *a2) {
-    // if (pFace->Portal()) return false;
-
-    if ((a2->vWorldPosition.z - pCamera3D->vCameraPos.z) * pFace->facePlane.normal.z +
-        (a2->vWorldPosition.y - pCamera3D->vCameraPos.y) * pFace->facePlane.normal.y +
-        (a2->vWorldPosition.x - pCamera3D->vCameraPos.x) * pFace->facePlane.normal.x <
-        0.0f)
-        return true;
-
-    return false;
 }
 
 //----- (00437AB5) --------------------------------------------------------

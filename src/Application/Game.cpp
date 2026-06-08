@@ -280,7 +280,6 @@ bool IsWindowSwitchable() {
 void Game::processQueuedMessages() {
     GUIWindow *pWindow2;        // ecx@248
     int v37;                    // eax@341
-    ODMFace *pODMFace;          // ecx@412
     CastSpellInfo *pSpellInfo;  // ecx@415
     int16_t v53;                // ax@431
     int v54;                    // eax@432
@@ -795,13 +794,11 @@ void Game::processQueuedMessages() {
                 }
                 if (type == OBJECT_Face) {
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                        ODMFace *pODMFace = &pOutdoor->pBModels[id >> 6].faces[id & 0x3F];
-                        interactionPossible = (pODMFace->Clickable() && pODMFace->eventId);
+                        BLVFace *pBLVFace = &pOutdoor->pBModels[id >> 6].faces[id & 0x3F];
+                        interactionPossible = (pBLVFace->Clickable() && pBLVFace->eventId);
                     } else { // Indoor
                         BLVFace *pBLVFace = &pIndoor->faces[id];
-                        if (pBLVFace->Clickable()) {
-                            interactionPossible = pIndoor->faceExtras[pBLVFace->faceExtraId].eventId != 0;
-                        }
+                        interactionPossible = pBLVFace->Clickable() && pBLVFace->eventId;
                     }
                 }
                 if (interactionPossible) {

@@ -294,7 +294,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
         int faceId = pBspRenderer->faces[i].uFaceID;
         BLVFace *face = &pIndoor->faces[faceId];
 
-        if (isFacePartOfSelection(nullptr, face, filter)) {
+        if (isFacePartOfSelection(face, filter)) {
             if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
                 pCamera3D->ViewTransform(&a1, 1);
                 list->AddObject(VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceId));
@@ -370,21 +370,18 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
             continue;
         }
 
-        for (ODMFace &face : model.faces) {
+        for (BLVFace &face : model.faces) {
             face.attributes &= ~FACE_OUTLINED;
 
-            if (isFacePartOfSelection(&face, nullptr, filter)) {
-                BLVFace blv_face;
-                blv_face.FromODM(&face);
-
+            if (isFacePartOfSelection(&face, filter)) {
                 RenderVertexSoft intersection;
                 if (Intersect_Ray_Face(rayOrigin, rayStep, &intersection,
-                                       &blv_face, model.index)) {
+                                       &face, model.index)) {
                     pCamera3D->ViewTransform(&intersection, 1);
                     // int v13 = fixpoint_from_float(/*v12,
                     // */intersection.vWorldViewPosition.x); v13 &= 0xFFFF0000;
                     // v13 += Pid(OBJECT_Face, j | (i << 6));
-                    Pid pid = Pid(OBJECT_Face, face.index | (model.index << 6));
+                    Pid pid = Pid(OBJECT_Face, face.faceId | (model.index << 6));
                     list->AddObject(VisObjectType_Face, intersection.vWorldViewPosition.x, pid);
 
                     if (engine->config->debug.ShowPickedFace.value())
@@ -798,24 +795,15 @@ bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filte
     return false;
 }
 
-bool Vis::isFacePartOfSelection(ODMFace *odmFace, BLVFace *bvlFace, Vis_SelectionFilter *filter) {
-    assert(!!odmFace ^ !!bvlFace); // Only one should be valid.
+bool Vis::isFacePartOfSelection(BLVFace *bvlFace, Vis_SelectionFilter *filter) {
+    assert(bvlFace);
 
     if (filter->vis_object_type == VisObjectType_Any)
         return true;
     assert(filter->vis_object_type == VisObjectType_Face);
 
-    FaceAttributes face_attrib;
-    bool no_event = true;
-    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        no_event = odmFace->eventId == 0;
-        face_attrib = odmFace->attributes;
-    } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        no_event = pIndoor->faceExtras[bvlFace->faceExtraId].eventId == 0;
-        face_attrib = bvlFace->attributes;
-    } else {
-        assert(false);
-    }
+    FaceAttributes face_attrib = bvlFace->attributes;
+    bool no_event = bvlFace->eventId == 0;
 
     if (filter->object_type != OBJECT_Door) return true;
 
@@ -897,7 +885,7 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vi
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
         int pFaceID = pBspRenderer->faces[i].uFaceID;
         BLVFace *pFace = &pIndoor->faces[pFaceID];
-        if (isFacePartOfSelection(nullptr, pFace, filter)) {
+        if (isFacePartOfSelection(pFace, filter)) {
             Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, Pid(OBJECT_Face, pFaceID), pick_depth);
             if (v8)
                 list->AddObject(v8->object_type, v8->depth, v8->object_pid);
@@ -911,14 +899,11 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
         bool reachable;
         if (IsBModelVisible(&model, pick_depth, &reachable)) {
             if (reachable) {
-                for (ODMFace &face : model.faces) {
-                    if (isFacePartOfSelection(&face, nullptr, filter)) {
-                        BLVFace blv_face;
-                        blv_face.FromODM(&face);
-
-                        Pid pid = Pid(OBJECT_Face, face.index | (model.index << 6));
+                for (BLVFace &face : model.faces) {
+                    if (isFacePartOfSelection(&face, filter)) {
+                        Pid pid = Pid(OBJECT_Face, face.faceId | (model.index << 6));
                         if (Vis_ObjectInfo *object_info =
-                                DetermineFacetIntersection(&blv_face, pid, pick_depth)) {
+                                DetermineFacetIntersection(&face, pid, pick_depth)) {
                             list->AddObject(object_info->object_type, object_info->depth, object_info->object_pid);
                         }
                     }

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <tuple>
 #include <utility>
+#include <vector>
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -80,12 +81,9 @@ static void dropDuplicateFaceVertices(Face *face) {
 
     face->numVertices = r - l + 1;
 
-    // BLVFace uses spans, resize them to match the new vertex count.
-    if constexpr (std::is_same_v<Face, BLVFace>) {
-        face->vertexIds = face->vertexIds.first(face->numVertices);
-        face->textureUs = face->textureUs.first(face->numVertices);
-        face->textureVs = face->textureVs.first(face->numVertices);
-    }
+    face->vertexIds.resize(face->numVertices);
+    face->textureUs.resize(face->numVertices);
+    face->textureVs.resize(face->numVertices);
 }
 
 template<class Face>
@@ -129,12 +127,14 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->vertices);
     reconstruct(src.faces, &dst->faces);
 
-    reconstruct(src.faceData, &dst->faceData);
+    // reconstruct temp face data locally and insert into faces
+    std::vector<int16_t> faceData;
+    reconstruct(src.faceData, &faceData);
 
     for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
 
-        pFace->vertexIds = std::span(dst->faceData.data() + j, pFace->numVertices);
+        pFace->vertexIds = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + pFace->numVertices);
         j += pFace->numVertices + 1; // +1 to skip closing vertex in source data.
 
         // Skipping pXInterceptDisplacements.
@@ -146,14 +146,14 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         // Skipping pZInterceptDisplacements.
         j += pFace->numVertices + 1;
 
-        pFace->textureUs = std::span(dst->faceData.data() + j, pFace->numVertices);
+        pFace->textureUs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + pFace->numVertices);
         j += pFace->numVertices + 1;
 
-        pFace->textureVs = std::span(dst->faceData.data() + j, pFace->numVertices);
+        pFace->textureVs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + pFace->numVertices);
         j += pFace->numVertices + 1;
 
-        if (j > dst->faceData.size())
-            throw Exception("BLV face data overflow: offset {} exceeds size {}", j, dst->faceData.size());
+        if (j > faceData.size())
+            throw Exception("BLV face data overflow: offset {} exceeds size {}", j, faceData.size());
     }
 
     for (BLVFace &face : dst->faces) {
@@ -169,24 +169,32 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         pFace->SetTexture(texName);
     }
 
-    reconstruct(src.faceExtras, &dst->faceExtras);
+    // Reconstruct temp face extras locally and insert into faces
+    std::vector<BLVFaceExtra> faceExtras;
+    reconstruct(src.faceExtras, &faceExtras);
 
     std::string textureName;
-    for (unsigned i = 0; i < dst->faceExtras.size(); ++i) {
+    for (unsigned i = 0; i < faceExtras.size(); ++i) {
         reconstruct(src.faceExtraTextures[i], &textureName);
 
         if (textureName.empty())
-            dst->faceExtras[i].additionalBitmapId = -1;
+            faceExtras[i].additionalBitmapId = -1;
         else
-            dst->faceExtras[i].additionalBitmapId = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
+            faceExtras[i].additionalBitmapId = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
     }
 
     for (size_t i = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
-        BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->faceExtraId];
+        BLVFaceExtra *pFaceExtra = &faceExtras[src.faces[i].faceExtraId];
+        pFace->faceId = pFaceExtra->faceId;
+        pFace->additionalBitmapId = pFaceExtra->additionalBitmapId;
+        pFace->textureDeltaU = pFaceExtra->textureDeltaU;
+        pFace->textureDeltaV = pFaceExtra->textureDeltaV;
+        pFace->cogNumber = pFaceExtra->cogNumber;
+        pFace->eventId = pFaceExtra->eventId;
 
-        if (pFaceExtra->eventId) {
-            if (pFaceExtra->HasEventHint())
+        if (pFace->eventId) {
+            if (pFace->HasEventHint())
                 pFace->attributes |= FACE_HAS_HINT;
             else
                 pFace->attributes &= ~FACE_HAS_HINT;
@@ -381,10 +389,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
 
         for (unsigned j = 0; j < pDoor->numFaces; ++j) {
             BLVFace *pFace = &dst->faces[pDoor->pFaceIDs[j]];
-            BLVFaceExtra *pFaceExtra = &dst->faceExtras[pFace->faceExtraId];
-
-            pDoor->pDeltaUs[j] = pFaceExtra->textureDeltaU;
-            pDoor->pDeltaVs[j] = pFaceExtra->textureDeltaV;
+            pDoor->pDeltaUs[j] = pFace->textureDeltaU;
+            pDoor->pDeltaVs[j] = pFace->textureDeltaV;
         }
     }
 
@@ -436,15 +442,16 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->boundingRadius = srcData.boundingRadius;
 
     reconstruct(srcExtras.vertices, &dst->vertices);
-    reconstruct(srcExtras.faces, &dst->faces);
+    dst->faces.clear();
+    dst->faces.resize(srcExtras.faces.size());
+    for (int i = 0; i < srcExtras.faces.size(); i++) {
+        reconstruct(srcExtras.faces[i], &dst->faces[i], tags::context(i)); // tag to set indexes in dst->faces
+    }
 
-    for (ODMFace &face : dst->faces) {
+    for (BLVFace &face : dst->faces) {
         dropDuplicateFaceVertices(&face);
         repairFaceNormal(&face, dst->vertices);
     }
-
-    for (size_t i = 0; i < dst->faces.size(); i++)
-        dst->faces[i].index = i;
 
     reconstruct(srcExtras.bspNodes, &dst->nodes);
 
@@ -578,7 +585,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - no all attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
-        for (const ODMFace &face : model.faces)
+        for (const BLVFace &face : model.faces)
             dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_HAS_HINT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
@@ -602,7 +609,7 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
-        for (ODMFace &face : model.faces) {
+        for (BLVFace &face : model.faces) {
             face.attributes &= FACE_ANIMATED | FACE_HAS_HINT;
             face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_HINT | FACE_ANIMATED);
         }
