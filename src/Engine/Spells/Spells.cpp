@@ -517,6 +517,20 @@ void SpellStats::Initialize(const Blob &spells) {
         pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();
         pSpellDatas[uSpellID].flags |= tokens[10].contains('x') || tokens[10].contains('X') ? SPELL_FLAG_8 : SpellFlag();
     }
+
+    // Patch SPELL_SHIFT_CLICK_CASTABLE flags that are bogus in vanilla spells.txt. See issues #1494, #1495, #1496.
+    // These spells target a single actor and should be quick-castable on shift+click.
+    for (SpellId spell : {SPELL_WATER_POISON_SPRAY, SPELL_LIGHT_LIGHT_BOLT, SPELL_LIGHT_DESTROY_UNDEAD, SPELL_LIGHT_PARALYZE}) {
+        pSpellDatas[spell].flags |= SPELL_SHIFT_CLICK_CASTABLE;
+    }
+    // These spells target the casting party or a party member and should NOT be quick-castable on shift+click.
+    // For party-target spells the shift+click cast is also confusing because nothing visible happens at the
+    // clicked actor; for character-target spells (Cure Paralysis) the player gets a target-character prompt
+    // that doesn't relate to the clicked actor.
+    for (SpellId spell : {SPELL_MIND_CURE_PARALYSIS, SPELL_LIGHT_DAY_OF_PROTECTION, SPELL_LIGHT_HOUR_OF_POWER,
+                          SPELL_MIND_MASS_FEAR, SPELL_LIGHT_PRISMATIC_LIGHT, SPELL_DARK_ARMAGEDDON}) {
+        pSpellDatas[spell].flags &= ~SPELL_SHIFT_CLICK_CASTABLE;
+    }
 }
 
 void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3f from, Vec3f to) {
