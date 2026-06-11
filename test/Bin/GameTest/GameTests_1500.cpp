@@ -10,11 +10,14 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Engine.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Objects/SpriteObject.h"
+
+#include "Library/Random/MersenneTwisterRandomEngine.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
@@ -327,6 +330,69 @@ GAME_TEST(Issues, Issue1685) {
 
     EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
+}
+
+GAME_TEST(Issues, Issue1721) {
+    // Master Dagger triple-damage chance was hardcoded at 10%. Per GrayFace's
+    // documentation of the vanilla bug it should scale at 1% per skill point.
+    // Set up a character with a dagger equipped and roll a large number of
+    // attacks at known skill levels, then check that the proc rate matches the
+    // skill level within a reasonable tolerance.
+    constexpr int trials = 4000;
+
+    Character character;
+    Item dagger;
+    dagger.itemId = ITEM_DAGGER;
+    character.inventory.equip(ITEM_SLOT_MAIN_HAND, dagger);
+    Item *equippedDagger =
+        character.inventory.functionalEntry(ITEM_SLOT_MAIN_HAND).get();
+    ASSERT_NE(equippedDagger, nullptr);
+
+    int baseDmg = pItemTable->items[ITEM_DAGGER].damageMod +
+                  pItemTable->items[ITEM_DAGGER].damageDice *
+                      pItemTable->items[ITEM_DAGGER].damageRoll;
+
+    MersenneTwisterRandomEngine engine;
+    RandomEngine *savedGrng = grng;
+    grng = &engine;
+
+    auto countProcs = [&](int skillLevel) {
+        engine.seed(12345);
+        character.pActiveSkills[SKILL_DAGGER] =
+            CombinedSkillValue(skillLevel, MASTERY_MASTER);
+        int procs = 0;
+        for (int i = 0; i < trials; ++i) {
+            int dmg = character.CalculateMeleeDmgToEnemyWithWeapon(
+                equippedDagger, MONSTER_INVALID, false);
+            if (dmg > baseDmg) ++procs;
+        }
+        return procs;
+    };
+
+    // At skill level 10 we expect ~10% procs (~400 / 4000).
+    int procs10 = countProcs(10);
+    EXPECT_GE(procs10, trials * 7 / 100);
+    EXPECT_LE(procs10, trials * 13 / 100);
+
+    // At skill level 30 we expect ~30% procs (~1200 / 4000).
+    int procs30 = countProcs(30);
+    EXPECT_GE(procs30, trials * 27 / 100);
+    EXPECT_LE(procs30, trials * 33 / 100);
+
+    // Sanity check: skill 30 should proc strictly more than skill 10.
+    EXPECT_GT(procs30, procs10);
+
+    // Below Master mastery the proc must never fire, regardless of level.
+    character.pActiveSkills[SKILL_DAGGER] =
+        CombinedSkillValue(60, MASTERY_EXPERT);
+    engine.seed(12345);
+    for (int i = 0; i < 200; ++i) {
+        int dmg = character.CalculateMeleeDmgToEnemyWithWeapon(
+            equippedDagger, MONSTER_INVALID, false);
+        EXPECT_LE(dmg, baseDmg);
+    }
+
+    grng = savedGrng;
 }
 
 GAME_TEST(Prs, Pr1694) {
