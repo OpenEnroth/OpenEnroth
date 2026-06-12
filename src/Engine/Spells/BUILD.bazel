@@ -1,0 +1,38 @@
+cc_library(
+    name = "engine_spells_enums",
+    hdrs = [
+        "SpellEnums.h",
+        "SpellEnumFunctions.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["CastSpellInfo.cpp", "Spells.cpp"],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_spells",
+    srcs = [],
+    hdrs = [
+        "CastSpellInfo.h",
+        "SpellBuff.h",
+        "Spells.h",
+    ],
+    deps = [
+        ":engine_spells_enums",
+        "//src/Engine:engine_base",
+        "//src/Engine/Objects:engine_objects_base",
+        "//src/Engine/Objects:engine_objects_enums",
+        "//src/Engine/Time:engine_time",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Utility:utility",
+        "//src/Library/Serialization:library_serialization",
+        "@glm//:glm",
+    ],
+    visibility = ["//visibility:public"],
+)

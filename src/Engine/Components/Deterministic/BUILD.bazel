@@ -1,0 +1,14 @@
+cc_library(
+    name = "engine_components_deterministic",
+    srcs = [
+        "EngineDeterministicComponent.cpp",
+    ],
+    hdrs = [
+        "EngineDeterministicComponent.h",
+    ],
+    deps = [
+        "//src/Engine/Components/Random:engine_components_random",
+        "//src/Library/Platform/Application:library_platform_application",
+    ],
+    visibility = ["//visibility:public"],
+)

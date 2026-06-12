@@ -1,0 +1,51 @@
+# CMake target name: engine_events
+# Bazel label: //src/Engine/Evt:engine_evt
+
+cc_library(
+    name = "engine_evt_enums",
+    hdrs = ["EvtEnums.h"],
+    deps = [
+        "//src/Library/Serialization:library_serialization",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    [
+        "EvtInstruction.cpp",
+        "EvtProgram.cpp",
+        "EvtInterpreter.cpp",
+        "Processor.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_evt",
+    srcs = [
+        "EvtEnums.cpp",
+        # EvtInstruction.cpp, EvtProgram.cpp, EvtInterpreter.cpp, Processor.cpp need
+        # Engine/Engine.h and are compiled in //src/Engine:engine_impl to break the
+        # circular dependency (engine depends on engine_evt).
+    ],
+    hdrs = [
+        "EvtInstruction.h",
+        "EvtProgram.h",
+        "EvtInterpreter.h",
+        "EvtEnums.h",
+        "Processor.h",
+        "EvtEnumFunctions.h",
+    ],
+    deps = [
+        "//src/Engine/Data:engine_data",
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Engine/Objects:engine_objects",
+        "//src/Library/Geometry:library_geometry",
+        "@generator//:generator",
+        "//src/Utility:utility",
+        "//src/Library/Serialization:library_serialization",
+        "@glm//:glm",
+    ],
+    visibility = ["//visibility:public"],
+)

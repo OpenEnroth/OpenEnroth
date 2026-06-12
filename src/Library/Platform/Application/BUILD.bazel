@@ -1,0 +1,19 @@
+cc_library(
+    name = "library_platform_application",
+    srcs = [
+        "PlatformApplication.cpp",
+        "PlatformComponentStorage.cpp",
+    ],
+    hdrs = [
+        "PlatformApplication.h",
+        "PlatformApplicationAware.h",
+        "PlatformIntrospection.h",
+        "PlatformComponentStorage.h",
+    ],
+    deps = [
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Platform/Filters:library_platform_filters",
+        "//src/Library/Platform/Proxy:library_platform_proxy",
+    ],
+    visibility = ["//visibility:public"],
+)

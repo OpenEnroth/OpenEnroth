@@ -1,0 +1,35 @@
+exports_files(
+    [
+        "LOD.cpp",
+        "LodSpriteCache.cpp",
+        "LodTextureCache.cpp",
+        "ResourceManager.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_resources",
+    srcs = [
+        "EngineFileSystem.cpp",
+        # LOD.cpp, LodSpriteCache.cpp, LodTextureCache.cpp, ResourceManager.cpp need
+        # Engine/AssetsManager.h (via ../AssetsManager.h) and are compiled in
+        # //src/Engine:engine_impl to break the circular dependency.
+    ],
+    hdrs = [
+        "EngineFileSystem.h",
+        "LOD.h",
+        "LodSpriteCache.h",
+        "LodTextureCache.h",
+        "ResourceManager.h",
+    ],
+    deps = [
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Library/Image:library_image",
+        "//src/Library/Lod:library_lod",
+        "//src/Library/LodFormats:library_lod_formats",
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

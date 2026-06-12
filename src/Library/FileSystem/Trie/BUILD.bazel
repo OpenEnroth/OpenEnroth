@@ -1,0 +1,24 @@
+cc_library(
+    name = "library_filesystem_trie",
+    hdrs = [
+        "FileSystemTrie.h",
+    ],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_library_filesystem_trie",
+    srcs = [
+        "Tests/FileSystemTrie_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        ":library_filesystem_trie",
+    ],
+    testonly = True,
+    visibility = ["//visibility:public"],
+)

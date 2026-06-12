@@ -1,0 +1,23 @@
+cc_library(
+    name = "engine_components_control",
+    srcs = [
+        "EngineControlComponent.cpp",
+        "EngineController.cpp",
+    ],
+    hdrs = [
+        "EngineControlComponent.h",
+        "EngineControlState.h",
+        "EngineControlStateHandle.h",
+        "EngineController.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Engine:engine",
+        "//src/GUI:gui",
+        "//src/Arcomage:arcomage",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Platform/Application:library_platform_application",
+    ],
+    visibility = ["//visibility:public"],
+)

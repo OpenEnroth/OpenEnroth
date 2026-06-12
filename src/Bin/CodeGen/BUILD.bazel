@@ -1,0 +1,24 @@
+cc_binary(
+    name = "CodeGen",
+    srcs = [
+        "CodeGen.cpp",
+        "CodeGenOptions.cpp",
+        "CodeGenEnums.cpp",
+        "CodeGenOptions.h",
+        "CodeGenEnums.h",
+        "CodeGenFunctions.h",
+        "CodeGenMap.h",
+    ],
+    deps = [
+        "//src/Application:application",
+        "//src/Engine:engine_impl",
+        "//src/Library/Cli:library_cli",
+        "//src/Library/Platform/Sdl:library_platform_main",
+        "//src/Library/Environment:library_environment",
+    ],
+    target_compatible_with = select({
+        "@platforms//os:android": ["@platforms//:incompatible"],
+        "//conditions:default": [],
+    }),
+    visibility = ["//visibility:public"],
+)

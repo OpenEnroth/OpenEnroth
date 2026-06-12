@@ -1,0 +1,8 @@
+# Root BUILD file — top-level aliases for convenience.
+# The main binary lives at //src/Bin/OpenEnroth.
+
+alias(
+    name = "OpenEnroth",
+    actual = "//src/Bin/OpenEnroth",
+    visibility = ["//visibility:public"],
+)
