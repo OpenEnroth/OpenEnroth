@@ -519,6 +519,7 @@ void SpellStats::Initialize(const Blob &spells) {
     }
 
     // Patch SPELL_SHIFT_CLICK_CASTABLE flags that are bogus in vanilla spells.txt. See issues #1494, #1495, #1496.
+    // TODO(captainurist): move these flag patches into the patched data tables instead of hardcoding them here.
     // These spells target a single actor and should be quick-castable on shift+click.
     for (SpellId spell : {SPELL_WATER_POISON_SPRAY, SPELL_LIGHT_LIGHT_BOLT, SPELL_LIGHT_DESTROY_UNDEAD, SPELL_LIGHT_PARALYZE}) {
         pSpellDatas[spell].flags |= SPELL_SHIFT_CLICK_CASTABLE;
