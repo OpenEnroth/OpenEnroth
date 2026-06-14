@@ -59,3 +59,28 @@ GAME_TEST(Spells, PsychicShockDamageFormula) {
     }
     grng = savedGrng;
 }
+
+// Tests that SPELL_SHIFT_CLICK_CASTABLE is patched up in SpellStats::Initialize. Issues: #1494, #1495, #1496.
+GAME_TEST(Spells, ShiftClickCastableFlags) {
+    // #1494: these spells target a single actor and must be quick-castable on shift+click.
+    EXPECT_TRUE(IsSpellQuickCastableOnShiftClick(SPELL_WATER_POISON_SPRAY));
+    EXPECT_TRUE(IsSpellQuickCastableOnShiftClick(SPELL_LIGHT_LIGHT_BOLT));
+    EXPECT_TRUE(IsSpellQuickCastableOnShiftClick(SPELL_LIGHT_DESTROY_UNDEAD));
+    EXPECT_TRUE(IsSpellQuickCastableOnShiftClick(SPELL_LIGHT_PARALYZE));
+
+    // #1495: these spells target the party or a party member; they must NOT be quick-castable on shift+click.
+    EXPECT_FALSE(IsSpellQuickCastableOnShiftClick(SPELL_MIND_CURE_PARALYSIS));
+    EXPECT_FALSE(IsSpellQuickCastableOnShiftClick(SPELL_LIGHT_DAY_OF_PROTECTION));
+    EXPECT_FALSE(IsSpellQuickCastableOnShiftClick(SPELL_LIGHT_HOUR_OF_POWER));
+
+    // #1496: the all-in-sight AoE spells are inconsistent in vanilla; we standardize on
+    // "not castable" since the only way to indicate the target is by clicking an actor,
+    // and the spell ignores that target anyway.
+    EXPECT_FALSE(IsSpellQuickCastableOnShiftClick(SPELL_MIND_MASS_FEAR));
+    EXPECT_FALSE(IsSpellQuickCastableOnShiftClick(SPELL_LIGHT_PRISMATIC_LIGHT));
+    EXPECT_FALSE(IsSpellQuickCastableOnShiftClick(SPELL_DARK_ARMAGEDDON));
+    // Spells in the same all-in-sight group that were already not quick-castable in vanilla:
+    EXPECT_FALSE(IsSpellQuickCastableOnShiftClick(SPELL_SPIRIT_TURN_UNDEAD));
+    EXPECT_FALSE(IsSpellQuickCastableOnShiftClick(SPELL_DARK_SOULDRINKER));
+    EXPECT_FALSE(IsSpellQuickCastableOnShiftClick(SPELL_LIGHT_DISPEL_MAGIC));
+}
