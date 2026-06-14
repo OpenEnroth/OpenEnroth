@@ -8,6 +8,7 @@
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Data/ItemData.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Engine.h"
 #include "Engine/Random/Random.h"
@@ -17,7 +18,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Objects/SpriteObject.h"
 
-#include "Library/Random/MersenneTwisterRandomEngine.h"
+#include "Library/Random/SequentialRandomEngine.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
@@ -333,66 +334,76 @@ GAME_TEST(Issues, Issue1685) {
 }
 
 GAME_TEST(Issues, Issue1721) {
-    // Master Dagger triple-damage chance was hardcoded at 10%. Per GrayFace's
-    // documentation of the vanilla bug it should scale at 1% per skill point.
-    // Set up a character with a dagger equipped and roll a large number of
-    // attacks at known skill levels, then check that the proc rate matches the
-    // skill level within a reasonable tolerance.
+    // Master Dagger triple-damage backstab chance was hardcoded at 10%. Per
+    // GrayFace's documentation of the vanilla bug it should scale at 1% per
+    // dagger skill point (issue #1721).
+    //
+    // To make the proc rate exactly checkable, equip a scratch dagger with no
+    // damage dice and a flat +1 damage modifier: a normal hit always deals 1
+    // and a backstab always deals 3, so the proc is detectable with no roll
+    // noise. With no damage dice the only RNG draw per attack is the proc roll,
+    // so a SequentialRandomEngine returns 0, 1, ..., 99 cyclically across the
+    // 4000 attacks -- each percentile value occurs exactly 40 times, hence the
+    // proc count is exactly 40 * skillLevel.
     constexpr int trials = 4000;
+
+    // Repurpose an unused item-table slot as the constant-damage dagger so this
+    // test doesn't depend on the real dagger's stats. Start from a real dagger
+    // (valid type / sprite / equip slot) and override only the damage fields.
+    constexpr ItemId scratchDaggerId = ITEM_160;
+    ItemData savedItemData = pItemTable->items[scratchDaggerId];
+    ItemData &scratchDagger = pItemTable->items[scratchDaggerId];
+    scratchDagger = pItemTable->items[ITEM_DAGGER];
+    scratchDagger.skill = SKILL_DAGGER;
+    scratchDagger.damageDice = 0;
+    scratchDagger.damageRoll = 0;
+    scratchDagger.damageMod = 1;
 
     Character character;
     Item dagger;
-    dagger.itemId = ITEM_DAGGER;
+    dagger.itemId = scratchDaggerId;
     character.inventory.equip(ITEM_SLOT_MAIN_HAND, dagger);
     Item *equippedDagger =
         character.inventory.functionalEntry(ITEM_SLOT_MAIN_HAND).get();
     ASSERT_NE(equippedDagger, nullptr);
 
-    int baseDmg = pItemTable->items[ITEM_DAGGER].damageMod +
-                  pItemTable->items[ITEM_DAGGER].damageDice *
-                      pItemTable->items[ITEM_DAGGER].damageRoll;
-
-    MersenneTwisterRandomEngine engine;
+    SequentialRandomEngine engine;
     RandomEngine *savedGrng = grng;
     grng = &engine;
 
     auto countProcs = [&](int skillLevel) {
-        engine.seed(12345);
+        engine.seed(0);
         character.pActiveSkills[SKILL_DAGGER] =
             CombinedSkillValue(skillLevel, MASTERY_MASTER);
         int procs = 0;
         for (int i = 0; i < trials; ++i) {
             int dmg = character.CalculateMeleeDmgToEnemyWithWeapon(
                 equippedDagger, MONSTER_INVALID, false);
-            if (dmg > baseDmg) ++procs;
+            if (dmg == 3) {
+                ++procs;
+            } else {
+                EXPECT_EQ(dmg, 1);
+            }
         }
         return procs;
     };
 
-    // At skill level 10 we expect ~10% procs (~400 / 4000).
-    int procs10 = countProcs(10);
-    EXPECT_GE(procs10, trials * 7 / 100);
-    EXPECT_LE(procs10, trials * 13 / 100);
+    // 1% proc per skill point => exactly 40 * level procs over 4000 attacks.
+    EXPECT_EQ(countProcs(10), 40 * 10);
+    EXPECT_EQ(countProcs(30), 40 * 30);
 
-    // At skill level 30 we expect ~30% procs (~1200 / 4000).
-    int procs30 = countProcs(30);
-    EXPECT_GE(procs30, trials * 27 / 100);
-    EXPECT_LE(procs30, trials * 33 / 100);
-
-    // Sanity check: skill 30 should proc strictly more than skill 10.
-    EXPECT_GT(procs30, procs10);
-
-    // Below Master mastery the proc must never fire, regardless of level.
+    // Below Master mastery the backstab must never fire, regardless of level;
+    // the proc roll is short-circuited so no RNG is consumed here.
     character.pActiveSkills[SKILL_DAGGER] =
         CombinedSkillValue(60, MASTERY_EXPERT);
-    engine.seed(12345);
-    for (int i = 0; i < 200; ++i) {
+    for (int i = 0; i < trials; ++i) {
         int dmg = character.CalculateMeleeDmgToEnemyWithWeapon(
             equippedDagger, MONSTER_INVALID, false);
-        EXPECT_LE(dmg, baseDmg);
+        EXPECT_EQ(dmg, 1);
     }
 
     grng = savedGrng;
+    pItemTable->items[scratchDaggerId] = savedItemData;
 }
 
 GAME_TEST(Prs, Pr1694) {
