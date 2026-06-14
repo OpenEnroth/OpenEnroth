@@ -746,13 +746,13 @@ void Game::processQueuedMessages() {
                     if (pParty->GetFood() > 0) {
                         pParty->restAndHeal();
                         if (pParty->GetFood() < getTravelTime()) {
-                            for (Character& character : pParty->pCharacters)
+                            for (Character &character : pParty->pCharacters)
                                 character.SetCondition(CONDITION_WEAK, 0);
                             ++pParty->days_played_without_rest;
                         }
                         pParty->TakeFood(getTravelTime());
                     } else {
-                        for (Character& character : pParty->pCharacters)
+                        for (Character &character : pParty->pCharacters)
                             character.SetCondition(CONDITION_WEAK, 0);
                         ++pParty->days_played_without_rest;
                     }
