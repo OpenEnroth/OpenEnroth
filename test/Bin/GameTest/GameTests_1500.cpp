@@ -8,13 +8,17 @@
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Data/ItemData.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Engine.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Objects/SpriteObject.h"
+
+#include "Library/Random/SequentialRandomEngine.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
@@ -327,6 +331,79 @@ GAME_TEST(Issues, Issue1685) {
 
     EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
+}
+
+GAME_TEST(Issues, Issue1721) {
+    // Master Dagger triple-damage backstab chance was hardcoded at 10%. Per
+    // GrayFace's documentation of the vanilla bug it should scale at 1% per
+    // dagger skill point (issue #1721).
+    //
+    // To make the proc rate exactly checkable, equip a scratch dagger with no
+    // damage dice and a flat +1 damage modifier: a normal hit always deals 1
+    // and a backstab always deals 3, so the proc is detectable with no roll
+    // noise. With no damage dice the only RNG draw per attack is the proc roll,
+    // so a SequentialRandomEngine returns 0, 1, ..., 99 cyclically across the
+    // 4000 attacks -- each percentile value occurs exactly 40 times, hence the
+    // proc count is exactly 40 * skillLevel.
+    constexpr int trials = 4000;
+
+    // Repurpose an unused item-table slot as the constant-damage dagger so this
+    // test doesn't depend on the real dagger's stats. Start from a real dagger
+    // (valid type / sprite / equip slot) and override only the damage fields.
+    constexpr ItemId scratchDaggerId = ITEM_160;
+    ItemData savedItemData = pItemTable->items[scratchDaggerId];
+    ItemData &scratchDagger = pItemTable->items[scratchDaggerId];
+    scratchDagger = pItemTable->items[ITEM_DAGGER];
+    scratchDagger.skill = SKILL_DAGGER;
+    scratchDagger.damageDice = 0;
+    scratchDagger.damageRoll = 0;
+    scratchDagger.damageMod = 1;
+
+    Character character;
+    Item dagger;
+    dagger.itemId = scratchDaggerId;
+    character.inventory.equip(ITEM_SLOT_MAIN_HAND, dagger);
+    Item *equippedDagger =
+        character.inventory.functionalEntry(ITEM_SLOT_MAIN_HAND).get();
+    ASSERT_NE(equippedDagger, nullptr);
+
+    SequentialRandomEngine engine;
+    RandomEngine *savedGrng = grng;
+    grng = &engine;
+
+    auto countProcs = [&](int skillLevel) {
+        engine.seed(0);
+        character.pActiveSkills[SKILL_DAGGER] =
+            CombinedSkillValue(skillLevel, MASTERY_MASTER);
+        int procs = 0;
+        for (int i = 0; i < trials; ++i) {
+            int dmg = character.CalculateMeleeDmgToEnemyWithWeapon(
+                equippedDagger, MONSTER_INVALID, false);
+            if (dmg == 3) {
+                ++procs;
+            } else {
+                EXPECT_EQ(dmg, 1);
+            }
+        }
+        return procs;
+    };
+
+    // 1% proc per skill point => exactly 40 * level procs over 4000 attacks.
+    EXPECT_EQ(countProcs(10), 40 * 10);
+    EXPECT_EQ(countProcs(30), 40 * 30);
+
+    // Below Master mastery the backstab must never fire, regardless of level;
+    // the proc roll is short-circuited so no RNG is consumed here.
+    character.pActiveSkills[SKILL_DAGGER] =
+        CombinedSkillValue(60, MASTERY_EXPERT);
+    for (int i = 0; i < trials; ++i) {
+        int dmg = character.CalculateMeleeDmgToEnemyWithWeapon(
+            equippedDagger, MONSTER_INVALID, false);
+        EXPECT_EQ(dmg, 1);
+    }
+
+    grng = savedGrng;
+    pItemTable->items[scratchDaggerId] = savedItemData;
 }
 
 GAME_TEST(Prs, Pr1694) {
