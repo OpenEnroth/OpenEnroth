@@ -532,6 +532,17 @@ void SpellStats::Initialize(const Blob &spells) {
                           SPELL_MIND_MASS_FEAR, SPELL_LIGHT_PRISMATIC_LIGHT, SPELL_DARK_ARMAGEDDON}) {
         pSpellDatas[spell].flags &= ~SPELL_SHIFT_CLICK_CASTABLE;
     }
+
+    // Vanilla bug fix: Control Undead is a Dark Magic spell, but its description in spells.txt
+    // states the duration scales with "Mind Magic". See issue #1698. The replacement is a no-op
+    // for localizations that don't contain the English wording.
+    // TODO(captainurist): these strings are translatable; move this fix into the patched data files.
+    SpellInfo &controlUndead = pInfos[SPELL_DARK_CONTROL_UNDEAD];
+    controlUndead.pDescription = replaceAll(controlUndead.pDescription, "Mind Magic", "Dark Magic");
+    controlUndead.pBasicSkillDesc = replaceAll(controlUndead.pBasicSkillDesc, "Mind Magic", "Dark Magic");
+    controlUndead.pExpertSkillDesc = replaceAll(controlUndead.pExpertSkillDesc, "Mind Magic", "Dark Magic");
+    controlUndead.pMasterSkillDesc = replaceAll(controlUndead.pMasterSkillDesc, "Mind Magic", "Dark Magic");
+    controlUndead.pGrandmasterSkillDesc = replaceAll(controlUndead.pGrandmasterSkillDesc, "Mind Magic", "Dark Magic");
 }
 
 void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3f from, Vec3f to) {
