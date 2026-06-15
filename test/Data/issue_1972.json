@@ -115,7 +115,7 @@
                         "Wizard Ring of Mind Magic",
                         "Brass Ring of Magic [+12]"
                     ],
-                    "hp": 459,
+                    "hp": 523,
                     "intelligence": 109,
                     "luck": 429,
                     "might": 137,
@@ -167,7 +167,7 @@
                         "Brass Ring of Disarming [+8]",
                         "Sapphire Ring of Items [+12]"
                     ],
-                    "hp": 485,
+                    "hp": 446,
                     "intelligence": 141,
                     "luck": 451,
                     "might": 150,
@@ -214,7 +214,7 @@
                         "Wizard Ring of The Troll",
                         "Enchanted Ring of The Moon"
                     ],
-                    "hp": 196,
+                    "hp": 403,
                     "intelligence": 125,
                     "luck": 429,
                     "might": 155,
@@ -289,7 +289,7 @@
                         "Wizards' Platinum Ring",
                         "Dazzling Ring of The Sun"
                     ],
-                    "hp": 126,
+                    "hp": 84,
                     "intelligence": 152,
                     "luck": 460,
                     "might": 129,
@@ -976,142 +976,142 @@
             "type": "paint"
         },
         {
-            "randomState": 589154,
+            "randomState": 1036431,
             "tickCount": 8900,
             "type": "paint"
         },
         {
-            "randomState": 626221,
+            "randomState": 998394,
             "tickCount": 9000,
             "type": "paint"
         },
         {
-            "randomState": 970032,
+            "randomState": 97906,
             "tickCount": 9100,
             "type": "paint"
         },
         {
-            "randomState": 923531,
+            "randomState": 651222,
             "tickCount": 9200,
             "type": "paint"
         },
         {
-            "randomState": 923531,
+            "randomState": 651222,
             "tickCount": 9300,
             "type": "paint"
         },
         {
-            "randomState": 20397,
+            "randomState": 970032,
             "tickCount": 9400,
             "type": "paint"
         },
         {
-            "randomState": 59256,
+            "randomState": 755399,
             "tickCount": 9500,
             "type": "paint"
         },
         {
-            "randomState": 578743,
+            "randomState": 487126,
             "tickCount": 9600,
             "type": "paint"
         },
         {
-            "randomState": 527863,
+            "randomState": 691651,
             "tickCount": 9700,
             "type": "paint"
         },
         {
-            "randomState": 527863,
+            "randomState": 691651,
             "tickCount": 9800,
             "type": "paint"
         },
         {
-            "randomState": 401862,
+            "randomState": 691651,
             "tickCount": 9900,
             "type": "paint"
         },
         {
-            "randomState": 401862,
+            "randomState": 691651,
             "tickCount": 10000,
             "type": "paint"
         },
         {
-            "randomState": 415243,
+            "randomState": 88744,
             "tickCount": 10100,
             "type": "paint"
         },
         {
-            "randomState": 221549,
+            "randomState": 103304,
             "tickCount": 10200,
             "type": "paint"
         },
         {
-            "randomState": 278251,
+            "randomState": 959933,
             "tickCount": 10300,
             "type": "paint"
         },
         {
-            "randomState": 611918,
+            "randomState": 256025,
             "tickCount": 10400,
             "type": "paint"
         },
         {
-            "randomState": 972403,
+            "randomState": 932113,
             "tickCount": 10500,
             "type": "paint"
         },
         {
-            "randomState": 962062,
+            "randomState": 6678,
             "tickCount": 10600,
             "type": "paint"
         },
         {
-            "randomState": 962062,
+            "randomState": 6678,
             "tickCount": 10700,
             "type": "paint"
         },
         {
-            "randomState": 804468,
+            "randomState": 1046017,
             "tickCount": 10800,
             "type": "paint"
         },
         {
-            "randomState": 873623,
+            "randomState": 408949,
             "tickCount": 10900,
             "type": "paint"
         },
         {
-            "randomState": 786245,
+            "randomState": 593394,
             "tickCount": 11000,
             "type": "paint"
         },
         {
-            "randomState": 144865,
+            "randomState": 557857,
             "tickCount": 11100,
             "type": "paint"
         },
         {
-            "randomState": 144865,
+            "randomState": 557857,
             "tickCount": 11200,
             "type": "paint"
         },
         {
-            "randomState": 144865,
+            "randomState": 189924,
             "tickCount": 11300,
             "type": "paint"
         },
         {
-            "randomState": 144865,
+            "randomState": 365727,
             "tickCount": 11400,
             "type": "paint"
         },
         {
-            "randomState": 842855,
+            "randomState": 749779,
             "tickCount": 11500,
             "type": "paint"
         },
         {
-            "randomState": 975218,
+            "randomState": 402486,
             "tickCount": 11600,
             "type": "paint"
         }

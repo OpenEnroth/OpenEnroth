@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <utility>
+#include <vector>
 
 #include "Testing/Game/GameTest.h"
 
@@ -403,14 +404,29 @@ GAME_TEST(Prs, Pr347) {
     EXPECT_LT(goldTape.delta(), 0); // Spent on items.
 }
 
-GAME_TEST(Issues, Issue355) {
+GAME_TEST(Issues, Issue355_2520) {
     // EVENT_CastSpell damage to characters (fire bolts in temple of the moon for example) doesnt match GOG.
     // GOG: 6-2. OpenEnroth: 9-5.
     auto healthTape = charTapes.hps();
+    auto fireboltColZ = tapes.custom([]() {
+        std::vector<float> zValues;
+        for (const auto& obj : pSpriteObjects) {
+            if (obj.spriteId == SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT) {
+                zValues.push_back(obj.vPosition.z);
+            }
+        }
+        return zValues;
+    }
+    );
+
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
     auto damageRange = healthTape.reverse().adjacentDeltas().flatten().filter([] (int damage) { return damage > 0; }).minMax();
     // 2d3+0 with a sequential engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to 1/2...
-    EXPECT_EQ(damageRange, tape(3 /*1*/, 5));
+    EXPECT_EQ(damageRange, tape(2 /*1*/, 5));
+
+    // 2520: Fire traps in Temple of the Moon aim at the floor instead of the opposite walls
+    // floor level is -96 so make sure everything is above that
+    EXPECT_GE(fireboltColZ.flatten().min(), -95);
 }
 
 GAME_TEST(Issues, Issue388) {
