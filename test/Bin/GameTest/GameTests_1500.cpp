@@ -10,6 +10,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Data/ItemData.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/Engine.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Resources/EngineFileSystem.h"
@@ -331,6 +332,20 @@ GAME_TEST(Issues, Issue1685) {
 
     EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
+}
+
+GAME_TEST(Issues, Issue1698) {
+    // Control Undead is a Dark Magic spell, but its vanilla description erroneously
+    // references Mind Magic (patched post-load in SpellStats::Initialize, issue #1698).
+    // The fix replaces those occurrences in every description string for
+    // SPELL_DARK_CONTROL_UNDEAD. For non-English locales the source text does not
+    // contain the English wording, so the assertions below pass vacuously.
+    const SpellInfo &controlUndead = pSpellStats->pInfos[SPELL_DARK_CONTROL_UNDEAD];
+    EXPECT_FALSE(controlUndead.pDescription.contains("Mind Magic"));
+    EXPECT_FALSE(controlUndead.pBasicSkillDesc.contains("Mind Magic"));
+    EXPECT_FALSE(controlUndead.pExpertSkillDesc.contains("Mind Magic"));
+    EXPECT_FALSE(controlUndead.pMasterSkillDesc.contains("Mind Magic"));
+    EXPECT_FALSE(controlUndead.pGrandmasterSkillDesc.contains("Mind Magic"));
 }
 
 GAME_TEST(Issues, Issue1721) {
