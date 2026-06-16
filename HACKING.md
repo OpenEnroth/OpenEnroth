@@ -47,7 +47,7 @@ Make sure you have the latest Xcode installed. Do this through the App Store or 
 
 ## Building on Windows
 
-* Get git (`https://git-scm.com/download/win`) and Visual Studio 2022.
+* Get git (`https://git-scm.com/download/win`) and Visual Studio 2022. (Not Visual Studio code)
 * Make sure you have Windows SDK v10.0.17134.0 or higher (required for UTF-8 locale support).
 * Clone, fork or download the repo `https://github.com/OpenEnroth/OpenEnroth`.
 * Setup CMake:
