@@ -246,10 +246,10 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 CollideWithActor(j, 0);
             }
         }
-        int collisionZ = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+        int collisionZ = collision_state.new_position_lo.z - collision_state.radius_lo;
         bool collisionOnWater = false;
         int collisionBmodelPid = 0;
-        Vec3f collisionPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1);
+        Vec3f collisionPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo);
         float collisionLevel = ODM_GetFloorLevel(collisionPos, &collisionOnWater, &collisionBmodelPid);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
@@ -262,17 +262,12 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             return;
         }
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            pSpriteObjects[uLayingItemID].vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1));
-            //pSpriteObjects[uLayingItemID].vPosition.x = collision_state.new_position_lo.x;
-            //pSpriteObjects[uLayingItemID].vPosition.y = collision_state.new_position_lo.y;
-            //pSpriteObjects[uLayingItemID].vPosition.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            pSpriteObjects[uLayingItemID].vPosition = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo);
             pSpriteObjects[uLayingItemID].uSectorID = collision_state.uSectorID;
             createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition, object->uFlags);
             return;
         }
-        // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.x) >> 16);
-        // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.y) >> 16);
-        // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.z) >> 16);
+
         Vec3f delta = collision_state.direction * collision_state.adjusted_move_distance;
         pSpriteObjects[uLayingItemID].vPosition += delta;
         pSpriteObjects[uLayingItemID].uSectorID = collision_state.uSectorID;
@@ -404,7 +399,7 @@ LABEL_25:
             // end loop2
 
             if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-                pSpriteObject->vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1));
+                pSpriteObject->vPosition = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo);
                 pSpriteObject->uSectorID = collision_state.uSectorID;
                 if (!(pObject->uFlags & OBJECT_DESC_TRAIL_PARTICLE)) {
                     return;
@@ -412,9 +407,6 @@ LABEL_25:
                 createSpriteTrailParticle(pSpriteObject->vPosition, pObject->uFlags);
                 return;
             }
-            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.x) >> 16;
-            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.y) >> 16;
-            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.z) >> 16;
 
             Vec3f delta = collision_state.direction * collision_state.adjusted_move_distance;
             pSpriteObject->vPosition += delta;
