@@ -416,8 +416,7 @@ GAME_TEST(Issues, Issue355_2520) {
             }
         }
         return zValues;
-    }
-    );
+    });
 
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
     auto damageRange = healthTape.reverse().adjacentDeltas().flatten().filter([] (int damage) { return damage > 0; }).minMax();
