@@ -197,6 +197,42 @@ GAME_TEST(Issues, Issue578) {
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_REST)); // and we never left the rest menu
 }
 
+GAME_TEST(Issues, Issue587) {
+    // Eradicated characters shouldn't be able to drink potions - they have no
+    // body left. Dropping a potion on one must be rejected (error sound + status
+    // message) and must neither consume the potion nor heal the character.
+    // This is an intentional change from the original game, where eradicated
+    // characters CAN drink potions (see issue #587).
+    auto healthTape = charTapes.hp(0);
+    auto soundsTape = tapes.sounds();
+    auto statusTape = tapes.statusBar();
+    game.startNewGame();
+
+    // Eradicate char 0 (the drinker). SetCondition(ERADICATED) zeroes HP, so
+    // afterwards wound it to a known value well below max - that way a Cure
+    // Wounds potion that wrongly took effect would visibly raise HP, and the
+    // "HP unchanged" assertion below can't pass vacuously from HP being maxed.
+    Character &drinker = pParty->pCharacters[0];
+    drinker.SetCondition(CONDITION_ERADICATED, 0);
+    drinker.health = 5;
+    ASSERT_LT(drinker.health, drinker.GetMaxHealth());
+    pParty->setActiveCharacterIndex(2); // Active "giver" must be a non-eradicated char.
+
+    test.startTaping();
+    game.tick(); // Baseline tick records health == 5.
+
+    // Active character drags a Cure Wounds potion onto the eradicated character's portrait.
+    pParty->setHoldingItem(Item(ITEM_POTION_CURE_WOUNDS));
+    pParty->activeCharacter().useItem(0, true);
+    game.tick();
+
+    EXPECT_TRUE(drinker.conditions.has(CONDITION_ERADICATED)); // Still eradicated.
+    EXPECT_EQ(healthTape, tape(5)); // HP never moved from 5 - potion had no effect.
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_POTION_CURE_WOUNDS); // Potion wasn't consumed.
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
+    EXPECT_CONTAINS(statusTape, "That player is Eradicated");
+}
+
 GAME_TEST(Issues, Issue598) {
     // Assert when accessing character inventory from the shop screen
     auto screenTape = tapes.screen();
