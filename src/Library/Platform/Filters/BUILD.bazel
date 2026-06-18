@@ -1,0 +1,16 @@
+cc_library(
+    name = "library_platform_filters",
+    srcs = [
+        "FilteringEventHandler.cpp",
+        "PlatformEventFilter.cpp",
+    ],
+    hdrs = [
+        "FilteringEventHandler.h",
+        "PlatformEventFilter.h",
+    ],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Platform/Interface:library_platform_interface",
+    ],
+    visibility = ["//visibility:public"],
+)

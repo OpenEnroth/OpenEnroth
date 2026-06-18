@@ -1,0 +1,11 @@
+load("//bazel/rules:cmrc.bzl", "cmrc_resource_library")
+
+cmrc_resource_library(
+    name = "resources",
+    namespace = "openenroth",
+    # glob() cannot cross package boundaries, so scripts/ (which has its own
+    # BUILD.bazel) is referenced via its filegroup target rather than glob.
+    srcs = glob(["shaders/**", "images/**"]) + ["//resources/scripts:scripts"],
+    strip_prefix = "resources",
+    visibility = ["//visibility:public"],
+)

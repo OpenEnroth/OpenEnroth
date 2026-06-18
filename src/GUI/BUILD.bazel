@@ -1,0 +1,95 @@
+cc_library(
+    name = "gui_enums",
+    hdrs = ["GUIEnums.h"],
+    deps = ["//src/Library/Serialization:library_serialization"],
+    visibility = ["//visibility:public"],
+)
+
+# Header-only target: no engine dep, so engine can include GUIFont.h via AssetsManager.h.
+cc_library(
+    name = "gui_font",
+    hdrs = ["GUIFont.h"],
+    deps = [
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Library/Color:library_color",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/LodFormats:library_lod_formats",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# Header-only target: GUIDialogues.h without any engine/gui_ui dep.
+# Needed by engine headers (ArenaEnumFunctions.h) which can't depend on gui (cycle).
+cc_library(
+    name = "gui_dialogues",
+    hdrs = ["GUIDialogues.h"],
+    deps = ["//src/Engine/Objects:engine_objects"],
+    visibility = ["//visibility:public"],
+)
+
+# Header-only target: GUIMessageQueue.h without depending on gui or gui_ui.
+# Needed by media (MediaPlayer.cpp) — gui -> gui_ui -> arcomage -> media creates a cycle.
+cc_library(
+    name = "gui_message_queue_base",
+    hdrs = ["GUIMessageQueue.h"],
+    deps = [":gui_enums"],
+    visibility = ["//visibility:public"],
+)
+
+# Header-only target: GUIWindow.h and GUIDialogues.h without depending on gui_ui or io.
+# Uses io_keyboard_base (not io) to avoid cycle: gui_window_base -> io -> engine -> gui_window_base.
+# Needed by gui_ui_house_base (which gui_ui_houses uses) to break the cycle:
+#   gui -> gui_ui -> gui_ui_houses -> (needs GUIWindow.h) -> would need gui -> cycle.
+cc_library(
+    name = "gui_window_base",
+    hdrs = [
+        "GUIButton.h",
+        "GUIDialogues.h",
+        "GUIWindow.h",
+    ],
+    deps = [
+        ":gui_dialogues",
+        ":gui_enums",
+        "//src/Engine:engine",
+        "//src/Io:io_keyboard_base",
+        "//src/Library/Color:library_color",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "gui",
+    srcs = [
+        "GUIButton.cpp",
+        "GUIEnums.cpp",
+        "GUIFont.cpp",
+        "GUIProgressBar.cpp",
+        "GUIMessageQueue.cpp",
+        "GUIWindow.cpp",
+    ],
+    hdrs = [
+        "GUIButton.h",
+        "GUIDialogues.h",
+        "GUIEnums.h",
+        "GUIFont.h",
+        "GUIProgressBar.h",
+        "GUIMessageQueue.h",
+        "GUIWindow.h",
+    ],
+    deps = [
+        ":gui_window_base",
+        "//src/Engine:engine",
+        "//src/Engine/Data:engine_data",
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/Engine/Objects:engine_objects",
+        "//src/Engine/Time:engine_time",
+        "//src/GUI/UI:gui_ui",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/LodFormats:library_lod_formats",
+        "//src/Utility:utility",
+    ],
+    visibility = ["//visibility:public"],
+)

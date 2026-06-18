@@ -1,0 +1,13 @@
+cc_library(
+    name = "library_cli",
+    srcs = [
+        "CliApp.cpp",
+    ],
+    hdrs = [
+        "CliApp.h",
+    ],
+    deps = [
+        "@cli11//:cli11",
+    ],
+    visibility = ["//visibility:public"],
+)

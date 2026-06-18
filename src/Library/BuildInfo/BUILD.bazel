@@ -1,0 +1,23 @@
+# CMake target name: library_buildinfo
+# Bazel label: //src/Library/BuildInfo:library_build_info
+#
+# TODO: The CMake version uses execute_process to get the git revision and
+# string(TIMESTAMP) to get the build time, then passes them as compile
+# definitions. In Bazel this should be done via a genrule or workspace status
+# (--workspace_status_command) that stamps MM_GIT_REVISION and MM_BUILD_TIME.
+# For now the defines are left as empty placeholders.
+cc_library(
+    name = "library_build_info",
+    srcs = [
+        "BuildInfo.cpp",
+    ],
+    hdrs = [
+        "BuildInfo.h",
+    ],
+    # TODO: replace with stamped values from workspace status
+    local_defines = [
+        'MM_GIT_REVISION=\\"unknown\\"',
+        'MM_BUILD_TIME=\\"unknown\\"',
+    ],
+    visibility = ["//visibility:public"],
+)
