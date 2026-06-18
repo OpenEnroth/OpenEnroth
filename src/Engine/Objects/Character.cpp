@@ -6239,6 +6239,10 @@ bool Character::IsDrunk() const {
     return this->conditions.has(CONDITION_DRUNK);
 }
 
+bool Character::isAlive() const {
+    return !IsDead() && !IsPetrified() && !IsEradicated();
+}
+
 void Character::SetCondWeakWithBlockCheck(int blockable) {
     SetCondition(CONDITION_WEAK, blockable);
 }

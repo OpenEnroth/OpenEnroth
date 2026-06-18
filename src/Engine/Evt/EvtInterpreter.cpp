@@ -111,6 +111,40 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
     }
 }
 
+/**
+ * @return                              `true` if the supplied EVENT_Compare variable describes a transient
+ *                                      character status that should not be evaluated against dead, petrified
+ *                                      or eradicated party members (e.g. the Haste Pedestal on Emerald Island
+ *                                      asks whether every character is rested - a dead party member can never
+ *                                      be rested, so leaving them out of the check matches player expectations).
+ *                                      Returns `false` for VAR_Dead, VAR_Stoned and VAR_Eradicated, where a
+ *                                      script may legitimately want to query those very states.
+ *
+ *                                      See issue #2502.
+ */
+static bool isTransientConditionVariable(EvtVariable variable) {
+    switch (variable) {
+        case VAR_Cursed:
+        case VAR_Weak:
+        case VAR_Asleep:
+        case VAR_Afraid:
+        case VAR_Drunk:
+        case VAR_Insane:
+        case VAR_PoisonedGreen:
+        case VAR_DiseasedGreen:
+        case VAR_PoisonedYellow:
+        case VAR_DiseasedYellow:
+        case VAR_PoisonedRed:
+        case VAR_DiseasedRed:
+        case VAR_Paralyzed:
+        case VAR_Unconsious:
+        case VAR_MajorCondition:
+            return true;
+        default:
+            return false;
+    }
+}
+
 int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
     EvtInstruction ir;
     bool stepFound = false;
@@ -296,11 +330,19 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_SetSprite:
             setDecorationSprite(ir.data.sprite_texture_descr.cog, ir.data.sprite_texture_descr.hide, ir.str);
             break;
-        case EVENT_Compare:
-            for (Character &character : iterateCharacters(_who, grng))
+        case EVENT_Compare: {
+            // For transient condition checks, exclude dead/petrified/eradicated party members - these characters
+            // cannot satisfy "all members rested" style triggers (e.g. the Haste Pedestal on Emerald Island)
+            // because resting does not clear conditions on dead members. See issue #2502.
+            bool skipNonAlive = isTransientConditionVariable(ir.data.variable_descr.type);
+            for (Character &character : iterateCharacters(_who, grng)) {
+                if (skipNonAlive && !character.isAlive())
+                    continue;
                 if (character.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value))
                     return ir.target_step;
+            }
             break;
+        }
         case EVENT_ChangeDoorState:
             switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
             break;
