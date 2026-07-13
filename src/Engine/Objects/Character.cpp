@@ -3959,7 +3959,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
 
 //----- (0044A5CB) --------------------------------------------------------
 void Character::SetVariable(EvtVariable var_type, int var_value) {
-    int gold{}, food{};
+    int gold = 0, food = 0;
     LocationInfo *ddm;
     Item item;
 
@@ -4570,7 +4570,7 @@ void Character::SetSkillReaction() {
 
 //----- (0044AFFB) --------------------------------------------------------
 void Character::AddVariable(EvtVariable var_type, signed int val) {
-    int food{};
+    int food = 0;
     LocationInfo *ddm;
     Item item;
 

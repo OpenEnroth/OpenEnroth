@@ -22,8 +22,8 @@ struct RenderVertexSoft;
 struct ODMRenderParams;
 
 struct DMap {
-    uint8_t field0;
-    uint8_t field1;
+    uint8_t field0 = 0;
+    uint8_t field1 = 0;
 };
 
 struct OutdoorLocation {
@@ -90,10 +90,10 @@ struct OutdoorLocation {
                                           // used for a separate cell, so in the
                                           // end it's 11 * 8 bits = 88 values
     std::array<std::array<uint8_t, 11>, 88> uPartiallyRevealedCellOnMap;  // [968]
-    int max_terrain_dimming_level;
+    int max_terrain_dimming_level = 0;
     Vec3f vSunlight;
-    float fFogDensity;
-    int uLastSunlightUpdateMinute;
+    float fFogDensity = 0;
+    int uLastSunlightUpdateMinute = 0;
 
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;

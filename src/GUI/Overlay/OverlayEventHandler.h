@@ -17,5 +17,5 @@ class OverlayEventHandler : public PlatformEventFilter {
     bool keyEvent(PlatformKey key, PlatformModifiers mods, bool down);
     bool mouseEvent(PlatformMouseButton button, const Pointi &pos, bool down);
 
-    struct nk_context *_context;
+    struct nk_context *_context = nullptr;
 };

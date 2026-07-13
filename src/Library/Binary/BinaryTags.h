@@ -7,7 +7,7 @@ struct UnsizedTag {};
 struct PresizedTag {
     constexpr explicit PresizedTag(size_t size) : size(size) {}
 
-    size_t size;
+    size_t size = 0;
 };
 
 struct AppendTag {};

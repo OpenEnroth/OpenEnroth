@@ -20,8 +20,8 @@ class GUIWindow_LloydsBook : public GUIWindow_Book {
  private:
     const Pid _casterPid;
     const SpellCastFlags _castFlags;
-    int _maxBeacons;
-    bool _recallingBeacon;
-    int _spellLevel;
+    int _maxBeacons = 0;
+    bool _recallingBeacon = false;
+    int _spellLevel = 0;
     Mastery _waterMastery;
 };

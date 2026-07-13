@@ -439,22 +439,6 @@ void GUIWindow_GameVideoOptions::Update() {
 }
 
 OptionsMenuSkin options_menu_skin;  // 507C60
-OptionsMenuSkin::OptionsMenuSkin()
-    : uTextureID_Background(0),
-      uTextureID_ArrowLeft(0),
-      uTextureID_ArrowRight(0),
-      uTextureID_unused_0(0),
-      uTextureID_unused_1(0),
-      uTextureID_unused_2(0),
-      uTextureID_FlipOnExit(0),
-      uTextureID_AlwaysRun(0),
-      uTextureID_WalkSound(0),
-      uTextureID_ShowDamage(0),
-      uTextureID_TurnSpeed(),
-      uTextureID_SoundLevels() {
-    for (unsigned i = 0; i < 3; ++i) uTextureID_TurnSpeed[i] = 0;
-    for (unsigned i = 0; i < 10; ++i) uTextureID_SoundLevels[i] = 0;
-}
 
 void OptionsMenuSkin::Release() {
 #define RELEASE(img)        \

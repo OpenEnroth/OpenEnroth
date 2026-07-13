@@ -25,14 +25,14 @@ class PlatformWindowEvent: public PlatformEvent {
 
 class PlatformKeyEvent: public PlatformWindowEvent {
  public:
-    PlatformKey key;
+    PlatformKey key = PlatformKey::KEY_NONE;
     PlatformModifiers mods;
     bool isAutoRepeat = false;
 };
 
 class PlatformMouseEvent: public PlatformWindowEvent {
  public:
-    PlatformMouseButton button; // Button that caused this event, or BUTTON_NONE for move events.
+    PlatformMouseButton button = PlatformMouseButton::BUTTON_NONE; // Button that caused this event, or BUTTON_NONE for move events.
     PlatformMouseButtons buttons; // Currently pressed mouse buttons.
     Pointi pos; // Window-relative cursor position.
     Pointi rel; // Mouse motion since the last mouse event.
@@ -61,12 +61,12 @@ class PlatformGamepadEvent: public PlatformEvent {
 
 class PlatformGamepadKeyEvent: public PlatformGamepadEvent {
  public:
-    PlatformKey key; // TODO(captainurist): PlatformGamepadKey
+    PlatformKey key = PlatformKey::KEY_NONE; // TODO(captainurist): PlatformGamepadKey
 };
 
 class PlatformGamepadAxisEvent: public PlatformGamepadEvent {
  public:
-    PlatformKey axis; // TODO(captainurist): PlatformGamepadAxis
+    PlatformKey axis = PlatformKey::KEY_NONE; // TODO(captainurist): PlatformGamepadAxis
     float value = 0.0; // In [-1, 1] range.
 };
 

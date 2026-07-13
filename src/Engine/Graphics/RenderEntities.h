@@ -55,16 +55,16 @@ struct RenderVertexD3D3 {
 
 struct RenderBillboard {
     Vec2f screenspace_projection_factor;
-    Sprite* hwsprite;
-    int16_t uPaletteId;
-    int uIndoorSectorID;
+    Sprite* hwsprite = nullptr;
+    int16_t uPaletteId = 0;
+    int uIndoorSectorID = 0;
     BillboardFlags flags;
     Vec3f worldPos;
     Vec2f screenPos;
-    int32_t view_space_z;
+    int32_t view_space_z = 0;
     float view_space_L2 = 0.0f;
     Pid object_pid;
-    uint16_t dimming_level;
+    uint16_t dimming_level = 0;
     Color sTintColor;
 };
 

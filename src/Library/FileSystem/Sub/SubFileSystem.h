@@ -42,6 +42,6 @@ class SubFileSystem : public FileSystem {
     virtual std::string _displayPath(FileSystemPathView path) const override;
 
  private:
-    FileSystem *_base;
+    FileSystem *_base = nullptr;
     FileSystemPath _basePath;
 };

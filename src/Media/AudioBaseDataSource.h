@@ -25,12 +25,12 @@ class AudioBaseDataSource : public IAudioDataSource {
     virtual float GetDuration() override;
 
  protected:
-    AVFormatContext *pFormatContext;
-    int iStreamIndex;
-    AVCodecContext *pCodecContext;
-    SwrContext *pConverter;
-    bool bOpened;
+    AVFormatContext *pFormatContext = nullptr;
+    int iStreamIndex = 0;
+    AVCodecContext *pCodecContext = nullptr;
+    SwrContext *pConverter = nullptr;
+    bool bOpened = false;
     std::queue<Blob> queue;
 
-    float _savedDuration;
+    float _savedDuration = 0;
 };

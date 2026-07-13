@@ -94,7 +94,7 @@ class PlatformApplication {
     void removeComponentInternal(PlatformApplicationAware *aware);
 
  private:
-    Platform *_platform;
+    Platform *_platform = nullptr;
     std::unique_ptr<PlatformEventLoop> _eventLoop;
     std::unique_ptr<PlatformWindow> _window;
     std::unique_ptr<PlatformOpenGLContext> _openGLContext;

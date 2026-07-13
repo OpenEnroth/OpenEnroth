@@ -314,7 +314,7 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     if (dist < model->boundingRadius + reachable_depth) *reachable = true;
 
     // to avoid small objects not showing up give a more generous radius
-    float radius{ model->boundingRadius };
+    float radius = model->boundingRadius;
     if (radius < 512.0f) radius = 512.0f;
 
     return IsSphereInFrustum(model->boundingCenter, radius);
@@ -347,7 +347,7 @@ bool IsCylinderInFrustum(Vec3f center, float radius) {
     // center must be within left / right frustum planes to be visible
     for (int i = 0; i < 2; i++) {
         Vec3f planenormal{ pCamera3D->FrustumPlanes[i].x, pCamera3D->FrustumPlanes[i].y, pCamera3D->FrustumPlanes[i].z };
-        float planedist{ pCamera3D->FrustumPlanes[i].w };
+        float planedist = pCamera3D->FrustumPlanes[i].w;
         if ((dot(center, planenormal) - planedist) < -radius) {
             return false;
         }

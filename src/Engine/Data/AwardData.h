@@ -4,5 +4,5 @@
 
 struct AwardData {
     std::string pText;
-    unsigned int uPriority;
+    unsigned int uPriority = 0;
 };

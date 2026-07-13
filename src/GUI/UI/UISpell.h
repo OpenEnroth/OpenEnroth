@@ -17,7 +17,7 @@ class TargetedSpellUI : public GUIWindow {
     void CreateButtonsTargetCharacters();
 
  private:
-    CastSpellInfo *_spellInfo;
+    CastSpellInfo *_spellInfo = nullptr;
 };
 
 class TargetedSpellUI_Hirelings : public TargetedSpellUI {

@@ -57,7 +57,7 @@ class EnumSerializer {
     }
 
     bool tryDeserialize(std::string_view src, T *dst) const {
-        uint64_t tmp;
+        uint64_t tmp = 0;
         if (!_table.tryDeserialize(src, &tmp))
             return false;
         *dst = static_cast<T>(tmp);
@@ -69,7 +69,7 @@ class EnumSerializer {
     }
 
     bool tryDeserialize(std::string_view src, Flags<T> *dst) const requires std::is_enum_v<T> {
-        uint64_t tmp;
+        uint64_t tmp = 0;
         if (!_table.tryDeserializeFlags(src, &tmp))
             return false;
         *dst = static_cast<Flags<T>>(tmp);

@@ -58,15 +58,15 @@ class KeyboardInputHandler {
     void ProcessPausedAction(InputAction action);
     void ProcessGameplayAction(InputAction action);
 
-    KeyboardController *controller;
+    KeyboardController *controller = nullptr;
     std::shared_ptr<KeyboardActionMapping> actionMapping;
 
-    PlatformKey lastKeyPressed;
+    PlatformKey lastKeyPressed = PlatformKey::KEY_NONE;
     Duration keydelaytimer;
-    int max_input_string_len;
+    int max_input_string_len = 0;
     std::string pPressedKeysBuffer;
-    TextInputType inputType;
-    GUIWindow *window;
+    TextInputType inputType = TextInputType::None;
+    GUIWindow *window = nullptr;
 };
 }  // namespace Io
 

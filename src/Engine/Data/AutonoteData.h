@@ -6,5 +6,5 @@
 
 struct AutonoteData {
     std::string pText;
-    AutonoteType eType;
+    AutonoteType eType = AUTONOTE_POTION_RECIPE;
 };

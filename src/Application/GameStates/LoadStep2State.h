@@ -12,6 +12,6 @@ class LoadStep2State : public FsmState {
 
  private:
     void _drawMM7CopyrightWindow();
-    GraphicsImage *_fullscreenTexture{};
-    bool _isFirstPass{};
+    GraphicsImage *_fullscreenTexture = nullptr;
+    bool _isFirstPass = false;
 };

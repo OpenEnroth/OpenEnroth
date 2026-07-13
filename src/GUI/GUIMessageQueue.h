@@ -7,9 +7,9 @@
 #include "GUI/GUIEnums.h"
 
 struct GUIMessage {
-    UIMessageType type;
-    int param;
-    int param2;
+    UIMessageType type = UIMSG_0;
+    int param = 0;
+    int param2 = 0;
 };
 
 struct GUIFrameMessageQueue {

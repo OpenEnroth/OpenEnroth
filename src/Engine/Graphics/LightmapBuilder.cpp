@@ -106,10 +106,10 @@ Color GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight
  */
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {
     int lightlevel = uBaseLightLevel;
-    float light_radius{};
-    float distX{};
-    float distY{};
-    float distZ{};
+    float light_radius = 0;
+    float distX = 0;
+    float distY = 0;
+    float distZ = 0;
     unsigned int approx_distance;
 
     // mobile lights

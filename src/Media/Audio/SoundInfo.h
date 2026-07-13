@@ -15,8 +15,8 @@ class SoundInfo {
 
  public:
     std::string name;
-    SoundType type;
-    SoundId soundId;
+    SoundType type = SOUND_TYPE_UNKNOWN;
+    SoundId soundId = SOUND_Invalid;
     SoundFlags flags;
     PAudioDataSource dataSource;
 };

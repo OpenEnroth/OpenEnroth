@@ -25,9 +25,9 @@ struct CollisionState {
 
     // actor is modeled as two spheres, basically "feet" & "head". Collisions are then done for both spheres.
 
-    bool check_hi;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
-    float radius_lo;   // radius of the lo ("feet") sphere.
-    float radius_hi;  // radius of the hi ("head") sphere.
+    bool check_hi = false;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
+    float radius_lo = 0;   // radius of the lo ("feet") sphere.
+    float radius_hi = 0;  // radius of the hi ("head") sphere.
     Vec3f position_lo; // center of the lo sphere.
     Vec3f position_hi; // center of the hi sphere.
     Vec3f new_position_lo; // desired new position for the center of the lo sphere.
@@ -35,9 +35,9 @@ struct CollisionState {
     Vec3f velocity;  // Movement vector.
     Vec3f direction;  // Movement direction, basically velocity as a unit vector.
     float speed = 0;  // Velocity magnitude.
-    float total_move_distance;  // Total move distance, accumulated between collision iterations, starts at 0.
-    float move_distance;  // Desired movement distance for current iteration, minus the distance already covered.
-    float adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
+    float total_move_distance = 0;  // Total move distance, accumulated between collision iterations, starts at 0.
+    float move_distance = 0;  // Desired movement distance for current iteration, minus the distance already covered.
+    float adjusted_move_distance = 0;  // Movement distance for current iteration, adjusted after collision checks.
     int uSectorID = 0;  // Indoor sector id.
     Pid pid;  // Pid of the object that we're collided with.
     BBoxf bbox;

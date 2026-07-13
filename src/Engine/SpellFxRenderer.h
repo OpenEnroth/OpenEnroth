@@ -46,7 +46,7 @@ struct SpellFX_Billboard {
     };
 
     // spellfx verts
-    int uNumVertices;
+    int uNumVertices = 0;
     local_01 field_14[5]{};  // world coords of verts
     local_01 field_64[5]{};  // view coords
     local_01 field_B4[5]{};  // clipped view coords
@@ -62,21 +62,21 @@ struct PlayerBuffAnim {
 };
 
 struct ProjectileAnim {
-    float srcX;
-    float srcY;
-    float srcZ;
-    float dstX;
-    float dstY;
-    float dstZ;
-    GraphicsImage *texture;  // int uTextureID;
+    float srcX = 0;
+    float srcY = 0;
+    float srcZ = 0;
+    float dstX = 0;
+    float dstY = 0;
+    float dstZ = 0;
+    GraphicsImage *texture = nullptr;  // int uTextureID;
 };
 
 struct stru6_stru2 {
     // int field_0;
-    float flt_0_x;
-    float flt_4_y;
-    float flt_8_z;
-    int field_C;
+    float flt_0_x = 0;
+    float flt_4_y = 0;
+    float flt_8_z = 0;
+    int field_C = 0;
 };
 
 struct SpellFxRenderer {
@@ -85,12 +85,6 @@ struct SpellFxRenderer {
      */
     explicit inline SpellFxRenderer(std::shared_ptr<ParticleEngine> particle_engine) {
         this->particle_engine = particle_engine;
-
-        this->field_204 = 0;
-        this->uFadeTime = 0_ticks;
-        this->uNumProjectiles = 0;
-        this->field_0 = 0;
-        this->uAnimLength = 0_ticks;
 
         _spellFXSphereInstance = new SpellFX_Billboard();
         //_spellFXSphereInstance->Initialize(colorTable.OrangeyRed);
@@ -138,25 +132,25 @@ struct SpellFxRenderer {
     void DrawPlayerBuffAnims();
     void LoadAnimations();
 
-    int field_0;  // count of have many stored in array_4
+    int field_0 = 0;  // count of have many stored in array_4
     stru6_stru2 array_4[32];  // stores source position
 
-    int field_204;  // fireball sphere tally
+    int field_204 = 0;  // fireball sphere tally
 
     std::array<PlayerBuffAnim, 4> pCharacterBuffs;
     std::array<ProjectileAnim, 32> pProjectiles;
-    int uNumProjectiles;
-    SpellFX_Billboard *_spellFXSphereInstance;
-    int field_5D0;
+    int uNumProjectiles = 0;
+    SpellFX_Billboard *_spellFXSphereInstance = nullptr;
+    int field_5D0 = 0;
     Duration uAnimLength;
     Duration uFadeTime;
     Duration uFadeLength;
     Color uFadeColor;
-    GraphicsImage *effpar01;  // unsigned int effpar01; // trail fire
-    GraphicsImage *effpar02;  // unsigned int effpar02;
-    GraphicsImage *effpar03;  // unsigned int effpar03; // trail particle
-    unsigned int _unused_uSpriteID_sp57c;
-    int field_5F4;
+    GraphicsImage *effpar01 = nullptr;  // unsigned int effpar01; // trail fire
+    GraphicsImage *effpar02 = nullptr;  // unsigned int effpar02;
+    GraphicsImage *effpar03 = nullptr;  // unsigned int effpar03; // trail particle
+    unsigned int _unused_uSpriteID_sp57c = 0;
+    int field_5F4 = 0;
 
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
 };

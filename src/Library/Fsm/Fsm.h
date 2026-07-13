@@ -41,7 +41,7 @@ class Fsm : public FsmEventHandler {
     [[nodiscard]] FsmStateEntry *_getStateByName(std::string_view stateName);
 
     FsmStateEntries _states;
-    FsmStateEntry *_currentState{};
+    FsmStateEntry *_currentState = nullptr;
 
-    bool _hasReachedExitState{};
+    bool _hasReachedExitState = false;
 };

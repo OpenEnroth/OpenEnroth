@@ -13,14 +13,14 @@ struct LevelDecoration {
     bool IsInteractive();
     bool IsObeliskChestActive();
 
-    DecorationId uDecorationDescID;
+    DecorationId uDecorationDescID = DECORATION_NULL;
     LevelDecorationFlags uFlags;
     Vec3f vPosition;
-    int32_t _yawAngle; // Only used for party spawn points, see `MapStartPoint`.
-    uint16_t uCog;
-    uint16_t uEventID;
-    uint16_t uTriggerRange;
-    int16_t eventVarId;
+    int32_t _yawAngle = 0; // Only used for party spawn points, see `MapStartPoint`.
+    uint16_t uCog = 0;
+    uint16_t uEventID = 0;
+    uint16_t uTriggerRange = 0;
+    int16_t eventVarId = 0;
 };
 
 extern std::vector<LevelDecoration> pLevelDecorations;

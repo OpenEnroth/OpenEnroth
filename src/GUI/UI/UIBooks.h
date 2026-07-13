@@ -58,8 +58,8 @@ class GUIWindow_Book : public GUIWindow {
     GraphicsImage *ui_book_map_frame{ nullptr };
     GraphicsImage *ui_book_quest_div_bar{ nullptr };
 
-    int _bookButtonClicked{ 0 };
-    BookButtonAction _bookButtonAction;
+    int _bookButtonClicked = 0;
+    BookButtonAction _bookButtonAction = BOOK_ZOOM_IN;
 
  private:
     /**

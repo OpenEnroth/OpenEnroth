@@ -124,7 +124,7 @@ void CastSpellInfoHelpers::castSpell() {
     for (CastSpellInfo &spellInfo : pCastSpellInfo) {  // cycle through spell queue
         SpriteObject pSpellSprite;
         CastSpellInfo *pCastSpell = &spellInfo;
-        int uRequiredMana{};
+        int uRequiredMana = 0;
         Duration recoveryTime;
         Duration failureRecoveryTime;
 

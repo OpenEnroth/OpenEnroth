@@ -111,8 +111,8 @@ struct ImGuiInputTextUserData {
         data->InsertChars(0, string->data());
     }
 
-    std::string *string{};
-    sol::function *callback{};
+    std::string *string = nullptr;
+    sol::function *callback = nullptr;
 };
 
 int inputTextCallback(ImGuiInputTextCallbackData *data) {

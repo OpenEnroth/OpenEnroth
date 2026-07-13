@@ -24,8 +24,8 @@ struct SpellInfo {
     std::string pExpertSkillDesc;
     std::string pMasterSkillDesc;
     std::string pGrandmasterSkillDesc;
-    DamageType damageType;
-    int field_20;
+    DamageType damageType = DAMAGE_FIRE;
+    int field_20 = 0;
 };
 
 struct SpellStats {
@@ -48,18 +48,18 @@ class SpellData {
               Mastery inSkillMastery);
     IndexedArray<uint16_t, MASTERY_FIRST, MASTERY_LAST> mana_per_skill;
     IndexedArray<Duration, MASTERY_FIRST, MASTERY_LAST> recovery_per_skill;
-    int8_t baseDamage;
-    int8_t bonusSkillDamage;
+    int8_t baseDamage = 0;
+    int8_t bonusSkillDamage = 0;
     SpellFlags flags;
-    Mastery skillMastery;
+    Mastery skillMastery = MASTERY_NONE;
     // char field_12;
     // char field_13;
     // int16_t field_14;
 };
 
 struct SpellBookIconPos {
-    int32_t Xpos;
-    int32_t Ypos;
+    int32_t Xpos = 0;
+    int32_t Ypos = 0;
 };
 
 extern SpellStats *pSpellStats;

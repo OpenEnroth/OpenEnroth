@@ -26,9 +26,9 @@ struct MobileLight {
 /*
 struct LightStack<T>
 {
-  int field_0;
+  int field_0 = 0;
   char T[400];
-  unsigned int uNumLightsActive;
+  unsigned int uNumLightsActive = 0;
 };
 */
 
@@ -46,7 +46,7 @@ struct LightsStack_StationaryLight_ {
     bool AddLight(const Vec3f &pos, int16_t radius, Color color, char uLightType);
 
     std::array<StationaryLight, 400> pLights;
-    unsigned int uNumLightsActive;
+    unsigned int uNumLightsActive = 0;
 };
 
 struct LightsStack_MobileLight_ {
@@ -59,5 +59,5 @@ struct LightsStack_MobileLight_ {
     bool AddLight(const Vec3f &pos, int uSectorID, int uRadius, Color color, char uLightType);
 
     std::array<MobileLight, 400> pLights;
-    unsigned int uNumLightsActive;
+    unsigned int uNumLightsActive = 0;
 };

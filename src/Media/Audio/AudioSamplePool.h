@@ -12,7 +12,7 @@ struct AudioSamplePoolEntry {
     AudioSamplePoolEntry(PAudioSample samplePtr, SoundId id, Pid pid) : samplePtr(samplePtr), id(id), pid(pid) {}
 
     PAudioSample samplePtr;
-    SoundId id;
+    SoundId id = SOUND_Invalid;
     Pid pid;
 };
 
@@ -33,5 +33,5 @@ class AudioSamplePool {
     bool hasPlaying();
  private:
     std::list<AudioSamplePoolEntry> _samplePool;
-    bool _looping;
+    bool _looping = false;
 };

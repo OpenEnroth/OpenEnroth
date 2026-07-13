@@ -722,7 +722,7 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
     int texid = texture->renderId().value();
 
     Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
-    float scrspace{ pCamera3D->GetFarClip() };
+    float scrspace = pCamera3D->GetFarClip();
 
     float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
     float oneof = 1.0f / (pCamera3D->GetFarClip());
@@ -1518,7 +1518,7 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
-    float scrspace{ pCamera3D->GetFarClip() };
+    float scrspace = pCamera3D->GetFarClip();
 
     // load up poly
     for (int z = 0; z < (numVertices - 2); z++) {
@@ -1734,7 +1734,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         logger->trace("Billboard shader store isnt empty!");
 
     // track loaded tex
-    float gltexid{ 0 };
+    float gltexid = 0;
     // track blend mode
     //RenderBillboardD3D::OpacityType blendtrack{ RenderBillboardD3D::NoBlend };
 
@@ -2713,7 +2713,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         }
 
         // check for any splat in this models box - if not continue
-        bool found{ false };
+        bool found = false;
         for (int splat = 0; splat < decal_builder->bloodsplat_container->uNumBloodsplats; ++splat) {
             Bloodsplat *thissplat = &decal_builder->bloodsplat_container->pBloodsplats_to_apply[splat];
             if (model.boundingBox.intersectsCube(thissplat->pos, thissplat->radius)) {
@@ -2974,8 +2974,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 int uFaceID = pBspRenderer->faces[i].uFaceID;
                 BLVFace *face = &pIndoor->faces[uFaceID];
 
-                float skymodtimex{};
-                float skymodtimey{};
+                float skymodtimex = 0;
+                float skymodtimey = 0;
                 if (face->Indoor_sky()) {
                     if (face->polygonType != POLYGON_InBetweenFloorAndWall && face->polygonType != POLYGON_Floor) {
                         // draw forced perspective sky
@@ -3168,7 +3168,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             // does light sphere collide with current sector
             // expanded current sector
-            bool fromexpanded{ false };
+            bool fromexpanded = false;
             if (pIndoor->sectors[pBLVRenderParams->uPartySectorID].boundingBox.intersectsCube(test.vPosition, test.uRadius)) {
                 onlist = true;
                 fromexpanded = true;
@@ -3177,7 +3177,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             if (!onlist) continue;
 
             // cull through viewing frustum
-            bool visinfrustum{ false };
+            bool visinfrustum = false;
             if (!fromexpanded) {
                 for (int j = 0; j < pBspRenderer->num_nodes; ++j) {
                     if (pBspRenderer->nodes[j].uSectorID == test.uSectorID) {

@@ -76,7 +76,7 @@ class HitMap {
  private:
     struct Entry {
         Pointi position;
-        GraphicsImage *image;
+        GraphicsImage *image = nullptr;
         T value;
 
         Entry(Pointi pos, GraphicsImage *img, T val) : position(pos), image(img), value(val) {}

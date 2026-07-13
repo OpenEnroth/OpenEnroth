@@ -31,7 +31,7 @@ class Paletted_Img_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod;
+    LodTextureCache *lod = nullptr;
 };
 
 class ColorKey_LOD_Loader : public ImageLoader {
@@ -46,7 +46,7 @@ class ColorKey_LOD_Loader : public ImageLoader {
 
  protected:
     Color colorkey;
-    LodTextureCache *lod;
+    LodTextureCache *lod = nullptr;
 };
 
 class Image16bit_LOD_Loader : public ImageLoader {
@@ -59,7 +59,7 @@ class Image16bit_LOD_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod;
+    LodTextureCache *lod = nullptr;
 };
 
 class Alpha_LOD_Loader : public ImageLoader {
@@ -72,7 +72,7 @@ class Alpha_LOD_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod;
+    LodTextureCache *lod = nullptr;
 };
 
 class Buff_LOD_Loader : public ImageLoader {
@@ -85,7 +85,7 @@ class Buff_LOD_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod;
+    LodTextureCache *lod = nullptr;
 };
 
 class PCX_Loader : public ImageLoader {
@@ -103,7 +103,7 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodReader *lod;
+    LodReader *lod = nullptr;
 };
 
 class PCX_LOD_Compressed_Loader : public PCX_Loader {
@@ -135,7 +135,7 @@ class Bitmaps_LOD_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod;
+    LodTextureCache *lod = nullptr;
 };
 
 class Bitmaps_GEN_Loader : public ImageLoader {
@@ -157,5 +157,5 @@ class Sprites_LOD_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodSpriteCache *lod;
+    LodSpriteCache *lod = nullptr;
 };

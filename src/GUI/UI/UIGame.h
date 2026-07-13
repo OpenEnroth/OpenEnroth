@@ -117,20 +117,19 @@ extern bool bFlashAutonotesBook;
 extern bool bFlashQuestBook;
 
 struct OptionsMenuSkin {
-    OptionsMenuSkin();
     void Release();
 
-    GraphicsImage *uTextureID_Background;       // 507C60
-    GraphicsImage *uTextureID_TurnSpeed[3];     // 507C64
-    GraphicsImage *uTextureID_ArrowLeft;        // 507C70
-    GraphicsImage *uTextureID_ArrowRight;       // 507C74
-    GraphicsImage *uTextureID_unused_0;         // 507C78
-    GraphicsImage *uTextureID_unused_1;         // 507C7C
-    GraphicsImage *uTextureID_unused_2;         // 507C80
-    GraphicsImage *uTextureID_FlipOnExit;       // 507C84
-    GraphicsImage *uTextureID_SoundLevels[10];  // 507C88
-    GraphicsImage *uTextureID_AlwaysRun;        // 507CB0
-    GraphicsImage *uTextureID_WalkSound;        // 507CB4
-    GraphicsImage *uTextureID_ShowDamage;       // 507CB8
+    GraphicsImage *uTextureID_Background = nullptr;       // 507C60
+    GraphicsImage *uTextureID_TurnSpeed[3] = {};          // 507C64
+    GraphicsImage *uTextureID_ArrowLeft = nullptr;        // 507C70
+    GraphicsImage *uTextureID_ArrowRight = nullptr;       // 507C74
+    GraphicsImage *uTextureID_unused_0 = nullptr;         // 507C78
+    GraphicsImage *uTextureID_unused_1 = nullptr;         // 507C7C
+    GraphicsImage *uTextureID_unused_2 = nullptr;         // 507C80
+    GraphicsImage *uTextureID_FlipOnExit = nullptr;       // 507C84
+    GraphicsImage *uTextureID_SoundLevels[10] = {};       // 507C88
+    GraphicsImage *uTextureID_AlwaysRun = nullptr;        // 507CB0
+    GraphicsImage *uTextureID_WalkSound = nullptr;        // 507CB4
+    GraphicsImage *uTextureID_ShowDamage = nullptr;       // 507CB8
 };
 extern OptionsMenuSkin options_menu_skin;  // 507C60
