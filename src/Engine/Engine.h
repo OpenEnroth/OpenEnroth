@@ -76,8 +76,6 @@ class Engine {
 
     bool isOverlayOpen() const;
 
-    TextEncoding gameDataEncoding() const { return _gameDataEncoding; }
-
     void Initialize();
     Vis_PIDAndDepth PickMouse(float fPickDepth, int uMouseX, int uMouseY,
                               Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
@@ -147,7 +145,6 @@ class Engine {
     std::unique_ptr<LightsStack_MobileLight_> _mobileLights;
 
  private:
-    TextEncoding _gameDataEncoding = ENCODING_ASCII;
     std::unique_ptr<ResourceManager> _resourceManager;
 };
 

@@ -34,6 +34,7 @@
 #include "Library/Image/Pcx.h"
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
+#include "Resources/ResourceManager.h"
 
 #include "TurnEngine/TurnEngine.h"
 
@@ -147,7 +148,7 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
     state.overlays = *pActiveOverlayList;
     state.npcData = pNPCStats->pNPCData;
     state.npcGroups = pNPCStats->pGroups;
-    state.extension.encoding = engine->gameDataEncoding();
+    state.extension.encoding = engine->resources()->encoding();
 
     // Populate map deltas.
     if (resetWorld) {

@@ -6,6 +6,6 @@
 
 class Blob;
 
-void initializeHouses(const Blob &houses);
+void initializeHouses(std::string_view houses);
 
 extern IndexedArray<HouseData, HOUSE_FIRST, HOUSE_LAST> houseTable;

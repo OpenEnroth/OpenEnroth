@@ -83,8 +83,8 @@ struct MonsterInfo {
 };
 
 struct MonsterStats {
-    void Initialize(const Blob &monsters);
-    void InitializePlacements(const Blob &placements);
+    void Initialize(std::string_view monsters);
+    void InitializePlacements(std::string_view placements);
     MonsterId FindMonsterByInternalName(std::string_view internalName);
 
     IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> infos;

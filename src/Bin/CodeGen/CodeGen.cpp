@@ -155,7 +155,7 @@ std::string mapIdEnumName(const MapInfo &mapInfo) {
 
 int runMapIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
     MapStats mapStats;
-    mapStats.Initialize(resourceManager->eventsData("MapStats.txt"));
+    mapStats.Initialize(resourceManager->eventsText("MapStats.txt"));
 
     CodeGenMap map;
     map.insert(MAP_INVALID, "INVALID", "");
@@ -178,7 +178,7 @@ const MapInfo &mapInfoByFileName(const MapStats &mapStats, std::string_view file
 
 int runBeaconsCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
     MapStats mapStats;
-    mapStats.Initialize(resourceManager->eventsData("MapStats.txt"));
+    mapStats.Initialize(resourceManager->eventsText("MapStats.txt"));
 
     LodReader gamesLod(dfs->read("data/games.lod"));
     std::vector<std::string> fileNames = gamesLod.ls();
@@ -196,9 +196,9 @@ int runBeaconsCodeGen(const CodeGenOptions &options, ResourceManager *resourceMa
 
 int runHouseIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
     MapStats mapStats;
-    mapStats.Initialize(resourceManager->eventsData("MapStats.txt"));
+    mapStats.Initialize(resourceManager->eventsText("MapStats.txt"));
 
-    initializeHouses(resourceManager->eventsData("2dEvents.txt"));
+    initializeHouses(resourceManager->eventsText("2dEvents.txt"));
 
     std::unordered_map<HouseId, std::set<std::string>> mapNamesByHouseId; // Only arbiter exists on two maps.
 
@@ -264,7 +264,7 @@ MonsterStats loadMonsterStats(ResourceManager *resourceManager) {
     deserialize(dmon, pMonsterList);
 
     MonsterStats result;
-    result.Initialize(resourceManager->eventsData("monsters.txt"));
+    result.Initialize(resourceManager->eventsText("monsters.txt"));
     return result;
 }
 
@@ -396,7 +396,7 @@ int runBountyHuntCodeGen(const CodeGenOptions &options, ResourceManager *resourc
 
 int runMusicCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
     MapStats mapStats;
-    mapStats.Initialize(resourceManager->eventsData("MapStats.txt"));
+    mapStats.Initialize(resourceManager->eventsText("MapStats.txt"));
 
     std::map<MusicId, std::vector<std::string>> mapNamesByMusicId, mapEnumNamesByMusicId;
     for (const MapInfo &info : mapStats.pInfos) {
@@ -498,7 +498,7 @@ int runSpeechPortraitsCodegen(const CodeGenOptions &options, ResourceManager *re
 int runLstrCodegen(const CodeGenOptions &options, ResourceManager *resourceManager) {
     CodeGenMap map;
 
-    std::string txt = std::string(resourceManager->eventsData("global.txt").str());
+    std::string txt = resourceManager->eventsText("global.txt");
 
     std::vector<std::string_view> lines = split(txt).by("\r\n");
 

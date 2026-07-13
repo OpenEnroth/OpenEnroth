@@ -85,15 +85,15 @@ struct NPCGreeting {
 
 struct NPCStats {
     void Initialize(ResourceManager *resourceManager);
-    void InitializeNPCNames(const Blob &npcNames);
-    void InitializeNPCProfs(const Blob &npcProfs);
-    void InitializeNPCText(const Blob &npcText);
-    void InitializeNPCTopics(const Blob &npcTopics);
-    void InitializeNPCDist(const Blob &npcDist);
-    void InitializeNPCData(const Blob &npcData);
-    void InitializeNPCGreets(const Blob &npcGreets);
-    void InitializeNPCGroups(const Blob &npcGroups);
-    void InitializeNPCNews(const Blob &npcNews);
+    void InitializeNPCNames(std::string_view npcNames);
+    void InitializeNPCProfs(std::string_view npcProfs);
+    void InitializeNPCText(std::string_view npcText);
+    void InitializeNPCTopics(std::string_view npcTopics);
+    void InitializeNPCDist(std::string_view npcDist);
+    void InitializeNPCData(std::string_view npcData);
+    void InitializeNPCGreets(std::string_view npcGreets);
+    void InitializeNPCGroups(std::string_view npcGroups);
+    void InitializeNPCNews(std::string_view npcNews);
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid,
                                   HouseId uLocation2D, MapId uMapId);
     /**

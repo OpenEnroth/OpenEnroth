@@ -22,6 +22,7 @@
 EvtProgram EvtProgram::load(const Blob &rawData) {
     EvtProgram result;
 
+    // TODO(captainurist): use a single memory input stream here?
     const uint8_t *pos = reinterpret_cast<const uint8_t *>(rawData.data());
     const uint8_t *const end = pos + rawData.size();
     while (pos < end) {

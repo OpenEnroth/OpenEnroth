@@ -116,7 +116,7 @@ static Blob makeSndBlobWithCorruptCompressedEntry(std::string_view content) {
     serialize(uint32_t(1), &stream);
 
     SndEntry_MM7 entry = {};
-    snapshot(std::string("corrupt.wav"), &entry.name);
+    snapshot(std::string("corrupt.wav"), &entry.name, tags::encoding(ENCODING_BYTES));
     entry.offset = headerSize;
     entry.size = compressed.size();
     entry.decompressedSize = content.size(); // deliberately wrong checksum in payload

@@ -22,6 +22,7 @@
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
 #include "GUI/GUIProgressBar.h"
@@ -189,7 +190,7 @@ GAME_TEST(Issues, Issue1) {
 
             for (const auto &actorSnap : rawDelta.actors) {
                 Actor actor;
-                reconstruct(actorSnap, &actor, tags::encoding(engine->gameDataEncoding()));
+                reconstruct(actorSnap, &actor, tags::encoding(engine->resources()->encoding()));
                 if (actor.uniqueNameIndex == 0 && actor.monsterInfo.id != MONSTER_INVALID) {
                     const MonsterInfo &templateInfo = pMonsterStats->infos[actor.monsterInfo.id];
                     reportMismatch(fileName, mapId, "indoor", actor, templateInfo);
@@ -207,7 +208,7 @@ GAME_TEST(Issues, Issue1) {
 
             for (const auto &actorSnap : rawDelta.actors) {
                 Actor actor;
-                reconstruct(actorSnap, &actor, tags::encoding(engine->gameDataEncoding()));
+                reconstruct(actorSnap, &actor, tags::encoding(engine->resources()->encoding()));
                 if (actor.uniqueNameIndex == 0 && actor.monsterInfo.id != MONSTER_INVALID) {
                     const MonsterInfo &templateInfo = pMonsterStats->infos[actor.monsterInfo.id];
                     reportMismatch(fileName, mapId, "outdoor", actor, templateInfo);
@@ -1042,7 +1043,7 @@ GAME_TEST(Prs, Pr2354) {
             std::string dlvFilename = fmt::format("{}.dlv", baseName);
             IndoorDelta_MM7 rawDelta;
             deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlvFilename)), &rawDelta, tags::context(rawLocation));
-            reconstruct(rawDelta, &location, tags::encoding(engine->gameDataEncoding()));
+            reconstruct(rawDelta, &location, tags::encoding(engine->resources()->encoding()));
         } else if (isMapOutdoor(mapId)) {
             // Deserialize and reconstruct the base outdoor location (.odm).
             OutdoorLocation_MM7 rawLocation;
@@ -1054,7 +1055,7 @@ GAME_TEST(Prs, Pr2354) {
             std::string ddmFilename = fmt::format("{}.ddm", baseName);
             OutdoorDelta_MM7 rawDelta;
             deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddmFilename)), &rawDelta, tags::context(rawLocation));
-            reconstruct(rawDelta, &location, tags::encoding(engine->gameDataEncoding()));
+            reconstruct(rawDelta, &location, tags::encoding(engine->resources()->encoding()));
         }
     }
 }

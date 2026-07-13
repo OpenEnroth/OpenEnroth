@@ -32,7 +32,7 @@ struct SpellStats {
     /**
      * @offset 0x45384A
      */
-    void Initialize(const Blob &spells);
+    void Initialize(std::string_view spells);
 
     IndexedArray<SpellInfo, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pInfos;
 };
