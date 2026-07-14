@@ -6,8 +6,8 @@
 #include <string_view>
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/Memory/MemoryScratchpad.h"
 
-#include "ChunkBuffer.h"
 #include "OutputStream.h"
 
 /**
@@ -45,9 +45,6 @@ class BlobOutputStream : public OutputStream {
     virtual void _close(Buffer *buffer, bool canThrow) override;
 
  private:
-    Blob materialize();
-
- private:
     Blob *_target = nullptr;
-    ChunkBuffer _chunks;
+    MemoryScratchpad _scratchpad;
 };

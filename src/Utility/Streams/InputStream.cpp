@@ -1,10 +1,11 @@
 #include "InputStream.h"
 
 #include <cassert>
+#include <span>
 #include <string>
 
 #include "Utility/Exception.h"
-#include "Utility/Streams/ChunkBuffer.h"
+#include "Utility/Memory/MemoryScratchpad.h"
 
 InputStream::~InputStream() = default;
 
@@ -18,21 +19,23 @@ size_t InputStream::readAll(std::string *dst) {
         size_t bytesTotal = _size - position();
         if (bytesTotal == 0)
             return 0;
-        dst->resize_and_overwrite(bytesTotal, [](char *, size_t n) { return n; }); // Technically UB.
-        return read(dst->data(), bytesTotal);
+        dst->resize_and_overwrite(bytesTotal, [](char *, size_t n) { return n; }); // Technically UB, but throwing from
+        return read(dst->data(), bytesTotal);                                      // the callback is also UB, so...
     } else {
         // Unsized stream: accumulate in chunks, materialize once.
-        ChunkBuffer chunks;
+        MemoryScratchpad scratchpad;
         size_t bytesTotal = 0;
         while (true) {
-            StreamBuffer<char> buf = chunks.allocateChunk();
-            size_t bytesRead = read(buf.pos(), buf.remaining());
+            std::span<char> chunk = scratchpad.next();
+            size_t bytesRead = read(chunk.data(), chunk.size());
             bytesTotal += bytesRead;
-            if (bytesRead < buf.remaining())
+            if (bytesRead < chunk.size())
                 break;
         }
-        dst->resize_and_overwrite(bytesTotal, [](char *, size_t n) { return n; }); // Technically UB.
-        chunks.materialize(dst->data(), bytesTotal);
+        dst->resize_and_overwrite(bytesTotal, [&scratchpad](char *buffer, size_t size) {
+            scratchpad.materialize(buffer, size);
+            return size;
+        });
         return bytesTotal;
     }
 }
