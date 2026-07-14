@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <memory>
 #include <vector>
 
@@ -27,6 +28,17 @@ struct Decal;
 struct nk_context;
 
 bool PauseGameDrawing();
+
+/**
+ * Colors for the up to four color channels of a font texture. Unused channels default to transparent black.
+ *
+ * @see Renderer::DrawTextNew
+ */
+struct TextColors : std::array<Color, 4> {
+    TextColors() = default;
+    TextColors(Color color0, Color color1 = Color(), Color color2 = Color(), Color color3 = Color()) // NOLINT: implicit conversion is intended.
+        : std::array<Color, 4>({{color0, color1, color2, color3}}) {}
+};
 
 class Renderer {
  public:
@@ -97,9 +109,9 @@ class Renderer {
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
     virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
 
-    virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) = 0;
+    virtual void BeginTextNew(GraphicsImage *texture) = 0;
     virtual void EndTextNew() = 0;
-    virtual void DrawTextNew(const Recti &srcRect, const Recti &dstRect, bool isShadow, Color color) = 0;
+    virtual void DrawTextNew(const Recti &srcRect, const Recti &dstRect, const TextColors &colors) = 0;
 
     virtual void DrawOutdoorBuildings() = 0;
 

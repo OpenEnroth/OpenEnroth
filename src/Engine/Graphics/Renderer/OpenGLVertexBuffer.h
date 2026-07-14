@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include <cassert>
 #include <span>
 #include <utility>
 
@@ -11,7 +13,25 @@
 namespace detail {
 template<typename T>
 struct VertexAttribTraits;
+
+template<typename Vertex, typename Element, size_t N>
+struct ArrayElementPointer {
+    std::array<Element, N> Vertex::*array = nullptr;
+    size_t index = 0;
+};
 } // namespace detail
+
+/**
+ * Helper for using a single `std::array` element as a vertex attribute in a call to `OpenGLVertexBuffer::reset`.
+ *
+ * @param array                         Pointer to an `std::array` member of the vertex type.
+ * @param index                         Index of the array element to use as a vertex attribute.
+ */
+template<typename Vertex, typename Element, size_t N>
+detail::ArrayElementPointer<Vertex, Element, N> arrayElement(std::array<Element, N> Vertex::*array, size_t index) {
+    assert(index < N);
+    return {array, index};
+}
 
 template<typename T>
 inline constexpr GLint vertex_size_v = detail::VertexAttribTraits<T>::size;
@@ -80,6 +100,7 @@ class OpenGLVertexBuffer {
      *
      * @param usage                     `GL_STATIC_DRAW`, `GL_DYNAMIC_DRAW`, etc.
      * @param attrs                     Pointer-to-member for each vertex attribute (in shader location order).
+     *                                  Use `arrayElement` to pass a single `std::array` element.
      */
     template<typename... Attrs>
     void reset(GLenum usage, Attrs... attrs) {
@@ -163,6 +184,23 @@ class OpenGLVertexBuffer {
             location,
             vertex_size_v<MemberType>,
             vertex_type_v<MemberType>,
+            GL_FALSE,
+            sizeof(Vertex),
+            offset
+        );
+        glEnableVertexAttribArray(location);
+    }
+
+    template<typename ElementType, size_t N>
+    void setupAttribute(GLuint location, detail::ArrayElementPointer<Vertex, ElementType, N> attrib) {
+        // Calculate offset using pointer-to-member
+        const Vertex *null = nullptr;
+        const void *offset = static_cast<const void *>(&(null->*attrib.array)[attrib.index]);
+
+        glVertexAttribPointer(
+            location,
+            vertex_size_v<ElementType>,
+            vertex_type_v<ElementType>,
             GL_FALSE,
             sizeof(Vertex),
             offset

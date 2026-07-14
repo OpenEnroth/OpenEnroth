@@ -108,7 +108,6 @@ class GUIFont {
  private:
     LodFont _font;
     AtlasLayout _layout;
-    GraphicsImage *_mainTexture = nullptr;
-    GraphicsImage *_shadowTexture = nullptr;
+    GraphicsImage *_texture = nullptr;
 };
 

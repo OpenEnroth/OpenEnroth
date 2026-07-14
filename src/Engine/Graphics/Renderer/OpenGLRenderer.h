@@ -63,9 +63,9 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
                                int start_opacity, int end_opacity) override;
 
-    virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) override;
+    virtual void BeginTextNew(GraphicsImage *texture) override;
     virtual void EndTextNew() override;
-    virtual void DrawTextNew(const Recti &srcRect, const Recti &dstRect, bool isShadow, Color color) override;
+    virtual void DrawTextNew(const Recti &srcRect, const Recti &dstRect, const TextColors &colors) override;
 
     virtual void DrawOutdoorBuildings() override;
 
@@ -183,9 +183,9 @@ class OpenGLRenderer : public BaseRenderer {
     std::vector<TwoDVertex> _twodVertices;
 
     // text shader
-    OpenGLVertexBuffer<TwoDVertex> _textBuffer;
-    std::vector<TwoDVertex> _textVertices;
-    GLuint texmain{}, texshadow{};
+    OpenGLVertexBuffer<TextVertex> _textBuffer;
+    std::vector<TextVertex> _textVertices;
+    GLuint _textTexture{};
     Sizei _textAtlasSize;
 
     // billboards shader

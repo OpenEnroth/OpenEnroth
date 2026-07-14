@@ -61,9 +61,9 @@ void NullRenderer::DrawImage(GraphicsImage *, const Recti &rect, int paletteid, 
 void NullRenderer::BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
                                  int start_opacity, int end_opacity) {}
 
-void NullRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {}
+void NullRenderer::BeginTextNew(GraphicsImage *texture) {}
 void NullRenderer::EndTextNew() {}
-void NullRenderer::DrawTextNew(const Recti &srcRect, const Recti &dstRect, bool isShadow, Color color) {}
+void NullRenderer::DrawTextNew(const Recti &srcRect, const Recti &dstRect, const TextColors &colors) {}
 
 void NullRenderer::DrawOutdoorBuildings() {}
 
