@@ -40,5 +40,5 @@ class OverlaySystem {
     Renderer &_renderer;
     PlatformApplication &_application;
     std::function<void()> _unregisterDependencies;
-    bool _isEnabled{};
+    bool _isEnabled = false;
 };

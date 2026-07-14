@@ -92,10 +92,10 @@ struct MonsterStats {
 };
 
 struct MonsterDesc {
-    uint16_t monsterHeight;
-    uint16_t monsterRadius;
-    uint16_t movementSpeed;
-    int16_t toHitRadius;
+    uint16_t monsterHeight = 0;
+    uint16_t monsterRadius = 0;
+    uint16_t movementSpeed = 0;
+    int16_t toHitRadius = 0;
     Color tintColor;
     IndexedArray<SoundId, ACTOR_SOUND_FIRST, ACTOR_SOUND_LAST> soundSampleIds;
     std::string internalMonsterName; // Internal monster name, e.g. "Angel A".

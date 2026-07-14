@@ -11,9 +11,9 @@
 struct AttackDescription {
     Pid pid;
     Vec3f pos;
-    float attackRange;
-    bool isMelee; // Melee attack or magic AOE
-    ActorAbility attackSpecial; // special ability
+    float attackRange = 0;
+    bool isMelee = false; // Melee attack or magic AOE
+    ActorAbility attackSpecial = ABILITY_ATTACK1; // special ability
 };
 
 extern std::vector<AttackDescription> attackList;  // for area of effect damage

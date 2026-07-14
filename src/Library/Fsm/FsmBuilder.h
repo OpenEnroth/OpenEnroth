@@ -43,6 +43,6 @@ class FsmBuilder {
 
  private:
     FsmStateEntries _states;
-    FsmStateEntry *_latestState;
+    FsmStateEntry *_latestState = nullptr;
     std::string _latestOnTransition;
 };

@@ -14,15 +14,15 @@ class GUIWindow_MainMenu : public GUIWindow {
     void processMessage(UIMessageType messageType);
 
  protected:
-    GUIButton *pBtnExit;
-    GUIButton *pBtnCredits;
-    GUIButton *pBtnLoad;
-    GUIButton *pBtnNew;
+    GUIButton *pBtnExit = nullptr;
+    GUIButton *pBtnCredits = nullptr;
+    GUIButton *pBtnLoad = nullptr;
+    GUIButton *pBtnNew = nullptr;
 
-    GraphicsImage *main_menu_background;
+    GraphicsImage *main_menu_background = nullptr;
 
-    GraphicsImage *ui_mainmenu_new;
-    GraphicsImage *ui_mainmenu_load;
-    GraphicsImage *ui_mainmenu_credits;
-    GraphicsImage *ui_mainmenu_exit;
+    GraphicsImage *ui_mainmenu_new = nullptr;
+    GraphicsImage *ui_mainmenu_load = nullptr;
+    GraphicsImage *ui_mainmenu_credits = nullptr;
+    GraphicsImage *ui_mainmenu_exit = nullptr;
 };

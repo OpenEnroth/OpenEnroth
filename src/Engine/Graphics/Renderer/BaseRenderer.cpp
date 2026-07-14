@@ -294,7 +294,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     int dimming_level = pBillboard->dimming_level;
     Color diffuse = ::GetActorTintColor(dimming_level, 0, pBillboard->view_space_z, 0, pBillboard);
 
-    bool opaquetest{ false };
+    bool opaquetest = false;
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         opaquetest = pBillboard->sTintColor.a;
     } else {

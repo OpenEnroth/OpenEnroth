@@ -7,7 +7,7 @@
 
 struct VertexBuffer {
     std::array<RenderVertexSoft, 64> pVertices = {{}};
-    int uNumVertices;
+    int uNumVertices = 0;
 };
 
 struct ClippingFunctions {

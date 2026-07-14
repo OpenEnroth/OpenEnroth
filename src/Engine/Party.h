@@ -30,7 +30,7 @@ struct ActionQueue {
     void Reset();
     PartyAction Next();
 
-    unsigned int uNumActions;
+    unsigned int uNumActions = 0;
     PartyAction pActions[30]{};
 };
 
@@ -275,48 +275,48 @@ struct Party {
         }
     }
 
-    int height; // Party height, 192 by default.
-    int eyeLevel; // Party eye level, 160 by default.
-    int radius; // Party radius, 37 by default.
-    int _yawGranularity;
-    int walkSpeed; // Party walk speed, units per real time second.
-    int _yawRotationSpeed;  // deg/s
-    int jump_strength; // jump strength, higher value => higher jumps, default 5.
+    int height = 0; // Party height, 192 by default.
+    int eyeLevel = 0; // Party eye level, 160 by default.
+    int radius = 0; // Party radius, 37 by default.
+    int _yawGranularity = 0;
+    int walkSpeed = 0; // Party walk speed, units per real time second.
+    int _yawRotationSpeed = 0;  // deg/s
+    int jump_strength = 0; // jump strength, higher value => higher jumps, default 5.
     Time playing_time;  // uint64_t uTimePlayed;
     Time last_regenerated; // Timestamp when HP/MP regeneration was done last time.
     PartyTimeStruct PartyTimes;
     Vec3f pos;
     Vec3f velocity; // Party speed, negative z => falling, positive z => jumping.
                  // Note that only z component is preserved between frames, x & y are fully determined by the keys pressed.
-    int _viewYaw; // View yaw in polar coordinates, 0 is positive X, 512 (pi/2) is positive Y.
-    int _viewPitch; // View pitch in polar coordinates, 0 is horizontal, positive is looking up, negative is looking down.
-    int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
-    int floor_face_id;  // face we are standing at
-    SoundId currentWalkingSound; // previously was 'walk_sound_timer'
+    int _viewYaw = 0; // View yaw in polar coordinates, 0 is positive X, 512 (pi/2) is positive Y.
+    int _viewPitch = 0; // View pitch in polar coordinates, 0 is horizontal, positive is looking up, negative is looking down.
+    int sPartySavedFlightZ = 0;  // this saves the Z position when flying without bob mods
+    int floor_face_id = 0;  // face we are standing at
+    SoundId currentWalkingSound = SOUND_Invalid; // previously was 'walk_sound_timer'
     Time _6FC_water_lava_timer;
-    int uFallStartZ;
-    unsigned int bFlying;
-    int hirelingScrollPosition;
-    char cNonHireFollowers;  // number of non hireling party guests
+    int uFallStartZ = 0;
+    unsigned int bFlying = 0;
+    int hirelingScrollPosition = 0;
+    char cNonHireFollowers = 0;  // number of non hireling party guests
 
     // TODO(captainurist): #time replace with GetCurrentCivilTime().
-    int uCurrentYear;
-    int uCurrentMonth;
-    int uCurrentMonthWeek;
-    int uCurrentDayOfMonth;  // unsigned int uDaysPlayed;
-    int uCurrentHour;
-    int uCurrentMinute;
-    int uCurrentTimeSecond;
+    int uCurrentYear = 0;
+    int uCurrentMonth = 0;
+    int uCurrentMonthWeek = 0;
+    int uCurrentDayOfMonth = 0;  // unsigned int uDaysPlayed;
+    int uCurrentHour = 0;
+    int uCurrentMinute = 0;
+    int uCurrentTimeSecond = 0;
 
-    int uNumFoodRations;
-    int uNumGold;
-    int uNumGoldInBank;
-    int uNumDeaths;
-    int uNumPrisonTerms;
-    int uNumBountiesCollected;
+    int uNumFoodRations = 0;
+    int uNumGold = 0;
+    int uNumGoldInBank = 0;
+    int uNumDeaths = 0;
+    int uNumPrisonTerms = 0;
+    int uNumBountiesCollected = 0;
     IndexedArray<MonsterId, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_id_for_hunting;
     IndexedArray<bool, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_for_hunting_killed;
-    unsigned char days_played_without_rest;
+    unsigned char days_played_without_rest = 0;
     IndexedBitset<QBIT_FIRST, QBIT_LAST> _questBits;
     IndexedArray<bool, HOUSE_FIRST_ARCOMAGE_TAVERN, HOUSE_LAST_ARCOMAGE_TAVERN> pArcomageWins;
     ArenaState arenaState = ARENA_STATE_INITIAL;
@@ -324,11 +324,11 @@ struct Party {
     IndexedArray<uint8_t, ARENA_LEVEL_FIRST_VALID, ARENA_LEVEL_LAST_VALID> uNumArenaWins;
     IndexedArray<bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT> pIsArtifactFound;  // 7ba
     IndexedBitset<1, 208> _autonoteBits;
-    int uNumArcomageWins;
-    int uNumArcomageLoses;
-    bool bTurnBasedModeOn;
-    PARTY_FLAGS_2 uFlags2;
-    PartyAlignment alignment;
+    int uNumArcomageWins = 0;
+    int uNumArcomageLoses = 0;
+    bool bTurnBasedModeOn = false;
+    PARTY_FLAGS_2 uFlags2 = {};
+    PartyAlignment alignment = PartyAlignment_Neutral;
     IndexedArray<SpellBuff, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> pPartyBuffs;
     std::array<Character, 4> pCharacters;
     std::array<NPCData, 2> pHirelings;
@@ -341,10 +341,10 @@ struct Party {
     std::string pHireling1Name;
     std::string pHireling2Name;
     Duration armageddon_timer;
-    int armageddonDamage;
+    int armageddonDamage = 0;
     // Keeps track of how many impulses have been applied to actors during armeggeddon
     // Stops actors being yeeted high in the air at high fps
-    int armageddonForceCount{ 0 };
+    int armageddonForceCount = 0;
     std::array<Duration, 4> pTurnBasedCharacterRecoveryTimes;
     IndexedArray<int, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> InTheShopFlags;
     int uFine = 0;

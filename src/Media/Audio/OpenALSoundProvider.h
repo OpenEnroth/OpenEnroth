@@ -13,9 +13,9 @@ constexpr float ROLLOFF_FACTOR = 1.5f;
 class OpenALSoundProvider {
  public:
     struct StreamingTrackBuffer {
-        unsigned int source_id;
-        ALenum sample_format;
-        int sample_rate;
+        unsigned int source_id = 0;
+        ALenum sample_format = 0;
+        int sample_rate = 0;
     };
 
     OpenALSoundProvider();
@@ -36,8 +36,8 @@ class OpenALSoundProvider {
  protected:
     void DeleteBuffers(StreamingTrackBuffer *track, int type);
 
-    ALCdevice *device;
-    ALCcontext *context;
+    ALCdevice *device = nullptr;
+    ALCcontext *context = nullptr;
 };
 
 // TODO(pskelton): contain?

@@ -21,10 +21,10 @@ class EvtInstruction {
     std::string toString() const;
     static EvtInstruction parse(InputStream &stream, size_t size);
 
-    EvtOpcode opcode;
-    int step;
-    int target_step;
-    EvtTargetCharacter who;
+    EvtOpcode opcode = EVENT_Invalid;
+    int step = 0;
+    int target_step = 0;
+    EvtTargetCharacter who = CHOOSE_PLAYER1;
     std::string str;
     union {
         HouseId house_id;

@@ -48,7 +48,7 @@ struct ArcomageCard {
     int8_t needed_beasts = 0;
     bool can_be_discarded = true;
     ArcomageCheck compare_param = CHECK_ALWAYS_PRIMARY;
-    int8_t field_30;  // play again
+    int8_t field_30 = 0;  // play again
     int8_t draw_extra_card_count = 0;
     int8_t to_player_quarry_lvl = 0;
     int8_t to_player_magic_lvl = 0;
@@ -156,7 +156,7 @@ using enum ArcomageMessageType;
 struct ArcomageGame_InputMSG {
     ArcomageMessageType am_input_type{ ARCO_MSG_NULL };
     PlatformKey am_input_key{ PlatformKey::KEY_NONE };
-    int field_4{}; // unsused
+    int field_4 = 0; // unsused
 };
 
 class GUIFont;
@@ -178,7 +178,7 @@ struct ArcomageGame {
     static void Loop();
 
     FrameLimiter _frameLimiter;
-    int _targetFPS{ 32 };
+    int _targetFPS = 32;
 
     ArcomageGame_InputMSG stru1;
 
@@ -218,17 +218,17 @@ struct spark_point_struct {
 
 struct effect_params_struct {
     Recti effect_area;
-    int unused_param_1;
-    int unused_param_2;
-    int unused_param_3;
-    float gravity_acc;
-    int spark_array_size;
-    int create_per_frame;
-    float unused_acc_1;
-    float unused_acc_2;
-    int min_lifespan;
-    int max_lifespan;
-    spark_point_struct *sparks_array;
+    int unused_param_1 = 0;
+    int unused_param_2 = 0;
+    int unused_param_3 = 0;
+    float gravity_acc = 0;
+    int spark_array_size = 0;
+    int create_per_frame = 0;
+    float unused_acc_1 = 0;
+    float unused_acc_2 = 0;
+    int min_lifespan = 0;
+    int max_lifespan = 0;
+    spark_point_struct *sparks_array = nullptr;
 };
 
 struct explosion_effect_struct {
@@ -240,32 +240,32 @@ struct explosion_effect_struct {
     int UpdateEffect();
     int IsEffectActive();
 
-    int mem_signature;
-    int spark_array_size;
-    int remaining_sparks_to_init;
-    int start_x_min;
-    int start_y_max;
-    int start_x_max;
-    int start_y_min;
-    int unused_param_1;
-    int unused_param_2;
-    int unused_param_3;
-    float gravity;
-    int num_init_per_cycle;
-    int prev_init_overflow;
-    int unused_acc_1;
-    int unused_acc_2;
-    int min_lifespan;
-    int max_lifespan;
-    int unused_param_4;
-    int unused_param_5;
-    int unused_param_6;
-    int unused_param_7;
+    int mem_signature = 0;
+    int spark_array_size = 0;
+    int remaining_sparks_to_init = 0;
+    int start_x_min = 0;
+    int start_y_max = 0;
+    int start_x_max = 0;
+    int start_y_min = 0;
+    int unused_param_1 = 0;
+    int unused_param_2 = 0;
+    int unused_param_3 = 0;
+    float gravity = 0;
+    int num_init_per_cycle = 0;
+    int prev_init_overflow = 0;
+    int unused_acc_1 = 0;
+    int unused_acc_2 = 0;
+    int min_lifespan = 0;
+    int max_lifespan = 0;
+    int unused_param_4 = 0;
+    int unused_param_5 = 0;
+    int unused_param_6 = 0;
+    int unused_param_7 = 0;
     spark_point_struct *spark_array_ptr = nullptr;
-    char effect_active;
-    char params_filled;
-    char unused_param_8;
-    char unused_param_9;
+    char effect_active = 0;
+    char params_filled = 0;
+    char unused_param_8 = 0;
+    char unused_param_9 = 0;
 };
 
 #define DECK_SIZE 108

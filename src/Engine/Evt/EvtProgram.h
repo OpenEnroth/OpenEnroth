@@ -9,8 +9,8 @@
 class Blob;
 
 struct EventTrigger {
-    int eventId;
-    int eventStep;
+    int eventId = 0;
+    int eventStep = 0;
 };
 
 class EvtProgram {

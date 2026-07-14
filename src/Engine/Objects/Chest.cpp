@@ -47,8 +47,8 @@ bool Chest::open(int uChestID, Pid objectPid) {
     bool flag_shout;
     SpriteId pSpriteID[4];
     Vec3f pOut;
-    int yawAngle{};
-    int pitchAngle{};
+    int yawAngle = 0;
+    int pitchAngle = 0;
     SpriteObject pSpellObject;
 
     assert(uChestID < 20);

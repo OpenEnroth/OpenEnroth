@@ -27,7 +27,7 @@ class VideoState : public FsmState {
     Type _type;
     std::string _videoFileName;
     std::unique_ptr<IMovie> _movie;
-    ScreenType _previousScreenType{};
-    bool _isPaused{};
-    bool _skipVideo{};
+    ScreenType _previousScreenType = SCREEN_GAME;
+    bool _isPaused = false;
+    bool _skipVideo = false;
 };

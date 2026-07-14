@@ -31,5 +31,5 @@ class ProxyBase : public T {
     }
 
  private:
-    T *base_;
+    T *base_ = nullptr;
 };

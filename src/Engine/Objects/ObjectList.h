@@ -34,14 +34,14 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ObjectDescFlags)
 struct ObjectDesc {
     inline bool NoSprite() const { return uFlags & OBJECT_DESC_NO_SPRITE; }
 
-    SpriteId uObjectID;
-    int16_t uRadius;
-    int16_t uHeight;
+    SpriteId uObjectID = SPRITE_NULL;
+    int16_t uRadius = 0;
+    int16_t uHeight = 0;
     ObjectDescFlags uFlags;
-    uint16_t uSpriteID;
+    uint16_t uSpriteID = 0;
     Duration uLifetime;
     Color uParticleTrailColor;
-    int16_t uSpeed;
+    int16_t uSpeed = 0;
 };
 
 class ObjectList {

@@ -31,10 +31,10 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(VisSelectFlags)
 
 // NOTE: The variable names here are correct when the filter is used for VisObjectType_Sprite, but wrong for VisObjectType_Face
 struct Vis_SelectionFilter {  // stru157
-    VisObjectType vis_object_type;
-    ObjectType object_type;
-    int at_ai_state;
-    int no_at_ai_state;
+    VisObjectType vis_object_type = VisObjectType_Any;
+    ObjectType object_type = OBJECT_None;
+    int at_ai_state = 0;
+    int no_at_ai_state = 0;
     VisSelectFlags select_flags;
 };
 

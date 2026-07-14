@@ -14,7 +14,7 @@ struct TurnBased_QueueElem {
         AI_action_type = TE_AI_STAND;
     }
     Pid uPackedID;
-    int actor_initiative;  // act first who have less
+    int actor_initiative = 0;  // act first who have less
     Duration uActionLength;
     TurnEngineAiAction AI_action_type;
 };
@@ -49,13 +49,13 @@ struct stru262_TurnBased {
     bool ActorMove(signed int a2);
     void ActorAIChooseNewTargets();
 
-    int turns_count;
+    int turns_count = 0;
     TurnEngineStep turn_stage;  // if = 2 - action
     Duration ai_turn_timer;
-    int turn_initiative;
-    int uActionPointsLeft;  // 14
+    int turn_initiative = 0;
+    int uActionPointsLeft = 0;  // 14
     TurnEngineFlags flags;
-    int pending_actions;
+    int pending_actions = 0;
     std::vector<TurnBased_QueueElem> pQueue;  // 20
 };
 

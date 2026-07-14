@@ -54,7 +54,7 @@ struct Color {
     }
 
     [[nodiscard]] uint32_t c32() const {
-        uint32_t result;
+        uint32_t result = 0;
         memcpy(&result, this, 4);
         return result;
     }

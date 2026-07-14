@@ -2953,8 +2953,8 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     Duration extraRecoveryTime;           // qax@125
-    uint16_t v43{};            // ax@132
-    uint16_t v45{};            // ax@132
+    uint16_t v43 = 0;            // ax@132
+    uint16_t v45 = 0;            // ax@132
     // uint64_t v46; // [sp+Ch] [bp-60h]@6
     int skillLevel = 0;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1

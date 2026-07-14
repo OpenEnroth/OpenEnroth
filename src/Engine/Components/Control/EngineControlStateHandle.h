@@ -56,7 +56,7 @@ class EngineControlStateHandle {
         }
 
         EngineControlSide side;
-        EngineControlState *state;
+        EngineControlState *state = nullptr;
         std::unique_lock<std::mutex> lock;
     };
 

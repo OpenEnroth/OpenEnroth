@@ -298,7 +298,7 @@ int explosion_effect_struct::UpdateEffect() {
     if (this->mem_signature != SIG_MEMALOC) return 2;
 
     // calculate how many sparks to initiate
-    int total_to_init {0};
+    int total_to_init = 0;
     if (this->remaining_sparks_to_init > 0) {
         total_to_init = this->prev_init_overflow + this->num_init_per_cycle;
          if (total_to_init > this->remaining_sparks_to_init)

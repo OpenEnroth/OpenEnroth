@@ -17,9 +17,9 @@ struct GUIWindow_AutonotesBook : public GUIWindow_Book {
     void recalculateCurrentNotesTypePages();
 
  private:
-    int _startingNotesIdx;
-    int _currentPage;
-    int _currentPageNotes;
+    int _startingNotesIdx = 0;
+    int _currentPage = 0;
+    int _currentPageNotes = 0;
     std::vector<int> _activeNotesIdx;
     std::unordered_map<int, int> _notesPerPage;
 };

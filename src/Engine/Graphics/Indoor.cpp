@@ -339,7 +339,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
      // holds faces the coords are above
     int FoundFaceStore[5] = { 0 };
     int NumFoundFaceStore = 0;
-    int backupboundingsector{ 0 };
+    int backupboundingsector = 0;
     std::optional<int> foundSector;
     bool singleSectorFound = false;
 
@@ -1265,7 +1265,7 @@ bool Check_LineOfSight(const Vec3f &target, const Vec3f &from) {  // target from
         }
     }
 
-    bool result{ !LOS_Obscurred2 || !LOS_Obscurred || !LOS_ObscurredStr };
+    bool result = !LOS_Obscurred2 || !LOS_Obscurred || !LOS_ObscurredStr;
     return result;  // true if LOS clear
 }
 

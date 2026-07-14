@@ -28,17 +28,17 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ParticleFlags)
 // TODO(pskelton): eliminate this one
 struct Particle_sw {
     ParticleFlags type{ ParticleType_Invalid };
-    float x{};
-    float y{};
-    float z{};
-    float shiftX{};
-    float shiftY{};
-    float shiftZ{};
+    float x = 0;
+    float y = 0;
+    float z = 0;
+    float shiftX = 0;
+    float shiftY = 0;
+    float shiftZ = 0;
     Color uDiffuse{};
     Duration timeToLive{};
     GraphicsImage *texture{ nullptr };
-    int paletteID{ 0 };
-    float particle_size{};
+    int paletteID = 0;
+    float particle_size = 0;
 };
 
 struct Particle {
@@ -64,7 +64,7 @@ struct Particle {
     int uScreenSpaceY = 0;
     int uScreenSpaceZ = 0;  // line end x
     int uScreenSpaceW = 0;  // line end y
-    short view_space_z;
+    short view_space_z = 0;
     float view_space_L2 = 0.0f;
     int view_space_z_lineEnd = 0;             // line end z
     float screenspace_scale = 1.0;  // fixed screenspace_scale {};  // int _screenspace_scale;
@@ -131,9 +131,9 @@ class ParticleEngine {
     std::array<Particle, PARTICLES_ARRAY_SIZE> pParticles;
     stru2_LineList pLines;
     char field_D160[4800]; // unused
-    float field_E420; // unused
-    int uStartParticle;
-    int uEndParticle;
+    float field_E420 = 0; // unused
+    int uStartParticle = 0;
+    int uEndParticle = 0;
     Duration uTimeElapsed;
 };
 
@@ -169,7 +169,7 @@ struct TrailParticleGenerator {  // stru167_wrap
     void AddParticle(int x, int y, int z, Color color);
 
     TrailParticle particles[100];
-    int num_particles;
+    int num_particles = 0;
     int field_964 = 0;
 };
 

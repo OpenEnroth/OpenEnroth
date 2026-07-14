@@ -617,7 +617,7 @@ class Movie : public IMovie {
         Blob buffer;
         if (GetFormat() == "bink") {
             if (av_read_frame(format_ctx, &_binkPacket) >= 0) {
-                int desired_frame_number{};
+                int desired_frame_number = 0;
                 do {
                     // get playback time - and wait till we need the next frame
                     _currentTime = std::chrono::system_clock::now();
@@ -712,7 +712,7 @@ class Movie : public IMovie {
 
     FFmpegBlobIoContext _ioContext;
 
-    GraphicsImage *_texture{};
+    GraphicsImage *_texture = nullptr;
 
     // Bink video properties
     AVPacket _binkPacket;

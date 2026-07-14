@@ -123,13 +123,13 @@ class OpenGLRenderer : public BaseRenderer {
 
     Recti clipRect;
 
-    int GL_lastboundtex{};
+    int GL_lastboundtex = 0;
 
-    int GPU_MAX_TEX_SIZE{};
-    int GPU_MAX_TEX_LAYERS{};
-    int GPU_MAX_TEX_UNITS{};
-    int GPU_MAX_UNIFORM_COMP{};
-    int GPU_MAX_TOTAL_TEXTURES{};
+    int GPU_MAX_TEX_SIZE = 0;
+    int GPU_MAX_TEX_LAYERS = 0;
+    int GPU_MAX_TEX_UNITS = 0;
+    int GPU_MAX_UNIFORM_COMP = 0;
+    int GPU_MAX_TOTAL_TEXTURES = 0;
 
     OpenGLShader terrainshader;
     OpenGLShader outbuildshader;
@@ -199,7 +199,7 @@ class OpenGLRenderer : public BaseRenderer {
 
     FogUniforms fog;
 
-    float gamma{};
+    float gamma = 0;
 
     std::array<GraphicsImage *, 7> hd_water_tile_anim = {{}}; // Water animation textures.
 

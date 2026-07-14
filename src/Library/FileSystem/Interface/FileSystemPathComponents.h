@@ -64,7 +64,7 @@ class FileSystemPathComponents {
 
  private:
     std::string_view _path;
-    size_t _prefixEnd;
-    size_t _nameStart;
-    size_t _extStart;
+    size_t _prefixEnd = 0;
+    size_t _nameStart = 0;
+    size_t _extStart = 0;
 };

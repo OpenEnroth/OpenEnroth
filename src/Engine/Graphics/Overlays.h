@@ -13,14 +13,14 @@ struct ActiveOverlay {
     ActiveOverlay();
     void Reset();
 
-    int16_t indexToOverlayList;
-    int16_t spriteFrameTime;
-    int16_t animLength;
-    int16_t screenSpaceX;
-    int16_t screenSpaceY;
+    int16_t indexToOverlayList = 0;
+    int16_t spriteFrameTime = 0;
+    int16_t animLength = 0;
+    int16_t screenSpaceX = 0;
+    int16_t screenSpaceY = 0;
     Pid pid;
-    int16_t projSize;
-    int fpDamageMod;
+    int16_t projSize = 0;
+    int fpDamageMod = 0;
 };
 
 struct ActiveOverlayList {

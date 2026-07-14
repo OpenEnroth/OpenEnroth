@@ -158,10 +158,10 @@ class Renderer {
     static const int MAX_BILLBOARDS_D3D = 5000;
     RenderBillboardD3D pBillboardRenderListD3D[MAX_BILLBOARDS_D3D];
     std::array<RenderBillboardD3D*, MAX_BILLBOARDS_D3D> pSortedBillboardRenderListD3D;
-    unsigned int uNumBillboardsToDraw; // TODO(captainurist): this is not properly cleared if BeginScene3D is not called,
+    unsigned int uNumBillboardsToDraw = 0; // TODO(captainurist): this is not properly cleared if BeginScene3D is not called,
                                        //                     resulting in dangling textures in pBillboardRenderListD3D.
 
-    int drawcalls;
+    int drawcalls = 0;
 
     /**
      * @returns                         1x1 white texture for solid color fills. Initialized lazily on first use.
@@ -192,17 +192,17 @@ extern RenderVertexSoft array_73D150[20];
 struct SkyBillboardStruct {
     void CalcSkyFrustumVec(int a2, int a3, int a4, int a5, int a6, int a7);
 
-    float field_0_party_dir_x;  // cam view transform
-    float field_4_party_dir_y;
-    float field_8_party_dir_z;
-    float CamVecLeft_Y;
-    float CamVecLeft_X;
-    float CamVecLeft_Z;
-    float CamVecFront_Y;
-    float CamVecFront_X;
-    float CamVecFront_Z;
-    float CamLeftDot;
-    float CamFrontDot;
+    float field_0_party_dir_x = 0;  // cam view transform
+    float field_4_party_dir_y = 0;
+    float field_8_party_dir_z = 0;
+    float CamVecLeft_Y = 0;
+    float CamVecLeft_X = 0;
+    float CamVecLeft_Z = 0;
+    float CamVecFront_Y = 0;
+    float CamVecFront_X = 0;
+    float CamVecFront_Z = 0;
+    float CamLeftDot = 0;
+    float CamFrontDot = 0;
 };
 
 extern SkyBillboardStruct SkyBillboard;

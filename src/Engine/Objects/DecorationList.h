@@ -14,13 +14,13 @@ struct DecorationDesc {
     std::string internalName; // Internal name of the decoration (e.g. "dec03").
     std::string hint; // Hint for the decoration (e.g. "campfire", "cauldron"). This text is shown in the status bar
                       // when clicking on the decoration if it's not scripted.
-    int16_t uType;
-    uint16_t uDecorationHeight;
-    int16_t uRadius;
-    int16_t uLightRadius;
-    uint16_t uSpriteID;
+    int16_t uType = 0;
+    uint16_t uDecorationHeight = 0;
+    int16_t uRadius = 0;
+    int16_t uLightRadius = 0;
+    uint16_t uSpriteID = 0;
     DecorationDescFlags uFlags;
-    SoundId uSoundID;
+    SoundId uSoundID = SOUND_Invalid;
     Color uColoredLight;
 
     inline bool CanMoveThrough() const {

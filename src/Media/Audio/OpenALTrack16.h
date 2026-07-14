@@ -31,11 +31,11 @@ class OpenALTrack16 : public IAudioTrack {
 
     PAudioDataSource pDataSource;
     OpenALUpdateThread updater;
-    ALenum al_format;
-    ALuint al_source;
-    ALsizei al_sample_rate;
-    size_t uiReservedData;
-    size_t uiReservedDataMinimum;
+    ALenum al_format = 0;
+    ALuint al_source = 0;
+    ALsizei al_sample_rate = 0;
+    size_t uiReservedData = 0;
+    size_t uiReservedDataMinimum = 0;
     std::mutex _mutex;  // Protects pDataSource access.
 };
 

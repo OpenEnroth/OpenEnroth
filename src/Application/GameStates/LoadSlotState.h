@@ -15,5 +15,5 @@ class LoadSlotState : public FsmState {
     virtual void exit() override;
 
  private:
-    GUIWindow_Load* _uiLoadSaveSlot;
+    GUIWindow_Load* _uiLoadSaveSlot = nullptr;
 };

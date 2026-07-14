@@ -60,13 +60,13 @@ struct Decal {
 
     virtual ~Decal() {}
 
-    int uNumVertices;
+    int uNumVertices = 0;
     std::array<RenderVertexSoft, 64> pVertices;
-    int16_t DecalXPos;
-    int16_t DecalYPos;
-    int16_t DecalZPos;
+    int16_t DecalXPos = 0;
+    int16_t DecalYPos = 0;
+    int16_t DecalZPos = 0;
     Color uColorMultiplier;
-    int DimmingLevel;
+    int DimmingLevel = 0;
 
     Duration fadetime;
     DecalFlags decal_flags;
@@ -107,7 +107,7 @@ struct DecalBuilder {
     void DrawDecalDebugOutlines();
 
     std::array<Decal, 1024> Decals;  // actual decal geom store
-    unsigned int DecalsCount;  // number of decals
+    unsigned int DecalsCount = 0;  // number of decals
 
     // for building decal geom
     int uNumSplatsThisFace = 0;  // numeber of bloodsplats that overlap this face
@@ -124,5 +124,5 @@ struct DecalBuilder {
     float field_30C02C = 0;
     float flt_30C030 = 0;
     float field_30C034 = 0;
-    BloodsplatContainer *bloodsplat_container;
+    BloodsplatContainer *bloodsplat_container = nullptr;
 };

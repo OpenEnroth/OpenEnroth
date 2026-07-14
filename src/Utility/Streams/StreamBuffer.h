@@ -86,7 +86,7 @@ class StreamBuffer {
     }
 
  private:
-    T *_start;
-    T *_pos;
-    T *_end;
+    T *_start = nullptr;
+    T *_pos = nullptr;
+    T *_end = nullptr;
 };

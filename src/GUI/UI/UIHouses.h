@@ -65,7 +65,7 @@ enum class HouseNpcType {
 using enum HouseNpcType;
 
 struct HouseNpcDesc {
-    HouseNpcType type;
+    HouseNpcType type = HOUSE_PROPRIETOR;
     std::string label = "";
     GraphicsImage *icon = nullptr;
     GUIButton *button = nullptr;
@@ -126,18 +126,18 @@ class GUIWindow_House : public GUIWindow {
 
     HouseId _houseId = HOUSE_INVALID;
     DialogueId _currentDialogue = DIALOGUE_NULL;
-    int _savedButtonsNum{};
+    int _savedButtonsNum = 0;
     bool _transactionPerformed = false;
 };
 
 // Originally was a packed struct.
 struct HouseAnimDescr {
     std::string video_name;
-    int field_4;
-    int house_npc_id;
-    HouseType uBuildingType; // Originally was 1 byte.
-    uint8_t uRoomSoundId;
-    uint16_t padding_e;
+    int field_4 = 0;
+    int house_npc_id = 0;
+    HouseType uBuildingType = HOUSE_TYPE_INVALID; // Originally was 1 byte.
+    uint8_t uRoomSoundId = 0;
+    uint16_t padding_e = 0;
 };
 
 extern GraphicsImage *_591428_endcap;

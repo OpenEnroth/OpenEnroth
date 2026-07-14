@@ -35,7 +35,7 @@ struct AppendWrapper {
     }
 
  private:
-    Container *_container;
+    Container *_container = nullptr;
     size_t _initialSize = 0;
 };
 } // namespace detail
@@ -135,7 +135,7 @@ void serialize(const Src &src, OutputStream *dst, const Tags &... tags) {
 
 template<ResizableContiguousContainer Dst, class... Tags>
 void deserialize(InputStream &src, Dst *dst, const Tags &... tags) {
-    uint32_t size;
+    uint32_t size = 0;
     deserialize(src, &size);
 
     // TODO(captainurist): can we do this better?

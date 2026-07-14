@@ -981,7 +981,7 @@ void ODM_ProcessPartyActions() {
     }
 
      // is party standing on any trigger faces
-    int triggerID{ 0 };
+    int triggerID = 0;
     if (!partyNotTouchingFloor) {
         if (pParty->floor_face_id != floorFaceId && floorFaceId) {
             int BModel_id = floorFaceId >> 6;
@@ -1007,7 +1007,7 @@ void ODM_ProcessPartyActions() {
     bool partyIsWalking = false;
     bool noFlightBob = false;
 
-    bool flyDown{ false };
+    bool flyDown = false;
 
     // TODO(captainurist): #time think about a better way to write this formula.
     int64_t dturn = pEventTimer->dt().ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
@@ -1316,7 +1316,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // has the party collided with a outdoor model
-    bool partyHasHitModel{ false };
+    bool partyHasHitModel = false;
 
     float savedZSpeed = partyInputSpeed.z;
     // horizontal
@@ -1343,7 +1343,7 @@ void ODM_ProcessPartyActions() {
     bool partyNewYOnLand = !pOutdoor->pTerrain.isWaterByGrid({partyOldGridPos.x, partyNewGridPos.y});
 
     // -(update party co-ords)---------------------------------------
-    bool notWater{ false };
+    bool notWater = false;
     if (partyNewGridPos == partyOldGridPos && partyCurrentOnLand/*partyNewXOnLand && partyNewYOnLand*/)
         notWater = true;
 
