@@ -45,45 +45,27 @@ void GUIFont::CreateFontTex() {
 
     _layout = AtlasLayout({16, 16}, {32, 32});
 
-    // create blank textures
-    RgbaImage main = RgbaImage::solid(Color(), _layout.geometry().size());
-    RgbaImage shadow = RgbaImage::solid(Color(), _layout.geometry().size());
+    RgbaImage pixels = RgbaImage::solid(Color(), _layout.geometry().size());
 
-    // load in char pixels into squares within texture
+    // Pack per-channel color weights: R is for text, G is for shadow, B & A are reserved for multi-color fonts
+    // (MM3 fonts use 4 colors and we will import them eventually).
     for (size_t l = 0; l < _layout.size(); l++) {
         Recti cell = _layout[l];
         GrayscaleImageView image = _font.image(l);
-        const uint8_t *pCharPixels = image.pixels().data();
 
-        for (int y = 0; y < image.height(); ++y) {
-            for (int x = 0; x < image.width(); ++x) {
-                if (*pCharPixels) {
-                    if (*pCharPixels != 1) {
-                        // add to normal
-                        main[cell.y + y][cell.x + x] = colorTable.White;
-                    }
-                    if (*pCharPixels == 1) {
-                        // add to shadow
-                        shadow[cell.y + y][cell.x + x] = colorTable.White;
-                    }
-                }
-                ++pCharPixels;
-            }
-        }
+        for (int y = 0; y < image.height(); y++)
+            for (int x = 0; x < image.width(); x++)
+                if (uint8_t pixel = image[y][x])
+                    pixels[cell.y + y][cell.x + x] = pixel == 1 ? Color(0, 255, 0, 0) : Color(255, 0, 0, 0);
     }
 
-    _mainTexture = GraphicsImage::Create(std::move(main));
-    _shadowTexture = GraphicsImage::Create(std::move(shadow));
+    _texture = GraphicsImage::Create(std::move(pixels));
 }
 
 void GUIFont::ReleaseFontTex() {
-    if (_mainTexture) {
-        _mainTexture->release();
-        _mainTexture = nullptr;
-    }
-    if (_shadowTexture) {
-        _shadowTexture->release();
-        _shadowTexture = nullptr;
+    if (_texture) {
+        _texture->release();
+        _texture = nullptr;
     }
 }
 
@@ -194,7 +176,7 @@ Color GUIFont::DrawTextLine(std::string_view text, Color startColor, Color defau
     if (text.empty())
         return startColor;
 
-    render->BeginTextNew(_mainTexture, _shadowTexture);
+    render->BeginTextNew(_texture);
 
     Color color = startColor;
     int x = position.x;
@@ -222,8 +204,7 @@ Color GUIFont::DrawTextLine(std::string_view text, Color startColor, Color defau
             Recti srcRect(cell.x, cell.y, charWidth, _font.height());
             Recti dstRect(x, position.y, charWidth, _font.height());
 
-            render->DrawTextNew(srcRect, dstRect, true, colorTable.Black);
-            render->DrawTextNew(srcRect, dstRect, false, color);
+            render->DrawTextNew(srcRect, dstRect, {color, colorTable.Black});
 
             x += charWidth;
             if (i < len - 1)
@@ -383,7 +364,7 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
         return;
     }
 
-    render->BeginTextNew(_mainTexture, _shadowTexture);
+    render->BeginTextNew(_texture);
 
     if (!position.x) {
         position.x = 12;
@@ -459,8 +440,7 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
             Recti srcRect(cell.x, cell.y, _font.metrics(c).width, _font.height());
             Recti dstRect(out_x, out_y, _font.metrics(c).width, _font.height());
 
-            render->DrawTextNew(srcRect, dstRect, true, shadowColor);
-            render->DrawTextNew(srcRect, dstRect, false, draw_color);
+            render->DrawTextNew(srcRect, dstRect, {draw_color, shadowColor});
 
             out_x += _font.metrics(c).width;
             if (i < len - 1) {

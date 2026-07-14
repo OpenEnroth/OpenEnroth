@@ -68,11 +68,16 @@ struct TwoDUniforms {
     void submit(const OpenGLShader &shader) const;
 };
 
+struct TextVertex {
+    Vec3f pos;
+    Vec2f texuv;
+    std::array<Colorf, 4> colors; // One color per texture channel.
+};
+
 struct TextUniforms {
     glm::mat4 projection = {};
     glm::mat4 view = {};
     int texture0 = 0;
-    int texture1 = 1;
 
     void submit(const OpenGLShader &shader) const;
 };

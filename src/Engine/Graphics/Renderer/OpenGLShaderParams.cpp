@@ -41,7 +41,6 @@ void TextUniforms::submit(const OpenGLShader &shader) const {
     glUniformMatrix4fv(shader.uniformLocation("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.uniformLocation("view"), 1, GL_FALSE, &view[0][0]);
     glUniform1i(shader.uniformLocation("texture0"), texture0);
-    glUniform1i(shader.uniformLocation("texture1"), texture1);
 }
 
 void DecalUniforms::submit(const OpenGLShader &shader) const {

@@ -2062,22 +2062,19 @@ void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, co
     vert5.paletteid = 0;
 }
 
-void OpenGLRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
+void OpenGLRenderer::BeginTextNew(GraphicsImage *texture) {
     // draw any images in buffer
     if (!_twodVertices.empty()) {
         DrawTwodVerts();
     }
 
-    GLuint texmainidcheck = main->renderId().value();
-
     // if we are changing font draw whats in the text buffer
-    if (texmainidcheck != texmain) {
+    if (texture->renderId().value() != _textTexture) {
         EndTextNew();
     }
 
-    texmain = main->renderId().value();
-    texshadow = shadow->renderId().value();
-    _textAtlasSize = main->size();
+    _textTexture = texture->renderId().value();
+    _textAtlasSize = texture->size();
 }
 
 void OpenGLRenderer::EndTextNew() {
@@ -2089,10 +2086,12 @@ void OpenGLRenderer::EndTextNew() {
 
     if (!_textBuffer) {
         _textBuffer.reset(GL_DYNAMIC_DRAW,
-            &TwoDVertex::pos,
-            &TwoDVertex::texuv,
-            &TwoDVertex::color,
-            &TwoDVertex::texid);
+            &TextVertex::pos,
+            &TextVertex::texuv,
+            arrayElement(&TextVertex::colors, 0),
+            arrayElement(&TextVertex::colors, 1),
+            arrayElement(&TextVertex::colors, 2),
+            arrayElement(&TextVertex::colors, 3));
     }
 
     _textBuffer.update(_textVertices);
@@ -2108,11 +2107,9 @@ void OpenGLRenderer::EndTextNew() {
     uniforms.view = viewmat;
     uniforms.submit(textshader);
 
-    // set textures
+    // set texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texmain);
-    glActiveTexture(GL_TEXTURE0 + 1);
-    glBindTexture(GL_TEXTURE_2D, texshadow);
+    glBindTexture(GL_TEXTURE_2D, _textTexture);
 
     glDrawArrays(GL_TRIANGLES, 0, _textVertices.size());
     drawcalls++;
@@ -2121,20 +2118,18 @@ void OpenGLRenderer::EndTextNew() {
     _textBuffer.unbind();
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
     _textVertices.clear();
-    // texmain = 0;
-    // texshadow = 0;
-    return;
 }
 
-void OpenGLRenderer::DrawTextNew(const Recti &srcRect, const Recti &dstRect, bool isShadow, Color color) {
-    Colorf cf = color.toColorf();
-    // not 100% sure why this is required but it is
-    if (cf.r == 0.0f)
-        cf.r = 0.00392f;
+void OpenGLRenderer::DrawTextNew(const Recti &srcRect, const Recti &dstRect, const TextColors &colors) {
+    std::array<Colorf, 4> cf;
+    for (size_t i = 0; i < cf.size(); i++) {
+        cf[i] = colors[i].toColorf();
+        // not 100% sure why this is required but it is
+        if (cf[i].r == 0.0f)
+            cf[i].r = 0.00392f;
+    }
 
     // check bounds
     if (dstRect.x >= outputRender.w || dstRect.y >= outputRender.h)
@@ -2154,51 +2149,37 @@ void OpenGLRenderer::DrawTextNew(const Recti &srcRect, const Recti &dstRect, boo
     float texz = static_cast<float>(srcRect.x + srcRect.w) / _textAtlasSize.w;
     float texw = static_cast<float>(srcRect.y + srcRect.h) / _textAtlasSize.h;
 
-    int texid = isShadow ? 1 : 0;
-
     // Triangle 1: top-left, top-right, bottom-right
-    TwoDVertex &vert0 = _textVertices.emplace_back();
+    TextVertex &vert0 = _textVertices.emplace_back();
     vert0.pos = Vec3f(drawx, drawy, 0);
     vert0.texuv = Vec2f(texx, texy);
-    vert0.color = cf;
-    vert0.texid = texid;
-    vert0.paletteid = 0;
+    vert0.colors = cf;
 
-    TwoDVertex &vert1 = _textVertices.emplace_back();
+    TextVertex &vert1 = _textVertices.emplace_back();
     vert1.pos = Vec3f(drawz, drawy, 0);
     vert1.texuv = Vec2f(texz, texy);
-    vert1.color = cf;
-    vert1.texid = texid;
-    vert1.paletteid = 0;
+    vert1.colors = cf;
 
-    TwoDVertex &vert2 = _textVertices.emplace_back();
+    TextVertex &vert2 = _textVertices.emplace_back();
     vert2.pos = Vec3f(drawz, draww, 0);
     vert2.texuv = Vec2f(texz, texw);
-    vert2.color = cf;
-    vert2.texid = texid;
-    vert2.paletteid = 0;
+    vert2.colors = cf;
 
     // Triangle 2: top-left, bottom-right, bottom-left
-    TwoDVertex &vert3 = _textVertices.emplace_back();
+    TextVertex &vert3 = _textVertices.emplace_back();
     vert3.pos = Vec3f(drawx, drawy, 0);
     vert3.texuv = Vec2f(texx, texy);
-    vert3.color = cf;
-    vert3.texid = texid;
-    vert3.paletteid = 0;
+    vert3.colors = cf;
 
-    TwoDVertex &vert4 = _textVertices.emplace_back();
+    TextVertex &vert4 = _textVertices.emplace_back();
     vert4.pos = Vec3f(drawz, draww, 0);
     vert4.texuv = Vec2f(texz, texw);
-    vert4.color = cf;
-    vert4.texid = texid;
-    vert4.paletteid = 0;
+    vert4.colors = cf;
 
-    TwoDVertex &vert5 = _textVertices.emplace_back();
+    TextVertex &vert5 = _textVertices.emplace_back();
     vert5.pos = Vec3f(drawx, draww, 0);
     vert5.texuv = Vec2f(texx, texw);
-    vert5.color = cf;
-    vert5.texid = texid;
-    vert5.paletteid = 0;
+    vert5.colors = cf;
 }
 
 void OpenGLRenderer::flushAndScale() {
