@@ -18,9 +18,9 @@ void initializeMerchants(const Blob &merchants) {
     // merchant.txt table structure: phrase (localized, not used) | buy (localized) | sell (localized) | repair (localized) | identify (localized).
     for (auto [line, i] : split(merchants.str()).by("\r\n").drop(1).skip("").zip(allMerchantPhrases())) {
         std::array<std::string_view, 5> tokens = split(line).by('\t');
-        pMerchantsBuyPhrases[i] = removeQuotes(tokens[1]);
-        pMerchantsSellPhrases[i] = removeQuotes(tokens[2]);
-        pMerchantsRepairPhrases[i] = removeQuotes(tokens[3]);
-        pMerchantsIdentifyPhrases[i] = removeQuotes(tokens[4]);
+        pMerchantsBuyPhrases[i] = unquote(tokens[1]);
+        pMerchantsSellPhrases[i] = unquote(tokens[2]);
+        pMerchantsRepairPhrases[i] = unquote(tokens[3]);
+        pMerchantsIdentifyPhrases[i] = unquote(tokens[4]);
     }
 }

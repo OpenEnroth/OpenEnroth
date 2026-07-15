@@ -35,7 +35,7 @@ bool Localization::initialize() {
     for (std::string_view line : split(globalBlob.str()).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         LstrId i = static_cast<LstrId>(fromString<int>(tokens[0]));
-        _localizationStrings[i] = removeQuotes(tokens[1]);
+        _localizationStrings[i] = unquote(tokens[1]);
     }
 
     // TODO(captainurist): should be moved to localization files eventually
@@ -306,11 +306,11 @@ void Localization::initializeSkillNames() {
     Blob skillDesBlob = engine->resources()->eventsData("skilldes.txt");
     for (auto [line, i] : split(skillDesBlob.str()).by("\r\n").drop(1).skip("").zip(allVisibleSkills())) {
         std::array<std::string_view, 6> tokens = split(line).by('\t');
-        _skillDescriptions[i] = removeQuotes(tokens[1]);
-        _skillDescriptionsNormal[i] = removeQuotes(tokens[2]);
-        _skillDescriptionsExpert[i] = removeQuotes(tokens[3]);
-        _skillDescriptionsMaster[i] = removeQuotes(tokens[4]);
-        _skillDescriptionsGrand[i] = removeQuotes(tokens[5]);
+        _skillDescriptions[i] = unquote(tokens[1]);
+        _skillDescriptionsNormal[i] = unquote(tokens[2]);
+        _skillDescriptionsExpert[i] = unquote(tokens[3]);
+        _skillDescriptionsMaster[i] = unquote(tokens[4]);
+        _skillDescriptionsGrand[i] = unquote(tokens[5]);
     }
 }
 
@@ -364,7 +364,7 @@ void Localization::initializeClassNames() {
     Blob classBlob = engine->resources()->eventsData("class.txt");
     for (auto [line, i] : split(classBlob.str()).by("\r\n").drop(1).skip("").zip(_classDescriptions.indices())) {
         std::array<std::string_view, 3> tokens = split(line).by('\t');
-        _classDescriptions[i] = removeQuotes(tokens[1]);
+        _classDescriptions[i] = unquote(tokens[1]);
     }
 }
 
@@ -441,7 +441,7 @@ void Localization::initializeAttributeNames() {
     std::array<std::string_view, 26> statsDescs = split(statsBlob.str()).by("\r\n").drop(1).skip("");
     for (std::string_view &line : statsDescs) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
-        line = removeQuotes(tokens[1]);
+        line = unquote(tokens[1]);
     }
     for (Attribute i : Segment(ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT))
         _attributeDescriptions[i] = statsDescs[std::to_underlying(i)];

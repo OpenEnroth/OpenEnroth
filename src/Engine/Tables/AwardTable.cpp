@@ -19,7 +19,7 @@ void initializeAwards(const Blob &awards) {
             continue; // Truncated lines with just the index exist in the file.
 
         AwardId awardId = static_cast<AwardId>(fromString<int>(chunks[0]));
-        pAwards[awardId].pText = removeQuotes(chunks[1]);
+        pAwards[awardId].pText = unquote(chunks[1]);
         pAwards[awardId].uPriority = fromString<int>(chunks[2]);
     }
 }

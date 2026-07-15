@@ -62,8 +62,8 @@ void MapStats::Initialize(const Blob &mapStats) {
         std::array<std::string_view, 30> tokens = split(line).by('\t');
         MapId mapId = static_cast<MapId>(fromString<int>(tokens[0]));
         MapInfo &info = pInfos[mapId];
-        info.name = removeQuotes(tokens[1]);
-        info.fileName = ascii::toLower(removeQuotes(tokens[2]));
+        info.name = unquote(tokens[1]);
+        info.fileName = ascii::toLower(unquote(tokens[2]));
         info.numResets = fromString<int>(tokens[3]);
         info.firstVisitedAt = fromString<int>(tokens[4]);
         info.perceptionDifficulty = fromString<int>(tokens[5]);
@@ -77,13 +77,13 @@ void MapStats::Initialize(const Blob &mapStats) {
         info.encounter1Chance = fromString<int>(tokens[13]);
         info.encounter2Chance = fromString<int>(tokens[14]);
         info.encounter3Chance = fromString<int>(tokens[15]);
-        info.encounter1MonsterInternalName = removeQuotes(tokens[16]);
+        info.encounter1MonsterInternalName = unquote(tokens[16]);
         info.Dif_M1 = fromString<int>(tokens[18]);
         parseRange(tokens[19], &info.encounter1MinCount, &info.encounter1MaxCount);
-        info.encounter2MonsterInternalName = removeQuotes(tokens[20]);
+        info.encounter2MonsterInternalName = unquote(tokens[20]);
         info.Dif_M2 = fromString<int>(tokens[22]);
         parseRange(tokens[23], &info.encounter2MinCount, &info.encounter2MaxCount);
-        info.encounter3MonsterInternalName = removeQuotes(tokens[24]);
+        info.encounter3MonsterInternalName = unquote(tokens[24]);
         info.Dif_M3 = fromString<int>(tokens[26]);
         parseRange(tokens[27], &info.encounter3MinCount, &info.encounter3MaxCount);
         info.musicId = static_cast<MusicId>(fromString<int>(tokens[28]));

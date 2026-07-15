@@ -30,7 +30,7 @@ void initializeAutonotes(const Blob &autonotes) {
         std::array<std::string_view, 3> tokens = split(line).by('\t'); // Truncated lines with just the index exist, tail defaults to "".
         int i = fromString<int>(tokens[0]);
         // TODO(captainurist): We have "0" in autonote texts, and it gets shown. Find out what it was supposed to be.
-        pAutonoteTxt[i].pText = tokens[1] == "0" ? "" : removeQuotes(tokens[1]);
+        pAutonoteTxt[i].pText = tokens[1] == "0" ? "" : unquote(tokens[1]);
         pAutonoteTxt[i].eType = valueOr(autonoteTypeMap, tokens[2], AUTONOTE_MISC);
     }
 }

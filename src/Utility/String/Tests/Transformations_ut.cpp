@@ -18,4 +18,15 @@ UNIT_TEST(StringTransformations, replaceAll) {
     EXPECT_EQ(replaceAll("AAAA", "AA", "AAZAA"), "AAZAAAAZAA");
 }
 
+UNIT_TEST(StringTransformations, unquote) {
+    // Quoted fields: outer quotes stripped, inner doubled quotes collapsed.
+    EXPECT_EQ(unquote("\"hello\""), "hello");
+    EXPECT_EQ(unquote("\"\""), "");
+    EXPECT_EQ(unquote("\"say \"\"hi\"\"\""), "say \"hi\"");
+    EXPECT_EQ(unquote("\"a, \"\"b\"\" and \"\"c\"\".\""), "a, \"b\" and \"c\".");
 
+    // Unquoted fields are returned verbatim - the "" escaping doesn't apply.
+    EXPECT_EQ(unquote("hello"), "hello");
+    EXPECT_EQ(unquote("a\"\"b"), "a\"\"b");
+    EXPECT_EQ(unquote(""), "");
+}
