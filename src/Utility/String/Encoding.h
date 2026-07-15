@@ -105,4 +105,40 @@ std::string encodedToUtf8(std::string_view str, TextEncoding encoding);
  */
 std::string utf8ToEncoded(std::string_view str, TextEncoding encoding);
 
+/**
+ * Convert a string from the given encoding to UTF-32.
+ *
+ * Invalid or incomplete byte sequences are replaced with the Unicode replacement character (U+FFFD).
+ *
+ * @param str                           String in the source encoding.
+ * @param encoding                      Source encoding.
+ * @return                              UTF-32 string.
+ */
+std::u32string encodedToUtf32(std::string_view str, TextEncoding encoding);
+
+/**
+ * Convert a UTF-32 string to the given encoding.
+ *
+ * Characters that cannot be represented in the target encoding are replaced with `?` or with the Unicode replacement
+ * character (U+FFFD).
+ *
+ * @param str                           UTF-32 string to convert.
+ * @param encoding                      Target encoding.
+ * @return                              String in the target encoding.
+ */
+std::string utf32ToEncoded(std::u32string_view str, TextEncoding encoding);
+
+/**
+ * Decode a single byte in the given encoding into a Unicode code point.
+ *
+ * Uses the same replacement semantics as `encodedToUtf32`.
+ *
+ * @param c                             Byte to decode.
+ * @param encoding                      Source encoding.
+ * @return                              Decoded code point, or the replacement character (U+FFFD) if the byte doesn't
+ *                                      decode into exactly one code point, e.g. if it's not mapped in the source
+ *                                      encoding, or is a part of a multi-byte sequence.
+ */
+char32_t encodedToChar32(char c, TextEncoding encoding);
+
 } // namespace txt
