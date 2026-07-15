@@ -18,7 +18,7 @@ BlobOutputStream::~BlobOutputStream() {
 void BlobOutputStream::open(Blob *target, std::string_view displayPath) {
     assert(target);
     _target = target;
-    _chunks.reset();
+    _scratchpad.reset();
     base_type::open({}, displayPath);
 }
 
@@ -26,35 +26,27 @@ void BlobOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
     size_t head = buffer->write(data, buffer->remaining());
     data = static_cast<const char *>(data) + head;
     size -= head;
-    *buffer = _chunks.allocateChunk(size);
+    *buffer = _scratchpad.next(size);
     buffer->write(data, size);
 }
 
 void BlobOutputStream::_flush(Buffer *buffer) {
-    *_target = materialize();
+    size_t bytesTotal = position();
+    if (bytesTotal == 0) {
+        *_target = Blob().withDisplayPath(displayPath());
+        return;
+    }
+
+    std::unique_ptr<char, FreeDeleter> result(static_cast<char *>(malloc(bytesTotal)));
+    _scratchpad.materialize(result.get(), bytesTotal);
+    *_target = Blob::fromMalloc(std::move(result), bytesTotal).withDisplayPath(displayPath());
 }
 
 void BlobOutputStream::_close(Buffer *buffer, bool canThrow) {
     assert(isOpen());
 
-    if (_chunks.chunkCount() == 1) {
-        *_target = Blob::fromMalloc(_chunks.popChunk(), position()).withDisplayPath(displayPath());
-    } else {
-        *_target = materialize();
-    }
-
+    *_target = _scratchpad.finish(position()).withDisplayPath(displayPath());
     _target = nullptr;
-    _chunks.reset();
 
     base_type::_close(buffer, canThrow);
-}
-
-Blob BlobOutputStream::materialize() {
-    size_t bytesTotal = position();
-    if (bytesTotal == 0)
-        return Blob().withDisplayPath(displayPath());
-
-    std::unique_ptr<char, FreeDeleter> result(static_cast<char *>(malloc(bytesTotal)));
-    _chunks.materialize(result.get(), bytesTotal);
-    return Blob::fromMalloc(std::move(result), bytesTotal).withDisplayPath(displayPath());
 }

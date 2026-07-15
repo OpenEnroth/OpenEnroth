@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstddef>
 #include <cstring>
+#include <span>
 #include <string>
 #include <type_traits>
 
@@ -25,6 +26,10 @@ class StreamBuffer {
 
     StreamBuffer(T *start, T *pos, T *end) {
         reset(start, pos, end);
+    }
+
+    StreamBuffer(std::span<T> span) { // NOLINT: implicit conversion is intended.
+        reset(span.data(), span.data(), span.data() + span.size());
     }
 
     void reset(T *newStart, T *newPos, T *newEnd) {
