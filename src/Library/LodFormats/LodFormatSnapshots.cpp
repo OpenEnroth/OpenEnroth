@@ -4,12 +4,6 @@
 
 #include "LodFont.h"
 
-void reconstruct(const LodFontHeader_MM7 &src, LodFontHeader *dst) {
-    dst->firstChar = src.firstChar;
-    dst->lastChar = src.lastChar;
-    dst->fontHeight = src.height;
-}
-
 void reconstruct(const LodFontMetrics_MM7 &src, LodFontMetrics *dst) {
     dst->leftSpacing = src.leftSpacing;
     dst->width = src.width;
@@ -22,10 +16,7 @@ void reconstruct(const LodFontAtlas_MM7 &src, LodFontAtlas *dst) {
 }
 
 void reconstruct(const LodFontAtlas_MMX &src, LodFontAtlas *dst) {
-    for (size_t i = 0; i < 256; i++) {
-        dst->metrics[i].width = src.widths[i];
-        dst->metrics[i].leftSpacing = dst->metrics[i].rightSpacing = 0;
-    }
-
+    for (size_t i = 0; i < 256; i++)
+        dst->metrics[i] = LodFontMetrics(0, src.widths[i], 0);
     reconstruct(src.offsets, &dst->offsets, tags::cast<uint32_t, int>);
 }

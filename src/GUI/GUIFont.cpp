@@ -12,6 +12,8 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 
+#include "Library/LodFormats/LodFormats.h"
+
 static Color parseColorTag(const char *tag, const Color &defaultColor) {
     char color_code[20];
     strncpy(color_code, tag, 5);
