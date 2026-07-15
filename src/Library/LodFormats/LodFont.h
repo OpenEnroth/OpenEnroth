@@ -2,21 +2,10 @@
 
 #include <cassert>
 #include <array>
+#include <utility>
 
 #include "Library/Image/Image.h"
 #include "Utility/Memory/Blob.h"
-
-class LodFont;
-
-namespace lod {
-LodFont decodeFont(const Blob &blob);
-} // namespace lod
-
-struct LodFontHeader {
-    int firstChar = 0; // First char that has an image in this font.
-    int lastChar = 0; // Last char that has an image in this font.
-    int fontHeight = 0;
-};
 
 struct LodFontMetrics {
     int leftSpacing = 0; // Spacing in pixels to the left of the character. Can be negative.
@@ -31,12 +20,16 @@ struct LodFontAtlas {
 
 class LodFont {
  public:
+    LodFont() = default;
+    LodFont(int height, const LodFontAtlas &atlas, Blob pixels)
+        : _height(height), _atlas(atlas), _pixels(std::move(pixels)) {}
+
     [[nodiscard]] int height() const {
-        return _header.fontHeight;
+        return _height;
     }
 
     [[nodiscard]] bool supports(char c) const {
-        return static_cast<unsigned char>(c) >= _header.firstChar && static_cast<unsigned char>(c) <= _header.lastChar;
+        return _atlas.metrics[static_cast<unsigned char>(c)].width != 0;
     }
 
     /**
@@ -57,13 +50,11 @@ class LodFont {
         return GrayscaleImageView(
             static_cast<const uint8_t *>(_pixels.data()) + _atlas.offsets[static_cast<unsigned char>(c)],
             _atlas.metrics[static_cast<unsigned char>(c)].width,
-            _header.fontHeight);
+            _height);
     }
 
-    friend LodFont lod::decodeFont(const Blob &blob);
-
  private:
-    LodFontHeader _header;
+    int _height = 0;
     LodFontAtlas _atlas;
     Blob _pixels;
 };

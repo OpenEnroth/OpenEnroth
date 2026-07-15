@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <span>
+#include <utility>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -277,49 +278,50 @@ LodFont lod::decodeFont(const Blob &blob) {
     if (!detectFont(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD font", blob.displayPath());
 
-    auto fixAndValidateFont = [](const Blob &blob, LodFont &font) {
-        for (int c = 0; c <= 255; c++) {
-            if (c < font._header.firstChar || c > font._header.lastChar) {
-                font._atlas.metrics[c].width = 0;
-                font._atlas.metrics[c].leftSpacing = 0;
-                font._atlas.metrics[c].rightSpacing = 0;
-                font._atlas.offsets[c] = 0;
-                continue;
-            }
+    LodFontHeader_MM7 header;
+    LodFontAtlas atlas;
+    Blob pixels;
 
+    auto decodeFontVia = [&](auto via) {
+        BlobInputStream stream(blob);
+        deserialize(stream, &header);
+        deserialize(stream, &atlas, via);
+        pixels = stream.readAllAsBlob();
+
+        for (int c = header.firstChar; c <= header.lastChar; c++) {
             // Check that font metrics are sane.
-            const LodFontMetrics &metrics = font._atlas.metrics[c];
-            if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH || metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
+            const LodFontMetrics &metrics = atlas.metrics[c];
+            if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH ||
+                metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
                 throw Exception("Cannot decode font LOD entry '{}': invalid font metrics encountered for character #{}",
                                 blob.displayPath(), c);
 
             // Check that all offsets point into the pixel data.
-            int offset = font._atlas.offsets[c];
-            int size = font._header.fontHeight * font._atlas.metrics[c].width;
-            if (offset < 0 || size < 0 || size + offset > font._pixels.size())
+            int size = header.height * metrics.width;
+            if (atlas.offsets[c] < 0 || size + atlas.offsets[c] > pixels.size())
                 throw Exception("Cannot decode font LOD entry '{}': invalid glyph data encountered for character #{}",
                                 blob.displayPath(), c);
         }
     };
 
-    LodFont result;
     try {
-        BlobInputStream stream(blob);
-        deserialize(stream, &result._header, tags::via<LodFontHeader_MM7>);
-        deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MM7>);
-        result._pixels = stream.readAllAsBlob();
-        fixAndValidateFont(blob, result);
+        decodeFontVia(tags::via<LodFontAtlas_MM7>);
     } catch (const std::exception &e) {
         try {
-            BlobInputStream stream(blob);
-            deserialize(stream, &result._header, tags::via<LodFontHeader_MM7>);
-            deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MMX>);
-            result._pixels = stream.readAllAsBlob();
-            fixAndValidateFont(blob, result);
+            decodeFontVia(tags::via<LodFontAtlas_MMX>);
         } catch (const std::exception &) {
-            throw e; // Re-throw outer exception if trying both formats failed.
+            throw e; // Re-throw MM7 exception if trying both formats failed.
         }
     }
 
-    return result;
+    // Characters outside `[firstChar, lastChar]` are garbage in the original files. Zero them out so that `LodFont`
+    // reports them as unsupported.
+    for (int c = 0; c <= 255; c++) {
+        if (c < header.firstChar || c > header.lastChar) {
+            atlas.metrics[c] = {};
+            atlas.offsets[c] = 0;
+        }
+    }
+
+    return LodFont(header.height, atlas, std::move(pixels));
 }
