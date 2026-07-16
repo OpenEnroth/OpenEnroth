@@ -80,9 +80,9 @@ void initializeHouses(const Blob &houses) {
         HouseId houseId = static_cast<HouseId>(fromString<int>(tokens[0]));
         houseTable[houseId].uType = valueOr(houseTypeMap, tokens[2], HOUSE_TYPE_MERCENARY_GUILD);
         houseTable[houseId].uAnimationID = fromString<int>(tokens[4]);
-        houseTable[houseId].name = removeQuotes(tokens[5]);
-        houseTable[houseId].pProprieterName = removeQuotes(tokens[6]);
-        houseTable[houseId].pProprieterTitle = removeQuotes(tokens[7]);
+        houseTable[houseId].name = unquote(tokens[5]);
+        houseTable[houseId].pProprieterName = unquote(tokens[6]);
+        houseTable[houseId].pProprieterTitle = unquote(tokens[7]);
         houseTable[houseId].field_14 = fromString<int>(tokens[8]);
         houseTable[houseId]._state = fromString<int>(tokens[9]);
         houseTable[houseId]._rep = fromString<int>(tokens[10]);
@@ -95,6 +95,6 @@ void initializeHouses(const Blob &houses) {
         houseTable[houseId].uExitPicID = fromString<int>(tokens[20]);
         houseTable[houseId].uExitMapID = static_cast<MapId>(fromString<int>(tokens[21]));
         houseTable[houseId]._quest_bit = static_cast<QuestBit>(fromString<int>(tokens[22]));
-        houseTable[houseId].pEnterText = removeQuotes(tokens[23]);
+        houseTable[houseId].pEnterText = unquote(tokens[23]);
     }
 }

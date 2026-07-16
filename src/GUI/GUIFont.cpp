@@ -427,11 +427,6 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
             if (!_font.supports(c))
                 break;
 
-            if (c == '\"' && string_base[i + 1] == '\"') {
-                ++i;
-            }
-
-            c = (uint8_t)string_base[i];
             if (i > 0) {
                 out_x += _font.metrics(c).leftSpacing;
             }

@@ -245,7 +245,7 @@ void MonsterStats::InitializePlacements(const Blob &placements) {
     for (std::string_view line : split(placements.str()).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]);
-        uniqueNames[i] = removeQuotes(tokens[1]);
+        uniqueNames[i] = unquote(tokens[1]);
     }
 }
 
@@ -376,7 +376,8 @@ void MonsterStats::Initialize(const Blob &monsters) {
         outMastery = CombinedSkillValue::none();
         if (cell.size() < 2)
             return;
-        std::array<std::string_view, 3> parts = split(removeQuotes(cell)).by(',');
+        std::string unquoted = unquote(cell);
+        std::array<std::string_view, 3> parts = split(unquoted).by(',');
         if (parts[0].empty())
             return;
         outSpellId = ParseSpellType(parts[0]);
@@ -397,7 +398,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
     auto parseSpecialAbility = [](std::string_view cell, MonsterInfo &info) {
         info.specialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
         info.specialAbilityDamageDiceBonus = 0;
-        std::string normalized(removeQuotes(cell));
+        std::string normalized(unquote(cell));
         for (char &c : normalized) {
             if (c == ',' || c == '\t') c = ' ';
         }
@@ -501,7 +502,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
     // HP and EXP cells are mostly plain numbers, but a couple of monsters use a quoted thousand-separated
     // format like `" 1,300 "`. Strip surrounding quotes/whitespace and any thousand-separator commas, then parse as int.
     auto parseThousand = [](std::string_view s) {
-        std::string buf(trim(removeQuotes(s)));
+        std::string buf(trim(unquote(s)));
         std::erase(buf, ',');
         return fromString<int>(buf);
     };
@@ -514,8 +515,8 @@ void MonsterStats::Initialize(const Blob &monsters) {
         MonsterId id = static_cast<MonsterId>(fromString<int>(tokens[0]));
         MonsterInfo &info = infos[id];
         info.id = id;
-        info.name = removeQuotes(tokens[1]);
-        info.internalName = removeQuotes(tokens[2]);
+        info.name = unquote(tokens[1]);
+        info.internalName = unquote(tokens[2]);
         info.level = fromString<int>(tokens[3]);
         info.hp = parseThousand(tokens[4]);
         info.ac = fromString<int>(tokens[5]);

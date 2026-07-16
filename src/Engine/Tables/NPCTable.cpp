@@ -30,7 +30,7 @@ void NPCStats::InitializeNPCText(const Blob &npcText) {
     for (std::string_view line : split(npcText.str()).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]) - 1; // File indices are 1-based, array is 0-based.
-        pNPCTopics[i].pText = removeQuotes(tokens[1]);
+        pNPCTopics[i].pText = unquote(tokens[1]);
     }
 }
 
@@ -40,7 +40,7 @@ void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
     for (std::string_view line : split(npcTopics.str()).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]);
-        pNPCTopics[i].pTopic = removeQuotes(tokens[1]);
+        pNPCTopics[i].pTopic = unquote(tokens[1]);
     }
 }
 
@@ -74,7 +74,7 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
     for (std::string_view line : split(npcData.str()).by("\r\n").drop(2).skip("").take(500)) {
         std::array<std::string_view, 16> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]); // File indices are 1-based.
-        pNPCUnicNames[i - 1] = removeQuotes(tokens[1]);
+        pNPCUnicNames[i - 1] = unquote(tokens[1]);
         pOriginalNPCData[i].name = pNPCUnicNames[i - 1]; // TODO(captainurist): just make this 1-based too?
         pOriginalNPCData[i].portraitId = fromString<int>(tokens[2]);
         pOriginalNPCData[i].house = static_cast<HouseId>(fromString<int>(tokens[6]));
@@ -100,8 +100,8 @@ void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
             continue; // Trailing orphan row with no index column.
 
         int i = fromString<int>(tokens[0]); // File indices are 1-based.
-        pNPCGreetings[i].pGreeting1 = removeQuotes(tokens[1]);
-        pNPCGreetings[i].pGreeting2 = removeQuotes(tokens[2]);
+        pNPCGreetings[i].pGreeting1 = unquote(tokens[1]);
+        pNPCGreetings[i].pGreeting2 = unquote(tokens[2]);
     }
 }
 
@@ -119,7 +119,7 @@ void NPCStats::InitializeNPCNews(const Blob &npcNews) {
     for (std::string_view line : split(npcNews.str()).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]); // File indices are 0-based.
-        pCatchPhrases[i] = removeQuotes(tokens[1]);
+        pCatchPhrases[i] = unquote(tokens[1]);
     }
 }
 
@@ -145,9 +145,9 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
     for (std::string_view line : split(npcNames.str()).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         if (!tokens[0].empty())
-            pNPCNames[SEX_MALE].emplace_back(removeQuotes(tokens[0]));
+            pNPCNames[SEX_MALE].emplace_back(unquote(tokens[0]));
         if (!tokens[1].empty())
-            pNPCNames[SEX_FEMALE].emplace_back(removeQuotes(tokens[1]));
+            pNPCNames[SEX_FEMALE].emplace_back(unquote(tokens[1]));
     }
 }
 
@@ -162,10 +162,10 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
 
         NpcProfession prof = static_cast<NpcProfession>(fromString<int>(tokens[0]));
         pProfessions[prof].uHirePrice = fromString<int>(tokens[2]);
-        pProfessions[prof].pActionText = removeQuotes(tokens[3]);
-        pProfessions[prof].pBenefits = removeQuotes(tokens[4]);
-        pProfessions[prof].pJoinText = removeQuotes(tokens[5]);
-        pProfessions[prof].pDismissText = removeQuotes(tokens[6]);
+        pProfessions[prof].pActionText = unquote(tokens[3]);
+        pProfessions[prof].pBenefits = unquote(tokens[4]);
+        pProfessions[prof].pJoinText = unquote(tokens[5]);
+        pProfessions[prof].pDismissText = unquote(tokens[6]);
     }
     uNumNPCProfessions = 59;
 }

@@ -19,6 +19,6 @@ void initializeQuests(const Blob &quests) {
     for (std::string_view line : split(quests.str()).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         QuestBit qbit = static_cast<QuestBit>(fromString<int>(tokens[0]));
-        pQuestTable[qbit] = removeQuotes(tokens[1]);
+        pQuestTable[qbit] = unquote(tokens[1]);
     }
 }

@@ -20,7 +20,7 @@ void HistoryTable::Initialize(const Blob &history) {
     for (std::string_view line : split(history.str()).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 4> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]);
-        historyLines[i].pText = removeQuotes(tokens[1]);
-        historyLines[i].pPageTitle = removeQuotes(tokens[3]);
+        historyLines[i].pText = unquote(tokens[1]);
+        historyLines[i].pPageTitle = unquote(tokens[3]);
     }
 }

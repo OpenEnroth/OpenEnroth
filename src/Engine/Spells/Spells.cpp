@@ -504,14 +504,14 @@ void SpellStats::Initialize(const Blob &spells) {
             continue; // Skip section headers.
 
         SpellId uSpellID = static_cast<SpellId>(fromString<int>(tokens[0]));
-        pInfos[uSpellID].name = removeQuotes(tokens[2]);
+        pInfos[uSpellID].name = unquote(tokens[2]);
         pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, tokens[3], DAMAGE_PHYSICAL);
-        pInfos[uSpellID].pShortName = removeQuotes(tokens[4]);
-        pInfos[uSpellID].pDescription = removeQuotes(tokens[5]);
-        pInfos[uSpellID].pBasicSkillDesc = removeQuotes(tokens[6]);
-        pInfos[uSpellID].pExpertSkillDesc = removeQuotes(tokens[7]);
-        pInfos[uSpellID].pMasterSkillDesc = removeQuotes(tokens[8]);
-        pInfos[uSpellID].pGrandmasterSkillDesc = removeQuotes(tokens[9]);
+        pInfos[uSpellID].pShortName = unquote(tokens[4]);
+        pInfos[uSpellID].pDescription = unquote(tokens[5]);
+        pInfos[uSpellID].pBasicSkillDesc = unquote(tokens[6]);
+        pInfos[uSpellID].pExpertSkillDesc = unquote(tokens[7]);
+        pInfos[uSpellID].pMasterSkillDesc = unquote(tokens[8]);
+        pInfos[uSpellID].pGrandmasterSkillDesc = unquote(tokens[9]);
         pSpellDatas[uSpellID].flags |= tokens[10].contains('m') || tokens[10].contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlag();
         pSpellDatas[uSpellID].flags |= tokens[10].contains('e') || tokens[10].contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlag();
         pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();

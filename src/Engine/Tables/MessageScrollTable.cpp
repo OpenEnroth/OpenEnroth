@@ -19,6 +19,6 @@ void initializeMessageScrolls(const Blob &scrolls) {
             continue; // Skip tab-only trailing lines.
 
         ItemId i = static_cast<ItemId>(fromString<int>(tokens[0]));
-        pMessageScrolls[i] = removeQuotes(tokens[1]);
+        pMessageScrolls[i] = unquote(tokens[1]);
     }
 }

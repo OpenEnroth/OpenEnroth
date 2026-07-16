@@ -38,8 +38,8 @@ void ItemTable::LoadStandardEnchantments(const Blob &stditems) {
     standardEnchantmentChanceSumByItemType.fill(0);
     for (auto [line, i] : view(lines).zip(allEnchantableAttributes())) {
         std::array<std::string_view, 11> tokens = split(line).by('\t');
-        standardEnchantments[i].attributeName = removeQuotes(tokens[0]);
-        standardEnchantments[i].itemSuffix = removeQuotes(tokens[1]);
+        standardEnchantments[i].attributeName = unquote(tokens[0]);
+        standardEnchantments[i].itemSuffix = unquote(tokens[1]);
 
         int k = 2;
         for (ItemType equipType : standardEnchantments[i].chanceByItemType.indices()) {
@@ -59,8 +59,8 @@ void ItemTable::LoadSpecialEnchantments(const Blob &spcitems) {
     // spcitems.txt table structure: description (localized) | suffix/prefix (localized) | chance by item type... | gold value | enchantment level.
     for (auto [line, i] : split(spcitems.str()).by("\r\n").drop(4).skip("").zip(specialEnchantments.indices())) {
         std::array<std::string_view, 17> tokens = split(line).by('\t');
-        specialEnchantments[i].description = removeQuotes(tokens[0]);
-        specialEnchantments[i].itemSuffixOrPrefix = removeQuotes(tokens[1]);
+        specialEnchantments[i].description = unquote(tokens[0]);
+        specialEnchantments[i].itemSuffixOrPrefix = unquote(tokens[1]);
 
         int k = 2;
         for (ItemType j : specialEnchantments[i].chanceByItemType.indices())
@@ -140,8 +140,8 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
     for (std::string_view line : split(itemsBlob.str()).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 17> tokens = split(line).by('\t');
         ItemId item_counter = ItemId(fromString<int>(tokens[0]));
-        items[item_counter].iconName = removeQuotes(tokens[1]);
-        items[item_counter].name = removeQuotes(tokens[2]);
+        items[item_counter].iconName = unquote(tokens[1]);
+        items[item_counter].name = unquote(tokens[2]);
         items[item_counter].baseValue = fromString<int>(tokens[3]);
         items[item_counter].type = valueOr(equipStatMap, tokens[4], ITEM_TYPE_NONE);
         items[item_counter].skill = valueOr(equipSkillMap, tokens[5], SKILL_MISC);
@@ -160,7 +160,7 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
         items[item_counter].damageMod = fromString<int>(tokens[7]);
         items[item_counter].rarity = valueOr(materialMap, tokens[8], RARITY_COMMON);
         items[item_counter].identifyAndRepairDifficulty = fromString<int>(tokens[9]);
-        items[item_counter].unidentifiedName = removeQuotes(tokens[10]);
+        items[item_counter].unidentifiedName = unquote(tokens[10]);
         items[item_counter].spriteId = static_cast<SpriteId>(fromString<int>(tokens[11]));
 
         if (items[item_counter].type == ITEM_TYPE_REAGENT) {
@@ -198,7 +198,7 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
         }
         items[item_counter].paperdollAnchorOffset.x = fromString<int>(tokens[14]);
         items[item_counter].paperdollAnchorOffset.y = fromString<int>(tokens[15]);
-        items[item_counter].description = removeQuotes(tokens[16]);
+        items[item_counter].description = unquote(tokens[16]);
     }
 }
 
