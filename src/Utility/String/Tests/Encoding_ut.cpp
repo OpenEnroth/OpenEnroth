@@ -497,3 +497,56 @@ UNIT_TEST(Encoding, StackSize) {
     });
     thread.join();
 }
+
+UNIT_TEST(Encoding, Iso8859UnmappedByteTerminates) {
+    // ISO-8859-3 (Latin-3) has undefined byte positions, e.g. 0xA5. Decoding such a byte must terminate with a
+    // replacement character, not loop forever. Regression test for a ztd.text bug where the single-byte decoder
+    // failed to advance past an unmapped high byte, hanging any caller.
+    EXPECT_EQ(txt::encodedToUtf8("\xA5", ENCODING_ISO_8859_3), "\xEF\xBF\xBD"); // U+FFFD.
+    EXPECT_EQ(txt::encodedToChar32('\xA5', ENCODING_ISO_8859_3), 0xFFFD); // Unmapped -> replacement character.
+
+    // A byte just below the hole still decodes fine.
+    EXPECT_EQ(txt::encodedToChar32('\xA3', ENCODING_ISO_8859_3), 0x00A3); // POUND SIGN, mapped.
+}
+
+UNIT_TEST(Encoding, Utf8InvalidLeadByteTerminates) {
+    // 0xF5-0xFF are byte values that only ever start out-of-range or malformed UTF-8 sequences. They have a lead-byte
+    // bit pattern, so a decoder that skips to "the next lead byte" on error can get stuck on them. Decoding one must
+    // terminate with a replacement character. Regression test for a ztd.text hang.
+    EXPECT_EQ(txt::encodedToUtf8("\xF5", ENCODING_UTF8), "\xEF\xBF\xBD"); // U+FFFD.
+    EXPECT_EQ(txt::encodedToChar32('\xF5', ENCODING_UTF8), 0xFFFD);
+    EXPECT_EQ(txt::encodedToChar32('\xFF', ENCODING_UTF8), 0xFFFD);
+
+    // A valid ASCII byte after the bad one is still decoded.
+    EXPECT_EQ(txt::encodedToUtf8("\xF5" "A", ENCODING_UTF8), "\xEF\xBF\xBD" "A");
+}
+
+UNIT_TEST(Encoding, SingleByteEncodingsDecodeEveryByte) {
+    // Decoding a single byte must work for every byte of every single-byte encoding: terminate (regression for a
+    // ztd.text hang on unmapped bytes in sparse single-byte encodings), yield exactly one code point - the character,
+    // or U+FFFD if the byte is unmapped - and give the same result through both decode entry points. Also exercises
+    // the code-point-overflow assert inside `encodedToChar32` for every byte.
+    //
+    // TODO(captainurist): extend this to all encodings once ztd.text is fixed - decoding a single (odd) byte in the
+    //                     fixed-width UTF-16 / UTF-32 encodings reads out of bounds, and an unmapped byte in some
+    //                     multi-byte encodings may still hang.
+    TextEncoding singleByteEncodings[] = {
+        ENCODING_ASCII,
+        ENCODING_ISO_8859_1, ENCODING_ISO_8859_2, ENCODING_ISO_8859_3, ENCODING_ISO_8859_4,
+        ENCODING_ISO_8859_5, ENCODING_ISO_8859_6, ENCODING_ISO_8859_7, ENCODING_ISO_8859_8,
+        ENCODING_ISO_8859_10, ENCODING_ISO_8859_13, ENCODING_ISO_8859_15, ENCODING_ISO_8859_16,
+        ENCODING_WINDOWS_1251, ENCODING_WINDOWS_1252, ENCODING_WINDOWS_1253, ENCODING_WINDOWS_1255,
+        ENCODING_WINDOWS_1256, ENCODING_WINDOWS_1257, ENCODING_WINDOWS_1258,
+        ENCODING_IBM865, ENCODING_IBM866, ENCODING_KOI8_R,
+    };
+    for (TextEncoding encoding : singleByteEncodings) {
+        for (int b = 0; b < 256; b++) {
+            std::u32string utf32 = txt::encodedToUtf32(std::string(1, static_cast<char>(b)), encoding);
+            ASSERT_EQ(utf32.size(), 1u) << "encoding " << static_cast<int>(encoding) << ", byte " << b;
+            EXPECT_EQ(txt::encodedToChar32(static_cast<char>(b), encoding), utf32[0])
+                << "encoding " << static_cast<int>(encoding) << ", byte " << b;
+        }
+    }
+}
+
+

@@ -1,5 +1,6 @@
 #include "Encoding.h"
 
+#include <array>
 #include <cassert>
 #include <span>
 #include <string>
@@ -78,3 +79,38 @@ std::string txt::utf8ToEncoded(std::string_view str, TextEncoding encoding) {
         return ztd::text::transcode(input, ztd::text::compat_utf8, enc, ztd::text::replacement_handler);
     });
 }
+
+std::u32string txt::encodedToUtf32(std::string_view str, TextEncoding encoding) {
+    std::span<const char> input(str.data(), str.size());
+    return dispatchEncoding(encoding == ENCODING_BYTES ? ENCODING_UTF8 : encoding, [&](auto enc) {
+        return ztd::text::transcode(input, enc, ztd::text::utf32, ztd::text::replacement_handler);
+    });
+}
+
+std::string txt::utf32ToEncoded(std::u32string_view str, TextEncoding encoding) {
+    std::span<const char32_t> input(str.data(), str.size());
+    return dispatchEncoding(encoding == ENCODING_BYTES ? ENCODING_UTF8 : encoding, [&](auto enc) {
+        return ztd::text::transcode(input, ztd::text::utf32, enc, ztd::text::replacement_handler);
+    });
+}
+
+char32_t txt::encodedToChar32(char c, TextEncoding encoding) {
+    // Same replacement semantics as `encodedToUtf32`: a byte that's not mapped in the source encoding, or is an
+    // incomplete part of a multi-byte sequence, decodes into the replacement character.
+    char32_t result = 0xFFFD;
+    dispatchEncoding(encoding == ENCODING_BYTES ? ENCODING_UTF8 : encoding, [&](auto enc) {
+        // Size the buffer so that decoding never overflows it, then require exactly one code point. A byte decodes
+        // into a single code point in all of the supported encodings; if a future one produced several, this asserts
+        // rather than silently return a truncated result.
+        std::array<char32_t, ztd::text::max_code_points_v<decltype(enc)>> buffer;
+        auto decoded = ztd::text::decode_one_into(std::span<const char>(&c, 1), enc, std::span<char32_t>(buffer),
+                                                  ztd::text::replacement_handler);
+
+        size_t decodedSize = buffer.size() - decoded.output.size();
+        assert(decodedSize <= 1);
+        if (decodedSize == 1)
+            result = buffer[0];
+    });
+    return result;
+}
+
