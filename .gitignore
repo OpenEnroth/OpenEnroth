@@ -21,12 +21,16 @@ cmake-build-release
 cmake-build-relwithdebinfo
 cmake-build-minsizerel
 
-# CMake
-## Default output folder used by Visual Studio
+# Default output folder used by Visual Studio
 out
 
-## Output folder on Linux as described in HACKING
+# Output folders used by Claude
 build
+build_*
+build-*
+
+# Scratch dir for local experiments
+tmp
 
 # Doxygen
 docs
@@ -51,4 +55,3 @@ local.properties
 # .claude
 .claude/settings.local.json
 .claude/plans
-build-*
