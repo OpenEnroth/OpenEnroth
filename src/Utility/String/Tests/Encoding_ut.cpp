@@ -7,6 +7,7 @@
 #include "Library/Serialization/Serialization.h"
 
 #include "Utility/String/Encoding.h"
+#include "Utility/String/Format.h"
 #include "Utility/Segment.h"
 
 UNIT_TEST(Encoding, WideInvalidUtf8) {
@@ -549,4 +550,172 @@ UNIT_TEST(Encoding, SingleByteEncodingsDecodeEveryByte) {
     }
 }
 
+UNIT_TEST(Encoding, NextRuneAscii) {
+    std::string_view s = "abc";
+    size_t pos = 0;
+    EXPECT_EQ(txt::nextRune(s, &pos), U'a');
+    EXPECT_EQ(pos, 1u);
+    EXPECT_EQ(txt::nextRune(s, &pos), U'b');
+    EXPECT_EQ(txt::nextRune(s, &pos), U'c');
+    EXPECT_EQ(pos, 3u);
+}
 
+UNIT_TEST(Encoding, NextRuneMultiByte) {
+    // 'a' (1 byte), 'Б' (2 bytes), '☃' (3 bytes), '😀' (4 bytes).
+    std::string_view s = "a\xD0\x91\xE2\x98\x83\xF0\x9F\x98\x80";
+    size_t pos = 0;
+    EXPECT_EQ(txt::nextRune(s, &pos), U'a');
+    EXPECT_EQ(pos, 1u);
+    EXPECT_EQ(txt::nextRune(s, &pos), 0x0411u); // CYRILLIC CAPITAL LETTER BE
+    EXPECT_EQ(pos, 3u);
+    EXPECT_EQ(txt::nextRune(s, &pos), 0x2603u); // SNOWMAN
+    EXPECT_EQ(pos, 6u);
+    EXPECT_EQ(txt::nextRune(s, &pos), 0x1F600u); // GRINNING FACE
+    EXPECT_EQ(pos, 10u);
+}
+
+UNIT_TEST(Encoding, NextRuneMalformed) {
+    // Invalid lead byte (0xFF is never valid in UTF-8), followed by valid ASCII.
+    std::string_view invalidLead = "\xFF" "a";
+    size_t pos = 0;
+    EXPECT_EQ(txt::nextRune(invalidLead, &pos), 0xFFFDu);
+    EXPECT_EQ(pos, 1u); // Advanced past the bad byte, but not past valid data.
+    EXPECT_EQ(txt::nextRune(invalidLead, &pos), U'a');
+    EXPECT_EQ(pos, 2u);
+
+    // Truncated 2-byte sequence at the end of the string.
+    std::string_view truncated = "a\xD0";
+    pos = 0;
+    EXPECT_EQ(txt::nextRune(truncated, &pos), U'a');
+    EXPECT_EQ(txt::nextRune(truncated, &pos), 0xFFFDu);
+    EXPECT_EQ(pos, 2u);
+
+    // Continuation byte without a lead byte.
+    std::string_view continuation = "\x80";
+    pos = 0;
+    EXPECT_EQ(txt::nextRune(continuation, &pos), 0xFFFDu);
+    EXPECT_EQ(pos, 1u);
+
+    // Lead byte followed by a non-continuation byte - only the lead byte is consumed.
+    std::string_view badContinuation = "\xD0" "a";
+    pos = 0;
+    EXPECT_EQ(txt::nextRune(badContinuation, &pos), 0xFFFDu);
+    EXPECT_EQ(pos, 1u);
+    EXPECT_EQ(txt::nextRune(badContinuation, &pos), U'a');
+}
+
+UNIT_TEST(Encoding, NextRuneRejectsOverlongSurrogateAndOutOfRange) {
+    size_t pos = 0;
+
+    std::string_view overlong = "\xC0\xAF"; // Overlong 2-byte encoding of '/'.
+    pos = 0;
+    EXPECT_EQ(txt::nextRune(overlong, &pos), 0xFFFDu);
+
+    std::string_view surrogate = "\xED\xA0\x80"; // UTF-16 surrogate U+D800.
+    pos = 0;
+    EXPECT_EQ(txt::nextRune(surrogate, &pos), 0xFFFDu);
+
+    std::string_view outOfRange = "\xF4\x90\x80\x80"; // U+110000, past the last code point.
+    pos = 0;
+    EXPECT_EQ(txt::nextRune(outOfRange, &pos), 0xFFFDu);
+
+    std::string_view maxCodePoint = "\xF4\x8F\xBF\xBF"; // U+10FFFF, the last valid code point.
+    pos = 0;
+    EXPECT_EQ(txt::nextRune(maxCodePoint, &pos), 0x10FFFFu);
+    EXPECT_EQ(pos, 4u);
+}
+
+// Decodes UTF-8 through `encodedToUtf32` and through `nextRune` iteration, checking that the two paths agree.
+static std::u32string utf8ToUtf32BothWays(std::string_view s) {
+    std::u32string viaString = txt::encodedToUtf32(s, ENCODING_UTF8);
+
+    std::u32string viaRunes;
+    for (size_t pos = 0; pos < s.size();) {
+        size_t previous = pos;
+        viaRunes += txt::nextRune(s, &pos);
+        EXPECT_GT(pos, previous); // Progress is guaranteed even on malformed input.
+    }
+
+    std::string hex;
+    for (unsigned char b : s)
+        hex += fmt::format("{:02X} ", b);
+    EXPECT_EQ(viaString, viaRunes) << "decoding: " << hex;
+
+    return viaString;
+}
+
+UNIT_TEST(Encoding, NextRuneMatchesEncodedToUtf32) {
+    // Valid text of all sequence lengths.
+    EXPECT_EQ(utf8ToUtf32BothWays("a\xD0\x91\xE2\x98\x83\xF0\x9F\x98\x80"), U"a\x0411\x2603\U0001F600");
+
+    // A malformed sequence is consumed as a whole and yields a single replacement character, matching ztd.text:
+    // the offending bytes are skipped together with the following run of bytes that cannot start a new sequence.
+    EXPECT_EQ(utf8ToUtf32BothWays("A\xF0\x9F\x92"), U"A\xFFFD"); // Truncated 4-byte sequence.
+    EXPECT_EQ(utf8ToUtf32BothWays("A\xE4\xB8"), U"A\xFFFD"); // Truncated 3-byte sequence.
+    EXPECT_EQ(utf8ToUtf32BothWays("A\xC3"), U"A\xFFFD"); // Truncated 2-byte sequence.
+    EXPECT_EQ(utf8ToUtf32BothWays("\xE4\xB8" "A"), U"\xFFFD" "A"); // Interrupted by a non-continuation byte.
+    EXPECT_EQ(utf8ToUtf32BothWays("\xC0\xAF"), U"\xFFFD"); // Overlong 2-byte encoding of '/'.
+    EXPECT_EQ(utf8ToUtf32BothWays("\xE0\x80\xAF"), U"\xFFFD"); // Overlong 3-byte encoding.
+    EXPECT_EQ(utf8ToUtf32BothWays("\xED\xA0\x80"), U"\xFFFD"); // UTF-16 surrogate U+D800.
+    EXPECT_EQ(utf8ToUtf32BothWays("\xF4\x90\x80\x80"), U"\xFFFD"); // U+110000, out of range.
+    EXPECT_EQ(utf8ToUtf32BothWays("\x80\x80\x80"), U"\xFFFD"); // A run of stray continuation bytes.
+    EXPECT_EQ(utf8ToUtf32BothWays("\x80\xC0\x80"), U"\xFFFD"); // 0xC0/0xC1 can't start a sequence, same run.
+    EXPECT_EQ(utf8ToUtf32BothWays("\x80\xC2\xA9"), U"\xFFFD\x00A9"); // 0xC2 starts a new, valid sequence.
+    EXPECT_EQ(utf8ToUtf32BothWays("\xF5\x80"), U"\xFFFD"); // 0xF5 is structurally a 4-byte lead.
+    EXPECT_EQ(utf8ToUtf32BothWays("\xFE\xFF"), U"\xFFFD\xFFFD"); // 0xFE/0xFF are standalone garbage.
+}
+
+UNIT_TEST(Encoding, NextRuneMatchesEncodedToUtf32Exhaustively) {
+    // All 1- and 2-byte strings.
+    for (int a = 0; a < 256; a++) {
+        char s1[] = {static_cast<char>(a)};
+        utf8ToUtf32BothWays({s1, 1});
+        for (int b = 0; b < 256; b++) {
+            char s2[] = {static_cast<char>(a), static_cast<char>(b)};
+            utf8ToUtf32BothWays({s2, 2});
+        }
+    }
+
+    // 3- and 4-byte strings over bytes covering every UTF-8 byte class and class boundary.
+    constexpr unsigned char interesting[] = {0x00, 0x41, 0x7F, 0x80, 0x8F, 0x90, 0x9F, 0xA0, 0xBF,
+                                             0xC0, 0xC1, 0xC2, 0xDF, 0xE0, 0xE1, 0xEC, 0xED, 0xEE, 0xEF,
+                                             0xF0, 0xF1, 0xF3, 0xF4, 0xF5, 0xF8, 0xFE, 0xFF};
+    for (unsigned char a : interesting) {
+        for (unsigned char b : interesting) {
+            for (unsigned char c : interesting) {
+                char s3[] = {static_cast<char>(a), static_cast<char>(b), static_cast<char>(c)};
+                utf8ToUtf32BothWays({s3, 3});
+            }
+        }
+    }
+    constexpr unsigned char leads4[] = {0xF0, 0xF1, 0xF3, 0xF4, 0xF5};
+    constexpr unsigned char tails4[] = {0x00, 0x41, 0x7F, 0x80, 0x8F, 0x90, 0x9F, 0xA0, 0xBF, 0xC0, 0xC2, 0xF5, 0xFF};
+    for (unsigned char a : leads4) {
+        for (unsigned char b : tails4) {
+            for (unsigned char c : tails4) {
+                for (unsigned char d : tails4) {
+                    char s4[] = {static_cast<char>(a), static_cast<char>(b), static_cast<char>(c), static_cast<char>(d)};
+                    utf8ToUtf32BothWays({s4, 4});
+                }
+            }
+        }
+    }
+}
+
+UNIT_TEST(Encoding, NextRuneDecodesEveryValidCodePoint) {
+    // Round-trip a representative sweep of valid code points through the encoder and both decode paths: everything
+    // up to U+0800 (all 1- and 2-byte and the first 3-byte encodings), then a stride, plus the boundary points.
+    auto check = [](char32_t c) {
+        std::string encoded = txt::utf32ToEncoded(std::u32string_view(&c, 1), ENCODING_UTF8);
+        std::u32string decoded = utf8ToUtf32BothWays(encoded);
+        EXPECT_EQ(decoded, std::u32string_view(&c, 1)) << "code point " << static_cast<uint32_t>(c);
+    };
+
+    for (char32_t c = 0; c < 0x800; c++)
+        check(c);
+    for (char32_t c = 0x800; c < 0x110000; c += 61) // A prime stride, hits both sides of every power of two.
+        if (c < 0xD800 || c > 0xDFFF)
+            check(c);
+    for (char32_t c : {0xD7FFu, 0xE000u, 0xFFFDu, 0xFFFFu, 0x10000u, 0x10FFFFu})
+        check(c);
+}
