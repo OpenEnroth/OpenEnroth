@@ -28,6 +28,7 @@ set(UTILITY_HEADERS
         Math/TrigLut.h
         Memory/Blob.h
         Memory/FreeDeleter.h
+        Memory/MemoryBuffer.h
         Memory/MemoryScratchpad.h
         Memory/MemSet.h
         View.h
@@ -72,6 +73,7 @@ if(OE_BUILD_TESTS)
     set(TEST_UTILITY_SOURCES
             Math/Tests/Float_ut.cpp
             Memory/Tests/Blob_ut.cpp
+            Memory/Tests/MemoryBuffer_ut.cpp
             Memory/Tests/MemoryScratchpad_ut.cpp
             Streams/Tests/BlobInputStream_ut.cpp
             Streams/Tests/BlobOutputStream_ut.cpp
