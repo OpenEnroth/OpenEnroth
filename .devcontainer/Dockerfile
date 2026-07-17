@@ -21,6 +21,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   man-db \
   unzip \
   p7zip-full \
+  unar \
+  libarchive-tools \
+  innoextract \
   gnupg2 \
   gh \
   iptables \
@@ -31,6 +34,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   jq \
   nano \
   vim \
+  imagemagick \
+  python3-pip \
+  python3-pil \
+  python3-numpy \
   wget \
   ca-certificates \
   curl \
@@ -39,6 +46,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   ninja-build \
   mold \
   libgl-dev \
+  xvfb \
+  mesa-utils \
   libdwarf-dev \
   libelf-dev \
   libdw-dev \

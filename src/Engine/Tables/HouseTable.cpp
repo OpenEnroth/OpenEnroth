@@ -16,7 +16,7 @@
 
 IndexedArray<HouseData, HOUSE_FIRST, HOUSE_LAST> houseTable;
 
-void initializeHouses(const Blob &houses) {
+void initializeHouses(std::string_view houses) {
     // 2devents.txt table structure (column names are the headers from the data file):
     //  0: "#"                  - house id
     //  1: "#"                  - per-type sequence number, resets at each new Type         (not used)
@@ -70,7 +70,7 @@ void initializeHouses(const Blob &houses) {
         {"Mercenary Guild", HOUSE_TYPE_TOWN_HALL}, // This is MM6 only. TODO(captainurist): Is this right and not Merc Guild (18)?
     };
 
-    for (std::string_view line : split(houses.str()).by("\r\n").drop(2).skip("")) {
+    for (std::string_view line : split(houses).by("\r\n").drop(2).skip("")) {
         // Some lines have only ~12 cols, and some cols are empty, so need both resize & replace.
         std::array<std::string_view, 24> tokens = split(line).by('\t').replace("", "0").resize(24, "0");
 

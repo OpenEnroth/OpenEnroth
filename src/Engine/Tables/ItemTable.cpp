@@ -30,9 +30,9 @@
 #include "Utility/String/Transformations.h"
 #include "Utility/String/Split.h"
 
-void ItemTable::LoadStandardEnchantments(const Blob &stditems) {
+void ItemTable::LoadStandardEnchantments(std::string_view stditems) {
     // stditems.txt has two sections.
-    std::vector<std::string_view> lines = split(stditems.str()).by("\r\n").drop(4).skip("");
+    std::vector<std::string_view> lines = split(stditems).by("\r\n").drop(4).skip("");
 
     // #1 Standard Bonuses by Group: attribute name (localized) | suffix (localized) | chance by item type....
     standardEnchantmentChanceSumByItemType.fill(0);
@@ -55,9 +55,9 @@ void ItemTable::LoadStandardEnchantments(const Blob &stditems) {
     }
 }
 
-void ItemTable::LoadSpecialEnchantments(const Blob &spcitems) {
+void ItemTable::LoadSpecialEnchantments(std::string_view spcitems) {
     // spcitems.txt table structure: description (localized) | suffix/prefix (localized) | chance by item type... | gold value | enchantment level.
-    for (auto [line, i] : split(spcitems.str()).by("\r\n").drop(4).skip("").zip(specialEnchantments.indices())) {
+    for (auto [line, i] : split(spcitems).by("\r\n").drop(4).skip("").zip(specialEnchantments.indices())) {
         std::array<std::string_view, 17> tokens = split(line).by('\t');
         specialEnchantments[i].description = unquote(tokens[0]);
         specialEnchantments[i].itemSuffixOrPrefix = unquote(tokens[1]);
@@ -86,7 +86,7 @@ void ItemTable::LoadSpecialEnchantments(const Blob &spcitems) {
     }
 }
 
-void ItemTable::LoadItems(const Blob &itemsBlob) {
+void ItemTable::LoadItems(std::string_view itemsBlob) {
     // items.txt table structure: index | icon | name (localized) | value | type | skill | damage | mod | material | ...
 
     static const std::map<std::string, ItemType, ascii::NoCaseLess> equipStatMap = { // TODO(captainurist): #enum use enum serialization
@@ -137,7 +137,7 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
         {"special", RARITY_SPECIAL},
     };
 
-    for (std::string_view line : split(itemsBlob.str()).by("\r\n").drop(2).skip("")) {
+    for (std::string_view line : split(itemsBlob).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 17> tokens = split(line).by('\t');
         ItemId item_counter = ItemId(fromString<int>(tokens[0]));
         items[item_counter].iconName = unquote(tokens[1]);
@@ -202,9 +202,9 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
     }
 }
 
-void ItemTable::LoadRandomItems(const Blob &rnditems) {
+void ItemTable::LoadRandomItems(std::string_view rnditems) {
     // rnditems.txt has two sections.
-    std::vector<std::string_view> lines = split(rnditems.str()).by("\r\n").drop(4).skip("");
+    std::vector<std::string_view> lines = split(rnditems).by("\r\n").drop(4).skip("");
     constexpr size_t section1Size = 618;
 
     // #1 Per-item chances: item index | id (e.g. "ring1", not used) | chance by treasure level 1-6.
@@ -234,12 +234,12 @@ void ItemTable::LoadRandomItems(const Blob &rnditems) {
 
 //----- (00456D84) --------------------------------------------------------
 void ItemTable::Initialize(ResourceManager *resourceManager) {
-    LoadPotions(resourceManager->eventsData("potion.txt"));
-    LoadPotionNotes(resourceManager->eventsData("potnotes.txt"));
-    LoadStandardEnchantments(resourceManager->eventsData("stditems.txt"));
-    LoadSpecialEnchantments(resourceManager->eventsData("spcitems.txt"));
-    LoadItems(resourceManager->eventsData("items.txt"));
-    LoadRandomItems(resourceManager->eventsData("rnditems.txt"));
+    LoadPotions(resourceManager->eventsText("potion.txt"));
+    LoadPotionNotes(resourceManager->eventsText("potnotes.txt"));
+    LoadStandardEnchantments(resourceManager->eventsText("stditems.txt"));
+    LoadSpecialEnchantments(resourceManager->eventsText("spcitems.txt"));
+    LoadItems(resourceManager->eventsText("items.txt"));
+    LoadRandomItems(resourceManager->eventsText("rnditems.txt"));
 
     Item::PopulateSpecialBonusMap();
     Item::PopulateArtifactBonusMap();
@@ -250,11 +250,11 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
 }
 
 //----- (00453B3C) --------------------------------------------------------
-void ItemTable::LoadPotions(const Blob &potions) {
+void ItemTable::LoadPotions(std::string_view potions) {
     // potion.txt table structure: item index | name (localized) | unidentified name (localized) | effect (not localized) | mixing matrix...
     // First rows are reagents, then real potions follow. Reagents don't have the mixing matrix values.
     // Matrix values: item ID of result, "no" for self-mixing, "E{n}" for damage level n on invalid mix.
-    for (std::string_view line : split(potions.str()).by("\r\n").skip("").drop(1)) {
+    for (std::string_view line : split(potions).by("\r\n").skip("").drop(1)) {
         std::array<std::string_view, 57> tokens = split(line).by('\t'); // 7 header cells + 50 mixing-matrix cells.
         if (tokens[0].empty())
             continue; // Skip tab-only lines.
@@ -277,10 +277,10 @@ void ItemTable::LoadPotions(const Blob &potions) {
 }
 
 //----- (00453CE5) --------------------------------------------------------
-void ItemTable::LoadPotionNotes(const Blob &notes) {
+void ItemTable::LoadPotionNotes(std::string_view notes) {
     // potnotes.txt has the same layout as potion.txt, but the mixing matrix contains autonote bit indices
     // (for recipe discovery) instead of resulting item IDs.
-    for (std::string_view line : split(notes.str()).by("\r\n").skip("").drop(1)) {
+    for (std::string_view line : split(notes).by("\r\n").skip("").drop(1)) {
         std::array<std::string_view, 57> tokens = split(line).by('\t'); // 7 header cells + 50 mixing-matrix cells.
         if (tokens[0].empty())
             continue; // Skip tab-only lines.

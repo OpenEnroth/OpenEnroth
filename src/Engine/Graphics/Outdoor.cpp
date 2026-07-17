@@ -41,6 +41,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Seasons.h"
 #include "Engine/Data/TileEnumFunctions.h"
+#include "Engine/Resources/ResourceManager.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -511,7 +512,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
         *outdoors_was_respawned = false;
     }
 
-    reconstruct(delta, this);
+    reconstruct(delta, this, tags::encoding(engine->resources()->encoding()));
 
     if (respawnTimed || respawnInitial)
         ddm.lastRespawnDay = days_played;

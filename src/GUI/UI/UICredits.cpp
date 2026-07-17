@@ -20,7 +20,7 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
 
     _mm6TitleTexture = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
 
-    std::string text{ engine->resources()->eventsData("credits.txt").str() };
+    std::string text = engine->resources()->eventsText("credits.txt");
 
     int height = _fontQuick->GetStringHeightWithSecondFont(_fontCChar.get(), text, creditsRect.w, 0) + 2 * creditsRect.h;
 

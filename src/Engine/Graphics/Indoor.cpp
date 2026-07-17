@@ -37,6 +37,7 @@
 #include "Engine/MapInfo.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Resources/ResourceManager.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -318,7 +319,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
         *indoor_was_respawned = false;
     }
 
-    reconstruct(delta, this);
+    reconstruct(delta, this, tags::encoding(engine->resources()->encoding()));
 
     if (respawnTimed || respawnInitial)
         dlv.lastRespawnDay = num_days_played;

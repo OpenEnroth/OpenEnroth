@@ -65,8 +65,8 @@ struct IndoorDelta_MM7 {
     LocationTime_MM7 locationTime;
 };
 
-void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst);
-void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst);
+void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst, EncodingTag encoding);
+void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst, EncodingTag encoding);
 void serialize(const IndoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocation_MM7> ctx);
 
@@ -122,8 +122,8 @@ struct OutdoorDelta_MM7 {
     LocationTime_MM7 locationTime;
 };
 
-void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst);
-void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst);
+void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst, EncodingTag encoding);
+void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst, EncodingTag encoding);
 void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx);
 
@@ -138,6 +138,7 @@ struct SaveGame_MM7 {
     std::unordered_map<std::string, Blob> mapDeltas; // Map deltas by name (e.g. "out01.ddm", "d29.dlv").
     std::unordered_map<std::pair<int, int>, Blob> lloydImages; // Lloyd's Beacon images as PCX blobs, by {playerIndex, beaconIndex}.
     Blob thumbnail; // In image.pcx - save thumbnail.
+    Blob extension; // In z.json - OE extension data.
 };
 
 void snapshot(const SaveGame &src, SaveGame_MM7 *dst);

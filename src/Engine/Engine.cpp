@@ -80,6 +80,7 @@
 
 #include "Io/Mouse.h"
 
+#include "Library/EncodingDetector/EncodingDetector.h"
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
 #include "Tables/ChestTable.h"
@@ -662,7 +663,7 @@ void Engine::MM7_Initialize() {
     deserialize(engine->resources()->eventsData("dift.bin"), pIconsFrameTable);
 
     pDecorationList = new DecorationList;
-    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationList);
+    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationList, tags::encoding(engine->resources()->encoding()));
 
     pObjectList = new ObjectList;
     deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectList);
@@ -694,25 +695,25 @@ void Engine::SecondaryInitialization() {
     mouse->Initialize();
 
     pMapStats = new MapStats();
-    pMapStats->Initialize(engine->resources()->eventsData("MapStats.txt"));
+    pMapStats->Initialize(engine->resources()->eventsText("MapStats.txt"));
 
     pMonsterStats = new MonsterStats();
-    pMonsterStats->Initialize(engine->resources()->eventsData("monsters.txt"));
-    pMonsterStats->InitializePlacements(engine->resources()->eventsData("placemon.txt"));
+    pMonsterStats->Initialize(engine->resources()->eventsText("monsters.txt"));
+    pMonsterStats->InitializePlacements(engine->resources()->eventsText("placemon.txt"));
 
     pSpellStats = new SpellStats();
-    pSpellStats->Initialize(engine->resources()->eventsData("spells.txt"));
+    pSpellStats->Initialize(engine->resources()->eventsText("spells.txt"));
 
     pHostilityTable = new HostilityTable();
-    pHostilityTable->Initialize(engine->resources()->eventsData("hostile.txt"));
+    pHostilityTable->Initialize(engine->resources()->eventsText("hostile.txt"));
 
     pHistoryTable = new HistoryTable();
-    pHistoryTable->Initialize(engine->resources()->eventsData("history.txt"));
+    pHistoryTable->Initialize(engine->resources()->eventsText("history.txt"));
 
     pItemTable = new ItemTable();
     pItemTable->Initialize(engine->resources());
 
-    initializeHouses(engine->resources()->eventsData("2dEvents.txt"));
+    initializeHouses(engine->resources()->eventsText("2dEvents.txt"));
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
@@ -738,12 +739,12 @@ void Engine::SecondaryInitialization() {
     pNPCStats = new NPCStats();
     pNPCStats->Initialize(engine->resources());
 
-    initializeQuests(engine->resources()->eventsData("quests.txt"));
-    initializeAutonotes(engine->resources()->eventsData("autonote.txt"));
-    initializeAwards(engine->resources()->eventsData("awards.txt"));
-    initializeTransitions(engine->resources()->eventsData("trans.txt"));
-    initializeMerchants(engine->resources()->eventsData("merchant.txt"));
-    initializeMessageScrolls(engine->resources()->eventsData("scroll.txt"));
+    initializeQuests(engine->resources()->eventsText("quests.txt"));
+    initializeAutonotes(engine->resources()->eventsText("autonote.txt"));
+    initializeAwards(engine->resources()->eventsText("awards.txt"));
+    initializeTransitions(engine->resources()->eventsText("trans.txt"));
+    initializeMerchants(engine->resources()->eventsText("merchant.txt"));
+    initializeMessageScrolls(engine->resources()->eventsText("scroll.txt"));
     initializeChests();
 
     engine->_globalEventMap = EvtProgram::load(engine->resources()->eventsData("global.evt"));
@@ -1419,14 +1420,15 @@ Duration timeUntilDawn() {
     return next5am - now;
 }
 
-void initLevelStrings(const Blob &blob) {
+void initLevelStrings(std::string_view blob) {
     engine->_levelStrings.clear();
 
+    // TODO(captainurist): use MemoryInputStream here.
     int offs = 0;
     while (offs < blob.size()) {
-        const char *nextNullTerm = (const char*)memchr(&blob.str()[offs], '\0', blob.size() - offs);
-        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.str()[offs]) : (blob.size() - offs);
-        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob.str()[offs], stringSize)));
+        const char *nextNullTerm = (const char*)memchr(&blob[offs], '\0', blob.size() - offs);
+        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob[offs]) : (blob.size() - offs);
+        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob[offs], stringSize)));
         offs += stringSize + 1;
     }
 }
@@ -1435,7 +1437,7 @@ void loadMapEventsAndStrings(MapId mapid) {
     std::string mapName = pMapStats->pInfos[mapid].fileName;
     std::string mapNameWithoutExt = mapName.substr(0, mapName.rfind('.'));
 
-    initLevelStrings(engine->resources()->eventsData(fmt::format("{}.str", mapNameWithoutExt)));
+    initLevelStrings(engine->resources()->eventsText(fmt::format("{}.str", mapNameWithoutExt)));
 
     engine->_localEventMap = EvtProgram::load(engine->resources()->eventsData(fmt::format("{}.evt", mapNameWithoutExt)));
 }

@@ -12,6 +12,6 @@ class Blob;
 /**
  * @offset 0x4763E0
  */
-void initializeAwards(const Blob &awards);
+void initializeAwards(std::string_view awards);
 
 extern IndexedArray<AwardData, AWARD_FIRST, AWARD_LAST> pAwards;

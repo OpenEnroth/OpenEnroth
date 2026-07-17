@@ -14,7 +14,7 @@
 
 MapStats *pMapStats;
 
-void MapStats::Initialize(const Blob &mapStats) {
+void MapStats::Initialize(std::string_view mapStats) {
     // mapstats.txt table structure: map id | name (localized) | file name | ... |
     //                               map designer (set only in mm6, not used) | dev notes | parent map (not used).
     static const std::map<std::string, uint8_t, ascii::NoCaseLess> eaxEnvMap = {
@@ -58,7 +58,7 @@ void MapStats::Initialize(const Blob &mapStats) {
         }
     };
 
-    for (std::string_view line : split(mapStats.str()).by("\r\n").drop(3).skip("")) {
+    for (std::string_view line : split(mapStats).by("\r\n").drop(3).skip("")) {
         std::array<std::string_view, 30> tokens = split(line).by('\t');
         MapId mapId = static_cast<MapId>(fromString<int>(tokens[0]));
         MapInfo &info = pInfos[mapId];

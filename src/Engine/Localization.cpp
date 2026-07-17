@@ -29,10 +29,10 @@ std::string Localization::skillValueShortString(CombinedSkillValue skillValue) c
 
 //----- (00452C49) --------------------------------------------------------
 bool Localization::initialize() {
-    Blob globalBlob = engine->resources()->eventsData("global.txt");
+    std::string globalBlob = engine->resources()->eventsText("global.txt");
 
     // global.txt table structure: index | text (localized).
-    for (std::string_view line : split(globalBlob.str()).by("\r\n").drop(2).skip("")) {
+    for (std::string_view line : split(globalBlob).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         LstrId i = static_cast<LstrId>(fromString<int>(tokens[0]));
         _localizationStrings[i] = unquote(tokens[1]);
@@ -303,8 +303,8 @@ void Localization::initializeSkillNames() {
     //    "So don't expect to become thwonking killer and devastating anyone beyond weaklings.";
 
     // skilldes.txt table structure: name | description | normal | expert | master | grandmaster (all fields localized).
-    Blob skillDesBlob = engine->resources()->eventsData("skilldes.txt");
-    for (auto [line, i] : split(skillDesBlob.str()).by("\r\n").drop(1).skip("").zip(allVisibleSkills())) {
+    std::string skillDes = engine->resources()->eventsText("skilldes.txt");
+    for (auto [line, i] : split(skillDes).by("\r\n").drop(1).skip("").zip(allVisibleSkills())) {
         std::array<std::string_view, 6> tokens = split(line).by('\t');
         _skillDescriptions[i] = unquote(tokens[1]);
         _skillDescriptionsNormal[i] = unquote(tokens[2]);
@@ -361,8 +361,8 @@ void Localization::initializeClassNames() {
     this->_classNames[CLASS_LICH] = this->_localizationStrings[LSTR_LICH];
 
     // class.txt table structure: name (localized) | description (localized) | base class name (not localized, not used).
-    Blob classBlob = engine->resources()->eventsData("class.txt");
-    for (auto [line, i] : split(classBlob.str()).by("\r\n").drop(1).skip("").zip(_classDescriptions.indices())) {
+    std::string classes = engine->resources()->eventsText("class.txt");
+    for (auto [line, i] : split(classes).by("\r\n").drop(1).skip("").zip(_classDescriptions.indices())) {
         std::array<std::string_view, 3> tokens = split(line).by('\t');
         _classDescriptions[i] = unquote(tokens[1]);
     }
@@ -437,8 +437,8 @@ void Localization::initializeAttributeNames() {
     this->_attributeNames[ATTRIBUTE_LUCK]         = this->_localizationStrings[LSTR_LUCK];
 
     // stats.txt table structure: name | description (all fields localized).
-    Blob statsBlob = engine->resources()->eventsData("stats.txt");
-    std::array<std::string_view, 26> statsDescs = split(statsBlob.str()).by("\r\n").drop(1).skip("");
+    std::string stats = engine->resources()->eventsText("stats.txt");
+    std::array<std::string_view, 26> statsDescs = split(stats).by("\r\n").drop(1).skip("");
     for (std::string_view &line : statsDescs) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         line = unquote(tokens[1]);

@@ -14,6 +14,7 @@
 #include "Engine/Time/Time.h"
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/String/Encoding.h"
 
 namespace Io {
 class Mouse;

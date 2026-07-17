@@ -5,7 +5,6 @@
 
 #include "Library/Binary/BinaryFwd.h"
 
-struct LodFontHeader;
 struct LodFontMetrics;
 struct LodFontAtlas;
 
@@ -90,8 +89,6 @@ struct LodFontHeader_MM7 {
 };
 static_assert(sizeof(LodFontHeader_MM7) == 32);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontHeader_MM7)
-
-void reconstruct(const LodFontHeader_MM7 &src, LodFontHeader *dst);
 
 struct LodFontMetrics_MM7 {
     int32_t leftSpacing;
