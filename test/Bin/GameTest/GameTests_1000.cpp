@@ -70,13 +70,13 @@ GAME_TEST(Issues, Issue1033) {
     test.startTaping();
     game.tick();
     game.pressKey(PlatformKey::KEY_UP);
-    game.tick(30);
+    game.tick(20);
     game.releaseKey(PlatformKey::KEY_UP);
     game.tick(5);
     // Party advanced from the starting point instead of being stuck against the paving edge.
     EXPECT_GT((posTape.back() - posTape.front()).length(), 100.0f);
-    // And actually climbed onto the paving at some point along the way.
-    EXPECT_GE(zTape.max(), 193);
+    // And actually ended up on the paving.
+    EXPECT_GE(zTape.back(), 193);
 }
 
 GAME_TEST(Issues, Issue1034) {
