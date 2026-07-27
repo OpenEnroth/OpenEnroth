@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/BlobInputStream.h"
 
