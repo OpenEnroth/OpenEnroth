@@ -64,8 +64,9 @@ void FFmpegBlobIoContext::reset(Blob blob) {
 }
 
 void FFmpegBlobIoContext::createAvioContext() {
-    unsigned char *buffer = static_cast<unsigned char *>(av_malloc(AV_INPUT_BUFFER_MIN_SIZE));
-    _ctx = avio_alloc_context(buffer, AV_INPUT_BUFFER_MIN_SIZE, 0, this, &ffRead, nullptr, &ffSeek);
+    constexpr int AVIO_BUFFER_SIZE = 16384; // Formerly AV_INPUT_BUFFER_MIN_SIZE, removed in ffmpeg 8.
+    unsigned char *buffer = static_cast<unsigned char *>(av_malloc(AVIO_BUFFER_SIZE));
+    _ctx = avio_alloc_context(buffer, AVIO_BUFFER_SIZE, 0, this, &ffRead, nullptr, &ffSeek);
 }
 
 void FFmpegBlobIoContext::destroyAvioContext() {
