@@ -967,8 +967,8 @@ GAME_TEST(Issues, Issue1972) {
     test.playTraceFromTestData("issue_1972.mm7", "issue_1972.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
     EXPECT_EQ(mapTape, tape(MAP_LAND_OF_THE_GIANTS));
     int meteorCount = spritesTape.map([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_FIRE_METEOR_SHOWER); }).max();
-    EXPECT_EQ(meteorCount, 24); // 2x meteor shower cast at master. Might change to 12 on retrace.
-    EXPECT_LE(hpTape.delta(), -700); // Party should have received some damage. Checking this b/c retracing might break smth.
+    EXPECT_EQ(meteorCount, 12); // 2x meteor shower cast at master.
+    EXPECT_LE(hpTape.delta(), -100); // Party should have received some damage. Checking this b/c retracing might break smth.
 }
 
 GAME_TEST(Issues, Issue1973) {

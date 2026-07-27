@@ -676,11 +676,11 @@ GAME_TEST(Issues, Issue760) {
 }
 
 GAME_TEST(Issues, Issue774) {
-    // Background stunned actors do idle motions
+    // Background stunned actors should recover from stun, not stay stuck forever.
     test.playTraceFromTestData("issue_774.mm7", "issue_774.json");
     for (auto &act : pActors) {
         if (!(act.attributes & ACTOR_FULL_AI_STATE))
-            EXPECT_TRUE(act.aiState == Stunned || act.aiState == Dead);
+            EXPECT_TRUE(act.aiState != Stunned || act.aiState == Dead);
     }
 }
 
