@@ -52,9 +52,19 @@ cmake --build build --target Run_GameTest_Headless_Parallel
 
 If game tests fail with `Random state desynchronized`, see `HACKING.md` section on retracing traces.
 
+## Regression tests for bug fixes
+
+When fixing a bug, you *MUST* add a regression test if it is feasible to test the fix. This means:
+
+- **Unit tests** for logic-level fixes (e.g. parsing, serialization, formulas). Add them to the appropriate `*_ut.cpp` file.
+- **Game tests** for gameplay-level fixes (e.g. AI behavior, combat, crashes during play). Add a trace and a test case to the appropriate `GameTests_*.cpp` file, following the existing patterns.
+- If a test cannot be written for the fix (e.g. the bug requires specific game data not available, or the fix is a trivial one-liner with no observable behavior change), explain why in the PR description.
+
 ## Before submitting changes
 
 1. Style check passes (`check_style` target).
 2. Unit tests pass (`Run_UnitTest` target).
 3. Game tests pass (`Run_GameTest_Headless_Parallel` target).
 4. If you changed game logic and traces desynchronized, retrace and commit updated traces.
+5. Regression tests added for bug fixes (if feasible).
+6. You *MUST* fully adhere to all guidelines in `HACKING.md` and this file. Do not skip or partially follow any rule.
