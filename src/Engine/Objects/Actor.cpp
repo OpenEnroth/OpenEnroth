@@ -174,6 +174,11 @@ bool Actor::CanAct() const {
              this->aiState == Summoned || this->aiState == Disabled);
 }
 
+bool Actor::CanBeDamaged() const {
+    return !(this->aiState == Dying || this->aiState == Dead ||
+             this->aiState == Removed || this->aiState == Disabled);
+}
+
 //----- (004089C7) --------------------------------------------------------
 bool Actor::IsNotAlive() {
     bool stoned = this->buffs[ACTOR_BUFF_STONED].Active();
