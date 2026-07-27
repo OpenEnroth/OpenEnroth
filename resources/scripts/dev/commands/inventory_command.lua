@@ -3,6 +3,8 @@ local Game = require "bindings.game"
 local addItemToInventory = function (itemId, characterIndex)
     if not characterIndex then
         characterIndex = Game.party.getActiveCharacter()
+    else
+        characterIndex = tonumber(characterIndex)
     end
 
     local item = Game.items.getItemInfo(itemId)
