@@ -1685,7 +1685,7 @@ void UpdateActors_ODM() {
         }
 
         // ARMAGEDDON PANIC
-        if (pParty->armageddon_timer && actor.CanAct() && pParty->armageddonForceCount > 0) {
+        if (pParty->armageddon_timer && actor.CanBeDamaged() && pParty->armageddonForceCount > 0) {
             actor.velocity.x += grng->random(100) - 50;
             actor.velocity.y += grng->random(100) - 50;
             actor.velocity.z += grng->random(100) - 20;
