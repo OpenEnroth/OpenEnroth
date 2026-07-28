@@ -174,6 +174,11 @@ bool Actor::CanAct() const {
              this->aiState == Summoned || this->aiState == Disabled);
 }
 
+bool Actor::CanBeDamaged() const {
+    return !(this->aiState == Dying || this->aiState == Dead ||
+             this->aiState == Removed || this->aiState == Disabled);
+}
+
 //----- (004089C7) --------------------------------------------------------
 bool Actor::IsNotAlive() {
     bool stoned = this->buffs[ACTOR_BUFF_STONED].Active();
@@ -2524,10 +2529,18 @@ void Actor::UpdateActorAI() {
         if (pActor->buffs[ACTOR_BUFF_PARALYZED].Active() || pActor->buffs[ACTOR_BUFF_STONED].Active())
             continue;
 
-        // If actor is stunned: skip - vanilla bug that causes stunned background actors to recover to idle motions
-        // Most apparent during armageddon spell, falling background actors will occasionally hover to perform action
-        if (pActor->aiState == AIState::Stunned)
+        // If actor is stunned: let the animation finish but don't process AI.
+        // Vanilla skipped stunned actors entirely, causing them to get stuck in stun state forever.
+        if (pActor->aiState == AIState::Stunned) {
+            pActor->currentActionTime += pEventTimer->dt();
+            if (pActor->currentActionTime >= pActor->currentActionLength) {
+                pActor->aiState = Standing;
+                pActor->currentActionTime = 0_ticks;
+                pActor->currentActionLength = 0_ticks;
+                pActor->UpdateAnimation();
+            }
             continue;
+        }
 
         // Calculate RecoveryTime
         pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - pEventTimer->dt(), 0_ticks); // was pMiscTimer

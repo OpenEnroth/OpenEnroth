@@ -500,10 +500,12 @@ void MonsterStats::Initialize(const Blob &monsters) {
     };
 
     // HP and EXP cells are mostly plain numbers, but a couple of monsters use a quoted thousand-separated
-    // format like `" 1,300 "`. Strip surrounding quotes/whitespace and any thousand-separator commas, then parse as int.
+    // format like `" 1,300 "` (English) or `"1 300"` (German). Strip surrounding quotes/whitespace and any
+    // thousand-separator commas or spaces, then parse as int.
     auto parseThousand = [](std::string_view s) {
         std::string buf(trim(unquote(s)));
         std::erase(buf, ',');
+        std::erase(buf, ' ');
         return fromString<int>(buf);
     };
 

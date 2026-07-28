@@ -78,6 +78,7 @@ class Actor {
     MonsterHostility GetActorsRelation(Actor *otherActPtr);
     void SetRandomGoldIfTheresNoItem();
     bool CanAct() const;
+    bool CanBeDamaged() const;
     bool IsNotAlive();
     bool IsPeasant();
 

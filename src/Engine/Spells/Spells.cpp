@@ -874,8 +874,8 @@ void armageddonProgress() {
     int outgoingDamage = pParty->armageddonDamage + 50;
 
     for (Actor &actor : pActors) {
-        if (!actor.CanAct()) {
-            continue; // TODO(captainurist): paralyzed & summoned actors should receive damage too!
+        if (!actor.CanBeDamaged()) {
+            continue;
         }
 
         int incomingDamage = actor.CalcMagicalDamageToActor(DAMAGE_MAGIC, outgoingDamage);
