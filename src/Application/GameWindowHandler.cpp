@@ -270,7 +270,7 @@ void GameWindowHandler::OnMouseRightDoubleClick(Pointi position) {
 
 void GameWindowHandler::OnMouseMove(Pointi position, Pointi relative, bool left_button, bool right_button) {
     if (pArcomageGame->bGameInProgress) {
-        ArcomageGame::OnMouseMove(position.x, position.y);
+        ArcomageGame::OnMouseMove(position);
         ArcomageGame::OnMouseClick(0, left_button);
         ArcomageGame::OnMouseClick(1, right_button);
     } else {

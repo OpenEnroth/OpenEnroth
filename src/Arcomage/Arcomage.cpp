@@ -164,25 +164,6 @@ char hide_card_anim_start;
 char hide_card_anim_runnning;
 int hide_card_anim_count;
 
-struct arcomage_mouse {
-    bool Update();
-    bool Inside(Recti *pRect);
-
-    int x = 0;
-    int y = 0;
-};
-
-bool arcomage_mouse::Update() {
-    this->x = pArcomageGame->mouse_x;
-    this->y = pArcomageGame->mouse_y;
-    return true;
-}
-
-// TODO(pskelton): duplicate of Rect::contains?
-bool arcomage_mouse::Inside(Recti *pRect) {
-    return (x >= pRect->x) && (x <= pRect->x + pRect->h) && (y >= pRect->y) && (y <= pRect->y + pRect->w);
-}
-
 void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
     mouseControl = true;
     // only accept one message input
@@ -198,10 +179,9 @@ void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
     }
 }
 
-void ArcomageGame::OnMouseMove(int x, int y) {
+void ArcomageGame::OnMouseMove(const Pointi& pos) {
     mouseControl = true;
-    pArcomageGame->mouse_x = x;
-    pArcomageGame->mouse_y = y;
+    pArcomageGame->_mousePos = pos;
 }
 
 void ArcomageGame::onKeyPress(PlatformKey key) {
@@ -2015,57 +1995,53 @@ int GetPlayerHandCardCount(int player_num) {
 
 signed int DrawCardsRectangles(int player_num) {
     // draws the framing rectangle around cards on hover
-    arcomage_mouse get_mouse;
     Recti pRect;
     Color color;
 
     // only do for the human player
     if (am_Players[player_num].IsHisTurn) {
-        // get the mouse position
-        if (get_mouse.Update()) {
-            // calc spacings and first card position
-            int card_count = GetPlayerHandCardCount(player_num);
-            int card_spacing = (render->GetRenderDimensions().w - 96 * card_count) / (card_count + 1);
-            pRect.y = 327;
-            pRect.h = 455 - pRect.y;
-            pRect.x = card_spacing;
-            int card_offset = pRect.x + 96;
-            pRect.w = card_offset - pRect.x;
+        // calc spacings and first card position
+        int card_count = GetPlayerHandCardCount(player_num);
+        int card_spacing = (render->GetRenderDimensions().w - 96 * card_count) / (card_count + 1);
+        pRect.y = 327;
+        pRect.h = 455 - pRect.y;
+        pRect.x = card_spacing;
+        int card_offset = pRect.x + 96;
+        pRect.w = card_offset - pRect.x;
 
-            // loop through hand of cards
-            for (int hand_index = 0; hand_index < card_count; hand_index++) {
-                // if there is a card
-                if (am_Players[player_num].cards_at_hand[hand_index] != -1) {
-                    // shift rectangle co ords
-                    if (Player_Cards_Shift) {
-                        pRect.x += am_Players[player_num].card_shift[hand_index].x;
-                        pRect.y += am_Players[player_num].card_shift[hand_index].y;
-                    }
-
-                    // see if mouse is hovering
-                    if (mouseControl && get_mouse.Inside(&pRect) || mouseControl == false && current_card_slot_index == hand_index) {
-                        if (CanCardBePlayed(player_num, hand_index))
-                            color = colorTable.White;  //белый цвет - white frame
-                        else
-                            color = colorTable.Red;  //красный цвет - red frame
-
-                        // draw outline and return
-                        DrawRect(&pRect, color, 0);
-                        return hand_index;
-                    }
-
-                    //рамка чёрного цвета - black frame
-                    DrawRect(&pRect, colorTable.Black, 0);
-
-                    // unshift rectangle co ords
-                    if (Player_Cards_Shift) {
-                        pRect.x -= am_Players[player_num].card_shift[hand_index].x;
-                        pRect.y -= am_Players[player_num].card_shift[hand_index].y;
-                    }
-
-                    // shift offsets along a card width
-                    pRect.x += card_offset;
+        // loop through hand of cards
+        for (int hand_index = 0; hand_index < card_count; hand_index++) {
+            // if there is a card
+            if (am_Players[player_num].cards_at_hand[hand_index] != -1) {
+                // shift rectangle co ords
+                if (Player_Cards_Shift) {
+                    pRect.x += am_Players[player_num].card_shift[hand_index].x;
+                    pRect.y += am_Players[player_num].card_shift[hand_index].y;
                 }
+
+                // see if mouse is hovering
+                if (mouseControl && pRect.contains(pArcomageGame->_mousePos) || mouseControl == false && current_card_slot_index == hand_index) {
+                    if (CanCardBePlayed(player_num, hand_index))
+                        color = colorTable.White;  //белый цвет - white frame
+                    else
+                        color = colorTable.Red;  //красный цвет - red frame
+
+                    // draw outline and return
+                    DrawRect(&pRect, color, 0);
+                    return hand_index;
+                }
+
+                //рамка чёрного цвета - black frame
+                DrawRect(&pRect, colorTable.Black, 0);
+
+                // unshift rectangle co ords
+                if (Player_Cards_Shift) {
+                    pRect.x -= am_Players[player_num].card_shift[hand_index].x;
+                    pRect.y -= am_Players[player_num].card_shift[hand_index].y;
+                }
+
+                // shift offsets along a card width
+                pRect.x += card_offset;
             }
         }
     }

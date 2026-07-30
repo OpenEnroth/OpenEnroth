@@ -170,7 +170,7 @@ struct ArcomageGame {
     static void playSound(int event_id);
     static void onKeyPress(PlatformKey key);
     static void OnMouseClick(char right_left, bool bDown);
-    static void OnMouseMove(int x, int y);
+    static void OnMouseMove(const Pointi& pos);
     static void GetCardRect(int uCardID, Recti *pCardRect);
     static void PrepareArcomage();
     // static void DoBlt_Copy(uint16_t *pPixels);  // idb
@@ -182,8 +182,8 @@ struct ArcomageGame {
 
     ArcomageGame_InputMSG stru1;
 
-    int mouse_x = 0;
-    int mouse_y = 0;
+    Pointi _mousePos = { 0,0 };
+
     char field_39 = 0;
     char field_3B = 0;
     GUIFont *pfntComic = nullptr;  // ptr_48;
