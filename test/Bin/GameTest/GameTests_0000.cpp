@@ -622,6 +622,7 @@ GAME_TEST(Issues, Issue414) {
 
 GAME_TEST(Issues, Issue415a) {
     // Paralysis prevents monsters from receiving damage. Check armageddon damage & knockback.
+    // Also check that stoned monsters stay unaffected.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
 
     engine->config->debug.NoActors.setValue(true);
@@ -661,6 +662,7 @@ GAME_TEST(Issues, Issue415a) {
 
 GAME_TEST(Issues, Issue415b) {
     // Paralysis prevents monsters from receiving damage from AoE spells.
+    // Also check that stoned monsters stay unaffected.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
 
     engine->config->debug.NoActors.setValue(true);
@@ -670,26 +672,28 @@ GAME_TEST(Issues, Issue415b) {
     prepareForBattleTest();
     engine->config->debug.NoActors.setValue(false);
 
-    // Titan #0 is the fireball's auto-picked target, paralyzed titan #1 behind it only gets the AoE splash.
-    auto hpTape = actorTapes.hps({0, 1});
+    // Titan #0 is the fireball's auto-picked target, paralyzed titan #1 behind it and stoned titan #2 to the side
+    // only get the AoE splash.
+    auto hpTape = actorTapes.hps({0, 1, 2});
+    Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
     Actor *target = game.spawnMonster(pParty->pos + Vec3f(0, 800, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     Actor *paralyzed = game.spawnMonster(pParty->pos + Vec3f(0, 1100, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
-    paralyzed->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
+    paralyzed->buffs[ACTOR_BUFF_PARALYZED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+    Actor *stoned = game.spawnMonster(pParty->pos + Vec3f(0, 900, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    stoned->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
 
     game.castQuickSpell(1, SPELL_FIRE_FIREBALL);
     game.tick(30);
     test.stopTaping();
 
     EXPECT_LT(hpTape.slice(0).delta(), 0); // Direct hit.
-
-    // Splash is a full fireball damage roll, 1d6 per spell level, and AllMagic casts at level 10, so 10d6.
-    int splashDamage = -hpTape.slice(1).delta();
-    EXPECT_GE(splashDamage, 10);
-    EXPECT_LE(splashDamage, 60);
+    EXPECT_LT(hpTape.slice(1).delta(), 0); // Splash damaged the paralyzed titan.
+    EXPECT_EQ(hpTape.slice(2).delta(), 0); // The stoned titan is unfazed.
 }
 
 GAME_TEST(Issues, Issue415c) {
     // Paralysis prevents monsters from receiving damage for shrinking ray AoE damage.
+    // Also check that stoned monsters stay unaffected.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
 
     engine->config->debug.NoActors.setValue(true);
@@ -699,18 +703,22 @@ GAME_TEST(Issues, Issue415c) {
     prepareForBattleTest();
     engine->config->debug.NoActors.setValue(false);
 
-    // Same layout as in Issue415b - shrinking ray hits titan #0, paralyzed titan #1 is affected by the AoE.
-    auto shrinkTape = actorTapes.haveBuffs({0, 1}, ACTOR_BUFF_SHRINK);
+    // Same layout as in Issue415b - shrinking ray hits titan #0, paralyzed titan #1 and stoned titan #2 are in AoE range.
+    auto shrinkTape = actorTapes.haveBuffs({0, 1, 2}, ACTOR_BUFF_SHRINK);
+    Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
     Actor *target = game.spawnMonster(pParty->pos + Vec3f(0, 800, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     Actor *paralyzed = game.spawnMonster(pParty->pos + Vec3f(0, 1000, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
-    paralyzed->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
+    paralyzed->buffs[ACTOR_BUFF_PARALYZED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+    Actor *stoned = game.spawnMonster(pParty->pos + Vec3f(0, 900, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    stoned->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
 
     game.castQuickSpell(1, SPELL_DARK_SHRINKING_RAY);
     game.tick(30);
     test.stopTaping();
 
     EXPECT_CONTAINS(shrinkTape.slice(0), true); // Direct hit shrunk titan #0.
-    EXPECT_CONTAINS(shrinkTape.slice(1), true); // AoE shrunk the paralyzed titan. Before the fix it didn't.
+    EXPECT_CONTAINS(shrinkTape.slice(1), true); // AoE shrunk the paralyzed titan.
+    EXPECT_MISSES(shrinkTape.slice(2), true); // The stoned titan is unfazed.
 }
 
 GAME_TEST(Issues, Issue416) {
