@@ -526,11 +526,9 @@ GAME_TEST(Issues, Issue1331) {
     pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 30, 0, 0);
     EXPECT_EQ(char0.GetRangedDamageString(), "4 - 8");
 
-    // Spawn a stationary titan. Wipe its physical resistance so damage rolls aren't halved.
+    // Spawn a stationary titan with no resistances so that damage rolls aren't halved.
     auto hpTape = actorTapes.hp(0);
-    Actor *titan = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_TITAN_A);
-    titan->moveSpeed = 1;
-    titan->monsterInfo.resPhysical = 0;
+    game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_TITAN_A, SPAWN_STATIONARY | SPAWN_NO_RESISTANCES);
 
     for (int i = 0; i < 500; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);

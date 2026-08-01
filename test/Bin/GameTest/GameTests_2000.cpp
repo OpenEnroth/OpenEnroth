@@ -228,9 +228,8 @@ GAME_TEST(Issues, Issue2104) {
 
         // Spawn a monster & wait.
         engine->config->debug.NoActors.setValue(false);
-        Actor *monster = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), monsterId);
-        monster->moveSpeed = 1; // Please stay in place.
-        monster->monsterInfo.level = 10; // Make all monsters the same level so that we don't have to tweak AC.
+        // Level 1 makes all monsters have the same to-hit rolls, so that we don't have to tweak AC per monster.
+        Actor *monster = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), monsterId, SPAWN_STATIONARY | SPAWN_LEVEL_1);
         game.tick(300);
 
         int projectileCount = spritesTape.count([&](auto sprites) { return sprites.contains(spriteForMonsterProjectile(monster->monsterInfo.attack1MissileType)); });
@@ -1201,8 +1200,7 @@ GAME_TEST(Issues, Issue2500b) {
     engine->config->debug.NoActors.setValue(false);
     for (int i = 0; i < 4; i++) {
         game.tick(7);
-        Actor *archer = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ARCHER_A);
-        archer->moveSpeed = 1; // Stay in place & shoot.
+        game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ARCHER_A, SPAWN_STATIONARY); // Stay in place & shoot.
     }
     game.tick(200);
 
@@ -1256,8 +1254,7 @@ GAME_TEST(Issues, Issue2505) {
     prepareForBattleTest();
 
     engine->config->debug.NoActors.setValue(false);
-    Actor *monster = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELEMENTAL_WATER_C);
-    monster->moveSpeed = 1; // Stay in place.
+    game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELEMENTAL_WATER_C, SPAWN_STATIONARY);
     game.tick(300); // Cast chance is 30%, shall be enough.
 
     auto flat = spritesTape.flatten();
@@ -1277,13 +1274,12 @@ GAME_TEST(Issues, Issue2507) {
     prepareForBattleTest();
 
     engine->config->debug.NoActors.setValue(false);
-    Actor *efreet = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_GENIE_C);
+    Actor *efreet = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_GENIE_C, SPAWN_STATIONARY);
     EXPECT_EQ(efreet->monsterInfo.spell1Id, SPELL_AIR_LIGHTNING_BOLT);
     EXPECT_EQ(efreet->monsterInfo.spell1SkillMastery.level(), 10);
     EXPECT_EQ(efreet->monsterInfo.spell1SkillMastery.mastery(), MASTERY_MASTER);
 
-    // Pin the Efreet in place & force its spell to fire every time.
-    efreet->moveSpeed = 1;
+    // Force the Efreet's spell to fire every time.
     efreet->monsterInfo.spell1UseChance = 100;
     game.tick(200);
 

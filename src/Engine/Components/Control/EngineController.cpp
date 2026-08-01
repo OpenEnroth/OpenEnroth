@@ -280,7 +280,7 @@ void EngineController::restAndHeal() {
     tick(); // This is when the characters actually wake up.
 }
 
-Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
+Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags flags) {
     Actor *actor = AllocateActor();
     if (!actor)
         throw Exception("Failed to spawn monster {}", static_cast<int>(id));
@@ -306,6 +306,23 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
     actor->aiState = Standing;
     actor->currentActionLength = 0_ticks;
     actor->UpdateAnimation();
+
+    if (flags & SPAWN_STATIONARY)
+        actor->moveSpeed = 1;
+    if (flags & SPAWN_NO_RESISTANCES) {
+        actor->monsterInfo.resFire = 0;
+        actor->monsterInfo.resAir = 0;
+        actor->monsterInfo.resWater = 0;
+        actor->monsterInfo.resEarth = 0;
+        actor->monsterInfo.resMind = 0;
+        actor->monsterInfo.resSpirit = 0;
+        actor->monsterInfo.resBody = 0;
+        actor->monsterInfo.resLight = 0;
+        actor->monsterInfo.resDark = 0;
+        actor->monsterInfo.resPhysical = 0;
+    }
+    if (flags & SPAWN_LEVEL_1)
+        actor->monsterInfo.level = 1;
 
     return actor;
 }
