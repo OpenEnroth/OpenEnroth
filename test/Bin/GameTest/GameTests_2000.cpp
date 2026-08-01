@@ -11,6 +11,7 @@
 #include "Engine/MapEnums.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
+#include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -707,6 +708,51 @@ GAME_TEST(Issues, Issue2255) {
     EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT);
     EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT);
     EXPECT_MISSES(spritesTape.flatten(), SPRITE_PROJECTILE_ARROW); // No arrows were fired, only fire bolts.
+}
+
+GAME_TEST(Issues, Issue2267) {
+    // Bloodsplats not appearing on save reload.
+    // Actor::donebloodsplat is not serialized, and reloading a save mid-session used to keep the in-memory actors,
+    // so re-killing the same monster produced no bloodsplat.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto splatsTape = tapes.custom([] { return static_cast<int>(engine->decal_builder->bloodsplat_container->uNumBloodsplats); });
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Expert bow shoots single arrows, peasants die in one hit.
+    Character &char0 = pParty->pCharacters[0];
+    char0.inventory.equip(ITEM_SLOT_BOW, Item(ITEM_CROSSBOW));
+    char0.setSkillValue(SKILL_BOW, CombinedSkillValue(10, MASTERY_EXPERT));
+
+    Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, 500, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A);
+    peasant->moveSpeed = 1;
+    ASSERT_TRUE(pMonsterStats->infos[peasant->monsterInfo.id].bloodSplatOnDeath);
+
+    auto shootUntilDead = [&] {
+        for (int i = 0; i < 100 && pActors[0].aiState != Dead; i++) {
+            game.pressAndReleaseKey(PlatformKey::KEY_A);
+            game.tick();
+        }
+        ASSERT_EQ(pActors[0].aiState, Dead);
+        game.tick(5); // Wait out the bloodsplat.
+    };
+
+    // Save while the peasant is alive, then kill it.
+    Blob save = game.saveGame();
+    shootUntilDead();
+
+    // Reload & kill again. Before the fix the peasant kept donebloodsplat = true through the reload, and the second
+    // bloodsplat was never emitted.
+    game.loadGame(save);
+    shootUntilDead();
+    test.stopTaping();
+
+    // One bloodsplat pulse per kill.
+    EXPECT_EQ(splatsTape, tape(0, 1, 0, 1, 0));
 }
 
 GAME_TEST(Issues, Issue2279) {
