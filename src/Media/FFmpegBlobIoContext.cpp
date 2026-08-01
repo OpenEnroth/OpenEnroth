@@ -64,9 +64,11 @@ void FFmpegBlobIoContext::reset(Blob blob) {
 }
 
 void FFmpegBlobIoContext::createAvioContext() {
-    constexpr int AVIO_BUFFER_SIZE = 16384; // Formerly AV_INPUT_BUFFER_MIN_SIZE, removed in ffmpeg 8.
-    unsigned char *buffer = static_cast<unsigned char *>(av_malloc(AVIO_BUFFER_SIZE));
-    _ctx = avio_alloc_context(buffer, AVIO_BUFFER_SIZE, 0, this, &ffRead, nullptr, &ffSeek);
+    // avio_alloc_context docs suggest a cache-page-sized buffer. Buffer size doesn't really matter for us anyway
+    // as we're reading from an in-memory blob.
+    constexpr int bufferSize = 4096;
+    unsigned char *buffer = static_cast<unsigned char *>(av_malloc(bufferSize));
+    _ctx = avio_alloc_context(buffer, bufferSize, 0, this, &ffRead, nullptr, &ffSeek);
 }
 
 void FFmpegBlobIoContext::destroyAvioContext() {
@@ -74,7 +76,6 @@ void FFmpegBlobIoContext::destroyAvioContext() {
         return;
 
     av_free(_ctx->buffer);
-    av_free(_ctx);
-    _ctx = nullptr;
+    avio_context_free(&_ctx);
     _stream.close();
 }
