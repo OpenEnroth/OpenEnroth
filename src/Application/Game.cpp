@@ -300,7 +300,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_PlayArcomage:
                 BackToHouseMenu();
-                pArcomageGame->bGameInProgress = 1;
+                pArcomageGame->_gameInProgress = true;
                 ArcomageGame::PrepareArcomage();
                 continue;
 
@@ -1563,7 +1563,7 @@ void Game::gameLoop() {
 
             keyboardInputHandler->GenerateInputActions();
             processQueuedMessages();
-            if (pArcomageGame->bGameInProgress) {
+            if (pArcomageGame->_gameInProgress) {
                 ArcomageGame::Loop();
                 render->Present();
                 continue;

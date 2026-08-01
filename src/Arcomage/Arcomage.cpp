@@ -101,9 +101,6 @@ am_effects_struct am_effects_array[10];
 ArcomageDeck playDeck;
 ArcomageDeck deckMaster;
 
-char Player2Name[] = "Enemy";
-char Player1Name[] = "Player";
-
 struct am_ai_cardpowerstruct {
     int slot_index;
     int card_power;
@@ -167,13 +164,13 @@ int hide_card_anim_count;
 void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
     mouseControl = true;
     // only accept one message input
-    if (pArcomageGame->stru1.am_input_type == ARCO_MSG_NULL) {
+    if (pArcomageGame->_amMsg.am_input_type == ARCO_MSG_NULL) {
         if (bDown) {
-            pArcomageGame->check_exit = 0;
+            pArcomageGame->_checkExit = 0;
             if (!right_left) {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_PLAYCARD;
+                pArcomageGame->_amMsg.am_input_type = ARCO_MSG_PLAYCARD;
             } else {
-                pArcomageGame->stru1.am_input_type = ARCO_MSG_DISCARD;
+                pArcomageGame->_amMsg.am_input_type = ARCO_MSG_DISCARD;
             }
         }
     }
@@ -186,28 +183,28 @@ void ArcomageGame::OnMouseMove(const Pointi& pos) {
 
 void ArcomageGame::onKeyPress(PlatformKey key) {
     // only accept one message input
-    if (pArcomageGame->stru1.am_input_type == ARCO_MSG_NULL) {
+    if (pArcomageGame->_amMsg.am_input_type == ARCO_MSG_NULL) {
         if (keyboardActionMapping->isBound(INPUT_ACTION_ESCAPE, key)) {
-            pArcomageGame->stru1.am_input_type = ARCO_MSG_ESCAPE;
-            pArcomageGame->stru1.am_input_key = PlatformKey::KEY_NONE;
-        } else if (pArcomageGame->check_exit == 1) {
-            pArcomageGame->check_exit = 0; // absorb the keypress and reset the check status
+            pArcomageGame->_amMsg.am_input_type = ARCO_MSG_ESCAPE;
+            pArcomageGame->_amMsg.am_input_key = PlatformKey::KEY_NONE;
+        } else if (pArcomageGame->_checkExit == 1) {
+            pArcomageGame->_checkExit = 0; // absorb the keypress and reset the check status
         } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_PLAY_CARD, key)) {
             mouseControl = false;
-            pArcomageGame->stru1.am_input_type = ARCO_MSG_PLAYCARD;
-            pArcomageGame->stru1.am_input_key = key;
+            pArcomageGame->_amMsg.am_input_type = ARCO_MSG_PLAYCARD;
+            pArcomageGame->_amMsg.am_input_key = key;
         } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_DISCARD, key)) {
             mouseControl = false;
-            pArcomageGame->stru1.am_input_type = ARCO_MSG_DISCARD;
-            pArcomageGame->stru1.am_input_key = key;
+            pArcomageGame->_amMsg.am_input_type = ARCO_MSG_DISCARD;
+            pArcomageGame->_amMsg.am_input_key = key;
         } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_LEFT, key)) {
             mouseControl = false;
-            pArcomageGame->stru1.am_input_type = ARCO_MSG_LEFT;
-            pArcomageGame->stru1.am_input_key = key;
+            pArcomageGame->_amMsg.am_input_type = ARCO_MSG_LEFT;
+            pArcomageGame->_amMsg.am_input_key = key;
         } else if (keyboardActionMapping->isBound(INPUT_ACTION_ARCOMAGE_RIGHT, key)) {
             mouseControl = false;
-            pArcomageGame->stru1.am_input_type = ARCO_MSG_RIGHT;
-            pArcomageGame->stru1.am_input_key = key;
+            pArcomageGame->_amMsg.am_input_type = ARCO_MSG_RIGHT;
+            pArcomageGame->_amMsg.am_input_key = key;
         }
     }
 }
@@ -520,13 +517,13 @@ void ArcomageGame::playSound(int event_id) {
 
 bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
     // blank message input
-    pArcomageGame->stru1.am_input_type = ARCO_MSG_NULL;
-    pArcomageGame->stru1.am_input_key = PlatformKey::KEY_NONE;
+    pArcomageGame->_amMsg.am_input_type = ARCO_MSG_NULL;
+    pArcomageGame->_amMsg.am_input_key = PlatformKey::KEY_NONE;
 
     eventLoop->processMessages(eventHandler);
 
-    *a2 = pArcomageGame->stru1;
-    return pArcomageGame->stru1.am_input_type != ARCO_MSG_NULL;
+    *a2 = pArcomageGame->_amMsg;
+    return pArcomageGame->_amMsg.am_input_type != ARCO_MSG_NULL;
 }
 
 bool ArcomageGame::LoadSprites() {
@@ -848,7 +845,7 @@ void ArcomageGame::Loop() {
     pArcomageGame->_frameLimiter.reset();
 
     bool am_turn_not_finished = false;
-    while (!pArcomageGame->GameOver) {
+    while (!pArcomageGame->_gameOver) {
         am_turn_not_finished = true;
         IncreaseResourcesInTurn(current_player_num);
         // LABEL_8:
@@ -863,18 +860,18 @@ void ArcomageGame::Loop() {
                     break;
                 }
                 need_to_discard_card = 1;
-                if (pArcomageGame->force_am_exit) break;
+                if (pArcomageGame->_forceExit) break;
             }
         }
-        pArcomageGame->GameOver = IsGameOver();
-        if (!pArcomageGame->GameOver) TurnChange();
-        if (pArcomageGame->force_am_exit) pArcomageGame->GameOver = 1;
+        pArcomageGame->_gameOver = IsGameOver();
+        if (!pArcomageGame->_gameOver) TurnChange();
+        if (pArcomageGame->_forceExit) pArcomageGame->_gameOver = 1;
     }
 
 
     GameResultsApply();
 
-    if (pArcomageGame->check_exit == 0) {
+    if (pArcomageGame->_checkExit == 0) {
         // add in pause till keypress here
         ArcomageGame_InputMSG v10;
         int frame_quant_time = 0;
@@ -895,7 +892,7 @@ void ArcomageGame::Loop() {
             cnt++;
             if (cnt >= 8) {
                 cnt = 0;
-                if (pArcomageGame->uGameWinner == 1) {
+                if (pArcomageGame->_gameWinner == 1) {
                     if (am_Players[1].tower_height > 0) {
                         int div = (am_Players[1].tower_height / 10);
                         if (div == 0) div = 1;
@@ -936,7 +933,7 @@ void ArcomageGame::Loop() {
 
             int rand = vrng->randomInSegment(0, 38);
             if (rand == 38) {
-                if (pArcomageGame->uGameWinner == 1) {
+                if (pArcomageGame->_gameWinner == 1) {
                     explos_coords.x = vrng->randomInSegment(75, 175);
                     explos_coords.y = vrng->randomInSegment(50, 150);
                     new_explosion_effect(&explos_coords, 5);
@@ -963,7 +960,7 @@ void ArcomageGame::Loop() {
     pArcomageGame->pSprites->release();
     pArcomageGame->pSprites = nullptr;
 
-    pArcomageGame->bGameInProgress = false;
+    pArcomageGame->_gameInProgress = false;
 
     if (pMovie_Track) BackToHouseMenu();
 }
@@ -977,9 +974,9 @@ void SetStartGameData() {
     SetStartConditions();
 
     current_player_num = !Player_Gets_First_Turn;
-    am_Players[1].pPlayerName = pArcomageGame->pPlayer2Name;
+    am_Players[1].pPlayerName = pArcomageGame->_player2Name;
     am_Players[1].IsHisTurn = 0;  // !Player_Gets_First_Turn;
-    am_Players[0].pPlayerName = pArcomageGame->pPlayer1Name;
+    am_Players[0].pPlayerName = pArcomageGame->_player1Name;
     am_Players[0].IsHisTurn = 1;  // Player_Gets_First_Turn;
 
     for (i = 0; i < 2; ++i) {
@@ -1137,7 +1134,7 @@ void IncreaseResourcesInTurn(int player_num) {
 }
 
 void TurnChange() {
-    if (!pArcomageGame->force_am_exit) {
+    if (!pArcomageGame->_forceExit) {
         if (am_Players[0].IsHisTurn != 1 || am_Players[1].IsHisTurn != 1) {
             ++current_player_num;
             hide_card_anim_start = 1;
@@ -1187,25 +1184,25 @@ char PlayerTurn(int player_num) {
         pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
 
         // get input message
-        if (pArcomageGame->force_am_exit) break_loop = true;
+        if (pArcomageGame->_forceExit) break_loop = true;
         ArcomageGame::MsgLoop(0, &get_message);
         switch (get_message.am_input_type) {
             case ARCO_MSG_FORCEQUIT:
                 if (get_message.field_4 == 129 && get_message.am_input_key == PlatformKey::KEY_ESCAPE) { // TODO(pskelton): was 1 - what was this meant to do? Check for dual key press??
                     num_actions_left = 0;
                     break_loop = true;
-                    pArcomageGame->force_am_exit = 1;
+                    pArcomageGame->_forceExit = 1;
                 }
                 break;
             case ARCO_MSG_ESCAPE:
-                if (pArcomageGame->check_exit == 1) {
-                    pArcomageGame->GameOver = 1;
-                    pArcomageGame->uGameWinner = 2;
-                    pArcomageGame->Victory_type = -2;
+                if (pArcomageGame->_checkExit == 1) {
+                    pArcomageGame->_gameOver = 1;
+                    pArcomageGame->_gameWinner = 2;
+                    pArcomageGame->_victoryType = -2;
                     break_loop = true;
-                    pArcomageGame->force_am_exit = 1;
+                    pArcomageGame->_forceExit = 1;
                 } else {
-                    pArcomageGame->check_exit = 1;
+                    pArcomageGame->_checkExit = 1;
                 }
                 break;
             case ARCO_MSG_LEFT: {
@@ -1333,12 +1330,12 @@ void DrawGameUI(int animation_stage) {
     DrawSparks();
 
     // draw texts
-    if (pArcomageGame->check_exit) {
+    if (pArcomageGame->_checkExit) {
         std::string t = "Are you sure you want to resign?\n    Press ESC again to confirm";
         Pointi p(200, 200);
         am_DrawText(t, &p);
     }
-    if (pArcomageGame->GameOver) {
+    if (pArcomageGame->_gameOver) {
         std::string t = "Game Over!";
         Pointi p(270, 200);
         am_DrawText(t, &p);
@@ -1412,7 +1409,7 @@ void DrawPlayersText() {
 
     if (need_to_discard_card) {
         text_buff = localization->str(LSTR_DISCARD_A_CARD);
-        text_position.x = 320 - pArcomageGame->pfntArrus->GetLineWidth(text_buff) / 2;
+        text_position.x = 320 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
         text_position.y = 306;
         am_DrawText(text_buff, &text_position);
     }
@@ -2685,6 +2682,7 @@ int ApplyDamageToBuildings(int player_num, int damage) {
     return result;
 }
 
+// TODO(pskelton): translate comments to English
 void GameResultsApply() {
     int winner;               // esi@1
     int victory_type;         // edi@1
@@ -2821,8 +2819,8 @@ void GameResultsApply() {
         }
     }
 
-    pArcomageGame->Victory_type = victory_type;
-    pArcomageGame->uGameWinner = winner;
+    pArcomageGame->_victoryType = victory_type;
+    pArcomageGame->_gameWinner = winner;
     if (winner == 1) {
         HouseId houseId = window_SpeakInHouse->houseId();
         if (isArcomageTavern(houseId)) {
@@ -2863,9 +2861,8 @@ void GameResultsApply() {
 }
 
 void ArcomageGame::PrepareArcomage() {
-    // stop all audio and set player names
-    pArcomageGame->pPlayer1Name = Player1Name;
-    pArcomageGame->pPlayer2Name = Player2Name;
+    // TODO(pskelton): stop audio comment?
+    // stop all audio
 
     // load in background pic and render
     render->BeginScene2D();
@@ -2908,9 +2905,9 @@ void ArcomageGame::PrepareArcomage() {
     need_to_discard_card = 0;
 
     // set exiting params
-    pArcomageGame->force_am_exit = 0;
-    pArcomageGame->check_exit = 0;
-    pArcomageGame->GameOver = 0;
+    pArcomageGame->_forceExit = 0;
+    pArcomageGame->_checkExit = 0;
+    pArcomageGame->_gameOver = 0;
 }
 
 void SetStartConditions() {
