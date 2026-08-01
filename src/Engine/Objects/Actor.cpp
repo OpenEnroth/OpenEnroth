@@ -4402,7 +4402,7 @@ void evaluateAoeDamage() {
                     }
                 }
             } else {  // Actor (peasant) damage from monsters
-                if (actor->buffs[ACTOR_BUFF_PARALYZED].Active() || actor->CanAct()) {
+                if (actor->CanBeDamaged()) {
                     Vec3f distanceVec = actor->pos + Vec3f(0, 0, actor->height / 2) - attack.pos;
                     float distanceSq = distanceVec.lengthSqr();
                     float attackRange = attack.attackRange + actor->radius;
@@ -4436,7 +4436,7 @@ void evaluateAoeDamage() {
             }
 
             for (int actorID = 0; actorID < pActors.size(); ++actorID) {
-                if (pActors[actorID].CanAct()) {
+                if (pActors[actorID].CanBeDamaged()) {
                     Vec3f distanceVec = pActors[actorID].pos + Vec3f(0, 0, pActors[actorID].height / 2) - attack.pos;
                     float distanceSq = distanceVec.lengthSqr();
                     float attackRange = attack.attackRange + pActors[actorID].radius;
