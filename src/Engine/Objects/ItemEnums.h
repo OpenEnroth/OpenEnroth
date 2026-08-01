@@ -13,7 +13,7 @@ enum class DamageType : unsigned int {
     DAMAGE_WATER = 2,
     DAMAGE_EARTH = 3,
     DAMAGE_PHYSICAL = 4,
-    DAMAGE_MAGIC = 5,
+    DAMAGE_MAGIC = 5, // Only used for Armageddon in MM7, and cannot be resisted.
     DAMAGE_SPIRIT = 6,
     DAMAGE_MIND = 7,
     DAMAGE_BODY = 8,

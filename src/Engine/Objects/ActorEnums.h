@@ -27,7 +27,8 @@ enum class ActorBuff {
     ACTOR_BUFF_SUMMONED = 2,
     ACTOR_BUFF_SHRINK = 3,
     ACTOR_BUFF_AFRAID = 4,
-    ACTOR_BUFF_STONED = 5,
+    ACTOR_BUFF_STONED = 5, // MM6 leftover (Turn to Stone), nothing in MM7 applies it.
+                           // TODO(captainurist): medusas should stone other actors?
     ACTOR_BUFF_PARALYZED = 6,
     ACTOR_BUFF_SLOWED = 7,
     ACTOR_BUFF_SOMETHING_THAT_HALVES_AC = 8,  // suspect gm axe effect??
@@ -70,7 +71,7 @@ enum class AIState : uint16_t {
     Stoned = 0xE,
     Paralyzed = 0xF,
     Resurrected = 16,
-    Summoned = 17,
+    Summoned = 17, // TODO(captainurist): rename to Summoning? This is a transient state, takes 2s.
     AttackingRanged4 = 18,
     Disabled = 19, // TODO(captainurist): what is this? Document properly.
 };

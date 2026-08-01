@@ -76,3 +76,9 @@ TestTape<bool> ActorTapeRecorder::hasBuff(int actorIndex, ActorBuff buff) {
     });
 }
 
+TestMultiTape<bool> ActorTapeRecorder::haveBuffs(std::initializer_list<int> actorIndices, ActorBuff buff) {
+    return custom(actorIndices, [buff] (const Actor &actor) {
+        return actor.buffs[buff].Active();
+    });
+}
+

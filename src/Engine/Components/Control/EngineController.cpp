@@ -372,6 +372,30 @@ void EngineController::castSpell(int characterIndex, SpellId spell) {
     tick(1);
 }
 
+void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
+    assert(characterIndex >= 1 && characterIndex <= 4);
+
+    goToGame();
+    if (GetCurrentMenuID() != MENU_NONE)
+        throw Exception("Can't cast a spell from the main menu");
+
+    if (pParty->activeCharacterIndex() != characterIndex) {
+        pressAndReleaseKey(platformKeyForDigit(characterIndex));
+        tick(1);
+        if (pParty->activeCharacterIndex() != characterIndex)
+            throw Exception("Couldn't activate character #{}", characterIndex);
+    }
+
+    Character &character = pParty->pCharacters[characterIndex - 1];
+    SpellId oldQuickSpell = character.uQuickSpell;
+    character.uQuickSpell = spell;
+    pressAndReleaseKey(PlatformKey::KEY_S);
+    // UIMSG_CastQuickSpell is processed in the next frame, and we need to wait for it to be processed before we can
+    // roll back the quick spell. Thus two ticks.
+    tick(2);
+    character.uQuickSpell = oldQuickSpell;
+}
+
 void EngineController::goToGameOrMainMenu() {
     ThrowingTicker ticker(this, "Couldn't return to game");
 

@@ -175,8 +175,10 @@ bool Actor::CanAct() const {
 }
 
 bool Actor::CanBeDamaged() const {
-    return !(this->aiState == Dying || this->aiState == Dead ||
-             this->aiState == Removed || this->aiState == Disabled);
+    // Stoned monsters are invulnerable statues, and Summoned ones are still materializing.
+    bool stoned = this->buffs[ACTOR_BUFF_STONED].Active();
+    return !(stoned || this->aiState == Dying || this->aiState == Dead ||
+             this->aiState == Removed || this->aiState == Summoned || this->aiState == Disabled);
 }
 
 //----- (004089C7) --------------------------------------------------------
