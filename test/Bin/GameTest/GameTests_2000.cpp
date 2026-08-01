@@ -11,6 +11,7 @@
 #include "Engine/MapEnums.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
+#include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -711,44 +712,47 @@ GAME_TEST(Issues, Issue2255) {
 
 GAME_TEST(Issues, Issue2267) {
     // Bloodsplats not appearing on save reload.
-    //
-    // The save contains the actor state, but Actor::donebloodsplat is not part of the snapshot - on reload the flag
-    // should come back default-constructed (= false), letting bloodsplats fire on the next death. Before the engine
-    // fix (PR #2275) the reconstruct path on `pActors` (and on every other resizable container going through
-    // CommonSnapshots.h) did `resize()` without `clear()` first. When the in-memory deque was the same size as or
-    // larger than the snapshot vector, the existing Actor instances were retained and only the serialized fields
-    // were overwritten. donebloodsplat - which isn't serialized - stayed at whatever value the previous session
-    // left in memory, suppressing the next bloodsplat emission.
+    // Actor::donebloodsplat is not serialized, and reloading a save mid-session used to keep the in-memory actors,
+    // so re-killing the same monster produced no bloodsplat.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto splatsTape = tapes.custom([] { return static_cast<int>(engine->decal_builder->bloodsplat_container->uNumBloodsplats); });
 
+    engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
-    game.tick(2);
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
 
-    // Pre-flight sanity: Emerald Island spawns actors naturally so the reconstruct path actually has same-index
-    // collisions to fix up. The fix is a no-op when the destination container starts out empty.
-    ASSERT_FALSE(pActors.empty());
+    // Expert bow shoots single arrows, peasants die in one hit.
+    Character &char0 = pParty->pCharacters[0];
+    char0.inventory.equip(ITEM_SLOT_BOW, Item(ITEM_CROSSBOW));
+    char0.setSkillValue(SKILL_BOW, CombinedSkillValue(10, MASTERY_EXPERT));
 
-    // Save while everyone is alive. Snapshot has donebloodsplat = false (it's not serialized; reconstruct produces
-    // default-constructed actors).
+    Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, 500, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A);
+    peasant->moveSpeed = 1;
+    ASSERT_TRUE(pMonsterStats->infos[peasant->monsterInfo.id].bloodSplatOnDeath);
+
+    auto shootUntilDead = [&] {
+        for (int i = 0; i < 100 && pActors[0].aiState != Dead; i++) {
+            game.pressAndReleaseKey(PlatformKey::KEY_A);
+            game.tick();
+        }
+        ASSERT_EQ(pActors[0].aiState, Dead);
+        game.tick(5); // Wait out the bloodsplat.
+    };
+
+    // Save while the peasant is alive, then kill it.
     Blob save = game.saveGame();
+    shootUntilDead();
 
-    // Simulate the user playing past the save: pretend an actor died and emitted its bloodsplat this session. The
-    // flag is what gates bloodsplat creation in Outdoor.cpp / Indoor.cpp - once set, no more bloodsplats for this
-    // Actor instance.
-    pActors[0].donebloodsplat = true;
-    int actorCountBeforeReload = pActors.size();
-
-    // Reload the save. Pre-fix this preserved the donebloodsplat = true value above; post-fix the deque is cleared
-    // before resize, so the actor at index 0 is freshly default-constructed.
+    // Reload & kill again. Before the fix the peasant kept donebloodsplat = true through the reload, and the second
+    // bloodsplat was never emitted.
     game.loadGame(save);
-    game.tick(1);
+    shootUntilDead();
+    test.stopTaping();
 
-    // Regression check for #2267: the donebloodsplat flag must not survive the snapshot/reconstruct round-trip.
-    ASSERT_FALSE(pActors.empty());
-    EXPECT_FALSE(pActors[0].donebloodsplat);
-    // Sanity: actor count round-trips and indices are reassigned consistently.
-    EXPECT_EQ(static_cast<int>(pActors.size()), actorCountBeforeReload);
-    EXPECT_EQ(pActors[0].id, 0);
+    // One bloodsplat pulse per kill.
+    EXPECT_EQ(splatsTape, tape(0, 1, 0, 1, 0));
 }
 
 GAME_TEST(Issues, Issue2279) {
