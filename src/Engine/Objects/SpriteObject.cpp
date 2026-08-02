@@ -242,6 +242,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 }
             }
         } else {
+            // TODO(captainurist): projectiles can fly right through small actors - an ice bolt aimed at a peasant
+            //                     ~250 units away missed it and hit a titan further along the flight path.
             for (int j = 0; j < pActors.size(); ++j) {
                 CollideWithActor(j, 0);
             }
