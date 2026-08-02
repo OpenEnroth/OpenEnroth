@@ -240,8 +240,8 @@ void EngineController::loadGame(const Blob &savedGame) {
     pSavegameList->saveListPosition = 0; // Make sure we start at the top of the list.
     tick(1);
 
-    assert(pSavegameList->pSavegameUsedSlots[0]);
-    assert(pSavegameList->pFileList[0] == "!!!save.mm7");
+    assert(pSavegameList->slots[0].isUsed);
+    assert(pSavegameList->slots[0].fileName == "!!!save.mm7");
 
     pressGuiButton("LoadMenu_Slot0");
     tick(2);
