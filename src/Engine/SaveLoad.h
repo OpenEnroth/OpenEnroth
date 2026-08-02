@@ -3,7 +3,9 @@
 #include <array>
 #include <unordered_map>
 #include <string>
+#include <string_view>
 #include <utility>
+#include <vector>
 
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Party.h"
@@ -15,7 +17,8 @@
 
 class GraphicsImage;
 
-constexpr int MAX_SAVE_SLOTS = 45;
+// Autosave file name. Note that it's not localized, unlike the autosave title displayed in-game.
+constexpr std::string_view autosaveFileName = "autosave.mm7";
 
 struct SaveGameHeader {
     std::string name; // Save name, as displayed in the save list in-game.
@@ -39,6 +42,13 @@ struct SaveGameLite {
     Blob thumbnail;
 };
 
+struct SavegameSlot {
+    std::string fileName;
+    SaveGameHeader header;
+    GraphicsImage *thumbnail = nullptr;
+    bool isUsed = false; // True for slots backed by an actual save file.
+};
+
 /** Runtime storage for map deltas from the currently loaded save. */
 extern std::unordered_map<std::string, Blob> pMapDeltas;
 
@@ -47,11 +57,30 @@ struct SavegameList {
     SavegameList();
 
     void Reset();
+    void releaseThumbnails();
 
-    std::array<std::string, MAX_SAVE_SLOTS> pFileList;
-    std::array<bool, MAX_SAVE_SLOTS> pSavegameUsedSlots;
-    std::array<SaveGameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
-    std::array<GraphicsImage *, MAX_SAVE_SLOTS> pSavegameThumbnails;
+    bool isSlotUsed(int slot) const {
+        return slot >= 0 && slot < std::ssize(slots) && slots[slot].isUsed;
+    }
+
+    // Maps save menu positions to slot indices.
+    int saveMenuSlot(int position) const {
+        return saveMenuSlots[position];
+    }
+
+    // Number of positions in the save menu.
+    int saveMenuSlotCount() const {
+        return static_cast<int>(saveMenuSlots.size());
+    }
+
+    // Slots [0, numSavegameFiles) are the saves, slot numSavegameFiles is the always-present empty slot used by
+    // the save menu for creating a new save. This way reinitializing the list mid-menu can never shrink it below
+    // what menus index.
+    std::vector<SavegameSlot> slots;
+
+    // Slot indices shown in the save menu - the new save slot first, then the saves. Autosave & quicksaves are
+    // not shown in the save menu.
+    std::vector<int> saveMenuSlots;
 
     int numSavegameFiles = 0;
     int selectedSlot = 0;

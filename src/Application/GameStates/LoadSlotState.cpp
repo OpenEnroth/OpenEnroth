@@ -28,7 +28,7 @@ FsmAction LoadSlotState::update() {
         engine->_messageQueue->popMessage(&message, &param1, &param2);
         switch (message) {
         case UIMSG_LoadGame: {
-            if (!pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
+            if (!pSavegameList->isSlotUsed(pSavegameList->selectedSlot)) {
                 break;
             }
             SetCurrentMenuID(MENU_LoadingProcInMainMenu);

@@ -137,17 +137,23 @@ void Menu::EventLoop() {
                     keyboardInputHandler->EndTextInput();
 
                 if (current_screen_type == SCREEN_SAVEGAME) {
-                    if (pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
-                        pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
+                    int position = pSavegameList->saveListPosition + param;
+                    if (position >= pSavegameList->saveMenuSlotCount())
+                        continue; // Clicked below the last slot.
+                    int slot = pSavegameList->saveMenuSlot(position);
+                    if (pSavegameList->selectedSlot != slot) {
+                        pSavegameList->selectedSlot = slot;
                     } else {
                         keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu.get());
-                        if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name != localization->str(LSTR_EMPTY_SAVE)) {
-                            keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
-                        }
+                        if (pSavegameList->isSlotUsed(slot))
+                            keyboardInputHandler->SetTextInput(pSavegameList->slots[slot].header.name);
                     }
                 } else {
-                    if (!isLoadSlotClicked || pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
-                        pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
+                    int slot = pSavegameList->saveListPosition + param;
+                    if (slot >= pSavegameList->numSavegameFiles)
+                        continue; // Clicked below the last save.
+                    if (!isLoadSlotClicked || pSavegameList->selectedSlot != slot) {
+                        pSavegameList->selectedSlot = slot;
                         isLoadSlotClicked = true;
                     } else {
                         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
@@ -155,7 +161,7 @@ void Menu::EventLoop() {
                 }
                 continue;
             case UIMSG_LoadGame:
-                if (pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
+                if (pSavegameList->isSlotUsed(pSavegameList->selectedSlot)) {
                     loadGame(pSavegameList->selectedSlot);
                     uGameState = GAME_STATE_LOADING_GAME;
                 }
@@ -163,8 +169,15 @@ void Menu::EventLoop() {
             case UIMSG_SaveGame:
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
-                    pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name = keyboardInputHandler->GetTextInput();
+                    if (keyboardInputHandler->GetTextInput().empty())
+                        continue; // Saves need a name, keep the input open.
+                    pSavegameList->slots[pSavegameList->selectedSlot].header.name = keyboardInputHandler->GetTextInput();
                     keyboardInputHandler->EndTextInput();
+                } else if (!pSavegameList->isSlotUsed(pSavegameList->selectedSlot) &&
+                           pSavegameList->slots[pSavegameList->selectedSlot].header.name.empty()) {
+                    // Don't just save into the new save slot, ask for the save name first.
+                    keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu.get());
+                    continue;
                 }
                 doSavegame(pSavegameList->selectedSlot);
                 continue;
@@ -413,6 +426,12 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_QuickLoad:
                 quickLoadGame();
+                if (current_screen_type == SCREEN_SAVEGAME || current_screen_type == SCREEN_LOADGAME) {
+                    // Failed quickload has reinitialized the list under the open menu, reload the headers.
+                    loadSaveHeaders();
+                    if (current_screen_type == SCREEN_SAVEGAME)
+                        pSavegameList->selectedSlot = pSavegameList->numSavegameFiles;
+                }
                 break;
             default:
                 break;

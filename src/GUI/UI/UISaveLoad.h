@@ -2,6 +2,9 @@
 
 #include "GUI/GUIWindow.h"
 
+/** Loads headers & thumbnails for all savegame slots and sorts them by display name. */
+void loadSaveHeaders();
+
 class GUIWindow_Save : public GUIWindow {
  public:
     GUIWindow_Save();

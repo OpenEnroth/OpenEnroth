@@ -20,6 +20,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
 #include "GUI/GUIProgressBar.h"
@@ -1092,12 +1093,13 @@ GAME_TEST(Issues, Issue2453) {
     game.skipLoadingScreen();
     game.tick(2);
 
-    // Save over the same slot — the existing title should be preserved, no need to retype.
+    // Save over the same slot — the existing title should be preserved, no need to retype. Slot #0 is the new save
+    // slot, the existing save is in slot #1.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
-    game.pressGuiButton("SaveMenu_Slot0");
+    game.pressGuiButton("SaveMenu_Slot1");
     game.tick(2);
     game.pressGuiButton("SaveMenu_Save");
     game.tick(10);
@@ -1333,4 +1335,81 @@ GAME_TEST(Issues, Issue2507) {
     auto damageRange = hpTape.reverse().adjacentDeltas().minMax();
     EXPECT_GE(damageRange[0], 10);
     EXPECT_LE(damageRange[1], 80); // Per-hit damage is within the 10d8 range.
+}
+
+GAME_TEST(Issues, Issue2551a) {
+    // Save list was capped at 45 files, and saving past the cap produced saves that weren't listed in the load menu.
+    game.startNewGame();
+    game.tick(2);
+
+    // Fill the saves folder well past the old cap.
+    ufs->remove("saves/autosave.mm7");
+    Blob save = game.saveGame();
+    for (int i = 0; i < 50; i++)
+        ufs->write(fmt::format("saves/save{:03}.mm7", i), save);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    ASSERT_EQ(pSavegameList->numSavegameFiles, 50); // All 50 saves are listed, +1 new save slot...
+    ASSERT_EQ(pSavegameList->selectedSlot, 50); // ...which is selected by default...
+    ASSERT_EQ(pSavegameList->saveListPosition, 0); // ...and shown first.
+
+    // Pressing the save button right away shouldn't save, we want a save name typed in first.
+    game.pressGuiButton("SaveMenu_Save");
+    game.tick(2);
+    EXPECT_EQ(ufs->ls("saves").size(), 50);
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN); // Confirm the name with Enter.
+    game.tick(10);
+    EXPECT_TRUE(ufs->exists("saves/save050.mm7")); // New save went into a new file.
+
+    // The new save shows up in the load menu, sorted by display name - "a" comes before "saveNNN".
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_LoadGame");
+    game.tick(3);
+    EXPECT_EQ(pSavegameList->numSavegameFiles, 51);
+    EXPECT_EQ(pSavegameList->slots[0].fileName, "save050.mm7");
+    EXPECT_EQ(pSavegameList->slots[0].header.name, "a");
+    EXPECT_TRUE(pSavegameList->isSlotUsed(0));
+}
+
+GAME_TEST(Issues, Issue2551b) {
+    // Quickload is handled from inside menus, and with no quicksave to load it reinitializes the save list under the
+    // open save menu. Check that the menu survives this.
+    game.startNewGame();
+    game.tick(2);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    game.tick(3);
+    ASSERT_EQ(pSavegameList->numSavegameFiles, 1); // Just the autosave, the menu is still alive.
+    ASSERT_EQ(pSavegameList->saveMenuSlotCount(), 1); // Autosave is not shown in the save menu.
+
+    // And the menu is still fully functional.
+    game.pressGuiButton("SaveMenu_Slot0"); // Select the new save slot...
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Slot0"); // ...and click it again to start the name input.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Save");
+    game.tick(10);
+    EXPECT_TRUE(ufs->exists("saves/save000.mm7"));
+
+    // Quicksaves are also hidden from the save menu.
+    game.pressAndReleaseKey(PlatformKey::KEY_F5);
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    ASSERT_EQ(pSavegameList->numSavegameFiles, 3); // Autosave, quicksave & our save...
+    ASSERT_EQ(pSavegameList->saveMenuSlotCount(), 2); // ...but only the new save slot & our save are shown.
 }
