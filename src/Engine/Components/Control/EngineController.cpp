@@ -23,6 +23,10 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/Vis.h"
+
+#include "Io/Mouse.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
@@ -394,6 +398,23 @@ void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
     // roll back the quick spell. Thus two ticks.
     tick(2);
     character.uQuickSpell = oldQuickSpell;
+}
+
+void EngineController::pointMouseAtActor(int actorId) {
+    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
+    // camera is still at the old position. Tick once to let it catch up.
+    tick(1);
+
+    Vec3f center = pActors[actorId].pos + Vec3f(0, 0, pActors[actorId].height / 2);
+    Vec3f viewPos = pCamera3D->ViewTransform(&center);
+    if (viewPos.x <= 0)
+        throw Exception("Actor #{} is behind the camera", actorId);
+    Vec2f screenPos = pCamera3D->Project(viewPos);
+
+    moveMouse(screenPos.x, screenPos.y);
+    tick(1); // Wait for Mouse::uPointingObjectID to pick up the new mouse position.
+    if (mouse->uPointingObjectID != Pid(OBJECT_Actor, actorId))
+        throw Exception("Failed to point mouse at actor #{}", actorId);
 }
 
 void EngineController::goToGameOrMainMenu() {

@@ -145,6 +145,14 @@ class EngineController {
      */
     void castQuickSpell(int characterIndex, SpellId spell);
 
+    /**
+     * Finds a screen position at which the mouse points at the provided actor & moves the mouse there.
+     *
+     * @param actorId                   Id of the actor to point at.
+     * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
+     */
+    void pointMouseAtActor(int actorId);
+
  private:
     void goToGameOrMainMenu();
 
