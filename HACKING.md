@@ -89,6 +89,7 @@ Naming:
 * Exceptions to the rules above are STL-compatible interfaces, which should follow STL naming rules. So it's `value_type` for iterator value type, and `push_back` for a method that's adding an element to a container.
 
 Code formatting:
+* Lines are 120 columns wide. This applies to comments, and to all file types, not just C++. Don't wrap at 80!
 * `*` and `&` in type declarations should be preceded by a space. So it's `char *string`, and not `char* string`.
 * Sort method definitions in `.cpp` files in the same order as they appear in the `.h` file.
 * In header files, use an additional `private:` label before listing all class fields at the end of the class declaration.

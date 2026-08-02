@@ -2,4 +2,6 @@ You *MUST* read `HACKING.md` before doing any changes in this repo. You *MUST* f
 
 Build `check_style` target to check style. You *MUST* always check style after your changes.
 
+Keep comments terse - prefer a single trailing comment over a multi-line block, and never write comments explaining what you *didn't* do.
+
 Build `Run_UnitTest` and `Run_GameTest_Headless_Parallel` targets to test your changes. You *MUST* always run tests after your changes. If you can't find the game data - ask the user to help you locate it, *NEVER* silently skip game tests.
