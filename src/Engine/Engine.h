@@ -133,6 +133,8 @@ class Engine {
     std::array<unsigned char, 50> _OE_transientVariables; // These are cleared on loading a new map
     MapId _currentLoadedMapId = MAP_INVALID;
     MapId _transitionMapId = MAP_INVALID;
+    std::string _lastLoadedSaveFileName; // File name of the last loaded savegame, pre-selected in the load menu.
+    int _pendingLoadSlot = -1; // Savegame slot to load when the main menu FSM exits into the game loop.
     TeleportPoint _teleportPoint;
     OverlaySystem &_overlaySystem;
 

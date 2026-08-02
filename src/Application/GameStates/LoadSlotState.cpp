@@ -28,14 +28,16 @@ FsmAction LoadSlotState::update() {
         engine->_messageQueue->popMessage(&message, &param1, &param2);
         switch (message) {
         case UIMSG_LoadGame: {
-            if (!pSavegameList->isSlotUsed(pSavegameList->selectedSlot)) {
+            int slot = _uiLoadSaveSlot->selectedSlot();
+            if (!pSavegameList->isSlotUsed(slot)) {
                 break;
             }
+            engine->_pendingLoadSlot = slot;
             SetCurrentMenuID(MENU_LoadingProcInMainMenu);
             return FsmAction::transition("slotConfirmed");
         }
         case UIMSG_SelectLoadSlot: {
-            _uiLoadSaveSlot->slotSelected(param1);
+            _uiLoadSaveSlot->slotClicked(param1);
             break;
         }
         case UIMSG_SaveLoadBtn: {
@@ -43,7 +45,7 @@ FsmAction LoadSlotState::update() {
             break;
         }
         case UIMSG_DownArrow: {
-            _uiLoadSaveSlot->downArrowPressed(param1);
+            _uiLoadSaveSlot->downArrowPressed();
             break;
         }
         case UIMSG_ArrowUp: {
@@ -61,7 +63,7 @@ FsmAction LoadSlotState::update() {
             return FsmAction::transition("back");
         }
         case UIMSG_SaveLoadScroll: {
-            _uiLoadSaveSlot->scroll(param1);
+            _uiLoadSaveSlot->scrollWithMouse();
             break;
         }
         case UIMSG_QuickLoad: {

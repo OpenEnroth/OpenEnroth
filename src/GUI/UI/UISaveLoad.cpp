@@ -1,23 +1,18 @@
 #include "GUI/UI/UISaveLoad.h"
 
-#include <string>
 #include <algorithm>
-#include <memory>
-#include <utility>
+#include <cmath>
+#include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
-#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/ImageLoader.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/SaveLoad.h"
-#include "Engine/Snapshots/CompositeSnapshots.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -27,17 +22,10 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
-#include "Library/Image/Pcx.h"
 
 #include "Library/Logger/Logger.h"
-#include "Library/Snapshots/SnapshotSerialization.h"
-
-#include "Utility/String/Ascii.h"
-#include "Utility/Exception.h"
 
 using Io::TextInputType;
-
-static void UI_DrawSaveLoad(bool save);
 
 std::array<int, 2> saveload_dlg_xs = {{82, 0}};
 std::array<int, 2> saveload_dlg_ys = {{60, 0}};
@@ -49,69 +37,122 @@ GraphicsImage *saveload_ui_x_d = nullptr;
 
 static GraphicsImage *scrollstop = nullptr;
 
-void loadSaveHeaders() {
-    for (int i = 0; i < pSavegameList->numSavegameFiles; ++i) {
-        SavegameSlot &slot = pSavegameList->slots[i];
-        std::string str = fmt::format("saves/{}", slot.fileName);
-        if (!ufs->exists(str)) {
-            slot.isUsed = false;
-            slot.header.name = localization->str(LSTR_EMPTY_SAVE);
-            continue;
-        }
+GUIWindow_SaveLoad::GUIWindow_SaveLoad(WindowType type, Pointi position, Sizei dimensions)
+    : GUIWindow(type, position, dimensions) {}
 
-        SaveGameLite save;
-        deserialize(ufs->read(str), &save, tags::via<SaveGameLite_MM7>);
-        slot.header = save.header;
+GUIWindow_SaveLoad::~GUIWindow_SaveLoad() {
+    pSavegameList->releaseThumbnails(); // Thumbnails are loaded when a save/load menu opens, released when it closes.
+}
 
-        if (ascii::noCaseEquals(slot.fileName, autosaveFileName))
-            slot.header.name = localization->str(LSTR_AUTOSAVE);
+void GUIWindow_SaveLoad::scrollUp() {
+    _scrollPosition = std::max(0, _scrollPosition - 1);
+}
 
-        if (slot.header.name.empty()) // blank so add something - suspect quicksaves
-            slot.header.name = slot.fileName.substr(0, slot.fileName.size() - 4);
+void GUIWindow_SaveLoad::scrollDown() {
+    if (_scrollPosition + 7 < std::ssize(menuSlots()))
+        ++_scrollPosition;
+}
 
-        try {
-            slot.thumbnail = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
+void GUIWindow_SaveLoad::scrollWithMouse() {
+    int slotCount = std::ssize(menuSlots());
+    if (slotCount < 7)
+        return; // Too few saves to scroll yet.
+    // 216 is the scroll bar offset from the top of the dialog, 107 is its total height.
+    int my = mouse->position().y - frameRect.y - 216;
+    float fmy = static_cast<float>(my) / 107.0f;
+    int newPosition = std::round((slotCount - 7) * fmy);
+    _scrollPosition = std::clamp(newPosition, 0, slotCount - 7);
+    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+}
 
-            if (slot.thumbnail->width() == 0) {
-                slot.thumbnail->release();
-                slot.thumbnail = nullptr;
-            }
-        } catch (const Exception &e) {
-            logger->debug("pSavegameList thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
-            slot.thumbnail = nullptr;
-        }
+void GUIWindow_SaveLoad::drawSaveLoad() {
+    if (pSavegameList->isSlotUsed(_selectedSlot)) {
+        const SavegameSlot &slot = pSavegameList->slots()[_selectedSlot];
+        Recti titleRect(frameRect.x + 240, (frameRect.y - assets->pFontSmallnum->GetHeight()) + 157,
+                        220, assets->pFontSmallnum->GetHeight());
+        if (slot.thumbnail)
+            render->DrawQuad2D(slot.thumbnail, {frameRect.x + 276, frameRect.y + 171});
 
-        slot.isUsed = true;
+        // Draw map name
+        GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
+                                 pMapStats->pInfos[pMapStats->GetMapInfo(slot.header.locationName)].name, 3, titleRect);
+
+        // Draw date
+        CivilTime time = slot.header.playingTime.toCivilTime();
+
+        titleRect.y = frameRect.y + 261;
+
+        std::string str = fmt::format(
+            "{} {}:{:02} {}\n{} {} {}",
+            localization->dayName(time.dayOfWeek - 1),
+            time.hourAmPm,
+            time.minute,
+            localization->amPm(time.isPm),
+            time.day,
+            localization->monthName(time.month - 1),
+            time.year);
+        GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White, str, 3, titleRect);
     }
 
-    // Sort saves by display name, with file name as a tie-breaker.
-    auto sortKey = [](const SavegameSlot &slot) { return std::pair(ascii::toLower(slot.header.name), std::string_view(slot.fileName)); };
-    std::ranges::sort(pSavegameList->slots.begin(), pSavegameList->slots.begin() + pSavegameList->numSavegameFiles, {}, sortKey);
+    if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
+        keyboard_input_status = WINDOW_INPUT_NONE;
+        if (keyboardInputHandler->GetTextInput().empty()) {
+            // Saves need a name, keep the input open.
+            keyboardInputHandler->StartTextInput(TextInputType::Text, 19, this);
+        } else {
+            pSavegameList->setSlotName(_selectedSlot, keyboardInputHandler->GetTextInput());
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
+        }
+    }
 
-    // Autosave & quicksaves are loadable, but shouldn't be manually saved over, so they are not shown in the
-    // save menu.
-    pSavegameList->saveMenuSlots.clear();
-    pSavegameList->saveMenuSlots.push_back(pSavegameList->numSavegameFiles); // New save slot goes first.
-    for (int i = 0; i < pSavegameList->numSavegameFiles; i++) {
-        const std::string &fileName = pSavegameList->slots[i].fileName;
-        if (!ascii::noCaseEquals(fileName, autosaveFileName) &&
-            !ascii::noCaseStartsWith(fileName, engine->config->gameplay.QuickSaveName.value()))
-            pSavegameList->saveMenuSlots.push_back(i);
+    if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
+        const std::string &name = pSavegameList->slots()[_selectedSlot].header.name;
+        GUIWindow::DrawText(assets->pFontSmallnum.get(),
+            {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_LOADING)) + 25, 220}, colorTable.White,
+            localization->str(LSTR_LOADING), frameRect);
+        DrawTextInRect(assets->pFontSmallnum.get(),
+                       {assets->pFontSmallnum->AlignText_Center(186, name) + 25, 262}, colorTable.White, name, 185, 0);
+        GUIWindow::DrawText(assets->pFontSmallnum.get(),
+            {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_PLEASE_WAIT)) + 25, 304}, colorTable.White,
+            localization->str(LSTR_PLEASE_WAIT), frameRect);
+    } else {
+        int slotCount = std::ssize(menuSlots());
+        int stopPos = 0;
+        if (slotCount > 7) {
+            stopPos = (float(_scrollPosition) / (slotCount - 7)) * 89.0f;
+            if (_scrollPosition > slotCount - 7)
+                stopPos = 89;
+        }
+        render->DrawQuad2D(scrollstop, {216 + frameRect.x, static_cast<int>(217 + frameRect.y + stopPos)});
+
+        int slot_Y = 199;
+        for (int i = _scrollPosition; i < slotCount; ++i) {
+            if (slot_Y >= 346)
+                break;
+            int slot = menuSlots()[i];
+            bool isNewSaveSlot = pSavegameList->slots()[slot].fileName.empty();
+            if (keyboard_input_status != WINDOW_INPUT_IN_PROGRESS || slot != _selectedSlot) {
+                DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y}, slot == _selectedSlot ? colorTable.LaserLemon : colorTable.White,
+                               isNewSaveSlot ? localization->str(LSTR_NEW_SAVE) : pSavegameList->slots()[slot].header.name, 185, 0);
+            } else {
+                GUIWindow::DrawFlashingInputCursor(DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y},
+                    colorTable.LaserLemon, keyboardInputHandler->GetTextInput(), 175, 1) + 27, slot_Y, assets->pFontSmallnum.get(), frameRect);
+            }
+            slot_Y += 21;
+        }
     }
 }
 
-GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRenderDimensions()) {
+GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_Save, {0, 0}, render->GetRenderDimensions()) {
     saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
     saveload_ui_save_up = assets->getImage_ColorKey("save_up");
     saveload_ui_saveu = assets->getImage_ColorKey("LS_saveU");
     saveload_ui_x_u = assets->getImage_ColorKey("x_u");
 
-    pSavegameList->Initialize();
-    loadSaveHeaders();
+    pSavegameList->loadHeaders();
 
     // New save slot is shown first & selected by default.
-    pSavegameList->selectedSlot = pSavegameList->numSavegameFiles;
-    pSavegameList->saveListPosition = 0;
+    _selectedSlot = pSavegameList->saveMenuSlots().front();
 
     saveload_ui_x_d = assets->getImage_ColorKey("x_d");
     saveload_ui_ls_saved = assets->getImage_ColorKey("LS_saveD");
@@ -120,7 +161,6 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
 
     scrollstop = assets->getImage_ColorKey("con_x");
 
-    // GUIWindow_Save c-tor --- part
     CreateButton("SaveMenu_Slot0", {21, 198}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 0);
     CreateButton("SaveMenu_Slot1", {21, 218}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 1);
     CreateButton("SaveMenu_Slot2", {21, 238}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 2);
@@ -132,9 +172,9 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
     pBtnLoadSlot = CreateButton("SaveMenu_Save", {241, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
     pBtnCancel = CreateButton({350, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
     pBtnArrowUp = CreateButton({215, 199}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
-    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, pSavegameList->saveMenuSlotCount(), INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
+    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
 
-    CreateButton({215, 216}, {17, 107}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, pSavegameList->saveMenuSlotCount());
+    CreateButton({215, 216}, {17, 107}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, 0);
 }
 
 void GUIWindow_Save::Update() {
@@ -144,10 +184,30 @@ void GUIWindow_Save::Update() {
         render->DrawQuad2D(saveload_ui_save_up, {18, 139});
         render->DrawQuad2D(saveload_ui_x_u, {351, 302});
     }
-    UI_DrawSaveLoad(true);
+    drawSaveLoad();
 }
 
-GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0, 0}) {
+void GUIWindow_Save::slotClicked(int slotIndex) {
+    if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
+        keyboardInputHandler->EndTextInput();
+    int position = _scrollPosition + slotIndex;
+    if (position >= std::ssize(menuSlots()))
+        return; // Clicked below the last slot.
+    int slot = menuSlots()[position];
+    if (_selectedSlot != slot) {
+        _selectedSlot = slot;
+    } else {
+        keyboardInputHandler->StartTextInput(TextInputType::Text, 19, this);
+        if (pSavegameList->isSlotUsed(slot))
+            keyboardInputHandler->SetTextInput(pSavegameList->slots()[slot].header.name);
+    }
+}
+
+const std::vector<int> &GUIWindow_Save::menuSlots() const {
+    return pSavegameList->saveMenuSlots();
+}
+
+GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_Load, {0, 0}, {0, 0}) {
     current_screen_type = SCREEN_LOADGAME;
 
     saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
@@ -166,20 +226,19 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
         render->DrawQuad2D(saveload_ui_x_u, {351, 302});
     }
 
-    // GUIWindow::GUIWindow
     this->frameRect = Recti(saveload_dlg_xs[ingame ? 1 : 0], saveload_dlg_ys[ingame ? 1 : 0],
                             saveload_dlg_zs[ingame ? 1 : 0], saveload_dlg_ws[ingame ? 1 : 0]);
 
     DrawText(assets->pFontSmallnum.get(), {25, 199}, colorTable.White, localization->str(LSTR_READING), this->frameRect);
     render->Present();
 
-    pSavegameList->Initialize();
-    loadSaveHeaders();
+    pSavegameList->loadHeaders();
 
-    for (int i = 0; i < pSavegameList->numSavegameFiles; ++i) {
-        if (pSavegameList->slots[i].fileName == pSavegameList->lastLoadedSave) {
-            pSavegameList->selectedSlot = i;
-            pSavegameList->saveListPosition = std::min(i, std::max(0, pSavegameList->numSavegameFiles - 7));
+    int slotCount = std::ssize(pSavegameList->loadMenuSlots());
+    for (int i : pSavegameList->loadMenuSlots()) {
+        if (pSavegameList->slots()[i].fileName == engine->_lastLoadedSaveFileName) {
+            _selectedSlot = i;
+            _scrollPosition = std::min(i, std::max(0, slotCount - 7));
         }
     }
 
@@ -201,9 +260,9 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
     pBtnLoadSlot = CreateButton("LoadMenu_Load", {241, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
     pBtnCancel = CreateButton({350, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
     pBtnArrowUp = CreateButton({215, 199}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
-    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, pSavegameList->numSavegameFiles, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
+    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
 
-    CreateButton("LoadMenu_Scroll", {215, 216}, {17, 107}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, pSavegameList->numSavegameFiles);
+    CreateButton("LoadMenu_Scroll", {215, 216}, {17, 107}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, 0);
 }
 
 void GUIWindow_Load::Update() {
@@ -216,161 +275,55 @@ void GUIWindow_Load::Update() {
         render->DrawQuad2D(saveload_ui_load_up, {18, 139});
         render->DrawQuad2D(saveload_ui_x_u, {351, 302});
     }
-    UI_DrawSaveLoad(false);
+    drawSaveLoad();
 }
 
-static void UI_DrawSaveLoad(bool save) {
-    if (pSavegameList->isSlotUsed(pSavegameList->selectedSlot)) {
-        Recti frameRect(pGUIWindow_CurrentMenu->frameRect.x + 240,
-                                           (pGUIWindow_CurrentMenu->frameRect.y - assets->pFontSmallnum->GetHeight()) + 157,
-                                           220,
-                                           assets->pFontSmallnum->GetHeight());
-        if (pSavegameList->slots[pSavegameList->selectedSlot].thumbnail) {
-            render->DrawQuad2D(pSavegameList->slots[pSavegameList->selectedSlot].thumbnail,
-                               {pGUIWindow_CurrentMenu->frameRect.x + 276, pGUIWindow_CurrentMenu->frameRect.y + 171});
-        }
-        // Draw map name
-        GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
-                                       pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->slots[pSavegameList->selectedSlot].header.locationName)].name, 3, frameRect);
-
-        // Draw date
-        CivilTime time = pSavegameList->slots[pSavegameList->selectedSlot].header.playingTime.toCivilTime();
-
-        frameRect.y = pGUIWindow_CurrentMenu->frameRect.y + 261;
-
-        std::string str = fmt::format(
-            "{} {}:{:02} {}\n{} {} {}",
-            localization->dayName(time.dayOfWeek - 1),
-            time.hourAmPm,
-            time.minute,
-            localization->amPm(time.isPm),
-            time.day,
-            localization->monthName(time.month - 1),
-            time.year);
-        GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White, str, 3, frameRect);
-    }
-
-    if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
-        pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
-        if (keyboardInputHandler->GetTextInput().empty()) {
-            // Saves need a name, keep the input open.
-            keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu.get());
-        } else {
-            pSavegameList->slots[pSavegameList->selectedSlot].header.name = keyboardInputHandler->GetTextInput();
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
-        }
-    }
-
-    if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
-        GUIWindow::DrawText(assets->pFontSmallnum.get(),
-            {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_LOADING)) + 25, 220}, colorTable.White,
-            localization->str(LSTR_LOADING), pGUIWindow_CurrentMenu->frameRect);
-        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontSmallnum.get(),
-                                               {assets->pFontSmallnum->AlignText_Center(186, pSavegameList->slots[pSavegameList->selectedSlot].header.name) + 25, 262}, colorTable.White,
-                                               pSavegameList->slots[pSavegameList->selectedSlot].header.name, 185, 0);
-        GUIWindow::DrawText(assets->pFontSmallnum.get(),
-            {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_PLEASE_WAIT)) + 25, 304}, colorTable.White,
-            localization->str(LSTR_PLEASE_WAIT), pGUIWindow_CurrentMenu->frameRect);
-    } else {
-        int maxSaveFiles = save ? pSavegameList->saveMenuSlotCount() : pSavegameList->numSavegameFiles;
-        int framex = 0, framey = 0;
-        int stopPos = 0;
-
-        if (!save) {
-            framex = pGUIWindow_CurrentMenu->frameRect.x;
-            framey = pGUIWindow_CurrentMenu->frameRect.y;
-        }
-
-        if (maxSaveFiles > 7) {
-            stopPos = (float(pSavegameList->saveListPosition) / (maxSaveFiles - 7)) * 89.0f;
-            if (pSavegameList->saveListPosition > maxSaveFiles - 7)
-                stopPos = 89;
-        }
-        render->DrawQuad2D(scrollstop, {216 + framex, static_cast<int>(217 + framey + stopPos)});
-
-        int slot_Y = 199;
-        for (int i = pSavegameList->saveListPosition; i < maxSaveFiles; ++i) {
-            if (slot_Y >= 346) {
-                break;
-            }
-            int slot = save ? pSavegameList->saveMenuSlot(i) : i;
-            bool isNewSaveSlot = slot == pSavegameList->numSavegameFiles;
-            if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS || slot != pSavegameList->selectedSlot) {
-                pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y}, slot == pSavegameList->selectedSlot ? colorTable.LaserLemon : colorTable.White,
-                                                       isNewSaveSlot ? localization->str(LSTR_NEW_SAVE) : pSavegameList->slots[slot].header.name, 185, 0);
-            } else {
-                GUIWindow::DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y},
-                    colorTable.LaserLemon, keyboardInputHandler->GetTextInput(), 175, 1) + 27, slot_Y, assets->pFontSmallnum.get(), pGUIWindow_CurrentMenu->frameRect);
-            }
-            slot_Y += 21;
-        }
-    }
-}
-
-void GUIWindow_Load::slotSelected(int slotIndex) {
-    // main menu save/load wnd   clicking on savegame lines
-    if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
+void GUIWindow_Load::slotClicked(int slotIndex) {
+    if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
         keyboardInputHandler->EndTextInput();
-    assert(current_screen_type != SCREEN_SAVEGAME); // No savegame in main menu
-    if (slotIndex + pSavegameList->saveListPosition >= pSavegameList->numSavegameFiles)
+    int position = _scrollPosition + slotIndex;
+    if (position >= std::ssize(menuSlots()))
         return; // Clicked below the last save.
-    if (isLoadSlotClicked && pSavegameList->selectedSlot == slotIndex + pSavegameList->saveListPosition) {
-        engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
+    int slot = menuSlots()[position];
+    if (!_loadSlotClicked || _selectedSlot != slot) {
+        _selectedSlot = slot;
+        _loadSlotClicked = true;
     } else {
-        pSavegameList->selectedSlot = slotIndex + pSavegameList->saveListPosition;
-        isLoadSlotClicked = true;
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
     }
+}
+
+const std::vector<int> &GUIWindow_Load::menuSlots() const {
+    return pSavegameList->loadMenuSlots();
 }
 
 void GUIWindow_Load::loadButtonPressed() {
-    new OnSaveLoad({ pGUIWindow_CurrentMenu->frameRect.x + 241, pGUIWindow_CurrentMenu->frameRect.y + 302 }, { 61, 28 }, pBtnLoadSlot);
+    new OnSaveLoad({ frameRect.x + 241, frameRect.y + 302 }, { 61, 28 }, pBtnLoadSlot);
 }
 
-void GUIWindow_Load::downArrowPressed(int maxSlots) {
-    if (pSavegameList->saveListPosition + 7 < maxSlots) {
-        ++pSavegameList->saveListPosition;
-    }
-    new OnButtonClick({ pGUIWindow_CurrentMenu->frameRect.x + 215, pGUIWindow_CurrentMenu->frameRect.y + 323 }, { 0, 0 }, pBtnDownArrow);
+void GUIWindow_Load::downArrowPressed() {
+    scrollDown();
+    new OnButtonClick({ frameRect.x + 215, frameRect.y + 323 }, { 0, 0 }, pBtnDownArrow);
 }
 
 void GUIWindow_Load::upArrowPressed() {
-    --pSavegameList->saveListPosition;
-    if (pSavegameList->saveListPosition < 0)
-        pSavegameList->saveListPosition = 0;
-    new OnButtonClick({ pGUIWindow_CurrentMenu->frameRect.x + 215, pGUIWindow_CurrentMenu->frameRect.y + 197 }, { 0, 0 }, pBtnArrowUp);
+    scrollUp();
+    new OnButtonClick({ frameRect.x + 215, frameRect.y + 197 }, { 0, 0 }, pBtnArrowUp);
 }
 
 void GUIWindow_Load::cancelButtonPressed() {
-    new OnCancel3({ pGUIWindow_CurrentMenu->frameRect.x + 350, pGUIWindow_CurrentMenu->frameRect.y + 302 }, { 61, 28 }, pBtnCancel);
-}
-
-void GUIWindow_Load::scroll(int maxSlots) {
-    // pskelton add for scroll click
-    if (maxSlots < 7) {
-        // Too few saves to scroll yet
-        return;
-    }
-    Pointi mousePos = mouse->position();
-    int mx = mousePos.x, my = mousePos.y;
-    // 276 is offset down from top (216 + 60 frame)
-    my -= 276;
-    // 107 is total height of bar
-    float fmy = static_cast<float>(my) / 107.0f;
-    int newlistpost = std::round((maxSlots - 7) * fmy);
-    newlistpost = std::clamp(newlistpost, 0, (maxSlots - 7));
-    pSavegameList->saveListPosition = newlistpost;
-    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+    new OnCancel3({ frameRect.x + 350, frameRect.y + 302 }, { 61, 28 }, pBtnCancel);
 }
 
 void GUIWindow_Load::quickLoad() {
     int slot = getQuickSaveSlot();
     if (slot != -1) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-        pSavegameList->selectedSlot = slot;
+        _selectedSlot = slot;
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
     } else {
         logger->error("QuickLoadGame:: No quick save could be found!");
         pAudioPlayer->playUISound(SOUND_error);
-        loadSaveHeaders(); // Failed quickload has reinitialized the list under the open menu, reload the headers.
+        pSavegameList->loadHeaders(); // Failed quickload has reinitialized the list under the open menu, reload the headers.
     }
 }
