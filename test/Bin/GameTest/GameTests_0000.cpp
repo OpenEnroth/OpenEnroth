@@ -435,12 +435,12 @@ GAME_TEST(Issues, Issue388) {
     int oldfpslimit = pArcomageGame->_targetFPS;
     pArcomageGame->_targetFPS = 500;
 
-    auto arcomageTape = tapes.custom([] { return !!pArcomageGame->bGameInProgress; });
+    auto arcomageTape = tapes.custom([] { return !!pArcomageGame->_gameInProgress; });
     auto screenTape = tapes.screen();
     test.playTraceFromTestData("issue_388.mm7", "issue_388.json");
     EXPECT_EQ(arcomageTape, tape(false, true, false)); // We've played arcomage.
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAME)); // And returned to game screen.
-    EXPECT_EQ(pArcomageGame->GameOver, 1); // With arcomage exit flag.
+    EXPECT_EQ(pArcomageGame->_gameOver, 1); // With arcomage exit flag.
 
     pArcomageGame->_targetFPS = oldfpslimit;
 }
