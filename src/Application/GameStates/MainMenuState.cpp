@@ -59,7 +59,7 @@ FsmAction MainMenuState::update() {
             int slot = getQuickSaveSlot();
             if (slot != -1) {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                pSavegameList->selectedSlot = slot;
+                engine->_pendingLoadSlot = slot;
                 SetCurrentMenuID(MENU_LoadingProcInMainMenu);
                 transition = "quickLoadGame";
             } else {

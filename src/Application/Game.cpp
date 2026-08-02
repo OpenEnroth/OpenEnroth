@@ -1526,7 +1526,8 @@ void Game::gameLoop() {
     SetCurrentMenuID(MENU_NONE);
     if (bLoading) {
         uGameState = GAME_STATE_PLAYING;
-        loadGame(pSavegameList->selectedSlot);
+        assert(engine->_pendingLoadSlot != -1);
+        loadGame(std::exchange(engine->_pendingLoadSlot, -1));
     }
 
     extern bool use_music_folder;

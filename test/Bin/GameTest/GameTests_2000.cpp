@@ -27,6 +27,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIChest.h"
+#include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Library/LodFormats/LodFormats.h"
@@ -1352,9 +1353,10 @@ GAME_TEST(Issues, Issue2551a) {
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
-    ASSERT_EQ(pSavegameList->numSavegameFiles, 50); // All 50 saves are listed, +1 new save slot...
-    ASSERT_EQ(pSavegameList->selectedSlot, 50); // ...which is selected by default...
-    ASSERT_EQ(pSavegameList->saveListPosition, 0); // ...and shown first.
+    GUIWindow_SaveLoad *saveMenu = static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
+    ASSERT_EQ(pSavegameList->loadMenuSlots().size(), 50); // All 50 saves are listed, +1 new save slot...
+    ASSERT_EQ(saveMenu->selectedSlot(), 50); // ...which is selected by default...
+    ASSERT_EQ(saveMenu->scrollPosition(), 0); // ...and shown first.
 
     // Pressing the save button right away shouldn't save, we want a save name typed in first.
     game.pressGuiButton("SaveMenu_Save");
@@ -1371,9 +1373,9 @@ GAME_TEST(Issues, Issue2551a) {
     game.tick(2);
     game.pressGuiButton("GameMenu_LoadGame");
     game.tick(3);
-    EXPECT_EQ(pSavegameList->numSavegameFiles, 51);
-    EXPECT_EQ(pSavegameList->slots[0].fileName, "save050.mm7");
-    EXPECT_EQ(pSavegameList->slots[0].header.name, "a");
+    EXPECT_EQ(pSavegameList->loadMenuSlots().size(), 51);
+    EXPECT_EQ(pSavegameList->slots()[0].fileName, "save050.mm7");
+    EXPECT_EQ(pSavegameList->slots()[0].header.name, "a");
     EXPECT_TRUE(pSavegameList->isSlotUsed(0));
 }
 
@@ -1389,8 +1391,8 @@ GAME_TEST(Issues, Issue2551b) {
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_F9);
     game.tick(3);
-    ASSERT_EQ(pSavegameList->numSavegameFiles, 1); // Just the autosave, the menu is still alive.
-    ASSERT_EQ(pSavegameList->saveMenuSlotCount(), 1); // Autosave is not shown in the save menu.
+    ASSERT_EQ(pSavegameList->loadMenuSlots().size(), 1); // Just the autosave, the menu is still alive.
+    ASSERT_EQ(pSavegameList->saveMenuSlots().size(), 1); // Autosave is not shown in the save menu.
 
     // And the menu is still fully functional.
     game.pressGuiButton("SaveMenu_Slot0"); // Select the new save slot...
@@ -1410,6 +1412,6 @@ GAME_TEST(Issues, Issue2551b) {
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
-    ASSERT_EQ(pSavegameList->numSavegameFiles, 3); // Autosave, quicksave & our save...
-    ASSERT_EQ(pSavegameList->saveMenuSlotCount(), 2); // ...but only the new save slot & our save are shown.
+    ASSERT_EQ(pSavegameList->loadMenuSlots().size(), 3); // Autosave, quicksave & our save...
+    ASSERT_EQ(pSavegameList->saveMenuSlots().size(), 2); // ...but only the new save slot & our save are shown.
 }

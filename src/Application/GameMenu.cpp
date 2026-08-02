@@ -40,9 +40,6 @@ enum class CurrentConfirmationState {
 };
 using enum CurrentConfirmationState;
 
-// TODO(Nik-RE-dev): drop variable and load game only on double click
-static bool isLoadSlotClicked = false;
-
 CurrentConfirmationState confirmationState = CONFIRM_NONE;
 
 InputAction currently_selected_action_for_binding = INPUT_ACTION_INVALID;  // 506E68
@@ -85,7 +82,11 @@ void Game_OpenLoadGameDialog() {
     // LoadUI_Load(1);
     current_screen_type = SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Load>(true);
-    isLoadSlotClicked = false;
+}
+
+static GUIWindow_SaveLoad *saveLoadMenu() {
+    assert(current_screen_type == SCREEN_SAVEGAME || current_screen_type == SCREEN_LOADGAME);
+    return static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
 }
 
 Menu::Menu() {
@@ -112,16 +113,12 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_ArrowUp:
-                --pSavegameList->saveListPosition;
-                if (pSavegameList->saveListPosition < 0)
-                    pSavegameList->saveListPosition = 0;
+                saveLoadMenu()->scrollUp();
                 new OnButtonClick({215, 199}, {17, 17}, pBtnArrowUp);
                 continue;
 
             case UIMSG_DownArrow:
-                if (pSavegameList->saveListPosition + 7 < param) {
-                    ++pSavegameList->saveListPosition;
-                }
+                saveLoadMenu()->scrollDown();
                 new OnButtonClick({215, 323}, {17, 17}, pBtnDownArrow);
                 continue;
 
@@ -133,54 +130,30 @@ void Menu::EventLoop() {
                 new OnSaveLoad({241, 302}, {106, 42}, pBtnLoadSlot);
                 continue;
             case UIMSG_SelectLoadSlot:
-                if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
-                    keyboardInputHandler->EndTextInput();
-
-                if (current_screen_type == SCREEN_SAVEGAME) {
-                    int position = pSavegameList->saveListPosition + param;
-                    if (position >= pSavegameList->saveMenuSlotCount())
-                        continue; // Clicked below the last slot.
-                    int slot = pSavegameList->saveMenuSlot(position);
-                    if (pSavegameList->selectedSlot != slot) {
-                        pSavegameList->selectedSlot = slot;
-                    } else {
-                        keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu.get());
-                        if (pSavegameList->isSlotUsed(slot))
-                            keyboardInputHandler->SetTextInput(pSavegameList->slots[slot].header.name);
-                    }
-                } else {
-                    int slot = pSavegameList->saveListPosition + param;
-                    if (slot >= pSavegameList->numSavegameFiles)
-                        continue; // Clicked below the last save.
-                    if (!isLoadSlotClicked || pSavegameList->selectedSlot != slot) {
-                        pSavegameList->selectedSlot = slot;
-                        isLoadSlotClicked = true;
-                    } else {
-                        engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
-                    }
-                }
+                saveLoadMenu()->slotClicked(param);
                 continue;
             case UIMSG_LoadGame:
-                if (pSavegameList->isSlotUsed(pSavegameList->selectedSlot)) {
-                    loadGame(pSavegameList->selectedSlot);
+                if (int slot = saveLoadMenu()->selectedSlot(); pSavegameList->isSlotUsed(slot)) {
+                    loadGame(slot);
                     uGameState = GAME_STATE_LOADING_GAME;
                 }
                 continue;
-            case UIMSG_SaveGame:
+            case UIMSG_SaveGame: {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+                int slot = saveLoadMenu()->selectedSlot();
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
                     if (keyboardInputHandler->GetTextInput().empty())
                         continue; // Saves need a name, keep the input open.
-                    pSavegameList->slots[pSavegameList->selectedSlot].header.name = keyboardInputHandler->GetTextInput();
+                    pSavegameList->setSlotName(slot, keyboardInputHandler->GetTextInput());
                     keyboardInputHandler->EndTextInput();
-                } else if (!pSavegameList->isSlotUsed(pSavegameList->selectedSlot) &&
-                           pSavegameList->slots[pSavegameList->selectedSlot].header.name.empty()) {
+                } else if (!pSavegameList->isSlotUsed(slot) && pSavegameList->slots()[slot].header.name.empty()) {
                     // Don't just save into the new save slot, ask for the save name first.
                     keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu.get());
                     continue;
                 }
-                doSavegame(pSavegameList->selectedSlot);
+                doSavegame(slot);
                 continue;
+            }
             case UIMSG_Game_OpenSaveGameDialog: {
                 if (engine->_currentLoadedMapId == MAP_ARENA) {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_THE_ARENA);
@@ -192,24 +165,9 @@ void Menu::EventLoop() {
                 }
                 continue;
             }
-            case UIMSG_SaveLoadScroll: {
-                // pskelton add for scroll click
-                if (param < 7) {
-                    // Too few saves to scroll yet
-                    break;
-                }
-                Pointi mousePos = mouse->position();
-                int mx = mousePos.x, my = mousePos.y;
-                // 216 is offset down from top (216)
-                my -= 216;
-                // 107 is total height of bar
-                float fmy = static_cast<float>(my) / 107.0f;
-                int newlistpost = std::round((param - 7) * fmy);
-                newlistpost = std::clamp(newlistpost, 0, (param - 7));
-                pSavegameList->saveListPosition = newlistpost;
-                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+            case UIMSG_SaveLoadScroll:
+                saveLoadMenu()->scrollWithMouse();
                 continue;
-            }
             case UIMSG_Game_OpenOptionsDialog:  // Open
             {
                 engine->_messageQueue->clear();
@@ -428,9 +386,9 @@ void Menu::EventLoop() {
                 quickLoadGame();
                 if (current_screen_type == SCREEN_SAVEGAME || current_screen_type == SCREEN_LOADGAME) {
                     // Failed quickload has reinitialized the list under the open menu, reload the headers.
-                    loadSaveHeaders();
+                    pSavegameList->loadHeaders();
                     if (current_screen_type == SCREEN_SAVEGAME)
-                        pSavegameList->selectedSlot = pSavegameList->numSavegameFiles;
+                        saveLoadMenu()->setSelectedSlot(pSavegameList->saveMenuSlots().front());
                 }
                 break;
             default:

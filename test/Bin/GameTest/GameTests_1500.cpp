@@ -430,7 +430,7 @@ GAME_TEST(Prs, Pr1694) {
     game.pressGuiButton("LoadMenu_Slot0"); // Should not crash.
     game.tick(1);
 
-    for (const SavegameSlot &slot : pSavegameList->slots)
+    for (const SavegameSlot &slot : pSavegameList->slots())
         EXPECT_FALSE(slot.isUsed); // All slots unused.
 }
 

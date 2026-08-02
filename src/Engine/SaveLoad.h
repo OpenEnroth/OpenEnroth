@@ -52,40 +52,56 @@ struct SavegameSlot {
 /** Runtime storage for map deltas from the currently loaded save. */
 extern std::unordered_map<std::string, Blob> pMapDeltas;
 
-struct SavegameList {
-    static void Initialize();
+class SavegameList {
+ public:
     SavegameList();
 
-    void Reset();
+    /** Rescans the saves folder. Headers & thumbnails are not loaded because that means reading every save file,
+     *  which the quickload path doesn't need. Menus call `loadHeaders` for that. */
+    void refresh();
+
+    /** Rescans the saves folder, loads headers & thumbnails for all saves, sorts the slots by display name &
+     *  rebuilds the menu slot mappings. */
+    void loadHeaders();
+
     void releaseThumbnails();
 
-    bool isSlotUsed(int slot) const {
-        return slot >= 0 && slot < std::ssize(slots) && slots[slot].isUsed;
+    void setSlotName(int slot, std::string_view name) {
+        _slots[slot].header.name = name;
     }
 
-    // Maps save menu positions to slot indices.
-    int saveMenuSlot(int position) const {
-        return saveMenuSlots[position];
+    [[nodiscard]] const std::vector<SavegameSlot> &slots() const {
+        return _slots;
     }
 
-    // Number of positions in the save menu.
-    int saveMenuSlotCount() const {
-        return static_cast<int>(saveMenuSlots.size());
+    [[nodiscard]] bool isSlotUsed(int slot) const {
+        return slot >= 0 && slot < std::ssize(_slots) && _slots[slot].isUsed;
     }
 
-    // Slots [0, numSavegameFiles) are the saves, slot numSavegameFiles is the always-present empty slot used by
-    // the save menu for creating a new save. This way reinitializing the list mid-menu can never shrink it below
-    // what menus index.
-    std::vector<SavegameSlot> slots;
+    // Slot indices shown in the load menu - all save files.
+    [[nodiscard]] const std::vector<int> &loadMenuSlots() const {
+        return _loadMenuSlots;
+    }
 
     // Slot indices shown in the save menu - the new save slot first, then the saves. Autosave & quicksaves are
     // not shown in the save menu.
-    std::vector<int> saveMenuSlots;
+    [[nodiscard]] const std::vector<int> &saveMenuSlots() const {
+        return _saveMenuSlots;
+    }
 
-    int numSavegameFiles = 0;
-    int selectedSlot = 0;
-    int saveListPosition = 0;
-    std::string lastLoadedSave{};
+ private:
+    // Number of save files, slots [0, saveFileCount()) are backed by them.
+    [[nodiscard]] int saveFileCount() const {
+        return std::ssize(_slots) - 1;
+    }
+
+ private:
+    // Slots for the save files, plus an always-present trailing empty slot used by the save menu for creating a
+    // new save. This way reinitializing the list mid-menu can never shrink it below what menus index.
+    std::vector<SavegameSlot> _slots;
+
+    std::vector<int> _loadMenuSlots;
+    std::vector<int> _saveMenuSlots;
 };
 
 void loadGame(int uSlot);
