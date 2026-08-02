@@ -33,6 +33,16 @@ UNIT_TEST(Ascii, noCaseEquals) {
     EXPECT_FALSE(ascii::noCaseEquals("@", "`")); // \x40 vs \x60
 }
 
+UNIT_TEST(Ascii, noCaseCompare) {
+    EXPECT_LT(ascii::noCaseCompare("A", "AB"), 0);
+    EXPECT_GT(ascii::noCaseCompare("AB", "A"), 0);
+    EXPECT_LT(ascii::noCaseCompare("a", "B"), 0);
+    EXPECT_GT(ascii::noCaseCompare("B", "a"), 0);
+    EXPECT_EQ(ascii::noCaseCompare("b", "B"), 0);
+    EXPECT_EQ(ascii::noCaseCompare("", ""), 0);
+    EXPECT_LT(ascii::noCaseCompare("@", "`"), 0);
+}
+
 UNIT_TEST(Ascii, noCaseLess) {
     EXPECT_TRUE(ascii::noCaseLess("A", "AB"));
     EXPECT_FALSE(ascii::noCaseLess("AB", "A"));
