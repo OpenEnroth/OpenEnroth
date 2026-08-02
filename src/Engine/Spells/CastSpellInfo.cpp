@@ -154,7 +154,7 @@ void CastSpellInfoHelpers::castSpell() {
         if (!spell_targeted_at &&
                 mouse->uPointingObjectID &&
                 mouse->uPointingObjectID.type() == OBJECT_Actor &&
-                pActors[mouse->uPointingObjectID.id()].CanAct()) {
+                pActors[mouse->uPointingObjectID.id()].CanBeDamaged()) {
             spell_targeted_at = mouse->uPointingObjectID;
         }
 

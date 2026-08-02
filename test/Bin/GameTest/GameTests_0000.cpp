@@ -25,6 +25,8 @@
 
 #include "Utility/ScopeGuard.h"
 
+#include "GameTestCommon.h"
+
 
 // 100
 
@@ -616,6 +618,181 @@ GAME_TEST(Issues, Issue414) {
 
     EXPECT_GT(manaSpentOnFailure, 0); // Mana was actually spent on failure.
     EXPECT_EQ(manaSpentOnFailure, manaSpentOnSuccess);
+}
+
+GAME_TEST(Issues, Issue415a) {
+    // Paralysis prevents monsters from receiving damage. Check armageddon damage & knockback.
+    // Also check that stoned monsters stay unaffected.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Spawn a paralyzed titan & a stoned one.
+    auto hpTape = actorTapes.hps({0, 1});
+    auto paralyzedTape = actorTapes.hasBuff(0, ACTOR_BUFF_PARALYZED);
+    auto stonedTape = actorTapes.hasBuff(1, ACTOR_BUFF_STONED);
+    auto stateTape = actorTapes.aiStates({0, 1});
+    Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
+    Actor *paralyzedTitan = game.spawnMonster(pParty->pos + Vec3f(0, 1000, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    paralyzedTitan->buffs[ACTOR_BUFF_PARALYZED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+    EXPECT_FALSE(paralyzedTitan->CanAct()); // Paralyzed monsters can't act...
+    EXPECT_TRUE(paralyzedTitan->CanBeDamaged()); // ...but can be damaged.
+    Actor *stonedTitan = game.spawnMonster(pParty->pos + Vec3f(0, 1200, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    stonedTitan->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+    EXPECT_FALSE(stonedTitan->CanAct()); // Stoned monsters can't act...
+    EXPECT_FALSE(stonedTitan->CanBeDamaged()); // ...and are invulnerable statues.
+
+    // Armageddon deals damage when its 256-tick timer runs out, wait it out.
+    game.castSpell(1, SPELL_DARK_ARMAGEDDON);
+    game.tick(30);
+    test.stopTaping();
+
+    EXPECT_EQ(hpTape.slice(0).delta(), -60); // Armageddon damage at GM is 60.
+    EXPECT_EQ(hpTape.slice(1).delta(), 0); // The stoned titan is unfazed.
+    EXPECT_CONTAINS(stateTape.slice(0), AIState::Stunned); // Armageddon knockback should also affect paralyzed monsters.
+    EXPECT_MISSES(stateTape.slice(1), AIState::Stunned); // But not the stoned ones.
+    EXPECT_EQ(paralyzedTape, tape(true)); // Stayed paralyzed the whole time.
+    EXPECT_EQ(stonedTape, tape(true)); // Stayed stoned the whole time.
+}
+
+GAME_TEST(Issues, Issue415b) {
+    // Paralysis prevents monsters from receiving damage from AoE spells.
+    // Also check that stoned monsters stay unaffected.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Titan #0 is the fireball's auto-picked target, paralyzed titan #1 behind it and stoned titan #2 to the side
+    // only get the AoE splash.
+    auto hpTape = actorTapes.hps({0, 1, 2});
+    Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
+    game.spawnMonster(pParty->pos + Vec3f(0, 800, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    Actor *paralyzed = game.spawnMonster(pParty->pos + Vec3f(0, 1100, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    paralyzed->buffs[ACTOR_BUFF_PARALYZED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+    Actor *stoned = game.spawnMonster(pParty->pos + Vec3f(0, 900, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    stoned->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+
+    game.castQuickSpell(1, SPELL_FIRE_FIREBALL);
+    game.tick(30);
+    test.stopTaping();
+
+    EXPECT_LT(hpTape.slice(0).delta(), 0); // Direct hit.
+    EXPECT_LT(hpTape.slice(1).delta(), 0); // Splash damaged the paralyzed titan.
+    EXPECT_EQ(hpTape.slice(2).delta(), 0); // The stoned titan is unfazed.
+}
+
+GAME_TEST(Issues, Issue415c) {
+    // Paralysis prevents monsters from receiving damage for shrinking ray AoE damage.
+    // Also check that stoned monsters stay unaffected.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Same layout as in Issue415b - shrinking ray hits titan #0, paralyzed titan #1 and stoned titan #2 are in AoE range.
+    auto shrinkTape = actorTapes.haveBuffs({0, 1, 2}, ACTOR_BUFF_SHRINK);
+    Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
+    game.spawnMonster(pParty->pos + Vec3f(0, 800, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    Actor *paralyzed = game.spawnMonster(pParty->pos + Vec3f(0, 1000, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    paralyzed->buffs[ACTOR_BUFF_PARALYZED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+    Actor *stoned = game.spawnMonster(pParty->pos + Vec3f(0, 900, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    stoned->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+
+    game.castQuickSpell(1, SPELL_DARK_SHRINKING_RAY);
+    game.tick(30);
+    test.stopTaping();
+
+    EXPECT_CONTAINS(shrinkTape.slice(0), true); // Direct hit shrunk titan #0.
+    EXPECT_CONTAINS(shrinkTape.slice(1), true); // AoE shrunk the paralyzed titan.
+    EXPECT_MISSES(shrinkTape.slice(2), true); // The stoned titan is unfazed.
+}
+
+GAME_TEST(Issues, Issue415d) {
+    // Paralyzed monsters couldn't be targeted by melee attacks. Also check stoned monsters.
+    for (ActorBuff buff : {ACTOR_BUFF_PARALYZED, ACTOR_BUFF_STONED}) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
+
+        Character &char0 = pParty->pCharacters[0];
+        char0.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_CHAMPION_SWORD));
+        char0.setSkillValue(SKILL_SWORD, CombinedSkillValue(10, MASTERY_EXPERT));
+
+        // Titan #0 to the left of the party is the closest-monster fallback bait, buffed titan #1 stands to the
+        // right, slightly further away but still within melee reach.
+        auto hpTape = actorTapes.hps({0, 1});
+        game.spawnMonster(pParty->pos + Vec3f(-200, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+        Actor *buffed = game.spawnMonster(pParty->pos + Vec3f(220, 380, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+        buffed->buffs[buff].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
+        game.pointMouseAtActor(1);
+
+        // Swing at the titan under the cursor until one of the titans is hit.
+        for (int i = 0; i < 30 && pActors[0].hp == pActors[0].monsterInfo.hp && pActors[1].hp == pActors[1].monsterInfo.hp; i++) {
+            game.pressAndReleaseKey(PlatformKey::KEY_A);
+            game.tick(5);
+        }
+        test.stopTaping();
+
+        if (buff == ACTOR_BUFF_PARALYZED) {
+            EXPECT_LT(hpTape.slice(1).delta(), 0); // Paralyzed titan under the cursor was hit. Before the fix melee went for titan #0.
+            EXPECT_EQ(hpTape.slice(0).delta(), 0); // The closest titan wasn't touched.
+        } else {
+            EXPECT_EQ(hpTape.slice(1).delta(), 0); // Stoned titan under the cursor is not a valid target...
+            EXPECT_LT(hpTape.slice(0).delta(), 0); // ...so melee went for the closest titan.
+        }
+    }
+}
+
+GAME_TEST(Issues, Issue415e) {
+    // Paralyzed monsters couldn't be targeted by targeted spells. Also check stoned monsters.
+    for (ActorBuff buff : {ACTOR_BUFF_PARALYZED, ACTOR_BUFF_STONED}) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+        engine->config->debug.NoActors.setValue(true);
+        engine->config->debug.AllMagic.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
+
+        // Same layout as in Issue415d - the titans are on the opposite sides of the view, so the bolt's flight path
+        // to one always clears the other.
+        auto hpTape = actorTapes.hps({0, 1});
+        game.spawnMonster(pParty->pos + Vec3f(-200, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+        Actor *buffed = game.spawnMonster(pParty->pos + Vec3f(220, 380, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+        buffed->buffs[buff].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
+        game.pointMouseAtActor(1);
+
+        game.castQuickSpell(1, SPELL_WATER_ICE_BOLT);
+        game.tick(30);
+        test.stopTaping();
+
+        if (buff == ACTOR_BUFF_PARALYZED) {
+            EXPECT_LT(hpTape.slice(1).delta(), 0); // Ice bolt hit the paralyzed titan under the cursor. Before the fix it flew at titan #0.
+            EXPECT_EQ(hpTape.slice(0).delta(), 0); // The closest titan wasn't hit.
+        } else {
+            EXPECT_EQ(hpTape.slice(1).delta(), 0); // Stoned titan under the cursor is not a valid target...
+            EXPECT_LT(hpTape.slice(0).delta(), 0); // ...so the bolt flew at the closest titan.
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue416) {

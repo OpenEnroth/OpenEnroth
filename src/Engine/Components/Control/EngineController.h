@@ -10,6 +10,7 @@
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
 
+#include "Utility/Flags.h"
 #include "Utility/Memory/Blob.h"
 
 #include "EngineControlStateHandle.h"
@@ -17,6 +18,18 @@
 class GUIButton;
 class PlatformEvent;
 class Actor;
+
+enum class SpawnFlag {
+    SPAWN_STATIONARY = 0x1, // Set moveSpeed to 1 so that the monster stays in place.
+    SPAWN_NO_RESISTANCES = 0x2, // Zero out all resistances. Note that you might also want to set `SPAWN_LEVEL_1`.
+    SPAWN_LEVEL_1 = 0x4, // Set level to 1. Level is used in to-hit, resistance and special attack rolls.
+
+    // A predictable stationary target for damage-related tests.
+    SPAWN_DUMMY = SPAWN_STATIONARY | SPAWN_NO_RESISTANCES | SPAWN_LEVEL_1,
+};
+using enum SpawnFlag;
+MM_DECLARE_FLAGS(SpawnFlags, SpawnFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(SpawnFlags)
 
 /**
  * This is the interface to be used from a control routine to control the game thread.
@@ -114,13 +127,31 @@ class EngineController {
     /**
      * @param position                  Position to spawn a monster at.
      * @param id                        Id of the monster to spawn.
+     * @param flags                     Post-spawn tweaks to apply.
      * @return                          Spawned monster, so you can tweak it after spawning.
      */
-    Actor *spawnMonster(Vec3f position, MonsterId id);
+    Actor *spawnMonster(Vec3f position, MonsterId id, SpawnFlags flags = 0);
 
     void teleportTo(MapId map, Vec3f position, int viewYaw);
 
     void castSpell(int characterIndex, SpellId spell);
+
+    /**
+     * Casts a spell through the quick spell mechanism. Unlike `castSpell`, quick spells don't open the targeting
+     * interface, and just auto-target the closest actor.
+     *
+     * @param characterIndex            1-based index of the casting character.
+     * @param spell                     Spell to cast.
+     */
+    void castQuickSpell(int characterIndex, SpellId spell);
+
+    /**
+     * Finds a screen position at which the mouse points at the provided actor & moves the mouse there.
+     *
+     * @param actorId                   Id of the actor to point at.
+     * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
+     */
+    void pointMouseAtActor(int actorId);
 
  private:
     void goToGameOrMainMenu();

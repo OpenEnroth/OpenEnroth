@@ -6338,7 +6338,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     Pid target_pid = mouse->uPointingObjectID;
     ObjectType target_type = target_pid.type();
     int target_id = target_pid.id();
-    if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
+    if (target_type != OBJECT_Actor || !pActors[target_id].CanBeDamaged()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);
         target_type = target_pid.type();
         target_id = target_pid.id();
@@ -6389,6 +6389,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
             _42FA66_do_explosive_impact(actor->pos + Vec3f(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
     } else if (bow) {
         shooting_bow = true;
+        // TODO(captainurist): target_pid is ignored here - the arrow re-resolves its target in castSpell() with a
+        //                     different fallback, so it can fly at a different actor than the one checked above.
         pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0, 0);
     } else {
         melee_attack = true;
