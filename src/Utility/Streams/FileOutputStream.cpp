@@ -76,8 +76,7 @@ void FileOutputStream::_close(Buffer *buffer, bool canThrow) {
 
     std::string path = displayPath(); // `base_type::_close` clears it.
 
-    // Tearing down has to happen even if the write throws, or the destructor re-enters and both rewrites the buffer
-    // and closes a second time.
+    // Tear down even if the write throws - this stream has to end up closed either way.
     std::exception_ptr writeError;
     try {
         writeBuffer(buffer, canThrow);

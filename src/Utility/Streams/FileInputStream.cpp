@@ -107,7 +107,7 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
 void FileInputStream::_close(bool canThrow) {
     assert(isOpen());
 
-    // Tear down before throwing, or `isOpen()` stays true with a closed `FILE*` and the destructor re-enters.
+    // Tear down first, throw last - this stream has to end up closed either way.
     std::string path = displayPath(); // `base_type::_close` clears it.
     int error = fclose(_file) != 0 ? errno : 0;
     _file = nullptr;
