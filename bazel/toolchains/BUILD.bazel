@@ -1,0 +1,18 @@
+load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "native_tool_toolchain")
+
+# ffmpeg's out-of-tree stub Makefile includes the source Makefile via an
+# msys-style /d/... path, which only an MSYS make can resolve. Both
+# rules_foreign_cc's bootstrapped make and the runner's chocolatey make are
+# native Win32 builds, so point at the MSYS2 make preinstalled on GHA runners.
+native_tool_toolchain(
+    name = "msys2_make",
+    path = "C:/msys64/usr/bin/make.exe",
+)
+
+toolchain(
+    name = "msys2_make_toolchain",
+    exec_compatible_with = ["@platforms//os:windows"],
+    toolchain = ":msys2_make",
+    toolchain_type = "@rules_foreign_cc//toolchains:make_toolchain",
+    visibility = ["//visibility:public"],
+)
