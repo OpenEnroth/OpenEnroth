@@ -84,11 +84,6 @@ void Game_OpenLoadGameDialog() {
     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Load>(true);
 }
 
-static GUIWindow_SaveLoad *saveLoadMenu() {
-    assert(current_screen_type == SCREEN_SAVEGAME || current_screen_type == SCREEN_LOADGAME);
-    return static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
-}
-
 Menu::Menu() {
     mouse = EngineIocContainer::ResolveMouse();
 }

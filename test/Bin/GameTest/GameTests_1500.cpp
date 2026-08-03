@@ -431,8 +431,7 @@ GAME_TEST(Prs, Pr1694) {
     game.pressGuiButton("LoadMenu_Slot0"); // Should not crash.
     game.tick(1);
 
-    GUIWindow_SaveLoad *loadMenu = static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
-    EXPECT_TRUE(loadMenu->slots().empty()); // No saves listed.
+    EXPECT_TRUE(saveLoadMenu()->slots().empty()); // No saves listed.
 }
 
 // 1700

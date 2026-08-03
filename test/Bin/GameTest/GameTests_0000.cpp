@@ -57,8 +57,7 @@ GAME_TEST(Issues, Issue163) {
 
     game.pressGuiButton("MainMenu_LoadGame"); // Shouldn't crash.
     game.tick(10);
-    GUIWindow_SaveLoad *loadMenu = static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
-    EXPECT_TRUE(loadMenu->slots().empty()); // No saves listed.
+    EXPECT_TRUE(saveLoadMenu()->slots().empty()); // No saves listed.
 
     game.pressGuiButton("LoadMenu_Load");
     game.tick(10);
