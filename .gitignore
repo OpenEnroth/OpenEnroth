@@ -61,3 +61,6 @@ build-*
 
 # Bazel output symlinks
 bazel-*
+
+# Bzlmod lockfile - not committed, the registry is treated as stable.
+MODULE.bazel.lock
