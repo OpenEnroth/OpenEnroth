@@ -6,7 +6,7 @@ load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 # The bazel-generated crosstool passes the NDK's raw clang without a --target
 # triple, so CMake's compile/link probes produce host objects. Supply the triple
-# per ABI; both libraries are static-only, so the link probe is skipped too.
+# per ABI in compile & link flags - NDK clang finds its sysroot from the triple.
 config_setting(
     name = "_android_arm64",
     constraint_values = ["@platforms//os:android", "@platforms//cpu:arm64"],
@@ -40,19 +40,19 @@ cmake(
         "-DCMAKE_C_FLAGS=--target=aarch64-linux-android24",
         "-DCMAKE_CXX_FLAGS=--target=aarch64-linux-android24",
         "-DCMAKE_ASM_FLAGS=--target=aarch64-linux-android24",
-        "-DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY",
+        "-DCMAKE_EXE_LINKER_FLAGS=--target=aarch64-linux-android24",
     ],
         ":_android_armv7": [
         "-DCMAKE_C_FLAGS=--target=armv7a-linux-androideabi24",
         "-DCMAKE_CXX_FLAGS=--target=armv7a-linux-androideabi24",
         "-DCMAKE_ASM_FLAGS=--target=armv7a-linux-androideabi24",
-        "-DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY",
+        "-DCMAKE_EXE_LINKER_FLAGS=--target=armv7a-linux-androideabi24",
     ],
         ":_android_x86_64": [
         "-DCMAKE_C_FLAGS=--target=x86_64-linux-android24",
         "-DCMAKE_CXX_FLAGS=--target=x86_64-linux-android24",
         "-DCMAKE_ASM_FLAGS=--target=x86_64-linux-android24",
-        "-DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY",
+        "-DCMAKE_EXE_LINKER_FLAGS=--target=x86_64-linux-android24",
     ],
         "//conditions:default": [],
     }),
