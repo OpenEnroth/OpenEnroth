@@ -59,8 +59,8 @@ void InputStream::open(Buffer buffer, size_t size, std::string_view displayPath)
 size_t InputStream::_underflow(void *, size_t, Buffer *buffer) {
     assert(buffer->remaining() == 0);
 
-    // The buffer we hand back has to have `used() == 0` - `readUntilSlow` adds the old `used()` to `_bufferBase`
-    // before calling us, and doesn't recompute it afterwards.
+    // `position()` is `_bufferBase + used()`, and `readUntilSlow` has just folded the old `used()` into
+    // `_bufferBase`. So the buffer we hand back has to have `used() == 0`, or those bytes are counted twice.
     buffer->commit();
     return 0;
 }
