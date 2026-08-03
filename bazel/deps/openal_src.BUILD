@@ -7,6 +7,13 @@ load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 # The bazel-generated crosstool passes the NDK's raw clang without a --target
 # triple, so CMake's compile/link probes produce host objects. Supply the triple
 # per ABI in compile & link flags - NDK clang finds its sysroot from the triple.
+# linux_x86: the blanked CMAKE_*_FLAGS below also strip bazel's -m32; restore it.
+config_setting(
+    name = "_linux_x86",
+    constraint_values = ["@platforms//os:linux", "@platforms//cpu:x86_64"],
+    define_values = {"oe_build_arch": "x86_32"},
+)
+
 config_setting(
     name = "_android_arm64",
     constraint_values = ["@platforms//os:android", "@platforms//cpu:arm64"],
@@ -124,6 +131,11 @@ cmake(
         "-DCMAKE_ASM_FLAGS=--target=x86_64-linux-android24",
         "-DCMAKE_EXE_LINKER_FLAGS=--target=x86_64-linux-android24",
     ],
+        ":_linux_x86": [
+            "-DCMAKE_C_FLAGS=-m32",
+            "-DCMAKE_CXX_FLAGS=-m32",
+            "-DCMAKE_EXE_LINKER_FLAGS=-m32",
+        ],
         "//conditions:default": [],
     }),
     cache_entries = {
