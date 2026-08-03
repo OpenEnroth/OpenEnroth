@@ -19,9 +19,11 @@ def _luajit_cmake_repository_impl(rctx):
         stripPrefix = rctx.attr.luajit_cmake_strip_prefix,
         output = "luajit-cmake",
     )
+    # LUAJIT_DIR must be a forced cache variable: luajit-cmake declares it via
+    # option(), which under policy CMP0077 OLD would overwrite a normal variable.
     rctx.file("CMakeLists.txt", """cmake_minimum_required(VERSION 3.16)
 project(luajit_wrapper C)
-set(LUAJIT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/luajit)
+set(LUAJIT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/luajit CACHE PATH "" FORCE)
 add_subdirectory(luajit-cmake)
 """)
     rctx.file("BUILD.bazel", rctx.read(rctx.attr.build_file))

@@ -3,6 +3,8 @@
 # ─── Bzlmod ──────────────────────────────────────────────────────────────────
 
 common --enable_bzlmod
+# No committed lockfile - resolution happens against the live registry.
+common --lockfile_mode=off
 
 # ─── C++23 ───────────────────────────────────────────────────────────────────
 
