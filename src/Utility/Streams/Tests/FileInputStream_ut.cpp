@@ -50,8 +50,11 @@ UNIT_TEST(FileInputStream, ReadUntil) {
 
     FileInputStream in(tmpfile);
     EXPECT_EQ(in.readUntil('\0'), "hello");
+    EXPECT_EQ(in.position(), 6u);
     EXPECT_EQ(in.readUntil('\0'), "world");
+    EXPECT_EQ(in.position(), 12u);
     EXPECT_EQ(in.readAll(), "!");
+    EXPECT_EQ(in.position(), 13u);
     in.close();
 }
 
@@ -331,7 +334,9 @@ UNIT_TEST(FileInputStream, ReadUntilMultiRefill) {
 
     FileInputStream in(tmpfile, 64);
     EXPECT_EQ(in.readUntil('\0'), first);
+    EXPECT_EQ(in.position(), first.size() + 1);
     EXPECT_EQ(in.readAll(), second);
+    EXPECT_EQ(in.position(), in.size());
     in.close();
 }
 

@@ -94,6 +94,15 @@ size_t InputStream::underflow(void *data, size_t size) {
     return head + tail;
 }
 
+void InputStream::refill() {
+    // Refilling consumes nothing, so `position()` has to come out unchanged whatever buffer we get back, and whether
+    // or not the refill throws. Note that this lives in its own function so that the guard fires right after the
+    // refill, rather than at the end of whatever block the call happens to sit in.
+    size_t pos = position();
+    MM_AT_SCOPE_EXIT(_bufferBase = pos - _buffer.used());
+    _underflow(nullptr, 0, &_buffer);
+}
+
 size_t InputStream::readUntilSlow(char delimiter, std::string *dst) {
     assert(dst->empty());
 
@@ -105,12 +114,7 @@ size_t InputStream::readUntilSlow(char delimiter, std::string *dst) {
 
     // Refill from source and search.
     while (true) {
-        // Refilling consumes nothing, so `position()` has to come out unchanged whatever buffer we get back, and
-        // whether or not the refill throws.
-        size_t pos = position();
-        MM_AT_SCOPE_EXIT(_bufferBase = pos - _buffer.used());
-        _underflow(nullptr, 0, &_buffer);
-
+        refill();
         if (_buffer.remaining() == 0)
             break; // No more data.
 

@@ -234,6 +234,7 @@ class InputStream {
 
  private:
     size_t underflow(void *data, size_t size);
+    void refill();
     size_t readUntilSlow(char delimiter, std::string *dst);
 
  private:
