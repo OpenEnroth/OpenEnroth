@@ -39,8 +39,6 @@ class MemoryScratchpad {
         size_t size = std::max(minSize, std::min(_chunks.empty() ? 1024 : _chunks.back().size * 2, _maxChunkSize));
 
         Chunk &chunk = _chunks.emplace_back();
-        // TODO(captainurist): unchecked `malloc` - on failure this hands out a span over a null pointer that the
-        //                     caller then memcpy's into. Should throw `std::bad_alloc`.
         chunk.data.reset(static_cast<char *>(malloc(size)));
         chunk.size = size;
         _capacity += size;
@@ -89,7 +87,6 @@ class MemoryScratchpad {
         } else if (_chunks.size() == 1) {
             result = Blob::fromMalloc(std::move(_chunks.front().data), size);
         } else {
-            // TODO(captainurist): unchecked `malloc`, see the comment in `next()`.
             std::unique_ptr<char, FreeDeleter> data(static_cast<char *>(malloc(size)));
             materialize(data.get(), size);
             result = Blob::fromMalloc(std::move(data), size);

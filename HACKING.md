@@ -117,6 +117,7 @@ Error handling:
 * Use `assert`s to check for coding errors and conditions that must never be false, no matter how the program is run.
 * Use exceptions for non-recoverable errors. It's usually OK to just throw an instance of `class Exception`.
 * Use `Logger` for warnings and recoverable errors.
+* We assume that memory allocation never fails. Don't check `malloc` results, and don't try to handle `std::bad_alloc` – crashing is the accepted outcome.
 * We don't yet have a mechanism for displaying errors to the user through the UI. This document will be updated once this is implemented.
 
 There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.

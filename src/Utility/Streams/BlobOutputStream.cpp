@@ -38,7 +38,6 @@ void BlobOutputStream::_flush(Buffer *buffer) {
         return;
     }
 
-    // TODO(captainurist): unchecked `malloc`, see the comment in `MemoryScratchpad::next`.
     std::unique_ptr<char, FreeDeleter> result(static_cast<char *>(malloc(bytesTotal)));
     _scratchpad.materialize(result.get(), bytesTotal);
     *_target = Blob::fromMalloc(std::move(result), bytesTotal).withDisplayPath(displayPath());
