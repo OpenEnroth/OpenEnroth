@@ -11,13 +11,11 @@ UNIT_TEST(BlobInputStream, CloseReleasesBlob) {
     std::string data = "hello world";
 
     // `Blob::custom` lets us watch the blob's lifetime - for a file-backed blob that state is the mmap.
-    std::weak_ptr<void> watch;
+    std::shared_ptr<void> state = std::make_shared<int>(0);
+    std::weak_ptr<void> watch = state;
+
     BlobInputStream stream;
-    {
-        std::shared_ptr<void> state = std::make_shared<int>(0);
-        watch = state;
-        stream.open(Blob::custom(data.data(), data.size(), std::move(state)));
-    }
+    stream.open(Blob::custom(data.data(), data.size(), std::move(state)));
 
     EXPECT_FALSE(watch.expired()); // Held while the stream is open.
     EXPECT_EQ(stream.readAll(), data);
