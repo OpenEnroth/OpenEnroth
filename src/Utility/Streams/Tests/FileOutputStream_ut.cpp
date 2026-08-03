@@ -98,8 +98,7 @@ UNIT_TEST(FileOutputStream, ReopenWithoutClose) {
     FileOutputStream out(tmpfile1, 64);
     out.write("first");
 
-    // Reopening without closing must flush and close the previous file, not silently drop it - and must not reuse
-    // the smaller `_buf` for the larger buffer size.
+    // Must flush the previous file rather than drop it, and must not reuse the smaller `_buf`.
     out.open(tmpfile2, 4096);
     out.write(data);
     out.close();

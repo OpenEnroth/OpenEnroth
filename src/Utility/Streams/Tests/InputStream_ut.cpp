@@ -57,8 +57,8 @@ class UnsizedInputStream : public InputStream {
 };
 
 /**
- * An input stream that lies about its size - it reports `reportedSize` but actually holds `size` bytes. Models both
- * a file that changed after its size was sampled, and a procfs file whose `st_size` is 0 but which has contents.
+ * An input stream that lies about its size, modelling a file that changed after its size was sampled, and a procfs
+ * file whose `st_size` is 0 but which has contents.
  */
 class LyingInputStream : public InputStream {
  public:
@@ -85,21 +85,20 @@ class LyingInputStream : public InputStream {
 };
 
 UNIT_TEST(InputStream, PositionAfterReadUntilAtEnd) {
-    // The delimiter is never found, so `readUntilSlow` runs out of data and hits the default `_underflow`. It used to
-    // leave `position()` past `size()`, which then made the `size() - position()` checks in the binary deserializer
-    // underflow and reject perfectly good data.
+    // The delimiter is never found, so this runs out of data and hits the default `_underflow`. `position()` must
+    // not overshoot - the binary deserializer's `size() - position()` checks depend on it.
     MemoryInputStream in("hello", 5);
     EXPECT_EQ(in.readUntil('\0'), "hello");
     EXPECT_EQ(in.position(), 5u);
     EXPECT_EQ(in.position(), in.size());
 
-    // And it used to accumulate, so check that repeated calls at end of stream don't drift either.
+    // Repeated calls at end of stream must not drift either.
     EXPECT_EQ(in.readUntil('\0'), "");
     EXPECT_EQ(in.position(), 5u);
 }
 
 UNIT_TEST(InputStream, ReadAllShrinksOnShortRead) {
-    // Reports 100 bytes but only has 10 - `readAll` used to return a 100-byte string with an uninitialized tail.
+    // Reports 100 bytes but has 10 - the result has to be shrunk to what was actually read.
     std::string data(10, 'a');
     LyingInputStream in(data.data(), data.size(), 100);
 
@@ -110,8 +109,7 @@ UNIT_TEST(InputStream, ReadAllShrinksOnShortRead) {
 }
 
 UNIT_TEST(InputStream, ReadAllReadsPastReportedSize) {
-    // Reports 10 bytes but has 100 - models a file that grew after its size was sampled, and a procfs file that
-    // reports `st_size == 0`. `readAll` used to stop at the reported size and silently drop the rest.
+    // Reports 10 bytes but has 100 - the reported size is only a hint, so everything must still be read.
     std::string data(100, 'a');
     LyingInputStream in(data.data(), data.size(), 10);
     EXPECT_EQ(in.readAll(), data);
@@ -121,8 +119,8 @@ UNIT_TEST(InputStream, ReadAllReadsPastReportedSize) {
 }
 
 UNIT_TEST(InputStream, ReadAllPastReportedSize) {
-    // Reading past the reported size leaves `position() > size()`. `readAll` used to underflow on the subtraction and
-    // throw `std::length_error`, which `catch (const Exception &)` doesn't catch.
+    // Reading past the reported size leaves `position() > size()`, which must not underflow into a nonsense
+    // allocation - that throws `std::length_error`, which `catch (const Exception &)` doesn't catch.
     std::string data(100, 'a');
     LyingInputStream in(data.data(), data.size(), 5);
 

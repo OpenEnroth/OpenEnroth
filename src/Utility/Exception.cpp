@@ -11,9 +11,8 @@ void Exception::throwFromErrno(std::string_view arg) {
 void Exception::throwFromErrno(int error, std::string_view arg) {
     assert(error != 0);
 
-    // Note that `errno` values belong to `std::generic_category`. `std::system_category` is the native OS error
-    // category, which is the same thing on POSIX, but means Win32 error codes on Windows - so using it here would
-    // produce a message for a completely unrelated error there.
+    // `errno` belongs to `generic_category`. `system_category` is the same thing on POSIX, but means Win32 codes on
+    // Windows, where it would describe a completely unrelated error.
     throw Exception("{}: {}", arg, std::generic_category().message(error));
 }
 

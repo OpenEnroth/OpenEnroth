@@ -196,13 +196,13 @@ UNIT_TEST(FileInputStream, ReadAllAfterFileGrows) {
 
     FileInputStream in(tmpfile);
 
-    // Append to the file behind the stream's back - its size was already sampled at open time.
+    // Append behind the stream's back - its size was already sampled.
     FileOutputStream more(tmpfile);
     more.write(first);
     more.write(second);
     more.close();
 
-    EXPECT_EQ(in.readAll(), first + second); // Used to stop at the sampled size and return just the first 10 bytes.
+    EXPECT_EQ(in.readAll(), first + second); // The size sampled at open is only a hint.
 }
 
 UNIT_TEST(FileInputStream, ReopenWithoutClose) {
@@ -221,7 +221,7 @@ UNIT_TEST(FileInputStream, ReopenWithoutClose) {
     out2.write(data);
     out2.close();
 
-    // Reopening with a larger buffer used to keep the smaller `_buf` around, which is a heap buffer overflow.
+    // Reopening with a larger buffer size has to reallocate the buffer.
     FileInputStream in(tmpfile1, 64);
     EXPECT_EQ(in.readAll(), "first");
 

@@ -23,18 +23,15 @@ void FileOutputStream::open(std::string_view path, size_t bufferSize) {
     assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
     assert(bufferSize > 0);
 
-    // Note that this can throw - the data buffered for the previously open file might fail to flush. Also note that
-    // reopening without closing first used to reuse `_buf` while `_bufSize` was already updated, which is a heap
-    // buffer overflow if the new buffer is larger.
     if (isOpen())
-        close();
+        close(); // Drops `_buf`, which is sized for the current `_bufSize`. Can throw if the flush fails.
 
     std::string absPath = absolute(std::filesystem::path(path)).generic_string();
     FILE *file = fopen(absPath.c_str(), "wb");
     if (!file)
         Exception::throwFromErrno(absPath);
 
-    // The `FILE*` is ours from this point on, so make sure it's not leaked if anything below throws.
+    // Don't leak the `FILE*` if anything below throws.
     bool succeeded = false;
     MM_AT_SCOPE_EXIT(if (!succeeded) fclose(file));
 
@@ -63,7 +60,7 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
     } else {
         // Large write: write out current buffer, then write data directly.
         writeBuffer(buffer, true);
-        if (fwrite(data, 1, size, _file) != size) // Byte-wise, so that a partial write isn't reported as a total loss.
+        if (fwrite(data, 1, size, _file) != size) // Byte-wise, see `writeBuffer`.
             Exception::throwFromErrno(displayPath());
         if (_buf)
             buffer->reset(_buf.get(), _buf.get(), _buf.get() + _bufSize);
@@ -71,7 +68,7 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
 }
 
 void FileOutputStream::_flush(Buffer *buffer) {
-    writeBuffer(buffer, true); // Drops what went out of the buffer, so `used()` is 0 on success.
+    writeBuffer(buffer, true); // Drops what went out, so `used()` is 0 on success.
     if (fflush(_file) != 0)
         Exception::throwFromErrno(displayPath());
 }
@@ -83,9 +80,8 @@ void FileOutputStream::_close(Buffer *buffer, bool canThrow) {
     int closeError = 0;
 
     {
-        // Note that all the teardown below happens on every path, including when the write throws. Otherwise
-        // `isOpen()` would stay true with an already closed `FILE*`, and the destructor would re-enter and both
-        // rewrite the buffer and close it a second time.
+        // Runs on every path, including when the write below throws - otherwise the destructor re-enters and both
+        // rewrites the buffer and closes a second time.
         MM_AT_SCOPE_EXIT(
             closeError = fclose(_file) != 0 ? errno : 0;
             _file = nullptr;
@@ -105,9 +101,8 @@ void FileOutputStream::writeBuffer(Buffer *buffer, bool canThrow) {
     if (bytesBuffered == 0)
         return;
 
-    // Note the byte-wise form of `fwrite` - the `fwrite(ptr, size, 1, f)` form returns 0 on a partial write, losing
-    // the count of what actually went out. We need that count, because the bytes that did make it to disk have to be
-    // dropped from the buffer - otherwise `_close` would write them out a second time, duplicating them in the file.
+    // Byte-wise, because the `fwrite(ptr, size, 1, f)` form returns 0 on a partial write and loses the count. We
+    // need it - bytes that did make it out must be dropped, or `_close` writes them again and duplicates them.
     size_t bytesWritten = fwrite(buffer->start(), 1, bytesBuffered, _file);
     buffer->reset(buffer->start() + bytesWritten, buffer->pos(), buffer->end());
 

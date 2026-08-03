@@ -10,7 +10,7 @@
 UNIT_TEST(BlobInputStream, CloseReleasesBlob) {
     std::string data = "hello world";
 
-    // `Blob::custom` lets us watch the blob's lifetime - for a file-backed blob the state is the mmap.
+    // `Blob::custom` lets us watch the blob's lifetime - for a file-backed blob that state is the mmap.
     std::weak_ptr<void> watch;
     BlobInputStream stream;
     {
@@ -24,7 +24,7 @@ UNIT_TEST(BlobInputStream, CloseReleasesBlob) {
     EXPECT_FALSE(watch.expired());
 
     stream.close();
-    EXPECT_TRUE(watch.expired()); // And released on close, rather than lingering until the stream is destroyed.
+    EXPECT_TRUE(watch.expired()); // Released on close, not at destruction.
 }
 
 UNIT_TEST(BlobInputStream, MixedBlobAndNonBlobReads) {

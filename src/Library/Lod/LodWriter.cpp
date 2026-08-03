@@ -23,9 +23,8 @@ LodWriter::LodWriter(OutputStream *stream, LodInfo info) {
 }
 
 LodWriter::~LodWriter() {
-    // TODO(captainurist): `close()` writes the accumulated data out, and writing throws on error. This is a
-    //                     destructor, so it's `noexcept` - meaning a failed write here terminates the process
-    //                     instead of reporting an error. Needs a non-throwing teardown path.
+    // TODO(captainurist): `close()` writes, and writing throws - so a failed write here terminates the process.
+    //                     Needs a non-throwing teardown path.
     close();
 }
 

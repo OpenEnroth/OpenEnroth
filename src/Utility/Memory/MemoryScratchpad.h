@@ -39,8 +39,8 @@ class MemoryScratchpad {
         size_t size = std::max(minSize, std::min(_chunks.empty() ? 1024 : _chunks.back().size * 2, _maxChunkSize));
 
         Chunk &chunk = _chunks.emplace_back();
-        // TODO(captainurist): `malloc` can return null, and then we hand out a span over a null pointer that the
-        //                     caller immediately memcpy's into. Should throw `std::bad_alloc` instead.
+        // TODO(captainurist): unchecked `malloc` - on failure this hands out a span over a null pointer that the
+        //                     caller then memcpy's into. Should throw `std::bad_alloc`.
         chunk.data.reset(static_cast<char *>(malloc(size)));
         chunk.size = size;
         _capacity += size;

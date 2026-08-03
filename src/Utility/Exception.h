@@ -14,8 +14,7 @@ class Exception : public std::runtime_error {
     [[noreturn]] static void throwFromErrno(std::string_view arg);
 
     /**
-     * Same as the above, but for an `errno` value that was captured earlier. Needed when the failing call has to be
-     * followed by cleanup that would clobber `errno`.
+     * Same as the above, but for an `errno` captured earlier - needed when cleanup would clobber it.
      *
      * @param error                     `errno` value.
      * @param arg                       Context to prepend to the error message, usually a file path.

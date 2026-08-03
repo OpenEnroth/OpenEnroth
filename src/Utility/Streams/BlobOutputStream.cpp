@@ -17,8 +17,7 @@ BlobOutputStream::~BlobOutputStream() {
 
 void BlobOutputStream::open(Blob *target, std::string_view displayPath) {
     assert(target);
-    // TODO(captainurist): re-opening an already open stream silently discards everything written so far - the
-    //                     previous target is never assigned. Should close first, like the file streams do.
+    // TODO(captainurist): reopening discards everything written so far - should close first, like file streams do.
     _target = target;
     _scratchpad.reset();
     base_type::open({}, displayPath);

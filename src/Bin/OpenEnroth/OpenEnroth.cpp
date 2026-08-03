@@ -119,8 +119,8 @@ int runRetrace(const OpenEnrothOptions &options) {
             if (oldTraceJson != newTraceJson) {
                 if (!options.retrace.checkCanonical) {
                     oldTraceBlob = Blob(); // Close old trace file
-                    // TODO(captainurist): this is a temporary, so it's closed by its destructor, which cannot
-                    //                     throw - a failed write here is silently a no-op.
+                    // TODO(captainurist): a temporary, so it's closed by the non-throwing destructor path - write
+                    //                     errors are lost.
                     FileOutputStream(tracePath).write(recording.trace);
                 } else {
                     fmt::println(stderr, "Trace '{}' is not in canonical representation.", tracePath);
