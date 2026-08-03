@@ -28,11 +28,9 @@ FsmAction LoadSlotState::update() {
         engine->_messageQueue->popMessage(&message, &param1, &param2);
         switch (message) {
         case UIMSG_LoadGame: {
-            int slot = _uiLoadSaveSlot->selectedSlot();
-            if (!pSavegameList->isSlotUsed(slot)) {
+            if (!_uiLoadSaveSlot->hasSelectedSlot())
                 break;
-            }
-            engine->_pendingLoadSlot = slot;
+            engine->_pendingLoadFileName = _uiLoadSaveSlot->selectedSlot().fileName;
             SetCurrentMenuID(MENU_LoadingProcInMainMenu);
             return FsmAction::transition("slotConfirmed");
         }

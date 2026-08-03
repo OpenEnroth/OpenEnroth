@@ -1,27 +1,58 @@
 #pragma once
 
+#include <cassert>
+#include <string>
+#include <string_view>
 #include <vector>
 
+#include "Engine/SaveLoad.h"
+#include "Engine/Graphics/Image.h"
+
 #include "GUI/GUIWindow.h"
+
+struct SavegameSlot {
+    std::string fileName;
+    SaveGameHeader header;
+    GraphicsImagePtr thumbnail;
+};
 
 class GUIWindow_SaveLoad : public GUIWindow {
  public:
     GUIWindow_SaveLoad(WindowType type, Pointi position, Sizei dimensions);
-    virtual ~GUIWindow_SaveLoad();
 
-    [[nodiscard]] int selectedSlot() const {
-        return _selectedSlot;
+    /**
+     * @return                      Slots shown in this menu, in display order.
+     */
+    [[nodiscard]] const std::vector<SavegameSlot> &slots() const {
+        return _slots;
     }
 
-    void setSelectedSlot(int slot) {
-        _selectedSlot = slot;
+    /**
+     * @return                      Whether a slot is selected. False only for a load menu with no saves to show.
+     */
+    [[nodiscard]] bool hasSelectedSlot() const {
+        return _selectedSlot < std::ssize(_slots);
+    }
+
+    [[nodiscard]] const SavegameSlot &selectedSlot() const {
+        assert(hasSelectedSlot());
+        return _slots[_selectedSlot];
+    }
+
+    void setSelectedSlotName(std::string_view name) {
+        assert(hasSelectedSlot());
+        _slots[_selectedSlot].header.name = name;
     }
 
     [[nodiscard]] int scrollPosition() const {
         return _scrollPosition;
     }
 
-    /** Handles a click on one of the visible slot rows. First click selects the slot, second click acts on it. */
+    /**
+     * Handles a click on one of the visible slot rows. First click selects the slot, second click acts on it.
+     *
+     * @param slotIndex             Index of the clicked row in the visible part of the list, in [0, 7).
+     */
     virtual void slotClicked(int slotIndex) = 0;
 
     void scrollUp();
@@ -29,12 +60,10 @@ class GUIWindow_SaveLoad : public GUIWindow {
     void scrollWithMouse();
 
  protected:
-    /** @return Savegame slot indices shown in this menu, in display order. */
-    [[nodiscard]] virtual const std::vector<int> &menuSlots() const = 0;
-
     void drawSaveLoad();
 
  protected:
+    std::vector<SavegameSlot> _slots;
     int _selectedSlot = 0;
     int _scrollPosition = 0;
 };
@@ -48,8 +77,6 @@ class GUIWindow_Save : public GUIWindow_SaveLoad {
     virtual void slotClicked(int slotIndex) override;
 
  protected:
-    [[nodiscard]] virtual const std::vector<int> &menuSlots() const override;
-
     GraphicsImage *saveload_ui_save_up = nullptr;
     GraphicsImage *saveload_ui_loadsave = nullptr;
     GraphicsImage *saveload_ui_saveu = nullptr;
@@ -70,8 +97,6 @@ class GUIWindow_Load : public GUIWindow_SaveLoad {
     void quickLoad();
 
  protected:
-    [[nodiscard]] virtual const std::vector<int> &menuSlots() const override;
-
     bool _loadSlotClicked = false;
     GraphicsImage *main_menu_background = nullptr;
 

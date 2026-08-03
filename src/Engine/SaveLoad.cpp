@@ -1,9 +1,9 @@
 #include "SaveLoad.h"
 
-#include <algorithm>
 #include <cassert>
 #include <unordered_map>
 #include <string>
+#include <string_view>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -36,21 +36,18 @@
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
 
-#include "Utility/String/Ascii.h"
-#include "Utility/Exception.h"
-
 #include "TurnEngine/TurnEngine.h"
 
-SavegameList *pSavegameList = new SavegameList;
 std::unordered_map<std::string, Blob> pMapDeltas;
 
-void loadGame(int uSlot) {
-    if (!pSavegameList->isSlotUsed(uSlot)) {
+void loadGame(std::string_view fileName) {
+    std::string path = fmt::format("saves/{}", fileName);
+    if (!ufs->exists(path)) {
         pAudioPlayer->playUISound(SOUND_error);
-        logger->warning("LoadGame: slot {} is empty", uSlot);
+        logger->warning("loadGame: '{}' doesn't exist", fileName);
         return;
     }
-    engine->_lastLoadedSaveFileName = pSavegameList->slots()[uSlot].fileName;
+    engine->_lastLoadedSaveFileName = fileName;
 
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
     current_character_screen_window = WINDOW_CharacterWindow_Stats;
@@ -59,11 +56,9 @@ void loadGame(int uSlot) {
         pParty->bTurnBasedModeOn = false;
     }
 
-    std::string filename = fmt::format("saves/{}", pSavegameList->slots()[uSlot].fileName);
-
     // Blob::copy below detaches from the underlying file so subsequent saves to the same path are not blocked.
     SaveGame state;
-    deserialize(Blob::copy(ufs->read(filename)), &state, tags::via<SaveGame_MM7>);
+    deserialize(Blob::copy(ufs->read(path)), &state, tags::via<SaveGame_MM7>);
 
     // Move loaded state to global variables.
     *pParty = std::move(state.party);
@@ -212,10 +207,9 @@ void autoSave() {
     saveGame(true, false, fmt::format("saves/{}", autosaveFileName));
 }
 
-void doSavegame(int uSlot) {
+void doSavegame(std::string fileName, std::string_view title) {
     assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
 
-    std::string fileName = pSavegameList->slots()[uSlot].fileName; // Overwrite an existing save.
     if (fileName.empty()) {
         for (int i = 0;; i++) { // New save, pick the first free numbered name.
             fileName = fmt::format("save{:03}.mm7", i);
@@ -224,7 +218,7 @@ void doSavegame(int uSlot) {
         }
     }
 
-    saveGame(false, false, fmt::format("saves/{}", fileName), pSavegameList->slots()[uSlot].header.name);
+    saveGame(false, false, fmt::format("saves/{}", fileName), title);
 
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu = nullptr;
@@ -232,93 +226,6 @@ void doSavegame(int uSlot) {
 
     pEventTimer->setPaused(false);
     engine->_statusBar->setEvent(LSTR_GAME_SAVED);
-}
-
-SavegameList::SavegameList() {
-    _slots.assign(1, {}); // Just the new save slot.
-}
-
-void SavegameList::refresh() {
-    releaseThumbnails();
-
-    std::vector<std::string> saves;
-    if (ufs->exists("saves"))
-        for (const auto &entry : ufs->ls("saves"))
-            if (entry.type == FILE_REGULAR && entry.name.ends_with(".mm7"))
-                saves.push_back(entry.name);
-
-    _slots.assign(saves.size() + 1, {}); // +1 for the new save slot.
-    for (size_t i = 0; i < saves.size(); i++) {
-        _slots[i].fileName = saves[i];
-        _slots[i].isUsed = true; // The file exists, so the slot is loadable even before loadHeaders() is called.
-    }
-    _loadMenuSlots.clear();
-    _saveMenuSlots.clear();
-}
-
-void SavegameList::loadHeaders() {
-    refresh();
-
-    for (int i = 0; i < saveFileCount(); ++i) {
-        SavegameSlot &slot = _slots[i];
-        std::string path = fmt::format("saves/{}", slot.fileName);
-        if (!ufs->exists(path)) {
-            slot.isUsed = false;
-            slot.header.name = localization->str(LSTR_EMPTY_SAVE);
-            continue;
-        }
-
-        SaveGameLite save;
-        deserialize(ufs->read(path), &save, tags::via<SaveGameLite_MM7>);
-        slot.header = save.header;
-
-        if (ascii::noCaseEquals(slot.fileName, autosaveFileName))
-            slot.header.name = localization->str(LSTR_AUTOSAVE);
-
-        if (slot.header.name.empty()) // blank so add something - suspect quicksaves
-            slot.header.name = slot.fileName.substr(0, slot.fileName.size() - 4);
-
-        try {
-            slot.thumbnail = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
-
-            if (slot.thumbnail->width() == 0) {
-                slot.thumbnail->release();
-                slot.thumbnail = nullptr;
-            }
-        } catch (const Exception &e) {
-            logger->debug("pSavegameList thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
-            slot.thumbnail = nullptr;
-        }
-    }
-
-    // Sort saves by display name, with file name as a tie-breaker.
-    auto slotLess = [](const SavegameSlot &l, const SavegameSlot &r) {
-        if (int result = ascii::noCaseCompare(l.header.name, r.header.name))
-            return result < 0;
-        return l.fileName < r.fileName;
-    };
-    std::ranges::sort(_slots.begin(), _slots.begin() + saveFileCount(), slotLess);
-
-    // All saves are shown in the load menu. Autosave & quicksaves are loadable, but shouldn't be manually saved
-    // over, so they are not shown in the save menu, which shows the new save slot first instead.
-    _loadMenuSlots.clear();
-    _saveMenuSlots.clear();
-    _saveMenuSlots.push_back(saveFileCount()); // New save slot goes first.
-    for (int i = 0; i < saveFileCount(); i++) {
-        _loadMenuSlots.push_back(i);
-        const std::string &fileName = _slots[i].fileName;
-        if (!ascii::noCaseEquals(fileName, autosaveFileName) &&
-            !ascii::noCaseStartsWith(fileName, engine->config->gameplay.QuickSaveName.value()))
-            _saveMenuSlots.push_back(i);
-    }
-}
-
-void SavegameList::releaseThumbnails() {
-    for (SavegameSlot &slot : _slots)
-        if (slot.thumbnail != nullptr) {
-            slot.thumbnail->release();
-            slot.thumbnail = nullptr;
-        }
 }
 
 void saveNewGame() {
@@ -344,19 +251,11 @@ void quickSaveGame() {
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 }
 
-int getQuickSaveSlot() {
-    pSavegameList->refresh();
-
-    const std::vector<SavegameSlot> &slots = pSavegameList->slots();
-    auto pos = std::ranges::find(slots, getCurrentQuickSave(), &SavegameSlot::fileName);
-    return pos == slots.end() ? -1 : pos - slots.begin();
-}
-
 void quickLoadGame() {
-    int uSlot = getQuickSaveSlot();
+    std::string fileName = getCurrentQuickSave();
 
-    if (uSlot != -1) {
-        loadGame(uSlot);
+    if (ufs->exists(fmt::format("saves/{}", fileName))) {
+        loadGame(fileName);
         uGameState = GAME_STATE_LOADING_GAME;
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     } else {

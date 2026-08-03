@@ -237,10 +237,6 @@ void EngineController::loadGame(const Blob &savedGame) {
     goToMainMenu();
     pressGuiButton("MainMenu_LoadGame");
     tick(4);
-
-    assert(pSavegameList->slots()[0].isUsed);
-    assert(pSavegameList->slots()[0].fileName == "!!!save.mm7");
-
     pressGuiButton("LoadMenu_Slot0");
     tick(2);
     pressGuiButton("LoadMenu_Load");

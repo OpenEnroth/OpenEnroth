@@ -3,16 +3,17 @@
 #include <algorithm>
 #include <cmath>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
-#include "Engine/SaveLoad.h"
+#include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Snapshots/CompositeSnapshots.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -23,7 +24,12 @@
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 
+#include "Library/Image/Pcx.h"
 #include "Library/Logger/Logger.h"
+#include "Library/Snapshots/SnapshotSerialization.h"
+
+#include "Utility/String/Ascii.h"
+#include "Utility/Exception.h"
 
 using Io::TextInputType;
 
@@ -37,24 +43,89 @@ GraphicsImage *saveload_ui_x_d = nullptr;
 
 static GraphicsImage *scrollstop = nullptr;
 
+/**
+ * @return                          Slots to show in the load menu - all saves from the saves folder, sorted by
+ *                                  display name with file name as a tie-breaker.
+ */
+static std::vector<SavegameSlot> loadMenuSlots() {
+    std::vector<SavegameSlot> result;
+
+    if (!ufs->exists("saves"))
+        return result;
+
+    for (const auto &entry : ufs->ls("saves")) {
+        if (entry.type != FILE_REGULAR || !entry.name.ends_with(".mm7"))
+            continue;
+
+        SavegameSlot slot;
+        slot.fileName = entry.name;
+
+        SaveGameLite save;
+        try {
+            deserialize(ufs->read(fmt::format("saves/{}", entry.name)), &save, tags::via<SaveGameLite_MM7>);
+        } catch (const std::exception &e) {
+            logger->warning("Couldn't load savegame '{}': {}", entry.name, e.what()); // Don't list unreadable saves.
+            continue;
+        }
+        slot.header = save.header;
+
+        if (ascii::noCaseEquals(slot.fileName, autosaveFileName))
+            slot.header.name = localization->str(LSTR_AUTOSAVE);
+
+        if (slot.header.name.empty()) // blank so add something - suspect quicksaves
+            slot.header.name = slot.fileName.substr(0, slot.fileName.size() - 4);
+
+        try {
+            slot.thumbnail.reset(GraphicsImage::Create(pcx::decode(save.thumbnail))); // TODO(captainurist): lazy-load.
+
+            if (slot.thumbnail->width() == 0)
+                slot.thumbnail = nullptr;
+        } catch (const Exception &e) {
+            logger->debug("Savegame thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
+            slot.thumbnail = nullptr;
+        }
+
+        result.push_back(std::move(slot));
+    }
+
+    auto slotLess = [](const SavegameSlot &l, const SavegameSlot &r) {
+        if (int result = ascii::noCaseCompare(l.header.name, r.header.name))
+            return result < 0;
+        return l.fileName < r.fileName;
+    };
+    std::ranges::sort(result, slotLess);
+    return result;
+}
+
+/**
+ * @return                          Slots to show in the save menu - a new save slot first, then the saves. Autosave
+ *                                  & quicksaves are loadable, but shouldn't be manually saved over, so they are
+ *                                  not shown.
+ */
+static std::vector<SavegameSlot> saveMenuSlots() {
+    std::vector<SavegameSlot> result = loadMenuSlots();
+    std::erase_if(result, [](const SavegameSlot &slot) {
+        return ascii::noCaseEquals(slot.fileName, autosaveFileName) ||
+               ascii::noCaseStartsWith(slot.fileName, engine->config->gameplay.QuickSaveName.value());
+    });
+    result.insert(result.begin(), SavegameSlot()); // New save slot goes first.
+    return result;
+}
+
 GUIWindow_SaveLoad::GUIWindow_SaveLoad(WindowType type, Pointi position, Sizei dimensions)
     : GUIWindow(type, position, dimensions) {}
-
-GUIWindow_SaveLoad::~GUIWindow_SaveLoad() {
-    pSavegameList->releaseThumbnails(); // Thumbnails are loaded when a save/load menu opens, released when it closes.
-}
 
 void GUIWindow_SaveLoad::scrollUp() {
     _scrollPosition = std::max(0, _scrollPosition - 1);
 }
 
 void GUIWindow_SaveLoad::scrollDown() {
-    if (_scrollPosition + 7 < std::ssize(menuSlots()))
+    if (_scrollPosition + 7 < std::ssize(_slots))
         ++_scrollPosition;
 }
 
 void GUIWindow_SaveLoad::scrollWithMouse() {
-    int slotCount = std::ssize(menuSlots());
+    int slotCount = std::ssize(_slots);
     if (slotCount < 7)
         return; // Too few saves to scroll yet.
     // 216 is the scroll bar offset from the top of the dialog, 107 is its total height.
@@ -66,12 +137,12 @@ void GUIWindow_SaveLoad::scrollWithMouse() {
 }
 
 void GUIWindow_SaveLoad::drawSaveLoad() {
-    if (pSavegameList->isSlotUsed(_selectedSlot)) {
-        const SavegameSlot &slot = pSavegameList->slots()[_selectedSlot];
+    if (hasSelectedSlot() && !selectedSlot().fileName.empty()) {
+        const SavegameSlot &slot = selectedSlot();
         Recti titleRect(frameRect.x + 240, (frameRect.y - assets->pFontSmallnum->GetHeight()) + 157,
                         220, assets->pFontSmallnum->GetHeight());
         if (slot.thumbnail)
-            render->DrawQuad2D(slot.thumbnail, {frameRect.x + 276, frameRect.y + 171});
+            render->DrawQuad2D(slot.thumbnail.get(), {frameRect.x + 276, frameRect.y + 171});
 
         // Draw map name
         GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
@@ -100,13 +171,13 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
             // Saves need a name, keep the input open.
             keyboardInputHandler->StartTextInput(TextInputType::Text, 19, this);
         } else {
-            pSavegameList->setSlotName(_selectedSlot, keyboardInputHandler->GetTextInput());
+            setSelectedSlotName(keyboardInputHandler->GetTextInput());
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
         }
     }
 
     if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
-        const std::string &name = pSavegameList->slots()[_selectedSlot].header.name;
+        const std::string &name = selectedSlot().header.name;
         GUIWindow::DrawText(assets->pFontSmallnum.get(),
             {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_LOADING)) + 25, 220}, colorTable.White,
             localization->str(LSTR_LOADING), frameRect);
@@ -116,7 +187,7 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
             {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_PLEASE_WAIT)) + 25, 304}, colorTable.White,
             localization->str(LSTR_PLEASE_WAIT), frameRect);
     } else {
-        int slotCount = std::ssize(menuSlots());
+        int slotCount = std::ssize(_slots);
         int stopPos = 0;
         if (slotCount > 7) {
             stopPos = (float(_scrollPosition) / (slotCount - 7)) * 89.0f;
@@ -129,11 +200,10 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
         for (int i = _scrollPosition; i < slotCount; ++i) {
             if (slot_Y >= 346)
                 break;
-            int slot = menuSlots()[i];
-            bool isNewSaveSlot = pSavegameList->slots()[slot].fileName.empty();
-            if (keyboard_input_status != WINDOW_INPUT_IN_PROGRESS || slot != _selectedSlot) {
-                DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y}, slot == _selectedSlot ? colorTable.LaserLemon : colorTable.White,
-                               isNewSaveSlot ? localization->str(LSTR_NEW_SAVE) : pSavegameList->slots()[slot].header.name, 185, 0);
+            bool isNewSaveSlot = _slots[i].fileName.empty();
+            if (keyboard_input_status != WINDOW_INPUT_IN_PROGRESS || i != _selectedSlot) {
+                DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y}, i == _selectedSlot ? colorTable.LaserLemon : colorTable.White,
+                               isNewSaveSlot ? localization->str(LSTR_NEW_SAVE) : _slots[i].header.name, 185, 0);
             } else {
                 GUIWindow::DrawFlashingInputCursor(DrawTextInRect(assets->pFontSmallnum.get(), {27, slot_Y},
                     colorTable.LaserLemon, keyboardInputHandler->GetTextInput(), 175, 1) + 27, slot_Y, assets->pFontSmallnum.get(), frameRect);
@@ -149,10 +219,7 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_Save, {0, 0}, rende
     saveload_ui_saveu = assets->getImage_ColorKey("LS_saveU");
     saveload_ui_x_u = assets->getImage_ColorKey("x_u");
 
-    pSavegameList->loadHeaders();
-
-    // New save slot is shown first & selected by default.
-    _selectedSlot = pSavegameList->saveMenuSlots().front();
+    _slots = saveMenuSlots(); // New save slot is shown first & selected by default.
 
     saveload_ui_x_d = assets->getImage_ColorKey("x_d");
     saveload_ui_ls_saved = assets->getImage_ColorKey("LS_saveD");
@@ -190,21 +257,16 @@ void GUIWindow_Save::Update() {
 void GUIWindow_Save::slotClicked(int slotIndex) {
     if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
         keyboardInputHandler->EndTextInput();
-    int position = _scrollPosition + slotIndex;
-    if (position >= std::ssize(menuSlots()))
+    int slot = _scrollPosition + slotIndex;
+    if (slot >= std::ssize(_slots))
         return; // Clicked below the last slot.
-    int slot = menuSlots()[position];
     if (_selectedSlot != slot) {
         _selectedSlot = slot;
     } else {
         keyboardInputHandler->StartTextInput(TextInputType::Text, 19, this);
-        if (pSavegameList->isSlotUsed(slot))
-            keyboardInputHandler->SetTextInput(pSavegameList->slots()[slot].header.name);
+        if (!_slots[slot].fileName.empty())
+            keyboardInputHandler->SetTextInput(_slots[slot].header.name);
     }
-}
-
-const std::vector<int> &GUIWindow_Save::menuSlots() const {
-    return pSavegameList->saveMenuSlots();
 }
 
 GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_Load, {0, 0}, {0, 0}) {
@@ -232,14 +294,13 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_Load, {0
     DrawText(assets->pFontSmallnum.get(), {25, 199}, colorTable.White, localization->str(LSTR_READING), this->frameRect);
     render->Present();
 
-    pSavegameList->loadHeaders();
+    _slots = loadMenuSlots();
 
-    int slotCount = std::ssize(pSavegameList->loadMenuSlots());
-    for (int i : pSavegameList->loadMenuSlots()) {
-        if (pSavegameList->slots()[i].fileName == engine->_lastLoadedSaveFileName) {
-            _selectedSlot = i;
-            _scrollPosition = std::min(i, std::max(0, slotCount - 7));
-        }
+    // Pre-select the last loaded save.
+    auto pos = std::ranges::find(_slots, engine->_lastLoadedSaveFileName, &SavegameSlot::fileName);
+    if (pos != _slots.end()) {
+        _selectedSlot = pos - _slots.begin();
+        _scrollPosition = std::min(_selectedSlot, std::max<int>(0, std::ssize(_slots) - 7));
     }
 
     saveload_ui_x_d = assets->getImage_ColorKey("x_d");
@@ -281,20 +342,15 @@ void GUIWindow_Load::Update() {
 void GUIWindow_Load::slotClicked(int slotIndex) {
     if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
         keyboardInputHandler->EndTextInput();
-    int position = _scrollPosition + slotIndex;
-    if (position >= std::ssize(menuSlots()))
+    int slot = _scrollPosition + slotIndex;
+    if (slot >= std::ssize(_slots))
         return; // Clicked below the last save.
-    int slot = menuSlots()[position];
     if (!_loadSlotClicked || _selectedSlot != slot) {
         _selectedSlot = slot;
         _loadSlotClicked = true;
     } else {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
     }
-}
-
-const std::vector<int> &GUIWindow_Load::menuSlots() const {
-    return pSavegameList->loadMenuSlots();
 }
 
 void GUIWindow_Load::loadButtonPressed() {
@@ -316,14 +372,13 @@ void GUIWindow_Load::cancelButtonPressed() {
 }
 
 void GUIWindow_Load::quickLoad() {
-    int slot = getQuickSaveSlot();
-    if (slot != -1) {
+    auto pos = std::ranges::find(_slots, getCurrentQuickSave(), &SavegameSlot::fileName);
+    if (pos != _slots.end()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-        _selectedSlot = slot;
+        _selectedSlot = pos - _slots.begin();
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
     } else {
         logger->error("QuickLoadGame:: No quick save could be found!");
         pAudioPlayer->playUISound(SOUND_error);
-        pSavegameList->loadHeaders(); // Failed quickload has reinitialized the list under the open menu, reload the headers.
     }
 }

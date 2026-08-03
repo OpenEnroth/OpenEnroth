@@ -1528,8 +1528,8 @@ void Game::gameLoop() {
     SetCurrentMenuID(MENU_NONE);
     if (bLoading) {
         uGameState = GAME_STATE_PLAYING;
-        assert(engine->_pendingLoadSlot != -1);
-        loadGame(std::exchange(engine->_pendingLoadSlot, -1));
+        assert(!engine->_pendingLoadFileName.empty());
+        loadGame(std::exchange(engine->_pendingLoadFileName, {}));
     }
 
     extern bool use_music_folder;
