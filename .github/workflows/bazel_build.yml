@@ -7,6 +7,10 @@ on:
       - master  # Master builds seed the shared bazel caches that PR builds restore.
   workflow_dispatch:
 
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
 env:
   NDK_VERSION: 28.1.13356709
   BAZEL_VERSION: 8.x
