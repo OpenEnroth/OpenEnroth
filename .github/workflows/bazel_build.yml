@@ -2,6 +2,9 @@ name: Bazel Build
 
 on:
   pull_request: null
+  push:
+    branches:
+      - master  # Master builds seed the shared bazel caches that PR builds restore.
   workflow_dispatch:
 
 env:
@@ -20,6 +23,7 @@ jobs:
           - darwin_x86_64
           - linux_x86_64
           - linux_x86
+          - linux_arm64
           - android_arm64_v8a
           - android_armeabi_v7a
           - android_x86_64
@@ -27,6 +31,7 @@ jobs:
       ${{
         startsWith(matrix.target, 'windows_') && 'windows-2022' ||
         startsWith(matrix.target, 'darwin_')  && 'macos-15'     ||
+        matrix.target == 'linux_arm64'        && 'ubuntu-24.04-arm' ||
         'ubuntu-24.04'
       }}
     defaults:
@@ -41,6 +46,7 @@ jobs:
             windows_x86_64)      platform=windows; bazel_config=windows_x86_64;;
             linux_x86_64)        platform=linux;   bazel_config=linux_x86_64;;
             linux_x86)           platform=linux;   bazel_config=linux_x86;;
+            linux_arm64)         platform=linux;   bazel_config=linux_arm64;;
             darwin_arm64)        platform=darwin;  bazel_config=darwin_arm64;;
             darwin_x86_64)       platform=darwin;  bazel_config=darwin_x86_64;;
             android_arm64_v8a)   platform=android; bazel_config=android_arm64_v8a;;
@@ -73,10 +79,6 @@ jobs:
 
       - name: 'Checkout'
         uses: actions/checkout@v5.0.0
-        with:
-          # Submodules are only needed on Windows: thirdparty/luajit/ headers are referenced
-          # by the @luajit_windows prebuilt wrapper. All other platforms fetch deps via http_archive.
-          submodules: ${{ env.MATRIX_PLATFORM == 'windows' && 'recursive' || 'false' }}
 
       - name: '[android] Install NDK'
         if: env.MATRIX_PLATFORM == 'android'
@@ -100,6 +102,10 @@ jobs:
               sudo apt-get install -y libx11-dev:i386 libxext-dev:i386 libxrandr-dev:i386 \
                 libxcursor-dev:i386 libxi-dev:i386 libxfixes-dev:i386 \
                 libwayland-dev:i386 libxkbcommon-dev:i386
+              # Make gcc-14 the default gcc: the bazel configs use the environment's
+              # default compiler, and the runner's gcc-13 can't do C++23 deducing this.
+              sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
+              sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
             else
               sudo apt-get update
               sudo apt-get install -y gcc-14 g++-14 lld
@@ -108,6 +114,8 @@ jobs:
               sudo apt-get install -y libx11-dev libxext-dev libxrandr-dev \
                 libxcursor-dev libxi-dev libxfixes-dev \
                 libwayland-dev libxkbcommon-dev
+              sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
+              sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
             fi
 
       - name: '[android] Install SDL3 dev dependencies'
@@ -130,25 +138,25 @@ jobs:
         if: env.MATRIX_PLATFORM == 'windows'
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: '[windows] Build LuaJIT via CMake'
-        if: env.MATRIX_PLATFORM == 'windows'
-        # The Bazel @luajit_windows wrapper references CMake-built artifacts:
-        #   build/thirdparty/Debug/libluajit.lib
-        #   build/thirdparty/luajit.h
-        # LuaJIT's GNU Makefile requires GCC, so we use the luajit-cmake wrapper to build
-        # it with MSVC. The cmake configure step also downloads the prebuilt SDL3/OpenAL/etc.
-        # archives (needed to satisfy find_package), but Bazel uses its own source builds for those.
-        run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Debug
-          cmake --build build --config Debug --target libluajit
-
       - name: 'Set up Bazel'
         uses: bazel-contrib/setup-bazel@0.14.0
         with:
           bazelisk-version: 1.x
           bazelisk-cache: true
-          disk-cache: '${{github.workflow}}-${{matrix.target}}'
-          repository-cache: true
+
+      # Bazel disk & repository caches, restored from the latest master snapshot.
+      # PR builds are restore-only; pushes to master save a fresh snapshot (see below).
+      # This keeps 9 matrix targets from thrashing GitHub's 10 GB per-repo cache budget
+      # with per-PR saves, and the disk cache GC bound in .bazelrc caps snapshot size.
+      - name: 'Restore bazel caches'
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: bazel-${{matrix.target}}-${{github.run_id}}
+          restore-keys: |
+            bazel-${{matrix.target}}-
 
       - name: 'Build'
         run: |
@@ -163,3 +171,12 @@ jobs:
         if: env.MATRIX_PLATFORM != 'android'
         run: |
           bazel run --config=${{env.MATRIX_BAZEL_CONFIG}} //test/Bin/UnitTest:OpenEnroth_UnitTest
+
+      - name: 'Save bazel caches'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: bazel-${{matrix.target}}-${{github.run_id}}
