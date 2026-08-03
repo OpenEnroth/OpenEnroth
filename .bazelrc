@@ -27,13 +27,18 @@ build:macos --copt=-Isrc --copt=-Itest
 build:windows --copt=/Isrc --copt=/Itest
 build:android_base --copt=-Isrc
 
+# FMT_USE_NONTYPE_TEMPLATE_ARGS enables the _cf literals used throughout OE. It has to be
+# defined globally because the BCR fmt module doesn't set it, and every fmt include must see it.
+build:linux --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:macos --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:windows --copt=/DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:android_base --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
+
 # ─── Compiler selection ───────────────────────────────────────────────────────
-# Linux native builds (x86_64 and x86): Use GCC 14 for C++23 "deducing this" (P0847R7).
-# The default GCC on Debian 12 is GCC 12; Ubuntu 24.04+ defaults to GCC 14.
-# NOTE: These are NOT set on build:linux (the base config) because Android builds
-# also run on Linux CI runners and inherit build:linux via --enable_platform_specific_config.
-# With CC=gcc-14, Android cross-compilation would fail (gcc can't handle NDK --target flags).
-# Instead, set CC/CXX only for the native Linux configs where GCC 14 is explicitly wanted.
+# Linux builds use the environment's default gcc; C++23 "deducing this" (P0847R7)
+# needs GCC >= 14, so CI promotes gcc-14 via update-alternatives (runners default
+# to gcc-13) and the dev container ships gcc-15. No version pins here — pinning
+# paths in --action_env just forces every environment to install that exact version.
 
 # ─── Disable strict header dep tracking ─────────────────────────────────────
 # MSVC's /showIncludes causes Bazel to reject headers found via /Isrc but not
@@ -63,8 +68,6 @@ build:linux --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_
 
 # Linux x86 (32-bit)
 build:linux_x86 --config=linux
-build:linux_x86 --action_env=CC=/usr/bin/gcc-14
-build:linux_x86 --action_env=CXX=/usr/bin/g++-14
 build:linux_x86 --copt=-m32
 build:linux_x86 --linkopt=-m32
 # Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
@@ -78,8 +81,9 @@ build:linux_x86 --linkopt=-fuse-ld=gold
 
 # Linux x86_64
 build:linux_x86_64 --config=linux
-build:linux_x86_64 --action_env=CC=/usr/bin/gcc-14
-build:linux_x86_64 --action_env=CXX=/usr/bin/g++-14
+
+# Linux arm64 — CI arm runners & arm64 dev containers.
+build:linux_arm64 --config=linux
 
 # macOS
 build:macos --apple_platform_type=macos
@@ -142,7 +146,10 @@ build:android_x86_64 --platforms=//bazel/platforms:android_x86_64_platform
 # Content-addressed cache on local disk. Avoids rebuilding cmake() deps (zlib,
 # libpng, SDL3, OpenAL) and other expensive actions when sources haven't changed.
 # Shared across workspaces and Bazel versions on the same machine.
-build --disk_cache=~/.cache/bazel
+# Note: not ~/.cache/bazel, which is bazel's default output root on Linux.
+build --disk_cache=~/.cache/bazel-disk
+# Bound the disk cache so CI cache uploads stay within GitHub's per-repo budget.
+build --experimental_disk_cache_gc_max_size=2G
 # Caches downloaded http_archive tarballs (avoids re-downloading on every clean).
 build --repository_cache=~/.cache/bazel-repo
 
