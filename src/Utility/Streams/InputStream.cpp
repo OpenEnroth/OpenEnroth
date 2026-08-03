@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Utility/Exception.h"
+#include "Utility/ScopeGuard.h"
 #include "Utility/Memory/MemoryScratchpad.h"
 
 InputStream::~InputStream() = default;
@@ -85,8 +86,12 @@ size_t InputStream::underflow(void *data, size_t size) {
     }
     size -= head;
 
-    size_t tail = _underflow(data, size, &_buffer);
-    _bufferBase = pos + head + tail - _buffer.used();
+    // Rebased on every path - `tail` stays zero if the refill throws, and the `head` bytes drained above are
+    // consumed either way.
+    size_t tail = 0;
+    MM_AT_SCOPE_EXIT(_bufferBase = pos + head + tail - _buffer.used());
+
+    tail = _underflow(data, size, &_buffer);
     return head + tail;
 }
 
@@ -101,10 +106,11 @@ size_t InputStream::readUntilSlow(char delimiter, std::string *dst) {
 
     // Refill from source and search.
     while (true) {
-        // Refilling consumes nothing, so `position()` has to come out unchanged whatever buffer we get back.
+        // Refilling consumes nothing, so `position()` has to come out unchanged whatever buffer we get back, and
+        // whether or not the refill throws.
         size_t pos = position();
+        MM_AT_SCOPE_EXIT(_bufferBase = pos - _buffer.used());
         _underflow(nullptr, 0, &_buffer);
-        _bufferBase = pos - _buffer.used();
 
         if (_buffer.remaining() == 0)
             break; // No more data.

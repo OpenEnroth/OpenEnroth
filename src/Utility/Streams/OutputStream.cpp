@@ -23,15 +23,12 @@ void OutputStream::_close(Buffer *buffer, bool /*canThrow*/) {
 void OutputStream::overflow(const void *data, size_t size) {
     assert(size > _buffer.remaining());
 
+    // Rebased on every path - `accepted` stays zero if the write throws, and part of the buffer may have gone out
+    // by then, which must not move `position()` backwards.
     size_t pos = position();
-    try {
-        _overflow(&_buffer, data, size);
-    } catch (...) {
-        // The write failed, so none of `size` was accepted - but part of the buffer may already have gone out, and
-        // `position()` must not move backwards by that much.
-        _bufferBase = pos - _buffer.used();
-        throw;
-    }
+    size_t accepted = 0;
+    MM_AT_SCOPE_EXIT(_bufferBase = pos + accepted - _buffer.used());
 
-    _bufferBase = pos + size - _buffer.used();
+    _overflow(&_buffer, data, size);
+    accepted = size;
 }
