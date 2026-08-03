@@ -100,17 +100,17 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
         if (fseeko(_file, cur + bytesSkipped, SEEK_SET) != 0)
             Exception::throwFromErrno(displayPath());
 
-        if (!_buf)
-            _buf = std::make_unique<char[]>(_bufSize);
         while (bytesSkipped < size) {
-            clearerr(_file); // See above.
+            clearerr(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
             size_t bytesRead = fread(_buf.get(), 1, std::min(size - bytesSkipped, _bufSize), _file);
-            if (bytesRead == 0) {
-                if (ferror(_file))
-                    Exception::throwFromErrno(displayPath());
-                break; // End of stream for real this time.
-            }
             bytesSkipped += bytesRead;
+            if (bytesRead == 0) {
+                // Once the offset has moved, throwing would strand it past what `position()` reports. Partial skips
+                // are returned as-is instead, and the error resurfaces on the next call.
+                if (bytesSkipped == 0 && ferror(_file))
+                    Exception::throwFromErrno(displayPath());
+                break; // End of stream, or an error that the next call will report.
+            }
         }
         return bytesSkipped;
     }

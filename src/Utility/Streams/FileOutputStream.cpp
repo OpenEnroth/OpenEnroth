@@ -44,10 +44,11 @@ void FileOutputStream::open(std::string_view path, size_t bufferSize) {
     base_type::open({}, absPath);
 }
 
-void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) {
+void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size, size_t *bytesAccepted) {
     if (size < _bufSize) {
         // Small write: fill current buffer, write it all out, put the tail into a fresh buffer.
         size_t head = buffer->write(data, buffer->remaining());
+        *bytesAccepted = head; // Ours the moment they're in the buffer - a failed write below leaves them pending.
         writeBuffer(buffer, true);
         data = static_cast<const char *>(data) + head;
         size -= head;
@@ -55,10 +56,14 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
             _buf = std::make_unique<char[]>(_bufSize);
         buffer->reset(_buf.get(), _buf.get(), _buf.get() + _bufSize);
         buffer->write(data, size);
+        *bytesAccepted = head + size;
     } else {
         // Large write: write out current buffer, then write data directly.
         writeBuffer(buffer, true);
-        if (fwrite(data, 1, size, _file) != size)
+        // Byte-wise, so a partial write reports what went out - those bytes are in the file whether we throw or not.
+        size_t bytesWritten = fwrite(data, 1, size, _file);
+        *bytesAccepted = bytesWritten;
+        if (bytesWritten != size)
             Exception::throwFromErrno(displayPath());
         if (_buf)
             buffer->reset(_buf.get(), _buf.get(), _buf.get() + _bufSize);

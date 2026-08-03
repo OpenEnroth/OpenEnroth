@@ -20,7 +20,13 @@ size_t InputStream::readAll(std::string *dst) {
         if (_size > position()) {
             size_t bytesHint = _size - position();
             dst->resize_and_overwrite(bytesHint, [](char *, size_t n) { return n; }); // Technically UB, but throwing
-            dst->resize(read(dst->data(), bytesHint));                                // from the callback is also UB.
+                                                                                      // from the callback is also UB.
+
+            // Trimmed on every path - everything past what was read is uninitialized, and a read that throws must not
+            // leave it exposed in `*dst`.
+            size_t bytesRead = 0;
+            MM_AT_SCOPE_EXIT(dst->resize(bytesRead));
+            bytesRead = read(dst->data(), bytesHint);
         }
 
         // The size is only a hint - it's sampled at open time, and `st_size` lies outright on procfs. A single byte

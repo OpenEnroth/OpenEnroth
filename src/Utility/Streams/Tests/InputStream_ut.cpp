@@ -91,9 +91,12 @@ class LyingInputStream : public InputStream {
  */
 class ThrowingInputStream : public InputStream {
  public:
-    ThrowingInputStream(const void *data, size_t size) : _data(static_cast<const char *>(data)) {
-        open(Buffer(_data, _data, _data + size), size, {});
+    ThrowingInputStream(const void *data, size_t size, size_t reportedSize)
+        : _data(static_cast<const char *>(data)) {
+        open(Buffer(_data, _data, _data + size), reportedSize, {});
     }
+
+    ThrowingInputStream(const void *data, size_t size) : ThrowingInputStream(data, size, size) {}
 
  protected:
     virtual size_t _underflow(void *, size_t, Buffer *buffer) override {
@@ -165,6 +168,18 @@ UNIT_TEST(InputStream, ReadAllPastReportedSize) {
     EXPECT_EQ(in.read(buf, sizeof(buf)), 50u);
     EXPECT_GT(in.position(), in.size());
     EXPECT_EQ(in.readAll(), data.substr(50)); // Everything that's left, even though the reported size is long gone.
+}
+
+UNIT_TEST(InputStream, ReadAllClearsOnThrow) {
+    std::string data = "hello";
+
+    // `readAll` sizes the string up front from `size()`, so the tail is uninitialized until the read fills it in.
+    // Leaving that tail in `*dst` when the read throws was a bug - it handed the caller indeterminate heap.
+    ThrowingInputStream in(data.data(), data.size(), 100);
+    std::string dst;
+    EXPECT_THROW((void) in.readAll(&dst), Exception);
+    EXPECT_TRUE(dst.empty());
+    in.close();
 }
 
 UNIT_TEST(InputStream, ReadAll) {
