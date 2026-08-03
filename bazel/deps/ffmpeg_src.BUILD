@@ -35,6 +35,9 @@ configure_make(
         "@platforms//os:windows": [
             "CCDEP=:",
             "HOSTCCDEP=:",
+            # cl under MSYS2 make loses the INCLUDE env var somewhere in the
+            # msys runtime hops; make exports command-line variables to recipes.
+            "INCLUDE=\"$INCLUDE\"",
         ],
         "//conditions:default": [],
     }),
