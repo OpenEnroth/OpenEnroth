@@ -35,26 +35,13 @@ cc_library(
 )
 
 # ─── FFmpeg ──────────────────────────────────────────────────────────────────
-# The BCR ffmpeg module is a native-bazel port; its with_defaults/ variants enable
-# the standard per-OS codec set (same as a stock ./configure). Its own CI covers
-# linux x86_64/arm64 & macOS; we also use it for windows x86_64 and 64-bit android.
-# 32-bit targets stay on the configure_make() source build: the module hardcodes
-# x86-64 nasm sources for every non-aarch64 CPU.
+# Stripped-down configure_make() source build on every platform - see
+# bazel/deps/ffmpeg_src.BUILD for the component set and for why the BCR ffmpeg
+# module is not used.
 
 cc_library(
     name = "ffmpeg",
-    deps = select({
-        "//bazel/platforms:linux_x86":           ["@ffmpeg_src//:ffmpeg"],
-        "//bazel/platforms:android_armeabi_v7a": ["@ffmpeg_src//:ffmpeg"],
-        "//bazel/platforms:windows_x86":         ["@ffmpeg_src//:ffmpeg"],
-        "//conditions:default": [
-            "@ffmpeg//:with_defaults/avcodec",
-            "@ffmpeg//:with_defaults/avformat",
-            "@ffmpeg//:with_defaults/avutil",
-            "@ffmpeg//:with_defaults/swscale",
-            "@ffmpeg//:with_defaults/swresample",
-        ],
-    }),
+    deps = ["@ffmpeg_src//:ffmpeg"],
     visibility = ["//visibility:public"],
 )
 

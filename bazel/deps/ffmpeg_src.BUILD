@@ -1,6 +1,7 @@
-# configure_make() build for FFmpeg n7.0 from source.
-# Used on the 32-bit targets that the BCR ffmpeg module can't serve: linux_x86,
-# windows_x86 and android_armeabi_v7a. 64-bit platforms use @ffmpeg from the BCR.
+# configure_make() build for FFmpeg n7.0 from source, used on all platforms.
+# The BCR ffmpeg module was evaluated but can't reproduce the stripped-down
+# component set below without hand-maintaining the internal component closure,
+# and it hardcodes x86-64 nasm sources for every non-aarch64 CPU.
 
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
 
@@ -8,6 +9,16 @@ load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
 config_setting(
     name = "_android_armv7",
     constraint_values = ["@platforms//os:android", "@platforms//cpu:armv7"],
+)
+
+config_setting(
+    name = "_android_arm64",
+    constraint_values = ["@platforms//os:android", "@platforms//cpu:arm64"],
+)
+
+config_setting(
+    name = "_android_x86_64",
+    constraint_values = ["@platforms//os:android", "@platforms//cpu:x86_64"],
 )
 
 filegroup(
@@ -18,21 +29,63 @@ filegroup(
 configure_make(
     name = "ffmpeg",
     lib_source = ":all_srcs",
+    # Mirrors the stripped-down configuration from OpenEnroth_Dependencies
+    # (scripts/build_all.sh): only the decoders/demuxers MM7 media needs.
     configure_options = [
-        "--disable-programs",   # Don't build ffmpeg/ffprobe/ffplay executables.
-        "--disable-doc",        # No documentation.
+        "--disable-everything",
+        "--disable-gpl",
+        "--disable-version3",
+        "--disable-nonfree",
+        "--enable-small",
+        "--enable-runtime-cpudetect",
+        "--disable-gray",
+        "--disable-swscale-alpha",
+        "--disable-programs",
+        "--disable-doc",
         "--disable-htmlpages",
         "--disable-manpages",
         "--disable-podpages",
         "--disable-txtpages",
-        "--enable-static",      # Build static libraries.
-        "--disable-shared",     # No shared libraries.
-        # Don't auto-detect optional external libraries (libmp3lame, x264, etc.).
-        # Keeps the build hermetic — only built-in codec support is compiled.
+        "--disable-iconv",
+        "--disable-avdevice",
+        "--disable-postproc",
+        "--disable-avfilter",
+        "--disable-network",
+        "--enable-avcodec",
+        "--enable-avformat",
+        "--enable-avutil",
+        "--enable-swresample",
+        "--enable-swscale",
+        "--disable-devices",
+        "--disable-encoders",
+        "--disable-filters",
+        "--disable-hwaccels",
+        "--disable-decoders",
+        "--enable-decoder=mp3*",
+        "--enable-decoder=adpcm*",
+        "--enable-decoder=pcm*",
+        "--enable-decoder=bink",
+        "--enable-decoder=binkaudio_dct",
+        "--enable-decoder=binkaudio_rdft",
+        "--enable-decoder=smackaud",
+        "--enable-decoder=smacker",
+        "--disable-muxers",
+        "--disable-demuxers",
+        "--enable-demuxer=mp3",
+        "--enable-demuxer=bink",
+        "--enable-demuxer=binka",
+        "--enable-demuxer=smacker",
+        "--enable-demuxer=pcm*",
+        "--enable-demuxer=wav",
+        "--disable-parsers",
+        "--disable-bsfs",
+        "--disable-protocols",
+        "--enable-protocol=file",
+        "--enable-static",
+        "--disable-shared",
         "--disable-autodetect",
-        # Disable x86/x86_64 assembly optimisations.
-        # Avoids a NASM/YASM dependency and keeps the build reproducible across
-        # environments that may not have an assembler available.
+        # Disable x86/x86_64 assembly optimisations. Avoids a NASM/YASM dependency
+        # and keeps the build reproducible; enable-runtime-cpudetect stays harmless.
         "--disable-asm",
     ] + select({
         # MSVC build; cl.exe comes from the msvc-dev-cmd environment, bash from MSYS.
@@ -44,6 +97,22 @@ configure_make(
             "--target-os=android",
             "--arch=arm",
             "--cpu=armv7-a",
+            "--cc=$CC",
+            "--cxx=$CXX",
+            "--ar=$AR",
+        ],
+        ":_android_arm64": [
+            "--enable-cross-compile",
+            "--target-os=android",
+            "--arch=aarch64",
+            "--cc=$CC",
+            "--cxx=$CXX",
+            "--ar=$AR",
+        ],
+        ":_android_x86_64": [
+            "--enable-cross-compile",
+            "--target-os=android",
+            "--arch=x86_64",
             "--cc=$CC",
             "--cxx=$CXX",
             "--ar=$AR",
@@ -73,13 +142,6 @@ configure_make(
     # every symbol unconditionally, resolving the circular dependency without
     # --start-group/--end-group — the same technique used by the prebuilt POSIX build.
     alwayslink = True,
-    # After install, remove half2float.o from libswscale.a to eliminate the duplicate
-    # _ff_init_half2float_tables symbol. Both libavcodec and libswscale compile half2float.c
-    # independently. With alwayslink=True (--whole-archive / -force_load), both copies
-    # land in the final binary, causing a duplicate symbol error in lld and Apple ld.
-    # Removing it from libswscale is safe: the binary still includes libavcodec.a with
-    # the symbol, satisfying any swscale references at final link time.
-    postfix_script = "ar d $INSTALLDIR/lib/libswscale.a half2float.o || true",
     linkopts = select({
         "@platforms//os:linux": ["-lm", "-lpthread"],
         # macOS: iconv is needed by some FFmpeg demuxers; CoreFoundation for system codecs.
