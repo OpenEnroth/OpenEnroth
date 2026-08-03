@@ -52,5 +52,7 @@ class BlobInputStream : public InputStream {
     [[nodiscard]] Blob readAllAsBlob();
 
  private:
+    // TODO(captainurist): `_close` isn't overridden, so this is held until the stream is destroyed. For a file-backed
+    //                     blob that keeps the mmap alive long after `close()`.
     Blob _blob;
 };

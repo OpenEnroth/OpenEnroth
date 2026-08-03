@@ -17,6 +17,8 @@ BlobOutputStream::~BlobOutputStream() {
 
 void BlobOutputStream::open(Blob *target, std::string_view displayPath) {
     assert(target);
+    // TODO(captainurist): re-opening an already open stream silently discards everything written so far - the
+    //                     previous target is never assigned. Should close first, like the file streams do.
     _target = target;
     _scratchpad.reset();
     base_type::open({}, displayPath);
@@ -37,6 +39,7 @@ void BlobOutputStream::_flush(Buffer *buffer) {
         return;
     }
 
+    // TODO(captainurist): unchecked `malloc`, see the comment in `MemoryScratchpad::next`.
     std::unique_ptr<char, FreeDeleter> result(static_cast<char *>(malloc(bytesTotal)));
     _scratchpad.materialize(result.get(), bytesTotal);
     *_target = Blob::fromMalloc(std::move(result), bytesTotal).withDisplayPath(displayPath());

@@ -21,6 +21,9 @@ void Config::load(std::string_view path) {
 }
 
 void Config::save(std::string_view path) const {
+    // TODO(captainurist): the stream below is closed by its destructor, and the destructor close path is explicitly
+    //                     non-throwing - so a failed write (e.g. a full disk) is swallowed and this function returns
+    //                     as if it had succeeded. Needs an explicit `stream.close()`.
     FileOutputStream stream(path);
     save(&stream);
 }
