@@ -44,6 +44,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   curl \
   gcc-15 \
   g++-15 \
+  pkg-config \
+  libx11-dev \
+  libxext-dev \
+  libxrandr-dev \
+  libxcursor-dev \
+  libxi-dev \
+  libxfixes-dev \
+  libwayland-dev \
+  libxkbcommon-dev \
+  make \
   ninja-build \
   mold \
   libgl-dev \
