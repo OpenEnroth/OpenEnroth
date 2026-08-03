@@ -121,6 +121,9 @@ build:windows_x86_64 --config=windows
 # auto-downloaded cmake 3.23.2. Required for OpenAL-soft 1.24.3 which uses
 # $<BUILD_LOCAL_INTERFACE> generator expressions added in cmake 3.26.
 build:windows --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
+# Use a preinstalled pkg-config (installed in CI via choco) - rules_foreign_cc's
+# MSVC pkg-config source build broke with the VS 14.44 runner image.
+build:windows --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_pkgconfig_toolchain
 
 # Android — NDK version 28.1.13356709 (matches CI)
 # android_base: common flags inherited by all android_* configs
