@@ -64,6 +64,11 @@ RUN wget -qO /tmp/cmake.sh "https://github.com/Kitware/CMake/releases/download/v
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 100 && \
   update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-15 100
 
+# Install Bazelisk as `bazel` (it downloads the Bazel version pinned in .bazelversion on first run).
+ARG BAZELISK_VERSION=1.26.0
+RUN wget -qO /usr/local/bin/bazel "https://github.com/bazelbuild/bazelisk/releases/download/v${BAZELISK_VERSION}/bazelisk-linux-$(dpkg --print-architecture)" && \
+  chmod +x /usr/local/bin/bazel
+
 # Install Node.js 20 (needed for Claude Code).
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
   apt-get install -y --no-install-recommends nodejs && \
