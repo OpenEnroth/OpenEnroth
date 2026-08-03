@@ -136,23 +136,15 @@ configure_make(
     }),
     # Provides the $(CC)/$(AR) make variables used in the android configure options.
     toolchains = ["@bazel_tools//tools/cpp:current_cc_toolchain"],
-    out_static_libs = select({
-        # MSVC-style library names (LIBPREF=""/LIBSUF=".lib" with --toolchain=msvc).
-        "@platforms//os:windows": [
-            "avcodec.lib",
-            "avformat.lib",
-            "avutil.lib",
-            "swscale.lib",
-            "swresample.lib",
-        ],
-        "//conditions:default": [
-            "libavcodec.a",
-            "libavformat.a",
-            "libavutil.a",
-            "libswscale.a",
-            "libswresample.a",
-        ],
-    }),
+    # ffmpeg names static libs lib*.a on every toolchain, msvc included
+    # (lib.exe archives with an .a extension; link.exe consumes them fine).
+    out_static_libs = [
+        "libavcodec.a",
+        "libavformat.a",
+        "libavutil.a",
+        "libswscale.a",
+        "libswresample.a",
+    ],
     # avformat and avcodec have circular symbol references at runtime initialisation
     # (avformat pulls in avcodec decoders, avcodec calls avformat helpers).
     # alwayslink forces --whole-archive on all five archives so the linker includes
