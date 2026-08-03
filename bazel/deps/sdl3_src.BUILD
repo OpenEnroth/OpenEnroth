@@ -94,6 +94,11 @@ cmake(
             "shell32.lib",
             "dinput8.lib",
         ],
+        # SDL3's android backends call into these NDK system libraries.
+        "@platforms//os:android": [
+            "-landroid",
+            "-llog",
+        ],
         # Use -Wl,-framework,Name (single string) rather than ["-framework", "Name"]
         # (two strings). Bazel 8 does not shell-split linkopts strings, so two-entry
         # pairs can lose ordering; -Wl passes the flag pair directly to ld.
