@@ -101,7 +101,12 @@ configure_make(
         "--disable-asm",
     ] + select({
         # MSVC build; cl.exe comes from the msvc-dev-cmd environment, bash from MSYS.
-        "@platforms//os:windows": ["--toolchain=msvc"],
+        # w64: wavdec.c references ff_w64_guid_data behind if(CONFIG_W64_DEMUXER),
+        # relying on dead-code elimination that MSVC doesn't perform here.
+        "@platforms//os:windows": [
+            "--toolchain=msvc",
+            "--enable-demuxer=w64",
+        ],
         # NDK cross-compilation; CC/CXX/AR point at NDK clang via rules_foreign_cc's
         # exported toolchain env vars, expanded by the generated configure wrapper.
         ":_android_armv7": [
@@ -150,9 +155,17 @@ configure_make(
     # alwayslink forces --whole-archive on all five archives so the linker includes
     # every symbol unconditionally, resolving the circular dependency without
     # --start-group/--end-group — the same technique used by the prebuilt POSIX build.
-    alwayslink = True,
+    # Not on windows: link.exe resolves circular archive references iteratively,
+    # and WHOLEARCHIVE would force in the duplicate file_open.o copies that
+    # ffmpeg compiles into all three libraries (LNK2005).
+    alwayslink = select({
+        "@platforms//os:windows": False,
+        "//conditions:default": True,
+    }),
     linkopts = select({
         "@platforms//os:linux": ["-lm", "-lpthread"],
+        # av_random_bytes uses BCryptGenRandom.
+        "@platforms//os:windows": ["-DEFAULTLIB:bcrypt.lib"],
         # macOS: iconv is needed by some FFmpeg demuxers; CoreFoundation for system codecs.
         # Use -Wl,-framework,Name (single string) to avoid two-entry pair ordering
         # issues in Bazel 8+ linkopts handling.
