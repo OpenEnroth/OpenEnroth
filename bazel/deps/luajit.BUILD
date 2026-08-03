@@ -102,7 +102,10 @@ _VARIANTS = {
         ],
         "vm": "peobj",
     },
+    # 32-bit targets need 32-bit host tools: buildvm's data layout mirrors the
+    # target's pointer size (the Makefile's "pointer size mismatch" check).
     "x86_linux": {
+        "host_copts": ["-m32"],
         "dasc": "src/vm_x86.dasc",
         "dasm_flags": "-D ENDIAN_LE -D JIT -D FFI -D FPU -D HFABI -D VER=",
         "defines": [
@@ -137,6 +140,7 @@ _VARIANTS = {
     },
     # android_armeabi_v7a: hard FPU (vfpv3), soft-float ABI, no HFABI dasm flag.
     "arm_linux": {
+        "host_copts": ["-m32"],
         "dasc": "src/vm_arm.dasc",
         "dasm_flags": "-D ENDIAN_LE -D JIT -D FFI -D DUALNUM -D FPU -D VER=70",
         "defines": [
@@ -222,6 +226,8 @@ cc_library(
 [cc_binary(
     name = "_buildvm_" + variant,
     srcs = glob(["src/host/buildvm*.c", "src/host/buildvm*.h"]),
+    copts = cfg.get("host_copts", []),
+    linkopts = cfg.get("host_copts", []),
     local_defines = cfg["defines"],
     deps = [
         ":_buildvm_arch_" + variant,
