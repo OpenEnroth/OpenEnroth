@@ -18,7 +18,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Io/KeyboardInputHandler.h"
-#include "Io/Mouse.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -69,10 +68,14 @@ static std::vector<SavegameSlot> loadMenuSlots() {
         }
         slot.header = save.header;
 
+        // Show autosave & quicksave titles in the current language - the stored titles are in whatever language
+        // was active when the save was made.
         if (ascii::noCaseEquals(slot.fileName, autosaveFileName))
             slot.header.name = localization->str(LSTR_AUTOSAVE);
+        else if (ascii::noCaseStartsWith(slot.fileName, quickSaveFileNamePrefix))
+            slot.header.name = localization->str(LSTR_QUICKSAVE);
 
-        if (slot.header.name.empty()) // blank so add something - suspect quicksaves
+        if (slot.header.name.empty()) // Foreign saves with blank titles - fall back to the file name.
             slot.header.name = slot.fileName.substr(0, slot.fileName.size() - 4);
 
         try {
@@ -88,12 +91,11 @@ static std::vector<SavegameSlot> loadMenuSlots() {
         result.push_back(std::move(slot));
     }
 
-    auto slotLess = [](const SavegameSlot &l, const SavegameSlot &r) {
+    std::ranges::sort(result, [](const SavegameSlot &l, const SavegameSlot &r) {
         if (int result = ascii::noCaseCompare(l.header.name, r.header.name))
             return result < 0;
         return l.fileName < r.fileName;
-    };
-    std::ranges::sort(result, slotLess);
+    });
     return result;
 }
 
@@ -106,7 +108,7 @@ static std::vector<SavegameSlot> saveMenuSlots() {
     std::vector<SavegameSlot> result = loadMenuSlots();
     std::erase_if(result, [](const SavegameSlot &slot) {
         return ascii::noCaseEquals(slot.fileName, autosaveFileName) ||
-               ascii::noCaseStartsWith(slot.fileName, engine->config->gameplay.QuickSaveName.value());
+               ascii::noCaseStartsWith(slot.fileName, quickSaveFileNamePrefix);
     });
     result.insert(result.begin(), SavegameSlot()); // New save slot goes first.
     return result;
@@ -118,7 +120,8 @@ GUIWindow_SaveLoad *saveLoadMenu() {
 }
 
 GUIWindow_SaveLoad::GUIWindow_SaveLoad(WindowType type, Pointi position, Sizei dimensions)
-    : GUIWindow(type, position, dimensions) {}
+    : GUIWindow(type, position, dimensions)
+{}
 
 void GUIWindow_SaveLoad::scrollUp() {
     _scrollPosition = std::max(0, _scrollPosition - 1);
@@ -129,12 +132,12 @@ void GUIWindow_SaveLoad::scrollDown() {
         ++_scrollPosition;
 }
 
-void GUIWindow_SaveLoad::scrollWithMouse() {
+void GUIWindow_SaveLoad::scrollWithMouse(Pointi mousePos) {
     int slotCount = std::ssize(_slots);
     if (slotCount < 7)
         return; // Too few saves to scroll yet.
     // 216 is the scroll bar offset from the top of the dialog, 107 is its total height.
-    int my = mouse->position().y - frameRect.y - 216;
+    int my = mousePos.y - frameRect.y - 216;
     float fmy = static_cast<float>(my) / 107.0f;
     int newPosition = std::round((slotCount - 7) * fmy);
     _scrollPosition = std::clamp(newPosition, 0, slotCount - 7);
@@ -155,9 +158,7 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
 
         // Draw date
         CivilTime time = slot.header.playingTime.toCivilTime();
-
         titleRect.y = frameRect.y + 261;
-
         std::string str = fmt::format(
             "{} {}:{:02} {}\n{} {} {}",
             localization->dayName(time.dayOfWeek - 1),

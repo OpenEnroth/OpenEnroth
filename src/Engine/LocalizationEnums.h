@@ -692,9 +692,10 @@ enum class LstrId {
     LSTR_REMAINING_POWER                = 686,  // "Remaining power: %d"
     LSTR_PLAYER_IS_NOT_ACTIVE           = 687,  // "That player is not active"
     LSTR_NEW_SAVE                       = 688,  // "[New Save]"
+    LSTR_QUICKSAVE                      = 689,  // "Quicksave"
 
     LSTR_FIRST = LSTR_AC,
-    LSTR_LAST = LSTR_NEW_SAVE,
+    LSTR_LAST = LSTR_QUICKSAVE,
 
     LSTR_FIRST_MM7 = LSTR_AC,
     LSTR_LAST_MM7 = LSTR_EVIL_ENDING,

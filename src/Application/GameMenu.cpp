@@ -161,7 +161,7 @@ void Menu::EventLoop() {
                 continue;
             }
             case UIMSG_SaveLoadScroll:
-                saveLoadMenu()->scrollWithMouse();
+                saveLoadMenu()->scrollWithMouse(mouse->position());
                 continue;
             case UIMSG_Game_OpenOptionsDialog:  // Open
             {

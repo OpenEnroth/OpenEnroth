@@ -51,11 +51,6 @@
                 "key": "wizard_eye",
                 "section": "debug",
                 "value": "true"
-            },
-            {
-                "key": "quick_saves_name",
-                "section": "gameplay",
-                "value": "quiksave"
             }
         ],
         "endState": {

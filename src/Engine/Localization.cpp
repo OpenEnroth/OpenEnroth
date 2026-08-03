@@ -69,6 +69,7 @@ bool Localization::initialize() {
     this->_localizationStrings[LSTR_REMAINING_POWER] = "Remaining power: %d";
     this->_localizationStrings[LSTR_PLAYER_IS_NOT_ACTIVE] = "That player is not active";
     this->_localizationStrings[LSTR_NEW_SAVE] = "[New Save]";
+    this->_localizationStrings[LSTR_QUICKSAVE] = "Quicksave";
 
     this->_specialAttackNames[SPECIAL_ATTACK_CURSE] = "Curse";
     this->_specialAttackNames[SPECIAL_ATTACK_WEAK] = "Weaken";

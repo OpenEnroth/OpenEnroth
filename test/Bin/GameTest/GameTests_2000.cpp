@@ -1389,7 +1389,7 @@ GAME_TEST(Issues, Issue2551b) {
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
-    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    game.pressAndReleaseKey(PlatformKey::KEY_F9); // Try to quickload, there is no quicksave so this should fail.
     game.tick(3);
     ASSERT_EQ(ufs->ls("saves").size(), 1); // Just the autosave...
     GUIWindow_SaveLoad *saveMenu = saveLoadMenu();
@@ -1407,7 +1407,7 @@ GAME_TEST(Issues, Issue2551b) {
     EXPECT_TRUE(ufs->exists("saves/save000.mm7"));
 
     // Quicksaves are also hidden from the save menu.
-    game.pressAndReleaseKey(PlatformKey::KEY_F5);
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
@@ -1416,4 +1416,49 @@ GAME_TEST(Issues, Issue2551b) {
     ASSERT_EQ(ufs->ls("saves").size(), 3); // Autosave, quicksave & our save...
     GUIWindow_SaveLoad *saveMenu2 = saveLoadMenu();
     ASSERT_EQ(saveMenu2->slots().size(), 2); // ...but only the new save slot & our save are shown.
+}
+
+GAME_TEST(Issues, Issue2551c) {
+    // Quickload works from the game, from the in-game save menu & from the main menu.
+    game.startNewGame();
+    game.tick(2);
+    engine->config->gameplay.QuickSavesCount.setValue(4); // Quicksave counter wraps 4 -> 0.
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
+    game.tick(2);
+    std::string quickSaveName = getCurrentQuickSave();
+    ASSERT_EQ(quickSaveName, "quicksave0.mm7");
+
+    auto checkQuickLoaded = [&] {
+        game.skipLoadingScreen();
+        game.tick(2);
+        EXPECT_EQ(current_screen_type, SCREEN_GAME);
+        EXPECT_EQ(engine->_lastLoadedSaveFileName, quickSaveName);
+        engine->_lastLoadedSaveFileName.clear(); // Make sure the next check is not vacuous.
+    };
+
+    // Quickload in-game.
+    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    checkQuickLoaded();
+
+    // Quickload from the in-game save menu.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    ASSERT_EQ(current_screen_type, SCREEN_SAVEGAME);
+    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    checkQuickLoaded();
+
+    // Quickload from the main menu.
+    game.goToMainMenu();
+    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    checkQuickLoaded();
+
+    // Quickload from the load menu in the main menu.
+    game.goToMainMenu();
+    game.pressGuiButton("MainMenu_LoadGame");
+    game.tick(3);
+    ASSERT_EQ(current_screen_type, SCREEN_LOADGAME);
+    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    checkQuickLoaded();
 }

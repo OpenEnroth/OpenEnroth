@@ -17,6 +17,9 @@
 // Autosave file name. Note that it's not localized, unlike the autosave title displayed in-game.
 constexpr std::string_view autosaveFileName = "autosave.mm7";
 
+// Quicksave file name prefix. Full quicksave file names also contain a number, e.g. "quicksave1.mm7".
+constexpr std::string_view quickSaveFileNamePrefix = "quicksave";
+
 struct SaveGameHeader {
     std::string name; // Save name, as displayed in the save list in-game.
     std::string locationName; // Name of the map, e.g. "out01.odm".

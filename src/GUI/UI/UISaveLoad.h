@@ -53,7 +53,7 @@ class GUIWindow_SaveLoad : public GUIWindow {
 
     void scrollUp();
     void scrollDown();
-    void scrollWithMouse();
+    void scrollWithMouse(Pointi mousePos);
 
  protected:
     void drawSaveLoad();
