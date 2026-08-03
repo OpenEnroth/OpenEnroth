@@ -154,7 +154,7 @@ jobs:
       # ffmpeg's out-of-tree build needs an MSYS make, see bazel/toolchains/BUILD.bazel.
       - name: '[windows] Install MSYS2 make'
         if: env.MATRIX_PLATFORM == 'windows'
-        run: C:\msys64\usr\bin\pacman.exe -S --noconfirm make
+        run: C:/msys64/usr/bin/pacman.exe -S --noconfirm make
 
       - name: 'Set up Bazel'
         uses: bazel-contrib/setup-bazel@0.14.0
