@@ -140,6 +140,10 @@ cmake(
     cache_entries = {
         "CMAKE_BUILD_TYPE": "Release",
         "LIBTYPE": "STATIC",
+        # The crosstool reports CMAKE_SYSTEM_NAME=Linux, so OpenAL would enable the
+        # OSS backend - bionic has no sys/soundcard.h. Use OpenSLES instead.
+        "ALSOFT_BACKEND_OSS": "OFF",
+        "ALSOFT_BACKEND_OPENSL": "ON",
         "ALSOFT_UTILS": "OFF",
         "ALSOFT_EXAMPLES": "OFF",
         "ALSOFT_TESTS": "OFF",
