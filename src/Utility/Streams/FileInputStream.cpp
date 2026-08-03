@@ -78,7 +78,7 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
         }
     } else if (data) {
         // Large read: direct fread.
-        clearerr(_file); // See above.
+        clearerr(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
         size_t bytesRead = fread(data, 1, size, _file);
         if (bytesRead < size && ferror(_file))
             Exception::throwFromErrno(displayPath());
