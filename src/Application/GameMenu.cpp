@@ -133,25 +133,25 @@ void Menu::EventLoop() {
                 saveLoadMenu()->slotClicked(param);
                 continue;
             case UIMSG_LoadGame:
-                if (int slot = saveLoadMenu()->selectedSlot(); pSavegameList->isSlotUsed(slot)) {
-                    loadGame(slot);
+                if (saveLoadMenu()->hasSelectedSlot()) {
+                    loadGame(saveLoadMenu()->selectedSlot().fileName);
                     uGameState = GAME_STATE_LOADING_GAME;
                 }
                 continue;
             case UIMSG_SaveGame: {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                int slot = saveLoadMenu()->selectedSlot();
+                GUIWindow_SaveLoad *menu = saveLoadMenu();
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
                     if (keyboardInputHandler->GetTextInput().empty())
                         continue; // Saves need a name, keep the input open.
-                    pSavegameList->setSlotName(slot, keyboardInputHandler->GetTextInput());
+                    menu->setSelectedSlotName(keyboardInputHandler->GetTextInput());
                     keyboardInputHandler->EndTextInput();
-                } else if (!pSavegameList->isSlotUsed(slot) && pSavegameList->slots()[slot].header.name.empty()) {
+                } else if (menu->selectedSlot().fileName.empty() && menu->selectedSlot().header.name.empty()) {
                     // Don't just save into the new save slot, ask for the save name first.
                     keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu.get());
                     continue;
                 }
-                doSavegame(slot);
+                doSavegame(menu->selectedSlot().fileName, menu->selectedSlot().header.name);
                 continue;
             }
             case UIMSG_Game_OpenSaveGameDialog: {
@@ -384,12 +384,6 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_QuickLoad:
                 quickLoadGame();
-                if (current_screen_type == SCREEN_SAVEGAME || current_screen_type == SCREEN_LOADGAME) {
-                    // Failed quickload has reinitialized the list under the open menu, reload the headers.
-                    pSavegameList->loadHeaders();
-                    if (current_screen_type == SCREEN_SAVEGAME)
-                        saveLoadMenu()->setSelectedSlot(pSavegameList->saveMenuSlots().front());
-                }
                 break;
             default:
                 break;
