@@ -77,6 +77,10 @@ cmake(
             "-DCMAKE_C_FLAGS=/D_WIN32_WINNT=0x0600",
             "-DCMAKE_CXX_FLAGS=/D_WIN32_WINNT=0x0600",
         ],
+        ":_linux_x86": [
+            "-DCMAKE_C_FLAGS=-m32",
+            "-DCMAKE_CXX_FLAGS=-m32",
+        ],
         "//conditions:default": [],
     }),
     # Don't generate a Bazel crosstool cmake toolchain file. The default crosstool
@@ -131,11 +135,6 @@ cmake(
         "-DCMAKE_ASM_FLAGS=--target=x86_64-linux-android24",
         "-DCMAKE_EXE_LINKER_FLAGS=--target=x86_64-linux-android24",
     ],
-        ":_linux_x86": [
-            "-DCMAKE_C_FLAGS=-m32",
-            "-DCMAKE_CXX_FLAGS=-m32",
-            "-DCMAKE_EXE_LINKER_FLAGS=-m32",
-        ],
         "//conditions:default": [],
     }),
     cache_entries = {
