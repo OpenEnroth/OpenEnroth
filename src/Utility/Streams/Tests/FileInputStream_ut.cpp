@@ -198,10 +198,9 @@ UNIT_TEST(FileInputStream, ReadAllAfterFileGrows) {
     FileInputStream in(tmpfile);
 
     // Append behind the stream's back - its size was already sampled.
-    {
-        std::ofstream more(tmpfile, std::ios::binary | std::ios::app);
-        more << second;
-    }
+    std::ofstream more(tmpfile, std::ios::binary | std::ios::app);
+    more << second;
+    more.close();
 
     EXPECT_EQ(in.readAll(), first + second); // The size sampled at open is only a hint.
 }

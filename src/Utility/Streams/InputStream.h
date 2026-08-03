@@ -163,6 +163,10 @@ class InputStream {
     [[nodiscard]] size_t position() const { return _bufferBase + _buffer.used(); }
 
     /**
+     * Note that for file-backed streams this is only a hint - it's sampled at open time, and re-reading it on every
+     * call wouldn't help either, the answer is stale the moment it's returned. `position()` can end up past it, and
+     * reading is the only way to find where the stream really ends.
+     *
      * @return                          Total size of the stream in bytes, or `size_t(-1)` for unsized streams.
      */
     [[nodiscard]] size_t size() const { return _size; }

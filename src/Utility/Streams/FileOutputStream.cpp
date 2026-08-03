@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cerrno>
+#include <exception>
 #include <cstdio>
 #include <memory>
 #include <string>
@@ -74,21 +75,24 @@ void FileOutputStream::_close(Buffer *buffer, bool canThrow) {
     assert(isOpen());
 
     std::string path = displayPath(); // `base_type::_close` clears it.
-    int closeError = 0;
 
-    {
-        // Runs on every path, including when the write below throws - otherwise the destructor re-enters and both
-        // rewrites the buffer and closes a second time.
-        MM_AT_SCOPE_EXIT(
-            closeError = fclose(_file) != 0 ? errno : 0;
-            _file = nullptr;
-            _buf.reset();
-            _bufSize = 0;
-            base_type::_close(buffer, canThrow));
-
+    // Tearing down has to happen even if the write throws, or the destructor re-enters and both rewrites the buffer
+    // and closes a second time.
+    std::exception_ptr writeError;
+    try {
         writeBuffer(buffer, canThrow);
+    } catch (...) {
+        writeError = std::current_exception();
     }
 
+    int closeError = fclose(_file) != 0 ? errno : 0;
+    _file = nullptr;
+    _buf.reset();
+    _bufSize = 0;
+    base_type::_close(buffer, canThrow);
+
+    if (writeError)
+        std::rethrow_exception(writeError); // The write error is the informative one, so it wins over `closeError`.
     if (closeError != 0 && canThrow) // TODO(captainurist): !canThrow => log OR attach
         Exception::throwFromErrno(closeError, path);
 }
