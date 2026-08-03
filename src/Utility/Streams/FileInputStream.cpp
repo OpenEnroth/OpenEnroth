@@ -32,6 +32,7 @@ void FileInputStream::open(std::string_view path, size_t bufferSize) {
 
     if (isOpen())
         close();
+    assert(!_buf); // Sized for the old `_bufSize`, so it has to be gone before that changes.
 
     std::string absolutePath = absolute(std::filesystem::path(path)).generic_string();
     FILE *file = fopen(absolutePath.c_str(), "rb");
@@ -52,7 +53,6 @@ void FileInputStream::open(std::string_view path, size_t bufferSize) {
     if (fseeko(file, 0, SEEK_SET) != 0)
         Exception::throwFromErrno(absolutePath);
 
-    assert(!_buf); // Dropped by `close()` above.
     _file = std::exchange(file, nullptr); // Disarms the guard above.
     _bufSize = bufferSize;
     base_type::open({}, fileEnd, absolutePath);
