@@ -152,9 +152,11 @@ jobs:
         run: choco install pkgconfiglite --no-progress -y
 
       # ffmpeg's out-of-tree build needs an MSYS make, see bazel/toolchains/BUILD.bazel.
+      # gawk must be MSYS2's own: make's sh otherwise falls through to git-bash's awk,
+      # a foreign msys runtime that re-parses the command line and halves backslashes.
       - name: '[windows] Install MSYS2 make'
         if: env.MATRIX_PLATFORM == 'windows'
-        run: C:/msys64/usr/bin/pacman.exe -S --noconfirm make
+        run: C:/msys64/usr/bin/pacman.exe -S --noconfirm make gawk
 
       - name: 'Set up Bazel'
         uses: bazel-contrib/setup-bazel@0.14.0
