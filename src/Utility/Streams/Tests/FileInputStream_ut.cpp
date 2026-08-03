@@ -183,6 +183,53 @@ UNIT_TEST(FileInputStream, LargeSkipPastEnd) {
     in.close();
 }
 
+UNIT_TEST(FileInputStream, ReadAllAfterFileGrows) {
+    const char *tmpfile = "tmp_grow_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    std::string first(10, 'a');
+    std::string second(90, 'b');
+
+    FileOutputStream out(tmpfile);
+    out.write(first);
+    out.close();
+
+    FileInputStream in(tmpfile);
+
+    // Append to the file behind the stream's back - its size was already sampled at open time.
+    FileOutputStream more(tmpfile);
+    more.write(first);
+    more.write(second);
+    more.close();
+
+    EXPECT_EQ(in.readAll(), first + second); // Used to stop at the sampled size and return just the first 10 bytes.
+}
+
+UNIT_TEST(FileInputStream, ReopenWithoutClose) {
+    const char *tmpfile1 = "tmp_reopen_noclose1_test.txt";
+    const char *tmpfile2 = "tmp_reopen_noclose2_test.txt";
+    ScopedTestFileSlot tmp1(tmpfile1);
+    ScopedTestFileSlot tmp2(tmpfile2);
+
+    std::string data(2000, 'q');
+
+    FileOutputStream out1(tmpfile1);
+    out1.write("first");
+    out1.close();
+
+    FileOutputStream out2(tmpfile2);
+    out2.write(data);
+    out2.close();
+
+    // Reopening with a larger buffer used to keep the smaller `_buf` around, which is a heap buffer overflow.
+    FileInputStream in(tmpfile1, 64);
+    EXPECT_EQ(in.readAll(), "first");
+
+    in.open(tmpfile2, 4096);
+    EXPECT_EQ(in.readAll(), data);
+    in.close();
+}
+
 UNIT_TEST(FileInputStream, CloseIdempotent) {
     const char *tmpfile = "tmp_closeidem_test.txt";
     ScopedTestFileSlot tmp(tmpfile);

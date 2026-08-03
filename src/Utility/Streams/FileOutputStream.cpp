@@ -1,12 +1,14 @@
 #include "FileOutputStream.h"
 
 #include <cassert>
+#include <cerrno>
 #include <cstdio>
 #include <memory>
 #include <string>
 #include <filesystem>
 
 #include "Utility/Exception.h"
+#include "Utility/ScopeGuard.h"
 #include "Utility/UnicodeCrt.h"
 
 FileOutputStream::FileOutputStream(std::string_view path, size_t bufferSize) {
@@ -21,15 +23,28 @@ void FileOutputStream::open(std::string_view path, size_t bufferSize) {
     assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
     assert(bufferSize > 0);
 
+    // Note that this can throw - the data buffered for the previously open file might fail to flush. Also note that
+    // reopening without closing first used to reuse `_buf` while `_bufSize` was already updated, which is a heap
+    // buffer overflow if the new buffer is larger.
+    if (isOpen())
+        close();
+
     std::string absPath = absolute(std::filesystem::path(path)).generic_string();
-    _file = fopen(absPath.c_str(), "wb");
-    if (!_file)
+    FILE *file = fopen(absPath.c_str(), "wb");
+    if (!file)
         Exception::throwFromErrno(absPath);
+
+    // The `FILE*` is ours from this point on, so make sure it's not leaked if anything below throws.
+    bool succeeded = false;
+    MM_AT_SCOPE_EXIT(if (!succeeded) fclose(file));
 
     // Disable libc buffering, we manage our own buffer.
-    if (setvbuf(_file, nullptr, _IONBF, 0) != 0)
+    if (setvbuf(file, nullptr, _IONBF, 0) != 0)
         Exception::throwFromErrno(absPath);
 
+    succeeded = true;
+    _file = file;
+    _buf.reset(); // Might have been allocated for a different buffer size.
     _bufSize = bufferSize;
     base_type::open({}, absPath);
 }
@@ -38,7 +53,7 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
     if (size < _bufSize) {
         // Small write: fill current buffer, write it all out, put the tail into a fresh buffer.
         size_t head = buffer->write(data, buffer->remaining());
-        writeBuffer(*buffer, true);
+        writeBuffer(buffer, true);
         data = static_cast<const char *>(data) + head;
         size -= head;
         if (!_buf)
@@ -47,8 +62,8 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
         buffer->write(data, size);
     } else {
         // Large write: write out current buffer, then write data directly.
-        writeBuffer(*buffer, true);
-        if (fwrite(data, size, 1, _file) != 1)
+        writeBuffer(buffer, true);
+        if (fwrite(data, 1, size, _file) != size) // Byte-wise, so that a partial write isn't reported as a total loss.
             Exception::throwFromErrno(displayPath());
         if (_buf)
             buffer->reset(_buf.get(), _buf.get(), _buf.get() + _bufSize);
@@ -56,8 +71,7 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
 }
 
 void FileOutputStream::_flush(Buffer *buffer) {
-    writeBuffer(*buffer, true);
-    buffer->commit();
+    writeBuffer(buffer, true); // Drops what went out of the buffer, so `used()` is 0 on success.
     if (fflush(_file) != 0)
         Exception::throwFromErrno(displayPath());
 }
@@ -65,20 +79,38 @@ void FileOutputStream::_flush(Buffer *buffer) {
 void FileOutputStream::_close(Buffer *buffer, bool canThrow) {
     assert(isOpen());
 
-    writeBuffer(*buffer, canThrow);
+    std::string path = displayPath(); // `base_type::_close` clears it.
+    int closeError = 0;
 
-    int status = fclose(_file);
-    if (status != 0 && canThrow) // TODO(captainurist): !canThrow => log OR attach
-        Exception::throwFromErrno(displayPath());
-    _file = nullptr;
-    _buf.reset();
-    _bufSize = 0;
+    {
+        // Note that all the teardown below happens on every path, including when the write throws. Otherwise
+        // `isOpen()` would stay true with an already closed `FILE*`, and the destructor would re-enter and both
+        // rewrite the buffer and close it a second time.
+        MM_AT_SCOPE_EXIT(
+            closeError = fclose(_file) != 0 ? errno : 0;
+            _file = nullptr;
+            _buf.reset();
+            _bufSize = 0;
+            base_type::_close(buffer, canThrow));
 
-    base_type::_close(buffer, canThrow);
+        writeBuffer(buffer, canThrow);
+    }
+
+    if (closeError != 0 && canThrow) // TODO(captainurist): !canThrow => log OR attach
+        Exception::throwFromErrno(closeError, path);
 }
 
-void FileOutputStream::writeBuffer(const Buffer &buffer, bool canThrow) {
-    if (size_t bytesBuffered = buffer.used())
-        if (fwrite(buffer.start(), bytesBuffered, 1, _file) != 1 && canThrow)
-            Exception::throwFromErrno(displayPath());
+void FileOutputStream::writeBuffer(Buffer *buffer, bool canThrow) {
+    size_t bytesBuffered = buffer->used();
+    if (bytesBuffered == 0)
+        return;
+
+    // Note the byte-wise form of `fwrite` - the `fwrite(ptr, size, 1, f)` form returns 0 on a partial write, losing
+    // the count of what actually went out. We need that count, because the bytes that did make it to disk have to be
+    // dropped from the buffer - otherwise `_close` would write them out a second time, duplicating them in the file.
+    size_t bytesWritten = fwrite(buffer->start(), 1, bytesBuffered, _file);
+    buffer->reset(buffer->start() + bytesWritten, buffer->pos(), buffer->end());
+
+    if (bytesWritten != bytesBuffered && canThrow)
+        Exception::throwFromErrno(displayPath());
 }

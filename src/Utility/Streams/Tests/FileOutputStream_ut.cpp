@@ -87,6 +87,30 @@ UNIT_TEST(FileOutputStream, MixedSmallAndLargeWrites) {
     EXPECT_EQ(in.readAll(), expected);
 }
 
+UNIT_TEST(FileOutputStream, ReopenWithoutClose) {
+    const char *tmpfile1 = "tmp_outreopen_noclose1_test.txt";
+    const char *tmpfile2 = "tmp_outreopen_noclose2_test.txt";
+    ScopedTestFileSlot tmp1(tmpfile1);
+    ScopedTestFileSlot tmp2(tmpfile2);
+
+    std::string data(2000, 'z');
+
+    FileOutputStream out(tmpfile1, 64);
+    out.write("first");
+
+    // Reopening without closing must flush and close the previous file, not silently drop it - and must not reuse
+    // the smaller `_buf` for the larger buffer size.
+    out.open(tmpfile2, 4096);
+    out.write(data);
+    out.close();
+
+    FileInputStream in1(tmpfile1);
+    EXPECT_EQ(in1.readAll(), "first");
+
+    FileInputStream in2(tmpfile2);
+    EXPECT_EQ(in2.readAll(), data);
+}
+
 UNIT_TEST(FileOutputStream, CloseIdempotent) {
     const char *tmpfile = "tmp_closeidem_test.txt";
     ScopedTestFileSlot tmp(tmpfile);
