@@ -46,15 +46,11 @@ cc_library(
 )
 
 # ─── LuaJIT ──────────────────────────────────────────────────────────────────
-# Windows: MSVC build via luajit-cmake (LuaJIT's own Makefile requires GCC).
-# Other platforms: two-stage make() build from @luajit.
+# Native bazel two-stage build on all platforms - see bazel/deps/luajit.BUILD.
 
 cc_library(
     name = "luajit",
-    deps = select({
-        "@platforms//os:windows": ["@luajit_win//:luajit"],
-        "//conditions:default":   ["@luajit//:luajit"],
-    }),
+    deps = ["@luajit//:luajit"],
     visibility = ["//visibility:public"],
 )
 

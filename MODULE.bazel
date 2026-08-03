@@ -230,20 +230,6 @@ http_archive(
     sha256 = "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7",
 )
 
-# LuaJIT for Windows — MSVC build via the luajit-cmake wrapper, entirely inside bazel.
-# Combines the LuaJIT & luajit-cmake archives into one repository (see luajit_repo.bzl).
-luajit_cmake_repository = use_repo_rule("//bazel/deps:luajit_repo.bzl", "luajit_cmake_repository")
-
-luajit_cmake_repository(
-    name = "luajit_win",
-    luajit_url = "https://github.com/LuaJIT/LuaJIT/archive/97813fb924edf822455f91a5fbbdfdb349e5984f.tar.gz",
-    luajit_sha256 = "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7",
-    luajit_strip_prefix = "LuaJIT-97813fb924edf822455f91a5fbbdfdb349e5984f",
-    luajit_cmake_url = "https://github.com/zhaozg/luajit-cmake/archive/64462217e05164b46ca44c10ed1d12918eee8fa5.tar.gz",
-    luajit_cmake_sha256 = "02b4a642ef33ad3da30850397050fc40aee15196440bd211fc445bb1e6edf35d",
-    luajit_cmake_strip_prefix = "luajit-cmake-64462217e05164b46ca44c10ed1d12918eee8fa5",
-    build_file = "//bazel/deps:luajit_win.BUILD",
-)
 
 # System deps — source builds via rules_foreign_cc cmake()/configure_make() -
 
