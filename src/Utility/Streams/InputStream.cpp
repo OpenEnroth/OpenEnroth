@@ -22,30 +22,30 @@ size_t InputStream::readAll(std::string *dst) {
             dst->resize(read(dst->data(), bytesHint));                                // from the callback is also UB.
         }
 
-        // The size is only a hint - it's sampled at open time, and `st_size` lies outright on procfs. Read on until
-        // the stream really ends; that's a single empty read if it ended where the size said.
-        char chunk[4096];
-        while (size_t bytesRead = read(chunk, sizeof(chunk)))
-            dst->append(chunk, bytesRead);
-
-        return dst->size();
-    } else {
-        // Unsized stream: accumulate in chunks, materialize once.
-        MemoryScratchpad scratchpad;
-        size_t bytesTotal = 0;
-        while (true) {
-            std::span<char> chunk = scratchpad.next();
-            size_t bytesRead = read(chunk.data(), chunk.size());
-            bytesTotal += bytesRead;
-            if (bytesRead < chunk.size())
-                break;
-        }
-        dst->resize_and_overwrite(bytesTotal, [&scratchpad](char *buffer, size_t size) {
-            scratchpad.materialize(buffer, size);
-            return size;
-        });
-        return bytesTotal;
+        // The size is only a hint - it's sampled at open time, and `st_size` lies outright on procfs. A single byte
+        // tells us whether the stream really ended there, which it almost always did.
+        char probe;
+        if (read(&probe, 1) == 0)
+            return dst->size();
+        dst->push_back(probe);
     }
+
+    // Unsized stream, or a sized one that turned out to have more data. Accumulate in geometrically growing chunks,
+    // then materialize once.
+    MemoryScratchpad scratchpad;
+    size_t bytesTail = 0;
+    while (true) {
+        std::span<char> chunk = scratchpad.next();
+        size_t bytesRead = read(chunk.data(), chunk.size());
+        bytesTail += bytesRead;
+        if (bytesRead < chunk.size())
+            break;
+    }
+
+    size_t bytesHead = dst->size();
+    dst->resize(bytesHead + bytesTail);
+    scratchpad.materialize(dst->data() + bytesHead, bytesTail);
+    return dst->size();
 }
 
 void InputStream::open(Buffer buffer, size_t size, std::string_view displayPath) {

@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <fstream>
 #include <string>
 #include <filesystem>
 
@@ -197,10 +198,10 @@ UNIT_TEST(FileInputStream, ReadAllAfterFileGrows) {
     FileInputStream in(tmpfile);
 
     // Append behind the stream's back - its size was already sampled.
-    FileOutputStream more(tmpfile);
-    more.write(first);
-    more.write(second);
-    more.close();
+    {
+        std::ofstream more(tmpfile, std::ios::binary | std::ios::app);
+        more << second;
+    }
 
     EXPECT_EQ(in.readAll(), first + second); // The size sampled at open is only a hint.
 }
