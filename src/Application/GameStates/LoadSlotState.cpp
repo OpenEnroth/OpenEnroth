@@ -8,6 +8,7 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UISaveLoad.h"
+#include "Io/Mouse.h"
 
 LoadSlotState::LoadSlotState() = default;
 LoadSlotState::~LoadSlotState() = default;
@@ -61,7 +62,7 @@ FsmAction LoadSlotState::update() {
             return FsmAction::transition("back");
         }
         case UIMSG_SaveLoadScroll: {
-            _uiLoadSaveSlot->scrollWithMouse();
+            _uiLoadSaveSlot->scrollWithMouse(mouse->position());
             break;
         }
         case UIMSG_QuickLoad: {

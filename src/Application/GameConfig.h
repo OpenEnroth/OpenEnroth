@@ -253,9 +253,6 @@ class GameConfig : public Config {
             "Recovery time modifier when spell casting ended in failure for the reason where spell cannot be cast at all in current context. "
             "Context include situation where outdoor spell is casted indoor or targeted spell is casted with no characters on screen."};
 
-        String QuickSaveName = {this, "quick_saves_name", "quicksave",
-            "What name to use to store the quick saves as."};
-
         Int QuickSavesCount = {this, "quick_saves_count", 4, &ValidateQuickSaveCount,
             "How many quick saves have currently been used."
             "This will rotate back to 0 when 5 saves has been reached."};

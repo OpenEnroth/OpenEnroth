@@ -204,7 +204,7 @@ SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path,
 }
 
 void autoSave() {
-    saveGame(true, false, fmt::format("saves/{}", autosaveFileName));
+    saveGame(true, false, fmt::format("saves/{}", autosaveFileName), localization->str(LSTR_AUTOSAVE));
 }
 
 void doSavegame(std::string fileName, std::string_view title) {
@@ -239,14 +239,14 @@ void saveNewGame() {
     pParty->_viewPitch = 0;
     pParty->_viewYaw = 512;
 
-    saveGame(true, true, fmt::format("saves/{}", autosaveFileName));
+    saveGame(true, true, fmt::format("saves/{}", autosaveFileName), localization->str(LSTR_AUTOSAVE));
 }
 
 void quickSaveGame() {
     assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
 
     engine->config->gameplay.QuickSavesCount.cycleIncrement();
-    saveGame(false, false, fmt::format("saves/{}", getCurrentQuickSave()), "Quicksave");
+    saveGame(false, false, fmt::format("saves/{}", getCurrentQuickSave()), localization->str(LSTR_QUICKSAVE));
     engine->_statusBar->setEvent(LSTR_GAME_SAVED);
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 }
@@ -265,5 +265,5 @@ void quickLoadGame() {
 }
 
 std::string getCurrentQuickSave() {
-    return fmt::format("{}{}.mm7", engine->config->gameplay.QuickSaveName.value(), engine->config->gameplay.QuickSavesCount.value());
+    return fmt::format("{}{}.mm7", quickSaveFileNamePrefix, engine->config->gameplay.QuickSavesCount.value());
 }
