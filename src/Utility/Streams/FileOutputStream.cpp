@@ -101,8 +101,7 @@ void FileOutputStream::writeBuffer(Buffer *buffer, bool canThrow) {
     if (bytesBuffered == 0)
         return;
 
-    // Byte-wise, because the `fwrite(ptr, size, 1, f)` form returns 0 on a partial write and loses the count. We
-    // need it - bytes that did make it out must be dropped, or `_close` writes them again and duplicates them.
+    // Byte-wise, so a partial write reports what went out - those bytes must be dropped or `_close` rewrites them.
     size_t bytesWritten = fwrite(buffer->start(), 1, bytesBuffered, _file);
     buffer->reset(buffer->start() + bytesWritten, buffer->pos(), buffer->end());
 
