@@ -5,7 +5,6 @@
 #   engine_graphics_renderer -> engine_graphics (headers)
 exports_files(
     [
-        "BSPModel.cpp",
         "BspRenderer.cpp",
         "Camera.cpp",
         "ClippingFunctions.cpp",
