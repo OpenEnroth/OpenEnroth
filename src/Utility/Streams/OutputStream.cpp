@@ -22,7 +22,16 @@ void OutputStream::_close(Buffer *buffer, bool /*canThrow*/) {
 
 void OutputStream::overflow(const void *data, size_t size) {
     assert(size > _buffer.remaining());
+
     size_t pos = position();
-    _overflow(&_buffer, data, size);
+    try {
+        _overflow(&_buffer, data, size);
+    } catch (...) {
+        // The write failed, so none of `size` was accepted - but part of the buffer may already have gone out, and
+        // `position()` must not move backwards by that much.
+        _bufferBase = pos - _buffer.used();
+        throw;
+    }
+
     _bufferBase = pos + size - _buffer.used();
 }

@@ -228,6 +228,21 @@ UNIT_TEST(FileInputStream, LargeSkipAfterFileGrows) {
     EXPECT_EQ(in.readAll(), (first + second).substr(50));
 }
 
+#ifdef __linux__
+UNIT_TEST(FileInputStream, SkipAgreesWithReadOnSeekOpaqueFiles) {
+    // Files on procfs report a size of zero but do have contents, so anything derived from seeking understates
+    // them. `skip` has to return what `read` would have consumed.
+    FileInputStream in("/proc/self/status", 8); // Small buffer, so that the skip goes through the seeking branch.
+
+    char buf[10] = {};
+    EXPECT_EQ(in.read(buf, sizeof(buf)), 10u);
+    EXPECT_EQ(in.skip(100), 100u);
+    EXPECT_EQ(in.position(), 110u);
+    EXPECT_EQ(in.read(buf, sizeof(buf)), 10u);
+    in.close();
+}
+#endif
+
 UNIT_TEST(FileInputStream, ReopenWithoutClose) {
     const char *tmpfile1 = "tmp_reopen_noclose1_test.txt";
     const char *tmpfile2 = "tmp_reopen_noclose2_test.txt";

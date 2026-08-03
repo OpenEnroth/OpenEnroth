@@ -7,6 +7,7 @@
 #include <string_view>
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/ScopeGuard.h"
 #include "Utility/Streams/StreamBuffer.h"
 
 /**
@@ -72,9 +73,12 @@ class OutputStream {
      */
     void flush() {
         assert(isOpen());
+
+        // Rebased on every path - a flush that throws has still written out part of the buffer, and leaving
+        // `_bufferBase` stale would move `position()` backwards by that much, permanently.
         size_t pos = position();
+        MM_AT_SCOPE_EXIT(_bufferBase = pos - _buffer.used());
         _flush(&_buffer);
-        _bufferBase = pos - _buffer.used();
     }
 
     /**

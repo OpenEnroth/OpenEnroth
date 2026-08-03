@@ -68,7 +68,7 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
         // Small read/skip/refill: fill the internal buffer.
         clearerr(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
         size_t bytesRead = fread(_buf.get(), 1, _bufSize, _file);
-        if (bytesRead < _bufSize && ferror(_file))
+        if (bytesRead == 0 && ferror(_file)) // Partial reads are returned as-is, the error resurfaces on the next call.
             Exception::throwFromErrno(displayPath());
         buffer->reset(_buf.get(), _buf.get(), _buf.get() + bytesRead);
         if (data) {
@@ -80,13 +80,12 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
         // Large read: direct fread.
         clearerr(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
         size_t bytesRead = fread(data, 1, size, _file);
-        if (bytesRead < size && ferror(_file))
+        if (bytesRead == 0 && ferror(_file)) // Partial reads are returned as-is, the error resurfaces on the next call.
             Exception::throwFromErrno(displayPath());
         return bytesRead;
     } else {
-        // Large skip: seek. Note that we're measuring where the file actually ends instead of going by the stream
-        // size, which is sampled at open time and can be stale in either direction. `read` above works off the real
-        // file, and `skip` has to agree with it.
+        // Large skip. Seek over what the file provably holds, then read and discard the rest - a seek-derived
+        // length understates the readable data for some files, and `skip` has to agree with `read`.
         int64_t cur = ftello(_file);
         if (cur == -1)
             Exception::throwFromErrno(displayPath());
@@ -97,10 +96,23 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
             Exception::throwFromErrno(displayPath());
 
         uint64_t bytesLeft = end > cur ? end - cur : 0;
-        size_t bytesToSkip = static_cast<size_t>(std::min<uint64_t>(size, bytesLeft));
-        if (fseeko(_file, cur + bytesToSkip, SEEK_SET) != 0)
+        size_t bytesSkipped = static_cast<size_t>(std::min<uint64_t>(size, bytesLeft));
+        if (fseeko(_file, cur + bytesSkipped, SEEK_SET) != 0)
             Exception::throwFromErrno(displayPath());
-        return bytesToSkip;
+
+        if (!_buf)
+            _buf = std::make_unique<char[]>(_bufSize);
+        while (bytesSkipped < size) {
+            clearerr(_file); // See above.
+            size_t bytesRead = fread(_buf.get(), 1, std::min(size - bytesSkipped, _bufSize), _file);
+            if (bytesRead == 0) {
+                if (ferror(_file))
+                    Exception::throwFromErrno(displayPath());
+                break; // End of stream for real this time.
+            }
+            bytesSkipped += bytesRead;
+        }
+        return bytesSkipped;
     }
 }
 

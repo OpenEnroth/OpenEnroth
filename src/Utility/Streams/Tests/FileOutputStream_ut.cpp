@@ -5,6 +5,7 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/FileInputStream.h"
+#include "Utility/Exception.h"
 
 UNIT_TEST(FileOutputStream, Write) {
     const char *tmpfile = "tmp_test.txt";
@@ -110,6 +111,28 @@ UNIT_TEST(FileOutputStream, ReopenWithoutClose) {
     FileInputStream in2(tmpfile2);
     EXPECT_EQ(in2.readAll(), data);
 }
+
+#ifdef __linux__
+UNIT_TEST(FileOutputStream, PositionSurvivesFailedFlush) {
+    // `/dev/full` can be opened for writing, but every write into it fails with `ENOSPC`.
+    FileOutputStream out("/dev/full", 1024);
+
+    out.write(std::string(200, 'y'));
+    EXPECT_EQ(out.position(), 200u);
+
+    EXPECT_THROW(out.flush(), Exception);
+    EXPECT_EQ(out.position(), 200u); // A failed flush must not move it, in either direction.
+
+    out.write(std::string(10, 'z'));
+    EXPECT_EQ(out.position(), 210u);
+
+    // Closing fails too, and that's fine.
+    try {
+        out.close();
+    } catch (const Exception &) {
+    }
+}
+#endif
 
 UNIT_TEST(FileOutputStream, CloseIdempotent) {
     const char *tmpfile = "tmp_closeidem_test.txt";
