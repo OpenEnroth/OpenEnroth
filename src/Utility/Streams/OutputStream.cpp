@@ -28,7 +28,6 @@ void OutputStream::overflow(const void *data, size_t size) {
     size_t pos = position();
     size_t accepted = 0;
     MM_AT_SCOPE_EXIT(_bufferBase = pos + accepted - _buffer.used());
-
     _overflow(&_buffer, data, size);
     accepted = size;
 }

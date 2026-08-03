@@ -6,6 +6,7 @@
 
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Streams/MemoryInputStream.h"
+#include "Utility/Exception.h"
 
 /**
  * An input stream that doesn't report its size, feeding data through `_underflow` in small chunks.
@@ -83,6 +84,43 @@ class LyingInputStream : public InputStream {
     size_t _dataSize;
     size_t _pos = 0;
 };
+
+/**
+ * An input stream whose `_underflow` leaves a mangled buffer behind and then throws. Position accounting must not
+ * depend on what a failing implementation does to the buffer.
+ */
+class ThrowingInputStream : public InputStream {
+ public:
+    ThrowingInputStream(const void *data, size_t size) : _data(static_cast<const char *>(data)) {
+        open(Buffer(_data, _data, _data + size), size, {});
+    }
+
+ protected:
+    virtual size_t _underflow(void *, size_t, Buffer *buffer) override {
+        buffer->reset(_scratch, _scratch + 7, _scratch + sizeof(_scratch)); // `used()` out of nowhere.
+        throw Exception("underflow failed");
+    }
+
+ private:
+    const char *_data;
+    char _scratch[64] = {};
+};
+
+UNIT_TEST(InputStream, PositionAfterThrowingUnderflow) {
+    std::string data = "hello";
+
+    // Reading past the end drains the buffer and then refills, so the drained bytes are consumed even though the
+    // refill throws.
+    ThrowingInputStream in(data.data(), data.size());
+    char buf[10];
+    EXPECT_THROW((void) in.read(buf, sizeof(buf)), Exception);
+    EXPECT_EQ(in.position(), 5u);
+
+    // Refilling consumes nothing, so here it must not move at all.
+    ThrowingInputStream in2(data.data(), data.size());
+    EXPECT_THROW((void) in2.readUntil('\0'), Exception);
+    EXPECT_EQ(in2.position(), 5u);
+}
 
 UNIT_TEST(InputStream, PositionAfterReadUntilAtEnd) {
     // The delimiter is never found, so this runs out of data and hits the default `_underflow`.

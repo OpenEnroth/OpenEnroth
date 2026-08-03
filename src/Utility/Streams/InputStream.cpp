@@ -90,7 +90,6 @@ size_t InputStream::underflow(void *data, size_t size) {
     // consumed either way.
     size_t tail = 0;
     MM_AT_SCOPE_EXIT(_bufferBase = pos + head + tail - _buffer.used());
-
     tail = _underflow(data, size, &_buffer);
     return head + tail;
 }
