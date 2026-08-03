@@ -118,8 +118,8 @@ UNIT_TEST(InputStream, ReadAllReadsPastReportedSize) {
 }
 
 UNIT_TEST(InputStream, ReadAllPastReportedSize) {
-    // Reading past the reported size leaves `position() > size()`, which must not underflow into a nonsense
-    // allocation - that throws `std::length_error`, which `catch (const Exception &)` doesn't catch.
+    // Reading past the reported size leaves `position() > size()`. Working out how much space to preallocate must
+    // not underflow there.
     std::string data(100, 'a');
     LyingInputStream in(data.data(), data.size(), 5);
 
