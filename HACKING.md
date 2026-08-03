@@ -93,6 +93,7 @@ Code formatting:
 * Sort method definitions in `.cpp` files in the same order as they appear in the `.h` file.
 * In header files, use an additional `private:` label before listing all class fields at the end of the class declaration.
 * Use `virtual` prefix for all virtual functions, even when `override` is also present.
+* Don't use a bare `{}` block just to make a destructor run at a certain point, prefer an explicit `close()` / `reset()` call. This is only about standalone scopes, `if` and `for` bodies are of course fine.
 
 Language features:
 * We use C++23. Prefer modern alternatives where appropriate, e.g. `contains()` instead of `find() != end()`.
