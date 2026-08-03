@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <utility>
 #include <filesystem>
 
 #include "Utility/Exception.h"
@@ -36,10 +37,7 @@ void FileInputStream::open(std::string_view path, size_t bufferSize) {
     FILE *file = fopen(absolutePath.c_str(), "rb");
     if (!file)
         Exception::throwFromErrno(absolutePath);
-
-    // Don't leak the `FILE*` if anything below throws.
-    bool succeeded = false;
-    MM_AT_SCOPE_EXIT(if (!succeeded) fclose(file));
+    MM_AT_SCOPE_EXIT(if (file) fclose(file)); // Don't leak it if anything below throws.
 
     // Disable libc buffering, we manage our own buffer.
     if (setvbuf(file, nullptr, _IONBF, 0) != 0)
@@ -54,9 +52,8 @@ void FileInputStream::open(std::string_view path, size_t bufferSize) {
     if (fseeko(file, 0, SEEK_SET) != 0)
         Exception::throwFromErrno(absolutePath);
 
-    succeeded = true;
-    _file = file;
-    _buf.reset(); // Might have been allocated for a different buffer size.
+    assert(!_buf); // Dropped by `close()` above.
+    _file = std::exchange(file, nullptr); // Disarms the guard above.
     _bufSize = bufferSize;
     base_type::open({}, fileEnd, absolutePath);
 }
@@ -69,7 +66,7 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
 
     if (size < _bufSize) {
         // Small read/skip/refill: fill the internal buffer.
-        clearerr(_file); // `feof` / `ferror` are sticky.
+        clearerr(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
         size_t bytesRead = fread(_buf.get(), 1, _bufSize, _file);
         if (bytesRead < _bufSize && ferror(_file))
             Exception::throwFromErrno(displayPath());
