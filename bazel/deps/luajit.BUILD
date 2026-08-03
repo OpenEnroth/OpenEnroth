@@ -91,10 +91,10 @@ make(
             # We only need libluajit-5.1.a, not the executable, so make strip a no-op.
             "TARGET_STRIP=true",
         ],
-        # Linux: HOST_CC=gcc-14 (bare, no Bazel toolchain wrapper) ensures HOST
+        # Linux: HOST_CC=gcc (bare, no Bazel toolchain wrapper) ensures HOST
         # tools are compiled by the host compiler. On linux_x86, Bazel injects -m32
         # via cc_wrapper, making HOST tools 32-bit. They still run on x86_64 since
-        # gcc-14-multilib provides 32-bit runtime support.
+        # gcc-multilib provides 32-bit runtime support.
         # LDFLAGS= clears Bazel-injected linker flags for the luajit executable link
         # step. On linux_x86, those flags include -L paths to gcc-13 multilib dirs
         # that don't have 32-bit libstdc++, causing link failure.
@@ -102,7 +102,7 @@ make(
         # restore the -m32 flag needed for 32-bit linking (GNU make uses the last
         # command-line assignment, so it overrides this empty LDFLAGS= value).
         "@platforms//os:linux": [
-            "HOST_CC=gcc-14",
+            "HOST_CC=gcc",
             "HOST_CFLAGS=-O2",
             "HOST_LDFLAGS=",
             "LDFLAGS=",
@@ -149,7 +149,7 @@ make(
             # this define to HOST buildvm via TARGET_ARCH+= (line 286). But TARGET_ARCH=
             # on the command line suppresses ALL += for that variable (GNU make ignores
             # += for command-line overrides). Without this define, HOST buildvm
-            # auto-detects x86 (32-bit via env HOST_CC "gcc-14 -m32") and generates
+            # auto-detects x86 (32-bit via env HOST_CC "gcc -m32") and generates
             # wrong ARM code:
             #   Error: DASM error 1100169f  (DASM_S_RANGE_I, immediate out of range)
             # With -DLUAJIT_TARGET=LUAJIT_ARCH_arm AND 32-bit HOST_CC, lj_arch.h sets:
@@ -158,7 +158,7 @@ make(
             # And sizeof(void*)=4 (32-bit HOST) matches LJ_32=1, passing buildvm.c:
             #   if (sizeof(void *) != 4*LJ_32+8*LJ_64) => 4 == 4*1+8*0 = 4 ✓
             # HOST_CC is set via env (see env attr below), not make args, to allow
-            # spaces in the value ("gcc-14 -m32"). env vars with -e take precedence
+            # spaces in the value ("gcc -m32"). env vars with -e take precedence
             # over the Makefile's HOST_CC= $(CC) assignment; unlike make command-line
             # args, they don't suppress Makefile += operations like HOST_XCFLAGS+= ...
             # so HOST_XCFLAGS= -I. (Makefile line 200) stays in effect — required for
@@ -181,15 +181,15 @@ make(
         ":_linux_x86": ["BUILDMODE=static", "LDFLAGS=-m32"],
         "//conditions:default": [],
     }),
-    # HOST_CC for android_armeabi_v7a must be "gcc-14 -m32" (32-bit x86 HOST tools)
+    # HOST_CC for android_armeabi_v7a must be "gcc -m32" (32-bit x86 HOST tools)
     # so sizeof(void*)=4 matches the ARM 32-bit target layout. Spaces in the value
     # are allowed in env vars but not in make command-line args (rules_foreign_cc
     # splits args on spaces). With the -e flag already set in the android OS args,
     # this env var overrides the Makefile's HOST_CC= $(CC) assignment. HOST_XCFLAGS=
     # -I. (Makefile line 200) is preserved because env vars don't suppress Makefile
-    # +=, unlike command-line make variables. Requires gcc-14-multilib on the runner.
+    # +=, unlike command-line make variables. Requires gcc-multilib on the runner.
     env = select({
-        ":_android_armv7": {"HOST_CC": "gcc-14 -m32"},
+        ":_android_armv7": {"HOST_CC": "gcc -m32"},
         "//conditions:default": {},
     }),
     visibility = ["//visibility:public"],

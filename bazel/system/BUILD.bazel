@@ -1,94 +1,71 @@
 # System dependency targets.
-# Each cc_library selects the correct prebuilt archive for the current platform+arch.
-# All src/ targets reference these (e.g. //bazel/system:sdl3).
+# All src/ targets reference these (e.g. //bazel/system:sdl3). Everything is built
+# from source — there are no prebuilt dependency archives in the bazel build.
 
 # ─── SDL3 ────────────────────────────────────────────────────────────────────
-# Android: keep prebuilt (complex NDK toolchain integration not yet ported).
 
 cc_library(
     name = "sdl3",
-    deps = select({
-        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:sdl3"],
-        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:sdl3"],
-        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:sdl3"],
-        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:sdl3"],
-        "//conditions:default":                  ["@sdl3_src//:sdl3"],
-    }),
+    deps = ["@sdl3_src//:sdl3"],
     visibility = ["//visibility:public"],
 )
 
 # ─── OpenAL ──────────────────────────────────────────────────────────────────
-# Android: system OpenSLES stub via prebuilt (not openal-soft).
 
 cc_library(
     name = "openal",
-    deps = select({
-        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:openal"],
-        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:openal"],
-        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:openal"],
-        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:openal"],
-        "//conditions:default":                  ["@openal_src//:openal"],
-    }),
+    deps = ["@openal_src//:openal"],
     visibility = ["//visibility:public"],
 )
 
 # ─── ZLIB ────────────────────────────────────────────────────────────────────
-# Android: keep prebuilt (cross-compilation toolchain not yet configured).
 
 cc_library(
     name = "zlib",
-    deps = select({
-        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:zlib"],
-        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:zlib"],
-        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:zlib"],
-        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:zlib"],
-        "//conditions:default":                  ["@zlib_src//:zlib"],
-    }),
+    deps = ["@zlib//:zlib"],
     visibility = ["//visibility:public"],
 )
 
 # ─── PNG ─────────────────────────────────────────────────────────────────────
-# Android: keep prebuilt (cross-compilation toolchain not yet configured).
 
 cc_library(
     name = "png",
-    deps = select({
-        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:png"],
-        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:png"],
-        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:png"],
-        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:png"],
-        "//conditions:default":                  ["@libpng_src//:png"],
-    }),
+    deps = ["@libpng//:libpng"],
     visibility = ["//visibility:public"],
 )
 
 # ─── FFmpeg ──────────────────────────────────────────────────────────────────
-# Linux / macOS: source build via configure_make().
-# Windows: prebuilt (FFmpeg configure requires bash/MSYS2 — deferred).
-# Android: prebuilt (NDK cross-compilation not yet configured).
+# The BCR ffmpeg module is a native-bazel port; its with_defaults/ variants enable
+# the standard per-OS codec set (same as a stock ./configure). Its own CI covers
+# linux x86_64/arm64 & macOS; we also use it for windows x86_64 and 64-bit android.
+# 32-bit targets stay on the configure_make() source build: the module hardcodes
+# x86-64 nasm sources for every non-aarch64 CPU.
 
 cc_library(
     name = "ffmpeg",
     deps = select({
-        "//bazel/platforms:linux_x86":           ["@oe_deps_linux_x86//:ffmpeg"],
-        "//bazel/platforms:android_arm64_v8a":   ["@oe_deps_android_arm64//:ffmpeg"],
-        "//bazel/platforms:android_armeabi_v7a": ["@oe_deps_android_arm32//:ffmpeg"],
-        "//bazel/platforms:android_x86_64":      ["@oe_deps_android_x86_64//:ffmpeg"],
-        "//bazel/platforms:windows_x86_64":      ["@oe_deps_windows_x86_64//:ffmpeg"],
-        "//bazel/platforms:windows_x86":         ["@oe_deps_windows_x86//:ffmpeg"],
-        "//conditions:default":                  ["@ffmpeg_src//:ffmpeg"],
+        "//bazel/platforms:linux_x86":           ["@ffmpeg_src//:ffmpeg"],
+        "//bazel/platforms:android_armeabi_v7a": ["@ffmpeg_src//:ffmpeg"],
+        "//bazel/platforms:windows_x86":         ["@ffmpeg_src//:ffmpeg"],
+        "//conditions:default": [
+            "@ffmpeg//:with_defaults/avcodec",
+            "@ffmpeg//:with_defaults/avformat",
+            "@ffmpeg//:with_defaults/avutil",
+            "@ffmpeg//:with_defaults/swscale",
+            "@ffmpeg//:with_defaults/swresample",
+        ],
     }),
     visibility = ["//visibility:public"],
 )
 
 # ─── LuaJIT ──────────────────────────────────────────────────────────────────
-# Windows: use CMake-prebuilt lib (rules_foreign_cc make() fails on Windows/MSVC).
-# Other platforms: use source build from @luajit http_archive.
+# Windows: MSVC build via luajit-cmake (LuaJIT's own Makefile requires GCC).
+# Other platforms: two-stage make() build from @luajit.
 
 cc_library(
     name = "luajit",
     deps = select({
-        "@platforms//os:windows": ["@luajit_windows//:luajit_prebuilt"],
+        "@platforms//os:windows": ["@luajit_win//:luajit"],
         "//conditions:default":   ["@luajit//:luajit"],
     }),
     visibility = ["//visibility:public"],

@@ -9,7 +9,7 @@ filegroup(
 )
 
 cmake(
-    name = "openal",
+    name = "openal_desktop",
     lib_source = ":all_srcs",
     out_static_libs = select({
         "@platforms//os:windows": ["OpenAL32.lib"],
@@ -75,6 +75,34 @@ cmake(
             "-Wl,-framework,AudioToolbox",
         ],
         "//conditions:default": [],
+    }),
+)
+
+# Android cross-compilation needs the bazel-generated crosstool file so cmake uses the
+# NDK toolchain that bazel resolved (with generate_crosstool_file = False it would
+# auto-detect the host compiler). Desktop platforms keep the crosstool off — see above.
+cmake(
+    name = "openal_android",
+    lib_source = ":all_srcs",
+    out_static_libs = ["libopenal.a"],
+    cache_entries = {
+        "CMAKE_BUILD_TYPE": "Release",
+        "LIBTYPE": "STATIC",
+        "ALSOFT_UTILS": "OFF",
+        "ALSOFT_EXAMPLES": "OFF",
+        "ALSOFT_TESTS": "OFF",
+        "CMAKE_POLICY_VERSION_MINIMUM": "3.5",
+    },
+    out_include_dir = "include/AL",
+    defines = ["AL_LIBTYPE_STATIC"],
+    linkopts = ["-lOpenSLES"],
+)
+
+cc_library(
+    name = "openal",
+    deps = select({
+        "@platforms//os:android": [":openal_android"],
+        "//conditions:default": [":openal_desktop"],
     }),
     visibility = ["//visibility:public"],
 )
