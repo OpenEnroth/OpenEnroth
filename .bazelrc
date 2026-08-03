@@ -130,6 +130,9 @@ build:windows --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_pkgc
 # Use system make instead of rules_foreign_cc's bundled make binary for the
 # configure_make()/cmake() deps.
 build:android_base --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
+# SDL3's android build compiles NDK-bundled sources (cpufeatures); the cmake()
+# rule receives the path via -DANDROID_NDK=$ANDROID_NDK_HOME.
+build:android_base --action_env=ANDROID_NDK_HOME
 build:android_base --cxxopt=-std=c++23
 build:android_base --host_cxxopt=-std=c++23
 build:android_base --copt=-fPIC
