@@ -65,7 +65,7 @@ cc_library(
     deps = [
         "@fmt//:fmt",
         "@small_vector//:small_vector",
-        "@lambda2//:lambda2",
+        "@lambda2//:boost.lambda2",
         "@ztd_text//:ztd_text",
         "@mio//:mio",
     ],

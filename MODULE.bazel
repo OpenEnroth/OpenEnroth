@@ -18,12 +18,16 @@ bazel_dep(name = "googletest", version = "1.17.0")
 # ─── Libraries from the Bazel Central Registry ───────────────────────────────
 # Kept as close to the CMake-pinned versions as the registry allows.
 
-bazel_dep(name = "fmt", version = "12.2.0")
-bazel_dep(name = "spdlog", version = "1.17.0")
+# fmt is capped at 11.x: the CMake build pins 11.1.1, and fmt 12 fails to compile
+# for 32-bit x86 (its uint128 fallback lacks operator~). spdlog 1.15.3 is the last
+# version whose fmt dependency stays at 11.x under MVS.
+bazel_dep(name = "fmt", version = "11.2.0")
+bazel_dep(name = "spdlog", version = "1.15.3")
 bazel_dep(name = "nlohmann_json", version = "3.12.0.bcr.1")
 bazel_dep(name = "cli11", version = "2.6.2")
 bazel_dep(name = "glm", version = "1.0.3")
 bazel_dep(name = "fast_float", version = "8.2.4")
+bazel_dep(name = "boost.lambda2", version = "1.90.0.bcr.1", repo_name = "lambda2")
 bazel_dep(name = "zlib", version = "1.3.2")
 bazel_dep(name = "libpng", version = "1.6.58")
 
@@ -131,13 +135,6 @@ http_archive(
     sha256 = "ad63d9437ebefb33404ed0b93c5e4f8a3e061ae20c89e2e80ec1cdabf4c0324b",
 )
 
-http_archive(
-    name = "lambda2",
-    url = "https://github.com/boostorg/lambda2/archive/dddfec608515f5a4f51f86d9b8efc01c7ad816cc.tar.gz",
-    strip_prefix = "lambda2-dddfec608515f5a4f51f86d9b8efc01c7ad816cc",
-    build_file = "//bazel/deps:lambda2.BUILD",
-    sha256 = "b2a74a4ec1a588d3110fbfbae921b9f97d6e8071c496f070c878a75ea7cd2347",
-)
 
 http_archive(
     name = "generator",
@@ -165,6 +162,9 @@ http_archive(
     sha256 = "679230074b411c58d802f8fdd6793523f4bbfa6acb2cc42a7d1bf43474fdef61",
 )
 
+# imgui is in the BCR (even the docking flavour), but its backends package has no
+# SDL3 platform backend and binds to the registry's own SDL - we need the backends
+# compiled against @sdl3_src with the include-prefix patching the CMake build does.
 http_archive(
     name = "imgui",
     url = "https://github.com/ocornut/imgui/archive/1f7f1f54af38b0350d8c0008b096a9af6de299c7.tar.gz",
