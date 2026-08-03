@@ -50,6 +50,7 @@ ALLOWED_DOMAINS=(
     npmjs.org               # registry.npmjs.org
     bazel.build             # releases.bazel.build, bcr.bazel.build, mirror.bazel.build
     buildbuddy.io           # app.buildbuddy.io (invocation pages), remote.buildbuddy.io (cache)
+    ffmpeg.org              # BCR ffmpeg module fetches the official release tarball.
     pypi.org                # Python package index — pip installs for tooling.
     gitlab.freedesktop.org
     pythonhosted.org        # files.pythonhosted.org — pip package downloads.
