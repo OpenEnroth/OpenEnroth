@@ -5,6 +5,21 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/BlobOutputStream.h"
 
+UNIT_TEST(BlobOutputStream, ReopenWithoutClose) {
+    Blob first;
+    Blob second;
+
+    BlobOutputStream out(&first);
+    out.write("hello");
+
+    out.open(&second);
+    out.write("world");
+    out.close();
+
+    EXPECT_EQ(first.str(), "hello"); // Reopening has to transfer into the previous target, not drop it.
+    EXPECT_EQ(second.str(), "world");
+}
+
 UNIT_TEST(BlobOutputStream, DestructorFlushesData) {
     Blob blob;
     {

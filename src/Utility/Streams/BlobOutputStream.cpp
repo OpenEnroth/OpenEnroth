@@ -17,7 +17,10 @@ BlobOutputStream::~BlobOutputStream() {
 
 void BlobOutputStream::open(Blob *target, std::string_view displayPath) {
     assert(target);
-    // TODO(captainurist): reopening discards everything written so far - should close first, like file streams do.
+
+    if (isOpen())
+        close(); // Transfers what's been written so far into the previous target.
+
     _target = target;
     _scratchpad.reset();
     base_type::open({}, displayPath);
