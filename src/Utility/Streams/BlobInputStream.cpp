@@ -32,7 +32,6 @@ Blob BlobInputStream::readAsBlob(size_t size) {
 Blob BlobInputStream::readAsBlobOrFail(size_t size) {
     assert(isOpen());
 
-    // TODO(captainurist): underflows if `position()` runs past `size()`, and then never fails.
     if (size > this->size() - position())
         throwReadError(size, this->size() - position());
 
