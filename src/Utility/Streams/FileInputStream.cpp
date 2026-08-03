@@ -84,9 +84,21 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
             Exception::throwFromErrno(displayPath());
         return bytesRead;
     } else {
-        // Large skip: seek. Saturating, as `position()` can be past `size()` if the file has grown since open.
-        size_t bytesToSkip = std::min(size, this->size() > position() ? this->size() - position() : 0);
-        if (bytesToSkip > 0 && fseeko(_file, bytesToSkip, SEEK_CUR) != 0)
+        // Large skip: seek. Note that we're measuring where the file actually ends instead of going by the stream
+        // size, which is sampled at open time and can be stale in either direction. `read` above works off the real
+        // file, and `skip` has to agree with it.
+        int64_t cur = ftello(_file);
+        if (cur == -1)
+            Exception::throwFromErrno(displayPath());
+        if (fseeko(_file, 0, SEEK_END) != 0)
+            Exception::throwFromErrno(displayPath());
+        int64_t end = ftello(_file);
+        if (end == -1)
+            Exception::throwFromErrno(displayPath());
+
+        uint64_t bytesLeft = end > cur ? end - cur : 0;
+        size_t bytesToSkip = static_cast<size_t>(std::min<uint64_t>(size, bytesLeft));
+        if (fseeko(_file, cur + bytesToSkip, SEEK_SET) != 0)
             Exception::throwFromErrno(displayPath());
         return bytesToSkip;
     }

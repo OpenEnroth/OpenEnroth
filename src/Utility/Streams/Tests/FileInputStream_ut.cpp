@@ -205,6 +205,29 @@ UNIT_TEST(FileInputStream, ReadAllAfterFileGrows) {
     EXPECT_EQ(in.readAll(), first + second); // The size sampled at open is only a hint.
 }
 
+UNIT_TEST(FileInputStream, LargeSkipAfterFileGrows) {
+    const char *tmpfile = "tmp_skipgrow_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    std::string first(10, 'a');
+    std::string second(90, 'b');
+
+    FileOutputStream out(tmpfile);
+    out.write(first);
+    out.close();
+
+    FileInputStream in(tmpfile, 4); // Small buffer, so that the skip below goes through the seeking branch.
+
+    std::ofstream more(tmpfile, std::ios::binary | std::ios::app);
+    more << second;
+    more.close();
+
+    // Like `read`, `skip` has to work off the real file - the size sampled at open said 10 bytes.
+    EXPECT_EQ(in.skip(50), 50u);
+    EXPECT_EQ(in.position(), 50u);
+    EXPECT_EQ(in.readAll(), (first + second).substr(50));
+}
+
 UNIT_TEST(FileInputStream, ReopenWithoutClose) {
     const char *tmpfile1 = "tmp_reopen_noclose1_test.txt";
     const char *tmpfile2 = "tmp_reopen_noclose2_test.txt";
