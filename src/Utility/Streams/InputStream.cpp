@@ -15,12 +15,23 @@ size_t InputStream::readAll(std::string *dst) {
     dst->clear();
 
     if (_size != static_cast<size_t>(-1)) {
-        // Sized stream: pre-allocate and read in one go.
-        size_t bytesTotal = _size - position();
-        if (bytesTotal == 0)
-            return 0;
-        dst->resize_and_overwrite(bytesTotal, [](char *, size_t n) { return n; }); // Technically UB, but throwing from
-        return read(dst->data(), bytesTotal);                                      // the callback is also UB, so...
+        // Sized stream: pre-allocate from the size and read it in one go. Note that `position()` can legitimately be
+        // past `_size`, e.g. after a large read from a file that has grown, so this must not underflow.
+        if (_size > position()) {
+            size_t bytesHint = _size - position();
+            dst->resize_and_overwrite(bytesHint, [](char *, size_t n) { return n; }); // Technically UB, but throwing
+            dst->resize(read(dst->data(), bytesHint));                                // from the callback is also UB.
+        }
+
+        // The size is only a hint - it's sampled when the stream is opened and the file can be appended to afterwards,
+        // and `st_size` is plain wrong for some files (procfs reports 0 for files that do have contents). So keep
+        // reading until the stream actually ends. For a stream that ended where the size said, this is a single
+        // empty read.
+        char chunk[4096];
+        while (size_t bytesRead = read(chunk, sizeof(chunk)))
+            dst->append(chunk, bytesRead);
+
+        return dst->size();
     } else {
         // Unsized stream: accumulate in chunks, materialize once.
         MemoryScratchpad scratchpad;
@@ -50,6 +61,12 @@ void InputStream::open(Buffer buffer, size_t size, std::string_view displayPath)
 
 size_t InputStream::_underflow(void *, size_t, Buffer *buffer) {
     assert(buffer->remaining() == 0);
+
+    // Note that the buffer has to be reset even though there's no more data. `readUntilSlow` folds `buffer->used()`
+    // into `_bufferBase` before calling us, so leaving a non-zero `used()` here would double-count it into
+    // `position()` - and `position()` running past `size()` then makes the `size() - position()` checks in the
+    // binary deserializer underflow.
+    buffer->commit();
     return 0;
 }
 

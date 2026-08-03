@@ -56,6 +56,82 @@ class UnsizedInputStream : public InputStream {
     size_t _pos = 0;
 };
 
+/**
+ * An input stream that lies about its size - it reports `reportedSize` but actually holds `size` bytes. Models both
+ * a file that changed after its size was sampled, and a procfs file whose `st_size` is 0 but which has contents.
+ */
+class LyingInputStream : public InputStream {
+ public:
+    LyingInputStream(const void *data, size_t size, size_t reportedSize) :
+        _data(static_cast<const char *>(data)), _dataSize(size) {
+        open({}, reportedSize, {});
+    }
+
+ protected:
+    virtual size_t _underflow(void *data, size_t size, Buffer *buffer) override {
+        buffer->reset(nullptr, nullptr, nullptr);
+
+        size_t bytesRead = std::min(size, _dataSize - _pos);
+        if (data)
+            memcpy(data, _data + _pos, bytesRead);
+        _pos += bytesRead;
+        return bytesRead;
+    }
+
+ private:
+    const char *_data;
+    size_t _dataSize;
+    size_t _pos = 0;
+};
+
+UNIT_TEST(InputStream, PositionAfterReadUntilAtEnd) {
+    // The delimiter is never found, so `readUntilSlow` runs out of data and hits the default `_underflow`. It used to
+    // leave `position()` past `size()`, which then made the `size() - position()` checks in the binary deserializer
+    // underflow and reject perfectly good data.
+    MemoryInputStream in("hello", 5);
+    EXPECT_EQ(in.readUntil('\0'), "hello");
+    EXPECT_EQ(in.position(), 5u);
+    EXPECT_EQ(in.position(), in.size());
+
+    // And it used to accumulate, so check that repeated calls at end of stream don't drift either.
+    EXPECT_EQ(in.readUntil('\0'), "");
+    EXPECT_EQ(in.position(), 5u);
+}
+
+UNIT_TEST(InputStream, ReadAllShrinksOnShortRead) {
+    // Reports 100 bytes but only has 10 - `readAll` used to return a 100-byte string with an uninitialized tail.
+    std::string data(10, 'a');
+    LyingInputStream in(data.data(), data.size(), 100);
+
+    std::string result;
+    EXPECT_EQ(in.readAll(&result), 10u);
+    EXPECT_EQ(result.size(), 10u);
+    EXPECT_EQ(result, data);
+}
+
+UNIT_TEST(InputStream, ReadAllReadsPastReportedSize) {
+    // Reports 10 bytes but has 100 - models a file that grew after its size was sampled, and a procfs file that
+    // reports `st_size == 0`. `readAll` used to stop at the reported size and silently drop the rest.
+    std::string data(100, 'a');
+    LyingInputStream in(data.data(), data.size(), 10);
+    EXPECT_EQ(in.readAll(), data);
+
+    LyingInputStream zeroSized(data.data(), data.size(), 0);
+    EXPECT_EQ(zeroSized.readAll(), data);
+}
+
+UNIT_TEST(InputStream, ReadAllPastReportedSize) {
+    // Reading past the reported size leaves `position() > size()`. `readAll` used to underflow on the subtraction and
+    // throw `std::length_error`, which `catch (const Exception &)` doesn't catch.
+    std::string data(100, 'a');
+    LyingInputStream in(data.data(), data.size(), 5);
+
+    char buf[50];
+    EXPECT_EQ(in.read(buf, sizeof(buf)), 50u);
+    EXPECT_GT(in.position(), in.size());
+    EXPECT_NO_THROW((void) in.readAll());
+}
+
 UNIT_TEST(InputStream, ReadAll) {
     std::string largeString(10000, 'a');
     MemoryInputStream input(largeString.data(), largeString.size());
