@@ -92,8 +92,8 @@ build:macos --apple_platform_type=macos
 # Use system cmake (available via Xcode command-line tools) instead of rules_foreign_cc's
 # bundled cmake 3.23.2. Required for OpenAL-soft 1.24.3's BUILD_LOCAL_INTERFACE usage.
 build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
-# Use system make instead of rules_foreign_cc's bundled make binary, which segfaults when
-# processing LuaJIT's src/Makefile on macOS runners.
+# Use system make instead of rules_foreign_cc's bundled make binary for the
+# configure_make()/cmake() deps (ffmpeg, SDL3, OpenAL).
 build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
 
 # macOS arm64
@@ -124,9 +124,8 @@ build:windows --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmak
 
 # Android — NDK version 28.1.13356709 (matches CI)
 # android_base: common flags inherited by all android_* configs
-# Use system make instead of rules_foreign_cc's bundled make binary.
-# The bundled make binary has issues with LuaJIT's src/Makefile on Linux too
-# ($(if $(filter ...)) expansion fails in cross-compilation mode).
+# Use system make instead of rules_foreign_cc's bundled make binary for the
+# configure_make()/cmake() deps.
 build:android_base --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
 build:android_base --cxxopt=-std=c++23
 build:android_base --host_cxxopt=-std=c++23
