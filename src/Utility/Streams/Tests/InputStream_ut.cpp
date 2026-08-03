@@ -126,7 +126,7 @@ UNIT_TEST(InputStream, ReadAllPastReportedSize) {
     char buf[50];
     EXPECT_EQ(in.read(buf, sizeof(buf)), 50u);
     EXPECT_GT(in.position(), in.size());
-    EXPECT_NO_THROW((void) in.readAll());
+    EXPECT_EQ(in.readAll(), data.substr(50)); // Everything that's left, even though the reported size is long gone.
 }
 
 UNIT_TEST(InputStream, ReadAll) {
