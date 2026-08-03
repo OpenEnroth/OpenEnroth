@@ -53,7 +53,7 @@ void FileInputStream::open(std::string_view path, size_t bufferSize) {
     if (fseeko(file, 0, SEEK_SET) != 0)
         Exception::throwFromErrno(absolutePath);
 
-    _file = std::exchange(file, nullptr); // Disarms the guard above.
+    _file = std::exchange(file, nullptr);
     _bufSize = bufferSize;
     base_type::open({}, fileEnd, absolutePath);
 }
