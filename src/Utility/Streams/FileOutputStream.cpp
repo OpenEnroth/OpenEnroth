@@ -25,7 +25,7 @@ void FileOutputStream::open(std::string_view path, size_t bufferSize) {
     assert(bufferSize > 0);
 
     if (isOpen())
-        close(); // Drops `_buf`, which is sized for the current `_bufSize`. Can throw if the flush fails.
+        close();
 
     std::string absPath = absolute(std::filesystem::path(path)).generic_string();
     FILE *file = fopen(absPath.c_str(), "wb");
@@ -57,7 +57,7 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
     } else {
         // Large write: write out current buffer, then write data directly.
         writeBuffer(buffer, true);
-        if (fwrite(data, 1, size, _file) != size) // Byte-wise, see `writeBuffer`.
+        if (fwrite(data, 1, size, _file) != size)
             Exception::throwFromErrno(displayPath());
         if (_buf)
             buffer->reset(_buf.get(), _buf.get(), _buf.get() + _bufSize);

@@ -31,7 +31,7 @@ void FileInputStream::open(std::string_view path, size_t bufferSize) {
     assert(bufferSize > 0);
 
     if (isOpen())
-        close(); // Drops `_buf`, which is sized for the current `_bufSize`.
+        close();
 
     std::string absolutePath = absolute(std::filesystem::path(path)).generic_string();
     FILE *file = fopen(absolutePath.c_str(), "rb");
