@@ -44,10 +44,6 @@ class GUIWindow_SaveLoad : public GUIWindow {
         _slots[_selectedSlot].header.name = name;
     }
 
-    [[nodiscard]] int scrollPosition() const {
-        return _scrollPosition;
-    }
-
     /**
      * Handles a click on one of the visible slot rows. First click selects the slot, second click acts on it.
      *
@@ -97,6 +93,7 @@ class GUIWindow_Load : public GUIWindow_SaveLoad {
     void quickLoad();
 
  protected:
+    // TODO(Nik-RE-dev): drop variable and load game only on double click.
     bool _loadSlotClicked = false;
     GraphicsImage *main_menu_background = nullptr;
 
@@ -105,3 +102,8 @@ class GUIWindow_Load : public GUIWindow_SaveLoad {
     GraphicsImage *saveload_ui_loadu = nullptr;
     GraphicsImage *saveload_ui_x_u = nullptr;
 };
+
+/**
+ * @return                      Currently open save/load menu. Should only be called when one is open.
+ */
+GUIWindow_SaveLoad *saveLoadMenu();

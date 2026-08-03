@@ -112,6 +112,11 @@ static std::vector<SavegameSlot> saveMenuSlots() {
     return result;
 }
 
+GUIWindow_SaveLoad *saveLoadMenu() {
+    assert(current_screen_type == SCREEN_SAVEGAME || current_screen_type == SCREEN_LOADGAME);
+    return static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
+}
+
 GUIWindow_SaveLoad::GUIWindow_SaveLoad(WindowType type, Pointi position, Sizei dimensions)
     : GUIWindow(type, position, dimensions) {}
 

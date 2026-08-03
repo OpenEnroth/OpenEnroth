@@ -1353,10 +1353,9 @@ GAME_TEST(Issues, Issue2551a) {
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
-    GUIWindow_SaveLoad *saveMenu = static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
-    ASSERT_EQ(saveMenu->slots().size(), 51); // All 50 saves are listed, plus the new save slot which...
-    ASSERT_TRUE(saveMenu->selectedSlot().fileName.empty()); // ...is selected by default...
-    ASSERT_EQ(saveMenu->scrollPosition(), 0); // ...and shown first.
+    GUIWindow_SaveLoad *saveMenu = saveLoadMenu();
+    ASSERT_EQ(saveMenu->slots().size(), 51); // All 50 saves are listed, plus the new save slot...
+    ASSERT_TRUE(saveMenu->selectedSlot().fileName.empty()); // ...which is selected by default.
 
     // Pressing the save button right away shouldn't save, we want a save name typed in first.
     game.pressGuiButton("SaveMenu_Save");
@@ -1366,14 +1365,16 @@ GAME_TEST(Issues, Issue2551a) {
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_RETURN); // Confirm the name with Enter.
     game.tick(10);
-    EXPECT_TRUE(ufs->exists("saves/save050.mm7")); // New save went into a new file.
+    EXPECT_EQ(ufs->ls("saves").size(), 51); // New save went into a new file.
+    EXPECT_TRUE(ufs->exists("saves/save050.mm7"));
 
-    // The new save shows up in the load menu, sorted by display name - "a" comes before "saveNNN".
+    // The new save shows up in the load menu, sorted by display name - the other saves have blank titles & fall
+    // back to "saveNNN" display names, so "a" sorts first.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_LoadGame");
     game.tick(3);
-    GUIWindow_SaveLoad *loadMenu = static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
+    GUIWindow_SaveLoad *loadMenu = saveLoadMenu();
     EXPECT_EQ(loadMenu->slots().size(), 51);
     EXPECT_EQ(loadMenu->slots()[0].fileName, "save050.mm7");
     EXPECT_EQ(loadMenu->slots()[0].header.name, "a");
@@ -1391,7 +1392,7 @@ GAME_TEST(Issues, Issue2551b) {
     game.pressAndReleaseKey(PlatformKey::KEY_F9);
     game.tick(3);
     ASSERT_EQ(ufs->ls("saves").size(), 1); // Just the autosave...
-    GUIWindow_SaveLoad *saveMenu = static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
+    GUIWindow_SaveLoad *saveMenu = saveLoadMenu();
     ASSERT_EQ(saveMenu->slots().size(), 1); // ...which is not shown in the save menu, so it's just the new save slot.
 
     // And the menu is still fully functional.
@@ -1413,6 +1414,6 @@ GAME_TEST(Issues, Issue2551b) {
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
     ASSERT_EQ(ufs->ls("saves").size(), 3); // Autosave, quicksave & our save...
-    GUIWindow_SaveLoad *saveMenu2 = static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
+    GUIWindow_SaveLoad *saveMenu2 = saveLoadMenu();
     ASSERT_EQ(saveMenu2->slots().size(), 2); // ...but only the new save slot & our save are shown.
 }

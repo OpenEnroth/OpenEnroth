@@ -385,8 +385,7 @@ GAME_TEST(Issues, Issue626) {
     game.pressGuiButton("GameMenu_LoadGame");
     game.tick(3);
 
-    GUIWindow_SaveLoad *loadMenu = static_cast<GUIWindow_SaveLoad *>(pGUIWindow_CurrentMenu.get());
-    EXPECT_EQ(loadMenu->selectedSlot().fileName, engine->_lastLoadedSaveFileName); // Last loaded save is pre-selected.
+    EXPECT_EQ(saveLoadMenu()->selectedSlot().fileName, engine->_lastLoadedSaveFileName); // Last loaded save is pre-selected.
 }
 
 GAME_TEST(Issues, Issue645) {
