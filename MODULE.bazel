@@ -173,6 +173,8 @@ http_archive(
     sha256 = "94862c296d4930f122902e4b2194eca198efc8d5a196965cff6a326534e76027",
 )
 
+# backward-cpp is in the BCR, but only as the 2022 v1.6 release; we pin a newer
+# upstream commit (matching the thirdparty/ submodule).
 http_archive(
     name = "backward_cpp",
     url = "https://github.com/OpenEnroth/backward-cpp/archive/51f0700452cf71c57d43c2d028277b24cde32502.tar.gz",
