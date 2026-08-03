@@ -97,28 +97,27 @@ configure_make(
             "--target-os=android",
             "--arch=arm",
             "--cpu=armv7-a",
-            "--cc=$$CC",
-            "--cxx=$$CXX",
-            "--ar=$$AR",
+            "--cc=$$EXT_BUILD_ROOT$$/$(CC) --target=armv7a-linux-androideabi24",
+            "--ar=$$EXT_BUILD_ROOT$$/$(AR)",
         ],
         ":_android_arm64": [
             "--enable-cross-compile",
             "--target-os=android",
             "--arch=aarch64",
-            "--cc=$$CC",
-            "--cxx=$$CXX",
-            "--ar=$$AR",
+            "--cc=$$EXT_BUILD_ROOT$$/$(CC) --target=aarch64-linux-android24",
+            "--ar=$$EXT_BUILD_ROOT$$/$(AR)",
         ],
         ":_android_x86_64": [
             "--enable-cross-compile",
             "--target-os=android",
             "--arch=x86_64",
-            "--cc=$$CC",
-            "--cxx=$$CXX",
-            "--ar=$$AR",
+            "--cc=$$EXT_BUILD_ROOT$$/$(CC) --target=x86_64-linux-android24",
+            "--ar=$$EXT_BUILD_ROOT$$/$(AR)",
         ],
         "//conditions:default": [],
     }),
+    # Provides the $(CC)/$(AR) make variables used in the android configure options.
+    toolchains = ["@bazel_tools//tools/cpp:current_cc_toolchain"],
     out_static_libs = select({
         # MSVC-style library names (LIBPREF=""/LIBSUF=".lib" with --toolchain=msvc).
         "@platforms//os:windows": [
