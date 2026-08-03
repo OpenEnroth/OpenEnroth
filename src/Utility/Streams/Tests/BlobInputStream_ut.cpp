@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -5,6 +6,26 @@
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/BlobInputStream.h"
+
+UNIT_TEST(BlobInputStream, CloseReleasesBlob) {
+    std::string data = "hello world";
+
+    // `Blob::custom` lets us watch the blob's lifetime - for a file-backed blob the state is the mmap.
+    std::weak_ptr<void> watch;
+    BlobInputStream stream;
+    {
+        std::shared_ptr<void> state = std::make_shared<int>(0);
+        watch = state;
+        stream.open(Blob::custom(data.data(), data.size(), std::move(state)));
+    }
+
+    EXPECT_FALSE(watch.expired()); // Held while the stream is open.
+    EXPECT_EQ(stream.readAll(), data);
+    EXPECT_FALSE(watch.expired());
+
+    stream.close();
+    EXPECT_TRUE(watch.expired()); // And released on close, rather than lingering until the stream is destroyed.
+}
 
 UNIT_TEST(BlobInputStream, MixedBlobAndNonBlobReads) {
     Blob blob = Blob::fromString("HelloWorldFoo");

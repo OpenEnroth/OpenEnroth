@@ -40,6 +40,13 @@ Blob BlobInputStream::readAsBlobOrFail(size_t size) {
     return readAsBlob(size);
 }
 
+void BlobInputStream::_close(bool canThrow) {
+    // Note that the base class has to go first - it drops the buffer, which points into the blob that we're about to
+    // release here.
+    base_type::_close(canThrow);
+    _blob = Blob(); // For a file-backed blob this is an mmap, no point in holding it until this object is destroyed.
+}
+
 Blob BlobInputStream::readAllAsBlob() {
     assert(isOpen());
 
