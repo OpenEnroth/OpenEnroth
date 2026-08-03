@@ -221,7 +221,8 @@ UNIT_TEST(FileInputStream, ReopenWithoutClose) {
     out2.write(data);
     out2.close();
 
-    // Reopening with a larger buffer size has to reallocate the buffer.
+    // Reopening with a larger buffer size has to reallocate the buffer. This used to be a heap buffer overflow -
+    // the old, smaller buffer was kept, and reading into it as if it were the new size overran the allocation.
     FileInputStream in(tmpfile1, 64);
     EXPECT_EQ(in.readAll(), "first");
 

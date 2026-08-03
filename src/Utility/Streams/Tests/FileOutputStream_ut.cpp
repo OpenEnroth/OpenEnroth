@@ -98,7 +98,8 @@ UNIT_TEST(FileOutputStream, ReopenWithoutClose) {
     FileOutputStream out(tmpfile1, 64);
     out.write("first");
 
-    // Must flush the previous file rather than drop it, and must not reuse the smaller `_buf`.
+    // Must flush the previous file rather than drop it, and has to reallocate the buffer. This used to be a heap
+    // buffer overflow - the old, smaller buffer was kept, and writing into it overran the allocation.
     out.open(tmpfile2, 4096);
     out.write(data);
     out.close();
