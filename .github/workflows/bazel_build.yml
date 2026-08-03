@@ -142,6 +142,10 @@ jobs:
         if: env.MATRIX_PLATFORM == 'windows'
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: '[windows] Install pkg-config'
+        if: env.MATRIX_PLATFORM == 'windows'
+        run: choco install pkgconfiglite --no-progress -y
+
       - name: 'Set up Bazel'
         uses: bazel-contrib/setup-bazel@0.14.0
         with:
