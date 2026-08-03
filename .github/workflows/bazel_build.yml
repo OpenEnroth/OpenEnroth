@@ -135,8 +135,12 @@ jobs:
           # as 32-bit x86 (gcc-14 -m32) to match the 32-bit ARM target struct layout.
           # gcc-14-multilib provides the 32-bit runtime and headers for gcc -m32.
           if [ "${{matrix.target}}" = "android_armeabi_v7a" ]; then
-            # 32-bit host tools (LuaJIT buildvm): 32-bit libgcc & libstdc++.
+            # 32-bit host tools (LuaJIT buildvm): 32-bit libgcc & libstdc++. The
+            # 32-bit runtime only ships for gcc-14, so promote it to default -
+            # the runner's gcc-13 can't find lib32stdc++ otherwise.
             sudo apt-get install -y gcc-14-multilib g++-14-multilib
+            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
+            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
           fi
 
       - name: '[windows] Set up MSVC'
