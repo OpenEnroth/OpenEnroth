@@ -199,7 +199,8 @@ class InputStream {
      * - `data != nullptr`: reads `size` bytes into `data`.
      * - `data == nullptr && size > 0`: skips `size` bytes.
      *
-     * In all modes, sets `*buffer` to the new buffer state.
+     * `*buffer` can be replaced or left as it is - callers work the stream position out from whatever it ends up
+     * holding, so implementations don't have to care about that.
      *
      * @param[out] data                 Buffer to read into, or `nullptr` for skip/refill.
      * @param size                      Number of bytes to read or skip.

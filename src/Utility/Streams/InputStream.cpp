@@ -58,10 +58,6 @@ void InputStream::open(Buffer buffer, size_t size, std::string_view displayPath)
 
 size_t InputStream::_underflow(void *, size_t, Buffer *buffer) {
     assert(buffer->remaining() == 0);
-
-    // `position()` is `_bufferBase + used()`, and `readUntilSlow` has just folded the old `used()` into
-    // `_bufferBase`. So the buffer we hand back has to have `used() == 0`, or those bytes are counted twice.
-    buffer->commit();
     return 0;
 }
 
@@ -105,8 +101,11 @@ size_t InputStream::readUntilSlow(char delimiter, std::string *dst) {
 
     // Refill from source and search.
     while (true) {
-        _bufferBase += _buffer.used();
+        // Refilling consumes nothing, so `position()` has to come out unchanged whatever buffer we get back.
+        size_t pos = position();
         _underflow(nullptr, 0, &_buffer);
+        _bufferBase = pos - _buffer.used();
+
         if (_buffer.remaining() == 0)
             break; // No more data.
 
