@@ -162,6 +162,10 @@ void FileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath)
     if (dstStat)
         remove(dstPath);
 
+    // TODO(captainurist): this loses data. The streams below are closed by their destructors, and that path cannot
+    //                     throw, so a failed write is swallowed - and then `remove(srcPath)` at the end of this
+    //                     function deletes the original. Renaming a 5000-byte file across mount points with a full
+    //                     destination leaves a 100-byte file, no source, and no error raised.
     std::unique_ptr<char[]> buffer;
     auto copyFile = [this, &buffer](FileSystemPathView srcPath, FileSystemPathView dstPath) -> void {
         std::unique_ptr<InputStream> input = openForReading(srcPath);
