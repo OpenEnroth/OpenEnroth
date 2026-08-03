@@ -59,8 +59,8 @@ void InputStream::open(Buffer buffer, size_t size, std::string_view displayPath)
 size_t InputStream::_underflow(void *, size_t, Buffer *buffer) {
     assert(buffer->remaining() == 0);
 
-    // Reset even with no data - `readUntilSlow` has already folded `used()` into `_bufferBase`, so leaving it
-    // non-zero double-counts into `position()`, which then runs past `size()`.
+    // The buffer we hand back has to have `used() == 0` - `readUntilSlow` adds the old `used()` to `_bufferBase`
+    // before calling us, and doesn't recompute it afterwards.
     buffer->commit();
     return 0;
 }

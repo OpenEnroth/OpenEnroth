@@ -85,8 +85,7 @@ class LyingInputStream : public InputStream {
 };
 
 UNIT_TEST(InputStream, PositionAfterReadUntilAtEnd) {
-    // The delimiter is never found, so this runs out of data and hits the default `_underflow`. `position()` must
-    // not overshoot - the binary deserializer's `size() - position()` checks depend on it.
+    // The delimiter is never found, so this runs out of data and hits the default `_underflow`.
     MemoryInputStream in("hello", 5);
     EXPECT_EQ(in.readUntil('\0'), "hello");
     EXPECT_EQ(in.position(), 5u);
