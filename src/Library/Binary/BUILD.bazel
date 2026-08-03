@@ -5,6 +5,7 @@ cc_library(
     ],
     hdrs = [
         "BinaryConcepts.h",
+        "PackSerialization.h",
         "BinaryExceptions.h",
         "BinaryFwd.h",
         "BinarySerialization.h",
@@ -28,5 +29,6 @@ cc_library(
         ":library_binary",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

@@ -13,3 +13,17 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
 )
+
+cc_library(
+    name = "test_library_compression",
+    srcs = [
+        "Tests/Compression_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        ":library_compression",
+    ],
+    testonly = True,
+    alwayslink = True,
+    visibility = ["//visibility:public"],
+)

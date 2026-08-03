@@ -23,5 +23,6 @@ cc_library(
         ":library_filesystem_directory",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

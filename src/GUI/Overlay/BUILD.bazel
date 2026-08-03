@@ -10,6 +10,7 @@ cc_library(
         "ScriptedOverlay.h",
     ],
     deps = [
+        "//src/Library/Logger:library_logger",
         "//src/Engine:engine",
         "//src/Utility:utility",
         "@imgui//:imgui",

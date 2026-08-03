@@ -10,6 +10,7 @@ cc_library(
     name = "gui_font",
     hdrs = ["GUIFont.h"],
     deps = [
+        "//src/Library/Logger:library_logger",
         "//src/Engine/Graphics:engine_graphics",
         "//src/Library/Color:library_color",
         "//src/Library/Geometry:library_geometry",

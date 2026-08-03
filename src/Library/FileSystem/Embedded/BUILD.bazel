@@ -35,5 +35,6 @@ cc_library(
         ":test_library_filesystem_embedded_resources",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

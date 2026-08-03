@@ -13,6 +13,7 @@ cc_library(
         "SpriteEnumFunctions.h",
     ],
     deps = [
+        "//src/Library/Logger:library_logger",
         "//src/Utility:utility",
     ],
     visibility = ["//visibility:public"],
@@ -104,6 +105,7 @@ cc_library(
     name = "test_engine_objects",
     srcs = [
         "Tests/Inventory_ut.cpp",
+        "Tests/MonsterEnumFunctions_ut.cpp",
     ],
     deps = [
         "//test/Testing/Game:testing_game",
@@ -111,5 +113,6 @@ cc_library(
         ":engine_objects",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

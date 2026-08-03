@@ -29,5 +29,6 @@ cc_library(
         "//src/Library/FileSystem/Dump:library_filesystem_dump",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

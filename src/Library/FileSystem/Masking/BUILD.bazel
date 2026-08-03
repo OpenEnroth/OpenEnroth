@@ -26,5 +26,6 @@ cc_library(
         "//src/Library/FileSystem/Memory:library_filesystem_memory",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

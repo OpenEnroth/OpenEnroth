@@ -9,5 +9,6 @@ cc_library(
         "//src/Library/Environment:library_environment",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

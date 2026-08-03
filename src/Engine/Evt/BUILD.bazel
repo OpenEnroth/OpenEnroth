@@ -5,6 +5,7 @@ cc_library(
     name = "engine_evt_enums",
     hdrs = ["EvtEnums.h"],
     deps = [
+        "//src/Library/Logger:library_logger",
         "//src/Library/Serialization:library_serialization",
         "//src/Utility:utility",
     ],

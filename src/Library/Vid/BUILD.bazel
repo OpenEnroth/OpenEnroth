@@ -26,5 +26,6 @@ cc_library(
         ":library_vid",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

@@ -12,5 +12,8 @@ cc_library(
         "//bazel/system:sdl3",
     ],
     target_compatible_with = ["@platforms//os:android"],
+    # Eagerly linked: nothing references these objects until link time resolves
+    # createStandardEnvironment(), and lazy --start-lib archives would drop them.
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

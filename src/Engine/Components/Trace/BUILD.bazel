@@ -17,6 +17,7 @@ cc_library(
         "EngineTraceRecording.h",
     ],
     deps = [
+        "//src/Library/Logger:library_logger",
         "//src/Engine:engine",
         "//src/Engine/Components/Control:engine_components_control",
         "//src/Engine/Components/Deterministic:engine_components_deterministic",

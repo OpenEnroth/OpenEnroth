@@ -27,5 +27,6 @@ cc_library(
         "//src/Library/FileSystem/Directory:library_filesystem_directory",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )
