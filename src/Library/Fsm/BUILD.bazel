@@ -33,5 +33,6 @@ cc_library(
         ":library_fsm",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

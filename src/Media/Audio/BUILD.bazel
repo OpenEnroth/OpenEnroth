@@ -2,6 +2,7 @@ cc_library(
     name = "media_audio_sound_enums",
     hdrs = ["SoundEnums.h"],
     deps = [
+        "//src/Library/Logger:library_logger",
         "//src/Utility:utility",
     ],
     visibility = ["//visibility:public"],

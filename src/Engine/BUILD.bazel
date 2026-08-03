@@ -140,7 +140,6 @@ cc_library(
     name = "engine_impl",
     srcs = [
         # engine_graphics .cpp files (need engine + renderer headers — circular with engine_graphics)
-        "//src/Engine/Graphics:BSPModel.cpp",
         "//src/Engine/Graphics:BspRenderer.cpp",
         "//src/Engine/Graphics:Camera.cpp",
         "//src/Engine/Graphics:ClippingFunctions.cpp",

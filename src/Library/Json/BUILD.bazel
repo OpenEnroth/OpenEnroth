@@ -11,7 +11,7 @@ cc_library(
     deps = [
         "//src/Utility:utility",
         "//src/Library/Serialization:library_serialization",
-        "@nlohmann_json//:nlohmann_json",
+        "@nlohmann_json//:json",
     ],
     visibility = ["//visibility:public"],
 )
@@ -26,5 +26,6 @@ cc_library(
         ":library_json",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

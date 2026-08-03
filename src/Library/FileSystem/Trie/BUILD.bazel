@@ -20,5 +20,6 @@ cc_library(
         ":library_filesystem_trie",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

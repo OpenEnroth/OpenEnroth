@@ -5,6 +5,7 @@ cc_library(
         "InputEnumFunctions.h",
     ],
     deps = [
+        "//src/Library/Logger:library_logger",
         "//src/Library/Platform/Interface:library_platform_interface",
         "//src/Library/Serialization:library_serialization",
         "//src/Utility:utility",

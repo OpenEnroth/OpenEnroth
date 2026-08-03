@@ -14,11 +14,16 @@ cc_binary(
     ],
     deps = [
         "//src/Application:application",
+        "//src/Engine:engine_impl",
         "//src/Library/Cli:library_cli",
         "//src/Library/Platform/Sdl:library_platform_main",
         "//src/Library/StackTrace:library_stack_trace",
-        "//src/Library/Environment:library_environment",
+        "//src/Library/Environment:library_environment",  # createStandardEnvironment() impl
         "//test/Testing/Game:testing_game",
+        # Test-case libraries that need the full engine (linked into the game test
+        # binary in the CMake build as well).
+        "//src/Engine/Objects:test_engine_objects",
+        "//src/Engine/Spells:test_engine_spells",
     ],
     testonly = True,
     visibility = ["//visibility:public"],

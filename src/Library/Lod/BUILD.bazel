@@ -34,5 +34,6 @@ cc_library(
         ":library_lod",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

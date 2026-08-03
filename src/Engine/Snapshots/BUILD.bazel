@@ -30,6 +30,7 @@ cc_library(
         "TableSerialization.h",
     ],
     deps = [
+        "//src/Library/Logger:library_logger",
         "//src/Engine/Data:engine_data",
         "//src/Engine/Objects:engine_objects",
         "//src/Engine/Tables:engine_tables",

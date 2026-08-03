@@ -11,5 +11,8 @@ cc_library(
         "//src/Utility:utility",
     ],
     target_compatible_with = ["@platforms//os:windows"],
+    # Eagerly linked: nothing references these objects until link time resolves
+    # createStandardEnvironment(), and lazy --start-lib archives would drop them.
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

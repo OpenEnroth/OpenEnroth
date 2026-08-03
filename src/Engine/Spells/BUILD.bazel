@@ -36,3 +36,18 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
 )
+
+cc_library(
+    name = "test_engine_spells",
+    srcs = [
+        "Tests/Spells_ut.cpp",
+    ],
+    deps = [
+        "//test/Testing/Game:testing_game",
+        "//test/Testing/Unit:testing_unit",
+        ":engine_spells",
+    ],
+    testonly = True,
+    alwayslink = True,
+    visibility = ["//visibility:public"],
+)

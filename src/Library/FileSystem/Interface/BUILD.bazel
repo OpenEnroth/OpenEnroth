@@ -33,5 +33,6 @@ cc_library(
         ":library_filesystem_interface",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

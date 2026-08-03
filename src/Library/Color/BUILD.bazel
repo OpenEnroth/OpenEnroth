@@ -28,5 +28,6 @@ cc_library(
         ":library_color",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

@@ -23,5 +23,6 @@ cc_library(
         ":library_snapshots",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

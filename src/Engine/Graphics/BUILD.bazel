@@ -71,6 +71,7 @@ cc_library(
         "Weather.h",
     ],
     deps = [
+        "//src/Library/Logger:library_logger",
         "//src/Engine:engine_base",
         "//src/Engine/Graphics/Renderer:engine_texture_id",
         "//src/Engine/Time:engine_time",

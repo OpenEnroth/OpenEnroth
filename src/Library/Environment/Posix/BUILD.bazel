@@ -14,5 +14,8 @@ cc_library(
         "@platforms//os:macos": [],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
+    # Eagerly linked: nothing references these objects until link time resolves
+    # createStandardEnvironment(), and lazy --start-lib archives would drop them.
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

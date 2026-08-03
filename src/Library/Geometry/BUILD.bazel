@@ -25,5 +25,6 @@ cc_library(
         ":library_geometry",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )

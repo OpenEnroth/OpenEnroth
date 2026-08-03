@@ -29,6 +29,7 @@ cc_library(
         "Math/Float.h",
         "Math/TrigLut.h",
         "Memory/Blob.h",
+        "Memory/MemoryBuffer.h",
         "Memory/MemoryScratchpad.h",
         "Memory/FreeDeleter.h",
         "Memory/MemSet.h",
@@ -50,6 +51,7 @@ cc_library(
         "String/Transformations.h",
         "String/Unicode.h",
         "Unaligned.h",
+        "View.h",
         "UnicodeCrt.h",
         "SmallVector.h",
         "ScopedRollback.h",
@@ -75,6 +77,9 @@ cc_library(
     srcs = [
         "Math/Tests/Float_ut.cpp",
         "Memory/Tests/Blob_ut.cpp",
+        "Memory/Tests/MemoryBuffer_ut.cpp",
+        "Memory/Tests/MemoryScratchpad_ut.cpp",
+        "Tests/View_ut.cpp",
         "Streams/Tests/BlobInputStream_ut.cpp",
         "Streams/Tests/BlobOutputStream_ut.cpp",
         "Streams/Tests/FileOutputStream_ut.cpp",
@@ -98,5 +103,6 @@ cc_library(
         "//src/Library/Serialization:library_serialization",
     ],
     testonly = True,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )
