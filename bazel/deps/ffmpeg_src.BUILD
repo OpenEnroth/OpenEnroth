@@ -29,6 +29,15 @@ filegroup(
 configure_make(
     name = "ffmpeg",
     lib_source = ":all_srcs",
+    # .d files are useless in a one-shot bazel build, and the msvc dep pipeline
+    # (cl -showIncludes | awk) breaks on backslash mangling in make's shell.
+    args = select({
+        "@platforms//os:windows": [
+            "CCDEP=:",
+            "HOSTCCDEP=:",
+        ],
+        "//conditions:default": [],
+    }),
     # Mirrors the stripped-down configuration from OpenEnroth_Dependencies
     # (scripts/build_all.sh): only the decoders/demuxers MM7 media needs.
     configure_options = [
