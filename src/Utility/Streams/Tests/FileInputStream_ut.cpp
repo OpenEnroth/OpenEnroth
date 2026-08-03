@@ -230,15 +230,17 @@ UNIT_TEST(FileInputStream, LargeSkipAfterFileGrows) {
 
 #ifdef __linux__
 UNIT_TEST(FileInputStream, SkipAgreesWithReadOnSeekOpaqueFiles) {
-    // Files on procfs report a size of zero but do have contents, so anything derived from seeking understates
-    // them. `skip` has to return what `read` would have consumed.
-    FileInputStream in("/proc/self/status", 8); // Small buffer, so that the skip goes through the seeking branch.
+    // Seeking to the end of `/dev/zero` says nothing about how much can be read from it, so anything derived from
+    // that understates the stream. `skip` has to return what `read` would have consumed.
+    FileInputStream in("/dev/zero", 8); // Small buffer, so that the skip goes through the seeking branch.
 
     char buf[10] = {};
     EXPECT_EQ(in.read(buf, sizeof(buf)), 10u);
+    EXPECT_EQ(std::string_view(buf, sizeof(buf)), std::string(sizeof(buf), '\0'));
     EXPECT_EQ(in.skip(100), 100u);
     EXPECT_EQ(in.position(), 110u);
     EXPECT_EQ(in.read(buf, sizeof(buf)), 10u);
+    EXPECT_EQ(std::string_view(buf, sizeof(buf)), std::string(sizeof(buf), '\0'));
     in.close();
 }
 #endif
