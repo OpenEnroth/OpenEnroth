@@ -16,7 +16,7 @@ UNIT_TEST(BlobOutputStream, ReopenWithoutClose) {
     out.write("world");
     out.close();
 
-    EXPECT_EQ(first.str(), "hello"); // Reopening has to transfer into the previous target, not drop it.
+    EXPECT_EQ(first.str(), "hello"); // Reopening writes out into the previous target.
     EXPECT_EQ(second.str(), "world");
 }
 

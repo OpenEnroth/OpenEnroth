@@ -19,7 +19,7 @@ void BlobOutputStream::open(Blob *target, std::string_view displayPath) {
     assert(target);
 
     if (isOpen())
-        close(); // Transfers what's been written so far into the previous target.
+        close(); // Writes out into the previous target.
 
     _target = target;
     _scratchpad.reset();
