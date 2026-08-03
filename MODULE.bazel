@@ -15,6 +15,22 @@ bazel_dep(name = "bazel_skylib", version = "1.8.2")
 
 bazel_dep(name = "googletest", version = "1.17.0")
 
+# ─── Libraries from the Bazel Central Registry ───────────────────────────────
+# Kept as close to the CMake-pinned versions as the registry allows.
+
+bazel_dep(name = "fmt", version = "12.2.0")
+bazel_dep(name = "spdlog", version = "1.17.0")
+bazel_dep(name = "nlohmann_json", version = "3.12.0.bcr.1")
+bazel_dep(name = "cli11", version = "2.6.2")
+bazel_dep(name = "glm", version = "1.0.3")
+bazel_dep(name = "fast_float", version = "8.2.4")
+bazel_dep(name = "zlib", version = "1.3.2")
+bazel_dep(name = "libpng", version = "1.6.58")
+
+# Native-bazel FFmpeg port. Used on 64-bit platforms; 32-bit targets build FFmpeg
+# from source via @ffmpeg_src (see //bazel/system:ffmpeg for details).
+bazel_dep(name = "ffmpeg", version = "7.1.1.bcr.beta.6")
+
 # ─── rules_foreign_cc — wraps CMake/Make deps (used for LuaJIT, SDL3, etc.) ──
 
 bazel_dep(name = "rules_foreign_cc", version = "0.11.1")
@@ -73,18 +89,11 @@ register_toolchains("@androidndk//:all")
 # ─── Non-BCR deps via http_archive ───────────────────────────────────────────
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-new_local_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:local.bzl", "new_local_repository")
 
 # Header-only deps ----------------------------------------------------------
 
-http_archive(
-    name = "glm",
-    url = "https://github.com/g-truc/glm/archive/0af55ccecd98d4e5a8d1fad7de25ba429d60e863.tar.gz",
-    strip_prefix = "glm-0af55ccecd98d4e5a8d1fad7de25ba429d60e863",
-    build_file = "//bazel/deps:glm.BUILD",
-    sha256 = "e7f187d83523f505eb38dd25d297ea6c0d4ed856d733e808f18253f5a8fa88a0",
-)
-
+# magic_enum stays off-registry: OE and the CMake build pin a pre-0.9 commit with the
+# flat include/magic_enum.hpp layout, while BCR versions use include/magic_enum/*.hpp.
 http_archive(
     name = "magic_enum",
     url = "https://github.com/Neargye/magic_enum/archive/d01a4f90a63444e910e66c796b93df25abffcfe0.tar.gz",
@@ -94,35 +103,11 @@ http_archive(
 )
 
 http_archive(
-    name = "fast_float",
-    url = "https://github.com/fastfloat/fast_float/archive/1ea4f27b2aeee2859a1354a3c24cff52a116cad1.tar.gz",
-    strip_prefix = "fast_float-1ea4f27b2aeee2859a1354a3c24cff52a116cad1",
-    build_file = "//bazel/deps:fast_float.BUILD",
-    sha256 = "06f860e3adb994b9c8523bb53a76a335c4182e27fe5a077246146d283efdc9da",
-)
-
-http_archive(
     name = "mio",
     url = "https://github.com/mandreyel/mio/archive/8b6b7d878c89e81614d05edca7936de41ccdd2da.tar.gz",
     strip_prefix = "mio-8b6b7d878c89e81614d05edca7936de41ccdd2da",
     build_file = "//bazel/deps:mio.BUILD",
     sha256 = "86248113bb2f1484f9cd44a260fe09beaa911307073c6f21fa9e765588d54b4b",
-)
-
-http_archive(
-    name = "nlohmann_json",
-    url = "https://github.com/nlohmann/json/archive/55f93686c01528224f448c19128836e7df245f72.tar.gz",
-    strip_prefix = "json-55f93686c01528224f448c19128836e7df245f72",
-    build_file = "//bazel/deps:nlohmann_json.BUILD",
-    sha256 = "67f4cdd9ca930c9c1e130af4a437c7fc98fab77a2846fc2d2a14b4943831f8ef",
-)
-
-http_archive(
-    name = "cli11",
-    url = "https://github.com/CLIUtils/CLI11/archive/95324820650117a2668ed63b095007068fd0c475.tar.gz",
-    strip_prefix = "CLI11-95324820650117a2668ed63b095007068fd0c475",
-    build_file = "//bazel/deps:cli11.BUILD",
-    sha256 = "edbc669c4c578e220cc6b0fbe5a1bf5047692289c0f7e38231c9ae248e0f0bdd",
 )
 
 http_archive(
@@ -176,22 +161,6 @@ http_archive(
 # Built deps -----------------------------------------------------------------
 
 http_archive(
-    name = "fmt",
-    url = "https://github.com/fmtlib/fmt/archive/e3ddede6c4ee818825c4e5a6dfa1d384860c27d9.tar.gz",
-    strip_prefix = "fmt-e3ddede6c4ee818825c4e5a6dfa1d384860c27d9",
-    build_file = "//bazel/deps:fmt.BUILD",
-    sha256 = "ae49fbb0f538242cebbc7241d1a466ae386f326ed2b76575ae91a559a9319121",
-)
-
-http_archive(
-    name = "spdlog",
-    url = "https://github.com/gabime/spdlog/archive/79524ddd08a4ec981b7fea76afd08ee05f83755d.tar.gz",
-    strip_prefix = "spdlog-79524ddd08a4ec981b7fea76afd08ee05f83755d",
-    build_file = "//bazel/deps:spdlog.BUILD",
-    sha256 = "c6dee844e35a54cc80e3ab76aae2310763e0b49c7397549dfa4d4657d9737138",
-)
-
-http_archive(
     name = "sol2",
     url = "https://github.com/ThePhD/sol2/archive/336f76c3772c84e347a7f4ffb246d8c0e2d5f426.tar.gz",
     strip_prefix = "sol2-336f76c3772c84e347a7f4ffb246d8c0e2d5f426",
@@ -217,10 +186,10 @@ http_archive(
 
 http_archive(
     name = "ztd_text",
-    url = "https://github.com/captainurist/ztd_text/archive/c7b7cd6c97db63042037c14b0e96302c4eb1888e.tar.gz",
-    strip_prefix = "ztd_text-c7b7cd6c97db63042037c14b0e96302c4eb1888e",
+    url = "https://github.com/captainurist/ztd_text/archive/c4c486179ebeb67510dbcceefe686cf931de1b5f.tar.gz",
+    strip_prefix = "ztd_text-c4c486179ebeb67510dbcceefe686cf931de1b5f",
     build_file = "//bazel/deps:ztd_text.BUILD",
-    sha256 = "fbdd87ce2de34da97e2a6dda893ed7844717f3802d291c9359bb2d67df9d96ac",
+    sha256 = "d15877bcc86dcbb2db15935d2862abb8d7f4fd005a603420bd98b006eca70145",
 )
 
 # ztd.idk + companion libraries — all required by ztd_text (all header-only)
@@ -270,60 +239,23 @@ http_archive(
     sha256 = "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7",
 )
 
-http_archive(
-    name = "luajit_cmake",
-    url = "https://github.com/zhaozg/luajit-cmake/archive/64462217e05164b46ca44c10ed1d12918eee8fa5.tar.gz",
-    strip_prefix = "luajit-cmake-64462217e05164b46ca44c10ed1d12918eee8fa5",
-    build_file = "//bazel/deps:luajit_cmake.BUILD",
-    sha256 = "02b4a642ef33ad3da30850397050fc40aee15196440bd211fc445bb1e6edf35d",
-)
+# LuaJIT for Windows — MSVC build via the luajit-cmake wrapper, entirely inside bazel.
+# Combines the LuaJIT & luajit-cmake archives into one repository (see luajit_repo.bzl).
+luajit_cmake_repository = use_repo_rule("//bazel/deps:luajit_repo.bzl", "luajit_cmake_repository")
 
-# LuaJIT Windows prebuilt — wraps CMake-built lib + submodule headers.
-# path = "." maps to the workspace root, giving access to both
-# thirdparty/luajit/src/*.h and build/thirdparty/Debug/libluajit.lib.
-# Requires a prior CMake build on Windows; unused on other platforms.
-new_local_repository(
-    name = "luajit_windows",
-    path = ".",
-    build_file = "//bazel/deps:luajit_windows.BUILD",
+luajit_cmake_repository(
+    name = "luajit_win",
+    luajit_url = "https://github.com/LuaJIT/LuaJIT/archive/97813fb924edf822455f91a5fbbdfdb349e5984f.tar.gz",
+    luajit_sha256 = "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7",
+    luajit_strip_prefix = "LuaJIT-97813fb924edf822455f91a5fbbdfdb349e5984f",
+    luajit_cmake_url = "https://github.com/zhaozg/luajit-cmake/archive/64462217e05164b46ca44c10ed1d12918eee8fa5.tar.gz",
+    luajit_cmake_sha256 = "02b4a642ef33ad3da30850397050fc40aee15196440bd211fc445bb1e6edf35d",
+    luajit_cmake_strip_prefix = "luajit-cmake-64462217e05164b46ca44c10ed1d12918eee8fa5",
+    build_file = "//bazel/deps:luajit_win.BUILD",
 )
 
 # System deps — source builds via rules_foreign_cc cmake()/configure_make() -
-# These replace the prebuilt zips from OpenEnroth_Dependencies.
-# FFmpeg (Linux/macOS): configure_make() source build.
-# FFmpeg (Windows): prebuilt — configure requires bash/MSYS2 (deferred).
-# FFmpeg (Android): prebuilt — NDK cross-compilation not yet configured.
 
-http_archive(
-    name = "zlib_src",
-    url = "https://github.com/madler/zlib/archive/04f42ceca40f73e2978b50e93806c2a18c1281fc.tar.gz",
-    strip_prefix = "zlib-04f42ceca40f73e2978b50e93806c2a18c1281fc",
-    build_file = "//bazel/deps:zlib_src.BUILD",
-    patches = [
-        # Patch 1: mark the shared lib EXCLUDE_FROM_ALL so it isn't built by default,
-        # and add OPTIONAL to its install() so cmake --install doesn't fail when the
-        # shared lib wasn't built. zlib 1.2.13 always builds both SHARED and STATIC
-        # unconditionally; this patch respects BUILD_SHARED_LIBS=OFF.
-        "//bazel/patches:zlib_exclude_shared.patch",
-        # Patch 2: strip Bazel timestamp-redaction flags (-D__DATE__=redacted etc.)
-        # that conflict with macOS Xcode 16.3 system headers (_stdio.h:318).
-        "//bazel/patches:zlib_strip_injected_flags.patch",
-        # Patch 3: zutil.h defines fdopen(fd,mode)=NULL on TARGET_OS_MAC, but macOS
-        # always has fdopen. The macro causes _stdio.h:318 to fail when fdopen() is
-        # declared after the macro is defined. Add !defined(__APPLE__) guard.
-        "//bazel/patches:zlib_fix_fdopen_apple.patch",
-    ],
-    patch_args = ["-p1"],
-    sha256 = "90f43a9c998740e8a0db24b0af0147033db2aaaa99423129abbd76640757cac9",
-)
-
-http_archive(
-    name = "libpng_src",
-    url = "https://github.com/glennrp/libpng/archive/f5e92d76973a7a53f517579bc95d61483bf108c0.tar.gz",
-    strip_prefix = "libpng-f5e92d76973a7a53f517579bc95d61483bf108c0",
-    build_file = "//bazel/deps:libpng_src.BUILD",
-    sha256 = "3689d30176661b821ce02c92baf801050bc3849d3428ff99c8afeb1ef4390c8c",
-)
 
 http_archive(
     name = "sdl3_src",
@@ -346,82 +278,12 @@ http_archive(
     sha256 = "dd733d74c33b106b90f83a0e0e9917b39aa401162ff8da23d7948615dcb92ef7",
 )
 
-# FFmpeg n7.0 — libavcodec 61.3.100 (same version as the prebuilt archives).
-# Used on Linux and macOS via configure_make(); Windows/Android stay on prebuilt.
+# FFmpeg n7.0 — configure_make() source build for the 32-bit targets that the
+# BCR ffmpeg module can't serve (it hardcodes x86-64 nasm sources for non-aarch64).
 http_archive(
     name = "ffmpeg_src",
     url = "https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.0.tar.gz",
     strip_prefix = "FFmpeg-n7.0",
     build_file = "//bazel/deps:ffmpeg_src.BUILD",
     sha256 = "a68fbc06a645cc93e5c877adbaa592cffc40e8595ba50eb716807c4a35bf0f03",
-)
-
-# System deps — prebuilt zips from OpenEnroth_Dependencies (Phase 5) --------
-# Tag: deps_r7_master. Release builds only; Debug variants follow same pattern.
-# sha256 fields left empty — fill in after first download for hermeticity.
-
-_DEPS_TAG = "deps_r7_master"
-_DEPS_BASE = "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/" + _DEPS_TAG + "/"
-
-http_archive(
-    name = "oe_deps_linux_x86_64",
-    url = _DEPS_BASE + "linux_Release_x86_64.zip",
-    build_file = "//bazel/system:prebuilt_posix.BUILD",
-    sha256 = "012fe020d10ff0642a3a993305475b74eed5ac69bf5472b62ef801a2006a0c3b",
-)
-
-http_archive(
-    name = "oe_deps_linux_x86",
-    url = _DEPS_BASE + "linux_Release_x86.zip",
-    build_file = "//bazel/system:prebuilt_posix.BUILD",
-    sha256 = "049edcfaf248e6744b6066f3b661952cf4bd29e125680437e83dbfc17f729d1e",
-)
-
-http_archive(
-    name = "oe_deps_darwin_arm64",
-    url = _DEPS_BASE + "darwin_Release_arm64.zip",
-    build_file = "//bazel/system:prebuilt_posix.BUILD",
-    sha256 = "f765ea21c804f066ac2439a9985e3eb755248997ff1023ea79e92d2fc4a5340f",
-)
-
-http_archive(
-    name = "oe_deps_darwin_x86_64",
-    url = _DEPS_BASE + "darwin_Release_x86_64.zip",
-    build_file = "//bazel/system:prebuilt_posix.BUILD",
-    sha256 = "8c46e5cd20ea9ce8bbe6d9351743f5f3267f7ac22c2ac216228feb73063d8eef",
-)
-
-http_archive(
-    name = "oe_deps_windows_x86_64",
-    url = _DEPS_BASE + "windows_Release_x86_64.zip",
-    build_file = "//bazel/system:prebuilt_windows.BUILD",
-    sha256 = "b19cddebdc905ad9856a95dedb48fe4e91fc34ce814c0ba440266509b9d1838d",
-)
-
-http_archive(
-    name = "oe_deps_windows_x86",
-    url = _DEPS_BASE + "windows_Release_x86.zip",
-    build_file = "//bazel/system:prebuilt_windows.BUILD",
-    sha256 = "83551e19acd4cec5bf9985e36129f44e85f0e8ed26a04872a3208b03df54fea4",
-)
-
-http_archive(
-    name = "oe_deps_android_arm64",
-    url = _DEPS_BASE + "android_Release_arm64.zip",
-    build_file = "//bazel/system:prebuilt_android.BUILD",
-    sha256 = "ed9c63d6911793d52541d77318c8fc7bea8c4d4ff02cf454fdd13a64b193b741",
-)
-
-http_archive(
-    name = "oe_deps_android_arm32",
-    url = _DEPS_BASE + "android_Release_arm32.zip",
-    build_file = "//bazel/system:prebuilt_android.BUILD",
-    sha256 = "1fcbc2508ef7c5eb7bb90ad45963f3c82b1643e4a1ebb1cb05c11b184b25baa2",
-)
-
-http_archive(
-    name = "oe_deps_android_x86_64",
-    url = _DEPS_BASE + "android_Release_x86_64.zip",
-    build_file = "//bazel/system:prebuilt_android.BUILD",
-    sha256 = "76b7cd20001c06a6cc663be4f00466ee9922b83f9185fa15d524abc32d4cee78",
 )

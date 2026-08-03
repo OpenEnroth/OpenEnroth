@@ -1,8 +1,14 @@
 # configure_make() build for FFmpeg n7.0 from source.
-# Replaces the prebuilt FFmpeg from OpenEnroth_Dependencies on Linux and macOS.
-# Windows is kept on prebuilt (FFmpeg configure requires bash/MSYS2, deferred).
+# Used on the 32-bit targets that the BCR ffmpeg module can't serve: linux_x86,
+# windows_x86 and android_armeabi_v7a. 64-bit platforms use @ffmpeg from the BCR.
 
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
+
+# Local config_settings — //bazel/platforms labels can't be used in injected BUILD files.
+config_setting(
+    name = "_android_armv7",
+    constraint_values = ["@platforms//os:android", "@platforms//cpu:armv7"],
+)
 
 filegroup(
     name = "all_srcs",
@@ -28,14 +34,39 @@ configure_make(
         # Avoids a NASM/YASM dependency and keeps the build reproducible across
         # environments that may not have an assembler available.
         "--disable-asm",
-    ],
-    out_static_libs = [
-        "libavcodec.a",
-        "libavformat.a",
-        "libavutil.a",
-        "libswscale.a",
-        "libswresample.a",
-    ],
+    ] + select({
+        # MSVC build; cl.exe comes from the msvc-dev-cmd environment, bash from MSYS.
+        "@platforms//os:windows": ["--toolchain=msvc"],
+        # NDK cross-compilation; CC/CXX/AR point at NDK clang via rules_foreign_cc's
+        # exported toolchain env vars, expanded by the generated configure wrapper.
+        ":_android_armv7": [
+            "--enable-cross-compile",
+            "--target-os=android",
+            "--arch=arm",
+            "--cpu=armv7-a",
+            "--cc=$CC",
+            "--cxx=$CXX",
+            "--ar=$AR",
+        ],
+        "//conditions:default": [],
+    }),
+    out_static_libs = select({
+        # MSVC-style library names (LIBPREF=""/LIBSUF=".lib" with --toolchain=msvc).
+        "@platforms//os:windows": [
+            "avcodec.lib",
+            "avformat.lib",
+            "avutil.lib",
+            "swscale.lib",
+            "swresample.lib",
+        ],
+        "//conditions:default": [
+            "libavcodec.a",
+            "libavformat.a",
+            "libavutil.a",
+            "libswscale.a",
+            "libswresample.a",
+        ],
+    }),
     # avformat and avcodec have circular symbol references at runtime initialisation
     # (avformat pulls in avcodec decoders, avcodec calls avformat helpers).
     # alwayslink forces --whole-archive on all five archives so the linker includes
