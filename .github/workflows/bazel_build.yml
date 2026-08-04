@@ -189,7 +189,7 @@ jobs:
       - name: 'Annotate failure log'
         if: failure()
         run: |
-          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED:|incomplete|FAILED TESTS" bazel-build.log bazel-gametest.log bazel-retrace.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
+          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED:|incomplete|FAILED TESTS" bazel-build.log bazel-test.log bazel-gametest.log bazel-retrace.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
 
       # Game tests need the MM7 data; same shared cache the cmake matrix uses.
       # TODO(captainurist): expand to windows/darwin legs before dropping cmake.
@@ -203,13 +203,9 @@ jobs:
       - name: '[linux_x86_64] Run game tests'
         if: matrix.target == 'linux_x86_64'
         run: |
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --remote_download_toplevel //test/Bin/GameTest:OpenEnroth_GameTest 2>&1 | tee bazel-build.log
-          bazel run --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} @gtest_parallel//:gtest_parallel -- \
-            --print_test_times --workers=$(nproc) \
-            ${{github.workspace}}/bazel-bin/test/Bin/GameTest/OpenEnroth_GameTest -- \
-            --test-path ${{github.workspace}}/test/Data --headless 2>&1 | tee bazel-gametest.log
-        env:
-          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
+          bazel test --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
+            --test_env=OPENENROTH_MM7_PATH=${{github.workspace}}/OpenEnroth_GameData/mm7 \
+            //test/Bin/GameTest:OpenEnroth_GameTest 2>&1 | tee bazel-gametest.log
 
       # Retrace tests replay canonical traces through the game binary itself.
       - name: '[linux_x86_64] Run retrace tests'
@@ -226,15 +222,12 @@ jobs:
         run: |
           bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //:check_style
 
-      - name: '[non-android] Build unit test'
-        if: env.MATRIX_PLATFORM != 'android'
-        run: |
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //test/Bin/UnitTest:OpenEnroth_UnitTest
-
+      # bazel test: passed results are cached (and shared via the remote cache),
+      # so unchanged tests cost nothing.
       - name: '[non-android] Run unit tests'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          bazel run --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //test/Bin/UnitTest:OpenEnroth_UnitTest
+          bazel test --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
 
       - name: 'Save bazel caches'
         # always(): a red test on master shouldn't discard the warmed cache.
