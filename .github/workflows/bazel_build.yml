@@ -189,7 +189,7 @@ jobs:
       - name: 'Annotate failure log'
         if: failure()
         run: |
-          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED:|incomplete|FAILED TESTS" bazel-build.log bazel-test.log bazel-gametest.log bazel-retrace.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
+          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED|TIMEOUT|incomplete" bazel-build.log bazel-test.log bazel-gametest.log bazel-retrace.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
 
       # Game tests need the MM7 data; same shared cache the cmake matrix uses.
       # TODO(captainurist): expand to windows/darwin legs before dropping cmake.
