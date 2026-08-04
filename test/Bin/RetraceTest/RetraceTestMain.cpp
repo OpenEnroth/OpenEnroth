@@ -22,22 +22,10 @@
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/String/Format.h"
-#include "Utility/String/Transformations.h"
 #include "Utility/String/Split.h"
 #include "Utility/UnicodeCrt.h"
 
 #include "RetraceTestOptions.h"
-
-static std::string normalizeText(std::string_view text) {
-    // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
-    std::string result = replaceAll(text, "\r\n", "\n");
-
-    // Also drop trailing newlines. Vim always adds a newline, but retracing removes it.
-    while (result.ends_with('\n'))
-        result.pop_back();
-
-    return result;
-}
 
 static void printLines(const std::vector<std::string_view> &lines, size_t line, size_t delta) {
     // TODO(captainurist): #cpp26 use std::sat_sub
@@ -89,8 +77,8 @@ class RetraceTest : public testing::Test {
         player->playTrace(_game, std::move(oldTrace.events), _tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
         EngineTraceRecording recording = recorder->finishRecording(_game);
 
-        std::string oldTraceJson = normalizeText(oldTraceBlob.str());
-        std::string newTraceJson = normalizeText(recording.trace.str());
+        std::string oldTraceJson = EventTrace::normalizeJson(oldTraceBlob.str());
+        std::string newTraceJson = EventTrace::normalizeJson(recording.trace.str());
         if (oldTraceJson != newTraceJson) {
             printTraceDiff(newTraceJson, oldTraceJson);
             ADD_FAILURE() << "Trace '" << _tracePath << "' is not in canonical representation.";

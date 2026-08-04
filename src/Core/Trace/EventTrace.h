@@ -56,6 +56,14 @@ struct EventTrace {
     static Blob toJsonBlob(const EventTrace &trace);
     static EventTrace fromJsonBlob(const Blob &blob, PlatformWindow *window);
 
+    /**
+     * Normalizes trace json text for comparison - unifies line endings and drops trailing newlines.
+     *
+     * @param text                      Trace json text.
+     * @return                          Normalized json text.
+     */
+    static std::string normalizeJson(std::string_view text);
+
     static bool isTraceable(const PlatformEvent *event);
     static std::unique_ptr<PlatformEvent> cloneEvent(const PlatformEvent *event);
 
