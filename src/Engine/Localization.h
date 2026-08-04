@@ -23,11 +23,6 @@ class Localization {
 
     const std::string &str(LstrId index) const;
 
-    /**
-     * Expands Buka-style `^`-tokens, see `sprintfex` in `mm7text_ru.h`. A no-op for non-Buka localizations.
-     */
-    std::string expandTokens(std::string_view str) const;
-
     template<class... Args>
     std::string format(LstrId index, Args &&... args) const {
         // TODO(captainurist): what if fmt throws?
@@ -62,8 +57,14 @@ class Localization {
         return _actorBuffNames[index];
     }
 
-    const std::string &className(Class index) const {
-        return _classNames[index];
+    /**
+     * @param index                     Character class.
+     * @return                          Class name for standalone display. In the Russian (Buka) localization
+     *                                  gendered names expand to the masculine form here - `NameAndTitle` is the
+     *                                  one that can gender them by the character's name.
+     */
+    std::string className(Class index) const {
+        return expandTokens(_classNames[index]);
     }
 
     const std::string &classDescription(Class index) const {
@@ -140,8 +141,12 @@ class Localization {
         return str(isPm ? LSTR_PM : LSTR_AM);
     }
 
-    const std::string &npcProfessionName(NpcProfession prof) const {
-        return _npcProfessionNames[prof];
+    /**
+     * @param prof                      NPC profession.
+     * @return                          Profession name for standalone display, see `className` for the Buka notes.
+     */
+    std::string npcProfessionName(NpcProfession prof) const {
+        return expandTokens(_npcProfessionNames[prof]);
     }
 
     const std::string &specialAttackName(MonsterSpecialAttack index) const {
@@ -232,6 +237,17 @@ class Localization {
     Localization() = default;
 
  private:
+    friend std::string NameAndTitle(std::string_view name, Class class_type);
+    friend std::string NameAndTitle(std::string_view name, NpcProfession profession);
+
+    /**
+     * Expands Buka-style `^`-tokens, see `sprintfex` in `mm7text_ru.h`. A no-op for non-Buka localizations.
+     *
+     * @param str                       A formatted string, possibly containing `^`-tokens.
+     * @return                          String with the tokens expanded.
+     */
+    std::string expandTokens(std::string_view str) const;
+
     void initializeMm6ItemCategories();
 
     void initializeMonthNames();

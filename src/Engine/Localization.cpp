@@ -1360,18 +1360,14 @@ std::string NameAndTitle(std::string_view name, std::string_view title) {
 
 
 std::string NameAndTitle(std::string_view name, Class class_type) {
-    return NameAndTitle(
-        name,
-        localization->className(class_type)
-    );
+    // Raw class name, not className() - in the Buka localization format() genders it by the character's name.
+    return localization->format(LSTR_S_THE_S, name, localization->_classNames[class_type]);
 }
 
 
 std::string NameAndTitle(std::string_view name, NpcProfession profession) {
-    return NameAndTitle(
-        name,
-        localization->npcProfessionName(profession)
-    );
+    // Raw profession name, not npcProfessionName() - see above.
+    return localization->format(LSTR_S_THE_S, name, localization->_npcProfessionNames[profession]);
 }
 
 
