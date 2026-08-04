@@ -13,10 +13,7 @@
 #include "Utility/ScopeGuard.h"
 #include "Utility/UnicodeCrt.h"
 
-#ifdef _WINDOWS
-#   define ftello _ftelli64
-#   define fseeko _fseeki64
-#endif
+#include "FileApi.h"
 
 FileInputStream::FileInputStream(std::string_view path, size_t bufferSize) {
     open(path, bufferSize);
@@ -35,22 +32,22 @@ void FileInputStream::open(std::string_view path, size_t bufferSize) {
     assert(!_buf); // Sized for the old `_bufSize`, so it has to be gone before that changes.
 
     std::string absolutePath = absolute(std::filesystem::path(path)).generic_string();
-    FILE *file = fopen(absolutePath.c_str(), "rb");
+    FILE *file = detail::fileApi->openFile(absolutePath.c_str(), "rb");
     if (!file)
         Exception::throwFromErrno(absolutePath);
-    MM_AT_SCOPE_EXIT(if (file) fclose(file)); // Don't leak it if anything below throws.
+    MM_AT_SCOPE_EXIT(if (file) detail::fileApi->closeFile(file)); // Don't leak it if anything below throws.
 
     // Disable libc buffering, we manage our own buffer.
-    if (setvbuf(file, nullptr, _IONBF, 0) != 0)
+    if (detail::fileApi->setBuffering(file, nullptr, _IONBF, 0) != 0)
         Exception::throwFromErrno(absolutePath);
 
     // Compute file size at open time.
-    if (fseeko(file, 0, SEEK_END) != 0)
+    if (detail::fileApi->seek(file, 0, SEEK_END) != 0)
         Exception::throwFromErrno(absolutePath);
-    int64_t fileEnd = ftello(file);
+    int64_t fileEnd = detail::fileApi->tell(file);
     if (fileEnd == -1)
         Exception::throwFromErrno(absolutePath);
-    if (fseeko(file, 0, SEEK_SET) != 0)
+    if (detail::fileApi->seek(file, 0, SEEK_SET) != 0)
         Exception::throwFromErrno(absolutePath);
 
     _file = std::exchange(file, nullptr);
@@ -66,9 +63,9 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
 
     if (size < _bufSize) {
         // Small read/skip/refill: fill the internal buffer.
-        clearerr(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
-        size_t bytesRead = fread(_buf.get(), 1, _bufSize, _file);
-        if (bytesRead == 0 && ferror(_file)) // Partial reads are returned as-is, the error resurfaces on the next call.
+        detail::fileApi->clearError(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
+        size_t bytesRead = detail::fileApi->readBytes(_buf.get(), 1, _bufSize, _file);
+        if (bytesRead == 0 && detail::fileApi->checkError(_file)) // Partial reads are returned as-is, the error resurfaces on the next call.
             Exception::throwFromErrno(displayPath());
         buffer->reset(_buf.get(), _buf.get(), _buf.get() + bytesRead);
         if (data) {
@@ -78,36 +75,36 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
         }
     } else if (data) {
         // Large read: direct fread.
-        clearerr(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
-        size_t bytesRead = fread(data, 1, size, _file);
-        if (bytesRead == 0 && ferror(_file)) // Partial reads are returned as-is, the error resurfaces on the next call.
+        detail::fileApi->clearError(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
+        size_t bytesRead = detail::fileApi->readBytes(data, 1, size, _file);
+        if (bytesRead == 0 && detail::fileApi->checkError(_file)) // Partial reads are returned as-is, the error resurfaces on the next call.
             Exception::throwFromErrno(displayPath());
         return bytesRead;
     } else {
         // Large skip. Seek over what the file provably holds, then read and discard the rest - a seek-derived
         // length understates the readable data for some files, and `skip` has to agree with `read`.
-        int64_t cur = ftello(_file);
+        int64_t cur = detail::fileApi->tell(_file);
         if (cur == -1)
             Exception::throwFromErrno(displayPath());
-        if (fseeko(_file, 0, SEEK_END) != 0)
+        if (detail::fileApi->seek(_file, 0, SEEK_END) != 0)
             Exception::throwFromErrno(displayPath());
-        int64_t end = ftello(_file);
+        int64_t end = detail::fileApi->tell(_file);
         if (end == -1)
             Exception::throwFromErrno(displayPath());
 
         uint64_t bytesLeft = end > cur ? end - cur : 0;
         size_t bytesSkipped = static_cast<size_t>(std::min<uint64_t>(size, bytesLeft));
-        if (fseeko(_file, cur + bytesSkipped, SEEK_SET) != 0)
+        if (detail::fileApi->seek(_file, cur + bytesSkipped, SEEK_SET) != 0)
             Exception::throwFromErrno(displayPath());
 
         while (bytesSkipped < size) {
-            clearerr(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
-            size_t bytesRead = fread(_buf.get(), 1, std::min(size - bytesSkipped, _bufSize), _file);
+            detail::fileApi->clearError(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".
+            size_t bytesRead = detail::fileApi->readBytes(_buf.get(), 1, std::min(size - bytesSkipped, _bufSize), _file);
             bytesSkipped += bytesRead;
             if (bytesRead == 0) {
                 // Once the offset has moved, throwing would strand it past what `position()` reports. Partial skips
                 // are returned as-is instead, and the error resurfaces on the next call.
-                if (bytesSkipped == 0 && ferror(_file))
+                if (bytesSkipped == 0 && detail::fileApi->checkError(_file))
                     Exception::throwFromErrno(displayPath());
                 break; // End of stream, or an error that the next call will report.
             }
@@ -121,7 +118,7 @@ void FileInputStream::_close(bool canThrow) {
 
     // Tear down first, throw last - this stream has to end up closed either way.
     std::string path = displayPath(); // `base_type::_close` clears it.
-    int error = fclose(_file) != 0 ? errno : 0;
+    int error = detail::fileApi->closeFile(_file) != 0 ? errno : 0;
     _file = nullptr;
     _buf.reset();
     _bufSize = 0;

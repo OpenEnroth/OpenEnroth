@@ -6,6 +6,7 @@ set(UTILITY_SOURCES
         Memory/Blob.cpp
         Streams/BlobInputStream.cpp
         Streams/BlobOutputStream.cpp
+        Streams/FileApi.cpp
         Streams/FileInputStream.cpp
         Streams/FileOutputStream.cpp
         Streams/InputStream.cpp
@@ -36,6 +37,7 @@ set(UTILITY_HEADERS
         Segment.h
         Streams/BlobInputStream.h
         Streams/BlobOutputStream.h
+        Streams/FileApi.h
         Streams/FileInputStream.h
         Streams/FileOutputStream.h
         Streams/InputStream.h
@@ -77,6 +79,7 @@ if(OE_BUILD_TESTS)
             Memory/Tests/MemoryScratchpad_ut.cpp
             Streams/Tests/BlobInputStream_ut.cpp
             Streams/Tests/BlobOutputStream_ut.cpp
+            Streams/Tests/FileApi_ut.cpp
             Streams/Tests/FileOutputStream_ut.cpp
             Streams/Tests/FileInputStream_ut.cpp
             Streams/Tests/InputStream_ut.cpp
