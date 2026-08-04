@@ -165,6 +165,11 @@ jobs:
         run: |
           bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //src/Bin/OpenEnroth:OpenEnroth
 
+      - name: '[linux_x86_64] Check style'
+        if: matrix.target == 'linux_x86_64'
+        run: |
+          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //:check_style
+
       - name: '[non-android] Build unit test'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
