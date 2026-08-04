@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <charconv>
 #include <functional>
 #include <cstdlib>
 #include <string>
@@ -654,12 +655,13 @@ int caseIndex(char c) {
 
 // Returns the Russian plural form index for n: 0 for "1 день", 1 for "2 дня", 2 for "5 дней".
 int pluralFormIndex(int n) {
-    n = std::abs(n);
-    if (n % 100 >= 11 && n % 100 <= 14) // The original mm7text.dll missed this and produced "11 день".
+    n = std::abs(n % 100); // % first - abs(INT_MIN) is UB.
+    if (n >= 11 && n <= 14) // The original mm7text.dll missed this and produced "11 день".
         return 2;
-    if (n % 10 == 1)
+    n %= 10;
+    if (n == 1)
         return 0;
-    if (n % 10 >= 2 && n % 10 <= 4)
+    if (n >= 2 && n <= 4)
         return 1;
     return 2;
 }
@@ -714,7 +716,11 @@ std::string sprintfex(std::string_view str) {
 
         switch (kind) {
         case 'I': {
-            numbers.push_back(atoi(std::string(contents).c_str())); // NOLINT: locale-independent, and errors => 0.
+            // Like the DLL: contents are printed verbatim either way, but only a successfully parsed number
+            // occupies a registry slot.
+            int value = 0;
+            if (std::from_chars(contents.data(), contents.data() + contents.size(), value).ec == std::errc())
+                numbers.push_back(value);
             result += contents;
         } break;
 

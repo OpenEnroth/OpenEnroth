@@ -31,6 +31,10 @@ UNIT_TEST(Mm7TextRu, Plurals) {
 
     // Negative numbers are numbers too, not a "no ^I yet" marker.
     EXPECT_EQ(sprintfex(ru("^I[-1] д^L[ень;ня;ней]")), ru("-1 день"));
+    EXPECT_EQ(sprintfex(ru("^I[-2147483648] д^L[ень;ня;ней]")), ru("-2147483648 дней"));
+
+    // Unparsable ^I contents are printed but don't occupy a number slot, like in the original DLL.
+    EXPECT_EQ(sprintfex(ru("^I[?]^I[2] штук^L[а;и;]")), ru("?2 штуки"));
 }
 
 UNIT_TEST(Mm7TextRu, NumberedPlurals) {
