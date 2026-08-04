@@ -61,26 +61,54 @@ using enum TextEncoding;
 namespace txt {
 
 /**
- * Convert a wide string to UTF-8.
+ * Convert a UTF-16 string to UTF-8.
  *
- * On Windows, the wide string is assumed to be UTF-16. On other platforms, it's assumed to be UTF-32.
- * Invalid sequences are replaced with the Unicode replacement character (U+FFFD).
+ * Invalid sequences, unpaired surrogates included, are replaced with the Unicode replacement character (U+FFFD).
  *
- * @param wstr                          Wide string to convert.
+ * @param str                           UTF-16 string to convert.
  * @return                              UTF-8 encoded string.
  */
-std::string wideToUtf8(std::wstring_view wstr);
+std::string utf16ToUtf8(std::u16string_view str);
 
 /**
- * Convert a UTF-8 string to a wide string.
+ * Convert a UTF-8 string to UTF-16.
  *
- * On Windows, the output is UTF-16. On other platforms, the output is UTF-32.
  * Invalid sequences are replaced with the Unicode replacement character (U+FFFD).
  *
  * @param str                           UTF-8 string to convert.
- * @return                              Wide string.
+ * @return                              UTF-16 string.
  */
+std::u16string utf8ToUtf16(std::string_view str);
+
+/**
+ * Convert a WTF-16 string to WTF-8. WTF-16 is any `char16_t` sequence, and WTF-8 is UTF-8 extended so that all of
+ * them can be encoded, so this round-trips through `wtf8ToWtf16` whatever it's given.
+ *
+ * Use this for file names on Windows - Win32 does no Unicode validation on them, so a name can hold unpaired
+ * surrogates and non-characters alike. `utf16ToUtf8` would replace the former, giving a name that can't be opened.
+ *
+ * @param str                           WTF-16 string to convert.
+ * @return                              WTF-8 encoded string.
+ */
+std::string wtf16ToWtf8(std::u16string_view str);
+
+/**
+ * Convert a WTF-8 string to WTF-16, the exact inverse of `wtf16ToWtf8`. Valid UTF-8 is also valid WTF-8, so this
+ * works on UTF-8 input too.
+ *
+ * @param str                           WTF-8 string to convert.
+ * @return                              WTF-16 string.
+ */
+std::u16string wtf8ToWtf16(std::string_view str);
+
+#ifdef _WINDOWS
+static_assert(sizeof(wchar_t) == sizeof(char16_t));
+
+std::string wideToUtf8(std::wstring_view str);
+std::string wideToWtf8(std::wstring_view str);
 std::wstring utf8ToWide(std::string_view str);
+std::wstring wtf8ToWide(std::string_view str);
+#endif
 
 /**
  * Convert a string from the given encoding to UTF-8.
