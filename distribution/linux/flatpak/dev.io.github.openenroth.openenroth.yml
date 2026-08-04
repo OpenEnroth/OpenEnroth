@@ -34,10 +34,11 @@ modules:
       no-debuginfo: false  # Ensure debug info is generated.
     build-commands:
       # The dev manifest builds with --share=network, so bazel fetches deps itself.
-      - curl -sL https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64 -o /tmp/bazel && chmod +x /tmp/bazel
-      - /tmp/bazel build --config=flatpak -c opt //src/Bin/OpenEnroth:OpenEnroth
+      # Output tees into the build dir so CI can surface it on failure.
+      - curl -sL https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64 -o /tmp/bazel 2>&1 | tee bazel-fetch.log && chmod +x /tmp/bazel
+      - /tmp/bazel build --config=flatpak -c opt //src/Bin/OpenEnroth:OpenEnroth 2>&1 | tee bazel-build.log
       # TODO(captainurist): would be cool to run game tests here too!
-      - /tmp/bazel run --config=flatpak -c opt //test/Bin/UnitTest:OpenEnroth_UnitTest
+      - /tmp/bazel run --config=flatpak -c opt //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
     sources:
       - type: dir
         path: ../../../
