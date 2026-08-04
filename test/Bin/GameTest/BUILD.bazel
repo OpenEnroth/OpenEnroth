@@ -1,4 +1,18 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
+
+# Shared with //test/Bin/RetraceTest.
+cc_library(
+    name = "gametest_options",
+    testonly = True,
+    srcs = ["GameTestOptions.cpp"],
+    hdrs = ["GameTestOptions.h"],
+    visibility = ["//test/Bin/RetraceTest:__pkg__"],
+    deps = [
+        "//src/Application/Startup:application_startup",
+        "//src/Library/Cli:library_cli",
+    ],
+)
 
 # The MM7 game data comes via --test_env=OPENENROTH_MM7_PATH; it's original
 # game assets, so treating it as a constant input keeps result caching honest.
@@ -9,8 +23,6 @@ cc_test(
         "GameTestCommon.cpp",
         "GameTestCommon.h",
         "GameTestMain.cpp",
-        "GameTestOptions.cpp",
-        "GameTestOptions.h",
         "GameTests_0000.cpp",
         "GameTests_0500.cpp",
         "GameTests_1000.cpp",
@@ -26,6 +38,7 @@ cc_test(
     shard_count = 8,
     visibility = ["//visibility:public"],
     deps = [
+        ":gametest_options",
         "//src/Application:application",
         "//src/Engine:engine_impl",
         "//src/Library/Cli:library_cli",
