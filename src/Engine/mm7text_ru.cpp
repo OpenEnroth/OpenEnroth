@@ -570,12 +570,14 @@ struct SpecialNameEntry {
     std::array<const char *, 6> cases; // I, R, D, V, T, P. All nullptr for indeclinable names.
 };
 
-// The original mm7text.dll returned masculine for "Стены тумана" due to an inverted check - clearly a bug, it's
-// feminine here, same as "Врата в Бездну".
+// Two deviations from the original mm7text.dll table, both clear bugs there: it returned masculine for
+// "Стены тумана" due to an inverted check, and it used the genitive "Врат в Бездну" for the accusative - both
+// names are inanimate plurals, so the accusative matches the nominative, as the DLL's own "Стены тумана" row
+// correctly shows ("Вы хотите покинуть Врат в Бездну?" was what Buka players actually saw).
 const SpecialNameEntry special_name_table[] = {
     {"Мэри Джо", 1, {}},
     {"Ли Энн", 1, {}},
-    {"Врата в Бездну", 1, {"Врата в Бездну", "Врат в Бездну", "Вратам в Бездну", "Врат в Бездну", "Вратами в Бездну", "Вратах в Бездну"}},
+    {"Врата в Бездну", 1, {"Врата в Бездну", "Врат в Бездну", "Вратам в Бездну", "Врата в Бездну", "Вратами в Бездну", "Вратах в Бездну"}},
     {"Стены тумана", 1, {"Стены тумана", "Стен тумана", "Стенам тумана", "Стены тумана", "Стенами тумана", "Стенах тумана"}},
 };
 

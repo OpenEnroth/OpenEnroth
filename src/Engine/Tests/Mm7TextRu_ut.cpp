@@ -63,7 +63,9 @@ UNIT_TEST(Mm7TextRu, Gender) {
 }
 
 UNIT_TEST(Mm7TextRu, SpecialNames) {
-    EXPECT_EQ(sprintfex(ru("Вы вошли в ^Pv[Врата в Бездну]")), ru("Вы вошли в Врат в Бездну"));
+    // String 126 of the Buka global.txt. The DLL used the genitive here - "покинуть Врат в Бездну".
+    EXPECT_EQ(sprintfex(ru("Вы хотите покинуть ^Pv[Врата в Бездну]?")), ru("Вы хотите покинуть Врата в Бездну?"));
+    EXPECT_EQ(sprintfex(ru("Вы не нашли ^Pr[Врата в Бездну]")), ru("Вы не нашли Врат в Бездну"));
     EXPECT_EQ(sprintfex(ru("к ^Pd[Врата в Бездну]")), ru("к Вратам в Бездну"));
     EXPECT_EQ(sprintfex(ru("о ^Pp[Стены тумана]")), ru("о Стенах тумана"));
     EXPECT_EQ(sprintfex(ru("^Pi[Мэри Джо] ушл^R[;а;о]")), ru("Мэри Джо ушла"));
