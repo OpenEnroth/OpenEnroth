@@ -61,8 +61,7 @@ cc_library(
     name = "opengl",
     linkopts = select({
         "@platforms//os:linux":   ["-lGL"],
-        # Use -Wl,-framework,Name (single string) to avoid two-entry pair ordering
-        # issues in Bazel 8+ linkopts handling.
+        # Single-string -Wl,-framework,Name dodges Bazel 8 linkopt pair reordering.
         "@platforms//os:macos":   ["-Wl,-framework,OpenGL"],
         "@platforms//os:windows": ["opengl32.lib"],
         "@platforms//os:android": ["-lGLESv2", "-lEGL"],
