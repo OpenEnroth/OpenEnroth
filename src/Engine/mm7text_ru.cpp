@@ -12,6 +12,8 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/Serialization.h"
 
+#include "Utility/SmallVector.h"
+
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Encoding.h"
 
@@ -699,7 +701,7 @@ std::string sprintfex(std::string_view str) {
     result.reserve(str.size());
     result += str.substr(0, pos);
 
-    std::vector<int> numbers; // Numbers seen in ^I tokens so far.
+    gch::small_vector<int, 10> numbers; // Numbers seen in ^I tokens so far. The DLL capped these at 10.
     int gender = -1; // Gender of the last ^P name, -1 if none yet.
 
     // Expands one token at `pos`, appending to `result` and advancing `pos`. False on malformed input.
