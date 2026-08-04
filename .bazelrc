@@ -113,20 +113,18 @@ build:darwin_x86_64 --action_env=MACOSX_DEPLOYMENT_TARGET=10.15
 # Windows x86
 build:windows_x86 --config=windows
 build:windows_x86 --cpu=x64_x86_windows
+# --cpu selects the 32-bit toolchain but doesn't flip the cpu constraint,
+# so mark 32-bit builds for select() the same way linux_x86 does.
+build:windows_x86 --define=oe_build_arch=x86_32
 
 # Windows x86_64
 build:windows_x86_64 --config=windows
 
-# Use the system cmake (Visual Studio ships cmake 3.31+) instead of rules_foreign_cc's
-# auto-downloaded cmake 3.23.2. Required for OpenAL-soft 1.24.3 which uses
-# $<BUILD_LOCAL_INTERFACE> generator expressions added in cmake 3.26.
-build:windows --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
-# Use a preinstalled pkg-config (installed in CI via choco) - rules_foreign_cc's
-# MSVC pkg-config source build broke with the VS 14.44 runner image.
-build:windows --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_pkgconfig_toolchain
-# MSYS2 make (see bazel/toolchains/BUILD.bazel) - native Win32 makes can't
-# resolve the msys-style paths in ffmpeg's generated stub Makefile.
-build:windows --extra_toolchains=//bazel/toolchains:msys2_make_toolchain
+# Hermetic make/pkg-config/cmake, downloaded by bazel/rules/windows_tools.bzl.
+# A windows build needs nothing beyond msvc + bazel + git.
+build:windows --extra_toolchains=@msys2//:make_toolchain
+build:windows --extra_toolchains=@msys2//:pkgconfig_toolchain
+build:windows --extra_toolchains=@cmake_windows//:cmake_toolchain
 
 # Android — NDK version 28.1.13356709 (matches CI)
 # android_base: common flags inherited by all android_* configs
@@ -169,6 +167,10 @@ build --repository_cache=~/.cache/bazel-repo
 # build --remote_upload_local_results=true
 
 # ─── Convenience ─────────────────────────────────────────────────────────────
+
+# Same as cmake's OE_DISTRIBUTION_BUILD: defaults to borderless fullscreen.
+build:distribution --define=oe_distribution_build=1
+build:distribution --compilation_mode=opt
 
 build --verbose_failures
 test --test_output=errors
