@@ -1,9 +1,8 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
-# Same as cmake's OE_DISTRIBUTION_BUILD; enable with --config=distribution.
 config_setting(
     name = "_distribution",
-    define_values = {"oe_distribution_build": "1"},
+    flag_values = {"//:distribution": "True"},
 )
 
 cc_library(
