@@ -1,7 +1,12 @@
 name: Bazel Build
 
 on:
+  # Same-repo PRs run via pull_request; fork PRs run via pull_request_target
+  # (workflow taken from master, head checked out explicitly), which is what
+  # lets trusted maintainers' fork PRs see the remote cache secrets. The two
+  # job-level gates below keep any PR from running twice.
   pull_request: null
+  pull_request_target: null
   push:
     branches:
       - master  # Master builds seed the shared bazel caches that PR builds restore.
@@ -17,6 +22,12 @@ env:
 
 jobs:
   bazel_build:
+    # TODO(captainurist): drop the feature/bazel-migration clause after merge;
+    # it keeps this pre-merge PR running while master lacks this workflow.
+    if: >-
+      github.event_name != 'pull_request' && github.event_name != 'pull_request_target' ||
+      github.event_name == 'pull_request' && (github.event.pull_request.head.repo.full_name == github.repository || github.head_ref == 'feature/bazel-migration') ||
+      github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository && contains(fromJSON('["MEMBER", "OWNER", "COLLABORATOR"]'), github.event.pull_request.author_association)
     timeout-minutes: 90
     strategy:
       fail-fast: false
@@ -86,6 +97,9 @@ jobs:
 
       - name: 'Checkout'
         uses: actions/checkout@v5.0.0
+        with:
+          # For pull_request_target the default ref is the base branch.
+          ref: ${{github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || ''}}
 
       - name: '[android] Install NDK'
         if: env.MATRIX_PLATFORM == 'android'
