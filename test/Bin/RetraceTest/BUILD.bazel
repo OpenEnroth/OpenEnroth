@@ -5,7 +5,11 @@ load("@rules_cc//cc:cc_test.bzl", "cc_test")
 cc_test(
     name = "OpenEnroth_RetraceTest",
     size = "enormous",
-    srcs = ["RetraceTestMain.cpp"],
+    srcs = [
+        "RetraceTestMain.cpp",
+        "RetraceTestOptions.cpp",
+        "RetraceTestOptions.h",
+    ],
     args = [
         "--test-path",
         "test/Data",
@@ -15,13 +19,12 @@ cc_test(
     shard_count = 8,
     visibility = ["//visibility:public"],
     deps = [
-        "@googletest//:gtest",
         "//src/Application:application",
         "//src/Engine:engine_impl",
         "//src/Library/Cli:library_cli",
         "//src/Library/Environment:library_environment",  # createStandardEnvironment() impl
         "//src/Library/Platform/Sdl:library_platform_main",
         "//src/Library/StackTrace:library_stack_trace",
-        "//test/Bin/GameTest:gametest_options",
+        "@googletest//:gtest",
     ],
 )

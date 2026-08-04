@@ -1,19 +1,6 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
-# Shared with //test/Bin/RetraceTest.
-cc_library(
-    name = "gametest_options",
-    testonly = True,
-    srcs = ["GameTestOptions.cpp"],
-    hdrs = ["GameTestOptions.h"],
-    visibility = ["//test/Bin/RetraceTest:__pkg__"],
-    deps = [
-        "//src/Application/Startup:application_startup",
-        "//src/Library/Cli:library_cli",
-    ],
-)
-
 cc_library(
     name = "gametest_lib",
     testonly = True,
@@ -21,6 +8,8 @@ cc_library(
         "GameTestCommon.cpp",
         "GameTestCommon.h",
         "GameTestMain.cpp",
+        "GameTestOptions.cpp",
+        "GameTestOptions.h",
         "GameTests_0000.cpp",
         "GameTests_0500.cpp",
         "GameTests_1000.cpp",
@@ -28,7 +17,6 @@ cc_library(
         "GameTests_2000.cpp",
     ],
     deps = [
-        ":gametest_options",
         "//src/Application:application",
         "//src/Engine:engine_impl",
         "//src/Library/Cli:library_cli",
