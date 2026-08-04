@@ -152,6 +152,21 @@ jobs:
           bazelisk-version: 1.x
           bazelisk-cache: true
 
+      # BuildBuddy: write key on master pushes and on this branch (pre-merge
+      # seeding, same as the cache-save clause below); read-only key otherwise.
+      # Fork PRs have no secrets and silently skip the remote cache.
+      # TODO(captainurist): drop the branch clause once master runs this workflow.
+      - name: 'Configure remote cache'
+        run: |
+          if [ "${{github.event_name}}" = "push" ] || [ "${{github.head_ref}}" = "feature/bazel-migration" ]; then
+            key='${{secrets.BUILDBUDDY_API_KEY}}'
+          else
+            key='${{secrets.BUILDBUDDY_READONLY_API_KEY}}'
+          fi
+          if [ -n "$key" ]; then
+            echo "BAZEL_REMOTE_ARGS=--config=remote-cache --remote_header=x-buildbuddy-api-key=$key" >> "$GITHUB_ENV"
+          fi
+
       # Restore-only on PRs, saved on master pushes: keeps the matrix from
       # thrashing GitHub's 10 GB per-repo cache budget.
       - name: 'Restore bazel caches'
@@ -172,7 +187,7 @@ jobs:
           else
             target=//src/Bin/OpenEnroth:OpenEnroth
           fi
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} "$target" 2>&1 | tee bazel-build.log
+          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} "$target" 2>&1 | tee bazel-build.log
 
       # Job logs need auth to read; annotations don't. Surface the tail on failure.
       - name: 'Annotate failure log'
@@ -183,17 +198,17 @@ jobs:
       - name: '[linux_x86_64] Check style'
         if: matrix.target == 'linux_x86_64'
         run: |
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //:check_style
+          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //:check_style
 
       - name: '[non-android] Build unit test'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //test/Bin/UnitTest:OpenEnroth_UnitTest
+          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //test/Bin/UnitTest:OpenEnroth_UnitTest
 
       - name: '[non-android] Run unit tests'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          bazel run --config=${{env.MATRIX_BAZEL_CONFIG}} //test/Bin/UnitTest:OpenEnroth_UnitTest
+          bazel run --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //test/Bin/UnitTest:OpenEnroth_UnitTest
 
       - name: 'Save bazel caches'
         # always(): a red test on master shouldn't discard the warmed cache.
