@@ -8,8 +8,6 @@
 #include "Utility/ScopeGuard.h"
 #include "Utility/Memory/MemoryScratchpad.h"
 
-InputStream::~InputStream() = default;
-
 size_t InputStream::readAll(std::string *dst) {
     assert(isOpen());
     assert(dst);

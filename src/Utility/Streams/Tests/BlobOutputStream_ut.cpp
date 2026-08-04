@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 
 #include "Testing/Unit/UnitTest.h"
@@ -197,4 +198,14 @@ UNIT_TEST(BlobOutputStream, FlushWithoutWriting) {
     EXPECT_EQ(blob.size(), 0u);
     EXPECT_EQ(blob.displayPath(), "empty.bin");
     output.close();
+}
+
+UNIT_TEST(BlobOutputStream, DeleteThroughBasePointer) {
+    // Deleting through the base pointer has to run the derived destructor, which is what writes out the blob. This
+    // only works because the base destructor is virtual, so it's worth pinning down.
+    Blob blob;
+    std::unique_ptr<OutputStream> output = std::make_unique<BlobOutputStream>(&blob);
+    output->write("hello");
+    output.reset();
+    EXPECT_EQ(blob.str(), "hello");
 }

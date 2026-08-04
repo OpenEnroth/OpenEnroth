@@ -20,7 +20,7 @@ class InputStream {
  public:
     using Buffer = StreamBuffer<const char>;
 
-    virtual ~InputStream();
+    virtual ~InputStream() = default;
 
     /**
      * @param[out] data                 Output buffer to write read data into.

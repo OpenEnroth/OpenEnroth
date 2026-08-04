@@ -179,6 +179,7 @@ UNIT_TEST(InputStream, ReadAllClearsOnThrow) {
     std::string dst;
     EXPECT_THROW((void) in.readAll(&dst), Exception);
     EXPECT_TRUE(dst.empty());
+    EXPECT_THROW((void) in.readAll(), Exception); // The convenience overload rethrows rather than half-filling.
     in.close();
 }
 

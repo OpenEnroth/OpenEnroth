@@ -2,8 +2,6 @@
 
 #include <cassert>
 
-OutputStream::~OutputStream() = default;
-
 void OutputStream::open(Buffer buffer, std::string_view displayPath) {
     _buffer = buffer;
     _bufferBase = 0;

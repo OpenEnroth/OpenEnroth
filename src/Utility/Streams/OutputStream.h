@@ -22,7 +22,7 @@ class OutputStream {
  public:
     using Buffer = StreamBuffer<char>;
 
-    virtual ~OutputStream();
+    virtual ~OutputStream() = default;
 
     /**
      * Writes provided data into the output stream.
