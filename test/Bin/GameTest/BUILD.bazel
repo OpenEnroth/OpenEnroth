@@ -14,11 +14,9 @@ cc_library(
     ],
 )
 
-# The MM7 game data comes via --test_env=OPENENROTH_MM7_PATH; it's original
-# game assets, so treating it as a constant input keeps result caching honest.
-cc_test(
-    name = "OpenEnroth_GameTest",
-    size = "enormous",
+cc_library(
+    name = "gametest_lib",
+    testonly = True,
     srcs = [
         "GameTestCommon.cpp",
         "GameTestCommon.h",
@@ -29,14 +27,6 @@ cc_test(
         "GameTests_1500.cpp",
         "GameTests_2000.cpp",
     ],
-    args = [
-        "--test-path",
-        "test/Data",
-        "--headless",
-    ],
-    data = ["//test:test_data"],
-    shard_count = 8,
-    visibility = ["//visibility:public"],
     deps = [
         ":gametest_options",
         "//src/Application:application",
@@ -51,4 +41,39 @@ cc_test(
         "//src/Engine/Objects:test_engine_objects",
         "//src/Engine/Spells:test_engine_spells",
     ],
+    # alwayslink keeps the gtest auto-registration statics.
+    alwayslink = True,
+)
+
+# The MM7 game data comes via --test_env=OPENENROTH_MM7_PATH; it's original
+# game assets, so treating it as a constant input keeps result caching honest.
+cc_test(
+    name = "OpenEnroth_GameTest",
+    size = "enormous",
+    args = [
+        "--test-path",
+        "test/Data",
+        "--headless",
+        # TODO(captainurist): Issue1479 leaks state that shifts Issue1655's rng
+        # stream when both run in one process; runs isolated below until fixed.
+        "--gtest_filter=-Issues.Issue1655",
+    ],
+    data = ["//test:test_data"],
+    shard_count = 8,
+    visibility = ["//visibility:public"],
+    deps = [":gametest_lib"],
+)
+
+cc_test(
+    name = "OpenEnroth_GameTest_Isolated",
+    size = "large",
+    args = [
+        "--test-path",
+        "test/Data",
+        "--headless",
+        "--gtest_filter=Issues.Issue1655",
+    ],
+    data = ["//test:test_data"],
+    visibility = ["//visibility:public"],
+    deps = [":gametest_lib"],
 )
