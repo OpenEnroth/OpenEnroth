@@ -168,10 +168,17 @@ jobs:
       - name: 'Build'
         run: |
           if [ "${{matrix.target}}" = "android_universal" ]; then
-            bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //android/openenroth:main
+            target=//android/openenroth:main
           else
-            bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //src/Bin/OpenEnroth:OpenEnroth
+            target=//src/Bin/OpenEnroth:OpenEnroth
           fi
+          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} "$target" 2>&1 | tee bazel-build.log
+
+      # Job logs need auth to read; annotations don't. Surface the tail on failure.
+      - name: 'Annotate failure log'
+        if: failure()
+        run: |
+          grep -E "ERROR|error" bazel-build.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
 
       - name: '[linux_x86_64] Check style'
         if: matrix.target == 'linux_x86_64'
