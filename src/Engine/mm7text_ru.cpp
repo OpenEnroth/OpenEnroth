@@ -746,12 +746,16 @@ std::string sprintfex(std::string_view str) {
 
         case 'P': {
             const SpecialName *special = nullptr;
-            for (const SpecialName &candidate : genderTables().specials)
-                if (contents.starts_with(candidate.name))
+            for (const SpecialName &candidate : genderTables().specials) {
+                if (contents.starts_with(candidate.name)) {
                     special = &candidate;
+                    break;
+                }
+            }
             if (special) {
                 gender = special->gender;
                 result += special->cases[nameCase];
+                result += contents.substr(special->name.size()); // Keep whatever follows the matched prefix.
             } else {
                 // Regular names are not declined, the case letter is ignored.
                 gender = genderOf(contents);

@@ -67,6 +67,9 @@ UNIT_TEST(Mm7TextRu, SpecialNames) {
     EXPECT_EQ(sprintfex(ru("к ^Pd[Врата в Бездну]")), ru("к Вратам в Бездну"));
     EXPECT_EQ(sprintfex(ru("о ^Pp[Стены тумана]")), ru("о Стенах тумана"));
     EXPECT_EQ(sprintfex(ru("^Pi[Мэри Джо] ушл^R[;а;о]")), ru("Мэри Джо ушла"));
+
+    // A name that merely starts with a special name isn't truncated to it.
+    EXPECT_EQ(sprintfex(ru("^Pi[Мэри Джонсон]")), ru("Мэри Джонсон"));
 }
 
 UNIT_TEST(Mm7TextRu, Malformed) {
