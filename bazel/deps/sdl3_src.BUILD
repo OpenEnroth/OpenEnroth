@@ -68,12 +68,15 @@ cmake(
         # Without CMP0091=NEW cmake's Release config adds /MD, overriding /MT.
         "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
     },
+    # -DANDROID=YES: rules_foreign_cc 0.15 moved this from the cmake cache into
+    # its toolchain file, where SDL's android detection no longer sees it.
     generate_args = select({
         ":_android_arm64": [
             "-DCMAKE_C_FLAGS=--target=aarch64-linux-android24",
             "-DCMAKE_CXX_FLAGS=--target=aarch64-linux-android24",
             "-DCMAKE_ASM_FLAGS=--target=aarch64-linux-android24",
             "-DCMAKE_EXE_LINKER_FLAGS=--target=aarch64-linux-android24",
+            "-DANDROID=YES",
             "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
         ],
         ":_android_armv7": [
@@ -81,6 +84,7 @@ cmake(
             "-DCMAKE_CXX_FLAGS=--target=armv7a-linux-androideabi24",
             "-DCMAKE_ASM_FLAGS=--target=armv7a-linux-androideabi24",
             "-DCMAKE_EXE_LINKER_FLAGS=--target=armv7a-linux-androideabi24",
+            "-DANDROID=YES",
             "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
         ],
         ":_android_x86_64": [
@@ -88,6 +92,7 @@ cmake(
             "-DCMAKE_CXX_FLAGS=--target=x86_64-linux-android24",
             "-DCMAKE_ASM_FLAGS=--target=x86_64-linux-android24",
             "-DCMAKE_EXE_LINKER_FLAGS=--target=x86_64-linux-android24",
+            "-DANDROID=YES",
             "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
         ],
         ":_android_x86": [
@@ -95,6 +100,7 @@ cmake(
             "-DCMAKE_CXX_FLAGS=--target=i686-linux-android24",
             "-DCMAKE_ASM_FLAGS=--target=i686-linux-android24",
             "-DCMAKE_EXE_LINKER_FLAGS=--target=i686-linux-android24",
+            "-DANDROID=YES",
             "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
         ],
         "//conditions:default": [],
