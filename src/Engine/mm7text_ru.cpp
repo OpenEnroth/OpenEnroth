@@ -22,7 +22,8 @@ struct GenderTableEntry {
     int gender;
 };
 
-static const GenderTableEntry gender_table_caps[] = {{"Авель", 0},        {"Адам", 0},
+static const GenderTableEntry gender_table_caps[] = {
+                         {"Авель", 0},        {"Адам", 0},
                          {"Адриан", 0},       {"Адрианис", 0},
                          {"Адская", 1},       {"Айр", 0},
                          {"Акио", 0},         {"Акира", 0},
