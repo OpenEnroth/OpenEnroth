@@ -169,6 +169,9 @@ build --repository_cache=~/.cache/bazel-repo
 # build --remote_cache=grpc://...
 # build --remote_upload_local_results=true
 
+# Flatpak sandbox build (distribution/linux/flatpak): libdwarf lives in /app.
+build:flatpak --copt=-I/app/include --linkopt=-L/app/lib
+
 # ─── Convenience ─────────────────────────────────────────────────────────────
 
 # Linker choice (cmake's OE_USE_LD_MOLD/OE_USE_LD_LLD): opt-in, requires the
