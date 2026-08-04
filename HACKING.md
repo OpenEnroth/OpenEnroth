@@ -12,12 +12,12 @@ The project requires:
 By default, we are using prebuilt dependencies, and they are resolved automatically during the cmake phase.
 
 Minimum required compiler versions are as follows:
-* Visual Studio 2022;
+* Visual Studio 2022 17.10;
 * GCC 15;
 * AppleClang 16 (Xcode 16.3).
 
 The following IDEs have been tested and should work fine:
-* Visual Studio (2022 or later);
+* Visual Studio (2022 17.10 or later);
 * Visual Studio Code (2022 or later);
 * CLion (2025 or later).
 
@@ -47,7 +47,7 @@ Make sure you have the latest Xcode installed. Do this through the App Store or 
 
 ## Building on Windows
 
-* Get [git](https://git-scm.com/download/win) and [Visual Studio 2022+](https://visualstudio.microsoft.com/downloads/). Note that you will need MSVC compiler, so while you can use Visual Studio Code, you will still need to download the plain old Visual Studio.
+* Get [git](https://git-scm.com/download/win) and [Visual Studio 2022 17.10+](https://visualstudio.microsoft.com/downloads/). Note that you will need MSVC compiler, so while you can use Visual Studio Code, you will still need to download the plain old Visual Studio.
 * Make sure you have Windows SDK v10.0.17134.0 or higher (required for UTF-8 locale support).
 * Clone, fork or download the repo `https://github.com/OpenEnroth/OpenEnroth`.
 * Setup CMake:
