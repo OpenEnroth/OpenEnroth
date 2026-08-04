@@ -152,17 +152,13 @@ jobs:
           bazelisk-version: 1.x
           bazelisk-cache: true
 
-      # BuildBuddy: write key on master pushes and on this branch (pre-merge
-      # seeding, same as the cache-save clause below); read-only key otherwise.
-      # Fork PRs have no secrets and silently skip the remote cache.
-      # TODO(captainurist): drop the branch clause once master runs this workflow.
+      # BuildBuddy, read-write everywhere: later commits of a PR reuse earlier
+      # ones. Safe because fork PRs have no secrets (they silently skip the
+      # remote cache), and same-repo branches are made by people with push
+      # rights anyway.
       - name: 'Configure remote cache'
         run: |
-          if [ "${{github.event_name}}" = "push" ] || [ "${{github.head_ref}}" = "feature/bazel-migration" ]; then
-            key='${{secrets.BUILDBUDDY_API_KEY}}'
-          else
-            key='${{secrets.BUILDBUDDY_READONLY_API_KEY}}'
-          fi
+          key='${{secrets.BUILDBUDDY_API_KEY}}'
           if [ -n "$key" ]; then
             echo "BAZEL_REMOTE_ARGS=--config=remote-cache --remote_header=x-buildbuddy-api-key=$key" >> "$GITHUB_ENV"
           fi
