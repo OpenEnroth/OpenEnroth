@@ -206,13 +206,13 @@ jobs:
       - name: 'Annotate invocation URLs'
         if: always()
         run: |
-          grep -ho "https://app.buildbuddy.io/invocation/[a-f0-9-]*" bazel-*.log 2>/dev/null | sort -u | head -5 | while read u; do echo "::notice::${{matrix.target}} $u"; done
+          grep -ho "https://app.buildbuddy.io/invocation/[a-f0-9-]*" bazel-*.log 2>/dev/null | sort -u | head -5 | while read u; do echo "::notice::${{matrix.target}} $u"; done || true
 
       # Job logs need auth to read; annotations don't. Surface the tail on failure.
       - name: 'Annotate failure log'
         if: failure()
         run: |
-          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED|TIMEOUT|incomplete" bazel-build.log bazel-test.log bazel-gametest.log bazel-retrace.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
+          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED|TIMEOUT|incomplete" bazel-build.log bazel-test.log bazel-gametest.log bazel-retrace.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done || true
 
       # Game tests need the MM7 data; same shared cache the cmake matrix uses.
       # TODO(captainurist): expand to windows/darwin legs before dropping cmake.
