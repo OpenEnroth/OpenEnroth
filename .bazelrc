@@ -63,10 +63,6 @@ build --enable_platform_specific_config
 build:linux --copt=-fPIC
 # Use ld.bfd instead of ld.gold — gold linker can't find libstdc++.so from the versioned GCC dir
 build:linux --features=-use_gold_linker
-# Use system cmake (3.28+ on ubuntu-24.04) instead of rules_foreign_cc's bundled cmake 3.23.2.
-# Keeps the cmake version consistent across Linux and Windows, and is required for some
-# cmake() deps that use features added after 3.23 (e.g. OpenAL's BUILD_LOCAL_INTERFACE).
-build:linux --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
 
 # Linux x86 (32-bit)
 build:linux_x86 --config=linux
@@ -89,9 +85,6 @@ build:linux_arm64 --config=linux
 
 # macOS
 build:macos --apple_platform_type=macos
-# Use system cmake (available via Xcode command-line tools) instead of rules_foreign_cc's
-# bundled cmake 3.23.2. Required for OpenAL-soft 1.24.3's BUILD_LOCAL_INTERFACE usage.
-build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
 # Use system make instead of rules_foreign_cc's bundled make binary for the
 # configure_make()/cmake() deps (ffmpeg, SDL3, OpenAL).
 build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
@@ -121,14 +114,14 @@ build:windows_x86 --define=oe_build_arch=x86_32
 # Windows x86_64
 build:windows_x86_64 --config=windows
 
-# Hermetic make/pkg-config/cmake, downloaded by bazel/rules/windows_tools.bzl.
+# Hermetic make/pkg-config, downloaded by bazel/rules/windows_tools.bzl
+# (cmake and ninja come prebuilt from rules_foreign_cc on every platform).
 # A windows build needs nothing beyond msvc + bazel + git.
 # Bazel's default shell is a hardcoded c:/msys64 path; use git's bash instead.
 # Non-standard git installs: override with --shell_executable on the command line.
 build:windows --shell_executable="C:/Program Files/Git/usr/bin/bash.exe"
 build:windows --extra_toolchains=@msys2//:make_toolchain
 build:windows --extra_toolchains=@msys2//:pkgconfig_toolchain
-build:windows --extra_toolchains=@cmake_windows//:cmake_toolchain
 
 # Android — NDK version 28.1.13356709 (matches CI)
 # android_base: common flags inherited by all android_* configs
@@ -172,9 +165,18 @@ build --repository_cache=~/.cache/bazel-repo
 
 # ─── Convenience ─────────────────────────────────────────────────────────────
 
-# Distribution build (see //:distribution): fullscreen default + opt mode.
-build:distribution --//:distribution
-build:distribution --compilation_mode=opt
+# Linker choice (cmake's OE_USE_LD_MOLD/OE_USE_LD_LLD): opt-in, requires the
+# linker to be installed. linux_x86 stays on gold, see above.
+build:mold --linkopt=-fuse-ld=mold
+build:lld --linkopt=-fuse-ld=lld
+
+# ccache layer (cmake's OE_USE_CCACHE): opt-in for local dev, requires ccache.
+# Hits on preprocessed sources, so it survives header edits that bazel's
+# input hashing has to treat as misses. Uses the masquerade dir, so linux-only;
+# macOS users can point CC at homebrew's libexec equivalent.
+build:ccache --repo_env=CC=/usr/lib/ccache/gcc
+# Unsandboxed so ccache can reach its cache dir (~ paths can't be sandboxed in).
+build:ccache --spawn_strategy=local
 
 build --verbose_failures
 test --test_output=errors
