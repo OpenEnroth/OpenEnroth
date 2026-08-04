@@ -1,11 +1,19 @@
-# configure_make() build for FFmpeg n7.0 from source, used on all platforms.
-# The BCR ffmpeg module was evaluated but can't reproduce the stripped-down
-# component set below without hand-maintaining the internal component closure,
-# and it hardcodes x86-64 nasm sources for every non-aarch64 CPU.
+# configure_make() build for FFmpeg n7.0, all platforms. The BCR ffmpeg module
+# is linux/macos-only (unconditional pthreads, x86-64 nasm on all non-aarch64).
 
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
 
 # Local config_settings — //bazel/platforms labels can't be used in injected BUILD files.
+config_setting(
+    name = "_armv7",
+    constraint_values = ["@platforms//cpu:armv7"],
+)
+
+config_setting(
+    name = "_arm64",
+    constraint_values = ["@platforms//cpu:arm64"],
+)
+
 config_setting(
     name = "_android_armv7",
     constraint_values = ["@platforms//os:android", "@platforms//cpu:armv7"],
@@ -96,33 +104,44 @@ configure_make(
         "--enable-static",
         "--disable-shared",
         "--disable-autodetect",
-        # Disable x86/x86_64 assembly optimisations. Avoids a NASM/YASM dependency
-        # and keeps the build reproducible; enable-runtime-cpudetect stays harmless.
-        "--disable-asm",
     ] + select({
-        # MSVC build; cl.exe comes from the msvc-dev-cmd environment, bash from MSYS.
+        # arm asm assembles through the target compiler; x86 asm would need
+        # nasm, keep it off (the deps repo also disabled it for android x86).
+        ":_arm64": [],
+        ":_armv7": [],
+        "//conditions:default": ["--disable-asm"],
+    }) + select({
         # w64: wavdec.c references ff_w64_guid_data behind if(CONFIG_W64_DEMUXER),
-        # relying on dead-code elimination that MSVC doesn't perform here.
+        # counting on dead-code elimination that MSVC doesn't do here.
         "@platforms//os:windows": [
             "--toolchain=msvc",
             "--enable-demuxer=w64",
         ],
-        # NDK cross-compilation; CC/CXX/AR point at NDK clang via rules_foreign_cc's
-        # exported toolchain env vars, expanded by the generated configure wrapper.
+        # NDK cross-compilation via $(CC)/$(AR); per-ABI cpu tuning mirrors the
+        # deps repo's build_all.sh.
         ":_android_armv7": [
             "--enable-cross-compile",
             "--target-os=android",
             "--arch=arm",
-            "--cpu=armv7-a",
+            "--cpu=cortex-a8",
+            "--enable-neon",
+            "--enable-thumb",
             "--cc=$$EXT_BUILD_ROOT$$/$(CC)",
             "--extra-cflags=--target=armv7a-linux-androideabi24",
+            "--extra-cflags=-march=armv7-a",
+            "--extra-cflags=-mcpu=cortex-a8",
+            "--extra-cflags=-mfpu=vfpv3-d16",
+            "--extra-cflags=-mfloat-abi=softfp",
+            "--extra-cflags=-mthumb",
             "--extra-ldflags=--target=armv7a-linux-androideabi24",
+            "--extra-ldflags=-Wl,--fix-cortex-a8",
             "--ar=$$EXT_BUILD_ROOT$$/$(AR)",
         ],
         ":_android_arm64": [
             "--enable-cross-compile",
             "--target-os=android",
             "--arch=aarch64",
+            "--enable-neon",
             "--cc=$$EXT_BUILD_ROOT$$/$(CC)",
             "--extra-cflags=--target=aarch64-linux-android24",
             "--extra-ldflags=--target=aarch64-linux-android24",
@@ -134,6 +153,10 @@ configure_make(
             "--arch=x86_64",
             "--cc=$$EXT_BUILD_ROOT$$/$(CC)",
             "--extra-cflags=--target=x86_64-linux-android24",
+            "--extra-cflags=-march=atom",
+            "--extra-cflags=-msse3",
+            "--extra-cflags=-ffast-math",
+            "--extra-cflags=-mfpmath=sse",
             "--extra-ldflags=--target=x86_64-linux-android24",
             "--ar=$$EXT_BUILD_ROOT$$/$(AR)",
         ],
@@ -150,25 +173,19 @@ configure_make(
         "libswscale.a",
         "libswresample.a",
     ],
-    # avformat and avcodec have circular symbol references at runtime initialisation
-    # (avformat pulls in avcodec decoders, avcodec calls avformat helpers).
-    # alwayslink forces --whole-archive on all five archives so the linker includes
-    # every symbol unconditionally, resolving the circular dependency without
-    # --start-group/--end-group — the same technique used by the prebuilt POSIX build.
-    # Not on windows: link.exe resolves circular archive references iteratively,
-    # and WHOLEARCHIVE would force in the duplicate file_open.o copies that
-    # ffmpeg compiles into all three libraries (LNK2005).
+    # --whole-archive resolves the avformat<->avcodec circular refs without
+    # --start-group. Not on windows: link.exe iterates archives itself, and
+    # WHOLEARCHIVE trips LNK2005 on the file_open.o copies in all three libs.
     alwayslink = select({
         "@platforms//os:windows": False,
         "//conditions:default": True,
     }),
     linkopts = select({
         "@platforms//os:linux": ["-lm", "-lpthread"],
-        # av_random_bytes uses BCryptGenRandom.
+        # av_random_bytes uses BCryptGenRandom. The deps repo patched
+        # HAVE_BCRYPT off instead; linking it is simpler here.
         "@platforms//os:windows": ["-DEFAULTLIB:bcrypt.lib"],
-        # macOS: iconv is needed by some FFmpeg demuxers; CoreFoundation for system codecs.
-        # Use -Wl,-framework,Name (single string) to avoid two-entry pair ordering
-        # issues in Bazel 8+ linkopts handling.
+        # Single-string -Wl,-framework,Name dodges Bazel 8 linkopt pair reordering.
         "@platforms//os:macos": ["-liconv", "-Wl,-framework,CoreFoundation"],
         "//conditions:default": [],
     }),
