@@ -202,6 +202,12 @@ jobs:
           fi
           bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} "$target" 2>&1 | tee bazel-build.log
 
+      # BuildBuddy invocation URLs, for timing/cache analysis without log access.
+      - name: 'Annotate invocation URLs'
+        if: always()
+        run: |
+          grep -ho "https://app.buildbuddy.io/invocation/[a-f0-9-]*" bazel-*.log 2>/dev/null | sort -u | head -5 | while read u; do echo "::notice::${{matrix.target}} $u"; done
+
       # Job logs need auth to read; annotations don't. Surface the tail on failure.
       - name: 'Annotate failure log'
         if: failure()
