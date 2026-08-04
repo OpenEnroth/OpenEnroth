@@ -54,8 +54,9 @@ cc_test(
         "--test-path",
         "test/Data",
         "--headless",
-        # TODO(captainurist): Issue1479 leaks state that shifts Issue1655's rng
-        # stream when both run in one process; runs isolated below until fixed.
+        # TODO(captainurist): drop the quarantine once fix/reset-particles-on-
+        # level-load is merged: Issue1479's leftover particles consumed vrng
+        # draws during Issue1655, masking its damage portraits.
         "--gtest_filter=-Issues.Issue1655",
     ],
     data = ["//test:test_data"],
