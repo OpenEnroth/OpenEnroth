@@ -98,6 +98,23 @@ platform(
     ],
 )
 
+# rules_cc's autoconfig generates the x64->x86 msvc cross toolchain but
+# registers no platform-resolvable wrapper for it; registered via
+# --extra_toolchains in --config=windows_x86 only.
+toolchain(
+    name = "windows_x86_cc_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+    target_compatible_with = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_32",
+    ],
+    toolchain = "@local_config_cc//:cc-compiler-x64_x86_windows",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
 platform(
     name = "android_arm64_v8a_platform",
     constraint_values = [

@@ -115,6 +115,7 @@ build:darwin_x86_64 --action_env=MACOSX_DEPLOYMENT_TARGET=10.15
 # injected BUILD files, same as linux_x86.
 build:windows_x86 --config=windows
 build:windows_x86 --platforms=//bazel/platforms:windows_x86_platform
+build:windows_x86 --extra_toolchains=//bazel/platforms:windows_x86_cc_toolchain
 build:windows_x86 --define=oe_build_arch=x86_32
 
 # Windows x86_64
