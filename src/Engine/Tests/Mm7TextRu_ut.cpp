@@ -74,6 +74,91 @@ UNIT_TEST(Mm7TextRu, SpecialNames) {
     EXPECT_EQ(sprintfex(ru("^Pi[Мэри Джонсон]")), ru("Мэри Джонсон"));
 }
 
+UNIT_TEST(Mm7TextRu, PluralBoundaries) {
+    EXPECT_EQ(sprintfex(ru("^I[0] д^L[ень;ня;ней]")), ru("0 дней"));
+    EXPECT_EQ(sprintfex(ru("^I[22] д^L[ень;ня;ней]")), ru("22 дня"));
+    EXPECT_EQ(sprintfex(ru("^I[25] д^L[ень;ня;ней]")), ru("25 дней"));
+    EXPECT_EQ(sprintfex(ru("^I[101] д^L[ень;ня;ней]")), ru("101 день"));
+    EXPECT_EQ(sprintfex(ru("^I[111] д^L[ень;ня;ней]")), ru("111 дней"));
+}
+
+UNIT_TEST(Mm7TextRu, NumberIndexing) {
+    // Explicit ^L<n> indices address the n-th recorded number.
+    EXPECT_EQ(sprintfex(ru("^I[1] ^I[2] ^I[5] очк^L3[о;а;ов]")), ru("1 2 5 очков"));
+
+    // An index past the recorded numbers means zero, not the last recorded number.
+    EXPECT_EQ(sprintfex(ru("^I[1] д^L2[ень;ня;ней]")), ru("1 дней"));
+
+    // An unparsable ^I doesn't occupy a slot, so later explicit indices shift.
+    EXPECT_EQ(sprintfex("^I[x]^I[3] ^L1[a;b;c] ^L2[a;b;c]"), "x3 b c");
+}
+
+UNIT_TEST(Mm7TextRu, GenderState) {
+    // One ^P gender drives all following ^R tokens...
+    EXPECT_EQ(sprintfex(ru("^Pi[Анна] пришл^R[;а;о] и ушл^R[;а;о]")), ru("Анна пришла и ушла"));
+    // ...until the next ^P overwrites it.
+    EXPECT_EQ(sprintfex(ru("^Pi[Адам] и ^Pi[Анна] - последн^R[ий;яя;ее] ушл^R[;а;о]")),
+              ru("Адам и Анна - последняя ушла"));
+
+    // Neuter from the capitalized table, not just the common-noun one.
+    EXPECT_EQ(sprintfex(ru("^Pi[Солнце] взошл^R[;а;о]")), ru("Солнце взошло"));
+
+    // Unknown Cyrillic names default to masculine, same as Latin ones.
+    EXPECT_EQ(sprintfex(ru("^Pi[Зорг] был^R[;а;о] здесь")), ru("Зорг был здесь"));
+
+    // A table entry matches if it starts with the looked-up name, like in the original DLL.
+    EXPECT_EQ(sprintfex(ru("^Pi[Валери] - портн^R[ой;иха;]")), ru("Валери - портниха"));
+
+    // The case letter is ignored for regular names - they're printed undeclined.
+    // String 164 of the Buka global.txt.
+    EXPECT_EQ(sprintfex(ru("Скелет наносит удар ^Pd[Гоблин], отбирая 5 ед. здоровья")),
+              ru("Скелет наносит удар Гоблин, отбирая 5 ед. здоровья"));
+
+    // Empty forms and empty names are not an error.
+    EXPECT_EQ(sprintfex("^R[;;]"), "");
+    EXPECT_EQ(sprintfex("^Pi[]"), "");
+    EXPECT_EQ(sprintfex(ru("^Pi[]: ^R[он;она;оно]")), ru(": он"));
+}
+
+UNIT_TEST(Mm7TextRu, SpecialNamesDeclension) {
+    // The remaining cases of a declined special name - v/r/d are covered in SpecialNames.
+    EXPECT_EQ(sprintfex(ru("^Pi[Врата в Бездну] закрыт^R[;а;о]")), ru("Врата в Бездну закрыта"));
+    EXPECT_EQ(sprintfex(ru("перед ^Pt[Врата в Бездну]")), ru("перед Вратами в Бездну"));
+    EXPECT_EQ(sprintfex(ru("о ^Pp[Врата в Бездну]")), ru("о Вратах в Бездну"));
+
+    // The case letter is ASCII case-insensitive.
+    EXPECT_EQ(sprintfex(ru("^PR[Врата в Бездну]")), ru("Врат в Бездну"));
+
+    // Indeclinable special names print the same in every case, and still carry a gender.
+    EXPECT_EQ(sprintfex(ru("к ^Pd[Ли Энн]")), ru("к Ли Энн"));
+    EXPECT_EQ(sprintfex(ru("^Pi[Ли Энн] ушл^R[;а;о]")), ru("Ли Энн ушла"));
+
+    // A prefix match keeps the tail verbatim and still records the gender...
+    EXPECT_EQ(sprintfex(ru("^Pi[Мэри Джонсон] ушл^R[;а;о]")), ru("Мэри Джонсон ушла"));
+    // ...and a declined prefix declines while the tail stays as is.
+    EXPECT_EQ(sprintfex(ru("^Pd[Врата в Бездну снов]")), ru("Вратам в Бездну снов"));
+}
+
+UNIT_TEST(Mm7TextRu, RealData) {
+    // String 302 of the Buka global.txt, all four token kinds in one string.
+    EXPECT_EQ(sprintfex(ru("^Pi[Анна] украл^R[;а;] ^I[41] золот^L[ой;ых;ых]!")),
+              ru("Анна украла 41 золотой!"));
+
+    // String 311, a token in the middle of a word.
+    EXPECT_EQ(sprintfex(ru("охотни^R[к;ца;]-следопыт")), ru("охотник-следопыт"));
+    EXPECT_EQ(sprintfex(ru("^Pi[Анна] - охотни^R[к;ца;]-следопыт")), ru("Анна - охотница-следопыт"));
+}
+
+UNIT_TEST(Mm7TextRu, Idempotency) {
+    // Expansion removes every well-formed token, so a second pass is a no-op.
+    std::string expanded = sprintfex(ru("^Pi[Анна] украл^R[;а;] ^I[41] золот^L[ой;ых;ых]!"));
+    EXPECT_EQ(sprintfex(expanded), expanded);
+
+    // Malformed tokens survive verbatim and keep surviving.
+    std::string malformed = sprintfex(ru("^L[только;две]"));
+    EXPECT_EQ(sprintfex(malformed), malformed);
+}
+
 UNIT_TEST(Mm7TextRu, Malformed) {
     // Malformed tokens are copied through verbatim, not a reason to crash.
     EXPECT_EQ(sprintfex("^"), "^");
@@ -82,6 +167,13 @@ UNIT_TEST(Mm7TextRu, Malformed) {
     EXPECT_EQ(sprintfex("^Z[what]"), "^Z[what]");
     EXPECT_EQ(sprintfex(ru("^L[только;две]")), ru("^L[только;две]"));
     EXPECT_EQ(sprintfex("^I[5]^L[a;b;c;d]"), "5c;d"); // Extra semicolons fold into the third form.
+    EXPECT_EQ(sprintfex(ru("^R[к;ца]")), ru("^R[к;ца]")); // ^R needs three forms too.
+    EXPECT_EQ(sprintfex("^L0[a;b;c]"), "^L0[a;b;c]"); // ^L indices start at 1.
+    EXPECT_EQ(sprintfex(ru("^Px[Анна]")), ru("^Px[Анна]")); // 'x' is not a case letter.
+    EXPECT_EQ(sprintfex(ru("^P[Анна]")), ru("^P[Анна]")); // ^P requires a case letter.
+
+    // A '^' inside token contents is consumed with the token, not parsed as a new one.
+    EXPECT_EQ(sprintfex("^I[5^] x"), "5^ x");
 }
 
 UNIT_TEST(Mm7TextRu, StandaloneFallbacks) {
