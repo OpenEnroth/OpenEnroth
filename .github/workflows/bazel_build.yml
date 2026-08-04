@@ -175,6 +175,9 @@ jobs:
           key='${{secrets.BUILDBUDDY_API_KEY}}'
           if [ -n "$key" ]; then
             echo "BAZEL_REMOTE_ARGS=--config=remote-cache --remote_header=x-buildbuddy-api-key=$key" >> "$GITHUB_ENV"
+          else
+            # No secrets (untrusted fork PR): read the cache with the public key.
+            echo "BAZEL_REMOTE_ARGS=--config=remote-cache-read" >> "$GITHUB_ENV"
           fi
 
       # Restore-only on PRs, saved on master pushes: keeps the matrix from

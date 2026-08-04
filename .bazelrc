@@ -179,6 +179,15 @@ build:remote-cache --build_metadata=REPO_URL=https://github.com/OpenEnroth/OpenE
 # Invocation pages are viewable without login - it's an open-source repo.
 build:remote-cache --build_metadata=VISIBILITY=PUBLIC
 
+# Read-only access for everyone: the key below can only fetch, never store,
+# and is public by design. Local devs and untrusted PRs build warm with it.
+build:remote-cache-read --config=remote-cache
+build:remote-cache-read --remote_header=x-buildbuddy-api-key=i3cYYKyGVxl6mp2Z30nl
+build:remote-cache-read --noremote_upload_local_results
+# No build event stream on the read-only path.
+build:remote-cache-read --bes_backend=
+build:remote-cache-read --bes_results_url=
+
 # Flatpak sandbox build (distribution/linux/flatpak): libdwarf lives in /app.
 build:flatpak --copt=-I/app/include --linkopt=-L/app/lib
 
