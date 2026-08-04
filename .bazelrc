@@ -110,11 +110,11 @@ build:darwin_x86_64 --cpu=darwin_x86_64
 build:darwin_x86_64 --macos_minimum_os=10.15
 build:darwin_x86_64 --action_env=MACOSX_DEPLOYMENT_TARGET=10.15
 
-# Windows x86
+# Windows x86. Bazel 8 resolves toolchains from --platforms (legacy --cpu only
+# renames the output dir); the define marks 32-bit builds for select() in
+# injected BUILD files, same as linux_x86.
 build:windows_x86 --config=windows
-build:windows_x86 --cpu=x64_x86_windows
-# --cpu selects the 32-bit toolchain but doesn't flip the cpu constraint,
-# so mark 32-bit builds for select() the same way linux_x86 does.
+build:windows_x86 --platforms=//bazel/platforms:windows_x86_platform
 build:windows_x86 --define=oe_build_arch=x86_32
 
 # Windows x86_64
@@ -122,6 +122,9 @@ build:windows_x86_64 --config=windows
 
 # Hermetic make/pkg-config/cmake, downloaded by bazel/rules/windows_tools.bzl.
 # A windows build needs nothing beyond msvc + bazel + git.
+# Bazel's default shell is a hardcoded c:/msys64 path; use git's bash instead.
+# Non-standard git installs: override with --shell_executable on the command line.
+build:windows --shell_executable="C:/Program Files/Git/usr/bin/bash.exe"
 build:windows --extra_toolchains=@msys2//:make_toolchain
 build:windows --extra_toolchains=@msys2//:pkgconfig_toolchain
 build:windows --extra_toolchains=@cmake_windows//:cmake_toolchain
@@ -156,8 +159,8 @@ build:android_x86_64 --platforms=//bazel/platforms:android_x86_64_platform
 # Shared across workspaces and Bazel versions on the same machine.
 # Note: not ~/.cache/bazel, which is bazel's default output root on Linux.
 build --disk_cache=~/.cache/bazel-disk
-# Bound the disk cache so CI cache uploads stay within GitHub's per-repo budget.
-build --experimental_disk_cache_gc_max_size=2G
+# Bound the disk cache so 10 matrix legs' uploads fit GitHub's 10G repo budget.
+build --experimental_disk_cache_gc_max_size=800M
 # Caches downloaded http_archive tarballs (avoids re-downloading on every clean).
 build --repository_cache=~/.cache/bazel-repo
 

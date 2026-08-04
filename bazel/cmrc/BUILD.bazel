@@ -1,3 +1,5 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+
 # BUILD file for cmrc Bazel resource embedding helpers.
 
 # The runtime header — exposed so cc_library targets can depend on it.

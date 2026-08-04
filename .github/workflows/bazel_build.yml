@@ -9,11 +9,11 @@ on:
 
 concurrency:
   group: ${{github.workflow}}-${{github.ref}}
-  cancel-in-progress: true
+  # Never cancel master runs - they are the only ones that save caches.
+  cancel-in-progress: ${{github.ref != 'refs/heads/master'}}
 
 env:
   NDK_VERSION: 28.1.13356709
-  BAZEL_VERSION: 8.x
 
 jobs:
   bazel_build:
@@ -175,7 +175,8 @@ jobs:
           bazel run --config=${{env.MATRIX_BAZEL_CONFIG}} //test/Bin/UnitTest:OpenEnroth_UnitTest
 
       - name: 'Save bazel caches'
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        # always(): a red test on master shouldn't discard the warmed cache.
+        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: actions/cache/save@v4
         with:
           path: |
