@@ -355,7 +355,7 @@ void GUIWindow_PartyCreation::Update() {
 
     for (int i = 0; i < 4; ++i) {
         DrawText(assets->pFontCreate.get(), {pIntervalX + 73, 100}, colorTable.White,
-            localization->className(pParty->pCharacters[i].classType), pGUIWindow_CurrentMenu->frameRect);
+            localization->expandTokens(localization->className(pParty->pCharacters[i].classType)), pGUIWindow_CurrentMenu->frameRect);
         render->DrawQuad2D(ui_partycreation_class_icons[std::to_underlying(pParty->pCharacters[i].classType) / 4], {pIntervalX + 77, 50});
 
         if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_NONE && uPlayerCreationUI_NameEditCharacter == i) {

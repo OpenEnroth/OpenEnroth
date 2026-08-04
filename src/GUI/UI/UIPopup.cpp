@@ -1909,7 +1909,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                         case UIMSG_PlayerCreationSelectClass:  // Available
                                                                // Class Info
                             sHint = localization->classDescription(static_cast<Class>(pButton->msg_param));
-                            pStr = localization->className(static_cast<Class>(pButton->msg_param));
+                            pStr = localization->expandTokens(localization->className(static_cast<Class>(pButton->msg_param)));
                             break;
                         case UIMSG_PlayerCreationClickOK:  // OK Info
                             sHint = localization->str(
