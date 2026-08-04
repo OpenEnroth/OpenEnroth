@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <fstream>
 #include <string>
 #include <filesystem>
 
@@ -6,6 +7,7 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/FileInputStream.h"
+#include "Utility/Exception.h"
 
 UNIT_TEST(FileInputStream, Skip) {
     const char *tmpfile = "tmp_test.txt";
@@ -49,8 +51,11 @@ UNIT_TEST(FileInputStream, ReadUntil) {
 
     FileInputStream in(tmpfile);
     EXPECT_EQ(in.readUntil('\0'), "hello");
+    EXPECT_EQ(in.position(), 6u);
     EXPECT_EQ(in.readUntil('\0'), "world");
+    EXPECT_EQ(in.position(), 12u);
     EXPECT_EQ(in.readAll(), "!");
+    EXPECT_EQ(in.position(), 13u);
     in.close();
 }
 
@@ -156,12 +161,13 @@ UNIT_TEST(FileInputStream, LargeSkip) {
     size_t skipped = in.skip(50);
     EXPECT_EQ(skipped, 50);
 
-    // Large skip: exceeds buffer size, triggers fseeko.
-    skipped = in.skip(200);
-    EXPECT_EQ(skipped, 200);
+    // Large skip: drains the 78 buffered bytes, and the rest exceeds the buffer size, so it goes through the seek
+    // path. A smaller skip here used to stay under the buffer size after the drain and never left the buffered path.
+    skipped = in.skip(300);
+    EXPECT_EQ(skipped, 300);
 
     std::string remaining = in.readAll();
-    EXPECT_EQ(remaining, data.substr(250));
+    EXPECT_EQ(remaining, data.substr(350));
     in.close();
 }
 
@@ -180,6 +186,93 @@ UNIT_TEST(FileInputStream, LargeSkipPastEnd) {
     EXPECT_EQ(skipped, 5);
 
     EXPECT_EQ(in.readAll(), "");
+    in.close();
+}
+
+UNIT_TEST(FileInputStream, ReadAllAfterFileGrows) {
+    const char *tmpfile = "tmp_grow_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    std::string first(10, 'a');
+    std::string second(90, 'b');
+
+    FileOutputStream out(tmpfile);
+    out.write(first);
+    out.close();
+
+    FileInputStream in(tmpfile);
+
+    // Append behind the stream's back - its size was already sampled.
+    std::ofstream more(tmpfile, std::ios::binary | std::ios::app);
+    more << second;
+    more.close();
+
+    EXPECT_EQ(in.readAll(), first + second); // The size sampled at open is only a hint.
+}
+
+UNIT_TEST(FileInputStream, LargeSkipAfterFileGrows) {
+    const char *tmpfile = "tmp_skipgrow_test.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    std::string first(10, 'a');
+    std::string second(90, 'b');
+
+    FileOutputStream out(tmpfile);
+    out.write(first);
+    out.close();
+
+    FileInputStream in(tmpfile, 4); // Small buffer, so that the skip below goes through the seeking branch.
+
+    std::ofstream more(tmpfile, std::ios::binary | std::ios::app);
+    more << second;
+    more.close();
+
+    // Like `read`, `skip` has to work off the real file - the size sampled at open said 10 bytes.
+    EXPECT_EQ(in.skip(50), 50u);
+    EXPECT_EQ(in.position(), 50u);
+    EXPECT_EQ(in.readAll(), (first + second).substr(50));
+}
+
+#ifdef __linux__
+UNIT_TEST(FileInputStream, SkipAgreesWithReadOnSeekOpaqueFiles) {
+    // Seeking to the end of `/dev/zero` says nothing about how much can be read from it, so anything derived from
+    // that understates the stream. `skip` has to return what `read` would have consumed.
+    FileInputStream in("/dev/zero", 8); // Small buffer, so that the skip goes through the seeking branch.
+
+    char buf[10] = {};
+    EXPECT_EQ(in.read(buf, sizeof(buf)), 10u);
+    EXPECT_EQ(std::string_view(buf, sizeof(buf)), std::string(sizeof(buf), '\0'));
+    EXPECT_EQ(in.skip(100), 100u);
+    EXPECT_EQ(in.position(), 110u);
+    EXPECT_EQ(in.read(buf, sizeof(buf)), 10u);
+    EXPECT_EQ(std::string_view(buf, sizeof(buf)), std::string(sizeof(buf), '\0'));
+    in.close();
+}
+#endif
+
+UNIT_TEST(FileInputStream, ReopenWithoutClose) {
+    const char *tmpfile1 = "tmp_reopen_noclose1_test.txt";
+    const char *tmpfile2 = "tmp_reopen_noclose2_test.txt";
+    ScopedTestFileSlot tmp1(tmpfile1);
+    ScopedTestFileSlot tmp2(tmpfile2);
+
+    std::string data(2000, 'q');
+
+    FileOutputStream out1(tmpfile1);
+    out1.write("first");
+    out1.close();
+
+    FileOutputStream out2(tmpfile2);
+    out2.write(data);
+    out2.close();
+
+    // Reopening with a larger buffer size has to reallocate the buffer. This used to be a heap buffer overflow -
+    // the old, smaller buffer was kept, and reading into it as if it were the new size overran the allocation.
+    FileInputStream in(tmpfile1, 64);
+    EXPECT_EQ(in.readAll(), "first");
+
+    in.open(tmpfile2, 4096);
+    EXPECT_EQ(in.readAll(), data);
     in.close();
 }
 
@@ -243,7 +336,9 @@ UNIT_TEST(FileInputStream, ReadUntilMultiRefill) {
 
     FileInputStream in(tmpfile, 64);
     EXPECT_EQ(in.readUntil('\0'), first);
+    EXPECT_EQ(in.position(), first.size() + 1);
     EXPECT_EQ(in.readAll(), second);
+    EXPECT_EQ(in.position(), in.size());
     in.close();
 }
 
@@ -322,6 +417,8 @@ UNIT_TEST(FileInputStream, PositionAdvancesOnSkip) {
     ScopedTestFileSlot tmp(tmpfile);
 
     std::string data(2000, 'x');
+    for (size_t i = 0; i < data.size(); i++)
+        data[i] = static_cast<char>('a' + (i % 26)); // Patterned, so a misplaced skip shows up in the data.
     FileOutputStream out(tmpfile);
     out.write(data);
     out.close();
@@ -332,10 +429,10 @@ UNIT_TEST(FileInputStream, PositionAdvancesOnSkip) {
     (void) in.skip(50);
     EXPECT_EQ(in.position(), 50u);
 
-    (void) in.skip(200); // Large skip via seek.
-    EXPECT_EQ(in.position(), 250u);
+    (void) in.skip(300); // Large skip via seek - big enough that draining the buffer doesn't cover it.
+    EXPECT_EQ(in.position(), 350u);
 
-    EXPECT_EQ(in.readAll(), data.substr(250));
+    EXPECT_EQ(in.readAll(), data.substr(350));
     EXPECT_EQ(in.position(), in.size());
     in.close();
 }

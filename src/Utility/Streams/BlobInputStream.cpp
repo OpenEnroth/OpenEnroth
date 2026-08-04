@@ -38,6 +38,11 @@ Blob BlobInputStream::readAsBlobOrFail(size_t size) {
     return readAsBlob(size);
 }
 
+void BlobInputStream::_close(bool canThrow) {
+    base_type::_close(canThrow); // Goes first, it drops the buffer that points into the blob.
+    _blob = Blob();
+}
+
 Blob BlobInputStream::readAllAsBlob() {
     assert(isOpen());
 

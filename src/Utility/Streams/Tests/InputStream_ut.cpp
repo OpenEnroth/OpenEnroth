@@ -6,6 +6,7 @@
 
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Streams/MemoryInputStream.h"
+#include "Utility/Exception.h"
 
 /**
  * An input stream that doesn't report its size, feeding data through `_underflow` in small chunks.
@@ -55,6 +56,132 @@ class UnsizedInputStream : public InputStream {
     size_t _chunkSize;
     size_t _pos = 0;
 };
+
+/**
+ * An input stream that lies about its size, modelling a file that changed after its size was sampled, and a procfs
+ * file whose `st_size` is 0 but which has contents.
+ */
+class LyingInputStream : public InputStream {
+ public:
+    LyingInputStream(const void *data, size_t size, size_t reportedSize) :
+        _data(static_cast<const char *>(data)), _dataSize(size) {
+        open({}, reportedSize, {});
+    }
+
+ protected:
+    virtual size_t _underflow(void *data, size_t size, Buffer *buffer) override {
+        buffer->reset(nullptr, nullptr, nullptr);
+
+        size_t bytesRead = std::min(size, _dataSize - _pos);
+        if (data)
+            memcpy(data, _data + _pos, bytesRead);
+        _pos += bytesRead;
+        return bytesRead;
+    }
+
+ private:
+    const char *_data;
+    size_t _dataSize;
+    size_t _pos = 0;
+};
+
+/**
+ * An input stream whose `_underflow` leaves a mangled buffer behind and then throws. Position accounting must not
+ * depend on what a failing implementation does to the buffer.
+ */
+class ThrowingInputStream : public InputStream {
+ public:
+    ThrowingInputStream(const void *data, size_t size, size_t reportedSize)
+        : _data(static_cast<const char *>(data)) {
+        open(Buffer(_data, _data, _data + size), reportedSize, {});
+    }
+
+    ThrowingInputStream(const void *data, size_t size) : ThrowingInputStream(data, size, size) {}
+
+ protected:
+    virtual size_t _underflow(void *, size_t, Buffer *buffer) override {
+        buffer->reset(_scratch, _scratch + 7, _scratch + sizeof(_scratch)); // `used()` out of nowhere.
+        throw Exception("underflow failed");
+    }
+
+ private:
+    const char *_data;
+    char _scratch[64] = {};
+};
+
+UNIT_TEST(InputStream, PositionAfterThrowingUnderflow) {
+    std::string data = "hello";
+
+    // Reading past the end drains the buffer and then refills, so the drained bytes are consumed even though the
+    // refill throws.
+    ThrowingInputStream in(data.data(), data.size());
+    char buf[10];
+    EXPECT_THROW((void) in.read(buf, sizeof(buf)), Exception);
+    EXPECT_EQ(in.position(), 5u);
+
+    // Refilling consumes nothing, so here it must not move at all.
+    ThrowingInputStream in2(data.data(), data.size());
+    EXPECT_THROW((void) in2.readUntil('\0'), Exception);
+    EXPECT_EQ(in2.position(), 5u);
+}
+
+UNIT_TEST(InputStream, PositionAfterReadUntilAtEnd) {
+    // The delimiter is never found, so this runs out of data and hits the default `_underflow`.
+    MemoryInputStream in("hello", 5);
+    EXPECT_EQ(in.readUntil('\0'), "hello");
+    EXPECT_EQ(in.position(), 5u);
+    EXPECT_EQ(in.position(), in.size());
+
+    // Repeated calls at end of stream must not drift either.
+    EXPECT_EQ(in.readUntil('\0'), "");
+    EXPECT_EQ(in.position(), 5u);
+}
+
+UNIT_TEST(InputStream, ReadAllShrinksOnShortRead) {
+    // Reports 100 bytes but has 10 - the result has to be shrunk to what was actually read.
+    std::string data(10, 'a');
+    LyingInputStream in(data.data(), data.size(), 100);
+
+    std::string result;
+    EXPECT_EQ(in.readAll(&result), 10u);
+    EXPECT_EQ(result.size(), 10u);
+    EXPECT_EQ(result, data);
+}
+
+UNIT_TEST(InputStream, ReadAllReadsPastReportedSize) {
+    // Reports 10 bytes but has 100 - the reported size is only a hint, so everything must still be read.
+    std::string data(100, 'a');
+    LyingInputStream in(data.data(), data.size(), 10);
+    EXPECT_EQ(in.readAll(), data);
+
+    LyingInputStream zeroSized(data.data(), data.size(), 0);
+    EXPECT_EQ(zeroSized.readAll(), data);
+}
+
+UNIT_TEST(InputStream, ReadAllPastReportedSize) {
+    // Reading past the reported size leaves `position() > size()`. Working out how much space to preallocate must
+    // not underflow there.
+    std::string data(100, 'a');
+    LyingInputStream in(data.data(), data.size(), 5);
+
+    char buf[50];
+    EXPECT_EQ(in.read(buf, sizeof(buf)), 50u);
+    EXPECT_GT(in.position(), in.size());
+    EXPECT_EQ(in.readAll(), data.substr(50)); // Everything that's left, even though the reported size is long gone.
+}
+
+UNIT_TEST(InputStream, ReadAllClearsOnThrow) {
+    std::string data = "hello";
+
+    // `readAll` sizes the string up front from `size()`, so the tail is uninitialized until the read fills it in.
+    // Leaving that tail in `*dst` when the read throws was a bug - it handed the caller indeterminate heap.
+    ThrowingInputStream in(data.data(), data.size(), 100);
+    std::string dst;
+    EXPECT_THROW((void) in.readAll(&dst), Exception);
+    EXPECT_TRUE(dst.empty());
+    EXPECT_THROW((void) in.readAll(), Exception); // The convenience overload rethrows rather than half-filling.
+    in.close();
+}
 
 UNIT_TEST(InputStream, ReadAll) {
     std::string largeString(10000, 'a');
@@ -202,11 +329,9 @@ UNIT_TEST(InputStream, SizeKnownForMemoryStream) {
 }
 
 UNIT_TEST(InputStream, SizeUnknownByDefault) {
-    InputStream::Buffer buffer;
-    // Default InputStream has size_t(-1) as size.
-    // We can only test this through MemoryInputStream which sets size.
-    MemoryInputStream input("", 0);
-    EXPECT_EQ(input.size(), 0u);
+    // This used to check `size() == 0` on a `MemoryInputStream`, which never observes the unknown-size default.
+    UnsizedInputStream input("", 0);
+    EXPECT_EQ(input.size(), static_cast<size_t>(-1));
 }
 
 UNIT_TEST(InputStream, PositionStartsAtZero) {

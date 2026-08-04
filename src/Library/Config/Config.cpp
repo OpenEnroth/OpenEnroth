@@ -21,6 +21,8 @@ void Config::load(std::string_view path) {
 }
 
 void Config::save(std::string_view path) const {
+    // TODO(captainurist): closed by the destructor, which cannot throw - so a failed write is swallowed and this
+    //                     returns as if it had succeeded. Needs an explicit `close()`.
     FileOutputStream stream(path);
     save(&stream);
 }

@@ -51,6 +51,9 @@ class BlobInputStream : public InputStream {
     */
     [[nodiscard]] Blob readAllAsBlob();
 
+ protected:
+    virtual void _close(bool canThrow) override;
+
  private:
     Blob _blob;
 };

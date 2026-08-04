@@ -1,9 +1,25 @@
+#include <memory>
 #include <string>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/BlobOutputStream.h"
+
+UNIT_TEST(BlobOutputStream, ReopenWithoutClose) {
+    Blob first;
+    Blob second;
+
+    BlobOutputStream out(&first);
+    out.write("hello");
+
+    out.open(&second);
+    out.write("world");
+    out.close();
+
+    EXPECT_EQ(first.str(), "hello"); // Reopening writes out into the previous target.
+    EXPECT_EQ(second.str(), "world");
+}
 
 UNIT_TEST(BlobOutputStream, DestructorFlushesData) {
     Blob blob;
@@ -171,4 +187,25 @@ UNIT_TEST(BlobOutputStream, PositionResetsOnReopen) {
     output.open(&blob);
     EXPECT_EQ(output.position(), 0u);
     output.close();
+}
+
+UNIT_TEST(BlobOutputStream, FlushWithoutWriting) {
+    // `close` finishes the scratchpad, `flush` has its own empty-stream branch. Only the former was covered, so the
+    // target could have kept its previous contents here.
+    Blob blob = Blob::fromString("old");
+    BlobOutputStream output(&blob, "empty.bin");
+    output.flush();
+    EXPECT_EQ(blob.size(), 0u);
+    EXPECT_EQ(blob.displayPath(), "empty.bin");
+    output.close();
+}
+
+UNIT_TEST(BlobOutputStream, DeleteThroughBasePointer) {
+    // Deleting through the base pointer has to run the derived destructor, which is what writes out the blob. This
+    // only works because the base destructor is virtual, so it's worth pinning down.
+    Blob blob;
+    std::unique_ptr<OutputStream> output = std::make_unique<BlobOutputStream>(&blob);
+    output->write("hello");
+    output.reset();
+    EXPECT_EQ(blob.str(), "hello");
 }

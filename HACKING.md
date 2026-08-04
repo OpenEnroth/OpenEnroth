@@ -94,6 +94,7 @@ Code formatting:
 * Sort method definitions in `.cpp` files in the same order as they appear in the `.h` file.
 * In header files, use an additional `private:` label before listing all class fields at the end of the class declaration.
 * Use `virtual` prefix for all virtual functions, even when `override` is also present.
+* Prefer an explicit `close()` / `reset()` call over a bare `{}` block that exists only to run a destructor. If there is no such call, use the bare block.
 
 Language features:
 * We use C++23. Prefer modern alternatives where appropriate, e.g. `contains()` instead of `find() != end()`.
@@ -118,6 +119,7 @@ Error handling:
 * Use `assert`s to check for coding errors and conditions that must never be false, no matter how the program is run.
 * Use exceptions for non-recoverable errors. It's usually OK to just throw an instance of `class Exception`.
 * Use `Logger` for warnings and recoverable errors.
+* We assume that memory allocation never fails. Don't check `malloc` results, and don't try to handle `std::bad_alloc` – crashing is the accepted outcome.
 * We don't yet have a mechanism for displaying errors to the user through the UI. This document will be updated once this is implemented.
 
 There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.

@@ -1,13 +1,19 @@
 #include "FileOutputStream.h"
 
 #include <cassert>
+#include <cerrno>
+#include <exception>
 #include <cstdio>
 #include <memory>
 #include <string>
+#include <utility>
 #include <filesystem>
 
 #include "Utility/Exception.h"
+#include "Utility/ScopeGuard.h"
 #include "Utility/UnicodeCrt.h"
+
+#include "FileApi.h"
 
 FileOutputStream::FileOutputStream(std::string_view path, size_t bufferSize) {
     open(path, bufferSize);
@@ -21,34 +27,45 @@ void FileOutputStream::open(std::string_view path, size_t bufferSize) {
     assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
     assert(bufferSize > 0);
 
+    if (isOpen())
+        close();
+    assert(!_buf); // Sized for the old `_bufSize`, so it has to be gone before that changes.
+
     std::string absPath = absolute(std::filesystem::path(path)).generic_string();
-    _file = fopen(absPath.c_str(), "wb");
-    if (!_file)
+    FILE *file = detail::fileApi->openFile(absPath.c_str(), "wb");
+    if (!file)
         Exception::throwFromErrno(absPath);
+    MM_AT_SCOPE_EXIT(if (file) detail::fileApi->closeFile(file)); // Don't leak it if anything below throws.
 
     // Disable libc buffering, we manage our own buffer.
-    if (setvbuf(_file, nullptr, _IONBF, 0) != 0)
+    if (detail::fileApi->setBuffering(file, nullptr, _IONBF, 0) != 0)
         Exception::throwFromErrno(absPath);
 
+    _file = std::exchange(file, nullptr);
     _bufSize = bufferSize;
     base_type::open({}, absPath);
 }
 
-void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) {
+void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size, size_t *bytesAccepted) {
     if (size < _bufSize) {
         // Small write: fill current buffer, write it all out, put the tail into a fresh buffer.
         size_t head = buffer->write(data, buffer->remaining());
-        writeBuffer(*buffer, true);
+        *bytesAccepted = head; // Ours the moment they're in the buffer - a failed write below leaves them pending.
+        writeBuffer(buffer, true);
         data = static_cast<const char *>(data) + head;
         size -= head;
         if (!_buf)
             _buf = std::make_unique<char[]>(_bufSize);
         buffer->reset(_buf.get(), _buf.get(), _buf.get() + _bufSize);
         buffer->write(data, size);
+        *bytesAccepted = head + size;
     } else {
         // Large write: write out current buffer, then write data directly.
-        writeBuffer(*buffer, true);
-        if (fwrite(data, size, 1, _file) != 1)
+        writeBuffer(buffer, true);
+        // Byte-wise, so a partial write reports what went out - those bytes are in the file whether we throw or not.
+        size_t bytesWritten = detail::fileApi->writeBytes(data, 1, size, _file);
+        *bytesAccepted = bytesWritten;
+        if (bytesWritten != size)
             Exception::throwFromErrno(displayPath());
         if (_buf)
             buffer->reset(_buf.get(), _buf.get(), _buf.get() + _bufSize);
@@ -56,29 +73,45 @@ void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) 
 }
 
 void FileOutputStream::_flush(Buffer *buffer) {
-    writeBuffer(*buffer, true);
-    buffer->commit();
-    if (fflush(_file) != 0)
+    writeBuffer(buffer, true); // Drops what went out, so `used()` is 0 on success.
+    if (detail::fileApi->flush(_file) != 0)
         Exception::throwFromErrno(displayPath());
 }
 
 void FileOutputStream::_close(Buffer *buffer, bool canThrow) {
     assert(isOpen());
 
-    writeBuffer(*buffer, canThrow);
+    std::string path = displayPath(); // `base_type::_close` clears it.
 
-    int status = fclose(_file);
-    if (status != 0 && canThrow) // TODO(captainurist): !canThrow => log OR attach
-        Exception::throwFromErrno(displayPath());
+    // Tear down even if the write throws - this stream has to end up closed either way.
+    std::exception_ptr writeError;
+    try {
+        writeBuffer(buffer, canThrow);
+    } catch (...) {
+        writeError = std::current_exception();
+    }
+
+    int closeError = detail::fileApi->closeFile(_file) != 0 ? errno : 0;
     _file = nullptr;
     _buf.reset();
     _bufSize = 0;
-
     base_type::_close(buffer, canThrow);
+
+    if (writeError)
+        std::rethrow_exception(writeError); // The write error is the informative one, so it wins over `closeError`.
+    if (closeError != 0 && canThrow) // TODO(captainurist): !canThrow => log OR attach
+        Exception::throwFromErrno(closeError, path);
 }
 
-void FileOutputStream::writeBuffer(const Buffer &buffer, bool canThrow) {
-    if (size_t bytesBuffered = buffer.used())
-        if (fwrite(buffer.start(), bytesBuffered, 1, _file) != 1 && canThrow)
-            Exception::throwFromErrno(displayPath());
+void FileOutputStream::writeBuffer(Buffer *buffer, bool canThrow) {
+    size_t bytesBuffered = buffer->used();
+    if (bytesBuffered == 0)
+        return;
+
+    // Byte-wise, so a partial write reports what went out - those bytes must be dropped or `_close` rewrites them.
+    size_t bytesWritten = detail::fileApi->writeBytes(buffer->start(), 1, bytesBuffered, _file);
+    buffer->reset(buffer->start() + bytesWritten, buffer->pos(), buffer->end());
+
+    if (bytesWritten != bytesBuffered && canThrow)
+        Exception::throwFromErrno(displayPath());
 }

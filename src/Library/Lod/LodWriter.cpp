@@ -23,6 +23,8 @@ LodWriter::LodWriter(OutputStream *stream, LodInfo info) {
 }
 
 LodWriter::~LodWriter() {
+    // TODO(captainurist): `close()` writes, and writing throws - so a failed write here terminates the process.
+    //                     Needs a non-throwing teardown path.
     close();
 }
 

@@ -20,7 +20,7 @@ class InputStream {
  public:
     using Buffer = StreamBuffer<const char>;
 
-    virtual ~InputStream();
+    virtual ~InputStream() = default;
 
     /**
      * @param[out] data                 Output buffer to write read data into.
@@ -60,7 +60,8 @@ class InputStream {
      *
      * @param[out] dst                  String to write the data into. Previous contents are cleared.
      * @return                          Number of bytes read from the stream.
-     * @throws Exception                On error.
+     * @throws Exception                On error. `*dst` comes out empty, and whatever the failed read consumed from
+     *                                  the stream is dropped with it - `position()` tells how much that was.
      */
     [[nodiscard]] size_t readAll(std::string *dst);
 
@@ -163,6 +164,12 @@ class InputStream {
     [[nodiscard]] size_t position() const { return _bufferBase + _buffer.used(); }
 
     /**
+     * Note that for file-backed streams this is only a hint. Nothing stops another process, or another stream in the
+     * current process, from appending to or truncating the file while it's open, and there's no way to prevent that
+     * on POSIX. So the size is sampled once, when the stream is opened. Re-reading it on every call wouldn't help
+     * either, as the answer is stale the moment it's returned. `position()` can end up past it, and reading is the
+     * only way to find where the stream really ends.
+     *
      * @return                          Total size of the stream in bytes, or `size_t(-1)` for unsized streams.
      */
     [[nodiscard]] size_t size() const { return _size; }
@@ -193,7 +200,8 @@ class InputStream {
      * - `data != nullptr`: reads `size` bytes into `data`.
      * - `data == nullptr && size > 0`: skips `size` bytes.
      *
-     * In all modes, sets `*buffer` to the new buffer state.
+     * `*buffer` can be replaced or left as it is - callers work the stream position out from whatever it ends up
+     * holding, so implementations don't have to care about that.
      *
      * @param[out] data                 Buffer to read into, or `nullptr` for skip/refill.
      * @param size                      Number of bytes to read or skip.

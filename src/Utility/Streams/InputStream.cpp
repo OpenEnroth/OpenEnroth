@@ -5,9 +5,8 @@
 #include <string>
 
 #include "Utility/Exception.h"
+#include "Utility/ScopeGuard.h"
 #include "Utility/Memory/MemoryScratchpad.h"
-
-InputStream::~InputStream() = default;
 
 size_t InputStream::readAll(std::string *dst) {
     assert(isOpen());
@@ -15,29 +14,43 @@ size_t InputStream::readAll(std::string *dst) {
     dst->clear();
 
     if (_size != static_cast<size_t>(-1)) {
-        // Sized stream: pre-allocate and read in one go.
-        size_t bytesTotal = _size - position();
-        if (bytesTotal == 0)
-            return 0;
-        dst->resize_and_overwrite(bytesTotal, [](char *, size_t n) { return n; }); // Technically UB, but throwing from
-        return read(dst->data(), bytesTotal);                                      // the callback is also UB, so...
-    } else {
-        // Unsized stream: accumulate in chunks, materialize once.
-        MemoryScratchpad scratchpad;
-        size_t bytesTotal = 0;
-        while (true) {
-            std::span<char> chunk = scratchpad.next();
-            size_t bytesRead = read(chunk.data(), chunk.size());
-            bytesTotal += bytesRead;
-            if (bytesRead < chunk.size())
-                break;
+        // Sized stream: preallocate and read in one go. `position()` can be past `_size`, so don't underflow.
+        if (_size > position()) {
+            size_t bytesHint = _size - position();
+            dst->resize_and_overwrite(bytesHint, [](char *, size_t n) { return n; }); // Technically UB, but throwing
+                                                                                      // from the callback is also UB.
+
+            // Trimmed on every path - everything past what was read is uninitialized, and a read that throws must not
+            // leave it exposed in `*dst`.
+            size_t bytesRead = 0;
+            MM_AT_SCOPE_EXIT(dst->resize(bytesRead));
+            bytesRead = read(dst->data(), bytesHint);
         }
-        dst->resize_and_overwrite(bytesTotal, [&scratchpad](char *buffer, size_t size) {
-            scratchpad.materialize(buffer, size);
-            return size;
-        });
-        return bytesTotal;
+
+        // The size is only a hint - it's sampled at open time, and `st_size` lies outright on procfs. A single byte
+        // tells us whether the stream really ended there, which it almost always did.
+        char probe;
+        if (read(&probe, 1) == 0)
+            return dst->size();
+        dst->push_back(probe);
     }
+
+    // Unsized stream, or a sized one that turned out to have more data. Accumulate in geometrically growing chunks,
+    // then materialize once.
+    MemoryScratchpad scratchpad;
+    size_t bytesTail = 0;
+    while (true) {
+        std::span<char> chunk = scratchpad.next();
+        size_t bytesRead = read(chunk.data(), chunk.size());
+        bytesTail += bytesRead;
+        if (bytesRead < chunk.size())
+            break;
+    }
+
+    size_t bytesHead = dst->size();
+    dst->resize(bytesHead + bytesTail);
+    scratchpad.materialize(dst->data() + bytesHead, bytesTail);
+    return dst->size();
 }
 
 void InputStream::open(Buffer buffer, size_t size, std::string_view displayPath) {
@@ -77,8 +90,11 @@ size_t InputStream::underflow(void *data, size_t size) {
     }
     size -= head;
 
-    size_t tail = _underflow(data, size, &_buffer);
-    _bufferBase = pos + head + tail - _buffer.used();
+    // Rebased on every path - `tail` stays zero if the refill throws, and the `head` bytes drained above are
+    // consumed either way.
+    size_t tail = 0;
+    MM_AT_SCOPE_EXIT(_bufferBase = pos + head + tail - _buffer.used());
+    tail = _underflow(data, size, &_buffer);
     return head + tail;
 }
 
@@ -93,8 +109,15 @@ size_t InputStream::readUntilSlow(char delimiter, std::string *dst) {
 
     // Refill from source and search.
     while (true) {
-        _bufferBase += _buffer.used();
-        _underflow(nullptr, 0, &_buffer);
+        // Refilling consumes nothing, so `position()` has to come out unchanged whatever buffer we get back, and
+        // whether or not the refill throws. The scope keeps the guard from firing at the end of the iteration, once
+        // the reads below have already moved the buffer along.
+        {
+            size_t pos = position();
+            MM_AT_SCOPE_EXIT(_bufferBase = pos - _buffer.used());
+            _underflow(nullptr, 0, &_buffer);
+        }
+
         if (_buffer.remaining() == 0)
             break; // No more data.
 

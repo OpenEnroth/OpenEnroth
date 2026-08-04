@@ -7,6 +7,7 @@
 #include <string_view>
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/ScopeGuard.h"
 #include "Utility/Streams/StreamBuffer.h"
 
 /**
@@ -21,7 +22,7 @@ class OutputStream {
  public:
     using Buffer = StreamBuffer<char>;
 
-    virtual ~OutputStream();
+    virtual ~OutputStream() = default;
 
     /**
      * Writes provided data into the output stream.
@@ -72,9 +73,12 @@ class OutputStream {
      */
     void flush() {
         assert(isOpen());
+
+        // Rebased on every path - a flush that throws has still written out part of the buffer, and leaving
+        // `_bufferBase` stale would move `position()` backwards by that much, permanently.
         size_t pos = position();
+        MM_AT_SCOPE_EXIT(_bufferBase = pos - _buffer.used());
         _flush(&_buffer);
-        _bufferBase = pos - _buffer.used();
     }
 
     /**
@@ -130,9 +134,12 @@ class OutputStream {
      *                                  `[buffer->start, buffer->pos)` is treated as dirty (not yet flushed).
      * @param data                      Pointer to the overflow data to write.
      * @param size                      Size of the overflow data, always greater than `buffer->remaining()`.
+     * @param[out] bytesAccepted        Number of leading bytes of `data` the stream has taken over - written out, or
+     *                                  moved into `*buffer`. Must be updated before throwing, as a failed write can
+     *                                  still have pushed part of the data out, and `position()` has to account for it.
      * @throws Exception                On error.
      */
-    virtual void _overflow(Buffer *buffer, const void *data, size_t size) = 0;
+    virtual void _overflow(Buffer *buffer, const void *data, size_t size, size_t *bytesAccepted) = 0;
 
     /**
      * Flushes buffered data to the underlying target.
