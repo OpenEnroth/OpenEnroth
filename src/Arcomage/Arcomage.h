@@ -164,44 +164,37 @@ class GUIFont;
 struct ArcomageGame {
     ArcomageGame() {}
 
-    // static bool LoadBackground();
     static bool LoadSprites();
     static bool MsgLoop(int a1, ArcomageGame_InputMSG *a2);
     static void playSound(int event_id);
     static void onKeyPress(PlatformKey key);
     static void OnMouseClick(char right_left, bool bDown);
-    static void OnMouseMove(int x, int y);
+    static void OnMouseMove(const Pointi& pos);
     static void GetCardRect(int uCardID, Recti *pCardRect);
     static void PrepareArcomage();
-    // static void DoBlt_Copy(uint16_t *pPixels);  // idb
-
     static void Loop();
 
     FrameLimiter _frameLimiter;
     int _targetFPS = 32;
 
-    ArcomageGame_InputMSG stru1;
+    ArcomageGame_InputMSG _amMsg;
+    Pointi _mousePos;
 
-    int mouse_x = 0;
-    int mouse_y = 0;
-    char field_39 = 0;
-    char field_3B = 0;
     GUIFont *pfntComic = nullptr;  // ptr_48;
     GUIFont *pfntArrus = nullptr;  // ptr_4C;
-    int field_50 = 0;
-    int field_54 = 0;  // blend mode ??
+
     GraphicsImage *pGameBackground = nullptr;
     GraphicsImage *pSprites = nullptr;
-    int uGameWinner = 0;
-    int Victory_type = 0;
-    std::string pPlayer1Name;
-    std::string pPlayer2Name;
-    char force_am_exit = 0;
-    char GameOver = 0;
-    char prev_mouse_left = 0;
-    char prev_mouse_right = 0;
-    char check_exit = 0;
-    char bGameInProgress = 0;
+
+    int _gameWinner = 0; // 0 = none, 1 = player, 2 = enemy
+    int _victoryType = 0;
+    std::string _player1Name = "Player";
+    std::string _player2Name = "Enemy";
+
+    bool _forceExit = false;
+    bool _gameOver = false;
+    bool _checkExit = false;
+    bool _gameInProgress = false;
 };
 
 extern ArcomageGame *pArcomageGame;

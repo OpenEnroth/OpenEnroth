@@ -23,6 +23,10 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/Vis.h"
+
+#include "Io/Mouse.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
@@ -280,7 +284,7 @@ void EngineController::restAndHeal() {
     tick(); // This is when the characters actually wake up.
 }
 
-Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
+Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags flags) {
     Actor *actor = AllocateActor();
     if (!actor)
         throw Exception("Failed to spawn monster {}", static_cast<int>(id));
@@ -306,6 +310,23 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
     actor->aiState = Standing;
     actor->currentActionLength = 0_ticks;
     actor->UpdateAnimation();
+
+    if (flags & SPAWN_STATIONARY)
+        actor->moveSpeed = 1;
+    if (flags & SPAWN_NO_RESISTANCES) {
+        actor->monsterInfo.resFire = 0;
+        actor->monsterInfo.resAir = 0;
+        actor->monsterInfo.resWater = 0;
+        actor->monsterInfo.resEarth = 0;
+        actor->monsterInfo.resMind = 0;
+        actor->monsterInfo.resSpirit = 0;
+        actor->monsterInfo.resBody = 0;
+        actor->monsterInfo.resLight = 0;
+        actor->monsterInfo.resDark = 0;
+        actor->monsterInfo.resPhysical = 0;
+    }
+    if (flags & SPAWN_LEVEL_1)
+        actor->monsterInfo.level = 1;
 
     return actor;
 }
@@ -353,6 +374,47 @@ void EngineController::castSpell(int characterIndex, SpellId spell) {
     tick(1);
     pressGuiButton(fmt::format("SpellBook_Spell{}", index)); // Confirm.
     tick(1);
+}
+
+void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
+    assert(characterIndex >= 1 && characterIndex <= 4);
+
+    goToGame();
+    if (GetCurrentMenuID() != MENU_NONE)
+        throw Exception("Can't cast a spell from the main menu");
+
+    if (pParty->activeCharacterIndex() != characterIndex) {
+        pressAndReleaseKey(platformKeyForDigit(characterIndex));
+        tick(1);
+        if (pParty->activeCharacterIndex() != characterIndex)
+            throw Exception("Couldn't activate character #{}", characterIndex);
+    }
+
+    Character &character = pParty->pCharacters[characterIndex - 1];
+    SpellId oldQuickSpell = character.uQuickSpell;
+    character.uQuickSpell = spell;
+    pressAndReleaseKey(PlatformKey::KEY_S);
+    // UIMSG_CastQuickSpell is processed in the next frame, and we need to wait for it to be processed before we can
+    // roll back the quick spell. Thus two ticks.
+    tick(2);
+    character.uQuickSpell = oldQuickSpell;
+}
+
+void EngineController::pointMouseAtActor(int actorId) {
+    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
+    // camera is still at the old position. Tick once to let it catch up.
+    tick(1);
+
+    Vec3f center = pActors[actorId].pos + Vec3f(0, 0, pActors[actorId].height / 2);
+    Vec3f viewPos = pCamera3D->ViewTransform(&center);
+    if (viewPos.x <= 0)
+        throw Exception("Actor #{} is behind the camera", actorId);
+    Vec2f screenPos = pCamera3D->Project(viewPos);
+
+    moveMouse(screenPos.x, screenPos.y);
+    tick(1); // Wait for Mouse::uPointingObjectID to pick up the new mouse position.
+    if (mouse->uPointingObjectID != Pid(OBJECT_Actor, actorId))
+        throw Exception("Failed to point mouse at actor #{}", actorId);
 }
 
 void EngineController::goToGameOrMainMenu() {

@@ -182,7 +182,7 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
 }
 
 void GameWindowHandler::OnMouseLeftClick(Pointi position) {
-    if (pArcomageGame->bGameInProgress) {
+    if (pArcomageGame->_gameInProgress) {
         ArcomageGame::OnMouseClick(0, true);
     } else {
         pMediaPlayer->StopMovie();
@@ -203,7 +203,7 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
 }
 
 void GameWindowHandler::OnMouseRightClick(Pointi position) {
-    if (pArcomageGame->bGameInProgress) {
+    if (pArcomageGame->_gameInProgress) {
         ArcomageGame::OnMouseClick(1, true);
         return;
     }
@@ -237,7 +237,7 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
 }
 
 void GameWindowHandler::OnMouseLeftUp() {
-    if (pArcomageGame->bGameInProgress) {
+    if (pArcomageGame->_gameInProgress) {
         ArcomageGame::OnMouseClick(0, 0);
     } else if (!isHoldingMouseRightButton()) {
         back_to_game();
@@ -245,7 +245,7 @@ void GameWindowHandler::OnMouseLeftUp() {
 }
 
 void GameWindowHandler::OnMouseRightUp() {
-    if (pArcomageGame->bGameInProgress) {
+    if (pArcomageGame->_gameInProgress) {
         ArcomageGame::OnMouseClick(1, false);
     } else {
         back_to_game();
@@ -253,7 +253,7 @@ void GameWindowHandler::OnMouseRightUp() {
 }
 
 void GameWindowHandler::OnMouseLeftDoubleClick(Pointi position) {
-    if (pArcomageGame->bGameInProgress) {
+    if (pArcomageGame->_gameInProgress) {
         pArcomageGame->OnMouseClick(0, true);
     } else {
         OnMouseLeftClick(position);
@@ -261,7 +261,7 @@ void GameWindowHandler::OnMouseLeftDoubleClick(Pointi position) {
 }
 
 void GameWindowHandler::OnMouseRightDoubleClick(Pointi position) {
-    if (pArcomageGame->bGameInProgress) {
+    if (pArcomageGame->_gameInProgress) {
         pArcomageGame->OnMouseClick(1, true);
     } else {
         OnMouseRightClick(position);
@@ -269,8 +269,8 @@ void GameWindowHandler::OnMouseRightDoubleClick(Pointi position) {
 }
 
 void GameWindowHandler::OnMouseMove(Pointi position, Pointi relative, bool left_button, bool right_button) {
-    if (pArcomageGame->bGameInProgress) {
-        ArcomageGame::OnMouseMove(position.x, position.y);
+    if (pArcomageGame->_gameInProgress) {
+        ArcomageGame::OnMouseMove(position);
         ArcomageGame::OnMouseClick(0, left_button);
         ArcomageGame::OnMouseClick(1, right_button);
     } else {
@@ -304,7 +304,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
     if (currently_selected_action_for_binding != INPUT_ACTION_INVALID) {
         // we're setting a key binding in options
         keyboardInputHandler->ProcessTextInput(key, -1);
-    } else if (pArcomageGame->bGameInProgress) {
+    } else if (pArcomageGame->_gameInProgress) {
         if (keyboardActionMapping->isBound(INPUT_ACTION_TOGGLE_WINDOW_MODE, key) && !pMovie_Track) {
             OnToggleWindowMode();
         } else {
@@ -361,7 +361,7 @@ void GameWindowHandler::OnActivated() {
 
         dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
 
-        if (!pArcomageGame->bGameInProgress) {
+        if (!pArcomageGame->_gameInProgress) {
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER)
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0200_EVENT_TIMER;
             else

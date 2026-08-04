@@ -50,6 +50,8 @@ class ActorTapeRecorder {
 
     TestTape<bool> hasBuff(int actorIndex, ActorBuff buff);
 
+    TestMultiTape<bool> haveBuffs(std::initializer_list<int> actorIndices, ActorBuff buff);
+
  private:
     static std::deque<Actor> &actors();
 

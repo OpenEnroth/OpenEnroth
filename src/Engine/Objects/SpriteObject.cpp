@@ -242,6 +242,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 }
             }
         } else {
+            // TODO(captainurist): projectiles can fly right through small actors - an ice bolt aimed at a peasant
+            //                     ~250 units away missed it and hit a titan further along the flight path.
             for (int j = 0; j < pActors.size(); ++j) {
                 CollideWithActor(j, 0);
             }
@@ -616,8 +618,7 @@ bool SpriteObject::applyShrinkRayAoe() {
     int effectDistance = engine->config->gameplay.ShrinkRayAoeDistance.value();
 
     for (Actor &actor : pActors) {
-        // TODO(Nik-RE-dev): paralyzed actor will not be affected?
-        if (actor.CanAct()) {
+        if (actor.CanBeDamaged()) {
             float distanceSq = (actor.pos - this->vPosition + Vec3f(0, 0, actor.height / 2)).lengthSqr();
             float checkDistanceSq = (effectDistance + actor.radius) * (effectDistance + actor.radius);
 
