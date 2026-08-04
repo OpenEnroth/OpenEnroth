@@ -57,6 +57,8 @@ cmake(
     name = "sdl3",
     cache_entries = {
         "CMAKE_BUILD_TYPE": "Release",
+        # GNUInstallDirs picks lib64 on non-debian roots (e.g. the flatpak sandbox).
+        "CMAKE_INSTALL_LIBDIR": "lib",
         # Use static MSVC runtime (/MT) to match the rest of the build.
         "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
         "SDL_STATIC": "ON",
