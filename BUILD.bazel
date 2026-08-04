@@ -2,6 +2,7 @@
 # The main binary lives at //src/Bin/OpenEnroth.
 
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+load("//bazel/rules:check_style.bzl", "check_style")
 
 alias(
     name = "OpenEnroth",
@@ -15,9 +16,29 @@ alias(
 # prebuilt/dummy deps, ccache and linker options are obsolete under bazel.
 
 # Same as cmake's OE_DISTRIBUTION_BUILD: a build for distribution, not a dev
-# build. Pass --//:distribution, or use --config=distribution for opt mode too.
+# build (defaults to borderless fullscreen). Combine with -c opt.
 bool_flag(
     name = "distribution",
     build_setting_default = False,
     visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "cpplint_config",
+    srcs = ["CPPLINT.cfg"],
+    visibility = ["//visibility:public"],
+)
+
+# cpplint over all first-party sources, cached per target - cmake's
+# check_style. Lua style checks still live in the cmake target.
+check_style(
+    name = "check_style",
+    testonly = True,
+    deps = [
+        "//src/Bin/CodeGen",
+        "//src/Bin/LodTool",
+        "//src/Bin/OpenEnroth",
+        "//test/Bin/GameTest:OpenEnroth_GameTest",
+        "//test/Bin/UnitTest:OpenEnroth_UnitTest",
+    ],
 )
