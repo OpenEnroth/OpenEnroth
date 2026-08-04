@@ -6,6 +6,7 @@
 #include <functional>
 #include <cstdlib>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -563,6 +564,13 @@ GenderTableEntry gender_table[] = {
       {"шляпа", 1},     {"элементал", 0},
 };
 
+// Some of the strings we're called on are re-formatted every frame, so each distinct warning is logged once.
+void warnOnce(const std::string &message) {
+    static std::unordered_set<std::string> reported;
+    if (reported.insert(message).second)
+        logger->warning("{}", message);
+}
+
 // Names that per-word gender lookup can't handle: multi-word, or declined as a whole.
 struct SpecialNameEntry {
     const char *name;
@@ -638,7 +646,7 @@ int genderOf(std::string_view name) {
     if (pos != table->end() && pos->first.starts_with(name))
         return pos->second;
 
-    logger->warning("sprintfex: unknown gender: {}", txt::encodedToUtf8(name, ENCODING_WINDOWS_1251));
+    warnOnce(fmt::format("sprintfex: unknown gender: {}", txt::encodedToUtf8(name, ENCODING_WINDOWS_1251)));
     return 0;
 }
 
@@ -776,7 +784,7 @@ std::string sprintfex(std::string_view str) {
     while (pos < str.size()) {
         // Loop invariant: str[pos] == '^' here.
         if (!expandToken()) {
-            logger->warning("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
+            warnOnce(fmt::format("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251)));
             result += '^'; // Malformed tokens are copied through verbatim.
             pos++;
         }
