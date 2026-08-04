@@ -76,6 +76,7 @@ UNIT_TEST(Mm7TextRu, Malformed) {
     EXPECT_EQ(sprintfex("^I[unclosed"), "^I[unclosed");
     EXPECT_EQ(sprintfex("^Z[what]"), "^Z[what]");
     EXPECT_EQ(sprintfex(ru("^L[только;две]")), ru("^L[только;две]"));
+    EXPECT_EQ(sprintfex("^I[5]^L[a;b;c;d]"), "5c;d"); // Extra semicolons fold into the third form.
 }
 
 UNIT_TEST(Mm7TextRu, StandaloneFallbacks) {

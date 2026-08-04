@@ -666,13 +666,14 @@ int pluralFormIndex(int n) {
     return 2;
 }
 
-// Splits `^L` / `^R` token contents like "ень;ня;ней" into three forms, false if there aren't exactly three.
+// Splits `^L` / `^R` token contents like "ень;ня;ней" into three forms, false if there are fewer than three.
+// Extra semicolons end up in the third form, like in the original DLL.
 bool splitForms(std::string_view forms, std::array<std::string_view, 3> *out) {
     size_t semi1 = forms.find(';');
     if (semi1 == std::string_view::npos)
         return false;
     size_t semi2 = forms.find(';', semi1 + 1);
-    if (semi2 == std::string_view::npos || forms.find(';', semi2 + 1) != std::string_view::npos)
+    if (semi2 == std::string_view::npos)
         return false;
     *out = {forms.substr(0, semi1), forms.substr(semi1 + 1, semi2 - semi1 - 1), forms.substr(semi2 + 1)};
     return true;
