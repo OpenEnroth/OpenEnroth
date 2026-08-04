@@ -87,6 +87,14 @@ config_setting(
     ],
 )
 
+config_setting(
+    name = "android_x86",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_32",
+    ],
+)
+
 # ─── platform() targets for --platforms ──────────────────────────────────────
 
 # 32-bit windows: resolves the x64->x86 cross toolchain from @local_config_cc.
@@ -136,5 +144,13 @@ platform(
     constraint_values = [
         "@platforms//os:android",
         "@platforms//cpu:x86_64",
+    ],
+)
+
+platform(
+    name = "android_x86_platform",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_32",
     ],
 )

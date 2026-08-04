@@ -30,6 +30,21 @@ config_setting(
     ],
 )
 
+config_setting(
+    name = "_android_x86",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_32",
+    ],
+)
+
+# Java side of SDL's android support, compiled into the APK.
+filegroup(
+    name = "android_java",
+    srcs = glob(["android-project/app/src/main/java/org/libsdl/app/*.java"]),
+    visibility = ["//visibility:public"],
+)
+
 filegroup(
     name = "all_srcs",
     srcs = glob(
@@ -73,6 +88,13 @@ cmake(
             "-DCMAKE_CXX_FLAGS=--target=x86_64-linux-android24",
             "-DCMAKE_ASM_FLAGS=--target=x86_64-linux-android24",
             "-DCMAKE_EXE_LINKER_FLAGS=--target=x86_64-linux-android24",
+            "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
+        ],
+        ":_android_x86": [
+            "-DCMAKE_C_FLAGS=--target=i686-linux-android24",
+            "-DCMAKE_CXX_FLAGS=--target=i686-linux-android24",
+            "-DCMAKE_ASM_FLAGS=--target=i686-linux-android24",
+            "-DCMAKE_EXE_LINKER_FLAGS=--target=i686-linux-android24",
             "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
         ],
         "//conditions:default": [],

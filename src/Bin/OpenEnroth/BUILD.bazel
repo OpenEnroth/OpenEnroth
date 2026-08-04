@@ -1,13 +1,14 @@
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
-cc_binary(
-    name = "OpenEnroth",
+# platformMain() and everything below it; shared between the standalone binary
+# and the android APK's libmain.so.
+cc_library(
+    name = "openenroth_main",
     srcs = [
         "OpenEnroth.cpp",
         "OpenEnrothOptions.cpp",
         "OpenEnrothOptions.h",
-        # OpenEnroth.rc omitted: Windows resource files not supported by cc_binary in Bazel.
-        # The binary works without it (no custom icon/version metadata).
     ],
     visibility = ["//visibility:public"],
     deps = [
@@ -15,7 +16,33 @@ cc_binary(
         "//src/Engine:engine_impl",
         "//src/Library/Cli:library_cli",
         "//src/Library/Environment:library_environment",  # createStandardEnvironment() impl
-        "//src/Library/Platform/Sdl:library_platform_main",
         "//src/Library/StackTrace:library_stack_trace",
+    ],
+    alwayslink = True,
+)
+
+cc_binary(
+    name = "OpenEnroth",
+    # OpenEnroth.rc omitted: Windows resource files not supported by cc_binary in Bazel.
+    # The binary works without it (no custom icon/version metadata).
+    visibility = ["//visibility:public"],
+    deps = [
+        ":openenroth_main",
+        "//src/Library/Platform/Sdl:library_platform_main",
+    ],
+)
+
+# Native side of the APK: android_binary links this into libmain.so, with
+# SDL_main as the only exported symbol (see libmain.map), which the Java
+# SDLActivity looks up at runtime.
+cc_library(
+    name = "openenroth_apk_main",
+    additional_linker_inputs = ["libmain.map"],
+    linkopts = ["-Wl,--version-script=$(location libmain.map)"],
+    target_compatible_with = ["@platforms//os:android"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":openenroth_main",
+        "//src/Library/Platform/Sdl:library_platform_main_apk",
     ],
 )

@@ -89,6 +89,14 @@ config_setting(
     ],
 )
 
+config_setting(
+    name = "_android_x86",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_32",
+    ],
+)
+
 # ─── Build variants ──────────────────────────────────────────────────────────
 # One entry per distinct (arch, LUAJIT_OS) combination. Android maps to
 # LUAJIT_OS_LINUX, exactly as in src/Makefile.
@@ -203,6 +211,7 @@ _PLATFORM_VARIANT = {
     ":_android_arm64": "arm64_linux",
     ":_android_armv7": "arm_linux",
     ":_android_x86_64": "x64_linux",
+    ":_android_x86": "x86_linux",
 }
 
 # Library files parsed by buildvm; order matters and matches src/Makefile LJLIB_C.
