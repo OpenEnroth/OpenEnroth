@@ -189,7 +189,27 @@ jobs:
       - name: 'Annotate failure log'
         if: failure()
         run: |
-          grep -E "error:|ERROR:|CMake Error|Error [0-9]|FAILED:|incomplete" bazel-build.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
+          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED:|incomplete|FAILED TESTS" bazel-build.log bazel-gametest.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
+
+      # Game tests need the MM7 data; same shared cache the cmake matrix uses.
+      # TODO(captainurist): expand to windows/darwin legs before dropping cmake.
+      - name: '[linux_x86_64] Restore game data cache'
+        if: matrix.target == 'linux_x86_64'
+        uses: actions/cache/restore@v4.2.4
+        with:
+          path: OpenEnroth_GameData
+          key: data-cache
+
+      - name: '[linux_x86_64] Run game tests'
+        if: matrix.target == 'linux_x86_64'
+        run: |
+          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --remote_download_toplevel //test/Bin/GameTest:OpenEnroth_GameTest 2>&1 | tee bazel-build.log
+          bazel run --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} @gtest_parallel//:gtest_parallel -- \
+            --print_test_times --workers=$(nproc) \
+            ${{github.workspace}}/bazel-bin/test/Bin/GameTest/OpenEnroth_GameTest -- \
+            --test-path ${{github.workspace}}/test/Data --headless 2>&1 | tee bazel-gametest.log
+        env:
+          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: '[linux_x86_64] Check style'
         if: matrix.target == 'linux_x86_64'
