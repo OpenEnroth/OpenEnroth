@@ -76,5 +76,12 @@ UNIT_TEST(Mm7TextRu, Malformed) {
     EXPECT_EQ(sprintfex("^I[unclosed"), "^I[unclosed");
     EXPECT_EQ(sprintfex("^Z[what]"), "^Z[what]");
     EXPECT_EQ(sprintfex(ru("^L[только;две]")), ru("^L[только;две]"));
-    EXPECT_EQ(sprintfex("^L9[a;b;c]"), "^L9[a;b;c]"); // No ^I tokens before it.
+}
+
+UNIT_TEST(Mm7TextRu, StandaloneFallbacks) {
+    // ^R with no ^P name and ^L with no ^I number fall back to masculine/zero, like in the original DLL.
+    // This is how Buka profession names render when displayed outside of a sentence.
+    EXPECT_EQ(sprintfex(ru("охотни^R[к;ца;]")), ru("охотник"));
+    EXPECT_EQ(sprintfex(ru("д^L[ень;ня;ней]")), ru("дней"));
+    EXPECT_EQ(sprintfex("^L9[a;b;c]"), "c");
 }

@@ -728,21 +728,19 @@ std::string sprintfex(std::string_view str) {
             std::array<std::string_view, 3> forms;
             if (!splitForms(contents, &forms))
                 return false;
-            if (numberIndex >= numbers.size())
-                return false; // No matching ^I number.
-            result += forms[pluralFormIndex(numbers[numberIndex])];
+            // No matching ^I means zero, like in the DLL. Buka data has standalone strings that rely on this.
+            int number = numberIndex < numbers.size() ? numbers[numberIndex] : 0;
+            result += forms[pluralFormIndex(number)];
         } break;
 
         case 'R': {
             std::array<std::string_view, 3> forms;
             if (!splitForms(contents, &forms))
                 return false;
-            if (gender == -1) {
-                logger->warning("sprintfex: ^R token without a preceding ^P name in \"{}\", assuming masculine",
-                                txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
-                gender = 0;
-            }
-            result += forms[gender];
+            // No preceding ^P means masculine, like in the DLL. Buka data relies on this: profession and class
+            // names like "охотни^R[к;ца;]" are gendered by a ^P name when formatted into a sentence, and fall
+            // back to masculine when displayed standalone.
+            result += forms[gender == -1 ? 0 : gender];
         } break;
 
         case 'P': {
