@@ -171,7 +171,10 @@ build:remote-cache --bes_backend=grpcs://remote.buildbuddy.io
 build:remote-cache --bes_results_url=https://app.buildbuddy.io/invocation/
 build:remote-cache --remote_cache=grpcs://remote.buildbuddy.io
 build:remote-cache --remote_timeout=10m
-build:remote-cache --remote_download_toplevel
+# Build without the bytes: only metadata comes down; bazel run/test fetch
+# what they execute on demand. zstd halves the transfer sizes.
+build:remote-cache --remote_download_minimal
+build:remote-cache --remote_cache_compression
 build:remote-cache --build_metadata=REPO_URL=https://github.com/OpenEnroth/OpenEnroth
 # Invocation pages are viewable without login - it's an open-source repo.
 build:remote-cache --build_metadata=VISIBILITY=PUBLIC
