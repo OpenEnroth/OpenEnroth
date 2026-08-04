@@ -25,13 +25,20 @@ class Localization {
 
     /**
      * Expands Buka-style `^`-tokens, see `sprintfex` in `mm7text_ru.h`. A no-op for non-Buka localizations.
+     *
+     * `format` calls this internally, so most code never needs it. Call it directly only when displaying a
+     * string that carries tokens without formatting it first - e.g. `className()` drawn standalone, where the
+     * gendered ending falls back to masculine.
+     *
+     * @param str                       String to expand.
+     * @return                          String with all `^`-tokens expanded.
      */
-    std::string expandTokens(std::string_view str) const;
+    std::string expand(std::string_view str) const;
 
     template<class... Args>
     std::string format(LstrId index, Args &&... args) const {
         // TODO(captainurist): what if fmt throws?
-        return expandTokens(fmt::sprintf(str(index), std::forward<Args>(args)...)); // NOLINT: not std::sprintf.
+        return expand(fmt::sprintf(str(index), std::forward<Args>(args)...)); // NOLINT: not std::sprintf.
     }
 
     const std::string &dayName(unsigned int index) const {

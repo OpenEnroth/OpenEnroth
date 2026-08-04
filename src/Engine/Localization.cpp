@@ -22,7 +22,7 @@ const std::string &Localization::str(LstrId index) const {
     return this->_localizationStrings[index];
 }
 
-std::string Localization::expandTokens(std::string_view str) const {
+std::string Localization::expand(std::string_view str) const {
     if (_hasSprintfexTokens && str.find('^') != std::string_view::npos)
         return sprintfex(str);
     return std::string(str);
