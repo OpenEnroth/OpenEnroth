@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <memory>
 #include <string>
 
 #include "Testing/Unit/UnitTest.h"
@@ -234,3 +235,37 @@ UNIT_TEST(FileOutputStream, PositionResetsOnReopen) {
     EXPECT_EQ(out.position(), 0u);
     out.close();
 }
+
+UNIT_TEST(FileOutputStream, OpenFailure) {
+    // Opening into a directory that doesn't exist has to throw, and the message has to name the path.
+    EXPECT_THROW_MESSAGE(FileOutputStream("no_such_dir_here/out.txt"), "no_such_dir_here");
+}
+
+UNIT_TEST(FileOutputStream, RepeatedOverflow) {
+    // Every write past the buffer end goes through `_overflow`. The second one finds the internal buffer already
+    // allocated, which is a different path through it than the first.
+    const char *tmpfile = "tmp_repeated_overflow.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    FileOutputStream out(tmpfile, 16);
+    for (int i = 0; i < 5; i++)
+        out.write(std::string(10, 'a' + i));
+    out.close();
+
+    FileInputStream in(tmpfile);
+    std::string expected;
+    for (int i = 0; i < 5; i++)
+        expected += std::string(10, 'a' + i);
+    EXPECT_EQ(in.readAll(), expected);
+    in.close();
+}
+
+#ifdef __linux__
+UNIT_TEST(FileOutputStream, DestructorSwallowsWriteError) {
+    // Writes to /dev/full fail with ENOSPC. The destructor closes with `canThrow` false, so it has to swallow that -
+    // throwing there would terminate the process.
+    auto out = std::make_unique<FileOutputStream>("/dev/full");
+    out->write(std::string(100, 'x'));
+    EXPECT_NO_THROW(out.reset());
+}
+#endif

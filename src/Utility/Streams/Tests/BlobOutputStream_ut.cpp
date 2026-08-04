@@ -187,3 +187,14 @@ UNIT_TEST(BlobOutputStream, PositionResetsOnReopen) {
     EXPECT_EQ(output.position(), 0u);
     output.close();
 }
+
+UNIT_TEST(BlobOutputStream, FlushWithoutWriting) {
+    // `close` finishes the scratchpad, `flush` has its own empty-stream branch. Only the former was covered, so the
+    // target could have kept its previous contents here.
+    Blob blob = Blob::fromString("old");
+    BlobOutputStream output(&blob, "empty.bin");
+    output.flush();
+    EXPECT_EQ(blob.size(), 0u);
+    EXPECT_EQ(blob.displayPath(), "empty.bin");
+    output.close();
+}
