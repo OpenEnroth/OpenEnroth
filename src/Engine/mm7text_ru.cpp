@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <array>
-#include <charconv>
 #include <functional>
 #include <cstdlib>
 #include <string>
@@ -11,6 +10,7 @@
 #include <vector>
 
 #include "Library/Logger/Logger.h"
+#include "Library/Serialization/Serialization.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Encoding.h"
@@ -730,7 +730,7 @@ std::string sprintfex(std::string_view str) {
             // Like the DLL: contents are printed verbatim either way, but only a successfully parsed number
             // occupies a registry slot.
             int value = 0;
-            if (std::from_chars(contents.data(), contents.data() + contents.size(), value).ec == std::errc())
+            if (tryDeserialize(contents, &value))
                 numbers.push_back(value);
             result += contents;
         } break;
