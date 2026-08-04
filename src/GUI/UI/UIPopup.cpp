@@ -1257,7 +1257,7 @@ void CharacterUI_StatsTab_ShowHint() {
             break;
 
         case 26:  // Class description
-            CharacterUI_DrawTooltip(localization->className(pParty->activeCharacter().classType),
+            CharacterUI_DrawTooltip(localization->expandTokens(localization->className(pParty->activeCharacter().classType)),
                                     localization->classDescription(pParty->activeCharacter().classType));
             break;
 

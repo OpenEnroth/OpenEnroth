@@ -23,6 +23,11 @@ class Localization {
 
     const std::string &str(LstrId index) const;
 
+    /**
+     * Expands Buka-style `^`-tokens, see `sprintfex` in `mm7text_ru.h`. A no-op for non-Buka localizations.
+     */
+    std::string expandTokens(std::string_view str) const;
+
     template<class... Args>
     std::string format(LstrId index, Args &&... args) const {
         // TODO(captainurist): what if fmt throws?
@@ -227,11 +232,6 @@ class Localization {
     Localization() = default;
 
  private:
-    /**
-     * Expands Buka-style `^`-tokens, see `sprintfex` in `mm7text_ru.h`. A no-op for non-Buka localizations.
-     */
-    std::string expandTokens(std::string_view str) const;
-
     void initializeMm6ItemCategories();
 
     void initializeMonthNames();
