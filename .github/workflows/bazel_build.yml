@@ -142,15 +142,6 @@ jobs:
         if: env.MATRIX_PLATFORM == 'windows'
         uses: ilammy/msvc-dev-cmd@v1
 
-      # TODO(captainurist): temporary, drop once the hashes land in windows_tools.bzl.
-      - name: 'Print msys2 package hashes'
-        if: matrix.target == 'linux_x86_64'
-        run: |
-          for p in make-4.4.1-3-x86_64.pkg.tar.zst pkgconf-3.0.5-1-x86_64.pkg.tar.zst; do
-            curl -sLO "https://mirror.msys2.org/msys/x86_64/$p"
-            echo "::warning::$p sha256=$(sha256sum $p | cut -d' ' -f1)"
-          done
-
       - name: 'Set up Bazel'
         uses: bazel-contrib/setup-bazel@0.14.0
         with:

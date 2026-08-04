@@ -13,8 +13,8 @@ _MSYS2_BASE_SHA256 = "a2d047e8ee213c3c6a49a8de427eb1069df12207c0422ff1b3cbb5c905
 # pkgconf only satisfies rules_foreign_cc's mandatory pkgconfig toolchain
 # resolution; nothing in this build actually queries pkg-config.
 _MSYS2_PACKAGES = [
-    ("make-4.4.1-3-x86_64.pkg.tar.zst", ""),
-    ("pkgconf-3.0.5-1-x86_64.pkg.tar.zst", ""),
+    ("make-4.4.1-3-x86_64.pkg.tar.zst", "af0bdba17f06fe037f0194069adaa31a8fe45f1a11381501896aea1fae37bd5d"),
+    ("pkgconf-3.0.5-1-x86_64.pkg.tar.zst", "40dfc37c4fed31b7bf2fe55f11299884e3120025d27f61255ad1a1c8b890aece"),
 ]
 
 _CMAKE_URL = "https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-windows-x86_64.zip"
