@@ -38,6 +38,14 @@ config_setting(
     ],
 )
 
+config_setting(
+    name = "_android_x86",
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_32",
+    ],
+)
+
 filegroup(
     name = "all_srcs",
     srcs = glob(
@@ -169,6 +177,19 @@ configure_make(
             "--extra-cflags=-ffast-math",
             "--extra-cflags=-mfpmath=sse",
             "--extra-ldflags=--target=x86_64-linux-android24",
+            "--ar=$$EXT_BUILD_ROOT$$/$(AR)",
+        ],
+        ":_android_x86": [
+            "--enable-cross-compile",
+            "--target-os=android",
+            "--arch=x86",
+            "--cc=$$EXT_BUILD_ROOT$$/$(CC)",
+            "--extra-cflags=--target=i686-linux-android24",
+            "--extra-cflags=-march=atom",
+            "--extra-cflags=-msse3",
+            "--extra-cflags=-ffast-math",
+            "--extra-cflags=-mfpmath=sse",
+            "--extra-ldflags=--target=i686-linux-android24",
             "--ar=$$EXT_BUILD_ROOT$$/$(AR)",
         ],
         "//conditions:default": [],

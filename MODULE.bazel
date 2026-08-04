@@ -74,6 +74,12 @@ use_repo(android_ndk_repository_extension, "androidndk")
 
 register_toolchains("@androidndk//:all")
 
+# SDK for android_binary (APK packaging); stubs out when ANDROID_HOME is unset.
+android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
+use_repo(android_sdk_repository_extension, "androidsdk")
+
+register_toolchains("@androidsdk//:sdk-toolchain", "@androidsdk//:all")
+
 # ─── Non-BCR deps via http_archive ───────────────────────────────────────────
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")

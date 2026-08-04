@@ -32,6 +32,8 @@ jobs:
           - android_arm64_v8a
           - android_armeabi_v7a
           - android_x86_64
+          - android_x86
+          - android_universal
     runs-on: >-
       ${{
         startsWith(matrix.target, 'windows_') && 'windows-2022' ||
@@ -58,6 +60,8 @@ jobs:
             android_arm64_v8a)   platform=android; bazel_config=android_arm64_v8a;;
             android_armeabi_v7a) platform=android; bazel_config=android_armeabi_v7a;;
             android_x86_64)      platform=android; bazel_config=android_x86_64;;
+            android_x86)         platform=android; bazel_config=android_x86;;
+            android_universal)   platform=android; bazel_config=android_universal;;
             *) echo "Unknown target: $target" >&2; exit 1;;
           esac
           echo "MATRIX_PLATFORM=$platform" >> "$GITHUB_ENV"
@@ -131,7 +135,7 @@ jobs:
             libwayland-dev libxkbcommon-dev
           # armeabi_v7a builds LuaJIT host tools with -m32; multilib runtime
           # only ships for gcc-14.
-          if [ "${{matrix.target}}" = "android_armeabi_v7a" ]; then
+          if [ "${{matrix.target}}" = "android_armeabi_v7a" ] || [ "${{matrix.target}}" = "android_x86" ] || [ "${{matrix.target}}" = "android_universal" ]; then
             # gcc-13 can't find lib32stdc++.
             sudo apt-get install -y gcc-14-multilib g++-14-multilib
             sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
@@ -163,7 +167,11 @@ jobs:
 
       - name: 'Build'
         run: |
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //src/Bin/OpenEnroth:OpenEnroth
+          if [ "${{matrix.target}}" = "android_universal" ]; then
+            bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //android/openenroth:main
+          else
+            bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} //src/Bin/OpenEnroth:OpenEnroth
+          fi
 
       - name: '[linux_x86_64] Check style'
         if: matrix.target == 'linux_x86_64'

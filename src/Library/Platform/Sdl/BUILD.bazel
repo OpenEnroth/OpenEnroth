@@ -22,6 +22,22 @@ cc_library(
     ],
 )
 
+# APK flavor: keeps SDL_main.h's main -> SDL_main rename so the Java
+# SDLActivity can dlsym it from libmain.so; alwayslink because nothing
+# references it at link time.
+cc_library(
+    name = "library_platform_main_apk",
+    srcs = [
+        "SdlMain.cpp",
+    ],
+    target_compatible_with = ["@platforms//os:android"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//bazel/system:sdl3",
+    ],
+    alwayslink = True,
+)
+
 cc_library(
     name = "library_platform_sdl",
     srcs = [
