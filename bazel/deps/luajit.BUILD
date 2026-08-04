@@ -405,6 +405,9 @@ cc_library(
             "-ldl",
         ],
     }),
+    # Lua 5.2 compat (__pairs etc.) - sol2 and our scripts rely on it; matches
+    # luajit-cmake's default. Library-only, same as the cmake build.
+    local_defines = ["LUAJIT_ENABLE_LUA52COMPAT"],
     visibility = ["//visibility:public"],
     deps = select({
         platform: [":_gen_headers_" + v]
