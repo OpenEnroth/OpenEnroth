@@ -23,7 +23,7 @@
 #include "Utility/String/Split.h"
 #include "Utility/UnicodeCrt.h"
 
-#include "Bin/GameTest/GameTestOptions.h"
+#include "RetraceTestOptions.h"
 
 static EngineController *g_game = nullptr;
 static PlatformApplication *g_application = nullptr;
@@ -95,7 +95,7 @@ int platformMain(int argc, char **argv) {
     try {
         StackTraceOnCrash st;
         UnicodeCrt _(argc, argv);
-        GameTestOptions opts = GameTestOptions::parse(argc, argv);
+        RetraceTestOptions opts = RetraceTestOptions::parse(argc, argv);
         if (opts.helpPrinted)
             return 1;
 
@@ -108,7 +108,7 @@ int platformMain(int argc, char **argv) {
         for (const std::string &tracePath : tracePaths)
             testing::RegisterTest("Retrace", std::filesystem::path(tracePath).stem().string().c_str(),
                                   nullptr, nullptr, __FILE__, __LINE__,
-                                  [tracePath] () -> testing::Test * { return new RetraceTest(tracePath); });
+                                  [tracePath] { return new RetraceTest(tracePath); });
 
         testing::InitGoogleTest(&argc, argv);
         if (opts.listRequested)
