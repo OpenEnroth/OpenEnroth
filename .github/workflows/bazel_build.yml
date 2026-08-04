@@ -231,6 +231,7 @@ jobs:
       - name: '[linux_x86_64] Run retrace tests'
         if: matrix.target == 'linux_x86_64'
         run: |
+          if [ ! -d OpenEnroth_GameData ]; then echo "::warning::no game data cache - tests skipped"; exit 0; fi
           hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
           bazel test --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
             --test_env=OPENENROTH_MM7_PATH=${{github.workspace}}/OpenEnroth_GameData/mm7 \
