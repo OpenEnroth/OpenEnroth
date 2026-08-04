@@ -1,8 +1,12 @@
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+
 cc_binary(
     name = "OpenEnroth_UnitTest",
+    testonly = True,
     srcs = [
         "UnitTestMain.cpp",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//test/Testing/Unit:testing_unit",
         "//src/Library/StackTrace:library_stack_trace",
@@ -36,6 +40,4 @@ cc_binary(
         "//src/Library/Vid:test_library_vid",
         "//src/Utility:test_utility",
     ],
-    testonly = True,
-    visibility = ["//visibility:public"],
 )

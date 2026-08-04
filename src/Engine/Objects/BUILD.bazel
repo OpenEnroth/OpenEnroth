@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "engine_objects_enums",
     hdrs = [
@@ -7,16 +9,16 @@ cc_library(
         "DecorationEnums.h",
         "ItemEnums.h",
         "MonsterEnums.h",
-        "NPCEnums.h",
         "NPCEnumFunctions.h",
-        "SpriteEnums.h",
+        "NPCEnums.h",
         "SpriteEnumFunctions.h",
+        "SpriteEnums.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/Logger:library_logger",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -27,11 +29,11 @@ cc_library(
     hdrs = [
         "CombinedSkillValue.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":engine_objects_enums",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 # These srcs need Engine.h or GUI/Media headers. They are compiled as part of
@@ -64,23 +66,24 @@ cc_library(
     hdrs = [
         "Actor.h",
         "ActorEnumFunctions.h",
-        "Chest.h",
-        "Decoration.h",
-        "DecorationList.h",
-        "ItemEnchantment.h",
-        "ItemEnumFunctions.h",
-        "Item.h",
-        "Monsters.h",
-        "MonsterEnumFunctions.h",
-        "NPC.h",
-        "ObjectList.h",
         "Character.h",
         "CharacterConditions.h",
         "CharacterEnumFunctions.h",
+        "Chest.h",
+        "Decoration.h",
+        "DecorationList.h",
+        "Inventory.h",
+        "Item.h",
+        "ItemEnchantment.h",
+        "ItemEnumFunctions.h",
+        "MonsterEnumFunctions.h",
+        "Monsters.h",
+        "NPC.h",
+        "ObjectList.h",
         "SpriteObject.h",
         "TalkAnimation.h",
-        "Inventory.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":engine_objects_base",
         ":engine_objects_enums",
@@ -90,29 +93,28 @@ cc_library(
         "//src/Engine/Spells:engine_spells",
         "//src/Engine/Time:engine_time",
         "//src/GUI:gui_enums",
-        "//src/Library/Random:library_random",
         "//src/Library/Color:library_color",
         "//src/Library/Geometry:library_geometry",
+        "//src/Library/Random:library_random",
         "//src/Library/Serialization:library_serialization",
         "//src/Media/Audio:media_audio_sound_enums",
         "//src/Utility:utility",
-        "@glm//:glm",
+        "@glm",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "test_engine_objects",
+    testonly = True,
     srcs = [
         "Tests/Inventory_ut.cpp",
         "Tests/MonsterEnumFunctions_ut.cpp",
     ],
+    visibility = ["//visibility:public"],
     deps = [
+        ":engine_objects",
         "//test/Testing/Game:testing_game",
         "//test/Testing/Unit:testing_unit",
-        ":engine_objects",
     ],
-    testonly = True,
     alwayslink = True,
-    visibility = ["//visibility:public"],
 )

@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 # Core imgui library (no backend).
 # include_prefix = "imgui" makes headers accessible as <imgui/imgui.h>, etc.
 # includes = ["."] keeps direct "imgui.h" working for imgui's own source files.
@@ -18,8 +20,8 @@ cc_library(
         "imstb_textedit.h",
         "imstb_truetype.h",
     ],
-    includes = ["."],
     include_prefix = "imgui",
+    includes = ["."],
     visibility = ["//visibility:public"],
 )
 
@@ -75,11 +77,11 @@ cc_library(
     hdrs = [":imgui_backends_patched"],
     include_prefix = "imgui",
     strip_include_prefix = "patched",
+    visibility = ["//visibility:public"],
     deps = [
         ":imgui_core",
-        "@@//bazel/system:sdl3",
-        "@@//bazel/system:opengl",
-        "@@//thirdparty/glad:glad",
+        "@openenroth//bazel/system:opengl",
+        "@openenroth//bazel/system:sdl3",
+        "@openenroth//thirdparty/glad",
     ],
-    visibility = ["//visibility:public"],
 )

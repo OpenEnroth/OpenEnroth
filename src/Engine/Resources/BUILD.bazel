@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 exports_files(
     [
         "LOD.cpp",
@@ -23,13 +25,13 @@ cc_library(
         "LodTextureCache.h",
         "ResourceManager.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Engine/Graphics:engine_graphics",
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
         "//src/Library/Image:library_image",
         "//src/Library/Lod:library_lod",
         "//src/Library/LodFormats:library_lod_formats",
-        "//src/Library/FileSystem/Interface:library_filesystem_interface",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )

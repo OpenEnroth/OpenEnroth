@@ -16,27 +16,38 @@ config_setting(
 
 config_setting(
     name = "_android_armv7",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:armv7"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:armv7",
+    ],
 )
 
 config_setting(
     name = "_android_arm64",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:arm64"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:arm64",
+    ],
 )
 
 config_setting(
     name = "_android_x86_64",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:x86_64"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_64",
+    ],
 )
 
 filegroup(
     name = "all_srcs",
-    srcs = glob(["**"], exclude = ["BUILD.bazel"]),
+    srcs = glob(
+        ["**"],
+        exclude = ["BUILD.bazel"],
+    ),
 )
 
 configure_make(
     name = "ffmpeg",
-    lib_source = ":all_srcs",
     # .d files are useless in a one-shot bazel build, and the msvc dep pipeline
     # (cl -showIncludes | awk) breaks on backslash mangling in make's shell.
     args = select({
@@ -162,8 +173,22 @@ configure_make(
         ],
         "//conditions:default": [],
     }),
-    # Provides the $(CC)/$(AR) make variables used in the android configure options.
-    toolchains = ["@bazel_tools//tools/cpp:current_cc_toolchain"],
+    lib_source = ":all_srcs",
+    linkopts = select({
+        "@platforms//os:linux": [
+            "-lm",
+            "-lpthread",
+        ],
+        # av_random_bytes uses BCryptGenRandom. The deps repo patched
+        # HAVE_BCRYPT off instead; linking it is simpler here.
+        "@platforms//os:windows": ["-DEFAULTLIB:bcrypt.lib"],
+        # Single-string -Wl,-framework,Name dodges Bazel 8 linkopt pair reordering.
+        "@platforms//os:macos": [
+            "-liconv",
+            "-Wl,-framework,CoreFoundation",
+        ],
+        "//conditions:default": [],
+    }),
     # ffmpeg names static libs lib*.a on every toolchain, msvc included
     # (lib.exe archives with an .a extension; link.exe consumes them fine).
     out_static_libs = [
@@ -173,6 +198,9 @@ configure_make(
         "libswscale.a",
         "libswresample.a",
     ],
+    # Provides the $(CC)/$(AR) make variables used in the android configure options.
+    toolchains = ["@bazel_tools//tools/cpp:current_cc_toolchain"],
+    visibility = ["//visibility:public"],
     # --whole-archive resolves the avformat<->avcodec circular refs without
     # --start-group. Not on windows: link.exe iterates archives itself, and
     # WHOLEARCHIVE trips LNK2005 on the file_open.o copies in all three libs.
@@ -180,14 +208,4 @@ configure_make(
         "@platforms//os:windows": False,
         "//conditions:default": True,
     }),
-    linkopts = select({
-        "@platforms//os:linux": ["-lm", "-lpthread"],
-        # av_random_bytes uses BCryptGenRandom. The deps repo patched
-        # HAVE_BCRYPT off instead; linking it is simpler here.
-        "@platforms//os:windows": ["-DEFAULTLIB:bcrypt.lib"],
-        # Single-string -Wl,-framework,Name dodges Bazel 8 linkopt pair reordering.
-        "@platforms//os:macos": ["-liconv", "-Wl,-framework,CoreFoundation"],
-        "//conditions:default": [],
-    }),
-    visibility = ["//visibility:public"],
 )

@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "library_stack_trace",
     srcs = [
@@ -8,12 +10,12 @@ cc_library(
         "StackTrace.h",
         "StackTraceOnCrash.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Utility:utility",
     ] + select({
         # backward-cpp doesn't support Android
         "@platforms//os:android": [],
-        "//conditions:default": ["@backward_cpp//:backward_cpp"],
+        "//conditions:default": ["@backward_cpp"],
     }),
-    visibility = ["//visibility:public"],
 )

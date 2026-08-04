@@ -3,62 +3,43 @@
 
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
-
 # The bazel-generated crosstool passes the NDK's raw clang without a --target
 # triple, so CMake's compile/link probes produce host objects. Supply the triple
 # per ABI in compile & link flags - NDK clang finds its sysroot from the triple.
 config_setting(
     name = "_android_arm64",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:arm64"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:arm64",
+    ],
 )
 
 config_setting(
     name = "_android_armv7",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:armv7"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:armv7",
+    ],
 )
 
 config_setting(
     name = "_android_x86_64",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:x86_64"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_64",
+    ],
 )
-
 
 filegroup(
     name = "all_srcs",
-    srcs = glob(["**"], exclude = ["BUILD.bazel"]),
+    srcs = glob(
+        ["**"],
+        exclude = ["BUILD.bazel"],
+    ),
 )
 
 cmake(
     name = "sdl3",
-    lib_source = ":all_srcs",
-    out_static_libs = select({
-        "@platforms//os:windows": ["SDL3-static.lib"],
-        "//conditions:default": ["libSDL3.a"],
-    }),
-    generate_args = select({
-        ":_android_arm64": [
-        "-DCMAKE_C_FLAGS=--target=aarch64-linux-android24",
-        "-DCMAKE_CXX_FLAGS=--target=aarch64-linux-android24",
-        "-DCMAKE_ASM_FLAGS=--target=aarch64-linux-android24",
-        "-DCMAKE_EXE_LINKER_FLAGS=--target=aarch64-linux-android24",
-        "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
-    ],
-        ":_android_armv7": [
-        "-DCMAKE_C_FLAGS=--target=armv7a-linux-androideabi24",
-        "-DCMAKE_CXX_FLAGS=--target=armv7a-linux-androideabi24",
-        "-DCMAKE_ASM_FLAGS=--target=armv7a-linux-androideabi24",
-        "-DCMAKE_EXE_LINKER_FLAGS=--target=armv7a-linux-androideabi24",
-        "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
-    ],
-        ":_android_x86_64": [
-        "-DCMAKE_C_FLAGS=--target=x86_64-linux-android24",
-        "-DCMAKE_CXX_FLAGS=--target=x86_64-linux-android24",
-        "-DCMAKE_ASM_FLAGS=--target=x86_64-linux-android24",
-        "-DCMAKE_EXE_LINKER_FLAGS=--target=x86_64-linux-android24",
-        "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
-    ],
-        "//conditions:default": [],
-    }),
     cache_entries = {
         "CMAKE_BUILD_TYPE": "Release",
         # Use static MSVC runtime (/MT) to match the rest of the build.
@@ -72,6 +53,31 @@ cmake(
         # Without CMP0091=NEW cmake's Release config adds /MD, overriding /MT.
         "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
     },
+    generate_args = select({
+        ":_android_arm64": [
+            "-DCMAKE_C_FLAGS=--target=aarch64-linux-android24",
+            "-DCMAKE_CXX_FLAGS=--target=aarch64-linux-android24",
+            "-DCMAKE_ASM_FLAGS=--target=aarch64-linux-android24",
+            "-DCMAKE_EXE_LINKER_FLAGS=--target=aarch64-linux-android24",
+            "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
+        ],
+        ":_android_armv7": [
+            "-DCMAKE_C_FLAGS=--target=armv7a-linux-androideabi24",
+            "-DCMAKE_CXX_FLAGS=--target=armv7a-linux-androideabi24",
+            "-DCMAKE_ASM_FLAGS=--target=armv7a-linux-androideabi24",
+            "-DCMAKE_EXE_LINKER_FLAGS=--target=armv7a-linux-androideabi24",
+            "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
+        ],
+        ":_android_x86_64": [
+            "-DCMAKE_C_FLAGS=--target=x86_64-linux-android24",
+            "-DCMAKE_CXX_FLAGS=--target=x86_64-linux-android24",
+            "-DCMAKE_ASM_FLAGS=--target=x86_64-linux-android24",
+            "-DCMAKE_EXE_LINKER_FLAGS=--target=x86_64-linux-android24",
+            "-DCMAKE_ANDROID_NDK=$ANDROID_NDK_HOME",
+        ],
+        "//conditions:default": [],
+    }),
+    lib_source = ":all_srcs",
     # System libs of the static SDL3 build; cmake() doesn't propagate them.
     linkopts = select({
         "@platforms//os:windows": [
@@ -117,6 +123,10 @@ cmake(
             "-Wl,-framework,ForceFeedback",
         ],
         "//conditions:default": [],
+    }),
+    out_static_libs = select({
+        "@platforms//os:windows": ["SDL3-static.lib"],
+        "//conditions:default": ["libSDL3.a"],
     }),
     visibility = ["//visibility:public"],
 )

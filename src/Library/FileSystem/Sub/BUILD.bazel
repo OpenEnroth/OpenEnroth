@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "library_filesystem_sub",
     srcs = [
@@ -6,23 +8,23 @@ cc_library(
     hdrs = [
         "SubFileSystem.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/FileSystem/Interface:library_filesystem_interface",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "test_library_filesystem_sub",
+    testonly = True,
     srcs = [
         "Tests/SubFileSystem_ut.cpp",
     ],
+    visibility = ["//visibility:public"],
     deps = [
-        "//test/Testing/Unit:testing_unit",
         ":library_filesystem_sub",
         "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//test/Testing/Unit:testing_unit",
     ],
-    testonly = True,
     alwayslink = True,
-    visibility = ["//visibility:public"],
 )

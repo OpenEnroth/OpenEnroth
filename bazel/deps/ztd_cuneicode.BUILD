@@ -1,6 +1,14 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "ztd_cuneicode",
-    hdrs = glob(["include/**/*.hpp", "include/**/*.h"], allow_empty = True),
+    hdrs = glob(
+        [
+            "include/**/*.hpp",
+            "include/**/*.h",
+        ],
+        allow_empty = True,
+    ),
     includes = ["include"],
     visibility = ["//visibility:public"],
 )

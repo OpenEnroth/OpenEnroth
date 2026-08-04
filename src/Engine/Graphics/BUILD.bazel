@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 # All engine_graphics .cpp files are compiled in //src/Engine:engine_impl
 # to break the circular dependency:
 #   engine_graphics.cpp -> Engine/Engine.h (from :engine) or Renderer/Renderer.h (from engine_graphics_renderer)
@@ -61,15 +63,16 @@ cc_library(
         "ParticleEngine.h",
         "PortalFunctions.h",
         "RenderEntities.h",
-        "Sprites.h",
-        "SpriteEnums.h",
         "SpriteEnumFunctions.h",
+        "SpriteEnums.h",
+        "Sprites.h",
         "TileGenerator.h",
         "TurnBasedOverlay.h",
         "Viewport.h",
         "Vis.h",
         "Weather.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/Logger:library_logger",
         "//src/Engine:engine_base",
@@ -79,12 +82,11 @@ cc_library(
         "//src/Library/Serialization:library_serialization",
         "//src/Library/Color:library_color",
         "//src/Library/Image:library_image",
-        "@glm//:glm",
+        "@glm",
         "//bazel/system:opengl",
         "//bazel/system:luajit",
-        "@sol2//:sol2",
+        "@sol2",
         # glad is PRIVATE
-        "//thirdparty/glad:glad",
+        "//thirdparty/glad",
     ],
-    visibility = ["//visibility:public"],
 )

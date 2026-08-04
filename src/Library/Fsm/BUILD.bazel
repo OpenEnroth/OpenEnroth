@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "library_fsm",
     srcs = [
@@ -14,25 +16,25 @@ cc_library(
         "FsmState.h",
         "FsmTypes.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
-        "//src/Utility:utility",
         "//src/Library/Logger:library_logger",
         "//src/Library/Platform/Filters:library_platform_filters",
+        "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "test_library_fsm",
+    testonly = True,
     srcs = [
         "Tests/Fsm_ut.cpp",
     ],
-    deps = [
-        "//test/Testing/Unit:testing_unit",
-        "//src/Utility:utility",
-        ":library_fsm",
-    ],
-    testonly = True,
-    alwayslink = True,
     visibility = ["//visibility:public"],
+    deps = [
+        ":library_fsm",
+        "//src/Utility:utility",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
 )

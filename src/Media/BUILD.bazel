@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "media_interfaces",
     hdrs = [
@@ -5,8 +7,8 @@ cc_library(
         "AudioSample.h",
         "AudioTrack.h",
     ],
-    deps = ["//src/Utility:utility"],
     visibility = ["//visibility:public"],
+    deps = ["//src/Utility:utility"],
 )
 
 # Header-only target: base datasource headers without depending on media_audio.
@@ -19,13 +21,13 @@ cc_library(
         "AudioBufferDataSource.h",
         "FFmpegBlobIoContext.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":media_interfaces",
         "//src/Utility:utility",
         # FFmpeg — Phase 5 TODO
         "//bazel/system:ffmpeg",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -48,6 +50,7 @@ cc_library(
         "Movie.h",
         "VideoDataSource.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":media_datasource_base",
         ":media_interfaces",
@@ -61,5 +64,4 @@ cc_library(
         # FFmpeg — Phase 5 TODO
         "//bazel/system:ffmpeg",
     ],
-    visibility = ["//visibility:public"],
 )

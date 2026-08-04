@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "application_game_states",
     srcs = [
@@ -18,6 +20,7 @@ cc_library(
         "StartState.h",
         "VideoState.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Engine:engine",
         "//src/Engine/Graphics:engine_graphics",
@@ -28,5 +31,4 @@ cc_library(
         "//src/Media:media",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )

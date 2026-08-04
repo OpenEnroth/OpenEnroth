@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "library_random",
     srcs = [
@@ -5,8 +7,8 @@ cc_library(
     ],
     hdrs = [
         "MersenneTwisterRandomEngine.h",
-        "SequentialRandomEngine.h",
         "RandomEngine.h",
+        "SequentialRandomEngine.h",
     ],
     visibility = ["//visibility:public"],
 )

@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "library_trace",
     srcs = [
@@ -9,13 +11,13 @@ cc_library(
         "EventTraceMigrations.h",
         "PaintEvent.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Io:io",
-        "//src/Library/Serialization:library_serialization",
-        "//src/Library/Json:library_json",
-        "//src/Library/Platform/Interface:library_platform_interface",
         "//src/Library/Config:library_config",
         "//src/Library/Geometry:library_geometry",
+        "//src/Library/Json:library_json",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Serialization:library_serialization",
     ],
-    visibility = ["//visibility:public"],
 )

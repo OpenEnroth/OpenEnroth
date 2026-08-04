@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "library_filesystem_merging",
     srcs = [
@@ -6,26 +8,26 @@ cc_library(
     hdrs = [
         "MergingFileSystem.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/FileSystem/Interface:library_filesystem_interface",
         "//src/Library/FileSystem/Null:library_filesystem_null",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "test_library_filesystem_merging",
+    testonly = True,
     srcs = [
         "Tests/MergingFileSystem_ut.cpp",
     ],
-    deps = [
-        "//test/Testing/Unit:testing_unit",
-        ":library_filesystem_merging",
-        "//src/Library/FileSystem/Memory:library_filesystem_memory",
-        "//src/Library/FileSystem/Dump:library_filesystem_dump",
-    ],
-    testonly = True,
-    alwayslink = True,
     visibility = ["//visibility:public"],
+    deps = [
+        ":library_filesystem_merging",
+        "//src/Library/FileSystem/Dump:library_filesystem_dump",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
 )

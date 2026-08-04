@@ -1,22 +1,24 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "gui_enums",
     hdrs = ["GUIEnums.h"],
-    deps = ["//src/Library/Serialization:library_serialization"],
     visibility = ["//visibility:public"],
+    deps = ["//src/Library/Serialization:library_serialization"],
 )
 
 # Header-only target: no engine dep, so engine can include GUIFont.h via AssetsManager.h.
 cc_library(
     name = "gui_font",
     hdrs = ["GUIFont.h"],
+    visibility = ["//visibility:public"],
     deps = [
-        "//src/Library/Logger:library_logger",
         "//src/Engine/Graphics:engine_graphics",
         "//src/Library/Color:library_color",
         "//src/Library/Geometry:library_geometry",
         "//src/Library/LodFormats:library_lod_formats",
+        "//src/Library/Logger:library_logger",
     ],
-    visibility = ["//visibility:public"],
 )
 
 # Header-only target: GUIDialogues.h without any engine/gui_ui dep.
@@ -24,8 +26,8 @@ cc_library(
 cc_library(
     name = "gui_dialogues",
     hdrs = ["GUIDialogues.h"],
-    deps = ["//src/Engine/Objects:engine_objects"],
     visibility = ["//visibility:public"],
+    deps = ["//src/Engine/Objects:engine_objects"],
 )
 
 # Header-only target: GUIMessageQueue.h without depending on gui or gui_ui.
@@ -33,8 +35,8 @@ cc_library(
 cc_library(
     name = "gui_message_queue_base",
     hdrs = ["GUIMessageQueue.h"],
-    deps = [":gui_enums"],
     visibility = ["//visibility:public"],
+    deps = [":gui_enums"],
 )
 
 # Header-only target: GUIWindow.h and GUIDialogues.h without depending on gui_ui or io.
@@ -48,6 +50,7 @@ cc_library(
         "GUIDialogues.h",
         "GUIWindow.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":gui_dialogues",
         ":gui_enums",
@@ -58,7 +61,6 @@ cc_library(
         "//src/Library/Platform/Interface:library_platform_interface",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -67,8 +69,8 @@ cc_library(
         "GUIButton.cpp",
         "GUIEnums.cpp",
         "GUIFont.cpp",
-        "GUIProgressBar.cpp",
         "GUIMessageQueue.cpp",
+        "GUIProgressBar.cpp",
         "GUIWindow.cpp",
     ],
     hdrs = [
@@ -76,10 +78,11 @@ cc_library(
         "GUIDialogues.h",
         "GUIEnums.h",
         "GUIFont.h",
-        "GUIProgressBar.h",
         "GUIMessageQueue.h",
+        "GUIProgressBar.h",
         "GUIWindow.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":gui_window_base",
         "//src/Engine:engine",
@@ -92,5 +95,4 @@ cc_library(
         "//src/Library/LodFormats:library_lod_formats",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )

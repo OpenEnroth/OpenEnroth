@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 # RendererFactory.cpp needs Engine/EngineIocContainer.h (from //src/Engine:engine) and is compiled
 # as part of //src/Engine:engine to avoid circular dependency.
 # BaseRenderer.cpp, NullRenderer.cpp, OpenGLRenderer.cpp also need Engine/Engine.h and are
@@ -30,15 +32,16 @@ cc_library(
     ],
     hdrs = [
         "BaseRenderer.h",
-        "OpenGLVertexBuffer.h",
         "NullRenderer.h",
         "OpenGLRenderer.h",
         "OpenGLShader.h",
         "OpenGLShaderParams.h",
+        "OpenGLVertexBuffer.h",
         "Renderer.h",
         "RendererEnums.h",
         "RendererFactory.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":engine_texture_id",
         "//src/Engine:engine_hitmap",
@@ -48,13 +51,12 @@ cc_library(
         "//src/Library/Serialization:library_serialization",
         "//src/Library/Color:library_color",
         "//src/Library/Image:library_image",
-        "@glm//:glm",
+        "@glm",
         "//bazel/system:opengl",
-        "@imgui//:imgui",
+        "@imgui",
         # PRIVATE deps below
-        "//thirdparty/glad:glad",
+        "//thirdparty/glad",
         "//src/Library/FileSystem/Sub:library_filesystem_sub",
         "//src/Library/Preprocessor:library_preprocessor",
     ],
-    visibility = ["//visibility:public"],
 )
