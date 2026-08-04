@@ -44,7 +44,7 @@ modules:
         export HOME=$PWD/.home
         mkdir -p "$HOME"
         ./bazelisk build --config=flatpak -c opt //src/Bin/OpenEnroth:OpenEnroth 2>&1 | tee bazel-build.log
-        ./bazelisk run --config=flatpak -c opt //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
+        ./bazelisk test --config=flatpak -c opt --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
     sources:
       - type: dir
         path: ../../../
