@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <ranges>
 #include <string>
 #include <utility>
 #include <vector>
@@ -38,24 +39,24 @@ static std::string normalizeText(std::string_view text) {
     return result;
 }
 
-static std::string firstDiffContext(std::string_view current, std::string_view canonical) {
+static void printLines(const std::vector<std::string_view> &lines, size_t line, size_t delta) {
+    // TODO(captainurist): #cpp26 use std::sat_sub
+    for (size_t i = line > delta ? line - delta : 0; i < std::min(lines.size(), line + delta + 1); i++)
+        fmt::println(stderr, "{:>5}: {}", i + 1, lines[i]);
+}
+
+static void printTraceDiff(std::string_view current, std::string_view canonical) {
+    assert(canonical != current);
+
     std::vector<std::string_view> canonicalLines = split(canonical).by('\n');
     std::vector<std::string_view> currentLines = split(current).by('\n');
 
-    size_t line = 0;
-    while (line < canonicalLines.size() && line < currentLines.size() && canonicalLines[line] == currentLines[line])
-        line++;
+    size_t line = std::ranges::mismatch(canonicalLines, currentLines).in1 - canonicalLines.begin() + 1; // Lines are 1-indexed.
 
-    std::string result;
-    auto printLines = [&](std::string_view title, const std::vector<std::string_view> &lines) {
-        result += fmt::format("{}:\n", title);
-        // TODO(captainurist): #cpp26 use std::sat_sub
-        for (size_t i = line > 4 ? line - 4 : 0; i < std::min(lines.size(), line + 5); i++)
-            result += fmt::format("{:>5}: {}\n", i + 1, lines[i]);
-    };
-    printLines("Canonical", canonicalLines);
-    printLines("Current", currentLines);
-    return result;
+    fmt::println(stderr, "Canonical:");
+    printLines(canonicalLines, line, 4);
+    fmt::println(stderr, "Current:");
+    printLines(currentLines, line, 4);
 }
 
 // One test per trace file, registered at runtime from the --test-path dir.
@@ -90,9 +91,10 @@ class RetraceTest : public testing::Test {
 
         std::string oldTraceJson = normalizeText(oldTraceBlob.str());
         std::string newTraceJson = normalizeText(recording.trace.str());
-        if (oldTraceJson != newTraceJson)
-            ADD_FAILURE() << "Trace '" << _tracePath << "' is not in canonical representation.\n"
-                          << firstDiffContext(newTraceJson, oldTraceJson);
+        if (oldTraceJson != newTraceJson) {
+            printTraceDiff(newTraceJson, oldTraceJson);
+            ADD_FAILURE() << "Trace '" << _tracePath << "' is not in canonical representation.";
+        }
     }
 
  private:
