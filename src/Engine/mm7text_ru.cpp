@@ -766,7 +766,11 @@ std::string sprintfex(std::string_view str) {
                 result += special->cases[nameCase];
                 result += contents.substr(special->name.size()); // Keep whatever follows the matched prefix.
             } else {
-                // Regular names are not declined, the case letter is ignored.
+                // Regular names are not declined, the case letter is ignored - that's what the original DLL
+                // did, so Buka players saw "наносит удар Гоблин" instead of "Гоблину".
+                // TODO(captainurist): #2562 auto-decline regular names here. A big table of endings per
+                //                     grammatical case would probably do - names and monster nouns decline
+                //                     regularly enough.
                 gender = genderOf(contents);
                 result += contents;
             }
