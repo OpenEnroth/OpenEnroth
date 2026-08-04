@@ -1,11 +1,13 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "media_audio_sound_enums",
     hdrs = ["SoundEnums.h"],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/Logger:library_logger",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 # Header-only target: SoundInfo.h without full media_audio dep.
@@ -13,12 +15,12 @@ cc_library(
 cc_library(
     name = "media_audio_sound_info",
     hdrs = ["SoundInfo.h"],
+    visibility = ["//visibility:public"],
     deps = [
         ":media_audio_sound_enums",
         "//src/Media:media_interfaces",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 # AudioPlayer.cpp needs GUI/GUIWindow.h — circular with gui -> gui_ui -> media_audio.
@@ -43,13 +45,14 @@ cc_library(
         "AudioPlayer.h",
         "AudioSamplePool.h",
         "OpenALAudioDataSource.h",
+        "OpenALSample16.h",
         "OpenALSoundProvider.h",
         "OpenALTrack16.h",
-        "OpenALSample16.h",
         "OpenALUpdateThread.h",
         "SoundInfo.h",
         "SoundList.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":media_audio_sound_enums",
         ":media_audio_sound_info",
@@ -63,5 +66,4 @@ cc_library(
         # OpenAL — Phase 5 TODO
         "//bazel/system:openal",
     ],
-    visibility = ["//visibility:public"],
 )

@@ -1,47 +1,49 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "library_logger",
     srcs = [
+        "DistLogSink.cpp",
         "LogCategory.cpp",
         "LogEnums.cpp",
-        "Logger.cpp",
         "LogSink.cpp",
-        "DistLogSink.cpp",
-        "StreamLogSink.cpp",
+        "Logger.cpp",
         "RotatingLogSink.cpp",
+        "StreamLogSink.cpp",
     ],
     hdrs = [
         "BufferLogSink.h",
-        "LogCategory.h",
-        "LogEnums.h",
-        "Logger.h",
-        "LogSink.h",
         "DistLogSink.h",
-        "LogSource.h",
-        "StreamLogSink.h",
+        "LogCategory.h",
         "LogEnumFunctions.h",
+        "LogEnums.h",
+        "LogSink.h",
+        "LogSource.h",
+        "Logger.h",
         "RotatingLogSink.h",
+        "StreamLogSink.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/Serialization:library_serialization",
         "//src/Library/FileSystem/Interface:library_filesystem_interface",
         "//src/Utility:utility",
         # spdlog is PRIVATE
-        "@spdlog//:spdlog",
+        "@spdlog",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "test_library_logger",
+    testonly = True,
     srcs = [
         "Tests/RotatingLogSink_ut.cpp",
     ],
+    visibility = ["//visibility:public"],
     deps = [
-        "//test/Testing/Unit:testing_unit",
         ":library_logger",
         "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//test/Testing/Unit:testing_unit",
     ],
-    testonly = True,
     alwayslink = True,
-    visibility = ["//visibility:public"],
 )

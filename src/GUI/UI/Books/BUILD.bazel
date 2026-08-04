@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 # Books .cpp files include GUI/UI headers (UIStatusBar.h, UIGame.h, etc.) — circular with
 # gui_ui depending on gui_ui_books. Compile them in gui_ui instead.
 exports_files(
@@ -25,6 +27,7 @@ cc_library(
         "QuestBook.h",
         "TownPortalBook.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Engine:engine",
         "//src/Engine/Data:engine_data",
@@ -33,5 +36,4 @@ cc_library(
         "//src/GUI/UI:gui_ui_books_base",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )

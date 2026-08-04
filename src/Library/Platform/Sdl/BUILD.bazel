@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 # library_platform_main is the SDL main entry-point object library.
 # In CMake it is an OBJECT library; in Bazel we model it as a cc_library so it
 # can be listed as a dep of cc_binary targets.
@@ -14,10 +16,10 @@ cc_library(
         "@platforms//os:android": ["SDL_MAIN_HANDLED"],
         "//conditions:default": [],
     }),
+    visibility = ["//visibility:public"],
     deps = [
         "//bazel/system:sdl3",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -35,14 +37,15 @@ cc_library(
     hdrs = [
         "SdlEnumTranslation.h",
         "SdlEventLoop.h",
+        "SdlFreeDeleter.h",
         "SdlGamepad.h",
         "SdlLogSource.h",
         "SdlOpenGLContext.h",
         "SdlPlatform.h",
         "SdlPlatformSharedState.h",
         "SdlWindow.h",
-        "SdlFreeDeleter.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Utility:utility",
         "//src/Library/Logger:library_logger",
@@ -50,5 +53,4 @@ cc_library(
         # SDL3 — Phase 5 TODO
         "//bazel/system:sdl3",
     ],
-    visibility = ["//visibility:public"],
 )

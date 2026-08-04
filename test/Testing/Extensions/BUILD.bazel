@@ -1,5 +1,8 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "testing_extensions",
+    testonly = True,
     srcs = [
         "ScopedTestFile.cpp",
         "ScopedTestFileSlot.cpp",
@@ -11,10 +14,9 @@ cc_library(
         "ScopedTestFileSlot.h",
         "ThrowingAssertions.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Utility:utility",
         "@googletest//:gtest",
     ],
-    testonly = True,
-    visibility = ["//visibility:public"],
 )

@@ -1,5 +1,8 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "testing_game",
+    testonly = True,
     srcs = [
         "ActorTapeRecorder.cpp",
         "CharacterTapeRecorder.cpp",
@@ -17,11 +20,10 @@ cc_library(
         "TestController.h",
         "TestTape.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Application:application",
         "//test/Testing/Extensions:testing_extensions",
         "@googletest//:gtest",
     ],
-    testonly = True,
-    visibility = ["//visibility:public"],
 )

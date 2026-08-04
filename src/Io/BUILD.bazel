@@ -1,16 +1,18 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "io_input_enums",
     hdrs = [
-        "InputEnums.h",
         "InputEnumFunctions.h",
+        "InputEnums.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/Logger:library_logger",
         "//src/Library/Platform/Interface:library_platform_interface",
         "//src/Library/Serialization:library_serialization",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 # Header-only target: Mouse.h without depending on io (which depends on engine).
@@ -18,12 +20,12 @@ cc_library(
 cc_library(
     name = "io_mouse",
     hdrs = ["Mouse.h"],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Engine:engine_base",
         "//src/Engine/Objects:engine_objects",
         "//src/Library/Geometry:library_geometry",
     ],
-    visibility = ["//visibility:public"],
 )
 
 # Header-only target: keyboard headers without depending on engine.
@@ -32,10 +34,11 @@ cc_library(
 cc_library(
     name = "io_keyboard_base",
     hdrs = [
-        "KeyboardController.h",
         "KeyboardActionMapping.h",
+        "KeyboardController.h",
         "KeyboardInputHandler.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":io_input_enums",
         "//src/Application:application_config",
@@ -45,13 +48,15 @@ cc_library(
         "//src/Library/Platform/Proxy:library_platform_proxy",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 # Mouse.cpp and KeyboardInputHandler.cpp include GUI headers — circular with gui -> gui_ui -> io.
 # Compiled in //src/Engine:engine_impl which depends on both io and gui.
 exports_files(
-    ["Mouse.cpp", "KeyboardInputHandler.cpp"],
+    [
+        "Mouse.cpp",
+        "KeyboardInputHandler.cpp",
+    ],
     visibility = ["//src/Engine:__pkg__"],
 )
 
@@ -64,13 +69,14 @@ cc_library(
         # KeyboardInputHandler.cpp and Mouse.cpp compiled in //src/Engine:engine_impl (need gui headers)
     ],
     hdrs = [
-        "KeyboardController.h",
-        "InputEnums.h",
         "InputEnumFunctions.h",
+        "InputEnums.h",
         "KeyboardActionMapping.h",
+        "KeyboardController.h",
         "KeyboardInputHandler.h",
         "Mouse.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Engine:engine",
         "//src/Engine/Objects:engine_objects",
@@ -80,5 +86,4 @@ cc_library(
         "//src/Library/Platform/Proxy:library_platform_proxy",
         "//src/Library/Serialization:library_serialization",
     ],
-    visibility = ["//visibility:public"],
 )

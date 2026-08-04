@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "engine_random",
     srcs = [
@@ -8,9 +10,9 @@ cc_library(
         "Random.h",
         "RandomEnums.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/Random:library_random",
         "//src/Library/Serialization:library_serialization",
     ],
-    visibility = ["//visibility:public"],
 )

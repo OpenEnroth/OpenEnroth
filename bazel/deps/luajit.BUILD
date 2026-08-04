@@ -5,6 +5,9 @@
 # Dasm flags and defines below are precomputed per (cpu, os) pair from lj_arch.h
 # instead of the Makefile's compile-and-grep discovery; all targets are LE.
 
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 config_setting(
     name = "_windows",
     constraint_values = ["@platforms//os:windows"],
@@ -19,22 +22,34 @@ config_setting(
 
 config_setting(
     name = "_macos_arm64",
-    constraint_values = ["@platforms//os:macos", "@platforms//cpu:arm64"],
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:arm64",
+    ],
 )
 
 config_setting(
     name = "_macos_x86_64",
-    constraint_values = ["@platforms//os:macos", "@platforms//cpu:x86_64"],
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
 )
 
 config_setting(
     name = "_linux_arm64",
-    constraint_values = ["@platforms//os:linux", "@platforms//cpu:arm64"],
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:arm64",
+    ],
 )
 
 config_setting(
     name = "_linux_x86_64",
-    constraint_values = ["@platforms//os:linux", "@platforms//cpu:x86_64"],
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
 )
 
 # linux_x86 builds use the host platform (x86_64 constraints) with -m32 flags and
@@ -43,23 +58,35 @@ config_setting(
 # unambiguous when both match.
 config_setting(
     name = "_linux_x86",
-    constraint_values = ["@platforms//os:linux", "@platforms//cpu:x86_64"],
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
     define_values = {"oe_build_arch": "x86_32"},
 )
 
 config_setting(
     name = "_android_arm64",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:arm64"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:arm64",
+    ],
 )
 
 config_setting(
     name = "_android_armv7",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:armv7"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:armv7",
+    ],
 )
 
 config_setting(
     name = "_android_x86_64",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:x86_64"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_64",
+    ],
 )
 
 # ─── Build variants ──────────────────────────────────────────────────────────
@@ -208,7 +235,11 @@ cc_binary(
 # Host headers that buildvm includes from src/ (lua.h, lj_*.h, ...).
 cc_library(
     name = "_host_headers",
-    hdrs = glob(["src/*.h", "src/host/*.h", "dynasm/*.h"]),
+    hdrs = glob([
+        "src/*.h",
+        "src/host/*.h",
+        "dynasm/*.h",
+    ]),
     includes = ["src"],
     deps = [":_luajit_h_lib"],
 )
@@ -221,9 +252,15 @@ cc_library(
 
 [genrule(
     name = "_buildvm_arch_h_" + variant,
-    srcs = glob(["dynasm/*.lua", "src/vm_*.dasc"]),
+    srcs = glob([
+        "dynasm/*.lua",
+        "src/vm_*.dasc",
+    ]),
     outs = ["gen_arch_%s/buildvm_arch.h" % variant],
-    cmd = "$(execpath :minilua) $(execpath dynasm/dynasm.lua) -LN %s -o $@ $(execpath %s)" % (cfg["dasm_flags"], cfg["dasc"]),
+    cmd = "$(execpath :minilua) $(execpath dynasm/dynasm.lua) -LN %s -o $@ $(execpath %s)" % (
+        cfg["dasm_flags"],
+        cfg["dasc"],
+    ),
     tools = [":minilua"],
 ) for variant, cfg in _VARIANTS.items()]
 
@@ -235,7 +272,10 @@ cc_library(
 
 [cc_binary(
     name = "_buildvm_" + variant,
-    srcs = glob(["src/host/buildvm*.c", "src/host/buildvm*.h"]),
+    srcs = glob([
+        "src/host/buildvm*.c",
+        "src/host/buildvm*.h",
+    ]),
     copts = cfg.get("host_copts", []),
     linkopts = cfg.get("host_copts", []),
     local_defines = cfg["defines"],
@@ -259,7 +299,10 @@ cc_library(
         "gen_%s/lj_libdef.h" % variant,
         "gen_%s/lj_recdef.h" % variant,
         "gen_%s/lj_folddef.h" % variant,
-        "gen_{}/lj_vm.{}".format(variant, "obj" if cfg["vm"] == "peobj" else "S"),
+        "gen_{}/lj_vm.{}".format(
+            variant,
+            "obj" if cfg["vm"] == "peobj" else "S",
+        ),
     ],
     cmd = " && ".join([
         "BV=$(execpath :_buildvm_%s)" % variant,
@@ -269,7 +312,11 @@ cc_library(
         "$$BV -m libdef -o $(RULEDIR)/gen_%s/lj_libdef.h $$LIBS" % variant,
         "$$BV -m recdef -o $(RULEDIR)/gen_%s/lj_recdef.h $$LIBS" % variant,
         "$$BV -m folddef -o $(RULEDIR)/gen_%s/lj_folddef.h $(execpath src/lj_opt_fold.c)" % variant,
-        "$$BV -m {} -o $(RULEDIR)/gen_{}/lj_vm.{}".format(cfg["vm"], variant, "obj" if cfg["vm"] == "peobj" else "S"),
+        "$$BV -m {} -o $(RULEDIR)/gen_{}/lj_vm.{}".format(
+            cfg["vm"],
+            variant,
+            "obj" if cfg["vm"] == "peobj" else "S",
+        ),
     ]),
     tools = [] if cfg.get("host_in_target_config") else [":_buildvm_" + variant],
 ) for variant, cfg in _VARIANTS.items()]
@@ -306,39 +353,52 @@ genrule(
 cc_library(
     name = "luajit",
     srcs = glob(
-        ["src/lj_*.c", "src/lib_*.c", "src/*.h"],
+        [
+            "src/lj_*.c",
+            "src/lib_*.c",
+            "src/*.h",
+        ],
         exclude = ["src/ljamalg.c"],
     ) + select({
-        platform: ["gen_{}/lj_vm.{}".format(v, "obj" if _VARIANTS[v]["vm"] == "peobj" else "S")]
+        platform: ["gen_{}/lj_vm.{}".format(
+            v,
+            "obj" if _VARIANTS[v]["vm"] == "peobj" else "S",
+        )]
         for platform, v in _PLATFORM_VARIANT.items()
     }),
     hdrs = [
-        "src/lua.h",
-        "src/luaconf.h",
-        "src/lauxlib.h",
-        "src/lualib.h",
-        "src/lua.hpp",
         "gen_version/luajit.h",
-    ],
-    includes = [
-        "src",
-        "gen_version",
+        "src/lauxlib.h",
+        "src/lua.h",
+        "src/lua.hpp",
+        "src/luaconf.h",
+        "src/lualib.h",
     ],
     copts = select({
         # External frame unwinding, as auto-detected by src/Makefile on all
         # modern non-Windows toolchains.
         "@platforms//os:windows": [],
-        "//conditions:default": ["-DLUAJIT_UNWIND_EXTERNAL", "-fomit-frame-pointer"],
+        "//conditions:default": [
+            "-DLUAJIT_UNWIND_EXTERNAL",
+            "-fomit-frame-pointer",
+        ],
     }),
+    includes = [
+        "gen_version",
+        "src",
+    ],
     linkopts = select({
         "@platforms//os:windows": [],
         "@platforms//os:android": [],
         "@platforms//os:macos": [],
-        "//conditions:default": ["-lm", "-ldl"],
+        "//conditions:default": [
+            "-lm",
+            "-ldl",
+        ],
     }),
+    visibility = ["//visibility:public"],
     deps = select({
         platform: [":_gen_headers_" + v]
         for platform, v in _PLATFORM_VARIANT.items()
     }),
-    visibility = ["//visibility:public"],
 )

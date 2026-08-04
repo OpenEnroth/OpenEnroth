@@ -4,34 +4,36 @@
 
 # ─── SDL3 ────────────────────────────────────────────────────────────────────
 
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "sdl3",
-    deps = ["@sdl3_src//:sdl3"],
     visibility = ["//visibility:public"],
+    deps = ["@sdl3_src//:sdl3"],
 )
 
 # ─── OpenAL ──────────────────────────────────────────────────────────────────
 
 cc_library(
     name = "openal",
-    deps = ["@openal_src//:openal"],
     visibility = ["//visibility:public"],
+    deps = ["@openal_src//:openal"],
 )
 
 # ─── ZLIB ────────────────────────────────────────────────────────────────────
 
 cc_library(
     name = "zlib",
-    deps = ["@zlib//:zlib"],
     visibility = ["//visibility:public"],
+    deps = ["@zlib"],
 )
 
 # ─── PNG ─────────────────────────────────────────────────────────────────────
 
 cc_library(
     name = "png",
-    deps = ["@libpng//:libpng"],
     visibility = ["//visibility:public"],
+    deps = ["@libpng"],
 )
 
 # ─── FFmpeg ──────────────────────────────────────────────────────────────────
@@ -41,8 +43,8 @@ cc_library(
 
 cc_library(
     name = "ffmpeg",
-    deps = ["@ffmpeg_src//:ffmpeg"],
     visibility = ["//visibility:public"],
+    deps = ["@ffmpeg_src//:ffmpeg"],
 )
 
 # ─── LuaJIT ──────────────────────────────────────────────────────────────────
@@ -50,8 +52,8 @@ cc_library(
 
 cc_library(
     name = "luajit",
-    deps = ["@luajit//:luajit"],
     visibility = ["//visibility:public"],
+    deps = ["@luajit"],
 )
 
 # ─── OpenGL ──────────────────────────────────────────────────────────────────
@@ -60,12 +62,15 @@ cc_library(
 cc_library(
     name = "opengl",
     linkopts = select({
-        "@platforms//os:linux":   ["-lGL"],
+        "@platforms//os:linux": ["-lGL"],
         # Single-string -Wl,-framework,Name dodges Bazel 8 linkopt pair reordering.
-        "@platforms//os:macos":   ["-Wl,-framework,OpenGL"],
+        "@platforms//os:macos": ["-Wl,-framework,OpenGL"],
         "@platforms//os:windows": ["opengl32.lib"],
-        "@platforms//os:android": ["-lGLESv2", "-lEGL"],
-        "//conditions:default":   [],
+        "@platforms//os:android": [
+            "-lGLESv2",
+            "-lEGL",
+        ],
+        "//conditions:default": [],
     }),
     visibility = ["//visibility:public"],
 )

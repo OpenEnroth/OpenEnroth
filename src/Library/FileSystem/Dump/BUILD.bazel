@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "library_filesystem_dump",
     srcs = [
@@ -6,25 +8,25 @@ cc_library(
     hdrs = [
         "FileSystemDump.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/FileSystem/Interface:library_filesystem_interface",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "test_library_filesystem_dump",
+    testonly = True,
     srcs = [
         "Tests/FileSystemDump_ut.cpp",
     ],
+    visibility = ["//visibility:public"],
     deps = [
-        "//test/Testing/Unit:testing_unit",
         ":library_filesystem_dump",
         "//src/Library/FileSystem/Memory:library_filesystem_memory",
         "//src/Library/FileSystem/Null:library_filesystem_null",
+        "//test/Testing/Unit:testing_unit",
     ],
-    testonly = True,
     alwayslink = True,
-    visibility = ["//visibility:public"],
 )

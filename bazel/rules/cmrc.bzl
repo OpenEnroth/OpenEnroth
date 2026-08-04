@@ -4,6 +4,8 @@ Embeds arbitrary files as C++ char arrays accessible via cmrc::embedded_filesyst
 Symbol naming matches CMakeRC: f_{first4ofMD5(relpath)}_{MAKE_C_IDENTIFIER(relpath)}.
 """
 
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 def _relpath(src, strip_prefix):
     """Compute the virtual path for a source file."""
     path = src.short_path
@@ -40,10 +42,14 @@ def _cmrc_gen_impl(ctx):
         ctx.actions.run(
             executable = ctx.executable._gen_resource,
             arguments = [
-                "--namespace", ctx.attr.namespace,
-                "--relpath", relpath,
-                "--input", src.path,
-                "--output", out_cpp.path,
+                "--namespace",
+                ctx.attr.namespace,
+                "--relpath",
+                relpath,
+                "--input",
+                src.path,
+                "--output",
+                out_cpp.path,
             ],
             inputs = [src],
             outputs = [out_cpp],
@@ -56,8 +62,10 @@ def _cmrc_gen_impl(ctx):
     ctx.actions.run(
         executable = ctx.executable._gen_lib,
         arguments = [
-            "--namespace", ctx.attr.namespace,
-            "--output", lib_cpp.path,
+            "--namespace",
+            ctx.attr.namespace,
+            "--output",
+            lib_cpp.path,
             "--relpaths",
         ] + relpaths,
         inputs = [],
@@ -97,6 +105,7 @@ def cmrc_resource_library(name, namespace = None, srcs = [], strip_prefix = "", 
         strip_prefix: Path prefix to strip when computing virtual paths.
         deps: Additional deps for the cc_library.
         visibility: Bazel visibility list.
+        **kwargs: Forwarded to the underlying cc_library.
     """
     if namespace == None:
         namespace = name
@@ -109,8 +118,7 @@ def cmrc_resource_library(name, namespace = None, srcs = [], strip_prefix = "", 
         strip_prefix = strip_prefix,
         visibility = ["//visibility:private"],
     )
-
-    native.cc_library(
+    cc_library(
         name = name,
         srcs = [":" + gen_name],
         deps = deps + ["//bazel/cmrc:cmrc_base"],

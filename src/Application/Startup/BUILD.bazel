@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 # Same as cmake's OE_DISTRIBUTION_BUILD; enable with --config=distribution.
 config_setting(
     name = "_distribution",
@@ -6,23 +8,24 @@ config_setting(
 
 cc_library(
     name = "application_startup",
+    srcs = [
+        "FileSystemStarter.cpp",
+        "GameStarter.cpp",
+        "LogStarter.cpp",
+        "PathResolver.cpp",
+    ],
+    hdrs = [
+        "FileSystemStarter.h",
+        "GameStarter.h",
+        "GameStarterOptions.h",
+        "LogStarter.h",
+        "PathResolver.h",
+    ],
     local_defines = select({
         ":_distribution": ["OE_DISTRIBUTION_BUILD"],
         "//conditions:default": [],
     }),
-    srcs = [
-        "PathResolver.cpp",
-        "GameStarter.cpp",
-        "LogStarter.cpp",
-        "FileSystemStarter.cpp",
-    ],
-    hdrs = [
-        "PathResolver.h",
-        "GameStarter.h",
-        "GameStarterOptions.h",
-        "LogStarter.h",
-        "FileSystemStarter.h",
-    ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Application:application_base",
         "//src/Engine:engine",
@@ -45,5 +48,4 @@ cc_library(
         "//src/GUI/Overlay:gui_overlay",
         "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )

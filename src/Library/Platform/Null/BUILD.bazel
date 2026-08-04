@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "library_platform_null",
     srcs = [
@@ -14,10 +16,10 @@ cc_library(
         "NullPlatformSharedState.h",
         "NullWindow.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/Library/Logger:library_logger",
-        "//src/Utility:utility",
         "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Utility:utility",
     ],
-    visibility = ["//visibility:public"],
 )

@@ -1,8 +1,8 @@
 # cmake() build for OpenAL-soft 1.24.3 from source.
 # Replaces the prebuilt OpenAL from OpenEnroth_Dependencies.
 
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
-
 
 # The bazel-generated crosstool passes the NDK's raw clang without a --target
 # triple, so CMake's compile/link probes produce host objects. Supply the triple
@@ -10,38 +10,47 @@ load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 # linux_x86: the blanked CMAKE_*_FLAGS below also strip bazel's -m32; restore it.
 config_setting(
     name = "_linux_x86",
-    constraint_values = ["@platforms//os:linux", "@platforms//cpu:x86_64"],
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
     define_values = {"oe_build_arch": "x86_32"},
 )
 
 config_setting(
     name = "_android_arm64",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:arm64"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:arm64",
+    ],
 )
 
 config_setting(
     name = "_android_armv7",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:armv7"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:armv7",
+    ],
 )
 
 config_setting(
     name = "_android_x86_64",
-    constraint_values = ["@platforms//os:android", "@platforms//cpu:x86_64"],
+    constraint_values = [
+        "@platforms//os:android",
+        "@platforms//cpu:x86_64",
+    ],
 )
-
 
 filegroup(
     name = "all_srcs",
-    srcs = glob(["**"], exclude = ["BUILD.bazel"]),
+    srcs = glob(
+        ["**"],
+        exclude = ["BUILD.bazel"],
+    ),
 )
 
 cmake(
     name = "openal_desktop",
-    lib_source = ":all_srcs",
-    out_static_libs = select({
-        "@platforms//os:windows": ["OpenAL32.lib"],
-        "//conditions:default": ["libopenal.a"],
-    }),
     cache_entries = {
         "CMAKE_BUILD_TYPE": "Release",
         # Use static MSVC runtime (/MT) to match the rest of the build.
@@ -59,6 +68,8 @@ cmake(
         "CMAKE_CXX_FLAGS": " ",
         "CMAKE_C_FLAGS": " ",
     },
+    # AL_LIBTYPE_STATIC suppresses dllimport decorations in al.h headers.
+    defines = ["AL_LIBTYPE_STATIC"],
     # openal-soft sets NTDDI_VERSION but not _WIN32_WINNT; SDK 10.0.26100 errors
     # unless both agree. generate_args -D wins over cache_entries' blank flags.
     generate_args = select({
@@ -74,12 +85,13 @@ cmake(
     }),
     # The crosstool toolchain file would inject all of bazel's --copts.
     generate_crosstool_file = False,
-    # The prebuilt OpenAL exposed include/AL, so code does #include <al.h>.
-    out_include_dir = "include/AL",
-    # AL_LIBTYPE_STATIC suppresses dllimport decorations in al.h headers.
-    defines = ["AL_LIBTYPE_STATIC"],
+    lib_source = ":all_srcs",
     linkopts = select({
-        "@platforms//os:windows": ["avrt.lib", "winmm.lib", "ole32.lib"],
+        "@platforms//os:windows": [
+            "avrt.lib",
+            "winmm.lib",
+            "ole32.lib",
+        ],
         # Single-string -Wl,-framework,Name dodges Bazel 8 linkopt pair reordering.
         "@platforms//os:macos": [
             "-Wl,-framework,CoreAudio",
@@ -89,35 +101,18 @@ cmake(
         ],
         "//conditions:default": [],
     }),
+    # The prebuilt OpenAL exposed include/AL, so code does #include <al.h>.
+    out_include_dir = "include/AL",
+    out_static_libs = select({
+        "@platforms//os:windows": ["OpenAL32.lib"],
+        "//conditions:default": ["libopenal.a"],
+    }),
 )
 
 # Android keeps the crosstool file: cmake must use the NDK toolchain bazel
 # resolved, not whatever compiler it would auto-detect.
 cmake(
     name = "openal_android",
-    lib_source = ":all_srcs",
-    out_static_libs = ["libopenal.a"],
-    generate_args = select({
-        ":_android_arm64": [
-        "-DCMAKE_C_FLAGS=--target=aarch64-linux-android24",
-        "-DCMAKE_CXX_FLAGS=--target=aarch64-linux-android24",
-        "-DCMAKE_ASM_FLAGS=--target=aarch64-linux-android24",
-        "-DCMAKE_EXE_LINKER_FLAGS=--target=aarch64-linux-android24",
-    ],
-        ":_android_armv7": [
-        "-DCMAKE_C_FLAGS=--target=armv7a-linux-androideabi24",
-        "-DCMAKE_CXX_FLAGS=--target=armv7a-linux-androideabi24",
-        "-DCMAKE_ASM_FLAGS=--target=armv7a-linux-androideabi24",
-        "-DCMAKE_EXE_LINKER_FLAGS=--target=armv7a-linux-androideabi24",
-    ],
-        ":_android_x86_64": [
-        "-DCMAKE_C_FLAGS=--target=x86_64-linux-android24",
-        "-DCMAKE_CXX_FLAGS=--target=x86_64-linux-android24",
-        "-DCMAKE_ASM_FLAGS=--target=x86_64-linux-android24",
-        "-DCMAKE_EXE_LINKER_FLAGS=--target=x86_64-linux-android24",
-    ],
-        "//conditions:default": [],
-    }),
     cache_entries = {
         "CMAKE_BUILD_TYPE": "Release",
         "LIBTYPE": "STATIC",
@@ -130,16 +125,39 @@ cmake(
         "ALSOFT_TESTS": "OFF",
         "CMAKE_POLICY_VERSION_MINIMUM": "3.5",
     },
-    out_include_dir = "include/AL",
     defines = ["AL_LIBTYPE_STATIC"],
+    generate_args = select({
+        ":_android_arm64": [
+            "-DCMAKE_C_FLAGS=--target=aarch64-linux-android24",
+            "-DCMAKE_CXX_FLAGS=--target=aarch64-linux-android24",
+            "-DCMAKE_ASM_FLAGS=--target=aarch64-linux-android24",
+            "-DCMAKE_EXE_LINKER_FLAGS=--target=aarch64-linux-android24",
+        ],
+        ":_android_armv7": [
+            "-DCMAKE_C_FLAGS=--target=armv7a-linux-androideabi24",
+            "-DCMAKE_CXX_FLAGS=--target=armv7a-linux-androideabi24",
+            "-DCMAKE_ASM_FLAGS=--target=armv7a-linux-androideabi24",
+            "-DCMAKE_EXE_LINKER_FLAGS=--target=armv7a-linux-androideabi24",
+        ],
+        ":_android_x86_64": [
+            "-DCMAKE_C_FLAGS=--target=x86_64-linux-android24",
+            "-DCMAKE_CXX_FLAGS=--target=x86_64-linux-android24",
+            "-DCMAKE_ASM_FLAGS=--target=x86_64-linux-android24",
+            "-DCMAKE_EXE_LINKER_FLAGS=--target=x86_64-linux-android24",
+        ],
+        "//conditions:default": [],
+    }),
+    lib_source = ":all_srcs",
     linkopts = ["-lOpenSLES"],
+    out_include_dir = "include/AL",
+    out_static_libs = ["libopenal.a"],
 )
 
 cc_library(
     name = "openal",
+    visibility = ["//visibility:public"],
     deps = select({
         "@platforms//os:android": [":openal_android"],
         "//conditions:default": [":openal_desktop"],
     }),
-    visibility = ["//visibility:public"],
 )
