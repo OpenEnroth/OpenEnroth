@@ -15,6 +15,7 @@ cc_test(
     shard_count = 8,
     visibility = ["//visibility:public"],
     deps = [
+        "@googletest//:gtest",
         "//src/Application:application",
         "//src/Engine:engine_impl",
         "//src/Library/Cli:library_cli",
