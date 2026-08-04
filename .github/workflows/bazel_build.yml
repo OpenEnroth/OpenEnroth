@@ -178,7 +178,7 @@ jobs:
       - name: 'Annotate failure log'
         if: failure()
         run: |
-          grep -E "ERROR|error" bazel-build.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
+          grep -E "error:|ERROR:|CMake Error|Error [0-9]|FAILED:|incomplete" bazel-build.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
 
       - name: '[linux_x86_64] Check style'
         if: matrix.target == 'linux_x86_64'
