@@ -1,9 +1,10 @@
-"""Hermetic build tools for windows: MSYS2 (make, pkgconf) and cmake.
+"""Hermetic build tools for windows: MSYS2 make and pkgconf.
 
 Windows builds must not require anything beyond msvc + bazel + git, so the
-make/pkg-config/cmake used by rules_foreign_cc are downloaded here instead of
-taken from the machine. ffmpeg's out-of-tree build needs an MSYS make: native
-Win32 makes can't resolve the msys-style paths in its generated stub Makefile.
+make/pkg-config used by rules_foreign_cc are downloaded here instead of taken
+from the machine (cmake/ninja come prebuilt from rules_foreign_cc itself).
+ffmpeg's out-of-tree build needs an MSYS make: native Win32 makes can't
+resolve the msys-style paths in its generated stub Makefile.
 """
 
 _MSYS2_BASE_URL = "https://github.com/msys2/msys2-installer/releases/download/2026-06-11/msys2-base-x86_64-20260611.tar.xz"
@@ -16,10 +17,6 @@ _MSYS2_PACKAGES = [
     ("make-4.4.1-3-x86_64.pkg.tar.zst", "af0bdba17f06fe037f0194069adaa31a8fe45f1a11381501896aea1fae37bd5d"),
     ("pkgconf-3.0.5-1-x86_64.pkg.tar.zst", "40dfc37c4fed31b7bf2fe55f11299884e3120025d27f61255ad1a1c8b890aece"),
 ]
-
-_CMAKE_URL = "https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-windows-x86_64.zip"
-_CMAKE_SHA256 = "d163cd3ab4959b0a53fa8988f2ddbd2e6c501658201e6a154386bad9dbe4f836"
-_CMAKE_STRIP_PREFIX = "cmake-3.31.6-windows-x86_64"
 
 _HEADER = """\
 load("@rules_foreign_cc//toolchains/native_tools:native_tools_toolchain.bzl", "native_tool_toolchain")
@@ -69,27 +66,9 @@ def _msys2_impl(ctx):
         type = "pkgconfig_toolchain",
     ))
 
-def _cmake_windows_impl(ctx):
-    if ctx.os.name.startswith("windows"):
-        ctx.download_and_extract(
-            url = _CMAKE_URL,
-            sha256 = _CMAKE_SHA256,
-            stripPrefix = _CMAKE_STRIP_PREFIX,
-        )
-        root = str(ctx.path(""))
-    else:
-        root = "/cmake-is-windows-only"
-    ctx.file("BUILD.bazel", _HEADER + _TOOLCHAIN_TMPL.format(
-        name = "cmake",
-        path = root + "/bin/cmake.exe",
-        type = "cmake_toolchain",
-    ))
-
 _msys2 = repository_rule(implementation = _msys2_impl)
-_cmake_windows = repository_rule(implementation = _cmake_windows_impl)
 
 def _windows_tools_impl(_ctx):
     _msys2(name = "msys2")
-    _cmake_windows(name = "cmake_windows")
 
 windows_tools = module_extension(implementation = _windows_tools_impl)
