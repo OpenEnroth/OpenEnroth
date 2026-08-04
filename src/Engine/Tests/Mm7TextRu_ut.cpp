@@ -28,6 +28,9 @@ UNIT_TEST(Mm7TextRu, Plurals) {
     // The original mm7text.dll only looked at the last digit and would produce "11 день" here.
     EXPECT_EQ(sprintfex(ru("^I[11] д^L[ень;ня;ней]")), ru("11 дней"));
     EXPECT_EQ(sprintfex(ru("^I[14] д^L[ень;ня;ней]")), ru("14 дней"));
+
+    // Negative numbers are numbers too, not a "no ^I yet" marker.
+    EXPECT_EQ(sprintfex(ru("^I[-1] д^L[ень;ня;ней]")), ru("-1 день"));
 }
 
 UNIT_TEST(Mm7TextRu, NumberedPlurals) {

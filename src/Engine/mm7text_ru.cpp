@@ -695,13 +695,10 @@ std::string sprintfex(std::string_view str) {
         char kind = pos + 1 < str.size() ? str[pos + 1] : '\0';
 
         size_t open = pos + 2; // Position of '['.
-        int number = numbers.empty() ? -1 : numbers.front(); // Number to use for ^L.
+        size_t numberIndex = 0; // Index into `numbers` for ^L.
         int nameCase = 0; // Case index for ^P.
         if (kind == 'L' && open < str.size() && str[open] >= '1' && str[open] <= '9') {
-            size_t index = str[open] - '1';
-            if (index >= numbers.size())
-                return false;
-            number = numbers[index];
+            numberIndex = str[open] - '1';
             open++;
         } else if (kind == 'P') {
             if (open >= str.size() || (nameCase = caseIndex(str[open])) == -1)
@@ -725,9 +722,9 @@ std::string sprintfex(std::string_view str) {
             std::array<std::string_view, 3> forms;
             if (!splitForms(contents, &forms))
                 return false;
-            if (number == -1)
-                return false; // ^L before any ^I.
-            result += forms[pluralFormIndex(number)];
+            if (numberIndex >= numbers.size())
+                return false; // No matching ^I number.
+            result += forms[pluralFormIndex(numbers[numberIndex])];
         } break;
 
         case 'R': {
