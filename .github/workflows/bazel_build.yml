@@ -258,7 +258,7 @@ jobs:
       - name: 'Annotate failure log'
         if: failure()
         run: |
-          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED|TIMEOUT|incomplete" bazel-build.log bazel-test.log bazel-gametest.log bazel-retrace.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done || true
+          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED|TIMEOUT|incomplete|size =|Actual:|Expected:" bazel-build.log bazel-test.log bazel-gametest.log bazel-retrace.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done || true
 
       - name: 'Save bazel caches'
         # always(): a red test on master shouldn't discard the warmed cache.
