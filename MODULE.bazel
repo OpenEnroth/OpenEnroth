@@ -8,6 +8,8 @@ module(
 # ─── Core Bazel rules ────────────────────────────────────────────────────────
 
 bazel_dep(name = "rules_cc", version = "0.2.17")
+# Explicit dep for the py_binary loads in //bazel/cmrc (Bazel 9 drops autoload).
+bazel_dep(name = "rules_python", version = "0.23.1")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
 
