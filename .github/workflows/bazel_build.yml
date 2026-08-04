@@ -220,6 +220,7 @@ jobs:
       - name: '[linux_x86_64] Run game tests'
         if: matrix.target == 'linux_x86_64'
         run: |
+          if [ ! -d OpenEnroth_GameData ]; then echo "::warning::no game data cache - tests skipped"; exit 0; fi
           # The data lives outside the workspace, so salt the test's action key
           # with its content hash - swapped data invalidates cached results.
           hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
