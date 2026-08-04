@@ -26,8 +26,7 @@ class Localization {
     template<class... Args>
     std::string format(LstrId index, Args &&... args) const {
         // TODO(captainurist): what if fmt throws?
-        return fmt::sprintf(str(index), std::forward<Args>(args)...); // NOLINT: not std::sprintf.
-        // TODO(captainurist): there was also a call to sprintfex_internal after a call to vsprintf.
+        return expandTokens(fmt::sprintf(str(index), std::forward<Args>(args)...)); // NOLINT: not std::sprintf.
     }
 
     const std::string &dayName(unsigned int index) const {
@@ -228,6 +227,11 @@ class Localization {
     Localization() = default;
 
  private:
+    /**
+     * Expands Buka-style `^`-tokens, see `sprintfex` in `mm7text_ru.h`. A no-op for non-Buka localizations.
+     */
+    std::string expandTokens(std::string_view str) const;
+
     void initializeMm6ItemCategories();
 
     void initializeMonthNames();
@@ -246,6 +250,7 @@ class Localization {
 
  private:
     IndexedArray<std::string, LSTR_FIRST, LSTR_LAST> _localizationStrings;
+    bool _hasSprintfexTokens = false;
 
     std::array<std::string, 14> _mm6ItemCategories;
     std::array<std::string, 12> _monthNames;

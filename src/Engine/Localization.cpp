@@ -1,10 +1,12 @@
 #include "Localization.h"
 
+#include <algorithm>
 #include <array>
 #include <string>
 
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
+#include "Engine/mm7text_ru.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Resources/ResourceManager.h"
 
@@ -18,6 +20,12 @@ Localization *localization = nullptr;
 
 const std::string &Localization::str(LstrId index) const {
     return this->_localizationStrings[index];
+}
+
+std::string Localization::expandTokens(std::string_view str) const {
+    if (_hasSprintfexTokens && str.find('^') != std::string_view::npos)
+        return sprintfex(str);
+    return std::string(str);
 }
 
 std::string Localization::skillValueShortString(CombinedSkillValue skillValue) const {
@@ -37,6 +45,9 @@ bool Localization::initialize() {
         LstrId i = static_cast<LstrId>(fromString<int>(tokens[0]));
         _localizationStrings[i] = unquote(tokens[1]);
     }
+
+    // Only the Russian (Buka) localization uses `^`-tokens, see `sprintfex` in `mm7text_ru.h`.
+    _hasSprintfexTokens = std::ranges::any_of(_localizationStrings, [](const std::string &s) { return s.contains('^'); });
 
     // TODO(captainurist): should be moved to localization files eventually
     this->_localizationStrings[LSTR_FMT_S_STOLE_D_ITEM] = "%s stole %s!";

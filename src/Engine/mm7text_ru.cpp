@@ -1,16 +1,22 @@
-#include <cassert>
+#include "Engine/mm7text_ru.h"
+
+#include <algorithm>
+#include <array>
+#include <functional>
 #include <cstdlib>
-#include <cstdio>
-#include <cstring>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "Library/Logger/Logger.h"
 
-#ifdef _WINDOWS
-#   include <mbstring.h>
-#else
-#   define _mbsncmp(str1, str2, maxCount) strncmp((const char*)str1, (const char*)str2, maxCount)
-#endif
+#include "Utility/String/Ascii.h"
+#include "Utility/String/Encoding.h"
 
+namespace {
+
+// Both tables below are UTF-8 in the sources and are transcoded into Windows-1251 in genderTables(). Gender is
+// 0 for masculine, 1 for feminine, 2 for neuter.
 struct GenderTableEntry {
     const char *name;
     int gender;
@@ -532,8 +538,10 @@ struct GenderTableEntry {
                          {"Юдифь", 1},        {"Юрий", 0},
                          {"Ядовитый", 0},     {"Якоб", 0},
                          {"Ян", 0},           {"Янси", 0},
-                         {"Ярод", 0},         {"Яспер", 0}},
-  gender_table[] = {
+                         {"Ярод", 0},         {"Яспер", 0},
+};
+
+GenderTableEntry gender_table[] = {
       {"ад", 0},        {"акула", 1},      {"банк", 0},       {"башня", 1},
       {"бластер", 0},   {"вампир", 0},     {"вдова", 1},      {"ведьма", 1},
       {"витерсмит", 0}, {"владыка", 0},    {"владычица", 1},  {"воин", 0},
@@ -551,314 +559,228 @@ struct GenderTableEntry {
       {"работник", 0},  {"рай", 0},        {"рейнджер", 0},   {"рух", 0},
       {"слизень", 0},   {"солдат", 0},     {"титан", 0},      {"трактир", 0},
       {"тролль", 0},    {"убийца", 0},     {"улан", 0},       {"училище", 2},
-      {"шляпа", 1},     {"элементал", 0}};
+      {"шляпа", 1},     {"элементал", 0},
+};
 
-int GetGender(char *ansi_name, int name_len) {
-    auto name = (char *)ansi_name;
+// Names that per-word gender lookup can't handle: multi-word, or declined as a whole.
+struct SpecialNameEntry {
+    const char *name;
+    int gender;
+    std::array<const char *, 6> cases; // I, R, D, V, T, P. All nullptr for indeclinable names.
+};
 
-    GenderTableEntry *table = nullptr;
-    unsigned int table_size = 0;
-    // if ((unsigned char)name[0] >= (unsigned char)'а' && (unsigned char)name[0] <= (unsigned char)'я') {
-    if ((unsigned char)name[0] >= (unsigned char)0xe0 && (unsigned char)name[0] <= (unsigned char)0xff) {
-        table = gender_table;
-        table_size = sizeof(gender_table) / sizeof(*gender_table);
-    // } else if (name[0] >= (unsigned char)'А' && name[0] <= (unsigned char)'Я') {
-    } else if ((unsigned char)name[0] >= (unsigned char)0xc0 && (unsigned char)name[0] <= (unsigned char)0xdf) {
-        table = gender_table_caps;
-        table_size = sizeof(gender_table_caps) / sizeof(*gender_table_caps);
+// The original mm7text.dll returned masculine for "Стены тумана" due to an inverted check - clearly a bug, it's
+// feminine here, same as "Врата в Бездну".
+const SpecialNameEntry special_name_table[] = {
+    {"Мэри Джо", 1, {}},
+    {"Ли Энн", 1, {}},
+    {"Врата в Бездну", 1, {"Врата в Бездну", "Врат в Бездну", "Вратам в Бездну", "Врат в Бездну", "Вратами в Бездну", "Вратах в Бездну"}},
+    {"Стены тумана", 1, {"Стены тумана", "Стен тумана", "Стенам тумана", "Стены тумана", "Стенами тумана", "Стенах тумана"}},
+};
+
+struct SpecialName {
+    std::string name;
+    int gender = 0;
+    std::array<std::string, 6> cases;
+};
+
+struct GenderTables {
+    std::vector<std::pair<std::string, int>> caps; // Names starting with an uppercase letter, sorted.
+    std::vector<std::pair<std::string, int>> lower; // Common nouns, sorted.
+    std::vector<SpecialName> specials;
+};
+
+const GenderTables &genderTables() {
+    static const GenderTables result = [] {
+        auto transcode = [](std::string_view utf8) {
+            return txt::utf8ToEncoded(utf8, ENCODING_WINDOWS_1251);
+        };
+
+        GenderTables tables;
+        for (const GenderTableEntry &entry : gender_table_caps)
+            tables.caps.emplace_back(transcode(entry.name), entry.gender);
+        for (const GenderTableEntry &entry : gender_table)
+            tables.lower.emplace_back(transcode(entry.name), entry.gender);
+        std::ranges::sort(tables.caps);
+        std::ranges::sort(tables.lower);
+
+        for (const SpecialNameEntry &entry : special_name_table) {
+            SpecialName &special = tables.specials.emplace_back();
+            special.name = transcode(entry.name);
+            special.gender = entry.gender;
+            for (size_t i = 0; i < special.cases.size(); i++)
+                special.cases[i] = entry.cases[i] ? transcode(entry.cases[i]) : special.name;
+        }
+        return tables;
+    }();
+    return result;
+}
+
+// Returns the grammatical gender of a Windows-1251 name, masculine if not recognized.
+int genderOf(std::string_view name) {
+    const GenderTables &tables = genderTables();
+
+    const std::vector<std::pair<std::string, int>> *table = nullptr;
+    unsigned char first = name.empty() ? 0 : static_cast<unsigned char>(name[0]);
+    if (first >= 0xE0) { // Windows-1251 'а'-'я'.
+        table = &tables.lower;
+    } else if (first >= 0xC0 && first <= 0xDF) { // Windows-1251 'А'-'Я'.
+        table = &tables.caps;
     } else {
         return 0;
     }
 
-    int left = 0, right = table_size - 1, match = 0;
-    while (left < right - 1) {
-        match = left + (right - left) / 2;
-        int rval = _mbsncmp(reinterpret_cast<const unsigned char *>(name), (unsigned char *)table[match].name, name_len);
-        if (rval < 0)
-            right = match;
-        else if (!rval)
-            return table[match].gender;
-        else
-            left = match;
+    // Same semantics as the original mm7text.dll: a table entry matches if it starts with the looked-up name.
+    auto pos = std::ranges::lower_bound(*table, name, std::less<>(), &std::pair<std::string, int>::first);
+    if (pos != table->end() && pos->first.starts_with(name))
+        return pos->second;
+
+    logger->warning("sprintfex: unknown gender: {}", txt::encodedToUtf8(name, ENCODING_WINDOWS_1251));
+    return 0;
+}
+
+// Maps a grammatical case letter to an index into SpecialName::cases, -1 if it's not a case letter.
+int caseIndex(char c) {
+    switch (ascii::toLower(c)) {
+    case 'i': return 0; // Именительный.
+    case 'r': return 1; // Родительный.
+    case 'd': return 2; // Дательный.
+    case 'v': return 3; // Винительный.
+    case 't': return 4; // Творительный.
+    case 'p': return 5; // Предложный.
+    default: return -1;
     }
-
-    logger->warning("sprintfex: unknown gender: {}", name);
-    return 0;
 }
 
-bool IsSpecialName(const char *ansi_name) {
-    auto name = (unsigned char *)ansi_name;
-    return !_mbsncmp(name, (unsigned char *)"Мэри Джо", 8) ||
-           !_mbsncmp(name, (unsigned char *)"Ли Энн", 6) ||
-           !_mbsncmp(name, (unsigned char *)"Врата в Бездну", 14) ||
-           !_mbsncmp(name, (unsigned char *)"Стены тумана", 12);
+// Returns the Russian plural form index for n: 0 for "1 день", 1 for "2 дня", 2 for "5 дней".
+int pluralFormIndex(int n) {
+    n = std::abs(n);
+    if (n % 100 >= 11 && n % 100 <= 14) // The original mm7text.dll missed this and produced "11 день".
+        return 2;
+    if (n % 10 == 1)
+        return 0;
+    if (n % 10 >= 2 && n % 10 <= 4)
+        return 1;
+    return 2;
 }
-int GetSpecialGender(const char *ansi_name) {
-    auto name = (unsigned char *)ansi_name;
-    if (!_mbsncmp(name, (unsigned char *)"Мэри Джо", 8)) return 1;
-    if (!_mbsncmp(name, (unsigned char *)"Ли Энн", 6)) return 1;
-    if (!_mbsncmp(name, (unsigned char *)"Врата в Бездну", 14)) return 1;
-    if (!!_mbsncmp(name, (unsigned char *)"Стены тумана", 12)) return 0;
-    return 0;
+
+// Splits `^L` / `^R` token contents like "ень;ня;ней" into three forms, false if there aren't exactly three.
+bool splitForms(std::string_view forms, std::array<std::string_view, 3> *out) {
+    size_t semi1 = forms.find(';');
+    if (semi1 == std::string_view::npos)
+        return false;
+    size_t semi2 = forms.find(';', semi1 + 1);
+    if (semi2 == std::string_view::npos || forms.find(';', semi2 + 1) != std::string_view::npos)
+        return false;
+    *out = {forms.substr(0, semi1), forms.substr(semi1 + 1, semi2 - semi1 - 1), forms.substr(semi2 + 1)};
+    return true;
 }
-const char *GetSpecialCase(const char *ansi_name, char c) {
-    auto name = (unsigned char *)ansi_name;
 
-    if (!_mbsncmp(name, (unsigned char *)"Мэри Джо", 8)) return "Мэри Джо";
-    if (!_mbsncmp(name, (unsigned char *)"Ли Энн", 6)) return "Ли Энн";
+} // anonymous namespace
 
-    if (!_mbsncmp(name, (unsigned char *)"Врата в Бездну", 14)) {
-        switch (c) {
-            case 'I':
-            case 'i':
-                return "Врата в Бездну";
-            case 'R':
-            case 'r':
-                return "Врат в Бездну";
-            case 'D':
-            case 'd':
-                return "Вратам в Бездну";
-            case 'V':
-            case 'v':
-                return "Врат в Бездну";
-            case 'T':
-            case 't':
-                return "Вратами в Бездну";
-            case 'P':
-            case 'p':
-                return "Вратах в Бездну";
+std::string sprintfex(std::string_view str) {
+    size_t pos = str.find('^');
+    if (pos == std::string_view::npos)
+        return std::string(str);
+
+    std::string result;
+    result.reserve(str.size());
+    result += str.substr(0, pos);
+
+    std::vector<int> numbers; // Numbers seen in ^I tokens so far.
+    int gender = -1; // Gender of the last ^P name, -1 if none yet.
+
+    // Expands one token at `pos`, appending to `result` and advancing `pos`. False on malformed input.
+    auto expandToken = [&] {
+        char kind = pos + 1 < str.size() ? str[pos + 1] : '\0';
+
+        size_t open = pos + 2; // Position of '['.
+        int number = numbers.empty() ? -1 : numbers.front(); // Number to use for ^L.
+        int nameCase = 0; // Case index for ^P.
+        if (kind == 'L' && open < str.size() && str[open] >= '1' && str[open] <= '9') {
+            size_t index = str[open] - '1';
+            if (index >= numbers.size())
+                return false;
+            number = numbers[index];
+            open++;
+        } else if (kind == 'P') {
+            if (open >= str.size() || (nameCase = caseIndex(str[open])) == -1)
+                return false;
+            open++;
         }
-    }
+        if (open >= str.size() || str[open] != '[')
+            return false;
+        size_t close = str.find(']', open);
+        if (close == std::string_view::npos)
+            return false;
+        std::string_view contents = str.substr(open + 1, close - open - 1);
 
-    if (!_mbsncmp(name, (unsigned char *)"Стены тумана", 12)) {
-        switch (c) {
-            case 'I':
-            case 'i':
-                return "Стены тумана";
-            case 'R':
-            case 'r':
-                return "Стен тумана";
-            case 'D':
-            case 'd':
-                return "Стенам тумана";
-            case 'V':
-            case 'v':
-                return "Стены тумана";
-            case 'T':
-            case 't':
-                return "Стенами тумана";
-            case 'P':
-            case 'p':
-                return "Стенах тумана";
+        switch (kind) {
+        case 'I': {
+            numbers.push_back(atoi(std::string(contents).c_str())); // NOLINT: locale-independent, and errors => 0.
+            result += contents;
+        } break;
+
+        case 'L': {
+            std::array<std::string_view, 3> forms;
+            if (!splitForms(contents, &forms))
+                return false;
+            if (number == -1)
+                return false; // ^L before any ^I.
+            result += forms[pluralFormIndex(number)];
+        } break;
+
+        case 'R': {
+            std::array<std::string_view, 3> forms;
+            if (!splitForms(contents, &forms))
+                return false;
+            if (gender == -1) {
+                logger->warning("sprintfex: ^R token without a preceding ^P name in \"{}\", assuming masculine",
+                                txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
+                gender = 0;
             }
-    }
+            result += forms[gender];
+        } break;
 
-    return nullptr;
-}
+        case 'P': {
+            const SpecialName *special = nullptr;
+            for (const SpecialName &candidate : genderTables().specials)
+                if (contents.starts_with(candidate.name))
+                    special = &candidate;
+            if (special) {
+                gender = special->gender;
+                result += special->cases[nameCase];
+            } else {
+                // Regular names are not declined, the case letter is ignored.
+                gender = genderOf(contents);
+                result += contents;
+            }
+        } break;
 
-int sprintfex_internal(char *str) {
-    auto p = strstr(str, "^");
-    if (!p) return strlen(str);
-
-    char buf[8192];
-    assert(strlen(str) < sizeof(buf));
-
-    int next_integer_token = 0;
-    bool integer_tokens_defined[10] = {false, false, false, false, false,
-                                       false, false, false, false, false};
-    int integer_tokens[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-    bool gender_token_defined = false;
-    int gender_token = 0;
-
-    auto src = buf, dst = p;
-    strcpy(buf, str + (p - str));
-    while (true) {
-        switch (src[1]) {
-            case 'I': {
-                if (src[2] != '[') goto _invalid_token;
-                src += 3;  // ^I[
-
-                assert(next_integer_token < 10);
-                if (sscanf(src, "%d", &integer_tokens[next_integer_token]))
-                    integer_tokens_defined[next_integer_token++] = true;
-
-                auto int_begin = src;
-                while (*src++ != ']') {}
-
-                int int_len = src - int_begin - 1;
-                strncpy(dst, int_begin, int_len);
-                dst += int_len;
-            } break;
-
-            case 'L': {
-                int integer_token_idx = 0;
-                if (src[2] >= '1' && src[2] <= '9') {
-                    if (src[3] != '[') goto _invalid_token;
-                    integer_token_idx = src[2] - '1';
-
-                    src += 1;
-                } else if (src[2] != '[') {
-                    goto _invalid_token;
-                }
-
-                assert(integer_tokens_defined[integer_token_idx]);
-                src += 3;  // ^L[
-
-                auto ending1 = src;
-                while (*src++ != ';') {}
-                auto ending2 = src;
-                while (*src++ != ';') {}
-                auto ending3 = src;
-                while (*src++ != ']') {}
-
-                char *actual_ending = nullptr;
-                int actual_ending_len = 0;
-
-                int modulo = std::abs(integer_tokens[integer_token_idx]) % 10;
-                if (modulo == 1) {
-                    actual_ending = ending1;
-                    actual_ending_len = ending2 - ending1 - 1;
-                } else if (modulo >= 2 && modulo <= 4) {
-                    actual_ending = ending2;
-                    actual_ending_len = ending3 - ending2 - 1;
-                } else {
-                    actual_ending = ending3;
-                    actual_ending_len = src - ending3 - 1;
-                }
-
-                strncpy(dst, actual_ending, actual_ending_len);
-                dst += actual_ending_len;
-            } break;
-
-            case 'R': {
-                if (src[2] != '[') goto _invalid_token;
-                assert(gender_token_defined);
-
-                src += 3;  // ^R[
-
-                auto ending1 = src;
-                while (*src++ != ';') {}
-                auto ending2 = src;
-                while (*src++ != ';') {}
-                auto ending3 = src;
-                while (*src++ != ']') {}
-
-                char *actual_ending = nullptr;
-                int actual_ending_len = 0;
-
-                if (gender_token == 0) {
-                    actual_ending = ending1;
-                    actual_ending_len = ending2 - ending1 - 1;
-                } else if (gender_token == 1) {
-                    actual_ending = ending2;
-                    actual_ending_len = ending3 - ending2 - 1;
-                } else if (gender_token == 2) {
-                    actual_ending = ending3;
-                    actual_ending_len = src - ending3 - 1;
-                } else {
-                    logger->error("Invalid gender token");
-                }
-
-                strncpy(dst, actual_ending, actual_ending_len);
-                dst += actual_ending_len;
-            } break;
-
-            case 'P': {
-                if (src[3] != '[') goto _invalid_token;
-                switch (src[2]) {
-                    case 'I':
-                    case 'i':
-                    case 'R':
-                    case 'r':
-                    case 'D':
-                    case 'd':
-                    case 'V':
-                    case 'v':
-                    case 'T':
-                    case 't':
-                    case 'P':
-                    case 'p':
-                        break;
-                    default:
-                        goto _invalid_token;
-                }
-
-                if (IsSpecialName(src + 4)) {
-                    auto name = GetSpecialCase(src + 4, src[2]);
-                    int name_len = strlen(name);
-
-                    gender_token = GetSpecialGender(src + 4);
-                    gender_token_defined = true;
-
-                    strncpy(dst, name, name_len);
-                    dst += name_len;
-                    while (*src++ != ']') {}
-                    break;
-                }
-
-                auto name_begin = src + 4;
-                int name_len = 0;
-                for (int i = 0; name_begin[i] != ']'; ++i) name_len++;
-                gender_token = GetGender(name_begin, name_len);
-                gender_token_defined = true;
-
-                switch (src[2]) {
-                    case 'I':
-                    case 'i':
-                    case 'V':
-                    case 'v':
-                    case 'R':
-                    case 'r':
-                    case 'D':
-                    case 'd':
-                    case 'T':
-                    case 't': {
-                        strncpy(dst, name_begin, name_len);
-                        dst += name_len;
-                    } break;
-
-                    case 'P':
-                    case 'p': {
-                        auto token_begin = src;
-                        int token_len = 1;
-                        for (int i = 0; token_begin[i] != ']'; ++i) token_len++;
-                        strncpy(dst, token_begin, token_len);
-                        dst += token_len;
-                    }
-                }
-                while (*src++ != ']') {}
-            } break;
-
-            default: {
-            _invalid_token:
-                auto token_begin = src;
-                while (*src++ != ']') {}
-
-                int token_len = src - token_begin;
-                char token[1024];
-                strncpy(token, token_begin, token_len);
-                token[token_len] = 0;
-
-                logger->error("Invalid format token: {}", token);
-            } break;
+        default:
+            return false;
         }
 
-        *dst = 0;
+        pos = close + 1;
+        return true;
+    };
 
-        auto copy_begin = src;
-        src = strstr(src, "^");
-        if (!src) {
-            strcpy(dst, copy_begin);  // just copy the rest
+    while (pos < str.size()) {
+        // Loop invariant: str[pos] == '^' here.
+        if (!expandToken()) {
+            logger->warning("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
+            result += '^'; // Malformed tokens are copied through verbatim.
+            pos++;
+        }
+
+        size_t next = str.find('^', pos);
+        result += str.substr(pos, next - pos); // npos-safe.
+        if (next == std::string_view::npos)
             break;
-        }
-
-        int copy_len = src - copy_begin;
-        strncpy(dst, copy_begin, copy_len);
-        dst += copy_len;
+        pos = next;
     }
 
-    return dst - str;
+    return result;
 }
 
 // mm6text.non -> c structure array
