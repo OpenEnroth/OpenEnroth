@@ -1,22 +1,20 @@
-# Native bazel build of LuaJIT — no make, no cmake.
-#
-# Mirrors src/Makefile's two-stage bootstrap:
-#   1. `minilua` (host tool) runs dynasm.lua over vm_<arch>.dasc -> buildvm_arch.h
-#   2. `buildvm` (host tool, compiled with the *target's* arch defines) generates
-#      the lj_*def.h headers and the VM itself (ELF/Mach-O assembly or a COFF
-#      object emitted directly for MSVC - no assembler needed anywhere).
-#   3. The target library compiles lj_*.c + lib_*.c + the generated VM.
-#
-# Per-target dasm flags and buildvm defines are precomputed below instead of the
-# Makefile's compile-and-grep arch discovery; values follow lj_arch.h for each
-# supported (cpu, os) pair. All supported targets are little-endian.
-#
-# Note: select() keys in injected BUILD files must use @platforms// labels,
-# not //bazel/platforms labels (which live in the main repo, not here).
+# Native bazel build of LuaJIT mirroring src/Makefile's bootstrap: minilua runs
+# dynasm over vm_<arch>.dasc, buildvm (host tool with the target's arch defines)
+# emits the lj_*def.h headers and the VM (asm source, or a COFF object for MSVC
+# - no assembler needed), then the library compiles lj_*.c + lib_*.c + the VM.
+# Dasm flags and defines below are precomputed per (cpu, os) pair from lj_arch.h
+# instead of the Makefile's compile-and-grep discovery; all targets are LE.
 
 config_setting(
     name = "_windows",
     constraint_values = ["@platforms//os:windows"],
+)
+
+# Strict specialization of _windows, same trick as _linux_x86 below.
+config_setting(
+    name = "_windows_x86",
+    constraint_values = ["@platforms//os:windows"],
+    define_values = {"oe_build_arch": "x86_32"},
 )
 
 config_setting(
@@ -138,6 +136,20 @@ _VARIANTS = {
         ],
         "vm": "machasm",
     },
+    # MSVC has no -m32; the 32-bit buildvm is built in the target config instead
+    # (host_in_target_config) and runs on the x64 runner via WoW64.
+    "x86_windows": {
+        "host_in_target_config": True,
+        "dasc": "src/vm_x86.dasc",
+        "dasm_flags": "-D ENDIAN_LE -D JIT -D FFI -D FPU -D HFABI -D VER= -D WIN",
+        "defines": [
+            "LUAJIT_TARGET=LUAJIT_ARCH_x86",
+            "LUAJIT_OS=LUAJIT_OS_WINDOWS",
+            "LJ_ARCH_HASFPU=1",
+            "LJ_ABI_SOFTFP=0",
+        ],
+        "vm": "peobj",
+    },
     # android_armeabi_v7a: hard FPU (vfpv3), soft-float ABI, no HFABI dasm flag.
     "arm_linux": {
         "host_copts": ["-m32"],
@@ -153,11 +165,9 @@ _VARIANTS = {
     },
 }
 
-# TODO(captainurist): windows x86_32 would need an x86_windows variant; the CI
-# matrix doesn't build it and --cpu=x64_x86_windows doesn't flip the cpu
-# constraint, so it's left out.
 _PLATFORM_VARIANT = {
     ":_windows": "x64_windows",
+    ":_windows_x86": "x86_windows",
     ":_macos_arm64": "arm64_osx",
     ":_macos_x86_64": "x64_osx",
     ":_linux_x86": "x86_linux",
@@ -239,7 +249,10 @@ cc_library(
 
 [genrule(
     name = "_gen_" + variant,
-    srcs = _LJLIB_C + ["src/lj_opt_fold.c"] + glob(["src/*.h"]),
+    # host_in_target_config: buildvm goes in srcs (target config) instead of
+    # tools (exec config).
+    srcs = _LJLIB_C + ["src/lj_opt_fold.c"] + glob(["src/*.h"]) +
+           ([":_buildvm_" + variant] if cfg.get("host_in_target_config") else []),
     outs = [
         "gen_%s/lj_bcdef.h" % variant,
         "gen_%s/lj_ffdef.h" % variant,
@@ -258,7 +271,7 @@ cc_library(
         "$$BV -m folddef -o $(RULEDIR)/gen_%s/lj_folddef.h $(execpath src/lj_opt_fold.c)" % variant,
         "$$BV -m {} -o $(RULEDIR)/gen_{}/lj_vm.{}".format(cfg["vm"], variant, "obj" if cfg["vm"] == "peobj" else "S"),
     ]),
-    tools = [":_buildvm_" + variant],
+    tools = [] if cfg.get("host_in_target_config") else [":_buildvm_" + variant],
 ) for variant, cfg in _VARIANTS.items()]
 
 [cc_library(
