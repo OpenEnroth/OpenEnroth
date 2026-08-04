@@ -34,11 +34,6 @@ class Localization {
      * @return                          String with all `^`-tokens expanded.
      */
     std::string expand(std::string_view str) const;
-
-    /**
-     * Same as the above, but moves the argument through on the no-token path instead of copying it. This is the
-     * overload that `format` hits with its freshly formatted string.
-     */
     std::string expand(std::string &&str) const;
 
     template<class... Args>
