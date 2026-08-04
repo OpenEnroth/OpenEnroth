@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <string>
+#include <utility>
 
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
@@ -26,6 +27,12 @@ std::string Localization::expand(std::string_view str) const {
     if (_hasSprintfexTokens && str.find('^') != std::string_view::npos)
         return sprintfex(str);
     return std::string(str);
+}
+
+std::string Localization::expand(std::string &&str) const {
+    if (_hasSprintfexTokens && str.find('^') != std::string::npos)
+        return sprintfex(str);
+    return std::move(str);
 }
 
 std::string Localization::skillValueShortString(CombinedSkillValue skillValue) const {
