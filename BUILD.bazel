@@ -34,6 +34,9 @@ filegroup(
 check_style(
     name = "check_style",
     testonly = True,
+    # manual: keeps wildcard builds from co-analyzing this with cc_tests in the
+    # test configuration (trim_test_configuration action conflicts).
+    tags = ["manual"],
     deps = [
         "//src/Bin/CodeGen",
         "//src/Bin/LodTool",
