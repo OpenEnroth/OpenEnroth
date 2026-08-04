@@ -15,14 +15,14 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Encoding.h"
 
-namespace {
-
 // Both tables below are UTF-8 in the sources and are transcoded into Windows-1251 in genderTables(). Gender is
 // 0 for masculine, 1 for feminine, 2 for neuter.
 struct GenderTableEntry {
     const char *name;
     int gender;
-} gender_table_caps[] = {{"Авель", 0},        {"Адам", 0},
+};
+
+static const GenderTableEntry gender_table_caps[] = {{"Авель", 0},        {"Адам", 0},
                          {"Адриан", 0},       {"Адрианис", 0},
                          {"Адская", 1},       {"Айр", 0},
                          {"Акио", 0},         {"Акира", 0},
@@ -543,7 +543,7 @@ struct GenderTableEntry {
                          {"Ярод", 0},         {"Яспер", 0},
 };
 
-GenderTableEntry gender_table[] = {
+static const GenderTableEntry gender_table[] = {
       {"ад", 0},        {"акула", 1},      {"банк", 0},       {"башня", 1},
       {"бластер", 0},   {"вампир", 0},     {"вдова", 1},      {"ведьма", 1},
       {"витерсмит", 0}, {"владыка", 0},    {"владычица", 1},  {"воин", 0},
@@ -565,7 +565,7 @@ GenderTableEntry gender_table[] = {
 };
 
 // Some of the strings we're called on are re-formatted every frame, so each distinct warning is logged once.
-void warnOnce(const std::string &message) {
+static void warnOnce(const std::string &message) {
     static std::unordered_set<std::string> reported;
     if (reported.insert(message).second)
         logger->warning("{}", message);
@@ -582,7 +582,7 @@ struct SpecialNameEntry {
 // "Стены тумана" due to an inverted check, and it used the genitive "Врат в Бездну" for the accusative - both
 // names are inanimate plurals, so the accusative matches the nominative, as the DLL's own "Стены тумана" row
 // correctly shows ("Вы хотите покинуть Врат в Бездну?" was what Buka players actually saw).
-const SpecialNameEntry special_name_table[] = {
+static const SpecialNameEntry special_name_table[] = {
     {"Мэри Джо", 1, {}},
     {"Ли Энн", 1, {}},
     {"Врата в Бездну", 1, {"Врата в Бездну", "Врат в Бездну", "Вратам в Бездну", "Врата в Бездну", "Вратами в Бездну", "Вратах в Бездну"}},
@@ -601,7 +601,7 @@ struct GenderTables {
     std::vector<SpecialName> specials;
 };
 
-const GenderTables &genderTables() {
+static const GenderTables &genderTables() {
     static const GenderTables result = [] {
         auto transcode = [](std::string_view utf8) {
             return txt::utf8ToEncoded(utf8, ENCODING_WINDOWS_1251);
@@ -628,7 +628,7 @@ const GenderTables &genderTables() {
 }
 
 // Returns the grammatical gender of a Windows-1251 name, masculine if not recognized.
-int genderOf(std::string_view name) {
+static int genderOf(std::string_view name) {
     const GenderTables &tables = genderTables();
 
     const std::vector<std::pair<std::string, int>> *table = nullptr;
@@ -651,7 +651,7 @@ int genderOf(std::string_view name) {
 }
 
 // Maps a grammatical case letter to an index into SpecialName::cases, -1 if it's not a case letter.
-int caseIndex(char c) {
+static int caseIndex(char c) {
     switch (ascii::toLower(c)) {
     case 'i': return 0; // Именительный.
     case 'r': return 1; // Родительный.
@@ -664,7 +664,7 @@ int caseIndex(char c) {
 }
 
 // Returns the Russian plural form index for n: 0 for "1 день", 1 for "2 дня", 2 for "5 дней".
-int pluralFormIndex(int n) {
+static int pluralFormIndex(int n) {
     n = std::abs(n % 100); // % first - abs(INT_MIN) is UB.
     if (n >= 11 && n <= 14) // The original mm7text.dll missed this and produced "11 день".
         return 2;
@@ -678,7 +678,7 @@ int pluralFormIndex(int n) {
 
 // Splits `^L` / `^R` token contents like "ень;ня;ней" into three forms, false if there are fewer than three.
 // Extra semicolons end up in the third form, like in the original DLL.
-bool splitForms(std::string_view forms, std::array<std::string_view, 3> *out) {
+static bool splitForms(std::string_view forms, std::array<std::string_view, 3> *out) {
     size_t semi1 = forms.find(';');
     if (semi1 == std::string_view::npos)
         return false;
@@ -688,8 +688,6 @@ bool splitForms(std::string_view forms, std::array<std::string_view, 3> *out) {
     *out = {forms.substr(0, semi1), forms.substr(semi1 + 1, semi2 - semi1 - 1), forms.substr(semi2 + 1)};
     return true;
 }
-
-} // anonymous namespace
 
 std::string sprintfex(std::string_view str) {
     size_t pos = str.find('^');
