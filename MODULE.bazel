@@ -10,7 +10,7 @@ module(
 bazel_dep(name = "rules_cc", version = "0.2.17")
 
 # Explicit dep for the py_binary loads in //bazel/cmrc (Bazel 9 drops autoload).
-bazel_dep(name = "rules_python", version = "0.23.1")
+bazel_dep(name = "rules_python", version = "0.40.0")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
 
@@ -56,6 +56,11 @@ single_version_override(
     ],
     version = "0.11.1",
 )
+
+# Expose the autoconfigured cc repo: //bazel/platforms:windows_x86_cc_toolchain
+# wraps its unregistered x64->x86 msvc cross toolchain.
+cc_configure = use_extension("@rules_cc//cc:extensions.bzl", "cc_configure_extension")
+use_repo(cc_configure, "local_config_cc")
 
 # Hermetic windows make/pkg-config/cmake - see bazel/rules/windows_tools.bzl.
 windows_tools = use_extension("//bazel/rules:windows_tools.bzl", "windows_tools")
