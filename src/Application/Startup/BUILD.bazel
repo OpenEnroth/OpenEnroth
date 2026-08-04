@@ -1,5 +1,15 @@
+# Same as cmake's OE_DISTRIBUTION_BUILD; enable with --config=distribution.
+config_setting(
+    name = "_distribution",
+    define_values = {"oe_distribution_build": "1"},
+)
+
 cc_library(
     name = "application_startup",
+    local_defines = select({
+        ":_distribution": ["OE_DISTRIBUTION_BUILD"],
+        "//conditions:default": [],
+    }),
     srcs = [
         "PathResolver.cpp",
         "GameStarter.cpp",
