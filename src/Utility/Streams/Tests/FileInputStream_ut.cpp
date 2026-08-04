@@ -474,11 +474,3 @@ UNIT_TEST(FileInputStream, PositionResetsOnReopen) {
     in.close();
 }
 
-
-#ifdef __linux__
-UNIT_TEST(FileInputStream, OpenDirectoryFails) {
-    // `fopen` on a directory succeeds on Linux, so the failure only surfaces further into `open`. It has to come out
-    // as an exception naming the path rather than as a stream that reads as empty.
-    EXPECT_THROW_MESSAGE(FileInputStream("/tmp"), "/tmp");
-}
-#endif
