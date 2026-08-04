@@ -2,6 +2,7 @@
 #include <cerrno>
 #include <cstddef>
 #include <cstdio>
+#include <memory>
 #include <string>
 
 #include "Testing/Unit/UnitTest.h"
@@ -26,6 +27,8 @@ struct Injection {
     int failTellOnCall = -1;     // Same for `tell`.
     int seekCalls = 0;
     int tellCalls = 0;
+    int filesOpened = 0;
+    int filesClosed = 0;
 };
 
 Injection injection;
@@ -57,7 +60,15 @@ int checkError(FILE *file) {
     return injection.failRead ? 1 : native()->checkError(file);
 }
 
+FILE *openFile(const char *path, const char *mode) {
+    FILE *result = native()->openFile(path, mode);
+    if (result)
+        injection.filesOpened++;
+    return result;
+}
+
 int closeFile(FILE *file) {
+    injection.filesClosed++;
     int result = native()->closeFile(file);
     if (!injection.failClose)
         return result;
@@ -98,6 +109,7 @@ int64_t tell(FILE *file) {
 detail::FileApi makeApi() {
     injection = Injection();
     detail::FileApi result = *native();
+    result.openFile = &openFile;
     result.writeBytes = &writeBytes;
     result.readBytes = &readBytes;
     result.checkError = &checkError;
@@ -106,6 +118,15 @@ detail::FileApi makeApi() {
     result.setBuffering = &setBuffering;
     result.seek = &seek;
     result.tell = &tell;
+    return result;
+}
+
+std::string patternedData(size_t size) {
+    // Distinct bytes, so that a misplaced, dropped or duplicated range shows up as a mismatch. A run of identical
+    // bytes can't catch any of that.
+    std::string result(size, '\0');
+    for (size_t i = 0; i < size; i++)
+        result[i] = 'a' + i % 26;
     return result;
 }
 
@@ -264,6 +285,8 @@ UNIT_TEST(FileApi, OpenReportsSetupFailures) {
 
     EXPECT_FALSE(in.isOpen()); // None of those left a stream behind.
     EXPECT_FALSE(out.isOpen());
+    EXPECT_GT(injection.filesOpened, 0); // And none of them leaked its `FILE *`.
+    EXPECT_EQ(injection.filesClosed, injection.filesOpened);
 }
 
 UNIT_TEST(FileApi, LargeSkipReportsSeekFailures) {
@@ -293,4 +316,143 @@ UNIT_TEST(FileApi, LargeSkipReportsSeekFailures) {
         injection.failTellOnCall = -1;
         in.close();
     }
+}
+
+UNIT_TEST(FileApi, WriteResumesAfterShortWrite) {
+    // The point of the position accounting - after a failed write, `position()` is exactly where the next byte lands,
+    // so the caller can retry the unaccepted tail and end up with the file it meant to write.
+    const char *tmpfile = "tmp_write_resume.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    detail::FileApi api = makeApi();
+    detail::ScopedFileApi scope(&api);
+
+    std::string data = patternedData(100);
+    FileOutputStream out(tmpfile, 16);
+    injection.writeLimit = 40;
+    EXPECT_THROW(out.write(data), Exception);
+    injection.writeLimit = -1;
+
+    out.write(data.substr(out.position()));
+    out.close();
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.readAll(), data);
+    in.close();
+}
+
+UNIT_TEST(FileApi, CloseDoesNotDuplicateAfterFailedFlush) {
+    // A flush that fails partway has still pushed a prefix of the buffer out. Those bytes are dropped from the
+    // buffer, and used to not be - `close` then wrote them to the file a second time.
+    const char *tmpfile = "tmp_flush_resume.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    detail::FileApi api = makeApi();
+    detail::ScopedFileApi scope(&api);
+
+    std::string data = patternedData(50);
+    FileOutputStream out(tmpfile, 64);
+    out.write(data);
+    injection.writeLimit = 20;
+    EXPECT_THROW(out.flush(), Exception);
+    EXPECT_EQ(out.position(), 50u); // Flushing consumes nothing, whether or not it fails.
+    injection.writeLimit = -1;
+    out.close();
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.readAll(), data);
+    in.close();
+}
+
+UNIT_TEST(FileApi, ReadResumesAfterError) {
+    // A read that fails consumes nothing past what it drained from the buffer, and `position()` says how much that
+    // was. Once the error clears, reading picks up from exactly there.
+    const char *tmpfile = "tmp_read_resume.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+    std::string data = patternedData(100);
+    writeFile(tmpfile, data);
+
+    detail::FileApi api = makeApi();
+    detail::ScopedFileApi scope(&api);
+
+    FileInputStream in(tmpfile, 16);
+    char buf[50];
+    in.readOrFail(buf, 10); // Leaves 6 buffered bytes, which the failing read below drains first.
+    injection.failRead = true;
+    EXPECT_THROW((void) in.read(buf, sizeof(buf)), Exception);
+    injection.failRead = false;
+
+    size_t pos = in.position();
+    EXPECT_EQ(pos, 16u); // The 10 bytes read, plus the 6 the failing read drained from the buffer before dying.
+    EXPECT_EQ(in.readAll(), data.substr(pos));
+    in.close();
+}
+
+UNIT_TEST(FileApi, ReopenAfterFailedClose) {
+    // A close that fails still tears the stream down, so the same object can be opened again.
+    const char *tmpfile = "tmp_reopen_after_close.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+    std::string data = patternedData(30);
+    writeFile(tmpfile, data);
+
+    detail::FileApi api = makeApi();
+    detail::ScopedFileApi scope(&api);
+
+    FileInputStream in(tmpfile);
+    injection.failClose = true;
+    EXPECT_THROW(in.close(), Exception);
+    injection.failClose = false;
+    in.open(tmpfile);
+    EXPECT_EQ(in.readAll(), data);
+    in.close();
+
+    FileOutputStream out(tmpfile);
+    out.write("garbage");
+    injection.failClose = true;
+    EXPECT_THROW(out.close(), Exception);
+    injection.failClose = false;
+    out.open(tmpfile);
+    out.write(data);
+    out.close();
+
+    FileInputStream check(tmpfile);
+    EXPECT_EQ(check.readAll(), data);
+    check.close();
+}
+
+UNIT_TEST(FileApi, WriteErrorWinsOverCloseError) {
+    // When both the final flush and the close itself fail, the write error is the one that says what was lost, so
+    // it's the one that has to surface. ENOSPC mentions space on all platforms, EIO doesn't.
+    const char *tmpfile = "tmp_error_precedence.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    detail::FileApi api = makeApi();
+    detail::ScopedFileApi scope(&api);
+
+    FileOutputStream out(tmpfile);
+    out.write("hello");
+    injection.writeLimit = 0;
+    injection.failClose = true;
+    EXPECT_THROW_MESSAGE(out.close(), "space");
+    EXPECT_FALSE(out.isOpen()); // Closed either way.
+    injection.writeLimit = -1;
+    injection.failClose = false;
+}
+
+UNIT_TEST(FileApi, DestructorSwallowsBothErrors) {
+    // The destructor closes with throwing disabled, so even a failing flush plus a failing close have to come out as
+    // nothing - throwing there would terminate the process.
+    const char *tmpfile = "tmp_dtor_both_errors.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+
+    detail::FileApi api = makeApi();
+    detail::ScopedFileApi scope(&api);
+
+    auto out = std::make_unique<FileOutputStream>(tmpfile);
+    out->write("hello");
+    injection.writeLimit = 0;
+    injection.failClose = true;
+    EXPECT_NO_THROW(out.reset());
+    injection.writeLimit = -1;
+    injection.failClose = false;
 }
