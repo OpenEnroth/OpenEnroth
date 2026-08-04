@@ -211,15 +211,14 @@ jobs:
             --test_env=OPENENROTH_MM7_HASH=$hash \
             //test/Bin/GameTest:OpenEnroth_GameTest 2>&1 | tee bazel-gametest.log
 
-      # Retrace tests replay canonical traces through the game binary itself.
       - name: '[linux_x86_64] Run retrace tests'
         if: matrix.target == 'linux_x86_64'
         run: |
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --remote_download_toplevel //src/Bin/OpenEnroth:OpenEnroth 2>&1 | tee bazel-build.log
-          python3 test/Bin/RetraceTest/ParallelRetrace.py --ls ${{github.workspace}}/test/Data --headless \
-            ${{github.workspace}}/bazel-bin/src/Bin/OpenEnroth/OpenEnroth 2>&1 | tee bazel-retrace.log
-        env:
-          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
+          hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
+          bazel test --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
+            --test_env=OPENENROTH_MM7_PATH=${{github.workspace}}/OpenEnroth_GameData/mm7 \
+            --test_env=OPENENROTH_MM7_HASH=$hash \
+            //test/Bin/RetraceTest:OpenEnroth_RetraceTest 2>&1 | tee bazel-retrace.log
 
       - name: '[linux_x86_64] Check style'
         if: matrix.target == 'linux_x86_64'
