@@ -37,39 +37,20 @@ bazel_dep(name = "libpng", version = "1.6.58")
 
 # ─── rules_foreign_cc — wraps CMake/Make deps (used for LuaJIT, SDL3, etc.) ──
 
-bazel_dep(name = "rules_foreign_cc", version = "0.11.1")
-
-# Bazel 8 compatibility patches, see the per-patch comments below.
-single_version_override(
-    module_name = "rules_foreign_cc",
-    patch_strip = 1,
-    patches = [
-        # glib_dev has an unused load("@rules_cc//...") that fails under Bazel 8
-        # (rules_cc isn't a non-dev bazel_dep of rules_foreign_cc 0.11.1).
-        "//bazel/patches:rules_foreign_cc_fix_glib.patch",
-        # full_label() returns @@module+ canonical names that $(location) can't
-        # resolve under Bazel 8 Bzlmod.
-        "//bazel/patches:rules_foreign_cc_fix_full_label.patch",
-        # pkgconfig_build.bzl crashes when the make toolchain is path-based
-        # (make_data.target is None).
-        "//bazel/patches:rules_foreign_cc_fix_pkgconfig.patch",
-    ],
-    version = "0.11.1",
-)
+bazel_dep(name = "rules_foreign_cc", version = "0.15.1")
 
 # Expose the autoconfigured cc repo: //bazel/platforms:windows_x86_cc_toolchain
 # wraps its unregistered x64->x86 msvc cross toolchain.
 cc_configure = use_extension("@rules_cc//cc:extensions.bzl", "cc_configure_extension")
 use_repo(cc_configure, "local_config_cc")
 
-# Hermetic windows make/pkg-config/cmake - see bazel/rules/windows_tools.bzl.
+# Hermetic windows make/pkg-config - see bazel/rules/windows_tools.bzl.
 windows_tools = use_extension("//bazel/rules:windows_tools.bzl", "windows_tools")
-use_repo(windows_tools, "cmake_windows", "msys2")
+use_repo(windows_tools, "msys2")
 
 register_toolchains(
     "@msys2//:make_toolchain",
     "@msys2//:pkgconfig_toolchain",
-    "@cmake_windows//:cmake_toolchain",
 )
 
 # ─── Android ─────────────────────────────────────────────────────────────────
@@ -137,6 +118,15 @@ http_archive(
     sha256 = "44e50a7f15976195c6eba36c226b9f95a90d2c46fedd0efb009b7aca2a88f402",
     strip_prefix = "generator-2a912502de4f97dcba4f95c958ee0ddf7bc22cf5",
     url = "https://github.com/TartanLlama/generator/archive/2a912502de4f97dcba4f95c958ee0ddf7bc22cf5.tar.gz",
+)
+
+# Pinned to the thirdparty/cpplint submodule commit; backs //:check_style.
+http_archive(
+    name = "cpplint",
+    build_file = "//bazel/deps:cpplint.BUILD",
+    sha256 = "ed79aec06aab455c1d257e6f39bba0bcf33d9bfebf0879326266b7372549fd54",
+    strip_prefix = "cpplint-45102d1497f3688c7c1eceffb7b87e1fdcce49f3",
+    url = "https://github.com/cpplint/cpplint/archive/45102d1497f3688c7c1eceffb7b87e1fdcce49f3.tar.gz",
 )
 
 http_archive(
