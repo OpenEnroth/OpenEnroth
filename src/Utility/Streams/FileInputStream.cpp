@@ -89,13 +89,18 @@ size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
         if (detail::fileApi->seek(_file, 0, SEEK_END) != 0)
             Exception::throwFromErrno(displayPath());
         int64_t end = detail::fileApi->tell(_file);
-        if (end == -1)
-            Exception::throwFromErrno(displayPath());
-
-        uint64_t bytesLeft = end > cur ? end - cur : 0;
-        size_t bytesSkipped = static_cast<size_t>(std::min<uint64_t>(size, bytesLeft));
-        if (detail::fileApi->seek(_file, cur + bytesSkipped, SEEK_SET) != 0)
-            Exception::throwFromErrno(displayPath());
+        size_t bytesSkipped = 0;
+        if (end != -1) {
+            uint64_t bytesLeft = end > cur ? end - cur : 0;
+            bytesSkipped = static_cast<size_t>(std::min<uint64_t>(size, bytesLeft));
+        }
+        if (end == -1 || detail::fileApi->seek(_file, cur + bytesSkipped, SEEK_SET) != 0) {
+            // The measuring seek above has moved the offset to the end, and `position()` hasn't - put it back, or a
+            // caller that catches the exception reads EOF where its data is.
+            int error = errno;
+            (void) detail::fileApi->seek(_file, cur, SEEK_SET);
+            Exception::throwFromErrno(error, displayPath());
+        }
 
         while (bytesSkipped < size) {
             detail::fileApi->clearError(_file); // So that `ferror` below means "this read failed", not "some earlier read failed".

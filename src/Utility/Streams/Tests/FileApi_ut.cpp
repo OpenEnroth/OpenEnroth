@@ -19,6 +19,7 @@ namespace {
 
 struct Injection {
     int writeLimit = -1;         // Bytes `writeBytes` takes before reporting a short write, -1 to pass through.
+    int readLimit = -1;          // Bytes `readBytes` returns before reporting an error, -1 to pass through.
     bool failRead = false;       // Whether `readBytes` reports an error instead of reading.
     bool failClose = false;
     bool failFlush = false;
@@ -50,14 +51,22 @@ size_t writeBytes(const void *data, size_t size, size_t count, FILE *file) {
 }
 
 size_t readBytes(void *data, size_t size, size_t count, FILE *file) {
-    if (!injection.failRead)
+    if (injection.failRead) {
+        errno = EIO;
+        return 0;
+    }
+    if (injection.readLimit < 0)
         return native()->readBytes(data, size, count, file);
+
+    size_t accepted = native()->readBytes(data, size, std::min<size_t>(count, injection.readLimit), file);
     errno = EIO;
-    return 0;
+    return accepted;
 }
 
 int checkError(FILE *file) {
-    return injection.failRead ? 1 : native()->checkError(file);
+    if (injection.failRead || injection.readLimit >= 0)
+        return 1;
+    return native()->checkError(file);
 }
 
 FILE *openFile(const char *path, const char *mode) {
@@ -292,19 +301,23 @@ UNIT_TEST(FileApi, OpenReportsSetupFailures) {
 UNIT_TEST(FileApi, LargeSkipReportsSeekFailures) {
     const char *tmpfile = "tmp_skip_seek_error.txt";
     ScopedTestFileSlot tmp(tmpfile);
-    writeFile(tmpfile, std::string(100, 'a'));
+    std::string data = patternedData(100);
+    writeFile(tmpfile, data);
 
     detail::FileApi api = makeApi();
     detail::ScopedFileApi scope(&api);
 
     // A large skip works out where the file ends before moving anything, so it tells, seeks to the end, tells again,
-    // then seeks to where it wanted to land. Each of those has its own error path.
+    // then seeks to where it wanted to land. Each of those has its own error path, and each has to leave the file
+    // offset where `position()` says. The measuring seek used to strand the offset at the end when a later call
+    // failed - the skip threw, and a caller that caught the exception then read EOF where its data was.
     for (int failingSeek : {1, 2}) {
         FileInputStream in(tmpfile, 16);
         injection.seekCalls = 0;
         injection.failSeekOnCall = failingSeek;
         EXPECT_THROW_MESSAGE((void) in.skip(1000), tmpfile);
         injection.failSeekOnCall = -1;
+        EXPECT_EQ(in.readAll(), data); // Nothing was skipped, so everything is still there.
         in.close();
     }
 
@@ -314,8 +327,40 @@ UNIT_TEST(FileApi, LargeSkipReportsSeekFailures) {
         injection.failTellOnCall = failingTell;
         EXPECT_THROW_MESSAGE((void) in.skip(1000), tmpfile);
         injection.failTellOnCall = -1;
+        EXPECT_EQ(in.readAll(), data);
         in.close();
     }
+}
+
+UNIT_TEST(FileApi, PartialReadWithErrorReturnsTheData) {
+    // The read paths throw only when a read returned nothing at all. A read that got some bytes before failing has
+    // to come back as data - throwing would lose the bytes it got - and the error resurfaces on the next call.
+    const char *tmpfile = "tmp_partial_read.txt";
+    ScopedTestFileSlot tmp(tmpfile);
+    std::string data = patternedData(100);
+    writeFile(tmpfile, data);
+
+    detail::FileApi api = makeApi();
+    detail::ScopedFileApi scope(&api);
+
+    FileInputStream in(tmpfile, 16);
+    char buf[50];
+    injection.readLimit = 20;
+    EXPECT_EQ(in.read(buf, sizeof(buf)), 20u); // Large read, straight through.
+    EXPECT_EQ(std::string(buf, 20), data.substr(0, 20));
+    injection.readLimit = -1;
+    injection.failRead = true;
+    EXPECT_THROW((void) in.read(buf, sizeof(buf)), Exception); // Nothing came back this time, so it surfaces.
+    injection.failRead = false;
+    EXPECT_EQ(in.readAll(), data.substr(20));
+    in.close();
+
+    FileInputStream small(tmpfile, 16);
+    injection.readLimit = 4;
+    EXPECT_EQ(small.read(buf, 8), 4u); // Small read, via the internal buffer.
+    EXPECT_EQ(std::string(buf, 4), data.substr(0, 4));
+    injection.readLimit = -1;
+    small.close();
 }
 
 UNIT_TEST(FileApi, WriteResumesAfterShortWrite) {

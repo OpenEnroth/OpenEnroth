@@ -329,11 +329,9 @@ UNIT_TEST(InputStream, SizeKnownForMemoryStream) {
 }
 
 UNIT_TEST(InputStream, SizeUnknownByDefault) {
-    InputStream::Buffer buffer;
-    // Default InputStream has size_t(-1) as size.
-    // We can only test this through MemoryInputStream which sets size.
-    MemoryInputStream input("", 0);
-    EXPECT_EQ(input.size(), 0u);
+    // This used to check `size() == 0` on a `MemoryInputStream`, which never observes the unknown-size default.
+    UnsizedInputStream input("", 0);
+    EXPECT_EQ(input.size(), static_cast<size_t>(-1));
 }
 
 UNIT_TEST(InputStream, PositionStartsAtZero) {

@@ -161,12 +161,13 @@ UNIT_TEST(FileInputStream, LargeSkip) {
     size_t skipped = in.skip(50);
     EXPECT_EQ(skipped, 50);
 
-    // Large skip: exceeds buffer size, triggers fseeko.
-    skipped = in.skip(200);
-    EXPECT_EQ(skipped, 200);
+    // Large skip: drains the 78 buffered bytes, and the rest exceeds the buffer size, so it goes through the seek
+    // path. A smaller skip here used to stay under the buffer size after the drain and never left the buffered path.
+    skipped = in.skip(300);
+    EXPECT_EQ(skipped, 300);
 
     std::string remaining = in.readAll();
-    EXPECT_EQ(remaining, data.substr(250));
+    EXPECT_EQ(remaining, data.substr(350));
     in.close();
 }
 
@@ -416,6 +417,8 @@ UNIT_TEST(FileInputStream, PositionAdvancesOnSkip) {
     ScopedTestFileSlot tmp(tmpfile);
 
     std::string data(2000, 'x');
+    for (size_t i = 0; i < data.size(); i++)
+        data[i] = static_cast<char>('a' + (i % 26)); // Patterned, so a misplaced skip shows up in the data.
     FileOutputStream out(tmpfile);
     out.write(data);
     out.close();
@@ -426,10 +429,10 @@ UNIT_TEST(FileInputStream, PositionAdvancesOnSkip) {
     (void) in.skip(50);
     EXPECT_EQ(in.position(), 50u);
 
-    (void) in.skip(200); // Large skip via seek.
-    EXPECT_EQ(in.position(), 250u);
+    (void) in.skip(300); // Large skip via seek - big enough that draining the buffer doesn't cover it.
+    EXPECT_EQ(in.position(), 350u);
 
-    EXPECT_EQ(in.readAll(), data.substr(250));
+    EXPECT_EQ(in.readAll(), data.substr(350));
     EXPECT_EQ(in.position(), in.size());
     in.close();
 }

@@ -60,7 +60,8 @@ class InputStream {
      *
      * @param[out] dst                  String to write the data into. Previous contents are cleared.
      * @return                          Number of bytes read from the stream.
-     * @throws Exception                On error.
+     * @throws Exception                On error. `*dst` comes out empty, and whatever the failed read consumed from
+     *                                  the stream is dropped with it - `position()` tells how much that was.
      */
     [[nodiscard]] size_t readAll(std::string *dst);
 
