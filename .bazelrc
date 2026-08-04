@@ -172,8 +172,8 @@ build --repository_cache=~/.cache/bazel-repo
 
 # ─── Convenience ─────────────────────────────────────────────────────────────
 
-# Same as cmake's OE_DISTRIBUTION_BUILD: defaults to borderless fullscreen.
-build:distribution --define=oe_distribution_build=1
+# Distribution build (see //:distribution): fullscreen default + opt mode.
+build:distribution --//:distribution
 build:distribution --compilation_mode=opt
 
 build --verbose_failures

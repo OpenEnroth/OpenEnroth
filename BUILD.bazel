@@ -1,8 +1,23 @@
-# Root BUILD file — top-level aliases for convenience.
+# Root BUILD file — top-level aliases and user-settable build options.
 # The main binary lives at //src/Bin/OpenEnroth.
+
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 
 alias(
     name = "OpenEnroth",
     actual = "//src/Bin/OpenEnroth",
+    visibility = ["//visibility:public"],
+)
+
+# ─── Build options — bazel's equivalent of the option() block in CMakeLists ──
+# Of the CMake options, only OE_DISTRIBUTION_BUILD affects compiled code.
+# Tests/tools toggles are target selection; style checks live in CI;
+# prebuilt/dummy deps, ccache and linker options are obsolete under bazel.
+
+# Same as cmake's OE_DISTRIBUTION_BUILD: a build for distribution, not a dev
+# build. Pass --//:distribution, or use --config=distribution for opt mode too.
+bool_flag(
+    name = "distribution",
+    build_setting_default = False,
     visibility = ["//visibility:public"],
 )
