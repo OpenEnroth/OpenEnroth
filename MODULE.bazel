@@ -37,46 +37,43 @@ bazel_dep(name = "libpng", version = "1.6.58")
 
 bazel_dep(name = "rules_foreign_cc", version = "0.11.1")
 
-# Patch rules_foreign_cc to remove an unused `load("@rules_cc//cc:defs.bzl", "cc_library")`
-# from the glib_dev build_file_content. That load fails under Bazel 8 / Bzlmod because
-# rules_foreign_cc 0.11.1 doesn't declare rules_cc as a bazel_dep, so @rules_cc is not
-# visible from the glib_dev synthetic repository. The load is completely unused (only
-# cc_import is present, which is a native Bazel rule).
+# Bazel 8 compatibility patches, see the per-patch comments below.
 single_version_override(
     module_name = "rules_foreign_cc",
     version = "0.11.1",
     patches = [
-        # Bug 1: glib_dev build_file_content has an unused load("@rules_cc//...") that
-        # fails under Bazel 8 because rules_foreign_cc 0.11.1 doesn't declare rules_cc
-        # as a non-dev bazel_dep (it's only a dev_dependency).
+        # glib_dev has an unused load("@rules_cc//...") that fails under Bazel 8
+        # (rules_cc isn't a non-dev bazel_dep of rules_foreign_cc 0.11.1).
         "//bazel/patches:rules_foreign_cc_fix_glib.patch",
-        # Bug 2: full_label() uses native.repository_name() which returns @@module+
-        # under Bazel 8 Bzlmod. That canonical form is not resolvable from within the
-        # same module in $(location ...) expressions.
+        # full_label() returns @@module+ canonical names that $(location) can't
+        # resolve under Bazel 8 Bzlmod.
         "//bazel/patches:rules_foreign_cc_fix_full_label.patch",
-        # Bug 3: pkgconfig_build.bzl accesses make_data.target.files unconditionally.
-        # When preinstalled_make_toolchain is used, make_data.target is None (the make
-        # binary is on PATH, not a Bazel target). This crashes with NoneType error.
+        # pkgconfig_build.bzl crashes when the make toolchain is path-based
+        # (make_data.target is None).
         "//bazel/patches:rules_foreign_cc_fix_pkgconfig.patch",
     ],
     patch_strip = 1,
+)
+
+# Hermetic windows make/pkg-config/cmake - see bazel/rules/windows_tools.bzl.
+windows_tools = use_extension("//bazel/rules:windows_tools.bzl", "windows_tools")
+use_repo(windows_tools, "cmake_windows", "msys2")
+
+register_toolchains(
+    "@msys2//:make_toolchain",
+    "@msys2//:pkgconfig_toolchain",
+    "@cmake_windows//:cmake_toolchain",
 )
 
 # ─── Android ─────────────────────────────────────────────────────────────────
 
 bazel_dep(name = "rules_android", version = "0.6.0")
 
-# rules_android_ndk provides the Android NDK C++ toolchain for cc_binary cross-compilation.
-# It reads ANDROID_NDK_HOME from the environment and registers toolchains for all ABIs
-# (arm64-v8a, armeabi-v7a, x86_64). Required for --platforms=//bazel/platforms:android_*
-# targets to find a CC toolchain.
+# NDK C++ toolchains for all ABIs, resolved from ANDROID_NDK_HOME.
 bazel_dep(name = "rules_android_ndk", version = "0.1.3")
 
-# Patch rules_android_ndk to create a stub repo (instead of fail()) when
-# ANDROID_NDK_HOME is not set. This lets Windows/macOS/Linux non-Android builds
-# succeed even though they don't have an NDK; register_toolchains("@androidndk//:all")
-# resolves to the empty set for the stub. Android CI builds set ANDROID_NDK_HOME
-# before invoking Bazel, so they get the real toolchains.
+# Patch: stub repo instead of fail() when ANDROID_NDK_HOME is unset, so
+# non-android builds work without an NDK.
 single_version_override(
     module_name = "rules_android_ndk",
     version = "0.1.3",
@@ -154,9 +151,7 @@ http_archive(
     sha256 = "679230074b411c58d802f8fdd6793523f4bbfa6acb2cc42a7d1bf43474fdef61",
 )
 
-# imgui is in the BCR (even the docking flavour), but its backends package has no
-# SDL3 platform backend and binds to the registry's own SDL - we need the backends
-# compiled against @sdl3_src with the include-prefix patching the CMake build does.
+# BCR imgui has no SDL3 backend; we compile the backends against @sdl3_src.
 http_archive(
     name = "imgui",
     url = "https://github.com/ocornut/imgui/archive/1f7f1f54af38b0350d8c0008b096a9af6de299c7.tar.gz",
@@ -247,16 +242,13 @@ http_archive(
     url = "https://github.com/kcat/openal-soft/archive/dc7d7054a5b4f3bec1dc23a42fd616a0847af948.tar.gz",
     strip_prefix = "openal-soft-dc7d7054a5b4f3bec1dc23a42fd616a0847af948",
     build_file = "//bazel/deps:openal_src.BUILD",
-    # Patch: strip Bazel-injected CXXFLAGS (/Zc:preprocessor, -Isrc, etc.) that
-    # rules_foreign_cc exports via the CXXFLAGS env var and that conflict with
-    # OpenAL-soft's own cmake build.
+    # Patch: strip the bazel --copts that rules_foreign_cc exports via CXXFLAGS.
     patches = ["//bazel/patches:openal_strip_injected_flags.patch"],
     patch_args = ["-p1"],
     sha256 = "dd733d74c33b106b90f83a0e0e9917b39aa401162ff8da23d7948615dcb92ef7",
 )
 
-# FFmpeg n7.0 — configure_make() source build for the 32-bit targets that the
-# BCR ffmpeg module can't serve (it hardcodes x86-64 nasm sources for non-aarch64).
+# FFmpeg n7.0 — configure_make() source build; the BCR module is linux/macos-only.
 http_archive(
     name = "ffmpeg_src",
     url = "https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.0.tar.gz",
