@@ -197,9 +197,9 @@ jobs:
 
       - name: 'Save bazel caches'
         # always(): a red test on master shouldn't discard the warmed cache.
-        # TODO(captainurist): drop the bootstrap clause once master runs this
-        # workflow; it seeds a snapshot from PR runs when no cache exists yet.
-        if: always() && (github.event_name == 'push' && github.ref == 'refs/heads/master' || steps.restore.outputs.cache-matched-key == '')
+        # TODO(captainurist): restrict to master pushes once master runs this
+        # workflow; until then PR runs of this branch keep the snapshots fresh.
+        if: always() && (github.event_name == 'push' && github.ref == 'refs/heads/master' || github.head_ref == 'feature/bazel-migration')
         uses: actions/cache/save@v4
         with:
           path: |
