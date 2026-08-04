@@ -164,10 +164,17 @@ build --experimental_disk_cache_gc_max_size=800M
 # Caches downloaded http_archive tarballs (avoids re-downloading on every clean).
 build --repository_cache=~/.cache/bazel-repo
 
-# ─── Remote cache (GitHub Actions / Buildbuddy) ──────────────────────────────
-# Uncomment and configure once CI is set up:
-# build --remote_cache=grpc://...
-# build --remote_upload_local_results=true
+# ─── BuildBuddy remote cache + build event stream ────────────────────────────
+# CI activates this and supplies the API key via
+# --remote_header=x-buildbuddy-api-key=... (from repo secrets).
+build:remote-cache --bes_backend=grpcs://remote.buildbuddy.io
+build:remote-cache --bes_results_url=https://app.buildbuddy.io/invocation/
+build:remote-cache --remote_cache=grpcs://remote.buildbuddy.io
+build:remote-cache --remote_timeout=10m
+build:remote-cache --remote_download_toplevel
+build:remote-cache --build_metadata=REPO_URL=https://github.com/OpenEnroth/OpenEnroth
+# Invocation pages are viewable without login - it's an open-source repo.
+build:remote-cache --build_metadata=VISIBILITY=PUBLIC
 
 # Flatpak sandbox build (distribution/linux/flatpak): libdwarf lives in /app.
 build:flatpak --copt=-I/app/include --linkopt=-L/app/lib
