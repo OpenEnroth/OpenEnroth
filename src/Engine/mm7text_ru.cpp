@@ -13,6 +13,7 @@
 #include "Library/Serialization/Serialization.h"
 
 #include "Utility/SmallVector.h"
+#include "Utility/String/TransparentFunctors.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Encoding.h"
@@ -567,11 +568,14 @@ static const GenderTableEntry gender_table[] = {
       {"шляпа", 1},     {"элементал", 0},
 };
 
-// Some of the strings we're called on are re-formatted every frame, so each distinct warning is logged once.
-static void warnOnce(const std::string &message) {
-    static std::unordered_set<std::string> reported;
-    if (reported.insert(message).second)
-        logger->warning("{}", message);
+// Some of the strings we're called on are re-formatted every frame, so each warning is logged once per distinct
+// offender, and repeat calls don't pay for message formatting.
+static bool shouldWarnAbout(std::string_view key) {
+    static std::unordered_set<TransparentString, TransparentStringHash, TransparentStringEquals> reported;
+    if (reported.contains(key))
+        return false;
+    reported.emplace(key);
+    return true;
 }
 
 // Names that per-word gender lookup can't handle: multi-word, or declined as a whole.
@@ -649,7 +653,8 @@ static int genderOf(std::string_view name) {
     if (pos != table->end() && pos->first.starts_with(name))
         return pos->second;
 
-    warnOnce(fmt::format("sprintfex: unknown gender: {}", txt::encodedToUtf8(name, ENCODING_WINDOWS_1251)));
+    if (shouldWarnAbout(name))
+        logger->warning("sprintfex: unknown gender: {}", txt::encodedToUtf8(name, ENCODING_WINDOWS_1251));
     return 0;
 }
 
@@ -789,7 +794,8 @@ std::string sprintfex(std::string_view str) {
     while (pos < str.size()) {
         // Loop invariant: str[pos] == '^' here.
         if (!expandToken()) {
-            warnOnce(fmt::format("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251)));
+            if (shouldWarnAbout(str))
+                logger->warning("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
             result += '^'; // Malformed tokens are copied through verbatim.
             pos++;
         }
