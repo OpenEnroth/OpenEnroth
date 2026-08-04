@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <cassert>
+
 #include <algorithm>
 #include <filesystem>
 #include <string>
@@ -24,9 +26,6 @@
 #include "Utility/UnicodeCrt.h"
 
 #include "RetraceTestOptions.h"
-
-static EngineController *g_game = nullptr;
-static PlatformApplication *g_application = nullptr;
 
 static std::string normalizeText(std::string_view text) {
     // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
@@ -60,25 +59,34 @@ static std::string firstDiffContext(std::string_view current, std::string_view c
 }
 
 // One test per trace file, registered at runtime from the --test-path dir.
+// Same static bridge as GameTest: gtest constructs fixtures through no-arg
+// factories, so main() can only pass state in through init().
 class RetraceTest : public testing::Test {
  public:
     explicit RetraceTest(std::string tracePath) : _tracePath(std::move(tracePath)) {}
+
+    static void init(EngineController *game, PlatformApplication *application) {
+        assert(!_game && !_application);
+        assert(game && application);
+        _game = game;
+        _application = application;
+    }
 
     void TestBody() override {
         std::string savePath = _tracePath.substr(0, _tracePath.length() - 5) + ".mm7";
         Blob oldTraceBlob = Blob::fromFile(_tracePath);
         Blob oldSaveBlob = Blob::fromFile(savePath);
 
-        EventTrace oldTrace = EventTrace::fromJsonBlob(oldTraceBlob, g_application->window());
+        EventTrace oldTrace = EventTrace::fromJsonBlob(oldTraceBlob, _application->window());
 
-        EngineTraceSimplePlayer *player = g_application->component<EngineTraceSimplePlayer>();
-        EngineTraceRecorder *recorder = g_application->component<EngineTraceRecorder>();
+        EngineTraceSimplePlayer *player = _application->component<EngineTraceSimplePlayer>();
+        EngineTraceRecorder *recorder = _application->component<EngineTraceRecorder>();
 
         EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
-        recorder->startRecording(g_game, oldSaveBlob);
+        recorder->startRecording(_game, oldSaveBlob);
         engine->config->graphics.FPSLimit.setValue(0);
-        player->playTrace(g_game, std::move(oldTrace.events), _tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
-        EngineTraceRecording recording = recorder->finishRecording(g_game);
+        player->playTrace(_game, std::move(oldTrace.events), _tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
+        EngineTraceRecording recording = recorder->finishRecording(_game);
 
         std::string oldTraceJson = normalizeText(oldTraceBlob.str());
         std::string newTraceJson = normalizeText(recording.trace.str());
@@ -88,8 +96,14 @@ class RetraceTest : public testing::Test {
     }
 
  private:
+    static EngineController *_game;
+    static PlatformApplication *_application;
+
     std::string _tracePath;
 };
+
+EngineController *RetraceTest::_game = nullptr;
+PlatformApplication *RetraceTest::_application = nullptr;
 
 int platformMain(int argc, char **argv) {
     try {
@@ -117,8 +131,7 @@ int platformMain(int argc, char **argv) {
         GameStarter starter(opts);
         int exitCode = 0;
         starter.runInstrumented([&] (EngineController *game) {
-            g_game = game;
-            g_application = starter.application();
+            RetraceTest::init(game, starter.application());
             exitCode = RUN_ALL_TESTS();
         });
         return exitCode;
