@@ -6,6 +6,8 @@ cc_test(
     name = "OpenEnroth_RetraceTest",
     size = "enormous",
     srcs = [
+        "RetraceTest.cpp",
+        "RetraceTest.h",
         "RetraceTestMain.cpp",
         "RetraceTestOptions.cpp",
         "RetraceTestOptions.h",
