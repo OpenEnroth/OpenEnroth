@@ -259,6 +259,7 @@ bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
                                  int respawn_interval_days,
                                  bool *outdoors_was_respawned) {
     decal_builder->Reset(0);
+    engine->particle_engine->ResetParticles();
 
     if (!filename.empty()) {
         Release();

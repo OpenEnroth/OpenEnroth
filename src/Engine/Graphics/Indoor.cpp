@@ -257,6 +257,7 @@ void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
 //----- (00498E0A) --------------------------------------------------------
 void IndoorLocation::Load(std::string_view filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned) {
     decal_builder->Reset(0);
+    engine->particle_engine->ResetParticles();
 
     assert(!bLoaded); // BLV is already loaded!
 
