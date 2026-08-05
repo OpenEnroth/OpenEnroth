@@ -583,7 +583,9 @@ static bool shouldWarnAbout(std::string_view key) {
     return true;
 }
 
-// Names that per-word gender lookup can't handle: multi-word, or declined as a whole.
+// Names the DLL special-cased, and the only ones whose `^P` case letter is honored: two phrases that decline
+// as a whole, and two indeclinable foreign names. All four also carry an explicit gender because they wouldn't
+// be found in the gender tables.
 struct SpecialNameEntry {
     const char *name;
     int gender;
