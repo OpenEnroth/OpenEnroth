@@ -1349,6 +1349,36 @@ GAME_TEST(Issues, Issue2507) {
     EXPECT_LE(damageRange[1], 80); // Per-hit damage is within the 10d8 range.
 }
 
+GAME_TEST(Issues, Issue2549) {
+    // Bloodsplats were lost on reload. Corpses re-emit their splats in a single frame after loading, and the splat
+    // queue used to wrap modulo 64, so most of them were dropped. The other half of the fix - the renderer applying
+    // splats outside the visible sectors - isn't observable here, headless runs use the null renderer.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto splatsTape = tapes.custom([] { return static_cast<int>(engine->decal_builder->bloodsplat_container->uNumBloodsplats); });
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    prepareForBattleTest();
+
+    // 70 corpses in one spot, so they all settle on the same frame.
+    for (int i = 0; i < 70; i++)
+        game.spawnMonster(pParty->pos, MONSTER_PEASANT_DWARF_FEMALE_A_A, SPAWN_DUMMY);
+    ASSERT_EQ(pActors.size(), 70);
+    ASSERT_TRUE(pMonsterStats->infos[pActors[0].monsterInfo.id].bloodSplatOnDeath);
+    for (int i = 0; i < 70; i++)
+        Actor::Die(i);
+
+    engine->config->debug.NoActors.setValue(false);
+    test.startTaping();
+    game.tick(5);
+    test.stopTaping();
+
+    // The queue holds 64 and is drained every frame, so 70 corpses take two frames. Before the fix the count wrapped
+    // to 70 % 64 == 6, and 64 splats were silently thrown away.
+    EXPECT_EQ(splatsTape.max(), 64);
+    EXPECT_TRUE(std::ranges::all_of(pActors, &Actor::donebloodsplat));
+}
+
 GAME_TEST(Issues, Issue2551a) {
     // Save list was capped at 45 files, and saving past the cap produced saves that weren't listed in the load menu.
     game.startNewGame();

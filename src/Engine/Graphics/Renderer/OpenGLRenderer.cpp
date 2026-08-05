@@ -3245,18 +3245,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
             // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
             if (!pface->GetTexture()) continue;
 
-            // check if faces is visible
-            bool onlist = false;
-            for (unsigned i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
-                int listsector = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
-                if (pface->sectorId == listsector) {
-                    onlist = true;
-                    break;
-                }
-            }
-            if (!onlist) continue;
-
-
+            // Decals are baked into world geometry, so they have to be applied everywhere, not just where we're
+            // looking - a reload re-emits every corpse's splat in a single frame.
             decal_builder->ApplyBloodsplatDecalsToFace(pface);
             if (!decal_builder->uNumSplatsThisFace) continue;
 

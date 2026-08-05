@@ -198,7 +198,7 @@ bool DecalBuilder::ApplyBloodsplatDecalsToFace(BLVFace* pFace) {
         Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
         if (pFace->boundingBox.intersectsCube(pBloodsplat->pos, pBloodsplat->radius)) {
             double dotdist = dot(pFace->facePlane.normal, pBloodsplat->pos) + pFace->facePlane.dist;
-            if (dotdist <= pBloodsplat->radius)
+            if (std::abs(dotdist) <= pBloodsplat->radius)  // Splat sphere has to reach the face plane.
                 WhichSplatsOnThisFace[uNumSplatsThisFace++] = i;
         }
     }
