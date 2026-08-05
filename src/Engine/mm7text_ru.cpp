@@ -725,18 +725,18 @@ static bool splitForms(std::string_view forms, std::array<std::string_view, 3> *
 /**
  * Expands a single `^`-token.
  *
- * @param str                           Whole string being expanded, with `str[*pos]` at the leading '^'.
- * @param[in,out] pos                   Token position, moved past the token on success.
+ * @param str                           Rest of the string being expanded, starting at the token's leading '^'.
  * @param[in,out] numbers               Numbers seen in `^I` tokens so far.
  * @param[in,out] gender                Gender of the last `^P` name, -1 if none yet.
  * @param[in,out] result                Output string that the expansion is appended to.
- * @return                              Whether the token was well-formed and expanded.
+ * @return                              Number of characters consumed, 0 if the token is malformed.
  */
-static bool expandToken(std::string_view str, size_t *pos, gch::small_vector<int, 16> *numbers, int *gender,
-                        std::string *result) {
-    char kind = *pos + 1 < str.size() ? str[*pos + 1] : '\0';
+static size_t expandToken(std::string_view str, gch::small_vector<int, 16> *numbers, int *gender,
+                          std::string *result) {
+    assert(str.starts_with('^'));
+    char kind = str.size() > 1 ? str[1] : '\0';
 
-    size_t open = *pos + 2; // Position of '['.
+    size_t open = 2; // Position of '['.
     size_t numberIndex = 0; // Index into `numbers` for ^L.
     int nameCase = 0; // Case index for ^P.
     if (kind == 'L' && open < str.size() && str[open] >= '1' && str[open] <= '9') {
@@ -744,14 +744,14 @@ static bool expandToken(std::string_view str, size_t *pos, gch::small_vector<int
         open++;
     } else if (kind == 'P') {
         if (open >= str.size() || (nameCase = caseIndex(str[open])) == -1)
-            return false;
+            return 0;
         open++;
     }
     if (open >= str.size() || str[open] != '[')
-        return false;
+        return 0;
     size_t close = str.find(']', open);
     if (close == std::string_view::npos)
-        return false;
+        return 0;
     std::string_view contents = str.substr(open + 1, close - open - 1);
 
     switch (kind) {
@@ -767,7 +767,7 @@ static bool expandToken(std::string_view str, size_t *pos, gch::small_vector<int
     case 'L': {
         std::array<std::string_view, 3> forms;
         if (!splitForms(contents, &forms))
-            return false;
+            return 0;
         // No matching ^I means zero, like in the DLL. Buka data has standalone strings that rely on this.
         int number = numberIndex < numbers->size() ? (*numbers)[numberIndex] : 0;
         *result += forms[pluralFormIndex(number)];
@@ -776,7 +776,7 @@ static bool expandToken(std::string_view str, size_t *pos, gch::small_vector<int
     case 'R': {
         std::array<std::string_view, 3> forms;
         if (!splitForms(contents, &forms))
-            return false;
+            return 0;
         // No preceding ^P means masculine, like in the DLL. Buka data relies on this: profession and class
         // names like "охотни^R[к;ца;]" are gendered by a ^P name when formatted into a sentence, and fall
         // back to masculine when displayed standalone.
@@ -807,11 +807,10 @@ static bool expandToken(std::string_view str, size_t *pos, gch::small_vector<int
     } break;
 
     default:
-        return false;
+        return 0;
     }
 
-    *pos = close + 1;
-    return true;
+    return close + 1;
 }
 
 std::string sprintfex(std::string_view str) {
@@ -827,8 +826,9 @@ std::string sprintfex(std::string_view str) {
     int gender = -1; // Gender of the last ^P name, -1 if none yet.
 
     while (pos < str.size()) {
-        assert(str[pos] == '^');
-        if (!expandToken(str, &pos, &numbers, &gender, &result)) {
+        if (size_t consumed = expandToken(str.substr(pos), &numbers, &gender, &result)) {
+            pos += consumed;
+        } else {
             if (shouldWarnAbout(str))
                 logger->warning("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
             result += '^'; // Malformed tokens are copied through verbatim.
