@@ -720,7 +720,7 @@ static bool splitForms(std::string_view forms, std::array<std::string_view, 3> *
  * @param[in,out] result                Output string that the expansion is appended to.
  * @return                              Whether the token was well-formed and expanded.
  */
-static bool expandToken(std::string_view str, size_t *pos, gch::small_vector<int, 10> *numbers, int *gender,
+static bool expandToken(std::string_view str, size_t *pos, gch::small_vector<int, 16> *numbers, int *gender,
                         std::string *result) {
     char kind = *pos + 1 < str.size() ? str[*pos + 1] : '\0';
 
@@ -811,7 +811,7 @@ std::string sprintfex(std::string_view str) {
     result.reserve(str.size());
     result += str.substr(0, pos);
 
-    gch::small_vector<int, 10> numbers; // Numbers seen in ^I tokens so far. The DLL capped these at 10.
+    gch::small_vector<int, 16> numbers; // Numbers seen in ^I tokens so far. The DLL capped these at 10.
     int gender = -1; // Gender of the last ^P name, -1 if none yet.
 
     while (pos < str.size()) {
