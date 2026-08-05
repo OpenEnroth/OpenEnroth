@@ -669,7 +669,10 @@ static int genderOf(std::string_view name) {
     return 0;
 }
 
-// Maps a grammatical case letter to an index into SpecialName::cases, -1 if it's not a case letter.
+/**
+ * @param c                             Grammatical case letter from a `^P` token, `IRDVTP` upper- or lowercase.
+ * @return                              Index of the case into `SpecialName::cases`, or -1 if `c` is not a case letter.
+ */
 static int caseIndex(char c) {
     switch (ascii::toLower(c)) {
     case 'i': return 0; // Именительный.
@@ -682,7 +685,11 @@ static int caseIndex(char c) {
     }
 }
 
-// Returns the Russian plural form index for n: 0 for "1 день", 1 for "2 дня", 2 for "5 дней".
+/**
+ * @param n                             Number to pick a plural form for.
+ * @return                              Russian plural form index for `n`, as an index into the `^L` forms:
+ *                                      0 for "1 день", 1 for "2 дня", 2 for "5 дней".
+ */
 static int pluralFormIndex(int n) {
     n = std::abs(n % 100); // % first - abs(INT_MIN) is UB.
     if (n >= 11 && n <= 14) // The original mm7text.dll missed this and produced "11 день".
