@@ -42,10 +42,6 @@ std::unique_ptr<OutputStream> SubFileSystem::_openForWriting(FileSystemPathView 
     return _base->openForWriting(_basePath / path);
 }
 
-void SubFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
-    _base->rename(_basePath / srcPath, _basePath / dstPath);
-}
-
 bool SubFileSystem::_remove(FileSystemPathView path) {
     return _base->remove(_basePath / path);
 }

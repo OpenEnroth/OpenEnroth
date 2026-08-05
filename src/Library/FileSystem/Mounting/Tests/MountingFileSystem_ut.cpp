@@ -127,38 +127,6 @@ UNIT_TEST(MountingFileSystem, Remove) {
     EXPECT_FALSE(fs.remove("a/a"));
 }
 
-UNIT_TEST(MountingFileSystem, RenameSameFs) {
-    MemoryFileSystem mfs("");
-
-    MountingFileSystem fs("");
-    fs.mount("a", &mfs);
-
-    mfs.write("a", Blob::fromString("123"));
-
-    fs.rename("a/a", "a/b");
-
-    EXPECT_EQ(mfs.read("b").str(), "123");
-    EXPECT_EQ(fs.read("a/b").str(), "123");
-    EXPECT_EQ(fs.ls("a"), std::vector<DirectoryEntry>({{"b", FILE_REGULAR}}));
-}
-
-UNIT_TEST(MountingFileSystem, RenameDifferentFs) {
-    MemoryFileSystem mfs1("");
-    MemoryFileSystem mfs2("");
-
-    MountingFileSystem fs("");
-    fs.mount("1", &mfs1);
-    fs.mount("2", &mfs2);
-
-    mfs1.write("a", Blob::fromString("123"));
-
-    fs.rename("1/a", "2/a");
-
-    EXPECT_FALSE(mfs1.exists("a"));
-    EXPECT_TRUE(mfs2.exists("a"));
-    EXPECT_EQ(mfs2.read("a").str(), "123");
-}
-
 UNIT_TEST(MountingFileSystem, Binary) {
     MountingFileSystem fs("");
     fs.mount("0", &fs);

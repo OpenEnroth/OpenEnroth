@@ -79,38 +79,6 @@ std::unique_ptr<OutputStream> LowercaseFileSystem::_openForWriting(FileSystemPat
     return result;
 }
 
-void LowercaseFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
-    if (hasUpper(dstPath.string()))
-        FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
-
-    auto [srcBasePath, srcNode, srcTail] = walk(srcPath);
-    if (!srcTail.isEmpty())
-        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
-    if (srcNode->value().conflicting)
-        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_NOT_WRITEABLE, srcPath, dstPath);
-
-    auto [dstBasePath, dstNode, dstTail] = walk(dstPath);
-    if (dstNode->value().type == FILE_DIRECTORY && dstTail.isEmpty())
-        FileSystemException::raise(this, FS_RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
-    if (srcNode->value().type == FILE_DIRECTORY && dstTail.isEmpty())
-        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_IS_DIR_DST_IS_FILE, srcPath, dstPath);
-    if (dstNode->value().conflicting)
-        FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
-
-    dstBasePath /= dstTail;
-    try {
-        _base->rename(srcBasePath, dstBasePath);
-    } catch (...) {
-        // We have no idea about the state of the underlying FS now. Don't bother checking, just invalidate the caches.
-        invalidateLs(srcNode->parent());
-        invalidateLs(dstTail.isEmpty() ? dstNode->parent() : dstNode);
-        throw;
-    }
-
-    cacheInsert(dstNode, dstTail, srcNode->value().type);
-    cacheRemove(srcNode);
-}
-
 bool LowercaseFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
 

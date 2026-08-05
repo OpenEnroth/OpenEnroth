@@ -25,8 +25,8 @@
  * In the example above, repeated calls to `mount` create a hierarchy of virtual directories. These virtual directories
  * override everything with the same name that existed in the underlying file systems.
  *
- * Note that `rename` and `remove` only work on regular files, and will fail on virtual directories. If you want to
- * tweak the virtual directory tree, use `mount` and `unmount`.
+ * Note that `remove` only works on regular files, and will fail on virtual directories. If you want to tweak the
+ * virtual directory tree, use `mount` and `unmount`.
  */
 class MountingFileSystem : public FileSystem {
  public:
@@ -48,7 +48,6 @@ class MountingFileSystem : public FileSystem {
     virtual void _write(FileSystemPathView path, const Blob &data) override;
     virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
     virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) override;
-    virtual void _rename(FileSystemPathView srcPath, FileSystemPathView dstPath) override;
     virtual bool _remove(FileSystemPathView path) override;
     virtual std::string _displayPath(FileSystemPathView path) const override;
 

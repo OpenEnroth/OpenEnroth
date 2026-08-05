@@ -198,56 +198,6 @@ class FileSystemTrie {
         return insertOrAssign(root(), path, std::move(value));
     }
 
-    std::unique_ptr<Node> extract(Node *node) {
-        assert(node);
-
-        Node *parent = node->_parent;
-        if (parent) {
-            auto pos = parent->_children.find(node->_key);
-
-            std::unique_ptr<Node> result = std::move(pos->second);
-            result->_parent = nullptr;
-            result->_key.clear();
-
-            parent->_children.erase(pos);
-            _prune(parent); // parent might have become empty as a result.
-
-            return result;
-        } else {
-            // Extracting root node.
-            std::unique_ptr<Node> result = std::make_unique<Node>(nullptr, "");
-            swap(result, _root);
-            return result;
-        }
-    }
-
-    Node *insertOrAssign(Node *base, FileSystemPathView relativePath, std::unique_ptr<Node> node) {
-        assert(base);
-        assert(node);
-        assert(node->_parent == nullptr);
-        assert(node->_key.empty());
-
-        if (base == root() && relativePath.isEmpty()) { // Replacing root.
-            _root = std::move(node);
-            return root();
-        }
-
-        if (!node->hasValue() && node->children().empty()) { // Replacing with an empty node == node deletion.
-            erase(base, relativePath);
-            return nullptr;
-        }
-
-        // We need to preserve pointer values so will have to jump through hoops here a bit.
-        Node *branch = _grow(base, relativePath);
-        node->_parent = branch->_parent;
-        node->_key = std::move(branch->_key); // Can move the string out as branch will be destroyed in the next statement.
-        return (node->_parent->_children[node->_key] = std::move(node)).get();
-    }
-
-    Node *insertOrAssign(FileSystemPathView path, std::unique_ptr<Node> node) {
-        return insertOrAssign(root(), path, std::move(node));
-    }
-
     void clear() {
         erase(root());
     }

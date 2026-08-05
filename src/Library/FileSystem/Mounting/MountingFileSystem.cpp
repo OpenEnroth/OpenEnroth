@@ -113,28 +113,6 @@ std::unique_ptr<OutputStream> MountingFileSystem::_openForWriting(FileSystemPath
     return mount->openForWriting(tail);
 }
 
-void MountingFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
-    auto [srcNode, srcMount, srcTail] = walk(srcPath);
-    auto [dstNode, dstMount, dstTail] = walk(dstPath);
-
-    if (srcNode)
-        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_NOT_WRITEABLE, srcPath, dstPath);
-    if (dstNode)
-        FileSystemException::raise(this, FS_RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
-    if (!srcMount)
-        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
-    if (!dstMount)
-        FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
-
-    if (srcMount == dstMount) {
-        srcMount->rename(srcTail, dstTail);
-    } else {
-        // Just forward to recursive copy & remove. Every call will resolve the mount points again and again, so
-        // suboptimal, but OK for now.
-        FileSystem::_rename(srcPath, dstPath);
-    }
-}
-
 bool MountingFileSystem::_remove(FileSystemPathView path) {
     auto [node, mount, tail] = walk(path);
     if (node)

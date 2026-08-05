@@ -33,10 +33,6 @@ std::unique_ptr<OutputStream> ProxyFileSystem::_openForWriting(FileSystemPathVie
     return nonNullBase()->_openForWriting(path);
 }
 
-void ProxyFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
-    return nonNullBase()->_rename(srcPath, dstPath);
-}
-
 bool ProxyFileSystem::_remove(FileSystemPathView path) {
     return nonNullBase()->_remove(path);
 }

@@ -51,10 +51,6 @@ class FileSystemPath {
         return _path.empty();
     }
 
-    [[nodiscard]] bool isPrefixOf(FileSystemPathView path) const {
-        return FileSystemPathView(*this).isPrefixOf(path);
-    }
-
     [[nodiscard]] bool isEscaping() const {
         return FileSystemPathView(*this).isEscaping();
     }

@@ -28,19 +28,6 @@ class FileSystemPathView {
         return _path.empty();
     }
 
-    /**
-     * @param path                      Path to check against.
-     * @return                          Whether this path is a starting subpath of `path`. Note that this is different
-     *                                  from just checking whether this path is a lexicographical prefix of `path`.
-     *                                  Every path is always a starting subpath of itself.
-     */
-    [[nodiscard]] bool isPrefixOf(FileSystemPathView path) const {
-        return
-            path._path.size() >= _path.size() &&
-            path._path.starts_with(_path) &&
-            (path._path.size() == _path.size() || _path.empty() || path._path[_path.size()] == '/');
-    }
-
     [[nodiscard]] bool isEscaping() const {
         return _path == ".." || _path.starts_with("../");
     }

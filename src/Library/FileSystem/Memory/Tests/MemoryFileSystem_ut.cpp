@@ -20,11 +20,8 @@ UNIT_TEST(MemoryFileSystem, EmptyRoot) {
     EXPECT_ANY_THROW((void) fs.openForReading(""));
     EXPECT_ANY_THROW((void) fs.openForWriting(""));
     EXPECT_ANY_THROW(fs.remove(""));
-    EXPECT_ANY_THROW(fs.rename("", ""));
-    EXPECT_ANY_THROW(fs.rename("", "new"));
 
     fs.write("a/b.bin", Blob());
-    EXPECT_ANY_THROW(fs.rename("a", ""));
 }
 
 UNIT_TEST(MemoryFileSystem, Ls) {
@@ -193,36 +190,6 @@ UNIT_TEST(MemoryFileSystem, DestructorFlushesData) {
     EXPECT_EQ(fs.read("a").str(), "123");
 }
 
-UNIT_TEST(MemoryFileSystem, Rename) {
-    MemoryFileSystem fs("");
-
-    fs.write("a/b/c", Blob::fromString("123"));
-
-    std::unique_ptr<InputStream> input = fs.openForReading("a/b/c");
-    std::unique_ptr<OutputStream> output = fs.openForWriting("a/b/d");
-
-    EXPECT_ANY_THROW(fs.rename("a/b", "a/b/c"));
-    EXPECT_ANY_THROW(fs.rename("a/b", "a/b/d"));
-    EXPECT_ANY_THROW(fs.rename("a/b", "a/b/1"));
-    EXPECT_ANY_THROW(fs.rename("a/b", "a"));
-
-    fs.rename("a/b", "x/y");
-    EXPECT_FALSE(fs.exists("a")); // "a" is now empty, so was trimmed.
-    EXPECT_ANY_THROW((void) fs.ls("a"));
-
-    EXPECT_EQ(input->readAll(), "123"); // Moving files around keeps the streams valid.
-    output->write("1234");
-    output->close();
-
-    EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
-        {"x", FILE_DIRECTORY},
-        {"x/y", FILE_DIRECTORY},
-        {"x/y/c", FILE_REGULAR, "123"},
-        {"x/y/d", FILE_REGULAR, "1234"}
-    }));
-}
-
 UNIT_TEST(MemoryFileSystem, Overwrite) {
     MemoryFileSystem fs("");
     fs.write("a", Blob::fromString("a"));
@@ -260,18 +227,3 @@ UNIT_TEST(MemoryFileSystem, ExceptionMessage) {
     EXPECT_THROW_MESSAGE((void) fs.ls("a"), "mem://a");
 }
 
-UNIT_TEST(MemoryFileSystem, SelfRename) {
-    MemoryFileSystem fs("");
-
-    fs.write("a", Blob::fromString("123"));
-    fs.rename("a", "a");
-
-    EXPECT_TRUE(fs.exists("a"));
-    EXPECT_EQ(fs.read("a").str(), "123");
-
-    fs.write("d/x", Blob::fromString("456"));
-    fs.rename("d", "d");
-
-    EXPECT_TRUE(fs.exists("d/x"));
-    EXPECT_EQ(fs.read("d/x").str(), "456");
-}

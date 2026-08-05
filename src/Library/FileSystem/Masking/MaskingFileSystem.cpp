@@ -109,14 +109,6 @@ std::unique_ptr<OutputStream> MaskingFileSystem::_openForWriting(FileSystemPathV
     return ProxyFileSystem::_openForWriting(path);
 }
 
-void MaskingFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
-    if (isMasked(srcPath))
-        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
-    if (isMasked(dstPath))
-        FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
-    return ProxyFileSystem::_rename(srcPath, dstPath);
-}
-
 bool MaskingFileSystem::_remove(FileSystemPathView path) {
     if (isMasked(path))
         return false;

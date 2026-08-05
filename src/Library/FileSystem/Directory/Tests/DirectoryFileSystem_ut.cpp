@@ -126,8 +126,6 @@ UNIT_TEST(DirectoryFileSystem, EscapingPaths) {
     EXPECT_ANY_THROW(fs.write("../1.txt", Blob()));
     EXPECT_ANY_THROW((void) fs.openForWriting("../1.txt"));
     EXPECT_ANY_THROW(fs.remove("../1.txt"));
-    EXPECT_ANY_THROW(fs.rename("../1.txt", "2.txt"));
-    EXPECT_ANY_THROW(fs.rename("1.txt", "../2.txt"));
 }
 
 UNIT_TEST(DirectoryFileSystem, EscapingDisplayPath) {
