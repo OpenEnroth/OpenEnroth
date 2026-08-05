@@ -199,7 +199,13 @@ jobs:
 
       # dbg/opt mirror the cmake matrix' Debug/RelWithDebInfo; separate steps so
       # CI timings stay comparable per config.
+      # TODO(captainurist): windows dbg needs debug-CRT dependency builds.
+      # Bazel's dbg mode compiles our code /MTd, while SDL3/OpenAL are built
+      # /MT and ffmpeg /MD, so the final link fails on _ITERATOR_DEBUG_LEVEL.
+      # The cmake build sidesteps this by shipping prebuilt MTd deps. Must be
+      # fixed before cmake can be dropped - windows devs need debug builds.
       - name: 'Build (dbg)'
+        if: env.MATRIX_PLATFORM != 'windows'
         run: |
           if [ "${{matrix.target}}" = "android_universal" ]; then
             target=//android/openenroth:main
@@ -258,7 +264,9 @@ jobs:
       - name: '[non-android] Run unit tests'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
+          # windows has no dbg build (see the Build (dbg) TODO), so test what it built.
+          mode=dbg; [ "${{env.MATRIX_PLATFORM}}" = "windows" ] && mode=opt
+          bazel test -c $mode --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
 
       # BuildBuddy invocation URLs, for timing/cache analysis without log access.
       - name: 'Annotate invocation URLs'
