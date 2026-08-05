@@ -568,8 +568,13 @@ static const GenderTableEntry gender_table[] = {
       {"шляпа", 1},     {"элементал", 0},
 };
 
-// Some of the strings we're called on are re-formatted every frame, so each warning is logged once per distinct
-// offender, and repeat calls don't pay for message formatting.
+/**
+ * Some of the strings we're called on are re-formatted every frame, so each warning is logged once per distinct
+ * offender, and repeat calls don't pay for message formatting.
+ *
+ * @param key                           Offending name or string.
+ * @return                              Whether `key` is seen for the first time and a warning should be logged.
+ */
 static bool shouldWarnAbout(std::string_view key) {
     static std::unordered_set<TransparentString, TransparentStringHash, TransparentStringEquals> reported;
     if (reported.contains(key))
@@ -684,8 +689,14 @@ static int pluralFormIndex(int n) {
     return 2;
 }
 
-// Splits `^L` / `^R` token contents like "ень;ня;ней" into three forms, false if there are fewer than three.
-// Extra semicolons end up in the third form, like in the original DLL.
+/**
+ * Splits `^L` / `^R` token contents like "ень;ня;ней" into three word forms. Extra semicolons end up in the third
+ * form, like in the original DLL.
+ *
+ * @param forms                         Token contents to split.
+ * @param[out] out                      Resulting three forms.
+ * @return                              Whether the split succeeded, i.e. there were at least three forms.
+ */
 static bool splitForms(std::string_view forms, std::array<std::string_view, 3> *out) {
     size_t semi1 = forms.find(';');
     if (semi1 == std::string_view::npos)
