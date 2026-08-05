@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <functional>
 #include <cstdlib>
 #include <string>
@@ -826,7 +827,7 @@ std::string sprintfex(std::string_view str) {
     int gender = -1; // Gender of the last ^P name, -1 if none yet.
 
     while (pos < str.size()) {
-        // Loop invariant: str[pos] == '^' here.
+        assert(str[pos] == '^');
         if (!expandToken(str, &pos, &numbers, &gender, &result)) {
             if (shouldWarnAbout(str))
                 logger->warning("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
