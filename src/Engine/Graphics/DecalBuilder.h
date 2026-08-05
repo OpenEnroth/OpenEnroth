@@ -42,10 +42,13 @@ struct Bloodsplat {
 
 // store for all the bloodsplats to be applied
 struct BloodsplatContainer {
-    void AddBloodsplat(const Vec3f &pos, float radius, Color color);
+    /**
+     * @return                          False if the queue is full and the splat was dropped.
+     */
+    bool AddBloodsplat(const Vec3f &pos, float radius, Color color);
 
     std::array<Bloodsplat, 64> pBloodsplats_to_apply;
-    unsigned int uNumBloodsplats = 0;  // this loops round so old bloodsplats are replaced
+    unsigned int uNumBloodsplats = 0;  // Queued splats, reset every frame in the game loop.
 };
 
 // decal is the created geometry to display
@@ -76,8 +79,8 @@ struct DecalBuilder {
     DecalBuilder();
     virtual ~DecalBuilder() {}
 
-    void AddBloodsplat(const Vec3f &pos, Color color, float radius);
-    void Reset(bool bPreserveBloodsplats);
+    bool AddBloodsplat(const Vec3f &pos, Color color, float radius);
+    void Reset();
     char BuildAndApplyDecals(int light_level, LocationFlags locationFlags, const Planef &FacePlane, int NumFaceVerts,
                              RenderVertexSoft *FaceVerts, char ClipFlags, int uSectorID);
     bool Build_Decal_Geometry(
@@ -105,10 +108,12 @@ struct DecalBuilder {
     void DrawBloodsplats();
     void DrawDecalDebugOutlines();
 
-    std::array<Decal, 1024> Decals;  // actual decal geom store
-    unsigned int DecalsCount = 0;  // number of decals
+    std::array<Decal, 1024> Decals;  // Ring of decal geometry, oldest is evicted when full.
+    unsigned int DecalsCount = 0;  // Live decals, saturates at Decals.size().
+    unsigned int DecalsCursor = 0;  // Slot the next decal goes into.
 
     // for building decal geom
+    Decal decalScratch;  // Decals are built here, then copied into the ring once clipping keeps them.
     int uNumSplatsThisFace = 0;  // numeber of bloodsplats that overlap this face
     std::array<int, 1024> WhichSplatsOnThisFace = {{}};  // Indices into BloodsplatContainer::pBloodsplats_to_apply.
 

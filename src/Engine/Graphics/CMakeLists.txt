@@ -80,3 +80,15 @@ target_link_libraries(engine_graphics
         sol2
         PRIVATE
         glad)
+
+if(OE_BUILD_TESTS)
+    set(TEST_ENGINE_GRAPHICS_SOURCES
+            Tests/DecalBuilder_ut.cpp)
+
+    add_library(test_engine_graphics OBJECT ${TEST_ENGINE_GRAPHICS_SOURCES})
+    target_link_libraries(test_engine_graphics PUBLIC testing_unit engine_graphics)
+
+    target_check_style(test_engine_graphics)
+
+    target_link_libraries(OpenEnroth_GameTest PUBLIC test_engine_graphics)
+endif()

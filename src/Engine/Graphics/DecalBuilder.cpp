@@ -1,5 +1,8 @@
 #include "Engine/Graphics/DecalBuilder.h"
 
+#include <algorithm>
+#include <cmath>
+
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Indoor.h"
@@ -27,16 +30,18 @@ float Decal::Fade_by_time() {
 }
 
 //----- (0043B6EF) --------------------------------------------------------
-void BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius, Color color) {
-    // this adds to store of bloodsplats to apply
-    Bloodsplat &splat = pBloodsplats_to_apply[uNumBloodsplats];
+bool BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius, Color color) {
+    // Consumers read uNumBloodsplats as a count, so it saturates instead of wrapping.
+    if (uNumBloodsplats == pBloodsplats_to_apply.size())
+        return false;
+
+    Bloodsplat &splat = pBloodsplats_to_apply[uNumBloodsplats++];
     splat.pos = pos;
     splat.radius = radius;
     splat.color = color;
     splat.blood_flags = DecalFlagsNone;
     splat.fade_timer = 0_ticks;
-
-    uNumBloodsplats = (uNumBloodsplats + 1) % 64;
+    return true;
 }
 
 DecalBuilder::DecalBuilder() {
@@ -46,16 +51,15 @@ DecalBuilder::DecalBuilder() {
 
 
 //----- (0049B490) --------------------------------------------------------
-void DecalBuilder::AddBloodsplat(const Vec3f &pos, Color color, float radius) {
-    bloodsplat_container->AddBloodsplat(pos, radius, color);
+bool DecalBuilder::AddBloodsplat(const Vec3f &pos, Color color, float radius) {
+    return bloodsplat_container->AddBloodsplat(pos, radius, color);
 }
 
 //----- (0049B525) --------------------------------------------------------
-void DecalBuilder::Reset(bool bPreserveBloodsplats) {
-    if (!bPreserveBloodsplats) {
-        bloodsplat_container->uNumBloodsplats = 0;
-    }
+void DecalBuilder::Reset() {
+    bloodsplat_container->uNumBloodsplats = 0;
     DecalsCount = 0;
+    DecalsCursor = 0;
 }
 
 //----- (0049B540) --------------------------------------------------------
@@ -98,7 +102,7 @@ bool DecalBuilder::Build_Decal_Geometry(
     RenderVertexSoft *faceverts, char uClipFlags) {
 
     if (DecalRadius == 0.0f) return 1;
-    Decal *decal = &this->Decals[this->DecalsCount];
+    Decal *decal = &this->decalScratch;
     decal->fadetime = blood->fade_timer;
     decal->decal_flags = blood->blood_flags;
 
@@ -175,8 +179,9 @@ bool DecalBuilder::Build_Decal_Geometry(
         if (!decal->uNumVertices) return 1;
 
         // otherwise keep this decal
-        this->DecalsCount++;
-        if (this->DecalsCount == 1024) this->DecalsCount = 0;
+        this->Decals[this->DecalsCursor] = *decal;
+        this->DecalsCursor = (this->DecalsCursor + 1) % this->Decals.size();
+        this->DecalsCount = std::min<unsigned>(this->DecalsCount + 1, this->Decals.size());
         return 1;
     }
 

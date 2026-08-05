@@ -257,7 +257,7 @@ void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
 
 //----- (00498E0A) --------------------------------------------------------
 void IndoorLocation::Load(std::string_view filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned) {
-    decal_builder->Reset(0);
+    decal_builder->Reset();
     engine->particle_engine->ResetParticles();
 
     assert(!bLoaded); // BLV is already loaded!
@@ -797,11 +797,12 @@ void BLV_UpdateActors() {
             if (actor.aiState == Dead || actor.aiState == Dying) {
                 if (actor.pos.z < floorZ + 30) { // 30 to provide small error / rounding factor
                     if (pMonsterStats->infos[actor.monsterInfo.id].bloodSplatOnDeath) {
+                        bool queued = true;
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, floorZ + 30), colorTable.Red, splatRadius);
+                            queued = EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, floorZ + 30), colorTable.Red, splatRadius);
                         }
-                        actor.donebloodsplat = true;
+                        actor.donebloodsplat = queued;  // Retry next frame if the queue was full.
                     }
                 }
             }

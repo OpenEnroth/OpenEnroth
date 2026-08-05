@@ -256,7 +256,7 @@ double OutdoorLocation::GetFogDensityByTime() {
 bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
                                  int respawn_interval_days,
                                  bool *outdoors_was_respawned) {
-    decal_builder->Reset(0);
+    decal_builder->Reset();
     engine->particle_engine->ResetParticles();
 
     if (!filename.empty()) {
@@ -1603,11 +1603,12 @@ void UpdateActors_ODM() {
             if (actor.aiState == Dead || actor.aiState == Dying) {
                 if (actor.pos.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
                     if (pMonsterStats->infos[actor.monsterInfo.id].bloodSplatOnDeath) {
+                        bool queued = true;
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
+                            queued = EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
                         }
-                        actor.donebloodsplat = true;
+                        actor.donebloodsplat = queued;  // Retry next frame if the queue was full.
                     }
                 }
             }
