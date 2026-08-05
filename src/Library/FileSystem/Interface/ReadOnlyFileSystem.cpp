@@ -12,10 +12,6 @@ std::unique_ptr<OutputStream> ReadOnlyFileSystem::_openForWriting(FileSystemPath
     reportWriteError(path);
 }
 
-void ReadOnlyFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
-    FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
-}
-
 bool ReadOnlyFileSystem::_remove(FileSystemPathView path) {
     if (!_exists(path))
         return false;

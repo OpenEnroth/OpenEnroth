@@ -49,28 +49,6 @@ UNIT_TEST(FileSystemPath, Normalization) {
     EXPECT_EQ(FileSystemPath("foo/.../bar/...").string(), "foo/.../bar/...");
 }
 
-UNIT_TEST(FileSystemPath, Prefix) {
-    EXPECT_TRUE(FileSystemPath("foo").isPrefixOf(FileSystemPath("foo")));
-    EXPECT_TRUE(FileSystemPath("").isPrefixOf(FileSystemPath("")));
-
-    EXPECT_TRUE(FileSystemPath("").isPrefixOf(FileSystemPath("a")));
-    EXPECT_TRUE(FileSystemPath("").isPrefixOf(FileSystemPath("a/b")));
-    EXPECT_TRUE(FileSystemPath("a").isPrefixOf(FileSystemPath("a/b")));
-
-    EXPECT_FALSE(FileSystemPath("a").isPrefixOf(FileSystemPath("aa/bb")));
-    EXPECT_FALSE(FileSystemPath("aa/b").isPrefixOf(FileSystemPath("aa/bb")));
-
-    EXPECT_FALSE(FileSystemPath("a/b").isPrefixOf(FileSystemPath("a")));
-    EXPECT_FALSE(FileSystemPath("a/b").isPrefixOf(FileSystemPath("")));
-    EXPECT_FALSE(FileSystemPath("a").isPrefixOf(FileSystemPath("")));
-
-    EXPECT_FALSE(FileSystemPath("..").isPrefixOf(FileSystemPath("")));
-    EXPECT_FALSE(FileSystemPath("../..").isPrefixOf(FileSystemPath("")));
-    EXPECT_TRUE(FileSystemPath("").isPrefixOf(FileSystemPath("..")));
-    EXPECT_TRUE(FileSystemPath("").isPrefixOf(FileSystemPath("../..")));
-    EXPECT_TRUE(FileSystemPath("..").isPrefixOf(FileSystemPath("../..")));
-}
-
 UNIT_TEST(FileSystemPath, EmptyChunks) {
     EXPECT_TRUE(FileSystemPath().split().empty());
     EXPECT_TRUE(FileSystemPath(".").split().empty());

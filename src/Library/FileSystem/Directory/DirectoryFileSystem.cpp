@@ -118,21 +118,6 @@ std::unique_ptr<OutputStream> DirectoryFileSystem::_openForWriting(FileSystemPat
     return std::make_unique<FileOutputStream>(basePath.generic_string());
 }
 
-void DirectoryFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
-    assert(!srcPath.isEmpty());
-    assert(!dstPath.isEmpty());
-
-    std::filesystem::path srcBasePath = makeBasePath(srcPath);
-    std::filesystem::path dstBasePath = makeBasePath(dstPath);
-
-    std::error_code ec;
-    if (std::filesystem::is_directory(dstBasePath, ec))
-        FileSystemException::raise(this, FS_RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
-
-    // This call will copy the file if POSIX rename() fails, so if it throws then we can't really do anything either.
-    std::filesystem::rename(srcBasePath, dstBasePath);
-}
-
 bool DirectoryFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
     return std::filesystem::remove_all(makeBasePath(path)) > 0;

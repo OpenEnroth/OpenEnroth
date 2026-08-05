@@ -81,7 +81,6 @@ UNIT_TEST(LowercaseFileSystem, Conflict) {
     EXPECT_ANY_THROW((void) fs.openForReading("a.bin"));
     EXPECT_ANY_THROW((void) fs.openForWriting("a.bin"));
     EXPECT_ANY_THROW((void) fs.remove("a.bin"));
-    EXPECT_ANY_THROW(fs.rename("a.bin", "b.bin"));
 
     EXPECT_TRUE(fs0.exists("A.bin"));
     EXPECT_TRUE(fs0.exists("a.bin"));
@@ -157,91 +156,12 @@ UNIT_TEST(LowercaseFileSystem, PruneRemove) {
     EXPECT_FALSE(fs0.exists("a")); // Because memory fs doesn't support empty dirs either.
 }
 
-UNIT_TEST(LowercaseFileSystem, PruneRename) {
-    MemoryFileSystem fs0("");
-    fs0.write("A/A/A", Blob::fromString("123"));
-
-    LowercaseFileSystem fs(&fs0);
-    fs.rename("a/a/a", "b/b/b");
-
-    EXPECT_FALSE(fs.exists("a")); // Pruning happened.
-    EXPECT_TRUE(fs.exists("b"));
-    EXPECT_EQ(fs.read("b/b/b").str(), "123");
-
-    EXPECT_FALSE(fs0.exists("A"));
-    EXPECT_TRUE(fs0.exists("b"));
-    EXPECT_EQ(fs0.read("b/b/b").str(), "123");
-}
-
-UNIT_TEST(LowercaseFileSystem, RenameReplace) {
-    MemoryFileSystem fs0("");
-    fs0.write("A/A/A", Blob::fromString("AAA"));
-    fs0.write("B/B/B", Blob::fromString("BBB"));
-
-    LowercaseFileSystem fs(&fs0);
-    fs.rename("a/a/a", "b/b/b");
-
-    EXPECT_FALSE(fs.exists("a"));
-    EXPECT_TRUE(fs.exists("b"));
-    EXPECT_EQ(fs.read("b/b/b").str(), "AAA");
-
-    EXPECT_FALSE(fs0.exists("A"));
-    EXPECT_TRUE(fs0.exists("B"));
-    EXPECT_EQ(fs0.read("B/B/B").str(), "AAA");
-}
-
-UNIT_TEST(LowercaseFileSystem, RenameFolder) {
-    MemoryFileSystem fs0("");
-    fs0.write("A/A/A/A", Blob::fromString("AAAA"));
-    fs0.write("B/tmp", Blob());
-
-    LowercaseFileSystem fs(&fs0);
-    fs.rename("a/a", "b/b");
-
-    EXPECT_FALSE(fs.exists("a"));
-    EXPECT_TRUE(fs.exists("b/b/a/a"));
-    EXPECT_TRUE(fs.exists("b/tmp"));
-
-    EXPECT_FALSE(fs0.exists("A"));
-    EXPECT_TRUE(fs0.exists("B/b/A/A"));
-    EXPECT_EQ(fs0.read("B/b/A/A").str(), "AAAA");
-}
-
 UNIT_TEST(LowercaseFileSystem, WriteUppercase) {
     MemoryFileSystem fs0("");
     LowercaseFileSystem fs(&fs0);
 
     EXPECT_ANY_THROW(fs.write("A", Blob()));
     EXPECT_ANY_THROW((void) fs.openForWriting("A"));
-}
-
-UNIT_TEST(LowercaseFileSystem, RenameRepeatedly) {
-    MemoryFileSystem fs0("");
-    fs0.write("A", Blob::fromString("A"));
-
-    LowercaseFileSystem fs(&fs0);
-    fs.rename("a", "b");
-    fs.rename("b", "c");
-    fs.rename("c", "d");
-    fs.rename("d", "e/f/g/h");
-    fs.rename("e/f/g/h", "a");
-
-    EXPECT_TRUE(fs.exists("a"));
-    EXPECT_EQ(fs.read("a").str(), "A");
-    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
-    EXPECT_FALSE(fs0.exists("A"));
-    EXPECT_EQ(fs0.read("a").str(), "A");
-    EXPECT_EQ(fs0.ls(""), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
-}
-
-UNIT_TEST(LowercaseFileSystem, RenameUppercase) {
-    MemoryFileSystem fs0("");
-    fs0.write("A", Blob::fromString("A"));
-
-    LowercaseFileSystem fs(&fs0);
-    EXPECT_ANY_THROW(fs.rename("a", "B"));
-    EXPECT_TRUE(fs.exists("a"));
-    EXPECT_EQ(fs.read("a").str(), "A");
 }
 
 UNIT_TEST(LowercaseFileSystem, RemoveRepeatedly) {
@@ -297,25 +217,3 @@ UNIT_TEST(LowercaseFileSystem, RemoveDeep) {
     EXPECT_EQ(fs0.ls("A/B"), std::vector<DirectoryEntry>({{"1", FILE_REGULAR}}));
 }
 
-UNIT_TEST(LowercaseFileSystem, RenameOverConflict) {
-    MemoryFileSystem fs0("ram");
-    fs0.write("A", Blob::fromString(""));
-    fs0.write("AAA", Blob::fromString(""));
-    fs0.write("AAa", Blob::fromString(""));
-
-    LowercaseFileSystem fs(&fs0);
-    EXPECT_ANY_THROW(fs.rename("a", "aaa/b"));
-}
-
-UNIT_TEST(LowercaseFileSystem, SelfRename) {
-    MemoryFileSystem fs0("ram");
-    fs0.write("ABC", Blob::fromString("abc"));
-
-    LowercaseFileSystem fs(&fs0);
-
-    fs.rename("abc", "abc");
-
-    EXPECT_TRUE(fs.exists("abc"));
-    EXPECT_EQ(fs.read("abc").str(), "abc");
-    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"abc", FILE_REGULAR}}));
-}

@@ -65,7 +65,7 @@ struct DirectoryEntry {
  * root-relative paths, so `"foo/bar"` and `"/foo/bar"` are equivalent.
  *
  * Root folder of the file system always exists. Thus, `exists("")` always returns `true`, `stat("")` always returns
- * `FILE_DIRECTORY`, `ls("")` never throws, `remove("")` and `rename("", "foo")` always throw.
+ * `FILE_DIRECTORY`, `ls("")` never throws, and `remove("")` always throws.
  *
  * @see ReadOnlyFileSystem
  */
@@ -136,22 +136,6 @@ class FileSystem {
     [[nodiscard]] std::unique_ptr<OutputStream> openForWriting(FileSystemPathView path);
 
     /**
-     * Renames a file or a folder.
-     *
-     * Default implementation removes `dstPath` first, then copies the `srcPath` over, then removes `srcPath`.
-     *
-     * Derived classes working on top of an actual file system might implement this using POSIX `rename`.
-     *
-     * @param srcPath                   Source path for renaming. Path must exist and must not be root.
-     * @param dstPath                   Target path for renaming. If source path is a directory, then target path must
-     *                                  not exist. If source path is a file, then target path must either not exist, or
-     *                                  be a file. If parent directory of `dstPath` doesn't exist, it will be created.
-     * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
-     */
-    void rename(std::string_view srcPath, std::string_view dstPath);
-    void rename(FileSystemPathView srcPath, FileSystemPathView dstPath);
-
-    /**
      * @param path                      Path to a file or a directory to remove. A directory will be removed even if it
      *                                  is not empty. Must not be root.
      * @return                          `true` if the file or folder was deleted, `false` if it did not exist.
@@ -184,7 +168,6 @@ class FileSystem {
     virtual void _write(FileSystemPathView path, const Blob &data) = 0;
     [[nodiscard]] virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const = 0;
     [[nodiscard]] virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) = 0;
-    virtual void _rename(FileSystemPathView srcPath, FileSystemPathView dstPath);
     virtual bool _remove(FileSystemPathView path) = 0;
     [[nodiscard]] virtual std::string _displayPath(FileSystemPathView path) const = 0;
 };

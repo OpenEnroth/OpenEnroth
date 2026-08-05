@@ -68,26 +68,6 @@ std::unique_ptr<OutputStream> MemoryFileSystem::_openForWriting(FileSystemPathVi
     return std::make_unique<detail::MemoryFileSystemOutputStream>(nodeForWriting(path)->value(), displayPath(path));
 }
 
-void MemoryFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
-    assert(!srcPath.isEmpty());
-    assert(!dstPath.isEmpty());
-
-    Node *srcNode = _trie.find(srcPath);
-    if (!srcNode)
-        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
-
-    FileSystemPathView dstTail;
-    Node *dstNode = _trie.walk(dstPath, &dstTail);
-    if (dstTail.isEmpty()) { // dstPath exists.
-        if (!dstNode->hasValue())
-            FileSystemException::raise(this, FS_RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
-        if (!srcNode->hasValue())
-            FileSystemException::raise(this, FS_RENAME_FAILED_SRC_IS_DIR_DST_IS_FILE, srcPath, dstPath);
-    }
-
-    _trie.insertOrAssign(dstNode, dstTail, _trie.extract(srcNode));
-}
-
 bool MemoryFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
 

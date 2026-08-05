@@ -37,7 +37,6 @@ class SubFileSystem : public FileSystem {
     virtual void _write(FileSystemPathView path, const Blob &data) override;
     virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
     virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) override;
-    virtual void _rename(FileSystemPathView srcPath, FileSystemPathView dstPath) override;
     virtual bool _remove(FileSystemPathView path) override;
     virtual std::string _displayPath(FileSystemPathView path) const override;
 
