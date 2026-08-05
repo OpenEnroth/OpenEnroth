@@ -143,6 +143,7 @@ jobs:
 
       - name: '[android] Install SDL3 dev dependencies'
         if: env.MATRIX_PLATFORM == 'android'
+        timeout-minutes: 6  # apt mirror hangs have cost 20-minute legs; fail fast, apt was already retried
         run: |
           # SDL3 cmake() is invoked in the host (linux) config during Android
           # cross-compilation and requires X11/Wayland headers to configure.
@@ -196,14 +197,25 @@ jobs:
           restore-keys: |
             bazel-${{matrix.target}}-
 
-      - name: 'Build'
+      # dbg/opt mirror the cmake matrix' Debug/RelWithDebInfo; separate steps so
+      # CI timings stay comparable per config.
+      - name: 'Build (dbg)'
         run: |
           if [ "${{matrix.target}}" = "android_universal" ]; then
             target=//android/openenroth:main
           else
             target=//src/Bin/OpenEnroth:OpenEnroth
           fi
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} "$target" 2>&1 | tee bazel-build.log
+          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} "$target" 2>&1 | tee bazel-build.log
+
+      - name: 'Build (opt)'
+        run: |
+          if [ "${{matrix.target}}" = "android_universal" ]; then
+            target=//android/openenroth:main
+          else
+            target=//src/Bin/OpenEnroth:OpenEnroth
+          fi
+          bazel build -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} "$target" 2>&1 | tee -a bazel-build.log
 
       # Game tests need the MM7 data; same shared cache the cmake matrix uses.
       # TODO(captainurist): expand to windows/darwin legs before dropping cmake.
@@ -221,7 +233,7 @@ jobs:
           # The data lives outside the workspace, so salt the test's action key
           # with its content hash - swapped data invalidates cached results.
           hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
-          bazel test --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
+          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
             --test_env=OPENENROTH_MM7_PATH=${{github.workspace}}/OpenEnroth_GameData/mm7 \
             --test_env=OPENENROTH_MM7_HASH=$hash \
             //test/Bin/GameTest:OpenEnroth_GameTest //test/Bin/GameTest:OpenEnroth_GameTest_Isolated 2>&1 | tee bazel-gametest.log
@@ -231,7 +243,7 @@ jobs:
         run: |
           if [ ! -d OpenEnroth_GameData ]; then echo "::warning::no game data cache - tests skipped"; exit 0; fi
           hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
-          bazel test --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
+          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
             --test_env=OPENENROTH_MM7_PATH=${{github.workspace}}/OpenEnroth_GameData/mm7 \
             --test_env=OPENENROTH_MM7_HASH=$hash \
             //test/Bin/RetraceTest:OpenEnroth_RetraceTest 2>&1 | tee bazel-retrace.log
@@ -239,14 +251,14 @@ jobs:
       - name: '[linux_x86_64] Check style'
         if: matrix.target == 'linux_x86_64'
         run: |
-          bazel build --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //:check_style
+          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //:check_style
 
       # bazel test: passed results are cached (and shared via the remote cache),
       # so unchanged tests cost nothing.
       - name: '[non-android] Run unit tests'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          bazel test --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
+          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
 
       # BuildBuddy invocation URLs, for timing/cache analysis without log access.
       - name: 'Annotate invocation URLs'
