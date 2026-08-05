@@ -729,18 +729,19 @@ static bool splitForms(std::string_view forms, std::array<std::string_view, 3> *
 /**
  * Expands a single `^`-token.
  *
- * @param str                           Rest of the string being expanded, starting at the token's leading '^'.
+ * @param str                           String being expanded, with `str[pos]` at the token's leading '^'.
+ * @param pos                           Position of the token.
  * @param[in,out] numbers               Numbers seen in `^I` tokens so far.
  * @param[in,out] gender                Gender of the last `^P` name, -1 if none yet.
  * @param[in,out] result                Output string that the expansion is appended to.
  * @return                              Number of characters consumed, 0 if the token is malformed.
  */
-static size_t expandToken(std::string_view str, gch::small_vector<int, 16> *numbers, int *gender,
+static size_t expandToken(std::string_view str, size_t pos, gch::small_vector<int, 16> *numbers, int *gender,
                           std::string *result) {
-    assert(str.starts_with('^'));
-    char kind = str.size() > 1 ? str[1] : '\0';
+    assert(pos < str.size() && str[pos] == '^');
+    char kind = pos + 1 < str.size() ? str[pos + 1] : '\0';
 
-    size_t open = 2; // Position of '['.
+    size_t open = pos + 2; // Position of '['.
     size_t numberIndex = 0; // Index into `numbers` for ^L.
     int nameCase = 0; // Case index for ^P.
     if (kind == 'L' && open < str.size() && str[open] >= '1' && str[open] <= '9') {
@@ -814,7 +815,7 @@ static size_t expandToken(std::string_view str, gch::small_vector<int, 16> *numb
         return 0;
     }
 
-    return close + 1;
+    return close + 1 - pos;
 }
 
 std::string sprintfex(std::string_view str) {
@@ -830,7 +831,7 @@ std::string sprintfex(std::string_view str) {
     int gender = -1; // Gender of the last ^P name, -1 if none yet.
 
     while (pos < str.size()) {
-        if (size_t consumed = expandToken(str.substr(pos), &numbers, &gender, &result)) {
+        if (size_t consumed = expandToken(str, pos, &numbers, &gender, &result)) {
             pos += consumed;
         } else {
             if (shouldWarnAbout(str))
