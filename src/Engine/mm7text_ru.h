@@ -14,6 +14,6 @@
  * Malformed tokens are copied through verbatim.
  *
  * @param str                           Formatted string, Windows-1251 encoded like all Buka in-game strings.
- * @return                              String with all `^`-tokens expanded, Windows-1251 encoded.
+ * @return                              String with all valid `^`-tokens expanded, Windows-1251 encoded.
  */
 [[nodiscard]] std::string sprintfex(std::string_view str);
