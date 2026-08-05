@@ -24,7 +24,7 @@ struct GenderTableEntry {
     int gender; // 0 for masculine, 1 for feminine, 2 for neuter.
 };
 
-static const GenderTableEntry gender_table_caps[] = {
+static constexpr GenderTableEntry gender_table_caps[] = {
                          {"Авель", 0},        {"Адам", 0},
                          {"Адриан", 0},       {"Адрианис", 0},
                          {"Адская", 1},       {"Айр", 0},
@@ -546,7 +546,7 @@ static const GenderTableEntry gender_table_caps[] = {
                          {"Ярод", 0},         {"Яспер", 0},
 };
 
-static const GenderTableEntry gender_table[] = {
+static constexpr GenderTableEntry gender_table[] = {
       {"ад", 0},        {"акула", 1},      {"банк", 0},       {"башня", 1},
       {"бластер", 0},   {"вампир", 0},     {"вдова", 1},      {"ведьма", 1},
       {"витерсмит", 0}, {"владыка", 0},    {"владычица", 1},  {"воин", 0},
@@ -601,7 +601,7 @@ struct SpecialNameEntry {
  * plurals, so the accusative matches the nominative, as the DLL's own "Стены тумана" row correctly shows
  * ("Вы хотите покинуть Врат в Бездну?" was what Buka players actually saw).
  */
-static const SpecialNameEntry special_name_table[] = {
+static constexpr SpecialNameEntry special_name_table[] = {
     {"Мэри Джо", 1, {}},
     {"Ли Энн", 1, {}},
     {"Врата в Бездну", 1, {"Врата в Бездну", "Врат в Бездну", "Вратам в Бездну", "Врата в Бездну", "Вратами в Бездну", "Вратах в Бездну"}},
