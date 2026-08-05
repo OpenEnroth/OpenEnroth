@@ -708,6 +708,98 @@ static bool splitForms(std::string_view forms, std::array<std::string_view, 3> *
     return true;
 }
 
+/**
+ * Expands a single `^`-token.
+ *
+ * @param str                           Whole string being expanded, with `str[*pos]` at the leading '^'.
+ * @param[in,out] pos                   Token position, moved past the token on success.
+ * @param[in,out] numbers               Numbers seen in `^I` tokens so far.
+ * @param[in,out] gender                Gender of the last `^P` name, -1 if none yet.
+ * @param[in,out] result                Output string that the expansion is appended to.
+ * @return                              Whether the token was well-formed and expanded.
+ */
+static bool expandToken(std::string_view str, size_t *pos, gch::small_vector<int, 10> *numbers, int *gender,
+                        std::string *result) {
+    char kind = *pos + 1 < str.size() ? str[*pos + 1] : '\0';
+
+    size_t open = *pos + 2; // Position of '['.
+    size_t numberIndex = 0; // Index into `numbers` for ^L.
+    int nameCase = 0; // Case index for ^P.
+    if (kind == 'L' && open < str.size() && str[open] >= '1' && str[open] <= '9') {
+        numberIndex = str[open] - '1';
+        open++;
+    } else if (kind == 'P') {
+        if (open >= str.size() || (nameCase = caseIndex(str[open])) == -1)
+            return false;
+        open++;
+    }
+    if (open >= str.size() || str[open] != '[')
+        return false;
+    size_t close = str.find(']', open);
+    if (close == std::string_view::npos)
+        return false;
+    std::string_view contents = str.substr(open + 1, close - open - 1);
+
+    switch (kind) {
+    case 'I': {
+        // Like the DLL: contents are printed verbatim either way, but only a successfully parsed number
+        // occupies a registry slot.
+        int value = 0;
+        if (tryDeserialize(contents, &value))
+            numbers->push_back(value);
+        *result += contents;
+    } break;
+
+    case 'L': {
+        std::array<std::string_view, 3> forms;
+        if (!splitForms(contents, &forms))
+            return false;
+        // No matching ^I means zero, like in the DLL. Buka data has standalone strings that rely on this.
+        int number = numberIndex < numbers->size() ? (*numbers)[numberIndex] : 0;
+        *result += forms[pluralFormIndex(number)];
+    } break;
+
+    case 'R': {
+        std::array<std::string_view, 3> forms;
+        if (!splitForms(contents, &forms))
+            return false;
+        // No preceding ^P means masculine, like in the DLL. Buka data relies on this: profession and class
+        // names like "охотни^R[к;ца;]" are gendered by a ^P name when formatted into a sentence, and fall
+        // back to masculine when displayed standalone.
+        *result += forms[*gender == -1 ? 0 : *gender];
+    } break;
+
+    case 'P': {
+        const SpecialName *special = nullptr;
+        for (const SpecialName &candidate : genderTables().specials) {
+            if (contents.starts_with(candidate.name)) {
+                special = &candidate;
+                break;
+            }
+        }
+        if (special) {
+            *gender = special->gender;
+            *result += special->cases[nameCase];
+            *result += contents.substr(special->name.size()); // Keep whatever follows the matched prefix.
+        } else {
+            // Regular names are not declined, the case letter is ignored - that's what the original DLL
+            // did, so Buka players saw "наносит удар Гоблин" instead of "Гоблину".
+            // TODO(captainurist): #2562 auto-decline regular names here. A big table of endings per
+            //                     grammatical case would probably do - names and monster nouns decline
+            //                     regularly enough.
+            *gender = genderOf(contents);
+            *result += contents;
+        }
+    } break;
+
+    default:
+        return false;
+    }
+
+    *pos = close + 1;
+    return true;
+}
+
 std::string sprintfex(std::string_view str) {
     size_t pos = str.find('^');
     if (pos == std::string_view::npos)
@@ -720,91 +812,9 @@ std::string sprintfex(std::string_view str) {
     gch::small_vector<int, 10> numbers; // Numbers seen in ^I tokens so far. The DLL capped these at 10.
     int gender = -1; // Gender of the last ^P name, -1 if none yet.
 
-    // Expands one token at `pos`, appending to `result` and advancing `pos`. False on malformed input.
-    auto expandToken = [&] {
-        char kind = pos + 1 < str.size() ? str[pos + 1] : '\0';
-
-        size_t open = pos + 2; // Position of '['.
-        size_t numberIndex = 0; // Index into `numbers` for ^L.
-        int nameCase = 0; // Case index for ^P.
-        if (kind == 'L' && open < str.size() && str[open] >= '1' && str[open] <= '9') {
-            numberIndex = str[open] - '1';
-            open++;
-        } else if (kind == 'P') {
-            if (open >= str.size() || (nameCase = caseIndex(str[open])) == -1)
-                return false;
-            open++;
-        }
-        if (open >= str.size() || str[open] != '[')
-            return false;
-        size_t close = str.find(']', open);
-        if (close == std::string_view::npos)
-            return false;
-        std::string_view contents = str.substr(open + 1, close - open - 1);
-
-        switch (kind) {
-        case 'I': {
-            // Like the DLL: contents are printed verbatim either way, but only a successfully parsed number
-            // occupies a registry slot.
-            int value = 0;
-            if (tryDeserialize(contents, &value))
-                numbers.push_back(value);
-            result += contents;
-        } break;
-
-        case 'L': {
-            std::array<std::string_view, 3> forms;
-            if (!splitForms(contents, &forms))
-                return false;
-            // No matching ^I means zero, like in the DLL. Buka data has standalone strings that rely on this.
-            int number = numberIndex < numbers.size() ? numbers[numberIndex] : 0;
-            result += forms[pluralFormIndex(number)];
-        } break;
-
-        case 'R': {
-            std::array<std::string_view, 3> forms;
-            if (!splitForms(contents, &forms))
-                return false;
-            // No preceding ^P means masculine, like in the DLL. Buka data relies on this: profession and class
-            // names like "охотни^R[к;ца;]" are gendered by a ^P name when formatted into a sentence, and fall
-            // back to masculine when displayed standalone.
-            result += forms[gender == -1 ? 0 : gender];
-        } break;
-
-        case 'P': {
-            const SpecialName *special = nullptr;
-            for (const SpecialName &candidate : genderTables().specials) {
-                if (contents.starts_with(candidate.name)) {
-                    special = &candidate;
-                    break;
-                }
-            }
-            if (special) {
-                gender = special->gender;
-                result += special->cases[nameCase];
-                result += contents.substr(special->name.size()); // Keep whatever follows the matched prefix.
-            } else {
-                // Regular names are not declined, the case letter is ignored - that's what the original DLL
-                // did, so Buka players saw "наносит удар Гоблин" instead of "Гоблину".
-                // TODO(captainurist): #2562 auto-decline regular names here. A big table of endings per
-                //                     grammatical case would probably do - names and monster nouns decline
-                //                     regularly enough.
-                gender = genderOf(contents);
-                result += contents;
-            }
-        } break;
-
-        default:
-            return false;
-        }
-
-        pos = close + 1;
-        return true;
-    };
-
     while (pos < str.size()) {
         // Loop invariant: str[pos] == '^' here.
-        if (!expandToken()) {
+        if (!expandToken(str, &pos, &numbers, &gender, &result)) {
             if (shouldWarnAbout(str))
                 logger->warning("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
             result += '^'; // Malformed tokens are copied through verbatim.
