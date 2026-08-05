@@ -641,7 +641,11 @@ static const GenderTables &genderTables() {
     return result;
 }
 
-// Returns the grammatical gender of a Windows-1251 name, masculine if not recognized.
+/**
+ * @param name                          Name to look up, Windows-1251 encoded.
+ * @return                              Grammatical gender of `name`, as an index into the `^R` forms: 0 for
+ *                                      masculine, 1 for feminine, 2 for neuter. Masculine if not recognized.
+ */
 static int genderOf(std::string_view name) {
     const GenderTables &tables = genderTables();
 
