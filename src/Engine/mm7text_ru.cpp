@@ -19,11 +19,9 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Encoding.h"
 
-// Both tables below are UTF-8 in the sources and are transcoded into Windows-1251 in genderTables(). Gender is
-// 0 for masculine, 1 for feminine, 2 for neuter.
 struct GenderTableEntry {
     const char *name;
-    int gender;
+    int gender; // 0 for masculine, 1 for feminine, 2 for neuter.
 };
 
 static const GenderTableEntry gender_table_caps[] = {
