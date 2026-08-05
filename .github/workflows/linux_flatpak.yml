@@ -30,6 +30,14 @@ on:
     types:
       - published
 
+# A new push into a PR auto-cancels the run for the previous one. Everything else lands in a group of one, so master
+# and nightly builds never queue behind or cancel each other. The group name starts with a literal because
+# `github.run_id` is the caller's id inside a reusable workflow, and the workflows called from the nightly build must
+# not end up sharing a group.
+concurrency:
+  group: linux-flatpak-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 env:
   CCACHE_COMPILERCHECK: content
     
