@@ -584,19 +584,25 @@ static bool shouldWarnAbout(std::string_view key) {
     return true;
 }
 
-// Names the DLL special-cased, and the only ones whose `^P` case letter is honored: two phrases that decline
-// as a whole, and two indeclinable foreign names. All four also carry an explicit gender because they wouldn't
-// be found in the gender tables.
+/**
+ * An entry of `special_name_table`. UTF-8 in the sources, transcoded into Windows-1251 in `genderTables()`.
+ */
 struct SpecialNameEntry {
     const char *name;
     int gender;
     std::array<const char *, 6> cases; // I, R, D, V, T, P. All nullptr for indeclinable names.
 };
 
-// Two deviations from the original mm7text.dll table, both clear bugs there: it returned masculine for
-// "Стены тумана" due to an inverted check, and it used the genitive "Врат в Бездну" for the accusative - both
-// names are inanimate plurals, so the accusative matches the nominative, as the DLL's own "Стены тумана" row
-// correctly shows ("Вы хотите покинуть Врат в Бездну?" was what Buka players actually saw).
+/**
+ * Names the DLL special-cased, and the only ones whose `^P` case letter is honored: two phrases that decline
+ * as a whole, and two indeclinable foreign names. All four also carry an explicit gender because they wouldn't
+ * be found in the gender tables.
+ *
+ * Two deviations from the original mm7text.dll table, both clear bugs there: it returned masculine for
+ * "Стены тумана", and it used the genitive "Врат в Бездну" for the accusative - both names are inanimate
+ * plurals, so the accusative matches the nominative, as the DLL's own "Стены тумана" row correctly shows
+ * ("Вы хотите покинуть Врат в Бездну?" was what Buka players actually saw).
+ */
 static const SpecialNameEntry special_name_table[] = {
     {"Мэри Джо", 1, {}},
     {"Ли Энн", 1, {}},
