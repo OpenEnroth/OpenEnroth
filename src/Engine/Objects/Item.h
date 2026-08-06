@@ -39,8 +39,6 @@ struct Item {
         return (flags & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_PURPLE;
     }
 
-    bool IsRegularEnchanmentForAttribute(Attribute attrToGet);
-
     inline bool IsBroken() const { return flags & ITEM_BROKEN; }
     inline void SetBroken() { flags |= ITEM_BROKEN; }
     inline bool IsIdentified() const { return flags & ITEM_IDENTIFIED; }

@@ -1859,68 +1859,6 @@ Color GetLevelFogColor() {
     return Color();
 }
 
-// TODO(pskelton): drop this
-// returns 0xZZ000000
-// basically how much fog should be applied 255-0 (no fog -> max fog)
-int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
-    int v7;
-
-    bool isNight = pWeather->bNight;
-    if (engine->IsUnderwater()) isNight = false;
-
-    if (pParty->armageddon_timer ||
-        !(pOutdoor->loc_time.weatherFlags & MAP_WEATHER_FOGGY) && !engine->IsUnderwater())
-        return 0xFF000000;
-    if (isNight) {
-        if (screen_depth < (double)pOutdoor->loc_time.fogWeakDistance) {
-            v7 = 0;
-            if (screen_depth == 0.0) v7 = 216;
-            if (isSky) v7 = 248;
-            return (255 - v7) << 24;
-        } else {
-            if (screen_depth > (double)pOutdoor->loc_time.fogStrongDistance) {
-                v7 = 216;
-                if (screen_depth == 0.0) v7 = 216;
-                if (isSky) v7 = 248;
-                return (255 - v7) << 24;
-            }
-            v7 = (int64_t)((screen_depth - (double)pOutdoor->loc_time.fogWeakDistance) /
-                                  ((double)pOutdoor->loc_time.fogStrongDistance -
-                                   (double)pOutdoor->loc_time.fogWeakDistance) *
-                                  216.0);
-        }
-    } else {
-        if (screen_depth < (double)pOutdoor->loc_time.fogWeakDistance) {
-            // no fog
-            v7 = 0;
-            if (screen_depth == 0.0) v7 = 216;
-            if (isSky) v7 = 248;
-            return (255 - v7) << 24;
-        } else {
-            if (screen_depth > (double)pOutdoor->loc_time.fogStrongDistance) {
-                // full fog
-                v7 = 216;
-                if (screen_depth == 0.0) v7 = 216;
-                if (isSky) v7 = 248;
-                return (255 - v7) << 24;
-            } else {
-                // linear interpolation
-                v7 =
-                    floorf(((screen_depth - (double)pOutdoor->loc_time.fogWeakDistance) * 216.0 /
-                    ((double)pOutdoor->loc_time.fogStrongDistance - (double)pOutdoor->loc_time.fogWeakDistance)) +
-                        0.5f);
-            }
-        }
-    }
-    if (v7 > 216) {
-        v7 = 216;
-    } else {
-        if (screen_depth == 0.0) v7 = 216;
-    }
-    if (isSky) v7 = 248;
-    return (255 - v7) << 24;
-}
-
 //----- (00436A6D) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts) {
     double result = FLT_MAX;

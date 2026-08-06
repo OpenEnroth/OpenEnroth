@@ -629,16 +629,6 @@ void Item::GetItemBonusArtifact(const Character *owner,
     }
 }
 
-bool Item::IsRegularEnchanmentForAttribute(Attribute attrToGet) {
-    //auto pos = specialBonusMap.find(this->standardEnchantment);
-    //if (pos == specialBonusMap.end())
-    //    return false;
-
-    //return pos->second.find(attrToGet) != pos->second.end();
-    // TODO(captainurist): what is this code about? ^
-    return false;
-}
-
 Skill Item::skill() const {
     Skill result = pItemTable->items[this->itemId].skill;
     if (result == SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
