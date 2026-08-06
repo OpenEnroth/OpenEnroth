@@ -568,21 +568,6 @@ static constexpr GenderTableEntry gender_table[] = {
 };
 
 /**
- * Some of the strings we're called on are re-formatted every frame, so each warning is logged once per distinct
- * offender, and repeat calls don't pay for message formatting.
- *
- * @param key                           Offending name or string.
- * @return                              Whether `key` is seen for the first time and a warning should be logged.
- */
-static bool shouldWarnAbout(std::string_view key) {
-    static std::unordered_set<TransparentString, TransparentStringHash, TransparentStringEquals> reported;
-    if (reported.contains(key))
-        return false;
-    reported.emplace(key);
-    return true;
-}
-
-/**
  * An entry of `special_name_table`. UTF-8 in the sources, transcoded into Windows-1251 in `genderTables()`.
  */
 struct SpecialNameEntry {
@@ -647,15 +632,33 @@ static const GenderTables &genderTables() {
 }
 
 /**
+ * Some of the strings we're called on are re-formatted every frame, so each warning is logged once per distinct
+ * offender, and repeat calls don't pay for message formatting.
+ *
+ * @param key                           Offending name or string.
+ * @return                              Whether `key` is seen for the first time and a warning should be logged.
+ */
+static bool shouldWarnAbout(std::string_view key) {
+    static std::unordered_set<TransparentString, TransparentStringHash, TransparentStringEquals> reported;
+    if (reported.contains(key))
+        return false;
+    reported.emplace(key);
+    return true;
+}
+
+/**
  * @param name                          Name to look up, Windows-1251 encoded.
  * @return                              Grammatical gender of `name`, as an index into the `^R` forms: 0 for
  *                                      masculine, 1 for feminine, 2 for neuter. Masculine if not recognized.
  */
 static int genderOf(std::string_view name) {
+    if (name.empty())
+        return 0;
+
     const GenderTables &tables = genderTables();
 
     const std::vector<std::pair<std::string, int>> *table = nullptr;
-    unsigned char first = name.empty() ? 0 : static_cast<unsigned char>(name[0]);
+    unsigned char first = static_cast<unsigned char>(name[0]);
     if (first >= 0xE0) { // Windows-1251 'а'-'я'.
         table = &tables.lower;
     } else if (first >= 0xC0 && first <= 0xDF) { // Windows-1251 'А'-'Я'.
@@ -696,7 +699,7 @@ static int caseIndex(char c) {
  *                                      0 for "1 день", 1 for "2 дня", 2 for "5 дней".
  */
 static int pluralFormIndex(int n) {
-    n = std::abs(n % 100); // % first - abs(INT_MIN) is UB.
+    n = std::abs(n % 100); // % goes first b/c abs(INT_MIN) is UB.
     if (n >= 11 && n <= 14) // The original mm7text.dll missed this and produced "11 день".
         return 2;
     n %= 10;
@@ -739,20 +742,24 @@ static bool splitForms(std::string_view forms, std::array<std::string_view, 3> *
 static size_t expandToken(std::string_view str, size_t pos, gch::small_vector<int, 16> *numbers, int *gender,
                           std::string *result) {
     assert(pos < str.size() && str[pos] == '^');
-    char kind = pos + 1 < str.size() ? str[pos + 1] : '\0';
+    if (pos + 3 >= str.size())
+        return 0; // Need kind + brackets, so at least three chars.
 
-    size_t open = pos + 2; // Position of '['.
+    char kind = str[pos + 1];
+
+    size_t open = pos + 2; // Expected position of '['.
     size_t numberIndex = 0; // Index into `numbers` for ^L.
     int nameCase = 0; // Case index for ^P.
-    if (kind == 'L' && open < str.size() && str[open] >= '1' && str[open] <= '9') {
+    if (kind == 'L' && str[open] >= '1' && str[open] <= '9') {
         numberIndex = str[open] - '1';
         open++;
     } else if (kind == 'P') {
-        if (open >= str.size() || (nameCase = caseIndex(str[open])) == -1)
+        nameCase = caseIndex(str[open]);
+        if (nameCase == -1)
             return 0;
         open++;
     }
-    if (open >= str.size() || str[open] != '[')
+    if (str[open] != '[')
         return 0;
     size_t close = str.find(']', open);
     if (close == std::string_view::npos)
@@ -799,6 +806,8 @@ static size_t expandToken(std::string_view str, size_t pos, gch::small_vector<in
         if (special) {
             *gender = special->gender;
             *result += special->cases[nameCase];
+
+            // TODO(captainurist): this is sus!
             *result += contents.substr(special->name.size()); // Keep whatever follows the matched prefix.
         } else {
             // Regular names are not declined, the case letter is ignored - that's what the original DLL
@@ -819,18 +828,20 @@ static size_t expandToken(std::string_view str, size_t pos, gch::small_vector<in
 }
 
 std::string sprintfex(std::string_view str) {
-    size_t pos = str.find('^');
-    if (pos == std::string_view::npos)
-        return std::string(str);
-
     std::string result;
     result.reserve(str.size());
-    result += str.substr(0, pos);
 
     gch::small_vector<int, 16> numbers; // Numbers seen in ^I tokens so far. The DLL capped these at 10.
     int gender = -1; // Gender of the last ^P name, -1 if none yet.
 
-    while (pos < str.size()) {
+    size_t pos = 0;
+    while (true) {
+        size_t next = str.find('^', pos);
+        result += str.substr(pos, next - pos); // npos-safe.
+        if (next == std::string_view::npos)
+            break;
+        pos = next;
+
         if (size_t consumed = expandToken(str, pos, &numbers, &gender, &result)) {
             pos += consumed;
         } else {
@@ -839,12 +850,6 @@ std::string sprintfex(std::string_view str) {
             result += '^'; // Malformed tokens are copied through verbatim.
             pos++;
         }
-
-        size_t next = str.find('^', pos);
-        result += str.substr(pos, next - pos); // npos-safe.
-        if (next == std::string_view::npos)
-            break;
-        pos = next;
     }
 
     return result;
