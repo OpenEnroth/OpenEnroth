@@ -57,7 +57,6 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Exception.h"
 
-#include "Io/Mouse.h"
 
 MapStartPoint uLevel_StartingPointType;
 
