@@ -688,11 +688,11 @@ void Game::processQueuedMessages() {
                 DialogueEnding();
 
                 if (engine->_teleportPoint.isValid()) {
-                    if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) { // '0' means teleportation within the current map.
+                    if (!engine->_teleportPoint.teleportMap().starts_with('0')) { // '0' means teleportation within the current map.
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                         bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
                         onMapLeave();
-                        Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
+                        Transition_StopSound_Autosave(engine->_teleportPoint.teleportMap(), MAP_START_POINT_PARTY);
                         if (leavingArena)
                             pParty->GetPlayingTime() += Duration::fromDays(4);
                     } else {

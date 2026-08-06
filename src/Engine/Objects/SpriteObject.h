@@ -28,7 +28,7 @@ struct SpriteObject {
     bool applyShrinkRayAoe();
     void explosionTraps();
     Duration GetLifetime();
-    SpriteFrame *getSpriteFrame();
+    SpriteFrame *spriteFrame();
     bool IsUnpickable();
     bool HasSprite();
     Color GetParticleTrailColor();

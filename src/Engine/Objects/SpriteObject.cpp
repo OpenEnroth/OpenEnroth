@@ -554,7 +554,7 @@ Duration SpriteObject::GetLifetime() {
     return pObjectDesc->uLifetime;
 }
 
-SpriteFrame *SpriteObject::getSpriteFrame() {
+SpriteFrame *SpriteObject::spriteFrame() {
     ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
     return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, timeSinceCreated);
 }

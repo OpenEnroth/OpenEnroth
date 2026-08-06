@@ -1467,7 +1467,7 @@ void ShowPopupShopItem() {
     int invindex;
     int testpos;
     HouseType houseType = window_SpeakInHouse->buildingType();
-    DialogueId dialogue = window_SpeakInHouse->getCurrentDialogue();
+    DialogueId dialogue = window_SpeakInHouse->currentDialogue();
 
     if (houseType == HOUSE_TYPE_INVALID)
         return;

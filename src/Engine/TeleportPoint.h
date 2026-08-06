@@ -43,7 +43,7 @@ class TeleportPoint {
     /**
      * Get target map name.
      */
-    const std::string &getTeleportMap() { return _targetMap; }
+    const std::string &teleportMap() { return _targetMap; }
 
     /**
      * Perform teleportation using current valid point.

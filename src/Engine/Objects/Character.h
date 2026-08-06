@@ -186,7 +186,7 @@ class Character {
      *
      * @offset 0x491317
      */
-    int getLearningPercent() const;
+    int learningPercent() const;
 
     bool HasSkill(Skill skill) const;
     bool CanAct() const;
@@ -269,7 +269,7 @@ class Character {
     /**
      * @return                          0-based index of this character in the party.
      */
-    int getCharacterIndex();
+    int characterIndex();
 
     static void _42ECB5_CharacterAttacksActor();
     static void _42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int actchar);

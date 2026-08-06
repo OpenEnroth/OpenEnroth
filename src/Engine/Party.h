@@ -66,7 +66,7 @@ struct Party {
     /**
      * @offset 0x49135E
      */
-    unsigned int getPartyFame();
+    unsigned int fame();
 
     /**
      * @offset 0x49137D

@@ -111,9 +111,9 @@ TestTape<std::string> CommonTapeRecorder::statusBar() {
 TestTape<DialogueId> CommonTapeRecorder::dialogueType() {
     return custom([] {
         if (GUIWindow_Dialogue *dlg = dynamic_cast<GUIWindow_Dialogue*>(pDialogueWindow.get())) {
-            return dlg->getDisplayedDialogueType();
+            return dlg->displayedDialogueType();
         } else if (GUIWindow_House *dlg = dynamic_cast<GUIWindow_House*>(window_SpeakInHouse.get())) {
-            return dlg->getCurrentDialogue();
+            return dlg->currentDialogue();
         } else {
             return DIALOGUE_NULL;
         }

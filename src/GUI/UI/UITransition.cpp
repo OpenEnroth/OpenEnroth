@@ -193,7 +193,7 @@ void GUIWindow_IndoorEntryExit::Update() {
 
     MapId map_id = engine->_currentLoadedMapId;
     // TODO(captainurist): mm7 map names never starts with ' ', what is this check?
-    if ((pMovie_Track || getSpecialTransferMessageIndex(_mapName)) && !engine->_teleportPoint.getTeleportMap().starts_with(' ')) {
+    if ((pMovie_Track || getSpecialTransferMessageIndex(_mapName)) && !engine->_teleportPoint.teleportMap().starts_with(' ')) {
         map_id = pMapStats->GetMapInfo(_mapName);
     }
 
