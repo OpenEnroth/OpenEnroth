@@ -35,9 +35,9 @@ struct LowercaseFileData {
  *
  * Previous iteration was a writeable FS that was always up to date with the underlying FS (was checking timestamps for
  * all parents in each call). The code was messy, it was `O(N)` on each call, and even after writing an implementation
- * that actually worked, I hated it. Mostly because of the `O(N)` - which led to a recursive implementation of
- * `FileSystem::rename` becoming `O(N^2)`. It is possible to iron this out, but that would require to redo the
- * `FileSystem` interface & expose the `Directory` abstraction directly. Which is just not worth it.
+ * that actually worked, I hated it. Mostly because of the `O(N)` - which makes anything that walks a tree `O(N^2)`.
+ * It is possible to iron this out, but that would require to redo the `FileSystem` interface & expose the `Directory`
+ * abstraction directly. Which is just not worth it.
  *
  * Next iteration was caching the whole file tree in constructor, but this was blowing up spectacularly when constructed
  * for `/`. Thus, we're now caching lazily.
