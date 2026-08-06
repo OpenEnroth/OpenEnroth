@@ -3076,6 +3076,12 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     }
 
     if (pParty->pPickedItem.isPotion()) {
+        // Eradicated characters have no body left to drink with. Vanilla lets them, so this is behind a config option.
+        if (engine->config->gameplay.NoPotionsForEradicated.value() && playerAffected->IsEradicated()) {
+            engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->characterConditionName(playerAffected->GetMajorConditionIdx()));
+            pAudioPlayer->playUISound(SOUND_error);
+            return;
+        }
         // TODO(Nik-RE-dev): no CanAct check?
         int potionStrength = pParty->pPickedItem.potionPower;
         Duration buffDuration = Duration::fromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength

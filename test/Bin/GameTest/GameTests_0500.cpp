@@ -198,6 +198,49 @@ GAME_TEST(Issues, Issue578) {
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_REST)); // and we never left the rest menu
 }
 
+GAME_TEST(Issues, Issue587) {
+    // Dropping a potion on an eradicated character's portrait used to drink it, wasting the potion. Test both sides
+    // of the config option - in vanilla the potion is still drunk, and Character::Heal refuses to heal an eradicated
+    // character, so it's simply lost.
+    for (bool noPotionsForEradicated : {true, false}) {
+        test.prepareForNextTest();
+        engine->config->gameplay.NoPotionsForEradicated.setValue(noPotionsForEradicated);
+
+        auto healthTape = charTapes.hp(0);
+        auto soundsTape = tapes.sounds();
+        auto statusTape = tapes.statusBar();
+        game.startNewGame();
+
+        // Eradicating zeroes HP, so the HP we want to watch has to be set after it, not before. 5 is arbitrary, it
+        // just has to be below max - at max a potion that wrongly healed the drinker would clamp straight back, and
+        // the tape below wouldn't move.
+        Character &drinker = pParty->pCharacters[0];
+        drinker.SetCondition(CONDITION_ERADICATED, 0);
+        drinker.health = 5;
+        ASSERT_LT(drinker.health, drinker.GetMaxHealth());
+        pParty->setActiveCharacterIndex(2); // Active "giver" must be a non-eradicated char.
+
+        test.startTaping();
+        game.tick(); // Baseline tick records health == 5.
+
+        // Active character drags a Cure Wounds potion onto the eradicated character's portrait.
+        pParty->setHoldingItem(Item(ITEM_POTION_CURE_WOUNDS));
+        pParty->activeCharacter().useItem(0, true);
+        game.tick();
+
+        EXPECT_TRUE(drinker.conditions.has(CONDITION_ERADICATED)); // Still eradicated.
+        EXPECT_EQ(healthTape, tape(5)); // Heal() is a no-op on an eradicated character either way.
+        if (noPotionsForEradicated) {
+            EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_POTION_CURE_WOUNDS); // Potion wasn't consumed.
+            EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
+            EXPECT_CONTAINS(statusTape, "That player is Eradicated");
+        } else {
+            EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // Vanilla drinks the potion, to no effect.
+            EXPECT_CONTAINS(soundsTape.flatten(), SOUND_drink);
+        }
+    }
+}
+
 GAME_TEST(Issues, Issue598) {
     // Assert when accessing character inventory from the shop screen
     auto screenTape = tapes.screen();
