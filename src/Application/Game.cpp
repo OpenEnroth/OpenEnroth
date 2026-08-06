@@ -166,10 +166,7 @@ bool Game::loop() {
 
             pParty->pPickedItem.itemId = ITEM_NULL;
 
-            engine->_transitionMapId = pMapStats->GetMapInfo(_config->gameplay.StartingMap.value());
-
-            // TODO(Nik-RE-dev): should not be an assert but an exception or error message.
-            assert(engine->_transitionMapId != MAP_INVALID);
+            engine->_transitionMapId = MAP_EMERALD_ISLAND;
 
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
@@ -1681,9 +1678,7 @@ void Game::gameLoop() {
                 } else {
                     pParty->pos = Vec3f(12552, 1816, 193); // respawn on emerald isle
                     pParty->_viewYaw = 512;
-                    mapid = pMapStats->GetMapInfo(_config->gameplay.StartingMap.value());
-                    // TODO(Nik-RE-dev): should not be an assert but an exception or error message.
-                    assert(mapid != MAP_INVALID);
+                    mapid = MAP_EMERALD_ISLAND;
                 }
                 pParty->uFallStartZ = pParty->pos.z;
                 pParty->_viewPitch = 0;
