@@ -143,11 +143,14 @@ void ParseDamage(std::string_view damage_str, uint8_t *dice_rolls,
 
 //----- (00454E3A) --------------------------------------------------------
 MonsterProjectile ParseMissleAttackType(std::string_view missle_attack_str) {
-    // TODO(captainurist): this is broken, we get "FireAr" for flaming arrow here.
+    // monsters.txt stores the flaming-arrow cell value as the 6-character abbreviation "FireAr"
+    // (e.g. for Elite Archer / Bowman). The original engine compared against this exact spelling,
+    // but earlier OE ports mistakenly checked "ARROWF", which never matches the real data, so
+    // fire-arrow archers were silently falling back to MONSTER_PROJECTILE_NONE. See issue #2144.
 
     if (ascii::noCaseEquals(missle_attack_str, "ARROW"))
         return MONSTER_PROJECTILE_ARROW;
-    else if (ascii::noCaseEquals(missle_attack_str, "ARROWF"))
+    else if (ascii::noCaseEquals(missle_attack_str, "FireAr"))
         return MONSTER_PROJECTILE_FLAMING_ARROW;
     else if (ascii::noCaseEquals(missle_attack_str, "FIRE"))
         return MONSTER_PROJECTILE_FIRE_BOLT;
