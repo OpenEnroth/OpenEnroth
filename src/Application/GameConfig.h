@@ -212,9 +212,6 @@ class GameConfig : public Config {
         Int NewGameGold = {this, "new_game_gold", 200,
             "Starting gold."};
 
-        String StartingMap = String(this, "starting_map", "out01.odm",
-            "New Game starting map.");
-
         Int PartyEyeLevel = {this, "party_eye_level", 160,
             "Party eye level."};
 
