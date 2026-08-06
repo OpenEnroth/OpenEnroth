@@ -24,6 +24,7 @@ set(ENGINE_DATA_HEADERS
         IconFrameData.h
         ItemData.h
         PortraitFrameData.h
+        SoundEnums.h
         SpecialEnchantmentData.h
         StandardEnchantmentData.h
         TextureFrameData.h

@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 
+#include "Engine/Data/SoundEnums.h"
 #include "Engine/Pid.h"
 #include "Engine/Spells/SpellEnums.h"
 
@@ -12,7 +13,6 @@
 
 #include "Utility/Memory/Blob.h"
 
-#include "SoundEnums.h"
 #include "AudioSamplePool.h"
 #include "SoundInfo.h"
 

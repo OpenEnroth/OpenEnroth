@@ -2,11 +2,11 @@
 
 #include <list>
 
+#include "Engine/Data/SoundEnums.h"
 #include "Engine/Pid.h"
 
 #include "Media/AudioSample.h"
 
-#include "SoundEnums.h"
 
 struct AudioSamplePoolEntry {
     AudioSamplePoolEntry(PAudioSample samplePtr, SoundId id, Pid pid) : samplePtr(samplePtr), id(id), pid(pid) {}

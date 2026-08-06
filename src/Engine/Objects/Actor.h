@@ -9,7 +9,7 @@
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Pid.h"
 
-#include "Media/Audio/SoundEnums.h"
+#include "Engine/Data/SoundEnums.h"
 
 #include "Library/Geometry/Rect.h"
 #include "Library/Geometry/Vec.h"

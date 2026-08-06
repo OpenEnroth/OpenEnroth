@@ -12,7 +12,7 @@
 #include "Engine/Time/Time.h"
 #include "Engine/MapEnums.h"
 #include "Engine/PartyEnums.h"
-#include "Media/Audio/SoundEnums.h"
+#include "Engine/Data/SoundEnums.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
 

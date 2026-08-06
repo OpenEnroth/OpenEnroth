@@ -17,7 +17,6 @@ set(MEDIA_AUDIO_HEADERS
         OpenALTrack16.h
         OpenALSample16.h
         OpenALUpdateThread.h
-        SoundEnums.h
         SoundInfo.h
         SoundList.h)
 

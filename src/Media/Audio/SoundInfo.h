@@ -3,11 +3,12 @@
 #include <string>
 #include <memory>
 
+#include "Engine/Data/SoundEnums.h"
+
 #include "Media/AudioDataSource.h"
 
 #include "Utility/Memory/Blob.h"
 
-#include "SoundEnums.h"
 
 class SoundInfo {
  public:

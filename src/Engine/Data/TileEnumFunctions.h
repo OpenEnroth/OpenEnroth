@@ -3,7 +3,7 @@
 
 #include "TileEnums.h"
 
-#include "Media/Audio/SoundEnums.h"
+#include "Engine/Data/SoundEnums.h"
 
 #include "Library/Geometry/Point.h"
 
