@@ -992,14 +992,8 @@ void CastSpellInfoHelpers::castSpell() {
                     int meteor_num = (spell_mastery == MASTERY_GRANDMASTER) ? 20 : 16;
                     for (; meteor_num; meteor_num--) {
                         int originHeight = grng->random(1000);
-                        // TODO(Nik-RE-dev): condition is always false
-                        if (Vec3f(j, k, originHeight - 2500).length() <= 1.0f) {
-                            pitch = 0;
-                            yaw = 0;
-                        } else {
-                            pitch = TrigLUT.atan2(std::sqrt(j * j + k * k), originHeight - 2500);
-                            yaw = TrigLUT.atan2(j, k);
-                        }
+                        pitch = TrigLUT.atan2(std::sqrt(j * j + k * k), originHeight - 2500);
+                        yaw = TrigLUT.atan2(j, k);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = dist + Vec3f(0, 0, originHeight + 2500);
                         pSpellSprite.spell_target_pid = (obj_type == OBJECT_Actor) ? spell_targeted_at : Pid();
@@ -1196,14 +1190,8 @@ void CastSpellInfoHelpers::castSpell() {
                     int yaw, pitch;
                     for (int star_num = 20; star_num; star_num--) {
                         int originHeight = grng->random(1000);
-                        // TODO(Nik-RE-dev): condition is always false
-                        if (Vec3f(j, k, originHeight - 2500).length() <= 1.0f) {
-                            pitch = 0;
-                            yaw = 0;
-                        } else {
-                            pitch = TrigLUT.atan2(std::sqrt(j * j + k * k), originHeight - 2500);
-                            yaw = TrigLUT.atan2(j, k);
-                        }
+                        pitch = TrigLUT.atan2(std::sqrt(j * j + k * k), originHeight - 2500);
+                        yaw = TrigLUT.atan2(j, k);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = dist + Vec3f(0, 0, originHeight + 2500);
                         pSpellSprite.spell_target_pid = (obj_type == OBJECT_Actor) ? spell_targeted_at : Pid();
