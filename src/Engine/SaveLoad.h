@@ -3,6 +3,7 @@
 #include <array>
 #include <unordered_map>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "Engine/Graphics/Overlays.h"
@@ -13,9 +14,11 @@
 
 #include "Utility/Memory/Blob.h"
 
-class GraphicsImage;
+// Autosave file name. Note that it's not localized, unlike the autosave title displayed in-game.
+constexpr std::string_view autosaveFileName = "autosave.mm7";
 
-constexpr int MAX_SAVE_SLOTS = 45;
+// Quicksave file name prefix. Full quicksave file names also contain a number, e.g. "quicksave1.mm7".
+constexpr std::string_view quickSaveFileNamePrefix = "quicksave";
 
 struct SaveGameHeader {
     std::string name; // Save name, as displayed in the save list in-game.
@@ -42,33 +45,21 @@ struct SaveGameLite {
 /** Runtime storage for map deltas from the currently loaded save. */
 extern std::unordered_map<std::string, Blob> pMapDeltas;
 
-struct SavegameList {
-    static void Initialize();
-    SavegameList();
-
-    void Reset();
-
-    std::array<std::string, MAX_SAVE_SLOTS> pFileList;
-    std::array<bool, MAX_SAVE_SLOTS> pSavegameUsedSlots;
-    std::array<SaveGameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
-    std::array<GraphicsImage *, MAX_SAVE_SLOTS> pSavegameThumbnails;
-
-    int numSavegameFiles = 0;
-    int selectedSlot = 0;
-    int saveListPosition = 0;
-    std::string lastLoadedSave{};
-};
-
-void loadGame(int uSlot);
+void loadGame(std::string_view fileName);
 std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view title);
 SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title = {});
 void autoSave();
-void doSavegame(int uSlot);
+
+/**
+ * Saves the game.
+ *
+ * @param fileName                  Name of the file to save into, e.g. "save000.mm7". Pass an empty string to save
+ *                                  into the first free `saveNNN.mm7`.
+ * @param title                     Save title to display in the save list in-game.
+ */
+void doSavegame(std::string fileName, std::string_view title);
 void saveNewGame();
 
 void quickSaveGame();
-int getQuickSaveSlot();
 void quickLoadGame();
 std::string getCurrentQuickSave();
-
-extern SavegameList *pSavegameList;

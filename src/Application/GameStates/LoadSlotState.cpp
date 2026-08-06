@@ -8,6 +8,7 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UISaveLoad.h"
+#include "Io/Mouse.h"
 
 LoadSlotState::LoadSlotState() = default;
 LoadSlotState::~LoadSlotState() = default;
@@ -28,14 +29,14 @@ FsmAction LoadSlotState::update() {
         engine->_messageQueue->popMessage(&message, &param1, &param2);
         switch (message) {
         case UIMSG_LoadGame: {
-            if (!pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
+            if (!_uiLoadSaveSlot->hasSelectedSlot())
                 break;
-            }
+            engine->_pendingLoadFileName = _uiLoadSaveSlot->selectedSlot().fileName;
             SetCurrentMenuID(MENU_LoadingProcInMainMenu);
             return FsmAction::transition("slotConfirmed");
         }
         case UIMSG_SelectLoadSlot: {
-            _uiLoadSaveSlot->slotSelected(param1);
+            _uiLoadSaveSlot->slotClicked(param1);
             break;
         }
         case UIMSG_SaveLoadBtn: {
@@ -43,7 +44,7 @@ FsmAction LoadSlotState::update() {
             break;
         }
         case UIMSG_DownArrow: {
-            _uiLoadSaveSlot->downArrowPressed(param1);
+            _uiLoadSaveSlot->downArrowPressed();
             break;
         }
         case UIMSG_ArrowUp: {
@@ -61,7 +62,7 @@ FsmAction LoadSlotState::update() {
             return FsmAction::transition("back");
         }
         case UIMSG_SaveLoadScroll: {
-            _uiLoadSaveSlot->scroll(param1);
+            _uiLoadSaveSlot->scrollWithMouse(mouse->position());
             break;
         }
         case UIMSG_QuickLoad: {

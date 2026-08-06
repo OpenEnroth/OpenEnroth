@@ -20,12 +20,14 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIChest.h"
+#include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Library/LodFormats/LodFormats.h"
@@ -1092,12 +1094,13 @@ GAME_TEST(Issues, Issue2453) {
     game.skipLoadingScreen();
     game.tick(2);
 
-    // Save over the same slot — the existing title should be preserved, no need to retype.
+    // Save over the same slot — the existing title should be preserved, no need to retype. Slot #0 is the new save
+    // slot, the existing save is in slot #1.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
-    game.pressGuiButton("SaveMenu_Slot0");
+    game.pressGuiButton("SaveMenu_Slot1");
     game.tick(2);
     game.pressGuiButton("SaveMenu_Save");
     game.tick(10);
@@ -1333,4 +1336,129 @@ GAME_TEST(Issues, Issue2507) {
     auto damageRange = hpTape.reverse().adjacentDeltas().minMax();
     EXPECT_GE(damageRange[0], 10);
     EXPECT_LE(damageRange[1], 80); // Per-hit damage is within the 10d8 range.
+}
+
+GAME_TEST(Issues, Issue2551a) {
+    // Save list was capped at 45 files, and saving past the cap produced saves that weren't listed in the load menu.
+    game.startNewGame();
+    game.tick(2);
+
+    // Fill the saves folder well past the old cap.
+    ufs->remove("saves/autosave.mm7");
+    Blob save = game.saveGame();
+    for (int i = 0; i < 50; i++)
+        ufs->write(fmt::format("saves/save{:03}.mm7", i), save);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    GUIWindow_SaveLoad *saveMenu = saveLoadMenu();
+    ASSERT_EQ(saveMenu->slots().size(), 51); // All 50 saves are listed, plus the new save slot...
+    ASSERT_TRUE(saveMenu->selectedSlot().fileName.empty()); // ...which is selected by default.
+
+    // Pressing the save button right away shouldn't save, we want a save name typed in first.
+    game.pressGuiButton("SaveMenu_Save");
+    game.tick(2);
+    EXPECT_EQ(ufs->ls("saves").size(), 50);
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN); // Confirm the name with Enter.
+    game.tick(10);
+    EXPECT_EQ(ufs->ls("saves").size(), 51); // New save went into a new file.
+    EXPECT_TRUE(ufs->exists("saves/save050.mm7"));
+
+    // The new save shows up in the load menu, sorted by display name - the other saves have blank titles & fall
+    // back to "saveNNN" display names, so "a" sorts first.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_LoadGame");
+    game.tick(3);
+    GUIWindow_SaveLoad *loadMenu = saveLoadMenu();
+    EXPECT_EQ(loadMenu->slots().size(), 51);
+    EXPECT_EQ(loadMenu->slots()[0].fileName, "save050.mm7");
+    EXPECT_EQ(loadMenu->slots()[0].header.name, "a");
+}
+
+GAME_TEST(Issues, Issue2551b) {
+    // Quickload is handled from inside menus, check that a failed quickload doesn't break the open save menu.
+    game.startNewGame();
+    game.tick(2);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_F9); // Try to quickload, there is no quicksave so this should fail.
+    game.tick(3);
+    ASSERT_EQ(ufs->ls("saves").size(), 1); // Just the autosave...
+    GUIWindow_SaveLoad *saveMenu = saveLoadMenu();
+    ASSERT_EQ(saveMenu->slots().size(), 1); // ...which is not shown in the save menu, so it's just the new save slot.
+
+    // And the menu is still fully functional.
+    game.pressGuiButton("SaveMenu_Slot0"); // Select the new save slot...
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Slot0"); // ...and click it again to start the name input.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Save");
+    game.tick(10);
+    EXPECT_TRUE(ufs->exists("saves/save000.mm7"));
+
+    // Quicksaves are also hidden from the save menu.
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    ASSERT_EQ(ufs->ls("saves").size(), 3); // Autosave, quicksave & our save...
+    GUIWindow_SaveLoad *saveMenu2 = saveLoadMenu();
+    ASSERT_EQ(saveMenu2->slots().size(), 2); // ...but only the new save slot & our save are shown.
+}
+
+GAME_TEST(Issues, Issue2551c) {
+    // Quickload works from the game, from the in-game save menu & from the main menu.
+    game.startNewGame();
+    game.tick(2);
+    engine->config->gameplay.QuickSavesCount.setValue(4); // Quicksave counter wraps 4 -> 0.
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
+    game.tick(2);
+    std::string quickSaveName = getCurrentQuickSave();
+    ASSERT_EQ(quickSaveName, "quicksave0.mm7");
+
+    auto checkQuickLoaded = [&] {
+        game.skipLoadingScreen();
+        game.tick(2);
+        EXPECT_EQ(current_screen_type, SCREEN_GAME);
+        EXPECT_EQ(engine->_lastLoadedSaveFileName, quickSaveName);
+        engine->_lastLoadedSaveFileName.clear(); // Make sure the next check is not vacuous.
+    };
+
+    // Quickload in-game.
+    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    checkQuickLoaded();
+
+    // Quickload from the in-game save menu.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    ASSERT_EQ(current_screen_type, SCREEN_SAVEGAME);
+    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    checkQuickLoaded();
+
+    // Quickload from the main menu.
+    game.goToMainMenu();
+    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    checkQuickLoaded();
+
+    // Quickload from the load menu in the main menu.
+    game.goToMainMenu();
+    game.pressGuiButton("MainMenu_LoadGame");
+    game.tick(3);
+    ASSERT_EQ(current_screen_type, SCREEN_LOADGAME);
+    game.pressAndReleaseKey(PlatformKey::KEY_F9);
+    checkQuickLoaded();
 }

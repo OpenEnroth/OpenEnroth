@@ -3,6 +3,7 @@
 #include <Media/Audio/AudioPlayer.h>
 #include <Engine/Engine.h>
 #include <Engine/SaveLoad.h>
+#include <Engine/Resources/EngineFileSystem.h>
 #include <GUI/GUIMessageQueue.h>
 #include <GUI/GUIWindow.h>
 #include <GUI/UI/UIBranchlessDialogue.h>
@@ -10,6 +11,7 @@
 #include <Engine/Graphics/Renderer/Renderer.h>
 
 #include <memory>
+#include <string>
 
 MainMenuState::MainMenuState() {
 }
@@ -56,10 +58,10 @@ FsmAction MainMenuState::update() {
             transition = "exitGame";
             break;
         case UIMSG_QuickLoad: {
-            int slot = getQuickSaveSlot();
-            if (slot != -1) {
+            std::string fileName = getCurrentQuickSave();
+            if (ufs->exists(fmt::format("saves/{}", fileName))) {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                pSavegameList->selectedSlot = slot;
+                engine->_pendingLoadFileName = fileName;
                 SetCurrentMenuID(MENU_LoadingProcInMainMenu);
                 transition = "quickLoadGame";
             } else {

@@ -1,40 +1,100 @@
 #pragma once
 
+#include <cassert>
+#include <string>
+#include <string_view>
+#include <vector>
+
+#include "Engine/SaveLoad.h"
+#include "Engine/Graphics/Image.h"
+
 #include "GUI/GUIWindow.h"
 
-class GUIWindow_Save : public GUIWindow {
+struct SavegameSlot {
+    std::string fileName;
+    SaveGameHeader header;
+    GraphicsImagePtr thumbnail;
+};
+
+class GUIWindow_SaveLoad : public GUIWindow {
+ public:
+    GUIWindow_SaveLoad(WindowType type, Pointi position, Sizei dimensions);
+
+    /**
+     * @return                      Slots shown in this menu, in display order.
+     */
+    [[nodiscard]] const std::vector<SavegameSlot> &slots() const {
+        return _slots;
+    }
+
+    /**
+     * @return                      Whether a slot is selected. False only for a load menu with no saves to show.
+     */
+    [[nodiscard]] bool hasSelectedSlot() const {
+        return _selectedSlot < std::ssize(_slots);
+    }
+
+    [[nodiscard]] const SavegameSlot &selectedSlot() const {
+        assert(hasSelectedSlot());
+        return _slots[_selectedSlot];
+    }
+
+    void setSelectedSlotName(std::string_view name) {
+        assert(hasSelectedSlot());
+        _slots[_selectedSlot].header.name = name;
+    }
+
+    /**
+     * Handles a click on one of the visible slot rows. First click selects the slot, second click acts on it.
+     *
+     * @param slotIndex             Index of the clicked row in the visible part of the list, in [0, 7).
+     */
+    virtual void slotClicked(int slotIndex) = 0;
+
+    void scrollUp();
+    void scrollDown();
+    void scrollWithMouse(Pointi mousePos);
+
+ protected:
+    void drawSaveLoad();
+
+ protected:
+    std::vector<SavegameSlot> _slots;
+    int _selectedSlot = 0;
+    int _scrollPosition = 0;
+};
+
+class GUIWindow_Save : public GUIWindow_SaveLoad {
  public:
     GUIWindow_Save();
-    virtual ~GUIWindow_Save() {}
 
     virtual void Update() override;
 
- protected:
-    // Image * main_menu_background;
+    virtual void slotClicked(int slotIndex) override;
 
+ protected:
     GraphicsImage *saveload_ui_save_up = nullptr;
     GraphicsImage *saveload_ui_loadsave = nullptr;
     GraphicsImage *saveload_ui_saveu = nullptr;
     GraphicsImage *saveload_ui_x_u = nullptr;
 };
 
-class GUIWindow_Load : public GUIWindow {
+class GUIWindow_Load : public GUIWindow_SaveLoad {
  public:
     explicit GUIWindow_Load(bool ingame);
-    virtual ~GUIWindow_Load() {}
 
     virtual void Update() override;
 
-    void slotSelected(int slotIndex);
+    virtual void slotClicked(int slotIndex) override;
     void loadButtonPressed();
-    void downArrowPressed(int maxSlots);
+    void downArrowPressed();
     void upArrowPressed();
     void cancelButtonPressed();
-    void scroll(int maxSlots);
     void quickLoad();
 
  protected:
-    bool isLoadSlotClicked = false;
+    // TODO(Nik-RE-dev): drop variable and load game only on double click.
+    bool _loadSlotClicked = false;
     GraphicsImage *main_menu_background = nullptr;
 
     GraphicsImage *saveload_ui_load_up = nullptr;
@@ -42,3 +102,8 @@ class GUIWindow_Load : public GUIWindow {
     GraphicsImage *saveload_ui_loadu = nullptr;
     GraphicsImage *saveload_ui_x_u = nullptr;
 };
+
+/**
+ * @return                      Currently open save/load menu. Should only be called when one is open.
+ */
+GUIWindow_SaveLoad *saveLoadMenu();
