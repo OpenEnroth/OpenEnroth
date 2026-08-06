@@ -83,6 +83,7 @@ Naming:
 * Use `CamelCase` for everything else.
 * Type names should start with a capital letter. E.g. `IndexedArray`, `InputAction`, `LogLevel`. This applies to all types, including classes, structs, enums and typedefs, with certain exceptions as listed below.
 * Method & function names should start with a lowercase letter. E.g. `Vec3::length`, `gridCellToWorldPosX`, `ceilingHeight`.
+* Getters are named after what they return, without a `get` prefix. Setters do use a `set` prefix. So it's `damage()` and `setDamage()`, and not `getDamage()` and `setDamage()`.
 * Variable names should start with a lowercase letter. E.g. `int monsterCount = level->monsterCount()`.
 * Names of private members should start with an underscore to visually distinguish them from variables without having to spell out `this->` every single time. E.g. `_initialized = true`, where `_initialized` is a member field.
 * Note that the above doesn't apply to POD-like types as for such types all members are public and are named just like ordinary variables.
