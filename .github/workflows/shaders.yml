@@ -14,6 +14,11 @@ on:
     types:
       - published
 
+# A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
+concurrency:
+  group: shaders-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   check_shaders:
     runs-on: ubuntu-22.04

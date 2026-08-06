@@ -30,6 +30,11 @@ on:
     types:
       - published
 
+# A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
+concurrency:
+  group: linux-flatpak-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 env:
   CCACHE_COMPILERCHECK: content
     

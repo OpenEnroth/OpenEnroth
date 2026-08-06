@@ -30,6 +30,11 @@ on:
     types:
       - published
 
+# A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
+concurrency:
+  group: build-all-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 env:
   # This version is referenced in android/openenroth/build.gradle.
   # When updating the version here you should also update it in the Dependencies repo!
