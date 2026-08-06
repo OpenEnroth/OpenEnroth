@@ -280,6 +280,10 @@ class GameConfig : public Config {
 
         Bool ShowProtectionMagicPower = {this, "show_prot_magic_power", true, "Display the remaining power of Protection from Magic in the Party Buffs popup."};
 
+        Bool NoPotionsForEradicated = {this, "no_potions_for_eradicated", true,
+            "Don't let eradicated characters drink potions. In vanilla a potion dropped on an eradicated "
+            "character's portrait is drunk normally."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)

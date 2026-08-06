@@ -199,39 +199,46 @@ GAME_TEST(Issues, Issue578) {
 }
 
 GAME_TEST(Issues, Issue587) {
-    // Eradicated characters shouldn't be able to drink potions - they have no
-    // body left. Dropping a potion on one must be rejected (error sound + status
-    // message) and must neither consume the potion nor heal the character.
-    // This is an intentional change from the original game, where eradicated
-    // characters CAN drink potions (see issue #587).
-    auto healthTape = charTapes.hp(0);
-    auto soundsTape = tapes.sounds();
-    auto statusTape = tapes.statusBar();
-    game.startNewGame();
+    // Dropping a potion on an eradicated character's portrait used to drink it, wasting the potion. Test both sides
+    // of the config option - in vanilla the potion is still drunk, and Character::Heal refuses to heal an eradicated
+    // character, so it's simply lost.
+    for (bool noPotionsForEradicated : {true, false}) {
+        test.prepareForNextTest();
+        engine->config->gameplay.NoPotionsForEradicated.setValue(noPotionsForEradicated);
 
-    // Eradicate char 0 (the drinker). SetCondition(ERADICATED) zeroes HP, so
-    // afterwards wound it to a known value well below max - that way a Cure
-    // Wounds potion that wrongly took effect would visibly raise HP, and the
-    // "HP unchanged" assertion below can't pass vacuously from HP being maxed.
-    Character &drinker = pParty->pCharacters[0];
-    drinker.SetCondition(CONDITION_ERADICATED, 0);
-    drinker.health = 5;
-    ASSERT_LT(drinker.health, drinker.GetMaxHealth());
-    pParty->setActiveCharacterIndex(2); // Active "giver" must be a non-eradicated char.
+        auto healthTape = charTapes.hp(0);
+        auto soundsTape = tapes.sounds();
+        auto statusTape = tapes.statusBar();
+        game.startNewGame();
 
-    test.startTaping();
-    game.tick(); // Baseline tick records health == 5.
+        // Eradicating zeroes HP, so the HP we want to watch has to be set after it, not before. 5 is arbitrary, it
+        // just has to be below max - at max a potion that wrongly healed the drinker would clamp straight back, and
+        // the tape below wouldn't move.
+        Character &drinker = pParty->pCharacters[0];
+        drinker.SetCondition(CONDITION_ERADICATED, 0);
+        drinker.health = 5;
+        ASSERT_LT(drinker.health, drinker.GetMaxHealth());
+        pParty->setActiveCharacterIndex(2); // Active "giver" must be a non-eradicated char.
 
-    // Active character drags a Cure Wounds potion onto the eradicated character's portrait.
-    pParty->setHoldingItem(Item(ITEM_POTION_CURE_WOUNDS));
-    pParty->activeCharacter().useItem(0, true);
-    game.tick();
+        test.startTaping();
+        game.tick(); // Baseline tick records health == 5.
 
-    EXPECT_TRUE(drinker.conditions.has(CONDITION_ERADICATED)); // Still eradicated.
-    EXPECT_EQ(healthTape, tape(5)); // HP never moved from 5 - potion had no effect.
-    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_POTION_CURE_WOUNDS); // Potion wasn't consumed.
-    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
-    EXPECT_CONTAINS(statusTape, "That player is Eradicated");
+        // Active character drags a Cure Wounds potion onto the eradicated character's portrait.
+        pParty->setHoldingItem(Item(ITEM_POTION_CURE_WOUNDS));
+        pParty->activeCharacter().useItem(0, true);
+        game.tick();
+
+        EXPECT_TRUE(drinker.conditions.has(CONDITION_ERADICATED)); // Still eradicated.
+        EXPECT_EQ(healthTape, tape(5)); // Heal() is a no-op on an eradicated character either way.
+        if (noPotionsForEradicated) {
+            EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_POTION_CURE_WOUNDS); // Potion wasn't consumed.
+            EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
+            EXPECT_CONTAINS(statusTape, "That player is Eradicated");
+        } else {
+            EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // Vanilla drinks the potion, to no effect.
+            EXPECT_CONTAINS(soundsTape.flatten(), SOUND_drink);
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue598) {

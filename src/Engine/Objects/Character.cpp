@@ -3076,8 +3076,8 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     }
 
     if (pParty->pPickedItem.isPotion()) {
-        // Eradicated characters have no body left, so they can't drink potions. See issue #587.
-        if (playerAffected->IsEradicated()) {
+        // Eradicated characters have no body left to drink with. Vanilla lets them, so this is behind a config option.
+        if (engine->config->gameplay.NoPotionsForEradicated.value() && playerAffected->IsEradicated()) {
             engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->characterConditionName(playerAffected->GetMajorConditionIdx()));
             pAudioPlayer->playUISound(SOUND_error);
             return;
