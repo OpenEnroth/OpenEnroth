@@ -12,7 +12,6 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Tables/NPCTable.h"
 
-#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 

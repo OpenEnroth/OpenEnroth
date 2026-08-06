@@ -14,7 +14,6 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 
-#include "GUI/GUIButton.h"
 
 #include "Utility/MapAccess.h"
 

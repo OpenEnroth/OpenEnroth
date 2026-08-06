@@ -12,7 +12,7 @@
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Graphics/FaceEnums.h"
 #include "Engine/Spells/SpellEnums.h"
-#include "Media/Audio/SoundEnums.h"
+#include "Engine/Data/SoundEnums.h"
 
 class InputStream;
 

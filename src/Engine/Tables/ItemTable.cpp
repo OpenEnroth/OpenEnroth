@@ -12,7 +12,6 @@
 #include "Library/Serialization/Serialization.h"
 
 #include "Engine/Random/Random.h"
-#include "Engine/Spells/Spells.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"

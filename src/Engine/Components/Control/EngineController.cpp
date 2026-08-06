@@ -6,7 +6,6 @@
 #include <string>
 #include <memory>
 
-#include "Arcomage/Arcomage.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"

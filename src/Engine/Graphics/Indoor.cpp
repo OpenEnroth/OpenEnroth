@@ -51,7 +51,6 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Exception.h"
 
-#include "Io/Mouse.h"
 
 IndoorLocation *pIndoor = nullptr;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;

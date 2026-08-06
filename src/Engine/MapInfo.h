@@ -4,7 +4,7 @@
 #include <array>
 #include <string>
 
-#include "Media/Audio/SoundEnums.h"
+#include "Engine/Data/SoundEnums.h"
 
 #include "Utility/IndexedArray.h"
 

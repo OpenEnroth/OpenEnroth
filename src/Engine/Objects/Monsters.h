@@ -13,7 +13,7 @@
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Time/Duration.h"
 
-#include "Media/Audio/SoundEnums.h"
+#include "Engine/Data/SoundEnums.h"
 
 #include "Utility/Segment.h"
 
