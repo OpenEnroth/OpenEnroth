@@ -71,9 +71,6 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     app->add_flag(
         "--headless", result.headless,
         "Run in headless mode.");
-    retrace->add_flag(
-        "--check-canonical", result.retrace.checkCanonical,
-        "Check whether all passed traces are stored in canonical representation and return an error if not. Don't overwrite the actual trace files.");
     retrace->add_option(
         "--migration", result.retrace.migration,
         "Migration to apply before retracing.")->option_text("MIGRATION");

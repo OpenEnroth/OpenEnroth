@@ -28,7 +28,6 @@ struct OpenEnrothOptions : public GameStarterOptions {
     struct RetraceOptions {
         std::vector<std::string> traces;
         Migration migration = MIGRATION_NONE;
-        bool checkCanonical = false;
     };
 
     struct PlayOptions {
