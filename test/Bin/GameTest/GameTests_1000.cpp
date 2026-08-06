@@ -437,7 +437,7 @@ GAME_TEST(Issues, Issue1274) {
 GAME_TEST(Issues, Issue1275) {
     // Clicking a store button while holding item causes black screen
     auto heldTape = tapes.custom([] {return pParty->pPickedItem.itemId; });
-    auto dialoTape = tapes.custom([] {if (window_SpeakInHouse != nullptr) return window_SpeakInHouse->getCurrentDialogue(); return DIALOGUE_NULL; });
+    auto dialoTape = tapes.custom([] {if (window_SpeakInHouse != nullptr) return window_SpeakInHouse->currentDialogue(); return DIALOGUE_NULL; });
     test.playTraceFromTestData("issue_1275.mm7", "issue_1275.json");
     // make sure item is returned to inventory
     EXPECT_EQ(heldTape.frontBack(), tape(ITEM_NULL, ITEM_NULL));

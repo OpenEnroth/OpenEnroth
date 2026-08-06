@@ -26,7 +26,7 @@ class GUIWindow_Dialogue : public GUIWindow {
         _displayedDialogue = type;
     }
 
-    DialogueId getDisplayedDialogueType() {
+    DialogueId displayedDialogueType() {
         return _displayedDialogue;
     }
 

@@ -112,7 +112,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellObject.spriteId);
 
             // adjust height to account for different sprite sizes and offset
-            SpriteFrame *frame = pSpellObject.getSpriteFrame();
+            SpriteFrame *frame = pSpellObject.spriteFrame();
             if (frame->flags & SPRITE_FRAME_CENTER) {
                 // centering
                 pOut += Vec3f(0, 0, frame->sprites[0]->texture->height() / 4);

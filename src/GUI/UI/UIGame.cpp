@@ -639,8 +639,8 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
         return;
     }
 
-    if (window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_SHOP_BUY_STANDARD ||
-        window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_SHOP_BUY_SPECIAL) {
+    if (window_SpeakInHouse->currentDialogue() == DIALOGUE_SHOP_BUY_STANDARD ||
+        window_SpeakInHouse->currentDialogue() == DIALOGUE_SHOP_BUY_SPECIAL) {
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
         pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(pParty->activeCharacterIndex(), SCREEN_SHOP_INVENTORY);
         return;
@@ -1103,7 +1103,7 @@ void GameUI_WritePointedObjectStatusString() {
         /* if (current_screen_type == SCREEN_HOUSE)  // this is required
         when displaying inventory in a house/shop??
         {
-        if (window_SpeakInHouse->getCurrentDialogue() != DIALOGUE_SHOP_BUY_STANDARD
+        if (window_SpeakInHouse->currentDialogue() != DIALOGUE_SHOP_BUY_STANDARD
         || (v16 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]], v16 ==
         0)
         || v16 == -65536)

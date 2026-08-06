@@ -366,7 +366,7 @@ void Party::TakeFine(int amount) {
 }
 
 //----- (0049135E) --------------------------------------------------------
-unsigned int Party::getPartyFame() {
+unsigned int Party::fame() {
     uint64_t total_exp = 0;
     for (Character &player : this->pCharacters) {
         total_exp += player.experience;
@@ -851,7 +851,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
             int perCharXP = static_cast<int>(pEXPNum) / pActivePlayerCount;
             for (Character &player : this->pCharacters) {
                 if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-                    int playermodexp = perCharXP + perCharXP * player.getLearningPercent() / 100;
+                    int playermodexp = perCharXP + perCharXP * player.learningPercent() / 100;
                     player.setXP(player.experience + playermodexp);
                 }
             }

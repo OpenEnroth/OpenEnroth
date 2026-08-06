@@ -75,7 +75,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
     int pNumberContacts = 0;
     int v9 = 0;
     if (!pNPCInfo->Hired() && pNPCInfo->house >= 0) {
-        if (pParty->getPartyFame() <= pNPCInfo->fame ||
+        if (pParty->fame() <= pNPCInfo->fame ||
             (pNumberContacts = pNPCInfo->flags & 0xFFFFFF7F,
              (pNumberContacts & 0x80000000u) != 0)) {
             v9 = 1;
@@ -187,7 +187,7 @@ void GUIWindow_Dialogue::Update() {
     DrawTitleText(assets->pFontArrus.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3, titleWindow);
 
     // TODO(pskelton): nothing done with fame here?
-    pParty->getPartyFame();
+    pParty->fame();
 
     std::string dialogue_string;
     switch (_displayedDialogue) {

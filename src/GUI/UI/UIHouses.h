@@ -88,7 +88,7 @@ class GUIWindow_House : public GUIWindow {
         return _houseId;
     }
 
-    DialogueId getCurrentDialogue() const {
+    DialogueId currentDialogue() const {
         return _currentDialogue;
     }
 

@@ -623,7 +623,7 @@ int Character::GetDisarmTrap() const {
     return multiplier * val.level();
 }
 
-int Character::getLearningPercent() const {
+int Character::learningPercent() const {
     int hirelingBonus = 0;
     if (CheckHiredNPCSpeciality(Teacher)) hirelingBonus = 10;
     if (CheckHiredNPCSpeciality(Instructor)) hirelingBonus += 15;
@@ -4002,7 +4002,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
                 for (InventoryEntry entry : inventory.entries()) {
                     if (entry->itemId == ITEM_QUEST_LICH_JAR_EMPTY) {
                         entry->itemId = ITEM_QUEST_LICH_JAR_FULL;
-                        entry->lichJarCharacterIndex = getCharacterIndex();
+                        entry->lichJarCharacterIndex = characterIndex();
                     }
                 }
                 if (this->sResFireBase < 20) this->sResFireBase = 20;
@@ -4021,7 +4021,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
                     this->uCurrentFace = 20;
                     this->uVoiceID = 20;
                 }
-                GameUI_ReloadPlayerPortraits(getCharacterIndex(),
+                GameUI_ReloadPlayerPortraits(characterIndex(),
                                              this->uCurrentFace);
             }
             PlayAwardSound_Anim();
@@ -4070,7 +4070,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
             // TODO(captainurist): qbits value is coming from a script, need to bound-check.
             if (!pParty->_questBits[static_cast<QuestBit>(var_value)] && !pQuestTable[static_cast<QuestBit>(var_value)].empty()) {
                 bFlashQuestBook = true;
-                spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, getCharacterIndex());
+                spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, characterIndex());
                 PlayAwardSound();
                 this->playReaction(SPEECH_QUEST_GOT);
             }
@@ -4325,7 +4325,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
         case VAR_AutoNotes:
             assert(var_value > 0);
             if (!pParty->_autonoteBits[var_value] && !pAutonoteTxt[var_value].pText.empty()) {
-                spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, getCharacterIndex());
+                spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, characterIndex());
                 this->playReaction(SPEECH_AWARD_GOT);
                 bFlashAutonotesBook = true;
                 autonoteBookDisplayType = pAutonoteTxt[var_value].eType;  // dword_72371C[2 * a3];
@@ -4542,7 +4542,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
 
 //----- (new function) --------------------------------------------------------
 void Character::PlayAwardSound() {
-    //int playerIndex = getCharacterIndex();
+    //int playerIndex = characterIndex();
     //int v25 = Pid(OBJECT_Character, playerIndex + 48);
     //pAudioPlayer->playSound(SOUND_quest, v25);
     pAudioPlayer->playUISound(SOUND_quest);
@@ -4550,7 +4550,7 @@ void Character::PlayAwardSound() {
 
 //----- (new function) --------------------------------------------------------
 void Character::PlayAwardSound_Anim() {
-    int playerIndex = getCharacterIndex();
+    int playerIndex = characterIndex();
     spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, playerIndex);
     PlayAwardSound();
 }
@@ -4563,7 +4563,7 @@ void Character::PlayAwardSound_Anim_Face(SpeechId speech) {
 
 //----- (new function) --------------------------------------------------------
 void Character::SetSkillReaction() {
-    int playerIndex = getCharacterIndex();
+    int playerIndex = characterIndex();
     spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, playerIndex);
     PlayAwardSound();
 }
@@ -4925,7 +4925,7 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
                 this->playReaction(SPEECH_AWARD_GOT);
                 bFlashAutonotesBook = true;
                 autonoteBookDisplayType = pAutonoteTxt[val].eType;
-                spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, getCharacterIndex());
+                spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, characterIndex());
             }
             pParty->_autonoteBits.set(val);
             PlayAwardSound();
@@ -5125,7 +5125,7 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
 
 //----- (new function) --------------------------------------------------------
 void Character::PlayAwardSound_Anim97() {
-    int playerIndex = getCharacterIndex();
+    int playerIndex = characterIndex();
     spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, playerIndex);
     PlayAwardSound();
 }
@@ -5676,7 +5676,7 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
 
 //----- (new function) --------------------------------------------------------
 void Character::PlayAwardSound_AnimSubtract() {
-    int playerIndex = getCharacterIndex();
+    int playerIndex = characterIndex();
     spell_fx_renderer->SetPlayerBuffAnim(SPELL_STAT_DECREASE, playerIndex);
     PlayAwardSound();
 }
@@ -6255,7 +6255,7 @@ void Character::SetCondUnconsciousWithBlockCheck(int blockable) {
     SetCondition(CONDITION_UNCONSCIOUS, blockable);
 }
 
-int Character::getCharacterIndex() {
+int Character::characterIndex() {
     return pParty->getCharacterIdInParty(this);
 }
 
@@ -6532,7 +6532,7 @@ void Character::playReaction(SpeechId speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->playSound((SoundId)pickedSoundID, SOUND_MODE_PID, Pid(OBJECT_Character, getCharacterIndex()));
+                pAudioPlayer->playSound((SoundId)pickedSoundID, SOUND_MODE_PID, Pid(OBJECT_Character, characterIndex()));
             }
         }
     }

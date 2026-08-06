@@ -527,7 +527,7 @@ void updateHouseNPCTopics(int npc) {
                                       INPUT_ACTION_INTERACT, houseNpcs[npc].label);
         pDialogueWindow->CreateButton({8, 8}, {460, 344}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label);
     } else {
-        if (window_SpeakInHouse->getCurrentDialogue() != DIALOGUE_OTHER) {
+        if (window_SpeakInHouse->currentDialogue() != DIALOGUE_OTHER) {
             for (int i = 0; i < houseNpcs.size(); ++i) {
                 houseNpcs[i].button->Release();
                 houseNpcs[i].button = nullptr;
@@ -566,14 +566,14 @@ bool houseDialogPressEscape() {
         return false;
     }
 
-    if (window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_OTHER) {
+    if (window_SpeakInHouse->currentDialogue() == DIALOGUE_OTHER) {
         updateHouseNPCTopics(currentHouseNpc);
         BackToHouseMenu();
         return true;
     }
 
-    if (window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_NULL ||
-        window_SpeakInHouse->getCurrentDialogue() == DIALOGUE_MAIN) {
+    if (window_SpeakInHouse->currentDialogue() == DIALOGUE_NULL ||
+        window_SpeakInHouse->currentDialogue() == DIALOGUE_MAIN) {
         currentHouseNpc = -1;
         if (shop_ui_background) {
             shop_ui_background->release();

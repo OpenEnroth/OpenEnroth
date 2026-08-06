@@ -96,7 +96,7 @@ void BaseRenderer::DrawSpriteObjects() {
             ((object->spriteId < SPRITE_SPELL_FIRE_TORCH_LIGHT || object->spriteId >= SPRITE_10000) && // Not a spell sprite.
              (object->spriteId < SPRITE_PROJECTILE_AIR_BOLT || object->spriteId >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
              (object->spriteId < SPRITE_TRAP_FIRE || object->spriteId > SPRITE_TRAP_BODY))) { // Not a trap.
-            SpriteFrame *frame = object->getSpriteFrame();
+            SpriteFrame *frame = object->spriteFrame();
             if (frame->spriteName == "null" || frame->textureName == "null") {
                 logger->trace("Trying to draw sprite with null frame");
                 continue;
