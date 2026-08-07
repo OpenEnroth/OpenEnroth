@@ -27,6 +27,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
+#include "Engine/Graphics/TileGenerator.h"
 #include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Resources/LodSpriteCache.h"
@@ -46,6 +47,7 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/ChestTable.h"
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
@@ -59,12 +61,12 @@
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Time/Timer.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AttackList.h"
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
-#include "Graphics/TileGenerator.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -82,10 +84,8 @@
 
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
-#include "Tables/ChestTable.h"
 
 #include "Utility/String/Transformations.h"
-#include "TurnEngine/TurnEngine.h"
 
 /*
 

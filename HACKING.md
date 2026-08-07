@@ -136,6 +136,7 @@ OpenEnroth code is broken up as follows:
 Our basic guidelines for code organization are:
 * One `CMakeLists.txt` file per folder. Exceptions are /android, /CMakeModules and /resources.
 * One class per source file, with the name of the source file matching the name of the class. Exceptions are small structs, which are usually easier to pack into a single source file, and helper classes, which generally should stay next to the main class. Note that this guideline doesn't apply to source files that mainly declare functions.
+* Include a header from another folder by its full path from `src`, as in `#include "Engine/Graphics/Indoor.h"`. Only headers in the same folder are included by bare name, and `..` never appears in an include path. Folder-relative paths hide dependency edges from every tool that reads the include graph, so a package can look decoupled while it isn't.
 
 
 ## Testing

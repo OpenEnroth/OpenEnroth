@@ -5,12 +5,12 @@
 #include <string>
 #include <memory>
 
+#include "Engine/AssetsManager.h" // TODO(captainurist): dependency doesn't belong here
+
 #include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
-
-#include "../AssetsManager.h" // TODO(captainurist): dependency doesn't belong here
 
 LodSpriteCache *pSprites_LOD = nullptr;
 LodSpriteCache *pSprites_LOD_mm6 = nullptr;

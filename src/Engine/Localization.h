@@ -4,18 +4,18 @@
 #include <string>
 #include <utility>
 
-#include "Engine/Objects/NPCEnums.h"
+#include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
-#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/MonsterEnums.h"
+#include "Engine/Objects/NPCEnums.h"
 #include "Engine/PartyEnums.h"
-#include "Objects/ActorEnums.h"
+#include "Engine/Spells/SpellEnums.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/String/Format.h"
 
 #include "LocalizationEnums.h"
-#include "Objects/CombinedSkillValue.h"
-#include "Objects/MonsterEnums.h"
 
 class Localization {
  public:

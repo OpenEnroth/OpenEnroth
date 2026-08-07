@@ -14,6 +14,7 @@
 #include "Engine/Party.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Time/Timer.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -34,8 +35,6 @@
 #include "Library/Image/Pcx.h"
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
-
-#include "TurnEngine/TurnEngine.h"
 
 SavegameList *pSavegameList = new SavegameList;
 std::unordered_map<std::string, Blob> pMapDeltas;
