@@ -768,10 +768,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            if (object->spriteId == SPRITE_PROJECTILE_BLASTER) {
-                // TODO(Nik-RE-dev): unreachable, these cases does not process this sprite type
-                pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
-            }
             return 0;
         }
 
@@ -808,10 +804,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            if (object->spriteId != SPRITE_PROJECTILE_BLASTER) {
-                pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
-                return 0;
-            }
+            pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
