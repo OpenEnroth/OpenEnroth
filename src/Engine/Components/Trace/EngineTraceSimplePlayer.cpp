@@ -8,8 +8,9 @@
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Random/Random.h"
 
+#include "Core/Trace/PaintEvent.h"
+
 #include "Library/Platform/Application/PlatformApplication.h"
-#include "Library/Trace/PaintEvent.h"
 
 #include "Utility/ScopeGuard.h"
 #include "Utility/Exception.h"

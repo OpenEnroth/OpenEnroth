@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Library/Trace/EventTrace.h"
+#include "Core/Trace/EventTrace.h"
 
 class GameConfig;
 struct EventTraceGameState;

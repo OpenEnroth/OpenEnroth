@@ -12,9 +12,10 @@
 
 #include "Io/KeyboardController.h"
 
+#include "Core/Trace/EventTrace.h"
+
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
-#include "Library/Trace/EventTrace.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/ScopeGuard.h"
