@@ -88,9 +88,10 @@
 #include "Utility/String/Split.h"
 #include "Utility/ScopeGuard.h"
 
+#include "Application/GameStates/GameFsmBuilder.h"
+
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
-#include "GameStates/GameFsmBuilder.h"
 
 Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
     _application = application;
