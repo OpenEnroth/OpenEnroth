@@ -49,9 +49,24 @@ class LogCategory {
  private:
     friend class Logger;
 
+    /**
+     * @return                          Log level as stored in `_adjustedLevel`. `LOG_NONE` maps above every other
+     *                                  level, so that messages logged at `LOG_NONE` are always dropped.
+     */
+    static constexpr int adjustLevel(LogLevel level) {
+        return level == LOG_NONE ? detail::LOG_NONE_BARRIER : static_cast<int>(level);
+    }
+
+    /**
+     * Creates an unnamed category that's not registered in the global category list, and thus can be constructed at
+     * compile time. This is what makes a `constinit Logger` possible.
+     */
+    constexpr LogCategory() = default;
+
  private:
     std::string_view _name;
     LogSource *_source = nullptr;
+    bool _registered = false;
 
     // Storing log level here is an implementation detail - it makes it possible to check the log level inside a
     // logging call in just two memory reads.
