@@ -186,9 +186,6 @@ void GUIWindow_Dialogue::Update() {
     titleWindow.w -= 10;
     DrawTitleText(assets->pFontArrus.get(), SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3, titleWindow);
 
-    // TODO(pskelton): nothing done with fame here?
-    pParty->fame();
-
     std::string dialogue_string;
     switch (_displayedDialogue) {
         case DIALOGUE_13_hiring_related:
