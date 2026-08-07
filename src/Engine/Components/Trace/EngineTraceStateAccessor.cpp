@@ -11,7 +11,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Library/Trace/EventTrace.h"
+#include "Core/Trace/EventTrace.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Encoding.h"

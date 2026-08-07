@@ -20,10 +20,11 @@
 #include "Io/KeyboardActionMapping.h"
 #include "Io/InputEnumFunctions.h"
 
+#include "Core/Trace/EventTrace.h"
+#include "Core/Trace/EventTraceMigrations.h"
+
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
-#include "Library/Trace/EventTrace.h"
-#include "Library/Trace/EventTraceMigrations.h"
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/String/Format.h"

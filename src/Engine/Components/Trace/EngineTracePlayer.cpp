@@ -14,8 +14,9 @@
 
 #include "Io/KeyboardController.h"
 
-#include "Library/Trace/PaintEvent.h"
-#include "Library/Trace/EventTrace.h"
+#include "Core/Trace/PaintEvent.h"
+#include "Core/Trace/EventTrace.h"
+
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 

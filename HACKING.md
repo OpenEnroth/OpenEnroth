@@ -131,6 +131,7 @@ OpenEnroth code is broken up as follows:
 * `Utility` – generic utility classes and functions go here. Utility classes should be domain-independent (e.g. should make sense in a context of some other project) and should depend only on `thirdparty` libraries.
 * `Library` – collection of independent libraries that the engine is built on top of. Code here can depend on `Utility` and other libraries in `Library`. However, there should be no cyclical dependencies between libraries here.
 * `Library/Platform` is our platform abstraction layer on top of SDL.
+* `Core` – collection of libraries that are specific to OpenEnroth, including parts of the engine itself. The difference from `Library` is that code here makes little sense in the context of another project. Code here can depend on `Utility` and `Library`, and as in `Library` there should be no cyclical dependencies.
 * The rest of the code is currently pretty tangled with each part depending on each other. This document will be updated once we have some progress there.
 
 Our basic guidelines for code organization are:

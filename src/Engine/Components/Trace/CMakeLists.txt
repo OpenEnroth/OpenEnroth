@@ -28,5 +28,5 @@ target_link_libraries(engine_components_trace
         library_platform_application
         library_platform_interface
         library_random
-        library_trace
+        core_trace
         utility)
