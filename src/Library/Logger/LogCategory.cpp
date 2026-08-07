@@ -11,13 +11,16 @@ static std::unordered_map<std::string_view, LogCategory *> &logCategoriesStorage
     return result;
 }
 
-LogCategory::LogCategory(std::string_view name, LogSource *source): _name(name), _source(source) {
+LogCategory::LogCategory(std::string_view name, LogSource *source): _name(name), _source(source), _registered(true) {
     auto &storage = logCategoriesStorage();
     assert(!storage.contains(_name));
     storage.emplace(_name, this);
 }
 
 LogCategory::~LogCategory() {
+    if (!_registered)
+        return;
+
     auto &storage = logCategoriesStorage();
     assert(storage.contains(_name));
     storage.erase(_name);
