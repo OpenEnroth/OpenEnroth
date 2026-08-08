@@ -10,6 +10,7 @@
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
 #include "Utility/String/Format.h"
+#include "Utility/System/NativePath.h"
 #include "Utility/UnicodeCrt.h"
 
 #include "RetraceTest.h"
@@ -23,14 +24,14 @@ int platformMain(int argc, char **argv) {
         if (opts.helpPrinted)
             return 1;
 
-        std::vector<std::string> tracePaths;
-        for (const auto &entry : std::filesystem::directory_iterator(opts.testPath))
+        std::vector<NativePath> tracePaths;
+        for (const auto &entry : std::filesystem::directory_iterator(opts.testPath.toStdPath()))
             if (entry.path().extension() == ".json")
-                tracePaths.push_back(entry.path().string());
+                tracePaths.push_back(NativePath::fromStdPath(entry.path()));
         std::ranges::sort(tracePaths);
 
-        for (const std::string &tracePath : tracePaths)
-            testing::RegisterTest("Retrace", std::filesystem::path(tracePath).stem().string().c_str(),
+        for (const NativePath &tracePath : tracePaths)
+            testing::RegisterTest("Retrace", tracePath.toStdPath().stem().string().c_str(),
                                   nullptr, nullptr, __FILE__, __LINE__,
                                   [tracePath] { return new RetraceTest(tracePath); });
 

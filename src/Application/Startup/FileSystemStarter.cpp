@@ -27,7 +27,7 @@ void FileSystemStarter::initUserFs(bool ramFs, std::string_view path) {
     if (ramFs) {
         _userFs = std::make_unique<MemoryFileSystem>("ramfs");
     } else {
-        _userFs = std::make_unique<DirectoryFileSystem>(path);
+        _userFs = std::make_unique<DirectoryFileSystem>(NativePath::fromWtf8(path));
     }
 
     ufs = _userFs.get();
@@ -37,7 +37,7 @@ void FileSystemStarter::initDataFs(std::string_view path, bool pathOverridesBuil
     assert(dfs == nullptr);
 
     _dataEmbeddedFs = std::make_unique<EmbeddedFileSystem>(cmrc::openenroth::get_filesystem(), "embedded");
-    _dataDirFs = std::make_unique<DirectoryFileSystem>(path);
+    _dataDirFs = std::make_unique<DirectoryFileSystem>(NativePath::fromWtf8(path));
     _dataDirLowercaseFs = std::make_unique<LowercaseFileSystem>(_dataDirFs.get());
 
     std::vector<const FileSystem *> baseFileSystems = {_dataDirLowercaseFs.get(), _dataEmbeddedFs.get()};

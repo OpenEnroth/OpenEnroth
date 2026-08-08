@@ -4,7 +4,7 @@
 #include <string>
 
 /**
- * Utility class that turns on UTF-8 for most of CRT, and converts command-line arguments to UTF-8. This is really only
+ * Utility class that turns on UTF-8 for most of CRT, and converts command-line arguments to WTF-8. This is really only
  * needed on Windows, and this class does nothing on POSIX.
  *
  * Use it like this:
@@ -26,6 +26,12 @@
  *
  * @see https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/setlocale-wsetlocale?view=msvc-170#utf-8-support
  */
+#ifdef _WINDOWS
+namespace detail {
+std::vector<std::string> parseCommandLine(const wchar_t *commandLine); // Parses & converts to WTF-8.
+} // namespace detail
+#endif
+
 class UnicodeCrt {
  public:
     UnicodeCrt(int &argc, char **&argv);

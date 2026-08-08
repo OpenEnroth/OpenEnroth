@@ -122,7 +122,7 @@ std::vector<std::string> resolveMm8Paths(Environment *environment) {
 }
 
 bool validateMm7Path(std::string_view dataPath, std::string *missingFile) {
-    DirectoryFileSystem dirFs(dataPath);
+    DirectoryFileSystem dirFs(NativePath::fromWtf8(dataPath));
     LowercaseFileSystem lowerFs(&dirFs);
 
     for (std::string_view entry : globalValidateList) {
