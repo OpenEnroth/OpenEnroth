@@ -262,7 +262,7 @@ inline Segment<ItemSlot> itemSlotsForItemType(ItemType type) {
     case ITEM_TYPE_MESSAGE_SCROLL:
     case ITEM_TYPE_GOLD:
     case ITEM_TYPE_GEM:
-    case ITEM_TYPE_NONE:
+    case ITEM_TYPE_MISC:
         return {};
     }
 }

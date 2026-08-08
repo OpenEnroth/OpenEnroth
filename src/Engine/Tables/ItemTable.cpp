@@ -142,7 +142,7 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
         items[item_counter].iconName = unquote(tokens[1]);
         items[item_counter].name = unquote(tokens[2]);
         items[item_counter].baseValue = fromString<int>(tokens[3]);
-        items[item_counter].type = valueOr(equipStatMap, tokens[4], ITEM_TYPE_NONE);
+        items[item_counter].type = valueOr(equipStatMap, tokens[4], ITEM_TYPE_MISC);
         items[item_counter].skill = valueOr(equipSkillMap, tokens[5], SKILL_MISC);
         std::array<std::string_view, 2> diceRollTokens = split(tokens[6]).by('d');
         char damagePrefix = tolower(diceRollTokens[0][0]);
