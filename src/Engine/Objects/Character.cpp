@@ -3931,7 +3931,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
             v19 = &currentLocationInfo();
             return (v19->reputation >= pValue);
 
-        case VAR_Unknown1:
+        case VAR_AlertStatus:
             v21 = &currentLocationInfo();
             return v21->alertStatus == pValue;  // yes, equality, not >=
 
