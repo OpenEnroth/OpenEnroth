@@ -46,6 +46,14 @@ config_setting(
     ],
 )
 
+# Windows -c dbg compiles the engine /MTd; ffmpeg must be on the same debug CRT
+# (see the configure_options select).
+config_setting(
+    name = "_windows_dbg",
+    constraint_values = ["@platforms//os:windows"],
+    values = {"compilation_mode": "dbg"},
+)
+
 filegroup(
     name = "all_srcs",
     srcs = glob(
@@ -53,6 +61,13 @@ filegroup(
         exclude = ["BUILD.bazel"],
     ),
 )
+
+# w64: wavdec.c references ff_w64_guid_data behind if(CONFIG_W64_DEMUXER),
+# counting on dead-code elimination that MSVC doesn't do here.
+_WINDOWS_CONFIGURE_OPTIONS = [
+    "--toolchain=msvc",
+    "--enable-demuxer=w64",
+]
 
 configure_make(
     name = "ffmpeg",
@@ -130,12 +145,10 @@ configure_make(
         ":_armv7": [],
         "//conditions:default": ["--disable-asm"],
     }) + select({
-        # w64: wavdec.c references ff_w64_guid_data behind if(CONFIG_W64_DEMUXER),
-        # counting on dead-code elimination that MSVC doesn't do here.
-        "@platforms//os:windows": [
-            "--toolchain=msvc",
-            "--enable-demuxer=w64",
-        ],
+        "@platforms//os:windows": _WINDOWS_CONFIGURE_OPTIONS,
+        # ffmpeg's msvc toolchain compiles -MD; -MTd comes later on the compile
+        # line, so it wins and matches the debug CRT of the rest of the build.
+        ":_windows_dbg": _WINDOWS_CONFIGURE_OPTIONS + ["--extra-cflags=-MTd"],
         # NDK cross-compilation via $(CC)/$(AR); per-ABI cpu tuning mirrors the
         # deps repo's build_all.sh.
         ":_android_armv7": [

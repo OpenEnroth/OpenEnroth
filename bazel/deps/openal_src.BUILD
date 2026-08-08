@@ -49,6 +49,14 @@ config_setting(
     ],
 )
 
+# Windows -c dbg compiles the engine /MTd; deps must be on the same debug CRT
+# or the link pulls in both CRTs and fails (see the cache_entries select).
+config_setting(
+    name = "_windows_dbg",
+    constraint_values = ["@platforms//os:windows"],
+    values = {"compilation_mode": "dbg"},
+)
+
 filegroup(
     name = "all_srcs",
     srcs = glob(
@@ -57,27 +65,37 @@ filegroup(
     ),
 )
 
+_CACHE_ENTRIES = {
+    "CMAKE_BUILD_TYPE": "Release",
+    # GNUInstallDirs picks lib64 on non-debian roots (e.g. the flatpak sandbox).
+    "CMAKE_INSTALL_LIBDIR": "lib",
+    # Use static MSVC runtime (/MT) to match the rest of the build.
+    "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
+    "LIBTYPE": "STATIC",
+    "ALSOFT_UTILS": "OFF",
+    "ALSOFT_EXAMPLES": "OFF",
+    "ALSOFT_TESTS": "OFF",
+    # Suppress a CMP0048 warning about project() not specifying version.
+    "CMAKE_POLICY_VERSION_MINIMUM": "3.5",
+    # Without CMP0091=NEW cmake's Release config adds /MD, overriding /MT.
+    "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+    # Blank out the CFLAGS/CXXFLAGS env vars rules_foreign_cc exports (all of
+    # bazel's --copts); a single space because cmake drops empty cache entries.
+    "CMAKE_CXX_FLAGS": " ",
+    "CMAKE_C_FLAGS": " ",
+}
+
 cmake(
     name = "openal_desktop",
-    cache_entries = {
-        "CMAKE_BUILD_TYPE": "Release",
-        # GNUInstallDirs picks lib64 on non-debian roots (e.g. the flatpak sandbox).
-        "CMAKE_INSTALL_LIBDIR": "lib",
-        # Use static MSVC runtime (/MT) to match the rest of the build.
-        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
-        "LIBTYPE": "STATIC",
-        "ALSOFT_UTILS": "OFF",
-        "ALSOFT_EXAMPLES": "OFF",
-        "ALSOFT_TESTS": "OFF",
-        # Suppress a CMP0048 warning about project() not specifying version.
-        "CMAKE_POLICY_VERSION_MINIMUM": "3.5",
-        # Without CMP0091=NEW cmake's Release config adds /MD, overriding /MT.
-        "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
-        # Blank out the CFLAGS/CXXFLAGS env vars rules_foreign_cc exports (all of
-        # bazel's --copts); a single space because cmake drops empty cache entries.
-        "CMAKE_CXX_FLAGS": " ",
-        "CMAKE_C_FLAGS": " ",
-    },
+    # Lib names stay the same in Debug: openal-soft defaults CMAKE_DEBUG_POSTFIX
+    # to an empty string.
+    cache_entries = select({
+        ":_windows_dbg": _CACHE_ENTRIES | {
+            "CMAKE_BUILD_TYPE": "Debug",
+            "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDebug",
+        },
+        "//conditions:default": _CACHE_ENTRIES,
+    }),
     # AL_LIBTYPE_STATIC suppresses dllimport decorations in al.h headers.
     defines = ["AL_LIBTYPE_STATIC"],
     # openal-soft sets NTDDI_VERSION but not _WIN32_WINNT; SDK 10.0.26100 errors
