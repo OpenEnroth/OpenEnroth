@@ -51,6 +51,8 @@ class EvtInstruction {
         } npc_item_descr;
         struct {
             EvtVariable type;
+            // TODO(captainurist): parsed from a uint32 wire field, so on-disk values above INT_MAX wrap negative
+            //                     here and then trip asserts or corrupt uint64 counters like experience downstream.
             int value;
         } variable_descr;
         struct {

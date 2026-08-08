@@ -3618,7 +3618,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_Award:
             return _achievedAwardsBits[static_cast<AwardId>(pValue)];
         case VAR_Experience:
-            return this->experience >= pValue;  // TODO(_) change pValue to long long
+            return this->experience >= pValue;
         case VAR_QBits_QuestsDone:
             return pParty->_questBits[static_cast<QuestBit>(pValue)]; // TODO(captainurist): values coming from scripts should be bound-checked.
         case VAR_PlayerItemInHands:
