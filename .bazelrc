@@ -97,10 +97,6 @@ build:linux_x86 --linkopt=-m32
 # OE_BUILD_ARCHITECTURE=x86 block in CMakeLists.txt). First-party only: under
 # cmake the deps were prebuilt and never saw these flags.
 build:linux_x86 --per_file_copt=^(src|test)/.*@-msse2,-mfpmath=sse,-march=pentium4
-# Tests link statically like every cmake binary does. The dynamically linked
-# opt libluajit.so faults on this arch, jumping into a non-executable mapping -
-# see task #22 for the diagnosis trail.
-build:linux_x86 --dynamic_mode=off
 # Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
 # We can't use --platforms= here (no 32-bit toolchain registered), so use --define instead.
 build:linux_x86 --define=oe_build_arch=x86_32
