@@ -97,7 +97,6 @@ cc_library(
         "//src/Library/Geometry:library_geometry",
         "//src/Library/Random:library_random",
         "//src/Library/Serialization:library_serialization",
-        "//src/Media/Audio:media_audio_sound_enums",
         "//src/Utility:utility",
         "@glm",
     ],

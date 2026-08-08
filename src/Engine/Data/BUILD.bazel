@@ -22,6 +22,7 @@ cc_library(
         "IconFrameData.h",
         "ItemData.h",
         "PortraitFrameData.h",
+        "SoundEnums.h",
         "SpecialEnchantmentData.h",
         "StandardEnchantmentData.h",
         "TextureFrameData.h",
@@ -35,7 +36,6 @@ cc_library(
         "//src/Engine/Time:engine_time",
         "//src/Library/Geometry:library_geometry",
         "//src/Library/Serialization:library_serialization",
-        "//src/Media/Audio:media_audio_sound_enums",
         "//src/Utility:utility",
     ],
 )

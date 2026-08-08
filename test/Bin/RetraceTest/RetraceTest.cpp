@@ -13,8 +13,9 @@
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Engine.h"
 
+#include "Core/Trace/EventTrace.h"
+
 #include "Library/Platform/Application/PlatformApplication.h"
-#include "Library/Trace/EventTrace.h"
 
 #include "Utility/String/Format.h"
 #include "Utility/String/Split.h"
