@@ -3,6 +3,7 @@
 #include <array>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 #include <span>
 
@@ -90,7 +91,10 @@ struct BLVFaceExtra {
 
 
 struct BLVFace {
-    void _get_normals(Vec3f *outU, Vec3f *outV);
+    /**
+     * @return                          Texture U and V axes for this face.
+     */
+    [[nodiscard]] std::pair<Vec3f, Vec3f> textureUV() const;
 
     void SetTexture(std::string_view filename);
     GraphicsImage *GetTexture() const;

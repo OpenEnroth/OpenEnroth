@@ -4,6 +4,7 @@
 #include <limits>
 #include <ranges>
 #include <string>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -437,60 +438,34 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 }
 
 //----- (00498A41) --------------------------------------------------------
-void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
-    // TODO(pskelton): these arent face normals - they are texture shift vectors
+std::pair<Vec3f, Vec3f> BLVFace::textureUV() const {
     // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
+    Vec3f u;
+    Vec3f v;
+
     if (this->polygonType == POLYGON_VerticalWall) {
-        outU->x = -this->facePlane.normal.y;
-        outU->y = this->facePlane.normal.x;
-        outU->z = 0;
-
-        outV->x = 0;
-        outV->y = 0;
-        outV->z = -1;
-
+        u = Vec3f(-this->facePlane.normal.y, this->facePlane.normal.x, 0);
+        v = Vec3f(0, 0, -1);
     } else if (this->polygonType == POLYGON_Floor ||
                this->polygonType == POLYGON_Ceiling) {
-        outU->x = 1;
-        outU->y = 0;
-        outU->z = 0;
-
-        outV->x = 0;
-        outV->y = -1;
-        outV->z = 0;
-
+        u = Vec3f(1, 0, 0);
+        v = Vec3f(0, -1, 0);
     } else if (this->polygonType == POLYGON_InBetweenFloorAndWall || this->polygonType == POLYGON_InBetweenCeilingAndWall) {
         if (std::abs(this->facePlane.normal.z) < 0.70863342285f) { // Was 46441 fixpoint
-            outU->x = -this->facePlane.normal.y;
-            outU->y = this->facePlane.normal.x;
-            outU->z = 0;
-            outU->normalize();
-
-            outV->y = 0;
-            outV->z = -1;
-            outV->x = 0;
+            u = Vec3f(-this->facePlane.normal.y, this->facePlane.normal.x, 0);
+            u.normalize();
+            v = Vec3f(0, 0, -1);
         } else {
-            outU->x = 1;
-            outU->y = 0;
-            outU->z = 0;
-
-            outV->x = 0;
-            outV->y = -1;
-            outV->z = 0;
+            u = Vec3f(1, 0, 0);
+            v = Vec3f(0, -1, 0);
         }
     }
-    // LABEL_12:
-    if (this->attributes & FACE_FlipNormalU) {
-        outU->x = -outU->x;
-        outU->y = -outU->y;
-        outU->z = -outU->z;
-    }
-    if (this->attributes & FACE_FlipNormalV) {
-        outV->x = -outV->x;
-        outV->y = -outV->y;
-        outV->z = -outV->z;
-    }
-    return;
+
+    if (this->attributes & FACE_FlipNormalU)
+        u = -u;
+    if (this->attributes & FACE_FlipNormalV)
+        v = -v;
+    return {u, v};
 }
 
 void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_plane) const {
@@ -707,9 +682,7 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         face->facePlane.dist = -dot(facePoint, face->facePlane.normal);
         face->zCalc.init(face->facePlane);
 
-        Vec3f v;
-        Vec3f u;
-        face->_get_normals(&u, &v);
+        auto [u, v] = face->textureUV();
         face->textureDeltaU = 0;
         face->textureDeltaV = 0;
 
