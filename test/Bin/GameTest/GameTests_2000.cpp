@@ -1128,7 +1128,7 @@ GAME_TEST(Issues, Issue2464) {
     // Find \"Goodbye\" button or any button with a label
     GUIButton *pTargetBtn = nullptr;
     for (GUIButton *pBtn : pDialogueWindow->vButtons) {
-        if (pBtn->uButtonType == BUTTON_TYPE_NORMAL && !pBtn->sLabel.empty()) {
+        if (pBtn->uButtonType == BUTTON_TYPE_NORMAL && !pBtn->label.empty()) {
             pTargetBtn = pBtn;
             break;
         }
@@ -1142,7 +1142,7 @@ GAME_TEST(Issues, Issue2464) {
     game.tick(10);
 
     // The status bar SHOULD contain the label for regular NPCs
-    EXPECT_EQ(engine->_statusBar->get(), pTargetBtn->sLabel);
+    EXPECT_EQ(engine->_statusBar->get(), pTargetBtn->label);
     test.stopTaping();
 
     // Exit dialogue
@@ -1167,7 +1167,7 @@ GAME_TEST(Issues, Issue2464) {
         // Find a service button in the house (like \"Exit Building\")
         GUIButton *pServiceBtn = nullptr;
         for (GUIButton *pBtn : pDialogueWindow->vButtons) {
-            if (pBtn->uButtonType == BUTTON_TYPE_NORMAL && !pBtn->sLabel.empty()) {
+            if (pBtn->uButtonType == BUTTON_TYPE_NORMAL && !pBtn->label.empty()) {
                 pServiceBtn = pBtn;
                 break;
             }
@@ -1180,7 +1180,7 @@ GAME_TEST(Issues, Issue2464) {
             game.tick(10);
 
             // The status bar should NOT contain the label for vendors/shops
-            EXPECT_FALSE(statusTape.contains(pServiceBtn->sLabel));
+            EXPECT_FALSE(statusTape.contains(pServiceBtn->label));
         }
     }
 }

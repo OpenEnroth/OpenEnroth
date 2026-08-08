@@ -1026,7 +1026,7 @@ void GameUI_WritePointedObjectStatusString() {
                         case BUTTON_TYPE_NORMAL:  // for dialogue window
                             if (pButton->Contains(pX, pY)) {
                                 if (shouldMirror(pWindow)) {
-                                    engine->_statusBar->setPermanent(pButton->sLabel);
+                                    engine->_statusBar->setPermanent(pButton->label);
                                 }
                                 pMessageType1 = (UIMessageType)pButton->uData;
                                 if (pMessageType1)
@@ -1049,7 +1049,7 @@ void GameUI_WritePointedObjectStatusString() {
                                     (pButton->rect.h * pButton->rect.h);
 
                                 if (ratioX + ratioY < 1.0) {
-                                    engine->_statusBar->setPermanent(pButton->sLabel);  // for character name
+                                    engine->_statusBar->setPermanent(pButton->label);  // for character name
                                     pMessageType2 = (UIMessageType)pButton->uData;
                                     if (pMessageType2 != 0)
                                         GameUI_handleHintMessage(pMessageType2, pButton->msg_param);
@@ -1138,7 +1138,7 @@ void GameUI_WritePointedObjectStatusString() {
                         if (pButton->Contains(mousePos)) {
                             pMessageType3 = (UIMessageType)pButton->uData;
                             if (pMessageType3 == 0) {  // For books
-                                engine->_statusBar->setPermanent(pButton->sLabel);
+                                engine->_statusBar->setPermanent(pButton->label);
                             } else {
                                 GameUI_handleHintMessage(pMessageType3, pButton->msg_param);
                             }
@@ -1158,7 +1158,7 @@ void GameUI_WritePointedObjectStatusString() {
                                 (pButton->rect.h * pButton->rect.h);
 
                             if (ratioX + ratioY < 1.0) {
-                                engine->_statusBar->setPermanent(pButton->sLabel);  // for character name
+                                engine->_statusBar->setPermanent(pButton->label);  // for character name
                                 pMessageType2 = (UIMessageType)pButton->uData;
                                 if (pMessageType2 != 0)
                                     GameUI_handleHintMessage(pMessageType2, pButton->msg_param);

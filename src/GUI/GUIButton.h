@@ -32,7 +32,7 @@ class GUIButton {
     GUIWindow *pParent = nullptr;
     std::vector<GraphicsImage*> vTextures;
     InputAction action = INPUT_ACTION_INVALID;
-    std::string sLabel = ""; // TODO(Nik-RE-dev): rename properly. In most cases it is a hover hint for status bar.
+    std::string label = ""; // Shown in the status bar on hover. Dialogue options draw it as the option text.
     std::string field_75 = "";
 };
 
