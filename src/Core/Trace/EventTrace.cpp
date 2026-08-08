@@ -6,10 +6,10 @@
 #include <vector>
 #include <span>
 
+#include "Core/Serialization/PlatformKeySerialization.h"
+
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Json/Json.h"
-
-#include "Io/InputEnumFunctions.h" // TODO(captainurist): doesn't belong here
 
 #include "PaintEvent.h"
 

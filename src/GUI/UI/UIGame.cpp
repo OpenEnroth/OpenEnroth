@@ -53,6 +53,8 @@
 #include "Io/InputEnumFunctions.h"
 #include "Io/Mouse.h"
 
+#include "Core/Serialization/PlatformKeySerialization.h"
+
 #include "Utility/Math/TrigLut.h"
 
 #include "Library/Logger/Logger.h"

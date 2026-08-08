@@ -8,7 +8,8 @@
 
 #include "Engine/Graphics/Renderer/RendererEnums.h"
 
-#include "Io/InputEnumFunctions.h"
+#include "Core/Serialization/PlatformKeySerialization.h"
+#include "Core/Serialization/PlatformWindowModeSerialization.h"
 
 #include "Library/Config/Config.h"
 #include "Library/Color/Color.h"
@@ -25,8 +26,6 @@
 #   define ConfigRenderer RENDERER_OPENGL
 #   define ConfigWindowMode WINDOW_MODE_WINDOWED
 #endif
-
-MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
 
 // TODO(captainurist): apply codestyle here.
 
