@@ -82,11 +82,11 @@ void GUIWindow_JournalBook::Update() {
     // for other text
     Recti journal_window(48, 70, 360, 264);
 
-    if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_NEXT_PAGE && (_currentIdx + 1) < _journalIdx.size()) {
+    if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES && _bookButtonAction == BOOK_NEXT_PAGE && (_currentIdx + 1) < _journalIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _currentIdx++;
     }
-    if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_PREV_PAGE && _currentIdx) {
+    if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES && _bookButtonAction == BOOK_PREV_PAGE && _currentIdx) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _currentIdx--;
     }
