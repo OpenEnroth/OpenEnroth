@@ -253,10 +253,7 @@ jobs:
           if [ ! -d OpenEnroth_GameData ]; then echo "::warning::no game data cache - tests skipped"; exit 0; fi
           hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
           dataroot="$(pwd -W 2>/dev/null || pwd)/OpenEnroth_GameData"
-          # TODO(captainurist): task #22 - opt luajit jumps into a non-executable
-          # mapping on 32-bit x86, so that leg retraces dbg until it's fixed.
-          mode=opt; [ "${{matrix.target}}" = "linux_x86" ] && mode=dbg
-          bazel test -c $mode --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
+          bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
             --test_env=OPENENROTH_MM7_PATH=$dataroot/mm7 \
             --test_env=OPENENROTH_MM7_HASH=$hash \
             //test/Bin/RetraceTest:OpenEnroth_RetraceTest 2>&1 | tee bazel-retrace.log
