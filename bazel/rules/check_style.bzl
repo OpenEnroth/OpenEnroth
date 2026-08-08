@@ -60,11 +60,18 @@ def _check_style_impl(ctx):
     return DefaultInfo(files = depset(transitive = [
         dep[_CheckStyleInfo].markers
         for dep in ctx.attr.deps
+    ] + [
+        check.files
+        for check in ctx.attr.extra_checks
     ]))
 
 check_style = rule(
     implementation = _check_style_impl,
     attrs = {
         "deps": attr.label_list(aspects = [_check_style_aspect]),
+        "extra_checks": attr.label_list(
+            doc = "Checks that are not cpplint-over-cc-targets, e.g. the lua lint marker.",
+            allow_files = True,
+        ),
     },
 )

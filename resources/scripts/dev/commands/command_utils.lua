@@ -151,7 +151,9 @@ CommandUtilities.characterOrCurrent = function (charIndex)
     if charIndex == nil then
         return Game.party.getActiveCharacter()
     end
-    return tonumber(charIndex)
+    local index = tonumber(charIndex)
+    ---@cast index integer
+    return index
 end
 
 CommandUtilities.renderCharacterIndexParam = function (name, value)
