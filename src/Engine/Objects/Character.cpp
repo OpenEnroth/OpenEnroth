@@ -3959,6 +3959,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_ItemEquipped:
             return wearsItem(static_cast<ItemId>(pValue));
         default:
+            MM_WARNING("Comparing unsupported evt variable {}", std::to_underlying(VarNum));
             return false;
     }
 }
@@ -4542,6 +4543,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
             SetSkillReaction();
             return;
         default:
+            MM_WARNING("Setting unsupported evt variable {}", std::to_underlying(var_type));
             return;
     }
 }
