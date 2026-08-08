@@ -49,11 +49,16 @@ build:android_base --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
 build:windows --features=-parse_showincludes
 
 # ─── Warnings ────────────────────────────────────────────────────────────────
+# -Wall prints everywhere. The -Werror= lists mirror the warnings-as-errors
+# block in CMakeLists.txt per compiler, scoped to first-party sources with
+# --per_file_copt: under cmake the heavyweight deps were prebuilt and never saw
+# these flags, and the scoping also keeps dep action keys unchanged.
 
-build:linux --copt=-Wall --copt=-Wno-error
-build:macos --copt=-Wall --copt=-Wno-error
-# Note: HACKING.md mandates warnings-as-errors. Enable --copt=-Werror once all
-# BUILD files are written and clean.
+build:linux --copt=-Wall
+build:linux --per_file_copt=^(src|test)/.*@-Werror=return-type,-Werror=unused-result,-Werror=unused-value,-Werror=shift-count-overflow,-Werror=mismatched-tags,-Werror=suggest-override,-Werror=return-local-addr,-Werror=overflow
+build:macos --copt=-Wall
+build:macos --per_file_copt=^(src|test)/.*@-Werror=return-type,-Werror=unused-result,-Werror=unused-value,-Werror=shift-count-overflow,-Werror=mismatched-tags,-Werror=suggest-override,-Werror=return-stack-address,-Werror=unused-comparison,-Werror=inconsistent-missing-override,-Werror=invalid-noreturn,-Werror=uninitialized,-Werror=delete-abstract-non-virtual-dtor,-Werror=switch
+build:windows --per_file_copt=^(src|test)/.*@/we4834,/we4172,/we26433
 
 # ─── Floating point behavior (mirrors CMakeLists.txt) ────────────────────────
 # Math functions don't set errno, fp traps are assumed off, and fma contraction
@@ -147,7 +152,8 @@ build:android_base --cxxopt=-std=c++23
 build:android_base --host_cxxopt=-std=c++23
 build:android_base --copt=-fPIC
 build:android_base --copt=-Wall
-build:android_base --copt=-Wno-error
+# NDK clang, so the same warnings-as-errors list as macos (see the Warnings section).
+build:android_base --per_file_copt=^(src|test)/.*@-Werror=return-type,-Werror=unused-result,-Werror=unused-value,-Werror=shift-count-overflow,-Werror=mismatched-tags,-Werror=suggest-override,-Werror=return-stack-address,-Werror=unused-comparison,-Werror=inconsistent-missing-override,-Werror=invalid-noreturn,-Werror=uninitialized,-Werror=delete-abstract-non-virtual-dtor,-Werror=switch
 
 build:android --config=android_base
 build:android_arm64_v8a --config=android
