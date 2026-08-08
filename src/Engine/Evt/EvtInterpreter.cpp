@@ -558,36 +558,15 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_SetActorItem:
             Actor::giveItem(ir.data.npc_item_descr.id, ir.data.npc_item_descr.item, ir.data.npc_item_descr.is_give);
             break;
+        // None of these appear in MM7 data.
         case EVENT_OnDateTimer:
-            // TODO: seems unused
-            assert(false);
-            break;
         case EVENT_EnableDateTimer:
-            // TODO: seems unused
-            assert(false);
-            break;
         case EVENT_StopAnimation:
-            // TODO: seems unused
-            assert(false);
-            break;
         case EVENT_CheckItemsCount:
-            // TODO: seems unused
-            assert(false);
-            break;
         case EVENT_RemoveItems:
-            // TODO: seems unused
-            assert(false);
-            break;
         case EVENT_SpecialJump:
-            // TODO: seems unused
-            assert(false);
-            break;
         case EVENT_IsTotalBountyHuntingAwardInRange:
-            // TODO: seems unused
-            assert(false);
-            break;
         case EVENT_IsNPCInParty:
-            // TODO: seems unused
             assert(false);
             break;
         default:
