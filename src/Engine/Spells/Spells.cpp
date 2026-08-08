@@ -145,7 +145,7 @@ const IndexedArray<SpriteId, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> Sp
 
     {SPELL_BOW_ARROW, SPRITE_PROJECTILE_ARROW},
     {SPELL_101, SPRITE_PROJECTILE_ARROW}, // TODO(captainurist): Looks like this is a flaming arrow spell, should map to SPRITE_PROJECTILE_FLAMING_ARROW?
-    {SPELL_LASER_PROJECTILE, SPRITE_PROJECTILE_BLASTER}};
+    {SPELL_BLASTER_PROJECTILE, SPRITE_PROJECTILE_BLASTER}};
 
 SpellData::SpellData(int16_t inNormalMana,
                      int16_t inExpertLevelMana,
@@ -433,7 +433,7 @@ const IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> Sp
     {SPELL_DARK_SOULDRINKER, 18100},
     {SPELL_BOW_ARROW, 00001},
     {SPELL_101, 00000},
-    {SPELL_LASER_PROJECTILE, 00000}
+    {SPELL_BLASTER_PROJECTILE, 00000}
 }};
 
 void SpellBuff::Reset() {

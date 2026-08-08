@@ -63,7 +63,7 @@ Skill skillForSpell(SpellId spell) {
         return skillForMagicSchool(magicSchoolForSpell(spell));
     } else if (spell == SPELL_BOW_ARROW) {
         return SKILL_BOW;
-    } else if (spell == SPELL_LASER_PROJECTILE) {
+    } else if (spell == SPELL_BLASTER_PROJECTILE) {
         return SKILL_BLASTER;
     } else {
         assert(false && "Unknown spell");

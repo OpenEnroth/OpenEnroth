@@ -3041,7 +3041,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         }
 
         switch (projectileSprite->uSpellID) {
-            case SPELL_LASER_PROJECTILE:
+            case SPELL_BLASTER_PROJECTILE:
                 // TODO: should be changed to GetActual* equivalents?
                 v61 = 1;
                 if (character->getSkillValue(SKILL_BLASTER).mastery() >= MASTERY_MASTER)

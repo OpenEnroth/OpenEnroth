@@ -6370,7 +6370,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
          melee_attack = false;
     if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
-        pushSpellOrRangedAttack(SPELL_LASER_PROJECTILE,
+        pushSpellOrRangedAttack(SPELL_BLASTER_PROJECTILE,
                                 pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0,
                                 pParty->activeCharacterIndex() + 8); // TODO(captainurist): +8???
     } else if (wand_item_id != ITEM_NULL) {
