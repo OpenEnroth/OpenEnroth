@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Engine/MapEnums.h"
+
 #include "Library/Geometry/Vec.h"
 
 /**
@@ -64,3 +66,12 @@ class TeleportPoint {
     int _zSpeed = 0;
 };
 
+
+/**
+ * Moves the party to the given starting point decoration of the currently loaded map, then applies the pending
+ * teleport in `engine->_teleportPoint` on top of it, if valid. Does nothing if `point` doesn't name a known
+ * decoration type.
+ */
+void TeleportToStartingPoint(MapStartPoint point);
+
+extern MapStartPoint uLevel_StartingPointType;

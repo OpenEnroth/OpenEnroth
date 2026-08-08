@@ -28,6 +28,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/TeleportPoint.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Tables/ItemTable.h"
@@ -56,9 +57,6 @@
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Exception.h"
-
-
-MapStartPoint uLevel_StartingPointType;
 
 OutdoorLocation *pOutdoor = nullptr;
 ODMRenderParams *pODMRenderParams = nullptr;
@@ -1875,35 +1873,3 @@ double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int u
     return result;
 }
 
-// TODO(pskelton): move this - used both indoors and out
-void TeleportToStartingPoint(MapStartPoint point) {
-    DecorationId decID = pDecorationList->GetDecorIdByName(toString(point));
-
-    if (decID != DECORATION_NULL) {
-        for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-            if (pLevelDecorations[i].uDecorationDescID == decID) {
-                pParty->pos = pLevelDecorations[i].vPosition;
-                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
-                    // always placing the party on the ground.
-                    // TODO: (Chaosit) dummy variables created for the sake of passing pointers
-                    bool bOnWater = false;
-                    int bModelPid;
-                    pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid);
-                } else {
-                    int face = -1;
-                    pParty->pos.z = BLV_GetFloorLevel(pParty->pos, pIndoor->GetSector(pParty->pos), &face);
-                }
-                pParty->velocity = Vec3f();
-                pParty->uFallStartZ = pParty->pos.z;
-                pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
-                pParty->_viewPitch = 0;
-            }
-        }
-
-        if (engine->_teleportPoint.isValid()) {
-            engine->_teleportPoint.doTeleport(true);
-        }
-        engine->_teleportPoint.invalidate();
-    }
-}

@@ -115,6 +115,4 @@ void loadAndPrepareODM(MapId mapid, bool bLoading);
 Color GetLevelFogColor();
 
 void sub_481ED9_MessWithODMRenderParams();
-void TeleportToStartingPoint(MapStartPoint point);  // idb
 
-extern MapStartPoint uLevel_StartingPointType;

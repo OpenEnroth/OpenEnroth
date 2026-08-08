@@ -1,11 +1,15 @@
 #include "TeleportPoint.h"
 
 #include "Engine/Party.h"
+#include "Engine/Engine.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/LocationFunctions.h"
 
 #include "Library/Logger/Logger.h"
+#include "Library/Serialization/Serialization.h"
 
 void TeleportPoint::invalidate() {
     _teleportValid = false;
@@ -80,4 +84,38 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
         pParty->_viewYaw = _yaw;
     }
     pParty->_viewPitch = newPitch;
+}
+
+MapStartPoint uLevel_StartingPointType;
+
+void TeleportToStartingPoint(MapStartPoint point) {
+    DecorationId decID = pDecorationList->GetDecorIdByName(toString(point));
+
+    if (decID != DECORATION_NULL) {
+        for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
+            if (pLevelDecorations[i].uDecorationDescID == decID) {
+                pParty->pos = pLevelDecorations[i].vPosition;
+                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+                    // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
+                    // always placing the party on the ground.
+                    // TODO: (Chaosit) dummy variables created for the sake of passing pointers
+                    bool bOnWater = false;
+                    int bModelPid;
+                    pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid);
+                } else {
+                    int face = -1;
+                    pParty->pos.z = BLV_GetFloorLevel(pParty->pos, pIndoor->GetSector(pParty->pos), &face);
+                }
+                pParty->velocity = Vec3f();
+                pParty->uFallStartZ = pParty->pos.z;
+                pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
+                pParty->_viewPitch = 0;
+            }
+        }
+
+        if (engine->_teleportPoint.isValid()) {
+            engine->_teleportPoint.doTeleport(true);
+        }
+        engine->_teleportPoint.invalidate();
+    }
 }

@@ -40,6 +40,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/TeleportPoint.h"
 #include "Engine/Random/Random.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Snapshots/TableSerialization.h"
