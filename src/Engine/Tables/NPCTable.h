@@ -125,7 +125,7 @@ struct NPCStats {
     IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {};
     std::array<NPCData, 100> pAdditionalNPC = {{}};
     std::array<std::string, 52> pCatchPhrases{};   // 15CA4h
-    std::array<std::string, 500> pNPCUnicNames{};  // from first batch
+    std::array<std::string, 501> pNPCUnicNames{};  // NPC names from npcdata.txt, 1-based like the data above.
     IndexedArray<NPCProfessionChance, MAP_FIRST, MAP_LAST> pProfessionChance;
     int field_17884 = 0;
     int field_17888 = 0;

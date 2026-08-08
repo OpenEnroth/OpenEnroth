@@ -58,7 +58,7 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
 // TODO(Nik-RE-dev): move out of table back to Engine/Objects/NPC.cpp
 void NPCStats::setNPCNamesOnLoad() {
     for (unsigned int i = 1; i < uNumNewNPCs; ++i)
-        pNPCData[i].name = pNPCUnicNames[i - 1];
+        pNPCData[i].name = pNPCUnicNames[i];
 
     if (!pParty->pHirelings[0].name.empty())
         pParty->pHirelings[0].name = pParty->pHireling1Name;
@@ -74,8 +74,8 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
     for (std::string_view line : split(npcData.str()).by("\r\n").drop(2).skip("").take(500)) {
         std::array<std::string_view, 16> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]); // File indices are 1-based.
-        pNPCUnicNames[i - 1] = unquote(tokens[1]);
-        pOriginalNPCData[i].name = pNPCUnicNames[i - 1]; // TODO(captainurist): just make this 1-based too?
+        pNPCUnicNames[i] = unquote(tokens[1]);
+        pOriginalNPCData[i].name = pNPCUnicNames[i];
         pOriginalNPCData[i].portraitId = fromString<int>(tokens[2]);
         pOriginalNPCData[i].house = static_cast<HouseId>(fromString<int>(tokens[6]));
         pOriginalNPCData[i].profession = static_cast<NpcProfession>(fromString<int>(tokens[7]));
