@@ -60,6 +60,17 @@ build:macos --copt=-Wall
 build:macos --per_file_copt=^(src|test)/.*@-Werror=return-type,-Werror=unused-result,-Werror=unused-value,-Werror=shift-count-overflow,-Werror=mismatched-tags,-Werror=suggest-override,-Werror=return-stack-address,-Werror=unused-comparison,-Werror=inconsistent-missing-override,-Werror=invalid-noreturn,-Werror=uninitialized,-Werror=delete-abstract-non-virtual-dtor,-Werror=switch
 build:windows --per_file_copt=^(src|test)/.*@/we4834,/we4172,/we26433
 
+# ─── Assertions ──────────────────────────────────────────────────────────────
+# Assertions stay on in every configuration, matching cmake - see
+# CMakeModules/Assertions.cmake, which strips NDEBUG from all build types.
+# The -U comes after the toolchain's opt-mode -DNDEBUG, so it wins. Scoped to
+# first-party code: deps keep normal release semantics, same as the prebuilts
+# that cmake links.
+build:linux --per_file_copt=^(src|test)/.*@-UNDEBUG
+build:macos --per_file_copt=^(src|test)/.*@-UNDEBUG
+build:android_base --per_file_copt=^(src|test)/.*@-UNDEBUG
+build:windows --per_file_copt=^(src|test)/.*@/UNDEBUG
+
 # ─── Floating point behavior (mirrors CMakeLists.txt) ────────────────────────
 # Math functions don't set errno, fp traps are assumed off, and fma contraction
 # is disabled - gcc and clang contract differently, and retrace tests diff the
