@@ -273,7 +273,7 @@ void CastSpellInfoHelpers::castSpell() {
                 }
             }
             setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(true));
-        } else if (pCastSpell->uSpellID == SPELL_LASER_PROJECTILE) {
+        } else if (pCastSpell->uSpellID == SPELL_BLASTER_PROJECTILE) {
             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
             // TODO(pskelton): was pParty->uPartyHeight / 2
             pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
