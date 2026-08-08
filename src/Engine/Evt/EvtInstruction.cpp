@@ -307,7 +307,7 @@ static std::string getVariableSetStr(EvtVariable type, int value) {
             return fmt::format("ERROR: IsFlying, value");
         case VAR_HiredNPCHasSpeciality:
             return fmt::format("NPCProfession({})", value);
-        case VAR_CircusPrises:
+        case VAR_CircusPrizes:
             return fmt::format("CircusPrizes, {}", value);
         case VAR_NumSkillPoints:
             return fmt::format("SkillPoints, {}", value);
@@ -630,7 +630,7 @@ static std::string getVariableCompareStr(EvtVariable type, int value) {
             return fmt::format("Flying");
         case VAR_HiredNPCHasSpeciality:
             return fmt::format("NPCProfession({})", value);
-        case VAR_CircusPrises:
+        case VAR_CircusPrizes:
             return fmt::format("CircusPrizes >= {}", value);
         case VAR_NumSkillPoints:
             return fmt::format("SkillPoints >= {}", value);
