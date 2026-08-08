@@ -48,23 +48,57 @@ static auto dispatchEncoding(TextEncoding encoding, Callback callback) {
     }
 }
 
-std::string txt::wideToUtf8(std::wstring_view wstr) {
-    std::span<const wchar_t> input(wstr.data(), wstr.size());
-    if constexpr (sizeof(wchar_t) == 2) {
-        return ztd::text::transcode(input, ztd::text::wide_utf16, ztd::text::compat_utf8, ztd::text::replacement_handler);
-    } else {
-        return ztd::text::transcode(input, ztd::text::wide_utf32, ztd::text::compat_utf8, ztd::text::replacement_handler);
-    }
+/**
+ * UTF-16 that permits unpaired surrogates - encoding into WTF-8 is pointless if the decoder replaces them first.
+ * ztd doesn't expose one, so we build it out of its CRTP base.
+ */
+template<class Unit>
+class BasicWtf16 : public ztd::text::__txt_impl::__utf16_with<BasicWtf16<Unit>, Unit, ztd::text::unicode_code_point, true> {};
+static constexpr BasicWtf16<char16_t> wtf16 = {};
+
+std::string txt::utf16ToUtf8(std::u16string_view str) {
+    std::span<const char16_t> input(str.data(), str.size());
+    return ztd::text::transcode(input, ztd::text::utf16, ztd::text::compat_utf8, ztd::text::replacement_handler);
+}
+
+std::u16string txt::utf8ToUtf16(std::string_view str) {
+    std::span<const char> input(str.data(), str.size());
+    return ztd::text::transcode(input, ztd::text::compat_utf8, ztd::text::utf16, ztd::text::replacement_handler);
+}
+
+std::string txt::wtf16ToWtf8(std::u16string_view str) {
+    std::span<const char16_t> input(str.data(), str.size());
+    return ztd::text::transcode(input, wtf16, ztd::text::compat_wtf8, ztd::text::replacement_handler);
+}
+
+std::u16string txt::wtf8ToWtf16(std::string_view str) {
+    std::span<const char> input(str.data(), str.size());
+    return ztd::text::transcode(input, ztd::text::compat_wtf8, wtf16, ztd::text::replacement_handler);
+}
+
+#ifdef _WINDOWS
+static constexpr BasicWtf16<wchar_t> wideWtf16 = {};
+
+std::string txt::wideToUtf8(std::wstring_view str) {
+    std::span<const wchar_t> input(str.data(), str.size());
+    return ztd::text::transcode(input, ztd::text::wide_utf16, ztd::text::compat_utf8, ztd::text::replacement_handler);
+}
+
+std::string txt::wideToWtf8(std::wstring_view str) {
+    std::span<const wchar_t> input(str.data(), str.size());
+    return ztd::text::transcode(input, wideWtf16, ztd::text::compat_wtf8, ztd::text::replacement_handler);
 }
 
 std::wstring txt::utf8ToWide(std::string_view str) {
     std::span<const char> input(str.data(), str.size());
-    if constexpr (sizeof(wchar_t) == 2) {
-        return ztd::text::transcode(input, ztd::text::compat_utf8, ztd::text::wide_utf16, ztd::text::replacement_handler);
-    } else {
-        return ztd::text::transcode(input, ztd::text::compat_utf8, ztd::text::wide_utf32, ztd::text::replacement_handler);
-    }
+    return ztd::text::transcode(input, ztd::text::compat_utf8, ztd::text::wide_utf16, ztd::text::replacement_handler);
 }
+
+std::wstring txt::wtf8ToWide(std::string_view str) {
+    std::span<const char> input(str.data(), str.size());
+    return ztd::text::transcode(input, ztd::text::compat_wtf8, wideWtf16, ztd::text::replacement_handler);
+}
+#endif
 
 std::string txt::encodedToUtf8(std::string_view str, TextEncoding encoding) {
     std::span<const char> input(str.data(), str.size());

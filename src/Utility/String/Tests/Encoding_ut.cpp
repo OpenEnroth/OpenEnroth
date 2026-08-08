@@ -9,32 +9,88 @@
 #include "Utility/String/Encoding.h"
 #include "Utility/Segment.h"
 
-UNIT_TEST(Encoding, WideInvalidUtf8) {
-    EXPECT_EQ(txt::utf8ToWide("\xc3\x28"), L"\xfffd(");
+UNIT_TEST(Encoding, Utf16InvalidUtf8) {
+    EXPECT_EQ(txt::utf8ToUtf16("\xc3\x28"), u"\xfffd(");
 }
 
-UNIT_TEST(Encoding, WideInvalidUtf16) {
-    // On Windows (16-bit wchar_t), \xDC00 is an unpaired surrogate.
-    // On Unix (32-bit wchar_t), \xDC00 is a valid (but reserved) code point.
-    // The encoding should still work, producing a replacement character for the surrogate.
-    EXPECT_EQ(txt::wideToUtf8(L"\xDC00\x0028"), "\xef\xbf\xbd(");  // \xef\xbf\xbd is U+FFFD.
+UNIT_TEST(Encoding, Utf16Invalid) {
+    // \xDC00 is an unpaired surrogate, and UTF-8 can't represent it.
+    EXPECT_EQ(txt::utf16ToUtf8(u"\xDC00\x0028"), "\xef\xbf\xbd(");  // \xef\xbf\xbd is U+FFFD.
 }
 
-UNIT_TEST(Encoding, WideEmpty) {
-    EXPECT_EQ(txt::utf8ToWide(""), L"");
-    EXPECT_EQ(txt::wideToUtf8(L""), "");
+UNIT_TEST(Encoding, Wtf8RoundTripExhaustive) {
+    // Every char16_t round-trips.
+    std::u16string str;
+    for (int i = 0; i <= 0xFFFF; i++)
+        str += static_cast<char16_t>(i);
+
+    EXPECT_EQ(txt::wtf8ToWtf16(txt::wtf16ToWtf8(str)), str);
 }
 
-UNIT_TEST(Encoding, WideSubstring) {
+UNIT_TEST(Encoding, Wtf8TrailingLeadSurrogate) {
+    // Nothing follows a lead surrogate at the end of the input, and the decoder used to call that an incomplete
+    // sequence instead of encoding it.
+    EXPECT_EQ(txt::wtf16ToWtf8(u"\xD800"), "\xed\xa0\x80");
+    EXPECT_EQ(txt::wtf8ToWtf16(txt::wtf16ToWtf8(u"lol\xD800")), u"lol\xD800");
+}
+
+UNIT_TEST(Encoding, Wtf8RoundTripSurrogatePairs) {
+    // lead/lead, lead/trail, trail/lead and trail/trail - only the 2nd is a valid pair, and all round-trip.
+    for (int i = 0xD800; i <= 0xDFFF; i++) {
+        for (int j : {0xD800, 0xDBFF, 0xDC00, 0xDFFF}) {
+            std::u16string str = {static_cast<char16_t>(i), static_cast<char16_t>(j)};
+            ASSERT_EQ(txt::wtf8ToWtf16(txt::wtf16ToWtf8(str)), str) << i << ", " << j;
+
+            str = {static_cast<char16_t>(j), static_cast<char16_t>(i)};
+            ASSERT_EQ(txt::wtf8ToWtf16(txt::wtf16ToWtf8(str)), str) << j << ", " << i;
+        }
+    }
+}
+
+UNIT_TEST(Encoding, Wtf8AgreesWithUtf8) {
+    // Valid UTF-8 is also valid WTF-8, encoded exactly the same way, in both directions.
+    EXPECT_EQ(txt::wtf16ToWtf8(u"lol"), txt::utf16ToUtf8(u"lol"));
+    EXPECT_EQ(txt::wtf16ToWtf8(u"\x043B"), txt::utf16ToUtf8(u"\x043B"));
+    EXPECT_EQ(txt::wtf8ToWtf16("lol"), txt::utf8ToUtf16("lol"));
+    EXPECT_EQ(txt::wtf16ToWtf8(u"\xFEFF"), "\xef\xbb\xbf"); // The BOM is a valid code point, not an error.
+
+    // A pair is a single astral code point, so it encodes the same way in both.
+    EXPECT_EQ(txt::wtf16ToWtf8(u"\U0001F600"), txt::utf16ToUtf8(u"\U0001F600"));
+    EXPECT_EQ(txt::wtf16ToWtf8(u"\U0001F600"), "\xf0\x9f\x98\x80");
+    EXPECT_EQ(txt::wtf8ToWtf16("\xf0\x9f\x98\x80"), u"\U0001F600");
+
+    // An unpaired surrogate is encoded like any other code point in that range, which is exactly what UTF-8 forbids.
+    EXPECT_EQ(txt::wtf16ToWtf8(u"\xD800"), "\xed\xa0\x80");
+    EXPECT_EQ(txt::wtf16ToWtf8(u"\xDC00"), "\xed\xb0\x80");
+    EXPECT_EQ(txt::utf16ToUtf8(u"\xDC00"), "\xef\xbf\xbd");
+    EXPECT_EQ(txt::utf8ToUtf16("\xed\xb0\x80"), u"\xfffd");
+}
+
+#ifdef _WINDOWS
+UNIT_TEST(Encoding, Wide) {
+    // The `wchar_t` variants only exist on Windows, so this is the only place they can be exercised.
+    EXPECT_EQ(txt::wideToUtf8(L"lol"), "lol");
+    EXPECT_EQ(txt::utf8ToWide("lol"), L"lol");
+    EXPECT_EQ(txt::wideToWtf8(L"\xDC00"), "\xed\xb0\x80");
+    EXPECT_EQ(txt::wtf8ToWide("\xed\xb0\x80"), L"\xDC00");
+}
+#endif
+
+UNIT_TEST(Encoding, Utf16Empty) {
+    EXPECT_EQ(txt::utf8ToUtf16(""), u"");
+    EXPECT_EQ(txt::utf16ToUtf8(u""), "");
+}
+
+UNIT_TEST(Encoding, Utf16Substring) {
     // Test that transcoding a substring (part of a longer string) works correctly.
     // This catches issues where the transcoding might read past the substring boundaries.
     std::string fullString = "Hello, World!";
     std::string_view substring = std::string_view(fullString).substr(0, 5);  // "Hello"
-    EXPECT_EQ(txt::utf8ToWide(substring), L"Hello");
+    EXPECT_EQ(txt::utf8ToUtf16(substring), u"Hello");
 
-    std::wstring fullWideString = L"Hello, World!";
-    std::wstring_view wideSubstring = std::wstring_view(fullWideString).substr(0, 5);  // L"Hello"
-    EXPECT_EQ(txt::wideToUtf8(wideSubstring), "Hello");
+    std::u16string fullUtf16String = u"Hello, World!";
+    std::u16string_view utf16Substring = std::u16string_view(fullUtf16String).substr(0, 5);  // u"Hello"
+    EXPECT_EQ(txt::utf16ToUtf8(utf16Substring), "Hello");
 }
 
 UNIT_TEST(Encoding, Ascii) {
