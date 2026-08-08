@@ -172,7 +172,44 @@ namespace detail {
 constexpr Logger *fallbackLogger() {
     return &Logger::fallbackLogger;
 }
+
+extern constinit Logger *logger; // Singleton logger instance, never null - use the macros below.
 } // namespace detail
 
-extern constinit Logger *logger; // Singleton logger instance, never null.
+/**
+ * Logging macros.
+ *
+ * These call into the global logger, and unlike the `Logger` methods, they don't evaluate the message arguments
+ * when the message is dropped by the log level check. Prefer them over calling `logger` directly.
+ *
+ * The `_IN` variants take a `LogCategory`, the ones without it log into the default category.
+ */
+#define MM_LOG(LEVEL, ...) \
+    do { \
+        LogLevel mmLogLevel = (LEVEL); \
+        if (::detail::logger->shouldLog(mmLogLevel)) \
+            ::detail::logger->log(mmLogLevel, __VA_ARGS__); \
+    } while (false)
+
+#define MM_LOG_IN(CATEGORY, LEVEL, ...) \
+    do { \
+        const LogCategory &mmLogCategory = (CATEGORY); \
+        LogLevel mmLogLevel = (LEVEL); \
+        if (::detail::logger->shouldLog(mmLogCategory, mmLogLevel)) \
+            ::detail::logger->log(mmLogCategory, mmLogLevel, __VA_ARGS__); \
+    } while (false)
+
+#define MM_TRACE(...) MM_LOG(LOG_TRACE, __VA_ARGS__)
+#define MM_DEBUG(...) MM_LOG(LOG_DEBUG, __VA_ARGS__)
+#define MM_INFO(...) MM_LOG(LOG_INFO, __VA_ARGS__)
+#define MM_WARNING(...) MM_LOG(LOG_WARNING, __VA_ARGS__)
+#define MM_ERROR(...) MM_LOG(LOG_ERROR, __VA_ARGS__)
+#define MM_CRITICAL(...) MM_LOG(LOG_CRITICAL, __VA_ARGS__)
+
+#define MM_TRACE_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_TRACE, __VA_ARGS__)
+#define MM_DEBUG_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_DEBUG, __VA_ARGS__)
+#define MM_INFO_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_INFO, __VA_ARGS__)
+#define MM_WARNING_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_WARNING, __VA_ARGS__)
+#define MM_ERROR_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_ERROR, __VA_ARGS__)
+#define MM_CRITICAL_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_CRITICAL, __VA_ARGS__)
 

@@ -1790,7 +1790,7 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         }
 
         default: {
-            logger->warning("GameUI_handleHintMessage - Unhandled message type: {}", static_cast<int>(type));
+            MM_WARNING("GameUI_handleHintMessage - Unhandled message type: {}", static_cast<int>(type));
             break;
         }
     }

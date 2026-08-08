@@ -57,7 +57,7 @@ void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
 
         std::string file_path = fmt::format("music/{}.mp3", std::to_underlying(eTrack));
         if (!dfs->exists(file_path)) {
-            logger->warning("AudioPlayer: {} not found", file_path);
+            MM_WARNING("AudioPlayer: {} not found", file_path);
             return;
         }
 
@@ -197,7 +197,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
 
     SoundInfo *si = pSoundList->soundInfo(eSoundID);
     if (!si) {
-        logger->warning("AudioPlayer: sound id {} not found", std::to_underlying(eSoundID));
+        MM_WARNING("AudioPlayer: sound id {} not found", std::to_underlying(eSoundID));
         return;
     }
 
@@ -307,7 +307,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
 
             default: {
                 result = _regularSoundPool.playNew(sample, si->dataSource);
-                logger->warning("Unexpected object type from Pid in playSound");
+                MM_WARNING("Unexpected object type from Pid in playSound");
                 break;
             }
         }
@@ -322,23 +322,23 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     switch (result) {
         case SOUND_PLAYBACK_FAILED:
             if (si->name.empty()) {
-                logger->warning("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->name);
+                MM_WARNING("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->name);
             } else {
-                logger->warning("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
+                MM_WARNING("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
             }
             break;
         case SOUND_PLAYBACK_SKIPPED:
             if (si->name.empty()) {
-                logger->trace("AudioPlayer: skipped playing sound {}", std::to_underlying(eSoundID));
+                MM_TRACE("AudioPlayer: skipped playing sound {}", std::to_underlying(eSoundID));
             } else {
-                logger->trace("AudioPlayer: skipped playing sound {} with name '{}'", std::to_underlying(eSoundID), si->name);
+                MM_TRACE("AudioPlayer: skipped playing sound {} with name '{}'", std::to_underlying(eSoundID), si->name);
             }
             break;
         case SOUND_PLAYBACK_SUCCEEDED:
             if (si->name.empty()) {
-                logger->trace("AudioPlayer: playing sound {}", std::to_underlying(eSoundID));
+                MM_TRACE("AudioPlayer: playing sound {}", std::to_underlying(eSoundID));
             } else {
-                logger->trace("AudioPlayer: playing sound {} with name '{}'", std::to_underlying(eSoundID), si->name);
+                MM_TRACE("AudioPlayer: playing sound {} with name '{}'", std::to_underlying(eSoundID), si->name);
             }
             break;
         default:
@@ -358,13 +358,13 @@ bool AudioPlayer::loadSoundDataSource(SoundInfo* si) {
         }
 
         if (!buffer) {
-            logger->warning("AudioPlayer: failed to load sound {} ({})", std::to_underlying(si->soundId), si->name);
+            MM_WARNING("AudioPlayer: failed to load sound {} ({})", std::to_underlying(si->soundId), si->name);
             return false;
         }
 
         si->dataSource = CreateAudioBufferDataSource(std::move(buffer));
         if (!si->dataSource) {
-            logger->warning("AudioPlayer: failed to create sound data source {} ({})", std::to_underlying(si->soundId), si->name);
+            MM_WARNING("AudioPlayer: failed to create sound data source {} ({})", std::to_underlying(si->soundId), si->name);
             return false;
         }
 
@@ -426,7 +426,7 @@ bool AudioPlayer::isWalkingSoundPlays() {
 float AudioPlayer::getSoundLength(SoundId eSoundID) {
     SoundInfo* si = pSoundList->soundInfo(eSoundID);
     if (!si) {
-        logger->warning("AudioPlayer: sound id {} not found", std::to_underlying(eSoundID));
+        MM_WARNING("AudioPlayer: sound id {} not found", std::to_underlying(eSoundID));
         return 0.0f;
     }
 
@@ -467,7 +467,7 @@ void PlayLevelMusic() {
 
 Blob AudioPlayer::LoadSound(std::string_view pSoundName) {
     if (!_sndReader.exists(pSoundName)) {
-        logger->warning("AudioPlayer: {} can't load sound header!", pSoundName);
+        MM_WARNING("AudioPlayer: {} can't load sound header!", pSoundName);
         return Blob();
     }
 

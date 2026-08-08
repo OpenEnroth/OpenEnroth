@@ -2,7 +2,6 @@
 
 #include <SDL3/SDL.h>
 
-#include <cassert>
 #include <memory>
 #include <vector>
 #include <string>
@@ -21,12 +20,10 @@ static void SDLCALL sdlLogCallback(void *userdata, int category, SDL_LogPriority
     if (category == SDL_LOG_CATEGORY_ASSERT)
         level = LOG_CRITICAL; // This is an assertion, damn it! But SDL issues these at SDL_LOG_PRIORITY_WARN.
 
-    logger->log(SdlPlatformSharedState::logCategory(), level, "{}", message);
+    MM_LOG_IN(SdlPlatformSharedState::logCategory(), level, "{}", message);
 }
 
 SdlPlatform::SdlPlatform() {
-    assert(logger);
-
     _state = std::make_unique<SdlPlatformSharedState>();
 
     SDL_SetLogOutputFunction(&sdlLogCallback, _state.get());

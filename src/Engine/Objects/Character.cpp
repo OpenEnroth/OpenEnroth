@@ -3701,7 +3701,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_DarkResistance:
             return this->sResDarkBase >= pValue;
         case VAR_PhysicalResistance:
-            logger->error("Physical resistance isn't used in events");
+            MM_ERROR("Physical resistance isn't used in events");
             return false;
         case VAR_MagicResistance:
             return this->sResMagicBase >= pValue;
@@ -4250,7 +4250,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
             PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PhysicalResistanceBonus:
-            logger->error("Physical res. bonus not used");
+            MM_ERROR("Physical res. bonus not used");
             return;
         case VAR_MagicResistanceBonus:
             this->sResMagicBonus = (uint8_t)var_value;
@@ -4507,7 +4507,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
             SetSkillReaction();
             return;
         case VAR_ThieverySkill:
-            logger->error("Thieving unsupported");
+            MM_ERROR("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
             pActiveSkills[SKILL_TRAP_DISARM] = CombinedSkillValue::fromJoined(var_value);
@@ -5090,7 +5090,7 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_ThieverySkill:
-            logger->error("Thieving unsupported");
+            MM_ERROR("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
             AddSkillByEvent(SKILL_TRAP_DISARM, val);
@@ -5499,7 +5499,7 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_ThieverySkill:
-            logger->error("Thieving unsupported");
+            MM_ERROR("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
             SubtractSkillByEvent(SKILL_TRAP_DISARM, pValue);

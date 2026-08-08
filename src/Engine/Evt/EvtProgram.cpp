@@ -120,12 +120,12 @@ std::string EvtProgram::hint(int eventId) const {
 void EvtProgram::dump(int eventId) const {
     const auto *events = valuePtr(_eventsById, eventId);
     if (events) {
-        logger->trace("Event: {}", eventId);
+        MM_TRACE("Event: {}", eventId);
         for (const EvtInstruction &ir : *events) {
-            logger->trace("{}", ir.toString());
+            MM_TRACE("{}", ir.toString());
         }
     } else {
-        logger->trace("Event {} not found", eventId);
+        MM_TRACE("Event {} not found", eventId);
     }
 }
 

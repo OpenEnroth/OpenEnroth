@@ -167,7 +167,7 @@ bool PCX_Loader::InternalLoad(const Blob &data, RgbaImage *rgbaImage) {
 bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage) {
     Blob data = lod->read(resource_name);
     if (!data) {
-        logger->warning("Unable to load {}", this->resource_name);
+        MM_WARNING("Unable to load {}", this->resource_name);
         return false;
     }
 
@@ -177,7 +177,7 @@ bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage) {
 bool PCX_LOD_Compressed_Loader::Load(RgbaImage *rgbaImage) {
     Blob pcx_data = blob_func();
     if (!pcx_data) {
-        logger->warning("Unable to load {}", resource_name);
+        MM_WARNING("Unable to load {}", resource_name);
         return false;
     }
 

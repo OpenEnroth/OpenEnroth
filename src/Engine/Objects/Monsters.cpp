@@ -63,7 +63,7 @@ SpellId ParseSpellType(std::string_view name) {
     auto it = monsterSpellMap.find(name);
     if (it != monsterSpellMap.end())
         return it->second;
-    logger->warning("Unknown monster spell {}", name);
+    MM_WARNING("Unknown monster spell {}", name);
     return SPELL_NONE;
 }
 
@@ -225,7 +225,7 @@ MonsterSpecialAttack ParseSpecialAttack(std::string_view spec_att_str) {
     else if (tmp.starts_with("none") || tmp.starts_with("0"))
         return SPECIAL_ATTACK_NONE;
     else
-        logger->warning("ParseSpecialAttack:: Unknown monster special attack '{}'", tmp);
+        MM_WARNING("ParseSpecialAttack:: Unknown monster special attack '{}'", tmp);
 
     return SPECIAL_ATTACK_NONE;
 }
@@ -566,7 +566,7 @@ MonsterId MonsterList::GetMonsterIDByName(std::string_view pMonsterName) {
         if (ascii::noCaseEquals(monsters[i].internalMonsterName, pMonsterName))
             return i;
     }
-    logger->error("Monster not found: {}", pMonsterName);
+    MM_ERROR("Monster not found: {}", pMonsterName);
     return MONSTER_INVALID;
 }
 

@@ -154,7 +154,7 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
 
     EvtInterpreter interpreter;
-    logger->trace("Executing regular event starting from step {}", startStep);
+    MM_TRACE("Executing regular event starting from step {}", startStep);
     if (activeLevelDecoration) {
         engine->_globalEventMap.dump(eventId);
         interpreter.prepare(engine->_globalEventMap, eventId, targetObj, canShowMessages);
@@ -164,7 +164,7 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     }
 
     if (!interpreter.isValid()) {
-        logger->info("Face has invalid event ID");
+        MM_INFO("Face has invalid event ID");
         engine->_statusBar->nothingHere();
         return;
     }
@@ -181,7 +181,7 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
 
     EvtInterpreter interpreter;
 
-    logger->trace("Executing NPC dialogue event starting from step {}", startStep);
+    MM_TRACE("Executing NPC dialogue event starting from step {}", startStep);
     LevelDecoration *oldDecoration = activeLevelDecoration;
     activeLevelDecoration = (LevelDecoration *)1; // Required for correct printing of messages
     engine->_globalEventMap.dump(eventId);

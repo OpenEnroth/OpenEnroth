@@ -93,7 +93,7 @@ void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_a
         if (!detail_gl_error::trySerialize(err, &error))
             error = "Unknown Error";
 
-        logger->warning("OpenGL error ({}): {} from function {}", err, error, name);
+        MM_WARNING("OpenGL error ({}): {} from function {}", err, error, name);
 
         err = glad_glGetError();
     }
@@ -117,7 +117,7 @@ void GL_Check_Framebuffer(const char *name) {
     if (!detail_fb_error::trySerialize(status, &error))
         return;
 
-    logger->warning("OpenGL Framebuffer error ({}): {} from function {}", status, error, name);
+    MM_WARNING("OpenGL Framebuffer error ({}): {} from function {}", status, error, name);
 }
 
 // sky billboard stuff
@@ -201,7 +201,7 @@ OpenGLRenderer::OpenGLRenderer(
 ) : BaseRenderer(config, decal_builder, spellfx, particle_engine, vis) {}
 
 OpenGLRenderer::~OpenGLRenderer() {
-    logger->info("RenderGl - Destructor");
+    MM_INFO("RenderGl - Destructor");
     _shutdownImGui();
 }
 
@@ -233,7 +233,7 @@ void OpenGLRenderer::ClearTarget(Color uColor) {
 
 void OpenGLRenderer::BeginLines2D() {
     if (!_lineVertices.empty())
-        logger->trace("BeginLines with points still stored in buffer");
+        MM_TRACE("BeginLines with points still stored in buffer");
 
     DrawTwodVerts();
 
@@ -475,7 +475,7 @@ void OpenGLRenderer::ScreenFade(Color color, float t) {
 
 void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int paletteid, Color uColor32) {
     if (!img) {
-        logger->trace("Null img passed to DrawImage");
+        MM_TRACE("Null img passed to DrawImage");
         return;
     }
 
@@ -861,7 +861,7 @@ void OpenGLRenderer::EndDecals() {
 
 void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
     if (pDecal->uNumVertices < 3) {
-        logger->warning("Decal has < 3 vertices");
+        MM_WARNING("Decal has < 3 vertices");
         return;
     }
 
@@ -1041,7 +1041,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     }
 
                     if (i == 8) {
-                        logger->warning("Texture unit full - draw terrain!");
+                        MM_WARNING("Texture unit full - draw terrain!");
                         tileunit = 0;
                         tilelayer = 0;
                     } else {
@@ -1057,7 +1057,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                             terraintexmap.insert(std::make_pair(tile.textureName, encode));
                             numterraintexloaded[i]++;
                         } else {
-                            logger->warning("Texture layer full - draw terrain!");
+                            MM_WARNING("Texture layer full - draw terrain!");
                             tileunit = 0;
                             tilelayer = 0;
                         }
@@ -1731,7 +1731,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
     _set_ortho_modelview();
 
     if (!_billboardVertices.empty())
-        logger->trace("Billboard shader store isnt empty!");
+        MM_TRACE("Billboard shader store isnt empty!");
 
     // track loaded tex
     float gltexid = 0;
@@ -1973,7 +1973,7 @@ void OpenGLRenderer::BeginScene2D() {
 
 void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) {
     if (!texture) {
-        logger->trace("Null texture passed to DrawQuad2D");
+        MM_TRACE("Null texture passed to DrawQuad2D");
         return;
     }
 
@@ -2351,7 +2351,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 }
 
                                 if (i == 16) {
-                                    logger->warning("Texture unit full - draw building!");
+                                    MM_WARNING("Texture unit full - draw building!");
                                     texunit = 0;
                                     texlayer = 0;
                                 } else {
@@ -2371,7 +2371,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                         outbuildtexmap.insert(std::make_pair(texname, encode));
                                         numoutbuildtexloaded[i]++;
                                     } else {
-                                        logger->warning("Texture layer full - draw building!");
+                                        MM_WARNING("Texture layer full - draw building!");
                                         texunit = 0;
                                         texlayer = 0;
                                     }
@@ -2496,7 +2496,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                         face.texlayer = texlayer = unitlayer & 0xFF;
                                         face.texunit = texunit = (unitlayer & 0xFF00) >> 8;
                                     } else {
-                                        logger->warning("Texture not found in map!");
+                                        MM_WARNING("Texture not found in map!");
                                         // TODO(pskelton): set to water for now - fountains in walls of mist
                                         texunit = face.texlayer = 0;
                                         texlayer = face.texunit = 0;
@@ -2776,7 +2776,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 if (pStationaryLightsStack->pLights[lightscnt].uSectorID == 0) cntnosect++;
             }
             if (cntnosect)
-                logger->warning("{} lights - sector not found", cntnosect);
+                MM_WARNING("{} lights - sector not found", cntnosect);
 
             // initialize vertex vectors
             for (int i = 0; i < 16; i++) {
@@ -2848,7 +2848,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         }
 
                         if (i == 16) {
-                            logger->warning("Texture unit full - draw Indoor faces!");
+                            MM_WARNING("Texture unit full - draw Indoor faces!");
                             texunit = 0;
                             texlayer = 0;
                         } else {
@@ -2868,7 +2868,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                                 bsptexmap.insert(std::make_pair(texname, encode));
                                 bsptexloaded[i]++;
                             } else {
-                                logger->warning("Texture layer full - draw indoor faces!");
+                                MM_WARNING("Texture layer full - draw indoor faces!");
                                 texunit = 0;
                                 texlayer = 0;
                             }
@@ -3012,7 +3012,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         face->texlayer = texlayer = unitlayer & 0xFF;
                         face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
                     } else {
-                        logger->warning("Texture not found in map!");
+                        MM_WARNING("Texture not found in map!");
                         // TODO(pskelton): set to water for now - fountains in walls of mist
                         texlayer = face->texlayer = 0;
                         texunit = face->texunit = 0;
@@ -3354,11 +3354,11 @@ bool OpenGLRenderer::Initialize() {
     };
 
     if (!version) {
-        logger->error("GLAD: Failed to initialize the OpenGL loader");
+        MM_ERROR("GLAD: Failed to initialize the OpenGL loader");
     } else {
-        logger->info("OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
-        logger->info("OpenGL version string: {}", glGetStringSafe(GL_VERSION));
-        logger->info("GLSL version: {}", glGetStringSafe(GL_SHADING_LANGUAGE_VERSION));
+        MM_INFO("OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
+        MM_INFO("OpenGL version string: {}", glGetStringSafe(GL_VERSION));
+        MM_INFO("GLSL version: {}", glGetStringSafe(GL_SHADING_LANGUAGE_VERSION));
         // TODO(captainurist): this is probably the place to check OpenGL version & exit.
         //                     openenroth requires opengl core 4.1 or opengles 3.2 capable gpu to run.
     }
@@ -3524,7 +3524,7 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
 }
 
 bool OpenGLRenderer::ReloadShaders() {
-    logger->info("Reloading shaders...");
+    MM_INFO("Reloading shaders...");
 
     ReleaseTerrain();
     ReleaseBSP();
@@ -3576,7 +3576,7 @@ bool OpenGLRenderer::ReloadShaders() {
         }
     }
 
-    logger->info("Shaders reloaded.");
+    MM_INFO("Shaders reloaded.");
     return true;
 }
 

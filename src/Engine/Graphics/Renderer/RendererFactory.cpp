@@ -12,7 +12,7 @@
 std::unique_ptr<Renderer> RendererFactory::createRenderer(RendererType type, std::shared_ptr<GameConfig> config) {
     switch (type) {
     case RENDERER_OPENGL:
-        logger->info("Initializing OpenGL renderer...");
+        MM_INFO("Initializing OpenGL renderer...");
         return std::make_unique<OpenGLRenderer>(
             config,
             EngineIocContainer::ResolveDecalBuilder(),
@@ -22,7 +22,7 @@ std::unique_ptr<Renderer> RendererFactory::createRenderer(RendererType type, std
         );
 
     case RENDERER_OPENGL_ES:
-        logger->info("Initializing OpenGL ES renderer...");
+        MM_INFO("Initializing OpenGL ES renderer...");
         return std::make_unique<OpenGLRenderer>(
             config,
             EngineIocContainer::ResolveDecalBuilder(),
@@ -36,7 +36,7 @@ std::unique_ptr<Renderer> RendererFactory::createRenderer(RendererType type, std
         [[fallthrough]];
 
     case RENDERER_NULL:
-        logger->info("Initializing null renderer...");
+        MM_INFO("Initializing null renderer...");
         return std::make_unique<NullRenderer>(
             config,
             EngineIocContainer::ResolveDecalBuilder(),

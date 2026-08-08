@@ -29,7 +29,7 @@ bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
                 // TODO(captainurist): do this properly, trace00001.json, etc.
                 ufs->write("trace.json", recording.trace);
                 ufs->write("trace.mm7", recording.save);
-                logger->info("Trace saved to {} and {}", ufs->displayPath("trace.json"), ufs->displayPath("trace.mm7"));
+                MM_INFO("Trace saved to {} and {}", ufs->displayPath("trace.json"), ufs->displayPath("trace.mm7"));
             } else {
                 tracer->startRecording(game);
             }

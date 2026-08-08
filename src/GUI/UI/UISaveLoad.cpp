@@ -90,7 +90,7 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
                 }
             }
             catch (const Exception& e) {
-                logger->debug("pSavegameList thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
+                MM_DEBUG("pSavegameList thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
                 pSavegameList->pSavegameThumbnails[i] = nullptr;
             }
 
@@ -199,7 +199,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
                 pSavegameList->pSavegameThumbnails[i] = nullptr;
             }
         } catch (const Exception &e) {
-            logger->debug("pSavegameList thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
+            MM_DEBUG("pSavegameList thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
             pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
 
@@ -391,7 +391,7 @@ void GUIWindow_Load::quickLoad() {
         pSavegameList->selectedSlot = slot;
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
     } else {
-        logger->error("QuickLoadGame:: No quick save could be found!");
+        MM_ERROR("QuickLoadGame:: No quick save could be found!");
         pAudioPlayer->playUISound(SOUND_error);
     }
 }

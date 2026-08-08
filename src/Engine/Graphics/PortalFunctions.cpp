@@ -305,7 +305,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
                 (v25.vWorldPosition.y - pCamera3D->vCameraPos.y) * a1.y +
                 (v25.vWorldPosition.z - pCamera3D->vCameraPos.z) * a1.z;
     if (fabs(_dp) < 1e-6f) {
-        logger->info("Epsilon check");
+        MM_INFO("Epsilon check");
         v25 = pOutBounding[1];
         pOutBounding[1] = pOutBounding[3];
         pOutBounding[3] = v25;

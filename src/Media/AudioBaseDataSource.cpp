@@ -25,7 +25,7 @@ bool AudioBaseDataSource::Open() {
     // Retrieve stream information
     if (avformat_find_stream_info(pFormatContext, nullptr) < 0) {
         Close();
-        logger->warning("ffmpeg: Unable to find stream info");
+        MM_WARNING("ffmpeg: Unable to find stream info");
         return false;
     }
 
@@ -38,7 +38,7 @@ bool AudioBaseDataSource::Open() {
                                        -1, &codec, 0);
     if (iStreamIndex < 0) {
         Close();
-        logger->warning("ffmpeg: Unable to find audio stream");
+        MM_WARNING("ffmpeg: Unable to find audio stream");
         return false;
     }
 
@@ -66,12 +66,12 @@ bool AudioBaseDataSource::Open() {
         pCodecContext->sample_fmt, pCodecContext->sample_rate, 0, nullptr);
     if (status < 0) {
         Close();
-        logger->warning("ffmpeg: Failed to set converter options");
+        MM_WARNING("ffmpeg: Failed to set converter options");
         return false;
     }
     if (swr_init(pConverter) < 0) {
         Close();
-        logger->warning("ffmpeg: Failed to create converter");
+        MM_WARNING("ffmpeg: Failed to create converter");
         return false;
     }
 

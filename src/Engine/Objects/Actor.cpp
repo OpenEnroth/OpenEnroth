@@ -545,7 +545,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
         case SPELL_LIGHT_PARALYZE:
             // TODO(pskelton): This is a vanilla bug - monsters with instant targeting spells can't actually use them - #1246
-            logger->info("Spell Paralyze cast - replaced with dispel");
+            MM_INFO("Spell Paralyze cast - replaced with dispel");
             [[fallthrough]];
         case SPELL_LIGHT_DISPEL_MAGIC:
             for (SpellBuff &buff : pParty->pPartyBuffs) {
@@ -751,7 +751,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
 
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.spriteId);
     if (a1.uObjectDescID == 0) {
-        logger->error("Item not found");
+        MM_ERROR("Item not found");
         return;
     }
     a1.containing_item.Reset();

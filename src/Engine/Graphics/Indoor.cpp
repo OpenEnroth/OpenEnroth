@@ -297,7 +297,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapStats->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
                 respawnTimed = true;
         } catch (const Exception &e) {
-            logger->error("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
+            MM_ERROR("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
             respawnInitial = true;
         }
     }
@@ -389,10 +389,10 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
     // No face found - outside of level
     if (!NumFoundFaceStore) {
         if (!backupboundingsector) {
-            logger->warning("GetSector fail: {}, {}, {}", sX, sY, sZ);
+            MM_WARNING("GetSector fail: {}, {}, {}", sX, sY, sZ);
             return 0;
         } else {
-            logger->warning("GetSector fail: {}, {}, {}  Returning backup sector bounding!", sX, sY, sZ);
+            MM_WARNING("GetSector fail: {}, {}, {}  Returning backup sector bounding!", sX, sY, sZ);
             return backupboundingsector;
         }
     }
@@ -753,7 +753,7 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
 void switchDoorAnimation(unsigned int uDoorID, DoorAction action) {
     auto pos = std::ranges::find(pIndoor->doors, uDoorID, &BLVDoor::doorId);
     if (pos == pIndoor->doors.end()) {
-        logger->error("Unable to find Door ID: {}!", uDoorID);
+        MM_ERROR("Unable to find Door ID: {}!", uDoorID);
         return;
     }
 
@@ -1142,7 +1142,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
 
     // no face found - probably wrong sector supplied
     if (!FacesFound) {
-        logger->trace("Floorlvl fail: {} {} {}", pos.x, pos.y, pos.z);
+        MM_TRACE("Floorlvl fail: {} {} {}", pos.x, pos.y, pos.z);
 
         if (pFaceID)
             *pFaceID = -1;
@@ -1470,7 +1470,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
             break;
 
         default:
-            logger->warning("Warning: Invalid ID reached!");
+            MM_WARNING("Warning: Invalid ID reached!");
             return 1;
     }
 

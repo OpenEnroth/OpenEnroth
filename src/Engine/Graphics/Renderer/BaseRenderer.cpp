@@ -65,7 +65,7 @@ void BaseRenderer::DrawSpriteObjects() {
     for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {
         // exit if we are at max sprites
         if (::uNumBillboardsToDraw >= 500) {
-            logger->warning("Billboards Full");
+            MM_WARNING("Billboards Full");
             break;
         }
 
@@ -98,7 +98,7 @@ void BaseRenderer::DrawSpriteObjects() {
              (object->spriteId < SPRITE_TRAP_FIRE || object->spriteId > SPRITE_TRAP_BODY))) { // Not a trap.
             SpriteFrame *frame = object->spriteFrame();
             if (frame->spriteName == "null" || frame->textureName == "null") {
-                logger->trace("Trying to draw sprite with null frame");
+                MM_TRACE("Trying to draw sprite with null frame");
                 continue;
             }
 
@@ -108,7 +108,7 @@ void BaseRenderer::DrawSpriteObjects() {
 
             // error catching
             if (frame->sprites[octant]->texture->height() == 0 || frame->sprites[octant]->texture->width() == 0) {
-                logger->trace("Trying to draw sprite with empty octant texture");
+                MM_TRACE("Trying to draw sprite with empty octant texture");
                 continue;
             }
 
@@ -152,7 +152,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
 
     for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
         if (::uNumBillboardsToDraw >= 500) {
-            logger->warning("Billboards Full");
+            MM_WARNING("Billboards Full");
             return;
         }
 
@@ -266,7 +266,7 @@ void BaseRenderer::TransformBillboards() {
         if (p->hwsprite) {
             TransformBillboard(p, i);
         } else {
-            logger->trace("Billboard with no sprite!");
+            MM_TRACE("Billboard with no sprite!");
         }
     }
 }
