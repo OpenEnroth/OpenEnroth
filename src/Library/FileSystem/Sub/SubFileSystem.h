@@ -13,6 +13,9 @@
  *
  * All paths are prefixed with the base path. This provides isolation - files outside the base path cannot be accessed.
  *
+ * All methods will work as if the base path exists on the underlying file system, even if it doesn't. So `ls("")`
+ * returns an empty list instead of throwing for a base path that doesn't exist, or that points to a file.
+ *
  * Usage:
  * ```
  * FileSystem *root = ...;
