@@ -236,9 +236,9 @@ http_archive(
 http_archive(
     name = "ztd_text",
     build_file = "//bazel/deps:ztd_text.BUILD",
-    sha256 = "d15877bcc86dcbb2db15935d2862abb8d7f4fd005a603420bd98b006eca70145",
-    strip_prefix = "ztd_text-c4c486179ebeb67510dbcceefe686cf931de1b5f",
-    url = "https://github.com/captainurist/ztd_text/archive/c4c486179ebeb67510dbcceefe686cf931de1b5f.tar.gz",
+    sha256 = "e16ff3e235d91784b88a7d4051e7f2ec89d5cb9aecbdc44da271829daad70741",
+    strip_prefix = "ztd_text-c17bbb1e0bbd953f65a1846e8df11939f83f2169",
+    url = "https://github.com/captainurist/ztd_text/archive/c17bbb1e0bbd953f65a1846e8df11939f83f2169.tar.gz",
 )
 
 # ztd.idk + companion libraries — all required by ztd_text (all header-only)
