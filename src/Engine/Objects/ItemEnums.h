@@ -1035,10 +1035,10 @@ enum class ItemType {
     ITEM_TYPE_MESSAGE_SCROLL = 17,
     ITEM_TYPE_GOLD = 18,
     ITEM_TYPE_GEM = 19,
-    ITEM_TYPE_NONE = 20, // Ores, quest items. // TODO(captainurist): come up with a better name for this value.
+    ITEM_TYPE_MISC = 20, // Items with no type in items.txt - quest items, ores, and unused placeholder entries.
 
     ITEM_TYPE_FIRST = ITEM_TYPE_SINGLE_HANDED,
-    ITEM_TYPE_LAST = ITEM_TYPE_NONE,
+    ITEM_TYPE_LAST = ITEM_TYPE_MISC,
 
     ITEM_TYPE_FIRST_SPECIAL_ENCHANTABLE = ITEM_TYPE_SINGLE_HANDED,
     ITEM_TYPE_LAST_SPECIAL_ENCHANTABLE = ITEM_TYPE_AMULET,
