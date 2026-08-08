@@ -835,9 +835,8 @@ int Party::GetPartyReputation() {
     return npcRep + ddm_dlv->reputation;
 }
 
-// TODO(pskelton): drop unsigned
 //----- (004269A2) --------------------------------------------------------
-void Party::GivePartyExp(unsigned int pEXPNum) {
+void Party::GivePartyExp(int pEXPNum) {
     if (pEXPNum > 0) {
         // Count active characters
         int pActivePlayerCount = 0;
@@ -848,7 +847,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
         }
         // Split gained xp between active characters
         if (pActivePlayerCount) {
-            int perCharXP = static_cast<int>(pEXPNum) / pActivePlayerCount;
+            int perCharXP = pEXPNum / pActivePlayerCount;
             for (Character &player : this->pCharacters) {
                 if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                     int playermodexp = perCharXP + perCharXP * player.learningPercent() / 100;
