@@ -154,14 +154,14 @@ int runDump(const LodToolOptions &options) {
 
 int runCat(const LodToolOptions &options) {
     std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(options.path);
-    std::unique_ptr<ArchiveReader> paletteReader = options.palettesLodPath.empty() ? nullptr : ArchiveReader::createArchiveReader(options.palettesLodPath);
+    std::unique_ptr<ArchiveReader> paletteReader = options.palettesLodPath.isEmpty() ? nullptr : ArchiveReader::createArchiveReader(options.palettesLodPath);
     auto [data, _] = std::move(decodeLodEntry(reader->read(options.cat.entry), options.cat.entry, options.raw, paletteReader.get())[0]);
     return fwrite(data.data(), data.size(), 1, stdout) != 1 ? 1 : 0;
 }
 
 int runExtract(const LodToolOptions &options) {
     std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(options.path);
-    std::unique_ptr<ArchiveReader> paletteReader = options.palettesLodPath.empty() ? nullptr : ArchiveReader::createArchiveReader(options.palettesLodPath);
+    std::unique_ptr<ArchiveReader> paletteReader = options.palettesLodPath.isEmpty() ? nullptr : ArchiveReader::createArchiveReader(options.palettesLodPath);
     DirectoryFileSystem output(options.extract.output);
 
     for (const std::string &entryName : reader->ls())

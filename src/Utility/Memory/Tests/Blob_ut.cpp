@@ -8,7 +8,7 @@
 #include "Utility/Streams/FileOutputStream.h"
 
 UNIT_TEST(Blob, FromFile) {
-    std::string fileName = "abcdefghijklmnopqrstuvwxyz.tmp";
+    NativePath fileName = NativePath::fromWtf8("abcdefghijklmnopqrstuvwxyz.tmp");
     std::string fileContents = "abcd";
 
     ScopedTestFileSlot tmp(fileName);
@@ -25,15 +25,16 @@ UNIT_TEST(Blob, FromFile) {
 }
 
 UNIT_TEST(Blob, FromEmptyFile) {
-    ScopedTestFile tmp("1.txt", "");
+    NativePath fileName = NativePath::fromWtf8("1.txt");
+    ScopedTestFile tmp(fileName, "");
 
-    Blob blob = Blob::fromFile("1.txt"); // Shouldn't throw.
+    Blob blob = Blob::fromFile(fileName); // Shouldn't throw.
     EXPECT_EQ(blob.size(), 0);
     EXPECT_TRUE(!blob);
 }
 
 UNIT_TEST(Blob, SharedFromFile) {
-    std::string fileName = "abcdefghijklmnopqrstuvwxyz1.tmp";
+    NativePath fileName = NativePath::fromWtf8("abcdefghijklmnopqrstuvwxyz1.tmp");
     std::string fileContents = "0123456789";
 
     ScopedTestFile tmp(fileName, fileContents);
@@ -57,33 +58,36 @@ UNIT_TEST(Blob, DisplayPathCopyShare) {
 }
 
 UNIT_TEST(Blob, DisplayPathFromFile) {
-    ScopedTestFile tmp("1.bin", "123");
+    NativePath fileName = NativePath::fromWtf8("1.bin");
+    ScopedTestFile tmp(fileName, "123");
 
-    std::string displayPath = Blob::fromFile("1.bin").displayPath();
+    std::string displayPath = Blob::fromFile(fileName).displayPath();
     EXPECT_TRUE(displayPath.ends_with("1.bin"));
     EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
 }
 
 UNIT_TEST(Blob, DisplayPathFromEmptyFile) {
-    ScopedTestFile tmp("1.txt", "");
+    NativePath fileName = NativePath::fromWtf8("1.txt");
+    ScopedTestFile tmp(fileName, "");
 
-    std::string displayPath = Blob::fromFile("1.txt").displayPath();
+    std::string displayPath = Blob::fromFile(fileName).displayPath();
     EXPECT_TRUE(displayPath.ends_with("1.txt"));
     EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
 }
 
 UNIT_TEST(Blob, DisplayPathFromStream) {
-    ScopedTestFile tmp("1.bin", "123");
+    NativePath fileName = NativePath::fromWtf8("1.bin");
+    ScopedTestFile tmp(fileName, "123");
 
-    FileInputStream in("1.bin");
+    FileInputStream in(fileName);
     std::string displayPath = Blob::read(&in, 2).displayPath();
     EXPECT_TRUE(displayPath.ends_with("1.bin"));
     EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
 }
 
 UNIT_TEST(Blob, ExceptionMessages) {
-    const char *fileName = "lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt";
+    NativePath fileName = NativePath::fromWtf8("lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt");
 
-    EXPECT_FALSE(std::filesystem::exists(fileName));
-    EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName);
+    EXPECT_FALSE(std::filesystem::exists(fileName.toStdPath()));
+    EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName.toWtf8());
 }

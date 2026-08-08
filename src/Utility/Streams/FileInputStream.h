@@ -2,7 +2,8 @@
 
 #include <cstdio>
 #include <memory>
-#include <string_view>
+
+#include "Utility/System/NativePath.h"
 
 #include "InputStream.h"
 
@@ -24,7 +25,7 @@ class FileInputStream : public InputStream {
      * @param bufferSize                Size of the internal read buffer.
      * @throws Exception                On error.
      */
-    explicit FileInputStream(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
+    explicit FileInputStream(const NativePath &path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
     virtual ~FileInputStream();
 
     /**
@@ -34,7 +35,7 @@ class FileInputStream : public InputStream {
      * @param bufferSize                Size of the internal read buffer.
      * @throws Exception                On error.
      */
-    void open(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
+    void open(const NativePath &path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
 
  private:
     virtual size_t _underflow(void *data, size_t size, Buffer *buffer) override;
