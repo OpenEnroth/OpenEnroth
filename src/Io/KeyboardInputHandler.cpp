@@ -102,10 +102,10 @@ void Io::KeyboardInputHandler::GenerateActions(bool isPaused) {
     }
 
     if (resettimer) {
-        this->keydelaytimer = pEventTimer->dt();
+        this->keydelaytimer = pGameTimer->dt();
     } else {
         if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST)
-            this->keydelaytimer += pEventTimer->dt();
+            this->keydelaytimer += pGameTimer->dt();
     }
 }
 
@@ -377,7 +377,7 @@ void Io::KeyboardInputHandler::GenerateInputActions() {
         }
     }
 
-    GenerateActions(pEventTimer->isPaused());
+    GenerateActions(pGameTimer->isPaused());
 }
 
 //----- (00459E5A) --------------------------------------------------------

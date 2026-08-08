@@ -247,7 +247,7 @@ static void checkTimer(MapTimer &timer) {
 }
 
 void onTimer() {
-    if (pEventTimer->isPaused()) {
+    if (pGameTimer->isPaused()) {
         return;
     }
 

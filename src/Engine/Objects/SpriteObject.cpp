@@ -160,11 +160,11 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
 
     if (!(object->uFlags & OBJECT_DESC_NO_GRAVITY)) {
         if (isAboveGround) {
-            pSpriteObjects[uLayingItemID].vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
+            pSpriteObjects[uLayingItemID].vVelocity.z -= pGameTimer->dt().ticks() * GetGravityStrength();
         } else if (isHighSlope) {
             Vec3f normf = pOutdoor->pTerrain.normalByPos(pSpriteObjects[uLayingItemID].vPosition);
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
-            pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
+            pSpriteObjects[uLayingItemID].vVelocity.z -= (pGameTimer->dt().ticks() * GetGravityStrength());
 
             float dotp = std::abs(dot(normf, pSpriteObjects[uLayingItemID].vVelocity));
             pSpriteObjects[uLayingItemID].vVelocity += dotp * normf;
@@ -351,7 +351,7 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
 
     // flying objects / projectiles
     if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
-        pSpriteObject->vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
+        pSpriteObject->vVelocity.z -= pGameTimer->dt().ticks() * GetGravityStrength();
         // TODO(Nik-RE-dev): get rid of goto here
         // TODO(pskelton): move to Collisions
 LABEL_25:
@@ -484,7 +484,7 @@ LABEL_25:
             pSpriteObject->vVelocity.z = 0;
         } else {
             if (pIndoor->faces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
-                pSpriteObject->vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
+                pSpriteObject->vVelocity.z -= pGameTimer->dt().ticks() * GetGravityStrength();
             }
         }
         pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
@@ -1275,7 +1275,7 @@ void UpdateObjects() {
                 if (!pSpriteObjects[i].uObjectDescID) {
                     continue;
                 }
-                pSpriteObjects[i].timeSinceCreated += pEventTimer->dt();
+                pSpriteObjects[i].timeSinceCreated += pGameTimer->dt();
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) {
                     continue;
                 }
@@ -1293,7 +1293,7 @@ void UpdateObjects() {
             }
             if (pSpriteObjects[i].uObjectDescID) {
                 Duration lifetime;
-                pSpriteObjects[i].timeSinceCreated += pEventTimer->dt();
+                pSpriteObjects[i].timeSinceCreated += pGameTimer->dt();
                 if (object->uFlags & OBJECT_DESC_TEMPORARY) {
                     if (pSpriteObjects[i].timeSinceCreated < 0_ticks) {
                         SpriteObject::OnInteraction(i);

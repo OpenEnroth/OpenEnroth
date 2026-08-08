@@ -264,7 +264,7 @@ void Game::onEscape() {
     window_SpeakInHouse = nullptr;
     pGUIWindow_CurrentMenu = nullptr;
 
-    pEventTimer->setPaused(false);
+    pGameTimer->setPaused(false);
     current_screen_type = SCREEN_GAME;
 }
 
@@ -531,7 +531,7 @@ void Game::processQueuedMessages() {
                                     onEscape();
                                     continue;
                                 case SCREEN_BOOKS:
-                                    pEventTimer->setPaused(false);
+                                    pGameTimer->setPaused(false);
                                     onEscape();
                                     continue;
                                 case SCREEN_CHEST_INVENTORY:
@@ -540,7 +540,7 @@ void Game::processQueuedMessages() {
                                 case SCREEN_CHEST:
                                     pGUIWindow_CurrentChest = nullptr;
                                     current_screen_type = SCREEN_GAME;
-                                    pEventTimer->setPaused(false);
+                                    pGameTimer->setPaused(false);
                                     continue;
                                 case SCREEN_REST:  // close rest screen
                                     if (currentRestType != REST_NONE) {
@@ -735,7 +735,7 @@ void Game::processQueuedMessages() {
                 } else {
                     DialogueEnding();
                     pAudioPlayer->stopSounds();
-                    pEventTimer->setPaused(true);
+                    pGameTimer->setPaused(true);
                     autoSave();
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     engine->_transitionMapId = travelMapId;
@@ -971,7 +971,7 @@ void Game::processQueuedMessages() {
                                 // window->GetWidth(), window->GetHeight(),
                                 // WINDOW_68, uMessageParam, 0);
                 current_screen_type = SCREEN_19;
-                pEventTimer->setPaused(true);
+                pGameTimer->setPaused(true);
                 continue;
             case UIMSG_STEALFROMACTOR:
                 if (!pParty->hasActiveCharacter()) continue;
@@ -1245,7 +1245,7 @@ void Game::processQueuedMessages() {
                 if (character->bHaveSpell[selectedSpell] || engine->config->debug.AllMagic.value()) {
                     if (spellbookSelectedSpell == selectedSpell) {
                         pGUIWindow_CurrentMenu = nullptr;  // spellbook close
-                        pEventTimer->setPaused(false);
+                        pGameTimer->setPaused(false);
                         current_screen_type = SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
                         // drawing object list which is used to count actors for some spells
@@ -1325,7 +1325,7 @@ void Game::processQueuedMessages() {
             case UIMSG_GameMenuButton:
                 if (current_screen_type != SCREEN_GAME) {
                     pGUIWindow_CurrentMenu = nullptr;
-                    pEventTimer->setPaused(false);
+                    pGameTimer->setPaused(false);
                     current_screen_type = SCREEN_GAME;
                 }
 
@@ -1499,7 +1499,7 @@ void Game::processQueuedMessages() {
     engine->_messageQueue->swapFrames();
 
     if (AfterEnchClickEventId != UIMSG_0) {
-        AfterEnchClickEventTimeout = std::max(0_ticks, AfterEnchClickEventTimeout - pEventTimer->dt());
+        AfterEnchClickEventTimeout = std::max(0_ticks, AfterEnchClickEventTimeout - pGameTimer->dt());
         if (!AfterEnchClickEventTimeout) {
             engine->_messageQueue->addMessageCurrentFrame(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
             AfterEnchClickEventId = UIMSG_0;
@@ -1543,7 +1543,7 @@ void Game::gameLoop() {
         pParty->bTurnBasedModeOn = false;  // Make sure turn engine and party turn based mode flag are in sync.
 
         DoPrepareWorld(bLoading, 1);
-        pEventTimer->setPaused(false);
+        pGameTimer->setPaused(false);
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
         // uGame_if_0_else_ui_id__11_save__else_load__8_drawSpellInfoPopup__22_final_window__26_keymapOptions__2_options__28_videoOptions
         // = 0;
@@ -1569,18 +1569,18 @@ void Game::gameLoop() {
 
             pMediaPlayer->HouseMovieLoop();
 
-            pEventTimer->tick();
+            pGameTimer->tick();
             pAnimTimer->tick();
 
-            if (pAnimTimer->isPaused() && !pEventTimer->isPaused())
+            if (pAnimTimer->isPaused() && !pGameTimer->isPaused())
                 pAnimTimer->setPaused(false);
-            if (pEventTimer->isTurnBased() && !pParty->bTurnBasedModeOn)
-                pEventTimer->setTurnBased(false);
-            if (!pEventTimer->isPaused() && uGameState == GAME_STATE_PLAYING) {
+            if (pGameTimer->isTurnBased() && !pParty->bTurnBasedModeOn)
+                pGameTimer->setTurnBased(false);
+            if (!pGameTimer->isPaused() && uGameState == GAME_STATE_PLAYING) {
                 onTimer();
 
-                if (!pEventTimer->isTurnBased()) {
-                    _494035_timed_effects__water_walking_damage__etc(pEventTimer->dt());
+                if (!pGameTimer->isTurnBased()) {
+                    _494035_timed_effects__water_walking_damage__etc(pGameTimer->dt());
                 } else {
                     // Need to process party death in turn-based mode.
                     maybeWakeSoloSurvivor();
@@ -1691,7 +1691,7 @@ void Game::gameLoop() {
                     PrepareWorld(1);
                 }
                 pAnimTimer->setPaused(false);
-                pEventTimer->setPaused(false);
+                pGameTimer->setPaused(false);
 
                 Actor::InitializeActors();
 
@@ -1708,7 +1708,7 @@ void Game::gameLoop() {
             }
         } while (!game_finished);
 
-        pEventTimer->setPaused(true);
+        pGameTimer->setPaused(true);
         engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
         if (uGameState == GAME_STATE_LOADING_GAME) {
             GameUI_LoadPlayerPortraitsAndVoices();

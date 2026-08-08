@@ -33,7 +33,7 @@ static void prepareToLoadRestUI() {
         pGUIWindow_CurrentMenu = nullptr;
         current_screen_type = SCREEN_GAME;
     }
-    pEventTimer->setPaused(true);
+    pGameTimer->setPaused(true);
     if (currentRestType != REST_HEAL) {
         new OnButtonClick({518, 450}, {0, 0}, pBtn_Rest);
     }
@@ -111,7 +111,7 @@ void GUIWindow_Rest::Update() {
             rest_ui_hourglass_frame_current = nullptr;
         }
 
-        hourglassLoopTimer += pEventTimer->dt();
+        hourglassLoopTimer += pGameTimer->dt();
         if (hourglassLoopTimer >= Duration::fromRealtimeSeconds(4)) {
             hourglassLoopTimer = 0_ticks;
         }

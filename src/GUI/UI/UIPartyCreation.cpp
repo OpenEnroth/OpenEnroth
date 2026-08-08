@@ -258,7 +258,7 @@ void CreateParty_EventLoop() {
 
 bool PartyCreationUI_Loop() {
     pAudioPlayer->MusicStop();
-    pEventTimer->setPaused(true);
+    pGameTimer->setPaused(true);
 
     // This call is here b/c otherwise Character::timeToRecovery will be overwritten in the main loop from the
     // turn-based queue if we're currently in turn-based combat.

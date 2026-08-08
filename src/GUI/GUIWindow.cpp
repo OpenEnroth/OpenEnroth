@@ -455,7 +455,7 @@ void DialogueEnding() {
     speakingNpcId = 0;
     pDialogueWindow = nullptr;
     pAnimTimer->setPaused(false);
-    pEventTimer->setPaused(false);
+    pGameTimer->setPaused(false);
 }
 
 void OnButtonClick::Update() {
@@ -1022,11 +1022,11 @@ void WindowManager::DeleteAllVisibleWindows() {
     current_screen_type = SCREEN_GAME;
     engine->_messageQueue->clearAll();
 
-    // TODO(captainurist): Unload() un-pauses the event timer, which is not always the right thing to do.
+    // TODO(captainurist): Unload() un-pauses the game timer, which is not always the right thing to do.
     //                     So we hack. Find a better way.
-    bool wasPaused = pEventTimer->isPaused();
+    bool wasPaused = pGameTimer->isPaused();
     pMediaPlayer->Unload();
-    pEventTimer->setPaused(wasPaused);
+    pGameTimer->setPaused(wasPaused);
 }
 
 void MainMenuUI_LoadFontsAndSomeStuff() {

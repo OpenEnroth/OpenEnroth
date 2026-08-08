@@ -26,8 +26,8 @@ FsmAction VideoState::enter() {
         return FsmAction::transition("videoEnd");
     }
 
-    // Stop the event timer and audio before playing a video
-    pEventTimer->setPaused(true);
+    // Stop the game timer and audio before playing a video
+    pGameTimer->setPaused(true);
     pAudioPlayer->pauseLooping();
     pAudioPlayer->MusicPause();
 

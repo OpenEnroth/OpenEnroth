@@ -1143,14 +1143,14 @@ void SpellFxRenderer::RenderSpecialEffects() {
         if (fadeAmount > 0.9) fadeAmount = 1.0 - (fadeAmount - 0.9) * 10.0;
         fadeAlpha = fadeAmount;
         render->ScreenFade(uFadeColor, fadeAlpha);
-        uFadeTime -= pEventTimer->dt();
+        uFadeTime -= pGameTimer->dt();
     }
 
     if (uAnimLength > 0_ticks) {
         // prismatic light
         animElapsed = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].animationLength - uAnimLength;
         prismaticFrame = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), animElapsed);
-        uAnimLength -= pEventTimer->dt();
+        uAnimLength -= pGameTimer->dt();
 
         render->DrawSpecialEffectsQuad(prismaticFrame->sprites[0]->texture, prismaticFrame->paletteId);
     }
@@ -1162,7 +1162,7 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
         PlayerBuffAnim *buff = &pCharacterBuffs[i];
         if (!buff->bRender) continue;
 
-        buff->uSpellAnimTimeElapsed += pEventTimer->dt();
+        buff->uSpellAnimTimeElapsed += pGameTimer->dt();
         if (buff->uSpellAnimTimeElapsed >= buff->uSpellAnimTime) {
             buff->bRender = false;
             continue;

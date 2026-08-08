@@ -5,7 +5,7 @@
 #include "Engine/EngineGlobals.h"
 
 Timer *pAnimTimer = new Timer;
-Timer *pEventTimer;
+Timer *pGameTimer;
 
 //----- (00426317) --------------------------------------------------------
 Duration Timer::platformTime() {
