@@ -28,7 +28,7 @@ cc_library(
         "//src/Library/Platform/Application:library_platform_application",
         "//src/Library/Platform/Interface:library_platform_interface",
         "//src/Library/Random:library_random",
-        "//src/Library/Trace:library_trace",
+        "//src/Core/Trace:core_trace",
         "//src/Utility:utility",
     ],
 )

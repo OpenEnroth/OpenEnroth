@@ -26,6 +26,7 @@ cc_library(
         "//test/Testing/Game:testing_game",
         # Test-case libraries that need the full engine (linked into the game test
         # binary in the CMake build as well).
+        "//src/Engine:test_engine",
         "//src/Engine/Objects:test_engine_objects",
         "//src/Engine/Spells:test_engine_spells",
     ],
@@ -42,27 +43,9 @@ cc_test(
         "--test-path",
         "test/Data",
         "--headless",
-        # TODO(captainurist): drop the quarantine once fix/reset-particles-on-
-        # level-load is merged: Issue1479's leftover particles consumed vrng
-        # draws during Issue1655, masking its damage portraits.
-        "--gtest_filter=-Issues.Issue1655",
     ],
     data = ["//test:test_data"],
     shard_count = 8,
-    visibility = ["//visibility:public"],
-    deps = [":gametest_lib"],
-)
-
-cc_test(
-    name = "OpenEnroth_GameTest_Isolated",
-    size = "large",
-    args = [
-        "--test-path",
-        "test/Data",
-        "--headless",
-        "--gtest_filter=Issues.Issue1655",
-    ],
-    data = ["//test:test_data"],
     visibility = ["//visibility:public"],
     deps = [":gametest_lib"],
 )

@@ -87,6 +87,7 @@ cc_library(
         "SpellFxRenderer.h",
         "TeleportPoint.h",
         "mm7_data.h",
+        "mm7text_ru.h",
         "stru314.h",
     ],
     # NOTE: local_defines below reference CMake variables that must be resolved at build time.
@@ -221,6 +222,22 @@ cc_library(
         "//src/GUI/UI:gui_ui",
         "//src/Io:io",
         "//src/Media/Audio:media_audio",
+    ],
+    alwayslink = True,
+)
+
+# cmake's test_engine, linked into the game test binary there as well.
+cc_library(
+    name = "test_engine",
+    testonly = True,
+    srcs = [
+        "Tests/Mm7TextRu_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":engine",
+        "//src/Utility:utility",
+        "//test/Testing/Unit:testing_unit",
     ],
     alwayslink = True,
 )

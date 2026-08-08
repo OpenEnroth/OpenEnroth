@@ -1,23 +1,14 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
-cc_library(
-    name = "media_audio_sound_enums",
-    hdrs = ["SoundEnums.h"],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src/Library/Logger:library_logger",
-        "//src/Utility:utility",
-    ],
-)
-
 # Header-only target: SoundInfo.h without full media_audio dep.
 # Needed by engine (EntitySnapshots.cpp) — media_audio depends on engine, so cycle.
+# SoundEnums.h moved to //src/Engine/Data (engine_data) upstream.
 cc_library(
     name = "media_audio_sound_info",
     hdrs = ["SoundInfo.h"],
     visibility = ["//visibility:public"],
     deps = [
-        ":media_audio_sound_enums",
+        "//src/Engine/Data:engine_data",
         "//src/Media:media_interfaces",
         "//src/Utility:utility",
     ],
@@ -54,7 +45,6 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        ":media_audio_sound_enums",
         ":media_audio_sound_info",
         "//src/Engine:engine",
         "//src/Media:media_datasource_base",
