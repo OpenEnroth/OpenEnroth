@@ -104,11 +104,16 @@ build:linux_x86 --dynamic_mode=off
 # Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
 # We can't use --platforms= here (no 32-bit toolchain registered), so use --define instead.
 build:linux_x86 --define=oe_build_arch=x86_32
-# Use gold for linux_x86. bfd doesn't support --start-lib/--end-lib (Bazel's
-# start_end_lib feature), and lld rejects 32-bit ELF when called via -fuse-ld=lld
-# (GCC doesn't properly forward -m elf_i386 to lld). Gold supports both --start-lib
-# and 32-bit ELF (elf_i386) natively.
-build:linux_x86 --linkopt=-fuse-ld=gold
+# lld, same as the cmake build (which refuses everything but lld and mold).
+# Gold mishandles luajit's generated .eh_frame under opt's --gc-sections: the
+# first thrown lua error unwinds into a garbage landing pad and segfaults
+# (task #22 has the full trail). bfd is not an option either - it lacks the
+# --start-lib/--end-lib that bazel's start_end_lib feature uses.
+build:linux_x86 --linkopt=-fuse-ld=lld
+# 32-bit x86 with lld needs this like the cmake build does: some inline asm in
+# deps is not position-independent, and lld chokes on the text relocations
+# that gnu ld quietly accepts.
+build:linux_x86 --linkopt=-Wl,-z,notext
 
 # Linux x86_64
 build:linux_x86_64 --config=linux
@@ -235,7 +240,7 @@ build:flatpak --copt=-I/app/include --linkopt=-L/app/lib
 # ─── Convenience ─────────────────────────────────────────────────────────────
 
 # Linker choice (cmake's OE_USE_LD_MOLD/OE_USE_LD_LLD): opt-in, requires the
-# linker to be installed. linux_x86 stays on gold, see above.
+# linker to be installed. linux_x86 is pinned to lld, see above.
 build:mold --linkopt=-fuse-ld=mold
 build:lld --linkopt=-fuse-ld=lld
 
