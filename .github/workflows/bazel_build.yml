@@ -218,16 +218,18 @@ jobs:
           bazel build -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} "$target" 2>&1 | tee -a bazel-build.log
 
       # Game tests need the MM7 data; same shared cache the cmake matrix uses.
-      # TODO(captainurist): expand to windows/darwin legs before dropping cmake.
-      - name: '[linux_x86_64] Restore game data cache'
-        if: matrix.target == 'linux_x86_64'
+      # The cache is saved on a linux runner, and windows needs the cross-OS
+      # flag to read it (mirrors build_all.yml).
+      - name: '[non-android] Restore game data cache'
+        if: env.MATRIX_PLATFORM != 'android'
         uses: actions/cache/restore@v4.2.4
         with:
           path: OpenEnroth_GameData
           key: data-cache
+          enableCrossOsArchive: ${{env.MATRIX_PLATFORM == 'windows'}}
 
-      - name: '[linux_x86_64] Run game tests'
-        if: matrix.target == 'linux_x86_64'
+      - name: '[non-android] Run game tests'
+        if: env.MATRIX_PLATFORM != 'android'
         run: |
           if [ ! -d OpenEnroth_GameData ]; then echo "::warning::no game data cache - tests skipped"; exit 0; fi
           # The data lives outside the workspace, so salt the test's action key
@@ -238,12 +240,15 @@ jobs:
             --test_env=OPENENROTH_MM7_HASH=$hash \
             //test/Bin/GameTest:OpenEnroth_GameTest //test/Bin/GameTest:OpenEnroth_GameTest_Isolated 2>&1 | tee bazel-gametest.log
 
-      - name: '[linux_x86_64] Run retrace tests'
-        if: matrix.target == 'linux_x86_64'
+      # Retrace replays every canonical trace, which the cmake matrix considers
+      # too slow for Debug builds (it retraces RelWithDebInfo only). Same here:
+      # retrace runs opt while the cheaper tests stay dbg.
+      - name: '[non-android] Run retrace tests'
+        if: env.MATRIX_PLATFORM != 'android'
         run: |
           if [ ! -d OpenEnroth_GameData ]; then echo "::warning::no game data cache - tests skipped"; exit 0; fi
           hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
-          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
+          bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
             --test_env=OPENENROTH_MM7_PATH=${{github.workspace}}/OpenEnroth_GameData/mm7 \
             --test_env=OPENENROTH_MM7_HASH=$hash \
             //test/Bin/RetraceTest:OpenEnroth_RetraceTest 2>&1 | tee bazel-retrace.log

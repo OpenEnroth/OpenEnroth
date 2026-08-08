@@ -55,6 +55,15 @@ build:macos --copt=-Wall --copt=-Wno-error
 # Note: HACKING.md mandates warnings-as-errors. Enable --copt=-Werror once all
 # BUILD files are written and clean.
 
+# ─── Floating point behavior (mirrors CMakeLists.txt) ────────────────────────
+# Math functions don't set errno, fp traps are assumed off, and fma contraction
+# is disabled - gcc and clang contract differently, and retrace tests diff the
+# results. Scoped to first-party sources: the deps do no trace-visible math,
+# and this keeps their cached actions byte-identical.
+build:linux --per_file_copt=^(src|test)/.*@-fno-math-errno,-fno-trapping-math,-ffp-contract=off
+build:macos --per_file_copt=^(src|test)/.*@-fno-math-errno,-fno-trapping-math,-ffp-contract=off
+build:android_base --per_file_copt=^(src|test)/.*@-fno-math-errno,-fno-trapping-math,-ffp-contract=off
+
 # ─── Platform configs ────────────────────────────────────────────────────────
 
 build --enable_platform_specific_config
@@ -68,6 +77,9 @@ build:linux --features=-use_gold_linker
 build:linux_x86 --config=linux
 build:linux_x86 --copt=-m32
 build:linux_x86 --linkopt=-m32
+# Don't use the x87 fpu - its 80-bit intermediates desync traces (mirrors the
+# OE_BUILD_ARCHITECTURE=x86 block in CMakeLists.txt).
+build:linux_x86 --copt=-msse2 --copt=-mfpmath=sse --copt=-march=pentium4
 # Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
 # We can't use --platforms= here (no 32-bit toolchain registered), so use --define instead.
 build:linux_x86 --define=oe_build_arch=x86_32
