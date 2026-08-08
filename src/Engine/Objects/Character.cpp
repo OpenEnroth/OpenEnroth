@@ -3882,7 +3882,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
             return false;
         case VAR_HiredNPCHasSpeciality:
             return CheckHiredNPCSpeciality((NpcProfession)pValue);
-        case VAR_CircusPrises:  // isn't used in MM6 since 0x1D6u is a book of
+        case VAR_CircusPrizes:  // isn't used in MM6 since 0x1D6u is a book of
                                 // regeneration
             v4 = 0;
             for (Character &character : pParty->pCharacters) {

@@ -217,7 +217,7 @@ enum class EvtVariable {
     VAR_NPCs2 = 0xE8,
     VAR_IsFlying = 0xF0,
     VAR_HiredNPCHasSpeciality = 0xF1,
-    VAR_CircusPrises = 0xF2,
+    VAR_CircusPrizes = 0xF2,
     VAR_NumSkillPoints = 0xF3,
     VAR_MonthIs = 0xF4,
     VAR_Counter1 = 0xF5,
