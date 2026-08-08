@@ -324,8 +324,6 @@ void MonsterStats::Initialize(const Blob &monsters) {
         {"GEM",       RANDOM_ITEM_GEM},
     };
 
-    int i = 0;
-
     // "Imm" in any of the resistance columns means full immunity, encoded as 200.
     auto parseResistance = [](std::string_view s) -> uint8_t {
         return ascii::noCaseEquals(s, "Imm") ? 200 : fromString<int>(s);
@@ -510,9 +508,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
     };
 
     for (std::string_view line : split(monsters.str()).by("\r\n").drop(4).skip("")) {
-        if (i >= 264) break;  // TODO(captainurist): get rid of magic numbers in txt deserialization.
         std::array<std::string_view, 39> tokens = split(line).by('\t');
-        i++;
 
         MonsterId id = static_cast<MonsterId>(fromString<int>(tokens[0]));
         MonsterInfo &info = infos[id];
