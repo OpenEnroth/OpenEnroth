@@ -58,7 +58,9 @@ class GUIWindow_Book : public GUIWindow {
     GraphicsImage *ui_book_map_frame{ nullptr };
     GraphicsImage *ui_book_quest_div_bar{ nullptr };
 
-    int _bookButtonClicked = 0;
+    static constexpr int BOOK_BUTTON_PRESSED_FRAMES = 10; // How long a clicked book button stays drawn pressed.
+
+    int _bookButtonClicked = 0; // Frames left to draw the pressed button, counts down from BOOK_BUTTON_PRESSED_FRAMES.
     BookButtonAction _bookButtonAction = BOOK_ZOOM_IN;
 
  private:

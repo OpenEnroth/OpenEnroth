@@ -69,14 +69,14 @@ void GUIWindow_QuestBook::Update() {
     // for other text
     Recti questbook_window(48, 70, 360, 264);
 
-    if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
+    if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES && _bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _startingQuestIdx += _currentPageQuests;
         _questsPerPage[_currentPage] = _currentPageQuests;
         _currentPage++;
     }
 
-    if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_PREV_PAGE && _startingQuestIdx) {
+    if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES && _bookButtonAction == BOOK_PREV_PAGE && _startingQuestIdx) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _currentPage--;
         _startingQuestIdx -= _questsPerPage[_currentPage];

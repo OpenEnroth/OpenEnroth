@@ -108,7 +108,7 @@ void GUIWindow_MapBook::Update() {
         render->DrawQuad2D(ui_book_button6_on, pViewport.topLeft() + Pointi(397, 226));
     }
 
-    if (_bookButtonClicked == 10) {
+    if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES) {
         if (_bookButtonAction == BOOK_ZOOM_IN && viewparams->uMapBookMapZoom / 128 < 12) {
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             viewparams->CenterOnPartyZoomIn();

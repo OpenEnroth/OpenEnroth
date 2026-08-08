@@ -97,7 +97,7 @@ void GUIWindow_Book::initializeFonts() {
 }
 
 void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {
-    _bookButtonClicked = 10; // TODO(pskelton): make a constant for this magic number
+    _bookButtonClicked = BOOK_BUTTON_PRESSED_FRAMES;
     _bookButtonAction = action;
 }
 

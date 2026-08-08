@@ -202,7 +202,7 @@ void GUIWindow_AutonotesBook::Update() {
     // for other text
     Recti autonotes_frameRect(48, 70, 360, 264);
 
-    if (_bookButtonClicked == 10) {
+    if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES) {
         if (_bookButtonAction >= BOOK_NOTES_POTION && _bookButtonAction <= BOOK_NOTES_INSTRUCTORS) {
             if (noteTypeChanged) {
                 recalculateCurrentNotesTypePages();
