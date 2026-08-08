@@ -67,4 +67,54 @@ UNIT_TEST(SubFileSystem, CannotEscapeWithDotDot) {
     EXPECT_FALSE(sub.exists("../secret.txt"));
     EXPECT_ANY_THROW((void) sub.read("../secret.txt"));
     EXPECT_ANY_THROW((void) sub.openForReading("../secret.txt"));
+
+    // Same for pathological tails that try harder.
+    EXPECT_FALSE(sub.exists("../../.."));
+    EXPECT_FALSE(sub.exists("a/../../../secret.txt"));
+    EXPECT_ANY_THROW((void) sub.read("a/../../../secret.txt"));
+}
+
+UNIT_TEST(SubFileSystem, RootWhenBasePathDoesntExist) {
+    // Root of a FileSystem always exists, even if the base path doesn't exist on the underlying file system.
+    MemoryFileSystem base("memfs");
+    SubFileSystem sub("this_dir_doesnt_exist", &base);
+
+    EXPECT_TRUE(sub.exists(""));
+    EXPECT_EQ(sub.stat(""), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_TRUE(sub.ls("").empty());
+
+    // But it's a directory, so we can't read or write it as a file.
+    EXPECT_ANY_THROW((void) sub.read(""));
+    EXPECT_ANY_THROW(sub.write("", Blob()));
+
+    // And ls of a non-root path that doesn't exist still throws.
+    EXPECT_ANY_THROW((void) sub.ls("subdir"));
+}
+
+UNIT_TEST(SubFileSystem, RootWhenBasePathIsFile) {
+    // Same deal when the base path points to a file.
+    MemoryFileSystem base("memfs");
+    base.write("1.txt", Blob::fromString("lol"));
+
+    SubFileSystem sub("1.txt", &base);
+
+    EXPECT_TRUE(sub.exists(""));
+    EXPECT_EQ(sub.stat(""), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_TRUE(sub.ls("").empty());
+
+    EXPECT_ANY_THROW((void) sub.read(""));
+    EXPECT_ANY_THROW(sub.write("", Blob()));
+}
+
+UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
+    // An empty base path just means "the whole base file system".
+    MemoryFileSystem base("memfs");
+    base.write("1.txt", Blob::fromString("lol"));
+
+    SubFileSystem sub("", &base);
+
+    EXPECT_TRUE(sub.exists(""));
+    EXPECT_EQ(sub.stat(""), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(sub.ls("").size(), 1);
+    EXPECT_EQ(sub.read("1.txt").str(), "lol");
 }
