@@ -150,6 +150,60 @@ http_archive(
     url = "https://github.com/google/gtest-parallel/archive/96f4f904922f9bf66689e749c40f314845baaac8.tar.gz",
 )
 
+# lua-language-server for //:check_style_lua, same 3.9.1 that style.yml pins as
+# LLS_TAG (it builds from source, these are the prebuilt releases). The archive
+# is a full install tree - bin/ finds main.lua, script/ and meta/ next to it,
+# so the whole tree ships as the :files filegroup. Only the archive matching
+# the build machine is ever downloaded.
+_LLS_BUILD = """
+filegroup(
+    name = "files",
+    srcs = glob(["**"]),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "binary",
+    srcs = ["bin/lua-language-server"],
+    visibility = ["//visibility:public"],
+)
+"""
+
+http_archive(
+    name = "lls_linux_x64",
+    build_file_content = _LLS_BUILD,
+    sha256 = "6b04bbceca8f80059a3cda2cd4169b0996d35a67bf93a8e0eeda2d32be5929d9",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.9.1/lua-language-server-3.9.1-linux-x64.tar.gz",
+)
+
+http_archive(
+    name = "lls_linux_arm64",
+    build_file_content = _LLS_BUILD,
+    sha256 = "1ec8a7f856896efc19be39cc159d93996cf8b4629f336b4c7f8606a066e74062",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.9.1/lua-language-server-3.9.1-linux-arm64.tar.gz",
+)
+
+http_archive(
+    name = "lls_darwin_x64",
+    build_file_content = _LLS_BUILD,
+    sha256 = "9b2cfe0f4df46e7db087288bbb173cf73bc231e7e95232beb7eb8e62a1c29d4f",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.9.1/lua-language-server-3.9.1-darwin-x64.tar.gz",
+)
+
+http_archive(
+    name = "lls_darwin_arm64",
+    build_file_content = _LLS_BUILD,
+    sha256 = "9047f24d778323ca551e830bcae5b8e51aa17b65ae479e25cfc4edf3f8edc6c8",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.9.1/lua-language-server-3.9.1-darwin-arm64.tar.gz",
+)
+
+http_archive(
+    name = "lls_win32_x64",
+    build_file_content = _LLS_BUILD.replace("bin/lua-language-server", "bin/lua-language-server.exe"),
+    sha256 = "aea890ee50ffb52fd68013dda17a8f1a4f45fa82e3a8dbb332c8f127e68faf67",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.9.1/lua-language-server-3.9.1-win32-x64.zip",
+)
+
 # Built deps -----------------------------------------------------------------
 
 http_archive(

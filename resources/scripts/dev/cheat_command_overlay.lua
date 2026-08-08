@@ -70,6 +70,7 @@ end
 
 CheatOverlay.init = function ()
     -- Built-in commands from the Lua list (add/reorder here, no config renumbering needed).
+    ---@type table<string, boolean>
     local builtinSet = {}
     for _, command in ipairs(DefaultCommands) do
         local entry = createCheatCommandEntry(command)
