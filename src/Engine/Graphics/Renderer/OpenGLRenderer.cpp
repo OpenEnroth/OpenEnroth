@@ -23,7 +23,7 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"
-#include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/Lighting.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/LightsStack.h"

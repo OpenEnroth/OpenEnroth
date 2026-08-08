@@ -1,12 +1,8 @@
 #pragma once
 
-// TODO(pskelton): rename - lighting functions
-
 struct LightsStack_StationaryLight_;
 struct LightsStack_MobileLight_;
 struct RenderBillboard;
-
-#define LIGHTMAP_FLAGS_USE_SPECULAR 0x01
 
 extern LightsStack_StationaryLight_ *pStationaryLightsStack;
 extern LightsStack_MobileLight_ *pMobileLightsStack;
