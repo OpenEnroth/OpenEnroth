@@ -315,7 +315,7 @@ static std::string getVariableSetStr(EvtVariable type, int value) {
             return fmt::format("ERROR: MonthIs, {}", value);
         case VAR_ReputationInCurrentLocation:
             return fmt::format("LocationReputation, {}", value);
-        case VAR_Unknown1:
+        case VAR_AlertStatus:
             return fmt::format("AlertStatus, {}", value);
         case VAR_GoldInBank:
             return fmt::format("GoldInBank, {}", value);
@@ -638,7 +638,7 @@ static std::string getVariableCompareStr(EvtVariable type, int value) {
             return fmt::format("Month == {}", value);
         case VAR_ReputationInCurrentLocation:
             return fmt::format("LocationReputation >= {}", value);
-        case VAR_Unknown1:
+        case VAR_AlertStatus:
             return fmt::format("AlertStatus == {}", value);
         case VAR_GoldInBank:
             return fmt::format("GoldInBank >= {}", value);

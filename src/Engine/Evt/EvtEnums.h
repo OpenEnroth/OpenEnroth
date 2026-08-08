@@ -235,7 +235,7 @@ enum class EvtVariable {
     VAR_ReputationInCurrentLocation = 0x113,
     VAR_History_0 = 0x114,
     VAR_History_28 = 0x130,
-    VAR_Unknown1 = 0x131,
+    VAR_AlertStatus = 0x131,
     VAR_GoldInBank = 0x132,
     VAR_NumDeaths = 0x133,
     VAR_NumBounties = 0x134,
