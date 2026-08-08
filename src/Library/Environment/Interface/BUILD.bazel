@@ -1,0 +1,10 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_environment_interface",
+    hdrs = [
+        "Environment.h",
+        "EnvironmentEnums.h",
+    ],
+    visibility = ["//visibility:public"],
+)

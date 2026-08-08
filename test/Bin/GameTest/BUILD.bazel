@@ -1,0 +1,51 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
+
+cc_library(
+    name = "gametest_lib",
+    testonly = True,
+    srcs = [
+        "GameTestCommon.cpp",
+        "GameTestCommon.h",
+        "GameTestMain.cpp",
+        "GameTestOptions.cpp",
+        "GameTestOptions.h",
+        "GameTests_0000.cpp",
+        "GameTests_0500.cpp",
+        "GameTests_1000.cpp",
+        "GameTests_1500.cpp",
+        "GameTests_2000.cpp",
+    ],
+    deps = [
+        "//src/Application:application",
+        "//src/Engine:engine_impl",
+        "//src/Library/Cli:library_cli",
+        "//src/Library/Platform/Sdl:library_platform_main",
+        "//src/Library/StackTrace:library_stack_trace",
+        "//src/Library/Environment:library_environment",  # createStandardEnvironment() impl
+        "//test/Testing/Game:testing_game",
+        # Test-case libraries that need the full engine (linked into the game test
+        # binary in the CMake build as well).
+        "//src/Engine:test_engine",
+        "//src/Engine/Objects:test_engine_objects",
+        "//src/Engine/Spells:test_engine_spells",
+    ],
+    # alwayslink keeps the gtest auto-registration statics.
+    alwayslink = True,
+)
+
+# The MM7 game data comes via --test_env=OPENENROTH_MM7_PATH; it's original
+# game assets, so treating it as a constant input keeps result caching honest.
+cc_test(
+    name = "OpenEnroth_GameTest",
+    size = "enormous",
+    args = [
+        "--test-path",
+        "test/Data",
+        "--headless",
+    ],
+    data = ["//test:test_data"],
+    shard_count = 8,
+    visibility = ["//visibility:public"],
+    deps = [":gametest_lib"],
+)

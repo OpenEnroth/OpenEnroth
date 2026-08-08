@@ -1,0 +1,32 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_preprocessor",
+    srcs = [
+        "Preprocessor.cpp",
+    ],
+    hdrs = [
+        "Preprocessor.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        # tcpp is PRIVATE
+        "@tcpp",
+    ],
+)
+
+cc_library(
+    name = "test_library_preprocessor",
+    testonly = True,
+    srcs = [
+        "Tests/Preprocessor_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_preprocessor",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

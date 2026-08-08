@@ -1,0 +1,15 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_cli",
+    srcs = [
+        "CliApp.cpp",
+    ],
+    hdrs = [
+        "CliApp.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@cli11",
+    ],
+)

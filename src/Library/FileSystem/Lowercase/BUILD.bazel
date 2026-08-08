@@ -1,0 +1,34 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_filesystem_lowercase",
+    srcs = [
+        "LowercaseFileSystem.cpp",
+    ],
+    hdrs = [
+        "LowercaseFileSystem.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Library/FileSystem/Proxy:library_filesystem_proxy",
+        "//src/Library/FileSystem/Trie:library_filesystem_trie",
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_filesystem_lowercase",
+    testonly = True,
+    srcs = [
+        "Tests/LowercaseFileSystem_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_filesystem_lowercase",
+        "//src/Library/FileSystem/Directory:library_filesystem_directory",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

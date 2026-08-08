@@ -1,0 +1,50 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "scripting",
+    srcs = [
+        "AudioBindings.cpp",
+        "ConfigBindings.cpp",
+        "GameBindings.cpp",
+        "ImGuiBindings.cpp",
+        "InputBindings.cpp",
+        "InputScriptEventHandler.cpp",
+        "LoggerBindings.cpp",
+        "OverlayBindings.cpp",
+        "PlatformBindings.cpp",
+        "RendererBindings.cpp",
+        "ScriptLogSink.cpp",
+        "ScriptingSystem.cpp",
+    ],
+    hdrs = [
+        "AudioBindings.h",
+        "ConfigBindings.h",
+        "GameBindings.h",
+        "IBindings.h",
+        "ImGuiBindings.h",
+        "InputBindings.h",
+        "InputScriptEventHandler.h",
+        "LoggerBindings.h",
+        "LuaItemQueryTable.h",
+        "OverlayBindings.h",
+        "PlatformBindings.h",
+        "RendererBindings.h",
+        "ScriptLogSink.h",
+        "ScriptingSystem.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Engine:engine",
+        "//src/GUI:gui",
+        "//src/Media/Audio:media_audio",
+        "//src/Library/Logger:library_logger",
+        "//src/GUI/Overlay:gui_overlay_hdrs",
+        # PRIVATE deps:
+        "//bazel/system:luajit",
+        "@sol2",
+    ],
+    # alwayslink: scripting objects (OverlayBindings.cpp) reference gui_overlay (ScriptedOverlay)
+    # which is also alwayslink. Both need to be alwayslink so the gold linker can resolve their
+    # cross-references without rescanning start-lib groups.
+    alwayslink = True,
+)

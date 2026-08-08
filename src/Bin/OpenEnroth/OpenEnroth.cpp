@@ -34,17 +34,6 @@
 
 #include "OpenEnrothOptions.h"
 
-static std::string normalizeText(std::string_view text) {
-    // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
-    std::string result = replaceAll(text, "\r\n", "\n");
-
-    // Also drop trailing newlines. Vim always adds a newline, but retracing removes it.
-    while (result.ends_with('\n'))
-        result.pop_back();
-
-    return result;
-}
-
 static void printLines(const std::vector<std::string_view> &lines, size_t line, size_t delta) {
     // TODO(captainurist): #cpp26 use std::sat_sub
     for (size_t i = line > delta ? line - delta : 0; i < std::min(lines.size(), line + delta + 1); i++)
@@ -115,8 +104,8 @@ int runRetrace(const OpenEnrothOptions &options) {
             auto endTime = std::chrono::steady_clock::now();
             fmt::println(stderr, "Retraced in {}ms.", std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count());
 
-            std::string oldTraceJson = normalizeText(oldTraceBlob.str());
-            std::string newTraceJson = normalizeText(recording.trace.str());
+            std::string oldTraceJson = EventTrace::normalizeJson(oldTraceBlob.str());
+            std::string newTraceJson = EventTrace::normalizeJson(recording.trace.str());
             if (oldTraceJson != newTraceJson) {
                 if (!options.retrace.checkCanonical) {
                     oldTraceBlob = Blob(); // Close old trace file

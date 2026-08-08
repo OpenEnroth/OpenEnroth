@@ -1,0 +1,40 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_fsm",
+    srcs = [
+        "Fsm.cpp",
+        "FsmAction.cpp",
+        "FsmBuilder.cpp",
+        "FsmState.cpp",
+    ],
+    hdrs = [
+        "Fsm.h",
+        "FsmAction.h",
+        "FsmBuilder.h",
+        "FsmEventHandler.h",
+        "FsmState.h",
+        "FsmTypes.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Logger:library_logger",
+        "//src/Library/Platform/Filters:library_platform_filters",
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_fsm",
+    testonly = True,
+    srcs = [
+        "Tests/Fsm_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_fsm",
+        "//src/Utility:utility",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)
