@@ -4,11 +4,11 @@
 #include <vector>
 #include <utility>
 
-#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 #include "Library/FileSystem/Embedded/EmbeddedFileSystem.h"
 #include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
 #include "Library/FileSystem/Merging/MergingFileSystem.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 
 #include "Engine/Resources/EngineFileSystem.h"
 
@@ -27,7 +27,7 @@ void FileSystemStarter::initUserFs(bool ramFs, std::string_view path) {
     if (ramFs) {
         _userFs = std::make_unique<MemoryFileSystem>("ramfs");
     } else {
-        _userFs = std::make_unique<DirectoryFileSystem>(NativePath::fromWtf8(path));
+        _userFs = std::make_unique<NativeFileSystem>(NativePath::fromWtf8(path));
     }
 
     ufs = _userFs.get();
@@ -37,10 +37,10 @@ void FileSystemStarter::initDataFs(std::string_view path, bool pathOverridesBuil
     assert(dfs == nullptr);
 
     _dataEmbeddedFs = std::make_unique<EmbeddedFileSystem>(cmrc::openenroth::get_filesystem(), "embedded");
-    _dataDirFs = std::make_unique<DirectoryFileSystem>(NativePath::fromWtf8(path));
-    _dataDirLowercaseFs = std::make_unique<LowercaseFileSystem>(_dataDirFs.get());
+    _dataNativeFs = std::make_unique<NativeFileSystem>(NativePath::fromWtf8(path));
+    _dataLowercaseFs = std::make_unique<LowercaseFileSystem>(_dataNativeFs.get());
 
-    std::vector<const FileSystem *> baseFileSystems = {_dataDirLowercaseFs.get(), _dataEmbeddedFs.get()};
+    std::vector<const FileSystem *> baseFileSystems = {_dataLowercaseFs.get(), _dataEmbeddedFs.get()};
     if (!pathOverridesBuiltIn)
         std::swap(baseFileSystems[0], baseFileSystems[1]);
     _dataFs = std::make_unique<MergingFileSystem>(std::move(baseFileSystems));

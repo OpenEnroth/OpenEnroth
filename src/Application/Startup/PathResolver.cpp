@@ -6,8 +6,8 @@
 
 #include "Library/Logger/Logger.h"
 #include "Library/Environment/Interface/Environment.h"
-#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 #include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 
 static const std::vector<std::string_view> globalValidateList = {
     {"anims/magic7.vid"},
@@ -122,8 +122,8 @@ std::vector<std::string> resolveMm8Paths(Environment *environment) {
 }
 
 bool validateMm7Path(std::string_view dataPath, std::string *missingFile) {
-    DirectoryFileSystem dirFs(NativePath::fromWtf8(dataPath));
-    LowercaseFileSystem lowerFs(&dirFs);
+    NativeFileSystem nativeFs(NativePath::fromWtf8(dataPath));
+    LowercaseFileSystem lowerFs(&nativeFs);
 
     for (std::string_view entry : globalValidateList) {
         if (!lowerFs.exists(entry)) {

@@ -16,7 +16,7 @@ class FileSystemStarter {
  private:
     std::unique_ptr<FileSystem> _userFs;
     std::unique_ptr<FileSystem> _dataEmbeddedFs;
-    std::unique_ptr<FileSystem> _dataDirFs;
-    std::unique_ptr<FileSystem> _dataDirLowercaseFs;
+    std::unique_ptr<FileSystem> _dataNativeFs;
+    std::unique_ptr<FileSystem> _dataLowercaseFs;
     std::unique_ptr<FileSystem> _dataFs;
 };
