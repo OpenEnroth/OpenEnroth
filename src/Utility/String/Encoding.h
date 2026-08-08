@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <string_view>
 
@@ -100,6 +101,21 @@ std::string wtf16ToWtf8(std::u16string_view str);
  * @return                              WTF-16 string.
  */
 std::u16string wtf8ToWtf16(std::string_view str);
+
+/**
+ * @param str                           WTF-8 string.
+ * @return                              `str` as a native path.
+ */
+std::filesystem::path wtf8ToPath(std::string_view str);
+
+/**
+ * The inverse of `wtf8ToPath`. Unlike `std::filesystem::path::generic_string()`, this never throws - on Windows a
+ * name with an unpaired surrogate in it is encoded instead of being rejected.
+ *
+ * @param path                          Native path.
+ * @return                              `path` as a WTF-8 string, always using forward slashes.
+ */
+std::string pathToWtf8(const std::filesystem::path &path);
 
 #ifdef _WINDOWS
 static_assert(sizeof(wchar_t) == sizeof(char16_t));

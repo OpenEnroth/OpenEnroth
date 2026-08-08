@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdio>
+#include <filesystem>
 #include <memory>
-#include <string_view>
 
 #include "OutputStream.h"
 
@@ -24,7 +24,7 @@ class FileOutputStream : public OutputStream {
      * @param bufferSize                Size of the internal write buffer.
      * @throws Exception                On error.
      */
-    explicit FileOutputStream(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
+    explicit FileOutputStream(const std::filesystem::path &path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
     virtual ~FileOutputStream();
 
     /**
@@ -34,7 +34,7 @@ class FileOutputStream : public OutputStream {
      * @param bufferSize                Size of the internal write buffer.
      * @throws Exception                On error.
      */
-    void open(std::string_view path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
+    void open(const std::filesystem::path &path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
 
  private:
     virtual void _overflow(Buffer *buffer, const void *data, size_t size) override;

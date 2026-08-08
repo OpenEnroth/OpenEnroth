@@ -1,35 +1,58 @@
-#include "DirectoryFileSystem.h"
+#include "NativeFileSystem.h"
 
 #include <cassert>
-#include <vector>
+#include <cstdint>
+#include <filesystem>
 #include <memory>
 #include <string>
+#include <system_error>
 #include <utility>
+#include <vector>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
+#include "Utility/Exception.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/String/Encoding.h"
 #include "Utility/UnicodeCrt.h"
 
-DirectoryFileSystem::DirectoryFileSystem(std::string_view root) {
-    assert(UnicodeCrt::isInitialized()); // Otherwise std::filesystem will choke on Unicode paths.
+NativeFileSystem::NativeFileSystem(const std::filesystem::path &root) {
+    assert(UnicodeCrt::isInitialized()); // Narrow paths from callers convert per locale on Windows.
 
     // We need to explicitly check for empty() b/c libstdc++ std::filesystem::absolute chokes on empty path.
     _root = root.empty() ? std::filesystem::current_path() : std::filesystem::absolute(root).lexically_normal();
-    _originalRoot = root;
 }
 
-DirectoryFileSystem::~DirectoryFileSystem() = default;
+NativeFileSystem::~NativeFileSystem() = default;
 
-bool DirectoryFileSystem::_exists(FileSystemPathView path) const {
+std::pair<std::unique_ptr<NativeFileSystem>, FileSystemPath> NativeFileSystem::fromNativePath(
+        const std::filesystem::path &path) {
+    assert(UnicodeCrt::isInitialized()); // Narrow paths from callers convert per locale on Windows.
+
+    // We need to explicitly check for empty() b/c libstdc++ std::filesystem::absolute chokes on empty path.
+    std::error_code ec;
+    std::filesystem::path absolutePath =
+        path.empty() ? std::filesystem::current_path(ec) : std::filesystem::absolute(path, ec);
+    if (ec)
+        throw Exception("Couldn't resolve native path '{}': {}", txt::pathToWtf8(path), ec.message());
+
+    // lexically_normal collapses ".." even right after the root, so the tail can never be an escaping path.
+    absolutePath = absolutePath.lexically_normal();
+
+    // FileSystemPath normalizes - lexically_normal can leave a trailing '/' in there.
+    return {std::make_unique<NativeFileSystem>(absolutePath.root_path()),
+            FileSystemPath(txt::pathToWtf8(absolutePath.relative_path()))};
+}
+
+bool NativeFileSystem::_exists(FileSystemPathView path) const {
     assert(!path.isEmpty());
 
     std::error_code ec;
     return std::filesystem::exists(makeBasePath(path), ec); // Returns false on error.
 }
 
-FileStat DirectoryFileSystem::_stat(FileSystemPathView path) const {
+FileStat NativeFileSystem::_stat(FileSystemPathView path) const {
     assert(!path.isEmpty());
 
     std::filesystem::path basePath = makeBasePath(path);
@@ -51,9 +74,10 @@ FileStat DirectoryFileSystem::_stat(FileSystemPathView path) const {
     FileStat result;
     result.type = isRegular ? FILE_REGULAR : FILE_DIRECTORY;
     result.size = size;
-    return result;}
+    return result;
+}
 
-void DirectoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
+void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
     std::filesystem::path basePath = makeBasePath(path);
 
     // Handle the known errors first.
@@ -70,7 +94,7 @@ void DirectoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntr
 
     // Then we do the regular ls and just ignore all errors. The errors we'll get here are most likely
     // permissions-related, and we're ignoring them in stat() and exists().
-    for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(makeBasePath(path), ec)) {
+    for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(basePath, ec)) {
         // Unfortunately, std::filesystem is retarded. We can get a directory_entry here for a dir that we don't have
         // permissions for, and which won't be stat-able. Seriously, entry.is_directory() returns true while
         // std::filesystem::exists(entry.path()) just throws. So we need to check for that.
@@ -82,7 +106,12 @@ void DirectoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntr
         if (!isRegular && !isDirectory)
             continue;
 
+#ifdef _WINDOWS
+        std::string name = txt::wideToWtf8(entry.path().filename().native());
+#else
         std::string name = entry.path().filename().string();
+#endif
+
         if (name.find('\\') != std::string::npos)
             continue; // Files with '\\' in filename are not observable through this interface. Don't be a retard.
 
@@ -92,41 +121,42 @@ void DirectoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntr
     }
 }
 
-Blob DirectoryFileSystem::_read(FileSystemPathView path) const {
+Blob NativeFileSystem::_read(FileSystemPathView path) const {
     assert(!path.isEmpty());
-    return Blob::fromFile(makeBasePath(path).generic_string());
+    return Blob::fromFile(makeBasePath(path));
 }
 
-void DirectoryFileSystem::_write(FileSystemPathView path, const Blob &data) {
+void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
     assert(!path.isEmpty());
-    std::filesystem::path basePath = makeBasePath(path);
-    std::filesystem::create_directories(basePath.parent_path());
-    FileOutputStream stream(basePath.generic_string());
+    std::filesystem::create_directories(makeBasePath(path).parent_path());
+    FileOutputStream stream(makeBasePath(path));
     stream.write(data.data(), data.size());
     stream.close();
 }
 
-std::unique_ptr<InputStream> DirectoryFileSystem::_openForReading(FileSystemPathView path) const {
+std::unique_ptr<InputStream> NativeFileSystem::_openForReading(FileSystemPathView path) const {
     assert(!path.isEmpty());
-    return std::make_unique<FileInputStream>(makeBasePath(path).generic_string());
+    return std::make_unique<FileInputStream>(makeBasePath(path));
 }
 
-std::unique_ptr<OutputStream> DirectoryFileSystem::_openForWriting(FileSystemPathView path) {
+std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(FileSystemPathView path) {
     assert(!path.isEmpty());
-    std::filesystem::path basePath = makeBasePath(path);
-    std::filesystem::create_directories(basePath.parent_path());
-    return std::make_unique<FileOutputStream>(basePath.generic_string());
+    std::filesystem::create_directories(makeBasePath(path).parent_path());
+    return std::make_unique<FileOutputStream>(makeBasePath(path));
 }
 
-bool DirectoryFileSystem::_remove(FileSystemPathView path) {
+bool NativeFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
     return std::filesystem::remove_all(makeBasePath(path)) > 0;
 }
 
-std::string DirectoryFileSystem::_displayPath(FileSystemPathView path) const {
-    return makeBasePath(path).generic_string();
+std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
+    return txt::pathToWtf8(makeBasePath(path));
 }
 
-std::filesystem::path DirectoryFileSystem::makeBasePath(FileSystemPathView path) const {
-    return _root / path.string();
+std::filesystem::path NativeFileSystem::makeBasePath(FileSystemPathView path) const {
+    if (path.isEmpty())
+        return _root; // `_root / ""` would add a trailing separator.
+
+    return _root / txt::wtf8ToPath(path.string());
 }

@@ -7,9 +7,10 @@
 #include <filesystem>
 
 #include "Utility/Exception.h"
+#include "Utility/String/Encoding.h"
 #include "Utility/UnicodeCrt.h"
 
-FileOutputStream::FileOutputStream(std::string_view path, size_t bufferSize) {
+FileOutputStream::FileOutputStream(const std::filesystem::path &path, size_t bufferSize) {
     open(path, bufferSize);
 }
 
@@ -17,21 +18,28 @@ FileOutputStream::~FileOutputStream() {
     destroy();
 }
 
-void FileOutputStream::open(std::string_view path, size_t bufferSize) {
-    assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
+void FileOutputStream::open(const std::filesystem::path &path, size_t bufferSize) {
+    assert(UnicodeCrt::isInitialized()); // Narrow paths from callers convert per locale on Windows.
     assert(bufferSize > 0);
 
-    std::string absPath = absolute(std::filesystem::path(path)).generic_string();
-    _file = fopen(absPath.c_str(), "wb");
+    std::filesystem::path absolutePath = absolute(path);
+    std::string pathString = txt::pathToWtf8(absolutePath);
+
+    // Wide fopen - the narrow one takes a UTF8 path, and ours are WTF8.
+#ifdef _WINDOWS
+    _file = _wfopen(absolutePath.c_str(), L"wb");
+#else
+    _file = fopen(absolutePath.c_str(), "wb");
+#endif
     if (!_file)
-        Exception::throwFromErrno(absPath);
+        Exception::throwFromErrno(pathString);
 
     // Disable libc buffering, we manage our own buffer.
     if (setvbuf(_file, nullptr, _IONBF, 0) != 0)
-        Exception::throwFromErrno(absPath);
+        Exception::throwFromErrno(pathString);
 
     _bufSize = bufferSize;
-    base_type::open({}, absPath);
+    base_type::open({}, pathString);
 }
 
 void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) {

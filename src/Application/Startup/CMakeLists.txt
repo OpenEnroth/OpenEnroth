@@ -26,6 +26,8 @@ target_link_libraries(application_startup
         engine_graphics_renderer
         gui
         library_config
+        library_filesystem_native
+        library_filesystem_sub
         library_fsm
         library_platform_null
         library_platform_implementation

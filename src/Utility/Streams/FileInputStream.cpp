@@ -8,6 +8,7 @@
 #include <filesystem>
 
 #include "Utility/Exception.h"
+#include "Utility/String/Encoding.h"
 #include "Utility/UnicodeCrt.h"
 
 #ifdef _WINDOWS
@@ -15,7 +16,7 @@
 #   define fseeko _fseeki64
 #endif
 
-FileInputStream::FileInputStream(std::string_view path, size_t bufferSize) {
+FileInputStream::FileInputStream(const std::filesystem::path &path, size_t bufferSize) {
     open(path, bufferSize);
 }
 
@@ -23,30 +24,37 @@ FileInputStream::~FileInputStream() {
     destroy();
 }
 
-void FileInputStream::open(std::string_view path, size_t bufferSize) {
-    assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
+void FileInputStream::open(const std::filesystem::path &path, size_t bufferSize) {
+    assert(UnicodeCrt::isInitialized()); // Narrow paths from callers convert per locale on Windows.
     assert(bufferSize > 0);
 
-    std::string absolutePath = absolute(std::filesystem::path(path)).generic_string();
+    std::filesystem::path absolutePath = absolute(path);
+    std::string pathString = txt::pathToWtf8(absolutePath);
+
+    // Wide fopen - the narrow one takes a UTF8 path, and ours are WTF8.
+#ifdef _WINDOWS
+    _file = _wfopen(absolutePath.c_str(), L"rb");
+#else
     _file = fopen(absolutePath.c_str(), "rb");
+#endif
     if (!_file)
-        Exception::throwFromErrno(absolutePath);
+        Exception::throwFromErrno(pathString);
 
     // Disable libc buffering, we manage our own buffer.
     if (setvbuf(_file, nullptr, _IONBF, 0) != 0)
-        Exception::throwFromErrno(absolutePath);
+        Exception::throwFromErrno(pathString);
 
     // Compute file size at open time.
     if (fseeko(_file, 0, SEEK_END) != 0)
-        Exception::throwFromErrno(absolutePath);
+        Exception::throwFromErrno(pathString);
     int64_t fileEnd = ftello(_file);
     if (fileEnd == -1)
-        Exception::throwFromErrno(absolutePath);
+        Exception::throwFromErrno(pathString);
     if (fseeko(_file, 0, SEEK_SET) != 0)
-        Exception::throwFromErrno(absolutePath);
+        Exception::throwFromErrno(pathString);
 
     _bufSize = bufferSize;
-    base_type::open({}, fileEnd, absolutePath);
+    base_type::open({}, fileEnd, pathString);
 }
 
 size_t FileInputStream::_underflow(void *data, size_t size, Buffer *buffer) {
