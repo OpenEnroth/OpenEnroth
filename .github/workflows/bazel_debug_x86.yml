@@ -77,4 +77,4 @@ jobs:
             -ex 'echo \n==== backtrace\n' -ex 'bt 25' \
             -ex 'echo \n==== all threads\n' -ex 'thread apply all bt 6' \
             -ex 'echo \n==== mappings\n' -ex 'info proc mappings' \
-            --args "$bin" --test-path "$PWD/test/Data" --gtest_filter=Prs.Pr1005 2>&1 | tail -150
+            --args "$bin" --test-path "$PWD/test/Data" --headless --gtest_filter=Prs.Pr1005 2>&1 | tail -150
