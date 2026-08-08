@@ -222,6 +222,14 @@ static constexpr std::array<std::pair<QuestBit, ItemId>, 27> _4F0882_evt_VAR_Pla
     {QBIT_241, ITEM_SPECIAL_THE_PERFECT_BOW}
 }};
 
+static void teleportPartyToArena() {
+    pParty->pos = Vec3f(3849, 5770, 1);
+    pParty->velocity = Vec3f();
+    pParty->uFallStartZ = 1;
+    pParty->_viewYaw = 512;
+    pParty->_viewPitch = 0;
+}
+
 DialogueId arenaMainDialogue() {
     if (pParty->arenaState == ARENA_STATE_INITIAL)
         return DIALOGUE_ARENA_WELCOME;
@@ -252,11 +260,7 @@ DialogueId arenaMainDialogue() {
         pParty->arenaLevel = ARENA_LEVEL_INVALID;
         return DIALOGUE_ARENA_REWARD;
     } else {
-        pParty->pos = Vec3f(3849, 5770, 1);
-        pParty->velocity = Vec3f();
-        pParty->uFallStartZ = 1;
-        pParty->_viewYaw = 512;
-        pParty->_viewPitch = 0;
+        teleportPartyToArena();
         pAudioPlayer->playUISound(SOUND_51heroism03);
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return DIALOGUE_NULL;
@@ -282,11 +286,7 @@ void prepareArenaFight(ArenaLevel level) {
     pDialogueWindow->DrawDialoguePanel(localization->str(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS));
     render->Present();
 
-    pParty->pos = Vec3f(3849, 5770, 1); // TODO(pskelton) :: extract this common teleport to func
-    pParty->velocity = Vec3f();
-    pParty->uFallStartZ = 1;
-    pParty->_viewYaw = 512;
-    pParty->_viewPitch = 0;
+    teleportPartyToArena();
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 
     int characterMaxLevel = 0;
