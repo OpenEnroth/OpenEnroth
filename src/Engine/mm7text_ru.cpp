@@ -673,7 +673,7 @@ static int genderOf(std::string_view name) {
         return pos->second;
 
     if (shouldWarnAbout(name))
-        logger->warning("sprintfex: unknown gender: {}", txt::encodedToUtf8(name, ENCODING_WINDOWS_1251));
+        MM_WARNING("sprintfex: unknown gender: {}", txt::encodedToUtf8(name, ENCODING_WINDOWS_1251));
     return 0;
 }
 
@@ -846,7 +846,7 @@ std::string sprintfex(std::string_view str) {
             pos += consumed;
         } else {
             if (shouldWarnAbout(str))
-                logger->warning("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
+                MM_WARNING("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
             result += '^'; // Malformed tokens are copied through verbatim.
             pos++;
         }

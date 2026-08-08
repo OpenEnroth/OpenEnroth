@@ -42,7 +42,7 @@ std::unordered_map<std::string, Blob> pMapDeltas;
 void loadGame(int uSlot) {
     if (!pSavegameList->pSavegameUsedSlots[uSlot]) {
         pAudioPlayer->playUISound(SOUND_error);
-        logger->warning("LoadGame: slot {} is empty", uSlot);
+        MM_WARNING("LoadGame: slot {} is empty", uSlot);
         return;
     }
     pSavegameList->selectedSlot = uSlot;
@@ -108,7 +108,7 @@ void loadGame(int uSlot) {
     SetUserInterface(pParty->alignment);
 
     if (!pGames_LOD->exists(state.header.locationName)) {
-        logger->error("Unable to find: {}!", state.header.locationName);
+        MM_ERROR("Unable to find: {}!", state.header.locationName);
     }
 
     engine->_transitionMapId = pMapStats->GetMapInfo(state.header.locationName);
@@ -216,7 +216,7 @@ SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path,
         ufs->write(path, blob);
     } catch (const std::exception &e) {
         if (isAutoSave) {
-            logger->warning("saveGame: failed to write autosave: {}", e.what());
+            MM_WARNING("saveGame: failed to write autosave: {}", e.what());
             return {};
         }
         throw;
@@ -329,7 +329,7 @@ void quickSaveGame() {
 
     // if no free slot error
     if (uSlot == -1) {
-        logger->error("QuickSaveGame:: No free save game slots!");
+        MM_ERROR("QuickSaveGame:: No free save game slots!");
         engine->config->gameplay.QuickSavesCount.cycleDecrement();
         pAudioPlayer->playUISound(SOUND_error);
         return;
@@ -368,7 +368,7 @@ void quickLoadGame() {
         uGameState = GAME_STATE_LOADING_GAME;
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     } else {
-        logger->error("QuickLoadGame:: No quick save could be found!");
+        MM_ERROR("QuickLoadGame:: No quick save could be found!");
         pAudioPlayer->playUISound(SOUND_error);
     }
 }

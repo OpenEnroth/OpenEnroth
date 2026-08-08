@@ -51,7 +51,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                     if (uFlags & SPRITE_FRAME_IMAGE1) {
                         Sprite *sprite = pSprites_LOD->loadSprite(pSpriteSFrames[iter_uSpriteID].textureName);
                         if (sprite == nullptr)
-                            logger->warning("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].textureName);
+                            MM_WARNING("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].textureName);
                         for (unsigned i = 0; i < 8; ++i)
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                     } else if (uFlags & SPRITE_FRAME_IMAGES3) {

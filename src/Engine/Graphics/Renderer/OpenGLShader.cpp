@@ -58,7 +58,7 @@ bool OpenGLShader::load(const Blob &vertSource, const Blob &fragSource, bool ope
 
     std::string errors = compileErrors(result);
     if (!errors.empty()) {
-        logger->error("Could not link shader program '{}+{}':\n{}", vertSource.displayPath(), fragSource.displayPath(), errors);
+        MM_ERROR("Could not link shader program '{}+{}':\n{}", vertSource.displayPath(), fragSource.displayPath(), errors);
         glDeleteProgram(result);
         return false;
     }
@@ -81,7 +81,7 @@ int OpenGLShader::uniformLocation(const char *name) const {
 
     int location = glGetUniformLocation(_id, name);
     if (location == -1)
-        logger->error("Uniform '{}' not found in shader program '{}'", name, _paths);
+        MM_ERROR("Uniform '{}' not found in shader program '{}'", name, _paths);
     return location;
 }
 
@@ -105,7 +105,7 @@ unsigned OpenGLShader::loadShader(const Blob &source, int type, bool openGLES, c
         static constexpr std::string_view glslDirectives[] = {"version", "extension"};
         preprocessedSource = pp::preprocess(source, pwd, preamble, glslDirectives);
     } catch (const std::exception &e) {
-        logger->error("Could not preprocess shader '{}': {}", source.displayPath(), e.what());
+        MM_ERROR("Could not preprocess shader '{}': {}", source.displayPath(), e.what());
         return 0;
     }
 
@@ -119,11 +119,11 @@ unsigned OpenGLShader::loadShader(const Blob &source, int type, bool openGLES, c
 
     std::string errors = compileErrors(result);
     if (!errors.empty()) {
-        logger->error("Could not compile shader '{}':\n{}", source.displayPath(), errors);
+        MM_ERROR("Could not compile shader '{}':\n{}", source.displayPath(), errors);
         glDeleteShader(result);
         return 0;
     }
 
-    logger->info("Loaded shader '{}'.", source.displayPath());
+    MM_INFO("Loaded shader '{}'.", source.displayPath());
     return result;
 }

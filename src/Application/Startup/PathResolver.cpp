@@ -68,7 +68,7 @@ static std::vector<std::string> resolvePaths(Environment *environment, const Pat
     // If we have a path override then it'll be the only path we'll check.
     std::string envPath = environment->getenv(config.overrideEnvKey);
     if (!envPath.empty()) {
-        logger->info("Path override provided, '{}={}'.", config.overrideEnvKey, envPath);
+        MM_INFO("Path override provided, '{}={}'.", config.overrideEnvKey, envPath);
         return {envPath};
     }
 

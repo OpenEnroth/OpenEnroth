@@ -218,7 +218,7 @@ void Chest::PlaceItems(int uChestID) { // only used for setup
         }
 
         if (entry.zone() == INVENTORY_ZONE_STASH)
-            logger->trace("Cannot place item with id {} in the chest!", std::to_underlying(entry->itemId));
+            MM_TRACE("Cannot place item with id {} in the chest!", std::to_underlying(entry->itemId));
     }
 
     chest.SetInitialized(true);

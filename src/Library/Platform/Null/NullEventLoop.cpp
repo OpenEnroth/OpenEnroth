@@ -24,5 +24,5 @@ void NullEventLoop::processMessages(PlatformEventHandler *eventHandler) {
 
 void NullEventLoop::waitForMessages() {
     // Null platform doesn't receive messages. In theory, we should deadlock here, but this makes no sense tbh.
-    logger->error("Calls to NullEventLoop::waitForMessages should never happen. Null platform never waits.");
+    MM_ERROR("Calls to NullEventLoop::waitForMessages should never happen. Null platform never waits.");
 }

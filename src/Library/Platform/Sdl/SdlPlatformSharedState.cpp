@@ -28,7 +28,7 @@ void SdlPlatformSharedState::logSdlError(const char *sdlFunctionName) {
     const char *errorMessage = SDL_GetError();
     if (!errorMessage || *errorMessage == '\0') // Not sure if SDL_GetError can return nullptr, but it definitely can return an empty string.
         errorMessage = "No error";
-    logger->error(logCategory(), "SDL error in {}: {}", sdlFunctionName, errorMessage);
+    MM_ERROR_IN(logCategory(), "SDL error in {}: {}", sdlFunctionName, errorMessage);
 }
 
 const LogCategory &SdlPlatformSharedState::logCategory() {

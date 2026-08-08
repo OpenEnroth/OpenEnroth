@@ -40,7 +40,7 @@ static void ReloadFonts() {
 }
 
 void AssetsManager::releaseAllTextures() {
-    logger->trace("Render - Releasing Textures.");
+    MM_TRACE("Render - Releasing Textures.");
     // clears any textures from gpu
     for (auto img : images) {
         img.second->releaseRenderId();

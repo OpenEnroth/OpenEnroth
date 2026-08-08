@@ -374,7 +374,7 @@ Character *getCharacterByIndex(int characterIndex) {
         return &pParty->pCharacters[characterIndex];
     }
 
-    logger->warning("Invalid character index. Asked for: {} but the party size is: {}", characterIndex, pParty->pCharacters.size());
+    MM_WARNING("Invalid character index. Asked for: {} but the party size is: {}", characterIndex, pParty->pCharacters.size());
     return nullptr;
 }
 

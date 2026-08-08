@@ -10,12 +10,21 @@
 #include "LogEnums.h"
 
 class LogSink;
+class Logger;
+
+namespace detail {
+constexpr Logger *fallbackLogger();
+struct DetachedTag {}; // Tells `Logger`'s constructor not to install the newly created logger as the global one.
+inline constexpr DetachedTag detached;
+} // namespace detail
 
 /**
  * Main logging class.
  *
  * `Logger` is a singleton, but the user is supposed to create a `Logger` instance himself before using it. This would
- * usually be done in the first few lines of `main`.
+ * usually be done in the first few lines of `main`. Logging before that point still works and goes to stderr, so
+ * early messages, messages from the code that runs after the user-created logger is gone, and messages from the
+ * command line tools that never create a logger are not lost.
  *
  * Some notes on design decisions:
  * 1. `Logger` supports hooking into other logging frameworks, translating the log levels appropriately. Thus, it's
@@ -134,13 +143,73 @@ class Logger {
     void setSink(LogSink *sink);
 
  private:
+    friend constexpr Logger *detail::fallbackLogger();
+
+    /**
+     * Fallback logger that writes everything to stderr. The global `logger` points here until the user creates a
+     * `Logger` of their own, and points back here once that logger is destroyed.
+     */
+    static Logger fallbackLogger;
+
+    /**
+     * Creates a logger that's detached from the global `logger`, and thus doesn't install itself there. Only
+     * `fallbackLogger` uses this, and it's `constexpr` so that `fallbackLogger` can be constant-initialized.
+     */
+    constexpr Logger(detail::DetachedTag, LogLevel level, LogSink *sink) : _sink(sink) {
+        _defaultCategory._level = level;
+        _defaultCategory._adjustedLevel = LogCategory::adjustLevel(level);
+    }
+
     void logV(const LogCategory &category, LogLevel level, fmt::string_view fmt, fmt::format_args args);
 
  private:
     std::mutex _mutex;
-    LogCategory _defaultCategory = LogCategory({});
+    LogCategory _defaultCategory;
     LogSink *_sink = nullptr;
 };
 
-extern Logger *logger; // Singleton logger instance.
+namespace detail {
+constexpr Logger *fallbackLogger() {
+    return &Logger::fallbackLogger;
+}
+
+extern constinit Logger *logger; // Singleton logger instance, never null - use the macros below.
+} // namespace detail
+
+/**
+ * Logging macros.
+ *
+ * These call into the global logger, and unlike the `Logger` methods, they don't evaluate the message arguments
+ * when the message is dropped by the log level check. Prefer them over calling `logger` directly.
+ *
+ * The `_IN` variants take a `LogCategory`, the ones without it log into the default category.
+ */
+#define MM_LOG(LEVEL, ...) \
+    do { \
+        LogLevel mmLogLevel = (LEVEL); \
+        if (::detail::logger->shouldLog(mmLogLevel)) \
+            ::detail::logger->log(mmLogLevel, __VA_ARGS__); \
+    } while (false)
+
+#define MM_LOG_IN(CATEGORY, LEVEL, ...) \
+    do { \
+        const LogCategory &mmLogCategory = (CATEGORY); \
+        LogLevel mmLogLevel = (LEVEL); \
+        if (::detail::logger->shouldLog(mmLogCategory, mmLogLevel)) \
+            ::detail::logger->log(mmLogCategory, mmLogLevel, __VA_ARGS__); \
+    } while (false)
+
+#define MM_TRACE(...) MM_LOG(LOG_TRACE, __VA_ARGS__)
+#define MM_DEBUG(...) MM_LOG(LOG_DEBUG, __VA_ARGS__)
+#define MM_INFO(...) MM_LOG(LOG_INFO, __VA_ARGS__)
+#define MM_WARNING(...) MM_LOG(LOG_WARNING, __VA_ARGS__)
+#define MM_ERROR(...) MM_LOG(LOG_ERROR, __VA_ARGS__)
+#define MM_CRITICAL(...) MM_LOG(LOG_CRITICAL, __VA_ARGS__)
+
+#define MM_TRACE_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_TRACE, __VA_ARGS__)
+#define MM_DEBUG_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_DEBUG, __VA_ARGS__)
+#define MM_INFO_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_INFO, __VA_ARGS__)
+#define MM_WARNING_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_WARNING, __VA_ARGS__)
+#define MM_ERROR_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_ERROR, __VA_ARGS__)
+#define MM_CRITICAL_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_CRITICAL, __VA_ARGS__)
 

@@ -144,7 +144,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         if (face->Contains(projected_pos, model_idx)) {
             *out_move_distance = move_distance;
             *out_collision_point = projected_pos;
-            //logger->warning("Error: collide with face md: {}", move_distance);
+            //MM_WARNING("Error: collide with face md: {}", move_distance);
             return true;
         }
     }

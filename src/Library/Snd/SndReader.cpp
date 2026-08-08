@@ -85,11 +85,11 @@ Blob SndReader::read(std::string_view filename) const {
         } catch (const Exception &e) {
             result = zlib::uncompressBestEffort(compressed, entry.decompressedSize);
             if (!result) {
-                logger->warning("SndReader: failed to decompress '{}', skipping: {}", path, e.what());
+                MM_WARNING("SndReader: failed to decompress '{}', skipping: {}", path, e.what());
                 return Blob();
             }
-            logger->warning("SndReader: '{}' has corrupt checksum, recovered {} of {} expected bytes",
-                            path, result.size(), entry.decompressedSize);
+            MM_WARNING("SndReader: '{}' has corrupt checksum, recovered {} of {} expected bytes",
+                       path, result.size(), entry.decompressedSize);
         }
     }
     return result.withDisplayPath(path);

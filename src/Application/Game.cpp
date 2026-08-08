@@ -1083,9 +1083,9 @@ void Game::processQueuedMessages() {
                     continue;
                 } else {
                     if (pParty->uFlags & PARTY_FLAG_AIRBORNE)
-                        logger->trace("Party is airborne");
+                        MM_TRACE("Party is airborne");
                     if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
-                        logger->trace("Party on water");
+                        MM_TRACE("Party on water");
                 }
 
                 if (pParty->bTurnBasedModeOn) {
@@ -1491,7 +1491,7 @@ void Game::processQueuedMessages() {
                 quickLoadGame();
                 continue;
             default:
-                logger->warning("Game::processQueuedMessages - Unhandled message type: {}", static_cast<int>(uMessage));
+                MM_WARNING("Game::processQueuedMessages - Unhandled message type: {}", static_cast<int>(uMessage));
                 continue;
         }
     }

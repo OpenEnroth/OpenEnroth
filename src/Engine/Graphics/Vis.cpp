@@ -435,7 +435,7 @@ Vis_PIDAndDepth Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
         }
 
         default:
-            logger->warning("Undefined type requested for: CVis::get_object_zbuf_val()");
+            MM_WARNING("Undefined type requested for: CVis::get_object_zbuf_val()");
             return Vis_PIDAndDepth();
     }
 }
@@ -620,7 +620,7 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type) {
         } break;
 
         default:
-            logger->warning("Unknown pointer creation flag passed to ::create_object_pointers()");
+            MM_WARNING("Unknown pointer creation flag passed to ::create_object_pointers()");
     }
 }
 
@@ -703,7 +703,7 @@ Vis_PIDAndDepth Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         PickOutdoorFaces_Mouse(fDepth, rayOrigin, rayStep, &_selectionList, face_filter, false);
     } else {
-        logger->warning("Picking mouse in undefined level");  // picking in main menu is
+        MM_WARNING("Picking mouse in undefined level");  // picking in main menu is
                                                   // default (buggy) game
                                                   // behaviour. should've
                                                   // returned false in
@@ -756,7 +756,7 @@ bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filte
     if (filter->select_flags & ExclusionIfNoEvent) {
         if (object_type != filter->object_type) return true;
         if (filter->object_type != OBJECT_Decoration) {
-            logger->warning("Unsupported \"exclusion if no event\" type in CVis::isBillboardPartOfSelection");
+            MM_WARNING("Unsupported \"exclusion if no event\" type in CVis::isBillboardPartOfSelection");
             return true;
         }
         if (pLevelDecorations[object_idx].uCog ||
@@ -766,7 +766,7 @@ bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filte
     }
     if (object_type == filter->object_type) {
         if (object_type != OBJECT_Actor) {
-            logger->warning("Default case reached in VIS");
+            MM_WARNING("Default case reached in VIS");
             return true;
         }
 
