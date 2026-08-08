@@ -761,7 +761,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         case SPRITE_PROJECTILE_MIND_BOLT:
         case SPRITE_PROJECTILE_SPIRIT_BOLT:
         case SPRITE_PROJECTILE_LIGHT_BOLT:
-        case SPRITE_PROJECTILE_DARK_BOLT: {
+        case SPRITE_PROJECTILE_DARK_BOLT:
+        case SPRITE_PROJECTILE_BLASTER: {
             applySpellSpriteDamage(uLayingItemID, pid);
             updateSpriteOnImpact(object);
             if (object->uObjectDescID == 0) {
@@ -859,16 +860,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v97, 0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
-            return 0;
-        }
-
-        case SPRITE_PROJECTILE_BLASTER: {
-            applySpellSpriteDamage(uLayingItemID, pid);
-            updateSpriteOnImpact(object);
-            if (object->uObjectDescID == 0) {
-                SpriteObject::OnInteraction(uLayingItemID);
-            }
-            object->spellSpriteStop();
             return 0;
         }
 
