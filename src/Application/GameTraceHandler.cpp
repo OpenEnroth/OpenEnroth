@@ -1,11 +1,14 @@
 #include "GameTraceHandler.h"
 
+#include <string>
+
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
+#include "Utility/String/Format.h"
 
 GameTraceHandler::GameTraceHandler() : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}) {}
 
@@ -26,10 +29,18 @@ bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
             if (tracer->isRecording()) {
                 EngineTraceRecording recording = tracer->finishRecording(game);
 
-                // TODO(captainurist): do this properly, trace00001.json, etc.
-                ufs->write("trace.json", recording.trace);
-                ufs->write("trace.mm7", recording.save);
-                MM_INFO("Trace saved to {} and {}", ufs->displayPath("trace.json"), ufs->displayPath("trace.mm7"));
+                // Find the first free traceNNNNN slot.
+                std::string tracePath, savePath;
+                for (int i = 1;; i++) {
+                    tracePath = fmt::format("trace{:05}.json", i);
+                    savePath = fmt::format("trace{:05}.mm7", i);
+                    if (!ufs->exists(tracePath) && !ufs->exists(savePath))
+                        break;
+                }
+
+                ufs->write(tracePath, recording.trace);
+                ufs->write(savePath, recording.save);
+                MM_INFO("Trace saved to {} and {}", ufs->displayPath(tracePath), ufs->displayPath(savePath));
             } else {
                 tracer->startRecording(game);
             }
