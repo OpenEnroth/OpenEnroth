@@ -1,4 +1,5 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
 
 # RendererFactory.cpp needs Engine/EngineIocContainer.h (from //src/Engine:engine) and is compiled
 # as part of //src/Engine:engine to avoid circular dependency.
@@ -16,6 +17,7 @@ exports_files(
 
 cc_library(
     name = "engine_texture_id",
+    defines = STDLIB_HARDENING_DEFINES,
     hdrs = ["TextureRenderId.h"],
     visibility = ["//visibility:public"],
 )

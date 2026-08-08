@@ -1,4 +1,5 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
 
 # library_platform_main is the SDL main entry-point object library.
 # In CMake it is an OBJECT library; in Bazel we model it as a cc_library so it
@@ -15,7 +16,7 @@ cc_library(
     defines = select({
         "@platforms//os:android": ["SDL_MAIN_HANDLED"],
         "//conditions:default": [],
-    }),
+    }) + STDLIB_HARDENING_DEFINES,
     visibility = ["//visibility:public"],
     deps = [
         "//bazel/system:sdl3",
@@ -27,6 +28,7 @@ cc_library(
 # references it at link time.
 cc_library(
     name = "library_platform_main_apk",
+    defines = STDLIB_HARDENING_DEFINES,
     srcs = [
         "SdlMain.cpp",
     ],

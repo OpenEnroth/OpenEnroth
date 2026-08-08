@@ -1,1 +1,23 @@
 # Bazel support files package.
+
+# Per-platform dbg detectors for stdlib_hardening.bzl.
+config_setting(
+    name = "linux_dbg",
+    constraint_values = ["@platforms//os:linux"],
+    values = {"compilation_mode": "dbg"},
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "macos_dbg",
+    constraint_values = ["@platforms//os:macos"],
+    values = {"compilation_mode": "dbg"},
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "android_dbg",
+    constraint_values = ["@platforms//os:android"],
+    values = {"compilation_mode": "dbg"},
+    visibility = ["//visibility:public"],
+)

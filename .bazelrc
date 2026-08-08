@@ -19,6 +19,10 @@ build:windows --copt=/Zc:preprocessor  # Use standard-compliant preprocessor (re
 build:windows --copt=/D_USE_MATH_DEFINES  # Pull in M_PI and other <cmath> defines (MSVC extension)
 build:windows --copt=/utf-8  # fmt and other libs require UTF-8 source encoding
 build:windows --copt=/D_WINDOWS  # CMake adds this automatically for Windows targets; enables _fseeki64/_ftelli64 aliases
+build:windows --copt=/DNOMINMAX  # Please don't pull in min/max macros from <Windows.h>
+build:windows --copt=/D_CRT_SECURE_NO_WARNINGS  # STL security warnings are just noise
+build:windows --copt=/D_CRT_NONSTDC_NO_DEPRECATE  # POSIX deprecation warnings are also just noise
+build:windows --copt=/D_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS  # These are also useless
 build:windows --features=static_link_msvcrt  # Use /MT instead of /MD to match prebuilt dep libs (CMake uses MultiThreaded runtime)
 
 # ─── Global include paths (mirrors CMake's include_directories(src test)) ────
@@ -79,6 +83,26 @@ build:windows --per_file_copt=^(src|test)/.*@/UNDEBUG
 build:linux --per_file_copt=^(src|test)/.*@-fno-math-errno,-fno-trapping-math,-ffp-contract=off
 build:macos --per_file_copt=^(src|test)/.*@-fno-math-errno,-fno-trapping-math,-ffp-contract=off
 build:android_base --per_file_copt=^(src|test)/.*@-fno-math-errno,-fno-trapping-math,-ffp-contract=off
+
+# ─── Debug info in every config ──────────────────────────────────────────────
+# Cmake ships symbols in both configs (RelWithDebInfo has -g, msvc uses
+# embedded /Z7 debug info), and StackTraceOnCrash resolves its own frames via
+# libdwarf at runtime, so release binaries need symbols too. First-party only,
+# which keeps dep action keys cached; dep frames stay bare.
+build:linux --per_file_copt=^(src|test)/.*@-g
+build:macos --per_file_copt=^(src|test)/.*@-g
+build:android_base --per_file_copt=^(src|test)/.*@-g
+build:windows --per_file_copt=^(src|test)/.*@/Z7
+# The pdb needs an explicit /DEBUG at link time in opt (dbg links pass it already).
+build:windows --linkopt=/DEBUG:FULL
+
+# ─── Linker options (mirrors cmake's add_link_options) ───────────────────────
+# Strip unreferenced sections and fold identical COMDATs in every config.
+build:windows --linkopt=/OPT:REF
+build:windows --linkopt=/OPT:ICF
+# Linker errors were seen on android without -Bsymbolic, see
+# https://github.com/google/ExoPlayer/issues/9933#issuecomment-1029775358.
+build:android_base --linkopt=-Wl,-Bsymbolic
 
 # ─── Platform configs ────────────────────────────────────────────────────────
 
@@ -144,6 +168,7 @@ build:windows_x86 --config=windows
 build:windows_x86 --platforms=//bazel/platforms:windows_x86_platform
 build:windows_x86 --extra_toolchains=//bazel/platforms:windows_x86_cc_toolchain
 build:windows_x86 --define=oe_build_arch=x86_32
+build:windows_x86 --linkopt=/LARGEADDRESSAWARE  # Enable heap size over 2gb for x86 builds
 
 # Windows x86_64
 build:windows_x86_64 --config=windows

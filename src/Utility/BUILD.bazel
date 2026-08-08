@@ -1,7 +1,9 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
 
 cc_library(
     name = "utility",
+    defines = STDLIB_HARDENING_DEFINES,
     srcs = [
         "Exception.cpp",
         "Math/TrigLut.cpp",
