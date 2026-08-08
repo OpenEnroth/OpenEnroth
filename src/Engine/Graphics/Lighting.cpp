@@ -1,6 +1,4 @@
-#include "LightmapBuilder.h"
-
-// TODO(pskelton): rename - lighting functions
+#include "Lighting.h"
 
 #include "Engine/Engine.h"
 

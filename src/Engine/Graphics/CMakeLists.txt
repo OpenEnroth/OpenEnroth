@@ -13,7 +13,7 @@ set(ENGINE_GRAPHICS_SOURCES
         Image.cpp
         ImageLoader.cpp
         Indoor.cpp
-        LightmapBuilder.cpp
+        Lighting.cpp
         LightsStack.cpp
         LocationFunctions.cpp
         Outdoor.cpp
@@ -41,7 +41,7 @@ set(ENGINE_GRAPHICS_HEADERS
         Image.h
         ImageLoader.h
         Indoor.h
-        LightmapBuilder.h
+        Lighting.h
         LightsStack.h
         LocationFunctions.h
         LocationInfo.h

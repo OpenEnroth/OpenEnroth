@@ -12,7 +12,7 @@
 
 #include "Library/Logger/Logger.h"
 
-#include "LightmapBuilder.h"
+#include "Lighting.h"
 
 //----- (0043B570) --------------------------------------------------------
 float Decal::Fade_by_time() {

@@ -14,7 +14,7 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Graphics/Camera.h"
-#include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/Lighting.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/BspRenderer.h"
