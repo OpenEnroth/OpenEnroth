@@ -63,7 +63,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     try {
         initialize();
     } catch (const std::exception &e) {
-        logger->critical("Terminated with exception: {}", e.what());
+        MM_CRITICAL("Terminated with exception: {}", e.what());
         throw;
     }
 }
@@ -75,21 +75,21 @@ void GameStarter::initialize() {
     // Resolve user path & create user fs.
     resolveUserPath(_environment.get(), &_options);
     _fsStarter.initUserFs(_options.ramFsUserData, _options.userPath);
-    logger->info("Using user path '{}'.", ufs->displayPath(""));
+    MM_INFO("Using user path '{}'.", ufs->displayPath(""));
 
     // Init config.
     _config = std::make_shared<GameConfig>();
     if (ufs->exists(configName)) {
         _config->load(ufs->openForReading(configName).get());
-        logger->info("Configuration file '{}' loaded!", ufs->displayPath(configName));
+        MM_INFO("Configuration file '{}' loaded!", ufs->displayPath(configName));
     } else {
         _config->reset();
 #ifdef OE_DISTRIBUTION_BUILD
         _config->window.Mode.setValue(WINDOW_MODE_FULLSCREEN_BORDERLESS);
 #endif
-        logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
+        MM_INFO("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
     }
-    logger->info("Built in resource override is {}.", _config->debug.OverrideBuiltInResources.value() ? "enabled" : "disabled");
+    MM_INFO("Built in resource override is {}.", _config->debug.OverrideBuiltInResources.value() ? "enabled" : "disabled");
 
     // Patch config.
     if (_options.quickStart)
@@ -102,7 +102,7 @@ void GameStarter::initialize() {
     // TODO(captainurist): actually move datapath to config?
     resolveDataPath(_environment.get(), &_options);
     _fsStarter.initDataFs(_options.dataPath, _config->debug.OverrideBuiltInResources.value());
-    logger->info("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath("") b/c it'll show "embedded://"...
+    MM_INFO("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath("") b/c it'll show "embedded://"...
 
     // Migrate saves if needed. We don't migrate anything else.
     if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
@@ -235,11 +235,11 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
     for (int i = 0; i < candidates.size(); i++) {
         std::string missingFile;
         if (!std::filesystem::exists(candidates[i])) {
-            logger->info("Data path #{} ('{}') doesn't exist.", i + 1, candidates[i]);
+            MM_INFO("Data path #{} ('{}') doesn't exist.", i + 1, candidates[i]);
         } else if (!validateMm7Path(candidates[i], &missingFile)) {
-            logger->info("Data path #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
+            MM_INFO("Data path #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
         } else {
-            logger->info("Data path #{} ('{}') is OK!", i + 1, candidates[i]);
+            MM_INFO("Data path #{} ('{}') is OK!", i + 1, candidates[i]);
             options->dataPath = candidates[i];
             break;
         }
@@ -267,18 +267,18 @@ void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platfor
 }
 
 void GameStarter::migrateSaves() {
-    logger->info("Migrating save files from '{}' to '{}'...", dfs->displayPath("saves"), ufs->displayPath("saves"));
+    MM_INFO("Migrating save files from '{}' to '{}'...", dfs->displayPath("saves"), ufs->displayPath("saves"));
 
     if (ufs->exists("saves") && !ufs->ls("saves").empty()) {
-        logger->info("    Target saves directory is not empty, skipping saves migration.");
+        MM_INFO("    Target saves directory is not empty, skipping saves migration.");
     } else if (!dfs->exists("saves")) {
-        logger->info("    No save files to migrate.");
+        MM_INFO("    No save files to migrate.");
     } else {
         for (const DirectoryEntry &entry : dfs->ls("saves")) {
             if (entry.type == FILE_REGULAR) {
                 std::string path = fmt::format("saves/{}", entry.name);
                 ufs->write(path, dfs->read(path));
-                logger->info("    Copied '{}'.", entry.name);
+                MM_INFO("    Copied '{}'.", entry.name);
             }
         }
     }
@@ -290,10 +290,10 @@ void GameStarter::run() {
 
         _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
         _config->save(ufs->openForWriting(configName).get());
-        logger->info("Configuration file '{}' saved!", ufs->displayPath(configName));
+        MM_INFO("Configuration file '{}' saved!", ufs->displayPath(configName));
     } catch (const std::exception &e) {
         // Log the exception so that it goes to all registered loggers.
-        logger->critical("Terminated with exception: {}", e.what());
+        MM_CRITICAL("Terminated with exception: {}", e.what());
         throw;
     }
 }

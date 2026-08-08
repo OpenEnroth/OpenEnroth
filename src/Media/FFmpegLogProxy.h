@@ -6,11 +6,9 @@
 #include <string>
 #include <thread>
 
-#include "Library/Logger/Logger.h"
-
 class FFmpegLogProxy {
  public:
-    explicit FFmpegLogProxy(Logger *logger);
+    FFmpegLogProxy();
     ~FFmpegLogProxy();
 
     void log(void *ptr, int level, const char *format, va_list args);
@@ -22,6 +20,5 @@ class FFmpegLogProxy {
     };
 
  private:
-    Logger *_logger = nullptr;
     std::unordered_map<std::thread::id, LogState> _stateByThreadId;
 };

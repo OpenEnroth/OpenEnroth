@@ -162,7 +162,7 @@ void OpenALTrack16::DrainBuffers() {
     ALint num_processed_buffers = 0;
     alGetSourcei(al_source, AL_BUFFERS_PROCESSED, &num_processed_buffers);
     if (checkOpenALError()) {
-        logger->warning("OpenAL: Failed to get played buffers");
+        MM_WARNING("OpenAL: Failed to get played buffers");
         return;
     }
 
@@ -170,14 +170,14 @@ void OpenALTrack16::DrainBuffers() {
         ALuint buffer;
         alSourceUnqueueBuffers(al_source, 1, &buffer);
         if (checkOpenALError()) {
-            logger->warning("OpenAL: Failed to unqueue played buffer");
+            MM_WARNING("OpenAL: Failed to unqueue played buffer");
         } else {
             ALint size = 0;
             alGetBufferi(buffer, AL_SIZE, &size);
             uiReservedData -= size;
             alDeleteBuffers(1, &buffer);
             if (checkOpenALError()) {
-                logger->warning("OpenAL: Failed to delete played buffer");
+                MM_WARNING("OpenAL: Failed to delete played buffer");
             }
         }
     }

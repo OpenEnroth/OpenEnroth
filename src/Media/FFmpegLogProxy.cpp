@@ -7,6 +7,8 @@ extern "C" {
 #include <cassert>
 #include <mutex>
 
+#include "Library/Logger/Logger.h"
+
 #include "FFmpegLogSource.h"
 
 // Category should be a global so that it's registered at program startup.
@@ -24,8 +26,7 @@ static void ffmpegLogCallback(void *ptr, int level, const char *format, va_list 
     globalFFmpegLogger->log(ptr, level, format, args);
 }
 
-FFmpegLogProxy::FFmpegLogProxy(Logger *logger): _logger(logger) {
-    assert(logger);
+FFmpegLogProxy::FFmpegLogProxy() {
     assert(globalFFmpegLogger == nullptr);
     globalFFmpegLogger = this;
 
@@ -46,12 +47,12 @@ void FFmpegLogProxy::log(void *ptr, int level, const char *format, va_list args)
     char buffer[4096];
     int status = av_log_format_line2(ptr, level, format, args, buffer, sizeof(buffer), &state.prefixFlag);
     if (status < 0) {
-        _logger->trace(globalFFmpegLogCategory, "av_log_format_line2 failed with error code {}", status);
+        MM_TRACE_IN(globalFFmpegLogCategory, "av_log_format_line2 failed with error code {}", status);
     } else {
         state.message += buffer;
         if (state.message.ends_with('\n')) {
             state.message.pop_back(); // Drop the '\n'.
-            _logger->log(globalFFmpegLogCategory, FFmpegLogSource::translateFFmpegLogLevel(level), "{}", state.message);
+            MM_LOG_IN(globalFFmpegLogCategory, FFmpegLogSource::translateFFmpegLogLevel(level), "{}", state.message);
             state.message.clear();
         }
     }

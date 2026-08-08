@@ -67,7 +67,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, const Blob &sav
 
     component<EngineTraceSimpleRecorder>()->startRecording();
 
-    logger->info("Tracing started.");
+    MM_INFO("Tracing started.");
 }
 
 EngineTraceRecording EngineTraceRecorder::finishRecording(EngineController *game) {

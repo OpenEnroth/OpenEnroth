@@ -85,7 +85,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
                 buildsplat->color,
                 buildsplat->faceDist,
                 &static_FacePlane, NumFaceVerts, FaceVerts, ClipFlags))
-                logger->warning("Error: Failed to build decal geometry");
+                MM_WARNING("Error: Failed to build decal geometry");
         }
     }
     return 1;

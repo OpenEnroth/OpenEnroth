@@ -29,7 +29,7 @@ bool AudioBufferDataSource::Open() {
 
     // Open audio file
     if (avformat_open_input(&pFormatContext, _ioContext.blob().displayPath().c_str(), nullptr, nullptr) < 0) {
-        logger->warning("ffmpeg: Unable to open input buffer");
+        MM_WARNING("ffmpeg: Unable to open input buffer");
         return false;
     }
 

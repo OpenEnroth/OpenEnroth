@@ -31,7 +31,7 @@ NPCData *getNPCData(int npcId) {
     if (npcId >= 0) {
         if (npcId < 5000) {
             if (npcId >= 501) {
-                logger->warning("NPC id exceeds MAX_DATA!");
+                MM_WARNING("NPC id exceeds MAX_DATA!");
             }
             return &pNPCStats->pNPCData[npcId];
         } else {

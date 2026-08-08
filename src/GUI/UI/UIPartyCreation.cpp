@@ -784,7 +784,7 @@ bool PartyCreationUI_LoopInternal() {
                 pParty->pCharacters[i].inventory.add(Item(ITEM_MACE));
                 break;
             case SKILL_BLASTER:
-                logger->error("No blasters at startup :p");
+                MM_ERROR("No blasters at startup :p");
                 break;
             case SKILL_SHIELD:
                 pParty->pCharacters[i].inventory.add(Item(ITEM_WOODEN_BUCKLER));
@@ -828,10 +828,10 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             case SKILL_LIGHT:
             case SKILL_DARK:
-                logger->error("No light/dark magic at startup");
+                MM_ERROR("No light/dark magic at startup");
                 break;
             case SKILL_DIPLOMACY:
-                logger->error("No diplomacy in mm7 (yet)");
+                MM_ERROR("No diplomacy in mm7 (yet)");
                 break;
             case SKILL_ITEM_ID:
             case SKILL_REPAIR:

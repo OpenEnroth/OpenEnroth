@@ -183,7 +183,7 @@ GUIWindow::~GUIWindow() {
     DeleteButtons();
     lWindowList.remove(this);
     // TODO(captainurist): logger can be NULL here if we're called from cxa_finalize.
-    logger->trace("Release window: {}", toString(eWindowType));
+    MM_TRACE("Release window: {}", toString(eWindowType));
 }
 
 void GUIWindow::DeleteButtons() {
@@ -443,7 +443,7 @@ void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2, Recti frame
 GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType) {
     this->mouse = EngineIocContainer::ResolveMouse();
 
-    logger->trace("New window: {}", toString(windowType));
+    MM_TRACE("New window: {}", toString(windowType));
     lWindowList.push_front(this);
     frameRect = Recti(position.x, position.y, dimensions.w, dimensions.h);
 

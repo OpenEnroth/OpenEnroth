@@ -13,7 +13,7 @@ LightsStack_MobileLight_::LightsStack_MobileLight_() {
 //----- (00467D88) --------------------------------------------------------
 bool LightsStack_MobileLight_::AddLight(const Vec3f &pos, int uSectorID, int uRadius, Color color, char uLightType) {
     if (uNumLightsActive >= 400) {
-        logger->warning("Too many mobile lights!");
+        MM_WARNING("Too many mobile lights!");
         return false;
     }
 
@@ -30,7 +30,7 @@ bool LightsStack_MobileLight_::AddLight(const Vec3f &pos, int uSectorID, int uRa
 
 bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos, int16_t radius, Color color, char uLightType) {
     if (uNumLightsActive >= 400) {
-        logger->warning("Too many stationary lights!");
+        MM_WARNING("Too many stationary lights!");
         return false;
     }
 

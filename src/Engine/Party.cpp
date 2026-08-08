@@ -957,7 +957,7 @@ bool Party::addItemToParty(Item *pItem, bool isSilent) {
             }
         }
     } else {
-        logger->warning("Invalid picture_name detected ::addItem()");
+        MM_WARNING("Invalid picture_name detected ::addItem()");
     }
     return false;
 }

@@ -21,7 +21,7 @@ bool InputScriptEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
                 return result;
             }
         } catch (const sol::error &e) {
-            logger->error(ScriptingSystem::ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
+            MM_ERROR_IN(ScriptingSystem::ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
         }
     }
 

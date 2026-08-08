@@ -59,7 +59,7 @@ void TileGenerator::ensureTile(std::string_view name) {
 RgbaImage TileGenerator::generateTile(Tileset tileset, TileVariant variant) {
     assert(allGeneratedTileVariants().contains(variant));
 
-    logger->info("Generating tile {}_{}.", toString(tileset), toString(variant));
+    MM_INFO("Generating tile {}_{}.", toString(tileset), toString(variant));
 
     Directions currentDirections = 0;
     Directions targetDirections = transitionDirectionsForTileVariant(variant);

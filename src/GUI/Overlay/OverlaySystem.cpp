@@ -28,7 +28,7 @@ OverlaySystem::~OverlaySystem() {
 
 void OverlaySystem::addOverlay(std::string_view name, std::unique_ptr<Overlay> overlay) {
     if (_overlays.contains(name)) {
-        logger->error(OverlayLogCategory, "Can't add overlay \"{}\". Another overlay with the same name already exists.", name);
+        MM_ERROR_IN(OverlayLogCategory, "Can't add overlay \"{}\". Another overlay with the same name already exists.", name);
         return;
     }
 
