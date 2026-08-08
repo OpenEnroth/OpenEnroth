@@ -94,8 +94,9 @@ build:linux_x86 --config=linux
 build:linux_x86 --copt=-m32
 build:linux_x86 --linkopt=-m32
 # Don't use the x87 fpu - its 80-bit intermediates desync traces (mirrors the
-# OE_BUILD_ARCHITECTURE=x86 block in CMakeLists.txt).
-build:linux_x86 --copt=-msse2 --copt=-mfpmath=sse --copt=-march=pentium4
+# OE_BUILD_ARCHITECTURE=x86 block in CMakeLists.txt). First-party only: under
+# cmake the deps were prebuilt and never saw these flags.
+build:linux_x86 --per_file_copt=^(src|test)/.*@-msse2,-mfpmath=sse,-march=pentium4
 # Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
 # We can't use --platforms= here (no 32-bit toolchain registered), so use --define instead.
 build:linux_x86 --define=oe_build_arch=x86_32
@@ -141,6 +142,13 @@ build:windows_x86 --define=oe_build_arch=x86_32
 
 # Windows x86_64
 build:windows_x86_64 --config=windows
+
+# Real runfiles trees, so tests find their data deps (test/Data) relative to
+# the runfiles root like on every other platform. Symlinks need admin or
+# developer mode on windows - CI runners have admin, and the startup flag is
+# accepted (and inert) on other platforms.
+startup --windows_enable_symlinks
+build:windows --enable_runfiles
 
 # Hermetic make/pkg-config, downloaded by bazel/rules/windows_tools.bzl
 # (cmake and ninja come prebuilt from rules_foreign_cc on every platform).
