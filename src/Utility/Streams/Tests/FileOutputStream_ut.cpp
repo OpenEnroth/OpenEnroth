@@ -7,7 +7,7 @@
 #include "Utility/Streams/FileInputStream.h"
 
 UNIT_TEST(FileOutputStream, Write) {
-    const char *tmpfile = "tmp_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_test.txt");
     const char *tmpfilecontent = "1234\n";
     size_t tmpfilesize = strlen(tmpfilecontent);
 
@@ -30,7 +30,7 @@ UNIT_TEST(FileOutputStream, Write) {
 }
 
 UNIT_TEST(FileOutputStream, FlushMidStream) {
-    const char *tmpfile = "tmp_flush_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_flush_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -51,7 +51,7 @@ UNIT_TEST(FileOutputStream, FlushMidStream) {
 
 UNIT_TEST(FileOutputStream, LargeWriteBypassesBuffer) {
     // Use a small buffer so that a large write goes through the direct-write path in _overflow.
-    const char *tmpfile = "tmp_largewrite_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_largewrite_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile, 64);
@@ -64,7 +64,7 @@ UNIT_TEST(FileOutputStream, LargeWriteBypassesBuffer) {
 }
 
 UNIT_TEST(FileOutputStream, MixedSmallAndLargeWrites) {
-    const char *tmpfile = "tmp_mixed_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_mixed_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile, 64);
@@ -88,7 +88,7 @@ UNIT_TEST(FileOutputStream, MixedSmallAndLargeWrites) {
 }
 
 UNIT_TEST(FileOutputStream, CloseIdempotent) {
-    const char *tmpfile = "tmp_closeidem_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_closeidem_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -100,7 +100,7 @@ UNIT_TEST(FileOutputStream, CloseIdempotent) {
 }
 
 UNIT_TEST(FileOutputStream, ReopenAfterClose) {
-    const char *tmpfile = "tmp_reopen_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_reopen_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -116,7 +116,7 @@ UNIT_TEST(FileOutputStream, ReopenAfterClose) {
 }
 
 UNIT_TEST(FileOutputStream, PositionStartsAtZero) {
-    const char *tmpfile = "tmp_pos_start_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_pos_start_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -125,7 +125,7 @@ UNIT_TEST(FileOutputStream, PositionStartsAtZero) {
 }
 
 UNIT_TEST(FileOutputStream, PositionAdvancesOnWrite) {
-    const char *tmpfile = "tmp_pos_write_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_pos_write_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -137,7 +137,7 @@ UNIT_TEST(FileOutputStream, PositionAdvancesOnWrite) {
 }
 
 UNIT_TEST(FileOutputStream, PositionAfterFlush) {
-    const char *tmpfile = "tmp_pos_flush_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_pos_flush_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -150,7 +150,7 @@ UNIT_TEST(FileOutputStream, PositionAfterFlush) {
 }
 
 UNIT_TEST(FileOutputStream, PositionAfterLargeWrite) {
-    const char *tmpfile = "tmp_pos_large_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_pos_large_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile, 64);
@@ -161,7 +161,7 @@ UNIT_TEST(FileOutputStream, PositionAfterLargeWrite) {
 }
 
 UNIT_TEST(FileOutputStream, DestructorFlushesBuffer) {
-    const char *tmpfile = "tmp_dtor_flush_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_dtor_flush_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     {
@@ -175,7 +175,7 @@ UNIT_TEST(FileOutputStream, DestructorFlushesBuffer) {
 }
 
 UNIT_TEST(FileOutputStream, PositionResetsOnReopen) {
-    const char *tmpfile = "tmp_pos_reopen_test.txt";
+    NativePath tmpfile = NativePath::fromWtf8("tmp_pos_reopen_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);

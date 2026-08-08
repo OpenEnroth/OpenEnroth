@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Utility/String/TransparentFunctors.h"
+#include "Utility/System/NativePath.h"
 
 #include "ConfigFwd.h"
 #include "ConfigSection.h"
@@ -19,8 +20,8 @@ class Config {
     Config(const Config &other) = delete; // non-copyable
     Config(Config &&other) = delete; // non-movable
 
-    void load(std::string_view path);
-    void save(std::string_view path) const;
+    void load(const NativePath &path);
+    void save(const NativePath &path) const;
     void load(InputStream *stream);
     void save(OutputStream *stream) const;
 

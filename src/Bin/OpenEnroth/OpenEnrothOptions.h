@@ -5,6 +5,8 @@
 
 #include "Application/Startup/GameStarterOptions.h"
 
+#include "Utility/System/NativePath.h"
+
 class GameConfig;
 class Platform;
 
@@ -26,13 +28,13 @@ struct OpenEnrothOptions : public GameStarterOptions {
     using enum Migration;
 
     struct RetraceOptions {
-        std::vector<std::string> traces;
+        std::vector<NativePath> traces;
         Migration migration = MIGRATION_NONE;
         bool checkCanonical = false;
     };
 
     struct PlayOptions {
-        std::vector<std::string> traces;
+        std::vector<NativePath> traces;
         float speed = 1.0f;
     };
 

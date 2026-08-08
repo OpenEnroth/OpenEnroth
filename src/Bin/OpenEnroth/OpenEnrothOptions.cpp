@@ -103,7 +103,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         if (!traceDir.empty()) {
             for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(traceDir))
                 if (entry.path().extension() == ".json")
-                    result.retrace.traces.push_back(entry.path().generic_string());
+                    result.retrace.traces.push_back(NativePath::fromStdPath(entry.path()));
             std::ranges::sort(result.retrace.traces); // NOLINT: This is ranges::sort. We want a fixed order.
         }
 

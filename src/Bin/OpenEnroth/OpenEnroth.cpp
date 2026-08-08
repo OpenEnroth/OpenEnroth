@@ -95,11 +95,11 @@ int runRetrace(const OpenEnrothOptions &options) {
         EngineTraceSimplePlayer *player = application->component<EngineTraceSimplePlayer>();
         EngineTraceRecorder *recorder = application->component<EngineTraceRecorder>();
 
-        for (const std::string &tracePath : options.retrace.traces) {
+        for (const NativePath &tracePath : options.retrace.traces) {
             fmt::println(stderr, "Retracing '{}'...", tracePath);
             auto startTime = std::chrono::steady_clock::now();
 
-            std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
+            NativePath savePath = tracePath.withExtension(".mm7");
             Blob oldTraceBlob = Blob::fromFile(tracePath);
             Blob oldSaveBlob = Blob::fromFile(savePath);
 
@@ -109,7 +109,7 @@ int runRetrace(const OpenEnrothOptions &options) {
             EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
             recorder->startRecording(game, oldSaveBlob);
             engine->config->graphics.FPSLimit.setValue(0);
-            player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
+            player->playTrace(game, std::move(oldTrace.events), tracePath.toWtf8(), TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
             EngineTraceRecording recording = recorder->finishRecording(game);
 
             auto endTime = std::chrono::steady_clock::now();
@@ -142,10 +142,10 @@ int runPlay(const OpenEnrothOptions &options) {
     starter.runInstrumented([options, application = starter.application()] (EngineController *game) {
         EngineTracePlayer *player = application->component<EngineTracePlayer>();
 
-        for (const std::string &tracePath : options.play.traces) {
+        for (const NativePath &tracePath : options.play.traces) {
             fmt::println(stderr, "Playing back '{}'...", tracePath);
 
-            std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
+            NativePath savePath = tracePath.withExtension(".mm7");
 
             EngineTraceRecording recording;
             recording.save = Blob::fromFile(savePath);

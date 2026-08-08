@@ -33,15 +33,15 @@ UNIT_TEST(DirectoryFileSystem, LsRoot) {
     // Make sure passing empty paths works as intended.
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs1(""); // Current dir.
+    DirectoryFileSystem fs1(NativePath::fromWtf8("")); // Current dir.
     std::vector<DirectoryEntry> entries = fs1.ls("");
     EXPECT_TRUE(std::ranges::find(entries, "1.txt", &DirectoryEntry::name) != std::ranges::end(entries))
         << "size = " << entries.size() << ", [0] = " << (entries.empty() ? "<nothing>" : entries[0].name);
 
-    DirectoryFileSystem fs2("this_dir_doesnt_exist"); // Non-existent dir.
+    DirectoryFileSystem fs2(NativePath::fromWtf8("this_dir_doesnt_exist")); // Non-existent dir.
     EXPECT_TRUE(fs2.ls("").empty());
 
-    DirectoryFileSystem fs3("1.txt"); // Not-a-dir.
+    DirectoryFileSystem fs3(NativePath::fromWtf8("1.txt")); // Not-a-dir.
     EXPECT_TRUE(fs3.ls("").empty());
 }
 
@@ -49,39 +49,39 @@ UNIT_TEST(DirectoryFileSystem, LsFile) {
     // Make sure ls() throws when called on a file.
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs(""); // Current dir.
+    DirectoryFileSystem fs(NativePath::fromWtf8("")); // Current dir.
     EXPECT_ANY_THROW((void) fs.ls("1.txt"));
 }
 
 UNIT_TEST(DirectoryFileSystem, LsNonExistent) {
     // Make sure ls() throws when called on a folder that doesn't exist.
-    DirectoryFileSystem fs(""); // Current dir.
+    DirectoryFileSystem fs(NativePath::fromWtf8("")); // Current dir.
     EXPECT_ANY_THROW((void) fs.ls("this_dir_doesnt_exist"));
 }
 
 UNIT_TEST(DirectoryFileSystem, ExistsRoot) {
     // Make sure exists("") works as intented.
-    DirectoryFileSystem fs1(""); // Current dir.
+    DirectoryFileSystem fs1(NativePath::fromWtf8("")); // Current dir.
     EXPECT_TRUE(fs1.exists(""));
 
-    DirectoryFileSystem fs2("this_dir_doesnt_exist");
+    DirectoryFileSystem fs2(NativePath::fromWtf8("this_dir_doesnt_exist"));
     EXPECT_TRUE(fs2.exists(""));
 
     ScopedTestFile tmp("1.txt", "");
-    DirectoryFileSystem fs3("1.txt");
+    DirectoryFileSystem fs3(NativePath::fromWtf8("1.txt"));
     EXPECT_TRUE(fs3.exists(""));
 }
 
 UNIT_TEST(DirectoryFileSystem, StatRoot) {
     // Make sure stat("") works as intented.
-    DirectoryFileSystem fs1(""); // Current dir.
+    DirectoryFileSystem fs1(NativePath::fromWtf8("")); // Current dir.
     EXPECT_EQ(fs1.stat("").type, FILE_DIRECTORY);
 
-    DirectoryFileSystem fs2("this_dir_doesnt_exist"); // Non-existent dir.
+    DirectoryFileSystem fs2(NativePath::fromWtf8("this_dir_doesnt_exist")); // Non-existent dir.
     EXPECT_EQ(fs2.stat("").type, FILE_DIRECTORY);
 
     ScopedTestFile tmp("1.txt", "");
-    DirectoryFileSystem fs3("1.txt"); // Not-a-dir.
+    DirectoryFileSystem fs3(NativePath::fromWtf8("1.txt")); // Not-a-dir.
     EXPECT_EQ(fs3.stat("").type, FILE_DIRECTORY);
 }
 
@@ -89,20 +89,20 @@ UNIT_TEST(DirectoryFileSystem, ReadRootAsFile) {
     // Root is always assumed to be a dir, we can't read it as a file even if it IS a file.
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs("1.txt");
+    DirectoryFileSystem fs(NativePath::fromWtf8("1.txt"));
     EXPECT_ANY_THROW((void) fs.read(""));
 }
 
 UNIT_TEST(DirectoryFileSystem, WriteRootAsFile) {
     // Root is always assumed to be a dir, we can't write it as a file if it doesn't exist.
-    DirectoryFileSystem fs("1.txt");
+    DirectoryFileSystem fs(NativePath::fromWtf8("1.txt"));
     EXPECT_ANY_THROW(fs.write("", Blob()));
 }
 
 UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs("");
+    DirectoryFileSystem fs(NativePath::fromWtf8(""));
     Blob blob = fs.read("1.txt");
     std::unique_ptr<InputStream> stream = fs.openForReading("1.txt");
 
@@ -116,7 +116,7 @@ UNIT_TEST(DirectoryFileSystem, EscapingPaths) {
     ScopedTestFile tmp2("1.txt", "");
     ScopedTestFile tmp3("a/1.txt", "");
 
-    DirectoryFileSystem fs("a");
+    DirectoryFileSystem fs(NativePath::fromWtf8("a"));
 
     EXPECT_FALSE(fs.exists(".."));
     EXPECT_FALSE(fs.stat(".."));
@@ -129,7 +129,7 @@ UNIT_TEST(DirectoryFileSystem, EscapingPaths) {
 }
 
 UNIT_TEST(DirectoryFileSystem, EscapingDisplayPath) {
-    DirectoryFileSystem fs("");
+    DirectoryFileSystem fs(NativePath::fromWtf8(""));
 
     EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
 }

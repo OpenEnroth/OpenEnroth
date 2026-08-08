@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/System/NativePath.h"
 
 /**
  * Reader for Might&Magic VID files.
@@ -13,7 +14,7 @@
 class VidReader {
  public:
     VidReader();
-    explicit VidReader(std::string_view path);
+    explicit VidReader(const NativePath &path);
     explicit VidReader(Blob blob);
     ~VidReader();
 
@@ -22,7 +23,7 @@ class VidReader {
      * @throw Exception                 If the VID couldn't be opened - e.g., if the file doesn't exist,
      *                                  or if it's not in VID format.
      */
-    void open(std::string_view path);
+    void open(const NativePath &path);
 
     /**
      * @param blob                      VID data.
