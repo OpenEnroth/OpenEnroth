@@ -69,12 +69,12 @@ enum class EvtOpcode : uint8_t {
     EVENT_SetActorItem = 60,
     EVENT_OnDateTimer = 61,
     EVENT_EnableDateTimer = 62,
-    EVENT_StopAnimation = 63,
-    EVENT_CheckItemsCount = 64,
-    EVENT_RemoveItems = 65,
-    EVENT_SpecialJump = 66,
-    EVENT_IsTotalBountyHuntingAwardInRange = 67,
-    EVENT_IsNPCInParty = 68,
+    EVENT_StopAnimation = 63, // MM8-only.
+    EVENT_CheckItemsCount = 64, // MM8-only.
+    EVENT_RemoveItems = 65, // MM8-only.
+    EVENT_SpecialJump = 66, // MM8-only.
+    EVENT_IsTotalBountyHuntingAwardInRange = 67, // MM8-only.
+    EVENT_IsNPCInParty = 68, // MM8-only.
 };
 using enum EvtOpcode;
 MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtOpcode)
@@ -217,7 +217,7 @@ enum class EvtVariable {
     VAR_NPCs2 = 0xE8,
     VAR_IsFlying = 0xF0,
     VAR_HiredNPCHasSpeciality = 0xF1,
-    VAR_CircusPrises = 0xF2,
+    VAR_CircusPrizes = 0xF2,
     VAR_NumSkillPoints = 0xF3,
     VAR_MonthIs = 0xF4,
     VAR_Counter1 = 0xF5,
@@ -235,7 +235,7 @@ enum class EvtVariable {
     VAR_ReputationInCurrentLocation = 0x113,
     VAR_History_0 = 0x114,
     VAR_History_28 = 0x130,
-    VAR_Unknown1 = 0x131,
+    VAR_AlertStatus = 0x131,
     VAR_GoldInBank = 0x132,
     VAR_NumDeaths = 0x133,
     VAR_NumBounties = 0x134,
