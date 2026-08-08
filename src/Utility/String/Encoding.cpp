@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cassert>
+#include <filesystem>
 #include <span>
 #include <string>
 
@@ -69,6 +70,22 @@ std::u16string txt::utf8ToUtf16(std::string_view str) {
 std::string txt::wtf16ToWtf8(std::u16string_view str) {
     std::span<const char16_t> input(str.data(), str.size());
     return ztd::text::transcode(input, wtf16, ztd::text::compat_wtf8, ztd::text::replacement_handler);
+}
+
+std::filesystem::path txt::wtf8ToPath(std::string_view str) {
+#ifdef _WINDOWS
+    return std::filesystem::path(txt::wtf8ToWide(str));
+#else
+    return std::filesystem::path(str);
+#endif
+}
+
+std::string txt::pathToWtf8(const std::filesystem::path &path) {
+#ifdef _WINDOWS
+    return txt::wideToWtf8(path.generic_wstring());
+#else
+    return path.generic_string();
+#endif
 }
 
 std::u16string txt::wtf8ToWtf16(std::string_view str) {

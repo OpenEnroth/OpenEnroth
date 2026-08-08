@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdio>
+#include <filesystem>
 #include <utility>
 #include <memory>
 #include <string_view>
@@ -74,7 +75,7 @@ class Blob final {
      *                                  set to `path`.
      * @throws std::runtime_error       If file doesn't exist or on some other OS error.
      */
-    [[nodiscard]] static Blob fromFile(std::string_view path);
+    [[nodiscard]] static Blob fromFile(const std::filesystem::path &path);
 
     /**
      * @param string                    String to create a blob from.

@@ -605,4 +605,9 @@ UNIT_TEST(Encoding, SingleByteEncodingsDecodeEveryByte) {
     }
 }
 
-
+UNIT_TEST(Encoding, PathRoundTrip) {
+    // File names go into an std::filesystem::path and come back out, so the round trip has to be lossless. On Windows
+    // that means going through wchar_t - `path::generic_string()` would reject the surrogate below.
+    for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
+        EXPECT_EQ(txt::pathToWtf8(txt::wtf8ToPath(path)), path);
+}
