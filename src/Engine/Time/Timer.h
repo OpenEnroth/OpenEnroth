@@ -48,8 +48,8 @@ class Timer {
     Duration _time; // Total time elapsed.
 };
 
-// TODO(captainurist): pAnimTimer?
-extern Timer *pMiscTimer;
+// Timer for UI animations. Keeps ticking while the game is paused.
+extern Timer *pAnimTimer;
 
 // TODO(captainurist): pGameTimer?
 extern Timer *pEventTimer;

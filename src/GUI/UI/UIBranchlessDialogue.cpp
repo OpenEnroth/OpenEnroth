@@ -76,7 +76,7 @@ void GUIWindow_BranchlessDialogue::Update() {
 
 void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
     if (!pGUIWindow_BranchlessDialogue) {
-        pMiscTimer->setPaused(true);
+        pAnimTimer->setPaused(true);
         pEventTimer->setPaused(true);
         savedEventID = eventid;
         savedEventStep = entryline;

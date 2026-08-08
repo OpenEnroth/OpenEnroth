@@ -707,7 +707,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
             int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(monsterInfo.id)] - 40;
             render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
         }
-        pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->dt();
+        pMonsterInfoUI_Doll.currentActionTime += pAnimTimer->dt();
 
         // Draw name and profession
         std::string str = pActors[uActorID].GetDisplayName();
@@ -1652,7 +1652,7 @@ void GameUI_CharacterQuickRecord_Draw(Recti window, int characterIndex) {
             faceTextureIndex = player->talkAnimation.currentFrameIndex();
         else
             faceTextureIndex = pPortraitFrameTable->animationFrameIndex(pPortraitFrameTable->animationId(player->portrait),
-                                                                        pMiscTimer->time());
+                                                                        pAnimTimer->time());
         player->portraitImageIndex = faceTextureIndex - 1;
         v13 = game_ui_player_faces[characterIndex][faceTextureIndex - 1];
     }

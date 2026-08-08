@@ -189,7 +189,7 @@ static int waterAnimationFrame() {
     // Frame    0       1       2       3       4       5       6       Total
     // Vanilla  1/12s   1/6s    1/6s    1/6s    1/6s    1/6s    1/12s   1s
     // OE       1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1/7s    1s
-    return static_cast<int>(std::floor(std::fmod(pMiscTimer->time().realtimeMillisecondsFloat(), 1.0f) * 7.0f));
+    return static_cast<int>(std::floor(std::fmod(pAnimTimer->time().realtimeMillisecondsFloat(), 1.0f) * 7.0f));
 }
 
 OpenGLRenderer::OpenGLRenderer(
@@ -702,9 +702,9 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
         float worldviewdepth = -512.0f / newX;
 
         // offset tex coords
-        float texoffset_U = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth) / 16.0f);
+        float texoffset_U = pAnimTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth) / 16.0f);
         VertexRenderList[_507D30_idx].u = texoffset_U / (pFace->GetTexture()->width());
-        float texoffset_V = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth) / 16.0f);
+        float texoffset_V = pAnimTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth) / 16.0f);
         VertexRenderList[_507D30_idx].v = texoffset_V / (pFace->GetTexture()->height());
 
         // this basically acts as texture perspective correction
@@ -1466,9 +1466,9 @@ void OpenGLRenderer::DrawOutdoorSky() {
             if (worldviewdepth < 0) worldviewdepth = pCamera3D->GetFarClip();
 
             // offset tex coords
-            float texoffset_U = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth));
+            float texoffset_U = pAnimTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth));
             VertexRenderList[i].u = texoffset_U / ((float) pOutdoor->sky_texture->width());
-            float texoffset_V = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth));
+            float texoffset_V = pAnimTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth));
             VertexRenderList[i].v = texoffset_V / ((float) pOutdoor->sky_texture->height());
 
             VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
@@ -2581,8 +2581,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     uniforms.fog = fog;
     uniforms.gamma = gamma;
     uniforms.waterframe = waterAnimationFrame();
-    uniforms.flowtimer = pMiscTimer->time().realtimeMilliseconds() >> 4;
-    uniforms.flowtimerms = pMiscTimer->time().realtimeMilliseconds();
+    uniforms.flowtimer = pAnimTimer->time().realtimeMilliseconds() >> 4;
+    uniforms.flowtimerms = pAnimTimer->time().realtimeMilliseconds();
 
     // sun lighting stuff
     float ambient = pParty->uCurrentMinute + pParty->uCurrentHour * 60.0f;  // 0 - > 1439
@@ -3096,8 +3096,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
         uniforms.cameraPos.z = pParty->pos.z + pParty->eyeLevel;
         uniforms.gamma = gamma;
         uniforms.waterframe = waterAnimationFrame();
-        uniforms.flowtimer = pMiscTimer->time().realtimeMilliseconds() >> 4;
-        uniforms.flowtimerms = pMiscTimer->time().realtimeMilliseconds();
+        uniforms.flowtimer = pAnimTimer->time().realtimeMilliseconds() >> 4;
+        uniforms.flowtimerms = pAnimTimer->time().realtimeMilliseconds();
 
         // lighting stuff
         int16_t mintest = 0;

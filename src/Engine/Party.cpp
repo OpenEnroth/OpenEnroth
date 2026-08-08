@@ -619,12 +619,12 @@ void Party::updateCharactersAndHirelingsEmotions() {
     }
 
     for (Character &player : this->pCharacters) {
-        player.portraitTimePassed += pMiscTimer->dt();
+        player.portraitTimePassed += pAnimTimer->dt();
 
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
             if (player.portrait == PORTRAIT_TALK)
-                player.talkAnimation.update(pMiscTimer->dt());
+                player.talkAnimation.update(pAnimTimer->dt());
 
             if (player.portraitTimePassed < player.portraitTimeLength)
                 continue;
@@ -684,7 +684,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
         if (!pHirelingsSacrifice[i].inProgress)
             continue;
 
-        pHirelingsSacrifice[i].elapsedTime += pMiscTimer->dt();
+        pHirelingsSacrifice[i].elapsedTime += pAnimTimer->dt();
         if (pHirelingsSacrifice[i].elapsedTime >= pHirelingsSacrifice[i].endTime) {
             pHirelings[i] = NPCData();
             pHirelingsSacrifice[i] = NPCSacrificeStatus();

@@ -1217,14 +1217,14 @@ void GameUI_DrawPartySpells() {
         if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
             GraphicsImage *icon = party_buff_icons[i];
             AtlasLayout layout({16, 8}, {icon->width() / 16, icon->height() / 8});
-            int frame = (pMiscTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]) % 126;
+            int frame = (pAnimTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]) % 126;
             render->DrawQuad2D(icon, layout[frame], pPartySpellbuffsUI_XYs[i]);
         }
     }
 
     if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_NPC_DIALOGUE) {
         // Flight / water walk animation is purposefully slowed down compared to what's in the data files.
-        Duration frameTime = pMiscTimer->time() * 50 / 128;
+        Duration frameTime = pAnimTimer->time() * 50 / 128;
 
         GraphicsImage *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
@@ -1597,10 +1597,10 @@ void GameUI_DrawTorchlightAndWizardEye() {
         current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG ||
         current_screen_type == SCREEN_QUICK_REFERENCE) {
         if (pParty->TorchlightActive()) {
-            render->DrawQuad2D(pIconsFrameTable->animationFrame(game_ui_torchLight, pMiscTimer->time()), {468, 0});
+            render->DrawQuad2D(pIconsFrameTable->animationFrame(game_ui_torchLight, pAnimTimer->time()), {468, 0});
         }
         if (pParty->wizardEyeActive()) {
-            render->DrawQuad2D(pIconsFrameTable->animationFrame(game_ui_wizardEye, pMiscTimer->time()), {606, 0});
+            render->DrawQuad2D(pIconsFrameTable->animationFrame(game_ui_wizardEye, pAnimTimer->time()), {606, 0});
         }
     }
 }

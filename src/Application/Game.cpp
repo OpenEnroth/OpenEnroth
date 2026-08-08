@@ -1570,10 +1570,10 @@ void Game::gameLoop() {
             pMediaPlayer->HouseMovieLoop();
 
             pEventTimer->tick();
-            pMiscTimer->tick();
+            pAnimTimer->tick();
 
-            if (pMiscTimer->isPaused() && !pEventTimer->isPaused())
-                pMiscTimer->setPaused(false);
+            if (pAnimTimer->isPaused() && !pEventTimer->isPaused())
+                pAnimTimer->setPaused(false);
             if (pEventTimer->isTurnBased() && !pParty->bTurnBasedModeOn)
                 pEventTimer->setTurnBased(false);
             if (!pEventTimer->isPaused() && uGameState == GAME_STATE_PLAYING) {
@@ -1599,7 +1599,7 @@ void Game::gameLoop() {
 
             GameUI_WritePointedObjectStatusString();
             engine->_statusBar->update();
-            turnBasedOverlay.update(pMiscTimer->dt(), pTurnEngine->turn_stage);
+            turnBasedOverlay.update(pAnimTimer->dt(), pTurnEngine->turn_stage);
 
             if (uGameState == GAME_STATE_PLAYING) {
                 engine->Draw();
@@ -1690,7 +1690,7 @@ void Game::gameLoop() {
                     engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                     PrepareWorld(1);
                 }
-                pMiscTimer->setPaused(false);
+                pAnimTimer->setPaused(false);
                 pEventTimer->setPaused(false);
 
                 Actor::InitializeActors();

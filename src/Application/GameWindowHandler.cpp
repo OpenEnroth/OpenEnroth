@@ -369,7 +369,7 @@ void GameWindowHandler::OnActivated() {
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0400_MISC_TIMER)
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0400_MISC_TIMER;
             else
-                pMiscTimer->setPaused(false);
+                pAnimTimer->setPaused(false);
         }
 
         pAudioPlayer->resumeSounds();
@@ -391,11 +391,11 @@ void GameWindowHandler::OnDeactivated() {
                 pEventTimer->setPaused(true);
         }
 
-        if (pMiscTimer != nullptr) {
-            if (pMiscTimer->isPaused())
+        if (pAnimTimer != nullptr) {
+            if (pAnimTimer->isPaused())
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
             else
-                pMiscTimer->setPaused(true);
+                pAnimTimer->setPaused(true);
         }
 
         if (pAudioPlayer) {

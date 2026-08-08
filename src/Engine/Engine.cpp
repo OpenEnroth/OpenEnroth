@@ -521,12 +521,12 @@ void PrepareWorld(int _0_box_loading_1_fullscreen) {
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();
     pEventTimer->setPaused(true);
-    pMiscTimer->setPaused(true);
+    pAnimTimer->setPaused(true);
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
 
     assert(pEventTimer->isPaused()); // DoPrepareWorld shouldn't un-pause.
-    assert(pMiscTimer->isPaused());
-    pMiscTimer->setPaused(false);
+    assert(pAnimTimer->isPaused());
+    pAnimTimer->setPaused(false);
     pEventTimer->setPaused(false);
 }
 

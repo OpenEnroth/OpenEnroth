@@ -187,7 +187,7 @@ void SpellFxRenderer::DrawProjectiles() {
 void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
         SpriteObject *a2, Color uDiffuse, GraphicsImage *texture) {
     // check if enough time has passed to add particle into the trail
-    if (a2->_lastParticleTime + a2->_ticksPerParticle < pMiscTimer->time()) {
+    if (a2->_lastParticleTime + a2->_ticksPerParticle < pAnimTimer->time()) {
         a2->_lastParticleTime += a2->_ticksPerParticle;
     } else {
         return;
@@ -546,10 +546,10 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
     if (!pActor->massDistortionTime)
         return 1.0;
 
-    assert(pActor->massDistortionTime <= pMiscTimer->time());
+    assert(pActor->massDistortionTime <= pAnimTimer->time());
 
     // That's one hell of a weird animation curve: https://tinyurl.com/5zu7ex2p.
-    float v3 = 1.0f - (pMiscTimer->time() - pActor->massDistortionTime).realtimeMillisecondsFloat();
+    float v3 = 1.0f - (pAnimTimer->time() - pActor->massDistortionTime).realtimeMillisecondsFloat();
     if (v3 > 0.5f) {
         float v2 = (v3 - 0.5f) * (v3 - 0.5f) / 0.25f;
         return 0.2f + v2 * 0.8f;

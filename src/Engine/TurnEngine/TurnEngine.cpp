@@ -256,7 +256,7 @@ void stru262_TurnBased::AITurnBasedAction() {
         if (!(curr_actor->attributes & ACTOR_STAND_IN_QUEUE) &&
             !curr_actor->buffs[ACTOR_BUFF_STONED].Expired() &&
             !curr_actor->buffs[ACTOR_BUFF_PARALYZED].Expired()) {
-            curr_actor->currentActionTime += pMiscTimer->dt();
+            curr_actor->currentActionTime += pAnimTimer->dt();
             if (curr_actor->currentActionTime >=
                 curr_actor->currentActionLength) {
                 target_pid = ai_near_actors_targets_pid[i];

@@ -4,7 +4,7 @@
 
 #include "Engine/EngineGlobals.h"
 
-Timer *pMiscTimer = new Timer;
+Timer *pAnimTimer = new Timer;
 Timer *pEventTimer;
 
 //----- (00426317) --------------------------------------------------------

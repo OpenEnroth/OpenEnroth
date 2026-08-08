@@ -57,7 +57,7 @@ void ParticleEngine::ResetParticles() {
 }
 
 void ParticleEngine::AddParticle(Particle_sw *particle) {
-    if (!pMiscTimer->isPaused()) {
+    if (!pAnimTimer->isPaused()) {
         Particle *freeParticle = nullptr;
 
         for (int i = 0; i < pParticles.size(); i++) {
@@ -122,8 +122,8 @@ void ParticleEngine::UpdateParticles() {
     unsigned uCurrentEnd = 0;
     unsigned uCurrentBegin = PARTICLES_ARRAY_SIZE;
 
-    // TODO(captainurist): checking pMiscTimer->isPaused(), then using pEventTimer->uTimeElapsed?
-    Duration time = !pMiscTimer->isPaused() ? pEventTimer->dt() : 0_ticks;
+    // TODO(captainurist): checking pAnimTimer->isPaused(), then using pEventTimer->uTimeElapsed?
+    Duration time = !pAnimTimer->isPaused() ? pEventTimer->dt() : 0_ticks;
 
     if (!time) {
         return;

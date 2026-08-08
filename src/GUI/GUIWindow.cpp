@@ -454,7 +454,7 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, s
 void DialogueEnding() {
     speakingNpcId = 0;
     pDialogueWindow = nullptr;
-    pMiscTimer->setPaused(false);
+    pAnimTimer->setPaused(false);
     pEventTimer->setPaused(false);
 }
 

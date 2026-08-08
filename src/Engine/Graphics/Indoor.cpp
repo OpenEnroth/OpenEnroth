@@ -203,7 +203,7 @@ void IndoorLocation::Draw() {
 GraphicsImage *BLVFace::GetTexture() const {
     if (this->IsAnimated())
         // TODO(captainurist): using pEventTimer here is weird. This means that e.g. cleric in the haunted mansion is
-        //                     not animated in turn-based mode. Use misc timer?
+        //                     not animated in turn-based mode. Use the anim timer?
         return pTextureFrameTable->animationFrame(this->animationId, pEventTimer->time());
     else
         return this->texture;
@@ -1180,7 +1180,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                                                                pLevelDecorations[uDecorationID].vPosition.y - pCamera3D->vCameraPos.y);
     v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
     Duration v37 = pEventTimer->time();
-    if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->time();
+    if (pParty->bTurnBasedModeOn) v37 = pAnimTimer->time();
     v10 = std::abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + Duration::fromTicks(v10));
