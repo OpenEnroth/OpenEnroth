@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "GameConfig.h"
+
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
@@ -10,7 +12,8 @@
 #include "Library/Logger/Logger.h"
 #include "Utility/String/Format.h"
 
-GameTraceHandler::GameTraceHandler() : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}) {}
+GameTraceHandler::GameTraceHandler(GameConfig *config)
+    : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}), _config(config) {}
 
 bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
     if (isTriggerKey(event) && _waitingForKeyRelease) {
@@ -64,13 +67,11 @@ bool GameTraceHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool GameTraceHandler::isTriggerKey(const PlatformKeyEvent *event) const {
-    // TODO(captainurist) : make configurable
-    return event->key == PlatformKey::KEY_R;
+    return event->key == _config->debug.TraceKey.value();
 }
 
 bool GameTraceHandler::isTriggerKeySequence(const PlatformKeyEvent *event) const {
-    // TODO(captainurist) : make configurable
     PlatformModifiers mods = MOD_CTRL | MOD_SHIFT;
 
-    return event->key == PlatformKey::KEY_R && (event->mods & mods) == mods;
+    return isTriggerKey(event) && (event->mods & mods) == mods;
 }

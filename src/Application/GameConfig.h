@@ -131,6 +131,9 @@ class GameConfig : public Config {
         Bool TraceNoVideo = {this, "trace_no_video", true,
             "Don't play movies when recording traces."};
 
+        ConfigEntry<PlatformKey> TraceKey = {this, "trace_key", PlatformKey::KEY_R,
+            "Key that starts and stops trace recording when pressed together with Ctrl+Shift."};
+
         Bool TraceNoPartyActorCollisions = {this, "trace_no_party_actor_collisions", false,
             "Disable collisions between the party and monsters on the map when recording traces."};
 
