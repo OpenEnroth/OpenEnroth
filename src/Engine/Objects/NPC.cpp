@@ -289,3 +289,13 @@ NPCSacrificeStatus *FlatHirelings::GetSacrificeStatus(size_t index) const {
     else
         return nullptr;
 }
+
+void setNPCNamesOnLoad() {
+    for (unsigned int i = 1; i < pNPCStats->uNumNewNPCs; ++i)
+        pNPCStats->pNPCData[i].name = pNPCStats->pNPCUnicNames[i];
+
+    if (!pParty->pHirelings[0].name.empty())
+        pParty->pHirelings[0].name = pParty->pHireling1Name;
+    if (!pParty->pHirelings[1].name.empty())
+        pParty->pHirelings[1].name = pParty->pHireling2Name;
+}

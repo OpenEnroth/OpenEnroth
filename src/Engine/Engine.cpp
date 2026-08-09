@@ -557,7 +557,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     else
         loadAndPrepareODM(engine->_transitionMapId, bLoading);
 
-    pNPCStats->setNPCNamesOnLoad();
+    setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
     if (engine->_currentLoadedMapId == MAP_BREEDING_ZONE || engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
         // spawning grounds & walls of mist - no loot & exp from monsters
