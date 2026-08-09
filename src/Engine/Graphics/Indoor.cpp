@@ -881,6 +881,8 @@ void BLV_UpdateActors() {
 }
 
 void loadAndPrepareBLV(MapId mapid, bool bLoading) {
+    assert(mapid != MAP_INVALID);
+
     unsigned int respawn_interval;  // ebx@1
     MapInfo *map_info;              // edi@9
     bool v28;                       // zf@81
@@ -902,13 +904,13 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
 
-    assert(mapid != MAP_INVALID);
     mapFilename = pMapStats->pInfos[mapid].fileName;
     map_info = &pMapStats->pInfos[mapid];
     respawn_interval = pMapStats->pInfos[mapid].respawnIntervalDays;
     alertStatus = GetAlertStatus();
 
-    assert(ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "blv"));
+    if (!ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "blv"))
+        throw Exception("Indoor map '{}' has a non-blv filename", mapFilename);
 
     pStationaryLightsStack->uNumLightsActive = 0;
     pIndoor->Load(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);

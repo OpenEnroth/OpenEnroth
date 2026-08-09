@@ -1757,6 +1757,8 @@ void UpdateActors_ODM() {
  * @offset 0x47A384
  */
 static void loadAndPrepareODMInternal(MapId mapid) {
+    assert(mapid != MAP_INVALID);
+
     MapInfo *map_info;
     bool outdoor_was_respawned;
     unsigned int respawn_interval = 0;
@@ -1767,12 +1769,12 @@ static void loadAndPrepareODMInternal(MapId mapid) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;
-    assert(mapid != MAP_INVALID);
     mapFilename = pMapStats->pInfos[mapid].fileName;
     map_info = &pMapStats->pInfos[mapid];
     respawn_interval = map_info->respawnIntervalDays;
 
-    assert(ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "odm"));
+    if (!ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "odm"))
+        throw Exception("Outdoor map '{}' has a non-odm filename", mapFilename);
     pOutdoor->loc_time.weatherFlags &= ~MAP_WEATHER_FOGGY;
     pOutdoor->Initialize(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
 
