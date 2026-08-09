@@ -156,7 +156,7 @@ As typing out all the events to send inside the test code can be pretty tedious,
 * Press `Ctrl+Shift+R` to start recording an event trace. Check logs to make sure that trace recording has started.
 * Perform the steps that used to reproduce the bug.
 * Press `Ctrl+Shift+R` again to stop trace recording. You will get two files generated in the current folder – `trace00001.json` and `trace00001.mm7`, with
-the lowest free number used.
+the number one past the highest existing one, so the freshest trace always sorts last.
 * Rename them into something more suiting (e.g. `issue_XXX.json` and `issue_XXX.mm7`) and place them into `test/Data/`.
 * Create a new test case in one of the game test files in [the game tests folder](https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Bin/GameTest).
 * Use `TestController::playTraceFromTestData` to play back your trace, and add the necessary checks around it.

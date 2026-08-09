@@ -1,6 +1,8 @@
 #include "GameTraceHandler.h"
 
+#include <algorithm>
 #include <string>
+#include <string_view>
 
 #include "GameConfig.h"
 
@@ -10,10 +12,12 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
+#include "Library/Serialization/Serialization.h"
 #include "Utility/String/Format.h"
 
 GameTraceHandler::GameTraceHandler(GameConfig *config)
-    : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}), _config(config) {}
+    : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}), _config(config)
+{}
 
 bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
     if (isTriggerKey(event) && _waitingForKeyRelease) {
@@ -32,14 +36,16 @@ bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
             if (tracer->isRecording()) {
                 EngineTraceRecording recording = tracer->finishRecording(game);
 
-                // Find the first free traceNNNNN slot.
-                std::string tracePath, savePath;
-                for (int i = 1;; i++) {
-                    tracePath = fmt::format("trace{:05}.json", i);
-                    savePath = fmt::format("trace{:05}.mm7", i);
-                    if (!ufs->exists(tracePath) && !ufs->exists(savePath))
-                        break;
+                // Pick the number one past the highest existing traceNNNNN file, so that the fresh trace always
+                // sorts last.
+                int maxIndex = 0;
+                for (const DirectoryEntry &entry : ufs->ls("")) {
+                    int index = 0;
+                    if (entry.name.starts_with("trace") && tryDeserialize(std::string_view(entry.name).substr(5, 5), &index))
+                        maxIndex = std::max(maxIndex, index);
                 }
+                std::string tracePath = fmt::format("trace{:05}.json", maxIndex + 1);
+                std::string savePath = fmt::format("trace{:05}.mm7", maxIndex + 1);
 
                 ufs->write(tracePath, recording.trace);
                 ufs->write(savePath, recording.save);
