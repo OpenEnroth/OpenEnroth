@@ -89,7 +89,7 @@ static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *
 
     // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
     //                   To support fair timers they need to be saved directly.
-    Time levelLastVisit = currentMapTime().lastVisitTime;
+    Time levelLastVisit = currentLastVisitTime();
 
     triggers->clear();
     for (EventTrigger &trigger : timerTriggers) {

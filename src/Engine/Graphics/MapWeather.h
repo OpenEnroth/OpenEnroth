@@ -2,13 +2,12 @@
 
 #include <string>
 
-#include "Engine/Time/Time.h"
 #include "Engine/MapEnums.h"
 
-struct MapTime {
-    Time lastVisitTime;
+// Weather state of an outdoor map, rolled on visit and persisted in the save.
+struct MapWeather {
     std::string skyTextureName;
-    MapWeatherFlags weatherFlags = 0;
+    MapWeatherFlags flags = 0;
     int fogWeakDistance = 0;
     int fogStrongDistance = 0;
 };

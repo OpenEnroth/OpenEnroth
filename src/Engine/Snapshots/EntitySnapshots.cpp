@@ -1835,20 +1835,18 @@ void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     dst->uSpeed = src.uSpeed;
 }
 
-void snapshot(const MapTime &src, MapTime_MM7 *dst) {
+void snapshot(const MapWeather &src, MapTime_MM7 *dst) {
     memzero(dst);
 
-    snapshot(src.lastVisitTime, &dst->lastVisitTime);
     snapshot(src.skyTextureName, &dst->skyTextureName);
-    dst->weatherFlags = std::to_underlying(src.weatherFlags);
+    dst->weatherFlags = std::to_underlying(src.flags);
     dst->fogWeakDistance = src.fogWeakDistance;
     dst->fogStrongDistance = src.fogStrongDistance;
 }
 
-void reconstruct(const MapTime_MM7 &src, MapTime *dst) {
-    reconstruct(src.lastVisitTime, &dst->lastVisitTime);
+void reconstruct(const MapTime_MM7 &src, MapWeather *dst) {
     reconstruct(src.skyTextureName, &dst->skyTextureName);
-    dst->weatherFlags = static_cast<MapWeatherFlags>(src.weatherFlags);
+    dst->flags = static_cast<MapWeatherFlags>(src.weatherFlags);
     dst->fogWeakDistance = src.fogWeakDistance;
     dst->fogStrongDistance = src.fogStrongDistance;
 }
