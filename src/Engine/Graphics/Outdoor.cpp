@@ -606,20 +606,6 @@ bool OutdoorLocation::PrepareDecorations() {
     return true;
 }
 
-void OutdoorLocation::ArrangeSpriteObjects() {
-    if (!pSpriteObjects.empty()) {
-        for (int i = 0; i < (signed int)pSpriteObjects.size(); ++i) {
-            if (pSpriteObjects[i].uObjectDescID) {
-                if (!(pSpriteObjects[i].uAttributes & SPRITE_DROPPED_BY_PLAYER) && !pSpriteObjects[i].IsUnpickable()) {
-                    pSpriteObjects[i].vPosition.z = pOutdoor->pTerrain.heightByPos(pSpriteObjects[i].vPosition);
-                }
-                pSpriteObjects[i].containing_item.postGenerate(ITEM_SOURCE_MAP);
-            }
-        }
-    }
-    pGameLoadingUI_ProgressBar->Progress();
-}
-
 //----- (0047F2D3) --------------------------------------------------------
 bool OutdoorLocation::InitalizeActors(MapId a1) {
     bool alert_status;  // [sp+348h] [bp-8h]@1
@@ -1795,7 +1781,8 @@ static void loadAndPrepareODMInternal(MapId mapid) {
         RespawnGlobalDecorations();
     }
     pOutdoor->PrepareDecorations();
-    pOutdoor->ArrangeSpriteObjects();
+    arrangeSpriteObjects();
+    pGameLoadingUI_ProgressBar->Progress();
     pOutdoor->InitalizeActors(mapid);
     pWeather->Initialize();
     pCamera3D->_viewYaw = pParty->_viewYaw;

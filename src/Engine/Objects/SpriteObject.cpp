@@ -27,6 +27,7 @@
 
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -580,6 +581,17 @@ void SpriteObject::OnInteraction(unsigned int uLayingItemID) {
             pSpriteObjects[uLayingItemID].uAttributes &= ~SPRITE_HALT_TURN_BASED;
             --pTurnEngine->pending_actions;
         }
+    }
+}
+
+void arrangeSpriteObjects() {
+    for (SpriteObject &object : pSpriteObjects) {
+        if (!object.uObjectDescID)
+            continue;
+        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && !(object.uAttributes & SPRITE_DROPPED_BY_PLAYER) &&
+            !object.IsUnpickable())
+            object.vPosition.z = pOutdoor->pTerrain.heightByPos(object.vPosition);
+        object.containing_item.postGenerate(ITEM_SOURCE_MAP);
     }
 }
 

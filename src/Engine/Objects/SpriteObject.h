@@ -91,6 +91,12 @@ struct SpriteObject {
     Duration _ticksPerParticle = 2_ticks; // how many ticks between particles
 };
 
+/**
+ * Snaps map-placed sprite objects to the ground on outdoor maps and post-generates their items. Called during
+ * level loading.
+ */
+void arrangeSpriteObjects();
+
 void CompactLayingItemsList();
 
 extern std::vector<SpriteObject> pSpriteObjects;
