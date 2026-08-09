@@ -74,6 +74,10 @@ inline MonsterTier monsterTierForMonsterId(MonsterId monsterId) {
     return static_cast<MonsterTier>((std::to_underlying(monsterId) - std::to_underlying(MONSTER_FIRST)) % 3);
 }
 
+inline MonsterId monsterIdForMonsterTypeAndTier(MonsterType monsterType, MonsterTier tier) {
+    return static_cast<MonsterId>((std::to_underlying(monsterType) - 1) * 3 + 1 + std::to_underlying(tier));
+}
+
 
 //
 // MonsterSupertype
