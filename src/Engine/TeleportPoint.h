@@ -71,6 +71,8 @@ class TeleportPoint {
  * Moves the party to the given starting point decoration of the currently loaded map, then applies the pending
  * teleport in `engine->_teleportPoint` on top of it, if valid. Does nothing if `point` doesn't name a known
  * decoration type.
+ *
+ * @param point                         Starting point type to move the party to.
  */
 void TeleportToStartingPoint(MapStartPoint point);
 

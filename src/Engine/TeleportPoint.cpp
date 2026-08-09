@@ -90,32 +90,32 @@ MapStartPoint uLevel_StartingPointType;
 
 void TeleportToStartingPoint(MapStartPoint point) {
     DecorationId decID = pDecorationList->GetDecorIdByName(toString(point));
+    if (decID == DECORATION_NULL)
+        return;
 
-    if (decID != DECORATION_NULL) {
-        for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-            if (pLevelDecorations[i].uDecorationDescID == decID) {
-                pParty->pos = pLevelDecorations[i].vPosition;
-                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
-                    // always placing the party on the ground.
-                    // TODO: (Chaosit) dummy variables created for the sake of passing pointers
-                    bool bOnWater = false;
-                    int bModelPid;
-                    pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid);
-                } else {
-                    int face = -1;
-                    pParty->pos.z = BLV_GetFloorLevel(pParty->pos, pIndoor->GetSector(pParty->pos), &face);
-                }
-                pParty->velocity = Vec3f();
-                pParty->uFallStartZ = pParty->pos.z;
-                pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
-                pParty->_viewPitch = 0;
+    for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
+        if (pLevelDecorations[i].uDecorationDescID == decID) {
+            pParty->pos = pLevelDecorations[i].vPosition;
+            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+                // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
+                // always placing the party on the ground.
+                // TODO: (Chaosit) dummy variables created for the sake of passing pointers
+                bool bOnWater = false;
+                int bModelPid;
+                pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid);
+            } else {
+                int face = -1;
+                pParty->pos.z = BLV_GetFloorLevel(pParty->pos, pIndoor->GetSector(pParty->pos), &face);
             }
+            pParty->velocity = Vec3f();
+            pParty->uFallStartZ = pParty->pos.z;
+            pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
+            pParty->_viewPitch = 0;
         }
-
-        if (engine->_teleportPoint.isValid()) {
-            engine->_teleportPoint.doTeleport(true);
-        }
-        engine->_teleportPoint.invalidate();
     }
+
+    if (engine->_teleportPoint.isValid()) {
+        engine->_teleportPoint.doTeleport(true);
+    }
+    engine->_teleportPoint.invalidate();
 }
