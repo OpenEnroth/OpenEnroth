@@ -911,10 +911,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         collision_state.collisionPos -= closestdist * collision_state.direction;
 
         float adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3f(0, 0, collision_state.radius_lo), &collision_state.uSectorID, faceId);
-        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
-            // New pos is out of bounds, running more iterations won't help.
-            break;
-        }
+        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128)
+            break; // New pos is out of bounds, running more iterations won't help.
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         pParty->pos = adjusted_pos;
