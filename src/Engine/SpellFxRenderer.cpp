@@ -187,7 +187,7 @@ void SpellFxRenderer::DrawProjectiles() {
 void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
         SpriteObject *a2, Color uDiffuse, GraphicsImage *texture) {
     // check if enough time has passed to add particle into the trail
-    if (a2->_lastParticleTime + a2->_ticksPerParticle < pMiscTimer->time()) {
+    if (a2->_lastParticleTime + a2->_ticksPerParticle < animTimer->time()) {
         a2->_lastParticleTime += a2->_ticksPerParticle;
     } else {
         return;
@@ -546,10 +546,10 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
     if (!pActor->massDistortionTime)
         return 1.0;
 
-    assert(pActor->massDistortionTime <= pMiscTimer->time());
+    assert(pActor->massDistortionTime <= animTimer->time());
 
     // That's one hell of a weird animation curve: https://tinyurl.com/5zu7ex2p.
-    float v3 = 1.0f - (pMiscTimer->time() - pActor->massDistortionTime).realtimeMillisecondsFloat();
+    float v3 = 1.0f - (animTimer->time() - pActor->massDistortionTime).realtimeMillisecondsFloat();
     if (v3 > 0.5f) {
         float v2 = (v3 - 0.5f) * (v3 - 0.5f) / 0.25f;
         return 0.2f + v2 * 0.8f;
@@ -1143,14 +1143,14 @@ void SpellFxRenderer::RenderSpecialEffects() {
         if (fadeAmount > 0.9) fadeAmount = 1.0 - (fadeAmount - 0.9) * 10.0;
         fadeAlpha = fadeAmount;
         render->ScreenFade(uFadeColor, fadeAlpha);
-        uFadeTime -= pEventTimer->dt();
+        uFadeTime -= gameTimer->dt();
     }
 
     if (uAnimLength > 0_ticks) {
         // prismatic light
         animElapsed = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].animationLength - uAnimLength;
         prismaticFrame = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), animElapsed);
-        uAnimLength -= pEventTimer->dt();
+        uAnimLength -= gameTimer->dt();
 
         render->DrawSpecialEffectsQuad(prismaticFrame->sprites[0]->texture, prismaticFrame->paletteId);
     }
@@ -1162,7 +1162,7 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
         PlayerBuffAnim *buff = &pCharacterBuffs[i];
         if (!buff->bRender) continue;
 
-        buff->uSpellAnimTimeElapsed += pEventTimer->dt();
+        buff->uSpellAnimTimeElapsed += gameTimer->dt();
         if (buff->uSpellAnimTimeElapsed >= buff->uSpellAnimTime) {
             buff->bRender = false;
             continue;

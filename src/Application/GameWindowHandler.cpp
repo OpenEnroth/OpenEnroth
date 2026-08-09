@@ -232,7 +232,7 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
         return; // Item used on character, do not enter popup mode.
 
     // OK, enter popup mode!
-    pEventTimer->setPaused(true);
+    gameTimer->setPaused(true);
     holdingMouseRightButton = true;
 }
 
@@ -365,11 +365,11 @@ void GameWindowHandler::OnActivated() {
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER)
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0200_EVENT_TIMER;
             else
-                pEventTimer->setPaused(false);
+                gameTimer->setPaused(false);
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0400_MISC_TIMER)
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0400_MISC_TIMER;
             else
-                pMiscTimer->setPaused(false);
+                animTimer->setPaused(false);
         }
 
         pAudioPlayer->resumeSounds();
@@ -384,18 +384,18 @@ void GameWindowHandler::OnDeactivated() {
         // dword_4E98BC_bApplicationActive = 0;
 
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_APP_INACTIVE;
-        if (pEventTimer != nullptr) {
-            if (pEventTimer->isPaused())
+        if (gameTimer != nullptr) {
+            if (gameTimer->isPaused())
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
             else
-                pEventTimer->setPaused(true);
+                gameTimer->setPaused(true);
         }
 
-        if (pMiscTimer != nullptr) {
-            if (pMiscTimer->isPaused())
+        if (animTimer != nullptr) {
+            if (animTimer->isPaused())
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
             else
-                pMiscTimer->setPaused(true);
+                animTimer->setPaused(true);
         }
 
         if (pAudioPlayer) {

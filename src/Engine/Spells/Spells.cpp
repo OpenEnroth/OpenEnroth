@@ -860,9 +860,9 @@ void armageddonProgress() {
 
     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + grng->randomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
     pParty->_viewPitch = std::clamp(pParty->_viewPitch + grng->randomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
-    pParty->armageddon_timer = std::max(0_ticks, pParty->armageddon_timer - pEventTimer->dt()); // Was pMiscTimer
+    pParty->armageddon_timer = std::max(0_ticks, pParty->armageddon_timer - gameTimer->dt()); // Was animTimer
 
-    // TODO(pskelton): ignore if pEventTimer->uTimeElapsed is zero?
+    // TODO(pskelton): ignore if gameTimer->uTimeElapsed is zero?
     // TODO(captainurist): See the logic in Outdoor.cpp, right now the force is applied in fixed amounts per frame,
     // while it should be applied in amounts relative to frame time --- basically, armageddon should provide some
     // acceleration, and then this acceleration should be applied to actors over a brief period of time.

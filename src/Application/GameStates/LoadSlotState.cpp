@@ -55,7 +55,7 @@ FsmAction LoadSlotState::update() {
             break;
         }
         case UIMSG_Escape: {
-            pEventTimer->setPaused(false);
+            gameTimer->setPaused(false);
             SetCurrentMenuID(MENU_MAIN);
             current_screen_type = SCREEN_GAME;
             return FsmAction::transition("back");

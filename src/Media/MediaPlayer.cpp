@@ -734,7 +734,7 @@ void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {
         return;
     }
 
-    pEventTimer->setPaused(true);
+    gameTimer->setPaused(true);
     pAudioPlayer->pauseLooping();
     pAudioPlayer->MusicPause();
     Blob blob = LoadMovie(pMovieName);
@@ -829,7 +829,7 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
     }
     pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
 
-    pEventTimer->setPaused(true);
+    gameTimer->setPaused(true);
     pAudioPlayer->pauseLooping();
     pAudioPlayer->MusicPause();
     platform->setCursorShown(false);
@@ -930,7 +930,7 @@ void MPlayer::Unload() {
         pAudioPlayer->MusicResume();
         pAudioPlayer->resumeSounds();
     }
-    pEventTimer->setPaused(false);
+    gameTimer->setPaused(false);
 }
 
 // for video//////////////////////////////////////////////////////////////////

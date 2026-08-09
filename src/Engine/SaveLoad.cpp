@@ -63,15 +63,15 @@ void loadGame(int uSlot) {
 
     // Move loaded state to global variables.
     *pParty = std::move(state.party);
-    *pEventTimer = std::move(state.eventTimer);
+    *gameTimer = std::move(state.eventTimer);
     *pActiveOverlayList = std::move(state.overlays);
     pNPCStats->pNPCData = std::move(state.npcData);
     pNPCStats->pGroups = std::move(state.npcGroups);
     pMapDeltas = std::move(state.mapDeltas);
 
-    // Patch up event timer.
-    pEventTimer->setPaused(true); // We're loading the game now => event timer is paused.
-    pEventTimer->setTurnBased(false);
+    // Patch up the game timer.
+    gameTimer->setPaused(true); // We're loading the game now => game timer is paused.
+    gameTimer->setTurnBased(false);
 
     // We always start in realtime after loading a game.
     pParty->bTurnBasedModeOn = false;
@@ -142,7 +142,7 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
     state.header.locationName = currentMapName;
     state.header.playingTime = pParty->GetPlayingTime();
     state.party = *pParty;
-    state.eventTimer = *pEventTimer;
+    state.eventTimer = *gameTimer;
     state.overlays = *pActiveOverlayList;
     state.npcData = pNPCStats->pNPCData;
     state.npcGroups = pNPCStats->pGroups;
@@ -248,7 +248,7 @@ void doSavegame(int uSlot) {
         }
     }
 
-    pEventTimer->setPaused(false);
+    gameTimer->setPaused(false);
     engine->_statusBar->setEvent(LSTR_GAME_SAVED);
 }
 

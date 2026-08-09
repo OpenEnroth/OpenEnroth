@@ -18,7 +18,7 @@ struct CollisionState {
      *
      * Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.
      *
-     * @param dt                        Time delta. Pass `0_ticks` to take the correct value from global `pEventTimer`.
+     * @param dt                        Time delta. Pass `0_ticks` to take the correct value from global `gameTimer`.
      * @return                          True if there is no movement, false otherwise.
      */
     bool PrepareAndCheckIfStationary(Duration dt = 0_ticks);

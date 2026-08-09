@@ -619,12 +619,12 @@ void Party::updateCharactersAndHirelingsEmotions() {
     }
 
     for (Character &player : this->pCharacters) {
-        player.portraitTimePassed += pMiscTimer->dt();
+        player.portraitTimePassed += animTimer->dt();
 
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
             if (player.portrait == PORTRAIT_TALK)
-                player.talkAnimation.update(pMiscTimer->dt());
+                player.talkAnimation.update(animTimer->dt());
 
             if (player.portraitTimePassed < player.portraitTimeLength)
                 continue;
@@ -684,7 +684,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
         if (!pHirelingsSacrifice[i].inProgress)
             continue;
 
-        pHirelingsSacrifice[i].elapsedTime += pMiscTimer->dt();
+        pHirelingsSacrifice[i].elapsedTime += animTimer->dt();
         if (pHirelingsSacrifice[i].elapsedTime >= pHirelingsSacrifice[i].endTime) {
             pHirelings[i] = NPCData();
             pHirelingsSacrifice[i] = NPCSacrificeStatus();
@@ -793,7 +793,7 @@ void restAndHeal(Duration restTime) {
 void Party::restOneFrame() {
     // Before each frame party rested for 6 minutes but that caused resting to be too fast on high FPS.
     // Game time is 30x real time, so given the calculation below we're resting ~6 game hours per realtime second.
-    Duration restTick = pEventTimer->dt() * 12 * 64;
+    Duration restTick = gameTimer->dt() * 12 * 64;
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;

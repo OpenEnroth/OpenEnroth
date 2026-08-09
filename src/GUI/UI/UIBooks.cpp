@@ -78,7 +78,7 @@ GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRen
     initializeFonts();
     CreateButton({475, 445}, {158, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_EXIT_DIALOGUE));
     current_screen_type = SCREEN_BOOKS;
-    pEventTimer->setPaused(true);
+    gameTimer->setPaused(true);
 }
 
 void GUIWindow_Book::initializeFonts() {

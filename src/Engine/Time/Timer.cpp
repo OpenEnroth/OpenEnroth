@@ -4,8 +4,8 @@
 
 #include "Engine/EngineGlobals.h"
 
-Timer *pMiscTimer = new Timer;
-Timer *pEventTimer;
+Timer *animTimer = new Timer;
+Timer *gameTimer;
 
 //----- (00426317) --------------------------------------------------------
 Duration Timer::platformTime() {
