@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Library/Geometry/Vec.h"
+
 struct stru314 {  // facet normals face / wall / celings
     //----- (00489B60) --------------------------------------------------------
     stru314() {
@@ -20,6 +22,13 @@ struct stru314 {  // facet normals face / wall / celings
 
     //----- (00489B96) --------------------------------------------------------
     inline ~stru314() {}
+
+    /**
+     * Computes the facet-local u and v axes from `Normal` and stores them in `field_10` and `field_1C`.
+     *
+     * @offset 0x436932
+     */
+    void computeBasis();
 
     Vec3f Normal;
     Vec3f field_10; // For decal application: u vector, perpendicular to Normal

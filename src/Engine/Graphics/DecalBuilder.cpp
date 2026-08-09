@@ -68,7 +68,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
     static stru314 static_FacePlane;
     static_FacePlane.Normal = FacePlane.normal;
     static_FacePlane.dist = FacePlane.dist;
-    Camera3D::GetFacetOrientation(static_FacePlane.Normal, &static_FacePlane.field_10, &static_FacePlane.field_1C);
+    static_FacePlane.computeBasis();
 
     if (this->uNumSplatsThisFace > 0) {
         for (int i = 0; i < this->uNumSplatsThisFace; ++i) {
