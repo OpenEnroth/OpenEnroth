@@ -93,6 +93,11 @@ cmake(
         ":_windows_dbg": _CACHE_ENTRIES | {
             "CMAKE_BUILD_TYPE": "Debug",
             "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDebug",
+            # Cmake's msvc Debug default is /Zi, which funnels every cl.exe
+            # through one mspdbsrv RPC server and flakes under parallel ninja
+            # (C1090, PDB API call failed). Embedded /Z7 has no server.
+            "CMAKE_C_FLAGS_DEBUG": "/Z7 /Ob0 /Od /RTC1",
+            "CMAKE_CXX_FLAGS_DEBUG": "/Z7 /Ob0 /Od /RTC1",
         },
         "//conditions:default": _CACHE_ENTRIES,
     }),
