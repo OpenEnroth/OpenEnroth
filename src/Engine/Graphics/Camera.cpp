@@ -78,7 +78,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
     int uOutNumVertices = 2;
     a1[0].vWorldPosition = pLineBegin->vWorldPosition;
     a1[1].vWorldPosition = pLineEnd->vWorldPosition;
-    if (CullFaceToCameraFrustum(a1, &uOutNumVertices, pVertices, 4) != 1 || uOutNumVertices >= 2) {
+    if (CullFaceToCameraFrustum(a1, &uOutNumVertices, pVertices, FRUSTUM_PLANE_COUNT) != 1 || uOutNumVertices >= 2) {
         ViewTransform(pVertices, 2);
         Project(pVertices, 2, 0);
 
@@ -249,7 +249,6 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     unsigned int *pOutNumVertices,
     RenderVertexSoft *pVertices,
     const Planef *CameraFrustrum) {
-    // NumFrustumPlanes usually 4 - top, bottom, left, right - near and far done elsewhere
     // DebugLines 0 or 1 - 1 when debug lines
 
     RenderVertexSoft *v14;  // eax@8
@@ -258,9 +257,6 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     // int v18; // [sp+48h] [bp-Ch]@5
     bool VertsAdjusted = false;  // [sp+53h] [bp-1h]@5
     // bool a6a; // [sp+70h] [bp+1Ch]@5
-
-    // TODO(yoctozepto): just have this as a global constant instead of random vars/4 around
-    const int NumFrustumPlanes = 4;
 
     // v17 = 0.0;
     // thisa = engine->pStru9Instance;
@@ -275,7 +271,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     // v13 = (char *)&a4->y;
 
     // while ( 1 )
-    for (unsigned i = 0; i < NumFrustumPlanes; ++i) {  // cycle through left,right, top, bottom planes
+    for (unsigned i = 0; i < FRUSTUM_PLANE_COUNT; ++i) {  // cycle through left,right, top, bottom planes
         if (i % 2) {
             v14 = pInVertices;
             v15 = sr_vertices_50D9D8;
@@ -284,7 +280,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
             v14 = sr_vertices_50D9D8;
         }
 
-        if (i == NumFrustumPlanes - 1) v14 = pVertices;
+        if (i == FRUSTUM_PLANE_COUNT - 1) v14 = pVertices;
 
         ClippingFunctions::ClipVertsToFrustumPlane(
             v15, *pOutNumVertices, v14, pOutNumVertices, &CameraFrustrum[i].normal, -CameraFrustrum[i].dist,
@@ -297,8 +293,6 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
         }
         // result = a6a;
         // v13 += 24;
-        // if (++i >= FrustumPlanes)
-        //
     }
     return VertsAdjusted;
 }

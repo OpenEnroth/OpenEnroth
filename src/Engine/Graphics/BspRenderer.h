@@ -12,7 +12,7 @@ struct BspRenderer_ViewportNode {
     int uSectorID = 0;  // sector that this node shows
     int uFaceID = 0;  // face id of the portal through which we're seeing this node
     int parentNodeId = 0;
-    std::array<Planef, 4> ViewportNodeFrustum = {{}};  // frustum planes of portal
+    std::array<Planef, FRUSTUM_PLANE_COUNT> ViewportNodeFrustum = {{}};  // frustum planes of portal
 
  private:
     void SetFrustumToCamera();

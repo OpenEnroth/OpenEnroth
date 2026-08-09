@@ -10,6 +10,8 @@
 
 struct BLVFace;
 
+constexpr int FRUSTUM_PLANE_COUNT = 4;  // Left, right, top and bottom. Near and far are handled separately.
+
 struct Camera3D {
     Vec3f ViewTransform(const Vec3f* pos) const;
     void ViewTransform(RenderVertexSoft *vertex, int uNumVertices) const;
@@ -55,7 +57,7 @@ struct Camera3D {
 
     glm::mat3x3 ViewMatrix = {};
     // using w comp of vec4 for dotdist
-    std::array<glm::vec4, 6> FrustumPlanes = {{}};
+    std::array<glm::vec4, FRUSTUM_PLANE_COUNT> FrustumPlanes = {{}};
 
     // field of view in vertical direction in degrees for GL
     float fov_y_deg = 0;

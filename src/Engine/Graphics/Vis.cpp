@@ -324,7 +324,7 @@ bool IsSphereInFrustum(Vec3f center, float radius, Planef *frustum) {
     // center must be within all four of the camera frustum planes to be visible
     Vec3f planenormal;
     float planedist = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < FRUSTUM_PLANE_COUNT; i++) {
         if (frustum) {
             planenormal = frustum[i].normal;
             planedist = -frustum[i].dist;
