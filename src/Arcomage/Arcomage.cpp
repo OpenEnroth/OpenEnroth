@@ -880,10 +880,6 @@ void ArcomageGame::Loop() {
             pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
 
             ArcomageGame::MsgLoop(20, &v10);
-            if (v10.am_input_type == ARCO_MSG_KEYDOWN) {
-                if (v10.field_4) break;
-                continue;
-            }
             if ((v10.am_input_type == ARCO_MSG_PLAYCARD) || (v10.am_input_type == ARCO_MSG_DISCARD)) break;
             if (v10.am_input_type == ARCO_MSG_ESCAPE) break;
 
@@ -1187,13 +1183,6 @@ char PlayerTurn(int player_num) {
         if (pArcomageGame->_forceExit) break_loop = true;
         ArcomageGame::MsgLoop(0, &get_message);
         switch (get_message.am_input_type) {
-            case ARCO_MSG_FORCEQUIT:
-                if (get_message.field_4 == 129 && get_message.am_input_key == PlatformKey::KEY_ESCAPE) { // TODO(pskelton): was 1 - what was this meant to do? Check for dual key press??
-                    num_actions_left = 0;
-                    break_loop = true;
-                    pArcomageGame->_forceExit = 1;
-                }
-                break;
             case ARCO_MSG_ESCAPE:
                 if (pArcomageGame->_checkExit == 1) {
                     pArcomageGame->_gameOver = 1;
