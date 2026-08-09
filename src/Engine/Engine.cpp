@@ -548,8 +548,8 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     engine->SetUnderwater(isMapUnderwater(engine->_transitionMapId));
 
-    // Pressure plates fire when the party's floor face changes, and face ids are per-map, so a leftover id
-    // could fire or suppress a plate right after the transition.
+    // Need to zero this one out. Pressure plates fire when the party's floor face changes, face ids are
+    // per-map, and a leftover id could fire or suppress a plate right after the transition.
     pParty->floor_face_id = 0;
 
     engine->_currentLoadedMapId = engine->_transitionMapId;
