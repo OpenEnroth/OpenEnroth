@@ -24,7 +24,7 @@ static bool shouldSkip(const GameConfig *config, const ConfigSection *section, c
         entry == &config->settings.VoiceLevel ||
         entry == &config->settings.SoundLevel ||
         entry == &config->debug.LogLevel ||
-        entry == &config->debug.TraceKey ||
+        entry == &config->keybindings.TraceKey ||
         entry == &config->debug.NoVideo ||
         entry == &config->debug.NoPartyActorCollisions ||
         entry == &config->gameplay.QuickSavesCount;

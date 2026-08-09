@@ -73,7 +73,7 @@ bool GameTraceHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool GameTraceHandler::isTriggerKey(const PlatformKeyEvent *event) const {
-    return event->key == _config->debug.TraceKey.value();
+    return event->key == _config->keybindings.TraceKey.value();
 }
 
 bool GameTraceHandler::isTriggerKeySequence(const PlatformKeyEvent *event) const {
