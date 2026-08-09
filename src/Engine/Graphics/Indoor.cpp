@@ -1495,7 +1495,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     // not hovering & stepped onto a new face => activate potential pressure plate.
-    if (!isAboveGround && pParty->floor_face_id != 0 && pParty->floor_face_id != faceId) {
+    if (!isAboveGround && pParty->floor_face_id != -1 && pParty->floor_face_id != faceId) {
         if (pIndoor->faces[faceId].attributes & FACE_PRESSURE_PLATE)
             faceEvent = pIndoor->faces[faceId].eventId;
     }

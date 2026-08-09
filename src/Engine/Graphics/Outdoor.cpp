@@ -1477,7 +1477,8 @@ void ODM_ProcessPartyActions() {
                 if (!partyNotTouchingFloor || partyCloseToGround) {
                     int modelId = pParty->floor_face_id >> 6;
                     int faceId = pParty->floor_face_id & 0x3F;
-                    bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].faces[faceId].Visible();
+                    bool isModelWalk = !partyNotOnModel && pParty->floor_face_id != -1 &&
+                                       pOutdoor->pBModels[modelId].faces[faceId].Visible();
                     SoundId sound = SOUND_Invalid;
                     if (partyIsRunning) {
                         if (walkDelta >= 4) {
