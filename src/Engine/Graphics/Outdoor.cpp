@@ -1767,17 +1767,12 @@ static void loadAndPrepareODMInternal(MapId mapid) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;
-    if (mapid != MAP_INVALID) {
-        mapFilename = pMapStats->pInfos[mapid].fileName;
-        map_info = &pMapStats->pInfos[mapid];
-        respawn_interval = map_info->respawnIntervalDays;
+    assert(mapid != MAP_INVALID);
+    mapFilename = pMapStats->pInfos[mapid].fileName;
+    map_info = &pMapStats->pInfos[mapid];
+    respawn_interval = map_info->respawnIntervalDays;
 
-        assert(ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "odm"));
-    } else {
-        // TODO(Nik-RE-dev): why there's logic for loading maps that are not listed in info?
-        mapFilename = "";
-        map_info = nullptr;
-    }
+    assert(ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "odm"));
     pOutdoor->loc_time.weatherFlags &= ~MAP_WEATHER_FOGGY;
     pOutdoor->Initialize(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
 
@@ -1787,7 +1782,7 @@ static void loadAndPrepareODMInternal(MapId mapid) {
     }
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
 
-    if (outdoor_was_respawned && mapid != MAP_INVALID) {
+    if (outdoor_was_respawned) {
         for (unsigned i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
             SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 

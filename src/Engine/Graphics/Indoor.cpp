@@ -888,7 +888,6 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
     std::string mapFilename;
 
-    respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
     uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
@@ -903,18 +902,13 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
 
-    if (mapid != MAP_INVALID) {
-        mapFilename = pMapStats->pInfos[mapid].fileName;
-        map_info = &pMapStats->pInfos[mapid];
-        respawn_interval = pMapStats->pInfos[mapid].respawnIntervalDays;
-        alertStatus = GetAlertStatus();
+    assert(mapid != MAP_INVALID);
+    mapFilename = pMapStats->pInfos[mapid].fileName;
+    map_info = &pMapStats->pInfos[mapid];
+    respawn_interval = pMapStats->pInfos[mapid].respawnIntervalDays;
+    alertStatus = GetAlertStatus();
 
-        assert(ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "blv"));
-    } else {
-        // TODO(Nik-RE-dev): why there's logic for loading maps that are not listed in info?
-        mapFilename = "";
-        map_info = nullptr;
-    }
+    assert(ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "blv"));
 
     pStationaryLightsStack->uNumLightsActive = 0;
     pIndoor->Load(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
@@ -923,8 +917,6 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         SpriteObject::InitializeSpriteObjects();
     }
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
-    if (mapid == MAP_INVALID)
-        indoor_was_respawned = false;
 
     if (indoor_was_respawned) {
         for (unsigned i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
@@ -994,11 +986,6 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     for (Actor &actor : pActors) {
         if (actor.attributes & ACTOR_UNKNOW7) {
-            if (mapid == MAP_INVALID) {
-                actor.monsterInfo.field_3E = 19;
-                actor.attributes |= ACTOR_UNKNOW11;
-                continue;
-            }
             v28 = !alertStatus;
         } else {
             v28 = alertStatus;
