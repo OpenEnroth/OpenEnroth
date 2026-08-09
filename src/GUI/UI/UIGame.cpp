@@ -880,9 +880,16 @@ void GameUI_WritePointedObjectStatusString() {
 
             auto vis = EngineIocContainer::ResolveVis();
 
-            // get_picked_object_zbuf_val contains both the pid and the depth
             Vis_PIDAndDepth pickedObject = engine->PickMouseNormal();
             mouse->uPointingObjectID = pickedObject.pid;
+            // The pick above is capped at ranged-attack reach, but monster popups reach further. Fall back to a
+            // display-only pick at popup depth so that every monster that can show a popup also gets a status bar
+            // hint. uPointingObjectID intentionally keeps the shorter reach - combat targeting reads it.
+            if (!pickedObject.pid) {
+                Vis_PIDAndDepth popupPick = engine->PickMouseInfoPopup();
+                if (popupPick.pid.type() == OBJECT_Actor)
+                    pickedObject = popupPick;
+            }
             pickedObjectID = (signed)pickedObject.pid.id();
             if (pickedObject.pid.type() == OBJECT_Sprite) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
@@ -943,20 +950,12 @@ void GameUI_WritePointedObjectStatusString() {
                 uLastPointedObjectID = Pid();
                 return;
             } else if (pickedObject.pid.type() == OBJECT_Actor) {
-                if (pickedObject.depth >= 0x2000u) {
-                    mouse->uPointingObjectID = Pid();
-                    if (uLastPointedObjectID) {
-                        engine->_statusBar->clearPermanent();
-                    }
-                    uLastPointedObjectID = Pid();
-                    return;
-                }
                 engine->_statusBar->setPermanent(pActors[pickedObjectID].GetDisplayName());
             }
-            if (!mouse->uPointingObjectID && uLastPointedObjectID) {
+            if (!pickedObject.pid && uLastPointedObjectID) {
                 engine->_statusBar->clearPermanent();
             }
-            uLastPointedObjectID = mouse->uPointingObjectID;
+            uLastPointedObjectID = pickedObject.pid;
             return;
         }
     } else if (current_screen_type == SCREEN_CHEST) {
