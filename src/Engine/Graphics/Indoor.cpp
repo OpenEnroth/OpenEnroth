@@ -202,9 +202,9 @@ void IndoorLocation::Draw() {
 //----- (004AE5BA) --------------------------------------------------------
 GraphicsImage *BLVFace::GetTexture() const {
     if (this->IsAnimated())
-        // TODO(captainurist): using pGameTimer here is weird. This means that e.g. cleric in the haunted mansion is
+        // TODO(captainurist): using gameTimer here is weird. This means that e.g. cleric in the haunted mansion is
         //                     not animated in turn-based mode. Use the anim timer?
-        return pTextureFrameTable->animationFrame(this->animationId, pGameTimer->time());
+        return pTextureFrameTable->animationFrame(this->animationId, gameTimer->time());
     else
         return this->texture;
 }
@@ -634,7 +634,7 @@ void BLV_UpdateDoors() {
 
         bool shouldPlaySound = !(door->attributes & DOOR_NOSOUND) && door->numVertices != 0;
 
-        door->timeSinceTriggered += pGameTimer->dt();
+        door->timeSinceTriggered += gameTimer->dt();
 
         int closeDistance = 0;     // [sp+60h] [bp-4h]@6
         if (door->state == DOOR_CLOSING) {
@@ -847,7 +847,7 @@ void BLV_UpdateActors() {
 
         // TODO(pskelton): why 8? doesnt match party
         if (!isFlying)
-            actor.velocity.z += -8 * pGameTimer->dt().ticks() * GetGravityStrength();
+            actor.velocity.z += -8 * gameTimer->dt().ticks() * GetGravityStrength();
 
         if (actor.velocity.xy().lengthSqr() < 400) {
             actor.velocity.x = 0;
@@ -1179,8 +1179,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
          ((signed int)TrigLUT.uIntegerPi >> 3) - TrigLUT.atan2(pLevelDecorations[uDecorationID].vPosition.x - pCamera3D->vCameraPos.x,
                                                                pLevelDecorations[uDecorationID].vPosition.y - pCamera3D->vCameraPos.y);
     v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
-    Duration v37 = pGameTimer->time();
-    if (pParty->bTurnBasedModeOn) v37 = pAnimTimer->time();
+    Duration v37 = gameTimer->time();
+    if (pParty->bTurnBasedModeOn) v37 = animTimer->time();
     v10 = std::abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + Duration::fromTicks(v10));
@@ -1523,7 +1523,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     // TODO(captainurist): #time think about a better way to write this formula.
     int rotation =
-        pGameTimer->dt().ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
+        gameTimer->dt().ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
 
     pParty->velocity = Vec3f(0, 0, pParty->velocity.z);
 
@@ -1623,7 +1623,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
-    pParty->velocity.z += -2.0f * pGameTimer->dt().ticks() * GetGravityStrength();
+    pParty->velocity.z += -2.0f * gameTimer->dt().ticks() * GetGravityStrength();
 
     if (isAboveGround) {
         if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
@@ -1641,7 +1641,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->uFallStartZ = pParty->pos.z;
 
     // If party movement delta is lower then this number then the party remains stationary.
-    int64_t elapsed_time_bounded = std::min(pGameTimer->dt().ticks(), static_cast<std::int64_t>(10000));
+    int64_t elapsed_time_bounded = std::min(gameTimer->dt().ticks(), static_cast<std::int64_t>(10000));
     int min_party_move_delta_sqr = 400 * elapsed_time_bounded * elapsed_time_bounded / 8;
 
     if (pParty->velocity.xy().lengthSqr() < min_party_move_delta_sqr) {
@@ -1667,7 +1667,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         bool canStartNewSound = !pAudioPlayer->isWalkingSoundPlays();
 
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
-        if (pGameTimer->dt()) {
+        if (gameTimer->dt()) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
             int walkDelta = integer_sqrt((oldPos - pParty->pos).lengthSqr());
 

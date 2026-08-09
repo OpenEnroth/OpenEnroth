@@ -85,7 +85,7 @@ SpellId spellbookSelectedSpell;
 
 GUIWindow_Spellbook::GUIWindow_Spellbook() : GUIWindow(WINDOW_SpellBook, {0, 0}, render->GetRenderDimensions()) {
     current_screen_type = SCREEN_SPELL_BOOK;
-    pGameTimer->setPaused(true);
+    gameTimer->setPaused(true);
 
     initializeTextures();
     openSpellbook();

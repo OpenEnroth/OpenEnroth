@@ -203,7 +203,7 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationClickOK:
             new OnButtonClick({580, 431}, {0, 0}, pPlayerCreationUI_BtnOK);
             if (CharacterCreation_GetUnspentAttributePointCount() || !PlayerCreation_Choose4Skills()) {
-                errorMessageExpireTime = pAnimTimer->time() + Duration::fromRealtimeSeconds(4); // show message for 4 seconds
+                errorMessageExpireTime = animTimer->time() + Duration::fromRealtimeSeconds(4); // show message for 4 seconds
             } else {
                 uGameState = GAME_STATE_STARTING_NEW_GAME;
             }
@@ -258,7 +258,7 @@ void CreateParty_EventLoop() {
 
 bool PartyCreationUI_Loop() {
     pAudioPlayer->MusicStop();
-    pGameTimer->setPaused(true);
+    gameTimer->setPaused(true);
 
     // This call is here b/c otherwise Character::timeToRecovery will be overwritten in the main loop from the
     // turn-based queue if we're currently in turn-based combat.
@@ -301,7 +301,7 @@ void GUIWindow_PartyCreation::Update() {
     // move sky
     render->BeginScene2D();
     render->DrawQuad2D(main_menu_background, {0, 0});
-    int sky_slider_anim_timer = static_cast<int>(std::fmod(pAnimTimer->time().realtimeMillisecondsFloat() * 640.0 / 20, 640.0));
+    int sky_slider_anim_timer = static_cast<int>(std::fmod(animTimer->time().realtimeMillisecondsFloat() * 640.0 / 20, 640.0));
     render->DrawQuad2D(ui_partycreation_sky_scroller, {sky_slider_anim_timer, 2});
     render->DrawQuad2D(ui_partycreation_sky_scroller, {sky_slider_anim_timer - 640, 2});
     render->DrawQuad2D(ui_partycreation_top, {0, 0});
@@ -340,7 +340,7 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawQuad2D(ui_partycreation_character_frame, {pX, 29});
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     // cycle arrows backwards
-    int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (pAnimTimer->time().realtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
+    int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (animTimer->time().realtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
     render->DrawQuad2D(ui_partycreation_arrow_l[arrowAnimTextureNum], {uPosActiveItem->rect.x + uPosActiveItem->rect.w - 4, uPosActiveItem->rect.y});
     render->DrawQuad2D(ui_partycreation_arrow_r[arrowAnimTextureNum], {uPosActiveItem->rect.x - 12, uPosActiveItem->rect.y});
 
@@ -557,7 +557,7 @@ void GUIWindow_PartyCreation::Update() {
     pTextCenter = assets->pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     DrawText(assets->pFontCreate.get(), {pTextCenter + 530, 410}, colorTable.White, unspent_attribute_bonus_label, pGUIWindow_CurrentMenu->frameRect);
 
-    if (errorMessageExpireTime > pAnimTimer->time()) {
+    if (errorMessageExpireTime > animTimer->time()) {
         auto& sHint = pBonusNum < 0 ? localization->str(LSTR_YOU_CANT_SPEND_MORE_THAN_50_POINTS) : localization->str(LSTR_CREATE_PARTY_CANNOT_BE_COMPLETED_UNLESS);
         Recti popupRect(170, 140, 300, 100);
         DrawMessageBox(0, popupRect, sHint);
@@ -716,7 +716,7 @@ bool PartyCreationUI_LoopInternal() {
     while (GetCurrentMenuID() == MENU_CREATEPARTY) {
         MessageLoopWithWait();
 
-        pAnimTimer->tick(); // This one is used for animations.
+        animTimer->tick(); // This one is used for animations.
 
         // PlayerCreationUI_Draw();
         // MainMenu_EventLoop();

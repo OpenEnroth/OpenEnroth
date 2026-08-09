@@ -412,7 +412,7 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
-    delete pGameTimer;
+    delete gameTimer;
     delete pCamera3D;
     pAudioPlayer.reset();
 }
@@ -520,14 +520,14 @@ void PrepareWorld(int _0_box_loading_1_fullscreen) {
     Vis *vis = EngineIocContainer::ResolveVis();
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();
-    pGameTimer->setPaused(true);
-    pAnimTimer->setPaused(true);
+    gameTimer->setPaused(true);
+    animTimer->setPaused(true);
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
 
-    assert(pGameTimer->isPaused()); // DoPrepareWorld shouldn't un-pause.
-    assert(pAnimTimer->isPaused());
-    pAnimTimer->setPaused(false);
-    pGameTimer->setPaused(false);
+    assert(gameTimer->isPaused()); // DoPrepareWorld shouldn't un-pause.
+    assert(animTimer->isPaused());
+    animTimer->setPaused(false);
+    gameTimer->setPaused(false);
 }
 
 //----- (00464866) --------------------------------------------------------
@@ -626,7 +626,7 @@ void Engine::MM7_Initialize() {
     grng->seed(platform->tickCount());
     vrng->seed(platform->tickCount());
 
-    pGameTimer = new Timer();
+    gameTimer = new Timer();
 
     pParty = new Party();
 
@@ -767,7 +767,7 @@ void Engine::Initialize() {
 
     MM7_Initialize();
 
-    pGameTimer->setPaused(true);
+    gameTimer->setPaused(true);
 
     GUIWindow::InitializeGUI();
 }
@@ -985,7 +985,7 @@ void back_to_game() {
     pGUIWindow_ScrollWindow = nullptr;
 
     if (current_screen_type == SCREEN_GAME && sCurrentMenuID == MENU_NONE && !pGUIWindow_CastTargetedSpell) {
-        pGameTimer->setPaused(false);
+        gameTimer->setPaused(false);
     }
 }
 

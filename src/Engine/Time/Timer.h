@@ -49,8 +49,8 @@ class Timer {
 };
 
 // Timer for UI animations. Keeps ticking while the game is paused.
-extern Timer *pAnimTimer;
+extern Timer *animTimer;
 
 // Timer for the game simulation - events, AI, physics. Also drives in-world visuals, which freeze together
 // with the simulation when the game pauses.
-extern Timer *pGameTimer;
+extern Timer *gameTimer;

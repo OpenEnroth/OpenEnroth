@@ -40,7 +40,7 @@ void TrailParticleGenerator::UpdateParticles() {
             particles[i].x += vrng->random(5) + 4;
             particles[i].y += vrng->random(5) - 2;
             particles[i].z += vrng->random(5) - 2;
-            particles[i].time_left -= pGameTimer->dt();
+            particles[i].time_left -= gameTimer->dt();
         }
     }
 }
@@ -57,7 +57,7 @@ void ParticleEngine::ResetParticles() {
 }
 
 void ParticleEngine::AddParticle(Particle_sw *particle) {
-    if (!pAnimTimer->isPaused()) {
+    if (!animTimer->isPaused()) {
         Particle *freeParticle = nullptr;
 
         for (int i = 0; i < pParticles.size(); i++) {
@@ -103,7 +103,7 @@ void ParticleEngine::AddParticle(Particle_sw *particle) {
 }
 
 void ParticleEngine::Draw() {
-    uTimeElapsed += pGameTimer->dt();
+    uTimeElapsed += gameTimer->dt();
     pLines.uNumLines = 0;
 
     DrawParticles_BLV();
@@ -122,8 +122,8 @@ void ParticleEngine::UpdateParticles() {
     unsigned uCurrentEnd = 0;
     unsigned uCurrentBegin = PARTICLES_ARRAY_SIZE;
 
-    // TODO(captainurist): checking pAnimTimer->isPaused(), then using pGameTimer->uTimeElapsed?
-    Duration time = !pAnimTimer->isPaused() ? pGameTimer->dt() : 0_ticks;
+    // TODO(captainurist): checking animTimer->isPaused(), then using gameTimer->uTimeElapsed?
+    Duration time = !animTimer->isPaused() ? gameTimer->dt() : 0_ticks;
 
     if (!time) {
         return;

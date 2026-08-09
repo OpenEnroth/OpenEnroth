@@ -552,7 +552,7 @@ Recti savedInventoryLeftClickButtonRect;
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, ScreenType screen)
     : GUIWindow(WINDOW_CharacterRecord, {0, 0}, render->GetRenderDimensions()) {
-    pGameTimer->setPaused(true);
+    gameTimer->setPaused(true);
     bRingsShownInCharScreen = false;
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = screen;
@@ -735,7 +735,7 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
 }
 
 std::unique_ptr<TargetedSpellUI> CastSpellInfo::GetCastSpellInInventoryWindow() {
-    pGameTimer->setPaused(true);
+    gameTimer->setPaused(true);
     bRingsShownInCharScreen = 0;
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = SCREEN_CASTING;
@@ -1303,7 +1303,7 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
         else
             assert(false);
 
-        ItemEnchantmentTimer = std::max(0_ticks, ItemEnchantmentTimer - pGameTimer->dt());
+        ItemEnchantmentTimer = std::max(0_ticks, ItemEnchantmentTimer - gameTimer->dt());
         if (!ItemEnchantmentTimer) {
             item->ResetEnchantAnimation(); // TODO(captainurist): doesn't belong here, and doesn't belong in Item.
             ptr_50C9A4_ItemToEnchant = nullptr;

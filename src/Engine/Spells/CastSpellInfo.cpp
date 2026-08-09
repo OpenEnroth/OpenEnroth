@@ -424,7 +424,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = spell_targeted_at.id();
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
-                        pActors[monster_id].massDistortionTime = pAnimTimer->time();
+                        pActors[monster_id].massDistortionTime = animTimer->time();
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos;
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, monster_id);

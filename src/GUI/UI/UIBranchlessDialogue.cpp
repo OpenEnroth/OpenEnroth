@@ -76,8 +76,8 @@ void GUIWindow_BranchlessDialogue::Update() {
 
 void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
     if (!pGUIWindow_BranchlessDialogue) {
-        pAnimTimer->setPaused(true);
-        pGameTimer->setPaused(true);
+        animTimer->setPaused(true);
+        gameTimer->setPaused(true);
         savedEventID = eventid;
         savedEventStep = entryline;
         savedDecoration = activeLevelDecoration;
@@ -94,6 +94,6 @@ void releaseBranchlessDialogue() {
         eventProcessor(savedEventID, Pid(), 1, savedEventStep);
     }
     activeLevelDecoration = nullptr;
-    pGameTimer->setPaused(false);
+    gameTimer->setPaused(false);
 }
 

@@ -723,10 +723,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
         Cur_Action_Time = pActors[i].currentActionTime;
         if (pParty->bTurnBasedModeOn) {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = i * 32_ticks + pAnimTimer->time();
+                Cur_Action_Time = i * 32_ticks + animTimer->time();
         } else {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = i * 32_ticks + pGameTimer->time();
+                Cur_Action_Time = i * 32_ticks + gameTimer->time();
         }
 
         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active() ||
@@ -1010,7 +1010,7 @@ void ODM_ProcessPartyActions() {
     bool flyDown = false;
 
     // TODO(captainurist): #time think about a better way to write this formula.
-    int64_t dturn = pGameTimer->dt().ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
+    int64_t dturn = gameTimer->dt().ticks() * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180 / Duration::TICKS_PER_REALTIME_SECOND;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_FlyUp:
@@ -1259,7 +1259,7 @@ void ODM_ProcessPartyActions() {
         if (noFlightBob) {
             partyNewPos.z = partyOldFlightZ;
         } else {
-            partyNewPos.z = partyOldFlightZ + 4 * TrigLUT.cos(pGameTimer->time().realtimeMilliseconds());
+            partyNewPos.z = partyOldFlightZ + 4 * TrigLUT.cos(gameTimer->time().realtimeMilliseconds());
         }
 
         if (pParty->FlyActive())
@@ -1280,7 +1280,7 @@ void ODM_ProcessPartyActions() {
     //------------------------------------------
 
     if (partyNotTouchingFloor && !pParty->bFlying) {  // add gravity
-        partyInputSpeed.z += -2.0f * pGameTimer->dt().ticks() * GetGravityStrength();
+        partyInputSpeed.z += -2.0f * gameTimer->dt().ticks() * GetGravityStrength();
     } else if (!partyNotTouchingFloor) {
         if (!floorFaceId) {
             // rolling down the hill
@@ -1290,7 +1290,7 @@ void ODM_ProcessPartyActions() {
             partyNewPos.z = currentGroundLevel;
             if (partyAtHighSlope) {
                 Vec3f v98 = pOutdoor->pTerrain.normalByPos(partyNewPos);
-                partyInputSpeed.z += (8 * -(pGameTimer->dt().ticks() * (int)GetGravityStrength()));
+                partyInputSpeed.z += (8 * -(gameTimer->dt().ticks() * (int)GetGravityStrength()));
                 float dotp = std::abs(dot(partyInputSpeed, v98));
                 partyInputSpeed += dotp * v98;
             }
@@ -1462,7 +1462,7 @@ void ODM_ProcessPartyActions() {
         bool canStartNewSound = !pAudioPlayer->isWalkingSoundPlays();
 
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
-        if (pGameTimer->dt()) {
+        if (gameTimer->dt()) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
             int walkDelta = integer_sqrt((partyOldPosition - pParty->pos).lengthSqr());
 
@@ -1672,7 +1672,7 @@ void UpdateActors_ODM() {
                 Vec3f Terrain_Norm = pOutdoor->pTerrain.normalByPos(actor.pos);
                 int Gravity = GetGravityStrength();
 
-                actor.velocity.z += -16 * pGameTimer->dt().ticks() * Gravity; //TODO(pskelton): common gravity code extract
+                actor.velocity.z += -16 * gameTimer->dt().ticks() * Gravity; //TODO(pskelton): common gravity code extract
                 float v73 = std::abs(dot(Terrain_Norm, actor.velocity)) * 2.0f;
 
                 actor.velocity.x += v73 * Terrain_Norm.x;
@@ -1681,7 +1681,7 @@ void UpdateActors_ODM() {
                 // actor.vVelocity.z += fixpoint_mul(v73, Terrain_Norm.z);
             }
         } else {
-            actor.velocity.z -= pGameTimer->dt().ticks() * GetGravityStrength();
+            actor.velocity.z -= gameTimer->dt().ticks() * GetGravityStrength();
         }
 
         // ARMAGEDDON PANIC

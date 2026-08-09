@@ -369,7 +369,7 @@ void Menu::EventLoop() {
 
             case UIMSG_GameMenu_ReturnToGame:
                 // pGUIWindow_CurrentMenu->Release();
-                pGameTimer->setPaused(false);
+                gameTimer->setPaused(false);
                 current_screen_type = SCREEN_GAME;
                 continue;
 
@@ -377,7 +377,7 @@ void Menu::EventLoop() {
                 confirmationState = CONFIRM_NONE;
 
                 if (current_screen_type == SCREEN_MENU) {
-                    pGameTimer->setPaused(false);
+                    gameTimer->setPaused(false);
                     current_screen_type = SCREEN_GAME;
                 } else if (current_screen_type == SCREEN_SAVEGAME ||
                            current_screen_type == SCREEN_LOADGAME) {
@@ -421,7 +421,7 @@ void Menu::EventLoop() {
 }
 
 void Menu::MenuLoop() {
-    pGameTimer->setPaused(true);
+    gameTimer->setPaused(true);
     current_screen_type = SCREEN_MENU;
 
     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();

@@ -56,7 +56,7 @@ int getSpecialTransferMessageIndex(std::string_view locationName) {
 }
 
 GUIWindow_Transition::GUIWindow_Transition(WindowType windowType, ScreenType screenType) : GUIWindow(windowType, {0, 0}, render->GetRenderDimensions()) {
-    pGameTimer->setPaused(true);
+    gameTimer->setPaused(true);
 
     game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 

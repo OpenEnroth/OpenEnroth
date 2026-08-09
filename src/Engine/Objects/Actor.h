@@ -258,7 +258,7 @@ class Actor {
     Pid lastCharacterIdToHit;
     int uniqueNameIndex = 0; // Index into pMonsterStats->pUniqueNames for a unique monster name. Regular name is used if this field is 0.
     bool donebloodsplat = false;
-    Duration massDistortionTime; // Value of pAnimTimer when mass distortion was cast. This was stored in the buffs table
+    Duration massDistortionTime; // Value of animTimer when mass distortion was cast. This was stored in the buffs table
                                  // in vanilla, which made little sense. Buff table stores game time, putting a value of
                                  // an anim timer in there is very questionable.
 };
