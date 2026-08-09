@@ -1835,7 +1835,7 @@ void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     dst->uSpeed = src.uSpeed;
 }
 
-void snapshot(const MapWeather &src, MapTime_MM7 *dst) {
+void snapshot(const MapWeather &src, MapWeather_MM7 *dst) {
     memzero(dst);
 
     snapshot(src.skyTextureName, &dst->skyTextureName);
@@ -1844,7 +1844,7 @@ void snapshot(const MapWeather &src, MapTime_MM7 *dst) {
     dst->fogStrongDistance = src.fogStrongDistance;
 }
 
-void reconstruct(const MapTime_MM7 &src, MapWeather *dst) {
+void reconstruct(const MapWeather_MM7 &src, MapWeather *dst) {
     reconstruct(src.skyTextureName, &dst->skyTextureName);
     dst->flags = static_cast<MapWeatherFlags>(src.weatherFlags);
     dst->fogWeakDistance = src.fogWeakDistance;

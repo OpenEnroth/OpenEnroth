@@ -1240,19 +1240,18 @@ static_assert(sizeof(BSPModelData_MM7) == 188);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BSPModelData_MM7)
 // Note: serialization code is in CompositeSnapshots.h
 
-struct MapTime_MM7 {
-    int64_t lastVisitTime;
+struct MapWeather_MM7 {
     std::array<char, 12> skyTextureName; // Texture name in bitmaps.lod.
     int32_t weatherFlags; // In MM7 we have only one flag here - for foggy weather.
     int32_t fogWeakDistance; // Zero if no fog. Otherwise, the distance where stronger fog starts.
     int32_t fogStrongDistance; // Zero if no fog. Otherwise, the distance where super strong fog starts.
     std::array<char, 24> field_2F4;
 };
-static_assert(sizeof(MapTime_MM7) == 0x38);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(MapTime_MM7)
+static_assert(sizeof(MapWeather_MM7) == 0x30);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(MapWeather_MM7)
 
-void snapshot(const MapWeather &src, MapTime_MM7 *dst);  // Callers fill in lastVisitTime separately.
-void reconstruct(const MapTime_MM7 &src, MapWeather *dst);
+void snapshot(const MapWeather &src, MapWeather_MM7 *dst);
+void reconstruct(const MapWeather_MM7 &src, MapWeather *dst);
 
 
 struct SoundInfo_MM6 {
