@@ -897,7 +897,7 @@ int GetGravityStrength() {
 }
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog, std::string_view filename) {
-    for (unsigned i = 1; i < pIndoor->faces.size(); ++i) {
+    for (unsigned i = 0; i < pIndoor->faces.size(); ++i) {
         if (pIndoor->faces[i].cogNumber == uFaceCog) {
             pIndoor->faces[i].SetTexture(filename);
         }
@@ -934,8 +934,7 @@ void setTexture(unsigned int uFaceCog, std::string_view pFilename) {
 void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            // TODO(pskelton): starts at 1?
-            for (int i = 1; i < pIndoor->faces.size(); ++i) {
+            for (unsigned i = 0; i < pIndoor->faces.size(); ++i) {
                 if (pIndoor->faces[i].cogNumber == sCogNumber) {
                     if (on)
                         pIndoor->faces[i].attributes |= bit;
