@@ -876,23 +876,25 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
  *                                      starting position.
  */
 static Vec3f decorationSlideDirection() {
-    Vec3f newDirection;
-    if (collision_state.adjusted_move_distance > 0.0f) {
-        // Create new sliding plane from collision
-        Vec3f slidePlaneOrigin = collision_state.collisionPos;
-        Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition - slidePlaneOrigin;
-        Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
-        slidePlaneNormal.normalize();
+    assert(collision_state.pid.type() == OBJECT_Decoration);
 
-        // Form a sliding vector that is parallel to sliding movement
-        // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
-        // Start point to new destination is a vector along the slide plane
-        float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
-        Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
-        newDirection = newDestination - collision_state.collisionPos;
-        newDirection.z = 0;
-        newDirection.normalize();
-    }
+    if (collision_state.adjusted_move_distance <= 0.0f)
+        return Vec3f();
+
+    // Create new sliding plane from collision
+    Vec3f slidePlaneOrigin = collision_state.collisionPos;
+    Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition - slidePlaneOrigin;
+    Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
+    slidePlaneNormal.normalize();
+
+    // Form a sliding vector that is parallel to sliding movement
+    // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
+    // Start point to new destination is a vector along the slide plane
+    float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
+    Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
+    Vec3f newDirection = newDestination - collision_state.collisionPos;
+    newDirection.z = 0;
+    newDirection.normalize();
     return newDirection;
 }
 
