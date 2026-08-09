@@ -308,7 +308,7 @@ static std::string getVariableSetStr(EvtVariable type, int value) {
         case VAR_HiredNPCHasSpeciality:
             return fmt::format("NPCProfession({})", value);
         case VAR_CircusPrises:
-            return fmt::format("[{}], {}", (int)type, value); // TODO
+            return fmt::format("ERROR: CircusPrises, {}", value);
         case VAR_NumSkillPoints:
             return fmt::format("SkillPoints, {}", value);
         case VAR_MonthIs:
@@ -316,7 +316,7 @@ static std::string getVariableSetStr(EvtVariable type, int value) {
         case VAR_ReputationInCurrentLocation:
             return fmt::format("LocationReputation, {}", value);
         case VAR_Unknown1:
-            return fmt::format("[{}], {}", (int)type, value); // TODO
+            return fmt::format("ERROR: Unknown1, {}", value);
         case VAR_GoldInBank:
             return fmt::format("GoldInBank, {}", value);
         case VAR_NumDeaths:
@@ -631,7 +631,7 @@ static std::string getVariableCompareStr(EvtVariable type, int value) {
         case VAR_HiredNPCHasSpeciality:
             return fmt::format("NPCProfession({})", value);
         case VAR_CircusPrises:
-            return fmt::format("[{}] ? {}", (int)type, value); // TODO
+            return fmt::format("CircusPrises >= {}", value);
         case VAR_NumSkillPoints:
             return fmt::format("SkillPoints >= {}", value);
         case VAR_MonthIs:
@@ -639,7 +639,7 @@ static std::string getVariableCompareStr(EvtVariable type, int value) {
         case VAR_ReputationInCurrentLocation:
             return fmt::format("LocationReputation >= {}", value);
         case VAR_Unknown1:
-            return fmt::format("[{}] ? {}", (int)type, value); // TODO
+            return fmt::format("Unknown1 == {}", value);
         case VAR_GoldInBank:
             return fmt::format("GoldInBank >= {}", value);
         case VAR_NumDeaths:
