@@ -223,7 +223,8 @@ class GameConfig : public Config {
         Int RangedAttackDepth = {this, "ranged_attack_depth", 5120, &ValidateRangedAttackDepth,
             "Max depth for ranged attacks and ranged spells. "
             "It's impossible to target monsters that are further away than this value. "
-            "This is also the depth at which status bar tips are displayed on mouse over."};
+            "Status bar tips on mouse over also use this depth, except for monsters, "
+            "which use the monster popup depth."};
 
         Int AoeDamageDistance = {this, "aoe_damage_distance", 512, &ValidateAoeDistance,
             "Distance from point of impact of harmful AOE spell. "
