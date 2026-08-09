@@ -870,6 +870,32 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
     }
 }
 
+/**
+ * @return                              Direction to slide along after bumping into the decoration recorded in
+ *                                      `collision_state`, or a zero vector if the collision happened at the
+ *                                      starting position.
+ */
+static Vec3f decorationSlideDirection() {
+    Vec3f newDirection;
+    if (collision_state.adjusted_move_distance > 0.0f) {
+        // Create new sliding plane from collision
+        Vec3f slidePlaneOrigin = collision_state.collisionPos;
+        Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition - slidePlaneOrigin;
+        Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
+        slidePlaneNormal.normalize();
+
+        // Form a sliding vector that is parallel to sliding movement
+        // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
+        // Start point to new destination is a vector along the slide plane
+        float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
+        Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
+        newDirection = newDestination - collision_state.collisionPos;
+        newDirection.z = 0;
+        newDirection.normalize();
+    }
+    return newDirection;
+}
+
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent) {
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
@@ -929,25 +955,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            // TODO(pskelton): common to odm/blv so extract
-            Vec3f newDirection;
-            if (collision_state.adjusted_move_distance > 0.0f) {
-                // Create new sliding plane from collision
-                Vec3f slidePlaneOrigin = collision_state.collisionPos;
-                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition - slidePlaneOrigin;
-                Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
-                slidePlaneNormal.normalize();
-
-                // Form a sliding vector that is parallel to sliding movement
-                // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
-                // Start point to new destination is a vector along the slide plane
-                float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
-                Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
-                newDirection = newDestination - collision_state.collisionPos;
-                newDirection.z = 0;
-                newDirection.normalize();
-            }
-
+            Vec3f newDirection = decorationSlideDirection();
             // Set party to move along this new sliding vector
             pParty->velocity = newDirection * dot(newDirection, pParty->velocity);
             // Skip reducing party speed
@@ -1120,25 +1128,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
         }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            // TODO(pskelton): common to odm/blv so extract
-            Vec3f newDirection;
-            if (collision_state.adjusted_move_distance > 0.0f) {
-                // Create new sliding plane from collision
-                Vec3f slidePlaneOrigin = collision_state.collisionPos;
-                Vec3f dirC = pLevelDecorations[collision_state.pid.id()].vPosition - slidePlaneOrigin;
-                Vec3f slidePlaneNormal = Vec3f(-dirC.x, -dirC.y, 0);
-                slidePlaneNormal.normalize();
-
-                // Form a sliding vector that is parallel to sliding movement
-                // Take where you wouldve ended up without collisions and move that onto the slide plane by adding the normal
-                // Start point to new destination is a vector along the slide plane
-                float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
-                Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
-                newDirection = newDestination - collision_state.collisionPos;
-                newDirection.z = 0;
-                newDirection.normalize();
-            }
-
+            Vec3f newDirection = decorationSlideDirection();
             // Set party to move along this new sliding vector
             *partyInputSpeed = newDirection * dot(newDirection, *partyInputSpeed);
             // Skip reducing party speed
