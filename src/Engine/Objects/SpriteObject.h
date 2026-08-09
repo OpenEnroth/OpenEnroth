@@ -92,8 +92,8 @@ struct SpriteObject {
 };
 
 /**
- * Snaps map-placed sprite objects to the ground on outdoor maps and post-generates their items. Called during
- * level loading.
+ * Post-generates the items of the sprite objects on the current map. On outdoor maps also snaps the
+ * map-placed ones to the ground. Called during level loading.
  */
 void arrangeSpriteObjects();
 
