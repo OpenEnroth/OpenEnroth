@@ -7,7 +7,6 @@
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
-#include "Engine/Party.h"
 #include "Engine/Objects/NPCEnumFunctions.h"
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Random/Random.h"
@@ -53,17 +52,6 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
     for (MapId map : allMaps())
         for (NpcProfession prof : allNpcProfessions())
             pProfessionChance[map].total += pProfessionChance[map].chanceByProfession[prof];
-}
-
-// TODO(Nik-RE-dev): move out of table back to Engine/Objects/NPC.cpp
-void NPCStats::setNPCNamesOnLoad() {
-    for (unsigned int i = 1; i < uNumNewNPCs; ++i)
-        pNPCData[i].name = pNPCUnicNames[i];
-
-    if (!pParty->pHirelings[0].name.empty())
-        pParty->pHirelings[0].name = pParty->pHireling1Name;
-    if (!pParty->pHirelings[1].name.empty())
-        pParty->pHirelings[1].name = pParty->pHireling2Name;
 }
 
 //----- (00476CB5) --------------------------------------------------------

@@ -37,6 +37,13 @@ const std::string &GetProfessionActionText(NpcProfession prof);
 NPCData *getNPCData(int npcId);
 
 /**
+ * Restores NPC names from the npcdata.txt name table and hireling names from party data on level load.
+ *
+ * @offset 0x476C60
+ */
+void setNPCNamesOnLoad();
+
+/**
  * @offset 0x445C8B
  */
 NpcType getNPCType(int npcId);
