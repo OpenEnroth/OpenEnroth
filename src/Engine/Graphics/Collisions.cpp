@@ -912,8 +912,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
         float adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3f(0, 0, collision_state.radius_lo), &collision_state.uSectorID, faceId);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
-            // intended world position isnt valid so dont move there
-            return; // TODO: whaaa?
+            // New pos is out of bounds, running more iterations won't help.
+            break;
         }
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
