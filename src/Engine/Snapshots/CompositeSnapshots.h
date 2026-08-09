@@ -62,7 +62,7 @@ struct IndoorDelta_MM7 {
     std::vector<BLVDoor_MM7> doors;
     std::vector<int16_t> doorsData;
     PersistentVariables_MM7 eventVariables;
-    LocationTime_MM7 locationTime;
+    MapTime_MM7 mapTime;
 };
 
 void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst);
@@ -119,7 +119,7 @@ struct OutdoorDelta_MM7 {
     std::vector<SpriteObject_MM7> spriteObjects;
     std::vector<Chest_MM7> chests;
     PersistentVariables_MM7 eventVariables;
-    LocationTime_MM7 locationTime;
+    MapTime_MM7 mapTime;
 };
 
 void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst);

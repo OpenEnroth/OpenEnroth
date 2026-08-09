@@ -46,7 +46,7 @@ struct DecorationDesc;
 struct Item;
 struct LevelDecoration;
 struct LocationInfo;
-struct LocationTime;
+struct MapTime;
 struct MonsterDesc;
 struct NPCData;
 struct ObjectDesc;
@@ -1240,7 +1240,7 @@ static_assert(sizeof(BSPModelData_MM7) == 188);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BSPModelData_MM7)
 // Note: serialization code is in CompositeSnapshots.h
 
-struct LocationTime_MM7 {
+struct MapTime_MM7 {
     int64_t lastVisitTime;
     std::array<char, 12> skyTextureName; // Texture name in bitmaps.lod.
     int32_t weatherFlags; // In MM7 we have only one flag here - for foggy weather.
@@ -1248,11 +1248,11 @@ struct LocationTime_MM7 {
     int32_t fogStrongDistance; // Zero if no fog. Otherwise, the distance where super strong fog starts.
     std::array<char, 24> field_2F4;
 };
-static_assert(sizeof(LocationTime_MM7) == 0x38);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LocationTime_MM7)
+static_assert(sizeof(MapTime_MM7) == 0x38);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(MapTime_MM7)
 
-void snapshot(const LocationTime &src, LocationTime_MM7 *dst);
-void reconstruct(const LocationTime_MM7 &src, LocationTime *dst);
+void snapshot(const MapTime &src, MapTime_MM7 *dst);
+void reconstruct(const MapTime_MM7 &src, MapTime *dst);
 
 
 struct SoundInfo_MM6 {

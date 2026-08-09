@@ -16,7 +16,7 @@
 #include "Library/Geometry/BBox.h"
 
 #include "LocationInfo.h"
-#include "LocationTime.h"
+#include "MapTime.h"
 #include "LocationFunctions.h"
 #include "FaceEnums.h"
 
@@ -249,7 +249,7 @@ struct IndoorLocation {
     std::vector<uint16_t> sectorLightData;
     std::vector<SpawnPoint> pSpawnPoints;
     LocationInfo dlv;
-    LocationTime stru1;
+    MapTime mapTime;
     std::array<char, 875> _visible_outlines;
     char padding;
 
