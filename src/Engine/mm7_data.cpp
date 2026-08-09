@@ -2412,7 +2412,6 @@ unsigned int uIconIdx_WaterWalk;
 
 int uCurrentHouse_Animation;
 std::string branchless_dialogue_str;
-int dword_5B65C4_cancelEventProcessing;
 int npcIdToDismissAfterDialogue;
 // std::array<char, 777> byte_5C3427;
 

@@ -35,6 +35,8 @@
 #include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIStatusBar.h"
 
+bool cancelEventProcessing = false;
+
 /**
  * @offset 0x4465DF
  */
@@ -587,7 +589,7 @@ bool EvtInterpreter::executeRegular(int startStep) {
 
     _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
 
-    while (step != -1 && dword_5B65C4_cancelEventProcessing == 0) {
+    while (step != -1 && !cancelEventProcessing) {
         step = executeOneEvent(step, false);
     }
 

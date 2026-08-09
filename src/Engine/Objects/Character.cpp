@@ -40,6 +40,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Conditions.h"
 #include "Engine/Evt/EvtEnumFunctions.h"
+#include "Engine/Evt/EvtInterpreter.h"
 
 #include "Io/Mouse.h"
 
@@ -5219,7 +5220,7 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             return;
         case VAR_FixedGold:
             if (pValue > pParty->GetGold()) {
-                dword_5B65C4_cancelEventProcessing = 1;
+                cancelEventProcessing = true;
                 return;
             }
             pParty->TakeGold(pValue);
@@ -5653,7 +5654,7 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             if (pValue <= pParty->uNumGoldInBank) {
                 pParty->uNumGoldInBank -= pValue;
             } else {
-                dword_5B65C4_cancelEventProcessing = 1;
+                cancelEventProcessing = true;
             }
             return;
         case VAR_NumDeaths:
