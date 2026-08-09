@@ -253,8 +253,8 @@ void GUIWindow_Dialogue::Update() {
         }
 
         DialogueId topic = (DialogueId)pButton->msg_param;
-        pButton->sLabel = npcDialogueOptionString(topic, pNPC);
-        if (pButton->sLabel.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
+        pButton->label = npcDialogueOptionString(topic, pNPC);
+        if (pButton->label.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
             pButton->msg_param = 0;
         }
 
@@ -271,7 +271,7 @@ void GUIWindow_Dialogue::Update() {
                 }
             }
             if (num_dead_actors == pActors.size()) {
-                pButton->sLabel = localization->str(LSTR_COLLECT_PRIZE);
+                pButton->label = localization->str(LSTR_COLLECT_PRIZE);
             }
         }
     }
@@ -286,7 +286,7 @@ void GUIWindow_Dialogue::Update() {
         GUIButton *pButton = pDialogueWindow->GetControl(i);
         if (!pButton)
             break;
-        all_text_height += assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.w, 0);
+        all_text_height += assets->pFontArrus->CalcTextHeight(pButton->label, window.w, 0);
         index++;
     }
 
@@ -300,14 +300,14 @@ void GUIWindow_Dialogue::Update() {
             if (!pButton)
                 break;
             pButton->rect.y = v45 + v42;
-            int pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->sLabel, window.w, 0);
+            int pTextHeight = assets->pFontArrus->CalcTextHeight(pButton->label, window.w, 0);
             pButton->rect.h = pTextHeight + 1;
             v42 = pButton->rect.y + pTextHeight - 1;
             Color pTextColor = ui_game_dialogue_option_normal_color;
             if (pDialogueWindow->pCurrentPosActiveItem == i) {
                 pTextColor = ui_game_dialogue_option_highlight_color;
             }
-            DrawTitleText(assets->pFontArrus.get(), 0, pButton->rect.y, pTextColor, pButton->sLabel, 3, window);
+            DrawTitleText(assets->pFontArrus.get(), 0, pButton->rect.y, pTextColor, pButton->label, 3, window);
         }
     }
     render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});

@@ -848,7 +848,7 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
             int textHeight = assets->pFontArrus->CalcTextHeight(optionsText[i], window.w, 0);
             button->rect.y = spacing + offset;
             button->rect.h = textHeight + 6;
-            button->sLabel = optionsText[i];
+            button->label = optionsText[i];
             if (denseSpacing) {
                 offset += assets->pFontArrus->GetHeight() - 3 + textHeight;
             } else {
@@ -858,7 +858,7 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
         } else if (button) {
             button->rect.y = 0;
             button->rect.h = 0;
-            button->sLabel.clear();
+            button->label.clear();
         }
     }
 }

@@ -391,7 +391,7 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
     pButton->msg = msg;
     pButton->msg_param = msg_param;
     pButton->action = action;
-    pButton->sLabel = label;
+    pButton->label = label;
     pButton->vTextures = textures;
 
     vButtons.push_back(pButton);
