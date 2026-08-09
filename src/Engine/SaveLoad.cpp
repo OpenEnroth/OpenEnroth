@@ -150,7 +150,7 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
         for (const auto &[key, value] : pMapDeltas)
             state.mapDeltas[key] = Blob::share(value);
 
-        currentLocationTime().lastVisitTime = pParty->GetPlayingTime();
+        currentMapTime().lastVisitTime = pParty->GetPlayingTime();
         CompactLayingItemsList();
 
         Blob uncompressed;

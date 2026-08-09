@@ -45,7 +45,7 @@ set(ENGINE_GRAPHICS_HEADERS
         LightsStack.h
         LocationFunctions.h
         LocationInfo.h
-        LocationTime.h
+        MapTime.h
         Outdoor.h
         Overlays.h
         PaletteManager.h

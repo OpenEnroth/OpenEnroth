@@ -11,7 +11,7 @@
 
 #include "BSPModel.h"
 #include "LocationInfo.h"
-#include "LocationTime.h"
+#include "MapTime.h"
 #include "LocationFunctions.h"
 #include "OutdoorTerrain.h"
 
@@ -83,7 +83,7 @@ struct OutdoorLocation {
     GraphicsImage *sky_texture = nullptr;        // signed int sSky_TextureID;
     std::vector<SpawnPoint> pSpawnPoints;
     LocationInfo ddm;
-    LocationTime loc_time;
+    MapTime mapTime;
     std::array<std::array<uint8_t, 11>, 88> uFullyRevealedCellOnMap;
                                           // 968         the inner array is 11
                                           // bytes long, because every bit is

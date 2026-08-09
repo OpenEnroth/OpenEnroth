@@ -29,11 +29,11 @@ LocationInfo &currentLocationInfo() {
     }
 }
 
-LocationTime &currentLocationTime() {
+MapTime &currentMapTime() {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        return pIndoor->stru1;
+        return pIndoor->mapTime;
     } else {
         assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
-        return pOutdoor->loc_time;
+        return pOutdoor->mapTime;
     }
 }

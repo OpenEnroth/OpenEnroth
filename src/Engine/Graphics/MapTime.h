@@ -5,8 +5,7 @@
 #include "Engine/Time/Time.h"
 #include "Engine/MapEnums.h"
 
-// TODO(captainurist): rename to smth like MapTime.
-struct LocationTime {
+struct MapTime {
     Time lastVisitTime;
     std::string skyTextureName;
     MapWeatherFlags weatherFlags = 0;

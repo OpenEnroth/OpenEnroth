@@ -308,7 +308,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     snapshot(src.doors, &dst->doors);
     snapshot(src.doorsData, &dst->doorsData);
     snapshot(engine->_persistentVariables, &dst->eventVariables);
-    snapshot(src.stru1, &dst->locationTime);
+    snapshot(src.mapTime, &dst->mapTime);
 }
 
 void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
@@ -394,7 +394,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     }
 
     reconstruct(src.eventVariables, &engine->_persistentVariables);
-    reconstruct(src.locationTime, &dst->stru1);
+    reconstruct(src.mapTime, &dst->mapTime);
 }
 
 void serialize(const IndoorDelta_MM7 &src, OutputStream *dst) {
@@ -408,7 +408,7 @@ void serialize(const IndoorDelta_MM7 &src, OutputStream *dst) {
     serialize(src.doors, dst, tags::unsized);
     serialize(src.doorsData, dst, tags::unsized);
     serialize(src.eventVariables, dst);
-    serialize(src.locationTime, dst);
+    serialize(src.mapTime, dst);
 }
 
 void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocation_MM7> ctx) {
@@ -422,7 +422,7 @@ void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocati
     deserialize(src, &dst->doors, tags::presized(ctx->doorCount));
     deserialize(src, &dst->doorsData, tags::presized(ctx->header.doorsDataSizeBytes / sizeof(int16_t)));
     deserialize(src, &dst->eventVariables);
-    deserialize(src, &dst->locationTime);
+    deserialize(src, &dst->mapTime);
 }
 
 void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst) {
@@ -596,7 +596,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     snapshot(pSpriteObjects, &dst->spriteObjects);
     snapshot(vChests, &dst->chests);
     snapshot(engine->_persistentVariables, &dst->eventVariables);
-    snapshot(src.loc_time, &dst->locationTime);
+    snapshot(src.mapTime, &dst->mapTime);
 }
 
 void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
@@ -628,7 +628,7 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
         reconstruct(src.chests[i], &vChests[i], tags::context<int>(i));
 
     reconstruct(src.eventVariables, &engine->_persistentVariables);
-    reconstruct(src.locationTime, &dst->loc_time);
+    reconstruct(src.mapTime, &dst->mapTime);
 }
 
 void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst) {
@@ -641,7 +641,7 @@ void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst) {
     serialize(src.spriteObjects, dst);
     serialize(src.chests, dst);
     serialize(src.eventVariables, dst);
-    serialize(src.locationTime, dst);
+    serialize(src.mapTime, dst);
 }
 
 void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx) {
@@ -658,7 +658,7 @@ void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLoca
     deserialize(src, &dst->spriteObjects);
     deserialize(src, &dst->chests);
     deserialize(src, &dst->eventVariables);
-    deserialize(src, &dst->locationTime);
+    deserialize(src, &dst->mapTime);
 }
 
 void snapshot(const SaveGame &src, SaveGame_MM7 *dst) {
