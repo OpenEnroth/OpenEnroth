@@ -1,6 +1,6 @@
 {
     "header": {
-        "afterLoadRandomState": 53704,
+        "afterLoadRandomState": 833827,
         "config": [
             {
                 "key": "no_intro",
@@ -1859,7 +1859,7 @@
             "type": "paint"
         },
         {
-            "randomState": 573802,
+            "randomState": 573446,
             "tickCount": 1500,
             "type": "paint"
         },
@@ -1884,7 +1884,7 @@
             "type": "mouseButtonPress"
         },
         {
-            "randomState": 573802,
+            "randomState": 573446,
             "tickCount": 1600,
             "type": "paint"
         },
@@ -1899,12 +1899,12 @@
             "type": "mouseButtonRelease"
         },
         {
-            "randomState": 573446,
+            "randomState": 1044865,
             "tickCount": 1700,
             "type": "paint"
         },
         {
-            "randomState": 573446,
+            "randomState": 1044865,
             "tickCount": 1800,
             "type": "paint"
         },
