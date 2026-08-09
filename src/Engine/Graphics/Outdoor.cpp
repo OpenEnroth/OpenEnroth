@@ -376,25 +376,25 @@ void OutdoorLocation::SetFog() {
     unsigned chance = vrng->random(100);
 
     if (chance < fog_probability_table[map_id].small_fog_chance) {
-        mapTime.weatherFlags |= MAP_WEATHER_FOGGY;
-        mapTime.fogWeakDistance = 4096;
-        mapTime.fogStrongDistance = 8192;
+        weather.flags |= MAP_WEATHER_FOGGY;
+        weather.fogWeakDistance = 4096;
+        weather.fogStrongDistance = 8192;
     } else if (chance <
                fog_probability_table[map_id].small_fog_chance +
                    fog_probability_table[map_id].average_fog_chance) {
-        mapTime.fogWeakDistance = 0;
-        mapTime.fogStrongDistance = 4096;
-        mapTime.weatherFlags |= MAP_WEATHER_FOGGY;
+        weather.fogWeakDistance = 0;
+        weather.fogStrongDistance = 4096;
+        weather.flags |= MAP_WEATHER_FOGGY;
     } else if (fog_probability_table[map_id].dense_fog_chance &&
                chance <
                    fog_probability_table[map_id].small_fog_chance +
                        fog_probability_table[map_id].average_fog_chance +
                        fog_probability_table[map_id].dense_fog_chance) {
-        mapTime.fogWeakDistance = 0;
-        mapTime.fogStrongDistance = 2048;
-        mapTime.weatherFlags |= MAP_WEATHER_FOGGY;
+        weather.fogWeakDistance = 0;
+        weather.fogStrongDistance = 2048;
+        weather.flags |= MAP_WEATHER_FOGGY;
     } else {
-        mapTime.weatherFlags &= ~MAP_WEATHER_FOGGY;
+        weather.flags &= ~MAP_WEATHER_FOGGY;
     }
 
     if (isMapUnderwater(map_id))
@@ -520,21 +520,21 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
 
     // LABEL_150:
     if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
-        mapTime.skyTextureName = "sky19";
-    } else if (mapTime.lastVisitTime) {
-        if (mapTime.lastVisitTime.toDays() % 28 != pParty->uCurrentDayOfMonth) {
+        weather.skyTextureName = "sky19";
+    } else if (lastVisitTime) {
+        if (lastVisitTime.toDays() % 28 != pParty->uCurrentDayOfMonth) {
             int sky_to_use;
             if (vrng->random(100) >= 20)
                 sky_to_use = skyTexturesIds1[vrng->random(9)];
             else
                 sky_to_use = skyTexturesIds2[vrng->random(7)];
-            mapTime.skyTextureName = fmt::format("plansky{}", sky_to_use);
+            weather.skyTextureName = fmt::format("plansky{}", sky_to_use);
         }
     } else {
-        mapTime.skyTextureName = "plansky3";
+        weather.skyTextureName = "plansky3";
     }
 
-    this->sky_texture = assets->getBitmap(mapTime.skyTextureName);
+    this->sky_texture = assets->getBitmap(weather.skyTextureName);
 
     if (engine->config->graphics.SeasonsChange.value())
         pOutdoor->pTerrain.changeSeason(pParty->uCurrentMonth);
@@ -1585,8 +1585,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
 
 //----- (00464851) --------------------------------------------------------
 void OutdoorLocation::SetUnderwaterFog() {
-    mapTime.fogWeakDistance = 50;
-    mapTime.fogStrongDistance = 2000;
+    weather.fogWeakDistance = 50;
+    weather.fogStrongDistance = 2000;
     // day_fogrange_3 = 25000;
 }
 
@@ -1774,7 +1774,7 @@ static void loadAndPrepareODMInternal(MapId mapid) {
     map_info = &pMapStats->pInfos[mapid];
     respawn_interval = map_info->respawnIntervalDays;
 
-    pOutdoor->mapTime.weatherFlags &= ~MAP_WEATHER_FOGGY;
+    pOutdoor->weather.flags &= ~MAP_WEATHER_FOGGY;
     pOutdoor->Initialize(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
 
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
@@ -1832,7 +1832,7 @@ Color GetLevelFogColor() {
         return colorTable.Eucalyptus;
     }
 
-    if (pOutdoor->mapTime.weatherFlags & MAP_WEATHER_FOGGY) {
+    if (pOutdoor->weather.flags & MAP_WEATHER_FOGGY) {
         if (pWeather->bNight) {  // night-time fog
             if (false) {
                 MM_ERROR("decompilation can be inaccurate, please send savegame to Nomad");

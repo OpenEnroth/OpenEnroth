@@ -6,12 +6,13 @@
 
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
+#include "Engine/Time/Time.h"
 
 #include "Library/Color/Color.h"
 
 #include "BSPModel.h"
 #include "LocationInfo.h"
-#include "MapTime.h"
+#include "MapWeather.h"
 #include "LocationFunctions.h"
 #include "OutdoorTerrain.h"
 
@@ -83,7 +84,8 @@ struct OutdoorLocation {
     GraphicsImage *sky_texture = nullptr;        // signed int sSky_TextureID;
     std::vector<SpawnPoint> pSpawnPoints;
     LocationInfo ddm;
-    MapTime mapTime;
+    Time lastVisitTime;
+    MapWeather weather;
     std::array<std::array<uint8_t, 11>, 88> uFullyRevealedCellOnMap;
                                           // 968         the inner array is 11
                                           // bytes long, because every bit is

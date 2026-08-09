@@ -46,7 +46,7 @@ struct DecorationDesc;
 struct Item;
 struct LevelDecoration;
 struct LocationInfo;
-struct MapTime;
+struct MapWeather;
 struct MonsterDesc;
 struct NPCData;
 struct ObjectDesc;
@@ -1251,8 +1251,8 @@ struct MapTime_MM7 {
 static_assert(sizeof(MapTime_MM7) == 0x38);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(MapTime_MM7)
 
-void snapshot(const MapTime &src, MapTime_MM7 *dst);
-void reconstruct(const MapTime_MM7 &src, MapTime *dst);
+void snapshot(const MapWeather &src, MapTime_MM7 *dst);  // Callers fill in lastVisitTime separately.
+void reconstruct(const MapTime_MM7 &src, MapWeather *dst);
 
 
 struct SoundInfo_MM6 {

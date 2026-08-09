@@ -10,13 +10,13 @@
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/SpawnPoint.h"
+#include "Engine/Time/Time.h"
 
 #include "Library/Geometry/Rect.h"
 #include "Library/Geometry/Plane.h"
 #include "Library/Geometry/BBox.h"
 
 #include "LocationInfo.h"
-#include "MapTime.h"
 #include "LocationFunctions.h"
 #include "FaceEnums.h"
 
@@ -249,7 +249,7 @@ struct IndoorLocation {
     std::vector<uint16_t> sectorLightData;
     std::vector<SpawnPoint> pSpawnPoints;
     LocationInfo dlv;
-    MapTime mapTime;
+    Time lastVisitTime;
     std::array<char, 875> _visible_outlines;
     char padding;
 
