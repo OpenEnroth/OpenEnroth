@@ -31,6 +31,7 @@
 
 #include "Library/Lod/LodReader.h"
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Tsv/TsvReader.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
@@ -498,21 +499,14 @@ int runSpeechPortraitsCodegen(const CodeGenOptions &options, ResourceManager *re
 int runLstrCodegen(const CodeGenOptions &options, ResourceManager *resourceManager) {
     CodeGenMap map;
 
-    std::string txt = std::string(resourceManager->eventsData("global.txt").str());
+    Blob txt = resourceManager->eventsData("global.txt");
 
-    std::vector<std::string_view> lines = split(txt).by("\r\n");
-
-    std::vector<std::string_view> chunks;
-    for (std::string_view line : std::views::drop(lines, 1)) {
-        if (line.empty())
-            continue;
-
-        split(line).by('\t').to(&chunks);
-        if (chunks.size() != 2)
+    for (TsvLine line : TsvReader(txt).drop(1).skip(&TsvLine::isEmpty)) {
+        if (line.size() != 2)
             throw Exception("Invalid localization file");
 
-        int id = fromString<int>(chunks[0]);
-        std::string text = trimRemoveQuotes(chunks[1]);
+        int id = line[0].as<int>();
+        std::string text = line[1];
 
         std::string enumName = toUpperCaseEnum(text);
         if (enumName.size() > 40) {

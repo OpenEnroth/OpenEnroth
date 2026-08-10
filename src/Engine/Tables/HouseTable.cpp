@@ -6,13 +6,11 @@
 
 #include "Engine/Data/HouseEnums.h"
 
-#include "Library/Serialization/Serialization.h"
+#include "Library/Tsv/TsvReader.h"
 
 #include "Utility/MapAccess.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
-#include "Utility/String/Split.h"
-#include "Utility/String/Transformations.h"
 
 IndexedArray<HouseData, HOUSE_FIRST, HOUSE_LAST> houseTable;
 
@@ -70,31 +68,30 @@ void initializeHouses(const Blob &houses) {
         {"Mercenary Guild", HOUSE_TYPE_TOWN_HALL}, // This is MM6 only. TODO(captainurist): Is this right and not Merc Guild (18)?
     };
 
-    for (std::string_view line : split(houses.str()).by("\r\n").drop(2).skip("")) {
-        // Some lines have only ~12 cols, and some cols are empty, so need both resize & replace.
-        std::array<std::string_view, 24> tokens = split(line).by('\t').replace("", "0").resize(24, "0");
+    for (TsvLine line : TsvReader(houses).drop(2).skip(&TsvLine::isEmpty)) {
+        // Lines are ragged and many numeric cells are empty, so those default to 0.
 
         // TODO(captainurist): We don't check if int is in range. A better way would be to deal away with enums
         //                     entirely, and just use typed ids. Do this once we iron out the details of how #mm6
         //                     enums will be handled by the engine. Also apply to other table parsers.
-        HouseId houseId = static_cast<HouseId>(fromString<int>(tokens[0]));
-        houseTable[houseId].uType = valueOr(houseTypeMap, tokens[2], HOUSE_TYPE_MERCENARY_GUILD);
-        houseTable[houseId].uAnimationID = fromString<int>(tokens[4]);
-        houseTable[houseId].name = unquote(tokens[5]);
-        houseTable[houseId].pProprieterName = unquote(tokens[6]);
-        houseTable[houseId].pProprieterTitle = unquote(tokens[7]);
-        houseTable[houseId].field_14 = fromString<int>(tokens[8]);
-        houseTable[houseId]._state = fromString<int>(tokens[9]);
-        houseTable[houseId]._rep = fromString<int>(tokens[10]);
-        houseTable[houseId]._per = fromString<int>(tokens[11]);
-        houseTable[houseId].fPriceMultiplier = fromString<float>(tokens[12]);
-        houseTable[houseId].flt_24 = fromString<float>(tokens[13]);
-        houseTable[houseId].generation_interval_days = fromString<int>(tokens[15]);
-        houseTable[houseId].uOpenTime = fromString<int>(tokens[18]);
-        houseTable[houseId].uCloseTime = fromString<int>(tokens[19]);
-        houseTable[houseId].uExitPicID = fromString<int>(tokens[20]);
-        houseTable[houseId].uExitMapID = static_cast<MapId>(fromString<int>(tokens[21]));
-        houseTable[houseId]._quest_bit = static_cast<QuestBit>(fromString<int>(tokens[22]));
-        houseTable[houseId].pEnterText = unquote(tokens[23]);
+        HouseId houseId = static_cast<HouseId>(line[0].as<int>());
+        houseTable[houseId].uType = valueOr(houseTypeMap, line[2], HOUSE_TYPE_MERCENARY_GUILD);
+        houseTable[houseId].uAnimationID = line[4].empty() ? 0 : line[4].as<int>();
+        houseTable[houseId].name = line[5];
+        houseTable[houseId].pProprieterName = line[6];
+        houseTable[houseId].pProprieterTitle = line[7];
+        houseTable[houseId].field_14 = line[8].empty() ? 0 : line[8].as<int>();
+        houseTable[houseId]._state = line[9].empty() ? 0 : line[9].as<int>();
+        houseTable[houseId]._rep = line[10].empty() ? 0 : line[10].as<int>();
+        houseTable[houseId]._per = line[11].empty() ? 0 : line[11].as<int>();
+        houseTable[houseId].fPriceMultiplier = line[12].empty() ? 0 : line[12].as<float>();
+        houseTable[houseId].flt_24 = line[13].empty() ? 0 : line[13].as<float>();
+        houseTable[houseId].generation_interval_days = line[15].empty() ? 0 : line[15].as<int>();
+        houseTable[houseId].uOpenTime = line[18].empty() ? 0 : line[18].as<int>();
+        houseTable[houseId].uCloseTime = line[19].empty() ? 0 : line[19].as<int>();
+        houseTable[houseId].uExitPicID = line[20].empty() ? 0 : line[20].as<int>();
+        houseTable[houseId].uExitMapID = static_cast<MapId>(line[21].empty() ? 0 : line[21].as<int>());
+        houseTable[houseId]._quest_bit = static_cast<QuestBit>(line[22].empty() ? 0 : line[22].as<int>());
+        houseTable[houseId].pEnterText = line[23];
     }
 }

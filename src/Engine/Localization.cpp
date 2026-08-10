@@ -11,11 +11,9 @@
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Resources/ResourceManager.h"
 
-#include "Library/Serialization/Serialization.h"
+#include "Library/Tsv/TsvReader.h"
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/String/Transformations.h"
-#include "Utility/String/Split.h"
 
 Localization *localization = nullptr;
 
@@ -47,10 +45,9 @@ bool Localization::initialize() {
     Blob globalBlob = engine->resources()->eventsData("global.txt");
 
     // global.txt table structure: index | text (localized).
-    for (std::string_view line : split(globalBlob.str()).by("\r\n").drop(2).skip("")) {
-        std::array<std::string_view, 2> tokens = split(line).by('\t');
-        LstrId i = static_cast<LstrId>(fromString<int>(tokens[0]));
-        _localizationStrings[i] = unquote(tokens[1]);
+    for (TsvLine line : TsvReader(globalBlob).drop(2).skip(&TsvLine::isEmpty)) {
+        LstrId i = static_cast<LstrId>(line[0].as<int>());
+        _localizationStrings[i] = line[1];
     }
 
     // Only the Russian (Buka) localization uses `^`-tokens, see `sprintfex` in `mm7text_ru.h`.
@@ -324,13 +321,12 @@ void Localization::initializeSkillNames() {
 
     // skilldes.txt table structure: name | description | normal | expert | master | grandmaster (all fields localized).
     Blob skillDesBlob = engine->resources()->eventsData("skilldes.txt");
-    for (auto [line, i] : split(skillDesBlob.str()).by("\r\n").drop(1).skip("").zip(allVisibleSkills())) {
-        std::array<std::string_view, 6> tokens = split(line).by('\t');
-        _skillDescriptions[i] = unquote(tokens[1]);
-        _skillDescriptionsNormal[i] = unquote(tokens[2]);
-        _skillDescriptionsExpert[i] = unquote(tokens[3]);
-        _skillDescriptionsMaster[i] = unquote(tokens[4]);
-        _skillDescriptionsGrand[i] = unquote(tokens[5]);
+    for (auto [line, i] : TsvReader(skillDesBlob).drop(1).skip(&TsvLine::isEmpty).zip(allVisibleSkills())) {
+        _skillDescriptions[i] = line[1];
+        _skillDescriptionsNormal[i] = line[2];
+        _skillDescriptionsExpert[i] = line[3];
+        _skillDescriptionsMaster[i] = line[4];
+        _skillDescriptionsGrand[i] = line[5];
     }
 }
 
@@ -382,10 +378,8 @@ void Localization::initializeClassNames() {
 
     // class.txt table structure: name (localized) | description (localized) | base class name (not localized, not used).
     Blob classBlob = engine->resources()->eventsData("class.txt");
-    for (auto [line, i] : split(classBlob.str()).by("\r\n").drop(1).skip("").zip(_classDescriptions.indices())) {
-        std::array<std::string_view, 3> tokens = split(line).by('\t');
-        _classDescriptions[i] = unquote(tokens[1]);
-    }
+    for (auto [line, i] : TsvReader(classBlob).drop(1).skip(&TsvLine::isEmpty).zip(_classDescriptions.indices()))
+        _classDescriptions[i] = line[1];
 }
 
 //----- (00452B95) --------------------------------------------------------
@@ -459,10 +453,8 @@ void Localization::initializeAttributeNames() {
     // stats.txt table structure: name | description (all fields localized).
     Blob statsBlob = engine->resources()->eventsData("stats.txt");
     std::array<std::string, 26> statsDescs;
-    for (auto &&[line, desc] : split(statsBlob.str()).by("\r\n").drop(1).skip("").zip(statsDescs)) {
-        std::array<std::string_view, 2> tokens = split(line).by('\t');
-        desc = unquote(tokens[1]);
-    }
+    for (auto [line, i] : TsvReader(statsBlob).drop(1).skip(&TsvLine::isEmpty).zip(Segment<size_t>(0, 25)))
+        statsDescs[i] = line[1];
     for (Attribute i : Segment(ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT))
         _attributeDescriptions[i] = statsDescs[std::to_underlying(i)];
     _hpDescription = statsDescs[7];
@@ -516,11 +508,9 @@ enum GLOBAL_LOCALIZ_INDEX
 
     LOCSTR_AVARDS_FOR = 23, //"Awards for"
 
-
     LOCSTR_RANGER = 31, //"Ranger"
 
     LOCSTR_CANCEL = 34, //"Cancel"
-
 
     LOCSTR_SELECT_TGT = 39,	 ///"Select Target"
 
@@ -674,7 +664,6 @@ unsigned char *
 
 +		[17]	0x04102e66 "Exp."	unsigned char *
 
-
 +		[20]	0x04102e88 "Available Skills"	unsigned char *
 
 +		[22]	0x04102ea6 "Awards"	unsigned char *
@@ -711,8 +700,6 @@ unsigned char * +		[38]	0x04102f8b "Cast Spell"	unsigned char *
 +		[53]	0x04103061 "Damage"	unsigned char *
 +		[0x36]	0x0410306c "Dark"	unsigned char *
 
-
-
 +		[58]	0x0410308f "Dead"	unsigned char *
 +		[59]	0x04103098 "Internal Error"	unsigned char *
 +		[60]	0x041030ab "Deposit"	unsigned char *
@@ -720,7 +707,6 @@ unsigned char * +		[38]	0x04102f8b "Cast Spell"	unsigned char *
 +		[62]	0x041030c8 "Might and Magic VII requires your desktop to
 be in 16bit (32k or 65k) Color mode in order to operate in a window." unsigned
 char *
-
 
 +		[65]	0x041031e6 "Diseased"	unsigned char *
 
@@ -753,8 +739,6 @@ unsigned char * +		[92]	0x0410338c "Full"	unsigned char *
 +		[93]	0x04103395 "Game Options"	unsigned char *
 +		[94]	0x041033a6 "Your score: %lu"	unsigned char *
 +		[95]	0x041033ba "Alchemy"	unsigned char *
-
-
 
 +		[97]	0x041033d0 "Gold"	unsigned char *
 +		[98]	0x041033d9 "Good"	unsigned char *
@@ -919,7 +903,6 @@ unsigned char * +		[240]	0x0410403f "Water"	unsigned char *
 +		[250]	0x041040d8 "You need %s"	unsigned char *
 +		[251]	0x041040e9 "Zoom In"	unsigned char *
 +		[252]	0x041040f6 "Zoom Out"	unsigned char *
-
 
 +		[258]	0x04104144 "Temp Speed"	unsigned char *
 
@@ -1098,7 +1081,6 @@ unsigned char * +		[419]	0x04104b3e "May"	unsigned char *
 +		[430]	0x04104be1 "%s is now Level %lu and has earned %lu Skill
 Points!"	unsigned char *
 
-
 +		[435]	0x04104c4a "Converse with %s"	unsigned char *
 +		[436]	0x04104c60 "Minutes"	unsigned char *
 +		[437]	0x04104c6d "Minute"	unsigned char *
@@ -1187,8 +1169,6 @@ char * +		[500]	0x0410523c "You have %lu gold"	unsigned char *
 +		[518]	0x04105359 "Despicable"	unsigned char *
 +		[519]	0x04105369 "Monstrous"	unsigned char *
 +		[520]	0x04105378 "Notorious"	unsigned char *
-
-
 
 +		[524]	0x041053b9 "Once again you've cheated death! …" unsigned
 char * +		[525]	0x041053e1 "Apothecary"	unsigned char *
@@ -1367,7 +1347,6 @@ std::string NameAndTitle(std::string_view name, std::string_view title) {
     return localization->format(LSTR_S_THE_S, name, title);
 }
 
-
 std::string NameAndTitle(std::string_view name, Class class_type) {
     return NameAndTitle(
         name,
@@ -1375,14 +1354,12 @@ std::string NameAndTitle(std::string_view name, Class class_type) {
     );
 }
 
-
 std::string NameAndTitle(std::string_view name, NpcProfession profession) {
     return NameAndTitle(
         name,
         localization->npcProfessionName(profession)
     );
 }
-
 
 std::string NameAndTitle(NPCData *npc) {
     if (!npc->name.empty()) {
