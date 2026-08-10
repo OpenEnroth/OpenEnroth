@@ -48,6 +48,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
 
+#include "Utility/SmallVector.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Exception.h"
@@ -337,17 +338,13 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         return 0;
     }
 
-     // holds faces the coords are above
-    int FoundFaceStore[5] = { 0 };
-    int NumFoundFaceStore = 0;
+    gch::small_vector<uint16_t, 16> foundFaces; // Faces the coords are above.
     int backupboundingsector = 0;
     std::optional<int> foundSector;
     bool singleSectorFound = false;
 
     // loop through sectors
     for (unsigned i = 1; i < sectors.size(); ++i) {
-        if (NumFoundFaceStore >= 5) break;
-
         BLVSector *pSector = &sectors[i];
 
         if (!pSector->boundingBox.intersectsCuboid(Vec3f(sX, sY, sZ), Vec3f(5, 5, 64)))
@@ -373,22 +370,19 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
             // add found faces into store
             if (pFace->Contains(Vec3f(sX, sY, 0), MODEL_INDOOR, engine->config->debug.FloorChecksEps.value(), FACE_XY_PLANE))
-                FoundFaceStore[NumFoundFaceStore++] = faceId;
-
-            if (NumFoundFaceStore >= 5)
-                break; // TODO(captainurist): we do get here sometimes (e.g. in dragon cave), increase limit?
+                foundFaces.push_back(faceId);
         }
     }
 
     // only one face found
-    if (NumFoundFaceStore == 1)
-        return this->faces[FoundFaceStore[0]].sectorId;
+    if (foundFaces.size() == 1)
+        return this->faces[foundFaces[0]].sectorId;
 
     // only one sector found
     if (singleSectorFound) return *foundSector;
 
     // No face found - outside of level
-    if (!NumFoundFaceStore) {
+    if (foundFaces.empty()) {
         if (!backupboundingsector) {
             MM_WARNING("GetSector fail: {}, {}, {}", sX, sY, sZ);
             return 0;
@@ -401,23 +395,23 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
     // when multiple possibilities are found - cycle through and use the closer one to party
     int pSectorID = 0, backupID = 0;
     int MinZDist = INT32_MAX, backupDist = INT32_MAX;
-    if (NumFoundFaceStore > 0) {
+    if (!foundFaces.empty()) {
         int CalcZDist = MinZDist;
-        for (int s = 0; s < NumFoundFaceStore; ++s) {
+        for (uint16_t faceId : foundFaces) {
             // calc distance between this face and party
-            if (this->faces[FoundFaceStore[s]].polygonType == POLYGON_Floor)
-                CalcZDist = sZ - this->vertices[this->faces[FoundFaceStore[s]].vertexIds[0]].z;
-            if (this->faces[FoundFaceStore[s]].polygonType == POLYGON_InBetweenFloorAndWall) {
-                CalcZDist = sZ - this->faces[FoundFaceStore[s]].zCalc.calculate(sX, sY);
+            if (this->faces[faceId].polygonType == POLYGON_Floor)
+                CalcZDist = sZ - this->vertices[this->faces[faceId].vertexIds[0]].z;
+            if (this->faces[faceId].polygonType == POLYGON_InBetweenFloorAndWall) {
+                CalcZDist = sZ - this->faces[faceId].zCalc.calculate(sX, sY);
             }
 
             // use this face if its smaller than the current min - prefer faces below party
             if (CalcZDist < MinZDist) {
                 if (CalcZDist >= 0) {
-                    pSectorID = this->faces[FoundFaceStore[s]].sectorId;
+                    pSectorID = this->faces[faceId].sectorId;
                     MinZDist = CalcZDist;
                 } else {
-                    backupID = this->faces[FoundFaceStore[s]].sectorId;
+                    backupID = this->faces[faceId].sectorId;
                     backupDist = std::abs(CalcZDist);
                 }
             }
@@ -426,7 +420,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         if (pSectorID == 0) {
             if (backupID == 0) {
                 assert(false); // doesnt choose - so default to first - SHOULDNT GET HERE
-                pSectorID = this->faces[FoundFaceStore[0]].sectorId;
+                pSectorID = this->faces[foundFaces[0]].sectorId;
             } else {
                 // there is a face above the party to use
                 pSectorID = backupID;
