@@ -453,7 +453,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
     }
 }
 
-void CollideOutdoorWithModels(bool ignore_ethereal) {
+void CollideOutdoorWithModels() {
     for (BSPModel &model : pOutdoor->pBModels) {
         if (!collision_state.bbox.intersects(model.boundingBox))
             continue;
@@ -462,11 +462,11 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (!collision_state.bbox.intersects(mface.boundingBox))
                 continue;
 
-            if (mface.Ethereal() || mface.isPortal()) // TODO: this doesn't respect ignore_ethereal parameter
+            if (mface.Ethereal() || mface.isPortal())
                 continue;
 
             Pid pid = Pid::odmFace(model.index, mface.faceId);
-            CollideBodyWithFace(&mface, pid, ignore_ethereal, model.index);
+            CollideBodyWithFace(&mface, pid, true, model.index);
         }
     }
 }
@@ -769,7 +769,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         if (collision_state.PrepareAndCheckIfStationary())
             break;
 
-        CollideOutdoorWithModels(true);
+        CollideOutdoorWithModels();
         CollideOutdoorWithDecorations(worldToGrid(actor.pos));
         CollideWithParty(false);
         _46ED8A_collide_against_sprite_objects(Pid(OBJECT_Actor, actor.id));
@@ -1054,7 +1054,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
             break;
         }
 
-        CollideOutdoorWithModels(true);
+        CollideOutdoorWithModels();
         CollideOutdoorWithDecorations(worldToGrid(pParty->pos));
         _46ED8A_collide_against_sprite_objects(Pid::character(0));
         if (!engine->config->debug.NoPartyActorCollisions.value()) {

@@ -62,9 +62,10 @@ void CollideIndoorWithGeometry(bool ignore_ethereal);
  *
  * Performs collisions with models in outdoor levels. Updates `collision_state`.
  *
- * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
+ * Ethereal faces never collide outdoors, regardless of what is colliding. This is unlike indoor collision,
+ * where `CollideIndoorWithGeometry` lets sprite objects collide with ethereal faces.
  */
-void CollideOutdoorWithModels(bool ignore_ethereal);
+void CollideOutdoorWithModels();
 
 /**
  * @offset 0x0046E0B2.
