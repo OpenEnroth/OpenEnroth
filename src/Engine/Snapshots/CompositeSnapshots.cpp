@@ -429,7 +429,6 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     const auto &[srcData, srcExtras] = src;
 
     // dst->index is set externally.
-    dst->field_40 = srcData.field_40;
     dst->position = srcData.position.toFloat();
     dst->boundingBox.x1 = srcData.minX;
     dst->boundingBox.y1 = srcData.minY;

@@ -9,7 +9,6 @@
 class BSPModel {
  public:
     int index = 0;
-    int32_t field_40 = 0; // visibility flag TODO(pskelton): use for map tooltip checking or remove
     Vec3f position {};
     BBoxi boundingBox = {0, 0, 0, 0, 0, 0};
     Vec3f boundingCenter {};
