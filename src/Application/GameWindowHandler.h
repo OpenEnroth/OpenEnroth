@@ -30,7 +30,7 @@ class GameWindowHandler : public PlatformEventFilter, private PlatformApplicatio
  private:
     friend class PlatformIntrospection;
 
-    void OnMouseLeftClick(Pointi position);
+    void OnMouseLeftClick(Pointi position, bool isDoubleClick = false);
     void OnMouseRightClick(Pointi position);
     void OnMouseLeftUp();
     void OnMouseRightUp();

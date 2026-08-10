@@ -36,7 +36,7 @@ class Mouse {
     void DrawCursor();
     void DrawPickedItem();
 
-    void UI_OnMouseLeftClick();
+    void UI_OnMouseLeftClick(bool isDoubleClick);
 
 
     Pid uPointingObjectID;
