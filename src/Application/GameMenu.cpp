@@ -125,7 +125,7 @@ void Menu::EventLoop() {
                 new OnSaveLoad({241, 302}, {106, 42}, pBtnLoadSlot);
                 continue;
             case UIMSG_SelectLoadSlot:
-                saveLoadMenu()->slotClicked(param);
+                saveLoadMenu()->slotClicked(param, param2);
                 continue;
             case UIMSG_LoadGame:
                 if (saveLoadMenu()->hasSelectedSlot()) {
