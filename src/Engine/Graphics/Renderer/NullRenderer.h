@@ -8,7 +8,7 @@ class NullRenderer : public BaseRenderer {
  public:
     using BaseRenderer::BaseRenderer;
 
-    virtual bool Initialize() override;
+    virtual void Initialize() override;
     virtual bool Reinitialize(bool firstInit) override;
 
     virtual RgbaImage ReadScreenPixels() override;

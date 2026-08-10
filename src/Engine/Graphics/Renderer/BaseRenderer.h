@@ -17,7 +17,7 @@ class BaseRenderer : public Renderer {
     ) : Renderer(config, decal_builder, spellfx, particle_engine, vis) {
     }
 
-    virtual bool Initialize() override;
+    virtual void Initialize() override;
 
     virtual void TransformBillboards() override;
     virtual bool AddBillboardIfVisible(Sprite* spr, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector = 0) override;

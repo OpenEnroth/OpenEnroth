@@ -34,9 +34,8 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Memory/MemSet.h"
 
-bool BaseRenderer::Initialize() {
+void BaseRenderer::Initialize() {
     updateRenderDimensions();
-    return true;
 }
 
 unsigned int BaseRenderer::NextBillboardIndex() {
