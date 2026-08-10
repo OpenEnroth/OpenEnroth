@@ -1102,7 +1102,6 @@ void Game::processQueuedMessages() {
                 pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
                 continue;
             case UIMSG_Rest8Hour:
-                engine->_messageQueue->clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
                 if (currentRestType != REST_NONE) {
                     engine->_statusBar->setEvent(LSTR_YOU_ARE_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
