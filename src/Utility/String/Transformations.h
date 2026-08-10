@@ -3,33 +3,6 @@
 #include <string>
 #include <string_view>
 
-/**
- * Unquotes a string using CSV-style quoting rules. If the string is double-quoted, strips the outer quotes and
- * un-doubles the inner ones (a literal quote inside a quoted string is escaped by doubling it, `""`). A string that
- * isn't double-quoted is returned as-is.
- *
- * @param str                           String to unquote.
- * @return                              Unquoted string.
- * @offset 0x00452C30
- */
-inline std::string unquote(std::string_view str) {
-    if (!str.starts_with('"'))
-        return std::string(str); // Not a quoted field, the `""` escaping doesn't apply.
-
-    str = str.substr(1);
-    if (str.ends_with('"'))
-        str = str.substr(0, str.size() - 1);
-
-    std::string result;
-    result.reserve(str.size());
-    for (size_t i = 0; i < str.size(); i++) {
-        result += str[i];
-        if (str[i] == '"' && i + 1 < str.size() && str[i + 1] == '"')
-            i++; // Doubled quote, emit only one.
-    }
-    return result;
-}
-
 inline std::string trimRemoveQuotes(std::string_view str) {
     while (str.starts_with(' ') || str.starts_with('"'))
         str = str.substr(1);
