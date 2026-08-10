@@ -785,13 +785,13 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
         Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         bool isOnWater = false;
-        int modelPid = 0;
+        int modelPid = -1;
         float newFloorZ = ODM_GetFloorLevel(newPos, &isOnWater, &modelPid);
         if (isOnWater) {
             if (actor.pos.z < newFloorZ + 60) {
                 if (actor.aiState == Dead || actor.aiState == Dying ||
                     actor.aiState == Removed || actor.aiState == Disabled) {
-                    SpriteObject::createSplashObject(Vec3f(actor.pos.x, actor.pos.y, modelPid ? newFloorZ + 30 : newFloorZ + 60));
+                    SpriteObject::createSplashObject(Vec3f(actor.pos.x, actor.pos.y, modelPid != -1 ? newFloorZ + 30 : newFloorZ + 60));
                     actor.aiState = Removed;
                     break;
                 }
@@ -1085,7 +1085,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
         bool terr_slope_advance_y = pOutdoor->pTerrain.isSlopeTooHighByPos(Vec3f(partyNewPos->x, newPosLow.y, 0.0f));
 
         *partyNotOnModel = false;
-        if (!party_y_pid && !party_x_pid && !*floorFaceId) *partyNotOnModel = true;
+        if (party_y_pid == -1 && party_x_pid == -1 && *floorFaceId == -1) *partyNotOnModel = true;
 
         bool move_in_y = true;
         bool move_in_x = true;

@@ -1755,7 +1755,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         int dist_x;
         bool not_in_model = false;
         bool bInWater = false;
-        int modelPID = 0;
+        int modelPID = -1;
 
         // 100 attempts to make a usuable spawn point
         for (; loop_cnt < 100; ++loop_cnt) {

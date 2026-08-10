@@ -145,13 +145,13 @@ static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
 void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
     bool isHighSlope = pOutdoor->pTerrain.isSlopeTooHighByPos(pSpriteObjects[uLayingItemID].vPosition);
-    int bmodelPid = 0;
+    int bmodelPid = -1;
     bool onWater = false;
     float level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, &onWater, &bmodelPid);
     bool isAboveGround = pSpriteObjects[uLayingItemID].vPosition.z > level + 1;
     if (!isAboveGround && onWater) {
         int splashZ = level + 60;
-        if (bmodelPid) {
+        if (bmodelPid != -1) {
             splashZ = level + 30;
         }
         createSplashObject(Vec3f(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));
@@ -250,13 +250,13 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         }
         int collisionZ = collision_state.new_position_lo.z - collision_state.radius_lo;
         bool collisionOnWater = false;
-        int collisionBmodelPid = 0;
+        int collisionBmodelPid = -1;
         Vec3f collisionPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo);
         float collisionLevel = ODM_GetFloorLevel(collisionPos, &collisionOnWater, &collisionBmodelPid);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
             int splashZ = level + 60;
-            if (collisionBmodelPid) {
+            if (collisionBmodelPid != -1) {
                 splashZ = collisionLevel + 30;
             }
             createSplashObject(Vec3f(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ));

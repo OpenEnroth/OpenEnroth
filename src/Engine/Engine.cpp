@@ -281,7 +281,7 @@ void Engine::DrawGUI() {
             floor_level_str = fmt::format(
                 "ODM_GetFloorLevel: {}   on_water: {}  on: {}\n",
                 floor_level, on_water ? "true" : "false",
-                bmodel_pid == 0
+                bmodel_pid == -1
                     ? "---"
                     : fmt::format("BModel={} Face={}", bmodel_pid >> 6, bmodel_pid & 0x3F)
             );
