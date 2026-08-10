@@ -23,6 +23,10 @@ FileStat SubFileSystem::_stat(FileSystemPathView path) const {
 }
 
 void SubFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
+    // A root always exists, so ls("") has to work even if the base path doesn't, or isn't a directory.
+    if (path.isEmpty() && _base->stat(_basePath).type != FILE_DIRECTORY)
+        return;
+
     _base->ls(_basePath / path, entries);
 }
 
