@@ -2376,7 +2376,7 @@ std::string Actor::GetDisplayName() const {
 //----- (0044FD29) --------------------------------------------------------
 void Actor::SummonMinion(int summonerId) {
     uint8_t extraSummonLevel;  // al@1
-    MonsterId summonMonsterBaseType;         // esi@1
+    MonsterId summonMonsterId;         // esi@1
     int v5;                            // edx@2
     int v7;                            // edi@10
     MonsterInfo *v9;                   // ebx@10
@@ -2408,34 +2408,34 @@ void Actor::SummonMinion(int summonerId) {
 
     extraSummonLevel = this->monsterInfo.specialAbilityDamageDiceRolls;
     // TODO(captainurist): drop the cast here, store the data properly.
-    summonMonsterBaseType = static_cast<MonsterId>(this->monsterInfo.field_3C_some_special_attack);
+    summonMonsterId = static_cast<MonsterId>(this->monsterInfo.field_3C_some_special_attack);
+
+    MonsterTier summonTier = MONSTER_TIER_A;
     if (extraSummonLevel) {
-        if (extraSummonLevel >= 1 && extraSummonLevel <= 3) {
-            // TODO(captainurist): encapsulate monster level arithmetic properly.
-            summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + extraSummonLevel - 1);
-        }
+        if (extraSummonLevel >= 1 && extraSummonLevel <= 3)
+            summonTier = static_cast<MonsterTier>(extraSummonLevel - 1);
     } else {
         v5 = grng->random(100);
-        // TODO(captainurist): encapsulate monster level arithmetic properly.
         if (v5 >= 90)
-            summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + 2);
+            summonTier = MONSTER_TIER_C;
         else if (v5 >= 60)
-            summonMonsterBaseType = static_cast<MonsterId>(std::to_underlying(summonMonsterBaseType) + 1);
+            summonTier = MONSTER_TIER_B;
     }
+    summonMonsterId = monsterIdForMonsterTypeAndTier(monsterTypeForMonsterId(summonMonsterId), summonTier);
     Actor *actor = AllocateActor();
     if (!actor)
         return;
 
-    v9 = &pMonsterStats->infos[summonMonsterBaseType];
+    v9 = &pMonsterStats->infos[summonMonsterId];
     actor->hp = v9->hp;
     actor->monsterInfo = *v9;
-    actor->monsterId = summonMonsterBaseType;
-    actor->radius = pMonsterList->monsters[summonMonsterBaseType].monsterRadius;
-    actor->height = pMonsterList->monsters[summonMonsterBaseType].monsterHeight;
+    actor->monsterId = summonMonsterId;
+    actor->radius = pMonsterList->monsters[summonMonsterId].monsterRadius;
+    actor->height = pMonsterList->monsters[summonMonsterId].monsterHeight;
     actor->monsterInfo.goldDiceRolls = 0;
     actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.exp = 0;
-    actor->moveSpeed = pMonsterList->monsters[summonMonsterBaseType].movementSpeed;
+    actor->moveSpeed = pMonsterList->monsters[summonMonsterId].movementSpeed;
 
     actor->initialPosition.x = v15;
     actor->initialPosition.y = v17;
