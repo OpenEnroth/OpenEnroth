@@ -131,7 +131,6 @@ class GameConfig : public Config {
         Bool TraceNoVideo = {this, "trace_no_video", true,
             "Don't play movies when recording traces."};
 
-
         Bool TraceNoPartyActorCollisions = {this, "trace_no_party_actor_collisions", false,
             "Disable collisions between the party and monsters on the map when recording traces."};
 
@@ -552,9 +551,6 @@ class GameConfig : public Config {
         Key Stats = {this, INPUT_ACTION_OPEN_STATS, "stats", PlatformKey::KEY_C, "Stats tab key."};
         Key Skills = {this, INPUT_ACTION_OPEN_SKILLS, "skills", PlatformKey::KEY_S, "Skills tab key."};
         Key Inventory = {this, INPUT_ACTION_OPEN_INVENTORY, "inventory", PlatformKey::KEY_I, "Inventory tab key."};
-
-        ConfigEntry<PlatformKey> TraceKey = {this, "trace_key", PlatformKey::KEY_R,
-            "Key that starts and stops trace recording when pressed together with Ctrl+Shift."};
         Key Awards = {this, INPUT_ACTION_OPEN_AWARDS, "awards", PlatformKey::KEY_A, "Stats tab key."};
         Key NewGame = {this, INPUT_ACTION_NEW_GAME, "new_game", PlatformKey::KEY_N, "New Game menu key."};
         Key SaveGame = {this, INPUT_ACTION_SAVE_GAME, "save_game", PlatformKey::KEY_S, "Save Game menu key."};

@@ -148,7 +148,7 @@ void GameStarter::initialize() {
     //    component updates tick count in `swapBuffers()`, and then trace component stores the updated value in a
     //    recorded `PaintEvent`.
     // 4. `KeyboardController` should be placed after GameWindowHandler.
-    // 5. `GameTraceHandler` should come before other input handlers, otherwise the trace hotkey will open up the rest menu.
+    // 5. `GameTraceHandler` should come before other input handlers, otherwise Ctrl+Shift+R will open up the rest menu.
     _application->installComponent(std::make_unique<EngineControlComponent>());
     _application->installComponent(std::make_unique<EngineTraceSimpleRecorder>());
     _application->installComponent(std::make_unique<EngineTraceSimplePlayer>());
@@ -158,7 +158,7 @@ void GameStarter::initialize() {
     _application->installComponent(std::make_unique<EngineRandomComponent>());
     _application->installComponent(std::make_unique<KeyboardController>());
     _application->installComponent(std::make_unique<GameWindowHandler>());
-    _application->installComponent(std::make_unique<GameTraceHandler>(_config.get()));
+    _application->installComponent(std::make_unique<GameTraceHandler>());
     _application->component<EngineRandomComponent>()->setTracing(_options.tracingRng);
 
     // Init main window. Should happen before the renderer init, which depends on window dimensions & mode.
