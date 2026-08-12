@@ -12,6 +12,7 @@
 #include "Io/InputEnumFunctions.h" // TODO(captainurist): doesn't belong here
 
 #include "PaintEvent.h"
+#include "Utility/String/Transformations.h"
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(Pointi, (
     (x, "x"),
@@ -217,6 +218,17 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTrace, (
     (header, "header"),
     (events, "trace")
 ))
+
+std::string EventTrace::normalizeJson(std::string_view text) {
+    // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
+    std::string result = replaceAll(text, "\r\n", "\n");
+
+    // Also drop trailing newlines. Vim always adds a newline, but retracing removes it.
+    while (result.ends_with('\n'))
+        result.pop_back();
+
+    return result;
+}
 
 Blob EventTrace::toJsonBlob(const EventTrace &trace) {
     // TODO(captainurist): well, nlohmann json is retarded in that it chokes if we throw exceptions inside

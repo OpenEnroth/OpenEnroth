@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <utility>
-#include <ranges>
 #include <vector>
 #include <string>
 
@@ -66,20 +65,13 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "Path to trace file(s) to play.")->required()->option_text("...");
     play->set_help_flag("-h,--help", "Print help and exit."); // This places --help last in the command list.
 
-    std::string traceDir;
     CLI::App *retrace = app->add_subcommand("retrace", "Retrace traces and exit.", result.subcommand, SUBCOMMAND_RETRACE)->fallthrough();
     app->add_flag(
         "--headless", result.headless,
         "Run in headless mode.");
-    retrace->add_flag(
-        "--check-canonical", result.retrace.checkCanonical,
-        "Check whether all passed traces are stored in canonical representation and return an error if not. Don't overwrite the actual trace files.");
     retrace->add_option(
         "--migration", result.retrace.migration,
         "Migration to apply before retracing.")->option_text("MIGRATION");
-    retrace->add_option(
-        "--ls", traceDir,
-        "Directory to look for traces to retrace.")->group(""); // This is here so that we don't have to jump through hoops in cmake, group("") hides the option.
     retrace->add_option(
         "TRACE", result.retrace.traces,
         "Path to trace file(s) to retrace.")->option_text("...");
@@ -99,13 +91,6 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     if (result.subcommand == SUBCOMMAND_RETRACE) {
         result.ramFsUserData = true; // No config & no user data if retracing.
         result.quickStart = true;
-
-        if (!traceDir.empty()) {
-            for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(traceDir))
-                if (entry.path().extension() == ".json")
-                    result.retrace.traces.push_back(entry.path().generic_string());
-            std::ranges::sort(result.retrace.traces); // NOLINT: This is ranges::sort. We want a fixed order.
-        }
 
         if (result.retrace.traces.empty())
             throw Exception("No trace files to retrace.");

@@ -30,40 +30,8 @@
 #include "Utility/String/Format.h"
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String/Transformations.h"
-#include "Utility/String/Split.h"
 
 #include "OpenEnrothOptions.h"
-
-static std::string normalizeText(std::string_view text) {
-    // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
-    std::string result = replaceAll(text, "\r\n", "\n");
-
-    // Also drop trailing newlines. Vim always adds a newline, but retracing removes it.
-    while (result.ends_with('\n'))
-        result.pop_back();
-
-    return result;
-}
-
-static void printLines(const std::vector<std::string_view> &lines, size_t line, size_t delta) {
-    // TODO(captainurist): #cpp26 use std::sat_sub
-    for (size_t i = line > delta ? line - delta : 0; i < std::min(lines.size(), line + delta + 1); i++)
-        fmt::println(stderr, "{:>5}: {}", i + 1, lines[i]);
-}
-
-static void printTraceDiff(std::string_view current, std::string_view canonical) {
-    assert(canonical != current);
-
-    std::vector<std::string_view> canonicalLines = split(canonical).by('\n');
-    std::vector<std::string_view> currentLines = split(current).by('\n');
-
-    size_t line = std::ranges::mismatch(canonicalLines, currentLines).in1 - canonicalLines.begin() + 1; // Lines are 1-indexed.
-
-    fmt::println(stderr, "Canonical:");
-    printLines(canonicalLines, line, 4);
-    fmt::println(stderr, "Current:");
-    printLines(currentLines, line, 4);
-}
 
 void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
     std::unordered_set<PlatformKey> continuousKeys, onceKeys;
@@ -89,9 +57,7 @@ void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
 int runRetrace(const OpenEnrothOptions &options) {
     GameStarter starter(options);
 
-    int status = 0;
-
-    starter.runInstrumented([&status, options, application = starter.application()] (EngineController *game) {
+    starter.runInstrumented([options, application = starter.application()] (EngineController *game) {
         EngineTraceSimplePlayer *player = application->component<EngineTraceSimplePlayer>();
         EngineTraceRecorder *recorder = application->component<EngineTraceRecorder>();
 
@@ -115,25 +81,16 @@ int runRetrace(const OpenEnrothOptions &options) {
             auto endTime = std::chrono::steady_clock::now();
             fmt::println(stderr, "Retraced in {}ms.", std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count());
 
-            std::string oldTraceJson = normalizeText(oldTraceBlob.str());
-            std::string newTraceJson = normalizeText(recording.trace.str());
+            std::string oldTraceJson = EventTrace::normalizeJson(oldTraceBlob.str());
+            std::string newTraceJson = EventTrace::normalizeJson(recording.trace.str());
             if (oldTraceJson != newTraceJson) {
-                if (!options.retrace.checkCanonical) {
-                    oldTraceBlob = Blob(); // Close old trace file
-                    FileOutputStream(tracePath).write(recording.trace);
-                } else {
-                    fmt::println(stderr, "Trace '{}' is not in canonical representation.", tracePath);
-                    printTraceDiff(oldTraceJson, newTraceJson);
-                    status = 1;
-                }
+                oldTraceBlob = Blob(); // Close old trace file
+                FileOutputStream(tracePath).write(recording.trace);
             }
         }
     });
 
-    if (options.retrace.checkCanonical && status == 0)
-        fmt::println(stderr, "All traces are in canonical representation.");
-
-    return status;
+    return 0;
 }
 
 int runPlay(const OpenEnrothOptions &options) {
