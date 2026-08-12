@@ -22,6 +22,7 @@
 #include "Engine/Graphics/AtlasLayout.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
@@ -880,16 +881,10 @@ void GameUI_WritePointedObjectStatusString() {
 
             auto vis = EngineIocContainer::ResolveVis();
 
-            Vis_PIDAndDepth pickedObject = engine->PickMouseNormal();
+            // Status bar tips share the monster popup depth, so anything close enough for a right-click popup
+            // also shows a hint.
+            Vis_PIDAndDepth pickedObject = engine->PickMouse(pCamera3D->GetMouseInfoDepth(), pX, pY, &vis_items_filter, &vis_face_filter);
             mouse->uPointingObjectID = pickedObject.pid;
-            // The pick above is capped at ranged-attack reach, but monster popups reach further. Fall back to a
-            // display-only pick at popup depth so that every monster that can show a popup also gets a status bar
-            // hint. uPointingObjectID intentionally keeps the shorter reach - combat targeting reads it.
-            if (!pickedObject.pid) {
-                Vis_PIDAndDepth popupPick = engine->PickMouseInfoPopup();
-                if (popupPick.pid.type() == OBJECT_Actor)
-                    pickedObject = popupPick;
-            }
             pickedObjectID = (signed)pickedObject.pid.id();
             if (pickedObject.pid.type() == OBJECT_Sprite) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
