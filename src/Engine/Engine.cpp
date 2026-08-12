@@ -276,14 +276,14 @@ void Engine::DrawGUI() {
             floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\nNodes: {}, Faces: {} ({}), Sectors: {}\n", floor_level, uFaceID, pBspRenderer->num_nodes, pBspRenderer->num_faces, pBLVRenderParams->uNumFacesRenderedThisFrame, pBspRenderer->uNumVisibleNotEmptySectors);
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
-            int bmodel_pid;
-            float floor_level = ODM_GetFloorLevel(pParty->pos, &on_water, &bmodel_pid);
+            int floor_face_id;
+            float floor_level = ODM_GetFloorLevel(pParty->pos, &on_water, &floor_face_id);
             floor_level_str = fmt::format(
                 "ODM_GetFloorLevel: {}   on_water: {}  on: {}\n",
                 floor_level, on_water ? "true" : "false",
-                bmodel_pid == -1
+                floor_face_id == -1
                     ? "---"
-                    : fmt::format("BModel={} Face={}", bmodel_pid >> 6, bmodel_pid & 0x3F)
+                    : fmt::format("BModel={} Face={}", floor_face_id >> 6, floor_face_id & 0x3F)
             );
         }
 

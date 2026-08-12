@@ -1755,7 +1755,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         int dist_x;
         bool not_in_model = false;
         bool bInWater = false;
-        int modelPID = -1;
+        int floorFaceId = -1;
 
         // 100 attempts to make a usuable spawn point
         for (; loop_cnt < 100; ++loop_cnt) {
@@ -1769,7 +1769,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.monsterIndex = enc_index;
 
             // get proposed floor level
-            enc_spawn_point.position.z = ODM_GetFloorLevel(enc_spawn_point.position, &bInWater, &modelPID);
+            enc_spawn_point.position.z = ODM_GetFloorLevel(enc_spawn_point.position, &bInWater, &floorFaceId);
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {

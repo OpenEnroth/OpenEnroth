@@ -357,9 +357,9 @@ void OutdoorLocation::UpdateFog() {
 
 int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
     bool is_on_water = false;
-    int bmodel_standing_on_pid = -1;
-    ODM_GetFloorLevel(pos, &is_on_water, &bmodel_standing_on_pid);
-    if (pParty->isAirborne() || bmodel_standing_on_pid != -1 || is_on_water) {
+    int floor_face_id = -1;
+    ODM_GetFloorLevel(pos, &is_on_water, &floor_face_id);
+    if (pParty->isAirborne() || floor_face_id != -1 || is_on_water) {
         return 2;
     }
 
@@ -1609,10 +1609,10 @@ void UpdateActors_ODM() {
             uIsFlying = 0;
 
         bool Slope_High = pOutdoor->pTerrain.isSlopeTooHighByPos(actor.pos);
-        int Model_On_PID = -1;
+        int Floor_Face_Id = -1;
         bool uIsOnWater = false;
-        float Floor_Level = ODM_GetFloorLevel(actor.pos, &uIsOnWater, &Model_On_PID);
-        bool Actor_On_Terrain = Model_On_PID == -1;
+        float Floor_Level = ODM_GetFloorLevel(actor.pos, &uIsOnWater, &Floor_Face_Id);
+        bool Actor_On_Terrain = Floor_Face_Id == -1;
 
         bool uIsAboveFloor = (actor.pos.z > (Floor_Level + 1));
 
