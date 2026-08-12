@@ -44,13 +44,15 @@ bool noCaseEquals(std::string_view a, std::string_view b) {
     return noCaseCompare(a.data(), b.data(), a.size()) == 0;
 }
 
-bool noCaseLess(std::string_view a, std::string_view b) {
+int noCaseCompare(std::string_view a, std::string_view b) {
     int result = noCaseCompare(a.data(), b.data(), std::min(a.size(), b.size()));
-    if (result < 0)
-        return true;
-    if (result > 0)
-        return false;
-    return a.size() < b.size();
+    if (result != 0)
+        return result;
+    return a.size() < b.size() ? -1 : a.size() > b.size() ? 1 : 0;
+}
+
+bool noCaseLess(std::string_view a, std::string_view b) {
+    return noCaseCompare(a, b) < 0;
 }
 
 std::string toPrintable(std::string_view s, char placeholder) {

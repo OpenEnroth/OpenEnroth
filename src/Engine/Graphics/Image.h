@@ -44,3 +44,11 @@ class GraphicsImage {
     RgbaImage _rgba;
     TextureRenderId _renderId;
 };
+
+struct GraphicsImageDeleter {
+    void operator()(GraphicsImage *image) const {
+        image->release();
+    }
+};
+
+using GraphicsImagePtr = std::unique_ptr<GraphicsImage, GraphicsImageDeleter>;

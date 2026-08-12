@@ -9,6 +9,7 @@
 #include "Arcomage/Arcomage.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIProgressBar.h"
 
@@ -58,8 +59,7 @@ GAME_TEST(Issues, Issue163) {
 
     game.pressGuiButton("MainMenu_LoadGame"); // Shouldn't crash.
     game.tick(10);
-    for (bool used : pSavegameList->pSavegameUsedSlots)
-        EXPECT_FALSE(used); // All slots unused.
+    EXPECT_TRUE(saveLoadMenu()->slots().empty()); // No saves listed.
 
     game.pressGuiButton("LoadMenu_Load");
     game.tick(10);

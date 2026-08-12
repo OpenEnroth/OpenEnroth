@@ -24,6 +24,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIPartyCreation.h"
+#include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -430,8 +431,7 @@ GAME_TEST(Prs, Pr1694) {
     game.pressGuiButton("LoadMenu_Slot0"); // Should not crash.
     game.tick(1);
 
-    for (bool used : pSavegameList->pSavegameUsedSlots)
-        EXPECT_FALSE(used); // All slots unused.
+    EXPECT_TRUE(saveLoadMenu()->slots().empty()); // No saves listed.
 }
 
 // 1700

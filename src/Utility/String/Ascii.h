@@ -30,6 +30,7 @@ std::string toUpper(std::string_view text);
 
 bool noCaseStartsWith(std::string_view s, std::string_view prefix);
 bool noCaseEquals(std::string_view a, std::string_view b);
+int noCaseCompare(std::string_view a, std::string_view b);
 bool noCaseLess(std::string_view a, std::string_view b);
 
 struct NoCaseLess {

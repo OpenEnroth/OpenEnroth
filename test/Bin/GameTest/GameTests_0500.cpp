@@ -7,6 +7,7 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/NPCTopics.h"
+#include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Engine/Tables/ItemTable.h"
@@ -384,7 +385,7 @@ GAME_TEST(Issues, Issue626) {
     game.pressGuiButton("GameMenu_LoadGame");
     game.tick(3);
 
-    EXPECT_EQ(pSavegameList->selectedSlot, 1);
+    EXPECT_EQ(saveLoadMenu()->selectedSlot().fileName, engine->_lastLoadedSaveFileName); // Last loaded save is pre-selected.
 }
 
 GAME_TEST(Issues, Issue645) {
