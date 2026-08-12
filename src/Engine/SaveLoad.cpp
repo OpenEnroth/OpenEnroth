@@ -229,6 +229,7 @@ void doSavegame(std::string fileName, std::string_view title) {
 
 void saveNewGame() {
     engine->_currentLoadedMapId = MAP_EMERALD_ISLAND;
+    engine->_lastLoadedSaveFileName.clear(); // Otherwise the save menu would pre-select a save from a previous playthrough.
     pParty->pos.x = 12552;
     pParty->pos.y = 800;
     pParty->pos.z = 193;

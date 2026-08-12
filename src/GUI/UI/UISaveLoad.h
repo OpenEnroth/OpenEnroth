@@ -56,6 +56,7 @@ class GUIWindow_SaveLoad : public GUIWindow {
     void scrollWithMouse(Pointi mousePos);
 
  protected:
+    void preselectSlot(std::string_view fileName); // Selects & scrolls to the slot for the given file. No-op if there's no such slot.
     void drawSaveLoad();
 
  protected:

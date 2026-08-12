@@ -1094,14 +1094,13 @@ GAME_TEST(Issues, Issue2453) {
     game.skipLoadingScreen();
     game.tick(2);
 
-    // Save over the same slot — the existing title should be preserved, no need to retype. Slot #0 is the new save
-    // slot, the existing save is in slot #1.
+    // Save over the same save — it's pre-selected in the save menu, so just pressing the save button overwrites it,
+    // and the existing title is preserved, no need to retype.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
-    game.pressGuiButton("SaveMenu_Slot1");
-    game.tick(2);
+    EXPECT_EQ(saveLoadMenu()->selectedSlot().fileName, "save000.mm7");
     game.pressGuiButton("SaveMenu_Save");
     game.tick(10);
     EXPECT_EQ(ufs->ls("saves").size(), 1);
@@ -1109,6 +1108,15 @@ GAME_TEST(Issues, Issue2453) {
     EXPECT_NE(firstSave.str(), secondSave.str()); // Save was actually overwritten.
 
     EXPECT_GE(loadingTape.count(true), 1); // Loading screen was shown.
+
+    // Starting a new game drops the pre-selection — otherwise the save button would overwrite a save from a
+    // previous playthrough.
+    game.startNewGame();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    EXPECT_TRUE(saveLoadMenu()->selectedSlot().fileName.empty()); // The new save slot is selected.
 }
 
 GAME_TEST(Issues, Issue2464) {
@@ -1355,7 +1363,7 @@ GAME_TEST(Issues, Issue2551a) {
     game.tick(2);
     GUIWindow_SaveLoad *saveMenu = saveLoadMenu();
     ASSERT_EQ(saveMenu->slots().size(), 51); // All 50 saves are listed, plus the new save slot...
-    ASSERT_TRUE(saveMenu->selectedSlot().fileName.empty()); // ...which is selected by default.
+    ASSERT_TRUE(saveMenu->selectedSlot().fileName.empty()); // ...which is selected, as this game wasn't loaded from a save.
 
     // Pressing the save button right away shouldn't save, we want a save name typed in first.
     game.pressGuiButton("SaveMenu_Save");

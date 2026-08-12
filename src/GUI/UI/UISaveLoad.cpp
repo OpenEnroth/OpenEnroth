@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -123,6 +124,14 @@ GUIWindow_SaveLoad::GUIWindow_SaveLoad(WindowType type, Pointi position, Sizei d
     : GUIWindow(type, position, dimensions)
 {}
 
+void GUIWindow_SaveLoad::preselectSlot(std::string_view fileName) {
+    auto pos = std::ranges::find(_slots, fileName, &SavegameSlot::fileName);
+    if (pos == _slots.end())
+        return;
+    _selectedSlot = pos - _slots.begin();
+    _scrollPosition = std::min(_selectedSlot, std::max<int>(0, std::ssize(_slots) - 7));
+}
+
 void GUIWindow_SaveLoad::scrollUp() {
     _scrollPosition = std::max(0, _scrollPosition - 1);
 }
@@ -225,7 +234,11 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_Save, {0, 0}, rende
     saveload_ui_saveu = assets->getImage_ColorKey("LS_saveU");
     saveload_ui_x_u = assets->getImage_ColorKey("x_u");
 
-    _slots = saveMenuSlots(); // New save slot is shown first & selected by default.
+    _slots = saveMenuSlots(); // New save slot is shown first.
+
+    // Pre-select the currently loaded save, so that just clicking the save button saves over it. There might be
+    // none, e.g. when playing a new game - then the new save slot stays selected.
+    preselectSlot(engine->_lastLoadedSaveFileName);
 
     saveload_ui_x_d = assets->getImage_ColorKey("x_d");
     saveload_ui_ls_saved = assets->getImage_ColorKey("LS_saveD");
@@ -303,11 +316,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_Load, {0
     _slots = loadMenuSlots();
 
     // Pre-select the last loaded save.
-    auto pos = std::ranges::find(_slots, engine->_lastLoadedSaveFileName, &SavegameSlot::fileName);
-    if (pos != _slots.end()) {
-        _selectedSlot = pos - _slots.begin();
-        _scrollPosition = std::min(_selectedSlot, std::max<int>(0, std::ssize(_slots) - 7));
-    }
+    preselectSlot(engine->_lastLoadedSaveFileName);
 
     saveload_ui_x_d = assets->getImage_ColorKey("x_d");
     saveload_ui_ls_saved = assets->getImage_ColorKey("LS_loadD");
