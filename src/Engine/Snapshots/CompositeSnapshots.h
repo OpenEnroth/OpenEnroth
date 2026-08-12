@@ -63,7 +63,7 @@ struct IndoorDelta_MM7 {
     std::vector<int16_t> doorsData;
     PersistentVariables_MM7 eventVariables;
     int64_t lastVisitTime;
-    MapWeather_MM7 weather;
+    MapWeather_MM7 weather; // Not used, indoor maps have no weather.
 };
 
 void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst);
