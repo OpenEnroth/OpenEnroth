@@ -59,6 +59,7 @@ target_link_libraries(gui_ui
         gui_ui_books
         gui_ui_houses
         arcomage
+        core_serialization
         engine_spells
         utility)
 

@@ -28,6 +28,7 @@ target_link_libraries(application
         engine_graphics_renderer
         application_game_states
         application_startup
+        core_serialization
         gui
         io
         library_config
