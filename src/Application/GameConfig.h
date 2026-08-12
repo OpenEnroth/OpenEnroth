@@ -198,11 +198,13 @@ class GameConfig : public Config {
 
         Int MouseInfoDepthIndoor = {this, "mouse_info_depth_indoor", 16192, &ValidateInteractionDepth,
             "Maximum range at which right clicking on a monster produces a popup indoors. "
+            "Status bar tips on mouse over use the same depth. "
             "Also this is the max range for the souldrinker spell indoors."};
 
         Int MouseInfoDepthOutdoor = {this, "mouse_info_depth_outdoor", 12800, &ValidateInteractionDepth,
             "Maximum range at which right clicking on a monster produces a popup outdoors. "
             "Default value is 12800 = 25 * 512, 25 map cells. "
+            "Status bar tips on mouse over use the same depth. "
             "Also this is the max range for the souldrinker spell outdoors."};
 
         Int NewGameFood = {this, "new_game_food", 7,
@@ -222,9 +224,7 @@ class GameConfig : public Config {
 
         Int RangedAttackDepth = {this, "ranged_attack_depth", 5120, &ValidateRangedAttackDepth,
             "Max depth for ranged attacks and ranged spells. "
-            "It's impossible to target monsters that are further away than this value. "
-            "Status bar tips on mouse over also use this depth, except for monsters, "
-            "which use the monster popup depth."};
+            "It's impossible to target monsters that are further away than this value."};
 
         Int AoeDamageDistance = {this, "aoe_damage_distance", 512, &ValidateAoeDistance,
             "Distance from point of impact of harmful AOE spell. "
