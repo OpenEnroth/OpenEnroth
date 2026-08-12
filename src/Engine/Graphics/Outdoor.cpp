@@ -1809,8 +1809,12 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
     uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
 
     loadAndPrepareODMInternal(mapid);
-    if (!bLoading)
-        TeleportToStartingPoint(uLevel_StartingPointType);
+    if (!bLoading) {
+        engine->_teleportPoint.adjustToStartingPoint(uLevel_StartingPointType);
+        if (engine->_teleportPoint.isValid())
+            engine->_teleportPoint.doTeleport(false);
+        engine->_teleportPoint.invalidate();
+    }
 
     viewparams->_443365();
     PlayLevelMusic();

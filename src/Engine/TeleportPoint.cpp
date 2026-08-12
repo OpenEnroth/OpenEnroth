@@ -1,7 +1,6 @@
 #include "TeleportPoint.h"
 
 #include "Engine/Party.h"
-#include "Engine/Engine.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Indoor.h"
@@ -86,35 +85,53 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
     pParty->_viewPitch = newPitch;
 }
 
-MapStartPoint uLevel_StartingPointType;
-
-void TeleportToStartingPoint(MapStartPoint point) {
+void TeleportPoint::adjustToStartingPoint(MapStartPoint point) {
     DecorationId decID = pDecorationList->GetDecorIdByName(toString(point));
     if (decID == DECORATION_NULL)
         return;
+
+    // Fallback when the map has no matching decoration - resolve against the current party state.
+    Vec3f basePos = pParty->pos;
+    int baseYaw = pParty->_viewYaw;
+    int basePitch = pParty->_viewPitch;
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
         if (pLevelDecorations[i].uDecorationDescID != decID)
             continue;
 
-        pParty->pos = pLevelDecorations[i].vPosition;
+        basePos = pLevelDecorations[i].vPosition;
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
             // always placing the party on the ground.
             bool bOnWater = false;
             int bModelPid;
-            pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid);
+            basePos.z = ODM_GetFloorLevel(basePos, &bOnWater, &bModelPid);
         } else {
             int face = -1;
-            pParty->pos.z = BLV_GetFloorLevel(pParty->pos, pIndoor->GetSector(pParty->pos), &face);
+            basePos.z = BLV_GetFloorLevel(basePos, pIndoor->GetSector(basePos), &face);
         }
-        pParty->velocity = Vec3f();
-        pParty->uFallStartZ = pParty->pos.z;
-        pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
-        pParty->_viewPitch = 0;
+        baseYaw = pLevelDecorations[i]._yawAngle;
+        basePitch = 0;
     }
 
-    if (engine->_teleportPoint.isValid())
-        engine->_teleportPoint.doTeleport(true);
-    engine->_teleportPoint.invalidate();
+    if (_teleportValid) {
+        if (_pos.x == 0)
+            _pos.x = basePos.x;
+        if (_pos.y == 0)
+            _pos.y = basePos.y;
+        if (_pos.z == 0)
+            _pos.z = basePos.z;
+        if (_yaw == -1)
+            _yaw = baseYaw;
+        if (_pitch == 0)
+            _pitch = basePitch;
+    } else {
+        _pos = basePos;
+        _yaw = baseYaw;
+        _pitch = basePitch;
+        _zSpeed = 0;
+    }
+    _teleportValid = true;
 }
+
+MapStartPoint uLevel_StartingPointType;

@@ -57,6 +57,18 @@ class TeleportPoint {
      */
     void doTeleport(bool keepOnZero);
 
+    /**
+     * Resolves the pending target against the given starting point decoration of the currently loaded map,
+     * making it fully absolute. Doesn't teleport. Zero components (-1 for yaw) take the value the decoration
+     * placement provides - the decoration position with z grounded on the floor, the decoration yaw, zero pitch
+     * and vertical speed. An invalid pending target resolves to the decoration placement itself, so the point is
+     * always valid afterwards. A map without a matching decoration resolves against the current party state
+     * instead. Does nothing if `point` doesn't name a known decoration type.
+     *
+     * @param point         Starting point type to resolve against.
+     */
+    void adjustToStartingPoint(MapStartPoint point);
+
  private:
     bool _teleportValid = false;
     std::string _targetMap;
@@ -65,15 +77,5 @@ class TeleportPoint {
     int _pitch = 0;
     int _zSpeed = 0;
 };
-
-
-/**
- * Moves the party to the given starting point decoration of the currently loaded map, then applies the pending
- * teleport in `engine->_teleportPoint` on top of it, if valid. Does nothing if `point` doesn't name a known
- * decoration type.
- *
- * @param point                         Starting point type to move the party to.
- */
-void TeleportToStartingPoint(MapStartPoint point);
 
 extern MapStartPoint uLevel_StartingPointType;

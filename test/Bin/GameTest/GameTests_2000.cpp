@@ -1500,3 +1500,16 @@ GAME_TEST(Prs, Pr2626) {
     game.tick(2);
     EXPECT_EQ(pIndoor->GetSector(-1849, 6726.5f, 934), 23);
 }
+
+GAME_TEST(Issues, Pr2599) {
+    // Cross-map teleports encode "keep this component" as zero (-1 for yaw), and the kept components must
+    // resolve against the start decoration placement - e.g. the Hidden Tomb exit arrives in Erathia with z=0
+    // and relies on getting the grounded z of the starting point, not height zero.
+    game.startNewGame();
+    game.teleportTo(MAP_ERATHIA, Vec3f(14207, -21526, 0), 270);
+    EXPECT_EQ(pParty->pos.x, 14207);
+    EXPECT_EQ(pParty->pos.y, -21526);
+    EXPECT_EQ(pParty->pos.z, 193); // Grounded z of Erathia's party start.
+    EXPECT_EQ(pParty->uFallStartZ, pParty->pos.z);
+    EXPECT_EQ(pParty->_viewYaw, 1536);
+}
