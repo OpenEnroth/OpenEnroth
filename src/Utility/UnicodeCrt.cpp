@@ -1,6 +1,8 @@
 #include "UnicodeCrt.h"
 
 #include <cassert>
+#include <string>
+#include <vector>
 
 #ifdef _WINDOWS
 #   define WIN32_LEAN_AND_MEAN
@@ -33,14 +35,11 @@ UnicodeCrt::UnicodeCrt(int &argc, char **&argv) {
     // platformMain, argc and argv are already UTF8-encoded. However, SDL doesn't add/remove arguments, so it's safe to
     // run the same code again.
     //
-    // CommandLineToArgvW can return NULL when out of memory, which should never happen. We don't handle errors here.
-    std::unique_ptr<LPWSTR[], LocalFreeDeleter> argvw(CommandLineToArgvW(GetCommandLineW(), &argc)); // NOLINT
-
-    for (int i = 0; i < argc; i++)
-        _storage.push_back(txt::wideToUtf8(argvw[i]));
-    for (int i = 0; i < argc; i++)
-        _argv.push_back(_storage[i].data());
+    _storage = detail::parseCommandLine(GetCommandLineW());
+    for (std::string &arg : _storage)
+        _argv.push_back(arg.data());
     _argv.push_back(nullptr);
+    argc = static_cast<int>(_storage.size());
     argv = _argv.data();
 
     // Switch to UTF8 for CRT functions. Without this, std::filesystem won't be able to process UTF8 paths.
@@ -58,3 +57,16 @@ UnicodeCrt::UnicodeCrt(int &argc, char **&argv) {
 bool UnicodeCrt::isInitialized() {
     return globalUnicodeCrtInitialized;
 }
+
+#ifdef _WINDOWS
+std::vector<std::string> detail::parseCommandLine(const wchar_t *commandLine) {
+    // CommandLineToArgvW can return NULL when out of memory, which should never happen. We don't handle errors here.
+    int argc = 0;
+    std::unique_ptr<LPWSTR[], LocalFreeDeleter> argvw(CommandLineToArgvW(commandLine, &argc)); // NOLINT
+
+    std::vector<std::string> result;
+    for (int i = 0; i < argc; i++)
+        result.push_back(txt::wideToWtf8(argvw[i])); // WTF8, so that paths with unpaired surrogates survive.
+    return result;
+}
+#endif

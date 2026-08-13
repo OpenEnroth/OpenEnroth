@@ -2,10 +2,12 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/String/Encoding.h"
 #include "Utility/UnicodeCrt.h"
 
 static const char8_t *u8prefix = u8"\u0444\u0430\u0439\u043B"; // "File" in Russian.
@@ -61,7 +63,7 @@ UNIT_TEST(UnicodeCrt, filesystem_exists_remove) {
     std::u8string u8path = std::u8string(u8prefix) + u8"_exists";
     std::string path = reinterpret_cast<const char *>(u8path.c_str());
 
-    FileOutputStream s(path);
+    FileOutputStream s(NativePath::fromWtf8(path));
     s.write("something");
     s.close();
 
@@ -88,7 +90,7 @@ UNIT_TEST(UnicodeCrt, filesystem_rename) {
     std::string path = reinterpret_cast<const char *>(u8path.c_str());
     std::string path2 = path + "2";
 
-    FileOutputStream s(path);
+    FileOutputStream s(NativePath::fromWtf8(path));
     s.write("something_else");
     s.close();
 
@@ -128,3 +130,14 @@ UNIT_TEST(UnicodeCrt, fstreams) {
     EXPECT_TRUE(std::filesystem::remove(u8path));
     EXPECT_FALSE(std::filesystem::exists(u8path));
 }
+
+#ifdef _WINDOWS
+UNIT_TEST(UnicodeCrt, SurrogatesInCommandLine) {
+    // A lone surrogate in a command-line argument has to survive into argv.
+    std::vector<std::string> argv = detail::parseCommandLine(L"OpenEnroth.exe play \"lol\xDC00kek.json\"");
+    ASSERT_EQ(argv.size(), 3u);
+    EXPECT_EQ(argv[0], "OpenEnroth.exe");
+    EXPECT_EQ(argv[2], "lol\xed\xb0\x80kek.json");
+    EXPECT_EQ(txt::wtf8ToWide(argv[2]), L"lol\xDC00kek.json");
+}
+#endif

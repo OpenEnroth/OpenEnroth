@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string>
-
 #include "Application/Startup/GameStarterOptions.h"
 
+#include "Utility/System/NativePath.h"
+
 struct RetraceTestOptions : GameStarterOptions {
-    std::string testPath;
+    NativePath testPath;
     bool helpPrinted = false;
     bool listRequested = false;
 

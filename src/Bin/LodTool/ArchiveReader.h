@@ -7,7 +7,9 @@
 
 #include "Library/Lod/LodInfo.h"
 #include "Library/Magic/MagicEnums.h"
+
 #include "Utility/Memory/Blob.h"
+#include "Utility/System/NativePath.h"
 
 class ArchiveReader {
  public:
@@ -17,5 +19,5 @@ class ArchiveReader {
     virtual Blob read(std::string_view filename) const = 0;
     virtual std::vector<std::string> ls() const = 0;
 
-    static std::unique_ptr<ArchiveReader> createArchiveReader(std::string_view path);
+    static std::unique_ptr<ArchiveReader> createArchiveReader(const NativePath &path);
 };

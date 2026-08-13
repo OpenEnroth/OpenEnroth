@@ -4,7 +4,7 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 
-ScopedTestFile::ScopedTestFile(std::string_view path, std::string_view contents) : _path(path) {
+ScopedTestFile::ScopedTestFile(const NativePath &path, std::string_view contents) : _path(path) {
     FileOutputStream stream(_path);
     stream.write(contents);
     stream.close();
@@ -12,5 +12,5 @@ ScopedTestFile::ScopedTestFile(std::string_view path, std::string_view contents)
 
 ScopedTestFile::~ScopedTestFile() {
     std::error_code ec;
-    std::filesystem::remove(_path, ec);
+    std::filesystem::remove(_path.toStdPath(), ec);
 }

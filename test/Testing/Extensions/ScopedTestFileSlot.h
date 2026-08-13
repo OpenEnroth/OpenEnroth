@@ -1,7 +1,8 @@
 #pragma once
 
 #include <string_view>
-#include <string>
+
+#include "Utility/System/NativePath.h"
 
 /**
  * Helper class to remove a file in ctor and when leaving the current scope.
@@ -11,9 +12,10 @@
  */
 class ScopedTestFileSlot {
  public:
-    explicit ScopedTestFileSlot(std::string_view path);
+    explicit ScopedTestFileSlot(std::string_view path) : ScopedTestFileSlot(NativePath::fromWtf8(path)) {}
+    explicit ScopedTestFileSlot(const NativePath &path);
     ~ScopedTestFileSlot();
 
  private:
-    std::string _path;
+    NativePath _path;
 };
