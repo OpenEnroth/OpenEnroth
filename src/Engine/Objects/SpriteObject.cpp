@@ -589,8 +589,11 @@ void arrangeSpriteObjects() {
         if (!object.uObjectDescID)
             continue;
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && !(object.uAttributes & SPRITE_DROPPED_BY_PLAYER) &&
-            !object.IsUnpickable())
-            object.vPosition.z = pOutdoor->pTerrain.heightByPos(object.vPosition);
+            !object.IsUnpickable()) {
+            bool onWater = false;
+            int faceId = 0;
+            object.vPosition.z = ODM_GetFloorLevel(object.vPosition, &onWater, &faceId);
+        }
         object.containing_item.postGenerate(ITEM_SOURCE_MAP);
     }
 }
