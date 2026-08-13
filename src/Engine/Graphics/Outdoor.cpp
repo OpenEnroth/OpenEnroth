@@ -306,13 +306,13 @@ MapId OutdoorLocation::getTravelDestination(int partyX, int partyY) {
 
         if (wholePartyUnderwaterSuitEquipped) {
             uDefaultTravelTime_ByFoot = 1;
-            uLevel_StartingPointType = MAP_START_POINT_EAST;
+            engine->_teleportPoint.setStartPoint(MAP_START_POINT_EAST);
             pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE);
             return MAP_SHOALS;
         }
     } else if (currentMap == MAP_SHOALS && direction == 2) {  // from Shoals
         uDefaultTravelTime_ByFoot = 1;
-        uLevel_StartingPointType = MAP_START_POINT_WEST;
+        engine->_teleportPoint.setStartPoint(MAP_START_POINT_WEST);
         pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE);
         return MAP_AVLEE;
     }
@@ -323,7 +323,7 @@ MapId OutdoorLocation::getTravelDestination(int partyX, int partyY) {
     assert(destinationMap <= MAP_SHOALS);
 
     uDefaultTravelTime_ByFoot = footTravelTimes[currentMap][direction];
-    uLevel_StartingPointType = footTravelArrivalPoints[currentMap][direction];
+    engine->_teleportPoint.setStartPoint(footTravelArrivalPoints[currentMap][direction]);
     return destinationMap;
 }
 
@@ -1810,7 +1810,7 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
 
     loadAndPrepareODMInternal(mapid);
     if (!bLoading) {
-        engine->_teleportPoint.adjustToStartingPoint(uLevel_StartingPointType);
+        engine->_teleportPoint.adjustToStartingPoint();
         if (engine->_teleportPoint.isValid())
             engine->_teleportPoint.doTeleport(false);
         engine->_teleportPoint.invalidate();

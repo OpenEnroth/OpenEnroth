@@ -85,8 +85,8 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
     pParty->_viewPitch = newPitch;
 }
 
-void TeleportPoint::adjustToStartingPoint(MapStartPoint point) {
-    DecorationId decID = pDecorationList->GetDecorIdByName(toString(point));
+void TeleportPoint::adjustToStartingPoint() {
+    DecorationId decID = pDecorationList->GetDecorIdByName(toString(_startPoint));
     if (decID == DECORATION_NULL)
         return;
 
@@ -134,4 +134,3 @@ void TeleportPoint::adjustToStartingPoint(MapStartPoint point) {
     _teleportValid = true;
 }
 
-MapStartPoint uLevel_StartingPointType;

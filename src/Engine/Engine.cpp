@@ -882,7 +882,7 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->vCameraPos.z = 100;
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
-    uLevel_StartingPointType = MAP_START_POINT_PARTY;
+    _teleportPoint.setStartPoint(MAP_START_POINT_PARTY);
     if (pParty->pPickedItem.itemId != ITEM_NULL)
         mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.itemId);
 }
@@ -1464,7 +1464,7 @@ void Transition_StopSound_Autosave(std::string_view pMapName,
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
     engine->_transitionMapId = pMapStats->GetMapInfo(pMapName);
-    uLevel_StartingPointType = start_point;
+    engine->_teleportPoint.setStartPoint(start_point);
 }
 
 //----- (0044C28F) --------------------------------------------------------

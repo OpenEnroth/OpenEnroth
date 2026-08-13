@@ -58,16 +58,21 @@ class TeleportPoint {
     void doTeleport(bool keepOnZero);
 
     /**
-     * Resolves the pending target against the given starting point decoration of the currently loaded map,
-     * making it fully absolute. Doesn't teleport. Zero components (-1 for yaw) take the value the decoration
-     * placement provides - the decoration position with z grounded on the floor, the decoration yaw, zero pitch
-     * and vertical speed. An invalid pending target resolves to the decoration placement itself, so the point is
-     * always valid afterwards. A map without a matching decoration resolves against the current party state
-     * instead. Does nothing if `point` doesn't name a known decoration type.
+     * Set the starting point decoration for the next map load, see `adjustToStartingPoint`.
      *
-     * @param point         Starting point type to resolve against.
+     * @param point         Starting point type to resolve against on the next map load.
      */
-    void adjustToStartingPoint(MapStartPoint point);
+    void setStartPoint(MapStartPoint point) { _startPoint = point; }
+
+    /**
+     * Resolves the pending target against the starting point decoration of the currently loaded map, making it
+     * fully absolute. Doesn't teleport. Zero components (-1 for yaw) take the value the decoration placement
+     * provides - the decoration position with z grounded on the floor, the decoration yaw, zero pitch and
+     * vertical speed. An invalid pending target resolves to the decoration placement itself, so the point is
+     * always valid afterwards. A map without a matching decoration resolves against the current party state
+     * instead. Does nothing if the start point set via `setStartPoint` doesn't name a known decoration type.
+     */
+    void adjustToStartingPoint();
 
  private:
     bool _teleportValid = false;
@@ -76,6 +81,5 @@ class TeleportPoint {
     int _yaw = 0;
     int _pitch = 0;
     int _zSpeed = 0;
+    MapStartPoint _startPoint = MAP_START_POINT_PARTY;
 };
-
-extern MapStartPoint uLevel_StartingPointType;

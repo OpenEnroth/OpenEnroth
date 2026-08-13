@@ -1012,7 +1012,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         pParty->pos = Vec3f();
         pParty->velocity = Vec3f();
         pParty->uFallStartZ = 0;
-        engine->_teleportPoint.adjustToStartingPoint(uLevel_StartingPointType);
+        engine->_teleportPoint.adjustToStartingPoint();
         if (engine->_teleportPoint.isValid())
             engine->_teleportPoint.doTeleport(false);
         engine->_teleportPoint.invalidate();
