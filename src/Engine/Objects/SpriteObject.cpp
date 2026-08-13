@@ -33,6 +33,8 @@
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
 
+#include "Library/Logger/Logger.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
@@ -335,6 +337,10 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     if (std::abs(pSpriteObject->vPosition.x) > 32767 ||
         std::abs(pSpriteObject->vPosition.y) > 32767 ||
         std::abs(pSpriteObject->vPosition.z) > 20000) {
+        if (pSpriteObject->containing_item.itemId != ITEM_NULL)
+            logger->error("Deleting item '{}' at ({}, {}, {}) - out of bounds",
+                          pSpriteObject->containing_item.GetDisplayName(),
+                          pSpriteObject->vPosition.x, pSpriteObject->vPosition.y, pSpriteObject->vPosition.z);
         SpriteObject::OnInteraction(uLayingItemID);
         return;
     }
@@ -342,6 +348,10 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     int uFaceID;
     float floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition, &pSpriteObject->uSectorID, &uFaceID);
     if (floor_lvl <= -30000) {
+        if (pSpriteObject->containing_item.itemId != ITEM_NULL)
+            logger->error("Deleting item '{}' at ({}, {}, {}) - no floor found",
+                          pSpriteObject->containing_item.GetDisplayName(),
+                          pSpriteObject->vPosition.x, pSpriteObject->vPosition.y, pSpriteObject->vPosition.z);
         SpriteObject::OnInteraction(uLayingItemID);
         return;
     }
