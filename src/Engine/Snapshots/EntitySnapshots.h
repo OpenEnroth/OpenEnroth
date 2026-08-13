@@ -465,9 +465,9 @@ struct Party_MM7 {
     int32_t fallSpeed;
     int32_t field_6EC;
     int32_t savedFlightZ;
-    int32_t floorFacePidUnused; // Face the party is standing at. Face id indoors, face pid outdoors.
-                                // Always set to zero on level loading, so in OE we are just saving 0 and
-                                // not using it when loading a savegame.
+    int32_t floorFaceIdUnused; // Face the party is standing on - blv face id indoors, composite
+                               // model << 6 | face id outdoors. Vanilla reset it on level load before
+                               // ever reading it, so in OE we just save 0 and ignore it on load.
     int32_t walkSoundTimerUnused; // This was removed in OE and we're just saving 0 in this field.
     int32_t waterLavaTimer; // Next game time when water/lava damage should be processed. This value will
                             // overflow after ~16 in-game years, and then the lava logic will trigger on
