@@ -9,6 +9,11 @@ cc_binary(
         "LodToolOptions.cpp",
         "LodToolOptions.h",
     ],
+    # Cmake excludes LodTool on android too.
+    target_compatible_with = select({
+        "@platforms//os:android": ["@platforms//:incompatible"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
     deps = [
         "//src/Library/Cli:library_cli",

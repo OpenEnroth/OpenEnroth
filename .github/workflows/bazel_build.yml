@@ -120,7 +120,7 @@ jobs:
             if [ "${{env.MATRIX_BAZEL_CONFIG}}" = "linux_x86" ]; then
               sudo dpkg --add-architecture i386
               sudo apt-get update
-              sudo apt-get install -y gcc-14-multilib g++-14-multilib lld
+              sudo apt-get install -y gcc-14-multilib g++-14-multilib lld mold
               sudo apt-get install -y libglu1-mesa-dev:i386 libdwarf-dev:i386 libelf-dev:i386
               # SDL3 source build requires X11/Wayland headers (32-bit for linux_x86).
               sudo apt-get install -y libx11-dev:i386 libxext-dev:i386 libxrandr-dev:i386 \
@@ -131,7 +131,7 @@ jobs:
               sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
             else
               sudo apt-get update
-              sudo apt-get install -y gcc-14 g++-14 lld
+              sudo apt-get install -y gcc-14 g++-14 lld mold
               sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev
               # SDL3 source build requires X11/Wayland dev headers.
               sudo apt-get install -y libx11-dev libxext-dev libxrandr-dev \
@@ -159,6 +159,13 @@ jobs:
             sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
             sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
           fi
+
+      # Mold on the linux legs, same as the cmake matrix (which mandates
+      # mold-or-lld and installs mold). The command-line config wins over the
+      # .bazelrc lld pin on linux_x86 - the driver takes the last -fuse-ld.
+      - name: '[linux] Use mold'
+        if: env.MATRIX_PLATFORM == 'linux'
+        run: echo "BAZEL_EXTRA_ARGS=--config=mold" >> "$GITHUB_ENV"
 
       - name: '[windows] Set up MSVC'
         if: env.MATRIX_PLATFORM == 'windows'
@@ -198,24 +205,30 @@ jobs:
             bazel-${{matrix.target}}-
 
       # dbg/opt mirror the cmake matrix' Debug/RelWithDebInfo; separate steps so
-      # CI timings stay comparable per config.
+      # CI timings stay comparable per config. Non-android legs also build the
+      # tools - the cmake matrix builds everything, and a tool that only ever
+      # gets lint-analyzed can silently stop linking.
       - name: 'Build (dbg)'
         run: |
           if [ "${{matrix.target}}" = "android_universal" ]; then
-            target=//android/openenroth:main
+            targets=//android/openenroth:main
+          elif [ "${{env.MATRIX_PLATFORM}}" = "android" ]; then
+            targets=//src/Bin/OpenEnroth:OpenEnroth
           else
-            target=//src/Bin/OpenEnroth:OpenEnroth
+            targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
           fi
-          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} "$target" 2>&1 | tee bazel-build.log
+          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} $targets 2>&1 | tee bazel-build.log
 
       - name: 'Build (opt)'
         run: |
           if [ "${{matrix.target}}" = "android_universal" ]; then
-            target=//android/openenroth:main
+            targets=//android/openenroth:main
+          elif [ "${{env.MATRIX_PLATFORM}}" = "android" ]; then
+            targets=//src/Bin/OpenEnroth:OpenEnroth
           else
-            target=//src/Bin/OpenEnroth:OpenEnroth
+            targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
           fi
-          bazel build -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} "$target" 2>&1 | tee -a bazel-build.log
+          bazel build -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} $targets 2>&1 | tee -a bazel-build.log
 
       # Game tests need the MM7 data; same shared cache the cmake matrix uses.
       # The cache is saved on a linux runner, and windows needs the cross-OS
@@ -228,10 +241,12 @@ jobs:
           key: data-cache
           enableCrossOsArchive: ${{env.MATRIX_PLATFORM == 'windows'}}
 
-      - name: '[non-android] Run game tests'
+      # A cold data cache means no game test coverage - fail loudly instead of
+      # going silently green. build_data_cache.yml seeds the cache.
+      - name: '[non-android] Run game tests (dbg)'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          if [ ! -d OpenEnroth_GameData ]; then echo "::warning::no game data cache - tests skipped"; exit 0; fi
+          if [ ! -d OpenEnroth_GameData ]; then echo "::error::no game data cache - run build_data_cache.yml first"; exit 1; fi
           # The data lives outside the workspace, so salt the test's action key
           # with its content hash - swapped data invalidates cached results.
           hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
@@ -239,21 +254,32 @@ jobs:
           # backslashes out of ${{github.workspace}}. Errors out elsewhere,
           # where plain pwd is already the right form.
           dataroot="$(pwd -W 2>/dev/null || pwd)/OpenEnroth_GameData"
-          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
+          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} --test_output=errors \
             --test_env=OPENENROTH_MM7_PATH=$dataroot/mm7 \
             --test_env=OPENENROTH_MM7_HASH=$hash \
-            //test/Bin/GameTest:OpenEnroth_GameTest 2>&1 | tee bazel-gametest.log
+            //test/Bin/GameTest:OpenEnroth_GameTest 2>&1 | tee bazel-gametest-dbg.log
+
+      - name: '[non-android] Run game tests (opt)'
+        if: env.MATRIX_PLATFORM != 'android'
+        run: |
+          if [ ! -d OpenEnroth_GameData ]; then echo "::error::no game data cache - run build_data_cache.yml first"; exit 1; fi
+          hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
+          dataroot="$(pwd -W 2>/dev/null || pwd)/OpenEnroth_GameData"
+          bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} --test_output=errors \
+            --test_env=OPENENROTH_MM7_PATH=$dataroot/mm7 \
+            --test_env=OPENENROTH_MM7_HASH=$hash \
+            //test/Bin/GameTest:OpenEnroth_GameTest 2>&1 | tee bazel-gametest-opt.log
 
       # Retrace replays every canonical trace, which the cmake matrix considers
       # too slow for Debug builds (it retraces RelWithDebInfo only). Same here:
-      # retrace runs opt while the cheaper tests stay dbg.
+      # retrace runs opt while dbg is skipped.
       - name: '[non-android] Run retrace tests'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          if [ ! -d OpenEnroth_GameData ]; then echo "::warning::no game data cache - tests skipped"; exit 0; fi
+          if [ ! -d OpenEnroth_GameData ]; then echo "::error::no game data cache - run build_data_cache.yml first"; exit 1; fi
           hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
           dataroot="$(pwd -W 2>/dev/null || pwd)/OpenEnroth_GameData"
-          bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors \
+          bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} --test_output=errors \
             --test_env=OPENENROTH_MM7_PATH=$dataroot/mm7 \
             --test_env=OPENENROTH_MM7_HASH=$hash \
             //test/Bin/RetraceTest:OpenEnroth_RetraceTest 2>&1 | tee bazel-retrace.log
@@ -261,14 +287,19 @@ jobs:
       - name: '[linux_x86_64] Check style'
         if: matrix.target == 'linux_x86_64'
         run: |
-          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //:check_style
+          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} //:check_style
 
       # bazel test: passed results are cached (and shared via the remote cache),
       # so unchanged tests cost nothing.
-      - name: '[non-android] Run unit tests'
+      - name: '[non-android] Run unit tests (dbg)'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
+          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test-dbg.log
+
+      - name: '[non-android] Run unit tests (opt)'
+        if: env.MATRIX_PLATFORM != 'android'
+        run: |
+          bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test-opt.log
 
       # BuildBuddy invocation URLs, for timing/cache analysis without log access.
       - name: 'Annotate invocation URLs'
@@ -280,7 +311,7 @@ jobs:
       - name: 'Annotate failure log'
         if: failure()
         run: |
-          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED|TIMEOUT|incomplete|size =|Actual:|Expected:" bazel-build.log bazel-test.log bazel-gametest.log bazel-retrace.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done || true
+          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED|TIMEOUT|incomplete|size =|Actual:|Expected:" bazel-*.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done || true
 
       - name: 'Save bazel caches'
         # always(): a red test on master shouldn't discard the warmed cache.
