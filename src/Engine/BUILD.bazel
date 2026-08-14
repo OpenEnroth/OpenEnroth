@@ -152,7 +152,7 @@ cc_library(
         "//src/Engine/Graphics:Image.cpp",
         "//src/Engine/Graphics:ImageLoader.cpp",
         "//src/Engine/Graphics:Indoor.cpp",
-        "//src/Engine/Graphics:LightmapBuilder.cpp",
+        "//src/Engine/Graphics:Lighting.cpp",
         "//src/Engine/Graphics:LightsStack.cpp",
         "//src/Engine/Graphics:LocationFunctions.cpp",
         "//src/Engine/Graphics:Outdoor.cpp",
