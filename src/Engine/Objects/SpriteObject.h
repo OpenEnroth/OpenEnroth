@@ -47,7 +47,7 @@ struct SpriteObject {
      * @offset 0x471C03
      */
     static void updateObjectODM(unsigned int uLayingItemID);
-    static void OnInteraction(unsigned int uLayingItemID);
+    static void Remove(unsigned int uLayingItemID);
     /**
      * Create sprite(s).
      *

@@ -176,7 +176,7 @@ void ItemInteraction(unsigned int item_id) {
             pParty->setHoldingItem(pSpriteObjects[item_id].containing_item);
         }
     }
-    SpriteObject::OnInteraction(item_id);
+    SpriteObject::Remove(item_id);
 }
 
 bool CanInteractWithActor(unsigned int id) {
