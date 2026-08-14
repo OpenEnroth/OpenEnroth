@@ -99,6 +99,12 @@ class Engine {
     Vis_PIDAndDepth PickMouseForInteraction();
 
     /**
+     * Picks what a viewport click sees beyond interaction reach. Reaches to the ranged attack depth and
+     * matches anything, so a decoration in front of a monster still eats the click.
+     */
+    Vis_PIDAndDepth PickMouseForCombatClick();
+
+    /**
      * @offset 0x42213C
      */
     void onGameViewportClick();

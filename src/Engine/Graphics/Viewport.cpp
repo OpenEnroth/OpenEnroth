@@ -307,8 +307,9 @@ void Engine::onGameViewportClick() {
             engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
         }
     } else {
-        // Nothing in interaction reach, but a live actor within targeting reach still takes the click as combat.
-        Pid target = engine->PickMouseForTargeting().pid;
+        // Nothing in interaction reach, but an unobstructed live actor within ranged reach still takes the
+        // click as combat - a decoration in front of the actor eats the click instead.
+        Pid target = engine->PickMouseForCombatClick().pid;
         if (target.type() == OBJECT_Actor && pActors[target.id()].aiState != Dead && !CanInteractWithActor(target.id())) {
             combatClickOnActor();
         } else {

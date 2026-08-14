@@ -456,6 +456,11 @@ Vis_PIDAndDepth Engine::PickMouseForInteraction() {
     return PickMouse(config->gameplay.MouseInteractionDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
 }
 
+Vis_PIDAndDepth Engine::PickMouseForCombatClick() {
+    Pointi pt = mouse->position();
+    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
+}
+
 void Engine::toggleOverlays() {
     bool isEnabled = _overlaySystem.isEnabled();
     _overlaySystem.setEnabled(!isEnabled);
