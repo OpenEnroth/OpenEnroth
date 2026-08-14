@@ -25,6 +25,12 @@ build:windows --copt=/D_CRT_NONSTDC_NO_DEPRECATE  # POSIX deprecation warnings a
 build:windows --copt=/D_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS  # These are also useless
 build:windows --features=static_link_msvcrt  # Use /MT instead of /MD to match prebuilt dep libs (CMake uses MultiThreaded runtime)
 
+# ─── Build stamping ──────────────────────────────────────────────────────────
+# Emits STABLE_MM_GIT_REVISION / STABLE_OE_VERSION into stable-status.txt for
+# the stamp genrule in //src/Library/BuildInfo. Runs once per build.
+build --workspace_status_command=bazel/workspace_status.sh
+build:windows --workspace_status_command=bazel/workspace_status.bat
+
 # ─── Global include paths (mirrors CMake's include_directories(src test)) ────
 # Allows #include "Engine/..." and #include "Testing/..." without explicit deps.
 # GCC/Clang use -I, MSVC uses /I.

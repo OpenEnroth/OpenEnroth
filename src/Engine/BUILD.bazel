@@ -1,4 +1,5 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:detection.bzl", "OE_BUILD_DEFINES")
 
 cc_library(
     name = "engine_base",
@@ -90,14 +91,7 @@ cc_library(
         "mm7text_ru.h",
         "stru314.h",
     ],
-    # NOTE: local_defines below reference CMake variables that must be resolved at build time.
-    # These are placeholder values; update via a genrule or stamping mechanism.
-    local_defines = [
-        'PROJECT_VERSION=\\"0.0.0\\"',
-        'OE_BUILD_COMPILER=\\"unknown\\"',
-        'OE_BUILD_PLATFORM=\\"unknown\\"',
-        'OE_BUILD_ARCHITECTURE=\\"unknown\\"',
-    ],
+    local_defines = OE_BUILD_DEFINES,
     visibility = ["//visibility:public"],
     deps = [
         ":engine_base",
@@ -206,12 +200,7 @@ cc_library(
         # media_audio .cpp files (need GUI headers — circular with gui -> gui_ui -> media_audio)
         "//src/Media/Audio:AudioPlayer.cpp",
     ],
-    local_defines = [
-        'PROJECT_VERSION=\\"0.0.0\\"',
-        'OE_BUILD_COMPILER=\\"unknown\\"',
-        'OE_BUILD_PLATFORM=\\"unknown\\"',
-        'OE_BUILD_ARCHITECTURE=\\"unknown\\"',
-    ],
+    local_defines = OE_BUILD_DEFINES,
     visibility = ["//visibility:public"],
     deps = [
         ":engine",
