@@ -598,11 +598,17 @@ void arrangeSpriteObjects() {
     for (SpriteObject &object : pSpriteObjects) {
         if (!object.uObjectDescID)
             continue;
-        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && !(object.uAttributes & SPRITE_DROPPED_BY_PLAYER) &&
-            !object.IsUnpickable()) {
-            bool onWater = false;
-            int faceId = 0;
-            object.vPosition.z = ODM_GetFloorLevel(object.vPosition, &onWater, &faceId);
+        if (!(object.uAttributes & SPRITE_DROPPED_BY_PLAYER) && !object.IsUnpickable()) {
+            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+                bool onWater = false;
+                int faceId = 0;
+                object.vPosition.z = ODM_GetFloorLevel(object.vPosition, &onWater, &faceId);
+            } else {
+                int faceId = -1;
+                float floorZ = GetIndoorFloorZ(object.vPosition, &object.uSectorID, &faceId);
+                if (floorZ > -29000)
+                    object.vPosition.z = floorZ; // Spawns outside walkable space keep their z, physics deletes and logs them.
+            }
         }
         object.containing_item.postGenerate(ITEM_SOURCE_MAP);
     }
