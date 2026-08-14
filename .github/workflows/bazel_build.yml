@@ -222,6 +222,8 @@ jobs:
             targets=//android/openenroth:main
           elif [ "${{env.MATRIX_PLATFORM}}" = "android" ]; then
             targets=//src/Bin/OpenEnroth:OpenEnroth
+          elif [ "${{env.MATRIX_PLATFORM}}" = "darwin" ]; then
+            targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/OpenEnroth:OpenEnroth_app //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
           else
             targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
           fi
@@ -233,6 +235,8 @@ jobs:
             targets=//android/openenroth:main
           elif [ "${{env.MATRIX_PLATFORM}}" = "android" ]; then
             targets=//src/Bin/OpenEnroth:OpenEnroth
+          elif [ "${{env.MATRIX_PLATFORM}}" = "darwin" ]; then
+            targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/OpenEnroth:OpenEnroth_app //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
           else
             targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
           fi

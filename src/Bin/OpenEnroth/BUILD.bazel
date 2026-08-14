@@ -1,5 +1,6 @@
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel/rules:macos_app.bzl", "macos_app")
 
 # platformMain() and everything below it; shared between the standalone binary
 # and the android APK's libmain.so.
@@ -30,6 +31,24 @@ cc_binary(
         ":openenroth_main",
         "//src/Library/Platform/Sdl:library_platform_main",
     ],
+)
+
+# The macOS bundle cmake builds via MACOSX_BUNDLE. Values mirror the
+# MACOSX_BUNDLE_* block in CMakeLists.txt, the version comes from stamping.
+# Assets.car carries the macOS 26+ icon, OpenEnroth.icns the pre-Tahoe one.
+macos_app(
+    name = "OpenEnroth_app",
+    binary = ":OpenEnroth",
+    bundle_name = "OpenEnroth",
+    copyright = "GPLv3",
+    info_string = "Open reimplementation of Might and Magic 6 7 8 game engine.",
+    infoplist = "Info.plist.in",
+    resources = [
+        "Assets.car",
+        "OpenEnroth.icns",
+    ],
+    target_compatible_with = ["@platforms//os:macos"],
+    visibility = ["//visibility:public"],
 )
 
 # Native side of the APK: android_binary links this into libmain.so, with
