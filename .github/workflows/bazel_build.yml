@@ -163,8 +163,10 @@ jobs:
       # Mold on the linux legs, same as the cmake matrix (which mandates
       # mold-or-lld and installs mold). The command-line config wins over the
       # .bazelrc lld pin on linux_x86 - the driver takes the last -fuse-ld.
+      # Not on arm64: the runner's mold aborts with signal 6 linking the
+      # shared libengine.so, and cmake CI never linked arm64 at all.
       - name: '[linux] Use mold'
-        if: env.MATRIX_PLATFORM == 'linux'
+        if: env.MATRIX_PLATFORM == 'linux' && matrix.target != 'linux_arm64'
         run: echo "BAZEL_EXTRA_ARGS=--config=mold" >> "$GITHUB_ENV"
 
       - name: '[windows] Set up MSVC'
