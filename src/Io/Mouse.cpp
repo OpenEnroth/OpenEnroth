@@ -279,10 +279,10 @@ void Io::Mouse::UI_OnMouseLeftClick(bool isDoubleClick) {
         return;
     }
 
-    Vis_PIDAndDepth picked_object = engine->PickMouseNormal();
+    Vis_PIDAndDepth picked_object = engine->PickMouseForInteraction();
 
     ObjectType type = picked_object.pid.type();
-    if (type == OBJECT_Actor && pParty->hasActiveCharacter() && picked_object.depth < 0x200 &&
+    if (type == OBJECT_Actor && pParty->hasActiveCharacter() &&
         pParty->activeCharacter().CanAct() &&
         pParty->activeCharacter().CanSteal()) {
         engine->_messageQueue->addMessageCurrentFrame(

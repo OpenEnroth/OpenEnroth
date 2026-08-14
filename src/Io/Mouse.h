@@ -39,7 +39,6 @@ class Mouse {
     void UI_OnMouseLeftClick(bool isDoubleClick);
 
 
-    Pid uPointingObjectID;
     int field_8 = 0;
     bool _arrowCursor = 0;
     int bInitialized = 0;

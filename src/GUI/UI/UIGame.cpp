@@ -845,7 +845,6 @@ void GameUI_WritePointedObjectStatusString() {
 
     // int testing;
 
-    mouse->uPointingObjectID = Pid();
     Pointi mousePos = mouse->position();
     pX = mousePos.x;
     pY = mousePos.y;
@@ -879,21 +878,15 @@ void GameUI_WritePointedObjectStatusString() {
                 return;
             }
 
-            auto vis = EngineIocContainer::ResolveVis();
-
-            // Status bar tips share the monster popup depth, so anything close enough for a right-click popup
-            // also shows a hint.
-            Vis_PIDAndDepth pickedObject = engine->PickMouse(pCamera3D->GetMouseInfoDepth(), pX, pY, &vis_items_filter, &vis_face_filter);
-            mouse->uPointingObjectID = pickedObject.pid;
+            Vis_PIDAndDepth pickedObject = engine->PickMouseForInfo();
             pickedObjectID = (signed)pickedObject.pid.id();
             if (pickedObject.pid.type() == OBJECT_Sprite) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
-                    mouse->uPointingObjectID = Pid();
                     engine->_statusBar->clearPermanent();
                     uLastPointedObjectID = Pid();
                     return;
                 }
-                if (pickedObject.depth >= 0x200u || pParty->pPickedItem.itemId != ITEM_NULL) {
+                if (pickedObject.depth >= engine->config->gameplay.MouseInteractionDepth.value() || pParty->pPickedItem.itemId != ITEM_NULL) {
                     engine->_statusBar->setPermanent(pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
                 } else {
                     engine->_statusBar->setPermanent(LSTR_GET_S, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
@@ -913,7 +906,7 @@ void GameUI_WritePointedObjectStatusString() {
                     }
                 }  // intentional fallthrough
             } else if (pickedObject.pid.type() == OBJECT_Face) {
-                if (pickedObject.depth < 0x200u) {
+                if (pickedObject.depth < engine->config->gameplay.MouseInteractionDepth.value()) {
                     std::string newString;
                     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {
                         v18b = pickedObject.pid.id() >> 6;
@@ -933,14 +926,10 @@ void GameUI_WritePointedObjectStatusString() {
                     }
                     if (!newString.empty()) {
                         engine->_statusBar->setPermanent(newString);
-                        if (!mouse->uPointingObjectID && uLastPointedObjectID) {
-                            engine->_statusBar->clearPermanent();
-                        }
-                        uLastPointedObjectID = mouse->uPointingObjectID;
+                        uLastPointedObjectID = pickedObject.pid;
                         return;
                     }
                 }
-                mouse->uPointingObjectID = Pid();
                 engine->_statusBar->clearPermanent();
                 uLastPointedObjectID = Pid();
                 return;
@@ -997,11 +986,9 @@ void GameUI_WritePointedObjectStatusString() {
                     // pSRZBufferLineOffsets[pY]];
                     if (pickedObjectID == 0 || pickedObjectID == -65536 ||
                         pickedObjectID >= 5000) {
-                        // if (pMouse->uPointingObjectID == 0) {
                         if (uLastPointedObjectID) {
                             engine->_statusBar->clearPermanent();
                         }
-                        //}
                         uLastPointedObjectID = Pid();
                         // return;
                     } else {
@@ -1193,7 +1180,6 @@ void GameUI_WritePointedObjectStatusString() {
         }
     }
 
-    // pMouse->uPointingObjectID = sub_46A99B(); //for software
     if (uLastPointedObjectID) {
         engine->_statusBar->clearPermanent();
     }
@@ -1750,7 +1736,6 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
             Character* character = &pParty->pCharacters[param - 1];
             engine->_statusBar->setPermanent(fmt::format("{}: {}", NameAndTitle(character->name, character->classType),
                 localization->characterConditionName(character->GetMajorConditionIdx())));
-            engine->mouse->uPointingObjectID = Pid(OBJECT_Character, (unsigned char)(8 * param - 8) | 4);
             break;
         }
 

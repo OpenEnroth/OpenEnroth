@@ -1807,7 +1807,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                 if ((signed int)pX <= 320) popup_window.x = pX + 30;
                 // if ( render->pRenderD3D )
 
-                Pid pointedObject = engine->PickMouseInfoPopup().pid;
+                Pid pointedObject = engine->PickMouseForInfo().pid;
                 /*else
                 pointedObject = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
                 if (pointedObject.type() == OBJECT_Actor) {
