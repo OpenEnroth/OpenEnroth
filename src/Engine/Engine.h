@@ -80,9 +80,23 @@ class Engine {
                               Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
     Vis_PIDAndDepth PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
 
-    Vis_PIDAndDepth PickMouseInfoPopup();
-    Vis_PIDAndDepth PickMouseTarget();
-    Vis_PIDAndDepth PickMouseNormal();
+    /**
+     * Picks whatever is under the cursor for display purposes - monster popups and status bar hints.
+     * Reaches to the monster popup depth, matches anything.
+     */
+    Vis_PIDAndDepth PickMouseForInfo();
+
+    /**
+     * Picks a combat target under the cursor for attacks and targeted spells. Reaches to the ranged attack
+     * depth, matches anything except decorations.
+     */
+    Vis_PIDAndDepth PickMouseForTargeting();
+
+    /**
+     * Picks whatever is under the cursor for a viewport click - item pickup, corpse looting, talking and
+     * levers. Reaches to the mouse interaction depth, matches anything.
+     */
+    Vis_PIDAndDepth PickMouseForInteraction();
 
     /**
      * @offset 0x42213C

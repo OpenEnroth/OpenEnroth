@@ -405,8 +405,8 @@ void EngineController::pointMouseAtActor(int actorId) {
     Vec2f screenPos = pCamera3D->Project(viewPos);
 
     moveMouse(screenPos.x, screenPos.y);
-    tick(1); // Wait for Mouse::uPointingObjectID to pick up the new mouse position.
-    if (mouse->uPointingObjectID != Pid(OBJECT_Actor, actorId))
+    tick(1); // The pick reads render billboards, so the new mouse position needs a rendered frame.
+    if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Actor, actorId))
         throw Exception("Failed to point mouse at actor #{}", actorId);
 }
 

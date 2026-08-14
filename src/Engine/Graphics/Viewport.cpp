@@ -213,54 +213,19 @@ void DecorationInteraction(unsigned int id, Pid pid) {
 }
 
 void Engine::onGameViewportClick() {
-    int16_t clickable_distance = 512;
-
     // bug fix - stops you entering shops while dialog still open.
     // was SCREEN_NPC_DIALOGUE
     if (current_screen_type != SCREEN_GAME) {
         return;
     }
 
-    auto pidAndDepth = engine->PickMouseNormal();
-    Pid pid = pidAndDepth.pid;
-    int16_t distance = pidAndDepth.depth;
-    bool in_range = distance < clickable_distance;
-
-    if (pid.type() == OBJECT_Sprite) {
-        int item_id = pid.id();
-        // v21 = (signed int)(uint16_t)v0 >> 3;
-        if (pSpriteObjects[item_id].IsUnpickable() || item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
-            pParty->dropHeldItem();
-        } else {
-            ItemInteraction(item_id);
-        }
-    } else if (pid.type() == OBJECT_Actor) {
-        int mon_id = pid.id();
-
-        if (pActors[mon_id].aiState == Dead) {
-            if (in_range) {
-                pActors[mon_id].LootActor();
+    // A combat click - the actor is either hostile or out of interaction reach.
+    auto combatClickOnActor = [this] {
+        if (!keyboardInputHandler->IsCastOnClickToggled()) {
+            if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
+                pTurnEngine->flags |= TE_FLAG_8_finished;
             } else {
-                pParty->dropHeldItem();
-            }
-        } else if (!keyboardInputHandler->IsCastOnClickToggled()) {
-            if (CanInteractWithActor(mon_id)) {
-                if (in_range) {
-                    if (pParty->hasActiveCharacter()) {
-                        InteractWithActor(mon_id);
-                    } else {
-                        // Do not interact with actors with no active character
-                        engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                    }
-                } else {
-                    pParty->dropHeldItem();
-                }
-            } else {
-                if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                    pTurnEngine->flags |= TE_FLAG_8_finished;
-                } else {
-                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
-                }
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->setAirborne(true);
@@ -273,19 +238,41 @@ void Engine::onGameViewportClick() {
         } else {
             pAudioPlayer->playUISound(SOUND_error);
         }
-    } else if (pid.type() == OBJECT_Decoration) {
-        int id = pid.id();
-        if (distance - pDecorationList->GetDecoration(pLevelDecorations[id].uDecorationDescID)->uRadius < clickable_distance) {
+    };
+
+    Pid pid = engine->PickMouseForInteraction().pid;
+
+    if (pid.type() == OBJECT_Sprite) {
+        int item_id = pid.id();
+        if (pSpriteObjects[item_id].IsUnpickable() || item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID) {
+            pParty->dropHeldItem();
+        } else {
+            ItemInteraction(item_id);
+        }
+    } else if (pid.type() == OBJECT_Actor) {
+        int mon_id = pid.id();
+
+        if (pActors[mon_id].aiState == Dead) {
+            pActors[mon_id].LootActor();
+        } else if (CanInteractWithActor(mon_id) && !keyboardInputHandler->IsCastOnClickToggled()) {
             if (pParty->hasActiveCharacter()) {
-                // Do not interact with decoration with no active character
-                DecorationInteraction(id, pid);
+                InteractWithActor(mon_id);
             } else {
+                // Do not interact with actors with no active character
                 engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             }
         } else {
-            pParty->dropHeldItem();
+            combatClickOnActor();
         }
-    } else if (pid.type() == OBJECT_Face && in_range) {
+    } else if (pid.type() == OBJECT_Decoration) {
+        int id = pid.id();
+        if (pParty->hasActiveCharacter()) {
+            // Do not interact with decoration with no active character
+            DecorationInteraction(id, pid);
+        } else {
+            engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
+        }
+    } else if (pid.type() == OBJECT_Face) {
         int eventId = 0;
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
@@ -320,6 +307,12 @@ void Engine::onGameViewportClick() {
             engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
         }
     } else {
-        pParty->dropHeldItem();
+        // Nothing in interaction reach, but a live actor within targeting reach still takes the click as combat.
+        Pid target = engine->PickMouseForTargeting().pid;
+        if (target.type() == OBJECT_Actor && pActors[target.id()].aiState != Dead && !CanInteractWithActor(target.id())) {
+            combatClickOnActor();
+        } else {
+            pParty->dropHeldItem();
+        }
     }
 }
