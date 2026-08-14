@@ -14,6 +14,18 @@ on:
       # seeding the remote cache pre-merge (the upstream fork-PR runs can't write).
       - feature/bazel-migration
   workflow_dispatch:
+  # Called from build_release.yml: a non-empty releaseTag makes every leg
+  # upload its artifacts to that release.
+  workflow_call:
+    inputs:
+      releaseTag:
+        required: false
+        default: ''
+        type: string
+      myCommit:
+        required: false
+        default: ''
+        type: string
 
 concurrency:
   group: ${{github.workflow}}-${{github.ref}}
@@ -102,7 +114,7 @@ jobs:
         uses: actions/checkout@v5.0.0
         with:
           # For pull_request_target the default ref is the base branch.
-          ref: ${{github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || ''}}
+          ref: ${{github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || inputs.myCommit || ''}}
 
       - name: '[android] Install NDK'
         if: env.MATRIX_PLATFORM == 'android'
@@ -312,6 +324,74 @@ jobs:
         if: env.MATRIX_PLATFORM != 'android'
         run: |
           bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test-opt.log
+
+      # Release artifacts, mirroring the cmake matrix: per-config zips on the
+      # desktop legs, universal APKs on android_universal. The builds below are
+      # cache hits - they just repoint the bazel-bin symlink per config. Config
+      # names stay Debug/RelWithDebInfo in the artifact names so nightly
+      # downloads keep their established names.
+      - name: '[non-android] Prepare release files'
+        if: inputs.releaseTag != '' && env.MATRIX_PLATFORM != 'android'
+        run: |
+          set -euo pipefail
+          arch="${MATRIX_BAZEL_CONFIG#*_}"
+          for config in dbg opt; do
+            [ "$config" = "dbg" ] && zipconfig=Debug || zipconfig=RelWithDebInfo
+            rm -rf dist && mkdir dist
+            if [ "${{env.MATRIX_PLATFORM}}" = "darwin" ]; then
+              bazel build -c $config --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} //src/Bin/OpenEnroth:OpenEnroth_app
+              cp -R bazel-bin/src/Bin/OpenEnroth/OpenEnroth.app dist/
+            elif [ "${{env.MATRIX_PLATFORM}}" = "windows" ]; then
+              # generate_pdb_file declares the pdb as a tracked output even in opt,
+              # so it materializes under remote_download_minimal.
+              bazel build -c $config --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} --features=generate_pdb_file //src/Bin/OpenEnroth:OpenEnroth
+              cp bazel-bin/src/Bin/OpenEnroth/OpenEnroth.exe dist/
+              cp bazel-bin/src/Bin/OpenEnroth/OpenEnroth.pdb dist/
+            else
+              bazel build -c $config --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} //src/Bin/OpenEnroth:OpenEnroth
+              cp bazel-bin/src/Bin/OpenEnroth/OpenEnroth dist/
+            fi
+            mkdir -p release
+            (cd dist && sh ../.github/zipdir.sh "../release/${{runner.os}}_${{inputs.releaseTag}}_${zipconfig}_${arch}.zip")
+          done
+
+      - name: '[android_universal] Decode keystore'
+        if: inputs.releaseTag != '' && matrix.target == 'android_universal' && env.SECRETS_KEYSTORE != ''
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: android_keystore.jks
+          encodedString: '${{env.SECRETS_KEYSTORE}}'
+        env:
+          # Secrets cannot be referenced in if: blocks, so we have to work it around.
+          SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'
+
+      - name: '[android_universal] Prepare release APKs'
+        if: inputs.releaseTag != '' && matrix.target == 'android_universal'
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //android/openenroth:main
+          cp bazel-bin/android/openenroth/main.apk release/openenroth-debug.apk
+          bazel build -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //android/openenroth:main
+          cp bazel-bin/android/openenroth/main.apk release/openenroth-release.apk
+          # Re-sign with the release key when the secrets exist; bazel signs
+          # with the debug key otherwise, same as gradle PR builds did.
+          ks='${{steps.decode_keystore.outputs.filePath}}'
+          if [ -n "$ks" ]; then
+            signer=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort | tail -1)
+            "$signer" sign --ks "$ks" --ks-key-alias '${{secrets.SIGNING_KEY_ALIAS}}' \
+              --ks-pass 'pass:${{secrets.SIGNING_STORE_PASSWORD}}' --key-pass 'pass:${{secrets.SIGNING_KEY_PASSWORD}}' \
+              release/openenroth-release.apk
+          fi
+
+      - name: 'Publish release'
+        if: inputs.releaseTag != '' && (env.MATRIX_PLATFORM != 'android' || matrix.target == 'android_universal')
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{inputs.releaseTag}}'
+          files: release/*
 
       # BuildBuddy invocation URLs, for timing/cache analysis without log access.
       - name: 'Annotate invocation URLs'
