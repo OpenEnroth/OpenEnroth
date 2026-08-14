@@ -19,3 +19,7 @@ std::string NativePath::toWtf8() const {
     return _path.generic_string();
 #endif
 }
+
+std::string NativePath::displayString() const {
+    return txt::encodedToUtf8(toWtf8(), ENCODING_UTF8); // UTF8 to UTF8 conversion replaces all the invalid parts.
+}

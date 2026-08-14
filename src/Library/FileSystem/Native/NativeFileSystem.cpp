@@ -98,7 +98,7 @@ void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
         if (!isRegular && !isDirectory)
             continue;
 
-        std::string name = NativePath::fromStdPath(entry.path().filename()).toWtf8();
+        std::string name = NativePath::fromStdPath(entry.path().filename()).toWtf8(); // The roundtrip is a WTF8 conversion.
         if (name.find('\\') != std::string::npos)
             continue; // Files with '\\' in filename are not observable through this interface. Don't be a retard.
 
@@ -140,7 +140,7 @@ bool NativeFileSystem::_remove(FileSystemPathView path) {
 }
 
 std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
-    return makeBasePath(path).toWtf8();
+    return makeBasePath(path).displayString();
 }
 
 NativePath NativeFileSystem::makeBasePath(FileSystemPathView path) const {

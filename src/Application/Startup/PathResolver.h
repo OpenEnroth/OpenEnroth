@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "Utility/System/NativePath.h"
+
 class Environment;
 
 constexpr char mm6PathOverrideKey[] = "OPENENROTH_MM6_PATH";
@@ -13,6 +15,6 @@ std::vector<std::string> resolveMm6Paths(Environment *environment);
 std::vector<std::string> resolveMm7Paths(Environment *environment);
 std::vector<std::string> resolveMm8Paths(Environment *environment);
 
-bool validateMm7Path(std::string_view dataPath, std::string *missingFile);
+bool validateMm7Path(const NativePath &dataPath, std::string *missingFile);
 
 std::string resolveMm7UserPath(Environment *environment);

@@ -45,6 +45,13 @@ class NativePath {
     }
 
     /**
+     * @return                          This path as a valid UTF-8 string for displaying to the user, with everything
+     *                                  that's not valid UTF-8 replaced with U+FFFD. Unlike the string returned by
+     *                                  `toWtf8`, it might not round-trip back into the same path.
+     */
+    [[nodiscard]] std::string displayString() const;
+
+    /**
      * @return                          Absolute copy of this path, resolved against the current directory. An empty
      *                                  path resolves to the current directory itself.
      */

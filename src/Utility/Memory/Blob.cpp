@@ -37,7 +37,7 @@ Blob Blob::fromMalloc(const void *data, size_t size) {
 }
 
 Blob Blob::fromFile(const NativePath &path) {
-    std::string pathString = path.absolute().toWtf8(); // Display path. Absolute, so that it's still meaningful in logs.
+    std::string pathString = path.absolute().displayString(); // Absolute, so that it's still meaningful in logs.
 
     // On Mac mapping an empty file throws, so we need to provide a workaround.
     std::error_code error;

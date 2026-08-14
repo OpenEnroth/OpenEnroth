@@ -25,7 +25,7 @@ FileInputStream::~FileInputStream() {
 void FileInputStream::open(const NativePath &path, size_t bufferSize) {
     assert(bufferSize > 0);
 
-    std::string pathString = path.absolute().toWtf8(); // Display path. Absolute, so that it's still meaningful in logs.
+    std::string pathString = path.absolute().displayString(); // Absolute, so that it's still meaningful in logs.
 
     // Wide fopen on Windows - the narrow one converts the path per the C locale.
 #ifdef _WINDOWS

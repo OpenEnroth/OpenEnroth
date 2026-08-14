@@ -8,6 +8,7 @@
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
+#include "Utility/String/Encoding.h"
 #include "Utility/String/Join.h"
 
 MountingFileSystem::MountingFileSystem(std::string_view displayName) : _displayName(displayName) {}
@@ -124,7 +125,7 @@ bool MountingFileSystem::_remove(FileSystemPathView path) {
 
 std::string MountingFileSystem::_displayPath(FileSystemPathView path) const {
     // TODO(captainurist): this is not symmetric with that's done in read / openForReading / openForWriting.
-    return join(_displayName, "://", path.string());
+    return join(_displayName, "://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
 MountingFileSystem::WalkResult MountingFileSystem::walk(FileSystemPathView path) {

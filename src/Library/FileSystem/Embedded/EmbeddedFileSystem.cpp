@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Utility/Streams/MemoryInputStream.h"
+#include "Utility/String/Encoding.h"
 #include "Utility/String/Join.h"
 
 EmbeddedFileSystem::EmbeddedFileSystem(cmrc::embedded_filesystem base, std::string_view displayName) : _base(base), _displayName(displayName) {}
@@ -44,5 +45,5 @@ std::unique_ptr<InputStream> EmbeddedFileSystem::_openForReading(FileSystemPathV
 }
 
 std::string EmbeddedFileSystem::_displayPath(FileSystemPathView path) const {
-    return join(_displayName, "://", path.string());
+    return join(_displayName, "://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }

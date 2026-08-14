@@ -17,7 +17,6 @@ if(NOT OE_BUILD_PLATFORM STREQUAL "android")
             library_image
             library_magic
             library_filesystem_native
-            library_filesystem_sub
             library_cli)
     target_check_style(LodTool)
 endif()

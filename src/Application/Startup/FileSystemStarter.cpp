@@ -21,23 +21,23 @@ FileSystemStarter::~FileSystemStarter() {
     dfs = nullptr;
 }
 
-void FileSystemStarter::initUserFs(bool ramFs, std::string_view path) {
+void FileSystemStarter::initUserFs(bool ramFs, const NativePath &path) {
     assert(ufs == nullptr);
 
     if (ramFs) {
         _userFs = std::make_unique<MemoryFileSystem>("ramfs");
     } else {
-        _userFs = std::make_unique<NativeFileSystem>(NativePath::fromWtf8(path));
+        _userFs = std::make_unique<NativeFileSystem>(path);
     }
 
     ufs = _userFs.get();
 }
 
-void FileSystemStarter::initDataFs(std::string_view path, bool pathOverridesBuiltIn) {
+void FileSystemStarter::initDataFs(const NativePath &path, bool pathOverridesBuiltIn) {
     assert(dfs == nullptr);
 
     _dataEmbeddedFs = std::make_unique<EmbeddedFileSystem>(cmrc::openenroth::get_filesystem(), "embedded");
-    _dataNativeFs = std::make_unique<NativeFileSystem>(NativePath::fromWtf8(path));
+    _dataNativeFs = std::make_unique<NativeFileSystem>(path);
     _dataLowercaseFs = std::make_unique<LowercaseFileSystem>(_dataNativeFs.get());
 
     std::vector<const FileSystem *> baseFileSystems = {_dataLowercaseFs.get(), _dataEmbeddedFs.get()};

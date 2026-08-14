@@ -75,7 +75,7 @@ static std::vector<std::string> resolvePaths(Environment *environment, const Pat
     std::vector<std::string> result;
 
     // Otherwise we check PWD first.
-    result.push_back(std::filesystem::current_path().generic_string());
+    result.push_back(NativePath::fromStdPath(std::filesystem::current_path()).toWtf8());
 
     // Then we check paths from registry on Windows,...
     for (const char *registryKey : config.registryKeys) {
@@ -121,8 +121,8 @@ std::vector<std::string> resolveMm8Paths(Environment *environment) {
     return resolvePaths(environment, mm8Config);
 }
 
-bool validateMm7Path(std::string_view dataPath, std::string *missingFile) {
-    NativeFileSystem nativeFs(NativePath::fromWtf8(dataPath));
+bool validateMm7Path(const NativePath &dataPath, std::string *missingFile) {
+    NativeFileSystem nativeFs(dataPath);
     LowercaseFileSystem lowerFs(&nativeFs);
 
     for (std::string_view entry : globalValidateList) {

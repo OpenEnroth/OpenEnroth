@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <string_view>
+
+#include "Utility/System/NativePath.h"
 
 class FileSystem;
 
@@ -10,8 +11,8 @@ class FileSystemStarter {
     FileSystemStarter();
     ~FileSystemStarter();
 
-    void initUserFs(bool ramFs, std::string_view path);
-    void initDataFs(std::string_view path, bool pathOverridesBuiltIn);
+    void initUserFs(bool ramFs, const NativePath &path);
+    void initDataFs(const NativePath &path, bool pathOverridesBuiltIn);
 
  private:
     std::unique_ptr<FileSystem> _userFs;

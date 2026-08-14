@@ -238,7 +238,9 @@ UNIT_TEST(NativeFileSystem, WindowsOddFileNames) {
         EXPECT_EQ(fs.stat(name), FileStat(FILE_REGULAR, 3));
         EXPECT_EQ(fs.read(name).str(), "lol");
         EXPECT_EQ(fs.openForReading(name)->readAll(), "lol");
-        EXPECT_TRUE(txt::wtf8ToWide(fs.displayPath(name)).ends_with(nativeName));
+
+        // displayPath is valid UTF-8, so the surrogates in the name come out replaced.
+        EXPECT_TRUE(fs.displayPath(name).ends_with(NativePath::fromWtf8(name).displayString()));
 
         // Writing such a name works too.
         fs.write(name + ".2", Blob::fromString("kek"));
