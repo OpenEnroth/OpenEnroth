@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <system_error>
 #include <utility>
 #include <vector>
@@ -41,13 +42,13 @@ bool NativeFileSystem::_exists(FileSystemPathView path) const {
     assert(!path.isEmpty());
 
     std::error_code ec;
-    return std::filesystem::exists(makeBasePath(path).toStdPath(), ec); // Returns false on error.
+    return std::filesystem::exists(toNativePath(path).toStdPath(), ec); // Returns false on error.
 }
 
 FileStat NativeFileSystem::_stat(FileSystemPathView path) const {
     assert(!path.isEmpty());
 
-    std::filesystem::path basePath = makeBasePath(path).toStdPath();
+    std::filesystem::path basePath = toNativePath(path).toStdPath();
 
     std::error_code ec;
     std::filesystem::directory_entry entry(basePath, ec);
@@ -70,7 +71,7 @@ FileStat NativeFileSystem::_stat(FileSystemPathView path) const {
 }
 
 void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    std::filesystem::path basePath = makeBasePath(path).toStdPath();
+    std::filesystem::path basePath = toNativePath(path).toStdPath();
 
     // Handle the known errors first.
     std::error_code ec;
@@ -110,12 +111,12 @@ void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
 
 Blob NativeFileSystem::_read(FileSystemPathView path) const {
     assert(!path.isEmpty());
-    return Blob::fromFile(makeBasePath(path));
+    return Blob::fromFile(toNativePath(path));
 }
 
 void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
     assert(!path.isEmpty());
-    NativePath basePath = makeBasePath(path);
+    NativePath basePath = toNativePath(path);
     std::filesystem::create_directories(basePath.toStdPath().parent_path());
     FileOutputStream stream(basePath);
     stream.write(data.data(), data.size());
@@ -124,26 +125,30 @@ void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
 
 std::unique_ptr<InputStream> NativeFileSystem::_openForReading(FileSystemPathView path) const {
     assert(!path.isEmpty());
-    return std::make_unique<FileInputStream>(makeBasePath(path));
+    return std::make_unique<FileInputStream>(toNativePath(path));
 }
 
 std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(FileSystemPathView path) {
     assert(!path.isEmpty());
-    NativePath basePath = makeBasePath(path);
+    NativePath basePath = toNativePath(path);
     std::filesystem::create_directories(basePath.toStdPath().parent_path());
     return std::make_unique<FileOutputStream>(basePath);
 }
 
 bool NativeFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
-    return std::filesystem::remove_all(makeBasePath(path).toStdPath()) > 0;
+    return std::filesystem::remove_all(toNativePath(path).toStdPath()) > 0;
 }
 
 std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
-    return makeBasePath(path).displayString();
+    return toNativePath(path).displayString();
 }
 
-NativePath NativeFileSystem::makeBasePath(FileSystemPathView path) const {
+NativePath NativeFileSystem::toNativePath(std::string_view path) const {
+    return toNativePath(FileSystemPath(path));
+}
+
+NativePath NativeFileSystem::toNativePath(FileSystemPathView path) const {
     if (path.isEmpty())
         return _root; // `_root / ""` would add a trailing separator.
 

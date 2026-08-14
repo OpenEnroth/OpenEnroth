@@ -37,13 +37,13 @@ Blob Blob::fromMalloc(const void *data, size_t size) {
 }
 
 Blob Blob::fromFile(const NativePath &path) {
-    std::string pathString = path.absolute().displayString(); // Absolute, so that it's still meaningful in logs.
+    std::string displayString = path.absolute().displayString(); // Absolute, so that it's still meaningful in logs.
 
     // On Mac mapping an empty file throws, so we need to provide a workaround.
     std::error_code error;
     uintmax_t size = std::filesystem::file_size(path.toStdPath(), error);
     if (!error && size == 0)
-        return Blob().withDisplayPath(pathString);
+        return Blob().withDisplayPath(displayString);
 
     // native() is a wchar_t string on Windows, so a WTF16 name is passed as-is. Throws std::system_error if the
     // file doesn't exist.
@@ -52,14 +52,14 @@ Blob Blob::fromFile(const NativePath &path) {
         mmap = std::make_shared<mio::mmap_source>(path.toStdPath().native());
     } catch (const std::system_error &e) {
         // mio doesn't fill in the path component for std::system_error, so we need to do this ourselves.
-        throw std::system_error(e.code(), pathString);
+        throw std::system_error(e.code(), displayString);
     }
 
     Blob result;
     result._data = mmap->data();
     result._size = mmap->size();
     result._state = std::move(mmap);
-    result._displayPath = std::move(pathString);
+    result._displayPath = std::move(displayString);
     return result;
 }
 

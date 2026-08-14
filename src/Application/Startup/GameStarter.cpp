@@ -1,7 +1,6 @@
 #include "GameStarter.h"
 
 #include <utility>
-#include <filesystem>
 #include <string>
 #include <vector>
 #include <memory>
@@ -38,6 +37,7 @@
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 
 #include "Scripting/AudioBindings.h"
 #include "Scripting/ConfigBindings.h"
@@ -75,7 +75,7 @@ void GameStarter::initialize() {
 
     // Resolve user path & create user fs.
     resolveUserPath(_environment.get(), &_options);
-    _fsStarter.initUserFs(_options.ramFsUserData, NativePath::fromWtf8(_options.userPath));
+    _fsStarter.initUserFs(_options.ramFsUserData, _options.userPath);
     logger->info("Using user path '{}'.", ufs->displayPath(""));
 
     // Init config.
@@ -102,7 +102,7 @@ void GameStarter::initialize() {
     // Resolve data path, create data fs.
     // TODO(captainurist): actually move datapath to config?
     resolveDataPath(_environment.get(), &_options);
-    _fsStarter.initDataFs(NativePath::fromWtf8(_options.dataPath), _config->debug.OverrideBuiltInResources.value());
+    _fsStarter.initDataFs(_options.dataPath, _config->debug.OverrideBuiltInResources.value());
     logger->info("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath("") b/c it'll show "embedded://"...
 
     // Migrate saves if needed. We don't migrate anything else.
@@ -220,13 +220,13 @@ GameStarter::~GameStarter() {
 }
 
 void GameStarter::resolveUserPath(Environment *environment, GameStarterOptions *options) {
-    if (options->userPath.empty())
+    if (options->userPath.isEmpty())
         options->userPath = resolveMm7UserPath(environment);
 }
 
 void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *options) {
-    std::vector<std::string> candidates;
-    if (!options->dataPath.empty()) {
+    std::vector<NativePath> candidates;
+    if (!options->dataPath.isEmpty()) {
         candidates.push_back(options->dataPath);
     } else {
         candidates = resolveMm7Paths(environment);
@@ -234,11 +234,11 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
     assert(!candidates.empty());
 
     for (int i = 0; i < candidates.size(); i++) {
-        NativePath candidatePath = NativePath::fromWtf8(candidates[i]);
+        auto [fs, path] = NativeFileSystem::fromNativePath(candidates[i]);
         std::string missingFile;
-        if (!std::filesystem::exists(candidatePath.toStdPath())) {
+        if (!fs->exists(path)) {
             logger->info("Data path #{} ('{}') doesn't exist.", i + 1, candidates[i]);
-        } else if (!validateMm7Path(candidatePath, &missingFile)) {
+        } else if (!validateMm7Path(candidates[i], &missingFile)) {
             logger->info("Data path #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
         } else {
             logger->info("Data path #{} ('{}') is OK!", i + 1, candidates[i]);
@@ -248,13 +248,13 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
     }
 
     // Just use the last data path if all paths are invalid. We'll throw later.
-    if (options->dataPath.empty())
+    if (options->dataPath.isEmpty())
         options->dataPath = candidates.back();
 }
 
-void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platform) {
+void GameStarter::failOnInvalidPath(const NativePath &dataPath, Platform *platform) {
     std::string missingFile;
-    if (validateMm7Path(NativePath::fromWtf8(dataPath), &missingFile))
+    if (validateMm7Path(dataPath, &missingFile))
         return;
 
     std::string message = fmt::format(

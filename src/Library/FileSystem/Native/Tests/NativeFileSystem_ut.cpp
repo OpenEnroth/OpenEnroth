@@ -136,6 +136,13 @@ UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
     EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
 }
 
+UNIT_TEST(NativeFileSystem, ToNativePath) {
+    NativeFileSystem fs(NativePath::fromWtf8("a"));
+
+    EXPECT_EQ(fs.toNativePath("b/c.txt"), NativePath::fromWtf8("a").absolute() / NativePath::fromWtf8("b/c.txt"));
+    EXPECT_EQ(fs.toNativePath(""), NativePath::fromWtf8("a").absolute()); // Root maps to the root dir itself.
+}
+
 UNIT_TEST(NativeFileSystem, FromNativePathIsCwdRelative) {
     // The returned path keeps every component of the cwd, that's the point of rooting the fs at the fs root.
     ScopedTestFile tmp("1.txt", "lol");
@@ -240,7 +247,7 @@ UNIT_TEST(NativeFileSystem, WindowsOddFileNames) {
         EXPECT_EQ(fs.openForReading(name)->readAll(), "lol");
 
         // displayPath is valid UTF-8, so the surrogates in the name come out replaced.
-        EXPECT_TRUE(fs.displayPath(name).ends_with(NativePath::fromWtf8(name).displayString()));
+        EXPECT_EQ(fs.displayPath(name), (NativePath::fromWtf8("tmp_native_dir") / NativePath::fromWtf8(name)).absolute().displayString());
 
         // Writing such a name works too.
         fs.write(name + ".2", Blob::fromString("kek"));

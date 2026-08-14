@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "Library/FileSystem/Interface/FileSystem.h"
@@ -51,6 +52,16 @@ class NativeFileSystem : public FileSystem {
     [[nodiscard]] static std::pair<std::unique_ptr<NativeFileSystem>, FileSystemPath> fromNativePath(
         const NativePath &path);
 
+    /**
+     * Maps a path in this file system back into a native path, the inverse of `fromNativePath`. The passed path is
+     * not required to exist.
+     *
+     * @param path                      Path in this file system.
+     * @return                          Native path for `path`. Always absolute.
+     */
+    [[nodiscard]] NativePath toNativePath(std::string_view path) const;
+    [[nodiscard]] NativePath toNativePath(FileSystemPathView path) const;
+
  private:
     virtual bool _exists(FileSystemPathView path) const override;
     virtual FileStat _stat(FileSystemPathView path) const override;
@@ -61,8 +72,6 @@ class NativeFileSystem : public FileSystem {
     virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) override;
     virtual bool _remove(FileSystemPathView path) override;
     virtual std::string _displayPath(FileSystemPathView path) const override;
-
-    NativePath makeBasePath(FileSystemPathView path) const;
 
  private:
     NativePath _root;

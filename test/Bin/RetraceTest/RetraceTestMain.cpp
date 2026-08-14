@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <filesystem>
 #include <string>
 #include <vector>
 
 #include "Application/Startup/GameStarter.h"
 
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
 #include "Utility/String/Format.h"
@@ -24,10 +24,11 @@ int platformMain(int argc, char **argv) {
         if (opts.helpPrinted)
             return 1;
 
+        NativeFileSystem testFs(opts.testPath);
         std::vector<NativePath> tracePaths;
-        for (const auto &entry : std::filesystem::directory_iterator(opts.testPath.toStdPath()))
-            if (entry.path().extension() == ".json")
-                tracePaths.push_back(NativePath::fromStdPath(entry.path()));
+        for (const DirectoryEntry &entry : testFs.ls(""))
+            if (entry.name.ends_with(".json"))
+                tracePaths.push_back(testFs.toNativePath(entry.name));
         std::ranges::sort(tracePaths);
 
         for (const NativePath &tracePath : tracePaths)

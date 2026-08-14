@@ -35,6 +35,13 @@ class NativePath {
     template<class T> static NativePath fromStdPath(const T &) = delete;
 
     /**
+     * @return                          Current working directory.
+     */
+    [[nodiscard]] static NativePath pwd() {
+        return NativePath(std::filesystem::current_path());
+    }
+
+    /**
      * @return                          This path as a WTF-8 string, always using forward slashes. Never throws,
      *                                  unlike `std::filesystem::path::generic_string()`.
      */

@@ -5,7 +5,6 @@
 #include <memory>
 #include <utility>
 
-#include "Library/FileSystem/Native/NativeFileSystem.h"
 #include "Library/Lod/LodReader.h"
 #include "Library/Vid/VidReader.h"
 #include "Library/Snd/SndReader.h"
@@ -49,8 +48,7 @@ class UniversalReader : public ArchiveReader {
 };
 
 std::unique_ptr<ArchiveReader> ArchiveReader::createArchiveReader(const NativePath &path) {
-    auto [fs, fsPath] = NativeFileSystem::fromNativePath(path);
-    Blob data = fs->read(fsPath);
+    Blob data = Blob::fromFile(path);
     switch (magic(data)) {
     case MAGIC_LOD:
         return std::make_unique<UniversalReader<LodReader, MAGIC_LOD>>(std::move(data));

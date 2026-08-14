@@ -8,6 +8,7 @@
 #include "Application/Startup/PathResolver.h"
 
 #include "Library/Cli/CliApp.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Serialization/EnumSerialization.h"
 
@@ -79,13 +80,16 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
     app->parse(argc, argv, result.helpPrinted);
 
-    if (!portable && std::filesystem::exists(".portable"))
-        portable = true;
+    if (!portable) {
+        auto [fs, path] = NativeFileSystem::fromNativePath(NativePath::fromWtf8(".portable"));
+        if (fs->exists(path))
+            portable = true;
+    }
     if (portable && *portable) {
-        if (result.userPath.empty())
-            result.userPath = NativePath::fromStdPath(std::filesystem::current_path()).toWtf8();
-        if (result.dataPath.empty())
-            result.dataPath = NativePath::fromStdPath(std::filesystem::current_path()).toWtf8();
+        if (result.userPath.isEmpty())
+            result.userPath = NativePath::pwd();
+        if (result.dataPath.isEmpty())
+            result.dataPath = NativePath::pwd();
     }
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {
