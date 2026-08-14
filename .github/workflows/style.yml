@@ -19,57 +19,43 @@ concurrency:
   group: style-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
-env:
-  LLS_TAG: '3.9.1'
-
 jobs:
   check_style:
     runs-on: ubuntu-22.04
     steps:
+      # No submodules: bazel pins cpplint and lua-language-server itself.
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5.0.0
         with:
-          submodules: recursive
           ref: '${{inputs.myCommit}}'
 
-      # OE builds with lld and with mold, and configure step fails if one is not found. We don't need the linker for
-      # the style checks, but it's easier to just install it than work this around in CMakeLists.
-      - name: Install mold
-        uses: rui314/setup-mold@v1
+      - name: Set up Bazel
+        uses: bazel-contrib/setup-bazel@0.14.0
         with:
-          mold-version: 2.36.0
-          make-default: false
+          bazelisk-version: 1.x
+          bazelisk-cache: true
 
-      - name: Restore cached lua-language-server
-        id: lls-cache
-        uses: actions/cache@v4
-        with:
-          path: 'lua-language-server/build/bin'
-          key: 'lls-cache-${{env.LLS_TAG}}'
-
-      - name: Checkout lua-language-server
-        if: steps.lls-cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: 'LuaLS/lua-language-server'
-          path: 'lua-language-server'
-          ref: '3.9.1'
-
-      - name: Install ninja-build
-        if: steps.lls-cache.outputs.cache-hit != 'true'
-        uses: seanmiddleditch/gha-setup-ninja@v4
-
-      - name: Build lua-language-server
-        if: steps.lls-cache.outputs.cache-hit != 'true'
-        working-directory: lua-language-server
+      - name: Configure remote cache
         run: |
-          ./make.sh
+          key='${{secrets.BUILDBUDDY_API_KEY}}'
+          if [ -n "$key" ]; then
+            echo "BAZEL_REMOTE_ARGS=--config=remote-cache --remote_header=x-buildbuddy-api-key=$key" >> "$GITHUB_ENV"
+          else
+            # No secrets (untrusted fork PR): read the cache with the public key.
+            echo "BAZEL_REMOTE_ARGS=--config=remote-cache-read" >> "$GITHUB_ENV"
+          fi
 
-      - name: Configure
-        run: |
-          cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON -DOE_LLS_COMMAND=./lua-language-server/build/bin/lua-language-server
+      # Reuse the linux_x86_64 matrix leg's caches - same lint action keys.
+      - name: Restore bazel caches
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: bazel-style-${{github.run_id}}
+          restore-keys: |
+            bazel-linux_x86_64-
 
       - name: Check style
-        working-directory: build
         run: |
-          make check_style
+          bazel build -c dbg ${{env.BAZEL_REMOTE_ARGS}} //:check_style
