@@ -34,6 +34,7 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "//src/Core/Serialization:core_serialization",
         "//src/Engine/Graphics/Renderer:engine_graphics_renderer",
         "//src/Engine/Random:engine_random",
         "//src/Io:io_input_enums",

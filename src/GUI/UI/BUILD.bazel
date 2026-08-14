@@ -105,6 +105,7 @@ cc_library(
         ":gui_ui_house_base",
         "//src/Application:application_base",
         "//src/Arcomage:arcomage",
+        "//src/Core/Serialization:core_serialization",
         "//src/Engine:engine",
         "//src/Engine/Data:engine_data",
         "//src/Engine/Evt:engine_evt",

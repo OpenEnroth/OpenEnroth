@@ -13,6 +13,7 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "//src/Core/Serialization:core_serialization",
         "//src/Io:io",
         "//src/Library/Config:library_config",
         "//src/Library/Geometry:library_geometry",
