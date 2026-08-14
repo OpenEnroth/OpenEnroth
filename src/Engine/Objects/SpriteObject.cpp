@@ -595,8 +595,7 @@ void SpriteObject::Remove(unsigned int uLayingItemID) {
 }
 
 void arrangeSpriteObjects() {
-    for (size_t i = 0; i < pSpriteObjects.size(); i++) {
-        SpriteObject &object = pSpriteObjects[i];
+    for (SpriteObject &object : pSpriteObjects) {
         if (!object.uObjectDescID)
             continue;
         object.containing_item.postGenerate(ITEM_SOURCE_MAP);
@@ -609,15 +608,8 @@ void arrangeSpriteObjects() {
         } else {
             int faceId = -1;
             float floorZ = GetIndoorFloorZ(object.vPosition, &object.uSectorID, &faceId);
-            if (floorZ == -30000) {
-                logger->error("Deleting item '{}' at ({}, {}, {}) - no floor found",
-                              object.containing_item.GetDisplayName(),
-                              object.vPosition.x, object.vPosition.y, object.vPosition.z);
-                SpriteObject::Remove(i);
-                continue;
-            }
             if (floorZ > -29000)
-                object.vPosition.z = floorZ; // -29000 keeps the z, the object falls through the portal to its floor.
+                object.vPosition.z = floorZ; // Spawns outside walkable space keep their z, physics deletes and logs them.
         }
     }
 }
