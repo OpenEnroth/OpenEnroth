@@ -5,6 +5,7 @@ cc_library(
     srcs = [
         "DistLogSink.cpp",
         "LogCategory.cpp",
+        "LogEnumFunctions.h", # Includes spdlog headers, so it's private like in cmake.
         "LogEnums.cpp",
         "LogSink.cpp",
         "Logger.cpp",
@@ -15,7 +16,6 @@ cc_library(
         "BufferLogSink.h",
         "DistLogSink.h",
         "LogCategory.h",
-        "LogEnumFunctions.h",
         "LogEnums.h",
         "LogSink.h",
         "LogSource.h",
@@ -23,12 +23,21 @@ cc_library(
         "RotatingLogSink.h",
         "StreamLogSink.h",
     ],
+    # Spdlog is header-only here, so its config macros live on the only target
+    # whose sources instantiate it. Wchar support makes the msvc sink use
+    # OutputDebugStringW, matching cmake's SPDLOG_WCHAR_SUPPORT on windows.
+    local_defines = ["SPDLOG_DISABLE_DEFAULT_LOGGER"] + select({
+        "@platforms//os:windows": ["SPDLOG_WCHAR_TO_UTF8_SUPPORT"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
     deps = [
         "//src/Library/Serialization:library_serialization",
         "//src/Library/FileSystem/Interface:library_filesystem_interface",
         "//src/Utility:utility",
-        # spdlog is PRIVATE
+    ],
+    # Spdlog is PRIVATE in cmake - dependents can't see its headers.
+    implementation_deps = [
         "@spdlog",
     ],
 )

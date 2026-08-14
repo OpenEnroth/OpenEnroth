@@ -385,11 +385,15 @@ cc_library(
     ],
     copts = select({
         # External frame unwinding, as auto-detected by src/Makefile on all
-        # modern non-Windows toolchains.
+        # modern non-Windows toolchains. Fortify and stack protectors are
+        # disabled the same way luajit-cmake does it - distro compilers enable
+        # them by default, and upstream deliberately builds without.
         "@platforms//os:windows": [],
         "//conditions:default": [
             "-DLUAJIT_UNWIND_EXTERNAL",
             "-fomit-frame-pointer",
+            "-U_FORTIFY_SOURCE",
+            "-fno-stack-protector",
         ],
     }),
     includes = [

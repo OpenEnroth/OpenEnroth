@@ -41,10 +41,15 @@ build:android_base --copt=-Isrc
 
 # FMT_USE_NONTYPE_TEMPLATE_ARGS enables the _cf literals used throughout OE. It has to be
 # defined globally because the BCR fmt module doesn't set it, and every fmt include must see it.
+# The host_copt twin keeps exec-configuration tools compilable the day one of them uses fmt.
 build:linux --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:linux --host_copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
 build:macos --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:macos --host_copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
 build:windows --copt=/DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:windows --host_copt=/DFMT_USE_NONTYPE_TEMPLATE_ARGS
 build:android_base --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:android_base --host_copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
 
 # ─── Compiler selection ───────────────────────────────────────────────────────
 # Linux builds use the environment's default gcc; C++23 "deducing this" (P0847R7)
@@ -267,7 +272,10 @@ build:remote-cache-read --bes_backend=
 build:remote-cache-read --bes_results_url=
 
 # Flatpak sandbox build (distribution/linux/flatpak): libdwarf lives in /app.
+# The define lets overlay BUILD files special-case the sandbox (backward_cpp
+# turns dwarf off there - the sandbox libdwarf is too new for it).
 build:flatpak --copt=-I/app/include --linkopt=-L/app/lib
+build:flatpak --define=oe_flatpak=1
 
 # ─── Convenience ─────────────────────────────────────────────────────────────
 

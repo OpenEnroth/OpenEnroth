@@ -10,6 +10,13 @@ cc_library(
         "StackTrace.h",
         "StackTraceOnCrash.h",
     ],
+    # BACKWARD_HAS_DWARF arrives transitively from @backward_cpp, but copts
+    # don't propagate, so the libdwarf include dir is repeated here.
+    copts = select({
+        "//bazel:linux_flatpak": [],
+        "@platforms//os:linux": ["-I/usr/include/libdwarf"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
     deps = [
         "//src/Utility:utility",

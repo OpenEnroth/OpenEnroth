@@ -22,6 +22,15 @@ config_setting(
     visibility = ["//visibility:public"],
 )
 
+# Linux build running inside the flatpak sandbox (--config=flatpak). A strict
+# specialization of @platforms//os:linux, so both can appear in one select().
+config_setting(
+    name = "linux_flatpak",
+    constraint_values = ["@platforms//os:linux"],
+    define_values = {"oe_flatpak": "1"},
+    visibility = ["//visibility:public"],
+)
+
 # Cpu detectors for detection.bzl. linux_x86 builds on the host x86_64
 # platform with -m32 and marks itself with --define (see .bazelrc), so the
 # extra define makes cpu_x86_32_shim a strict specialization of cpu_x86_64
