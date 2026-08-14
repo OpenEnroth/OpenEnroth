@@ -41,15 +41,13 @@ build:android_base --copt=-Isrc
 
 # FMT_USE_NONTYPE_TEMPLATE_ARGS enables the _cf literals used throughout OE. It has to be
 # defined globally because the BCR fmt module doesn't set it, and every fmt include must see it.
-# The host_copt twin keeps exec-configuration tools compilable the day one of them uses fmt.
+# No --host_copt twin on purpose: no exec-configuration tool uses fmt, and touching the exec
+# config invalidates the cached rules_foreign_cc pkg-config build, whose vendored glib
+# doesn't compile under gcc 15 (C23 makes bool a keyword).
 build:linux --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
-build:linux --host_copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
 build:macos --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
-build:macos --host_copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
 build:windows --copt=/DFMT_USE_NONTYPE_TEMPLATE_ARGS
-build:windows --host_copt=/DFMT_USE_NONTYPE_TEMPLATE_ARGS
 build:android_base --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
-build:android_base --host_copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
 
 # ─── Compiler selection ───────────────────────────────────────────────────────
 # Linux builds use the environment's default gcc; C++23 "deducing this" (P0847R7)
