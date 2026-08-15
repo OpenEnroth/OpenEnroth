@@ -139,8 +139,8 @@ UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
 UNIT_TEST(NativeFileSystem, ToNativePath) {
     NativeFileSystem fs(NativePath::fromWtf8("a"));
 
-    EXPECT_EQ(fs.toNativePath("b/c.txt"), NativePath::fromWtf8("a").absolute() / NativePath::fromWtf8("b/c.txt"));
-    EXPECT_EQ(fs.toNativePath(""), NativePath::fromWtf8("a").absolute()); // Root maps to the root dir itself.
+    EXPECT_EQ(fs.toNativePath("b/c.txt"), os::absolute(NativePath::fromWtf8("a")) / NativePath::fromWtf8("b/c.txt"));
+    EXPECT_EQ(fs.toNativePath(""), os::absolute(NativePath::fromWtf8("a"))); // Root maps to the root dir itself.
 }
 
 UNIT_TEST(NativeFileSystem, FromNativePathIsCwdRelative) {

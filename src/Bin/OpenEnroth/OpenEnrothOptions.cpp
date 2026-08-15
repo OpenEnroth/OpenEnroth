@@ -8,11 +8,11 @@
 #include "Application/Startup/PathResolver.h"
 
 #include "Library/Cli/CliApp.h"
-#include "Library/FileSystem/Native/NativeFileSystem.h"
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Exception.h"
+#include "Utility/System/Os.h"
 #include "Utility/String/Format.h"
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(OpenEnrothOptions::Migration, CASE_INSENSITIVE, {
@@ -80,16 +80,13 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
     app->parse(argc, argv, result.helpPrinted);
 
-    if (!portable) {
-        auto [fs, path] = NativeFileSystem::fromNativePath(NativePath::fromWtf8(".portable"));
-        if (fs->exists(path))
-            portable = true;
-    }
+    if (!portable && os::exists(NativePath::fromWtf8(".portable")))
+        portable = true;
     if (portable && *portable) {
         if (result.userPath.isEmpty())
-            result.userPath = NativePath::pwd();
+            result.userPath = os::cwd();
         if (result.dataPath.isEmpty())
-            result.dataPath = NativePath::pwd();
+            result.dataPath = os::cwd();
     }
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {

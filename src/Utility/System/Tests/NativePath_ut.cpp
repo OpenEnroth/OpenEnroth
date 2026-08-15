@@ -39,11 +39,6 @@ UNIT_TEST(NativePath, DisplayString) {
     EXPECT_EQ(display.find("\xed\xb0\x80"), std::string::npos);
 }
 
-UNIT_TEST(NativePath, Absolute) {
-    EXPECT_EQ(NativePath().absolute().toStdPath(), std::filesystem::current_path());
-    EXPECT_EQ(NativePath::fromWtf8("a").absolute().toStdPath(), std::filesystem::current_path() / "a");
-}
-
 #ifndef _WINDOWS
 UNIT_TEST(NativePath, InvalidUtf8FileNames) {
     // File names on Linux are byte strings, so fromWtf8 / toWtf8 have to pass invalid UTF-8 through as-is. "\xD0" is

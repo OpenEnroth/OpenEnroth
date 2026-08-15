@@ -35,13 +35,6 @@ class NativePath {
     template<class T> static NativePath fromStdPath(const T &) = delete;
 
     /**
-     * @return                          Current working directory.
-     */
-    [[nodiscard]] static NativePath pwd() {
-        return NativePath(std::filesystem::current_path());
-    }
-
-    /**
      * @return                          This path as a WTF-8 string, always using forward slashes. Never throws,
      *                                  unlike `std::filesystem::path::generic_string()`.
      */
@@ -57,14 +50,6 @@ class NativePath {
      *                                  `toWtf8`, it might not round-trip back into the same path.
      */
     [[nodiscard]] std::string displayString() const;
-
-    /**
-     * @return                          Absolute copy of this path, resolved against the current directory. An empty
-     *                                  path resolves to the current directory itself.
-     */
-    [[nodiscard]] NativePath absolute() const {
-        return NativePath(_path.empty() ? std::filesystem::current_path() : std::filesystem::absolute(_path));
-    }
 
     /**
      * @param extension                 New extension, WTF-8, with or without the leading dot. Pass an empty string

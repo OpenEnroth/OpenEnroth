@@ -37,7 +37,6 @@
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
-#include "Library/FileSystem/Native/NativeFileSystem.h"
 
 #include "Scripting/AudioBindings.h"
 #include "Scripting/ConfigBindings.h"
@@ -51,7 +50,7 @@
 #include "Scripting/ScriptingSystem.h"
 
 #include "Utility/Exception.h"
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Os.h"
 
 #include "PathResolver.h"
 
@@ -234,9 +233,8 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
     assert(!candidates.empty());
 
     for (int i = 0; i < candidates.size(); i++) {
-        auto [fs, path] = NativeFileSystem::fromNativePath(candidates[i]);
         std::string missingFile;
-        if (!fs->exists(path)) {
+        if (!os::exists(candidates[i])) {
             logger->info("Data path #{} ('{}') doesn't exist.", i + 1, candidates[i]);
         } else if (!validateMm7Path(candidates[i], &missingFile)) {
             logger->info("Data path #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);

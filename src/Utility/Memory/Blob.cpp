@@ -10,6 +10,7 @@
 #include <mio/mmap.hpp>
 
 #include "Utility/Streams/FileInputStream.h"
+#include "Utility/System/Os.h"
 #include "Utility/Exception.h"
 
 #include "FreeDeleter.h"
@@ -37,7 +38,7 @@ Blob Blob::fromMalloc(const void *data, size_t size) {
 }
 
 Blob Blob::fromFile(const NativePath &path) {
-    std::string displayString = path.absolute().displayString(); // Absolute, so that it's still meaningful in logs.
+    std::string displayString = os::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
 
     // On Mac mapping an empty file throws, so we need to provide a workaround.
     std::error_code error;

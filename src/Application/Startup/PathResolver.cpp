@@ -8,6 +8,8 @@
 #include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
 #include "Library/FileSystem/Native/NativeFileSystem.h"
 
+#include "Utility/System/Os.h"
+
 static const std::vector<std::string_view> globalValidateList = {
     {"anims/magic7.vid"},
     {"anims/might7.vid"},
@@ -74,7 +76,7 @@ static std::vector<NativePath> resolvePaths(Environment *environment, const Path
     std::vector<NativePath> result;
 
     // Otherwise we check PWD first.
-    result.push_back(NativePath::pwd());
+    result.push_back(os::cwd());
 
     // Then we check paths from registry on Windows,...
     for (const char *registryKey : config.registryKeys) {

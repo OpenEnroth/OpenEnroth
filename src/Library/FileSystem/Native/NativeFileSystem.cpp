@@ -1,37 +1,28 @@
 #include "NativeFileSystem.h"
 
 #include <cassert>
-#include <cstdint>
 #include <filesystem>
 #include <memory>
 #include <string>
 #include <string_view>
-#include <system_error>
 #include <utility>
 #include <vector>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
-#include "Utility/Exception.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/System/Os.h"
 
 NativeFileSystem::NativeFileSystem(const NativePath &root) {
-    _root = root.absolute();
+    _root = os::absolute(root);
 }
 
 NativeFileSystem::~NativeFileSystem() = default;
 
 std::pair<std::unique_ptr<NativeFileSystem>, FileSystemPath> NativeFileSystem::fromNativePath(const NativePath &path) {
-    // An explicit isEmpty() check b/c libstdc++ std::filesystem::absolute chokes on an empty path.
-    std::error_code ec;
-    std::filesystem::path absolutePath =
-        path.isEmpty() ? std::filesystem::current_path(ec) : std::filesystem::absolute(path.toStdPath(), ec);
-    if (ec)
-        throw Exception("Couldn't resolve native path '{}': {}", path, ec.message());
-
     // lexically_normal collapses ".." even right after the root, so the tail can never be an escaping path.
-    absolutePath = absolutePath.lexically_normal();
+    std::filesystem::path absolutePath = os::absolute(path).toStdPath().lexically_normal();
 
     // FileSystemPath normalizes - lexically_normal can leave a trailing '/' in there.
     return {std::make_unique<NativeFileSystem>(NativePath::fromStdPath(absolutePath.root_path())),
@@ -40,72 +31,30 @@ std::pair<std::unique_ptr<NativeFileSystem>, FileSystemPath> NativeFileSystem::f
 
 bool NativeFileSystem::_exists(FileSystemPathView path) const {
     assert(!path.isEmpty());
-
-    std::error_code ec;
-    return std::filesystem::exists(toNativePath(path).toStdPath(), ec); // Returns false on error.
+    return os::exists(toNativePath(path));
 }
 
 FileStat NativeFileSystem::_stat(FileSystemPathView path) const {
     assert(!path.isEmpty());
-
-    std::filesystem::path basePath = toNativePath(path).toStdPath();
-
-    std::error_code ec;
-    std::filesystem::directory_entry entry(basePath, ec);
-    bool isRegular = entry.is_regular_file(ec);
-    bool isDirectory = !isRegular && entry.is_directory(ec);
-    if (!isRegular && !isDirectory)
-        return {}; // Return an empty stat on error or if it's not a file / directory.
-
-    std::int64_t size = 0;
-    if (isRegular) {
-        size = std::filesystem::file_size(basePath, ec);
-        if (ec)
-            return {};
-    }
-
-    FileStat result;
-    result.type = isRegular ? FILE_REGULAR : FILE_DIRECTORY;
-    result.size = size;
-    return result;
+    return os::stat(toNativePath(path));
 }
 
 void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    std::filesystem::path basePath = toNativePath(path).toStdPath();
+    NativePath basePath = toNativePath(path);
 
     // Handle the known errors first.
-    std::error_code ec;
-    std::filesystem::directory_entry parent(basePath, ec);
-    bool isParentRegular = parent.is_regular_file(ec);
-    bool isParentDirectory = !isParentRegular && parent.is_directory(ec);
-    if (path.isEmpty() && !isParentDirectory)
+    FileType type = os::stat(basePath).type;
+    if (path.isEmpty() && type != FILE_DIRECTORY)
         return; // ls("") should always work.
-    if (isParentRegular)
+    if (type == FILE_REGULAR)
         FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);
-    if (!isParentDirectory)
+    if (type != FILE_DIRECTORY)
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 
-    // Then we do the regular ls and just ignore all errors. The errors we'll get here are most likely
-    // permissions-related, and we're ignoring them in stat() and exists().
-    for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(basePath, ec)) {
-        // Unfortunately, std::filesystem is retarded. We can get a directory_entry here for a dir that we don't have
-        // permissions for, and which won't be stat-able. Seriously, entry.is_directory() returns true while
-        // std::filesystem::exists(entry.path()) just throws. So we need to check for that.
-        if (!std::filesystem::exists(entry.path(), ec))
-            continue;
-
-        bool isRegular = entry.is_regular_file(ec);
-        bool isDirectory = !isRegular && entry.is_directory(ec);
-        if (!isRegular && !isDirectory)
-            continue;
-
-        std::string name = NativePath::fromStdPath(entry.path().filename()).toWtf8(); // The roundtrip is a WTF8 conversion.
-        if (name.find('\\') != std::string::npos)
+    for (DirectoryEntry &entry : os::ls(basePath)) {
+        if (entry.name.find('\\') != std::string::npos)
             continue; // Files with '\\' in filename are not observable through this interface. Don't be a retard.
-
-        DirectoryEntry &resultEntry = entries->emplace_back();
-        resultEntry.name = std::move(name);
-        resultEntry.type = isRegular ? FILE_REGULAR : FILE_DIRECTORY;
+        entries->push_back(std::move(entry));
     }
 }
 
@@ -137,7 +86,7 @@ std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(FileSystemPathVi
 
 bool NativeFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
-    return std::filesystem::remove_all(toNativePath(path).toStdPath()) > 0;
+    return os::remove(toNativePath(path));
 }
 
 std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
