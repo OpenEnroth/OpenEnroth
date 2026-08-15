@@ -458,7 +458,7 @@ void Localization::initializeAttributeNames() {
 
     // stats.txt table structure: name | description (all fields localized).
     Blob statsBlob = engine->resources()->eventsData("stats.txt");
-    std::array<std::string, 26> statsDescs; // unquote() returns a new string, a string_view would dangle.
+    std::array<std::string, 26> statsDescs;
     for (auto &&[line, desc] : split(statsBlob.str()).by("\r\n").drop(1).skip("").zip(statsDescs)) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         desc = unquote(tokens[1]);
