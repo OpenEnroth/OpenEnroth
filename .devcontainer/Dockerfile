@@ -45,6 +45,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc-15 \
   g++-15 \
   ninja-build \
+  pkg-config \
   mold \
   libgl-dev \
   libx11-dev \
