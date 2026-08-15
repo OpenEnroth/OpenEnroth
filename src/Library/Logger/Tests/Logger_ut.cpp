@@ -6,8 +6,10 @@
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/Logger/LogCategory.h"
+#include "Library/Logger/LogEnums.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Logger/LogSink.h"
+#include "Library/Serialization/Serialization.h"
 
 class TestLogSink : public LogSink {
  public:
@@ -51,4 +53,20 @@ UNIT_TEST(Logger, UserLoggerReplacesFallbackAndGivesItBack) {
 
     // Destroying a user-created logger puts the fallback back, so that logging during shutdown still works.
     EXPECT_EQ(logger, detail::fallbackLogger());
+}
+
+UNIT_TEST(FallbackLogSink, LevelNamesDontNeedTheSerializationTables) {
+    // The fallback sink used to run level names through `toString`. That reads a serialization table that's only
+    // built during dynamic initialization, so logging from a static constructor - the very thing the fallback logger
+    // exists for - threw instead of logging. Level names have to be available at compile time.
+    static_assert(std::string_view(logLevelName(LOG_WARNING)) == "warning");
+    static_assert(std::string_view(logLevelName(LOG_NONE)) == "none");
+}
+
+UNIT_TEST(FallbackLogSink, LevelNamesMatchSerialization) {
+    // `logLevelName` is a second spelling of the level names, and a log line that says `[warn]` while the config file
+    // wants `warning` would be a mess. `LogEnums.cpp` builds the table out of `logLevelName` to keep the two
+    // together, and this pins that.
+    for (LogLevel level : {LOG_NONE, LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR, LOG_CRITICAL})
+        EXPECT_EQ(std::string_view(logLevelName(level)), toString(level));
 }
