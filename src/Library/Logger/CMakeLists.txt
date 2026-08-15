@@ -6,7 +6,7 @@ set(LIBRARY_LOGGER_SOURCES
         Logger.cpp
         LogSink.cpp
         DistLogSink.cpp
-        StderrLogSink.cpp
+        FallbackLogSink.cpp
         StreamLogSink.cpp
         RotatingLogSink.cpp)
 
@@ -18,7 +18,7 @@ set(LIBRARY_LOGGER_HEADERS
         LogSink.h
         DistLogSink.h
         LogSource.h
-        StderrLogSink.h
+        FallbackLogSink.h
         StreamLogSink.h
         LogEnumFunctions.h
         RotatingLogSink.h)

@@ -5,9 +5,9 @@
 
 #include "LogSink.h"
 #include "LogSource.h"
-#include "StderrLogSink.h"
+#include "FallbackLogSink.h"
 
-static constinit StderrLogSink fallbackSink;
+static constinit FallbackLogSink fallbackSink;
 
 constinit Logger Logger::fallbackLogger = Logger(detail::detached, LOG_TRACE, &fallbackSink);
 

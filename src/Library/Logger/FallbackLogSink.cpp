@@ -1,11 +1,11 @@
-#include "StderrLogSink.h"
+#include "FallbackLogSink.h"
 
 #include <cstdio>
 #include <string>
 
 #include "Utility/String/Format.h"
 
-void StderrLogSink::write(const LogCategory &category, LogLevel level, std::string_view message) {
+void FallbackLogSink::write(const LogCategory &category, LogLevel level, std::string_view message) {
     std::string levelName;
     serialize(level, &levelName);
 
