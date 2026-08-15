@@ -1,5 +1,35 @@
-# Only high-signal checks are enabled - the codebase must stay clean under everything listed here,
-# and CI treats any finding as an error.
-Checks: '-*,bugprone-dangling-handle'
+# The codebase must stay clean under every check enabled here - CI treats any finding as an error.
+# The excluded bugprone checks are the ones with existing findings, clean them up to enable them.
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-assignment-in-if-condition,
+  -bugprone-branch-clone,
+  -bugprone-crtp-constructor-accessibility,
+  -bugprone-derived-method-shadowing-base-method,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-empty-catch,
+  -bugprone-exception-escape,
+  -bugprone-implicit-widening-of-multiplication-result,
+  -bugprone-inc-dec-in-conditions,
+  -bugprone-incorrect-roundings,
+  -bugprone-integer-division,
+  -bugprone-invalid-enum-default-initialization,
+  -bugprone-macro-parentheses,
+  -bugprone-misplaced-widening-cast,
+  -bugprone-multi-level-implicit-pointer-conversion,
+  -bugprone-narrowing-conversions,
+  -bugprone-random-generator-seed,
+  -bugprone-raw-memory-call-on-non-trivial-type,
+  -bugprone-reserved-identifier,
+  -bugprone-signed-char-misuse,
+  -bugprone-std-namespace-modification,
+  -bugprone-suspicious-stringview-data-usage,
+  -bugprone-switch-missing-default-case,
+  -bugprone-throwing-static-initialization,
+  -bugprone-unchecked-optional-access,
+  -bugprone-unchecked-string-to-number-conversion,
+  -bugprone-unused-local-non-trivial-variable,
+  -bugprone-use-after-move
 WarningsAsErrors: '*'
-HeaderFilterRegex: '/src/'
+HeaderFilterRegex: '/(src|test)/'

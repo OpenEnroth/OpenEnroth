@@ -73,3 +73,34 @@ jobs:
         working-directory: build
         run: |
           make check_style
+
+  check_tidy:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{inputs.myCommit}}'
+
+      - name: Install mold
+        uses: rui314/setup-mold@v1
+        with:
+          mold-version: 2.36.0
+          make-default: false
+
+      - name: Install ninja-build
+        uses: seanmiddleditch/gha-setup-ninja@v4
+
+      - name: Install clang-tidy
+        run: |
+          pip install --break-system-packages clang-tidy==22.1.8
+
+      - name: Configure
+        run: |
+          cmake -B build -G Ninja
+
+      - name: Run clang-tidy
+        working-directory: build
+        run: |
+          ninja check_tidy

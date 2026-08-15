@@ -7,12 +7,14 @@ project("OpenEnroth")
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For clang-tidy and IDEs.
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 include(Git)
 include(Detection)
 include(ExternalProject)
 include(CppLint)
+include(ClangTidy)
 include(LlsLint)
 include(Dependencies)
 include(CheckLinkerFlag)
@@ -187,6 +189,7 @@ if(OE_BUILD_PLATFORM STREQUAL "android")
 endif()
 
 init_check_style()
+init_check_tidy()
 init_check_lua_style()
 resolve_dependencies()
 
