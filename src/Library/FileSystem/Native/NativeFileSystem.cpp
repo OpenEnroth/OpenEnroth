@@ -14,6 +14,14 @@
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/System/Os.h"
 
+// Parent directory, keeping the trailing separator so that roots come out right - the parent of "C:/x" is "C:/".
+static NativePath parentOf(const NativePath &path) {
+    std::string_view wtf8 = path.toWtf8();
+    size_t pos = wtf8.find_last_of('/');
+    assert(pos != std::string_view::npos); // We're only called for absolute paths.
+    return NativePath::fromWtf8(wtf8.substr(0, pos + 1));
+}
+
 NativeFileSystem::NativeFileSystem(const NativePath &root) {
     _root = os::absolute(root);
 }
@@ -22,11 +30,11 @@ NativeFileSystem::~NativeFileSystem() = default;
 
 std::pair<std::unique_ptr<NativeFileSystem>, FileSystemPath> NativeFileSystem::fromNativePath(const NativePath &path) {
     // lexically_normal collapses ".." even right after the root, so the tail can never be an escaping path.
-    std::filesystem::path absolutePath = os::absolute(path).toStdPath().lexically_normal();
+    std::filesystem::path absolutePath = std::filesystem::path(os::absolute(path).native()).lexically_normal();
 
     // FileSystemPath normalizes - lexically_normal can leave a trailing '/' in there.
-    return {std::make_unique<NativeFileSystem>(NativePath::fromStdPath(absolutePath.root_path())),
-            FileSystemPath(NativePath::fromStdPath(absolutePath.relative_path()).toWtf8())};
+    return {std::make_unique<NativeFileSystem>(NativePath::fromNative(absolutePath.root_path().native())),
+            FileSystemPath(NativePath::fromNative(absolutePath.relative_path().native()).toWtf8())};
 }
 
 bool NativeFileSystem::_exists(FileSystemPathView path) const {
@@ -66,7 +74,7 @@ Blob NativeFileSystem::_read(FileSystemPathView path) const {
 void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
     assert(!path.isEmpty());
     NativePath basePath = toNativePath(path);
-    std::filesystem::create_directories(basePath.toStdPath().parent_path());
+    os::mkdirs(parentOf(basePath));
     FileOutputStream stream(basePath);
     stream.write(data.data(), data.size());
     stream.close();
@@ -80,7 +88,7 @@ std::unique_ptr<InputStream> NativeFileSystem::_openForReading(FileSystemPathVie
 std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(FileSystemPathView path) {
     assert(!path.isEmpty());
     NativePath basePath = toNativePath(path);
-    std::filesystem::create_directories(basePath.toStdPath().parent_path());
+    os::mkdirs(parentOf(basePath));
     return std::make_unique<FileOutputStream>(basePath);
 }
 

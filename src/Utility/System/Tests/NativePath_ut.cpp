@@ -6,6 +6,7 @@
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/System/NativePath.h"
+#include "Utility/System/Os.h"
 
 UNIT_TEST(NativePath, Wtf8RoundTrip) {
     // The conversion goes through wchar_t on Windows, so WTF-8 has to survive, unpaired surrogates included.
@@ -13,9 +14,10 @@ UNIT_TEST(NativePath, Wtf8RoundTrip) {
         EXPECT_EQ(NativePath::fromWtf8(path).toWtf8(), path);
 }
 
-UNIT_TEST(NativePath, StdPathRoundTrip) {
-    std::filesystem::path cwd = std::filesystem::current_path();
-    EXPECT_EQ(NativePath::fromStdPath(cwd).toStdPath(), cwd);
+UNIT_TEST(NativePath, NativeRoundTrip) {
+    // The native form is wchar_t on Windows, so WTF-8 has to survive the round trip there too.
+    for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
+        EXPECT_EQ(NativePath::fromNative(NativePath::fromWtf8(path).native()).toWtf8(), path);
 }
 
 UNIT_TEST(NativePath, Composition) {
@@ -48,14 +50,14 @@ UNIT_TEST(NativePath, InvalidUtf8FileNames) {
         EXPECT_EQ(path.toWtf8(), name);
 
         // APFS rejects such names, and so do APFS-backed mounts in a dev container, so we skip instead of asserting.
-        std::ofstream stream(path.toStdPath());
+        std::ofstream stream(path.native());
         if (!stream.is_open())
             GTEST_SKIP() << "File system rejected an invalid UTF-8 name.";
         stream << "lol";
         stream.close();
 
-        EXPECT_TRUE(std::filesystem::exists(path.toStdPath())) << name;
-        EXPECT_TRUE(std::filesystem::remove(path.toStdPath())) << name;
+        EXPECT_TRUE(os::exists(path)) << name;
+        EXPECT_TRUE(os::remove(path)) << name;
     }
 }
 #endif

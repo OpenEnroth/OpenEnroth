@@ -31,7 +31,8 @@
  * File system interface.
  *
  * All user-facing methods take paths as WTF8-encoded `std::string_view`s, and users are expected to just use
- * `std::string`s to store paths.
+ * `std::string`s to store paths. Note that this is for paths inside a `FileSystem` only - native paths are always
+ * passed around as `NativePath` objects.
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. Both `".."` and `"."`
  * special dirs are supported, but peeking outside the root directory is not - passing paths that try to do this will

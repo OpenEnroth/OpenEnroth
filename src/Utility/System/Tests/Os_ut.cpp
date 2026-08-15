@@ -6,7 +6,7 @@
 #include "Utility/System/Os.h"
 
 UNIT_TEST(Os, Cwd) {
-    EXPECT_EQ(os::cwd(), NativePath::fromStdPath(std::filesystem::current_path()));
+    EXPECT_EQ(std::filesystem::path(os::cwd().native()), std::filesystem::current_path());
 }
 
 UNIT_TEST(Os, Absolute) {

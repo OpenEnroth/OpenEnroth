@@ -25,16 +25,16 @@ int platformMain(int argc, char **argv) {
             return 1;
 
         NativeFileSystem testFs(opts.testPath);
-        std::vector<NativePath> tracePaths;
+        std::vector<std::string> traceNames;
         for (const DirectoryEntry &entry : testFs.ls(""))
             if (entry.name.ends_with(".json"))
-                tracePaths.push_back(testFs.toNativePath(entry.name));
-        std::ranges::sort(tracePaths);
+                traceNames.push_back(entry.name);
+        std::ranges::sort(traceNames);
 
-        for (const NativePath &tracePath : tracePaths)
-            testing::RegisterTest("Retrace", tracePath.toStdPath().stem().string().c_str(),
+        for (const std::string &traceName : traceNames)
+            testing::RegisterTest("Retrace", traceName.substr(0, traceName.size() - 5).c_str(), // Minus ".json".
                                   nullptr, nullptr, __FILE__, __LINE__,
-                                  [tracePath] { return new RetraceTest(tracePath); });
+                                  [tracePath = testFs.toNativePath(traceName)] { return new RetraceTest(tracePath); });
 
         testing::InitGoogleTest(&argc, argv);
         if (opts.listRequested)

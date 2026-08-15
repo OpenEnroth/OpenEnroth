@@ -182,11 +182,11 @@ UNIT_TEST(NativeFileSystem, FromNativePathAbsolute) {
     ScopedTestFolder tmp("tmp_native_dir");
     ScopedTestFile tmp2("tmp_native_dir/1.txt", "kek");
 
-    std::filesystem::path absolutePath = std::filesystem::absolute("tmp_native_dir/1.txt");
-    auto [fs, path] = NativeFileSystem::fromNativePath(NativePath::fromStdPath(absolutePath));
+    NativePath absolutePath = os::absolute(NativePath::fromWtf8("tmp_native_dir/1.txt"));
+    auto [fs, path] = NativeFileSystem::fromNativePath(absolutePath);
 
     EXPECT_EQ(fs->read(path).str(), "kek");
-    EXPECT_EQ(std::filesystem::path(fs->displayPath(path)), absolutePath);
+    EXPECT_EQ(fs->displayPath(path), absolutePath.toWtf8());
 }
 
 UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {
