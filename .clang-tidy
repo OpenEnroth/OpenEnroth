@@ -1,0 +1,5 @@
+# Only high-signal checks are enabled - the codebase must stay clean under everything listed here,
+# and CI treats any finding as an error.
+Checks: '-*,bugprone-dangling-handle'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '/src/'

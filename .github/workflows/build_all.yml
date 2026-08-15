@@ -261,6 +261,13 @@ jobs:
           CMAKE_BUILD_PARALLEL_LEVEL: 4
           GITHUBARCH: '${{env.MATRIX_ARCHITECTURE}}'
 
+      - name: '[linux] Run clang-tidy'
+        if: env.MATRIX_TARGET == 'linux_x86_64' && env.MATRIX_CONFIGURATION == 'Debug'
+        run: |
+          pip install --break-system-packages clang-tidy==22.1.8
+          cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          run-clang-tidy.py -p build -j "$(nproc)" -quiet "$(pwd)/src/.*"
+
       - name: '[darwin/windows/linux] Run unit tests'
         if: env.MATRIX_PLATFORM != 'android'
         working-directory: build
