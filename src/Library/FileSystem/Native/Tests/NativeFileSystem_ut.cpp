@@ -16,15 +16,15 @@ UNIT_TEST(NativeFileSystem, LsRoot) {
     // Make sure passing empty paths works as intended.
     ScopedTestFile tmp("1.txt", "");
 
-    NativeFileSystem fs1(NativePath("")); // Current dir.
+    NativeFileSystem fs1(""); // Current dir.
     std::vector<DirectoryEntry> entries = fs1.ls("");
     EXPECT_TRUE(std::ranges::find(entries, "1.txt", &DirectoryEntry::name) != std::ranges::end(entries))
         << "size = " << entries.size() << ", [0] = " << (entries.empty() ? "<nothing>" : entries[0].name);
 
-    NativeFileSystem fs2(NativePath("this_dir_doesnt_exist")); // Non-existent dir.
+    NativeFileSystem fs2("this_dir_doesnt_exist"); // Non-existent dir.
     EXPECT_TRUE(fs2.ls("").empty());
 
-    NativeFileSystem fs3(NativePath("1.txt")); // Not-a-dir.
+    NativeFileSystem fs3("1.txt"); // Not-a-dir.
     EXPECT_TRUE(fs3.ls("").empty());
 }
 
@@ -32,39 +32,39 @@ UNIT_TEST(NativeFileSystem, LsFile) {
     // Make sure ls() throws when called on a file.
     ScopedTestFile tmp("1.txt", "");
 
-    NativeFileSystem fs(NativePath("")); // Current dir.
+    NativeFileSystem fs(""); // Current dir.
     EXPECT_ANY_THROW((void) fs.ls("1.txt"));
 }
 
 UNIT_TEST(NativeFileSystem, LsNonExistent) {
     // Make sure ls() throws when called on a folder that doesn't exist.
-    NativeFileSystem fs(NativePath("")); // Current dir.
+    NativeFileSystem fs(""); // Current dir.
     EXPECT_ANY_THROW((void) fs.ls("this_dir_doesnt_exist"));
 }
 
 UNIT_TEST(NativeFileSystem, ExistsRoot) {
     // Make sure exists("") works as intented.
-    NativeFileSystem fs1(NativePath("")); // Current dir.
+    NativeFileSystem fs1(""); // Current dir.
     EXPECT_TRUE(fs1.exists(""));
 
-    NativeFileSystem fs2(NativePath("this_dir_doesnt_exist"));
+    NativeFileSystem fs2("this_dir_doesnt_exist");
     EXPECT_TRUE(fs2.exists(""));
 
     ScopedTestFile tmp("1.txt", "");
-    NativeFileSystem fs3(NativePath("1.txt"));
+    NativeFileSystem fs3("1.txt");
     EXPECT_TRUE(fs3.exists(""));
 }
 
 UNIT_TEST(NativeFileSystem, StatRoot) {
     // Make sure stat("") works as intented.
-    NativeFileSystem fs1(NativePath("")); // Current dir.
+    NativeFileSystem fs1(""); // Current dir.
     EXPECT_EQ(fs1.stat("").type, FILE_DIRECTORY);
 
-    NativeFileSystem fs2(NativePath("this_dir_doesnt_exist")); // Non-existent dir.
+    NativeFileSystem fs2("this_dir_doesnt_exist"); // Non-existent dir.
     EXPECT_EQ(fs2.stat("").type, FILE_DIRECTORY);
 
     ScopedTestFile tmp("1.txt", "");
-    NativeFileSystem fs3(NativePath("1.txt")); // Not-a-dir.
+    NativeFileSystem fs3("1.txt"); // Not-a-dir.
     EXPECT_EQ(fs3.stat("").type, FILE_DIRECTORY);
 }
 
@@ -72,20 +72,20 @@ UNIT_TEST(NativeFileSystem, ReadRootAsFile) {
     // Root is always assumed to be a dir, we can't read it as a file even if it IS a file.
     ScopedTestFile tmp("1.txt", "");
 
-    NativeFileSystem fs(NativePath("1.txt"));
+    NativeFileSystem fs("1.txt");
     EXPECT_ANY_THROW((void) fs.read(""));
 }
 
 UNIT_TEST(NativeFileSystem, WriteRootAsFile) {
     // Root is always assumed to be a dir, we can't write it as a file if it doesn't exist.
-    NativeFileSystem fs(NativePath("1.txt"));
+    NativeFileSystem fs("1.txt");
     EXPECT_ANY_THROW(fs.write("", Blob()));
 }
 
 UNIT_TEST(NativeFileSystem, DisplayPathSymmetry) {
     ScopedTestFile tmp("1.txt", "");
 
-    NativeFileSystem fs(NativePath(""));
+    NativeFileSystem fs("");
     Blob blob = fs.read("1.txt");
     std::unique_ptr<InputStream> stream = fs.openForReading("1.txt");
 
@@ -99,7 +99,7 @@ UNIT_TEST(NativeFileSystem, EscapingPaths) {
     ScopedTestFile tmp2("1.txt", "");
     ScopedTestFile tmp3("a/1.txt", "");
 
-    NativeFileSystem fs(NativePath("a"));
+    NativeFileSystem fs("a");
 
     EXPECT_FALSE(fs.exists(".."));
     EXPECT_FALSE(fs.stat(".."));
@@ -113,7 +113,7 @@ UNIT_TEST(NativeFileSystem, EscapingPaths) {
 
 UNIT_TEST(NativeFileSystem, DisplayPath) {
     ScopedTestFolder tmp("tmp_native_dir");
-    NativeFileSystem fs(NativePath("tmp_native_dir"));
+    NativeFileSystem fs("tmp_native_dir");
 
     // displayPath must work for a path that doesn't exist - FileSystemException calls it on the very path it is
     // about to complain about.
@@ -124,69 +124,19 @@ UNIT_TEST(NativeFileSystem, DisplayPath) {
 
     // Root maps to the root directory itself, with no trailing separator.
     EXPECT_EQ(std::filesystem::path(fs.displayPath("")), std::filesystem::absolute("tmp_native_dir"));
-
-    // And what comes out of displayPath can be fed back into fromNativePath.
-    auto [rootFs, rootPath] = NativeFileSystem::fromNativePath(NativePath::fromWtf8(path));
-    EXPECT_EQ(rootFs->displayPath(rootPath), path);
 }
 
 UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
-    NativeFileSystem fs(NativePath(""));
+    NativeFileSystem fs("");
 
     EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
 }
 
 UNIT_TEST(NativeFileSystem, ToNativePath) {
-    NativeFileSystem fs(NativePath("a"));
+    NativeFileSystem fs("a");
 
-    EXPECT_EQ(fs.toNativePath("b/c.txt"), os::absolute(NativePath("a")) / NativePath("b/c.txt"));
-    EXPECT_EQ(fs.toNativePath(""), os::absolute(NativePath("a"))); // Root maps to the root dir itself.
-}
-
-UNIT_TEST(NativeFileSystem, FromNativePathIsCwdRelative) {
-    // The returned path keeps every component of the cwd, that's the point of rooting the fs at the fs root.
-    ScopedTestFile tmp("1.txt", "lol");
-
-    auto [fs, path] = NativeFileSystem::fromNativePath(NativePath("1.txt"));
-    EXPECT_EQ(fs->read(path).str(), "lol");
-
-    auto [cwdFs, cwdPath] = NativeFileSystem::fromNativePath(NativePath(""));
-    EXPECT_EQ(cwdPath / "1.txt", path); // Empty path means the cwd.
-    EXPECT_EQ(std::filesystem::current_path(), std::filesystem::path(cwdFs->displayPath(cwdPath)));
-}
-
-UNIT_TEST(NativeFileSystem, FromNativePathIsRootedAtRoot) {
-    // Whatever we pass in, the fs we get back is rooted at the root of the native fs.
-    for (std::string_view nativePath : {"", "1.txt", "a/b/c", ".."}) {
-        auto [fs, path] = NativeFileSystem::fromNativePath(NativePath::fromWtf8(nativePath));
-
-        std::filesystem::path displayPath(fs->displayPath(path));
-        EXPECT_TRUE(displayPath.is_absolute()) << nativePath;
-        EXPECT_EQ(std::filesystem::path(fs->displayPath("")), displayPath.root_path()) << nativePath;
-    }
-}
-
-UNIT_TEST(NativeFileSystem, FromNativePathNormalizes) {
-    // ".." is collapsed lexically, so the result can never escape - not even for a path walking out of the root.
-    auto [fs, path] = NativeFileSystem::fromNativePath(NativePath("a/../b/./c"));
-    EXPECT_TRUE(path.string().ends_with("b/c"));
-    EXPECT_FALSE(path.isEscaping());
-
-    auto [rootFs, rootPath] = NativeFileSystem::fromNativePath(NativePath("/../../.."));
-    EXPECT_TRUE(rootPath.isEmpty());
-    EXPECT_FALSE(rootPath.isEscaping());
-}
-
-UNIT_TEST(NativeFileSystem, FromNativePathAbsolute) {
-    // An absolute path comes back unchanged, minus the root.
-    ScopedTestFolder tmp("tmp_native_dir");
-    ScopedTestFile tmp2("tmp_native_dir/1.txt", "kek");
-
-    NativePath absolutePath = os::absolute(NativePath("tmp_native_dir/1.txt"));
-    auto [fs, path] = NativeFileSystem::fromNativePath(absolutePath);
-
-    EXPECT_EQ(fs->read(path).str(), "kek");
-    EXPECT_EQ(fs->displayPath(path), absolutePath.toWtf8());
+    EXPECT_EQ(fs.toNativePath("b/c.txt"), os::absolute("a") / NativePath("b/c.txt"));
+    EXPECT_EQ(fs.toNativePath(""), os::absolute("a")); // Root maps to the root dir itself.
 }
 
 UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {
@@ -195,7 +145,7 @@ UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {
     ScopedTestFolder tmp("tmp_native_dir");
     ScopedTestFile tmp2(NativePath::fromWtf8("tmp_native_dir/\xD0\xBB\xD0\xBE\xD0\xBB.txt"), "lol"); // "лол.txt".
 
-    NativeFileSystem fs(NativePath("tmp_native_dir"));
+    NativeFileSystem fs("tmp_native_dir");
     std::vector<DirectoryEntry> entries = fs.ls("");
     ASSERT_EQ(entries.size(), 1);
 
@@ -233,7 +183,7 @@ UNIT_TEST(NativeFileSystem, WindowsOddFileNames) {
         { std::ofstream stream(nativePath); stream << "lol"; }
         ASSERT_TRUE(std::filesystem::exists(nativePath)) << txt::wideToWtf8(nativeName);
 
-        NativeFileSystem fs(NativePath("tmp_native_dir"));
+        NativeFileSystem fs("tmp_native_dir");
 
         std::vector<DirectoryEntry> entries = fs.ls("");
         ASSERT_EQ(entries.size(), 1u) << txt::wideToWtf8(nativeName);
@@ -263,7 +213,7 @@ UNIT_TEST(NativeFileSystem, WindowsSurrogateBytes) {
     { std::ofstream stream(nativePath); stream << "lol"; }
     ASSERT_TRUE(std::filesystem::exists(nativePath));
 
-    NativeFileSystem fs(NativePath("tmp_native_dir"));
+    NativeFileSystem fs("tmp_native_dir");
     std::vector<DirectoryEntry> entries = fs.ls("");
     ASSERT_EQ(entries.size(), 1u);
     EXPECT_EQ(entries[0].name, "lol\xed\xb0\x80kek.txt");

@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <string>
 #include <system_error>
 #include <utility>
 #include <vector>
@@ -49,7 +50,7 @@ std::vector<DirectoryEntry> os::ls(const NativePath &path) {
     // them in `stat` and `exists` too.
     std::error_code ec;
     for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(toStdPath(path), ec)) {
-        // Unfortunately, std::filesystem is retarded. We can get a directory_entry here for a dir that we don't have
+        // Unfortunately, std::filesystem is broken here. We can get a directory_entry here for a dir that we don't have
         // permissions for, and which won't be stat-able. Seriously, entry.is_directory() returns true while
         // std::filesystem::exists(entry.path()) just throws. So we need to check for that.
         if (!std::filesystem::exists(entry.path(), ec))

@@ -81,7 +81,8 @@ class NativePath {
     /**
      * @param extension                 New extension, WTF-8, with or without the leading dot. Pass an empty string
      *                                  to drop the extension.
-     * @return                          Copy of this path with the extension replaced.
+     * @return                          Copy of this path with the extension replaced. The extension is everything
+     *                                  after the last dot, so `a.tar.gz` becomes `a.tar.mm7`, not `a.mm7`.
      */
     [[nodiscard]] NativePath withExtension(std::string_view extension) const;
 

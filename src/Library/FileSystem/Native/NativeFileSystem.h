@@ -4,10 +4,10 @@
 #include <memory>
 #include <string>
 #include <string_view>
-#include <utility>
 
 #include "Library/FileSystem/Interface/FileSystem.h"
 
+#include "Utility/String/AsciiLiteral.h"
 #include "Utility/System/NativePath.h"
 
 /**
@@ -17,9 +17,8 @@
  * underlying file system.
  *
  * Files outside of the root directory are not observable through this `FileSystem` - the methods will behave as if
- * these files don't exist. That buys nothing for a file system rooted at the root of the native one, which is what
- * `fromNativePath` returns - everything is inside it, so `remove("home")` is `rm -rf /home`, and it is only the base
- * class that stops `remove("")`.
+ * these files don't exist. That buys nothing for a file system rooted at the root of the native one - everything is
+ * inside it, so `remove("home")` is `rm -rf /home`, and it is only the base class that stops `remove("")`.
  *
  * When it comes to permissions, this filesystem tries its best to provide a simple guarantee that `ls` for an existing
  * folder never throws, and is in sync with what `stat` / `exists` return. This means that some files or folders that
@@ -36,25 +35,11 @@ class NativeFileSystem : public FileSystem {
      *                                  current working directory itself.
      */
     explicit NativeFileSystem(const NativePath &root);
+    explicit NativeFileSystem(AsciiLiteral root) : NativeFileSystem(NativePath(root)) {}
     virtual ~NativeFileSystem();
 
     /**
-     * Splits a native path into a file system rooted at the root of the native file system, and a path inside it.
-     *
-     * Rooting at the very root keeps all of the path components, so that the result can be walked down looking for an
-     * archive. On Windows the root is a drive or a UNC share. Not sandboxed, see above.
-     *
-     * @param path                      Native path, absolute or relative. Empty means the current working directory.
-     * @return                          File system rooted at the native root, and `path` relative to it. Never
-     *                                  escaping.
-     * @throws Exception                If `path` couldn't be resolved.
-     */
-    [[nodiscard]] static std::pair<std::unique_ptr<NativeFileSystem>, FileSystemPath> fromNativePath(
-        const NativePath &path);
-
-    /**
-     * Maps a path in this file system back into a native path, the inverse of `fromNativePath`. The passed path is
-     * not required to exist.
+     * Maps a path in this file system back into a native path. The passed path is not required to exist.
      *
      * @param path                      Path in this file system.
      * @return                          Native path for `path`. Always absolute.

@@ -34,6 +34,7 @@ UNIT_TEST(NativePath, WithExtension) {
     EXPECT_EQ(NativePath("a/b.json").withExtension(".mm7").toWtf8(), "a/b.mm7");
     EXPECT_EQ(NativePath("a/b").withExtension(".mm7").toWtf8(), "a/b.mm7");
     EXPECT_EQ(NativePath("a/b.json").withExtension("").toWtf8(), "a/b");
+    EXPECT_EQ(NativePath("a.tar.gz").withExtension(".mm7").toWtf8(), "a.tar.mm7"); // Only the last extension is replaced.
 }
 
 UNIT_TEST(NativePath, DisplayString) {

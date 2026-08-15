@@ -1,7 +1,6 @@
 #include "NativeFileSystem.h"
 
 #include <cassert>
-#include <filesystem>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -28,15 +27,6 @@ NativeFileSystem::NativeFileSystem(const NativePath &root) {
 
 NativeFileSystem::~NativeFileSystem() = default;
 
-std::pair<std::unique_ptr<NativeFileSystem>, FileSystemPath> NativeFileSystem::fromNativePath(const NativePath &path) {
-    // lexically_normal collapses ".." even right after the root, so the tail can never be an escaping path.
-    std::filesystem::path absolutePath = std::filesystem::path(os::absolute(path).native()).lexically_normal();
-
-    // FileSystemPath normalizes - lexically_normal can leave a trailing '/' in there.
-    return {std::make_unique<NativeFileSystem>(NativePath::fromNative(absolutePath.root_path().native())),
-            FileSystemPath(NativePath::fromNative(absolutePath.relative_path().native()).toWtf8())};
-}
-
 bool NativeFileSystem::_exists(FileSystemPathView path) const {
     assert(!path.isEmpty());
     return os::exists(toNativePath(path));
@@ -61,7 +51,7 @@ void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
 
     for (DirectoryEntry &entry : os::ls(basePath)) {
         if (entry.name.find('\\') != std::string::npos)
-            continue; // Files with '\\' in filename are not observable through this interface. Don't be a retard.
+            continue; // Files with '\\' in filename are not observable through this interface.
         entries->push_back(std::move(entry));
     }
 }
