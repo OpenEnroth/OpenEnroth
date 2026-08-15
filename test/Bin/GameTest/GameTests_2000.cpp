@@ -1470,3 +1470,23 @@ GAME_TEST(Issues, Issue2551c) {
     game.pressAndReleaseKey(PlatformKey::KEY_F9);
     checkQuickLoaded();
 }
+
+GAME_TEST(Issues, Issue2636) {
+    // Attribute descriptions in Localization were dangling string_views into unquote() temporaries - crashed
+    // at startup on FreeBSD and drew garbage in the character screen stats tooltips elsewhere.
+    auto textTape = tapes.allGUIWindowsText();
+    game.startNewGame();
+    test.startTaping();
+    game.tick(2);
+    game.goToInventory(1);
+    game.pressAndReleaseKey(PlatformKey::KEY_C); // Switch to the stats tab.
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
+    game.pressButton(BUTTON_RIGHT, 100, 60); // Right-click hold over the Might row shows its tooltip.
+    game.tick(2);
+    game.releaseButton(BUTTON_RIGHT, 100, 60);
+    game.tick(1);
+    EXPECT_CONTAINS(textTape.flatten(), "Might is the statistic that represents a character's overall strength, "
+                                        "and the ability to put that strength where it counts.  Characters with a "
+                                        "high might statistic do more damage in combat.");
+}
