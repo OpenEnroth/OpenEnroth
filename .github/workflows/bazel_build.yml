@@ -143,7 +143,7 @@ jobs:
               sudo apt-get install -y libx11-dev:i386 libxext-dev:i386 libxrandr-dev:i386 \
                 libxcursor-dev:i386 libxi-dev:i386 libxfixes-dev:i386 libxss-dev:i386 libxtst-dev:i386 \
                 libwayland-dev:i386 libxkbcommon-dev:i386 \
-                libasound2-dev:i386 libpipewire-0.3-dev:i386 \
+                libasound2-dev:i386 \
                 libdrm-dev:i386 libgbm-dev:i386 libgles2-mesa-dev:i386 libegl1-mesa-dev:i386 \
                 libdbus-1-dev:i386 libudev-dev:i386
               # The runner's default gcc-13 can't do C++23 deducing this.

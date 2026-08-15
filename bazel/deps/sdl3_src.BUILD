@@ -115,7 +115,6 @@ cmake(
         # 32-bit - noble's partial i386 archive can't install libpulse-dev:i386.
         ":_linux_x86": _CACHE_ENTRIES | {
             "SDL_ALSA": "ON",
-            "SDL_PIPEWIRE": "ON",
         },
         ":_linux": _CACHE_ENTRIES | {
             "SDL_ALSA": "ON",
