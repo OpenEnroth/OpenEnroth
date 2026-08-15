@@ -8,7 +8,7 @@
 #include "Utility/Streams/FileInputStream.h"
 
 UNIT_TEST(FileInputStream, Skip) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_test.txt");
+    NativePath tmpfile = NativePath("tmp_test.txt");
     std::string data(3000, 'a');
 
     ScopedTestFileSlot tmp(tmpfile);
@@ -39,7 +39,7 @@ UNIT_TEST(FileInputStream, ExceptionMessages) {
 }
 
 UNIT_TEST(FileInputStream, ReadUntil) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_readuntil_test.txt");
+    NativePath tmpfile = NativePath("tmp_readuntil_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -55,7 +55,7 @@ UNIT_TEST(FileInputStream, ReadUntil) {
 }
 
 UNIT_TEST(FileInputStream, ReadUntilLargeData) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_readuntil_large_test.txt");
+    NativePath tmpfile = NativePath("tmp_readuntil_large_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     std::string first(10000, 'a');
@@ -75,7 +75,7 @@ UNIT_TEST(FileInputStream, ReadUntilLargeData) {
 }
 
 UNIT_TEST(FileInputStream, ReadSmallChunks) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_readchunks_test.txt");
+    NativePath tmpfile = NativePath("tmp_readchunks_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     std::string data(20000, 'x');
@@ -99,7 +99,7 @@ UNIT_TEST(FileInputStream, ReadSmallChunks) {
 }
 
 UNIT_TEST(FileInputStream, ReadAllLargeFile) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_readall_large_test.txt");
+    NativePath tmpfile = NativePath("tmp_readall_large_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     std::string data(50000, 'z');
@@ -113,7 +113,7 @@ UNIT_TEST(FileInputStream, ReadAllLargeFile) {
 }
 
 UNIT_TEST(FileInputStream, SkipAndRead) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_skipread_test.txt");
+    NativePath tmpfile = NativePath("tmp_skipread_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     std::string data(20000, 'a');
@@ -138,7 +138,7 @@ UNIT_TEST(FileInputStream, SkipAndRead) {
 }
 
 UNIT_TEST(FileInputStream, LargeSkip) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_largeskip_test.txt");
+    NativePath tmpfile = NativePath("tmp_largeskip_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     std::string data(2000, 'a');
@@ -166,7 +166,7 @@ UNIT_TEST(FileInputStream, LargeSkip) {
 }
 
 UNIT_TEST(FileInputStream, LargeSkipPastEnd) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_largeskip_end_test.txt");
+    NativePath tmpfile = NativePath("tmp_largeskip_end_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -184,7 +184,7 @@ UNIT_TEST(FileInputStream, LargeSkipPastEnd) {
 }
 
 UNIT_TEST(FileInputStream, CloseIdempotent) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_closeidem_test.txt");
+    NativePath tmpfile = NativePath("tmp_closeidem_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -199,8 +199,8 @@ UNIT_TEST(FileInputStream, CloseIdempotent) {
 }
 
 UNIT_TEST(FileInputStream, ReopenAfterClose) {
-    NativePath tmpfile1 = NativePath::fromWtf8("tmp_reopen1_test.txt");
-    NativePath tmpfile2 = NativePath::fromWtf8("tmp_reopen2_test.txt");
+    NativePath tmpfile1 = NativePath("tmp_reopen1_test.txt");
+    NativePath tmpfile2 = NativePath("tmp_reopen2_test.txt");
     ScopedTestFileSlot tmp1(tmpfile1);
     ScopedTestFileSlot tmp2(tmpfile2);
 
@@ -226,7 +226,7 @@ UNIT_TEST(FileInputStream, ReopenAfterClose) {
 }
 
 UNIT_TEST(FileInputStream, ReadUntilMultiRefill) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_readuntil_multirefill_test.txt");
+    NativePath tmpfile = NativePath("tmp_readuntil_multirefill_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     // 500 bytes of 'a', then a '\0' delimiter, then 200 bytes of 'b'.
@@ -248,7 +248,7 @@ UNIT_TEST(FileInputStream, ReadUntilMultiRefill) {
 }
 
 UNIT_TEST(FileInputStream, ReadUntilNotFound) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_readuntil_notfound_test.txt");
+    NativePath tmpfile = NativePath("tmp_readuntil_notfound_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     // No delimiter in data — readUntil should return everything.
@@ -265,7 +265,7 @@ UNIT_TEST(FileInputStream, ReadUntilNotFound) {
 }
 
 UNIT_TEST(FileInputStream, ReadAllEmpty) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_readall_empty_test.txt");
+    NativePath tmpfile = NativePath("tmp_readall_empty_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -277,7 +277,7 @@ UNIT_TEST(FileInputStream, ReadAllEmpty) {
 }
 
 UNIT_TEST(FileInputStream, SizeMatchesFileSize) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_size_test.txt");
+    NativePath tmpfile = NativePath("tmp_size_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -290,7 +290,7 @@ UNIT_TEST(FileInputStream, SizeMatchesFileSize) {
 }
 
 UNIT_TEST(FileInputStream, PositionStartsAtZero) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_pos_start_test.txt");
+    NativePath tmpfile = NativePath("tmp_pos_start_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -303,7 +303,7 @@ UNIT_TEST(FileInputStream, PositionStartsAtZero) {
 }
 
 UNIT_TEST(FileInputStream, PositionAdvancesOnRead) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_pos_read_test.txt");
+    NativePath tmpfile = NativePath("tmp_pos_read_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -318,7 +318,7 @@ UNIT_TEST(FileInputStream, PositionAdvancesOnRead) {
 }
 
 UNIT_TEST(FileInputStream, PositionAdvancesOnSkip) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_pos_skip_test.txt");
+    NativePath tmpfile = NativePath("tmp_pos_skip_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     std::string data(2000, 'x');
@@ -341,7 +341,7 @@ UNIT_TEST(FileInputStream, PositionAdvancesOnSkip) {
 }
 
 UNIT_TEST(FileInputStream, PositionAfterReadAll) {
-    NativePath tmpfile = NativePath::fromWtf8("tmp_pos_readall_test.txt");
+    NativePath tmpfile = NativePath("tmp_pos_readall_test.txt");
     ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
@@ -356,8 +356,8 @@ UNIT_TEST(FileInputStream, PositionAfterReadAll) {
 }
 
 UNIT_TEST(FileInputStream, PositionResetsOnReopen) {
-    NativePath tmpfile1 = NativePath::fromWtf8("tmp_pos_reopen1_test.txt");
-    NativePath tmpfile2 = NativePath::fromWtf8("tmp_pos_reopen2_test.txt");
+    NativePath tmpfile1 = NativePath("tmp_pos_reopen1_test.txt");
+    NativePath tmpfile2 = NativePath("tmp_pos_reopen2_test.txt");
     ScopedTestFileSlot tmp1(tmpfile1);
     ScopedTestFileSlot tmp2(tmpfile2);
 

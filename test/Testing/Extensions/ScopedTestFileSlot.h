@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string_view>
-
+#include "Utility/String/AsciiLiteral.h"
 #include "Utility/System/NativePath.h"
 
 /**
@@ -12,7 +11,7 @@
  */
 class ScopedTestFileSlot {
  public:
-    explicit ScopedTestFileSlot(std::string_view path) : ScopedTestFileSlot(NativePath::fromWtf8(path)) {}
+    explicit ScopedTestFileSlot(AsciiLiteral path) : ScopedTestFileSlot(NativePath(path)) {}
     explicit ScopedTestFileSlot(const NativePath &path);
     ~ScopedTestFileSlot();
 

@@ -6,14 +6,17 @@
 
 #include "Utility/String/Encoding.h"
 
+NativePath::NativePath(AsciiLiteral path) {
+    *this = fromWtf8(path);
+}
+
 NativePath NativePath::fromWtf8(std::string_view path) {
+    NativePath result;
+    result._path = path;
 #ifdef _WINDOWS
-    std::string result(path);
-    std::replace(result.begin(), result.end(), '\\', '/'); // '\\' is not a valid file name char on Windows, so it's a separator.
-    return NativePath(std::move(result));
-#else
-    return NativePath(std::string(path));
+    std::replace(result._path.begin(), result._path.end(), '\\', '/'); // '\\' is not a valid file name char on Windows, so it's a separator.
 #endif
+    return result;
 }
 
 #ifdef _WINDOWS
@@ -31,20 +34,20 @@ std::string NativePath::displayString() const {
 }
 
 NativePath NativePath::withExtension(std::string_view extension) const {
-    std::string result = _path;
+    NativePath result = *this;
 
-    std::string_view name = std::string_view(result).substr(result.find_last_of('/') + 1); // npos + 1 == 0.
+    std::string_view name = std::string_view(result._path).substr(result._path.find_last_of('/') + 1); // npos + 1 == 0.
     if (name != "." && name != "..") {
         size_t dotPos = name.find_last_of('.');
         if (dotPos != std::string_view::npos && dotPos > 0)
-            result.resize(result.size() - (name.size() - dotPos));
+            result._path.resize(result._path.size() - (name.size() - dotPos));
     }
 
     if (!extension.empty()) {
         if (!extension.starts_with('.'))
-            result += '.';
-        result += extension;
+            result._path += '.';
+        result._path += extension;
     }
 
-    return NativePath(std::move(result));
+    return result;
 }

@@ -28,7 +28,7 @@ UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
 UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
     ScopedTestFolder tmp("tmp_dir");
 
-    NativeFileSystem fs0(NativePath::fromWtf8("tmp_dir"));
+    NativeFileSystem fs0(NativePath("tmp_dir"));
     fs0.write("a/b/c.bin", Blob());
     fs0.write("a/c/b.bin", Blob());
 
@@ -50,7 +50,7 @@ UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
 UNIT_TEST(LowercaseFileSystem, NonExistentNativeFolder) {
     // This is the stack that game data path validation runs on, and it must report "file not found" for a data folder
     // that doesn't exist, instead of blowing up somewhere inside the lazy ls of the folder's root.
-    NativeFileSystem fs0(NativePath::fromWtf8("this_dir_doesnt_exist"));
+    NativeFileSystem fs0(NativePath("this_dir_doesnt_exist"));
     LowercaseFileSystem fs(&fs0);
 
     EXPECT_TRUE(fs.ls("").empty());

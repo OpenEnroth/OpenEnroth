@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string_view>
-
+#include "Utility/String/AsciiLiteral.h"
 #include "Utility/System/NativePath.h"
 
 /**
@@ -10,7 +9,7 @@
  */
 class ScopedTestFolder {
  public:
-    explicit ScopedTestFolder(std::string_view path) : ScopedTestFolder(NativePath::fromWtf8(path)) {}
+    explicit ScopedTestFolder(AsciiLiteral path) : ScopedTestFolder(NativePath(path)) {}
     explicit ScopedTestFolder(const NativePath &path);
     ~ScopedTestFolder();
 

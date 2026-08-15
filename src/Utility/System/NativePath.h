@@ -4,6 +4,7 @@
 #include <string_view>
 #include <utility>
 
+#include "Utility/String/AsciiLiteral.h"
 #include "Utility/String/Format.h"
 
 /**
@@ -23,6 +24,16 @@ class NativePath {
  public:
     NativePath() = default;
 
+    /**
+     * Implicit constructor from an ASCII string literal.
+     *
+     * ASCII-only because a literal's bytes have to mean the same thing in three places at once - in the compiler's
+     * execution charset (MSVC re-encodes literals per the locale codepage unless `/utf-8` is passed), when
+     * interpreted as WTF8 on Windows, and as raw bytes on POSIX. ASCII is the one subset that all of them agree on.
+     * Everything else goes through `fromWtf8`, where the encoding claim is visible at the call site.
+     */
+    NativePath(AsciiLiteral path); // NOLINT: intentionally implicit.
+
     [[nodiscard]] static NativePath fromWtf8(std::string_view path);
 
     /**
@@ -34,7 +45,9 @@ class NativePath {
     [[nodiscard]] static NativePath fromNative(std::wstring_view path);
 #else
     [[nodiscard]] static NativePath fromNative(std::string_view path) {
-        return NativePath(std::string(path));
+        NativePath result;
+        result._path = path;
+        return result;
     }
 #endif
 
@@ -82,7 +95,7 @@ class NativePath {
         if (tail._path.empty())
             return *this;
 
-        NativePath result(_path);
+        NativePath result = *this;
         if (!result._path.ends_with('/'))
             result._path += '/';
         result._path += tail._path;
@@ -99,9 +112,6 @@ class NativePath {
         output = NativePath::fromWtf8(input);
         return true;
     }
-
- private:
-    explicit NativePath(std::string path) : _path(std::move(path)) {}
 
  private:
     std::string _path; // WTF8, with forward slashes for separators.
