@@ -127,6 +127,9 @@ build --enable_platform_specific_config
 build:linux --copt=-fPIC
 # Use ld.bfd instead of ld.gold — gold linker can't find libstdc++.so from the versioned GCC dir
 build:linux --features=-use_gold_linker
+# System pkg-config instead of rules_foreign_cc's from-source bootstrap, whose
+# vendored glib doesn't compile under gcc 15 (C23 makes bool a keyword).
+build:linux --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_pkgconfig_toolchain
 
 # Linux x86 (32-bit)
 build:linux_x86 --config=linux
@@ -158,8 +161,10 @@ build:linux_arm64 --config=linux
 # macOS
 build:macos --apple_platform_type=macos
 # Use system make instead of rules_foreign_cc's bundled make binary for the
-# configure_make()/cmake() deps (ffmpeg, SDL3, OpenAL).
+# configure_make()/cmake() deps (ffmpeg, SDL3, OpenAL). Same for pkg-config,
+# see the linux section.
 build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
+build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_pkgconfig_toolchain
 
 # macOS arm64
 build:darwin_arm64 --config=macos
@@ -208,6 +213,7 @@ build:windows --extra_toolchains=@msys2//:pkgconfig_toolchain
 # Use system make instead of rules_foreign_cc's bundled make binary for the
 # configure_make()/cmake() deps.
 build:android_base --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
+build:android_base --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_pkgconfig_toolchain
 # SDL3's android build compiles NDK-bundled sources (cpufeatures); the cmake()
 # rule receives the path via -DANDROID_NDK=$ANDROID_NDK_HOME.
 build:android_base --action_env=ANDROID_NDK_HOME
