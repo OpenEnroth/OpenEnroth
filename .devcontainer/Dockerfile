@@ -47,6 +47,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   ninja-build \
   mold \
   libgl-dev \
+  libx11-dev \
+  libxext-dev \
+  libxrandr-dev \
+  libxcursor-dev \
+  libxi-dev \
+  libxfixes-dev \
+  libwayland-dev \
+  libxkbcommon-dev \
   xvfb \
   mesa-utils \
   libdwarf-dev \
