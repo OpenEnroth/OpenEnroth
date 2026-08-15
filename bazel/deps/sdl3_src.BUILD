@@ -46,6 +46,11 @@ config_setting(
     values = {"compilation_mode": "dbg"},
 )
 
+config_setting(
+    name = "_linux",
+    constraint_values = ["@platforms//os:linux"],
+)
+
 # Java side of SDL's android support, compiled into the APK.
 filegroup(
     name = "android_java",
@@ -89,6 +94,17 @@ cmake(
             # (C1090, PDB API call failed). Embedded /Z7 has no server.
             "CMAKE_C_FLAGS_DEBUG": "/Z7 /Ob0 /Od /RTC1",
             "CMAKE_CXX_FLAGS_DEBUG": "/Z7 /Ob0 /Od /RTC1",
+        },
+        # Audio backends are dlopened at runtime, so they only exist in the
+        # binary if the dev packages were present at build time - the prebuilt
+        # deps were built with all of them. SDL has no per-backend REQUIRE, so
+        # unlike OpenAL these stay soft, but the explicit ON documents intent
+        # and re-keys the action when the entries change. X11 and Wayland need
+        # no entry: SDL itself hard-errors when neither is found.
+        ":_linux": _CACHE_ENTRIES | {
+            "SDL_ALSA": "ON",
+            "SDL_PULSEAUDIO": "ON",
+            "SDL_PIPEWIRE": "ON",
         },
         "//conditions:default": _CACHE_ENTRIES,
     }),

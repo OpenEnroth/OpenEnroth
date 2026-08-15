@@ -57,6 +57,11 @@ config_setting(
     values = {"compilation_mode": "dbg"},
 )
 
+config_setting(
+    name = "_linux",
+    constraint_values = ["@platforms//os:linux"],
+)
+
 filegroup(
     name = "all_srcs",
     srcs = glob(
@@ -98,6 +103,14 @@ cmake(
             # (C1090, PDB API call failed). Embedded /Z7 has no server.
             "CMAKE_C_FLAGS_DEBUG": "/Z7 /Ob0 /Od /RTC1",
             "CMAKE_CXX_FLAGS_DEBUG": "/Z7 /Ob0 /Od /RTC1",
+        },
+        # The backends are dlopened at runtime, so a missing dev package at
+        # build time silently drops them from the binary - the prebuilt deps
+        # were built with all three. REQUIRE turns that into a configure error.
+        ":_linux": _CACHE_ENTRIES | {
+            "ALSOFT_REQUIRE_ALSA": "ON",
+            "ALSOFT_REQUIRE_PULSEAUDIO": "ON",
+            "ALSOFT_REQUIRE_PIPEWIRE": "ON",
         },
         "//conditions:default": _CACHE_ENTRIES,
     }),

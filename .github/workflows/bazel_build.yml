@@ -134,10 +134,16 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y gcc-14-multilib g++-14-multilib lld mold pkg-config
               sudo apt-get install -y libglu1-mesa-dev:i386 libdwarf-dev:i386 libelf-dev:i386
-              # SDL3 source build requires X11/Wayland headers (32-bit for linux_x86).
+              # The full SDL3/OpenAL dev set the prebuilt deps were built with
+              # (32-bit for linux_x86). The backends are dlopened at runtime,
+              # so anything missing here silently vanishes from the binary.
               sudo apt-get install -y libx11-dev:i386 libxext-dev:i386 libxrandr-dev:i386 \
-                libxcursor-dev:i386 libxi-dev:i386 libxfixes-dev:i386 \
-                libwayland-dev:i386 libxkbcommon-dev:i386
+                libxcursor-dev:i386 libxi-dev:i386 libxfixes-dev:i386 libxss-dev:i386 libxtst-dev:i386 \
+                libwayland-dev:i386 libxkbcommon-dev:i386 libdecor-0-dev:i386 \
+                libasound2-dev:i386 libpulse-dev:i386 libpipewire-0.3-dev:i386 \
+                libaudio-dev:i386 libjack-dev:i386 libsndio-dev:i386 \
+                libdrm-dev:i386 libgbm-dev:i386 libgles2-mesa-dev:i386 libegl1-mesa-dev:i386 \
+                libdbus-1-dev:i386 libibus-1.0-dev:i386 libudev-dev:i386
               # The runner's default gcc-13 can't do C++23 deducing this.
               sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
               sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
@@ -145,10 +151,16 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y gcc-14 g++-14 lld mold pkg-config
               sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev
-              # SDL3 source build requires X11/Wayland dev headers.
+              # The full SDL3/OpenAL dev set the prebuilt deps were built with.
+              # The backends are dlopened at runtime, so anything missing here
+              # silently vanishes from the binary.
               sudo apt-get install -y libx11-dev libxext-dev libxrandr-dev \
-                libxcursor-dev libxi-dev libxfixes-dev \
-                libwayland-dev libxkbcommon-dev
+                libxcursor-dev libxi-dev libxfixes-dev libxss-dev libxtst-dev \
+                libwayland-dev libxkbcommon-dev libdecor-0-dev \
+                libasound2-dev libpulse-dev libpipewire-0.3-dev \
+                libaudio-dev libjack-dev libsndio-dev \
+                libdrm-dev libgbm-dev libgles2-mesa-dev libegl1-mesa-dev \
+                libdbus-1-dev libibus-1.0-dev libudev-dev
               sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
               sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
             fi
@@ -160,9 +172,12 @@ jobs:
           # SDL3 cmake() is invoked in the host (linux) config during Android
           # cross-compilation and requires X11/Wayland headers to configure.
           sudo apt-get update
+          # The audio trio is needed too: the host-config sdl3 resolves as
+          # linux, where the overlay forces those backends on.
           sudo apt-get install -y libx11-dev libxext-dev libxrandr-dev \
             libxcursor-dev libxi-dev libxfixes-dev \
-            libwayland-dev libxkbcommon-dev
+            libwayland-dev libxkbcommon-dev \
+            libasound2-dev libpulse-dev libpipewire-0.3-dev
           # armeabi_v7a builds LuaJIT host tools with -m32; multilib runtime
           # only ships for gcc-14.
           if [ "${{matrix.target}}" = "android_armeabi_v7a" ] || [ "${{matrix.target}}" = "android_x86" ] || [ "${{matrix.target}}" = "android_universal" ]; then
