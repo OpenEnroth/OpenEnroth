@@ -785,13 +785,13 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
         Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         bool isOnWater = false;
-        int modelPid = 0;
-        float newFloorZ = ODM_GetFloorLevel(newPos, &isOnWater, &modelPid);
+        int floorFaceId = -1;
+        float newFloorZ = ODM_GetFloorLevel(newPos, &isOnWater, &floorFaceId);
         if (isOnWater) {
             if (actor.pos.z < newFloorZ + 60) {
                 if (actor.aiState == Dead || actor.aiState == Dying ||
                     actor.aiState == Removed || actor.aiState == Disabled) {
-                    SpriteObject::createSplashObject(Vec3f(actor.pos.x, actor.pos.y, modelPid ? newFloorZ + 30 : newFloorZ + 60));
+                    SpriteObject::createSplashObject(Vec3f(actor.pos.x, actor.pos.y, floorFaceId != -1 ? newFloorZ + 30 : newFloorZ + 60));
                     actor.aiState = Removed;
                     break;
                 }
@@ -1077,15 +1077,15 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
 
         bool isOnWater = false;
         float allnewfloor = ODM_GetFloorLevel(newPosLow, &isOnWater, floorFaceId);
-        int party_y_pid;
-        float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), &isOnWater, &party_y_pid);
-        int party_x_pid;
-        float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), &isOnWater, &party_x_pid);
+        int party_y_face_id;
+        float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), &isOnWater, &party_y_face_id);
+        int party_x_face_id;
+        float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), &isOnWater, &party_x_face_id);
         bool terr_slope_advance_x = pOutdoor->pTerrain.isSlopeTooHighByPos(Vec3f(newPosLow.x, partyNewPos->y, 0.0f));
         bool terr_slope_advance_y = pOutdoor->pTerrain.isSlopeTooHighByPos(Vec3f(partyNewPos->x, newPosLow.y, 0.0f));
 
         *partyNotOnModel = false;
-        if (!party_y_pid && !party_x_pid && !*floorFaceId) *partyNotOnModel = true;
+        if (party_y_face_id == -1 && party_x_face_id == -1 && *floorFaceId == -1) *partyNotOnModel = true;
 
         bool move_in_y = true;
         bool move_in_x = true;

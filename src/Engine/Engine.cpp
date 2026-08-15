@@ -276,14 +276,14 @@ void Engine::DrawGUI() {
             floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\nNodes: {}, Faces: {} ({}), Sectors: {}\n", floor_level, uFaceID, pBspRenderer->num_nodes, pBspRenderer->num_faces, pBLVRenderParams->uNumFacesRenderedThisFrame, pBspRenderer->uNumVisibleNotEmptySectors);
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
-            int bmodel_pid;
-            float floor_level = ODM_GetFloorLevel(pParty->pos, &on_water, &bmodel_pid);
+            int floor_face_id;
+            float floor_level = ODM_GetFloorLevel(pParty->pos, &on_water, &floor_face_id);
             floor_level_str = fmt::format(
                 "ODM_GetFloorLevel: {}   on_water: {}  on: {}\n",
                 floor_level, on_water ? "true" : "false",
-                bmodel_pid == 0
+                floor_face_id == -1
                     ? "---"
-                    : fmt::format("BModel={} Face={}", bmodel_pid >> 6, bmodel_pid & 0x3F)
+                    : fmt::format("BModel={} Face={}", floor_face_id >> 6, floor_face_id & 0x3F)
             );
         }
 
@@ -548,7 +548,9 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     engine->SetUnderwater(isMapUnderwater(engine->_transitionMapId));
 
-    pParty->floor_face_id = 0; // TODO(captainurist): drop?
+    // Need to reset this one. Pressure plates fire when the party's floor face changes, face ids are
+    // per-map, and a leftover id could fire or suppress a plate right after the transition.
+    pParty->floor_face_id = -1;
 
     engine->_currentLoadedMapId = engine->_transitionMapId;
 

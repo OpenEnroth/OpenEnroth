@@ -357,9 +357,9 @@ void OutdoorLocation::UpdateFog() {
 
 int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
     bool is_on_water = false;
-    int bmodel_standing_on_pid = 0;
-    ODM_GetFloorLevel(pos, &is_on_water, &bmodel_standing_on_pid);
-    if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water) {
+    int floor_face_id = -1;
+    ODM_GetFloorLevel(pos, &is_on_water, &floor_face_id);
+    if (pParty->isAirborne() || floor_face_id != -1 || is_on_water) {
         return 2;
     }
 
@@ -842,10 +842,13 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
             if (surface_count >= 20)
                 break;
         }
+
+        if (surface_count >= 20)
+            break; // The break above only exits the face loop, without this one the next model overruns the arrays.
     }
 
     if (surface_count == 1) {
-        *faceId = 0;
+        *faceId = -1;
         return odm_floor_level[0]; // No bmodels, just the terrain.
     }
 
@@ -862,10 +865,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
             current_idx = i;
         }
     }
-    if (!current_idx)
-        *faceId = 0;
-    else
-        *faceId = current_Face_id[current_idx] | (current_BModel_id[current_idx] << 6);
+    *faceId = current_Face_id[current_idx] | (current_BModel_id[current_idx] << 6); // -1 for terrain, the sentinels merge.
 
     if (current_idx)
         *pIsOnWater = pOutdoor->pBModels[current_BModel_id[current_idx]].faces[current_Face_id[current_idx]].isFluid();
@@ -940,11 +940,11 @@ void ODM_ProcessPartyActions() {
             waterWalkActive = false;
     }
 
-    int floorFaceId = 0;
+    int floorFaceId = -1;
     bool partyIsOnWater = false;
 
     float floorZ = ODM_GetFloorLevel(pParty->pos, &partyIsOnWater, &floorFaceId);
-    bool partyNotOnModel = floorFaceId == 0;
+    bool partyNotOnModel = floorFaceId == -1;
     int currentGroundLevel = floorZ + 1;
 
     bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItem(ITEM_ARTIFACT_LADYS_ESCORT)
@@ -983,7 +983,7 @@ void ODM_ProcessPartyActions() {
      // is party standing on any trigger faces
     int triggerID = 0;
     if (!partyNotTouchingFloor) {
-        if (pParty->floor_face_id != floorFaceId && floorFaceId) {
+        if (pParty->floor_face_id != floorFaceId && floorFaceId != -1) {
             int BModel_id = floorFaceId >> 6;
             if (BModel_id < pOutdoor->pBModels.size()) {
                 int face_id = floorFaceId & 0x3F;
@@ -1136,7 +1136,7 @@ void ODM_ProcessPartyActions() {
                         partyInputSpeed.x += 4 * dx;
                         partyInputSpeed.y += 4 * dy;
                     }
-                } else if (partyAtHighSlope && !floorFaceId) {
+                } else if (partyAtHighSlope && floorFaceId == -1) {
                     partyInputSpeed.x += dx;
                     partyInputSpeed.y += dy;
                     partyIsWalking = true;
@@ -1204,7 +1204,7 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_Jump:
-                if ((!partyAtHighSlope || floorFaceId) &&
+                if ((!partyAtHighSlope || floorFaceId != -1) &&
                     // to avoid jump hesitancy when moving downhill
                     (!partyNotTouchingFloor || (partyCloseToGround && partyInputSpeed.z <= 0)) &&
                     pParty->jump_strength &&
@@ -1282,7 +1282,7 @@ void ODM_ProcessPartyActions() {
     if (partyNotTouchingFloor && !pParty->bFlying) {  // add gravity
         partyInputSpeed.z += -2.0f * gameTimer->dt().ticks() * GetGravityStrength();
     } else if (!partyNotTouchingFloor) {
-        if (!floorFaceId) {
+        if (floorFaceId == -1) {
             // rolling down the hill
             // how it's done: you get a little bit pushed in the air along
             // terrain normal, getting in the air and falling to the gravity,
@@ -1477,7 +1477,8 @@ void ODM_ProcessPartyActions() {
                 if (!partyNotTouchingFloor || partyCloseToGround) {
                     int modelId = pParty->floor_face_id >> 6;
                     int faceId = pParty->floor_face_id & 0x3F;
-                    bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].faces[faceId].Visible();
+                    bool isModelWalk = !partyNotOnModel && pParty->floor_face_id != -1 &&
+                                       pOutdoor->pBModels[modelId].faces[faceId].Visible();
                     SoundId sound = SOUND_Invalid;
                     if (partyIsRunning) {
                         if (walkDelta >= 4) {
@@ -1608,10 +1609,10 @@ void UpdateActors_ODM() {
             uIsFlying = 0;
 
         bool Slope_High = pOutdoor->pTerrain.isSlopeTooHighByPos(actor.pos);
-        int Model_On_PID = 0;
+        int Floor_Face_Id = -1;
         bool uIsOnWater = false;
-        float Floor_Level = ODM_GetFloorLevel(actor.pos, &uIsOnWater, &Model_On_PID);
-        bool Actor_On_Terrain = Model_On_PID == 0;
+        float Floor_Level = ODM_GetFloorLevel(actor.pos, &uIsOnWater, &Floor_Face_Id);
+        bool Actor_On_Terrain = Floor_Face_Id == -1;
 
         bool uIsAboveFloor = (actor.pos.z > (Floor_Level + 1));
 

@@ -291,7 +291,7 @@ struct Party {
     int _viewYaw = 0; // View yaw in polar coordinates, 0 is positive X, 512 (pi/2) is positive Y.
     int _viewPitch = 0; // View pitch in polar coordinates, 0 is horizontal, positive is looking up, negative is looking down.
     int sPartySavedFlightZ = 0;  // this saves the Z position when flying without bob mods
-    int floor_face_id = 0;  // face we are standing at
+    int floor_face_id = -1;  // Face the party is standing on, -1 for none.
     SoundId currentWalkingSound = SOUND_Invalid; // previously was 'walk_sound_timer'
     Time _6FC_water_lava_timer;
     int uFallStartZ = 0;
