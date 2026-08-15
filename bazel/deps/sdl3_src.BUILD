@@ -51,6 +51,17 @@ config_setting(
     constraint_values = ["@platforms//os:linux"],
 )
 
+# Strict specialization of _linux: linux_x86 builds on the host x86_64
+# platform with -m32 and marks itself with --define (see .bazelrc).
+config_setting(
+    name = "_linux_x86",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    define_values = {"oe_build_arch": "x86_32"},
+)
+
 # Java side of SDL's android support, compiled into the APK.
 filegroup(
     name = "android_java",
@@ -100,7 +111,12 @@ cmake(
         # deps were built with all of them. SDL has no per-backend REQUIRE, so
         # unlike OpenAL these stay soft, but the explicit ON documents intent
         # and re-keys the action when the entries change. X11 and Wayland need
-        # no entry: SDL itself hard-errors when neither is found.
+        # no entry: SDL itself hard-errors when neither is found. No pulse on
+        # 32-bit - noble's partial i386 archive can't install libpulse-dev:i386.
+        ":_linux_x86": _CACHE_ENTRIES | {
+            "SDL_ALSA": "ON",
+            "SDL_PIPEWIRE": "ON",
+        },
         ":_linux": _CACHE_ENTRIES | {
             "SDL_ALSA": "ON",
             "SDL_PULSEAUDIO": "ON",

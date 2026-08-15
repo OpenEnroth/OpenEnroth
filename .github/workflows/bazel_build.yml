@@ -134,16 +134,18 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y gcc-14-multilib g++-14-multilib lld mold pkg-config
               sudo apt-get install -y libglu1-mesa-dev:i386 libdwarf-dev:i386 libelf-dev:i386
-              # The full SDL3/OpenAL dev set the prebuilt deps were built with
-              # (32-bit for linux_x86). The backends are dlopened at runtime,
-              # so anything missing here silently vanishes from the binary.
+              # The SDL3/OpenAL backend dev set, trimmed to what noble's partial
+              # i386 archive can install: libpulse-dev:i386 and friends need a
+              # co-installable libglib2.0-dev:i386, which doesn't exist there.
+              # 32-bit pulse systems still get audio through the alsa-pulse
+              # plugin. The backends are dlopened at runtime, so anything
+              # missing here silently vanishes from the binary.
               sudo apt-get install -y libx11-dev:i386 libxext-dev:i386 libxrandr-dev:i386 \
                 libxcursor-dev:i386 libxi-dev:i386 libxfixes-dev:i386 libxss-dev:i386 libxtst-dev:i386 \
-                libwayland-dev:i386 libxkbcommon-dev:i386 libdecor-0-dev:i386 \
-                libasound2-dev:i386 libpulse-dev:i386 libpipewire-0.3-dev:i386 \
-                libaudio-dev:i386 libjack-dev:i386 libsndio-dev:i386 \
+                libwayland-dev:i386 libxkbcommon-dev:i386 \
+                libasound2-dev:i386 libpipewire-0.3-dev:i386 \
                 libdrm-dev:i386 libgbm-dev:i386 libgles2-mesa-dev:i386 libegl1-mesa-dev:i386 \
-                libdbus-1-dev:i386 libibus-1.0-dev:i386 libudev-dev:i386
+                libdbus-1-dev:i386 libudev-dev:i386
               # The runner's default gcc-13 can't do C++23 deducing this.
               sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
               sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100

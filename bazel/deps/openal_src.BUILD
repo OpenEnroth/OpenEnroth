@@ -107,6 +107,12 @@ cmake(
         # The backends are dlopened at runtime, so a missing dev package at
         # build time silently drops them from the binary - the prebuilt deps
         # were built with all three. REQUIRE turns that into a configure error.
+        # No pulse on 32-bit: noble's partial i386 archive can't install
+        # libpulse-dev:i386, and pulse systems route through alsa-pulse anyway.
+        ":_linux_x86": _CACHE_ENTRIES | {
+            "ALSOFT_REQUIRE_ALSA": "ON",
+            "ALSOFT_REQUIRE_PIPEWIRE": "ON",
+        },
         ":_linux": _CACHE_ENTRIES | {
             "ALSOFT_REQUIRE_ALSA": "ON",
             "ALSOFT_REQUIRE_PULSEAUDIO": "ON",
