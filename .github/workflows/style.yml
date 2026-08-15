@@ -99,7 +99,25 @@ jobs:
           attempt_delay: 5000
           command: |
             sudo apt-get update
-            sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev
+            sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev lld libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison
+
+      # Same cached gcc-15 as the build jobs - clang-tidy parses against its libstdc++, the system one is too old.
+      - name: Set GCC_PREFIX
+        run: echo "GCC_PREFIX=$HOME/gcc-15" >> "$GITHUB_ENV"
+
+      - name: Restore gcc-15 cache
+        id: gcc-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{env.GCC_PREFIX}}
+          key: gcc-15-${{env.ImageOS}}-${{runner.arch}}-${{hashFiles('scripts/build_gcc_15.sh')}}
+
+      - name: Build gcc-15
+        if: steps.gcc-cache.outputs.cache-hit != 'true'
+        run: bash scripts/build_gcc_15.sh "$GCC_PREFIX"
+
+      - name: Add gcc-15 to PATH
+        run: echo "$GCC_PREFIX/bin" >> "$GITHUB_PATH"
 
       - name: Install clang-tidy
         run: |
@@ -107,7 +125,7 @@ jobs:
 
       - name: Configure
         run: |
-          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-15 -DCMAKE_CXX_COMPILER=g++-15
 
       - name: Run clang-tidy
         working-directory: build
