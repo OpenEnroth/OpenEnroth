@@ -190,12 +190,15 @@ jobs:
           fi
 
       # Mold on the linux legs, same as the cmake matrix (which mandates
-      # mold-or-lld and installs mold). The command-line config wins over the
-      # .bazelrc lld pin on linux_x86 - the driver takes the last -fuse-ld.
-      # Not on arm64: the runner's mold aborts with signal 6 linking the
-      # shared libengine.so, and cmake CI never linked arm64 at all.
+      # mold-or-lld and installs mold). Not on arm64: the runner's mold aborts
+      # with signal 6 linking the shared libengine.so, and cmake CI never
+      # linked arm64 at all. Not on x86 either, which keeps its .bazelrc lld
+      # pin: mold corrupts luajit's hand-written 32-bit .eh_frame under opt's
+      # --gc-sections just like gold did, and the first lua error then unwinds
+      # into a garbage landing pad and segfaults. Cmake never saw this - it
+      # doesn't link with --gc-sections.
       - name: '[linux] Use mold'
-        if: env.MATRIX_PLATFORM == 'linux' && matrix.target != 'linux_arm64'
+        if: env.MATRIX_PLATFORM == 'linux' && matrix.target != 'linux_arm64' && matrix.target != 'linux_x86'
         run: echo "BAZEL_EXTRA_ARGS=--config=mold" >> "$GITHUB_ENV"
 
       # Cmake CI passes -DOE_DISTRIBUTION_BUILD=ON on every desktop leg and

@@ -141,10 +141,10 @@ build:linux_x86 --per_file_copt=(^|/)(src|test|external)/.*@-msse2,-mfpmath=sse,
 # Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
 # We can't use --platforms= here (no 32-bit toolchain registered), so use --define instead.
 build:linux_x86 --define=oe_build_arch=x86_32
-# lld, same as the cmake build (which refuses everything but lld and mold).
-# Gold mishandles luajit's generated .eh_frame under opt's --gc-sections: the
-# first thrown lua error unwinds into a garbage landing pad and segfaults
-# (task #22 has the full trail). bfd is not an option either - it lacks the
+# lld, and only lld. Gold and mold both mishandle luajit's generated 32-bit
+# .eh_frame under opt's --gc-sections: the first thrown lua error unwinds into
+# a garbage landing pad and segfaults (task #22 has the full trail, mold
+# reproduced it in CI). bfd is not an option either - it lacks the
 # --start-lib/--end-lib that bazel's start_end_lib feature uses.
 build:linux_x86 --linkopt=-fuse-ld=lld
 # 32-bit x86 with lld needs this like the cmake build does: some inline asm in
