@@ -92,6 +92,15 @@ jobs:
       - name: Install ninja-build
         uses: seanmiddleditch/gha-setup-ninja@v4
 
+      - name: Install dependencies
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev
+
       - name: Install clang-tidy
         run: |
           pip install --break-system-packages clang-tidy==22.1.8
