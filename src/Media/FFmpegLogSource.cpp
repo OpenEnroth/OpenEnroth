@@ -39,6 +39,7 @@ LogLevel FFmpegLogSource::translateFFmpegLogLevel(int level) {
 
 int FFmpegLogSource::translateLoggerLogLevel(LogLevel level) {
     switch (level) {
+    default:            assert(false); [[fallthrough]];
     case LOG_TRACE:     return AV_LOG_TRACE;
     case LOG_DEBUG:     return AV_LOG_DEBUG; // max(AV_LOG_DEBUG, AV_LOG_VERBOSE)
     case LOG_INFO:      return AV_LOG_INFO;
@@ -46,8 +47,5 @@ int FFmpegLogSource::translateLoggerLogLevel(LogLevel level) {
     case LOG_ERROR:     return AV_LOG_ERROR;
     case LOG_CRITICAL:  return AV_LOG_FATAL; // max(AV_LOG_PANIC, AV_LOG_FATAL)
     case LOG_NONE:      return AV_LOG_QUIET;
-    default:
-        assert(false);
-        return AV_LOG_TRACE;
     }
 }
