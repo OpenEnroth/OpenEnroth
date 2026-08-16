@@ -22,7 +22,7 @@ UNIT_TEST(Logger, GlobalLoggerIsAlwaysUsable) {
     // The global logger is never null - it points at the fallback until a user-created `Logger` takes over.
     ASSERT_NE(logger, nullptr);
     EXPECT_EQ(logger, detail::fallbackLogger());
-    EXPECT_NE(logger->sink(), nullptr); // The fallback logger writes to stderr through a constant-initialized sink.
+    EXPECT_NE(logger->sink(), nullptr);
 }
 
 UNIT_TEST(Logger, FallbackLoggerWritesToStderr) {
