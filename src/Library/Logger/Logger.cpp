@@ -5,27 +5,31 @@
 
 #include "LogSink.h"
 #include "LogSource.h"
+#include "FallbackLogSink.h"
 
-Logger *logger = nullptr;
+static constinit FallbackLogSink fallbackSink;
 
-static int adjustLevel(LogLevel level) {
-    return level == LOG_NONE ? detail::LOG_NONE_BARRIER : static_cast<int>(level);
-}
+constinit Logger Logger::fallbackLogger = Logger(detail::detached, LOG_TRACE, &fallbackSink);
+
+constinit Logger *logger = detail::fallbackLogger();
 
 Logger::Logger(LogLevel level, LogSink *sink) {
     assert(sink);
 
     _defaultCategory._level = level;
-    _defaultCategory._adjustedLevel = adjustLevel(level);
+    _defaultCategory._adjustedLevel = LogCategory::adjustLevel(level);
     _sink = sink;
 
-    assert(logger == nullptr);
+    assert(logger == &fallbackLogger);
     logger = this;
 }
 
 Logger::~Logger() {
+    if (this == &fallbackLogger)
+        return;
+
     assert(logger == this);
-    logger = nullptr;
+    logger = &fallbackLogger;
 }
 
 void Logger::logV(const LogCategory &category, LogLevel level, fmt::string_view fmt, fmt::format_args args) {
@@ -44,7 +48,7 @@ void Logger::setLevel(LogLevel level) {
         return;
 
     _defaultCategory._level = level;
-    _defaultCategory._adjustedLevel = adjustLevel(level);
+    _defaultCategory._adjustedLevel = LogCategory::adjustLevel(level);
 
     for (const LogCategory *category : LogCategory::instances())
         if (category->_source && !category->_level)
@@ -60,7 +64,7 @@ void Logger::setLevel(LogCategory &category, std::optional<LogLevel> level) {
         return;
 
     category._level = level;
-    category._adjustedLevel = level.transform(&adjustLevel);
+    category._adjustedLevel = level.transform(&LogCategory::adjustLevel);
 
     if (category._source) {
         LogLevel effectiveLevel = level ? *level : *_defaultCategory._level;

@@ -6,6 +6,7 @@ set(LIBRARY_LOGGER_SOURCES
         Logger.cpp
         LogSink.cpp
         DistLogSink.cpp
+        FallbackLogSink.cpp
         StreamLogSink.cpp
         RotatingLogSink.cpp)
 
@@ -17,6 +18,7 @@ set(LIBRARY_LOGGER_HEADERS
         LogSink.h
         DistLogSink.h
         LogSource.h
+        FallbackLogSink.h
         StreamLogSink.h
         LogEnumFunctions.h
         RotatingLogSink.h)
@@ -26,7 +28,9 @@ target_link_libraries(library_logger PUBLIC library_serialization library_filesy
 target_check_style(library_logger)
 
 if(OE_BUILD_TESTS)
-    set(TEST_LIBRARY_LOGGER_SOURCES Tests/RotatingLogSink_ut.cpp)
+    set(TEST_LIBRARY_LOGGER_SOURCES
+            Tests/Logger_ut.cpp
+            Tests/RotatingLogSink_ut.cpp)
 
     add_library(test_library_logger OBJECT ${TEST_LIBRARY_LOGGER_SOURCES})
     target_link_libraries(test_library_logger PUBLIC testing_unit library_logger)
