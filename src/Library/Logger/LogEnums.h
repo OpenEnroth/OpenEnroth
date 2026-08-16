@@ -30,14 +30,14 @@ MM_DECLARE_SERIALIZATION_FUNCTIONS(LogLevel)
  */
 constexpr const char *logLevelName(LogLevel level) {
     switch (level) {
-    default:            assert(false); [[fallthrough]];
+    case LOG_NONE:      return "none";
     case LOG_TRACE:     return "trace";
     case LOG_DEBUG:     return "debug";
     case LOG_INFO:      return "info";
     case LOG_WARNING:   return "warning";
     case LOG_ERROR:     return "error";
+    default:            assert(false); [[fallthrough]]; // A garbage level filters as above-critical.
     case LOG_CRITICAL:  return "critical";
-    case LOG_NONE:      return "none";
     }
 }
 
