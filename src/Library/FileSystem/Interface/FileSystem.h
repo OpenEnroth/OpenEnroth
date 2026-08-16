@@ -11,35 +11,11 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Streams/OutputStream.h"
+#include "Utility/System/Os.h"
 
 #include "FileSystemPath.h"
 #include "FileSystemEnums.h"
 #include "FileSystemFwd.h"
-
-struct FileStat {
-    FileStat() = default;
-    FileStat(FileType type, std::int64_t size) : type(type), size(size) {}
-
-    FileType type = FILE_INVALID; // Invalid means file doesn't exist.
-    std::int64_t size = 0; // Always zero for directories.
-
-    explicit operator bool() const {
-        return type != FILE_INVALID;
-    }
-
-    friend bool operator==(const FileStat &l, const FileStat &r) = default;
-};
-
-struct DirectoryEntry {
-    DirectoryEntry() = default;
-    DirectoryEntry(std::string name, FileType type) : name(std::move(name)), type(type) {}
-
-    std::string name;
-    FileType type = FILE_INVALID; // When returned from FileSystem::ls, this one is never invalid.
-
-    // Make entries sortable. If two entries have the same name, then files go before directories.
-    friend std::strong_ordering operator<=>(const DirectoryEntry &l, const DirectoryEntry &r) = default;
-};
 
 // TODO(captainurist): I still think most of FSs should inherit from ProxyFS.
 //
@@ -54,8 +30,9 @@ struct DirectoryEntry {
 /**
  * File system interface.
  *
- * All user-facing methods take paths as UTF8-encoded `std::string_view`s, and users are expected to just use
- * `std::string`s to store paths.
+ * All user-facing methods take paths as WTF8-encoded `std::string_view`s, and users are expected to just use
+ * `std::string`s to store paths. Note that this is for paths inside a `FileSystem` only - native paths are always
+ * passed around as `NativePath` objects.
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. Both `".."` and `"."`
  * special dirs are supported, but peeking outside the root directory is not - passing paths that try to do this will
@@ -147,7 +124,8 @@ class FileSystem {
     /**
      * @param path                      Path inside this file system. The passed path is not required to exist.
      * @return                          A path string that's suitable to be displayed to the user. E.g. an absolute path
-     *                                  on the underlying OS file system.
+     *                                  on the underlying OS file system. Always valid UTF-8, with everything that's
+     *                                  not valid UTF-8 replaced with U+FFFD, so it might not map back to a real path.
      */
     [[nodiscard]] std::string displayPath(std::string_view path) const;
     [[nodiscard]] std::string displayPath(FileSystemPathView path) const;

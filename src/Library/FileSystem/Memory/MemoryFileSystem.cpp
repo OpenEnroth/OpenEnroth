@@ -7,6 +7,7 @@
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
+#include "Utility/String/Encoding.h"
 #include "Utility/String/Join.h"
 
 #include "MemoryFileSystemInputStream.h"
@@ -79,7 +80,7 @@ bool MemoryFileSystem::_remove(FileSystemPathView path) {
 }
 
 std::string MemoryFileSystem::_displayPath(FileSystemPathView path) const {
-    return join(_displayName, "://", path.string());
+    return join(_displayName, "://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
 const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(FileSystemPathView path) const {

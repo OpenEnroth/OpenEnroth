@@ -1,10 +1,10 @@
 #pragma once
 
-#include <filesystem>
 #include <string>
 #include <string_view>
 #include <utility>
 
+#include "Utility/String/AsciiLiteral.h"
 #include "Utility/String/Format.h"
 
 /**
@@ -12,63 +12,101 @@
  *
  * Unlike `std::filesystem::path`, this class does not depend on the C locale - on Windows constructing an
  * `std::filesystem::path` from a narrow string converts it per the C locale, while here all charset conversions are
- * done by our own code, and the underlying `std::filesystem::path` is only ever constructed from `wchar_t` strings
- * on Windows. `fromWtf8` / `toWtf8` convert from and to our own strings, and `fromStdPath` / `toStdPath` are for
- * talking to the OS, with no charset conversion whatsoever.
+ * done by our own code. Internally the path is stored as a WTF8 string with forward slashes for separators, and
+ * `native()` converts to the native encoding when it's time to talk to the OS.
  *
- * Note that `fromWtf8` / `toWtf8` are named somewhat improperly - file names on Linux are arbitrary byte strings,
- * and these bytes are passed through as-is. So the string returned by `toWtf8` is not necessarily valid UTF-8, and
- * not even necessarily valid WTF-8 - it's guaranteed to be valid WTF-8 on Windows only. And MacOS is different
- * again - APFS only takes file names that are valid UTF-8.
+ * Note that `fromWtf8` / `toWtf8` are named somewhat improperly - file names on Linux are arbitrary byte strings
+ * (anything goes except '/' and NUL), and these bytes are passed through as-is. So the string returned by `toWtf8`
+ * is not necessarily valid UTF-8, and not even necessarily valid WTF-8 - it's guaranteed to be valid WTF-8 on
+ * Windows only. And MacOS is different again - APFS only takes file names that are valid UTF-8.
  */
 class NativePath {
  public:
     NativePath() = default;
 
+    /**
+     * Implicit constructor from an ASCII string literal.
+     *
+     * ASCII-only because a literal's bytes have to mean the same thing in three places at once - in the compiler's
+     * execution charset (MSVC re-encodes literals per the locale codepage unless `/utf-8` is passed), when
+     * interpreted as WTF8 on Windows, and as raw bytes on POSIX. ASCII is the one subset that all of them agree on.
+     * Everything else goes through `fromWtf8`, where the encoding claim is visible at the call site.
+     */
+    NativePath(AsciiLiteral path); // NOLINT: intentionally implicit.
+
     [[nodiscard]] static NativePath fromWtf8(std::string_view path);
 
-    [[nodiscard]] static NativePath fromStdPath(std::filesystem::path path) {
-        return NativePath(std::move(path));
+    /**
+     * @param path                      Path in the OS-native encoding - a `wchar_t` string on Windows. Separators can
+     *                                  be either forward or backward slashes.
+     * @return                          `NativePath` for the given native string.
+     */
+#ifdef _WINDOWS
+    [[nodiscard]] static NativePath fromNative(std::wstring_view path);
+#else
+    [[nodiscard]] static NativePath fromNative(std::string_view path) {
+        NativePath result;
+        result._path = path;
+        return result;
     }
-
-    // Deliberately dead for strings of all charsets, see the class docs. Use fromWtf8.
-    template<class T> static NativePath fromStdPath(const T &) = delete;
+#endif
 
     /**
-     * @return                          This path as a WTF-8 string, always using forward slashes. Never throws,
-     *                                  unlike `std::filesystem::path::generic_string()`.
+     * @return                          This path as a WTF-8 string, always using forward slashes.
      */
-    [[nodiscard]] std::string toWtf8() const;
-
-    [[nodiscard]] const std::filesystem::path &toStdPath() const {
+    [[nodiscard]] const std::string &toWtf8() const {
         return _path;
     }
 
     /**
-     * @return                          Absolute copy of this path, resolved against the current directory. An empty
-     *                                  path resolves to the current directory itself.
+     * @return                          This path as a string in the OS-native encoding - a `wchar_t` string on
+     *                                  Windows. Separators stay forward slashes, Windows APIs accept those. Use this
+     *                                  for talking to the OS.
      */
-    [[nodiscard]] NativePath absolute() const {
-        return NativePath(_path.empty() ? std::filesystem::current_path() : std::filesystem::absolute(_path));
+#ifdef _WINDOWS
+    [[nodiscard]] std::wstring native() const;
+#else
+    [[nodiscard]] const std::string &native() const {
+        return _path;
     }
+#endif
+
+    /**
+     * @return                          This path as a valid UTF-8 string for displaying to the user, with everything
+     *                                  that's not valid UTF-8 replaced with U+FFFD. Unlike the string returned by
+     *                                  `toWtf8`, it might not round-trip back into the same path.
+     */
+    [[nodiscard]] std::string displayString() const;
 
     /**
      * @param extension                 New extension, WTF-8, with or without the leading dot. Pass an empty string
      *                                  to drop the extension.
-     * @return                          Copy of this path with the extension replaced.
+     * @return                          Copy of this path with the extension replaced. The extension is everything
+     *                                  after the last dot, so `a.tar.gz` becomes `a.tar.mm7`, not `a.mm7`.
      */
-    [[nodiscard]] NativePath withExtension(std::string_view extension) const {
-        std::filesystem::path result = _path;
-        result.replace_extension(fromWtf8(extension).toStdPath());
-        return NativePath(std::move(result));
-    }
+    [[nodiscard]] NativePath withExtension(std::string_view extension) const;
 
     [[nodiscard]] bool isEmpty() const {
         return _path.empty();
     }
 
+    /**
+     * @param tail                      Path to append.
+     * @return                          This path with `tail` appended. Like for `std::filesystem::path`, a rooted
+     *                                  `tail` - starting with `/`, or with a drive letter on Windows - replaces
+     *                                  the path entirely.
+     */
     [[nodiscard]] NativePath operator/(const NativePath &tail) const {
-        return NativePath(_path / tail._path);
+        if (isRooted(tail._path) || _path.empty())
+            return tail;
+        if (tail._path.empty())
+            return *this;
+
+        NativePath result = *this;
+        if (!result._path.ends_with('/'))
+            result._path += '/';
+        result._path += tail._path;
+        return result;
     }
 
     friend auto operator<=>(const NativePath &l, const NativePath &r) = default;
@@ -83,10 +121,16 @@ class NativePath {
     }
 
  private:
-    explicit NativePath(std::filesystem::path path) : _path(std::move(path)) {}
+    static bool isRooted(std::string_view path) {
+#ifdef _WINDOWS
+        if (path.size() >= 2 && path[1] == ':' && ((path[0] | 0x20) >= 'a' && (path[0] | 0x20) <= 'z'))
+            return true; // A drive letter. ':' can't appear in Windows file names, but it can on POSIX.
+#endif
+        return path.starts_with('/');
+    }
 
  private:
-    std::filesystem::path _path;
+    std::string _path; // WTF8, with forward slashes for separators.
 };
 
 template<>

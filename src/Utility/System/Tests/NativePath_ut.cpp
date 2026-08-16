@@ -6,6 +6,7 @@
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/System/NativePath.h"
+#include "Utility/System/Os.h"
 
 UNIT_TEST(NativePath, Wtf8RoundTrip) {
     // The conversion goes through wchar_t on Windows, so WTF-8 has to survive, unpaired surrogates included.
@@ -13,24 +14,46 @@ UNIT_TEST(NativePath, Wtf8RoundTrip) {
         EXPECT_EQ(NativePath::fromWtf8(path).toWtf8(), path);
 }
 
-UNIT_TEST(NativePath, StdPathRoundTrip) {
-    std::filesystem::path cwd = std::filesystem::current_path();
-    EXPECT_EQ(NativePath::fromStdPath(cwd).toStdPath(), cwd);
+UNIT_TEST(NativePath, Literals) {
+    // ASCII literals construct directly, everything else goes through fromWtf8.
+    EXPECT_EQ(NativePath("a/b/c.txt"), NativePath::fromWtf8("a/b/c.txt"));
+    EXPECT_EQ(NativePath(""), NativePath());
+}
+
+UNIT_TEST(NativePath, NativeRoundTrip) {
+    // The native form is wchar_t on Windows, so WTF-8 has to survive the round trip there too.
+    for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
+        EXPECT_EQ(NativePath::fromNative(NativePath::fromWtf8(path).native()).toWtf8(), path);
 }
 
 UNIT_TEST(NativePath, Composition) {
-    EXPECT_EQ((NativePath::fromWtf8("a/b") / NativePath::fromWtf8("c.txt")).toWtf8(), "a/b/c.txt");
+    EXPECT_EQ((NativePath("a/b") / NativePath("c.txt")).toWtf8(), "a/b/c.txt");
+    EXPECT_EQ((NativePath("a") / NativePath("")).toWtf8(), "a");
+    EXPECT_EQ((NativePath("") / NativePath("b")).toWtf8(), "b");
+
+    // A rooted tail replaces the whole path, like it does for std::filesystem::path.
+    EXPECT_EQ((NativePath("a") / NativePath("/b")).toWtf8(), "/b");
+#ifdef _WINDOWS
+    EXPECT_EQ((NativePath("D:/lol") / NativePath("C:/kek")).toWtf8(), "C:/kek"); // Drive letters root a path on Windows only.
+#endif
 }
 
 UNIT_TEST(NativePath, WithExtension) {
-    EXPECT_EQ(NativePath::fromWtf8("a/b.json").withExtension(".mm7").toWtf8(), "a/b.mm7");
-    EXPECT_EQ(NativePath::fromWtf8("a/b").withExtension(".mm7").toWtf8(), "a/b.mm7");
-    EXPECT_EQ(NativePath::fromWtf8("a/b.json").withExtension("").toWtf8(), "a/b");
+    EXPECT_EQ(NativePath("a/b.json").withExtension(".mm7").toWtf8(), "a/b.mm7");
+    EXPECT_EQ(NativePath("a/b").withExtension(".mm7").toWtf8(), "a/b.mm7");
+    EXPECT_EQ(NativePath("a/b.json").withExtension("").toWtf8(), "a/b");
+    EXPECT_EQ(NativePath("a.tar.gz").withExtension(".mm7").toWtf8(), "a.tar.mm7"); // Only the last extension is replaced.
 }
 
-UNIT_TEST(NativePath, Absolute) {
-    EXPECT_EQ(NativePath().absolute().toStdPath(), std::filesystem::current_path());
-    EXPECT_EQ(NativePath::fromWtf8("a").absolute().toStdPath(), std::filesystem::current_path() / "a");
+UNIT_TEST(NativePath, DisplayString) {
+    EXPECT_EQ(NativePath::fromWtf8("a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt").displayString(), "a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt");
+
+    // WTF-8-encoded surrogates are not valid UTF-8, so they have to come out as replacement characters.
+    std::string display = NativePath::fromWtf8("lol\xed\xb0\x80kek.txt").displayString();
+    EXPECT_TRUE(display.starts_with("lol"));
+    EXPECT_TRUE(display.ends_with("kek.txt"));
+    EXPECT_NE(display.find("\xEF\xBF\xBD"), std::string::npos); // U+FFFD.
+    EXPECT_EQ(display.find("\xed\xb0\x80"), std::string::npos);
 }
 
 #ifndef _WINDOWS
@@ -42,14 +65,14 @@ UNIT_TEST(NativePath, InvalidUtf8FileNames) {
         EXPECT_EQ(path.toWtf8(), name);
 
         // APFS rejects such names, and so do APFS-backed mounts in a dev container, so we skip instead of asserting.
-        std::ofstream stream(path.toStdPath());
+        std::ofstream stream(path.native());
         if (!stream.is_open())
             GTEST_SKIP() << "File system rejected an invalid UTF-8 name.";
         stream << "lol";
         stream.close();
 
-        EXPECT_TRUE(std::filesystem::exists(path.toStdPath())) << name;
-        EXPECT_TRUE(std::filesystem::remove(path.toStdPath())) << name;
+        EXPECT_TRUE(os::exists(path)) << name;
+        EXPECT_TRUE(os::remove(path)) << name;
     }
 }
 #endif

@@ -1,7 +1,6 @@
 #include "GameStarter.h"
 
 #include <utility>
-#include <filesystem>
 #include <string>
 #include <vector>
 #include <memory>
@@ -51,6 +50,7 @@
 #include "Scripting/ScriptingSystem.h"
 
 #include "Utility/Exception.h"
+#include "Utility/System/Os.h"
 
 #include "PathResolver.h"
 
@@ -219,13 +219,13 @@ GameStarter::~GameStarter() {
 }
 
 void GameStarter::resolveUserPath(Environment *environment, GameStarterOptions *options) {
-    if (options->userPath.empty())
+    if (options->userPath.isEmpty())
         options->userPath = resolveMm7UserPath(environment);
 }
 
 void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *options) {
-    std::vector<std::string> candidates;
-    if (!options->dataPath.empty()) {
+    std::vector<NativePath> candidates;
+    if (!options->dataPath.isEmpty()) {
         candidates.push_back(options->dataPath);
     } else {
         candidates = resolveMm7Paths(environment);
@@ -234,7 +234,7 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
 
     for (int i = 0; i < candidates.size(); i++) {
         std::string missingFile;
-        if (!std::filesystem::exists(candidates[i])) {
+        if (!os::exists(candidates[i])) {
             logger->info("Data path #{} ('{}') doesn't exist.", i + 1, candidates[i]);
         } else if (!validateMm7Path(candidates[i], &missingFile)) {
             logger->info("Data path #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
@@ -246,11 +246,11 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
     }
 
     // Just use the last data path if all paths are invalid. We'll throw later.
-    if (options->dataPath.empty())
+    if (options->dataPath.isEmpty())
         options->dataPath = candidates.back();
 }
 
-void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platform) {
+void GameStarter::failOnInvalidPath(const NativePath &dataPath, Platform *platform) {
     std::string missingFile;
     if (validateMm7Path(dataPath, &missingFile))
         return;

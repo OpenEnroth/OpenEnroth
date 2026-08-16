@@ -134,7 +134,7 @@ class Platform {
  * Entrypoint for the program that uses the platform lib. Function definition should be provided in user code.
  *
  * @param argc                          Total number of arguments passed.
- * @param argv                          UTF8-encoded program arguments. Note that you're getting UTF8 on ALL platforms,
+ * @param argv                          WTF8-encoded program arguments. Note that you're getting WTF8 on ALL platforms,
  *                                      including Windows.
  * @return                              Program return code.
  */
