@@ -180,7 +180,8 @@ extern constinit Logger *logger; // Singleton logger instance, never null - use 
  * Logging macros.
  *
  * These call into the global logger, and unlike the `Logger` methods, they don't evaluate the message arguments
- * when the message is dropped by the log level check. Prefer them over calling `logger` directly.
+ * when the message is dropped by the log level check. This is why the global `logger` is hidden away in `detail` -
+ * logging is supposed to go through the macros.
  *
  * The `_IN` variants take a `LogCategory`, the ones without it log into the default category.
  */
