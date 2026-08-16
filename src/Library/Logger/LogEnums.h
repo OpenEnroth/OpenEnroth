@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include "Library/Serialization/SerializationFwd.h"
 
 /**
@@ -28,14 +30,14 @@ MM_DECLARE_SERIALIZATION_FUNCTIONS(LogLevel)
  */
 constexpr const char *logLevelName(LogLevel level) {
     switch (level) {
-    case LOG_NONE:      return "none";
+    default:            assert(false); [[fallthrough]];
     case LOG_TRACE:     return "trace";
     case LOG_DEBUG:     return "debug";
     case LOG_INFO:      return "info";
     case LOG_WARNING:   return "warning";
     case LOG_ERROR:     return "error";
     case LOG_CRITICAL:  return "critical";
-    default:            return "?";
+    case LOG_NONE:      return "none";
     }
 }
 
