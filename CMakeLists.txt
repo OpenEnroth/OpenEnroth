@@ -32,8 +32,8 @@ set(OE_BUILD_TESTS ON CACHE BOOL "Build OpenEnroth tests.")
 set(OE_BUILD_TOOLS ON CACHE BOOL "Build OpenEnroth tools - LodTool and CodeGen.")
 set(OE_CHECK_STYLE ON CACHE BOOL "Enable style checks.")
 set(OE_CHECK_LUA_STYLE ON CACHE BOOL "Enable lua style checks.")
+set(OE_CHECK_TIDY ON CACHE BOOL "Enable clang-tidy checks.")
 set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies.")
-set(OE_USE_DUMMY_DEPENDENCIES OFF CACHE BOOL "Use dummy dependencies. Build will fail if this is set to ON, only style checks will work.")
 set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
 set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
@@ -42,10 +42,6 @@ set(OE_DISTRIBUTION_BUILD OFF CACHE BOOL "Specify that this is a build for distr
 
 if(OE_DISTRIBUTION_BUILD)
     add_compile_definitions(OE_DISTRIBUTION_BUILD)
-endif()
-
-if(OE_USE_PREBUILT_DEPENDENCIES AND OE_USE_DUMMY_DEPENDENCIES)
-    message(FATAL_ERROR "Only one of OE_USE_PREBUILT_DEPENDENCIES and OE_USE_DUMMY_DEPENDENCIES must be set.")
 endif()
 
 # Find ccache / sccache.
