@@ -177,13 +177,14 @@ extern constinit Logger *logger; // Singleton logger instance, never null - use 
 } // namespace detail
 
 /**
- * Logging macros.
+ * Logging macros - this is how you log.
  *
- * These call into the global logger, and unlike the `Logger` methods, they don't evaluate the message arguments
- * when the message is dropped by the log level check. This is why the global `logger` is hidden away in `detail` -
- * logging is supposed to go through the macros.
+ * Message arguments are not evaluated when the message is dropped by the log level check.
  *
  * The `_IN` variants take a `LogCategory`, the ones without it log into the default category.
+ *
+ * @param LEVEL                         Level to log at.
+ * @param ...                           Format string and format arguments.
  */
 #define MM_LOG(LEVEL, ...) \
     do { \
@@ -192,6 +193,13 @@ extern constinit Logger *logger; // Singleton logger instance, never null - use 
             ::detail::logger->log(localLevel, __VA_ARGS__); \
     } while (false)
 
+/**
+ * Same as `MM_LOG`, but logs into the provided category.
+ *
+ * @param CATEGORY                      `LogCategory` to log into.
+ * @param LEVEL                         Level to log at.
+ * @param ...                           Format string and format arguments.
+ */
 #define MM_LOG_IN(CATEGORY, LEVEL, ...) \
     do { \
         const LogCategory &localCategory = (CATEGORY); \
