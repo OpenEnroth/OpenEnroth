@@ -6,11 +6,10 @@
 
 #include "Application/Startup/GameStarter.h"
 
-#include "Library/FileSystem/Native/NativeFileSystem.h"
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
 #include "Utility/String/Format.h"
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Os.h"
 #include "Utility/UnicodeCrt.h"
 
 #include "RetraceTest.h"
@@ -24,9 +23,8 @@ int platformMain(int argc, char **argv) {
         if (opts.helpPrinted)
             return 1;
 
-        NativeFileSystem testFs(opts.testPath);
         std::vector<std::string> traceNames;
-        for (const DirectoryEntry &entry : testFs.ls(""))
+        for (const DirectoryEntry &entry : os::ls(opts.testPath))
             if (entry.name.ends_with(".json"))
                 traceNames.push_back(entry.name);
         std::ranges::sort(traceNames);
@@ -34,7 +32,7 @@ int platformMain(int argc, char **argv) {
         for (const std::string &traceName : traceNames)
             testing::RegisterTest("Retrace", traceName.substr(0, traceName.size() - 5).c_str(), // Minus ".json".
                                   nullptr, nullptr, __FILE__, __LINE__,
-                                  [tracePath = testFs.toNativePath(traceName)] { return new RetraceTest(tracePath); });
+                                  [tracePath = opts.testPath / NativePath::fromWtf8(traceName)] { return new RetraceTest(tracePath); });
 
         testing::InitGoogleTest(&argc, argv);
         if (opts.listRequested)
