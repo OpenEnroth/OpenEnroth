@@ -184,13 +184,14 @@ extern constinit Logger *logger; // Singleton logger instance, never null - use 
  * The `_IN` variants take a `LogCategory`, the ones without it log into the default category.
  *
  * @param LEVEL                         Level to log at.
- * @param ...                           Format string and format arguments.
+ * @param FMT                           Format string, in `fmt::format` form.
+ * @param ...                           Format arguments.
  */
-#define MM_LOG(LEVEL, ...) \
+#define MM_LOG(LEVEL, FMT, ...) \
     do { \
         LogLevel localLevel = (LEVEL); \
         if (::detail::logger->shouldLog(localLevel)) \
-            ::detail::logger->log(localLevel, __VA_ARGS__); \
+            ::detail::logger->log(localLevel, (FMT) __VA_OPT__(,) __VA_ARGS__); \
     } while (false)
 
 /**
@@ -198,14 +199,15 @@ extern constinit Logger *logger; // Singleton logger instance, never null - use 
  *
  * @param CATEGORY                      `LogCategory` to log into.
  * @param LEVEL                         Level to log at.
- * @param ...                           Format string and format arguments.
+ * @param FMT                           Format string, in `fmt::format` form.
+ * @param ...                           Format arguments.
  */
-#define MM_LOG_IN(CATEGORY, LEVEL, ...) \
+#define MM_LOG_IN(CATEGORY, LEVEL, FMT, ...) \
     do { \
         const LogCategory &localCategory = (CATEGORY); \
         LogLevel localLevel = (LEVEL); \
         if (::detail::logger->shouldLog(localCategory, localLevel)) \
-            ::detail::logger->log(localCategory, localLevel, __VA_ARGS__); \
+            ::detail::logger->log(localCategory, localLevel, (FMT) __VA_OPT__(,) __VA_ARGS__); \
     } while (false)
 
 #define MM_TRACE(...) MM_LOG(LOG_TRACE, __VA_ARGS__)
