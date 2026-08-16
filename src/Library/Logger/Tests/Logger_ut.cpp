@@ -19,7 +19,7 @@ class TestLogSink : public LogSink {
 };
 
 UNIT_TEST(Logger, GlobalLoggerIsAlwaysUsable) {
-    // The global logger used to be null until someone constructed a `Logger`, so logging before that point crashed.
+    // The global logger is never null - it points at the fallback until a user-created `Logger` takes over.
     ASSERT_NE(logger, nullptr);
     EXPECT_EQ(logger, detail::fallbackLogger());
     EXPECT_NE(logger->sink(), nullptr); // The fallback logger writes to stderr through a constant-initialized sink.
