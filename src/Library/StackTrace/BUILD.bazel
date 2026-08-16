@@ -1,0 +1,28 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_stack_trace",
+    srcs = [
+        "StackTrace.cpp",
+        "StackTraceOnCrash.cpp",
+    ],
+    hdrs = [
+        "StackTrace.h",
+        "StackTraceOnCrash.h",
+    ],
+    # BACKWARD_HAS_DWARF arrives transitively from @backward_cpp, but copts
+    # don't propagate, so the libdwarf include dir is repeated here.
+    copts = select({
+        "//bazel:linux_flatpak": [],
+        "@platforms//os:linux": ["-I/usr/include/libdwarf"],
+        "//conditions:default": [],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+    ] + select({
+        # backward-cpp doesn't support Android
+        "@platforms//os:android": [],
+        "//conditions:default": ["@backward_cpp"],
+    }),
+)

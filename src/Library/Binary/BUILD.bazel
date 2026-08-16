@@ -1,0 +1,36 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_binary",
+    srcs = [
+        "BinaryExceptions.cpp",
+    ],
+    hdrs = [
+        "BinaryConcepts.h",
+        "BinaryExceptions.h",
+        "BinaryFwd.h",
+        "BinarySerialization.h",
+        "BinaryTags.h",
+        "BlobSerialization.h",
+        "CommonSerialization.h",
+        "PackSerialization.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_binary",
+    testonly = True,
+    srcs = [
+        "Tests/Binary_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_binary",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

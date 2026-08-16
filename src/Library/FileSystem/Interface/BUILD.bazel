@@ -1,0 +1,40 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_filesystem_interface",
+    srcs = [
+        "FileSystem.cpp",
+        "FileSystemException.cpp",
+        "FileSystemPath.cpp",
+        "ReadOnlyFileSystem.cpp",
+    ],
+    hdrs = [
+        "FileSystem.h",
+        "FileSystemEnums.h",
+        "FileSystemException.h",
+        "FileSystemFwd.h",
+        "FileSystemPath.h",
+        "FileSystemPathComponents.h",
+        "FileSystemPathSplit.h",
+        "FileSystemPathView.h",
+        "ReadOnlyFileSystem.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_filesystem_interface",
+    testonly = True,
+    srcs = [
+        "Tests/FileSystemPath_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_filesystem_interface",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

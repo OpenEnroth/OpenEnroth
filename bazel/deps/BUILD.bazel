@@ -1,0 +1,2 @@
+# This package contains .BUILD files used as build_file= in MODULE.bazel http_archive rules.
+# Files ending in .BUILD are not Bazel packages themselves — they are injected into external repos.

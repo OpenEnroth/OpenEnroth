@@ -1,0 +1,76 @@
+# System dependency targets.
+# All src/ targets reference these (e.g. //bazel/system:sdl3). Everything is built
+# from source — there are no prebuilt dependency archives in the bazel build.
+
+# ─── SDL3 ────────────────────────────────────────────────────────────────────
+
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "sdl3",
+    visibility = ["//visibility:public"],
+    deps = ["@sdl3_src//:sdl3"],
+)
+
+# ─── OpenAL ──────────────────────────────────────────────────────────────────
+
+cc_library(
+    name = "openal",
+    visibility = ["//visibility:public"],
+    deps = ["@openal_src//:openal"],
+)
+
+# ─── ZLIB ────────────────────────────────────────────────────────────────────
+
+cc_library(
+    name = "zlib",
+    visibility = ["//visibility:public"],
+    deps = ["@zlib"],
+)
+
+# ─── PNG ─────────────────────────────────────────────────────────────────────
+
+cc_library(
+    name = "png",
+    visibility = ["//visibility:public"],
+    deps = ["@libpng"],
+)
+
+# ─── FFmpeg ──────────────────────────────────────────────────────────────────
+# Stripped-down configure_make() source build on every platform - see
+# bazel/deps/ffmpeg_src.BUILD for the component set and for why the BCR ffmpeg
+# module is not used.
+
+cc_library(
+    name = "ffmpeg",
+    visibility = ["//visibility:public"],
+    deps = ["@ffmpeg_src//:ffmpeg"],
+)
+
+# ─── LuaJIT ──────────────────────────────────────────────────────────────────
+# Native bazel two-stage build on all platforms - see bazel/deps/luajit.BUILD.
+
+cc_library(
+    name = "luajit",
+    visibility = ["//visibility:public"],
+    deps = ["@luajit"],
+)
+
+# ─── OpenGL ──────────────────────────────────────────────────────────────────
+# System-provided on all platforms — no prebuilt archive needed.
+
+cc_library(
+    name = "opengl",
+    linkopts = select({
+        "@platforms//os:linux": ["-lGL"],
+        # Single-string -Wl,-framework,Name dodges Bazel 8 linkopt pair reordering.
+        "@platforms//os:macos": ["-Wl,-framework,OpenGL"],
+        "@platforms//os:windows": ["opengl32.lib"],
+        "@platforms//os:android": [
+            "-lGLESv2",
+            "-lEGL",
+        ],
+        "//conditions:default": [],
+    }),
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,25 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_environment_win",
+    srcs = [
+        "WinEnvironment.cpp",
+    ],
+    hdrs = [
+        "WinEnvironment.h",
+    ],
+    # Registry access (advapi32) and CoTaskMemFree (ole32).
+    linkopts = [
+        "-DEFAULTLIB:advapi32.lib",
+        "-DEFAULTLIB:ole32.lib",
+    ],
+    target_compatible_with = ["@platforms//os:windows"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Environment/Interface:library_environment_interface",
+        "//src/Utility:utility",
+    ],
+    # Eagerly linked: nothing references these objects until link time resolves
+    # createStandardEnvironment(), and lazy --start-lib archives would drop them.
+    alwayslink = True,
+)
