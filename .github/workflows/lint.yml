@@ -1,4 +1,4 @@
-name: Style
+name: Lint
 
 on:
   pull_request: null
@@ -16,65 +16,14 @@ on:
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
 concurrency:
-  group: style-${{ github.event.pull_request.number || github.run_id }}
+  group: lint-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 env:
   LLS_TAG: '3.9.1'
 
 jobs:
-  check_style:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          ref: '${{inputs.myCommit}}'
-
-      # OE builds with lld and with mold, and configure step fails if one is not found. We don't need the linker for
-      # the style checks, but it's easier to just install it than work this around in CMakeLists.
-      - name: Install mold
-        uses: rui314/setup-mold@v1
-        with:
-          mold-version: 2.36.0
-          make-default: false
-
-      - name: Restore cached lua-language-server
-        id: lls-cache
-        uses: actions/cache@v4
-        with:
-          path: 'lua-language-server/build/bin'
-          key: 'lls-cache-${{env.LLS_TAG}}'
-
-      - name: Checkout lua-language-server
-        if: steps.lls-cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: 'LuaLS/lua-language-server'
-          path: 'lua-language-server'
-          ref: '3.9.1'
-
-      - name: Install ninja-build
-        if: steps.lls-cache.outputs.cache-hit != 'true'
-        uses: seanmiddleditch/gha-setup-ninja@v4
-
-      - name: Build lua-language-server
-        if: steps.lls-cache.outputs.cache-hit != 'true'
-        working-directory: lua-language-server
-        run: |
-          ./make.sh
-
-      - name: Configure
-        run: |
-          cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON -DOE_LLS_COMMAND=./lua-language-server/build/bin/lua-language-server
-
-      - name: Check style
-        working-directory: build
-        run: |
-          make check_style
-
-  check_tidy:
+  lint:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -83,6 +32,7 @@ jobs:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
 
+      # The configure step hard-errors on linux unless lld or mold is present.
       - name: Install mold
         uses: rui314/setup-mold@v1
         with:
@@ -100,6 +50,27 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev lld libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison
+
+      - name: Restore cached lua-language-server
+        id: lls-cache
+        uses: actions/cache@v4
+        with:
+          path: 'lua-language-server/build/bin'
+          key: 'lls-cache-${{env.LLS_TAG}}'
+
+      - name: Checkout lua-language-server
+        if: steps.lls-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: 'LuaLS/lua-language-server'
+          path: 'lua-language-server'
+          ref: '3.9.1'
+
+      - name: Build lua-language-server
+        if: steps.lls-cache.outputs.cache-hit != 'true'
+        working-directory: lua-language-server
+        run: |
+          ./make.sh
 
       # Same cached gcc-15 as the build jobs - clang-tidy parses against its libstdc++, the system one is too old.
       - name: Set GCC_PREFIX
@@ -123,11 +94,27 @@ jobs:
         run: |
           pip install --break-system-packages clang-tidy==22.1.8
 
+      # One real configure serves all three checks - clang-tidy needs actual headers
+      # and a compile commands database, so dummy dependencies are gone for good.
       - name: Configure
         run: |
-          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-15 -DCMAKE_CXX_COMPILER=g++-15
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-15 -DCMAKE_CXX_COMPILER=g++-15 -DOE_LLS_COMMAND=./lua-language-server/build/bin/lua-language-server
+
+      # The remaining checks still run when an earlier one fails, so one push
+      # reports every verdict.
+      - name: Check style
+        working-directory: build
+        run: |
+          ninja check_cpp_style
+
+      - name: Check lua style
+        if: '!cancelled()'
+        working-directory: build
+        run: |
+          ninja check_style_lua_scripts
 
       - name: Run clang-tidy
+        if: '!cancelled()'
         working-directory: build
         run: |
           ninja check_tidy
