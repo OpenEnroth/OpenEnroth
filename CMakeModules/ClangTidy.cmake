@@ -1,4 +1,8 @@
 function(init_check_tidy)
+    if(NOT OE_CHECK_TIDY)
+        return()
+    endif()
+
     find_program(OE_CLANG_TIDY_COMMAND clang-tidy)
     find_program(OE_RUN_CLANG_TIDY_COMMAND NAMES run-clang-tidy run-clang-tidy.py)
 
