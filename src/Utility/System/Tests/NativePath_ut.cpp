@@ -28,6 +28,14 @@ UNIT_TEST(NativePath, NativeRoundTrip) {
 
 UNIT_TEST(NativePath, Composition) {
     EXPECT_EQ((NativePath("a/b") / NativePath("c.txt")).toWtf8(), "a/b/c.txt");
+    EXPECT_EQ((NativePath("a") / NativePath("")).toWtf8(), "a");
+    EXPECT_EQ((NativePath("") / NativePath("b")).toWtf8(), "b");
+
+    // A rooted tail replaces the whole path, like it does for std::filesystem::path.
+    EXPECT_EQ((NativePath("a") / NativePath("/b")).toWtf8(), "/b");
+#ifdef _WINDOWS
+    EXPECT_EQ((NativePath("D:/lol") / NativePath("C:/kek")).toWtf8(), "C:/kek"); // Drive letters root a path on Windows only.
+#endif
 }
 
 UNIT_TEST(NativePath, WithExtension) {

@@ -90,8 +90,14 @@ class NativePath {
         return _path.empty();
     }
 
+    /**
+     * @param tail                      Path to append.
+     * @return                          This path with `tail` appended. Like for `std::filesystem::path`, a rooted
+     *                                  `tail` - starting with `/`, or with a drive letter on Windows - replaces
+     *                                  the path entirely.
+     */
     [[nodiscard]] NativePath operator/(const NativePath &tail) const {
-        if (_path.empty())
+        if (isRooted(tail._path) || _path.empty())
             return tail;
         if (tail._path.empty())
             return *this;
@@ -112,6 +118,15 @@ class NativePath {
     friend bool lexical_cast(const std::string &input, NativePath &output) {
         output = NativePath::fromWtf8(input);
         return true;
+    }
+
+ private:
+    static bool isRooted(std::string_view path) {
+#ifdef _WINDOWS
+        if (path.size() >= 2 && path[1] == ':' && ((path[0] | 0x20) >= 'a' && (path[0] | 0x20) <= 'z'))
+            return true; // A drive letter. ':' can't appear in Windows file names, but it can on POSIX.
+#endif
+        return path.starts_with('/');
     }
 
  private:
