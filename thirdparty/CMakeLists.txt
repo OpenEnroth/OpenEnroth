@@ -62,9 +62,12 @@ if(OE_BUILD_TESTS)
     add_subdirectory(googletest EXCLUDE_FROM_ALL)
 endif()
 
-# cpptrace, it pulls libdwarf and zstd in with FetchContent at configure time.
+# cpptrace, it clones libdwarf with FetchContent at configure time. The two options below are libdwarf's and
+# cpptrace's respectively, and they only take effect thanks to the CMP0077 default set at the top of this file.
 if(NOT OE_BUILD_PLATFORM STREQUAL "android")
     set(ENABLE_DECOMPRESSION OFF) # We don't emit compressed debug sections, and libdwarf can't export its zlib dep.
+    set(CPPTRACE_USE_EXTERNAL_ZSTD ON) # Only used for decompression, so this just stops cpptrace downloading it.
+    set(CPPTRACE_DISABLE_CXX_20_MODULES ON) # Nothing imports cpptrace, and module scanning needs a ninja generator.
     add_subdirectory(cpptrace EXCLUDE_FROM_ALL)
 endif()
 
