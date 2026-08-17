@@ -27,13 +27,11 @@ StackTraceOnCrash::StackTraceOnCrash() = default;
 
 #else
 
-namespace {
-
 // Set by whichever handler runs first. Handlers chain into each other - terminate calls abort, and a crash
 // inside a handler re-enters it - and one trace is what's actually useful.
-std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
+static std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
 
-void printCrashTrace() {
+static void printCrashTrace() {
     std::string trace = stackTraceToString();
 
     std::fputs("\nCrashed, stack trace follows:\n", stderr);
@@ -44,7 +42,7 @@ void printCrashTrace() {
 
 // Cpptrace resolves symbols lazily, so the first trace is the one that opens the debug info and allocates.
 // Doing it here means the crash handler doesn't have to do it in an already broken process.
-void warmUpCpptrace() {
+static void warmUpCpptrace() {
     (void) cpptrace::generate_trace(0, 1).to_string();
 }
 
@@ -52,7 +50,7 @@ void warmUpCpptrace() {
 
 // Structured exceptions are what access violations, illegal instructions and division by zero arrive as.
 // Signals cover none of those on windows.
-LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
+static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
     if (!crashHandled.test_and_set())
         printCrashTrace();
 
@@ -61,29 +59,29 @@ LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
-void onAbort(int signal) {
+static void onAbort(int signal) {
     if (!crashHandled.test_and_set())
         printCrashTrace();
 }
 
-void onTerminate() {
+static void onTerminate() {
     if (!crashHandled.test_and_set())
         printCrashTrace();
     std::abort();
 }
 
-void onPureCall() {
+static void onPureCall() {
     if (!crashHandled.test_and_set())
         printCrashTrace();
 }
 
-void onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file, unsigned int line,
+static void onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file, unsigned int line,
                         uintptr_t reserved) {
     if (!crashHandled.test_and_set())
         printCrashTrace();
 }
 
-void installHandlers() {
+static void installHandlers() {
     SetUnhandledExceptionFilter(&onStructuredException);
 
     // Without _CALL_REPORTFAULT abort() pops up the CRT dialog instead of reporting the fault.
@@ -97,7 +95,7 @@ void installHandlers() {
 
 #else
 
-const int handledSignals[] = {
+static const int handledSignals[] = {
     SIGABRT, // abort().
     SIGBUS, // Bad memory access.
     SIGFPE, // Floating point exception.
@@ -110,7 +108,7 @@ const int handledSignals[] = {
     SIGXFSZ, // File size limit exceeded.
 };
 
-void onSignal(int signal, siginfo_t *info, void *context) {
+static void onSignal(int signal, siginfo_t *info, void *context) {
     if (crashHandled.test_and_set())
         _exit(EXIT_FAILURE); // Crashed inside the handler, printing again would just hang or recurse.
 
@@ -121,7 +119,7 @@ void onSignal(int signal, siginfo_t *info, void *context) {
     _exit(EXIT_FAILURE);
 }
 
-void installHandlers() {
+static void installHandlers() {
     // The handler runs on its own stack so that it also works when the crash is stack exhaustion. The default
     // SIGSTKSZ is a few kb, and symbolizing a trace needs orders of magnitude more.
     static char alternateStack[8 * 1024 * 1024];
@@ -144,8 +142,6 @@ void installHandlers() {
 }
 
 #endif
-
-} // namespace
 
 StackTraceOnCrash::StackTraceOnCrash() {
     warmUpCpptrace();
