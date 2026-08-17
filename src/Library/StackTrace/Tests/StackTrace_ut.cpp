@@ -5,19 +5,15 @@
 #include "Library/StackTrace/StackTrace.h"
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
-#ifdef _MSC_VER
-#   define OE_NOINLINE __declspec(noinline)
-#else
-#   define OE_NOINLINE [[gnu::noinline]]
-#endif
+#include "Utility/Preprocessor.h"
 
 // Deliberately not static and not inlined - a stripped binary keeps the symbols that name frames like this one
 // only if the stripping was done right, and there is no other test that would notice if it wasn't.
-OE_NOINLINE std::string oeStackTraceMarkerFunction() {
+MM_NOINLINE std::string oeStackTraceMarkerFunction() {
     return stackTraceToString();
 }
 
-OE_NOINLINE void oeStackTraceCrashingFunction() {
+MM_NOINLINE void oeStackTraceCrashingFunction() {
     volatile int *nowhere = nullptr;
     *nowhere = 1;
 }
