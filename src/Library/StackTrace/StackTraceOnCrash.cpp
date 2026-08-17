@@ -1,6 +1,7 @@
 #include "StackTraceOnCrash.h"
 
 #include <atomic>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
@@ -31,10 +32,12 @@ StackTraceOnCrash::StackTraceOnCrash() = default;
 // inside a handler re-enters it - and one trace is what's actually useful.
 static std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
 
-static void printCrashTrace() {
+static void printCrashTrace(const char *reason) {
     std::string trace = stackTraceToString();
 
-    std::fputs("\nCrashed, stack trace follows:\n", stderr);
+    std::fputs("\nCrashed: ", stderr);
+    std::fputs(reason, stderr);
+    std::fputs("\n", stderr);
     std::fputs(trace.c_str(), stderr);
     std::fputc('\n', stderr);
     std::fflush(stderr);
@@ -51,8 +54,12 @@ static void warmUpCpptrace() {
 // Structured exceptions are what access violations, illegal instructions and division by zero arrive as.
 // Signals cover none of those on windows.
 static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
-    if (!crashHandled.test_and_set())
-        printCrashTrace();
+    if (!crashHandled.test_and_set()) {
+        char reason[128];
+        std::snprintf(reason, sizeof(reason), "exception %#lx at %p",
+                      exceptionInfo->ExceptionRecord->ExceptionCode, exceptionInfo->ExceptionRecord->ExceptionAddress);
+        printCrashTrace(reason);
+    }
 
     // The filter runs on the crashing thread with the faulting frames still below it, so the trace above is
     // the real one. Continuing the search hands the exception to WER and to any attached debugger.
@@ -62,35 +69,36 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
 // Runs inside abort(), which goes on to terminate the process once this returns.
 static void onAbort(int signal) {
     if (!crashHandled.test_and_set())
-        printCrashTrace();
+        printCrashTrace("abort()");
 }
 
 // The three below must not return. A terminate handler that returns is undefined behavior, and returning from
 // the other two resumes a process that just called a pure virtual function or passed garbage into the CRT.
 static void onTerminate() {
     if (!crashHandled.test_and_set())
-        printCrashTrace();
+        printCrashTrace("std::terminate()");
     std::abort();
 }
 
-static void onPureCall() {
+static void __cdecl onPureCall() {
     if (!crashHandled.test_and_set())
-        printCrashTrace();
+        printCrashTrace("pure virtual function call");
     std::abort();
 }
 
-static void onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file,
-                               unsigned int line, uintptr_t reserved) {
+static void __cdecl onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file,
+                                       unsigned int line, uintptr_t reserved) {
     if (!crashHandled.test_and_set())
-        printCrashTrace();
+        printCrashTrace("invalid parameter passed to a CRT function");
     std::abort();
 }
 
 static void installHandlers() {
     SetUnhandledExceptionFilter(&onStructuredException);
 
-    // Without _CALL_REPORTFAULT abort() pops up the CRT dialog instead of reporting the fault.
-    _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+    // Drop the CRT's own abort message, we print a trace instead. _CALL_REPORTFAULT stays on so that abort()
+    // still reaches WER, same as a structured exception does.
+    _set_abort_behavior(0, _WRITE_ABORT_MSG);
     std::signal(SIGABRT, &onAbort);
 
     std::set_terminate(&onTerminate);
@@ -114,10 +122,13 @@ static const int handledSignals[] = {
 };
 
 static void onSignal(int signal, siginfo_t *info, void *context) {
-    if (crashHandled.test_and_set())
-        _exit(EXIT_FAILURE); // Crashed inside the handler, printing again would just hang or recurse.
-
-    printCrashTrace();
+    // Only the first crash prints, a second thread faulting while this one symbolizes would interleave with
+    // it. It still falls through to the raise below - exiting here instead would cost us the core dump.
+    if (!crashHandled.test_and_set()) {
+        char reason[128];
+        std::snprintf(reason, sizeof(reason), "%s at %p", strsignal(info->si_signo), info->si_addr);
+        printCrashTrace(reason);
+    }
 
     // Die of the original signal rather than of us, so that a core dump still happens and whoever launched
     // the process sees it was killed by a SIGSEGV. SA_RESETHAND put the default handler back before we were

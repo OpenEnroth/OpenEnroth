@@ -7,6 +7,7 @@
 #   include <cpptrace/cpptrace.hpp>
 #endif
 
+#include "Utility/Attributes.h"
 #include "Utility/String/Format.h"
 
 #ifdef __ANDROID__
@@ -21,8 +22,8 @@ std::string stackTraceToString() {
 // instead of megabytes of one. Backward-cpp used to stop at 32.
 constexpr size_t MAX_TRACE_DEPTH = 128;
 
-std::string stackTraceToString() {
-    return cpptrace::generate_trace(1, MAX_TRACE_DEPTH).to_string(); // Skip this function itself.
+MM_NOINLINE std::string stackTraceToString() {
+    return cpptrace::generate_trace(1, MAX_TRACE_DEPTH).to_string(); // Skip this function itself, hence the noinline.
 }
 
 #endif
