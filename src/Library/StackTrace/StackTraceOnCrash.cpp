@@ -59,11 +59,14 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
+// Runs inside abort(), which goes on to terminate the process once this returns.
 static void onAbort(int signal) {
     if (!crashHandled.test_and_set())
         printCrashTrace();
 }
 
+// The three below must not return. A terminate handler that returns is undefined behavior, and returning from
+// the other two resumes a process that just called a pure virtual function or passed garbage into the CRT.
 static void onTerminate() {
     if (!crashHandled.test_and_set())
         printCrashTrace();
@@ -73,12 +76,14 @@ static void onTerminate() {
 static void onPureCall() {
     if (!crashHandled.test_and_set())
         printCrashTrace();
+    std::abort();
 }
 
-static void onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file, unsigned int line,
-                        uintptr_t reserved) {
+static void onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file,
+                               unsigned int line, uintptr_t reserved) {
     if (!crashHandled.test_and_set())
         printCrashTrace();
+    std::abort();
 }
 
 static void installHandlers() {
@@ -114,7 +119,9 @@ static void onSignal(int signal, siginfo_t *info, void *context) {
 
     printCrashTrace();
 
-    // SA_RESETHAND has already put the default disposition back, so this is what dumps core.
+    // Die of the original signal rather than of us, so that a core dump still happens and whoever launched
+    // the process sees it was killed by a SIGSEGV. SA_RESETHAND put the default handler back before we were
+    // called, so raising it here is what actually kills us.
     std::raise(info->si_signo);
     _exit(EXIT_FAILURE);
 }
