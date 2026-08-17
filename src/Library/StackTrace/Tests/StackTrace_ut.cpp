@@ -30,9 +30,9 @@ UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 #endif
 }
 
-// The crash path is the one that matters, and it's the one that breaks silently - a handler that traces the
-// wrong thread, or traces nothing at all, still exits with the right signal.
 UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
+    // The crash path is the one that matters, and it's the one that breaks silently - a handler that traces
+    // the wrong thread, or traces nothing at all, still exits with the right signal.
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
 #else
