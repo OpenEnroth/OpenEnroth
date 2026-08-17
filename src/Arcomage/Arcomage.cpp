@@ -2019,16 +2019,15 @@ signed int DrawCardsRectangles(int player_num) {
                 // see if mouse is hovering
                 if (mouseControl && pRect.contains(pArcomageGame->_mousePos) || mouseControl == false && current_card_slot_index == hand_index) {
                     if (CanCardBePlayed(player_num, hand_index))
-                        color = colorTable.White;  // white frame
+                        color = colorTable.White;
                     else
-                        color = colorTable.Red;  // red frame
+                        color = colorTable.Red;
 
                     // draw outline and return
                     DrawRect(&pRect, color, 0);
                     return hand_index;
                 }
 
-                // black frame
                 DrawRect(&pRect, colorTable.Black, 0);
 
                 // unshift rectangle co ords
