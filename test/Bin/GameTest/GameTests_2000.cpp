@@ -1502,14 +1502,22 @@ GAME_TEST(Prs, Pr2626) {
 }
 
 GAME_TEST(Issues, Pr2599) {
-    // Cross-map teleports encode "keep this component" as zero (-1 for yaw), and the kept components must
-    // resolve against the start decoration placement - e.g. the Hidden Tomb exit arrives in Erathia with z=0
-    // and relies on getting the grounded z of the starting point, not height zero.
+    // Cross-map teleports encode "keep this component" as a zero, and a kept component has to survive the map
+    // load. Erathia has no party start decoration, only the four directional ones for foot travel, so a zero
+    // there keeps the party's current coordinate - this is the Hidden Tomb exit, which arrives with z=0.
     game.startNewGame();
+    float zBeforeTeleport = pParty->pos.z;
     game.teleportTo(MAP_ERATHIA, Vec3f(14207, -21526, 0), 270);
     EXPECT_EQ(pParty->pos.x, 14207);
     EXPECT_EQ(pParty->pos.y, -21526);
-    EXPECT_EQ(pParty->pos.z, 193); // Grounded z of Erathia's party start.
+    EXPECT_EQ(pParty->pos.z, zBeforeTeleport);
     EXPECT_EQ(pParty->uFallStartZ, pParty->pos.z);
     EXPECT_EQ(pParty->_viewYaw, 1536);
+
+    // With a start point decoration present the zero takes the decoration's coordinate instead. Castle Navan's
+    // party start is at (0, -1472, 224), so only the zeroed y is substituted.
+    game.teleportTo(MAP_CASTLE_NAVAN, Vec3f(100, 0, 300), 0);
+    EXPECT_EQ(pParty->pos.x, 100);
+    EXPECT_EQ(pParty->pos.y, -1472);
+    EXPECT_EQ(pParty->pos.z, 300);
 }
