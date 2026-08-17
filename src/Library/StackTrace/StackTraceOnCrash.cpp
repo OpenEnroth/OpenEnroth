@@ -19,6 +19,8 @@
 #   include <cstring>
 #endif
 
+#include "Library/StackTrace/StackTrace.h"
+
 #ifdef __ANDROID__
 
 StackTraceOnCrash::StackTraceOnCrash() = default;
@@ -32,7 +34,7 @@ namespace {
 std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
 
 void printCrashTrace() {
-    std::string trace = cpptrace::generate_trace(1).to_string(); // Skip this function itself.
+    std::string trace = stackTraceToString();
 
     std::fputs("\nCrashed, stack trace follows:\n", stderr);
     std::fputs(trace.c_str(), stderr);
