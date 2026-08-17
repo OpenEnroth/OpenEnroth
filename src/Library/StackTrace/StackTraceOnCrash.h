@@ -7,6 +7,12 @@
  * Construct one in `main` before anything else can crash. On POSIX the handlers run on an alternate stack so
  * that they also work when the crash is stack exhaustion, and that stack is per-thread - only the thread that
  * constructs this gets one.
+ *
+ * The handlers are not async-signal-safe, and can't be - symbolizing a trace allocates, reads files and takes
+ * locks. So a crash that happens while another thread holds the malloc lock, or one of cpptrace's, deadlocks
+ * the handler and the process hangs instead of dying. Crashing inside the allocator does the same. This is
+ * what backward-cpp did before it too, and getting rid of it needs a separate tracer process - cpptrace's
+ * signal-safe API only collects raw addresses, and resolving them in the handler is exactly what's unsafe.
  */
 class StackTraceOnCrash {
  public:
