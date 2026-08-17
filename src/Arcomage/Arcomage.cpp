@@ -1313,10 +1313,10 @@ void DrawGameUI(int animation_stage) {
 
     // draw gui items
     DrawRectanglesForText();
-    DrawCards();          //рисуем карты
-    DrawPlayersTowers();  //рисуем башню
-    DrawPlayersWall();    //рисуем стену
-    DrawPlayersText();    //рисуем текст
+    DrawCards();
+    DrawPlayersTowers();
+    DrawPlayersWall();
+    DrawPlayersText();
 
     DrawCardAnimation(animation_stage);
 
@@ -1621,7 +1621,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = tower_top - pSrcXYZW.y;
     pTargetXY.x = 102;
     pTargetXY.y = 297 - tower_top;
-    if (tower_height > 0) render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  //стена башни
+    if (tower_height > 0) render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  // tower body
 
     // draw player 0 top
     pSrcXYZW.y = 0;
@@ -1630,7 +1630,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = 94 - pSrcXYZW.y;
     pTargetXY.y = 203 - tower_top;
     pTargetXY.x = 91;
-    render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  //верхушка башни
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  // tower top
 
     // draw player 1 tower
     tower_height = am_Players[1].tower_height;
@@ -1721,14 +1721,14 @@ void DrawCards() {
                 pSrcXYZW.y = 0;
                 pSrcXYZW.w = 288 - pSrcXYZW.x;
                 pSrcXYZW.h = 128 - pSrcXYZW.y;
-                render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  //рисуется оборотные стороны карт противника
+                render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  // backs of the opponent's cards
             } else {
                 pArcomageGame->GetCardRect(am_Players[current_player_num].cards_at_hand[card_slot], &pSrcXYZW);
                 if (!CanCardBePlayed(current_player_num, card_slot)) {
-                    // рисуются неактивные карты - greyed out
+                    // inactive cards are drawn greyed out
                     render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.Gray);
                 } else {
-                    render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  //рисуются активные карты
+                    render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  // active cards
                 }
             }
         }
@@ -2019,16 +2019,15 @@ signed int DrawCardsRectangles(int player_num) {
                 // see if mouse is hovering
                 if (mouseControl && pRect.contains(pArcomageGame->_mousePos) || mouseControl == false && current_card_slot_index == hand_index) {
                     if (CanCardBePlayed(player_num, hand_index))
-                        color = colorTable.White;  //белый цвет - white frame
+                        color = colorTable.White;
                     else
-                        color = colorTable.Red;  //красный цвет - red frame
+                        color = colorTable.Red;
 
                     // draw outline and return
                     DrawRect(&pRect, color, 0);
                     return hand_index;
                 }
 
-                //рамка чёрного цвета - black frame
                 DrawRect(&pRect, colorTable.Black, 0);
 
                 // unshift rectangle co ords
@@ -2682,7 +2681,6 @@ int ApplyDamageToBuildings(int player_num, int damage) {
     return result;
 }
 
-// TODO(pskelton): translate comments to English
 void GameResultsApply() {
     int winner;               // esi@1
     int victory_type;         // edi@1
@@ -2693,129 +2691,124 @@ void GameResultsApply() {
     winner = -1;
     victory_type = -1;
     // nullsub_1();
-    /*strcpy(pText, "The Winner is: ");//"Победил: " Ritor1: архаизм
-    xy.y = 160;
-    xy.x = 320; //- 12 * v2 / 2;
-    am_DrawText(-1, pText, &xy);*/
 
-    //проверка построена ли башня
+    // Check if a tower was built.
     if (am_Players[0].tower_height < max_tower_height &&
         am_Players[1].tower_height >=
-            max_tower_height) {  //наша башня не построена, а у врага построена
-        winner = 2;  //победил игрок 2(враг)
+            max_tower_height) {  // ours is not built, the enemy's is
+        winner = 2;  // player 2 (the enemy) wins
         victory_type = 0;
     } else if (am_Players[0].tower_height >= max_tower_height &&
                am_Players[1].tower_height <
-                   max_tower_height) {  //наша башня построена, а у врага нет
-        winner = 1;  //победил игрок 1(мы)
+                   max_tower_height) {  // ours is built, the enemy's is not
+        winner = 1;  // player 1 (us) wins
         victory_type = 0;
     } else if (am_Players[0].tower_height >= max_tower_height &&
                am_Players[1].tower_height >=
-                   max_tower_height) {  //и у нас, и у врага построена
+                   max_tower_height) {  // both are built
         if (am_Players[0].tower_height ==
-            am_Players[1].tower_height) {  //наши башни равны
-            winner = 0;        //никто не победил
-            victory_type = 4;  //ничья
-        } else {               //наши башни не равны
+            am_Players[1].tower_height) {  // equal height
+            winner = 0;        // nobody wins
+            victory_type = 4;  // draw
+        } else {               // heights differ
             winner =
                 (am_Players[0].tower_height <= am_Players[1].tower_height) +
-                1;  //победил тот, у кого выше
+                1;  // taller tower wins
             victory_type = 0;
         }
     }
 
-    //проверка разрушена ли башня
+    // Check if a tower was destroyed.
     if (am_Players[0].tower_height <= 0 &&
-        am_Players[1].tower_height > 0) {  //наша башня разрушена, а у врага нет
-        winner = 2;        // победил игрок 2(враг)
-        victory_type = 2;  //победил разрушив башню врага
+        am_Players[1].tower_height > 0) {  // ours is destroyed, the enemy's is not
+        winner = 2;        // player 2 (the enemy) wins
+        victory_type = 2;  // won by tower destruction
     } else if (am_Players[0].tower_height > 0 &&
                am_Players[1].tower_height <=
-                   0) {  //у врага башня разрушена, а у нас нет
-        winner = 1;        //победил игрок 1(мы)
-        victory_type = 2;  //победил разрушив башню врага
+                   0) {  // the enemy's is destroyed, ours is not
+        winner = 1;        // player 1 (us) wins
+        victory_type = 2;  // won by tower destruction
     } else if (am_Players[0].tower_height <= 0 &&
                am_Players[1].tower_height <=
-                   0) {  //наша башня разрушена, и у врага разрушена
+                   0) {  // both are destroyed
         if (am_Players[0].tower_height ==
-            am_Players[1].tower_height) {  //если башни равны
+            am_Players[1].tower_height) {  // equal tower height
             if (am_Players[0].wall_height ==
-                am_Players[1].wall_height) {  //если стены равны
+                am_Players[1].wall_height) {  // equal wall height
                 winner = 0;
                 victory_type = 4;
-            } else {  //если стены не равны
+            } else {  // wall heights differ
                 winner =
                     (am_Players[0].wall_height <= am_Players[1].wall_height) +
-                    1;  //победил тот, у кого стена выше
-                victory_type = 1;  //победа когда больше стена при ничье
+                    1;  // taller wall wins
+                victory_type = 1;  // won on wall height tiebreak
             }
-        } else {  //башни не равны
+        } else {  // tower heights differ
             winner =
                 (am_Players[0].tower_height <= am_Players[1].tower_height) +
-                1;  // побеждает тот у кого башня больше
-            victory_type = 2;  //победил разрушив башню врага
+                1;  // taller tower wins
+            victory_type = 2;  // won by tower destruction
         }
     }
 
-    //проверка набраны ли ресурсы
-    //проверка какого ресурса больше всего у игрока 1(нас)
+    // Check if the resource goal was reached.
+    // Find player 1's (our) most plentiful resource.
     pl_resource =
-        am_Players[0].resource_bricks;  //кирпичей больше чем др. ресурсов
+        am_Players[0].resource_bricks;  // bricks are the most plentiful
     if (am_Players[0].resource_gems > am_Players[0].resource_bricks &&
         am_Players[0].resource_gems >
-            am_Players[0].resource_beasts)  //драг.камней больше всего
+            am_Players[0].resource_beasts)  // gems are the most plentiful
         pl_resource = am_Players[0].resource_gems;
     else if (am_Players[0].resource_beasts > am_Players[0].resource_gems &&
              am_Players[0].resource_beasts >
-                 am_Players[0].resource_bricks)  //зверей больше всего
+                 am_Players[0].resource_bricks)  // beasts are the most plentiful
         pl_resource = am_Players[0].resource_beasts;
 
-    //проверка какого ресурса больше у игрока 2(врага)
+    // Find player 2's (the enemy's) most plentiful resource.
     en_resource =
-        am_Players[1].resource_bricks;  //кирпичей больше чем др. ресурсов
+        am_Players[1].resource_bricks;  // bricks are the most plentiful
     if (am_Players[1].resource_gems > am_Players[1].resource_bricks &&
         am_Players[1].resource_gems >
-            am_Players[1].resource_beasts)  //драг.камней больше всего
+            am_Players[1].resource_beasts)  // gems are the most plentiful
         en_resource = am_Players[1].resource_gems;
     else if (am_Players[1].resource_beasts > am_Players[1].resource_gems &&
              am_Players[1].resource_beasts >
-                 am_Players[1].resource_bricks)  //зверей больше всего
+                 am_Players[1].resource_bricks)  // beasts are the most plentiful
         en_resource = am_Players[1].resource_beasts;
 
-    //сравнение ресурсов игроков
-    if (winner == -1 && victory_type == -1) {  //нет победителя по башням
+    // Compare the players' resources.
+    if (winner == -1 && victory_type == -1) {  // no winner on towers
         if (pl_resource < max_resources_amount &&
             en_resource >=
-                max_resources_amount) {  //враг набрал нужное количество
-            winner = 2;  // враг победил
-            victory_type = 3;  //победа собрав нужное количество ресурсов
+                max_resources_amount) {  // the enemy reached the goal
+            winner = 2;  // the enemy wins
+            victory_type = 3;  // won by resource goal
         } else if (pl_resource >= max_resources_amount &&
                    en_resource <
-                       max_resources_amount) {  //мы набрали нужное количество
-            winner = 1;  // мы победили
-            victory_type = 3;  //победа собрав нужное количество ресурсов
+                       max_resources_amount) {  // we reached the goal
+            winner = 1;  // we win
+            victory_type = 3;  // won by resource goal
         } else if (pl_resource >= max_resources_amount &&
                    en_resource >=
-                       max_resources_amount) {  //и у нас и у врага нужное
-                                                //количество ресурсов
-            if (pl_resource == en_resource) {  // ресурсы равны
-                winner = 0;        //ресурсы равны
-                victory_type = 4;  //ничья
+                       max_resources_amount) {  // both reached the goal
+            if (pl_resource == en_resource) {  // equal resources
+                winner = 0;        // nobody wins
+                victory_type = 4;  // draw
             } else {
                 winner = (pl_resource <= en_resource) +
-                         1;  //ресурсы не равны, побеждает тот у кого больше
-                victory_type = 3;  //победа собрав нужное количество ресурсов
+                         1;  // whoever has more wins
+                victory_type = 3;  // won by resource goal
             }
         }
-    } else if (winner == 0 && victory_type == 4) {  // при ничье по башням и стене
-        if (pl_resource != en_resource) {  //ресурсы не равны
+    } else if (winner == 0 && victory_type == 4) {  // draw so far
+        if (pl_resource != en_resource) {  // resources differ
             winner =
-                (pl_resource <= en_resource) + 1;  //победил тот у кого больше
+                (pl_resource <= en_resource) + 1;  // whoever has more wins
             victory_type =
-                5;  //победа когда при ничье большее количество ресурсов
-        } else {    //ресурсы равны
-            winner = 0;        //нет победителя
-            victory_type = 4;  //ничья
+                5;  // won on resource tiebreak
+        } else {    // equal resources
+            winner = 0;        // nobody wins
+            victory_type = 4;  // draw
         }
     }
 
@@ -2848,7 +2841,7 @@ void GameResultsApply() {
         ++pParty->uNumArcomageWins;
         if (pParty->uNumArcomageWins > 1000000)
             pParty->uNumArcomageWins = 1000000;
-    } else {  //проигрыш
+    } else {  // loss or draw
         for (int i = 0; i < 4; ++i) {
             if (!pParty->pCharacters[i]._achievedAwardsBits[AWARD_FINE]) {
                 pParty->pCharacters[i]._achievedAwardsBits.set(AWARD_ARCOMAGE_LOSES);
