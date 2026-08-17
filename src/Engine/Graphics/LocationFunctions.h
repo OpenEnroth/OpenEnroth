@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/MapEnums.h"
-#include "Engine/Time/Time.h"
 
 #include "LocationInfo.h"
 
@@ -12,4 +11,3 @@ extern LevelType uCurrentlyLoadedLevelType;
 bool GetAlertStatus();
 
 LocationInfo &currentLocationInfo();
-Time &currentLastVisitTime();

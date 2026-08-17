@@ -28,12 +28,3 @@ LocationInfo &currentLocationInfo() {
         return pOutdoor->ddm;
     }
 }
-
-Time &currentLastVisitTime() {
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        return pIndoor->lastVisitTime;
-    } else {
-        assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
-        return pOutdoor->lastVisitTime;
-    }
-}
