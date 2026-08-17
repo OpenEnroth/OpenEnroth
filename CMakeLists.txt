@@ -42,6 +42,15 @@ if(OE_DISTRIBUTION_BUILD)
     add_compile_definitions(OE_DISTRIBUTION_BUILD)
 endif()
 
+# We build with a newer gcc than most distros ship, so a binary that links libstdc++ dynamically fails to start
+# on the machines it was built for with a "version GLIBCXX_x.y.z not found". Link the C++ runtime in instead.
+# This is deliberately not restricted to distribution builds - a dev build that behaves differently from the
+# shipped one is how this class of bug goes unnoticed. The link options are global rather than per target so
+# that the test binaries link the same way the game does.
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_link_options(-static-libstdc++ -static-libgcc)
+endif()
+
 if(OE_USE_PREBUILT_DEPENDENCIES AND OE_USE_DUMMY_DEPENDENCIES)
     message(FATAL_ERROR "Only one of OE_USE_PREBUILT_DEPENDENCIES and OE_USE_DUMMY_DEPENDENCIES must be set.")
 endif()
