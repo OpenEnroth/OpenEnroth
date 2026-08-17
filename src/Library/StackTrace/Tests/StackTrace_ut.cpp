@@ -18,9 +18,19 @@ MM_NOINLINE std::string oeStackTraceMarkerFunction() {
     return trace.empty() ? std::string() : trace;
 }
 
-MM_NOINLINE void oeStackTraceCrashingFunction() {
-    volatile int *nowhere = nullptr;
+// The pointer itself is volatile, not just the pointee - otherwise the compiler knows it's null and drops the
+// store, and at -O2 the process then doesn't crash at all.
+MM_NOINLINE static int oeStackTraceFaultingFunction() {
+    int *volatile nowhere = nullptr;
     *nowhere = 1;
+    return *nowhere;
+}
+
+// The fault is one call deeper so that this frame is a caller rather than the faulting leaf. Unwinding out of
+// a signal recovers the leaf on linux but not on macos, where the trace jumps straight to the caller.
+MM_NOINLINE void oeStackTraceCrashingFunction() {
+    volatile int sink = oeStackTraceFaultingFunction();
+    (void)sink;
 }
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
