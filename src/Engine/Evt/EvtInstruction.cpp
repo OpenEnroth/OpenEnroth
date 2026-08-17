@@ -307,16 +307,16 @@ static std::string getVariableSetStr(EvtVariable type, int value) {
             return fmt::format("ERROR: IsFlying, value");
         case VAR_HiredNPCHasSpeciality:
             return fmt::format("NPCProfession({})", value);
-        case VAR_CircusPrises:
-            return fmt::format("[{}], {}", (int)type, value); // TODO
+        case VAR_CircusPrizes:
+            return fmt::format("CircusPrizes, {}", value);
         case VAR_NumSkillPoints:
             return fmt::format("SkillPoints, {}", value);
         case VAR_MonthIs:
             return fmt::format("ERROR: MonthIs, {}", value);
         case VAR_ReputationInCurrentLocation:
             return fmt::format("LocationReputation, {}", value);
-        case VAR_Unknown1:
-            return fmt::format("[{}], {}", (int)type, value); // TODO
+        case VAR_AlertStatus:
+            return fmt::format("AlertStatus, {}", value);
         case VAR_GoldInBank:
             return fmt::format("GoldInBank, {}", value);
         case VAR_NumDeaths:
@@ -630,16 +630,16 @@ static std::string getVariableCompareStr(EvtVariable type, int value) {
             return fmt::format("Flying");
         case VAR_HiredNPCHasSpeciality:
             return fmt::format("NPCProfession({})", value);
-        case VAR_CircusPrises:
-            return fmt::format("[{}] ? {}", (int)type, value); // TODO
+        case VAR_CircusPrizes:
+            return fmt::format("CircusPrizes >= {}", value);
         case VAR_NumSkillPoints:
             return fmt::format("SkillPoints >= {}", value);
         case VAR_MonthIs:
             return fmt::format("Month == {}", value);
         case VAR_ReputationInCurrentLocation:
             return fmt::format("LocationReputation >= {}", value);
-        case VAR_Unknown1:
-            return fmt::format("[{}] ? {}", (int)type, value); // TODO
+        case VAR_AlertStatus:
+            return fmt::format("AlertStatus == {}", value);
         case VAR_GoldInBank:
             return fmt::format("GoldInBank >= {}", value);
         case VAR_NumDeaths:

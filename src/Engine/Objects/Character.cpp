@@ -3882,7 +3882,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
             return false;
         case VAR_HiredNPCHasSpeciality:
             return CheckHiredNPCSpeciality((NpcProfession)pValue);
-        case VAR_CircusPrises:  // isn't used in MM6 since 0x1D6u is a book of
+        case VAR_CircusPrizes:  // isn't used in MM6 since 0x1D6u is a book of
                                 // regeneration
             v4 = 0;
             for (Character &character : pParty->pCharacters) {
@@ -3931,7 +3931,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
             v19 = &currentLocationInfo();
             return (v19->reputation >= pValue);
 
-        case VAR_Unknown1:
+        case VAR_AlertStatus:
             v21 = &currentLocationInfo();
             return v21->alertStatus == pValue;  // yes, equality, not >=
 
@@ -3959,6 +3959,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_ItemEquipped:
             return wearsItem(static_cast<ItemId>(pValue));
         default:
+            MM_WARNING("Comparing unsupported evt variable {}", std::to_underlying(VarNum));
             return false;
     }
 }
@@ -4542,6 +4543,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
             SetSkillReaction();
             return;
         default:
+            MM_WARNING("Setting unsupported evt variable {}", std::to_underlying(var_type));
             return;
     }
 }
