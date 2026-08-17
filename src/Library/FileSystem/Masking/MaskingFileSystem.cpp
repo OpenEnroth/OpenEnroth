@@ -6,6 +6,7 @@
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
+#include "Utility/String/Encoding.h"
 #include "Utility/String/Join.h"
 
 MaskingFileSystem::MaskingFileSystem(FileSystem *base) : ProxyFileSystem(base) {}
@@ -117,6 +118,6 @@ bool MaskingFileSystem::_remove(FileSystemPathView path) {
 
 std::string MaskingFileSystem::_displayPath(FileSystemPathView path) const {
     if (isMasked(path))
-        return join("masked://", path.string());
+        return join("masked://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
     return ProxyFileSystem::_displayPath(path);
 }

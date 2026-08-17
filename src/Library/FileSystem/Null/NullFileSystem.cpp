@@ -6,6 +6,7 @@
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
+#include "Utility/String/Encoding.h"
 #include "Utility/String/Join.h"
 
 bool NullFileSystem::_exists(FileSystemPathView path) const {
@@ -33,7 +34,7 @@ std::unique_ptr<InputStream> NullFileSystem::_openForReading(FileSystemPathView 
 }
 
 std::string NullFileSystem::_displayPath(FileSystemPathView path) const {
-    return join("null://", path.string());
+    return join("null://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
 [[noreturn]] void NullFileSystem::reportReadError(FileSystemPathView path) const {

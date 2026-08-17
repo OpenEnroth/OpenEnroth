@@ -28,6 +28,17 @@ UNIT_TEST(NativePath, WithExtension) {
     EXPECT_EQ(NativePath::fromWtf8("a/b.json").withExtension("").toWtf8(), "a/b");
 }
 
+UNIT_TEST(NativePath, DisplayString) {
+    EXPECT_EQ(NativePath::fromWtf8("a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt").displayString(), "a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt");
+
+    // WTF-8-encoded surrogates are not valid UTF-8, so they have to come out as replacement characters.
+    std::string display = NativePath::fromWtf8("lol\xed\xb0\x80kek.txt").displayString();
+    EXPECT_TRUE(display.starts_with("lol"));
+    EXPECT_TRUE(display.ends_with("kek.txt"));
+    EXPECT_NE(display.find("\xEF\xBF\xBD"), std::string::npos); // U+FFFD.
+    EXPECT_EQ(display.find("\xed\xb0\x80"), std::string::npos);
+}
+
 UNIT_TEST(NativePath, Absolute) {
     EXPECT_EQ(NativePath().absolute().toStdPath(), std::filesystem::current_path());
     EXPECT_EQ(NativePath::fromWtf8("a").absolute().toStdPath(), std::filesystem::current_path() / "a");
