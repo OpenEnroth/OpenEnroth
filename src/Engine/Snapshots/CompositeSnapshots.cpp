@@ -309,7 +309,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     snapshot(src.doors, &dst->doors);
     snapshot(src.doorsData, &dst->doorsData);
     snapshot(engine->_persistentVariables, &dst->eventVariables);
-    memzero(&dst->weather); // Indoor maps have no weather, only the visit time is meaningful.
+    memzero(&dst->weather); // Indoor maps have no weather.
     dst->lastVisitTime = src.lastVisitTime.ticks();
 }
 
