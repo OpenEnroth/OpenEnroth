@@ -62,11 +62,9 @@ if(OE_BUILD_TESTS)
     add_subdirectory(googletest EXCLUDE_FROM_ALL)
 endif()
 
-# cpptrace. It pulls libdwarf and zstd in with FetchContent at configure time, so configuring needs network
-# access. Don't be tempted by CPPTRACE_USE_EXTERNAL_LIBDWARF to avoid that - it makes cpptrace probe the system
-# include dirs for libdwarf.h, and on a machine that has libdwarf-dev installed it then compiles against those
-# headers, which are years older than the API it calls.
+# cpptrace, it pulls libdwarf and zstd in with FetchContent at configure time.
 if(NOT OE_BUILD_PLATFORM STREQUAL "android")
+    set(ENABLE_DECOMPRESSION OFF) # We don't emit compressed debug sections, and libdwarf can't export its zlib dep.
     add_subdirectory(cpptrace EXCLUDE_FROM_ALL)
 endif()
 
