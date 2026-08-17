@@ -37,7 +37,9 @@ UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
 #else
-    EXPECT_TRUE(oeStackTraceMarkerFunction().contains("oeStackTraceMarkerFunction"));
+    std::string trace = oeStackTraceMarkerFunction();
+
+    EXPECT_TRUE(trace.contains("oeStackTraceMarkerFunction")) << trace;
 #endif
 }
 
