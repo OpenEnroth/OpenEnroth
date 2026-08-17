@@ -18,6 +18,7 @@ set(UTILITY_SOURCES
         String/Wrap.cpp)
 
 set(UTILITY_HEADERS
+        Attributes.h
         Exception.h
         Flags.h
         Hash.h

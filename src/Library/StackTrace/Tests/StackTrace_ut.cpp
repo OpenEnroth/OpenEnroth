@@ -5,10 +5,11 @@
 #include "Library/StackTrace/StackTrace.h"
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
-#include "Utility/Preprocessor.h"
+#include "Utility/Attributes.h"
 
-// Deliberately not static and not inlined - a stripped binary keeps the symbols that name frames like this one
-// only if the stripping was done right, and there is no other test that would notice if it wasn't.
+// This is what guards the toolchain flags and the debug info that stack traces need, and nothing else would
+// notice if a build stopped naming frames. Not inlined so that it gets a frame of its own, and not static
+// because windows drops private symbols from a stripped pdb - linux and macos name static functions fine.
 MM_NOINLINE std::string oeStackTraceMarkerFunction() {
     return stackTraceToString();
 }
