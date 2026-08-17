@@ -16,7 +16,7 @@ bool checkOpenALError() {
     }
 
     const char *message = alGetString(code1);
-    logger->warning("OpenAL: error #{} \"{}\"", code1, message ? message : "");
+    MM_WARNING("OpenAL: error #{} \"{}\"", code1, message ? message : "");
 
     return true;
 }
@@ -44,7 +44,7 @@ bool OpenALSoundProvider::Initialize() {
 
     if (device_names) {
         for (const char *device_name = device_names; device_name[0]; device_name += strlen(device_name) + 1) {
-            logger->info("OpenAL: device found \"{}\"", device_name);
+            MM_INFO("OpenAL: device found \"{}\"", device_name);
         }
     }
 
@@ -53,7 +53,7 @@ bool OpenALSoundProvider::Initialize() {
     device = alcOpenDevice(defname);
     if (device == nullptr) {
         checkOpenALError();
-        logger->warning("OpenAL: Default sound device not present");
+        MM_WARNING("OpenAL: Default sound device not present");
         return false;
     }
 
@@ -125,19 +125,19 @@ void OpenALSoundProvider::DeleteBuffers(StreamingTrackBuffer *track, int type) {
     int count = 0;
     alGetSourcei(track->source_id, type, &count);
     if (checkOpenALError()) {
-        logger->warning("OpenAL: Fail to get buffers count.");
+        MM_WARNING("OpenAL: Fail to get buffers count.");
         assert(false);
     }
     if (count > 0) {
         unsigned int *buffer_ids = new unsigned int[count];
         alSourceUnqueueBuffers(track->source_id, count, buffer_ids);
         if (checkOpenALError()) {
-            logger->warning("OpenAL: Fail to unqueue buffers.");
+            MM_WARNING("OpenAL: Fail to unqueue buffers.");
             assert(false);
         } else {
             alDeleteBuffers(count, buffer_ids);
             if (checkOpenALError()) {
-                logger->warning("OpenAL: Fail to delete buffers.");
+                MM_WARNING("OpenAL: Fail to delete buffers.");
                 assert(false);
             }
         }
@@ -157,7 +157,7 @@ void OpenALSoundProvider::DeleteStreamingTrack(StreamingTrackBuffer **buffer) {
     }
     alSourcei(track->source_id, AL_LOOPING, AL_FALSE);
     if (checkOpenALError()) {
-        logger->warning("OpenAL: Fail to disable looping.");
+        MM_WARNING("OpenAL: Fail to disable looping.");
         assert(false);
     }
 
@@ -201,7 +201,7 @@ OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
                         break;
                 }
             }
-            logger->error("Unsupported number of audio channels: {}", num_channels);
+            MM_ERROR("Unsupported number of audio channels: {}", num_channels);
     }
 
     unsigned int al_source = -1;

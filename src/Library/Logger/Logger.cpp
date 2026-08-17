@@ -11,7 +11,7 @@ static constinit FallbackLogSink fallbackSink;
 
 constinit Logger Logger::fallbackLogger = Logger(detail::detached, LOG_TRACE, &fallbackSink);
 
-constinit Logger *logger = detail::fallbackLogger();
+constinit Logger *detail::logger = detail::fallbackLogger();
 
 Logger::Logger(LogLevel level, LogSink *sink) {
     assert(sink);
@@ -20,16 +20,16 @@ Logger::Logger(LogLevel level, LogSink *sink) {
     _defaultCategory._adjustedLevel = LogCategory::adjustLevel(level);
     _sink = sink;
 
-    assert(logger == &fallbackLogger);
-    logger = this;
+    assert(detail::logger == &fallbackLogger);
+    detail::logger = this;
 }
 
 Logger::~Logger() {
     if (this == &fallbackLogger)
         return;
 
-    assert(logger == this);
-    logger = &fallbackLogger;
+    assert(detail::logger == this);
+    detail::logger = &fallbackLogger;
 }
 
 void Logger::logV(const LogCategory &category, LogLevel level, fmt::string_view fmt, fmt::format_args args) {

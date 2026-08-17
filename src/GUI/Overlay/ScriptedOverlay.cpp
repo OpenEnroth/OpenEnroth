@@ -53,5 +53,5 @@ void ScriptedOverlay::_setErrorHandler(sol::protected_function &function) {
 }
 
 void ScriptedOverlay::_logMissingFunctionWarning(std::string_view functionName) {
-    logger->warning(ScriptingSystem::ScriptingLogCategory, "Missing [{}] function for the Scripted Overlay: {}", functionName, _name);
+    MM_WARNING_IN(ScriptingSystem::ScriptingLogCategory, "Missing [{}] function for the Scripted Overlay: {}", functionName, _name);
 }

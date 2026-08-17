@@ -43,7 +43,7 @@ void loadGame(std::string_view fileName) {
     std::string path = fmt::format("saves/{}", fileName);
     if (!ufs->exists(path)) {
         pAudioPlayer->playUISound(SOUND_error);
-        logger->warning("loadGame: '{}' doesn't exist", fileName);
+        MM_WARNING("loadGame: '{}' doesn't exist", fileName);
         return;
     }
     engine->_lastLoadedSaveFileName = fileName;
@@ -106,7 +106,7 @@ void loadGame(std::string_view fileName) {
     SetUserInterface(pParty->alignment);
 
     if (!pGames_LOD->exists(state.header.locationName)) {
-        logger->error("Unable to find: {}!", state.header.locationName);
+        MM_ERROR("Unable to find: {}!", state.header.locationName);
     }
 
     engine->_transitionMapId = pMapStats->GetMapInfo(state.header.locationName);
@@ -193,7 +193,7 @@ SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path,
         ufs->write(path, blob);
     } catch (const std::exception &e) {
         if (isAutoSave) {
-            logger->warning("saveGame: failed to write autosave: {}", e.what());
+            MM_WARNING("saveGame: failed to write autosave: {}", e.what());
             return {};
         }
         throw;
@@ -259,7 +259,7 @@ void quickLoadGame() {
         uGameState = GAME_STATE_LOADING_GAME;
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     } else {
-        logger->error("QuickLoadGame:: No quick save could be found!");
+        MM_ERROR("QuickLoadGame:: No quick save could be found!");
         pAudioPlayer->playUISound(SOUND_error);
     }
 }

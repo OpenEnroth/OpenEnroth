@@ -172,7 +172,55 @@ namespace detail {
 constexpr Logger *fallbackLogger() {
     return &Logger::fallbackLogger;
 }
+
+extern constinit Logger *logger; // Singleton logger instance, never null - use the macros below.
 } // namespace detail
 
-extern constinit Logger *logger; // Singleton logger instance, never null.
+/**
+ * Logging macros - this is how you log.
+ *
+ * Message arguments are not evaluated when the message is dropped by the log level check.
+ *
+ * The `_IN` variants take a `LogCategory`, the ones without it log into the default category.
+ *
+ * @param LEVEL                         Level to log at.
+ * @param FMT                           Format string, in `fmt::format` form.
+ * @param ...                           Format arguments.
+ */
+#define MM_LOG(LEVEL, FMT, ...) \
+    do { \
+        LogLevel localLevel = (LEVEL); \
+        if (::detail::logger->shouldLog(localLevel)) \
+            ::detail::logger->log(localLevel, (FMT) __VA_OPT__(,) __VA_ARGS__); \
+    } while (false)
+
+/**
+ * Same as `MM_LOG`, but logs into the provided category.
+ *
+ * @param CATEGORY                      `LogCategory` to log into.
+ * @param LEVEL                         Level to log at.
+ * @param FMT                           Format string, in `fmt::format` form.
+ * @param ...                           Format arguments.
+ */
+#define MM_LOG_IN(CATEGORY, LEVEL, FMT, ...) \
+    do { \
+        const LogCategory &localCategory = (CATEGORY); \
+        LogLevel localLevel = (LEVEL); \
+        if (::detail::logger->shouldLog(localCategory, localLevel)) \
+            ::detail::logger->log(localCategory, localLevel, (FMT) __VA_OPT__(,) __VA_ARGS__); \
+    } while (false)
+
+#define MM_TRACE(...) MM_LOG(LOG_TRACE, __VA_ARGS__)
+#define MM_DEBUG(...) MM_LOG(LOG_DEBUG, __VA_ARGS__)
+#define MM_INFO(...) MM_LOG(LOG_INFO, __VA_ARGS__)
+#define MM_WARNING(...) MM_LOG(LOG_WARNING, __VA_ARGS__)
+#define MM_ERROR(...) MM_LOG(LOG_ERROR, __VA_ARGS__)
+#define MM_CRITICAL(...) MM_LOG(LOG_CRITICAL, __VA_ARGS__)
+
+#define MM_TRACE_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_TRACE, __VA_ARGS__)
+#define MM_DEBUG_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_DEBUG, __VA_ARGS__)
+#define MM_INFO_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_INFO, __VA_ARGS__)
+#define MM_WARNING_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_WARNING, __VA_ARGS__)
+#define MM_ERROR_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_ERROR, __VA_ARGS__)
+#define MM_CRITICAL_IN(CATEGORY, ...) MM_LOG_IN(CATEGORY, LOG_CRITICAL, __VA_ARGS__)
 

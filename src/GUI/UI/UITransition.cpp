@@ -212,6 +212,6 @@ void GUIWindow_IndoorEntryExit::Update() {
         unsigned int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(str, transition_window.w, 0)) / 2 + 101;
         DrawTitleText(assets->pFontCreate.get(), 0, vertMargin, colorTable.White, str, 3, transition_window);
     } else {
-        logger->error("Troubles in da house");
+        MM_ERROR("Troubles in da house");
     }
 }

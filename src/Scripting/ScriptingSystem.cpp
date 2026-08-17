@@ -91,7 +91,7 @@ void ScriptingSystem::_initBindingFunction() {
         if (auto itr = _bindings.find(tableName); itr != _bindings.end()) {
             return itr->second->createBindingTable(*_solState);
         }
-        logger->warning(ScriptingLogCategory, "Can't find a binding table with name: {}", tableName);
+        MM_WARNING_IN(ScriptingLogCategory, "Can't find a binding table with name: {}", tableName);
         return _solState->create_table();
     });
 }

@@ -488,7 +488,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
             if (!respawnInitial && days_played - delta.header.info.lastRespawnDay >= respawn_interval_days)
                 respawnTimed = true;
         } catch (const Exception &e) {
-            logger->error("Failed to load '{}', respawning location: {}", ddm_filename, e.what());
+            MM_ERROR("Failed to load '{}', respawning location: {}", ddm_filename, e.what());
             respawnInitial = true;
         }
     }
@@ -1835,7 +1835,7 @@ Color GetLevelFogColor() {
     if (pOutdoor->loc_time.weatherFlags & MAP_WEATHER_FOGGY) {
         if (pWeather->bNight) {  // night-time fog
             if (false) {
-                logger->error("decompilation can be inaccurate, please send savegame to Nomad");
+                MM_ERROR("decompilation can be inaccurate, please send savegame to Nomad");
                 assert(false);
             }
             if (pWeather->bNight) {

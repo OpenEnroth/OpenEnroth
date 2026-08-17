@@ -18,7 +18,7 @@ LogStarter::LogStarter() {
     _rootLogSink->addLogSink(_bufferLogSink.get());
 
     // Quiet down FFMPEG logs a little.
-    logger->setLevel(*LogCategory::instance("ffmpeg"), LOG_ERROR);
+    _logger->setLevel(*LogCategory::instance("ffmpeg"), LOG_ERROR);
 }
 
 LogStarter::~LogStarter() {
@@ -46,7 +46,7 @@ void LogStarter::initialize(FileSystem *userFs, LogLevel logLevel) {
             _userLogSink = std::make_unique<RotatingLogSink>("logs/openenroth.log", userFs);
             _rootLogSink->addLogSink(_userLogSink.get());
         } catch (const std::exception &e) {
-            _logger->log(LOG_ERROR, "Could not open log file for writing: {}", e.what());
+            MM_ERROR("Could not open log file for writing: {}", e.what());
             _userLogSink.reset();
         }
     }

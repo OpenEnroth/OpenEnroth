@@ -181,7 +181,7 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
         //                   there are lots of portals in sight from there
         // drop all sectors beyond config limit
         if (uNumVisibleNotEmptySectors >= engine->config->graphics.MaxVisibleSectors.value()) {
-            logger->warning("Hit visible sector limit but needed to add new one!");
+            MM_WARNING("Hit visible sector limit but needed to add new one!");
         } else {
             AddSector(newNode->uSectorID);
         }

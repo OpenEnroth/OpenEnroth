@@ -418,8 +418,8 @@ Engine::~Engine() {
 }
 
 void Engine::LogEngineBuildInfo() {
-    logger->info("OpenEnroth, revision {} built on {}", gitRevision(), buildTime());
-    logger->info("Extra build information: {}/{}/{} {}", OE_BUILD_PLATFORM, OE_BUILD_ARCHITECTURE, OE_BUILD_COMPILER, PROJECT_VERSION);
+    MM_INFO("OpenEnroth, revision {} built on {}", gitRevision(), buildTime());
+    MM_INFO("Extra build information: {}/{}/{} {}", OE_BUILD_PLATFORM, OE_BUILD_ARCHITECTURE, OE_BUILD_COMPILER, PROJECT_VERSION);
 }
 
 //----- (0044EA5E) --------------------------------------------------------

@@ -49,7 +49,7 @@ bool OpenALAudioDataSource::Open() {
                         break;
                 }
             }
-            logger->error("Unsupported number of audio channels: {}", num_channels);
+            MM_ERROR("Unsupported number of audio channels: {}", num_channels);
     }
 
     while (true) {

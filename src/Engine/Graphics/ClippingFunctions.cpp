@@ -26,7 +26,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
     // return true;  // testing bypass
 
     if (pPortalBounding->vWorldPosition.x == 0 && pPortalBounding->vWorldPosition.y == 0 && pPortalBounding->vWorldPosition.z == 0) {
-        logger->info("no portal bounding");
+        MM_INFO("no portal bounding");
         return true;
     }
 

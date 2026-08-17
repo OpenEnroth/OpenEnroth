@@ -308,7 +308,7 @@ int LevelDecoration::GetGlobalEvent() {
             return 0;
 
         default:
-            logger->error("Invalid DecorationDescID: {}", std::to_underlying(uDecorationDescID));
+            MM_ERROR("Invalid DecorationDescID: {}", std::to_underlying(uDecorationDescID));
             return 0;
     }
 }

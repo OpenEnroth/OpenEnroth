@@ -5,14 +5,11 @@
 #include <vector>
 #include <string>
 
-#include "Library/Logger/Logger.h"
-
 #include "NullPlatformSharedState.h"
 #include "NullWindow.h"
 #include "NullEventLoop.h"
 
 NullPlatform::NullPlatform(NullPlatformOptions options): _state(std::make_unique<NullPlatformSharedState>(std::move(options))) {
-    assert(logger); // Some of NullPlatform classes log.
 }
 
 NullPlatform::~NullPlatform() = default;

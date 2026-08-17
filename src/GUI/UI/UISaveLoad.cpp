@@ -64,7 +64,7 @@ static std::vector<SavegameSlot> loadMenuSlots() {
         try {
             deserialize(ufs->read(fmt::format("saves/{}", entry.name)), &save, tags::via<SaveGameLite_MM7>);
         } catch (const std::exception &e) {
-            logger->warning("Couldn't load savegame '{}': {}", entry.name, e.what()); // Don't list unreadable saves.
+            MM_WARNING("Couldn't load savegame '{}': {}", entry.name, e.what()); // Don't list unreadable saves.
             continue;
         }
         slot.header = save.header;
@@ -85,7 +85,7 @@ static std::vector<SavegameSlot> loadMenuSlots() {
             if (slot.thumbnail->width() == 0)
                 slot.thumbnail = nullptr;
         } catch (const Exception &e) {
-            logger->debug("Savegame thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
+            MM_DEBUG("Savegame thumbnail exception: {}", e.what()); // swallow it - bad pcx thumbnail is fine
             slot.thumbnail = nullptr;
         }
 
@@ -393,7 +393,7 @@ void GUIWindow_Load::quickLoad() {
         _selectedSlot = pos - _slots.begin();
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
     } else {
-        logger->error("QuickLoadGame:: No quick save could be found!");
+        MM_ERROR("QuickLoadGame:: No quick save could be found!");
         pAudioPlayer->playUISound(SOUND_error);
     }
 }

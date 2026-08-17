@@ -27,7 +27,7 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
     // Test target position is valid
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         if (!pIndoor->GetSector(_pos)) {
-            logger->error("TeleportPoint::doTeleport - Cannot GetSector for target position ({}, {}, {}), skipping teleport", _pos.x, _pos.y, _pos.z);
+            MM_ERROR("TeleportPoint::doTeleport - Cannot GetSector for target position ({}, {}, {}), skipping teleport", _pos.x, _pos.y, _pos.z);
             return;
         }
     } else {
@@ -36,12 +36,12 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
         float newFloorLevel = ODM_GetFloorLevel(_pos, &partyIsOnWater, &floorFaceId);
         if (_pos.x < -maxPartyAxisDistance || _pos.x > maxPartyAxisDistance ||
             _pos.y < -maxPartyAxisDistance || _pos.y > maxPartyAxisDistance ) {
-            logger->error("TeleportPoint::doTeleport - Target position ({}, {}, {}) is out of bounds, skipping teleport", _pos.x, _pos.y, _pos.z);
+            MM_ERROR("TeleportPoint::doTeleport - Target position ({}, {}, {}) is out of bounds, skipping teleport", _pos.x, _pos.y, _pos.z);
             return;
         }
         // Warn about teleport height - party will be correctly z positioned on next update
         if (_pos.z < newFloorLevel)
-            logger->warning("TeleportPoint::doTeleport - Target position ({}, {}, {}) is below the floor level of {}", _pos.x, _pos.y, _pos.z, newFloorLevel);
+            MM_WARNING("TeleportPoint::doTeleport - Target position ({}, {}, {}) is below the floor level of {}", _pos.x, _pos.y, _pos.z, newFloorLevel);
     }
 
     Vec3f newPos = pParty->pos;

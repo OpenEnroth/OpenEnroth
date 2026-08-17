@@ -65,7 +65,7 @@ FsmAction MainMenuState::update() {
                 SetCurrentMenuID(MENU_LoadingProcInMainMenu);
                 transition = "quickLoadGame";
             } else {
-                logger->debug("UIMSG_QuickLoad - No quick save could be found!");
+                MM_DEBUG("UIMSG_QuickLoad - No quick save could be found!");
                 pAudioPlayer->playUISound(SOUND_error);
             }
             break;

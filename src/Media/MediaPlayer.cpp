@@ -32,6 +32,8 @@ extern "C" {
 
 #include "GUI/GUIMessageQueue.h"
 
+#include "Library/Logger/Logger.h"
+
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
 #include "Media/FFmpegLogProxy.h"
@@ -76,7 +78,7 @@ class AVStreamWrapper {
         if (dec_ctx != nullptr) {
             // Close the codec and free the context.
             avcodec_free_context(&dec_ctx);
-            logger->trace("ffmpeg: close decoder context file");
+            MM_TRACE("ffmpeg: close decoder context file");
         }
     }
 
@@ -86,7 +88,7 @@ class AVStreamWrapper {
         stream_idx = av_find_best_stream(format_ctx, type_, -1, -1, &dec, 0);
         if (stream_idx < 0) {
             close();
-            logger->warning("ffmpeg: unable to find audio stream");
+            MM_WARNING("ffmpeg: unable to find audio stream");
             return false;
         }
 
@@ -136,13 +138,13 @@ class AVAudioStream : public AVStreamWrapper {
             dec_ctx->sample_rate, &dec_ctx->ch_layout, dec_ctx->sample_fmt,
             dec_ctx->sample_rate, 0, nullptr);
         if (status < 0) {
-            logger->warning("ffmpeg: swr_alloc_set_opts2 failed");
+            MM_WARNING("ffmpeg: swr_alloc_set_opts2 failed");
             swr_free(&converter);
             converter = nullptr;
             return false;
         }
         if (swr_init(converter) < 0) {
-            logger->warning("ffmpeg: swr_init failed");
+            MM_WARNING("ffmpeg: swr_init failed");
             swr_free(&converter);
             converter = nullptr;
             return false;
@@ -338,7 +340,7 @@ class Movie : public IMovie {
         if (format_ctx) {
             // Close the video file
             avformat_close_input(&format_ctx);
-            logger->trace("close video format context file\n");
+            MM_TRACE("close video format context file\n");
             format_ctx = nullptr;
         }
     }
@@ -346,14 +348,14 @@ class Movie : public IMovie {
     bool Load(const std::string &fileName) {  // Загрузка
         // Open video file
         if (avformat_open_input(&format_ctx, fileName.c_str(), nullptr, nullptr) < 0) {
-            logger->warning("ffmpeg: Unable to open input file");
+            MM_WARNING("ffmpeg: Unable to open input file");
             Close();
             return false;
         }
 
         // Retrieve stream information
         if (avformat_find_stream_info(format_ctx, nullptr) < 0) {
-            logger->warning("ffmpeg: Unable to find stream info");
+            MM_WARNING("ffmpeg: Unable to find stream info");
             Close();
             return false;
         }
@@ -364,7 +366,7 @@ class Movie : public IMovie {
         audio.open(format_ctx);
 
         if (!video.open(format_ctx)) {
-            logger->error("Cannot open video stream: {}", fileName);
+            MM_ERROR("Cannot open video stream: {}", fileName);
             Close();
             return false;
         }
@@ -478,17 +480,17 @@ class Movie : public IMovie {
                 if (buffer) buffq.push(std::move(buffer));
             }
         }
-        logger->trace("Audio Packets Queued");
+        MM_TRACE("Audio Packets Queued");
 
         // reset video to start
         int err = avformat_seek_file(format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
         //int err = av_seek_frame(format_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
         if (err < 0) {
-            logger->warning("Seek to start failed! - Exit Movie");
+            MM_WARNING("Seek to start failed! - Exit Movie");
             return;
         }
         start_time = std::chrono::system_clock::now();
-        logger->trace("Video stream reset");
+        MM_TRACE("Video stream reset");
 
         int lastvideopts = -1;
         int desired_frame_number;
@@ -594,17 +596,17 @@ class Movie : public IMovie {
                     if (buffer) _binkBuffer.push(std::move(buffer));
                 }
             }
-            logger->trace("Audio Packets Queued");
+            MM_TRACE("Audio Packets Queued");
 
             // reset video to start
             int err = avformat_seek_file(format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
             //int err = av_seek_frame(format_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
             if (err < 0) {
-                logger->warning("Seek to start failed! - Exit Movie");
+                MM_WARNING("Seek to start failed! - Exit Movie");
                 return false;
             }
             start_time = std::chrono::system_clock::now();
-            logger->trace("Video stream reset");
+            MM_TRACE("Video stream reset");
 
             _lastVideoPts = -1;
             _currentTime = std::chrono::system_clock::now();
@@ -838,7 +840,7 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
     pMovie_Track->Play();
 
     if (pMovie->GetFormat() == "bink") {
-        logger->trace("bink file");
+        MM_TRACE("bink file");
         pMovie->PlayBink();
     } else {
         GraphicsImage *tex = nullptr;
@@ -936,7 +938,7 @@ void MPlayer::Unload() {
 // for video//////////////////////////////////////////////////////////////////
 
 MPlayer::MPlayer() {
-    logProxy = std::make_unique<FFmpegLogProxy>(logger);
+    logProxy = std::make_unique<FFmpegLogProxy>();
     pMovie_Track = nullptr;
 
     if (!provider) {
