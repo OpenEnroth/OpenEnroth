@@ -1715,7 +1715,6 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         }
 
         case UIMSG_Spellbook_ShowHightlightedSpellInfo: {
-            // TODO(pskelton): this used to check if character had the spell activated - no longer required here ??
             if (!pParty->hasActiveCharacter())
                 break;
             SpellId selectedSpell = static_cast<SpellId>(param);
