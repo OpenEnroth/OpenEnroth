@@ -62,17 +62,11 @@ if(OE_BUILD_TESTS)
     add_subdirectory(googletest EXCLUDE_FROM_ALL)
 endif()
 
-# cpptrace, and libdwarf under it. Cpptrace fetches libdwarf with FetchContent, which needs network access at
-# configure time, so FETCHCONTENT_SOURCE_DIR_LIBDWARF points it at our submodule - pinned at the commit cpptrace
-# fetches. Note that CPPTRACE_USE_EXTERNAL_LIBDWARF is not the way to do this. It makes cpptrace probe the system
+# cpptrace. It pulls libdwarf and zstd in with FetchContent at configure time, so configuring needs network
+# access. Don't be tempted by CPPTRACE_USE_EXTERNAL_LIBDWARF to avoid that - it makes cpptrace probe the system
 # include dirs for libdwarf.h, and on a machine that has libdwarf-dev installed it then compiles against those
 # headers, which are years older than the API it calls.
-# Decompression is off because it needs zstd, which is another thing cpptrace would go and fetch. It only buys
-# reading compressed debug sections, and we don't emit those.
 if(NOT OE_BUILD_PLATFORM STREQUAL "android")
-    set(ENABLE_DECOMPRESSION OFF)
-    set(CPPTRACE_USE_EXTERNAL_ZSTD ON)
-    set(FETCHCONTENT_SOURCE_DIR_LIBDWARF ${CMAKE_CURRENT_SOURCE_DIR}/libdwarf_lite)
     add_subdirectory(cpptrace EXCLUDE_FROM_ALL)
 endif()
 

@@ -69,6 +69,3 @@
 [submodule "thirdparty/cpptrace"]
 	path = thirdparty/cpptrace
 	url = https://github.com/jeremy-rifkin/cpptrace.git
-[submodule "thirdparty/libdwarf_lite"]
-	path = thirdparty/libdwarf_lite
-	url = https://github.com/jeremy-rifkin/libdwarf-lite.git
