@@ -36,6 +36,11 @@ MM_NOINLINE void oeStackTraceCrashingFunction() {
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
+#elif defined(__APPLE__)
+    // Cpptrace drops the innermost couple of frames on macos, so the frame this looks for is never in the
+    // trace. CrashHandlerNamesTheCrashingFunction covers symbolization there instead, it asserts on a frame
+    // far enough out to survive.
+    GTEST_SKIP() << "Cpptrace doesn't report the innermost frames on macos.";
 #else
     std::string trace = oeStackTraceMarkerFunction();
 
@@ -48,6 +53,11 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
     // the wrong thread, or traces nothing at all, still exits with the right signal.
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
+#elif defined(_WIN32) && !defined(_WIN64)
+    // Tracing out of an SEH filter needs the CONTEXT record to get back across ntdll's dispatcher, and
+    // cpptrace has no API that takes one. 64-bit gets there anyway on unwind data, 32-bit walks the frame
+    // pointer chain and stops inside ntdll. Crashes still report their exception code and address.
+    GTEST_SKIP() << "Cpptrace can't trace out of an SEH filter on 32-bit windows.";
 #else
     EXPECT_DEATH({
         // Gtest wraps test bodies in __try/__except, and a frame-based handler runs before any unhandled

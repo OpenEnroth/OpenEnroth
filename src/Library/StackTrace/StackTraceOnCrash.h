@@ -8,6 +8,9 @@
  * that they also work when the crash is stack exhaustion, and that stack is per-thread - only the thread that
  * constructs this gets one.
  *
+ * Crashes on 32-bit windows report their exception code and address but no usable trace - getting back across
+ * ntdll's dispatcher needs the CONTEXT record, and cpptrace has no API that takes one.
+ *
  * The handlers are not async-signal-safe, and can't be - symbolizing a trace allocates, reads files and takes
  * locks. So a crash that happens while another thread holds the malloc lock, or one of cpptrace's, deadlocks
  * the handler and the process hangs instead of dying. Crashing inside the allocator does the same. This is
