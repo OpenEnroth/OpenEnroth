@@ -14,7 +14,7 @@ set(OVERLAY_HEADERS
         ScriptedOverlay.h)
 
 add_library(gui_overlay STATIC ${OVERLAY_SOURCES} ${OVERLAY_HEADERS})
-target_check_style(gui_overlay)
+target_check_cpp_style(gui_overlay)
 
 target_link_libraries(gui_overlay
     PUBLIC

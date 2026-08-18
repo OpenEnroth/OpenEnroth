@@ -184,7 +184,7 @@ if(OE_BUILD_PLATFORM STREQUAL "android")
     add_link_options("-Wl,-Bsymbolic")
 endif()
 
-init_check_style()
+init_check_cpp_style()
 init_check_tidy()
 init_check_lua_style()
 resolve_dependencies()

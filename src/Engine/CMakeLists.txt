@@ -50,7 +50,7 @@ set(ENGINE_HEADERS
         Seasons.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
-target_check_style(engine)
+target_check_cpp_style(engine)
 
 target_link_libraries(engine
         PUBLIC
@@ -107,7 +107,7 @@ if(OE_BUILD_TESTS)
     add_library(test_engine OBJECT ${TEST_ENGINE_SOURCES})
     target_link_libraries(test_engine PUBLIC testing_unit engine)
 
-    target_check_style(test_engine)
+    target_check_cpp_style(test_engine)
 
     target_link_libraries(OpenEnroth_GameTest PUBLIC test_engine)
 endif()

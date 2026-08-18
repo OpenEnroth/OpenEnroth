@@ -10,4 +10,4 @@ set(ACROMAGE_HEADERS
 add_library(arcomage STATIC ${ACROMAGE_SOURCES} ${ACROMAGE_HEADERS})
 target_link_libraries(arcomage PUBLIC utility engine gui media library_color)
 
-target_check_style(arcomage)
+target_check_cpp_style(arcomage)

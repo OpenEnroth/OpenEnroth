@@ -14,7 +14,7 @@ set(APPLICATION_STARTUP_HEADERS
         FileSystemStarter.h)
 
 add_library(application_startup STATIC ${APPLICATION_STARTUP_SOURCES} ${APPLICATION_STARTUP_HEADERS})
-target_check_style(application_startup)
+target_check_cpp_style(application_startup)
 
 target_link_libraries(application_startup
         PUBLIC

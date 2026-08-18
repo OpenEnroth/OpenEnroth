@@ -8,4 +8,4 @@ set(LIBRARY_CLI_HEADERS
 
 add_library(library_cli ${LIBRARY_CLI_SOURCES} ${LIBRARY_CLI_HEADERS})
 target_link_libraries(library_cli CLI11::CLI11)
-target_check_style(library_cli)
+target_check_cpp_style(library_cli)
