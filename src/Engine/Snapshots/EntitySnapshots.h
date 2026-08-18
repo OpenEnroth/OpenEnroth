@@ -1207,7 +1207,8 @@ struct BSPModelData_MM7 {
                                     // remnant of the mapping software that was used by NWC. Not used by the engine.
     std::array<char, 32> modelName2; // Sometimes different from the first model name, mainly for boats and chests.
                                      // Why? No idea.
-    int32_t field_40;
+    int32_t visibilityFlagsUnused; // Was a runtime visibility flag, the renderer set bit 0 on every model it
+                                   // drew. Zero in all shipped map data, and OE doesn't read it.
     uint32_t numVertices;
     Pointer_MM7 vertices;
     uint32_t numFaces;
