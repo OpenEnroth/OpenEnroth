@@ -472,7 +472,7 @@ bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
         if (event->isDoubleClick) {
             OnMouseLeftDoubleClick(position);
         } else {
-            OnMouseLeftClick(position);
+            OnMouseLeftClick(position, false);
         }
     } else if (event->button == BUTTON_RIGHT) {
         if (event->isDoubleClick) {

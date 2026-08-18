@@ -106,25 +106,29 @@ void EngineController::releaseKey(PlatformKey key) {
     postEvent(std::move(event));
 }
 
-void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
+void EngineController::postMouseButtonEvent(PlatformEventType type, PlatformMouseButton button, int x, int y,
+                                            bool isDoubleClick) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
-    event->type = EVENT_MOUSE_BUTTON_PRESS;
+    event->type = type;
     event->window = ::application->window();
     event->button = button;
+    if (type == EVENT_MOUSE_BUTTON_RELEASE)
+        event->buttons = button;
     event->pos = render->MapToPresent({ x, y });
-    event->isDoubleClick = false;
+    event->isDoubleClick = isDoubleClick;
     postEvent(std::move(event));
 }
 
+void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
+    postMouseButtonEvent(EVENT_MOUSE_BUTTON_PRESS, button, x, y, false);
+}
+
+void EngineController::pressButtonDoubleClick(PlatformMouseButton button, int x, int y) {
+    postMouseButtonEvent(EVENT_MOUSE_BUTTON_PRESS, button, x, y, true);
+}
+
 void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
-    std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
-    event->type = EVENT_MOUSE_BUTTON_RELEASE;
-    event->window = ::application->window();
-    event->button = button;
-    event->buttons = button;
-    event->pos = render->MapToPresent({ x, y });
-    event->isDoubleClick = false;
-    postEvent(std::move(event));
+    postMouseButtonEvent(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
 }
 
 void EngineController::moveMouse(int x, int y) {
@@ -152,6 +156,15 @@ void EngineController::pressGuiButton(std::string_view buttonId) {
     GUIButton *button = existingButton(buttonId);
     Pointi center = button->rect.center();
     pressAndReleaseButton(BUTTON_LEFT, center.x, center.y);
+}
+
+void EngineController::doubleClickGuiButton(std::string_view buttonId) {
+    GUIButton *button = existingButton(buttonId);
+    Pointi center = button->rect.center();
+    pressAndReleaseButton(BUTTON_LEFT, center.x, center.y); // The platform sends the 1st click as an ordinary one.
+    tick(1); // A click clears the message queue, so the 1st one needs a frame of its own to be seen.
+    pressButtonDoubleClick(BUTTON_LEFT, center.x, center.y);
+    releaseButton(BUTTON_LEFT, center.x, center.y);
 }
 
 void EngineController::goToGame() {
