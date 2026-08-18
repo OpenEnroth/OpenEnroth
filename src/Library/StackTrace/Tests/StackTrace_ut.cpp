@@ -38,17 +38,9 @@ UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
 #else
-    // Macos leaves the innermost frames out, so the marker isn't in its traces. Asserting on a frame that is
-    // still catches the thing this test exists for, which is a build that has stopped naming frames at all.
-#ifdef __APPLE__
-    const char *expected = "main";
-#else
-    const char *expected = "oeStackTraceMarkerFunction";
-#endif
-
     std::string trace = oeStackTraceMarkerFunction();
 
-    EXPECT_TRUE(trace.contains(expected)) << trace;
+    EXPECT_TRUE(trace.contains("oeStackTraceMarkerFunction")) << trace;
 #endif
 }
 
