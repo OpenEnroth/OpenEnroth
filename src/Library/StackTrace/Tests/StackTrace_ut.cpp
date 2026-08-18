@@ -18,9 +18,9 @@ MM_NOINLINE std::string oeStackTraceMarkerFunction() {
     return trace.empty() ? std::string() : trace;
 }
 
-// The pointer itself is volatile, not just the pointee - otherwise the compiler knows it's null and drops the
-// store, and at -O2 the process then doesn't crash at all.
 MM_NOINLINE static int oeStackTraceFaultingFunction() {
+    // Volatile pointer, not pointer to volatile - otherwise the compiler knows it's null and drops the store,
+    // and at -O2 nothing crashes at all.
     int *volatile nowhere = nullptr;
     *nowhere = 1;
     return *nowhere;
