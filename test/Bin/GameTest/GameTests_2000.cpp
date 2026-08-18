@@ -1502,7 +1502,6 @@ GAME_TEST(Prs, Pr2626) {
 GAME_TEST(Issues, Pr2635) {
     // Loading a save and opening the save name editor take a real double click on a slot, and are not
     // triggered by two ordinary clicks on it.
-    ufs->remove("saves");
     game.startNewGame();
     game.tick(2);
 
