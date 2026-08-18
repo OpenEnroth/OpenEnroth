@@ -29,6 +29,8 @@ class NativePath {
     /**
      * Implicit constructor from an ASCII string literal. ASCII-only - it's the only subset that means the same bytes
      * in the compiler's execution charset, in WTF8, and in POSIX file names. Use `fromWtf8` for everything else.
+     *
+     * @param path                      Path as an ASCII string literal.
      */
     NativePath(AsciiLiteral path); // NOLINT: intentionally implicit.
 
