@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
-#include <string>
+#include <string_view>
 
 #ifndef __ANDROID__
 #   include <cpptrace/cpptrace.hpp>
@@ -22,6 +22,8 @@
 
 #include "Library/StackTrace/StackTrace.h"
 
+#include "Utility/String/Format.h"
+
 #ifdef __ANDROID__
 
 StackTraceOnCrash::StackTraceOnCrash() = default;
@@ -32,14 +34,13 @@ StackTraceOnCrash::StackTraceOnCrash() = default;
 // inside a handler re-enters it - and one trace is what's actually useful.
 static std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
 
-static void printCrashTrace(const char *reason) {
-    std::string trace = stackTraceToString();
+static void printCrashTrace(std::string_view reason) {
+    // The reason goes out first and on its own. Building the trace is what can hang, and when it does this is
+    // the only thing anyone gets to see.
+    fmt::println(stderr, "\nCrashed because of {}", reason);
+    std::fflush(stderr);
 
-    std::fputs("\nCrashed: ", stderr);
-    std::fputs(reason, stderr);
-    std::fputs("\n", stderr);
-    std::fputs(trace.c_str(), stderr);
-    std::fputc('\n', stderr);
+    fmt::println(stderr, "{}", stackTraceToString());
     std::fflush(stderr);
 }
 
@@ -62,7 +63,8 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
     }
 
     // The filter runs on the crashing thread with the faulting frames still below it, so the trace above is
-    // the real one. Continuing the search hands the exception to WER and to any attached debugger.
+    // the real one. Continuing the search hands the exception to windows error reporting, which is what
+    // writes the crash dump, and to any attached debugger.
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
@@ -96,8 +98,8 @@ static void __cdecl onInvalidParameter(const wchar_t *expression, const wchar_t 
 static void installHandlers() {
     SetUnhandledExceptionFilter(&onStructuredException);
 
-    // Drop the CRT's own abort message, we print a trace instead. _CALL_REPORTFAULT stays on so that abort()
-    // still reaches WER, same as a structured exception does.
+    // Drop the CRT's own abort message, we print a trace instead. _CALL_REPORTFAULT is left alone so that
+    // abort() still gets a crash dump out of windows error reporting, the way a structured exception does.
     _set_abort_behavior(0, _WRITE_ABORT_MSG);
     std::signal(SIGABRT, &onAbort);
 
