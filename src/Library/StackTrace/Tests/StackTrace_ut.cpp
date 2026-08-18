@@ -38,18 +38,9 @@ UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
 #else
-    // Macos leaves out the two innermost frames, which here are stackTraceToString and the marker itself, so
-    // there the assertion is on a frame further out. It still catches what this test is for, a build that has
-    // stopped naming frames at all.
-#ifdef __APPLE__
-    const char *expected = "main";
-#else
-    const char *expected = "oeStackTraceMarkerFunction";
-#endif
-
     std::string trace = oeStackTraceMarkerFunction();
 
-    EXPECT_TRUE(trace.contains(expected)) << trace;
+    EXPECT_TRUE(trace.contains("oeStackTraceMarkerFunction")) << trace;
 #endif
 }
 
@@ -59,14 +50,6 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
 #else
-    // Macos x86_64 hands back an empty trace once optimizations are on, so there the assertion is only that
-    // the handler ran and said what happened. Everywhere else the crashing frame has to be in there.
-#if defined(__APPLE__) && defined(__x86_64__)
-    const char *expected = "Crashed because of";
-#else
-    const char *expected = "oeStackTraceCrashingFunction";
-#endif
-
     EXPECT_DEATH({
         // Gtest wraps test bodies in __try/__except, and a frame-based handler runs before any unhandled
         // exception filter, so on windows ours would never see the access violation below.
@@ -74,6 +57,6 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
 
         StackTraceOnCrash handler;
         oeStackTraceCrashingFunction();
-    }, expected);
+    }, "oeStackTraceCrashingFunction");
 #endif
 }

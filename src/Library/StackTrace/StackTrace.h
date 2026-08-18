@@ -11,9 +11,6 @@
 constexpr std::size_t MAX_TRACE_DEPTH = 128;
 
 /**
- * Note that the innermost couple of frames don't make it into the trace on macos, so the caller usually isn't
- * in there either.
- *
  * @return                              Stack trace starting at this function, one frame per line. Returns a
  *                                      message saying so on platforms with no stack trace support.
  */
