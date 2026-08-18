@@ -283,12 +283,11 @@ void GUIWindow_Save::slotClicked(int slotIndex, bool isDoubleClick) {
     int slot = _scrollPosition + slotIndex;
     if (slot >= std::ssize(_slots))
         return; // Clicked below the last slot.
-    if (isDoubleClick && _selectedSlot == slot) {
+    _selectedSlot = slot;
+    if (isDoubleClick) {
         keyboardInputHandler->StartTextInput(TextInputType::Text, 19, this);
-        if (!_slots[slot].fileName.empty())
-            keyboardInputHandler->SetTextInput(_slots[slot].header.name);
-    } else {
-        _selectedSlot = slot;
+        if (!selectedSlot().fileName.empty())
+            keyboardInputHandler->SetTextInput(selectedSlot().header.name);
     }
 }
 
@@ -364,11 +363,9 @@ void GUIWindow_Load::slotClicked(int slotIndex, bool isDoubleClick) {
     int slot = _scrollPosition + slotIndex;
     if (slot >= std::ssize(_slots))
         return; // Clicked below the last save.
-    if (isDoubleClick && _selectedSlot == slot) {
+    _selectedSlot = slot;
+    if (isDoubleClick)
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
-    } else {
-        _selectedSlot = slot;
-    }
 }
 
 void GUIWindow_Load::loadButtonPressed() {
