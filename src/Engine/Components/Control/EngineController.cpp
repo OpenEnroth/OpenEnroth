@@ -145,7 +145,12 @@ void EngineController::doubleClickGuiButton(std::string_view buttonId) {
     GUIButton *button = existingButton(buttonId);
     Pointi center = button->rect.center();
     pressAndReleaseButton(BUTTON_LEFT, center.x, center.y); // The platform sends the 1st click as an ordinary one.
-    tick(1); // A click clears the message queue, so the 1st one needs a frame of its own to be seen.
+
+    // Clicking a button clears the message queue before posting into it, and the queue is only drained once a
+    // frame. Without a frame in between, the 2nd click would wipe the 1st one's message before anything reads
+    // it, and only the double click would ever arrive.
+    tick(1);
+
     pressButton(BUTTON_LEFT, center.x, center.y, true);
     releaseButton(BUTTON_LEFT, center.x, center.y);
 }
