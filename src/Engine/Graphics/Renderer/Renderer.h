@@ -51,9 +51,6 @@ class Renderer {
     );
     virtual ~Renderer();
 
-    /**
-     * @throws Exception               On failure.
-     */
     virtual void Initialize() = 0;
 
     virtual RgbaImage ReadScreenPixels() = 0;
