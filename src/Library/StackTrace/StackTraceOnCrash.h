@@ -6,7 +6,10 @@
  *
  * Construct one in `main` before anything else can crash. On POSIX the handlers run on an alternate stack so
  * that they also work when the crash is stack exhaustion, and that stack is per-thread - only the thread that
- * constructs this gets one. Windows has no equivalent, and printing a trace needs stack space that a stack
+ * constructs this gets one, so a stack overflow on a worker thread dies without a trace. Crashes that aren't
+ * stack exhaustion are traced on every thread, the handlers themselves are process-wide.
+ *
+ * Windows has no equivalent, and printing a trace needs stack space that a stack
  * overflow is precisely out of, so an overflow there dies without one. Backward-cpp kept a thread parked at
  * startup to have somewhere to report from, which is what that cost.
  *
