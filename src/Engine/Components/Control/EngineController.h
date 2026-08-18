@@ -56,8 +56,7 @@ class EngineController {
     void pressKey(PlatformKey key);
     void pressAutoRepeatedKey(PlatformKey key);
     void releaseKey(PlatformKey key);
-    void pressButton(PlatformMouseButton button, int x, int y);
-    void pressButtonDoubleClick(PlatformMouseButton button, int x, int y);
+    void pressButton(PlatformMouseButton button, int x, int y, bool isDoubleClick);
     void releaseButton(PlatformMouseButton button, int x, int y);
     void moveMouse(int x, int y);
 
@@ -165,7 +164,7 @@ class EngineController {
  private:
     void goToGameOrMainMenu();
 
-    void postMouseButtonEvent(PlatformEventType type, PlatformMouseButton button, int x, int y, bool isDoubleClick);
+    void pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y, bool isDoubleClick);
 
     GUIButton *existingButton(std::string_view buttonId);
 
