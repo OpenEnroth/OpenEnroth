@@ -184,6 +184,9 @@ if(OE_BUILD_PLATFORM STREQUAL "android")
     add_link_options("-Wl,-Bsymbolic")
 endif()
 
+# Aggregates whichever checks are enabled, so it has to exist before any of them can attach to it.
+add_custom_target(check_style)
+
 init_check_cpp_style()
 init_check_tidy()
 init_check_lua_style()

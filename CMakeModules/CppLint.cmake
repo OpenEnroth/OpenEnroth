@@ -4,7 +4,6 @@ function(init_check_cpp_style)
         set(OE_CPPLINT_COMMAND "${PROJECT_SOURCE_DIR}/thirdparty/cpplint/cpplint.py" CACHE FILEPATH "CppLint command")
         # check_cpp_style is cpplint only. check_style aggregates every check for local use, CI runs them as separate steps.
         add_custom_target(check_cpp_style)
-        add_custom_target(check_style)
         add_dependencies(check_style check_cpp_style)
     endif()
 endfunction()
