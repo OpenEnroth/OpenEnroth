@@ -106,21 +106,6 @@ void EngineController::releaseKey(PlatformKey key) {
     postEvent(std::move(event));
 }
 
-void EngineController::pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y,
-                                            bool isDoubleClick) {
-    assert(type == EVENT_MOUSE_BUTTON_PRESS || type == EVENT_MOUSE_BUTTON_RELEASE);
-
-    std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
-    event->type = type;
-    event->window = ::application->window();
-    event->button = button;
-    if (type == EVENT_MOUSE_BUTTON_RELEASE)
-        event->buttons = button;
-    event->pos = render->MapToPresent({ x, y });
-    event->isDoubleClick = isDoubleClick;
-    postEvent(std::move(event));
-}
-
 void EngineController::pressButton(PlatformMouseButton button, int x, int y, bool isDoubleClick) {
     pressOrReleaseButton(EVENT_MOUSE_BUTTON_PRESS, button, x, y, isDoubleClick);
 }
@@ -445,6 +430,21 @@ void EngineController::goToGameOrMainMenu() {
     // If game is starting up - wait for main menu to appear.
     while (GetCurrentMenuID() == MENU_MAIN && lWindowList.empty())
         ticker.tick();
+}
+
+void EngineController::pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y,
+                                            bool isDoubleClick) {
+    assert(type == EVENT_MOUSE_BUTTON_PRESS || type == EVENT_MOUSE_BUTTON_RELEASE);
+
+    std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
+    event->type = type;
+    event->window = ::application->window();
+    event->button = button;
+    if (type == EVENT_MOUSE_BUTTON_RELEASE)
+        event->buttons = button;
+    event->pos = render->MapToPresent({ x, y });
+    event->isDoubleClick = isDoubleClick;
+    postEvent(std::move(event));
 }
 
 GUIButton *EngineController::existingButton(std::string_view buttonId) {
