@@ -108,6 +108,8 @@ void EngineController::releaseKey(PlatformKey key) {
 
 void EngineController::postMouseButtonEvent(PlatformEventType type, PlatformMouseButton button, int x, int y,
                                             bool isDoubleClick) {
+    assert(type == EVENT_MOUSE_BUTTON_PRESS || type == EVENT_MOUSE_BUTTON_RELEASE);
+
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = type;
     event->window = ::application->window();
