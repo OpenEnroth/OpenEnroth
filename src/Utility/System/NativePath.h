@@ -5,6 +5,7 @@
 #include <string_view>
 #include <utility>
 
+#include "Utility/String/AsciiLiteral.h"
 #include "Utility/String/Format.h"
 
 /**
@@ -25,10 +26,18 @@ class NativePath {
  public:
     NativePath() = default;
 
+    /**
+     * Implicit constructor from an ASCII string literal. ASCII-only - it's the only subset that means the same bytes
+     * in the compiler's execution charset, in WTF8, and in POSIX file names. Use `fromWtf8` for everything else.
+     */
+    NativePath(AsciiLiteral path); // NOLINT: intentionally implicit.
+
     [[nodiscard]] static NativePath fromWtf8(std::string_view path);
 
     [[nodiscard]] static NativePath fromStdPath(std::filesystem::path path) {
-        return NativePath(std::move(path));
+        NativePath result;
+        result._path = std::move(path);
+        return result;
     }
 
     // Deliberately dead for strings of all charsets, see the class docs. Use fromWtf8.
@@ -49,7 +58,7 @@ class NativePath {
      *                                  path resolves to the current directory itself.
      */
     [[nodiscard]] NativePath absolute() const {
-        return NativePath(_path.empty() ? std::filesystem::current_path() : std::filesystem::absolute(_path));
+        return fromStdPath(_path.empty() ? std::filesystem::current_path() : std::filesystem::absolute(_path));
     }
 
     /**
@@ -60,7 +69,7 @@ class NativePath {
     [[nodiscard]] NativePath withExtension(std::string_view extension) const {
         std::filesystem::path result = _path;
         result.replace_extension(fromWtf8(extension).toStdPath());
-        return NativePath(std::move(result));
+        return fromStdPath(std::move(result));
     }
 
     [[nodiscard]] bool isEmpty() const {
@@ -68,7 +77,7 @@ class NativePath {
     }
 
     [[nodiscard]] NativePath operator/(const NativePath &tail) const {
-        return NativePath(_path / tail._path);
+        return fromStdPath(_path / tail._path);
     }
 
     friend auto operator<=>(const NativePath &l, const NativePath &r) = default;
@@ -81,9 +90,6 @@ class NativePath {
         output = NativePath::fromWtf8(input);
         return true;
     }
-
- private:
-    explicit NativePath(std::filesystem::path path) : _path(std::move(path)) {}
 
  private:
     std::filesystem::path _path;

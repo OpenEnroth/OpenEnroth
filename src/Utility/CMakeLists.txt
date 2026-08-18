@@ -45,6 +45,7 @@ set(UTILITY_HEADERS
         Streams/StreamBuffer.h
         System/NativePath.h
         String/Ascii.h
+        String/AsciiLiteral.h
         String/Encoding.h
         String/Join.h
         String/Split.h

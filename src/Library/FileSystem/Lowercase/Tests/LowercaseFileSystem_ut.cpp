@@ -30,7 +30,7 @@ UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
 UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
     MM_AT_SCOPE_EXIT(std::filesystem::remove_all("tmp_dir"));
 
-    DirectoryFileSystem fs0(NativePath::fromWtf8("tmp_dir"));
+    DirectoryFileSystem fs0(NativePath("tmp_dir"));
     fs0.write("a/b/c.bin", Blob());
     fs0.write("a/c/b.bin", Blob());
 
