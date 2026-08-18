@@ -56,7 +56,7 @@ class EngineController {
     void pressKey(PlatformKey key);
     void pressAutoRepeatedKey(PlatformKey key);
     void releaseKey(PlatformKey key);
-    void pressButton(PlatformMouseButton button, int x, int y, bool isDoubleClick);
+    void pressButton(PlatformMouseButton button, int x, int y, bool isDoubleClick = false);
     void releaseButton(PlatformMouseButton button, int x, int y);
     void moveMouse(int x, int y);
 
