@@ -62,11 +62,13 @@ if(OE_BUILD_TESTS)
     add_subdirectory(googletest EXCLUDE_FROM_ALL)
 endif()
 
-# cpptrace, it clones libdwarf with FetchContent at configure time. The two options below are libdwarf's and
-# cpptrace's respectively, and they only take effect thanks to the CMP0077 default set at the top of this file.
+# cpptrace, it clones libdwarf with FetchContent at configure time. The options below are libdwarf's and
+# cpptrace's, and they only take effect thanks to the CMP0077 default set at the top of this file.
 if(NOT OE_BUILD_PLATFORM STREQUAL "android")
-    # Cpptrace picks execinfo on macos, which starts its traces two frames in. Unwind is what the C++ runtime
-    # itself unwinds with, and it reports those frames - it's already the pick everywhere else.
+    # Cpptrace picks execinfo on macos and the libgcc unwinder on every other unix. Execinfo starts its traces
+    # two frames in, so neither the function that asked for a trace nor the one that crashed is in them, and in
+    # optimized builds it returns nothing at all from a signal handler. Unwind is what the C++ runtime unwinds
+    # with, so it's as accurate as the platform gets. Windows is left alone because it wants dbghelp.
     if(NOT OE_BUILD_PLATFORM STREQUAL "windows")
         set(CPPTRACE_UNWIND_WITH_UNWIND ON)
     endif()
