@@ -26,8 +26,9 @@ MM_NOINLINE static int oeStackTraceFaultingFunction() {
     return *nowhere;
 }
 
-// The fault is one call deeper so that this frame is a caller rather than the faulting leaf. Unwinding out of
-// a signal recovers the leaf on linux but not on macos, where the trace jumps straight to the caller.
+// The crash itself is in the function this one calls. Macos leaves the function a signal fired in out of the
+// trace and starts at its caller instead, so a caller is the only kind of frame the test can look for and
+// still find on every platform.
 MM_NOINLINE void oeStackTraceCrashingFunction() {
     volatile int sink = oeStackTraceFaultingFunction();
     (void)sink;
@@ -36,15 +37,18 @@ MM_NOINLINE void oeStackTraceCrashingFunction() {
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
-#elif defined(__APPLE__)
-    // Cpptrace drops the innermost couple of frames on macos, so the frame this looks for is never in the
-    // trace. CrashHandlerNamesTheCrashingFunction covers symbolization there instead, it asserts on a frame
-    // far enough out to survive.
-    GTEST_SKIP() << "Cpptrace doesn't report the innermost frames on macos.";
 #else
+    // Macos leaves the innermost frames out, so the marker isn't in its traces. Asserting on a frame that is
+    // still catches the thing this test exists for, which is a build that has stopped naming frames at all.
+#ifdef __APPLE__
+    const char *expected = "main";
+#else
+    const char *expected = "oeStackTraceMarkerFunction";
+#endif
+
     std::string trace = oeStackTraceMarkerFunction();
 
-    EXPECT_TRUE(trace.contains("oeStackTraceMarkerFunction")) << trace;
+    EXPECT_TRUE(trace.contains(expected)) << trace;
 #endif
 }
 
