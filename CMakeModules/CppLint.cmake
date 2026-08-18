@@ -1,5 +1,5 @@
 function(init_check_style)
-    if(OE_CHECK_STYLE)
+    if(OE_CHECK_CPP_STYLE)
         find_package(Python COMPONENTS Interpreter GLOBAL)
         set(OE_CPPLINT_COMMAND "${PROJECT_SOURCE_DIR}/thirdparty/cpplint/cpplint.py" CACHE FILEPATH "CppLint command")
         # check_cpp_style is cpplint only. check_style aggregates every check for local use, CI runs them as separate steps.
@@ -10,7 +10,7 @@ function(init_check_style)
 endfunction()
 
 function(source_check_style TARGET TARGET_SOURCES)
-    if(OE_CHECK_STYLE)
+    if(OE_CHECK_CPP_STYLE)
         set(TARGET_NAME "check_style_${TARGET}")
 
         set(SOURCES_LIST)
@@ -30,7 +30,7 @@ function(source_check_style TARGET TARGET_SOURCES)
 endfunction()
 
 function(target_check_style TARGET)
-    if(OE_CHECK_STYLE)
+    if(OE_CHECK_CPP_STYLE)
         get_target_property(TARGET_SOURCES ${TARGET} SOURCES)
         source_check_style(${TARGET} "${TARGET_SOURCES}")
     endif()
