@@ -131,7 +131,7 @@ void EngineController::pressAndReleaseKey(PlatformKey key) {
 }
 
 void EngineController::pressAndReleaseButton(PlatformMouseButton button, int x, int y) {
-    pressButton(button, x, y, false);
+    pressButton(button, x, y);
     releaseButton(button, x, y);
 }
 

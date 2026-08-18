@@ -1046,7 +1046,7 @@ GAME_TEST(Issues, Issue2452) {
 
     // Sweep through skill list Y positions and verify at most one tooltip per frame.
     for (int y = 40; y < 200; y++) {
-        game.pressButton(BUTTON_RIGHT, 100, y, false);
+        game.pressButton(BUTTON_RIGHT, 100, y);
         game.tick(1);
         game.releaseButton(BUTTON_RIGHT, 100, y);
         game.tick(1);
@@ -1480,7 +1480,7 @@ GAME_TEST(Issues, Issue2636) {
     game.pressAndReleaseKey(PlatformKey::KEY_C); // Switch to the stats tab.
     game.tick(2);
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
-    game.pressButton(BUTTON_RIGHT, 100, 60, false); // Right-click hold over the Might row shows its tooltip.
+    game.pressButton(BUTTON_RIGHT, 100, 60); // Right-click hold over the Might row shows its tooltip.
     game.tick(2);
     game.releaseButton(BUTTON_RIGHT, 100, 60);
     game.tick(1);
