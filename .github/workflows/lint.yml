@@ -56,7 +56,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: 'lua-language-server/build/bin'
-          key: 'lls-cache-${{env.LLS_TAG}}'
+          key: 'lls-cache-${{env.LLS_TAG}}-${{env.ImageOS}}-${{runner.arch}}'
 
       - name: Checkout lua-language-server
         if: steps.lls-cache.outputs.cache-hit != 'true'
@@ -92,14 +92,18 @@ jobs:
           attempt_limit: 3
           attempt_delay: 5000
           command: |
-            sudo apt-get install -y libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison
+            # gcc-multilib is for the 32-bit libc headers, which --enable-multilib needs to build the
+            # 32-bit libgcc and libstdc++. The rest are gcc's own build prerequisites.
+            sudo apt-get install -y gcc-multilib g++-multilib libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison
 
       - name: Build gcc-15
         if: steps.gcc-cache.outputs.cache-hit != 'true'
         run: bash scripts/build_gcc_15.sh "$GCC_PREFIX"
 
       - name: Add gcc-15 to PATH
-        run: echo "$GCC_PREFIX/bin" >> "$GITHUB_PATH"
+        run: |
+          echo "$GCC_PREFIX/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=$GCC_PREFIX/lib64:$GCC_PREFIX/lib32${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       - name: Install clang-tidy
         run: |
@@ -108,6 +112,7 @@ jobs:
       # One real configure serves all three checks - clang-tidy needs actual headers
       # and a compile commands database, so dummy dependencies are gone for good.
       - name: Configure
+        id: configure
         run: |
           cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-15 -DCMAKE_CXX_COMPILER=g++-15 -DOE_LLS_COMMAND=./lua-language-server/build/bin/lua-language-server
 
@@ -119,13 +124,13 @@ jobs:
           ninja check_cpp_style
 
       - name: Check lua style
-        if: '!cancelled()'
+        if: '!cancelled() && steps.configure.outcome == ''success'''
         working-directory: build
         run: |
           ninja check_style_lua_scripts
 
       - name: Run clang-tidy
-        if: '!cancelled()'
+        if: '!cancelled() && steps.configure.outcome == ''success'''
         working-directory: build
         run: |
           ninja check_tidy
