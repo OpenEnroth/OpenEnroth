@@ -46,8 +46,8 @@ class GUIWindow_SaveLoad : public GUIWindow {
     }
 
     /**
-     * Handles a click on one of the visible slot rows. First click selects the slot, a repeat click starts
-     * renaming in the save menu, and a double click loads in the load menu.
+     * Handles a click on one of the visible slot rows. A single click selects the slot, and a double click on
+     * the selected slot acts on it - loading it in the load menu, renaming it in the save menu.
      *
      * @param slotIndex             Index of the clicked row in the visible part of the list, in [0, 7).
      * @param isDoubleClick         Whether this click is the second click of a double click.

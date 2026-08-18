@@ -57,6 +57,7 @@ class EngineController {
     void pressAutoRepeatedKey(PlatformKey key);
     void releaseKey(PlatformKey key);
     void pressButton(PlatformMouseButton button, int x, int y);
+    void pressButtonDoubleClick(PlatformMouseButton button, int x, int y);
     void releaseButton(PlatformMouseButton button, int x, int y);
     void moveMouse(int x, int y);
 
@@ -70,6 +71,14 @@ class EngineController {
      * @throws Exception                If the button with the provided id doesn't exist.
      */
     void pressGuiButton(std::string_view buttonId);
+
+    /**
+     * Clicks a GUI button twice, the second click carrying the double click flag the platform would set.
+     *
+     * @param buttonId                  Id of the button to click.
+     * @throws Exception                If the button with the provided id doesn't exist.
+     */
+    void doubleClickGuiButton(std::string_view buttonId);
 
     /**
      * Closes all menus and goes to the game screen. Will fail if main menu is currently open.
@@ -155,6 +164,8 @@ class EngineController {
 
  private:
     void goToGameOrMainMenu();
+
+    void postMouseButtonEvent(PlatformEventType type, PlatformMouseButton button, int x, int y, bool isDoubleClick);
 
     GUIButton *existingButton(std::string_view buttonId);
 

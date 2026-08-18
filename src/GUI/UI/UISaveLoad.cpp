@@ -283,12 +283,12 @@ void GUIWindow_Save::slotClicked(int slotIndex, bool isDoubleClick) {
     int slot = _scrollPosition + slotIndex;
     if (slot >= std::ssize(_slots))
         return; // Clicked below the last slot.
-    if (_selectedSlot != slot) {
-        _selectedSlot = slot;
-    } else {
+    if (isDoubleClick && _selectedSlot == slot) {
         keyboardInputHandler->StartTextInput(TextInputType::Text, 19, this);
         if (!_slots[slot].fileName.empty())
             keyboardInputHandler->SetTextInput(_slots[slot].header.name);
+    } else {
+        _selectedSlot = slot;
     }
 }
 

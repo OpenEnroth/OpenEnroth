@@ -243,9 +243,8 @@ void Io::Mouse::UI_OnMouseLeftClick(bool isDoubleClick) {
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
                             engine->_messageQueue->clear();
-                            // Load menu slots load on double click, everything else ignores the click multiplicity.
                             engine->_messageQueue->addMessageCurrentFrame(
-                                control->msg, control->msg_param, control->msg == UIMSG_SelectLoadSlot ? isDoubleClick : 0);
+                                control->msg, control->msg_param, isDoubleClick);
                             return;
                         }
                         continue;
