@@ -6,7 +6,9 @@
  *
  * Construct one in `main` before anything else can crash. On POSIX the handlers run on an alternate stack so
  * that they also work when the crash is stack exhaustion, and that stack is per-thread - only the thread that
- * constructs this gets one.
+ * constructs this gets one. Windows has no equivalent, and printing a trace needs stack space that a stack
+ * overflow is precisely out of, so an overflow there dies without one. Backward-cpp kept a thread parked at
+ * startup to have somewhere to report from, which is what that cost.
  *
  * How much of a trace a crash produces varies. 32-bit windows gets none, because getting back across ntdll's
  * dispatcher needs the CONTEXT record and cpptrace has no API that takes one, and macos x86_64 gets none in
