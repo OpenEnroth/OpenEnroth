@@ -10,9 +10,8 @@
  * stack exhaustion are traced on every thread, the handlers themselves are process-wide. Windows has no
  * alternate stack to run on, so a stack overflow is never traced there.
  *
- * How much of a trace a crash produces varies. 32-bit windows gets none, because getting back across ntdll's
- * dispatcher needs the CONTEXT record and there is no way to hand it over, and macos x86_64 gets none in
- * optimized builds. The signal or exception, and the faulting address, are reported either way.
+ * Macos x86_64 produces no trace at all in optimized builds. The signal or exception and the faulting address
+ * are reported either way.
  *
  * The handlers are not async-signal-safe, and can't be - symbolizing a trace allocates, reads files and takes
  * locks, so a crash while another thread holds one of those hangs the process instead of killing it. Crashing

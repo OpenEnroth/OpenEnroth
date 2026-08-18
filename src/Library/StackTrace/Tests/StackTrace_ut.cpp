@@ -50,13 +50,10 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
 #else
-    // How far cpptrace gets unwinding out of a crash is platform-dependent, so the frame is only asserted on
-    // where it's reachable. Everywhere else this still checks the part that matters most - that the handler
-    // ran at all and said what happened. Tracing out of an SEH filter needs the CONTEXT record to get back
-    // across ntdll's dispatcher and cpptrace takes none, which 64-bit survives on unwind data and 32-bit
-    // doesn't. Macos x86_64 hands back an empty trace once optimizations are on.
-#if (defined(_WIN32) && !defined(_WIN64)) || (defined(__APPLE__) && defined(__x86_64__))
-    const char *expected = "Crashed: ";
+    // Macos x86_64 hands back an empty trace once optimizations are on, so there the assertion is only that
+    // the handler ran and said what happened. Everywhere else the crashing frame has to be in there.
+#if defined(__APPLE__) && defined(__x86_64__)
+    const char *expected = "Crashed because of";
 #else
     const char *expected = "oeStackTraceCrashingFunction";
 #endif

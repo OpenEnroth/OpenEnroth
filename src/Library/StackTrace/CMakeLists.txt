@@ -17,6 +17,11 @@ if (NOT OE_BUILD_PLATFORM STREQUAL "android")
     target_link_libraries(library_stack_trace PRIVATE cpptrace::cpptrace)
 endif ()
 
+# The crash handler walks the stack itself, see the comment on traceFromContext.
+if (OE_BUILD_PLATFORM STREQUAL "windows")
+    target_link_libraries(library_stack_trace PRIVATE dbghelp)
+endif ()
+
 if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_STACK_TRACE_SOURCES
             Tests/StackTrace_ut.cpp)

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <string>
 #include <string_view>
 
 #ifndef __ANDROID__
@@ -12,8 +13,10 @@
 
 #ifdef _WIN32
 #   include <windows.h> // NOLINT: not a C system header.
+#   include <dbghelp.h> // NOLINT: not a C system header.
 #   include <csignal>
 #   include <exception>
+#   include <mutex>
 #elif !defined(__ANDROID__)
 #   include <unistd.h> // NOLINT: not a C++ system header.
 #   include <csignal>
@@ -34,14 +37,21 @@ StackTraceOnCrash::StackTraceOnCrash() = default;
 // inside a handler re-enters it - and one trace is what's actually useful.
 static std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
 
-static void printCrashTrace(std::string_view reason) {
-    // The reason goes out first and on its own. Building the trace is what can hang, and when it does this is
-    // the only thing anyone gets to see.
+// The reason goes out first and on its own. Building a trace is what can hang, and when it does this is the
+// only thing anyone gets to see.
+static void printCrashHeader(std::string_view reason) {
     fmt::println(stderr, "\nCrashed because of {}", reason);
     std::fflush(stderr);
+}
 
-    fmt::println(stderr, "{}", stackTraceToString());
+static void printTrace(std::string_view trace) {
+    fmt::println(stderr, "{}", trace);
     std::fflush(stderr);
+}
+
+static void printCrashTrace(std::string_view reason) {
+    printCrashHeader(reason);
+    printTrace(stackTraceToString());
 }
 
 // Cpptrace resolves symbols lazily, so the first trace is the one that opens the debug info and allocates.
@@ -52,6 +62,61 @@ static void warmUpCpptrace() {
 
 #ifdef _WIN32
 
+// Cpptrace serializes its own dbghelp calls behind this, and dbghelp is single-threaded. Declared rather than
+// included because it lives in cpptrace's internals - a signature change there becomes a link error here,
+// which is the failure mode we want.
+namespace cpptrace {
+inline namespace v1 {
+namespace detail {
+std::unique_lock<std::recursive_mutex> get_dbghelp_lock();
+} // namespace detail
+} // namespace v1
+} // namespace cpptrace
+
+// Walks the stack the exception was raised on, rather than the one the filter is running on. Cpptrace only
+// ever captures the latter, and getting from there back to the fault means crossing ntdll's dispatcher, which
+// has no frame pointers to follow - 64-bit manages it on unwind data, 32-bit doesn't get across at all.
+// Seeding the walk with the faulting context skips that problem instead of solving it.
+static std::string traceFromContext(const CONTEXT &crashContext) {
+    CONTEXT context = crashContext; // StackWalk64 walks by mutating it.
+
+    STACKFRAME64 frame = {};
+    frame.AddrPC.Mode = AddrModeFlat;
+    frame.AddrFrame.Mode = AddrModeFlat;
+    frame.AddrStack.Mode = AddrModeFlat;
+#if defined(_M_IX86)
+    DWORD machineType = IMAGE_FILE_MACHINE_I386;
+    frame.AddrPC.Offset = context.Eip;
+    frame.AddrFrame.Offset = context.Ebp;
+    frame.AddrStack.Offset = context.Esp;
+#elif defined(_M_X64)
+    DWORD machineType = IMAGE_FILE_MACHINE_AMD64;
+    frame.AddrPC.Offset = context.Rip;
+    frame.AddrFrame.Offset = context.Rsp;
+    frame.AddrStack.Offset = context.Rsp;
+#else
+#   error "Unsupported windows architecture."
+#endif
+
+    cpptrace::raw_trace raw;
+    {
+        std::unique_lock<std::recursive_mutex> lock = cpptrace::detail::get_dbghelp_lock();
+
+        // Cpptrace has already done this from the warmup, doing it again is how we stop depending on that.
+        SymInitialize(GetCurrentProcess(), nullptr, TRUE);
+
+        while (raw.frames.size() < MAX_TRACE_DEPTH &&
+               StackWalk64(machineType, GetCurrentProcess(), GetCurrentThread(), &frame,
+                           machineType == IMAGE_FILE_MACHINE_I386 ? nullptr : &context, nullptr,
+                           SymFunctionTableAccess64, SymGetModuleBase64, nullptr) &&
+               frame.AddrPC.Offset != 0) {
+            raw.frames.push_back(static_cast<cpptrace::frame_ptr>(frame.AddrPC.Offset));
+        }
+    }
+
+    return raw.resolve().to_string(); // Takes the same lock, which is why it's recursive.
+}
+
 // Structured exceptions are what access violations, illegal instructions and division by zero arrive as.
 // Signals cover none of those on windows.
 static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
@@ -59,12 +124,12 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
         char reason[128];
         std::snprintf(reason, sizeof(reason), "exception %#lx at %p",
                       exceptionInfo->ExceptionRecord->ExceptionCode, exceptionInfo->ExceptionRecord->ExceptionAddress);
-        printCrashTrace(reason);
+        printCrashHeader(reason);
+        printTrace(traceFromContext(*exceptionInfo->ContextRecord));
     }
 
-    // The filter runs on the crashing thread with the faulting frames still below it, so the trace above is
-    // the real one. Continuing the search hands the exception to windows error reporting, which is what
-    // writes the crash dump, and to any attached debugger.
+    // Continuing the search hands the exception to windows error reporting, which is what writes the crash
+    // dump, and to any attached debugger.
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
