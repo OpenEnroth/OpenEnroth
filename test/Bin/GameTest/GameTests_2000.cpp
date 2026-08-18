@@ -1046,7 +1046,7 @@ GAME_TEST(Issues, Issue2452) {
 
     // Sweep through skill list Y positions and verify at most one tooltip per frame.
     for (int y = 40; y < 200; y++) {
-        game.pressButton(BUTTON_RIGHT, 100, y);
+        game.pressButton(BUTTON_RIGHT, 100, y, false);
         game.tick(1);
         game.releaseButton(BUTTON_RIGHT, 100, y);
         game.tick(1);
@@ -1480,7 +1480,7 @@ GAME_TEST(Issues, Issue2636) {
     game.pressAndReleaseKey(PlatformKey::KEY_C); // Switch to the stats tab.
     game.tick(2);
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
-    game.pressButton(BUTTON_RIGHT, 100, 60); // Right-click hold over the Might row shows its tooltip.
+    game.pressButton(BUTTON_RIGHT, 100, 60, false); // Right-click hold over the Might row shows its tooltip.
     game.tick(2);
     game.releaseButton(BUTTON_RIGHT, 100, 60);
     game.tick(1);
@@ -1500,13 +1500,14 @@ GAME_TEST(Prs, Pr2626) {
 }
 
 GAME_TEST(Issues, Pr2635) {
-    // Save and load slots used to act on the second of two clicks at any speed, so a slow double click on a
-    // load slot loaded a save the player had only meant to select.
+    // The load menu opens with a row already selected, and clicking that row used to load it. The first click
+    // changed nothing on screen because the row was selected already, so the second one loaded a save the
+    // player had only been looking at. Acting on a slot now takes a real double click.
     ufs->remove("saves");
     game.startNewGame();
     game.tick(2);
 
-    // Make a save to load back later.
+    // Save something to load back.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
@@ -1519,7 +1520,31 @@ GAME_TEST(Issues, Pr2635) {
     game.tick(10);
     ASSERT_TRUE(ufs->exists("saves/save000.mm7"));
 
-    // Clicking the selected save slot twice slowly only selects it, the name input stays closed.
+    // Open the load menu and check a row really is selected before anything is clicked.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_LoadGame");
+    game.tick(3);
+    ASSERT_EQ(current_screen_type, SCREEN_LOADGAME);
+    ASSERT_TRUE(saveLoadMenu()->hasSelectedSlot()); // A row is selected before the player clicks anything...
+    ASSERT_EQ(saveLoadMenu()->selectedSlot().fileName, "save000.mm7"); // ...and it's the one Slot0 points at.
+
+    // Clicking the already selected row does nothing, however many times it's clicked slowly.
+    game.pressGuiButton("LoadMenu_Slot0");
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME);
+    game.pressGuiButton("LoadMenu_Slot0");
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME); // This is the click that used to load the save.
+
+    // A double click on it loads.
+    game.doubleClickGuiButton("LoadMenu_Slot0");
+    game.tick(2);
+    game.skipLoadingScreen();
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_GAME);
+
+    // Same rule in the save menu - two slow clicks don't open the name input, a double click does.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
@@ -1530,36 +1555,7 @@ GAME_TEST(Issues, Pr2635) {
     game.tick(2);
     EXPECT_NE(saveLoadMenu()->keyboard_input_status, WINDOW_INPUT_IN_PROGRESS);
 
-    // A double click opens it.
     game.doubleClickGuiButton("SaveMenu_Slot0");
     game.tick(2);
     EXPECT_EQ(saveLoadMenu()->keyboard_input_status, WINDOW_INPUT_IN_PROGRESS);
-
-    // Make a second save so the load menu has a slot that isn't the preselected one. The name input from the
-    // double click above is still open.
-    game.pressAndReleaseKey(PlatformKey::KEY_B);
-    game.tick(2);
-    game.pressGuiButton("SaveMenu_Save");
-    game.tick(10);
-    ASSERT_EQ(ufs->ls("saves").size(), 3); // Autosave plus our two.
-
-    // Same in the load menu - two slow clicks select without loading, a double click loads. Slot 1 is not the
-    // preselected slot, so this also pins that the first of the two clicks is the one doing the selecting.
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick(2);
-    game.pressGuiButton("GameMenu_LoadGame");
-    game.tick(3);
-    game.pressGuiButton("LoadMenu_Slot1");
-    game.tick(2);
-    game.pressGuiButton("LoadMenu_Slot1");
-    game.tick(2);
-    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME); // Still in the menu, nothing was loaded.
-
-    game.pressGuiButton("LoadMenu_Slot0"); // Move the selection away, so the double click has to do the selecting.
-    game.tick(2);
-    game.doubleClickGuiButton("LoadMenu_Slot1");
-    game.tick(2);
-    game.skipLoadingScreen();
-    game.tick(2);
-    EXPECT_EQ(current_screen_type, SCREEN_GAME); // The double click selected and loaded the save.
 }

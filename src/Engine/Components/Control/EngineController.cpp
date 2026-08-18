@@ -106,7 +106,7 @@ void EngineController::releaseKey(PlatformKey key) {
     postEvent(std::move(event));
 }
 
-void EngineController::postMouseButtonEvent(PlatformEventType type, PlatformMouseButton button, int x, int y,
+void EngineController::pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y,
                                             bool isDoubleClick) {
     assert(type == EVENT_MOUSE_BUTTON_PRESS || type == EVENT_MOUSE_BUTTON_RELEASE);
 
@@ -121,16 +121,12 @@ void EngineController::postMouseButtonEvent(PlatformEventType type, PlatformMous
     postEvent(std::move(event));
 }
 
-void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
-    postMouseButtonEvent(EVENT_MOUSE_BUTTON_PRESS, button, x, y, false);
-}
-
-void EngineController::pressButtonDoubleClick(PlatformMouseButton button, int x, int y) {
-    postMouseButtonEvent(EVENT_MOUSE_BUTTON_PRESS, button, x, y, true);
+void EngineController::pressButton(PlatformMouseButton button, int x, int y, bool isDoubleClick) {
+    pressOrReleaseButton(EVENT_MOUSE_BUTTON_PRESS, button, x, y, isDoubleClick);
 }
 
 void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
-    postMouseButtonEvent(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
+    pressOrReleaseButton(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
 }
 
 void EngineController::moveMouse(int x, int y) {
@@ -150,7 +146,7 @@ void EngineController::pressAndReleaseKey(PlatformKey key) {
 }
 
 void EngineController::pressAndReleaseButton(PlatformMouseButton button, int x, int y) {
-    pressButton(button, x, y);
+    pressButton(button, x, y, false);
     releaseButton(button, x, y);
 }
 
@@ -165,7 +161,7 @@ void EngineController::doubleClickGuiButton(std::string_view buttonId) {
     Pointi center = button->rect.center();
     pressAndReleaseButton(BUTTON_LEFT, center.x, center.y); // The platform sends the 1st click as an ordinary one.
     tick(1); // A click clears the message queue, so the 1st one needs a frame of its own to be seen.
-    pressButtonDoubleClick(BUTTON_LEFT, center.x, center.y);
+    pressButton(BUTTON_LEFT, center.x, center.y, true);
     releaseButton(BUTTON_LEFT, center.x, center.y);
 }
 
