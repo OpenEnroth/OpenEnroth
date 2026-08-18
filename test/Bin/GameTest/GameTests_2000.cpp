@@ -1500,9 +1500,8 @@ GAME_TEST(Prs, Pr2626) {
 }
 
 GAME_TEST(Issues, Pr2635) {
-    // The load menu opens with a row already selected, and clicking that row used to load it. The first click
-    // changed nothing on screen because the row was selected already, so the second one loaded a save the
-    // player had only been looking at. Acting on a slot now takes a real double click.
+    // Loading a save and opening the save name editor take a real double click on a slot, and are not
+    // triggered by two ordinary clicks on it.
     ufs->remove("saves");
     game.startNewGame();
     game.tick(2);
@@ -1535,7 +1534,7 @@ GAME_TEST(Issues, Pr2635) {
     EXPECT_EQ(current_screen_type, SCREEN_LOADGAME);
     game.pressGuiButton("LoadMenu_Slot0");
     game.tick(2);
-    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME); // This is the click that used to load the save.
+    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME);
 
     // A double click on it loads.
     game.doubleClickGuiButton("LoadMenu_Slot0");
