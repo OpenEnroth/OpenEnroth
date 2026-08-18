@@ -26,10 +26,10 @@ void initializeHouses(const Blob &houses) {
     //  5: "Name"               - house name                                                (localized)
     //  6: "Proprietor Name"                                                                (localized)
     //  7: "Proprietor Title"                                                               (localized)
-    //  8: "Picture"            - always 0                                                  (not used)
-    //  9: "State"              - always 0                                                  (not used)
-    // 10: "Rep"                - always 0, reputation?                                     (not used)
-    // 11: "Per"                - always 0                                                  (not used)
+    //  8: "Picture"            - always 0                                                  (not used in MM7)
+    //  9: "State"              - always 0                                                  (not used in MM7)
+    // 10: "Rep"                - always 0, reputation?                                     (not used in MM7)
+    // 11: "Per"                - always 0                                                  (not used in MM7)
     // 12: "Val"                - shop price multiplier, float
     // 13: "A"                  - skill/spell price multiplier, float
     // 14: "B"                  - always empty
@@ -42,7 +42,7 @@ void initializeHouses(const Blob &houses) {
     // 20: "Pic"                - exit picture id                                           (not used in MM7)
     // 21: "Map"                - exit map id                                               (not used in MM7)
     // 22: "Restrictions"       - exit gating quest bit                                     (not used in MM7)
-    // 23: "Text"               - exit text                                                 (not used)
+    // 23: "Text"               - exit text                                                 (not used in MM7)
     static const std::map<std::string, HouseType, ascii::NoCaseLess> houseTypeMap = {
         {"Weapon Shop", HOUSE_TYPE_WEAPON_SHOP},
         {"Armor Shop", HOUSE_TYPE_ARMOR_SHOP},
