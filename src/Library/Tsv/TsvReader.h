@@ -6,8 +6,8 @@
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
-#include "Utility/SmallVector.h"
 #include "Utility/View.h"
 
 #include "TsvLine.h"
@@ -86,7 +86,7 @@ class TsvReader : public ViewInterface<TsvReader> {
     size_t _lineNumber = 0; // 1-based number of the current line.
     std::string_view _line;
     bool _empty = false; // Whether all cells of the current line are empty.
-    gch::small_vector<std::string_view, 64> _cells;
+    std::vector<std::string_view> _cells;
     // Holds the unquoted text of the cells that needed un-doubling, which is a rarity. A deque because
     // references into it must survive the pushes that happen while the rest of the line is parsed.
     std::deque<std::string> _scratch;
