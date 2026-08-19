@@ -54,7 +54,7 @@ struct DirectoryEntry {
 /**
  * File system interface.
  *
- * All user-facing methods take paths as UTF8-encoded `std::string_view`s, and users are expected to just use
+ * All user-facing methods take paths as UTF-8 encoded `std::string_view`s, and users are expected to just use
  * `std::string`s to store paths.
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. Both `".."` and `"."`
