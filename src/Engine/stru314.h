@@ -2,6 +2,8 @@
 
 #include "Library/Geometry/Vec.h"
 
+// TODO(captainurist): this is a facet plane plus a decal basis - rename the struct and its field_* members
+//                     accordingly.
 struct stru314 {  // facet normals face / wall / celings
     //----- (00489B60) --------------------------------------------------------
     stru314() {
