@@ -119,7 +119,7 @@ bool DirectoryFileSystem::_remove(FileSystemPathView path) {
 }
 
 std::string DirectoryFileSystem::_displayPath(FileSystemPathView path) const {
-    return makeBasePath(path).toWtf8();
+    return makeBasePath(path).displayString();
 }
 
 NativePath DirectoryFileSystem::makeBasePath(FileSystemPathView path) const {

@@ -1,4 +1,5 @@
 #include <ranges>
+#include <string>
 #include <utility>
 #include <memory>
 #include <vector>
@@ -199,6 +200,18 @@ UNIT_TEST(MemoryFileSystem, Overwrite) {
     output->close();
 
     EXPECT_EQ(fs.read("a").str(), "A");
+}
+
+UNIT_TEST(MemoryFileSystem, DisplayPathInvalidUtf8) {
+    // displayPath guarantees valid UTF-8, and file names can be arbitrary bytes, e.g. when round-tripped through
+    // an ls of a DirectoryFileSystem on POSIX.
+    MemoryFileSystem fs("mem");
+
+    std::string display = fs.displayPath("lol\xD0kek"); // "\xD0" starts an incomplete UTF-8 sequence.
+    EXPECT_TRUE(display.starts_with("mem://lol"));
+    EXPECT_TRUE(display.ends_with("kek"));
+    EXPECT_NE(display.find("\xEF\xBF\xBD"), std::string::npos); // U+FFFD.
+    EXPECT_EQ(display.find('\xD0'), std::string::npos);
 }
 
 UNIT_TEST(MemoryFileSystem, DisplayPath) {

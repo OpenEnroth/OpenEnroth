@@ -147,7 +147,8 @@ class FileSystem {
     /**
      * @param path                      Path inside this file system. The passed path is not required to exist.
      * @return                          A path string that's suitable to be displayed to the user. E.g. an absolute path
-     *                                  on the underlying OS file system.
+     *                                  on the underlying OS file system. Always valid UTF-8, with everything that's
+     *                                  not valid UTF-8 replaced with U+FFFD, so it might not map back to a real path.
      */
     [[nodiscard]] std::string displayPath(std::string_view path) const;
     [[nodiscard]] std::string displayPath(FileSystemPathView path) const;

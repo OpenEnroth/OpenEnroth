@@ -19,7 +19,7 @@ FileOutputStream::~FileOutputStream() {
 void FileOutputStream::open(const NativePath &path, size_t bufferSize) {
     assert(bufferSize > 0);
 
-    std::string pathString = path.absolute().toWtf8(); // Display path. Absolute, so that it's still meaningful in logs.
+    std::string displayString = path.absolute().displayString(); // Absolute, so that it's still meaningful in logs.
 
     // Wide fopen on Windows - the narrow one converts the path per the C locale.
 #ifdef _WINDOWS
@@ -28,14 +28,14 @@ void FileOutputStream::open(const NativePath &path, size_t bufferSize) {
     _file = fopen(path.toStdPath().c_str(), "wb");
 #endif
     if (!_file)
-        Exception::throwFromErrno(pathString);
+        Exception::throwFromErrno(displayString);
 
     // Disable libc buffering, we manage our own buffer.
     if (setvbuf(_file, nullptr, _IONBF, 0) != 0)
-        Exception::throwFromErrno(pathString);
+        Exception::throwFromErrno(displayString);
 
     _bufSize = bufferSize;
-    base_type::open({}, pathString);
+    base_type::open({}, displayString);
 }
 
 void FileOutputStream::_overflow(Buffer *buffer, const void *data, size_t size) {
