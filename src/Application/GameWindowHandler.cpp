@@ -432,7 +432,7 @@ void GameWindowHandler::OnToggleWindowMode() {
 }
 
 void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat) {
-    OnChar(key, -1);
+    bool hotkeyHandled = OnChar(key, -1);
 
     if (!isAutoRepeat) {
         // Do not use autorepeat for game actions, only for text input
@@ -441,7 +441,9 @@ void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, 
 
     char c = PlatformKeyToChar(key, mods);
 
-    if (c != 0)
+    // Skip the char call when a button hotkey already consumed the key, both calls fall through to
+    // GUI_HandleHotkey and the button message would be posted twice.
+    if (c != 0 && !hotkeyHandled)
         OnChar(key, c);
 }
 
