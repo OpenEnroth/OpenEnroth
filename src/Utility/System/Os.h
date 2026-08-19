@@ -80,4 +80,17 @@ bool remove(const NativePath &path);
  */
 void mkdirs(const NativePath &path);
 
+/**
+ * @return                              Current working directory.
+ */
+[[nodiscard]] NativePath cwd();
+
+/**
+ * @param path                          Path to resolve.
+ * @return                              Absolute copy of `path`, resolved against the current directory. An empty path
+ *                                      resolves to the current directory itself.
+ * @throws Exception                    If the path couldn't be resolved.
+ */
+[[nodiscard]] NativePath absolute(const NativePath &path);
+
 } // namespace os

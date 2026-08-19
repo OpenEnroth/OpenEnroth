@@ -13,7 +13,7 @@
 #include "Utility/System/Os.h"
 
 DirectoryFileSystem::DirectoryFileSystem(const NativePath &root) {
-    _root = root.absolute();
+    _root = os::absolute(root);
 }
 
 DirectoryFileSystem::~DirectoryFileSystem() = default;

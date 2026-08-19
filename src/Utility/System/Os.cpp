@@ -4,7 +4,10 @@
 #include <filesystem>
 #include <string>
 #include <system_error>
+#include <utility>
 #include <vector>
+
+#include "Utility/Exception.h"
 
 bool os::exists(const NativePath &path) {
     std::error_code ec;
@@ -63,4 +66,18 @@ bool os::remove(const NativePath &path) {
 
 void os::mkdirs(const NativePath &path) {
     std::filesystem::create_directories(path.toStdPath());
+}
+
+NativePath os::cwd() {
+    return NativePath::fromStdPath(std::filesystem::current_path());
+}
+
+NativePath os::absolute(const NativePath &path) {
+    // An explicit isEmpty() check b/c libstdc++ std::filesystem::absolute chokes on an empty path.
+    std::error_code ec;
+    std::filesystem::path result =
+        path.isEmpty() ? std::filesystem::current_path(ec) : std::filesystem::absolute(path.toStdPath(), ec);
+    if (ec)
+        throw Exception("Couldn't resolve native path '{}': {}", path, ec.message());
+    return NativePath::fromStdPath(std::move(result));
 }

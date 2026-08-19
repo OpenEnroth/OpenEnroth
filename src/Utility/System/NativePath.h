@@ -70,14 +70,6 @@ class NativePath {
     [[nodiscard]] std::string displayString() const;
 
     /**
-     * @return                          Absolute copy of this path, resolved against the current directory. An empty
-     *                                  path resolves to the current directory itself.
-     */
-    [[nodiscard]] NativePath absolute() const {
-        return fromStdPath(_path.empty() ? std::filesystem::current_path() : std::filesystem::absolute(_path));
-    }
-
-    /**
      * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
      *                                  the extension. WTF-8 on Windows, byte string on POSIX.
      * @return                          Copy of this path with the extension replaced.
