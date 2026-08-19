@@ -10,6 +10,9 @@
  * Where the party ends up, in absolute map coordinates.
  */
 struct PartyPlacement {
+    PartyPlacement() = default;
+    PartyPlacement(const Vec3f &pos, int yaw, int pitch, int zSpeed) : pos(pos), yaw(yaw), pitch(pitch), zSpeed(zSpeed) {}
+
     Vec3f pos;
     int yaw = -1; // -1 keeps the current yaw, as in the evt data.
     int pitch = 0;
