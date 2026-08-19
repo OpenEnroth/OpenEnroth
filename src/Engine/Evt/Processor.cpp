@@ -151,8 +151,6 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
         return;
     }
 
-    cancelEventProcessing = false;
-
     EvtInterpreter interpreter;
     MM_TRACE("Executing regular event starting from step {}", startStep);
     if (activeLevelDecoration) {

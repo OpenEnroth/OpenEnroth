@@ -8,9 +8,6 @@
 
 #include "Library/Geometry/Vec.h"
 
-// Set from inside a running event script to abort it, e.g. when the script tries to take more gold than the party has.
-extern bool cancelEventProcessing;
-
 // EvtInterpreter
 class EvtInterpreter {
  public:
@@ -31,6 +28,7 @@ class EvtInterpreter {
      bool _canShowOption = true;
      bool _readyToExit = false;
      bool _mapExitTriggered = false;
+     bool _cancelled = false; // Set when a script asks for more than the party has, e.g. gold, and aborts it.
      EvtTargetCharacter _who = CHOOSE_PARTY;
 };
 

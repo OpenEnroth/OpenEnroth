@@ -76,7 +76,11 @@ class Character {
 
     void SetVariable(EvtVariable var, signed int a3);
     void AddVariable(EvtVariable var, signed int val);
-    void SubtractVariable(EvtVariable VarNum, signed int pValue);
+    /**
+     * @return                          False if the subtraction could not be performed, e.g. the party doesn't have
+     *                                  enough gold. A script that hits this is aborted.
+     */
+    [[nodiscard]] bool SubtractVariable(EvtVariable VarNum, signed int pValue);
     bool CompareVariable(EvtVariable VarNum, signed int pValue);
 
     /**
