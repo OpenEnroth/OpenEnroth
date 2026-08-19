@@ -46,7 +46,7 @@ class Environment {
     [[nodiscard]] virtual std::string path(EnvironmentPath path) const = 0;
 
     /**
-     * Same as `std::getenv`, but doesn't depend on the C locale.
+     * Same as `std::getenv`.
      *
      * Note that on Windows `std::getenv` doesn't switch to UTF8 even if `UnicodeCrt` is used
      * (aka `std::setlocale(LC_ALL, ".UTF-8")`).
