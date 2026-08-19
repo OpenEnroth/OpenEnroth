@@ -14,7 +14,8 @@ struct PartyPlacement {
     PartyPlacement(const Vec3f &pos, int yaw, int pitch, int zSpeed) : pos(pos), yaw(yaw), pitch(pitch), zSpeed(zSpeed) {}
 
     Vec3f pos;
-    int yaw = -1; // -1 keeps the current yaw, as in the evt data.
+    int yaw = -1; // -1 keeps the current yaw. Shipped scripts use it for the in-map teleporters in the Erathian
+                  // Sewers and the Hall under the Hill, which move the party without turning it.
     int pitch = 0;
     int zSpeed = 0;
 };
