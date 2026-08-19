@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <concepts>
 #include <functional>
 #include <ranges>
 #include <string>
@@ -21,6 +22,14 @@ inline constexpr bool is_initializer_list_v = is_initializer_list<T>::value;
 
 template<class Container, class Element>
 concept Emplaceable = requires (Container &c, Element &e) { c.emplace_back(e); } || requires (Container &c, Element &e) { c.emplace(e); };
+
+template<class Range, class T>
+concept ComparableWithElement = requires (std::ranges::range_reference_t<Range> element, const T &value) {
+    element != value;
+};
+
+template<class Range, class T>
+concept PredicateOnElement = std::invocable<T, std::ranges::range_reference_t<Range>>;
 
 template<class Range>
 class ViewWrapper;
@@ -92,7 +101,7 @@ class ResizeView {
  * CRTP mixin that provides a fluent range API on top of `std::ranges::view_interface`.
  *
  * Any class that inherits `ViewInterface<Derived>` and provides `begin()`/`end()` gets:
- * - `drop(n)`, `take(n)`, `skip(value)`, `replace(from, to)`, `resize(n, value)`, `zip(other)` — chainable range transformations.
+ * - `drop(n)`, `take(n)`, `skip(value or predicate)`, `replace(from, to)`, `resize(n, value)`, `zip(other)` — chainable range transformations.
  * - `to(&container)` — populate an existing container. For dynamic containers (`std::vector`, `std::set`, ...)
  *   the container is cleared and refilled. For `std::array<T, N>` the first N elements are written, extras are
  *   dropped, and the tail (if the range yielded fewer than N elements) is reset to default-constructed `T()`.
@@ -118,18 +127,23 @@ class ViewInterface : public std::ranges::view_interface<Derived> {
     }
 
     /**
-     * Drops the elements that are equal to `value`, or, if `value` is callable on an element, the elements it
-     * returns `true` for. The latter form takes member functions, e.g. `skip(&Item::isBad)`.
-     *
-     * @param value                     Value to drop, or a predicate selecting the elements to drop.
+     * @param value                     Value to drop.
      */
-    [[nodiscard]] auto skip(auto value) {
-        return detail::ViewWrapper(std::views::filter(derived(), [value] (const auto &e) {
-            if constexpr (std::invocable<decltype(value), const decltype(e) &>) {
-                return !std::invoke(value, e);
-            } else {
-                return e != value;
-            }
+    [[nodiscard]] auto skip(auto value) requires detail::ComparableWithElement<Derived, decltype(value)> {
+        return detail::ViewWrapper(std::views::filter(derived(), [value = std::move(value)] (auto &&element) {
+            return element != value;
+        }));
+    }
+
+    /**
+     * Same as above, but drops the elements that `predicate` returns `true` for. Takes member functions, so
+     * `skip(&Item::isBad)` works.
+     *
+     * @param predicate                 Predicate selecting the elements to drop.
+     */
+    [[nodiscard]] auto skip(auto predicate) requires detail::PredicateOnElement<Derived, decltype(predicate)> {
+        return detail::ViewWrapper(std::views::filter(derived(), [predicate = std::move(predicate)] (auto &&element) {
+            return !std::invoke(predicate, element);
         }));
     }
 
