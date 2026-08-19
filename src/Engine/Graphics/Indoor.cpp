@@ -202,9 +202,7 @@ void IndoorLocation::Draw() {
 //----- (004AE5BA) --------------------------------------------------------
 GraphicsImage *BLVFace::GetTexture() const {
     if (this->IsAnimated())
-        // TODO(captainurist): using gameTimer here is weird. This means that e.g. cleric in the haunted mansion is
-        //                     not animated in turn-based mode. Use the anim timer?
-        return pTextureFrameTable->animationFrame(this->animationId, gameTimer->time());
+        return pTextureFrameTable->animationFrame(this->animationId, animTimer->time());
     else
         return this->texture;
 }
