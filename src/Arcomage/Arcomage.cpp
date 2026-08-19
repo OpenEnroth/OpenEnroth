@@ -95,8 +95,8 @@ constexpr auto SIG_MEMFREE = 0x78787878;  // memory free;
 
 ArcomageGame *pArcomageGame = new ArcomageGame;
 
-ArcomagePlayer am_Players[2];
-AcromageCardOnTable shown_cards[10];
+std::array<ArcomagePlayer, 2> am_Players;
+std::array<AcromageCardOnTable, 10> shown_cards;
 std::array<am_effects_struct, 10> am_effects_array;
 
 ArcomageDeck playDeck;
@@ -346,8 +346,8 @@ int explosion_effect_struct::IsEffectActive() {
 
 int new_explosion_effect(Pointi *startXY, int effect_value) {
     // find first empty effect slot
-    signed int arr_slot = 0;
-    for (arr_slot = 0; arr_slot < std::ssize(am_effects_array); arr_slot++) {
+    size_t arr_slot = 0;
+    for (arr_slot = 0; arr_slot < am_effects_array.size(); arr_slot++) {
         if (am_effects_array[arr_slot].have_effect) {
             if (am_effects_array[arr_slot].explosion_eff->IsEffectActive() == 0) {
                 am_effects_array[arr_slot].have_effect = 0;
@@ -356,7 +356,7 @@ int new_explosion_effect(Pointi *startXY, int effect_value) {
         } else {
             break;
         }
-        if (arr_slot == std::ssize(am_effects_array) - 1) return 2;
+        if (arr_slot == am_effects_array.size() - 1) return 2;
     }
 
     // set slot active and effect colour
@@ -383,7 +383,7 @@ int new_explosion_effect(Pointi *startXY, int effect_value) {
     am_effects_array[arr_slot].eff_params.unused_acc_1 = 8.0;
     am_effects_array[arr_slot].eff_params.min_lifespan = 5;
     am_effects_array[arr_slot].eff_params.max_lifespan = 15;
-    am_effects_array[arr_slot].eff_params.sparks_array = &am_effects_array[arr_slot].effect_sparks[0];
+    am_effects_array[arr_slot].eff_params.sparks_array = am_effects_array[arr_slot].effect_sparks.data();
 
     // fill explosion struct
     explosion_effect_struct *explos = am_effects_array[arr_slot].explosion_eff;
@@ -416,7 +416,7 @@ void DrawSparks() {
             if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red;
 
             // draw sparks
-            for (size_t j = 0; j < std::size(am_effects_array[i].effect_sparks); ++j) {
+            for (size_t j = 0; j < am_effects_array[i].effect_sparks.size(); ++j) {
                 if (am_effects_array[i].effect_sparks[j].spark_remaining_life > 0) {
                     // check limits - TODO(pskelton): hardcoded 640x480 screen bounds
                     if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {

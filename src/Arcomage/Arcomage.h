@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 
 #include "Engine/Graphics/FrameLimiter.h"
@@ -276,5 +277,5 @@ struct am_effects_struct {
     char _pad_3 = 0;
     effect_params_struct eff_params {};
     explosion_effect_struct *explosion_eff = nullptr;
-    spark_point_struct effect_sparks[150] {};
+    std::array<spark_point_struct, 150> effect_sparks {};
 };
