@@ -19,6 +19,7 @@ struct SavegameSlot {
 class GUIWindow_SaveLoad : public GUIWindow {
  public:
     GUIWindow_SaveLoad(WindowType type, Pointi position, Sizei dimensions);
+    virtual ~GUIWindow_SaveLoad();
 
     /**
      * @return                      Slots shown in this menu, in display order.

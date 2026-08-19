@@ -294,7 +294,6 @@ static constexpr IndexedArray<const char *, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_M
 bool enterHouse(HouseId uHouseID) {
     engine->_statusBar->clearAll();
     engine->_messageQueue->clear();
-    keyboardInputHandler->EndTextInput();
 
     if (uHouseID == HOUSE_THRONEROOM_WIN_GOOD || uHouseID == HOUSE_THRONEROOM_WIN_EVIL) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_ShowGameOverWindow, 0, 0);
@@ -557,7 +556,6 @@ void selectProprietorDialogueOption(DialogueId option) {
 
 bool houseDialogPressEscape() {
     engine->_messageQueue->clear();
-    keyboardInputHandler->EndTextInput();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
     pParty->placeHeldItemInInventoryOrDrop();
@@ -1078,6 +1076,8 @@ void GUIWindow_House::Update() {
 }
 
 GUIWindow_House::~GUIWindow_House() {
+    keyboardInputHandler->EndTextInput(this); // Banks and town halls ask for a gold amount.
+
     for (HouseNpcDesc &desc : houseNpcs) {
         if (desc.icon) {
             desc.icon->release();
