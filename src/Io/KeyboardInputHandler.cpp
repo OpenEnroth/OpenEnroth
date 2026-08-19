@@ -403,6 +403,11 @@ void Io::KeyboardInputHandler::EndTextInput() {
     inputType = TextInputType::None;
 }
 
+void Io::KeyboardInputHandler::EndTextInput(GUIWindow *window) {
+    if (this->window == window)
+        EndTextInput();
+}
+
 //----- (00459ED1) --------------------------------------------------------
 void Io::KeyboardInputHandler::SetWindowInputStatus(WindowInputStatus status) {
     inputType = TextInputType::None;

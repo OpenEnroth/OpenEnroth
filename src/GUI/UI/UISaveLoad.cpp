@@ -124,6 +124,10 @@ GUIWindow_SaveLoad::GUIWindow_SaveLoad(WindowType type, Pointi position, Sizei d
     : GUIWindow(type, position, dimensions)
 {}
 
+GUIWindow_SaveLoad::~GUIWindow_SaveLoad() {
+    keyboardInputHandler->EndTextInput(this); // Save slots are renamed in place.
+}
+
 void GUIWindow_SaveLoad::preselectSlot(std::string_view fileName) {
     auto pos = std::ranges::find(_slots, fileName, &SavegameSlot::fileName);
     if (pos == _slots.end())

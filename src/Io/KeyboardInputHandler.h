@@ -49,6 +49,17 @@ class KeyboardInputHandler {
     bool ProcessTextInput(PlatformKey key, int c);
     void EndTextInput();
 
+    /**
+     * Ends text input, but only if it was started for the passed window. Windows that start text input call
+     * this as they go away, so that the handler is never left pointing at a dead window.
+     *
+     * Passing the window matters. A window that's closing might not be the one the player is typing into, and
+     * ending someone else's input session would drop the text they'd entered.
+     *
+     * @param window                    Window that's going away.
+     */
+    void EndTextInput(GUIWindow *window);
+
     const std::string &GetTextInput() const;
     void SetTextInput(std::string_view text);
 
