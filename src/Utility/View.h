@@ -24,9 +24,7 @@ template<class Container, class Element>
 concept Emplaceable = requires (Container &c, Element &e) { c.emplace_back(e); } || requires (Container &c, Element &e) { c.emplace(e); };
 
 template<class Range, class T>
-concept ComparableWithElement = requires (std::ranges::range_reference_t<Range> element, const T &value) {
-    element != value;
-};
+concept ComparableWithElement = requires (std::ranges::range_reference_t<Range> e, const T &v) { e != v; };
 
 template<class Range, class T>
 concept PredicateOnElement = std::invocable<T, std::ranges::range_reference_t<Range>>;
