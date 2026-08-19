@@ -7,9 +7,9 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 
-bool NullRenderer::Initialize() {
+void NullRenderer::Initialize() {
     application->initializeOpenGLContext(PlatformOpenGLOptions());
-    return BaseRenderer::Initialize();
+    BaseRenderer::Initialize();
 }
 
 bool NullRenderer::Reinitialize(bool firstInit) {

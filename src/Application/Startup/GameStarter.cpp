@@ -168,8 +168,7 @@ void GameStarter::initialize() {
     RendererType rendererType = _options.headless ? RENDERER_NULL : _config->graphics.Renderer.value();
     _renderer = RendererFactory().createRenderer(rendererType, _config);
     ::render = _renderer.get();
-    if (!_renderer->Initialize())
-        throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
+    _renderer->Initialize();
 
     // Init overlays.
     _overlaySystem = std::make_unique<OverlaySystem>(*_renderer, *_application);

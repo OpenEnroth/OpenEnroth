@@ -32,7 +32,7 @@ class OpenGLRenderer : public BaseRenderer {
     );
     virtual ~OpenGLRenderer();
 
-    virtual bool Initialize() override;
+    virtual void Initialize() override;
 
     virtual RgbaImage ReadScreenPixels() override;
     virtual void ClearTarget(Color uColor) override;

@@ -51,7 +51,7 @@ class Renderer {
     );
     virtual ~Renderer();
 
-    virtual bool Initialize() = 0;
+    virtual void Initialize() = 0;
 
     virtual RgbaImage ReadScreenPixels() = 0;
     virtual void ClearTarget(Color uColor) = 0;

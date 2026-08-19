@@ -51,6 +51,7 @@
 #include "Library/Geometry/Vec.h"
 #include "Library/Image/ImageFunctions.h"
 
+#include "Utility/Exception.h"
 #include "Utility/String/Format.h"
 
 #include "OpenGLShader.h"
@@ -3303,12 +3304,11 @@ void OpenGLRenderer::DrawIndoorFaces() {
         return;
 }
 
-bool OpenGLRenderer::Initialize() {
-    if (!BaseRenderer::Initialize())
-        return false;
+void OpenGLRenderer::Initialize() {
+    BaseRenderer::Initialize();
 
     if (!window)
-        return false;
+        throw Exception("Cannot initialize the renderer without a window");
 
     PlatformOpenGLOptions opts;
 
@@ -3367,7 +3367,8 @@ bool OpenGLRenderer::Initialize() {
 
     _initImGui();
 
-    return Reinitialize(true);
+    if (!Reinitialize(true))
+        throw Exception("Renderer failed to initialize");
 }
 
 void OpenGLRenderer::_initImGui() {
