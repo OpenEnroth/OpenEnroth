@@ -25,26 +25,26 @@ int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;
 //----- (00476977) --------------------------------------------------------
 void NPCStats::InitializeNPCText(const Blob &npcText) {
     // npctext.txt table structure: index | text (localized) | dev notes | npc name (localized, not used).
-    for (TsvLine line : TsvReader(npcText).drop(1).skip(&TsvLine::isBlank)) {
-        int i = line[0].as<int>() - 1; // File indices are 1-based, array is 0-based.
-        pNPCTopics[i].pText = line[1];
+    for (TsvLine cells : TsvReader(npcText).drop(1).skip(&TsvLine::isBlank)) {
+        int i = cells[0].as<int>() - 1; // File indices are 1-based, array is 0-based.
+        pNPCTopics[i].pText = cells[1];
     }
 }
 
 void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
     // npctopic.txt table structure: index | topic (localized) | ??? (not used) | dev notes | text index (not used) |
     //                               npc name (not localized, not used) | npc index (not used).
-    for (TsvLine line : TsvReader(npcTopics).drop(1).skip(&TsvLine::isBlank)) {
-        int i = line[0].as<int>();
-        pNPCTopics[i].pTopic = line[1];
+    for (TsvLine cells : TsvReader(npcTopics).drop(1).skip(&TsvLine::isBlank)) {
+        int i = cells[0].as<int>();
+        pNPCTopics[i].pTopic = cells[1];
     }
 }
 
 void NPCStats::InitializeNPCDist(const Blob &npcDist) {
     // npcdist.txt table structure: profession (localized, not used) | area profession chance values...
-    for (auto [line, prof] : TsvReader(npcDist).drop(2).skip(&TsvLine::isBlank).zip(allNpcProfessions()))
-        for (auto [token, map] : line.drop(1).zip(allMaps()))
-            pProfessionChance[map].chanceByProfession[prof] = token.as<int>();
+    for (auto [cells, prof] : TsvReader(npcDist).drop(2).skip(&TsvLine::isBlank).zip(allNpcProfessions()))
+        for (auto [cell, map] : cells.drop(1).zip(allMaps()))
+            pProfessionChance[map].chanceByProfession[prof] = cell.as<int>();
 
     for (MapId map : allMaps())
         for (NpcProfession prof : allNpcProfessions())
@@ -56,21 +56,21 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
     // npcdata.txt table structure: index | name (localized) | portrait id | groups (not used) | house | profession |
     //                              greeting index | can join (y/n) | event ids 1-6 | dev notes |
     //                              map id (optional, not used).
-    for (TsvLine line : TsvReader(npcData).drop(2).skip(&TsvLine::isBlank).take(500)) {
-        int i = line[0].as<int>(); // File indices are 1-based.
-        pNPCUnicNames[i] = line[1];
+    for (TsvLine cells : TsvReader(npcData).drop(2).skip(&TsvLine::isBlank).take(500)) {
+        int i = cells[0].as<int>(); // File indices are 1-based.
+        pNPCUnicNames[i] = cells[1];
         pOriginalNPCData[i].name = pNPCUnicNames[i];
-        pOriginalNPCData[i].portraitId = line[2].as<int>();
-        pOriginalNPCData[i].house = static_cast<HouseId>(line[6].as<int>());
-        pOriginalNPCData[i].profession = static_cast<NpcProfession>(line[7].as<int>());
-        pOriginalNPCData[i].greetingIndex = line[8].as<int>();
-        pOriginalNPCData[i].canJoin = line[9].starts_with('y') ? 1 : 0;
-        pOriginalNPCData[i].dialogue_1_evt_id = line[10].as<int>();
-        pOriginalNPCData[i].dialogue_2_evt_id = line[11].as<int>();
-        pOriginalNPCData[i].dialogue_3_evt_id = line[12].as<int>();
-        pOriginalNPCData[i].dialogue_4_evt_id = line[13].as<int>();
-        pOriginalNPCData[i].dialogue_5_evt_id = line[14].as<int>();
-        pOriginalNPCData[i].dialogue_6_evt_id = line[15].as<int>();
+        pOriginalNPCData[i].portraitId = cells[2].as<int>();
+        pOriginalNPCData[i].house = static_cast<HouseId>(cells[6].as<int>());
+        pOriginalNPCData[i].profession = static_cast<NpcProfession>(cells[7].as<int>());
+        pOriginalNPCData[i].greetingIndex = cells[8].as<int>();
+        pOriginalNPCData[i].canJoin = cells[9].starts_with('y') ? 1 : 0;
+        pOriginalNPCData[i].dialogue_1_evt_id = cells[10].as<int>();
+        pOriginalNPCData[i].dialogue_2_evt_id = cells[11].as<int>();
+        pOriginalNPCData[i].dialogue_3_evt_id = cells[12].as<int>();
+        pOriginalNPCData[i].dialogue_4_evt_id = cells[13].as<int>();
+        pOriginalNPCData[i].dialogue_5_evt_id = cells[14].as<int>();
+        pOriginalNPCData[i].dialogue_6_evt_id = cells[15].as<int>();
     }
     uNumNewNPCs = 501;
 }
@@ -78,29 +78,29 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
 void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
     // npcgreet.txt table structure: index | greeting 1 (localized) | greeting 2 (localized) |
     //                               notes (not localized, not used) | owner (not localized, not used).
-    for (TsvLine line : TsvReader(npcGreets).drop(1).skip(&TsvLine::isBlank)) {
-        if (line[0].empty())
+    for (TsvLine cells : TsvReader(npcGreets).drop(1).skip(&TsvLine::isBlank)) {
+        if (cells[0].empty())
             continue; // Trailing orphan row with no index column.
 
-        int i = line[0].as<int>(); // File indices are 1-based.
-        pNPCGreetings[i].pGreeting1 = line[1];
-        pNPCGreetings[i].pGreeting2 = line[2];
+        int i = cells[0].as<int>(); // File indices are 1-based.
+        pNPCGreetings[i].pGreeting1 = cells[1];
+        pNPCGreetings[i].pGreeting2 = cells[2];
     }
 }
 
 void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
     // npcgroup.txt table structure: group index | news index | dev notes.
-    for (TsvLine line : TsvReader(npcGroups).drop(1).skip(&TsvLine::isBlank)) {
-        int i = line[0].as<int>(); // File indices are 0-based.
-        pOriginalGroups[i] = line[1].as<int>();
+    for (TsvLine cells : TsvReader(npcGroups).drop(1).skip(&TsvLine::isBlank)) {
+        int i = cells[0].as<int>(); // File indices are 0-based.
+        pOriginalGroups[i] = cells[1].as<int>();
     }
 }
 
 void NPCStats::InitializeNPCNews(const Blob &npcNews) {
     // npcnews.txt table structure: index | text (localized) | dev notes.
-    for (TsvLine line : TsvReader(npcNews).drop(1).skip(&TsvLine::isBlank)) {
-        int i = line[0].as<int>(); // File indices are 0-based.
-        pCatchPhrases[i] = line[1];
+    for (TsvLine cells : TsvReader(npcNews).drop(1).skip(&TsvLine::isBlank)) {
+        int i = cells[0].as<int>(); // File indices are 0-based.
+        pCatchPhrases[i] = cells[1];
     }
 }
 
@@ -123,11 +123,11 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
     // Female column runs out before the male column.
     uNewlNPCBufPos = 0;
     pNPCNames.fill({});
-    for (TsvLine line : TsvReader(npcNames).drop(1).skip(&TsvLine::isBlank)) {
-        if (!line[0].empty())
-            pNPCNames[SEX_MALE].emplace_back(line[0]);
-        if (!line[1].empty())
-            pNPCNames[SEX_FEMALE].emplace_back(line[1]);
+    for (TsvLine cells : TsvReader(npcNames).drop(1).skip(&TsvLine::isBlank)) {
+        if (!cells[0].empty())
+            pNPCNames[SEX_MALE].emplace_back(cells[0]);
+        if (!cells[1].empty())
+            pNPCNames[SEX_FEMALE].emplace_back(cells[1]);
     }
 }
 
@@ -135,16 +135,16 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
     // npcprof.txt table structure: profession id | profession name (localized, not used) | hire price |
     //                              action text (localized) | benefit description (localized) |
     //                              join text (localized) | dismiss text (localized).
-    for (TsvLine line : TsvReader(npcProfs).drop(4).skip(&TsvLine::isBlank)) {
-        if (line[0].empty())
+    for (TsvLine cells : TsvReader(npcProfs).drop(4).skip(&TsvLine::isBlank)) {
+        if (cells[0].empty())
             continue; // Trailing pure-tab orphan rows past the last entry.
 
-        NpcProfession prof = static_cast<NpcProfession>(line[0].as<int>());
-        pProfessions[prof].uHirePrice = line[2].as<int>();
-        pProfessions[prof].pActionText = line[3];
-        pProfessions[prof].pBenefits = line[4];
-        pProfessions[prof].pJoinText = line[5];
-        pProfessions[prof].pDismissText = line[6];
+        NpcProfession prof = static_cast<NpcProfession>(cells[0].as<int>());
+        pProfessions[prof].uHirePrice = cells[2].as<int>();
+        pProfessions[prof].pActionText = cells[3];
+        pProfessions[prof].pBenefits = cells[4];
+        pProfessions[prof].pJoinText = cells[5];
+        pProfessions[prof].pDismissText = cells[6];
     }
     uNumNPCProfessions = 59;
 }

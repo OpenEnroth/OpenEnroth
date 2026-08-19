@@ -68,25 +68,25 @@ void initializeHouses(const Blob &houses) {
         {"Mercenary Guild", HOUSE_TYPE_TOWN_HALL}, // This is MM6 only. TODO(captainurist): Is this right and not Merc Guild (18)?
     };
 
-    for (TsvLine line : TsvReader(houses).drop(2).skip(&TsvLine::isBlank)) {
+    for (TsvLine cells : TsvReader(houses).drop(2).skip(&TsvLine::isBlank)) {
         // Lines are ragged and many numeric cells are empty, so those default to 0.
 
         // TODO(captainurist): We don't check if int is in range. A better way would be to deal away with enums
         //                     entirely, and just use typed ids. Do this once we iron out the details of how #mm6
         //                     enums will be handled by the engine. Also apply to other table parsers.
-        HouseId houseId = static_cast<HouseId>(line[0].as<int>());
-        houseTable[houseId].uType = valueOr(houseTypeMap, line[2], HOUSE_TYPE_MERCENARY_GUILD);
-        houseTable[houseId].uAnimationID = line[4].empty() ? 0 : line[4].as<int>();
-        houseTable[houseId].name = line[5];
-        houseTable[houseId].pProprieterName = line[6];
-        houseTable[houseId].pProprieterTitle = line[7];
-        houseTable[houseId].fPriceMultiplier = line[12].empty() ? 0 : line[12].as<float>();
-        houseTable[houseId].flt_24 = line[13].empty() ? 0 : line[13].as<float>();
-        houseTable[houseId].generation_interval_days = line[15].empty() ? 0 : line[15].as<int>();
-        houseTable[houseId].uOpenTime = line[18].empty() ? 0 : line[18].as<int>();
-        houseTable[houseId].uCloseTime = line[19].empty() ? 0 : line[19].as<int>();
-        houseTable[houseId].uExitPicID = line[20].empty() ? 0 : line[20].as<int>();
-        houseTable[houseId].uExitMapID = static_cast<MapId>(line[21].empty() ? 0 : line[21].as<int>());
-        houseTable[houseId]._quest_bit = static_cast<QuestBit>(line[22].empty() ? 0 : line[22].as<int>());
+        HouseId houseId = static_cast<HouseId>(cells[0].as<int>());
+        houseTable[houseId].uType = valueOr(houseTypeMap, cells[2], HOUSE_TYPE_MERCENARY_GUILD);
+        houseTable[houseId].uAnimationID = cells[4].empty() ? 0 : cells[4].as<int>();
+        houseTable[houseId].name = cells[5];
+        houseTable[houseId].pProprieterName = cells[6];
+        houseTable[houseId].pProprieterTitle = cells[7];
+        houseTable[houseId].fPriceMultiplier = cells[12].empty() ? 0 : cells[12].as<float>();
+        houseTable[houseId].flt_24 = cells[13].empty() ? 0 : cells[13].as<float>();
+        houseTable[houseId].generation_interval_days = cells[15].empty() ? 0 : cells[15].as<int>();
+        houseTable[houseId].uOpenTime = cells[18].empty() ? 0 : cells[18].as<int>();
+        houseTable[houseId].uCloseTime = cells[19].empty() ? 0 : cells[19].as<int>();
+        houseTable[houseId].uExitPicID = cells[20].empty() ? 0 : cells[20].as<int>();
+        houseTable[houseId].uExitMapID = static_cast<MapId>(cells[21].empty() ? 0 : cells[21].as<int>());
+        houseTable[houseId]._quest_bit = static_cast<QuestBit>(cells[22].empty() ? 0 : cells[22].as<int>());
     }
 }
