@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <functional>
 #include <ranges>
 #include <string>
 #include <type_traits>
@@ -116,8 +117,20 @@ class ViewInterface : public std::ranges::view_interface<Derived> {
         return detail::ViewWrapper(std::views::take(derived(), n));
     }
 
+    /**
+     * Drops the elements that are equal to `value`, or, if `value` is callable on an element, the elements it
+     * returns `true` for. The latter form takes member functions, e.g. `skip(&Item::isBad)`.
+     *
+     * @param value                     Value to drop, or a predicate selecting the elements to drop.
+     */
     [[nodiscard]] auto skip(auto value) {
-        return detail::ViewWrapper(std::views::filter(derived(), [value] (const auto &e) { return e != value; }));
+        return detail::ViewWrapper(std::views::filter(derived(), [value] (const auto &e) {
+            if constexpr (std::invocable<decltype(value), const decltype(e) &>) {
+                return !std::invoke(value, e);
+            } else {
+                return e != value;
+            }
+        }));
     }
 
     [[nodiscard]] auto replace(auto from, auto to) {

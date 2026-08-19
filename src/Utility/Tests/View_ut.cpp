@@ -200,3 +200,17 @@ UNIT_TEST(View, ExplicitConversion) {
     view(v).to(&r);
     EXPECT_EQ(r, std::vector<std::string>({"a", "b", "c"}));
 }
+
+UNIT_TEST(View, SkipByPredicate) {
+    struct Item {
+        int value = 0;
+        bool isBad() const { return value < 0; }
+    };
+    std::vector<Item> items{{1}, {-1}, {2}, {-2}, {3}};
+
+    std::vector<int> result;
+    for (const Item &item : view(items).skip(&Item::isBad))
+        result.push_back(item.value);
+
+    EXPECT_EQ(result, (std::vector<int>{1, 2, 3}));
+}
