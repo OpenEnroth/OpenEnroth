@@ -45,7 +45,7 @@ Blob Blob::fromFile(const NativePath &path) {
     if (!error && size == 0)
         return Blob().withDisplayPath(displayString);
 
-    // native() is a wchar_t string on Windows, so a WTF16 name is passed as-is. Throws std::system_error if the
+    // native() is a wchar_t string on Windows, so a WTF-16 name is passed as-is. Throws std::system_error if the
     // file doesn't exist.
     std::shared_ptr<mio::mmap_source> mmap;
     try {

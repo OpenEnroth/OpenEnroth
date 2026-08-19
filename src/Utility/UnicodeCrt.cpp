@@ -66,7 +66,7 @@ std::vector<std::string> detail::parseCommandLine(const wchar_t *commandLine) {
 
     std::vector<std::string> result;
     for (int i = 0; i < argc; i++)
-        result.push_back(txt::wideToWtf8(argvw[i])); // WTF8, so that paths with unpaired surrogates survive.
+        result.push_back(txt::wideToWtf8(argvw[i])); // WTF-8, so that paths with unpaired surrogates survive.
     return result;
 }
 #endif

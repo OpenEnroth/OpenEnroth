@@ -18,14 +18,20 @@ UNIT_TEST(NativePath, StdPathRoundTrip) {
     EXPECT_EQ(NativePath::fromStdPath(cwd).toStdPath(), cwd);
 }
 
+UNIT_TEST(NativePath, Literals) {
+    // ASCII literals construct directly, everything else goes through fromWtf8.
+    EXPECT_EQ(NativePath("a/b/c.txt"), NativePath::fromWtf8("a/b/c.txt"));
+    EXPECT_EQ(NativePath(""), NativePath());
+}
+
 UNIT_TEST(NativePath, Composition) {
-    EXPECT_EQ((NativePath::fromWtf8("a/b") / NativePath::fromWtf8("c.txt")).toWtf8(), "a/b/c.txt");
+    EXPECT_EQ((NativePath("a/b") / NativePath("c.txt")).toWtf8(), "a/b/c.txt");
 }
 
 UNIT_TEST(NativePath, WithExtension) {
-    EXPECT_EQ(NativePath::fromWtf8("a/b.json").withExtension(".mm7").toWtf8(), "a/b.mm7");
-    EXPECT_EQ(NativePath::fromWtf8("a/b").withExtension(".mm7").toWtf8(), "a/b.mm7");
-    EXPECT_EQ(NativePath::fromWtf8("a/b.json").withExtension("").toWtf8(), "a/b");
+    EXPECT_EQ(NativePath("a/b.json").withExtension(".mm7").toWtf8(), "a/b.mm7");
+    EXPECT_EQ(NativePath("a/b").withExtension(".mm7").toWtf8(), "a/b.mm7");
+    EXPECT_EQ(NativePath("a/b.json").withExtension("").toWtf8(), "a/b");
 }
 
 UNIT_TEST(NativePath, DisplayString) {
@@ -41,7 +47,7 @@ UNIT_TEST(NativePath, DisplayString) {
 
 UNIT_TEST(NativePath, Absolute) {
     EXPECT_EQ(NativePath().absolute().toStdPath(), std::filesystem::current_path());
-    EXPECT_EQ(NativePath::fromWtf8("a").absolute().toStdPath(), std::filesystem::current_path() / "a");
+    EXPECT_EQ(NativePath("a").absolute().toStdPath(), std::filesystem::current_path() / "a");
 }
 
 #ifndef _WINDOWS

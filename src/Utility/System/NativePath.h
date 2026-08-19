@@ -5,6 +5,7 @@
 #include <string_view>
 #include <utility>
 
+#include "Utility/String/AsciiLiteral.h"
 #include "Utility/String/Format.h"
 
 /**
@@ -25,18 +26,35 @@ class NativePath {
  public:
     NativePath() = default;
 
+    /**
+     * Implicit constructor from an ASCII string literal. ASCII-only - it's the only subset that means the same bytes
+     * in the compiler's execution charset, in WTF-8, and in POSIX file names. Use `fromWtf8` for everything else.
+     *
+     * @param path                      Path as an ASCII string literal.
+     */
+    NativePath(AsciiLiteral path); // NOLINT: intentionally implicit.
+
+    // TODO(captainurist): fromWtf8 / toWtf8 are misnomers, the strings are WTF-8 on Windows only. Rename.
+
+    /**
+     * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
+     * @return                          `NativePath` for the given string.
+     */
     [[nodiscard]] static NativePath fromWtf8(std::string_view path);
 
     [[nodiscard]] static NativePath fromStdPath(std::filesystem::path path) {
-        return NativePath(std::move(path));
+        NativePath result;
+        result._path = std::move(path);
+        return result;
     }
 
     // Deliberately dead for strings of all charsets, see the class docs. Use fromWtf8.
     template<class T> static NativePath fromStdPath(const T &) = delete;
 
     /**
-     * @return                          This path as a WTF-8 string, always using forward slashes. Never throws,
-     *                                  unlike `std::filesystem::path::generic_string()`.
+     * @return                          This path as a string, always using forward slashes. WTF-8 on Windows,
+     *                                  byte string on POSIX. Never throws, unlike
+     *                                  `std::filesystem::path::generic_string()`.
      */
     [[nodiscard]] std::string toWtf8() const;
 
@@ -56,18 +74,18 @@ class NativePath {
      *                                  path resolves to the current directory itself.
      */
     [[nodiscard]] NativePath absolute() const {
-        return NativePath(_path.empty() ? std::filesystem::current_path() : std::filesystem::absolute(_path));
+        return fromStdPath(_path.empty() ? std::filesystem::current_path() : std::filesystem::absolute(_path));
     }
 
     /**
-     * @param extension                 New extension, WTF-8, with or without the leading dot. Pass an empty string
-     *                                  to drop the extension.
+     * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
+     *                                  the extension. WTF-8 on Windows, byte string on POSIX.
      * @return                          Copy of this path with the extension replaced.
      */
     [[nodiscard]] NativePath withExtension(std::string_view extension) const {
         std::filesystem::path result = _path;
         result.replace_extension(fromWtf8(extension).toStdPath());
-        return NativePath(std::move(result));
+        return fromStdPath(std::move(result));
     }
 
     [[nodiscard]] bool isEmpty() const {
@@ -75,22 +93,20 @@ class NativePath {
     }
 
     [[nodiscard]] NativePath operator/(const NativePath &tail) const {
-        return NativePath(_path / tail._path);
+        return fromStdPath(_path / tail._path);
     }
 
     friend auto operator<=>(const NativePath &l, const NativePath &r) = default;
 
     /**
      * CLI11 picks this function up through ADL, so that options can bind `NativePath` fields directly. Note that
-     * `argv` is WTF-8, `UnicodeCrt` converts it from the wide command line on Windows.
+     * `argv` is WTF-8 on Windows, where `UnicodeCrt` converts it from the wide command line, and a byte string on
+     * POSIX.
      */
     friend bool lexical_cast(const std::string &input, NativePath &output) {
         output = NativePath::fromWtf8(input);
         return true;
     }
-
- private:
-    explicit NativePath(std::filesystem::path path) : _path(std::move(path)) {}
 
  private:
     std::filesystem::path _path;

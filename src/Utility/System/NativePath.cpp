@@ -4,11 +4,15 @@
 
 #include "Utility/String/Encoding.h"
 
+NativePath::NativePath(AsciiLiteral path) {
+    *this = fromWtf8(path);
+}
+
 NativePath NativePath::fromWtf8(std::string_view path) {
 #ifdef _WINDOWS
-    return NativePath(std::filesystem::path(txt::wtf8ToWide(path)));
+    return fromStdPath(std::filesystem::path(txt::wtf8ToWide(path)));
 #else
-    return NativePath(std::filesystem::path(path));
+    return fromStdPath(std::filesystem::path(path));
 #endif
 }
 
