@@ -242,7 +242,7 @@ MonsterId MonsterStats::FindMonsterByInternalName(std::string_view internalName)
 //----- (00454F4E) --------------------------------------------------------
 void MonsterStats::InitializePlacements(const Blob &placements) {
     // placemon.txt table structure: index | name (localized).
-    for (TsvLine line : TsvReader(placements).drop(1).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(placements).drop(1).skip(&TsvLine::isBlank)) {
         int i = line[0].as<int>();
         uniqueNames[i] = line[1];
     }
@@ -503,7 +503,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
         return fromString<int>(buf);
     };
 
-    for (TsvLine line : TsvReader(monsters).drop(4).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(monsters).drop(4).skip(&TsvLine::isBlank)) {
         MonsterId id = static_cast<MonsterId>(line[0].as<int>());
         MonsterInfo &info = infos[id];
         info.id = id;

@@ -56,7 +56,7 @@ UNIT_TEST(TsvReader, DropCountsEmptyRows) {
     // Header blocks do contain all-tabs rows, so dropping the header has to happen before the empty rows are
     // filtered out - otherwise the drop eats the first data rows.
     std::vector<std::string> lines;
-    for (TsvLine line : TsvReader("\t\t\r\nhead\r\n\t\t\r\ndata\r\n").drop(3).skip(&TsvLine::isEmpty))
+    for (TsvLine line : TsvReader("\t\t\r\nhead\r\n\t\t\r\ndata\r\n").drop(3).skip(&TsvLine::isBlank))
         lines.push_back(std::string(line.str()));
 
     EXPECT_EQ(lines, (std::vector<std::string>{"data"}));
@@ -72,7 +72,7 @@ UNIT_TEST(TsvReader, EmptyRowsAreReadUnlessSkipped) {
 
     // Excel pads a table with runs of tabs past the last data row.
     std::vector<std::string> nonEmpty;
-    for (TsvLine line : TsvReader(data).skip(&TsvLine::isEmpty))
+    for (TsvLine line : TsvReader(data).skip(&TsvLine::isBlank))
         nonEmpty.push_back(std::string(line[0]));
     EXPECT_EQ(nonEmpty, (std::vector<std::string>{"a", "b"}));
 }
@@ -170,7 +170,7 @@ UNIT_TEST(TsvReader, ScratchIsReusedBetweenLines) {
 
 UNIT_TEST(TsvReader, LineNumbersAreOneBasedAndCountEverything) {
     std::vector<size_t> numbers;
-    for (TsvLine line : TsvReader("h\r\n\r\na\r\nb\r\n").drop(1).skip(&TsvLine::isEmpty))
+    for (TsvLine line : TsvReader("h\r\n\r\na\r\nb\r\n").drop(1).skip(&TsvLine::isBlank))
         numbers.push_back(line.lineNumber());
 
     EXPECT_EQ(numbers, (std::vector<size_t>{3, 4}));

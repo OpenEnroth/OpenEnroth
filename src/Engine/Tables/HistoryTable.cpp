@@ -15,7 +15,7 @@ void HistoryTable::Initialize(const Blob &history) {
     historyLines[0].pText = "";
     historyLines[0].pPageTitle = "";
 
-    for (TsvLine line : TsvReader(history).drop(1).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(history).drop(1).skip(&TsvLine::isBlank)) {
         int i = line[0].as<int>();
         historyLines[i].pText = line[1];
         historyLines[i].pPageTitle = line[3];

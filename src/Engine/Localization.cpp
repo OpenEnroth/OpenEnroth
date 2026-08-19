@@ -45,7 +45,7 @@ bool Localization::initialize() {
     Blob globalBlob = engine->resources()->eventsData("global.txt");
 
     // global.txt table structure: index | text (localized).
-    for (TsvLine line : TsvReader(globalBlob).drop(2).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(globalBlob).drop(2).skip(&TsvLine::isBlank)) {
         LstrId i = static_cast<LstrId>(line[0].as<int>());
         _localizationStrings[i] = line[1];
     }
@@ -321,7 +321,7 @@ void Localization::initializeSkillNames() {
 
     // skilldes.txt table structure: name | description | normal | expert | master | grandmaster (all fields localized).
     Blob skillDesBlob = engine->resources()->eventsData("skilldes.txt");
-    for (auto [line, i] : TsvReader(skillDesBlob).drop(1).skip(&TsvLine::isEmpty).zip(allVisibleSkills())) {
+    for (auto [line, i] : TsvReader(skillDesBlob).drop(1).skip(&TsvLine::isBlank).zip(allVisibleSkills())) {
         _skillDescriptions[i] = line[1];
         _skillDescriptionsNormal[i] = line[2];
         _skillDescriptionsExpert[i] = line[3];
@@ -378,7 +378,7 @@ void Localization::initializeClassNames() {
 
     // class.txt table structure: name (localized) | description (localized) | base class name (not localized, not used).
     Blob classBlob = engine->resources()->eventsData("class.txt");
-    for (auto [line, i] : TsvReader(classBlob).drop(1).skip(&TsvLine::isEmpty).zip(_classDescriptions.indices()))
+    for (auto [line, i] : TsvReader(classBlob).drop(1).skip(&TsvLine::isBlank).zip(_classDescriptions.indices()))
         _classDescriptions[i] = line[1];
 }
 
@@ -453,7 +453,7 @@ void Localization::initializeAttributeNames() {
     // stats.txt table structure: name | description (all fields localized).
     Blob statsBlob = engine->resources()->eventsData("stats.txt");
     std::array<std::string, 26> statsDescs;
-    for (auto [line, i] : TsvReader(statsBlob).drop(1).skip(&TsvLine::isEmpty).zip(Segment<size_t>(0, 25)))
+    for (auto [line, i] : TsvReader(statsBlob).drop(1).skip(&TsvLine::isBlank).zip(Segment<size_t>(0, 25)))
         statsDescs[i] = line[1];
     for (Attribute i : Segment(ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT))
         _attributeDescriptions[i] = statsDescs[std::to_underlying(i)];

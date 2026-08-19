@@ -68,7 +68,7 @@ void initializeHouses(const Blob &houses) {
         {"Mercenary Guild", HOUSE_TYPE_TOWN_HALL}, // This is MM6 only. TODO(captainurist): Is this right and not Merc Guild (18)?
     };
 
-    for (TsvLine line : TsvReader(houses).drop(2).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(houses).drop(2).skip(&TsvLine::isBlank)) {
         // Lines are ragged and many numeric cells are empty, so those default to 0.
 
         // TODO(captainurist): We don't check if int is in range. A better way would be to deal away with enums

@@ -497,7 +497,7 @@ void SpellStats::Initialize(const Blob &spells) {
 
     // spells.txt table structure: index | ... | name (localized) | school (not localized) | ...
     // Section header lines have an empty first column and are skipped.
-    for (TsvLine line : TsvReader(spells).drop(2).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(spells).drop(2).skip(&TsvLine::isBlank)) {
         if (line[0].empty())
             continue; // Skip section headers.
 

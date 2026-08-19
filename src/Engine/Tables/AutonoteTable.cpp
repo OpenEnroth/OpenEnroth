@@ -24,7 +24,7 @@ void initializeAutonotes(const Blob &autonotes) {
         {"misc", AUTONOTE_MISC}
     };
 
-    for (TsvLine line : TsvReader(autonotes).drop(1).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(autonotes).drop(1).skip(&TsvLine::isBlank)) {
         int i = line[0].as<int>();
         // TODO(captainurist): We have "0" in autonote texts, and it gets shown. Find out what it was supposed to be.
         pAutonoteTxt[i].pText = line[1] == "0" ? std::string() : line[1];

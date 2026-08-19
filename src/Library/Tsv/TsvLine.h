@@ -45,10 +45,13 @@ class TsvLine {
     [[nodiscard]] auto cells() const;
 
     /**
+     * Note that this is not the same as having no cells - a line of nothing but tabs has plenty of cells, and all of
+     * them are empty.
+     *
      * @return                          Whether all cells of this line are empty. Excel pads a table with runs of
-     *                                  tabs past the last data row, and `skip(&TsvLine::isEmpty)` drops those.
+     *                                  tabs past the last data row, and `skip(&TsvLine::isBlank)` drops those.
      */
-    [[nodiscard]] bool isEmpty() const;
+    [[nodiscard]] bool isBlank() const;
 
  private:
     friend class TsvReader;
