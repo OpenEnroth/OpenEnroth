@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <memory>
 #include <string>
-#include <filesystem>
 
 #include "Utility/Exception.h"
 #include "Utility/System/Os.h"

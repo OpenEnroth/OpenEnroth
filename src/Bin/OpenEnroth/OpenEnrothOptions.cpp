@@ -80,7 +80,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
     app->parse(argc, argv, result.helpPrinted);
 
-    if (!portable && std::filesystem::exists(".portable"))
+    if (!portable && os::exists(NativePath::fromWtf8(".portable")))
         portable = true;
     if (portable && *portable) {
         if (result.userPath.isEmpty())

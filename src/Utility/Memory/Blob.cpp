@@ -5,7 +5,6 @@
 #include <string>
 #include <memory>
 #include <utility>
-#include <filesystem>
 
 #include <mio/mmap.hpp>
 
@@ -41,9 +40,7 @@ Blob Blob::fromFile(const NativePath &path) {
     std::string displayString = os::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
 
     // On Mac mapping an empty file throws, so we need to provide a workaround.
-    std::error_code error;
-    uintmax_t size = std::filesystem::file_size(path.toStdPath(), error);
-    if (!error && size == 0)
+    if (os::stat(path) == FileStat(FILE_REGULAR, 0))
         return Blob().withDisplayPath(displayString);
 
     // native() is a wchar_t string on Windows, so a WTF-16 name is passed as-is. Throws std::system_error if the

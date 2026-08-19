@@ -6,6 +6,7 @@
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/System/NativePath.h"
+#include "Utility/System/Os.h"
 
 UNIT_TEST(NativePath, Wtf8RoundTrip) {
     // The conversion goes through wchar_t on Windows, so WTF-8 has to survive, unpaired surrogates included.
@@ -60,8 +61,8 @@ UNIT_TEST(NativePath, InvalidUtf8FileNames) {
         stream << "lol";
         stream.close();
 
-        EXPECT_TRUE(std::filesystem::exists(path.toStdPath())) << name;
-        EXPECT_TRUE(std::filesystem::remove(path.toStdPath())) << name;
+        EXPECT_TRUE(os::exists(path)) << name;
+        EXPECT_TRUE(os::remove(path)) << name;
     }
 }
 #endif
