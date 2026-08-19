@@ -868,25 +868,13 @@ std::string EvtInstruction::toString() const {
     return fmt::format("{}: UNPROCESSED/{}", step, ::toString(opcode));
 }
 
-// Reads a 32 bit wire value into a narrower enum, throwing instead of silently truncating. SoundId and SpriteId
-// name only the ids the code needs, and the shipped maps use plenty of others, so the width is all that can be
-// checked for them.
+// Reads a 32 bit wire value into a narrower enum, throwing instead of silently truncating.
 template<class Enum>
 static Enum narrowEnumFromStream(InputStream &stream, std::string_view what) {
     uint32_t value = fromStream<uint32_t>(stream);
     if (!std::in_range<std::underlying_type_t<Enum>>(value))
         throw Exception("Evt {} {} is out of range", what, value);
     return static_cast<Enum>(value);
-}
-
-// ChestFlag names every flag there is, so this one is checked against the flags themselves. Chest::toggleFlag takes a
-// single flag, a combination would need the value to be read as ChestFlags instead.
-static ChestFlag chestFlagFromStream(InputStream &stream) {
-    uint32_t value = fromStream<uint32_t>(stream);
-    for (ChestFlag flag : {CHEST_TRAPPED, CHEST_ITEMS_PLACED, CHEST_OPENED})
-        if (value == std::to_underlying(flag))
-            return flag;
-    throw Exception("Evt chest flag {} is invalid", value);
 }
 
 EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
@@ -1208,7 +1196,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
         case EVENT_ToggleChestFlag:
             requireSize(14);
             ir.data.chest_flag_descr.chest_id = fromStream<uint32_t>(stream);
-            ir.data.chest_flag_descr.flag = chestFlagFromStream(stream);
+            ir.data.chest_flag_descr.flag = narrowEnumFromStream<ChestFlag>(stream, "chest flag");
             ir.data.chest_flag_descr.is_set = fromStream<uint8_t>(stream);
             break;
         case EVENT_CharacterAnimation:
