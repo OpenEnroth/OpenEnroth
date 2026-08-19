@@ -2282,7 +2282,6 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         for (BSPModel &model : pOutdoor->pBModels) {
             //int reachable;
             //if (IsBModelVisible(&model, &reachable)) {
-            model.field_40 |= 1;
             if (!model.faces.empty()) {
                 for (BLVFace &face : model.faces) {
                     if (!face.Invisible()) {
@@ -2471,7 +2470,6 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             bool reachable;
             if (IsBModelVisible(&model, 256, &reachable)) {
                 //if (model.index == 35) continue;
-                model.field_40 |= 1;
                 if (!model.faces.empty()) {
                     for (BLVFace &face : model.faces) {
                         if (!face.Invisible()) {
