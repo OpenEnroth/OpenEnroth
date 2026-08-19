@@ -8,7 +8,7 @@
 #include "Utility/System/NativePath.h"
 
 UNIT_TEST(NativePath, Wtf8RoundTrip) {
-    // The conversion goes through wchar_t on Windows, so WTF8 has to survive, unpaired surrogates included.
+    // The conversion goes through wchar_t on Windows, so WTF-8 has to survive, unpaired surrogates included.
     for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
         EXPECT_EQ(NativePath::fromWtf8(path).toWtf8(), path);
 }

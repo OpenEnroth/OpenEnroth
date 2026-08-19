@@ -81,23 +81,23 @@ std::string utf16ToUtf8(std::u16string_view str);
 std::u16string utf8ToUtf16(std::string_view str);
 
 /**
- * Convert a WTF16 string to WTF8. WTF16 is any `char16_t` sequence, and WTF8 is UTF-8 extended so that all of
+ * Convert a WTF-16 string to WTF-8. WTF-16 is any `char16_t` sequence, and WTF-8 is UTF-8 extended so that all of
  * them can be encoded, so this round-trips through `wtf8ToWtf16` whatever it's given.
  *
  * Use this for file names on Windows - Win32 does no Unicode validation on them, so a name can hold unpaired
  * surrogates and non-characters alike. `utf16ToUtf8` would replace the former, giving a name that can't be opened.
  *
- * @param str                           WTF16 string to convert.
- * @return                              WTF8 encoded string.
+ * @param str                           WTF-16 string to convert.
+ * @return                              WTF-8 encoded string.
  */
 std::string wtf16ToWtf8(std::u16string_view str);
 
 /**
- * Convert a WTF8 string to WTF16, the exact inverse of `wtf16ToWtf8`. Valid UTF-8 is also valid WTF8, so this
+ * Convert a WTF-8 string to WTF-16, the exact inverse of `wtf16ToWtf8`. Valid UTF-8 is also valid WTF-8, so this
  * works on UTF-8 input too.
  *
- * @param str                           WTF8 string to convert.
- * @return                              WTF16 string.
+ * @param str                           WTF-8 string to convert.
+ * @return                              WTF-16 string.
  */
 std::u16string wtf8ToWtf16(std::string_view str);
 
