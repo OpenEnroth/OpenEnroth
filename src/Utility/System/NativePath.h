@@ -19,7 +19,7 @@
  *
  * Note that `fromWtf8` / `toWtf8` are named somewhat improperly - file names on Linux are arbitrary byte strings,
  * and these bytes are passed through as-is. So the string returned by `toWtf8` is not necessarily valid UTF-8, and
- * not even necessarily valid WTF-8 - it's guaranteed to be valid WTF-8 on Windows only. And MacOS is different
+ * not even necessarily valid WTF8 - it's guaranteed to be valid WTF8 on Windows only. And MacOS is different
  * again - APFS only takes file names that are valid UTF-8.
  */
 class NativePath {
@@ -46,7 +46,7 @@ class NativePath {
     template<class T> static NativePath fromStdPath(const T &) = delete;
 
     /**
-     * @return                          This path as a WTF-8 string, always using forward slashes. Never throws,
+     * @return                          This path as a WTF8 string, always using forward slashes. Never throws,
      *                                  unlike `std::filesystem::path::generic_string()`.
      */
     [[nodiscard]] std::string toWtf8() const;
@@ -64,7 +64,7 @@ class NativePath {
     }
 
     /**
-     * @param extension                 New extension, WTF-8, with or without the leading dot. Pass an empty string
+     * @param extension                 New extension, WTF8, with or without the leading dot. Pass an empty string
      *                                  to drop the extension.
      * @return                          Copy of this path with the extension replaced.
      */
@@ -86,7 +86,7 @@ class NativePath {
 
     /**
      * CLI11 picks this function up through ADL, so that options can bind `NativePath` fields directly. Note that
-     * `argv` is WTF-8, `UnicodeCrt` converts it from the wide command line on Windows.
+     * `argv` is WTF8, `UnicodeCrt` converts it from the wide command line on Windows.
      */
     friend bool lexical_cast(const std::string &input, NativePath &output) {
         output = NativePath::fromWtf8(input);

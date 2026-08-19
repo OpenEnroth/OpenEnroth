@@ -49,7 +49,7 @@ static auto dispatchEncoding(TextEncoding encoding, Callback callback) {
 }
 
 /**
- * UTF-16 that permits unpaired surrogates - encoding into WTF-8 is pointless if the decoder replaces them first.
+ * UTF-16 that permits unpaired surrogates - encoding into WTF8 is pointless if the decoder replaces them first.
  * ztd doesn't expose one, so we build it out of its CRTP base.
  */
 template<class Unit>

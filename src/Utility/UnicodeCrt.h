@@ -4,7 +4,7 @@
 #include <string>
 
 /**
- * Utility class that turns on UTF-8 for most of CRT, and converts command-line arguments to WTF-8. This is really only
+ * Utility class that turns on UTF-8 for most of CRT, and converts command-line arguments to WTF8. This is really only
  * needed on Windows, and this class does nothing on POSIX.
  *
  * Use it like this:
@@ -28,7 +28,7 @@
  */
 #ifdef _WINDOWS
 namespace detail {
-std::vector<std::string> parseCommandLine(const wchar_t *commandLine); // Parses & converts to WTF-8.
+std::vector<std::string> parseCommandLine(const wchar_t *commandLine); // Parses & converts to WTF8.
 } // namespace detail
 #endif
 

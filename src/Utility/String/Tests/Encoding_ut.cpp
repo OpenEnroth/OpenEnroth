@@ -48,7 +48,7 @@ UNIT_TEST(Encoding, Wtf8RoundTripSurrogatePairs) {
 }
 
 UNIT_TEST(Encoding, Wtf8AgreesWithUtf8) {
-    // Valid UTF-8 is also valid WTF-8, encoded exactly the same way, in both directions.
+    // Valid UTF-8 is also valid WTF8, encoded exactly the same way, in both directions.
     EXPECT_EQ(txt::wtf16ToWtf8(u"lol"), txt::utf16ToUtf8(u"lol"));
     EXPECT_EQ(txt::wtf16ToWtf8(u"\x043B"), txt::utf16ToUtf8(u"\x043B"));
     EXPECT_EQ(txt::wtf8ToWtf16("lol"), txt::utf8ToUtf16("lol"));
