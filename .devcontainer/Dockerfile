@@ -45,8 +45,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   gcc-15 \
   g++-15 \
   ninja-build \
+  pkg-config \
   mold \
   libgl-dev \
+  libx11-dev \
+  libxext-dev \
+  libxrandr-dev \
+  libxcursor-dev \
+  libxi-dev \
+  libxfixes-dev \
+  libwayland-dev \
+  libxkbcommon-dev \
+  libasound2-dev \
+  libpulse-dev \
+  libpipewire-0.3-dev \
   xvfb \
   mesa-utils \
   libdwarf-dev \
