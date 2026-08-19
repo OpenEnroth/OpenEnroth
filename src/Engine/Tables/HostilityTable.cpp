@@ -18,6 +18,6 @@ void HostilityTable::Initialize(const Blob &factions) {
 
     for (auto [line, row] : TsvReader(factions).drop(1).skip(&TsvLine::isEmpty).zip(Segment(0, 88))) {
         for (auto [cell, col] : line.cells().drop(1).zip(Segment(0, 88)))
-            relations[static_cast<MonsterType>(col)][static_cast<MonsterType>(row)] = static_cast<MonsterHostility>(fromString<int>(cell));
+            relations[static_cast<MonsterType>(col)][static_cast<MonsterType>(row)] = static_cast<MonsterHostility>(cell.as<int>());
     }
 }

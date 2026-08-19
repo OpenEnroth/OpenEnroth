@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <deque>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -134,7 +135,11 @@ inline std::string_view TsvLine::str() const {
 }
 
 inline auto TsvLine::cells() const {
-    return view(_reader->_cells);
+    const TsvReader *reader = _reader;
+    return detail::ViewWrapper(std::views::transform(std::views::iota(size_t(0), reader->_cells.size()),
+                                                    [reader] (size_t column) {
+        return TsvCell(reader->_cells[column], reader, column);
+    }));
 }
 
 inline bool TsvLine::isEmpty() const {
