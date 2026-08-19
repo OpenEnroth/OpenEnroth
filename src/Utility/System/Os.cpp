@@ -52,7 +52,7 @@ std::vector<DirectoryEntry> os::ls(const NativePath &path) {
         if (!isRegular && !isDirectory)
             continue;
 
-        // The roundtrip through NativePath is a WTF8 conversion.
+        // The roundtrip through NativePath is a WTF-8 conversion on Windows.
         result.emplace_back(NativePath::fromStdPath(entry.path().filename()).toWtf8(),
                             isRegular ? FILE_REGULAR : FILE_DIRECTORY);
     }
