@@ -1490,3 +1490,21 @@ GAME_TEST(Issues, Issue2636) {
                                         "and the ability to put that strength where it counts.  Characters with a "
                                         "high might statistic do more damage in combat.");
 }
+
+GAME_TEST(Issues, Pr2632) {
+    // Pressing a button hotkey used to post the button's message twice, once for the raw key and once for the
+    // printable character that the key produces.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+
+    auto msgTape = tapes.uiMessages();
+    test.startTaping();
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_R); // Open the rest menu.
+    game.tick(2);
+    ASSERT_EQ(current_screen_type, SCREEN_REST);
+    game.pressAndReleaseKey(PlatformKey::KEY_H); // Hotkey of the rest menu's wait-one-hour button.
+    game.tick(2);
+
+    EXPECT_EQ(std::ranges::count(msgTape.flatten(), UIMSG_Wait1Hour), 1);
+}
