@@ -59,7 +59,8 @@ namespace os {
  * entries that can't be stat'ed, so the result is always in sync with what `stat` returns.
  *
  * @param path                          Path to a directory to list.
- * @return                              Directory entries, with WTF8-encoded names, in unspecified order.
+ * @return                              Directory entries, in unspecified order. Names are WTF-8 on Windows, byte
+ *                                      strings on POSIX.
  */
 [[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
 
