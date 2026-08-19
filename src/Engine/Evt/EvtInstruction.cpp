@@ -868,10 +868,9 @@ std::string EvtInstruction::toString() const {
     return fmt::format("{}: UNPROCESSED/{}", step, ::toString(opcode));
 }
 
-// Reads a 32 bit wire value into a narrower enum, throwing instead of silently truncating.
+// Casts a wire value into an enum, throwing instead of silently truncating.
 template<class Enum>
-static Enum narrowEnumFromStream(InputStream &stream, std::string_view what) {
-    uint32_t value = fromStream<uint32_t>(stream);
+static Enum narrowToEnum(uint32_t value, std::string_view what) {
     if (!std::in_range<std::underlying_type_t<Enum>>(value))
         throw Exception("Evt {} {} is out of range", what, value);
     return static_cast<Enum>(value);
@@ -908,7 +907,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             break;
         case EVENT_PlaySound:
             requireSize(17);
-            ir.data.sound_descr.sound_id = narrowEnumFromStream<SoundId>(stream, "sound id");
+            ir.data.sound_descr.sound_id = narrowToEnum<SoundId>(fromStream<uint32_t>(stream), "sound id");
             ir.data.sound_descr.x = fromStream<uint32_t>(stream);
             ir.data.sound_descr.y = fromStream<uint32_t>(stream);
             break;
@@ -1076,7 +1075,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             break;
         case EVENT_SummonItem:  // TODO(yoctozepto): not present in used MM7 data
             requireSize(27);
-            ir.data.summon_item_descr.sprite = narrowEnumFromStream<SpriteId>(stream, "sprite id");
+            ir.data.summon_item_descr.sprite = narrowToEnum<SpriteId>(fromStream<uint32_t>(stream), "sprite id");
             ir.data.summon_item_descr.x = fromStream<uint32_t>(stream);
             ir.data.summon_item_descr.y = fromStream<uint32_t>(stream);
             ir.data.summon_item_descr.z = fromStream<uint32_t>(stream);
@@ -1196,7 +1195,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
         case EVENT_ToggleChestFlag:
             requireSize(14);
             ir.data.chest_flag_descr.chest_id = fromStream<uint32_t>(stream);
-            ir.data.chest_flag_descr.flag = narrowEnumFromStream<ChestFlag>(stream, "chest flag");
+            ir.data.chest_flag_descr.flag = narrowToEnum<ChestFlag>(fromStream<uint32_t>(stream), "chest flag");
             ir.data.chest_flag_descr.is_set = fromStream<uint8_t>(stream);
             break;
         case EVENT_CharacterAnimation:
