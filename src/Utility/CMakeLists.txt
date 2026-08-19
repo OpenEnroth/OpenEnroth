@@ -14,6 +14,7 @@ set(UTILITY_SOURCES
         String/Encoding.cpp
         String/Transformations.cpp
         System/NativePath.cpp
+        System/Os.cpp
         UnicodeCrt.cpp
         String/Wrap.cpp)
 
@@ -44,6 +45,7 @@ set(UTILITY_HEADERS
         Streams/OutputStream.h
         Streams/StreamBuffer.h
         System/NativePath.h
+        System/Os.h
         String/Ascii.h
         String/AsciiLiteral.h
         String/Encoding.h
@@ -93,6 +95,7 @@ if(OE_BUILD_TESTS)
             String/Tests/Ascii_ut.cpp
             String/Tests/Encoding_ut.cpp
             System/Tests/NativePath_ut.cpp
+            System/Tests/Os_ut.cpp
             String/Tests/Split_ut.cpp
             String/Tests/Join_ut.cpp
             String/Tests/Wrap_ut.cpp)

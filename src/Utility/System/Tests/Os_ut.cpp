@@ -1,0 +1,41 @@
+#include <algorithm>
+#include <vector>
+
+#include "Testing/Unit/UnitTest.h"
+
+#include "Utility/ScopeGuard.h"
+
+#include "Utility/System/Os.h"
+
+UNIT_TEST(Os, ExistsStat) {
+    ScopedTestFile tmp("tmp_os_test.txt", "lol");
+
+    EXPECT_TRUE(os::exists(NativePath::fromWtf8("tmp_os_test.txt")));
+    EXPECT_EQ(os::stat(NativePath::fromWtf8("tmp_os_test.txt")), FileStat(FILE_REGULAR, 3));
+
+    EXPECT_FALSE(os::exists(NativePath::fromWtf8("tmp_os_doesnt_exist")));
+    EXPECT_EQ(os::stat(NativePath::fromWtf8("tmp_os_doesnt_exist")), FileStat());
+}
+
+UNIT_TEST(Os, LsRemoveMkdirs) {
+    MM_AT_SCOPE_EXIT(os::remove(NativePath::fromWtf8("tmp_os_dir")));
+
+    os::mkdirs(NativePath::fromWtf8("tmp_os_dir/a/b"));
+    EXPECT_EQ(os::stat(NativePath::fromWtf8("tmp_os_dir/a/b")).type, FILE_DIRECTORY);
+
+    ScopedTestFile tmp("tmp_os_dir/1.txt", "");
+    std::vector<DirectoryEntry> entries = os::ls(NativePath::fromWtf8("tmp_os_dir"));
+    std::ranges::sort(entries); // ls doesn't promise any particular order.
+    EXPECT_EQ(entries, std::vector<DirectoryEntry>({
+        {"1.txt", FILE_REGULAR},
+        {"a", FILE_DIRECTORY}
+    }));
+
+    // ls never throws, not for a path that doesn't exist, and not for a file either.
+    EXPECT_TRUE(os::ls(NativePath::fromWtf8("tmp_os_doesnt_exist")).empty());
+    EXPECT_TRUE(os::ls(NativePath::fromWtf8("tmp_os_dir/1.txt")).empty());
+
+    EXPECT_TRUE(os::remove(NativePath::fromWtf8("tmp_os_dir")));
+    EXPECT_FALSE(os::remove(NativePath::fromWtf8("tmp_os_dir"))); // Nothing left to remove.
+    EXPECT_FALSE(os::exists(NativePath::fromWtf8("tmp_os_dir")));
+}
