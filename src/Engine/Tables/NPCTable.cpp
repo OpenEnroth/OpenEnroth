@@ -43,7 +43,7 @@ void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
 void NPCStats::InitializeNPCDist(const Blob &npcDist) {
     // npcdist.txt table structure: profession (localized, not used) | area profession chance values...
     for (auto [line, prof] : TsvReader(npcDist).drop(2).skip(&TsvLine::isBlank).zip(allNpcProfessions()))
-        for (auto [token, map] : line.cells().drop(1).zip(allMaps()))
+        for (auto [token, map] : line.drop(1).zip(allMaps()))
             pProfessionChance[map].chanceByProfession[prof] = token.as<int>();
 
     for (MapId map : allMaps())

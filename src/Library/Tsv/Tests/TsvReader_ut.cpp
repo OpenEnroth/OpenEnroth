@@ -1,3 +1,5 @@
+#include <concepts>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -7,6 +9,14 @@
 #include "Library/Tsv/TsvReader.h"
 
 #include "Utility/Memory/Blob.h"
+
+// A `TsvLine` is a range of its cells, and a view, even though it isn't default-constructible - a default-constructed
+// line would point at no reader and have no meaning. C++20 originally required views to be default-initializable,
+// P2325R3 dropped that.
+static_assert(std::ranges::range<TsvLine>);
+static_assert(std::ranges::view<TsvLine>);
+static_assert(std::ranges::forward_range<TsvLine>);
+static_assert(!std::default_initializable<TsvLine>);
 
 // `f(std::string_view)` + `f(std::string &&)` is a sane overload set, and `Split.h` is exactly that shape, with
 // the string overload deleted. A cell has to pick the view - back when it converted to both, the call was
@@ -185,25 +195,25 @@ UNIT_TEST(TsvReader, ParseErrorMentionsPosition) {
     }
 }
 
-UNIT_TEST(TsvReader, Cells) {
-    // HostilityTable and the monster placement table walk all cells instead of indexing them.
+UNIT_TEST(TsvLine, IsARangeOfCells) {
+    // HostilityTable and the npcdist parser walk all cells instead of indexing them.
     TsvReader reader("skip\t10\t20\t30\r\n");
 
-    for (TsvLine line : reader) {
+    for (TsvLine cells : reader) {
         std::vector<std::string> tail;
-        for (std::string_view cell : line.cells().drop(1))
+        for (std::string_view cell : cells.drop(1))
             tail.push_back(std::string(cell));
         EXPECT_EQ(tail, (std::vector<std::string>{"10", "20", "30"}));
     }
 }
 
-UNIT_TEST(TsvReader, CellsReportPosition) {
-    // `cells()` used to yield plain `std::string_view`s, so the tables that walk all cells had to reach for
+UNIT_TEST(TsvLine, CellsReportPosition) {
+    // Iterating a line used to yield plain `std::string_view`s, so the tables that walk all cells had to reach for
     // `fromString` and lost the position of the offending cell in the file.
     TsvReader reader("skip\t10\tnope\r\n", "table.txt");
 
-    for (TsvLine line : reader)
-        for (TsvCell cell : line.cells().drop(2))
+    for (TsvLine cells : reader)
+        for (TsvCell cell : cells.drop(2))
             EXPECT_THROW_MESSAGE((void) cell.as<int>(), "table.txt:1:3"); // 1-based line and column.
 }
 
