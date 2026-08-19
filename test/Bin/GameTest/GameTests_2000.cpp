@@ -1490,3 +1490,13 @@ GAME_TEST(Issues, Issue2636) {
                                         "and the ability to put that strength where it counts.  Characters with a "
                                         "high might statistic do more damage in combat.");
 }
+
+GAME_TEST(Prs, Pr2626) {
+    // GetSector used to stop looking after 5 candidate floor faces, so where more floors than that stack up it
+    // could miss the one the party is standing on. This spot in Colony Zod has 16 of them, and the truncated
+    // search answered sector 9 instead of 23.
+    game.startNewGame();
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-1849, 6726, 934), 0);
+    game.tick(2);
+    EXPECT_EQ(pIndoor->GetSector(-1849, 6726.5f, 934), 23);
+}

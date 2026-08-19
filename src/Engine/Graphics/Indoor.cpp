@@ -338,7 +338,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         return 0;
     }
 
-    gch::small_vector<uint16_t, 16> foundFaces; // Faces the coords are above.
+    gch::small_vector<uint16_t, 32> foundFaces; // Floor faces whose horizontal projection contains the point.
     int backupboundingsector = 0;
     std::optional<int> foundSector;
     bool singleSectorFound = false;
@@ -395,36 +395,36 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
     // when multiple possibilities are found - cycle through and use the closer one to party
     int pSectorID = 0, backupID = 0;
     int MinZDist = INT32_MAX, backupDist = INT32_MAX;
-    if (!foundFaces.empty()) {
-        int CalcZDist = MinZDist;
-        for (uint16_t faceId : foundFaces) {
-            // calc distance between this face and party
-            if (this->faces[faceId].polygonType == POLYGON_Floor)
-                CalcZDist = sZ - this->vertices[this->faces[faceId].vertexIds[0]].z;
-            if (this->faces[faceId].polygonType == POLYGON_InBetweenFloorAndWall) {
-                CalcZDist = sZ - this->faces[faceId].zCalc.calculate(sX, sY);
-            }
-
-            // use this face if its smaller than the current min - prefer faces below party
-            if (CalcZDist < MinZDist) {
-                if (CalcZDist >= 0) {
-                    pSectorID = this->faces[faceId].sectorId;
-                    MinZDist = CalcZDist;
-                } else {
-                    backupID = this->faces[faceId].sectorId;
-                    backupDist = std::abs(CalcZDist);
-                }
-            }
+    int CalcZDist = MinZDist;
+    for (uint16_t faceId : foundFaces) {
+        // calc distance between this face and party
+        if (this->faces[faceId].polygonType == POLYGON_Floor)
+            CalcZDist = sZ - this->vertices[this->faces[faceId].vertexIds[0]].z;
+        if (this->faces[faceId].polygonType == POLYGON_InBetweenFloorAndWall) {
+            CalcZDist = sZ - this->faces[faceId].zCalc.calculate(sX, sY);
         }
 
-        if (pSectorID == 0) {
-            if (backupID == 0) {
-                assert(false); // doesnt choose - so default to first - SHOULDNT GET HERE
-                pSectorID = this->faces[foundFaces[0]].sectorId;
+        // use this face if its smaller than the current min - prefer faces below party
+        if (CalcZDist < MinZDist) {
+            if (CalcZDist >= 0) {
+                pSectorID = this->faces[faceId].sectorId;
+                MinZDist = CalcZDist;
             } else {
-                // there is a face above the party to use
-                pSectorID = backupID;
+                backupID = this->faces[faceId].sectorId;
+                backupDist = std::abs(CalcZDist);
             }
+        }
+    }
+
+    if (pSectorID == 0) {
+        if (backupID == 0) {
+            // TODO(captainurist): asserts are on in release builds, so the line below is unreachable. Work out
+            //                     whether every face can really be above the party here, and drop it if not.
+            assert(false); // doesnt choose - so default to first - SHOULDNT GET HERE
+            pSectorID = this->faces[foundFaces[0]].sectorId;
+        } else {
+            // there is a face above the party to use
+            pSectorID = backupID;
         }
     }
 
