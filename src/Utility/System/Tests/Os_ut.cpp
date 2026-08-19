@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <filesystem>
 #include <vector>
 
 #include "Testing/Unit/UnitTest.h"
@@ -6,6 +7,12 @@
 #include "Utility/ScopeGuard.h"
 
 #include "Utility/System/Os.h"
+
+UNIT_TEST(Os, CwdAbsolute) {
+    EXPECT_EQ(os::cwd().toStdPath(), std::filesystem::current_path());
+    EXPECT_EQ(os::absolute(NativePath()), os::cwd()); // An empty path resolves to the cwd itself.
+    EXPECT_EQ(os::absolute(NativePath::fromWtf8("a")), os::cwd() / NativePath::fromWtf8("a"));
+}
 
 UNIT_TEST(Os, ExistsStat) {
     ScopedTestFile tmp("tmp_os_test.txt", "lol");

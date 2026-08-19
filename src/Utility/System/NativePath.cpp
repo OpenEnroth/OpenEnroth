@@ -112,12 +112,6 @@ std::string NativePath::displayString() const {
     return txt::encodedToUtf8(_path, ENCODING_UTF8); // UTF-8 to UTF-8 conversion replaces all the invalid parts.
 }
 
-NativePath NativePath::absolute() const {
-    // Resolution is delegated to std::filesystem b/c on Windows it's not lexical - a drive-relative "C:x" resolves
-    // against the current directory of drive C, which only the OS knows.
-    return fromStdPath(_path.empty() ? std::filesystem::current_path() : std::filesystem::absolute(toStdPath()));
-}
-
 NativePath NativePath::withExtension(std::string_view extension) const {
     NativePath result;
     size_t offset = extensionOffset(_path);
