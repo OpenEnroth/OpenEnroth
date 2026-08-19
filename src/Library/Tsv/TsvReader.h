@@ -134,12 +134,16 @@ inline std::string_view TsvLine::str() const {
     return _reader->_line;
 }
 
-inline auto TsvLine::cells() const {
-    const TsvReader *reader = _reader;
-    return detail::ViewWrapper(std::views::transform(std::views::iota(size_t(0), reader->_cells.size()),
-                                                    [reader] (size_t column) {
-        return TsvCell(reader->_cells[column], reader, column);
-    }));
+inline TsvCell TsvLine::Iterator::operator*() const {
+    return TsvLine(_reader)[_column]; // `Iterator` is a member of `TsvLine`, so the private constructor is fine here.
+}
+
+inline TsvLine::Iterator TsvLine::begin() const {
+    return Iterator(_reader, 0);
+}
+
+inline TsvLine::Iterator TsvLine::end() const {
+    return Iterator(_reader, _reader->_cells.size());
 }
 
 inline bool TsvLine::isBlank() const {
