@@ -6,6 +6,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/System/Os.h"
 
 UNIT_TEST(Blob, FromFile) {
     NativePath fileName = NativePath("abcdefghijklmnopqrstuvwxyz.tmp");
@@ -88,6 +89,6 @@ UNIT_TEST(Blob, DisplayPathFromStream) {
 UNIT_TEST(Blob, ExceptionMessages) {
     NativePath fileName = NativePath("lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt");
 
-    EXPECT_FALSE(std::filesystem::exists(fileName.toStdPath()));
+    EXPECT_FALSE(os::exists(fileName));
     EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName.toWtf8());
 }

@@ -1,7 +1,6 @@
 #include "GameStarter.h"
 
 #include <utility>
-#include <filesystem>
 #include <string>
 #include <vector>
 #include <memory>
@@ -51,6 +50,7 @@
 #include "Scripting/ScriptingSystem.h"
 
 #include "Utility/Exception.h"
+#include "Utility/System/Os.h"
 
 #include "PathResolver.h"
 
@@ -233,7 +233,7 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
 
     for (int i = 0; i < candidates.size(); i++) {
         std::string missingFile;
-        if (!std::filesystem::exists(candidates[i].toStdPath())) {
+        if (!os::exists(candidates[i])) {
             MM_INFO("Data path #{} ('{}') doesn't exist.", i + 1, candidates[i]);
         } else if (!validateMm7Path(candidates[i], &missingFile)) {
             MM_INFO("Data path #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);

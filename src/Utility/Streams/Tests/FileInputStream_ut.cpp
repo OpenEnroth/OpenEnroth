@@ -1,11 +1,11 @@
 #include <cstdlib>
 #include <string>
-#include <filesystem>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/FileInputStream.h"
+#include "Utility/System/Os.h"
 
 UNIT_TEST(FileInputStream, Skip) {
     NativePath tmpfile = NativePath("tmp_test.txt");
@@ -34,7 +34,7 @@ UNIT_TEST(FileInputStream, Skip) {
 UNIT_TEST(FileInputStream, ExceptionMessages) {
     const char *fileName = "afjhrbluxnkskghelxrigjmgdhckeog.txt";
 
-    EXPECT_FALSE(std::filesystem::exists(fileName));
+    EXPECT_FALSE(os::exists(NativePath::fromWtf8(fileName)));
     EXPECT_THROW_MESSAGE(FileInputStream in(NativePath::fromWtf8(fileName)), fileName);
 }
 

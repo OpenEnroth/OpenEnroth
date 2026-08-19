@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -10,7 +9,7 @@
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
 #include "Utility/String/Format.h"
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Os.h"
 #include "Utility/UnicodeCrt.h"
 
 #include "RetraceTest.h"
@@ -24,16 +23,18 @@ int platformMain(int argc, char **argv) {
         if (opts.helpPrinted)
             return 1;
 
-        std::vector<NativePath> tracePaths;
-        for (const auto &entry : std::filesystem::directory_iterator(opts.testPath.toStdPath()))
-            if (entry.path().extension() == ".json")
-                tracePaths.push_back(NativePath::fromStdPath(entry.path()));
-        std::ranges::sort(tracePaths);
+        std::vector<std::string> traceNames;
+        for (const DirectoryEntry &entry : os::ls(opts.testPath))
+            if (entry.name.ends_with(".json"))
+                traceNames.push_back(entry.name);
+        std::ranges::sort(traceNames);
 
-        for (const NativePath &tracePath : tracePaths)
-            testing::RegisterTest("Retrace", tracePath.toStdPath().stem().string().c_str(),
+        for (const std::string &traceName : traceNames)
+            testing::RegisterTest("Retrace", traceName.substr(0, traceName.size() - 5).c_str(), // Minus ".json".
                                   nullptr, nullptr, __FILE__, __LINE__,
-                                  [tracePath] { return new RetraceTest(tracePath); });
+                                  [tracePath = opts.testPath / NativePath::fromWtf8(traceName)] {
+                                      return new RetraceTest(tracePath);
+                                  });
 
         testing::InitGoogleTest(&argc, argv);
         if (opts.listRequested)

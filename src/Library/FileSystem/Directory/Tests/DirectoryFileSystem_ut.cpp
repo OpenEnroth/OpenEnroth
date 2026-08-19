@@ -8,25 +8,25 @@
 
 #include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 
+#include "Utility/System/Os.h"
+
 #include "Utility/Streams/FileOutputStream.h"
 
 class TemporaryDir {
  public:
-    explicit TemporaryDir(std::string_view name): _name(name) {
-        if (std::filesystem::exists(_name))
-            std::filesystem::remove_all(_name);
-
-        std::filesystem::create_directory(name);
-        EXPECT_TRUE(std::filesystem::exists(name));
+    explicit TemporaryDir(std::string_view name): _path(NativePath::fromWtf8(name)) {
+        os::remove(_path); // Drop whatever an earlier run might have left behind.
+        os::mkdirs(_path);
+        EXPECT_TRUE(os::exists(_path));
     }
 
     ~TemporaryDir() {
-        std::filesystem::remove_all(_name);
-        EXPECT_FALSE(std::filesystem::exists(_name));
+        os::remove(_path);
+        EXPECT_FALSE(os::exists(_path));
     }
 
  private:
-    std::string _name;
+    NativePath _path;
 };
 
 UNIT_TEST(DirectoryFileSystem, LsRoot) {
