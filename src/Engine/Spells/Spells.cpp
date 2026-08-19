@@ -497,20 +497,20 @@ void SpellStats::Initialize(const Blob &spells) {
 
     // spells.txt table structure: index | ... | name (localized) | school (not localized) | ...
     // Section header lines have an empty first column and are skipped.
-    for (TsvLine line : TsvReader(spells).drop(2).skip(&TsvLine::isBlank)) {
-        if (line[0].empty())
+    for (TsvLine cells : TsvReader(spells).drop(2).skip(&TsvLine::isBlank)) {
+        if (cells[0].empty())
             continue; // Skip section headers.
 
-        SpellId uSpellID = static_cast<SpellId>(line[0].as<int>());
-        pInfos[uSpellID].name = line[2];
-        pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, line[3], DAMAGE_PHYSICAL);
-        pInfos[uSpellID].pShortName = line[4];
-        pInfos[uSpellID].pDescription = line[5];
-        pInfos[uSpellID].pBasicSkillDesc = line[6];
-        pInfos[uSpellID].pExpertSkillDesc = line[7];
-        pInfos[uSpellID].pMasterSkillDesc = line[8];
-        pInfos[uSpellID].pGrandmasterSkillDesc = line[9];
-        std::string_view flags = line[10];
+        SpellId uSpellID = static_cast<SpellId>(cells[0].as<int>());
+        pInfos[uSpellID].name = cells[2];
+        pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, cells[3], DAMAGE_PHYSICAL);
+        pInfos[uSpellID].pShortName = cells[4];
+        pInfos[uSpellID].pDescription = cells[5];
+        pInfos[uSpellID].pBasicSkillDesc = cells[6];
+        pInfos[uSpellID].pExpertSkillDesc = cells[7];
+        pInfos[uSpellID].pMasterSkillDesc = cells[8];
+        pInfos[uSpellID].pGrandmasterSkillDesc = cells[9];
+        std::string_view flags = cells[10];
         pSpellDatas[uSpellID].flags |= flags.contains('m') || flags.contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlag();
         pSpellDatas[uSpellID].flags |= flags.contains('e') || flags.contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlag();
         pSpellDatas[uSpellID].flags |= flags.contains('c') || flags.contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();

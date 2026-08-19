@@ -58,35 +58,35 @@ void MapStats::Initialize(const Blob &mapStats) {
         }
     };
 
-    for (TsvLine line : TsvReader(mapStats).drop(3).skip(&TsvLine::isBlank)) {
-        MapId mapId = static_cast<MapId>(line[0].as<int>());
+    for (TsvLine cells : TsvReader(mapStats).drop(3).skip(&TsvLine::isBlank)) {
+        MapId mapId = static_cast<MapId>(cells[0].as<int>());
         MapInfo &info = pInfos[mapId];
-        info.name = line[1];
-        info.fileName = ascii::toLower(line[2]);
-        info.numResets = line[3].as<int>();
-        info.firstVisitedAt = line[4].as<int>();
-        info.perceptionDifficulty = line[5].as<int>();
-        info.respawnIntervalDays = line[6].as<int>();
-        info.alertDays = line[7].as<int>();
-        info.baseStealingFine = line[8].as<int>();
-        info.disarmDifficulty = line[9].as<int>();
-        info.trapDamageD20DiceCount = line[10].as<int>();
-        info.mapTreasureLevel = static_cast<MapTreasureLevel>(line[11].as<int>());
-        info.encounterChance = line[12].as<int>();
-        info.encounter1Chance = line[13].as<int>();
-        info.encounter2Chance = line[14].as<int>();
-        info.encounter3Chance = line[15].as<int>();
-        info.encounter1MonsterInternalName = line[16];
-        info.Dif_M1 = line[18].as<int>();
-        parseRange(line[19], &info.encounter1MinCount, &info.encounter1MaxCount);
-        info.encounter2MonsterInternalName = line[20];
-        info.Dif_M2 = line[22].as<int>();
-        parseRange(line[23], &info.encounter2MinCount, &info.encounter2MaxCount);
-        info.encounter3MonsterInternalName = line[24];
-        info.Dif_M3 = line[26].as<int>();
-        parseRange(line[27], &info.encounter3MinCount, &info.encounter3MaxCount);
-        info.musicId = static_cast<MusicId>(line[28].as<int>());
-        info.uEAXEnv = valueOr(eaxEnvMap, std::string(line[29]), 26);
+        info.name = cells[1];
+        info.fileName = ascii::toLower(cells[2]);
+        info.numResets = cells[3].as<int>();
+        info.firstVisitedAt = cells[4].as<int>();
+        info.perceptionDifficulty = cells[5].as<int>();
+        info.respawnIntervalDays = cells[6].as<int>();
+        info.alertDays = cells[7].as<int>();
+        info.baseStealingFine = cells[8].as<int>();
+        info.disarmDifficulty = cells[9].as<int>();
+        info.trapDamageD20DiceCount = cells[10].as<int>();
+        info.mapTreasureLevel = static_cast<MapTreasureLevel>(cells[11].as<int>());
+        info.encounterChance = cells[12].as<int>();
+        info.encounter1Chance = cells[13].as<int>();
+        info.encounter2Chance = cells[14].as<int>();
+        info.encounter3Chance = cells[15].as<int>();
+        info.encounter1MonsterInternalName = cells[16];
+        info.Dif_M1 = cells[18].as<int>();
+        parseRange(cells[19], &info.encounter1MinCount, &info.encounter1MaxCount);
+        info.encounter2MonsterInternalName = cells[20];
+        info.Dif_M2 = cells[22].as<int>();
+        parseRange(cells[23], &info.encounter2MinCount, &info.encounter2MaxCount);
+        info.encounter3MonsterInternalName = cells[24];
+        info.Dif_M3 = cells[26].as<int>();
+        parseRange(cells[27], &info.encounter3MinCount, &info.encounter3MaxCount);
+        info.musicId = static_cast<MusicId>(cells[28].as<int>());
+        info.uEAXEnv = valueOr(eaxEnvMap, std::string(cells[29]), 26);
     }
 }
 

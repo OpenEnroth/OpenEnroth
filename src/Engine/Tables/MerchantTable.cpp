@@ -16,10 +16,10 @@ IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchant
 
 void initializeMerchants(const Blob &merchants) {
     // merchant.txt table structure: phrase (localized, not used) | buy (localized) | sell (localized) | repair (localized) | identify (localized).
-    for (auto [line, i] : TsvReader(merchants).drop(1).skip(&TsvLine::isBlank).zip(allMerchantPhrases())) {
-        pMerchantsBuyPhrases[i] = line[1];
-        pMerchantsSellPhrases[i] = line[2];
-        pMerchantsRepairPhrases[i] = line[3];
-        pMerchantsIdentifyPhrases[i] = line[4];
+    for (auto [cells, i] : TsvReader(merchants).drop(1).skip(&TsvLine::isBlank).zip(allMerchantPhrases())) {
+        pMerchantsBuyPhrases[i] = cells[1];
+        pMerchantsSellPhrases[i] = cells[2];
+        pMerchantsRepairPhrases[i] = cells[3];
+        pMerchantsIdentifyPhrases[i] = cells[4];
     }
 }

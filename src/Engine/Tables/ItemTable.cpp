@@ -33,35 +33,35 @@ void ItemTable::LoadStandardEnchantments(const Blob &stditems) {
     // stditems.txt has two sections.
     // #1 Standard Bonuses by Group: attribute name (localized) | suffix (localized) | chance by item type....
     standardEnchantmentChanceSumByItemType.fill(0);
-    for (auto [line, i] : TsvReader(stditems).drop(4).skip(&TsvLine::isBlank).zip(allEnchantableAttributes())) {
-        standardEnchantments[i].attributeName = line[0];
-        standardEnchantments[i].itemSuffix = line[1];
+    for (auto [cells, i] : TsvReader(stditems).drop(4).skip(&TsvLine::isBlank).zip(allEnchantableAttributes())) {
+        standardEnchantments[i].attributeName = cells[0];
+        standardEnchantments[i].itemSuffix = cells[1];
 
         int k = 2;
         for (ItemType equipType : standardEnchantments[i].chanceByItemType.indices()) {
-            standardEnchantments[i].chanceByItemType[equipType] = line[k++].as<int>();
+            standardEnchantments[i].chanceByItemType[equipType] = cells[k++].as<int>();
             standardEnchantmentChanceSumByItemType[equipType] += standardEnchantments[i].chanceByItemType[equipType];
         }
     }
 
     // #2 Bonus range for Standard by Level: (empty) | treasure level | min | max.
-    for (auto [line, i] : TsvReader(stditems).drop(4).skip(&TsvLine::isBlank)
+    for (auto [cells, i] : TsvReader(stditems).drop(4).skip(&TsvLine::isBlank)
              .drop(allEnchantableAttributes().size() + 3).zip(standardEnchantmentRangeByTreasureLevel.indices())) {
-        standardEnchantmentRangeByTreasureLevel[i] = Segment(line[2].as<int>(), line[3].as<int>());
+        standardEnchantmentRangeByTreasureLevel[i] = Segment(cells[2].as<int>(), cells[3].as<int>());
     }
 }
 
 void ItemTable::LoadSpecialEnchantments(const Blob &spcitems) {
     // spcitems.txt table structure: description (localized) | suffix/prefix (localized) | chance by item type... | gold value | enchantment level.
-    for (auto [line, i] : TsvReader(spcitems).drop(4).skip(&TsvLine::isBlank).zip(specialEnchantments.indices())) {
-        specialEnchantments[i].description = line[0];
-        specialEnchantments[i].itemSuffixOrPrefix = line[1];
+    for (auto [cells, i] : TsvReader(spcitems).drop(4).skip(&TsvLine::isBlank).zip(specialEnchantments.indices())) {
+        specialEnchantments[i].description = cells[0];
+        specialEnchantments[i].itemSuffixOrPrefix = cells[1];
 
         int k = 2;
         for (ItemType j : specialEnchantments[i].chanceByItemType.indices())
-            specialEnchantments[i].chanceByItemType[j] = line[k++].as<int>();
+            specialEnchantments[i].chanceByItemType[j] = cells[k++].as<int>();
 
-        std::string_view token14 = line[14];
+        std::string_view token14 = cells[14];
         int res;
         bool isMul = !token14.empty() && (token14[0] == 'x' || token14[0] == 'X');
         if (isMul) {
@@ -77,7 +77,7 @@ void ItemTable::LoadSpecialEnchantments(const Blob &spcitems) {
             specialEnchantments[i].valueMul = res;
         else
             specialEnchantments[i].valueAdd = res;
-        specialEnchantments[i].enchantmentLevel = !line[15].empty() ? (tolower(line[15][0]) - 'a') : 0;
+        specialEnchantments[i].enchantmentLevel = !cells[15].empty() ? (tolower(cells[15][0]) - 'a') : 0;
     }
 }
 
@@ -132,14 +132,14 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
         {"special", RARITY_SPECIAL},
     };
 
-    for (TsvLine line : TsvReader(itemsBlob).drop(2).skip(&TsvLine::isBlank)) {
-        ItemId item_counter = ItemId(line[0].as<int>());
-        items[item_counter].iconName = line[1];
-        items[item_counter].name = line[2];
-        items[item_counter].baseValue = line[3].as<int>();
-        items[item_counter].type = valueOr(equipStatMap, line[4], ITEM_TYPE_MISC);
-        items[item_counter].skill = valueOr(equipSkillMap, line[5], SKILL_MISC);
-        std::array<std::string_view, 2> diceRollTokens = split(line[6]).by('d');
+    for (TsvLine cells : TsvReader(itemsBlob).drop(2).skip(&TsvLine::isBlank)) {
+        ItemId item_counter = ItemId(cells[0].as<int>());
+        items[item_counter].iconName = cells[1];
+        items[item_counter].name = cells[2];
+        items[item_counter].baseValue = cells[3].as<int>();
+        items[item_counter].type = valueOr(equipStatMap, cells[4], ITEM_TYPE_MISC);
+        items[item_counter].skill = valueOr(equipSkillMap, cells[5], SKILL_MISC);
+        std::array<std::string_view, 2> diceRollTokens = split(cells[6]).by('d');
         char damagePrefix = tolower(diceRollTokens[0][0]);
         if (!diceRollTokens[1].empty()) {
             items[item_counter].damageDice = fromString<int>(diceRollTokens[0]);
@@ -151,11 +151,11 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
             items[item_counter].damageDice = 0;
             items[item_counter].damageRoll = 0;
         }
-        items[item_counter].damageMod = line[7].as<int>();
-        items[item_counter].rarity = valueOr(materialMap, line[8], RARITY_COMMON);
-        items[item_counter].identifyAndRepairDifficulty = line[9].as<int>();
-        items[item_counter].unidentifiedName = line[10];
-        items[item_counter].spriteId = static_cast<SpriteId>(line[11].as<int>());
+        items[item_counter].damageMod = cells[7].as<int>();
+        items[item_counter].rarity = valueOr(materialMap, cells[8], RARITY_COMMON);
+        items[item_counter].identifyAndRepairDifficulty = cells[9].as<int>();
+        items[item_counter].unidentifiedName = cells[10];
+        items[item_counter].spriteId = static_cast<SpriteId>(cells[11].as<int>());
 
         if (items[item_counter].type == ITEM_TYPE_REAGENT) {
             items[item_counter].reagentPower = items[item_counter].damageDice;
@@ -166,14 +166,14 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
         items[item_counter].standardEnchantment = {};
         if (items[item_counter].rarity == RARITY_SPECIAL) {
             for (Attribute ii : allEnchantableAttributes()) {
-                if (ascii::noCaseEquals(line[12], standardEnchantments[ii].itemSuffix)) { // TODO(captainurist): #unicode this is not ascii
+                if (ascii::noCaseEquals(cells[12], standardEnchantments[ii].itemSuffix)) { // TODO(captainurist): #unicode this is not ascii
                     items[item_counter].standardEnchantment = ii;
                     break;
                 }
             }
             if (!items[item_counter].standardEnchantment) {
                 for (ItemEnchantment ii : specialEnchantments.indices()) {
-                    if (ascii::noCaseEquals(line[12], specialEnchantments[ii].itemSuffixOrPrefix)) { // TODO(captainurist): #unicode this is not ascii
+                    if (ascii::noCaseEquals(cells[12], specialEnchantments[ii].itemSuffixOrPrefix)) { // TODO(captainurist): #unicode this is not ascii
                         items[item_counter].specialEnchantment = ii;
                     }
                 }
@@ -182,7 +182,7 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
 
         if ((items[item_counter].rarity == RARITY_SPECIAL) &&
             (items[item_counter].standardEnchantment)) {
-            char b_s = line[13].as<int>();
+            char b_s = cells[13].as<int>();
             if (b_s)
                 items[item_counter].standardEnchantmentStrength = b_s;
             else
@@ -190,9 +190,9 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
         } else {
             items[item_counter].standardEnchantmentStrength = 0;
         }
-        items[item_counter].paperdollAnchorOffset.x = line[14].as<int>();
-        items[item_counter].paperdollAnchorOffset.y = line[15].as<int>();
-        items[item_counter].description = line[16];
+        items[item_counter].paperdollAnchorOffset.x = cells[14].as<int>();
+        items[item_counter].paperdollAnchorOffset.y = cells[15].as<int>();
+        items[item_counter].description = cells[16];
     }
 }
 
@@ -201,14 +201,14 @@ void ItemTable::LoadRandomItems(const Blob &rnditems) {
     constexpr size_t section1Size = 618;
 
     // #1 Per-item chances: item index | id (e.g. "ring1", not used) | chance by treasure level 1-6.
-    for (TsvLine line : TsvReader(rnditems).drop(4).skip(&TsvLine::isBlank).take(section1Size)) {
-        ItemId item_counter = ItemId(line[0].as<int>());
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_1] = line[2].as<int>();
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_2] = line[3].as<int>();
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_3] = line[4].as<int>();
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_4] = line[5].as<int>();
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_5] = line[6].as<int>();
-        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_6] = line[7].as<int>();
+    for (TsvLine cells : TsvReader(rnditems).drop(4).skip(&TsvLine::isBlank).take(section1Size)) {
+        ItemId item_counter = ItemId(cells[0].as<int>());
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_1] = cells[2].as<int>();
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_2] = cells[3].as<int>();
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_3] = cells[4].as<int>();
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_4] = cells[5].as<int>();
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_5] = cells[6].as<int>();
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_6] = cells[7].as<int>();
     }
     itemChanceSumByTreasureLevel.fill(0);
     for (ItemTreasureLevel i : itemChanceSumByTreasureLevel.indices())
@@ -217,10 +217,10 @@ void ItemTable::LoadRandomItems(const Blob &rnditems) {
 
     // #2: Enchantment chances by level: line type (not localized, not used) | enchantment type (not localized, not used) | chance by treasure level 1-6.
     auto chancesArray = std::array{&standardEnchantmentChanceForEquipment, &specialEnchantmentChanceForEquipment, &specialEnchantmentChanceForWeapons};
-    for (auto [line, chances] : TsvReader(rnditems).drop(4).skip(&TsvLine::isBlank)
+    for (auto [cells, chances] : TsvReader(rnditems).drop(4).skip(&TsvLine::isBlank)
              .drop(section1Size + 1).zip(chancesArray)) {
         for (ItemTreasureLevel i : chances->indices())
-            (*chances)[i] = line[2 + std::to_underlying(i) - std::to_underlying(ITEM_TREASURE_LEVEL_FIRST_RANDOM)].as<int>();
+            (*chances)[i] = cells[2 + std::to_underlying(i) - std::to_underlying(ITEM_TREASURE_LEVEL_FIRST_RANDOM)].as<int>();
     }
 }
 
@@ -246,17 +246,17 @@ void ItemTable::LoadPotions(const Blob &potions) {
     // potion.txt table structure: item index | name (localized) | unidentified name (localized) | effect (not localized) | mixing matrix...
     // First rows are reagents, then real potions follow. Reagents don't have the mixing matrix values.
     // Matrix values: item ID of result, "no" for self-mixing, "E{n}" for damage level n on invalid mix.
-    for (TsvLine line : TsvReader(potions).drop(1).skip(&TsvLine::isBlank)) {
-        if (line[0].empty())
+    for (TsvLine cells : TsvReader(potions).drop(1).skip(&TsvLine::isBlank)) {
+        if (cells[0].empty())
             continue; // Skip tab-only lines.
 
-        ItemId row = static_cast<ItemId>(line[0].as<int>());
+        ItemId row = static_cast<ItemId>(cells[0].as<int>());
         if (row < ITEM_FIRST_REAL_POTION || row > ITEM_LAST_REAL_POTION)
             continue; // Skip reagents, catalyst, etc.
 
         for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
-            TsvCell cell = line[flatPotionId + 7];
+            TsvCell cell = cells[flatPotionId + 7];
             if (cell == "no")
                 potionCombination[row][column] = ITEM_NULL;
             else if (cell[0] == 'E')
@@ -271,17 +271,17 @@ void ItemTable::LoadPotions(const Blob &potions) {
 void ItemTable::LoadPotionNotes(const Blob &notes) {
     // potnotes.txt has the same layout as potion.txt, but the mixing matrix contains autonote bit indices
     // (for recipe discovery) instead of resulting item IDs.
-    for (TsvLine line : TsvReader(notes).drop(1).skip(&TsvLine::isBlank)) {
-        if (line[0].empty())
+    for (TsvLine cells : TsvReader(notes).drop(1).skip(&TsvLine::isBlank)) {
+        if (cells[0].empty())
             continue; // Skip tab-only lines.
 
-        ItemId row = static_cast<ItemId>(line[0].as<int>());
+        ItemId row = static_cast<ItemId>(cells[0].as<int>());
         if (row < ITEM_FIRST_REAL_POTION || row > ITEM_LAST_REAL_POTION)
             continue; // Skip reagents, catalyst, etc.
 
         for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
-            TsvCell cell = line[flatPotionId + 7];
+            TsvCell cell = cells[flatPotionId + 7];
             potionNotes[row][column] = cell == "no" ? 0 : cell.as<int>();
         }
     }

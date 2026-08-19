@@ -501,12 +501,12 @@ int runLstrCodegen(const CodeGenOptions &options, ResourceManager *resourceManag
 
     Blob txt = resourceManager->eventsData("global.txt");
 
-    for (TsvLine line : TsvReader(txt).drop(1).skip(&TsvLine::isBlank)) {
-        if (line.size() != 2)
+    for (TsvLine cells : TsvReader(txt).drop(1).skip(&TsvLine::isBlank)) {
+        if (cells.size() != 2)
             throw Exception("Invalid localization file");
 
-        int id = line[0].as<int>();
-        std::string text = line[1];
+        int id = cells[0].as<int>();
+        std::string text = cells[1];
 
         std::string enumName = toUpperCaseEnum(text);
         if (enumName.size() > 40) {
