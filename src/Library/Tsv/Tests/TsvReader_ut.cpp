@@ -197,6 +197,16 @@ UNIT_TEST(TsvReader, Cells) {
     }
 }
 
+UNIT_TEST(TsvReader, CellsReportPosition) {
+    // `cells()` used to yield plain `std::string_view`s, so the tables that walk all cells had to reach for
+    // `fromString` and lost the position of the offending cell in the file.
+    TsvReader reader("skip\t10\tnope\r\n", "table.txt");
+
+    for (TsvLine line : reader)
+        for (TsvCell cell : line.cells().drop(2))
+            EXPECT_THROW_MESSAGE((void) cell.as<int>(), "table.txt:1:3"); // 1-based line and column.
+}
+
 UNIT_TEST(TsvReader, EmptyInput) {
     TsvReader reader("");
 

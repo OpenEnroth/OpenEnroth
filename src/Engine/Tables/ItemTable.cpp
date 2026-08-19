@@ -256,13 +256,13 @@ void ItemTable::LoadPotions(const Blob &potions) {
 
         for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
-            std::string_view cell = line[flatPotionId + 7];
+            TsvCell cell = line[flatPotionId + 7];
             if (cell == "no")
                 potionCombination[row][column] = ITEM_NULL;
             else if (cell[0] == 'E')
                 potionCombination[row][column] = static_cast<ItemId>(fromString<int>(cell.substr(1))); // Damage level.
             else
-                potionCombination[row][column] = static_cast<ItemId>(fromString<int>(cell));
+                potionCombination[row][column] = static_cast<ItemId>(cell.as<int>());
         }
     }
 }
@@ -281,8 +281,8 @@ void ItemTable::LoadPotionNotes(const Blob &notes) {
 
         for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
-            std::string_view cell = line[flatPotionId + 7];
-            potionNotes[row][column] = cell == "no" ? 0 : fromString<int>(cell);
+            TsvCell cell = line[flatPotionId + 7];
+            potionNotes[row][column] = cell == "no" ? 0 : cell.as<int>();
         }
     }
 }
