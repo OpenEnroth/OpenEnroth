@@ -14,7 +14,7 @@ void initializeQuests(const Blob &quests) {
     //                             quest giver name (not localized, not used).
     pQuestTable.fill({});
 
-    for (TsvLine line : TsvReader(quests).drop(1).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(quests).drop(1).skip(&TsvLine::isBlank)) {
         QuestBit qbit = static_cast<QuestBit>(line[0].as<int>());
         pQuestTable[qbit] = line[1];
     }

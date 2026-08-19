@@ -58,7 +58,7 @@ void MapStats::Initialize(const Blob &mapStats) {
         }
     };
 
-    for (TsvLine line : TsvReader(mapStats).drop(3).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(mapStats).drop(3).skip(&TsvLine::isBlank)) {
         MapId mapId = static_cast<MapId>(line[0].as<int>());
         MapInfo &info = pInfos[mapId];
         info.name = line[1];

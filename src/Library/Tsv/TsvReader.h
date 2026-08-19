@@ -26,7 +26,7 @@ class Blob;
  *
  * Lines are read lazily and the buffers are reused between lines, so iterating a table doesn't allocate.
  *
- * Every row is read, including the empty ones - use `skip(&TsvLine::isEmpty)` to drop those.
+ * Every row is read, including the empty ones - use `skip(&TsvLine::isBlank)` to drop those.
  *
  * Inherits the fluent view methods, so `take`, `zip` and friends work on the row range.
  */
@@ -142,6 +142,6 @@ inline auto TsvLine::cells() const {
     }));
 }
 
-inline bool TsvLine::isEmpty() const {
+inline bool TsvLine::isBlank() const {
     return _reader->_empty;
 }

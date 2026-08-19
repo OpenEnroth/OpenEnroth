@@ -501,7 +501,7 @@ int runLstrCodegen(const CodeGenOptions &options, ResourceManager *resourceManag
 
     Blob txt = resourceManager->eventsData("global.txt");
 
-    for (TsvLine line : TsvReader(txt).drop(1).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(txt).drop(1).skip(&TsvLine::isBlank)) {
         if (line.size() != 2)
             throw Exception("Invalid localization file");
 

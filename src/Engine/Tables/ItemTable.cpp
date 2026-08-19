@@ -33,7 +33,7 @@ void ItemTable::LoadStandardEnchantments(const Blob &stditems) {
     // stditems.txt has two sections.
     // #1 Standard Bonuses by Group: attribute name (localized) | suffix (localized) | chance by item type....
     standardEnchantmentChanceSumByItemType.fill(0);
-    for (auto [line, i] : TsvReader(stditems).drop(4).skip(&TsvLine::isEmpty).zip(allEnchantableAttributes())) {
+    for (auto [line, i] : TsvReader(stditems).drop(4).skip(&TsvLine::isBlank).zip(allEnchantableAttributes())) {
         standardEnchantments[i].attributeName = line[0];
         standardEnchantments[i].itemSuffix = line[1];
 
@@ -45,7 +45,7 @@ void ItemTable::LoadStandardEnchantments(const Blob &stditems) {
     }
 
     // #2 Bonus range for Standard by Level: (empty) | treasure level | min | max.
-    for (auto [line, i] : TsvReader(stditems).drop(4).skip(&TsvLine::isEmpty)
+    for (auto [line, i] : TsvReader(stditems).drop(4).skip(&TsvLine::isBlank)
              .drop(allEnchantableAttributes().size() + 3).zip(standardEnchantmentRangeByTreasureLevel.indices())) {
         standardEnchantmentRangeByTreasureLevel[i] = Segment(line[2].as<int>(), line[3].as<int>());
     }
@@ -53,7 +53,7 @@ void ItemTable::LoadStandardEnchantments(const Blob &stditems) {
 
 void ItemTable::LoadSpecialEnchantments(const Blob &spcitems) {
     // spcitems.txt table structure: description (localized) | suffix/prefix (localized) | chance by item type... | gold value | enchantment level.
-    for (auto [line, i] : TsvReader(spcitems).drop(4).skip(&TsvLine::isEmpty).zip(specialEnchantments.indices())) {
+    for (auto [line, i] : TsvReader(spcitems).drop(4).skip(&TsvLine::isBlank).zip(specialEnchantments.indices())) {
         specialEnchantments[i].description = line[0];
         specialEnchantments[i].itemSuffixOrPrefix = line[1];
 
@@ -132,7 +132,7 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
         {"special", RARITY_SPECIAL},
     };
 
-    for (TsvLine line : TsvReader(itemsBlob).drop(2).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(itemsBlob).drop(2).skip(&TsvLine::isBlank)) {
         ItemId item_counter = ItemId(line[0].as<int>());
         items[item_counter].iconName = line[1];
         items[item_counter].name = line[2];
@@ -201,7 +201,7 @@ void ItemTable::LoadRandomItems(const Blob &rnditems) {
     constexpr size_t section1Size = 618;
 
     // #1 Per-item chances: item index | id (e.g. "ring1", not used) | chance by treasure level 1-6.
-    for (TsvLine line : TsvReader(rnditems).drop(4).skip(&TsvLine::isEmpty).take(section1Size)) {
+    for (TsvLine line : TsvReader(rnditems).drop(4).skip(&TsvLine::isBlank).take(section1Size)) {
         ItemId item_counter = ItemId(line[0].as<int>());
         items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_1] = line[2].as<int>();
         items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_2] = line[3].as<int>();
@@ -217,7 +217,7 @@ void ItemTable::LoadRandomItems(const Blob &rnditems) {
 
     // #2: Enchantment chances by level: line type (not localized, not used) | enchantment type (not localized, not used) | chance by treasure level 1-6.
     auto chancesArray = std::array{&standardEnchantmentChanceForEquipment, &specialEnchantmentChanceForEquipment, &specialEnchantmentChanceForWeapons};
-    for (auto [line, chances] : TsvReader(rnditems).drop(4).skip(&TsvLine::isEmpty)
+    for (auto [line, chances] : TsvReader(rnditems).drop(4).skip(&TsvLine::isBlank)
              .drop(section1Size + 1).zip(chancesArray)) {
         for (ItemTreasureLevel i : chances->indices())
             (*chances)[i] = line[2 + std::to_underlying(i) - std::to_underlying(ITEM_TREASURE_LEVEL_FIRST_RANDOM)].as<int>();
@@ -246,7 +246,7 @@ void ItemTable::LoadPotions(const Blob &potions) {
     // potion.txt table structure: item index | name (localized) | unidentified name (localized) | effect (not localized) | mixing matrix...
     // First rows are reagents, then real potions follow. Reagents don't have the mixing matrix values.
     // Matrix values: item ID of result, "no" for self-mixing, "E{n}" for damage level n on invalid mix.
-    for (TsvLine line : TsvReader(potions).drop(1).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(potions).drop(1).skip(&TsvLine::isBlank)) {
         if (line[0].empty())
             continue; // Skip tab-only lines.
 
@@ -271,7 +271,7 @@ void ItemTable::LoadPotions(const Blob &potions) {
 void ItemTable::LoadPotionNotes(const Blob &notes) {
     // potnotes.txt has the same layout as potion.txt, but the mixing matrix contains autonote bit indices
     // (for recipe discovery) instead of resulting item IDs.
-    for (TsvLine line : TsvReader(notes).drop(1).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(notes).drop(1).skip(&TsvLine::isBlank)) {
         if (line[0].empty())
             continue; // Skip tab-only lines.
 

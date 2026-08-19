@@ -11,7 +11,7 @@ IndexedArray<AwardData, AWARD_FIRST, AWARD_LAST> pAwards;
 
 void initializeAwards(const Blob &awards) {
     // awards.txt table structure: index | text (localized) | priority.
-    for (TsvLine line : TsvReader(awards).drop(1).skip(&TsvLine::isEmpty)) {
+    for (TsvLine line : TsvReader(awards).drop(1).skip(&TsvLine::isBlank)) {
         if (line[2].empty())
             continue; // Truncated lines with just the index exist in the file.
 
