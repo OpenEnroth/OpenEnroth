@@ -1,6 +1,7 @@
 #include "Arcomage.h"
 
 #include <algorithm>
+#include <array>
 #include <string>
 
 #include "Engine/EngineGlobals.h"
@@ -94,9 +95,9 @@ constexpr auto SIG_MEMFREE = 0x78787878;  // memory free;
 
 ArcomageGame *pArcomageGame = new ArcomageGame;
 
-ArcomagePlayer am_Players[2];
-AcromageCardOnTable shown_cards[10];
-am_effects_struct am_effects_array[10];
+std::array<ArcomagePlayer, 2> am_Players;
+std::array<AcromageCardOnTable, 10> shown_cards;
+std::array<am_effects_struct, 10> am_effects_array;
 
 ArcomageDeck playDeck;
 ArcomageDeck deckMaster;
@@ -345,8 +346,8 @@ int explosion_effect_struct::IsEffectActive() {
 
 int new_explosion_effect(Pointi *startXY, int effect_value) {
     // find first empty effect slot
-    signed int arr_slot = 0;
-    for (arr_slot = 0; arr_slot < 10; arr_slot++) {
+    size_t arr_slot = 0;
+    for (arr_slot = 0; arr_slot < am_effects_array.size(); arr_slot++) {
         if (am_effects_array[arr_slot].have_effect) {
             if (am_effects_array[arr_slot].explosion_eff->IsEffectActive() == 0) {
                 am_effects_array[arr_slot].have_effect = 0;
@@ -355,7 +356,7 @@ int new_explosion_effect(Pointi *startXY, int effect_value) {
         } else {
             break;
         }
-        if (arr_slot == 9) return 2;
+        if (arr_slot == am_effects_array.size() - 1) return 2;
     }
 
     // set slot active and effect colour
@@ -382,7 +383,7 @@ int new_explosion_effect(Pointi *startXY, int effect_value) {
     am_effects_array[arr_slot].eff_params.unused_acc_1 = 8.0;
     am_effects_array[arr_slot].eff_params.min_lifespan = 5;
     am_effects_array[arr_slot].eff_params.max_lifespan = 15;
-    am_effects_array[arr_slot].eff_params.sparks_array = &am_effects_array[arr_slot].effect_sparks[0];
+    am_effects_array[arr_slot].eff_params.sparks_array = am_effects_array[arr_slot].effect_sparks.data();
 
     // fill explosion struct
     explosion_effect_struct *explos = am_effects_array[arr_slot].explosion_eff;
@@ -405,20 +406,19 @@ int new_explosion_effect(Pointi *startXY, int effect_value) {
     return 0;
 }
 
-// TODO(pskelton): Hardcoded limit checks need changing
 void DrawSparks() {
     Color rgb_pixel_color;
 
-    for (int i = 0; i < 10; ++i) {
+    for (size_t i = 0; i < am_effects_array.size(); ++i) {
         if (am_effects_array[i].have_effect && (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
             // set the pixel color
             rgb_pixel_color = colorTable.Green;
             if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red;
 
             // draw sparks
-            for (int j = 0; j < 150; ++j) {
+            for (size_t j = 0; j < am_effects_array[i].effect_sparks.size(); ++j) {
                 if (am_effects_array[i].effect_sparks[j].spark_remaining_life > 0) {
-                    // check limits
+                    // check limits - TODO(pskelton): hardcoded 640x480 screen bounds
                     if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
                         if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
                             if (j % 2) {
@@ -949,7 +949,7 @@ void ArcomageGame::Loop() {
         }
     }
 
-    for (int i = 0; i < 10; ++i) {
+    for (size_t i = 0; i < am_effects_array.size(); ++i) {
         am_effects_array[i].explosion_eff->Clear(1, 1);
         am_effects_array[i].explosion_eff->Free();
     }
@@ -1324,7 +1324,7 @@ void DrawGameUI(int animation_stage) {
         current_card_slot_index = DrawCardsRectangles(current_player_num);
 
     // update explosion effects
-    for (int i = 0; i < 10; ++i) {
+    for (size_t i = 0; i < am_effects_array.size(); ++i) {
         if (am_effects_array[i].have_effect) am_effects_array[i].explosion_eff->UpdateEffect();
     }
     DrawSparks();
@@ -2885,7 +2885,7 @@ void ArcomageGame::PrepareArcomage() {
     }
 
     // create new explosion effect struct array
-    for (int i = 0; i < 10; ++i)
+    for (size_t i = 0; i < am_effects_array.size(); ++i)
         am_effects_array[i].explosion_eff = explosion_effect_struct::New();
 
     // load in start condtions and create initial deck and deal
