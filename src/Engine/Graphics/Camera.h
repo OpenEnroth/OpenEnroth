@@ -47,7 +47,6 @@ struct Camera3D {
                                RenderVertexSoft *pLineEnd,
                                Color sEndDiffuse32, float z_stuff);
     bool is_face_faced_to_camera(BLVFace *pFace);
-    static void GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV);
 
     void CullByNearClip(RenderVertexSoft *pverts, unsigned int *unumverts);
     void CullByFarClip(RenderVertexSoft *pverts, unsigned int *unumverts);

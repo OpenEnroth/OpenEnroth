@@ -20,6 +20,7 @@ set(ENGINE_SOURCES
         TeleportPoint.cpp
         mm7_data.cpp
         mm7text_ru.cpp
+        stru314.cpp
         Seasons.cpp)
 
 set(ENGINE_HEADERS

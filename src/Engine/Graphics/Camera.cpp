@@ -57,52 +57,6 @@ Vec3f Camera3D::ViewTransform(const Vec3f* pos) const {
     return Vec3f(camtovert.x, camtovert.y, camtovert.z);
 }
 
-//----- (00436932) --------------------------------------------------------
-// TODO(captainurist): function belongs to stru314
-void Camera3D::GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV) {
-    if (fabsf(normal.z) < 1e-6f) {
-        // Vertical wall.
-        outV->x = -normal.y;
-        outV->y = normal.x;
-        outV->z = 0.0;
-
-        outU->x = 0.0;
-        outU->y = 0.0;
-        outU->z = 1.0f;
-    } else if (fabsf(normal.x) < 1e-6f && fabsf(normal.y) < 1e-6f) {
-        // Floor.
-        outV->x = 1.0;
-        outV->y = 0.0;
-        outV->z = 0.0;
-
-        outU->x = 0.0;
-        outU->y = 1.0;
-        outU->z = 0.0;
-    } else {
-        // Other.
-        if (fabs(normal.z) < 0.70811361) {
-            outV->x = -normal.y;
-            outV->y = normal.x;
-            outV->z = 0.0;
-            outV->normalize();
-
-            outU->x = 0.0;
-            outU->y = 0.0;
-            outU->z = 1.0;
-        } else {
-            outV->x = 1.0;
-            outV->y = 0.0;
-            outV->z = 0.0;
-
-            outU->x = 0.0;
-            outU->y = 1.0;
-            outU->z = 0.0;
-        }
-    }
-}
-
-
-
 //----- (00438258) --------------------------------------------------------
 bool Camera3D::is_face_faced_to_camera(BLVFace *pFace) {
     return pFace->facePlane.dist +

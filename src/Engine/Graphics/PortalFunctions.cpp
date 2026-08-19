@@ -166,7 +166,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
 
     float var_28;
     float var_24;
-    // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
+    // TODO(captainurist): code looks very similar to stru314::computeBasis
     switch (pFace->polygonType) {
         case POLYGON_VerticalWall:
             a1.x = -pFace->facePlane.normal.y;  // направление полигона

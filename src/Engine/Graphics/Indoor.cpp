@@ -431,7 +431,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
 //----- (00498A41) --------------------------------------------------------
 std::pair<Vec3f, Vec3f> BLVFace::textureUV() const {
-    // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
+    // TODO(captainurist): code looks very similar to stru314::computeBasis
     Vec3f u;
     Vec3f v;
 
