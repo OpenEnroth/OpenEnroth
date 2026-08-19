@@ -34,6 +34,12 @@ class NativePath {
      */
     NativePath(AsciiLiteral path); // NOLINT: intentionally implicit.
 
+    // TODO(captainurist): fromWtf8 / toWtf8 are misnomers, the strings are WTF8 on Windows only. Rename.
+
+    /**
+     * @param path                      Path string, WTF8-encoded on Windows, byte string on POSIX.
+     * @return                          `NativePath` for the given string.
+     */
     [[nodiscard]] static NativePath fromWtf8(std::string_view path);
 
     [[nodiscard]] static NativePath fromStdPath(std::filesystem::path path) {
@@ -46,8 +52,9 @@ class NativePath {
     template<class T> static NativePath fromStdPath(const T &) = delete;
 
     /**
-     * @return                          This path as a WTF8 string, always using forward slashes. Never throws,
-     *                                  unlike `std::filesystem::path::generic_string()`.
+     * @return                          This path as a string, always using forward slashes. WTF8-encoded on
+     *                                  Windows, byte string on POSIX. Never throws, unlike
+     *                                  `std::filesystem::path::generic_string()`.
      */
     [[nodiscard]] std::string toWtf8() const;
 
@@ -64,8 +71,8 @@ class NativePath {
     }
 
     /**
-     * @param extension                 New extension, WTF8, with or without the leading dot. Pass an empty string
-     *                                  to drop the extension.
+     * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
+     *                                  the extension. WTF8-encoded on Windows, byte string on POSIX.
      * @return                          Copy of this path with the extension replaced.
      */
     [[nodiscard]] NativePath withExtension(std::string_view extension) const {
@@ -86,7 +93,8 @@ class NativePath {
 
     /**
      * CLI11 picks this function up through ADL, so that options can bind `NativePath` fields directly. Note that
-     * `argv` is WTF8, `UnicodeCrt` converts it from the wide command line on Windows.
+     * `argv` is WTF8 on Windows, where `UnicodeCrt` converts it from the wide command line, and a byte string on
+     * POSIX.
      */
     friend bool lexical_cast(const std::string &input, NativePath &output) {
         output = NativePath::fromWtf8(input);
