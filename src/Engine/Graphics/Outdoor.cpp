@@ -28,7 +28,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/TeleportPoint.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Tables/ItemTable.h"
@@ -275,13 +275,13 @@ bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
     return false;
 }
 
-MapId OutdoorLocation::getTravelDestination(int partyX, int partyY) {
+MapDestination OutdoorLocation::getTravelDestination(int partyX, int partyY) {
     int direction;
     MapId currentMap = engine->_currentLoadedMapId;
     MapId destinationMap;
 
     if (!isMapOutdoor(currentMap))
-        return MAP_INVALID;
+        return {};
 
     // Check which side of the map
     if (partyX < -maxPartyAxisDistance)
@@ -293,7 +293,7 @@ MapId OutdoorLocation::getTravelDestination(int partyX, int partyY) {
     else if (partyY > maxPartyAxisDistance)
         direction = 0; // north
     else
-        return MAP_INVALID;
+        return {};
 
     if (currentMap == MAP_AVLEE && direction == 3) {  // to Shoals
         bool wholePartyUnderwaterSuitEquipped = true;
@@ -306,25 +306,22 @@ MapId OutdoorLocation::getTravelDestination(int partyX, int partyY) {
 
         if (wholePartyUnderwaterSuitEquipped) {
             uDefaultTravelTime_ByFoot = 1;
-            engine->_teleportPoint.setStartPoint(MAP_START_POINT_EAST);
             pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE);
-            return MAP_SHOALS;
+            return MapDestination(MAP_SHOALS, MAP_START_POINT_EAST);
         }
     } else if (currentMap == MAP_SHOALS && direction == 2) {  // from Shoals
         uDefaultTravelTime_ByFoot = 1;
-        engine->_teleportPoint.setStartPoint(MAP_START_POINT_WEST);
         pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE);
-        return MAP_AVLEE;
+        return MapDestination(MAP_AVLEE, MAP_START_POINT_WEST);
     }
     destinationMap = footTravelDestinations[currentMap][direction];
     if (destinationMap == MAP_INVALID)
-        return MAP_INVALID;
+        return {};
 
     assert(destinationMap <= MAP_SHOALS);
 
     uDefaultTravelTime_ByFoot = footTravelTimes[currentMap][direction];
-    engine->_teleportPoint.setStartPoint(footTravelArrivalPoints[currentMap][direction]);
-    return destinationMap;
+    return MapDestination(destinationMap, footTravelArrivalPoints[currentMap][direction]);
 }
 
 //----- (004892E6) --------------------------------------------------------
@@ -877,9 +874,9 @@ void ODM_UpdateUserInputAndOther() {
 
     if (pParty->pos.x < -maxPartyAxisDistance || pParty->pos.x > maxPartyAxisDistance ||
         pParty->pos.y < -maxPartyAxisDistance || pParty->pos.y > maxPartyAxisDistance) {
-        MapId mapid = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
+        MapDestination destination = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
         if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE)) ||
-                             pParty->uFlags & PARTY_FLAG_BURNING || pParty->bFlying) || mapid == MAP_INVALID) {
+                             pParty->uFlags & PARTY_FLAG_BURNING || pParty->bFlying) || destination.map == MAP_INVALID) {
             pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
             pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);
         } else {
@@ -1810,10 +1807,8 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
 
     loadAndPrepareODMInternal(mapid);
     if (!bLoading) {
-        engine->_teleportPoint.adjustToStartingPoint();
-        if (engine->_teleportPoint.isValid())
-            engine->_teleportPoint.doTeleport(false);
-        engine->_teleportPoint.invalidate();
+        const MapDestination &destination = *engine->_pendingTransition;
+        placeParty(destination.placement.value_or(placementForStartPoint(destination.startPoint)));
     }
 
     viewparams->_443365();

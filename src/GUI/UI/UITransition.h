@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Engine/MapEnums.h"
+#include "Engine/PartyPlacement.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouseEnums.h"
@@ -26,11 +27,20 @@ class GUIWindow_Travel : public GUIWindow_Transition {
 
 class GUIWindow_IndoorEntryExit : public GUIWindow_Transition {
  public:
-    GUIWindow_IndoorEntryExit(HouseId transitionHouse, uint32_t exit_pic_id, Vec3f pos, int yaw, int pitch, int zspeed, std::string_view locationName);
+    GUIWindow_IndoorEntryExit(HouseId transitionHouse, uint32_t exit_pic_id, const MapDestination &destination,
+                              std::string_view locationName);
     virtual ~GUIWindow_IndoorEntryExit() {}
 
     virtual void Update() override;
 
+    /**
+     * @return                          Where the party goes if the player confirms.
+     */
+    [[nodiscard]] const MapDestination &destination() const { return _destination; }
+
     std::string _mapName = "";
     int _transitionStringId = 0;
+
+ private:
+    MapDestination _destination;
 };

@@ -17,6 +17,8 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
@@ -1502,22 +1504,18 @@ GAME_TEST(Prs, Pr2626) {
 }
 
 GAME_TEST(Issues, Pr2599) {
-    // Cross-map teleports encode "keep this component" as a zero, and a kept component has to survive the map
-    // load. Erathia has no party start decoration, only the four directional ones for foot travel, so a zero
-    // there keeps the party's current coordinate - this is the Hidden Tomb exit, which arrives with z=0.
+    // A cross-map teleport puts the party exactly where the script says. Zero components used to be filled in from
+    // the destination's start point decoration, and Erathia has no start decoration at all, only the four
+    // directional ones for foot travel - so this exit, which arrives with z=0, used to keep whatever z the party
+    // had back in the dungeon it came from.
     game.startNewGame();
-    float zBeforeTeleport = pParty->pos.z;
     game.teleportTo(MAP_ERATHIA, Vec3f(14207, -21526, 0), 270);
-    EXPECT_EQ(pParty->pos.x, 14207);
-    EXPECT_EQ(pParty->pos.y, -21526);
-    EXPECT_EQ(pParty->pos.z, zBeforeTeleport);
-    EXPECT_EQ(pParty->uFallStartZ, pParty->pos.z);
+    EXPECT_EQ(pParty->pos, Vec3f(14207, -21526, 0));
+    EXPECT_EQ(pParty->uFallStartZ, 0);
     EXPECT_EQ(pParty->_viewYaw, 1536);
 
-    // With a start point decoration present the zero takes the decoration's coordinate instead. Castle Navan's
-    // party start is at (0, -1472, 224), so only the zeroed y is substituted.
-    game.teleportTo(MAP_CASTLE_NAVAN, Vec3f(100, 0, 300), 0);
-    EXPECT_EQ(pParty->pos.x, 100);
-    EXPECT_EQ(pParty->pos.y, -1472);
-    EXPECT_EQ(pParty->pos.z, 300);
+    // The six shipped scripts that arrive with a zero component are unaffected, because the decoration holds the
+    // same value there anyway. This is the Colony Zod entrance, whose x is zero in the script and in the decoration.
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(0, -709, 1), 90);
+    EXPECT_EQ(pParty->pos, Vec3f(0, -709, 1));
 }

@@ -6,6 +6,7 @@
 
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
+#include "Engine/PartyPlacement.h"
 
 #include "Library/Color/Color.h"
 
@@ -52,7 +53,13 @@ struct OutdoorLocation {
     /**
      * @offset 0x48902E
      */
-    MapId getTravelDestination(int partyX, int partyY);
+    /**
+     * @param partyX                    Party x position, out of bounds when foot travel is possible.
+     * @param partyY                    Party y position.
+     * @return                          Neighbouring map the party walks into, and the start point it arrives at.
+     *                                  Map is MAP_INVALID when there is nowhere to go.
+     */
+    MapDestination getTravelDestination(int partyX, int partyY);
     void UpdateSunlightVectors();
     void UpdateFog();
     int getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos);

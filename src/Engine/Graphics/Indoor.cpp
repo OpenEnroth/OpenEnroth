@@ -30,7 +30,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/TeleportPoint.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time/Timer.h"
@@ -1012,10 +1012,8 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         pParty->pos = Vec3f();
         pParty->velocity = Vec3f();
         pParty->uFallStartZ = 0;
-        engine->_teleportPoint.adjustToStartingPoint();
-        if (engine->_teleportPoint.isValid())
-            engine->_teleportPoint.doTeleport(false);
-        engine->_teleportPoint.invalidate();
+        const MapDestination &destination = *engine->_pendingTransition;
+        placeParty(destination.placement.value_or(placementForStartPoint(destination.startPoint)));
         pBLVRenderParams->Reset();
     }
     viewparams->_443365();

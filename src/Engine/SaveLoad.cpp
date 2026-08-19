@@ -109,7 +109,7 @@ void loadGame(std::string_view fileName) {
         MM_ERROR("Unable to find: {}!", state.header.locationName);
     }
 
-    engine->_transitionMapId = pMapStats->GetMapInfo(state.header.locationName);
+    engine->_pendingTransition = MapDestination(pMapStats->GetMapInfo(state.header.locationName));
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_SKIP_WORLD_UPDATE;
 

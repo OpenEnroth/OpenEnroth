@@ -63,6 +63,7 @@
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIMainMenu.h"
 #include "GUI/UI/UIGameOver.h"
 #include "GUI/UI/UIPartyCreation.h"
@@ -167,7 +168,7 @@ bool Game::loop() {
 
             pParty->pPickedItem.itemId = ITEM_NULL;
 
-            engine->_transitionMapId = MAP_EMERALD_ISLAND;
+            engine->_pendingTransition = MapDestination(MAP_EMERALD_ISLAND);
 
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
@@ -671,7 +672,10 @@ void Game::processQueuedMessages() {
                 GameUI_DrawHiredNPCs();
                 continue;
 
-            case UIMSG_OnIndoorEntryExit:
+            case UIMSG_OnIndoorEntryExit: {
+                // Read before DialogueEnding, which destroys the window this came from.
+                MapDestination destination = static_cast<GUIWindow_IndoorEntryExit *>(pDialogueWindow.get())->destination();
+
                 engine->_messageQueue->clear();
                 playButtonSoundOnEscape = false;
                 // PID_INVALID was used (exclusive sound)
@@ -685,18 +689,15 @@ void Game::processQueuedMessages() {
                     pMediaPlayer->Unload();
                 DialogueEnding();
 
-                if (engine->_teleportPoint.isValid()) {
-                    if (!engine->_teleportPoint.teleportMap().starts_with('0')) { // '0' means teleportation within the current map.
-                        //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                        bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
-                        onMapLeave();
-                        Transition_StopSound_Autosave(engine->_teleportPoint.teleportMap(), MAP_START_POINT_PARTY);
-                        if (leavingArena)
-                            pParty->GetPlayingTime() += Duration::fromDays(4);
-                    } else {
-                        engine->_teleportPoint.doTeleport(true);
-                        engine->_teleportPoint.invalidate();
-                    }
+                if (destination.map != MAP_INVALID) {
+                    //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
+                    bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
+                    onMapLeave();
+                    startMapTransition(destination);
+                    if (leavingArena)
+                        pParty->GetPlayingTime() += Duration::fromDays(4);
+                } else if (destination.placement) {
+                    placeParty(*destination.placement);
                 } else {
                     eventProcessor(savedEventID, Pid(), 1, savedEventStep);
                 }
@@ -706,10 +707,10 @@ void Game::processQueuedMessages() {
                 back_to_game();
                 onEscape();
                 continue;
+            }
             case UIMSG_CancelIndoorEntryExit:
                 PlayButtonClickSound();
                 pMediaPlayer->Unload();
-                engine->_teleportPoint.invalidate();
                 DialogueEnding();
                 back_to_game();
                 onEscape();
@@ -725,8 +726,8 @@ void Game::processQueuedMessages() {
 
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 // encounter_index = (NPCData *)getTravelTime();
-                MapId travelMapId = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
-                if (!engine->IsUnderwater() && pParty->bFlying || travelMapId == MAP_INVALID) {
+                MapDestination travelDestination = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
+                if (!engine->IsUnderwater() && pParty->bFlying || travelDestination.map == MAP_INVALID) {
                     PlayButtonClickSound();
                     pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
                     pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);;
@@ -738,7 +739,7 @@ void Game::processQueuedMessages() {
                     gameTimer->setPaused(true);
                     autoSave();
                     uGameState = GAME_STATE_CHANGE_LOCATION;
-                    engine->_transitionMapId = travelMapId;
+                    engine->_pendingTransition = travelDestination;
                     // TODO(Nik-RE-dev): rest and heal uncoditionally even if party does not have food?
                     restAndHeal(Duration::fromDays(getTravelTime()));
                     if (pParty->GetFood() > 0) {
@@ -822,7 +823,7 @@ void Game::processQueuedMessages() {
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 autoSave();
-                engine->_transitionMapId = houseNpcs[currentHouseNpc].targetMapID;
+                MapDestination destination(houseNpcs[currentHouseNpc].targetMapID);
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
@@ -830,8 +831,9 @@ void Game::processQueuedMessages() {
                 uint16_t v53 = std::to_underlying(houseTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     int v54 = std::abs(v53) - 1;
-                    engine->_teleportPoint.setTeleportTarget(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
+                    destination.placement = PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
                 }
+                engine->_pendingTransition = destination;
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 continue;
@@ -883,8 +885,8 @@ void Game::processQueuedMessages() {
                 pParty->_viewPitch = 0;
 
                 // change map to Harmondale
-                engine->_transitionMapId = MAP_HARMONDALE;
-                engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
+                engine->_pendingTransition = MapDestination(
+                    MAP_HARMONDALE, PartyPlacement(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0));
                 PrepareWorld(1);
                 Actor::InitializeActors();
 
@@ -908,7 +910,7 @@ void Game::processQueuedMessages() {
                     MapId map_index = static_cast<MapId>(fromString<int>(tokens[0]));
                     if (!allMaps().contains(map_index))
                         continue;
-                    engine->_transitionMapId = map_index;
+                    engine->_pendingTransition = MapDestination(map_index);
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     onMapLeave();
@@ -1686,8 +1688,8 @@ void Game::gameLoop() {
                 pParty->velocity = Vec3f();
                 // change map
                 if (engine->_currentLoadedMapId != mapid) {
-                    engine->_transitionMapId = mapid;
-                    engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
+                    engine->_pendingTransition = MapDestination(
+                        mapid, PartyPlacement(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0));
                     PrepareWorld(1);
                 }
                 animTimer->setPaused(false);

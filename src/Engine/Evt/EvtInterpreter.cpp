@@ -111,6 +111,24 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
     }
 }
 
+/**
+ * @return                              Where a MoveToMap instruction sends the party. An all-zero position means the
+ *                                      script isn't moving the party, which is how the MM6 castle doors open their
+ *                                      throne rooms without a teleport.
+ */
+static MapDestination moveToMapDestination(const EvtInstruction &ir) {
+    const auto &descr = ir.data.move_map_descr;
+
+    MapDestination result;
+    if (!ir.str.starts_with('0') && !ir.str.empty())
+        result.map = pMapStats->GetMapInfo(ir.str);
+    if (descr.x || descr.y || descr.z)
+        result.placement = PartyPlacement(Vec3f(descr.x, descr.y, descr.z),
+                                          descr.yaw != -1 ? (descr.yaw & TrigLUT.uDoublePiMask) : -1,
+                                          descr.pitch, descr.zspeed);
+    return result;
+}
+
 int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
     EvtInstruction ir;
     bool stepFound = false;
@@ -191,33 +209,32 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 if (engine->_indoor->filename == "d20.blv" && _eventId == 501)
                     ir.data.move_map_descr.z = 3088;
 
-                pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                                Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
-                                                                ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
+                pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id,
+                                                                             ir.data.move_map_descr.exit_pic_id,
+                                                                             moveToMapDestination(ir), ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;
                 return -1;
             }
 
-            // TODO(pskelton): Fix #2117 this should be a data mod - stop it overwriting the teleport point
-            if (!(engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_teleportPoint.isValid()))
-                engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
-                                                     (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : -1,
-                                                     ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
-
             // TODO(pskelton): Fix #2117 this should be a data mod
             if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && ir.step == 1)
                 ir.str = "out06.odm";
 
-            if (ir.str[0] == '0') { // teleport within map
-                if (engine->_teleportPoint.isValid()) {
-                    engine->_teleportPoint.doTeleport(false);
-                    engine->_teleportPoint.invalidate();
+            MapDestination destination = moveToMapDestination(ir);
+
+            // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
+            //                 other, so the placement of the one it picked has to survive the rest of them.
+            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
+                destination.placement = engine->_pendingTransition->placement;
+            if (destination.map == MAP_INVALID) { // teleport within map
+                if (destination.placement) {
+                    placeParty(*destination.placement);
                     pAudioPlayer->playUISound(SOUND_teleport);
                 }
             } else {
                 pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
-                Transition_StopSound_Autosave(ir.str, MAP_START_POINT_PARTY);
+                startMapTransition(destination);
                 _mapExitTriggered = true;
                 if (current_screen_type == SCREEN_HOUSE) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
