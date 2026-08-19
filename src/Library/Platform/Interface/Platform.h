@@ -134,8 +134,7 @@ class Platform {
  * Entrypoint for the program that uses the platform lib. Function definition should be provided in user code.
  *
  * @param argc                          Total number of arguments passed.
- * @param argv                          UTF8-encoded program arguments. Note that you're getting UTF8 on ALL platforms,
- *                                      including Windows.
+ * @param argv                          Program arguments. WTF-8 on Windows, byte strings on POSIX.
  * @return                              Program return code.
  */
 int platformMain(int argc, char **argv);

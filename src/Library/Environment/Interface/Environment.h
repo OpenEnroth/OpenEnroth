@@ -8,7 +8,8 @@
 /**
  * Base class akin to `Platform` that provides an abstraction for the process's environment.
  *
- * All strings accepted by and returned from methods of this class are UTF8-encoded.
+ * Strings accepted by and returned from methods of this class are WTF-8 encoded on Windows. On POSIX they are just
+ * byte strings that are passed through as-is - POSIX doesn't guarantee UTF-8 in paths, or anywhere else.
  *
  * Why is this class not a part of `Platform`? Mainly for the following reasons:
  * - `Platform` handles an unrelated domain (UI and window management). Using a `NullPlatform` while still relying on
@@ -29,8 +30,9 @@ class Environment {
     /**
      * Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.
      *
-     * @param path                      UTF8-encoded registry path to query.
-     * @return                          UTF8-encoded value at the given path, or an empty string in case of an error.
+     * @param path                      Registry path to query. WTF-8 encoded.
+     * @return                          Value at the given path, or an empty string in case of an error.
+     *                                  WTF-8 encoded.
      */
     [[nodiscard]] virtual std::string queryRegistry(const std::string &path) const = 0;
 
@@ -38,29 +40,32 @@ class Environment {
      * Accessor for various system paths.
      *
      * @param path                      Path to get.
-     * @return                          UTF8-encoded path, or an empty string in case of an error.
+     * @return                          Requested path, or an empty string in case of an error. WTF-8 on Windows,
+     *                                  byte string on POSIX.
      */
     [[nodiscard]] virtual std::string path(EnvironmentPath path) const = 0;
 
     /**
-     * Same as `std::getenv`, but takes & returns UTF8-encoded keys and values on all platforms.
+     * Same as `std::getenv`.
      *
-     * Note that on Windows `std::getenv` doesn't switch to UTF8 even if `UnicodeCrt` is used
+     * Note that on Windows `std::getenv` doesn't switch to UTF-8 even if `UnicodeCrt` is used
      * (aka `std::setlocale(LC_ALL, ".UTF-8")`).
      *
      * Returns an empty string for non-existent environment variables, and thus doesn't distinguish between empty and
      * non-existent values (and you shouldn't, either).
      *
-     * @param key                       UTF8-encoded name of the environment variable to query.
-     * @return                          UTF8-encoded value of the environment variable.
+     * @param key                       Name of the environment variable to query. WTF-8 on Windows, byte string
+     *                                  on POSIX.
+     * @return                          Value of the environment variable. WTF-8 on Windows, byte string on POSIX.
      */
     [[nodiscard]] virtual std::string getenv(const std::string &key) const = 0;
 
     /**
-     * Same as POSIX `setenv(key, value, 1)`. Takes UTF8-encoded keys and values on all platforms.
+     * Same as POSIX `setenv(key, value, 1)`.
      *
-     * @param key                       UTF8-encoded name of the environment variable to set.
-     * @param value                     UTF8-encoded value of the environment variable.
+     * @param key                       Name of the environment variable to set. WTF-8 on Windows, byte string on
+     *                                  POSIX.
+     * @param value                     Value of the environment variable. WTF-8 on Windows, byte string on POSIX.
      */
     virtual void setenv(const std::string &key, const std::string &value) const = 0;
 };
