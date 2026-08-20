@@ -13,7 +13,11 @@
 // Not inlined so that it gets a frame of its own, and not static because windows drops private symbols from a
 // stripped pdb.
 MM_NOINLINE std::string oeStackTraceMarkerFunction() {
-    return stackTraceToString();
+    std::string trace = stackTraceToString();
+
+    // Deriving the result from the trace keeps the call above out of tail position. Clang tail-calls it at
+    // -O2 otherwise, and then this frame, which is the one the test looks for, isn't in the trace at all.
+    return trace.empty() ? std::string() : trace;
 }
 
 MM_NOINLINE static int oeStackTraceFaultingFunction() {
