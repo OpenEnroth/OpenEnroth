@@ -74,9 +74,22 @@ class Character {
 
     bool matchesAttackPreference(MonsterAttackPreference preference) const;
 
+    // TODO(captainurist): evt script semantics, belongs in the Evt module. The callers outside it all go through
+    //                     VAR_Award or VAR_PlayerItemInHands and need their own entry points first.
     void SetVariable(EvtVariable var, signed int a3);
+
+    // TODO(captainurist): evt script semantics, belongs in the Evt module, see SetVariable.
     void AddVariable(EvtVariable var, signed int val);
-    void SubtractVariable(EvtVariable VarNum, signed int pValue);
+
+    /**
+     * TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
+     *
+     * @return                          False if the subtraction could not be performed, e.g. the party doesn't have
+     *                                  enough gold. A script that hits this is aborted.
+     */
+    [[nodiscard]] bool SubtractVariable(EvtVariable VarNum, signed int pValue);
+
+    // TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
     bool CompareVariable(EvtVariable VarNum, signed int pValue);
 
     /**

@@ -316,13 +316,15 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 ItemId itemId = static_cast<ItemId>(ir.data.variable_descr.value);
                 for (Character &character : pParty->pCharacters) {
                     if (pParty->pPickedItem.itemId == itemId || character.inventory.find(itemId)) {
-                        character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
+                        if (!character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value))
+                            _cancelled = true;
                         break;  // Only take one item.
                     }
                 }
             } else {
                 for (Character &character : iterateCharacters(_who, grng))
-                    character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
+                    if (!character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value))
+                        _cancelled = true;
             }
             break;
         case EVENT_Set:
@@ -587,7 +589,7 @@ bool EvtInterpreter::executeRegular(int startStep) {
 
     _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
 
-    while (step != -1 && dword_5B65C4_cancelEventProcessing == 0) {
+    while (step != -1 && !_cancelled) {
         step = executeOneEvent(step, false);
     }
 
