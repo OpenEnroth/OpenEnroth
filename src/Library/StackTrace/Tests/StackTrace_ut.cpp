@@ -9,9 +9,7 @@
 #include "Utility/Attributes.h"
 
 /**
- * Takes a stack trace from a function with a name the test can look for. Symbolization is what breaks when a
- * toolchain flag or a debug info setting changes, and nothing else in the codebase notices when a build stops
- * naming frames.
+ * Takes a stack trace from a function with a name the test can look for.
  *
  * Not inlined so that it gets a frame of its own, and not static because windows drops private symbols from a
  * stripped pdb. Linux and macos name static functions fine.
