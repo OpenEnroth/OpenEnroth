@@ -82,10 +82,10 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     if (!portable && std::filesystem::exists(".portable"))
         portable = true;
     if (portable && *portable) {
-        if (result.userPath.empty())
-            result.userPath = std::filesystem::current_path().generic_string();
-        if (result.dataPath.empty())
-            result.dataPath = std::filesystem::current_path().generic_string();
+        if (result.userPath.isEmpty())
+            result.userPath = NativePath::fromStdPath(std::filesystem::current_path());
+        if (result.dataPath.isEmpty())
+            result.dataPath = NativePath::fromStdPath(std::filesystem::current_path());
     }
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {
