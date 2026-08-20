@@ -24,6 +24,8 @@ MM_NOINLINE static int oeStackTraceFaultingFunction() {
     return *nowhere;
 }
 
+// The fault is one call deeper on purpose. Macos leaves the function a signal fired in out of the trace and
+// starts at its caller, so a caller is the only frame every platform names.
 MM_NOINLINE void oeStackTraceCrashingFunction() {
     volatile int sink = oeStackTraceFaultingFunction();
     (void) sink;
@@ -46,7 +48,7 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
 
         StackTraceOnCrash handler;
         oeStackTraceCrashingFunction();
-    }, testing::AllOf(testing::HasSubstr("oeStackTraceFaultingFunction"), testing::HasSubstr("main")));
+    }, testing::AllOf(testing::HasSubstr("oeStackTraceCrashingFunction"), testing::HasSubstr("main")));
 }
 
 UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
@@ -59,7 +61,7 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
         std::thread(oeStackTraceCrashingFunction).join();
     // A worker's stack ends at the thread entry, so main being absent is what says we traced the thread that
     // crashed rather than the one that installed the handlers.
-    }, testing::AllOf(testing::HasSubstr("oeStackTraceFaultingFunction"),
+    }, testing::AllOf(testing::HasSubstr("oeStackTraceCrashingFunction"),
                       testing::Not(testing::HasSubstr("main"))));
 }
 
