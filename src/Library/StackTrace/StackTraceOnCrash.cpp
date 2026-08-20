@@ -105,7 +105,7 @@ static std::string traceFromContext(const CONTEXT &crashContext) {
         // Cpptrace has already done this from the warmup, doing it again is how we stop depending on that.
         SymInitialize(GetCurrentProcess(), nullptr, TRUE);
 
-        while (raw.frames.size() < MAX_TRACE_DEPTH &&
+        while (raw.frames.size() < detail::MAX_TRACE_DEPTH &&
                StackWalk64(machineType, GetCurrentProcess(), GetCurrentThread(), &frame,
                            machineType == IMAGE_FILE_MACHINE_I386 ? nullptr : &context, nullptr,
                            SymFunctionTableAccess64, SymGetModuleBase64, nullptr) &&
@@ -173,7 +173,7 @@ static void installHandlers() {
     _set_invalid_parameter_handler(&onInvalidParameter);
 }
 
-#else
+#else // _WIN32
 
 static const int handledSignals[] = {
     SIGABRT, // abort().
@@ -226,11 +226,11 @@ static void installHandlers() {
     }
 }
 
-#endif
+#endif // _WIN32
 
 StackTraceOnCrash::StackTraceOnCrash() {
     warmUpCpptrace();
     installHandlers();
 }
 
-#endif
+#endif // __ANDROID__

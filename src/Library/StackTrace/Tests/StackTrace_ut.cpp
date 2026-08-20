@@ -1,4 +1,5 @@
 #include <string>
+#include <thread>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -7,28 +8,28 @@
 
 #include "Utility/Attributes.h"
 
-// This is what guards the toolchain flags and the debug info that stack traces need, and nothing else would
-// notice if a build stopped naming frames. Not inlined so that it gets a frame of its own, and not static
-// because windows drops private symbols from a stripped pdb - linux and macos name static functions fine.
+/**
+ * Takes a stack trace from a function with a name the test can look for. Symbolization is what breaks when a
+ * toolchain flag or a debug info setting changes, and nothing else in the codebase notices when a build stops
+ * naming frames.
+ *
+ * Not inlined so that it gets a frame of its own, and not static because windows drops private symbols from a
+ * stripped pdb. Linux and macos name static functions fine.
+ *
+ * @return                              Stack trace taken inside this function.
+ */
 MM_NOINLINE std::string oeStackTraceMarkerFunction() {
-    std::string trace = stackTraceToString();
-
-    // Returning something derived from the result keeps the call above out of tail position. A sibling call
-    // would pop this frame before the trace is taken, and this frame is what the test looks for.
-    return trace.empty() ? std::string() : trace;
+    return stackTraceToString();
 }
 
 MM_NOINLINE static int oeStackTraceFaultingFunction() {
-    // Volatile pointer, not pointer to volatile - otherwise the compiler knows it's null and drops the store,
-    // and at -O2 nothing crashes at all.
+    // Volatile pointer, not pointer to volatile. Without it the null dereference is just undefined behaviour
+    // the compiler may delete or turn into a trap instruction, and either way this stops being a null fault.
     int *volatile nowhere = nullptr;
     *nowhere = 1;
     return *nowhere;
 }
 
-// The crash itself is in the function this one calls. Macos leaves the function a signal fired in out of the
-// trace and starts at its caller instead, so a caller is the only kind of frame the test can look for and
-// still find on every platform.
 MM_NOINLINE void oeStackTraceCrashingFunction() {
     volatile int sink = oeStackTraceFaultingFunction();
     (void)sink;
@@ -37,11 +38,11 @@ MM_NOINLINE void oeStackTraceCrashingFunction() {
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
-#else
+#endif
+
     std::string trace = oeStackTraceMarkerFunction();
 
     EXPECT_TRUE(trace.contains("oeStackTraceMarkerFunction")) << trace;
-#endif
 }
 
 UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
@@ -49,7 +50,8 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
     // the wrong thread, or traces nothing at all, still exits with the right signal.
 #ifdef __ANDROID__
     GTEST_SKIP() << "Stack traces are not supported on Android.";
-#else
+#endif
+
     EXPECT_DEATH({
         // Gtest wraps test bodies in __try/__except, and a frame-based handler runs before any unhandled
         // exception filter, so on windows ours would never see the access violation below.
@@ -57,6 +59,20 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
 
         StackTraceOnCrash handler;
         oeStackTraceCrashingFunction();
-    }, "oeStackTraceCrashingFunction");
+    }, "oeStackTraceFaultingFunction");
+}
+
+UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
+    // The handlers are process-wide, but the alternate stack they run on is per-thread, so a crash away from
+    // the thread that installed them is a separate path through the handler.
+#ifdef __ANDROID__
+    GTEST_SKIP() << "Stack traces are not supported on Android.";
 #endif
+
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        std::thread(oeStackTraceCrashingFunction).join();
+    }, "oeStackTraceFaultingFunction");
 }

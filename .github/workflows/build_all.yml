@@ -167,7 +167,9 @@ jobs:
             sudo apt-get install -y gcc-multilib g++-multilib lld libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
               sudo apt-get install -y libglu1-mesa-dev:i386
-              # Luajit's minilua links against libm, and this is what puts the 32-bit one where cmake looks.
+              # Luajit generates its interpreter with minilua, which luajit-cmake builds as a separate host
+              # tool only when cross-compiling. An -m32 build isn't cross-compiling, so minilua is built
+              # 32-bit as well, and the libm it links against has to be 32-bit too.
               sudo apt-get install -y libc6-dev:i386
             fi
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86_64" ]; then

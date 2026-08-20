@@ -18,7 +18,7 @@ std::string stackTraceToString() {
 #else
 
 std::string stackTraceToString() {
-    return cpptrace::generate_trace(0, MAX_TRACE_DEPTH).to_string();
+    return cpptrace::generate_trace(0, detail::MAX_TRACE_DEPTH).to_string();
 }
 
 #endif
