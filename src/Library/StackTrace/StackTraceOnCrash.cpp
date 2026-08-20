@@ -150,20 +150,20 @@ static void onAbort(int signal) {
 static void onTerminate() {
     if (!crashHandled.test_and_set())
         printCrashTrace("std::terminate()");
-    std::abort(); // Returning from a terminate handler is undefined behavior, need to abort().
+    std::abort(); // Ends the process, as returning from a terminate handler is undefined behavior.
 }
 
 static void __cdecl onPureCall() {
     if (!crashHandled.test_and_set())
         printCrashTrace("pure virtual function call");
-    std::abort(); // Returning resumes a process that just called a pure virtual function, need to abort().
+    std::abort(); // Ends the process, as a pure virtual call leaves nothing sane to continue with.
 }
 
 static void __cdecl onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file,
                                        unsigned int line, uintptr_t reserved) {
     if (!crashHandled.test_and_set())
         printCrashTrace("invalid parameter passed to a CRT function");
-    std::abort(); // Returning resumes a process that passed garbage into a CRT function, need to abort().
+    std::abort(); // Ends the process, as the CRT was handed garbage and can't carry on.
 }
 
 static void installHandlers() {
@@ -212,9 +212,9 @@ static void onSignal(int signal, siginfo_t *info, void *context) {
 
 static void installHandlers() {
     // The handler runs on its own stack so that it also works when the crash is stack exhaustion. Symbolizing
-    // a trace measures at 17kb, well past SIGSTKSZ, and the rest is margin - this is bss, so the pages beyond
-    // what's touched never get committed, and running out of stack inside a crash handler prints nothing.
-    static char alternateStack[8 * 1024 * 1024];
+    // a trace measures at 17kb, well past SIGSTKSZ, and the rest is margin for the platforms that weren't
+    // measured. This is bss, so the pages past what's touched never get committed.
+    static char alternateStack[1024 * 1024];
 
     stack_t stack;
     stack.ss_sp = alternateStack;
