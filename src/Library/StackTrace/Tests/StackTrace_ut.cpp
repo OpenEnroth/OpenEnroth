@@ -24,7 +24,7 @@ MM_NOINLINE static int oeStackTraceFaultingFunction() {
 
 MM_NOINLINE void oeStackTraceCrashingFunction() {
     volatile int sink = oeStackTraceFaultingFunction();
-    (void)sink;
+    (void) sink;
 }
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
