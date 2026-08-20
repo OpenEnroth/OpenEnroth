@@ -8,6 +8,8 @@
 
 #include "Utility/Attributes.h"
 
+#ifndef __ANDROID__ // Stack traces are not supported on android.
+
 // Not inlined so that it gets a frame of its own, and not static because windows drops private symbols from a
 // stripped pdb.
 MM_NOINLINE std::string oeStackTraceMarkerFunction() {
@@ -28,10 +30,6 @@ MM_NOINLINE void oeStackTraceCrashingFunction() {
 }
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
-#ifdef __ANDROID__
-    GTEST_SKIP() << "Stack traces are not supported on Android.";
-#endif
-
     std::string trace = oeStackTraceMarkerFunction();
 
     EXPECT_TRUE(trace.contains("oeStackTraceMarkerFunction")) << trace;
@@ -40,10 +38,6 @@ UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
     // The crash path is the one that matters, and it's the one that breaks silently - a handler that traces
     // the wrong thread, or traces nothing at all, still exits with the right signal.
-#ifdef __ANDROID__
-    GTEST_SKIP() << "Stack traces are not supported on Android.";
-#endif
-
     EXPECT_DEATH({
         // Gtest wraps test bodies in __try/__except, and a frame-based handler runs before any unhandled
         // exception filter, so on windows ours would never see the access violation below.
@@ -57,10 +51,6 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
 UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
     // The handlers are process-wide, but the alternate stack they run on is per-thread, so a crash away from
     // the thread that installed them is a separate path through the handler.
-#ifdef __ANDROID__
-    GTEST_SKIP() << "Stack traces are not supported on Android.";
-#endif
-
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
@@ -68,3 +58,5 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
         std::thread(oeStackTraceCrashingFunction).join();
     }, "oeStackTraceFaultingFunction");
 }
+
+#endif // !__ANDROID__
