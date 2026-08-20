@@ -56,6 +56,7 @@ target_link_libraries(engine_objects PUBLIC engine gui library_random library_co
 
 if(OE_BUILD_TESTS)
     set(TEST_ENGINE_OBJECTS_SOURCES
+            Tests/Character_ut.cpp
             Tests/Inventory_ut.cpp
             Tests/MonsterEnumFunctions_ut.cpp)
 
