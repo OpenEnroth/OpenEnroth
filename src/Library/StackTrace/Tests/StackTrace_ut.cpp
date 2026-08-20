@@ -8,14 +8,8 @@
 
 #include "Utility/Attributes.h"
 
-/**
- * Takes a stack trace from a function with a name the test can look for.
- *
- * Not inlined so that it gets a frame of its own, and not static because windows drops private symbols from a
- * stripped pdb. Linux and macos name static functions fine.
- *
- * @return                              Stack trace taken inside this function.
- */
+// Not inlined so that it gets a frame of its own, and not static because windows drops private symbols from a
+// stripped pdb.
 MM_NOINLINE std::string oeStackTraceMarkerFunction() {
     return stackTraceToString();
 }
