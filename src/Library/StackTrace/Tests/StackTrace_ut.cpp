@@ -32,8 +32,8 @@ MM_NOINLINE void oeStackTraceCrashingFunction() {
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
     std::string trace = oeStackTraceMarkerFunction();
 
-    EXPECT_THAT(trace, testing::HasSubstr("oeStackTraceMarkerFunction"));
-    EXPECT_THAT(trace, testing::HasSubstr("main")); // Walking off the top two frames would still pass above.
+    EXPECT_CONTAINS(trace, "oeStackTraceMarkerFunction");
+    EXPECT_CONTAINS(trace, "main");
 }
 
 UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
