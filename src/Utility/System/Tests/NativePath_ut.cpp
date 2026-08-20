@@ -47,17 +47,26 @@ UNIT_TEST(NativePath, DisplayString) {
 }
 
 #ifndef _WINDOWS
-UNIT_TEST(NativePath, InvalidUtf8FileNames) {
-    // File names on Linux are byte strings, so fromWtf8 / toWtf8 have to pass invalid UTF-8 through as-is. "\xD0" is
+UNIT_TEST(NativePath, InvalidUtf8RoundTrip) {
+    // File names on POSIX are byte strings, so fromWtf8 / toWtf8 have to pass invalid UTF-8 through as-is. "\xD0" is
     // an incomplete UTF-8 sequence, "\xFF" can't appear in UTF-8 at all.
-    for (std::string_view name : {"tmp_lol\xD0kek.txt", "tmp_lol\xFFkek.txt", "tmp_trailing\xD0"}) {
-        NativePath path = NativePath::fromWtf8(name);
-        EXPECT_EQ(path.toWtf8(), name);
+    for (std::string_view name : {"lol\xD0kek.txt", "lol\xFFkek.txt", "trailing\xD0"})
+        EXPECT_EQ(NativePath::fromWtf8(name).toWtf8(), name);
+}
+#endif
 
-        // APFS rejects such names, and so do APFS-backed mounts in a dev container, so we skip instead of asserting.
+#if !defined(_WINDOWS) && !defined(__APPLE__)
+UNIT_TEST(NativePath, InvalidUtf8FileNames) {
+    // A name with invalid UTF-8 in it is not just convertible, but is also usable to actually open a file. Not on
+    // APFS though - it only takes file names that are valid UTF-8, thus no MacOS here. And we write into the temp
+    // dir b/c the build dir can be on an APFS-backed mount in a dev container.
+    NativePath tmpDir = NativePath::fromStdPath(std::filesystem::temp_directory_path());
+
+    for (std::string_view name : {"tmp_lol\xD0kek.txt", "tmp_lol\xFFkek.txt", "tmp_trailing\xD0"}) {
+        NativePath path = tmpDir / NativePath::fromWtf8(name);
+
         std::ofstream stream(path.toStdPath());
-        if (!stream.is_open())
-            GTEST_SKIP() << "File system rejected an invalid UTF-8 name.";
+        ASSERT_TRUE(stream.is_open()) << name;
         stream << "lol";
         stream.close();
 
