@@ -1697,8 +1697,8 @@ void OpenGLRenderer::SetFogParametersGL() {
         if (fogcol != Color()) {
             fog.weakDensity = 0.25;
             fog.strongDensity = 0.85;
-            fog.weakDistance = pOutdoor->loc_time.fogWeakDistance;
-            fog.strongDistance = pOutdoor->loc_time.fogStrongDistance;
+            fog.weakDistance = pOutdoor->weather.fogWeakDistance;
+            fog.strongDistance = pOutdoor->weather.fogStrongDistance;
             fog.clipDistance = pCamera3D->GetFarClip();
             fog.color = fogcol.toColorf();
         } else {
