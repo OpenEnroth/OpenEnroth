@@ -115,7 +115,7 @@ static std::string traceFromContext(const CONTEXT &crashContext) {
            frame.AddrPC.Offset != 0) {
         raw.frames.push_back(static_cast<cpptrace::frame_ptr>(frame.AddrPC.Offset));
     }
-    lock.unlock(); // Resolving takes the lock itself.
+    lock.unlock();
 
     return raw.resolve().to_string();
 }
@@ -141,12 +141,8 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
-/**
- * Runs inside abort(), which goes on to terminate the process once this returns.
- *
- * @param signal                        Always `SIGABRT`, this is only installed for abort().
- */
 static void onAbort(int signal) {
+    // Returning is fine here, abort() goes on to terminate the process.
     if (!crashHandled.test_and_set())
         printCrashTrace("abort()");
 }
