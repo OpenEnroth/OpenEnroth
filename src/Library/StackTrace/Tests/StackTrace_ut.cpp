@@ -32,7 +32,8 @@ MM_NOINLINE void oeStackTraceCrashingFunction() {
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
     std::string trace = oeStackTraceMarkerFunction();
 
-    EXPECT_TRUE(trace.contains("oeStackTraceMarkerFunction")) << trace;
+    EXPECT_THAT(trace, testing::HasSubstr("oeStackTraceMarkerFunction"));
+    EXPECT_THAT(trace, testing::HasSubstr("main")); // Walking off the top two frames would still pass above.
 }
 
 UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
@@ -45,18 +46,21 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
 
         StackTraceOnCrash handler;
         oeStackTraceCrashingFunction();
-    }, "oeStackTraceFaultingFunction");
+    }, testing::AllOf(testing::HasSubstr("oeStackTraceFaultingFunction"), testing::HasSubstr("main")));
 }
 
 UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
-    // The handlers are process-wide, but the alternate stack they run on is per-thread, so a crash away from
-    // the thread that installed them is a separate path through the handler.
+    // The handlers are process-wide, but only the thread that installs them gets an alternate signal stack,
+    // so this one runs on the worker's own stack. That's enough for anything short of stack exhaustion.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         std::thread(oeStackTraceCrashingFunction).join();
-    }, "oeStackTraceFaultingFunction");
+    // A worker's stack ends at the thread entry, so main being absent is what says we traced the thread that
+    // crashed rather than the one that installed the handlers.
+    }, testing::AllOf(testing::HasSubstr("oeStackTraceFaultingFunction"),
+                      testing::Not(testing::HasSubstr("main"))));
 }
 
 #endif // !__ANDROID__
