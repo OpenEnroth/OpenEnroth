@@ -150,7 +150,7 @@ static void onAbort(int signal) {
 static void onTerminate() {
     if (!crashHandled.test_and_set())
         printCrashTrace("std::terminate()");
-    std::abort(); // Returning from a terminate handler is undefined behavior.
+    std::abort(); // Returning from a terminate handler is undefined behavior, need to abort().
 }
 
 static void __cdecl onPureCall() {
