@@ -1,6 +1,6 @@
 You *MUST* read `HACKING.md` before doing any changes in this repo. You *MUST* follow the guidelines in `HACKING.md`, consider it a part of this document.
 
-Build `check_style` target to check style. You *MUST* always check style after your changes.
+Build `check_style` and `check_tidy` targets to check style. You *MUST* always check style after your changes.
 
 Keep comments terse - prefer a single trailing comment over a multi-line block, and never write comments explaining what you *didn't* do.
 

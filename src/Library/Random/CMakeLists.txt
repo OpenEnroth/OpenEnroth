@@ -9,4 +9,4 @@ set(LIBRARY_RANDOM_HEADERS
         RandomEngine.h)
 
 add_library(library_random STATIC ${LIBRARY_RANDOM_SOURCES} ${LIBRARY_RANDOM_HEADERS})
-target_check_style(library_random)
+target_check_cpp_style(library_random)

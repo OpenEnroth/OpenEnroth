@@ -10,7 +10,7 @@ set(LIBRARY_STACK_TRACE_HEADERS
 
 add_library(library_stack_trace STATIC ${LIBRARY_STACK_TRACE_SOURCES} ${LIBRARY_STACK_TRACE_HEADERS})
 target_link_libraries(library_stack_trace PUBLIC utility)
-target_check_style(library_stack_trace)
+target_check_cpp_style(library_stack_trace)
 
 # backward-cpp doesn't support Android...
 if (NOT OE_BUILD_PLATFORM STREQUAL "android")

@@ -11,4 +11,4 @@ set(ENGINE_TIME_HEADERS
 
 add_library(engine_time STATIC ${ENGINE_TIME_SOURCES} ${ENGINE_TIME_HEADERS})
 target_link_libraries(engine_time PUBLIC engine library_snapshots)
-target_check_style(engine_time)
+target_check_cpp_style(engine_time)

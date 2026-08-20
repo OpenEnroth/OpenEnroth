@@ -16,5 +16,5 @@ set(LIBRARY_PLATFORM_PROXY_HEADERS
         ProxyWindow.h)
 
 add_library(library_platform_proxy STATIC ${LIBRARY_PLATFORM_PROXY_SOURCES} ${LIBRARY_PLATFORM_PROXY_HEADERS})
-target_check_style(library_platform_proxy)
+target_check_cpp_style(library_platform_proxy)
 target_link_libraries(library_platform_proxy PUBLIC library_platform_interface)

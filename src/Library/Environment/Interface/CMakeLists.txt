@@ -7,4 +7,4 @@ set(LIBRARY_ENVIRONMENT_INTERFACE_HEADERS
         EnvironmentEnums.h)
 
 add_library(library_environment_interface INTERFACE ${LIBRARY_ENVIRONMENT_INTERFACE_SOURCES} ${LIBRARY_ENVIRONMENT_INTERFACE_HEADERS})
-target_check_style(library_environment_interface)
+target_check_cpp_style(library_environment_interface)

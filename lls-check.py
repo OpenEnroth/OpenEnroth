@@ -53,22 +53,28 @@ def main():
     print_lls(result.stdout)
     print_lls("Diagnostics Completed.")
 
-    # If the log file does not exists it means there are no errors
-    if os.path.exists(log_file):
-        print_lls("Opening Log File.")
-        data = open_log_file(log_file)
-        if data == None:
+    # No log file means no diagnostics, but only if lls got far enough to look. Exiting non-zero without
+    # writing one is the tool failing to run, which used to be reported as a pass.
+    if not os.path.exists(log_file):
+        if result.returncode != 0:
+            print_lls(f"Exited with code {result.returncode} and wrote no log, diagnostics did not run.")
             return 1
-        # New LLS version produces json file with empty list if there are no errors
-        if len(data) == 0:
-            return 0
+        return 0
 
-        print_lls(f"Parsing {len(data.items())} Lua Files containing issues...")
-        files_with_errors = parse_log(data)
-        if len(files_with_errors) > 0:
-            print_errors(files_with_errors)
-            return 1
-    
+    print_lls("Opening Log File.")
+    data = open_log_file(log_file)
+    if data == None:
+        return 1
+    # New LLS version produces json file with empty list if there are no errors
+    if len(data) == 0:
+        return 0
+
+    print_lls(f"Parsing {len(data.items())} Lua Files containing issues...")
+    files_with_errors = parse_log(data)
+    if len(files_with_errors) > 0:
+        print_errors(files_with_errors)
+        return 1
+
     return 0
 
 # Open the log file. Returns the internal data

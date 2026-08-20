@@ -9,5 +9,5 @@ if(OE_BUILD_TESTS)
     add_library(testing_unit ${TESTING_UNIT_SOURCES} ${TESTING_UNIT_HEADERS})
     target_link_libraries(testing_unit PUBLIC testing_extensions GTest::gtest GTest::gmock)
 
-    target_check_style(testing_unit)
+    target_check_cpp_style(testing_unit)
 endif()

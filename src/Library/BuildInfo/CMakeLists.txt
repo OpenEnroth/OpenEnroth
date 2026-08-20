@@ -20,4 +20,4 @@ add_library(library_buildinfo ${LIBRARY_BUILDINFO_SOURCES} ${LIBRARY_BUILDINFO_H
 target_compile_definitions(library_buildinfo PRIVATE
         MM_GIT_REVISION="${GIT_REVISION}"
         MM_BUILD_TIME="${BUILD_TIME}")
-target_check_style(library_buildinfo)
+target_check_cpp_style(library_buildinfo)

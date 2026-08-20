@@ -1,0 +1,136 @@
+name: Lint
+
+on:
+  pull_request: null
+  push: null
+  workflow_dispatch:
+    inputs:
+      myCommit:
+        description: Commit SHA1
+        required: false
+        default: ''
+        type: string
+  release:
+    types:
+      - published
+
+# A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
+concurrency:
+  group: lint-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  LLS_TAG: '3.9.1'
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: '${{inputs.myCommit}}'
+
+      # The configure step hard-errors on linux unless lld or mold is present.
+      - name: Install mold
+        uses: rui314/setup-mold@v1
+        with:
+          mold-version: 2.36.0
+          make-default: false
+
+      - name: Install ninja-build
+        uses: seanmiddleditch/gha-setup-ninja@v4
+
+      - name: Install dependencies
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libglu1-mesa-dev libdwarf-dev libelf-dev
+
+      - name: Restore cached lua-language-server
+        id: lls-cache
+        uses: actions/cache@v4
+        with:
+          path: 'lua-language-server/build/bin'
+          key: 'lls-cache-${{env.LLS_TAG}}-${{env.ImageOS}}-${{runner.arch}}'
+
+      - name: Checkout lua-language-server
+        if: steps.lls-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: 'LuaLS/lua-language-server'
+          path: 'lua-language-server'
+          ref: '3.9.1'
+
+      - name: Build lua-language-server
+        if: steps.lls-cache.outputs.cache-hit != 'true'
+        working-directory: lua-language-server
+        run: |
+          ./make.sh
+
+      # Same cached gcc-15 as the build jobs - clang-tidy parses against its libstdc++, the system one is too old.
+      - name: Set GCC_PREFIX
+        run: echo "GCC_PREFIX=$HOME/gcc-15" >> "$GITHUB_ENV"
+
+      - name: Restore gcc-15 cache
+        id: gcc-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{env.GCC_PREFIX}}
+          key: gcc-15-${{env.ImageOS}}-${{runner.arch}}-${{hashFiles('scripts/build_gcc_15.sh')}}
+
+      # Prerequisites for building gcc itself - the cached compiler runs on the
+      # runtime libs the runner image already has.
+      - name: Install gcc-15 build dependencies
+        if: steps.gcc-cache.outputs.cache-hit != 'true'
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            # gcc-multilib is for the 32-bit libc headers, which --enable-multilib needs to build the
+            # 32-bit libgcc and libstdc++. The rest are gcc's own build prerequisites.
+            sudo apt-get install -y gcc-multilib g++-multilib libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison
+
+      - name: Build gcc-15
+        if: steps.gcc-cache.outputs.cache-hit != 'true'
+        run: bash scripts/build_gcc_15.sh "$GCC_PREFIX"
+
+      - name: Add gcc-15 to PATH
+        run: |
+          echo "$GCC_PREFIX/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=$GCC_PREFIX/lib64:$GCC_PREFIX/lib32${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Install clang-tidy
+        run: |
+          pip install --break-system-packages clang-tidy==22.1.8
+
+      # One real configure serves all three checks - clang-tidy needs actual headers
+      # and a compile commands database, so dummy dependencies are gone for good.
+      - name: Configure
+        id: configure
+        run: |
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-15 -DCMAKE_CXX_COMPILER=g++-15 -DOE_LLS_COMMAND=./lua-language-server/build/bin/lua-language-server
+
+      # The remaining checks still run when an earlier one fails, so one push
+      # reports every verdict.
+      - name: Check style
+        working-directory: build
+        run: |
+          ninja check_cpp_style
+
+      - name: Check lua style
+        if: '!cancelled() && steps.configure.outcome == ''success'''
+        working-directory: build
+        run: |
+          ninja check_style_lua_scripts
+
+      - name: Run clang-tidy
+        if: '!cancelled() && steps.configure.outcome == ''success'''
+        working-directory: build
+        run: |
+          ninja check_tidy

@@ -25,6 +25,6 @@ set(GUI_UI_HOUSES_HEADERS
         Shops.h)
 
 add_library(gui_ui_houses STATIC ${GUI_UI_HOUSES_SOURCES} ${GUI_UI_HOUSES_HEADERS})
-target_check_style(gui_ui_houses)
+target_check_cpp_style(gui_ui_houses)
 
 target_link_libraries(gui_ui_houses PUBLIC engine_graphics utility)

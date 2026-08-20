@@ -4,7 +4,7 @@
 [![Linux](https://github.com/OpenEnroth/OpenEnroth/workflows/Linux/badge.svg)](https://github.com/OpenEnroth/OpenEnroth/actions/workflows/linux.yml) 
 [![MacOS](https://github.com/OpenEnroth/OpenEnroth/workflows/MacOS/badge.svg)](https://github.com/OpenEnroth/OpenEnroth/actions/workflows/macos.yml) 
 [![Doxygen](https://github.com/OpenEnroth/OpenEnroth/workflows/Doxygen/badge.svg)](https://github.com/OpenEnroth/OpenEnroth/actions/workflows/doxygen.yml) 
-[![Style Checker](https://github.com/OpenEnroth/OpenEnroth/workflows/Style/badge.svg)](https://github.com/OpenEnroth/OpenEnroth/actions/workflows/style.yml)
+[![Lint](https://github.com/OpenEnroth/OpenEnroth/workflows/Lint/badge.svg)](https://github.com/OpenEnroth/OpenEnroth/actions/workflows/lint.yml)
 
 OpenEnroth is an open-source reimplementation of the Might & Magic VI-VIII game engine, allowing you to play the
 original games on modern platforms. It uses the original game data, so you will need a copy of the game to play.

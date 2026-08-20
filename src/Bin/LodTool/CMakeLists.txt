@@ -18,5 +18,5 @@ if(NOT OE_BUILD_PLATFORM STREQUAL "android")
             library_magic
             library_filesystem_directory
             library_cli)
-    target_check_style(LodTool)
+    target_check_cpp_style(LodTool)
 endif()

@@ -14,7 +14,7 @@ set(LIBRARY_SERIALIZATION_HEADERS
         CommonSerialization.h)
 
 add_library(library_serialization STATIC ${LIBRARY_SERIALIZATION_SOURCES} ${LIBRARY_SERIALIZATION_HEADERS})
-target_check_style(library_serialization)
+target_check_cpp_style(library_serialization)
 target_link_libraries(library_serialization
         PUBLIC
         utility
@@ -28,7 +28,7 @@ if(OE_BUILD_TESTS)
     add_library(test_library_serialization OBJECT ${TEST_LIBRARY_SERIALIZATION_SOURCES})
     target_link_libraries(test_library_serialization PUBLIC testing_unit library_serialization)
 
-    target_check_style(test_library_serialization)
+    target_check_cpp_style(test_library_serialization)
 
     target_link_libraries(OpenEnroth_UnitTest PUBLIC test_library_serialization)
 endif()

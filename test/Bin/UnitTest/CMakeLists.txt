@@ -11,4 +11,4 @@ add_custom_target(Run_UnitTest OpenEnroth_UnitTest
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         USES_TERMINAL) # USES_TERMINAL makes the command print progress as it goes.
 
-target_check_style(OpenEnroth_UnitTest)
+target_check_cpp_style(OpenEnroth_UnitTest)

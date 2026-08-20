@@ -13,4 +13,4 @@ set(GLAD_GL_HEADERS include/glad/gl.h
 add_library(glad STATIC ${GLAD_GL_SOURCES} ${GLAD_GL_HEADERS})
 target_include_directories(glad PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-source_check_style(glad "${GLAD_GL_SOURCES}")
+source_check_cpp_style(glad "${GLAD_GL_SOURCES}")
