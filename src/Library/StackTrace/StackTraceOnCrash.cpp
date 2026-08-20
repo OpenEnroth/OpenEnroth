@@ -142,9 +142,9 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
 }
 
 static void onAbort(int signal) {
-    // Returning is fine here, abort() goes on to terminate the process.
     if (!crashHandled.test_and_set())
         printCrashTrace("abort()");
+    // Returning is fine here, abort() goes on to terminate the process.
 }
 
 static void onTerminate() {
