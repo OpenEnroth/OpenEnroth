@@ -96,7 +96,7 @@ Code formatting:
 * In header files, use an additional `private:` label before listing all class fields at the end of the class declaration.
 * Use `virtual` prefix for all virtual functions, even when `override` is also present.
 * When an `#else` or `#endif` is far enough from its `#if` that the two don't fit on screen together, repeat the condition there verbatim, e.g. `#endif // _WIN32`. In an `#elif` chain, repeat the condition of the last `#elif`.
-* Indent `#include`, `#define` and `#error` after the `#` when they sit inside a conditional, e.g. `#   define MM_FOO 1`. The conditionals themselves stay at column zero, however deeply they nest.
+* Indent after the `#` inside a conditional, e.g. `#   define MM_FOO 1`, when the block is compact enough to read as preprocessor logic. Nested conditionals are indented too in that case. A conditional wrapping ordinary code is left at column zero, as indenting there just moves the code around.
 
 Language features:
 * We use C++23. Prefer modern alternatives where appropriate, e.g. `contains()` instead of `find() != end()`.
