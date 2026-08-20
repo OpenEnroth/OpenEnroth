@@ -150,20 +150,20 @@ static void onAbort(int signal) {
 static void onTerminate() {
     if (!crashHandled.test_and_set())
         printCrashTrace("std::terminate()");
-    std::abort(); // Ends the process, as returning from a terminate handler is undefined behavior.
+    std::abort(); // Returning from a terminate handler is undefined behavior, need to abort().
 }
 
 static void __cdecl onPureCall() {
     if (!crashHandled.test_and_set())
         printCrashTrace("pure virtual function call");
-    std::abort(); // Ends the process, as a pure virtual call leaves nothing sane to continue with.
+    std::abort(); // Returning resumes a process that just called a pure virtual function, need to abort().
 }
 
 static void __cdecl onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file,
                                        unsigned int line, uintptr_t reserved) {
     if (!crashHandled.test_and_set())
         printCrashTrace("invalid parameter passed to a CRT function");
-    std::abort(); // Ends the process, as the CRT was handed garbage and can't carry on.
+    std::abort(); // Returning resumes a process that passed garbage into a CRT function, need to abort().
 }
 
 static void installHandlers() {
