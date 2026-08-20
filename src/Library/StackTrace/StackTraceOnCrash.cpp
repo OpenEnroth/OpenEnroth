@@ -37,9 +37,8 @@ StackTraceOnCrash::StackTraceOnCrash() = default;
 // inside a handler re-enters it - and one trace is what's actually useful.
 static std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
 
-// The reason goes out first and on its own. Building a trace is what can hang, and when it does this is the
-// only thing anyone gets to see.
 static void printCrashHeader(std::string_view reason) {
+    // Flushed on its own because building the trace can hang, and then this is all anyone sees.
     fmt::println(stderr, "\nCrashed because of {}", reason);
     std::fflush(stderr);
 }
@@ -54,29 +53,32 @@ static void printCrashTrace(std::string_view reason) {
     printTrace(stackTraceToString());
 }
 
-// Cpptrace resolves symbols lazily, so the first trace is the one that opens the debug info and allocates.
-// Doing it here means the crash handler doesn't have to do it in an already broken process.
 static void warmUpCpptrace() {
     (void) cpptrace::generate_trace(0, 1).to_string();
 }
 
 #ifdef _WIN32
 
-// Cpptrace serializes its own dbghelp calls behind this, and dbghelp is single-threaded. Declared rather than
-// included because it lives in cpptrace's internals - a signature change there becomes a link error here,
-// which is the failure mode we want.
 namespace cpptrace {
 inline namespace v1 {
 namespace detail {
+// Cpptrace serializes its own dbghelp calls behind this, and dbghelp is single-threaded. Declared rather than
+// included because it lives in cpptrace's internals - a signature change there becomes a link error here,
+// which is the failure mode we want.
 std::unique_lock<std::recursive_mutex> get_dbghelp_lock();
 } // namespace detail
 } // namespace v1
 } // namespace cpptrace
 
-// Walks the stack the exception was raised on, rather than the one the filter is running on. Cpptrace only
-// ever captures the latter, and getting from there back to the fault means crossing ntdll's dispatcher, which
-// has no frame pointers to follow - 64-bit manages it on unwind data, 32-bit doesn't get across at all.
-// Seeding the walk with the faulting context skips that problem instead of solving it.
+/**
+ * Walks the stack the exception was raised on, rather than the one the filter is running on. Cpptrace only
+ * ever captures the latter, and getting from there back to the fault means crossing ntdll's dispatcher, which
+ * has no frame pointers to follow - 64-bit manages it on unwind data, 32-bit doesn't get across at all.
+ * Seeding the walk with the faulting context skips that problem instead of solving it.
+ *
+ * @param crashContext                  Register state the exception was raised with.
+ * @return                              Stack trace starting at the faulting frame, one frame per line.
+ */
 static std::string traceFromContext(const CONTEXT &crashContext) {
     CONTEXT context = crashContext; // StackWalk64 walks by mutating it.
 
@@ -98,27 +100,33 @@ static std::string traceFromContext(const CONTEXT &crashContext) {
 #   error "Unsupported windows architecture."
 #endif
 
+    std::unique_lock<std::recursive_mutex> lock = cpptrace::detail::get_dbghelp_lock();
+
+    // StackWalk64 and the symbol callbacks below need the symbol handler initialized for the handle they're
+    // passed, and cpptrace initializes a duplicate of it rather than this one. Failure means it was already
+    // initialized, which is just as good.
+    SymInitialize(GetCurrentProcess(), nullptr, TRUE);
+
     cpptrace::raw_trace raw;
-    {
-        std::unique_lock<std::recursive_mutex> lock = cpptrace::detail::get_dbghelp_lock();
-
-        // Cpptrace has already done this from the warmup, doing it again is how we stop depending on that.
-        SymInitialize(GetCurrentProcess(), nullptr, TRUE);
-
-        while (raw.frames.size() < detail::MAX_TRACE_DEPTH &&
-               StackWalk64(machineType, GetCurrentProcess(), GetCurrentThread(), &frame,
-                           machineType == IMAGE_FILE_MACHINE_I386 ? nullptr : &context, nullptr,
-                           SymFunctionTableAccess64, SymGetModuleBase64, nullptr) &&
-               frame.AddrPC.Offset != 0) {
-            raw.frames.push_back(static_cast<cpptrace::frame_ptr>(frame.AddrPC.Offset));
-        }
+    while (raw.frames.size() < detail::MAX_TRACE_DEPTH &&
+           StackWalk64(machineType, GetCurrentProcess(), GetCurrentThread(), &frame,
+                       machineType == IMAGE_FILE_MACHINE_I386 ? nullptr : &context, nullptr,
+                       SymFunctionTableAccess64, SymGetModuleBase64, nullptr) &&
+           frame.AddrPC.Offset != 0) {
+        raw.frames.push_back(static_cast<cpptrace::frame_ptr>(frame.AddrPC.Offset));
     }
+    lock.unlock(); // Resolving takes the lock itself.
 
-    return raw.resolve().to_string(); // Takes the same lock, which is why it's recursive.
+    return raw.resolve().to_string();
 }
 
-// Structured exceptions are what access violations, illegal instructions and division by zero arrive as.
-// Signals cover none of those on windows.
+/**
+ * Structured exceptions are what access violations, illegal instructions and division by zero arrive as.
+ * Signals cover none of those on windows.
+ *
+ * @param exceptionInfo                 Exception record and register state of the crash.
+ * @return                              Always `EXCEPTION_CONTINUE_SEARCH`, so that the crash proceeds.
+ */
 static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
     if (!crashHandled.test_and_set()) {
         char reason[128];
@@ -133,31 +141,33 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
-// Runs inside abort(), which goes on to terminate the process once this returns.
+/**
+ * Runs inside abort(), which goes on to terminate the process once this returns.
+ *
+ * @param signal                        Always `SIGABRT`, this is only installed for abort().
+ */
 static void onAbort(int signal) {
     if (!crashHandled.test_and_set())
         printCrashTrace("abort()");
 }
 
-// The three below must not return. A terminate handler that returns is undefined behavior, and returning from
-// the other two resumes a process that just called a pure virtual function or passed garbage into the CRT.
 static void onTerminate() {
     if (!crashHandled.test_and_set())
         printCrashTrace("std::terminate()");
-    std::abort();
+    std::abort(); // Returning from a terminate handler is undefined behavior.
 }
 
 static void __cdecl onPureCall() {
     if (!crashHandled.test_and_set())
         printCrashTrace("pure virtual function call");
-    std::abort();
+    std::abort(); // Returning resumes a process that just called a pure virtual function.
 }
 
 static void __cdecl onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file,
                                        unsigned int line, uintptr_t reserved) {
     if (!crashHandled.test_and_set())
         printCrashTrace("invalid parameter passed to a CRT function");
-    std::abort();
+    std::abort(); // Returning resumes a process that passed garbage into a CRT function.
 }
 
 static void installHandlers() {
@@ -197,16 +207,17 @@ static void onSignal(int signal, siginfo_t *info, void *context) {
         printCrashTrace(reason);
     }
 
-    // Die of the original signal rather than of us, so that a core dump still happens and whoever launched
-    // the process sees it was killed by a SIGSEGV. SA_RESETHAND put the default handler back before we were
-    // called, so raising it here is what actually kills us.
+    // Die of the original signal, so that a core dump still happens and whoever launched the process sees it
+    // was killed by a SIGSEGV. SA_RESETHAND put the default handler back before we were called, so raising it
+    // here is what actually kills us.
     std::raise(info->si_signo);
     _exit(EXIT_FAILURE);
 }
 
 static void installHandlers() {
-    // The handler runs on its own stack so that it also works when the crash is stack exhaustion. The default
-    // SIGSTKSZ is a few kb, and symbolizing a trace needs orders of magnitude more.
+    // The handler runs on its own stack so that it also works when the crash is stack exhaustion. Symbolizing
+    // a trace measures at 17kb, well past SIGSTKSZ, and the rest is margin - this is bss, so the pages beyond
+    // what's touched never get committed, and running out of stack inside a crash handler prints nothing.
     static char alternateStack[8 * 1024 * 1024];
 
     stack_t stack;
@@ -229,6 +240,8 @@ static void installHandlers() {
 #endif // _WIN32
 
 StackTraceOnCrash::StackTraceOnCrash() {
+    // Symbols resolve lazily, so the first trace is the one that opens debug info and allocates. Better done
+    // here than inside a handler, with the process already broken.
     warmUpCpptrace();
     installHandlers();
 }
