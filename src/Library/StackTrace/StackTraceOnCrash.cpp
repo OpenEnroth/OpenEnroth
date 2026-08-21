@@ -1,5 +1,6 @@
 #include "StackTraceOnCrash.h"
 
+#include <algorithm>
 #include <atomic>
 #include <cstdint>
 #include <cstdio>
@@ -19,6 +20,7 @@
 #   include <mutex>
 #elif !defined(__ANDROID__)
 #   include <unistd.h> // NOLINT: not a C++ system header.
+#   include <ucontext.h> // NOLINT: not a C++ system header.
 #   include <csignal>
 #   include <cstring>
 #endif
@@ -48,16 +50,16 @@ static void printTrace(std::string_view trace) {
     std::fflush(stderr);
 }
 
-static void printCrashTrace(std::string_view reason) {
-    printCrashHeader(reason);
-    printTrace(stackTraceToString());
-}
-
 static void warmUpCpptrace() {
     (void) cpptrace::generate_trace(0, 1).to_string();
 }
 
 #ifdef _WIN32
+
+static void printCrashTrace(std::string_view reason) {
+    printCrashHeader(reason);
+    printTrace(stackTraceToString());
+}
 
 namespace cpptrace {
 inline namespace v1 {
@@ -194,13 +196,60 @@ static const int handledSignals[] = {
     SIGXFSZ, // File size limit exceeded.
 };
 
+/**
+ * @param crashContext                  Register state the signal was delivered with.
+ * @return                              Address of the instruction that faulted, or null on an architecture
+ *                                      this doesn't know how to ask.
+ */
+static cpptrace::frame_ptr faultingProgramCounter(const ucontext_t &crashContext) {
+#if defined(__APPLE__) && defined(__aarch64__)
+    return crashContext.uc_mcontext->__ss.__pc;
+#elif defined(__APPLE__) && defined(__x86_64__)
+    return crashContext.uc_mcontext->__ss.__rip;
+#elif defined(__aarch64__)
+    return crashContext.uc_mcontext.pc;
+#elif defined(REG_RIP)
+    return crashContext.uc_mcontext.gregs[REG_RIP];
+#elif defined(REG_EIP)
+    return crashContext.uc_mcontext.gregs[REG_EIP];
+#elif defined(__arm__)
+    return crashContext.uc_mcontext.arm_pc;
+#else
+    return 0;
+#endif
+}
+
+/**
+ * Walks from the handler, then trims the trace back to the instruction that faulted. Whether the walk crosses
+ * the signal trampoline at all is up to the platform - a function that faulted without setting up a frame of
+ * its own has nothing to find, and the walk picks up at its caller instead. The register state has the
+ * address either way, so it's what decides where the trace starts.
+ *
+ * @param crashContext                  Register state the signal was delivered with.
+ * @return                              Stack trace starting at the faulting frame, one frame per line.
+ */
+static std::string traceFromContext(const ucontext_t &crashContext) {
+    cpptrace::raw_trace raw = cpptrace::generate_raw_trace(0, detail::MAX_TRACE_DEPTH);
+
+    if (cpptrace::frame_ptr faultingPc = faultingProgramCounter(crashContext)) {
+        auto fault = std::ranges::find(raw.frames, faultingPc);
+        if (fault == raw.frames.end())
+            raw.frames.insert(raw.frames.begin(), faultingPc); // Walk stopped short of it, so put it back.
+        else
+            raw.frames.erase(raw.frames.begin(), fault); // Walk got there, so drop the handler above it.
+    }
+
+    return raw.resolve().to_string();
+}
+
 static void onSignal(int signal, siginfo_t *info, void *context) {
     // Only the first crash prints, a second thread faulting while this one symbolizes would interleave with
     // it. It still falls through to the raise below - exiting here instead would cost us the core dump.
     if (!crashHandled.test_and_set()) {
         char reason[128];
         std::snprintf(reason, sizeof(reason), "%s at %p", strsignal(info->si_signo), info->si_addr);
-        printCrashTrace(reason);
+        printCrashHeader(reason);
+        printTrace(traceFromContext(*static_cast<ucontext_t *>(context)));
     }
 
     // Die of the original signal, so that a core dump still happens and whoever launched the process sees it
