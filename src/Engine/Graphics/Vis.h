@@ -38,12 +38,11 @@ struct Vis_SelectionFilter {  // stru157
     VisSelectFlags select_flags;
 };
 
-extern Vis_SelectionFilter vis_sprite_targets_filter;  // 00F93E1C
-extern Vis_SelectionFilter vis_allsprites_filter;  // 00F93E30
+extern Vis_SelectionFilter vis_no_decorations_filter;  // 00F93E1C
+extern Vis_SelectionFilter vis_anything_filter;  // 00F93E30
 extern Vis_SelectionFilter vis_face_filter;      // 00F93E44
 extern Vis_SelectionFilter vis_door_filter;      // 00F93E58
 extern Vis_SelectionFilter vis_decoration_noevent_filter;  // 00F93E6C
-extern Vis_SelectionFilter vis_items_filter;  // static to sub_44EEA7
 
 struct Vis_PIDAndDepth {
     Pid pid;

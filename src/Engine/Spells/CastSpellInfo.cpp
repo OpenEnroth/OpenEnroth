@@ -10,6 +10,7 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
@@ -150,11 +151,10 @@ void CastSpellInfoHelpers::castSpell() {
         Pid spell_targeted_at = pCastSpell->targetPid;
 
         // First try to pick live actor mouse is pointing at
-        if (!spell_targeted_at &&
-                mouse->uPointingObjectID &&
-                mouse->uPointingObjectID.type() == OBJECT_Actor &&
-                pActors[mouse->uPointingObjectID.id()].CanBeDamaged()) {
-            spell_targeted_at = mouse->uPointingObjectID;
+        if (!spell_targeted_at) {
+            Pid pointed = engine->PickMouseForTargeting().pid;
+            if (pointed.type() == OBJECT_Actor && pActors[pointed.id()].CanBeDamaged())
+                spell_targeted_at = pointed;
         }
 
         // Otherwise pick closest live actor

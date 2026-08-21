@@ -441,21 +441,24 @@ Vis_PIDAndDepth Engine::PickKeyboard(float pick_depth, Vis_SelectionFilter *spri
     }
 }
 
-Vis_PIDAndDepth Engine::PickMouseInfoPopup() {
+Vis_PIDAndDepth Engine::PickMouseForInfo() {
     Pointi pt = mouse->position();
-    // TODO(captainurist): Right now we can have popups for monsters that are not reachable with a bow, and this is OK.
-    //                     However, such monsters also don't get a hint displayed on mouseover. Probably should fix this?
-    return PickMouse(pCamera3D->GetMouseInfoDepth(), pt.x, pt.y, &vis_allsprites_filter, &vis_face_filter);
+    return PickMouse(pCamera3D->GetMouseInfoDepth(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
 }
 
-Vis_PIDAndDepth Engine::PickMouseTarget() {
+Vis_PIDAndDepth Engine::PickMouseForTargeting() {
     Pointi pt = mouse->position();
-    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_sprite_targets_filter, &vis_face_filter);
+    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_no_decorations_filter, &vis_face_filter);
 }
 
-Vis_PIDAndDepth Engine::PickMouseNormal() {
+Vis_PIDAndDepth Engine::PickMouseForInteraction() {
     Pointi pt = mouse->position();
-    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_items_filter, &vis_face_filter);
+    return PickMouse(config->gameplay.MouseInteractionDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
+}
+
+Vis_PIDAndDepth Engine::PickMouseForCombatClick() {
+    Pointi pt = mouse->position();
+    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
 }
 
 void Engine::toggleOverlays() {

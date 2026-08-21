@@ -212,7 +212,7 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
     position = mouse->setPosition(position);
 
     if (engine)
-        engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_allsprites_filter, &vis_door_filter);
+        engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_anything_filter, &vis_door_filter);
 
     // Decide here whether the right-press should enter "show popup" mode.
     if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)

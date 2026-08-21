@@ -765,7 +765,7 @@ void Game::processQueuedMessages() {
                 current_screen_type = SCREEN_GAME;
                 continue;
             case UIMSG_CastSpell_Telekinesis: {
-                Pid pid = engine->PickMouseTarget().pid;
+                Pid pid = engine->PickMouseForTargeting().pid;
                 ObjectType type = pid.type();
                 int id = pid.id();
                 bool interactionPossible = false;
@@ -954,7 +954,7 @@ void Game::processQueuedMessages() {
 
             case UIMSG_CastSpell_TargetActorBuff:
             case UIMSG_CastSpell_TargetActor: {
-                Vis_PIDAndDepth object = engine->PickMouseTarget();
+                Vis_PIDAndDepth object = engine->PickMouseForTargeting();
                 Pid pid = object.pid;
                 int depth = object.depth;
                 if (pid.type() == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.value()) {
