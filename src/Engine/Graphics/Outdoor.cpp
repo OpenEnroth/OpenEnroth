@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <optional>
 #include <string>
 
 #include "Engine/Engine.h"
@@ -1808,7 +1809,8 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
     loadAndPrepareODMInternal(mapid);
     if (!bLoading) {
         const MapDestination &destination = *engine->_pendingTransition;
-        placeParty(destination.placement.value_or(placementForStartPoint(destination.startPoint)));
+        if (std::optional<PartyPlacement> placement = destination.resolvePlacement())
+            placeParty(*placement);
     }
 
     viewparams->_443365();

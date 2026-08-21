@@ -9,37 +9,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/Serialization.h"
 
-void placeParty(const PartyPlacement &placement) {
-    const Vec3f &pos = placement.pos;
-
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        if (!pIndoor->GetSector(pos)) {
-            MM_ERROR("placeParty - Cannot GetSector for target position ({}, {}, {}), skipping teleport", pos.x, pos.y, pos.z);
-            return;
-        }
-    } else {
-        bool partyIsOnWater = false;
-        int floorFaceId = -1;
-        float newFloorLevel = ODM_GetFloorLevel(pos, &partyIsOnWater, &floorFaceId);
-        if (pos.x < -maxPartyAxisDistance || pos.x > maxPartyAxisDistance ||
-            pos.y < -maxPartyAxisDistance || pos.y > maxPartyAxisDistance) {
-            MM_ERROR("placeParty - Target position ({}, {}, {}) is out of bounds, skipping teleport", pos.x, pos.y, pos.z);
-            return;
-        }
-        // Warn about teleport height - party will be correctly z positioned on next update
-        if (pos.z < newFloorLevel)
-            MM_WARNING("placeParty - Target position ({}, {}, {}) is below the floor level of {}", pos.x, pos.y, pos.z, newFloorLevel);
-    }
-
-    pParty->pos = pos;
-    pParty->velocity = Vec3f(0, 0, placement.zSpeed);
-    pParty->uFallStartZ = pos.z;
-    if (placement.yaw != -1)
-        pParty->_viewYaw = placement.yaw;
-    pParty->_viewPitch = placement.pitch;
-}
-
-PartyPlacement placementForStartPoint(MapStartPoint point) {
+static PartyPlacement placementForStartPoint(MapStartPoint point) {
     PartyPlacement result;
     result.pos = pParty->pos;
     result.yaw = pParty->_viewYaw;
@@ -69,4 +39,42 @@ PartyPlacement placementForStartPoint(MapStartPoint point) {
     }
 
     return result;
+}
+
+std::optional<PartyPlacement> MapDestination::resolvePlacement() const {
+    if (const PartyPlacement *placement = std::get_if<PartyPlacement>(&arrival))
+        return *placement;
+    if (const MapStartPoint *startPoint = std::get_if<MapStartPoint>(&arrival))
+        return placementForStartPoint(*startPoint);
+    return std::nullopt;
+}
+
+void placeParty(const PartyPlacement &placement) {
+    const Vec3f &pos = placement.pos;
+
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+        if (!pIndoor->GetSector(pos)) {
+            MM_ERROR("placeParty - Cannot GetSector for target position ({}, {}, {}), skipping teleport", pos.x, pos.y, pos.z);
+            return;
+        }
+    } else {
+        bool partyIsOnWater = false;
+        int floorFaceId = -1;
+        float newFloorLevel = ODM_GetFloorLevel(pos, &partyIsOnWater, &floorFaceId);
+        if (pos.x < -maxPartyAxisDistance || pos.x > maxPartyAxisDistance ||
+            pos.y < -maxPartyAxisDistance || pos.y > maxPartyAxisDistance) {
+            MM_ERROR("placeParty - Target position ({}, {}, {}) is out of bounds, skipping teleport", pos.x, pos.y, pos.z);
+            return;
+        }
+        // Warn about teleport height - party will be correctly z positioned on next update
+        if (pos.z < newFloorLevel)
+            MM_WARNING("placeParty - Target position ({}, {}, {}) is below the floor level of {}", pos.x, pos.y, pos.z, newFloorLevel);
+    }
+
+    pParty->pos = pos;
+    pParty->velocity = Vec3f(0, 0, placement.zSpeed);
+    pParty->uFallStartZ = pos.z;
+    if (placement.yaw != -1)
+        pParty->_viewYaw = placement.yaw;
+    pParty->_viewPitch = placement.pitch;
 }

@@ -6,6 +6,7 @@
 #include <string_view>
 #include <utility>
 #include <memory>
+#include <optional>
 
 #include "Arcomage/Arcomage.h"
 
@@ -696,8 +697,8 @@ void Game::processQueuedMessages() {
                     startMapTransition(destination);
                     if (leavingArena)
                         pParty->GetPlayingTime() += Duration::fromDays(4);
-                } else if (destination.placement) {
-                    placeParty(*destination.placement);
+                } else if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
+                    placeParty(*placement);
                 } else {
                     eventProcessor(savedEventID, Pid(), 1, savedEventStep);
                 }
@@ -831,7 +832,7 @@ void Game::processQueuedMessages() {
                 uint16_t v53 = std::to_underlying(houseTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     int v54 = std::abs(v53) - 1;
-                    destination.placement = PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
+                    destination.arrival = PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
                 }
                 engine->_pendingTransition = destination;
                 houseDialogPressEscape();

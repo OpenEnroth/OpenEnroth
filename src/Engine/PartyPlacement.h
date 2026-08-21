@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <variant>
 
 #include "Engine/MapEnums.h"
 
@@ -28,22 +29,22 @@ struct PartyPlacement {
  */
 struct MapDestination {
     MapDestination() = default;
-    MapDestination(MapId map, MapStartPoint startPoint) : map(map), startPoint(startPoint) {}
-    MapDestination(MapId map, const PartyPlacement &placement) : map(map), placement(placement) {}
+    MapDestination(MapId map, MapStartPoint startPoint) : map(map), arrival(startPoint) {}
+    MapDestination(MapId map, const PartyPlacement &placement) : map(map), arrival(placement) {}
+
+    /**
+     * Start points name a decoration in the map that's being entered, so this can only be called once that map is
+     * loaded.
+     *
+     * @return                          Where the party ends up, or empty if it shouldn't be moved at all.
+     */
+    [[nodiscard]] std::optional<PartyPlacement> resolvePlacement() const;
 
     MapId map = MAP_INVALID; // MAP_INVALID means stay on the current map.
-    MapStartPoint startPoint = MAP_START_POINT_PARTY;
-    std::optional<PartyPlacement> placement; // Unset means don't move the party.
+    std::variant<std::monostate, MapStartPoint, PartyPlacement> arrival; // monostate means don't move the party.
 };
 
 /**
  * Moves the party. Refuses positions the map can't hold, logging an error.
  */
 void placeParty(const PartyPlacement &placement);
-
-/**
- * @param point                         Starting point to look up in the currently loaded map.
- * @return                              Placement of the map's starting point decoration, grounded on the floor.
- *                                      Maps without a matching decoration give the party's current placement.
- */
-PartyPlacement placementForStartPoint(MapStartPoint point);

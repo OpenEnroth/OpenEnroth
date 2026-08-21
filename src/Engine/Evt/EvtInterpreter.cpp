@@ -1,4 +1,5 @@
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 
@@ -122,10 +123,13 @@ static MapDestination moveToMapDestination(const EvtInstruction &ir) {
     MapDestination result;
     if (!ir.str.starts_with('0') && !ir.str.empty())
         result.map = pMapStats->GetMapInfo(ir.str);
-    if (descr.x || descr.y || descr.z)
-        result.placement = PartyPlacement(Vec3f(descr.x, descr.y, descr.z),
-                                          descr.yaw != -1 ? (descr.yaw & TrigLUT.uDoublePiMask) : -1,
-                                          descr.pitch, descr.zspeed);
+    if (descr.x || descr.y || descr.z) {
+        result.arrival = PartyPlacement(Vec3f(descr.x, descr.y, descr.z),
+                                        descr.yaw != -1 ? (descr.yaw & TrigLUT.uDoublePiMask) : -1,
+                                        descr.pitch, descr.zspeed);
+    } else if (result.map != MAP_INVALID) {
+        result.arrival = MAP_START_POINT_PARTY; // Shipped MM6 doors name the map and nothing else.
+    }
     return result;
 }
 
@@ -226,10 +230,10 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
             //                 other, so the placement of the one it picked has to survive the rest of them.
             if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
-                destination.placement = engine->_pendingTransition->placement;
+                destination.arrival = engine->_pendingTransition->arrival;
             if (destination.map == MAP_INVALID) { // teleport within map
-                if (destination.placement) {
-                    placeParty(*destination.placement);
+                if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
+                    placeParty(*placement);
                     pAudioPlayer->playUISound(SOUND_teleport);
                 }
             } else {

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <optional>
 #include <ranges>
 #include <string>
 #include <utility>
@@ -1013,7 +1014,8 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         pParty->velocity = Vec3f();
         pParty->uFallStartZ = 0;
         const MapDestination &destination = *engine->_pendingTransition;
-        placeParty(destination.placement.value_or(placementForStartPoint(destination.startPoint)));
+        if (std::optional<PartyPlacement> placement = destination.resolvePlacement())
+            placeParty(*placement);
         pBLVRenderParams->Reset();
     }
     viewparams->_443365();
