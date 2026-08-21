@@ -562,10 +562,9 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
     if (engine->_currentLoadedMapId == MAP_BREEDING_ZONE || engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
-        // spawning grounds & walls of mist - no loot & exp from monsters
-
+        // Monsters here give no exp and no gold, and their typed loot is replaced with untyped random
+        // items. Item drops themselves stay. treasureDropChance and treasureLevel are untouched.
         for (Actor &actor : pActors) {
-            // TODO(captainurist): shouldn't we also set uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID?
             actor.monsterInfo.treasureType = RANDOM_ITEM_ANY;
             actor.monsterInfo.goldDiceRolls = 0;
             actor.monsterInfo.exp = 0;
