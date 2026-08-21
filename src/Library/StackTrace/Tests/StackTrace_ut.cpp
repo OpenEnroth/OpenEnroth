@@ -20,11 +20,13 @@ MM_NOINLINE std::string stackTraceMarkerFunction() {
     return trace.empty() ? std::string() : trace;
 }
 
-MM_NOINLINE void stackTraceCrashingFunction() {
-    // Volatile pointer, not pointer to volatile. Without it the null dereference is just undefined behaviour
-    // the compiler may delete or turn into a trap instruction, and either way this stops being a null fault.
+MM_NOINLINE int stackTraceCrashingFunction() {
+    // Volatile pointer, not pointer to volatile, or the compiler knows it's null and traps instead of
+    // faulting. The read feeds the return value because a store on its own is dead code that some compilers
+    // drop, and then nothing crashes at all.
     int *volatile nowhere = nullptr;
     *nowhere = 1;
+    return *nowhere;
 }
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
