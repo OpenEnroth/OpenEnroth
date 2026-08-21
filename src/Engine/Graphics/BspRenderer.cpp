@@ -276,7 +276,7 @@ void BspRenderer::AddBSPFaces(const int node_id, const int initialBSPNodeId) {
 
 
 void BspRenderer_ViewportNode::SetFrustumToCamera() {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < FRUSTUM_PLANE_COUNT; i++) {
         ViewportNodeFrustum[i].normal.x = pCamera3D->FrustumPlanes[i].x;
         ViewportNodeFrustum[i].normal.y = pCamera3D->FrustumPlanes[i].y;
         ViewportNodeFrustum[i].normal.z = pCamera3D->FrustumPlanes[i].z;
