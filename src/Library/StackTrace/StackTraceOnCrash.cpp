@@ -20,7 +20,7 @@
 #   include <mutex>
 #elif !defined(__ANDROID__)
 #   include <unistd.h> // NOLINT: not a C++ system header.
-#   include <ucontext.h> // NOLINT: not a C++ system header.
+#   include <sys/ucontext.h> // NOLINT: not a C++ system header.
 #   include <csignal>
 #   include <cstring>
 #endif

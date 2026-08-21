@@ -12,7 +12,7 @@
 
 // Not inlined so that it gets a frame of its own, and not static because windows drops private symbols from a
 // stripped pdb.
-MM_NOINLINE std::string oeStackTraceMarkerFunction() {
+MM_NOINLINE std::string stackTraceMarkerFunction() {
     std::string trace = stackTraceToString();
 
     // Deriving the result from the trace keeps the call above out of tail position. Clang tail-calls it at
@@ -20,24 +20,17 @@ MM_NOINLINE std::string oeStackTraceMarkerFunction() {
     return trace.empty() ? std::string() : trace;
 }
 
-MM_NOINLINE static int oeStackTraceFaultingFunction() {
+MM_NOINLINE void stackTraceCrashingFunction() {
     // Volatile pointer, not pointer to volatile. Without it the null dereference is just undefined behaviour
     // the compiler may delete or turn into a trap instruction, and either way this stops being a null fault.
     int *volatile nowhere = nullptr;
     *nowhere = 1;
-    return *nowhere;
-}
-
-// The fault is one call deeper so that the tests can check the trace both names it and carries on past it.
-MM_NOINLINE void oeStackTraceCrashingFunction() {
-    volatile int sink = oeStackTraceFaultingFunction();
-    (void) sink;
 }
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
-    std::string trace = oeStackTraceMarkerFunction();
+    std::string trace = stackTraceMarkerFunction();
 
-    EXPECT_CONTAINS(trace, "oeStackTraceMarkerFunction");
+    EXPECT_CONTAINS(trace, "stackTraceMarkerFunction");
     EXPECT_CONTAINS(trace, "main");
 }
 
@@ -50,8 +43,8 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
-        oeStackTraceCrashingFunction();
-    }, testing::AllOf(testing::HasSubstr("oeStackTraceFaultingFunction"), testing::HasSubstr("main")));
+        stackTraceCrashingFunction();
+    }, testing::AllOf(testing::HasSubstr("stackTraceCrashingFunction"), testing::HasSubstr("main")));
 }
 
 UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
@@ -61,10 +54,10 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
-        std::thread(oeStackTraceCrashingFunction).join();
+        std::thread(stackTraceCrashingFunction).join();
     // A worker's stack ends at the thread entry, so main being absent is what says we traced the thread that
     // crashed rather than the one that installed the handlers.
-    }, testing::AllOf(testing::HasSubstr("oeStackTraceFaultingFunction"),
+    }, testing::AllOf(testing::HasSubstr("stackTraceCrashingFunction"),
                       testing::Not(testing::HasSubstr("main"))));
 }
 
