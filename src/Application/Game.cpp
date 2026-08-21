@@ -168,7 +168,7 @@ bool Game::loop() {
 
             pParty->pPickedItem.itemId = ITEM_NULL;
 
-            engine->_pendingTransition = MapDestination(MAP_EMERALD_ISLAND);
+            engine->_pendingTransition = MapDestination(MAP_EMERALD_ISLAND, MAP_START_POINT_PARTY);
 
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
@@ -823,7 +823,7 @@ void Game::processQueuedMessages() {
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 autoSave();
-                MapDestination destination(houseNpcs[currentHouseNpc].targetMapID);
+                MapDestination destination(houseNpcs[currentHouseNpc].targetMapID, MAP_START_POINT_PARTY);
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
@@ -910,7 +910,7 @@ void Game::processQueuedMessages() {
                     MapId map_index = static_cast<MapId>(fromString<int>(tokens[0]));
                     if (!allMaps().contains(map_index))
                         continue;
-                    engine->_pendingTransition = MapDestination(map_index);
+                    engine->_pendingTransition = MapDestination(map_index, MAP_START_POINT_PARTY);
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     onMapLeave();

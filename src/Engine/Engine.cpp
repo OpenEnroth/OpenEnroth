@@ -1477,6 +1477,6 @@ void TeleportToNWCDungeon() {
 
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
-    startMapTransition(MapDestination(pMapStats->GetMapInfo("nwc.blv")));
+    startMapTransition(MapDestination(pMapStats->GetMapInfo("nwc.blv"), MAP_START_POINT_PARTY));
     current_screen_type = SCREEN_GAME;
 }
