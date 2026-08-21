@@ -198,8 +198,7 @@ static const int handledSignals[] = {
 
 /**
  * @param crashContext                  Register state the signal was delivered with.
- * @return                              Address of the instruction that faulted, or null on an architecture
- *                                      this doesn't know how to ask.
+ * @return                              Address of the instruction that faulted.
  */
 static cpptrace::frame_ptr faultingProgramCounter(const ucontext_t &crashContext) {
 #if defined(__APPLE__) && defined(__aarch64__)
@@ -215,7 +214,7 @@ static cpptrace::frame_ptr faultingProgramCounter(const ucontext_t &crashContext
 #elif defined(__arm__)
     return crashContext.uc_mcontext.arm_pc;
 #else
-    return 0;
+#   error "Unsupported posix architecture."
 #endif
 }
 
