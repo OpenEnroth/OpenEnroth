@@ -181,7 +181,7 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
     return false;
 }
 
-void GameWindowHandler::OnMouseLeftClick(Pointi position) {
+void GameWindowHandler::OnMouseLeftClick(Pointi position, bool isDoubleClick) {
     if (pArcomageGame->_gameInProgress) {
         ArcomageGame::OnMouseClick(0, true);
     } else {
@@ -198,7 +198,7 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
                               &vis_decoration_noevent_filter, &vis_door_filter);
         }
 
-        mouse->UI_OnMouseLeftClick();
+        mouse->UI_OnMouseLeftClick(isDoubleClick);
     }
 }
 
@@ -256,7 +256,7 @@ void GameWindowHandler::OnMouseLeftDoubleClick(Pointi position) {
     if (pArcomageGame->_gameInProgress) {
         pArcomageGame->OnMouseClick(0, true);
     } else {
-        OnMouseLeftClick(position);
+        OnMouseLeftClick(position, true);
     }
 }
 
@@ -472,7 +472,7 @@ bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
         if (event->isDoubleClick) {
             OnMouseLeftDoubleClick(position);
         } else {
-            OnMouseLeftClick(position);
+            OnMouseLeftClick(position, false);
         }
     } else if (event->button == BUTTON_RIGHT) {
         if (event->isDoubleClick) {

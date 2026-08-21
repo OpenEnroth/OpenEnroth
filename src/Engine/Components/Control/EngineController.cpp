@@ -106,25 +106,12 @@ void EngineController::releaseKey(PlatformKey key) {
     postEvent(std::move(event));
 }
 
-void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
-    std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
-    event->type = EVENT_MOUSE_BUTTON_PRESS;
-    event->window = ::application->window();
-    event->button = button;
-    event->pos = render->MapToPresent({ x, y });
-    event->isDoubleClick = false;
-    postEvent(std::move(event));
+void EngineController::pressButton(PlatformMouseButton button, int x, int y, bool isDoubleClick) {
+    pressOrReleaseButton(EVENT_MOUSE_BUTTON_PRESS, button, x, y, isDoubleClick);
 }
 
 void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
-    std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
-    event->type = EVENT_MOUSE_BUTTON_RELEASE;
-    event->window = ::application->window();
-    event->button = button;
-    event->buttons = button;
-    event->pos = render->MapToPresent({ x, y });
-    event->isDoubleClick = false;
-    postEvent(std::move(event));
+    pressOrReleaseButton(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
 }
 
 void EngineController::moveMouse(int x, int y) {
@@ -152,6 +139,15 @@ void EngineController::pressGuiButton(std::string_view buttonId) {
     GUIButton *button = existingButton(buttonId);
     Pointi center = button->rect.center();
     pressAndReleaseButton(BUTTON_LEFT, center.x, center.y);
+}
+
+void EngineController::doubleClickGuiButton(std::string_view buttonId) {
+    GUIButton *button = existingButton(buttonId);
+    Pointi center = button->rect.center();
+    pressAndReleaseButton(BUTTON_LEFT, center.x, center.y);
+    tick(1);
+    pressButton(BUTTON_LEFT, center.x, center.y, true);
+    releaseButton(BUTTON_LEFT, center.x, center.y);
 }
 
 void EngineController::goToGame() {
@@ -434,6 +430,21 @@ void EngineController::goToGameOrMainMenu() {
     // If game is starting up - wait for main menu to appear.
     while (GetCurrentMenuID() == MENU_MAIN && lWindowList.empty())
         ticker.tick();
+}
+
+void EngineController::pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y,
+                                            bool isDoubleClick) {
+    assert(type == EVENT_MOUSE_BUTTON_PRESS || type == EVENT_MOUSE_BUTTON_RELEASE);
+
+    std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
+    event->type = type;
+    event->window = ::application->window();
+    event->button = button;
+    if (type == EVENT_MOUSE_BUTTON_RELEASE)
+        event->buttons = button;
+    event->pos = render->MapToPresent({ x, y });
+    event->isDoubleClick = isDoubleClick;
+    postEvent(std::move(event));
 }
 
 GUIButton *EngineController::existingButton(std::string_view buttonId) {

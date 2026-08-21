@@ -320,7 +320,7 @@ GAME_TEST(Issues, Issue624) {
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
-    game.pressGuiButton("SaveMenu_Slot0");
+    game.doubleClickGuiButton("SaveMenu_Slot0"); // Double click starts the name input.
     game.tick(1);
 
     for (int i = 0; i < 5; i++) {
@@ -351,7 +351,7 @@ GAME_TEST(Issues, Issue626) {
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(10);
-    game.pressGuiButton("SaveMenu_Slot0");
+    game.doubleClickGuiButton("SaveMenu_Slot0"); // Double click starts the name input.
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_0);
     game.tick(2);
@@ -535,7 +535,7 @@ GAME_TEST(Issues, Issue689) {
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(10);
-    game.pressGuiButton("SaveMenu_Slot0");
+    game.doubleClickGuiButton("SaveMenu_Slot0"); // Double click starts the name input.
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_0);
     game.tick(2);

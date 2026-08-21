@@ -36,7 +36,7 @@ FsmAction LoadSlotState::update() {
             return FsmAction::transition("slotConfirmed");
         }
         case UIMSG_SelectLoadSlot: {
-            _uiLoadSaveSlot->slotClicked(param1);
+            _uiLoadSaveSlot->slotClicked(param1, param2);
             break;
         }
         case UIMSG_SaveLoadBtn: {
