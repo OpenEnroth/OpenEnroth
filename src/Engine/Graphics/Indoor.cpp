@@ -968,10 +968,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    // TODO(captainurist): merge with ArrangeSpriteObjects?
-    for (int i = 0; i < pSpriteObjects.size(); ++i)
-        if (pSpriteObjects[i].uObjectDescID)
-            pSpriteObjects[i].containing_item.postGenerate(ITEM_SOURCE_MAP);
+    arrangeSpriteObjects();
 
     // INDOOR initialize actors
     alertStatus = false;

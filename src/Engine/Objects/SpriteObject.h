@@ -47,7 +47,7 @@ struct SpriteObject {
      * @offset 0x471C03
      */
     static void updateObjectODM(unsigned int uLayingItemID);
-    static void OnInteraction(unsigned int uLayingItemID);
+    static void Remove(unsigned int uLayingItemID);
     /**
      * Create sprite(s).
      *
@@ -90,6 +90,12 @@ struct SpriteObject {
     Duration _lastParticleTime;
     Duration _ticksPerParticle = 2_ticks; // how many ticks between particles
 };
+
+/**
+ * Post-generates the items of the sprite objects on the current map. On outdoor maps also snaps the
+ * map-placed ones to the ground. Called during level loading.
+ */
+void arrangeSpriteObjects();
 
 void CompactLayingItemsList();
 

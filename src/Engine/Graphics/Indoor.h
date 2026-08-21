@@ -337,8 +337,9 @@ void FindBillboardsLightLevels_BLV();
  *                                      then this parameter is set to 0.
  * @param[out] pFaceID                  Id of the floor face on which the actor is standing, or `-1` if actor is outside
  *                                      the level boundaries. Pass `nullptr` to ignore.
- * @return                              Z coordinate for the floor at (X, Y), or `-30000` if actor is outside the
- *                                      level boundaries.
+ * @return                              Z coordinate for the floor at (X, Y), `-30000` if actor is outside the
+ *                                      level boundaries, or `-29000` if the position is inside a vertical portal
+ *                                      opening between sectors and there is no real floor underneath.
  */
 float GetIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID = nullptr);
 

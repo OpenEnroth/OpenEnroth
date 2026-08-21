@@ -40,7 +40,6 @@ struct OutdoorLocation {
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
     bool PrepareDecorations();
-    void ArrangeSpriteObjects();
     bool InitalizeActors(MapId a1);
     double GetFogDensityByTime();
 
