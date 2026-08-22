@@ -69,12 +69,19 @@ MM_NOINLINE void stackTraceInvalidParameterFunction() {
     std::printf(nullptr); // Null format string is the canonical way to trip the invalid parameter handler.
 }
 
+// abort() and terminate() don't return, so at /O2 msvc turns a call to either into a jump, and the frame of
+// the function that made the call is gone before the handler ever runs. Touching a volatile afterwards gives
+// the call something to return to, which keeps the frame.
 MM_NOINLINE void stackTraceTerminateFunction() {
+    volatile int keepFrame = 0;
     std::terminate();
+    keepFrame = 1;
 }
 
 MM_NOINLINE void stackTraceAbortFunction() {
+    volatile int keepFrame = 0;
     std::abort();
+    keepFrame = 1;
 }
 #endif
 
@@ -122,16 +129,15 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
 }
 
 UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
-    // Calling a null pointer faults at address zero, where there's nothing to unwind from, so the walk stops
-    // dead before it reaches the real stack. The call pushed its return address first though, and that names
-    // the function that made it. Nothing below it is reachable from inside the handler, so main isn't asked
-    // for here, that one frame is what there is.
+    // Calling a null pointer faults at address zero, where there's nothing to unwind from. The call pushed its
+    // return address first though, and walking on from that names the function that made the call and
+    // everything above it.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceNullCallFunction();
-    }, HasFrame(0, "stackTraceNullCallFunction"));
+    }, testing::AllOf(HasFrame(0, "stackTraceNullCallFunction"), testing::HasSubstr("main")));
 }
 
 #ifdef _WIN32
