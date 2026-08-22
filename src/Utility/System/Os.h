@@ -41,11 +41,15 @@ struct DirectoryEntry {
 
 namespace os {
 
+// Path-taking functions below also have an `AsciiLiteral` overload - C++ allows a single user-defined conversion,
+// so a string literal passed as an argument wouldn't otherwise reach `NativePath`'s literal constructor.
+
 /**
  * @param path                          Path to check. Never throws, returns `false` on errors.
  * @return                              Whether `path` exists.
  */
 [[nodiscard]] bool exists(const NativePath &path);
+[[nodiscard]] inline bool exists(AsciiLiteral path) { return exists(NativePath(path)); }
 
 /**
  * @param path                          Path to stat. Never throws.
@@ -53,6 +57,7 @@ namespace os {
  *                                      a file nor a directory.
  */
 [[nodiscard]] FileStat stat(const NativePath &path);
+[[nodiscard]] inline FileStat stat(AsciiLiteral path) { return stat(NativePath(path)); }
 
 /**
  * Lists a directory. Never throws - returns an empty vector if `path` doesn't exist or isn't a directory, and skips
@@ -63,6 +68,7 @@ namespace os {
  *                                      strings on POSIX.
  */
 [[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
+[[nodiscard]] inline std::vector<DirectoryEntry> ls(AsciiLiteral path) { return ls(NativePath(path)); }
 
 /**
  * Removes the file or directory at `path`. A directory is removed with everything that's in it.
@@ -72,6 +78,7 @@ namespace os {
  * @throws std::runtime_error           On errors, e.g. missing permissions.
  */
 bool remove(const NativePath &path);
+inline bool remove(AsciiLiteral path) { return remove(NativePath(path)); }
 
 /**
  * Creates the directory at `path`, along with all missing parents. Does nothing if it already exists.
@@ -80,6 +87,7 @@ bool remove(const NativePath &path);
  * @throws std::runtime_error           On errors.
  */
 void mkdirs(const NativePath &path);
+inline void mkdirs(AsciiLiteral path) { mkdirs(NativePath(path)); }
 
 /**
  * @return                              Current working directory.
@@ -93,5 +101,6 @@ void mkdirs(const NativePath &path);
  * @throws Exception                    If the path couldn't be resolved.
  */
 [[nodiscard]] NativePath absolute(const NativePath &path);
+[[nodiscard]] inline NativePath absolute(AsciiLiteral path) { return absolute(NativePath(path)); }
 
 } // namespace os
