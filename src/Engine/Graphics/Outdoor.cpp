@@ -1625,8 +1625,8 @@ void UpdateActors_ODM() {
                     if (pMonsterStats->infos[actor.monsterInfo.id].bloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(
-                                Vec3f(actor.pos.x, actor.pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
+                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, Floor_Level + 30),
+                                                                                     colorTable.Red, splatRadius);
                         }
                         actor.donebloodsplat = true;
                     }

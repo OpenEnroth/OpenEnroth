@@ -837,8 +837,8 @@ void Game::processQueuedMessages() {
                 continue;
             }
             case UIMSG_OnCastTownPortal:
-                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_TownPortalBook>(
-                    Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_TownPortalBook>(Pid::fromPacked(uMessageParam),
+                                                                                    static_cast<SpellCastFlags>(uMessageParam2));
                 continue;
 
             case UIMSG_OnCastLloydsBeacon:

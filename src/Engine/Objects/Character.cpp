@@ -6558,8 +6558,7 @@ void Character::playReaction(SpeechId speech, int a3) {
         if (portrait == PORTRAIT_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
                 // Was (sLastTrackLengthMS << 7) / 1000;
-                expressionDuration = Duration::fromRealtimeMilliseconds(
-                    1000 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID)));
+                expressionDuration = Duration::fromRealtimeMilliseconds(1000 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID)));
             }
         }
         playEmotion(portrait, expressionDuration);

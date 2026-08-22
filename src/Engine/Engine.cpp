@@ -276,10 +276,9 @@ void Engine::DrawGUI() {
             int uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             float floor_level = BLV_GetFloorLevel(pParty->pos/* + Vec3f(0,0,40) */, sector_id, &uFaceID);
-            floor_level_str = fmt::format(
-                "BLV_GetFloorLevel: {}   face_id {}\nNodes: {}, Faces: {} ({}), Sectors: {}\n",
-                floor_level, uFaceID, pBspRenderer->num_nodes, pBspRenderer->num_faces,
-                pBLVRenderParams->uNumFacesRenderedThisFrame, pBspRenderer->uNumVisibleNotEmptySectors);
+            floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\nNodes: {}, Faces: {} ({}), Sectors: {}\n",
+                                          floor_level, uFaceID, pBspRenderer->num_nodes, pBspRenderer->num_faces,
+                                          pBLVRenderParams->uNumFacesRenderedThisFrame, pBspRenderer->uNumVisibleNotEmptySectors);
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
             int floor_face_id;
@@ -1012,9 +1011,8 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     pParty->uCurrentYear = time.year;
 
     // New day dawns at 3am.
-    Time next3am = Time::fromDurationSinceSilence(
-        (oldTime.toDurationSinceSilence() - Duration::fromHours(3)).roundedUp(Duration::fromDays(1)) +
-        Duration::fromHours(3));
+    Time next3am = Time::fromDurationSinceSilence((oldTime.toDurationSinceSilence() - Duration::fromHours(3)).roundedUp(Duration::fromDays(1)) +
+                                                  Duration::fromHours(3));
     if (oldTime < next3am && newTime >= next3am) {
         pParty->pHirelings[0].hasUsedAbility = false;
         pParty->pHirelings[1].hasUsedAbility = false;
@@ -1425,9 +1423,8 @@ void RegeneratePartyHealthMana() {
 
 Duration timeUntilDawn() {
     Time now = pParty->GetPlayingTime();
-    Time next5am = Time::fromDurationSinceSilence(
-        (now.toDurationSinceSilence() - Duration::fromHours(5) + 1_ticks).roundedUp(Duration::fromDays(1)) +
-        Duration::fromHours(5));
+    Time next5am = Time::fromDurationSinceSilence((now.toDurationSinceSilence() - Duration::fromHours(5) + 1_ticks).roundedUp(Duration::fromDays(1)) +
+                                                  Duration::fromHours(5));
     return next5am - now;
 }
 

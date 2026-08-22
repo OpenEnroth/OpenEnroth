@@ -320,9 +320,8 @@ void CastSpellInfoHelpers::castSpell() {
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             } else {
                 int param2 = std::to_underlying(pCastSpell->flags & ON_CAST_CastViaScroll);
-                engine->_messageQueue->addMessageCurrentFrame(
-                    UIMSG_OnCastLloydsBeacon, Pid(OBJECT_Character, pCastSpell->casterCharacterIndex).packed(),
-                    param2);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon,
+                                                              Pid(OBJECT_Character, pCastSpell->casterCharacterIndex).packed(), param2);
                 pCastSpell->flags |= ON_CAST_NoRecoverySpell;
             }
         } else {
@@ -2312,8 +2311,8 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.hasAny(
-                            {CONDITION_POISON_WEAK, CONDITION_POISON_MEDIUM, CONDITION_POISON_SEVERE})) {
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.hasAny({CONDITION_POISON_WEAK, CONDITION_POISON_MEDIUM,
+                                                                                                 CONDITION_POISON_SEVERE})) {
                         if (spell_mastery == MASTERY_GRANDMASTER) {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_POISON_WEAK);
                             pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_POISON_MEDIUM);
@@ -2352,8 +2351,8 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.hasAny(
-                            {CONDITION_DISEASE_WEAK, CONDITION_DISEASE_MEDIUM, CONDITION_DISEASE_SEVERE})) {
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.hasAny({CONDITION_DISEASE_WEAK, CONDITION_DISEASE_MEDIUM,
+                                                                                                 CONDITION_DISEASE_SEVERE})) {
                         if (spell_mastery == MASTERY_GRANDMASTER) {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_DISEASE_WEAK);
                             pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_DISEASE_MEDIUM);

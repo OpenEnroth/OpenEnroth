@@ -424,8 +424,8 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                         if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height()))) {
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(
-                                    item, HOUSE_TYPE_WEAPON_SHOP, houseId(), SHOP_SCREEN_BUY);
+                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, HOUSE_TYPE_WEAPON_SHOP, houseId(),
+                                                                                                           SHOP_SCREEN_BUY);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase],
                                                           pParty->activeCharacterIndex() - 1,
                                                           houseNpcs[currentHouseNpc].npc, item, houseId(),
