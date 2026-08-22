@@ -105,7 +105,7 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_Travel, SCREE
 }
 
 void GUIWindow_Travel::Update() {
-    MapId destinationMap = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y).map;
+    MapId destinationMap = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y).map();
 
     render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});

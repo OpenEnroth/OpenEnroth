@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <optional>
 #include <variant>
 
@@ -26,12 +27,18 @@ struct PartyPlacement {
 };
 
 /**
- * Where a script or the UI wants the party to go.
+ * Where a script or the UI wants the party to go. Default-constructed one stays on the current map and doesn't move
+ * the party.
  */
-struct MapDestination {
+class MapDestination {
+ public:
     MapDestination() = default;
-    MapDestination(MapId map, MapStartPoint startPoint) : map(map), arrival(startPoint) {}
-    MapDestination(MapId map, const PartyPlacement &placement) : map(map), arrival(placement) {}
+    MapDestination(MapId map, MapStartPoint startPoint) : _map(map), _arrival(startPoint) {
+        assert(map != MAP_INVALID); // Start points name a spot in the map being entered.
+    }
+    MapDestination(MapId map, const PartyPlacement &placement) : _map(map), _arrival(placement) {}
+
+    [[nodiscard]] MapId map() const { return _map; } // MAP_INVALID means stay on the current map.
 
     /**
      * A `MapStartPoint` arrival names a decoration in the map that's being entered, so this can only be called once
@@ -42,8 +49,9 @@ struct MapDestination {
      */
     [[nodiscard]] std::optional<PartyPlacement> resolvePlacement() const;
 
-    MapId map = MAP_INVALID; // MAP_INVALID means stay on the current map.
-    std::variant<std::monostate, MapStartPoint, PartyPlacement> arrival; // monostate means don't move the party.
+ private:
+    MapId _map = MAP_INVALID;
+    std::variant<std::monostate, MapStartPoint, PartyPlacement> _arrival; // monostate means don't move the party.
 };
 
 /**

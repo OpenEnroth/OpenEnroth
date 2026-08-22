@@ -693,7 +693,7 @@ void Game::processQueuedMessages() {
                     pMediaPlayer->Unload();
                 DialogueEnding();
 
-                if (destination.map != MAP_INVALID) {
+                if (destination.map() != MAP_INVALID) {
                     //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                     bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
                     onMapLeave();
@@ -731,7 +731,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 // encounter_index = (NPCData *)getTravelTime();
                 MapDestination travelDestination = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
-                if (!engine->IsUnderwater() && pParty->bFlying || travelDestination.map == MAP_INVALID) {
+                if (!engine->IsUnderwater() && pParty->bFlying || travelDestination.map() == MAP_INVALID) {
                     PlayButtonClickSound();
                     pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
                     pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);;
@@ -835,8 +835,9 @@ void Game::processQueuedMessages() {
                 uint16_t v53 = std::to_underlying(houseTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     int v54 = std::abs(v53) - 1;
-                    destination.arrival = PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]),
-                                                         teleportYaw[v54], 0, 0);
+                    destination = MapDestination(houseNpcs[currentHouseNpc].targetMapID,
+                                                 PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]),
+                                                                teleportYaw[v54], 0, 0));
                 }
                 engine->_pendingTransition = destination;
                 houseDialogPressEscape();

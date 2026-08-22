@@ -878,7 +878,7 @@ void ODM_UpdateUserInputAndOther() {
         MapDestination destination = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
         if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE)) ||
                              pParty->uFlags & PARTY_FLAG_BURNING || pParty->bFlying) ||
-            destination.map == MAP_INVALID) {
+            destination.map() == MAP_INVALID) {
             pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
             pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);
         } else {

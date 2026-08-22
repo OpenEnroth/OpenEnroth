@@ -44,10 +44,10 @@ static std::optional<PartyPlacement> placementForStartPoint(MapStartPoint point)
 }
 
 std::optional<PartyPlacement> MapDestination::resolvePlacement() const {
-    if (const PartyPlacement *placement = std::get_if<PartyPlacement>(&arrival))
+    if (const PartyPlacement *placement = std::get_if<PartyPlacement>(&_arrival))
         return *placement;
-    if (const MapStartPoint *startPoint = std::get_if<MapStartPoint>(&arrival)) {
-        assert(map == engine->_currentLoadedMapId); // The decoration we're looking for lives in the target map.
+    if (const MapStartPoint *startPoint = std::get_if<MapStartPoint>(&_arrival)) {
+        assert(_map == engine->_currentLoadedMapId); // The decoration we're looking for lives in the target map.
         return placementForStartPoint(*startPoint);
     }
     return std::nullopt;

@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <memory>
 #include <optional>
-#include <variant>
 
 #include "Engine/Engine.h"
 
@@ -541,9 +540,8 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     engine->_OE_transientVariables.fill(0);
     assert(engine->_pendingTransition); // Nothing gets here without a map change in flight.
-    assert(engine->_pendingTransition->map != MAP_INVALID);
-    assert(!std::holds_alternative<std::monostate>(engine->_pendingTransition->arrival)); // And it says where to.
-    MapId transitionMapId = engine->_pendingTransition->map;
+    assert(engine->_pendingTransition->map() != MAP_INVALID);
+    MapId transitionMapId = engine->_pendingTransition->map();
     loadMapEventsAndStrings(transitionMapId);
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
@@ -1460,13 +1458,13 @@ bool _44100D_should_alter_right_panel() {
 
 // TODO(captainurist): six more sites set _pendingTransition and uGameState by hand, route them through here.
 void startMapTransition(const MapDestination &destination) {
-    assert(destination.map != MAP_INVALID);
+    assert(destination.map() != MAP_INVALID);
 
     pAudioPlayer->stopSounds();
 
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
-    if (engine->_currentLoadedMapId != destination.map) {
+    if (engine->_currentLoadedMapId != destination.map()) {
         autoSave();
     }
 

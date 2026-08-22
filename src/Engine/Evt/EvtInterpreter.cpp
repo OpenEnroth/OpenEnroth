@@ -124,17 +124,14 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
 static MapDestination moveToMapDestination(const EvtInstruction &ir) {
     const auto &descr = ir.data.move_map_descr;
 
-    MapDestination result;
-    if (!ir.str.starts_with('0') && !ir.str.empty())
-        result.map = pMapStats->GetMapInfo(ir.str);
-    if (descr.x || descr.y || descr.z) {
-        result.arrival = PartyPlacement(Vec3f(descr.x, descr.y, descr.z),
-                                        descr.yaw != -1 ? (descr.yaw & TrigLUT.uDoublePiMask) : -1,
-                                        descr.pitch, descr.zspeed);
-    } else if (result.map != MAP_INVALID) {
-        result.arrival = MAP_START_POINT_PARTY; // Shipped MM6 doors name the map and nothing else.
-    }
-    return result;
+    MapId map = !ir.str.starts_with('0') && !ir.str.empty() ? pMapStats->GetMapInfo(ir.str) : MAP_INVALID;
+    if (descr.x || descr.y || descr.z)
+        return MapDestination(map, PartyPlacement(Vec3f(descr.x, descr.y, descr.z),
+                                                  descr.yaw != -1 ? (descr.yaw & TrigLUT.uDoublePiMask) : -1,
+                                                  descr.pitch, descr.zspeed));
+    if (map != MAP_INVALID)
+        return MapDestination(map, MAP_START_POINT_PARTY); // Shipped MM6 doors name the map and nothing else.
+    return {};
 }
 
 int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
@@ -235,7 +232,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 break;
 
             MapDestination destination = moveToMapDestination(ir);
-            if (destination.map == MAP_INVALID) { // teleport within map
+            if (destination.map() == MAP_INVALID) { // teleport within map
                 if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
                     pAudioPlayer->playUISound(SOUND_teleport);
