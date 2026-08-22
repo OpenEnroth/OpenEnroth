@@ -29,9 +29,9 @@ void FileInputStream::open(const NativePath &path, size_t bufferSize) {
 
     // Wide fopen on Windows - the narrow one converts the path per the C locale.
 #ifdef _WINDOWS
-    _file = _wfopen(path.toStdPath().c_str(), L"rb");
+    _file = _wfopen(path.native().c_str(), L"rb");
 #else
-    _file = fopen(path.toStdPath().c_str(), "rb");
+    _file = fopen(path.native().c_str(), "rb");
 #endif
     if (!_file)
         Exception::throwFromErrno(displayString);
