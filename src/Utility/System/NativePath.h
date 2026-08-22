@@ -10,14 +10,6 @@
 #include "Utility/String/AsciiLiteral.h"
 #include "Utility/String/Format.h"
 
-#ifdef _WINDOWS
-using NativeString = std::wstring;
-using NativeStringView = std::wstring_view;
-#else
-using NativeString = std::string;
-using NativeStringView = std::string_view;
-#endif
-
 /**
  * The repo's vocabulary type for native paths - everything that takes a native path takes a `NativePath`.
  *
@@ -56,10 +48,14 @@ class NativePath {
     [[nodiscard]] static NativePath fromWtf8(std::string_view path);
 
     /**
-     * @param path                      Path as the OS spells it - a wide string on Windows, a byte string on POSIX.
+     * @param path                      Path as the OS spells it - a `wchar_t` string on Windows.
      * @return                          `NativePath` for the given string.
      */
-    [[nodiscard]] static NativePath fromNative(NativeStringView path);
+#ifdef _WINDOWS
+    [[nodiscard]] static NativePath fromNative(std::wstring_view path);
+#else
+    [[nodiscard]] static NativePath fromNative(std::string_view path);
+#endif
 
     [[nodiscard]] static NativePath fromStdPath(const std::filesystem::path &path) {
         return fromNative(path.native());
@@ -77,10 +73,17 @@ class NativePath {
     }
 
     /**
-     * @return                          This path as the OS spells it, ready to be passed into a system call. A wide
-     *                                  string on Windows, a byte string on POSIX.
+     * @return                          This path as a string in the OS-native encoding - a `wchar_t` string on
+     *                                  Windows. Separators stay forward slashes, Windows APIs accept those. Use this
+     *                                  for talking to the OS.
      */
-    [[nodiscard]] NativeString native() const;
+#ifdef _WINDOWS
+    [[nodiscard]] std::wstring native() const;
+#else
+    [[nodiscard]] const std::string &native() const {
+        return _path;
+    }
+#endif
 
     [[nodiscard]] std::filesystem::path toStdPath() const {
         return std::filesystem::path(native());

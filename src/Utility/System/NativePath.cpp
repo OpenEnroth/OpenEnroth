@@ -75,21 +75,19 @@ NativePath NativePath::fromWtf8(std::string_view path) {
     return result;
 }
 
-NativePath NativePath::fromNative(NativeStringView path) {
 #ifdef _WINDOWS
+NativePath NativePath::fromNative(std::wstring_view path) {
     return fromWtf8(txt::wideToWtf8(path));
-#else
-    return fromWtf8(path);
-#endif
 }
 
-NativeString NativePath::native() const {
-#ifdef _WINDOWS
+std::wstring NativePath::native() const {
     return txt::wtf8ToWide(_path); // Win32 takes forward slashes just fine, no need to convert them back.
-#else
-    return _path;
-#endif
 }
+#else
+NativePath NativePath::fromNative(std::string_view path) {
+    return fromWtf8(path);
+}
+#endif
 
 std::string NativePath::displayString() const {
     return txt::encodedToUtf8(_path, ENCODING_UTF8); // UTF-8 to UTF-8 conversion replaces all the invalid parts.
