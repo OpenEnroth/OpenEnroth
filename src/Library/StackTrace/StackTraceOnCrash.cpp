@@ -222,15 +222,6 @@ static cpptrace::frame_ptr faultingProgramCounter(const ucontext_t &crashContext
 }
 
 /**
- * Walks from the handler, then trims the trace back to the instruction that faulted. Whether the walk crosses
- * the signal trampoline at all is up to the platform - a function that faulted without setting up a frame of
- * its own has nothing to find, and the walk picks up at its caller instead. The register state has the
- * address either way, so it's what decides where the trace starts.
- *
- * @param crashContext                  Register state the signal was delivered with.
- * @return                              Stack trace starting at the faulting frame, one frame per line.
- */
-/**
  * @param crashContext                  Register state the signal was delivered with.
  * @return                              Where the faulting function would return to. For a call that jumped
  *                                      to a bad address this is the one frame the walk can't recover.
@@ -267,6 +258,16 @@ static cpptrace::frame_ptr startingProgramCounter(const ucontext_t &crashContext
     return pc;
 }
 
+/**
+ * Walks from the handler, then trims the trace back to the instruction that faulted. Whether the walk crosses
+ * the signal trampoline at all is up to the platform - a function that faulted without setting up a frame of
+ * its own has nothing to find, and the walk picks up at its caller instead. The register state has the
+ * address either way, so it's what decides where the trace starts.
+ *
+ * @param crashContext                  Register state the signal was delivered with.
+ * @param faultAddress                  Address the signal was about, `si_addr`.
+ * @return                              Stack trace starting at the faulting frame, one frame per line.
+ */
 static std::string traceFromContext(const ucontext_t &crashContext, const void *faultAddress) {
     cpptrace::raw_trace raw = cpptrace::generate_raw_trace(0, detail::MAX_TRACE_DEPTH);
     cpptrace::frame_ptr startPc = startingProgramCounter(crashContext, faultAddress);
