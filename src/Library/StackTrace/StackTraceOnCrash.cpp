@@ -79,10 +79,23 @@ std::unique_lock<std::recursive_mutex> get_dbghelp_lock();
  * Seeding the walk with the faulting context skips that problem instead of solving it.
  *
  * @param crashContext                  Register state the exception was raised with.
+ * @param exceptionAddress              Address the exception was raised at.
  * @return                              Stack trace starting at the faulting frame, one frame per line.
  */
-static std::string traceFromContext(const CONTEXT &crashContext) {
+static std::string traceFromContext(const CONTEXT &crashContext, const void *exceptionAddress) {
     CONTEXT context = crashContext; // StackWalk64 walks by mutating it.
+
+    // A call through a bad pointer faults at the bad address, where there's nothing to walk from. The call
+    // pushed its return address first though, so pop it back into the pc and carry on from the caller.
+    if (exceptionAddress == nullptr) {
+#if defined(_M_IX86)
+        context.Eip = *reinterpret_cast<const DWORD *>(context.Esp);
+        context.Esp += sizeof(DWORD);
+#elif defined(_M_X64)
+        context.Rip = *reinterpret_cast<const DWORD64 *>(context.Rsp);
+        context.Rsp += sizeof(DWORD64);
+#endif
+    }
 
     STACKFRAME64 frame = {};
     frame.AddrPC.Mode = AddrModeFlat;
@@ -138,7 +151,7 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
         std::snprintf(reason, sizeof(reason), "exception %#lx at %p",
                       exceptionInfo->ExceptionRecord->ExceptionCode, exceptionInfo->ExceptionRecord->ExceptionAddress);
         printCrashHeader(reason);
-        printTrace(traceFromContext(*exceptionInfo->ContextRecord));
+        printTrace(traceFromContext(*exceptionInfo->ContextRecord, exceptionInfo->ExceptionRecord->ExceptionAddress));
     }
 
     // Continuing the search hands the exception to windows error reporting, which is what writes the crash

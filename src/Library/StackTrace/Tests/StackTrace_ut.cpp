@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <exception>
+#include <ranges>
 #include <string>
 #include <thread>
 
@@ -10,8 +11,20 @@
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
 #include "Utility/Attributes.h"
+#include "Utility/String/Format.h"
 
 #ifndef __ANDROID__ // Stack traces are not supported on android.
+
+// Matches when the frame numbered `index` names `function`. A regex can't do this portably - gtest uses three
+// different engines across our platforms and they disagree on character classes and on whether dot crosses a
+// newline - so this walks the lines instead.
+MATCHER_P2(HasFrame, index, function, "") {
+    std::string prefix = fmt::format("#{} ", index);
+    for (std::string_view line : std::views::split(std::string_view(arg), '\n'))
+        if (line.starts_with(prefix) && std::string_view(line).contains(function))
+            return true;
+    return false;
+}
 
 // Not inlined so that it gets a frame of its own, and not static because windows drops private symbols from a
 // stripped pdb.
@@ -75,7 +88,7 @@ MM_NOINLINE int stackTraceNullCallFunction() {
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
     std::string trace = stackTraceMarkerFunction();
 
-    EXPECT_THAT(trace, testing::ContainsRegex("#1 +\\S+ in stackTraceMarkerFunction"));
+    EXPECT_THAT(trace, HasFrame(1, "stackTraceMarkerFunction"));
     EXPECT_CONTAINS(trace, "main");
 }
 
@@ -89,7 +102,7 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
 
         StackTraceOnCrash handler;
         stackTraceCrashingFunction();
-    }, testing::AllOf(testing::ContainsRegex("#0 +\\S+ in stackTraceCrashingFunction"), testing::HasSubstr("main")));
+    }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::HasSubstr("main")));
 }
 
 UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
@@ -102,7 +115,7 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
         std::thread(stackTraceCrashingFunction).join();
     // A worker's stack ends at the thread entry, so main being absent is what says we traced the thread that
     // crashed rather than the one that installed the handlers.
-    }, testing::AllOf(testing::ContainsRegex("#0 +\\S+ in stackTraceCrashingFunction"),
+    }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"),
                       testing::Not(testing::HasSubstr("main"))));
 }
 
@@ -116,7 +129,7 @@ UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
 
         StackTraceOnCrash handler;
         stackTraceNullCallFunction();
-    }, testing::ContainsRegex("#0 +\\S+ in stackTraceNullCallFunction"));
+    }, HasFrame(0, "stackTraceNullCallFunction"));
 }
 
 #ifdef _WIN32
