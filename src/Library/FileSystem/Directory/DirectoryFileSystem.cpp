@@ -1,6 +1,8 @@
 #include "DirectoryFileSystem.h"
 
 #include <cassert>
+#include <algorithm>
+#include <cstddef>
 #include <vector>
 #include <memory>
 #include <string>
@@ -10,81 +12,42 @@
 
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/System/Os.h"
 
 DirectoryFileSystem::DirectoryFileSystem(const NativePath &root) {
-    _root = root.absolute();
+    _root = os::absolute(root);
 }
 
 DirectoryFileSystem::~DirectoryFileSystem() = default;
 
 bool DirectoryFileSystem::_exists(FileSystemPathView path) const {
     assert(!path.isEmpty());
-
-    std::error_code ec;
-    return std::filesystem::exists(makeBasePath(path).toStdPath(), ec); // Returns false on error.
+    return os::exists(makeBasePath(path));
 }
 
 FileStat DirectoryFileSystem::_stat(FileSystemPathView path) const {
     assert(!path.isEmpty());
-
-    std::filesystem::path basePath = makeBasePath(path).toStdPath();
-
-    std::error_code ec;
-    std::filesystem::directory_entry entry(basePath, ec);
-    bool isRegular = entry.is_regular_file(ec);
-    bool isDirectory = !isRegular && entry.is_directory(ec);
-    if (!isRegular && !isDirectory)
-        return {}; // Return an empty stat on error or if it's not a file / directory.
-
-    std::int64_t size = 0;
-    if (isRegular) {
-        size = std::filesystem::file_size(basePath, ec);
-        if (ec)
-            return {};
-    }
-
-    FileStat result;
-    result.type = isRegular ? FILE_REGULAR : FILE_DIRECTORY;
-    result.size = size;
-    return result;}
+    return os::stat(makeBasePath(path));
+}
 
 void DirectoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    std::filesystem::path basePath = makeBasePath(path).toStdPath();
+    NativePath basePath = makeBasePath(path);
 
     // Handle the known errors first.
-    std::error_code ec;
-    std::filesystem::directory_entry parent(basePath, ec);
-    bool isParentRegular = parent.is_regular_file(ec);
-    bool isParentDirectory = !isParentRegular && parent.is_directory(ec);
-    if (path.isEmpty() && !isParentDirectory)
+    FileType type = os::stat(basePath).type;
+    if (path.isEmpty() && type != FILE_DIRECTORY)
         return; // ls("") should always work.
-    if (isParentRegular)
+    if (type == FILE_REGULAR)
         FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);
-    if (!isParentDirectory)
+    if (type != FILE_DIRECTORY)
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 
-    // Then we do the regular ls and just ignore all errors. The errors we'll get here are most likely
-    // permissions-related, and we're ignoring them in stat() and exists().
-    for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(basePath, ec)) {
-        // Unfortunately, std::filesystem is retarded. We can get a directory_entry here for a dir that we don't have
-        // permissions for, and which won't be stat-able. Seriously, entry.is_directory() returns true while
-        // std::filesystem::exists(entry.path()) just throws. So we need to check for that.
-        if (!std::filesystem::exists(entry.path(), ec))
-            continue;
+    auto oldSize = static_cast<std::ptrdiff_t>(entries->size());
+    os::ls(basePath, entries);
 
-        bool isRegular = entry.is_regular_file(ec);
-        bool isDirectory = !isRegular && entry.is_directory(ec);
-        if (!isRegular && !isDirectory)
-            continue;
-
-        std::string name = entry.path().filename().string();
-        if (name.find('\\') != std::string::npos)
-            continue; // Files with '\\' in filename are not observable through this interface. Don't be a retard.
-
-        DirectoryEntry &resultEntry = entries->emplace_back();
-        resultEntry.name = std::move(name);
-        resultEntry.type = isRegular ? FILE_REGULAR : FILE_DIRECTORY;
-    }
+    // Files with '\\' in filename are not observable through this interface.
+    auto isUnobservable = [] (const DirectoryEntry &entry) { return entry.name.contains('\\'); };
+    entries->erase(std::remove_if(entries->begin() + oldSize, entries->end(), isUnobservable), entries->end());
 }
 
 Blob DirectoryFileSystem::_read(FileSystemPathView path) const {
@@ -95,7 +58,7 @@ Blob DirectoryFileSystem::_read(FileSystemPathView path) const {
 void DirectoryFileSystem::_write(FileSystemPathView path, const Blob &data) {
     assert(!path.isEmpty());
     NativePath basePath = makeBasePath(path);
-    std::filesystem::create_directories(basePath.toStdPath().parent_path());
+    os::mkdirs(basePath.parent());
     FileOutputStream stream(basePath);
     stream.write(data.data(), data.size());
     stream.close();
@@ -109,13 +72,13 @@ std::unique_ptr<InputStream> DirectoryFileSystem::_openForReading(FileSystemPath
 std::unique_ptr<OutputStream> DirectoryFileSystem::_openForWriting(FileSystemPathView path) {
     assert(!path.isEmpty());
     NativePath basePath = makeBasePath(path);
-    std::filesystem::create_directories(basePath.toStdPath().parent_path());
+    os::mkdirs(basePath.parent());
     return std::make_unique<FileOutputStream>(basePath);
 }
 
 bool DirectoryFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
-    return std::filesystem::remove_all(makeBasePath(path).toStdPath()) > 0;
+    return os::remove(makeBasePath(path));
 }
 
 std::string DirectoryFileSystem::_displayPath(FileSystemPathView path) const {

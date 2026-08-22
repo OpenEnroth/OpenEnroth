@@ -2,7 +2,6 @@
 
 #include <string>
 #include <vector>
-#include <filesystem>
 
 #include "Library/Logger/Logger.h"
 #include "Library/Environment/Interface/Environment.h"
@@ -75,7 +74,7 @@ static std::vector<NativePath> resolvePaths(Environment *environment, const Path
     std::vector<NativePath> result;
 
     // Otherwise we check PWD first.
-    result.push_back(NativePath::fromStdPath(std::filesystem::current_path()));
+    result.push_back(os::cwd());
 
     // Then we check paths from registry on Windows,...
     for (const char *registryKey : config.registryKeys) {

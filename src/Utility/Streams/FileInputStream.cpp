@@ -5,9 +5,9 @@
 #include <algorithm>
 #include <memory>
 #include <string>
-#include <filesystem>
 
 #include "Utility/Exception.h"
+#include "Utility/System/Os.h"
 
 #ifdef _WINDOWS
 #   define ftello _ftelli64
@@ -25,7 +25,7 @@ FileInputStream::~FileInputStream() {
 void FileInputStream::open(const NativePath &path, size_t bufferSize) {
     assert(bufferSize > 0);
 
-    std::string displayString = path.absolute().displayString(); // Absolute, so that it's still meaningful in logs.
+    std::string displayString = os::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
 
     // Wide fopen on Windows - the narrow one converts the path per the C locale.
 #ifdef _WINDOWS

@@ -11,35 +11,11 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Streams/OutputStream.h"
+#include "Utility/System/Os.h"
 
 #include "FileSystemPath.h"
 #include "FileSystemEnums.h"
 #include "FileSystemFwd.h"
-
-struct FileStat {
-    FileStat() = default;
-    FileStat(FileType type, std::int64_t size) : type(type), size(size) {}
-
-    FileType type = FILE_INVALID; // Invalid means file doesn't exist.
-    std::int64_t size = 0; // Always zero for directories.
-
-    explicit operator bool() const {
-        return type != FILE_INVALID;
-    }
-
-    friend bool operator==(const FileStat &l, const FileStat &r) = default;
-};
-
-struct DirectoryEntry {
-    DirectoryEntry() = default;
-    DirectoryEntry(std::string name, FileType type) : name(std::move(name)), type(type) {}
-
-    std::string name;
-    FileType type = FILE_INVALID; // When returned from FileSystem::ls, this one is never invalid.
-
-    // Make entries sortable. If two entries have the same name, then files go before directories.
-    friend std::strong_ordering operator<=>(const DirectoryEntry &l, const DirectoryEntry &r) = default;
-};
 
 // TODO(captainurist): I still think most of FSs should inherit from ProxyFS.
 //
