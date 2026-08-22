@@ -23,16 +23,16 @@ int platformMain(int argc, char **argv) {
         if (opts.helpPrinted)
             return 1;
 
-        std::vector<std::string> traceNames;
+        std::vector<NativePath> traceNames;
         for (const DirectoryEntry &entry : os::ls(opts.testPath))
             if (entry.name.ends_with(".json"))
-                traceNames.push_back(entry.name);
+                traceNames.push_back(NativePath::fromWtf8(entry.name));
         std::ranges::sort(traceNames);
 
-        for (const std::string &traceName : traceNames)
-            testing::RegisterTest("Retrace", traceName.substr(0, traceName.size() - 5).c_str(), // Minus ".json".
+        for (const NativePath &traceName : traceNames)
+            testing::RegisterTest("Retrace", traceName.withExtension("").toWtf8().c_str(),
                                   nullptr, nullptr, __FILE__, __LINE__,
-                                  [tracePath = opts.testPath / NativePath::fromWtf8(traceName)] {
+                                  [tracePath = opts.testPath / traceName] {
                                       return new RetraceTest(tracePath);
                                   });
 
