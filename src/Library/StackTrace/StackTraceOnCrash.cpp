@@ -230,46 +230,102 @@ static cpptrace::frame_ptr faultingProgramCounter(const ucontext_t &crashContext
  * @param crashContext                  Register state the signal was delivered with.
  * @return                              Stack trace starting at the faulting frame, one frame per line.
  */
-static std::string traceFromContext(const ucontext_t &crashContext) {
-    cpptrace::raw_trace raw = cpptrace::generate_raw_trace(0, detail::MAX_TRACE_DEPTH);
-    cpptrace::frame_ptr faultingPc = faultingProgramCounter(crashContext);
+/**
+ * @param crashContext                  Register state the signal was delivered with.
+ * @return                              Where the faulting function would return to. For a call that jumped
+ *                                      to a bad address this is the one frame the walk can't recover.
+ */
+static cpptrace::frame_ptr returnAddress(const ucontext_t &crashContext) {
+#if defined(__APPLE__) && defined(__aarch64__)
+    return crashContext.uc_mcontext->__ss.__lr;
+#elif defined(__APPLE__) && defined(__x86_64__)
+    return *reinterpret_cast<const cpptrace::frame_ptr *>(crashContext.uc_mcontext->__ss.__rsp);
+#elif defined(__aarch64__)
+    return crashContext.uc_mcontext.regs[30];
+#elif defined(REG_RIP)
+    return *reinterpret_cast<const cpptrace::frame_ptr *>(crashContext.uc_mcontext.gregs[REG_RSP]);
+#elif defined(REG_EIP)
+    return *reinterpret_cast<const cpptrace::frame_ptr *>(crashContext.uc_mcontext.gregs[REG_ESP]);
+#elif defined(__arm__)
+    return crashContext.uc_mcontext.arm_lr;
+#else
+#   error "Unsupported posix architecture."
+#endif
+}
 
-    auto fault = std::ranges::find(raw.frames, faultingPc);
+/**
+ * @param crashContext                  Register state the signal was delivered with.
+ * @param faultAddress                  Address the signal was about, `si_addr`.
+ * @return                              Program counter to start the trace from. When the crash was a jump to
+ *                                      a bad address the PC is that address and there's nothing to unwind
+ *                                      at it, so this hands back where the call came from instead.
+ */
+static cpptrace::frame_ptr startingProgramCounter(const ucontext_t &crashContext, const void *faultAddress) {
+    cpptrace::frame_ptr pc = faultingProgramCounter(crashContext);
+    if (pc == reinterpret_cast<cpptrace::frame_ptr>(faultAddress))
+        return returnAddress(crashContext) - 1; // Back into the call, that's the frame the trace names.
+    return pc;
+}
+
+static std::string traceFromContext(const ucontext_t &crashContext, const void *faultAddress) {
+    cpptrace::raw_trace raw = cpptrace::generate_raw_trace(0, detail::MAX_TRACE_DEPTH);
+    cpptrace::frame_ptr startPc = startingProgramCounter(crashContext, faultAddress);
+
+    // Exact address first. The walk stores return addresses backed up into their call, so the frame below the
+    // trampoline carries a pc one behind the real one on some platforms, and then this doesn't hit.
+    auto fault = std::ranges::find(raw.frames, startPc);
     if (fault != raw.frames.end()) {
         raw.frames.erase(raw.frames.begin(), fault); // Walk got there, so drop the handler above it.
         return raw.resolve().to_string();
     }
 
-    // Walk lost the faulting frame. It belongs right below the signal trampoline, which is the last frame of
-    // the handler, so resolve, find the trampoline by name and put the fault in its place. No trampoline means
-    // there's nowhere to put it that wouldn't be a lie, so the trace goes out as walked.
+    // Resolve and find the trampoline. Everything through it is the handler. No trampoline means there's
+    // nowhere to put the fault that wouldn't be a lie, so the trace goes out as walked.
+    // The trampoline is the last frame of the handler. Macos names it, linux doesn't name its restorer at
+    // all, so there it's the first frame with no symbol. Anything else unnamed this early would be our own
+    // handler, and that always resolves.
     cpptrace::stacktrace resolved = raw.resolve();
     auto trampoline = std::ranges::find_if(resolved.frames, [](const cpptrace::stacktrace_frame &frame) {
-        return frame.symbol.contains("sigtramp");
+        return frame.symbol.contains("sigtramp") || frame.symbol.empty();
     });
     if (trampoline == resolved.frames.end())
-        return resolved.to_string();
+        return resolved.to_string(); // Nowhere to put the fault that wouldn't be a lie.
 
-    // Resolving expands inlined calls into frames of their own, so the trampoline's position in the resolved
-    // trace isn't its position in the raw one. Only the frames that came from the walk count towards it.
-    size_t rawFramesThroughTrampoline = std::ranges::count_if(resolved.frames.begin(), std::next(trampoline),
-                                                             [](const cpptrace::stacktrace_frame &frame) {
-        return !frame.is_inline;
-    });
+    // Resolving expands inlined calls into frames of their own, so positions in the resolved trace aren't
+    // positions in the raw one. Only frames that came from the walk count.
+    auto rawIndexOf = [&](std::vector<cpptrace::stacktrace_frame>::iterator it) {
+        return std::ranges::count_if(resolved.frames.begin(), it, [](const cpptrace::stacktrace_frame &frame) {
+            return !frame.is_inline;
+        });
+    };
+    size_t eraseThrough = rawIndexOf(std::next(trampoline));
 
-    raw.frames.erase(raw.frames.begin(), raw.frames.begin() + rawFramesThroughTrampoline);
-    raw.frames.insert(raw.frames.begin(), faultingPc);
+    // The frame right below the trampoline is the walk's idea of where the fault was. Where it kept the
+    // function at a stale pc it's the same function as the fault, and keeping both would list it twice.
+    cpptrace::stacktrace_frame faultFrame = cpptrace::raw_trace{{startPc}}.resolve().frames.front();
+    auto below = std::next(trampoline);
+    if (below != resolved.frames.end() && !below->symbol.empty() && below->symbol == faultFrame.symbol)
+        eraseThrough = rawIndexOf(std::next(below));
+
+    raw.frames.erase(raw.frames.begin(), raw.frames.begin() + eraseThrough);
+    raw.frames.insert(raw.frames.begin(), startPc);
     return raw.resolve().to_string();
 }
 
 static void onSignal(int signal, siginfo_t *info, void *context) {
-    // Only the first crash prints, a second thread faulting while this one symbolizes would interleave with
-    // it. It still falls through to the raise below - exiting here instead would cost us the core dump.
+    // Only the first crash prints. A second thread raising a different signal while this one symbolizes
+    // would interleave with it, so it skips to the raise below instead - exiting here would cost the core
+    // dump. A second thread raising the same signal never gets here, SA_RESETHAND already put the default
+    // handler back, so the kernel kills the process and whatever was printed so far is all there is.
     if (!crashHandled.test_and_set()) {
         char reason[128];
-        std::snprintf(reason, sizeof(reason), "%s at %p", strsignal(info->si_signo), info->si_addr);
+        const ucontext_t &crashContext = *static_cast<ucontext_t *>(context);
+        cpptrace::frame_ptr startPc = startingProgramCounter(crashContext, info->si_addr);
+        std::string where = cpptrace::raw_trace{{startPc}}.resolve().frames.front().symbol;
+        std::snprintf(reason, sizeof(reason), "%s at %p, in %s", strsignal(info->si_signo), info->si_addr,
+                      where.empty() ? "an unknown function" : where.c_str());
         printCrashHeader(reason);
-        printTrace(traceFromContext(*static_cast<ucontext_t *>(context)));
+        printTrace(traceFromContext(crashContext, info->si_addr));
     }
 
     // Die of the original signal, so that a core dump still happens and whoever launched the process sees it

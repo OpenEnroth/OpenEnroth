@@ -63,20 +63,10 @@ MM_NOINLINE void stackTraceAbortFunction() {
 }
 #endif
 
-MM_NOINLINE int stackTraceNonLeafCrashingFunction() {
-    volatile int prelude = stackTraceMarkerFunction().size(); // A real call first, so this frame exists.
-    int *volatile nowhere = nullptr;
-    *nowhere = prelude;
-    return *nowhere;
-}
-
-// PROBE: asserts on a string that can't match, so gtest dumps the child's stderr and CI logs show the trace.
-UNIT_TEST(StackTrace, ProbeNonLeafCrashFrames) {
-    EXPECT_DEATH({
-        GTEST_FLAG_SET(catch_exceptions, false);
-        StackTraceOnCrash handler;
-        stackTraceNonLeafCrashingFunction();
-    }, "ZZ_PROBE_NO_MATCH_ZZ");
+// A volatile null so that the compiler can't see the call target and turn it into a trap.
+MM_NOINLINE int stackTraceNullCallFunction() {
+    int (*volatile nowhere)() = nullptr;
+    return nowhere();
 }
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
@@ -111,6 +101,19 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
     // crashed rather than the one that installed the handlers.
     }, testing::AllOf(testing::ContainsRegex("#0 [^\\n]* in stackTraceCrashingFunction"),
                       testing::Not(testing::HasSubstr("main"))));
+}
+
+UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
+    // Calling a null pointer faults at address zero, where there's nothing to unwind from, so the walk stops
+    // dead before it reaches the real stack. The call pushed its return address first though, and that names
+    // the function that made it. Nothing below it is reachable from inside the handler, so main isn't asked
+    // for here, that one frame is what there is.
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        stackTraceNullCallFunction();
+    }, testing::ContainsRegex("#0 [^\\n]* in stackTraceNullCallFunction"));
 }
 
 #ifdef _WIN32
