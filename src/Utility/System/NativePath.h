@@ -106,6 +106,14 @@ class NativePath {
      */
     [[nodiscard]] NativePath withExtension(std::string_view extension) const;
 
+    /**
+     * @return                          Parent path, or an empty path if this path has no parent. Same semantics as
+     *                                  `std::filesystem::path::parent_path`.
+     */
+    [[nodiscard]] NativePath parent() const {
+        return fromStdPath(_path.parent_path());
+    }
+
     [[nodiscard]] bool isEmpty() const {
         return _path.empty();
     }

@@ -36,7 +36,11 @@ FileStat os::stat(const NativePath &path) {
 
 std::vector<DirectoryEntry> os::ls(const NativePath &path) {
     std::vector<DirectoryEntry> result;
+    ls(path, &result);
+    return result;
+}
 
+void os::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
     // We just ignore all errors here. The errors we'll get are most likely permissions-related, and we're ignoring
     // them in `stat` and `exists` too.
     std::error_code ec;
@@ -53,11 +57,9 @@ std::vector<DirectoryEntry> os::ls(const NativePath &path) {
             continue;
 
         // The roundtrip through NativePath is a WTF-8 conversion on Windows.
-        result.emplace_back(NativePath::fromStdPath(entry.path().filename()).toWtf8(),
-                            isRegular ? FILE_REGULAR : FILE_DIRECTORY);
+        entries->emplace_back(NativePath::fromStdPath(entry.path().filename()).toWtf8(),
+                              isRegular ? FILE_REGULAR : FILE_DIRECTORY);
     }
-
-    return result;
 }
 
 bool os::remove(const NativePath &path) {
