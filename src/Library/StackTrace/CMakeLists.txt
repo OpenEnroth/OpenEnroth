@@ -15,6 +15,9 @@ target_check_style(library_stack_trace)
 # cpptrace doesn't support Android...
 if (NOT OE_BUILD_PLATFORM STREQUAL "android")
     target_link_libraries(library_stack_trace PRIVATE cpptrace::cpptrace)
+    if(NOT OE_BUILD_PLATFORM STREQUAL "windows")
+        target_link_libraries(library_stack_trace PRIVATE libunwind::libunwind) # The crash handler walks with it.
+    endif()
 endif ()
 
 # The crash handler walks the stack itself, see the comment on traceFromContext.
