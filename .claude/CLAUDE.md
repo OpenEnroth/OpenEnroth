@@ -8,7 +8,7 @@ Any comment on a function, class, struct or table that's longer than a trailing 
 
 An invariant is an assert, not a comment. If you're about to write a comment saying what must be true at this point in the code, write an `assert` instead.
 
-*NEVER* claim anything about game data or runtime behaviour that you haven't checked. Say what you checked - "MM7 has no such record" means you scanned MM7's scripts, and if MM6 and MM8 weren't scanned, say so.
+*NEVER* claim anything about game data or runtime behaviour that you haven't checked. OpenEnroth targets MM6, MM7 and MM8, so a claim about the data means all three were scanned. Go the extra mile when scanning data, and say what you checked - "no shipped record does this" means MM6, MM7 and MM8 scripts were all read, and if one of them wasn't, say which.
 
 Build `Run_UnitTest` and `Run_GameTest_Headless_Parallel` targets to test your changes. You *MUST* always run tests after your changes. If you can't find the game data - ask the user to help you locate it, *NEVER* silently skip game tests.
 
