@@ -6,6 +6,9 @@ if(OE_BUILD_PLATFORM STREQUAL "android" OR OE_BUILD_PLATFORM STREQUAL "windows")
     return()
 endif()
 
+# The assembler has to target what the c compiler targets. The 32-bit x86 build gets there with -m32 in the c
+# flags alone, and the register save/restore assembly is x86-64 code when that doesn't reach it.
+set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${CMAKE_C_FLAGS}")
 enable_language(ASM)
 
 add_library(libunwind STATIC
