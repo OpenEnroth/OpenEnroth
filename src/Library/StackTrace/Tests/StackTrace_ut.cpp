@@ -34,10 +34,13 @@ MM_NOINLINE int stackTraceCrashingFunction() {
 
 #ifdef _WIN32
 // Calling a pure virtual from a constructor reaches the base vtable before the derived one is installed, which
-// is the one reliable way to hit the CRT's purecall handler. Not static for the same reason as above.
+// is the one reliable way to hit the CRT's purecall handler. The call goes through a non-virtual member so
+// that the compiler can't see the dynamic type and devirtualize it into a direct call to a function with no
+// body. Not static for the same reason as above.
 struct StackTracePureCallBase {
-    StackTracePureCallBase() { callPure(); }
+    StackTracePureCallBase() { callPureIndirectly(); }
     virtual void callPure() = 0;
+    void callPureIndirectly() { callPure(); }
 };
 struct StackTracePureCallDerived : StackTracePureCallBase {
     virtual void callPure() override {}
