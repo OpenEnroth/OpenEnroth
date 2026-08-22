@@ -3,11 +3,11 @@
 #include <array>
 #include <string>
 
+#include "Library/Tsv/TsvReader.h"
+
 #include "Engine/Objects/NPCEnumFunctions.h"
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/String/Split.h"
-#include "Utility/String/Transformations.h"
 
 IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsBuyPhrases;
 IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsSellPhrases;
@@ -16,11 +16,10 @@ IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchant
 
 void initializeMerchants(const Blob &merchants) {
     // merchant.txt table structure: phrase (localized, not used) | buy (localized) | sell (localized) | repair (localized) | identify (localized).
-    for (auto [line, i] : split(merchants.str()).by("\r\n").drop(1).skip("").zip(allMerchantPhrases())) {
-        std::array<std::string_view, 5> tokens = split(line).by('\t');
-        pMerchantsBuyPhrases[i] = unquote(tokens[1]);
-        pMerchantsSellPhrases[i] = unquote(tokens[2]);
-        pMerchantsRepairPhrases[i] = unquote(tokens[3]);
-        pMerchantsIdentifyPhrases[i] = unquote(tokens[4]);
+    for (auto [cells, i] : TsvReader(merchants).drop(1).skip(&TsvLine::isBlank).zip(allMerchantPhrases())) {
+        pMerchantsBuyPhrases[i] = cells[1];
+        pMerchantsSellPhrases[i] = cells[2];
+        pMerchantsRepairPhrases[i] = cells[3];
+        pMerchantsIdentifyPhrases[i] = cells[4];
     }
 }
