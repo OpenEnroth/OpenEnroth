@@ -4,6 +4,12 @@ Build `check_style` target to check style. You *MUST* always check style after y
 
 Keep comments terse - prefer a single trailing comment over a multi-line block, and never write comments explaining what you *didn't* do.
 
+Any comment on a function, class, struct or table that's longer than a trailing one-liner is a doxygen block. Every doxygen block on a function *MUST* carry a `@param` tag for each parameter and a `@return` tag if the function returns something. A prose-only block isn't finished. Descriptions start at column 41, like the rest of the codebase.
+
+An invariant is an assert, not a comment. If you're about to write a comment saying what must be true at this point in the code, write an `assert` instead.
+
+*NEVER* claim anything about game data or runtime behaviour that you haven't checked. Say what you checked - "MM7 has no such record" means you scanned MM7's scripts, and if MM6 and MM8 weren't scanned, say so.
+
 Build `Run_UnitTest` and `Run_GameTest_Headless_Parallel` targets to test your changes. You *MUST* always run tests after your changes. If you can't find the game data - ask the user to help you locate it, *NEVER* silently skip game tests.
 
 *NEVER* use semicolons in prose - in comments, commit messages, PR descriptions or documentation. Write two sentences instead.
