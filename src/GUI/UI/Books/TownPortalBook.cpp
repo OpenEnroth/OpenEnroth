@@ -5,6 +5,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/Pid.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Objects/Actor.h"
@@ -167,8 +168,10 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
         onMapLeave();
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
-        engine->_transitionMapId = townPortalList[townId].mapInfoID;
-        engine->_teleportPoint.setTeleportTarget(townPortalList[townId].pos, townPortalList[townId].viewYaw, townPortalList[townId].viewPitch, 0);
+        engine->_pendingTransition = MapDestination(
+            townPortalList[townId].mapInfoID,
+            PartyPlacement(townPortalList[townId].pos, townPortalList[townId].viewYaw,
+                           townPortalList[townId].viewPitch, 0));
         Actor::InitializeActors();
     }
 

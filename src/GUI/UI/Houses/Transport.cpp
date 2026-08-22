@@ -12,6 +12,7 @@
 #include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Camera.h"
@@ -159,11 +160,11 @@ void GUIWindow_Transport::transportDialogue() {
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
         if (engine->_currentLoadedMapId != pTravel->uMapInfoID) {
             autoSave();
-            engine->_transitionMapId = pTravel->uMapInfoID;
+            engine->_pendingTransition = MapDestination(
+                pTravel->uMapInfoID, PartyPlacement(pTravel->arrivalPos, pTravel->arrival_view_yaw, 0, 0));
 
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
-            engine->_teleportPoint.setTeleportTarget(pTravel->arrivalPos, pTravel->arrival_view_yaw, 0, 0);
         } else {
             // travelling to map we are already in
             pCamera3D->_viewYaw = 0;

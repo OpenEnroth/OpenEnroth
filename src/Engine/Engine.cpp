@@ -1,7 +1,9 @@
+#include <cassert>
 #include <cstring>
 #include <string>
 #include <algorithm>
 #include <memory>
+#include <optional>
 
 #include "Engine/Engine.h"
 
@@ -40,6 +42,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/Random/Random.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Snapshots/TableSerialization.h"
@@ -536,7 +539,10 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1 ? GUIProgressBar::TYPE_Fullscreen : GUIProgressBar::TYPE_Box);
 
     engine->_OE_transientVariables.fill(0);
-    loadMapEventsAndStrings(engine->_transitionMapId);
+    assert(engine->_pendingTransition); // Nothing gets here without a map change in flight.
+    assert(engine->_pendingTransition->map() != MAP_INVALID);
+    MapId transitionMapId = engine->_pendingTransition->map();
+    loadMapEventsAndStrings(transitionMapId);
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
@@ -546,18 +552,18 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     ai_near_actors_targets_pid.resize(configLimit, Pid());
     ai_near_actors_ids.resize(configLimit);
 
-    engine->SetUnderwater(isMapUnderwater(engine->_transitionMapId));
+    engine->SetUnderwater(isMapUnderwater(transitionMapId));
 
     // Need to reset this one. Pressure plates fire when the party's floor face changes, face ids are
     // per-map, and a leftover id could fire or suppress a plate right after the transition.
     pParty->floor_face_id = -1;
 
-    engine->_currentLoadedMapId = engine->_transitionMapId;
+    engine->_currentLoadedMapId = transitionMapId;
 
-    if (isMapIndoor(engine->_transitionMapId))
-        loadAndPrepareBLV(engine->_transitionMapId, bLoading);
+    if (isMapIndoor(transitionMapId))
+        loadAndPrepareBLV(transitionMapId, bLoading);
     else
-        loadAndPrepareODM(engine->_transitionMapId, bLoading);
+        loadAndPrepareODM(transitionMapId, bLoading);
 
     setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
@@ -586,7 +592,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
                 actor.monsterInfo.spell2Id = SPELL_SPIRIT_BLESS;
 
     bDialogueUI_InitializeActor_NPC_ID = 0;
-    engine->_transitionMapId = MAP_INVALID;
+    engine->_pendingTransition.reset();
     onMapLoad();
     pGameLoadingUI_ProgressBar->Progress();
     memset(&render->pBillboardRenderListD3D, 0, sizeof(render->pBillboardRenderListD3D));
@@ -881,7 +887,6 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->vCameraPos.z = 100;
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
-    uLevel_StartingPointType = MAP_START_POINT_PARTY;
     if (pParty->pPickedItem.itemId != ITEM_NULL)
         mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.itemId);
 }
@@ -1451,19 +1456,20 @@ bool _44100D_should_alter_right_panel() {
            current_screen_type == SCREEN_CASTING;
 }
 
-void Transition_StopSound_Autosave(std::string_view pMapName,
-                                   MapStartPoint start_point) {
+// TODO(captainurist): six more sites set _pendingTransition and uGameState by hand, route them through here.
+void startMapTransition(const MapDestination &destination) {
+    assert(destination.map() != MAP_INVALID);
+
     pAudioPlayer->stopSounds();
 
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
-    if (engine->_currentLoadedMapId != pMapStats->GetMapInfo(pMapName)) {
+    if (engine->_currentLoadedMapId != destination.map()) {
         autoSave();
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
-    engine->_transitionMapId = pMapStats->GetMapInfo(pMapName);
-    uLevel_StartingPointType = start_point;
+    engine->_pendingTransition = destination;
 }
 
 //----- (0044C28F) --------------------------------------------------------
@@ -1473,11 +1479,8 @@ void TeleportToNWCDungeon() {
         return;
     }
 
-    // reset party teleport
-    engine->_teleportPoint.invalidate();
-
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
-    Transition_StopSound_Autosave("nwc.blv", MAP_START_POINT_PARTY);
+    startMapTransition(MapDestination(pMapStats->GetMapInfo("nwc.blv"), MAP_START_POINT_PARTY));
     current_screen_type = SCREEN_GAME;
 }

@@ -105,7 +105,7 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_Travel, SCREE
 }
 
 void GUIWindow_Travel::Update() {
-    MapId destinationMap = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
+    MapId destinationMap = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y).map();
 
     render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
@@ -134,13 +134,11 @@ void GUIWindow_Travel::Update() {
 }
 
 //----- (00444839) --------------------------------------------------------
-GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, unsigned exit_pic_id, Vec3f pos, int yaw,
-                                                     int pitch, int zspeed, std::string_view locationName)
-    : GUIWindow_Transition(WINDOW_IndoorEntryExit, SCREEN_INPUT_BLV) {
+GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, unsigned exit_pic_id,
+                                                     const MapDestination &destination, std::string_view locationName)
+    : GUIWindow_Transition(WINDOW_IndoorEntryExit, SCREEN_INPUT_BLV), _destination(destination) {
     std::string hint;
 
-    engine->_teleportPoint.setTeleportTarget(pos, yaw, pitch, zspeed);
-    engine->_teleportPoint.setTeleportMap(locationName);
     _transitionStringId = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?
 
     _mapName = locationName;
@@ -192,8 +190,7 @@ void GUIWindow_IndoorEntryExit::Update() {
     render->DrawQuad2D(dialogue_ui_x_ok_u, {476, 451});
 
     MapId map_id = engine->_currentLoadedMapId;
-    // TODO(captainurist): mm7 map names never starts with ' ', what is this check?
-    if ((pMovie_Track || getSpecialTransferMessageIndex(_mapName)) && !engine->_teleportPoint.teleportMap().starts_with(' ')) {
+    if (pMovie_Track || getSpecialTransferMessageIndex(_mapName)) {
         map_id = pMapStats->GetMapInfo(_mapName);
     }
 

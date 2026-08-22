@@ -4,6 +4,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
@@ -194,10 +195,10 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
             autoSave();
             onMapLeave();
-            engine->_transitionMapId = beacon.mapId;
+            engine->_pendingTransition = MapDestination(
+                beacon.mapId, PartyPlacement(beacon._partyPos, beacon._partyViewYaw, beacon._partyViewPitch, 0));
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
-            engine->_teleportPoint.setTeleportTarget(beacon._partyPos, beacon._partyViewYaw, beacon._partyViewPitch, 0);
         } else {
             pParty->pos = beacon._partyPos;
             pParty->uFallStartZ = pParty->pos.z;

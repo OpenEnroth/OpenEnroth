@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/Localization.h"
@@ -109,7 +110,10 @@ void loadGame(std::string_view fileName) {
         MM_ERROR("Unable to find: {}!", state.header.locationName);
     }
 
-    engine->_transitionMapId = pMapStats->GetMapInfo(state.header.locationName);
+    // TODO(captainurist): the start point is a placeholder, the save carries the party's position and the loaders
+    //                     skip placement when loading. MapDestination has no way to say that.
+    engine->_pendingTransition = MapDestination(pMapStats->GetMapInfo(state.header.locationName),
+                                                MAP_START_POINT_PARTY);
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_SKIP_WORLD_UPDATE;
 

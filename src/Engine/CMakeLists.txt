@@ -14,10 +14,10 @@ set(ENGINE_SOURCES
         OurMath.cpp
         Party.cpp
         PartyEnums.cpp
+        PartyPlacement.cpp
         PriceCalculator.cpp
         SaveLoad.cpp
         SpellFxRenderer.cpp
-        TeleportPoint.cpp
         mm7_data.cpp
         mm7text_ru.cpp
         stru314.cpp
@@ -39,11 +39,11 @@ set(ENGINE_HEADERS
         OurMath.h
         Party.h
         PartyEnums.h
+        PartyPlacement.h
         Pid.h
         PriceCalculator.h
         SaveLoad.h
         SpellFxRenderer.h
-        TeleportPoint.h
         mm7_data.h
         mm7text_ru.h
         stru314.h

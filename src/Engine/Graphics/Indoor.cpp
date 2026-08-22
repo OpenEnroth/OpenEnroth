@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <optional>
 #include <ranges>
 #include <string>
 #include <utility>
@@ -30,6 +31,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time/Timer.h"
@@ -1011,7 +1013,8 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         pParty->pos = Vec3f();
         pParty->velocity = Vec3f();
         pParty->uFallStartZ = 0;
-        TeleportToStartingPoint(uLevel_StartingPointType);
+        if (std::optional<PartyPlacement> placement = engine->_pendingTransition->resolvePlacement())
+            placeParty(*placement);
         pBLVRenderParams->Reset();
     }
     viewparams->_443365();

@@ -1,4 +1,5 @@
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 
@@ -15,6 +16,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/Spells.h"
@@ -111,6 +113,27 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
     }
 }
 
+/**
+ * @param ir                            MoveToMap instruction.
+ * @return                              Where it sends the party. An all-zero position means the script isn't placing
+ *                                      the party itself - on the current map it stays put, which is how the MM6
+ *                                      castle doors open their throne rooms without a teleport, and on another map
+ *                                      it arrives at Party Start. Yaw, pitch and speed are ignored in that case, and
+ *                                      every shipped record with a zero position has them at zero anyway.
+ */
+static MapDestination moveToMapDestination(const EvtInstruction &ir) {
+    const auto &descr = ir.data.move_map_descr;
+
+    MapId map = !ir.str.starts_with('0') && !ir.str.empty() ? pMapStats->GetMapInfo(ir.str) : MAP_INVALID;
+    if (descr.x || descr.y || descr.z)
+        return MapDestination(map, PartyPlacement(Vec3f(descr.x, descr.y, descr.z),
+                                                  descr.yaw != -1 ? (descr.yaw & TrigLUT.uDoublePiMask) : -1,
+                                                  descr.pitch, descr.zspeed));
+    if (map != MAP_INVALID)
+        return MapDestination(map, MAP_START_POINT_PARTY); // Shipped MM6 doors name the map and nothing else.
+    return {};
+}
+
 int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
     EvtInstruction ir;
     bool stepFound = false;
@@ -191,33 +214,32 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 if (engine->_indoor->filename == "d20.blv" && _eventId == 501)
                     ir.data.move_map_descr.z = 3088;
 
-                pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                                Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
-                                                                ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
+                pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id,
+                                                                             ir.data.move_map_descr.exit_pic_id,
+                                                                             moveToMapDestination(ir), ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;
                 return -1;
             }
 
-            // TODO(pskelton): Fix #2117 this should be a data mod - stop it overwriting the teleport point
-            if (!(engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_teleportPoint.isValid()))
-                engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
-                                                     (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : -1,
-                                                     ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
-
             // TODO(pskelton): Fix #2117 this should be a data mod
             if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && ir.step == 1)
                 ir.str = "out06.odm";
 
-            if (ir.str[0] == '0') { // teleport within map
-                if (engine->_teleportPoint.isValid()) {
-                    engine->_teleportPoint.doTeleport(false);
-                    engine->_teleportPoint.invalidate();
+            // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
+            //                 other, only the one it picked gets to run.
+            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
+                break;
+
+            MapDestination destination = moveToMapDestination(ir);
+            if (destination.map() == MAP_INVALID) { // teleport within map
+                if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
+                    placeParty(*placement);
                     pAudioPlayer->playUISound(SOUND_teleport);
                 }
             } else {
                 pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
-                Transition_StopSound_Autosave(ir.str, MAP_START_POINT_PARTY);
+                startMapTransition(destination);
                 _mapExitTriggered = true;
                 if (current_screen_type == SCREEN_HOUSE) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
