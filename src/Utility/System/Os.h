@@ -60,15 +60,18 @@ namespace os {
 [[nodiscard]] inline FileStat stat(AsciiLiteral path) { return stat(NativePath(path)); }
 
 /**
- * Lists a directory. Never throws - returns an empty vector if `path` doesn't exist or isn't a directory, and skips
- * entries that can't be stat'ed, so the result is always in sync with what `stat` returns.
+ * Lists a directory. Never throws - lists nothing if `path` doesn't exist or isn't a directory, and skips entries
+ * that can't be stat'ed, so the result is always in sync with what `stat` returns.
  *
  * @param path                          Path to a directory to list.
+ * @param[out] entries                  Vector to append the entries to.
  * @return                              Directory entries, in unspecified order. Names are WTF-8 on Windows, byte
  *                                      strings on POSIX.
  */
 [[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
 [[nodiscard]] inline std::vector<DirectoryEntry> ls(AsciiLiteral path) { return ls(NativePath(path)); }
+void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
+inline void ls(AsciiLiteral path, std::vector<DirectoryEntry> *entries) { ls(NativePath(path), entries); }
 
 /**
  * Removes the file or directory at `path`. A directory is removed with everything that's in it.

@@ -35,6 +35,12 @@ UNIT_TEST(NativePath, WithExtension) {
     EXPECT_EQ(NativePath("a/b.json").withExtension("").toWtf8(), "a/b");
 }
 
+UNIT_TEST(NativePath, Parent) {
+    EXPECT_EQ(NativePath("a/b/c.txt").parent(), NativePath("a/b"));
+    EXPECT_EQ(NativePath("c.txt").parent(), NativePath()); // No parent means an empty path.
+    EXPECT_EQ(NativePath().parent(), NativePath());
+}
+
 UNIT_TEST(NativePath, DisplayString) {
     EXPECT_EQ(NativePath::fromWtf8("a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt").displayString(), "a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt");
 

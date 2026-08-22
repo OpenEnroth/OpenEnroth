@@ -32,10 +32,10 @@ UNIT_TEST(FileInputStream, Skip) {
 }
 
 UNIT_TEST(FileInputStream, ExceptionMessages) {
-    const char *fileName = "afjhrbluxnkskghelxrigjmgdhckeog.txt";
+    NativePath fileName("afjhrbluxnkskghelxrigjmgdhckeog.txt");
 
-    EXPECT_FALSE(os::exists(NativePath::fromWtf8(fileName)));
-    EXPECT_THROW_MESSAGE(FileInputStream in(NativePath::fromWtf8(fileName)), fileName);
+    EXPECT_FALSE(os::exists(fileName));
+    EXPECT_THROW_MESSAGE(FileInputStream in(fileName), fileName.toWtf8());
 }
 
 UNIT_TEST(FileInputStream, ReadUntil) {
