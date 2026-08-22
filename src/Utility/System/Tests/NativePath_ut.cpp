@@ -56,14 +56,20 @@ UNIT_TEST(NativePath, WindowsRoots) {
 }
 #endif
 
-#ifndef _WINDOWS
 UNIT_TEST(NativePath, LexicalOpsMatchStdFilesystem) {
     // Path manipulation is ours now instead of std::filesystem's, so check it against std::filesystem as an oracle.
-    // Two leading slashes are left out - POSIX says such paths are implementation-defined, and libstdc++ reads them
-    // as a root name, while NativePath has no root names on POSIX.
-    static const std::vector<std::string> paths = {
+    // Every string here is ASCII on purpose - on Windows std::filesystem::path converts narrow strings per the C
+    // locale, so anything else would be comparing against an oracle that mangles its input.
+    std::vector<std::string> paths = {
         "", ".", "..", "a", "a/", "/a", "a/b", "a/b/", "/", "a.txt", ".bashrc", "a.tar.gz", "a.d/b", "/a/b.c"
     };
+
+    // Root names and backslash separators exist on Windows only. POSIX says a path starting with exactly two slashes
+    // is implementation-defined, and libstdc++ reads it as a root name, while NativePath never does.
+#ifdef _WINDOWS
+    for (std::string_view windowsPath : {"C:", "C:a", "C:/a", "D:/b", "//server", "//server/share", "a\\b"})
+        paths.emplace_back(windowsPath);
+#endif
 
     for (const std::string &head : paths) {
         for (const std::string &tail : paths)
@@ -79,7 +85,6 @@ UNIT_TEST(NativePath, LexicalOpsMatchStdFilesystem) {
         }
     }
 }
-#endif
 
 UNIT_TEST(NativePath, DisplayString) {
     EXPECT_EQ(NativePath::fromWtf8("a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt").displayString(), "a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt");
