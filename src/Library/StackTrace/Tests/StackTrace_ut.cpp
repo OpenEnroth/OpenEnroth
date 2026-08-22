@@ -1,3 +1,6 @@
+#include <cstdio>
+#include <cstdlib>
+#include <exception>
 #include <string>
 #include <thread>
 
@@ -28,6 +31,34 @@ MM_NOINLINE int stackTraceCrashingFunction() {
     *nowhere = 1;
     return *nowhere;
 }
+
+#ifdef _WIN32
+// Calling a pure virtual from a constructor reaches the base vtable before the derived one is installed, which
+// is the one reliable way to hit the CRT's purecall handler. Not static for the same reason as above.
+struct StackTracePureCallBase {
+    StackTracePureCallBase() { callPure(); }
+    virtual void callPure() = 0;
+};
+struct StackTracePureCallDerived : StackTracePureCallBase {
+    virtual void callPure() override {}
+};
+
+MM_NOINLINE void stackTracePureCallFunction() {
+    StackTracePureCallDerived derived;
+}
+
+MM_NOINLINE void stackTraceInvalidParameterFunction() {
+    std::printf(nullptr); // Null format string is the canonical way to trip the invalid parameter handler.
+}
+
+MM_NOINLINE void stackTraceTerminateFunction() {
+    std::terminate();
+}
+
+MM_NOINLINE void stackTraceAbortFunction() {
+    std::abort();
+}
+#endif
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
     std::string trace = stackTraceMarkerFunction();
@@ -62,5 +93,49 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
     }, testing::AllOf(testing::HasSubstr("stackTraceCrashingFunction"),
                       testing::Not(testing::HasSubstr("main"))));
 }
+
+#ifdef _WIN32
+// The four below each go through a different CRT hook, and each hook has its own way of being installed
+// and its own way of not working. What they share is the reason string, which is the only thing that tells
+// them apart in the output, so that's what each test asserts on top of the frame.
+
+UNIT_TEST(StackTrace, AbortIsTraced) {
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        stackTraceAbortFunction();
+    }, testing::AllOf(testing::HasSubstr("abort()"), testing::HasSubstr("stackTraceAbortFunction")));
+}
+
+UNIT_TEST(StackTrace, TerminateIsTraced) {
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        stackTraceTerminateFunction();
+    }, testing::AllOf(testing::HasSubstr("std::terminate()"), testing::HasSubstr("stackTraceTerminateFunction")));
+}
+
+UNIT_TEST(StackTrace, PureVirtualCallIsTraced) {
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        stackTracePureCallFunction();
+    }, testing::AllOf(testing::HasSubstr("pure virtual function call"),
+                      testing::HasSubstr("stackTracePureCallFunction")));
+}
+
+UNIT_TEST(StackTrace, InvalidParameterIsTraced) {
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        stackTraceInvalidParameterFunction();
+    }, testing::AllOf(testing::HasSubstr("invalid parameter passed to a CRT function"),
+                      testing::HasSubstr("stackTraceInvalidParameterFunction")));
+}
+#endif // _WIN32
 
 #endif // !__ANDROID__
