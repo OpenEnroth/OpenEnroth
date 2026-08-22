@@ -1809,8 +1809,7 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
 
     loadAndPrepareODMInternal(mapid);
     if (!bLoading) {
-        const MapDestination &destination = *engine->_pendingTransition;
-        if (std::optional<PartyPlacement> placement = destination.resolvePlacement())
+        if (std::optional<PartyPlacement> placement = engine->_pendingTransition->resolvePlacement())
             placeParty(*placement);
     }
 

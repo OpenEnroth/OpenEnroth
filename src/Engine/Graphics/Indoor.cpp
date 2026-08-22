@@ -1013,8 +1013,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         pParty->pos = Vec3f();
         pParty->velocity = Vec3f();
         pParty->uFallStartZ = 0;
-        const MapDestination &destination = *engine->_pendingTransition;
-        if (std::optional<PartyPlacement> placement = destination.resolvePlacement())
+        if (std::optional<PartyPlacement> placement = engine->_pendingTransition->resolvePlacement())
             placeParty(*placement);
         pBLVRenderParams->Reset();
     }
