@@ -75,7 +75,7 @@ MM_NOINLINE int stackTraceNullCallFunction() {
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
     std::string trace = stackTraceMarkerFunction();
 
-    EXPECT_THAT(trace, testing::ContainsRegex("#1 \\S* \\S* in stackTraceMarkerFunction"));
+    EXPECT_THAT(trace, testing::ContainsRegex("#1 +\\S+ in stackTraceMarkerFunction"));
     EXPECT_CONTAINS(trace, "main");
 }
 
@@ -89,7 +89,7 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
 
         StackTraceOnCrash handler;
         stackTraceCrashingFunction();
-    }, testing::AllOf(testing::ContainsRegex("#0 \\S* \\S* in stackTraceCrashingFunction"), testing::HasSubstr("main")));
+    }, testing::AllOf(testing::ContainsRegex("#0 +\\S+ in stackTraceCrashingFunction"), testing::HasSubstr("main")));
 }
 
 UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
@@ -102,7 +102,7 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
         std::thread(stackTraceCrashingFunction).join();
     // A worker's stack ends at the thread entry, so main being absent is what says we traced the thread that
     // crashed rather than the one that installed the handlers.
-    }, testing::AllOf(testing::ContainsRegex("#0 \\S* \\S* in stackTraceCrashingFunction"),
+    }, testing::AllOf(testing::ContainsRegex("#0 +\\S+ in stackTraceCrashingFunction"),
                       testing::Not(testing::HasSubstr("main"))));
 }
 
@@ -116,7 +116,7 @@ UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
 
         StackTraceOnCrash handler;
         stackTraceNullCallFunction();
-    }, testing::ContainsRegex("#0 \\S* \\S* in stackTraceNullCallFunction"));
+    }, testing::ContainsRegex("#0 +\\S+ in stackTraceNullCallFunction"));
 }
 
 #ifdef _WIN32
