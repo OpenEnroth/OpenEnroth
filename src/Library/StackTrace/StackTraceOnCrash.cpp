@@ -238,14 +238,16 @@ static std::string traceFromContext(const ucontext_t &crashContext) {
     }
 
     // Walk lost the faulting frame. It belongs right below the signal trampoline, which is the last frame of
-    // the handler, so resolve, find the trampoline by name and put the fault in its place.
+    // the handler, so resolve, find the trampoline by name and put the fault in its place. No trampoline means
+    // there's nowhere to put it that wouldn't be a lie, so the trace goes out as walked.
     cpptrace::stacktrace resolved = raw.resolve();
     auto trampoline = std::ranges::find_if(resolved.frames, [](const cpptrace::stacktrace_frame &frame) {
         return frame.symbol.contains("sigtramp");
     });
-    size_t handlerDepth = trampoline == resolved.frames.end() ? 0 : trampoline - resolved.frames.begin() + 1;
+    if (trampoline == resolved.frames.end())
+        return resolved.to_string();
 
-    raw.frames.erase(raw.frames.begin(), raw.frames.begin() + handlerDepth);
+    raw.frames.erase(raw.frames.begin(), raw.frames.begin() + (trampoline - resolved.frames.begin() + 1));
     raw.frames.insert(raw.frames.begin(), faultingPc);
     return raw.resolve().to_string();
 }
