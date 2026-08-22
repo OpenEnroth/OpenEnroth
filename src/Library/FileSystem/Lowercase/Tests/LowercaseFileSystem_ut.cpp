@@ -29,7 +29,7 @@ UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
 }
 
 UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
-    MM_AT_SCOPE_EXIT(os::remove(NativePath::fromWtf8("tmp_dir")));
+    MM_AT_SCOPE_EXIT(os::remove("tmp_dir"));
 
     DirectoryFileSystem fs0(NativePath("tmp_dir"));
     fs0.write("a/b/c.bin", Blob());
