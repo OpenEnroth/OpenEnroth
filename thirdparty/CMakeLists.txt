@@ -64,18 +64,27 @@ endif()
 
 # cpptrace, it clones libdwarf with FetchContent at configure time. The options below are libdwarf's and
 # cpptrace's, and they only take effect thanks to the CMP0077 default set at the top of this file.
+add_subdirectory(libunwind)
+
 if(NOT OE_BUILD_PLATFORM STREQUAL "android")
     # Cpptrace picks execinfo on macos and the libgcc unwinder on every other unix. Execinfo starts its traces
-    # two frames in, so neither the function that asked for a trace nor the one that crashed is in them, and in
-    # optimized builds it returns nothing at all from a signal handler. Unwind is what the C++ runtime unwinds
-    # with, so it's as accurate as the platform gets. Windows is left alone because it wants dbghelp.
+    # two frames in, and the libgcc unwinder can only walk from where it's called, never from a register state
+    # we hand it - which is what a crash handler needs, see thirdparty/libunwind/README.md. So both cpptrace and
+    # the crash handler walk with the vendored libunwind instead. Windows is left alone because it wants dbghelp.
     if(NOT OE_BUILD_PLATFORM STREQUAL "windows")
-        set(CPPTRACE_UNWIND_WITH_UNWIND ON)
+        set(CPPTRACE_UNWIND_WITH_LIBUNWIND ON)
+        set(LIBUNWIND_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/libunwind/include")
+        # Linked by file rather than by target. Cpptrace exports its targets, and a public dependency on a
+        # target outside its export set is a configure error, while a plain path is just a path.
+        set(LIBUNWIND_LDFLAGS "$<TARGET_FILE:libunwind>" ${CMAKE_DL_LIBS})
     endif()
     set(ENABLE_DECOMPRESSION OFF) # We don't emit compressed debug sections, and libdwarf can't export its zlib dep.
     set(CPPTRACE_USE_EXTERNAL_ZSTD ON) # Only used for decompression, so this just stops cpptrace downloading it.
     set(CPPTRACE_DISABLE_CXX_20_MODULES ON) # Nothing imports cpptrace, and module scanning needs a ninja generator.
     add_subdirectory(cpptrace EXCLUDE_FROM_ALL)
+    if(NOT OE_BUILD_PLATFORM STREQUAL "windows")
+        add_dependencies(cpptrace-lib libunwind)
+    endif()
 endif()
 
 # generator
