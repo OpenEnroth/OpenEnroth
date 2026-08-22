@@ -12,7 +12,27 @@ add_library(library_stack_trace STATIC ${LIBRARY_STACK_TRACE_SOURCES} ${LIBRARY_
 target_link_libraries(library_stack_trace PUBLIC utility)
 target_check_style(library_stack_trace)
 
-# backward-cpp doesn't support Android...
+# cpptrace doesn't support Android...
 if (NOT OE_BUILD_PLATFORM STREQUAL "android")
-    target_link_libraries(library_stack_trace PRIVATE Backward::Backward)
+    target_link_libraries(library_stack_trace PRIVATE cpptrace::cpptrace)
+    if(NOT OE_BUILD_PLATFORM STREQUAL "windows")
+        target_link_libraries(library_stack_trace PRIVATE libunwind::libunwind) # The crash handler walks with it.
+    endif()
 endif ()
+
+# The crash handler walks the stack itself, see the comment on traceFromContext.
+if (OE_BUILD_PLATFORM STREQUAL "windows")
+    target_link_libraries(library_stack_trace PRIVATE dbghelp)
+endif ()
+
+if(OE_BUILD_TESTS)
+    set(TEST_LIBRARY_STACK_TRACE_SOURCES
+            Tests/StackTrace_ut.cpp)
+
+    add_library(test_library_stack_trace OBJECT ${TEST_LIBRARY_STACK_TRACE_SOURCES})
+    target_link_libraries(test_library_stack_trace PUBLIC testing_unit library_stack_trace)
+
+    target_check_style(test_library_stack_trace)
+
+    target_link_libraries(OpenEnroth_UnitTest PUBLIC test_library_stack_trace)
+endif()

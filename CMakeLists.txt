@@ -105,6 +105,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID STREQUAL "Cla
     string(REPLACE " -g " " -g -Og " CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE " -g " " -g -Og " CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 
+    # Keep frame pointers. Clang drops them at -O2 on x86, and then nothing can walk a stack through code that
+    # has no unwind info - jit traces, the luajit interpreter, a call through a bad pointer. One register.
+    add_compile_options(-fno-omit-frame-pointer)
+
     # Detect available linkers.
     check_linker_flag(CXX "-fuse-ld=mold" COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
     check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)

@@ -111,7 +111,7 @@ packages on your computer (e.g. on "atomic"/"immutable" distributions like Bazzi
 The loose executable is better if you want direct access to the binary (e.g. for development), or need full
 control over install location. Requires Ubuntu 24.04 or a distribution with compatible system libraries.
 
-1. Install required libraries: `sudo apt-get install libdwarf1 libelf++* libgl1` (Ubuntu 24.04).
+1. Install required libraries: `sudo apt-get install libgl1` (Ubuntu 24.04).
    For other distributions, check your package manager for equivalent packages.
 2. Download a prebuilt [release](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip it.
 3. Copy the game data (`ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) next to the `OpenEnroth` executable.
