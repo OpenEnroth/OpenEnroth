@@ -57,6 +57,8 @@ class NativePath {
     [[nodiscard]] static NativePath fromNative(std::string_view path);
 #endif
 
+    // TODO(captainurist): toStdPath / fromStdPath are for the call sites that still reach for std::filesystem
+    //                     directly. Drop them once those are all on the os functions.
     [[nodiscard]] static NativePath fromStdPath(const std::filesystem::path &path) {
         return fromNative(path.native());
     }
