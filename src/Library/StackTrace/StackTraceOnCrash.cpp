@@ -115,7 +115,10 @@ static std::string traceFromContext(const CONTEXT &crashContext) {
                        machineType == IMAGE_FILE_MACHINE_I386 ? nullptr : &context, nullptr,
                        SymFunctionTableAccess64, SymGetModuleBase64, nullptr) &&
            frame.AddrPC.Offset != 0) {
-        raw.frames.push_back(static_cast<cpptrace::frame_ptr>(frame.AddrPC.Offset));
+        // Cpptrace resolves call sites, and a return address points one past the call. The first frame is
+        // the faulting instruction itself, so it's exact as is.
+        cpptrace::frame_ptr pc = static_cast<cpptrace::frame_ptr>(frame.AddrPC.Offset);
+        raw.frames.push_back(raw.frames.empty() ? pc : pc - 1);
     }
     lock.unlock();
 
@@ -247,7 +250,14 @@ static std::string traceFromContext(const ucontext_t &crashContext) {
     if (trampoline == resolved.frames.end())
         return resolved.to_string();
 
-    raw.frames.erase(raw.frames.begin(), raw.frames.begin() + (trampoline - resolved.frames.begin() + 1));
+    // Resolving expands inlined calls into frames of their own, so the trampoline's position in the resolved
+    // trace isn't its position in the raw one. Only the frames that came from the walk count towards it.
+    size_t rawFramesThroughTrampoline = std::ranges::count_if(resolved.frames.begin(), std::next(trampoline),
+                                                             [](const cpptrace::stacktrace_frame &frame) {
+        return !frame.is_inline;
+    });
+
+    raw.frames.erase(raw.frames.begin(), raw.frames.begin() + rawFramesThroughTrampoline);
     raw.frames.insert(raw.frames.begin(), faultingPc);
     return raw.resolve().to_string();
 }
