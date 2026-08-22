@@ -340,7 +340,9 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawQuad2D(ui_partycreation_character_frame, {pX, 29});
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     // cycle arrows backwards
-    int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (animTimer->time().realtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
+    int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 -
+                              (animTimer->time().realtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) /
+                              (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
     render->DrawQuad2D(ui_partycreation_arrow_l[arrowAnimTextureNum], {uPosActiveItem->rect.x + uPosActiveItem->rect.w - 4, uPosActiveItem->rect.y});
     render->DrawQuad2D(ui_partycreation_arrow_r[arrowAnimTextureNum], {uPosActiveItem->rect.x - 12, uPosActiveItem->rect.y});
 
@@ -363,7 +365,8 @@ void GUIWindow_PartyCreation::Update() {
             case WINDOW_INPUT_IN_PROGRESS:  // press name panel
                 v17 = pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontCreate.get(), {159 * uPlayerCreationUI_NameEditCharacter + 18, 124}, colorTable.White,
                     keyboardInputHandler->GetTextInput(), 120, 1);
-                DrawFlashingInputCursor(159 * uPlayerCreationUI_NameEditCharacter + v17 + 20, 124, assets->pFontCreate.get(), pGUIWindow_CurrentMenu->frameRect);
+                DrawFlashingInputCursor(159 * uPlayerCreationUI_NameEditCharacter + v17 + 20, 124,
+                                        assets->pFontCreate.get(), pGUIWindow_CurrentMenu->frameRect);
                 break;
             case WINDOW_INPUT_CONFIRMED:  // press enter
                 pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
@@ -468,14 +471,16 @@ void GUIWindow_PartyCreation::Update() {
         pColorText = colorTable.White;
     pTextCenter =
         assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_PALADIN));
-    DrawText(assets->pFontCreate.get(), {pTextCenter + 323, pIntervalY + 417}, pColorText, localization->className(CLASS_PALADIN), pGUIWindow_CurrentMenu->frameRect);
+    DrawText(assets->pFontCreate.get(), {pTextCenter + 323, pIntervalY + 417}, pColorText,
+             localization->className(CLASS_PALADIN), pGUIWindow_CurrentMenu->frameRect);
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_RANGER)
         pColorText = colorTable.White;
     pTextCenter =
         assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_RANGER));
-    DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 2 * pIntervalY + 417}, pColorText, localization->className(CLASS_RANGER), pGUIWindow_CurrentMenu->frameRect);
+    DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 2 * pIntervalY + 417}, pColorText,
+             localization->className(CLASS_RANGER), pGUIWindow_CurrentMenu->frameRect);
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_CLERIC)
@@ -489,14 +494,16 @@ void GUIWindow_PartyCreation::Update() {
         pColorText = colorTable.White;
     pTextCenter =
         assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_DRUID));
-    DrawText(assets->pFontCreate.get(), {pTextCenter + 388, pIntervalY + 417}, pColorText, localization->className(CLASS_DRUID), pGUIWindow_CurrentMenu->frameRect);
+    DrawText(assets->pFontCreate.get(), {pTextCenter + 388, pIntervalY + 417}, pColorText,
+             localization->className(CLASS_DRUID), pGUIWindow_CurrentMenu->frameRect);
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_SORCERER)
         pColorText = colorTable.White;
     pTextCenter =
         assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_SORCERER));
-    DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 2 * pIntervalY + 417}, pColorText, localization->className(CLASS_SORCERER), pGUIWindow_CurrentMenu->frameRect);
+    DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 2 * pIntervalY + 417}, pColorText,
+             localization->className(CLASS_SORCERER), pGUIWindow_CurrentMenu->frameRect);
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_ARCHER)
@@ -510,13 +517,15 @@ void GUIWindow_PartyCreation::Update() {
         pColorText = colorTable.White;
     pTextCenter =
         assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_MONK));
-    DrawText(assets->pFontCreate.get(), {pTextCenter + 453, pIntervalY + 417}, pColorText, localization->className(CLASS_MONK), pGUIWindow_CurrentMenu->frameRect);
+    DrawText(assets->pFontCreate.get(), {pTextCenter + 453, pIntervalY + 417}, pColorText,
+             localization->className(CLASS_MONK), pGUIWindow_CurrentMenu->frameRect);
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_THIEF)
         pColorText = colorTable.White;
     pTextCenter = assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_THIEF));
-    DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 2 * pIntervalY + 417}, pColorText, localization->className(CLASS_THIEF), pGUIWindow_CurrentMenu->frameRect);
+    DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 2 * pIntervalY + 417}, pColorText,
+             localization->className(CLASS_THIEF), pGUIWindow_CurrentMenu->frameRect);
 
     pTextCenter = assets->pFontCreate->AlignText_Center(
         236, localization->str(LSTR_AVAILABLE_SKILLS));
@@ -540,7 +549,9 @@ void GUIWindow_PartyCreation::Update() {
             pColorText = colorTable.White;
 
         pTextCenter = assets->pFontCreate->AlignText_Center(100, pText);
-        DrawText(assets->pFontCreate.get(), {100 * (i / 3) + pTextCenter + pCorrective + 17, pIntervalY * (i % 3) + 417}, pColorText, pText, pGUIWindow_CurrentMenu->frameRect);
+        DrawText(assets->pFontCreate.get(),
+                 {100 * (i / 3) + pTextCenter + pCorrective + 17, pIntervalY * (i % 3) + 417}, pColorText, pText,
+                 pGUIWindow_CurrentMenu->frameRect);
     }
 
     pTextCenter = assets->pFontCreate->AlignText_Center(
@@ -558,7 +569,8 @@ void GUIWindow_PartyCreation::Update() {
     DrawText(assets->pFontCreate.get(), {pTextCenter + 530, 410}, colorTable.White, unspent_attribute_bonus_label, pGUIWindow_CurrentMenu->frameRect);
 
     if (errorMessageExpireTime > animTimer->time()) {
-        auto& sHint = pBonusNum < 0 ? localization->str(LSTR_YOU_CANT_SPEND_MORE_THAN_50_POINTS) : localization->str(LSTR_CREATE_PARTY_CANNOT_BE_COMPLETED_UNLESS);
+        auto& sHint = pBonusNum < 0 ? localization->str(LSTR_YOU_CANT_SPEND_MORE_THAN_50_POINTS)
+                                    : localization->str(LSTR_CREATE_PARTY_CANNOT_BE_COMPLETED_UNLESS);
         Recti popupRect(170, 140, 300, 100);
         DrawMessageBox(0, popupRect, sHint);
     }
@@ -618,32 +630,65 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         uX += 158;
     }
 
-    pCreationUI_BtnPressLeft[0] = CreateButton({10, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_FacePrev, 0, INPUT_ACTION_INVALID, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft[1] = CreateButton({169, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_FacePrev, 1, INPUT_ACTION_INVALID, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft[2] = CreateButton({327, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_FacePrev, 2, INPUT_ACTION_INVALID, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft[3] = CreateButton({486, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_FacePrev, 3, INPUT_ACTION_INVALID, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft[0] = CreateButton({10, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_FacePrev,
+                                               0, INPUT_ACTION_INVALID, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft[1] = CreateButton({169, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                               UIMSG_PlayerCreation_FacePrev, 1, INPUT_ACTION_INVALID, "",
+                                               {ui_partycreation_left});
+    pCreationUI_BtnPressLeft[2] = CreateButton({327, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                               UIMSG_PlayerCreation_FacePrev, 2, INPUT_ACTION_INVALID, "",
+                                               {ui_partycreation_left});
+    pCreationUI_BtnPressLeft[3] = CreateButton({486, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                               UIMSG_PlayerCreation_FacePrev, 3, INPUT_ACTION_INVALID, "",
+                                               {ui_partycreation_left});
 
-    pCreationUI_BtnPressRight[0] = CreateButton({74, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_FaceNext, 0, INPUT_ACTION_INVALID, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight[1] = CreateButton({233, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_FaceNext, 1, INPUT_ACTION_INVALID, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight[2] = CreateButton({391, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_FaceNext, 2, INPUT_ACTION_INVALID, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight[3] = CreateButton({549, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_FaceNext, 3, INPUT_ACTION_INVALID, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight[0] = CreateButton({74, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                UIMSG_PlayerCreation_FaceNext, 0, INPUT_ACTION_INVALID, "",
+                                                {ui_partycreation_right});
+    pCreationUI_BtnPressRight[1] = CreateButton({233, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                UIMSG_PlayerCreation_FaceNext, 1, INPUT_ACTION_INVALID, "",
+                                                {ui_partycreation_right});
+    pCreationUI_BtnPressRight[2] = CreateButton({391, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                UIMSG_PlayerCreation_FaceNext, 2, INPUT_ACTION_INVALID, "",
+                                                {ui_partycreation_right});
+    pCreationUI_BtnPressRight[3] = CreateButton({549, 32}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                UIMSG_PlayerCreation_FaceNext, 3, INPUT_ACTION_INVALID, "",
+                                                {ui_partycreation_right});
 
-    pCreationUI_BtnPressLeft2[0] = CreateButton({10, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_VoicePrev, 0, INPUT_ACTION_INVALID, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft2[1] = CreateButton({169, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_VoicePrev, 1, INPUT_ACTION_INVALID, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft2[2] = CreateButton({327, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_VoicePrev, 2, INPUT_ACTION_INVALID, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft2[3] = CreateButton({486, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_VoicePrev, 3, INPUT_ACTION_INVALID, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft2[0] = CreateButton({10, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                UIMSG_PlayerCreation_VoicePrev, 0, INPUT_ACTION_INVALID, "",
+                                                {ui_partycreation_left});
+    pCreationUI_BtnPressLeft2[1] = CreateButton({169, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                UIMSG_PlayerCreation_VoicePrev, 1, INPUT_ACTION_INVALID, "",
+                                                {ui_partycreation_left});
+    pCreationUI_BtnPressLeft2[2] = CreateButton({327, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                UIMSG_PlayerCreation_VoicePrev, 2, INPUT_ACTION_INVALID, "",
+                                                {ui_partycreation_left});
+    pCreationUI_BtnPressLeft2[3] = CreateButton({486, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                UIMSG_PlayerCreation_VoicePrev, 3, INPUT_ACTION_INVALID, "",
+                                                {ui_partycreation_left});
 
-    pCreationUI_BtnPressRight2[0] = CreateButton({74, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_VoiceNext, 0, INPUT_ACTION_INVALID, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight2[1] = CreateButton({233, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_VoiceNext, 1, INPUT_ACTION_INVALID, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight2[2] = CreateButton({391, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_VoiceNext, 2, INPUT_ACTION_INVALID, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight2[3] = CreateButton({549, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreation_VoiceNext, 3, INPUT_ACTION_INVALID, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight2[0] = CreateButton({74, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                 UIMSG_PlayerCreation_VoiceNext, 0, INPUT_ACTION_INVALID, "",
+                                                 {ui_partycreation_right});
+    pCreationUI_BtnPressRight2[1] = CreateButton({233, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                 UIMSG_PlayerCreation_VoiceNext, 1, INPUT_ACTION_INVALID, "",
+                                                 {ui_partycreation_right});
+    pCreationUI_BtnPressRight2[2] = CreateButton({391, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                 UIMSG_PlayerCreation_VoiceNext, 2, INPUT_ACTION_INVALID, "",
+                                                 {ui_partycreation_right});
+    pCreationUI_BtnPressRight2[3] = CreateButton({549, 103}, {11, 13}, BUTTON_TYPE_NORMAL, 0,
+                                                 UIMSG_PlayerCreation_VoiceNext, 3, INPUT_ACTION_INVALID, "",
+                                                 {ui_partycreation_right});
 
     uX = 8;
     for (int characterIndex = 0 ; characterIndex < 4; characterIndex++) {
         CreateButton({uX, 308}, {150, v0}, BUTTON_TYPE_NORMAL, 0, UIMSG_48, characterIndex);
         CreateButton({uX, v0 + 308}, {150, v0}, BUTTON_TYPE_NORMAL, 0, UIMSG_49, characterIndex);
-        CreateButton(fmt::format("PartyCreation_RemoveSkill3_{}", characterIndex), {uX, 2 * v0 + 308}, {150, v0}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationRemoveUpSkill, characterIndex);
-        CreateButton(fmt::format("PartyCreation_RemoveSkill4_{}", characterIndex), {uX, 3 * v0 + 308}, {150, v0}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationRemoveDownSkill, characterIndex);
+        CreateButton(fmt::format("PartyCreation_RemoveSkill3_{}", characterIndex), {uX, 2 * v0 + 308}, {150, v0},
+                     BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationRemoveUpSkill, characterIndex);
+        CreateButton(fmt::format("PartyCreation_RemoveSkill4_{}", characterIndex), {uX, 3 * v0 + 308}, {150, v0},
+                     BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationRemoveDownSkill, characterIndex);
         uX += 158;
     }
 
@@ -684,17 +729,25 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         uX = -5;
         if (uControlParam <= 3)
             uX = 0;
-        CreateButton({100 * (uControlParam / 3) + uX + 17, v0 * (uControlParam % 3) + 417}, {100, v0}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationSelectActiveSkill, uControlParam);
+        CreateButton({100 * (uControlParam / 3) + uX + 17, v0 * (uControlParam % 3) + 417}, {100, v0},
+                     BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationSelectActiveSkill, uControlParam);
         ++uControlParam;
     } while (uControlParam < 9);
 
     ui_partycreation_buttmake = assets->getImage_Solid("BUTTMAKE");
     ui_partycreation_buttmake2 = assets->getImage_Solid("BUTTMAKE2");
 
-    pPlayerCreationUI_BtnOK = CreateButton("PartyCreation_OK", {580, 431}, {51, 39}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickOK, 0, INPUT_ACTION_PARTY_CREATION_DONE, "", {ui_partycreation_buttmake});
-    pPlayerCreationUI_BtnReset = CreateButton("PartyCreation_Clear", {527, 431}, {51, 39}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickReset, 0, INPUT_ACTION_PARTY_CREATION_CLEAR, "", {ui_partycreation_buttmake2});
-    pPlayerCreationUI_BtnMinus = CreateButton({523, 393}, {20, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickMinus, 0, INPUT_ACTION_PARTY_CREATION_DEC, "", {ui_partycreation_minus});
-    pPlayerCreationUI_BtnPlus = CreateButton({613, 393}, {20, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickPlus, 1, INPUT_ACTION_PARTY_CREATION_INC, "", {ui_partycreation_plus});
+    pPlayerCreationUI_BtnOK = CreateButton("PartyCreation_OK", {580, 431}, {51, 39}, BUTTON_TYPE_NORMAL, 0,
+                                           UIMSG_PlayerCreationClickOK, 0, INPUT_ACTION_PARTY_CREATION_DONE, "",
+                                           {ui_partycreation_buttmake});
+    pPlayerCreationUI_BtnReset = CreateButton("PartyCreation_Clear", {527, 431}, {51, 39}, BUTTON_TYPE_NORMAL, 0,
+                                              UIMSG_PlayerCreationClickReset, 0, INPUT_ACTION_PARTY_CREATION_CLEAR, "",
+                                              {ui_partycreation_buttmake2});
+    pPlayerCreationUI_BtnMinus = CreateButton({523, 393}, {20, 35}, BUTTON_TYPE_NORMAL, 0,
+                                              UIMSG_PlayerCreationClickMinus, 0, INPUT_ACTION_PARTY_CREATION_DEC, "",
+                                              {ui_partycreation_minus});
+    pPlayerCreationUI_BtnPlus = CreateButton({613, 393}, {20, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickPlus,
+                                             1, INPUT_ACTION_PARTY_CREATION_INC, "", {ui_partycreation_plus});
 
     ui_partycreation_font = GUIFont::LoadFont("cchar.fnt");
 }

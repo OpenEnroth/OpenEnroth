@@ -475,7 +475,8 @@ class GameConfig : public Config {
         Bool GenerateTiles = {this, "generate_tiles", true,
             "Auto-generate missing tiles on startup and use them where appropriate. MM7 missed some tile transitions, this option fixes this issue."};
 
-        ColorEntry DefaultLightColor = {this, "default_light_color", Color(185, 185, 185), "Some light sources have black color. Use this color for such lights instead."};
+        ColorEntry DefaultLightColor = {this, "default_light_color", Color(185, 185, 185),
+                                        "Some light sources have black color. Use this color for such lights instead."};
         Bool AddMoreLights = {this, "add_more_lights", true, "add light sources to pedestals/cauldrons/etc (as in MM8)"};
         Int DefaultLightRadius = {this, "default_light_radius", 172, "Light radius of the additional lights."};
 

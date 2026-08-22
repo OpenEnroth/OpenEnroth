@@ -77,7 +77,8 @@ class GUIWindow {
     int DrawTextInRect(GUIFont *font, Pointi position, Color color, std::string_view text, int rect_width, int reverse_text);
 
     static void InitializeGUI();
-    static void DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, Recti frameRect, int maxY = 0, Color shadowColor = colorTable.Black);
+    static void DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, Recti frameRect,
+                         int maxY = 0, Color shadowColor = colorTable.Black);
     static void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing, Recti frameRect);
     static void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2, Recti frameRect);
     static void DrawShops_next_generation_time_string(Duration time, Recti frameRect);

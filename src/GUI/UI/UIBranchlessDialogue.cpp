@@ -18,7 +18,8 @@
 
 #include "Io/KeyboardInputHandler.h"
 
-GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event) : GUIWindow(WINDOW_GreetingNPC, {0, 0}, render->GetRenderDimensions()), _event(event) {
+GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event)
+    : GUIWindow(WINDOW_GreetingNPC, {0, 0}, render->GetRenderDimensions()), _event(event) {
     prev_screen_type = current_screen_type;
     keyboardInputHandler->StartTextInput(Io::TextInputType::Text, 15, this);
     current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;

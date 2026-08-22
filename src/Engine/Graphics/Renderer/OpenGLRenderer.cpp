@@ -963,7 +963,8 @@ void OpenGLRenderer::_set_ortho_projection(bool gameviewport) {
         projmat = glm::ortho(float(0), float(outputRender.w), float(outputRender.h), float(0), float(-1), float(1));
     } else {  // project to game viewport
         glViewport(pViewport.x, outputRender.h - (pViewport.y + pViewport.h - 1) - 1, pViewport.w, pViewport.h);
-        projmat = glm::ortho(float(pViewport.x), float(pViewport.x + pViewport.w - 1), float(pViewport.y + pViewport.h - 1), float(pViewport.y), float(1), float(-1));
+        projmat = glm::ortho(float(pViewport.x), float(pViewport.x + pViewport.w - 1),
+                             float(pViewport.y + pViewport.h - 1), float(pViewport.y), float(1), float(-1));
     }
 }
 
@@ -1132,7 +1133,8 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
             glBindTexture(GL_TEXTURE_2D_ARRAY, terraintextures[unit]);
 
             // create blank memory for later texture submission
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, terraintexturesizes[unit], terraintexturesizes[unit], numterraintexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, terraintexturesizes[unit], terraintexturesizes[unit],
+                         numterraintexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
             // loop through texture map
             std::map<std::string, int>::iterator it = terraintexmap.begin();
@@ -1346,7 +1348,8 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                                   WorldMaxZ };
 
                 // skip this square if no splat over lap
-                if (!thissquare.intersectsCube(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos, decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius))
+                if (!thissquare.intersectsCube(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos,
+                                               decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius))
                     continue;
 
                 // splat hits this square of terrain
@@ -2287,7 +2290,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                     if (!face.Invisible()) {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
-                        // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
+                        // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are
+                        //                             otherwise marked as visible (see also BSPRenderer)
                         if (!face.GetTexture()) continue;
                         GraphicsImage *tex = face.GetTexture();
 
@@ -2414,7 +2418,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             glBindTexture(GL_TEXTURE_2D_ARRAY, outbuildtextures[unit]);
 
             // create blank memory for later texture submission
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, outbuildtexturewidths[unit], outbuildtextureheights[unit], numoutbuildtexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, outbuildtexturewidths[unit], outbuildtextureheights[unit],
+                         numoutbuildtexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
             std::map<std::string, int>::iterator it = outbuildtexmap.begin();
             while (it != outbuildtexmap.end()) {
                 // skip if wtrtyl
@@ -2708,7 +2713,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 continue;
             }
 
-            float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x + face.facePlane.normal.y * pOutdoor->vSunlight.y + face.facePlane.normal.z * pOutdoor->vSunlight.z;
+            float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x +
+                        face.facePlane.normal.y * pOutdoor->vSunlight.y +
+                        face.facePlane.normal.z * pOutdoor->vSunlight.z;
             int dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f1 + 0.5f)), 0, 31);
 
             for (unsigned vertex_id = 1; vertex_id <= face.numVertices; vertex_id++) {
@@ -2904,7 +2911,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 glGenTextures(1, &bsptextures[unit]);
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D_ARRAY, bsptextures[unit]);
-                glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, bsptexturewidths[unit], bsptextureheights[unit], bsptexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+                glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, bsptexturewidths[unit], bsptextureheights[unit],
+                             bsptexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
                 std::map<std::string, int>::iterator it = bsptexmap.begin();
                 while (it != bsptexmap.end()) {

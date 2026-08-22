@@ -53,5 +53,6 @@ void LoadStep2State::_drawMM7CopyrightWindow() {
     window.x += 12;
     window.y += 12;
     window.h -= 12;
-    GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 12, ui_mainmenu_copyright_color, localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), 3, window);
+    GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 12, ui_mainmenu_copyright_color,
+                             localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), 3, window);
 }

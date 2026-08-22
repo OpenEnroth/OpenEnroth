@@ -538,7 +538,8 @@ class Movie : public IMovie {
                     tex->release();
                 }
                 // TODO(captainurist): no need to copy here.
-                RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(video.last_frame.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
+                RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(video.last_frame.data()),
+                                                       pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
                 tex = GraphicsImage::Create(std::move(frameImage));
 
                 render->DrawImage(tex, calculateVideoRectangle(*pMovie_Track));

@@ -164,6 +164,8 @@ struct BountyHuntableMask : IndexedArray<bool, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST
  *
  * @see runBountyHuntCodeGen
  */
+// TODO(captainurist): this is game data, move it out of the code.
+// NOLINTBEGIN(whitespace/line_length)
 static constexpr IndexedArray<BountyHuntableMask, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST> bountyHuntableMaskByMonsterType = {
     {MONSTER_TYPE_ANGEL,                   {HOUSE_TOWN_HALL_HARMONDALE, HOUSE_TOWN_HALL_ERATHIA, HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
     {MONSTER_TYPE_ARCHER,                  {HOUSE_TOWN_HALL_HARMONDALE,                          HOUSE_TOWN_HALL_TULAREAN_FOREST, HOUSE_TOWN_HALL_CELESTE, HOUSE_TOWN_HALL_PIT}},
@@ -260,6 +262,7 @@ static constexpr IndexedArray<BountyHuntableMask, MONSTER_TYPE_FIRST, MONSTER_TY
     {MONSTER_TYPE_UNUSED_DOG,              {                                                                                                                                  }},
     {MONSTER_TYPE_UNUSED_RAT,              {                                                                                                                                  }},
 };
+// NOLINTEND
 
 bool isBountyHuntable(MonsterType monsterType, HouseId townHall) {
     return bountyHuntableMaskByMonsterType[monsterType][townHall];

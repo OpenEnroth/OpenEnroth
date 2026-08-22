@@ -356,6 +356,8 @@ IndexedArray<std::array<unsigned char, 3>, SPEECH_FIRST, SPEECH_LAST> speechVari
     {SPEECH_110,                 {0,  0,  0}} // initially this entry was not present in array
 };
 
+// TODO(captainurist): this is game data, move it out of the code.
+// NOLINTBEGIN(whitespace/line_length)
 IndexedArray<std::array<PortraitId, 5>, SPEECH_FIRST, SPEECH_LAST> portraitVariants = {{
     {SPEECH_NONE,                {PORTRAIT_INVALID,        PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_KILL_WEAK_ENEMY,     {PORTRAIT_SMILE,          PORTRAIT_WIDE_SMILE,        PORTRAIT_45,             PORTRAIT_INVALID,      PORTRAIT_INVALID}},
@@ -470,6 +472,7 @@ IndexedArray<std::array<PortraitId, 5>, SPEECH_FIRST, SPEECH_LAST> portraitVaria
     {SPEECH_DEATH_BLOW,          {PORTRAIT_INVALID,        PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_110,                 {PORTRAIT_INVALID,        PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}}, // Initially this entry was not present in array.
 }};
+// NOLINTEND
 
 std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing = {{34, 149, 264, 379}};
 

@@ -32,6 +32,8 @@ struct ConditionTableEntry {
     }
 };
 
+// TODO(captainurist): this is game data, move it out of the code.
+// NOLINTBEGIN(whitespace/line_length)
 static constexpr IndexedArray<ConditionTableEntry, CONDITION_CURSED, CONDITION_ZOMBIE> conditionArray = {
     // hint: condname, protfrommagic, enchantment, ...
     {CONDITION_CURSED,          {0}},
@@ -53,6 +55,7 @@ static constexpr IndexedArray<ConditionTableEntry, CONDITION_CURSED, CONDITION_Z
     {CONDITION_ERADICATED,      {AFFECTED_BY_PROTECTION_FROM_MAGIC | REQUIRES_GM_PROTECTION_FROM_MAGIC}},
     {CONDITION_ZOMBIE,          {0}}
 };
+// NOLINTEND
 
 static std::array<Condition, 18> conditionImportancyTableDefault = {{
     CONDITION_ERADICATED,

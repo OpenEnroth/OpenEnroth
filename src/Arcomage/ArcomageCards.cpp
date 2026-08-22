@@ -1,5 +1,7 @@
 #include "Arcomage.h"
 
+// TODO(captainurist): this is game data, move it out of the code.
+// NOLINTBEGIN(whitespace/line_length)
 ArcomageCard pCards[87]  =  {
     { .pCardName = "Brick Shortage", .slot = 0, .card_resource_type = 1, .to_pl_enm_bricks = -8},
     { .pCardName = "Lucky Cache", .slot = 1, .card_resource_type = 1, .field_30 = 1, .to_player_bricks = 2, .to_player_gems = 2},
@@ -89,3 +91,4 @@ ArcomageCard pCards[87]  =  {
     { .pCardName = "Forced Labor", .slot = 28, .card_resource_type = 1, .needed_bricks = 7, .to_player_beasts = -5, .to_player_wall = 9},
     { .pCardName = "Crystallize", .slot = 58, .card_resource_type = 2, .needed_gems = 8, .to_player_wall = -6, .to_player_tower = 11}
 };
+// NOLINTEND

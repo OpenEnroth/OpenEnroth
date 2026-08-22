@@ -65,7 +65,8 @@ void GUIWindow_TownHall::payFineDialogue() {
         DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.PaleCanary,
                                       fmt::format("{}\n{}", localization->str(LSTR_PAY), localization->str(LSTR_HOW_MUCH)), 3, townHall_window);
         DrawTitleText(assets->pFontArrus.get(), 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3, townHall_window);
-        DrawFlashingInputCursor(assets->pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, assets->pFontArrus.get(), townHall_window);
+        DrawFlashingInputCursor(assets->pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185,
+                                assets->pFontArrus.get(), townHall_window);
         return;
     } else if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         int sum = atoi(keyboardInputHandler->GetTextInput().c_str());

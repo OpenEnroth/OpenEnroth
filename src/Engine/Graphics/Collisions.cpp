@@ -46,7 +46,8 @@ constexpr float COLLISIONS_MIN_MOVE_DISTANCE = 0.5f; // Minimal movement distanc
  *                                      line p1 to p2 if moving along the `dir` axis AND the distance required to move for that
  *                                      collision is less than the current distance.
  */
-static bool CollideSphereWithLine(const Vec3f &pos, const Vec3f &p1, const Vec3f &p2, const float radius, const float currentmovedist, float* newmovedist, float* intersection, bool inside) {
+static bool CollideSphereWithLine(const Vec3f &pos, const Vec3f &p1, const Vec3f &p2, const float radius,
+                                  const float currentmovedist, float* newmovedist, float* intersection, bool inside) {
     Vec3f dir = collision_state.direction;
     Vec3f edge = p2 - p1;
     Vec3f sphereToVertex = p1 - pos;
@@ -295,7 +296,8 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
     if (!collision_state.check_hi)
         return;
 
-    collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction, collision_state.radius_hi, collision_state.position_hi.z - collision_state.position_lo.z);
+    collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction,
+                 collision_state.radius_hi, collision_state.position_hi.z - collision_state.position_lo.z);
 
     // Test some more spheres in the middle of the body to catch some edge cases
     Vec3f midPos = (collision_state.position_lo + collision_state.position_hi) / 2;
@@ -695,7 +697,8 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         if (type == OBJECT_Decoration) {
             int speed = integer_sqrt(actor.velocity.x * actor.velocity.x + actor.velocity.y * actor.velocity.y);
-            int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
+            int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x,
+                                      actor.pos.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;
         }
@@ -984,7 +987,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                     bFaceSlopeTooSteep = false;
             }
             if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) {
-                if (collision_state.pid.id() == 2439 || collision_state.pid.id() == 2438 || collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436) // gloaming
+                if (collision_state.pid.id() == 2439 || collision_state.pid.id() == 2438 ||
+                    collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436) // gloaming
                     bFaceSlopeTooSteep = false;
             }
 

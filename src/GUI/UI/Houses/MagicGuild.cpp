@@ -199,11 +199,16 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                 }
 
                 if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
-                    if ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) || (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))) {
+                    if ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) ||
+                        (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))) {
                         MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, HOUSE_TYPE_MAGIC_SHOP, houseId(), SHOP_SCREEN_BUY);
-                        std::string str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                        std::string str = BuildDialogueString(pMerchantsBuyPhrases[phrase],
+                                                              pParty->activeCharacterIndex() - 1,
+                                                              houseNpcs[currentHouseNpc].npc, item, houseId(),
+                                                              SHOP_SCREEN_BUY);
                         int textHeight = assets->pFontArrus->CalcTextHeight(str, working_window.w, 0);
-                        DrawTitleText(assets->pFontArrus.get(), 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3, working_window);
+                        int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+                        DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, working_window);
                         return;
                     }
                 }

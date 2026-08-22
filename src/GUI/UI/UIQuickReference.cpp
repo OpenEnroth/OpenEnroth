@@ -81,7 +81,8 @@ void GUIWindow_QuickReference::Update() {
         pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, 47}, pTextColor, fmt::format("{}", player.GetActualLevel()), 84, 0);
 
         pY = pFontHeight + 47;
-        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, localization->expand(localization->className(player.classType)), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White,
+                                               localization->expand(localization->className(player.classType)), 84, 0);
         pY += pFontHeight;
 
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player.health, player.GetMaxHealth());
@@ -122,7 +123,9 @@ void GUIWindow_QuickReference::Update() {
         pY += pFontHeight;
 
         pTextColor = GetConditionDrawColor(player.GetMajorConditionIdx());
-        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, pTextColor, localization->characterConditionName(player.GetMajorConditionIdx()), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, pTextColor,
+                                               localization->characterConditionName(player.GetMajorConditionIdx()), 84,
+                                               0);
         pY += pFontHeight;
 
         std::string pText = (player.uQuickSpell != SPELL_NONE) ? pSpellStats->pInfos[player.uQuickSpell].pShortName : localization->str(LSTR_NONE);

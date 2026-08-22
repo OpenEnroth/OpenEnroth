@@ -91,6 +91,7 @@ Naming:
 
 Code formatting:
 * Lines are 120 columns wide. This applies to comments, and to all file types, not just C++. Don't wrap at 80!
+* Code lines can go up to 160 columns in the rare cases where wrapping would hurt readability, and `check_style` enforces that limit. 120 is still the preferred width, and comments always stay within 120. Tables of game data that can't be wrapped are fenced with `// NOLINTBEGIN(whitespace/line_length)` and `// NOLINTEND` and carry a TODO to move them out of the code.
 * `*` and `&` in type declarations should be preceded by a space. So it's `char *string`, and not `char* string`.
 * Sort method definitions in `.cpp` files in the same order as they appear in the `.h` file.
 * In header files, use an additional `private:` label before listing all class fields at the end of the class declaration.

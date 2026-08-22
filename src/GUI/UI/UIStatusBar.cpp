@@ -26,7 +26,8 @@ void StatusBar::draw() {
 
     const std::string &status = get();
     if (status.length() > 0) {
-        GUIWindow::DrawText(assets->pFontLucida.get(), { assets->pFontLucida->AlignText_Center(450, status) + 11, 357}, uGameUIFontMain, status, pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
+        GUIWindow::DrawText(assets->pFontLucida.get(), { assets->pFontLucida->AlignText_Center(450, status) + 11, 357},
+                            uGameUIFontMain, status, pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
     }
 }
 

@@ -522,9 +522,12 @@ GAME_TEST(Issues, Issue1726) {
     // Blaster trainers do not check requirements and crash the game
     auto textTape = tapes.allGUIWindowsText();
     test.playTraceFromTestData("issue_1726.mm7", "issue_1726.json");
-    int GMcount = std::ranges::count_if(pParty->pCharacters, [](const Character &ch) { return ch.getActualSkillValue(SKILL_BLASTER).mastery() == MASTERY_GRANDMASTER; });
+    int GMcount = std::ranges::count_if(pParty->pCharacters,
+                                        [](const Character &ch) { return ch.getActualSkillValue(SKILL_BLASTER).mastery() == MASTERY_GRANDMASTER; });
     EXPECT_EQ(GMcount, 0); // no one ends up grand master
-    EXPECT_GT(textTape.flatten().filter([](const auto& s) { return s.starts_with("Your skills improve!  If your Skill with the Blaster"); }).size(), 0); // blaster requirements shown
+    EXPECT_GT(textTape.flatten().filter([](const auto& s) {
+        return s.starts_with("Your skills improve!  If your Skill with the Blaster");
+    }).size(), 0); // blaster requirements shown
     EXPECT_CONTAINS(textTape.flatten(), "You don't meet the requirements, and cannot be taught until you do."); // but we dont meet them
 }
 
@@ -846,7 +849,8 @@ GAME_TEST(Issues, Issue1958) {
     auto goldTape = tapes.gold();
     test.playTraceFromTestData("issue_1958.mm7", "issue_1958.json");
     EXPECT_CONTAINS(textsTape.flatten(), [](std::string_view s) { return s.contains("Congratulations on defeating the"); }); // Bounty message.
-    EXPECT_CONTAINS(textsTape.flatten(), [](std::string_view s) { return s.contains("Someone has already claimed the bounty"); }); // Bounty already claimed message.
+    EXPECT_CONTAINS(textsTape.flatten(),
+                    [](std::string_view s) { return s.contains("Someone has already claimed the bounty"); }); // Bounty already claimed message.
     EXPECT_EQ(goldTape.delta(), +1400); // We got the bounty.
 }
 
@@ -990,10 +994,14 @@ GAME_TEST(Issues, Issue1983) {
     EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error); // Tried to sell unsellable items
 
     // Merchant should have reacted properly to unsellable items.
-    EXPECT_CONTAINS(textsTape.flatten(), [] (std::string_view text) { return text.contains("Body Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
-    EXPECT_CONTAINS(textsTape.flatten(), [] (std::string_view text) { return text.contains("Rejuvenation Recipe") && text.contains("is beyond my meager knowledge"); });
-    EXPECT_CONTAINS(textsTape.flatten(), [] (std::string_view text) { return text.contains("Water Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
-    EXPECT_CONTAINS(textsTape.flatten(), [] (std::string_view text) { return text.contains("Letter from Mr. Stantley") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flatten(),
+                    [] (std::string_view text) { return text.contains("Body Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flatten(),
+                    [] (std::string_view text) { return text.contains("Rejuvenation Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flatten(),
+                    [] (std::string_view text) { return text.contains("Water Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flatten(),
+                    [] (std::string_view text) { return text.contains("Letter from Mr. Stantley") && text.contains("is beyond my meager knowledge"); });
 }
 
 GAME_TEST(Issues, Issue1989) {

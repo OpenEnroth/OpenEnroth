@@ -29,6 +29,6 @@ struct ItemData {
     ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special enchantment, applied only to `RARITY_SPECIAL` items.
     std::optional<Attribute> standardEnchantment; // Standard (attribute) enchantment, applied only to `RARITY_SPECIAL` items.
     int standardEnchantmentStrength = 0; // Strength of the standard enchantment above.
-    IndexedArray<int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uChanceByTreasureLvl = {{}}; // Weights for seeing this item in random loot by treasure level.
+    IndexedArray<int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uChanceByTreasureLvl = {{}}; // Random loot weights by treasure level.
     int identifyAndRepairDifficulty = 0; // Value that the id item skill is checked against, 0 means always identified. Also used for item repair checks.
 };

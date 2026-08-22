@@ -38,7 +38,8 @@ void GUIWindow_Training::mainDialogue() {
     std::string trainText = "";
 
     if (pParty->activeCharacter().uLevel >= trainingHallMaxLevels[houseId()]) {
-        trainText = fmt::format("{}\n \n{}", localization->str(LSTR_WITH_YOUR_SKILLS_YOU_SHOULD_BE_WORKING), localization->str(LSTR_SORRY_BUT_WE_ARE_UNABLE_TO_TRAIN_YOU));
+        trainText = fmt::format("{}\n \n{}", localization->str(LSTR_WITH_YOUR_SKILLS_YOU_SHOULD_BE_WORKING),
+                                localization->str(LSTR_SORRY_BUT_WE_ARE_UNABLE_TO_TRAIN_YOU));
     } else {
         if (pParty->activeCharacter().experience < expForNextLevel) {
             uint64_t expDelta = expForNextLevel - pParty->activeCharacter().experience;

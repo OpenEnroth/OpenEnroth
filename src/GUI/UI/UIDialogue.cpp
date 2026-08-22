@@ -146,7 +146,8 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
         optionList.push_back(DIALOGUE_HIRE_FIRE);
     }
     for (int i = 0; i < optionList.size(); i++) {
-        CreateButton({480, 130 + i * text_line_height}, {140, text_line_height}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
+        CreateButton({480, 130 + i * text_line_height}, {140, text_line_height}, BUTTON_TYPE_NORMAL, 0,
+                     UIMSG_SelectNPCDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
     }
     setKeyboardControlGroup(optionList.size(), false, 0, 1);
 
@@ -337,7 +338,9 @@ void selectNPCDialogueOption(DialogueId option) {
                                                             localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
             for (int i = 0; i < topics.size(); i++) {
-                pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]), INPUT_ACTION_INVALID, "");
+                pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
+                                              UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]),
+                                              INPUT_ACTION_INVALID, "");
             }
             pDialogueWindow->setKeyboardControlGroup(topics.size(), false, 0, 1);
 

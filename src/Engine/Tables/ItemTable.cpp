@@ -327,7 +327,8 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
     if (uTreasureType != RANDOM_ITEM_ANY) {  // generate known treasure type
         auto [requestedType, requestedSkill] = itemTypeOrSkillForRandomItemType(uTreasureType);
         for (ItemId itemId : allSpawnableItems()) {
-            if ((requestedType == ITEM_TYPE_INVALID || items[itemId].type == requestedType) && (requestedSkill == SKILL_INVALID || items[itemId].skill == requestedSkill)) {
+            if ((requestedType == ITEM_TYPE_INVALID || items[itemId].type == requestedType) &&
+                (requestedSkill == SKILL_INVALID || items[itemId].skill == requestedSkill)) {
                 if (items[itemId].uChanceByTreasureLvl[treasureLevel]) {
                     weightSum += items[itemId].uChanceByTreasureLvl[treasureLevel];
                     possibleItems.push_back(itemId);
@@ -353,7 +354,8 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             ItemId artifactRandomId = grng->randomSample(allSpawnableArtifacts());
             for (ItemId i : allSpawnableArtifacts())
                 artifactsFound += pParty->pIsArtifactFound[i];
-            bool artifactLimitReached = (engine->config->gameplay.ArtifactLimit.value() != 0 && artifactsFound >= engine->config->gameplay.ArtifactLimit.value());
+            bool artifactLimitReached = (engine->config->gameplay.ArtifactLimit.value() != 0 &&
+                                         artifactsFound >= engine->config->gameplay.ArtifactLimit.value());
             if ((grng->random(100) < 5) && !pParty->pIsArtifactFound[artifactRandomId] && !artifactLimitReached) {
                 pParty->pIsArtifactFound[artifactRandomId] = true;
                 outItem->flags = 0;

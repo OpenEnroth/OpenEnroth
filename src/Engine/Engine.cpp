@@ -251,7 +251,8 @@ void Engine::DrawGUI() {
 
         int debug_info_offset = 16;
         GUIWindow::DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
-                                 fmt::format("Party position:         {:.2f} {:.2f} {:.2f}", pParty->pos.x, pParty->pos.y, pParty->pos.z), pPrimaryWindow->frameRect);
+                                 fmt::format("Party position:         {:.2f} {:.2f} {:.2f}", pParty->pos.x,
+                                             pParty->pos.y, pParty->pos.z), pPrimaryWindow->frameRect);
         debug_info_offset += 16;
 
         GUIWindow::DrawText(assets->pFontArrus.get(), {16, debug_info_offset}, colorTable.White,
@@ -261,7 +262,9 @@ void Engine::DrawGUI() {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int sector_id = pBLVRenderParams->uPartySectorID;
             GUIWindow::DrawText(assets->pFontArrus.get(), { 16, debug_info_offset }, colorTable.White,
-                                     fmt::format("Party Sector ID:       {}/{} ({})\n", sector_id, pIndoor->sectors.size(), pBLVRenderParams->uPartyEyeSectorID), pPrimaryWindow->frameRect);
+                                fmt::format("Party Sector ID:       {}/{} ({})\n", sector_id, pIndoor->sectors.size(),
+                                            pBLVRenderParams->uPartyEyeSectorID),
+                                pPrimaryWindow->frameRect);
             debug_info_offset += 16;
         }
 
@@ -273,7 +276,9 @@ void Engine::DrawGUI() {
             int uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             float floor_level = BLV_GetFloorLevel(pParty->pos/* + Vec3f(0,0,40) */, sector_id, &uFaceID);
-            floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\nNodes: {}, Faces: {} ({}), Sectors: {}\n", floor_level, uFaceID, pBspRenderer->num_nodes, pBspRenderer->num_faces, pBLVRenderParams->uNumFacesRenderedThisFrame, pBspRenderer->uNumVisibleNotEmptySectors);
+            floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\nNodes: {}, Faces: {} ({}), Sectors: {}\n",
+                                          floor_level, uFaceID, pBspRenderer->num_nodes, pBspRenderer->num_faces,
+                                          pBLVRenderParams->uNumFacesRenderedThisFrame, pBspRenderer->uNumVisibleNotEmptySectors);
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
             int floor_face_id;
@@ -1006,7 +1011,8 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     pParty->uCurrentYear = time.year;
 
     // New day dawns at 3am.
-    Time next3am = Time::fromDurationSinceSilence((oldTime.toDurationSinceSilence() - Duration::fromHours(3)).roundedUp(Duration::fromDays(1)) + Duration::fromHours(3));
+    Time next3am = Time::fromDurationSinceSilence((oldTime.toDurationSinceSilence() - Duration::fromHours(3)).roundedUp(Duration::fromDays(1)) +
+                                                  Duration::fromHours(3));
     if (oldTime < next3am && newTime >= next3am) {
         pParty->pHirelings[0].hasUsedAbility = false;
         pParty->pHirelings[1].hasUsedAbility = false;
@@ -1405,7 +1411,8 @@ void RegeneratePartyHealthMana() {
         // Knock out / kill chars due to hp drain.
         if (character.health <= 0) {
             int enduranceCheck = character.health + character.GetBaseEndurance();
-            Condition targetCondition = enduranceCheck >= 1 || character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active() ? CONDITION_UNCONSCIOUS : CONDITION_DEAD;
+            bool survives = enduranceCheck >= 1 || character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active();
+            Condition targetCondition = survives ? CONDITION_UNCONSCIOUS : CONDITION_DEAD;
             if (!character.conditions.has(targetCondition))
                 character.conditions.set(targetCondition, pParty->GetPlayingTime());
         }
@@ -1416,7 +1423,8 @@ void RegeneratePartyHealthMana() {
 
 Duration timeUntilDawn() {
     Time now = pParty->GetPlayingTime();
-    Time next5am = Time::fromDurationSinceSilence((now.toDurationSinceSilence() - Duration::fromHours(5) + 1_ticks).roundedUp(Duration::fromDays(1)) + Duration::fromHours(5));
+    Time next5am = Time::fromDurationSinceSilence((now.toDurationSinceSilence() - Duration::fromHours(5) + 1_ticks).roundedUp(Duration::fromDays(1)) +
+                                                  Duration::fromHours(5));
     return next5am - now;
 }
 

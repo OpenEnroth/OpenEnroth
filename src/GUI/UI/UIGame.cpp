@@ -353,12 +353,15 @@ void GUIWindow_GameKeyBindings::Update() {
     for (int i = 0; i < 7; ++i) {
         InputAction action1 = (InputAction)(base_controls_offset + i);
         DrawText(assets->pFontLucida.get(), {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1), pGUIWindow_CurrentMenu->frameRect);
-        DrawText(assets->pFontLucida.get(), {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]), pGUIWindow_CurrentMenu->frameRect);
+        DrawText(assets->pFontLucida.get(), {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1),
+                 GetDisplayName(curr_key_map[action1]), pGUIWindow_CurrentMenu->frameRect);
 
         int j = i + 7;
         InputAction action2 = (InputAction)(base_controls_offset + j);
-        DrawText(assets->pFontLucida.get(), {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2), pGUIWindow_CurrentMenu->frameRect);
-        DrawText(assets->pFontLucida.get(), {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]), pGUIWindow_CurrentMenu->frameRect);
+        DrawText(assets->pFontLucida.get(), {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color,
+                 GetDisplayName(action2), pGUIWindow_CurrentMenu->frameRect);
+        DrawText(assets->pFontLucida.get(), {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2),
+                 GetDisplayName(curr_key_map[action2]), pGUIWindow_CurrentMenu->frameRect);
     }
 }
 
@@ -391,9 +394,11 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     CreateButton({0xF1u, 0x12Eu}, {0xD6u, 0x28u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0);
 
     // gamma buttons
-    pBtn_SliderLeft = CreateButton({21, 161}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeGammaLevel, 4, INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowLeft }); // -
+    pBtn_SliderLeft = CreateButton({21, 161}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeGammaLevel, 4,
+                                   INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowLeft }); // -
     CreateButton({42, 160}, {170, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeGammaLevel, 0);
-    pBtn_SliderRight = CreateButton({213, 161}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeGammaLevel, 5, INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowRight }); // +
+    pBtn_SliderRight = CreateButton({213, 161}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeGammaLevel, 5,
+                                    INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowRight }); // +
 
     // if ( render->pRenderD3D )
     {
@@ -755,8 +760,12 @@ void GameUI_DrawFoodAndGold() {
     if (uGameState != GAME_STATE_FINAL_WINDOW) {
         text_y = _44100D_should_alter_right_panel() != 0 ? 381 : 322;
 
-        GUIWindow::DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", toCompactString(pParty->GetFood())), pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
-        GUIWindow::DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", toCompactString(pParty->GetGold())), pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
+        GUIWindow::DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain,
+                            fmt::format("\r087{}", toCompactString(pParty->GetFood())), pPrimaryWindow->frameRect, 0,
+                            uGameUIFontShadow);
+        GUIWindow::DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain,
+                            fmt::format("\r028{}", toCompactString(pParty->GetGold())), pPrimaryWindow->frameRect, 0,
+                            uGameUIFontShadow);
         // force to render all queued text now so it wont be delayed and drawn over things it isn't supposed to, like item in hand or nuklear
         render->EndTextNew();
     }
@@ -1070,7 +1079,8 @@ void GameUI_WritePointedObjectStatusString() {
                                 if (skills_max_level[skill] <= skillLevel)
                                     engine->_statusBar->setPermanent(LSTR_YOU_HAVE_ALREADY_MASTERED_THIS_SKILL);
                                 else if (pParty->activeCharacter().uSkillPoints < requiredSkillpoints)
-                                    engine->_statusBar->setPermanent(LSTR_YOU_NEED_D_MORE_SKILL_POINTS_TO_ADVANCE, requiredSkillpoints - pParty->activeCharacter().uSkillPoints);
+                                    engine->_statusBar->setPermanent(LSTR_YOU_NEED_D_MORE_SKILL_POINTS_TO_ADVANCE,
+                                                                     requiredSkillpoints - pParty->activeCharacter().uSkillPoints);
                                 else
                                     engine->_statusBar->setPermanent(LSTR_CLICKING_HERE_WILL_SPEND_D_SKILL_POINTS, requiredSkillpoints);
 

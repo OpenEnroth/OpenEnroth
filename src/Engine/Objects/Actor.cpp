@@ -2629,7 +2629,8 @@ void Actor::UpdateActorAI() {
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
             pActor->monsterInfo.recoveryTime > 0_ticks ||
             radiusMultiplier * meleeRange < pDir->uDistance ||
-            uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && pActor->monsterInfo.attack1MissileType == MONSTER_PROJECTILE_NONE ||
+            uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting &&
+            pActor->monsterInfo.attack1MissileType == MONSTER_PROJECTILE_NONE ||
             uAIState != Stunned) {
             if (pActor->currentActionTime < pActor->currentActionLength) {
                 continue;
@@ -3890,7 +3891,8 @@ void Actor::MakeActorAIList_ODM() {
 
     // sort active actors by distance
     // use stable_sort to make tests work across all platforms
-    std::stable_sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; });
+    std::stable_sort(activeActorsDistances.begin(), activeActorsDistances.end(),
+                     [] (std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; });
 
     // and takes nearest amount
     int configLimit = engine->config->gameplay.MaxActiveAIActors.value();
@@ -3945,7 +3947,8 @@ int Actor::MakeActorAIList_BLV() {
 
     // sort active actors by distance
     // use stable_sort to make tests work across all platforms
-    std::stable_sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; });
+    std::stable_sort(activeActorsDistances.begin(), activeActorsDistances.end(),
+                     [] (std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; });
 
     // checks nearby actors can detect player and take nearest 30
     for (const auto &[actorId, _] : activeActorsDistances) {

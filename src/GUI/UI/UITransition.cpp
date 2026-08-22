@@ -129,7 +129,9 @@ void GUIWindow_Travel::Update() {
         str += "\n \n";
         str += localization->format(LSTR_DO_YOU_WISH_TO_LEAVE_S_1, pMapStats->pInfos[engine->_currentLoadedMapId].name);
 
-        DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, travel_window.w, 0)) / 2 + 101, colorTable.White, str, 3, travel_window);
+        DrawTitleText(assets->pFontCreate.get(), 0,
+                      (212 - assets->pFontCreate->CalcTextHeight(str, travel_window.w, 0)) / 2 + 101, colorTable.White,
+                      str, 3, travel_window);
     }
 }
 

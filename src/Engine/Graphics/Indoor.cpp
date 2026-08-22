@@ -294,7 +294,8 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapStats->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
+            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days &&
+                pMapStats->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
                 respawnTimed = true;
         } catch (const Exception &e) {
             MM_ERROR("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -1169,7 +1170,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
     v30 = billboardFlagsForSprite(v11->flags, v9);
 
-    if (render->AddBillboardIfVisible(v11->sprites[v9], v11->paletteId, pLevelDecorations[uDecorationID].vPosition, {v11->scale, v11->scale}, v30, Pid(OBJECT_Decoration, uDecorationID), uSectorID))
+    if (render->AddBillboardIfVisible(v11->sprites[v9], v11->paletteId, pLevelDecorations[uDecorationID].vPosition,
+                                      {v11->scale, v11->scale}, v30, Pid(OBJECT_Decoration, uDecorationID), uSectorID))
         ++uNumDecorationsDrawnThisFrame;
 }
 

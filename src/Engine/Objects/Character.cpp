@@ -2188,7 +2188,8 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
             if (IsUnarmed()) {
                 return 3;
             } else {
-                if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND); mainHandItem && mainHandItem->isWeapon()) { // Not a wand.
+                if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND);
+                    mainHandItem && mainHandItem->isWeapon()) { // Not a wand.
                     v26 = mainHandItem->GetDamageRoll();
                     if (inventory.entry(ITEM_SLOT_OFF_HAND) ||
                         mainHandItem->skill() != SKILL_SPEAR) {
@@ -6555,7 +6556,8 @@ void Character::playReaction(SpeechId speech, int a3) {
         Duration expressionDuration;
         if (portrait == PORTRAIT_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
-                expressionDuration = Duration::fromRealtimeMilliseconds(1000 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID))); // Was (sLastTrackLengthMS << 7) / 1000;
+                // Was (sLastTrackLengthMS << 7) / 1000;
+                expressionDuration = Duration::fromRealtimeMilliseconds(1000 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID)));
             }
         }
         playEmotion(portrait, expressionDuration);

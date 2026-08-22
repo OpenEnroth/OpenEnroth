@@ -143,7 +143,8 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                             mastery = current.mastery();
 
                         if (!CombinedSkillValue::isValid(*level, *mastery))
-                            throw Exception("Invalid skill-mastery pair '{} {}'", *level, static_cast<int>(*mastery)); // TODO(captainurist): #enum need proper toDisplayString.
+                            // TODO(captainurist): #enum need proper toDisplayString.
+                            throw Exception("Invalid skill-mastery pair '{} {}'", *level, static_cast<int>(*mastery));
 
                         character->setSkillValue(skillValueTable["id"], CombinedSkillValue(*level, *mastery));
                     } else {

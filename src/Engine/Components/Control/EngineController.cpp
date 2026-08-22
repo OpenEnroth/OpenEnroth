@@ -39,7 +39,8 @@
 namespace {
 class ThrowingTicker {
  public:
-    explicit ThrowingTicker(EngineController *controller, std::string_view exceptionMessage, int maxTicks = 128) : _controller(controller), _exceptionMessage(exceptionMessage), _maxTicks(maxTicks) {}
+    explicit ThrowingTicker(EngineController *controller, std::string_view exceptionMessage, int maxTicks = 128)
+        : _controller(controller), _exceptionMessage(exceptionMessage), _maxTicks(maxTicks) {}
 
     void tick(int count = 1) {
         for (int i = 0; i < count; i++) {

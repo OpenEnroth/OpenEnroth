@@ -181,7 +181,8 @@ void GUIWindow_Spellbook::Update() {
                     if (SBPageSSpellsTextureList[index + 1]) {
                         GraphicsImage *pTexture = (spellbookSelectedSpell == spell) ? SBPageCSpellsTextureList[index + 1] : SBPageSSpellsTextureList[index + 1];
                         if (pTexture) {
-                            SpellBookIconPos &iconPos = pIconPos[player.lastOpenedSpellbookPage][pSpellbookSpellIndices[player.lastOpenedSpellbookPage][index + 1]];
+                            MagicSchool page = player.lastOpenedSpellbookPage;
+                            SpellBookIconPos &iconPos = pIconPos[page][pSpellbookSpellIndices[page][index + 1]];
 
                             pX_coord = pViewport.x + iconPos.Xpos;
                             pY_coord = pViewport.y + iconPos.Ypos;

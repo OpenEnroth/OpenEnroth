@@ -686,7 +686,10 @@ std::string EvtInstruction::toString() const {
         case EVENT_LocationName:
             return fmt::format("{}: LocationName", step);
         case EVENT_MoveToMap:
-            return fmt::format("{}: MoveToMap(({}, {}, {}), {}, {}, {}, {}, {}, \"{}\")", step, data.move_map_descr.x, data.move_map_descr.y, data.move_map_descr.z, data.move_map_descr.yaw, data.move_map_descr.pitch, data.move_map_descr.zspeed, std::to_underlying(data.move_map_descr.house_id), data.move_map_descr.exit_pic_id, str);
+            return fmt::format("{}: MoveToMap(({}, {}, {}), {}, {}, {}, {}, {}, \"{}\")", step, data.move_map_descr.x,
+                               data.move_map_descr.y, data.move_map_descr.z, data.move_map_descr.yaw,
+                               data.move_map_descr.pitch, data.move_map_descr.zspeed,
+                               std::to_underlying(data.move_map_descr.house_id), data.move_map_descr.exit_pic_id, str);
         case EVENT_OpenChest:
             return fmt::format("{}: OpenChest({})", step, data.chest_id);
         case EVENT_ShowFace:
@@ -712,15 +715,24 @@ std::string EvtInstruction::toString() const {
         case EVENT_Set:
             return fmt::format("{}: Set({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
         case EVENT_SummonMonsters:
-            return fmt::format("{}: SummonMonsters({}, {}, {}, ({}, {}, {}), {}, {})", step, data.monster_descr.type, data.monster_descr.level, data.monster_descr.count, data.monster_descr.x, data.monster_descr.y, data.monster_descr.z, data.monster_descr.group, data.monster_descr.name_id);
+            return fmt::format("{}: SummonMonsters({}, {}, {}, ({}, {}, {}), {}, {})", step, data.monster_descr.type,
+                               data.monster_descr.level, data.monster_descr.count, data.monster_descr.x,
+                               data.monster_descr.y, data.monster_descr.z, data.monster_descr.group,
+                               data.monster_descr.name_id);
         case EVENT_CastSpell:
-            return fmt::format("{}: CastSpell({}, {}, {}, ({}, {}, {}), ({}, {}, {}))", step, std::to_underlying(data.spell_descr.spell_id), std::to_underlying(data.spell_descr.spell_mastery), data.spell_descr.spell_level, data.spell_descr.fromx, data.spell_descr.fromy, data.spell_descr.fromz, data.spell_descr.tox, data.spell_descr.toy, data.spell_descr.toz);
+            return fmt::format("{}: CastSpell({}, {}, {}, ({}, {}, {}), ({}, {}, {}))", step,
+                               std::to_underlying(data.spell_descr.spell_id),
+                               std::to_underlying(data.spell_descr.spell_mastery), data.spell_descr.spell_level,
+                               data.spell_descr.fromx, data.spell_descr.fromy, data.spell_descr.fromz,
+                               data.spell_descr.tox, data.spell_descr.toy, data.spell_descr.toz);
         case EVENT_SpeakNPC:
             return fmt::format("{}: SpeakNPC({})", step, data.npc_descr.npc_id);
         case EVENT_SetFacesBit:
-            return fmt::format("{}: SetFacesBit({}, 0x{:x}, {})", step, data.faces_bit_descr.cog, (int)data.faces_bit_descr.face_bit, data.faces_bit_descr.is_on);
+            return fmt::format("{}: SetFacesBit({}, 0x{:x}, {})", step, data.faces_bit_descr.cog,
+                               (int)data.faces_bit_descr.face_bit, data.faces_bit_descr.is_on);
         case EVENT_ToggleActorFlag:
-            return fmt::format("{}: ToggleActorFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, (int)data.actor_flag_descr.attr, data.actor_flag_descr.is_set);
+            return fmt::format("{}: ToggleActorFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id,
+                               (int)data.actor_flag_descr.attr, data.actor_flag_descr.is_set);
         case EVENT_RandomGoTo:
             return fmt::format("{}: RandomJmp -> ({})", step,
                                fmt::join(std::span(data.random_goto_descr.random_goto).subspan(0, data.random_goto_descr.random_goto_len), ", "));
@@ -747,13 +759,19 @@ std::string EvtInstruction::toString() const {
                 return fmt::format("{}: ShowMessage({})", step, data.text_id);
             }
         case EVENT_OnTimer:
-            return fmt::format("{}: OnTimer(Year({}), Month({}), Week({}), Day({}hr, {}min, {}sec), {})", step, data.timer_descr.is_yearly, data.timer_descr.is_monthly, data.timer_descr.is_weekly, data.timer_descr.daily_start_hour, data.timer_descr.daily_start_minute, data.timer_descr.daily_start_second, data.timer_descr.alt_halfmin_interval);
+            return fmt::format("{}: OnTimer(Year({}), Month({}), Week({}), Day({}hr, {}min, {}sec), {})", step,
+                               data.timer_descr.is_yearly, data.timer_descr.is_monthly, data.timer_descr.is_weekly,
+                               data.timer_descr.daily_start_hour, data.timer_descr.daily_start_minute,
+                               data.timer_descr.daily_start_second, data.timer_descr.alt_halfmin_interval);
         case EVENT_ToggleIndoorLight:
             return fmt::format("{}: ToggleIndoorLight({}, {})", step, data.light_descr.light_id, data.light_descr.is_enable);
         case EVENT_PressAnyKey:
             return fmt::format("{}: PressAnyKey()", step);
         case EVENT_SummonItem:
-            return fmt::format("{}: SummonItem({}, ({}, {}, {}), {}, {}, {})", step, std::to_underlying(data.summon_item_descr.sprite), data.summon_item_descr.x, data.summon_item_descr.y, data.summon_item_descr.z, data.summon_item_descr.speed, data.summon_item_descr.count, data.summon_item_descr.random_rotate);
+            return fmt::format("{}: SummonItem({}, ({}, {}, {}), {}, {}, {})", step,
+                               std::to_underlying(data.summon_item_descr.sprite), data.summon_item_descr.x,
+                               data.summon_item_descr.y, data.summon_item_descr.z, data.summon_item_descr.speed,
+                               data.summon_item_descr.count, data.summon_item_descr.random_rotate);
         case EVENT_ForPartyMember:
             return fmt::format("{}: ForPartyMember({})", step, std::to_underlying(who));
         case EVENT_Jmp:
@@ -761,19 +779,29 @@ std::string EvtInstruction::toString() const {
         case EVENT_OnMapReload:
             return fmt::format("{}: OnMapReload", step);
         case EVENT_OnLongTimer:
-            return fmt::format("{}: OnLongTimer(Year({}), Month({}), Week({}), Day({}hr, {}min, {}sec), {})", step, data.timer_descr.is_yearly, data.timer_descr.is_monthly, data.timer_descr.is_weekly, data.timer_descr.daily_start_hour, data.timer_descr.daily_start_minute, data.timer_descr.daily_start_second, data.timer_descr.alt_halfmin_interval);
+            return fmt::format("{}: OnLongTimer(Year({}), Month({}), Week({}), Day({}hr, {}min, {}sec), {})", step,
+                               data.timer_descr.is_yearly, data.timer_descr.is_monthly, data.timer_descr.is_weekly,
+                               data.timer_descr.daily_start_hour, data.timer_descr.daily_start_minute,
+                               data.timer_descr.daily_start_second, data.timer_descr.alt_halfmin_interval);
         case EVENT_SetNPCTopic:
             return fmt::format("{}: SetNPCTopic({}, {}, {})", step, data.npc_topic_descr.npc_id, data.npc_topic_descr.index, data.npc_topic_descr.event_id);
         case EVENT_MoveNPC:
             return fmt::format("{}: MoveNPC({}, {})", step, data.npc_move_descr.npc_id, std::to_underlying(data.npc_move_descr.location_id));
         case EVENT_GiveItem:
-            return fmt::format("{}: GiveItem({}, {}, {})", step, std::to_underlying(data.give_item_descr.treasure_level), std::to_underlying(data.give_item_descr.treasure_type), std::to_underlying(data.give_item_descr.item_id));
+            return fmt::format("{}: GiveItem({}, {}, {})", step,
+                               std::to_underlying(data.give_item_descr.treasure_level),
+                               std::to_underlying(data.give_item_descr.treasure_type),
+                               std::to_underlying(data.give_item_descr.item_id));
         case EVENT_ChangeEvent:
             return fmt::format("{}: ChangeEvent({})", step, data.event_id);
         case EVENT_CheckSkill:
-             return fmt::format("{}: CheckSkill({}, {}, {}) -> {}", step, std::to_underlying(data.check_skill_descr.skill_type), std::to_underlying(data.check_skill_descr.skill_mastery), data.check_skill_descr.skill_level, target_step);
+             return fmt::format("{}: CheckSkill({}, {}, {}) -> {}", step,
+                                std::to_underlying(data.check_skill_descr.skill_type),
+                                std::to_underlying(data.check_skill_descr.skill_mastery),
+                                data.check_skill_descr.skill_level, target_step);
         case EVENT_OnCanShowDialogItemCmp:
-            return fmt::format("{}: OnCanShowDialogItemCmp({}) -> {}", step, getVariableCompareStr(data.variable_descr.type, data.variable_descr.value), target_step);
+            return fmt::format("{}: OnCanShowDialogItemCmp({}) -> {}", step,
+                               getVariableCompareStr(data.variable_descr.type, data.variable_descr.value), target_step);
         case EVENT_EndCanShowDialogItem:
             return fmt::format("{}: EndCanShowDialogItem", step);
         case EVENT_SetCanShowDialogItem:
@@ -784,13 +812,17 @@ std::string EvtInstruction::toString() const {
             // TODO
             break;
         case EVENT_NPCSetItem:
-            return fmt::format("{}: NPCSetItem({}, {}, {})", step, data.npc_item_descr.id, std::to_underlying(data.npc_item_descr.item), data.npc_item_descr.is_give);
+            return fmt::format("{}: NPCSetItem({}, {}, {})", step, data.npc_item_descr.id,
+                               std::to_underlying(data.npc_item_descr.item), data.npc_item_descr.is_give);
         case EVENT_SetNPCGreeting:
             return fmt::format("{}: SetNpcGreeting({}, {})", step, data.npc_descr.npc_id, data.npc_descr.greeting);
         case EVENT_IsActorKilled:
-            return fmt::format("{}: IsActorKilled({}, {}, {}) -> {}", step, std::to_underlying(data.actor_descr.policy), data.actor_descr.param, data.actor_descr.num, target_step);
+            return fmt::format("{}: IsActorKilled({}, {}, {}) -> {}", step, std::to_underlying(data.actor_descr.policy),
+                               data.actor_descr.param, data.actor_descr.num, target_step);
         case EVENT_CanShowTopic_IsActorKilled:
-            return fmt::format("{}: CanShowTopic_IsActorKilled({}, {}, {}) -> {}", step, std::to_underlying(data.actor_descr.policy), data.actor_descr.param, data.actor_descr.num, target_step);
+            return fmt::format("{}: CanShowTopic_IsActorKilled({}, {}, {}) -> {}", step,
+                               std::to_underlying(data.actor_descr.policy), data.actor_descr.param,
+                               data.actor_descr.num, target_step);
         case EVENT_OnMapLeave:
             return fmt::format("{}: OnMapLeave", step);
         case EVENT_ChangeGroup:
@@ -802,13 +834,16 @@ std::string EvtInstruction::toString() const {
         case EVENT_CheckSeason:
             return fmt::format("{}: CheckSeason({}) -> {}", step, std::to_underlying(data.season), target_step);
         case EVENT_ToggleActorGroupFlag:
-            return fmt::format("{}: ToggleActorGroupFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, std::to_underlying(data.actor_flag_descr.attr), data.actor_flag_descr.is_set);
+            return fmt::format("{}: ToggleActorGroupFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id,
+                               std::to_underlying(data.actor_flag_descr.attr), data.actor_flag_descr.is_set);
         case EVENT_ToggleChestFlag:
-            return fmt::format("{}: ToggleChestFlag({}, 0x{:x}, {})", step, data.chest_flag_descr.chest_id, std::to_underlying(data.chest_flag_descr.flag), data.chest_flag_descr.is_set);
+            return fmt::format("{}: ToggleChestFlag({}, 0x{:x}, {})", step, data.chest_flag_descr.chest_id,
+                               std::to_underlying(data.chest_flag_descr.flag), data.chest_flag_descr.is_set);
         case EVENT_CharacterAnimation:
             return fmt::format("{}: SetReaction({}, {})", step, std::to_underlying(who), std::to_underlying(data.speech_id));
         case EVENT_SetActorItem:
-            return fmt::format("{}: SetActorItem({}, {}, {})", step, data.npc_item_descr.id, std::to_underlying(data.npc_item_descr.item), data.npc_item_descr.is_give);
+            return fmt::format("{}: SetActorItem({}, {}, {})", step, data.npc_item_descr.id,
+                               std::to_underlying(data.npc_item_descr.item), data.npc_item_descr.is_give);
         case EVENT_OnDateTimer:
             // TODO
             break;
@@ -891,7 +926,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             ir.data.move_map_descr.yaw = fromStream<uint32_t>(stream);
             ir.data.move_map_descr.pitch = fromStream<uint32_t>(stream);
             ir.data.move_map_descr.zspeed = fromStream<uint32_t>(stream);
-            ir.data.move_map_descr.house_id = static_cast<HouseId>(fromStream<uint8_t>(stream)); // TODO(captainurist): Is this correct? Houses can have ids > 255.
+            ir.data.move_map_descr.house_id = static_cast<HouseId>(fromStream<uint8_t>(stream)); // TODO(captainurist): houses can have ids > 255.
             ir.data.move_map_descr.exit_pic_id = fromStream<uint8_t>(stream);
             ir.str = fromStream<std::string>(stream, tags::nullTerminated);
             break;
@@ -964,7 +999,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
         case EVENT_CastSpell:
             requireSize(32);
             ir.data.spell_descr.spell_id = static_cast<SpellId>(fromStream<uint8_t>(stream));
-            ir.data.spell_descr.spell_mastery = static_cast<Mastery>(fromStream<uint8_t>(stream) + 1);  // TODO(yoctozepto): why add 1? it is not done with Event_CheckSkill
+            ir.data.spell_descr.spell_mastery = static_cast<Mastery>(fromStream<uint8_t>(stream) + 1); // TODO(yoctozepto): why add 1? CheckSkill doesn't.
             ir.data.spell_descr.spell_level = fromStream<uint8_t>(stream);
             ir.data.spell_descr.fromx = fromStream<uint32_t>(stream);
             ir.data.spell_descr.fromy = fromStream<uint32_t>(stream);
