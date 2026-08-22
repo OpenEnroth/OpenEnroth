@@ -2,7 +2,6 @@
 #include <optional>
 #include <string>
 #include <utility>
-#include <variant>
 
 #include <tl/generator.hpp>
 
@@ -230,13 +229,12 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && ir.step == 1)
                 ir.str = "out06.odm";
 
-            MapDestination destination = moveToMapDestination(ir);
-
             // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
-            //                 other, so the placement of the one it picked has to survive the rest of them.
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition &&
-                std::holds_alternative<PartyPlacement>(engine->_pendingTransition->arrival))
-                destination.arrival = engine->_pendingTransition->arrival;
+            //                 other, only the one it picked gets to run.
+            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
+                break;
+
+            MapDestination destination = moveToMapDestination(ir);
             if (destination.map == MAP_INVALID) { // teleport within map
                 if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
