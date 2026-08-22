@@ -676,7 +676,6 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_OnIndoorEntryExit: {
-                // Read before DialogueEnding, which destroys the window this came from.
                 assert(pDialogueWindow && pDialogueWindow->eWindowType == WINDOW_IndoorEntryExit);
                 GUIWindow_IndoorEntryExit *window = static_cast<GUIWindow_IndoorEntryExit *>(pDialogueWindow.get());
                 MapDestination destination = window->destination();
