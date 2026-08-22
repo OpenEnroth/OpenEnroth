@@ -63,6 +63,22 @@ MM_NOINLINE void stackTraceAbortFunction() {
 }
 #endif
 
+MM_NOINLINE int stackTraceNonLeafCrashingFunction() {
+    volatile int prelude = stackTraceMarkerFunction().size(); // A real call first, so this frame exists.
+    int *volatile nowhere = nullptr;
+    *nowhere = prelude;
+    return *nowhere;
+}
+
+// PROBE: asserts on a string that can't match, so gtest dumps the child's stderr and CI logs show the trace.
+UNIT_TEST(StackTrace, ProbeNonLeafCrashFrames) {
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+        StackTraceOnCrash handler;
+        stackTraceNonLeafCrashingFunction();
+    }, "ZZ_PROBE_NO_MATCH_ZZ");
+}
+
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
     std::string trace = stackTraceMarkerFunction();
 
