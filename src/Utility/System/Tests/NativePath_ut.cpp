@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -26,12 +27,63 @@ UNIT_TEST(NativePath, Literals) {
 
 UNIT_TEST(NativePath, Composition) {
     EXPECT_EQ((NativePath("a/b") / NativePath("c.txt")).toWtf8(), "a/b/c.txt");
+    EXPECT_EQ((NativePath("a/b/") / NativePath("c.txt")).toWtf8(), "a/b/c.txt"); // No doubled separator.
+    EXPECT_EQ((NativePath() / NativePath("c.txt")).toWtf8(), "c.txt");
+
+    // A rooted tail replaces the head instead of being appended to it.
+    EXPECT_EQ((NativePath("a/b") / NativePath("/c.txt")).toWtf8(), "/c.txt");
 }
 
 UNIT_TEST(NativePath, WithExtension) {
     EXPECT_EQ(NativePath("a/b.json").withExtension(".mm7").toWtf8(), "a/b.mm7");
     EXPECT_EQ(NativePath("a/b").withExtension(".mm7").toWtf8(), "a/b.mm7");
     EXPECT_EQ(NativePath("a/b.json").withExtension("").toWtf8(), "a/b");
+    EXPECT_EQ(NativePath("a/b.json").withExtension("mm7").toWtf8(), "a/b.mm7"); // The leading dot is optional.
+    EXPECT_EQ(NativePath("a.tar.gz").withExtension(".zip").toWtf8(), "a.tar.zip"); // Only the last extension goes.
+    EXPECT_EQ(NativePath("a/.bashrc").withExtension(".txt").toWtf8(), "a/.bashrc.txt"); // A dotfile has no extension.
+    EXPECT_EQ(NativePath("a.d/b").withExtension(".txt").toWtf8(), "a.d/b.txt"); // Dots in directory names don't count.
+}
+
+#ifdef _WINDOWS
+UNIT_TEST(NativePath, WindowsRoots) {
+    EXPECT_EQ(NativePath::fromWtf8("a\\b").toWtf8(), "a/b"); // Both slashes separate components on Windows.
+
+    EXPECT_EQ((NativePath("C:/a") / NativePath("D:/b")).toWtf8(), "D:/b"); // Another drive replaces everything.
+    EXPECT_EQ((NativePath("C:/a") / NativePath("/b")).toWtf8(), "C:/b"); // A rooted tail keeps our drive.
+    EXPECT_EQ((NativePath("C:/a") / NativePath("C:b")).toWtf8(), "C:/a/b"); // Same drive, so it's a plain append.
+    EXPECT_EQ((NativePath("C:") / NativePath("b")).toWtf8(), "C:b"); // Drive-relative, no separator inserted.
+    EXPECT_EQ((NativePath("//server/share") / NativePath("f")).toWtf8(), "//server/share/f");
+}
+#endif
+
+UNIT_TEST(NativePath, LexicalOpsMatchStdFilesystem) {
+    // Path manipulation is ours now instead of std::filesystem's, so check it against std::filesystem as an oracle.
+    // Every string here is ASCII on purpose - on Windows std::filesystem::path converts narrow strings per the C
+    // locale, so anything else would be comparing against an oracle that mangles its input.
+    std::vector<std::string> paths = {
+        "", ".", "..", "a", "a/", "/a", "a/b", "a/b/", "/", "a.txt", ".bashrc", "a.tar.gz", "a.d/b", "/a/b.c"
+    };
+
+    // Root names and backslash separators exist on Windows only. POSIX says a path starting with exactly two slashes
+    // is implementation-defined, and libstdc++ reads it as a root name, while NativePath never does.
+#ifdef _WINDOWS
+    for (std::string_view windowsPath : {"C:", "C:a", "C:/a", "D:/b", "//server", "//server/share", "a\\b"})
+        paths.emplace_back(windowsPath);
+#endif
+
+    for (const std::string &head : paths) {
+        for (const std::string &tail : paths)
+            EXPECT_EQ((NativePath::fromWtf8(head) / NativePath::fromWtf8(tail)).toWtf8(),
+                      (std::filesystem::path(head) / std::filesystem::path(tail)).generic_string())
+                << "'" << head << "' / '" << tail << "'";
+
+        for (std::string_view extension : {"", ".x", "x", ".tar.gz"}) {
+            std::filesystem::path expected = std::filesystem::path(head);
+            expected.replace_extension(extension);
+            EXPECT_EQ(NativePath::fromWtf8(head).withExtension(extension).toWtf8(), expected.generic_string())
+                << "'" << head << "' + '" << extension << "'";
+        }
+    }
 }
 
 UNIT_TEST(NativePath, DisplayString) {
