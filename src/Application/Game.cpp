@@ -2,11 +2,12 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
 #include <memory>
-#include <optional>
 
 #include "Arcomage/Arcomage.h"
 
@@ -31,6 +32,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/Localization.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
@@ -675,7 +677,9 @@ void Game::processQueuedMessages() {
 
             case UIMSG_OnIndoorEntryExit: {
                 // Read before DialogueEnding, which destroys the window this came from.
-                MapDestination destination = static_cast<GUIWindow_IndoorEntryExit *>(pDialogueWindow.get())->destination();
+                assert(pDialogueWindow && pDialogueWindow->eWindowType == WINDOW_IndoorEntryExit);
+                GUIWindow_IndoorEntryExit *window = static_cast<GUIWindow_IndoorEntryExit *>(pDialogueWindow.get());
+                MapDestination destination = window->destination();
 
                 engine->_messageQueue->clear();
                 playButtonSoundOnEscape = false;
@@ -832,7 +836,8 @@ void Game::processQueuedMessages() {
                 uint16_t v53 = std::to_underlying(houseTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     int v54 = std::abs(v53) - 1;
-                    destination.arrival = PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
+                    destination.arrival = PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]),
+                                                         teleportYaw[v54], 0, 0);
                 }
                 engine->_pendingTransition = destination;
                 houseDialogPressEscape();

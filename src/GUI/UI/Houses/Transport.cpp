@@ -12,6 +12,7 @@
 #include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Camera.h"

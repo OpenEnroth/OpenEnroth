@@ -13,6 +13,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"

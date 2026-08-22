@@ -4,6 +4,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"

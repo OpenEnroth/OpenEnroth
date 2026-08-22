@@ -8,11 +8,12 @@
 #include "Library/Geometry/Vec.h"
 
 /**
- * Where the party ends up, in absolute map coordinates.
+ * Where the party ends up and which way it faces, in absolute map coordinates.
  */
 struct PartyPlacement {
     PartyPlacement() = default;
-    PartyPlacement(const Vec3f &pos, int yaw, int pitch, int zSpeed) : pos(pos), yaw(yaw), pitch(pitch), zSpeed(zSpeed) {}
+    PartyPlacement(const Vec3f &pos, int yaw, int pitch, int zSpeed)
+        : pos(pos), yaw(yaw), pitch(pitch), zSpeed(zSpeed) {}
 
     Vec3f pos;
     int yaw = -1; // -1 keeps the current yaw. Shipped scripts use it for the in-map teleporters in the Erathian
@@ -33,10 +34,11 @@ struct MapDestination {
     MapDestination(MapId map, const PartyPlacement &placement) : map(map), arrival(placement) {}
 
     /**
-     * Start points name a decoration in the map that's being entered, so this can only be called once that map is
-     * loaded.
+     * A `MapStartPoint` arrival names a decoration in the map that's being entered, so this can only be called once
+     * that map is loaded. A `PartyPlacement` arrival is already in absolute coordinates and has no such requirement.
      *
-     * @return                          Where the party ends up, or empty if it shouldn't be moved at all.
+     * @return                          Where the party ends up, or empty if it shouldn't be moved at all. A map
+     *                                  that has no such start point decoration leaves the party where it is.
      */
     [[nodiscard]] std::optional<PartyPlacement> resolvePlacement() const;
 
@@ -45,6 +47,8 @@ struct MapDestination {
 };
 
 /**
- * Moves the party. Refuses positions the map can't hold, logging an error.
+ * Moves the party, or leaves it where it is and logs an error if the target is unusable - indoors that means a
+ * position outside every sector, outdoors one past the map bounds. An outdoor position below the floor is only
+ * warned about, the next update drops the party down onto it.
  */
 void placeParty(const PartyPlacement &placement);

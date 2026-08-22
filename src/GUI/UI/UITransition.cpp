@@ -190,7 +190,6 @@ void GUIWindow_IndoorEntryExit::Update() {
     render->DrawQuad2D(dialogue_ui_x_ok_u, {476, 451});
 
     MapId map_id = engine->_currentLoadedMapId;
-    // TODO(captainurist): mm7 map names never starts with ' ', what is this check?
     if (pMovie_Track || getSpecialTransferMessageIndex(_mapName)) {
         map_id = pMapStats->GetMapInfo(_mapName);
     }

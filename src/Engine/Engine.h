@@ -206,7 +206,11 @@ Duration timeUntilDawn();
 void initLevelStrings(const Blob &blob);
 void loadMapEventsAndStrings(MapId mapid);
 bool _44100D_should_alter_right_panel();
-void startMapTransition(const MapDestination &destination);  // sub_44987B idb
+
+/**
+ * @offset 0x44987B
+ */
+void startMapTransition(const MapDestination &destination);
 
 void TeleportToNWCDungeon();
 

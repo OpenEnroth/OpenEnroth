@@ -2,6 +2,7 @@
 #include <optional>
 #include <string>
 #include <utility>
+#include <variant>
 
 #include <tl/generator.hpp>
 
@@ -16,6 +17,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/Spells.h"
@@ -113,9 +115,12 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
 }
 
 /**
- * @return                              Where a MoveToMap instruction sends the party. An all-zero position means the
- *                                      script isn't moving the party, which is how the MM6 castle doors open their
- *                                      throne rooms without a teleport.
+ * @param ir                            MoveToMap instruction.
+ * @return                              Where it sends the party. An all-zero position means the script isn't placing
+ *                                      the party itself - on the current map it stays put, which is how the MM6
+ *                                      castle doors open their throne rooms without a teleport, and on another map
+ *                                      it arrives at Party Start. Yaw, pitch and speed are ignored in that case, and
+ *                                      every shipped record with a zero position has them at zero anyway.
  */
 static MapDestination moveToMapDestination(const EvtInstruction &ir) {
     const auto &descr = ir.data.move_map_descr;
@@ -229,7 +234,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
 
             // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
             //                 other, so the placement of the one it picked has to survive the rest of them.
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
+            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition &&
+                std::holds_alternative<PartyPlacement>(engine->_pendingTransition->arrival))
                 destination.arrival = engine->_pendingTransition->arrival;
             if (destination.map == MAP_INVALID) { // teleport within map
                 if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {

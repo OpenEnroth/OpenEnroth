@@ -17,8 +17,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/Decoration.h"
-#include "Engine/Objects/DecorationList.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
@@ -1503,19 +1501,19 @@ GAME_TEST(Prs, Pr2626) {
     EXPECT_EQ(pIndoor->GetSector(-1849, 6726.5f, 934), 23);
 }
 
-GAME_TEST(Issues, Pr2599) {
-    // A cross-map teleport puts the party exactly where the script says. Zero components used to be filled in from
-    // the destination's start point decoration, and Erathia has no start decoration at all, only the four
-    // directional ones for foot travel - so this exit, which arrives with z=0, used to keep whatever z the party
-    // had back in the dungeon it came from.
+GAME_TEST(Prs, Pr2599) {
+    // A cross-map arrival used to land at the wrong height. Zero components of the target position were treated as
+    // unset and filled in from the destination's start point decoration, and Erathia has no start decoration at all,
+    // only the four directional ones for foot travel - so this exit, which arrives with z=0, kept whatever z the
+    // party had back in the dungeon it came from. The harness builds the same PartyPlacement a script would.
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(14207, -21526, 0), 270);
     EXPECT_EQ(pParty->pos, Vec3f(14207, -21526, 0));
     EXPECT_EQ(pParty->uFallStartZ, 0);
     EXPECT_EQ(pParty->_viewYaw, 1536);
 
-    // The six shipped scripts that arrive with a zero component are unaffected, because the decoration holds the
-    // same value there anyway. This is the Colony Zod entrance, whose x is zero in the script and in the decoration.
+    // Zero components are still taken literally. This is the Colony Zod entrance, x is zero both in the script and
+    // in the decoration, so a per-component "zero means skip" rule would carry the Erathia x over instead.
     game.teleportTo(MAP_COLONY_ZOD, Vec3f(0, -709, 1), 90);
     EXPECT_EQ(pParty->pos, Vec3f(0, -709, 1));
 }
