@@ -837,7 +837,8 @@ void Game::processQueuedMessages() {
                 continue;
             }
             case UIMSG_OnCastTownPortal:
-                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_TownPortalBook>(Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
+                pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_TownPortalBook>(
+                    Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
                 continue;
 
             case UIMSG_OnCastLloydsBeacon:
@@ -1248,7 +1249,9 @@ void Game::processQueuedMessages() {
                         current_screen_type = SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
                         // drawing object list which is used to count actors for some spells
-                        engine->_messageQueue->addMessageNextFrame(UIMSG_CastSpellFromBook, std::to_underlying(selectedSpell), pParty->activeCharacterIndex() - 1);
+                        engine->_messageQueue->addMessageNextFrame(UIMSG_CastSpellFromBook,
+                                                                   std::to_underlying(selectedSpell),
+                                                                   pParty->activeCharacterIndex() - 1);
                     } else {
                         spellbookSelectedSpell = selectedSpell;
                     }
@@ -1392,7 +1395,8 @@ void Game::processQueuedMessages() {
                 new OnCancel2(pCharacterScreen_ExitBtn->rect.topLeft(), {0, 0}, pCharacterScreen_ExitBtn);
                 continue;
             case UIMSG_ClickBooksBtn:
-                assert(uMessageParam >= std::to_underlying(BOOK_BUTTON_FIRST) && uMessageParam <= std::to_underlying(BOOK_BUTTON_LAST) && "Invalid book button action");
+                assert(uMessageParam >= std::to_underlying(BOOK_BUTTON_FIRST) &&
+                       uMessageParam <= std::to_underlying(BOOK_BUTTON_LAST) && "Invalid book button action");
                 ((GUIWindow_Book *)pGUIWindow_CurrentMenu.get())->bookButtonClicked(BookButtonAction(uMessageParam));
                 continue;
             case UIMSG_SelectCharacter:

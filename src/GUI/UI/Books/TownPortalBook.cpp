@@ -114,7 +114,8 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags
         count = TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS;
     }
     for (int i = 0; i < count; ++i) {
-        CreateButton(fmt::format("TownPortalBook_Marker{}", i), townPortalButtonsPos[i].topLeft(), townPortalButtonsPos[i].size(), BUTTON_TYPE_NORMAL, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
+        CreateButton(fmt::format("TownPortalBook_Marker{}", i), townPortalButtonsPos[i].topLeft(),
+                     townPortalButtonsPos[i].size(), BUTTON_TYPE_NORMAL, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
     }
 }
 

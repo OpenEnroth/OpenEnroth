@@ -20,7 +20,8 @@
 
 LogCategory ScriptingSystem::ScriptingLogCategory("script");
 
-ScriptingSystem::ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication, DistLogSink &distLogSink)
+ScriptingSystem::ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile,
+                                 PlatformApplication &platformApplication, DistLogSink &distLogSink)
     : _scriptFolder(scriptFolder), _entryPointFile(entryPointFile), _platformApplication(platformApplication), _distLogSink(distLogSink) {
     _solState = std::make_unique<sol::state>();
     _scriptingLogSink = std::make_unique<ScriptLogSink>(*_solState);

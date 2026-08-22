@@ -696,7 +696,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
     ObjectDesc *objectDesc = &pObjectList->pObjects[object->uObjectDescID];
 
     if (pid.type() == OBJECT_Actor) {
-        if (object->spell_caster_pid.type() == OBJECT_Actor && pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()]) == HOSTILITY_FRIENDLY) {
+        if (object->spell_caster_pid.type() == OBJECT_Actor &&
+            pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()]) == HOSTILITY_FRIENDLY) {
             return 1;
         }
     } else {

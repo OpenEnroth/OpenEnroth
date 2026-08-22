@@ -36,7 +36,9 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
                     "If neither this argument is supplied nor the environment variable is set, "
                     "then OpenEnroth will try to look for game data in the current folder, "
                     "then on Windows it will also try to read the path from registry, "
-                    "and on MacOS it will also try to look in '~/Library/Application Support/OpenEnroth'.", mm7PathOverrideKey))->check(CLI::ExistingDirectory)->option_text("PATH");
+                    "and on MacOS it will also try to look in '~/Library/Application Support/OpenEnroth'.",
+                    mm7PathOverrideKey))
+        ->check(CLI::ExistingDirectory)->option_text("PATH");
     app->add_option(
         "--user-path", result.userPath,
         fmt::format("Path to OpenEnroth user data folder. Default is '{}'.",

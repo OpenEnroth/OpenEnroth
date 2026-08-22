@@ -41,7 +41,8 @@ static LodEntry parseDirectoryEntry(InputStream &stream, LodVersion version, siz
 
     size_t expectedDataSize = result.numItems * fileEntrySize(version);
     if (result.dataSize < expectedDataSize)
-        throw Exception("File '{}' is not a valid LOD: invalid root directory index size, expected at least {} bytes, got {} bytes", stream.displayPath(), expectedDataSize, result.dataSize);
+        throw Exception("File '{}' is not a valid LOD: invalid root directory index size, expected at least {} bytes, "
+                        "got {} bytes", stream.displayPath(), expectedDataSize, result.dataSize);
 
     if (result.dataOffset + result.dataSize > lodSize)
         throw Exception("File '{}' is not a valid LOD: root directory index points outside the LOD file", stream.displayPath());

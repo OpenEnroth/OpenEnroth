@@ -131,7 +131,9 @@ void BaseRenderer::DrawSpriteObjects() {
                                              object->uSectorID, lightradius, color, _4E94D3_light_type);
             }
 
-            if (render->AddBillboardIfVisible(frame->sprites[octant], frame->paletteId, posMod, { frame->scale, frame->scale }, setflags, Pid(OBJECT_Sprite, i), object->uSectorID)) {
+            if (render->AddBillboardIfVisible(frame->sprites[octant], frame->paletteId, posMod,
+                                              { frame->scale, frame->scale }, setflags, Pid(OBJECT_Sprite, i),
+                                              object->uSectorID)) {
                 ++uNumSpritesDrawnThisFrame;
                 object->uAttributes |= SPRITE_VISIBLE;
             }
@@ -203,10 +205,13 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         // OpenEnroth do not support mods and data patches right now. TODO(pskelton): data patch
                         // So the changes are in C++ code. But it better be placed in lua scripts or binary data patches.
                         static const std::unordered_set<DecorationId> lightEmittingDecorations = {
-                            DECORATION_CAMPFIRE_5, DECORATION_CAULDRON_6, DECORATION_BARREL_27, DECORATION_BURNED_OUT_FIRE_222, DECORATION_FIRE_184, DECORATION_MUSHROOM_187,
-                            DECORATION_MUSHROOM_190, DECORATION_BEACON_FIRE_206, DECORATION_BEACON_FIRE_207, DECORATION_BEACON_FIRE_208, DECORATION_BEACON_FIRE_209,
-                            DECORATION_MAGIC_PEDASTAL_210, DECORATION_MAGIC_PEDASTAL_211, DECORATION_MAGIC_PEDASTAL_212, DECORATION_MAGIC_PEDASTAL_213, DECORATION_MAGIC_PEDASTAL_214,
-                            DECORATION_MAGIC_PEDASTAL_215, DECORATION_MAGIC_PEDASTAL_216, DECORATION_MAGIC_PEDASTAL_217, DECORATION_MAGIC_PEDASTAL_218, DECORATION_MAGIC_PEDASTAL_219,
+                            DECORATION_CAMPFIRE_5, DECORATION_CAULDRON_6, DECORATION_BARREL_27,
+                            DECORATION_BURNED_OUT_FIRE_222, DECORATION_FIRE_184, DECORATION_MUSHROOM_187,
+                            DECORATION_MUSHROOM_190, DECORATION_BEACON_FIRE_206, DECORATION_BEACON_FIRE_207,
+                            DECORATION_BEACON_FIRE_208, DECORATION_BEACON_FIRE_209, DECORATION_MAGIC_PEDASTAL_210,
+                            DECORATION_MAGIC_PEDASTAL_211, DECORATION_MAGIC_PEDASTAL_212, DECORATION_MAGIC_PEDASTAL_213,
+                            DECORATION_MAGIC_PEDASTAL_214, DECORATION_MAGIC_PEDASTAL_215, DECORATION_MAGIC_PEDASTAL_216,
+                            DECORATION_MAGIC_PEDASTAL_217, DECORATION_MAGIC_PEDASTAL_218, DECORATION_MAGIC_PEDASTAL_219,
                             DECORATION_MAGIC_PEDASTAL_220, DECORATION_MAGIC_PEDASTAL_221
                         };
 
@@ -230,7 +235,8 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     }
 
 
-                    if (render->AddBillboardIfVisible(frame->sprites[(int64_t)v37], frame->paletteId, pLevelDecorations[i].vPosition, { frame->scale, frame->scale },
+                    if (render->AddBillboardIfVisible(frame->sprites[(int64_t)v37], frame->paletteId,
+                                                      pLevelDecorations[i].vPosition, {frame->scale, frame->scale},
                         v38, Pid(OBJECT_Decoration, i))) {
                         ++uNumDecorationsDrawnThisFrame;
                         // TODO(pskelton): what is this for?

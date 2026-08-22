@@ -313,7 +313,9 @@ std::string MakeDateTimeString(Duration time) {
 //----- (004B1854) --------------------------------------------------------
 void GUIWindow::DrawShops_next_generation_time_string(Duration time, Recti frameRect) {
     auto str = MakeDateTimeString(time);
-    DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, frameRect.w, 0)) / 2 + 101, colorTable.PaleCanary, localization->str(LSTR_PLEASE_TRY_BACK_IN) + str, 3, frameRect);
+    DrawTitleText(assets->pFontArrus.get(), 0,
+                  (212 - assets->pFontArrus->CalcTextHeight(str, frameRect.w, 0)) / 2 + 101, colorTable.PaleCanary,
+                  localization->str(LSTR_PLEASE_TRY_BACK_IN) + str, 3, frameRect);
 }
 
 //----- (0044D406) --------------------------------------------------------
@@ -408,7 +410,9 @@ GUIButton *GUIWindow::CreateButton(std::string id, Pointi position, Sizei dimens
 }
 
 void GUIWindow::CreateCharacterButtons() {
-    CreateButton("Game_Character1", { 61, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);  // buttons for portraits
+    // buttons for portraits
+    CreateButton("Game_Character1", { 61, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 1,
+                 INPUT_ACTION_SELECT_CHAR_1);
     CreateButton("Game_Character2", { 177, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
     CreateButton("Game_Character3", { 292, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
     CreateButton("Game_Character4", { 407, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);

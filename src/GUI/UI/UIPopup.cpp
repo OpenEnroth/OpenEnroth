@@ -256,7 +256,9 @@ static void CharacterUI_DrawTooltip(std::string_view title, std::string_view con
     auto colored_title = fmt::format(
         "{::}{}\f00000\n", ui_character_tooltip_header_default_color.tag(), title);
     GUIWindow::DrawTitleText(assets->pFontCreate.get(), 0, 0, colorTable.White, colored_title, 3, popup_window);
-    GUIWindow::DrawText(assets->pFontSmallnum.get(), {1, assets->pFontLucida->GetHeight()}, colorTable.White, content, popup_window);  // popup_window.uFrameY + popup_window.uFrameHeight
+    // popup_window.uFrameY + popup_window.uFrameHeight
+    GUIWindow::DrawText(assets->pFontSmallnum.get(), {1, assets->pFontLucida->GetHeight()}, colorTable.White, content,
+                        popup_window);
 }
 
 //----- (004151D9) --------------------------------------------------------
@@ -602,7 +604,9 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
             if (formatting)
                 txt4 += fmt::format(" {}:mn", d.minutes);
 
-            GUIWindow::DrawText(assets->pFontComic.get(), {100, iteminfo_window.h - 2 * assets->pFontComic->GetHeight()}, colorTable.White, txt4, iteminfo_window);
+            GUIWindow::DrawText(assets->pFontComic.get(),
+                                {100, iteminfo_window.h - 2 * assets->pFontComic->GetHeight()}, colorTable.White, txt4,
+                                iteminfo_window);
         }
 
         auto txt2 = fmt::format(
@@ -922,13 +926,15 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
         }
         if (monsterInfo.spell1Id != SPELL_NONE) {
             if (extended)
-                spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName, localization->skillValueShortString(monsterInfo.spell1SkillMastery));
+                spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName,
+                                        localization->skillValueShortString(monsterInfo.spell1SkillMastery));
             else
                 spell1Str = pSpellStats->pInfos[monsterInfo.spell1Id].pShortName;
         }
         if (monsterInfo.spell2Id != SPELL_NONE) {
             if (extended)
-                spell3Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell2Id].pShortName, localization->skillValueShortString(monsterInfo.spell2SkillMastery));
+                spell3Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell2Id].pShortName,
+                                        localization->skillValueShortString(monsterInfo.spell2SkillMastery));
             else
                 spell2Str = pSpellStats->pInfos[monsterInfo.spell2Id].pShortName;
         }
@@ -1068,7 +1074,9 @@ std::string CharacterUI_GetSkillDescText(int uPlayerID, Skill uPlayerSkillType) 
     }
 
     if (base_skill != actual_skill)
-        Description += fmt::format("{::}\n{}\t{:03}:\t{:03}+{}\n", colorTable.White.tag(), localization->str(LSTR_BONUS_2), line_width + 3, line_width + 10, actual_skill - base_skill);
+        Description += fmt::format("{::}\n{}\t{:03}:\t{:03}+{}\n", colorTable.White.tag(),
+                                   localization->str(LSTR_BONUS_2), line_width + 3, line_width + 10,
+                                   actual_skill - base_skill);
 
     return Description;
 }
@@ -1383,7 +1391,9 @@ static void drawBuffPopupWindow() {
             stringCount++;
             if (i == PARTY_BUFF_PROTECTION_FROM_MAGIC && engine->config->gameplay.ShowProtectionMagicPower.value()) {
                 yPos = stringCount * assets->pFontComic->GetHeight() + 40;
-                GUIWindow::DrawText(assets->pFontComic.get(), {32, yPos}, colorTable.White, "\r020" + localization->format(LSTR_REMAINING_POWER, pParty->pPartyBuffs[i].power), frameRect);
+                GUIWindow::DrawText(assets->pFontComic.get(), {32, yPos}, colorTable.White,
+                                    "\r020" + localization->format(LSTR_REMAINING_POWER, pParty->pPartyBuffs[i].power),
+                                    frameRect);
                 stringCount++;
             }
         }
@@ -1617,7 +1627,8 @@ void ShowPopupShopItem() {
                 }
 
                 if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
-                    if ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) || (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))) {
+                    if ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) ||
+                        (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))) {
                         showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].itemId);
                     }
                 }

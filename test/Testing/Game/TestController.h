@@ -23,7 +23,8 @@ class TestController {
 
     void loadGameFromTestData(std::string_view name);
     void playTraceFromTestData(std::string_view saveName, std::string_view traceName, std::function<void()> postLoadCallback = {});
-    void playTraceFromTestData(std::string_view saveName, std::string_view traceName, EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback = {});
+    void playTraceFromTestData(std::string_view saveName, std::string_view traceName, EngineTracePlaybackFlags flags,
+                               std::function<void()> postLoadCallback = {});
 
     void prepareForNextTest();
     void prepareForNextTest(int frameTimeMs, RandomEngineType rngType);

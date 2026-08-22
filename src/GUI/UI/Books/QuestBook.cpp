@@ -34,9 +34,11 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() {
     ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
 
     pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), ui_book_button1_on->size(), BUTTON_TYPE_NORMAL, 0,
-                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_UP), {ui_book_button1_on});
+                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT,
+                               localization->str(LSTR_SCROLL_UP), {ui_book_button1_on});
     pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), ui_book_button2_on->size(), BUTTON_TYPE_NORMAL, 0,
-                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
+                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT,
+                               localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
     for (auto i : pQuestTable.indices()) {
         if (pParty->_questBits[i] && !pQuestTable[i].empty()) {
@@ -69,7 +71,8 @@ void GUIWindow_QuestBook::Update() {
     // for other text
     Recti questbook_window(48, 70, 360, 264);
 
-    if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES && _bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
+    if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES && _bookButtonAction == BOOK_NEXT_PAGE &&
+        (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _startingQuestIdx += _currentPageQuests;
         _questsPerPage[_currentPage] = _currentPageQuests;

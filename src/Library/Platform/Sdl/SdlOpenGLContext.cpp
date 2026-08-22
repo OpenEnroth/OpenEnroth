@@ -4,7 +4,8 @@
 
 #include "SdlPlatformSharedState.h"
 
-SdlOpenGLContext::SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *window, SDL_GLContext context): _state(state), _window(window), _context(context) {
+SdlOpenGLContext::SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *window, SDL_GLContext context)
+    : _state(state), _window(window), _context(context) {
     assert(state);
     assert(window);
     assert(context);

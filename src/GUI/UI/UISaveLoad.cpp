@@ -259,7 +259,8 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_Save, {0, 0}, rende
     CreateButton("SaveMenu_Slot5", {21, 298}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 5);
     CreateButton("SaveMenu_Slot6", {21, 318}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 6);
 
-    pBtnLoadSlot = CreateButton("SaveMenu_Save", {241, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
+    pBtnLoadSlot = CreateButton("SaveMenu_Save", {241, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0,
+                                INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
     pBtnCancel = CreateButton({350, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
     pBtnArrowUp = CreateButton({215, 199}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
     pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
@@ -337,7 +338,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_Load, {0
     CreateButton("LoadMenu_Slot5", {21, 303}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 5);
     CreateButton("LoadMenu_Slot6", {21, 324}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 6);
 
-    pBtnLoadSlot = CreateButton("LoadMenu_Load", {241, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
+    pBtnLoadSlot = CreateButton("LoadMenu_Load", {241, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0,
+                                INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
     pBtnCancel = CreateButton({350, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
     pBtnArrowUp = CreateButton({215, 199}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
     pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});

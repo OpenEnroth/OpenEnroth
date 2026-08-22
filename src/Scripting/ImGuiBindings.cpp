@@ -15,7 +15,9 @@ std::tuple<bool, bool> imGuiBeginEx(const std::string &name, bool isOpened, ImGu
 void imGuiEnd() { ImGui::End(); }
 
 // Child Windows
-bool imGuiBeginChild(const std::string &name, float sizeX, float sizeY, bool border, ImGuiWindowFlags_ flags) { return ImGui::BeginChild(name.c_str(), { sizeX, sizeY }, border, flags); }
+bool imGuiBeginChild(const std::string &name, float sizeX, float sizeY, bool border, ImGuiWindowFlags_ flags) {
+    return ImGui::BeginChild(name.c_str(), { sizeX, sizeY }, border, flags);
+}
 void imGuiEndChild() { ImGui::EndChild(); }
 
 // Windows Utilities
@@ -134,13 +136,17 @@ int inputTextCallback(ImGuiInputTextCallbackData *data) {
 
 std::tuple<std::string, bool> imGuiInputTextWithHint(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags) {
     ImGuiInputTextUserData userData{ &text, nullptr };
-    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
+    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1,
+                                             flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
     return { text, selected };
 }
 
-std::tuple<std::string, bool> imGuiInputTextWithHintEx(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags, sol::function callback) {
+std::tuple<std::string, bool> imGuiInputTextWithHintEx(const std::string &label, const std::string &hint,
+                                                       std::string text, ImGuiInputTextFlags flags,
+                                                       sol::function callback) {
     ImGuiInputTextUserData userData{ &text, callback.valid() ? &callback : nullptr };
-    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
+    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1,
+                                             flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
     return { text, selected };
 }
 

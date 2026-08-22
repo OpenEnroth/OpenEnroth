@@ -12,12 +12,14 @@
 
 class FileSystemDumper {
  public:
-    FileSystemDumper(FILE *stream, FileSystem *fs, FileSystemDumpFlags flags, int maxEntries) : _stream(stream), _fs(fs), _flags(flags), _maxEntries(maxEntries) {
+    FileSystemDumper(FILE *stream, FileSystem *fs, FileSystemDumpFlags flags, int maxEntries)
+        : _stream(stream), _fs(fs), _flags(flags), _maxEntries(maxEntries) {
         assert(stream);
         assert(fs);
     }
 
-    FileSystemDumper(std::vector<FileSystemDumpEntry> *target, FileSystem *fs, FileSystemDumpFlags flags, int maxEntries) : _target(target), _fs(fs), _flags(flags), _maxEntries(maxEntries) {
+    FileSystemDumper(std::vector<FileSystemDumpEntry> *target, FileSystem *fs, FileSystemDumpFlags flags, int maxEntries)
+        : _target(target), _fs(fs), _flags(flags), _maxEntries(maxEntries) {
         assert(target);
         assert(fs);
     }

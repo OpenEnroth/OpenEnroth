@@ -560,7 +560,8 @@ std::string GUIFont::FitTwoFontStringInWindow(std::string_view inString, GUIFont
             if (!currentFont->_font.supports(c))
                 break;
 
-            if ((lineWidth + currentFont->_font.metrics(c).width + currentFont->_font.metrics(c).leftSpacing + currentFont->_font.metrics(c).rightSpacing) < width) {
+            if ((lineWidth + currentFont->_font.metrics(c).width + currentFont->_font.metrics(c).leftSpacing +
+                 currentFont->_font.metrics(c).rightSpacing) < width) {
                 if (i > newlinePos)
                     lineWidth += currentFont->_font.metrics(c).leftSpacing;
                 lineWidth += currentFont->_font.metrics(c).width;

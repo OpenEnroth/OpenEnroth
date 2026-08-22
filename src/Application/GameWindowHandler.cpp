@@ -498,8 +498,10 @@ bool GameWindowHandler::wheelEvent(const PlatformWheelEvent *event) {
 }
 
 bool GameWindowHandler::moveEvent(const PlatformMoveEvent *event) {
-    /* Remember window position after move. Move position event is also triggered on toggling fullscreen. And we should save current window position prior to entering fullscreen.
-     * As entering fullscreen will forcefully move window to {0,0} position on current display. And we want to restore position prior to entering fullscreen and not {0,0} or startup one. */
+    // Remember window position after move. Move position event is also triggered on toggling fullscreen, and we
+    // should save the window position prior to entering fullscreen, as entering fullscreen will forcefully move the
+    // window to {0,0} on the current display. We want to restore the position prior to entering fullscreen, and not
+    // {0,0} or the startup one.
     PlatformWindowMode mode = window->windowMode();
     if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
         Pointi pos = event->pos;

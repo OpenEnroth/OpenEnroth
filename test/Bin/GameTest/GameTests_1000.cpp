@@ -672,7 +672,12 @@ GAME_TEST(Issues, Issue1370) {
 
     // Can be any character selected to talk on map change
     auto someonesTalking = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.portrait == PORTRAIT_TALK) return true; return false; });
-    auto talkExprTimeTape = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.portrait == PORTRAIT_TALK) return ch.portraitTimeLength; return Duration(); });
+    auto talkExprTimeTape = tapes.custom([] {
+        for (const auto& ch : pParty->pCharacters)
+            if (ch.portrait == PORTRAIT_TALK)
+                return ch.portraitTimeLength;
+        return Duration();
+    });
     test.playTraceFromTestData("issue_1370.mm7", "issue_1370.json", [] { engine->config->settings.VoiceLevel.setValue(1); });
     EXPECT_CONTAINS(someonesTalking, true);
     EXPECT_GT(talkExprTimeTape.max(), 128_ticks);  // Check that we have at least a second of speech to cover all
@@ -976,7 +981,8 @@ GAME_TEST(Issues, Issue1478) {
     // Check buttons have correct texture set.
     const auto quickRefButton = std::ranges::find_if(pPrimaryWindow->vButtons, [](const GUIButton* but) { return but->msg == UIMSG_QuickReference; });
     EXPECT_EQ((*quickRefButton)->vTextures[0]->name(), "ib-m3d-c");
-    const auto npcLeftButton = std::ranges::find_if(pPrimaryWindow->vButtons, [](const GUIButton* but) { return but->msg == UIMSG_ScrollNPCPanel && but->msg_param == 0; });
+    const auto npcLeftButton = std::ranges::find_if(pPrimaryWindow->vButtons,
+                                                    [](const GUIButton* but) { return but->msg == UIMSG_ScrollNPCPanel && but->msg_param == 0; });
     EXPECT_EQ((*npcLeftButton)->vTextures[0]->name(), "ib-npcld-c");
 }
 

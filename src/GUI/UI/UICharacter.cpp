@@ -739,7 +739,8 @@ std::unique_ptr<TargetedSpellUI> CastSpellInfo::GetCastSpellInInventoryWindow() 
     bRingsShownInCharScreen = 0;
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = SCREEN_CASTING;
-    std::unique_ptr<TargetedSpellUI> CS_inventory_window = std::make_unique<GUIWindow_Inventory_CastSpell>(Pointi(0, 0), render->GetRenderDimensions(), this, "");
+    std::unique_ptr<TargetedSpellUI> CS_inventory_window =
+        std::make_unique<GUIWindow_Inventory_CastSpell>(Pointi(0, 0), render->GetRenderDimensions(), this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton({394, 318}, {75, 33}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickExitCharacterWindowBtn, 0, INPUT_ACTION_INVALID, localization->str(LSTR_EXIT_DIALOGUE),
         {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
@@ -1282,7 +1283,8 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i gridOffset) {
         );
         Sizei itemSize = pParty->pPickedItem.inventorySize();
 
-        render->FillRect(Recti(inventoryPos.x * 32 + gridOffset.x, inventoryPos.y * 32 + gridOffset.y, itemSize.w * 32, itemSize.h * 32), Color(96, 96, 96, 128));
+        render->FillRect(Recti(inventoryPos.x * 32 + gridOffset.x, inventoryPos.y * 32 + gridOffset.y, itemSize.w * 32,
+                               itemSize.h * 32), Color(96, 96, 96, 128));
     }
 }
 
@@ -1313,7 +1315,8 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
         render->BlendTextures(x, y, item_texture, enchantment_texture, platform->tickCount() / 10, 0, 255);
     } else if (item->IsBroken()) {
         render->DrawQuad2D(item_texture, {x, y}, colorTable.Red);
-    } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.value() || id)) { // TODO(captainurist): after my changes id==0 is a valid item id
+    // TODO(captainurist): after my changes id==0 is a valid item id
+    } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.value() || id)) {
         render->DrawQuad2D(item_texture, {x, y}, colorTable.Green);
     } else {
         render->DrawQuad2D(item_texture, {x, y});
@@ -1502,14 +1505,17 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
 
     pY += assets->pFontArrus->GetHeight() - 2;
     GUIWindow::DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
-                                     formatLeftCol(LSTR_INTELLECT, player->GetActualIntelligence(), player->GetBaseIntelligence()), pGUIWindow_CurrentMenu->frameRect);
+                                     formatLeftCol(LSTR_INTELLECT, player->GetActualIntelligence(),
+                                                   player->GetBaseIntelligence()), pGUIWindow_CurrentMenu->frameRect);
     pY += assets->pFontArrus->GetHeight() - 2;
     GUIWindow::DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
-                                     formatLeftCol(LSTR_PERSONALITY, player->GetActualPersonality(), player->GetBasePersonality()), pGUIWindow_CurrentMenu->frameRect);
+                                     formatLeftCol(LSTR_PERSONALITY, player->GetActualPersonality(),
+                                                   player->GetBasePersonality()), pGUIWindow_CurrentMenu->frameRect);
 
     pY += assets->pFontArrus->GetHeight() - 2;
     GUIWindow::DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
-                                     formatLeftCol(LSTR_ENDURANCE, player->GetActualEndurance(), player->GetBaseEndurance()), pGUIWindow_CurrentMenu->frameRect);
+                                     formatLeftCol(LSTR_ENDURANCE, player->GetActualEndurance(),
+                                                   player->GetBaseEndurance()), pGUIWindow_CurrentMenu->frameRect);
     pY += assets->pFontArrus->GetHeight() - 2;
     GUIWindow::DrawText(assets->pFontArrus.get(), {26, pY}, colorTable.White,
                                      formatLeftCol(LSTR_ACCURACY, player->GetActualAccuracy(), player->GetBaseAccuracy()), pGUIWindow_CurrentMenu->frameRect);
@@ -1577,17 +1583,20 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
 
     pY += 2 * assets->pFontArrus->GetHeight();
     GUIWindow::DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     fmt::format("{}\t100{:+}\n", localization->str(LSTR_ATTACK), player->GetActualAttack(false)), pGUIWindow_CurrentMenu->frameRect);
+                                     fmt::format("{}\t100{:+}\n", localization->str(LSTR_ATTACK),
+                                                 player->GetActualAttack(false)), pGUIWindow_CurrentMenu->frameRect);
     pY += assets->pFontArrus->GetHeight() - 2;
     GUIWindow::DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     fmt::format("{}\t100 {}\n", localization->str(LSTR_DAMAGE), player->GetMeleeDamageString()), pGUIWindow_CurrentMenu->frameRect);
+                                     fmt::format("{}\t100 {}\n", localization->str(LSTR_DAMAGE),
+                                                 player->GetMeleeDamageString()), pGUIWindow_CurrentMenu->frameRect);
 
     pY += assets->pFontArrus->GetHeight() - 2;
     GUIWindow::DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
                                      fmt::format("{}\t100{:+}\n", localization->str(LSTR_SHOOT), player->GetRangedAttack()), pGUIWindow_CurrentMenu->frameRect);
     pY += assets->pFontArrus->GetHeight() - 2;
     GUIWindow::DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     fmt::format("{}\t100 {}\n\n", localization->str(LSTR_DAMAGE), player->GetRangedDamageString()), pGUIWindow_CurrentMenu->frameRect);
+                                     fmt::format("{}\t100 {}\n\n", localization->str(LSTR_DAMAGE),
+                                                 player->GetRangedDamageString()), pGUIWindow_CurrentMenu->frameRect);
 
     pY += 2 * assets->pFontArrus->GetHeight() - 4;
     GUIWindow::DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
@@ -1637,7 +1646,8 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
         }
     }
 
-    std::stable_sort(_achievedAwardsList.begin(), _achievedAwardsList.end(), [&] (AwardId a, AwardId b) { return pAwards[a].uPriority < pAwards[b].uPriority; });
+    std::stable_sort(_achievedAwardsList.begin(), _achievedAwardsList.end(),
+                     [&] (AwardId a, AwardId b) { return pAwards[a].uPriority < pAwards[b].uPriority; });
 
     Recti window(12, 48, 424, 290);
     int y = 0;
@@ -1780,7 +1790,9 @@ void OnPaperdollLeftClick() {
                     return;
                 }
 
-                if (pParty->activeCharacter().hasUnderwaterSuitEquipped() && (pEquipType != ITEM_TYPE_ARMOUR || engine->IsUnderwater())) {  // cant put anything on wearing wetsuit
+                // cant put anything on wearing wetsuit
+                if (pParty->activeCharacter().hasUnderwaterSuitEquipped() &&
+                    (pEquipType != ITEM_TYPE_ARMOUR || engine->IsUnderwater())) {
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }

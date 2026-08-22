@@ -1188,7 +1188,8 @@ char PlayerTurn(int player_num) {
         ArcomageGame::MsgLoop(0, &get_message);
         switch (get_message.am_input_type) {
             case ARCO_MSG_FORCEQUIT:
-                if (get_message.field_4 == 129 && get_message.am_input_key == PlatformKey::KEY_ESCAPE) { // TODO(pskelton): was 1 - what was this meant to do? Check for dual key press??
+                // TODO(pskelton): was 1 - what was this meant to do? Check for dual key press??
+                if (get_message.field_4 == 129 && get_message.am_input_key == PlatformKey::KEY_ESCAPE) {
                     num_actions_left = 0;
                     break_loop = true;
                     pArcomageGame->_forceExit = 1;
@@ -1268,7 +1269,8 @@ char PlayerTurn(int player_num) {
             // can play cards
             if (need_to_discard_card) {
                 // any mouse - try and discard
-                if ((get_message.am_input_type == ARCO_MSG_PLAYCARD || get_message.am_input_type == ARCO_MSG_DISCARD) && DiscardCard(player_num, current_card_slot_index)) {
+                if ((get_message.am_input_type == ARCO_MSG_PLAYCARD || get_message.am_input_type == ARCO_MSG_DISCARD) &&
+                    DiscardCard(player_num, current_card_slot_index)) {
                     if (hide_card_anim_start) hide_card_anim_runnning = 1;
                     if (num_cards_to_discard > 0) {
                         --num_cards_to_discard;
@@ -2930,7 +2932,8 @@ void SetStartConditions() {
 }
 
 void am_DrawText(std::string_view str, Pointi *pXY) {
-    GUIWindow::DrawText(assets->pFontComic.get(), {pXY->x, pXY->y - ((assets->pFontComic->GetHeight() - 3) / 2) + 3}, colorTable.White, str, pPrimaryWindow->frameRect);
+    GUIWindow::DrawText(assets->pFontComic.get(), {pXY->x, pXY->y - ((assets->pFontComic->GetHeight() - 3) / 2) + 3},
+                        colorTable.White, str, pPrimaryWindow->frameRect);
 }
 
 void DrawRect(Recti *pRect, Color uColor, char bSolidFill) {

@@ -168,9 +168,12 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
 
     // NOTE(yoctozepto): (1) when the party is standing near (in a `boundingslack`) a portal of the same node (`id == 0`), then we need to fix the frustum
     //                   because it is likely to clip the view too much and miss to render the faces behind it
-    //                   (2) normal in z (1/-1) does not work too well - similar issue happens, e.g., in "Temple of Light" when looking at the indoor sky ceiling
+    // (2) normal in z (1/-1) does not work too well - similar issue happens, e.g., in "Temple of Light" when looking at
+    // the indoor sky ceiling
     //                   behind a portal in the big room before the hidden stairs
-    if (/* (1) */(node_id == 0 && pFace->boundingBox.intersectsCube(Vec3f(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z), boundingslack))
+    if (/* (1) */(node_id == 0 && pFace->boundingBox.intersectsCube(Vec3f(pCamera3D->vCameraPos.x,
+                                                                          pCamera3D->vCameraPos.y,
+                                                                          pCamera3D->vCameraPos.z), boundingslack))
         || /* (2) */(pFace->facePlane.normal.z == 1.0 || pFace->facePlane.normal.z == -1.0)) {
         newNode->SetFrustumToCamera();
     }

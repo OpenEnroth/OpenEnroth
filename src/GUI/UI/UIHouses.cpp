@@ -520,11 +520,16 @@ void updateHouseNPCTopics(int npc) {
     if (houseNpcs[npc].type == HOUSE_TRANSITION) {
         // TODO(Nik-RE-dev): can use GUIWindow_Transition
         pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), render->GetRenderDimensions());
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_TRANSITION_NO, localization->str(LSTR_CANCEL), {ui_buttdesc2});
-        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label, {ui_buttyes2});
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0,
+                                                        INPUT_ACTION_TRANSITION_NO, localization->str(LSTR_CANCEL),
+                                                        {ui_buttdesc2});
+        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, BUTTON_TYPE_NORMAL, 0,
+                                                 UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES,
+                                                 houseNpcs[npc].label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseTransitionConfirmation, 1,
                                       INPUT_ACTION_INTERACT, houseNpcs[npc].label);
-        pDialogueWindow->CreateButton({8, 8}, {460, 344}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label);
+        pDialogueWindow->CreateButton({8, 8}, {460, 344}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseTransitionConfirmation, 1,
+                                      INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label);
     } else {
         if (window_SpeakInHouse->currentDialogue() != DIALOGUE_OTHER) {
             for (int i = 0; i < houseNpcs.size(); ++i) {
@@ -706,7 +711,9 @@ void GUIWindow_House::houseNPCDialogue() {
         house_window.w = SIDE_TEXT_BOX_WIDTH;
         if (pTransitionStrings[std::to_underlying(id)].empty()) { // TODO(captainurist): this is a weird access into pTransitionStrings, investigate & add docs
             auto str = localization->format(LSTR_ENTER_S, pMapStats->pInfos[id].name);
-            DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, house_window.w, 0)) / 2 + 101, colorTable.White, str, 3, house_window);
+            DrawTitleText(assets->pFontCreate.get(), 0,
+                          (212 - assets->pFontCreate->CalcTextHeight(str, house_window.w, 0)) / 2 + 101,
+                          colorTable.White, str, 3, house_window);
             return;
         }
 
@@ -805,7 +812,9 @@ bool GUIWindow_House::checkIfPlayerCanInteract() {
         window.w = SIDE_TEXT_BOX_WIDTH;
 
         std::string str = localization->format(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name, localization->str(LSTR_DO_ANYTHING));
-        DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, window.w, 0)) / 2 + 101, ui_house_player_cant_interact_color, str, 3, window);
+        DrawTitleText(assets->pFontArrus.get(), 0,
+                      (212 - assets->pFontArrus->CalcTextHeight(str, window.w, 0)) / 2 + 101,
+                      ui_house_player_cant_interact_color, str, 3, window);
         return false;
     }
 }
@@ -834,7 +843,8 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
         if (spacing > SIDE_TEXT_BOX_MAX_SPACING) {
             spacing = SIDE_TEXT_BOX_MAX_SPACING;
         }
-        offset += (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - topOptionShift - spacing * activeOptions - allTextHeight) / 2 - spacing / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+        offset += (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - topOptionShift - spacing * activeOptions - allTextHeight) / 2 -
+                  spacing / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
     }
 
     for (int i = 0; i < pDialogueWindow->pNumPresenceButton; ++i) {
@@ -953,7 +963,9 @@ void GUIWindow_House::initializeProprietorDialogue() {
 
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
-            pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectProprietorDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
+            pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
+                                          UIMSG_SelectProprietorDialogueOption, std::to_underlying(optionList[i]),
+                                          INPUT_ACTION_INVALID, "");
         }
         pDialogueWindow->setKeyboardControlGroup(optionList.size(), false, 0, 2);
     }
@@ -971,7 +983,9 @@ void GUIWindow_House::initializeNPCDialogue(int npc) {
 void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DialogueId> optionList) {
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
-            pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
+            pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
+                                          UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(optionList[i]),
+                                          INPUT_ACTION_INVALID, "");
         }
         pDialogueWindow->setKeyboardControlGroup(optionList.size(), false, 0, 2);
     }
@@ -1008,7 +1022,9 @@ void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
         str = str + "\n \n" + localization->str(LSTR_I_CAN_OFFER_YOU_NOTHING_FURTHER);
 
         int text_height = assets->pFontArrus->CalcTextHeight(str, dialogue.w, 0);
-        DrawTitleText(assets->pFontArrus.get(), 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - text_height) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary, str, 3, dialogue);
+        DrawTitleText(assets->pFontArrus.get(), 0,
+                      (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - text_height) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET,
+                      colorTable.PaleCanary, str, 3, dialogue);
     } else {
         std::string skill_price_label = localization->format(LSTR_SKILL_COST_LU, cost);
         DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, skill_price_label, 3, dialogue);

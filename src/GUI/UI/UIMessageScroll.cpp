@@ -39,5 +39,6 @@ void GUIWindow_MessageScroll::Update() {
     const std::string &name = pItemTable->items[pGUIWindow_ScrollWindow->scroll_type].name;
 
     DrawTitleText(assets->pFontCreate.get(), 0, 0, colorTable.White, fmt::format("{::}{}\f00000\n", colorTable.PaleCanary.tag(), name), 3, a1.frameRect);
-    DrawText(assets->pFontSmallnum.get(), {1, assets->pFontCreate->GetHeight() - 3}, colorTable.White, pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type], a1.frameRect);
+    DrawText(assets->pFontSmallnum.get(), {1, assets->pFontCreate->GetHeight() - 3}, colorTable.White,
+             pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type], a1.frameRect);
 }

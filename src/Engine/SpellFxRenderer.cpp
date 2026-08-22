@@ -1296,7 +1296,8 @@ int SpellFX_Billboard::SpellFXFarClipAdjust(float farclip) {  // far clip adjust
                 field_B4[ProducedVerts].pos.x = farclip;
                 field_B4[ProducedVerts].pos.y = (field_64[i].pos.y - field_64[i + 1].pos.y) * Tmult + field_64[i].pos.y;
                 field_B4[ProducedVerts].pos.z = (field_64[i].pos.z - field_64[i + 1].pos.z) * Tmult + field_64[i].pos.z;
-                field_B4[ProducedVerts].diffuse = field_64[i * 4 + 3].diffuse;  // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
+                // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
+                field_B4[ProducedVerts].diffuse = field_64[i * 4 + 3].diffuse;
             }
             ++ProducedVerts;
         }

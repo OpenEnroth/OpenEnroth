@@ -86,7 +86,8 @@ GraphicsImage *TurnBasedOverlay::currentIcon() const {
     case TURN_BASED_OVERLAY_ATTACK:
         return pIconsFrameTable->animationFrame(_attackIconId, 0_ticks);
     case TURN_BASED_OVERLAY_MOVEMENT:
-        return pIconsFrameTable->animationFrame(_movementIconIds[5 - pTurnEngine->uActionPointsLeft / 26], 0_ticks); // TODO(captainurist): get rid of this dependency.
+        // TODO(captainurist): get rid of this dependency.
+        return pIconsFrameTable->animationFrame(_movementIconIds[5 - pTurnEngine->uActionPointsLeft / 26], 0_ticks);
     case TURN_BASED_OVERLAY_WAIT:
         return pIconsFrameTable->animationFrame(_waitIconId, _currentTime);
     }

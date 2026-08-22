@@ -289,7 +289,8 @@ LodFont lod::decodeFont(const Blob &blob) {
 
             // Check that font metrics are sane.
             const LodFontMetrics &metrics = font._atlas.metrics[c];
-            if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH || metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
+            if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH ||
+                metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
                 throw Exception("Cannot decode font LOD entry '{}': invalid font metrics encountered for character #{}",
                                 blob.displayPath(), c);
 

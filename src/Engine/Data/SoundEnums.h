@@ -166,13 +166,17 @@ enum class MusicId {
     MUSIC_CELESTE = 10,
     MUSIC_MOUNT_NIGHON = 11,
     MUSIC_BARROW_DOWNS_LAND_OF_THE_GIANTS = 12,
-    MUSIC_TEMPLES = 13,                          // The Temple of the Moon, Temple of the Light, Temple of the Dark, Grand Temple of the Moon, Grand Temple of the Sun, The Temple of Baa.
+    // The Temple of the Moon, Temple of the Light, Temple of the Dark, Grand Temple of the Moon, Grand Temple of the
+    // Sun, The Temple of Baa.
+    MUSIC_TEMPLES = 13,
     MUSIC_CASTLE_GRYPHONHEART_CASTLE_NAVAN = 14,
     MUSIC_CASTLE_LAMBENT = 15,
     MUSIC_ENDGAME_DUNGEON = 16,                  // The Dragon Caves, Thunderfist Mountain, The Titans' Stronghold, Tunnels to Eeofol.
     MUSIC_ERATHIA = 17,
     MUSIC_TULAREAN_FOREST = 18,
-    MUSIC_CASTLE_HARMONDALE = 19,                // Lord Markham's Manor, The Bandit Caves, Castle Harmondale, Fort Riverstride, The School of Sorcery, Stone City, The Mercenary Guild, William Setag's Tower, The Strange Temple, The Small House.
+    // Lord Markham's Manor, The Bandit Caves, Castle Harmondale, Fort Riverstride, The School of Sorcery, Stone City,
+    // The Mercenary Guild, William Setag's Tower, The Strange Temple, The Small House.
+    MUSIC_CASTLE_HARMONDALE = 19,
     MUSIC_EMERALD_ISLAND = 20,
 
     MUSIC_MAIN_MENU = MUSIC_CASTLE_GRYPHONHEART_CASTLE_NAVAN,

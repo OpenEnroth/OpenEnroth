@@ -475,7 +475,8 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
 
             // Level was changed externally and we have a save there? Don't crash, just respawn.
             if (delta.header.totalFacesCount && delta.header.bmodelCount && delta.header.decorationCount &&
-                (delta.header.totalFacesCount != totalFaces || delta.header.bmodelCount != pBModels.size() || delta.header.decorationCount != pLevelDecorations.size()))
+                (delta.header.totalFacesCount != totalFaces || delta.header.bmodelCount != pBModels.size() ||
+                 delta.header.decorationCount != pLevelDecorations.size()))
                 respawnInitial = true;
 
             // Entering the level for the 1st time?
@@ -782,7 +783,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
             billScale.y *= spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]);
         }
 
-        if (render->AddBillboardIfVisible(frame->sprites[Sprite_Octant], frame->paletteId, posMod, billScale, flags, Pid(OBJECT_Actor, i), pActors[i].sectorId)) {
+        if (render->AddBillboardIfVisible(frame->sprites[Sprite_Octant], frame->paletteId, posMod, billScale, flags,
+                                          Pid(OBJECT_Actor, i), pActors[i].sectorId)) {
             ++uNumSpritesDrawnThisFrame;
             pActors[i].attributes |= ACTOR_VISIBLE;
             // TODO(pskelton): drop tint color anyway?
@@ -1623,7 +1625,8 @@ void UpdateActors_ODM() {
                     if (pMonsterStats->infos[actor.monsterInfo.id].bloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
+                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(
+                                Vec3f(actor.pos.x, actor.pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
                         }
                         actor.donebloodsplat = true;
                     }

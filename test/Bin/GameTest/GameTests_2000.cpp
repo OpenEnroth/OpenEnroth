@@ -235,7 +235,9 @@ GAME_TEST(Issues, Issue2104) {
         Actor *monster = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), monsterId, SPAWN_STATIONARY | SPAWN_LEVEL_1);
         game.tick(300);
 
-        int projectileCount = spritesTape.count([&](auto sprites) { return sprites.contains(spriteForMonsterProjectile(monster->monsterInfo.attack1MissileType)); });
+        int projectileCount = spritesTape.count([&](auto sprites) {
+            return sprites.contains(spriteForMonsterProjectile(monster->monsterInfo.attack1MissileType));
+        });
         int hitCount = hpTape.size() - 1;
 
         ASSERT_GT(hitCount, 0); // Should have hit some.

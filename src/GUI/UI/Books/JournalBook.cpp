@@ -34,9 +34,11 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
     ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
 
     pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), ui_book_button1_on->size(), BUTTON_TYPE_NORMAL, 0,
-                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_UP), {ui_book_button1_on});
+                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT,
+                               localization->str(LSTR_SCROLL_UP), {ui_book_button1_on});
     pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), ui_book_button2_on->size(), BUTTON_TYPE_NORMAL, 0,
-                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
+                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT,
+                               localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
     Recti journal_window(48, 70, 360, 264);
     journal_window.h = (assets->pFontBookOnlyShadow->GetHeight() - 3) * 264 / assets->pFontBookOnlyShadow->GetHeight() - 3;
@@ -45,7 +47,9 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
         if (pParty->PartyTimes.HistoryEventTimes[i].isValid()) {
             if (!pHistoryTable->historyLines[i + 1].pText.empty()) {
                 NPCData dummyNpc;
-                std::string str = BuildDialogueString(pHistoryTable->historyLines[i + 1].pText, 0, &dummyNpc, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[i]);
+                std::string str = BuildDialogueString(pHistoryTable->historyLines[i + 1].pText, 0, &dummyNpc, 0,
+                                                      HOUSE_INVALID, SHOP_SCREEN_INVALID,
+                                                      &pParty->PartyTimes.HistoryEventTimes[i]);
                 int pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(str, journal_window.w, 1);
                 int pages = ((pTextHeight - (assets->pFontBookOnlyShadow->GetHeight() - 3)) / (signed int)journal_window.h) + 1;
                 for (int j = 0; j < pages; ++j) {
@@ -75,7 +79,8 @@ void GUIWindow_JournalBook::Update() {
 
     if (_journalIdx.size() && !_journalEntryPage[_currentIdx]) {  // for title
         if (!pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle.empty()) {
-            DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle, 3, pViewport);
+            DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color,
+                          pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle, 3, pViewport);
         }
     }
 
