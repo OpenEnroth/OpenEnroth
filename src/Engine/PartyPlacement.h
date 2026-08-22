@@ -58,5 +58,7 @@ class MapDestination {
  * Moves the party, or leaves it where it is and logs an error if the target is unusable - indoors that means a
  * position outside every sector, outdoors one past the map bounds. An outdoor position below the floor is only
  * warned about, the next update drops the party down onto it.
+ *
+ * @param placement                     Where to put the party, in the currently loaded map.
  */
 void placeParty(const PartyPlacement &placement);
