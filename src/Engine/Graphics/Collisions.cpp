@@ -697,9 +697,8 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         if (type == OBJECT_Decoration) {
             int speed = integer_sqrt(actor.velocity.x * actor.velocity.x + actor.velocity.y * actor.velocity.y);
-            // Face away from the decoration.
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x,
-                                      actor.pos.y - pLevelDecorations[id].vPosition.y);
+                                      actor.pos.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;
         }
@@ -988,9 +987,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                     bFaceSlopeTooSteep = false;
             }
             if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) {
-                // gloaming
                 if (collision_state.pid.id() == 2439 || collision_state.pid.id() == 2438 ||
-                    collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436)
+                    collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436) // gloaming
                     bFaceSlopeTooSteep = false;
             }
 

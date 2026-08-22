@@ -2188,9 +2188,8 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
             if (IsUnarmed()) {
                 return 3;
             } else {
-                // Not a wand.
-                if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND); mainHandItem &&
-                    mainHandItem->isWeapon()) {
+                if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND);
+                    mainHandItem && mainHandItem->isWeapon()) { // Not a wand.
                     v26 = mainHandItem->GetDamageRoll();
                     if (inventory.entry(ITEM_SLOT_OFF_HAND) ||
                         mainHandItem->skill() != SKILL_SPEAR) {

@@ -1315,8 +1315,7 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
         render->BlendTextures(x, y, item_texture, enchantment_texture, platform->tickCount() / 10, 0, 255);
     } else if (item->IsBroken()) {
         render->DrawQuad2D(item_texture, {x, y}, colorTable.Red);
-    // TODO(captainurist): after my changes id==0 is a valid item id
-    } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.value() || id)) {
+    } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.value() || id)) { // TODO(captainurist): id==0 is a valid item id now.
         render->DrawQuad2D(item_texture, {x, y}, colorTable.Green);
     } else {
         render->DrawQuad2D(item_texture, {x, y});
@@ -1790,9 +1789,8 @@ void OnPaperdollLeftClick() {
                     return;
                 }
 
-                // cant put anything on wearing wetsuit
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped() &&
-                    (pEquipType != ITEM_TYPE_ARMOUR || engine->IsUnderwater())) {
+                    (pEquipType != ITEM_TYPE_ARMOUR || engine->IsUnderwater())) { // cant put anything on wearing wetsuit
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }

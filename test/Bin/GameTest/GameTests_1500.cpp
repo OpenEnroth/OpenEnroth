@@ -525,10 +525,9 @@ GAME_TEST(Issues, Issue1726) {
     int GMcount = std::ranges::count_if(pParty->pCharacters,
                                         [](const Character &ch) { return ch.getActualSkillValue(SKILL_BLASTER).mastery() == MASTERY_GRANDMASTER; });
     EXPECT_EQ(GMcount, 0); // no one ends up grand master
-    // blaster requirements shown
     EXPECT_GT(textTape.flatten().filter([](const auto& s) {
         return s.starts_with("Your skills improve!  If your Skill with the Blaster");
-    }).size(), 0);
+    }).size(), 0); // blaster requirements shown
     EXPECT_CONTAINS(textTape.flatten(), "You don't meet the requirements, and cannot be taught until you do."); // but we dont meet them
 }
 
@@ -850,9 +849,8 @@ GAME_TEST(Issues, Issue1958) {
     auto goldTape = tapes.gold();
     test.playTraceFromTestData("issue_1958.mm7", "issue_1958.json");
     EXPECT_CONTAINS(textsTape.flatten(), [](std::string_view s) { return s.contains("Congratulations on defeating the"); }); // Bounty message.
-    // Bounty already claimed message.
     EXPECT_CONTAINS(textsTape.flatten(),
-                    [](std::string_view s) { return s.contains("Someone has already claimed the bounty"); });
+                    [](std::string_view s) { return s.contains("Someone has already claimed the bounty"); }); // Bounty already claimed message.
     EXPECT_EQ(goldTape.delta(), +1400); // We got the bounty.
 }
 

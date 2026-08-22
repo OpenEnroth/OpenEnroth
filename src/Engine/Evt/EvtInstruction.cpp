@@ -926,8 +926,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             ir.data.move_map_descr.yaw = fromStream<uint32_t>(stream);
             ir.data.move_map_descr.pitch = fromStream<uint32_t>(stream);
             ir.data.move_map_descr.zspeed = fromStream<uint32_t>(stream);
-            // TODO(captainurist): Is this correct? Houses can have ids > 255.
-            ir.data.move_map_descr.house_id = static_cast<HouseId>(fromStream<uint8_t>(stream));
+            ir.data.move_map_descr.house_id = static_cast<HouseId>(fromStream<uint8_t>(stream)); // TODO(captainurist): houses can have ids > 255.
             ir.data.move_map_descr.exit_pic_id = fromStream<uint8_t>(stream);
             ir.str = fromStream<std::string>(stream, tags::nullTerminated);
             break;
@@ -1000,8 +999,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
         case EVENT_CastSpell:
             requireSize(32);
             ir.data.spell_descr.spell_id = static_cast<SpellId>(fromStream<uint8_t>(stream));
-            // TODO(yoctozepto): why add 1? it is not done with Event_CheckSkill
-            ir.data.spell_descr.spell_mastery = static_cast<Mastery>(fromStream<uint8_t>(stream) + 1);
+            ir.data.spell_descr.spell_mastery = static_cast<Mastery>(fromStream<uint8_t>(stream) + 1); // TODO(yoctozepto): why add 1? CheckSkill doesn't.
             ir.data.spell_descr.spell_level = fromStream<uint8_t>(stream);
             ir.data.spell_descr.fromx = fromStream<uint32_t>(stream);
             ir.data.spell_descr.fromy = fromStream<uint32_t>(stream);
