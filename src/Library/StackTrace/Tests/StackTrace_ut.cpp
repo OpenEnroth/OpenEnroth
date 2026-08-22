@@ -20,9 +20,11 @@
 // newline - so this walks the lines instead.
 MATCHER_P2(HasFrame, index, function, "") {
     std::string prefix = fmt::format("#{} ", index);
-    for (std::string_view line : std::views::split(std::string_view(arg), '\n'))
-        if (line.starts_with(prefix) && std::string_view(line).contains(function))
+    for (auto part : std::views::split(std::string_view(arg), '\n')) {
+        std::string_view line(part.begin(), part.end());
+        if (line.starts_with(prefix) && line.contains(function))
             return true;
+    }
     return false;
 }
 
