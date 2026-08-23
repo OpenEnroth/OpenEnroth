@@ -468,7 +468,7 @@ IndexedArray<std::array<PortraitId, 5>, SPEECH_FIRST, SPEECH_LAST> portraitVaria
     {SPEECH_LAST_MAN_STANDING,   {PORTRAIT_48,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_NOT_ENOUGH_FOOD,     {PORTRAIT_48,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_DEATH_BLOW,          {PORTRAIT_INVALID,        PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
-    {SPEECH_110,                 {PORTRAIT_INVALID,        PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}}, // Initially this entry was not present in array.
+    {SPEECH_110,                 {PORTRAIT_INVALID,        PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}}, // Not in the original game's table.
 }};
 
 std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing = {{34, 149, 264, 379}};
