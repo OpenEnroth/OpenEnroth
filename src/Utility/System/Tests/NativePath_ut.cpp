@@ -53,6 +53,11 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("C:/a") / NativePath("C:b")).toWtf8(), "C:/a/b"); // Same drive, so it's a plain append.
     EXPECT_EQ((NativePath("C:") / NativePath("b")).toWtf8(), "C:b"); // Drive-relative, no separator inserted.
     EXPECT_EQ((NativePath("//server/share") / NativePath("f")).toWtf8(), "//server/share/f");
+
+    // A bare drive letter is drive-relative, but a bare share name is already absolute. So a separator does go in
+    // after it, and it replaces whatever it's appended to.
+    EXPECT_EQ((NativePath("//server") / NativePath("share")).toWtf8(), "//server/share");
+    EXPECT_EQ((NativePath("//server/share") / NativePath("//server")).toWtf8(), "//server");
 }
 #endif
 

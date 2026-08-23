@@ -12,12 +12,21 @@
 // Everything below operates on the stored string, where the only separator is a forward slash.
 static constexpr char separator = '/';
 
+// Whether the path starts with a drive letter, e.g. "C:".
+static bool hasDriveLetter([[maybe_unused]] std::string_view path) {
+#ifdef _WINDOWS
+    return path.size() >= 2 && (ascii::isLower(path[0]) || ascii::isUpper(path[0])) && path[1] == ':';
+#else
+    return false;
+#endif
+}
+
 // Length of the root name - "C:" or "//server" on Windows, always zero on POSIX. A root name is what a relative path
 // is relative to, and POSIX has only one file system tree, so there's nothing to name there.
 static size_t rootNameSize([[maybe_unused]] std::string_view path) {
 #ifdef _WINDOWS
-    if (path.size() >= 2 && (ascii::isLower(path[0]) || ascii::isUpper(path[0])) && path[1] == ':')
-        return 2; // Drive letter.
+    if (hasDriveLetter(path))
+        return 2;
 
     if (path.size() >= 3 && path[0] == separator && path[1] == separator && path[2] != separator)
         return std::min(path.find(separator, 2), path.size()); // UNC share, e.g. "//server" in "//server/share".
@@ -31,11 +40,16 @@ static bool hasRootDirectory(std::string_view path) {
     return path.size() > rootSize && path[rootSize] == separator;
 }
 
-// An absolute path needs both parts of the root on Windows - "C:/x" is absolute, while "C:x" is relative to the
-// current directory of drive C, and "/x" is relative to the current drive.
+// A drive letter is the only root name that still needs a root directory to be absolute - "C:x" is relative to the
+// current directory of drive C. A share name is enough on its own, so "//server" is absolute, and so is everything
+// under it. Without a root name a path is either relative ("x") or relative to the current drive ("/x").
 static bool isAbsolute(std::string_view path) {
+    if (hasDriveLetter(path))
+        return hasRootDirectory(path);
+    if (rootNameSize(path) > 0)
+        return true;
 #ifdef _WINDOWS
-    return rootNameSize(path) > 0 && hasRootDirectory(path);
+    return false;
 #else
     return hasRootDirectory(path);
 #endif
@@ -45,6 +59,11 @@ static bool isAbsolute(std::string_view path) {
 static size_t fileNameOffset(std::string_view path) {
     size_t separatorPos = path.rfind(separator);
     return std::max(separatorPos == std::string_view::npos ? 0 : separatorPos + 1, rootNameSize(path));
+}
+
+// Whether the path ends in a component that names a file, so "a/b" does and "a/b/", "C:" and "//server" don't.
+static bool hasFileName(std::string_view path) {
+    return fileNameOffset(path) < path.size();
 }
 
 // Offset of the extension inside the path, or npos if there's none. A leading dot doesn't start an extension, so
@@ -127,8 +146,11 @@ NativePath NativePath::operator/(const NativePath &tail) const {
         result._path = _path.substr(0, rootSize); // Rooted tail keeps our root name, and drops everything after it.
     } else {
         result._path = _path;
-        if (!result._path.empty() && result._path.back() != separator && result._path.size() != rootSize)
-            result._path += separator; // No separator after a bare root name - "C:" / "x" is "C:x".
+
+        // No separator after a bare drive letter, "C:" / "x" is "C:x". A bare share name is absolute though, so
+        // "//server" / "x" is "//server/x".
+        if (hasFileName(_path) || (!hasRootDirectory(_path) && isAbsolute(_path)))
+            result._path += separator;
     }
 
     result._path += tail._path.substr(tailRootSize);
