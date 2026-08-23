@@ -58,8 +58,7 @@ void placeParty(const PartyPlacement &placement) {
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         if (!pIndoor->GetSector(pos)) {
-            MM_ERROR("placeParty - Cannot GetSector for target position ({}, {}, {}), skipping teleport",
-                     pos.x, pos.y, pos.z);
+            MM_ERROR("placeParty - Cannot GetSector for target position ({}, {}, {}), skipping teleport", pos.x, pos.y, pos.z);
             return;
         }
     } else {
@@ -68,14 +67,12 @@ void placeParty(const PartyPlacement &placement) {
         float newFloorLevel = ODM_GetFloorLevel(pos, &partyIsOnWater, &floorFaceId);
         if (pos.x < -maxPartyAxisDistance || pos.x > maxPartyAxisDistance ||
             pos.y < -maxPartyAxisDistance || pos.y > maxPartyAxisDistance) {
-            MM_ERROR("placeParty - Target position ({}, {}, {}) is out of bounds, skipping teleport",
-                     pos.x, pos.y, pos.z);
+            MM_ERROR("placeParty - Target position ({}, {}, {}) is out of bounds, skipping teleport", pos.x, pos.y, pos.z);
             return;
         }
         // Warn about teleport height - party will be correctly z positioned on next update
         if (pos.z < newFloorLevel)
-            MM_WARNING("placeParty - Target position ({}, {}, {}) is below the floor level of {}",
-                       pos.x, pos.y, pos.z, newFloorLevel);
+            MM_WARNING("placeParty - Target position ({}, {}, {}) is below the floor level of {}", pos.x, pos.y, pos.z, newFloorLevel);
     }
 
     pParty->pos = pos;

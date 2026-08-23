@@ -134,8 +134,7 @@ void GUIWindow_Travel::Update() {
 }
 
 //----- (00444839) --------------------------------------------------------
-GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, unsigned exit_pic_id,
-                                                     const MapDestination &destination, std::string_view locationName)
+GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, unsigned exit_pic_id, const MapDestination &destination, std::string_view locationName)
     : GUIWindow_Transition(WINDOW_IndoorEntryExit, SCREEN_INPUT_BLV), _destination(destination) {
     std::string hint;
 

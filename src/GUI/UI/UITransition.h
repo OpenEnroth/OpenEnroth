@@ -27,8 +27,7 @@ class GUIWindow_Travel : public GUIWindow_Transition {
 
 class GUIWindow_IndoorEntryExit : public GUIWindow_Transition {
  public:
-    GUIWindow_IndoorEntryExit(HouseId transitionHouse, uint32_t exit_pic_id, const MapDestination &destination,
-                              std::string_view locationName);
+    GUIWindow_IndoorEntryExit(HouseId transitionHouse, uint32_t exit_pic_id, const MapDestination &destination, std::string_view locationName);
     virtual ~GUIWindow_IndoorEntryExit() {}
 
     virtual void Update() override;

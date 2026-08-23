@@ -127,8 +127,7 @@ static MapDestination moveToMapDestination(const EvtInstruction &ir) {
     MapId map = !ir.str.starts_with('0') && !ir.str.empty() ? pMapStats->GetMapInfo(ir.str) : MAP_INVALID;
     if (descr.x || descr.y || descr.z)
         return MapDestination(map, PartyPlacement(Vec3f(descr.x, descr.y, descr.z),
-                                                  descr.yaw != -1 ? (descr.yaw & TrigLUT.uDoublePiMask) : -1,
-                                                  descr.pitch, descr.zspeed));
+                                                  descr.yaw != -1 ? (descr.yaw & TrigLUT.uDoublePiMask) : -1, descr.pitch, descr.zspeed));
     if (map != MAP_INVALID)
         return MapDestination(map, MAP_START_POINT_PARTY); // Shipped MM6 doors name the map and nothing else.
     return {};
@@ -214,8 +213,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 if (engine->_indoor->filename == "d20.blv" && _eventId == 501)
                     ir.data.move_map_descr.z = 3088;
 
-                pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id,
-                                                                             ir.data.move_map_descr.exit_pic_id,
+                pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
                                                                              moveToMapDestination(ir), ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;

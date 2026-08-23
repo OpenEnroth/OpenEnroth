@@ -195,8 +195,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
             autoSave();
             onMapLeave();
-            engine->_pendingTransition = MapDestination(
-                beacon.mapId, PartyPlacement(beacon._partyPos, beacon._partyViewYaw, beacon._partyViewPitch, 0));
+            engine->_pendingTransition = MapDestination(beacon.mapId, PartyPlacement(beacon._partyPos, beacon._partyViewYaw, beacon._partyViewPitch, 0));
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
         } else {

@@ -836,8 +836,7 @@ void Game::processQueuedMessages() {
                 if (v53 < 0) {
                     int v54 = std::abs(v53) - 1;
                     destination = MapDestination(houseNpcs[currentHouseNpc].targetMapID,
-                                                 PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]),
-                                                                teleportYaw[v54], 0, 0));
+                                                 PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0));
                 }
                 engine->_pendingTransition = destination;
                 houseDialogPressEscape();
@@ -891,8 +890,7 @@ void Game::processQueuedMessages() {
                 pParty->_viewPitch = 0;
 
                 // change map to Harmondale
-                engine->_pendingTransition = MapDestination(
-                    MAP_HARMONDALE, PartyPlacement(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0));
+                engine->_pendingTransition = MapDestination(MAP_HARMONDALE, PartyPlacement(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0));
                 PrepareWorld(1);
                 Actor::InitializeActors();
 
@@ -1694,8 +1692,7 @@ void Game::gameLoop() {
                 pParty->velocity = Vec3f();
                 // change map
                 if (engine->_currentLoadedMapId != mapid) {
-                    engine->_pendingTransition = MapDestination(
-                        mapid, PartyPlacement(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0));
+                    engine->_pendingTransition = MapDestination(mapid, PartyPlacement(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0));
                     PrepareWorld(1);
                 }
                 animTimer->setPaused(false);
