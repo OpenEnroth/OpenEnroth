@@ -225,7 +225,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 ir.str = "out06.odm";
 
             // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
-            //                 other, only the one it picked gets to run.
+            //                 other, only the first one should run.
             if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
                 break;
 
