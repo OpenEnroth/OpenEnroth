@@ -1503,10 +1503,10 @@ GAME_TEST(Prs, Pr2626) {
 
 GAME_TEST(Prs, Pr2599) {
     // Leaving the Hidden Tomb while looking up used to leave the party staring at the sky in Erathia. Every shipped
-    // MoveToMap carries pitch 0, and the original game applies a script's pitch only when it's non-zero (0x4498D5),
-    // the view was leveled by the target map's party start decoration instead, and Erathia has none - only the four
-    // directional ones for foot travel. So this is vanilla behaviour, and we deliberately apply the script's pitch
-    // as is, like on every other arrival.
+    // MoveToMap carries pitch 0, and the original game applies a script's pitch only when it's non-zero (see
+    // TeleportToStartingPoint at 0x4498D5 in the MM7 binary), the view was leveled by the target map's party start
+    // decoration instead, and Erathia has none - only the four directional ones for foot travel. So this is vanilla
+    // behaviour, and we deliberately apply the script's pitch as is, like on every other arrival.
     auto mapTape = tapes.map();
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-111, -25, 1), 0); // Just inside the entrance, facing the exit.
