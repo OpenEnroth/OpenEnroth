@@ -1502,18 +1502,27 @@ GAME_TEST(Prs, Pr2626) {
 }
 
 GAME_TEST(Prs, Pr2599) {
-    // A cross-map arrival used to land at the wrong height. Zero components of the target position were treated as
-    // unset and filled in from the destination's start point decoration, and Erathia has no start decoration at all,
-    // only the four directional ones for foot travel - so this exit, which arrives with z=0, kept whatever z the
-    // party had back in the dungeon it came from. The harness builds the same PartyPlacement a script would.
+    // Leaving the Hidden Tomb used to place the party in Erathia at the height it had inside the tomb instead of the
+    // z=0 that the exit script asks for. Zero components of a script position were treated as unset and filled in
+    // from the target map's party start decoration, Erathia has no such decoration - only the four directional ones
+    // for foot travel - so the fill fell back to the party's current z. Both floors happen to be at zero, so the
+    // party ended up in the right place anyway, and only the placement frame tells the two apart.
+    auto zTape = tapes.custom([] { return pParty->pos.z; });
+    auto mapTape = tapes.map();
     game.startNewGame();
-    game.teleportTo(MAP_ERATHIA, Vec3f(14207, -21526, 0), 270);
-    EXPECT_EQ(pParty->pos, Vec3f(14207, -21526, 0));
-    EXPECT_EQ(pParty->uFallStartZ, 0);
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-111, -25, 1), 0); // Just inside the entrance, facing the exit.
+    test.startTaping();
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
+    EXPECT_EQ(zTape, tape(0.5f, 0.0f, 1.0f)); // Tomb floor, the script's position, then standing on the desert.
+    EXPECT_EQ(pParty->pos.x, 14207);
+    EXPECT_EQ(pParty->pos.y, -21526);
     EXPECT_EQ(pParty->_viewYaw, 1536);
-
-    // Zero components are still taken literally. This is the Colony Zod entrance, x is zero both in the script and
-    // in the decoration, so a per-component "zero means skip" rule would carry the Erathia x over instead.
-    game.teleportTo(MAP_COLONY_ZOD, Vec3f(0, -709, 1), 90);
-    EXPECT_EQ(pParty->pos, Vec3f(0, -709, 1));
 }
