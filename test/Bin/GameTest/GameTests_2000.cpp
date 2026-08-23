@@ -1502,16 +1502,19 @@ GAME_TEST(Prs, Pr2626) {
 }
 
 GAME_TEST(Prs, Pr2599) {
-    // Leaving the Hidden Tomb used to place the party in Erathia at the height it had inside the tomb instead of the
-    // z=0 that the exit script asks for. Zero components of a script position were treated as unset and filled in
-    // from the target map's party start decoration, Erathia has no such decoration - only the four directional ones
-    // for foot travel - so the fill fell back to the party's current z. Both floors happen to be at zero, so the
-    // party ended up in the right place anyway, and only the placement frame tells the two apart.
-    auto zTape = tapes.custom([] { return pParty->pos.z; });
+    // Leaving the Hidden Tomb while looking up used to leave the party staring at the sky in Erathia. Every shipped
+    // MoveToMap carries pitch 0, and the original game applies a script's pitch only when it's non-zero (0x4498D5),
+    // the view was leveled by the target map's party start decoration instead, and Erathia has none - only the four
+    // directional ones for foot travel. So this is vanilla behaviour, and we deliberately apply the script's pitch
+    // as is, like on every other arrival.
     auto mapTape = tapes.map();
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-111, -25, 1), 0); // Just inside the entrance, facing the exit.
     test.startTaping();
+    game.pressKey(PlatformKey::KEY_PAGEDOWN); // Look up.
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_PAGEDOWN);
+    EXPECT_EQ(pParty->_viewPitch, 125);
     game.pressKey(PlatformKey::KEY_UP);
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_UP);
@@ -1521,8 +1524,8 @@ GAME_TEST(Prs, Pr2599) {
     game.tick();
     game.skipLoadingScreen();
     EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
-    EXPECT_EQ(zTape, tape(0.5f, 0.0f, 1.0f)); // Tomb floor, the script's position, then standing on the desert.
     EXPECT_EQ(pParty->pos.x, 14207);
     EXPECT_EQ(pParty->pos.y, -21526);
     EXPECT_EQ(pParty->_viewYaw, 1536);
+    EXPECT_EQ(pParty->_viewPitch, 0);
 }
