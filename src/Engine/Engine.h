@@ -208,7 +208,12 @@ void loadMapEventsAndStrings(MapId mapid);
 bool _44100D_should_alter_right_panel();
 
 /**
+ * Stops all sounds, autosaves if the party is leaving the current map, and flags the game loop to load the target
+ * map on its next iteration. The party is moved once that map is loaded.
+ *
  * @offset 0x44987B
+ *
+ * @param destination                   Map to load and where to put the party in it, can't be `MAP_INVALID`.
  */
 void startMapTransition(const MapDestination &destination);
 
