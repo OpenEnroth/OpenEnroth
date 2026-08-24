@@ -2844,6 +2844,8 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_SOULDRINKER:
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                    // Vanilla swept to the mouse info depth here - 25 map cells outdoors, three times the reach
+                    // of any targeted attack.
                     std::vector<Actor*> actorsInViewport = render->getActorsInViewport(engine->config->gameplay.RangedAttackDepth.value());
                     for (Actor *actor : actorsInViewport) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);

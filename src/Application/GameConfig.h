@@ -184,6 +184,19 @@ class GameConfig : public Config {
         Int MouseInteractionDepth = {this, "mouse_interaction_depth", 512, &ValidateInteractionDepth,
             "Maximum range for item pickup / opening chests / activating levers / etc with a mouse."};
 
+        Int MouseInfoDepthIndoor = {this, "mouse_info_depth_indoor", 16192, &ValidateInteractionDepth,
+            "Maximum range at which right clicking on a monster produces a popup indoors. "
+            "Status bar tips on mouse over use the same depth."};
+
+        Int MouseInfoDepthOutdoor = {this, "mouse_info_depth_outdoor", 12800, &ValidateInteractionDepth,
+            "Maximum range at which right clicking on a monster produces a popup outdoors. "
+            "Default value is 12800 = 25 * 512, 25 map cells. "
+            "Status bar tips on mouse over use the same depth."};
+
+        Int RangedAttackDepth = {this, "ranged_attack_depth", 5120, &ValidateRangedAttackDepth,
+            "Max depth for ranged attacks and ranged spells. "
+            "It's impossible to target monsters that are further away than this value."};
+
         Int MinRecoveryMelee = {this, "minimum_recovery_melee", 30, &ValidateRecovery,
             "Minimum recovery time for melee weapons. Was 30 in vanilla."};
 
@@ -195,17 +208,6 @@ class GameConfig : public Config {
 
         Int MaxFlightHeight = {this, "max_flight_height", 4000, &ValidateMaxFlightHeight,
             "Maximum height for the fly spell."};
-
-        Int MouseInfoDepthIndoor = {this, "mouse_info_depth_indoor", 16192, &ValidateInteractionDepth,
-            "Maximum range at which right clicking on a monster produces a popup indoors. "
-            "Status bar tips on mouse over use the same depth. "
-            "Also this is the max range for the souldrinker spell indoors."};
-
-        Int MouseInfoDepthOutdoor = {this, "mouse_info_depth_outdoor", 12800, &ValidateInteractionDepth,
-            "Maximum range at which right clicking on a monster produces a popup outdoors. "
-            "Default value is 12800 = 25 * 512, 25 map cells. "
-            "Status bar tips on mouse over use the same depth. "
-            "Also this is the max range for the souldrinker spell outdoors."};
 
         Int NewGameFood = {this, "new_game_food", 7,
             "Starting food."};
@@ -221,10 +223,6 @@ class GameConfig : public Config {
 
         Int PartyWalkSpeed = {this, "party_walk_speed", 384,
             "Party walk speed."};
-
-        Int RangedAttackDepth = {this, "ranged_attack_depth", 5120, &ValidateRangedAttackDepth,
-            "Max depth for ranged attacks and ranged spells. "
-            "It's impossible to target monsters that are further away than this value."};
 
         Int AoeDamageDistance = {this, "aoe_damage_distance", 512, &ValidateAoeDistance,
             "Distance from point of impact of harmful AOE spell. "
