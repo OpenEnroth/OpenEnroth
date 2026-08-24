@@ -78,8 +78,6 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
                     buildsplat->pos.x, buildsplat->pos.y, buildsplat->pos.z);
 
             float dist = dot(FacePlane.normal, buildsplat->pos) + FacePlane.dist;
-            if (locationFlags & LocationTerrain)
-                dist += 0.5f; // The overlap test in ApplyBloodSplatToTerrain measures the distance with this bias.
 
             if (!this->Build_Decal_Geometry(
                 point_light_level, locationFlags,
@@ -217,7 +215,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(bool fading, const Vec3f &terrnorm, 
     if (NumBloodsplats > 0) {
        // check plane distance
        *tridotdist = -dot(triverts->vWorldPosition, terrnorm);
-       float planedist = dot(terrnorm, bloodsplat_container->pBloodsplats_to_apply[whichsplat].pos) + *tridotdist + 0.5f;
+       float planedist = dot(terrnorm, bloodsplat_container->pBloodsplats_to_apply[whichsplat].pos) + *tridotdist;
 
         if (planedist <= bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius) {
             // blood splat hits this terrain tri
