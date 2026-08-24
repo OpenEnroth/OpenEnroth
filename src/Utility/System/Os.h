@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+#include "Utility/String/AsciiLiteral.h"
 #include "Utility/System/NativePath.h"
 
 enum class FileType {
