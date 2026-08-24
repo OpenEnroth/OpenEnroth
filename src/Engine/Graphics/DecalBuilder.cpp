@@ -71,18 +71,22 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
 
     if (this->uNumSplatsThisFace > 0) {
         for (int i = 0; i < this->uNumSplatsThisFace; ++i) {
-            FaceSplat thissplat = this->WhichSplatsOnThisFace[i];
-            Bloodsplat *buildsplat = &bloodsplat_container->pBloodsplats_to_apply[thissplat.index];
+            int thissplat = this->WhichSplatsOnThisFace[i];
+            Bloodsplat *buildsplat = &bloodsplat_container->pBloodsplats_to_apply[thissplat];
             int point_light_level = GetLightLevelAtPoint(
                     light_level, uSectorID,
                     buildsplat->pos.x, buildsplat->pos.y, buildsplat->pos.z);
+
+            float dist = dot(FacePlane.normal, buildsplat->pos) + FacePlane.dist;
+            if (locationFlags & LocationTerrain)
+                dist += 0.5f; // The overlap test in ApplyBloodSplatToTerrain measures the distance with this bias.
 
             if (!this->Build_Decal_Geometry(
                 point_light_level, locationFlags,
                 buildsplat,
                 buildsplat->radius,
                 buildsplat->color,
-                thissplat.dist,
+                dist,
                 &static_FacePlane, NumFaceVerts, FaceVerts, ClipFlags))
                 MM_WARNING("Error: Failed to build decal geometry");
         }
@@ -192,9 +196,8 @@ bool DecalBuilder::ApplyBloodsplatDecalsToFace(BLVFace* pFace) {
         Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
         if (pFace->boundingBox.intersectsCube(pBloodsplat->pos, pBloodsplat->radius)) {
             double dotdist = dot(pFace->facePlane.normal, pBloodsplat->pos) + pFace->facePlane.dist;
-            if (dotdist <= pBloodsplat->radius) {
-                WhichSplatsOnThisFace[uNumSplatsThisFace++] = {static_cast<int>(i), static_cast<float>(dotdist)};
-            }
+            if (dotdist <= pBloodsplat->radius)
+                WhichSplatsOnThisFace[uNumSplatsThisFace++] = i;
         }
     }
 
@@ -231,7 +234,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(bool fading, const Vec3f &terrnorm, 
             bloodsplat_container->pBloodsplats_to_apply[whichsplat].fade_timer = gameTimer->time();
 
             // store this decal to apply
-            this->WhichSplatsOnThisFace[this->uNumSplatsThisFace] = {whichsplat, planedist};
+            this->WhichSplatsOnThisFace[this->uNumSplatsThisFace] = whichsplat;
             ++this->uNumSplatsThisFace;
         }
     }

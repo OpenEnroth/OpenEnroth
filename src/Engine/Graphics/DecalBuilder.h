@@ -107,15 +107,9 @@ struct DecalBuilder {
     std::array<Decal, 1024> Decals;  // actual decal geom store
     unsigned int DecalsCount = 0;  // number of decals
 
-    // Bloodsplat overlapping the face currently being processed.
-    struct FaceSplat {
-        int index = 0; // Index into BloodsplatContainer::pBloodsplats_to_apply.
-        float dist = 0; // Signed distance from the bloodsplat origin to the face plane.
-    };
-
     // for building decal geom
     int uNumSplatsThisFace = 0;  // numeber of bloodsplats that overlap this face
-    std::array<FaceSplat, 1024> WhichSplatsOnThisFace = {{}};
+    std::array<int, 1024> WhichSplatsOnThisFace = {{}};  // Indices into BloodsplatContainer::pBloodsplats_to_apply.
 
     // sizes for building decal geometry
     float field_30C010 = 0;
