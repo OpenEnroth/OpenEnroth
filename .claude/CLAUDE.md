@@ -19,7 +19,7 @@ Keep comments terse - prefer a single trailing comment over a multi-line block, 
 
 A comment that explains a statement sits on that statement, inside the function. If it's about returning, it sits where the function returns. If it's about when to call, it sits at the call site. The doxygen block above a function is for callers only - what it does, what goes in, what comes out - never a walkthrough of the body.
 
-Explanations live where the logic lives. Why a detection works goes next to the detection, the bug a test guards goes on the test, and a helper that just crashes needs no essay.
+Explanations live where the logic lives. Why a detection works goes next to the detection, and the bug a test guards goes on the test.
 
 Every sentence in a comment must say something the code, the names, or the previous sentence don't already say. No pointers to other comments - state the fact or delete the sentence. If a call site needs a comment to be readable, fix the code instead - an enum parameter reads at the call site, a bool doesn't.
 
