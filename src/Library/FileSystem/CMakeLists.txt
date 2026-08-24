@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 add_subdirectory(Dump)
-add_subdirectory(Directory)
+add_subdirectory(Native)
 add_subdirectory(Embedded)
 add_subdirectory(Interface)
 add_subdirectory(Lowercase)
