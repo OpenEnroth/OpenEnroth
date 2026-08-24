@@ -1,8 +1,6 @@
 #pragma once
 
 #include <compare>
-#include <cstddef>
-#include <filesystem>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -20,7 +18,7 @@
  * Unlike `std::filesystem::path`, this class does not depend on the C locale - on Windows constructing an
  * `std::filesystem::path` from a narrow string converts it per the C locale, while here all charset conversions are
  * done by our own code, and the OS is only ever handed `wchar_t` strings. `native` / `fromNative` are the conversions
- * to use when talking to the OS, and `toStdPath` / `fromStdPath` are for the code that still needs `std::filesystem`.
+ * to use when talking to the OS.
  *
  * Note that `fromWtf8` / `toWtf8` are named somewhat improperly - file names on Linux are arbitrary byte strings,
  * and these bytes are passed through as-is. So the string returned by `toWtf8` is not necessarily valid UTF-8, and
@@ -57,15 +55,6 @@ class NativePath {
     [[nodiscard]] static NativePath fromNative(std::string_view path);
 #endif
 
-    // TODO(captainurist): toStdPath / fromStdPath are for the call sites that still reach for std::filesystem
-    //                     directly. Drop them once those are all on the os functions.
-    [[nodiscard]] static NativePath fromStdPath(const std::filesystem::path &path) {
-        return fromNative(path.native());
-    }
-
-    // Deliberately dead for strings of all charsets, see the class docs. Use fromWtf8.
-    template<class T> static NativePath fromStdPath(const T &) = delete;
-
     /**
      * @return                          This path as a string, always using forward slashes. WTF-8 on Windows,
      *                                  byte string on POSIX.
@@ -86,10 +75,6 @@ class NativePath {
         return _path;
     }
 #endif
-
-    [[nodiscard]] std::filesystem::path toStdPath() const {
-        return std::filesystem::path(native());
-    }
 
     /**
      * @return                          This path as a valid UTF-8 string for displaying to the user, with everything

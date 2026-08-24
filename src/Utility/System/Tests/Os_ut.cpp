@@ -9,7 +9,7 @@
 #include "Utility/System/Os.h"
 
 UNIT_TEST(Os, CwdAbsolute) {
-    EXPECT_EQ(os::cwd().toStdPath(), std::filesystem::current_path());
+    EXPECT_EQ(os::cwd(), NativePath::fromNative(std::filesystem::current_path().native()));
     EXPECT_EQ(os::absolute(NativePath()), os::cwd()); // An empty path resolves to the cwd itself.
     EXPECT_EQ(os::absolute("a"), os::cwd() / NativePath("a"));
 }

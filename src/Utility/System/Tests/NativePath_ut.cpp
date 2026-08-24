@@ -15,9 +15,9 @@ UNIT_TEST(NativePath, Wtf8RoundTrip) {
         EXPECT_EQ(NativePath::fromWtf8(path).toWtf8(), path);
 }
 
-UNIT_TEST(NativePath, StdPathRoundTrip) {
+UNIT_TEST(NativePath, NativeRoundTrip) {
     std::filesystem::path cwd = std::filesystem::current_path();
-    EXPECT_EQ(NativePath::fromStdPath(cwd).toStdPath(), cwd);
+    EXPECT_EQ(NativePath::fromNative(cwd.native()).native(), cwd.native());
 }
 
 UNIT_TEST(NativePath, Literals) {
@@ -126,12 +126,12 @@ UNIT_TEST(NativePath, InvalidUtf8FileNames) {
     // A name with invalid UTF-8 in it is not just convertible, but is also usable to actually open a file. Not on
     // APFS though - it only takes file names that are valid UTF-8, thus no MacOS here. And we write into the temp
     // dir b/c the build dir can be on an APFS-backed mount in a dev container.
-    NativePath tmpDir = NativePath::fromStdPath(std::filesystem::temp_directory_path());
+    NativePath tmpDir = NativePath::fromNative(std::filesystem::temp_directory_path().native());
 
     for (std::string_view name : {"tmp_lol\xD0kek.txt", "tmp_lol\xFFkek.txt", "tmp_trailing\xD0"}) {
         NativePath path = tmpDir / NativePath::fromWtf8(name);
 
-        std::ofstream stream(path.toStdPath());
+        std::ofstream stream(path.native().c_str());
         ASSERT_TRUE(stream.is_open()) << name;
         stream << "lol";
         stream.close();
