@@ -6,6 +6,8 @@ Build `check_style` target to check style. You *MUST* always check style after y
 
 Build `Run_UnitTest` and `Run_GameTest_Headless_Parallel` targets to test your changes. You *MUST* always run tests after your changes. If you can't find the game data - ask the user to help you locate it, *NEVER* silently skip game tests.
 
+*NEVER* claim anything about game data or runtime behaviour that you haven't checked. OpenEnroth targets MM6, MM7 and MM8, so a claim about the data means all three were scanned. Go the extra mile when scanning data, and say what you checked - "no shipped record does this" means MM6, MM7 and MM8 scripts were all read, and if one of them wasn't, say which.
+
 Before every commit, re-read the diff's comments against the Comments section, as a separate pass with fresh eyes. You *MUST* do this - the review rounds exist for design questions, not for comment cleanup you could have caught yourself.
 
 *NEVER* amend a commit or rewrite pushed history unless explicitly asked to. Fixes go on top as new commits with their own messages, and squashing is the human's call, made when they're ready.
@@ -34,5 +36,3 @@ Comments in tests are the opposite. State the bug that the test guards against, 
 When you do write about a past bug, spell out that it *was* a bug and name it. "We used to keep the old buffer" reads like a reasonable choice that happened to change. "This used to be a heap buffer overflow" doesn't.
 
 *NEVER* use semicolons in prose - in comments, commit messages, PR descriptions or documentation. Write two sentences instead.
-
-*NEVER* claim anything about game data or runtime behaviour that you haven't checked. OpenEnroth targets MM6, MM7 and MM8, so a claim about the data means all three were scanned. Go the extra mile when scanning data, and say what you checked - "no shipped record does this" means MM6, MM7 and MM8 scripts were all read, and if one of them wasn't, say which.
