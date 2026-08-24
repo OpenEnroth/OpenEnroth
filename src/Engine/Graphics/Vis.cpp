@@ -26,8 +26,6 @@
 
 static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
-Vis_SelectionFilter vis_no_decorations_filter = {
-    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType};  // 00F93E1C
 Vis_SelectionFilter vis_anything_filter = {
     VisObjectType_Sprite, OBJECT_None, 0, 0, ExcludeType};  // 00F93E30, "exclude nothing" matches every billboard.
 Vis_SelectionFilter vis_face_filter = {

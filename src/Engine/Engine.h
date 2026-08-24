@@ -89,7 +89,7 @@ class Engine {
 
     /**
      * Picks a combat target under the cursor for attacks and targeted spells. Reaches to the ranged attack
-     * depth, matches anything except decorations.
+     * depth and matches anything, so a decoration in front of a monster eats the pick.
      */
     Vis_PIDAndDepth PickMouseForTargeting();
 
@@ -98,12 +98,6 @@ class Engine {
      * levers. Reaches to the mouse interaction depth, matches anything.
      */
     Vis_PIDAndDepth PickMouseForInteraction();
-
-    /**
-     * Picks what a viewport click sees beyond interaction reach. Reaches to the ranged attack depth and
-     * matches anything, so a decoration in front of a monster still eats the click.
-     */
-    Vis_PIDAndDepth PickMouseForCombatClick();
 
     /**
      * @offset 0x42213C

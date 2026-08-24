@@ -38,7 +38,6 @@ struct Vis_SelectionFilter {  // stru157
     VisSelectFlags select_flags;
 };
 
-extern Vis_SelectionFilter vis_no_decorations_filter;  // 00F93E1C
 extern Vis_SelectionFilter vis_anything_filter;  // 00F93E30
 extern Vis_SelectionFilter vis_face_filter;      // 00F93E44
 extern Vis_SelectionFilter vis_door_filter;      // 00F93E58

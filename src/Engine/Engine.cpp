@@ -453,17 +453,12 @@ Vis_PIDAndDepth Engine::PickMouseForInfo() {
 
 Vis_PIDAndDepth Engine::PickMouseForTargeting() {
     Pointi pt = mouse->position();
-    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_no_decorations_filter, &vis_face_filter);
+    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
 }
 
 Vis_PIDAndDepth Engine::PickMouseForInteraction() {
     Pointi pt = mouse->position();
     return PickMouse(config->gameplay.MouseInteractionDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
-}
-
-Vis_PIDAndDepth Engine::PickMouseForCombatClick() {
-    Pointi pt = mouse->position();
-    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
 }
 
 void Engine::toggleOverlays() {
