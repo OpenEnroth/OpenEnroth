@@ -4,6 +4,8 @@ Build `check_style` target to check style. You *MUST* always check style after y
 
 Keep comments terse - prefer a single trailing comment over a multi-line block, and never write comments explaining what you *didn't* do.
 
+A comment that explains a statement sits on that statement, inside the function. If it's about returning, it sits where the function returns. If it's about when to call, it sits at the call site. The doxygen block above a function is for callers only - what it does, what goes in, what comes out - never a walkthrough of the body.
+
 Any comment on a function, class, struct or table that's longer than a trailing one-liner is a doxygen block. Every doxygen block on a function *MUST* carry a `@param` tag for each parameter and a `@return` tag if the function returns something. A prose-only block isn't finished. Descriptions start at column 41, like the rest of the codebase.
 
 An invariant is an assert, not a comment. If you're about to write a comment saying what must be true at this point in the code, write an `assert` instead.
