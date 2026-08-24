@@ -34,8 +34,6 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(LocationFlags)
 struct Bloodsplat {
     Vec3f pos; // Bloodsplat origin, usually 30 units above ground level where the monster was killed.
     float radius = 0;
-    float faceDist = 0; // Signed distance from bloodsplat origin to the face plane (for the current face).
-                        // TODO(captainurist): doesn't belong to this struct, should be moved out.
     Color color;
     DecalFlags blood_flags = DecalFlagsNone;
     Duration fade_timer;
@@ -111,7 +109,7 @@ struct DecalBuilder {
 
     // for building decal geom
     int uNumSplatsThisFace = 0;  // numeber of bloodsplats that overlap this face
-    std::array<int, 1024> WhichSplatsOnThisFace = {{}};  // stores which ith element of blodsplats to apply outdoor bloodsplats/decals store for calc
+    std::array<int, 1024> WhichSplatsOnThisFace = {{}};  // Indices into BloodsplatContainer::pBloodsplats_to_apply.
 
     // sizes for building decal geometry
     float field_30C010 = 0;
