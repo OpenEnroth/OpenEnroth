@@ -2178,7 +2178,7 @@ void CastSpellInfoHelpers::castSpell() {
                                 pParty->setHoldingItem(pSpriteObjects[obj_id].containing_item);
                             }
                         }
-                        SpriteObject::OnInteraction(obj_id);
+                        SpriteObject::Remove(obj_id);
                     }
                     if (spell_targeted_at.type() == OBJECT_Actor) {
                         pActors[obj_id].LootActor();
