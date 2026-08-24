@@ -1500,3 +1500,32 @@ GAME_TEST(Prs, Pr2626) {
     game.tick(2);
     EXPECT_EQ(pIndoor->GetSector(-1849, 6726.5f, 934), 23);
 }
+
+GAME_TEST(Prs, Pr2599) {
+    // Leaving the Hidden Tomb while looking up used to leave the party staring at the sky in Erathia. Every shipped
+    // MoveToMap carries pitch 0, and the original game applies a script's pitch only when it's non-zero, the view
+    // was leveled by the target map's party start decoration instead, and Erathia has none - only the four
+    // directional ones for foot travel. So this is vanilla behaviour, and we deliberately apply the script's pitch
+    // as is, like on every other arrival.
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-111, -25, 1), 0); // Just inside the entrance, facing the exit.
+    test.startTaping();
+    game.pressKey(PlatformKey::KEY_PAGEDOWN); // Look up.
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_PAGEDOWN);
+    EXPECT_EQ(pParty->_viewPitch, 125);
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
+    EXPECT_EQ(pParty->pos.x, 14207);
+    EXPECT_EQ(pParty->pos.y, -21526);
+    EXPECT_EQ(pParty->_viewYaw, 1536);
+    EXPECT_EQ(pParty->_viewPitch, 0);
+}

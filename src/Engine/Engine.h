@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 #include <array>
@@ -9,7 +10,7 @@
 
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/MapEnums.h"
-#include "Engine/TeleportPoint.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Time/Time.h"
 
@@ -132,10 +133,9 @@ class Engine {
     PersistentVariables _persistentVariables;
     std::array<unsigned char, 50> _OE_transientVariables; // These are cleared on loading a new map
     MapId _currentLoadedMapId = MAP_INVALID;
-    MapId _transitionMapId = MAP_INVALID;
+    std::optional<MapDestination> _pendingTransition; // Set while a map change is in flight, consumed by the loaders.
     std::string _lastLoadedSaveFileName; // File name of the last loaded savegame, pre-selected in the save & load menus.
     std::string _pendingLoadFileName; // Savegame to load when the main menu FSM exits into the game loop.
-    TeleportPoint _teleportPoint;
     OverlaySystem &_overlaySystem;
 
     std::unique_ptr<GUIMessageQueue> _messageQueue;
@@ -206,7 +206,16 @@ Duration timeUntilDawn();
 void initLevelStrings(const Blob &blob);
 void loadMapEventsAndStrings(MapId mapid);
 bool _44100D_should_alter_right_panel();
-void Transition_StopSound_Autosave(std::string_view pMapName, MapStartPoint point);  // sub_44987B idb
+
+/**
+ * Stops all sounds, autosaves if the party is leaving the current map, and flags the game loop to load the target
+ * map on its next iteration. The party is moved once that map is loaded.
+ *
+ * @offset 0x44987B
+ *
+ * @param destination                   Map to load and where to put the party in it, can't be `MAP_INVALID`.
+ */
+void startMapTransition(const MapDestination &destination);
 
 void TeleportToNWCDungeon();
 

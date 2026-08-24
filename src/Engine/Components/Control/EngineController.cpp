@@ -13,6 +13,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/PartyPlacement.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
@@ -326,10 +327,9 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
 
 void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw) {
     if (engine->_currentLoadedMapId != map) {
-        engine->_transitionMapId = map;
+        engine->_pendingTransition = MapDestination(map, PartyPlacement(position, viewYaw * 512 / 90, 0, 0));
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
-        engine->_teleportPoint.setTeleportTarget(position, viewYaw * 512 / 90, 0, 0);
         onMapLeave();
         tick();
         skipLoadingScreen();
