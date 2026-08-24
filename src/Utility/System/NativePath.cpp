@@ -126,6 +126,21 @@ NativePath NativePath::withExtension(std::string_view extension) const {
     return result;
 }
 
+NativePath NativePath::parent() const {
+    size_t rootSize = rootNameSize(_path);
+    size_t end = fileNameOffset(_path);
+
+    // Drop the separators between the parent and the file name, but keep the one that is the root directory.
+    while (end > rootSize && _path[end - 1] == separator)
+        end--;
+    if (end == rootSize && hasRootDirectory(_path))
+        end++;
+
+    NativePath result;
+    result._path = _path.substr(0, end);
+    return result;
+}
+
 NativePath NativePath::operator/(const NativePath &tail) const {
     size_t rootSize = rootNameSize(_path);
     size_t tailRootSize = rootNameSize(tail._path);

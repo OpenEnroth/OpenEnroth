@@ -83,6 +83,9 @@ UNIT_TEST(NativePath, LexicalOpsMatchStdFilesystem) {
                       (std::filesystem::path(head) / std::filesystem::path(tail)).generic_string())
                 << "'" << head << "' / '" << tail << "'";
 
+        EXPECT_EQ(NativePath::fromWtf8(head).parent().toWtf8(),
+                  std::filesystem::path(head).parent_path().generic_string()) << "parent of '" << head << "'";
+
         for (std::string_view extension : {"", ".x", "x", ".tar.gz"}) {
             std::filesystem::path expected = std::filesystem::path(head);
             expected.replace_extension(extension);
