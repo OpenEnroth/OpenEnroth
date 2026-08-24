@@ -2844,7 +2844,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_SOULDRINKER:
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(pCamera3D->GetMouseInfoDepth());
+                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(engine->config->gameplay.RangedAttackDepth.value());
                     for (Actor *actor : actorsInViewport) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
