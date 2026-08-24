@@ -29,6 +29,7 @@ static std::optional<PartyPlacement> placementForStartPoint(MapStartPoint point)
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
             // always placing the party on the ground.
+            // TODO(pskelton): fix this with a data mod moving the spawn point onto the ground instead.
             bool onWater = false;
             int bmodelPid = 0;
             result->pos.z = ODM_GetFloorLevel(result->pos, &onWater, &bmodelPid);
