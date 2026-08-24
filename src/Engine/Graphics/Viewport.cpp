@@ -309,8 +309,18 @@ void Engine::onGameViewportClick() {
     } else {
         // Nothing in interaction reach, but an unobstructed live actor within ranged reach still takes the
         // click as combat - a decoration in front of the actor eats the click instead.
-        Pid target = engine->PickMouseForTargeting().pid;
-        if (target.type() == OBJECT_Actor && pActors[target.id()].aiState != Dead && !CanInteractWithActor(target.id())) {
+        Vis_PIDAndDepth object = engine->PickMouseForTargeting();
+        Pid target = object.pid;
+        if (target.type() == OBJECT_Decoration &&
+            object.depth - pDecorationList->GetDecoration(pLevelDecorations[target.id()].uDecorationDescID)->uRadius <
+                engine->config->gameplay.MouseInteractionDepth.value()) {
+            // A decoration's clickable reach extends by its radius, so a big one is clickable past interaction depth.
+            if (pParty->hasActiveCharacter()) {
+                DecorationInteraction(target.id(), target);
+            } else {
+                engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
+            }
+        } else if (target.type() == OBJECT_Actor && pActors[target.id()].aiState != Dead && !CanInteractWithActor(target.id())) {
             combatClickOnActor();
         } else {
             pParty->dropHeldItem();
