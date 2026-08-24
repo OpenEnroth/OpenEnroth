@@ -313,7 +313,9 @@ std::string MakeDateTimeString(Duration time) {
 //----- (004B1854) --------------------------------------------------------
 void GUIWindow::DrawShops_next_generation_time_string(Duration time, Recti frameRect) {
     auto str = MakeDateTimeString(time);
-    DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, frameRect.w, 0)) / 2 + 101, colorTable.PaleCanary, localization->str(LSTR_PLEASE_TRY_BACK_IN) + str, 3, frameRect);
+    DrawTitleText(assets->pFontArrus.get(), 0,
+                  (212 - assets->pFontArrus->CalcTextHeight(str, frameRect.w, 0)) / 2 + 101, colorTable.PaleCanary,
+                  localization->str(LSTR_PLEASE_TRY_BACK_IN) + str, 3, frameRect);
 }
 
 //----- (0044D406) --------------------------------------------------------

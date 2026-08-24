@@ -691,8 +691,12 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     ui_partycreation_buttmake = assets->getImage_Solid("BUTTMAKE");
     ui_partycreation_buttmake2 = assets->getImage_Solid("BUTTMAKE2");
 
-    pPlayerCreationUI_BtnOK = CreateButton("PartyCreation_OK", {580, 431}, {51, 39}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickOK, 0, INPUT_ACTION_PARTY_CREATION_DONE, "", {ui_partycreation_buttmake});
-    pPlayerCreationUI_BtnReset = CreateButton("PartyCreation_Clear", {527, 431}, {51, 39}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickReset, 0, INPUT_ACTION_PARTY_CREATION_CLEAR, "", {ui_partycreation_buttmake2});
+    pPlayerCreationUI_BtnOK = CreateButton("PartyCreation_OK", {580, 431}, {51, 39}, BUTTON_TYPE_NORMAL, 0,
+                                           UIMSG_PlayerCreationClickOK, 0, INPUT_ACTION_PARTY_CREATION_DONE, "",
+                                           {ui_partycreation_buttmake});
+    pPlayerCreationUI_BtnReset = CreateButton("PartyCreation_Clear", {527, 431}, {51, 39}, BUTTON_TYPE_NORMAL, 0,
+                                              UIMSG_PlayerCreationClickReset, 0, INPUT_ACTION_PARTY_CREATION_CLEAR, "",
+                                              {ui_partycreation_buttmake2});
     pPlayerCreationUI_BtnMinus = CreateButton({523, 393}, {20, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickMinus, 0, INPUT_ACTION_PARTY_CREATION_DEC, "", {ui_partycreation_minus});
     pPlayerCreationUI_BtnPlus = CreateButton({613, 393}, {20, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickPlus, 1, INPUT_ACTION_PARTY_CREATION_INC, "", {ui_partycreation_plus});
 
