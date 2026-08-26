@@ -5,7 +5,6 @@
 #include <utility>
 #include <vector>
 
-#include "Utility/String/AsciiLiteral.h"
 #include "Utility/System/NativePath.h"
 
 enum class FileType {
@@ -42,15 +41,11 @@ struct DirectoryEntry {
 
 namespace os {
 
-// Path-taking functions below also have an `AsciiLiteral` overload - C++ allows a single user-defined conversion,
-// so a string literal passed as an argument wouldn't otherwise reach `NativePath`'s literal constructor.
-
 /**
  * @param path                          Path to check. Never throws, returns `false` on errors.
  * @return                              Whether `path` exists.
  */
 [[nodiscard]] bool exists(const NativePath &path);
-[[nodiscard]] inline bool exists(AsciiLiteral path) { return exists(NativePath(path)); }
 
 /**
  * @param path                          Path to stat. Never throws.
@@ -58,7 +53,6 @@ namespace os {
  *                                      a file nor a directory.
  */
 [[nodiscard]] FileStat stat(const NativePath &path);
-[[nodiscard]] inline FileStat stat(AsciiLiteral path) { return stat(NativePath(path)); }
 
 /**
  * Lists a directory. Never throws - lists nothing if `path` doesn't exist or isn't a directory, and skips entries
@@ -70,9 +64,7 @@ namespace os {
  *                                      strings on POSIX.
  */
 [[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
-[[nodiscard]] inline std::vector<DirectoryEntry> ls(AsciiLiteral path) { return ls(NativePath(path)); }
 void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
-inline void ls(AsciiLiteral path, std::vector<DirectoryEntry> *entries) { ls(NativePath(path), entries); }
 
 /**
  * Removes the file or directory at `path`. A directory is removed with everything that's in it.
@@ -82,7 +74,6 @@ inline void ls(AsciiLiteral path, std::vector<DirectoryEntry> *entries) { ls(Nat
  * @throws std::runtime_error           On errors, e.g. missing permissions.
  */
 bool remove(const NativePath &path);
-inline bool remove(AsciiLiteral path) { return remove(NativePath(path)); }
 
 /**
  * Creates the directory at `path`, along with all missing parents. Does nothing if it already exists.
@@ -91,7 +82,6 @@ inline bool remove(AsciiLiteral path) { return remove(NativePath(path)); }
  * @throws std::runtime_error           On errors.
  */
 void mkdirs(const NativePath &path);
-inline void mkdirs(AsciiLiteral path) { mkdirs(NativePath(path)); }
 
 /**
  * @return                              Current working directory.
@@ -105,6 +95,5 @@ inline void mkdirs(AsciiLiteral path) { mkdirs(NativePath(path)); }
  * @throws Exception                    If the path couldn't be resolved.
  */
 [[nodiscard]] NativePath absolute(const NativePath &path);
-[[nodiscard]] inline NativePath absolute(AsciiLiteral path) { return absolute(NativePath(path)); }
 
 } // namespace os

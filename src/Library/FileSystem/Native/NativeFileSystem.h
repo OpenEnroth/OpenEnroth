@@ -7,7 +7,6 @@
 
 #include "Library/FileSystem/Interface/FileSystem.h"
 
-#include "Utility/String/AsciiLiteral.h"
 #include "Utility/System/NativePath.h"
 
 /**
@@ -35,7 +34,6 @@ class NativeFileSystem : public FileSystem {
      *                                  current working directory itself.
      */
     explicit NativeFileSystem(const NativePath &root);
-    explicit NativeFileSystem(AsciiLiteral root) : NativeFileSystem(NativePath(root)) {}
     virtual ~NativeFileSystem();
 
     /**

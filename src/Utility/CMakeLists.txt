@@ -47,7 +47,6 @@ set(UTILITY_HEADERS
         System/NativePath.h
         System/Os.h
         String/Ascii.h
-        String/AsciiLiteral.h
         String/Encoding.h
         String/Join.h
         String/Split.h

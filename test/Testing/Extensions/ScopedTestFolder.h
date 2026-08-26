@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utility/String/AsciiLiteral.h"
 #include "Utility/System/NativePath.h"
 
 /**
@@ -9,7 +8,6 @@
  */
 class ScopedTestFolder {
  public:
-    explicit ScopedTestFolder(AsciiLiteral path) : ScopedTestFolder(NativePath(path)) {}
     explicit ScopedTestFolder(const NativePath &path);
     ~ScopedTestFolder();
 

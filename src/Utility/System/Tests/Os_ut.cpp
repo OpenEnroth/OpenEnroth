@@ -47,9 +47,9 @@ UNIT_TEST(Os, LsRemoveMkdirs) {
     EXPECT_FALSE(os::exists("tmp_os_dir"));
 }
 
-UNIT_TEST(Os, AsciiLiterals) {
-    // Every os function has an AsciiLiteral overload. Without them these calls don't compile - reaching a NativePath
-    // parameter from a literal needs two user-defined conversions, and C++ allows only one.
+UNIT_TEST(Os, StringLiterals) {
+    // The os functions take a NativePath, which is implicitly constructible from a byte string, so a literal reaches
+    // them in one user-defined conversion and needs no overload of its own.
     ScopedTestFile tmp("tmp_os_literal.txt", "lol");
 
     EXPECT_TRUE(os::exists("tmp_os_literal.txt"));

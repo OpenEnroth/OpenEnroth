@@ -81,7 +81,7 @@ static size_t extensionOffset(std::string_view path) {
     return nameOffset + dotPos;
 }
 
-NativePath::NativePath(AsciiLiteral path) {
+NativePath::NativePath(std::string_view path) {
     *this = fromWtf8(path);
 }
 

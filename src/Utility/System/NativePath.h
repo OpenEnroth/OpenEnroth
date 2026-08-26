@@ -5,7 +5,6 @@
 #include <string_view>
 #include <utility>
 
-#include "Utility/String/AsciiLiteral.h"
 #include "Utility/String/Format.h"
 
 /**
@@ -30,12 +29,14 @@ class NativePath {
     NativePath() = default;
 
     /**
-     * Implicit constructor from an ASCII string literal. ASCII-only - it's the only subset that means the same bytes
-     * in the compiler's execution charset, in WTF-8, and in POSIX file names. Use `fromWtf8` for everything else.
+     * Implicit constructor from a byte string, same as `std::filesystem::path`. The bytes are taken as-is - a
+     * `NativePath` promises no encoding, see the class docs.
      *
-     * @param path                      Path as an ASCII string literal.
+     * @param path                      Path as a byte string.
      */
-    NativePath(AsciiLiteral path); // NOLINT: intentionally implicit.
+    NativePath(std::string_view path); // NOLINT: intentionally implicit.
+    NativePath(const char *path) : NativePath(std::string_view(path)) {} // NOLINT: intentionally implicit.
+    NativePath(const std::string &path) : NativePath(std::string_view(path)) {} // NOLINT: intentionally implicit.
 
     // TODO(captainurist): fromWtf8 / toWtf8 are misnomers, the strings are WTF-8 on Windows only. Rename.
 
