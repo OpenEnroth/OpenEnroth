@@ -89,6 +89,14 @@ static std::string oracle(const std::filesystem::path &path) {
     if (result == ".")
         result.clear();
 
+#ifdef _WINDOWS
+    // A root carries its separator for us, so that "//server" and "//server/" are one path. std::filesystem keeps
+    // them distinct, and hands back a bare share name without one. There is no canonical form that agrees with it
+    // on both spellings, which is the price of making them equal.
+    if (result.starts_with("//") && result.find('/', 2) == std::string::npos)
+        result += '/';
+#endif
+
     return result;
 }
 
