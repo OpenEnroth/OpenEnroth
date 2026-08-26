@@ -14,6 +14,9 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Chest.h"
@@ -1585,4 +1588,43 @@ GAME_TEST(Issues, Pr2635) {
     game.doubleClickGuiButton("SaveMenu_Slot0");
     game.tick(2);
     EXPECT_EQ(saveLoadMenu()->keyboard_input_status, WINDOW_INPUT_IN_PROGRESS);
+}
+
+GAME_TEST(Prs, Pr2615a) {
+    // Clicking a decoration got a reach of exactly the mouse interaction depth after the pick rework, and vanilla
+    // extends it by the decoration's radius. This campfire is at depth 560 with radius 52, so it's clickable at the
+    // default reach of 512, and the plain interaction pick can't see it.
+    auto foodTape = tapes.food();
+    auto statusTape = tapes.statusBar();
+    game.startNewGame();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(12288 - 535, 2040, 0), 0); // Facing the campfire on the beach.
+    test.startTaping();
+    game.moveMouse(240, 250);
+    game.tick();
+    EXPECT_EQ(engine->PickMouseForInteraction().pid, Pid()); // Otherwise the radius allowance isn't what's tested.
+    Vis_PIDAndDepth object = engine->PickMouseForTargeting();
+    EXPECT_EQ(object.pid, Pid(OBJECT_Decoration, 7));
+    EXPECT_GT(object.depth, engine->config->gameplay.MouseInteractionDepth.value());
+    game.pressAndReleaseButton(BUTTON_LEFT, 240, 250);
+    game.tick(3);
+    EXPECT_EQ(foodTape.delta(), 2);
+    EXPECT_CONTAINS(statusTape, "You find 2 food");
+}
+
+GAME_TEST(Prs, Pr2615b) {
+    // Telekinesis never worked on decorations - the pick filter skipped their billboards, so the decoration branch
+    // in castSpell was dead code, and it crashed once reached, indexing pSpriteObjects with a decoration id. The
+    // click gate also rejected interactive decorations, campfires and their kin have no event id.
+    auto foodTape = tapes.food();
+    auto statusTape = tapes.statusBar();
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(12288 - 535, 2040, 0), 0); // Facing the campfire on the beach.
+    test.startTaping();
+    game.castSpell(1, SPELL_EARTH_TELEKINESIS);
+    game.tick(2);
+    game.pressAndReleaseButton(BUTTON_LEFT, 240, 250);
+    game.tick(3);
+    EXPECT_EQ(foodTape.delta(), 2);
+    EXPECT_CONTAINS(statusTape, "You find 2 food");
 }
