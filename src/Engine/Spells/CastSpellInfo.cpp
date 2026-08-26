@@ -2187,9 +2187,7 @@ void CastSpellInfoHelpers::castSpell() {
                         OpenedTelekinesis = true;
                         if (pLevelDecorations[obj_id].uEventID) {
                             eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
-                        }
-                        // TODO(captainurist): investigate, that's a very weird std::to_underlying call.
-                        if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id].containing_item.itemId)].IsInteractive()) {
+                        } else if (pLevelDecorations[obj_id].IsInteractive()) {
                             activeLevelDecoration = &pLevelDecorations[obj_id];
                             eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1);
                             activeLevelDecoration = nullptr;

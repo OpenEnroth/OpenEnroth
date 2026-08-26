@@ -781,7 +781,7 @@ void Game::processQueuedMessages() {
                     interactionPossible = !(pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE);
                 }
                 if (type == OBJECT_Decoration) {
-                    interactionPossible = pLevelDecorations[id].uEventID != 0;
+                    interactionPossible = pLevelDecorations[id].uEventID != 0 || pLevelDecorations[id].IsInteractive();
                 }
                 if (type == OBJECT_Face) {
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
