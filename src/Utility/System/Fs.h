@@ -59,11 +59,17 @@ namespace fs {
  * that can't be stat'ed, so the result is always in sync with what `stat` returns.
  *
  * @param path                          Path to a directory to list.
- * @param[out] entries                  Vector to append the entries to.
  * @return                              Directory entries, in unspecified order. Names are WTF-8 on Windows, byte
  *                                      strings on POSIX.
  */
 [[nodiscard]] std::vector<DirectoryEntry> ls(const Path &path);
+
+/**
+ * Same as `ls` above, but appends into a vector the caller already has, saving an allocation.
+ *
+ * @param path                          Path to a directory to list.
+ * @param[out] entries                  Vector to append the entries to.
+ */
 void ls(const Path &path, std::vector<DirectoryEntry> *entries);
 
 /**

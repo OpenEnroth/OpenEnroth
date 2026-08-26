@@ -39,8 +39,10 @@ static size_t rootSize(std::string_view path) {
         slashes++;
 
 #ifdef _WINDOWS
-    if (slashes == 2 && path.size() > 2)
-        return std::min(path.find(separator, 2), path.size()); // A UNC share, "//server" in "//server/x".
+    if (slashes == 2 && path.size() > 2) {
+        size_t shareEnd = std::min(path.find(separator, 2), path.size()); // A UNC share, "//server" in "//server/x".
+        return shareEnd < path.size() ? shareEnd + 1 : shareEnd;
+    }
 #else
     if (slashes == 2)
         return 2;
@@ -83,6 +85,8 @@ static std::string normalized(std::string_view path) {
     size_t root = rootSize(path);
     bool isRooted = root > 0;
     result = path.substr(0, root);
+    if (isRooted && result.back() != separator)
+        result += separator; // A bare share name is a root, and a root carries its separator - "//server" is "//server/".
 
     gch::small_vector<std::string_view, 32> stack;
     for (std::string_view chunk : split(path.substr(root)).by(separator)) {

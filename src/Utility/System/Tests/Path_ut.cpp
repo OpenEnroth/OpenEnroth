@@ -17,8 +17,10 @@ UNIT_TEST(Path, Wtf8RoundTrip) {
 
 UNIT_TEST(Path, NativeRoundTrip) {
     // The wide conversion on Windows has to be lossless both ways, or paths stop round-tripping through the OS.
-    std::filesystem::path cwd = std::filesystem::current_path();
-    EXPECT_EQ(Path::fromNative(cwd.native()).native(), cwd.native());
+    // Not byte-identical though - what comes back from the OS has backslashes in it, and those are separators.
+    Path path = Path::fromNative(std::filesystem::current_path().native());
+    EXPECT_EQ(Path::fromNative(path.native()), path);
+    EXPECT_FALSE(path.isEmpty());
 }
 
 UNIT_TEST(Path, StringConversions) {
@@ -70,7 +72,7 @@ UNIT_TEST(Path, WindowsRoots) {
 
     EXPECT_EQ(Path("//").string(), "/"); // Only "//" followed by a share name is root syntax here.
     EXPECT_EQ(Path("//server/x").parent(), Path("//server")); // The share name is one value, however it's spelled.
-    EXPECT_EQ(Path("//server/").string(), "//server");
+    EXPECT_EQ(Path("//server").string(), "//server/"); // A root carries its separator.
 }
 #endif
 

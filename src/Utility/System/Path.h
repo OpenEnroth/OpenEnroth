@@ -85,7 +85,7 @@ class Path {
 
     /**
      * @return                          The root this path is relative to, empty for a relative path. That's `"/"`,
-     *                                  or `"//"` on POSIX, or `"C:/"` / `"//server"` on Windows. Note that a bare
+     *                                  or `"//"` on POSIX, or `"C:/"` / `"//server/"` on Windows. Note that a bare
      *                                  `"C:"` is not root syntax - it parses as an ordinary relative segment.
      *                                  The returned view points into this path, so it dies with it.
      */
