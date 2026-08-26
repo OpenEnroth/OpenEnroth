@@ -28,6 +28,7 @@ class EvtInterpreter {
      bool _canShowOption = true;
      bool _readyToExit = false;
      bool _mapExitTriggered = false;
+     bool _cancelled = false; // Set when a script asks for more than the party has, e.g. gold, and aborts it.
      EvtTargetCharacter _who = CHOOSE_PARTY;
 };
 

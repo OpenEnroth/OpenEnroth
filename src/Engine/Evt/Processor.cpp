@@ -151,8 +151,6 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
         return;
     }
 
-    dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
-
     EvtInterpreter interpreter;
     MM_TRACE("Executing regular event starting from step {}", startStep);
     if (activeLevelDecoration) {
