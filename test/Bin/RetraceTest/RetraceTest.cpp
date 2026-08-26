@@ -64,13 +64,13 @@ void RetraceTest::TestBody() {
     EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
     recorder->startRecording(globalEngineController, oldSaveBlob);
     engine->config->graphics.FPSLimit.setValue(0);
-    player->playTrace(globalEngineController, std::move(oldTrace.events), _tracePath.toWtf8(), TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
+    player->playTrace(globalEngineController, std::move(oldTrace.events), _tracePath.string(), TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
     EngineTraceRecording recording = recorder->finishRecording(globalEngineController);
 
     std::string oldTraceJson = EventTrace::normalizeJson(oldTraceBlob.str());
     std::string newTraceJson = EventTrace::normalizeJson(recording.trace.str());
     if (oldTraceJson != newTraceJson) {
         printTraceDiff(newTraceJson, oldTraceJson);
-        ADD_FAILURE() << "Trace '" << _tracePath.toWtf8() << "' is not in canonical representation.";
+        ADD_FAILURE() << "Trace '" << _tracePath.string() << "' is not in canonical representation.";
     }
 }

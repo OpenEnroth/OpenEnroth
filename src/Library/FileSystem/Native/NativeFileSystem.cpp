@@ -94,5 +94,5 @@ NativePath NativeFileSystem::toNativePath(FileSystemPathView path) const {
     if (path.isEmpty())
         return _root; // `_root / ""` would add a trailing separator.
 
-    return _root / NativePath::fromWtf8(path.string());
+    return _root / NativePath(path.string());
 }

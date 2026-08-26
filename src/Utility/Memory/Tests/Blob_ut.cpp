@@ -90,5 +90,5 @@ UNIT_TEST(Blob, ExceptionMessages) {
     NativePath fileName = NativePath("lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt");
 
     EXPECT_FALSE(os::exists(fileName));
-    EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName.toWtf8());
+    EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName.string());
 }

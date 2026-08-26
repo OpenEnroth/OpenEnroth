@@ -68,7 +68,7 @@ static std::vector<NativePath> resolvePaths(Environment *environment, const Path
     std::string envPath = environment->getenv(config.overrideEnvKey);
     if (!envPath.empty()) {
         MM_INFO("Path override provided, '{}={}'.", config.overrideEnvKey, envPath);
-        return {NativePath::fromWtf8(envPath)};
+        return {NativePath(envPath)};
     }
 
     std::vector<NativePath> result;
@@ -81,7 +81,7 @@ static std::vector<NativePath> resolvePaths(Environment *environment, const Path
         if (registryKey) {
             std::string registryPath = environment->queryRegistry(registryKey);
             if (!registryPath.empty())
-                result.push_back(NativePath::fromWtf8(registryPath));
+                result.push_back(NativePath(registryPath));
         }
     }
 
@@ -89,10 +89,10 @@ static std::vector<NativePath> resolvePaths(Environment *environment, const Path
     // ...Android storage paths on Android,...
     std::string externalPath = environment->path(PATH_ANDROID_STORAGE_EXTERNAL);
     if (!externalPath.empty())
-        result.push_back(NativePath::fromWtf8(externalPath));
+        result.push_back(NativePath(externalPath));
     std::string internalPath = environment->path(PATH_ANDROID_STORAGE_INTERNAL);
     if (!internalPath.empty())
-        result.push_back(NativePath::fromWtf8(internalPath));
+        result.push_back(NativePath(internalPath));
     // TODO(captainurist): need a mechanism to show user-visible errors. Commenting out for now.
     //if (ANDROID && result.empty())
     //    platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
@@ -102,7 +102,7 @@ static std::vector<NativePath> resolvePaths(Environment *environment, const Path
     // ...or Library/Application Support in home on macOS.
     std::string home = environment->path(PATH_HOME);
     if (!home.empty())
-        result.push_back(NativePath::fromWtf8(home + "/Library/Application Support/OpenEnroth"));
+        result.push_back(NativePath(home + "/Library/Application Support/OpenEnroth"));
 #endif
 
     return result;
@@ -139,10 +139,10 @@ NativePath resolveMm7UserPath(Environment *environment) {
     std::string savedGames = environment->path(PATH_WINDOWS_SAVED_GAMES);
     if (savedGames.empty())
         return {}; // Shouldn't really happen.
-    return NativePath::fromWtf8(fmt::format("{}/OpenEnroth", savedGames));
+    return NativePath(fmt::format("{}/OpenEnroth", savedGames));
 #elif __ANDROID__
-    return NativePath::fromWtf8(fmt::format("{}/.openenroth", environment->path(PATH_ANDROID_STORAGE_INTERNAL)));
+    return NativePath(fmt::format("{}/.openenroth", environment->path(PATH_ANDROID_STORAGE_INTERNAL)));
 #else // Mac & linux
-    return NativePath::fromWtf8(fmt::format("{}/.openenroth", environment->path(PATH_HOME)));
+    return NativePath(fmt::format("{}/.openenroth", environment->path(PATH_HOME)));
 #endif
 }

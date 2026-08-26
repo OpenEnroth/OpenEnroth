@@ -75,7 +75,7 @@ int runRetrace(const OpenEnrothOptions &options) {
             EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
             recorder->startRecording(game, oldSaveBlob);
             engine->config->graphics.FPSLimit.setValue(0);
-            player->playTrace(game, std::move(oldTrace.events), tracePath.toWtf8(), TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
+            player->playTrace(game, std::move(oldTrace.events), tracePath.string(), TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
             EngineTraceRecording recording = recorder->finishRecording(game);
 
             auto endTime = std::chrono::steady_clock::now();

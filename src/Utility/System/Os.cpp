@@ -14,8 +14,8 @@ static std::filesystem::path toStdPath(const NativePath &path) {
     return std::filesystem::path(path.native());
 }
 
-static std::string toWtf8(const std::filesystem::path &path) {
-    return NativePath::fromNative(path.native()).toWtf8();
+static std::string toPathString(const std::filesystem::path &path) {
+    return NativePath::fromNative(path.native()).string();
 }
 
 bool os::exists(const NativePath &path) {
@@ -66,7 +66,7 @@ void os::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
             continue;
 
         // The roundtrip through NativePath is a WTF-8 conversion on Windows.
-        entries->emplace_back(toWtf8(entry.path().filename()), isRegular ? FILE_REGULAR : FILE_DIRECTORY);
+        entries->emplace_back(toPathString(entry.path().filename()), isRegular ? FILE_REGULAR : FILE_DIRECTORY);
     }
 }
 

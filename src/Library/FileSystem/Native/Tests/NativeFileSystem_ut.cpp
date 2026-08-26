@@ -127,9 +127,12 @@ UNIT_TEST(NativeFileSystem, DisplayPath) {
 }
 
 UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
+    // displayPath is the one method that doesn't reject an escaping path - it exists for diagnostics. What it shows
+    // changed with lexical normalization though: the ".." now resolves against the absolute root instead of being
+    // appended to it verbatim, so the answer is the parent directory itself.
     NativeFileSystem fs("");
 
-    EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
+    EXPECT_EQ(fs.displayPath(".."), os::cwd().parent().displayString());
 }
 
 UNIT_TEST(NativeFileSystem, ToNativePath) {
@@ -143,7 +146,7 @@ UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {
     // File names go through a narrow<->wide conversion on Windows, so a non-ASCII name has to survive a round trip
     // through ls and stay usable. On *nix names are just bytes, so this mostly guards the Windows side.
     ScopedTestFolder tmp("tmp_native_dir");
-    ScopedTestFile tmp2(NativePath::fromWtf8("tmp_native_dir/\xD0\xBB\xD0\xBE\xD0\xBB.txt"), "lol"); // "лол.txt".
+    ScopedTestFile tmp2(NativePath("tmp_native_dir/\xD0\xBB\xD0\xBE\xD0\xBB.txt"), "lol"); // "лол.txt".
 
     NativeFileSystem fs("tmp_native_dir");
     std::vector<DirectoryEntry> entries = fs.ls("");
@@ -197,7 +200,7 @@ UNIT_TEST(NativeFileSystem, WindowsOddFileNames) {
         EXPECT_EQ(fs.openForReading(name)->readAll(), "lol");
 
         // displayPath is valid UTF-8, so the surrogates in the name come out replaced.
-        EXPECT_EQ(fs.displayPath(name), os::absolute(NativePath("tmp_native_dir") / NativePath::fromWtf8(name)).displayString());
+        EXPECT_EQ(fs.displayPath(name), os::absolute(NativePath("tmp_native_dir") / NativePath(name)).displayString());
 
         // Writing such a name works too.
         fs.write(name + ".2", Blob::fromString("kek"));

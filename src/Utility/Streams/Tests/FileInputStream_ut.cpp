@@ -35,7 +35,7 @@ UNIT_TEST(FileInputStream, ExceptionMessages) {
     NativePath fileName("afjhrbluxnkskghelxrigjmgdhckeog.txt");
 
     EXPECT_FALSE(os::exists(fileName));
-    EXPECT_THROW_MESSAGE(FileInputStream in(fileName), fileName.toWtf8());
+    EXPECT_THROW_MESSAGE(FileInputStream in(fileName), fileName.string());
 }
 
 UNIT_TEST(FileInputStream, ReadUntil) {
