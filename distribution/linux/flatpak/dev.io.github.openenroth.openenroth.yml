@@ -32,15 +32,6 @@ add-extensions:
     autodelete: false
 
 modules:
-  - name: libdwarf
-    buildsystem: cmake-ninja
-    builddir: true
-    sources:
-      - type: git
-        url: https://github.com/davea42/libdwarf-code/
-        tag: v0.11.0
-        commit: 285d9d34f3e9f56cc1c487d0055f6dc54a9c54a1
-
   - name: sdl3
     buildsystem: cmake-ninja
     builddir: true
