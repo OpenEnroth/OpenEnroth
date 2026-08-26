@@ -1021,7 +1021,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                         Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
@@ -1754,7 +1754,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.spriteId = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         if (supertypeForMonsterId(actor->monsterInfo.id) == MONSTER_SUPERTYPE_UNDEAD) {
                             pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                             pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
@@ -2106,7 +2106,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.spriteId = SPRITE_SPELL_MIND_MASS_FEAR_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         // Change: do not exit loop when first undead monster is found
                         if (supertypeForMonsterId(actor->monsterInfo.id) != MONSTER_SUPERTYPE_UNDEAD) {
                             pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
@@ -2394,7 +2394,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.spriteId = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     // Spell damage processing was removed because Dispel Magic does not do damage
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                         pSpellSprite.Create(0, 0, 0, 0);
@@ -2484,7 +2484,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.spriteId = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                         Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
@@ -2842,9 +2842,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_SOULDRINKER:
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    // Vanilla swept to the mouse info depth here - 25 map cells outdoors, three times the reach
-                    // of any targeted attack.
-                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(engine->config->gameplay.RangedAttackDepth.value());
+                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value());
                     for (Actor *actor : actorsInViewport) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);

@@ -197,6 +197,11 @@ class GameConfig : public Config {
             "Max depth for ranged attacks and ranged spells. "
             "It's impossible to target monsters that are further away than this value."};
 
+        Int MassSpellDepth = {this, "mass_spell_depth", 4096, &ValidateRangedAttackDepth,
+            "Max depth for mass spells, the ones that hit every monster in the viewport - Inferno, Turn Undead, "
+            "Mass Fear, Dispel Magic, Prismatic Light and Souldrinker. Vanilla used 4096 for all of them except "
+            "Souldrinker, which reached to the mouse info depth of 12800 outdoors and 16192 indoors."};
+
         Int MinRecoveryMelee = {this, "minimum_recovery_melee", 30, &ValidateRecovery,
             "Minimum recovery time for melee weapons. Was 30 in vanilla."};
 
