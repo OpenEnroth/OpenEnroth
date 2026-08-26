@@ -16,13 +16,17 @@ UNIT_TEST(Path, Wtf8RoundTrip) {
 }
 
 UNIT_TEST(Path, NativeRoundTrip) {
+    // The wide conversion on Windows has to be lossless both ways, or paths stop round-tripping through the OS.
     std::filesystem::path cwd = std::filesystem::current_path();
     EXPECT_EQ(Path::fromNative(cwd.native()).native(), cwd.native());
 }
 
-UNIT_TEST(Path, Literals) {
-    // A byte string constructs directly.
-    EXPECT_EQ(Path("a/b/c.txt"), Path("a/b/c.txt"));
+UNIT_TEST(Path, StringConversions) {
+    // A literal, a std::string and a string_view all land on the same Path - the constructor is the only conversion
+    // there is now that fromWtf8 is gone.
+    std::string string = "a/b/c.txt";
+    EXPECT_EQ(Path("a/b/c.txt"), Path(string));
+    EXPECT_EQ(Path("a/b/c.txt"), Path(std::string_view(string)));
     EXPECT_EQ(Path(""), Path());
 }
 
@@ -50,15 +54,23 @@ UNIT_TEST(Path, WindowsRoots) {
     EXPECT_EQ(Path("a\\b").string(), "a/b"); // Both slashes separate components on Windows.
 
     EXPECT_EQ((Path("C:/a") / Path("D:/b")).string(), "D:/b"); // Another drive replaces everything.
-    EXPECT_EQ((Path("C:/a") / Path("/b")).string(), "C:/b"); // A rooted tail keeps our drive.
-    EXPECT_EQ((Path("C:/a") / Path("C:b")).string(), "C:/a/b"); // Same drive, so it's a plain append.
-    EXPECT_EQ((Path("C:") / Path("b")).string(), "C:b"); // Drive-relative, no separator inserted.
     EXPECT_EQ((Path("//server/share") / Path("f")).string(), "//server/share/f");
-
-    // A bare drive letter is drive-relative, but a bare share name is already absolute. So a separator does go in
-    // after it, and it replaces whatever it's appended to.
     EXPECT_EQ((Path("//server") / Path("share")).string(), "//server/share");
-    EXPECT_EQ((Path("//server/share") / Path("//server")).string(), "//server");
+
+    // A rooted tail replaces the head whatever its root is, so an absolute intent survives the join instead of
+    // being laundered into a relative one. std::filesystem instead keeps the head's drive here, giving "C:/b".
+    EXPECT_EQ((Path("C:/a") / Path("/b")).string(), "/b");
+
+    // A bare drive letter is not root syntax - there is no cross-platform meaning to preserve - so it joins as an
+    // ordinary segment. Which means a relative head can concatenate into something that parses absolute. That is
+    // degenerate but inert, since the boundary rejects the ingredients and the result alike.
+    EXPECT_EQ((Path("C:/a") / Path("C:b")).string(), "C:/a/C:b");
+    EXPECT_EQ((Path("C:") / Path("b")).string(), "C:/b");
+    EXPECT_TRUE((Path("C:") / Path("b")).isAbsolute());
+
+    EXPECT_EQ(Path("//").string(), "/"); // Only "//" followed by a share name is root syntax here.
+    EXPECT_EQ(Path("//server/x").parent(), Path("//server")); // The share name is one value, however it's spelled.
+    EXPECT_EQ(Path("//server/").string(), "//server");
 }
 #endif
 
@@ -95,12 +107,24 @@ UNIT_TEST(Path, NormalForm) {
         EXPECT_EQ(Path(Path(path).string()), Path(path)) << path;
 }
 
+#ifndef _WINDOWS
+UNIT_TEST(Path, PosixDoubleSlashRoot) {
+    // POSIX says a path starting with exactly two slashes is implementation-defined, so we leave it alone instead
+    // of reading a root name out of it the way libstdc++ does. Three or more slashes are just a root directory.
+    EXPECT_EQ(Path("//a").string(), "//a");
+    EXPECT_EQ(Path("//a").root(), "//");
+    EXPECT_EQ(Path("///a").string(), "/a");
+    EXPECT_EQ(Path("///a").root(), "/");
+    EXPECT_EQ(Path("//a/../b").string(), "//b"); // Clamped by the root like any other absolute path.
+}
+#endif
+
 UNIT_TEST(Path, Dichotomy) {
     // root() is the primitive, and isAbsolute / isRelative are exact complements of it on every path.
     for (std::string_view path : {"", ".", "..", "a", "a/b", "/", "/a", "C:x", "a\\b"}) {
-        Path nativePath(path);
-        EXPECT_EQ(nativePath.isAbsolute(), !nativePath.root().empty()) << path;
-        EXPECT_EQ(nativePath.isRelative(), !nativePath.isAbsolute()) << path;
+        Path testPath(path);
+        EXPECT_EQ(testPath.isAbsolute(), !testPath.root().empty()) << path;
+        EXPECT_EQ(testPath.isRelative(), !testPath.isAbsolute()) << path;
     }
 
     EXPECT_TRUE(Path("/lol").isAbsolute()); // On every platform, Windows included.
@@ -162,10 +186,16 @@ UNIT_TEST(Path, LexicalOpsMatchStdFilesystem) {
         std::string normal = oracle(head);
         EXPECT_EQ(Path(head).string(), normal) << "normalizing '" << head << "'";
 
-        for (const std::string &tail : paths)
-            EXPECT_EQ((Path(head) / Path(tail)).string(),
-                      oracle(std::filesystem::path(head) / std::filesystem::path(tail)))
-                << "'" << head << "' / '" << tail << "'";
+        for (const std::string &tail : paths) {
+            // Our rule is that any rooted tail replaces the head. std::filesystem instead keeps the head's root
+            // name when the tail has a root directory but no root name, so on Windows it turns "/b" into "C:/b" -
+            // laundering an absolute path into a relative one, which is exactly what we don't want.
+            std::string expected = Path(tail).isAbsolute()
+                ? oracle(tail)
+                : oracle(std::filesystem::path(head) / std::filesystem::path(tail));
+
+            EXPECT_EQ((Path(head) / Path(tail)).string(), expected) << "'" << head << "' / '" << tail << "'";
+        }
 
         // Against the normal form, so that the oracle's retained trailing separator doesn't shift the answer.
         EXPECT_EQ(Path(head).parent().string(), oracle(std::filesystem::path(normal).parent_path()))
@@ -181,6 +211,9 @@ UNIT_TEST(Path, LexicalOpsMatchStdFilesystem) {
 }
 
 UNIT_TEST(Path, Parent) {
+    EXPECT_EQ(Path("/a").parent(), Path("/")); // Clamped by the root, not emptied.
+    EXPECT_EQ(Path("../..").parent(), Path("..")); // The lexical parent, which is not the semantic one.
+
     EXPECT_EQ(Path("a/b/c.txt").parent(), Path("a/b"));
     EXPECT_EQ(Path("c.txt").parent(), Path()); // No parent means an empty path.
     EXPECT_EQ(Path().parent(), Path());

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <compare>
 #include <string>
 #include <string_view>
@@ -17,8 +16,10 @@
  * Every `Path` is in lexical normal form, established at construction and preserved by every operation:
  * separators are single forward slashes with no trailing one, `.` segments are gone (a lone `"."` is the empty path,
  * which means "here"), and `..` is collapsed - surviving only as a leading run of a relative path, and clamped above
- * an absolute root, so `"/.."` is `"/"`. A leading `"//"` is root syntax and is preserved. On Windows a backslash is
- * a separator and is converted, on POSIX it's an ordinary character in a file name and is left alone.
+ * an absolute root, so `"/.."` is `"/"`. On Windows a backslash is
+ * a separator and is converted, on POSIX it's an ordinary character in a file name and is left alone. A leading
+ * `"//"` is root syntax and survives normalization - a share name on Windows, where a bare `"//"` is just `"/"`, and
+ * the implementation-defined two-slash prefix on POSIX, where `"///"` and longer collapse to `"/"`.
  *
  * Collapsing `..` lexically is a deliberate engine-wide decision - a path *means* its normal form. Where a symlink is
  * involved this diverges from the OS: with `a/link` pointing elsewhere, `Path("a/link/../f")` is `"a/f"`, while
@@ -27,8 +28,8 @@
  *
  * The bytes carry no encoding promise. They're WTF-8 on Windows, where that's the only encoding that round-trips
  * unpaired surrogates through the OS, and arbitrary bytes on Linux, which is what file names are there. MacOS is
- * different again - APFS only takes file names that are valid UTF-8. Encoding is checked where paths cross into the
- * OS, not here.
+ * different again - APFS only takes file names that are valid UTF-8. Encoding is a concern of the code that talks to
+ * the OS, not of this type - note that `native` substitutes U+FFFD for anything it can't convert rather than failing.
  */
 class Path {
  public:
@@ -84,8 +85,9 @@ class Path {
 
     /**
      * @return                          The root this path is relative to, empty for a relative path. That's `"/"`,
-     *                                  or `"//"` on POSIX, or `"C:/"` / `"//server/"` on Windows. Note that a bare
+     *                                  or `"//"` on POSIX, or `"C:/"` / `"//server"` on Windows. Note that a bare
      *                                  `"C:"` is not root syntax - it parses as an ordinary relative segment.
+     *                                  The returned view points into this path, so it dies with it.
      */
     [[nodiscard]] std::string_view root() const;
 
@@ -106,6 +108,7 @@ class Path {
 
     /**
      * @return                          The last component, empty if there is none. `"a/b.txt"` gives `"b.txt"`.
+     *                                  The returned view points into this path, so it dies with it.
      */
     [[nodiscard]] std::string_view name() const;
 
@@ -113,11 +116,13 @@ class Path {
      * @return                          The extension of the file name, with the leading dot, empty if there is none.
      *                                  A leading dot doesn't start one, so `".bashrc"` has no extension, and only the
      *                                  last one counts, so `"a.tar.gz"` gives `".gz"`.
+     *                                  The returned view points into this path, so it dies with it.
      */
     [[nodiscard]] std::string_view extension() const;
 
     /**
      * @return                          The file name without its extension. `"a/b.tar.gz"` gives `"b.tar"`.
+     *                                  The returned view points into this path, so it dies with it.
      */
     [[nodiscard]] std::string_view stem() const;
 
@@ -130,8 +135,8 @@ class Path {
 
     /**
      * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
-     *                                  the extension. Must not contain a separator, and must not turn the file name
-     *                                  into `"."` or `".."`.
+     *                                  the extension. Must not contain a separator. Note that the result is
+     *                                  normalized, so dropping the extension of `"a/..b"` gives `"a"`.
      * @return                          Copy of this path with the extension replaced. Only the last extension is
      *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`.
      */
@@ -144,9 +149,11 @@ class Path {
     /**
      * @param tail                      Path to append.
      * @return                          The two paths joined with a separator, re-normalized at the seam - so a
-     *                                  leading `..` run in `tail` eats trailing components of the head. An absolute
-     *                                  `tail` replaces this path instead of being appended to it, same as
-     *                                  `std::filesystem::path::operator/`.
+     *                                  leading `..` run in `tail` eats trailing components of the head. A `tail` with
+     *                                  any root replaces this path instead of being appended to it, so that an
+     *                                  absolute intent survives the join. That last part is deliberately unlike
+     *                                  `std::filesystem::path::operator/`, which keeps the head's root name when the
+     *                                  tail has a root directory but no root name of its own.
      */
     [[nodiscard]] Path operator/(const Path &tail) const;
 

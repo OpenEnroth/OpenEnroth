@@ -1,6 +1,7 @@
 #include "Path.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cstddef>
 #include <string>
 #include <string_view>
@@ -38,10 +39,8 @@ static size_t rootSize(std::string_view path) {
         slashes++;
 
 #ifdef _WINDOWS
-    if (slashes == 2 && path.size() > 2) {
-        size_t shareEnd = std::min(path.find(separator, 2), path.size()); // A UNC share, "//server" in "//server/x".
-        return shareEnd < path.size() ? shareEnd + 1 : shareEnd;
-    }
+    if (slashes == 2 && path.size() > 2)
+        return std::min(path.find(separator, 2), path.size()); // A UNC share, "//server" in "//server/x".
 #else
     if (slashes == 2)
         return 2;
@@ -84,8 +83,6 @@ static std::string normalized(std::string_view path) {
     size_t root = rootSize(path);
     bool isRooted = root > 0;
     result = path.substr(0, root);
-    if (isRooted && result.back() != separator)
-        isRooted = false; // A root name without a root directory, e.g. "//server" - ".." isn't clamped by it.
 
     gch::small_vector<std::string_view, 32> stack;
     for (std::string_view chunk : split(path.substr(root)).by(separator)) {
@@ -165,14 +162,12 @@ Path Path::parent() const {
     // Drop the separators between the parent and the file name, but keep the one that is the root directory.
     while (end > root && _path[end - 1] == separator)
         end--;
-    if (end < root)
-        end = root;
 
     return fromNormalized(_path.substr(0, end));
 }
 
 Path Path::withExtension(std::string_view extension) const {
-    assert(!extension.contains(separator) && !extension.contains('\\')); // An extension is not a path.
+    assert(!extension.contains(separator)); // An extension is not a path.
 
     size_t offset = extensionOffset(_path);
     std::string result = offset == std::string::npos ? _path : _path.substr(0, offset);
@@ -183,12 +178,9 @@ Path Path::withExtension(std::string_view extension) const {
         result += extension;
     }
 
-    // Truncating at the last dot can turn "..." into "..", which would silently make the path escaping. Leaving an
-    // already-degenerate name alone is fine, it's creating one that isn't.
-    [[maybe_unused]] std::string_view resultName = std::string_view(result).substr(fileNameOffset(result));
-    assert(resultName == name() || (resultName != "." && resultName != ".."));
-
-    return fromNormalized(std::move(result));
+    // Truncating at the last dot can leave a "." or ".." file name - "a/..b" without an extension is "a/.", which
+    // is "a". So the result goes back through normalization instead of being taken on trust.
+    return Path(result);
 }
 
 Path Path::operator/(const Path &tail) const {
