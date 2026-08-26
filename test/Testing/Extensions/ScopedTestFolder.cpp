@@ -1,14 +1,14 @@
 #include "ScopedTestFolder.h"
 
-#include "Utility/System/Os.h"
+#include "Utility/System/Fs.h"
 
-ScopedTestFolder::ScopedTestFolder(const NativePath &path) : _path(path) {
-    os::remove(_path); // Drop whatever an earlier run might have left behind.
-    os::mkdirs(_path);
+ScopedTestFolder::ScopedTestFolder(const Path &path) : _path(path) {
+    fs::remove(_path); // Drop whatever an earlier run might have left behind.
+    fs::mkdirs(_path);
 }
 
 ScopedTestFolder::~ScopedTestFolder() {
     try {
-        os::remove(_path);
+        fs::remove(_path);
     } catch (...) {} // Cleanup errors shouldn't throw out of a dtor.
 }

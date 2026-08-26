@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 enum class FileType {
     FILE_INVALID, // Returned by `stat` calls if file doesn't exist.
@@ -39,20 +39,20 @@ struct DirectoryEntry {
     friend std::strong_ordering operator<=>(const DirectoryEntry &l, const DirectoryEntry &r) = default;
 };
 
-namespace os {
+namespace fs {
 
 /**
  * @param path                          Path to check. Never throws, returns `false` on errors.
  * @return                              Whether `path` exists.
  */
-[[nodiscard]] bool exists(const NativePath &path);
+[[nodiscard]] bool exists(const Path &path);
 
 /**
  * @param path                          Path to stat. Never throws.
  * @return                              Stats for `path`, or an empty `FileStat` on errors, or if `path` is neither
  *                                      a file nor a directory.
  */
-[[nodiscard]] FileStat stat(const NativePath &path);
+[[nodiscard]] FileStat stat(const Path &path);
 
 /**
  * Lists a directory. Never throws - lists nothing if `path` doesn't exist or isn't a directory, and skips entries
@@ -63,8 +63,8 @@ namespace os {
  * @return                              Directory entries, in unspecified order. Names are WTF-8 on Windows, byte
  *                                      strings on POSIX.
  */
-[[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
-void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
+[[nodiscard]] std::vector<DirectoryEntry> ls(const Path &path);
+void ls(const Path &path, std::vector<DirectoryEntry> *entries);
 
 /**
  * Removes the file or directory at `path`. A directory is removed with everything that's in it.
@@ -73,7 +73,7 @@ void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
  * @return                              Whether anything was removed.
  * @throws std::runtime_error           On errors, e.g. missing permissions.
  */
-bool remove(const NativePath &path);
+bool remove(const Path &path);
 
 /**
  * Creates the directory at `path`, along with all missing parents. Does nothing if it already exists.
@@ -81,12 +81,12 @@ bool remove(const NativePath &path);
  * @param path                          Path to the directory to create.
  * @throws std::runtime_error           On errors.
  */
-void mkdirs(const NativePath &path);
+void mkdirs(const Path &path);
 
 /**
  * @return                              Current working directory.
  */
-[[nodiscard]] NativePath cwd();
+[[nodiscard]] Path cwd();
 
 /**
  * @param path                          Path to resolve.
@@ -94,6 +94,6 @@ void mkdirs(const NativePath &path);
  *                                      resolves to the current directory itself.
  * @throws Exception                    If the path couldn't be resolved.
  */
-[[nodiscard]] NativePath absolute(const NativePath &path);
+[[nodiscard]] Path absolute(const Path &path);
 
-} // namespace os
+} // namespace fs

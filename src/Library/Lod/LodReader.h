@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 #include "LodEnums.h"
 #include "LodInfo.h"
@@ -22,7 +22,7 @@ class InputStream;
 class LodReader final {
  public:
     LodReader();
-    explicit LodReader(const NativePath &path, LodOpenFlags openFlags = 0);
+    explicit LodReader(const Path &path, LodOpenFlags openFlags = 0);
     LodReader(Blob blob, LodOpenFlags openFlags = 0);
     ~LodReader();
 
@@ -32,7 +32,7 @@ class LodReader final {
      * @throw Exception                 If the LOD couldn't be opened - e.g., if the file doesn't exist,
      *                                  or if it's not a LOD.
      */
-    void open(const NativePath &path, LodOpenFlags openFlags = 0);
+    void open(const Path &path, LodOpenFlags openFlags = 0);
 
     /**
      * @param blob                      LOD data.

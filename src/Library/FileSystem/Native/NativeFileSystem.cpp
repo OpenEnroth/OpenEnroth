@@ -13,29 +13,29 @@
 
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
-#include "Utility/System/Os.h"
+#include "Utility/System/Fs.h"
 
-NativeFileSystem::NativeFileSystem(const NativePath &root) {
-    _root = os::absolute(root);
+NativeFileSystem::NativeFileSystem(const Path &root) {
+    _root = fs::absolute(root);
 }
 
 NativeFileSystem::~NativeFileSystem() = default;
 
 bool NativeFileSystem::_exists(FileSystemPathView path) const {
     assert(!path.isEmpty());
-    return os::exists(toNativePath(path));
+    return fs::exists(toNativePath(path));
 }
 
 FileStat NativeFileSystem::_stat(FileSystemPathView path) const {
     assert(!path.isEmpty());
-    return os::stat(toNativePath(path));
+    return fs::stat(toNativePath(path));
 }
 
 void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    NativePath basePath = toNativePath(path);
+    Path basePath = toNativePath(path);
 
     // Handle the known errors first.
-    FileType type = os::stat(basePath).type;
+    FileType type = fs::stat(basePath).type;
     if (path.isEmpty() && type != FILE_DIRECTORY)
         return; // ls("") should always work.
     if (type == FILE_REGULAR)
@@ -44,7 +44,7 @@ void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 
     auto oldSize = static_cast<std::ptrdiff_t>(entries->size());
-    os::ls(basePath, entries);
+    fs::ls(basePath, entries);
 
     // Files with '\\' in filename are not observable through this interface.
     auto isUnobservable = [] (const DirectoryEntry &entry) { return entry.name.contains('\\'); };
@@ -58,8 +58,8 @@ Blob NativeFileSystem::_read(FileSystemPathView path) const {
 
 void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
     assert(!path.isEmpty());
-    NativePath basePath = toNativePath(path);
-    os::mkdirs(basePath.parent());
+    Path basePath = toNativePath(path);
+    fs::mkdirs(basePath.parent());
     FileOutputStream stream(basePath);
     stream.write(data.data(), data.size());
     stream.close();
@@ -72,27 +72,27 @@ std::unique_ptr<InputStream> NativeFileSystem::_openForReading(FileSystemPathVie
 
 std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(FileSystemPathView path) {
     assert(!path.isEmpty());
-    NativePath basePath = toNativePath(path);
-    os::mkdirs(basePath.parent());
+    Path basePath = toNativePath(path);
+    fs::mkdirs(basePath.parent());
     return std::make_unique<FileOutputStream>(basePath);
 }
 
 bool NativeFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
-    return os::remove(toNativePath(path));
+    return fs::remove(toNativePath(path));
 }
 
 std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
     return toNativePath(path).displayString();
 }
 
-NativePath NativeFileSystem::toNativePath(std::string_view path) const {
+Path NativeFileSystem::toNativePath(std::string_view path) const {
     return toNativePath(FileSystemPath(path));
 }
 
-NativePath NativeFileSystem::toNativePath(FileSystemPathView path) const {
+Path NativeFileSystem::toNativePath(FileSystemPathView path) const {
     if (path.isEmpty())
         return _root; // `_root / ""` would add a trailing separator.
 
-    return _root / NativePath(path.string());
+    return _root / Path(path.string());
 }

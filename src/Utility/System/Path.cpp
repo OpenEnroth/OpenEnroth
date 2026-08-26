@@ -1,4 +1,4 @@
-#include "NativePath.h"
+#include "Path.h"
 
 #include <algorithm>
 #include <cstddef>
@@ -113,52 +113,52 @@ static std::string normalized(std::string_view path) {
     return result;
 }
 
-NativePath::NativePath(std::string_view path) : _path(normalized(path)) {}
+Path::Path(std::string_view path) : _path(normalized(path)) {}
 
 #ifdef _WINDOWS
-NativePath NativePath::fromNative(std::wstring_view path) {
-    return NativePath(txt::wideToWtf8(path));
+Path Path::fromNative(std::wstring_view path) {
+    return Path(txt::wideToWtf8(path));
 }
 #else
-NativePath NativePath::fromNative(std::string_view path) {
-    return NativePath(path);
+Path Path::fromNative(std::string_view path) {
+    return Path(path);
 }
 #endif
 
 #ifdef _WINDOWS
-std::wstring NativePath::native() const {
+std::wstring Path::native() const {
     return txt::wtf8ToWide(_path); // Win32 takes forward slashes just fine, no need to convert them back.
 }
 #endif
 
-std::string NativePath::displayString() const {
+std::string Path::displayString() const {
     return txt::encodedToUtf8(_path, ENCODING_UTF8); // UTF-8 to UTF-8 conversion replaces all the invalid parts.
 }
 
-std::string_view NativePath::root() const {
+std::string_view Path::root() const {
     return std::string_view(_path).substr(0, rootSize(_path));
 }
 
-bool NativePath::isEscaping() const {
+bool Path::isEscaping() const {
     return _path == ".." || _path.starts_with("../");
 }
 
-std::string_view NativePath::name() const {
+std::string_view Path::name() const {
     return std::string_view(_path).substr(fileNameOffset(_path));
 }
 
-std::string_view NativePath::extension() const {
+std::string_view Path::extension() const {
     size_t offset = extensionOffset(_path);
     return offset == std::string::npos ? std::string_view() : std::string_view(_path).substr(offset);
 }
 
-std::string_view NativePath::stem() const {
+std::string_view Path::stem() const {
     size_t offset = extensionOffset(_path);
     std::string_view name = this->name();
     return offset == std::string::npos ? name : name.substr(0, name.size() - (_path.size() - offset));
 }
 
-NativePath NativePath::parent() const {
+Path Path::parent() const {
     size_t root = rootSize(_path);
     size_t end = fileNameOffset(_path);
 
@@ -171,7 +171,7 @@ NativePath NativePath::parent() const {
     return fromNormalized(_path.substr(0, end));
 }
 
-NativePath NativePath::withExtension(std::string_view extension) const {
+Path Path::withExtension(std::string_view extension) const {
     assert(!extension.contains(separator) && !extension.contains('\\')); // An extension is not a path.
 
     size_t offset = extensionOffset(_path);
@@ -191,7 +191,7 @@ NativePath NativePath::withExtension(std::string_view extension) const {
     return fromNormalized(std::move(result));
 }
 
-NativePath NativePath::operator/(const NativePath &tail) const {
+Path Path::operator/(const Path &tail) const {
     if (tail.isAbsolute())
         return tail; // A rooted tail replaces the head, same as std::filesystem::path::operator/ does it.
 
@@ -205,5 +205,5 @@ NativePath NativePath::operator/(const NativePath &tail) const {
     if (result.back() != separator)
         result += separator;
     result += tail._path;
-    return NativePath(result);
+    return Path(result);
 }

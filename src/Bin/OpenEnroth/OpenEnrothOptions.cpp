@@ -12,7 +12,7 @@
 #include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Exception.h"
-#include "Utility/System/Os.h"
+#include "Utility/System/Fs.h"
 #include "Utility/String/Format.h"
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(OpenEnrothOptions::Migration, CASE_INSENSITIVE, {
@@ -80,13 +80,13 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
     app->parse(argc, argv, result.helpPrinted);
 
-    if (!portable && os::exists(".portable"))
+    if (!portable && fs::exists(".portable"))
         portable = true;
     if (portable && *portable) {
         if (result.userPath.isEmpty())
-            result.userPath = os::cwd();
+            result.userPath = fs::cwd();
         if (result.dataPath.isEmpty())
-            result.dataPath = os::cwd();
+            result.dataPath = fs::cwd();
     }
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {

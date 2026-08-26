@@ -61,11 +61,11 @@ int runRetrace(const OpenEnrothOptions &options) {
         EngineTraceSimplePlayer *player = application->component<EngineTraceSimplePlayer>();
         EngineTraceRecorder *recorder = application->component<EngineTraceRecorder>();
 
-        for (const NativePath &tracePath : options.retrace.traces) {
+        for (const Path &tracePath : options.retrace.traces) {
             fmt::println(stderr, "Retracing '{}'...", tracePath);
             auto startTime = std::chrono::steady_clock::now();
 
-            NativePath savePath = tracePath.withExtension(".mm7");
+            Path savePath = tracePath.withExtension(".mm7");
             Blob oldTraceBlob = Blob::fromFile(tracePath);
             Blob oldSaveBlob = Blob::fromFile(savePath);
 
@@ -99,10 +99,10 @@ int runPlay(const OpenEnrothOptions &options) {
     starter.runInstrumented([options, application = starter.application()] (EngineController *game) {
         EngineTracePlayer *player = application->component<EngineTracePlayer>();
 
-        for (const NativePath &tracePath : options.play.traces) {
+        for (const Path &tracePath : options.play.traces) {
             fmt::println(stderr, "Playing back '{}'...", tracePath);
 
-            NativePath savePath = tracePath.withExtension(".mm7");
+            Path savePath = tracePath.withExtension(".mm7");
 
             EngineTraceRecording recording;
             recording.save = Blob::fromFile(savePath);

@@ -7,7 +7,7 @@
 
 #include "Library/FileSystem/Interface/FileSystem.h"
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 /**
  * View over a directory on the native file system of the host OS.
@@ -33,7 +33,7 @@ class NativeFileSystem : public FileSystem {
      *                                  resolved against the current working directory, and an empty path means the
      *                                  current working directory itself.
      */
-    explicit NativeFileSystem(const NativePath &root);
+    explicit NativeFileSystem(const Path &root);
     virtual ~NativeFileSystem();
 
     /**
@@ -42,8 +42,8 @@ class NativeFileSystem : public FileSystem {
      * @param path                      Path in this file system.
      * @return                          Native path for `path`. Always absolute.
      */
-    [[nodiscard]] NativePath toNativePath(std::string_view path) const;
-    [[nodiscard]] NativePath toNativePath(FileSystemPathView path) const;
+    [[nodiscard]] Path toNativePath(std::string_view path) const;
+    [[nodiscard]] Path toNativePath(FileSystemPathView path) const;
 
  private:
     virtual bool _exists(FileSystemPathView path) const override;
@@ -57,5 +57,5 @@ class NativeFileSystem : public FileSystem {
     virtual std::string _displayPath(FileSystemPathView path) const override;
 
  private:
-    NativePath _root;
+    Path _root;
 };

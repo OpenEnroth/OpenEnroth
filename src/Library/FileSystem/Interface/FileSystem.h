@@ -11,7 +11,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Streams/OutputStream.h"
-#include "Utility/System/Os.h"
+#include "Utility/System/Fs.h"
 
 #include "FileSystemPath.h"
 #include "FileSystemEnums.h"
@@ -32,7 +32,7 @@
  *
  * All user-facing methods take paths as WTF-8 encoded `std::string_view`s, and users are expected to just use
  * `std::string`s to store paths. Note that this is for paths inside a `FileSystem` only - native paths are always
- * passed around as `NativePath` objects.
+ * passed around as `Path` objects.
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. Both `".."` and `"."`
  * special dirs are supported, but peeking outside the root directory is not - passing paths that try to do this will

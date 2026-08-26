@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 /**
  * Helper class to create a temporary folder at the given path & remove it, with everything that's in it, when leaving
@@ -8,9 +8,9 @@
  */
 class ScopedTestFolder {
  public:
-    explicit ScopedTestFolder(const NativePath &path);
+    explicit ScopedTestFolder(const Path &path);
     ~ScopedTestFolder();
 
  private:
-    NativePath _path;
+    Path _path;
 };

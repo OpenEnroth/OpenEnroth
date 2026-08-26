@@ -132,21 +132,21 @@ UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
     // appended to it verbatim, so the answer is the parent directory itself.
     NativeFileSystem fs("");
 
-    EXPECT_EQ(fs.displayPath(".."), os::cwd().parent().displayString());
+    EXPECT_EQ(fs.displayPath(".."), fs::cwd().parent().displayString());
 }
 
 UNIT_TEST(NativeFileSystem, ToNativePath) {
     NativeFileSystem fs("a");
 
-    EXPECT_EQ(fs.toNativePath("b/c.txt"), os::absolute("a") / NativePath("b/c.txt"));
-    EXPECT_EQ(fs.toNativePath(""), os::absolute("a")); // Root maps to the root dir itself.
+    EXPECT_EQ(fs.toNativePath("b/c.txt"), fs::absolute("a") / Path("b/c.txt"));
+    EXPECT_EQ(fs.toNativePath(""), fs::absolute("a")); // Root maps to the root dir itself.
 }
 
 UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {
     // File names go through a narrow<->wide conversion on Windows, so a non-ASCII name has to survive a round trip
     // through ls and stay usable. On *nix names are just bytes, so this mostly guards the Windows side.
     ScopedTestFolder tmp("tmp_native_dir");
-    ScopedTestFile tmp2(NativePath("tmp_native_dir/\xD0\xBB\xD0\xBE\xD0\xBB.txt"), "lol"); // "лол.txt".
+    ScopedTestFile tmp2(Path("tmp_native_dir/\xD0\xBB\xD0\xBE\xD0\xBB.txt"), "lol"); // "лол.txt".
 
     NativeFileSystem fs("tmp_native_dir");
     std::vector<DirectoryEntry> entries = fs.ls("");
@@ -200,7 +200,7 @@ UNIT_TEST(NativeFileSystem, WindowsOddFileNames) {
         EXPECT_EQ(fs.openForReading(name)->readAll(), "lol");
 
         // displayPath is valid UTF-8, so the surrogates in the name come out replaced.
-        EXPECT_EQ(fs.displayPath(name), os::absolute(NativePath("tmp_native_dir") / NativePath(name)).displayString());
+        EXPECT_EQ(fs.displayPath(name), fs::absolute(Path("tmp_native_dir") / Path(name)).displayString());
 
         // Writing such a name works too.
         fs.write(name + ".2", Blob::fromString("kek"));

@@ -14,7 +14,7 @@
 
 LodWriter::LodWriter() {}
 
-LodWriter::LodWriter(const NativePath &path, LodInfo info) {
+LodWriter::LodWriter(const Path &path, LodInfo info) {
     open(path, std::move(info));
 }
 
@@ -26,7 +26,7 @@ LodWriter::~LodWriter() {
     close();
 }
 
-void LodWriter::open(const NativePath &path, LodInfo info) {
+void LodWriter::open(const Path &path, LodInfo info) {
     std::unique_ptr<OutputStream> ownedStream = std::make_unique<FileOutputStream>(path); // If this throws, no field is overwritten.
     open(ownedStream.get(), std::move(info));
     _ownedStream = std::move(ownedStream);

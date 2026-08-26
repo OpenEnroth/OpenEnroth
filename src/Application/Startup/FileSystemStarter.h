@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 class FileSystem;
 
@@ -11,8 +11,8 @@ class FileSystemStarter {
     FileSystemStarter();
     ~FileSystemStarter();
 
-    void initUserFs(bool ramFs, const NativePath &path);
-    void initDataFs(const NativePath &path, bool pathOverridesBuiltIn);
+    void initUserFs(bool ramFs, const Path &path);
+    void initDataFs(const Path &path, bool pathOverridesBuiltIn);
 
  private:
     std::unique_ptr<FileSystem> _userFs;

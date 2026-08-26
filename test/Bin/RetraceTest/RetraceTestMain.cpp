@@ -9,7 +9,7 @@
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
 #include "Utility/String/Format.h"
-#include "Utility/System/Os.h"
+#include "Utility/System/Fs.h"
 #include "Utility/UnicodeCrt.h"
 
 #include "RetraceTest.h"
@@ -23,13 +23,13 @@ int platformMain(int argc, char **argv) {
         if (opts.helpPrinted)
             return 1;
 
-        std::vector<NativePath> traceNames;
-        for (const DirectoryEntry &entry : os::ls(opts.testPath))
+        std::vector<Path> traceNames;
+        for (const DirectoryEntry &entry : fs::ls(opts.testPath))
             if (entry.name.ends_with(".json"))
-                traceNames.push_back(NativePath(entry.name));
+                traceNames.push_back(Path(entry.name));
         std::ranges::sort(traceNames);
 
-        for (const NativePath &traceName : traceNames)
+        for (const Path &traceName : traceNames)
             testing::RegisterTest("Retrace", traceName.withExtension("").string().c_str(),
                                   nullptr, nullptr, __FILE__, __LINE__,
                                   [tracePath = opts.testPath / traceName] {

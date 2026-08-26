@@ -10,7 +10,7 @@
 
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Exception.h"
-#include "Utility/System/Os.h"
+#include "Utility/System/Fs.h"
 
 #include "FreeDeleter.h"
 
@@ -36,11 +36,11 @@ Blob Blob::fromMalloc(const void *data, size_t size) {
     return result;
 }
 
-Blob Blob::fromFile(const NativePath &path) {
-    std::string displayString = os::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
+Blob Blob::fromFile(const Path &path) {
+    std::string displayString = fs::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
 
     // On Mac mapping an empty file throws, so we need to provide a workaround.
-    if (os::stat(path) == FileStat(FILE_REGULAR, 0))
+    if (fs::stat(path) == FileStat(FILE_REGULAR, 0))
         return Blob().withDisplayPath(displayString);
 
     // native() is a wchar_t string on Windows, so a WTF-16 name is passed as-is. Throws std::system_error if the

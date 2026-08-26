@@ -1,13 +1,13 @@
 #include "ScopedTestFileSlot.h"
 
-#include "Utility/System/Os.h"
+#include "Utility/System/Fs.h"
 
-ScopedTestFileSlot::ScopedTestFileSlot(const NativePath &path) : _path(path) {
-    os::remove(_path); // Drop whatever an earlier run might have left behind.
+ScopedTestFileSlot::ScopedTestFileSlot(const Path &path) : _path(path) {
+    fs::remove(_path); // Drop whatever an earlier run might have left behind.
 }
 
 ScopedTestFileSlot::~ScopedTestFileSlot() {
     try {
-        os::remove(_path);
+        fs::remove(_path);
     } catch (...) {} // Cleanup errors shouldn't throw out of a dtor.
 }

@@ -47,7 +47,7 @@ class GameStarter {
 
     static void resolveUserPath(Environment *environment, GameStarterOptions *options);
     static void resolveDataPath(Environment *environment, GameStarterOptions *options);
-    static void failOnInvalidPath(const NativePath &dataPath, Platform *platform);
+    static void failOnInvalidPath(const Path &dataPath, Platform *platform);
     static void migrateSaves();
 
  private:

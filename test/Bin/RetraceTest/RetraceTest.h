@@ -4,19 +4,19 @@
 
 #include <utility>
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 class EngineController;
 class PlatformApplication;
 
 class RetraceTest : public testing::Test {
  public:
-    explicit RetraceTest(NativePath tracePath) : _tracePath(std::move(tracePath)) {}
+    explicit RetraceTest(Path tracePath) : _tracePath(std::move(tracePath)) {}
 
     static void init(EngineController *game, PlatformApplication *application);
 
     void TestBody() override;
 
  private:
-    NativePath _tracePath;
+    Path _tracePath;
 };

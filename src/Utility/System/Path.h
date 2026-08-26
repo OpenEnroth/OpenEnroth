@@ -9,19 +9,19 @@
 #include "Utility/String/Format.h"
 
 /**
- * The repo's vocabulary type for native paths - everything that takes a native path takes a `NativePath`.
+ * The repo's vocabulary type for native paths - everything that takes a native path takes a `Path`.
  *
  * The path is stored as a string - WTF-8 on Windows, a byte string on POSIX - and all path manipulation is lexical,
  * these methods never touch the file system. No encoding is promised by the type itself, see below.
  *
- * Every `NativePath` is in lexical normal form, established at construction and preserved by every operation:
+ * Every `Path` is in lexical normal form, established at construction and preserved by every operation:
  * separators are single forward slashes with no trailing one, `.` segments are gone (a lone `"."` is the empty path,
  * which means "here"), and `..` is collapsed - surviving only as a leading run of a relative path, and clamped above
  * an absolute root, so `"/.."` is `"/"`. A leading `"//"` is root syntax and is preserved. On Windows a backslash is
  * a separator and is converted, on POSIX it's an ordinary character in a file name and is left alone.
  *
  * Collapsing `..` lexically is a deliberate engine-wide decision - a path *means* its normal form. Where a symlink is
- * involved this diverges from the OS: with `a/link` pointing elsewhere, `NativePath("a/link/../f")` is `"a/f"`, while
+ * involved this diverges from the OS: with `a/link` pointing elsewhere, `Path("a/link/../f")` is `"a/f"`, while
  * the OS handed the raw string would resolve through the link's target. Code that needs the OS reading has to ask the
  * OS. The trailing-slash distinction POSIX draws on symlinks (`stat("link/")`) is likewise not expressible.
  *
@@ -30,28 +30,28 @@
  * different again - APFS only takes file names that are valid UTF-8. Encoding is checked where paths cross into the
  * OS, not here.
  */
-class NativePath {
+class Path {
  public:
-    NativePath() = default;
+    Path() = default;
 
     /**
      * Implicit constructor from a byte string, same as `std::filesystem::path`. The bytes are taken as-is - a
-     * `NativePath` promises no encoding, see the class docs.
+     * `Path` promises no encoding, see the class docs.
      *
      * @param path                      Path as a byte string.
      */
-    NativePath(std::string_view path); // NOLINT: intentionally implicit.
-    NativePath(const char *path) : NativePath(std::string_view(path)) {} // NOLINT: intentionally implicit.
-    NativePath(const std::string &path) : NativePath(std::string_view(path)) {} // NOLINT: intentionally implicit.
+    Path(std::string_view path); // NOLINT: intentionally implicit.
+    Path(const char *path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
+    Path(const std::string &path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
 
     /**
      * @param path                      Path as the OS spells it - a `wchar_t` string on Windows.
-     * @return                          `NativePath` for the given string.
+     * @return                          `Path` for the given string.
      */
 #ifdef _WINDOWS
-    [[nodiscard]] static NativePath fromNative(std::wstring_view path);
+    [[nodiscard]] static Path fromNative(std::wstring_view path);
 #else
-    [[nodiscard]] static NativePath fromNative(std::string_view path);
+    [[nodiscard]] static Path fromNative(std::string_view path);
 #endif
 
     /**
@@ -126,7 +126,7 @@ class NativePath {
      *                                  so the parent of `"/a"` is `"/"`. Note that this is the lexical parent - the
      *                                  lexical parent of `"../.."` is `".."`, which is not its semantic parent.
      */
-    [[nodiscard]] NativePath parent() const;
+    [[nodiscard]] Path parent() const;
 
     /**
      * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
@@ -135,7 +135,7 @@ class NativePath {
      * @return                          Copy of this path with the extension replaced. Only the last extension is
      *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`.
      */
-    [[nodiscard]] NativePath withExtension(std::string_view extension) const;
+    [[nodiscard]] Path withExtension(std::string_view extension) const;
 
     [[nodiscard]] bool isEmpty() const {
         return _path.empty();
@@ -148,24 +148,24 @@ class NativePath {
      *                                  `tail` replaces this path instead of being appended to it, same as
      *                                  `std::filesystem::path::operator/`.
      */
-    [[nodiscard]] NativePath operator/(const NativePath &tail) const;
+    [[nodiscard]] Path operator/(const Path &tail) const;
 
-    friend auto operator<=>(const NativePath &l, const NativePath &r) = default;
+    friend auto operator<=>(const Path &l, const Path &r) = default;
 
     /**
-     * CLI11 picks this function up through ADL, so that options can bind `NativePath` fields directly. Note that
+     * CLI11 picks this function up through ADL, so that options can bind `Path` fields directly. Note that
      * `argv` is WTF-8 on Windows, where `UnicodeCrt` converts it from the wide command line, and a byte string on
      * POSIX.
      */
-    friend bool lexical_cast(const std::string &input, NativePath &output) {
-        output = NativePath(input);
+    friend bool lexical_cast(const std::string &input, Path &output) {
+        output = Path(input);
         return true;
     }
 
  private:
     // For results that are already normal - re-running normalization on them would be a no-op.
-    [[nodiscard]] static NativePath fromNormalized(std::string path) {
-        NativePath result;
+    [[nodiscard]] static Path fromNormalized(std::string path) {
+        Path result;
         result._path = std::move(path);
         return result;
     }
@@ -175,8 +175,8 @@ class NativePath {
 };
 
 template<>
-struct fmt::formatter<NativePath> : fmt::formatter<std::string> {
-    auto format(const NativePath &path, format_context &ctx) const {
+struct fmt::formatter<Path> : fmt::formatter<std::string> {
+    auto format(const Path &path, format_context &ctx) const {
         return fmt::formatter<std::string>::format(path.string(), ctx);
     }
 };

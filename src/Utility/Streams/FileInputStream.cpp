@@ -7,14 +7,14 @@
 #include <string>
 
 #include "Utility/Exception.h"
-#include "Utility/System/Os.h"
+#include "Utility/System/Fs.h"
 
 #ifdef _WINDOWS
 #   define ftello _ftelli64
 #   define fseeko _fseeki64
 #endif
 
-FileInputStream::FileInputStream(const NativePath &path, size_t bufferSize) {
+FileInputStream::FileInputStream(const Path &path, size_t bufferSize) {
     open(path, bufferSize);
 }
 
@@ -22,10 +22,10 @@ FileInputStream::~FileInputStream() {
     destroy();
 }
 
-void FileInputStream::open(const NativePath &path, size_t bufferSize) {
+void FileInputStream::open(const Path &path, size_t bufferSize) {
     assert(bufferSize > 0);
 
-    std::string displayString = os::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
+    std::string displayString = fs::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
 
     // Wide fopen on Windows - the narrow one converts the path per the C locale.
 #ifdef _WINDOWS

@@ -19,7 +19,7 @@
 
 #include "Utility/String/Format.h"
 #include "Utility/String/Split.h"
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 static EngineController *globalEngineController = nullptr;
 static PlatformApplication *globalApplication = nullptr;
@@ -52,7 +52,7 @@ void RetraceTest::init(EngineController *game, PlatformApplication *application)
 }
 
 void RetraceTest::TestBody() {
-    NativePath savePath = _tracePath.withExtension(".mm7");
+    Path savePath = _tracePath.withExtension(".mm7");
     Blob oldTraceBlob = Blob::fromFile(_tracePath);
     Blob oldSaveBlob = Blob::fromFile(savePath);
 
