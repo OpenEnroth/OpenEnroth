@@ -7,6 +7,8 @@
 
 #include "Utility/String/Format.h"
 
+#include "PathSplit.h"
+
 /**
  * The repo's vocabulary type for native paths - everything that takes a native path takes a `Path`.
  *
@@ -89,7 +91,9 @@ class Path {
      *                                  `"C:"` is not root syntax - it parses as an ordinary relative segment.
      *                                  The returned view points into this path, so it dies with it.
      */
-    [[nodiscard]] std::string_view root() const;
+    [[nodiscard]] std::string_view root() const {
+        return rootOf(_path);
+    }
 
     [[nodiscard]] bool isAbsolute() const {
         return !root().empty();
@@ -153,6 +157,15 @@ class Path {
     }
 
     /**
+     * @return                          Lazy view over this path's name segments. The root is not one of them, so
+     *                                  `path == path.root() / join(path.split())`. Under normal form a `..` can only
+     *                                  show up as the leading run of an escaping relative path, and `"."` never does.
+     */
+    [[nodiscard]] PathSplit split() const {
+        return PathSplit(std::string_view(_path).substr(root().size()));
+    }
+
+    /**
      * @param tail                      Path to append.
      * @return                          The two paths joined with a separator, re-normalized at the seam - so a
      *                                  leading `..` run in `tail` eats trailing components of the head. A `tail` with
@@ -174,6 +187,11 @@ class Path {
         output = Path(input);
         return true;
     }
+
+ private:
+    friend class PathView; // So that a view can answer root() and split() the same way this does.
+
+    [[nodiscard]] static std::string_view rootOf(std::string_view path);
 
  private:
     // For results that are already normal - re-running normalization on them would be a no-op.

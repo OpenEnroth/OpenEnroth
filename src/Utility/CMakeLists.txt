@@ -45,6 +45,8 @@ set(UTILITY_HEADERS
         Streams/OutputStream.h
         Streams/StreamBuffer.h
         System/Path.h
+        System/PathSplit.h
+        System/PathView.h
         System/Fs.h
         String/Ascii.h
         String/Encoding.h

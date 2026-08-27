@@ -138,8 +138,8 @@ std::string Path::displayString() const {
     return txt::encodedToUtf8(_path, ENCODING_UTF8); // UTF-8 to UTF-8 conversion replaces all the invalid parts.
 }
 
-std::string_view Path::root() const {
-    return std::string_view(_path).substr(0, rootSize(_path));
+std::string_view Path::rootOf(std::string_view path) {
+    return path.substr(0, rootSize(path));
 }
 
 bool Path::isEscaping() const {

@@ -6,7 +6,7 @@
 
 #include "Testing/Unit/UnitTest.h"
 
-#include "Utility/System/Path.h"
+#include "Utility/System/PathView.h"
 #include "Utility/System/Fs.h"
 
 UNIT_TEST(Path, Wtf8RoundTrip) {
@@ -202,6 +202,54 @@ UNIT_TEST(Path, WithExtensionIsTotal) {
         Path path = Path("a/b.txt").withExtension(extension);
         EXPECT_EQ(Path(path.string()), path) << extension;
     }
+}
+
+UNIT_TEST(Path, Split) {
+    // The root is not a segment, so a path is its root joined with its segments. Under normal form "." never shows
+    // up as one, and ".." only as the leading run of an escaping path.
+    auto segments = [] (const Path &path) {
+        std::vector<std::string> result;
+        for (std::string_view chunk : path.split())
+            result.emplace_back(chunk);
+        return result;
+    };
+
+    EXPECT_EQ(segments(Path("a/b/c")), std::vector<std::string>({"a", "b", "c"}));
+    EXPECT_EQ(segments(Path("/a/b")), std::vector<std::string>({"a", "b"})); // Root dropped.
+    EXPECT_EQ(segments(Path("a/./b")), std::vector<std::string>({"a", "b"}));
+    EXPECT_EQ(segments(Path("../a")), std::vector<std::string>({"..", "a"}));
+    EXPECT_TRUE(segments(Path("")).empty());
+    EXPECT_TRUE(segments(Path(".")).empty()); // "." is the empty path.
+    EXPECT_TRUE(segments(Path("/")).empty()); // A bare root has no segments.
+}
+
+UNIT_TEST(Path, SplitTails) {
+    // tailAt / tailAfter slice the original buffer, so they're O(1) and the result is a view into it. That's what
+    // the file system trie walks on.
+    Path path("a/b/c");
+
+    for (std::string_view chunk : path.split()) {
+        if (chunk == "b") {
+            EXPECT_EQ(path.split().tailAt(chunk).string(), "b/c");
+            EXPECT_EQ(path.split().tailAfter(chunk).string(), "c");
+            EXPECT_EQ(path.split().tailAt(chunk).string().data(), path.string().data() + 2); // Same buffer.
+        }
+        if (chunk == "c")
+            EXPECT_TRUE(path.split().tailAfter(chunk).isEmpty()); // Nothing after the last one.
+    }
+
+    EXPECT_EQ(path.split().tailAfter(std::string_view()).string(), "a/b/c"); // Empty chunk means the whole path.
+}
+
+UNIT_TEST(PathView, FromPath) {
+    Path path("a/b");
+    PathView view = path; // Implicit.
+
+    EXPECT_EQ(view.string(), "a/b");
+    EXPECT_FALSE(view.isEmpty());
+    EXPECT_FALSE(view.isEscaping());
+    EXPECT_TRUE(PathView(Path("../a")).isEscaping());
+    EXPECT_TRUE(PathView().isEmpty());
 }
 
 UNIT_TEST(Path, Escaping) {
