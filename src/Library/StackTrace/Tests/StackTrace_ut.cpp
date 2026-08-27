@@ -75,7 +75,6 @@ struct StackTracePureCallDerived : StackTracePureCallBase {
     virtual void callPure() override {}
 };
 
-// Not static because windows drops private symbols from a stripped pdb.
 MM_NOINLINE void stackTracePureCallFunction() {
     StackTracePureCallDerived derived;
 }
