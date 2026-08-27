@@ -18,11 +18,17 @@
 
 // On windows dedicated CRT hooks print the reasons asserted below. On posix there are no hooks - abort and
 // terminate arrive as SIGABRT with the abort machinery in the output, and a pure call is a plain crash - so
-// the posix side of each check probes for that instead.
+// the posix side of each check probes for that instead. Mac needs its own spellings - its abort frame prints
+// with no name, and libc++abi says terminating rather than terminate.
 #ifdef _WINDOWS
 constexpr bool isWindows = true;
 #else
 constexpr bool isWindows = false;
+#endif
+#ifdef __APPLE__
+constexpr bool isMac = true;
+#else
+constexpr bool isMac = false;
 #endif
 
 /**
@@ -211,7 +217,7 @@ UNIT_TEST(StackTrace, AbortIsTraced) {
 
         StackTraceOnCrash handler;
         stackTraceAbortFunction();
-    }, testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : "Crashed because of Abort"), // "Aborted" on glibc, "Abort trap" on mac.
+    }, testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
                       testing::HasSubstr("stackTraceAbortFunction")));
 }
 
@@ -221,7 +227,7 @@ UNIT_TEST(StackTrace, TerminateIsTraced) {
 
         StackTraceOnCrash handler;
         stackTraceTerminateFunction();
-    }, testing::AllOf(testing::HasSubstr(isWindows ? "std::terminate()" : "terminat"), // Chopped, it's "terminating" on mac and "terminate called" on glibc.
+    }, testing::AllOf(testing::HasSubstr(isWindows ? "std::terminate()" : isMac ? "terminating" : "terminate"),
                       testing::HasSubstr("stackTraceTerminateFunction")));
 }
 
