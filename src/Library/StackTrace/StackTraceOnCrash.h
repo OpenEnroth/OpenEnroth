@@ -17,7 +17,7 @@ class StackTraceOnCrash {
  public:
     /**
      * @param callback                  Called after the crash trace is printed, right before the process
-     *                                  dies. For holding a console window open until a key is pressed.
+     *                                  dies.
      */
     explicit StackTraceOnCrash(void (*callback)() = nullptr);
 };
