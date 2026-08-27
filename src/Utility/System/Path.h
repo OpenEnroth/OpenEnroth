@@ -48,6 +48,11 @@ class Path {
     Path(const std::string &path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
 
     /**
+     * @param path                      View over a path that's already in normal form.
+     */
+    inline explicit Path(PathView path);
+
+    /**
      * @param path                      Path as the OS spells it - a `wchar_t` string on Windows.
      * @return                          `Path` for the given string.
      */
@@ -176,6 +181,12 @@ class Path {
      */
     [[nodiscard]] Path operator/(const Path &tail) const;
 
+    Path &operator/=(const Path &tail) {
+        return *this = *this / tail;
+    }
+
+    inline Path &operator/=(PathView tail);
+
     friend auto operator<=>(const Path &l, const Path &r) = default;
 
     /**
@@ -188,18 +199,22 @@ class Path {
         return true;
     }
 
- private:
-    friend class PathView; // So that a view can answer root() and split() the same way this does.
-
-    [[nodiscard]] static std::string_view rootOf(std::string_view path);
-
- private:
-    // For results that are already normal - re-running normalization on them would be a no-op.
+    /**
+     * @param path                      Path string that's already in normal form, e.g. a slice of another path.
+     * @return                          `Path` for the given string, without re-running normalization on it.
+     */
     [[nodiscard]] static Path fromNormalized(std::string path) {
         Path result;
         result._path = std::move(path);
         return result;
     }
+
+    [[nodiscard]] static Path fromNormalized(PathView path);
+
+ private:
+    friend class PathView; // So that a view can answer root() and split() the same way this does.
+
+    [[nodiscard]] static std::string_view rootOf(std::string_view path);
 
  private:
     std::string _path;

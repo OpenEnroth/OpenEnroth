@@ -21,17 +21,17 @@ NativeFileSystem::NativeFileSystem(const Path &root) {
 
 NativeFileSystem::~NativeFileSystem() = default;
 
-bool NativeFileSystem::_exists(FileSystemPathView path) const {
+bool NativeFileSystem::_exists(PathView path) const {
     assert(!path.isEmpty());
     return fs::exists(toNativePath(path));
 }
 
-FileStat NativeFileSystem::_stat(FileSystemPathView path) const {
+FileStat NativeFileSystem::_stat(PathView path) const {
     assert(!path.isEmpty());
     return fs::stat(toNativePath(path));
 }
 
-void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
+void NativeFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
     Path basePath = toNativePath(path);
 
     // Handle the known errors first.
@@ -51,12 +51,12 @@ void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
     entries->erase(std::remove_if(entries->begin() + oldSize, entries->end(), isUnobservable), entries->end());
 }
 
-Blob NativeFileSystem::_read(FileSystemPathView path) const {
+Blob NativeFileSystem::_read(PathView path) const {
     assert(!path.isEmpty());
     return Blob::fromFile(toNativePath(path));
 }
 
-void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
+void NativeFileSystem::_write(PathView path, const Blob &data) {
     assert(!path.isEmpty());
     Path basePath = toNativePath(path);
     fs::mkdirs(basePath.parent());
@@ -65,32 +65,32 @@ void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
     stream.close();
 }
 
-std::unique_ptr<InputStream> NativeFileSystem::_openForReading(FileSystemPathView path) const {
+std::unique_ptr<InputStream> NativeFileSystem::_openForReading(PathView path) const {
     assert(!path.isEmpty());
     return std::make_unique<FileInputStream>(toNativePath(path));
 }
 
-std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(FileSystemPathView path) {
+std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(PathView path) {
     assert(!path.isEmpty());
     Path basePath = toNativePath(path);
     fs::mkdirs(basePath.parent());
     return std::make_unique<FileOutputStream>(basePath);
 }
 
-bool NativeFileSystem::_remove(FileSystemPathView path) {
+bool NativeFileSystem::_remove(PathView path) {
     assert(!path.isEmpty());
     return fs::remove(toNativePath(path));
 }
 
-std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
+std::string NativeFileSystem::_displayPath(PathView path) const {
     return toNativePath(path).displayString();
 }
 
 Path NativeFileSystem::toNativePath(std::string_view path) const {
-    return toNativePath(FileSystemPath(path));
+    return toNativePath(Path(path));
 }
 
-Path NativeFileSystem::toNativePath(FileSystemPathView path) const {
+Path NativeFileSystem::toNativePath(PathView path) const {
     if (path.isEmpty())
         return _root; // `_root / ""` would add a trailing separator.
 

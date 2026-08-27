@@ -30,7 +30,7 @@ class FileSystemDumper {
     }
 
  private:
-    void dump(FileSystemPathView path) {
+    void dump(PathView path) {
         writeOutDir(path);
         if (_entries == _maxEntries)
             return;
@@ -39,7 +39,7 @@ class FileSystemDumper {
         std::ranges::sort(entries);
 
         for (const DirectoryEntry &entry : entries) {
-            FileSystemPath entryPath = path / entry.name;
+            Path entryPath = path / entry.name;
 
             if (entry.type == FILE_REGULAR) {
                 writeOutFile(entryPath);
@@ -53,7 +53,7 @@ class FileSystemDumper {
         }
     }
 
-    void writeOutDir(FileSystemPathView path) {
+    void writeOutDir(PathView path) {
         if (_target) {
             _target->push_back(FileSystemDumpEntry(path.string(), FILE_DIRECTORY));
         } else {
@@ -64,7 +64,7 @@ class FileSystemDumper {
         assert(_entries <= _maxEntries);
     }
 
-    void writeOutFile(FileSystemPathView path) {
+    void writeOutFile(PathView path) {
         Blob content;
         if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS)
             content = _fs->read(path);

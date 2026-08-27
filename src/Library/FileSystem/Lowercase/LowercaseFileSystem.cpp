@@ -31,12 +31,12 @@ void LowercaseFileSystem::refresh() {
     _trie.insertOrAssign({}, detail::LowercaseFileData(FILE_DIRECTORY, ""));
 }
 
-bool LowercaseFileSystem::_exists(FileSystemPathView path) const {
+bool LowercaseFileSystem::_exists(PathView path) const {
     const auto [basePath, node, tail] = walk(path);
     return tail.isEmpty();
 }
 
-FileStat LowercaseFileSystem::_stat(FileSystemPathView path) const {
+FileStat LowercaseFileSystem::_stat(PathView path) const {
     const auto [basePath, node, tail] = walk(path);
     if (!tail.isEmpty())
         return FileStat();
@@ -45,7 +45,7 @@ FileStat LowercaseFileSystem::_stat(FileSystemPathView path) const {
     return _base->stat(basePath);
 }
 
-void LowercaseFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
+void LowercaseFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
     const auto [basePath, node, tail] = walk(path);
     if (!tail.isEmpty())
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
@@ -58,28 +58,28 @@ void LowercaseFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntr
         entries->push_back(DirectoryEntry(name, child->value().type));
 }
 
-Blob LowercaseFileSystem::_read(FileSystemPathView path) const {
+Blob LowercaseFileSystem::_read(PathView path) const {
     return _base->read(locateForReading(path));
 }
 
-void LowercaseFileSystem::_write(FileSystemPathView path, const Blob &data) {
+void LowercaseFileSystem::_write(PathView path, const Blob &data) {
     const auto &[basePath, node, tail] = locateForWriting(path);
     _base->write(basePath, data);
     cacheInsert(node, tail, FILE_REGULAR);
 }
 
-std::unique_ptr<InputStream> LowercaseFileSystem::_openForReading(FileSystemPathView path) const {
+std::unique_ptr<InputStream> LowercaseFileSystem::_openForReading(PathView path) const {
     return _base->openForReading(locateForReading(path));
 }
 
-std::unique_ptr<OutputStream> LowercaseFileSystem::_openForWriting(FileSystemPathView path) {
+std::unique_ptr<OutputStream> LowercaseFileSystem::_openForWriting(PathView path) {
     const auto &[basePath, node, tail] = locateForWriting(path);
     std::unique_ptr<OutputStream> result = _base->openForWriting(basePath);
     cacheInsert(node, tail, FILE_REGULAR);
     return result;
 }
 
-bool LowercaseFileSystem::_remove(FileSystemPathView path) {
+bool LowercaseFileSystem::_remove(PathView path) {
     assert(!path.isEmpty());
 
     auto [basePath, node, tail] = walk(path);
@@ -104,17 +104,17 @@ bool LowercaseFileSystem::_remove(FileSystemPathView path) {
     return true;
 }
 
-std::string LowercaseFileSystem::_displayPath(FileSystemPathView path) const {
+std::string LowercaseFileSystem::_displayPath(PathView path) const {
     auto [basePath, node, tail] = walk(path);
     return _base->displayPath(basePath / tail);
 }
 
-std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> LowercaseFileSystem::walk(FileSystemPathView path) const {
+std::tuple<Path, LowercaseFileSystem::Node *, PathView> LowercaseFileSystem::walk(PathView path) const {
     Node *node = _trie.root();
     if (path.isEmpty())
-        return {FileSystemPath(), node, FileSystemPathView()};
+        return {Path(), node, PathView()};
 
-    FileSystemPath basePath;
+    Path basePath;
     for (std::string_view chunk : path.split()) {
         if (node->value().type != FILE_DIRECTORY)
             return {std::move(basePath), node, path.split().tailAt(chunk)};
@@ -129,10 +129,10 @@ std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> Lowe
         basePath /= child->value().baseName;
     }
 
-    return {std::move(basePath), node, FileSystemPathView()};
+    return {std::move(basePath), node, PathView()};
 }
 
-void LowercaseFileSystem::cacheLs(Node *node, FileSystemPathView basePath) const {
+void LowercaseFileSystem::cacheLs(Node *node, PathView basePath) const {
     assert(node->value().type == FILE_DIRECTORY);
 
     if (node->value().listed)
@@ -150,7 +150,7 @@ void LowercaseFileSystem::cacheLs(Node *node, FileSystemPathView basePath) const
         }
 
         _trie.insertOrAssign(node,
-                             FileSystemPathView::fromNormalized(lowerEntryName),
+                             PathView::fromNormalized(lowerEntryName),
                              detail::LowercaseFileData(entry.type, std::move(entry.name)));
     }
 
@@ -183,7 +183,7 @@ void LowercaseFileSystem::cacheRemove(Node *node) const {
     }
 }
 
-void LowercaseFileSystem::cacheInsert(Node *node, FileSystemPathView tail, FileType type) const {
+void LowercaseFileSystem::cacheInsert(Node *node, PathView tail, FileType type) const {
     if (tail.isEmpty())
         return;
 
@@ -199,11 +199,11 @@ void LowercaseFileSystem::cacheInsert(Node *node, FileSystemPathView tail, FileT
 
     FileType nodeType = pos == end ? type : FILE_DIRECTORY;
     _trie.insertOrAssign(node,
-                         FileSystemPathView::fromNormalized(firstChunk),
+                         PathView::fromNormalized(firstChunk),
                          detail::LowercaseFileData(nodeType, std::string(firstChunk)));
 }
 
-FileSystemPath LowercaseFileSystem::locateForReading(FileSystemPathView path) const {
+Path LowercaseFileSystem::locateForReading(PathView path) const {
     auto [basePath, node, tail] = walk(path);
     if (!tail.isEmpty())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
@@ -214,7 +214,7 @@ FileSystemPath LowercaseFileSystem::locateForReading(FileSystemPathView path) co
     return std::move(basePath);
 }
 
-std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> LowercaseFileSystem::locateForWriting(FileSystemPathView path) {
+std::tuple<Path, LowercaseFileSystem::Node *, PathView> LowercaseFileSystem::locateForWriting(PathView path) {
     if (hasUpper(path.string()))
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
 

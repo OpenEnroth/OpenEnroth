@@ -47,6 +47,14 @@ class PathView {
      */
     [[nodiscard]] std::string_view root() const;
 
+    [[nodiscard]] bool isAbsolute() const {
+        return !root().empty();
+    }
+
+    [[nodiscard]] bool isRelative() const {
+        return !isAbsolute();
+    }
+
     [[nodiscard]] PathSplit split() const;
 
  private:
@@ -89,8 +97,26 @@ struct std::hash<PathView> : std::hash<std::string_view> {
 
 inline PathView::PathView(const Path &path) : _path(path.string()) {}
 
+inline Path::Path(PathView path) : _path(path.string()) {}
+
+inline Path Path::fromNormalized(PathView path) {
+    return fromNormalized(std::string(path.string()));
+}
+
 inline std::string_view PathView::root() const {
     return Path::rootOf(_path);
+}
+
+inline Path &Path::operator/=(PathView tail) {
+    return *this = *this / Path::fromNormalized(tail);
+}
+
+[[nodiscard]] inline Path operator/(PathView head, PathView tail) {
+    return Path::fromNormalized(head) / Path::fromNormalized(tail);
+}
+
+[[nodiscard]] inline Path operator/(PathView head, std::string_view tail) {
+    return Path::fromNormalized(head) / Path(tail);
 }
 
 inline PathSplit PathView::split() const {

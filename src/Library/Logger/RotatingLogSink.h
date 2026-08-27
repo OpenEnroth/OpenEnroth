@@ -6,7 +6,7 @@
 #include "StreamLogSink.h"
 
 class FileSystem;
-class FileSystemPath;
+class Path;
 class OutputStream;
 
 class RotatingLogSink : public StreamLogSink {
@@ -15,5 +15,5 @@ class RotatingLogSink : public StreamLogSink {
     virtual ~RotatingLogSink();
 
  private:
-    static std::unique_ptr<OutputStream> openRotatingStream(const FileSystemPath &path, FileSystem *fs, int count);
+    static std::unique_ptr<OutputStream> openRotatingStream(const Path &path, FileSystem *fs, int count);
 };

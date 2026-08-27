@@ -15,18 +15,18 @@ MountingFileSystem::MountingFileSystem(std::string_view displayName) : _displayN
 MountingFileSystem::~MountingFileSystem() = default;
 
 void MountingFileSystem::mount(std::string_view path, FileSystem *fileSystem) {
-    mount(FileSystemPath(path), fileSystem);
+    mount(Path(path), fileSystem);
 }
 
-void MountingFileSystem::mount(FileSystemPathView path, FileSystem *fileSystem) {
+void MountingFileSystem::mount(PathView path, FileSystem *fileSystem) {
     _trie.insertOrAssign(path, fileSystem);
 }
 
 bool MountingFileSystem::unmount(std::string_view path) {
-    return unmount(FileSystemPath(path));
+    return unmount(Path(path));
 }
 
-bool MountingFileSystem::unmount(FileSystemPathView path) {
+bool MountingFileSystem::unmount(PathView path) {
     Node *node = _trie.find(path);
     if (!node || !node->hasValue())
         return false; // Should be a real mount point, unmount("") is not equivalent to clearMounts().
@@ -38,20 +38,20 @@ void MountingFileSystem::clearMounts() {
     _trie.clear();
 }
 
-bool MountingFileSystem::_exists(FileSystemPathView path) const {
+bool MountingFileSystem::_exists(PathView path) const {
     assert(!path.isEmpty());
 
     auto [node, mount, tail] = walk(path);
     return node ? true : mount ? mount->exists(tail) : false;
 }
 
-FileStat MountingFileSystem::_stat(FileSystemPathView path) const {
+FileStat MountingFileSystem::_stat(PathView path) const {
     assert(!path.isEmpty());
     auto [node, mount, tail] = walk(path);
     return node ? FileStat(FILE_DIRECTORY, 0) : mount ? mount->stat(tail) : FileStat();
 }
 
-void MountingFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
+void MountingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
     auto [node, mount, tail] = walk(path);
 
     if (!node && !mount)
@@ -94,27 +94,27 @@ void MountingFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry
         std::erase_if(*entries, [] (const DirectoryEntry &entry) { return entry.type == FILE_INVALID; });
 }
 
-Blob MountingFileSystem::_read(FileSystemPathView path) const {
+Blob MountingFileSystem::_read(PathView path) const {
     auto [mount, tail] = walkForReading(path);
     return mount->read(tail);
 }
 
-void MountingFileSystem::_write(FileSystemPathView path, const Blob &data) {
+void MountingFileSystem::_write(PathView path, const Blob &data) {
     auto [mount, tail] = walkForWriting(path);
     return mount->write(tail, data);
 }
 
-std::unique_ptr<InputStream> MountingFileSystem::_openForReading(FileSystemPathView path) const {
+std::unique_ptr<InputStream> MountingFileSystem::_openForReading(PathView path) const {
     auto [mount, tail] = walkForReading(path);
     return mount->openForReading(tail);
 }
 
-std::unique_ptr<OutputStream> MountingFileSystem::_openForWriting(FileSystemPathView path) {
+std::unique_ptr<OutputStream> MountingFileSystem::_openForWriting(PathView path) {
     auto [mount, tail] = walkForWriting(path);
     return mount->openForWriting(tail);
 }
 
-bool MountingFileSystem::_remove(FileSystemPathView path) {
+bool MountingFileSystem::_remove(PathView path) {
     auto [node, mount, tail] = walk(path);
     if (node)
         FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
@@ -123,12 +123,12 @@ bool MountingFileSystem::_remove(FileSystemPathView path) {
     return mount->remove(tail);
 }
 
-std::string MountingFileSystem::_displayPath(FileSystemPathView path) const {
+std::string MountingFileSystem::_displayPath(PathView path) const {
     // TODO(captainurist): this is not symmetric with that's done in read / openForReading / openForWriting.
     return join(_displayName, "://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
-MountingFileSystem::WalkResult MountingFileSystem::walk(FileSystemPathView path) {
+MountingFileSystem::WalkResult MountingFileSystem::walk(PathView path) {
     Node *node = _trie.root();
     FileSystem *mount = node->hasValue() ? node->value() : nullptr;
     if (path.isEmpty())
@@ -152,11 +152,11 @@ MountingFileSystem::WalkResult MountingFileSystem::walk(FileSystemPathView path)
     }
 }
 
-MountingFileSystem::ConstWalkResult MountingFileSystem::walk(FileSystemPathView path) const {
+MountingFileSystem::ConstWalkResult MountingFileSystem::walk(PathView path) const {
     return const_cast<MountingFileSystem *>(this)->walk(path);
 }
 
-std::pair<const FileSystem *, FileSystemPathView> MountingFileSystem::walkForReading(FileSystemPathView path) const {
+std::pair<const FileSystem *, PathView> MountingFileSystem::walkForReading(PathView path) const {
     auto [node, mount, tail] = walk(path);
     if (node)
         FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
@@ -165,7 +165,7 @@ std::pair<const FileSystem *, FileSystemPathView> MountingFileSystem::walkForRea
     return {mount, std::move(tail)};
 }
 
-std::pair<FileSystem *, FileSystemPathView> MountingFileSystem::walkForWriting(FileSystemPathView path) {
+std::pair<FileSystem *, PathView> MountingFileSystem::walkForWriting(PathView path) {
     auto [node, mount, tail] = walk(path);
     if (node)
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
