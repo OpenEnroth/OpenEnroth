@@ -211,7 +211,7 @@ UNIT_TEST(StackTrace, AbortIsTraced) {
 
         StackTraceOnCrash handler;
         stackTraceAbortFunction();
-    }, testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : "abort"),
+    }, testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : "Crashed because of Abort"), // "Aborted" on glibc, "Abort trap" on mac.
                       testing::HasSubstr("stackTraceAbortFunction")));
 }
 
@@ -221,7 +221,7 @@ UNIT_TEST(StackTrace, TerminateIsTraced) {
 
         StackTraceOnCrash handler;
         stackTraceTerminateFunction();
-    }, testing::AllOf(testing::HasSubstr(isWindows ? "std::terminate()" : "terminate"),
+    }, testing::AllOf(testing::HasSubstr(isWindows ? "std::terminate()" : "terminat"), // Chopped, it's "terminating" on mac and "terminate called" on glibc.
                       testing::HasSubstr("stackTraceTerminateFunction")));
 }
 
