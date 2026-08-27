@@ -188,8 +188,10 @@ UNIT_TEST(Path, DottedNames) {
 
 UNIT_TEST(Path, WithExtensionIsTotal) {
     // Path never throws and never asserts, and an extension can come from user data, so every argument has to have a
-    // defined result. A path-shaped one lands somewhere odd but honest - the escaping case reports itself as
+    // defined result. A path-shaped one extends the path instead of just the name, which is what std::filesystem
+    // does too - the alternative would be silently mangling the argument. The escaping case reports itself as
     // escaping, which is what the file system layer refuses on.
+    EXPECT_EQ(Path("a/b").withExtension("/c/d/e"), Path("a/b./c/d/e"));
     EXPECT_EQ(Path("a").withExtension("./../../x"), Path("../x"));
     EXPECT_TRUE(Path("a").withExtension("./../../x").isEscaping());
     EXPECT_EQ(Path("a").withExtension("/x"), Path("a./x"));

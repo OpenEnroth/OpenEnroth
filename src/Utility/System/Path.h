@@ -139,11 +139,12 @@ class Path {
      * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
      *                                  the extension. Anything is accepted - this class never throws, and extension
      *                                  strings reach it from user data - so an argument that's shaped like a path
-     *                                  gives a normalized result rather than being rejected.
+     *                                  is appended and normalized rather than rejected, and does extend the path.
+     *                                  `"a/b"` with `"/c/d"` is `"a/b./c/d"`, same as `std::filesystem` gives.
      * @return                          Copy of this path with the extension replaced. Only the last extension is
-     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`. The file name
-     *                                  is the only thing this changes - it can't alter the parent, and it can't
-     *                                  shorten the path, because the stem it leaves behind is never all dots.
+     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`. Dropping an
+     *                                  extension never collapses the path, since the stem left behind is never all
+     *                                  dots.
      */
     [[nodiscard]] Path withExtension(std::string_view extension) const;
 
