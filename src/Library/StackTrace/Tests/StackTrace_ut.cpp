@@ -19,7 +19,7 @@
 // On windows dedicated CRT hooks print the reasons asserted below. On posix there are no hooks - abort and
 // terminate arrive as SIGABRT with the abort machinery in the output, and a pure call is a plain crash - so
 // the posix side of each check probes for that instead. Mac needs its own spellings - its abort frame prints
-// with no name, and libc++abi says terminating rather than terminate.
+// with no name, and libc++abi says "terminating" rather than "terminate".
 #ifdef _WINDOWS
 constexpr bool isWindows = true;
 #else
