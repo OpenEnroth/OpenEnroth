@@ -65,10 +65,10 @@ endif()
 # cpptrace, it clones libdwarf with FetchContent at configure time. The options below are libdwarf's and
 # cpptrace's, and they only take effect thanks to the CMP0077 default set at the top of this file.
 if(NOT OE_BUILD_PLATFORM STREQUAL "android")
-    # Cpptrace picks execinfo on macos, which starts its traces two frames in and returns nothing at all from
-    # a signal handler in optimized builds. The built-in unwinder is what the C++ runtime unwinds with - libgcc
-    # on linux, the system libunwind on macos - so it's as accurate as the platform gets, and it's already
-    # linked. Windows is left alone because it wants dbghelp.
+    # Cpptrace picks execinfo on macos, which starts its traces two frames in, and that breaks the
+    # stackTraceToString contract of starting at the caller. The built-in unwinder is what the C++ runtime
+    # unwinds with - libgcc on linux, the system libunwind on macos - and it's already linked. Windows is
+    # left alone because it wants dbghelp.
     if(NOT OE_BUILD_PLATFORM STREQUAL "windows")
         set(CPPTRACE_UNWIND_WITH_UNWIND ON)
     endif()
