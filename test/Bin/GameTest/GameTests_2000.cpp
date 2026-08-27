@@ -1630,26 +1630,31 @@ GAME_TEST(Prs, Pr2615b) {
 }
 
 GAME_TEST(Prs, Pr2615c) {
-    // Shift-clicking a friendly actor between interaction reach and ranged attack depth fires the quick spell,
-    // as it does in vanilla. The out-of-reach click fallback used to consider hostile actors only, so the click
-    // was silently dropped. Within interaction reach the quick spell fired fine all along.
+    // Shift-clicking a friendly actor fires the quick spell at it on both sides of the interaction depth, as in
+    // vanilla. The out-of-reach click fallback used to consider hostile actors only, so past interaction depth the
+    // click was silently dropped.
     engine->config->debug.AllMagic.setValue(true);
+    engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
-    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(12107, 4319, 96), 0); // A peasant walks about a thousand units ahead.
+    engine->config->debug.NoActors.setValue(false);
+    prepareForBattleTest();
     pParty->pCharacters[0].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
-    game.tick();
-    game.moveMouse(240, 190);
-    game.tick();
-    Vis_PIDAndDepth object = engine->PickMouseForTargeting();
-    EXPECT_EQ(object.pid, Pid(OBJECT_Actor, 1));
-    EXPECT_TRUE(pActors[1].IsPeasant());
-    EXPECT_GT(object.depth, engine->config->gameplay.MouseInteractionDepth.value()); // Otherwise it's not the fallback.
-    int hp = pActors[1].hp;
-    EXPECT_GT(hp, 0);
-    game.pressKey(PlatformKey::KEY_SHIFT);
-    game.pressAndReleaseButton(BUTTON_LEFT, 240, 190);
-    game.tick(2);
-    game.releaseKey(PlatformKey::KEY_SHIFT);
-    game.tick(30);
-    EXPECT_LT(pActors[1].hp, hp); // The quick spell fired and hit.
+    for (int depth : {1200, 300}) { // Far one first, so that its corpse ends up behind the near one, not in front.
+        Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, depth, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A, SPAWN_DUMMY);
+        peasant->attributes &= ~ACTOR_AGGRESSOR;
+        peasant->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
+        EXPECT_EQ(peasant->GetActorsRelation(0), HOSTILITY_FRIENDLY); // Otherwise it's the hostile path that's tested.
+        game.pointMouseAtActor(peasant->id);
+        EXPECT_EQ(engine->PickMouseForInteraction().pid == Pid(), depth > engine->config->gameplay.MouseInteractionDepth.value());
+        int hp = peasant->hp;
+        EXPECT_GT(hp, 0);
+        pParty->pCharacters[0].timeToRecovery = 0_ticks;
+        Pointi pt = mouse->position();
+        game.pressKey(PlatformKey::KEY_SHIFT);
+        game.pressAndReleaseButton(BUTTON_LEFT, pt.x, pt.y);
+        game.tick(2);
+        game.releaseKey(PlatformKey::KEY_SHIFT);
+        game.tick(30);
+        EXPECT_LT(peasant->hp, hp); // The quick spell fired and hit.
+    }
 }
