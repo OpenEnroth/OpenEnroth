@@ -1628,3 +1628,28 @@ GAME_TEST(Prs, Pr2615b) {
     EXPECT_EQ(foodTape.delta(), 2);
     EXPECT_CONTAINS(statusTape, "You find 2 food");
 }
+
+GAME_TEST(Prs, Pr2615c) {
+    // Shift-clicking a friendly actor between interaction reach and ranged attack depth fires the quick spell,
+    // as it does in vanilla. The out-of-reach click fallback used to consider hostile actors only, so the click
+    // was silently dropped. Within interaction reach the quick spell fired fine all along.
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(12107, 4319, 96), 0); // A peasant walks about a thousand units ahead.
+    pParty->pCharacters[0].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
+    game.tick();
+    game.moveMouse(240, 190);
+    game.tick();
+    Vis_PIDAndDepth object = engine->PickMouseForTargeting();
+    EXPECT_EQ(object.pid, Pid(OBJECT_Actor, 1));
+    EXPECT_TRUE(pActors[1].IsPeasant());
+    EXPECT_GT(object.depth, engine->config->gameplay.MouseInteractionDepth.value()); // Otherwise it's not the fallback.
+    int hp = pActors[1].hp;
+    EXPECT_GT(hp, 0);
+    game.pressKey(PlatformKey::KEY_SHIFT);
+    game.pressAndReleaseButton(BUTTON_LEFT, 240, 190);
+    game.tick(2);
+    game.releaseKey(PlatformKey::KEY_SHIFT);
+    game.tick(30);
+    EXPECT_LT(pActors[1].hp, hp); // The quick spell fired and hit.
+}

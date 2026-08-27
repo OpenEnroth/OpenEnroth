@@ -320,8 +320,9 @@ void Engine::onGameViewportClick() {
             } else {
                 engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             }
-        } else if (target.type() == OBJECT_Actor && pActors[target.id()].aiState != Dead && !CanInteractWithActor(target.id())) {
-            combatClickOnActor();
+        } else if (target.type() == OBJECT_Actor && pActors[target.id()].aiState != Dead &&
+                   (!CanInteractWithActor(target.id()) || keyboardInputHandler->IsCastOnClickToggled())) {
+            combatClickOnActor(); // With cast-on-click held, a friendly actor takes the quick spell too, as in vanilla.
         } else {
             pParty->dropHeldItem();
         }
