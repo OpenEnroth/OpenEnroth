@@ -115,7 +115,9 @@ class Path {
     /**
      * @return                          The extension of the file name, with the leading dot, empty if there is none.
      *                                  A leading dot doesn't start one, so `".bashrc"` has no extension, and only the
-     *                                  last one counts, so `"a.tar.gz"` gives `".gz"`.
+     *                                  last one counts, so `"a.tar.gz"` gives `".gz"`. A name whose stem would be
+     *                                  all dots has none either - `"..."` and `"...a"` are whole names, not a stem
+     *                                  and an extension.
      *                                  The returned view points into this path, so it dies with it.
      */
     [[nodiscard]] std::string_view extension() const;
@@ -135,10 +137,13 @@ class Path {
 
     /**
      * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
-     *                                  the extension. Must not contain a separator. Note that the result is
-     *                                  normalized, so dropping the extension of `"a/..b"` gives `"a"`.
+     *                                  the extension. Anything is accepted - this class never throws, and extension
+     *                                  strings reach it from user data - so an argument that's shaped like a path
+     *                                  gives a normalized result rather than being rejected.
      * @return                          Copy of this path with the extension replaced. Only the last extension is
-     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`.
+     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`. The file name
+     *                                  is the only thing this changes - it can't alter the parent, and it can't
+     *                                  shorten the path, because the stem it leaves behind is never all dots.
      */
     [[nodiscard]] Path withExtension(std::string_view extension) const;
 

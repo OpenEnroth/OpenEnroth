@@ -165,6 +165,43 @@ UNIT_TEST(Path, Anatomy) {
     EXPECT_EQ(Path("/").name(), "");
 }
 
+UNIT_TEST(Path, DottedNames) {
+    // A name whose stem would be all dots has no extension, so that dropping the extension can't turn a name into a
+    // navigation token - the stem of "..." is "..", which would collapse "a/..." to nothing. This is reachable from
+    // data, not just from a hostile caller: a trace file named "...json" comes off disk and RetraceTest calls
+    // withExtension("") on every name it lists. std::filesystem parses these the other way round, which is why they
+    // are pinned here instead of being left to the oracle.
+    EXPECT_EQ(Path("a/...").extension(), "");
+    EXPECT_EQ(Path("a/...").stem(), "...");
+    EXPECT_EQ(Path("a/...a").extension(), "");
+    EXPECT_EQ(Path("...json").extension(), "");
+
+    EXPECT_EQ(Path("a/...").withExtension(""), Path("a/..."));
+    EXPECT_EQ(Path("a/...a").withExtension(""), Path("a/...a"));
+    EXPECT_EQ(Path("...json").withExtension(""), Path("...json"));
+    EXPECT_EQ(Path("a/...").withExtension(".x"), Path("a/....x"));
+
+    // A stem that isn't all dots still splits normally.
+    EXPECT_EQ(Path("..a.txt").extension(), ".txt");
+    EXPECT_EQ(Path("..a.txt").withExtension(""), Path("..a"));
+}
+
+UNIT_TEST(Path, WithExtensionIsTotal) {
+    // Path never throws and never asserts, and an extension can come from user data, so every argument has to have a
+    // defined result. A path-shaped one lands somewhere odd but honest - the escaping case reports itself as
+    // escaping, which is what the file system layer refuses on.
+    EXPECT_EQ(Path("a").withExtension("./../../x"), Path("../x"));
+    EXPECT_TRUE(Path("a").withExtension("./../../x").isEscaping());
+    EXPECT_EQ(Path("a").withExtension("/x"), Path("a./x"));
+    EXPECT_EQ(Path("a").withExtension("../../.."), Path(".."));
+
+    // Whatever the argument, the result is still in normal form.
+    for (std::string_view extension : {"", ".x", "x", "./../../x", "/x", "../../..", "a/b"}) {
+        Path path = Path("a/b.txt").withExtension(extension);
+        EXPECT_EQ(Path(path.string()), path) << extension;
+    }
+}
+
 UNIT_TEST(Path, Escaping) {
     EXPECT_TRUE(Path("..").isEscaping());
     EXPECT_TRUE(Path("../a").isEscaping());

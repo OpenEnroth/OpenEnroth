@@ -1,7 +1,6 @@
 #include "Path.h"
 
 #include <algorithm>
-#include <cassert>
 #include <cstddef>
 #include <string>
 #include <string_view>
@@ -58,15 +57,18 @@ static size_t fileNameOffset(std::string_view path) {
 }
 
 // Offset of the extension inside the path, or npos if there's none. A leading dot doesn't start an extension, so
-// ".bashrc" has no extension, and neither do "." and "..".
+// ".bashrc" has no extension. Neither does a name whose stem would be all dots - the stem of "..." is "..", and
+// dropping the extension of such a name would turn it into a navigation token rather than shortening it. That also
+// covers "." and ".." without naming them.
 static size_t extensionOffset(std::string_view path) {
     size_t nameOffset = fileNameOffset(path);
     std::string_view fileName = path.substr(nameOffset);
-    if (fileName == "." || fileName == "..")
-        return std::string_view::npos;
 
     size_t dotPos = fileName.rfind('.');
     if (dotPos == std::string_view::npos || dotPos == 0)
+        return std::string_view::npos;
+
+    if (fileName.substr(0, dotPos).find_first_not_of('.') == std::string_view::npos)
         return std::string_view::npos;
 
     return nameOffset + dotPos;
@@ -171,8 +173,6 @@ Path Path::parent() const {
 }
 
 Path Path::withExtension(std::string_view extension) const {
-    assert(!extension.contains(separator)); // An extension is not a path.
-
     size_t offset = extensionOffset(_path);
     std::string result = offset == std::string::npos ? _path : _path.substr(0, offset);
 
@@ -182,8 +182,8 @@ Path Path::withExtension(std::string_view extension) const {
         result += extension;
     }
 
-    // Truncating at the last dot can leave a "." or ".." file name - "a/..b" without an extension is "a/.", which
-    // is "a". So the result goes back through normalization instead of being taken on trust.
+    // The argument can be anything - extension strings reach here from user data, and Path neither throws nor
+    // asserts. Normalizing the result is what keeps a path-shaped argument honest rather than rejected.
     return Path(result);
 }
 
