@@ -111,18 +111,11 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
     return result + 1;
 }
 
-/**
- * Overflows the stack. The pad makes each frame big enough to get there fast, and feeding it into the return
- * value keeps the recursion from being folded into a loop.
- *
- * @param depth                         Recursion depth, start at zero.
- * @return                              Never returns, the stack runs out first.
- */
 MM_NOINLINE int stackTraceOverflowFunction(int depth) {
-    volatile char pad[1024];
+    volatile char pad[1024]; // Big frames run out of stack fast.
     pad[0] = static_cast<char>(depth); // Touching both ends, or the compiler is free to shrink the array.
     pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + stackTraceOverflowFunction(depth + 1);
+    return pad[0] + pad[1023] + stackTraceOverflowFunction(depth + 1); // Using the pad keeps the recursion from being folded into a loop.
 }
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
