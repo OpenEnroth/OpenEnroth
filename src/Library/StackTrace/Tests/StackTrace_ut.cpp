@@ -126,8 +126,6 @@ UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 }
 
 UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
-    // The crash path is the one that matters, and it's the one that breaks silently - a handler that traces
-    // the wrong thread, or traces nothing at all, still exits with the right signal.
     EXPECT_DEATH({
         // Gtest wraps test bodies in __try/__except, and a frame-based handler runs before any unhandled
         // exception filter, so on windows ours would never see the access violation below.
