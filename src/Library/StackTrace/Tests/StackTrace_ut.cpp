@@ -162,9 +162,10 @@ UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
 }
 
 UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
-    // Guards against detecting a bad call target by comparing the pc to si_addr. On x86-64 a jump to a
-    // non-canonical address is a general protection fault with si_addr reported as zero, so that comparison
-    // only ever passed the null call, where the two happen to be equal.
+    // Calling 0xdeadbeefdead faults with the pc at the bad address, and the handler has to recognize that
+    // to walk from the caller instead. Recognizing it by comparing the pc to si_addr was a bug - on x86-64 a
+    // jump to a non-canonical address is a general protection fault, which reports si_addr as zero, so the
+    // comparison held only for a null call, where both sides are zero.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
