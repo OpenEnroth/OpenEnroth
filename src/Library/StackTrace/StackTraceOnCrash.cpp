@@ -111,8 +111,9 @@ static std::string traceFromContext(const CONTEXT &crashContext, const void *exc
     SymInitialize(GetCurrentProcess(), nullptr, TRUE);
 
     // A call through a bad pointer faults at the bad address, where there's nothing to walk from. The call
-    // pushed its return address first though, so pop it back into the pc, backed into the call so the unwind
-    // data lookup lands in the caller. A bad address is one no module was loaded at.
+    // pushed its return address first though, so pop it into the pc, minus one - a return address points one
+    // past the call, and the unwind data lookup has to land inside the caller, not one past it. A bad
+    // address is one no module was loaded at.
     if (SymGetModuleBase64(GetCurrentProcess(), reinterpret_cast<DWORD64>(exceptionAddress)) == 0) {
 #if defined(_M_IX86)
         context.Eip = *reinterpret_cast<const DWORD *>(context.Esp) - 1;
@@ -148,8 +149,8 @@ static std::string traceFromContext(const CONTEXT &crashContext, const void *exc
                        SymFunctionTableAccess64, SymGetModuleBase64, nullptr) &&
            frame.AddrPC.Offset != 0) {
         // Cpptrace resolves call sites, and a return address points one past the call. The first frame is
-        // exact as is - the faulting instruction itself, or a popped return address already backed into its
-        // call above.
+        // exact as is - the faulting instruction itself, or the popped return address that already got its
+        // minus one above.
         cpptrace::frame_ptr pc = static_cast<cpptrace::frame_ptr>(frame.AddrPC.Offset);
         raw.frames.push_back(raw.frames.empty() ? pc : pc - 1);
     }
@@ -299,7 +300,7 @@ static std::string traceFromContext(const ucontext_t &crashContext, const void *
 #if defined(__aarch64__)
     uint64_t &pc = regs[32];
     if (pc == reinterpret_cast<uint64_t>(faultAddress))
-        pc = regs[30] - 1; // Back into the call that jumped here.
+        pc = regs[30] - 1; // Minus one, so the pc points into the call, not one past it.
 #else
     uint64_t &pc = regs[16];
     if (pc == reinterpret_cast<uint64_t>(faultAddress)) {
@@ -373,7 +374,7 @@ static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &cras
     uintptr_t returnAddress = crashContext.uc_mcontext.arm_lr;
     uintptr_t fp = crashContext.uc_mcontext.arm_fp;
 #endif
-    frames.push_back(returnAddress - 1); // Back into the call that jumped.
+    frames.push_back(returnAddress - 1); // Minus one, so it points into the call, not one past it.
     while (fp != 0 && frames.size() < detail::MAX_TRACE_DEPTH) {
         const uintptr_t *frame = reinterpret_cast<const uintptr_t *>(fp); // [fp] = caller's fp, [fp + 1] = return.
         if (frame[1] == 0)
