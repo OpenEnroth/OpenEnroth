@@ -106,7 +106,8 @@ static std::string traceFromContext(const CONTEXT &crashContext, const void *exc
 
     // The module lookup below, StackWalk64 and the symbol callbacks all need the symbol handler initialized
     // for the handle they're passed, and cpptrace initializes a duplicate of it rather than this one. Failure
-    // means it was already initialized, which is just as good.
+    // means it was already initialized, which is just as good. Done at crash time rather than at install so
+    // the module list is current - a dll loaded since then must not read as a bad call target.
     SymInitialize(GetCurrentProcess(), nullptr, TRUE);
 
     // A call through a bad pointer faults at the bad address, where there's nothing to walk from. The call
