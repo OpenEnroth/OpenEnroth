@@ -1,6 +1,5 @@
 #include "EvtInstruction.h"
 
-#include <limits>
 #include <span>
 #include <string>
 #include <string_view>
@@ -879,11 +878,7 @@ std::string EvtInstruction::toString() const {
  */
 template<class Enum, class Int>
 static Enum narrowToEnum(Int value, std::string_view what) {
-    using Underlying = std::underlying_type_t<Enum>;
-    static_assert(std::cmp_greater(std::numeric_limits<Int>::max(), std::numeric_limits<Underlying>::max()) ||
-                  std::cmp_less(std::numeric_limits<Int>::lowest(), std::numeric_limits<Underlying>::lowest()),
-                  "Every value fits, the cast doesn't narrow");
-    if (!std::in_range<Underlying>(value))
+    if (!std::in_range<std::underlying_type_t<Enum>>(value))
         throw Exception("Evt {} {} is out of range", what, value);
     return static_cast<Enum>(value);
 }
