@@ -1616,8 +1616,8 @@ GAME_TEST(Prs, Pr2615a) {
 GAME_TEST(Prs, Pr2615b) {
     // In vanilla telekinesis doesn't work on decorations at all - its targeting pick skips their billboards, so
     // the decoration branch in castSpell is dead code there, with a garbled line that crashes once reached. OE
-    // deliberately lets the pick see decorations, and this is the OE behavior being tested: telekinesis pulls a
-    // decoration from beyond click reach, evented and interactive ones alike.
+    // deliberately lets the pick see decorations, and this is the OE behavior being tested: telekinesis pulls an
+    // interactive decoration from beyond click reach.
     auto foodTape = tapes.food();
     auto statusTape = tapes.statusBar();
     game.startNewGame();
