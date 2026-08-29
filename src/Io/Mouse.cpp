@@ -208,7 +208,7 @@ void Io::Mouse::DrawPickedItem() {
     }
 }
 
-void Io::Mouse::UI_OnMouseLeftClick() {
+void Io::Mouse::UI_OnMouseLeftClick(bool isDoubleClick) {
     if (current_screen_type == SCREEN_VIDEO || isHoldingMouseRightButton())
         return;
 
@@ -243,7 +243,8 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
                             engine->_messageQueue->clear();
-                            engine->_messageQueue->addMessageCurrentFrame(control->msg, control->msg_param, 0);
+                            engine->_messageQueue->addMessageCurrentFrame(
+                                control->msg, control->msg_param, isDoubleClick);
                             return;
                         }
                         continue;

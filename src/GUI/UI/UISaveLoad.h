@@ -46,11 +46,13 @@ class GUIWindow_SaveLoad : public GUIWindow {
     }
 
     /**
-     * Handles a click on one of the visible slot rows. First click selects the slot, second click acts on it.
+     * Handles a click on one of the visible slot rows. A single click selects the slot, and a double click on
+     * the selected slot acts on it - loading it in the load menu, renaming it in the save menu.
      *
      * @param slotIndex             Index of the clicked row in the visible part of the list, in [0, 7).
+     * @param isDoubleClick         Whether this click is the second click of a double click.
      */
-    virtual void slotClicked(int slotIndex) = 0;
+    virtual void slotClicked(int slotIndex, bool isDoubleClick) = 0;
 
     void scrollUp();
     void scrollDown();
@@ -72,7 +74,7 @@ class GUIWindow_Save : public GUIWindow_SaveLoad {
 
     virtual void Update() override;
 
-    virtual void slotClicked(int slotIndex) override;
+    virtual void slotClicked(int slotIndex, bool isDoubleClick) override;
 
  protected:
     GraphicsImage *saveload_ui_save_up = nullptr;
@@ -87,7 +89,7 @@ class GUIWindow_Load : public GUIWindow_SaveLoad {
 
     virtual void Update() override;
 
-    virtual void slotClicked(int slotIndex) override;
+    virtual void slotClicked(int slotIndex, bool isDoubleClick) override;
     void loadButtonPressed();
     void downArrowPressed();
     void upArrowPressed();
@@ -95,8 +97,6 @@ class GUIWindow_Load : public GUIWindow_SaveLoad {
     void quickLoad();
 
  protected:
-    // TODO(Nik-RE-dev): drop variable and load game only on double click.
-    bool _loadSlotClicked = false;
     GraphicsImage *main_menu_background = nullptr;
 
     GraphicsImage *saveload_ui_load_up = nullptr;

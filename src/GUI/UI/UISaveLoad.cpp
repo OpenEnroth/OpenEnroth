@@ -277,18 +277,17 @@ void GUIWindow_Save::Update() {
     drawSaveLoad();
 }
 
-void GUIWindow_Save::slotClicked(int slotIndex) {
+void GUIWindow_Save::slotClicked(int slotIndex, bool isDoubleClick) {
     if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
         keyboardInputHandler->EndTextInput();
     int slot = _scrollPosition + slotIndex;
     if (slot >= std::ssize(_slots))
         return; // Clicked below the last slot.
-    if (_selectedSlot != slot) {
-        _selectedSlot = slot;
-    } else {
+    _selectedSlot = slot;
+    if (isDoubleClick) {
         keyboardInputHandler->StartTextInput(TextInputType::Text, 19, this);
-        if (!_slots[slot].fileName.empty())
-            keyboardInputHandler->SetTextInput(_slots[slot].header.name);
+        if (!selectedSlot().fileName.empty())
+            keyboardInputHandler->SetTextInput(selectedSlot().header.name);
     }
 }
 
@@ -358,18 +357,15 @@ void GUIWindow_Load::Update() {
     drawSaveLoad();
 }
 
-void GUIWindow_Load::slotClicked(int slotIndex) {
+void GUIWindow_Load::slotClicked(int slotIndex, bool isDoubleClick) {
     if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
         keyboardInputHandler->EndTextInput();
     int slot = _scrollPosition + slotIndex;
     if (slot >= std::ssize(_slots))
         return; // Clicked below the last save.
-    if (!_loadSlotClicked || _selectedSlot != slot) {
-        _selectedSlot = slot;
-        _loadSlotClicked = true;
-    } else {
+    _selectedSlot = slot;
+    if (isDoubleClick)
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
-    }
 }
 
 void GUIWindow_Load::loadButtonPressed() {
