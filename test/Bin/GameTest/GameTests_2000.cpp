@@ -1599,13 +1599,15 @@ GAME_TEST(Prs, Pr2615a) {
     game.startNewGame();
     game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(12288 - 535, 2040, 0), 0); // Facing the campfire on the beach.
     test.startTaping();
-    game.moveMouse(240, 250);
-    game.tick();
+    ASSERT_EQ(pDecorationList->GetDecoration(pLevelDecorations[7].uDecorationDescID)->hint, "campfire");
+    ASSERT_EQ(pDecorationList->GetDecoration(pLevelDecorations[7].uDecorationDescID)->uRadius, 52);
+    game.pointMouseAtDecoration(7);
     EXPECT_EQ(engine->PickMouseForInteraction().pid, Pid()); // Otherwise the radius allowance isn't what's tested.
     Vis_PIDAndDepth object = engine->PickMouseForTargeting();
     EXPECT_EQ(object.pid, Pid(OBJECT_Decoration, 7));
     EXPECT_GT(object.depth, engine->config->gameplay.MouseInteractionDepth.value());
-    game.pressAndReleaseButton(BUTTON_LEFT, 240, 250);
+    Pointi pt = mouse->position();
+    game.pressAndReleaseButton(BUTTON_LEFT, pt.x, pt.y);
     game.tick(3);
     EXPECT_EQ(foodTape.delta(), 2);
     EXPECT_CONTAINS(statusTape, "You find 2 food");
@@ -1623,7 +1625,10 @@ GAME_TEST(Prs, Pr2615b) {
     test.startTaping();
     game.castSpell(1, SPELL_EARTH_TELEKINESIS);
     game.tick(2);
-    game.pressAndReleaseButton(BUTTON_LEFT, 240, 250);
+    ASSERT_EQ(pDecorationList->GetDecoration(pLevelDecorations[7].uDecorationDescID)->hint, "campfire");
+    game.pointMouseAtDecoration(7);
+    Pointi pt = mouse->position();
+    game.pressAndReleaseButton(BUTTON_LEFT, pt.x, pt.y);
     game.tick(3);
     EXPECT_EQ(foodTape.delta(), 2);
     EXPECT_CONTAINS(statusTape, "You find 2 food");

@@ -161,6 +161,14 @@ class EngineController {
      */
     void pointMouseAtActor(int actorId);
 
+    /**
+     * Finds a screen position at which the mouse points at the provided decoration & moves the mouse there.
+     *
+     * @param decorationId              Id of the decoration to point at.
+     * @throws Exception                If pointing at the decoration is not possible, e.g. it's not on the screen.
+     */
+    void pointMouseAtDecoration(int decorationId);
+
  private:
     void goToGameOrMainMenu();
 

@@ -22,6 +22,8 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Vis.h"
@@ -387,6 +389,24 @@ void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
     // roll back the quick spell. Thus two ticks.
     tick(2);
     character.uQuickSpell = oldQuickSpell;
+}
+
+void EngineController::pointMouseAtDecoration(int decorationId) {
+    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
+    // camera is still at the old position. Tick once to let it catch up.
+    tick(1);
+
+    const DecorationDesc *desc = pDecorationList->GetDecoration(pLevelDecorations[decorationId].uDecorationDescID);
+    Vec3f center = pLevelDecorations[decorationId].vPosition + Vec3f(0, 0, desc->uDecorationHeight / 2);
+    Vec3f viewPos = pCamera3D->ViewTransform(&center);
+    if (viewPos.x <= 0)
+        throw Exception("Decoration #{} is behind the camera", decorationId);
+    Vec2f screenPos = pCamera3D->Project(viewPos);
+
+    moveMouse(screenPos.x, screenPos.y);
+    tick(1); // The pick reads render billboards, so the new mouse position needs a rendered frame.
+    if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Decoration, decorationId))
+        throw Exception("Failed to point mouse at decoration #{}", decorationId);
 }
 
 void EngineController::pointMouseAtActor(int actorId) {
