@@ -134,17 +134,8 @@ struct ArcomagePlayer {
     Pointi card_shift[10] {};
 };
 
-// TODO(pskelton): cleanup unused
 enum class ArcomageMessageType {
     ARCO_MSG_NULL,
-
-    ARCO_MSG_KEYDOWN,
-    ARCO_MSG_FORCEQUIT,
-    ARCO_MSG_LM_UP,
-    ARCO_MSG_RM_UP,
-    ARCO_MSG_LM_DOWN,
-    ARCO_MSG_RM_DOWN,
-    ARCO_MSG_SWITCH_FULLSCREEN, // Not used in Arcomage
 
     ARCO_MSG_ESCAPE,
     ARCO_MSG_PLAYCARD,
@@ -157,7 +148,6 @@ using enum ArcomageMessageType;
 struct ArcomageGame_InputMSG {
     ArcomageMessageType am_input_type{ ARCO_MSG_NULL };
     PlatformKey am_input_key{ PlatformKey::KEY_NONE };
-    int field_4 = 0; // unsused
 };
 
 class GUIFont;
