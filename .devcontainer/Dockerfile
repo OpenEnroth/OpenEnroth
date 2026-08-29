@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 ARG TZ
 ENV TZ="$TZ"
@@ -6,11 +6,7 @@ ENV TZ="$TZ"
 ARG CLAUDE_CODE_VERSION=latest
 
 # Install basic development tools, iptables/ipset, and C++ build toolchain.
-# PPA needed for gcc-15 which isn't in ubuntu-24.04 repos.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  software-properties-common \
-  && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
-  && apt-get update && apt-get install -y --no-install-recommends \
   less \
   git \
   git-lfs \
@@ -42,8 +38,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   wget \
   ca-certificates \
   curl \
-  gcc-15 \
-  g++-15 \
+  gcc \
+  g++ \
   ninja-build \
   pkg-config \
   mold \
@@ -68,10 +64,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN wget -qO /tmp/cmake.sh "https://github.com/Kitware/CMake/releases/download/v4.3.0/cmake-4.3.0-linux-$(uname -m).sh" && \
   sh /tmp/cmake.sh --skip-license --prefix=/usr/local && \
   rm /tmp/cmake.sh
-
-# Make gcc-15/g++-15 the default gcc/g++.
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 100 && \
-  update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-15 100
 
 # Install Node.js 20 (needed for Claude Code).
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
