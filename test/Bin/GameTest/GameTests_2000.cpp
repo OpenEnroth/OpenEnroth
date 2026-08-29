@@ -1665,3 +1665,25 @@ GAME_TEST(Prs, Pr2615c) {
         EXPECT_LT(hpTape.delta(), 0); // The quick spell fired and hit.
     }
 }
+
+GAME_TEST(Prs, Pr2615d) {
+    // Telekinesis on a decoration that carries a map event - the campfire in Pr2615b is the interactive kind, this
+    // Harmondale fruit tree is the evented kind, and its event hands the player an apple. Fruit trees bear nothing
+    // in autumn and winter, and a new game starts on the 1st of January, so the calendar moves to June first.
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-12192, 9000, 0), 0); // Decorations belong to the loaded map.
+    const LevelDecoration &tree = pLevelDecorations[559];
+    ASSERT_EQ(pDecorationList->GetDecoration(tree.uDecorationDescID)->hint, "tree");
+    ASSERT_NE(tree.uEventID, 0); // The point of this test - Pr2615b covers the eventless interactive kind.
+    game.teleportTo(MAP_HARMONDALE, tree.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
+    pParty->GetPlayingTime() += Duration::fromDays(150);
+    game.tick(2);
+    ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
+    game.castSpell(1, SPELL_EARTH_TELEKINESIS);
+    game.tick(2);
+    game.pointMouseAtDecoration(559);
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.tick(3);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
+}
