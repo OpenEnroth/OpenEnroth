@@ -1591,9 +1591,9 @@ GAME_TEST(Issues, Pr2635) {
 }
 
 GAME_TEST(Prs, Pr2615a) {
-    // Clicking a decoration got a reach of exactly the mouse interaction depth after the pick rework, and vanilla
-    // extends it by the decoration's radius. This campfire is at depth 560 with radius 52, so it's clickable at the
-    // default reach of 512, and the plain interaction pick can't see it.
+    // A decoration's clickable reach extends past the mouse interaction depth by the decoration's radius, so a big
+    // one is clickable from further away than its center. This campfire is at depth 560 with radius 52, clickable
+    // at the default reach of 512.
     auto foodTape = tapes.food();
     auto statusTape = tapes.statusBar();
     game.startNewGame();
@@ -1638,8 +1638,7 @@ GAME_TEST(Prs, Pr2615b) {
 
 GAME_TEST(Prs, Pr2615c) {
     // Shift-clicking a friendly actor fires the quick spell at it on both sides of the interaction depth, as in
-    // vanilla. The out-of-reach click fallback used to consider hostile actors only, so past interaction depth the
-    // click was silently dropped.
+    // vanilla - a friendliness check in the click handler is not allowed to drop the far click.
     engine->config->debug.AllMagic.setValue(true);
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
