@@ -1615,9 +1615,10 @@ GAME_TEST(Prs, Pr2615a) {
 }
 
 GAME_TEST(Prs, Pr2615b) {
-    // Telekinesis never worked on decorations - the pick filter skipped their billboards, so the decoration branch
-    // in castSpell was dead code, and it crashed once reached, indexing pSpriteObjects with a decoration id. The
-    // click gate also rejected interactive decorations, campfires and their kin have no event id.
+    // In vanilla telekinesis doesn't work on decorations at all - its targeting pick skips their billboards, so
+    // the decoration branch in castSpell is dead code there, with a garbled line that crashes once reached. OE
+    // deliberately lets the pick see decorations, and this is the OE behavior being tested: telekinesis pulls a
+    // decoration from beyond click reach, evented and interactive ones alike.
     auto foodTape = tapes.food();
     auto statusTape = tapes.statusBar();
     game.startNewGame();
