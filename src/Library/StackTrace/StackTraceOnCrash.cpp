@@ -474,6 +474,7 @@ static void installHandlers() {
         action.sa_flags = SA_SIGINFO | SA_ONSTACK | SA_NODEFER | SA_RESETHAND;
         sigfillset(&action.sa_mask);
         sigdelset(&action.sa_mask, signal);
+        sigdelset(&action.sa_mask, SIGALRM); // Or the watchdog alarm sits pending while the handler hangs, and never fires.
         action.sa_sigaction = &onSignal;
         sigaction(signal, &action, nullptr);
     }
