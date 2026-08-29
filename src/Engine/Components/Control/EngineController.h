@@ -59,8 +59,11 @@ class EngineController {
     void pressAutoRepeatedKey(PlatformKey key);
     void releaseKey(PlatformKey key);
     void pressButton(PlatformMouseButton button, int x, int y, bool isDoubleClick = false);
+    void pressButton(PlatformMouseButton button, Pointi point, bool isDoubleClick = false);
     void releaseButton(PlatformMouseButton button, int x, int y);
+    void releaseButton(PlatformMouseButton button, Pointi point);
     void moveMouse(int x, int y);
+    void moveMouse(Pointi point);
 
     void pressAndReleaseKey(PlatformKey key);
     void pressAndReleaseButton(PlatformMouseButton button, int x, int y);

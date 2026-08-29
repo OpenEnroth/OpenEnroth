@@ -1638,26 +1638,30 @@ GAME_TEST(Prs, Pr2615b) {
 GAME_TEST(Prs, Pr2615c) {
     // Shift-clicking a friendly actor fires the quick spell at it on both sides of the interaction depth, as in
     // vanilla - a friendliness check in the click handler is not allowed to drop the far click.
-    engine->config->debug.AllMagic.setValue(true);
-    engine->config->debug.NoActors.setValue(true);
-    game.startNewGame();
-    engine->config->debug.NoActors.setValue(false);
-    prepareForBattleTest();
-    pParty->pCharacters[0].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
-    for (int depth : {1200, 300}) { // Far one first, so that its corpse ends up behind the near one, not in front.
+    for (int depth : {300, 1200}) {
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        engine->config->debug.AllMagic.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
+
+        auto hpTape = actorTapes.hp(0);
         Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, depth, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A,
                                            SPAWN_DUMMY | SPAWN_FRIENDLY);
         EXPECT_EQ(peasant->GetActorsRelation(0), HOSTILITY_FRIENDLY); // Otherwise it's the hostile path that's tested.
-        game.pointMouseAtActor(peasant->id);
+        pParty->pCharacters[0].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
+        game.pointMouseAtActor(0);
         EXPECT_EQ(engine->PickMouseForInteraction().pid == Pid(), depth > engine->config->gameplay.MouseInteractionDepth.value());
-        int hp = peasant->hp;
-        EXPECT_GT(hp, 0);
-        pParty->pCharacters[0].timeToRecovery = 0_ticks;
+
         game.pressKey(PlatformKey::KEY_SHIFT);
         game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
         game.tick(2);
         game.releaseKey(PlatformKey::KEY_SHIFT);
         game.tick(30);
-        EXPECT_LT(peasant->hp, hp); // The quick spell fired and hit.
+        test.stopTaping();
+
+        EXPECT_LT(hpTape.delta(), 0); // The quick spell fired and hit.
     }
 }

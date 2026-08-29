@@ -117,6 +117,18 @@ void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     pressOrReleaseButton(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
 }
 
+void EngineController::pressButton(PlatformMouseButton button, Pointi point, bool isDoubleClick) {
+    pressButton(button, point.x, point.y, isDoubleClick);
+}
+
+void EngineController::releaseButton(PlatformMouseButton button, Pointi point) {
+    releaseButton(button, point.x, point.y);
+}
+
+void EngineController::moveMouse(Pointi point) {
+    moveMouse(point.x, point.y);
+}
+
 void EngineController::moveMouse(int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = EVENT_MOUSE_MOVE;
