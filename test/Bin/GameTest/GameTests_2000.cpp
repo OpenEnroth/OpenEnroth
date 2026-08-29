@@ -1607,8 +1607,7 @@ GAME_TEST(Prs, Pr2615a) {
     Vis_PIDAndDepth object = engine->PickMouseForTargeting();
     EXPECT_EQ(object.pid, Pid(OBJECT_Decoration, 7));
     EXPECT_GT(object.depth, engine->config->gameplay.MouseInteractionDepth.value());
-    Pointi pt = mouse->position();
-    game.pressAndReleaseButton(BUTTON_LEFT, pt.x, pt.y);
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
     game.tick(3);
     EXPECT_EQ(foodTape.delta(), 2);
     EXPECT_CONTAINS(statusTape, "You find 2 food");
@@ -1630,8 +1629,7 @@ GAME_TEST(Prs, Pr2615b) {
     game.castSpell(1, SPELL_EARTH_TELEKINESIS);
     game.tick(2);
     game.pointMouseAtDecoration(7);
-    Pointi pt = mouse->position();
-    game.pressAndReleaseButton(BUTTON_LEFT, pt.x, pt.y);
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
     game.tick(3);
     EXPECT_EQ(foodTape.delta(), 2);
     EXPECT_CONTAINS(statusTape, "You find 2 food");
@@ -1655,9 +1653,8 @@ GAME_TEST(Prs, Pr2615c) {
         int hp = peasant->hp;
         EXPECT_GT(hp, 0);
         pParty->pCharacters[0].timeToRecovery = 0_ticks;
-        Pointi pt = mouse->position();
         game.pressKey(PlatformKey::KEY_SHIFT);
-        game.pressAndReleaseButton(BUTTON_LEFT, pt.x, pt.y);
+        game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
         game.tick(2);
         game.releaseKey(PlatformKey::KEY_SHIFT);
         game.tick(30);

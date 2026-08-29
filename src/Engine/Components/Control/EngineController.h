@@ -7,6 +7,7 @@
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/MapEnums.h"
 
+#include "Library/Geometry/Point.h"
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
 
@@ -63,6 +64,7 @@ class EngineController {
 
     void pressAndReleaseKey(PlatformKey key);
     void pressAndReleaseButton(PlatformMouseButton button, int x, int y);
+    void pressAndReleaseButton(PlatformMouseButton button, Pointi point);
 
     /**
      * Presses a GUI button identified by the provided id by sending a mouse press and release event.
