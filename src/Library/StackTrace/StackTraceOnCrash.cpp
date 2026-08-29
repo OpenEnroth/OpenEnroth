@@ -433,6 +433,11 @@ static void onSignal(int signal, siginfo_t *info, void *context) {
     // dump. A second thread raising the same signal never gets here, SA_RESETHAND already put the default
     // handler back, so the kernel kills the process and whatever was printed so far is all there is.
     if (!crashHandled.test_and_set()) {
+        // Symbolizing allocates and takes locks, and the header spells out how that can deadlock. A wedged
+        // handler is worse than a lost trace, so the alarm kills the process - SIGALRM keeps its default
+        // disposition - and whatever was printed by then still reaches the reader.
+        alarm(30);
+
         char reason[128];
         std::snprintf(reason, sizeof(reason), "%s at %p", strsignal(info->si_signo), info->si_addr);
         printCrashHeader(reason);
