@@ -2189,7 +2189,7 @@ void CastSpellInfoHelpers::castSpell() {
                             eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
                         } else if (pLevelDecorations[obj_id].IsInteractive()) {
                             activeLevelDecoration = &pLevelDecorations[obj_id];
-                            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1);
+                            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
                             activeLevelDecoration = nullptr;
                         }
                     }
