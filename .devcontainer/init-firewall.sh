@@ -60,6 +60,7 @@ ALLOWED_DOMAINS=(
     code.visualstudio.com   # update.code.visualstudio.com
     mightandmagic.fandom.com # MM7 wiki — game data references during refactoring.
     celestialheavens.com    # Might & Magic fan site — game data references.
+    mmmodding.miraheze.org  # Might & Magic modding wiki — evt format references.
     godbolt.org             # Compiler Explorer — checking codegen across compilers.
 )
 
