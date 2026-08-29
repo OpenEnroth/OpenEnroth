@@ -244,7 +244,7 @@ void Engine::onGameViewportClick() {
 
     if (pid.type() == OBJECT_Sprite) {
         int item_id = pid.id();
-        if (pSpriteObjects[item_id].IsUnpickable() || item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID) {
+        if (pSpriteObjects[item_id].IsUnpickable() || !pSpriteObjects[item_id].uObjectDescID) {
             pParty->dropHeldItem();
         } else {
             ItemInteraction(item_id);
