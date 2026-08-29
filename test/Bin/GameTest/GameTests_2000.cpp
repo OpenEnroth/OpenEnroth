@@ -1625,7 +1625,7 @@ GAME_TEST(Prs, Pr2615b) {
     engine->config->debug.AllMagic.setValue(true);
     const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
     ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
-    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(535, 0, 0), 0); // Puts it at pick depth 560.
+    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
     test.startTaping();
     game.castSpell(1, SPELL_EARTH_TELEKINESIS);
     game.tick(2);
