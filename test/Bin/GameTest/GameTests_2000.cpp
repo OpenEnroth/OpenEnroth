@@ -1614,28 +1614,6 @@ GAME_TEST(Prs, Pr2615a) {
 }
 
 GAME_TEST(Prs, Pr2615b) {
-    // In vanilla telekinesis doesn't work on decorations at all - its targeting pick skips their billboards, so
-    // the decoration branch in castSpell is dead code there, with a garbled line that crashes once reached. OE
-    // deliberately lets the pick see decorations, and this is the OE behavior being tested: telekinesis pulls an
-    // interactive decoration from beyond click reach.
-    auto foodTape = tapes.food();
-    auto statusTape = tapes.statusBar();
-    game.startNewGame();
-    engine->config->debug.AllMagic.setValue(true);
-    const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
-    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
-    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
-    test.startTaping();
-    game.castSpell(1, SPELL_EARTH_TELEKINESIS);
-    game.tick(2);
-    game.pointMouseAtDecoration(7);
-    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
-    game.tick(3);
-    EXPECT_EQ(foodTape.delta(), 2);
-    EXPECT_CONTAINS(statusTape, "You find 2 food");
-}
-
-GAME_TEST(Prs, Pr2615c) {
     // Shift-clicking a friendly actor fires the quick spell at it on both sides of the interaction depth, as in
     // vanilla - a friendliness check in the click handler is not allowed to drop the far click.
     for (int depth : {300, 1200}) {
@@ -1666,6 +1644,28 @@ GAME_TEST(Prs, Pr2615c) {
     }
 }
 
+GAME_TEST(Prs, Pr2615c) {
+    // In vanilla telekinesis doesn't work on decorations at all - its targeting pick skips their billboards, so
+    // the decoration branch in castSpell is dead code there, with a garbled line that crashes once reached. OE
+    // deliberately lets the pick see decorations, and this is the OE behavior being tested: telekinesis pulls an
+    // interactive decoration from beyond click reach.
+    auto foodTape = tapes.food();
+    auto statusTape = tapes.statusBar();
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
+    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
+    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
+    test.startTaping();
+    game.castSpell(1, SPELL_EARTH_TELEKINESIS);
+    game.tick(2);
+    game.pointMouseAtDecoration(7);
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.tick(3);
+    EXPECT_EQ(foodTape.delta(), 2);
+    EXPECT_CONTAINS(statusTape, "You find 2 food");
+}
+
 GAME_TEST(Prs, Pr2615d) {
     // Telekinesis on a decoration that carries a map event - the campfire in Pr2615b is the interactive kind, this
     // Harmondale fruit tree is the evented kind, and its event hands the player an apple. Fruit trees bear nothing
@@ -1675,7 +1675,7 @@ GAME_TEST(Prs, Pr2615d) {
     game.teleportTo(MAP_HARMONDALE, Vec3f(-12192, 9000, 0), 0); // Decorations belong to the loaded map.
     const LevelDecoration &tree = pLevelDecorations[559];
     ASSERT_EQ(pDecorationList->GetDecoration(tree.uDecorationDescID)->hint, "tree");
-    ASSERT_NE(tree.uEventID, 0); // The point of this test - Pr2615b covers the eventless interactive kind.
+    ASSERT_NE(tree.uEventID, 0); // The point of this test - Pr2615c covers the eventless interactive kind.
     game.teleportTo(MAP_HARMONDALE, tree.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
     pParty->GetPlayingTime() += Duration::fromDays(150);
     game.tick(2);
