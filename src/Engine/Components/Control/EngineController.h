@@ -24,7 +24,8 @@ enum class SpawnFlag {
     SPAWN_STATIONARY = 0x1, // Set moveSpeed to 1 so that the monster stays in place.
     SPAWN_NO_RESISTANCES = 0x2, // Zero out all resistances. Note that you might also want to set `SPAWN_LEVEL_1`.
     SPAWN_LEVEL_1 = 0x4, // Set level to 1. Level is used in to-hit, resistance and special attack rolls.
-    SPAWN_FRIENDLY = 0x8, // Make the monster friendly to the party instead of unconditionally hostile.
+    SPAWN_FRIENDLY = 0x8, // Drop the aggressor flag and set friendly hostility. The monster type's own hostility
+                          // table still applies, so spawn something table-friendly, like a peasant.
 
     // A predictable stationary target for damage-related tests.
     SPAWN_DUMMY = SPAWN_STATIONARY | SPAWN_NO_RESISTANCES | SPAWN_LEVEL_1,

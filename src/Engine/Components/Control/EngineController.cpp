@@ -422,7 +422,7 @@ void EngineController::pointMouseAtActor(int actorId) {
     Vec2f screenPos = pCamera3D->Project(viewPos);
 
     moveMouse(screenPos.x, screenPos.y);
-    tick(1); // The pick reads render billboards, so the new mouse position needs a rendered frame.
+    tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
     if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Actor, actorId))
         throw Exception("Failed to point mouse at actor #{}", actorId);
 }
@@ -440,7 +440,7 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
     Vec2f screenPos = pCamera3D->Project(viewPos);
 
     moveMouse(screenPos.x, screenPos.y);
-    tick(1); // The pick reads render billboards, so the new mouse position needs a rendered frame.
+    tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
     if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Decoration, decorationId))
         throw Exception("Failed to point mouse at decoration #{}", decorationId);
 }

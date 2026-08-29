@@ -894,7 +894,7 @@ void GameUI_WritePointedObjectStatusString() {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
                     std::string pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
-                        pText = pNPCTopics[engine->_persistentVariables.decorVars[pLevelDecorations[pickedObjectID].eventVarId] + 380].pTopic; // campfire
+                        pText = pNPCTopics[engine->_persistentVariables.decorVars[pLevelDecorations[pickedObjectID].eventVarId] + 380].pTopic; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
                     else
                         pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->hint;
                     engine->_statusBar->setPermanent(pText);

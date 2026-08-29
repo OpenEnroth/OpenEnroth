@@ -2187,6 +2187,7 @@ void CastSpellInfoHelpers::castSpell() {
                         OpenedTelekinesis = true;
                         if (pLevelDecorations[obj_id].uEventID) {
                             eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
+                            pLevelDecorations[obj_id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
                         } else if (pLevelDecorations[obj_id].IsInteractive()) {
                             activeLevelDecoration = &pLevelDecorations[obj_id];
                             eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.

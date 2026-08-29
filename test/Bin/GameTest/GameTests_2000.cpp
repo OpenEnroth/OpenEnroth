@@ -1600,7 +1600,7 @@ GAME_TEST(Prs, Pr2615a) {
     const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
     ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
     ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->uRadius, 52);
-    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(535, 0, 0), 0); // Puts it at pick depth 560.
+    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(535, 0, 0), 0); // The pick depth comes out at 560.
     test.startTaping();
     game.pointMouseAtDecoration(7);
     EXPECT_EQ(engine->PickMouseForInteraction().pid, Pid()); // Otherwise the radius allowance isn't what's tested.
@@ -1655,6 +1655,7 @@ GAME_TEST(Prs, Pr2615c) {
     engine->config->debug.AllMagic.setValue(true);
     const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
     ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
+    ASSERT_EQ(campfire.uEventID, 0); // The eventless interactive kind - Pr2615d covers the evented kind.
     game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
     test.startTaping();
     game.castSpell(1, SPELL_EARTH_TELEKINESIS);
@@ -1669,7 +1670,7 @@ GAME_TEST(Prs, Pr2615c) {
 GAME_TEST(Prs, Pr2615d) {
     // Telekinesis on a decoration that carries a map event - the campfire in Pr2615c is the interactive kind, this
     // Harmondale fruit tree is the evented kind, and its event hands the player an apple. Fruit trees bear nothing
-    // in autumn and winter, and a new game starts on the 1st of January, so the calendar moves to June first.
+    // in autumn and winter, and a new game starts on the 1st of January, so the calendar is pushed into summer first.
     game.startNewGame();
     engine->config->debug.AllMagic.setValue(true);
     game.teleportTo(MAP_HARMONDALE, Vec3f(-12192, 9000, 0), 0); // Decorations belong to the loaded map.

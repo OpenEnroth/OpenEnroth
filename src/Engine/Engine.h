@@ -88,8 +88,8 @@ class Engine {
     Vis_PIDAndDepth PickMouseForInfo();
 
     /**
-     * Picks a combat target under the cursor for attacks and targeted spells. Reaches to the ranged attack
-     * depth and matches anything, so a decoration in front of a monster eats the pick.
+     * Picks whatever is under the cursor for attacks, targeted spells and viewport clicks. Reaches to the
+     * ranged attack depth and matches anything, so a decoration in front of a monster eats the pick.
      */
     Vis_PIDAndDepth PickMouseForTargeting();
 
