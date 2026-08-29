@@ -94,8 +94,8 @@ class Engine {
     Vis_PIDAndDepth PickMouseForTargeting();
 
     /**
-     * Picks whatever is under the cursor for a viewport click - item pickup, corpse looting, talking and
-     * levers. Reaches to the mouse interaction depth, matches anything.
+     * Picks the actor under the cursor for stealing from it. Reaches to the mouse interaction depth,
+     * matches anything.
      */
     Vis_PIDAndDepth PickMouseForInteraction();
 
