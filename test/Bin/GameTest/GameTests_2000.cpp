@@ -1647,9 +1647,8 @@ GAME_TEST(Prs, Pr2615c) {
     prepareForBattleTest();
     pParty->pCharacters[0].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
     for (int depth : {1200, 300}) { // Far one first, so that its corpse ends up behind the near one, not in front.
-        Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, depth, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A, SPAWN_DUMMY);
-        peasant->attributes &= ~ACTOR_AGGRESSOR;
-        peasant->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
+        Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, depth, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A,
+                                           SPAWN_DUMMY | SPAWN_FRIENDLY);
         EXPECT_EQ(peasant->GetActorsRelation(0), HOSTILITY_FRIENDLY); // Otherwise it's the hostile path that's tested.
         game.pointMouseAtActor(peasant->id);
         EXPECT_EQ(engine->PickMouseForInteraction().pid == Pid(), depth > engine->config->gameplay.MouseInteractionDepth.value());

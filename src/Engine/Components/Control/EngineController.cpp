@@ -305,6 +305,10 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
 
     if (flags & SPAWN_STATIONARY)
         actor->moveSpeed = 1;
+    if (flags & SPAWN_FRIENDLY) {
+        actor->attributes &= ~ACTOR_AGGRESSOR;
+        actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
+    }
     if (flags & SPAWN_NO_RESISTANCES) {
         actor->monsterInfo.resFire = 0;
         actor->monsterInfo.resAir = 0;
