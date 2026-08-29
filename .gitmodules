@@ -42,9 +42,6 @@
 [submodule "thirdparty/inifile_cpp"]
 	path = thirdparty/inifile_cpp
 	url = https://github.com/Rookfighter/inifile-cpp.git
-[submodule "thirdparty/backward_cpp"]
-	path = thirdparty/backward_cpp
-	url = https://github.com/OpenEnroth/backward-cpp.git
 [submodule "thirdparty/small_vector"]
 	path = thirdparty/small_vector
 	url = https://github.com/gharveymn/small_vector.git
@@ -69,3 +66,6 @@
 [submodule "thirdparty/ztd_text"]
 	path = thirdparty/ztd_text
 	url = https://github.com/captainurist/ztd_text.git
+[submodule "thirdparty/cpptrace"]
+	path = thirdparty/cpptrace
+	url = https://github.com/jeremy-rifkin/cpptrace.git

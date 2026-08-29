@@ -61,9 +61,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libpipewire-0.3-dev \
   xvfb \
   mesa-utils \
-  libdwarf-dev \
-  libelf-dev \
-  libdw-dev \
   ccache \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 

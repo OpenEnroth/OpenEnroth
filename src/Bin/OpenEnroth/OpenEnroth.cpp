@@ -123,9 +123,20 @@ int runOpenEnroth(const OpenEnrothOptions &options) {
     return 0;
 }
 
+#ifdef _WINDOWS
+static void waitForAnyKey() {
+    printf("[Press any key to close this window]");
+    getchar();
+}
+#endif
+
 int openEnrothMain(int argc, char **argv) {
     try {
+#ifdef _WINDOWS
+        StackTraceOnCrash st(&waitForAnyKey);
+#else
         StackTraceOnCrash st;
+#endif
         UnicodeCrt _(argc, argv);
         OpenEnrothOptions options = OpenEnrothOptions::parse(argc, argv);
         if (options.helpPrinted)
@@ -147,12 +158,8 @@ int platformMain(int argc, char **argv) {
     int result = openEnrothMain(argc, argv);
 
 #ifdef _WINDOWS
-    // SDL on Windows creates a separate console window, and we want to be able to actually read the error message
-    // before that window closes.
-    if (result != 0) {
-        printf("[Press any key to close this window]");
-        getchar();
-    }
+    if (result != 0)
+        waitForAnyKey();
 #elif __ANDROID__
     // TODO: on android without this it won't close application properly until it finishes music track?!
     // Something is not closing and preventing proper teardown?

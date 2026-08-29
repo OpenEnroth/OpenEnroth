@@ -62,15 +62,20 @@ if(OE_BUILD_TESTS)
     add_subdirectory(googletest EXCLUDE_FROM_ALL)
 endif()
 
-# backward
+# cpptrace, it clones libdwarf with FetchContent at configure time. The options below are libdwarf's and
+# cpptrace's, and they only take effect thanks to the CMP0077 default set at the top of this file.
 if(NOT OE_BUILD_PLATFORM STREQUAL "android")
-    add_subdirectory(backward_cpp EXCLUDE_FROM_ALL)
-    if (OE_BUILD_PLATFORM STREQUAL "linux" AND NOT OE_USE_DUMMY_DEPENDENCIES)
-        string(FIND "${BACKWARD_DEFINITIONS}" "BACKWARD_HAS_DWARF=1" DWARF_POS)
-        if (${DWARF_POS} EQUAL -1)
-            message(WARNING "libdwarf is required for backward-cpp on linux.")
-        endif()
+    # Cpptrace picks execinfo on macos, which starts traces two frames in - a trace taken inside
+    # stackTraceToString opens at its caller's caller, and FunctionNamesAreResolved fails exactly that way.
+    # The built-in unwinder is what the C++ runtime unwinds with - libgcc on linux, the system libunwind on
+    # macos - and it's already linked. Windows is left alone because it wants dbghelp.
+    if(NOT OE_BUILD_PLATFORM STREQUAL "windows")
+        set(CPPTRACE_UNWIND_WITH_UNWIND ON)
     endif()
+    set(ENABLE_DECOMPRESSION OFF) # We don't emit compressed debug sections, and libdwarf can't export its zlib dep.
+    set(CPPTRACE_USE_EXTERNAL_ZSTD ON) # Only used for decompression, so this just stops cpptrace downloading it.
+    set(CPPTRACE_DISABLE_CXX_20_MODULES ON) # Nothing imports cpptrace, and module scanning needs a ninja generator.
+    add_subdirectory(cpptrace EXCLUDE_FROM_ALL)
 endif()
 
 # generator
