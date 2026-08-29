@@ -26,10 +26,10 @@ void initializeHouses(const Blob &houses) {
     //  5: "Name"               - house name                                                (localized)
     //  6: "Proprietor Name"                                                                (localized)
     //  7: "Proprietor Title"                                                               (localized)
-    //  8: "Picture"            - always 0
-    //  9: "State"              - always 0
-    // 10: "Rep"                - always 0, reputation?
-    // 11: "Per"                - always 0
+    //  8: "Picture"            - always 0                                                  (not used in MM7)
+    //  9: "State"              - always 0                                                  (not used in MM7)
+    // 10: "Rep"                - always 0, reputation?                                     (not used in MM7)
+    // 11: "Per"                - always 0                                                  (not used in MM7)
     // 12: "Val"                - shop price multiplier, float
     // 13: "A"                  - skill/spell price multiplier, float
     // 14: "B"                  - always empty
@@ -83,10 +83,6 @@ void initializeHouses(const Blob &houses) {
         houseTable[houseId].name = unquote(tokens[5]);
         houseTable[houseId].pProprieterName = unquote(tokens[6]);
         houseTable[houseId].pProprieterTitle = unquote(tokens[7]);
-        houseTable[houseId].field_14 = fromString<int>(tokens[8]);
-        houseTable[houseId]._state = fromString<int>(tokens[9]);
-        houseTable[houseId]._rep = fromString<int>(tokens[10]);
-        houseTable[houseId]._per = fromString<int>(tokens[11]);
         houseTable[houseId].fPriceMultiplier = fromString<float>(tokens[12]);
         houseTable[houseId].flt_24 = fromString<float>(tokens[13]);
         houseTable[houseId].generation_interval_days = fromString<int>(tokens[15]);
@@ -95,6 +91,5 @@ void initializeHouses(const Blob &houses) {
         houseTable[houseId].uExitPicID = fromString<int>(tokens[20]);
         houseTable[houseId].uExitMapID = static_cast<MapId>(fromString<int>(tokens[21]));
         houseTable[houseId]._quest_bit = static_cast<QuestBit>(fromString<int>(tokens[22]));
-        houseTable[houseId].pEnterText = unquote(tokens[23]);
     }
 }
