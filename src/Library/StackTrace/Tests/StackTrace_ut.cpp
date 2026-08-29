@@ -31,6 +31,16 @@ constexpr bool isMac = true;
 constexpr bool isMac = false;
 #endif
 
+// Death tests re-exec the binary instead of forking. The parent has helper threads on mac, and a forked
+// child inherits whatever locks they held at that instant, so a handler that allocates while symbolizing
+// deadlocked darwin CI. A re-exec'd child starts clean. Windows spawns a fresh process either way.
+class StackTraceDeathTest : public testing::Test {
+ protected:
+    void SetUp() override {
+        GTEST_FLAG_SET(death_test_style, "threadsafe");
+    }
+};
+
 /**
  * Matches when the frame numbered `index` names `function`. The regexes gtest's own death test matchers take
  * aren't portable - gtest picks between two engines with different grammars depending on the platform - so
@@ -128,7 +138,7 @@ UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
     EXPECT_CONTAINS(trace, "main");
 }
 
-UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, CrashHandlerNamesTheCrashingFunction) {
     EXPECT_DEATH({
         // Gtest wraps test bodies in __try/__except, and a frame-based handler runs before any unhandled
         // exception filter, so on windows ours would never see the access violation below.
@@ -139,7 +149,7 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
     }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::HasSubstr("main")));
 }
 
-UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, CrashOnAnotherThreadIsTraced) {
     // The handlers are process-wide, but only the thread that installs them gets an alternate signal stack,
     // so this one runs on the worker's own stack. That's enough for anything short of stack exhaustion.
     EXPECT_DEATH({
@@ -152,7 +162,7 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
     }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::Not(testing::HasSubstr("main"))));
 }
 
-UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, NullFunctionCallIsTraced) {
     // Calling a null pointer faults at address zero, where there's nothing to unwind from. The call pushed its
     // return address first though, and walking on from that names the function that made the call and
     // everything above it.
@@ -164,7 +174,7 @@ UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
     }, testing::AllOf(HasFrame(0, "stackTraceNullCallFunction"), testing::HasSubstr("main")));
 }
 
-UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, BadTargetCallIsTraced) {
     // Calling 0xdeadbeefdead faults with the pc at the bad address, and the handler has to recognize that
     // to walk from the caller instead.
     EXPECT_DEATH({
@@ -175,7 +185,7 @@ UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
     }, testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
 }
 
-UNIT_TEST(StackTrace, StackOverflowIsTraced) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, StackOverflowIsTraced) {
     // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
     // faults on the exhausted stack and the crash prints nothing at all.
     EXPECT_DEATH({
@@ -186,7 +196,7 @@ UNIT_TEST(StackTrace, StackOverflowIsTraced) {
     }, HasFrame(0, "stackTraceOverflowFunction"));
 }
 
-UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, CrashCallbackRunsAfterTheTrace) {
     // The callback is what holds a console window open after a crash, so it has to fire after the trace is
     // printed. Matching on order and not just presence is what guards that.
     auto callbackAfterTrace = testing::Truly([](const std::string &output) {
@@ -203,7 +213,7 @@ UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
     }, callbackAfterTrace);
 }
 
-UNIT_TEST(StackTrace, AbortIsTraced) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, AbortIsTraced) {
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
@@ -213,7 +223,7 @@ UNIT_TEST(StackTrace, AbortIsTraced) {
                       testing::HasSubstr("stackTraceAbortFunction")));
 }
 
-UNIT_TEST(StackTrace, TerminateIsTraced) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, TerminateIsTraced) {
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
@@ -223,7 +233,7 @@ UNIT_TEST(StackTrace, TerminateIsTraced) {
                       testing::HasSubstr("stackTraceTerminateFunction")));
 }
 
-UNIT_TEST(StackTrace, PureVirtualCallIsTraced) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, PureVirtualCallIsTraced) {
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
@@ -234,7 +244,7 @@ UNIT_TEST(StackTrace, PureVirtualCallIsTraced) {
 }
 
 #ifdef _WINDOWS
-UNIT_TEST(StackTrace, InvalidParameterIsTraced) {
+UNIT_TEST_FIXTURE(StackTraceDeathTest, InvalidParameterIsTraced) {
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
