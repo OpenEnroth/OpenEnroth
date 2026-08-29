@@ -68,7 +68,9 @@ struct StackTracePureCallBase {
     MM_NOINLINE void callPureIndirectly() {
         // An extra hop the compiler can't fold away. Inlined into the constructor, the call site would have a
         // known dynamic type, and the call devirtualizes into a direct one to a function with no body.
+        volatile int keepFrame = 0;
         callPure();
+        keepFrame = 1; // Or the call is in tail position, becomes a jump, and this frame is gone from the trace.
     }
 };
 struct StackTracePureCallDerived : StackTracePureCallBase {
