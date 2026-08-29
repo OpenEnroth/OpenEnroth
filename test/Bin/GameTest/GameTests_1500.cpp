@@ -52,6 +52,40 @@ GAME_TEST(Issues, Issue1510) {
     EXPECT_LE(actorDistTape.max(), meleeRange);
 }
 
+GAME_TEST(Issues, Issue1511) {
+    // Loading a save made on another map by double clicking it in the load menu crashed the game.
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    test.startTaping();
+    game.tick(2);
+
+    // Save on Emerald Island into slot 0.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    game.doubleClickGuiButton("SaveMenu_Slot0");
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Save");
+    game.tick(10);
+    ASSERT_TRUE(ufs->exists("saves/save000.mm7"));
+
+    // Double-click-load it from a different map.
+    game.teleportTo(MAP_ERATHIA, Vec3f(14207, -21526, 0), 270);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_LoadGame");
+    game.tick(3);
+    game.doubleClickGuiButton("LoadMenu_Slot0");
+    game.tick(2);
+    game.skipLoadingScreen();
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_GAME);
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_ERATHIA, MAP_EMERALD_ISLAND));
+}
+
 GAME_TEST(Issues, Issue1515) {
     // No dispel magic sound
     auto soundsTape = tapes.sounds();
