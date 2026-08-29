@@ -1,5 +1,6 @@
 #include "EvtInstruction.h"
 
+#include <limits>
 #include <span>
 #include <string>
 #include <string_view>
@@ -868,10 +869,21 @@ std::string EvtInstruction::toString() const {
     return fmt::format("{}: UNPROCESSED/{}", step, ::toString(opcode));
 }
 
-// Casts a wire value into an enum, throwing instead of silently truncating.
-template<class Enum>
-static Enum narrowToEnum(uint32_t value, std::string_view what) {
-    if (!std::in_range<std::underlying_type_t<Enum>>(value))
+/**
+ * Casts a wire value into a narrower enum, throwing instead of silently truncating.
+ *
+ * @param value                         Value as read from the wire.
+ * @param what                          What is being read, for the error message.
+ * @return                              `value` cast to `Enum`.
+ * @throws Exception                    If `value` doesn't fit the enum's underlying type.
+ */
+template<class Enum, class Int>
+static Enum narrowToEnum(Int value, std::string_view what) {
+    using Underlying = std::underlying_type_t<Enum>;
+    static_assert(std::cmp_greater(std::numeric_limits<Int>::max(), std::numeric_limits<Underlying>::max()) ||
+                  std::cmp_less(std::numeric_limits<Int>::lowest(), std::numeric_limits<Underlying>::lowest()),
+                  "Every value fits, the cast doesn't narrow");
+    if (!std::in_range<Underlying>(value))
         throw Exception("Evt {} {} is out of range", what, value);
     return static_cast<Enum>(value);
 }
