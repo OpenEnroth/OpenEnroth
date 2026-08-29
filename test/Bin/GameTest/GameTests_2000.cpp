@@ -1597,10 +1597,11 @@ GAME_TEST(Prs, Pr2615a) {
     auto foodTape = tapes.food();
     auto statusTape = tapes.statusBar();
     game.startNewGame();
-    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(12288 - 535, 2040, 0), 0); // Facing the campfire on the beach.
+    const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
+    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
+    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->uRadius, 52);
+    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(535, 0, 0), 0); // Puts it at pick depth 560.
     test.startTaping();
-    ASSERT_EQ(pDecorationList->GetDecoration(pLevelDecorations[7].uDecorationDescID)->hint, "campfire");
-    ASSERT_EQ(pDecorationList->GetDecoration(pLevelDecorations[7].uDecorationDescID)->uRadius, 52);
     game.pointMouseAtDecoration(7);
     EXPECT_EQ(engine->PickMouseForInteraction().pid, Pid()); // Otherwise the radius allowance isn't what's tested.
     Vis_PIDAndDepth object = engine->PickMouseForTargeting();
@@ -1621,11 +1622,12 @@ GAME_TEST(Prs, Pr2615b) {
     auto statusTape = tapes.statusBar();
     game.startNewGame();
     engine->config->debug.AllMagic.setValue(true);
-    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(12288 - 535, 2040, 0), 0); // Facing the campfire on the beach.
+    const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
+    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
+    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(535, 0, 0), 0); // Puts it at pick depth 560.
     test.startTaping();
     game.castSpell(1, SPELL_EARTH_TELEKINESIS);
     game.tick(2);
-    ASSERT_EQ(pDecorationList->GetDecoration(pLevelDecorations[7].uDecorationDescID)->hint, "campfire");
     game.pointMouseAtDecoration(7);
     Pointi pt = mouse->position();
     game.pressAndReleaseButton(BUTTON_LEFT, pt.x, pt.y);
