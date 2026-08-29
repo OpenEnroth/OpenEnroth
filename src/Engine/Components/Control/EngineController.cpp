@@ -6,7 +6,6 @@
 #include <string>
 #include <memory>
 
-
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -113,20 +112,16 @@ void EngineController::pressButton(PlatformMouseButton button, int x, int y, boo
     pressOrReleaseButton(EVENT_MOUSE_BUTTON_PRESS, button, x, y, isDoubleClick);
 }
 
-void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
-    pressOrReleaseButton(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
-}
-
 void EngineController::pressButton(PlatformMouseButton button, Pointi point, bool isDoubleClick) {
     pressButton(button, point.x, point.y, isDoubleClick);
 }
 
-void EngineController::releaseButton(PlatformMouseButton button, Pointi point) {
-    releaseButton(button, point.x, point.y);
+void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
+    pressOrReleaseButton(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
 }
 
-void EngineController::moveMouse(Pointi point) {
-    moveMouse(point.x, point.y);
+void EngineController::releaseButton(PlatformMouseButton button, Pointi point) {
+    releaseButton(button, point.x, point.y);
 }
 
 void EngineController::moveMouse(int x, int y) {
@@ -138,6 +133,10 @@ void EngineController::moveMouse(int x, int y) {
     event->pos = render->MapToPresent({ x, y });
     event->isDoubleClick = false;
     postEvent(std::move(event));
+}
+
+void EngineController::moveMouse(Pointi point) {
+    moveMouse(point.x, point.y);
 }
 
 void EngineController::pressAndReleaseKey(PlatformKey key) {
@@ -411,6 +410,23 @@ void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
     character.uQuickSpell = oldQuickSpell;
 }
 
+void EngineController::pointMouseAtActor(int actorId) {
+    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
+    // camera is still at the old position. Tick once to let it catch up.
+    tick(1);
+
+    Vec3f center = pActors[actorId].pos + Vec3f(0, 0, pActors[actorId].height / 2);
+    Vec3f viewPos = pCamera3D->ViewTransform(&center);
+    if (viewPos.x <= 0)
+        throw Exception("Actor #{} is behind the camera", actorId);
+    Vec2f screenPos = pCamera3D->Project(viewPos);
+
+    moveMouse(screenPos.x, screenPos.y);
+    tick(1); // The pick reads render billboards, so the new mouse position needs a rendered frame.
+    if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Actor, actorId))
+        throw Exception("Failed to point mouse at actor #{}", actorId);
+}
+
 void EngineController::pointMouseAtDecoration(int decorationId) {
     // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
     // camera is still at the old position. Tick once to let it catch up.
@@ -427,23 +443,6 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
     tick(1); // The pick reads render billboards, so the new mouse position needs a rendered frame.
     if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Decoration, decorationId))
         throw Exception("Failed to point mouse at decoration #{}", decorationId);
-}
-
-void EngineController::pointMouseAtActor(int actorId) {
-    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
-    // camera is still at the old position. Tick once to let it catch up.
-    tick(1);
-
-    Vec3f center = pActors[actorId].pos + Vec3f(0, 0, pActors[actorId].height / 2);
-    Vec3f viewPos = pCamera3D->ViewTransform(&center);
-    if (viewPos.x <= 0)
-        throw Exception("Actor #{} is behind the camera", actorId);
-    Vec2f screenPos = pCamera3D->Project(viewPos);
-
-    moveMouse(screenPos.x, screenPos.y);
-    tick(1); // The pick reads render billboards, so the new mouse position needs a rendered frame.
-    if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Actor, actorId))
-        throw Exception("Failed to point mouse at actor #{}", actorId);
 }
 
 void EngineController::goToGameOrMainMenu() {
