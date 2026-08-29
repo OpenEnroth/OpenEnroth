@@ -1667,7 +1667,7 @@ GAME_TEST(Prs, Pr2615c) {
 }
 
 GAME_TEST(Prs, Pr2615d) {
-    // Telekinesis on a decoration that carries a map event - the campfire in Pr2615b is the interactive kind, this
+    // Telekinesis on a decoration that carries a map event - the campfire in Pr2615c is the interactive kind, this
     // Harmondale fruit tree is the evented kind, and its event hands the player an apple. Fruit trees bear nothing
     // in autumn and winter, and a new game starts on the 1st of January, so the calendar moves to June first.
     game.startNewGame();
