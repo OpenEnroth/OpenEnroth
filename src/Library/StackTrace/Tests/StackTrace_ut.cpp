@@ -123,8 +123,11 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
     return result + 1;
 }
 
+static volatile char *volatile stackTraceOverflowEscape; // Never read. Escaping each pad below keeps the frames apart.
+
 MM_NOINLINE int stackTraceOverflowFunction(int depth) {
     volatile char pad[1024]; // Big frames run out of stack fast.
+    stackTraceOverflowEscape = pad; // Escaped, or the compiler may merge the frames and fold the recursion into a loop.
     pad[0] = static_cast<char>(depth); // Touching both ends, or the compiler is free to shrink the array.
     pad[1023] = static_cast<char>(depth);
     pad[0] = static_cast<char>(pad[0] + stackTraceOverflowFunction(depth + 1)); // Result lands in this frame after the call. Plain `x + recurse()` became an accumulator loop at -O2 and hung.
