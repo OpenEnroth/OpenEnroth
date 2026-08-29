@@ -62,7 +62,7 @@ jobs:
       ${{
         startsWith(matrix.target, 'windows_') && 'windows-2022' ||
         startsWith(matrix.target, 'darwin_')  && 'macos-15'     ||
-        'ubuntu-24.04'
+        'ubuntu-26.04'
       }}
     defaults:
       run:
@@ -80,8 +80,8 @@ jobs:
             windows_x86_64)     platform=windows; architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="";;
             darwin_arm64)       platform=darwin;  architecture=arm64;       ccache_architecture=arm64;     ccache_size=400M;  cmake_args="-DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11";;
             darwin_x86_64)      platform=darwin;  architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="-DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15";;
-            linux_x86)          platform=linux;   architecture=x86;         ccache_architecture=x86;       ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-15 -DCMAKE_CXX_COMPILER=g++-15 -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32";;
-            linux_x86_64)       platform=linux;   architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-15 -DCMAKE_CXX_COMPILER=g++-15";;
+            linux_x86)          platform=linux;   architecture=x86;         ccache_architecture=x86;       ccache_size=400M;  cmake_args="-DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32";;
+            linux_x86_64)       platform=linux;   architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="";;
             android_universal)  platform=android; architecture=universal;   ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
             android_arm64_v8a)  platform=android; architecture=arm64-v8a;   ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
             android_arm32_v7a)  platform=android; architecture=armeabi-v7a; ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
@@ -129,7 +129,6 @@ jobs:
           /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "ndk;$NDK_VERSION"
 
       # We need gcc-multilib for host-side tools (luajit's buildvm) when building for armeabi-v7a. Why? No idea.
-      # buildvm is plain C, so any gcc works - we don't need gcc-15.
       - name: '[android] Install dependencies'
         if: env.MATRIX_PLATFORM == 'android'
         uses: Wandalen/wretry.action@master
@@ -160,13 +159,10 @@ jobs:
               sudo dpkg --add-architecture i386
             fi
             sudo apt-get update
-            # gcc-multilib pulls in libc6-dev-i386 (32-bit C headers/libs), which the gcc-15 build below
-            # needs to compile its 32-bit libgcc and libstdc++ when --enable-multilib is on. gcc itself
-            # doesn't bundle libc.
-            # libgmp/mpfr/mpc/isl + flex + bison are gcc-15 build prerequisites.
-            sudo apt-get install -y gcc-multilib g++-multilib lld libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison
+            sudo apt-get install -y lld
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
-              sudo apt-get install -y libglu1-mesa-dev:i386
+              # gcc-multilib is the 32-bit libgcc and libstdc++ that the -m32 build compiles against.
+              sudo apt-get install -y gcc-multilib g++-multilib libglu1-mesa-dev:i386
               # Luajit generates its interpreter with minilua, which luajit-cmake builds as a separate host
               # tool only when cross-compiling. An -m32 build isn't cross-compiling, so minilua is built
               # 32-bit as well, and the libm it links against has to be 32-bit too.
@@ -175,33 +171,6 @@ jobs:
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86_64" ]; then
               sudo apt-get install -y libglu1-mesa-dev
             fi
-
-      # gcc-15 from source, cached. ubuntu-24.04 ships gcc-13 which is too old for our C++23 usage,
-      # and the only apt source for gcc-15 on noble is ppa:ubuntu-toolchain-r/test - a single-region,
-      # uncached, throttled launchpad service that frequently stalls or fails CI runs. Cache hits
-      # restore in seconds; misses pay ~30 min once per cache-key (gcc version / build script) change.
-      # See scripts/build_gcc_15.sh.
-      - name: '[linux] Set GCC_PREFIX'
-        if: env.MATRIX_PLATFORM == 'linux'
-        run: echo "GCC_PREFIX=$HOME/gcc-15" >> "$GITHUB_ENV"
-
-      - name: '[linux] Restore gcc-15 cache'
-        if: env.MATRIX_PLATFORM == 'linux'
-        id: gcc-cache
-        uses: actions/cache@v4
-        with:
-          path: ${{env.GCC_PREFIX}}
-          key: gcc-15-${{env.ImageOS}}-${{runner.arch}}-${{hashFiles('scripts/build_gcc_15.sh')}}
-
-      - name: '[linux] Build gcc-15'
-        if: env.MATRIX_PLATFORM == 'linux' && steps.gcc-cache.outputs.cache-hit != 'true'
-        run: bash scripts/build_gcc_15.sh "$GCC_PREFIX"
-
-      - name: '[linux] Add gcc-15 to PATH'
-        if: env.MATRIX_PLATFORM == 'linux'
-        run: |
-          echo "$GCC_PREFIX/bin" >> "$GITHUB_PATH"
-          echo "LD_LIBRARY_PATH=$GCC_PREFIX/lib64:$GCC_PREFIX/lib32${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       - name: '[windows] Setup MSVC environment'
         if: env.MATRIX_PLATFORM == 'windows'
