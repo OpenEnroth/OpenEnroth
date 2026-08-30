@@ -323,6 +323,7 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
     if (flags & SPAWN_FRIENDLY) {
         actor->attributes &= ~ACTOR_AGGRESSOR;
         actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
+        actor->hostilityGroup = MONSTER_TYPE_INVALID; // The party's own faction, what summons and resurrects get.
     }
     if (flags & SPAWN_NO_RESISTANCES) {
         actor->monsterInfo.resFire = 0;
