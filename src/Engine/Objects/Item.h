@@ -8,9 +8,10 @@
 #include "Engine/Objects/ItemEnumFunctions.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/MapEnums.h"
-#include "Library/Geometry/Size.h"
 
 #include "Core/Time/Time.h"
+
+#include "Library/Geometry/Size.h"
 
 #include "Utility/IndexedArray.h"
 
