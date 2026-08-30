@@ -462,7 +462,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (!collision_state.bbox.intersects(mface.boundingBox))
                 continue;
 
-            if (mface.Ethereal() || mface.isPortal()) // TODO: this doesn't respect ignore_ethereal parameter
+            if (mface.isPortal())
                 continue;
 
             Pid pid = Pid::odmFace(model.index, mface.faceId);
