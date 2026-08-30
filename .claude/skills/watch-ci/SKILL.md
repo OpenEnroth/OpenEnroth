@@ -23,32 +23,43 @@ shipped a false-verdict bug, and this script exists to guard against the three t
 ## Usage
 
 ```sh
-.claude/skills/watch-ci/watch-ci.sh <sha> [minutes] [min_checks] [repo]
+.claude/skills/watch-ci/watch-ci.sh <sha> [-m minutes] [-c min_checks] [-r repo] [check-name ...]
 ```
 
 The script calls `gh api`, so it needs either a logged-in `gh` or a `GH_TOKEN` in the environment.
 
 - `sha` - the exact commit to watch. Required.
-- `minutes` - polling horizon, default 150. Runs from other PRs compete for the account's job concurrency
+- `-m minutes` - polling horizon, default 150. Runs from other PRs compete for the account's job concurrency
   cap, so the queue can back up for an hour or more before your jobs even start. Don't shorten this
   without a reason.
-- `min_checks` - minimum check runs that must exist before any verdict, default 15. The full matrix on
-  this project is 22.
-- `repo` - default `OpenEnroth/OpenEnroth`.
+- `-c min_checks` - minimum check runs that must exist before an ALL GREEN verdict, default 15. The full
+  matrix on this project is 22. A failure needs no minimum, one failed check is a verdict on its own.
+- `-r repo` - default `OpenEnroth/OpenEnroth`.
+- `check-name ...` - optional. With names given, the script waits until every named check has completed and
+  reports each one's conclusion, whatever the rest of the run is doing. Use it when you need the results of
+  specific jobs - both darwin legs, say - rather than the first verdict.
+
+Without names the script returns on the first failure, or once everything has completed green. It polls
+once a minute and prints a line whenever the completed count changes, so a background task's output shows
+progress.
 
 Run it with `run_in_background`, and pipe nothing into it. Exit code 0 means all green, 1 means failing,
 and 2 means there is no verdict to report. The last line is always one of `RESULT: ALL GREEN`,
-`RESULT: FAILING -> <names>`, `RESULT: CANCELLED -> <names>`, or `RESULT: TIMED_OUT`.
+`RESULT: FAILING -> <names>`, `RESULT: CANCELLED -> <names>`, or `RESULT: TIMED_OUT`. A FAILING line
+carries the failed jobs' URLs on the lines above it, and without names it says how many checks were still
+running - those got no verdict.
 
 ## When it reports FAILING
 
-Get the failing job's log through the check-run id, filtering any tokens out of everything you print:
+The job URL is printed with the verdict - its trailing number is the job id. Get the log through it,
+filtering any tokens out of everything you print:
 
 ```sh
-gh api "repos/<repo>/commits/<sha>/check-runs?per_page=100" \
-    --jq '.check_runs[] | select(.conclusion != "success") | {id, name}'
 gh api "repos/<repo>/actions/jobs/<id>/logs" | grep -E "FAILED|error:" | head -30
 ```
+
+The run may still be going for the other checks. Fix what failed rather than waiting for the rest, a new push
+cancels them anyway.
 
 A failure on one platform only is usually real - this project's tests run on four Windows configs, Linux,
 macOS and Android, and platform-dependent behavior (libc error text, directory `fopen` semantics, 16-bit
