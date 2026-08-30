@@ -346,13 +346,16 @@ UNIT_TEST(Path, LexicalOpsMatchStdFilesystem) {
     };
 
     // Root names and backslash separators exist on Windows only. POSIX says a path starting with exactly two slashes
-    // is implementation-defined, and Path preserves it there instead of reading a root name out of it. The UNC and
-    // extended-length spellings are here to settle where MSVC puts the root - a disagreement shows up as a parent
-    // mismatch, because parent() clamps at the root.
+    // is implementation-defined, and Path preserves it there instead of reading a root name out of it.
+    //
+    // "//server/share/x" is here because it settles where the root of a plain UNC path ends, and the answer came
+    // back agreeing with us: MSVC's root is the server, so "share" is an ordinary component. The extended-length
+    // spellings are deliberately absent - MSVC reads "\\?\" as the whole root name and treats the volume as a
+    // component, so parent_path("//?/C:/x") is "//?/C:" and stem("//?/UNC/server/share") is "share". We anchor at
+    // the volume instead, because Win32 resolves nothing inside such a path and ".." must not climb past it. That
+    // divergence is the design, so the oracle can't arbitrate it - WindowsRoots pins those shapes by hand.
 #ifdef _WINDOWS
-    for (std::string_view windowsPath : {"C:/a", "D:/b", "//server", "//server/share", "a\\b",
-                                         "//server/share/x", "//?/UNC/server/share", "//?/UNC/server/share/x",
-                                         "//?/C:/x"})
+    for (std::string_view windowsPath : {"C:/a", "D:/b", "//server", "//server/share", "a\\b", "//server/share/x"})
         paths.emplace_back(windowsPath);
 #endif
 
