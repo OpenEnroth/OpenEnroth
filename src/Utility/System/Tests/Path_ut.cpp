@@ -223,6 +223,12 @@ UNIT_TEST(Path, DottedNames) {
     EXPECT_EQ(Path("..").extension(), "");
     EXPECT_EQ(Path(".bashrc").extension(), "");
     EXPECT_EQ(Path("..a.txt").extension(), ".txt");
+
+    // Pinned by the suite this file replaced: a single-dot stem, and a trailing-dot name whose extension is ".".
+    EXPECT_EQ(Path("..wat").stem(), ".");
+    EXPECT_EQ(Path("..wat").extension(), ".wat");
+    EXPECT_EQ(Path("x/y/z/some.").stem(), "some");
+    EXPECT_EQ(Path("x/y/z/some.").extension(), ".");
 }
 
 UNIT_TEST(Path, WithExtensionPrecondition) {
@@ -300,7 +306,7 @@ UNIT_TEST(Path, LexicalOpsMatchStdFilesystem) {
     std::vector<std::string> paths = {
         "", ".", "..", "a", "a/", "/a", "a/b", "a/b/", "/", "a.txt", ".bashrc", "a.tar.gz", "a.d/b", "/a/b.c",
         "a/./b", "a//b", "a/b/../c", "../a", "/..", "a/../..",
-        "...", "a/.../b", "a...", "some." // Dotted names, where our old rule used to diverge from std.
+        "...", "a/.../b", "a...", "some.", "..wat" // Dotted names, where our old rule diverged from std.
     };
 
     // Root names and backslash separators exist on Windows only. POSIX says a path starting with exactly two slashes
@@ -345,7 +351,9 @@ UNIT_TEST(Path, LexicalOpsMatchStdFilesystem) {
         for (std::string_view extension : {"", ".x", ".tar.gz"}) { // isExtension rejects "x", and that's asserted.
             std::filesystem::path expected = std::filesystem::path(normal);
             expected.replace_extension(extension);
-            EXPECT_EQ(Path(normal).withExtension(extension).string(), oracle(expected))
+            // Normalized on our side too, since withExtension doesn't normalize and the oracle does - mirroring
+            // std means "..wat" without an extension is ".", which is a path that spells the empty one.
+            EXPECT_EQ(Path(normal).withExtension(extension).normalized().string(), oracle(expected))
                 << "'" << head << "' + '" << extension << "'";
         }
     }

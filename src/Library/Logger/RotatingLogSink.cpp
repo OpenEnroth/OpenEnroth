@@ -12,8 +12,12 @@
 
 RotatingLogSink::RotatingLogSink(std::string_view path, FileSystem *fs, int count): StreamLogSink(openRotatingStream(Path(path), fs, count)) {}
 
-std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &path, FileSystem *fs, int count) {
+std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &rawPath, FileSystem *fs, int count) {
     assert(fs);
+
+    // parent(), stem() and extension() are lexical, so a dotted path would have us list one directory and write into
+    // another - "logs/../logs/oe.log" has a parent of "logs/..". The path comes from a caller, so normalize first.
+    Path path = rawPath.normalized();
 
     // Find existing log files.
     std::vector<DirectoryEntry> entries;
