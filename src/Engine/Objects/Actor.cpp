@@ -3211,7 +3211,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             engine->_statusBar->setEvent(LSTR_S_PARALYZES_S, character->name, pMonster->GetDisplayName());
         }
     }
-    if (hit_will_halve_armor) {
+    if (hit_will_halve_armor && pMonster->CanAct()) {
         // TODO(captainurist): there is no localized status bar string for this, the issue asks for one.
         CombinedSkillValue axeSkill = character->getActualSkillValue(SKILL_AXE);
         pMonster->buffs[ACTOR_BUFF_HALVED_ARMOR].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(axeSkill.level()), axeSkill.mastery(), 0, 0, 0);
