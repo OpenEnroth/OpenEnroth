@@ -1754,7 +1754,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         for (; loop_cnt < 100; ++loop_cnt) {
             // random x,y at distance from party
             dist_from_party = grng->random(1024) + 512;
-            angle_from_party = (grng->random(TrigLUT.uIntegerDoublePi) * 2 * static_cast<float>(M_PI)) / TrigLUT.uIntegerDoublePi;
+            angle_from_party = (grng->random(TrigLUT.uIntegerDoublePi) * 2 * M_PI) / TrigLUT.uIntegerDoublePi;
             enc_spawn_point.position.x = pParty->pos.x + std::cos(angle_from_party) * dist_from_party;
             enc_spawn_point.position.y = pParty->pos.y + std::sin(angle_from_party) * dist_from_party;
             enc_spawn_point.position.z = pParty->pos.z;
@@ -1790,7 +1790,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         for (loop_cnt = 0; loop_cnt < 100; ++loop_cnt) {
             // random x,y at distance from party
             dist_from_party = grng->random(512) + 256;
-            angle_from_party = (grng->random(TrigLUT.uIntegerDoublePi) * 2 * static_cast<float>(M_PI)) / TrigLUT.uIntegerDoublePi;
+            angle_from_party = (grng->random(TrigLUT.uIntegerDoublePi) * 2 * M_PI) / TrigLUT.uIntegerDoublePi;
             enc_spawn_point.position.x = pParty->pos.x + std::cos(angle_from_party) * dist_from_party;
             enc_spawn_point.position.y = pParty->pos.y + std::sin(angle_from_party) * dist_from_party;
             enc_spawn_point.position.z = pParty->pos.z;

@@ -334,9 +334,9 @@ void OutdoorLocation::UpdateSunlightVectors() {
     if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 21) {
         minutes = pParty->uCurrentMinute + 60 * (pParty->uCurrentHour - 5);
 
-        this->vSunlight.x = std::cos((minutes * static_cast<float>(M_PI)) / 960.0);
+        this->vSunlight.x = std::cos((minutes * M_PI) / 960.0);
         this->vSunlight.y = 0;
-        this->vSunlight.z = std::sin((minutes * static_cast<float>(M_PI)) / 960.0);
+        this->vSunlight.z = std::sin((minutes * M_PI) / 960.0);
 
         if (minutes >= 480)
             v8 = 960 - minutes;
