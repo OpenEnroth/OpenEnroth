@@ -10,6 +10,7 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
@@ -150,11 +151,10 @@ void CastSpellInfoHelpers::castSpell() {
         Pid spell_targeted_at = pCastSpell->targetPid;
 
         // First try to pick live actor mouse is pointing at
-        if (!spell_targeted_at &&
-                mouse->uPointingObjectID &&
-                mouse->uPointingObjectID.type() == OBJECT_Actor &&
-                pActors[mouse->uPointingObjectID.id()].CanBeDamaged()) {
-            spell_targeted_at = mouse->uPointingObjectID;
+        if (!spell_targeted_at) {
+            Pid pointed = engine->PickMouseForTargeting().pid;
+            if (pointed.type() == OBJECT_Actor && pActors[pointed.id()].CanBeDamaged())
+                spell_targeted_at = pointed;
         }
 
         // Otherwise pick closest live actor
@@ -1021,7 +1021,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                         Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
@@ -1754,7 +1754,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.spriteId = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         if (supertypeForMonsterId(actor->monsterInfo.id) == MONSTER_SUPERTYPE_UNDEAD) {
                             pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                             pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
@@ -2106,7 +2106,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.spriteId = SPRITE_SPELL_MIND_MASS_FEAR_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         // Change: do not exit loop when first undead monster is found
                         if (supertypeForMonsterId(actor->monsterInfo.id) != MONSTER_SUPERTYPE_UNDEAD) {
                             pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
@@ -2187,11 +2187,10 @@ void CastSpellInfoHelpers::castSpell() {
                         OpenedTelekinesis = true;
                         if (pLevelDecorations[obj_id].uEventID) {
                             eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
-                        }
-                        // TODO(captainurist): investigate, that's a very weird std::to_underlying call.
-                        if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id].containing_item.itemId)].IsInteractive()) {
+                            pLevelDecorations[obj_id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
+                        } else if (pLevelDecorations[obj_id].IsInteractive()) {
                             activeLevelDecoration = &pLevelDecorations[obj_id];
-                            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1);
+                            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
                             activeLevelDecoration = nullptr;
                         }
                     }
@@ -2396,7 +2395,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.spriteId = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     // Spell damage processing was removed because Dispel Magic does not do damage
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                         pSpellSprite.Create(0, 0, 0, 0);
@@ -2486,7 +2485,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.spriteId = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value())) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                         Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
@@ -2844,7 +2843,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_SOULDRINKER:
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(pCamera3D->GetMouseInfoDepth());
+                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(engine->config->gameplay.MassSpellDepth.value());
                     for (Actor *actor : actorsInViewport) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);

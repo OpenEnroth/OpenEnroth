@@ -206,14 +206,14 @@ void DecorationInteraction(unsigned int id, Pid pid) {
     } else {
         if (pLevelDecorations[id].IsInteractive()) {
             activeLevelDecoration = &pLevelDecorations[id];
-            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, Pid(), 1);
+            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
             activeLevelDecoration = nullptr;
         }
     }
 }
 
 void Engine::onGameViewportClick() {
-    int16_t clickable_distance = 512;
+    int clickable_distance = engine->config->gameplay.MouseInteractionDepth.value();
 
     // bug fix - stops you entering shops while dialog still open.
     // was SCREEN_NPC_DIALOGUE
@@ -221,15 +221,14 @@ void Engine::onGameViewportClick() {
         return;
     }
 
-    auto pidAndDepth = engine->PickMouseNormal();
+    auto pidAndDepth = engine->PickMouseForTargeting();
     Pid pid = pidAndDepth.pid;
-    int16_t distance = pidAndDepth.depth;
+    int distance = pidAndDepth.depth;
     bool in_range = distance < clickable_distance;
 
     if (pid.type() == OBJECT_Sprite) {
         int item_id = pid.id();
-        // v21 = (signed int)(uint16_t)v0 >> 3;
-        if (pSpriteObjects[item_id].IsUnpickable() || item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
+        if (pSpriteObjects[item_id].IsUnpickable() || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
             pParty->dropHeldItem();
         } else {
             ItemInteraction(item_id);
