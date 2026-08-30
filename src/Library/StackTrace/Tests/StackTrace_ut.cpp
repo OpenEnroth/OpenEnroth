@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <cstdint>
+#include <csignal>
 #include <cstdlib>
+#include <cstring>
 #include <exception>
 #include <string>
 #include <thread>
@@ -137,7 +139,7 @@ static volatile uintptr_t probeSp0 = 0;
 static int probePrintEvery = 0;
 static int probeSyscallEvery = 0;
 
-static void probeOnAlarm(int) {
+static void probeOnAlarm(int, siginfo_t *, void *) {
     char line[128];
     int n = std::snprintf(line, sizeof(line), "[probe alarm] still recursing or wedged, depth=%d sp0=%#zx sp=%#zx used=%zu\n",
                           probeDepth, static_cast<size_t>(probeSp0), static_cast<size_t>(probeSp), static_cast<size_t>(probeSp0 - probeSp));
@@ -146,8 +148,10 @@ static void probeOnAlarm(int) {
 }
 
 static void probeArm() {
-    struct sigaction action = {};
-    action.sa_handler = &probeOnAlarm;
+    struct sigaction action;
+    std::memset(&action, 0, sizeof(action));
+    action.sa_flags = SA_SIGINFO;
+    action.sa_sigaction = &probeOnAlarm;
     sigaction(SIGALRM, &action, nullptr);
     alarm(20);
 }
