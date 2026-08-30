@@ -2,6 +2,9 @@
 
 #include <span>
 #include <string>
+#include <string_view>
+#include <type_traits>
+#include <utility>
 
 #include "Engine/Evt/EvtEnums.h"
 #include "Engine/Objects/Decoration.h"
@@ -865,6 +868,21 @@ std::string EvtInstruction::toString() const {
     return fmt::format("{}: UNPROCESSED/{}", step, ::toString(opcode));
 }
 
+/**
+ * Casts a wire value into a narrower enum, throwing instead of silently truncating.
+ *
+ * @param value                         Value as read from the wire.
+ * @param what                          What is being read, for the error message.
+ * @return                              `value` cast to `Enum`.
+ * @throws Exception                    If `value` doesn't fit the enum's underlying type.
+ */
+template<class Enum, class Int>
+static Enum narrowToEnum(Int value, std::string_view what) {
+    if (!std::in_range<std::underlying_type_t<Enum>>(value))
+        throw Exception("Evt {} {} is out of range", what, value);
+    return static_cast<Enum>(value);
+}
+
 EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
     // TODO(yoctozepto): zeroing-out the struct to prevent values from previous events from lingering;
     //                   this makes it slightly easier to spot uninitialised members but, since the 0s may have a proper meaning, not always;
@@ -896,7 +914,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             break;
         case EVENT_PlaySound:
             requireSize(17);
-            ir.data.sound_descr.sound_id = static_cast<SoundId>(fromStream<uint32_t>(stream));  // TODO(yoctozepto): this downcasts a DWORD to WORD
+            ir.data.sound_descr.sound_id = narrowToEnum<SoundId>(fromStream<uint32_t>(stream), "sound id");
             ir.data.sound_descr.x = fromStream<uint32_t>(stream);
             ir.data.sound_descr.y = fromStream<uint32_t>(stream);
             break;
@@ -1064,7 +1082,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             break;
         case EVENT_SummonItem:  // TODO(yoctozepto): not present in used MM7 data
             requireSize(27);
-            ir.data.summon_item_descr.sprite = static_cast<SpriteId>(fromStream<uint32_t>(stream));  // TODO(yoctozepto): this downcasts a DWORD to WORD
+            ir.data.summon_item_descr.sprite = narrowToEnum<SpriteId>(fromStream<uint32_t>(stream), "sprite id");
             ir.data.summon_item_descr.x = fromStream<uint32_t>(stream);
             ir.data.summon_item_descr.y = fromStream<uint32_t>(stream);
             ir.data.summon_item_descr.z = fromStream<uint32_t>(stream);
@@ -1184,7 +1202,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
         case EVENT_ToggleChestFlag:
             requireSize(14);
             ir.data.chest_flag_descr.chest_id = fromStream<uint32_t>(stream);
-            ir.data.chest_flag_descr.flag = (ChestFlag)fromStream<uint32_t>(stream);  // TODO(yoctozepto): this downcasts a DWORD to WORD
+            ir.data.chest_flag_descr.flag = narrowToEnum<ChestFlag>(fromStream<uint32_t>(stream), "chest flag");
             ir.data.chest_flag_descr.is_set = fromStream<uint8_t>(stream);
             break;
         case EVENT_CharacterAnimation:
