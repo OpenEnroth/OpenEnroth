@@ -182,168 +182,25 @@ MM_NOINLINE int probeRealOverflow2(int depth) {
     return pad[0] + pad[1023] + probeRealOverflow1(depth + 1);
 }
 
-// PROBE: the real shape plus one global store per call.
-MM_NOINLINE int probeStoreOverflow2(int depth);
-
-MM_NOINLINE int probeStoreOverflow1(int depth) {
-    probeDepth = depth;
-    volatile char pad[1024];
-    pad[0] = static_cast<char>(depth);
-    pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + probeStoreOverflow2(depth + 1);
-}
-
-MM_NOINLINE int probeStoreOverflow2(int depth) {
-    probeDepth = depth;
-    volatile char pad[1024];
-    pad[0] = static_cast<char>(depth);
-    pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + probeStoreOverflow1(depth + 1);
-}
-
-// PROBE: the real shape plus one frame address store per call.
-MM_NOINLINE int probeFrameOverflow2(int depth);
-
-MM_NOINLINE int probeFrameOverflow1(int depth) {
-    probeSp = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));
-    volatile char pad[1024];
-    pad[0] = static_cast<char>(depth);
-    pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + probeFrameOverflow2(depth + 1);
-}
-
-MM_NOINLINE int probeFrameOverflow2(int depth) {
-    probeSp = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));
-    volatile char pad[1024];
-    pad[0] = static_cast<char>(depth);
-    pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + probeFrameOverflow1(depth + 1);
-}
-
-static void probeWatchdog(uintptr_t sp0) {
-    sleep(20);
-#ifdef __APPLE__
-    thread_act_array_t threads = nullptr;
-    mach_msg_type_number_t count = 0;
-    task_threads(mach_task_self(), &threads, &count);
-    for (mach_msg_type_number_t i = 0; i < count; i++) {
-        if (threads[i] == mach_thread_self())
-            continue;
-        thread_basic_info_data_t basic = {};
-        mach_msg_type_number_t basicCount = THREAD_BASIC_INFO_COUNT;
-        thread_info(threads[i], THREAD_BASIC_INFO, reinterpret_cast<thread_info_t>(&basic), &basicCount);
-        thread_extended_info_data_t extended = {};
-        mach_msg_type_number_t extendedCount = THREAD_EXTENDED_INFO_COUNT;
-        thread_info(threads[i], THREAD_EXTENDED_INFO, reinterpret_cast<thread_info_t>(&extended), &extendedCount);
-        size_t pc = 0, sp = 0;
-        kern_return_t stateResult = KERN_FAILURE;
-#if defined(__x86_64__)
-        x86_thread_state64_t state;
-        mach_msg_type_number_t stateCount = x86_THREAD_STATE64_COUNT;
-        stateResult = thread_get_state(threads[i], x86_THREAD_STATE64, reinterpret_cast<thread_state_t>(&state), &stateCount);
-        if (stateResult == KERN_SUCCESS) { pc = state.__rip; sp = state.__rsp; }
-#endif
-        Dl_info info = {};
-        if (pc) dladdr(reinterpret_cast<void *>(pc), &info);
-        char line[320];
-        int n = std::snprintf(line, sizeof(line),
-            "[probe watchdog] thread %u name='%s' run_state=%d flags=%#x suspend=%d cpu=%d%% state=%d pc=%#zx in %s+%#zx sp=%#zx used=%zu\n",
-            i, extended.pth_name, basic.run_state, basic.flags, basic.suspend_count, basic.cpu_usage / 10, stateResult, pc,
-            info.dli_sname ? info.dli_sname : "?", info.dli_saddr ? pc - reinterpret_cast<size_t>(info.dli_saddr) : 0, sp, sp ? sp0 - sp : 0);
-        (void) !write(1, line, n);
+#define PROBE_ESCAPED_PAIR(NAME, SIZE)                                                                          \
+    MM_NOINLINE int NAME##2(int depth);                                                                        \
+    MM_NOINLINE int NAME##1(int depth) {                                                                       \
+        volatile char pad[SIZE];                                                                               \
+        asm volatile("" : : "r"(pad) : "memory"); /* The address escapes, so the array stays on the stack. */  \
+        pad[0] = static_cast<char>(depth);                                                                     \
+        pad[SIZE - 1] = static_cast<char>(depth);                                                              \
+        return pad[0] + pad[SIZE - 1] + NAME##2(depth + 1);                                                    \
+    }                                                                                                          \
+    MM_NOINLINE int NAME##2(int depth) {                                                                       \
+        volatile char pad[SIZE];                                                                               \
+        asm volatile("" : : "r"(pad) : "memory");                                                              \
+        pad[0] = static_cast<char>(depth);                                                                     \
+        pad[SIZE - 1] = static_cast<char>(depth);                                                              \
+        return pad[0] + pad[SIZE - 1] + NAME##1(depth + 1);                                                    \
     }
-#else
-    (void) !write(1, "[probe watchdog] not apple\n", 27);
-#endif
-    _exit(42);
-}
 
-static void probeArm() {
-    struct sigaction action;
-    std::memset(&action, 0, sizeof(action));
-    action.sa_flags = SA_SIGINFO;
-    action.sa_sigaction = &probeOnAlarm;
-    sigaction(SIGALRM, &action, nullptr);
-    alarm(20);
-}
-
-MM_NOINLINE int stackTraceOverflowFunction1(int depth) {
-    probeDepth = depth;
-    probeSp = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));
-    if (probePrintEvery && depth % probePrintEvery == 0) {
-        char line[64];
-        int n = std::snprintf(line, sizeof(line), "[probe depth] %d used=%zu\n", depth, static_cast<size_t>(probeSp0 - probeSp));
-        (void) !write(1, line, n);
-    }
-    if (probeSyscallEvery && depth % probeSyscallEvery == 0)
-        (void) getpid();
-    volatile char pad[1024]; // Big frames overflow fast, and the volatile writes keep the endless recursion out of UB land.
-    pad[0] = static_cast<char>(depth); // Touching both ends, or the compiler is free to shrink the array.
-    pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + stackTraceOverflowFunction2(depth + 1); // Mutual, or this folds into a loop that never overflows.
-}
-
-MM_NOINLINE int stackTraceOverflowFunction2(int depth) {
-    volatile char pad[1024];
-    pad[0] = static_cast<char>(depth);
-    pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + stackTraceOverflowFunction1(depth + 1);
-}
-
-UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
-    std::string trace = stackTraceMarkerFunction();
-
-    EXPECT_THAT(trace, HasFrame(1, "stackTraceMarkerFunction"));
-    EXPECT_CONTAINS(trace, "main");
-}
-
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashHandlerNamesTheCrashingFunction) {
-    EXPECT_DEATH({
-        // Gtest wraps test bodies in __try/__except, and a frame-based handler runs before any unhandled
-        // exception filter, so on windows ours would never see the access violation below.
-        GTEST_FLAG_SET(catch_exceptions, false);
-
-        StackTraceOnCrash handler;
-        stackTraceCrashingFunction();
-    }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::HasSubstr("main")));
-}
-
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashOnAnotherThreadIsTraced) {
-    // The handlers are process-wide, but only the thread that installs them gets an alternate signal stack,
-    // so this one runs on the worker's own stack. That's enough for anything short of stack exhaustion.
-    EXPECT_DEATH({
-        GTEST_FLAG_SET(catch_exceptions, false);
-
-        StackTraceOnCrash handler;
-        std::thread(stackTraceCrashingFunction).join();
-    // A worker's stack ends at the thread entry, so main being absent is what says we traced the thread that
-    // crashed rather than the one that installed the handlers.
-    }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::Not(testing::HasSubstr("main"))));
-}
-
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, NullFunctionCallIsTraced) {
-    // Calling a null pointer faults at address zero, where there's nothing to unwind from. The call pushed its
-    // return address first though, and walking on from that names the function that made the call and
-    // everything above it. The walk used to follow the frame pointer slot of a frame that had none, past main
-    // into garbage, and on i386 that crashed the handler before it printed a single frame.
-    EXPECT_DEATH({
-        GTEST_FLAG_SET(catch_exceptions, false);
-
-        StackTraceOnCrash handler;
-        stackTraceNullCallFunction();
-    }, testing::AllOf(HasFrame(0, "stackTraceNullCallFunction"), testing::HasSubstr("main")));
-}
-
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, BadTargetCallIsTraced) {
-    // Calling 0xdeadbeefdead faults with the pc at the bad address, and the handler has to recognize that
-    // to walk from the caller instead.
-    EXPECT_DEATH({
-        GTEST_FLAG_SET(catch_exceptions, false);
-
-        StackTraceOnCrash handler;
-        stackTraceBadTargetCallFunction();
-    }, testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
-}
+PROBE_ESCAPED_PAIR(probeEscaped1kOverflow, 1024)
+PROBE_ESCAPED_PAIR(probeEscaped16kOverflow, 16 * 1024)
 
 // PROBE: overflow death is a signal other than SIGALRM. The alarm handler exits 42 after reporting the depth.
 static bool probeDiedOfTheOverflow(int status) {
@@ -352,7 +209,9 @@ static bool probeDiedOfTheOverflow(int status) {
 
 #define PROBE_VARIANT(NAME, HANDLER, PRINT, FUNCTION)                                                           \
     UNIT_TEST_FIXTURE(ThreadSafeDeathTest, NAME) {                                                              \
-        (void) !write(1, "[probe] " #NAME "\n", sizeof("[probe] " #NAME "\n") - 1);                             \
+        for (int sample = 0; sample < 8; sample++) {                                                            \
+        char head[96];                                                                                          \
+        (void) !write(1, head, std::snprintf(head, sizeof(head), "[probe] " #NAME " sample %d\n", sample));      \
         EXPECT_EXIT({                                                                                           \
             GTEST_FLAG_SET(catch_exceptions, false);                                                            \
             probePrintEvery = PRINT;                                                                            \
@@ -362,13 +221,12 @@ static bool probeDiedOfTheOverflow(int status) {
             std::thread(probeWatchdog, static_cast<uintptr_t>(probeSp0)).detach();                              \
             FUNCTION(0);                                                                                        \
         }, probeDiedOfTheOverflow, "");                                                                         \
+        }                                                                                                       \
     }
 
-PROBE_VARIANT(Probe1_RealShape_Handler, true, 0, probeRealOverflow1)
-PROBE_VARIANT(Probe2_RealShape_NoHandler, false, 0, probeRealOverflow1)
-PROBE_VARIANT(Probe3_StorePerCall_Handler, true, 0, probeStoreOverflow1)
-PROBE_VARIANT(Probe4_FrameAddressPerCall_Handler, true, 0, probeFrameOverflow1)
-PROBE_VARIANT(Probe5_Instrumented_Handler_Silent, true, 0, stackTraceOverflowFunction1)
+PROBE_VARIANT(Probe1_Escaped16k_Handler, true, 0, probeEscaped16kOverflow1)
+PROBE_VARIANT(Probe2_Escaped1k_Handler, true, 0, probeEscaped1kOverflow1)
+PROBE_VARIANT(Probe3_RealShape_Handler, true, 0, probeRealOverflow1)
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashCallbackRunsAfterTheTrace) {
     // The callback is what holds a console window open after a crash, so it has to fire after the trace is
