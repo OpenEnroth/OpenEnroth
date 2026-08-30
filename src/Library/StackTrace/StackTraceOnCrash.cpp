@@ -21,6 +21,7 @@
 #   include <mutex>
 #elif !defined(__ANDROID__)
 #   include <unistd.h> // NOLINT: not a C++ system header.
+#   include <sys/mman.h> // NOLINT: not a C++ system header.
 #   include <sys/ucontext.h> // NOLINT: not a C++ system header.
 #   ifdef __APPLE__
 #       include <libunwind.h> // NOLINT: not a C++ system header.
@@ -357,6 +358,11 @@ static uintptr_t faultingProgramCounter(const ucontext_t &crashContext) {
  * @param crashContext                  Register state the signal was delivered with.
  * @return                              Frames starting with the call that jumped to the bad address.
  */
+static bool isMapped(uintptr_t address) {
+    uintptr_t page = address & ~static_cast<uintptr_t>(getpagesize() - 1);
+    return msync(reinterpret_cast<void *>(page), 1, MS_ASYNC) == 0; // Fails with ENOMEM on an unmapped page, and touches nothing.
+}
+
 static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &crashContext) {
     std::vector<cpptrace::frame_ptr> frames;
 #if defined(__aarch64__)
@@ -376,6 +382,8 @@ static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &cras
 #endif
     frames.push_back(returnAddress - 1); // Minus one, so it points into the call, not one past it.
     while (fp != 0 && frames.size() < detail::MAX_TRACE_DEPTH) {
+        if (!isMapped(fp) || !isMapped(fp + sizeof(uintptr_t)))
+            break; // Reading it would fault inside the handler.
         const uintptr_t *frame = reinterpret_cast<const uintptr_t *>(fp); // [fp] = caller's fp, [fp + 1] = return.
         if (frame[1] == 0)
             break;
