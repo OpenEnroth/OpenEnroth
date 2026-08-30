@@ -1031,3 +1031,35 @@ GAME_TEST(Issues, Issue1489) {
     EXPECT_EQ(amuletTape.front(), amuletTape.back());
     EXPECT_CONTAINS(amuletTape, ITEM_NULL);
 }
+
+GAME_TEST(Issues, Issue1497) {
+    // Quick-casting Berserk opened the target picker instead of casting at the actor under the cursor. Paralyze
+    // shared the code path and had the same bug.
+    for (auto [spell, buff] : {std::pair(SPELL_MIND_BERSERK, ACTOR_BUFF_BERSERK), std::pair(SPELL_LIGHT_PARALYZE, ACTOR_BUFF_PARALYZED)}) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+        engine->config->debug.NoActors.setValue(true);
+        engine->config->debug.AllMagic.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
+
+        // The resistance roll is random(level / 4 + resist + 30) < 30, so a low-level monster with zeroed
+        // resistances always gets the buff.
+        Actor *goblin = game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY);
+        ASSERT_LT(goblin->monsterInfo.level, 4);
+        goblin->monsterInfo.resMind = 0;
+        goblin->monsterInfo.resLight = 0;
+
+        auto buffTape = actorTapes.hasBuff(0, buff);
+        auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
+        game.pointMouseAtActor(0);
+        game.castQuickSpell(1, spell);
+        game.tick(10);
+        test.stopTaping();
+
+        EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened. Before the fix it opened on every quick-cast.
+        EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the goblin under the cursor.
+    }
+}
