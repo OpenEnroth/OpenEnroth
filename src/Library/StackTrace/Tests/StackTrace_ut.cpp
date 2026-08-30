@@ -4,6 +4,7 @@
 #include <exception>
 #include <string>
 #include <thread>
+#include <unistd.h> // PROBE
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -129,6 +130,11 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
 MM_NOINLINE int stackTraceOverflowFunction2(int depth);
 
 MM_NOINLINE int stackTraceOverflowFunction1(int depth) {
+    if (depth % 1000 == 0) { // PROBE
+        char line[64];
+        int n = std::snprintf(line, sizeof(line), "[probe depth] %d\n", depth);
+        (void) !write(1, line, n);
+    }
     volatile char pad[1024]; // Big frames overflow fast, and the volatile writes keep the endless recursion out of UB land.
     pad[0] = static_cast<char>(depth); // Touching both ends, or the compiler is free to shrink the array.
     pad[1023] = static_cast<char>(depth);
@@ -195,6 +201,33 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, BadTargetCallIsTraced) {
         StackTraceOnCrash handler;
         stackTraceBadTargetCallFunction();
     }, testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
+}
+
+UNIT_TEST_FIXTURE(ThreadSafeDeathTest, ProbeOverflowNoHandler) {
+    (void) !write(1, "[probe] no handler\n", 19);
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+        stackTraceOverflowFunction1(0);
+    }, "");
+}
+
+UNIT_TEST_FIXTURE(ThreadSafeDeathTest, ProbeOverflowNoAltStack) {
+    (void) !write(1, "[probe] handler without altstack\n", 33);
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+        probeNoAltStack = true;
+        StackTraceOnCrash handler;
+        stackTraceOverflowFunction1(0);
+    }, "");
+}
+
+UNIT_TEST_FIXTURE(ThreadSafeDeathTest, ProbeOverflowFull) {
+    (void) !write(1, "[probe] handler with altstack\n", 30);
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+        StackTraceOnCrash handler;
+        stackTraceOverflowFunction1(0);
+    }, "");
 }
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, StackOverflowIsTraced) {

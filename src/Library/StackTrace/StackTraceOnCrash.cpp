@@ -45,6 +45,8 @@ StackTraceOnCrash::StackTraceOnCrash(void (*)()) {}
 // inside a handler re-enters it - and one trace is what's actually useful.
 static std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
 
+bool probeNoAltStack = false; // PROBE
+
 static void (*crashCallback)() = nullptr;
 
 static void runCrashCallback() {
@@ -470,12 +472,13 @@ static void installHandlers() {
     stack.ss_sp = alternateStack;
     stack.ss_size = sizeof(alternateStack);
     stack.ss_flags = 0;
-    sigaltstack(&stack, nullptr);
+    if (!probeNoAltStack)
+        sigaltstack(&stack, nullptr);
 
     for (int signal : handledSignals) {
         struct sigaction action;
         std::memset(&action, 0, sizeof(action));
-        action.sa_flags = SA_SIGINFO | SA_ONSTACK | SA_NODEFER | SA_RESETHAND;
+        action.sa_flags = SA_SIGINFO | (probeNoAltStack ? 0 : SA_ONSTACK) | SA_NODEFER | SA_RESETHAND;
         sigfillset(&action.sa_mask);
         sigdelset(&action.sa_mask, signal);
         sigdelset(&action.sa_mask, SIGALRM); // Or the watchdog alarm sits pending while the handler hangs, and never fires.

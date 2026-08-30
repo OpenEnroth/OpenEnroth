@@ -13,6 +13,8 @@
  * locks, so a crash while another thread holds one of those hangs the process instead of killing it. Crashing
  * inside the allocator does the same.
  */
+extern bool probeNoAltStack; // PROBE
+
 class StackTraceOnCrash {
  public:
     /**
