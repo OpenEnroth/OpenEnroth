@@ -8,6 +8,9 @@
 #include <thread>
 #include <unistd.h> // PROBE
 #include <dlfcn.h> // PROBE
+#ifdef __APPLE__
+#   include <mach/mach.h> // PROBE
+#endif
 #include <sys/ucontext.h> // PROBE
 #include <sys/wait.h> // PROBE
 
@@ -179,6 +182,82 @@ MM_NOINLINE int probeRealOverflow2(int depth) {
     return pad[0] + pad[1023] + probeRealOverflow1(depth + 1);
 }
 
+// PROBE: the real shape plus one global store per call.
+MM_NOINLINE int probeStoreOverflow2(int depth);
+
+MM_NOINLINE int probeStoreOverflow1(int depth) {
+    probeDepth = depth;
+    volatile char pad[1024];
+    pad[0] = static_cast<char>(depth);
+    pad[1023] = static_cast<char>(depth);
+    return pad[0] + pad[1023] + probeStoreOverflow2(depth + 1);
+}
+
+MM_NOINLINE int probeStoreOverflow2(int depth) {
+    probeDepth = depth;
+    volatile char pad[1024];
+    pad[0] = static_cast<char>(depth);
+    pad[1023] = static_cast<char>(depth);
+    return pad[0] + pad[1023] + probeStoreOverflow1(depth + 1);
+}
+
+// PROBE: the real shape plus one frame address store per call.
+MM_NOINLINE int probeFrameOverflow2(int depth);
+
+MM_NOINLINE int probeFrameOverflow1(int depth) {
+    probeSp = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));
+    volatile char pad[1024];
+    pad[0] = static_cast<char>(depth);
+    pad[1023] = static_cast<char>(depth);
+    return pad[0] + pad[1023] + probeFrameOverflow2(depth + 1);
+}
+
+MM_NOINLINE int probeFrameOverflow2(int depth) {
+    probeSp = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));
+    volatile char pad[1024];
+    pad[0] = static_cast<char>(depth);
+    pad[1023] = static_cast<char>(depth);
+    return pad[0] + pad[1023] + probeFrameOverflow1(depth + 1);
+}
+
+static void probeWatchdog(uintptr_t sp0) {
+    sleep(20);
+#ifdef __APPLE__
+    thread_act_array_t threads = nullptr;
+    mach_msg_type_number_t count = 0;
+    task_threads(mach_task_self(), &threads, &count);
+    for (mach_msg_type_number_t i = 0; i < count; i++) {
+        if (threads[i] == mach_thread_self())
+            continue;
+        thread_basic_info_data_t basic = {};
+        mach_msg_type_number_t basicCount = THREAD_BASIC_INFO_COUNT;
+        thread_info(threads[i], THREAD_BASIC_INFO, reinterpret_cast<thread_info_t>(&basic), &basicCount);
+        thread_extended_info_data_t extended = {};
+        mach_msg_type_number_t extendedCount = THREAD_EXTENDED_INFO_COUNT;
+        thread_info(threads[i], THREAD_EXTENDED_INFO, reinterpret_cast<thread_info_t>(&extended), &extendedCount);
+        size_t pc = 0, sp = 0;
+        kern_return_t stateResult = KERN_FAILURE;
+#if defined(__x86_64__)
+        x86_thread_state64_t state;
+        mach_msg_type_number_t stateCount = x86_THREAD_STATE64_COUNT;
+        stateResult = thread_get_state(threads[i], x86_THREAD_STATE64, reinterpret_cast<thread_state_t>(&state), &stateCount);
+        if (stateResult == KERN_SUCCESS) { pc = state.__rip; sp = state.__rsp; }
+#endif
+        Dl_info info = {};
+        if (pc) dladdr(reinterpret_cast<void *>(pc), &info);
+        char line[320];
+        int n = std::snprintf(line, sizeof(line),
+            "[probe watchdog] thread %u name='%s' run_state=%d flags=%#x suspend=%d cpu=%d%% state=%d pc=%#zx in %s+%#zx sp=%#zx used=%zu\n",
+            i, extended.pth_name, basic.run_state, basic.flags, basic.suspend_count, basic.cpu_usage / 10, stateResult, pc,
+            info.dli_sname ? info.dli_sname : "?", info.dli_saddr ? pc - reinterpret_cast<size_t>(info.dli_saddr) : 0, sp, sp ? sp0 - sp : 0);
+        (void) !write(1, line, n);
+    }
+#else
+    (void) !write(1, "[probe watchdog] not apple\n", 27);
+#endif
+    _exit(42);
+}
+
 static void probeArm() {
     struct sigaction action;
     std::memset(&action, 0, sizeof(action));
@@ -280,14 +359,16 @@ static bool probeDiedOfTheOverflow(int status) {
             probeSp0 = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));                                 \
             if (HANDLER) new StackTraceOnCrash();                                                               \
             probeArm();                                                                                         \
+            std::thread(probeWatchdog, static_cast<uintptr_t>(probeSp0)).detach();                              \
             FUNCTION(0);                                                                                        \
         }, probeDiedOfTheOverflow, "");                                                                         \
     }
 
 PROBE_VARIANT(Probe1_RealShape_Handler, true, 0, probeRealOverflow1)
 PROBE_VARIANT(Probe2_RealShape_NoHandler, false, 0, probeRealOverflow1)
-PROBE_VARIANT(Probe3_Instrumented_Handler_Silent, true, 0, stackTraceOverflowFunction1)
-PROBE_VARIANT(Probe4_Instrumented_Handler_Print, true, 1000, stackTraceOverflowFunction1)
+PROBE_VARIANT(Probe3_StorePerCall_Handler, true, 0, probeStoreOverflow1)
+PROBE_VARIANT(Probe4_FrameAddressPerCall_Handler, true, 0, probeFrameOverflow1)
+PROBE_VARIANT(Probe5_Instrumented_Handler_Silent, true, 0, stackTraceOverflowFunction1)
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashCallbackRunsAfterTheTrace) {
     // The callback is what holds a console window open after a crash, so it has to fire after the trace is
