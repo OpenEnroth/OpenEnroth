@@ -10,7 +10,7 @@
 #include "Engine/Pid.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
-#include "Engine/Time/Duration.h"
+#include "Core/Time/Duration.h"
 #include "Engine/MapEnums.h"
 
 #include "GUI/GUIEnums.h"

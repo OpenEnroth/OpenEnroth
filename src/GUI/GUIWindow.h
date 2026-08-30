@@ -12,7 +12,7 @@
 #include "Engine/PartyEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ItemEnums.h"
-#include "Engine/Time/Time.h"
+#include "Core/Time/Time.h"
 
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"

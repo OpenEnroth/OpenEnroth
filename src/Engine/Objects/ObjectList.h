@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Time/Duration.h"
+#include "Core/Time/Duration.h"
 
 #include "Library/Color/Color.h"
 

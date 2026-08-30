@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Engine/Data/PortraitFrameData.h"
-#include "Engine/Time/Duration.h"
+#include "Core/Time/Duration.h"
 
 struct PortraitFrameTable {
     int animationId(PortraitId portrait);

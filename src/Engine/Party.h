@@ -9,8 +9,8 @@
 #include "Engine/Objects/Item.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/Character.h"
-#include "Engine/Time/Time.h"
-#include "Engine/Time/Timer.h"
+#include "Core/Time/Time.h"
+#include "Engine/Timer.h"
 
 #include "Engine/Data/SoundEnums.h"
 

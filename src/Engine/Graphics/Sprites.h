@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Engine/Time/Duration.h"
+#include "Core/Time/Duration.h"
 
 #include "SpriteEnums.h"
 #include "SpriteEnumFunctions.h"

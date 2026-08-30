@@ -13,7 +13,7 @@
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 
 #include "GUI/GUIButton.h"
 

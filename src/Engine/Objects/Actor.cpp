@@ -32,7 +32,7 @@
 #include "Engine/AttackList.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/HostilityTable.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"
 

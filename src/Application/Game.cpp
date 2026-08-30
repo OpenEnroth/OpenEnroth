@@ -45,7 +45,7 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"
 

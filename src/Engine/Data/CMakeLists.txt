@@ -33,5 +33,5 @@ set(ENGINE_DATA_HEADERS
         TileEnums.h)
 
 add_library(engine_data STATIC ${ENGINE_DATA_SOURCES} ${ENGINE_DATA_HEADERS})
-target_link_libraries(engine_data PUBLIC library_serialization utility)
+target_link_libraries(engine_data PUBLIC core_time library_serialization utility)
 target_check_style(engine_data)

@@ -20,7 +20,7 @@
 #include "Engine/Party.h"
 #include "Engine/Data/AwardEnumFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Spells/Spells.h"

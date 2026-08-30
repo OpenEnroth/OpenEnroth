@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "Engine/EngineGlobals.h"
+#include "EngineGlobals.h"
 
 Timer *animTimer = new Timer;
 Timer *gameTimer;

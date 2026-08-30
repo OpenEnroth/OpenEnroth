@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Engine/Data/IconFrameData.h"
-#include "Engine/Time/Duration.h"
+#include "Core/Time/Duration.h"
 
 class GraphicsImage;
 class Blob;

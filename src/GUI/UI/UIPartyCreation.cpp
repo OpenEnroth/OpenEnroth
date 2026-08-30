@@ -15,7 +15,7 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"

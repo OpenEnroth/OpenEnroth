@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "Duration.h"
+#include "Core/Time/Duration.h"
 
 struct Timer_MM7;
 

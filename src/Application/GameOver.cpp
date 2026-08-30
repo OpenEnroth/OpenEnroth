@@ -10,7 +10,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Engine/Time/Time.h"
+#include "Core/Time/Time.h"
 #include "Engine/mm7_data.h"
 
 #include "GUI/GUIFont.h"

@@ -12,7 +12,7 @@
 #include "Engine/MapEnums.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/mm7_data.h"
-#include "Engine/Time/Time.h"
+#include "Core/Time/Time.h"
 
 #include "Utility/Memory/Blob.h"
 

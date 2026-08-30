@@ -25,7 +25,7 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
 #include "Engine/MapEnumFunctions.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/Conditions.h"
 #include "Engine/Objects/ActorEnumFunctions.h"
 #include "Engine/Spells/SpellEnumFunctions.h"

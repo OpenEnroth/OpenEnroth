@@ -7,7 +7,7 @@
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
 #include "Engine/PartyPlacement.h"
-#include "Engine/Time/Time.h"
+#include "Core/Time/Time.h"
 
 #include "Library/Color/Color.h"
 

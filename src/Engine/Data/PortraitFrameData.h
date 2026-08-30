@@ -2,7 +2,7 @@
 
 #include "Engine/Objects/CharacterEnums.h" // TODO(captainurist): Data -> Objects dependency, we don't want that.
 
-#include "Engine/Time/Duration.h"
+#include "Core/Time/Duration.h"
 
 #include "FrameEnums.h"
 

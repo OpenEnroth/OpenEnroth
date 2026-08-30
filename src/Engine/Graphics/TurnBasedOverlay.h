@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "Engine/Time/Duration.h"
+#include "Core/Time/Duration.h"
 #include "Engine/TurnEngine/TurnEngineEnums.h"
 
 class GraphicsImage;

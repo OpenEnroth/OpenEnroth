@@ -18,6 +18,7 @@ set(ENGINE_SOURCES
         PriceCalculator.cpp
         SaveLoad.cpp
         SpellFxRenderer.cpp
+        Timer.cpp
         mm7_data.cpp
         mm7text_ru.cpp
         stru314.cpp
@@ -44,6 +45,7 @@ set(ENGINE_HEADERS
         PriceCalculator.h
         SaveLoad.h
         SpellFxRenderer.h
+        Timer.h
         mm7_data.h
         mm7text_ru.h
         stru314.h
@@ -64,8 +66,8 @@ target_link_libraries(engine
         engine_turn_engine
         engine_events
         engine_random
-        engine_time
         engine_resources
+        core_time
         library_compression
         library_logger
         library_serialization
@@ -97,7 +99,6 @@ add_subdirectory(Resources)
 add_subdirectory(Snapshots)
 add_subdirectory(Spells)
 add_subdirectory(Tables)
-add_subdirectory(Time)
 add_subdirectory(TurnEngine)
 
 if(OE_BUILD_TESTS)
