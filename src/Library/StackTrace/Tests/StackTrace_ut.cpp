@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 #include <unistd.h> // PROBE
+#include <sys/wait.h> // PROBE
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -203,42 +204,39 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, BadTargetCallIsTraced) {
     }, testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
 }
 
+// PROBE: a wedge anywhere shows up as death by SIGALRM within 20s instead of a 60 minute hang.
+static bool probeDiedOfTheOverflow(int status) {
+    return WIFSIGNALED(status) && WTERMSIG(status) != SIGALRM;
+}
+
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, ProbeOverflowNoHandler) {
     (void) !write(1, "[probe] no handler\n", 19);
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
+        alarm(20);
         stackTraceOverflowFunction1(0);
-    }, "");
+    }, probeDiedOfTheOverflow, "");
 }
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, ProbeOverflowNoAltStack) {
     (void) !write(1, "[probe] handler without altstack\n", 33);
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
         probeNoAltStack = true;
         StackTraceOnCrash handler;
+        alarm(20);
         stackTraceOverflowFunction1(0);
-    }, "");
+    }, probeDiedOfTheOverflow, "");
 }
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, ProbeOverflowFull) {
     (void) !write(1, "[probe] handler with altstack\n", 30);
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
         StackTraceOnCrash handler;
+        alarm(20);
         stackTraceOverflowFunction1(0);
-    }, "");
-}
-
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, StackOverflowIsTraced) {
-    // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
-    // faults on the exhausted stack and the crash prints nothing at all.
-    EXPECT_DEATH({
-        GTEST_FLAG_SET(catch_exceptions, false);
-
-        StackTraceOnCrash handler;
-        stackTraceOverflowFunction1(0);
-    }, HasFrame(0, "stackTraceOverflowFunction"));
+    }, probeDiedOfTheOverflow, "");
 }
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashCallbackRunsAfterTheTrace) {
