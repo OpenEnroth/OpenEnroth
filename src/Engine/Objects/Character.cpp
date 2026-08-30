@@ -6268,8 +6268,7 @@ bool Character::characterHitOrMiss(Actor *pActor, int distancemod, int skillmod)
     int naturalArmor = pActor->monsterInfo.ac;  // actor usual armour
     int armorBuff = 0;
 
-    if (pActor->buffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC]
-            .Active())  // gm axe effect??
+    if (pActor->buffs[ACTOR_BUFF_HALVED_ARMOR].Active())
         naturalArmor /= 2;
 
     if (pActor->buffs[ACTOR_BUFF_HOUR_OF_POWER].Active())

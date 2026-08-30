@@ -277,6 +277,10 @@ class GameConfig : public Config {
             "Don't let eradicated characters drink potions. In vanilla a potion dropped on an eradicated "
             "character's portrait is drunk normally."};
 
+        Bool GrandmasterAxeHalvesArmor = {this, "grandmaster_axe_halves_armor", true,
+            "Grandmaster axe hits get a skill level percent chance to halve the target's armor for skill level "
+            "minutes. In vanilla the effect is never applied."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)

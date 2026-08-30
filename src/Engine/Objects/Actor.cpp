@@ -2989,7 +2989,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
 
     pMonster->attributes |= ACTOR_NEARBY | ACTOR_ACTIVE;
     if (pMonster->aiState == Fleeing) pMonster->attributes |= ACTOR_FLEEING;
-    bool hit_will_stun = false, hit_will_paralyze = false;
+    bool hit_will_stun = false, hit_will_paralyze = false, hit_will_halve_armor = false;
     if (!projectileSprite) {
         IsAdditionalDamagePossible = true;
         if (InventoryEntry mainHandItem = character->inventory.functionalEntry(ITEM_SLOT_MAIN_HAND)) {
@@ -3011,6 +3011,13 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
                     if (main_hand_mastery >= MASTERY_GRANDMASTER) {
                         if (grng->random(100) < character->getActualSkillValue(SKILL_MACE).level())
                             hit_will_paralyze = true;
+                    }
+                    break;
+
+                case SKILL_AXE:
+                    if (main_hand_mastery >= MASTERY_GRANDMASTER && engine->config->gameplay.GrandmasterAxeHalvesArmor.value()) {
+                        if (grng->random(100) < character->getActualSkillValue(SKILL_AXE).level())
+                            hit_will_halve_armor = true;
                     }
                     break;
 
@@ -3203,6 +3210,11 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         if (engine->config->settings.ShowHits.value()) {
             engine->_statusBar->setEvent(LSTR_S_PARALYZES_S, character->name, pMonster->GetDisplayName());
         }
+    }
+    if (hit_will_halve_armor) {
+        // TODO(captainurist): there is no localized status bar string for this, the issue asks for one.
+        CombinedSkillValue axeSkill = character->getActualSkillValue(SKILL_AXE);
+        pMonster->buffs[ACTOR_BUFF_HALVED_ARMOR].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(axeSkill.level()), axeSkill.mastery(), 0, 0, 0);
     }
     if (knockbackValue > 10) knockbackValue = 10;
     if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
@@ -3667,7 +3679,7 @@ bool Actor::_4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4) {
     v6 = defender->monsterInfo.ac;
     v7 = 0;
     a2a = 0;
-    if (defender->buffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC].Active())
+    if (defender->buffs[ACTOR_BUFF_HALVED_ARMOR].Active())
         v6 /= 2;
     if (defender->buffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
         v7 = defender->buffs[ACTOR_BUFF_HOUR_OF_POWER].power;
