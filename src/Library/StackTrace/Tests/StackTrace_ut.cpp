@@ -126,10 +126,13 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
     return result + 1;
 }
 
+static volatile char *volatile stackTraceOverflowEscape; // Never read, the pads below are stored here so they exist.
+
 MM_NOINLINE int stackTraceOverflowFunction2(int depth);
 
 MM_NOINLINE int stackTraceOverflowFunction1(int depth) {
     volatile char pad[1024]; // Big frames overflow fast, and the volatile writes keep the endless recursion out of UB land.
+    stackTraceOverflowEscape = pad; // Or -O2 drops the pad, and rosetta freezes the whole process on an overflow of frames that small.
     pad[0] = static_cast<char>(depth); // Touching both ends, or the compiler is free to shrink the array.
     pad[1023] = static_cast<char>(depth);
     return pad[0] + pad[1023] + stackTraceOverflowFunction2(depth + 1); // Mutual, or this folds into a loop that never overflows.
@@ -137,6 +140,7 @@ MM_NOINLINE int stackTraceOverflowFunction1(int depth) {
 
 MM_NOINLINE int stackTraceOverflowFunction2(int depth) {
     volatile char pad[1024];
+    stackTraceOverflowEscape = pad;
     pad[0] = static_cast<char>(depth);
     pad[1023] = static_cast<char>(depth);
     return pad[0] + pad[1023] + stackTraceOverflowFunction1(depth + 1);
@@ -199,7 +203,9 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, BadTargetCallIsTraced) {
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, StackOverflowIsTraced) {
     // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
-    // faults on the exhausted stack and the crash prints nothing at all.
+    // faults on the exhausted stack and the crash prints nothing at all. Under rosetta, where darwin_x86_64
+    // runs in CI, an overflow of frames a few dozen bytes deep froze the process for good - no signal was
+    // delivered, not even to other threads. Frames holding a real 1kb pad were delivered 20 times out of 20.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
