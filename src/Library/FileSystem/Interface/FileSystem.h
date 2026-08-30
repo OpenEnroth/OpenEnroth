@@ -39,7 +39,8 @@
  * throw, `exists` will return `false`, and `stat` will return `FILE_INVALID`.
  *
  * Unlike a real file system, this interface doesn't have a concept of a "current directory." All methods take
- * root-relative paths, so `"foo/bar"` and `"/foo/bar"` are equivalent.
+ * paths relative to the root, and an absolute path is refused rather than reinterpreted - `"/foo/bar"` names a
+ * location of its own, which is not something this file system can reach.
  *
  * Root folder of the file system always exists. Thus, `exists("")` always returns `true`, `stat("")` always returns
  * `FILE_DIRECTORY`, `ls("")` never throws, and `remove("")` always throws.
@@ -122,7 +123,11 @@ class FileSystem {
     bool remove(PathView path);
 
     /**
-     * @param path                      Path inside this file system. The passed path is not required to exist.
+     * Unlike every other method here, this one doesn't refuse an inaccessible path - error reporting formats the
+     * path that was just rejected, so refusing one here would recurse. It still normalizes.
+     *
+     * @param path                      Path inside this file system. The passed path is not required to exist, or
+     *                                  even to be accessible.
      * @return                          A path string that's suitable to be displayed to the user. E.g. an absolute path
      *                                  on the underlying OS file system. Always valid UTF-8, with everything that's
      *                                  not valid UTF-8 replaced with U+FFFD, so it might not map back to a real path.
@@ -140,9 +145,9 @@ class FileSystem {
     // argument already cleared the public boundary, so re-validating it would be wasted work. They have to be
     // static: [class.protected] only lets a derived class reach a protected member through its own type, so
     // `_base->_read(path)` doesn't compile while `readOf(_base, path)` does.
-    // The empty path is the root, which every file system has and no backend implements - the public methods
-    // answer for it before dispatching, so these have to as well. Skipping a check that is not about the path
-    // invariant is the one way these forwarders can differ from the public API, and this is that check.
+    // The empty path is the root, which every file system has and no backend implements - the public methods answer
+    // for it before dispatching, so these two have to as well. The others don't: nothing reaches them with an empty
+    // path, since every caller either prepends a non-empty prefix or has already refused the root.
     static bool existsOf(const FileSystem *fs, PathView path) { return path.isEmpty() || fs->_exists(path); }
     static FileStat statOf(const FileSystem *fs, PathView path) {
         return path.isEmpty() ? FileStat(FILE_DIRECTORY, 0) : fs->_stat(path);

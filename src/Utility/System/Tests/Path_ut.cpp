@@ -105,6 +105,19 @@ UNIT_TEST(Path, WindowsRoots) {
     EXPECT_EQ(Path("//").normalized().string(), "/"); // Only "//" followed by a share name is root syntax here.
     EXPECT_EQ(Path("//server/x").parent(), Path("//server/")); // The share is one value, however it's spelled.
     EXPECT_EQ(Path("//server").normalized().string(), "//server/"); // A root carries its separator.
+
+    // An extended-length prefix is a root, in the same sense a drive is - Win32 parses nothing inside one, so the
+    // volume or device that follows anchors the path and ".." can't climb above it.
+    EXPECT_EQ(Path("//?/C:/Games").root(), "//?/C:/");
+    EXPECT_EQ(Path("//./COM1").root(), "//./COM1");
+    EXPECT_EQ(Path("//?/UNC/server/share/x").root(), "//?/UNC/server/share/");
+    EXPECT_EQ(Path("//?/C:/a/../b").normalized().string(), "//?/C:/b");
+    EXPECT_EQ(Path("//?/C:/..").normalized().string(), "//?/C:/"); // Clamped, like any other root.
+
+    // A root is copied through normalization verbatim, so something needing normalization can't be part of one -
+    // otherwise the dots would reach Win32, which does not resolve them inside an extended-length path.
+    EXPECT_EQ(Path("//?/../x").root(), "/");
+    EXPECT_EQ(Path("//?/../x").normalized().string(), "/x");
 }
 #endif
 
@@ -275,6 +288,29 @@ UNIT_TEST(Path, SplitTails) {
     }
 
     EXPECT_EQ(path.split().tailAfter(std::string_view()).string(), "a/b/c"); // Empty chunk means the whole path.
+}
+
+UNIT_TEST(Path, DegenerateSplit) {
+    // A split with nothing in it has no buffer at all - it marks itself past-the-end by putting its begin pointer
+    // above its end, so asking it for a string view yields one of negative length. tailAfter takes an empty chunk
+    // to mean "all of it", which is the way to reach that view, and it has to notice.
+    for (std::string_view path : {"", "/"}) {
+        PathSplit split = Path(path).split();
+        EXPECT_TRUE(split.empty()) << path;
+        EXPECT_TRUE(split.tailAfter(std::string_view()).isEmpty()) << path;
+        EXPECT_TRUE(split.tailAfter(std::string_view()).string().empty()) << path;
+    }
+
+    // A split that does have chunks answers normally for the same argument.
+    EXPECT_EQ(Path("a/b").split().tailAfter(std::string_view()).string(), "a/b");
+}
+
+UNIT_TEST(Path, IsNormalized) {
+    // isNormalized has to agree with "normalized() would change nothing", or the asserts in the file system layer
+    // are checking something other than what the boundary establishes.
+    for (std::string_view path : {"", ".", "..", "a", "a/", "a//b", "a/./b", "a/b/../c", "../a", "/", "/a", "/..",
+                                  "a/b/", "./a", "a/..", "//", "///a", "..a", "a...", "some."})
+        EXPECT_EQ(Path(path).isNormalized(), Path(path).normalized() == Path(path)) << path;
 }
 
 UNIT_TEST(PathView, FromPath) {

@@ -84,7 +84,7 @@ std::string MergingFileSystem::_displayPath(PathView path) const {
         if (statOf(base, path).type != FILE_INVALID)
             return displayPathOf(base, path);
 
-    return _bases[0]->displayPath(path);
+    return displayPathOf(_bases[0], path);
 }
 
 const FileSystem *MergingFileSystem::locateForReading(PathView path) const {

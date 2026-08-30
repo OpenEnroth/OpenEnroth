@@ -48,8 +48,17 @@ static size_t rootSize(std::string_view path) {
             components = path.compare(4, 4, "UNC/") == 0 ? 4 : 2;
 
         size_t end = 2;
-        for (size_t i = 0; i < components && end < path.size(); i++)
-            end = std::min(path.find(separator, end + 1), path.size());
+        for (size_t i = 0; i < components && end < path.size(); i++) {
+            size_t next = std::min(path.find(separator, end + 1), path.size());
+
+            // A root is copied through normalization verbatim, so anything that needs normalizing can't be part of
+            // one. Without this "//?/../x" would keep its dots all the way to Win32, which doesn't resolve them.
+            std::string_view component = path.substr(end + 1, next - end - 1);
+            if (component.empty() || component == "." || component == "..")
+                return 1;
+
+            end = next;
+        }
 
         return end < path.size() ? end + 1 : end; // A root carries its separator, when it has one to carry.
     }
@@ -126,7 +135,30 @@ Path::Path(std::string_view path) : _path(path) {
 }
 
 bool Path::isNormalizedImpl(std::string_view path) {
-    return ::normalized(path) == path; // Not the cheapest possible check, but this only runs inside an assert.
+    size_t root = rootSize(path);
+    if (root > 0 && path[root - 1] != separator)
+        return false; // A root carries its separator, so a bare share name isn't normal.
+
+    std::string_view tail = path.substr(root);
+    if (tail.empty())
+        return true;
+    if (tail.back() == separator)
+        return false; // No trailing separator.
+
+    bool leading = true;
+    for (std::string_view chunk : ::split(tail).by(separator)) {
+        if (chunk.empty() || chunk == ".")
+            return false;
+
+        if (chunk == "..") {
+            if (root > 0 || !leading)
+                return false; // ".." survives only as the leading run of a relative path.
+        } else {
+            leading = false;
+        }
+    }
+
+    return true;
 }
 
 Path Path::normalized() const {

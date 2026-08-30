@@ -15,18 +15,20 @@ MaskingFileSystem::MaskingFileSystem(FileSystem *base) : ProxyFileSystem(base) {
 MaskingFileSystem::~MaskingFileSystem() = default;
 
 void MaskingFileSystem::mask(std::string_view path) {
-    mask(Path(path));
+    mask(Path(path).normalized());
 }
 
 void MaskingFileSystem::mask(PathView path) {
+    assert(path.isNormalized()); // The tries are walked with normal paths, so a non-normal key could never match.
     _masks.insertOrAssign(path, true);
 }
 
 bool MaskingFileSystem::unmask(std::string_view path) {
-    return unmask(Path(path));
+    return unmask(Path(path).normalized());
 }
 
 bool MaskingFileSystem::unmask(PathView path) {
+    assert(path.isNormalized()); // The tries are walked with normal paths, so a non-normal key could never match.
     FileSystemTrieNode<bool> *node = _masks.find(path);
     if (!node || !node->hasValue() || !node->value())
         return false; // Can only unmask what was previously masked.

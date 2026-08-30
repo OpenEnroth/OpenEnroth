@@ -9,15 +9,16 @@
 class Path;
 
 /**
- * Non-owning view over a `Path`. Carries the same normal-form invariant, which is why it can't be built from an
- * arbitrary string - construct a `Path` for that.
+ * Non-owning view over a `Path`. It can't be built from an arbitrary string, because the bytes have to be owned by
+ * something - construct a `Path` for that.
  */
 class PathView {
  public:
     inline PathView(const Path &path); // NOLINT: intentionally implicit.
 
     /**
-     * @param path                      Path string that's already in normal form, e.g. a slice of another path.
+     * @param path                      Path string owned by something that outlives this view, e.g. a slice of
+     *                                  another path.
      * @return                          View over the given string.
      */
     [[nodiscard]] static PathView fromNormalized(std::string_view path) {
@@ -78,8 +79,8 @@ struct std::hash<PathView> : std::hash<std::string_view> {
 };
 
 [[nodiscard]] inline PathView PathSplit::tailAt(std::same_as<std::string_view> auto chunk) const {
-    if (chunk.empty())
-        return {}; // A default-constructed split has no buffer to point into, so str() is not usable here.
+    if (_isEmpty)
+        return {}; // No buffer to point into, so str() is not usable here.
 
     std::string_view path = str();
     assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
@@ -88,8 +89,8 @@ struct std::hash<PathView> : std::hash<std::string_view> {
 }
 
 [[nodiscard]] inline PathView PathSplit::tailAfter(std::same_as<std::string_view> auto chunk) const {
-    if (chunk.empty() && str().data() == nullptr)
-        return {}; // A default-constructed split has no buffer to point into.
+    if (_isEmpty)
+        return {}; // No buffer to point into, so str() is not usable here.
 
     std::string_view path = str(); // NOLINT: not std::string.
 

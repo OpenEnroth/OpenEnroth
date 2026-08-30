@@ -27,7 +27,14 @@ class PathSplit : public detail::SplitView<detail::CharSplitter> {
  private:
     friend class Path;
     friend class PathView;
-    explicit PathSplit(std::string_view s) : base_type(s.empty() ? base_type() : base_type(s, detail::CharSplitter('/'))) {}
+    explicit PathSplit(std::string_view s)
+        : base_type(s.empty() ? base_type() : base_type(s, detail::CharSplitter('/'))), _isEmpty(s.empty()) {}
+
+ private:
+    // A default-constructed SplitView points at no buffer at all - it marks itself past-the-end by setting _begin
+    // above _end, so str() comes back as a negative-length view. Remembering how we were built is the only way to
+    // tell that apart from a real one.
+    bool _isEmpty = true;
 };
 
 #ifndef __DOXYGEN__ // Doxygen chokes here...

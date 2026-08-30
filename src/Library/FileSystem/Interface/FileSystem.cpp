@@ -16,17 +16,37 @@ static bool isAccessible(PathView path) {
 }
 
 // Every public entry point starts here. The private _ methods take the result and assume it, so this is the one
-// place the invariant is established.
-static Path normalizedFor(PathView path) {
-    return Path(path).normalized();
-}
+// place the invariant is established. Scans first and only allocates when there is something to rewrite, which in
+// practice there never is - callers pass paths that are already normal.
+class NormalizedPath {
+ public:
+    explicit NormalizedPath(PathView path) : _view(path) {
+        if (!path.isNormalized()) {
+            _owned = Path(path).normalized();
+            _view = _owned;
+        }
+    }
+
+    NormalizedPath(const NormalizedPath &) = delete; // _view can point into _owned.
+    NormalizedPath &operator=(const NormalizedPath &) = delete;
+
+    operator PathView() const { return _view; } // NOLINT: intentionally implicit.
+
+    [[nodiscard]] bool isEmpty() const { return _view.isEmpty(); }
+    [[nodiscard]] bool isAbsolute() const { return _view.isAbsolute(); }
+    [[nodiscard]] bool isEscaping() const { return _view.isEscaping(); }
+
+ private:
+    Path _owned;
+    PathView _view;
+};
 
 bool FileSystem::exists(std::string_view path) const {
     return exists(Path(path));
 }
 
 bool FileSystem::exists(PathView path) const {
-    Path normalPath = normalizedFor(path);
+    NormalizedPath normalPath(path);
     if (normalPath.isEmpty())
         return true; // Root always exists.
     if (!isAccessible(normalPath))
@@ -39,7 +59,7 @@ FileStat FileSystem::stat(std::string_view path) const {
 }
 
 FileStat FileSystem::stat(PathView path) const {
-    Path normalPath = normalizedFor(path);
+    NormalizedPath normalPath(path);
     if (normalPath.isEmpty())
         return FileStat(FILE_DIRECTORY, 0);
     if (!isAccessible(normalPath))
@@ -52,7 +72,7 @@ std::vector<DirectoryEntry> FileSystem::ls(std::string_view path) const {
 }
 
 std::vector<DirectoryEntry> FileSystem::ls(PathView path) const {
-    Path normalPath = normalizedFor(path);
+    NormalizedPath normalPath(path);
     if (!isAccessible(normalPath))
         FileSystemException::raise(this, FS_LS_FAILED_PATH_NOT_ACCESSIBLE, path);
     std::vector<DirectoryEntry> result;
@@ -65,7 +85,7 @@ void FileSystem::ls(std::string_view path, std::vector<DirectoryEntry> *entries)
 }
 
 void FileSystem::ls(PathView path, std::vector<DirectoryEntry> *entries) const {
-    Path normalPath = normalizedFor(path);
+    NormalizedPath normalPath(path);
     if (!isAccessible(normalPath))
         FileSystemException::raise(this, FS_LS_FAILED_PATH_NOT_ACCESSIBLE, path);
     entries->clear();
@@ -77,7 +97,7 @@ Blob FileSystem::read(std::string_view path) const {
 }
 
 Blob FileSystem::read(PathView path) const {
-    Path normalPath = normalizedFor(path);
+    NormalizedPath normalPath(path);
     if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
     if (!isAccessible(normalPath))
@@ -90,7 +110,7 @@ void FileSystem::write(std::string_view path, const Blob &data) {
 }
 
 void FileSystem::write(PathView path, const Blob &data) {
-    Path normalPath = normalizedFor(path);
+    NormalizedPath normalPath(path);
     if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
     if (!isAccessible(normalPath))
@@ -103,7 +123,7 @@ std::unique_ptr<InputStream> FileSystem::openForReading(std::string_view path) c
 }
 
 std::unique_ptr<InputStream> FileSystem::openForReading(PathView path) const {
-    Path normalPath = normalizedFor(path);
+    NormalizedPath normalPath(path);
     if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
     if (!isAccessible(normalPath))
@@ -116,7 +136,7 @@ std::unique_ptr<OutputStream> FileSystem::openForWriting(std::string_view path) 
 }
 
 std::unique_ptr<OutputStream> FileSystem::openForWriting(PathView path) {
-    Path normalPath = normalizedFor(path);
+    NormalizedPath normalPath(path);
     if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
     if (!isAccessible(normalPath))
@@ -129,7 +149,7 @@ bool FileSystem::remove(std::string_view path) {
 }
 
 bool FileSystem::remove(PathView path) {
-    Path normalPath = normalizedFor(path);
+    NormalizedPath normalPath(path);
     if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
     if (!isAccessible(normalPath))
@@ -142,5 +162,7 @@ std::string FileSystem::displayPath(std::string_view path) const {
 }
 
 std::string FileSystem::displayPath(PathView path) const {
-    return _displayPath(path);
+    // Normalizes like everything else, because the _ methods assume normal form. It deliberately does not validate
+    // though - raising a FileSystemException formats the offending path through here, so refusing one would recurse.
+    return _displayPath(NormalizedPath(path));
 }

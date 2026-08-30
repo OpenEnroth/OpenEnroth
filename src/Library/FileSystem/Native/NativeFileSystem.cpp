@@ -1,7 +1,6 @@
 #include "NativeFileSystem.h"
 
 #include <cassert>
-#include <algorithm>
 #include <cstddef>
 #include <vector>
 #include <memory>
@@ -106,9 +105,14 @@ Path NativeFileSystem::toNativePath(PathView path) const {
 
 Path NativeFileSystem::basePath(PathView path) const {
     // No validation - the private _ methods are only reachable through the public boundary, which has already done
-    // it, and _displayPath has to work on a path that was just rejected, or raising an error would recurse.
-    if (path.isEmpty())
+    // it, and _displayPath has to work on a path that was just rejected, or raising an error would recurse. What it
+    // does guarantee is that the result is under the root: a rooted tail would otherwise replace it outright, so
+    // the root of the argument is dropped rather than honoured.
+    std::string_view tail = path.string();
+    tail.remove_prefix(path.root().size());
+
+    if (tail.empty())
         return _root; // `_root / ""` would add a trailing separator.
 
-    return _root / Path(path.string());
+    return _root / Path(tail);
 }

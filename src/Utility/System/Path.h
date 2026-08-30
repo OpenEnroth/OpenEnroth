@@ -72,8 +72,10 @@ class Path {
 
     /**
      * @return                          This path as a string in the OS-native encoding - a `wchar_t` string on
-     *                                  Windows. Separators stay forward slashes, Windows APIs accept those. Use this
-     *                                  for talking to the OS.
+     *                                  Windows. Separators stay forward slashes, which Win32 accepts everywhere
+     *                                  except in an extended-length path, where it parses nothing and a forward
+     *                                  slash is an ordinary file name character - those come back with backslashes.
+     *                                  Use this for talking to the OS.
      */
 #ifdef _WINDOWS
     [[nodiscard]] std::wstring native() const;
@@ -91,12 +93,6 @@ class Path {
     [[nodiscard]] std::string displayString() const;
 
     /**
-     * @return                          The root this path is relative to, empty for a relative path. That's `"/"`,
-     *                                  or `"//"` on POSIX, or `"C:/"` / `"//server/"` on Windows. Note that a bare
-     *                                  `"C:"` is not root syntax - it parses as an ordinary relative segment.
-     *                                  The returned view points into this path, so it dies with it.
-     */
-    /**
      * @return                          Copy of this path in lexical normal form - single separators with no trailing
      *                                  one, no `.` segments, and `..` collapsed, surviving only as a leading run of a
      *                                  relative path and clamped above an absolute root so that `"/.."` is `"/"`.
@@ -106,13 +102,19 @@ class Path {
 
     /**
      * @return                          Whether this path is already in lexical normal form, i.e. whether
-     *                                  `normalized` would return it unchanged. Cheaper than normalizing, since it
-     *                                  allocates nothing.
+     *                                  `normalized` would return it unchanged. Allocates nothing, so it's worth
+     *                                  asking before normalizing.
      */
     [[nodiscard]] bool isNormalized() const {
         return isNormalizedImpl(_path);
     }
 
+    /**
+     * @return                          The root this path is relative to, empty for a relative path. That's `"/"`,
+     *                                  or `"//"` on POSIX, or `"C:/"` / `"//server/"` on Windows. Note that a bare
+     *                                  `"C:"` is not root syntax - it parses as an ordinary relative segment.
+     *                                  The returned view points into this path, so it dies with it.
+     */
     [[nodiscard]] std::string_view root() const {
         return rootOf(_path);
     }
@@ -179,8 +181,10 @@ class Path {
      * @param extension                 String to check.
      * @return                          Whether it can be passed to `withExtension` - empty, or a leading dot
      *                                  followed by something that is not a separator, a NUL or a trailing dot.
-     *                                  `isExtension(p.extension())` holds for every path, so
-     *                                  `p.withExtension(p.extension()) == p` is always the identity.
+     *                                  `isExtension(p.extension())` holds for every path whose name a file system
+     *                                  could carry, so `p.withExtension(p.extension()) == p` is the identity for
+     *                                  those. A name containing a NUL is the exception, and neither platform
+     *                                  accepts one of those.
      */
     [[nodiscard]] static bool isExtension(std::string_view extension);
 
@@ -199,8 +203,9 @@ class Path {
 
     /**
      * @param tail                      Path to append.
-     * @return                          The two paths joined with a separator, re-normalized at the seam - so a
-     *                                  leading `..` run in `tail` eats trailing components of the head. A `tail` with
+     * @return                          The two paths joined with a single separator. The seam is not normalized, so
+     *                                  a leading `..` run in `tail` survives rather than eating components of the
+     *                                  head - call `normalized` if you want that. A `tail` with
      *                                  any root replaces this path instead of being appended to it, so that an
      *                                  absolute intent survives the join. That last part is deliberately unlike
      *                                  `std::filesystem::path::operator/`, which keeps the head's root name when the

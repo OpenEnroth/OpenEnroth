@@ -5,14 +5,18 @@
 #include <string>
 #include <vector>
 
+#include "Utility/Exception.h"
+
 SubFileSystem::SubFileSystem(PathView basePath, FileSystem *base)
     : _base(base), _basePath(Path(basePath).normalized()) {
     assert(_base);
 
-    // The base path is prepended to everything this file system is asked for, so an escaping one would escape on
-    // every call. Nothing downstream checks it - the base's public methods used to, but delegation goes through the
-    // forwarders now, which skip validation by design.
-    assert(!_basePath.isAbsolute() && !_basePath.isEscaping());
+    // The base path is prepended to everything this file system is asked for, so an escaping one escapes on every
+    // call. Nothing downstream checks it - the base's public methods used to, but delegation goes through the
+    // forwarders now, which skip validation by design. An assert wouldn't do: this is the only guard left, and it
+    // has to hold in a release build too.
+    if (_basePath.isAbsolute() || _basePath.isEscaping())
+        throw Exception("Base path '{}' is not accessible", _basePath);
 }
 
 SubFileSystem::SubFileSystem(std::string_view basePath, FileSystem *base)

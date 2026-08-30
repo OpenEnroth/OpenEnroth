@@ -16,18 +16,20 @@ MountingFileSystem::MountingFileSystem(std::string_view displayName) : _displayN
 MountingFileSystem::~MountingFileSystem() = default;
 
 void MountingFileSystem::mount(std::string_view path, FileSystem *fileSystem) {
-    mount(Path(path), fileSystem);
+    mount(Path(path).normalized(), fileSystem);
 }
 
 void MountingFileSystem::mount(PathView path, FileSystem *fileSystem) {
+    assert(path.isNormalized()); // The tries are walked with normal paths, so a non-normal key could never match.
     _trie.insertOrAssign(path, fileSystem);
 }
 
 bool MountingFileSystem::unmount(std::string_view path) {
-    return unmount(Path(path));
+    return unmount(Path(path).normalized());
 }
 
 bool MountingFileSystem::unmount(PathView path) {
+    assert(path.isNormalized()); // The tries are walked with normal paths, so a non-normal key could never match.
     Node *node = _trie.find(path);
     if (!node || !node->hasValue())
         return false; // Should be a real mount point, unmount("") is not equivalent to clearMounts().
@@ -75,7 +77,7 @@ void MountingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries
     // Need to merge in this case.
     lsOf(mount, tail, entries);
     std::ranges::sort(*entries);
-    size_t originalSize = entries->size();
+    size_t originalSize = entries->size(); // lsOf appends, so the merge below works on what we added.
     bool cleanupNeeded = false;
     for (const auto &[name, _] : node->children()) {
         auto range = std::ranges::equal_range(

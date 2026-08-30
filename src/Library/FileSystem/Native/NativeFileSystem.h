@@ -40,7 +40,10 @@ class NativeFileSystem : public FileSystem {
      * Maps a path in this file system back into a native path. The passed path is not required to exist.
      *
      * @param path                      Path in this file system.
-     * @return                          Native path for `path`. Always absolute.
+     * @return                          Native path for `path`. Always absolute, and always under the root - this
+     *                                  validates its argument like every other public method here, so it can't be
+     *                                  used to name something outside.
+     * @throws FileSystemException      If `path` is absolute or escaping.
      */
     [[nodiscard]] Path toNativePath(std::string_view path) const;
     [[nodiscard]] Path toNativePath(PathView path) const;

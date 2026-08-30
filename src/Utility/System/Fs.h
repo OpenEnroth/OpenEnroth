@@ -60,6 +60,7 @@ void mkdirs(const Path &path);
 
 /**
  * @return                              Current working directory.
+ * @throws Exception                    If the current directory couldn't be determined.
  */
 [[nodiscard]] Path cwd();
 
