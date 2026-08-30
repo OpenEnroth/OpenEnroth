@@ -182,6 +182,48 @@ MM_NOINLINE int probeRealOverflow2(int depth) {
     return pad[0] + pad[1023] + probeRealOverflow1(depth + 1);
 }
 
+static void probeWatchdog(uintptr_t sp0) {
+    sleep(20);
+#ifdef __APPLE__
+    thread_act_array_t threads = nullptr;
+    mach_msg_type_number_t count = 0;
+    task_threads(mach_task_self(), &threads, &count);
+    for (mach_msg_type_number_t i = 0; i < count; i++) {
+        if (threads[i] == mach_thread_self())
+            continue;
+        thread_basic_info_data_t basic = {};
+        mach_msg_type_number_t basicCount = THREAD_BASIC_INFO_COUNT;
+        thread_info(threads[i], THREAD_BASIC_INFO, reinterpret_cast<thread_info_t>(&basic), &basicCount);
+        size_t pc = 0, sp = 0;
+        kern_return_t stateResult = KERN_FAILURE;
+#if defined(__x86_64__)
+        x86_thread_state64_t state;
+        mach_msg_type_number_t stateCount = x86_THREAD_STATE64_COUNT;
+        stateResult = thread_get_state(threads[i], x86_THREAD_STATE64, reinterpret_cast<thread_state_t>(&state), &stateCount);
+        if (stateResult == KERN_SUCCESS) { pc = state.__rip; sp = state.__rsp; }
+#endif
+        Dl_info info = {};
+        if (pc) dladdr(reinterpret_cast<void *>(pc), &info);
+        char line[320];
+        int n = std::snprintf(line, sizeof(line), "[probe watchdog] thread %u run_state=%d suspend=%d state=%d pc=%#zx in %s sp=%#zx used=%zu\n",
+                              i, basic.run_state, basic.suspend_count, stateResult, pc, info.dli_sname ? info.dli_sname : "?", sp, sp ? sp0 - sp : 0);
+        (void) !write(1, line, n);
+    }
+#else
+    (void) !write(1, "[probe watchdog] not apple\n", 27);
+#endif
+    _exit(42);
+}
+
+static void probeArm() {
+    struct sigaction action;
+    std::memset(&action, 0, sizeof(action));
+    action.sa_flags = SA_SIGINFO;
+    action.sa_sigaction = &probeOnAlarm;
+    sigaction(SIGALRM, &action, nullptr);
+    alarm(20);
+}
+
 #define PROBE_ESCAPED_PAIR(NAME, SIZE)                                                                          \
     MM_NOINLINE int NAME##2(int depth);                                                                        \
     MM_NOINLINE int NAME##1(int depth) {                                                                       \
