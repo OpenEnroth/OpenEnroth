@@ -36,6 +36,53 @@
 
 // 1500
 
+GAME_TEST(Issues, Issue1502) {
+    // HP and SP left above the maximum by an expired buff were snapped down to the maximum by the next regeneration
+    // tick, while damage taken from the same overflow worked normally.
+    for (bool keepOverflow : {true, false}) {
+        SCOPED_TRACE(fmt::format("keepOverflow={}", keepOverflow));
+        test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame, a few game minutes.
+        engine->config->gameplay.RegenKeepsOverflow.setValue(keepOverflow);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+
+        // The last two characters of the default party are the casters, they have mana to overflow. Both regenerate
+        // HP through the buff and SP through the ring. #2 sits above max like after Day of the Gods expired, #3 sits
+        // below max and proves that regen ticks actually happened.
+        Character &overflowing = pParty->pCharacters[2];
+        Character &wounded = pParty->pCharacters[3];
+        for (Character *character : {&overflowing, &wounded}) {
+            ASSERT_GT(character->GetMaxMana(), 0);
+            character->pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_EXPERT, 1, 0, 0);
+            Item ring(ITEM_BRASS_RING);
+            ring.specialEnchantment = ITEM_ENCHANTMENT_OF_MANA;
+            character->inventory.equip(ITEM_SLOT_RING1, ring);
+        }
+        int maxHp = overflowing.GetMaxHealth();
+        int maxMp = overflowing.GetMaxMana();
+        overflowing.health = maxHp + 20;
+        overflowing.mana = maxMp + 20;
+        wounded.health = 1;
+        wounded.mana = 0;
+
+        auto timeTape = tapes.time();
+        test.startTaping();
+        game.tick(10);
+        test.stopTaping();
+
+        EXPECT_GE(timeTape.delta(), Duration::fromMinutes(5)); // At least one regen tick fits in the window...
+        EXPECT_GT(wounded.health, 1); // ...and it happened.
+        EXPECT_GT(wounded.mana, 0);
+        if (keepOverflow) {
+            EXPECT_EQ(overflowing.health, maxHp + 20); // Overflow left alone.
+            EXPECT_EQ(overflowing.mana, maxMp + 20);
+        } else {
+            EXPECT_EQ(overflowing.health, maxHp); // Vanilla snap.
+            EXPECT_EQ(overflowing.mana, maxMp);
+        }
+    }
+}
+
 GAME_TEST(Issues, Issue1503) {
     // Can start new game without 4 skills selected
     test.playTraceFromTestData("issue_1503.mm7", "issue_1503.json");

@@ -277,6 +277,10 @@ class GameConfig : public Config {
             "Don't let eradicated characters drink potions. In vanilla a potion dropped on an eradicated "
             "character's portrait is drunk normally."};
 
+        Bool RegenKeepsOverflow = {this, "regen_keeps_overflow", true,
+            "Regeneration leaves HP and SP alone when a buff left them above the maximum, it just stops adding. "
+            "In vanilla the next regeneration tick snaps the value down to the maximum."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
