@@ -60,6 +60,9 @@ UNIT_TEST_FIXTURE(ConfigTest, SavedValuesAreLoadedBack) {
     TestConfig saved;
     saved.test.value.setValue(-13);
     saved.test.flag.setValue(true);
+    // Interior '=' and spaces round-trip because the parser splits at the first '=' and only trims the padding.
+    // A value containing ';' would be truncated by comment stripping on load, and leading or trailing spaces are
+    // trimmed away, so string values are not round-trip safe in general.
     saved.test.name.setValue("with spaces and = sign");
 
     Blob blob;
