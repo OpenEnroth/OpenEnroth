@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <memory>
 #include <optional>
-#include <numbers>
+#include <cmath>
 
 #include "Engine/Engine.h"
 
@@ -134,8 +134,8 @@ void Engine::drawWorld() {
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
     pCamera3D->_viewYaw = pParty->_viewYaw;
-    pCamera3D->vCameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * std::numbers::pi * pParty->_viewYaw / 2048.0);
-    pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * std::numbers::pi * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * M_PI * pParty->_viewYaw / 2048.0);
     pCamera3D->vCameraPos.z = pParty->pos.z + pParty->eyeLevel;  // 193, but real 353
 
     pCamera3D->CalculateRotations(pParty->_viewYaw, pParty->_viewPitch);
@@ -351,7 +351,7 @@ static void drawDebugCylinder(Vec3f center_lo, float radius, float height, Color
     static constexpr int SEGMENTS = 12;
     RenderVertexSoft prev_lo, prev_hi, cur_lo, cur_hi;
     for (int i = 0; i <= SEGMENTS; ++i) {
-        float angle = 2.0f * std::numbers::pi * i / SEGMENTS;
+        float angle = 2.0f * M_PI * i / SEGMENTS;
         float dx = radius * std::cos(angle);
         float dy = radius * std::sin(angle);
         cur_lo.vWorldPosition = Vec3f(center_lo.x + dx, center_lo.y + dy, center_lo.z);
