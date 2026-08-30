@@ -374,14 +374,18 @@ static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &cras
     uintptr_t returnAddress = crashContext.uc_mcontext.arm_lr;
     uintptr_t fp = crashContext.uc_mcontext.arm_fp;
 #endif
+    std::fprintf(stderr, "[probe walk] return=%#zx fp=%#zx\n", static_cast<size_t>(returnAddress), static_cast<size_t>(fp));
     frames.push_back(returnAddress - 1); // Minus one, so it points into the call, not one past it.
     while (fp != 0 && frames.size() < detail::MAX_TRACE_DEPTH) {
         const uintptr_t *frame = reinterpret_cast<const uintptr_t *>(fp); // [fp] = caller's fp, [fp + 1] = return.
+        std::fprintf(stderr, "[probe walk] deref fp=%#zx\n", static_cast<size_t>(fp));
         if (frame[1] == 0)
             break;
+        std::fprintf(stderr, "[probe walk]   -> return=%#zx next fp=%#zx\n", static_cast<size_t>(frame[1]), static_cast<size_t>(frame[0]));
         frames.push_back(frame[1] - 1);
         fp = frame[0];
     }
+    std::fprintf(stderr, "[probe walk] done, %zu frames, resolving\n", frames.size());
     return frames;
 }
 
@@ -400,6 +404,8 @@ static std::string traceFromContext(const ucontext_t &crashContext) {
     cpptrace::raw_trace raw;
 
     dwarf_eh_bases bases;
+    std::fprintf(stderr, "[probe trace] pc=%#zx fde=%p\n", static_cast<size_t>(faultingProgramCounter(crashContext)),
+                 _Unwind_Find_FDE(reinterpret_cast<const void *>(faultingProgramCounter(crashContext)), &bases));
     if (!_Unwind_Find_FDE(reinterpret_cast<const void *>(faultingProgramCounter(crashContext)), &bases)) {
         raw.frames = walkFramePointers(crashContext);
         return raw.resolve().to_string();
