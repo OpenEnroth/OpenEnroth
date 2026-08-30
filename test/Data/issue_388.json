@@ -83,7 +83,7 @@
                     "intelligence": 15,
                     "luck": 23,
                     "might": 35,
-                    "mp": 0,
+                    "mp": 25,
                     "personality": 28,
                     "speed": 17
                 },
@@ -377,7 +377,7 @@
                     "intelligence": 15,
                     "luck": 23,
                     "might": 35,
-                    "mp": 0,
+                    "mp": 25,
                     "personality": 28,
                     "speed": 17
                 },
