@@ -3,6 +3,7 @@
 #include <array>
 
 #include "Engine/Graphics/RenderEntities.h"
+
 #include "Core/Time/Duration.h"
 
 #include "Library/Color/Color.h"

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "CharacterEnums.h"
 #include "Core/Time/Duration.h"
+
+#include "CharacterEnums.h"
 
 class TalkAnimation {
  public:

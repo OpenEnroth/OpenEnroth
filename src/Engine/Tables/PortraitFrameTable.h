@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Engine/Data/PortraitFrameData.h"
+
 #include "Core/Time/Duration.h"
 
 struct PortraitFrameTable {

@@ -8,8 +8,9 @@
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
-#include "Core/Time/Duration.h"
 #include "Engine/MapEnums.h"
+
+#include "Core/Time/Duration.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/Flags.h"

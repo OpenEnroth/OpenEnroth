@@ -9,12 +9,13 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
-#include "Core/Time/Time.h"
 #include "Engine/MapEnums.h"
 #include "Engine/PartyEnums.h"
 #include "Engine/Data/SoundEnums.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
+
+#include "Core/Time/Time.h"
 
 #include "Library/Config/ConfigEntry.h"
 

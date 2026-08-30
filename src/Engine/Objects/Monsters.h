@@ -11,9 +11,10 @@
 
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
-#include "Core/Time/Duration.h"
 
 #include "Engine/Data/SoundEnums.h"
+
+#include "Core/Time/Duration.h"
 
 #include "Utility/Segment.h"
 

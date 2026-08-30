@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "Engine/Spells/SpellEnums.h"
+
 #include "Core/Time/Duration.h"
 
 #include "Library/Color/ColorTable.h"

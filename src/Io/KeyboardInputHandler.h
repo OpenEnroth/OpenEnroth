@@ -6,6 +6,7 @@
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Io/KeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
+
 #include "Core/Time/Duration.h"
 
 class GUIWindow;

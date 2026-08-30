@@ -10,7 +10,6 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Core/Time/Time.h"
 #include "Engine/mm7_data.h"
 
 #include "GUI/GUIFont.h"
@@ -18,6 +17,8 @@
 #include "GUI/UI/UIHouses.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Core/Time/Time.h"
 
 #include "Library/Image/Pcx.h"
 

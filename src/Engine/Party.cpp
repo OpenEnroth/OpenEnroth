@@ -21,7 +21,6 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PortraitFrameTable.h"
-#include "Core/Time/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/OurMath.h"
 #include "Engine/AssetsManager.h"
@@ -35,6 +34,8 @@
 #include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Core/Time/Time.h"
 
 #include "Library/Logger/Logger.h"
 

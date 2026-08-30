@@ -9,8 +9,9 @@
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/NPCTable.h"
-#include "Core/Time/Time.h"
 #include "Engine/Timer.h"
+
+#include "Core/Time/Time.h"
 
 #include "Utility/Memory/Blob.h"
 
