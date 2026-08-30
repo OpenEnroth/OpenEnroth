@@ -130,12 +130,40 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
 
 MM_NOINLINE int stackTraceOverflowFunction2(int depth);
 
+// PROBE: per-variant knobs and the state the alarm handler reports.
+static volatile int probeDepth = 0;
+static volatile uintptr_t probeSp = 0;
+static volatile uintptr_t probeSp0 = 0;
+static int probePrintEvery = 0;
+static int probeSyscallEvery = 0;
+
+static void probeOnAlarm(int) {
+    char line[128];
+    int n = std::snprintf(line, sizeof(line), "[probe alarm] still recursing or wedged, depth=%d sp0=%#zx sp=%#zx used=%zu\n",
+                          probeDepth, static_cast<size_t>(probeSp0), static_cast<size_t>(probeSp), static_cast<size_t>(probeSp0 - probeSp));
+    (void) !write(1, line, n);
+    _exit(42);
+}
+
+static void probeArm() {
+    struct sigaction action = {};
+    action.sa_handler = &probeOnAlarm;
+    sigaction(SIGALRM, &action, nullptr);
+    alarm(20);
+}
+
 MM_NOINLINE int stackTraceOverflowFunction1(int depth) {
-    if (depth % 1000 == 0) { // PROBE
+    probeDepth = depth;
+    probeSp = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));
+    if (depth == 0)
+        probeSp0 = probeSp;
+    if (probePrintEvery && depth % probePrintEvery == 0) {
         char line[64];
         int n = std::snprintf(line, sizeof(line), "[probe depth] %d\n", depth);
         (void) !write(1, line, n);
     }
+    if (probeSyscallEvery && depth % probeSyscallEvery == 0)
+        (void) getpid();
     volatile char pad[1024]; // Big frames overflow fast, and the volatile writes keep the endless recursion out of UB land.
     pad[0] = static_cast<char>(depth); // Touching both ends, or the compiler is free to shrink the array.
     pad[1023] = static_cast<char>(depth);
@@ -204,40 +232,29 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, BadTargetCallIsTraced) {
     }, testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
 }
 
-// PROBE: a wedge anywhere shows up as death by SIGALRM within 20s instead of a 60 minute hang.
+// PROBE: overflow death is a signal other than SIGALRM. The alarm handler exits 42 after reporting the depth.
 static bool probeDiedOfTheOverflow(int status) {
     return WIFSIGNALED(status) && WTERMSIG(status) != SIGALRM;
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, ProbeOverflowNoHandler) {
-    (void) !write(1, "[probe] no handler\n", 19);
-    EXPECT_EXIT({
-        GTEST_FLAG_SET(catch_exceptions, false);
-        alarm(20);
-        stackTraceOverflowFunction1(0);
-    }, probeDiedOfTheOverflow, "");
-}
+#define PROBE_VARIANT(NAME, HANDLER, PRINT, SYSCALL)                                                            \
+    UNIT_TEST_FIXTURE(ThreadSafeDeathTest, NAME) {                                                              \
+        (void) !write(1, "[probe] " #NAME "\n", sizeof("[probe] " #NAME "\n") - 1);                             \
+        EXPECT_EXIT({                                                                                           \
+            GTEST_FLAG_SET(catch_exceptions, false);                                                            \
+            probePrintEvery = PRINT;                                                                            \
+            probeSyscallEvery = SYSCALL;                                                                        \
+            if (HANDLER) new StackTraceOnCrash();                                                               \
+            probeArm();                                                                                         \
+            stackTraceOverflowFunction1(0);                                                                     \
+        }, probeDiedOfTheOverflow, "");                                                                         \
+    }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, ProbeOverflowNoAltStack) {
-    (void) !write(1, "[probe] handler without altstack\n", 33);
-    EXPECT_EXIT({
-        GTEST_FLAG_SET(catch_exceptions, false);
-        probeNoAltStack = true;
-        StackTraceOnCrash handler;
-        alarm(20);
-        stackTraceOverflowFunction1(0);
-    }, probeDiedOfTheOverflow, "");
-}
-
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, ProbeOverflowFull) {
-    (void) !write(1, "[probe] handler with altstack\n", 30);
-    EXPECT_EXIT({
-        GTEST_FLAG_SET(catch_exceptions, false);
-        StackTraceOnCrash handler;
-        alarm(20);
-        stackTraceOverflowFunction1(0);
-    }, probeDiedOfTheOverflow, "");
-}
+PROBE_VARIANT(Probe1_NoHandler_Silent, false, 0, 0)
+PROBE_VARIANT(Probe2_Handler_Silent, true, 0, 0)
+PROBE_VARIANT(Probe3_Handler_PrintEvery1000, true, 1000, 0)
+PROBE_VARIANT(Probe4_Handler_GetpidEvery1000, true, 0, 1000)
+PROBE_VARIANT(Probe5_NoHandler_PrintEvery1000, false, 1000, 0)
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashCallbackRunsAfterTheTrace) {
     // The callback is what holds a console window open after a crash, so it has to fire after the trace is
