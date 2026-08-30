@@ -32,9 +32,9 @@ constexpr bool isMac = false;
 #endif
 
 /**
- * Death tests in this suite re-exec the binary instead of forking it. Gtest counts a second thread in this
- * process on mac and warns that a forked child inherits whatever locks that thread held at that instant,
- * which is a deadlock waiting to happen in a handler that allocates. A re-exec'd child starts clean.
+ * Death tests in this suite re-exec the binary instead of forking it. The darwin_x86_64 leg runs under
+ * Rosetta on the arm64 runners, where gtest counts a second thread in the process and warns that a forked
+ * child inherits whatever locks that thread held at that instant. A re-exec'd child starts clean.
  */
 class ThreadSafeDeathTest : public testing::Test {
  protected:
