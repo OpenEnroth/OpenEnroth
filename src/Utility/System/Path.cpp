@@ -42,26 +42,32 @@ static size_t rootSize(std::string_view path) {
     if (slashes == 2 && path.size() > 2) {
         // An extended-length path, "//?/C:/x" or "//./COM1". Win32 does no parsing on these - that's the point of
         // the prefix - so the volume or device that follows it anchors the path the same way a drive letter does,
-        // and "\\?\UNC\server\share" spells a share with two components instead of one.
+        // and "//?/UNC/server/share" spells a share with two components instead of one.
+        bool isExtended = path.compare(2, 2, "?/") == 0 || path.compare(2, 2, "./") == 0;
         size_t components = 1;
-        if (path.compare(2, 2, "?/") == 0 || path.compare(2, 2, "./") == 0)
+        if (isExtended)
             components = path.compare(4, 4, "UNC/") == 0 ? 4 : 2;
 
-        size_t end = 2;
-        for (size_t i = 0; i < components && end < path.size(); i++) {
-            size_t next = std::min(path.find(separator, end + 1), path.size());
+        size_t pos = 2; // The first character after the leading "//".
+        for (size_t i = 0; i < components; i++) {
+            size_t next = std::min(path.find(separator, pos), path.size());
+            std::string_view component = path.substr(pos, next - pos);
 
-            // A root is copied through normalization verbatim, so anything that needs normalizing can't be part of
-            // one. Without this "//?/../x" would keep its dots all the way to Win32, which doesn't resolve them.
-            std::string_view component = path.substr(end + 1, next - end - 1);
-            if (component.empty() || component == "." || component == "..")
+            // A root is copied through normalization verbatim, so nothing that needs normalizing can be part of
+            // one - otherwise "//?/../x" would keep its dots all the way to Win32, which doesn't resolve them. The
+            // "?" or "." that opens an extended-length path is exempt, being the prefix rather than a component.
+            if (component.empty() || (i > 0 && (component == "." || component == "..")))
                 return 1;
 
-            end = next;
+            if (next >= path.size())
+                return path.size(); // The root is the whole path, with no separator to carry.
+
+            pos = next + 1;
         }
 
-        return end < path.size() ? end + 1 : end; // A root carries its separator, when it has one to carry.
+        return pos; // Just past the separator, which the root carries.
     }
+
 #else
     if (slashes == 2)
         return 2;
