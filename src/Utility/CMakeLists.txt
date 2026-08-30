@@ -60,7 +60,7 @@ set(UTILITY_HEADERS
         String/Wrap.h)
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
-target_check_style(utility)
+target_check_cpp_style(utility)
 target_link_libraries(utility
         PUBLIC
         fmt::fmt
@@ -101,7 +101,7 @@ if(OE_BUILD_TESTS)
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)
 
-    target_check_style(test_utility)
+    target_check_cpp_style(test_utility)
 
     target_link_libraries(OpenEnroth_UnitTest PUBLIC test_utility)
 endif()

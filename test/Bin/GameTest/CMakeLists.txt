@@ -16,7 +16,7 @@ set(GAME_TEST_MAIN_HEADERS
 add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
 target_link_libraries(OpenEnroth_GameTest PUBLIC application testing_game library_cli library_platform_main library_stack_trace)
 
-target_check_style(OpenEnroth_GameTest)
+target_check_cpp_style(OpenEnroth_GameTest)
 
 add_custom_target(Run_GameTest
         OpenEnroth_GameTest --test-path ${OE_TESTDATA_PATH}

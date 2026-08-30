@@ -25,7 +25,7 @@ set(LIBRARY_LOGGER_HEADERS
 
 add_library(library_logger STATIC ${LIBRARY_LOGGER_SOURCES} ${LIBRARY_LOGGER_HEADERS})
 target_link_libraries(library_logger PUBLIC library_serialization library_filesystem_interface utility PRIVATE spdlog::spdlog)
-target_check_style(library_logger)
+target_check_cpp_style(library_logger)
 
 if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_LOGGER_SOURCES
@@ -35,7 +35,7 @@ if(OE_BUILD_TESTS)
     add_library(test_library_logger OBJECT ${TEST_LIBRARY_LOGGER_SOURCES})
     target_link_libraries(test_library_logger PUBLIC testing_unit library_logger)
 
-    target_check_style(test_library_logger)
+    target_check_cpp_style(test_library_logger)
 
     target_link_libraries(OpenEnroth_UnitTest PUBLIC test_library_logger)
 endif()

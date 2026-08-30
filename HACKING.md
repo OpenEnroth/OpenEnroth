@@ -67,7 +67,9 @@ __Be aware__ that Visual Studio has a bug with git submodules not syncing betwee
 
 For the C++ code we are following the [Google C++ Style Guide](http://google.github.io/styleguide/cppguide.html). Source code is automatically checked against it and pull request will fail if you don't follow it.
 
-To perform a style check before pushing anything you can build `check_style` target. In Visual Studio you can do that by going to ***Solution Explorer → Change Views → CMake targets***. Right click and build `check_style`, errors will be listed in output.
+To perform a style check before pushing anything you can build `check_style` target, and `check_tidy` for the clang-tidy checks below. In Visual Studio you can do that by going to ***Solution Explorer → Change Views → CMake targets***. Right click and build `check_style`, errors will be listed in output.
+
+CI also runs `clang-tidy` with the checks listed in `.clang-tidy`, and any finding fails the build. To run it locally, install clang-tidy (e.g. `pip install clang-tidy`) before configuring, then build the `check_tidy` target.
 
 We also follow some additional style preferences, as listed below.
 

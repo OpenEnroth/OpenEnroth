@@ -64,7 +64,7 @@ set(ENGINE_GRAPHICS_HEADERS
         OutdoorTerrain.cpp)
 
 add_library(engine_graphics STATIC ${ENGINE_GRAPHICS_SOURCES} ${ENGINE_GRAPHICS_HEADERS})
-target_check_style(engine_graphics)
+target_check_cpp_style(engine_graphics)
 
 target_link_libraries(engine_graphics
         PUBLIC

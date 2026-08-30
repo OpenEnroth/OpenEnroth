@@ -11,7 +11,7 @@ set(RETRACE_TEST_HEADERS
 add_executable(OpenEnroth_RetraceTest ${RETRACE_TEST_SOURCES} ${RETRACE_TEST_HEADERS})
 target_link_libraries(OpenEnroth_RetraceTest PUBLIC application GTest::gtest library_cli library_platform_main library_stack_trace)
 
-target_check_style(OpenEnroth_RetraceTest)
+target_check_cpp_style(OpenEnroth_RetraceTest)
 
 add_custom_target(Run_RetraceTest
         OpenEnroth_RetraceTest --test-path ${OE_TESTDATA_PATH}

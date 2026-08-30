@@ -34,4 +34,4 @@ set(ENGINE_DATA_HEADERS
 
 add_library(engine_data STATIC ${ENGINE_DATA_SOURCES} ${ENGINE_DATA_HEADERS})
 target_link_libraries(engine_data PUBLIC core_time library_serialization utility)
-target_check_style(engine_data)
+target_check_cpp_style(engine_data)

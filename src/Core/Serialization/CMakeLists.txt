@@ -9,7 +9,7 @@ set(CORE_SERIALIZATION_HEADERS
         PlatformWindowModeSerialization.h)
 
 add_library(core_serialization STATIC ${CORE_SERIALIZATION_SOURCES} ${CORE_SERIALIZATION_HEADERS})
-target_check_style(core_serialization)
+target_check_cpp_style(core_serialization)
 target_link_libraries(core_serialization PUBLIC
         library_serialization
         library_platform_interface)

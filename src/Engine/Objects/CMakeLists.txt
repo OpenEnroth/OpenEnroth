@@ -50,7 +50,7 @@ set(ENGINE_OBJECTS_HEADERS
         Inventory.h)
 
 add_library(engine_objects STATIC ${ENGINE_OBJECTS_SOURCES} ${ENGINE_OBJECTS_HEADERS})
-target_check_style(engine_objects)
+target_check_cpp_style(engine_objects)
 
 target_link_libraries(engine_objects PUBLIC engine gui library_random library_color utility)
 
@@ -62,7 +62,7 @@ if(OE_BUILD_TESTS)
     add_library(test_engine_objects OBJECT ${TEST_ENGINE_OBJECTS_SOURCES})
     target_link_libraries(test_engine_objects PUBLIC testing_unit engine_objects)
 
-    target_check_style(test_engine_objects)
+    target_check_cpp_style(test_engine_objects)
 
     target_link_libraries(OpenEnroth_GameTest PUBLIC test_engine_objects)
 endif()
