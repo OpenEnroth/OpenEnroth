@@ -349,6 +349,11 @@ static uintptr_t faultingProgramCounter(const ucontext_t &crashContext) {
 #endif
 }
 
+static bool isMapped(uintptr_t address) {
+    uintptr_t page = address & ~static_cast<uintptr_t>(getpagesize() - 1);
+    return msync(reinterpret_cast<void *>(page), 1, MS_ASYNC) == 0; // Fails with ENOMEM on an unmapped page, and touches nothing.
+}
+
 /**
  * Walks the frame pointer chain from the register state a signal was delivered with. This is for a call
  * through a bad pointer, which faults at the bad address where the unwinder has nothing to go on. The call
@@ -358,11 +363,6 @@ static uintptr_t faultingProgramCounter(const ucontext_t &crashContext) {
  * @param crashContext                  Register state the signal was delivered with.
  * @return                              Frames starting with the call that jumped to the bad address.
  */
-static bool isMapped(uintptr_t address) {
-    uintptr_t page = address & ~static_cast<uintptr_t>(getpagesize() - 1);
-    return msync(reinterpret_cast<void *>(page), 1, MS_ASYNC) == 0; // Fails with ENOMEM on an unmapped page, and touches nothing.
-}
-
 static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &crashContext) {
     std::vector<cpptrace::frame_ptr> frames;
 #if defined(__aarch64__)
