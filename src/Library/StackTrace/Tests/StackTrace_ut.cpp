@@ -30,7 +30,7 @@ static void probeDumpThreads(const char *where) {
     thread_act_array_t threads = nullptr;
     mach_msg_type_number_t count = 0;
     task_threads(mach_task_self(), &threads, &count);
-    std::fprintf(stderr, "[probe %s] translated=%d threads=%u self=%p\n", where, translated, count, static_cast<void *>(pthread_self()));
+    std::fprintf(stdout, "[probe %s] translated=%d threads=%u self=%p\n", where, translated, count, static_cast<void *>(pthread_self()));
     for (mach_msg_type_number_t i = 0; i < count; i++) {
         thread_extended_info_data_t extended = {};
         mach_msg_type_number_t extendedCount = THREAD_EXTENDED_INFO_COUNT;
@@ -54,14 +54,15 @@ static void probeDumpThreads(const char *where) {
         Dl_info info = {};
         if (pc)
             dladdr(pc, &info);
-        std::fprintf(stderr, "[probe %s] thread %u info=%d name='%s' flags=%#x pthread=%p state=%d pc=%p module=%s symbol=%s\n",
+        std::fprintf(stdout, "[probe %s] thread %u info=%d name='%s' flags=%#x pthread=%p state=%d pc=%p module=%s symbol=%s\n",
                      where, i, infoResult, infoResult == KERN_SUCCESS ? extended.pth_name : "", infoResult == KERN_SUCCESS ? extended.pth_flags : 0,
                      static_cast<void *>(pt), stateResult, pc, info.dli_fname ? info.dli_fname : "?", info.dli_sname ? info.dli_sname : "?");
         mach_port_deallocate(mach_task_self(), threads[i]);
     }
     vm_deallocate(mach_task_self(), reinterpret_cast<vm_address_t>(threads), count * sizeof(thread_act_t));
+    std::fflush(stdout);
 #else
-    std::fprintf(stderr, "[probe %s] not apple\n", where);
+    std::fprintf(stdout, "[probe %s] not apple\n", where);
 #endif
 }
 
