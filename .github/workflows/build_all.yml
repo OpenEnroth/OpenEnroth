@@ -264,6 +264,7 @@ jobs:
           GITHUBARCH: '${{env.MATRIX_ARCHITECTURE}}'
 
       - name: '[darwin/windows/linux] Run unit tests'
+        timeout-minutes: 15
         if: env.MATRIX_PLATFORM != 'android'
         working-directory: build
         run: |
