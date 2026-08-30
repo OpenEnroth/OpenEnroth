@@ -290,6 +290,10 @@ class GameConfig : public Config {
             "Monster attack preferences for a class also match its promotions, so a monster that hunts clerics "
             "also hunts priests. In vanilla only the base class matches."};
 
+        Bool RegenKeepsOverflow = {this, "regen_keeps_overflow", true,
+            "Regeneration leaves HP and SP alone when a buff left them above the maximum, it just stops adding. "
+            "In vanilla the next regeneration tick snaps the value down to the maximum."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
