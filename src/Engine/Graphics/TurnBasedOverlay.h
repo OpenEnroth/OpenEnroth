@@ -2,8 +2,9 @@
 
 #include <array>
 
-#include "Engine/Time/Duration.h"
 #include "Engine/TurnEngine/TurnEngineEnums.h"
+
+#include "Core/Time/Duration.h"
 
 class GraphicsImage;
 

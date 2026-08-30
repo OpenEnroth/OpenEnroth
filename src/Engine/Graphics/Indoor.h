@@ -10,7 +10,8 @@
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/SpawnPoint.h"
-#include "Engine/Time/Time.h"
+
+#include "Core/Time/Time.h"
 
 #include "Library/Geometry/Rect.h"
 #include "Library/Geometry/Plane.h"

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Engine/Pid.h"
-#include "Engine/Time/Duration.h"
+
+#include "Core/Time/Duration.h"
 
 #include "Library/Geometry/Vec.h"
 #include "Library/Geometry/BBox.h"

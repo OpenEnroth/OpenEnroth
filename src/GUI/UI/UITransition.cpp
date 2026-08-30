@@ -13,7 +13,7 @@
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/Tables/TransitionTable.h"
 #include "Engine/mm7_data.h"
 

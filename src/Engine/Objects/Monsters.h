@@ -5,16 +5,15 @@
 #include <string>
 #include <vector>
 
-#include "Utility/IndexedArray.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Data/SoundEnums.h"
+
+#include "Core/Time/Duration.h"
 
 #include "Library/Color/Color.h"
 
-#include "Engine/Spells/SpellEnums.h"
-#include "Engine/Objects/CombinedSkillValue.h"
-#include "Engine/Time/Duration.h"
-
-#include "Engine/Data/SoundEnums.h"
-
+#include "Utility/IndexedArray.h"
 #include "Utility/Segment.h"
 
 #include "ActorEnums.h"

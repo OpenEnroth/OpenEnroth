@@ -15,7 +15,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/MapInfo.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Engine/Graphics/Outdoor.h"

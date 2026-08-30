@@ -5,7 +5,8 @@
 #include <vector>
 
 #include "Engine/Pid.h"
-#include "Engine/Time/Duration.h"
+
+#include "Core/Time/Duration.h"
 
 // TODO(pskelton): Overlays in MM7/ MM8 are blank so most of this isnt used. MM6 does have overlays - investigate if needed
 

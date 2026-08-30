@@ -12,13 +12,14 @@
 #include "Engine/PartyEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ItemEnums.h"
-#include "Engine/Time/Time.h"
 
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
 
 #include "Io/InputEnums.h"
 #include "Io/KeyboardInputHandler.h"
+
+#include "Core/Time/Time.h"
 
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Color/ColorTable.h"

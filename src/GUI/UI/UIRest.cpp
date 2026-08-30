@@ -9,7 +9,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"

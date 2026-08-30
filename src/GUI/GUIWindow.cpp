@@ -26,7 +26,7 @@
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"

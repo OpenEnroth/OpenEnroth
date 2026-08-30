@@ -37,7 +37,7 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PortraitFrameTable.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIButton.h"

@@ -4,7 +4,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Tables/ChestTable.h"

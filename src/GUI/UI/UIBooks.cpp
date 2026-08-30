@@ -5,7 +5,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"

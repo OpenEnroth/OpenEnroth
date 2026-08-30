@@ -63,7 +63,7 @@
 #include "Engine/Tables/TransitionTable.h"
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/MessageScrollTable.h"
-#include "Engine/Time/Timer.h"
+#include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AttackList.h"
 #include "Engine/Resources/ResourceManager.h"
