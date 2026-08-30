@@ -1,20 +1,14 @@
 #pragma once
 
 #include <cassert>
-#include <cmath>
 #include <cstdint>
 #include <limits>
 
 // TODO(captainurist): drop this header
 
-#define pi_double 3.14159265358979323846
-
-const float pi = static_cast<float>(M_PI);
-
 int integer_sqrt(int val);
 
 uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
-
 
 template <typename FloatType>
 inline int bankersRounding(const FloatType &value) {
@@ -45,4 +39,3 @@ inline int bankersRounding<double>(const double &inValue) {
     c.d = inValue + 6755399441055744.0;
     return c.l;
 }
-

@@ -1,5 +1,6 @@
 #include "Engine/OurMath.h"
 
+#include <cmath>
 #include <utility>
 
 //----- (00452A9E) --------------------------------------------------------

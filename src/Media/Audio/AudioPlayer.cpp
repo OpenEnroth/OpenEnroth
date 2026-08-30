@@ -6,6 +6,7 @@
 #include <utility>
 #include <thread>
 #include <memory>
+#include <numbers>
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
@@ -374,8 +375,8 @@ bool AudioPlayer::loadSoundDataSource(SoundInfo* si) {
 }
 
 void AudioPlayer::UpdateSounds() {
-    float pitch = M_PI * pParty->_viewPitch / 1024.f;
-    float yaw = M_PI * pParty->_viewYaw / 1024.f;
+    float pitch = std::numbers::pi * pParty->_viewPitch / 1024.f;
+    float yaw = std::numbers::pi * pParty->_viewYaw / 1024.f;
 
     provider->SetOrientation(yaw, pitch);
     provider->SetListenerPosition(pParty->pos.x, pParty->pos.y, pParty->pos.z);
