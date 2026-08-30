@@ -2,7 +2,6 @@
 
 #include <cmath>
 
-
 #include "Engine/Engine.h"
 
 #include "Engine/Graphics/Indoor.h"

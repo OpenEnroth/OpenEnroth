@@ -2,13 +2,13 @@
 
 #include "OpenGLVertexBuffer.h"
 
+#include <cmath>
 #include <algorithm>
 #include <memory>
 #include <utility>
 #include <map>
 #include <string>
 #include <tuple>
-#include <cmath>
 
 #include <glad/gl.h> // NOLINT: not a C system header.
 

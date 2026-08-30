@@ -1,7 +1,7 @@
 #pragma once
 
-#include <array>
 #include <cmath>
+#include <array>
 
 #include <glm/glm.hpp>
 

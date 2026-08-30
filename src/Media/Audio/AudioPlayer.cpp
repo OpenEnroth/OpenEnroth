@@ -1,12 +1,12 @@
 #include "AudioPlayer.h"
 
+#include <cmath>
 #include <algorithm>
 #include <map>
 #include <string>
 #include <utility>
 #include <thread>
 #include <memory>
-#include <cmath>
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"

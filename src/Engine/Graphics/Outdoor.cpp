@@ -1,10 +1,10 @@
 #include "Engine/Graphics/Outdoor.h"
 
+#include <cmath>
 #include <algorithm>
 #include <memory>
 #include <optional>
 #include <string>
-#include <cmath>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
