@@ -7,6 +7,8 @@
 #include <string>
 #include <thread>
 #include <unistd.h> // PROBE
+#include <dlfcn.h> // PROBE
+#include <sys/ucontext.h> // PROBE
 #include <sys/wait.h> // PROBE
 
 #include "Testing/Unit/UnitTest.h"
@@ -139,12 +141,42 @@ static volatile uintptr_t probeSp0 = 0;
 static int probePrintEvery = 0;
 static int probeSyscallEvery = 0;
 
-static void probeOnAlarm(int, siginfo_t *, void *) {
-    char line[128];
-    int n = std::snprintf(line, sizeof(line), "[probe alarm] still recursing or wedged, depth=%d sp0=%#zx sp=%#zx used=%zu\n",
-                          probeDepth, static_cast<size_t>(probeSp0), static_cast<size_t>(probeSp), static_cast<size_t>(probeSp0 - probeSp));
+static void probeOnAlarm(int, siginfo_t *, void *context) {
+    const ucontext_t &uc = *static_cast<ucontext_t *>(context);
+#if defined(__APPLE__) && defined(__x86_64__)
+    size_t pc = uc.uc_mcontext->__ss.__rip, sp = uc.uc_mcontext->__ss.__rsp;
+#elif defined(__APPLE__) && defined(__aarch64__)
+    size_t pc = arm_thread_state64_get_pc(uc.uc_mcontext->__ss), sp = arm_thread_state64_get_sp(uc.uc_mcontext->__ss);
+#elif defined(__aarch64__)
+    size_t pc = uc.uc_mcontext.pc, sp = uc.uc_mcontext.sp;
+#else
+    size_t pc = uc.uc_mcontext.gregs[REG_RIP], sp = uc.uc_mcontext.gregs[REG_RSP];
+#endif
+    Dl_info info = {};
+    dladdr(reinterpret_cast<void *>(pc), &info);
+    char line[256];
+    int n = std::snprintf(line, sizeof(line), "[probe alarm] wedged: pc=%#zx in %s sp=%#zx sp0=%#zx used=%zu depth=%d\n",
+                          pc, info.dli_sname ? info.dli_sname : "?", sp, static_cast<size_t>(probeSp0),
+                          static_cast<size_t>(probeSp0 - sp), probeDepth);
     (void) !write(1, line, n);
     _exit(42);
+}
+
+// PROBE: the real helper pair, byte for byte, with nothing added to the recursion.
+MM_NOINLINE int probeRealOverflow2(int depth);
+
+MM_NOINLINE int probeRealOverflow1(int depth) {
+    volatile char pad[1024];
+    pad[0] = static_cast<char>(depth);
+    pad[1023] = static_cast<char>(depth);
+    return pad[0] + pad[1023] + probeRealOverflow2(depth + 1);
+}
+
+MM_NOINLINE int probeRealOverflow2(int depth) {
+    volatile char pad[1024];
+    pad[0] = static_cast<char>(depth);
+    pad[1023] = static_cast<char>(depth);
+    return pad[0] + pad[1023] + probeRealOverflow1(depth + 1);
 }
 
 static void probeArm() {
@@ -159,11 +191,9 @@ static void probeArm() {
 MM_NOINLINE int stackTraceOverflowFunction1(int depth) {
     probeDepth = depth;
     probeSp = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));
-    if (depth == 0)
-        probeSp0 = probeSp;
     if (probePrintEvery && depth % probePrintEvery == 0) {
         char line[64];
-        int n = std::snprintf(line, sizeof(line), "[probe depth] %d\n", depth);
+        int n = std::snprintf(line, sizeof(line), "[probe depth] %d used=%zu\n", depth, static_cast<size_t>(probeSp0 - probeSp));
         (void) !write(1, line, n);
     }
     if (probeSyscallEvery && depth % probeSyscallEvery == 0)
@@ -241,24 +271,23 @@ static bool probeDiedOfTheOverflow(int status) {
     return WIFSIGNALED(status) && WTERMSIG(status) != SIGALRM;
 }
 
-#define PROBE_VARIANT(NAME, HANDLER, PRINT, SYSCALL)                                                            \
+#define PROBE_VARIANT(NAME, HANDLER, PRINT, FUNCTION)                                                           \
     UNIT_TEST_FIXTURE(ThreadSafeDeathTest, NAME) {                                                              \
         (void) !write(1, "[probe] " #NAME "\n", sizeof("[probe] " #NAME "\n") - 1);                             \
         EXPECT_EXIT({                                                                                           \
             GTEST_FLAG_SET(catch_exceptions, false);                                                            \
             probePrintEvery = PRINT;                                                                            \
-            probeSyscallEvery = SYSCALL;                                                                        \
+            probeSp0 = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));                                 \
             if (HANDLER) new StackTraceOnCrash();                                                               \
             probeArm();                                                                                         \
-            stackTraceOverflowFunction1(0);                                                                     \
+            FUNCTION(0);                                                                                        \
         }, probeDiedOfTheOverflow, "");                                                                         \
     }
 
-PROBE_VARIANT(Probe1_NoHandler_Silent, false, 0, 0)
-PROBE_VARIANT(Probe2_Handler_Silent, true, 0, 0)
-PROBE_VARIANT(Probe3_Handler_PrintEvery1000, true, 1000, 0)
-PROBE_VARIANT(Probe4_Handler_GetpidEvery1000, true, 0, 1000)
-PROBE_VARIANT(Probe5_NoHandler_PrintEvery1000, false, 1000, 0)
+PROBE_VARIANT(Probe1_RealShape_Handler, true, 0, probeRealOverflow1)
+PROBE_VARIANT(Probe2_RealShape_NoHandler, false, 0, probeRealOverflow1)
+PROBE_VARIANT(Probe3_Instrumented_Handler_Silent, true, 0, stackTraceOverflowFunction1)
+PROBE_VARIANT(Probe4_Instrumented_Handler_Print, true, 1000, stackTraceOverflowFunction1)
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashCallbackRunsAfterTheTrace) {
     // The callback is what holds a console window open after a crash, so it has to fire after the trace is
