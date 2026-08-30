@@ -281,6 +281,11 @@ class GameConfig : public Config {
             "Don't let eradicated characters drink potions. In vanilla a potion dropped on an eradicated "
             "character's portrait is drunk normally."};
 
+        Bool TurnBasedFocusSkipsIncapacitated = {this, "turn_based_focus_skips_incapacitated", true,
+            "In turn-based mode move the focus off the active character as soon as it can no longer act, the same way "
+            "realtime mode does. Off keeps an eradicated character selected, which the infinite well drinking trick "
+            "relies on."};
+
         Bool AttackPreferencesIncludePromotions = {this, "attack_preferences_include_promotions", true,
             "Monster attack preferences for a class also match its promotions, so a monster that hunts clerics "
             "also hunts priests. In vanilla only the base class matches."};
