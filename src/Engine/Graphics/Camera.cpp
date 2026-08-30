@@ -128,7 +128,7 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
     ViewPlaneDistPixels = (double)pViewport.w * 0.5 / halfFovTan;
 
     // calculate vertical FOV in degrees for GL rendering
-    fov_y_deg = (180.0 / static_cast<float>(M_PI)) * 2.0 * std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels);
+    fov_y_deg = (180.0 / M_PI) * 2.0 * std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels);
 
     screenCenterX = (double)pViewport.center().x;
     screenCenterY = (double)pViewport.center().y - pViewport.y;
@@ -138,11 +138,11 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
-    float HalfAngleX = (static_cast<float>(M_PI) / 2.0) - (odm_fov_rad / 2.0);
-    float HalfAngleY = (static_cast<float>(M_PI) / 2.0) - (std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels));
+    float HalfAngleX = (M_PI / 2.0) - (odm_fov_rad / 2.0);
+    float HalfAngleY = (M_PI / 2.0) - (std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels));
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        HalfAngleX = (static_cast<float>(M_PI) / 2.0) - (blv_fov_rad / 2.0);
+        HalfAngleX = (M_PI / 2.0) - (blv_fov_rad / 2.0);
     }
 
     glm::vec3 PlaneVec(0);
