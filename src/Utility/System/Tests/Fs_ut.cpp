@@ -25,7 +25,7 @@ UNIT_TEST(Fs, ExistsStat) {
 }
 
 UNIT_TEST(Fs, LsRemoveMkdirs) {
-    MM_AT_SCOPE_EXIT(fs::remove("tmp_fs_dir"));
+    ScopedTestFolder dir("tmp_fs_dir"); // Not MM_AT_SCOPE_EXIT - ~ScopeGuard is noexcept and fs::remove throws.
 
     fs::mkdirs("tmp_fs_dir/a/b");
     EXPECT_EQ(fs::stat("tmp_fs_dir/a/b").type, FILE_DIRECTORY);
@@ -55,4 +55,33 @@ UNIT_TEST(Fs, StringLiterals) {
     EXPECT_TRUE(fs::exists("tmp_fs_literal.txt"));
     EXPECT_EQ(fs::stat("tmp_fs_literal.txt"), FileStat(FILE_REGULAR, 3));
     EXPECT_EQ(fs::absolute("tmp_fs_literal.txt"), fs::cwd() / Path("tmp_fs_literal.txt"));
+}
+
+UNIT_TEST(Fs, LsFailurePaths) {
+    // ls never throws, whatever it is pointed at. It used to drive a range-for over directory_iterator, whose
+    // operator++ is the throwing overload - so an error part way through a listing escaped as a filesystem_error
+    // rather than being swallowed the way the header promises.
+    EXPECT_TRUE(fs::ls("tmp_fs_doesnt_exist").empty());
+
+    ScopedTestFile notADir("tmp_fs_not_a_dir.txt", "lol");
+    EXPECT_TRUE(fs::ls("tmp_fs_not_a_dir.txt").empty());
+
+    EXPECT_NO_THROW((void) fs::ls(""));  // The current directory.
+    EXPECT_NO_THROW((void) fs::ls("."));
+}
+
+UNIT_TEST(Fs, MkdirsEmptyPath) {
+    // create_directories("") throws, and the header says mkdirs does nothing when the directory already exists.
+    // The empty path is the current directory, which by definition does.
+    EXPECT_NO_THROW(fs::mkdirs(""));
+    EXPECT_NO_THROW(fs::mkdirs("."));
+}
+
+UNIT_TEST(Fs, CwdIsAbsolute) {
+    // cwd used the throwing current_path() while its neighbour absolute() converted the error_code into an
+    // Exception. Both report through Exception now, so a caller has one thing to catch.
+    Path cwd = fs::cwd();
+    EXPECT_TRUE(cwd.isAbsolute());
+    EXPECT_FALSE(cwd.isEmpty());
+    EXPECT_TRUE(cwd.isNormalized());
 }

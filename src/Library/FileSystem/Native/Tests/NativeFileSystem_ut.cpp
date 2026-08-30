@@ -9,6 +9,8 @@
 
 #include "Library/FileSystem/Native/NativeFileSystem.h"
 
+#include "Utility/System/Fs.h"
+
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/String/Encoding.h"
 
@@ -95,20 +97,20 @@ UNIT_TEST(NativeFileSystem, DisplayPathSymmetry) {
 }
 
 UNIT_TEST(NativeFileSystem, EscapingPaths) {
-    ScopedTestFolder tmp("a");
-    ScopedTestFile tmp2("1.txt", "");
-    ScopedTestFile tmp3("a/1.txt", "");
+    ScopedTestFolder tmp("tmp_native_a");
+    ScopedTestFile tmp2("tmp_native_1.txt", "");
+    ScopedTestFile tmp3("tmp_native_a/1.txt", "");
 
-    NativeFileSystem fs("a");
+    NativeFileSystem fs("tmp_native_a");
 
     EXPECT_FALSE(fs.exists(".."));
     EXPECT_FALSE(fs.stat(".."));
     EXPECT_ANY_THROW((void) fs.ls(".."));
-    EXPECT_ANY_THROW((void) fs.read("../1.txt"));
-    EXPECT_ANY_THROW((void) fs.openForReading("../1.txt"));
-    EXPECT_ANY_THROW(fs.write("../1.txt", Blob()));
-    EXPECT_ANY_THROW((void) fs.openForWriting("../1.txt"));
-    EXPECT_ANY_THROW(fs.remove("../1.txt"));
+    EXPECT_ANY_THROW((void) fs.read("../tmp_native_1.txt"));
+    EXPECT_ANY_THROW((void) fs.openForReading("../tmp_native_1.txt"));
+    EXPECT_ANY_THROW(fs.write("../tmp_native_1.txt", Blob()));
+    EXPECT_ANY_THROW((void) fs.openForWriting("../tmp_native_1.txt"));
+    EXPECT_ANY_THROW(fs.remove("../tmp_native_1.txt"));
 }
 
 UNIT_TEST(NativeFileSystem, DisplayPath) {
@@ -127,19 +129,27 @@ UNIT_TEST(NativeFileSystem, DisplayPath) {
 }
 
 UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
-    // displayPath is the one method that doesn't reject an escaping path - it exists for diagnostics. What it shows
-    // changed with lexical normalization though: the ".." now resolves against the absolute root instead of being
-    // appended to it verbatim, so the answer is the parent directory itself.
+    // displayPath is the one method that doesn't reject an escaping path - it exists for diagnostics, and error
+    // reporting has to be able to format the path that was just rejected. It shows what it was handed rather than
+    // what that resolves to, which is what you want in a message.
     NativeFileSystem fs("");
 
-    EXPECT_EQ(fs.displayPath(".."), fs::cwd().parent().displayString());
+    EXPECT_EQ(fs.displayPath(".."), (fs::cwd() / Path("..")).displayString());
+    EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
 }
 
 UNIT_TEST(NativeFileSystem, ToNativePath) {
-    NativeFileSystem fs("a");
+    NativeFileSystem fs("tmp_native_a");
 
-    EXPECT_EQ(fs.toNativePath("b/c.txt"), fs::absolute("a") / Path("b/c.txt"));
-    EXPECT_EQ(fs.toNativePath(""), fs::absolute("a")); // Root maps to the root dir itself.
+    EXPECT_EQ(fs.toNativePath("b/c.txt"), fs::absolute("tmp_native_a") / Path("b/c.txt"));
+    EXPECT_EQ(fs.toNativePath(""), fs::absolute("tmp_native_a")); // Root maps to the root dir itself.
+    EXPECT_EQ(fs.toNativePath("b/../c"), fs::absolute("tmp_native_a") / Path("c")); // Normalized like anything else.
+
+    // B7: it is a public method taking a path in this file system's namespace, so it validates like the rest. It
+    // used to hand back the argument itself for an absolute one, since a rooted tail replaces the head - while
+    // displayPath, given the same input, answered something else entirely.
+    EXPECT_ANY_THROW((void) fs.toNativePath("/etc/passwd"));
+    EXPECT_ANY_THROW((void) fs.toNativePath(".."));
 }
 
 UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {

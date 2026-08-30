@@ -46,6 +46,11 @@ class NativeFileSystem : public FileSystem {
     [[nodiscard]] Path toNativePath(PathView path) const;
 
  private:
+    // Composes a path in this file system onto the root, without validating it. Callers inside this class have
+    // already been through the public boundary, and _displayPath must work on a path that was just rejected.
+    [[nodiscard]] Path basePath(PathView path) const;
+
+ private:
     virtual bool _exists(PathView path) const override;
     virtual FileStat _stat(PathView path) const override;
     virtual void _ls(PathView path, std::vector<DirectoryEntry> *entries) const override;

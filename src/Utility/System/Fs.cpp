@@ -52,8 +52,16 @@ std::vector<DirectoryEntry> fs::ls(const Path &path) {
 void fs::ls(const Path &path, std::vector<DirectoryEntry> *entries) {
     // We just ignore all errors here. The errors we'll get are most likely permissions-related, and we're ignoring
     // them in `stat` and `exists` too.
+    // Driven by hand rather than with a range-for, because only the constructor takes an error_code - operator++ is
+    // the throwing overload, and a mid-iteration EIO on a network mount would escape this function. The walk gets
+    // its own error_code, so that a per-entry failure below skips that entry instead of truncating the listing.
+    std::error_code walkEc;
     std::error_code ec;
-    for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(toStdPath(path), ec)) {
+    std::filesystem::directory_iterator pos(toStdPath(path), walkEc);
+    std::filesystem::directory_iterator end;
+    for (; !walkEc && pos != end; pos.increment(walkEc)) {
+        const std::filesystem::directory_entry &entry = *pos;
+
         // Unfortunately, std::filesystem is broken here. We can get a directory_entry for a dir that we don't have
         // permissions for, and which won't be stat-able. Seriously, entry.is_directory() returns true while
         // std::filesystem::exists(entry.path()) just throws. So we need to check for that.
@@ -75,18 +83,25 @@ bool fs::remove(const Path &path) {
 }
 
 void fs::mkdirs(const Path &path) {
+    if (path.isEmpty())
+        return; // The current directory, which necessarily exists - create_directories("") would throw.
+
     std::filesystem::create_directories(toStdPath(path));
 }
 
 Path fs::cwd() {
-    return Path::fromNative(std::filesystem::current_path().native());
+    std::error_code ec;
+    std::filesystem::path result = std::filesystem::current_path(ec);
+    if (ec)
+        throw Exception("Couldn't get the current directory: {}", ec.message());
+    return Path::fromNative(result.native());
 }
 
 Path fs::absolute(const Path &path) {
     // An explicit isEmpty() check b/c libstdc++ std::filesystem::absolute chokes on an empty path.
     std::error_code ec;
     std::filesystem::path result =
-        path.isEmpty() ? std::filesystem::current_path(ec) : std::filesystem::absolute(toStdPath(path), ec);
+        path.isEmpty() ? std::filesystem::current_path(ec) : std::filesystem::absolute(toStdPath(path.normalized()), ec);
     if (ec)
         throw Exception("Couldn't resolve native path '{}': {}", path, ec.message());
     return Path::fromNative(result.native());

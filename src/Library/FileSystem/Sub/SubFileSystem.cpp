@@ -6,8 +6,13 @@
 #include <vector>
 
 SubFileSystem::SubFileSystem(PathView basePath, FileSystem *base)
-    : _base(base), _basePath(basePath) {
+    : _base(base), _basePath(Path(basePath).normalized()) {
     assert(_base);
+
+    // The base path is prepended to everything this file system is asked for, so an escaping one would escape on
+    // every call. Nothing downstream checks it - the base's public methods used to, but delegation goes through the
+    // forwarders now, which skip validation by design.
+    assert(!_basePath.isAbsolute() && !_basePath.isEscaping());
 }
 
 SubFileSystem::SubFileSystem(std::string_view basePath, FileSystem *base)
@@ -15,41 +20,49 @@ SubFileSystem::SubFileSystem(std::string_view basePath, FileSystem *base)
 }
 
 bool SubFileSystem::_exists(PathView path) const {
-    return _base->exists(_basePath / path);
+    assert(path.isNormalized());
+    return existsOf(_base, _basePath / path);
 }
 
 FileStat SubFileSystem::_stat(PathView path) const {
-    return _base->stat(_basePath / path);
+    assert(path.isNormalized());
+    return statOf(_base, _basePath / path);
 }
 
 void SubFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+    assert(path.isNormalized());
     // A root always exists, so ls("") has to work even if the base path doesn't, or isn't a directory.
-    if (path.isEmpty() && _base->stat(_basePath).type != FILE_DIRECTORY)
+    if (path.isEmpty() && statOf(_base, _basePath).type != FILE_DIRECTORY)
         return;
 
-    _base->ls(_basePath / path, entries);
+    lsOf(_base, _basePath / path, entries);
 }
 
 Blob SubFileSystem::_read(PathView path) const {
-    return _base->read(_basePath / path);
+    assert(path.isNormalized());
+    return readOf(_base, _basePath / path);
 }
 
 void SubFileSystem::_write(PathView path, const Blob &data) {
-    _base->write(_basePath / path, data);
+    assert(path.isNormalized());
+    writeOf(_base, _basePath / path, data);
 }
 
 std::unique_ptr<InputStream> SubFileSystem::_openForReading(PathView path) const {
-    return _base->openForReading(_basePath / path);
+    assert(path.isNormalized());
+    return openForReadingOf(_base, _basePath / path);
 }
 
 std::unique_ptr<OutputStream> SubFileSystem::_openForWriting(PathView path) {
-    return _base->openForWriting(_basePath / path);
+    assert(path.isNormalized());
+    return openForWritingOf(_base, _basePath / path);
 }
 
 bool SubFileSystem::_remove(PathView path) {
-    return _base->remove(_basePath / path);
+    assert(path.isNormalized());
+    return removeOf(_base, _basePath / path);
 }
 
 std::string SubFileSystem::_displayPath(PathView path) const {
-    return _base->displayPath(_basePath / path);
+    return displayPathOf(_base, _basePath / path);
 }

@@ -9,10 +9,17 @@
 #include "Utility/System/PathView.h"
 #include "Utility/System/Fs.h"
 
-UNIT_TEST(Path, Wtf8RoundTrip) {
-    // The conversion goes through wchar_t on Windows, so WTF-8 has to survive, unpaired surrogates included.
-    for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
-        EXPECT_EQ(Path(path).string(), path);
+UNIT_TEST(Path, ConstructorKeepsBytes) {
+    // The constructor stores what it was given. Normal form is something you ask for, because a path bound for the
+    // OS should keep its dots - the OS resolves them itself, and through symlinks, which a lexical pass can't.
+    EXPECT_EQ(Path("a/b/../c").string(), "a/b/../c");
+    EXPECT_EQ(Path("a/b/../c").normalized().string(), "a/c");
+
+    EXPECT_FALSE(Path(".").isEmpty()); // "." is a path, not nothing - startup reads an empty path as "not supplied".
+    EXPECT_TRUE(Path(".").normalized().isEmpty());
+
+    EXPECT_EQ(Path("a/b/").string(), "a/b/"); // A trailing separator survives, which is the POSIX "must be a dir".
+    EXPECT_EQ(Path("a/b/").normalized().string(), "a/b");
 }
 
 UNIT_TEST(Path, NativeRoundTrip) {
@@ -33,9 +40,13 @@ UNIT_TEST(Path, StringConversions) {
 }
 
 UNIT_TEST(Path, Composition) {
+    // operator/ concatenates and nothing more - it does not normalize the seam. Callers that want normal form ask
+    // for it, which for file system paths happens once at the public boundary.
     EXPECT_EQ((Path("a/b") / Path("c.txt")).string(), "a/b/c.txt");
     EXPECT_EQ((Path("a/b/") / Path("c.txt")).string(), "a/b/c.txt"); // No doubled separator.
-    EXPECT_EQ((Path() / Path("c.txt")).string(), "c.txt");
+    EXPECT_EQ((Path("a") / Path("../b")).string(), "a/../b");
+    EXPECT_EQ((Path("a") / Path()).string(), "a");
+    EXPECT_EQ((Path() / Path("a")).string(), "a");
 
     // A rooted tail replaces the head instead of being appended to it.
     EXPECT_EQ((Path("a/b") / Path("/c.txt")).string(), "/c.txt");
@@ -45,10 +56,31 @@ UNIT_TEST(Path, WithExtension) {
     EXPECT_EQ(Path("a/b.json").withExtension(".mm7").string(), "a/b.mm7");
     EXPECT_EQ(Path("a/b").withExtension(".mm7").string(), "a/b.mm7");
     EXPECT_EQ(Path("a/b.json").withExtension("").string(), "a/b");
-    EXPECT_EQ(Path("a/b.json").withExtension("mm7").string(), "a/b.mm7"); // The leading dot is optional.
     EXPECT_EQ(Path("a.tar.gz").withExtension(".zip").string(), "a.tar.zip"); // Only the last extension goes.
     EXPECT_EQ(Path("a/.bashrc").withExtension(".txt").string(), "a/.bashrc.txt"); // A dotfile has no extension.
     EXPECT_EQ(Path("a.d/b").withExtension(".txt").string(), "a.d/b.txt"); // Dots in directory names don't count.
+
+    // A path with no file name gains one rather than being renamed. std::filesystem does the same.
+    EXPECT_EQ(Path("a/b/").withExtension(".txt").string(), "a/b/.txt");
+    EXPECT_EQ(Path("").withExtension(".txt").string(), ".txt");
+}
+
+UNIT_TEST(Path, IsExtension) {
+    // withExtension asserts this, so it is the whole precondition. A trailing dot is out because Windows trims one
+    // and POSIX doesn't, so the same literal would name two different files.
+    for (std::string_view extension : {"", ".", ".txt", ".tar.gz", ".txt "})
+        EXPECT_TRUE(Path::isExtension(extension)) << extension;
+    for (std::string_view extension : {"..", "...", ".txt.", "txt", "/x", ".a/b"})
+        EXPECT_FALSE(Path::isExtension(extension)) << extension;
+
+    EXPECT_FALSE(Path::isExtension(std::string_view(".a\0b", 4))); // A NUL can't be in a file name.
+
+    // The identity: every path's own extension is a valid one, so putting it back is a no-op.
+    for (std::string_view path : {".", "..", "...", "....", "...a", "..a", "a.", "a..", "a.txt.", "a.tar.gz",
+                                  ".bashrc", "..a.txt", "a/b", ""}) {
+        EXPECT_TRUE(Path::isExtension(Path(path).extension())) << path;
+        EXPECT_EQ(Path(path).withExtension(Path(path).extension()), Path(path)) << path;
+    }
 }
 
 #ifdef _WINDOWS
@@ -70,9 +102,9 @@ UNIT_TEST(Path, WindowsRoots) {
     EXPECT_EQ((Path("C:") / Path("b")).string(), "C:/b");
     EXPECT_TRUE((Path("C:") / Path("b")).isAbsolute());
 
-    EXPECT_EQ(Path("//").string(), "/"); // Only "//" followed by a share name is root syntax here.
-    EXPECT_EQ(Path("//server/x").parent(), Path("//server")); // The share name is one value, however it's spelled.
-    EXPECT_EQ(Path("//server").string(), "//server/"); // A root carries its separator.
+    EXPECT_EQ(Path("//").normalized().string(), "/"); // Only "//" followed by a share name is root syntax here.
+    EXPECT_EQ(Path("//server/x").parent(), Path("//server/")); // The share is one value, however it's spelled.
+    EXPECT_EQ(Path("//server").normalized().string(), "//server/"); // A root carries its separator.
 }
 #endif
 
@@ -101,31 +133,37 @@ static std::string oracle(const std::filesystem::path &path) {
 }
 
 UNIT_TEST(Path, NormalForm) {
-    // Every Path is in lexical normal form, and these are the rules. They're pinned here rather than left to
-    // the std::filesystem oracle because two of them are deliberate divergences from it.
-    EXPECT_EQ(Path(".").string(), ""); // "Here" is the empty path.
-    EXPECT_EQ(Path("a/./b").string(), "a/b");
-    EXPECT_EQ(Path("a//b/").string(), "a/b"); // Separators collapse, trailing one goes.
-    EXPECT_EQ(Path("a/b/../c").string(), "a/c");
-    EXPECT_EQ(Path("../a").string(), "../a"); // A leading ".." run survives - it's escaping.
-    EXPECT_EQ(Path("a/../../b").string(), "../b");
-    EXPECT_EQ(Path("/..").string(), "/"); // Clamped by the root, same as POSIX defines it.
-    EXPECT_EQ(Path("/../../a").string(), "/a");
+    // The rules normalized() applies. Two of them are deliberate divergences from std::filesystem, which is why
+    // they're pinned here rather than left to the oracle test below.
+    auto normalized = [] (std::string_view path) { return Path(path).normalized().string(); };
 
-    // Normalization is idempotent.
-    for (std::string_view path : {"", ".", "..", "a/./b", "a//b/", "a/b/../c", "../a", "/.."})
-        EXPECT_EQ(Path(Path(path).string()), Path(path)) << path;
+    EXPECT_EQ(normalized("."), ""); // "Here" is the empty path.
+    EXPECT_EQ(normalized("a/./b"), "a/b");
+    EXPECT_EQ(normalized("a//b/"), "a/b"); // Separators collapse, trailing one goes.
+    EXPECT_EQ(normalized("a/b/../c"), "a/c");
+    EXPECT_EQ(normalized("../a"), "../a"); // A leading ".." run survives - it's escaping.
+    EXPECT_EQ(normalized("a/../../b"), "../b");
+    EXPECT_EQ(normalized("/.."), "/"); // Clamped by the root, same as POSIX defines it.
+    EXPECT_EQ(normalized("/../../a"), "/a");
+
+    for (std::string_view path : {"", ".", "..", "a/./b", "a//b/", "a/b/../c", "../a", "/..", "a/b/"})
+        EXPECT_EQ(Path(path).normalized().normalized(), Path(path).normalized()) << path; // Idempotent.
+
+    for (std::string_view path : {"", "a", "a/b", "..", "../a", "/", "/a"})
+        EXPECT_TRUE(Path(path).isNormalized()) << path;
+    for (std::string_view path : {".", "a/", "a//b", "a/./b", "a/b/../c"})
+        EXPECT_FALSE(Path(path).isNormalized()) << path;
 }
 
 #ifndef _WINDOWS
 UNIT_TEST(Path, PosixDoubleSlashRoot) {
     // POSIX says a path starting with exactly two slashes is implementation-defined, so we leave it alone instead
     // of reading a root name out of it the way libstdc++ does. Three or more slashes are just a root directory.
-    EXPECT_EQ(Path("//a").string(), "//a");
     EXPECT_EQ(Path("//a").root(), "//");
-    EXPECT_EQ(Path("///a").string(), "/a");
+    EXPECT_EQ(Path("//a").normalized().string(), "//a");
     EXPECT_EQ(Path("///a").root(), "/");
-    EXPECT_EQ(Path("//a/../b").string(), "//b"); // Clamped by the root like any other absolute path.
+    EXPECT_EQ(Path("///a").normalized().string(), "/a");
+    EXPECT_EQ(Path("//a/../b").normalized().string(), "//b"); // Clamped by the root like any other absolute path.
 }
 #endif
 
@@ -166,47 +204,38 @@ UNIT_TEST(Path, Anatomy) {
 }
 
 UNIT_TEST(Path, DottedNames) {
-    // A name whose stem would be all dots has no extension, so that dropping the extension can't turn a name into a
-    // navigation token - the stem of "..." is "..", which would collapse "a/..." to nothing. This is reachable from
-    // data, not just from a hostile caller: a trace file named "...json" comes off disk and RetraceTest calls
-    // withExtension("") on every name it lists. std::filesystem parses these the other way round, which is why they
-    // are pinned here instead of being left to the oracle.
-    EXPECT_EQ(Path("a/...").extension(), "");
-    EXPECT_EQ(Path("a/...").stem(), "...");
-    EXPECT_EQ(Path("a/...a").extension(), "");
-    EXPECT_EQ(Path("...json").extension(), "");
+    // Decomposition mirrors std::filesystem exactly, all-dot names included. So "..." is a stem of ".." plus an
+    // extension of ".", and dropping that extension leaves "..". That is a navigation token, which is why this file
+    // used to carry a rule against it - but the rule diverged from std for no gain, since withExtension's
+    // precondition is now the guard and every production call site passes a literal.
+    EXPECT_EQ(Path("a/...").extension(), ".");
+    EXPECT_EQ(Path("a/...").stem(), "..");
+    EXPECT_EQ(Path("a/...").withExtension("").string(), "a/..");
 
-    EXPECT_EQ(Path("a/...").withExtension(""), Path("a/..."));
-    EXPECT_EQ(Path("a/...a").withExtension(""), Path("a/...a"));
-    EXPECT_EQ(Path("...json").withExtension(""), Path("...json"));
-    EXPECT_EQ(Path("a/...").withExtension(".x"), Path("a/....x"));
+    EXPECT_EQ(Path("...a").extension(), ".a");
+    EXPECT_EQ(Path("...a").stem(), "..");
+    EXPECT_EQ(Path("..a").extension(), ".a");
+    EXPECT_EQ(Path("a.").extension(), ".");
+    EXPECT_EQ(Path("a.").stem(), "a");
 
-    // A stem that isn't all dots still splits normally.
+    // The names std exempts outright.
+    EXPECT_EQ(Path(".").extension(), "");
+    EXPECT_EQ(Path("..").extension(), "");
+    EXPECT_EQ(Path(".bashrc").extension(), "");
     EXPECT_EQ(Path("..a.txt").extension(), ".txt");
-    EXPECT_EQ(Path("..a.txt").withExtension(""), Path("..a"));
 }
 
-UNIT_TEST(Path, WithExtensionIsTotal) {
-    // Path never throws and never asserts, and an extension can come from user data, so every argument has to have a
-    // defined result. A path-shaped one extends the path instead of just the name, which is what std::filesystem
-    // does too - the alternative would be silently mangling the argument. The escaping case reports itself as
-    // escaping, which is what the file system layer refuses on.
-    EXPECT_EQ(Path("a/b").withExtension("/c/d/e"), Path("a/b./c/d/e"));
-    EXPECT_EQ(Path("a").withExtension("./../../x"), Path("../x"));
-    EXPECT_TRUE(Path("a").withExtension("./../../x").isEscaping());
-    EXPECT_EQ(Path("a").withExtension("/x"), Path("a./x"));
-    EXPECT_EQ(Path("a").withExtension("../../.."), Path(".."));
-
-    // Whatever the argument, the result is still in normal form.
-    for (std::string_view extension : {"", ".x", "x", "./../../x", "/x", "../../..", "a/b"}) {
-        Path path = Path("a/b.txt").withExtension(extension);
-        EXPECT_EQ(Path(path.string()), path) << extension;
-    }
+UNIT_TEST(Path, WithExtensionPrecondition) {
+    // withExtension asserts isExtension, so a path-shaped argument is a programming error rather than something
+    // with a defined result. All four production call sites pass ".mm7" or "".
+    EXPECT_EQ(Path("a/b.txt").withExtension(".tar.gz").string(), "a/b.tar.gz");
+    EXPECT_EQ(Path("a/b.txt").withExtension(".").string(), "a/b.");
+    EXPECT_EQ(Path("a/b.txt").withExtension("").string(), "a/b");
 }
 
 UNIT_TEST(Path, Split) {
-    // The root is not a segment, so a path is its root joined with its segments. Under normal form "." never shows
-    // up as one, and ".." only as the leading run of an escaping path.
+    // The root is not a segment, so a path is its root joined with its segments. split() works on the bytes it is
+    // given - it is normal form that makes "." disappear and leaves ".." only as a leading run.
     auto segments = [] (const Path &path) {
         std::vector<std::string> result;
         for (std::string_view chunk : path.split())
@@ -216,10 +245,11 @@ UNIT_TEST(Path, Split) {
 
     EXPECT_EQ(segments(Path("a/b/c")), std::vector<std::string>({"a", "b", "c"}));
     EXPECT_EQ(segments(Path("/a/b")), std::vector<std::string>({"a", "b"})); // Root dropped.
-    EXPECT_EQ(segments(Path("a/./b")), std::vector<std::string>({"a", "b"}));
+    EXPECT_EQ(segments(Path("a/./b")), std::vector<std::string>({"a", ".", "b"})); // Raw, not normalized.
+    EXPECT_EQ(segments(Path("a/./b").normalized()), std::vector<std::string>({"a", "b"}));
     EXPECT_EQ(segments(Path("../a")), std::vector<std::string>({"..", "a"}));
     EXPECT_TRUE(segments(Path("")).empty());
-    EXPECT_TRUE(segments(Path(".")).empty()); // "." is the empty path.
+    EXPECT_TRUE(segments(Path(".").normalized()).empty()); // "." normalizes to the empty path.
     EXPECT_TRUE(segments(Path("/")).empty()); // A bare root has no segments.
 }
 
@@ -269,39 +299,53 @@ UNIT_TEST(Path, LexicalOpsMatchStdFilesystem) {
     // locale, so anything else would be comparing against an oracle that mangles its input.
     std::vector<std::string> paths = {
         "", ".", "..", "a", "a/", "/a", "a/b", "a/b/", "/", "a.txt", ".bashrc", "a.tar.gz", "a.d/b", "/a/b.c",
-        "a/./b", "a//b", "a/b/../c", "../a", "/..", "a/../.."
+        "a/./b", "a//b", "a/b/../c", "../a", "/..", "a/../..",
+        "...", "a/.../b", "a...", "some." // Dotted names, where our old rule used to diverge from std.
     };
 
     // Root names and backslash separators exist on Windows only. POSIX says a path starting with exactly two slashes
-    // is implementation-defined, and Path preserves it there instead of reading a root name out of it.
+    // is implementation-defined, and Path preserves it there instead of reading a root name out of it. The UNC and
+    // extended-length spellings are here to settle where MSVC puts the root - a disagreement shows up as a parent
+    // mismatch, because parent() clamps at the root.
 #ifdef _WINDOWS
-    for (std::string_view windowsPath : {"C:/a", "D:/b", "//server", "//server/share", "a\\b"})
+    for (std::string_view windowsPath : {"C:/a", "D:/b", "//server", "//server/share", "a\\b",
+                                         "//server/share/x", "//?/UNC/server/share", "//?/UNC/server/share/x",
+                                         "//?/C:/x"})
         paths.emplace_back(windowsPath);
 #endif
 
     for (const std::string &head : paths) {
         std::string normal = oracle(head);
-        EXPECT_EQ(Path(head).string(), normal) << "normalizing '" << head << "'";
+        EXPECT_EQ(Path(head).normalized().string(), normal) << "normalizing '" << head << "'";
 
         for (const std::string &tail : paths) {
             // Our rule is that any rooted tail replaces the head. std::filesystem instead keeps the head's root
             // name when the tail has a root directory but no root name, so on Windows it turns "/b" into "C:/b" -
-            // laundering an absolute path into a relative one, which is exactly what we don't want.
+            // laundering an absolute path into a relative one, which is exactly what we don't want. And operator/
+            // concatenates without normalizing, so the comparison is against the normalized join.
             std::string expected = Path(tail).isAbsolute()
                 ? oracle(tail)
                 : oracle(std::filesystem::path(head) / std::filesystem::path(tail));
 
-            EXPECT_EQ((Path(head) / Path(tail)).string(), expected) << "'" << head << "' / '" << tail << "'";
+            EXPECT_EQ((Path(head) / Path(tail)).normalized().string(), expected)
+                << "'" << head << "' / '" << tail << "'";
         }
 
         // Against the normal form, so that the oracle's retained trailing separator doesn't shift the answer.
-        EXPECT_EQ(Path(head).parent().string(), oracle(std::filesystem::path(normal).parent_path()))
+        EXPECT_EQ(Path(normal).parent().string(), oracle(std::filesystem::path(normal).parent_path()))
             << "parent of '" << head << "'";
 
-        for (std::string_view extension : {"", ".x", "x", ".tar.gz"}) {
+        // Decomposition agrees with std everywhere now, so the oracle is the authority here rather than a
+        // documented divergence.
+        EXPECT_EQ(Path(head).extension(), std::filesystem::path(head).extension().generic_string())
+            << "extension of '" << head << "'";
+        EXPECT_EQ(Path(head).stem(), std::filesystem::path(head).stem().generic_string())
+            << "stem of '" << head << "'";
+
+        for (std::string_view extension : {"", ".x", ".tar.gz"}) { // isExtension rejects "x", and that's asserted.
             std::filesystem::path expected = std::filesystem::path(normal);
             expected.replace_extension(extension);
-            EXPECT_EQ(Path(head).withExtension(extension).string(), oracle(expected))
+            EXPECT_EQ(Path(normal).withExtension(extension).string(), oracle(expected))
                 << "'" << head << "' + '" << extension << "'";
         }
     }

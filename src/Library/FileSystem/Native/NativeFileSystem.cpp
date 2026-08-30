@@ -22,20 +22,23 @@ NativeFileSystem::NativeFileSystem(const Path &root) {
 NativeFileSystem::~NativeFileSystem() = default;
 
 bool NativeFileSystem::_exists(PathView path) const {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
-    return fs::exists(toNativePath(path));
+    return fs::exists(basePath(path));
 }
 
 FileStat NativeFileSystem::_stat(PathView path) const {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
-    return fs::stat(toNativePath(path));
+    return fs::stat(basePath(path));
 }
 
 void NativeFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
-    Path basePath = toNativePath(path);
+    assert(path.isNormalized());
+    Path nativePath = basePath(path);
 
     // Handle the known errors first.
-    FileType type = fs::stat(basePath).type;
+    FileType type = fs::stat(nativePath).type;
     if (path.isEmpty() && type != FILE_DIRECTORY)
         return; // ls("") should always work.
     if (type == FILE_REGULAR)
@@ -43,47 +46,47 @@ void NativeFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) 
     if (type != FILE_DIRECTORY)
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 
-    auto oldSize = static_cast<std::ptrdiff_t>(entries->size());
-    fs::ls(basePath, entries);
-
-    // Files with '\\' in filename are not observable through this interface.
-    auto isUnobservable = [] (const DirectoryEntry &entry) { return entry.name.contains('\\'); };
-    entries->erase(std::remove_if(entries->begin() + oldSize, entries->end(), isUnobservable), entries->end());
+    fs::ls(nativePath, entries);
 }
 
 Blob NativeFileSystem::_read(PathView path) const {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
-    return Blob::fromFile(toNativePath(path));
+    return Blob::fromFile(basePath(path));
 }
 
 void NativeFileSystem::_write(PathView path, const Blob &data) {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
-    Path basePath = toNativePath(path);
-    fs::mkdirs(basePath.parent());
-    FileOutputStream stream(basePath);
+    Path nativePath = basePath(path);
+    fs::mkdirs(nativePath.normalized().parent());
+    FileOutputStream stream(nativePath);
     stream.write(data.data(), data.size());
     stream.close();
 }
 
 std::unique_ptr<InputStream> NativeFileSystem::_openForReading(PathView path) const {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
-    return std::make_unique<FileInputStream>(toNativePath(path));
+    return std::make_unique<FileInputStream>(basePath(path));
 }
 
 std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(PathView path) {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
-    Path basePath = toNativePath(path);
-    fs::mkdirs(basePath.parent());
-    return std::make_unique<FileOutputStream>(basePath);
+    Path nativePath = basePath(path);
+    fs::mkdirs(nativePath.normalized().parent());
+    return std::make_unique<FileOutputStream>(nativePath);
 }
 
 bool NativeFileSystem::_remove(PathView path) {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
-    return fs::remove(toNativePath(path));
+    return fs::remove(basePath(path));
 }
 
 std::string NativeFileSystem::_displayPath(PathView path) const {
-    return toNativePath(path).displayString();
+    return basePath(path).displayString();
 }
 
 Path NativeFileSystem::toNativePath(std::string_view path) const {
@@ -91,6 +94,19 @@ Path NativeFileSystem::toNativePath(std::string_view path) const {
 }
 
 Path NativeFileSystem::toNativePath(PathView path) const {
+    // Public, and it takes a path in this file system's namespace, so it validates like every other public method.
+    // Without that it would hand back a path outside the root for an absolute argument, since a rooted tail
+    // replaces the head - while displayPath, given the same input, would say something else entirely.
+    Path normalPath = Path(path.string()).normalized();
+    if (normalPath.isAbsolute() || normalPath.isEscaping())
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_ACCESSIBLE, path);
+
+    return basePath(normalPath);
+}
+
+Path NativeFileSystem::basePath(PathView path) const {
+    // No validation - the private _ methods are only reachable through the public boundary, which has already done
+    // it, and _displayPath has to work on a path that was just rejected, or raising an error would recurse.
     if (path.isEmpty())
         return _root; // `_root / ""` would add a trailing separator.
 

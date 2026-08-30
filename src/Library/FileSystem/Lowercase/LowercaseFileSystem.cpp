@@ -32,20 +32,23 @@ void LowercaseFileSystem::refresh() {
 }
 
 bool LowercaseFileSystem::_exists(PathView path) const {
+    assert(path.isNormalized());
     const auto [basePath, node, tail] = walk(path);
     return tail.isEmpty();
 }
 
 FileStat LowercaseFileSystem::_stat(PathView path) const {
+    assert(path.isNormalized());
     const auto [basePath, node, tail] = walk(path);
     if (!tail.isEmpty())
         return FileStat();
     if (node->value().conflicting)
         return FileStat(FILE_REGULAR, 0); // Conflicts are reported as empty files.
-    return _base->stat(basePath);
+    return statOf(_base, basePath);
 }
 
 void LowercaseFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+    assert(path.isNormalized());
     const auto [basePath, node, tail] = walk(path);
     if (!tail.isEmpty())
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
@@ -59,27 +62,32 @@ void LowercaseFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entrie
 }
 
 Blob LowercaseFileSystem::_read(PathView path) const {
-    return _base->read(locateForReading(path));
+    assert(path.isNormalized());
+    return readOf(_base, locateForReading(path));
 }
 
 void LowercaseFileSystem::_write(PathView path, const Blob &data) {
+    assert(path.isNormalized());
     const auto &[basePath, node, tail] = locateForWriting(path);
-    _base->write(basePath, data);
+    writeOf(_base, basePath, data);
     cacheInsert(node, tail, FILE_REGULAR);
 }
 
 std::unique_ptr<InputStream> LowercaseFileSystem::_openForReading(PathView path) const {
-    return _base->openForReading(locateForReading(path));
+    assert(path.isNormalized());
+    return openForReadingOf(_base, locateForReading(path));
 }
 
 std::unique_ptr<OutputStream> LowercaseFileSystem::_openForWriting(PathView path) {
+    assert(path.isNormalized());
     const auto &[basePath, node, tail] = locateForWriting(path);
-    std::unique_ptr<OutputStream> result = _base->openForWriting(basePath);
+    std::unique_ptr<OutputStream> result = openForWritingOf(_base, basePath);
     cacheInsert(node, tail, FILE_REGULAR);
     return result;
 }
 
 bool LowercaseFileSystem::_remove(PathView path) {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
 
     auto [basePath, node, tail] = walk(path);
@@ -91,7 +99,7 @@ bool LowercaseFileSystem::_remove(PathView path) {
 
     try {
         // Return value doesn't matter here, from this file system's pov we are deleting an existing entry.
-        _base->remove(basePath);
+        removeOf(_base, basePath);
     } catch (...) {
         // Exception should mean that the file/folder wasn't removed. However, if it's a folder then some of the files
         // might have been removed, so we need to invalidate the caches in this case.
@@ -106,7 +114,7 @@ bool LowercaseFileSystem::_remove(PathView path) {
 
 std::string LowercaseFileSystem::_displayPath(PathView path) const {
     auto [basePath, node, tail] = walk(path);
-    return _base->displayPath(basePath / tail);
+    return displayPathOf(_base, basePath / tail);
 }
 
 std::tuple<Path, LowercaseFileSystem::Node *, PathView> LowercaseFileSystem::walk(PathView path) const {
@@ -138,7 +146,8 @@ void LowercaseFileSystem::cacheLs(Node *node, PathView basePath) const {
     if (node->value().listed)
         return;
 
-    std::vector<DirectoryEntry> entries = _base->ls(basePath);
+    std::vector<DirectoryEntry> entries;
+    lsOf(_base, basePath, &entries);
     for (DirectoryEntry &entry : entries) {
         std::string lowerEntryName = ascii::toLower(entry.name);
 

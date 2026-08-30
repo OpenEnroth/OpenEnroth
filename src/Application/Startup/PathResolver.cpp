@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "Utility/System/Fs.h"
+
 #include "Library/Logger/Logger.h"
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/FileSystem/Native/NativeFileSystem.h"

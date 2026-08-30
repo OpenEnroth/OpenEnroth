@@ -1,5 +1,6 @@
 #include "MountingFileSystem.h"
 
+#include <cassert>
 #include <vector>
 #include <memory>
 #include <ranges>
@@ -39,26 +40,29 @@ void MountingFileSystem::clearMounts() {
 }
 
 bool MountingFileSystem::_exists(PathView path) const {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
 
     auto [node, mount, tail] = walk(path);
-    return node ? true : mount ? mount->exists(tail) : false;
+    return node ? true : mount ? existsOf(mount, tail) : false;
 }
 
 FileStat MountingFileSystem::_stat(PathView path) const {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
     auto [node, mount, tail] = walk(path);
-    return node ? FileStat(FILE_DIRECTORY, 0) : mount ? mount->stat(tail) : FileStat();
+    return node ? FileStat(FILE_DIRECTORY, 0) : mount ? statOf(mount, tail) : FileStat();
 }
 
 void MountingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+    assert(path.isNormalized());
     auto [node, mount, tail] = walk(path);
 
     if (!node && !mount)
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 
     if (!node) {
-        mount->ls(tail, entries);
+        lsOf(mount, tail, entries);
         return;
     }
 
@@ -69,7 +73,7 @@ void MountingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries
     }
 
     // Need to merge in this case.
-    mount->ls(tail, entries);
+    lsOf(mount, tail, entries);
     std::ranges::sort(*entries);
     size_t originalSize = entries->size();
     bool cleanupNeeded = false;
@@ -95,37 +99,42 @@ void MountingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries
 }
 
 Blob MountingFileSystem::_read(PathView path) const {
+    assert(path.isNormalized());
     auto [mount, tail] = walkForReading(path);
-    return mount->read(tail);
+    return readOf(mount, tail);
 }
 
 void MountingFileSystem::_write(PathView path, const Blob &data) {
+    assert(path.isNormalized());
     auto [mount, tail] = walkForWriting(path);
-    return mount->write(tail, data);
+    return writeOf(mount, tail, data);
 }
 
 std::unique_ptr<InputStream> MountingFileSystem::_openForReading(PathView path) const {
+    assert(path.isNormalized());
     auto [mount, tail] = walkForReading(path);
-    return mount->openForReading(tail);
+    return openForReadingOf(mount, tail);
 }
 
 std::unique_ptr<OutputStream> MountingFileSystem::_openForWriting(PathView path) {
+    assert(path.isNormalized());
     auto [mount, tail] = walkForWriting(path);
-    return mount->openForWriting(tail);
+    return openForWritingOf(mount, tail);
 }
 
 bool MountingFileSystem::_remove(PathView path) {
+    assert(path.isNormalized());
     auto [node, mount, tail] = walk(path);
     if (node)
         FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
     if (!mount)
         return false; // Nothing to remove.
-    return mount->remove(tail);
+    return removeOf(mount, tail);
 }
 
 std::string MountingFileSystem::_displayPath(PathView path) const {
     // TODO(captainurist): this is not symmetric with that's done in read / openForReading / openForWriting.
-    return join(_displayName, "://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+    return join(_displayName, "://", path.displayString());
 }
 
 MountingFileSystem::WalkResult MountingFileSystem::walk(PathView path) {

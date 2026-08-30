@@ -8,6 +8,7 @@
 
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
+#include "Utility/Exception.h"
 #include "Utility/String/Format.h"
 #include "Utility/System/Fs.h"
 #include "Utility/UnicodeCrt.h"
@@ -23,11 +24,17 @@ int platformMain(int argc, char **argv) {
         if (opts.helpPrinted)
             return 1;
 
+        if (fs::stat(opts.testPath).type != FILE_DIRECTORY)
+            throw Exception("Test path '{}' is not a directory", opts.testPath);
+
         std::vector<Path> traceNames;
         for (const DirectoryEntry &entry : fs::ls(opts.testPath))
             if (entry.name.ends_with(".json"))
                 traceNames.push_back(Path(entry.name));
         std::ranges::sort(traceNames);
+
+        if (traceNames.empty())
+            throw Exception("No traces found in '{}'", opts.testPath); // Or we'd exit green having run nothing.
 
         for (const Path &traceName : traceNames)
             testing::RegisterTest("Retrace", traceName.withExtension("").string().c_str(),

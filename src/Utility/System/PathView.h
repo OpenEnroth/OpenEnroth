@@ -34,9 +34,9 @@ class PathView {
         return _path.empty();
     }
 
-    [[nodiscard]] bool isEscaping() const {
-        return _path == ".." || _path.starts_with("../");
-    }
+    [[nodiscard]] bool isEscaping() const;
+
+    [[nodiscard]] bool isNormalized() const;
 
     [[nodiscard]] std::string_view string() const {
         return _path;
@@ -57,6 +57,13 @@ class PathView {
 
     [[nodiscard]] PathSplit split() const;
 
+    /**
+     * @return                          This path as a valid UTF-8 string for displaying to the user, with everything
+     *                                  that's not valid UTF-8 replaced with U+FFFD. Unlike `string`, it might not
+     *                                  round-trip back into the same path.
+     */
+    [[nodiscard]] std::string displayString() const;
+
  private:
     std::string_view _path;
 };
@@ -71,6 +78,9 @@ struct std::hash<PathView> : std::hash<std::string_view> {
 };
 
 [[nodiscard]] inline PathView PathSplit::tailAt(std::same_as<std::string_view> auto chunk) const {
+    if (chunk.empty())
+        return {}; // A default-constructed split has no buffer to point into, so str() is not usable here.
+
     std::string_view path = str();
     assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
     size_t offset = chunk.data() - path.data();
@@ -78,6 +88,9 @@ struct std::hash<PathView> : std::hash<std::string_view> {
 }
 
 [[nodiscard]] inline PathView PathSplit::tailAfter(std::same_as<std::string_view> auto chunk) const {
+    if (chunk.empty() && str().data() == nullptr)
+        return {}; // A default-constructed split has no buffer to point into.
+
     std::string_view path = str(); // NOLINT: not std::string.
 
     if (chunk.empty())
@@ -103,6 +116,18 @@ inline Path Path::fromNormalized(PathView path) {
     return fromNormalized(std::string(path.string()));
 }
 
+inline bool PathView::isEscaping() const {
+    return Path::isEscapingImpl(_path);
+}
+
+inline std::string PathView::displayString() const {
+    return Path::fromNormalized(*this).displayString();
+}
+
+inline bool PathView::isNormalized() const {
+    return Path::isNormalizedImpl(_path);
+}
+
 inline std::string_view PathView::root() const {
     return Path::rootOf(_path);
 }
@@ -113,10 +138,6 @@ inline Path &Path::operator/=(PathView tail) {
 
 [[nodiscard]] inline Path operator/(PathView head, PathView tail) {
     return Path::fromNormalized(head) / Path::fromNormalized(tail);
-}
-
-[[nodiscard]] inline Path operator/(PathView head, std::string_view tail) {
-    return Path::fromNormalized(head) / Path(tail);
 }
 
 inline PathSplit PathView::split() const {

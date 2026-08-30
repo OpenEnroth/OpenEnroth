@@ -15,18 +15,18 @@
  * The path is stored as a string - WTF-8 on Windows, a byte string on POSIX - and all path manipulation is lexical,
  * these methods never touch the file system. No encoding is promised by the type itself, see below.
  *
- * Every `Path` is in lexical normal form, established at construction and preserved by every operation:
- * separators are single forward slashes with no trailing one, `.` segments are gone (a lone `"."` is the empty path,
- * which means "here"), and `..` is collapsed - surviving only as a leading run of a relative path, and clamped above
- * an absolute root, so `"/.."` is `"/"`. On Windows a backslash is
- * a separator and is converted, on POSIX it's an ordinary character in a file name and is left alone. A leading
- * `"//"` is root syntax and survives normalization - a share name on Windows, where a bare `"//"` is just `"/"`, and
- * the implementation-defined two-slash prefix on POSIX, where `"///"` and longer collapse to `"/"`.
+ * The bytes are kept as given. `normalized` is the one operation that rewrites them, collapsing `.` and `..`,
+ * squeezing separators and dropping a trailing one, and it has to be asked for - a `Path` is not normal just because
+ * it exists. The file system layer normalizes at its public boundary, so everything behind that boundary can assume
+ * normal form. Code talking to the OS mostly doesn't need to, since the OS resolves paths itself.
  *
- * Collapsing `..` lexically is a deliberate engine-wide decision - a path *means* its normal form. Where a symlink is
- * involved this diverges from the OS: with `a/link` pointing elsewhere, `Path("a/link/../f")` is `"a/f"`, while
- * the OS handed the raw string would resolve through the link's target. Code that needs the OS reading has to ask the
- * OS. The trailing-slash distinction POSIX draws on symlinks (`stat("link/")`) is likewise not expressible.
+ * Collapsing `..` is lexical when you do ask for it, which diverges from the OS where a symlink is involved: with
+ * `a/link` pointing elsewhere, `Path("a/link/../f").normalized()` is `"a/f"`, while the OS resolves through the
+ * link's target. That is why normalizing is not automatic - a path bound for the OS should keep what it was given.
+ *
+ * On Windows a backslash is a separator and is converted on construction, on POSIX it's an ordinary character in a
+ * file name and is left alone. A leading `"//"` is root syntax - a share name on Windows, where a bare `"//"` is
+ * just `"/"`, and the implementation-defined two-slash prefix on POSIX, where `"///"` and longer collapse to `"/"`.
  *
  * The bytes carry no encoding promise. They're WTF-8 on Windows, where that's the only encoding that round-trips
  * unpaired surrogates through the OS, and arbitrary bytes on Linux, which is what file names are there. MacOS is
@@ -96,6 +96,23 @@ class Path {
      *                                  `"C:"` is not root syntax - it parses as an ordinary relative segment.
      *                                  The returned view points into this path, so it dies with it.
      */
+    /**
+     * @return                          Copy of this path in lexical normal form - single separators with no trailing
+     *                                  one, no `.` segments, and `..` collapsed, surviving only as a leading run of a
+     *                                  relative path and clamped above an absolute root so that `"/.."` is `"/"`.
+     *                                  A lone `"."` normalizes to the empty path, which means "here".
+     */
+    [[nodiscard]] Path normalized() const;
+
+    /**
+     * @return                          Whether this path is already in lexical normal form, i.e. whether
+     *                                  `normalized` would return it unchanged. Cheaper than normalizing, since it
+     *                                  allocates nothing.
+     */
+    [[nodiscard]] bool isNormalized() const {
+        return isNormalizedImpl(_path);
+    }
+
     [[nodiscard]] std::string_view root() const {
         return rootOf(_path);
     }
@@ -109,11 +126,13 @@ class Path {
     }
 
     /**
-     * @return                          Whether this path points above its starting point. Under normal form that's
-     *                                  exactly a path starting with a `..` segment. Always `false` for an absolute
-     *                                  path, where `..` is clamped by the root.
+     * @return                          Whether this path points above its starting point - `"a/../.."` does, and so
+     *                                  does `".."`, while `"a/../b"` doesn't. Always `false` for an absolute path,
+     *                                  where `..` is clamped by the root. Doesn't require normal form.
      */
-    [[nodiscard]] bool isEscaping() const;
+    [[nodiscard]] bool isEscaping() const {
+        return isEscapingImpl(_path);
+    }
 
     /**
      * @return                          The last component, empty if there is none. `"a/b.txt"` gives `"b.txt"`.
@@ -124,9 +143,9 @@ class Path {
     /**
      * @return                          The extension of the file name, with the leading dot, empty if there is none.
      *                                  A leading dot doesn't start one, so `".bashrc"` has no extension, and only the
-     *                                  last one counts, so `"a.tar.gz"` gives `".gz"`. A name whose stem would be
-     *                                  all dots has none either - `"..."` and `"...a"` are whole names, not a stem
-     *                                  and an extension.
+     *                                  last one counts, so `"a.tar.gz"` gives `".gz"`. Same as `std::filesystem`,
+     *                                  which means `"..."` decomposes into a stem of `".."` and an extension of
+     *                                  `"."`.
      *                                  The returned view points into this path, so it dies with it.
      */
     [[nodiscard]] std::string_view extension() const;
@@ -145,17 +164,25 @@ class Path {
     [[nodiscard]] Path parent() const;
 
     /**
-     * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
-     *                                  the extension. Anything is accepted - this class never throws, and extension
-     *                                  strings reach it from user data - so an argument that's shaped like a path
-     *                                  is appended and normalized rather than rejected, and does extend the path.
-     *                                  `"a/b"` with `"/c/d"` is `"a/b./c/d"`, same as `std::filesystem` gives.
+     * @param extension                 New extension, which must satisfy `isExtension` - the result is unspecified
+     *                                  otherwise. Pass an empty string to drop the extension.
      * @return                          Copy of this path with the extension replaced. Only the last extension is
-     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`. Dropping an
-     *                                  extension never collapses the path, since the stem left behind is never all
-     *                                  dots.
+     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`.
+     *
+     *                                  A path with no file name gains one - `"a/b/"` with `".txt"` is `"a/b/.txt"`,
+     *                                  a hidden file inside the directory rather than a rename. `std::filesystem`
+     *                                  does the same, and the empty path, `"/"` and `"a/b//"` all behave that way.
      */
     [[nodiscard]] Path withExtension(std::string_view extension) const;
+
+    /**
+     * @param extension                 String to check.
+     * @return                          Whether it can be passed to `withExtension` - empty, or a leading dot
+     *                                  followed by something that is not a separator, a NUL or a trailing dot.
+     *                                  `isExtension(p.extension())` holds for every path, so
+     *                                  `p.withExtension(p.extension()) == p` is always the identity.
+     */
+    [[nodiscard]] static bool isExtension(std::string_view extension);
 
     [[nodiscard]] bool isEmpty() const {
         return _path.empty();
@@ -215,14 +242,20 @@ class Path {
     friend class PathView; // So that a view can answer root() and split() the same way this does.
 
     [[nodiscard]] static std::string_view rootOf(std::string_view path);
+    [[nodiscard]] static bool isEscapingImpl(std::string_view path);
+    [[nodiscard]] static bool isNormalizedImpl(std::string_view path);
 
  private:
     std::string _path;
 };
 
+/**
+ * Formats as `displayString`, so `{}` is always valid UTF-8 and safe to print. A path that is going to be read back
+ * as a path has to say `.string()` - the substitution the display form does is lossy.
+ */
 template<>
 struct fmt::formatter<Path> : fmt::formatter<std::string> {
     auto format(const Path &path, format_context &ctx) const {
-        return fmt::formatter<std::string>::format(path.string(), ctx);
+        return fmt::formatter<std::string>::format(path.displayString(), ctx);
     }
 };

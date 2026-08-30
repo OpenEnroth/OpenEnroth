@@ -1,5 +1,6 @@
 #include "MaskingFileSystem.h"
 
+#include <cassert>
 #include <vector>
 #include <memory>
 #include <string>
@@ -53,18 +54,21 @@ bool MaskingFileSystem::isMasked(PathView path) const {
 }
 
 bool MaskingFileSystem::_exists(PathView path) const {
+    assert(path.isNormalized());
     if (isMasked(path))
         return false;
     return ProxyFileSystem::_exists(path);
 }
 
 FileStat MaskingFileSystem::_stat(PathView path) const {
+    assert(path.isNormalized());
     if (isMasked(path))
         return {};
     return ProxyFileSystem::_stat(path);
 }
 
 void MaskingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+    assert(path.isNormalized());
     if (isMasked(path)) {
         if (path.isEmpty()) {
             return; // Pretend root exists even if it was masked.
@@ -87,30 +91,35 @@ void MaskingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries)
 }
 
 Blob MaskingFileSystem::_read(PathView path) const {
+    assert(path.isNormalized());
     if (isMasked(path))
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     return ProxyFileSystem::_read(path);
 }
 
 void MaskingFileSystem::_write(PathView path, const Blob &data) {
+    assert(path.isNormalized());
     if (isMasked(path))
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
     ProxyFileSystem::_write(path, data);
 }
 
 std::unique_ptr<InputStream> MaskingFileSystem::_openForReading(PathView path) const {
+    assert(path.isNormalized());
     if (isMasked(path))
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     return ProxyFileSystem::_openForReading(path);
 }
 
 std::unique_ptr<OutputStream> MaskingFileSystem::_openForWriting(PathView path) {
+    assert(path.isNormalized());
     if (isMasked(path))
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
     return ProxyFileSystem::_openForWriting(path);
 }
 
 bool MaskingFileSystem::_remove(PathView path) {
+    assert(path.isNormalized());
     if (isMasked(path))
         return false;
     return ProxyFileSystem::_remove(path);
@@ -118,6 +127,6 @@ bool MaskingFileSystem::_remove(PathView path) {
 
 std::string MaskingFileSystem::_displayPath(PathView path) const {
     if (isMasked(path))
-        return join("masked://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+        return join("masked://", path.displayString());
     return ProxyFileSystem::_displayPath(path);
 }

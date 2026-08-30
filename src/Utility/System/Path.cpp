@@ -1,6 +1,7 @@
 #include "Path.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cstddef>
 #include <string>
 #include <string_view>
@@ -27,7 +28,7 @@ static bool hasDriveRoot([[maybe_unused]] std::string_view path) {
 
 // Length of the root prefix - the leading part that normalization preserves verbatim. That's "" or "/" everywhere,
 // plus "//" on POSIX (a path starting with exactly two slashes is implementation-defined, so we don't touch it), and
-// "C:/" or "//server" / "//server/" on Windows. The root is what a relative path is relative to, so an absolute path
+// "C:/", "//server/" or an extended-length prefix like "//?/C:/" on Windows. The root is what a relative path is relative to, so an absolute path
 // is exactly one that has a non-empty root.
 static size_t rootSize(std::string_view path) {
     if (hasDriveRoot(path))
@@ -39,8 +40,18 @@ static size_t rootSize(std::string_view path) {
 
 #ifdef _WINDOWS
     if (slashes == 2 && path.size() > 2) {
-        size_t shareEnd = std::min(path.find(separator, 2), path.size()); // A UNC share, "//server" in "//server/x".
-        return shareEnd < path.size() ? shareEnd + 1 : shareEnd;
+        // An extended-length path, "//?/C:/x" or "//./COM1". Win32 does no parsing on these - that's the point of
+        // the prefix - so the volume or device that follows it anchors the path the same way a drive letter does,
+        // and "\\?\UNC\server\share" spells a share with two components instead of one.
+        size_t components = 1;
+        if (path.compare(2, 2, "?/") == 0 || path.compare(2, 2, "./") == 0)
+            components = path.compare(4, 4, "UNC/") == 0 ? 4 : 2;
+
+        size_t end = 2;
+        for (size_t i = 0; i < components && end < path.size(); i++)
+            end = std::min(path.find(separator, end + 1), path.size());
+
+        return end < path.size() ? end + 1 : end; // A root carries its separator, when it has one to carry.
     }
 #else
     if (slashes == 2)
@@ -56,33 +67,25 @@ static size_t fileNameOffset(std::string_view path) {
     return std::max(separatorPos == std::string_view::npos ? 0 : separatorPos + 1, rootSize(path));
 }
 
-// Offset of the extension inside the path, or npos if there's none. A leading dot doesn't start an extension, so
-// ".bashrc" has no extension. Neither does a name whose stem would be all dots - the stem of "..." is "..", and
-// dropping the extension of such a name would turn it into a navigation token rather than shortening it. That also
-// covers "." and ".." without naming them.
+// Offset of the extension inside the path, or npos if there's none. Mirrors std::filesystem: a leading dot doesn't
+// start an extension, so ".bashrc" has none, and the names "." and ".." have none either.
 static size_t extensionOffset(std::string_view path) {
     size_t nameOffset = fileNameOffset(path);
     std::string_view fileName = path.substr(nameOffset);
+    if (fileName == "." || fileName == "..")
+        return std::string_view::npos;
 
     size_t dotPos = fileName.rfind('.');
     if (dotPos == std::string_view::npos || dotPos == 0)
         return std::string_view::npos;
 
-    if (fileName.substr(0, dotPos).find_first_not_of('.') == std::string_view::npos)
-        return std::string_view::npos;
-
     return nameOffset + dotPos;
 }
 
-// Rewrites the path into the lexical normal form - see the class docs for what that is.
+// Rewrites the path into the lexical normal form - see Path::normalized for what that is. Separators are already
+// forward slashes here, the constructor does that.
 static std::string normalized(std::string_view path) {
     std::string result;
-
-#ifdef _WINDOWS
-    std::string converted(path);
-    std::ranges::replace(converted, '\\', separator); // Both slashes separate components on Windows.
-    path = converted;
-#endif
 
     size_t root = rootSize(path);
     bool isRooted = root > 0;
@@ -116,7 +119,19 @@ static std::string normalized(std::string_view path) {
     return result;
 }
 
-Path::Path(std::string_view path) : _path(normalized(path)) {}
+Path::Path(std::string_view path) : _path(path) {
+#ifdef _WINDOWS
+    std::ranges::replace(_path, '\\', separator); // Both slashes separate components on Windows.
+#endif
+}
+
+bool Path::isNormalizedImpl(std::string_view path) {
+    return ::normalized(path) == path; // Not the cheapest possible check, but this only runs inside an assert.
+}
+
+Path Path::normalized() const {
+    return fromNormalized(::normalized(_path));
+}
 
 #ifdef _WINDOWS
 Path Path::fromNative(std::wstring_view path) {
@@ -130,7 +145,14 @@ Path Path::fromNative(std::string_view path) {
 
 #ifdef _WINDOWS
 std::wstring Path::native() const {
-    return txt::wtf8ToWide(_path); // Win32 takes forward slashes just fine, no need to convert them back.
+    std::wstring result = txt::wtf8ToWide(_path);
+
+    // Win32 takes forward slashes everywhere except in an extended-length path, where it does no parsing at all and
+    // a forward slash is just a character a file name can't contain.
+    if (result.starts_with(L"//?/") || result.starts_with(L"//./"))
+        std::ranges::replace(result, L'/', L'\\');
+
+    return result;
 }
 #endif
 
@@ -142,8 +164,24 @@ std::string_view Path::rootOf(std::string_view path) {
     return path.substr(0, rootSize(path));
 }
 
-bool Path::isEscaping() const {
-    return _path == ".." || _path.starts_with("../");
+bool Path::isEscapingImpl(std::string_view path) {
+    if (rootSize(path) > 0)
+        return false; // An absolute path can't escape, ".." is clamped by the root.
+
+    int depth = 0;
+    for (std::string_view chunk : ::split(path).by(separator)) {
+        if (chunk.empty() || chunk == ".")
+            continue;
+
+        if (chunk == "..") {
+            if (--depth < 0)
+                return true;
+        } else {
+            depth++;
+        }
+    }
+
+    return false;
 }
 
 std::string_view Path::name() const {
@@ -172,7 +210,22 @@ Path Path::parent() const {
     return fromNormalized(_path.substr(0, end));
 }
 
+bool Path::isExtension(std::string_view extension) {
+    if (extension.empty())
+        return true; // Dropping the extension.
+    if (extension[0] != '.')
+        return false;
+    if (extension.size() > 1 && extension.back() == '.')
+        return false; // "..", "...", ".txt." - Windows trims a trailing dot and POSIX doesn't, so the same literal
+                      // would name two different files.
+
+    static constexpr std::string_view forbidden("/\\\0", 3); // Explicit length, so the NUL is part of the needle.
+    return extension.find_first_of(forbidden) == std::string_view::npos;
+}
+
 Path Path::withExtension(std::string_view extension) const {
+    assert(isExtension(extension));
+
     size_t offset = extensionOffset(_path);
     std::string result = offset == std::string::npos ? _path : _path.substr(0, offset);
 
@@ -182,9 +235,7 @@ Path Path::withExtension(std::string_view extension) const {
         result += extension;
     }
 
-    // The argument can be anything - extension strings reach here from user data, and Path neither throws nor
-    // asserts. Normalizing the result is what keeps a path-shaped argument honest rather than rejected.
-    return Path(result);
+    return fromNormalized(std::move(result));
 }
 
 Path Path::operator/(const Path &tail) const {
@@ -196,10 +247,9 @@ Path Path::operator/(const Path &tail) const {
     if (tail._path.empty())
         return *this;
 
-    // Re-normalizing the seam is what collapses a leading ".." run in the tail against the head.
     std::string result = _path;
     if (result.back() != separator)
         result += separator;
     result += tail._path;
-    return Path(result);
+    return fromNormalized(std::move(result)); // Plain concatenation - normalizing the seam is the caller's call.
 }

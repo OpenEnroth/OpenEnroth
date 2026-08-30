@@ -11,7 +11,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Streams/OutputStream.h"
-#include "Utility/System/Fs.h"
+#include "Utility/System/FileStat.h"
 
 #include "Utility/System/PathView.h"
 #include "FileSystemEnums.h"
@@ -136,7 +136,24 @@ class FileSystem {
     template<class T>
     using FileSystemTrie = detail::FileSystemTrie<T>;
 
-    friend class ProxyFileSystem; // It's OK for the default proxy implementation to call into the private methods.
+    // A file system that delegates to another one reaches it through these, not through its public methods - the
+    // argument already cleared the public boundary, so re-validating it would be wasted work. They have to be
+    // static: [class.protected] only lets a derived class reach a protected member through its own type, so
+    // `_base->_read(path)` doesn't compile while `readOf(_base, path)` does.
+    // The empty path is the root, which every file system has and no backend implements - the public methods
+    // answer for it before dispatching, so these have to as well. Skipping a check that is not about the path
+    // invariant is the one way these forwarders can differ from the public API, and this is that check.
+    static bool existsOf(const FileSystem *fs, PathView path) { return path.isEmpty() || fs->_exists(path); }
+    static FileStat statOf(const FileSystem *fs, PathView path) {
+        return path.isEmpty() ? FileStat(FILE_DIRECTORY, 0) : fs->_stat(path);
+    }
+    static void lsOf(const FileSystem *fs, PathView path, std::vector<DirectoryEntry> *entries) { fs->_ls(path, entries); }
+    static Blob readOf(const FileSystem *fs, PathView path) { return fs->_read(path); }
+    static void writeOf(FileSystem *fs, PathView path, const Blob &data) { fs->_write(path, data); }
+    static std::unique_ptr<InputStream> openForReadingOf(const FileSystem *fs, PathView path) { return fs->_openForReading(path); }
+    static std::unique_ptr<OutputStream> openForWritingOf(FileSystem *fs, PathView path) { return fs->_openForWriting(path); }
+    static bool removeOf(FileSystem *fs, PathView path) { return fs->_remove(path); }
+    static std::string displayPathOf(const FileSystem *fs, PathView path) { return fs->_displayPath(path); }
 
  protected:
     [[nodiscard]] virtual bool _exists(PathView path) const = 0;
