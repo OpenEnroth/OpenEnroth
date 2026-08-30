@@ -380,6 +380,10 @@ static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &cras
         if (frame[1] == 0)
             break;
         frames.push_back(frame[1] - 1);
+        // A frame built without a frame pointer holds something else in that slot. The caller's frame is always
+        // further up the stack, so a value that isn't stops the walk instead of being followed.
+        if (frame[0] <= fp || frame[0] % sizeof(uintptr_t) != 0)
+            break;
         fp = frame[0];
     }
     return frames;

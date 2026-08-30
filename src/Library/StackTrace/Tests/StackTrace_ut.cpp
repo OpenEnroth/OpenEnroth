@@ -176,7 +176,8 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashOnAnotherThreadIsTraced) {
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, NullFunctionCallIsTraced) {
     // Calling a null pointer faults at address zero, where there's nothing to unwind from. The call pushed its
     // return address first though, and walking on from that names the function that made the call and
-    // everything above it.
+    // everything above it. The walk used to follow the frame pointer slot of a frame that had none, past main
+    // into garbage, and on i386 that crashed the handler before it printed a single frame.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
