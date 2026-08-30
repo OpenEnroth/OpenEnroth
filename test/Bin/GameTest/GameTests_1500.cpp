@@ -1070,3 +1070,37 @@ GAME_TEST(Issues, Issue1997) {
     EXPECT_EQ(blessTape.front(), 0);
     EXPECT_GT(blessTape.back(), 0); // Bless was cast at least once.
 }
+
+GAME_TEST(Issues, Issue1998) {
+    // Repairing an unidentified item from the inventory also identified it, even with no identify skill at all.
+    for (bool repairDoesNotIdentify : {true, false}) {
+        SCOPED_TRACE(fmt::format("repairDoesNotIdentify={}", repairDoesNotIdentify));
+        test.prepareForNextTest();
+        engine->config->gameplay.RepairDoesNotIdentify.setValue(repairDoesNotIdentify);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+
+        Character &character = pParty->pCharacters[0];
+        character.setSkillValue(SKILL_REPAIR, CombinedSkillValue(10, MASTERY_GRANDMASTER)); // Grandmaster repair always succeeds.
+        character.setSkillValue(SKILL_ITEM_ID, CombinedSkillValue::none());
+        Item armor(ITEM_LEATHER_ARMOR); // A fresh item is unidentified.
+        armor.SetBroken();
+        ASSERT_GT(pItemTable->items[armor.itemId].identifyAndRepairDifficulty, 0); // Zero-difficulty items identify on inspection.
+        ASSERT_FALSE(character.CanIdentify(armor));
+        ASSERT_TRUE(character.CanRepair(armor));
+        character.inventory.clear();
+        character.inventory.add(Pointi(0, 0), armor);
+
+        // Right-click the item in the inventory grid, the popup does the repair.
+        game.goToInventory(1);
+        game.pressButton(BUTTON_RIGHT, 30, 30);
+        game.tick();
+        game.releaseButton(BUTTON_RIGHT, 30, 30);
+        game.tick();
+
+        auto entry = character.inventory.entry(Pointi(0, 0));
+        ASSERT_TRUE(entry);
+        EXPECT_FALSE(entry->IsBroken()); // Repaired either way.
+        EXPECT_EQ(entry->IsIdentified(), !repairDoesNotIdentify); // Before the fix it was always identified.
+    }
+}

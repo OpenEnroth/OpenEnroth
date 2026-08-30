@@ -355,11 +355,14 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     }
 
     if (pParty->hasActiveCharacter()) {
+        bool repairDoesNotIdentify = engine->config->gameplay.RepairDoesNotIdentify.value();
+        SpeechId speech = SPEECH_NONE;
+
         // try to identify
         if (!inspect_item->IsIdentified()) {
             if (pParty->activeCharacter().CanIdentify(*inspect_item) == 1)
                 inspect_item->SetIdentified();
-            SpeechId speech = SPEECH_ID_ITEM_FAIL;
+            speech = SPEECH_ID_ITEM_FAIL;
             if (!inspect_item->IsIdentified()) {
                 engine->_statusBar->setEvent(LSTR_IDENTIFY_FAILED);
             } else {
@@ -368,24 +371,29 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
                     speech = SPEECH_ID_ITEM_WEAK;
                 }
             }
-            if (!identifyOrRepairReactionPlayed) {
-                pParty->activeCharacter().playReaction(speech);
-                identifyOrRepairReactionPlayed = true;
-            }
         }
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
         if (inspect_item->IsBroken()) {
-            if (pParty->activeCharacter().CanRepair(*inspect_item) == 1)
-                inspect_item->flags = inspect_item->flags & ~ITEM_BROKEN | ITEM_IDENTIFIED;
-            SpeechId speech = SPEECH_REPAIR_FAIL;
-            if (!inspect_item->IsBroken())
-                speech = SPEECH_REPAIR_SUCCESS;
-            else
-                engine->_statusBar->setEvent(LSTR_REPAIR_FAILED);
-            if (!identifyOrRepairReactionPlayed) {
-                pParty->activeCharacter().playReaction(speech);
-                identifyOrRepairReactionPlayed = true;
+            if (pParty->activeCharacter().CanRepair(*inspect_item) == 1) {
+                if (repairDoesNotIdentify) {
+                    inspect_item->SetRepaired();
+                } else {
+                    inspect_item->flags = inspect_item->flags & ~ITEM_BROKEN | ITEM_IDENTIFIED;
+                }
             }
+            // A successful repair outranks the identification speech, vanilla keeps whichever came first.
+            if (!inspect_item->IsBroken()) {
+                if (repairDoesNotIdentify || speech == SPEECH_NONE)
+                    speech = SPEECH_REPAIR_SUCCESS;
+            } else {
+                engine->_statusBar->setEvent(LSTR_REPAIR_FAILED);
+                if (speech == SPEECH_NONE)
+                    speech = SPEECH_REPAIR_FAIL;
+            }
+        }
+        if (speech != SPEECH_NONE && !identifyOrRepairReactionPlayed) {
+            pParty->activeCharacter().playReaction(speech);
+            identifyOrRepairReactionPlayed = true;
         }
     }
 

@@ -277,6 +277,10 @@ class GameConfig : public Config {
             "Don't let eradicated characters drink potions. In vanilla a potion dropped on an eradicated "
             "character's portrait is drunk normally."};
 
+        Bool RepairDoesNotIdentify = {this, "repair_does_not_identify", true,
+            "Repairing an unidentified item in the inventory leaves it unidentified and plays the repair speech. "
+            "In vanilla a successful repair also identifies the item and the failed identification speech plays."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
