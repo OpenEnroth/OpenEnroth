@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/Config/Config.h"
@@ -7,6 +9,7 @@
 #include "Library/Logger/LogSink.h"
 
 #include "Utility/Streams/MemoryInputStream.h"
+#include "Utility/Streams/BlobOutputStream.h"
 
 // Minimal concrete Config subclass for testing.
 struct TestConfig : Config {
@@ -14,6 +17,8 @@ struct TestConfig : Config {
         explicit TestSection(Config *config) : ConfigSection(config, "test") {}
 
         ConfigEntry<int> value = {this, "value", 42, "Test integer entry."};
+        ConfigEntry<bool> flag = {this, "flag", false, "Test boolean entry."};
+        ConfigEntry<std::string> name = {this, "name", "default", "Test string entry."};
     } test{this};
 };
 
@@ -48,4 +53,24 @@ UNIT_TEST_FIXTURE(ConfigTest, ValidValueIsLoaded) {
     MemoryInputStream stream(ini.data(), ini.size());
     EXPECT_NO_THROW(config.load(&stream));
     EXPECT_EQ(config.test.value.value(), 7);
+}
+
+UNIT_TEST_FIXTURE(ConfigTest, SavedValuesAreLoadedBack) {
+    // Issue #1167: the game started with default values instead of the ones it had itself written to the ini.
+    TestConfig saved;
+    saved.test.value.setValue(-13);
+    saved.test.flag.setValue(true);
+    saved.test.name.setValue("with spaces and = sign");
+
+    Blob blob;
+    BlobOutputStream out(&blob);
+    saved.save(&out);
+    out.close();
+
+    TestConfig loaded;
+    MemoryInputStream in(blob.data(), blob.size());
+    EXPECT_NO_THROW(loaded.load(&in));
+    EXPECT_EQ(loaded.test.value.value(), -13);
+    EXPECT_EQ(loaded.test.flag.value(), true);
+    EXPECT_EQ(loaded.test.name.value(), "with spaces and = sign");
 }
