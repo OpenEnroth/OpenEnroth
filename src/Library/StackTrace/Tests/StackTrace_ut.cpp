@@ -14,6 +14,57 @@
 #include "Utility/String/Format.h"
 #include "Utility/String/Split.h"
 
+#ifdef __APPLE__
+#   include <dlfcn.h>
+#   include <mach/mach.h>
+#   include <pthread.h>
+#   include <sys/sysctl.h>
+#endif
+
+// PROBE: enumerate every mach thread in this process, to name the second one gtest counts under rosetta.
+static void probeDumpThreads(const char *where) {
+#ifdef __APPLE__
+    int translated = 0;
+    size_t size = sizeof(translated);
+    sysctlbyname("sysctl.proc_translated", &translated, &size, nullptr, 0);
+    thread_act_array_t threads = nullptr;
+    mach_msg_type_number_t count = 0;
+    task_threads(mach_task_self(), &threads, &count);
+    std::fprintf(stderr, "[probe %s] translated=%d threads=%u self=%p\n", where, translated, count, static_cast<void *>(pthread_self()));
+    for (mach_msg_type_number_t i = 0; i < count; i++) {
+        thread_extended_info_data_t extended = {};
+        mach_msg_type_number_t extendedCount = THREAD_EXTENDED_INFO_COUNT;
+        kern_return_t infoResult = thread_info(threads[i], THREAD_EXTENDED_INFO, reinterpret_cast<thread_info_t>(&extended), &extendedCount);
+        pthread_t pt = pthread_from_mach_thread_np(threads[i]);
+        void *pc = nullptr;
+        kern_return_t stateResult = KERN_FAILURE;
+#if defined(__x86_64__)
+        x86_thread_state64_t state;
+        mach_msg_type_number_t stateCount = x86_THREAD_STATE64_COUNT;
+        stateResult = thread_get_state(threads[i], x86_THREAD_STATE64, reinterpret_cast<thread_state_t>(&state), &stateCount);
+        if (stateResult == KERN_SUCCESS)
+            pc = reinterpret_cast<void *>(state.__rip);
+#elif defined(__aarch64__)
+        arm_thread_state64_t state;
+        mach_msg_type_number_t stateCount = ARM_THREAD_STATE64_COUNT;
+        stateResult = thread_get_state(threads[i], ARM_THREAD_STATE64, reinterpret_cast<thread_state_t>(&state), &stateCount);
+        if (stateResult == KERN_SUCCESS)
+            pc = reinterpret_cast<void *>(arm_thread_state64_get_pc(state));
+#endif
+        Dl_info info = {};
+        if (pc)
+            dladdr(pc, &info);
+        std::fprintf(stderr, "[probe %s] thread %u info=%d name='%s' flags=%#x pthread=%p state=%d pc=%p module=%s symbol=%s\n",
+                     where, i, infoResult, infoResult == KERN_SUCCESS ? extended.pth_name : "", infoResult == KERN_SUCCESS ? extended.pth_flags : 0,
+                     static_cast<void *>(pt), stateResult, pc, info.dli_fname ? info.dli_fname : "?", info.dli_sname ? info.dli_sname : "?");
+        mach_port_deallocate(mach_task_self(), threads[i]);
+    }
+    vm_deallocate(mach_task_self(), reinterpret_cast<vm_address_t>(threads), count * sizeof(thread_act_t));
+#else
+    std::fprintf(stderr, "[probe %s] not apple\n", where);
+#endif
+}
+
 #ifndef __ANDROID__ // Stack traces are not supported on android.
 
 // On windows dedicated CRT hooks print the reasons asserted below. On posix there are no hooks - abort and
@@ -39,6 +90,7 @@ constexpr bool isMac = false;
 class ThreadSafeDeathTest : public testing::Test {
  protected:
     void SetUp() override {
+        probeDumpThreads("SetUp");
         GTEST_FLAG_SET(death_test_style, "threadsafe");
     }
 };
@@ -154,6 +206,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashHandlerNamesTheCrashingFunction) {
         // exception filter, so on windows ours would never see the access violation below.
         GTEST_FLAG_SET(catch_exceptions, false);
 
+        probeDumpThreads("child");
         StackTraceOnCrash handler;
         stackTraceCrashingFunction();
     }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::HasSubstr("main")));
