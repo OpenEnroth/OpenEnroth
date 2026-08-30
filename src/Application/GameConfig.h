@@ -277,6 +277,11 @@ class GameConfig : public Config {
             "Don't let eradicated characters drink potions. In vanilla a potion dropped on an eradicated "
             "character's portrait is drunk normally."};
 
+        Bool TurnBasedFocusSkipsIncapacitated = {this, "turn_based_focus_skips_incapacitated", true,
+            "In turn-based mode move the focus off the active character as soon as it can no longer act, the same way "
+            "realtime mode does. Off keeps an eradicated character selected, which the infinite well drinking trick "
+            "relies on."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
