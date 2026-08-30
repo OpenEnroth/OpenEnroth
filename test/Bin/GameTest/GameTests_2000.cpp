@@ -19,6 +19,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Resources/EngineFileSystem.h"
@@ -539,6 +540,39 @@ GAME_TEST(Prs, Pr2157b) {
     EXPECT_FALSE(inventory.find(ITEM_DAZZLING_RING));
     EXPECT_EQ(soundsTape.flatten().count(SOUND_error), 1);
     EXPECT_EQ(inventory.size(), 126);
+}
+
+GAME_TEST(Issues, Issue2146) {
+    // Monster attack preferences ignored promoted classes, so a monster that hunts clerics never went for priests.
+    for (bool includePromotions : {true, false}) {
+        test.prepareForNextTest();
+        engine->config->gameplay.AttackPreferencesIncludePromotions.setValue(includePromotions);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        engine->config->debug.NoActors.setValue(false);
+
+        // Three knights and a priest at #2, so the priest is the only character a cleric hunter could prefer.
+        for (Character &character : pParty->pCharacters)
+            character.classType = CLASS_KNIGHT;
+        Character &priest = pParty->pCharacters[2];
+        priest.classType = CLASS_PRIEST;
+
+        EXPECT_EQ(priest.matchesAttackPreference(ATTACK_PREFERENCE_CLERIC), includePromotions);
+        EXPECT_FALSE(priest.matchesAttackPreference(ATTACK_PREFERENCE_KNIGHT)); // Promotion doesn't leak into other classes.
+        priest.classType = CLASS_PRIEST_OF_SUN;
+        EXPECT_EQ(priest.matchesAttackPreference(ATTACK_PREFERENCE_CLERIC), includePromotions); // Tier 3 counts as a promotion too.
+        priest.classType = CLASS_PRIEST;
+
+        // Same through the victim picker. A single preferred victim makes the pick deterministic.
+        Actor *hunter = game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY);
+        hunter->monsterInfo.attackPreferences = ATTACK_PREFERENCE_CLERIC;
+        if (includePromotions) {
+            EXPECT_EQ(stru_50C198.which_player_to_attack(hunter), 2); // The priest is the only preferred victim.
+        } else {
+            pParty->pCharacters[1].classType = CLASS_CLERIC;
+            EXPECT_EQ(stru_50C198.which_player_to_attack(hunter), 1); // Only the base-class cleric is preferred, not the priest.
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue2186a) {
