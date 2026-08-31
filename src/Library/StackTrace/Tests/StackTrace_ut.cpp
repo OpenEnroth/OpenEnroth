@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <exception>
 #include <string>
+#include <string_view>
 #include <thread>
 
 #ifdef _WINDOWS
@@ -210,7 +211,7 @@ UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
         // exception filter, so on windows ours would never see the access violation below.
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceCrashingFunction();
     }, killedBy(SIGSEGV), testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::HasSubstr("main")));
 }
@@ -221,7 +222,7 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         std::thread(stackTraceCrashingFunction).join();
     // A worker's stack ends at the thread entry, so main being absent is what says we traced the thread that
     // crashed rather than the one that installed the handlers.
@@ -235,7 +236,7 @@ UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceNullCallFunction();
     }, killedBy(SIGSEGV), testing::AllOf(HasFrame(0, "stackTraceNullCallFunction"), testing::HasSubstr("main")));
 }
@@ -246,7 +247,7 @@ UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceBadTargetCallFunction();
     }, killedBy(SIGSEGV), testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
 }
@@ -256,7 +257,7 @@ UNIT_TEST(StackTrace, DivisionByZeroIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceDivisionFunction();
     }, killedBy(SIGFPE), testing::AllOf(HasFrame(0, "stackTraceDivisionFunction"), testing::HasSubstr("main")));
 }
@@ -267,7 +268,7 @@ UNIT_TEST(StackTrace, BuiltinTrapIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceTrapFunction();
     }, killedBy(SIG_BUILTIN_TRAP),
        testing::AllOf(HasFrame(0, "stackTraceTrapFunction"), testing::HasSubstr("main")));
@@ -283,26 +284,45 @@ UNIT_TEST(StackTrace, StackOverflowIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceOverflowFunction(0);
     }, killedBy(SIGSEGV), HasFrame(0, "stackTraceOverflowFunction"));
 }
 
-UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
-    // The callback is what holds a console window open after a crash, so it has to fire after the trace is
-    // printed. Matching on order and not just presence is what guards that.
-    auto callbackAfterTrace = testing::Truly([](const std::string &output) {
-        size_t tracePos = output.find("stackTraceCrashingFunction");
-        size_t callbackPos = output.find("crash callback ran");
-        return tracePos != std::string::npos && callbackPos != std::string::npos && tracePos < callbackPos;
+UNIT_TEST(StackTrace, InitReturnsThePreviousCallback) {
+    // The return value is what lets a callback chain to whatever was in effect before it, and what restores
+    // that afterwards. Both only work if every call hands back the callback it replaced, with nullptr standing
+    // for the default.
+    CrashCallback custom = [](std::string_view, bool) {};
+    CrashCallback previous = initStackTraceOnCrash(custom);
+    EXPECT_NE(previous, nullptr);
+    EXPECT_EQ(initStackTraceOnCrash(nullptr), custom);
+    EXPECT_EQ(initStackTraceOnCrash(previous), &printCrashChunk);
+}
+
+UNIT_TEST(StackTrace, CrashArrivesAsHeaderThenTrace) {
+    // The reason goes out as a chunk of its own before anything is symbolized, so that a hang in symbolization
+    // still leaves it behind, and the trace is the final chunk - the one an app callback holds a console window
+    // open on, which is why nothing may follow it. Exactly two chunks, in that order, is what this guards.
+    auto headerThenTrace = testing::Truly([](const std::string &output) {
+        int chunks = 0;
+        for (size_t pos = output.find("chunk:"); pos != std::string::npos; pos = output.find("chunk:", pos + 1))
+            chunks++;
+        size_t reason = output.find("chunk:\n\nCrashed because of");
+        size_t trace = output.find("final chunk:\n");
+        return chunks == 2 && reason != std::string::npos && trace != std::string::npos && reason < trace &&
+               output.find("stackTraceCrashingFunction", trace) != std::string::npos;
     });
 
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler([] { std::fputs("crash callback ran", stderr); });
+        initStackTraceOnCrash([](std::string_view text, bool final) {
+            printCrashChunk(final ? "final chunk:" : "chunk:", false);
+            printCrashChunk(text, final);
+        });
         stackTraceCrashingFunction();
-    }, killedBy(SIGSEGV), callbackAfterTrace);
+    }, killedBy(SIGSEGV), headerThenTrace);
 }
 
 UNIT_TEST(StackTrace, AbortIsTraced) {
@@ -312,7 +332,7 @@ UNIT_TEST(StackTrace, AbortIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceAbortFunction();
     }, killedBy(SIGABRT), testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
                                          testing::HasSubstr("stackTraceAbortFunction")));
@@ -328,7 +348,7 @@ UNIT_TEST(StackTrace, AssertIsTraced) {
         GTEST_FLAG_SET(catch_exceptions, false);
         sendAssertReportsToStderr();
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceAssertFunction();
     }, killedBy(SIGABRT), testing::AllOf(testing::HasSubstr("Assertion"),
                                          testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
@@ -342,7 +362,7 @@ UNIT_TEST(StackTrace, TerminateIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceTerminateFunction();
     }, killedBy(SIGABRT), testing::AllOf(testing::HasSubstr(isWindows ? "std::terminate()" : isMac ? "terminating" : "terminate"),
                                          testing::HasSubstr("stackTraceTerminateFunction")));
@@ -355,7 +375,7 @@ UNIT_TEST(StackTrace, PureVirtualCallIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTracePureCallFunction();
     }, killedBy(sigPureCall()), testing::AllOf(testing::HasSubstr(isWindows ? "pure virtual function call" : "callPureIndirectly"),
                                                testing::HasSubstr("stackTracePureCallFunction")));
@@ -366,7 +386,7 @@ UNIT_TEST(StackTrace, InvalidParameterIsTraced) {
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        StackTraceOnCrash handler;
+        initStackTraceOnCrash();
         stackTraceInvalidParameterFunction();
     }, testing::AllOf(testing::HasSubstr("invalid parameter passed to a CRT function"),
                       testing::HasSubstr("stackTraceInvalidParameterFunction")));
