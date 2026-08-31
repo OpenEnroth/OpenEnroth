@@ -30,7 +30,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   jq \
   nano \
   vim \
-  tmux \
   imagemagick \
   python3-pip \
   python3-pil \
@@ -122,9 +121,6 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
 
 # Install Claude
 RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
-
-# tmux config — Claude runs inside tmux so it survives host terminal disconnects.
-COPY --chown=$USERNAME:$USERNAME tmux.conf /home/$USERNAME/.tmux.conf
 
 # Copy and set up firewall script
 COPY init-firewall.sh /usr/local/bin/
