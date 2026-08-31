@@ -42,7 +42,6 @@
 #include "GUI/UI/Houses/TownHall.h"
 #include "GUI/UI/Houses/Shops.h"
 
-#include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -666,10 +665,14 @@ void createHouseUI(HouseId houseId) {
     }
 }
 
-// TODO(Nik-RE-dev): looks like this function is not needed anymore
+/**
+ * In MM6 this is the seam between a movie house's movie and the game. It runs on every return to the house
+ * menu, and when the house is the High Council - where the ending ceremony movie plays - it rebuilds the
+ * house window under the game over flag. MM7 has no movie houses, so in MM7 there is nothing to do.
+ */
 void BackToHouseMenu() {
-    auto pMouse = EngineIocContainer::ResolveMouse();
-    // TODO(Nik-RE-dev): Looks like it's artifact of MM6
+    // MM6 house 165 is the High Council. MM7 reused that id for the Erathian Master Guild of Body, and
+    // running this there was the #840 crash, so the block stays disabled until MM6 support gives it a home.
 #if 0
     if (window_SpeakInHouse && window_SpeakInHouse->houseId() == 165 &&
         !pMovie_Track) {
