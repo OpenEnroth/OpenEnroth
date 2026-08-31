@@ -34,6 +34,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   python3-pip \
   python3-pil \
   python3-numpy \
+  python3-capstone \
+  python3-pefile \
+  binutils-multiarch \
   wget \
   ca-certificates \
   curl \
