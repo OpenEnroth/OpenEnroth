@@ -1,9 +1,6 @@
 #pragma once
 
 namespace detail {
-/**
- * @return                              Whether this is an x86_64 binary running under Rosetta translation.
- */
 bool isRunningUnderRosetta();
 } // namespace detail
 
