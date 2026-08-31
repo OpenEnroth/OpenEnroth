@@ -216,6 +216,9 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, BadTargetCallIsTraced) {
 }
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, StackOverflowIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "Rosetta can't reliably deliver the guard page fault.";
+
     // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
     // faults on the exhausted stack and the crash prints nothing at all. Under rosetta, where darwin_x86_64
     // runs in CI, an overflow of frames a few dozen bytes deep froze the process for good - no signal was
@@ -246,6 +249,9 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashCallbackRunsAfterTheTrace) {
 }
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AbortIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
+
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
@@ -256,6 +262,9 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AbortIsTraced) {
 }
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, TerminateIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
+
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
@@ -266,6 +275,9 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, TerminateIsTraced) {
 }
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, PureVirtualCallIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
+
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
