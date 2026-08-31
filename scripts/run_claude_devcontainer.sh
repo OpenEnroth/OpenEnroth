@@ -17,9 +17,11 @@ fi
 echo "Starting devcontainer (no-op if already running)..."
 devcontainer up --workspace-folder "$REPO_DIR" >/dev/null
 
-# The agent view is the entry point. Sessions dispatched from it run under the supervisor and keep working
-# when the host terminal dies - only the view dies, and rerunning this script brings it back with every
-# session still in it. TERM and COLORTERM are forwarded from the host, because plain `devcontainer exec`
-# passes a bare TERM=xterm and drops COLORTERM.
+# Claude's agent view is the entry point. Sessions dispatched from it keep running when the host terminal
+# dies. A dead terminal only takes down the view itself. Rerun this script to get it back, with every
+# session still in it.
+#
+# TERM and COLORTERM are forwarded by hand. Plain `devcontainer exec` passes a bare TERM=xterm and drops
+# COLORTERM.
 exec devcontainer exec --workspace-folder "$REPO_DIR" \
   bash -lc "TERM='${TERM:-xterm-256color}' COLORTERM='${COLORTERM:-}' exec claude agents --dangerously-skip-permissions"
