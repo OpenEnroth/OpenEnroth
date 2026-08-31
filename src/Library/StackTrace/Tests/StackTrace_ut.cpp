@@ -131,24 +131,14 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
     return result + 1;
 }
 
-static volatile char *volatile stackTraceOverflowEscape; // Never read, the pads below are stored here so they exist.
+static volatile char *volatile stackTraceOverflowEscape; // Never read, the pad below is stored here so it exists.
 
-MM_NOINLINE int stackTraceOverflowFunction2(int depth);
-
-MM_NOINLINE int stackTraceOverflowFunction1(int depth) {
+MM_NOINLINE int stackTraceOverflowFunction(int depth) {
     volatile char pad[1024]; // Big frames overflow fast, and the volatile writes keep the endless recursion out of UB land.
-    stackTraceOverflowEscape = pad; // Or -O2 drops the pad, and rosetta freezes the whole process on an overflow of frames that small.
+    stackTraceOverflowEscape = pad; // Address taken, so the pad stays on the stack at -O2 and the recursion can't be folded into a loop.
     pad[0] = static_cast<char>(depth); // Touching both ends, or the compiler is free to shrink the array.
     pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + stackTraceOverflowFunction2(depth + 1); // Mutual, or this folds into a loop that never overflows.
-}
-
-MM_NOINLINE int stackTraceOverflowFunction2(int depth) {
-    volatile char pad[1024];
-    stackTraceOverflowEscape = pad;
-    pad[0] = static_cast<char>(depth);
-    pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + stackTraceOverflowFunction1(depth + 1);
+    return pad[0] + pad[1023] + stackTraceOverflowFunction(depth + 1);
 }
 
 #if defined(__linux__) && !defined(__ANDROID__)
@@ -234,7 +224,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, StackOverflowIsTraced) {
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
-        stackTraceOverflowFunction1(0);
+        stackTraceOverflowFunction(0);
     }, HasFrame(0, "stackTraceOverflowFunction"));
 }
 
