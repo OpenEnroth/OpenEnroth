@@ -44,6 +44,18 @@ static void sendAssertReportsToStderr() {
 }
 
 /**
+ * @param line                          One line of a trace.
+ * @return                              The function the line names, without the location that may follow it.
+ */
+std::string_view frameFunction(std::string_view line) {
+    size_t start = line.find(" in ");
+    if (start == std::string_view::npos)
+        return {};
+    line = line.substr(start + 4);
+    return line.substr(0, line.find(" at ")); // The location can contain anything, bazel's execroot is literally _main.
+}
+
+/**
  * Matches when the frame numbered `index` names `function`. The regexes gtest's own death test matchers take
  * aren't portable - gtest picks between two engines with different grammars depending on the platform - so
  * this walks the lines instead.
@@ -51,7 +63,17 @@ static void sendAssertReportsToStderr() {
 MATCHER_P2(HasFrame, index, function, "") {
     std::string prefix = fmt::format("#{} ", index);
     for (std::string_view line : split(std::string_view(arg)).by('\n'))
-        if (line.starts_with(prefix) && line.contains(function))
+        if (line.starts_with(prefix) && frameFunction(line).contains(function))
+            return true;
+    return false;
+}
+
+/**
+ * Matches when any frame names `function`.
+ */
+MATCHER_P(HasFrameNamed, function, "") {
+    for (std::string_view line : split(std::string_view(arg)).by('\n'))
+        if (line.starts_with('#') && frameFunction(line).contains(function))
             return true;
     return false;
 }
@@ -168,7 +190,7 @@ UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
         std::thread(stackTraceCrashingFunction).join();
     // A worker's stack ends at the thread entry, so main being absent is what says we traced the thread that
     // crashed rather than the one that installed the handlers.
-    }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::Not(testing::HasSubstr("main"))));
+    }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::Not(HasFrameNamed("main"))));
 }
 
 UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
