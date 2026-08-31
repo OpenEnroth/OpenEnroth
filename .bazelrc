@@ -50,10 +50,10 @@ build:windows --copt=/DFMT_USE_NONTYPE_TEMPLATE_ARGS
 build:android_base --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
 
 # ─── Compiler selection ───────────────────────────────────────────────────────
-# Linux builds use the environment's default gcc; C++23 "deducing this" (P0847R7)
-# needs GCC >= 14, so CI promotes gcc-14 via update-alternatives (runners default
-# to gcc-13) and the dev container ships gcc-15. No version pins here — pinning
-# paths in --action_env just forces every environment to install that exact version.
+# Linux builds use the environment's default gcc. C++23 "deducing this" (P0847R7)
+# needs GCC >= 14, and the ubuntu 26.04 runners and the dev container both ship
+# gcc-15. No version pins here — pinning paths in --action_env just forces every
+# environment to install that exact version.
 
 # ─── Disable strict header dep tracking ─────────────────────────────────────
 # MSVC's /showIncludes causes Bazel to reject headers found via /Isrc but not

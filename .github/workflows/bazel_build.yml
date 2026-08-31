@@ -64,8 +64,8 @@ jobs:
       ${{
         startsWith(matrix.target, 'windows_') && 'windows-2022' ||
         startsWith(matrix.target, 'darwin_')  && 'macos-15'     ||
-        matrix.target == 'linux_arm64'        && 'ubuntu-24.04-arm' ||
-        'ubuntu-24.04'
+        matrix.target == 'linux_arm64'        && 'ubuntu-26.04-arm' ||
+        'ubuntu-26.04'
       }}
     defaults:
       run:
@@ -132,9 +132,9 @@ jobs:
             if [ "${{env.MATRIX_BAZEL_CONFIG}}" = "linux_x86" ]; then
               sudo dpkg --add-architecture i386
               sudo apt-get update
-              sudo apt-get install -y gcc-14-multilib g++-14-multilib lld mold pkg-config
+              sudo apt-get install -y gcc-multilib g++-multilib lld mold pkg-config
               sudo apt-get install -y libglu1-mesa-dev:i386
-              # The SDL3/OpenAL backend dev set, trimmed to what noble's partial
+              # The SDL3/OpenAL backend dev set, trimmed to what ubuntu's partial
               # i386 archive can install: libpulse-dev:i386 and friends need a
               # co-installable libglib2.0-dev:i386, which doesn't exist there.
               # 32-bit pulse systems still get audio through the alsa-pulse
@@ -146,12 +146,9 @@ jobs:
                 libasound2-dev:i386 \
                 libdrm-dev:i386 libgbm-dev:i386 libgles2-mesa-dev:i386 libegl1-mesa-dev:i386 \
                 libdbus-1-dev:i386 libudev-dev:i386
-              # The runner's default gcc-13 can't do C++23 deducing this.
-              sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
-              sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
             else
               sudo apt-get update
-              sudo apt-get install -y gcc-14 g++-14 lld mold pkg-config
+              sudo apt-get install -y lld mold pkg-config
               sudo apt-get install -y libglu1-mesa-dev
               # The full SDL3/OpenAL dev set the prebuilt deps were built with.
               # The backends are dlopened at runtime, so anything missing here
@@ -163,8 +160,6 @@ jobs:
                 libaudio-dev libjack-dev libsndio-dev \
                 libdrm-dev libgbm-dev libgles2-mesa-dev libegl1-mesa-dev \
                 libdbus-1-dev libibus-1.0-dev libudev-dev
-              sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
-              sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
             fi
 
       - name: '[android] Install SDL3 dev dependencies'
@@ -180,13 +175,9 @@ jobs:
             libxcursor-dev libxi-dev libxfixes-dev \
             libwayland-dev libxkbcommon-dev \
             libasound2-dev libpulse-dev libpipewire-0.3-dev
-          # armeabi_v7a builds LuaJIT host tools with -m32; multilib runtime
-          # only ships for gcc-14.
+          # armeabi_v7a builds LuaJIT host tools with -m32, which needs the multilib runtime.
           if [ "${{matrix.target}}" = "android_armeabi_v7a" ] || [ "${{matrix.target}}" = "android_x86" ] || [ "${{matrix.target}}" = "android_universal" ]; then
-            # gcc-13 can't find lib32stdc++.
-            sudo apt-get install -y gcc-14-multilib g++-14-multilib
-            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
-            sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
+            sudo apt-get install -y gcc-multilib g++-multilib
           fi
 
       # Mold on the linux legs, same as the cmake matrix (which mandates
