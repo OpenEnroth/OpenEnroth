@@ -349,9 +349,15 @@ static uintptr_t faultingProgramCounter(const ucontext_t &crashContext) {
 #endif
 }
 
-static bool isMapped(uintptr_t address) {
-    uintptr_t page = address & ~static_cast<uintptr_t>(getpagesize() - 1);
-    return msync(reinterpret_cast<void *>(page), 1, MS_ASYNC) == 0; // Fails with ENOMEM on an unmapped page, and touches nothing.
+static const size_t crashPageSize = getpagesize(); // Resolved at load. It's a call, and the handler runs in a broken process.
+
+bool detail::isRangeMapped(uintptr_t address, size_t size) {
+    uintptr_t mask = ~static_cast<uintptr_t>(crashPageSize - 1);
+    uintptr_t last = (address + size - 1) & mask;
+    for (uintptr_t page = address & mask; page <= last; page += crashPageSize)
+        if (msync(reinterpret_cast<void *>(page), 1, MS_ASYNC) != 0)
+            return false; // Fails with ENOMEM on an unmapped page, and touches nothing.
+    return true;
 }
 
 /**
@@ -365,34 +371,52 @@ static bool isMapped(uintptr_t address) {
  */
 static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &crashContext) {
     std::vector<cpptrace::frame_ptr> frames;
+    uintptr_t returnAddress = 0;
+    uintptr_t fp = 0;
 #if defined(__aarch64__)
-    uintptr_t returnAddress = crashContext.uc_mcontext.regs[30]; // lr
-    uintptr_t fp = crashContext.uc_mcontext.regs[29];
-#elif defined(__x86_64__)
+    returnAddress = crashContext.uc_mcontext.regs[30]; // lr
+    fp = crashContext.uc_mcontext.regs[29];
+#elif defined(__x86_64__) || defined(__i386__)
+#   if defined(__x86_64__)
     uintptr_t sp = crashContext.uc_mcontext.gregs[REG_RSP];
-    uintptr_t returnAddress = *reinterpret_cast<const uintptr_t *>(sp); // The call pushed it.
-    uintptr_t fp = crashContext.uc_mcontext.gregs[REG_RBP];
-#elif defined(__i386__)
+    fp = crashContext.uc_mcontext.gregs[REG_RBP];
+#   else
     uintptr_t sp = crashContext.uc_mcontext.gregs[REG_ESP];
-    uintptr_t returnAddress = *reinterpret_cast<const uintptr_t *>(sp);
-    uintptr_t fp = crashContext.uc_mcontext.gregs[REG_EBP];
+    fp = crashContext.uc_mcontext.gregs[REG_EBP];
+#   endif
+    // The call pushed the return address, but sp comes out of a broken process, so it's checked like every
+    // other read here. Nothing to trace from if it isn't there.
+    if (!detail::isRangeMapped(sp, sizeof(uintptr_t)))
+        return frames;
+    returnAddress = *reinterpret_cast<const uintptr_t *>(sp);
 #elif defined(__arm__)
-    uintptr_t returnAddress = crashContext.uc_mcontext.arm_lr;
-    uintptr_t fp = crashContext.uc_mcontext.arm_fp;
+    returnAddress = crashContext.uc_mcontext.arm_lr;
+    fp = crashContext.uc_mcontext.arm_fp;
 #endif
     frames.push_back(returnAddress - 1); // Minus one, so it points into the call, not one past it.
-    while (fp != 0 && frames.size() < detail::MAX_TRACE_DEPTH) {
-        if (!isMapped(fp) || !isMapped(fp + sizeof(uintptr_t)))
-            break; // Reading it would fault inside the handler.
-        const uintptr_t *frame = reinterpret_cast<const uintptr_t *>(fp); // [fp] = caller's fp, [fp + 1] = return.
-        if (frame[1] == 0)
+
+    while (frames.size() < detail::MAX_TRACE_DEPTH) {
+        // Both checks precede the read and cover its whole span - [fp] is the caller's frame pointer and
+        // [fp + 1] the return address, two words starting at fp. Checking alignment here rather than at the
+        // bottom of the loop is what covers the fp that came out of the crash context.
+        if (fp == 0 || fp % sizeof(uintptr_t) != 0)
             break;
-        frames.push_back(frame[1] - 1);
+        if (!detail::isRangeMapped(fp, 2 * sizeof(uintptr_t)))
+            break;
+
+        const uintptr_t *frame = reinterpret_cast<const uintptr_t *>(fp);
+        uintptr_t callerFp = frame[0];
+        uintptr_t callerPc = frame[1];
+        if (callerPc == 0)
+            break;
+        frames.push_back(callerPc - 1);
+
         // A frame built without a frame pointer holds something else in that slot. The caller's frame is always
-        // further up the stack, so a value that isn't stops the walk instead of being followed.
-        if (frame[0] <= fp || frame[0] % sizeof(uintptr_t) != 0)
+        // further up the stack, so a value that isn't ends the walk - after the push, since at the frame above
+        // main the return address is real while the slot is not.
+        if (callerFp <= fp)
             break;
-        fp = frame[0];
+        fp = callerFp;
     }
     return frames;
 }

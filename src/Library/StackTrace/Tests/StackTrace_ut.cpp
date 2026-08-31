@@ -5,6 +5,11 @@
 #include <string>
 #include <thread>
 
+#if defined(__linux__) && !defined(__ANDROID__)
+#   include <sys/mman.h> // NOLINT: not a C++ system header.
+#   include <unistd.h> // NOLINT: not a C++ system header.
+#endif
+
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/StackTrace/StackTrace.h"
@@ -145,6 +150,25 @@ MM_NOINLINE int stackTraceOverflowFunction2(int depth) {
     pad[1023] = static_cast<char>(depth);
     return pad[0] + pad[1023] + stackTraceOverflowFunction1(depth + 1);
 }
+
+#if defined(__linux__) && !defined(__ANDROID__)
+UNIT_TEST(StackTrace, RangeCheckSpansEveryPageItReads) {
+    // The frame walk reads two words at fp. Checking only the page holding the first byte let a read whose tail
+    // crossed into an unmapped page fault, and that was the crash handler crashing mid-walk.
+    long pageSize = getpagesize();
+    char *pages = static_cast<char *>(mmap(nullptr, pageSize * 3, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
+    ASSERT_NE(pages, MAP_FAILED);
+    munmap(pages + pageSize, pageSize); // A hole between two mapped pages.
+
+    EXPECT_TRUE(detail::isRangeMapped(reinterpret_cast<uintptr_t>(pages), 1));
+    EXPECT_FALSE(detail::isRangeMapped(reinterpret_cast<uintptr_t>(pages + pageSize), 1));
+    uintptr_t straddling = reinterpret_cast<uintptr_t>(pages + pageSize) - sizeof(uintptr_t) / 2;
+    EXPECT_FALSE(detail::isRangeMapped(straddling, 2 * sizeof(uintptr_t)));
+
+    munmap(pages, pageSize);
+    munmap(pages + 2 * pageSize, pageSize);
+}
+#endif
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
     std::string trace = stackTraceMarkerFunction();

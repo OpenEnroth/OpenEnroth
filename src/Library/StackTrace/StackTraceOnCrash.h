@@ -1,5 +1,19 @@
 #pragma once
 
+#include <cstddef>
+#include <cstdint>
+
+#if defined(__linux__) && !defined(__ANDROID__)
+namespace detail {
+/**
+ * @param address                       First byte of the range.
+ * @param size                          Range length in bytes.
+ * @return                              Whether every page the range touches is mapped.
+ */
+bool isRangeMapped(uintptr_t address, size_t size);
+} // namespace detail
+#endif
+
 /**
  * Installs crash handlers that dump a stack trace to stderr, then let the crash proceed so that the OS still
  * produces a core dump or a crash report. The handlers are never uninstalled, the process is dying anyway.
