@@ -360,7 +360,7 @@ static uintptr_t faultingProgramCounter(const ucontext_t &crashContext) {
 #endif
 }
 
-static const size_t crashPageSize = getpagesize(); // Resolved at load. It's a call, and the handler runs in a broken process.
+static const size_t crashPageSize = getpagesize();
 
 static bool isRangeMapped(uintptr_t address, size_t size) {
     uintptr_t mask = ~static_cast<uintptr_t>(crashPageSize - 1);
