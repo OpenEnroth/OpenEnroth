@@ -1,0 +1,42 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_stack_trace",
+    srcs = [
+        "StackTrace.cpp",
+        "StackTraceOnCrash.cpp",
+    ],
+    hdrs = [
+        "StackTrace.h",
+        "StackTraceOnCrash.h",
+    ],
+    # The crash handler walks the stack with StackWalk64.
+    linkopts = select({
+        "@platforms//os:windows": ["dbghelp.lib"],
+        "//conditions:default": [],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+    ],
+    # Cpptrace is PRIVATE in cmake - dependents can't see its headers. It doesn't support android.
+    implementation_deps = select({
+        "@platforms//os:android": [],
+        "//conditions:default": ["@cpptrace"],
+    }),
+)
+
+cc_library(
+    name = "test_library_stack_trace",
+    testonly = True,
+    srcs = [
+        "Tests/StackTrace_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_stack_trace",
+        "//src/Utility:utility",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

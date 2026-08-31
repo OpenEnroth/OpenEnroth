@@ -46,6 +46,8 @@ dist
 *.rej
 *.diff
 *.patch
+# ...except intentional Bazel override patches committed to source:
+!bazel/patches/*.patch
 
 # Clang formatter file for Visual Studio
 .clang-format
@@ -59,3 +61,6 @@ local.properties
 .claude/settings.local.json
 .claude/plans
 .claude/worktrees/
+
+# Bzlmod lockfile - not committed, the registry is treated as stable.
+MODULE.bazel.lock

@@ -1,0 +1,24 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "arcomage",
+    srcs = [
+        "Arcomage.cpp",
+        "ArcomageCards.cpp",
+    ],
+    hdrs = [
+        "Arcomage.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Engine:engine",
+        "//src/Engine/Graphics:engine_graphics",
+        "//src/GUI:gui_window_base",
+        "//src/GUI/UI:gui_ui_house_base",
+        "//src/Library/Color:library_color",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Media:media",
+        "//src/Utility:utility",
+    ],
+)

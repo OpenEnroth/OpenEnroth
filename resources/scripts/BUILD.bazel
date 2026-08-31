@@ -1,0 +1,7 @@
+# All Lua scripts, embedded into the binary via //resources:resources and
+# linted by //:check_style_lua.
+filegroup(
+    name = "scripts",
+    srcs = glob(["**/*.lua"]),
+    visibility = ["//visibility:public"],
+)

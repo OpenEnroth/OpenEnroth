@@ -1,0 +1,43 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel/rules:cmrc.bzl", "cmrc_resource_library")
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
+
+cc_library(
+    name = "library_filesystem_embedded",
+    srcs = [
+        "EmbeddedFileSystem.cpp",
+    ],
+    hdrs = [
+        "EmbeddedFileSystem.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//bazel/cmrc:cmrc_base",
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+)
+
+cmrc_resource_library(
+    name = "test_library_filesystem_embedded_resources",
+    defines = STDLIB_HARDENING_DEFINES,
+    srcs = ["Tests/EmbeddedFileSystem_ut.cpp"],
+    namespace = "testrc",
+    strip_prefix = "src/Library/FileSystem/Embedded",
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "test_library_filesystem_embedded",
+    testonly = True,
+    srcs = [
+        "Tests/EmbeddedFileSystem_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_filesystem_embedded",
+        ":test_library_filesystem_embedded_resources",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

@@ -1,0 +1,18 @@
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
+load("//bazel/rules:cmrc.bzl", "cmrc_resource_library")
+
+cmrc_resource_library(
+    name = "resources",
+    # The generated lib.cpp instantiates std::map/std::string inline code, so
+    # it has to agree with the rest of the build on the hardening macros.
+    defines = STDLIB_HARDENING_DEFINES,
+    # glob() cannot cross package boundaries, so scripts/ (which has its own
+    # BUILD.bazel) is referenced via its filegroup target rather than glob.
+    srcs = glob([
+        "shaders/**",
+        "images/**",
+    ]) + ["//resources/scripts"],
+    namespace = "openenroth",
+    strip_prefix = "resources",
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,31 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_compression",
+    srcs = [
+        "Compression.cpp",
+    ],
+    hdrs = [
+        "Compression.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+        # ZLIB — Phase 5 TODO
+        "//bazel/system:zlib",
+    ],
+)
+
+cc_library(
+    name = "test_library_compression",
+    testonly = True,
+    srcs = [
+        "Tests/Compression_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_compression",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

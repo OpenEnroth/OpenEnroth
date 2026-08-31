@@ -1,0 +1,67 @@
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel/rules:macos_app.bzl", "macos_app")
+
+# platformMain() and everything below it; shared between the standalone binary
+# and the android APK's libmain.so.
+cc_library(
+    name = "openenroth_main",
+    srcs = [
+        "OpenEnroth.cpp",
+        "OpenEnrothOptions.cpp",
+        "OpenEnrothOptions.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Application:application",
+        "//src/Engine:engine_impl",
+        "//src/Library/Cli:library_cli",
+        "//src/Library/Environment:library_environment",  # createStandardEnvironment() impl
+        "//src/Library/StackTrace:library_stack_trace",
+    ],
+    alwayslink = True,
+)
+
+cc_binary(
+    name = "OpenEnroth",
+    # OpenEnroth.rc omitted: Windows resource files not supported by cc_binary in Bazel.
+    # The binary works without it (no custom icon/version metadata).
+    visibility = ["//visibility:public"],
+    deps = [
+        ":openenroth_main",
+        "//src/Library/Platform/Sdl:library_platform_main",
+    ],
+)
+
+# The macOS bundle cmake builds via MACOSX_BUNDLE. Values mirror the
+# MACOSX_BUNDLE_* block in CMakeLists.txt, the version comes from stamping.
+# Assets.car carries the macOS 26+ icon, OpenEnroth.icns the pre-Tahoe one.
+macos_app(
+    name = "OpenEnroth_app",
+    binary = ":OpenEnroth",
+    bundle_name = "OpenEnroth",
+    copyright = "GPLv3",
+    info_string = "Open reimplementation of Might and Magic 6 7 8 game engine.",
+    infoplist = "Info.plist.in",
+    resources = [
+        "Assets.car",
+        "OpenEnroth.icns",
+    ],
+    target_compatible_with = ["@platforms//os:macos"],
+    visibility = ["//visibility:public"],
+)
+
+# Native side of the APK: android_binary links this into libmain.so, with
+# SDL_main as the only exported symbol (see libmain.map), which the Java
+# SDLActivity looks up at runtime.
+cc_library(
+    name = "openenroth_apk_main",
+    additional_linker_inputs = ["libmain.map"],
+    linkopts = ["-Wl,--version-script=$(location libmain.map)"],
+    target_compatible_with = ["@platforms//os:android"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":openenroth_main",
+        "//src/Library/Platform/Sdl:library_platform_main_apk",
+    ],
+)

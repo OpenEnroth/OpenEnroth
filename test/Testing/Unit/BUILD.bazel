@@ -1,0 +1,17 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "testing_unit",
+    testonly = True,
+    srcs = [
+        "UnitTest.cpp",
+    ],
+    hdrs = [
+        "UnitTest.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//test/Testing/Extensions:testing_extensions",
+        "@googletest//:gtest",
+    ],
+)

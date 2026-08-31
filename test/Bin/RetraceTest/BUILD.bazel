@@ -1,0 +1,32 @@
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
+
+# One gtest test per trace in test/Data, registered at runtime; the engine
+# starts once per shard. Replaces ParallelRetrace.py under bazel.
+cc_test(
+    name = "OpenEnroth_RetraceTest",
+    size = "enormous",
+    srcs = [
+        "RetraceTest.cpp",
+        "RetraceTest.h",
+        "RetraceTestMain.cpp",
+        "RetraceTestOptions.cpp",
+        "RetraceTestOptions.h",
+    ],
+    args = [
+        "--test-path",
+        "test/Data",
+        "--headless",
+    ],
+    data = ["//test:test_data"],
+    shard_count = 8,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Application:application",
+        "//src/Engine:engine_impl",
+        "//src/Library/Cli:library_cli",
+        "//src/Library/Environment:library_environment",  # createStandardEnvironment() impl
+        "//src/Library/Platform/Sdl:library_platform_main",
+        "//src/Library/StackTrace:library_stack_trace",
+        "@googletest//:gtest",
+    ],
+)

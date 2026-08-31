@@ -1,0 +1,36 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_filesystem_memory",
+    srcs = [
+        "MemoryFileSystem.cpp",
+        "MemoryFileSystemInputStream.cpp",
+        "MemoryFileSystemOutputStream.cpp",
+    ],
+    hdrs = [
+        "MemoryFileSystem.h",
+        "MemoryFileSystemInputStream.h",
+        "MemoryFileSystemOutputStream.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Library/FileSystem/Trie:library_filesystem_trie",
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_filesystem_memory",
+    testonly = True,
+    srcs = [
+        "Tests/MemoryFileSystem_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_filesystem_memory",
+        "//src/Library/FileSystem/Dump:library_filesystem_dump",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

@@ -1,0 +1,16 @@
+# This package contains platform-specific Environment implementations.
+# The concrete implementation to use is selected via select() on the platform.
+#
+# library_environment_implementation is an alias that resolves to the
+# correct platform library at build time.
+alias(
+    name = "library_environment",
+    actual = select({
+        "@platforms//os:windows": "//src/Library/Environment/Win:library_environment_win",
+        "@platforms//os:android": "//src/Library/Environment/Android:library_environment_android",
+        "@platforms//os:linux": "//src/Library/Environment/Posix:library_environment_posix",
+        "@platforms//os:macos": "//src/Library/Environment/Posix:library_environment_posix",
+        "//conditions:default": "//src/Library/Environment/Interface:library_environment_interface",
+    }),
+    visibility = ["//visibility:public"],
+)

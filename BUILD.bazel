@@ -1,0 +1,96 @@
+# Root BUILD file — top-level aliases and user-settable build options.
+# The main binary lives at //src/Bin/OpenEnroth.
+
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+load("//bazel/rules:check_style.bzl", "check_style")
+
+alias(
+    name = "OpenEnroth",
+    actual = "//src/Bin/OpenEnroth",
+    visibility = ["//visibility:public"],
+)
+
+# ─── Build options — bazel's equivalent of the option() block in CMakeLists ──
+# Of the CMake options, only OE_DISTRIBUTION_BUILD affects compiled code.
+# Tests/tools toggles are target selection; style checks live in CI;
+# prebuilt/dummy deps, ccache and linker options are obsolete under bazel.
+
+# Same as cmake's OE_DISTRIBUTION_BUILD: a build for distribution, not a dev
+# build (defaults to borderless fullscreen). Combine with -c opt.
+bool_flag(
+    name = "distribution",
+    build_setting_default = False,
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "cpplint_config",
+    srcs = ["CPPLINT.cfg"],
+    visibility = ["//visibility:public"],
+)
+
+# lua-language-server runs on the machine doing the build, so pick the
+# prebuilt release for it. linux_x86 builds on an x64 host, and both windows
+# arches use the single win32-x64 release.
+_LLS_SELECT = {
+    "//bazel/platforms:linux_x86": "lls_linux_x64",
+    "//bazel/platforms:linux_x86_64": "lls_linux_x64",
+    "//bazel/platforms:linux_arm64": "lls_linux_arm64",
+    "//bazel/platforms:darwin_x86_64": "lls_darwin_x64",
+    "//bazel/platforms:darwin_arm64": "lls_darwin_arm64",
+    "//bazel/platforms:windows_x86": "lls_win32_x64",
+    "//bazel/platforms:windows_x86_64": "lls_win32_x64",
+}
+
+alias(
+    name = "_lls_binary",
+    actual = select({k: "@" + v + "//:binary" for k, v in _LLS_SELECT.items()}),
+)
+
+alias(
+    name = "_lls_files",
+    actual = select({k: "@" + v + "//:files" for k, v in _LLS_SELECT.items()}),
+)
+
+# cmake's check_style_lua_scripts: check_lua_style.py drives lua-language-server and
+# fails on any diagnostic. The scripts are staged into a scratch workspace that
+# holds nothing else - pointing lls at the execroot would put the staged lls
+# install tree in scope, and it starts linting its own lua sources.
+genrule(
+    name = "check_style_lua",
+    srcs = [
+        ".luarc.json",
+        "scripts/check_lua_style.py",
+        "//resources/scripts",
+    ],
+    outs = ["check_style_lua.marker"],
+    cmd = "ws=$$(mktemp -d) && mkdir -p $$ws/root/resources $$ws/log && " +
+          "cp -RL resources/scripts $$ws/root/resources/ && " +
+          "cp $(location .luarc.json) $$ws/root/ && " +
+          "HOME=$$ws python3 $(location scripts/check_lua_style.py) $(execpath :_lls_binary) $$ws/root $$ws/log $$ws/root/.luarc.json && " +
+          "touch $@",
+    tags = ["manual"],
+    tools = [
+        ":_lls_binary",
+        ":_lls_files",
+    ],
+)
+
+# cpplint over all first-party sources, cached per target, plus the lua lint -
+# together these are cmake's check_style.
+check_style(
+    name = "check_style",
+    testonly = True,
+    extra_checks = [":check_style_lua"],
+    # manual: keeps wildcard builds from co-analyzing this with cc_tests in the
+    # test configuration (trim_test_configuration action conflicts).
+    tags = ["manual"],
+    deps = [
+        "//src/Bin/CodeGen",
+        "//src/Bin/LodTool",
+        "//src/Bin/OpenEnroth",
+        "//test/Bin/GameTest:OpenEnroth_GameTest",
+        "//test/Bin/RetraceTest:OpenEnroth_RetraceTest",
+        "//test/Bin/UnitTest:OpenEnroth_UnitTest",
+    ],
+)

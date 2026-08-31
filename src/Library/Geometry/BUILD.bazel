@@ -1,0 +1,32 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_geometry",
+    hdrs = [
+        "BBox.h",
+        "Margins.h",
+        "Plane.h",
+        "Point.h",
+        "Rect.h",
+        "Size.h",
+        "Vec.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_geometry",
+    testonly = True,
+    srcs = [
+        "Tests/Rect_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_geometry",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

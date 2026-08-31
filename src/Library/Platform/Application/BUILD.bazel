@@ -1,0 +1,21 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_platform_application",
+    srcs = [
+        "PlatformApplication.cpp",
+        "PlatformComponentStorage.cpp",
+    ],
+    hdrs = [
+        "PlatformApplication.h",
+        "PlatformApplicationAware.h",
+        "PlatformComponentStorage.h",
+        "PlatformIntrospection.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Platform/Filters:library_platform_filters",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Platform/Proxy:library_platform_proxy",
+    ],
+)

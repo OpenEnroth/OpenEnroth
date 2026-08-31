@@ -1,0 +1,16 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_filesystem_null",
+    srcs = [
+        "NullFileSystem.cpp",
+    ],
+    hdrs = [
+        "NullFileSystem.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+)

@@ -1,0 +1,27 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_filesystem_trie",
+    hdrs = [
+        "FileSystemTrie.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_filesystem_trie",
+    testonly = True,
+    srcs = [
+        "Tests/FileSystemTrie_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_filesystem_trie",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)
