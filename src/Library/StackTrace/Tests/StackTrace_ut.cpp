@@ -118,11 +118,18 @@ MM_NOINLINE void stackTraceAssertFunction() {
 }
 
 #ifdef _WINDOWS
+static void sendAssertReportsToStderr() {
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
+    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+}
+
 MM_NOINLINE void stackTraceInvalidParameterFunction() {
     volatile int keepFrame = 0;
     std::printf(nullptr); // Null format string is the canonical way to trip the invalid parameter handler.
     keepFrame = 1; // Or the call is in tail position, becomes a jump, and this frame is gone from the trace.
 }
+#else
+static void sendAssertReportsToStderr() {}
 #endif // _WINDOWS
 
 MM_NOINLINE int stackTraceNullCallFunction() {
@@ -254,10 +261,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AssertIsTraced) {
     // message printed in front, and the trace has to follow that message rather than replace it.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
-#ifdef _WINDOWS
-        _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
-        _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-#endif
+        sendAssertReportsToStderr(); // Not an #ifdef here, a directive inside a macro argument doesn't compile on msvc.
 
         StackTraceOnCrash handler;
         stackTraceAssertFunction();
