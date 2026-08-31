@@ -1,0 +1,40 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_serialization",
+    srcs = [
+        "CommonSerialization.cpp",
+        "EnumSerializer.cpp",
+        "SerializationExceptions.cpp",
+    ],
+    hdrs = [
+        "CommonSerialization.h",
+        "EnumSerialization.h",
+        "EnumSerializer.h",
+        "Serialization.h",
+        "SerializationExceptions.h",
+        "SerializationFwd.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+        "@magic_enum",
+        # fast_float is PRIVATE
+        "@fast_float",
+    ],
+)
+
+cc_library(
+    name = "test_library_serialization",
+    testonly = True,
+    srcs = [
+        "Tests/Serialization_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_serialization",
+        "//src/Library/Color:library_color",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

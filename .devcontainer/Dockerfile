@@ -42,6 +42,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   curl \
   gcc \
   g++ \
+  make \
   ninja-build \
   pkg-config \
   mold \
@@ -66,6 +67,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN wget -qO /tmp/cmake.sh "https://github.com/Kitware/CMake/releases/download/v4.3.0/cmake-4.3.0-linux-$(uname -m).sh" && \
   sh /tmp/cmake.sh --skip-license --prefix=/usr/local && \
   rm /tmp/cmake.sh
+
+# Install Bazelisk as `bazel` (it downloads the Bazel version pinned in .bazelversion on first run).
+ARG BAZELISK_VERSION=1.26.0
+RUN wget -qO /usr/local/bin/bazel "https://github.com/bazelbuild/bazelisk/releases/download/v${BAZELISK_VERSION}/bazelisk-linux-$(dpkg --print-architecture)" && \
+  chmod +x /usr/local/bin/bazel
 
 # Install Node.js 20 (needed for Claude Code).
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \

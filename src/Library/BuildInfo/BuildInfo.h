@@ -4,3 +4,4 @@
 
 std::string_view gitRevision();
 std::string_view buildTime();
+std::string_view buildVersion();

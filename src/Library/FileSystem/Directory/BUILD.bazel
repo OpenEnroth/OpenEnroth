@@ -1,0 +1,30 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_filesystem_directory",
+    srcs = [
+        "DirectoryFileSystem.cpp",
+    ],
+    hdrs = [
+        "DirectoryFileSystem.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_filesystem_directory",
+    testonly = True,
+    srcs = [
+        "Tests/DirectoryFileSystem_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_filesystem_directory",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

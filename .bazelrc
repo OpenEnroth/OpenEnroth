@@ -1,0 +1,303 @@
+# OpenEnroth Bazel configuration
+
+# ─── Bzlmod ──────────────────────────────────────────────────────────────────
+
+common --enable_bzlmod
+# No committed lockfile - resolution happens against the live registry.
+common --lockfile_mode=off
+
+# ─── C++23 ───────────────────────────────────────────────────────────────────
+
+build --cxxopt=-std=c++23
+build --host_cxxopt=-std=c++23
+
+# Windows/MSVC uses a different flag
+build:windows --cxxopt=/std:c++latest
+build:windows --host_cxxopt=/std:c++latest
+build:windows --cxxopt=/Zc:__cplusplus  # Make __cplusplus reflect actual standard
+build:windows --copt=/Zc:preprocessor  # Use standard-compliant preprocessor (required for NLOHMANN_JSON_PASTE variadic macros)
+build:windows --copt=/D_USE_MATH_DEFINES  # Pull in M_PI and other <cmath> defines (MSVC extension)
+build:windows --copt=/utf-8  # fmt and other libs require UTF-8 source encoding
+build:windows --copt=/D_WINDOWS  # CMake adds this automatically for Windows targets; enables _fseeki64/_ftelli64 aliases
+build:windows --copt=/DNOMINMAX  # Please don't pull in min/max macros from <Windows.h>
+build:windows --copt=/D_CRT_SECURE_NO_WARNINGS  # STL security warnings are just noise
+build:windows --copt=/D_CRT_NONSTDC_NO_DEPRECATE  # POSIX deprecation warnings are also just noise
+build:windows --copt=/D_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS  # These are also useless
+build:windows --features=static_link_msvcrt  # Use /MT instead of /MD to match prebuilt dep libs (CMake uses MultiThreaded runtime)
+
+# ─── Build stamping ──────────────────────────────────────────────────────────
+# Emits STABLE_MM_GIT_REVISION / STABLE_OE_VERSION into stable-status.txt for
+# the stamp genrule in //src/Library/BuildInfo. Runs once per build.
+build --workspace_status_command=bazel/workspace_status.sh
+build:windows --workspace_status_command=bazel/workspace_status.bat
+
+# ─── Global include paths (mirrors CMake's include_directories(src test)) ────
+# Allows #include "Engine/..." and #include "Testing/..." without explicit deps.
+# GCC/Clang use -I, MSVC uses /I.
+build:linux --copt=-Isrc --copt=-Itest
+build:macos --copt=-Isrc --copt=-Itest
+build:windows --copt=/Isrc --copt=/Itest
+build:android_base --copt=-Isrc
+
+# FMT_USE_NONTYPE_TEMPLATE_ARGS enables the _cf literals used throughout OE. It has to be
+# defined globally because the BCR fmt module doesn't set it, and every fmt include must see it.
+# No --host_copt twin on purpose: no exec-configuration tool uses fmt, and touching the exec
+# config invalidates the cached rules_foreign_cc pkg-config build, whose vendored glib
+# doesn't compile under gcc 15 (C23 makes bool a keyword).
+build:linux --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:macos --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:windows --copt=/DFMT_USE_NONTYPE_TEMPLATE_ARGS
+build:android_base --copt=-DFMT_USE_NONTYPE_TEMPLATE_ARGS
+
+# ─── Compiler selection ───────────────────────────────────────────────────────
+# Linux builds use the environment's default gcc; C++23 "deducing this" (P0847R7)
+# needs GCC >= 14, so CI promotes gcc-14 via update-alternatives (runners default
+# to gcc-13) and the dev container ships gcc-15. No version pins here — pinning
+# paths in --action_env just forces every environment to install that exact version.
+
+# ─── Disable strict header dep tracking ─────────────────────────────────────
+# MSVC's /showIncludes causes Bazel to reject headers found via /Isrc but not
+# declared as explicit deps. Disable on Windows only; GCC/Clang .d file tracking
+# works correctly (all headers are declared in BUILD hdrs).
+build:windows --features=-parse_showincludes
+
+# ─── Warnings ────────────────────────────────────────────────────────────────
+# -Wall prints everywhere. The -Werror= lists mirror the warnings-as-errors
+# block in CMakeLists.txt per compiler, scoped to first-party sources with
+# --per_file_copt: under cmake the heavyweight deps were prebuilt and never saw
+# these flags, and the scoping also keeps dep action keys unchanged.
+
+build:linux --copt=-Wall
+build:linux --per_file_copt=^(src|test)/.*@-Werror=return-type,-Werror=unused-result,-Werror=unused-value,-Werror=shift-count-overflow,-Werror=mismatched-tags,-Werror=suggest-override,-Werror=return-local-addr,-Werror=overflow
+build:macos --copt=-Wall
+build:macos --per_file_copt=^(src|test)/.*@-Werror=return-type,-Werror=unused-result,-Werror=unused-value,-Werror=shift-count-overflow,-Werror=mismatched-tags,-Werror=suggest-override,-Werror=return-stack-address,-Werror=unused-comparison,-Werror=inconsistent-missing-override,-Werror=invalid-noreturn,-Werror=uninitialized,-Werror=delete-abstract-non-virtual-dtor,-Werror=switch
+build:windows --per_file_copt=^(src|test)/.*@/we4834,/we4172,/we26433
+
+# ─── Assertions ──────────────────────────────────────────────────────────────
+# Assertions stay on in every configuration, matching cmake - see
+# CMakeModules/Assertions.cmake, which strips NDEBUG from all build types.
+# The -U comes after the toolchain's opt-mode -DNDEBUG, so it wins.
+#
+# Scoping note, applies to every per_file_copt below: src|test|external covers
+# first-party code plus the thirdparty that bazel compiles itself (imgui,
+# luajit, fmt, gtest, ...), which is exactly the set cmake compiled inside its
+# flag-carrying directory scope. The (^|/) prefix keeps generated sources in
+# scope - patched imgui compiles from bazel-out/.../external/. The
+# rules_foreign_cc deps (SDL3, OpenAL, ffmpeg) are cmake's prebuilts, and
+# per_file_copt structurally can't reach them - their compiles aren't bazel
+# CppCompile actions. The -Werror lines above stay anchored at ^: with (^|/)
+# they would match the src/ directory inside luajit and friends.
+build:linux --per_file_copt=(^|/)(src|test|external)/.*@-UNDEBUG
+build:macos --per_file_copt=(^|/)(src|test|external)/.*@-UNDEBUG
+build:android_base --per_file_copt=(^|/)(src|test|external)/.*@-UNDEBUG
+build:windows --per_file_copt=(^|/)(src|test|external)/.*@/UNDEBUG
+
+# ─── Floating point behavior (mirrors CMakeLists.txt) ────────────────────────
+# Math functions don't set errno, fp traps are assumed off, and fma contraction
+# is disabled - gcc and clang contract differently, and retrace tests diff the
+# results.
+build:linux --per_file_copt=(^|/)(src|test|external)/.*@-fno-math-errno,-fno-trapping-math,-ffp-contract=off
+build:macos --per_file_copt=(^|/)(src|test|external)/.*@-fno-math-errno,-fno-trapping-math,-ffp-contract=off
+build:android_base --per_file_copt=(^|/)(src|test|external)/.*@-fno-math-errno,-fno-trapping-math,-ffp-contract=off
+
+# ─── Debug info in every config ──────────────────────────────────────────────
+# Cmake ships symbols in both configs (RelWithDebInfo has -g, msvc uses
+# embedded /Z7 debug info), and StackTraceOnCrash resolves its own frames via
+# libdwarf at runtime, so release binaries need symbols too.
+build:linux --per_file_copt=(^|/)(src|test|external)/.*@-g
+build:macos --per_file_copt=(^|/)(src|test|external)/.*@-g
+build:android_base --per_file_copt=(^|/)(src|test|external)/.*@-g
+build:windows --per_file_copt=(^|/)(src|test|external)/.*@/Z7
+# The pdb needs an explicit /DEBUG at link time in opt (dbg links pass it already).
+build:windows --linkopt=/DEBUG:FULL
+
+# ─── Linker options (mirrors cmake's add_link_options) ───────────────────────
+# Strip unreferenced sections and fold identical COMDATs in every config.
+build:windows --linkopt=/OPT:REF
+build:windows --linkopt=/OPT:ICF
+# Linker errors were seen on android without -Bsymbolic, see
+# https://github.com/google/ExoPlayer/issues/9933#issuecomment-1029775358.
+build:android_base --linkopt=-Wl,-Bsymbolic
+
+# ─── Platform configs ────────────────────────────────────────────────────────
+
+build --enable_platform_specific_config
+
+# Linux
+build:linux --copt=-fPIC
+
+# Frame pointers stay, cmake's -fno-omit-frame-pointer: without them nothing walks a stack through code that
+# has no unwind info - jit traces, the luajit interpreter, a call through a bad pointer.
+build:linux --per_file_copt=(^|/)(src|test|external)/.*@-fno-omit-frame-pointer
+build:macos --per_file_copt=(^|/)(src|test|external)/.*@-fno-omit-frame-pointer
+build:android_base --per_file_copt=(^|/)(src|test|external)/.*@-fno-omit-frame-pointer
+
+# Cmake's -static-libstdc++ -static-libgcc for gcc: the build gcc is newer than what the target distros ship.
+build:linux --linkopt=-static-libstdc++ --linkopt=-static-libgcc
+# Use ld.bfd instead of ld.gold — gold linker can't find libstdc++.so from the versioned GCC dir
+build:linux --features=-use_gold_linker
+# System pkg-config instead of rules_foreign_cc's from-source bootstrap, whose
+# vendored glib doesn't compile under gcc 15 (C23 makes bool a keyword).
+build:linux --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_pkgconfig_toolchain
+
+# Linux x86 (32-bit)
+build:linux_x86 --config=linux
+build:linux_x86 --copt=-m32
+build:linux_x86 --linkopt=-m32
+# Don't use the x87 fpu - its 80-bit intermediates desync traces (mirrors the
+# OE_BUILD_ARCHITECTURE=x86 block in CMakeLists.txt).
+build:linux_x86 --per_file_copt=(^|/)(src|test|external)/.*@-msse2,-mfpmath=sse,-march=pentium4
+# Identify this as a 32-bit build for select() in BUILD files (//bazel/platforms:linux_x86).
+# We can't use --platforms= here (no 32-bit toolchain registered), so use --define instead.
+build:linux_x86 --define=oe_build_arch=x86_32
+# lld, and only lld. Gold and mold both mishandle luajit's generated 32-bit
+# .eh_frame under opt's --gc-sections: the first thrown lua error unwinds into
+# a garbage landing pad and segfaults (task #22 has the full trail, mold
+# reproduced it in CI). bfd is not an option either - it lacks the
+# --start-lib/--end-lib that bazel's start_end_lib feature uses.
+build:linux_x86 --linkopt=-fuse-ld=lld
+# 32-bit x86 with lld needs this like the cmake build does: some inline asm in
+# deps is not position-independent, and lld chokes on the text relocations
+# that gnu ld quietly accepts.
+build:linux_x86 --linkopt=-Wl,-z,notext
+
+# Linux x86_64
+build:linux_x86_64 --config=linux
+
+# Linux arm64 — CI arm runners & arm64 dev containers.
+build:linux_arm64 --config=linux
+
+# macOS
+build:macos --apple_platform_type=macos
+# Use system make instead of rules_foreign_cc's bundled make binary for the
+# configure_make()/cmake() deps (ffmpeg, SDL3, OpenAL). Same for pkg-config,
+# see the linux section.
+build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
+build:macos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_pkgconfig_toolchain
+
+# macOS arm64
+build:darwin_arm64 --config=macos
+build:darwin_arm64 --cpu=darwin_arm64
+build:darwin_arm64 --macos_minimum_os=11.0
+# LuaJIT's Makefile requires MACOSX_DEPLOYMENT_TARGET as an exported env var.
+# --action_env propagates it into all build actions (including make() sandboxes).
+build:darwin_arm64 --action_env=MACOSX_DEPLOYMENT_TARGET=11.0
+
+# macOS x86_64
+build:darwin_x86_64 --config=macos
+build:darwin_x86_64 --cpu=darwin_x86_64
+build:darwin_x86_64 --macos_minimum_os=10.15
+build:darwin_x86_64 --action_env=MACOSX_DEPLOYMENT_TARGET=10.15
+
+# Windows x86. Bazel 8 resolves toolchains from --platforms (legacy --cpu only
+# renames the output dir); the define marks 32-bit builds for select() in
+# injected BUILD files, same as linux_x86.
+build:windows_x86 --config=windows
+build:windows_x86 --platforms=//bazel/platforms:windows_x86_platform
+build:windows_x86 --extra_toolchains=//bazel/platforms:windows_x86_cc_toolchain
+build:windows_x86 --define=oe_build_arch=x86_32
+build:windows_x86 --linkopt=/LARGEADDRESSAWARE  # Enable heap size over 2gb for x86 builds
+
+# Windows x86_64
+build:windows_x86_64 --config=windows
+
+# Real runfiles trees, so tests find their data deps (test/Data) relative to
+# the runfiles root like on every other platform. Symlinks need admin or
+# developer mode on windows - CI runners have admin, and the startup flag is
+# accepted (and inert) on other platforms.
+startup --windows_enable_symlinks
+build:windows --enable_runfiles
+
+# Hermetic make/pkg-config, downloaded by bazel/rules/windows_tools.bzl
+# (cmake and ninja come prebuilt from rules_foreign_cc on every platform).
+# A windows build needs nothing beyond msvc + bazel + git.
+# Bazel's default shell is a hardcoded c:/msys64 path; use git's bash instead.
+# Non-standard git installs: override with --shell_executable on the command line.
+build:windows --shell_executable="C:/Program Files/Git/usr/bin/bash.exe"
+build:windows --extra_toolchains=@msys2//:make_toolchain
+build:windows --extra_toolchains=@msys2//:pkgconfig_toolchain
+
+# Android — NDK version 28.1.13356709 (matches CI)
+# android_base: common flags inherited by all android_* configs
+# Use system make instead of rules_foreign_cc's bundled make binary for the
+# configure_make()/cmake() deps.
+build:android_base --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_make_toolchain
+build:android_base --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_pkgconfig_toolchain
+# SDL3's android build compiles NDK-bundled sources (cpufeatures); the cmake()
+# rule receives the path via -DANDROID_NDK=$ANDROID_NDK_HOME.
+build:android_base --action_env=ANDROID_NDK_HOME
+build:android_base --cxxopt=-std=c++23
+build:android_base --host_cxxopt=-std=c++23
+build:android_base --copt=-fPIC
+build:android_base --copt=-Wall
+# NDK clang, so the same warnings-as-errors list as macos (see the Warnings section).
+build:android_base --per_file_copt=^(src|test)/.*@-Werror=return-type,-Werror=unused-result,-Werror=unused-value,-Werror=shift-count-overflow,-Werror=mismatched-tags,-Werror=suggest-override,-Werror=return-stack-address,-Werror=unused-comparison,-Werror=inconsistent-missing-override,-Werror=invalid-noreturn,-Werror=uninitialized,-Werror=delete-abstract-non-virtual-dtor,-Werror=switch
+
+build:android --config=android_base
+build:android_arm64_v8a --config=android
+# --platforms sets the TARGET platform for cc_binary() cross-compilation.
+# --android_platforms only applies to android_binary() rules (APK builds).
+build:android_arm64_v8a --platforms=//bazel/platforms:android_arm64_v8a_platform
+build:android_armeabi_v7a --config=android
+build:android_armeabi_v7a --platforms=//bazel/platforms:android_armeabi_v7a_platform
+build:android_x86_64 --config=android
+build:android_x86_64 --platforms=//bazel/platforms:android_x86_64_platform
+build:android_x86 --config=android
+build:android_x86 --platforms=//bazel/platforms:android_x86_platform
+
+# Universal APK: all four ABIs in one //android/openenroth APK.
+build:android_universal --config=android_base
+build:android_universal --android_platforms=//bazel/platforms:android_arm64_v8a_platform,//bazel/platforms:android_armeabi_v7a_platform,//bazel/platforms:android_x86_64_platform,//bazel/platforms:android_x86_platform
+
+# ─── Local disk cache ────────────────────────────────────────────────────────
+# Content-addressed cache on local disk. Avoids rebuilding cmake() deps (zlib,
+# libpng, SDL3, OpenAL) and other expensive actions when sources haven't changed.
+# Shared across workspaces and Bazel versions on the same machine.
+# Note: not ~/.cache/bazel, which is bazel's default output root on Linux.
+build --disk_cache=~/.cache/bazel-disk
+# Bound the disk cache so 10 matrix legs' uploads fit GitHub's 10G repo budget.
+build --experimental_disk_cache_gc_max_size=800M
+# Caches downloaded http_archive tarballs (avoids re-downloading on every clean).
+build --repository_cache=~/.cache/bazel-repo
+
+# ─── BuildBuddy remote cache + build event stream ────────────────────────────
+# CI activates this and supplies the API key via
+# --remote_header=x-buildbuddy-api-key=... (from repo secrets).
+build:remote-cache --bes_backend=grpcs://remote.buildbuddy.io
+build:remote-cache --bes_results_url=https://app.buildbuddy.io/invocation/
+build:remote-cache --remote_cache=grpcs://remote.buildbuddy.io
+build:remote-cache --remote_timeout=10m
+# Build without the bytes: only metadata comes down; bazel run/test fetch
+# what they execute on demand. zstd halves the transfer sizes.
+build:remote-cache --remote_download_minimal
+build:remote-cache --remote_cache_compression
+build:remote-cache --build_metadata=REPO_URL=https://github.com/OpenEnroth/OpenEnroth
+# Invocation pages are viewable without login - it's an open-source repo.
+build:remote-cache --build_metadata=VISIBILITY=PUBLIC
+
+# Read-only access for everyone: the key below can only fetch, never store,
+# and is public by design. Local devs and untrusted PRs build warm with it.
+build:remote-cache-read --config=remote-cache
+build:remote-cache-read --remote_header=x-buildbuddy-api-key=i3cYYKyGVxl6mp2Z30nl
+build:remote-cache-read --noremote_upload_local_results
+# No build event stream on the read-only path.
+build:remote-cache-read --bes_backend=
+build:remote-cache-read --bes_results_url=
+
+# ─── Convenience ─────────────────────────────────────────────────────────────
+
+# Linker choice (cmake's OE_USE_LD_MOLD/OE_USE_LD_LLD): opt-in, requires the
+# linker to be installed. linux_x86 is pinned to lld, see above.
+build:mold --linkopt=-fuse-ld=mold
+build:lld --linkopt=-fuse-ld=lld
+
+# ccache layer (cmake's OE_USE_CCACHE): opt-in for local dev, requires ccache.
+# Hits on preprocessed sources, so it survives header edits that bazel's
+# input hashing has to treat as misses. Uses the masquerade dir, so linux-only;
+# macOS users can point CC at homebrew's libexec equivalent.
+build:ccache --repo_env=CC=/usr/lib/ccache/gcc
+# Unsandboxed so ccache can reach its cache dir (~ paths can't be sandboxed in).
+build:ccache --spawn_strategy=local
+
+build --verbose_failures
+test --test_output=errors

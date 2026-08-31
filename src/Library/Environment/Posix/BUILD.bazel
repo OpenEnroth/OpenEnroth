@@ -1,0 +1,25 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
+
+cc_library(
+    name = "library_environment_posix",
+    defines = STDLIB_HARDENING_DEFINES,
+    srcs = [
+        "PosixEnvironment.cpp",
+    ],
+    hdrs = [
+        "PosixEnvironment.h",
+    ],
+    target_compatible_with = select({
+        "@platforms//os:linux": [],
+        "@platforms//os:macos": [],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Environment/Interface:library_environment_interface",
+    ],
+    # Eagerly linked: nothing references these objects until link time resolves
+    # createStandardEnvironment(), and lazy --start-lib archives would drop them.
+    alwayslink = True,
+)

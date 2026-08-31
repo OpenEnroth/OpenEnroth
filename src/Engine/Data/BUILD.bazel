@@ -1,0 +1,41 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "engine_data",
+    srcs = [
+        "HouseEnumFunctions.cpp",
+        "TileEnumFunctions.cpp",
+        "TileEnums.cpp",
+    ],
+    hdrs = [
+        "AutonoteData.h",
+        "AutonoteEnums.h",
+        "AwardData.h",
+        "AwardEnumFunctions.h",
+        "AwardEnums.h",
+        "ChestData.h",
+        "FrameEnums.h",
+        "HistoryData.h",
+        "HouseData.h",
+        "HouseEnumFunctions.h",
+        "HouseEnums.h",
+        "IconFrameData.h",
+        "ItemData.h",
+        "PortraitFrameData.h",
+        "SoundEnums.h",
+        "SpecialEnchantmentData.h",
+        "StandardEnchantmentData.h",
+        "TextureFrameData.h",
+        "TileData.h",
+        "TileEnumFunctions.h",
+        "TileEnums.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Engine:engine_base",
+        "//src/Core/Time:core_time",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Serialization:library_serialization",
+        "//src/Utility:utility",
+    ],
+)

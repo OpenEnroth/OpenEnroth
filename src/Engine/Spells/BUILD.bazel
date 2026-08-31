@@ -1,0 +1,58 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "engine_spells_enums",
+    hdrs = [
+        "SpellEnumFunctions.h",
+        "SpellEnums.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+    ],
+)
+
+exports_files(
+    [
+        "CastSpellInfo.cpp",
+        "Spells.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_spells",
+    srcs = [],
+    hdrs = [
+        "CastSpellInfo.h",
+        "SpellBuff.h",
+        "Spells.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":engine_spells_enums",
+        "//src/Engine:engine_base",
+        "//src/Engine/Objects:engine_objects_base",
+        "//src/Engine/Objects:engine_objects_enums",
+        "//src/Core/Time:core_time",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Serialization:library_serialization",
+        "//src/Utility:utility",
+        "@glm",
+    ],
+)
+
+cc_library(
+    name = "test_engine_spells",
+    testonly = True,
+    srcs = [
+        "Tests/Spells_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":engine_spells",
+        "//test/Testing/Game:testing_game",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

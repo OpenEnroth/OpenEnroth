@@ -1,0 +1,27 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_platform_interface",
+    srcs = [
+        "PlatformEventHandler.cpp",
+    ],
+    hdrs = [
+        "Platform.h",
+        "PlatformEnumFunctions.h",
+        "PlatformEnums.h",
+        "PlatformEventHandler.h",
+        "PlatformEventLoop.h",
+        "PlatformEvents.h",
+        "PlatformGamepad.h",
+        "PlatformOpenGLContext.h",
+        "PlatformOpenGLOptions.h",
+        "PlatformWindow.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Image:library_image",
+        "//src/Library/Logger:library_logger",
+        "//src/Utility:utility",
+    ],
+)

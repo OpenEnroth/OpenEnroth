@@ -1,0 +1,22 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "testing_extensions",
+    testonly = True,
+    srcs = [
+        "ScopedTestFile.cpp",
+        "ScopedTestFileSlot.cpp",
+        "ThrowingAssertions.cpp",
+    ],
+    hdrs = [
+        "ExpectExtensions.h",
+        "ScopedTestFile.h",
+        "ScopedTestFileSlot.h",
+        "ThrowingAssertions.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+        "@googletest//:gtest",
+    ],
+)

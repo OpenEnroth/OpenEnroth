@@ -1,0 +1,23 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+exports_files(
+    ["TurnEngine.cpp"],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_turn_engine",
+    srcs = [],
+    hdrs = [
+        "TurnEngine.h",
+        "TurnEngineEnums.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Engine:engine_base",
+        "//src/Core/Time:core_time",
+        "//src/Library/Serialization:library_serialization",
+        "//src/Utility:utility",
+        "@glm",
+    ],
+)
