@@ -54,9 +54,17 @@ static size_t rootSize(std::string_view path) {
             std::string_view component = path.substr(pos, next - pos);
 
             // A root is copied through normalization verbatim, so nothing that needs normalizing can be part of
-            // one - otherwise "//?/../x" would keep its dots all the way to Win32, which doesn't resolve them. The
-            // "?" or "." that opens an extended-length path is exempt, being the prefix rather than a component.
-            if (component.empty() || (i > 0 && (component == "." || component == "..")))
+            // one - otherwise "//?/../x" would keep its dots all the way to Win32, which doesn't resolve them.
+            if (component.empty() || component == "." || component == "..") {
+                // ...except the "?" or "." opening an extended-length path, which is the prefix, not a component.
+                if (!isExtended || i > 0)
+                    return 1;
+            }
+
+            // A share can't be named "?" or ".", and reading one that way isn't harmless: normalization gives a
+            // root its separator, and "//?" would come back as "//?/", which parses as the extended prefix with no
+            // volume behind it. Normalizing twice would then give a different answer than normalizing once.
+            if (!isExtended && (component == "?" || component == "."))
                 return 1;
 
             if (next >= path.size())

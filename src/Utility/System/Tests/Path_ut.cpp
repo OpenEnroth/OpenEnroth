@@ -118,6 +118,14 @@ UNIT_TEST(Path, WindowsRoots) {
     // otherwise the dots would reach Win32, which does not resolve them inside an extended-length path.
     EXPECT_EQ(Path("//?/../x").root(), "/");
     EXPECT_EQ(Path("//?/../x").normalized().string(), "/x");
+
+    // And "?" or "." alone can't name a share. Reading them as one isn't harmless: normalizing gives a root its
+    // separator, so "//?" would come back as "//?/", which parses as the extended prefix with no volume behind it,
+    // and normalizing twice would answer differently than normalizing once.
+    EXPECT_EQ(Path("//?").root(), "/");
+    EXPECT_EQ(Path("//.").root(), "/");
+    EXPECT_EQ(Path("//?").normalized(), Path("//?").normalized().normalized());
+    EXPECT_EQ(Path("//.").normalized(), Path("//.").normalized().normalized());
 }
 #endif
 
