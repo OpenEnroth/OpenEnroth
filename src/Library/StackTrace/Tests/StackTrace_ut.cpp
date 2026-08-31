@@ -1,9 +1,14 @@
+#include <cassert>
 #include <cstdio>
 #include <cstdint>
 #include <cstdlib>
 #include <exception>
 #include <string>
 #include <thread>
+
+#ifdef _WINDOWS
+#   include <crtdbg.h> // NOLINT: not a C++ system header.
+#endif
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -103,6 +108,12 @@ MM_NOINLINE void stackTraceTerminateFunction() {
 MM_NOINLINE void stackTraceAbortFunction() {
     volatile int keepFrame = 0;
     std::abort();
+    keepFrame = 1; // Or the noreturn call becomes a jump, and this frame is gone before the handler runs.
+}
+
+MM_NOINLINE void stackTraceAssertFunction() {
+    volatile int keepFrame = 0;
+    assert(keepFrame != 0);
     keepFrame = 1; // Or the noreturn call becomes a jump, and this frame is gone before the handler runs.
 }
 
@@ -233,6 +244,26 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AbortIsTraced) {
         stackTraceAbortFunction();
     }, testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
                       testing::HasSubstr("stackTraceAbortFunction")));
+}
+
+UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AssertIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
+
+    // A failed assert is the crash a debug build produces most. It arrives as an abort with the assertion
+    // message printed in front, and the trace has to follow that message rather than replace it.
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+#ifdef _WINDOWS
+        _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
+        _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+#endif
+
+        StackTraceOnCrash handler;
+        stackTraceAssertFunction();
+    }, testing::AllOf(testing::HasSubstr("Assertion"),
+                      testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
+                      testing::HasSubstr("stackTraceAssertFunction")));
 }
 
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, TerminateIsTraced) {
