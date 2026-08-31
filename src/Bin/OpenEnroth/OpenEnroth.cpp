@@ -4,11 +4,23 @@
 #include <ranges>
 #include <vector>
 #include <string>
+#include <string_view>
 #include <algorithm>
+#include <atomic>
 #include <chrono>
+#include <optional>
 #include <unordered_set>
 
+#ifdef _WINDOWS
+#   include <conio.h> // NOLINT: not a C++ system header.
+#   include <io.h> // NOLINT: not a C++ system header.
+#elif defined(__APPLE__)
+#   include <unistd.h> // NOLINT: not a C++ system header.
+#   include <CoreFoundation/CoreFoundation.h> // NOLINT: not a C++ system header.
+#endif
+
 #include "Application/Startup/GameStarter.h"
+#include "Application/Startup/PathResolver.h"
 
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
@@ -23,6 +35,8 @@
 #include "Core/Trace/EventTrace.h"
 #include "Core/Trace/EventTraceMigrations.h"
 
+#include "Library/Blackbox/Blackbox.h"
+#include "Library/Environment/Interface/Environment.h"
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 
@@ -125,22 +139,75 @@ int runOpenEnroth(const OpenEnrothOptions &options) {
 
 #ifdef _WINDOWS
 static void waitForAnyKey() {
-    printf("[Press any key to close this window]");
-    getchar();
+    // Raw write, stdio might be locked by the thread that was printing when it died. _getch takes the key as
+    // it's pressed, getchar would wait for the enter after it.
+    constexpr std::string_view prompt = "[Press any key to close this window]";
+    _write(2, prompt.data(), static_cast<unsigned>(prompt.size()));
+    _getch();
+}
+#elif defined(__APPLE__)
+static const bool stderrIsTerminal = isatty(STDERR_FILENO); // A terminal user already sees the trace, and must not be blocked by a modal dialog.
+static std::atomic<CFStringRef> crashDialogText = CFSTR("OpenEnroth has crashed."); // Replaced once the crash log path is known.
+
+static void showCrashDialog() {
+    if (stderrIsTerminal)
+        return;
+
+    // A bundle launched from finder has no console, stderr goes nowhere, so this points the user at the crash
+    // log instead. The alert is rendered out of process by the system - no app object, no run loop, no main
+    // thread, all of which a cocoa alert would want from a crashed worker thread. A zero timeout blocks until
+    // the dialog is dismissed, and the re-raise that gets the system its own crash report happens after that.
+    CFOptionFlags response;
+    CFUserNotificationDisplayAlert(0, kCFUserNotificationStopAlertLevel, nullptr, nullptr, nullptr,
+                                   CFSTR("OpenEnroth crashed"), crashDialogText.load(std::memory_order_relaxed),
+                                   nullptr, nullptr, nullptr, &response);
+}
+
+static void pointCrashDialogAt(const NativePath &crashLogPath) {
+    std::string text = fmt::format("OpenEnroth has crashed.\nA crash log was written to:\n{}", crashLogPath.displayString());
+    crashDialogText.store(CFStringCreateWithCString(nullptr, text.c_str(), kCFStringEncodingUTF8), std::memory_order_relaxed); // Never released, it's for the crash.
 }
 #endif
 
+static void appCrashCallback(std::string_view text, bool final) {
+    printCrashChunk(text, final);
+    if (!final)
+        return;
+
+    // Whatever makes the crash visible comes last, once every sink has the whole trace - a key wait holds the
+    // console window open for good, and a dialog can fail in a broken process.
+#ifdef _WINDOWS
+    waitForAnyKey();
+#elif defined(__APPLE__)
+    showCrashDialog();
+#endif
+}
+
+static NativePath crashLogPath(const OpenEnrothOptions &options) {
+    NativePath userPath = options.userPath;
+    if (userPath.isEmpty())
+        userPath = resolveMm7UserPath(Environment::createStandardEnvironment().get()); // The same call GameStarter makes later, so both land in the same folder.
+    return userPath / NativePath("crash.log");
+}
+
 int openEnrothMain(int argc, char **argv) {
     try {
-#ifdef _WINDOWS
-        StackTraceOnCrash st(&waitForAnyKey);
-#else
-        StackTraceOnCrash st;
-#endif
+        initStackTraceOnCrash(&appCrashCallback);
         UnicodeCrt _(argc, argv);
         OpenEnrothOptions options = OpenEnrothOptions::parse(argc, argv);
         if (options.helpPrinted)
             return 1;
+
+        // Spans the whole run, so that the exit line goes in on every way out, exceptions included. The modes
+        // that promise not to touch the disk - retrace, play - get none, and stderr is visible there anyway.
+        std::optional<Blackbox> blackbox;
+        if (!options.ramFsUserData) {
+            NativePath path = crashLogPath(options);
+            blackbox.emplace(path);
+#ifdef __APPLE__
+            pointCrashDialogAt(path);
+#endif
+        }
 
         switch (options.subcommand) {
         default: assert(false); [[fallthrough]];
