@@ -130,10 +130,9 @@ static volatile char *volatile stackTraceOverflowEscape; // Never read, the pad 
 
 MM_NOINLINE int stackTraceOverflowFunction(int depth) {
     volatile char pad[1024]; // Big frames overflow fast, and the volatile writes keep the endless recursion out of UB land.
-    stackTraceOverflowEscape = pad; // Address taken, so the pad stays on the stack at -O2 and the recursion can't be folded into a loop.
-    pad[0] = static_cast<char>(depth); // Touching both ends, or the compiler is free to shrink the array.
-    pad[1023] = static_cast<char>(depth);
-    return pad[0] + pad[1023] + stackTraceOverflowFunction(depth + 1);
+    stackTraceOverflowEscape = pad; // Address taken, so the pad keeps its size at -O2 and the recursion can't be folded into a loop.
+    pad[0] = static_cast<char>(depth);
+    return pad[0] + stackTraceOverflowFunction(depth + 1);
 }
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
@@ -170,8 +169,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashOnAnotherThreadIsTraced) {
 UNIT_TEST_FIXTURE(ThreadSafeDeathTest, NullFunctionCallIsTraced) {
     // Calling a null pointer faults at address zero, where there's nothing to unwind from. The call pushed its
     // return address first though, and walking on from that names the function that made the call and
-    // everything above it. The walk used to follow the frame pointer slot of a frame that had none, past main
-    // into garbage, and on i386 that crashed the handler before it printed a single frame.
+    // everything above it.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
