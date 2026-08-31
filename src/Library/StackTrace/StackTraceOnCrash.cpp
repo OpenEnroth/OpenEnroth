@@ -395,8 +395,6 @@ static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &cras
     uintptr_t sp = crashContext.uc_mcontext.gregs[REG_ESP];
     fp = crashContext.uc_mcontext.gregs[REG_EBP];
 #   endif
-    // The call pushed the return address, but sp comes out of a broken process, so it's checked like every
-    // other read here. Nothing to trace from if it isn't there.
     if (!isRangeMapped(sp, sizeof(uintptr_t)))
         return frames;
     returnAddress = *reinterpret_cast<const uintptr_t *>(sp);
