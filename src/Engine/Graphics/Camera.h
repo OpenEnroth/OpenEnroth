@@ -24,10 +24,14 @@ struct Camera3D {
                  bool fit_into_viewport = false);
     Vec2f FitToViewport(const Vec2f& projPos) const;
 
-    bool CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
-        int *pOutNumVertices,
-        RenderVertexSoft *pVertices,
-        int NumFrustumPlanes);
+    /**
+     * @param pInVertices               Face vertices in world space.
+     * @param uNumVertices              Vertex count.
+     * @return                          Whether the face is approximately inside the camera frustum. Each plane is
+     *                                  tested independently, so a face outside a frustum corner can still pass.
+     * @offset 0x437285
+     */
+    bool IsFaceInCameraFrustum(const RenderVertexSoft *pInVertices, int uNumVertices) const;
 
     bool CullFaceToFrustum(RenderVertexSoft *inVerts,
         unsigned int *pOutNumVertices,
