@@ -20,9 +20,9 @@ bool isRunningUnderRosetta();
  * locks, so a crash while another thread holds one of those hangs the process instead of killing it. Crashing
  * inside the allocator does the same.
  *
- * Under Rosetta SIGABRT is left at its default disposition, so an abort, a terminate and a pure virtual call
- * die there without a trace. Handling it would deadlock the process instead, the faulting thread being parked
- * by Rosetta where no signal reaches it.
+ * Under Rosetta SIGABRT is left at its default disposition, so anything that ends in abort - a failed assert,
+ * a terminate, a pure virtual call, a libc++ hardening check - dies there without a trace. Handling it would
+ * deadlock the process instead, the faulting thread being parked by Rosetta where no signal reaches it.
  */
 class StackTraceOnCrash {
  public:
