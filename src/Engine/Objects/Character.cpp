@@ -26,7 +26,6 @@
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteEnumFunctions.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/SpellFxRenderer.h"
@@ -6358,10 +6357,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         int distance_x = actor->pos.x - pParty->pos.x,
             distance_y = actor->pos.y - pParty->pos.y,
             distance_z = actor->pos.z - pParty->pos.z;
-        actor_distance =
-            integer_sqrt(distance_x * distance_x + distance_y * distance_y +
-                         distance_z * distance_z) -
-            actor->radius;
+        actor_distance = Vec3i(distance_x, distance_y, distance_z).length() - actor->radius;
         if (actor_distance < 0) actor_distance = 0;
     }
 

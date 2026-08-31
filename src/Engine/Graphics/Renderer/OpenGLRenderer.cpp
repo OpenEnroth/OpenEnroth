@@ -37,7 +37,6 @@
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Tables/TileTable.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/AssetsManager.h"
@@ -307,8 +306,8 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
                                     GraphicsImage *texture) {
     // billboards projectile - lightning bolt
 
-    int xDifference = bankersRounding(dstX - srcX);
-    int yDifference = bankersRounding(dstY - srcY);
+    int xDifference = static_cast<int>(std::nearbyint(dstX - srcX));
+    int yDifference = static_cast<int>(std::nearbyint(dstY - srcY));
     int absYDifference = std::abs(yDifference);
     int absXDifference = std::abs(xDifference);
     unsigned int smallerabsdiff = std::min(absXDifference, absYDifference);

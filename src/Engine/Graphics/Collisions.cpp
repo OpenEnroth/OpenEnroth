@@ -1,5 +1,6 @@
 #include "Collisions.h"
 
+#include <cmath>
 #include <algorithm>
 #include <limits>
 #include <utility>
@@ -13,7 +14,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 #include "Engine/Random/Random.h"
@@ -694,7 +694,8 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
 
         if (type == OBJECT_Decoration) {
-            int speed = integer_sqrt(actor.velocity.x * actor.velocity.x + actor.velocity.y * actor.velocity.y);
+            // Actor velocity feeds the traces, so the squared length keeps its truncation to int.
+            int speed = std::sqrt(static_cast<int>(actor.velocity.xy().lengthSqr()));
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;
@@ -834,7 +835,8 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Decoration) {
-            int speed = integer_sqrt(actor.velocity.x * actor.velocity.x + actor.velocity.y * actor.velocity.y);
+            // Actor velocity feeds the traces, so the squared length keeps its truncation to int.
+            int speed = std::sqrt(static_cast<int>(actor.velocity.xy().lengthSqr()));
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y);
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;

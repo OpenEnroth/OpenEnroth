@@ -6,8 +6,6 @@
 #include <utility>
 
 #include "Engine/Engine.h"
-#include "Engine/OurMath.h"
-
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -305,7 +303,7 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // approx distance - for reachable checks
     float rayx = model->boundingCenter.x - pCamera3D->vCameraPos.x;
     float rayy = model->boundingCenter.y - pCamera3D->vCameraPos.y;
-    int dist = int_get_vector_length(std::abs(static_cast<int>(rayx)), std::abs(static_cast<int>(rayy)), 0);
+    int dist = Vec2i(static_cast<int>(rayx), static_cast<int>(rayy)).octagonalLength();
     *reachable = false;
     if (dist < model->boundingRadius + reachable_depth) *reachable = true;
 
