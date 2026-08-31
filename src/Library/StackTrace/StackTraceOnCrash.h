@@ -3,6 +3,13 @@
 #include <cstddef>
 #include <cstdint>
 
+namespace detail {
+/**
+ * @return                              Whether this is an x86_64 binary running under Rosetta translation.
+ */
+bool isRunningUnderRosetta();
+} // namespace detail
+
 #if defined(__linux__) && !defined(__ANDROID__)
 namespace detail {
 /**
@@ -26,6 +33,10 @@ bool isRangeMapped(uintptr_t address, size_t size);
  * The handlers are not async-signal-safe, and can't be - symbolizing a trace allocates, reads files and takes
  * locks, so a crash while another thread holds one of those hangs the process instead of killing it. Crashing
  * inside the allocator does the same.
+ *
+ * Under Rosetta SIGABRT is left at its default disposition, so an abort, a terminate and a pure virtual call
+ * die there without a trace. Handling it would deadlock the process instead, the faulting thread being parked
+ * by Rosetta where no signal reaches it.
  */
 class StackTraceOnCrash {
  public:

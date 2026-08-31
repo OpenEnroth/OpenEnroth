@@ -25,6 +25,7 @@
 #   include <sys/ucontext.h> // NOLINT: not a C++ system header.
 #   ifdef __APPLE__
 #       include <libunwind.h> // NOLINT: not a C++ system header.
+#       include <sys/sysctl.h> // NOLINT: not a C++ system header.
 #   else
 #       include <unwind.h> // NOLINT: not a C++ system header.
 #   endif
@@ -51,6 +52,16 @@ static void (*crashCallback)() = nullptr;
 static void runCrashCallback() {
     if (crashCallback)
         crashCallback();
+}
+
+bool detail::isRunningUnderRosetta() {
+#ifdef __APPLE__
+    int translated = 0;
+    size_t size = sizeof(translated);
+    return sysctlbyname("sysctl.proc_translated", &translated, &size, nullptr, 0) == 0 && translated == 1; // The key only exists in a translated process.
+#else
+    return false;
+#endif
 }
 
 static void printCrashHeader(std::string_view reason) {
@@ -505,6 +516,15 @@ static void installHandlers() {
     sigaltstack(&stack, nullptr);
 
     for (int signal : handledSignals) {
+        // Rosetta gives up on a fault that lands on any push of a function prologue's push run but the first,
+        // reports that it can't emulate forward on a synchronous exception, and aborts the process with the
+        // faulting thread still parked in the mach exception path, where no signal reaches it. A SIGABRT
+        // handler would then deadlock the process where the default disposition kills it. A stack overflow is
+        // the crash that hits this, a prologue being where a new frame first touches new stack. Only translated
+        // x86_64 is affected, hence a runtime check - the same build still traces aborts on an intel mac.
+        if (signal == SIGABRT && detail::isRunningUnderRosetta())
+            continue;
+
         struct sigaction action;
         std::memset(&action, 0, sizeof(action));
         action.sa_flags = SA_SIGINFO | SA_ONSTACK | SA_NODEFER | SA_RESETHAND;
