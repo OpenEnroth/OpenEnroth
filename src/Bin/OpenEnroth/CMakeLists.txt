@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(BIN_OPENENROTH_SOURCES
+        CrashDialog.cpp
         OpenEnroth.cpp
         OpenEnrothOptions.cpp)
 
 set(BIN_OPENENROTH_HEADERS
+        CrashDialog.h
         OpenEnrothOptions.h)
 
 if(OE_BUILD_PLATFORM STREQUAL "android")

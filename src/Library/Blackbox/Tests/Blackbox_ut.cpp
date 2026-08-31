@@ -47,7 +47,10 @@ class BlackboxTest : public testing::Test {
 };
 
 MM_NOINLINE int blackboxCrashingFunction() {
-    int *volatile nowhere = nullptr; // Volatile, or the compiler knows it's null and traps instead of faulting.
+    // Faults at a small address rather than at zero, so that the code differs from the null write in the stack
+    // trace tests - the windows linker folds identical functions into one, and the trace then names whichever
+    // survived.
+    int *volatile nowhere = reinterpret_cast<int *>(64); // Volatile, or the store is folded away.
     *nowhere = 1;
     return *nowhere; // The read feeds the return value, a store on its own is dead code that some compilers drop.
 }

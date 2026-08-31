@@ -7,15 +7,13 @@ bool isRunningUnderRosetta();
 } // namespace detail
 
 /**
- * Receives crash output, chunk by chunk. Runs inside a signal handler on an alternate stack, in a dying
- * process - so no allocation where it can be avoided, raw `write` rather than stdio for file output, and no
- * locks that might already be held.
+ * Receives crash output, chunk by chunk - the chunk text, without a trailing newline as sinks append their own,
+ * and whether it's the last chunk of this crash. Runs inside a signal handler on an alternate stack, in a
+ * dying process - so no allocation where it can be avoided, raw `write` rather than stdio for file output, and
+ * no locks that might already be held.
  *
- * The chunk with `final` set may never arrive - symbolization can hang, and a second crash with the same
- * signal kills the process outright. Treat `final` as best effort.
- *
- * @param text                          Chunk text, without a trailing newline. Sinks append their own.
- * @param final                         Whether this is the last chunk of this crash.
+ * The last chunk may never arrive - symbolization can hang, and a second crash with the same signal kills the
+ * process outright. Treat the flag as best effort.
  */
 using CrashCallback = void (*)(std::string_view text, bool final);
 
