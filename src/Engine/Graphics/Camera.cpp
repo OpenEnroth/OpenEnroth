@@ -1,7 +1,8 @@
 #include "Engine/Graphics/Camera.h"
 
+#include <cmath>
+
 #include "Engine/Engine.h"
-#include "Engine/OurMath.h"
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
@@ -126,7 +127,7 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
     ViewPlaneDistPixels = (double)pViewport.w * 0.5 / halfFovTan;
 
     // calculate vertical FOV in degrees for GL rendering
-    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels);
+    fov_y_deg = (180.0 / M_PI) * 2.0 * std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels);
 
     screenCenterX = (double)pViewport.center().x;
     screenCenterY = (double)pViewport.center().y - pViewport.y;
@@ -136,11 +137,11 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
-    float HalfAngleX = (pi / 2.0) - (odm_fov_rad / 2.0);
-    float HalfAngleY = (pi / 2.0) - (std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels));
+    float HalfAngleX = (M_PI / 2.0) - (odm_fov_rad / 2.0);
+    float HalfAngleY = (M_PI / 2.0) - (std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels));
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        HalfAngleX = (pi / 2.0) - (blv_fov_rad / 2.0);
+        HalfAngleX = (M_PI / 2.0) - (blv_fov_rad / 2.0);
     }
 
     glm::vec3 PlaneVec(0);
@@ -328,11 +329,11 @@ void Camera3D::CalculateRotations(int cameraYaw, int cameraPitch) {
     _viewPitch = -cameraPitch;  // pitch
     _viewYaw = cameraYaw;  // yaw
 
-    _yawRotationSine = std::sin((pi_double + pi_double) * _viewYaw / 2048.0);
-    _yawRotationCosine = std::cos((pi_double + pi_double) * _viewYaw / 2048.0);
+    _yawRotationSine = std::sin((2 * M_PI) * _viewYaw / 2048.0);
+    _yawRotationCosine = std::cos((2 * M_PI) * _viewYaw / 2048.0);
 
-    _pitchRotationSine = std::sin((pi_double + pi_double) * _viewPitch / 2048.0);
-    _pitchRotationCosine = std::cos((pi_double + pi_double) * _viewPitch / 2048.0);
+    _pitchRotationSine = std::sin((2 * M_PI) * _viewPitch / 2048.0);
+    _pitchRotationCosine = std::cos((2 * M_PI) * _viewPitch / 2048.0);
 }
 
 void Camera3D::CullByNearClip(RenderVertexSoft *pverts, unsigned *unumverts) {
