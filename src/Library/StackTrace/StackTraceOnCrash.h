@@ -1,25 +1,11 @@
 #pragma once
 
-#include <cstddef>
-#include <cstdint>
-
 namespace detail {
 /**
  * @return                              Whether this is an x86_64 binary running under Rosetta translation.
  */
 bool isRunningUnderRosetta();
 } // namespace detail
-
-#if defined(__linux__) && !defined(__ANDROID__)
-namespace detail {
-/**
- * @param address                       First byte of the range.
- * @param size                          Range length in bytes.
- * @return                              Whether every page the range touches is mapped.
- */
-bool isRangeMapped(uintptr_t address, size_t size);
-} // namespace detail
-#endif
 
 /**
  * Installs crash handlers that dump a stack trace to stderr, then let the crash proceed so that the OS still

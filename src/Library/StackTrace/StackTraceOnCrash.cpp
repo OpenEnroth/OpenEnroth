@@ -362,7 +362,7 @@ static uintptr_t faultingProgramCounter(const ucontext_t &crashContext) {
 
 static const size_t crashPageSize = getpagesize(); // Resolved at load. It's a call, and the handler runs in a broken process.
 
-bool detail::isRangeMapped(uintptr_t address, size_t size) {
+static bool isRangeMapped(uintptr_t address, size_t size) {
     uintptr_t mask = ~static_cast<uintptr_t>(crashPageSize - 1);
     uintptr_t last = (address + size - 1) & mask;
     for (uintptr_t page = address & mask; page <= last; page += crashPageSize)
@@ -397,7 +397,7 @@ static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &cras
 #   endif
     // The call pushed the return address, but sp comes out of a broken process, so it's checked like every
     // other read here. Nothing to trace from if it isn't there.
-    if (!detail::isRangeMapped(sp, sizeof(uintptr_t)))
+    if (!isRangeMapped(sp, sizeof(uintptr_t)))
         return frames;
     returnAddress = *reinterpret_cast<const uintptr_t *>(sp);
 #elif defined(__arm__)
@@ -412,7 +412,7 @@ static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &cras
         // bottom of the loop is what covers the fp that came out of the crash context.
         if (fp == 0 || fp % sizeof(uintptr_t) != 0)
             break;
-        if (!detail::isRangeMapped(fp, 2 * sizeof(uintptr_t)))
+        if (!isRangeMapped(fp, 2 * sizeof(uintptr_t)))
             break;
 
         const uintptr_t *frame = reinterpret_cast<const uintptr_t *>(fp);
