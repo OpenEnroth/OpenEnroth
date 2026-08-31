@@ -5,6 +5,7 @@ local addItemToInventory = function (itemId, characterIndex)
         characterIndex = Game.party.getActiveCharacter()
     else
         characterIndex = tonumber(characterIndex)
+        ---@cast characterIndex integer
     end
 
     local item = Game.items.getItemInfo(itemId)
