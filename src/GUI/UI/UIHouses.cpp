@@ -42,7 +42,6 @@
 #include "GUI/UI/Houses/TownHall.h"
 #include "GUI/UI/Houses/Shops.h"
 
-#include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -666,10 +665,10 @@ void createHouseUI(HouseId houseId) {
     }
 }
 
-// TODO(Nik-RE-dev): looks like this function is not needed anymore
 void BackToHouseMenu() {
-    auto pMouse = EngineIocContainer::ResolveMouse();
-    // TODO(Nik-RE-dev): Looks like it's artifact of MM6
+    // Dead since #840, the crash this block caused in MM7 - id 165 is MM6's High Council but MM7's Master
+    // Guild of Body in Erathia. It rebuilt house 165's window on a return to the menu with no movie playing.
+    // Four things in it no longer compile, so MM6 will need more than flipping the #if.
 #if 0
     if (window_SpeakInHouse && window_SpeakInHouse->houseId() == 165 &&
         !pMovie_Track) {
