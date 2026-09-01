@@ -26,18 +26,14 @@
 
 static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
-Vis_SelectionFilter vis_sprite_targets_filter = {
-    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType};  // 00F93E1C
-Vis_SelectionFilter vis_allsprites_filter = {
-    VisObjectType_Sprite, OBJECT_None, 0, 0, ExcludeType};  // 00F93E30
+Vis_SelectionFilter vis_anything_filter = {
+    VisObjectType_Sprite, OBJECT_None, 0, 0, ExcludeType};  // 00F93E30, "exclude nothing" matches every billboard.
 Vis_SelectionFilter vis_face_filter = {
     VisObjectType_Face, OBJECT_None, -1, 0, None};  // 00F93E44
 Vis_SelectionFilter vis_door_filter = {
     VisObjectType_Face, OBJECT_Door, -1, static_cast<int>(FACE_HAS_HINT), None };  // 00F93E58
 Vis_SelectionFilter vis_decoration_noevent_filter = {
     VisObjectType_Sprite, OBJECT_Decoration, -1, 0, ExclusionIfNoEvent};  // 00F93E6C
-Vis_SelectionFilter vis_items_filter = {
-    VisObjectType_Any, OBJECT_Sprite, -1, 0, None };  // static to sub_44EEA7
 
 //----- (004C1026) --------------------------------------------------------
 Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pick_depth) {

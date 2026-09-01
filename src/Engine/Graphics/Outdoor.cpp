@@ -1,5 +1,6 @@
 #include "Engine/Graphics/Outdoor.h"
 
+#include <cmath>
 #include <algorithm>
 #include <memory>
 #include <optional>
@@ -333,9 +334,9 @@ void OutdoorLocation::UpdateSunlightVectors() {
     if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 21) {
         minutes = pParty->uCurrentMinute + 60 * (pParty->uCurrentHour - 5);
 
-        this->vSunlight.x = std::cos((minutes * pi) / 960.0);
+        this->vSunlight.x = std::cos((minutes * M_PI) / 960.0);
         this->vSunlight.y = 0;
-        this->vSunlight.z = std::sin((minutes * pi) / 960.0);
+        this->vSunlight.z = std::sin((minutes * M_PI) / 960.0);
 
         if (minutes >= 480)
             v8 = 960 - minutes;
@@ -1059,11 +1060,11 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_StrafeLeft:
             {
-                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float sin_y = sinf(2 * M_PI * pParty->_viewYaw / 2048.0);
                 float dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.x -= 3 * dx / 4;
 
-                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float cos_y = cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
                 float dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.y += 3 * dy / 4;
 
@@ -1072,11 +1073,11 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_StrafeRight:
             {
-                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float sin_y = sinf(2 * M_PI * pParty->_viewYaw / 2048.0);
                 float dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.x += 3 * dx / 4;
 
-                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float cos_y = cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
                 float dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.y -= 3 * dy / 4;
 
@@ -1085,8 +1086,8 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_WalkForward:
             {
-                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0),
-                      cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float sin_y = sinf(2 * M_PI * pParty->_viewYaw / 2048.0),
+                      cos_y = cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
 
                 float dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 float dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
@@ -1104,8 +1105,8 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_RunForward:
             {
-                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
-                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float sin_y = sinf(2 * M_PI * pParty->_viewYaw / 2048.0);
+                float cos_y = cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
 
                 float dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 float dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
@@ -1136,8 +1137,8 @@ void ODM_ProcessPartyActions() {
             } break;
 
             case PARTY_WalkBackward: {
-                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
-                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float sin_y = sinf(2 * M_PI * pParty->_viewYaw / 2048.0);
+                float cos_y = cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
 
                 float dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 partyInputSpeed.x -= dx;
@@ -1149,8 +1150,8 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_RunBackward:
             {
-                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
-                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float sin_y = sinf(2 * M_PI * pParty->_viewYaw / 2048.0);
+                float cos_y = cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
 
                 float dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 float dy = sin_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
