@@ -1550,8 +1550,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
     int absy;                                          // eax@1
     unsigned int v9;                                   // ebx@11
     int v10;                                           // ebx@13
-    // TODO(captainurist): yaw/pitch angles are actually initialized to 0 despite the name!
-    AIDirection doNotInitializeBecauseShouldBeRandom;  // [sp+Ch] [bp-30h]@7
+    AIDirection randomDirection;  // [sp+Ch] [bp-30h]@7
     int y;                                             // [sp+30h] [bp-Ch]@1
     int absx;                                          // [sp+38h] [bp-4h]@1
 
@@ -1565,15 +1564,17 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
         absx = absx + absy / 2;
     if (supertypeForMonsterId(pActors[uActor_id].monsterInfo.id) == MONSTER_SUPERTYPE_TREANT) {
         if (!uActionLength) uActionLength = 256_ticks;
+        randomDirection.uYawAngle = grng->random(TrigLUT.uIntegerDoublePi);
         Actor::AI_StandOrBored(uActor_id, Pid(OBJECT_Character, 0), uActionLength,
-                               &doNotInitializeBecauseShouldBeRandom);
+                               &randomDirection);
         return;
     }
     if (pActors[uActor_id].monsterInfo.movementType ==
         MONSTER_MOVEMENT_TYPE_GLOBAL &&
         absx < 128) {
+        randomDirection.uYawAngle = grng->random(TrigLUT.uIntegerDoublePi);
         Actor::AI_Stand(uActor_id, uTarget_id, 256_ticks,
-                        &doNotInitializeBecauseShouldBeRandom);
+                        &randomDirection);
         return;
     }
     absx += (grng->random(0x10) * radius) / 16;
@@ -1585,8 +1586,9 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
     v10 = v9 + grng->random(256) - 128;
     if (std::abs(v10 - pActors[uActor_id].yawAngle) > 256 &&
         !(pActors[uActor_id].attributes & ACTOR_ANIMATION)) {
+        randomDirection.uYawAngle = grng->random(TrigLUT.uIntegerDoublePi);
         Actor::AI_Stand(uActor_id, uTarget_id, 256_ticks,
-                        &doNotInitializeBecauseShouldBeRandom);
+                        &randomDirection);
         return;
     }
     pActors[uActor_id].yawAngle = v10;

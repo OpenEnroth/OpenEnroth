@@ -1,6 +1,6 @@
 {
     "header": {
-        "afterLoadRandomState": 729004,
+        "afterLoadRandomState": 398926,
         "config": [
             {
                 "key": "all_magic",
@@ -45,7 +45,7 @@
                     ],
                     "endurance": 13,
                     "equipment": [],
-                    "hp": 0,
+                    "hp": 5,
                     "intelligence": 5,
                     "luck": 7,
                     "might": 30,
@@ -64,7 +64,7 @@
                     ],
                     "endurance": 13,
                     "equipment": [],
-                    "hp": 10,
+                    "hp": 5,
                     "intelligence": 9,
                     "luck": 13,
                     "might": 13,
@@ -82,7 +82,7 @@
                     ],
                     "endurance": 22,
                     "equipment": [],
-                    "hp": 2,
+                    "hp": 5,
                     "intelligence": 9,
                     "luck": 7,
                     "might": 12,
@@ -101,11 +101,11 @@
                     ],
                     "endurance": 13,
                     "equipment": [],
-                    "hp": -8,
+                    "hp": -13,
                     "intelligence": 30,
                     "luck": 7,
                     "might": 5,
-                    "mp": 36,
+                    "mp": 0,
                     "personality": 9,
                     "speed": 13
                 }
@@ -356,7 +356,7 @@
             "type": "keyPress"
         },
         {
-            "randomState": 378844,
+            "randomState": 687593,
             "tickCount": 1200,
             "type": "paint"
         },
@@ -367,52 +367,52 @@
             "type": "keyRelease"
         },
         {
-            "randomState": 802702,
+            "randomState": 132012,
             "tickCount": 1300,
             "type": "paint"
         },
         {
-            "randomState": 833827,
+            "randomState": 220420,
             "tickCount": 1400,
             "type": "paint"
         },
         {
-            "randomState": 522572,
+            "randomState": 686920,
             "tickCount": 1500,
             "type": "paint"
         },
         {
-            "randomState": 522572,
+            "randomState": 686920,
             "tickCount": 1600,
             "type": "paint"
         },
         {
-            "randomState": 356920,
+            "randomState": 124778,
             "tickCount": 1700,
             "type": "paint"
         },
         {
-            "randomState": 356920,
+            "randomState": 124778,
             "tickCount": 1800,
             "type": "paint"
         },
         {
-            "randomState": 356920,
+            "randomState": 124778,
             "tickCount": 1900,
             "type": "paint"
         },
         {
-            "randomState": 787760,
+            "randomState": 124778,
             "tickCount": 2000,
             "type": "paint"
         },
         {
-            "randomState": 369898,
+            "randomState": 218175,
             "tickCount": 2100,
             "type": "paint"
         },
         {
-            "randomState": 492191,
+            "randomState": 373654,
             "tickCount": 2200,
             "type": "paint"
         },
@@ -429,22 +429,22 @@
             "type": "keyPress"
         },
         {
-            "randomState": 492191,
+            "randomState": 373654,
             "tickCount": 2300,
             "type": "paint"
         },
         {
-            "randomState": 492191,
+            "randomState": 373654,
             "tickCount": 2400,
             "type": "paint"
         },
         {
-            "randomState": 353498,
+            "randomState": 136216,
             "tickCount": 2500,
             "type": "paint"
         },
         {
-            "randomState": 353498,
+            "randomState": 136216,
             "tickCount": 2600,
             "type": "paint"
         }
