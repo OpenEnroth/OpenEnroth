@@ -1,5 +1,6 @@
 #include "AudioPlayer.h"
 
+#include <cmath>
 #include <algorithm>
 #include <map>
 #include <string>
