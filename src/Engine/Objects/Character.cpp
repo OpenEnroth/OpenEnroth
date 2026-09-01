@@ -12,6 +12,7 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -6338,7 +6339,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         }
     }
 
-    Pid target_pid = mouse->uPointingObjectID;
+    Pid target_pid = engine->PickMouseForTargeting().pid;
     ObjectType target_type = target_pid.type();
     int target_id = target_pid.id();
     if (target_type != OBJECT_Actor || !pActors[target_id].CanBeDamaged()) {

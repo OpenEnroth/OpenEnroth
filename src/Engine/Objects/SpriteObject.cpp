@@ -9,7 +9,6 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Timer.h"
 #include "Engine/Evt/Processor.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AttackList.h"
