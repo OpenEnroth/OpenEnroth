@@ -1,6 +1,6 @@
 # lls acronym stands for Lua Language Server
 # This script expects four parameters: 
-# python lls-check.py [LLS-PATH] [SCRIPTS-FOLDER] [LOG-OUTPUT-FOLDER-PATH] [LLS-CONFIGURATION-PATH]
+# python check_lua_style.py [LLS-PATH] [SCRIPTS-FOLDER] [LOG-OUTPUT-FOLDER-PATH] [LLS-CONFIGURATION-PATH]
 
 # LLS-PATH - The path where the LLS executable is located
 # SCRIPTS-FOLDER - location where all the scripts that we want to check are located
@@ -22,7 +22,7 @@ def print_lls(message):
 
 def main():
     if len(sys.argv) != 5:
-        print_lls("Wrong number of arguments passed to lls-check.py")
+        print_lls("Wrong number of arguments passed to check_lua_style.py")
         return 1
 
     check_level = "Warning"
