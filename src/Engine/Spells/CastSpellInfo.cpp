@@ -3047,7 +3047,8 @@ void pushSpellOrRangedAttack(SpellId spell,
             case SPELL_LIGHT_PARALYZE:
             case SPELL_DARK_CONTROL_UNDEAD:
                 if (!overrideSoundId) {
-                    // These spells are targeted unless used from quick spell button
+                    // These spells are targeted when cast from the spellbook or a scroll. Quick casts and wands
+                    // resolve the target from the cursor or the closest actor instead.
                     flags |= ON_CAST_TargetedActor;
                 }
                 break;
