@@ -38,19 +38,6 @@ constexpr bool isMac = false;
 #endif
 
 /**
- * Death tests in this suite re-exec the binary instead of forking it. The darwin_x86_64 leg runs under
- * Rosetta on the arm64 runners, and Rosetta plants its exception server thread in every translated process,
- * so gtest counts two threads there and warns that a forked child inherits whatever locks the other one held
- * at that instant. A re-exec'd child starts clean.
- */
-class ThreadSafeDeathTest : public testing::Test {
- protected:
-    void SetUp() override {
-        GTEST_FLAG_SET(death_test_style, "threadsafe");
-    }
-};
-
-/**
  * Matches when the frame numbered `index` names `function`. The regexes gtest's own death test matchers take
  * aren't portable - gtest picks between two engines with different grammars depending on the platform - so
  * this walks the lines instead.
@@ -172,7 +159,7 @@ UNIT_TEST(StackTrace, InitReturnsThePreviousCallback) {
     EXPECT_EQ(initStackTraceOnCrash(previous), &printCrashChunk);
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashHandlerNamesTheCrashingFunction) {
+UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
     EXPECT_DEATH({
         // Gtest wraps test bodies in __try/__except, and a frame-based handler runs before any unhandled
         // exception filter, so on windows ours would never see the access violation below.
@@ -183,7 +170,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashHandlerNamesTheCrashingFunction) {
     }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::HasSubstr("main")));
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashOnAnotherThreadIsTraced) {
+UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
     // The handlers are process-wide, but only the thread that installs them gets an alternate signal stack,
     // so this one runs on the worker's own stack. That's enough for anything short of stack exhaustion.
     EXPECT_DEATH({
@@ -196,7 +183,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashOnAnotherThreadIsTraced) {
     }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::Not(testing::HasSubstr("main"))));
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, NullFunctionCallIsTraced) {
+UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
     // Calling a null pointer faults at address zero, where there's nothing to unwind from. The call pushed its
     // return address first though, and walking on from that names the function that made the call and
     // everything above it.
@@ -208,7 +195,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, NullFunctionCallIsTraced) {
     }, testing::AllOf(HasFrame(0, "stackTraceNullCallFunction"), testing::HasSubstr("main")));
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, BadTargetCallIsTraced) {
+UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
     // Calling 0xdeadbeefdead faults with the pc at the bad address, and the handler has to recognize that
     // to walk from the caller instead.
     EXPECT_DEATH({
@@ -219,7 +206,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, BadTargetCallIsTraced) {
     }, testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, StackOverflowIsTraced) {
+UNIT_TEST(StackTrace, StackOverflowIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "Rosetta can't reliably deliver the guard page fault.";
 
@@ -235,7 +222,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, StackOverflowIsTraced) {
     }, HasFrame(0, "stackTraceOverflowFunction"));
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashArrivesAsHeaderThenTrace) {
+UNIT_TEST(StackTrace, CrashArrivesAsHeaderThenTrace) {
     // The reason goes out as a chunk of its own before anything is symbolized, so that a hang in symbolization
     // still leaves it behind, and the trace is the final chunk - the one an app callback holds a console window
     // open on, which is why nothing may follow it. Exactly two chunks, in that order, is what this guards.
@@ -260,7 +247,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, CrashArrivesAsHeaderThenTrace) {
     }, headerThenTrace);
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AbortIsTraced) {
+UNIT_TEST(StackTrace, AbortIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
 
@@ -273,7 +260,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AbortIsTraced) {
                       testing::HasSubstr("stackTraceAbortFunction")));
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AssertIsTraced) {
+UNIT_TEST(StackTrace, AssertIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
 
@@ -290,7 +277,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AssertIsTraced) {
                       testing::HasSubstr("stackTraceAssertFunction")));
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, TerminateIsTraced) {
+UNIT_TEST(StackTrace, TerminateIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
 
@@ -303,7 +290,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, TerminateIsTraced) {
                       testing::HasSubstr("stackTraceTerminateFunction")));
 }
 
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, PureVirtualCallIsTraced) {
+UNIT_TEST(StackTrace, PureVirtualCallIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
 
@@ -317,7 +304,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, PureVirtualCallIsTraced) {
 }
 
 #ifdef _WINDOWS
-UNIT_TEST_FIXTURE(ThreadSafeDeathTest, InvalidParameterIsTraced) {
+UNIT_TEST(StackTrace, InvalidParameterIsTraced) {
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
