@@ -21,9 +21,11 @@
 #   include <mutex>
 #elif !defined(__ANDROID__)
 #   include <unistd.h> // NOLINT: not a C++ system header.
+#   include <sys/mman.h> // NOLINT: not a C++ system header.
 #   include <sys/ucontext.h> // NOLINT: not a C++ system header.
 #   ifdef __APPLE__
 #       include <libunwind.h> // NOLINT: not a C++ system header.
+#       include <sys/sysctl.h> // NOLINT: not a C++ system header.
 #   else
 #       include <unwind.h> // NOLINT: not a C++ system header.
 #   endif
@@ -50,6 +52,16 @@ static void (*crashCallback)() = nullptr;
 static void runCrashCallback() {
     if (crashCallback)
         crashCallback();
+}
+
+bool detail::isRunningUnderRosetta() {
+#ifdef __APPLE__
+    int translated = 0;
+    size_t size = sizeof(translated);
+    return sysctlbyname("sysctl.proc_translated", &translated, &size, nullptr, 0) == 0 && translated == 1; // The key only exists in a translated process.
+#else
+    return false;
+#endif
 }
 
 static void printCrashHeader(std::string_view reason) {
@@ -348,6 +360,17 @@ static uintptr_t faultingProgramCounter(const ucontext_t &crashContext) {
 #endif
 }
 
+static const size_t crashPageSize = getpagesize();
+
+static bool isRangeMapped(uintptr_t address, size_t size) {
+    uintptr_t mask = ~static_cast<uintptr_t>(crashPageSize - 1);
+    uintptr_t last = (address + size - 1) & mask;
+    for (uintptr_t page = address & mask; page <= last; page += crashPageSize)
+        if (msync(reinterpret_cast<void *>(page), 1, MS_ASYNC) != 0)
+            return false; // Fails with ENOMEM on an unmapped page, and touches nothing.
+    return true;
+}
+
 /**
  * Walks the frame pointer chain from the register state a signal was delivered with. This is for a call
  * through a bad pointer, which faults at the bad address where the unwinder has nothing to go on. The call
@@ -359,28 +382,50 @@ static uintptr_t faultingProgramCounter(const ucontext_t &crashContext) {
  */
 static std::vector<cpptrace::frame_ptr> walkFramePointers(const ucontext_t &crashContext) {
     std::vector<cpptrace::frame_ptr> frames;
+    uintptr_t returnAddress = 0;
+    uintptr_t fp = 0;
 #if defined(__aarch64__)
-    uintptr_t returnAddress = crashContext.uc_mcontext.regs[30]; // lr
-    uintptr_t fp = crashContext.uc_mcontext.regs[29];
-#elif defined(__x86_64__)
+    returnAddress = crashContext.uc_mcontext.regs[30]; // lr
+    fp = crashContext.uc_mcontext.regs[29];
+#elif defined(__x86_64__) || defined(__i386__)
+#   if defined(__x86_64__)
     uintptr_t sp = crashContext.uc_mcontext.gregs[REG_RSP];
-    uintptr_t returnAddress = *reinterpret_cast<const uintptr_t *>(sp); // The call pushed it.
-    uintptr_t fp = crashContext.uc_mcontext.gregs[REG_RBP];
-#elif defined(__i386__)
+    fp = crashContext.uc_mcontext.gregs[REG_RBP];
+#   else
     uintptr_t sp = crashContext.uc_mcontext.gregs[REG_ESP];
-    uintptr_t returnAddress = *reinterpret_cast<const uintptr_t *>(sp);
-    uintptr_t fp = crashContext.uc_mcontext.gregs[REG_EBP];
+    fp = crashContext.uc_mcontext.gregs[REG_EBP];
+#   endif
+    if (!isRangeMapped(sp, sizeof(uintptr_t)))
+        return frames;
+    returnAddress = *reinterpret_cast<const uintptr_t *>(sp);
 #elif defined(__arm__)
-    uintptr_t returnAddress = crashContext.uc_mcontext.arm_lr;
-    uintptr_t fp = crashContext.uc_mcontext.arm_fp;
+    returnAddress = crashContext.uc_mcontext.arm_lr;
+    fp = crashContext.uc_mcontext.arm_fp;
 #endif
     frames.push_back(returnAddress - 1); // Minus one, so it points into the call, not one past it.
-    while (fp != 0 && frames.size() < detail::MAX_TRACE_DEPTH) {
-        const uintptr_t *frame = reinterpret_cast<const uintptr_t *>(fp); // [fp] = caller's fp, [fp + 1] = return.
-        if (frame[1] == 0)
+
+    while (frames.size() < detail::MAX_TRACE_DEPTH) {
+        // Both checks precede the read and cover its whole span - [fp] is the caller's frame pointer and
+        // [fp + 1] the return address, two words starting at fp. Checking alignment here rather than at the
+        // bottom of the loop is what covers the fp that came out of the crash context.
+        if (fp == 0 || fp % sizeof(uintptr_t) != 0)
             break;
-        frames.push_back(frame[1] - 1);
-        fp = frame[0];
+        if (!isRangeMapped(fp, 2 * sizeof(uintptr_t)))
+            break;
+
+        const uintptr_t *frame = reinterpret_cast<const uintptr_t *>(fp);
+        uintptr_t callerFp = frame[0];
+        uintptr_t callerPc = frame[1];
+        if (callerPc == 0)
+            break;
+        frames.push_back(callerPc - 1);
+
+        // A frame built without a frame pointer holds something else in that slot. The caller's frame is always
+        // further up the stack, so a value that isn't ends the walk - after the push, since at the frame above
+        // main the return address is real while the slot is not.
+        if (callerFp <= fp)
+            break;
+        fp = callerFp;
     }
     return frames;
 }
@@ -464,6 +509,9 @@ static void installHandlers() {
     sigaltstack(&stack, nullptr);
 
     for (int signal : handledSignals) {
+        if (signal == SIGABRT && detail::isRunningUnderRosetta())
+            continue; // A handler would hang the process on Rosetta's own abort, the default handler kills it.
+
         struct sigaction action;
         std::memset(&action, 0, sizeof(action));
         action.sa_flags = SA_SIGINFO | SA_ONSTACK | SA_NODEFER | SA_RESETHAND;
