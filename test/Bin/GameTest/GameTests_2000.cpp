@@ -14,6 +14,9 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Actor.h"
@@ -1619,4 +1622,103 @@ GAME_TEST(Issues, Pr2635) {
     game.doubleClickGuiButton("SaveMenu_Slot0");
     game.tick(2);
     EXPECT_EQ(saveLoadMenu()->keyboard_input_status, WINDOW_INPUT_IN_PROGRESS);
+}
+
+GAME_TEST(Prs, Pr2615a) {
+    // A decoration's clickable reach extends past the mouse interaction depth by the decoration's radius, so a big
+    // one is clickable from further away than its center. This campfire is at depth 560 with radius 52, clickable
+    // at the default reach of 512.
+    auto foodTape = tapes.food();
+    auto statusTape = tapes.statusBar();
+    game.startNewGame();
+    const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
+    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
+    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->uRadius, 52);
+    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(535, 0, 0), 0); // The pick depth comes out at 560.
+    test.startTaping();
+    game.pointMouseAtDecoration(7);
+    EXPECT_EQ(engine->PickMouseForInteraction().pid, Pid()); // Otherwise the radius allowance isn't what's tested.
+    Vis_PIDAndDepth object = engine->PickMouseForTargeting();
+    EXPECT_EQ(object.pid, Pid(OBJECT_Decoration, 7));
+    EXPECT_GT(object.depth, engine->config->gameplay.MouseInteractionDepth.value());
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.tick(3);
+    EXPECT_EQ(foodTape.delta(), 2);
+    EXPECT_CONTAINS(statusTape, "You find 2 food");
+}
+
+GAME_TEST(Prs, Pr2615b) {
+    // Shift-clicking a friendly actor fires the quick spell at it on both sides of the interaction depth, as in
+    // vanilla - a friendliness check in the click handler is not allowed to drop the far click.
+    for (int depth : {300, 1200}) {
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        engine->config->debug.AllMagic.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
+
+        auto hpTape = actorTapes.hp(0);
+        Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, depth, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A,
+                                           SPAWN_DUMMY | SPAWN_FRIENDLY);
+        EXPECT_EQ(peasant->GetActorsRelation(0), HOSTILITY_FRIENDLY); // Otherwise it's the hostile path that's tested.
+        pParty->pCharacters[0].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
+        game.pointMouseAtActor(0);
+        EXPECT_EQ(engine->PickMouseForInteraction().pid == Pid(), depth > engine->config->gameplay.MouseInteractionDepth.value());
+
+        game.pressKey(PlatformKey::KEY_SHIFT);
+        game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+        game.tick(2);
+        game.releaseKey(PlatformKey::KEY_SHIFT);
+        game.tick(30);
+        test.stopTaping();
+
+        EXPECT_LT(hpTape.delta(), 0); // The quick spell fired and hit.
+    }
+}
+
+GAME_TEST(Prs, Pr2615c) {
+    // In vanilla telekinesis doesn't work on decorations at all - its targeting pick skips their billboards, so
+    // the decoration branch in castSpell is dead code there, with a garbled line that crashes once reached. OE
+    // deliberately lets the pick see decorations, and this is the OE behavior being tested: telekinesis pulls an
+    // interactive decoration from beyond click reach.
+    auto foodTape = tapes.food();
+    auto statusTape = tapes.statusBar();
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
+    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
+    ASSERT_EQ(campfire.uEventID, 0); // The eventless interactive kind - Pr2615d covers the evented kind.
+    game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
+    test.startTaping();
+    game.castSpell(1, SPELL_EARTH_TELEKINESIS);
+    game.tick(2);
+    game.pointMouseAtDecoration(7);
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.tick(3);
+    EXPECT_EQ(foodTape.delta(), 2);
+    EXPECT_CONTAINS(statusTape, "You find 2 food");
+}
+
+GAME_TEST(Prs, Pr2615d) {
+    // Telekinesis on a decoration that carries a map event - the campfire in Pr2615c is the interactive kind, this
+    // Harmondale fruit tree is the evented kind, and its event hands the player an apple. Fruit trees bear nothing
+    // in autumn and winter, and a new game starts on the 1st of January, so the calendar is pushed into summer first.
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-12192, 9000, 0), 0); // Decorations belong to the loaded map.
+    const LevelDecoration &tree = pLevelDecorations[559];
+    ASSERT_EQ(pDecorationList->GetDecoration(tree.uDecorationDescID)->hint, "tree");
+    ASSERT_NE(tree.uEventID, 0); // The point of this test - Pr2615c covers the eventless interactive kind.
+    game.teleportTo(MAP_HARMONDALE, tree.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
+    pParty->GetPlayingTime() += Duration::fromDays(150);
+    game.tick(2);
+    ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
+    game.castSpell(1, SPELL_EARTH_TELEKINESIS);
+    game.tick(2);
+    game.pointMouseAtDecoration(559);
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.tick(3);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
 }

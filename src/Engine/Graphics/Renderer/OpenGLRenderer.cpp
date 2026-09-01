@@ -2,6 +2,7 @@
 
 #include "OpenGLVertexBuffer.h"
 
+#include <cmath>
 #include <algorithm>
 #include <memory>
 #include <utility>
@@ -645,7 +646,7 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
 
 
     // TODO(pskelton): repeated maths could be saved when calculating sky planes
-    double rot_to_rads = ((2 * pi_double) / 2048);
+    double rot_to_rads = ((2 * M_PI) / 2048);
 
     // lowers clouds as party goes up
     float  blv_horizon_height_offset = ((pCamera3D->ViewPlaneDistPixels * pCamera3D->vCameraPos.z)
@@ -765,8 +766,8 @@ RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int heig
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
     pCamera3D->_viewYaw = pParty->_viewYaw;
-    pCamera3D->vCameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
-    pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * M_PI * pParty->_viewYaw / 2048.0);
     pCamera3D->vCameraPos.z = pParty->pos.z + pParty->eyeLevel;  // 193, but real 353
     pCamera3D->CalculateRotations(pParty->_viewYaw, pParty->_viewPitch);
     pCamera3D->CreateViewMatrixAndProjectionScale();
@@ -948,9 +949,9 @@ void OpenGLRenderer::_set_3d_modelview_matrix() {
 
     // build view matrix with glm
     glm::vec3 campos = glm::vec3(camera_x, camera_y, camera_z);
-    glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0f * pi_double * pCamera3D->_viewYaw / 2048.0f),
-        camera_y - sinf(2.0f * pi_double * pCamera3D->_viewYaw / 2048.0f),
-        camera_z - tanf(2.0f * pi_double * -pCamera3D->_viewPitch / 2048.0f));
+    glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0f * M_PI * pCamera3D->_viewYaw / 2048.0f),
+        camera_y - sinf(2.0f * M_PI * pCamera3D->_viewYaw / 2048.0f),
+        camera_z - tanf(2.0f * M_PI * -pCamera3D->_viewPitch / 2048.0f));
     glm::vec3 upvec = glm::vec3(0.0f, 0.0f, 1.0f);
 
     viewmat = glm::lookAtLH(campos, eyepos, upvec);
@@ -1194,8 +1195,8 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     TerrainUniforms uniforms;
     uniforms.projection = projmat;
     uniforms.view = viewmat;
-    uniforms.cameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
-    uniforms.cameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    uniforms.cameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
+    uniforms.cameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * M_PI * pParty->_viewYaw / 2048.0);
     uniforms.cameraPos.z = pParty->pos.z + pParty->eyeLevel;
     uniforms.fog = fog;
     uniforms.gamma = gamma;
@@ -1203,7 +1204,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
     // sun lighting stuff
     float ambient = pParty->uCurrentMinute + pParty->uCurrentHour * 60.0;  // 0 - > 1439
-    ambient = 0.15 + (sinf(((ambient - 360.0) * 2 * pi_double) / 1440) + 1) * 0.27;
+    ambient = 0.15 + (sinf(((ambient - 360.0) * 2 * M_PI) / 1440) + 1) * 0.27;
     float diffuseon = pWeather->bNight ? 0 : 1;
 
     uniforms.sun.direction = pOutdoor->vSunlight;
@@ -1388,7 +1389,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawOutdoorSky() {
-    double rot_to_rads = ((2 * pi_double) / 2048);
+    double rot_to_rads = ((2 * M_PI) / 2048);
 
     // lowers clouds as party goes up
     float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDistPixels * pCamera3D->vCameraPos.z)
@@ -2574,8 +2575,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     OutBuildUniforms uniforms;
     uniforms.projection = projmat;
     uniforms.view = viewmat;
-    uniforms.cameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f);
-    uniforms.cameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f);
+    uniforms.cameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * M_PI * pParty->_viewYaw / 2048.0f);
+    uniforms.cameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * M_PI * pParty->_viewYaw / 2048.0f);
     uniforms.cameraPos.z = pParty->pos.z + pParty->eyeLevel;
     uniforms.fog = fog;
     uniforms.gamma = gamma;
@@ -2585,7 +2586,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
     // sun lighting stuff
     float ambient = pParty->uCurrentMinute + pParty->uCurrentHour * 60.0f;  // 0 - > 1439
-    ambient = 0.15 + (sinf(((ambient - 360.0f) * 2 * pi_double) / 1440) + 1) * 0.27f;
+    ambient = 0.15 + (sinf(((ambient - 360.0f) * 2 * M_PI) / 1440) + 1) * 0.27f;
     float diffuseon = pWeather->bNight ? 0.0f : 1.0f;
 
     uniforms.sun.direction = pOutdoor->vSunlight;
@@ -3090,8 +3091,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
         BSPUniforms uniforms;
         uniforms.projection = projmat;
         uniforms.view = viewmat;
-        uniforms.cameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f);
-        uniforms.cameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f);
+        uniforms.cameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * M_PI * pParty->_viewYaw / 2048.0f);
+        uniforms.cameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * M_PI * pParty->_viewYaw / 2048.0f);
         uniforms.cameraPos.z = pParty->pos.z + pParty->eyeLevel;
         uniforms.gamma = gamma;
         uniforms.waterframe = waterAnimationFrame();

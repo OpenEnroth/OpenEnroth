@@ -1,9 +1,14 @@
+#include <cassert>
 #include <cstdio>
 #include <cstdint>
 #include <cstdlib>
 #include <exception>
 #include <string>
 #include <thread>
+
+#ifdef _WINDOWS
+#   include <crtdbg.h> // NOLINT: not a C++ system header.
+#endif
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -30,6 +35,13 @@ constexpr bool isMac = true;
 #else
 constexpr bool isMac = false;
 #endif
+
+static void sendAssertReportsToStderr() {
+#ifdef _WINDOWS
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
+    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+#endif
+}
 
 /**
  * Matches when the frame numbered `index` names `function`. The regexes gtest's own death test matchers take
@@ -93,6 +105,12 @@ MM_NOINLINE void stackTraceAbortFunction() {
     keepFrame = 1; // Or the noreturn call becomes a jump, and this frame is gone before the handler runs.
 }
 
+MM_NOINLINE void stackTraceAssertFunction() {
+    volatile int keepFrame = 0;
+    assert(keepFrame != 0);
+    keepFrame = 1; // Or the noreturn call becomes a jump, and this frame is gone before the handler runs.
+}
+
 #ifdef _WINDOWS
 MM_NOINLINE void stackTraceInvalidParameterFunction() {
     volatile int keepFrame = 0;
@@ -113,12 +131,13 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
     return result + 1;
 }
 
+static volatile char *volatile stackTraceOverflowEscape; // Never read, the pad below is stored here so it exists.
+
 MM_NOINLINE int stackTraceOverflowFunction(int depth) {
-    volatile char pad[1024]; // Big frames run out of stack fast.
-    pad[0] = static_cast<char>(depth); // Touching both ends, or the compiler is free to shrink the array.
-    pad[1023] = static_cast<char>(depth);
-    pad[0] = static_cast<char>(pad[0] + stackTraceOverflowFunction(depth + 1)); // Result lands in this frame after the call. Plain `x + recurse()` became an accumulator loop at -O2 and hung.
-    return pad[0] + pad[1023];
+    volatile char pad[1024]; // Big frames overflow fast, and the volatile writes keep the endless recursion out of UB land.
+    stackTraceOverflowEscape = pad; // Address taken, so the pad keeps its size at -O2 and the recursion can't be folded into a loop.
+    pad[0] = static_cast<char>(depth);
+    return pad[0] + stackTraceOverflowFunction(depth + 1);
 }
 
 UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
@@ -176,6 +195,9 @@ UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
 }
 
 UNIT_TEST(StackTrace, StackOverflowIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "Rosetta can't reliably deliver the guard page fault.";
+
     // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
     // faults on the exhausted stack and the crash prints nothing at all.
     EXPECT_DEATH({
@@ -204,6 +226,9 @@ UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
 }
 
 UNIT_TEST(StackTrace, AbortIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
+
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
@@ -213,7 +238,27 @@ UNIT_TEST(StackTrace, AbortIsTraced) {
                       testing::HasSubstr("stackTraceAbortFunction")));
 }
 
+UNIT_TEST(StackTrace, AssertIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
+
+    // A failed assert is the crash a debug build produces most. It arrives as an abort with the assertion
+    // message printed in front, and the trace has to follow that message rather than replace it.
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+        sendAssertReportsToStderr();
+
+        StackTraceOnCrash handler;
+        stackTraceAssertFunction();
+    }, testing::AllOf(testing::HasSubstr("Assertion"),
+                      testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
+                      testing::HasSubstr("stackTraceAssertFunction")));
+}
+
 UNIT_TEST(StackTrace, TerminateIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
+
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
@@ -224,6 +269,9 @@ UNIT_TEST(StackTrace, TerminateIsTraced) {
 }
 
 UNIT_TEST(StackTrace, PureVirtualCallIsTraced) {
+    if (detail::isRunningUnderRosetta())
+        GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
+
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 

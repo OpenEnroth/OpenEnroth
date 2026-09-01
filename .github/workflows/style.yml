@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  LLS_TAG: '3.9.1'
+  LLS_TAG: '3.19.1'
 
 jobs:
   check_style:
@@ -40,34 +40,16 @@ jobs:
           mold-version: 2.36.0
           make-default: false
 
-      - name: Restore cached lua-language-server
-        id: lls-cache
-        uses: actions/cache@v4
-        with:
-          path: 'lua-language-server/build/bin'
-          key: 'lls-cache-${{env.LLS_TAG}}'
-
-      - name: Checkout lua-language-server
-        if: steps.lls-cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: 'LuaLS/lua-language-server'
-          path: 'lua-language-server'
-          ref: '3.9.1'
-
-      - name: Install ninja-build
-        if: steps.lls-cache.outputs.cache-hit != 'true'
-        uses: seanmiddleditch/gha-setup-ninja@v4
-
-      - name: Build lua-language-server
-        if: steps.lls-cache.outputs.cache-hit != 'true'
-        working-directory: lua-language-server
+      # Unpacked outside the workspace on purpose. Inside it, lua-language-server lints its own lua sources.
+      - name: Install lua-language-server
         run: |
-          ./make.sh
+          mkdir -p "$HOME/lua-language-server"
+          curl -fsSL -o "$RUNNER_TEMP/lls.tar.gz" "https://github.com/LuaLS/lua-language-server/releases/download/$LLS_TAG/lua-language-server-$LLS_TAG-linux-x64.tar.gz"
+          tar xzf "$RUNNER_TEMP/lls.tar.gz" -C "$HOME/lua-language-server"
 
       - name: Configure
         run: |
-          cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON -DOE_LLS_COMMAND=./lua-language-server/build/bin/lua-language-server
+          cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON -DOE_LLS_COMMAND="$HOME/lua-language-server/bin/lua-language-server"
 
       - name: Check style
         working-directory: build
