@@ -22,16 +22,12 @@ static const NativePath logPath("blackbox_ut.log"); // Relative, a death test ch
 static const NativePath oldLogPath("blackbox_ut.log.old");
 
 /**
- * Every test here runs the blackbox in a re-exec'd death test child. It registers a process-wide callback and
- * holds its file open for good, so the parent never constructs one - a second instance asserts, and on
- * windows the parent couldn't remove the file afterwards.
+ * Every test here runs the blackbox in a death test child. It registers a process-wide callback and holds its
+ * file open for good, so the parent never constructs one - a second instance asserts, and on windows the
+ * parent couldn't remove the file afterwards.
  */
 class BlackboxTest : public testing::Test {
  protected:
-    void SetUp() override {
-        GTEST_FLAG_SET(death_test_style, "threadsafe");
-    }
-
     std::vector<std::string> logLines() {
         std::vector<std::string> result;
         Blob log = Blob::fromFile(logPath);
@@ -112,7 +108,7 @@ UNIT_TEST_FIXTURE(BlackboxTest, CrashIsInTheFileBeforeTheChainedCallbackRuns) {
 }
 
 UNIT_TEST_FIXTURE(BlackboxTest, OversizedLogIsRotated) {
-    FileOutputStream(logPath).write(std::string(1024 * 1024 + 1, 'x')); // Runs in the child too, which re-executes everything up to the death statement.
+    FileOutputStream(logPath).write(std::string(1024 * 1024 + 1, 'x'));
 
     EXPECT_EXIT({
         {
