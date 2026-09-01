@@ -6,7 +6,6 @@
 #include <string>
 #include <memory>
 
-
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -22,6 +21,8 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Vis.h"
@@ -111,8 +112,16 @@ void EngineController::pressButton(PlatformMouseButton button, int x, int y, boo
     pressOrReleaseButton(EVENT_MOUSE_BUTTON_PRESS, button, x, y, isDoubleClick);
 }
 
+void EngineController::pressButton(PlatformMouseButton button, Pointi point, bool isDoubleClick) {
+    pressButton(button, point.x, point.y, isDoubleClick);
+}
+
 void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     pressOrReleaseButton(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
+}
+
+void EngineController::releaseButton(PlatformMouseButton button, Pointi point) {
+    releaseButton(button, point.x, point.y);
 }
 
 void EngineController::moveMouse(int x, int y) {
@@ -126,6 +135,10 @@ void EngineController::moveMouse(int x, int y) {
     postEvent(std::move(event));
 }
 
+void EngineController::moveMouse(Pointi point) {
+    moveMouse(point.x, point.y);
+}
+
 void EngineController::pressAndReleaseKey(PlatformKey key) {
     pressKey(key);
     releaseKey(key);
@@ -134,6 +147,10 @@ void EngineController::pressAndReleaseKey(PlatformKey key) {
 void EngineController::pressAndReleaseButton(PlatformMouseButton button, int x, int y) {
     pressButton(button, x, y);
     releaseButton(button, x, y);
+}
+
+void EngineController::pressAndReleaseButton(PlatformMouseButton button, Pointi point) {
+    pressAndReleaseButton(button, point.x, point.y);
 }
 
 void EngineController::pressGuiButton(std::string_view buttonId) {
@@ -303,6 +320,11 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
 
     if (flags & SPAWN_STATIONARY)
         actor->moveSpeed = 1;
+    if (flags & SPAWN_FRIENDLY) {
+        actor->attributes &= ~ACTOR_AGGRESSOR;
+        actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
+        actor->hostilityGroup = MONSTER_TYPE_INVALID; // The party's own faction, what summons and resurrects get.
+    }
     if (flags & SPAWN_NO_RESISTANCES) {
         actor->monsterInfo.resFire = 0;
         actor->monsterInfo.resAir = 0;
@@ -401,9 +423,27 @@ void EngineController::pointMouseAtActor(int actorId) {
     Vec2f screenPos = pCamera3D->Project(viewPos);
 
     moveMouse(screenPos.x, screenPos.y);
-    tick(1); // Wait for Mouse::uPointingObjectID to pick up the new mouse position.
-    if (mouse->uPointingObjectID != Pid(OBJECT_Actor, actorId))
+    tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
+    if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Actor, actorId))
         throw Exception("Failed to point mouse at actor #{}", actorId);
+}
+
+void EngineController::pointMouseAtDecoration(int decorationId) {
+    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
+    // camera is still at the old position. Tick once to let it catch up.
+    tick(1);
+
+    const DecorationDesc *desc = pDecorationList->GetDecoration(pLevelDecorations[decorationId].uDecorationDescID);
+    Vec3f center = pLevelDecorations[decorationId].vPosition + Vec3f(0, 0, desc->uDecorationHeight / 2);
+    Vec3f viewPos = pCamera3D->ViewTransform(&center);
+    if (viewPos.x <= 0)
+        throw Exception("Decoration #{} is behind the camera", decorationId);
+    Vec2f screenPos = pCamera3D->Project(viewPos);
+
+    moveMouse(screenPos.x, screenPos.y);
+    tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
+    if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Decoration, decorationId))
+        throw Exception("Failed to point mouse at decoration #{}", decorationId);
 }
 
 void EngineController::goToGameOrMainMenu() {

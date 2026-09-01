@@ -25,4 +25,5 @@ struct LevelDecoration {
 
 extern std::vector<LevelDecoration> pLevelDecorations;
 extern std::vector<int> decorationsWithSound;
+// TODO(captainurist): should be passed to eventProcessor explicitly, not smuggled in through a global.
 extern LevelDecoration *activeLevelDecoration;  // 5C3420

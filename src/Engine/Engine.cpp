@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cmath>
 #include <cstring>
 #include <string>
 #include <algorithm>
@@ -40,7 +41,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Random/Random.h"
@@ -134,8 +134,8 @@ void Engine::drawWorld() {
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
     pCamera3D->_viewYaw = pParty->_viewYaw;
-    pCamera3D->vCameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
-    pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * M_PI * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * M_PI * pParty->_viewYaw / 2048.0);
     pCamera3D->vCameraPos.z = pParty->pos.z + pParty->eyeLevel;  // 193, but real 353
 
     pCamera3D->CalculateRotations(pParty->_viewYaw, pParty->_viewPitch);
@@ -446,21 +446,19 @@ Vis_PIDAndDepth Engine::PickKeyboard(float pick_depth, Vis_SelectionFilter *spri
     }
 }
 
-Vis_PIDAndDepth Engine::PickMouseInfoPopup() {
+Vis_PIDAndDepth Engine::PickMouseForInfo() {
     Pointi pt = mouse->position();
-    // TODO(captainurist): Right now we can have popups for monsters that are not reachable with a bow, and this is OK.
-    //                     However, such monsters also don't get a hint displayed on mouseover. Probably should fix this?
-    return PickMouse(pCamera3D->GetMouseInfoDepth(), pt.x, pt.y, &vis_allsprites_filter, &vis_face_filter);
+    return PickMouse(pCamera3D->GetMouseInfoDepth(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
 }
 
-Vis_PIDAndDepth Engine::PickMouseTarget() {
+Vis_PIDAndDepth Engine::PickMouseForTargeting() {
     Pointi pt = mouse->position();
-    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_sprite_targets_filter, &vis_face_filter);
+    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
 }
 
-Vis_PIDAndDepth Engine::PickMouseNormal() {
+Vis_PIDAndDepth Engine::PickMouseForInteraction() {
     Pointi pt = mouse->position();
-    return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_items_filter, &vis_face_filter);
+    return PickMouse(config->gameplay.MouseInteractionDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
 }
 
 void Engine::toggleOverlays() {
