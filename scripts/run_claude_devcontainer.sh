@@ -23,5 +23,16 @@ devcontainer up --workspace-folder "$REPO_DIR" >/dev/null
 #
 # TERM and COLORTERM are forwarded by hand. Plain `devcontainer exec` passes a bare TERM=xterm and drops
 # COLORTERM.
+#
+# TERM_PROGRAM and TERM_PROGRAM_VERSION go the same way, and they are how Claude names the host terminal.
+# Without them it assumes a generic Linux one and says to hold Shift to select text, but Terminal.app needs
+# Fn and iTerm2 needs Option.
+#
+# The agent view turns on mouse reporting, and a terminal that has handed the mouse over stops making
+# selections of its own, which leaves Cmd+C nothing to copy. CLAUDE_CODE_DISABLE_MOUSE turns it back off at
+# the cost of wheel scrolling.
 exec devcontainer exec --workspace-folder "$REPO_DIR" \
-  bash -lc "TERM='${TERM:-xterm-256color}' COLORTERM='${COLORTERM:-}' exec claude agents --dangerously-skip-permissions"
+  bash -lc "TERM='${TERM:-xterm-256color}' COLORTERM='${COLORTERM:-}' \
+            TERM_PROGRAM='${TERM_PROGRAM:-}' TERM_PROGRAM_VERSION='${TERM_PROGRAM_VERSION:-}' \
+            CLAUDE_CODE_DISABLE_MOUSE=1 \
+            exec claude agents --dangerously-skip-permissions"
