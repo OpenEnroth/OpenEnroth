@@ -37,6 +37,13 @@ constexpr bool isMac = true;
 constexpr bool isMac = false;
 #endif
 
+static void sendAssertReportsToStderr() {
+#ifdef _WINDOWS
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
+    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+#endif
+}
+
 /**
  * Matches when the frame numbered `index` names `function`. The regexes gtest's own death test matchers take
  * aren't portable - gtest picks between two engines with different grammars depending on the platform - so
@@ -106,18 +113,11 @@ MM_NOINLINE void stackTraceAssertFunction() {
 }
 
 #ifdef _WINDOWS
-static void sendAssertReportsToStderr() {
-    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
-    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-}
-
 MM_NOINLINE void stackTraceInvalidParameterFunction() {
     volatile int keepFrame = 0;
     std::printf(nullptr); // Null format string is the canonical way to trip the invalid parameter handler.
     keepFrame = 1; // Or the call is in tail position, becomes a jump, and this frame is gone from the trace.
 }
-#else
-static void sendAssertReportsToStderr() {}
 #endif // _WINDOWS
 
 MM_NOINLINE int stackTraceNullCallFunction() {
@@ -211,9 +211,7 @@ UNIT_TEST(StackTrace, StackOverflowIsTraced) {
         GTEST_SKIP() << "Rosetta can't reliably deliver the guard page fault.";
 
     // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
-    // faults on the exhausted stack and the crash prints nothing at all. Under rosetta, where darwin_x86_64
-    // runs in CI, an overflow of frames a few dozen bytes deep froze the process for good - no signal was
-    // delivered, not even to other threads. Frames holding a real 1kb pad were delivered 20 times out of 20.
+    // faults on the exhausted stack and the crash prints nothing at all.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
@@ -268,7 +266,7 @@ UNIT_TEST(StackTrace, AssertIsTraced) {
     // message printed in front, and the trace has to follow that message rather than replace it.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
-        sendAssertReportsToStderr(); // Not an #ifdef here, a directive inside a macro argument doesn't compile on msvc.
+        sendAssertReportsToStderr();
 
         initStackTraceOnCrash();
         stackTraceAssertFunction();
