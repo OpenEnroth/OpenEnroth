@@ -117,19 +117,19 @@ MM_NOINLINE void stackTraceAssertFunction() {
     keepFrame = 1; // Or the noreturn call becomes a jump, and this frame is gone before the handler runs.
 }
 
-#ifdef _WINDOWS
 static void sendAssertReportsToStderr() {
+#ifdef _WINDOWS
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+#endif
 }
 
+#ifdef _WINDOWS
 MM_NOINLINE void stackTraceInvalidParameterFunction() {
     volatile int keepFrame = 0;
     std::printf(nullptr); // Null format string is the canonical way to trip the invalid parameter handler.
     keepFrame = 1; // Or the call is in tail position, becomes a jump, and this frame is gone from the trace.
 }
-#else
-static void sendAssertReportsToStderr() {}
 #endif // _WINDOWS
 
 MM_NOINLINE int stackTraceNullCallFunction() {
