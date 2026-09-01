@@ -36,6 +36,13 @@ constexpr bool isMac = true;
 constexpr bool isMac = false;
 #endif
 
+static void sendAssertReportsToStderr() {
+#ifdef _WINDOWS
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
+    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+#endif
+}
+
 /**
  * Matches when the frame numbered `index` names `function`. The regexes gtest's own death test matchers take
  * aren't portable - gtest picks between two engines with different grammars depending on the platform - so
@@ -102,13 +109,6 @@ MM_NOINLINE void stackTraceAssertFunction() {
     volatile int keepFrame = 0;
     assert(keepFrame != 0);
     keepFrame = 1; // Or the noreturn call becomes a jump, and this frame is gone before the handler runs.
-}
-
-static void sendAssertReportsToStderr() {
-#ifdef _WINDOWS
-    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
-    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-#endif
 }
 
 #ifdef _WINDOWS
