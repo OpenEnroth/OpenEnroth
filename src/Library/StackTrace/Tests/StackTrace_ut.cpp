@@ -211,7 +211,10 @@ UNIT_TEST(StackTrace, StackOverflowIsTraced) {
         GTEST_SKIP() << "Rosetta can't reliably deliver the guard page fault.";
 
     // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
-    // faults on the exhausted stack and the crash prints nothing at all.
+    // faults on the exhausted stack and the crash prints nothing at all. That is also why this child is
+    // re-exec'd rather than forked - a forked child inherits the flag saying the handlers are installed, but
+    // on darwin not the alternate stack, so nothing installs one. A re-exec'd child installs both in main.
+    GTEST_FLAG_SET(death_test_style, "threadsafe");
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
