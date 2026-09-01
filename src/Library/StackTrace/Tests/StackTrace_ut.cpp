@@ -212,9 +212,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, StackOverflowIsTraced) {
         GTEST_SKIP() << "Rosetta can't reliably deliver the guard page fault.";
 
     // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
-    // faults on the exhausted stack and the crash prints nothing at all. Under rosetta, where darwin_x86_64
-    // runs in CI, an overflow of frames a few dozen bytes deep froze the process for good - no signal was
-    // delivered, not even to other threads. Frames holding a real 1kb pad were delivered 20 times out of 20.
+    // faults on the exhausted stack and the crash prints nothing at all.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
