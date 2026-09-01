@@ -7,6 +7,7 @@
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/MapEnums.h"
 
+#include "Library/Geometry/Point.h"
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
 
@@ -23,6 +24,7 @@ enum class SpawnFlag {
     SPAWN_STATIONARY = 0x1, // Set moveSpeed to 1 so that the monster stays in place.
     SPAWN_NO_RESISTANCES = 0x2, // Zero out all resistances. Note that you might also want to set `SPAWN_LEVEL_1`.
     SPAWN_LEVEL_1 = 0x4, // Set level to 1. Level is used in to-hit, resistance and special attack rolls.
+    SPAWN_FRIENDLY = 0x8, // Make the monster friendly to the party, whatever the hostility table says about its type.
 
     // A predictable stationary target for damage-related tests.
     SPAWN_DUMMY = SPAWN_STATIONARY | SPAWN_NO_RESISTANCES | SPAWN_LEVEL_1,
@@ -57,11 +59,15 @@ class EngineController {
     void pressAutoRepeatedKey(PlatformKey key);
     void releaseKey(PlatformKey key);
     void pressButton(PlatformMouseButton button, int x, int y, bool isDoubleClick = false);
+    void pressButton(PlatformMouseButton button, Pointi point, bool isDoubleClick = false);
     void releaseButton(PlatformMouseButton button, int x, int y);
+    void releaseButton(PlatformMouseButton button, Pointi point);
     void moveMouse(int x, int y);
+    void moveMouse(Pointi point);
 
     void pressAndReleaseKey(PlatformKey key);
     void pressAndReleaseButton(PlatformMouseButton button, int x, int y);
+    void pressAndReleaseButton(PlatformMouseButton button, Pointi point);
 
     /**
      * Presses a GUI button identified by the provided id by sending a mouse press and release event.
@@ -160,6 +166,14 @@ class EngineController {
      * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
      */
     void pointMouseAtActor(int actorId);
+
+    /**
+     * Finds a screen position at which the mouse points at the provided decoration & moves the mouse there.
+     *
+     * @param decorationId              Id of the decoration to point at.
+     * @throws Exception                If pointing at the decoration is not possible, e.g. it's not on the screen.
+     */
+    void pointMouseAtDecoration(int decorationId);
 
  private:
     void goToGameOrMainMenu();
