@@ -1,7 +1,8 @@
 #include "Engine/Graphics/Camera.h"
 
+#include <cmath>
+
 #include "Engine/Engine.h"
-#include "Engine/OurMath.h"
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
@@ -72,18 +73,16 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
                                             RenderVertexSoft *pLineEnd,
                                             Color sEndDiffuse32,
                                             float z_stuff) {
-    RenderVertexSoft a1[20];
-    RenderVertexSoft pVertices[20];
+    RenderVertexSoft a1[2];
 
-    int uOutNumVertices = 2;
     a1[0].vWorldPosition = pLineBegin->vWorldPosition;
     a1[1].vWorldPosition = pLineEnd->vWorldPosition;
-    if (CullFaceToCameraFrustum(a1, &uOutNumVertices, pVertices, FRUSTUM_PLANE_COUNT) != 1 || uOutNumVertices >= 2) {
-        ViewTransform(pVertices, 2);
-        Project(pVertices, 2, 0);
+    if (IsFaceInCameraFrustum(a1, 2)) {
+        ViewTransform(a1, 2);
+        Project(a1, 2, 0);
 
         render->BeginLines2D();
-        render->RasterLine2D(pVertices[0].vWorldViewProj.toInt(), pVertices[1].vWorldViewProj.toInt(),
+        render->RasterLine2D(a1[0].vWorldViewProj.toInt(), a1[1].vWorldViewProj.toInt(),
                              sStartDiffuse32, sEndDiffuse32);
         render->EndLines2D();
     }
@@ -126,7 +125,7 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
     ViewPlaneDistPixels = (double)pViewport.w * 0.5 / halfFovTan;
 
     // calculate vertical FOV in degrees for GL rendering
-    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels);
+    fov_y_deg = (180.0 / M_PI) * 2.0 * std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels);
 
     screenCenterX = (double)pViewport.center().x;
     screenCenterY = (double)pViewport.center().y - pViewport.y;
@@ -136,11 +135,11 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
-    float HalfAngleX = (pi / 2.0) - (odm_fov_rad / 2.0);
-    float HalfAngleY = (pi / 2.0) - (std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels));
+    float HalfAngleX = (M_PI / 2.0) - (odm_fov_rad / 2.0);
+    float HalfAngleY = (M_PI / 2.0) - (std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels));
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        HalfAngleX = (pi / 2.0) - (blv_fov_rad / 2.0);
+        HalfAngleX = (M_PI / 2.0) - (blv_fov_rad / 2.0);
     }
 
     glm::vec3 PlaneVec(0);
@@ -168,19 +167,13 @@ void Camera3D::BuildViewFrustum() {
     FrustumPlanes[3].w = glm::dot(glm::vec3(FrustumPlanes[3]), vCameraPos);
 }
 
-// TODO(pskelton): does this func need to copy verts or could it be eliminated
-//----- (00437285) --------------------------------------------------------
-bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
-                                       int *pOutNumVertices,
-                                       RenderVertexSoft *pVertices,
-                                       int NumFrustumPlanes) {
-    if (NumFrustumPlanes <= 0) return false;
-    if (*pOutNumVertices <= 0) return false;
+bool Camera3D::IsFaceInCameraFrustum(const RenderVertexSoft *pInVertices, int uNumVertices) const {
+    if (uNumVertices <= 0) return false;
 
     bool inside = false;
-    for (int p = 0; p < NumFrustumPlanes; p++) {
+    for (int p = 0; p < 4; p++) {
         inside = false;
-        for (int v = 0; v < *pOutNumVertices; v++) {
+        for (int v = 0; v < uNumVertices; v++) {
             float pLinelength1 = pInVertices[v].vWorldPosition.x * FrustumPlanes[p].x +
                                   pInVertices[v].vWorldPosition.y * FrustumPlanes[p].y +
                                   pInVertices[v].vWorldPosition.z * FrustumPlanes[p].z;
@@ -193,19 +186,7 @@ bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
         if (inside == false) break;
     }
 
-    if (inside == false) {
-        *pOutNumVertices = 0;
-        return false;
-    } else {
-        // copy in vcerts
-        memcpy(pVertices, pInVertices, sizeof(RenderVertexSoft) * *pOutNumVertices);
-        // return true
-        return true;
-    }
-
-    assert(false);
-
-    return false;
+    return inside;
 }
 
 // used for culling to supplied portal frustums
@@ -328,11 +309,11 @@ void Camera3D::CalculateRotations(int cameraYaw, int cameraPitch) {
     _viewPitch = -cameraPitch;  // pitch
     _viewYaw = cameraYaw;  // yaw
 
-    _yawRotationSine = std::sin((pi_double + pi_double) * _viewYaw / 2048.0);
-    _yawRotationCosine = std::cos((pi_double + pi_double) * _viewYaw / 2048.0);
+    _yawRotationSine = std::sin((2 * M_PI) * _viewYaw / 2048.0);
+    _yawRotationCosine = std::cos((2 * M_PI) * _viewYaw / 2048.0);
 
-    _pitchRotationSine = std::sin((pi_double + pi_double) * _viewPitch / 2048.0);
-    _pitchRotationCosine = std::cos((pi_double + pi_double) * _viewPitch / 2048.0);
+    _pitchRotationSine = std::sin((2 * M_PI) * _viewPitch / 2048.0);
+    _pitchRotationCosine = std::cos((2 * M_PI) * _viewPitch / 2048.0);
 }
 
 void Camera3D::CullByNearClip(RenderVertexSoft *pverts, unsigned *unumverts) {
