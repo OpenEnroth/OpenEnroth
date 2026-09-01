@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <string>
 
-#include "Engine/OurMath.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Image.h"

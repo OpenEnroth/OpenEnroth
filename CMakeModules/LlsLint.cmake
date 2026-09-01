@@ -1,7 +1,7 @@
 function(init_check_lua_style)
     if(OE_CHECK_LUA_STYLE)
         find_program(OE_LLS_COMMAND lua-language-server)
-        set(OE_LLS_CHECK_COMMAND "${PROJECT_SOURCE_DIR}/lls-check.py" CACHE FILEPATH "Lua Language Server check script")
+        set(OE_LLS_CHECK_COMMAND "${PROJECT_SOURCE_DIR}/scripts/check_lua_style.py" CACHE FILEPATH "Lua Language Server check script")
         if(OE_LLS_COMMAND)
             message("Using lua-language-server at '${OE_LLS_COMMAND}'")
         else()

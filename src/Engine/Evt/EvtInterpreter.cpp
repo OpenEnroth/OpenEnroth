@@ -494,6 +494,15 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         }
         case EVENT_ChangeEvent:
+            // The operand is the absolute id of the global event to run on the next click, and the byte in decorVars
+            // stores it relative to the dispatch base of 380. The -124 is -380 folded through the mod-256 store, so
+            // the round trip only works for ids in [380, 635], and all shipped MM6 and MM7 records fit - every
+            // non-zero operand in both games' evt files is in [383, 443]. MM8 data doesn't fit. Its global.evt uses
+            // ids 268-289 and 531-570, and its engine maps them piecewise - states 0-21 are events 268-289, states
+            // 23-62 are events 531-570, everything else passes through unchanged. Read out of the PS2 SLPS_250.31
+            // binary at 0xa33e0 and 0xa3418, the PC MM8.exe is presumed to match.
+            // TODO(captainurist): make the state<->event mapping per-game before feeding MM8 data through here, and
+            //                     spell the MM7 store as -380 while at it.
             if (ir.data.event_id) {
                 engine->_persistentVariables.decorVars[activeLevelDecoration->eventVarId] = ir.data.event_id - 124;
             } else {

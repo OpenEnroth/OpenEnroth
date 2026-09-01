@@ -43,6 +43,8 @@ local function getSkills()
         for skillId, skillValue in pairs(info.skills) do
             local skillName = enumToString(Game.SkillType, skillId)
             local skillMasteryName = enumToString(Game.SkillMastery, skillValue.mastery)
+            -- lua-language-server cannot infer a string built up across nested loops.
+            ---@diagnostic disable-next-line: no-unknown
             message = message ..
                 skillName .. ": " .. skillMasteryName .. " - Level " .. tostring(skillValue.level) .. "\n"
         end
