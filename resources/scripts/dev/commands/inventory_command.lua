@@ -1,12 +1,8 @@
 local Game = require "bindings.game"
+local CommandUtilities = require "dev.commands.command_utils"
 
 local addItemToInventory = function (itemId, characterIndex)
-    if not characterIndex then
-        characterIndex = Game.party.getActiveCharacter()
-    else
-        characterIndex = tonumber(characterIndex)
-        ---@cast characterIndex integer
-    end
+    characterIndex = CommandUtilities.characterOrCurrent(characterIndex)
 
     local item = Game.items.getItemInfo(itemId)
     if item then
