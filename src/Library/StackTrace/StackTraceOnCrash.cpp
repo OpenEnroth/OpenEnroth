@@ -512,7 +512,7 @@ static void installHandlers() {
         // Rosetta gives up on a fault that lands on any push of a function prologue's push run but the first,
         // reports that it can't emulate forward on a synchronous exception, and aborts the process with the
         // faulting thread still parked in the mach exception path, where no signal reaches it. A SIGABRT
-        // handler would then deadlock the process where the default disposition kills it. A stack overflow is
+        // handler would then deadlock the process where the default handler kills it. A stack overflow is
         // the crash that hits this, a prologue being where a new frame first touches new stack. Only translated
         // x86_64 is affected, hence a runtime check - the same build still traces aborts on an intel mac.
         if (signal == SIGABRT && detail::isRunningUnderRosetta())
