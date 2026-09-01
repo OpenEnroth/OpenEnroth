@@ -665,14 +665,10 @@ void createHouseUI(HouseId houseId) {
     }
 }
 
-/**
- * In MM6 this is the seam between a movie house's movie and the game. It runs on every return to the house
- * menu, and when the house is the High Council - where the ending ceremony movie plays - it rebuilds the
- * house window under the game over flag. MM7 has no movie houses, so in MM7 there is nothing to do.
- */
 void BackToHouseMenu() {
-    // MM6 house 165 is the High Council. MM7 reused that id for the Erathian Master Guild of Body, and
-    // running this there was the #840 crash, so the block stays disabled until MM6 support gives it a home.
+    // Dead since #840, the crash this block caused in MM7 - id 165 is MM6's High Council but MM7's Master
+    // Guild of Body in Erathia. It rebuilt house 165's window on a return to the menu with no movie playing.
+    // Four things in it no longer compile, so MM6 will need more than flipping the #if.
 #if 0
     if (window_SpeakInHouse && window_SpeakInHouse->houseId() == 165 &&
         !pMovie_Track) {
