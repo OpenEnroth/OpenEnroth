@@ -259,7 +259,7 @@ UNIT_TEST_FIXTURE(ThreadSafeDeathTest, AssertIsTraced) {
     // message printed in front, and the trace has to follow that message rather than replace it.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
-        sendAssertReportsToStderr(); // Not an #ifdef here, a directive inside a macro argument doesn't compile on msvc.
+        sendAssertReportsToStderr();
 
         StackTraceOnCrash handler;
         stackTraceAssertFunction();
