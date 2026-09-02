@@ -792,21 +792,7 @@ void BLV_UpdateActors() {
 
         bool isAboveGround = actor.pos.z > floorZ + 1;
 
-        // make bloodsplat when the ground is hit
-        if (!actor.donebloodsplat) {
-            if (actor.aiState == Dead || actor.aiState == Dying) {
-                if (actor.pos.z < floorZ + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->infos[actor.monsterInfo.id].bloodSplatOnDeath) {
-                        bool queued = true;
-                        if (engine->config->graphics.BloodSplats.value()) {
-                            float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            queued = EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, floorZ + 30), colorTable.Red, splatRadius);
-                        }
-                        actor.donebloodsplat = queued;  // Retry next frame if the queue was full.
-                    }
-                }
-            }
-        }
+        actor.updateBloodsplat(floorZ);
 
         if (actor.currentActionAnimation == ANIM_Walking) {  // actor is moving
             int moveSpeed = actor.moveSpeed;
