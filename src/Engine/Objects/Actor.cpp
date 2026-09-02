@@ -23,7 +23,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Random/Random.h"
@@ -709,14 +708,6 @@ bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
 
 //----- (0043AC45) --------------------------------------------------------
 void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
-    int v4;  // ebx@8
-    int v5;  // ST1C_4@8
-    int v6;  // eax@8
-
-    int x = 0;
-    x |= 0x80000;
-    int y = 0;
-    y |= 0x80000;
     Actor *victim = &pActors[uActorID];
     if (a2 == 1) victim->attributes |= ACTOR_AGGRESSOR;
 
@@ -725,10 +716,10 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
         if (!actor->CanAct() || i == uActorID) continue;
 
         if (Actor::ArePeasantsOfSameFaction(victim, actor)) {
-            v4 = std::abs(actor->pos.x - victim->pos.x);
-            v5 = std::abs(actor->pos.y - victim->pos.y);
-            v6 = std::abs(actor->pos.z - victim->pos.z);
-            if (int_get_vector_length(v4, v5, v6) < 4096) {
+            int deltaX = actor->pos.x - victim->pos.x;
+            int deltaY = actor->pos.y - victim->pos.y;
+            int deltaZ = actor->pos.z - victim->pos.z;
+            if (Vec3i(deltaX, deltaY, deltaZ).octagonalLength() < 4096) {
                 actor->monsterInfo.hostilityType =
                     HOSTILITY_LONG;
                 if (a2 == 1) actor->attributes |= ACTOR_AGGRESSOR;
@@ -3027,10 +3018,10 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     } else {
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
         if (projectileSprite->uSpellID != SPELL_DARK_SOULDRINKER) {
-            int d1 = std::abs(pParty->pos.x - projectileSprite->vPosition.x);
-            int d2 = std::abs(pParty->pos.y - projectileSprite->vPosition.y);
-            int d3 = std::abs(pParty->pos.z - projectileSprite->vPosition.z);
-            v61 = int_get_vector_length(d1, d2, d3);
+            int d1 = pParty->pos.x - projectileSprite->vPosition.x;
+            int d2 = pParty->pos.y - projectileSprite->vPosition.y;
+            int d3 = pParty->pos.z - projectileSprite->vPosition.z;
+            v61 = Vec3i(d1, d2, d3).octagonalLength();
 
             if (v61 >= 5120 && !(pMonster->attributes & ACTOR_FULL_AI_STATE))  // 0x400
                 return 0;
@@ -3457,7 +3448,7 @@ Pid stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not 
 
 //----- (0042F4DA) --------------------------------------------------------
 bool CheckActors_proximity() {
-    unsigned int distance;  // edi@1
+    int distance;  // edi@1
     int for_x;            // ebx@5
     int for_y;            // [sp+Ch] [bp-10h]@5
     int for_z;            // [sp+10h] [bp-Ch]@5
@@ -3466,10 +3457,10 @@ bool CheckActors_proximity() {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) distance = 2560;
 
     for (Actor &actor : pActors) {
-        for_x = std::abs(actor.pos.x - pParty->pos.x);
-        for_y = std::abs(actor.pos.y - pParty->pos.y);
-        for_z = std::abs(actor.pos.z - pParty->pos.z);
-        if (int_get_vector_length(for_x, for_y, for_z) < distance) {
+        for_x = actor.pos.x - pParty->pos.x;
+        for_y = actor.pos.y - pParty->pos.y;
+        for_z = actor.pos.z - pParty->pos.z;
+        if (Vec3i(for_x, for_y, for_z).octagonalLength() < distance) {
             if (actor.aiState != Dead) {
                 if (actor.aiState != Dying &&
                     actor.aiState != Removed &&
@@ -3864,11 +3855,11 @@ void Actor::MakeActorAIList_ODM() {
             continue;
         }
 
-        int delta_x = std::abs(pParty->pos.x - actor.pos.x);
-        int delta_y = std::abs(pParty->pos.y - actor.pos.y);
-        int delta_z = std::abs(pParty->pos.z - actor.pos.z);
+        int delta_x = pParty->pos.x - actor.pos.x;
+        int delta_y = pParty->pos.y - actor.pos.y;
+        int delta_z = pParty->pos.z - actor.pos.z;
 
-        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - actor.radius;
+        int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
         if (distance < 0)
             distance = 0;
 
@@ -3918,11 +3909,11 @@ int Actor::MakeActorAIList_BLV() {
             continue;
         }
 
-        int delta_x = std::abs(pParty->pos.x - actor.pos.x);
-        int delta_y = std::abs(pParty->pos.y - actor.pos.y);
-        int delta_z = std::abs(pParty->pos.z - actor.pos.z);
+        int delta_x = pParty->pos.x - actor.pos.x;
+        int delta_y = pParty->pos.y - actor.pos.y;
+        int delta_z = pParty->pos.z - actor.pos.z;
 
-        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - actor.radius;
+        int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
         if (distance < 0)
             distance = 0;
 

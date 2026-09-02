@@ -28,7 +28,6 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
@@ -1447,7 +1446,7 @@ void ODM_ProcessPartyActions() {
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
         if (gameTimer->dt()) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
-            int walkDelta = integer_sqrt((partyOldPosition - pParty->pos).lengthSqr());
+            int walkDelta = (partyOldPosition - pParty->pos).length();
 
             if (walkDelta < 2) {
                 // mute the walking sound when stopping
