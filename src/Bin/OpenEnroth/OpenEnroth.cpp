@@ -169,10 +169,9 @@ static void appCrashCallback(std::string_view text, bool final) {
 }
 
 static NativePath crashLogPath(const OpenEnrothOptions &options) {
-    NativePath userPath = options.userPath;
-    if (userPath.isEmpty())
-        userPath = resolveMm7UserPath(Environment::createStandardEnvironment().get()); // The same call GameStarter makes later, so both land in the same folder.
-    return userPath / NativePath("crash.log");
+    if (options.userPath.isEmpty())
+        return {}; // Resolving the user folder can fail on windows, and a bare relative crash.log would land wherever the game was launched from.
+    return options.userPath / NativePath("crash.log");
 }
 
 int openEnrothMain(int argc, char **argv) {
@@ -186,11 +185,13 @@ int openEnrothMain(int argc, char **argv) {
         // Spans the whole run, so that the exit line goes in on every way out, exceptions included. The modes
         // that promise not to touch the disk - retrace, play - get none, and stderr is visible there anyway.
         std::optional<Blackbox> blackbox;
-        if (!options.ramFsUserData) {
-            NativePath path = crashLogPath(options);
-            blackbox.emplace(path);
+        NativePath crashLog = crashLogPath(options);
+        if (!options.ramFsUserData && !crashLog.isEmpty()) {
+            blackbox.emplace(crashLog);
 #ifdef __APPLE__
-            setCrashDialogText(fmt::format("OpenEnroth has crashed.\nA crash log was written to:\n{}", path.displayString()));
+            // Only promise a file that's actually open, the dialog is the one place a mac user hears about it.
+            if (blackbox->isLogging())
+                setCrashDialogText(fmt::format("OpenEnroth has crashed.\nA crash log was written to:\n{}", crashLog.displayString()));
 #endif
         }
 
