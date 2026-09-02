@@ -1,6 +1,5 @@
 #include "Blackbox.h"
 
-#include <atomic>
 #include <cassert>
 #include <cstdint>
 #include <ctime>
@@ -24,18 +23,17 @@
 
 #include "Utility/String/Format.h"
 
-// Not members, because the crash callback is a plain function pointer. Relaxed throughout - both are written
-// once, in the constructor, and a crash that races those writes still finds a valid value in each.
-static std::atomic<int> crashLogFd = -1;
-static std::atomic<CrashCallback> chainedCallback = &printCrashChunk;
+// Not members, because the crash callback is a plain function pointer. No synchronization either - the
+// constructor writes both before any other thread is spawned, and everything after that only reads.
+static int crashLogFd = -1;
+static CrashCallback chainedCallback = &printCrashChunk;
 
 static void blackboxCrashCallback(std::string_view text, bool final) {
     // File first. The callback chained to may never return from the final chunk - a crash dialog, a console
     // wait - or die trying to show it, and the trace has to be on disk by then.
-    int fd = crashLogFd.load(std::memory_order_relaxed);
-    if (fd >= 0)
-        writeCrashChunk(fd, text);
-    chainedCallback.load(std::memory_order_relaxed)(text, final);
+    if (crashLogFd >= 0)
+        writeCrashChunk(crashLogFd, text);
+    chainedCallback(text, final);
 }
 
 static std::string localTimestamp() {
@@ -78,22 +76,21 @@ Blackbox::Blackbox(const NativePath &path) {
 #endif
     if (fd < 0)
         return;
-    crashLogFd.store(fd, std::memory_order_relaxed);
+    crashLogFd = fd;
 
     writeCrashChunk(fd, fmt::format("--- started {} pid={} revision={} ---", localTimestamp(), pid, gitRevision()));
 
     // Registering comes before learning what was registered, so for a few instructions a crash would chain to
     // the default printer rather than to the callback inherited here. Stderr and the file still get written,
     // at worst a console wait is skipped.
-    chainedCallback.store(initStackTraceOnCrash(&blackboxCrashCallback), std::memory_order_relaxed);
+    chainedCallback = initStackTraceOnCrash(&blackboxCrashCallback);
 }
 
 Blackbox::~Blackbox() {
-    int fd = crashLogFd.load(std::memory_order_relaxed);
-    if (fd < 0)
+    if (crashLogFd < 0)
         return;
 
     // Runs during unwinding too, and that's not a clean exit.
     const char *how = std::uncaught_exceptions() > 0 ? "exiting with exception" : "clean exit";
-    writeCrashChunk(fd, fmt::format("--- {} {} ---", how, localTimestamp()));
+    writeCrashChunk(crashLogFd, fmt::format("--- {} {} ---", how, localTimestamp()));
 }

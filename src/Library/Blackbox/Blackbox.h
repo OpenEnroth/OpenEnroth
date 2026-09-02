@@ -12,7 +12,8 @@
  * through the file system abstraction. That one virtualizes game data, while this is process diagnostics, like
  * stderr, and has to be a physical file that survives the process.
  *
- * One per process, and only the game binary constructs one.
+ * One per process, and only the game binary constructs one, on the main thread before any other thread is
+ * spawned.
  */
 class Blackbox {
  public:

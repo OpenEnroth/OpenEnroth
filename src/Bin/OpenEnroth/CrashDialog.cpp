@@ -2,18 +2,17 @@
 
 #ifdef __APPLE__
 
-#include <atomic>
 #include <string>
 
 #include <unistd.h> // NOLINT: not a C++ system header.
 #include <CoreFoundation/CoreFoundation.h> // NOLINT: not a C++ system header. Confined to this file, MacTypes.h defines Point, Size and Duration, and so does the engine.
 
 static const bool stderrIsTerminal = isatty(STDERR_FILENO);
-static std::atomic<CFStringRef> crashDialogText = CFSTR("OpenEnroth has crashed."); // Relaxed throughout, it's written once at startup.
+static CFStringRef crashDialogText = CFSTR("OpenEnroth has crashed."); // Written once at startup, before any other thread is spawned.
 
 void setCrashDialogText(std::string_view text) {
     std::string terminated(text);
-    crashDialogText.store(CFStringCreateWithCString(nullptr, terminated.c_str(), kCFStringEncodingUTF8), std::memory_order_relaxed); // Never released, it's for the crash.
+    crashDialogText = CFStringCreateWithCString(nullptr, terminated.c_str(), kCFStringEncodingUTF8); // Never released, it's for the crash.
 }
 
 void showCrashDialog() {
@@ -26,7 +25,7 @@ void showCrashDialog() {
     // that gets the system its own crash report happens after that.
     CFOptionFlags response;
     CFUserNotificationDisplayAlert(0, kCFUserNotificationStopAlertLevel, nullptr, nullptr, nullptr,
-                                   CFSTR("OpenEnroth crashed"), crashDialogText.load(std::memory_order_relaxed),
+                                   CFSTR("OpenEnroth crashed"), crashDialogText,
                                    nullptr, nullptr, nullptr, &response);
 }
 
