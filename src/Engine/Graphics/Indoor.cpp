@@ -792,7 +792,6 @@ void BLV_UpdateActors() {
             isFlying = false;
 
         bool isAboveGround = actor.pos.z > floorZ + 1;
-        actor.airborne = isAboveGround && !isFlying;
 
         // make bloodsplat when the ground is hit
         if (!actor.donebloodsplat) {

@@ -14,6 +14,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
@@ -178,6 +179,24 @@ bool Actor::CanBeDamaged() const {
     bool stoned = this->buffs[ACTOR_BUFF_STONED].Active();
     return !(stoned || this->aiState == Dying || this->aiState == Dead ||
              this->aiState == Removed || this->aiState == Summoned || this->aiState == Disabled);
+}
+
+bool Actor::isAirborne() const {
+    if (this->monsterInfo.flying && CanAct())
+        return false;
+
+    float floorZ;
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+        int sectorId = this->sectorId;
+        floorZ = GetIndoorFloorZ(this->pos + Vec3f(0, 0, this->radius), &sectorId);
+        if (floorZ <= -30000)
+            return false; // No floor under the actor, this happens on levels built with errors.
+    } else {
+        bool onWater = false;
+        int faceId = -1;
+        floorZ = ODM_GetFloorLevel(this->pos, &onWater, &faceId);
+    }
+    return this->pos.z > floorZ + 1;
 }
 
 //----- (004089C7) --------------------------------------------------------
@@ -2524,7 +2543,7 @@ void Actor::UpdateActorAI() {
             continue;
 
         // An actor still in the air, e.g. thrown up by armageddon, keeps falling and leaves the pain state once it lands.
-        if (pActor->aiState == InPain && pActor->airborne)
+        if (pActor->aiState == InPain && pActor->isAirborne())
             continue;
 
         if (pActor->aiState == Dying) {
@@ -2601,7 +2620,7 @@ void Actor::UpdateActorAI() {
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
 
         // An actor still in the air keeps falling and leaves the pain state once it lands.
-        if (pActor->aiState == InPain && pActor->airborne)
+        if (pActor->aiState == InPain && pActor->isAirborne())
             continue;
 
         if (!pActor->ActorNearby())
