@@ -181,6 +181,7 @@ end
 local filterThreshold = 20
 
 --- Filter text per parameter, kept across frames since the combo box is rebuilt on each one
+--- @type table<string, string>
 local enumFilters = {}
 
 --- @param name string

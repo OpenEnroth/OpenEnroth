@@ -162,6 +162,7 @@ end
 --- @param t table<string, any>
 --- @return table<integer, string>
 Utilities.sortedKeys = function (t)
+    --- @type table<integer, string>
     local result = {}
     for k, _ in pairs(t) do
         table.insert(result, k)
