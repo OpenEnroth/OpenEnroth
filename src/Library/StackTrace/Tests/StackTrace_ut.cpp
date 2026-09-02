@@ -139,6 +139,12 @@ MM_NOINLINE int stackTraceDivisionFunction() {
 }
 #endif
 
+#ifndef _WINDOWS
+MM_NOINLINE void stackTraceTrapFunction() {
+    __builtin_trap(); // ud2 on x86, brk on arm.
+}
+#endif
+
 static volatile char *volatile stackTraceOverflowEscape; // Never read, the pad below is stored here so it exists.
 
 MM_NOINLINE int stackTraceOverflowFunction(int depth) {
@@ -213,6 +219,21 @@ UNIT_TEST(StackTrace, DivisionByZeroIsTraced) {
     }, testing::AllOf(HasFrame(0, "stackTraceDivisionFunction"), testing::HasSubstr("main")));
 }
 #endif
+
+#ifndef _WINDOWS
+UNIT_TEST(StackTrace, BuiltinTrapIsTraced) {
+    // A compiler trap sits at its own instruction, so si_addr equals the pc, and the darwin handler used to
+    // take that as a jump to a bad address and restart the walk from a fake return address - one garbage
+    // frame was the whole trace. It's SIGILL from ud2 on x86 and SIGTRAP from brk on arm, so between them the
+    // platforms cover both signals the restart must skip.
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        stackTraceTrapFunction();
+    }, testing::AllOf(HasFrame(0, "stackTraceTrapFunction"), testing::HasSubstr("main")));
+}
+#endif // _WINDOWS
 
 UNIT_TEST(StackTrace, StackOverflowIsTraced) {
     if (detail::isRunningUnderRosetta())
