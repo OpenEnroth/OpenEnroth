@@ -1071,7 +1071,7 @@ struct OverlayData_MM7 {
     uint16_t uOverlayID;
     uint16_t uOverlayType;
     uint16_t uSpriteFramesetID;
-    int16_t spriteFramesetGroup;
+    int16_t field_6; // Zero in all shipped MM6, MM7 and MM8 records, and no engine reads it.
 };
 static_assert(sizeof(OverlayData_MM7) == 8);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayData_MM7)

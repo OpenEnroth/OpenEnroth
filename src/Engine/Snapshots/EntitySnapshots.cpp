@@ -1763,7 +1763,6 @@ void reconstruct(const OverlayData_MM7 &src, OverlayData *dst) {
     dst->uOverlayID = src.uOverlayID;
     dst->uOverlayType = src.uOverlayType;
     dst->uSpriteFramesetID = src.uSpriteFramesetID;
-    dst->spriteFramesetGroup = src.spriteFramesetGroup;
 }
 
 void reconstruct(const PortraitFrameData_MM7 &src, PortraitFrameData *dst) {
