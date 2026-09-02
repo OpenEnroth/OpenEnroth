@@ -44,6 +44,10 @@
 #include "CrashDialog.h"
 #include "OpenEnrothOptions.h"
 
+// Set in main before the first thread starts, read from a crash on any of them. Only a run someone is watching
+// has anyone to hold the window for - a script needs the process to die instead, and it has the trace on stderr.
+static bool crashNeedsAcknowledgement = false;
+
 void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
     std::unordered_set<PlatformKey> continuousKeys, onceKeys;
     for (InputAction inputAction : allInputActions())
@@ -130,12 +134,18 @@ int runPlay(const OpenEnrothOptions &options) {
 }
 
 int runOpenEnroth(const OpenEnrothOptions &options) {
+    crashNeedsAcknowledgement = !options.headless; // Before the window opens, so that a crash on the way up is held too.
     GameStarter(options).run();
     return 0;
 }
 
 #ifdef _WINDOWS
 static void waitForAnyKey() {
+    // _getch reads the console input buffer rather than stdin, so a redirect can't end the wait the way it ended
+    // the old getchar. Nobody is looking at a redirected stderr either, and the prompt would go into the file.
+    if (!_isatty(_fileno(stderr)))
+        return;
+
     // Raw write, stdio might be locked by the thread that was printing when it died. _getch takes the key as
     // it's pressed, getchar would wait for the enter after it.
     constexpr std::string_view prompt = "[Press any key to close this window]";
@@ -146,7 +156,7 @@ static void waitForAnyKey() {
 
 static void appCrashCallback(std::string_view text, bool final) {
     printCrashChunk(text, final);
-    if (!final)
+    if (!final || !crashNeedsAcknowledgement)
         return;
 
     // Whatever makes the crash visible comes last, once every sink has the whole trace - a key wait holds the
