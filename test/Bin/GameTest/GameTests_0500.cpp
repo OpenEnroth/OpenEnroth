@@ -98,10 +98,10 @@ GAME_TEST(Issues, Issue506) {
 GAME_TEST(Issues, Issue518) {
     // Armageddon yeets the actors way too far into the sky & actors take stops when falling down.
     auto armageddonTape = tapes.custom([] { return pParty->pCharacters[0].uNumArmageddonCasts; });
-    auto midairTape = tapes.custom([] { return countBackgroundActorsActingInMidair(); });
+    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
     test.playTraceFromTestData("issue_518.mm7", "issue_518.json");
     EXPECT_EQ(armageddonTape, tape(2, 3)); // +1 armageddon cast.
-    EXPECT_EQ(midairTape.max(), 0); // The stops were actors standing up in mid-air once the pain animation ran out.
+    EXPECT_EQ(midairTape.max(), 0); // The stops were actors standing up in mid-air once the pain animation ran out, near ones included.
 
     for (auto &actor : pActors) {
         EXPECT_LT(actor.pos.z, 3500);
@@ -683,10 +683,10 @@ GAME_TEST(Issues, Issue760) {
 GAME_TEST(Issues, Issue774) {
     // Background actors in pain do idle motions. Their pain animation ran out in mid-air, and standing up zeroed their velocity.
     auto inPainTape = actorTapes.countByState(InPain);
-    auto midairTape = tapes.custom([] { return countBackgroundActorsActingInMidair(); });
+    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
     test.playTraceFromTestData("issue_774.mm7", "issue_774.json");
     EXPECT_GT(inPainTape.max(), 0); // Armageddon hurt the crowd...
-    EXPECT_EQ(midairTape.max(), 0); // ...and nobody got up before landing.
+    EXPECT_EQ(midairTape.max(), 0); // ...and nobody got up before landing, near actors included.
 }
 
 GAME_TEST(Issues, Issue779) {
@@ -1006,7 +1006,7 @@ GAME_TEST(Issues, Issue920) {
     auto stateTape = actorTapes.aiState(titanId);
     auto zTape = actorTapes.custom(titanId, [] (const Actor &actor) { return actor.pos.z; });
     auto backgroundTape = actorTapes.custom(titanId, [] (const Actor &actor) { return !(actor.attributes & ACTOR_FULL_AI_STATE); });
-    auto midairTape = tapes.custom([] { return countBackgroundActorsActingInMidair(); });
+    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
 
     game.castSpell(0, SPELL_DARK_ARMAGEDDON);
     game.tick(250); // Lands at about 4s in, this is 6.25s.
