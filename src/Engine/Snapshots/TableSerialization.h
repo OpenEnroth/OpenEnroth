@@ -7,7 +7,7 @@ class ObjectList;
 class SoundList;
 class IconFrameTable;
 struct MonsterList;
-struct OverlayList;
+struct OverlayTable;
 struct PortraitFrameTable;
 struct SpriteFrameTable;
 class TextureFrameTable;
@@ -38,7 +38,7 @@ void deserialize(const Blob &src, ObjectList *dst);
 /**
  * @offset 0x00458E08
  */
-void deserialize(const Blob &src, OverlayList *dst);
+void deserialize(const Blob &src, OverlayTable *dst);
 
 /**
  * @offset 0x0044D9D7

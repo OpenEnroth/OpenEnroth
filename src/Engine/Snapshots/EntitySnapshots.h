@@ -591,7 +591,7 @@ void reconstruct(const Timer_MM7 &src, Timer *dst);
 
 struct ActiveOverlay_MM7 {
     int16_t field_0;
-    int16_t indexToOverlayList;
+    int16_t indexToOverlayTable;
     int16_t spriteFrameTime;
     int16_t animLength;
     int16_t screenSpaceX;

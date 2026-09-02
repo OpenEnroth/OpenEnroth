@@ -392,7 +392,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
 void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     memzero(dst);
 
-    dst->indexToOverlayList = src.indexToOverlayList;
+    dst->indexToOverlayTable = src.indexToOverlayTable;
     dst->spriteFrameTime = src.spriteFrameTime;
     dst->animLength = src.animLength;
     dst->screenSpaceX = src.screenSpaceX;
@@ -405,7 +405,7 @@ void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
 void reconstruct(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     memzero(dst);
 
-    dst->indexToOverlayList = src.indexToOverlayList;
+    dst->indexToOverlayTable = src.indexToOverlayTable;
     dst->spriteFrameTime = src.spriteFrameTime;
     dst->animLength = src.animLength;
     dst->screenSpaceX = src.screenSpaceX;
