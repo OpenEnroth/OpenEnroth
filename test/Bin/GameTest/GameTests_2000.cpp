@@ -1350,9 +1350,9 @@ GAME_TEST(Issues, Issue2507) {
 }
 
 GAME_TEST(Issues, Issue2549) {
-    // Bloodsplats were lost on reload. Corpses re-emit their splats in a single frame after loading, and the splat
-    // queue used to wrap modulo 64, so most of them were dropped. The other half of the fix - the renderer applying
-    // splats outside the visible sectors - isn't observable here, headless runs use the null renderer.
+    // uNumBloodsplats used to wrap modulo 64 while every consumer read it as a count, so 70 corpses settling in one
+    // frame reported 70 % 64 == 6 queued splats and 64 of them were thrown away. A reload is what puts that many
+    // corpses on one frame, since donebloodsplat isn't serialized and every corpse re-emits at once.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto splatsTape = tapes.custom([] { return static_cast<int>(engine->decal_builder->bloodsplat_container->uNumBloodsplats); });
 
@@ -1373,9 +1373,8 @@ GAME_TEST(Issues, Issue2549) {
     game.tick(5);
     test.stopTaping();
 
-    // The queue holds 64 and is drained every frame, so 70 corpses take two frames. Before the fix the count wrapped
-    // to 70 % 64 == 6, and 64 splats were silently thrown away.
-    EXPECT_EQ(splatsTape.max(), 64);
+    // The queue holds 64 and is drained every frame, so 70 corpses take two frames to drain.
+    EXPECT_EQ(splatsTape, tape(64, 6, 0));
     EXPECT_TRUE(std::ranges::all_of(pActors, &Actor::donebloodsplat));
 }
 

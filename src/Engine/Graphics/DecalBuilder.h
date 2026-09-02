@@ -43,7 +43,14 @@ struct Bloodsplat {
 // store for all the bloodsplats to be applied
 struct BloodsplatContainer {
     /**
-     * @return                          False if the queue is full and the splat was dropped.
+     * @offset 0x0043B6EF
+     *
+     * Queues a bloodsplat to be applied to the world geometry on the next draw.
+     *
+     * @param pos                       Splat origin, usually 30 units above ground level.
+     * @param radius                    Splat radius.
+     * @param color                     Splat color.
+     * @return                          True if the splat was queued, false if the queue was already full.
      */
     bool AddBloodsplat(const Vec3f &pos, float radius, Color color);
 
@@ -79,7 +86,7 @@ struct DecalBuilder {
     DecalBuilder();
     virtual ~DecalBuilder() {}
 
-    bool AddBloodsplat(const Vec3f &pos, Color color, float radius);
+    bool AddBloodsplat(const Vec3f &pos, Color color, float radius);  // False if the splat queue is full.
     void Reset();
     char BuildAndApplyDecals(int light_level, LocationFlags locationFlags, const Planef &FacePlane, int NumFaceVerts,
                              RenderVertexSoft *FaceVerts, char ClipFlags, int uSectorID);
@@ -109,12 +116,12 @@ struct DecalBuilder {
     void DrawDecalDebugOutlines();
 
     std::array<Decal, 1024> Decals;  // Ring of decal geometry, oldest is evicted when full.
-    unsigned int DecalsCount = 0;  // Live decals, saturates at Decals.size().
-    unsigned int DecalsCursor = 0;  // Slot the next decal goes into.
+    size_t DecalsCount = 0;  // Live decals, saturates at Decals.size().
+    size_t decalsCursor = 0;
 
     // for building decal geom
     Decal decalScratch;  // Decals are built here, then copied into the ring once clipping keeps them.
-    int uNumSplatsThisFace = 0;  // numeber of bloodsplats that overlap this face
+    int uNumSplatsThisFace = 0;  // number of bloodsplats that overlap this face
     std::array<int, 1024> WhichSplatsOnThisFace = {{}};  // Indices into BloodsplatContainer::pBloodsplats_to_apply.
 
     // sizes for building decal geometry

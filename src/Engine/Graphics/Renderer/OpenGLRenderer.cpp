@@ -3245,8 +3245,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
             if (!pface->GetTexture()) continue;
 
-            // Decals are baked into world geometry, so they have to be applied everywhere, not just where we're
-            // looking - a reload re-emits every corpse's splat in a single frame.
+            // Decals are baked into world geometry, so they apply to every face.
             decal_builder->ApplyBloodsplatDecalsToFace(pface);
             if (!decal_builder->uNumSplatsThisFace) continue;
 
