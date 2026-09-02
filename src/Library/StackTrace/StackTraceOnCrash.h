@@ -26,7 +26,7 @@ bool isRunningUnderRosetta();
  * hangs the process for good, where the default handler kills it. Only translated x86_64 is affected, so the
  * check is at runtime, and the same build still traces aborts on an intel mac.
  *
- * A `__fastfail` on windows - a security cookie check and the like - is not handled, and leaves no trace.
+ * A `__fastfail` on windows is not handled and leaves no trace. A failed security cookie check raises one.
  */
 class StackTraceOnCrash {
  public:
