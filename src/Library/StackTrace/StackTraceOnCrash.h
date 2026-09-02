@@ -47,7 +47,9 @@ void printCrashChunk(std::string_view text, bool final);
  * crash log file. The handlers need stack of their own for when the crash is stack exhaustion - an alternate
  * signal stack on posix, a committed stack guarantee on windows - and both are per-thread, so only the thread
  * that makes the first call gets one. On a worker thread the handlers are left to run on whatever stack
- * remains. The handlers themselves are process-wide.
+ * remains. The handlers themselves are process-wide. A forked child inherits the handlers and the knowledge
+ * that they are installed, so a later call installs nothing there - and on darwin, where a child inherits no
+ * alternate stack, that leaves it with none. A child that has to survive stack exhaustion re-execs.
  *
  * The handlers are not async-signal-safe, and can't be - symbolizing a trace allocates, reads files and takes
  * locks, so a crash while another thread holds one of those hangs the process instead of killing it. Only

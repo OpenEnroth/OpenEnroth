@@ -60,8 +60,12 @@ void writeCrashChunk(int fd, std::string_view text) {
 
 void printCrashChunk(std::string_view, bool) {}
 
-CrashCallback initStackTraceOnCrash(CrashCallback) {
-    return &printCrashChunk;
+// Nothing ever calls it here, no handlers are installed, but the return contract holds so that a chaining
+// caller doesn't silently lose the callback it was chaining to.
+static CrashCallback crashCallback = &printCrashChunk;
+
+CrashCallback initStackTraceOnCrash(CrashCallback callback) {
+    return std::exchange(crashCallback, callback ? callback : &printCrashChunk);
 }
 
 #else
