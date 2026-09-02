@@ -248,6 +248,28 @@ UNIT_TEST(StackTrace, CrashArrivesAsHeaderThenTrace) {
     }, headerThenTrace);
 }
 
+UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
+    // What an app callback does on the final chunk - hold a console window open, put up a dialog - has to happen
+    // after the trace has gone out, or the user acknowledges a crash they haven't been shown. The app callback
+    // itself links into no test, so this pins the library half it's written against.
+    auto traceBeforeMarker = testing::Truly([](const std::string &output) {
+        size_t trace = output.find("stackTraceCrashingFunction");
+        size_t marker = output.find("crash callback ran");
+        return trace != std::string::npos && marker != std::string::npos && trace < marker;
+    });
+
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        initStackTraceOnCrash([](std::string_view text, bool final) {
+            printCrashChunk(text, final);
+            if (final)
+                printCrashChunk("crash callback ran", final);
+        });
+        stackTraceCrashingFunction();
+    }, traceBeforeMarker);
+}
+
 UNIT_TEST(StackTrace, AbortIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
