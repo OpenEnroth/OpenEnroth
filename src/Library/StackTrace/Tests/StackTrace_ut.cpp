@@ -45,6 +45,20 @@ constexpr int SIG_BUILTIN_TRAP = SIGILL; // x86's ud2 and arm32's udf are both i
 #   endif
 #endif
 
+// Libc++abi hooks a pure call and aborts, where libstdc++ leaves the vtable slot null and the call faults.
+#ifdef __APPLE__
+constexpr int SIG_PURE_CALL = SIGABRT;
+#else
+constexpr int SIG_PURE_CALL = SIGSEGV;
+#endif
+
+// Darwin maps its stack guard without access, where linux leaves the page unmapped.
+#ifdef __APPLE__
+constexpr int SIG_STACK_OVERFLOW = SIGBUS;
+#else
+constexpr int SIG_STACK_OVERFLOW = SIGSEGV;
+#endif
+
 /**
  * Predicate for `EXPECT_EXIT` that pins how the process died, rather than just that it did. Gtest has no
  * `KilledBySignal` on windows, where a death test reports an exit code, so there this only asserts a death.
@@ -152,7 +166,7 @@ MM_NOINLINE int stackTraceNullCallFunction() {
 }
 
 MM_NOINLINE int stackTraceBadTargetCallFunction() {
-    int (*volatile nowhere)() = reinterpret_cast<int (*)()>(static_cast<uintptr_t>(0xdeadbeefdeadULL));
+    int (*volatile nowhere)() = reinterpret_cast<int (*)()>(static_cast<uintptr_t>(0xdeadbeefdeacULL)); // Aligned, or arm faults on the fetch alignment instead of the mapping.
     volatile int result = nowhere(); // Using the result keeps this out of tail position, which keeps the frame.
     return result + 1;
 }
@@ -224,14 +238,14 @@ UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
 }
 
 UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
-    // Calling 0xdeadbeefdead faults with the pc at the bad address, and the handler has to recognize that
+    // Calling 0xdeadbeefdeac faults with the pc at the bad address, and the handler has to recognize that
     // to walk from the caller instead.
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceBadTargetCallFunction();
-    }, testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
+    }, killedBy(SIGSEGV), testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
 }
 
 #if !defined(__aarch64__) && !defined(__arm__) // No trap to test on arm, integer division by zero just yields zero there.
@@ -267,12 +281,12 @@ UNIT_TEST(StackTrace, StackOverflowIsTraced) {
 
     // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
     // faults on the exhausted stack and the crash prints nothing at all.
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceOverflowFunction(0);
-    }, HasFrame(0, "stackTraceOverflowFunction"));
+    }, killedBy(SIG_STACK_OVERFLOW), HasFrame(0, "stackTraceOverflowFunction"));
 }
 
 UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
@@ -339,13 +353,13 @@ UNIT_TEST(StackTrace, PureVirtualCallIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
 
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTracePureCallFunction();
-    }, testing::AllOf(testing::HasSubstr(isWindows ? "pure virtual function call" : "callPureIndirectly"),
-                      testing::HasSubstr("stackTracePureCallFunction")));
+    }, killedBy(SIG_PURE_CALL), testing::AllOf(testing::HasSubstr(isWindows ? "pure virtual function call" : "callPureIndirectly"),
+                                               testing::HasSubstr("stackTracePureCallFunction")));
 }
 
 #ifdef _WINDOWS
