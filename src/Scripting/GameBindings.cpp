@@ -1,8 +1,5 @@
 #include "GameBindings.h"
 
-#include <algorithm>
-#include <string>
-#include <utility>
 #include <string_view>
 #include <memory>
 #include <vector>
@@ -221,6 +218,15 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
             }
             return sol::make_object(solState, sol::lua_nil);
         }),
+        // An array rather than a name-keyed table, because item names are localized and several items share one -
+        // both lich jars are called "Lich Jar". Entries come out in item id order.
+        "allItems", sol::as_function([&solState]() {
+            sol::table result = solState.create_table();
+            for (ItemId itemId : pItemTable->items.indices())
+                if (!pItemTable->items[itemId].name.empty())
+                    result.add(solState.create_table_with("id", itemId, "name", pItemTable->items[itemId].name));
+            return result;
+        }),
         // The getRandomItem function accept an optional filter function to exclude some items from the randomization
         "getRandomItem", sol::as_function([](const FilterItemFunction &filter) {
             if (filter) {
@@ -360,26 +366,11 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
         "LightPath", QBIT_LIGHT_PATH
     );
 
-    sol::table itemTypeEnum = solState.create_table();
-    std::vector<std::pair<std::string, ItemId>> sortedItems;
-
-    for (ItemId itemId : pItemTable->items.indices()) {
-        const ItemData& itemDesc = pItemTable->items[itemId];
-        if (!itemDesc.name.empty()) {
-            std::string luaKey = itemDesc.name;
-            std::replace(luaKey.begin(), luaKey.end(), ' ', '_');
-            sortedItems.emplace_back(luaKey, itemId);
-        }
-    }
-
-    // Sort alphabetically by name
-    std::sort(sortedItems.begin(), sortedItems.end());
-
-    for (const auto& [name, id] : sortedItems) {
-        itemTypeEnum[name] = std::to_underlying(id);
-    }
-
-    table["ItemType"] = itemTypeEnum;
+    // Item names are localized and not unique, so they can't be used as enum keys. Scripts that need a specific item
+    // go through this enum, everything else goes through `items.allItems`.
+    table.new_enum<false>("ItemType",
+        "LichJarFull", ITEM_QUEST_LICH_JAR_FULL
+    );
 }
 
 void GameBindings::_registerFunctions(sol::state_view &solState, sol::table &table) const {
