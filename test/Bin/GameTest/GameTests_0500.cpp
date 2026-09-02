@@ -25,6 +25,7 @@
 #include "Engine/Resources/EngineFileSystem.h"
 
 #include "Engine/Spells/SpellEnums.h"
+#include "Engine/Timer.h"
 
 #include "Media/MediaPlayer.h"
 
@@ -117,10 +118,18 @@ GAME_TEST(Issues, Issue506) {
 GAME_TEST(Issues, Issue518) {
     // Armageddon yeets the actors way too far into the sky & actors take stops when falling down.
     auto armageddonTape = tapes.custom([] { return pParty->pCharacters[0].uNumArmageddonCasts; });
-    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
+    // The nine actors in full AI state when the spell lands.
+    auto flightTape = actorTapes.custom({1, 6, 8, 9, 15, 18, 19, 24, 25}, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
     test.playTraceFromTestData("issue_518.mm7", "issue_518.json");
     EXPECT_EQ(armageddonTape, tape(2, 3)); // +1 armageddon cast.
-    EXPECT_EQ(midairTape.max(), 0); // The stops were actors standing up in mid-air once the pain animation ran out, near ones included.
+
+    for (size_t i = 0; i < 9; i++) {
+        auto flight = flightTape.slice(i);
+        float groundZ = flight.front().second;
+        EXPECT_GT(flight.map([] (const auto &p) { return p.second; }).max(), groundZ + 500); // Went flying...
+        // ...in pain or dying all the way, the stops were actors standing up in mid-air once the pain animation ran out.
+        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain && p.first != Dying && p.first != Dead; }));
+    }
 
     for (auto &actor : pActors)
         EXPECT_LT(actor.pos.z, 3500);
@@ -1198,9 +1207,8 @@ GAME_TEST(Issues, Issue920) {
     float groundZ = pActors[titanId].pos.z;
 
     auto stateTape = actorTapes.aiState(titanId);
-    auto zTape = actorTapes.custom(titanId, [] (const Actor &actor) { return actor.pos.z; });
+    auto flightTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
     auto backgroundTape = actorTapes.custom(titanId, [] (const Actor &actor) { return !(actor.attributes & ACTOR_FULL_AI_STATE); });
-    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
 
     game.castSpell(0, SPELL_DARK_ARMAGEDDON);
     game.tick(250); // Lands at about 4s in, this is 6.25s.
@@ -1208,8 +1216,8 @@ GAME_TEST(Issues, Issue920) {
 
     EXPECT_EQ(backgroundTape, tape(true)); // Never made it into full AI state.
     EXPECT_CONTAINS(stateTape, InPain); // Got hurt...
-    EXPECT_GT(zTape.max(), groundZ + 500); // ...went flying...
-    EXPECT_EQ(midairTape.max(), 0); // ...without getting up in the air...
+    EXPECT_GT(flightTape.map([] (const auto &p) { return p.second; }).max(), groundZ + 500); // ...went flying...
+    EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain; })); // ...in pain all the way up and down...
     EXPECT_FALSE(pActors[titanId].isAirborne()); // ...landed...
     EXPECT_NE(stateTape.back(), InPain); // ...and got up.
 }
