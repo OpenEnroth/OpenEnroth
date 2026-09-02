@@ -62,14 +62,10 @@
 --- @field name string
 --- @field level integer
 
---- @class ItemListEntry
---- @field id integer
---- @field name string
-
 --- @class ItemsBindings
 --- @field getItemInfo fun(itemId: integer):ItemInfo
 --- @field getRandomItem fun(filter: fun(item: table)?):integer
---- @field allItems fun():table<integer, ItemListEntry>
+--- @field allItems fun():table<integer, string> -- item id to localized name, for every item that has one
 
 --- ENUMS
 

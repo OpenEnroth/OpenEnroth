@@ -218,13 +218,13 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
             }
             return sol::make_object(solState, sol::lua_nil);
         }),
-        // An array rather than a name-keyed table, because item names are localized and several items share one -
-        // both lich jars are called "Lich Jar". Entries come out in item id order.
+        // Keyed by item id and not by name, because item names are localized and several items share one - both lich
+        // jars are called "Lich Jar".
         "allItems", sol::as_function([&solState]() {
             sol::table result = solState.create_table();
             for (ItemId itemId : pItemTable->items.indices())
                 if (!pItemTable->items[itemId].name.empty())
-                    result.add(solState.create_table_with("id", itemId, "name", pItemTable->items[itemId].name));
+                    result[itemId] = pItemTable->items[itemId].name;
             return result;
         }),
         // The getRandomItem function accept an optional filter function to exclude some items from the randomization

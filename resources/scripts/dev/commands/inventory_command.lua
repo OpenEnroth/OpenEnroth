@@ -30,13 +30,23 @@ local function itemNameToIdMap()
         return itemsByName
     end
 
+    local allItems = Game.items.allItems()
+    --- Walked in id order so that the lowest id is the one that keeps the plain name. Without the sort the winner
+    --- would depend on hash order, which LuaJIT reseeds on every launch.
+    --- @type table<integer, integer>
+    local ids = {}
+    for id in pairs(allItems) do
+        table.insert(ids, id)
+    end
+    table.sort(ids)
+
     itemsByName = {}
-    for _, item in ipairs(Game.items.allItems()) do
-        local name = string.gsub(item.name, " ", "_")
+    for _, id in ipairs(ids) do
+        local name = string.gsub(allItems[id], " ", "_")
         if itemsByName[name] then
-            name = name .. "_" .. item.id
+            name = name .. "_" .. id
         end
-        itemsByName[name] = item.id
+        itemsByName[name] = id
     end
     return itemsByName
 end
