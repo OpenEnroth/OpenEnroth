@@ -15,7 +15,7 @@ import verdict
 POLL_SECONDS = 60
 
 
-def commit(text):
+def hexsha(text):
     """Rejects anything that is not a commit hash, so a branch name never becomes a silent horizon-long wait.
 
     @param text                         Argument as typed on the command line.
@@ -37,7 +37,9 @@ def fetch(repo, sha):
     try:
         done = subprocess.run(["gh", "api", url], capture_output=True, text=True)
     except FileNotFoundError:
-        return None
+        # Polling cannot install gh, and exit 1 would read as a CI failure, so this is the no-verdict code.
+        print("RESULT: NO_GH - the check runs can only be read through gh - not a pass/fail verdict")
+        sys.exit(2)
     try:
         return json.loads(done.stdout)  # A 4xx body arrives on stdout too, and the verdict reads it.
     except ValueError:
@@ -46,14 +48,14 @@ def fetch(repo, sha):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("sha", type=commit, help="the exact commit to watch")
+    parser.add_argument("sha", type=hexsha, help="the exact commit to watch")
     parser.add_argument("names", nargs="*", help="check names to wait for, empty to judge the whole run")
     parser.add_argument("-m", "--minutes", type=int, default=150, help="polling horizon, default 150")
     parser.add_argument("-c", "--min-checks", type=int, default=15, help="checks needed for a green verdict")
     parser.add_argument("-r", "--repo", default="OpenEnroth/OpenEnroth", help="owner/name, default OpenEnroth")
     args = parser.parse_intermixed_args()
 
-    scope = "waiting for: " + " ".join(args.names) if args.names else f"min checks {args.min_checks}"
+    scope = ("waiting for: " + " ".join(args.names)) if args.names else f"min checks {args.min_checks}"
     print(f"watching {args.sha} on {args.repo} (horizon {args.minutes}m, {scope})", flush=True)
 
     deadline = time.monotonic() + args.minutes * 60
@@ -70,8 +72,8 @@ def main():
             break
         time.sleep(POLL_SECONDS)
 
-    detail = last[-1].removeprefix("WAIT ") if last else "nothing seen"
-    print(f"RESULT: TIMED_OUT - {detail} - not a pass/fail verdict")
+    assert last, "the loop polls at least once, and every WAIT it can return carries a line"
+    print(f"RESULT: TIMED_OUT - {last[-1].removeprefix('WAIT ')} - not a pass/fail verdict", flush=True)
     return 2
 
 

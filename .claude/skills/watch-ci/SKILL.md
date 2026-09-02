@@ -9,7 +9,8 @@ shipped a false-verdict bug, and this script exists to guard against the four th
 
 1. **False pass on an empty set.** A transient empty API response made `pending == 0` vacuously true, and
    the watcher reported "FAILING: none" while every check was still queued. The script refuses to render a
-   verdict until at least `MIN_CHECKS` check runs exist.
+   green verdict until at least `-c` check runs exist. A failure still reports at once, one failed check
+   settles the question on its own.
 2. **False fail on a not-started set.** A watcher timed out while all checks were still queued, and its
    final print classified `conclusion: null` as a failure. The script reports `TIMED_OUT` as its own
    outcome, carrying the counts it last saw, and says explicitly that it is not a pass/fail verdict.
@@ -33,7 +34,8 @@ The script calls `gh api`, so it needs either a logged-in `gh` or a `GH_TOKEN` i
   cap, so the queue can back up for an hour or more before your jobs even start. Don't shorten this
   without a reason.
 - `-c min_checks` - minimum check runs that must exist before an ALL GREEN verdict, default 15. The full
-  matrix on this project is 22. A failure needs no minimum, one failed check is a verdict on its own.
+  matrix on this project is 22. A failure needs no minimum, one failed check is a verdict on its own. With
+  check names given it does not gate the green at all, the named checks alone decide that.
 - `-r repo` - default `OpenEnroth/OpenEnroth`.
 - `check-name ...` - optional. With names given, the script waits until every named check has completed and
   reports each one's conclusion, whatever the rest of the run is doing. Use it when you need the results of
@@ -44,13 +46,13 @@ once a minute and prints a line whenever the completed count changes, so a backg
 progress.
 
 The verdict itself is `verdict.py`, a module that turns one API response into one outcome with no network
-and no clock. That keeps it testable - run `verdict_test.py` after touching either file, it replays canned
-responses for every outcome below.
+and no clock. That keeps it testable - run `verdict_test.py` after touching it, it replays canned responses
+for every outcome except TIMED_OUT, which belongs to the polling loop rather than the verdict.
 
-Run it with `run_in_background`, and pipe nothing into it. Exit code 0 means all green, 1 means failing,
+Run it with `run_in_background`. Exit code 0 means all green, 1 means failing,
 and 2 means there is no verdict to report. The last line is always one of `RESULT: ALL GREEN`,
 `RESULT: FAILING -> <names>`, `RESULT: CANCELLED -> <names>`, `RESULT: NOT_FOUND -> <names>`,
-`RESULT: TRUNCATED`, or `RESULT: TIMED_OUT`.
+`RESULT: TRUNCATED`, `RESULT: NO_GH`, or `RESULT: TIMED_OUT`.
 
 A FAILING line lists every failed job with its URL on the lines above it, and caps the names it repeats when a
 whole matrix leg goes red. Without names it also says how many checks were still running - those got no
@@ -77,7 +79,12 @@ macOS and Android, and platform-dependent behavior (libc error text, directory `
 ## When it reports CANCELLED
 
 Almost always the SHA is stale - a newer push cancelled its run. Check what the branch points at now, and
-watch that SHA instead. Never report a cancelled run as a CI failure.
+watch that SHA instead. Never report a cancelled run as a CI failure. A `stale` check run is reported the
+same way, for the same reason.
+
+Read the `RESULT:` line, not the exit status of the surrounding job. A watcher that is killed, or piped
+through anything, reports its own exit code, and a task that ends without a `RESULT:` line has told you
+nothing about CI.
 
 ## Hygiene
 

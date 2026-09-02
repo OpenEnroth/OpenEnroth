@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 """Checks the verdict against canned API responses. Run it after touching verdict.py."""
-import os
 import sys
 
-# Importing the verdict keeps the checks below a plain function call, and leaves no __pycache__ in the skill.
-sys.dont_write_bytecode = True
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.dont_write_bytecode = True  # Set before the import, so the skill directory never grows a __pycache__.
 import verdict
 
 URL = "https://github.com/o/r/actions/runs/1/job/2"
@@ -15,8 +12,8 @@ def check(name, status, conclusion):
     return {"name": name, "status": status, "conclusion": conclusion, "html_url": URL}
 
 
-def green(count, first=0):
-    return [check(f"job{i}", "completed", "success") for i in range(first, first + count)]
+def green(count):
+    return [check(f"job{i}", "completed", "success") for i in range(count)]
 
 
 def decide(runs=(), names=(), min_checks=15, total_count=None, payload=None):
@@ -62,28 +59,39 @@ case("server error keeps waiting", verdict.WAIT, "WAIT api error", payload={"mes
 
 case("unparseable body polls again", verdict.WAIT, "WAIT api error", payload=NOT_JSON)
 
+# The one case that must never be reached by accident, so it is pinned against the whole matrix.
 case("full green matrix", 0, "RESULT: ALL GREEN", runs=green(22))
+# Nothing else records that a path-filtered or neutral check is not a failure, it is only an absence from BAD.
 case("skipped and neutral are green", 0, "RESULT: ALL GREEN",
      runs=green(20) + [check("skip", "completed", "skipped"), check("neut", "completed", "neutral")])
 # The whole point of the fail-fast rewrite, a failure is a verdict while the matrix is still running.
 case("failure with others running", 1, "RESULT: FAILING -> lint (18 still running)",
      runs=[check("lint", "completed", "failure")] + [check(f"job{i}", "in_progress", None) for i in range(18)])
+# min_checks gates green and never gates a failure, an asymmetry that reads like an oversight and is not one.
 case("failure below min_checks", 1, "RESULT: FAILING -> lint", runs=[check("lint", "completed", "failure")])
 # CI auto-cancels a superseded run, and cancelled is the absence of a verdict rather than a failure.
 case("all cancelled", 2, "RESULT: CANCELLED", runs=[check(f"job{i}", "completed", "cancelled") for i in range(22)])
 # A cancellation must never bury a real failure in the same run.
 case("failure outranks cancelled", 1, "RESULT: FAILING -> lint",
      runs=green(20) + [check("lint", "completed", "failure"), check("c", "completed", "cancelled")])
+# A check whose conclusion is timed_out is a failure, unlike this script's own TIMED_OUT, which is not.
 case("timed_out check is a failure", 1, "RESULT: FAILING -> hang",
      runs=green(21) + [check("hang", "completed", "timed_out")])
 # A whole matrix leg going red used to print every name on the RESULT line, burying the verdict.
 case("many failures stay readable", 1, "RESULT: FAILING -> f0, f1, f2 and 9 more",
      runs=[check(f"f{i}", "completed", "failure") for i in range(12)] + green(10))
 
+# Naming a check means the rest of the matrix does not get a say, which is the whole point of naming one.
 case("named green while the rest run", 0, "RESULT: ALL GREEN", names=["a"],
      runs=[check("a", "completed", "success")] + [check(f"job{i}", "in_progress", None) for i in range(21)])
 case("named still running", verdict.WAIT, "WAIT", names=["a"], runs=[check("a", "in_progress", None)])
 case("named failure", 1, "RESULT: FAILING -> a", names=["a"], runs=[check("a", "completed", "failure")] + green(21))
+# A name that never ran used to outrank a check that really failed, and reported NOT_FOUND over the failure.
+case("typo does not bury a real failure", 1, "RESULT: FAILING -> a (never ran: typo)", names=["a", "typo"],
+     runs=[check("a", "completed", "failure")] + green(21))
+# A superseded run cancels every check at once, so this is the list most likely to bury the verdict.
+case("whole matrix cancelled stays readable", 2, "RESULT: CANCELLED -> job0, job1, job2 and 19 more",
+     runs=[check(f"job{i}", "completed", "cancelled") for i in range(22)])
 # A named check absent from a finished run is a typo, and waiting out the horizon would never find it.
 case("named typo once the run is over", 2, "RESULT: NOT_FOUND -> typo - never ran, check the names",
      names=["typo"], runs=green(22))
@@ -101,7 +109,8 @@ for label, want_code, prefix, contains, kwargs in CASES:
         print(f"ok   {label}")
         continue
     failed += 1
-    print(f"FAIL {label}: got exit {code} {lines[-1]!r}, want exit {want_code} starting {prefix!r}")
+    want = f"exit {want_code} starting {prefix!r}" + (f" with {contains!r} among the lines" if contains else "")
+    print(f"FAIL {label}: got exit {code} {lines[-1]!r}, want {want}")
 
 
 print(f"\n{len(CASES) - failed}/{len(CASES)} passed")

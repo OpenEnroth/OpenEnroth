@@ -1,7 +1,7 @@
 """Turns one check-runs API response into a CI verdict, with no network and no clock of its own.
 
-The codes it returns are the ones watch-ci.py exits with. 0 is all green, 1 is failing, 2 is no verdict to
-report, and 3 means poll again."""
+0 is all green, 1 is failing and 2 is no verdict to report, which are the codes watch-ci.py exits with. WAIT
+is the one it keeps to itself, and means the response settled nothing."""
 WAIT = 3
 BAD = ("failure", "timed_out", "action_required", "startup_failure")
 NO_VERDICT = ("cancelled", "stale")
@@ -44,7 +44,13 @@ def decide_named(names, runs, run_over):
     # A name still absent once the run is over is a typo, and waiting out the horizon would not find it.
     if missing and run_over:
         lines = [describe(r) for r in named]
-        return 2, lines + ["RESULT: NOT_FOUND -> " + ", ".join(missing) + " - never ran, check the names"]
+        never_ran = " (never ran: " + summarize(missing) + ")"
+        # A failure among the names that did run outranks the ones that did not, the same way it outranks a
+        # cancellation below. Reporting only the typo would bury it.
+        bad = [r["name"] for r in named if r["conclusion"] in BAD]
+        if bad:
+            return 1, lines + ["RESULT: FAILING -> " + summarize(bad) + never_ran]
+        return 2, lines + ["RESULT: NOT_FOUND -> " + summarize(missing) + " - never ran, check the names"]
     if missing or pending:
         detail = f"named {len(named) - len(pending)}/{len(names)} completed"
         if missing:
@@ -57,12 +63,12 @@ def decide_named(names, runs, run_over):
         return 1, lines + ["RESULT: FAILING -> " + summarize(bad)]
     cancelled = [r["name"] for r in named if r["conclusion"] in NO_VERDICT]
     if cancelled:
-        return 2, lines + ["RESULT: CANCELLED -> " + ", ".join(cancelled) + " - not a pass/fail verdict"]
+        return 2, lines + ["RESULT: CANCELLED -> " + summarize(cancelled) + " - not a pass/fail verdict"]
     return 0, lines + ["RESULT: ALL GREEN"]
 
 
 def decide(payload, min_checks, names):
-    """Decides the outcome for one check-runs response, without touching the network or the clock.
+    """Decides the outcome for one check-runs response.
 
     @param payload                      Parsed response, or None when the body did not parse.
     @param min_checks                   Minimum check runs that must exist before a green verdict.
@@ -73,8 +79,8 @@ def decide(payload, min_checks, names):
         return WAIT, ["WAIT api error"]
     runs = payload.get("check_runs")
     if runs is None:
-        # An error body arrives on stdout, and a bad sha or repo never turns into check runs however long we wait.
         message = payload.get("message", "")
+        # A sha or repo that does not exist never turns into check runs, however long we wait for it.
         if str(payload.get("status", "")) in ("404", "422"):
             return 2, [f"RESULT: NOT_FOUND -> {message} - not a pass/fail verdict"]
         return WAIT, ["WAIT api error" + (f": {message}" if message else "")]
@@ -82,7 +88,7 @@ def decide(payload, min_checks, names):
     # One page is fetched, so a larger total means checks are missing here and no count below can be trusted.
     truncated = payload.get("total_count", len(runs)) > len(runs)
     completed = [r for r in runs if r["status"] == "completed"]
-    # Every check that exists has finished, so no further check run will appear for this commit.
+    # A full set that has all finished means no further check run will appear for this commit.
     run_over = not truncated and len(runs) >= min_checks and len(completed) == len(runs)
 
     if names:
@@ -105,5 +111,5 @@ def decide(payload, min_checks, names):
 
     cancelled = [r["name"] for r in runs if r["conclusion"] in NO_VERDICT]
     if cancelled:
-        return 2, ["RESULT: CANCELLED -> " + ", ".join(cancelled) + " - not a pass/fail verdict"]
+        return 2, ["RESULT: CANCELLED -> " + summarize(cancelled) + " - not a pass/fail verdict"]
     return 0, ["RESULT: ALL GREEN"]
