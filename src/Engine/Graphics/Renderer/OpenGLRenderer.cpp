@@ -757,7 +757,6 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
             v.color = uTint;
             v.texid = texid;
         }
-        // TODO (pskelton): should force drawing if buffer is full
     }
 }
 
@@ -2247,9 +2246,6 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     // verts are streamed to gpu as required
     // textures can be different sizes
 
-    // TODO(pskelton): might have to pass a texture width through for the waterr flow textures to size right
-    // and get the correct water speed
-
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
@@ -2747,10 +2743,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
     _initWaterTiles();
     // void RenderOpenGL::DrawIndoorBSP() {
 
-    // TODO(pskelton): might have to pass a texture width through for the waterr flow textures to size right
-    // and get the correct water speed
-
-
         glEnable(GL_CULL_FACE);
 
         glCullFace(GL_BACK);
@@ -3026,7 +3018,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     // copy first
                     ShaderVertex &v0 = _bspVertices[texunit].emplace_back();
                     v0.pos = pIndoor->vertices[face->vertexIds[0]];
-                    // TODO(captainurist): adding in IDs below?
                     v0.texuv = Vec2f(face->textureUs[0] + face->textureDeltaU,
                                      face->textureVs[0] + face->textureDeltaV);
                     if (face->Indoor_sky()) {
@@ -3041,7 +3032,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     for (unsigned i = 1; i < 3; ++i) {
                         ShaderVertex &v = _bspVertices[texunit].emplace_back();
                         v.pos = pIndoor->vertices[face->vertexIds[z + i]];
-                        // TODO(captainurist): adding in IDs???
                         v.texuv = Vec2f(face->textureUs[z + i] + face->textureDeltaU,
                                         face->textureVs[z + i] + face->textureDeltaV);
                         if (face->Indoor_sky()) {
@@ -3510,7 +3500,6 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
 
     if (config->window.ReloadTex.value()) {
         // Added config option for this - may not always be required - #199 no longer replicates on windows??
-        // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
         // TODO(pskelton): Needs testings on other platforms
         assets->releaseAllTextures();
         ReleaseTerrain();
