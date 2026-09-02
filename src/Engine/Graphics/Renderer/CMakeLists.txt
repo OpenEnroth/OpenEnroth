@@ -23,7 +23,7 @@ set(ENGINE_GRAPHICS_RENDERER_HEADERS
         TextureRenderId.h)
 
 add_library(engine_graphics_renderer STATIC ${ENGINE_GRAPHICS_RENDERER_SOURCES} ${ENGINE_GRAPHICS_RENDERER_HEADERS})
-target_check_cpp_style(engine_graphics_renderer)
+target_check_style(engine_graphics_renderer)
 
 target_link_libraries(engine_graphics_renderer
         PUBLIC

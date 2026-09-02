@@ -52,7 +52,7 @@ set(GUI_UI_HEADERS
         UIMessageScroll.h)
 
 add_library(gui_ui STATIC ${GUI_UI_SOURCES} ${GUI_UI_HEADERS})
-target_check_cpp_style(gui_ui)
+target_check_style(gui_ui)
 
 target_link_libraries(gui_ui
         PUBLIC

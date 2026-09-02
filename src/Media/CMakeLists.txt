@@ -25,6 +25,6 @@ add_library(media STATIC ${MEDIA_SOURCES} ${MEDIA_HEADERS})
 target_link_libraries(media PRIVATE FFmpeg::avformat FFmpeg::avcodec FFmpeg::avutil FFmpeg::swscale FFmpeg::swresample)
 target_link_libraries(media PUBLIC media_audio library_logger library_vid utility application)
 
-target_check_cpp_style(media)
+target_check_style(media)
 
 add_subdirectory(Audio)

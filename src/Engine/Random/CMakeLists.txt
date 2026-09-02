@@ -10,4 +10,4 @@ set(ENGINE_RANDOM_HEADERS
 
 add_library(engine_random STATIC ${ENGINE_RANDOM_SOURCES} ${ENGINE_RANDOM_HEADERS})
 target_link_libraries(engine_random PUBLIC library_random library_serialization)
-target_check_cpp_style(engine_random)
+target_check_style(engine_random)

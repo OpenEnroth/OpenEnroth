@@ -16,7 +16,7 @@ set(LIBRARY_CONFIG_HEADERS
         ConfigPatch.h)
 
 add_library(library_config STATIC ${LIBRARY_CONFIG_SOURCES} ${LIBRARY_CONFIG_HEADERS})
-target_check_cpp_style(library_config)
+target_check_style(library_config)
 target_link_libraries(library_config
         PUBLIC
         utility

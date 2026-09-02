@@ -21,7 +21,7 @@ set(MEDIA_AUDIO_HEADERS
         SoundList.h)
 
 add_library(media_audio STATIC ${MEDIA_AUDIO_SOURCES} ${MEDIA_AUDIO_HEADERS})
-target_check_cpp_style(media_audio)
+target_check_style(media_audio)
 target_link_libraries(media_audio
         PUBLIC
         utility

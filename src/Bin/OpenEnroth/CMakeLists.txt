@@ -10,7 +10,7 @@ set(BIN_OPENENROTH_HEADERS
 if(OE_BUILD_PLATFORM STREQUAL "android")
     add_library(main SHARED)
     target_sources(main PUBLIC ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
-    target_check_cpp_style(main)
+    target_check_style(main)
     target_link_libraries(main PUBLIC application library_cli library_platform_main library_stack_trace)
     target_link_options(main PRIVATE "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libmain.map")
 else()
@@ -47,7 +47,7 @@ else()
         install(TARGETS OpenEnroth)
     endif()
 
-    target_check_cpp_style(OpenEnroth)
+    target_check_style(OpenEnroth)
     target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace)
 
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth)

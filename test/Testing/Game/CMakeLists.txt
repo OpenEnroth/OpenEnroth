@@ -21,5 +21,5 @@ if(OE_BUILD_TESTS)
     add_library(testing_game ${TESTING_GAME_SOURCES} ${TESTING_GAME_HEADERS})
     target_link_libraries(testing_game PUBLIC application testing_extensions GTest::gtest)
 
-    target_check_cpp_style(testing_game)
+    target_check_style(testing_game)
 endif()

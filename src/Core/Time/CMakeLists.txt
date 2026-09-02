@@ -8,6 +8,6 @@ set(CORE_TIME_HEADERS
         Time.h)
 
 add_library(core_time STATIC ${CORE_TIME_SOURCES} ${CORE_TIME_HEADERS})
-target_check_cpp_style(core_time)
+target_check_style(core_time)
 target_link_libraries(core_time PUBLIC
         library_random)

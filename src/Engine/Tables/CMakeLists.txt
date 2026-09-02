@@ -38,4 +38,4 @@ set(ENGINE_TABLES_HEADERS
 
 add_library(engine_tables STATIC ${ENGINE_TABLES_SOURCES} ${ENGINE_TABLES_HEADERS})
 target_link_libraries(engine_tables PUBLIC engine_data)
-target_check_cpp_style(engine_tables)
+target_check_style(engine_tables)

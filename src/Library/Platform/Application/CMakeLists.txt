@@ -12,4 +12,4 @@ set(LIBRARY_PLATFORM_APPLICATION_HEADERS
 
 add_library(library_platform_application STATIC ${LIBRARY_PLATFORM_APPLICATION_SOURCES} ${LIBRARY_PLATFORM_APPLICATION_HEADERS})
 target_link_libraries(library_platform_application PUBLIC library_platform_interface library_platform_filters library_platform_proxy)
-target_check_cpp_style(library_platform_application)
+target_check_style(library_platform_application)

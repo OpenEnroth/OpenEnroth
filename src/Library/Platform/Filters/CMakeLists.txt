@@ -9,5 +9,5 @@ set(LIBRARY_PLATFORM_FILTERS_HEADERS
         PlatformEventFilter.h)
 
 add_library(library_platform_filters STATIC ${LIBRARY_PLATFORM_FILTERS_SOURCES} ${LIBRARY_PLATFORM_FILTERS_HEADERS})
-target_check_cpp_style(library_platform_filters)
+target_check_style(library_platform_filters)
 target_link_libraries(library_platform_filters PUBLIC utility library_platform_interface)

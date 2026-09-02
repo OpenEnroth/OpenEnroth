@@ -18,7 +18,7 @@ set(GUI_HEADERS
         GUIWindow.h)
 
 add_library(gui STATIC ${GUI_SOURCES} ${GUI_HEADERS})
-target_check_cpp_style(gui)
+target_check_style(gui)
 
 target_link_libraries(gui PUBLIC gui_ui engine utility)
 

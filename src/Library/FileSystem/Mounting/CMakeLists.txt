@@ -8,7 +8,7 @@ set(LIBRARY_FILESYSTEM_MOUNTING_HEADERS
 
 add_library(library_filesystem_mounting STATIC ${LIBRARY_FILESYSTEM_MOUNTING_SOURCES} ${LIBRARY_FILESYSTEM_MOUNTING_HEADERS})
 target_link_libraries(library_filesystem_mounting PUBLIC library_filesystem_interface utility)
-target_check_cpp_style(library_filesystem_mounting)
+target_check_style(library_filesystem_mounting)
 
 if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_FILESYSTEM_MOUNTING_SOURCES Tests/MountingFileSystem_ut.cpp)
@@ -22,7 +22,7 @@ if(OE_BUILD_TESTS)
             library_filesystem_merging
             library_filesystem_dump)
 
-    target_check_cpp_style(test_library_filesystem_mounting)
+    target_check_style(test_library_filesystem_mounting)
 
     target_link_libraries(OpenEnroth_UnitTest PUBLIC test_library_filesystem_mounting)
 endif()

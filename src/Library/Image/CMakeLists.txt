@@ -14,4 +14,4 @@ set(LIBRARY_IMAGE_HEADERS
 
 add_library(library_image STATIC ${LIBRARY_IMAGE_SOURCES} ${LIBRARY_IMAGE_HEADERS})
 target_link_libraries(library_image PUBLIC library_color library_geometry utility PRIVATE PNG::PNG)
-target_check_cpp_style(library_image)
+target_check_style(library_image)

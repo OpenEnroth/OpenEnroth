@@ -17,7 +17,7 @@ set(APPLICATION_HEADERS
         GameWindowHandler.h)
 
 add_library(application STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})
-target_check_cpp_style(application)
+target_check_style(application)
 
 target_link_libraries(application
         PUBLIC

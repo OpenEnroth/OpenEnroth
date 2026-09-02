@@ -19,7 +19,7 @@ set(APPLICATION_GAME_STATES_HEADERS
         VideoState.h)
 
 add_library(application_game_states STATIC ${APPLICATION_GAME_STATES_SOURCES} ${APPLICATION_GAME_STATES_HEADERS})
-target_check_cpp_style(application_game_states)
+target_check_style(application_game_states)
 
 target_link_libraries(application_game_states
         PUBLIC

@@ -16,5 +16,5 @@ set(LIBRARY_PLATFORM_INTERFACE_HEADERS
         PlatformWindow.h)
 
 add_library(library_platform_interface STATIC ${LIBRARY_PLATFORM_INTERFACE_SOURCES} ${LIBRARY_PLATFORM_INTERFACE_HEADERS})
-target_check_cpp_style(library_platform_interface)
+target_check_style(library_platform_interface)
 target_link_libraries(library_platform_interface PUBLIC utility library_logger library_geometry)

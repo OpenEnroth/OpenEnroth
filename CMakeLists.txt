@@ -30,7 +30,7 @@ endif()
 # User-settable options.
 set(OE_BUILD_TESTS ON CACHE BOOL "Build OpenEnroth tests.")
 set(OE_BUILD_TOOLS ON CACHE BOOL "Build OpenEnroth tools - LodTool and CodeGen.")
-set(OE_CHECK_CPP_STYLE ON CACHE BOOL "Enable C++ style checks.")
+set(OE_CHECK_STYLE ON CACHE BOOL "Enable style checks.")
 set(OE_CHECK_LUA_STYLE ON CACHE BOOL "Enable lua style checks.")
 set(OE_CHECK_TIDY ON CACHE BOOL "Enable clang-tidy checks.")
 set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies.")
@@ -188,10 +188,7 @@ if(OE_BUILD_PLATFORM STREQUAL "android")
     add_link_options("-Wl,-Bsymbolic")
 endif()
 
-# init_check_cpp_style attaches to this right below, so it has to exist first.
-add_custom_target(check_style)
-
-init_check_cpp_style()
+init_check_style()
 init_check_tidy()
 init_check_lua_style()
 resolve_dependencies()

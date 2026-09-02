@@ -30,7 +30,7 @@ set(SCRIPTING_HEADERS
         ScriptLogSink.h)
 
 add_library(scripting STATIC ${SCRIPTING_SOURCES} ${SCRIPTING_HEADERS})
-target_check_cpp_style(scripting)
+target_check_style(scripting)
 
 target_link_libraries(scripting
         PUBLIC

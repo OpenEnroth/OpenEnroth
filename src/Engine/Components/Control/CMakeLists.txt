@@ -11,7 +11,7 @@ set(ENGINE_COMPONENTS_CONTROL_HEADERS
         EngineController.h)
 
 add_library(engine_components_control STATIC ${ENGINE_COMPONENTS_CONTROL_SOURCES} ${ENGINE_COMPONENTS_CONTROL_HEADERS})
-target_check_cpp_style(engine_components_control)
+target_check_style(engine_components_control)
 
 target_link_libraries(engine_components_control PUBLIC
         utility

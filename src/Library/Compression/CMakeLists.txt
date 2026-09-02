@@ -7,7 +7,7 @@ set(LIBRARY_COMPRESSION_HEADERS
         Compression.h)
 
 add_library(library_compression STATIC ${LIBRARY_COMPRESSION_SOURCES} ${LIBRARY_COMPRESSION_HEADERS})
-target_check_cpp_style(library_compression)
+target_check_style(library_compression)
 target_link_libraries(library_compression
         PUBLIC
         utility
@@ -21,7 +21,7 @@ if(OE_BUILD_TESTS)
     add_library(test_library_compression OBJECT ${TEST_LIBRARY_COMPRESSION_SOURCES})
     target_link_libraries(test_library_compression PUBLIC testing_unit library_compression)
 
-    target_check_cpp_style(test_library_compression)
+    target_check_style(test_library_compression)
 
     target_link_libraries(OpenEnroth_UnitTest PUBLIC test_library_compression)
 endif()

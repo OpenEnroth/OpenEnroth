@@ -9,7 +9,7 @@ set(ENGINE_COMPONENTS_RANDOM_HEADERS
         TracingRandomEngine.h)
 
 add_library(engine_components_random STATIC ${ENGINE_COMPONENTS_RANDOM_SOURCES} ${ENGINE_COMPONENTS_RANDOM_HEADERS})
-target_check_cpp_style(engine_components_random)
+target_check_style(engine_components_random)
 
 target_link_libraries(engine_components_random PUBLIC
         engine_random
