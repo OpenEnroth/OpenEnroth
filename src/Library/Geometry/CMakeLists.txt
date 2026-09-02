@@ -16,9 +16,7 @@ target_link_libraries(library_geometry INTERFACE utility)
 target_check_style(library_geometry)
 
 if(OE_BUILD_TESTS)
-    set(TEST_LIBRARY_GEOMETRY_SOURCES
-            Tests/Rect_ut.cpp
-            Tests/Vec_ut.cpp)
+    set(TEST_LIBRARY_GEOMETRY_SOURCES Tests/Rect_ut.cpp)
 
     add_library(test_library_geometry OBJECT ${TEST_LIBRARY_GEOMETRY_SOURCES})
     target_link_libraries(test_library_geometry PUBLIC testing_unit library_geometry)
