@@ -316,10 +316,11 @@ static std::string traceFromContext(const ucontext_t &crashContext, int signal, 
     uint64_t &pc = regs[16];
 #endif
 
-    // A jump to a bad address is the one case where the pc is unwalkable and the pushed return address is the
-    // frame to restart from. It reads as pc equal to si_addr, but so does SIGFPE, which sits at a perfectly
-    // walkable instruction - hence the signal gate, only a bad access can be a bad jump.
-    if ((signal == SIGSEGV || signal == SIGBUS) && pc == reinterpret_cast<uint64_t>(faultAddress)) {
+    // A pc equal to si_addr means the pc itself is the problem - a jump to a bad address, or abort parked in
+    // a kill syscall stub the unwinder can't step out of - and the pushed return address is the frame to
+    // restart from. The instruction faults are the exception, SIGFPE, SIGILL and SIGTRAP put the pc of a
+    // perfectly walkable instruction into si_addr, and restarting would seed the walk with garbage.
+    if (signal != SIGFPE && signal != SIGILL && signal != SIGTRAP && pc == reinterpret_cast<uint64_t>(faultAddress)) {
 #if defined(__aarch64__)
         pc = regs[30] - 1; // Minus one, so the pc points into the call, not one past it.
 #else
