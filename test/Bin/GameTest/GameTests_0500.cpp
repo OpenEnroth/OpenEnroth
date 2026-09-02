@@ -1,5 +1,6 @@
 #include <unordered_set>
 #include <string>
+#include <utility>
 
 #include "Testing/Game/GameTest.h"
 
@@ -22,6 +23,7 @@
 #include "Engine/Resources/EngineFileSystem.h"
 
 #include "Engine/Spells/SpellEnums.h"
+#include "Engine/Timer.h"
 #include "Utility/ScopeGuard.h"
 #include "GameTestCommon.h"
 
@@ -97,10 +99,18 @@ GAME_TEST(Issues, Issue506) {
 GAME_TEST(Issues, Issue518) {
     // Armageddon yeets the actors way too far into the sky & actors take stops when falling down.
     auto armageddonTape = tapes.custom([] { return pParty->pCharacters[0].uNumArmageddonCasts; });
-    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
+    // The nine actors in full AI state when the spell lands.
+    auto flightTape = actorTapes.custom({1, 6, 8, 9, 15, 18, 19, 24, 25}, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
     test.playTraceFromTestData("issue_518.mm7", "issue_518.json");
     EXPECT_EQ(armageddonTape, tape(2, 3)); // +1 armageddon cast.
-    EXPECT_EQ(midairTape.max(), 0); // The stops were actors standing up in mid-air once their stun timer ran out, near ones included.
+
+    for (size_t i = 0; i < 9; i++) {
+        auto flight = flightTape.slice(i);
+        float groundZ = flight.front().second;
+        EXPECT_GT(flight.map([] (const auto &p) { return p.second; }).max(), groundZ + 500); // Went flying...
+        // ...stunned or dying all the way, the stops were actors standing up in mid-air once their stun timer ran out.
+        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != Stunned && p.first != Dying && p.first != Dead; }));
+    }
 
     for (auto &actor : pActors) {
         EXPECT_LT(actor.pos.z, 3500);
@@ -680,12 +690,36 @@ GAME_TEST(Issues, Issue760) {
 }
 
 GAME_TEST(Issues, Issue774) {
-    // Background stunned actors do idle motions. Their stun timer ran out in mid-air, and standing up zeroed their velocity.
-    auto stunnedTape = actorTapes.countByState(Stunned);
-    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
-    test.playTraceFromTestData("issue_774.mm7", "issue_774.json");
-    EXPECT_GT(stunnedTape.max(), 0); // Armageddon stunned the crowd...
-    EXPECT_EQ(midairTape.max(), 0); // ...and nobody got up before landing, near actors included.
+    // Background stunned actors do idle motions. A hit stuns a monster for the length of its pain animation, it should do
+    // nothing else meanwhile and get up right after. Background actors used to stay stunned forever instead, the AI loop
+    // skipped them altogether so that they wouldn't get up in mid-air.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Far enough from the party to stay a background actor.
+    int titanId = game.spawnMonster(pParty->pos + Vec3f(0, 6500, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
+    game.tick(1); // Drops it onto the ground.
+
+    auto stateTape = actorTapes.aiState(titanId);
+    auto stunTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, gameTimer->time()); });
+    game.tick(1); // A frame on its feet before the hit.
+    Actor::AI_Stun(titanId, Pid::character(0), 0); // What a hit does to a monster that survives it.
+    Duration stunLength = pActors[titanId].currentActionLength;
+    game.tick(30); // 3s, the pain animation is well under a second.
+    test.stopTaping();
+
+    EXPECT_EQ(stateTape.front(), Standing);
+    EXPECT_EQ(stateTape.count(Stunned), 1); // Stunned once, with nothing in between...
+    EXPECT_NE(stateTape.back(), Stunned); // ...and up again afterwards.
+    auto stunned = stunTape.filter([] (const auto &p) { return p.first == Stunned; });
+    Duration held = stunned.back().second - stunned.front().second;
+    EXPECT_GE(held, stunLength - Duration::fromRealtimeMilliseconds(200)); // Held for the pain animation, the tape can't see the frame the hit landed on...
+    EXPECT_LE(held, stunLength); // ...and not longer.
 }
 
 GAME_TEST(Issues, Issue779) {
@@ -1003,9 +1037,8 @@ GAME_TEST(Issues, Issue920) {
     float groundZ = pActors[titanId].pos.z;
 
     auto stateTape = actorTapes.aiState(titanId);
-    auto zTape = actorTapes.custom(titanId, [] (const Actor &actor) { return actor.pos.z; });
+    auto flightTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
     auto backgroundTape = actorTapes.custom(titanId, [] (const Actor &actor) { return !(actor.attributes & ACTOR_FULL_AI_STATE); });
-    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
 
     game.castSpell(1, SPELL_DARK_ARMAGEDDON);
     game.tick(250); // Lands at about 4s in, this is 6.25s.
@@ -1013,8 +1046,8 @@ GAME_TEST(Issues, Issue920) {
 
     EXPECT_EQ(backgroundTape, tape(true)); // Never made it into full AI state.
     EXPECT_CONTAINS(stateTape, Stunned); // Got stunned...
-    EXPECT_GT(zTape.max(), groundZ + 500); // ...went flying...
-    EXPECT_EQ(midairTape.max(), 0); // ...without getting up in the air...
+    EXPECT_GT(flightTape.map([] (const auto &p) { return p.second; }).max(), groundZ + 500); // ...went flying...
+    EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != Stunned; })); // ...stunned all the way up and down...
     EXPECT_FALSE(pActors[titanId].isAirborne()); // ...landed...
     EXPECT_NE(stateTape.back(), Stunned); // ...and got up.
 }

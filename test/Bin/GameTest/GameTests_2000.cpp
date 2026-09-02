@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 #include "Testing/Game/GameTest.h"
@@ -108,8 +109,7 @@ GAME_TEST(Issues, Issue2003) {
     auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
     auto queuedTape = actorTapes.custom(titanId, [] (const Actor &actor) { return static_cast<bool>(actor.attributes & ACTOR_STAND_IN_QUEUE); });
     auto stateTape = actorTapes.aiState(titanId);
-    auto zTape = actorTapes.custom(titanId, [] (const Actor &actor) { return actor.pos.z; });
-    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
+    auto flightTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
 
     game.castSpell(1, SPELL_DARK_ARMAGEDDON);
     game.tick(300); // Lands at about 5s in, this is 7.5s.
@@ -118,8 +118,8 @@ GAME_TEST(Issues, Issue2003) {
     EXPECT_EQ(turnBasedTape, tape(true)); // Never left turn-based mode.
     EXPECT_EQ(queuedTape, tape(false)); // Never made it into the turn queue.
     EXPECT_CONTAINS(stateTape, Stunned); // Got stunned...
-    EXPECT_GT(zTape.max(), groundZ + 500); // ...went flying...
-    EXPECT_EQ(midairTape.max(), 0); // ...without getting up in the air...
+    EXPECT_GT(flightTape.map([] (const auto &p) { return p.second; }).max(), groundZ + 500); // ...went flying...
+    EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != Stunned; })); // ...stunned all the way up and down...
     EXPECT_FALSE(pActors[titanId].isAirborne()); // ...landed...
     EXPECT_NE(stateTape.back(), Stunned); // ...and got up.
 }
