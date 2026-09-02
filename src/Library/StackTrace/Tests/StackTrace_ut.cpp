@@ -131,6 +131,12 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
     return result + 1;
 }
 
+MM_NOINLINE int stackTraceDivisionFunction() {
+    volatile int zero = 0; // Volatile, or the compiler sees the division by zero and emits a trap instead of dividing.
+    volatile int result = 64 / zero; // Using the result keeps this out of tail position, which keeps the frame.
+    return result + 1;
+}
+
 static volatile char *volatile stackTraceOverflowEscape; // Never read, the pad below is stored here so it exists.
 
 MM_NOINLINE int stackTraceOverflowFunction(int depth) {
@@ -192,6 +198,22 @@ UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
         StackTraceOnCrash handler;
         stackTraceBadTargetCallFunction();
     }, testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
+}
+
+UNIT_TEST(StackTrace, DivisionByZeroIsTraced) {
+#if defined(__aarch64__) || defined(__arm__)
+    GTEST_SKIP() << "Integer division by zero doesn't trap on arm, it just yields zero.";
+#else
+    // Division by zero arrives as SIGFPE, and nothing else in the suite raises it, so this is the test that
+    // notices SIGFPE going missing from the handled signal list. Windows delivers it as one more structured
+    // exception instead.
+    EXPECT_DEATH({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        stackTraceDivisionFunction();
+    }, testing::AllOf(HasFrame(0, "stackTraceDivisionFunction"), testing::HasSubstr("main")));
+#endif
 }
 
 UNIT_TEST(StackTrace, StackOverflowIsTraced) {
