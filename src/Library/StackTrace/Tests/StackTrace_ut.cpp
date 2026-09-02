@@ -53,13 +53,6 @@ constexpr int SIG_PURE_CALL = SIGABRT;
 constexpr int SIG_PURE_CALL = SIGSEGV;
 #endif
 
-// Darwin maps its stack guard without access, where linux leaves the page unmapped.
-#ifdef __APPLE__
-constexpr int SIG_STACK_OVERFLOW = SIGBUS;
-#else
-constexpr int SIG_STACK_OVERFLOW = SIGSEGV;
-#endif
-
 /**
  * Predicate for `EXPECT_EXIT` that pins how the process died, rather than just that it did. Gtest has no
  * `KilledBySignal` on windows, where a death test reports an exit code, so there this only asserts a death.
@@ -281,7 +274,7 @@ UNIT_TEST(StackTrace, StackOverflowIsTraced) {
 
         StackTraceOnCrash handler;
         stackTraceOverflowFunction(0);
-    }, killedBy(SIG_STACK_OVERFLOW), HasFrame(0, "stackTraceOverflowFunction"));
+    }, killedBy(SIGSEGV), HasFrame(0, "stackTraceOverflowFunction"));
 }
 
 UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
