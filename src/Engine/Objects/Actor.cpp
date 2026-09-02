@@ -2534,7 +2534,7 @@ void Actor::UpdateActorAI() {
         // If actor is stunned: let the animation finish but don't process AI.
         // Vanilla skipped stunned actors entirely, causing them to get stuck in stun state forever.
         if (pActor->aiState == AIState::Stunned) {
-            pActor->currentActionTime += pEventTimer->dt();
+            pActor->currentActionTime += gameTimer->dt();
             if (pActor->currentActionTime >= pActor->currentActionLength) {
                 pActor->aiState = Standing;
                 pActor->currentActionTime = 0_ticks;
