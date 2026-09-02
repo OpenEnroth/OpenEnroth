@@ -69,7 +69,7 @@ For the C++ code we are following the [Google C++ Style Guide](http://google.git
 
 To perform a style check before pushing anything you can build `check_style` target. In Visual Studio you can do that by going to ***Solution Explorer → Change Views → CMake targets***. Right click and build `check_style`, errors will be listed in output.
 
-CI also runs `clang-tidy` with the checks listed in `.clang-tidy`, and any finding fails the build. To run it locally, install the version CI pins, `pip install --break-system-packages clang-tidy==22.1.8`, reconfigure so that cmake picks it up, then build the `check_tidy` target. The target needs a compile commands database, so it is only offered by the ninja and makefile generators.
+CI also runs `clang-tidy` with the checks listed in `.clang-tidy`, and any finding fails the build. Running it locally needs clang-tidy 22 with `run-clang-tidy` next to it on PATH, and distro packages are usually older. CI installs the `clang-tidy` package from PyPI, which ships both, so install that the way you install other python command line tools, with pipx or a virtualenv rather than into the system python. Reconfigure so that cmake picks it up, then build the `check_tidy` target, which needs a compile commands database and so is only offered by the ninja and makefile generators.
 
 We also follow some additional style preferences, as listed below.
 
