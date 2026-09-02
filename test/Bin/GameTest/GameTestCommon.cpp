@@ -1,9 +1,11 @@
 #include "GameTestCommon.h"
 
+#include <algorithm>
 #include <cassert>
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
 
 static int faceForRace(Race race) {
@@ -51,4 +53,10 @@ void prepareForBattleTest(const std::vector<CharacterPreset> &presets) {
         c.health = c.GetMaxHealth();
         c._stats[ATTRIBUTE_LUCK] = 0; // We don't want luck rolls that decrease damage dealt.
     }
+}
+
+int countBackgroundActorsActingInMidair() {
+    return static_cast<int>(std::ranges::count_if(pActors, [] (const Actor &actor) {
+        return !(actor.attributes & ACTOR_FULL_AI_STATE) && actor.airborne && actor.CanAct() && actor.aiState != Stunned;
+    }));
 }

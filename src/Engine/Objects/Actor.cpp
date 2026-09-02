@@ -2531,16 +2531,15 @@ void Actor::UpdateActorAI() {
         if (pActor->buffs[ACTOR_BUFF_PARALYZED].Active() || pActor->buffs[ACTOR_BUFF_STONED].Active())
             continue;
 
-        // If actor is stunned: skip - vanilla bug that causes stunned background actors to recover to idle motions
-        // Most apparent during armageddon spell, falling background actors will occasionally hover to perform action
-        if (pActor->aiState == AIState::Stunned)
-            continue;
-
         // Calculate RecoveryTime
         pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - gameTimer->dt(), 0_ticks); // was animTimer
 
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
         if (pActor->currentActionTime < pActor->currentActionLength)
+            continue;
+
+        // A stunned actor still in the air, e.g. thrown up by armageddon, keeps falling and gets up once it lands.
+        if (pActor->aiState == Stunned && pActor->airborne)
             continue;
 
         if (pActor->aiState == Dying) {

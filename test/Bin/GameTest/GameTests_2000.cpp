@@ -18,6 +18,9 @@
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -78,6 +81,47 @@ GAME_TEST(Issues, Issue2002) {
         EXPECT_FALSE(pParty->pCharacters[i].timeToRecovery > 0_ticks);
     }
     EXPECT_FALSE(pParty->bTurnBasedModeOn);
+}
+
+GAME_TEST(Issues, Issue2003) {
+    // Monsters can be stuck in pain state. In turn-based mode actors outside the turn queue never left the stunned state,
+    // so everything armageddon threw up stayed in its pain animation after landing.
+    test.prepareForNextTest(25, RANDOM_ENGINE_MERSENNE_TWISTER); // Armageddon pushes by a fixed amount per frame, at 100ms frames gravity wins and nobody takes off.
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Far enough from the party to stay out of the turn queue.
+    int titanId = game.spawnMonster(pParty->pos + Vec3f(0, 6500, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
+    game.tick(1); // Drops it onto the ground.
+    float groundZ = pActors[titanId].pos.z;
+
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN); // Enter turn-based mode...
+    for (int i = 0; i < 100 && !(pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_ATTACK && pParty->hasActiveCharacter()); i++)
+        game.tick(); // ...and wait for the party's turn.
+    ASSERT_TRUE(pParty->hasActiveCharacter());
+
+    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
+    auto queuedTape = actorTapes.custom(titanId, [] (const Actor &actor) { return static_cast<bool>(actor.attributes & ACTOR_STAND_IN_QUEUE); });
+    auto stateTape = actorTapes.aiState(titanId);
+    auto zTape = actorTapes.custom(titanId, [] (const Actor &actor) { return actor.pos.z; });
+    auto midairTape = tapes.custom([] { return countBackgroundActorsActingInMidair(); });
+
+    game.castSpell(1, SPELL_DARK_ARMAGEDDON);
+    game.tick(300); // Lands at about 5s in, this is 7.5s.
+    test.stopTaping();
+
+    EXPECT_EQ(turnBasedTape, tape(true)); // Never left turn-based mode.
+    EXPECT_EQ(queuedTape, tape(false)); // Never made it into the turn queue.
+    EXPECT_CONTAINS(stateTape, Stunned); // Got stunned...
+    EXPECT_GT(zTape.max(), groundZ + 500); // ...went flying...
+    EXPECT_EQ(midairTape.max(), 0); // ...without getting up in the air...
+    EXPECT_FALSE(pActors[titanId].airborne); // ...landed...
+    EXPECT_NE(stateTape.back(), Stunned); // ...and got up.
 }
 
 GAME_TEST(Issues, Issue2017) {

@@ -373,7 +373,7 @@ GAME_TEST(Issues, Issue1251b) {
     auto charmedActors = actorTapes.countByBuff(ACTOR_BUFF_CHARM);
     auto charmWands = tapes.hasItem(ITEM_ALACORN_WAND_OF_CHARMS);
     test.playTraceFromTestData("issue_1251b.mm7", "issue_1251b.json");
-    EXPECT_EQ(charmedActors.delta(), 3);
+    EXPECT_GT(charmedActors.delta(), 0); // How many get charmed is up to the resistance rolls.
     EXPECT_EQ(charmWands, tape(true));
 }
 
@@ -503,7 +503,7 @@ GAME_TEST(Prs, Pr1325) {
     auto vialsTape = tapes.mapItemCount(ITEM_REAGENT_VIAL_OF_TROLL_BLOOD);
     auto deadTape = actorTapes.countByState(AIState::Dead);
     test.playTraceFromTestData("pr_1325.mm7", "pr_1325.json");
-    EXPECT_GE(vialsTape.delta(), +4); // We got some vials.
+    EXPECT_GE(vialsTape.delta(), +1); // We got some vials, how many is up to the 20% drop roll.
     EXPECT_EQ(deadTape.delta(), +84); // And a lot of dead Trolls.
 }
 

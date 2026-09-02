@@ -18,3 +18,11 @@ struct CharacterPreset {
  * - Zeroes out luck on each configured character so that luck rolls don't randomly bump damage dealt to them.
  */
 void prepareForBattleTest(const std::vector<CharacterPreset> &presets = {{CLASS_KNIGHT, RACE_GOBLIN}});
+
+/**
+ * Armageddon throws every actor on the map into the air, and a background actor should then do nothing but fall in its
+ * pain animation until it lands.
+ *
+ * @return                              Number of background actors that are up in the air and not stunned.
+ */
+int countBackgroundActorsActingInMidair();
