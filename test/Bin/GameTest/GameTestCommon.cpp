@@ -60,7 +60,7 @@ void prepareForBattleTest(const std::vector<CharacterPreset> &presets) {
 int countActorsActingInMidair() {
     assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR); // Armageddon is an outdoor spell, so only the outdoor floor is looked up.
     return static_cast<int>(std::ranges::count_if(pActors, [] (const Actor &actor) {
-        if (!actor.airborne || !actor.CanAct() || actor.aiState == Stunned)
+        if (!actor.isAirborne() || !actor.CanAct() || actor.aiState == Stunned)
             return false;
         bool onWater = false;
         int faceId = -1;

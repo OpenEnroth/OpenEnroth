@@ -270,7 +270,7 @@ void stru262_TurnBased::AITurnBasedAction() {
                     curr_actor->aiState = Dead;
                     curr_actor->UpdateAnimation();
                 } else if (curr_actor->aiState == Stunned) {
-                    if (!curr_actor->airborne) // Thrown up by armageddon, gets up once it lands.
+                    if (!curr_actor->isAirborne()) // Thrown up by armageddon, gets up once it lands.
                         Actor::AI_StandOrBored(i, target_pid, 32_ticks, &v14);
                 } else if ((curr_actor->aiState > Removed) &&
                            (curr_actor->aiState < Disabled)) {
