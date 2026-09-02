@@ -33,6 +33,9 @@ set(LUAJIT_DIR ${CMAKE_CURRENT_LIST_DIR}/luajit)
 include(${CMAKE_CURRENT_LIST_DIR}/luajit-cmake/LuaJIT.cmake)
 target_include_directories(libluajit INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}") # Make it compile under x86.
+if(TARGET check_tidy)
+    add_dependencies(check_tidy libluajit) # Scripting sources include the luajit.h that's generated here.
+endif()
 
 # inifile_cpp, would rather not use add_subdirectory
 add_library(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_cpp/include/inicpp.h)
