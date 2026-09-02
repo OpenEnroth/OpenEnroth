@@ -1598,6 +1598,7 @@ void UpdateActors_ODM() {
         bool Actor_On_Terrain = Floor_Face_Id == -1;
 
         bool uIsAboveFloor = (actor.pos.z > (Floor_Level + 1));
+        actor.airborne = uIsAboveFloor && !uIsFlying;
 
         // make bloodsplat when the ground is hit
         if (!actor.donebloodsplat) {
