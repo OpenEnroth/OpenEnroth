@@ -1,0 +1,61 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_logger",
+    srcs = [
+        "DistLogSink.cpp",
+        "FallbackLogSink.cpp",
+        "LogCategory.cpp",
+        "LogEnumFunctions.h", # Includes spdlog headers, so it's private like in cmake.
+        "LogEnums.cpp",
+        "LogSink.cpp",
+        "Logger.cpp",
+        "RotatingLogSink.cpp",
+        "StreamLogSink.cpp",
+    ],
+    hdrs = [
+        "BufferLogSink.h",
+        "DistLogSink.h",
+        "FallbackLogSink.h",
+        "LogCategory.h",
+        "LogEnums.h",
+        "LogSink.h",
+        "LogSource.h",
+        "Logger.h",
+        "RotatingLogSink.h",
+        "StreamLogSink.h",
+    ],
+    # Spdlog is header-only here, so its config macros live on the only target
+    # whose sources instantiate it. Wchar support makes the msvc sink use
+    # OutputDebugStringW, matching cmake's SPDLOG_WCHAR_SUPPORT on windows.
+    local_defines = ["SPDLOG_DISABLE_DEFAULT_LOGGER"] + select({
+        "@platforms//os:windows": ["SPDLOG_WCHAR_TO_UTF8_SUPPORT"],
+        "//conditions:default": [],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Serialization:library_serialization",
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Utility:utility",
+    ],
+    # Spdlog is PRIVATE in cmake - dependents can't see its headers.
+    implementation_deps = [
+        "@spdlog",
+    ],
+)
+
+cc_library(
+    name = "test_library_logger",
+    testonly = True,
+    srcs = [
+        "Tests/Logger_ut.cpp",
+        "Tests/RotatingLogSink_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_logger",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

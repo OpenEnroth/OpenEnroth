@@ -17,69 +17,38 @@ finish-args:
   # Audio
   - --socket=pulseaudio
 
-cleanup-commands:
-  - mkdir -p ${FLATPAK_DEST}/lib/ffmpeg
-
-sdk-extensions:
-  - org.freedesktop.Sdk.Extension.llvm20
-
-add-extensions:
-  org.freedesktop.Platform.ffmpeg-full:
-    directory: lib/ffmpeg
-    add-ld-path: .
-    version: *runtime-version
-    no-autodownload: false
-    autodelete: false
-
 modules:
-  - name: sdl3
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -DSDL_TESTS=OFF
-      - -DSDL_EXAMPLES=OFF
-    sources:
-      - type: archive
-        url: https://libsdl.org/release/SDL3-3.2.22.tar.gz
-        sha256: f29d00cbcee273c0a54f3f32f86bf5c595e8823a96b1d92a145aac40571ebfcc
 
   - name: openenroth
-    buildsystem: cmake-ninja
-    builddir: true
+    buildsystem: simple
     build-options:
-      append-path: /usr/lib/sdk/llvm20/bin
-      prepend-ld-library-path: /usr/lib/sdk/llvm20/lib
       strip: false  # Do not strip binaries to keep debug symbols.
       no-debuginfo: false  # Ensure debug info is generated.
-    cleanup:
-      - /share/cmake
-      - /lib/cmake
-      - /share/man
-      - /share/gch
-      - '*.a'
-      - /include
-    config-opts:
-      - -DOE_BUILD_TOOLS=OFF
-      - -DOE_CHECK_STYLE=OFF
-      - -DOE_CHECK_LUA_STYLE=OFF
-      - -DOE_USE_PREBUILT_DEPENDENCIES=OFF
-      - -DCMAKE_BUILD_TYPE=RelWithDbgInfo
-      - -DCMAKE_LINKER=lld
+    build-commands:
+      # The dev manifest builds with --share=network, so bazel fetches deps
+      # itself. One command: every build-command gets a fresh sandbox, so all
+      # state stays in the build dir. Output tees there too for CI.
+      # TODO(captainurist): would be cool to run game tests here too!
+      - |
+        set -eo pipefail
+        curl -sL https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64 -o ./bazelisk
+        chmod +x ./bazelisk
+        export HOME=$PWD/.home
+        mkdir -p "$HOME"
+        ./bazelisk build -c opt //src/Bin/OpenEnroth:OpenEnroth 2>&1 | tee bazel-build.log
+        ./bazelisk test -c opt --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test.log
     sources:
       - type: dir
         path: ../../../
-    # TODO(captainurist): would be cool to run game tests here too!
-    run-tests: true
-    test-rule: Run_UnitTest
     post-install:
-      - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
+      - install -Dm755 bazel-bin/src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
       # launcher script
-      - install -Dm755 ../distribution/linux/flatpak/${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
+      - install -Dm755 distribution/linux/flatpak/${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
       # Icon
-      - install -Dm644 ../distribution/linux/${FLATPAK_ID}.png /app/share/icons/hicolor/512x512/apps/${FLATPAK_ID}.png
+      - install -Dm644 distribution/linux/${FLATPAK_ID}.png /app/share/icons/hicolor/512x512/apps/${FLATPAK_ID}.png
       # metainfo
-      - install -Dm644 ../distribution/linux/${FLATPAK_ID}.metainfo.xml /app/share/metainfo/${FLATPAK_ID}.metainfo.xml
-      - install -Dm644 ../distribution/linux/${FLATPAK_ID}.releases.xml /app/share/releases/${FLATPAK_ID}.releases.xml
+      - install -Dm644 distribution/linux/${FLATPAK_ID}.metainfo.xml /app/share/metainfo/${FLATPAK_ID}.metainfo.xml
+      - install -Dm644 distribution/linux/${FLATPAK_ID}.releases.xml /app/share/releases/${FLATPAK_ID}.releases.xml
       # desktop file
-      - install -Dm644 ../distribution/linux/${FLATPAK_ID}.desktop /app/share/applications/${FLATPAK_ID}.desktop
+      - install -Dm644 distribution/linux/${FLATPAK_ID}.desktop /app/share/applications/${FLATPAK_ID}.desktop
       - desktop-file-edit --set-key=Exec --set-value="${FLATPAK_ID}.sh" /app/share/applications/${FLATPAK_ID}.desktop

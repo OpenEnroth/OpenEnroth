@@ -1,0 +1,74 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
+
+# library_platform_main is the SDL main entry-point object library.
+# In CMake it is an OBJECT library; in Bazel we model it as a cc_library so it
+# can be listed as a dep of cc_binary targets.
+cc_library(
+    name = "library_platform_main",
+    srcs = [
+        "SdlMain.cpp",
+    ],
+    # SDL_main.h renames main() to SDL_main() on Android so libSDL3.so (loaded by
+    # the Java activity layer) can call it. For cc_binary (standalone NDK executable,
+    # not APK), the binary needs a regular main() entry point. SDL_MAIN_HANDLED tells
+    # SDL3 not to rename main, preserving the standard main() for the linker.
+    defines = select({
+        "@platforms//os:android": ["SDL_MAIN_HANDLED"],
+        "//conditions:default": [],
+    }) + STDLIB_HARDENING_DEFINES,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//bazel/system:sdl3",
+    ],
+)
+
+# APK flavor: keeps SDL_main.h's main -> SDL_main rename so the Java
+# SDLActivity can dlsym it from libmain.so; alwayslink because nothing
+# references it at link time.
+cc_library(
+    name = "library_platform_main_apk",
+    defines = STDLIB_HARDENING_DEFINES,
+    srcs = [
+        "SdlMain.cpp",
+    ],
+    target_compatible_with = ["@platforms//os:android"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//bazel/system:sdl3",
+    ],
+    alwayslink = True,
+)
+
+cc_library(
+    name = "library_platform_sdl",
+    srcs = [
+        "SdlEnumTranslation.cpp",
+        "SdlEventLoop.cpp",
+        "SdlGamepad.cpp",
+        "SdlLogSource.cpp",
+        "SdlOpenGLContext.cpp",
+        "SdlPlatform.cpp",
+        "SdlPlatformSharedState.cpp",
+        "SdlWindow.cpp",
+    ],
+    hdrs = [
+        "SdlEnumTranslation.h",
+        "SdlEventLoop.h",
+        "SdlFreeDeleter.h",
+        "SdlGamepad.h",
+        "SdlLogSource.h",
+        "SdlOpenGLContext.h",
+        "SdlPlatform.h",
+        "SdlPlatformSharedState.h",
+        "SdlWindow.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Logger:library_logger",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        # SDL3 — Phase 5 TODO
+        "//bazel/system:sdl3",
+    ],
+)

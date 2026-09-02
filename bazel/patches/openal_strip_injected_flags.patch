@@ -1,0 +1,20 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -3,4 +3,17 @@
+ cmake_minimum_required(VERSION 3.13)
+ enable_testing()
+
++# rules_foreign_cc cmake() unconditionally exports a CXXFLAGS env var containing
++# all Bazel --copt flags. cmake picks these up as CMAKE_CXX_FLAGS. Some of the
++# Bazel flags conflict with OpenAL-soft's own build:
++#   /Zc:preprocessor  MSVC conformant preprocessor that breaks hrtf.cpp template parsing
++#   -Isrc -Itest       OpenEnroth-relative include paths, meaningless here
++# Strip these injected flags before OpenAL's own CMakeLists logic runs.
++foreach(_flag "/Zc:preprocessor" "-Zc:preprocessor" "-Isrc" "-Itest" "/Isrc" "/Itest")
++    string(REPLACE "${_flag}" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
++    string(REPLACE "${_flag}" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
++endforeach()
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE STRING "C++ flags" FORCE)
++set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "C flags" FORCE)
++
+ if(APPLE)

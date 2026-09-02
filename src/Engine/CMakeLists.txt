@@ -84,7 +84,6 @@ target_link_libraries(engine
         utility)
 
 target_compile_definitions(engine PRIVATE
-        PROJECT_VERSION="${PROJECT_VERSION}"
         OE_BUILD_COMPILER="${CMAKE_CXX_COMPILER_ID}"
         OE_BUILD_PLATFORM="${OE_BUILD_PLATFORM}"
         OE_BUILD_ARCHITECTURE="${OE_BUILD_ARCHITECTURE}")

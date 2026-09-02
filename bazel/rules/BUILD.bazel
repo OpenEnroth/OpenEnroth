@@ -1,0 +1,2 @@
+# Starlark rules and macros.
+# No build targets here — just a package marker.

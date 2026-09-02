@@ -1,0 +1,429 @@
+name: Bazel Build
+
+on:
+  # Same-repo PRs run via pull_request; fork PRs run via pull_request_target
+  # (workflow taken from master, head checked out explicitly), which is what
+  # lets trusted maintainers' fork PRs see the remote cache secrets. The two
+  # job-level gates below keep any PR from running twice.
+  pull_request: null
+  pull_request_target: null
+  push:
+    branches:
+      - master  # Master builds seed the shared bazel caches that PR builds restore.
+      # TODO(captainurist): drop after merge. Runs on the FORK with its secrets,
+      # seeding the remote cache pre-merge (the upstream fork-PR runs can't write).
+      - feature/bazel-migration
+  workflow_dispatch:
+  # Called from build_release.yml: a non-empty releaseTag makes every leg
+  # upload its artifacts to that release.
+  workflow_call:
+    inputs:
+      releaseTag:
+        required: false
+        default: ''
+        type: string
+      myCommit:
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  # Never cancel master runs - they are the only ones that save caches.
+  cancel-in-progress: ${{github.ref != 'refs/heads/master'}}
+
+env:
+  NDK_VERSION: 28.1.13356709
+
+jobs:
+  bazel_build:
+    # TODO(captainurist): drop the feature/bazel-migration clause after merge;
+    # it keeps this pre-merge PR running while master lacks this workflow.
+    if: >-
+      github.event_name != 'pull_request' && github.event_name != 'pull_request_target' ||
+      github.event_name == 'pull_request' && (github.event.pull_request.head.repo.full_name == github.repository || github.head_ref == 'feature/bazel-migration') ||
+      github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository && contains(fromJSON('["MEMBER", "OWNER", "COLLABORATOR"]'), github.event.pull_request.author_association)
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - windows_x86
+          - windows_x86_64
+          - darwin_arm64
+          - darwin_x86_64
+          - linux_x86_64
+          - linux_x86
+          - linux_arm64
+          - android_arm64_v8a
+          - android_armeabi_v7a
+          - android_x86_64
+          - android_x86
+          - android_universal
+    runs-on: >-
+      ${{
+        startsWith(matrix.target, 'windows_') && 'windows-2022' ||
+        startsWith(matrix.target, 'darwin_')  && 'macos-15'     ||
+        matrix.target == 'linux_arm64'        && 'ubuntu-26.04-arm' ||
+        'ubuntu-26.04'
+      }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: 'Initialize matrix vars'
+        run: |
+          set -euo pipefail
+          target="${{matrix.target}}"
+          case "$target" in
+            windows_x86)         platform=windows; bazel_config=windows_x86;;
+            windows_x86_64)      platform=windows; bazel_config=windows_x86_64;;
+            linux_x86_64)        platform=linux;   bazel_config=linux_x86_64;;
+            linux_x86)           platform=linux;   bazel_config=linux_x86;;
+            linux_arm64)         platform=linux;   bazel_config=linux_arm64;;
+            darwin_arm64)        platform=darwin;  bazel_config=darwin_arm64;;
+            darwin_x86_64)       platform=darwin;  bazel_config=darwin_x86_64;;
+            android_arm64_v8a)   platform=android; bazel_config=android_arm64_v8a;;
+            android_armeabi_v7a) platform=android; bazel_config=android_armeabi_v7a;;
+            android_x86_64)      platform=android; bazel_config=android_x86_64;;
+            android_x86)         platform=android; bazel_config=android_x86;;
+            android_universal)   platform=android; bazel_config=android_universal;;
+            *) echo "Unknown target: $target" >&2; exit 1;;
+          esac
+          echo "MATRIX_PLATFORM=$platform" >> "$GITHUB_ENV"
+          echo "MATRIX_BAZEL_CONFIG=$bazel_config" >> "$GITHUB_ENV"
+          # Clear the runners' preset ANDROID_* vars on non-android platforms so
+          # rules_android_ndk stubs out instead of tripping over the preinstalled NDK.
+          # Android builds set ANDROID_NDK_HOME in the [android] Install NDK step.
+          if [ "$platform" != "android" ]; then
+            echo "ANDROID_HOME=" >> "$GITHUB_ENV"
+            echo "ANDROID_NDK_HOME=" >> "$GITHUB_ENV"
+          fi
+
+      - name: '[linux/android] Configure fast APT mirror'
+        if: env.MATRIX_PLATFORM == 'linux' || env.MATRIX_PLATFORM == 'android'
+        uses: vegardit/fast-apt-mirror.sh@v1
+
+      - name: '[darwin] Set up Xcode'
+        if: env.MATRIX_PLATFORM == 'darwin'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: 16.3
+
+      - name: 'Checkout'
+        uses: actions/checkout@v5.0.0
+        with:
+          # For pull_request_target the default ref is the base branch.
+          ref: ${{github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || inputs.myCommit || ''}}
+
+      - name: '[android] Install NDK'
+        if: env.MATRIX_PLATFORM == 'android'
+        run: |
+          /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "ndk;$NDK_VERSION"
+          echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/$NDK_VERSION" >> "$GITHUB_ENV"
+
+      - name: '[linux] Install dependencies'
+        if: env.MATRIX_PLATFORM == 'linux'
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            if [ "${{env.MATRIX_BAZEL_CONFIG}}" = "linux_x86" ]; then
+              sudo dpkg --add-architecture i386
+              sudo apt-get update
+              sudo apt-get install -y gcc-multilib g++-multilib lld mold pkg-config
+              sudo apt-get install -y libglu1-mesa-dev:i386
+              # The SDL3/OpenAL backend dev set, trimmed to what ubuntu's partial
+              # i386 archive can install: libpulse-dev:i386 and friends need a
+              # co-installable libglib2.0-dev:i386, which doesn't exist there.
+              # 32-bit pulse systems still get audio through the alsa-pulse
+              # plugin. The backends are dlopened at runtime, so anything
+              # missing here silently vanishes from the binary.
+              sudo apt-get install -y libx11-dev:i386 libxext-dev:i386 libxrandr-dev:i386 \
+                libxcursor-dev:i386 libxi-dev:i386 libxfixes-dev:i386 libxss-dev:i386 libxtst-dev:i386 \
+                libwayland-dev:i386 libxkbcommon-dev:i386 \
+                libasound2-dev:i386 \
+                libdrm-dev:i386 libgbm-dev:i386 libgles2-mesa-dev:i386 libegl1-mesa-dev:i386 \
+                libdbus-1-dev:i386 libudev-dev:i386
+            else
+              sudo apt-get update
+              sudo apt-get install -y lld mold pkg-config
+              sudo apt-get install -y libglu1-mesa-dev
+              # The full SDL3/OpenAL dev set the prebuilt deps were built with.
+              # The backends are dlopened at runtime, so anything missing here
+              # silently vanishes from the binary.
+              sudo apt-get install -y libx11-dev libxext-dev libxrandr-dev \
+                libxcursor-dev libxi-dev libxfixes-dev libxss-dev libxtst-dev \
+                libwayland-dev libxkbcommon-dev libdecor-0-dev \
+                libasound2-dev libpulse-dev libpipewire-0.3-dev \
+                libaudio-dev libjack-dev libsndio-dev \
+                libdrm-dev libgbm-dev libgles2-mesa-dev libegl1-mesa-dev \
+                libdbus-1-dev libibus-1.0-dev libudev-dev
+            fi
+
+      - name: '[android] Install SDL3 dev dependencies'
+        if: env.MATRIX_PLATFORM == 'android'
+        timeout-minutes: 6  # apt mirror hangs have cost 20-minute legs; fail fast, apt was already retried
+        run: |
+          # SDL3 cmake() is invoked in the host (linux) config during Android
+          # cross-compilation and requires X11/Wayland headers to configure.
+          sudo apt-get update
+          # The audio trio is needed too: the host-config sdl3 resolves as
+          # linux, where the overlay forces those backends on.
+          sudo apt-get install -y libx11-dev libxext-dev libxrandr-dev \
+            libxcursor-dev libxi-dev libxfixes-dev \
+            libwayland-dev libxkbcommon-dev \
+            libasound2-dev libpulse-dev libpipewire-0.3-dev
+          # armeabi_v7a builds LuaJIT host tools with -m32, which needs the multilib runtime.
+          if [ "${{matrix.target}}" = "android_armeabi_v7a" ] || [ "${{matrix.target}}" = "android_x86" ] || [ "${{matrix.target}}" = "android_universal" ]; then
+            sudo apt-get install -y gcc-multilib g++-multilib
+          fi
+
+      # Mold on the linux legs, same as the cmake matrix (which mandates
+      # mold-or-lld and installs mold). Not on arm64: the runner's mold aborts
+      # with signal 6 linking the shared libengine.so, and cmake CI never
+      # linked arm64 at all. Not on x86 either, which keeps its .bazelrc lld
+      # pin: mold corrupts luajit's hand-written 32-bit .eh_frame under opt's
+      # --gc-sections just like gold did, and the first lua error then unwinds
+      # into a garbage landing pad and segfaults. Cmake never saw this - it
+      # doesn't link with --gc-sections.
+      - name: '[linux] Use mold'
+        if: env.MATRIX_PLATFORM == 'linux' && matrix.target != 'linux_arm64' && matrix.target != 'linux_x86'
+        run: echo "BAZEL_EXTRA_ARGS=--config=mold" >> "$GITHUB_ENV"
+
+      # Cmake CI passes -DOE_DISTRIBUTION_BUILD=ON on every desktop leg and
+      # tests those builds, while gradle never passes it. Same split here.
+      - name: '[non-android] Distribution build'
+        if: env.MATRIX_PLATFORM != 'android'
+        run: echo "BAZEL_DIST_ARGS=--//:distribution=true" >> "$GITHUB_ENV"
+
+      - name: '[windows] Set up MSVC'
+        if: env.MATRIX_PLATFORM == 'windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: 'Set up Bazel'
+        uses: bazel-contrib/setup-bazel@0.14.0
+        with:
+          bazelisk-version: 1.x
+          bazelisk-cache: true
+
+      # BuildBuddy, read-write everywhere: later commits of a PR reuse earlier
+      # ones. Safe because fork PRs have no secrets (they silently skip the
+      # remote cache), and same-repo branches are made by people with push
+      # rights anyway.
+      - name: 'Configure remote cache'
+        run: |
+          key='${{secrets.BUILDBUDDY_API_KEY}}'
+          if [ -n "$key" ]; then
+            echo "BAZEL_REMOTE_ARGS=--config=remote-cache --remote_header=x-buildbuddy-api-key=$key" >> "$GITHUB_ENV"
+          else
+            # No secrets (untrusted fork PR): read the cache with the public key.
+            echo "BAZEL_REMOTE_ARGS=--config=remote-cache-read" >> "$GITHUB_ENV"
+          fi
+
+      # Restore-only on PRs, saved on master pushes: keeps the matrix from
+      # thrashing GitHub's 10 GB per-repo cache budget.
+      - name: 'Restore bazel caches'
+        id: restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: bazel-${{matrix.target}}-${{github.run_id}}
+          restore-keys: |
+            bazel-${{matrix.target}}-
+
+      # dbg/opt mirror the cmake matrix' Debug/RelWithDebInfo; separate steps so
+      # CI timings stay comparable per config. Non-android legs also build the
+      # tools - the cmake matrix builds everything, and a tool that only ever
+      # gets lint-analyzed can silently stop linking.
+      - name: 'Build (dbg)'
+        run: |
+          if [ "${{matrix.target}}" = "android_universal" ]; then
+            targets=//android/openenroth:main
+          elif [ "${{env.MATRIX_PLATFORM}}" = "android" ]; then
+            targets=//src/Bin/OpenEnroth:OpenEnroth
+          elif [ "${{env.MATRIX_PLATFORM}}" = "darwin" ]; then
+            targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/OpenEnroth:OpenEnroth_app //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
+          else
+            targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
+          fi
+          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} $targets 2>&1 | tee bazel-build.log
+
+      - name: 'Build (opt)'
+        run: |
+          if [ "${{matrix.target}}" = "android_universal" ]; then
+            targets=//android/openenroth:main
+          elif [ "${{env.MATRIX_PLATFORM}}" = "android" ]; then
+            targets=//src/Bin/OpenEnroth:OpenEnroth
+          elif [ "${{env.MATRIX_PLATFORM}}" = "darwin" ]; then
+            targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/OpenEnroth:OpenEnroth_app //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
+          else
+            targets="//src/Bin/OpenEnroth:OpenEnroth //src/Bin/LodTool:LodTool //src/Bin/CodeGen:CodeGen"
+          fi
+          bazel build -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} $targets 2>&1 | tee -a bazel-build.log
+
+      # Game tests need the MM7 data; same shared cache the cmake matrix uses.
+      # The cache is saved on a linux runner, and windows needs the cross-OS
+      # flag to read it (mirrors build_all.yml).
+      - name: '[non-android] Restore game data cache'
+        if: env.MATRIX_PLATFORM != 'android'
+        uses: actions/cache/restore@v4.2.4
+        with:
+          path: OpenEnroth_GameData
+          key: data-cache
+          enableCrossOsArchive: ${{env.MATRIX_PLATFORM == 'windows'}}
+
+      # A cold data cache means no game test coverage - fail loudly instead of
+      # going silently green. build_data_cache.yml seeds the cache.
+      - name: '[non-android] Run game tests (dbg)'
+        if: env.MATRIX_PLATFORM != 'android'
+        run: |
+          if [ ! -d OpenEnroth_GameData ]; then echo "::error::no game data cache - run build_data_cache.yml first"; exit 1; fi
+          # The data lives outside the workspace, so salt the test's action key
+          # with its content hash - swapped data invalidates cached results.
+          hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
+          # pwd -W is git-bash's windows-style D:/... form - bash eats the
+          # backslashes out of ${{github.workspace}}. Errors out elsewhere,
+          # where plain pwd is already the right form.
+          dataroot="$(pwd -W 2>/dev/null || pwd)/OpenEnroth_GameData"
+          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} --test_output=errors \
+            --test_env=OPENENROTH_MM7_PATH=$dataroot/mm7 \
+            --test_env=OPENENROTH_MM7_HASH=$hash \
+            //test/Bin/GameTest:OpenEnroth_GameTest 2>&1 | tee bazel-gametest-dbg.log
+
+      - name: '[non-android] Run game tests (opt)'
+        if: env.MATRIX_PLATFORM != 'android'
+        run: |
+          if [ ! -d OpenEnroth_GameData ]; then echo "::error::no game data cache - run build_data_cache.yml first"; exit 1; fi
+          hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
+          dataroot="$(pwd -W 2>/dev/null || pwd)/OpenEnroth_GameData"
+          bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} --test_output=errors \
+            --test_env=OPENENROTH_MM7_PATH=$dataroot/mm7 \
+            --test_env=OPENENROTH_MM7_HASH=$hash \
+            //test/Bin/GameTest:OpenEnroth_GameTest 2>&1 | tee bazel-gametest-opt.log
+
+      # Retrace replays every canonical trace, which the cmake matrix considers
+      # too slow for Debug builds (it retraces RelWithDebInfo only). Same here:
+      # retrace runs opt while dbg is skipped.
+      - name: '[non-android] Run retrace tests'
+        if: env.MATRIX_PLATFORM != 'android'
+        run: |
+          if [ ! -d OpenEnroth_GameData ]; then echo "::error::no game data cache - run build_data_cache.yml first"; exit 1; fi
+          hash=$(cd OpenEnroth_GameData && find . -type f | LC_ALL=C sort | xargs cat | cksum | cut -d' ' -f1)
+          dataroot="$(pwd -W 2>/dev/null || pwd)/OpenEnroth_GameData"
+          bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} --test_output=errors \
+            --test_env=OPENENROTH_MM7_PATH=$dataroot/mm7 \
+            --test_env=OPENENROTH_MM7_HASH=$hash \
+            //test/Bin/RetraceTest:OpenEnroth_RetraceTest 2>&1 | tee bazel-retrace.log
+
+      - name: '[linux_x86_64] Check style'
+        if: matrix.target == 'linux_x86_64'
+        run: |
+          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} //:check_style
+
+      # bazel test: passed results are cached (and shared via the remote cache),
+      # so unchanged tests cost nothing.
+      - name: '[non-android] Run unit tests (dbg)'
+        if: env.MATRIX_PLATFORM != 'android'
+        run: |
+          bazel test -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test-dbg.log
+
+      - name: '[non-android] Run unit tests (opt)'
+        if: env.MATRIX_PLATFORM != 'android'
+        run: |
+          bazel test -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} --test_output=errors //test/Bin/UnitTest:OpenEnroth_UnitTest 2>&1 | tee bazel-test-opt.log
+
+      # Release artifacts, mirroring the cmake matrix: per-config zips on the
+      # desktop legs, universal APKs on android_universal. The builds below are
+      # cache hits - they just repoint the bazel-bin symlink per config. Config
+      # names stay Debug/RelWithDebInfo in the artifact names so nightly
+      # downloads keep their established names.
+      - name: '[non-android] Prepare release files'
+        if: inputs.releaseTag != '' && env.MATRIX_PLATFORM != 'android'
+        run: |
+          set -euo pipefail
+          arch="${MATRIX_BAZEL_CONFIG#*_}"
+          for config in dbg opt; do
+            [ "$config" = "dbg" ] && zipconfig=Debug || zipconfig=RelWithDebInfo
+            rm -rf dist && mkdir dist
+            if [ "${{env.MATRIX_PLATFORM}}" = "darwin" ]; then
+              bazel build -c $config --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} //src/Bin/OpenEnroth:OpenEnroth_app
+              cp -R bazel-bin/src/Bin/OpenEnroth/OpenEnroth.app dist/
+            elif [ "${{env.MATRIX_PLATFORM}}" = "windows" ]; then
+              # generate_pdb_file declares the pdb as a tracked output even in opt,
+              # so it materializes under remote_download_minimal.
+              bazel build -c $config --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} --features=generate_pdb_file //src/Bin/OpenEnroth:OpenEnroth
+              cp bazel-bin/src/Bin/OpenEnroth/OpenEnroth.exe dist/
+              cp bazel-bin/src/Bin/OpenEnroth/OpenEnroth.pdb dist/
+            else
+              bazel build -c $config --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} ${{env.BAZEL_EXTRA_ARGS}} ${{env.BAZEL_DIST_ARGS}} //src/Bin/OpenEnroth:OpenEnroth
+              cp bazel-bin/src/Bin/OpenEnroth/OpenEnroth dist/
+            fi
+            mkdir -p release
+            (cd dist && sh ../.github/zipdir.sh "../release/${{runner.os}}_${{inputs.releaseTag}}_${zipconfig}_${arch}.zip")
+          done
+
+      - name: '[android_universal] Decode keystore'
+        if: inputs.releaseTag != '' && matrix.target == 'android_universal' && env.SECRETS_KEYSTORE != ''
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: android_keystore.jks
+          encodedString: '${{env.SECRETS_KEYSTORE}}'
+        env:
+          # Secrets cannot be referenced in if: blocks, so we have to work it around.
+          SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'
+
+      - name: '[android_universal] Prepare release APKs'
+        if: inputs.releaseTag != '' && matrix.target == 'android_universal'
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          bazel build -c dbg --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //android/openenroth:main
+          cp bazel-bin/android/openenroth/main.apk release/openenroth-debug.apk
+          bazel build -c opt --config=${{env.MATRIX_BAZEL_CONFIG}} ${{env.BAZEL_REMOTE_ARGS}} //android/openenroth:main
+          cp bazel-bin/android/openenroth/main.apk release/openenroth-release.apk
+          # Re-sign with the release key when the secrets exist; bazel signs
+          # with the debug key otherwise, same as gradle PR builds did.
+          ks='${{steps.decode_keystore.outputs.filePath}}'
+          if [ -n "$ks" ]; then
+            signer=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort | tail -1)
+            "$signer" sign --ks "$ks" --ks-key-alias '${{secrets.SIGNING_KEY_ALIAS}}' \
+              --ks-pass 'pass:${{secrets.SIGNING_STORE_PASSWORD}}' --key-pass 'pass:${{secrets.SIGNING_KEY_PASSWORD}}' \
+              release/openenroth-release.apk
+          fi
+
+      - name: 'Publish release'
+        if: inputs.releaseTag != '' && (env.MATRIX_PLATFORM != 'android' || matrix.target == 'android_universal')
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{inputs.releaseTag}}'
+          files: release/*
+
+      # BuildBuddy invocation URLs, for timing/cache analysis without log access.
+      - name: 'Annotate invocation URLs'
+        if: always()
+        run: |
+          grep -ho "https://app.buildbuddy.io/invocation/[a-f0-9-]*" bazel-*.log 2>/dev/null | sort -u | head -5 | while read u; do echo "::notice::${{matrix.target}} $u"; done || true
+
+      # Job logs need auth to read; annotations don't. Surface the tail on failure.
+      - name: 'Annotate failure log'
+        if: failure()
+        run: |
+          grep -hE "error:|ERROR:|CMake Error|Error [0-9]|FAILED|TIMEOUT|incomplete|size =|Actual:|Expected:" bazel-*.log 2>/dev/null | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done || true
+
+      - name: 'Save bazel caches'
+        # always(): a red test on master shouldn't discard the warmed cache.
+        # TODO(captainurist): restrict to master pushes once master runs this
+        # workflow; until then PR runs of this branch keep the snapshots fresh.
+        if: always() && (github.event_name == 'push' && github.ref == 'refs/heads/master' || github.head_ref == 'feature/bazel-migration')
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: bazel-${{matrix.target}}-${{github.run_id}}

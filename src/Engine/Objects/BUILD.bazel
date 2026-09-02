@@ -1,0 +1,120 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "engine_objects_enums",
+    hdrs = [
+        "ActorEnums.h",
+        "CharacterEnums.h",
+        "ChestEnums.h",
+        "DecorationEnums.h",
+        "ItemEnums.h",
+        "MonsterEnums.h",
+        "NPCEnumFunctions.h",
+        "NPCEnums.h",
+        "SpriteEnumFunctions.h",
+        "SpriteEnums.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Logger:library_logger",
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "engine_objects_base",
+    srcs = [
+        "CombinedSkillValue.cpp",
+    ],
+    hdrs = [
+        "CombinedSkillValue.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":engine_objects_enums",
+        "//src/Utility:utility",
+    ],
+)
+
+# These srcs need Engine.h or GUI/Media headers. They are compiled as part of
+# //src/Engine:engine_impl to avoid circular dependencies.
+exports_files(
+    [
+        "Actor.cpp",
+        "Character.cpp",
+        "Chest.cpp",
+        "Decoration.cpp",
+        "DecorationList.cpp",
+        "Item.cpp",
+        "ItemEnumFunctions.cpp",
+        "Monsters.cpp",
+        "NPC.cpp",
+        "ObjectList.cpp",
+        "SpriteObject.cpp",
+        "TalkAnimation.cpp",
+    ],
+    visibility = ["//src/Engine:__pkg__"],
+)
+
+cc_library(
+    name = "engine_objects",
+    srcs = [
+        "CharacterEnumFunctions.cpp",
+        "Inventory.cpp",
+        "MonsterEnumFunctions.cpp",
+    ],
+    hdrs = [
+        "Actor.h",
+        "ActorEnumFunctions.h",
+        "Character.h",
+        "CharacterConditions.h",
+        "CharacterEnumFunctions.h",
+        "Chest.h",
+        "Decoration.h",
+        "DecorationList.h",
+        "Inventory.h",
+        "Item.h",
+        "ItemEnchantment.h",
+        "ItemEnumFunctions.h",
+        "MonsterEnumFunctions.h",
+        "Monsters.h",
+        "NPC.h",
+        "ObjectList.h",
+        "SpriteObject.h",
+        "TalkAnimation.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":engine_objects_base",
+        ":engine_objects_enums",
+        "//src/Engine:engine_base",
+        "//src/Engine/Data:engine_data",
+        "//src/Engine/Evt:engine_evt_enums",
+        "//src/Engine/Spells:engine_spells",
+        "//src/Core/Time:core_time",
+        "//src/GUI:gui_enums",
+        "//src/Library/Binary:library_binary",
+        "//src/Library/Color:library_color",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Random:library_random",
+        "//src/Library/Serialization:library_serialization",
+        "//src/Utility:utility",
+        "@glm",
+    ],
+)
+
+cc_library(
+    name = "test_engine_objects",
+    testonly = True,
+    srcs = [
+        "Tests/Inventory_ut.cpp",
+        "Tests/MonsterEnumFunctions_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":engine_objects",
+        "//test/Testing/Game:testing_game",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)
