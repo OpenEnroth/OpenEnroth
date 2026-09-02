@@ -41,7 +41,7 @@ constexpr bool isMac = false;
 #   if defined(__aarch64__)
 constexpr int SIG_BUILTIN_TRAP = SIGTRAP; // brk raises a breakpoint trap.
 #   else
-constexpr int SIG_BUILTIN_TRAP = SIGILL; // ud2 and udf are both illegal instructions.
+constexpr int SIG_BUILTIN_TRAP = SIGILL; // x86's ud2 and arm32's udf are both illegal instructions.
 #   endif
 #endif
 
