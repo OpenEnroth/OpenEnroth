@@ -4,7 +4,8 @@
 
 /**
  * Replaces the text of the crash dialog. Until this is called the dialog says only that the game crashed, so
- * call it as soon as the crash log path is known.
+ * call it as soon as the crash log path is known. Call it on the main thread, before any other thread is
+ * spawned - the crash path reads what it writes, with nothing in between to synchronize them.
  *
  * @param text                          Dialog text, UTF-8.
  */
