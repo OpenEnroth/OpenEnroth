@@ -221,7 +221,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(bool fading, const Vec3f &terrnorm, 
        *tridotdist = -dot(triverts->vWorldPosition, terrnorm);
        float planedist = dot(terrnorm, bloodsplat_container->pBloodsplats_to_apply[whichsplat].pos) + *tridotdist;
 
-        if (planedist <= bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius) {
+        if (std::abs(planedist) <= bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius) {  // Splat sphere has to reach the tri plane.
             // blood splat hits this terrain tri
 
             // check if water or something else (maybe should be border tile or swampy?)
