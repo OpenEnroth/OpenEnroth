@@ -109,7 +109,7 @@ GAME_TEST(Issues, Issue2003) {
     auto queuedTape = actorTapes.custom(titanId, [] (const Actor &actor) { return static_cast<bool>(actor.attributes & ACTOR_STAND_IN_QUEUE); });
     auto stateTape = actorTapes.aiState(titanId);
     auto zTape = actorTapes.custom(titanId, [] (const Actor &actor) { return actor.pos.z; });
-    auto midairTape = tapes.custom([] { return countBackgroundActorsActingInMidair(); });
+    auto midairTape = tapes.custom([] { return countActorsActingInMidair(); });
 
     game.castSpell(1, SPELL_DARK_ARMAGEDDON);
     game.tick(300); // Lands at about 5s in, this is 7.5s.

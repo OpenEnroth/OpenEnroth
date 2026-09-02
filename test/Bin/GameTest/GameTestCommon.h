@@ -20,9 +20,9 @@ struct CharacterPreset {
 void prepareForBattleTest(const std::vector<CharacterPreset> &presets = {{CLASS_KNIGHT, RACE_GOBLIN}});
 
 /**
- * Armageddon throws every actor on the map into the air, and a background actor should then do nothing but fall in its
- * pain animation until it lands.
+ * Armageddon throws every actor on the map into the air, and an actor should then do nothing but fall in its pain
+ * animation until it lands.
  *
- * @return                              Number of background actors that are up in the air and not stunned.
+ * @return                              Number of actors that are up in the air and not stunned.
  */
-int countBackgroundActorsActingInMidair();
+int countActorsActingInMidair();

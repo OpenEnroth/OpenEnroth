@@ -2615,6 +2615,10 @@ void Actor::UpdateActorAI() {
         pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - gameTimer->dt()); // was animTimer
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
 
+        // A stunned actor still in the air keeps falling and gets up once it lands.
+        if (pActor->aiState == Stunned && pActor->airborne)
+            continue;
+
         if (!pActor->ActorNearby())
             pActor->attributes |= ACTOR_NEARBY;
 

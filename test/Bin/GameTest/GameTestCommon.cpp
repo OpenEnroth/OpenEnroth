@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/LocationFunctions.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
 
@@ -55,8 +57,14 @@ void prepareForBattleTest(const std::vector<CharacterPreset> &presets) {
     }
 }
 
-int countBackgroundActorsActingInMidair() {
+int countActorsActingInMidair() {
+    assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR); // Armageddon is an outdoor spell, so only the outdoor floor is looked up.
     return static_cast<int>(std::ranges::count_if(pActors, [] (const Actor &actor) {
-        return !(actor.attributes & ACTOR_FULL_AI_STATE) && actor.airborne && actor.CanAct() && actor.aiState != Stunned;
+        if (!actor.airborne || !actor.CanAct() || actor.aiState == Stunned)
+            return false;
+        bool onWater = false;
+        int faceId = -1;
+        float floorZ = ODM_GetFloorLevel(actor.pos, &onWater, &faceId);
+        return actor.pos.z > floorZ + 32; // Walking down a slope leaves an actor a unit or two above the terrain, being thrown up leaves it hundreds.
     }));
 }
