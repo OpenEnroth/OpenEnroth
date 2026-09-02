@@ -33,6 +33,7 @@ struct Vec2 {
         return std::sqrt(lengthSqr());
     }
 
+    // TODO(captainurist): drop octagonalLength, gameplay should not depend on a distance approximation
     /**
      * Octagonal approximation of the Euclidean length, as computed by the original engine.
      * Gameplay depends on the approximation error, so a true length is not a drop-in replacement.
@@ -155,6 +156,7 @@ struct Vec3 {
         return std::max({std::abs(x), std::abs(y), std::abs(z)});
     }
 
+    // TODO(captainurist): drop octagonalLength, gameplay should not depend on a distance approximation
     /**
      * Octagonal approximation of the Euclidean length, as computed by the original engine.
      * Gameplay depends on the approximation error, so a true length is not a drop-in replacement.
