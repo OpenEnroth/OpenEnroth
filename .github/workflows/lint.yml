@@ -40,7 +40,7 @@ jobs:
           mold-version: 2.36.0
           make-default: false
 
-      # The configure step resolves OpenGL, and that needs the GLU headers.
+      # The configure step resolves OpenGL, so the GL development files have to be there.
       - name: Install dependencies
         uses: Wandalen/wretry.action@master
         with:
@@ -61,7 +61,7 @@ jobs:
         run: |
           pip install --break-system-packages "clang-tidy==$CLANG_TIDY_VERSION"
 
-      # clang-tidy needs actual headers and a compile commands database, so this is a full configure.
+      # clang-tidy needs the dependency headers and a compile commands database, so this is a full configure.
       # All three checks run off it.
       - name: Configure
         id: configure

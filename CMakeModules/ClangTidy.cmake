@@ -13,7 +13,7 @@ function(init_check_tidy)
     find_program(OE_RUN_CLANG_TIDY_COMMAND NAMES run-clang-tidy run-clang-tidy.py)
 
     if(NOT OE_CLANG_TIDY_COMMAND OR NOT OE_RUN_CLANG_TIDY_COMMAND)
-        message(STATUS "clang-tidy not found, check_tidy target won't be available")
+        message(STATUS "clang-tidy or run-clang-tidy not found, check_tidy target won't be available")
         return()
     endif()
 

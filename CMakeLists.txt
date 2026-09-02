@@ -188,7 +188,7 @@ if(OE_BUILD_PLATFORM STREQUAL "android")
     add_link_options("-Wl,-Bsymbolic")
 endif()
 
-# The cpplint and lua checks attach to this, so it has to exist before their init functions run.
+# init_check_cpp_style attaches to this right below, so it has to exist first.
 add_custom_target(check_style)
 
 init_check_cpp_style()
