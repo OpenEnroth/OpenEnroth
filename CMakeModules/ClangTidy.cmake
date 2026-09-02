@@ -41,7 +41,4 @@ function(init_check_tidy)
         COMMENT "Running clang-tidy"
         USES_TERMINAL # run-clang-tidy parallelizes internally, and its progress output is worth seeing live.
         VERBATIM)
-
-    # Scripting sources include the luajit.h that's generated when luajit is built.
-    add_dependencies(check_tidy libluajit)
 endfunction()
