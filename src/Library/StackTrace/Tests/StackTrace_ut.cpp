@@ -230,9 +230,10 @@ UNIT_TEST(StackTrace, DivisionByZeroIsTraced) {
 
 #ifndef _WINDOWS
 UNIT_TEST(StackTrace, BuiltinTrapIsTraced) {
-    // The signal is checked because the trace can't stand in for it. Dying of the signal it took is the
-    // handler's own contract, and a handler that re-enters itself through its own re-raise dies too, having
-    // already printed everything the matcher below looks for.
+    // A death with a matching trace doesn't prove the handler worked here. The trace goes out first, so a
+    // handler that goes wrong afterwards still leaves it behind and still ends up dead, just killed by
+    // something other than the trap that started it. Checking the signal is what tells those two apart, and
+    // dying of the signal it took is what the handler is meant to do.
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
