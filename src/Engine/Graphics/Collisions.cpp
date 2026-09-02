@@ -694,8 +694,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
 
         if (type == OBJECT_Decoration) {
-            // TODO(captainurist): use length() here and retrace
-            int speed = std::sqrt(static_cast<int>(actor.velocity.xy().lengthSqr()));
+            int speed = actor.velocity.xy().length();
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;
@@ -835,8 +834,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Decoration) {
-            // TODO(captainurist): use length() here and retrace
-            int speed = std::sqrt(static_cast<int>(actor.velocity.xy().lengthSqr()));
+            int speed = actor.velocity.xy().length();
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y);
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;
