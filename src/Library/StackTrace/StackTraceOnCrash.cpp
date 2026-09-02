@@ -299,10 +299,11 @@ static void fillUnwindContext(const ucontext_t &crashContext, unw_context_t *con
  * its return address first though, so the pc is set back into that call and the walk carries on from there.
  *
  * @param crashContext                  Register state the signal was delivered with.
+ * @param signal                        Signal that was delivered, `si_signo`.
  * @param faultAddress                  Address the signal was about, `si_addr`.
  * @return                              Stack trace starting at the faulting frame, one frame per line.
  */
-static std::string traceFromContext(const ucontext_t &crashContext, const void *faultAddress) {
+static std::string traceFromContext(const ucontext_t &crashContext, int signal, const void *faultAddress) {
     unw_context_t context;
     fillUnwindContext(crashContext, &context);
 
@@ -311,15 +312,21 @@ static std::string traceFromContext(const ucontext_t &crashContext, const void *
     uint64_t *regs = reinterpret_cast<uint64_t *>(&context);
 #if defined(__aarch64__)
     uint64_t &pc = regs[32];
-    if (pc == reinterpret_cast<uint64_t>(faultAddress))
-        pc = regs[30] - 1; // Minus one, so the pc points into the call, not one past it.
 #else
     uint64_t &pc = regs[16];
-    if (pc == reinterpret_cast<uint64_t>(faultAddress)) {
+#endif
+
+    // A jump to a bad address is the one case where the pc is unwalkable and the pushed return address is the
+    // frame to restart from. It reads as pc equal to si_addr, but so does SIGFPE, which sits at a perfectly
+    // walkable instruction - hence the signal gate, only a bad access can be a bad jump.
+    if ((signal == SIGSEGV || signal == SIGBUS) && pc == reinterpret_cast<uint64_t>(faultAddress)) {
+#if defined(__aarch64__)
+        pc = regs[30] - 1; // Minus one, so the pc points into the call, not one past it.
+#else
         pc = *reinterpret_cast<const uint64_t *>(regs[7]) - 1; // Return address is at [rsp].
         regs[7] += sizeof(uint64_t); // And it's been popped.
-    }
 #endif
+    }
 
     unw_cursor_t cursor;
     unw_init_local(&cursor, &context);
@@ -482,7 +489,7 @@ static void onSignal(int signal, siginfo_t *info, void *context) {
         std::snprintf(reason, sizeof(reason), "%s at %p", strsignal(info->si_signo), info->si_addr);
         printCrashHeader(reason);
 #ifdef __APPLE__
-        printTrace(traceFromContext(*static_cast<ucontext_t *>(context), info->si_addr));
+        printTrace(traceFromContext(*static_cast<ucontext_t *>(context), info->si_signo, info->si_addr));
 #else
         printTrace(traceFromContext(*static_cast<ucontext_t *>(context)));
 #endif
