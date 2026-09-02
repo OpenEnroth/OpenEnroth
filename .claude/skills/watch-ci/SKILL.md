@@ -52,13 +52,19 @@ for every outcome except TIMED_OUT, which belongs to the polling loop rather tha
 Run it with `run_in_background`. Exit code 0 means all green, 1 means failing,
 and 2 means there is no verdict to report. The last line is always one of `RESULT: ALL GREEN`,
 `RESULT: FAILING -> <names>`, `RESULT: CANCELLED -> <names>`, `RESULT: NOT_FOUND -> <names>`,
-`RESULT: TRUNCATED`, `RESULT: NO_GH`, or `RESULT: TIMED_OUT`.
+`RESULT: TRUNCATED`, `RESULT: NO_ACCESS`, `RESULT: NO_GH`, `RESULT: CRASHED`, or `RESULT: TIMED_OUT`.
 
 A FAILING line lists every failed job with its URL on the lines above it, and caps the names it repeats when a
 whole matrix leg goes red. Without names it also says how many checks were still running - those got no
 verdict. NOT_FOUND means what you asked for does not exist, either a mistyped sha or repo, or a check name
-that never ran once the rest of the run had finished. TRUNCATED means more checks exist than one page returns,
-so no green verdict is possible.
+that never ran once the rest of the run had finished. TRUNCATED means the pages read did not add up to the
+total the API reported, so some check runs were never seen and no green verdict is possible. NO_ACCESS, NO_GH
+and CRASHED are the script's own failures rather than CI's, and none of them is a pass or a fail.
+
+A commit keeps every check run that ever ran on it, so a re-run leaves the run it replaced sitting alongside
+it, and the two often disagree. Only the newest run of each name counts. Ignoring that produced both a green
+verdict on a check whose latest run had failed and a red one from a run superseded months earlier, on real
+commits in this repository.
 
 ## When it reports FAILING
 

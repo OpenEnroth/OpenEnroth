@@ -8,8 +8,9 @@ import verdict
 URL = "https://github.com/o/r/actions/runs/1/job/2"
 
 
-def check(name, status, conclusion):
-    return {"name": name, "status": status, "conclusion": conclusion, "html_url": URL}
+def check(name, status, conclusion, started="2026-01-01T00:00:00Z", ident=1):
+    return {"name": name, "status": status, "conclusion": conclusion, "html_url": URL,
+            "started_at": started, "id": ident}
 
 
 def green(count):
@@ -28,11 +29,14 @@ def decide(runs=(), names=(), min_checks=15, total_count=None, payload=None):
     """
     if payload is None:
         total = len(runs) if total_count is None else total_count
-        payload = {"total_count": total, "check_runs": list(runs)}
+        payload = {"check_runs": list(runs)}
+        if total is not MISSING:
+            payload["total_count"] = total
     return verdict.decide(None if payload is NOT_JSON else payload, min_checks, list(names))
 
 
 NOT_JSON = object()  # What fetch() hands over when the response was not JSON at all.
+MISSING = object()   # Stands for a total_count that the response did not carry.
 
 CASES = []
 
@@ -54,6 +58,9 @@ case("truncated response", 2, "RESULT: TRUNCATED", runs=green(22), total_count=4
 case("bad sha is not a wait", 2, "RESULT: NOT_FOUND -> No commit found for SHA: dead",
      payload={"message": "No commit found for SHA: dead", "status": "422"})
 case("missing repo is not a wait", 2, "RESULT: NOT_FOUND", payload={"message": "Not Found", "status": "404"})
+# Bad or absent credentials never come right on their own, so this one used to poll out the horizon too.
+case("no credentials is not a wait", 2, "RESULT: NO_ACCESS",
+     payload={"message": "gh auth login", "status": "401"})
 # A server error is transient, so that one does keep polling.
 case("server error keeps waiting", verdict.WAIT, "WAIT api error", payload={"message": "Server Error"})
 
@@ -82,6 +89,33 @@ case("many failures stay readable", 1, "RESULT: FAILING -> f0, f1, f2 and 9 more
      runs=[check(f"f{i}", "completed", "failure") for i in range(12)] + green(10))
 
 # Naming a check means the rest of the matrix does not get a say, which is the whole point of naming one.
+# A re-run leaves both runs on the commit, and the superseded one used to win and report a stale verdict.
+# Proven on OpenEnroth c91e7768, where the newest build_data_cache failed while an older one had passed.
+NEW = "2026-02-02T00:00:00Z"
+OLD = "2026-01-01T00:00:00Z"
+case("a re-run that failed beats the pass it replaced", 1, "RESULT: FAILING -> flaky",
+     runs=green(21) + [check("flaky", "completed", "success", OLD, 1),
+                       check("flaky", "completed", "failure", NEW, 2)])
+# The mirror image, proven on OpenEnroth 297fe4ba, where a 2026-05-06 failure was reported for months.
+case("a superseded failure does not fail the commit", 0, "RESULT: ALL GREEN",
+     runs=green(21) + [check("flaky", "completed", "failure", OLD, 1),
+                       check("flaky", "completed", "success", NEW, 2)])
+case("a re-run still going is not a verdict", verdict.WAIT, "WAIT",
+     runs=green(21) + [check("flaky", "completed", "success", OLD, 1),
+                       check("flaky", "in_progress", None, NEW, 2)])
+# Only three conclusions count as green, so a new one GitHub invents cannot slip through as a pass.
+case("an unknown conclusion is not green", 1, "RESULT: FAILING -> weird",
+     runs=green(21) + [check("weird", "completed", "exploded")])
+case("a completed check with no conclusion is not green", 1, "RESULT: FAILING -> null",
+     runs=green(21) + [check("null", "completed", None)])
+# Without total_count there is no way to know a page was the whole of it.
+case("a response with no total_count is truncated", 2, "RESULT: TRUNCATED", runs=green(22), total_count=MISSING)
+# min_checks gates green, and gating never-ran on it left a typo waiting out the horizon on a small matrix.
+case("a typo on a short run still reports", 2, "RESULT: NOT_FOUND -> typo", names=["typo"], runs=green(3))
+# A named check found on page one may have a newer run on a page that was never read.
+case("named checks are not judged off a partial response", 2, "RESULT: TRUNCATED", names=["job0"],
+     runs=green(22), total_count=40)
+
 case("named green while the rest run", 0, "RESULT: ALL GREEN", names=["a"],
      runs=[check("a", "completed", "success")] + [check(f"job{i}", "in_progress", None) for i in range(21)])
 case("named still running", verdict.WAIT, "WAIT", names=["a"], runs=[check("a", "in_progress", None)])

@@ -13,6 +13,9 @@ sys.dont_write_bytecode = True  # Set before the import, so the skill directory 
 import verdict
 
 POLL_SECONDS = 60
+PER_PAGE = 100
+MAX_PAGES = 20  # A commit with more than 2000 check runs is not something this tool needs to judge.
+GH_TIMEOUT = 120
 
 
 def hexsha(text):
@@ -26,24 +29,49 @@ def hexsha(text):
     return text
 
 
-def fetch(repo, sha):
-    """Reads the check runs GitHub currently has for one commit.
+def page(repo, sha, number):
+    """Reads one page of check runs.
 
     @param repo                         Repository in owner/name form.
     @param sha                          Commit to ask about.
+    @param number                       Page to read, counting from one.
     @return                             Parsed response, or None when the answer was not JSON at all.
     """
-    url = f"repos/{repo}/commits/{sha}/check-runs?per_page=100"
+    url = f"repos/{repo}/commits/{sha}/check-runs?per_page={PER_PAGE}&page={number}"
     try:
-        done = subprocess.run(["gh", "api", url], capture_output=True, text=True)
+        done = subprocess.run(["gh", "api", url], capture_output=True, text=True, timeout=GH_TIMEOUT)
     except FileNotFoundError:
         # Polling cannot install gh, and exit 1 would read as a CI failure, so this is the no-verdict code.
         print("RESULT: NO_GH - the check runs can only be read through gh - not a pass/fail verdict")
         sys.exit(2)
+    except subprocess.TimeoutExpired:
+        return None
     try:
         return json.loads(done.stdout)  # A 4xx body arrives on stdout too, and the verdict reads it.
     except ValueError:
-        return None
+        # gh writes its own diagnostics to stderr, and an unauthenticated one repeats forever.
+        return {"message": done.stderr.strip().splitlines()[0] if done.stderr.strip() else "no output from gh",
+                "status": "401" if "auth" in done.stderr.lower() else str(done.returncode)}
+
+
+def fetch(repo, sha):
+    """Reads every check run GitHub has for one commit, following pagination to the end.
+
+    @param repo                         Repository in owner/name form.
+    @param sha                          Commit to ask about.
+    @return                             Every page's check runs in one response, or the error body that came instead.
+    """
+    runs = []
+    total = 0
+    for number in range(1, MAX_PAGES + 1):
+        payload = page(repo, sha, number)
+        if not isinstance(payload, dict) or "check_runs" not in payload:
+            return payload
+        runs += payload["check_runs"]
+        total = payload.get("total_count")
+        if not payload["check_runs"] or total is None or len(runs) >= total:
+            break
+    return {"total_count": total, "check_runs": runs}
 
 
 def main():
@@ -78,4 +106,8 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Exception as e:
+        print(f"RESULT: CRASHED - {type(e).__name__}: {e} - not a pass/fail verdict")
+        sys.exit(2)
