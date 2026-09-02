@@ -45,13 +45,24 @@ constexpr int SIG_BUILTIN_TRAP = SIGILL; // x86's ud2 and arm32's udf are both i
 #   endif
 #endif
 
-// Darwin gets the pure call hook from the system libc++abi and aborts inside it. We link libstdc++ statically
-// elsewhere, and the vtable's weak reference to that hook pulls nothing in, so the null slot faults instead.
-#ifdef __APPLE__
-constexpr int SIG_PURE_CALL = SIGABRT;
-#else
-constexpr int SIG_PURE_CALL = SIGSEGV;
+#ifndef _WINDOWS
+extern "C" void __cxa_pure_virtual() __attribute__((weak)); // Weak, so asking about it below links nothing in.
 #endif
+
+/**
+ * A pure virtual call lands on a hook that aborts, and the vtable's reference to that hook is weak. Linking
+ * the standard library statically then leaves the hook out and the slot null, and the call faults instead of
+ * aborting. Asking whether the hook made it into the binary is what keeps this right either way.
+ *
+ * @return                              Signal a pure virtual call dies of.
+ */
+static int sigPureCall() {
+#ifdef _WINDOWS
+    return SIGABRT; // Windows dies through the CRT hook rather than a signal, and killedBy ignores this.
+#else
+    return &__cxa_pure_virtual != nullptr ? SIGABRT : SIGSEGV;
+#endif
+}
 
 /**
  * Predicate for `EXPECT_EXIT` that pins how the process died, rather than just that it did. Gtest has no
@@ -346,7 +357,7 @@ UNIT_TEST(StackTrace, PureVirtualCallIsTraced) {
 
         StackTraceOnCrash handler;
         stackTracePureCallFunction();
-    }, killedBy(SIG_PURE_CALL), testing::AllOf(testing::HasSubstr(isWindows ? "pure virtual function call" : "callPureIndirectly"),
+    }, killedBy(sigPureCall()), testing::AllOf(testing::HasSubstr(isWindows ? "pure virtual function call" : "callPureIndirectly"),
                                                testing::HasSubstr("stackTracePureCallFunction")));
 }
 
