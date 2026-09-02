@@ -192,7 +192,7 @@ Script files undergo a syntax checking process during the build generation. If y
 - Generate the project.
 - The `check_style` target is now including scripting in its tests.
 
-Little note: If `LuaLS` is not found, everything still build but no checks will be run against the Lua scripts.
+Little note: If `LuaLS` is not found, everything still build but no checks will be run against the Lua scripts. This is worth checking before you push, as CI does run them. The devcontainer ships `LuaLS` already, so there's nothing to install there.
 
 #### Tools
 To go through a better experience while working with scripts it is strongly recommended to use [VS Code](https://code.visualstudio.com/) and [install the LuaLS extension](https://luals.github.io/#vscode-install).
