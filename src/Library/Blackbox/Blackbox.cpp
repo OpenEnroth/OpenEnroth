@@ -37,16 +37,7 @@ static void blackboxCrashCallback(std::string_view text, bool final) {
 }
 
 static std::string localTimestamp() {
-    std::time_t now = std::time(nullptr);
-    std::tm local = {};
-#ifdef _WINDOWS
-    localtime_s(&local, &now);
-#else
-    localtime_r(&now, &local);
-#endif
-    char buffer[32];
-    std::strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S", &local);
-    return buffer;
+    return fmt::format("{:%Y-%m-%dT%H:%M:%S}", fmt::localtime(std::time(nullptr)));
 }
 
 Blackbox::Blackbox(const NativePath &path) {
@@ -83,7 +74,13 @@ Blackbox::Blackbox(const NativePath &path) {
     // Registering comes before learning what was registered, so for a few instructions a crash would chain to
     // the default printer rather than to the callback inherited here. Stderr and the file still get written,
     // at worst a console wait is skipped.
-    chainedCallback = initStackTraceOnCrash(&blackboxCrashCallback);
+    CrashCallback previous = initStackTraceOnCrash(&blackboxCrashCallback);
+    if (previous != &blackboxCrashCallback)
+        chainedCallback = previous; // A second instance would otherwise chain the callback to itself and recurse until the signal stack is gone.
+}
+
+bool Blackbox::isLogging() const {
+    return crashLogFd >= 0;
 }
 
 Blackbox::~Blackbox() {

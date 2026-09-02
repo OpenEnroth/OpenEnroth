@@ -33,4 +33,11 @@ class Blackbox {
      * a trace after an exit line is exactly how such a crash should read.
      */
     ~Blackbox();
+
+    /**
+     * @return                          Whether the crash log is open. False means the file couldn't be opened
+     *                                  and nothing is being logged, which is not an error, but is worth knowing
+     *                                  before telling a user where to find their crash log.
+     */
+    bool isLogging() const;
 };
