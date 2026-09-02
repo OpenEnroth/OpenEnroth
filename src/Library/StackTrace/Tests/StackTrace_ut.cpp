@@ -37,6 +37,14 @@ constexpr bool isMac = true;
 constexpr bool isMac = false;
 #endif
 
+#ifndef _WINDOWS
+#   if defined(__aarch64__)
+constexpr int SIG_BUILTIN_TRAP = SIGTRAP; // brk raises a breakpoint trap.
+#   else
+constexpr int SIG_BUILTIN_TRAP = SIGILL; // ud2 and udf are both illegal instructions.
+#   endif
+#endif
+
 static void sendAssertReportsToStderr() {
 #ifdef _WINDOWS
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE); // The debug CRT would otherwise put up a dialog and wait.
@@ -141,12 +149,6 @@ MM_NOINLINE int stackTraceDivisionFunction() {
 #endif
 
 #ifndef _WINDOWS
-#if defined(__aarch64__)
-constexpr int trapSignal = SIGTRAP; // brk raises a breakpoint trap.
-#else
-constexpr int trapSignal = SIGILL; // ud2 and udf are both illegal instructions.
-#endif
-
 MM_NOINLINE void stackTraceTrapFunction() {
     __builtin_trap(); // ud2 on x86, brk on arm.
 }
@@ -229,20 +231,15 @@ UNIT_TEST(StackTrace, DivisionByZeroIsTraced) {
 
 #ifndef _WINDOWS
 UNIT_TEST(StackTrace, BuiltinTrapIsTraced) {
-    // A compiler trap sits at its own instruction, so si_addr equals the pc, and the darwin handler used to
-    // take that as a jump to a bad address and restart the walk from a fake return address - one garbage
-    // frame was the whole trace. It's SIGILL from ud2 on x86 and SIGTRAP from brk on arm.
-    //
-    // These are also the two signals darwin doesn't reset to the default handler on delivery, and the handler
-    // used to re-enter itself through its own re-raise until it ran off the alternate signal stack - a hang
-    // on some darwin versions, a death by the wrong signal on others. Checking the signal is what catches
-    // that everywhere rather than only where the runaway recursion happens to wedge.
+    // The signal is checked because the trace can't stand in for it. Dying of the signal it took is the
+    // handler's own contract, and a handler that re-enters itself through its own re-raise dies too, having
+    // already printed everything the matcher below looks for.
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceTrapFunction();
-    }, testing::KilledBySignal(trapSignal),
+    }, testing::KilledBySignal(SIG_BUILTIN_TRAP),
        testing::AllOf(HasFrame(0, "stackTraceTrapFunction"), testing::HasSubstr("main")));
 }
 #endif
