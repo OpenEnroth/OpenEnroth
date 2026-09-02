@@ -45,7 +45,8 @@ constexpr int SIG_BUILTIN_TRAP = SIGILL; // x86's ud2 and arm32's udf are both i
 #   endif
 #endif
 
-// Libc++abi hooks a pure call and aborts, where libstdc++ leaves the vtable slot null and the call faults.
+// Darwin gets the pure call hook from the system libc++abi and aborts inside it. We link libstdc++ statically
+// elsewhere, and the vtable's weak reference to that hook pulls nothing in, so the null slot faults instead.
 #ifdef __APPLE__
 constexpr int SIG_PURE_CALL = SIGABRT;
 #else
@@ -66,15 +67,13 @@ constexpr int SIG_STACK_OVERFLOW = SIGSEGV;
  * @param signal                        Signal the process is expected to die of, ignored on windows.
  * @return                              Predicate over the exit status.
  */
+static auto killedBy([[maybe_unused]] int signal) {
 #ifdef _WINDOWS
-static auto killedBy(int) {
     return [] (int status) { return status != 0; };
-}
 #else
-static auto killedBy(int signal) {
     return testing::KilledBySignal(signal);
-}
 #endif
+}
 
 static void sendAssertReportsToStderr() {
 #ifdef _WINDOWS
@@ -261,10 +260,6 @@ UNIT_TEST(StackTrace, DivisionByZeroIsTraced) {
 
 #ifndef _WINDOWS
 UNIT_TEST(StackTrace, BuiltinTrapIsTraced) {
-    // A death with a matching trace doesn't prove the handler worked here. The trace goes out first, so a
-    // handler that goes wrong afterwards still leaves it behind and still ends up dead, just killed by
-    // something other than the trap that started it. Checking the signal is what tells those two apart, and
-    // dying of the signal it took is what the handler is meant to do.
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
