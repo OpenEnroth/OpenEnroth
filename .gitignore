@@ -55,4 +55,3 @@ local.properties
 # .claude
 .claude/settings.local.json
 .claude/plans
-__pycache__/

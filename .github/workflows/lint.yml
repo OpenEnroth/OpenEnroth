@@ -21,13 +21,15 @@ concurrency:
 
 env:
   LLS_TAG: '3.19.1'
+  CLANG_TIDY_VERSION: '22.1.8'
 
 jobs:
   lint:
     runs-on: ubuntu-26.04
+    timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5.0.0
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
@@ -39,9 +41,7 @@ jobs:
           mold-version: 2.36.0
           make-default: false
 
-      - name: Install ninja-build
-        uses: seanmiddleditch/gha-setup-ninja@v4
-
+      # The configure step resolves OpenGL, and that needs the GLU headers.
       - name: Install dependencies
         uses: Wandalen/wretry.action@master
         with:
@@ -60,22 +60,21 @@ jobs:
 
       - name: Install clang-tidy
         run: |
-          pip install --break-system-packages clang-tidy==22.1.8
+          pip install --break-system-packages "clang-tidy==$CLANG_TIDY_VERSION"
 
-      # One real configure serves all three checks - clang-tidy needs actual headers
-      # and a compile commands database, so dummy dependencies are gone for good.
+      # clang-tidy needs actual headers and a compile commands database, so this is a full configure.
+      # All three checks run off it.
       - name: Configure
         id: configure
         run: |
           cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DOE_LLS_COMMAND="$HOME/lua-language-server/bin/lua-language-server"
 
-      # The remaining checks still run when an earlier one fails, so one push
-      # reports every verdict.
-      - name: Check style
+      - name: Check cpp style
         working-directory: build
         run: |
           ninja check_cpp_style
 
+      # Gated on the configure rather than on the previous step, so that one push reports every verdict.
       - name: Check lua style
         if: '!cancelled() && steps.configure.outcome == ''success'''
         working-directory: build

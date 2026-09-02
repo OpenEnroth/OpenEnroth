@@ -1,4 +1,3 @@
-# The codebase must stay clean under every check enabled here - CI treats any finding as an error.
 # The excluded bugprone checks are the ones with existing findings, clean them up to enable them.
 Checks: >
   -*,
@@ -33,3 +32,4 @@ Checks: >
   -bugprone-use-after-move
 WarningsAsErrors: '*'
 HeaderFilterRegex: '/(src|test)/'
+ExcludeHeaderFilterRegex: '/thirdparty/' # Submodules have src and test dirs of their own.
