@@ -72,9 +72,15 @@ def decide(payload, min_checks, names):
     @param names                        Check names asked for, empty to judge the whole run.
     @return                             Exit code and the lines to print, the last of which is the RESULT or WAIT line.
     """
-    runs = payload.get("check_runs") if isinstance(payload, dict) else None
-    if runs is None:
+    if not isinstance(payload, dict):
         return WAIT, ["WAIT api error"]
+    runs = payload.get("check_runs")
+    if runs is None:
+        # An error body arrives on stdout, and a bad sha or repo never turns into check runs however long we wait.
+        message = payload.get("message", "")
+        if str(payload.get("status", "")) in ("404", "422"):
+            return 2, [f"RESULT: NOT_FOUND -> {message} - not a pass/fail verdict"]
+        return WAIT, ["WAIT api error" + (f": {message}" if message else "")]
 
     # One page is fetched, so a larger total means checks are missing here and no count below can be trusted.
     truncated = payload.get("total_count", len(runs)) > len(runs)

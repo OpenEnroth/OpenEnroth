@@ -52,11 +52,11 @@ and 2 means there is no verdict to report. The last line is always one of `RESUL
 `RESULT: FAILING -> <names>`, `RESULT: CANCELLED -> <names>`, `RESULT: NOT_FOUND -> <names>`,
 `RESULT: TRUNCATED`, or `RESULT: TIMED_OUT`.
 
-A FAILING line lists every failed job with its URL on the lines above it, and caps the names it repeats when
-a whole matrix leg goes red. Without names it also says how many checks were still running - those got no
-verdict. NOT_FOUND means a name you asked for never ran once the rest of the run had finished, which is
-almost always a typo. TRUNCATED means more checks exist than one page returns, so no green verdict is
-possible.
+A FAILING line lists every failed job with its URL on the lines above it, and caps the names it repeats when a
+whole matrix leg goes red. Without names it also says how many checks were still running - those got no
+verdict. NOT_FOUND means what you asked for does not exist, either a mistyped sha or repo, or a check name
+that never ran once the rest of the run had finished. TRUNCATED means more checks exist than one page returns,
+so no green verdict is possible.
 
 ## When it reports FAILING
 

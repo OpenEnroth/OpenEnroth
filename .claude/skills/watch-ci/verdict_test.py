@@ -21,17 +21,20 @@ def green(count, first=0):
     return [check(f"job{i}", "completed", "success") for i in range(first, first + count)]
 
 
-def decide(runs=(), names=(), min_checks=15, total_count=None):
+def decide(runs=(), names=(), min_checks=15, total_count=None, payload=None):
     """Calls the verdict on a response assembled from the given check runs.
 
     @param runs                         Check runs to put in the response.
     @param names                        Check names to judge, empty for the whole run.
     @param min_checks                   Minimum check runs before a green verdict.
     @param total_count                  Reported total, defaults to the number of runs.
+    @param payload                      Whole response, overriding the fields above.
     @return                             Exit code and the lines printed.
     """
-    total = len(runs) if total_count is None else total_count
-    return verdict.decide({"total_count": total, "check_runs": list(runs)}, min_checks, list(names))
+    if payload is None:
+        total = len(runs) if total_count is None else total_count
+        payload = {"total_count": total, "check_runs": list(runs)}
+    return verdict.decide(payload, min_checks, list(names))
 
 
 CASES = []
@@ -49,6 +52,13 @@ case("all queued", verdict.WAIT, "WAIT", runs=[check(f"job{i}", "queued", None) 
 case("green below min_checks", verdict.WAIT, "WAIT", runs=green(9))
 # One page is fetched, so a bigger total means the missing checks could be anything.
 case("truncated response", 2, "RESULT: TRUNCATED", runs=green(22), total_count=40)
+
+# A mistyped sha returns a 422 error body on stdout, and waiting out the horizon would never resolve it.
+case("bad sha is not a wait", 2, "RESULT: NOT_FOUND -> No commit found for SHA: dead",
+     payload={"message": "No commit found for SHA: dead", "status": "422"})
+case("missing repo is not a wait", 2, "RESULT: NOT_FOUND", payload={"message": "Not Found", "status": "404"})
+# A server error is transient, so that one does keep polling.
+case("server error keeps waiting", verdict.WAIT, "WAIT api error", payload={"message": "Server Error"})
 
 case("full green matrix", 0, "RESULT: ALL GREEN", runs=green(22))
 case("skipped and neutral are green", 0, "RESULT: ALL GREEN",
