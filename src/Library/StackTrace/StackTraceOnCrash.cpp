@@ -173,7 +173,10 @@ static std::string traceFromContext(const CONTEXT &crashContext, const void *exc
 
 /**
  * Structured exceptions are what access violations, illegal instructions and division by zero arrive as.
- * Signals cover none of those on windows.
+ * Signals cover none of those on windows. A fast fail arrives nowhere - the kernel takes it straight off the
+ * `int 0x29` without dispatching it to user mode, which is what makes it fast, so the checks that raise it
+ * die with no trace. That's the stack cookie and the control flow guard, both of which mean memory this
+ * walk would have to read is already corrupt.
  *
  * @param exceptionInfo                 Exception record and register state of the crash.
  * @return                              Always `EXCEPTION_CONTINUE_SEARCH`, so that the crash proceeds.
