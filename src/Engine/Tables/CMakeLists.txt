@@ -12,6 +12,7 @@ set(ENGINE_TABLES_SOURCES
         MerchantTable.cpp
         MessageScrollTable.cpp
         NPCTable.cpp
+        OverlayTable.cpp
         PortraitFrameTable.cpp
         QuestTable.cpp
         TextureFrameTable.cpp
@@ -30,6 +31,7 @@ set(ENGINE_TABLES_HEADERS
         MerchantTable.h
         MessageScrollTable.h
         NPCTable.h
+        OverlayTable.h
         PortraitFrameTable.h
         QuestTable.h
         TextureFrameTable.h

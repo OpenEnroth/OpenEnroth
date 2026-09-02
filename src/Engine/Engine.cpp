@@ -54,6 +54,7 @@
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/OverlayTable.h"
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Tables/HostilityTable.h"
@@ -677,8 +678,8 @@ void Engine::MM7_Initialize() {
     pMonsterList = new MonsterList;
     deserialize(engine->resources()->eventsData("dmonlist.bin"), pMonsterList);
 
-    pOverlayList = new OverlayList;
-    deserialize(engine->resources()->eventsData("doverlay.bin"), pOverlayList);
+    pOverlayTable = new OverlayTable;
+    deserialize(engine->resources()->eventsData("doverlay.bin"), pOverlayTable);
 
     pSoundList = new SoundList;
     deserialize(engine->resources()->eventsData("dsounds.bin"), pSoundList);
@@ -724,7 +725,7 @@ void Engine::SecondaryInitialization() {
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
     pObjectList->InitializeSprites();
-    pOverlayList->InitializeSprites();
+    pOverlayTable->initializeSprites();
 
     // TODO(captainurist): try resurrecting the food / gold animations using resource files from MM6?
     //for (unsigned i = 0; i < 4; ++i) {
