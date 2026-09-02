@@ -13,7 +13,7 @@ NO_VERDICT = ("cancelled", "stale")
 def summarize(names):
     """Joins check names for the RESULT line, keeping it readable when a whole matrix leg went red.
 
-    @param names                        Failing check names, already printed in full above with their URLs.
+    @param names                        Failing check names, already listed in full above with their URLs.
     @return                             The first few names, with a count standing in for the rest.
     """
     if len(names) <= 3:
@@ -31,56 +31,50 @@ def describe(run):
     return f'{run["name"]}: {run["conclusion"] or run["status"]}{where}'
 
 
-def named_verdict(names, runs, run_over):
+def decide_named(names, runs, run_over):
     """Reports the named checks once they have all completed, ignoring whatever the rest of the run is doing.
 
     @param names                        Check names asked for on the command line.
     @param runs                         Check runs returned for the commit.
     @param run_over                     Whether every check on the commit has completed.
-    @return                             Exit code, WAIT while any named check is still outstanding.
+    @return                             Exit code and lines, WAIT while any named check is still outstanding.
     """
     present = {r["name"]: r for r in runs}
     missing = [n for n in names if n not in present]
     named = [present[n] for n in names if n in present]
     pending = [r for r in named if r["status"] != "completed"]
 
-    # A name that is still absent once the run is over is a typo, and waiting out the horizon would not find it.
+    # A name still absent once the run is over is a typo, and waiting out the horizon would not find it.
     if missing and run_over:
-        for r in named:
-            print(describe(r))
-        print("RESULT: NOT_FOUND -> " + ", ".join(missing) + " - never ran, check the names")
-        return 2
+        lines = [describe(r) for r in named]
+        return 2, lines + ["RESULT: NOT_FOUND -> " + ", ".join(missing) + " - never ran, check the names"]
     if missing or pending:
         detail = f"named {len(named) - len(pending)}/{len(names)} completed"
         if missing:
             detail += ", not started: " + ", ".join(missing)
-        print("WAIT " + detail)
-        return WAIT
+        return WAIT, ["WAIT " + detail]
 
-    for r in named:
-        print(describe(r))
+    lines = [describe(r) for r in named]
     bad = [r["name"] for r in named if r["conclusion"] in BAD]
     if bad:
-        print("RESULT: FAILING -> " + summarize(bad))
-        return 1
+        return 1, lines + ["RESULT: FAILING -> " + summarize(bad)]
     cancelled = [r["name"] for r in named if r["conclusion"] in NO_VERDICT]
     if cancelled:
-        print("RESULT: CANCELLED -> " + ", ".join(cancelled) + " - not a pass/fail verdict")
-        return 2
-    print("RESULT: ALL GREEN")
-    return 0
+        return 2, lines + ["RESULT: CANCELLED -> " + ", ".join(cancelled) + " - not a pass/fail verdict"]
+    return 0, lines + ["RESULT: ALL GREEN"]
 
 
-def main():
-    min_checks = int(sys.argv[1])
-    names = sys.argv[2:]
+def decide(payload, min_checks, names):
+    """Decides the outcome for one check-runs response, without touching the network or the clock.
 
-    try:
-        payload = json.load(sys.stdin)
-        runs = payload["check_runs"]
-    except Exception:
-        print("WAIT api error")
-        return WAIT
+    @param payload                      Parsed response, or None when the body did not parse.
+    @param min_checks                   Minimum check runs that must exist before a green verdict.
+    @param names                        Check names asked for, empty to judge the whole run.
+    @return                             Exit code and the lines to print, the last of which is the RESULT or WAIT line.
+    """
+    runs = payload.get("check_runs") if isinstance(payload, dict) else None
+    if runs is None:
+        return WAIT, ["WAIT api error"]
 
     # One page is fetched, so a larger total means checks are missing here and no count below can be trusted.
     truncated = payload.get("total_count", len(runs)) > len(runs)
@@ -89,33 +83,38 @@ def main():
     run_over = not truncated and len(runs) >= min_checks and len(completed) == len(runs)
 
     if names:
-        return named_verdict(names, runs, run_over)
+        return decide_named(names, runs, run_over)
 
     # A failure is final the moment it lands, whatever the rest is doing. Cancelled checks carry no verdict, but
     # a failure elsewhere in the same run is still a failure, and reporting CANCELLED would bury it.
     bad = [r for r in completed if r["conclusion"] in BAD]
     if bad:
-        for r in bad:
-            print(describe(r))
         still = len(runs) - len(completed)
         rest = f" ({still} still running)" if still else ""
-        print("RESULT: FAILING -> " + summarize([r["name"] for r in bad]) + rest)
-        return 1
+        lines = [describe(r) for r in bad]
+        return 1, lines + ["RESULT: FAILING -> " + summarize([r["name"] for r in bad]) + rest]
 
     if truncated:
-        print(f"RESULT: TRUNCATED - {payload['total_count']} checks exist, {len(runs)} returned"
-              " - not a pass/fail verdict")
-        return 2
+        return 2, [f"RESULT: TRUNCATED - {payload['total_count']} checks exist, {len(runs)} returned"
+                   " - not a pass/fail verdict"]
     if len(runs) < min_checks or len(completed) < len(runs):
-        print(f"WAIT {len(completed)}/{len(runs)} completed, min {min_checks}")
-        return WAIT
+        return WAIT, [f"WAIT {len(completed)}/{len(runs)} completed, min {min_checks}"]
 
     cancelled = [r["name"] for r in runs if r["conclusion"] in NO_VERDICT]
     if cancelled:
-        print("RESULT: CANCELLED -> " + ", ".join(cancelled) + " - not a pass/fail verdict")
-        return 2
-    print("RESULT: ALL GREEN")
-    return 0
+        return 2, ["RESULT: CANCELLED -> " + ", ".join(cancelled) + " - not a pass/fail verdict"]
+    return 0, ["RESULT: ALL GREEN"]
+
+
+def main():
+    try:
+        payload = json.load(sys.stdin)
+    except Exception:
+        payload = None
+    code, lines = decide(payload, int(sys.argv[1]), sys.argv[2:])
+    for line in lines:
+        print(line)
+    return code
 
 
 if __name__ == "__main__":
