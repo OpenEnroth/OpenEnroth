@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Checks the verdict against canned API responses. Run it after touching verdict.py."""
-import json
 import os
-import subprocess
 import sys
 
 # Importing the verdict keeps the checks below a plain function call, and leaves no __pycache__ in the skill.
@@ -34,8 +32,10 @@ def decide(runs=(), names=(), min_checks=15, total_count=None, payload=None):
     if payload is None:
         total = len(runs) if total_count is None else total_count
         payload = {"total_count": total, "check_runs": list(runs)}
-    return verdict.decide(payload, min_checks, list(names))
+    return verdict.decide(None if payload is NOT_JSON else payload, min_checks, list(names))
 
+
+NOT_JSON = object()  # What fetch() hands over when the response was not JSON at all.
 
 CASES = []
 
@@ -59,6 +59,8 @@ case("bad sha is not a wait", 2, "RESULT: NOT_FOUND -> No commit found for SHA: 
 case("missing repo is not a wait", 2, "RESULT: NOT_FOUND", payload={"message": "Not Found", "status": "404"})
 # A server error is transient, so that one does keep polling.
 case("server error keeps waiting", verdict.WAIT, "WAIT api error", payload={"message": "Server Error"})
+
+case("unparseable body polls again", verdict.WAIT, "WAIT api error", payload=NOT_JSON)
 
 case("full green matrix", 0, "RESULT: ALL GREEN", runs=green(22))
 case("skipped and neutral are green", 0, "RESULT: ALL GREEN",
@@ -102,35 +104,5 @@ for label, want_code, prefix, contains, kwargs in CASES:
     print(f"FAIL {label}: got exit {code} {lines[-1]!r}, want exit {want_code} starting {prefix!r}")
 
 
-def shim(body, args, want_code, want_last):
-    """Runs verdict.py as watch-ci.sh runs it, to pin the stdin and exit code wiring the shell depends on.
-
-    @param body                         Raw stdin for the script.
-    @param args                         Command line arguments after the script name.
-    @param want_code                    Expected exit code.
-    @param want_last                    Expected prefix of the last printed line.
-    @return                             Whether the script behaved as expected.
-    """
-    script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "verdict.py")
-    done = subprocess.run([sys.executable, script] + args, input=body, capture_output=True, text=True)
-    last = done.stdout.strip().splitlines()[-1]
-    return done.returncode == want_code and last.startswith(want_last)
-
-
-# The shell reads the exit code, so a body that is not JSON at all must still poll rather than pass or fail.
-SHIMS = [
-    ("malformed body polls again", "<html>502</html>", ["15"], verdict.WAIT, "WAIT api error"),
-    ("green matrix exits 0", json.dumps({"total_count": 22, "check_runs": green(22)}), ["15"], 0, "RESULT: ALL GREEN"),
-    ("names arrive as arguments", json.dumps({"total_count": 22, "check_runs": green(22)}), ["15", "job3"],
-     0, "RESULT: ALL GREEN"),
-]
-for label, body, args, want_code, want_last in SHIMS:
-    if shim(body, args, want_code, want_last):
-        print(f"ok   {label}")
-        continue
-    failed += 1
-    print(f"FAIL {label}")
-
-total = len(CASES) + len(SHIMS)
-print(f"\n{total - failed}/{total} passed")
+print(f"\n{len(CASES) - failed}/{len(CASES)} passed")
 sys.exit(1 if failed else 0)

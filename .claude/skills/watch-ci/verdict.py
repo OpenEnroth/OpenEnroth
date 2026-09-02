@@ -1,10 +1,7 @@
-#!/usr/bin/env python3
-"""Turns one check-runs API response on stdin into a CI verdict. Usage: verdict.py MIN_CHECKS [check-name ...]
+"""Turns one check-runs API response into a CI verdict, with no network and no clock of its own.
 
-Exit code 0 is all green, 1 is failing, 2 is no verdict to report, and 3 means poll again."""
-import json
-import sys
-
+The codes it returns are the ones watch-ci.py exits with. 0 is all green, 1 is failing, 2 is no verdict to
+report, and 3 means poll again."""
 WAIT = 3
 BAD = ("failure", "timed_out", "action_required", "startup_failure")
 NO_VERDICT = ("cancelled", "stale")
@@ -110,18 +107,3 @@ def decide(payload, min_checks, names):
     if cancelled:
         return 2, ["RESULT: CANCELLED -> " + ", ".join(cancelled) + " - not a pass/fail verdict"]
     return 0, ["RESULT: ALL GREEN"]
-
-
-def main():
-    try:
-        payload = json.load(sys.stdin)
-    except Exception:
-        payload = None
-    code, lines = decide(payload, int(sys.argv[1]), sys.argv[2:])
-    for line in lines:
-        print(line)
-    return code
-
-
-if __name__ == "__main__":
-    sys.exit(main())

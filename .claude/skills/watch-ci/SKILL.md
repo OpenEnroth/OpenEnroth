@@ -3,7 +3,7 @@ name: watch-ci
 description: Wait for GitHub CI on a specific commit and report a trustworthy verdict - green, failing, cancelled, or timed out. Use whenever a push needs a CI verdict, instead of hand-writing a polling loop.
 ---
 
-Run `watch-ci.sh` from this directory as a background task, then read its output file when the task
+Run `watch-ci.py` from this directory as a background task, then read its output file when the task
 completes. Do not hand-write a new polling loop - every hand-written one in the history of this project
 shipped a false-verdict bug, and this script exists to guard against the four that actually happened:
 
@@ -23,12 +23,12 @@ shipped a false-verdict bug, and this script exists to guard against the four th
 ## Usage
 
 ```sh
-.claude/skills/watch-ci/watch-ci.sh <sha> [-m minutes] [-c min_checks] [-r repo] [check-name ...]
+.claude/skills/watch-ci/watch-ci.py <sha> [-m minutes] [-c min_checks] [-r repo] [check-name ...]
 ```
 
 The script calls `gh api`, so it needs either a logged-in `gh` or a `GH_TOKEN` in the environment.
 
-- `sha` - the exact commit to watch, a hex sha. Required, and it comes before the flags.
+- `sha` - the exact commit to watch, a hex sha. Required. Anything else is rejected outright.
 - `-m minutes` - polling horizon, default 150. Runs from other PRs compete for the account's job concurrency
   cap, so the queue can back up for an hour or more before your jobs even start. Don't shorten this
   without a reason.
@@ -43,9 +43,9 @@ Without names the script returns on the first failure, or once everything has co
 once a minute and prints a line whenever the completed count changes, so a background task's output shows
 progress.
 
-The verdict itself is `verdict.py`, which turns one API response on stdin into one outcome. That keeps it
-testable without the network - run `verdict_test.py` after touching either file, it replays canned responses
-for every outcome below.
+The verdict itself is `verdict.py`, a module that turns one API response into one outcome with no network
+and no clock. That keeps it testable - run `verdict_test.py` after touching either file, it replays canned
+responses for every outcome below.
 
 Run it with `run_in_background`, and pipe nothing into it. Exit code 0 means all green, 1 means failing,
 and 2 means there is no verdict to report. The last line is always one of `RESULT: ALL GREEN`,
