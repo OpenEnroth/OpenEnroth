@@ -219,7 +219,6 @@ UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
 
 #if !defined(__aarch64__) && !defined(__arm__) // No trap to test on arm, integer division by zero just yields zero there.
 UNIT_TEST(StackTrace, DivisionByZeroIsTraced) {
-    // Nothing else in the suite raises SIGFPE, so this is what notices it going missing from the handled signal list.
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
