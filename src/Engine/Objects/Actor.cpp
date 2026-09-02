@@ -2600,6 +2600,10 @@ void Actor::UpdateActorAI() {
         pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - gameTimer->dt()); // was animTimer
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
 
+        // An actor still in the air keeps falling and leaves the pain state once it lands.
+        if (pActor->aiState == InPain && pActor->airborne)
+            continue;
+
         if (!pActor->ActorNearby())
             pActor->attributes |= ACTOR_NEARBY;
 
