@@ -24,6 +24,7 @@
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Data/IconFrameData.h"
+#include "Engine/Data/OverlayData.h"
 #include "Engine/Data/PortraitFrameData.h"
 #include "Engine/Data/TileData.h"
 #include "Engine/Data/TileEnumFunctions.h"
@@ -1758,7 +1759,7 @@ void reconstruct(const BLVLight_MM7 &src, BLVLight *dst) {
     dst->uBrightness = src.uBrightness;
 }
 
-void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
+void reconstruct(const OverlayData_MM7 &src, OverlayData *dst) {
     dst->uOverlayID = src.uOverlayID;
     dst->uOverlayType = src.uOverlayType;
     dst->uSpriteFramesetID = src.uSpriteFramesetID;

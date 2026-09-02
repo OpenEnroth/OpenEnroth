@@ -51,7 +51,7 @@ struct MonsterDesc;
 struct NPCData;
 struct ObjectDesc;
 struct OutdoorTileType;
-struct OverlayDesc;
+struct OverlayData;
 struct Party;
 struct PersistentVariables;
 struct PortraitFrameData;
@@ -1067,16 +1067,16 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVLight_MM7)
 void reconstruct(const BLVLight_MM7 &src, BLVLight *dst);
 
 
-struct OverlayDesc_MM7 {
+struct OverlayData_MM7 {
     uint16_t uOverlayID;
     uint16_t uOverlayType;
     uint16_t uSpriteFramesetID;
     int16_t spriteFramesetGroup;
 };
-static_assert(sizeof(OverlayDesc_MM7) == 8);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayDesc_MM7)
+static_assert(sizeof(OverlayData_MM7) == 8);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayData_MM7)
 
-void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst);
+void reconstruct(const OverlayData_MM7 &src, OverlayData *dst);
 
 
 struct PortraitFrameData_MM7 {

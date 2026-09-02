@@ -23,6 +23,7 @@ set(ENGINE_DATA_HEADERS
         HouseEnums.h
         IconFrameData.h
         ItemData.h
+        OverlayData.h
         PortraitFrameData.h
         SoundEnums.h
         SpecialEnchantmentData.h

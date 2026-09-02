@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 
+#include "Engine/Data/OverlayData.h"
 #include "Engine/Pid.h"
 
 #include "Core/Time/Duration.h"
@@ -31,17 +32,11 @@ struct ActiveOverlayList {
     std::array<ActiveOverlay, 50> pOverlays;
 };
 
-struct OverlayDesc {
-    uint16_t uOverlayID = 0;
-    uint16_t uOverlayType = 0;
-    uint16_t uSpriteFramesetID = 0;
-    int16_t spriteFramesetGroup = 0;
-};
-
+// TODO(captainurist): move to Engine/Tables as OverlayTable.
 struct OverlayList {
     void InitializeSprites();
 
-    std::vector<OverlayDesc> pOverlays;
+    std::vector<OverlayData> pOverlays;
 };
 
 extern ActiveOverlayList *pActiveOverlayList;

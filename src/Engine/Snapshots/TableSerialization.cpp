@@ -69,7 +69,7 @@ void deserialize(const Blob &src, ObjectList *dst) {
 
 void deserialize(const Blob &src, OverlayList *dst) {
     dst->pOverlays.clear();
-    deserialize(src, &dst->pOverlays, tags::append, tags::each, tags::via<OverlayDesc_MM7>);
+    deserialize(src, &dst->pOverlays, tags::append, tags::each, tags::via<OverlayData_MM7>);
 
     assert(!dst->pOverlays.empty());
 }
