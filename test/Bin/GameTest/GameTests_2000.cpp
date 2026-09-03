@@ -6,6 +6,7 @@
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/mm7_data.h"
 #include "Engine/MapEnums.h"
@@ -1687,4 +1688,10 @@ GAME_TEST(Prs, Pr2615d) {
     game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
     game.tick(3);
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
+}
+
+GAME_TEST(Prs, Pr2610) {
+    // Reading the tables trims every cell, and this string ends with the space that separates it from the restock
+    // duration appended after it in DrawShops_next_generation_time_string. Trimming it drew "Please try back in3 Days".
+    EXPECT_EQ(localization->str(LSTR_PLEASE_TRY_BACK_IN), "Please try back in ");
 }
