@@ -2335,5 +2335,5 @@ uint64_t GetExperienceRequiredForLevel(int level) {
     int effectiveLevel = 0;
     for (int i = 0; i < level; ++i)
         effectiveLevel += i + 1;
-    return (uint64_t)(1000 * effectiveLevel);
+    return 1000ULL * effectiveLevel;
 }
