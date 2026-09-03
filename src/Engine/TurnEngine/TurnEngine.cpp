@@ -405,7 +405,7 @@ void stru262_TurnBased::NextTurn() {
                     pActors[monster_id].currentActionLength = 0_ticks;
                     pActors[monster_id].UpdateAnimation();
                 } else {
-                    if (pActors[monster_id].aiState == Stunned)  // Stunned
+                    if (pActors[monster_id].aiState == Stunned && !pActors[monster_id].isAirborne()) // Gets up once it lands.
                         Actor::AI_StandOrBored(
                             monster_id,
                             ai_near_actors_targets_pid[monster_id], 32_ticks, 0);
@@ -429,6 +429,8 @@ void stru262_TurnBased::NextTurn() {
                 (pActors[monster_id].aiState != Summoned) &&
                 (pActors[monster_id].aiState != Disabled)) {
                 pQueue[i].uActionLength = 0_ticks;
+                if (pActors[monster_id].isStunnedInMidair())
+                    continue;
                 Actor::AI_StandOrBored(monster_id,
                                        ai_near_actors_targets_pid[monster_id],
                                        32_ticks, nullptr);
@@ -607,7 +609,10 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                         pActors[actor_id].UpdateAnimation();
                         break;
                     case Stunned:
-                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
+                        if (!pActors[actor_id].isAirborne())
+                            Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4); // Gets up once it lands.
+                        else if (pQueue[queue_index].actor_initiative <= 0)
+                            spendTurnFalling(queue_index); // Its turn came up while it's still in the air.
                         break;
                     case AttackingRanged2:
                         Actor::AI_RangedAttack(actor_id, &a4, pActors[actor_id].monsterInfo.attack2MissileType, ABILITY_ATTACK2);
@@ -648,6 +653,10 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
     pQueue[queue_index].uActionLength = 0_ticks;
     if (pQueue[queue_index].uPackedID.type() == OBJECT_Actor) {
         actor_id = pQueue[queue_index].uPackedID.id();
+        if (pActors[actor_id].isStunnedInMidair()) {
+            spendTurnFalling(queue_index);
+            return;
+        }
         if (!(pActors[actor_id].aiState == Dying ||
               pActors[actor_id].aiState == Dead ||
               pActors[actor_id].aiState == Summoned ||
@@ -752,6 +761,11 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
     }
 }
 
+void stru262_TurnBased::spendTurnFalling(int queueIndex) {
+    pQueue[queueIndex].AI_action_type = TE_AI_STAND;
+    pQueue[queueIndex].actor_initiative = pMonsterStats->infos[pActors[pQueue[queueIndex].uPackedID.id()].monsterInfo.id].recoveryTime.ticks();
+}
+
 //----- (00406A63) --------------------------------------------------------
 void stru262_TurnBased::ActorAISetMovementDecision() {
     AIDirection a3;           // [sp+8h] [bp-44h]@5
@@ -765,6 +779,8 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
             Pid target_pid =
                 ai_near_actors_targets_pid[pQueue[i].uPackedID.id()];
             Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v7, 0);
+            if (pActors[pQueue[i].uPackedID.id()].isStunnedInMidair())
+                continue;
             if (!ActorMove(i))
                 Actor::AI_Stand(pQueue[i].uPackedID.id(), target_pid, 32_ticks,
                                 &v7);
@@ -785,7 +801,8 @@ void stru262_TurnBased::ActorAIStopMovement() {
             Pid target_pid =
                 ai_near_actors_targets_pid[pQueue[i].uPackedID.id()];
             Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v7, 0);
-            Actor::AI_Stand(pQueue[i].uPackedID.id(), target_pid, 32_ticks, &v7);
+            if (!pActors[pQueue[i].uPackedID.id()].isStunnedInMidair())
+                Actor::AI_Stand(pQueue[i].uPackedID.id(), target_pid, 32_ticks, &v7);
             pQueue[i].AI_action_type = TE_AI_STAND;
             pQueue[i].uActionLength = 0_ticks;
         }
@@ -809,7 +826,8 @@ void stru262_TurnBased::ActorAIDoAdditionalMove() {
                       .Active() ||
                   pActors[monster_id].aiState == Dead ||
                   pActors[monster_id].aiState == Removed ||
-                  pActors[monster_id].aiState == Disabled)) {
+                  pActors[monster_id].aiState == Disabled ||
+                  pActors[monster_id].isStunnedInMidair())) {
                 Pid v13 = ai_near_actors_targets_pid[pQueue[i].uPackedID.id()];
                 Actor::GetDirectionInfo(pQueue[i].uPackedID, v13, &v9, 0);
                 if (pActors[monster_id].aiState == Pursuing ||
@@ -993,7 +1011,8 @@ void stru262_TurnBased::ActorAIChooseNewTargets() {
             if (!(curr_acror->aiState == Summoned ||
                   curr_acror->aiState == Dead ||
                   curr_acror->aiState == Removed ||
-                  curr_acror->aiState == Disabled)) {
+                  curr_acror->aiState == Disabled ||
+                  curr_acror->isStunnedInMidair())) {
                 target_pid = ai_near_actors_targets_pid[uActorID];
                 Actor::_SelectTarget(
                     uActorID, &ai_near_actors_targets_pid[uActorID], true);

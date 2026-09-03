@@ -2558,7 +2558,7 @@ void Actor::UpdateActorAI() {
             continue;
 
         // A stunned actor still in the air, e.g. thrown up by armageddon, keeps falling and gets up once it lands.
-        if (pActor->aiState == Stunned && pActor->isAirborne())
+        if (pActor->isStunnedInMidair())
             continue;
 
         if (pActor->aiState == Dying) {
@@ -2635,7 +2635,7 @@ void Actor::UpdateActorAI() {
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
 
         // A stunned actor still in the air keeps falling and gets up once it lands.
-        if (pActor->aiState == Stunned && pActor->isAirborne())
+        if (pActor->isStunnedInMidair())
             continue;
 
         if (!pActor->ActorNearby())

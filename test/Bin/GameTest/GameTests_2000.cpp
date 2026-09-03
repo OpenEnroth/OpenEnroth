@@ -86,7 +86,8 @@ GAME_TEST(Issues, Issue2002) {
 
 GAME_TEST(Issues, Issue2003) {
     // Monsters can be stuck in pain state. In turn-based mode actors outside the turn queue never left the stunned state,
-    // so everything armageddon threw up stayed in its pain animation after landing.
+    // so everything armageddon threw up stayed in its pain animation after landing. Actors in the queue got up in mid-air
+    // instead, on their turn and at the end of every round, and stopped dead in the air each time.
     test.prepareForNextTest(25, RANDOM_ENGINE_MERSENNE_TWISTER); // Armageddon pushes by a fixed amount per frame, at 100ms frames gravity wins and nobody takes off.
 
     engine->config->debug.NoActors.setValue(true);
@@ -96,10 +97,10 @@ GAME_TEST(Issues, Issue2003) {
     prepareForBattleTest();
     engine->config->debug.NoActors.setValue(false);
 
-    // Far enough from the party to stay out of the turn queue.
-    int titanId = game.spawnMonster(pParty->pos + Vec3f(0, 6500, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
-    game.tick(1); // Drops it onto the ground.
-    float groundZ = pActors[titanId].pos.z;
+    // One titan far enough from the party to stay out of the turn queue, one close enough to be in it.
+    int farId = game.spawnMonster(pParty->pos + Vec3f(0, 6500, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
+    int nearId = game.spawnMonster(pParty->pos + Vec3f(0, 1000, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
+    game.tick(1); // Drops them onto the ground.
 
     game.pressAndReleaseKey(PlatformKey::KEY_RETURN); // Enter turn-based mode...
     for (int i = 0; i < 100 && !(pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_ATTACK && pParty->hasActiveCharacter()); i++)
@@ -107,21 +108,31 @@ GAME_TEST(Issues, Issue2003) {
     ASSERT_TRUE(pParty->hasActiveCharacter());
 
     auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
-    auto queuedTape = actorTapes.custom(titanId, [] (const Actor &actor) { return static_cast<bool>(actor.attributes & ACTOR_STAND_IN_QUEUE); });
-    auto stateTape = actorTapes.aiState(titanId);
-    auto flightTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
+    auto queuedTape = actorTapes.custom({farId, nearId}, [] (const Actor &actor) { return static_cast<bool>(actor.attributes & ACTOR_STAND_IN_QUEUE); });
+    auto flightTape = actorTapes.custom({farId, nearId}, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
+    auto turnTape = tapes.custom([nearId] { return std::pair(pActors[nearId].isAirborne(), pParty->hasActiveCharacter()); });
 
     game.castSpell(1, SPELL_DARK_ARMAGEDDON);
-    game.tick(300); // Lands at about 5s in, this is 7.5s.
+    for (int i = 0; i < 15; i++) {
+        game.tick(20); // 7.5s in all, both land at about 5s in.
+        game.pressAndReleaseKey(PlatformKey::KEY_A); // Keep the rounds coming while the titans are in the air.
+    }
     test.stopTaping();
 
     EXPECT_EQ(turnBasedTape, tape(true)); // Never left turn-based mode.
-    EXPECT_EQ(queuedTape, tape(false)); // Never made it into the turn queue.
-    EXPECT_CONTAINS(stateTape, Stunned); // Got stunned...
-    EXPECT_GT(flightTape.map([] (const auto &p) { return p.second; }).max(), groundZ + 500); // ...went flying...
-    EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != Stunned; })); // ...stunned all the way up and down...
-    EXPECT_FALSE(pActors[titanId].isAirborne()); // ...landed...
-    EXPECT_NE(stateTape.back(), Stunned); // ...and got up.
+    EXPECT_EQ(queuedTape.slice(0).unique(), tape(false)); // The far titan never made it into the turn queue...
+    EXPECT_EQ(queuedTape.slice(1).unique(), tape(true)); // ...and the near one was in it throughout.
+    for (size_t i = 0; i < 2; i++) {
+        auto flight = flightTape.slice(i);
+        float groundZ = flight.front().second;
+        EXPECT_TRUE(flight.contains([] (const auto &p) { return p.first == Stunned; })); // Got stunned...
+        EXPECT_GT(flight.map([] (const auto &p) { return p.second; }).max(), groundZ + 200); // ...went flying...
+        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != Stunned; })); // ...stunned all the way up and down...
+        EXPECT_NE(flight.back().first, Stunned); // ...and got up.
+    }
+    EXPECT_FALSE(pActors[farId].isAirborne());
+    EXPECT_FALSE(pActors[nearId].isAirborne());
+    EXPECT_TRUE(turnTape.contains(std::pair(true, true))); // The party got its turn while the near titan was still in the air.
 }
 
 GAME_TEST(Issues, Issue2017) {
