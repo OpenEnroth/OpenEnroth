@@ -57,6 +57,7 @@ local.properties
 # .claude
 .claude/settings.local.json
 .claude/plans
+.claude/worktrees/
 
 # Bazel output symlinks
 bazel-*
