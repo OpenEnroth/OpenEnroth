@@ -68,11 +68,11 @@ void initializeHouses(const Blob &houses) {
     };
 
     for (TsvLine cells : TsvReader(houses).drop(2).skip(&TsvLine::isBlank)) {
-        // Lines are ragged and many numeric cells are empty, so those default to 0.
-
         // TODO(captainurist): We don't check if int is in range. A better way would be to deal away with enums
         //                     entirely, and just use typed ids. Do this once we iron out the details of how #mm6
         //                     enums will be handled by the engine. Also apply to other table parsers.
+
+        // The table is ragged and many numeric cells are empty.
         HouseId houseId = static_cast<HouseId>(cells[0].as<int>());
         houseTable[houseId].uType = valueOr(houseTypeMap, cells[2], HOUSE_TYPE_MERCENARY_GUILD);
         houseTable[houseId].uAnimationID = cells[4].empty() ? 0 : cells[4].as<int>();
