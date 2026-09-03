@@ -719,6 +719,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
             int deltaX = actor->pos.x - victim->pos.x;
             int deltaY = actor->pos.y - victim->pos.y;
             int deltaZ = actor->pos.z - victim->pos.z;
+            // TODO(captainurist): use length() here and retrace
             if (Vec3i(deltaX, deltaY, deltaZ).octagonalLength() < 4096) {
                 actor->monsterInfo.hostilityType =
                     HOSTILITY_LONG;
@@ -3021,7 +3022,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             int d1 = pParty->pos.x - projectileSprite->vPosition.x;
             int d2 = pParty->pos.y - projectileSprite->vPosition.y;
             int d3 = pParty->pos.z - projectileSprite->vPosition.z;
-            v61 = Vec3i(d1, d2, d3).octagonalLength();
+            v61 = Vec3i(d1, d2, d3).length();
 
             if (v61 >= 5120 && !(pMonster->attributes & ACTOR_FULL_AI_STATE))  // 0x400
                 return 0;
@@ -3460,7 +3461,7 @@ bool CheckActors_proximity() {
         for_x = actor.pos.x - pParty->pos.x;
         for_y = actor.pos.y - pParty->pos.y;
         for_z = actor.pos.z - pParty->pos.z;
-        if (Vec3i(for_x, for_y, for_z).octagonalLength() < distance) {
+        if (Vec3i(for_x, for_y, for_z).length() < distance) {
             if (actor.aiState != Dead) {
                 if (actor.aiState != Dying &&
                     actor.aiState != Removed &&
@@ -3859,6 +3860,7 @@ void Actor::MakeActorAIList_ODM() {
         int delta_y = pParty->pos.y - actor.pos.y;
         int delta_z = pParty->pos.z - actor.pos.z;
 
+        // TODO(captainurist): use length() here and retrace
         int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
         if (distance < 0)
             distance = 0;
@@ -3913,6 +3915,7 @@ int Actor::MakeActorAIList_BLV() {
         int delta_y = pParty->pos.y - actor.pos.y;
         int delta_z = pParty->pos.z - actor.pos.z;
 
+        // TODO(captainurist): use length() here and retrace
         int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
         if (distance < 0)
             distance = 0;

@@ -986,7 +986,7 @@ size_t Party::immolationAffectedActors(int *affected, size_t affectedArrSize, si
         int x = pActors[i].pos.x - this->pos.x;
         int y = pActors[i].pos.y - this->pos.y;
         int z = pActors[i].pos.z - this->pos.z;
-        if (Vec3i(x, y, z).octagonalLength() <= effectRange) {
+        if (Vec3i(x, y, z).length() <= effectRange) {
             if (pActors[i].aiState != Dead && pActors[i].aiState != Dying &&
                 pActors[i].aiState != Removed &&
                 pActors[i].aiState != Disabled &&

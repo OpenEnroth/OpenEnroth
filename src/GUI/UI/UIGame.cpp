@@ -674,7 +674,7 @@ std::string GameUI_GetMinimapHintText() {
     } else {
         for (BSPModel &model : pOutdoor->pBModels) {
             v7 = Vec2i((int)model.boundingCenter.x - global_coord_X,
-                       (int)model.boundingCenter.y - global_coord_Y).octagonalLength();
+                       (int)model.boundingCenter.y - global_coord_Y).length();
             if (v7 < 2 * model.boundingRadius) {
                 for (BLVFace &face : model.faces) {
                     if (face.eventId) {

@@ -120,7 +120,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
             if (distY <= light_radius) {
                 distZ = std::abs(p->vPosition.z - z);
                 if (distZ <= light_radius) {
-                    approx_distance = Vec3i(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ)).octagonalLength();
+                    approx_distance = Vec3i(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ)).length();
                     if (approx_distance < light_radius)
                         //* ORIGONAL */lightlevel += ((uint64_t)(30i64 *(signed int)(approx_distance << 16) / light_radius) >> 16) - 30;
                         lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
@@ -144,7 +144,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
                     if (distY <= light_radius) {
                         distZ = std::abs(this_light->vPosition.z - z);
                         if (distZ <= light_radius) {
-                            approx_distance = Vec3i(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ)).octagonalLength();
+                            approx_distance = Vec3i(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ)).length();
                             if (approx_distance < light_radius)
                                 lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
                         }
@@ -165,7 +165,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
             if (distY <= light_radius) {
                 distZ = std::abs(p->vPosition.z - z);
                 if (distZ <= light_radius) {
-                    approx_distance = Vec3i(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ)).octagonalLength();
+                    approx_distance = Vec3i(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ)).length();
                     if (approx_distance < light_radius)
                         lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
                 }
