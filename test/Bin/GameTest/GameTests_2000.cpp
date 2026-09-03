@@ -85,7 +85,7 @@ GAME_TEST(Issues, Issue2002) {
 }
 
 GAME_TEST(Issues, Issue2003) {
-    // Monsters can be stuck in pain state. In turn-based mode actors outside the turn queue never left the stunned state,
+    // Monsters can be stuck in pain state. In turn-based mode actors outside the turn queue never left the pain state,
     // so everything armageddon threw up stayed in its pain animation after landing. Actors in the queue got up in mid-air
     // instead, on their turn and at the end of every round, and stopped dead in the air each time.
     test.prepareForNextTest(25, RANDOM_ENGINE_MERSENNE_TWISTER); // Armageddon pushes by a fixed amount per frame, at 100ms frames gravity wins and nobody takes off.
@@ -125,10 +125,10 @@ GAME_TEST(Issues, Issue2003) {
     for (size_t i = 0; i < 2; i++) {
         auto flight = flightTape.slice(i);
         float groundZ = flight.front().second;
-        EXPECT_TRUE(flight.contains([] (const auto &p) { return p.first == Stunned; })); // Got stunned...
+        EXPECT_TRUE(flight.contains([] (const auto &p) { return p.first == InPain; })); // Took the hit...
         EXPECT_GT(flight.map([] (const auto &p) { return p.second; }).max(), groundZ + 200); // ...went flying...
-        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != Stunned; })); // ...stunned all the way up and down...
-        EXPECT_NE(flight.back().first, Stunned); // ...and got up.
+        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain; })); // ...in pain all the way up and down...
+        EXPECT_NE(flight.back().first, InPain); // ...and got up.
     }
     EXPECT_FALSE(pActors[farId].isAirborne());
     EXPECT_FALSE(pActors[nearId].isAirborne());

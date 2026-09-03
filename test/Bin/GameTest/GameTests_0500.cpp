@@ -108,8 +108,8 @@ GAME_TEST(Issues, Issue518) {
         auto flight = flightTape.slice(i);
         float groundZ = flight.front().second;
         EXPECT_GT(flight.map([] (const auto &p) { return p.second; }).max(), groundZ + 500); // Went flying...
-        // ...stunned or dying all the way, the stops were actors standing up in mid-air once their stun timer ran out.
-        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != Stunned && p.first != Dying && p.first != Dead; }));
+        // ...in pain or dying all the way, the stops were actors standing up in mid-air once their pain animation ran out.
+        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain && p.first != Dying && p.first != Dead; }));
     }
 
     for (auto &actor : pActors) {
@@ -690,8 +690,8 @@ GAME_TEST(Issues, Issue760) {
 }
 
 GAME_TEST(Issues, Issue774) {
-    // Background stunned actors do idle motions. A hit stuns a monster for the length of its pain animation, it should do
-    // nothing else meanwhile and get up right after. Background actors used to stay stunned forever instead, the AI loop
+    // Background stunned actors do idle motions. A hit puts a monster in pain for the length of the animation, it should do
+    // nothing else meanwhile and get up right after. Background actors used to stay in pain forever instead, the AI loop
     // skipped them altogether so that they wouldn't get up in mid-air.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
 
@@ -706,20 +706,20 @@ GAME_TEST(Issues, Issue774) {
     game.tick(1); // Drops it onto the ground.
 
     auto stateTape = actorTapes.aiState(titanId);
-    auto stunTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, gameTimer->time()); });
+    auto painTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, gameTimer->time()); });
     game.tick(1); // A frame on its feet before the hit.
-    Actor::AI_Stun(titanId, Pid::character(0), 0); // What a hit does to a monster that survives it.
-    Duration stunLength = pActors[titanId].currentActionLength;
+    Actor::AI_Pain(titanId, Pid::character(0), 0); // What a hit does to a monster that survives it.
+    Duration painLength = pActors[titanId].currentActionLength;
     game.tick(30); // 3s, the pain animation is well under a second.
     test.stopTaping();
 
     EXPECT_EQ(stateTape.front(), Standing);
-    EXPECT_EQ(stateTape.count(Stunned), 1); // Stunned once, with nothing in between...
-    EXPECT_NE(stateTape.back(), Stunned); // ...and up again afterwards.
-    auto stunned = stunTape.filter([] (const auto &p) { return p.first == Stunned; });
-    Duration held = stunned.back().second - stunned.front().second;
-    EXPECT_GE(held, stunLength - Duration::fromRealtimeMilliseconds(200)); // Held for the pain animation, the tape can't see the frame the hit landed on...
-    EXPECT_LE(held, stunLength); // ...and not longer.
+    EXPECT_EQ(stateTape.count(InPain), 1); // In pain once, with nothing in between...
+    EXPECT_NE(stateTape.back(), InPain); // ...and up again afterwards.
+    auto inPain = painTape.filter([] (const auto &p) { return p.first == InPain; });
+    Duration held = inPain.back().second - inPain.front().second;
+    EXPECT_GE(held, painLength - Duration::fromRealtimeMilliseconds(200)); // Held for the pain animation, the tape can't see the frame the hit landed on...
+    EXPECT_LE(held, painLength); // ...and not longer.
 }
 
 GAME_TEST(Issues, Issue779) {
@@ -1020,7 +1020,7 @@ GAME_TEST(Issues, Issue906_773) {
 }
 
 GAME_TEST(Issues, Issue920) {
-    // Background actors stay stunned after armageddon. The AI loop skipped stunned actors so that they wouldn't get up in
+    // Background actors stay stunned after armageddon. The AI loop skipped actors in pain so that they wouldn't get up in
     // mid-air, and as a result they never got up at all.
     test.prepareForNextTest(25, RANDOM_ENGINE_MERSENNE_TWISTER); // Armageddon pushes by a fixed amount per frame, at 100ms frames gravity wins and nobody takes off.
 
@@ -1045,11 +1045,11 @@ GAME_TEST(Issues, Issue920) {
     test.stopTaping();
 
     EXPECT_EQ(backgroundTape, tape(true)); // Never made it into full AI state.
-    EXPECT_CONTAINS(stateTape, Stunned); // Got stunned...
+    EXPECT_CONTAINS(stateTape, InPain); // Took the hit...
     EXPECT_GT(flightTape.map([] (const auto &p) { return p.second; }).max(), groundZ + 200); // ...went flying...
-    EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != Stunned; })); // ...stunned all the way up and down...
+    EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain; })); // ...in pain all the way up and down...
     EXPECT_FALSE(pActors[titanId].isAirborne()); // ...landed...
-    EXPECT_NE(stateTape.back(), Stunned); // ...and got up.
+    EXPECT_NE(stateTape.back(), InPain); // ...and got up.
 }
 
 GAME_TEST(Issues, Issue929) {

@@ -1684,8 +1684,8 @@ char Actor::_4031C1_update_job_never_gets_called(
 }
 
 //----- (004030AD) --------------------------------------------------------
-void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
-                    int stunRegardlessOfState) {
+void Actor::AI_Pain(unsigned int uActorID, Pid edx0,
+                    int painRegardlessOfState) {
     Duration v7;      // ax@16
     AIDirection a3;  // [sp+Ch] [bp-40h]@16
 
@@ -1699,8 +1699,8 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
         pActors[uActorID].buffs[ACTOR_BUFF_CHARM].Reset();
     if (pActors[uActorID].buffs[ACTOR_BUFF_AFRAID].Active())
         pActors[uActorID].buffs[ACTOR_BUFF_AFRAID].Reset();
-    if (stunRegardlessOfState ||
-        (pActors[uActorID].aiState != Stunned &&
+    if (painRegardlessOfState ||
+        (pActors[uActorID].aiState != InPain &&
          pActors[uActorID].aiState != AttackingRanged1 &&
          pActors[uActorID].aiState != AttackingRanged2 &&
          pActors[uActorID].aiState != AttackingRanged3 &&
@@ -1713,9 +1713,9 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
                  ->pSpriteSFrames[pActors[uActorID].spriteIds[ANIM_GotHit]]
                  .animationLength;
         pActors[uActorID].currentActionTime = 0_ticks;
-        pActors[uActorID].aiState = Stunned;
+        pActors[uActorID].aiState = InPain;
         pActors[uActorID].currentActionLength = v7;
-        Actor::playSound(uActorID, ACTOR_STUNNED_SOUND);
+        Actor::playSound(uActorID, ACTOR_PAIN_SOUND);
         pActors[uActorID].UpdateAnimation();
     }
 }
@@ -2058,7 +2058,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
     v6->pitchAngle = v16;
     v6->aiState = Pursuing;
     if (vrng->random(100) < 2) {
-        Actor::playSound(uActorID, ACTOR_STUNNED_SOUND);
+        Actor::playSound(uActorID, ACTOR_PAIN_SOUND);
     }
     v6->UpdateAnimation();
 }
@@ -2233,7 +2233,7 @@ void Actor::UpdateAnimation() {
             attributes |= ACTOR_ANIMATION;
             break;
 
-        case Stunned:
+        case InPain:
             currentActionAnimation = ANIM_GotHit;
             attributes |= ACTOR_ANIMATION;
             break;
@@ -2364,7 +2364,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                 pActors[actor_id].hp -= finalDmg;
                 if (finalDmg) {
                     if (pActors[actor_id].hp > 0)
-                        Actor::AI_Stun(actor_id, attacker_id, 0);
+                        Actor::AI_Pain(actor_id, attacker_id, 0);
                     else
                         Actor::Die(actor_id);
                     Actor::AggroSurroundingPeasants(actor_id, 0);
@@ -2376,7 +2376,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                     }
                     Actor::AddOnDamageOverlay(actor_id, 1, finalDmg);
                 } else {
-                    Actor::AI_Stun(actor_id, attacker_id, 0);
+                    Actor::AI_Pain(actor_id, attacker_id, 0);
                 }
                 return;
             }
@@ -2557,8 +2557,8 @@ void Actor::UpdateActorAI() {
         if (pActor->currentActionTime < pActor->currentActionLength)
             continue;
 
-        // A stunned actor still in the air, e.g. thrown up by armageddon, keeps falling and gets up once it lands.
-        if (pActor->isStunnedInMidair())
+        // An actor in pain that's still in the air, e.g. thrown up by armageddon, keeps falling and gets up once it lands.
+        if (pActor->isAirborneInPain())
             continue;
 
         if (pActor->aiState == Dying) {
@@ -2634,8 +2634,8 @@ void Actor::UpdateActorAI() {
         pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - gameTimer->dt()); // was animTimer
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
 
-        // A stunned actor still in the air keeps falling and gets up once it lands.
-        if (pActor->isStunnedInMidair())
+        // An actor in pain that's still in the air keeps falling and gets up once it lands.
+        if (pActor->isAirborneInPain())
             continue;
 
         if (!pActor->ActorNearby())
@@ -2647,12 +2647,12 @@ void Actor::UpdateActorAI() {
         AIState uAIState = pActor->aiState;
 
          // TODO(captainurist): this check makes no sense, it fails only for monsters that are:
-        // stunned && non-friendly && recovering && far from target && don't have missile attack. Seriously?
+        // in pain && non-friendly && recovering && far from target && don't have missile attack. Seriously?
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
             pActor->monsterInfo.recoveryTime > 0_ticks ||
             radiusMultiplier * meleeRange < pDir->uDistance ||
             uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && pActor->monsterInfo.attack1MissileType == MONSTER_PROJECTILE_NONE ||
-            uAIState != Stunned) {
+            uAIState != InPain) {
             if (pActor->currentActionTime < pActor->currentActionLength) {
                 continue;
             } else if (pActor->aiState == AttackingMelee) {
@@ -3180,7 +3180,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         return 0;
     }
     if (pMonster->hp > 0) {
-        Actor::AI_Stun(uActorID_Monster, a1, 0);
+        Actor::AI_Pain(uActorID_Monster, a1, 0);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
         if (engine->config->settings.ShowHits.value()) {
             if (projectileSprite)
@@ -4538,7 +4538,7 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVeloci
 
                 if (damage > 0) {
                     if (pActors[uActorID].hp > 0)
-                        Actor::AI_Stun(uActorID, uObjID, 0);
+                        Actor::AI_Pain(uActorID, uObjID, 0);
                     else
                         Actor::Die(uActorID);
 
@@ -4550,7 +4550,7 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVeloci
                     }
                     Actor::AddOnDamageOverlay(uActorID, 1, damage);
                 } else {
-                    Actor::AI_Stun(uActorID, uObjID, 0);
+                    Actor::AI_Pain(uActorID, uObjID, 0);
                 }
             }
         }

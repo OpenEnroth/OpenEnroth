@@ -87,10 +87,10 @@ class Actor {
     bool isAirborne() const;
 
     /**
-     * @return                          Whether the actor is stunned and still in the air, e.g. thrown up by armageddon.
-     *                                  The stun holds until it lands.
+     * @return                          Whether the actor is in pain and still in the air, e.g. thrown up by armageddon.
+     *                                  The pain state holds until it lands.
      */
-    bool isStunnedInMidair() const { return aiState == Stunned && isAirborne(); }
+    bool isAirborneInPain() const { return aiState == InPain && isAirborne(); }
     bool IsNotAlive();
     bool IsPeasant();
 
@@ -134,7 +134,7 @@ class Actor {
     static void resurrect(unsigned int uActorID);
     static void AI_Bored(unsigned int uActorID, Pid uObjID,
                          AIDirection *a4);
-    static void AI_Stun(unsigned int uActorID, Pid edx0, int arg0);
+    static void AI_Pain(unsigned int uActorID, Pid edx0, int arg0);
     static char _4031C1_update_job_never_gets_called(unsigned int uActorID,
                                                      signed int a2, int a3);
     static void AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,

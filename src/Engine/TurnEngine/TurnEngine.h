@@ -45,7 +45,7 @@ struct stru262_TurnBased {
     void AI_Action_(int queue_index);
 
     /**
-     * Lets a stunned actor that's still in the air spend its turn falling, its next one comes after the usual recovery.
+     * Lets an actor in pain that's still in the air spend its turn falling, its next one comes after the usual recovery.
      *
      * @param queueIndex                Queue entry of the actor.
      */
