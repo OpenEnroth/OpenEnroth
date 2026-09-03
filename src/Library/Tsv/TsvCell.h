@@ -42,6 +42,19 @@ class TsvCell : public std::string_view {
         }
     }
 
+    /**
+     * Shadows `std::string_view::substr`, which would return a plain view and lose the position, so that
+     * `cell.substr(1).as<int>()` still reports the file and column. `substr` is the only `std::string_view`
+     * accessor returning a `std::string_view`, so it is the only one that can drop the position like this.
+     *
+     * @param pos                       Offset of the first character to include.
+     * @param count                     Number of characters to include.
+     * @return                          Cell over the requested substring, at the same position in the file.
+     */
+    [[nodiscard]] TsvCell substr(size_type pos = 0, size_type count = npos) const {
+        return TsvCell(std::string_view::substr(pos, count), _reader, _column);
+    }
+
  private:
     friend class TsvLine;
 

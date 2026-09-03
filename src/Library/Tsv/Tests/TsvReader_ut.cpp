@@ -195,6 +195,17 @@ UNIT_TEST(TsvReader, ParseErrorMentionsPosition) {
     }
 }
 
+UNIT_TEST(TsvCell, SubstrKeepsThePosition) {
+    // Taking a substring used to slice the cell back to a plain `std::string_view`, and the parse error that came
+    // out of it named no file and no column.
+    TsvReader reader("skip\tE12\tEnope\r\n", "table.txt");
+
+    for (TsvLine cells : reader) {
+        EXPECT_EQ(cells[1].substr(1).as<int>(), 12);
+        EXPECT_THROW_MESSAGE((void) cells[2].substr(1).as<int>(), "table.txt:1:3"); // 1-based line and column.
+    }
+}
+
 UNIT_TEST(TsvLine, IsARangeOfCells) {
     // HostilityTable and the npcdist parser walk all cells instead of indexing them.
     TsvReader reader("skip\t10\t20\t30\r\n");

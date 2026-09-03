@@ -260,7 +260,7 @@ void ItemTable::LoadPotions(const Blob &potions) {
             if (cell == "no")
                 potionCombination[row][column] = ITEM_NULL;
             else if (cell[0] == 'E')
-                potionCombination[row][column] = static_cast<ItemId>(fromString<int>(cell.substr(1))); // Damage level.
+                potionCombination[row][column] = static_cast<ItemId>(cell.substr(1).as<int>()); // Damage level.
             else
                 potionCombination[row][column] = static_cast<ItemId>(cell.as<int>());
         }
