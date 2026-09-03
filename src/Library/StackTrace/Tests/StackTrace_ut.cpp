@@ -1,4 +1,5 @@
 #include <cassert>
+#include <csignal>
 #include <cstdio>
 #include <cstdint>
 #include <cstdlib>
@@ -35,6 +36,48 @@ constexpr bool isMac = true;
 #else
 constexpr bool isMac = false;
 #endif
+
+#ifndef _WINDOWS
+#   if defined(__aarch64__)
+constexpr int SIG_BUILTIN_TRAP = SIGTRAP; // brk raises a breakpoint trap.
+#   else
+constexpr int SIG_BUILTIN_TRAP = SIGILL; // x86's ud2 and arm32's udf are both illegal instructions.
+#   endif
+#endif
+
+#ifndef _WINDOWS
+extern "C" void __cxa_pure_virtual() __attribute__((weak)); // Weak, so asking about it below links nothing in.
+#endif
+
+/**
+ * A pure virtual call lands on a hook that aborts, and the vtable's reference to that hook is weak. Linking
+ * the standard library statically then leaves the hook out and the slot null, and the call faults instead of
+ * aborting. Asking whether the hook made it into the binary is what keeps this right either way.
+ *
+ * @return                              Signal a pure virtual call dies of.
+ */
+static int sigPureCall() {
+#ifdef _WINDOWS
+    return SIGABRT; // Windows dies through the CRT hook rather than a signal, and killedBy ignores this.
+#else
+    return &__cxa_pure_virtual != nullptr ? SIGABRT : SIGSEGV;
+#endif
+}
+
+/**
+ * Predicate for `EXPECT_EXIT` that pins how the process died, rather than just that it did. Gtest has no
+ * `KilledBySignal` on windows, where a death test reports an exit code, so there this only asserts a death.
+ *
+ * @param signal                        Signal the process is expected to die of, ignored on windows.
+ * @return                              Predicate over the exit status.
+ */
+static auto killedBy([[maybe_unused]] int signal) {
+#ifdef _WINDOWS
+    return [] (int status) { return status != 0; };
+#else
+    return testing::KilledBySignal(signal);
+#endif
+}
 
 static void sendAssertReportsToStderr() {
 #ifdef _WINDOWS
@@ -126,10 +169,24 @@ MM_NOINLINE int stackTraceNullCallFunction() {
 }
 
 MM_NOINLINE int stackTraceBadTargetCallFunction() {
-    int (*volatile nowhere)() = reinterpret_cast<int (*)()>(static_cast<uintptr_t>(0xdeadbeefdeadULL));
+    int (*volatile nowhere)() = reinterpret_cast<int (*)()>(static_cast<uintptr_t>(0xdeadbeefdeacULL)); // Aligned, or arm faults on the fetch alignment instead of the mapping.
     volatile int result = nowhere(); // Using the result keeps this out of tail position, which keeps the frame.
     return result + 1;
 }
+
+#if !defined(__aarch64__) && !defined(__arm__) // No trap to test on arm, integer division by zero just yields zero there.
+MM_NOINLINE int stackTraceDivisionFunction() {
+    volatile int zero = 0; // Volatile, or the compiler sees the division by zero and emits a trap instead of dividing.
+    volatile int result = 64 / zero; // Using the result keeps this out of tail position, which keeps the frame.
+    return result + 1;
+}
+#endif
+
+#ifndef _WINDOWS
+MM_NOINLINE void stackTraceTrapFunction() {
+    __builtin_trap(); // ud2 on x86, brk on arm.
+}
+#endif
 
 static volatile char *volatile stackTraceOverflowEscape; // Never read, the pad below is stored here so it exists.
 
@@ -148,51 +205,74 @@ UNIT_TEST(StackTrace, FunctionNamesAreResolved) {
 }
 
 UNIT_TEST(StackTrace, CrashHandlerNamesTheCrashingFunction) {
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         // Gtest wraps test bodies in __try/__except, and a frame-based handler runs before any unhandled
         // exception filter, so on windows ours would never see the access violation below.
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceCrashingFunction();
-    }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::HasSubstr("main")));
+    }, killedBy(SIGSEGV), testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::HasSubstr("main")));
 }
 
 UNIT_TEST(StackTrace, CrashOnAnotherThreadIsTraced) {
     // The handlers are process-wide, but only the thread that installs them gets an alternate signal stack,
     // so this one runs on the worker's own stack. That's enough for anything short of stack exhaustion.
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         std::thread(stackTraceCrashingFunction).join();
     // A worker's stack ends at the thread entry, so main being absent is what says we traced the thread that
     // crashed rather than the one that installed the handlers.
-    }, testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::Not(testing::HasSubstr("main"))));
+    }, killedBy(SIGSEGV), testing::AllOf(HasFrame(0, "stackTraceCrashingFunction"), testing::Not(testing::HasSubstr("main"))));
 }
 
 UNIT_TEST(StackTrace, NullFunctionCallIsTraced) {
     // Calling a null pointer faults at address zero, where there's nothing to unwind from. The call pushed its
     // return address first though, and walking on from that names the function that made the call and
     // everything above it.
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceNullCallFunction();
-    }, testing::AllOf(HasFrame(0, "stackTraceNullCallFunction"), testing::HasSubstr("main")));
+    }, killedBy(SIGSEGV), testing::AllOf(HasFrame(0, "stackTraceNullCallFunction"), testing::HasSubstr("main")));
 }
 
 UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
-    // Calling 0xdeadbeefdead faults with the pc at the bad address, and the handler has to recognize that
+    // Calling 0xdeadbeefdeac faults with the pc at the bad address, and the handler has to recognize that
     // to walk from the caller instead.
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceBadTargetCallFunction();
-    }, testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
+    }, killedBy(SIGSEGV), testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
 }
+
+#if !defined(__aarch64__) && !defined(__arm__)
+UNIT_TEST(StackTrace, DivisionByZeroIsTraced) {
+    EXPECT_EXIT({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        stackTraceDivisionFunction();
+    }, killedBy(SIGFPE), testing::AllOf(HasFrame(0, "stackTraceDivisionFunction"), testing::HasSubstr("main")));
+}
+#endif
+
+#ifndef _WINDOWS
+UNIT_TEST(StackTrace, BuiltinTrapIsTraced) {
+    EXPECT_EXIT({
+        GTEST_FLAG_SET(catch_exceptions, false);
+
+        StackTraceOnCrash handler;
+        stackTraceTrapFunction();
+    }, killedBy(SIG_BUILTIN_TRAP),
+       testing::AllOf(HasFrame(0, "stackTraceTrapFunction"), testing::HasSubstr("main")));
+}
+#endif
 
 UNIT_TEST(StackTrace, StackOverflowIsTraced) {
     if (detail::isRunningUnderRosetta())
@@ -200,12 +280,12 @@ UNIT_TEST(StackTrace, StackOverflowIsTraced) {
 
     // The handlers run on an alternate stack, and this is what checks it. Without one the handler itself
     // faults on the exhausted stack and the crash prints nothing at all.
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceOverflowFunction(0);
-    }, HasFrame(0, "stackTraceOverflowFunction"));
+    }, killedBy(SIGSEGV), HasFrame(0, "stackTraceOverflowFunction"));
 }
 
 UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
@@ -217,25 +297,25 @@ UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
         return tracePos != std::string::npos && callbackPos != std::string::npos && tracePos < callbackPos;
     });
 
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler([] { std::fputs("crash callback ran", stderr); });
         stackTraceCrashingFunction();
-    }, callbackAfterTrace);
+    }, killedBy(SIGSEGV), callbackAfterTrace);
 }
 
 UNIT_TEST(StackTrace, AbortIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
 
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceAbortFunction();
-    }, testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
-                      testing::HasSubstr("stackTraceAbortFunction")));
+    }, killedBy(SIGABRT), testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
+                                         testing::HasSubstr("stackTraceAbortFunction")));
 }
 
 UNIT_TEST(StackTrace, AssertIsTraced) {
@@ -244,41 +324,41 @@ UNIT_TEST(StackTrace, AssertIsTraced) {
 
     // A failed assert is the crash a debug build produces most. It arrives as an abort with the assertion
     // message printed in front, and the trace has to follow that message rather than replace it.
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
         sendAssertReportsToStderr();
 
         StackTraceOnCrash handler;
         stackTraceAssertFunction();
-    }, testing::AllOf(testing::HasSubstr("Assertion"),
-                      testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
-                      testing::HasSubstr("stackTraceAssertFunction")));
+    }, killedBy(SIGABRT), testing::AllOf(testing::HasSubstr("Assertion"),
+                                         testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
+                                         testing::HasSubstr("stackTraceAssertFunction")));
 }
 
 UNIT_TEST(StackTrace, TerminateIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
 
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTraceTerminateFunction();
-    }, testing::AllOf(testing::HasSubstr(isWindows ? "std::terminate()" : isMac ? "terminating" : "terminate"),
-                      testing::HasSubstr("stackTraceTerminateFunction")));
+    }, killedBy(SIGABRT), testing::AllOf(testing::HasSubstr(isWindows ? "std::terminate()" : isMac ? "terminating" : "terminate"),
+                                         testing::HasSubstr("stackTraceTerminateFunction")));
 }
 
 UNIT_TEST(StackTrace, PureVirtualCallIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
 
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         StackTraceOnCrash handler;
         stackTracePureCallFunction();
-    }, testing::AllOf(testing::HasSubstr(isWindows ? "pure virtual function call" : "callPureIndirectly"),
-                      testing::HasSubstr("stackTracePureCallFunction")));
+    }, killedBy(sigPureCall()), testing::AllOf(testing::HasSubstr(isWindows ? "pure virtual function call" : "callPureIndirectly"),
+                                               testing::HasSubstr("stackTracePureCallFunction")));
 }
 
 #ifdef _WINDOWS
