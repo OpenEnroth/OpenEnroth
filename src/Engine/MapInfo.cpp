@@ -1,6 +1,5 @@
 #include "MapInfo.h"
 
-#include <array>
 #include <map>
 #include <string>
 

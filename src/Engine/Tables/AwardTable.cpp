@@ -1,6 +1,5 @@
 #include "AwardTable.h"
 
-#include <array>
 #include <string>
 
 #include "Library/Tsv/TsvReader.h"

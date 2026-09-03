@@ -1,6 +1,5 @@
 #include "HouseTable.h"
 
-#include <array>
 #include <map>
 #include <string>
 

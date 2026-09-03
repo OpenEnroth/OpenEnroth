@@ -4,6 +4,7 @@
 #include <array>
 #include <map>
 #include <string>
+#include <string_view>
 
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
