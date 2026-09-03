@@ -2543,7 +2543,7 @@ void Actor::UpdateActorAI() {
             continue;
 
         // An actor still in the air, e.g. thrown up by armageddon, keeps falling and leaves the pain state once it lands.
-        if (pActor->aiState == InPain && pActor->isAirborne())
+        if (pActor->isAirborneInPain())
             continue;
 
         if (pActor->aiState == Dying) {
@@ -2620,7 +2620,7 @@ void Actor::UpdateActorAI() {
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
 
         // An actor still in the air keeps falling and leaves the pain state once it lands.
-        if (pActor->aiState == InPain && pActor->isAirborne())
+        if (pActor->isAirborneInPain())
             continue;
 
         if (!pActor->ActorNearby())
