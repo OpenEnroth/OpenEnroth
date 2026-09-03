@@ -15,12 +15,12 @@
 // Everything below operates on the stored string, where the only separator is a forward slash.
 static constexpr char separator = '/';
 
-// Whether the path starts with a drive letter followed by a root directory, e.g. "C:/". A bare "C:" is not root
-// syntax - there is no cross-platform meaning to preserve, so it parses as ordinary relative bytes.
+// Whether the path starts with a drive letter, e.g. "C:", "C:/" or "C:x". All three are rooted at the drive. Win32
+// resolves "C:x" against the current directory on drive C rather than against its root, but one root per path cannot
+// carry that distinction, so the drive-relative spelling normalizes into the drive-absolute one.
 static bool hasDriveRoot([[maybe_unused]] std::string_view path) {
 #ifdef _WINDOWS
-    return path.size() >= 3 && (ascii::isLower(path[0]) || ascii::isUpper(path[0])) && path[1] == ':' &&
-           path[2] == separator;
+    return path.size() >= 2 && (ascii::isLower(path[0]) || ascii::isUpper(path[0])) && path[1] == ':';
 #else
     return false;
 #endif
@@ -28,11 +28,11 @@ static bool hasDriveRoot([[maybe_unused]] std::string_view path) {
 
 // Length of the root prefix - the leading part that normalization preserves verbatim. That's "" or "/" everywhere,
 // plus "//" on POSIX (a path starting with exactly two slashes is implementation-defined, so we don't touch it), and
-// "C:/", "//server/" or an extended-length prefix like "//?/C:/" on Windows. The root is what a relative path is relative to, so an absolute path
-// is exactly one that has a non-empty root.
+// "C:", "C:/", "//server/" or an extended-length prefix like "//?/C:/" on Windows. The root is what a relative path
+// is relative to, so an absolute path is exactly one that has a non-empty root.
 static size_t rootSize(std::string_view path) {
     if (hasDriveRoot(path))
-        return 3;
+        return path.size() > 2 && path[2] == separator ? 3 : 2; // A bare drive is a root that carries no separator.
 
     size_t slashes = 0;
     while (slashes < path.size() && path[slashes] == separator)
@@ -138,6 +138,13 @@ static std::string normalized(std::string_view path) {
             result += separator;
         result += stack[i];
     }
+
+    // Dropping a "." or an "x/.." pair can leave a drive letter leading, where it becomes a root the input didn't
+    // have, and the pass above already walked it as an ordinary component. Normalizing again settles it, or
+    // normalizing twice would answer differently than normalizing once. The second pass starts rooted and can't
+    // reach this branch.
+    if (!isRooted && rootSize(result) > 0)
+        return normalized(result);
 
     return result;
 }

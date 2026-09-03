@@ -96,7 +96,12 @@ class Path {
      * @return                          Copy of this path in lexical normal form - single separators with no trailing
      *                                  one, no `.` segments, and `..` collapsed, surviving only as a leading run of a
      *                                  relative path and clamped above an absolute root so that `"/.."` is `"/"`.
-     *                                  A lone `"."` normalizes to the empty path, which means "here".
+     *                                  A lone `"."` normalizes to the empty path, which means "here". A root keeps
+     *                                  the separator it carries, so `"C:"` normalizes to `"C:/"` on Windows.
+     *
+     *                                  Dropping a `"."` can leave a drive letter leading, which makes a relative
+     *                                  path absolute. `"./C:/a"` normalizes to `"C:/a"`. Ask whether a path is
+     *                                  absolute after normalizing it, never before.
      */
     [[nodiscard]] Path normalized() const;
 
@@ -111,8 +116,10 @@ class Path {
 
     /**
      * @return                          The root this path is relative to, empty for a relative path. That's `"/"`,
-     *                                  or `"//"` on POSIX, or `"C:/"` / `"//server/"` on Windows. Note that a bare
-     *                                  `"C:"` is not root syntax - it parses as an ordinary relative segment.
+     *                                  or `"//"` on POSIX, or `"C:"`, `"C:/"` and `"//server/"` on Windows. A bare
+     *                                  drive letter is root syntax, so `"C:"` and `"C:x"` are both absolute. Win32
+     *                                  reads those two as relative to the current directory on drive C, a meaning
+     *                                  one root per path can't carry and this type doesn't preserve.
      *                                  The returned view points into this path, so it dies with it.
      */
     [[nodiscard]] std::string_view root() const {

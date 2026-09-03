@@ -95,12 +95,33 @@ UNIT_TEST(Path, WindowsRoots) {
     // being laundered into a relative one. std::filesystem instead keeps the head's drive here, giving "C:/b".
     EXPECT_EQ((Path("C:/a") / Path("/b")).string(), "/b");
 
-    // A bare drive letter is not root syntax - there is no cross-platform meaning to preserve - so it joins as an
-    // ordinary segment. Which means a relative head can concatenate into something that parses absolute. That is
-    // degenerate but inert, since the boundary rejects the ingredients and the result alike.
-    EXPECT_EQ((Path("C:/a") / Path("C:b")).string(), "C:/a/C:b");
-    EXPECT_EQ((Path("C:") / Path("b")).string(), "C:/b");
-    EXPECT_TRUE((Path("C:") / Path("b")).isAbsolute());
+    // A bare drive letter is root syntax, so it can't be laundered into a relative segment. Reading it as a relative
+    // segment was a guard bypass: "C:" was then relative, so a SubFileSystem based at it passed a constructor check
+    // that asks only whether the base itself is absolute, and every later call concatenated that base with its tail
+    // into an absolute "C:/b" that no forwarder validates.
+    EXPECT_TRUE(Path("C:").isAbsolute());
+    EXPECT_EQ(Path("C:").root(), "C:");
+    EXPECT_EQ((Path("C:") / Path("b")).string(), "C:/b"); // A rooted head keeps its root.
+    EXPECT_EQ((Path("C:/a") / Path("C:b")).string(), "C:b"); // A rooted tail replaces the head, and "C:b" is rooted.
+
+    // Win32 resolves "C:b" against the current directory on drive C rather than against its root. One root per path
+    // can't carry that, so normalizing spells it the drive-absolute way.
+    EXPECT_EQ(Path("C:b").root(), "C:");
+    EXPECT_EQ(Path("C:b").normalized().string(), "C:/b");
+    EXPECT_EQ(Path("C:").normalized().string(), "C:/"); // A root carries its separator.
+
+    // Dropping a "." leaves the drive letter leading, which turns a relative path into an absolute one. Nothing
+    // relies on normalization preserving relativeness, and every caller asks after normalizing rather than before.
+    EXPECT_TRUE(Path("./C:/a").isRelative());
+    EXPECT_EQ(Path("./C:/a").normalized().string(), "C:/a");
+    EXPECT_TRUE(Path("./C:/a").normalized().isAbsolute());
+
+    // Promotion splits a component at the drive boundary, which can expose a dot segment that the first pass walked
+    // straight past as ordinary bytes. Normalizing has to run again or it returns "a:.", which is not a normal form,
+    // and the file system layer asserts on normal form.
+    EXPECT_EQ(Path("./a:.").normalized().string(), "a:/");
+    EXPECT_EQ(Path("./a:..").normalized().string(), "a:/");
+    EXPECT_TRUE(Path("./a:.").normalized().isNormalized());
 
     EXPECT_EQ(Path("//").normalized().string(), "/"); // Only "//" followed by a share name is root syntax here.
     EXPECT_EQ(Path("//server/x").parent(), Path("//server/")); // The share is one value, however it's spelled.
@@ -204,9 +225,14 @@ UNIT_TEST(Path, Dichotomy) {
     // A rooted tail replaces the head, so the absolute intent survives the join instead of being laundered away.
     EXPECT_EQ((Path("base") / Path("/x")).string(), "/x");
 
-    // A bare drive letter is not root syntax - there's no cross-platform meaning to preserve.
+    // A drive letter is root syntax on Windows and an ordinary file name character everywhere else.
+#ifdef _WINDOWS
+    EXPECT_TRUE(Path("C:x").isAbsolute());
+    EXPECT_EQ(Path("C:x").name(), "x");
+#else
     EXPECT_TRUE(Path("C:x").isRelative());
     EXPECT_EQ(Path("C:x").name(), "C:x");
+#endif
 }
 
 UNIT_TEST(Path, Anatomy) {
@@ -362,6 +388,9 @@ UNIT_TEST(Path, LexicalOpsMatchStdFilesystem) {
     // component, so parent_path("//?/C:/x") is "//?/C:" and stem("//?/UNC/server/share") is "share". We anchor at
     // the volume instead, because Win32 resolves nothing inside such a path and ".." must not climb past it. That
     // divergence is the design, so the oracle can't arbitrate it - WindowsRoots pins those shapes by hand.
+    //
+    // A bare drive letter is absent for the same reason. std::filesystem gives "C:" a root name but no root
+    // directory, which makes it relative there and absolute here, so the oracle can't arbitrate that either.
 #ifdef _WINDOWS
     for (std::string_view windowsPath : {"C:/a", "D:/b", "//server", "//server/share", "a\\b", "//server/share/x"})
         paths.emplace_back(windowsPath);

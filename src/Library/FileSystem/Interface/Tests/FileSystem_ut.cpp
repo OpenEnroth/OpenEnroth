@@ -50,7 +50,9 @@ UNIT_TEST(FileSystem, AbsolutePathsAreRefused) {
     }
 
 #ifdef _WINDOWS
-    for (std::string_view path : {"C:/Windows", "//server/share", "//?/C:/x"}) {
+    // "C:" and "C:x" are here because a drive letter is a root on its own. They used to read as relative segments,
+    // and the boundary waved them through.
+    for (std::string_view path : {"C:/Windows", "//server/share", "//?/C:/x", "C:", "C:x"}) {
         EXPECT_FALSE(fs.exists(path)) << path;
         EXPECT_ANY_THROW((void) fs.read(path)) << path;
     }
