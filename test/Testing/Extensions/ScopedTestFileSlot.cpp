@@ -1,13 +1,13 @@
 #include "ScopedTestFileSlot.h"
 
-#include <filesystem>
+#include "Utility/System/Fs.h"
 
-ScopedTestFileSlot::ScopedTestFileSlot(const NativePath &path) : _path(path) {
-    std::error_code ec;
-    std::filesystem::remove(_path.toStdPath(), ec);
+ScopedTestFileSlot::ScopedTestFileSlot(const Path &path) : _path(path) {
+    fs::remove(_path); // Drop whatever an earlier run might have left behind.
 }
 
 ScopedTestFileSlot::~ScopedTestFileSlot() {
-    std::error_code ec;
-    std::filesystem::remove(_path.toStdPath(), ec);
+    try {
+        fs::remove(_path);
+    } catch (...) {} // Cleanup errors shouldn't throw out of a dtor.
 }

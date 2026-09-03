@@ -74,6 +74,22 @@ UNIT_TEST(SubFileSystem, CannotEscapeWithDotDot) {
     EXPECT_ANY_THROW((void) sub.read("a/../../../secret.txt"));
 }
 
+UNIT_TEST(SubFileSystem, BasePathMustBeRelative) {
+    MemoryFileSystem base("memfs");
+
+    EXPECT_ANY_THROW(SubFileSystem("/etc", &base));
+    EXPECT_ANY_THROW(SubFileSystem("..", &base));
+    EXPECT_ANY_THROW(SubFileSystem("a/../..", &base));
+
+#ifdef _WINDOWS
+    // These two used to read as relative segments, which let them through this guard. The base is composed with the
+    // tail on every later call, so the result was an absolute path arriving at a forwarder, and forwarders skip
+    // validation by design.
+    EXPECT_ANY_THROW(SubFileSystem("C:", &base));
+    EXPECT_ANY_THROW(SubFileSystem("C:x", &base));
+#endif
+}
+
 UNIT_TEST(SubFileSystem, RootWhenBasePathDoesntExist) {
     // Root of a FileSystem always exists, even if the base path doesn't exist on the underlying file system.
     MemoryFileSystem base("memfs");

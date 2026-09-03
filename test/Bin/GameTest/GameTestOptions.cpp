@@ -46,7 +46,7 @@ GameTestOptions GameTestOptions::parse(int argc, char **argv) {
 
     if (!result.listRequested && !result.helpPrinted && !testPath)
         throw CLI::RequiredError(testPathOption->get_name());
-    result.testPath = NativePath::fromWtf8(testPath.value_or(""));
+    result.testPath = Path(testPath.value_or(""));
 
     return result;
 }

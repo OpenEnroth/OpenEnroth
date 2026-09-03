@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <memory>
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 #include "OutputStream.h"
 
@@ -25,7 +25,7 @@ class FileOutputStream : public OutputStream {
      * @param bufferSize                Size of the internal write buffer.
      * @throws Exception                On error.
      */
-    explicit FileOutputStream(const NativePath &path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
+    explicit FileOutputStream(const Path &path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
     virtual ~FileOutputStream();
 
     /**
@@ -35,7 +35,7 @@ class FileOutputStream : public OutputStream {
      * @param bufferSize                Size of the internal write buffer.
      * @throws Exception                On error.
      */
-    void open(const NativePath &path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
+    void open(const Path &path, size_t bufferSize = DEFAULT_BUFFER_SIZE);
 
  private:
     virtual void _overflow(Buffer *buffer, const void *data, size_t size) override;

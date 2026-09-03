@@ -75,7 +75,7 @@ target_link_libraries(engine
         library_filesystem_embedded
         library_filesystem_merging
         library_filesystem_masking
-        library_filesystem_directory
+        library_filesystem_native
         library_filesystem_lowercase
         library_filesystem_proxy
         resources

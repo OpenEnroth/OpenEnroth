@@ -30,7 +30,7 @@ class FileSystemDumper {
     }
 
  private:
-    void dump(FileSystemPathView path) {
+    void dump(PathView path) {
         writeOutDir(path);
         if (_entries == _maxEntries)
             return;
@@ -39,7 +39,7 @@ class FileSystemDumper {
         std::ranges::sort(entries);
 
         for (const DirectoryEntry &entry : entries) {
-            FileSystemPath entryPath = path / entry.name;
+            Path entryPath = Path(path) / Path(entry.name);
 
             if (entry.type == FILE_REGULAR) {
                 writeOutFile(entryPath);
@@ -53,18 +53,18 @@ class FileSystemDumper {
         }
     }
 
-    void writeOutDir(FileSystemPathView path) {
+    void writeOutDir(PathView path) {
         if (_target) {
             _target->push_back(FileSystemDumpEntry(path.string(), FILE_DIRECTORY));
         } else {
-            fmt::println(_stream, "{}", path.string());
+            fmt::println(_stream, "{}", path.displayString());
         }
 
         _entries++;
         assert(_entries <= _maxEntries);
     }
 
-    void writeOutFile(FileSystemPathView path) {
+    void writeOutFile(PathView path) {
         Blob content;
         if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS)
             content = _fs->read(path);
@@ -73,9 +73,9 @@ class FileSystemDumper {
             _target->push_back(FileSystemDumpEntry(path.string(), FILE_REGULAR, std::move(content)));
         } else {
             if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS) {
-                fmt::println(_stream, "{}: \"{}\" ", path.string(), ascii::toPrintable(content.str(), '_'));
+                fmt::println(_stream, "{}: \"{}\" ", path.displayString(), ascii::toPrintable(content.str(), '_'));
             } else {
-                fmt::println(_stream, "{}", path.string());
+                fmt::println(_stream, "{}", path.displayString());
             }
         }
 

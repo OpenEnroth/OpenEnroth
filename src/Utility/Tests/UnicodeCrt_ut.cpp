@@ -63,7 +63,7 @@ UNIT_TEST(UnicodeCrt, filesystem_exists_remove) {
     std::u8string u8path = std::u8string(u8prefix) + u8"_exists";
     std::string path = reinterpret_cast<const char *>(u8path.c_str());
 
-    FileOutputStream s(NativePath::fromWtf8(path));
+    FileOutputStream s{Path(path)};
     s.write("something");
     s.close();
 
@@ -90,7 +90,7 @@ UNIT_TEST(UnicodeCrt, filesystem_rename) {
     std::string path = reinterpret_cast<const char *>(u8path.c_str());
     std::string path2 = path + "2";
 
-    FileOutputStream s(NativePath::fromWtf8(path));
+    FileOutputStream s{Path(path)};
     s.write("something_else");
     s.close();
 

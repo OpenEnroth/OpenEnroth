@@ -1,5 +1,6 @@
 #include "NullFileSystem.h"
 
+#include <cassert>
 #include <memory>
 #include <vector>
 #include <string>
@@ -9,15 +10,18 @@
 #include "Utility/String/Encoding.h"
 #include "Utility/String/Join.h"
 
-bool NullFileSystem::_exists(FileSystemPathView path) const {
+bool NullFileSystem::_exists(PathView path) const {
+    assert(path.isNormalized());
     return false;
 }
 
-FileStat NullFileSystem::_stat(FileSystemPathView path) const {
+FileStat NullFileSystem::_stat(PathView path) const {
+    assert(path.isNormalized());
     return {};
 }
 
-void NullFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
+void NullFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+    assert(path.isNormalized());
     if (path.isEmpty()) {
         entries->clear();
         return;
@@ -25,18 +29,20 @@ void NullFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *e
     FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 }
 
-Blob NullFileSystem::_read(FileSystemPathView path) const {
+Blob NullFileSystem::_read(PathView path) const {
+    assert(path.isNormalized());
     reportReadError(path);
 }
 
-std::unique_ptr<InputStream> NullFileSystem::_openForReading(FileSystemPathView path) const {
+std::unique_ptr<InputStream> NullFileSystem::_openForReading(PathView path) const {
+    assert(path.isNormalized());
     reportReadError(path);
 }
 
-std::string NullFileSystem::_displayPath(FileSystemPathView path) const {
-    return join("null://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+std::string NullFileSystem::_displayPath(PathView path) const {
+    return join("null://", path.displayString());
 }
 
-[[noreturn]] void NullFileSystem::reportReadError(FileSystemPathView path) const {
+[[noreturn]] void NullFileSystem::reportReadError(PathView path) const {
     FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
 }

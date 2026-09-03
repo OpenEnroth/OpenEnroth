@@ -10,20 +10,22 @@
 
 #include "Utility/String/Format.h"
 
-RotatingLogSink::RotatingLogSink(std::string_view path, FileSystem *fs, int count): StreamLogSink(openRotatingStream(FileSystemPath(path), fs, count)) {}
+RotatingLogSink::RotatingLogSink(std::string_view path, FileSystem *fs, int count): StreamLogSink(openRotatingStream(Path(path), fs, count)) {}
 
-std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const FileSystemPath &path, FileSystem *fs, int count) {
+std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &rawPath, FileSystem *fs, int count) {
     assert(fs);
 
-    auto components = path.components();
+    // parent(), stem() and extension() are lexical, so a dotted path would have us list one directory and write into
+    // another - "logs/../logs/oe.log" has a parent of "logs/..". The path comes from a caller, so normalize first.
+    Path path = rawPath.normalized();
 
     // Find existing log files.
     std::vector<DirectoryEntry> entries;
-    if (fs->exists(components.prefix())) {
-        entries = fs->ls(components.prefix());
+    if (fs->exists(path.parent())) {
+        entries = fs->ls(path.parent());
         std::erase_if(entries, [&](const DirectoryEntry &entry) {
             // We're being lazy here and just checking stem & extension. Can do a regex, but that would be an overkill.
-            return !(entry.name.starts_with(components.stem()) && entry.name.ends_with(components.extension()));
+            return !(entry.name.starts_with(path.stem()) && entry.name.ends_with(path.extension()));
         });
     }
 
@@ -35,17 +37,17 @@ std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const FileSyst
     // not keen on bringing it back.
     std::ranges::sort(entries, std::ranges::greater());
     while (!entries.empty() && entries.size() >= count) {
-        fs->remove(components.prefix() / entries.back().name);
+        fs->remove(path.parent() / entries.back().name);
         entries.pop_back();
     }
 
     // Open the file that we'll be using.
     std::string name = fmt::format("{}{}{:%Y_%m_%d_%H_%M_%S}{}",
-                                   components.stem(),
-                                   components.stem().ends_with('_') ? "" : "_",
+                                   path.stem(),
+                                   path.stem().ends_with('_') ? "" : "_",
                                    std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now()),
-                                   components.extension());
-    return fs->openForWriting(components.prefix() / name);
+                                   path.extension());
+    return fs->openForWriting(path.parent() / name);
 }
 
 RotatingLogSink::~RotatingLogSink() = default;

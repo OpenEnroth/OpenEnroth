@@ -157,6 +157,9 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR (CMAKE_CXX_COMPILER_ID STREQUAL 
     add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines.
     add_compile_options(/MP) # Multi-threaded build.
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor.
+    add_compile_options(/utf-8) # Source and execution charset are UTF-8, so that non-ASCII literals mean the same
+                                # bytes as on GCC and Clang. We get this from fmt transitively, but only on targets
+                                # that link it, and it's too load-bearing to leave to a dependency.
     add_link_options(/OPT:REF) # Eliminate unreferenced data & functions.
     add_link_options(/OPT:ICF) # Enable COMDAT folding, should decrease binary sizes?
     if (OE_BUILD_ARCHITECTURE STREQUAL "x86")

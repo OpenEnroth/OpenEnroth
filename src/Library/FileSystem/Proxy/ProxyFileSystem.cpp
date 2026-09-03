@@ -5,40 +5,48 @@
 #include <memory>
 #include <string>
 
-bool ProxyFileSystem::_exists(FileSystemPathView path) const {
-    return nonNullBase()->_exists(path);
+bool ProxyFileSystem::_exists(PathView path) const {
+    assert(path.isNormalized());
+    return existsOf(nonNullBase(), path);
 }
 
-FileStat ProxyFileSystem::_stat(FileSystemPathView path) const {
-    return nonNullBase()->_stat(path);
+FileStat ProxyFileSystem::_stat(PathView path) const {
+    assert(path.isNormalized());
+    return statOf(nonNullBase(), path);
 }
 
-void ProxyFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    nonNullBase()->_ls(path, entries);
+void ProxyFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+    assert(path.isNormalized());
+    lsOf(nonNullBase(), path, entries);
 }
 
-Blob ProxyFileSystem::_read(FileSystemPathView path) const {
-    return nonNullBase()->_read(path);
+Blob ProxyFileSystem::_read(PathView path) const {
+    assert(path.isNormalized());
+    return readOf(nonNullBase(), path);
 }
 
-void ProxyFileSystem::_write(FileSystemPathView path, const Blob &data) {
-    return nonNullBase()->_write(path, data);
+void ProxyFileSystem::_write(PathView path, const Blob &data) {
+    assert(path.isNormalized());
+    return writeOf(nonNullBase(), path, data);
 }
 
-std::unique_ptr<InputStream> ProxyFileSystem::_openForReading(FileSystemPathView path) const {
-    return nonNullBase()->_openForReading(path);
+std::unique_ptr<InputStream> ProxyFileSystem::_openForReading(PathView path) const {
+    assert(path.isNormalized());
+    return openForReadingOf(nonNullBase(), path);
 }
 
-std::unique_ptr<OutputStream> ProxyFileSystem::_openForWriting(FileSystemPathView path) {
-    return nonNullBase()->_openForWriting(path);
+std::unique_ptr<OutputStream> ProxyFileSystem::_openForWriting(PathView path) {
+    assert(path.isNormalized());
+    return openForWritingOf(nonNullBase(), path);
 }
 
-bool ProxyFileSystem::_remove(FileSystemPathView path) {
-    return nonNullBase()->_remove(path);
+bool ProxyFileSystem::_remove(PathView path) {
+    assert(path.isNormalized());
+    return removeOf(nonNullBase(), path);
 }
 
-std::string ProxyFileSystem::_displayPath(FileSystemPathView path) const {
-    return nonNullBase()->_displayPath(path);
+std::string ProxyFileSystem::_displayPath(PathView path) const {
+    return displayPathOf(nonNullBase(), path);
 }
 
 FileSystem *ProxyFileSystem::nonNullBase() const {

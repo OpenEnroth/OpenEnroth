@@ -70,7 +70,7 @@ static std::vector<LodEntry> parseFileEntries(InputStream &stream, const LodEntr
 
 LodReader::LodReader() = default;
 
-LodReader::LodReader(const NativePath &path, LodOpenFlags openFlags) {
+LodReader::LodReader(const Path &path, LodOpenFlags openFlags) {
     open(path, openFlags);
 }
 
@@ -82,7 +82,7 @@ LodReader::~LodReader() {
     close();
 }
 
-void LodReader::open(const NativePath &path, LodOpenFlags openFlags) {
+void LodReader::open(const Path &path, LodOpenFlags openFlags) {
     open(Blob::fromFile(path), openFlags); // Blob::fromFile throws if the file doesn't exist.
 }
 

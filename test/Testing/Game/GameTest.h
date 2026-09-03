@@ -4,6 +4,7 @@
 #include "Testing/Extensions/ExpectExtensions.h"
 #include "Testing/Extensions/ScopedTestFile.h"
 #include "Testing/Extensions/ScopedTestFileSlot.h"
+#include "Testing/Extensions/ScopedTestFolder.h"
 
 #include "Engine/Components/Control/EngineController.h"
 

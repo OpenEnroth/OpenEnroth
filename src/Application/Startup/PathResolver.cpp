@@ -2,11 +2,12 @@
 
 #include <string>
 #include <vector>
-#include <filesystem>
+
+#include "Utility/System/Fs.h"
 
 #include "Library/Logger/Logger.h"
 #include "Library/Environment/Interface/Environment.h"
-#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 #include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
 
 static const std::vector<std::string_view> globalValidateList = {
@@ -64,25 +65,25 @@ static const PathResolutionConfig mm8Config = {
     }
 };
 
-static std::vector<NativePath> resolvePaths(Environment *environment, const PathResolutionConfig &config) {
+static std::vector<Path> resolvePaths(Environment *environment, const PathResolutionConfig &config) {
     // If we have a path override then it'll be the only path we'll check.
     std::string envPath = environment->getenv(config.overrideEnvKey);
     if (!envPath.empty()) {
         MM_INFO("Path override provided, '{}={}'.", config.overrideEnvKey, envPath);
-        return {NativePath::fromWtf8(envPath)};
+        return {Path(envPath)};
     }
 
-    std::vector<NativePath> result;
+    std::vector<Path> result;
 
     // Otherwise we check PWD first.
-    result.push_back(NativePath::fromStdPath(std::filesystem::current_path()));
+    result.push_back(fs::cwd());
 
     // Then we check paths from registry on Windows,...
     for (const char *registryKey : config.registryKeys) {
         if (registryKey) {
             std::string registryPath = environment->queryRegistry(registryKey);
             if (!registryPath.empty())
-                result.push_back(NativePath::fromWtf8(registryPath));
+                result.push_back(Path(registryPath));
         }
     }
 
@@ -90,10 +91,10 @@ static std::vector<NativePath> resolvePaths(Environment *environment, const Path
     // ...Android storage paths on Android,...
     std::string externalPath = environment->path(PATH_ANDROID_STORAGE_EXTERNAL);
     if (!externalPath.empty())
-        result.push_back(NativePath::fromWtf8(externalPath));
+        result.push_back(Path(externalPath));
     std::string internalPath = environment->path(PATH_ANDROID_STORAGE_INTERNAL);
     if (!internalPath.empty())
-        result.push_back(NativePath::fromWtf8(internalPath));
+        result.push_back(Path(internalPath));
     // TODO(captainurist): need a mechanism to show user-visible errors. Commenting out for now.
     //if (ANDROID && result.empty())
     //    platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
@@ -103,26 +104,26 @@ static std::vector<NativePath> resolvePaths(Environment *environment, const Path
     // ...or Library/Application Support in home on macOS.
     std::string home = environment->path(PATH_HOME);
     if (!home.empty())
-        result.push_back(NativePath::fromWtf8(home + "/Library/Application Support/OpenEnroth"));
+        result.push_back(Path(home + "/Library/Application Support/OpenEnroth"));
 #endif
 
     return result;
 }
 
-std::vector<NativePath> resolveMm6Paths(Environment *environment) {
+std::vector<Path> resolveMm6Paths(Environment *environment) {
     return resolvePaths(environment, mm6Config);
 }
 
-std::vector<NativePath> resolveMm7Paths(Environment *environment) {
+std::vector<Path> resolveMm7Paths(Environment *environment) {
     return resolvePaths(environment, mm7Config);
 }
 
-std::vector<NativePath> resolveMm8Paths(Environment *environment) {
+std::vector<Path> resolveMm8Paths(Environment *environment) {
     return resolvePaths(environment, mm8Config);
 }
 
-bool validateMm7Path(const NativePath &dataPath, std::string *missingFile) {
-    DirectoryFileSystem dirFs(dataPath);
+bool validateMm7Path(const Path &dataPath, std::string *missingFile) {
+    NativeFileSystem dirFs(dataPath);
     LowercaseFileSystem lowerFs(&dirFs);
 
     for (std::string_view entry : globalValidateList) {
@@ -135,15 +136,15 @@ bool validateMm7Path(const NativePath &dataPath, std::string *missingFile) {
     return true;
 }
 
-NativePath resolveMm7UserPath(Environment *environment) {
+Path resolveMm7UserPath(Environment *environment) {
 #ifdef _WINDOWS
     std::string savedGames = environment->path(PATH_WINDOWS_SAVED_GAMES);
     if (savedGames.empty())
         return {}; // Shouldn't really happen.
-    return NativePath::fromWtf8(fmt::format("{}/OpenEnroth", savedGames));
+    return Path(fmt::format("{}/OpenEnroth", savedGames));
 #elif __ANDROID__
-    return NativePath::fromWtf8(fmt::format("{}/.openenroth", environment->path(PATH_ANDROID_STORAGE_INTERNAL)));
+    return Path(fmt::format("{}/.openenroth", environment->path(PATH_ANDROID_STORAGE_INTERNAL)));
 #else // Mac & linux
-    return NativePath::fromWtf8(fmt::format("{}/.openenroth", environment->path(PATH_HOME)));
+    return Path(fmt::format("{}/.openenroth", environment->path(PATH_HOME)));
 #endif
 }

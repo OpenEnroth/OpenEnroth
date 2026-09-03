@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 #include "SndSnapshots.h"
 
@@ -20,7 +20,7 @@
 class SndReader {
  public:
     SndReader();
-    explicit SndReader(const NativePath &path);
+    explicit SndReader(const Path &path);
     explicit SndReader(Blob blob);
     ~SndReader();
 
@@ -29,7 +29,7 @@ class SndReader {
      * @throw Exception                 If the SND couldn't be opened - e.g., if the file doesn't exist,
      *                                  or if it's not in SND format.
      */
-    void open(const NativePath &path);
+    void open(const Path &path);
 
     /**
      * @param blob                      SND data.

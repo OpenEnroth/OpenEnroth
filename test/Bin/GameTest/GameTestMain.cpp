@@ -9,7 +9,7 @@
 
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
-#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 
 #include "Utility/String/Format.h"
 #include "Utility/UnicodeCrt.h"
@@ -42,7 +42,7 @@ int platformMain(int argc, char **argv) {
 
         int exitCode = 0;
         starter.runInstrumented([&] (EngineController *game) {
-            DirectoryFileSystem tfs(opts.testPath);
+            NativeFileSystem tfs(opts.testPath);
             TestController test(game, &tfs, opts.speed);
             GameTest::init(game, &test);
             exitCode = RUN_ALL_TESTS();

@@ -204,7 +204,7 @@ UNIT_TEST(MemoryFileSystem, Overwrite) {
 
 UNIT_TEST(MemoryFileSystem, DisplayPathInvalidUtf8) {
     // displayPath guarantees valid UTF-8, and file names can be arbitrary bytes, e.g. when round-tripped through
-    // an ls of a DirectoryFileSystem on POSIX.
+    // an ls of a NativeFileSystem on POSIX.
     MemoryFileSystem fs("mem");
 
     std::string display = fs.displayPath("lol\xD0kek"); // "\xD0" starts an incomplete UTF-8 sequence.

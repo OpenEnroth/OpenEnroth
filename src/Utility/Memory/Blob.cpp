@@ -5,12 +5,12 @@
 #include <string>
 #include <memory>
 #include <utility>
-#include <filesystem>
 
 #include <mio/mmap.hpp>
 
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Exception.h"
+#include "Utility/System/Fs.h"
 
 #include "FreeDeleter.h"
 
@@ -36,20 +36,18 @@ Blob Blob::fromMalloc(const void *data, size_t size) {
     return result;
 }
 
-Blob Blob::fromFile(const NativePath &path) {
-    std::string displayString = path.absolute().displayString(); // Absolute, so that it's still meaningful in logs.
+Blob Blob::fromFile(const Path &path) {
+    std::string displayString = fs::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
 
     // On Mac mapping an empty file throws, so we need to provide a workaround.
-    std::error_code error;
-    uintmax_t size = std::filesystem::file_size(path.toStdPath(), error);
-    if (!error && size == 0)
+    if (fs::stat(path) == FileStat(FILE_REGULAR, 0))
         return Blob().withDisplayPath(displayString);
 
     // native() is a wchar_t string on Windows, so a WTF-16 name is passed as-is. Throws std::system_error if the
     // file doesn't exist.
     std::shared_ptr<mio::mmap_source> mmap;
     try {
-        mmap = std::make_shared<mio::mmap_source>(path.toStdPath().native());
+        mmap = std::make_shared<mio::mmap_source>(path.native());
     } catch (const std::system_error &e) {
         // mio doesn't fill in the path component for std::system_error, so we need to do this ourselves.
         throw std::system_error(e.code(), displayString);

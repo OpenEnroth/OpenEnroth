@@ -4,11 +4,11 @@
 #include <cstdio>
 #include <memory>
 #include <string>
-#include <filesystem>
 
 #include "Utility/Exception.h"
+#include "Utility/System/Fs.h"
 
-FileOutputStream::FileOutputStream(const NativePath &path, size_t bufferSize) {
+FileOutputStream::FileOutputStream(const Path &path, size_t bufferSize) {
     open(path, bufferSize);
 }
 
@@ -16,16 +16,16 @@ FileOutputStream::~FileOutputStream() {
     destroy();
 }
 
-void FileOutputStream::open(const NativePath &path, size_t bufferSize) {
+void FileOutputStream::open(const Path &path, size_t bufferSize) {
     assert(bufferSize > 0);
 
-    std::string displayString = path.absolute().displayString(); // Absolute, so that it's still meaningful in logs.
+    std::string displayString = fs::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
 
     // Wide fopen on Windows - the narrow one converts the path per the C locale.
 #ifdef _WINDOWS
-    _file = _wfopen(path.toStdPath().c_str(), L"wb");
+    _file = _wfopen(path.native().c_str(), L"wb");
 #else
-    _file = fopen(path.toStdPath().c_str(), "wb");
+    _file = fopen(path.native().c_str(), "wb");
 #endif
     if (!_file)
         Exception::throwFromErrno(displayString);

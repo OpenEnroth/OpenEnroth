@@ -1,5 +1,6 @@
 #include "MemoryFileSystem.h"
 
+#include <cassert>
 #include <vector>
 #include <memory>
 #include <string>
@@ -19,12 +20,14 @@ void MemoryFileSystem::clear() {
     _trie.clear();
 }
 
-bool MemoryFileSystem::_exists(FileSystemPathView path) const {
+bool MemoryFileSystem::_exists(PathView path) const {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
     return _trie.find(path) != nullptr;
 }
 
-FileStat MemoryFileSystem::_stat(FileSystemPathView path) const {
+FileStat MemoryFileSystem::_stat(PathView path) const {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
 
     const Node *node = _trie.find(path);
@@ -38,7 +41,8 @@ FileStat MemoryFileSystem::_stat(FileSystemPathView path) const {
     }
 }
 
-void MemoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
+void MemoryFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+    assert(path.isNormalized());
     const Node *node = _trie.find(path);
     if (!node)
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
@@ -49,7 +53,8 @@ void MemoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
         entries->push_back(DirectoryEntry(name, child->hasValue() ? FILE_REGULAR : FILE_DIRECTORY));
 }
 
-Blob MemoryFileSystem::_read(FileSystemPathView path) const {
+Blob MemoryFileSystem::_read(PathView path) const {
+    assert(path.isNormalized());
     // We mimic how Windows handles file mapping here - treating mapped files as if they are open for reading.
     std::shared_ptr<MemoryFileData> data = nodeForReading(path)->value();
     data->readerCount++;
@@ -57,19 +62,23 @@ Blob MemoryFileSystem::_read(FileSystemPathView path) const {
     return Blob::custom(data->blob.data(), data->blob.size(), std::move(guard)).withDisplayPath(displayPath(path));
 }
 
-void MemoryFileSystem::_write(FileSystemPathView path, const Blob &data) {
+void MemoryFileSystem::_write(PathView path, const Blob &data) {
+    assert(path.isNormalized());
     nodeForWriting(path)->value()->blob = Blob::share(data).withDisplayPath(displayPath(path));
 }
 
-std::unique_ptr<InputStream> MemoryFileSystem::_openForReading(FileSystemPathView path) const {
+std::unique_ptr<InputStream> MemoryFileSystem::_openForReading(PathView path) const {
+    assert(path.isNormalized());
     return std::make_unique<detail::MemoryFileSystemInputStream>(nodeForReading(path)->value());
 }
 
-std::unique_ptr<OutputStream> MemoryFileSystem::_openForWriting(FileSystemPathView path) {
+std::unique_ptr<OutputStream> MemoryFileSystem::_openForWriting(PathView path) {
+    assert(path.isNormalized());
     return std::make_unique<detail::MemoryFileSystemOutputStream>(nodeForWriting(path)->value(), displayPath(path));
 }
 
-bool MemoryFileSystem::_remove(FileSystemPathView path) {
+bool MemoryFileSystem::_remove(PathView path) {
+    assert(path.isNormalized());
     assert(!path.isEmpty());
 
     Node *node = _trie.find(path);
@@ -79,11 +88,11 @@ bool MemoryFileSystem::_remove(FileSystemPathView path) {
     return _trie.erase(node);
 }
 
-std::string MemoryFileSystem::_displayPath(FileSystemPathView path) const {
-    return join(_displayName, "://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+std::string MemoryFileSystem::_displayPath(PathView path) const {
+    return join(_displayName, "://", path.displayString());
 }
 
-const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(FileSystemPathView path) const {
+const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(PathView path) const {
     assert(!path.isEmpty());
     const Node *node = _trie.find(path);
     if (!node)
@@ -95,10 +104,10 @@ const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(FileSystemPathVie
     return node;
 }
 
-MemoryFileSystem::Node *MemoryFileSystem::nodeForWriting(FileSystemPathView path) {
+MemoryFileSystem::Node *MemoryFileSystem::nodeForWriting(PathView path) {
     assert(!path.isEmpty());
 
-    FileSystemPathView tail;
+    PathView tail;
     Node *node = _trie.walk(path, &tail);
 
     if (!tail.isEmpty()) { // File doesn't exist.

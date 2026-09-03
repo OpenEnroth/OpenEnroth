@@ -2,10 +2,10 @@
 
 #include "Application/Startup/GameStarterOptions.h"
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 struct RetraceTestOptions : GameStarterOptions {
-    NativePath testPath;
+    Path testPath;
     bool helpPrinted = false;
     bool listRequested = false;
 

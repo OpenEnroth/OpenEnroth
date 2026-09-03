@@ -47,7 +47,7 @@ class UniversalReader : public ArchiveReader {
     Base _base;
 };
 
-std::unique_ptr<ArchiveReader> ArchiveReader::createArchiveReader(const NativePath &path) {
+std::unique_ptr<ArchiveReader> ArchiveReader::createArchiveReader(const Path &path) {
     Blob data = Blob::fromFile(path);
     switch (magic(data)) {
     case MAGIC_LOD:

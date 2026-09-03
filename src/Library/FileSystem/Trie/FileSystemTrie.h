@@ -9,7 +9,7 @@
 
 #include "Utility/String/TransparentFunctors.h"
 
-#include "Library/FileSystem/Interface/FileSystemPath.h"
+#include "Utility/System/PathView.h"
 
 namespace detail {
 
@@ -66,7 +66,7 @@ class FileSystemTrieNode {
 };
 
 /**
- * Trie map from `FileSystemPath` to `T`.
+ * Trie map from `Path` to `T`.
  * 
  * Each node can contain a value, even if it's not a leaf node. If the user needs a trie that only contains values in
  * the leaf nodes, then it's up to the user to maintain this invariant.
@@ -75,9 +75,9 @@ class FileSystemTrieNode {
  * to a value node. This means, for example, that the following code will leave the trie empty:
  * ```
  * FileSystemTrie<bool> trie;
- * trie.insertOrAssign(FileSystemPath("a/b/c"), true);
- * trie.erase(FileSystemPath("a/b"));
- * // trie is now empty, trie.find(FileSystemPath("a")) will return nullptr.
+ * trie.insertOrAssign(Path("a/b/c"), true);
+ * trie.erase(Path("a/b"));
+ * // trie is now empty, trie.find(Path("a")) will return nullptr.
  * ```
  * 
  * Note that the interface of `FileSystemTrie` is a bit different from what one would expect a map-like class to offer.
@@ -100,7 +100,7 @@ class FileSystemTrie {
         return const_cast<FileSystemTrie *>(this)->root();
     }
 
-    Node *find(Node *base, FileSystemPathView relativePath) {
+    Node *find(Node *base, PathView relativePath) {
         assert(base);
 
         for (std::string_view chunk : relativePath.split()) {
@@ -112,19 +112,19 @@ class FileSystemTrie {
         return base;
     }
 
-    Node *find(FileSystemPathView path) {
+    Node *find(PathView path) {
         return find(root(), path);
     }
 
-    const Node *find(const Node *base, FileSystemPathView relativePath) const {
+    const Node *find(const Node *base, PathView relativePath) const {
         return const_cast<FileSystemTrie *>(this)->find(base, relativePath);
     }
 
-    const Node *find(FileSystemPathView path) const {
+    const Node *find(PathView path) const {
         return const_cast<FileSystemTrie *>(this)->find(path);
     }
 
-    Node *walk(Node *base, FileSystemPathView relativePath, FileSystemPathView *tail = nullptr) {
+    Node *walk(Node *base, PathView relativePath, PathView *tail = nullptr) {
         assert(base);
 
         for (std::string_view chunk : relativePath.split()) {
@@ -142,19 +142,19 @@ class FileSystemTrie {
         return base;
     }
 
-    Node *walk(FileSystemPathView path, FileSystemPathView *tail = nullptr) {
+    Node *walk(PathView path, PathView *tail = nullptr) {
         return walk(root(), path, tail);
     }
 
-    const Node *walk(const Node *base, FileSystemPathView relativePath, FileSystemPathView *tail = nullptr) const {
+    const Node *walk(const Node *base, PathView relativePath, PathView *tail = nullptr) const {
         return const_cast<FileSystemTrie *>(this)->walk(base, relativePath, tail);
     }
 
-    const Node *walk(FileSystemPathView path, FileSystemPathView *tail = nullptr) const {
+    const Node *walk(PathView path, PathView *tail = nullptr) const {
         return const_cast<FileSystemTrie *>(this)->walk(path, tail);
     }
 
-    bool erase(Node *base, FileSystemPathView relativePath = {}) {
+    bool erase(Node *base, PathView relativePath = {}) {
         assert(base);
 
         base = find(base, relativePath);
@@ -167,11 +167,11 @@ class FileSystemTrie {
         return true;
     }
 
-    bool erase(FileSystemPathView path) {
+    bool erase(PathView path) {
         return erase(root(), path);
     }
 
-    void chop(Node *base, FileSystemPathView relativePath = {}) {
+    void chop(Node *base, PathView relativePath = {}) {
         assert(base);
 
         base = find(base, relativePath);
@@ -182,11 +182,11 @@ class FileSystemTrie {
         _prune(base);
     }
 
-    void chop(FileSystemPathView path) {
+    void chop(PathView path) {
         chop(root(), path);
     }
 
-    Node *insertOrAssign(Node *base, FileSystemPathView relativePath, T value) {
+    Node *insertOrAssign(Node *base, PathView relativePath, T value) {
         assert(base);
 
         base = _grow(base, relativePath);
@@ -194,7 +194,7 @@ class FileSystemTrie {
         return base;
     }
 
-    Node *insertOrAssign(FileSystemPathView path, T value) {
+    Node *insertOrAssign(PathView path, T value) {
         return insertOrAssign(root(), path, std::move(value));
     }
 
@@ -217,7 +217,7 @@ class FileSystemTrie {
         return node;
     }
 
-    Node *_grow(Node *base, const FileSystemPathView relativePath) {
+    Node *_grow(Node *base, const PathView relativePath) {
         assert(base);
 
         for (std::string_view chunk : relativePath.split()) {

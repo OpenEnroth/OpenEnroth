@@ -5,9 +5,7 @@
 
 #include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
-#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
-
-#include "Utility/ScopeGuard.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 
 UNIT_TEST(LowercaseFileSystem, Empty) {
     MemoryFileSystem fs0("");
@@ -28,9 +26,9 @@ UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
 }
 
 UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
-    MM_AT_SCOPE_EXIT(std::filesystem::remove_all("tmp_dir"));
+    ScopedTestFolder tmp("tmp_dir");
 
-    DirectoryFileSystem fs0(NativePath("tmp_dir"));
+    NativeFileSystem fs0("tmp_dir");
     fs0.write("a/b/c.bin", Blob());
     fs0.write("a/c/b.bin", Blob());
 
@@ -47,6 +45,17 @@ UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
     LowercaseFileSystem fss(&fs0);
     EXPECT_TRUE(fss.exists("a/b"));
     EXPECT_TRUE(fss.exists("a/c"));
+}
+
+UNIT_TEST(LowercaseFileSystem, NonExistentNativeFolder) {
+    // This is the stack that game data path validation runs on, and it must report "file not found" for a data folder
+    // that doesn't exist, instead of blowing up somewhere inside the lazy ls of the folder's root.
+    NativeFileSystem fs0("this_dir_doesnt_exist");
+    LowercaseFileSystem fs(&fs0);
+
+    EXPECT_TRUE(fs.ls("").empty());
+    EXPECT_FALSE(fs.exists("anims/magic7.vid"));
+    EXPECT_EQ(fs.stat("anims/magic7.vid"), FileStat());
 }
 
 UNIT_TEST(LowercaseFileSystem, DropEmptyFolders) {

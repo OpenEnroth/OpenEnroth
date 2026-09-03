@@ -11,7 +11,7 @@
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
 #include "Library/LodFormats/LodFormats.h"
-#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 #include "Library/Serialization/Serialization.h"
 #include "Library/Magic/Magic.h"
 
@@ -162,7 +162,7 @@ int runCat(const LodToolOptions &options) {
 int runExtract(const LodToolOptions &options) {
     std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(options.path);
     std::unique_ptr<ArchiveReader> paletteReader = options.palettesLodPath.isEmpty() ? nullptr : ArchiveReader::createArchiveReader(options.palettesLodPath);
-    DirectoryFileSystem output(options.extract.output);
+    NativeFileSystem output(options.extract.output);
 
     for (const std::string &entryName : reader->ls())
         for (const auto &[data, name] : decodeLodEntry(reader->read(entryName), entryName, options.raw, paletteReader.get()))

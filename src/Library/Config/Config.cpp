@@ -15,12 +15,12 @@
 #include "Utility/String/Format.h"
 #include "Utility/String/Wrap.h"
 
-void Config::load(const NativePath &path) {
+void Config::load(const Path &path) {
     FileInputStream stream(path); // Will throw if file doesn't exist.
     load(&stream);
 }
 
-void Config::save(const NativePath &path) const {
+void Config::save(const Path &path) const {
     FileOutputStream stream(path);
     save(&stream);
 }

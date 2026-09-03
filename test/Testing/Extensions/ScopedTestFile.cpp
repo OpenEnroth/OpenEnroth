@@ -1,16 +1,16 @@
 #include "ScopedTestFile.h"
 
-#include <filesystem>
-
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/System/Fs.h"
 
-ScopedTestFile::ScopedTestFile(const NativePath &path, std::string_view contents) : _path(path) {
+ScopedTestFile::ScopedTestFile(const Path &path, std::string_view contents) : _path(path) {
     FileOutputStream stream(_path);
     stream.write(contents);
     stream.close();
 }
 
 ScopedTestFile::~ScopedTestFile() {
-    std::error_code ec;
-    std::filesystem::remove(_path.toStdPath(), ec);
+    try {
+        fs::remove(_path);
+    } catch (...) {} // Cleanup errors shouldn't throw out of a dtor.
 }

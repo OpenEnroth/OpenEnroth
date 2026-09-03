@@ -18,7 +18,7 @@
 
 VidReader::VidReader() = default;
 
-VidReader::VidReader(const NativePath &path) {
+VidReader::VidReader(const Path &path) {
     open(path);
 }
 
@@ -28,7 +28,7 @@ VidReader::VidReader(Blob blob) {
 
 VidReader::~VidReader() = default;
 
-void VidReader::open(const NativePath &path) {
+void VidReader::open(const Path &path) {
     close();
     open(Blob::fromFile(path));
 }
