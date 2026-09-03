@@ -384,6 +384,9 @@ void RespawnGlobalDecorations() {
 
         if (!decor->uEventID) {
             if (decor->IsInteractive()) {
+                // Each such decoration gets one byte of decorVars to remember its event in, and only 124 of the 125
+                // bytes are ever handed out. Indoor and Outdoor walk the same decorations and repeat this bound.
+                // TODO(captainurist): find out what the last byte is held back for, then name this bound.
                 if (decorEventIdx < 124) {
                     decor->eventVarId = decorEventIdx;
                     engine->_persistentVariables.decorVars[decorEventIdx++] = decor->GetGlobalEvent();
