@@ -14,7 +14,7 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Lighting.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -937,9 +937,9 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     int interactiveDecorationsNum = 0;
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
-        pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
+        pDecorationTable->initializeSprite(pLevelDecorations[i].uDecorationDescID);
 
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+        const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[i].uDecorationDescID);
 
         if (decoration->uSoundID != SOUND_Invalid) {
             decorationsWithSound.push_back(i);
@@ -1130,7 +1130,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
 
-    const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[uDecorationID].uDecorationDescID);
+    const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[uDecorationID].uDecorationDescID);
 
     if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
         // TODO(pskelton): common emit fire code

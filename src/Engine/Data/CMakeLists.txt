@@ -16,6 +16,8 @@ set(ENGINE_DATA_HEADERS
         AwardEnums.h
         AwardEnumFunctions.h
         ChestData.h
+        DecorationData.h
+        DecorationEnums.h
         FrameEnums.h
         HistoryData.h
         HouseData.h

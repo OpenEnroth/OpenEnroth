@@ -4,6 +4,7 @@ set(ENGINE_TABLES_SOURCES
         AutonoteTable.cpp
         AwardTable.cpp
         ChestTable.cpp
+        DecorationTable.cpp
         HostilityTable.cpp
         HistoryTable.cpp
         HouseTable.cpp
@@ -23,6 +24,7 @@ set(ENGINE_TABLES_HEADERS
         AutonoteTable.h
         AwardTable.h
         ChestTable.h
+        DecorationTable.h
         HostilityTable.h
         HistoryTable.h
         HouseTable.h

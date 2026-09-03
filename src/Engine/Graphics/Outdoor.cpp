@@ -13,7 +13,7 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Lighting.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -578,8 +578,8 @@ bool OutdoorLocation::PrepareDecorations() {
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
-        pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
+        pDecorationTable->initializeSprite(decor->uDecorationDescID);
+        const DecorationData *decoration = pDecorationTable->decoration(decor->uDecorationDescID);
 
         if (decoration->uSoundID != SOUND_Invalid) {
             decorationsWithSound.push_back(i);
@@ -1804,7 +1804,7 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
 
     //  level decoration sound
     for (int decorIdx : decorationsWithSound) {
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
+        const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[decorIdx].uDecorationDescID);
         pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
     }
 }

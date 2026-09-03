@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "Engine/Engine.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Party.h"
 
@@ -372,4 +373,22 @@ bool LevelDecoration::IsInteractive() {
         return true;
 
     return false;
+}
+
+void RespawnGlobalDecorations() {
+    engine->_persistentVariables.decorVars.fill(0);
+
+    unsigned decorEventIdx = 0;
+    for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
+        LevelDecoration *decor = &pLevelDecorations[i];
+
+        if (!decor->uEventID) {
+            if (decor->IsInteractive()) {
+                if (decorEventIdx < 124) {
+                    decor->eventVarId = decorEventIdx;
+                    engine->_persistentVariables.decorVars[decorEventIdx++] = decor->GetGlobalEvent();
+                }
+            }
+        }
+    }
 }

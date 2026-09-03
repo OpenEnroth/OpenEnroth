@@ -6,7 +6,7 @@
 #include <utility>
 
 #include "Engine/Evt/Processor.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -372,7 +372,7 @@ static void CollideWithDecoration(int id) {
     if (decor->uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
 
-    const DecorationDesc *desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
+    const DecorationData *desc = pDecorationTable->decoration(decor->uDecorationDescID);
     if (desc->CanMoveThrough())
         return;
 

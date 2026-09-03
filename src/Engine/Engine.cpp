@@ -14,7 +14,7 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Lighting.h"
@@ -386,7 +386,7 @@ bool Engine::draw_debug_outlines() {
         for (const LevelDecoration &decor : pLevelDecorations) {
             if (decor.uFlags & LEVEL_DECORATION_INVISIBLE)
                 continue;
-            const DecorationDesc *desc = pDecorationList->GetDecoration(decor.uDecorationDescID);
+            const DecorationData *desc = pDecorationTable->decoration(decor.uDecorationDescID);
             if (desc->CanMoveThrough())
                 continue;
             drawDebugCylinder(decor.vPosition, desc->uRadius, desc->uDecorationHeight, colorTable.OrangeyRed);
@@ -669,8 +669,8 @@ void Engine::MM7_Initialize() {
     pIconsFrameTable = new IconFrameTable;
     deserialize(engine->resources()->eventsData("dift.bin"), pIconsFrameTable);
 
-    pDecorationList = new DecorationList;
-    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationList);
+    pDecorationTable = new DecorationTable;
+    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationTable);
 
     pObjectList = new ObjectList;
     deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectList);
@@ -969,8 +969,8 @@ void setDecorationSprite(uint16_t uCog, bool bHide, std::string_view pFileName) 
     for (size_t i = 0; i < pLevelDecorations.size(); i++) {
         if (pLevelDecorations[i].uCog == uCog) {
             if (!pFileName.empty() && pFileName != "0") {
-                pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(pFileName);
-                pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
+                pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(pFileName);
+                pDecorationTable->initializeSprite(pLevelDecorations[i].uDecorationDescID);
             }
 
             if (bHide)

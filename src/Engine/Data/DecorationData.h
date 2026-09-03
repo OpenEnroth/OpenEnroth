@@ -1,16 +1,14 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
 #include <string>
 
-#include "Engine/Data/SoundEnums.h"
+#include "DecorationEnums.h"
+#include "SoundEnums.h"
 
 #include "Library/Color/Color.h"
 
-#include "DecorationEnums.h"
-
-struct DecorationDesc {
+struct DecorationData {
     std::string internalName; // Internal name of the decoration (e.g. "dec03").
     std::string hint; // Hint for the decoration (e.g. "campfire", "cauldron"). This text is shown in the status bar
                       // when clicking on the decoration if it's not scripted.
@@ -34,22 +32,3 @@ struct DecorationDesc {
         return uFlags & DECORATION_DESC_SOUND_ON_DUSK;
     }
 };
-
-class DecorationList {
- public:
-    inline DecorationList() {}
-
-    void InitializeDecorationSprite(DecorationId uDecID);
-    DecorationId GetDecorIdByName(std::string_view pName);
-
-    const DecorationDesc *GetDecoration(DecorationId index) const {
-        return &pDecorations[std::to_underlying(index)];
-    }
-
- public:
-    std::vector<DecorationDesc> pDecorations; // TODO(captainurist): IndexedArray.
-};
-
-extern DecorationList *pDecorationList;
-
-void RespawnGlobalDecorations();

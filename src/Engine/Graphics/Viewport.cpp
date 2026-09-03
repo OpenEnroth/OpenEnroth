@@ -4,7 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/Processor.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -273,7 +273,7 @@ void Engine::onGameViewportClick() {
         }
     } else if (pid.type() == OBJECT_Decoration) {
         int id = pid.id();
-        if (distance - pDecorationList->GetDecoration(pLevelDecorations[id].uDecorationDescID)->uRadius < clickable_distance) {
+        if (distance - pDecorationTable->decoration(pLevelDecorations[id].uDecorationDescID)->uRadius < clickable_distance) {
             if (pParty->hasActiveCharacter()) {
                 // Do not interact with decoration with no active character
                 DecorationInteraction(id, pid);
