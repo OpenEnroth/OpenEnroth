@@ -219,6 +219,8 @@ Currently, the console is only available while in-game.
 
 Old event decompiler and IDB files can be found [here](https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0). Feel free to ping `zipi6616` on Discord for more info.
 
+An archived snapshot of the codebase from before the first commit in this repository is kept at [OpenEnroth_PreHistory](https://github.com/OpenEnroth/OpenEnroth_PreHistory). That tree is still flat and carries the unsorted `mm7_*.cpp` decompilation dumps, so it's mostly useful for tracing where a piece of code originally came from.
+
 
 ## Support
 
