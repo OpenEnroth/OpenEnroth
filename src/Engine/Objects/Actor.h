@@ -122,7 +122,7 @@ class Actor {
     static void resurrect(unsigned int uActorID);
     static void AI_Bored(unsigned int uActorID, Pid uObjID,
                          AIDirection *a4);
-    static void AI_Stun(unsigned int uActorID, Pid edx0, int arg0);
+    static void AI_Pain(unsigned int uActorID, Pid edx0, int arg0);
     static char _4031C1_update_job_never_gets_called(unsigned int uActorID,
                                                      signed int a2, int a3);
     static void AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,

@@ -1672,7 +1672,7 @@ void UpdateActors_ODM() {
             actor.velocity.x += grng->random(100) - 50;
             actor.velocity.y += grng->random(100) - 50;
             actor.velocity.z += grng->random(100) - 20;
-            actor.aiState = Stunned;
+            actor.aiState = InPain;
             actor.yawAngle += grng->random(32) - 16;
             actor.UpdateAnimation();
         }
