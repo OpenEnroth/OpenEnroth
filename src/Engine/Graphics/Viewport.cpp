@@ -1,6 +1,7 @@
 #include "Viewport.h"
 
 #include <algorithm>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/Processor.h"
@@ -25,7 +26,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 Recti pViewport;
-ViewingParams *viewparams = new ViewingParams;
+std::unique_ptr<ViewingParams> viewparams = std::make_unique<ViewingParams>();
 
 //----- (00443219) --------------------------------------------------------
 void ViewingParams::MapViewUp() {

@@ -1,8 +1,10 @@
 #include "Engine/Tables/OverlayTable.h"
 
+#include <memory>
+
 #include "Engine/Graphics/Sprites.h"
 
-OverlayTable *pOverlayTable = new OverlayTable;
+std::unique_ptr<OverlayTable> pOverlayTable = std::make_unique<OverlayTable>();
 
 //----- (00458D97) --------------------------------------------------------
 void OverlayTable::initializeSprites() {
