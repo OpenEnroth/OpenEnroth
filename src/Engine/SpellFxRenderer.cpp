@@ -246,10 +246,7 @@ SpellFX_Billboard::~SpellFX_Billboard() {}
 
 //----- (0047829F) --------------------------------------------------------
 void SpellFX_Billboard::_47829F_sphere_particle(Vec3f center, float scale, Color diffuse) {
-    // 66 total verts points - held in array1
-    // 128 triangles using 66 diff verts
-
-    for (unsigned int i = 0; i < sphereVertInd.size() / 3; ++i) {  // indicies for triangle in sphere
+    for (unsigned int i = 0; i < sphereVertInd.size() / 3; ++i) {
         int ind = i * 3;
 
         field_14[0].pos = center + scale * sphereVertPos[sphereVertInd[ind + 0]];
