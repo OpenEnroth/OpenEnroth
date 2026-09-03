@@ -14,6 +14,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
@@ -178,6 +179,24 @@ bool Actor::CanBeDamaged() const {
     bool stoned = this->buffs[ACTOR_BUFF_STONED].Active();
     return !(stoned || this->aiState == Dying || this->aiState == Dead ||
              this->aiState == Removed || this->aiState == Summoned || this->aiState == Disabled);
+}
+
+bool Actor::isAirborne() const {
+    if (this->monsterInfo.flying && CanAct())
+        return false;
+
+    float floorZ;
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+        int sectorId = this->sectorId;
+        floorZ = GetIndoorFloorZ(this->pos + Vec3f(0, 0, this->radius), &sectorId);
+        if (floorZ <= -30000)
+            return false; // No floor under the actor, this happens on levels built with errors.
+    } else {
+        bool onWater = false;
+        int faceId = -1;
+        floorZ = ODM_GetFloorLevel(this->pos, &onWater, &faceId);
+    }
+    return this->pos.z > floorZ + 1;
 }
 
 //----- (004089C7) --------------------------------------------------------
@@ -2522,16 +2541,15 @@ void Actor::UpdateActorAI() {
         if (pActor->buffs[ACTOR_BUFF_PARALYZED].Active() || pActor->buffs[ACTOR_BUFF_STONED].Active())
             continue;
 
-        // If actor is stunned: skip - vanilla bug that causes stunned background actors to recover to idle motions
-        // Most apparent during armageddon spell, falling background actors will occasionally hover to perform action
-        if (pActor->aiState == AIState::Stunned)
-            continue;
-
         // Calculate RecoveryTime
         pActor->monsterInfo.recoveryTime = std::max(pActor->monsterInfo.recoveryTime - gameTimer->dt(), 0_ticks); // was animTimer
 
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
         if (pActor->currentActionTime < pActor->currentActionLength)
+            continue;
+
+        // A stunned actor still in the air, e.g. thrown up by armageddon, keeps falling and gets up once it lands.
+        if (pActor->isStunnedInMidair())
             continue;
 
         if (pActor->aiState == Dying) {
@@ -2606,6 +2624,10 @@ void Actor::UpdateActorAI() {
 
         pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - gameTimer->dt()); // was animTimer
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
+
+        // A stunned actor still in the air keeps falling and gets up once it lands.
+        if (pActor->isStunnedInMidair())
+            continue;
 
         if (!pActor->ActorNearby())
             pActor->attributes |= ACTOR_NEARBY;

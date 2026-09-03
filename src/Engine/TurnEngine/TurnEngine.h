@@ -43,6 +43,13 @@ struct stru262_TurnBased {
     void _4065B0();
     void AIAttacks(unsigned int queue_index);
     void AI_Action_(int queue_index);
+
+    /**
+     * Lets a stunned actor that's still in the air spend its turn falling, its next one comes after the usual recovery.
+     *
+     * @param queueIndex                Queue entry of the actor.
+     */
+    void spendTurnFalling(int queueIndex);
     void ActorAISetMovementDecision();
     void ActorAIStopMovement();
     void ActorAIDoAdditionalMove();
