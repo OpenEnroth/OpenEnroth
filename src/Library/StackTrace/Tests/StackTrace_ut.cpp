@@ -174,7 +174,7 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
     return result + 1;
 }
 
-#if !defined(__aarch64__) && !defined(__arm__)
+#if !defined(__aarch64__) && !defined(__arm__) // No trap to test on arm, integer division by zero just yields zero there.
 MM_NOINLINE int stackTraceDivisionFunction() {
     volatile int zero = 0; // Volatile, or the compiler sees the division by zero and emits a trap instead of dividing.
     volatile int result = 64 / zero; // Using the result keeps this out of tail position, which keeps the frame.
@@ -251,7 +251,7 @@ UNIT_TEST(StackTrace, BadTargetCallIsTraced) {
     }, killedBy(SIGSEGV), testing::AllOf(HasFrame(0, "stackTraceBadTargetCallFunction"), testing::HasSubstr("main")));
 }
 
-#if !defined(__aarch64__) && !defined(__arm__) // No trap to test on arm, integer division by zero just yields zero there.
+#if !defined(__aarch64__) && !defined(__arm__)
 UNIT_TEST(StackTrace, DivisionByZeroIsTraced) {
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
