@@ -6,7 +6,7 @@
 #include "Engine/Party.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Objects/Decoration.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -15,7 +15,7 @@
 #include "Library/Serialization/Serialization.h"
 
 static std::optional<PartyPlacement> placementForStartPoint(MapStartPoint point) {
-    DecorationId decorationId = pDecorationList->GetDecorIdByName(toString(point));
+    DecorationId decorationId = pDecorationTable->decorationId(toString(point));
     if (decorationId == DECORATION_NULL)
         return std::nullopt;
 

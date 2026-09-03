@@ -10,7 +10,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
@@ -1651,7 +1651,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->initialPosition = src.initialPosition.toFloat();
 }
 
-void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
+void reconstruct(const DecorationData_MM6 &src, DecorationData *dst) {
     reconstruct(src.internalName, &dst->internalName);
     reconstruct(src.hint, &dst->hint);
     dst->uType = src.uType;
@@ -1668,8 +1668,8 @@ void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     dst->uColoredLight.a = 255;
 }
 
-void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
-    reconstruct(static_cast<const DecorationDesc_MM6 &>(src), dst);
+void reconstruct(const DecorationData_MM7 &src, DecorationData *dst) {
+    reconstruct(static_cast<const DecorationData_MM6 &>(src), dst);
 
     dst->uColoredLight.r = src.uColoredLightRed;
     dst->uColoredLight.g = src.uColoredLightGreen;

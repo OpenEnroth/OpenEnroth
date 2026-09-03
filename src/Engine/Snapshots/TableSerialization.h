@@ -2,7 +2,7 @@
 
 #include "Utility/Memory/Blob.h"
 
-class DecorationList;
+struct DecorationTable;
 class ObjectList;
 class SoundList;
 class IconFrameTable;
@@ -21,7 +21,7 @@ void deserialize(const Blob &src, PortraitFrameTable *dst);
 /**
  * @offset 0x0045864C
  */
-void deserialize(const Blob &src, DecorationList *dst);
+void deserialize(const Blob &src, DecorationTable *dst);
 
 /**
  * @offset 0x00495056

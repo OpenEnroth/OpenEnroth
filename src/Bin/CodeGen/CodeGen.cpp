@@ -17,8 +17,8 @@
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Random/Random.h"
-#include "Engine/Objects/DecorationEnums.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Data/DecorationEnums.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Snapshots/TableSerialization.h"
@@ -441,9 +441,9 @@ int runDecorationsCodegen(const CodeGenOptions &options, ResourceManager *resour
     // id values as a suffix. So this is what we're doing here.
 
     map.insert(DECORATION_NULL, "NULL", "");
-    for (size_t index = 1; index < pDecorationList->pDecorations.size(); index++) {
+    for (size_t index = 1; index < pDecorationTable->decorations.size(); index++) {
         DecorationId i = static_cast<DecorationId>(index);
-        const DecorationDesc& dd = pDecorationList->pDecorations[index];
+        const DecorationData& dd = pDecorationTable->decorations[index];
 
         if (dd.internalName.empty()) {
             map.insert(i, "", "Unused.");
