@@ -34,6 +34,7 @@ set(ENGINE_HEADERS
         EngineGlobals.h
         EngineIocContainer.h
         Localization.h
+        LocationInfo.h
         MapEnums.h
         MapInfo.h
         Party.h
