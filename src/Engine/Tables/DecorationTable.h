@@ -15,10 +15,10 @@ struct DecorationTable {
      * @return                          Id of the decoration with the given name, or `DECORATION_NULL` if there is
      *                                  no such decoration.
      */
-    DecorationId decorationId(std::string_view name);
+    DecorationId decorationId(std::string_view name) const;
 
-    const DecorationData *decoration(DecorationId index) const {
-        return &decorations[std::to_underlying(index)];
+    const DecorationData *decoration(DecorationId id) const {
+        return &decorations[std::to_underlying(id)];
     }
 
     std::vector<DecorationData> decorations; // TODO(captainurist): IndexedArray.

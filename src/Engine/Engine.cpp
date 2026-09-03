@@ -387,7 +387,7 @@ bool Engine::draw_debug_outlines() {
             if (decor.uFlags & LEVEL_DECORATION_INVISIBLE)
                 continue;
             const DecorationData *desc = pDecorationTable->decoration(decor.uDecorationDescID);
-            if (desc->CanMoveThrough())
+            if (desc->canMoveThrough())
                 continue;
             drawDebugCylinder(decor.vPosition, desc->uRadius, desc->uDecorationHeight, colorTable.OrangeyRed);
         }

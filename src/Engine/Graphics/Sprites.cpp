@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <string>
 
-#include "Engine/Tables/DecorationTable.h"
+#include "Engine/Data/DecorationData.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Resources/LodSpriteCache.h"

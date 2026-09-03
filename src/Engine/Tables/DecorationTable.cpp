@@ -10,16 +10,13 @@ void DecorationTable::initializeSprite(DecorationId id) {
     pSpriteFrameTable->InitializeSprite(decorations[std::to_underlying(id)].uSpriteID);
 }
 
-DecorationId DecorationTable::decorationId(std::string_view name) {
+DecorationId DecorationTable::decorationId(std::string_view name) const {
     if (name.empty())
         return DECORATION_NULL;
 
-    if (decorations.size() > 1) {
-        for (unsigned uID = 1; uID < decorations.size(); ++uID) {
-            if (ascii::noCaseEquals(name, decorations[uID].internalName))
-                return static_cast<DecorationId>(uID);
-        }
-    }
+    for (size_t i = 1; i < decorations.size(); ++i)
+        if (ascii::noCaseEquals(name, decorations[i].internalName))
+            return static_cast<DecorationId>(i);
 
     return DECORATION_NULL;
 }

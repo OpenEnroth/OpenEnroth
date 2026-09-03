@@ -946,7 +946,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         }
 
         if (!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            if (!decoration->DontDraw()) {
+            if (!decoration->dontDraw()) {
                 if (decoration->uLightRadius) {
                     Color color = render->config->graphics.ColoredLights.value() ? decoration->uColoredLight : colorTable.White;
                     pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +

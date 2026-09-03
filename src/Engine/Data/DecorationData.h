@@ -21,14 +21,14 @@ struct DecorationData {
     SoundId uSoundID = SOUND_Invalid;
     Color uColoredLight;
 
-    inline bool CanMoveThrough() const {
+    bool canMoveThrough() const {
         return uFlags & (DECORATION_DESC_MOVE_THROUGH | DECORATION_DESC_DONT_DRAW);
     }
-    inline bool DontDraw() const { return uFlags & DECORATION_DESC_DONT_DRAW; }
-    inline bool SoundOnDawn() const {
+    bool dontDraw() const { return uFlags & DECORATION_DESC_DONT_DRAW; }
+    bool soundOnDawn() const {
         return uFlags & DECORATION_DESC_SOUND_ON_DAWN;
     }
-    inline bool SoundOnDusk() const {
+    bool soundOnDusk() const {
         return uFlags & DECORATION_DESC_SOUND_ON_DUSK;
     }
 };

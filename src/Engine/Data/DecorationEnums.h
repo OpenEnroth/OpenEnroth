@@ -243,7 +243,7 @@ enum class DecorationId : int32_t {
 };
 using enum DecorationId;
 
-// TODO(captainurist): rename to DecorationDataFlag/DECORATION_DATA_*, plain DECORATION_* is taken by DecorationId.
+// TODO(captainurist): rename to DecorationDataFlag/DECORATION_DATA_*. Plain DECORATION_* is taken by DecorationId.
 enum class DecorationDescFlag : uint16_t {
     DECORATION_DESC_MOVE_THROUGH = 0x0001,
     DECORATION_DESC_DONT_DRAW = 0x0002,

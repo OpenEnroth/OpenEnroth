@@ -373,7 +373,7 @@ static void CollideWithDecoration(int id) {
         return;
 
     const DecorationData *desc = pDecorationTable->decoration(decor->uDecorationDescID);
-    if (desc->CanMoveThrough())
+    if (desc->canMoveThrough())
         return;
 
     CollideWithCylinder(decor->vPosition, desc->uRadius, desc->uDecorationHeight, Pid(OBJECT_Decoration, id), false);
