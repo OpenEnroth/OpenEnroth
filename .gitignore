@@ -29,6 +29,9 @@ build
 build_*
 build-*
 
+# Convenience symlinks that bazel drops at the workspace root
+bazel-*
+
 # Scratch dir for local experiments
 tmp
 
