@@ -12,6 +12,7 @@
 #include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
@@ -359,22 +360,79 @@ GAME_TEST(Issues, Issue1226c) {
 }
 
 GAME_TEST(Issues, Issue1251a) {
-    // Part A - test that wand damage matches vanilla damage should be in range (d6 per skill) 8-48 for novice 8 fireball wand
-    auto dragonhealth = tapes.custom([] { return pActors[0].hp; });
-    test.playTraceFromTestData("issue_1251a.mm7", "issue_1251a.json");
+    // Wands cast their spell at novice skill 8 like in vanilla, whoever holds them. So a fireball wand rolls 8d6 per
+    // charge, and takes 8 to 48 hp off a monster with no fire resistance.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
 
-    auto damageRange = dragonhealth.reverse().adjacentDeltas().minMax();
-    EXPECT_GE(damageRange.front(), 8);
-    EXPECT_LE(damageRange.back(), 48);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+
+    Item wand(ITEM_ALACORN_WAND_OF_FIREBALLS);
+    wand.numCharges = wand.maxCharges = 20;
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
+
+    auto hpTape = actorTapes.hp(0);
+    auto chargesTape = tapes.custom([] { return pParty->pCharacters[0].inventory.entry(ITEM_SLOT_MAIN_HAND)->numCharges; });
+    auto fireballsTape = tapes.custom([] {
+        AccessibleVector<std::pair<int, Mastery>> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.uSpellID == SPELL_FIRE_FIREBALL)
+                result.emplace_back(sprite.spell_level, sprite.spell_skill);
+        return result;
+    });
+    game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_TITAN_A, SPAWN_DUMMY); // No fire resistance, so damage rolls aren't halved.
+    game.tick(); // A frame before the first shot, so that the tapes start from a full wand.
+
+    for (int i = 0; i < 1000 && pParty->pCharacters[0].inventory.entry(ITEM_SLOT_MAIN_HAND)->numCharges > 0; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_A);
+        game.tick();
+    }
+    game.tick(20); // Let the last fireball land.
+    test.stopTaping();
+
+    EXPECT_EQ(chargesTape.frontBack(), tape(20, 0));
+    EXPECT_EQ(fireballsTape.flatten().unique(), tape(std::pair(8, MASTERY_NOVICE)));
+    auto damages = hpTape.reverse().adjacentDeltas().filter(_1 > 0);
+    EXPECT_EQ(damages.size(), 20); // Every charge landed.
+    EXPECT_GE(damages.min(), 8);
+    EXPECT_LE(damages.max(), 48);
 }
 
 GAME_TEST(Issues, Issue1251b) {
-    // Make sure charm wand doesn't assert
-    auto charmedActors = actorTapes.countByBuff(ACTOR_BUFF_CHARM);
-    auto charmWands = tapes.hasItem(ITEM_ALACORN_WAND_OF_CHARMS);
-    test.playTraceFromTestData("issue_1251b.mm7", "issue_1251b.json");
-    EXPECT_EQ(charmedActors.delta(), 3);
-    EXPECT_EQ(charmWands, tape(true));
+    // A charm wand casts charm at novice mastery, which no character can do since charm is an expert spell. This used
+    // to hit an assert because the charm duration was only known from expert up. Novice now lasts as long as expert.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+
+    Item wand(ITEM_ALACORN_WAND_OF_CHARMS);
+    wand.numCharges = wand.maxCharges = 3;
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
+    for (int i = 0; i < 3; i++)
+        game.spawnMonster(pParty->pos + Vec3f(0, 600 + 300 * i, 0), MONSTER_TITAN_A, SPAWN_DUMMY); // No mind resistance, so charm always lands.
+
+    auto charmedTape = actorTapes.countByBuff(ACTOR_BUFF_CHARM);
+    auto charmLeftTape = actorTapes.custom({0, 1, 2}, [] (const Actor &actor) {
+        return actor.buffs[ACTOR_BUFF_CHARM].Active() ? actor.buffs[ACTOR_BUFF_CHARM].expireTime - pParty->GetPlayingTime() : 0_ticks;
+    });
+    game.tick(); // The wand targets what's on screen, and the titans get there a frame after spawning.
+    for (int i = 0; i < 200 && pParty->pCharacters[0].inventory.entry(ITEM_SLOT_MAIN_HAND)->numCharges > 0; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_A);
+        game.tick();
+    }
+    test.stopTaping();
+
+    EXPECT_EQ(charmedTape, tape(0, 1, 2, 3)); // Each charge charms the closest monster that isn't charmed yet.
+    for (int i = 0; i < 3; i++) {
+        Duration charmLeft = charmLeftTape.slice(i).filter([] (Duration left) { return left > 0_ticks; }).front();
+        EXPECT_GE(charmLeft, Duration::fromMinutes(5 * 8) - Duration::fromRealtimeMilliseconds(200)); // 5 minutes per skill point, the expert duration...
+        EXPECT_LE(charmLeft, Duration::fromMinutes(5 * 8)); // ...less the frame that passes before the tape sees the charm.
+    }
 }
 
 GAME_TEST(Issues, Issue1253) {
