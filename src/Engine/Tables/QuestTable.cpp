@@ -1,13 +1,10 @@
 #include "QuestTable.h"
 
-#include <array>
 #include <string>
 
-#include "Library/Serialization/Serialization.h"
+#include "Library/Tsv/TsvReader.h"
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/String/Split.h"
-#include "Utility/String/Transformations.h"
 
 IndexedArray<std::string, QBIT_FIRST, QBIT_LAST> pQuestTable;
 
@@ -16,9 +13,8 @@ void initializeQuests(const Blob &quests) {
     //                             quest giver name (not localized, not used).
     pQuestTable.fill({});
 
-    for (std::string_view line : split(quests.str()).by("\r\n").drop(1).skip("")) {
-        std::array<std::string_view, 2> tokens = split(line).by('\t');
-        QuestBit qbit = static_cast<QuestBit>(fromString<int>(tokens[0]));
-        pQuestTable[qbit] = unquote(tokens[1]);
+    for (TsvLine cells : TsvReader(quests).drop(1).skip(&TsvLine::isBlank)) {
+        QuestBit qbit = static_cast<QuestBit>(cells[0].as<int>());
+        pQuestTable[qbit] = cells[1];
     }
 }

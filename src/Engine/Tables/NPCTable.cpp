@@ -11,11 +11,9 @@
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Random/Random.h"
 
-#include "Library/Serialization/Serialization.h"
+#include "Library/Tsv/TsvReader.h"
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/String/Split.h"
-#include "Utility/String/Transformations.h"
 
 std::array<NPCTopic, 789> pNPCTopics;
 NPCStats *pNPCStats = nullptr;
@@ -26,28 +24,26 @@ int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;
 //----- (00476977) --------------------------------------------------------
 void NPCStats::InitializeNPCText(const Blob &npcText) {
     // npctext.txt table structure: index | text (localized) | dev notes | npc name (localized, not used).
-    for (std::string_view line : split(npcText.str()).by("\r\n").drop(1).skip("")) {
-        std::array<std::string_view, 2> tokens = split(line).by('\t');
-        int i = fromString<int>(tokens[0]) - 1; // File indices are 1-based, array is 0-based.
-        pNPCTopics[i].pText = unquote(tokens[1]);
+    for (TsvLine cells : TsvReader(npcText).drop(1).skip(&TsvLine::isBlank)) {
+        int i = cells[0].as<int>() - 1; // File indices are 1-based, array is 0-based.
+        pNPCTopics[i].pText = cells[1];
     }
 }
 
 void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
     // npctopic.txt table structure: index | topic (localized) | ??? (not used) | dev notes | text index (not used) |
     //                               npc name (not localized, not used) | npc index (not used).
-    for (std::string_view line : split(npcTopics.str()).by("\r\n").drop(1).skip("")) {
-        std::array<std::string_view, 2> tokens = split(line).by('\t');
-        int i = fromString<int>(tokens[0]);
-        pNPCTopics[i].pTopic = unquote(tokens[1]);
+    for (TsvLine cells : TsvReader(npcTopics).drop(1).skip(&TsvLine::isBlank)) {
+        int i = cells[0].as<int>();
+        pNPCTopics[i].pTopic = cells[1];
     }
 }
 
 void NPCStats::InitializeNPCDist(const Blob &npcDist) {
     // npcdist.txt table structure: profession (localized, not used) | area profession chance values...
-    for (auto [line, prof] : split(npcDist.str()).by("\r\n").drop(2).skip("").zip(allNpcProfessions()))
-        for (auto [token, map] : split(line).by('\t').drop(1).zip(allMaps()))
-            pProfessionChance[map].chanceByProfession[prof] = fromString<int>(token);
+    for (auto [cells, prof] : TsvReader(npcDist).drop(2).skip(&TsvLine::isBlank).zip(allNpcProfessions()))
+        for (auto [cell, map] : cells.drop(1).zip(allMaps()))
+            pProfessionChance[map].chanceByProfession[prof] = cell.as<int>();
 
     for (MapId map : allMaps())
         for (NpcProfession prof : allNpcProfessions())
@@ -59,22 +55,21 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
     // npcdata.txt table structure: index | name (localized) | portrait id | groups (not used) | house | profession |
     //                              greeting index | can join (y/n) | event ids 1-6 | dev notes |
     //                              map id (optional, not used).
-    for (std::string_view line : split(npcData.str()).by("\r\n").drop(2).skip("").take(500)) {
-        std::array<std::string_view, 16> tokens = split(line).by('\t');
-        int i = fromString<int>(tokens[0]); // File indices are 1-based.
-        pNPCUnicNames[i] = unquote(tokens[1]);
+    for (TsvLine cells : TsvReader(npcData).drop(2).skip(&TsvLine::isBlank).take(500)) {
+        int i = cells[0].as<int>(); // File indices are 1-based.
+        pNPCUnicNames[i] = cells[1];
         pOriginalNPCData[i].name = pNPCUnicNames[i];
-        pOriginalNPCData[i].portraitId = fromString<int>(tokens[2]);
-        pOriginalNPCData[i].house = static_cast<HouseId>(fromString<int>(tokens[6]));
-        pOriginalNPCData[i].profession = static_cast<NpcProfession>(fromString<int>(tokens[7]));
-        pOriginalNPCData[i].greetingIndex = fromString<int>(tokens[8]);
-        pOriginalNPCData[i].canJoin = tokens[9][0] == 'y' ? 1 : 0;
-        pOriginalNPCData[i].dialogue_1_evt_id = fromString<int>(tokens[10]);
-        pOriginalNPCData[i].dialogue_2_evt_id = fromString<int>(tokens[11]);
-        pOriginalNPCData[i].dialogue_3_evt_id = fromString<int>(tokens[12]);
-        pOriginalNPCData[i].dialogue_4_evt_id = fromString<int>(tokens[13]);
-        pOriginalNPCData[i].dialogue_5_evt_id = fromString<int>(tokens[14]);
-        pOriginalNPCData[i].dialogue_6_evt_id = fromString<int>(tokens[15]);
+        pOriginalNPCData[i].portraitId = cells[2].as<int>();
+        pOriginalNPCData[i].house = static_cast<HouseId>(cells[6].as<int>());
+        pOriginalNPCData[i].profession = static_cast<NpcProfession>(cells[7].as<int>());
+        pOriginalNPCData[i].greetingIndex = cells[8].as<int>();
+        pOriginalNPCData[i].canJoin = cells[9].starts_with('y') ? 1 : 0;
+        pOriginalNPCData[i].dialogue_1_evt_id = cells[10].as<int>();
+        pOriginalNPCData[i].dialogue_2_evt_id = cells[11].as<int>();
+        pOriginalNPCData[i].dialogue_3_evt_id = cells[12].as<int>();
+        pOriginalNPCData[i].dialogue_4_evt_id = cells[13].as<int>();
+        pOriginalNPCData[i].dialogue_5_evt_id = cells[14].as<int>();
+        pOriginalNPCData[i].dialogue_6_evt_id = cells[15].as<int>();
     }
     uNumNewNPCs = 501;
 }
@@ -82,32 +77,29 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
 void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
     // npcgreet.txt table structure: index | greeting 1 (localized) | greeting 2 (localized) |
     //                               notes (not localized, not used) | owner (not localized, not used).
-    for (std::string_view line : split(npcGreets.str()).by("\r\n").drop(1).skip("")) {
-        std::array<std::string_view, 3> tokens = split(line).by('\t');
-        if (tokens[0].empty())
+    for (TsvLine cells : TsvReader(npcGreets).drop(1).skip(&TsvLine::isBlank)) {
+        if (cells[0].empty())
             continue; // Trailing orphan row with no index column.
 
-        int i = fromString<int>(tokens[0]); // File indices are 1-based.
-        pNPCGreetings[i].pGreeting1 = unquote(tokens[1]);
-        pNPCGreetings[i].pGreeting2 = unquote(tokens[2]);
+        int i = cells[0].as<int>(); // File indices are 1-based.
+        pNPCGreetings[i].pGreeting1 = cells[1];
+        pNPCGreetings[i].pGreeting2 = cells[2];
     }
 }
 
 void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
     // npcgroup.txt table structure: group index | news index | dev notes.
-    for (std::string_view line : split(npcGroups.str()).by("\r\n").drop(1).skip("")) {
-        std::array<std::string_view, 2> tokens = split(line).by('\t');
-        int i = fromString<int>(tokens[0]); // File indices are 0-based.
-        pOriginalGroups[i] = fromString<int>(tokens[1]);
+    for (TsvLine cells : TsvReader(npcGroups).drop(1).skip(&TsvLine::isBlank)) {
+        int i = cells[0].as<int>(); // File indices are 0-based.
+        pOriginalGroups[i] = cells[1].as<int>();
     }
 }
 
 void NPCStats::InitializeNPCNews(const Blob &npcNews) {
     // npcnews.txt table structure: index | text (localized) | dev notes.
-    for (std::string_view line : split(npcNews.str()).by("\r\n").drop(1).skip("")) {
-        std::array<std::string_view, 2> tokens = split(line).by('\t');
-        int i = fromString<int>(tokens[0]); // File indices are 0-based.
-        pCatchPhrases[i] = unquote(tokens[1]);
+    for (TsvLine cells : TsvReader(npcNews).drop(1).skip(&TsvLine::isBlank)) {
+        int i = cells[0].as<int>(); // File indices are 0-based.
+        pCatchPhrases[i] = cells[1];
     }
 }
 
@@ -130,12 +122,11 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
     // Female column runs out before the male column.
     uNewlNPCBufPos = 0;
     pNPCNames.fill({});
-    for (std::string_view line : split(npcNames.str()).by("\r\n").drop(1).skip("")) {
-        std::array<std::string_view, 2> tokens = split(line).by('\t');
-        if (!tokens[0].empty())
-            pNPCNames[SEX_MALE].emplace_back(unquote(tokens[0]));
-        if (!tokens[1].empty())
-            pNPCNames[SEX_FEMALE].emplace_back(unquote(tokens[1]));
+    for (TsvLine cells : TsvReader(npcNames).drop(1).skip(&TsvLine::isBlank)) {
+        if (!cells[0].empty())
+            pNPCNames[SEX_MALE].emplace_back(cells[0]);
+        if (!cells[1].empty())
+            pNPCNames[SEX_FEMALE].emplace_back(cells[1]);
     }
 }
 
@@ -143,17 +134,16 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
     // npcprof.txt table structure: profession id | profession name (localized, not used) | hire price |
     //                              action text (localized) | benefit description (localized) |
     //                              join text (localized) | dismiss text (localized).
-    for (std::string_view line : split(npcProfs.str()).by("\r\n").drop(4)) {
-        std::array<std::string_view, 7> tokens = split(line).by('\t');
-        if (tokens[0].empty())
+    for (TsvLine cells : TsvReader(npcProfs).drop(4).skip(&TsvLine::isBlank)) {
+        if (cells[0].empty())
             continue; // Trailing pure-tab orphan rows past the last entry.
 
-        NpcProfession prof = static_cast<NpcProfession>(fromString<int>(tokens[0]));
-        pProfessions[prof].uHirePrice = fromString<int>(tokens[2]);
-        pProfessions[prof].pActionText = unquote(tokens[3]);
-        pProfessions[prof].pBenefits = unquote(tokens[4]);
-        pProfessions[prof].pJoinText = unquote(tokens[5]);
-        pProfessions[prof].pDismissText = unquote(tokens[6]);
+        NpcProfession prof = static_cast<NpcProfession>(cells[0].as<int>());
+        pProfessions[prof].uHirePrice = cells[2].as<int>();
+        pProfessions[prof].pActionText = cells[3];
+        pProfessions[prof].pBenefits = cells[4];
+        pProfessions[prof].pJoinText = cells[5];
+        pProfessions[prof].pDismissText = cells[6];
     }
     uNumNPCProfessions = 59;
 }

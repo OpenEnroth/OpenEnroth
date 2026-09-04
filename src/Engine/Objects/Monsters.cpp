@@ -7,6 +7,7 @@
 #include <utility>
 #include <vector>
 
+#include "Library/Tsv/TsvReader.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/Serialization.h"
 
@@ -15,7 +16,6 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Split.h"
 #include "Utility/Exception.h"
-#include "Utility/String/Transformations.h"
 
 MonsterStats *pMonsterStats;
 MonsterList *pMonsterList;
@@ -242,10 +242,9 @@ MonsterId MonsterStats::FindMonsterByInternalName(std::string_view internalName)
 //----- (00454F4E) --------------------------------------------------------
 void MonsterStats::InitializePlacements(const Blob &placements) {
     // placemon.txt table structure: index | name (localized).
-    for (std::string_view line : split(placements.str()).by("\r\n").drop(1).skip("")) {
-        std::array<std::string_view, 2> tokens = split(line).by('\t');
-        int i = fromString<int>(tokens[0]);
-        uniqueNames[i] = unquote(tokens[1]);
+    for (TsvLine cells : TsvReader(placements).drop(1).skip(&TsvLine::isBlank)) {
+        int i = cells[0].as<int>();
+        uniqueNames[i] = cells[1];
     }
 }
 
@@ -374,8 +373,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
         outMastery = CombinedSkillValue::none();
         if (cell.size() < 2)
             return;
-        std::string unquoted = unquote(cell);
-        std::array<std::string_view, 3> parts = split(unquoted).by(',');
+        std::array<std::string_view, 3> parts = split(cell).by(',');
         if (parts[0].empty())
             return;
         outSpellId = ParseSpellType(parts[0]);
@@ -396,10 +394,9 @@ void MonsterStats::Initialize(const Blob &monsters) {
     auto parseSpecialAbility = [](std::string_view cell, MonsterInfo &info) {
         info.specialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
         info.specialAbilityDamageDiceBonus = 0;
-        std::string normalized(unquote(cell));
-        for (char &c : normalized) {
+        std::string normalized(cell);
+        for (char &c : normalized)
             if (c == ',' || c == '\t') c = ' ';
-        }
         std::vector<std::string_view> props;
         split(std::string_view(normalized)).by(' ').skip("").to(&props);
         if (props.empty() || props.size() >= 10)
@@ -497,62 +494,59 @@ void MonsterStats::Initialize(const Blob &monsters) {
         }
     };
 
-    // HP and EXP cells are mostly plain numbers, but a couple of monsters use a quoted thousand-separated
-    // format like `" 1,300 "` (English) or `"1 300"` (German). Strip surrounding quotes/whitespace and any
-    // thousand-separator commas or spaces, then parse as int.
+    // HP and EXP cells are mostly plain numbers, but a couple of monsters use a thousand-separated format like
+    // `1,300` (English) or `1 300` (German). Strip the separators, then parse as int.
     auto parseThousand = [](std::string_view s) {
-        std::string buf(trim(unquote(s)));
+        std::string buf(s);
         std::erase(buf, ',');
         std::erase(buf, ' ');
         return fromString<int>(buf);
     };
 
-    for (std::string_view line : split(monsters.str()).by("\r\n").drop(4).skip("")) {
-        std::array<std::string_view, 39> tokens = split(line).by('\t');
-
-        MonsterId id = static_cast<MonsterId>(fromString<int>(tokens[0]));
+    for (TsvLine cells : TsvReader(monsters).drop(4).skip(&TsvLine::isBlank)) {
+        MonsterId id = static_cast<MonsterId>(cells[0].as<int>());
         MonsterInfo &info = infos[id];
         info.id = id;
-        info.name = unquote(tokens[1]);
-        info.internalName = unquote(tokens[2]);
-        info.level = fromString<int>(tokens[3]);
-        info.hp = parseThousand(tokens[4]);
-        info.ac = fromString<int>(tokens[5]);
-        info.exp = parseThousand(tokens[6]);
-        parseTreasure(tokens[7], info);
-        info.bloodSplatOnDeath = fromString<int>(tokens[8]) != 0;
-        info.flying = parseYesNo(tokens[9]);
-        info.movementType = valueOr(movementMap, tokens[10], MONSTER_MOVEMENT_TYPE_FREE);
-        info.aiType = valueOr(aiMap, tokens[11], MONSTER_AI_AGGRESSIVE);
-        info.hostilityType = static_cast<MonsterHostility>(fromString<int>(tokens[12]));
-        info.baseSpeed = fromString<int>(tokens[13]);
-        info.recoveryTime = Duration::fromTicks(fromString<int>(tokens[14]));
+        info.name = cells[1];
+        info.internalName = cells[2];
+        info.level = cells[3].as<int>();
+        info.hp = parseThousand(cells[4]);
+        info.ac = cells[5].as<int>();
+        info.exp = parseThousand(cells[6]);
+        parseTreasure(cells[7], info);
+        info.bloodSplatOnDeath = cells[8].as<int>() != 0;
+        info.flying = parseYesNo(cells[9]);
+        info.movementType = valueOr(movementMap, cells[10], MONSTER_MOVEMENT_TYPE_FREE);
+        info.aiType = valueOr(aiMap, cells[11], MONSTER_AI_AGGRESSIVE);
+        info.hostilityType = static_cast<MonsterHostility>(cells[12].as<int>());
+        info.baseSpeed = cells[13].as<int>();
+        info.recoveryTime = Duration::fromTicks(cells[14].as<int>());
 
-        parseAttackPrefs(tokens[15], info);
-        parseSpecialAttack(tokens[16], info);
+        parseAttackPrefs(cells[15], info);
+        parseSpecialAttack(cells[16], info);
 
-        info.attack1Type = ParseAttackType(tokens[17]);
-        ParseDamage(tokens[18], &info.attack1DamageDiceRolls, &info.attack1DamageDiceSides, &info.attack1DamageBonus);
-        info.attack1MissileType = ParseMissleAttackType(tokens[19]);
-        info.attack2Chance = fromString<int>(tokens[20]);
-        info.attack2Type = ParseAttackType(tokens[21]);
-        ParseDamage(tokens[22], &info.attack2DamageDiceRolls, &info.attack2DamageDiceSides, &info.attack2DamageBonus);
-        info.attack2MissileType = ParseMissleAttackType(tokens[23]);
-        info.spell1UseChance = fromString<int>(tokens[24]);
-        parseSpellEntry(tokens[25], info.spell1Id, info.spell1SkillMastery);
-        info.spell2UseChance = fromString<int>(tokens[26]);
-        parseSpellEntry(tokens[27], info.spell2Id, info.spell2SkillMastery);
-        info.resFire     = parseResistance(tokens[28]);
-        info.resAir      = parseResistance(tokens[29]);
-        info.resWater    = parseResistance(tokens[30]);
-        info.resEarth    = parseResistance(tokens[31]);
-        info.resMind     = parseResistance(tokens[32]);
-        info.resSpirit   = parseResistance(tokens[33]);
-        info.resBody     = parseResistance(tokens[34]);
-        info.resLight    = parseResistance(tokens[35]);
-        info.resDark     = parseResistance(tokens[36]);
-        info.resPhysical = parseResistance(tokens[37]);
-        parseSpecialAbility(tokens[38], info);
+        info.attack1Type = ParseAttackType(cells[17]);
+        ParseDamage(cells[18], &info.attack1DamageDiceRolls, &info.attack1DamageDiceSides, &info.attack1DamageBonus);
+        info.attack1MissileType = ParseMissleAttackType(cells[19]);
+        info.attack2Chance = cells[20].as<int>();
+        info.attack2Type = ParseAttackType(cells[21]);
+        ParseDamage(cells[22], &info.attack2DamageDiceRolls, &info.attack2DamageDiceSides, &info.attack2DamageBonus);
+        info.attack2MissileType = ParseMissleAttackType(cells[23]);
+        info.spell1UseChance = cells[24].as<int>();
+        parseSpellEntry(cells[25], info.spell1Id, info.spell1SkillMastery);
+        info.spell2UseChance = cells[26].as<int>();
+        parseSpellEntry(cells[27], info.spell2Id, info.spell2SkillMastery);
+        info.resFire     = parseResistance(cells[28]);
+        info.resAir      = parseResistance(cells[29]);
+        info.resWater    = parseResistance(cells[30]);
+        info.resEarth    = parseResistance(cells[31]);
+        info.resMind     = parseResistance(cells[32]);
+        info.resSpirit   = parseResistance(cells[33]);
+        info.resBody     = parseResistance(cells[34]);
+        info.resLight    = parseResistance(cells[35]);
+        info.resDark     = parseResistance(cells[36]);
+        info.resPhysical = parseResistance(cells[37]);
+        parseSpecialAbility(cells[38], info);
     }
 }
 

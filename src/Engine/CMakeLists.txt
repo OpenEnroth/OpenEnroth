@@ -70,6 +70,7 @@ target_link_libraries(engine
         library_compression
         library_logger
         library_serialization
+        library_tsv
         library_color
         library_lod_formats
         library_buildinfo

@@ -4,6 +4,7 @@
 #include <array>
 #include <map>
 #include <string>
+#include <string_view>
 
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
@@ -16,14 +17,13 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 
-#include "Library/Serialization/Serialization.h"
+#include "Library/Tsv/TsvReader.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
-#include "Utility/String/Split.h"
 #include "Utility/String/Transformations.h"
 #include "Utility/MapAccess.h"
 
@@ -498,32 +498,31 @@ void SpellStats::Initialize(const Blob &spells) {
 
     // spells.txt table structure: index | ... | name (localized) | school (not localized) | ...
     // Section header lines have an empty first column and are skipped.
-    for (std::string_view line : split(spells.str()).by("\r\n").drop(2).skip("")) {
-        std::array<std::string_view, 11> tokens = split(line).by('\t');
-        if (tokens[0].empty())
+    for (TsvLine cells : TsvReader(spells).drop(2).skip(&TsvLine::isBlank)) {
+        if (cells[0].empty())
             continue; // Skip section headers.
 
-        SpellId uSpellID = static_cast<SpellId>(fromString<int>(tokens[0]));
-        pInfos[uSpellID].name = unquote(tokens[2]);
-        pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, tokens[3], DAMAGE_PHYSICAL);
-        pInfos[uSpellID].pShortName = unquote(tokens[4]);
-        pInfos[uSpellID].pDescription = unquote(tokens[5]);
-        pInfos[uSpellID].pBasicSkillDesc = unquote(tokens[6]);
-        pInfos[uSpellID].pExpertSkillDesc = unquote(tokens[7]);
-        pInfos[uSpellID].pMasterSkillDesc = unquote(tokens[8]);
-        pInfos[uSpellID].pGrandmasterSkillDesc = unquote(tokens[9]);
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('m') || tokens[10].contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlag();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('e') || tokens[10].contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlag();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('x') || tokens[10].contains('X') ? SPELL_FLAG_8 : SpellFlag();
+        SpellId uSpellID = static_cast<SpellId>(cells[0].as<int>());
+        pInfos[uSpellID].name = cells[2];
+        pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, cells[3], DAMAGE_PHYSICAL);
+        pInfos[uSpellID].pShortName = cells[4];
+        pInfos[uSpellID].pDescription = cells[5];
+        pInfos[uSpellID].pBasicSkillDesc = cells[6];
+        pInfos[uSpellID].pExpertSkillDesc = cells[7];
+        pInfos[uSpellID].pMasterSkillDesc = cells[8];
+        pInfos[uSpellID].pGrandmasterSkillDesc = cells[9];
+        std::string_view flags = cells[10];
+        pSpellDatas[uSpellID].flags |= flags.contains('m') || flags.contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlag();
+        pSpellDatas[uSpellID].flags |= flags.contains('e') || flags.contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlag();
+        pSpellDatas[uSpellID].flags |= flags.contains('c') || flags.contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();
+        pSpellDatas[uSpellID].flags |= flags.contains('x') || flags.contains('X') ? SPELL_FLAG_8 : SpellFlag();
     }
 
     // Patch SPELL_SHIFT_CLICK_CASTABLE flags that are bogus in vanilla spells.txt. See issues #1494, #1495, #1496.
     // TODO(captainurist): move these flag patches into the patched data tables instead of hardcoding them here.
     // These spells target a single actor and should be quick-castable on shift+click.
-    for (SpellId spell : {SPELL_WATER_POISON_SPRAY, SPELL_LIGHT_LIGHT_BOLT, SPELL_LIGHT_DESTROY_UNDEAD, SPELL_LIGHT_PARALYZE}) {
+    for (SpellId spell : {SPELL_WATER_POISON_SPRAY, SPELL_LIGHT_LIGHT_BOLT, SPELL_LIGHT_DESTROY_UNDEAD, SPELL_LIGHT_PARALYZE})
         pSpellDatas[spell].flags |= SPELL_SHIFT_CLICK_CASTABLE;
-    }
     // These spells target the casting party or a party member and should NOT be quick-castable on shift+click.
     // For party-target spells the shift+click cast is also confusing because nothing visible happens at the
     // clicked actor; for character-target spells (Cure Paralysis) the player gets a target-character prompt
