@@ -13,7 +13,6 @@ Checks: >
   -bugprone-integer-division,
   -bugprone-invalid-enum-default-initialization,
   -bugprone-macro-parentheses,
-  -bugprone-multi-level-implicit-pointer-conversion,
   -bugprone-narrowing-conversions,
   -bugprone-random-generator-seed,
   -bugprone-raw-memory-call-on-non-trivial-type,
