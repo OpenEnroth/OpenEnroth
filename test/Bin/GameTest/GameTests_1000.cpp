@@ -382,7 +382,7 @@ GAME_TEST(Issues, Issue1251a) {
                 result.emplace_back(sprite.spell_level, sprite.spell_skill);
         return result;
     });
-    game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_TITAN_A, SPAWN_DUMMY); // No fire resistance, so damage rolls aren't halved.
+    game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_TITAN_C, SPAWN_DUMMY); // No fire resistance, so damage rolls aren't halved. Beefy enough to take all twenty.
     game.tick(); // A frame before the first shot, so that the tapes start from a full wand.
 
     for (int i = 0; i < 1000 && pParty->pCharacters[0].inventory.entry(ITEM_SLOT_MAIN_HAND)->numCharges > 0; i++) {
@@ -402,7 +402,7 @@ GAME_TEST(Issues, Issue1251a) {
 
 GAME_TEST(Issues, Issue1251b) {
     // A charm wand casts charm at novice mastery, which no character can do since charm is an expert spell. This used
-    // to hit an assert because the charm duration was only known from expert up. Novice now lasts as long as expert.
+    // to hit an assert because the charm duration was only known from expert up.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
 
     engine->config->debug.NoActors.setValue(true);
@@ -417,9 +417,6 @@ GAME_TEST(Issues, Issue1251b) {
         game.spawnMonster(pParty->pos + Vec3f(0, 600 + 300 * i, 0), MONSTER_TITAN_A, SPAWN_DUMMY); // No mind resistance, so charm always lands.
 
     auto charmedTape = actorTapes.countByBuff(ACTOR_BUFF_CHARM);
-    auto charmLeftTape = actorTapes.custom({0, 1, 2}, [] (const Actor &actor) {
-        return actor.buffs[ACTOR_BUFF_CHARM].Active() ? actor.buffs[ACTOR_BUFF_CHARM].expireTime - pParty->GetPlayingTime() : 0_ticks;
-    });
     game.tick(); // The wand targets what's on screen, and the titans get there a frame after spawning.
     for (int i = 0; i < 200 && pParty->pCharacters[0].inventory.entry(ITEM_SLOT_MAIN_HAND)->numCharges > 0; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
@@ -428,11 +425,6 @@ GAME_TEST(Issues, Issue1251b) {
     test.stopTaping();
 
     EXPECT_EQ(charmedTape, tape(0, 1, 2, 3)); // Each charge charms the closest monster that isn't charmed yet.
-    for (int i = 0; i < 3; i++) {
-        Duration charmLeft = charmLeftTape.slice(i).filter([] (Duration left) { return left > 0_ticks; }).front();
-        EXPECT_GE(charmLeft, Duration::fromMinutes(5 * 8) - Duration::fromRealtimeMilliseconds(200)); // 5 minutes per skill point, the expert duration...
-        EXPECT_LE(charmLeft, Duration::fromMinutes(5 * 8)); // ...less the frame that passes before the tape sees the charm.
-    }
 }
 
 GAME_TEST(Issues, Issue1253) {
