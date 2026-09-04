@@ -408,7 +408,7 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 
     uNumStationaryLights_in_pStationaryLightsStack = 0;
 
-    pCamera3D = new Camera3D;
+    pCamera3D = std::make_unique<Camera3D>();
 
     keyboardInputHandler = ::keyboardInputHandler;
     keyboardActionMapping = ::keyboardActionMapping;
@@ -419,7 +419,7 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
     delete gameTimer;
-    delete pCamera3D;
+    pCamera3D.reset();
     pAudioPlayer.reset();
 }
 
@@ -678,8 +678,8 @@ void Engine::MM7_Initialize() {
     pMonsterList = new MonsterList;
     deserialize(engine->resources()->eventsData("dmonlist.bin"), pMonsterList);
 
-    pOverlayTable = new OverlayTable;
-    deserialize(engine->resources()->eventsData("doverlay.bin"), pOverlayTable);
+    pOverlayTable = std::make_unique<OverlayTable>();
+    deserialize(engine->resources()->eventsData("doverlay.bin"), pOverlayTable.get());
 
     pSoundList = new SoundList;
     deserialize(engine->resources()->eventsData("dsounds.bin"), pSoundList);
@@ -782,7 +782,7 @@ void Engine::Initialize() {
 
 //----- (00466082) --------------------------------------------------------
 void MM6_Initialize() {
-    viewparams = new ViewingParams;
+    viewparams = std::make_unique<ViewingParams>();
     pAudioPlayer = std::make_unique<AudioPlayer>();
 
     pODMRenderParams = new ODMRenderParams;
