@@ -14,7 +14,6 @@ UNIT_TEST(Color, Tags) {
     EXPECT_THROW((void) fmt::format(fmt::runtime("{: }"), colorTable.Anakiwa.tag()), std::exception);
     EXPECT_THROW((void) fmt::format(fmt::runtime("{:_}"), colorTable.Anakiwa.tag()), std::exception);
     EXPECT_THROW((void) fmt::format(fmt::runtime("{:!}"), colorTable.Anakiwa.tag()), std::exception);
-    // Truncated spec, the parser must stop at the end of the format string instead of reading past it.
     EXPECT_THROW((void) fmt::format(fmt::runtime("{::"), colorTable.Anakiwa.tag()), std::exception);
 
     EXPECT_EQ(fmt::format("{::}", colorTable.White.tag()), "\f65535");
