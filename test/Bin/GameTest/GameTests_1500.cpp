@@ -538,6 +538,41 @@ GAME_TEST(Issues, Issue1724) {
     EXPECT_EQ(zombieActor.max(), 0);
 }
 
+GAME_TEST(Issues, Issue1720) {
+    // Grandmaster axe hits never halved the target's armor, the buff existed but nothing ever applied it.
+    for (bool halvesArmor : {true, false}) {
+        SCOPED_TRACE(fmt::format("halvesArmor={}", halvesArmor));
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        engine->config->gameplay.GrandmasterAxeHalvesArmor.setValue(halvesArmor);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
+
+        Character &char0 = pParty->pCharacters[0];
+        char0.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BATTLE_AXE));
+        char0.setSkillValue(SKILL_AXE, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // 60% chance per hit.
+
+        auto halvedTape = actorTapes.hasBuff(0, ACTOR_BUFF_HALVED_ARMOR);
+        auto hpTape = actorTapes.hp(0);
+        game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY); // Enough HP to survive the swings.
+        game.pointMouseAtActor(0);
+        for (int i = 0; i < 30; i++) {
+            game.pressAndReleaseKey(PlatformKey::KEY_A);
+            game.tick(5);
+        }
+        test.stopTaping();
+
+        EXPECT_LT(hpTape.delta(), 0); // Hits landed.
+        if (halvesArmor) {
+            EXPECT_CONTAINS(halvedTape, true); // Before the fix the buff never appeared.
+        } else {
+            EXPECT_MISSES(halvedTape, true);
+        }
+    }
+}
+
 GAME_TEST(Issues, Issue1725) {
     // Finishing Strike the Devils quest on dark path glitches out game menus
     auto screenTape = tapes.screen();
