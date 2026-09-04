@@ -11,7 +11,7 @@
 
 #include "Engine/Graphics/ClippingFunctions.h"
 
-std::unique_ptr<Camera3D> pCamera3D = std::make_unique<Camera3D>();
+std::unique_ptr<Camera3D> pCamera3D;
 
 //----- (0043643E) --------------------------------------------------------
 float Camera3D::GetMouseInfoDepth() {

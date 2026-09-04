@@ -4,7 +4,7 @@
 
 #include "Engine/Graphics/Sprites.h"
 
-std::unique_ptr<OverlayTable> pOverlayTable = std::make_unique<OverlayTable>();
+std::unique_ptr<OverlayTable> pOverlayTable;
 
 //----- (00458D97) --------------------------------------------------------
 void OverlayTable::initializeSprites() {

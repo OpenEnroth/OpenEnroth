@@ -26,7 +26,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 Recti pViewport;
-std::unique_ptr<ViewingParams> viewparams = std::make_unique<ViewingParams>();
+std::unique_ptr<ViewingParams> viewparams;
 
 //----- (00443219) --------------------------------------------------------
 void ViewingParams::MapViewUp() {
