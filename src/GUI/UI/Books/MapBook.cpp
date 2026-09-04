@@ -336,7 +336,7 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
         !pOutdoor->pBModels.empty()) {
         for (BSPModel &model : pOutdoor->pBModels) {
             if (Vec2i((int)model.boundingCenter.x - global_coord_X,
-                      (int)model.boundingCenter.y - global_coord_Y).octagonalLength() < model.boundingRadius) {
+                      (int)model.boundingCenter.y - global_coord_Y).length() < model.boundingRadius) {
                 for (BLVFace &face : model.faces) {
                     if (face.eventId) {
                         if (!(face.attributes & FACE_HAS_HINT)) {

@@ -515,7 +515,7 @@ void SpriteObject::explosionTraps() {
     int dir_x = pParty->pos.x - this->vPosition.x;
     int dir_y = pParty->pos.y - this->vPosition.y;
     int dir_z = pParty->pos.z + pParty->eyeLevel - this->vPosition.z;
-    if (Vec3i(dir_x, dir_y, dir_z).octagonalLength() <= 768) {
+    if (Vec3i(dir_x, dir_y, dir_z).length() <= 768) {
         int trapDamage = 5;
         if (pMapInfo->trapDamageD20DiceCount) {
             trapDamage += grng->randomDice(pMapInfo->trapDamageD20DiceCount, 20);

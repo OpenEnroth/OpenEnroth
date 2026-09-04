@@ -308,7 +308,7 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
 
     int xDifference = static_cast<int>(std::round(dstX - srcX));
     int yDifference = static_cast<int>(std::round(dstY - srcY));
-    int distapprox = Vec2i(xDifference, yDifference).octagonalLength();
+    int distapprox = Vec2i(xDifference, yDifference).length();
 
     float v16 = 1.0f / (float)distapprox;
     float srcxmod = (float)yDifference * v16 * srcfovoworldview;

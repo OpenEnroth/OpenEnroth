@@ -1766,7 +1766,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             for (BSPModel &model : pOutdoor->pBModels) {
                 dist_y = enc_spawn_point.position.y - model.boundingCenter.y;
                 dist_x = enc_spawn_point.position.x - model.boundingCenter.x;
-                if (Vec2i(dist_x, dist_y).octagonalLength() < model.boundingRadius + 256) {
+                if (Vec2i(dist_x, dist_y).length() < model.boundingRadius + 256) {
                     not_in_model = 1;
                     break;
                 }
