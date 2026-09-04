@@ -33,8 +33,11 @@ set(ENGINE_HEADERS
         EngineCallObserver.h
         EngineGlobals.h
         EngineIocContainer.h
+        HitMap.h
         Localization.h
+        LocalizationEnums.h
         LocationInfo.h
+        MapEnumFunctions.h
         MapEnums.h
         MapInfo.h
         Party.h
@@ -43,6 +46,7 @@ set(ENGINE_HEADERS
         Pid.h
         PriceCalculator.h
         SaveLoad.h
+        SpawnPoint.h
         SpellFxRenderer.h
         Timer.h
         mm7_data.h

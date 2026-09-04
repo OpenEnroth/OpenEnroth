@@ -6,10 +6,12 @@ set(LIBRARY_BINARY_SOURCES
 set(LIBRARY_BINARY_HEADERS
         BinaryConcepts.h
         BinaryExceptions.h
+        BinaryFwd.h
         BinarySerialization.h
         BinaryTags.h
         BlobSerialization.h
-        CommonSerialization.h)
+        CommonSerialization.h
+        PackSerialization.h)
 
 add_library(library_binary STATIC ${LIBRARY_BINARY_SOURCES} ${LIBRARY_BINARY_HEADERS})
 target_link_libraries(library_binary PUBLIC utility)

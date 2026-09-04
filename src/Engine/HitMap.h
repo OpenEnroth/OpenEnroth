@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <utility>
 #include <vector>
 #include <algorithm>
 
@@ -12,7 +13,7 @@
 /**
  * A canvas-like container that allows adding images with associated values, then querying pixels to get the value of
  * the topmost non-transparent image at that position.
- * 
+ *
  * @tparam T                            The type of values associated with images.
  */
 template<class T>
@@ -29,7 +30,7 @@ class HitMap {
         assert(image);
 
         _entries.emplace_back(position, image, std::move(value));
-        
+
         Recti imageRect = Recti(position, image->size());
         if (_entries.size() == 1) {
             _bounds = imageRect;
@@ -37,7 +38,7 @@ class HitMap {
             _bounds |= imageRect;
         }
     }
-    
+
     /**
      * Clear all images from the canvas.
      */
@@ -45,7 +46,7 @@ class HitMap {
         _entries.clear();
         _bounds = Recti();
     }
-    
+
     /**
      * Query a pixel position to get the value from the topmost non-transparent image.
      *
@@ -61,7 +62,7 @@ class HitMap {
         // Iterate entries in reverse order (topmost first).
         for (auto it = _entries.rbegin(); it != _entries.rend(); ++it) {
             const Entry &entry = *it;
-            
+
             Pointi relativePos = point - entry.position;
             if (entry.image->rgba().geometry().contains(relativePos)) {
                 Color color = entry.image->rgba()[relativePos];
@@ -69,7 +70,7 @@ class HitMap {
                     return entry.value;
             }
         }
-        
+
         return defaultValue;
     }
 

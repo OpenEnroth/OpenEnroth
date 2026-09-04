@@ -26,6 +26,7 @@ set(UTILITY_HEADERS
         IndexedArray.h
         IndexedBitset.h
         Lambda.h
+        MapAccess.h
         Math/Float.h
         Math/TrigLut.h
         Memory/Blob.h
@@ -33,6 +34,7 @@ set(UTILITY_HEADERS
         Memory/MemoryBuffer.h
         Memory/MemoryScratchpad.h
         Memory/MemSet.h
+        Preprocessor.h
         View.h
         ScopeGuard.h
         Segment.h
