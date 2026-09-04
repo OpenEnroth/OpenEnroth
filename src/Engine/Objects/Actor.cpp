@@ -33,7 +33,7 @@
 #include "Engine/Tables/HostilityTable.h"
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -1096,7 +1096,7 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if ((engine->_currentLoadedMapId == MAP_DEYJA || engine->_currentLoadedMapId == MAP_PIT) && pParty->isPartyGood())
         return;
 
-    pParty->uFine += 100 * (pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine +
+    pParty->uFine += 100 * (mapTable[engine->_currentLoadedMapId].baseStealingFine +
                             pActors[uActorID].monsterInfo.level +
                             pParty->GetPartyReputation());
     if (pParty->uFine < 0)
@@ -1237,7 +1237,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         if (engine->_currentLoadedMapId != MAP_INVALID)
-            v4 = pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine;
+            v4 = mapTable[engine->_currentLoadedMapId].baseStealingFine;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
@@ -4197,7 +4197,7 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
 }
 
 //----- (0044F57C) --------------------------------------------------------
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
+void SpawnEncounter(MapData *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
     assert(spawn->type == OBJECT_Actor);
 
     char v8;               // zf@5

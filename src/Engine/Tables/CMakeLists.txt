@@ -10,6 +10,7 @@ set(ENGINE_TABLES_SOURCES
         HouseTable.cpp
         IconFrameTable.cpp
         ItemTable.cpp
+        MapTable.cpp
         MerchantTable.cpp
         MessageScrollTable.cpp
         NPCTable.cpp
@@ -30,6 +31,7 @@ set(ENGINE_TABLES_HEADERS
         HouseTable.h
         IconFrameTable.h
         ItemTable.h
+        MapTable.h
         MerchantTable.h
         MessageScrollTable.h
         NPCTable.h

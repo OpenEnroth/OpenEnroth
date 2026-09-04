@@ -47,7 +47,8 @@
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/MapEnumFunctions.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
@@ -1127,7 +1128,7 @@ void Game::processQueuedMessages() {
                     // Was this, which made exactly zero sense:
                     // if (mapIdx == MAP_INVALID)
                     //    mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
-                    MapInfo *pMapInfo = &pMapStats->pInfos[mapIdx];
+                    MapData *pMapInfo = &mapTable[mapIdx];
 
                     // Encounters when resting
                     if ((grng->random(100) + 1) <= pMapInfo->encounterChance && !engine->config->debug.NoActors.value()) {

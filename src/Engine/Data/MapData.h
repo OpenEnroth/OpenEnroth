@@ -1,19 +1,13 @@
 #pragma once
 
 #include <cstdint>
-#include <array>
 #include <string>
 
-#include "Engine/Data/SoundEnums.h"
+#include "SoundEnums.h"
 
-#include "Utility/IndexedArray.h"
+#include "Engine/MapEnums.h"
 
-#include "MapEnumFunctions.h"
-#include "MapEnums.h"
-
-class Blob;
-
-struct MapInfo {
+struct MapData {
     std::string name; // Display name, e.g. "The Tularean Forest".
     std::string fileName; // E.g. "out02.odm".
     std::string encounter1MonsterInternalName; //
@@ -50,11 +44,3 @@ struct MapInfo {
     char field_42 = 0;
     char field_43 = 0;
 };
-
-struct MapStats {
-    void Initialize(const Blob &mapStats);
-    MapId GetMapInfo(std::string_view Str2);
-    IndexedArray<MapInfo, MAP_FIRST, MAP_LAST> pInfos;
-};
-
-extern MapStats *pMapStats;

@@ -1,5 +1,6 @@
-#include "MapInfo.h"
+#include "MapTable.h"
 
+#include <cassert>
 #include <array>
 #include <map>
 #include <string>
@@ -12,9 +13,9 @@
 #include "Utility/String/Split.h"
 #include "Utility/String/Transformations.h"
 
-MapStats *pMapStats;
+IndexedArray<MapData, MAP_FIRST, MAP_LAST> mapTable;
 
-void MapStats::Initialize(const Blob &mapStats) {
+void initializeMaps(const Blob &maps) {
     // mapstats.txt table structure: map id | name (localized) | file name | ... |
     //                               map designer (set only in mm6, not used) | dev notes | parent map (not used).
     static const std::map<std::string, uint8_t, ascii::NoCaseLess> eaxEnvMap = {
@@ -58,10 +59,10 @@ void MapStats::Initialize(const Blob &mapStats) {
         }
     };
 
-    for (std::string_view line : split(mapStats.str()).by("\r\n").drop(3).skip("")) {
+    for (std::string_view line : split(maps.str()).by("\r\n").drop(3).skip("")) {
         std::array<std::string_view, 30> tokens = split(line).by('\t');
         MapId mapId = static_cast<MapId>(fromString<int>(tokens[0]));
-        MapInfo &info = pInfos[mapId];
+        MapData &info = mapTable[mapId];
         info.name = unquote(tokens[1]);
         info.fileName = ascii::toLower(unquote(tokens[2]));
         info.numResets = fromString<int>(tokens[3]);
@@ -91,14 +92,12 @@ void MapStats::Initialize(const Blob &mapStats) {
     }
 }
 
-MapId MapStats::GetMapInfo(std::string_view Str2) {
-    std::string map_name = ascii::toLower(Str2);
+MapId mapIdByFileName(std::string_view fileName) {
+    std::string mapName = ascii::toLower(fileName);
 
-    for (MapId i : pInfos.indices()) {
-        if (pInfos[i].fileName == map_name) {
+    for (MapId i : mapTable.indices())
+        if (mapTable[i].fileName == mapName)
             return i;
-        }
-    }
 
     assert(false);
     return MAP_INVALID;

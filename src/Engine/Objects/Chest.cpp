@@ -21,7 +21,7 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Tables/ChestTable.h"
 
 #include "GUI/UI/UIChest.h"
@@ -62,7 +62,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
         return false;
     flag_shout = false;
     if (chest->Trapped() && engine->_currentLoadedMapId != MAP_INVALID) {
-        if (pParty->activeCharacter().GetDisarmTrap() < 2 * pMapStats->pInfos[engine->_currentLoadedMapId].disarmDifficulty) {
+        if (pParty->activeCharacter().GetDisarmTrap() < 2 * mapTable[engine->_currentLoadedMapId].disarmDifficulty) {
             pSpriteID[0] = SPRITE_TRAP_FIRE;
             pSpriteID[1] = SPRITE_TRAP_LIGHTNING;
             pSpriteID[2] = SPRITE_TRAP_COLD;
@@ -322,7 +322,7 @@ void Chest::GrabItem(bool all) {  // new function to grab items from chest using
 }
 
 void GenerateItemsInChest() {
-    MapInfo *currMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
+    MapData *currMapInfo = &mapTable[engine->_currentLoadedMapId];
     for (int i = 0; i < 20; ++i) {
         for (InventoryEntry entry : vChests[i].inventory.entries()) {
             if (!isRandomItem(entry->itemId))

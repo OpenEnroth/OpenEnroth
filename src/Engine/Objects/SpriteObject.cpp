@@ -11,7 +11,7 @@
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AttackList.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "Engine/Random/Random.h"
 
@@ -511,7 +511,7 @@ LABEL_25:
 }
 
 void SpriteObject::explosionTraps() {
-    MapInfo *pMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
+    MapData *pMapInfo = &mapTable[engine->_currentLoadedMapId];
     int dir_x = pParty->pos.x - this->vPosition.x;
     int dir_y = pParty->pos.y - this->vPosition.y;
     int dir_z = pParty->pos.z + pParty->eyeLevel - this->vPosition.z;

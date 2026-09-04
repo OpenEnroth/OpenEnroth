@@ -38,7 +38,8 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/BspRenderer.h"
-#include "Engine/MapInfo.h"
+#include "Engine/MapEnumFunctions.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Seasons.h"
@@ -1742,7 +1743,7 @@ void UpdateActors_ODM() {
 static void loadAndPrepareODMInternal(MapId mapid) {
     assert(isMapOutdoor(mapid));
 
-    MapInfo *map_info;
+    MapData *map_info;
     bool outdoor_was_respawned;
     unsigned int respawn_interval = 0;
     std::string mapFilename;
@@ -1752,8 +1753,8 @@ static void loadAndPrepareODMInternal(MapId mapid) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;
-    mapFilename = pMapStats->pInfos[mapid].fileName;
-    map_info = &pMapStats->pInfos[mapid];
+    mapFilename = mapTable[mapid].fileName;
+    map_info = &mapTable[mapid];
     respawn_interval = map_info->respawnIntervalDays;
 
     pOutdoor->weather.flags &= ~MAP_WEATHER_FOGGY;

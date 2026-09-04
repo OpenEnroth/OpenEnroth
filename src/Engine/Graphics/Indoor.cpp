@@ -37,7 +37,8 @@
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
+#include "Engine/MapEnumFunctions.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
 
@@ -296,7 +297,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapStats->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
+            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && mapIdByFileName(filename) != MAP_CASTLE_HARMONDALE)
                 respawnTimed = true;
         } catch (const Exception &e) {
             MM_ERROR("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -878,7 +879,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     assert(isMapIndoor(mapid));
 
     unsigned int respawn_interval;  // ebx@1
-    MapInfo *map_info;              // edi@9
+    MapData *map_info;              // edi@9
     bool v28;                       // zf@81
     bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
@@ -898,9 +899,9 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
 
-    mapFilename = pMapStats->pInfos[mapid].fileName;
-    map_info = &pMapStats->pInfos[mapid];
-    respawn_interval = pMapStats->pInfos[mapid].respawnIntervalDays;
+    mapFilename = mapTable[mapid].fileName;
+    map_info = &mapTable[mapid];
+    respawn_interval = mapTable[mapid].respawnIntervalDays;
     alertStatus = GetAlertStatus();
 
 
@@ -1730,7 +1731,7 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
 }
 
 //----- (0045063B) --------------------------------------------------------
-int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
+int SpawnEncounterMonsters(MapData *map_info, int enc_index) {
     // creates random spawn point for encounter
     bool failed_point = false;
     float angle_from_party;
@@ -1832,7 +1833,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
     return a1.Create(0, 0, 0, 0);
 }
 
-void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *spawn) {
+void SpawnRandomTreasure(MapData *mapInfo, SpawnPoint *spawn) {
     assert(spawn->type == OBJECT_Sprite);
 
     SpriteObject spawnedObject;
