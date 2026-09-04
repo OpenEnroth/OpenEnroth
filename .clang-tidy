@@ -9,7 +9,6 @@ Checks: >
   -bugprone-empty-catch,
   -bugprone-exception-escape,
   -bugprone-implicit-widening-of-multiplication-result,
-  -bugprone-inc-dec-in-conditions,
   -bugprone-incorrect-roundings,
   -bugprone-integer-division,
   -bugprone-invalid-enum-default-initialization,
