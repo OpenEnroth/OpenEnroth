@@ -8,6 +8,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIRest.h"
 
 #include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Objects/Actor.h"
@@ -991,6 +992,32 @@ GAME_TEST(Issues, Issue1471) {
     EXPECT_EQ(armageddonTape, tape(4, 0, 1)); // blocked/ reset/ cast
     EXPECT_GT(timeTape.back().toCivilTime().day, timeTape.front().toCivilTime().day); // Time should have passed 3am reset time
     EXPECT_GT(timeTape.back().toCivilTime().hour, 3);
+}
+
+GAME_TEST(Issues, Issue1474) {
+    // Wait until dawn was reported to end at 5:02 instead of 5:00.
+    test.prepareForNextTest();
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    auto timeTape = tapes.time();
+    test.startTaping();
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_R);
+    game.tick(2);
+    ASSERT_EQ(current_screen_type, SCREEN_REST);
+    game.pressGuiButton("Rest_WaitTillDawn");
+    game.tick(2);
+    ASSERT_EQ(currentRestType, REST_WAIT);
+    for (int i = 0; i < 200 && currentRestType == REST_WAIT; i++)
+        game.tick();
+    test.stopTaping();
+
+    ASSERT_EQ(currentRestType, REST_NONE); // The wait finished on its own.
+    EXPECT_GT(timeTape.delta(), Duration::fromHours(1)); // A new game starts well past dawn, so at least a night passed.
+    CivilTime dawn = timeTape.back().toCivilTime();
+    EXPECT_EQ(dawn.hour, 5);
+    EXPECT_EQ(dawn.minute, 0);
+    EXPECT_EQ(dawn.second, 0);
 }
 
 GAME_TEST(Issues, Issue1475) {
