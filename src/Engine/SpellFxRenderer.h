@@ -17,9 +17,6 @@ class GraphicsImage;
 class ParticleEngine;
 struct SpriteObject;
 
-extern std::array<Vec3f, 66> sphereVertPos;
-extern std::array<int32_t, 128 * 3> sphereVertInd;
-
 struct SpellFX_Billboard {
     /**
      * @offset 0x4775B1

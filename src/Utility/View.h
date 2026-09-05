@@ -113,6 +113,9 @@ class ResizeView {
  */
 template<class Derived>
 class ViewInterface : public std::ranges::view_interface<Derived> {
+    ViewInterface() = default; // Private, so that passing the wrong type as Derived doesn't compile.
+    friend Derived;
+
     [[nodiscard]] Derived &derived() { return static_cast<Derived &>(*this); }
 
  public:

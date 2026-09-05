@@ -47,7 +47,7 @@ void LoadStep2State::_drawMM7CopyrightWindow() {
     window.h = assets->pFontSmallnum->CalcTextHeight(localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), window.w, 24);
     window.h += 2 * assets->pFontSmallnum->GetHeight() + 24;
     window.y = 470 - window.h;
-    GUIWindow::DrawMessageBox(0, window, "");
+    GUIWindow::DrawMessageBox(window, "");
 
     window.w -= 28;
     window.x += 12;

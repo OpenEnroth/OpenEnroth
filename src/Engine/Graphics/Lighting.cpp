@@ -7,7 +7,6 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 
 #include "Library/Color/ColorTable.h"
@@ -121,7 +120,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
             if (distY <= light_radius) {
                 distZ = std::abs(p->vPosition.z - z);
                 if (distZ <= light_radius) {
-                    approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
+                    approx_distance = Vec3i(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ)).length();
                     if (approx_distance < light_radius)
                         //* ORIGONAL */lightlevel += ((uint64_t)(30i64 *(signed int)(approx_distance << 16) / light_radius) >> 16) - 30;
                         lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
@@ -145,7 +144,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
                     if (distY <= light_radius) {
                         distZ = std::abs(this_light->vPosition.z - z);
                         if (distZ <= light_radius) {
-                            approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
+                            approx_distance = Vec3i(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ)).length();
                             if (approx_distance < light_radius)
                                 lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
                         }
@@ -166,7 +165,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
             if (distY <= light_radius) {
                 distZ = std::abs(p->vPosition.z - z);
                 if (distZ <= light_radius) {
-                    approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
+                    approx_distance = Vec3i(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ)).length();
                     if (approx_distance < light_radius)
                         lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
                 }

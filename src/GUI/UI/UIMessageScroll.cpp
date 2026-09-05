@@ -30,7 +30,7 @@ void GUIWindow_MessageScroll::Update() {
         v0 = 479 - a1.frameRect.y;
         a1.frameRect.h = 479 - a1.frameRect.y;
     }
-    GUIWindow::DrawMessageBox(0, a1.frameRect, a1.sHint);
+    GUIWindow::DrawMessageBox(a1.frameRect, a1.sHint);
     a1.frameRect.x += 12;
     a1.frameRect.w -= 28;
     a1.frameRect.y += 12;

@@ -13,7 +13,7 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Lighting.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -28,7 +28,6 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
@@ -579,8 +578,8 @@ bool OutdoorLocation::PrepareDecorations() {
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
-        pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
+        pDecorationTable->initializeSprite(decor->uDecorationDescID);
+        const DecorationData *decoration = pDecorationTable->decoration(decor->uDecorationDescID);
 
         if (decoration->uSoundID != SOUND_Invalid) {
             decorationsWithSound.push_back(i);
@@ -1447,7 +1446,7 @@ void ODM_ProcessPartyActions() {
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
         if (gameTimer->dt()) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
-            int walkDelta = integer_sqrt((partyOldPosition - pParty->pos).lengthSqr());
+            int walkDelta = (partyOldPosition - pParty->pos).length();
 
             if (walkDelta < 2) {
                 // mute the walking sound when stopping
@@ -1673,7 +1672,7 @@ void UpdateActors_ODM() {
             actor.velocity.x += grng->random(100) - 50;
             actor.velocity.y += grng->random(100) - 50;
             actor.velocity.z += grng->random(100) - 20;
-            actor.aiState = Stunned;
+            actor.aiState = InPain;
             actor.yawAngle += grng->random(32) - 16;
             actor.UpdateAnimation();
         }
@@ -1805,7 +1804,7 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
 
     //  level decoration sound
     for (int decorIdx : decorationsWithSound) {
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
+        const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[decorIdx].uDecorationDescID);
         pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
     }
 }
