@@ -728,11 +728,11 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
     bool showCurrentHp = monster_full_informations || pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active();
 
     if (pParty->hasActiveCharacter()) {
-        int skill_points = 0;
         Mastery skill_mastery = MASTERY_NONE;
         CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(SKILL_MONSTER_ID);
+        int skill_points = idMonsterSkill.level();
 
-        if ((skill_points = idMonsterSkill.level()) > 0) {
+        if (skill_points > 0) {
             skill_mastery = idMonsterSkill.mastery();
             if (skill_mastery == MASTERY_NOVICE) {
                 if (skill_points + 10 >= monsterInfo.level) {
@@ -1147,7 +1147,9 @@ void CharacterUI_StatsTab_ShowHint() {
                         pHourWord = localization->str(LSTR_HOUR);
                     else
                         pHourWord = localization->str(LSTR_HOURS);
-                    if (!d.days || (pDayWord = localization->str(LSTR_DAY_CAPITALIZED), d.days > 1))
+                    if (d.days && d.days <= 1)
+                        pDayWord = localization->str(LSTR_DAY_CAPITALIZED);
+                    else
                         pDayWord = localization->str(LSTR_DAYS);
                     str += fmt::format("{} {}, {} {}", d.days, pDayWord, d.hours, pHourWord);
                 }

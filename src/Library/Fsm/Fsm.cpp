@@ -22,8 +22,8 @@ void Fsm::update() {
 }
 
 void Fsm::_goToState(std::string_view stateName) {
-    FsmStateEntry *nextState = nullptr;
-    if (!(nextState = _getStateByName(stateName))) {
+    FsmStateEntry *nextState = _getStateByName(stateName);
+    if (!nextState) {
         throw Exception("Cannot jump to state [{}]. The state does not exist.", stateName);
     }
 

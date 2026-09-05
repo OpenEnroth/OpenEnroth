@@ -1643,11 +1643,14 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
     } else if (IsUnarmed() && getActualSkillValue(SKILL_UNARMED).level() > 0) {
         weapon_recovery = base_recovery_times_per_weapon_type[SKILL_UNARMED];
-    } else if (weapon = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND)) {
-        if (weapon->isWand()) {
-            weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[MASTERY_EXPERT];
-        } else {
-            weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
+    } else {
+        weapon = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND);
+        if (weapon) {
+            if (weapon->isWand()) {
+                weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[MASTERY_EXPERT];
+            } else {
+                weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
+            }
         }
     }
 

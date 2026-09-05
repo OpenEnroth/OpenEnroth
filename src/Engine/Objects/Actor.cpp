@@ -4184,12 +4184,13 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
     actor->UpdateAnimation();
 
     int sectorId = pIndoor->GetSector(actor->pos);
-    int zlevel;
-    int zdiff;
-    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ||
-            sectorId == partySectorId &&
-            (zlevel = BLV_GetFloorLevel(actor->pos, sectorId), zlevel != -30000) &&
-            (zdiff = std::abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
+    bool positionValid = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR;
+    if (!positionValid && sectorId == partySectorId) {
+        int zlevel = BLV_GetFloorLevel(actor->pos, sectorId);
+        positionValid = zlevel != -30000 && std::abs(zlevel - pParty->pos.z) <= 1024;
+    }
+
+    if (positionValid) {
         actor->summonerId = Pid(OBJECT_Character, spell_power);
 
         actor->buffs[ACTOR_BUFF_SUMMONED].Apply(pParty->GetPlayingTime() + duration,
