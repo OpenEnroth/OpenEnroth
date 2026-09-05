@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cassert>
-#include <utility>
 #include <type_traits>
 
 #include "Library/Platform/Proxy/ProxyWindow.h"
@@ -18,12 +17,12 @@ class PlatformIntrospection {
     static void visit(T *component, Callable &&callable) {
         int count = 0;
         // Using += instead of one big expression to get deterministic call order.
-        count += visitInternal<ProxyPlatform>(component, std::forward<Callable>(callable));
-        count += visitInternal<ProxyEventLoop>(component, std::forward<Callable>(callable));
-        count += visitInternal<ProxyWindow>(component, std::forward<Callable>(callable));
-        count += visitInternal<ProxyOpenGLContext>(component, std::forward<Callable>(callable));
-        count += visitInternal<PlatformEventFilter>(component, std::forward<Callable>(callable));
-        count += visitInternal<PlatformApplicationAware>(component, std::forward<Callable>(callable));
+        count += visitInternal<ProxyPlatform>(component, callable);
+        count += visitInternal<ProxyEventLoop>(component, callable);
+        count += visitInternal<ProxyWindow>(component, callable);
+        count += visitInternal<ProxyOpenGLContext>(component, callable);
+        count += visitInternal<PlatformEventFilter>(component, callable);
+        count += visitInternal<PlatformApplicationAware>(component, callable);
         assert(count > 0); // Must derive from at least one of the supported types.
         (void) count;
     }
