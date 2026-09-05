@@ -50,7 +50,10 @@ TargetedSpellUI_Telekinesis::TargetedSpellUI_Telekinesis(Pointi position, Sizei 
 }
 
 void TargetedSpellUI::CreateButtonsTargetCharacters() {
-    // TODO(pskelton): why is position / size different to normal character buttons
+    // TODO(pskelton): why is position / size different to normal character buttons. These are 72 by 72 circles
+    // where the game portraits are 64 by 82 ovals, and their centers sit 18, 16, 16 and 11 pixels right of the
+    // portrait's left edge while the game buttons hold a constant 27 to 28. That offset has to be the same for
+    // all four, so these numbers look mis-transcribed rather than deliberate.
     CreateButton({16, 386}, {71, 71}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 0, INPUT_ACTION_SELECT_CHAR_1);
     CreateButton({129, 386}, {71, 71}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 1, INPUT_ACTION_SELECT_CHAR_2);
     CreateButton({244, 386}, {71, 71}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 2, INPUT_ACTION_SELECT_CHAR_3);
