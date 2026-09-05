@@ -23,7 +23,6 @@ Checks: >
   -bugprone-switch-missing-default-case,
   -bugprone-throwing-static-initialization,
   -bugprone-unchecked-optional-access,
-  -bugprone-unchecked-string-to-number-conversion,
   -bugprone-use-after-move
 WarningsAsErrors: '*'
 HeaderFilterRegex: '/(src|test)/'

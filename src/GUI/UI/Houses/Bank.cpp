@@ -1,5 +1,6 @@
 #include "Bank.h"
 
+#include <cstdlib>
 #include <string>
 #include <vector>
 
@@ -43,7 +44,7 @@ void GUIWindow_Bank::putGoldDialogue() {
         return;
     }
     if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
-        int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
+        int sum = static_cast<int>(std::strtol(keyboardInputHandler->GetTextInput().c_str(), nullptr, 10));
         if (sum <= 0) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;
@@ -83,7 +84,7 @@ void GUIWindow_Bank::getGoldDialogue() {
         return;
     } else if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         keyboard_input_status = WINDOW_INPUT_NONE;
-        int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
+        int sum = static_cast<int>(std::strtol(keyboardInputHandler->GetTextInput().c_str(), nullptr, 10));
         if (sum <= 0) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;
