@@ -81,8 +81,6 @@ jobs:
           echo "MATRIX_CONFIGURATION=${{matrix.configuration}}" >> "$GITHUB_ENV"
           echo "MATRIX_TARGET=${{matrix.target}}" >> "$GITHUB_ENV"
           
-          # ASan is a Debug build with a sanitizer, not a build type of its own. Prebuilt dependencies are
-          # published per build type, and there is no ASan archive to download.
           configuration="${{matrix.configuration}}"
           case "$configuration" in
             ASan) build_type=Debug;            sanitizers=address;;
