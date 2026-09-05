@@ -672,22 +672,22 @@
             "type": "paint"
         },
         {
-            "randomState": 7,
+            "randomState": 5,
             "tickCount": 100,
             "type": "paint"
         },
         {
-            "randomState": 10,
+            "randomState": 8,
             "tickCount": 150,
             "type": "paint"
         },
         {
-            "randomState": 14,
+            "randomState": 12,
             "tickCount": 200,
             "type": "paint"
         },
         {
-            "randomState": 24,
+            "randomState": 22,
             "tickCount": 250,
             "type": "paint"
         },
