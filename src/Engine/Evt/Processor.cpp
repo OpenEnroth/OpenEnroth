@@ -164,7 +164,7 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     }
 
     if (!interpreter.isValid()) {
-        MM_INFO("Face has invalid event ID");
+        MM_WARNING("Face has invalid event ID");
         engine->_statusBar->nothingHere();
         return;
     }
