@@ -3195,11 +3195,21 @@ void pushTempleSpell(SpellId spell) {
 }
 
 void pushNPCSpell(SpellId spell) {
-    pushSpellOrRangedAttack(spell, 0, SCROLL_OR_NPC_SPELL_SKILL_VALUE, 0);
+    pushSpellOrRangedAttack(spell, 0, scrollSpellSkillValue(), 0);
 }
 
 void pushScrollSpell(SpellId spell, int casterIndex) {
-    pushSpellOrRangedAttack(spell, casterIndex, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll);
+    pushSpellOrRangedAttack(spell, casterIndex, scrollSpellSkillValue(), ON_CAST_CastViaScroll);
+}
+
+CombinedSkillValue scrollSpellSkillValue() {
+    return CombinedSkillValue(engine->config->gameplay.ScrollSpellLevel.value(),
+                              static_cast<Mastery>(engine->config->gameplay.ScrollSpellMastery.value()));
+}
+
+CombinedSkillValue wandSpellSkillValue() {
+    return CombinedSkillValue(engine->config->gameplay.WandSpellLevel.value(),
+                              static_cast<Mastery>(engine->config->gameplay.WandSpellMastery.value()));
 }
 
 void spellTargetPicked(Pid targetPid, int targetCharacterIndex) {
