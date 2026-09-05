@@ -1155,14 +1155,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
 
     maybeWakeSoloSurvivor();
     updatePartyDeathState();
-
-    if (pParty->hasActiveCharacter()) {
-        if (current_screen_type != SCREEN_REST) {
-            if (!pParty->activeCharacter().CanAct()) {
-                pParty->switchToNextActiveCharacter();
-            }
-        }
-    }
+    dropFocusFromIncapacitatedCharacter();
 }
 
 void maybeWakeSoloSurvivor() {
@@ -1187,6 +1180,11 @@ void maybeWakeSoloSurvivor() {
 void updatePartyDeathState() {
     if (current_screen_type != SCREEN_REST && pParty->canActCount() == 0)
         uGameState = GAME_STATE_PARTY_DIED;
+}
+
+void dropFocusFromIncapacitatedCharacter() {
+    if (current_screen_type != SCREEN_REST && pParty->hasActiveCharacter() && !pParty->activeCharacter().CanAct())
+        pParty->switchToNextActiveCharacter();
 }
 
 void RegeneratePartyHealthMana() {

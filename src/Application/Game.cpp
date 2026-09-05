@@ -1591,6 +1591,8 @@ void Game::gameLoop() {
                     // Need to process party death in turn-based mode.
                     maybeWakeSoloSurvivor();
                     updatePartyDeathState();
+                    if (engine->config->gameplay.TurnBasedFocusSkipsIncapacitated.value())
+                        dropFocusFromIncapacitatedCharacter();
                 }
 
                 if (dword_6BE364_game_settings_1 & GAME_SETTINGS_SKIP_WORLD_UPDATE) {

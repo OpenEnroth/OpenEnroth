@@ -534,6 +534,43 @@ GAME_TEST(Issues, Issue1294_1389) {
 
 // 1300
 
+GAME_TEST(Issues, Issue1301) {
+    // A character eradicated by a script (the well in Eofol) stayed the active character in turn-based mode, which is
+    // what the infinite drinking trick relies on. Realtime mode always moved the focus, turn-based mode now does the
+    // same unless turn_based_focus_skips_incapacitated is off.
+    for (auto [turnBased, skipIncapacitated] : {std::pair(false, true), std::pair(true, true), std::pair(true, false)}) {
+        SCOPED_TRACE(fmt::format("turnBased={} skipIncapacitated={}", turnBased, skipIncapacitated));
+        test.prepareForNextTest();
+        engine->config->gameplay.TurnBasedFocusSkipsIncapacitated.setValue(skipIncapacitated);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        engine->config->debug.NoActors.setValue(false);
+        if (turnBased) {
+            game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+            game.tick(2);
+        }
+        ASSERT_EQ(pParty->bTurnBasedModeOn, turnBased);
+        pParty->setActiveCharacterIndex(1);
+
+        auto activeTape = tapes.activeCharacterIndex();
+        test.startTaping();
+        game.tick();
+        pParty->pCharacters[0].SetVariable(VAR_Eradicated, 1); // Same call the well script makes.
+        game.tick(2);
+        test.stopTaping();
+
+        ASSERT_TRUE(pParty->pCharacters[0].conditions.has(CONDITION_ERADICATED));
+        EXPECT_EQ(activeTape.front(), 1);
+        if (skipIncapacitated) {
+            EXPECT_NE(activeTape.back(), 1); // Focus left the eradicated character.
+            if (pParty->hasActiveCharacter())
+                EXPECT_TRUE(pParty->activeCharacter().CanAct());
+        } else {
+            EXPECT_EQ(activeTape.back(), 1); // Option off keeps the eradicated character selected.
+        }
+    }
+}
+
 GAME_TEST(Issues, Issue1315) {
     // Dying in turn-based mode asserts.
     auto deathsTape = tapes.deaths();
