@@ -98,6 +98,14 @@
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
 
+static void rememberMinimapZoom() {
+    if (!engine->config->settings.RememberMinimapZoom.value())
+        return;
+    auto &zoom = uCurrentlyLoadedLevelType == LEVEL_INDOOR ?
+        engine->config->settings.IndoorMinimapZoom : engine->config->settings.OutdoorMinimapZoom;
+    zoom.setValue(viewparams->uMinimapZoom);
+}
+
 Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
     _application = application;
     _config = config;
@@ -1453,6 +1461,7 @@ void Game::processQueuedMessages() {
                         viewparams->uMinimapZoom = 2048;
                     }
                 }
+                rememberMinimapZoom();
 
                 break;
             case UIMSG_ClickZoomOutBtn:
@@ -1469,6 +1478,7 @@ void Game::processQueuedMessages() {
                         viewparams->uMinimapZoom = 256;
                     }
                 }
+                rememberMinimapZoom();
 
                 break;
 
