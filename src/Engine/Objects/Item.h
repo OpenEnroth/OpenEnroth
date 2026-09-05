@@ -43,6 +43,7 @@ struct Item {
 
     inline bool IsBroken() const { return flags & ITEM_BROKEN; }
     inline void SetBroken() { flags |= ITEM_BROKEN; }
+    inline void SetRepaired() { flags &= ~ITEM_BROKEN; }
     inline bool IsIdentified() const { return flags & ITEM_IDENTIFIED; }
     inline void SetIdentified() { flags |= ITEM_IDENTIFIED; }
     inline bool IsStolen() const { return flags & ITEM_STOLEN; }
