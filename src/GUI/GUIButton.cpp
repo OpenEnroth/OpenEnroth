@@ -1,5 +1,6 @@
 #include "GUI/GUIButton.h"
 
+#include <cassert>
 #include <vector>
 
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -99,6 +100,8 @@ bool GUIButton::Contains(Pointi position) {
 }
 
 bool GUIButton::containsOval(Pointi position) const {
+    assert(uButtonType == BUTTON_TYPE_CHARACTER);
+
     if (rect.isEmpty())
         return false;
 

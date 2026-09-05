@@ -21,9 +21,8 @@ class GUIButton {
     bool Contains(Pointi position);
 
     /**
-     * Hit test for `BUTTON_TYPE_CHARACTER` buttons, which are ovals rather than rectangles. `rect` is not a
-     * rectangle for these - `rect.x` and `rect.y` are the center of the oval, and `rect.w` and `rect.h` are its
-     * semi-axes.
+     * Hit test for `BUTTON_TYPE_CHARACTER` buttons. `rect` holds an oval for these, `rect.x` and `rect.y` are its
+     * center and `rect.w` and `rect.h` its semi-axes.
      *
      * @param position                  Point to test.
      * @return                          Whether the point is inside the oval.

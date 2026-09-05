@@ -1691,12 +1691,12 @@ GAME_TEST(Prs, Pr2615d) {
 
 GAME_TEST(Prs, Pr2717) {
     // Clicking the top or the bottom of a party portrait did nothing. A portrait is an oval with semi-axes 32 and
-    // 41, but the click test used the circle of radius 32 inscribed in it, so a nine pixel band at each end lit up
-    // on hover and then swallowed the click.
+    // 41, but the click test used the circle of radius 32 inscribed in it, so a nine pixel band at each end showed
+    // the character in the status bar on hover and then swallowed the click.
     game.startNewGame();
 
     pParty->setActiveCharacterIndex(1);
-    ASSERT_EQ(pParty->pCharacters[1].timeToRecovery, Duration()); // Portrait clicks do nothing while recovering.
+    ASSERT_EQ(pParty->pCharacters[1].timeToRecovery, 0_ticks); // Portrait clicks do nothing while recovering.
 
     game.pressAndReleaseButton(BUTTON_LEFT, 177, 460); // 36 pixels below the center of the second portrait.
     game.tick();
