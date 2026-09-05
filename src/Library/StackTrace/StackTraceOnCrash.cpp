@@ -299,10 +299,11 @@ static void fillUnwindContext(const ucontext_t &crashContext, unw_context_t *con
  * its return address first though, so the pc is set back into that call and the walk carries on from there.
  *
  * @param crashContext                  Register state the signal was delivered with.
+ * @param signal                        Signal that was delivered, `si_signo`.
  * @param faultAddress                  Address the signal was about, `si_addr`.
  * @return                              Stack trace starting at the faulting frame, one frame per line.
  */
-static std::string traceFromContext(const ucontext_t &crashContext, const void *faultAddress) {
+static std::string traceFromContext(const ucontext_t &crashContext, int signal, const void *faultAddress) {
     unw_context_t context;
     fillUnwindContext(crashContext, &context);
 
@@ -311,15 +312,22 @@ static std::string traceFromContext(const ucontext_t &crashContext, const void *
     uint64_t *regs = reinterpret_cast<uint64_t *>(&context);
 #if defined(__aarch64__)
     uint64_t &pc = regs[32];
-    if (pc == reinterpret_cast<uint64_t>(faultAddress))
-        pc = regs[30] - 1; // Minus one, so the pc points into the call, not one past it.
 #else
     uint64_t &pc = regs[16];
-    if (pc == reinterpret_cast<uint64_t>(faultAddress)) {
+#endif
+
+    // A pc equal to si_addr means the pc itself is the problem - a jump to a bad address, or abort parked in
+    // a kill syscall stub the unwinder can't step out of - and the pushed return address is the frame to
+    // restart from. The instruction faults are the exception, SIGFPE, SIGILL and SIGTRAP put the pc of a
+    // perfectly walkable instruction into si_addr, and restarting would seed the walk with garbage.
+    if (signal != SIGFPE && signal != SIGILL && signal != SIGTRAP && pc == reinterpret_cast<uint64_t>(faultAddress)) {
+#if defined(__aarch64__)
+        pc = regs[30] - 1; // Minus one, so the pc points into the call, not one past it.
+#else
         pc = *reinterpret_cast<const uint64_t *>(regs[7]) - 1; // Return address is at [rsp].
         regs[7] += sizeof(uint64_t); // And it's been popped.
-    }
 #endif
+    }
 
     unw_cursor_t cursor;
     unw_init_local(&cursor, &context);
@@ -473,16 +481,21 @@ static std::string traceFromContext(const ucontext_t &crashContext) {
 #endif // __APPLE__
 
 static void onSignal(int signal, siginfo_t *info, void *context) {
+    // Darwin honors SA_RESETHAND for every signal except SIGILL and SIGTRAP, and leaves this handler
+    // installed for those two. Restoring the default by hand is what stops the raise below from re-entering
+    // the handler instead of killing us.
+    std::signal(info->si_signo, SIG_DFL);
+
     // Only the first crash prints. A second thread raising a different signal while this one symbolizes
     // would interleave with it, so it skips to the raise below instead - exiting here would cost the core
-    // dump. A second thread raising the same signal never gets here, SA_RESETHAND already put the default
-    // handler back, so the kernel kills the process and whatever was printed so far is all there is.
+    // dump. A second thread raising the same signal never gets here, the default handler is back in place,
+    // so the kernel kills the process and whatever was printed so far is all there is.
     if (!crashHandled.test_and_set()) {
         char reason[128];
         std::snprintf(reason, sizeof(reason), "%s at %p", strsignal(info->si_signo), info->si_addr);
         printCrashHeader(reason);
 #ifdef __APPLE__
-        printTrace(traceFromContext(*static_cast<ucontext_t *>(context), info->si_addr));
+        printTrace(traceFromContext(*static_cast<ucontext_t *>(context), info->si_signo, info->si_addr));
 #else
         printTrace(traceFromContext(*static_cast<ucontext_t *>(context)));
 #endif
@@ -490,8 +503,8 @@ static void onSignal(int signal, siginfo_t *info, void *context) {
     }
 
     // Die of the original signal, so that a core dump still happens and whoever launched the process sees it
-    // was killed by a SIGSEGV. SA_RESETHAND put the default handler back before we were called, so raising it
-    // here is what actually kills us.
+    // was killed by a SIGSEGV. The default handler is back in place, so raising it here is what actually
+    // kills us.
     std::raise(info->si_signo);
     _exit(EXIT_FAILURE);
 }

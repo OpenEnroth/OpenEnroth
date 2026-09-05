@@ -11,7 +11,6 @@ set(ENGINE_SOURCES
         Localization.cpp
         MapEnums.cpp
         MapInfo.cpp
-        OurMath.cpp
         Party.cpp
         PartyEnums.cpp
         PartyPlacement.cpp
@@ -34,16 +33,20 @@ set(ENGINE_HEADERS
         EngineCallObserver.h
         EngineGlobals.h
         EngineIocContainer.h
+        HitMap.h
         Localization.h
+        LocalizationEnums.h
+        LocationInfo.h
+        MapEnumFunctions.h
         MapEnums.h
         MapInfo.h
-        OurMath.h
         Party.h
         PartyEnums.h
         PartyPlacement.h
         Pid.h
         PriceCalculator.h
         SaveLoad.h
+        SpawnPoint.h
         SpellFxRenderer.h
         Timer.h
         mm7_data.h

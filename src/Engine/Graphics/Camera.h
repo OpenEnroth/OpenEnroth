@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <array>
+#include <memory>
 
 #include <glm/glm.hpp>
 
@@ -97,4 +98,4 @@ struct Camera3D {
     float GetFarClip() const;
 };
 
-extern Camera3D *pCamera3D;
+extern std::unique_ptr<Camera3D> pCamera3D;

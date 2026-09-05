@@ -69,6 +69,8 @@ For the C++ code we are following the [Google C++ Style Guide](http://google.git
 
 To perform a style check before pushing anything you can build `check_style` target. In Visual Studio you can do that by going to ***Solution Explorer → Change Views → CMake targets***. Right click and build `check_style`, errors will be listed in output.
 
+CI also runs `clang-tidy` with the checks listed in `.clang-tidy`, and any finding fails the build. To run it locally you need clang-tidy 22, with `run-clang-tidy` alongside it on PATH. Distro packages are usually older than that. The PyPI `clang-tidy` package has both binaries and is the one CI installs. Install it with pipx or into a virtualenv, not into the system python. Reconfigure so that cmake finds it, then build the `check_tidy` target. Only the ninja and makefile generators offer that target, because they are the ones that write a compile commands database.
+
 We also follow some additional style preferences, as listed below.
 
 Documentation:
@@ -192,7 +194,7 @@ Script files undergo a syntax checking process during the build generation. If y
 - Generate the project.
 - The `check_style` target is now including scripting in its tests.
 
-Little note: If `LuaLS` is not found, everything still build but no checks will be run against the Lua scripts.
+Little note: If `LuaLS` is not found, everything still build but no checks will be run against the Lua scripts. This is worth checking before you push, as CI does run them. The devcontainer ships `LuaLS` already, so there's nothing to install there.
 
 #### Tools
 To go through a better experience while working with scripts it is strongly recommended to use [VS Code](https://code.visualstudio.com/) and [install the LuaLS extension](https://luals.github.io/#vscode-install).
@@ -216,6 +218,8 @@ Currently, the console is only available while in-game.
 ## Additional Resources
 
 Old event decompiler and IDB files can be found [here](https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0). Feel free to ping `zipi6616` on Discord for more info.
+
+An archived snapshot of the codebase from before the first commit in this repository is kept at [OpenEnroth_PreHistory](https://github.com/OpenEnroth/OpenEnroth_PreHistory). That tree is still flat and carries the unsorted `mm7_*.cpp` decompilation dumps, so it's mostly useful for tracing where a piece of code originally came from.
 
 
 ## Support

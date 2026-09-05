@@ -150,16 +150,55 @@ function stringToEnum(enumTable, valueStr)
     return nil
 end
 
---- Convert an enum table to string containing all the keys separated by \0 (zero) separator. Useful for imgui combo boxes
---- @param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
---- @return string - A zero-separated list of strings representing the enum keys
-function enumTableToZeroSeparatedList(enumTable)
-    ---@cast enumTable table<string, any>
+--- Convert a list of strings into a \0 (zero) separated string. Useful for imgui combo boxes
+--- @param list table<integer, string>
+--- @return string - A zero-separated list of the passed strings
+function stringListToZeroSeparatedList(list)
+    return table.concat(list, "\0") .. "\0"
+end
+
+--- Get the keys of a table in a stable, sorted order. LuaJIT reseeds its string hash on every launch, so `pairs`
+--- yields a different order each run and can't be used to render anything a human is expected to read.
+--- @param t table<string, any>
+--- @return table<integer, string>
+Utilities.sortedKeys = function (t)
+    --- @type table<integer, string>
     local result = {}
-    for k, _ in pairs(enumTable) do
+    for k, _ in pairs(t) do
         table.insert(result, k)
     end
-    return table.concat(result, "\0") .. "\0"
+    table.sort(result, function (a, b)
+        local lowerA, lowerB = string.lower(a), string.lower(b)
+        if lowerA == lowerB then
+            return a < b
+        end
+        return lowerA < lowerB
+    end)
+    return result
+end
+
+--- Filter a list of strings down to the ones containing the given substring. Matching ignores case, and treats
+--- underscores and spaces as the same character so that a typed "lich jar" finds the "Lich_Jar" enum key.
+--- @param list table<integer, string>
+--- @param filter string
+--- @return table<integer, string>
+Utilities.filterStrings = function (list, filter)
+    if Utilities.isEmpty(filter) then
+        return list
+    end
+
+    local normalize = function (value)
+        return string.gsub(string.lower(value), "_", " ")
+    end
+
+    local result = {}
+    local normalizedFilter = normalize(filter)
+    for _, value in ipairs(list) do
+        if string.find(normalize(value), normalizedFilter, 1, true) then
+            table.insert(result, value)
+        end
+    end
+    return result
 end
 
 --- Get the nth element of a table treated as a map
