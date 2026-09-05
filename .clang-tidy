@@ -23,8 +23,7 @@ Checks: >
   -bugprone-switch-missing-default-case,
   -bugprone-throwing-static-initialization,
   -bugprone-unchecked-optional-access,
-  -bugprone-unchecked-string-to-number-conversion,
-  -bugprone-use-after-move
+  -bugprone-unchecked-string-to-number-conversion
 WarningsAsErrors: '*'
 HeaderFilterRegex: '/(src|test)/'
 ExcludeHeaderFilterRegex: '/thirdparty/' # Submodules have src and test dirs of their own.
