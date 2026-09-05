@@ -176,6 +176,14 @@ CommandUtilities.renderCharacterIndexParam = function (name, value)
     return result;
 end
 
+--- Number of entries above which the combo box gets a filter field. Anything longer is unusable without one, imgui
+--- shows 8 rows at a time.
+local filterThreshold = 20
+
+--- Filter text per parameter, kept across frames since the combo box is rebuilt on each one
+--- @type table<string, string>
+local enumFilters = {}
+
 --- @param name string
 --- @param value string
 --- @param enumValues table<string, integer>|fun(value:any):table
@@ -195,17 +203,30 @@ CommandUtilities.renderEnumParam = function (name, value, enumValues, allDataPar
         values = enumValues
     end
 
-    local index = Utilities.getIndexByKey(values, value)
+    local keys = Utilities.sortedKeys(values)
+    if #keys > filterThreshold then
+        imgui.sameLine()
+        enumFilters[name] = imgui.inputTextWithHint("##" .. name .. "filter", "filter", enumFilters[name] or "",
+            imgui.ImGuiInputTextFlags.None)
+        keys = Utilities.filterStrings(keys, enumFilters[name])
+    end
+
+    if #keys == 0 then
+        imgui.sameLine()
+        imgui.textUnformatted("No " .. name .. " matches the filter.")
+        return ""
+    end
+
+    local index = Utilities.findIndex(keys, function (key) return key == value end)
     if index == nil then
         index = 1
-        value = Utilities.getKeyAtIndex(values, 1)
+        value = keys[1]
     end
 
     imgui.sameLine()
-    local options = enumTableToZeroSeparatedList(values)
-    local changed, selectedValue = imgui.combo("##" .. name, index, options)
+    local changed, selectedValue = imgui.combo("##" .. name, index, stringListToZeroSeparatedList(keys))
     if changed then
-        value = Utilities.getKeyAtIndex(values, selectedValue)
+        value = keys[selectedValue]
     end
 
     return value

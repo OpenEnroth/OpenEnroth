@@ -14,7 +14,8 @@ set(APPLICATION_HEADERS
         GameMenu.h
         GameOver.h
         GameTraceHandler.h
-        GameWindowHandler.h)
+        GameWindowHandler.h
+        KeyConfigEntry.h)
 
 add_library(application STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})
 target_check_style(application)

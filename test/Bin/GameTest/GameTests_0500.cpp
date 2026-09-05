@@ -680,7 +680,7 @@ GAME_TEST(Issues, Issue774) {
     test.playTraceFromTestData("issue_774.mm7", "issue_774.json");
     for (auto &act : pActors) {
         if (!(act.attributes & ACTOR_FULL_AI_STATE))
-            EXPECT_TRUE(act.aiState == Stunned || act.aiState == Dead);
+            EXPECT_TRUE(act.aiState == InPain || act.aiState == Dead);
     }
 }
 
