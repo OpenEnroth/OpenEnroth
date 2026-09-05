@@ -1,7 +1,7 @@
 name: Linux (Flatpak)
 
 on:
-  pull_request: null
+  pull_request:
   workflow_dispatch:
     inputs:
       myCommit:
@@ -26,22 +26,23 @@ on:
         required: false
         default: ''
         type: string
-  release:
-    types:
-      - published
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
 concurrency:
-  group: linux-flatpak-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{github.workflow}}-${{github.event.pull_request.number || github.run_id}}
   cancel-in-progress: true
 
 env:
   CCACHE_COMPILERCHECK: content
-    
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build_flatpak_bundle:
     timeout-minutes: 60
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     container:
       image: bilelmoussaoui/flatpak-github-actions:freedesktop-24.08
       options: --privileged
@@ -54,46 +55,53 @@ jobs:
           - x86_64
 
     steps:
-    - name: make ccache dir
-      run: |
-        mkdir -p .ccache
-        cd .ccache
-        echo "CCACHE_DIR=$PWD" >> $GITHUB_ENV
-        
-    - name: Checkout
-      uses: actions/checkout@v5.0.0
-      with:
-        submodules: recursive
-        ref: '${{inputs.myCommit}}'
-          
-    - name: Run ccache
-      uses: hendrikmuhs/ccache-action@v1.2.18
-      with:
-        key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
-        verbose: 2
-        max-size: 400M
-        save: ${{github.event_name != 'pull_request'}}
-        
-    - name: Run Flatpak build
-      uses: flatpak/flatpak-github-actions/flatpak-builder@dcbd3a30d991a38708c318d17f5352cc1268c215
-      with:
-        run-tests: true
-        bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
-        manifest-path: distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
-        arch: ${{matrix.architecture}}
-        verbose: true
-        cache: true
-        restore-cache: false
-        upload-artifact: false
+      - name: make ccache dir
+        run: |
+          mkdir -p .ccache
+          cd .ccache
+          echo "CCACHE_DIR=$PWD" >> "$GITHUB_ENV"
 
-    - name: Publish release
-      if: inputs.releaseTag != ''
-      uses: softprops/action-gh-release@v2.0.8
-      with:
-        prerelease: true
-        tag_name: '${{inputs.releaseTag}}'
-        files: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
+      - name: Compose bundle name
+        env:
+          RELEASE_TAG: '${{inputs.releaseTag}}'
+        run: |
+          # PR builds pass an empty release tag, which must not leave a doubled underscore in the name.
+          echo "BUNDLE_NAME=io.github.openenroth.openenroth${RELEASE_TAG:+_$RELEASE_TAG}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak" >> "$GITHUB_ENV"
 
-    - name: Cleanup ccache
-      run: |
-        ccache -c
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          submodules: recursive
+          ref: '${{inputs.myCommit}}'
+
+      - name: Set up ccache
+        uses: hendrikmuhs/ccache-action@v1.2.24
+        with:
+          key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
+          verbose: 2
+          max-size: 400M
+          save: ${{github.event_name != 'pull_request'}}
+
+      - name: Run Flatpak build
+        uses: flatpak/flatpak-github-actions/flatpak-builder@79327416609af08178ad73b352877e51450790b3 # v6.8
+        with:
+          run-tests: true
+          bundle: ${{env.BUNDLE_NAME}}
+          manifest-path: distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
+          arch: ${{matrix.architecture}}
+          verbose: true
+          cache: true
+          restore-cache: false
+          upload-artifact: false
+
+      - name: Publish release
+        if: inputs.releaseTag != ''
+        uses: softprops/action-gh-release@v3.0.3
+        with:
+          prerelease: true
+          tag_name: '${{inputs.releaseTag}}'
+          files: ${{env.BUNDLE_NAME}}
+
+      - name: Cleanup ccache
+        run: |
+          ccache -c

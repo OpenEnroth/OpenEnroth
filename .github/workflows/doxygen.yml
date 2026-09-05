@@ -1,8 +1,8 @@
 name: Doxygen
 
 on:
-  pull_request: null
-  push: null
+  pull_request:
+  push:
   workflow_dispatch:
     inputs:
       myCommit:
@@ -10,33 +10,33 @@ on:
         required: false
         default: ''
         type: string
-  release:
-    types:
-      - published
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
 concurrency:
-  group: doxygen-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{github.workflow}}-${{github.event.pull_request.number || github.run_id}}
   cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   generate_documentation:
+    timeout-minutes: 60
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
-          ref: '${{ inputs.myCommit }}'
+          ref: '${{inputs.myCommit}}'
 
       - name: Install Doxygen
         run: |
           curl -fsSL --retry 3 -o doxygen.tar.gz https://github.com/doxygen/doxygen/releases/download/Release_1_9_5/doxygen-1.9.5.linux.bin.tar.gz
           tar xzf doxygen.tar.gz --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
 
-      - name: Generate Documentation
+      # The generated html goes nowhere. This runs for the warnings, which the Doxyfile turns into errors.
+      - name: Generate documentation
         run: |
-          export PROJECT_NUMBER="$(git describe --always --tags --dirty)"
           ./doxygen Doxyfile
-          touch docs/html/.nojekyll
-

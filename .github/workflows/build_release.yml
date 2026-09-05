@@ -17,71 +17,55 @@ on:
 env:
   TAG_NAME: nightly
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
-  advanceNightlyTag:
+  advance_nightly_tag:
     name: Advance Nightly
+    timeout-minutes: 60
     runs-on: ubuntu-26.04
     outputs:
-      tagName: ${{steps.outputReleaseTag.outputs.tagName }}
+      tagName: ${{steps.output_release_tag.outputs.tagName}}
+    env:
+      GH_TOKEN: '${{secrets.GITHUB_TOKEN}}'
+      GH_REPO: '${{github.repository}}'
     steps:
+      # A dispatch can ask for a commit other than the one that triggered the run, and the tag has to follow it.
       - name: Advance nightly tag
-        uses: actions/github-script@v3
-        with:
-          github-token: '${{secrets.GITHUB_TOKEN}}'
-          script: |
-            try {
-                await github.git.deleteRef({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ref: "tags/nightly"
-                })
-            } catch (e) {
-              console.log("The nightly tag doesn't exist yet: " + e)
-            }
-            await github.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/nightly",
-              sha: context.sha
-            })
-
-      - name: Sleep for 10 seconds
-        run: sleep 10s
-        shell: bash
-
-      - name: Get latest release
-        id: latest_release
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: '${{ github.token }}'
-          tag_name: nightly
-          draft: true
-
-      - name: Publish release
-        uses: eregon/publish-release@v1
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-        with:
-          release_id: '${{ steps.latest_release.outputs.id }}'
-
-      - name: Output Release Tag
-        id: outputReleaseTag
+          NIGHTLY_SHA: '${{inputs.myCommit || github.sha}}'
         run: |
-          echo "tagName=${{env.TAG_NAME}}" >> "$GITHUB_OUTPUT"
+          if ! gh api --method PATCH "repos/$GH_REPO/git/refs/tags/$TAG_NAME" -f sha="$NIGHTLY_SHA" -F force=true; then
+            gh api --method POST "repos/$GH_REPO/git/refs" -f ref="refs/tags/$TAG_NAME" -f sha="$NIGHTLY_SHA"
+          fi
 
+      - name: Publish nightly release
+        run: |
+          if gh release view "$TAG_NAME" > /dev/null 2>&1; then
+            gh release edit "$TAG_NAME" --draft=false --prerelease
+          else
+            gh release create "$TAG_NAME" --prerelease --title "$TAG_NAME" --notes 'Nightly build.'
+          fi
+
+      - name: Output release tag
+        id: output_release_tag
+        run: |
+          echo "tagName=$TAG_NAME" >> "$GITHUB_OUTPUT"
 
   build_all:
-    needs: advanceNightlyTag
+    needs: advance_nightly_tag
     uses: ./.github/workflows/build_all.yml
     secrets: inherit
     with:
-      releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
+      releaseTag: '${{needs.advance_nightly_tag.outputs.tagName}}'
       myCommit: '${{inputs.myCommit}}'
 
   build_linux_flatpak:
-    needs: advanceNightlyTag
+    needs: advance_nightly_tag
     uses: ./.github/workflows/linux_flatpak.yml
     secrets: inherit
     with:
-      releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
+      releaseTag: '${{needs.advance_nightly_tag.outputs.tagName}}'
       myCommit: '${{inputs.myCommit}}'

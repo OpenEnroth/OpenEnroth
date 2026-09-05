@@ -1,8 +1,8 @@
 name: Lint
 
 on:
-  pull_request: null
-  push: null
+  pull_request:
+  push:
   workflow_dispatch:
     inputs:
       myCommit:
@@ -10,25 +10,27 @@ on:
         required: false
         default: ''
         type: string
-  release:
-    types:
-      - published
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
 concurrency:
-  group: lint-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{github.workflow}}-${{github.event.pull_request.number || github.run_id}}
   cancel-in-progress: true
 
 env:
   LLS_TAG: '3.19.1'
   CLANG_TIDY_VERSION: '22.1.8'
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   lint:
+    timeout-minutes: 60
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
@@ -42,7 +44,7 @@ jobs:
 
       # The configure step resolves OpenGL, so the GL development files have to be there.
       - name: Install dependencies
-        uses: Wandalen/wretry.action@master
+        uses: Wandalen/wretry.action@v3.8.0
         with:
           attempt_limit: 3
           attempt_delay: 5000
