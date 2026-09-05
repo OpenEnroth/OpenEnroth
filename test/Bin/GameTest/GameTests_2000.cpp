@@ -1688,3 +1688,18 @@ GAME_TEST(Prs, Pr2615d) {
     game.tick(3);
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
 }
+
+GAME_TEST(Prs, Pr2717) {
+    // Clicking the top or the bottom of a party portrait did nothing. A portrait is an oval with semi-axes 32 and
+    // 41, but the click test used the circle of radius 32 inscribed in it, so a nine pixel band at each end lit up
+    // on hover and then swallowed the click.
+    game.startNewGame();
+
+    pParty->setActiveCharacterIndex(1);
+    ASSERT_EQ(pParty->pCharacters[1].timeToRecovery, Duration()); // Portrait clicks do nothing while recovering.
+
+    game.pressAndReleaseButton(BUTTON_LEFT, 177, 460); // 36 pixels below the center of the second portrait.
+    game.tick();
+
+    EXPECT_EQ(pParty->activeCharacterIndex(), 2);
+}
