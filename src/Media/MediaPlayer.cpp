@@ -403,7 +403,7 @@ class Movie : public IMovie {
         playback_time += std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
         start_time = current_time;
 
-        int desired_frame_number = static_cast<int>(std::lround(playback_time / video.frame_len));
+        int desired_frame_number = std::round(playback_time / video.frame_len);
         if (last_resampled_frame_num == desired_frame_number) {
             return Blob::share(video.last_frame);
         }
