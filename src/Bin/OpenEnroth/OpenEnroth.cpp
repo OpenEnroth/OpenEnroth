@@ -20,7 +20,6 @@
 #endif
 
 #include "Application/Startup/GameStarter.h"
-#include "Application/Startup/PathResolver.h"
 
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
@@ -36,7 +35,6 @@
 #include "Core/Trace/EventTraceMigrations.h"
 
 #include "Library/Blackbox/Blackbox.h"
-#include "Library/Environment/Interface/Environment.h"
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 
@@ -48,9 +46,7 @@
 #include "CrashDialog.h"
 #include "OpenEnrothOptions.h"
 
-// Set in main before the first thread starts, read from a crash on any of them. Only a run someone is watching
-// has anyone to hold the window for - a script needs the process to die instead, and it has the trace on stderr.
-static bool crashNeedsAcknowledgement = false;
+static bool crashNeedsAcknowledgement = false; // Set in main before the first thread starts, read from a crash on any of them.
 
 #ifdef __APPLE__
 static const bool stderrIsTerminal = isatty(STDERR_FILENO); // Sampled at startup, because by crash time fd 2 can be closed or pointing somewhere else.
@@ -142,20 +138,19 @@ int runPlay(const OpenEnrothOptions &options) {
 }
 
 int runOpenEnroth(const OpenEnrothOptions &options) {
-    crashNeedsAcknowledgement = !options.headless; // Before the window opens, so that a crash on the way up is held too.
     GameStarter(options).run();
     return 0;
 }
 
 #ifdef _WINDOWS
 static void waitForAnyKey() {
-    // _getch reads the console input buffer rather than stdin, so a redirect can't end the wait the way it ended
-    // the old getchar. Nobody is looking at a redirected stderr either, and the prompt would go into the file.
+    // _fileno is what distinguishes having no console at all, where it gives -2. Lowio slot 2 stays marked as a
+    // character device in that case, so _isatty(2) would answer true and we'd wait for a key nobody can press.
     if (!_isatty(_fileno(stderr)))
         return;
 
-    // Raw write, stdio might be locked by the thread that was printing when it died. _getch takes the key as
-    // it's pressed, getchar would wait for the enter after it.
+    // Raw write, stdio might be locked by the thread that was printing when it died. _getch reads the console
+    // input buffer rather than stdin, and takes the key as it's pressed.
     constexpr std::string_view prompt = "[Press any key to close this window]";
     _write(2, prompt.data(), static_cast<unsigned>(prompt.size()));
     _getch();
@@ -191,11 +186,13 @@ int openEnrothMain(int argc, char **argv) {
         if (options.helpPrinted)
             return 1;
 
-        // Spans the whole run, so that the exit line goes in on every way out, exceptions included. The modes
-        // that promise not to touch the disk - retrace, play - get none, and stderr is visible there anyway.
+        crashNeedsAcknowledgement = !options.headless; // Every subcommand takes --headless and opens a window without it, retrace and play included.
+
+        // Declared out here so that it lives until the function returns. Its destructor writes the exit line,
+        // and that has to happen on every way out, including an exception thrown out of the switch below.
         std::optional<Blackbox> blackbox;
         NativePath crashLog = crashLogPath(options);
-        if (!options.ramFsUserData && !crashLog.isEmpty()) {
+        if (!options.ramFsUserData && !crashLog.isEmpty()) { // Retrace and play set ramFsUserData, and they write nothing to disk.
             blackbox.emplace(crashLog);
 #ifdef __APPLE__
             // Only promise a file that's actually open, the dialog is the one place a mac user hears about it.

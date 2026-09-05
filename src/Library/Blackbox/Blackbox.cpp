@@ -89,5 +89,9 @@ Blackbox::~Blackbox() {
 
     // Runs during unwinding too, and that's not a clean exit.
     const char *how = std::uncaught_exceptions() > 0 ? "exiting with exception" : "clean exit";
-    writeCrashChunk(crashLogFd, fmt::format("--- {} {} ---", how, localTimestamp()));
+    try {
+        writeCrashChunk(crashLogFd, fmt::format("--- {} {} ---", how, localTimestamp()));
+    } catch (...) {
+        // Formatting allocates, and a destructor is noexcept. Losing the exit line beats terminating on the way out.
+    }
 }

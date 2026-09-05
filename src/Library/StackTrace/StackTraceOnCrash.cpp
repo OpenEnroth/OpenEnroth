@@ -1,6 +1,7 @@
 #include "StackTraceOnCrash.h"
 
 #include <atomic>
+#include <cerrno>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -45,6 +46,12 @@ static void writeAll(int fd, std::string_view text) {
 #else
         ssize_t written = write(fd, text.data(), text.size());
 #endif
+#ifndef _WINDOWS
+        // Only EINTR is worth retrying. Spinning on EAGAIN would hang the handler whenever nothing is draining
+        // the far end of a non-blocking pipe, and a truncated trace beats a process that never dies.
+        if (written < 0 && errno == EINTR)
+            continue;
+#endif
         if (written <= 0)
             return; // Nowhere to report an error to.
         text.remove_prefix(written);
@@ -77,6 +84,7 @@ static std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
 // Relaxed throughout - a crash that races a replacement lands on whichever callback the swap has left here,
 // and both are valid.
 static std::atomic<CrashCallback> crashCallback = &printCrashChunk;
+static_assert(std::atomic<CrashCallback>::is_always_lock_free); // A handler reads this, and taking a lock there could deadlock.
 
 bool detail::isRunningUnderRosetta() {
 #ifdef __APPLE__
@@ -281,6 +289,30 @@ static const int handledSignals[] = {
     SIGXCPU, // CPU time limit exceeded.
     SIGXFSZ, // File size limit exceeded.
 };
+
+/**
+ * Signal names for the crash header, spelled the way `strsignal` spells them. Calling `strsignal` itself would
+ * not be safe here. It goes through gettext, which takes a lock and allocates a message catalog on first use,
+ * so a crash inside the allocator would hang in the handler instead of printing anything.
+ *
+ * @param signal                        Signal the process is dying of.
+ * @return                              Static name of the signal.
+ */
+static const char *signalName(int signal) {
+    switch (signal) {
+    case SIGABRT: return "Aborted";
+    case SIGBUS: return "Bus error";
+    case SIGFPE: return "Floating point exception";
+    case SIGILL: return "Illegal instruction";
+    case SIGQUIT: return "Quit";
+    case SIGSEGV: return "Segmentation fault";
+    case SIGSYS: return "Bad system call";
+    case SIGTRAP: return "Trace/breakpoint trap";
+    case SIGXCPU: return "CPU time limit exceeded";
+    case SIGXFSZ: return "File size limit exceeded";
+    default: return "Unknown signal";
+    }
+}
 
 #ifdef __APPLE__
 
@@ -501,7 +533,7 @@ static void onSignal(int signal, siginfo_t *info, void *context) {
     // handler back, so the kernel kills the process and whatever was printed so far is all there is.
     if (!crashHandled.test_and_set()) {
         char reason[128];
-        std::snprintf(reason, sizeof(reason), "%s at %p", strsignal(info->si_signo), info->si_addr);
+        std::snprintf(reason, sizeof(reason), "%s at %p", signalName(info->si_signo), info->si_addr);
         emitHeader(reason);
 #ifdef __APPLE__
         emitTrace(traceFromContext(*static_cast<ucontext_t *>(context), info->si_addr));

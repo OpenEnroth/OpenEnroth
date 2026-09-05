@@ -154,7 +154,7 @@ UNIT_TEST(StackTrace, InitReturnsThePreviousCallback) {
     // for the default.
     CrashCallback custom = [](std::string_view, bool) {};
     CrashCallback previous = initStackTraceOnCrash(custom);
-    EXPECT_NE(previous, nullptr);
+    EXPECT_EQ(previous, &printCrashChunk);
     EXPECT_EQ(initStackTraceOnCrash(nullptr), custom);
     EXPECT_EQ(initStackTraceOnCrash(previous), &printCrashChunk);
 }
