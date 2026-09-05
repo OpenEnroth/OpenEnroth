@@ -14,8 +14,7 @@ set(LIBRARY_FILESYSTEM_INTERFACE_HEADERS
         ReadOnlyFileSystem.h
         FileSystemFwd.h
         FileSystemPathView.h
-        FileSystemPathSplit.h
-        FileSystemPathComponents.h)
+        FileSystemPathSplit.h)
 
 add_library(library_filesystem_interface STATIC ${LIBRARY_FILESYSTEM_INTERFACE_SOURCES} ${LIBRARY_FILESYSTEM_INTERFACE_HEADERS})
 target_link_libraries(library_filesystem_interface PUBLIC utility)

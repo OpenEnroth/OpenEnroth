@@ -1,11 +1,33 @@
 #include "FileSystemPath.h"
 
 #include <string>
+#include <string_view>
 
 #include "Utility/String/Split.h"
 #include "Utility/String/Join.h"
 #include "Utility/String/Transformations.h"
 #include "Utility/SmallVector.h"
+
+// Offset of the file name inside the path, so `path.substr(fileNameOffset(path))` is the last component.
+static size_t fileNameOffset(std::string_view path) {
+    size_t separatorPos = path.rfind('/');
+    return separatorPos == std::string_view::npos ? 0 : separatorPos + 1;
+}
+
+// Offset of the extension inside the path, or npos if there's none. Mirrors std::filesystem: a leading dot doesn't
+// start an extension, so ".bashrc" has none, and ".." has none either. Normal form never spells a name as ".".
+static size_t extensionOffset(std::string_view path) {
+    size_t nameOffset = fileNameOffset(path);
+    std::string_view fileName = path.substr(nameOffset);
+    if (fileName == "..")
+        return std::string_view::npos;
+
+    size_t dotPos = fileName.rfind('.');
+    if (dotPos == std::string_view::npos || dotPos == 0)
+        return std::string_view::npos;
+
+    return nameOffset + dotPos;
+}
 
 template<class String>
 inline bool popOneChunk(String &path) {
@@ -30,6 +52,29 @@ inline bool popOneChunk(String &path) {
 
 FileSystemPath::FileSystemPath(std::string_view path) {
     operator/=(path);
+}
+
+std::string_view FileSystemPath::name() const {
+    return std::string_view(_path).substr(fileNameOffset(_path));
+}
+
+std::string_view FileSystemPath::extension() const {
+    size_t offset = extensionOffset(_path);
+    return offset == std::string::npos ? std::string_view() : std::string_view(_path).substr(offset);
+}
+
+std::string_view FileSystemPath::stem() const {
+    size_t offset = extensionOffset(_path);
+    std::string_view name = this->name();
+    return offset == std::string::npos ? name : name.substr(0, name.size() - (_path.size() - offset));
+}
+
+FileSystemPath FileSystemPath::parent() const {
+    size_t end = fileNameOffset(_path);
+    if (end > 0)
+        end--; // Normal form has single separators, so this drops the one between the parent and the file name.
+
+    return fromNormalized(_path.substr(0, end));
 }
 
 FileSystemPath &FileSystemPath::operator/=(std::string_view tail) {

@@ -5,7 +5,6 @@
 #include "Utility/String/Split.h"
 
 #include "FileSystemPathSplit.h"
-#include "FileSystemPathComponents.h"
 
 class FileSystemPath;
 
@@ -38,10 +37,6 @@ class FileSystemPathView {
 
     [[nodiscard]] FileSystemPathSplit split() const {
         return FileSystemPathSplit(_path);
-    }
-
-    [[nodiscard]] FileSystemPathComponents components() const {
-        return FileSystemPathComponents(_path);
     }
 
  private:
@@ -78,10 +73,6 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
         size_t offset = chunk.data() + chunk.size() - path.data() + 1;
         return FileSystemPathView::fromNormalized(path.substr(offset));
     }
-}
-
-inline FileSystemPathView FileSystemPathComponents::prefix() const {
-    return FileSystemPathView::fromNormalized(_path.substr(0, _prefixEnd));
 }
 
 #include "FileSystemPath.h"

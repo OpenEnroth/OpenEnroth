@@ -154,14 +154,16 @@ UNIT_TEST(FileSystemPath, AppendedEscaping) {
     testOne("aa/bb/cc", "../../..", "");
 }
 
-UNIT_TEST(FileSystemPath, Components) {
-    auto testOne = [](std::string_view path, std::string_view prefix, std::string_view name, std::string_view stem, std::string_view ext) {
+UNIT_TEST(FileSystemPath, Decomposition) {
+    // Decomposition follows std::filesystem, so a leading dot doesn't start an extension and only the last one
+    // counts. The all-dot names are the interesting ones - ".." has no extension at all, while "..wat" has a stem of
+    // "." and an extension of ".wat".
+    auto testOne = [](std::string_view path, std::string_view parent, std::string_view name, std::string_view stem, std::string_view ext) {
         FileSystemPath fsPath(path);
-        auto components = fsPath.components();
-        EXPECT_EQ(components.prefix().string(), prefix) << "for " << path;
-        EXPECT_EQ(components.name(), name) << "for " << path;
-        EXPECT_EQ(components.stem(), stem) << "for " << path;
-        EXPECT_EQ(components.extension(), ext) << "for " << path;
+        EXPECT_EQ(fsPath.parent().string(), parent) << "for " << path;
+        EXPECT_EQ(fsPath.name(), name) << "for " << path;
+        EXPECT_EQ(fsPath.stem(), stem) << "for " << path;
+        EXPECT_EQ(fsPath.extension(), ext) << "for " << path;
     };
 
     testOne("", "", "", "", "");
