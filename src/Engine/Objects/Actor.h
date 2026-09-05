@@ -63,6 +63,14 @@ class Actor {
     void UpdateAnimation();
 
     /**
+     * Queues this actor's death bloodsplat once its corpse has settled on the ground. Call this every frame -
+     * the splat queue is bounded, and a rejected splat is retried on the next frame.
+     *
+     * @param floorZ                    Ground level under the actor.
+     */
+    void updateBloodsplat(float floorZ);
+
+    /**
      * Determines hostility between this actor and another actor (or the party if null).
      *
      * Hostility is resolved via the hostility table indexed by monster type, with several overrides:

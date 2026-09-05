@@ -256,7 +256,7 @@ double OutdoorLocation::GetFogDensityByTime() {
 bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
                                  int respawn_interval_days,
                                  bool *outdoors_was_respawned) {
-    decal_builder->Reset(0);
+    decal_builder->Reset();
     engine->particle_engine->ResetParticles();
 
     if (!filename.empty()) {
@@ -1598,20 +1598,7 @@ void UpdateActors_ODM() {
 
         bool uIsAboveFloor = (actor.pos.z > (Floor_Level + 1));
 
-        // make bloodsplat when the ground is hit
-        if (!actor.donebloodsplat) {
-            if (actor.aiState == Dead || actor.aiState == Dying) {
-                if (actor.pos.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->infos[actor.monsterInfo.id].bloodSplatOnDeath) {
-                        if (engine->config->graphics.BloodSplats.value()) {
-                            float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
-                        }
-                        actor.donebloodsplat = true;
-                    }
-                }
-            }
-        }
+        actor.updateBloodsplat(Floor_Level);
 
         if (actor.aiState == Dead && uIsOnWater && !uIsAboveFloor) {
             actor.aiState = Removed;

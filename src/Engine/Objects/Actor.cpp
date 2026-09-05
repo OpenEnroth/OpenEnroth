@@ -2173,6 +2173,24 @@ MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
     }
 }
 
+void Actor::updateBloodsplat(float floorZ) {
+    if (donebloodsplat)
+        return;
+    if (aiState != Dead && aiState != Dying)
+        return;
+    if (pos.z >= floorZ + 30)  // 30 to provide small error / rounding factor.
+        return;
+    if (!pMonsterStats->infos[monsterInfo.id].bloodSplatOnDeath)
+        return;
+
+    bool splatDone = true;
+    if (engine->config->graphics.BloodSplats.value()) {
+        float splatRadius = radius * engine->config->graphics.BloodSplatsMultiplier.value();
+        splatDone = EngineIocContainer::ResolveDecalBuilder()->AddBloodsplat(Vec3f(pos.x, pos.y, floorZ + 30), colorTable.Red, splatRadius);
+    }
+    donebloodsplat = splatDone;  // Retry next frame if the queue was full.
+}
+
 //----- (0045976D) --------------------------------------------------------
 void Actor::UpdateAnimation() {
     ResetAnimation();
