@@ -368,12 +368,23 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
 
     pButton->pParent = this;
 
-    // For button type 2, if height is 0, use width for height (circular button).
+    // A zero height on a character button means it is round.
     int height = (uButtonType == BUTTON_TYPE_CHARACTER && !dimensions.h) ? dimensions.w : dimensions.h;
 
     // Original code used closed intervals [uX, uZ] where uZ = uX + uWidth, so the button covered
     // uWidth + 1 pixels. With standard half-open Rect semantics [x, x+w), we store w + 1 to match.
-    pButton->rect = Recti(position.x + frameRect.x, position.y + frameRect.y, dimensions.w + 1, height + 1);
+    int x = position.x + frameRect.x;
+    int y = position.y + frameRect.y;
+    int w = dimensions.w + 1;
+    int h = height + 1;
+
+    if (uButtonType == BUTTON_TYPE_CHARACTER) {
+        // Character buttons are ovals, and callers pass the center in position and the semi-axes in dimensions.
+        // Store the bounding box so that rect is a plain rect for every button type.
+        pButton->rect = Recti(x - w, y - h, 2 * w, 2 * h);
+    } else {
+        pButton->rect = Recti(x, y, w, h);
+    }
     pButton->uButtonType = uButtonType;
     pButton->field_2C_is_pushed = false;
     pButton->uData = uData;
