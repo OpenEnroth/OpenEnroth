@@ -1,0 +1,12 @@
+version: 2
+
+updates:
+  # Grouped so that an update round lands as a single pull request.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns:
+          - '*'
