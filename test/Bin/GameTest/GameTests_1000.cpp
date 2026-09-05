@@ -24,6 +24,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Random/Random.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -535,9 +536,7 @@ GAME_TEST(Issues, Issue1294_1389) {
 // 1300
 
 GAME_TEST(Issues, Issue1301) {
-    // A character eradicated by a script (the well in Eofol) stayed the active character in turn-based mode, which is
-    // what the infinite drinking trick relies on. Realtime mode always moved the focus, turn-based mode now does the
-    // same unless turn_based_focus_skips_incapacitated is off.
+    // A character incapacitated by a script stayed selected during the movement phase of turn-based mode.
     for (auto [turnBased, skipIncapacitated] : {std::pair(false, true), std::pair(true, true), std::pair(true, false)}) {
         SCOPED_TRACE(fmt::format("turnBased={} skipIncapacitated={}", turnBased, skipIncapacitated));
         test.prepareForNextTest();
@@ -547,26 +546,36 @@ GAME_TEST(Issues, Issue1301) {
         engine->config->debug.NoActors.setValue(false);
         if (turnBased) {
             game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
-            game.tick(2);
+            for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_MOVEMENT; ++i) {
+                if (pTurnEngine->turn_stage == TE_ATTACK && pParty->hasActiveCharacter() && !pParty->activeCharacter().timeToRecovery)
+                    game.pressAndReleaseKey(PlatformKey::KEY_B);
+                game.tick();
+            }
+            ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
         }
         ASSERT_EQ(pParty->bTurnBasedModeOn, turnBased);
-        pParty->setActiveCharacterIndex(1);
+        ASSERT_TRUE(pParty->hasActiveCharacter());
+        ASSERT_TRUE(pParty->activeCharacter().CanAct());
+        int activeCharacterIndex = pParty->activeCharacterIndex();
+        Character &character = pParty->activeCharacter();
 
         auto activeTape = tapes.activeCharacterIndex();
         test.startTaping();
         game.tick();
-        pParty->pCharacters[0].SetVariable(VAR_Eradicated, 1); // Same call the well script makes.
+        character.SetVariable(VAR_Eradicated, 1);
         game.tick(2);
         test.stopTaping();
 
-        ASSERT_TRUE(pParty->pCharacters[0].conditions.has(CONDITION_ERADICATED));
-        EXPECT_EQ(activeTape.front(), 1);
+        ASSERT_TRUE(character.conditions.has(CONDITION_ERADICATED));
+        if (turnBased)
+            ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
+        EXPECT_EQ(activeTape.front(), activeCharacterIndex);
         if (skipIncapacitated) {
-            EXPECT_NE(activeTape.back(), 1); // Focus left the eradicated character.
+            EXPECT_NE(activeTape.back(), activeCharacterIndex); // Focus left the eradicated character.
             if (pParty->hasActiveCharacter())
                 EXPECT_TRUE(pParty->activeCharacter().CanAct());
         } else {
-            EXPECT_EQ(activeTape.back(), 1); // Option off keeps the eradicated character selected.
+            EXPECT_EQ(activeTape.back(), activeCharacterIndex); // Option off keeps the eradicated character selected.
         }
     }
 }
