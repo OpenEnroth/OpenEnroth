@@ -15,6 +15,10 @@
 #   include <io.h> // NOLINT: not a C++ system header.
 #endif
 
+#ifdef __APPLE__
+#   include <unistd.h> // NOLINT: not a C++ system header.
+#endif
+
 #include "Application/Startup/GameStarter.h"
 #include "Application/Startup/PathResolver.h"
 
@@ -47,6 +51,10 @@
 // Set in main before the first thread starts, read from a crash on any of them. Only a run someone is watching
 // has anyone to hold the window for - a script needs the process to die instead, and it has the trace on stderr.
 static bool crashNeedsAcknowledgement = false;
+
+#ifdef __APPLE__
+static const bool stderrIsTerminal = isatty(STDERR_FILENO); // Sampled at startup, because by crash time fd 2 can be closed or pointing somewhere else.
+#endif
 
 void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
     std::unordered_set<PlatformKey> continuousKeys, onceKeys;
@@ -164,7 +172,8 @@ static void appCrashCallback(std::string_view text, bool final) {
 #ifdef _WINDOWS
     waitForAnyKey();
 #elif defined(__APPLE__)
-    showCrashDialog();
+    if (!stderrIsTerminal) // A terminal user already sees the trace, and a modal dialog would only block them.
+        showCrashDialog();
 #endif
 }
 
@@ -191,7 +200,7 @@ int openEnrothMain(int argc, char **argv) {
 #ifdef __APPLE__
             // Only promise a file that's actually open, the dialog is the one place a mac user hears about it.
             if (blackbox->isLogging())
-                setCrashDialogText(fmt::format("OpenEnroth has crashed.\nA crash log was written to:\n{}", crashLog.displayString()));
+                setCrashDialogLogPath(crashLog);
 #endif
         }
 
