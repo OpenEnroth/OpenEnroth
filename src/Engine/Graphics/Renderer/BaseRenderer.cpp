@@ -24,7 +24,7 @@
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Objects/Decoration.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Random/Random.h"
@@ -162,7 +162,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
             pLevelDecorations[i].IsObeliskChestActive()) &&
             !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            const DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+            const DecorationData *decor_desc = pDecorationTable->decoration(pLevelDecorations[i].uDecorationDescID);
             if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
                 if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
                     v6 = animTimer->time();

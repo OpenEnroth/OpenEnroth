@@ -15,7 +15,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
@@ -1598,8 +1598,8 @@ GAME_TEST(Prs, Pr2615a) {
     auto statusTape = tapes.statusBar();
     game.startNewGame();
     const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
-    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
-    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->uRadius, 52);
+    ASSERT_EQ(pDecorationTable->decoration(campfire.uDecorationDescID)->hint, "campfire");
+    ASSERT_EQ(pDecorationTable->decoration(campfire.uDecorationDescID)->uRadius, 52);
     game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(535, 0, 0), 0); // The pick depth comes out at 560.
     test.startTaping();
     game.pointMouseAtDecoration(7);
@@ -1654,7 +1654,7 @@ GAME_TEST(Prs, Pr2615c) {
     game.startNewGame();
     engine->config->debug.AllMagic.setValue(true);
     const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
-    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
+    ASSERT_EQ(pDecorationTable->decoration(campfire.uDecorationDescID)->hint, "campfire");
     ASSERT_EQ(campfire.uEventID, 0); // The eventless interactive kind - Pr2615d covers the evented kind.
     game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
     test.startTaping();
@@ -1675,7 +1675,7 @@ GAME_TEST(Prs, Pr2615d) {
     engine->config->debug.AllMagic.setValue(true);
     game.teleportTo(MAP_HARMONDALE, Vec3f(-12192, 9000, 0), 0); // Decorations belong to the loaded map.
     const LevelDecoration &tree = pLevelDecorations[559];
-    ASSERT_EQ(pDecorationList->GetDecoration(tree.uDecorationDescID)->hint, "tree");
+    ASSERT_EQ(pDecorationTable->decoration(tree.uDecorationDescID)->hint, "tree");
     ASSERT_NE(tree.uEventID, 0); // The point of this test - Pr2615c covers the eventless interactive kind.
     game.teleportTo(MAP_HARMONDALE, tree.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
     pParty->GetPlayingTime() += Duration::fromDays(150);

@@ -385,7 +385,7 @@ void stru262_TurnBased::NextTurn() {
         if (pQueue[i].uPackedID.type() == OBJECT_Actor) {
             monster_id = pQueue[i].uPackedID.id();
             if ((pActors[monster_id].aiState == Dying) ||
-                (pActors[monster_id].aiState == Stunned) ||
+                (pActors[monster_id].aiState == InPain) ||
                 (pActors[monster_id].aiState == AttackingMelee) ||
                 (pActors[monster_id].aiState == AttackingRanged1) ||
                 (pActors[monster_id].aiState == AttackingRanged2) ||
@@ -402,7 +402,7 @@ void stru262_TurnBased::NextTurn() {
                     pActors[monster_id].currentActionLength = 0_ticks;
                     pActors[monster_id].UpdateAnimation();
                 } else {
-                    if (pActors[monster_id].aiState == Stunned)  // Stunned
+                    if (pActors[monster_id].aiState == InPain)
                         Actor::AI_StandOrBored(
                             monster_id,
                             ai_near_actors_targets_pid[monster_id], 32_ticks, 0);
@@ -603,7 +603,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                         pActors[actor_id].aiState = Dead;
                         pActors[actor_id].UpdateAnimation();
                         break;
-                    case Stunned:
+                    case InPain:
                         Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0_ticks, &a4);
                         break;
                     case AttackingRanged2:

@@ -200,49 +200,37 @@ GUIButton *GUIWindow::GetControl(unsigned int uID) {
 }
 
 // TODO(pskelton): this function may modify frameRect - extract out
-void GUIWindow::DrawMessageBox(bool inside_game_viewport, Recti& frameRect, std::string sHint) {
+void GUIWindow::DrawMessageBox(Recti& frameRect, std::string sHint) {
     // TODO(pskelton): Derived Messagebox types for different kinds of popup boxes
     if (engine->callObserver) {
         engine->callObserver->notify(CALL_DRAW_MESSAGE_BOX, sHint);
     }
 
-    int x = 0;
-    int y = 0;
-    int z, w;
-    if (inside_game_viewport) {
-        x = pViewport.x;
-        z = pViewport.x + pViewport.w - 1;
-        y = pViewport.y;
-        w = pViewport.y + pViewport.h - 1;
-    } else {
-        Sizei renDims = render->GetRenderDimensions();
-        z = renDims.w;
-        w = renDims.h;
-    }
+    Sizei renDims = render->GetRenderDimensions();
 
     Pointi cursor = EngineIocContainer::ResolveMouse()->position();
-    if (frameRect.x >= x) {
-        if (frameRect.w + frameRect.x > z) {
-            frameRect.x = z - frameRect.w;
+    if (frameRect.x >= 0) {
+        if (frameRect.w + frameRect.x > renDims.w) {
+            frameRect.x = renDims.w - frameRect.w;
             frameRect.y = cursor.y + 30;
         }
     } else {
-        frameRect.x = x;
+        frameRect.x = 0;
         frameRect.y = cursor.y + 30;
     }
 
-    if (frameRect.y >= y) {
-        if (frameRect.y + frameRect.h > w) {
+    if (frameRect.y >= 0) {
+        if (frameRect.y + frameRect.h > renDims.h) {
             frameRect.y = cursor.y - frameRect.h - 30;
         }
     } else {
         frameRect.y = cursor.y + 30;
     }
-    if (frameRect.y < y) {
-        frameRect.y = y;
+    if (frameRect.y < 0) {
+        frameRect.y = 0;
     }
-    if (frameRect.x < x) {
-        frameRect.x = x;
+    if (frameRect.x < 0) {
+        frameRect.x = 0;
     }
 
     Recti current_window = frameRect;

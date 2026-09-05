@@ -4,12 +4,12 @@
 
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/OverlayTable.h"
 #include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/ObjectList.h"
-#include "Engine/Objects/DecorationList.h"
-#include "Engine/Graphics/Overlays.h"
+#include "Engine/Tables/DecorationTable.h"
 
 #include "Media/Audio/SoundList.h"
 
@@ -30,11 +30,11 @@ void deserialize(const Blob &src, PortraitFrameTable *dst) {
     assert(!dst->pFrames.empty());
 }
 
-void deserialize(const Blob &src, DecorationList *dst) {
-    dst->pDecorations.clear();
-    deserialize(src, &dst->pDecorations, tags::append, tags::each, tags::via<DecorationDesc_MM7>);
+void deserialize(const Blob &src, DecorationTable *dst) {
+    dst->decorations.clear();
+    deserialize(src, &dst->decorations, tags::append, tags::each, tags::via<DecorationData_MM7>);
 
-    assert(!dst->pDecorations.empty());
+    assert(!dst->decorations.empty());
 }
 
 void deserialize(const Blob &src, IconFrameTable *dst) {
@@ -67,11 +67,11 @@ void deserialize(const Blob &src, ObjectList *dst) {
     assert(!dst->pObjects.empty());
 }
 
-void deserialize(const Blob &src, OverlayList *dst) {
-    dst->pOverlays.clear();
-    deserialize(src, &dst->pOverlays, tags::append, tags::each, tags::via<OverlayDesc_MM7>);
+void deserialize(const Blob &src, OverlayTable *dst) {
+    dst->overlays.clear();
+    deserialize(src, &dst->overlays, tags::append, tags::each, tags::via<OverlayData_MM7>);
 
-    assert(!dst->pOverlays.empty());
+    assert(!dst->overlays.empty());
 }
 
 void deserialize(const Blob &src, SpriteFrameTable *dst) {
