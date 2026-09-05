@@ -1689,7 +1689,7 @@ GAME_TEST(Prs, Pr2615d) {
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
 }
 
-GAME_TEST(Prs, Pr2717) {
+GAME_TEST(Prs, Pr2723) {
     // Clicking the top or the bottom of a party portrait did nothing. A portrait is an oval with semi-axes 32 and
     // 41, but the click test used the circle of radius 32 inscribed in it, so a nine pixel band at each end showed
     // the character in the status bar on hover and then swallowed the click.
