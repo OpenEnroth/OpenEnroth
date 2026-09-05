@@ -292,7 +292,6 @@ jobs:
           cp build/src/Bin/OpenEnroth/OpenEnroth.exe dist/
           cp build/src/Bin/OpenEnroth/OpenEnroth.pdb dist/
 
-      # A sanitized binary is not shippable, so it gets no release artifact.
       - name: '[linux] Prepare files for release'
         if: env.MATRIX_PLATFORM == 'linux' && env.MATRIX_SANITIZERS == ''
         run: |
