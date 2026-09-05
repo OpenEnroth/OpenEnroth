@@ -6499,20 +6499,26 @@ void Character::setXP(int xp) {
 }
 
 void Character::tickRegeneration(int tick5, const RegenData &rData, bool stacking) {
+    bool keepOverflow = engine->config->gameplay.RegenKeepsOverflow.value();
+    auto regen = [keepOverflow](int current, int max, int amount) {
+        int result = std::min(max, current + amount);
+        return keepOverflow ? std::max(current, result) : result;
+    };
+
     if (stacking) {
         if (rData.hpSpellRegen || rData.hpRegen)
-            health = std::min(GetMaxHealth(), health + tick5 * (rData.hpRegen + rData.hpSpellRegen));
+            health = regen(health, GetMaxHealth(), tick5 * (rData.hpRegen + rData.hpSpellRegen));
 
         if (rData.spRegen)
-            mana = std::min(GetMaxMana(), mana + tick5 * rData.spRegen);
+            mana = regen(mana, GetMaxMana(), tick5 * rData.spRegen);
     } else {
         if (rData.hpSpellRegen)
-            health = std::min(GetMaxHealth(), health + tick5 * rData.hpSpellRegen);
+            health = regen(health, GetMaxHealth(), tick5 * rData.hpSpellRegen);
         else if (rData.hpRegen)
-            health = std::min(GetMaxHealth(), health + tick5);
+            health = regen(health, GetMaxHealth(), tick5);
 
         if (rData.spRegen)
-            mana = std::min(GetMaxMana(), mana + tick5);
+            mana = regen(mana, GetMaxMana(), tick5);
     }
 }
 
