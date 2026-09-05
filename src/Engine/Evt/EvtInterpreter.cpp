@@ -325,6 +325,11 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
             break;
         case EVENT_Add:
+            // TODO(captainurist): belongs in patched event data, GrayFace's d27.evt exits event 376 once the quest bit is set.
+            if (engine->config->gameplay.NoRepeatedColonyZodKey.value() && engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
+                ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits.test(QBIT_TALKED_TO_ROLAND)) {
+                break; // Roland's cage hands over its key once.
+            }
             for (Character &character : iterateCharacters(_who, grng))
                 character.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;

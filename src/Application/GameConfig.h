@@ -260,6 +260,10 @@ class GameConfig : public Config {
         Bool NoIndoorFallDamage = {this, "no_indoor_fall_damage", false,
             "Disable fall damage for indoor maps."};
 
+        Bool NoRepeatedColonyZodKey = {this, "no_repeated_colony_zod_key", true,
+            "Roland's cage in Colony Zod hands over its key only once. In vanilla every click on the cage gives "
+            "another key."};
+
         Float SpawnCountMultiplier = {this, "spawn_count_multiplier", 1.0f,
             "Multiplication factor for how many enemies are spawned over original."};
 
