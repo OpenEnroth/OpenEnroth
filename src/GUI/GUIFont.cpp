@@ -1,5 +1,6 @@
 #include "GUIFont.h"
 
+#include <cstdlib>
 #include <sstream>
 #include <memory>
 #include <algorithm>
@@ -16,7 +17,7 @@ static Color parseColorTag(const char *tag, const Color &defaultColor) {
     char color_code[20];
     strncpy(color_code, tag, 5);
     color_code[5] = 0;
-    int color16 = atoi(color_code);
+    int color16 = static_cast<int>(std::strtol(color_code, nullptr, 10));
     if (color16 == 0) {
         return defaultColor; // Back to default color.
     } else {
@@ -295,7 +296,7 @@ std::string GUIFont::WrapText(std::string_view inString, int width, int uX, bool
                 char digits[4];
                 strncpy(digits, &inString[i + 1], 3);
                 digits[3] = 0;
-                lineWidth = atoi(digits) + uX;
+                lineWidth = static_cast<int>(std::strtol(digits, nullptr, 10)) + uX;
                 i += 3;
                 break;
             }
@@ -392,7 +393,7 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
             strncpy(Dest, &string_base[i + 1], 3);
             Dest[3] = 0;
             i += 3;
-            left_margin = atoi(Dest);
+            left_margin = static_cast<int>(std::strtol(Dest, nullptr, 10));
             out_x = position.x + rect.x + left_margin;
             break;
         case '\n': // New line.
@@ -413,7 +414,7 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
             strncpy(Dest, &string_base[i + 1], 3);
             Dest[3] = 0;
             i += 3;
-            left_margin = atoi(Dest);
+            left_margin = static_cast<int>(std::strtol(Dest, nullptr, 10));
             out_x = rect.x + rect.w - 1 - GetLineWidth(&string_base[i]) - left_margin;
             out_y = position.y + rect.y;
             if (maxY != 0) {
@@ -531,7 +532,7 @@ std::string GUIFont::FitTwoFontStringInWindow(std::string_view inString, GUIFont
                 char digits[4];
                 strncpy(digits, &inString[i + 1], 3);
                 digits[3] = 0;
-                lineWidth = atoi(digits) + x;
+                lineWidth = static_cast<int>(std::strtol(digits, nullptr, 10)) + x;
                 i += 3;
                 break;
             }
