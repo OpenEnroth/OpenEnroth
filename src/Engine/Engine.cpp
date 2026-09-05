@@ -14,7 +14,7 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Lighting.h"
@@ -54,6 +54,7 @@
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/OverlayTable.h"
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Tables/HostilityTable.h"
@@ -385,8 +386,8 @@ bool Engine::draw_debug_outlines() {
         for (const LevelDecoration &decor : pLevelDecorations) {
             if (decor.uFlags & LEVEL_DECORATION_INVISIBLE)
                 continue;
-            const DecorationDesc *desc = pDecorationList->GetDecoration(decor.uDecorationDescID);
-            if (desc->CanMoveThrough())
+            const DecorationData *desc = pDecorationTable->decoration(decor.uDecorationDescID);
+            if (desc->canMoveThrough())
                 continue;
             drawDebugCylinder(decor.vPosition, desc->uRadius, desc->uDecorationHeight, colorTable.OrangeyRed);
         }
@@ -407,7 +408,7 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 
     uNumStationaryLights_in_pStationaryLightsStack = 0;
 
-    pCamera3D = new Camera3D;
+    pCamera3D = std::make_unique<Camera3D>();
 
     keyboardInputHandler = ::keyboardInputHandler;
     keyboardActionMapping = ::keyboardActionMapping;
@@ -418,7 +419,7 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
     delete gameTimer;
-    delete pCamera3D;
+    pCamera3D.reset();
     pAudioPlayer.reset();
 }
 
@@ -668,8 +669,8 @@ void Engine::MM7_Initialize() {
     pIconsFrameTable = new IconFrameTable;
     deserialize(engine->resources()->eventsData("dift.bin"), pIconsFrameTable);
 
-    pDecorationList = new DecorationList;
-    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationList);
+    pDecorationTable = new DecorationTable;
+    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationTable);
 
     pObjectList = new ObjectList;
     deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectList);
@@ -677,8 +678,8 @@ void Engine::MM7_Initialize() {
     pMonsterList = new MonsterList;
     deserialize(engine->resources()->eventsData("dmonlist.bin"), pMonsterList);
 
-    pOverlayList = new OverlayList;
-    deserialize(engine->resources()->eventsData("doverlay.bin"), pOverlayList);
+    pOverlayTable = std::make_unique<OverlayTable>();
+    deserialize(engine->resources()->eventsData("doverlay.bin"), pOverlayTable.get());
 
     pSoundList = new SoundList;
     deserialize(engine->resources()->eventsData("dsounds.bin"), pSoundList);
@@ -724,7 +725,7 @@ void Engine::SecondaryInitialization() {
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
     pObjectList->InitializeSprites();
-    pOverlayList->InitializeSprites();
+    pOverlayTable->initializeSprites();
 
     // TODO(captainurist): try resurrecting the food / gold animations using resource files from MM6?
     //for (unsigned i = 0; i < 4; ++i) {
@@ -781,7 +782,7 @@ void Engine::Initialize() {
 
 //----- (00466082) --------------------------------------------------------
 void MM6_Initialize() {
-    viewparams = new ViewingParams;
+    viewparams = std::make_unique<ViewingParams>();
     pAudioPlayer = std::make_unique<AudioPlayer>();
 
     pODMRenderParams = new ODMRenderParams;
@@ -968,8 +969,8 @@ void setDecorationSprite(uint16_t uCog, bool bHide, std::string_view pFileName) 
     for (size_t i = 0; i < pLevelDecorations.size(); i++) {
         if (pLevelDecorations[i].uCog == uCog) {
             if (!pFileName.empty() && pFileName != "0") {
-                pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(pFileName);
-                pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
+                pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(pFileName);
+                pDecorationTable->initializeSprite(pLevelDecorations[i].uDecorationDescID);
             }
 
             if (bHide)

@@ -44,7 +44,6 @@ set(ENGINE_GRAPHICS_HEADERS
         Lighting.h
         LightsStack.h
         LocationFunctions.h
-        LocationInfo.h
         MapWeather.h
         Outdoor.h
         Overlays.h

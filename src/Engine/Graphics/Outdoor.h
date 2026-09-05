@@ -7,13 +7,13 @@
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
 #include "Engine/PartyPlacement.h"
+#include "Engine/LocationInfo.h"
 
 #include "Core/Time/Time.h"
 
 #include "Library/Color/Color.h"
 
 #include "BSPModel.h"
-#include "LocationInfo.h"
 #include "MapWeather.h"
 #include "LocationFunctions.h"
 #include "OutdoorTerrain.h"

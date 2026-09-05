@@ -15,7 +15,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/BSPModel.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -32,7 +32,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Tables/IconFrameTable.h"
@@ -674,9 +673,8 @@ std::string GameUI_GetMinimapHintText() {
             result = pMapStats->pInfos[engine->_currentLoadedMapId].name;
     } else {
         for (BSPModel &model : pOutdoor->pBModels) {
-            v7 = int_get_vector_length(
-                std::abs((int)model.boundingCenter.x - global_coord_X),
-                std::abs((int)model.boundingCenter.y - global_coord_Y), 0);
+            v7 = Vec2i((int)model.boundingCenter.x - global_coord_X,
+                       (int)model.boundingCenter.y - global_coord_Y).length();
             if (v7 < 2 * model.boundingRadius) {
                 for (BLVFace &face : model.faces) {
                     if (face.eventId) {
@@ -896,7 +894,7 @@ void GameUI_WritePointedObjectStatusString() {
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[engine->_persistentVariables.decorVars[pLevelDecorations[pickedObjectID].eventVarId] + 380].pTopic; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
                     else
-                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->hint;
+                        pText = pDecorationTable->decoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->hint;
                     engine->_statusBar->setPermanent(pText);
                 } else {
                     std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);

@@ -4,6 +4,7 @@ set(ENGINE_TABLES_SOURCES
         AutonoteTable.cpp
         AwardTable.cpp
         ChestTable.cpp
+        DecorationTable.cpp
         HostilityTable.cpp
         HistoryTable.cpp
         HouseTable.cpp
@@ -12,6 +13,7 @@ set(ENGINE_TABLES_SOURCES
         MerchantTable.cpp
         MessageScrollTable.cpp
         NPCTable.cpp
+        OverlayTable.cpp
         PortraitFrameTable.cpp
         QuestTable.cpp
         TextureFrameTable.cpp
@@ -22,6 +24,7 @@ set(ENGINE_TABLES_HEADERS
         AutonoteTable.h
         AwardTable.h
         ChestTable.h
+        DecorationTable.h
         HostilityTable.h
         HistoryTable.h
         HouseTable.h
@@ -30,6 +33,7 @@ set(ENGINE_TABLES_HEADERS
         MerchantTable.h
         MessageScrollTable.h
         NPCTable.h
+        OverlayTable.h
         PortraitFrameTable.h
         QuestTable.h
         TextureFrameTable.h

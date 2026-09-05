@@ -22,7 +22,6 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/OurMath.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/MapInfo.h"
 
@@ -981,14 +980,13 @@ bool Party::isPartyEvil() { return _questBits[QBIT_DARK_PATH]; }
 bool Party::isPartyGood() { return _questBits[QBIT_LIGHT_PATH]; }
 
 size_t Party::immolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange) {
-    int x, y, z;
     int affectedCount = 0;
 
     for (size_t i = 0; i < pActors.size(); ++i) {
-        x = std::abs(pActors[i].pos.x - this->pos.x);
-        y = std::abs(pActors[i].pos.y - this->pos.y);
-        z = std::abs(pActors[i].pos.z - this->pos.z);
-        if (int_get_vector_length(x, y, z) <= effectRange) {
+        int x = pActors[i].pos.x - this->pos.x;
+        int y = pActors[i].pos.y - this->pos.y;
+        int z = pActors[i].pos.z - this->pos.z;
+        if (Vec3i(x, y, z).length() <= effectRange) {
             if (pActors[i].aiState != Dead && pActors[i].aiState != Dying &&
                 pActors[i].aiState != Removed &&
                 pActors[i].aiState != Disabled &&
