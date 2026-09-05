@@ -1124,7 +1124,6 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     int v9;                // edi@5
     int v10;               // eax@7
     SpriteFrame *v11;      // eax@7
-    Particle_sw particle;  // [sp+Ch] [bp-A0h]@3
     BillboardFlags v30;               // [sp+8Ch] [bp-20h]@7
 
     if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
@@ -1134,7 +1133,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
     if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
         // TODO(pskelton): common emit fire code
-        memset(&particle, 0, sizeof(Particle_sw));  // fire,  like at the Pit's tavern
+        Particle_sw particle; // Fire, like at the Pit's tavern.
         particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
         particle.uDiffuse = colorTable.OrangeyRed;
         particle.x = (double)pLevelDecorations[uDecorationID].vPosition.x;

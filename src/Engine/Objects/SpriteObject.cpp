@@ -115,7 +115,6 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
 
 static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
     Particle_sw particle;
-    memset(&particle, 0, sizeof(Particle_sw));
     particle.x = pos.x;
     particle.y = pos.y;
     particle.z = pos.z;
