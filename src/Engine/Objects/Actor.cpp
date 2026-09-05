@@ -719,8 +719,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
             int deltaX = actor->pos.x - victim->pos.x;
             int deltaY = actor->pos.y - victim->pos.y;
             int deltaZ = actor->pos.z - victim->pos.z;
-            // TODO(captainurist): use length() here and retrace
-            if (Vec3i(deltaX, deltaY, deltaZ).octagonalLength() < 4096) {
+            if (Vec3i(deltaX, deltaY, deltaZ).length() < 4096) {
                 actor->monsterInfo.hostilityType =
                     HOSTILITY_LONG;
                 if (a2 == 1) actor->attributes |= ACTOR_AGGRESSOR;
@@ -3860,7 +3859,7 @@ void Actor::MakeActorAIList_ODM() {
         int delta_y = pParty->pos.y - actor.pos.y;
         int delta_z = pParty->pos.z - actor.pos.z;
 
-        // TODO(captainurist): use length() here and retrace
+        // TODO(captainurist): use length() here, four traces need re-recording and not just a retrace
         int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
         if (distance < 0)
             distance = 0;
@@ -3915,8 +3914,7 @@ int Actor::MakeActorAIList_BLV() {
         int delta_y = pParty->pos.y - actor.pos.y;
         int delta_z = pParty->pos.z - actor.pos.z;
 
-        // TODO(captainurist): use length() here and retrace
-        int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
+        int distance = Vec3i(delta_x, delta_y, delta_z).length() - actor.radius;
         if (distance < 0)
             distance = 0;
 

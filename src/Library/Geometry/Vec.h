@@ -33,20 +33,6 @@ struct Vec2 {
         return std::sqrt(lengthSqr());
     }
 
-    // TODO(captainurist): drop octagonalLength, gameplay should not depend on a distance approximation
-    /**
-     * Octagonal approximation of the Euclidean length, as computed by the original engine.
-     * Gameplay depends on the approximation error, so a true length is not a drop-in replacement.
-     *
-     * @return                          Approximated length of this vector, always non-negative.
-     */
-    [[nodiscard]] T octagonalLength() const requires std::is_integral_v<T> {
-        T a = std::abs(x), b = std::abs(y);
-        if (a < b)
-            std::swap(a, b);
-        return a + (11 * b >> 5);
-    }
-
     friend bool operator==(const Vec2 &, const Vec2 &) = default;
 
     friend Vec2 operator+(const Vec2 &l, const Vec2 &r) {
