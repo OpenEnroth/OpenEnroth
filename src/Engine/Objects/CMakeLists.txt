@@ -5,7 +5,6 @@ set(ENGINE_OBJECTS_SOURCES
         Chest.cpp
         CombinedSkillValue.cpp
         Decoration.cpp
-        DecorationList.cpp
         ItemEnumFunctions.cpp
         Item.cpp
         MonsterEnumFunctions.cpp
@@ -26,8 +25,6 @@ set(ENGINE_OBJECTS_HEADERS
         ChestEnums.h
         CombinedSkillValue.h
         Decoration.h
-        DecorationList.h
-        DecorationEnums.h
         ItemEnchantment.h
         ItemEnums.h
         ItemEnumFunctions.h

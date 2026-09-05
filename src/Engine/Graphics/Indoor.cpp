@@ -14,7 +14,7 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Lighting.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -30,7 +30,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
@@ -938,16 +937,16 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     int interactiveDecorationsNum = 0;
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
-        pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
+        pDecorationTable->initializeSprite(pLevelDecorations[i].uDecorationDescID);
 
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+        const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[i].uDecorationDescID);
 
         if (decoration->uSoundID != SOUND_Invalid) {
             decorationsWithSound.push_back(i);
         }
 
         if (!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            if (!decoration->DontDraw()) {
+            if (!decoration->dontDraw()) {
                 if (decoration->uLightRadius) {
                     Color color = render->config->graphics.ColoredLights.value() ? decoration->uColoredLight : colorTable.White;
                     pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +
@@ -1131,7 +1130,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
 
-    const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[uDecorationID].uDecorationDescID);
+    const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[uDecorationID].uDecorationDescID);
 
     if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
         // TODO(pskelton): common emit fire code
@@ -1649,7 +1648,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
         if (gameTimer->dt()) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
-            int walkDelta = integer_sqrt((oldPos - pParty->pos).lengthSqr());
+            int walkDelta = (oldPos - pParty->pos).length();
 
             if (walkDelta < 2) {
                 // mute the walking sound when stopping
@@ -1721,8 +1720,7 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
     // calculates distance from point x3y3 to line x1y1->x2y2
 
     signed int result;
-    // calc line length
-    result = integer_sqrt(std::abs(x2 - x1) * std::abs(x2 - x1) + std::abs(y2 - y1) * std::abs(y2 - y1));
+    result = Vec2i(x2 - x1, y2 - y1).length();
 
     // orthogonal projection from line to point
     if (result)
@@ -1766,10 +1764,9 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {
-                dist_y = std::abs(enc_spawn_point.position.y - model.boundingCenter.y);
-                dist_x = std::abs(enc_spawn_point.position.x - model.boundingCenter.x);
-                if (int_get_vector_length(dist_x, dist_y, 0) <
-                    model.boundingRadius + 256) {
+                dist_y = enc_spawn_point.position.y - model.boundingCenter.y;
+                dist_x = enc_spawn_point.position.x - model.boundingCenter.x;
+                if (Vec2i(dist_x, dist_y).length() < model.boundingRadius + 256) {
                     not_in_model = 1;
                     break;
                 }

@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <array>
-#include <vector>
 
 #include "Engine/Pid.h"
 
@@ -14,7 +13,7 @@ struct ActiveOverlay {
     ActiveOverlay();
     void Reset();
 
-    int16_t indexToOverlayList = 0;
+    int16_t indexToOverlayTable = 0;
     int16_t spriteFrameTime = 0;
     int16_t animLength = 0;
     int16_t screenSpaceX = 0;
@@ -31,18 +30,4 @@ struct ActiveOverlayList {
     std::array<ActiveOverlay, 50> pOverlays;
 };
 
-struct OverlayDesc {
-    uint16_t uOverlayID = 0;
-    uint16_t uOverlayType = 0;
-    uint16_t uSpriteFramesetID = 0;
-    int16_t spriteFramesetGroup = 0;
-};
-
-struct OverlayList {
-    void InitializeSprites();
-
-    std::vector<OverlayDesc> pOverlays;
-};
-
 extern ActiveOverlayList *pActiveOverlayList;
-extern OverlayList *pOverlayList;

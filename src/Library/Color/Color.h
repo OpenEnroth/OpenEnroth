@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstring>
+#include <string_view>
 
 #include "Library/Serialization/SerializationFwd.h"
 
@@ -107,11 +108,10 @@ struct fmt::formatter<ColorTag> {
     constexpr auto parse(format_parse_context &ctx) {
         // Require {::} format spec. What's special about it is that it will fail for other types, so can only be used
         // for ColorTag. Also makes it easier to distinguish color tags in the format string.
-        auto pos = ctx.begin();
-        auto end = ctx.end();
-        if (pos == end || *pos != ':' || ++pos == end || *pos != '}')
+        std::string_view spec(ctx.begin(), ctx.end());
+        if (!spec.starts_with(":}"))
             fmt::report_error("ColorTag needs {::} format specifier");
-        return pos; // pos points to '}'
+        return ctx.begin() + 1; // Points to '}'.
     }
 
     auto format(const ColorTag &tag, format_context &ctx) const {
