@@ -51,8 +51,8 @@ TargetedSpellUI_Telekinesis::TargetedSpellUI_Telekinesis(Pointi position, Sizei 
 
 void TargetedSpellUI::CreateButtonsTargetCharacters() {
     // TODO(pskelton): why is position / size different to normal character buttons
-    CreateButton({52, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 0, INPUT_ACTION_SELECT_CHAR_1);
-    CreateButton({165, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 1, INPUT_ACTION_SELECT_CHAR_2);
-    CreateButton({280, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 2, INPUT_ACTION_SELECT_CHAR_3);
-    CreateButton({390, 422}, {35, 0}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 3, INPUT_ACTION_SELECT_CHAR_4);
+    CreateButton({16, 386}, {71, 71}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 0, INPUT_ACTION_SELECT_CHAR_1);
+    CreateButton({129, 386}, {71, 71}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 1, INPUT_ACTION_SELECT_CHAR_2);
+    CreateButton({244, 386}, {71, 71}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 2, INPUT_ACTION_SELECT_CHAR_3);
+    CreateButton({354, 386}, {71, 71}, BUTTON_TYPE_CHARACTER, 0, UIMSG_CastSpell_TargetCharacter, 3, INPUT_ACTION_SELECT_CHAR_4);
 }

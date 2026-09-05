@@ -368,23 +368,9 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
 
     pButton->pParent = this;
 
-    // A zero height on a character button means it is round.
-    int height = (uButtonType == BUTTON_TYPE_CHARACTER && !dimensions.h) ? dimensions.w : dimensions.h;
-
     // Original code used closed intervals [uX, uZ] where uZ = uX + uWidth, so the button covered
     // uWidth + 1 pixels. With standard half-open Rect semantics [x, x+w), we store w + 1 to match.
-    int x = position.x + frameRect.x;
-    int y = position.y + frameRect.y;
-    int w = dimensions.w + 1;
-    int h = height + 1;
-
-    if (uButtonType == BUTTON_TYPE_CHARACTER) {
-        // Character buttons are ovals, and callers pass the center in position and the semi-axes in dimensions.
-        // Store the bounding box so that rect is a plain rect for every button type.
-        pButton->rect = Recti(x - w, y - h, 2 * w, 2 * h);
-    } else {
-        pButton->rect = Recti(x, y, w, h);
-    }
+    pButton->rect = Recti(position.x + frameRect.x, position.y + frameRect.y, dimensions.w + 1, dimensions.h + 1);
     pButton->uButtonType = uButtonType;
     pButton->field_2C_is_pushed = false;
     pButton->uData = uData;
@@ -408,10 +394,10 @@ GUIButton *GUIWindow::CreateButton(std::string id, Pointi position, Sizei dimens
 }
 
 void GUIWindow::CreateCharacterButtons() {
-    CreateButton("Game_Character1", { 61, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);  // buttons for portraits
-    CreateButton("Game_Character2", { 177, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
-    CreateButton("Game_Character3", { 292, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
-    CreateButton("Game_Character4", { 407, 424 }, { 31, 40 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
+    CreateButton("Game_Character1", { 29, 383 }, { 63, 81 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);  // buttons for portraits
+    CreateButton("Game_Character2", { 145, 383 }, { 63, 81 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
+    CreateButton("Game_Character3", { 260, 383 }, { 63, 81 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
+    CreateButton("Game_Character4", { 375, 383 }, { 63, 81 }, BUTTON_TYPE_CHARACTER, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
 
     CreateButton({ pHealthBarPos[0], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 1);  // buttons for HP
     CreateButton({ pHealthBarPos[1], pHealthManaBarYPos }, { 5, 49 }, BUTTON_TYPE_NORMAL, UIMSG_ShowStatus_ManaHP, UIMSG_0, 2);
