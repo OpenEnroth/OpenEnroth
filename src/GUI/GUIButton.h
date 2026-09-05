@@ -19,6 +19,17 @@ class GUIButton {
     void DrawLabel(std::string_view text, GUIFont *font, Color color, Color shadowColor = colorTable.Black);
     bool Contains(unsigned int x, unsigned int y);
     bool Contains(Pointi position);
+
+    /**
+     * Hit test for `BUTTON_TYPE_CHARACTER` buttons, which are ovals rather than rectangles. `rect` is not a
+     * rectangle for these - `rect.x` and `rect.y` are the center of the oval, and `rect.w` and `rect.h` are its
+     * semi-axes.
+     *
+     * @param position                  Point to test.
+     * @return                          Whether the point is inside the oval.
+     */
+    bool containsOval(Pointi position) const;
+
     void Release();
 
     std::string id = {}; // Button id, so that buttons can be referenced from tests.

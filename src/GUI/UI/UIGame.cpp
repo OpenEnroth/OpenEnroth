@@ -1017,26 +1017,14 @@ void GameUI_WritePointedObjectStatusString() {
                             }
                             break;
                         case BUTTON_TYPE_CHARACTER:  // hovering over portraits
-                            if (!pButton->rect.isEmpty()) {
-                                int distW = mousePos.x - pButton->rect.x;
-                                int distY = mousePos.y - pButton->rect.y;
+                            if (pButton->containsOval(mousePos)) {
+                                engine->_statusBar->setPermanent(pButton->label);  // for character name
+                                pMessageType2 = (UIMessageType)pButton->uData;
+                                if (pMessageType2 != 0)
+                                    GameUI_handleHintMessage(pMessageType2, pButton->msg_param);
 
-                                double ratioX =
-                                    1.0 * (distW * distW) /
-                                    (pButton->rect.w * pButton->rect.w);
-                                double ratioY =
-                                    1.0 * (distY * distY) /
-                                    (pButton->rect.h * pButton->rect.h);
-
-                                if (ratioX + ratioY < 1.0) {
-                                    engine->_statusBar->setPermanent(pButton->label);  // for character name
-                                    pMessageType2 = (UIMessageType)pButton->uData;
-                                    if (pMessageType2 != 0)
-                                        GameUI_handleHintMessage(pMessageType2, pButton->msg_param);
-
-                                    uLastPointedObjectID = Pid::dummy();
-                                    return;
-                                }
+                                uLastPointedObjectID = Pid::dummy();
+                                return;
                             }
                             break;
                         case BUTTON_TYPE_SKILLS:  // hovering over buttons
@@ -1127,24 +1115,13 @@ void GameUI_WritePointedObjectStatusString() {
                         }
                         break;
                     case BUTTON_TYPE_CHARACTER:  // hovering over portraits
-                        if (!pButton->rect.isEmpty()) {
-                            int distW = mousePos.x - pButton->rect.x;
-                            int distY = mousePos.y - pButton->rect.y;
-
-                            double ratioX = 1.0 * (distW * distW) /
-                                            (pButton->rect.w * pButton->rect.w);
-                            double ratioY =
-                                1.0 * (distY * distY) /
-                                (pButton->rect.h * pButton->rect.h);
-
-                            if (ratioX + ratioY < 1.0) {
-                                engine->_statusBar->setPermanent(pButton->label);  // for character name
-                                pMessageType2 = (UIMessageType)pButton->uData;
-                                if (pMessageType2 != 0)
-                                    GameUI_handleHintMessage(pMessageType2, pButton->msg_param);
-                                uLastPointedObjectID = Pid::dummy();
-                                return;
-                            }
+                        if (pButton->containsOval(mousePos)) {
+                            engine->_statusBar->setPermanent(pButton->label);  // for character name
+                            pMessageType2 = (UIMessageType)pButton->uData;
+                            if (pMessageType2 != 0)
+                                GameUI_handleHintMessage(pMessageType2, pButton->msg_param);
+                            uLastPointedObjectID = Pid::dummy();
+                            return;
                         }
                         break;
                     case BUTTON_TYPE_SKILLS:

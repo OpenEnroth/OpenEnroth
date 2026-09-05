@@ -97,3 +97,12 @@ bool GUIButton::Contains(unsigned int x, unsigned int y) {
 bool GUIButton::Contains(Pointi position) {
     return rect.contains(position);
 }
+
+bool GUIButton::containsOval(Pointi position) const {
+    if (rect.isEmpty())
+        return false;
+
+    int dx = position.x - rect.x;
+    int dy = position.y - rect.y;
+    return 1.0 * dx * dx / (rect.w * rect.w) + 1.0 * dy * dy / (rect.h * rect.h) < 1.0;
+}
