@@ -39,6 +39,7 @@ set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache tak
 set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
 set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
 set(OE_DISTRIBUTION_BUILD OFF CACHE BOOL "Specify that this is a build for distribution, not a dev build.")
+set(OE_USE_SANITIZERS "" CACHE STRING "Sanitizers to build with, passed on to -fsanitize=. Empty string disables sanitizers.")
 
 if(OE_DISTRIBUTION_BUILD)
     add_compile_definitions(OE_DISTRIBUTION_BUILD)
@@ -93,6 +94,16 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute.
     add_compile_options(/we4172) # Returning address of local variable or temporary.
     add_compile_options(/we26433) # Function should be marked with 'override'.
+endif()
+
+# Set up sanitizers.
+if(OE_USE_SANITIZERS)
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+        message(FATAL_ERROR "OE_USE_SANITIZERS is not supported for ${CMAKE_CXX_COMPILER_ID}.")
+    endif()
+    message(STATUS "Using sanitizers: ${OE_USE_SANITIZERS}.")
+    add_compile_options(-fsanitize=${OE_USE_SANITIZERS})
+    add_link_options(-fsanitize=${OE_USE_SANITIZERS})
 endif()
 
 # Set compiler options. We do a lot of tweaks here.

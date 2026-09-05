@@ -41,6 +41,9 @@ env:
   NDK_VERSION: 28.1.13356709
   # This is required for ccache to work for android build, otherwise we get 100% cache misses.
   CCACHE_COMPILERCHECK: content
+  # Luajit runs the minilua and buildvm tools that it builds, and both leak by design, so LeakSanitizer
+  # would fail the sanitizer build long before it reaches our code. Many of our own game tests leak too.
+  ASAN_OPTIONS: detect_leaks=0
 
 jobs:
   build_all:
@@ -58,6 +61,10 @@ jobs:
               && '["windows_x86","windows_x86_64","darwin_arm64","darwin_x86_64","linux_x86","linux_x86_64","android_universal"]'
               || '["windows_x86","windows_x86_64","darwin_arm64","darwin_x86_64","linux_x86","linux_x86_64","android_arm64_v8a","android_arm32_v7a","android_x86_64"]'
           )}}
+        # Listing ASan in the configurations above would cross it with every target, and one job is all we want.
+        include:
+          - configuration: ASan
+            target: linux_x86_64
     runs-on: >-
       ${{
         startsWith(matrix.target, 'windows_') && 'windows-2022' ||
@@ -74,6 +81,12 @@ jobs:
           echo "MATRIX_CONFIGURATION=${{matrix.configuration}}" >> "$GITHUB_ENV"
           echo "MATRIX_TARGET=${{matrix.target}}" >> "$GITHUB_ENV"
           
+          configuration="${{matrix.configuration}}"
+          case "$configuration" in
+            ASan) build_type=Debug;            sanitizers=address;;
+            *)    build_type="$configuration"; sanitizers="";;
+          esac
+
           target="${{matrix.target}}"
           case "$target" in
             windows_x86)        platform=windows; architecture=x86;         ccache_architecture=x86;       ccache_size=400M;  cmake_args="";;
@@ -89,6 +102,8 @@ jobs:
             *) echo "Unknown target: $target" >&2; exit 1;;
           esac
           
+          echo "MATRIX_BUILD_TYPE=$build_type" >> "$GITHUB_ENV"
+          echo "MATRIX_SANITIZERS=$sanitizers" >> "$GITHUB_ENV"
           echo "MATRIX_PLATFORM=$platform" >> "$GITHUB_ENV"
           echo "MATRIX_ARCHITECTURE=$architecture" >> "$GITHUB_ENV"
           echo "MATRIX_CCACHE_ARCHITECTURE=$ccache_architecture" >> "$GITHUB_ENV"
@@ -208,7 +223,7 @@ jobs:
       - name: '[darwin/windows/linux] Configure'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{env.MATRIX_CONFIGURATION}} -DOE_DISTRIBUTION_BUILD=ON ${{env.MATRIX_CMAKE_ARGS}}
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{env.MATRIX_BUILD_TYPE}} -DOE_DISTRIBUTION_BUILD=ON -DOE_USE_SANITIZERS=${{env.MATRIX_SANITIZERS}} ${{env.MATRIX_CMAKE_ARGS}}
 
       - name: '[darwin/windows/linux] Build'
         if: env.MATRIX_PLATFORM != 'android'
@@ -247,7 +262,7 @@ jobs:
           OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: '[darwin/windows/linux] Run retrace tests'
-        if: env.MATRIX_PLATFORM != 'android' && env.MATRIX_CONFIGURATION != 'Debug'
+        if: env.MATRIX_PLATFORM != 'android' && env.MATRIX_BUILD_TYPE != 'Debug'
         working-directory: build
         run: |
           ninja Run_RetraceTest_Headless_Parallel
@@ -278,13 +293,13 @@ jobs:
           cp build/src/Bin/OpenEnroth/OpenEnroth.pdb dist/
 
       - name: '[linux] Prepare files for release'
-        if: env.MATRIX_PLATFORM == 'linux'
+        if: env.MATRIX_PLATFORM == 'linux' && env.MATRIX_SANITIZERS == ''
         run: |
           mkdir dist
           cp build/src/Bin/OpenEnroth/OpenEnroth dist/
 
       - name: '[darwin/windows/linux] Zip folder for release'
-        if: env.MATRIX_PLATFORM != 'android'
+        if: env.MATRIX_PLATFORM != 'android' && env.MATRIX_SANITIZERS == ''
         uses: thedoctor0/zip-release@0.7.6
         with:
           type: zip
@@ -292,7 +307,7 @@ jobs:
           path: dist
 
       - name: '[darwin/windows/linux] Publish release'
-        if: env.MATRIX_PLATFORM != 'android' && inputs.releaseTag != ''
+        if: env.MATRIX_PLATFORM != 'android' && env.MATRIX_SANITIZERS == '' && inputs.releaseTag != ''
         uses: softprops/action-gh-release@v1
         with:
           prerelease: true
