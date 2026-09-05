@@ -383,7 +383,7 @@ GAME_TEST(Issues, Issue1251a) {
         return result;
     });
     game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_TITAN_C, SPAWN_DUMMY); // No fire resistance, so damage rolls aren't halved. Beefy enough to take all twenty.
-    game.tick(); // A frame before the first shot, so that the tapes start from a full wand.
+    game.tick(); // Baseline tick records 20 charges.
 
     for (int i = 0; i < 1000 && pParty->pCharacters[0].inventory.entry(ITEM_SLOT_MAIN_HAND)->numCharges > 0; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
