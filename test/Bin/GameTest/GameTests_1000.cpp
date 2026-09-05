@@ -538,20 +538,25 @@ GAME_TEST(Issues, Issue1290) {
 GAME_TEST(Issues, Issue1293) {
     // Hovering the black bars of a letterboxed window with the spellbook open asserted, the highlight code indexed the
     // Z-buffer with a mouse position outside the render area.
-    test.prepareForNextTest();
-    engine->config->debug.NoActors.setValue(true);
-    game.startNewGame();
-    game.resizeWindow(640, 600); // 60 px black bars above and below the 640x480 render area.
-    pParty->setActiveCharacterIndex(4); // The sorcerer, so the spellbook has pages to draw.
-    game.pressAndReleaseKey(PlatformKey::KEY_C);
-    game.tick(2);
-    ASSERT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
-
     for (int y : {-30, 510}) { // Top bar, bottom bar.
+        SCOPED_TRACE(y);
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        game.resizeWindow(640, 600); // 60 px black bars above and below the 640x480 render area.
+        pParty->setActiveCharacterIndex(4); // The sorcerer, so the spellbook has pages to draw.
+        game.pressAndReleaseKey(PlatformKey::KEY_C);
+        game.tick(2);
+        ASSERT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
+
+        auto texturesTape = tapes.hudTextures();
+        test.startTaping();
         game.moveMouse(320, y);
         game.tick(2);
+        test.stopTaping();
         ASSERT_EQ(engine->mouse->position().y, y); // The mouse really is outside the render area.
-        EXPECT_EQ(current_screen_type, SCREEN_SPELL_BOOK); // And the spellbook is still being drawn.
+        EXPECT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
+        EXPECT_CONTAINS(texturesTape.back(), "ib-m5-u"); // The spellbook's close button was drawn during the hover.
     }
 }
 
