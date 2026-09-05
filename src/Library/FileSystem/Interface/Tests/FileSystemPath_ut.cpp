@@ -155,9 +155,9 @@ UNIT_TEST(FileSystemPath, AppendedEscaping) {
 }
 
 UNIT_TEST(FileSystemPath, Decomposition) {
-    // Decomposition follows std::filesystem, so a leading dot doesn't start an extension and only the last one
-    // counts. The all-dot names are the interesting ones - ".." has no extension at all, while "..wat" has a stem of
-    // "." and an extension of ".wat".
+    // "..." is here because the offset math is easiest to get wrong there. The FileSystemPathComponents this replaced
+    // carried a hand-written special case to keep "..." apart from "..", and dropping that object means the case has
+    // to be re-derived rather than inherited. The doc on extension() names this exact result, so it needs a pin.
     auto testOne = [](std::string_view path, std::string_view parent, std::string_view name, std::string_view stem, std::string_view ext) {
         FileSystemPath fsPath(path);
         EXPECT_EQ(fsPath.parent().string(), parent) << "for " << path;
@@ -175,6 +175,8 @@ UNIT_TEST(FileSystemPath, Decomposition) {
     testOne("../..", "..", "..", "..", "");
     testOne(".hidden", "", ".hidden", ".hidden", "");
     testOne("..wat", "", "..wat", ".", ".wat");
+    testOne("...", "", "...", "..", ".");
+    testOne("a/...", "a", "...", "..", ".");
     testOne("x/y/z/some.", "x/y/z", "some.", "some", ".");
     testOne("x.y/z.f/a.b.c.d", "x.y/z.f", "a.b.c.d", "a.b.c", ".d");
     testOne("1/2/3/xyz.txt", "1/2/3", "xyz.txt", "xyz", ".txt");

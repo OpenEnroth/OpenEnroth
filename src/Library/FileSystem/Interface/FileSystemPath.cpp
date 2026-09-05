@@ -8,14 +8,17 @@
 #include "Utility/String/Transformations.h"
 #include "Utility/SmallVector.h"
 
-// Offset of the file name inside the path, so `path.substr(fileNameOffset(path))` is the last component.
 static size_t fileNameOffset(std::string_view path) {
     size_t separatorPos = path.rfind('/');
     return separatorPos == std::string_view::npos ? 0 : separatorPos + 1;
 }
 
-// Offset of the extension inside the path, or npos if there's none. Mirrors std::filesystem: a leading dot doesn't
-// start an extension, so ".bashrc" has none, and ".." has none either. Normal form never spells a name as ".".
+/**
+ * @param path                      Path in normal form, so a name is never spelled `"."`.
+ * @return                          Offset of the extension inside the path, or `npos` if there is none. Mirrors
+ *                                  `std::filesystem`, so a leading dot doesn't start an extension and `".bashrc"`
+ *                                  has none, and `".."` has none either.
+ */
 static size_t extensionOffset(std::string_view path) {
     size_t nameOffset = fileNameOffset(path);
     std::string_view fileName = path.substr(nameOffset);
