@@ -1,6 +1,5 @@
 #include "GUI/GUIButton.h"
 
-#include <cassert>
 #include <vector>
 
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -97,18 +96,4 @@ bool GUIButton::Contains(unsigned int x, unsigned int y) {
 
 bool GUIButton::Contains(Pointi position) {
     return rect.contains(position);
-}
-
-bool GUIButton::containsOval(Pointi position) const {
-    assert(uButtonType == BUTTON_TYPE_CHARACTER);
-
-    if (rect.isEmpty())
-        return false;
-
-    Pointi center = rect.center();
-    int dx = position.x - center.x;
-    int dy = position.y - center.y;
-    int semiW = rect.w / 2;
-    int semiH = rect.h / 2;
-    return 1.0 * dx * dx / (semiW * semiW) + 1.0 * dy * dy / (semiH * semiH) < 1.0;
 }

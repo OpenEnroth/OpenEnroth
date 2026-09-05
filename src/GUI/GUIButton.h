@@ -19,15 +19,6 @@ class GUIButton {
     void DrawLabel(std::string_view text, GUIFont *font, Color color, Color shadowColor = colorTable.Black);
     bool Contains(unsigned int x, unsigned int y);
     bool Contains(Pointi position);
-
-    /**
-     * Hit test against the oval inscribed in `rect`, which is the shape of a `BUTTON_TYPE_CHARACTER` button.
-     *
-     * @param position                  Point to test.
-     * @return                          Whether the point is inside the oval.
-     */
-    bool containsOval(Pointi position) const;
-
     void Release();
 
     std::string id = {}; // Button id, so that buttons can be referenced from tests.
