@@ -28,7 +28,7 @@ struct FileSystemDumpEntry {
 
     FileSystemDumpEntry(std::string_view path, FileType type, Blob content = {}): path(path), type(type), content(std::move(content)) {
         assert(type == FILE_REGULAR || type == FILE_DIRECTORY);
-        assert(content.empty() || type == FILE_REGULAR);
+        assert(this->content.empty() || type == FILE_REGULAR);
     }
 
     FileSystemDumpEntry(std::string_view path, FileType type, std::string content) : path(path), type(type) {
