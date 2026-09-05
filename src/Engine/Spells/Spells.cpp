@@ -512,10 +512,10 @@ void SpellStats::Initialize(const Blob &spells) {
         pInfos[uSpellID].pExpertSkillDesc = unquote(tokens[7]);
         pInfos[uSpellID].pMasterSkillDesc = unquote(tokens[8]);
         pInfos[uSpellID].pGrandmasterSkillDesc = unquote(tokens[9]);
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('m') || tokens[10].contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlag();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('e') || tokens[10].contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlag();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('x') || tokens[10].contains('X') ? SPELL_FLAG_8 : SpellFlag();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('m') || tokens[10].contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlags();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('e') || tokens[10].contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlags();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlags();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('x') || tokens[10].contains('X') ? SPELL_FLAG_8 : SpellFlags();
     }
 
     // Patch SPELL_SHIFT_CLICK_CASTABLE flags that are bogus in vanilla spells.txt. See issues #1494, #1495, #1496.
