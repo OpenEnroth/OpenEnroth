@@ -15,7 +15,6 @@ Checks: >
   -bugprone-macro-parentheses,
   -bugprone-narrowing-conversions,
   -bugprone-random-generator-seed,
-  -bugprone-raw-memory-call-on-non-trivial-type,
   -bugprone-reserved-identifier,
   -bugprone-signed-char-misuse,
   -bugprone-std-namespace-modification,
