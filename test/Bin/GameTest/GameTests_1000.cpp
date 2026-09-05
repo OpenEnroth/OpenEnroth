@@ -27,6 +27,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Io/Mouse.h"
+
 #include "Utility/Lambda.h"
 
 #include "GameTestCommon.h"
@@ -516,6 +518,26 @@ GAME_TEST(Issues, Issue1282) {
     test.playTraceFromTestData("issue_1282.mm7", "issue_1282.json");
     EXPECT_EQ(itemTape, tape(false, true));
     EXPECT_EQ(totalObjectsTape.delta(), -1);
+}
+
+GAME_TEST(Issues, Issue1293) {
+    // Hovering the black bars of a letterboxed window with the spellbook open asserted, the highlight code indexed the
+    // Z-buffer with a mouse position outside the render area.
+    test.prepareForNextTest();
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.resizeWindow(640, 600); // 60 px black bars above and below the 640x480 render area.
+    pParty->setActiveCharacterIndex(4); // The sorcerer, so the spellbook has pages to draw.
+    game.pressAndReleaseKey(PlatformKey::KEY_C);
+    game.tick(2);
+    ASSERT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
+
+    for (int y : {-30, 510}) { // Top bar, bottom bar.
+        game.moveMouse(320, y);
+        game.tick(2);
+        ASSERT_EQ(engine->mouse->position().y, y); // The mouse really is outside the render area.
+        EXPECT_EQ(current_screen_type, SCREEN_SPELL_BOOK); // And the spellbook is still being drawn.
+    }
 }
 
 GAME_TEST(Issues, Issue1294_1389) {
