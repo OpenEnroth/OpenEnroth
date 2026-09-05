@@ -38,7 +38,8 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/BspRenderer.h"
-#include "Engine/MapInfo.h"
+#include "Engine/MapEnumFunctions.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Seasons.h"
@@ -1742,7 +1743,7 @@ void UpdateActors_ODM() {
 static void loadAndPrepareODMInternal(MapId mapid) {
     assert(isMapOutdoor(mapid));
 
-    MapInfo *map_info;
+    MapData *mapData;
     bool outdoor_was_respawned;
     unsigned int respawn_interval = 0;
     std::string mapFilename;
@@ -1752,9 +1753,9 @@ static void loadAndPrepareODMInternal(MapId mapid) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;
-    mapFilename = pMapStats->pInfos[mapid].fileName;
-    map_info = &pMapStats->pInfos[mapid];
-    respawn_interval = map_info->respawnIntervalDays;
+    mapFilename = pMapTable->pInfos[mapid].fileName;
+    mapData = &pMapTable->pInfos[mapid];
+    respawn_interval = mapData->respawnIntervalDays;
 
     pOutdoor->weather.flags &= ~MAP_WEATHER_FOGGY;
     pOutdoor->Initialize(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
@@ -1770,9 +1771,9 @@ static void loadAndPrepareODMInternal(MapId mapid) {
             SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 
             if (spawn->type == OBJECT_Actor)
-                SpawnEncounter(map_info, spawn, 0, 0, 0);
+                SpawnEncounter(mapData, spawn, 0, 0, 0);
             else
-                SpawnRandomTreasure(map_info, spawn);
+                SpawnRandomTreasure(mapData, spawn);
         }
         RespawnGlobalDecorations();
     }

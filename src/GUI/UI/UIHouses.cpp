@@ -16,7 +16,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Viewport.h"
@@ -426,7 +426,7 @@ void prepareHouse(HouseId house) {
 
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
-            desc.label = localization->format(LSTR_ENTER_S, pMapStats->pInfos[id].name);
+            desc.label = localization->format(LSTR_ENTER_S, pMapTable->pInfos[id].name);
             desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[static_cast<int>(id)]);
             desc.targetMapID = id;
 
@@ -700,11 +700,11 @@ void GUIWindow_House::houseNPCDialogue() {
         MapId id = houseNpcs[currentHouseNpc].targetMapID;
         house_window.x = 493;
         house_window.w = 126;
-        DrawTitleText(assets->pFontCreate.get(), 0, 2, colorTable.White, pMapStats->pInfos[id].name, 3, house_window);
+        DrawTitleText(assets->pFontCreate.get(), 0, 2, colorTable.White, pMapTable->pInfos[id].name, 3, house_window);
         house_window.x = SIDE_TEXT_BOX_POS_X;
         house_window.w = SIDE_TEXT_BOX_WIDTH;
         if (pTransitionStrings[std::to_underlying(id)].empty()) { // TODO(captainurist): this is a weird access into pTransitionStrings, investigate & add docs
-            auto str = localization->format(LSTR_ENTER_S, pMapStats->pInfos[id].name);
+            auto str = localization->format(LSTR_ENTER_S, pMapTable->pInfos[id].name);
             DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, house_window.w, 0)) / 2 + 101, colorTable.White, str, 3, house_window);
             return;
         }
@@ -902,7 +902,7 @@ void GUIWindow_House::houseDialogManager() {
                 int yPos = 0;
                 switch (houseNpcs[i].type) {
                   case HOUSE_TRANSITION:
-                    pTitleText = pMapStats->pInfos[houseNpcs[i].targetMapID].name;
+                    pTitleText = pMapTable->pInfos[houseNpcs[i].targetMapID].name;
                     yPos = 94 * i + SIDE_TEXT_BOX_POS_Y;
                     break;
                   case HOUSE_PROPRIETOR:

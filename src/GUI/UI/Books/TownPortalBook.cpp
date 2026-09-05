@@ -12,7 +12,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Spells/Spells.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIMessageQueue.h"
@@ -212,5 +212,5 @@ void GUIWindow_TownPortalBook::hintTown(int townId) {
         return;
     }
 
-    engine->_statusBar->setPermanent(LSTR_TOWN_PORTAL_TO_S, pMapStats->pInfos[townPortalList[townId].mapInfoID].name);
+    engine->_statusBar->setPermanent(LSTR_TOWN_PORTAL_TO_S, pMapTable->pInfos[townPortalList[townId].mapInfoID].name);
 }

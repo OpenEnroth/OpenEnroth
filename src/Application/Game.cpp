@@ -47,7 +47,8 @@
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/MapEnumFunctions.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
@@ -1127,22 +1128,22 @@ void Game::processQueuedMessages() {
                     // Was this, which made exactly zero sense:
                     // if (mapIdx == MAP_INVALID)
                     //    mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
-                    MapInfo *pMapInfo = &pMapStats->pInfos[mapIdx];
+                    MapData *mapData = &pMapTable->pInfos[mapIdx];
 
                     // Encounters when resting
-                    if ((grng->random(100) + 1) <= pMapInfo->encounterChance && !engine->config->debug.NoActors.value()) {
+                    if ((grng->random(100) + 1) <= mapData->encounterChance && !engine->config->debug.NoActors.value()) {
                         int encRand = grng->random(100) + 1;
                         int encIndex = 0; // 1-3 index for which monster to spawn
 
-                        if (encRand <= pMapInfo->encounter1Chance) {
+                        if (encRand <= mapData->encounter1Chance) {
                             encIndex = 1;
-                        } else if (encRand <= (pMapInfo->encounter1Chance + pMapInfo->encounter2Chance)) {
+                        } else if (encRand <= (mapData->encounter1Chance + mapData->encounter2Chance)) {
                             encIndex = 2;
                         } else {
                             encIndex = 3;
                         }
 
-                        if (!SpawnEncounterMonsters(pMapInfo, encIndex))
+                        if (!SpawnEncounterMonsters(mapData, encIndex))
                             encIndex = 0;
 
                         if (encIndex) {

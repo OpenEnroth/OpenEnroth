@@ -17,7 +17,7 @@
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 
@@ -127,7 +127,7 @@ void GUIWindow_Transport::mainDialogue() {
 
         if (routeActive && (transportSchedule[schedule_id].uQuestBit == QBIT_INVALID || pParty->_questBits[transportSchedule[schedule_id].uQuestBit])) {
             int travel_time = getTravelTimeTransportDays(schedule_id);
-            optionsText.push_back(localization->format(LSTR_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].name));
+            optionsText.push_back(localization->format(LSTR_D_DAYS_TO_S, travel_time, pMapTable->pInfos[transportSchedule[schedule_id].uMapInfoID].name));
             hasActiveRoute = true;
         } else {
             optionsText.push_back("");

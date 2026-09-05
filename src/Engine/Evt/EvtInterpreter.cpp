@@ -21,7 +21,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Engine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -89,7 +89,7 @@ void spawnMonsters(int16_t typeindex, int16_t level, int count,
 
     AIDirection direction;
     int oldNumActors = pActors.size();
-    SpawnEncounter(&pMapStats->pInfos[engine->_currentLoadedMapId], &pSpawnPoint, 0, count, 0);
+    SpawnEncounter(&pMapTable->pInfos[engine->_currentLoadedMapId], &pSpawnPoint, 0, count, 0);
     Actor::GetDirectionInfo(pos, pParty->pos + Vec3f(0, 0, pParty->eyeLevel), &direction);
     for (int i = oldNumActors; i < pActors.size(); ++i) {
         pActors[i].PrepareSprites(0);
@@ -124,7 +124,7 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
 static MapDestination moveToMapDestination(const EvtInstruction &ir) {
     const auto &descr = ir.data.move_map_descr;
 
-    MapId map = !ir.str.starts_with('0') && !ir.str.empty() ? pMapStats->GetMapInfo(ir.str) : MAP_INVALID;
+    MapId map = !ir.str.starts_with('0') && !ir.str.empty() ? pMapTable->GetMapInfo(ir.str) : MAP_INVALID;
     if (descr.x || descr.y || descr.z)
         return MapDestination(map, PartyPlacement(Vec3f(descr.x, descr.y, descr.z),
                                                   descr.yaw != -1 ? (descr.yaw & TrigLUT.uDoublePiMask) : -1, descr.pitch, descr.zspeed));

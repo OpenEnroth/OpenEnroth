@@ -26,7 +26,7 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Timer.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -878,7 +878,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
             case 23:
                 if (engine->_currentLoadedMapId != MAP_INVALID)
-                    result += pMapStats->pInfos[engine->_currentLoadedMapId].name;
+                    result += pMapTable->pInfos[engine->_currentLoadedMapId].name;
                 else
                     result += localization->str(LSTR_UNKNOWN);
                 break;

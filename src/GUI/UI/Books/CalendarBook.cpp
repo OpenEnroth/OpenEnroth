@@ -6,7 +6,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
 
@@ -93,7 +93,7 @@ void GUIWindow_CalendarBook::Update() {
 
     std::string pMapName = "Unknown";
     if (engine->_currentLoadedMapId != MAP_INVALID) {
-        pMapName = pMapStats->pInfos[engine->_currentLoadedMapId].name;
+        pMapName = pMapTable->pInfos[engine->_currentLoadedMapId].name;
     }
 
     str = fmt::format("{}\t100:\t110{}", localization->str(LSTR_LOCATION), pMapName);

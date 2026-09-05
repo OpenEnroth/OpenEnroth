@@ -68,7 +68,8 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AttackList.h"
 #include "Engine/Resources/ResourceManager.h"
-#include "Engine/MapInfo.h"
+#include "Engine/MapEnumFunctions.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
 
@@ -701,8 +702,8 @@ void Engine::MM7_Initialize() {
 void Engine::SecondaryInitialization() {
     mouse->Initialize();
 
-    pMapStats = new MapStats();
-    pMapStats->Initialize(engine->resources()->eventsData("MapStats.txt"));
+    pMapTable = new MapTable();
+    pMapTable->Initialize(engine->resources()->eventsData("MapStats.txt"));
 
     pMonsterStats = new MonsterStats();
     pMonsterStats->Initialize(engine->resources()->eventsData("monsters.txt"));
@@ -1438,7 +1439,7 @@ void initLevelStrings(const Blob &blob) {
 }
 
 void loadMapEventsAndStrings(MapId mapid) {
-    std::string mapName = pMapStats->pInfos[mapid].fileName;
+    std::string mapName = pMapTable->pInfos[mapid].fileName;
     std::string mapNameWithoutExt = mapName.substr(0, mapName.rfind('.'));
 
     initLevelStrings(engine->resources()->eventsData(fmt::format("{}.str", mapNameWithoutExt)));
@@ -1481,6 +1482,6 @@ void TeleportToNWCDungeon() {
 
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
-    startMapTransition(MapDestination(pMapStats->GetMapInfo("nwc.blv"), MAP_START_POINT_PARTY));
+    startMapTransition(MapDestination(pMapTable->GetMapInfo("nwc.blv"), MAP_START_POINT_PARTY));
     current_screen_type = SCREEN_GAME;
 }

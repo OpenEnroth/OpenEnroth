@@ -6,7 +6,7 @@
 
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/mm7_data.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -103,7 +103,7 @@ EventTraceGameState EngineTraceStateAccessor::makeGameState() {
     };
 
     EventTraceGameState result;
-    result.locationName = ascii::toLower(pMapStats->pInfos[engine->_currentLoadedMapId].fileName);
+    result.locationName = ascii::toLower(pMapTable->pInfos[engine->_currentLoadedMapId].fileName);
     result.partyPosition = pParty->pos.toInt();
     for (const Character &character : pParty->pCharacters) {
         EventTraceCharacterState &traceCharacter = result.characters.emplace_back();

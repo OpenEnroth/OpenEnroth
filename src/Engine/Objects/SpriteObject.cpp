@@ -11,7 +11,7 @@
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AttackList.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "Engine/Random/Random.h"
 
@@ -511,14 +511,14 @@ LABEL_25:
 }
 
 void SpriteObject::explosionTraps() {
-    MapInfo *pMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
+    MapData *mapData = &pMapTable->pInfos[engine->_currentLoadedMapId];
     int dir_x = pParty->pos.x - this->vPosition.x;
     int dir_y = pParty->pos.y - this->vPosition.y;
     int dir_z = pParty->pos.z + pParty->eyeLevel - this->vPosition.z;
     if (Vec3i(dir_x, dir_y, dir_z).length() <= 768) {
         int trapDamage = 5;
-        if (pMapInfo->trapDamageD20DiceCount) {
-            trapDamage += grng->randomDice(pMapInfo->trapDamageD20DiceCount, 20);
+        if (mapData->trapDamageD20DiceCount) {
+            trapDamage += grng->randomDice(mapData->trapDamageD20DiceCount, 20);
         }
         DamageType pDamageType;
         switch (this->spriteId) {

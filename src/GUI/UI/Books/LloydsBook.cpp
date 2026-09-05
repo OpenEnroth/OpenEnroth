@@ -10,7 +10,7 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -113,7 +113,7 @@ void GUIWindow_LloydsBook::Update() {
         if (pPlayer->vBeacons[beaconId]) {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId].value();
             render->DrawQuad2D(beacon.image, {lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId]});
-            std::string Str = pMapStats->pInfos[beacon.mapId].name;
+            std::string Str = pMapTable->pInfos[beacon.mapId].name;
             int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.w, 0);
             pWindow.y -= 6 + pTextHeight;
             DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, Str, 3, pWindow);
@@ -153,17 +153,17 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
     LloydBeacon &beacon = *character.vBeacons[beaconId];
     if (_recallingBeacon) {
         if (beacon.uBeaconTime) {
-            std::string mapName = pMapStats->pInfos[beacon.mapId].name;
+            std::string mapName = pMapTable->pInfos[beacon.mapId].name;
             engine->_statusBar->setPermanent(LSTR_RECALL_TO_S, mapName);
         }
     } else {
         std::string mapName = "Not in Map Stats";
         if (engine->_currentLoadedMapId != MAP_INVALID) {
-            mapName = pMapStats->pInfos[engine->_currentLoadedMapId].name;
+            mapName = pMapTable->pInfos[engine->_currentLoadedMapId].name;
         }
 
         if (beacon.uBeaconTime) {
-            std::string mapName2 = pMapStats->pInfos[beacon.mapId].name;
+            std::string mapName2 = pMapTable->pInfos[beacon.mapId].name;
             engine->_statusBar->setPermanent(LSTR_SET_S_OVER_S, mapName, mapName2);
         } else {
             engine->_statusBar->setPermanent(LSTR_SET_TO_S, mapName);

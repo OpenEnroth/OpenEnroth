@@ -33,7 +33,7 @@
 #include "Engine/Tables/HostilityTable.h"
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -1097,7 +1097,7 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if ((engine->_currentLoadedMapId == MAP_DEYJA || engine->_currentLoadedMapId == MAP_PIT) && pParty->isPartyGood())
         return;
 
-    pParty->uFine += 100 * (pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine +
+    pParty->uFine += 100 * (pMapTable->pInfos[engine->_currentLoadedMapId].baseStealingFine +
                             pActors[uActorID].monsterInfo.level +
                             pParty->GetPartyReputation());
     if (pParty->uFine < 0)
@@ -1238,7 +1238,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         if (engine->_currentLoadedMapId != MAP_INVALID)
-            v4 = pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine;
+            v4 = pMapTable->pInfos[engine->_currentLoadedMapId].baseStealingFine;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
@@ -4200,7 +4200,7 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
 }
 
 //----- (0044F57C) --------------------------------------------------------
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
+void SpawnEncounter(MapData *mapData, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
     assert(spawn->type == OBJECT_Actor);
 
     char v8;               // zf@5
@@ -4215,46 +4215,46 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
     int monsterCategoryOddsSet = 0;
     switch (spawn->monsterIndex - 1) {
         case 0:
-            monsterCategoryOddsSet = pMapInfo->Dif_M1;
-            NumToSpawn = pMapInfo->encounter1MinCount + grng->random(pMapInfo->encounter1MaxCount - pMapInfo->encounter1MinCount + 1);
-            baseInternalName = pMapInfo->encounter1MonsterInternalName;
+            monsterCategoryOddsSet = mapData->Dif_M1;
+            NumToSpawn = mapData->encounter1MinCount + grng->random(mapData->encounter1MaxCount - mapData->encounter1MinCount + 1);
+            baseInternalName = mapData->encounter1MonsterInternalName;
             break;
         case 1:
-            monsterCategoryOddsSet = pMapInfo->Dif_M2;
-            NumToSpawn = pMapInfo->encounter2MinCount + grng->random(pMapInfo->encounter2MaxCount - pMapInfo->encounter2MinCount + 1);
-            baseInternalName = pMapInfo->encounter2MonsterInternalName;
+            monsterCategoryOddsSet = mapData->Dif_M2;
+            NumToSpawn = mapData->encounter2MinCount + grng->random(mapData->encounter2MaxCount - mapData->encounter2MinCount + 1);
+            baseInternalName = mapData->encounter2MonsterInternalName;
             break;
         case 2:
-            monsterCategoryOddsSet = pMapInfo->Dif_M3;
-            NumToSpawn = pMapInfo->encounter3MinCount + grng->random(pMapInfo->encounter3MaxCount - pMapInfo->encounter3MinCount + 1);
-            baseInternalName = pMapInfo->encounter3MonsterInternalName;
+            monsterCategoryOddsSet = mapData->Dif_M3;
+            NumToSpawn = mapData->encounter3MinCount + grng->random(mapData->encounter3MaxCount - mapData->encounter3MinCount + 1);
+            baseInternalName = mapData->encounter3MonsterInternalName;
             break;
         case 3:
-            baseInternalName = pMapInfo->encounter1MonsterInternalName + " A";
+            baseInternalName = mapData->encounter1MonsterInternalName + " A";
             break;
         case 4:
-            baseInternalName = pMapInfo->encounter2MonsterInternalName + " A";
+            baseInternalName = mapData->encounter2MonsterInternalName + " A";
             break;
         case 5:
-            baseInternalName = pMapInfo->encounter3MonsterInternalName + " A";
+            baseInternalName = mapData->encounter3MonsterInternalName + " A";
             break;
         case 6:
-            baseInternalName = pMapInfo->encounter1MonsterInternalName + " B";
+            baseInternalName = mapData->encounter1MonsterInternalName + " B";
             break;
         case 7:
-            baseInternalName = pMapInfo->encounter2MonsterInternalName + " B";
+            baseInternalName = mapData->encounter2MonsterInternalName + " B";
             break;
         case 8:
-            baseInternalName = pMapInfo->encounter3MonsterInternalName + " B";
+            baseInternalName = mapData->encounter3MonsterInternalName + " B";
             break;
         case 9:
-            baseInternalName = pMapInfo->encounter1MonsterInternalName + " C";
+            baseInternalName = mapData->encounter1MonsterInternalName + " C";
             break;
         case 10:
-            baseInternalName = pMapInfo->encounter2MonsterInternalName + " C";
+            baseInternalName = mapData->encounter2MonsterInternalName + " C";
             break;
         case 11:
-            baseInternalName = pMapInfo->encounter3MonsterInternalName + " C";
+            baseInternalName = mapData->encounter3MonsterInternalName + " C";
             break;
         default:
             return;
