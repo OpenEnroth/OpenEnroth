@@ -34,6 +34,9 @@ class Blackbox {
      */
     ~Blackbox();
 
+    Blackbox(const Blackbox &) = delete; // The state is process-wide, so a copy's destructor would write a second exit line.
+    Blackbox &operator=(const Blackbox &) = delete;
+
     /**
      * @return                          Whether the crash log is open. False means the file couldn't be opened
      *                                  and nothing is being logged, which is not an error, but is worth knowing

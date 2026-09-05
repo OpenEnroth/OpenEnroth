@@ -104,7 +104,10 @@ UNIT_TEST_FIXTURE(BlackboxTest, CrashIsInTheFileBeforeTheChainedCallbackRuns) {
     EXPECT_CONTAINS(log, "--- started ");
     EXPECT_CONTAINS(log, "Crashed because of");
     EXPECT_CONTAINS(log, "blackboxCrashingFunction");
-    EXPECT_MISSES(log, "exit"); // The process died, no exit line was ever written.
+    // Matching the whole line, because a symbolized trace has frame names and build paths in it that can
+    // contain "exit" on their own.
+    EXPECT_MISSES(log, "--- clean exit");
+    EXPECT_MISSES(log, "--- exiting with exception");
 }
 
 UNIT_TEST_FIXTURE(BlackboxTest, OversizedLogIsRotated) {
