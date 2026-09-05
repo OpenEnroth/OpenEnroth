@@ -322,9 +322,9 @@ void PrepareDrawLists_BLV();
  * @offset 0x460A78
  */
 void loadAndPrepareBLV(MapId mapid, bool bLoading);
-int SpawnEncounterMonsters(MapData *a1, int a2);
+int SpawnEncounterMonsters(MapData *mapData, int encIndex);
 int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing);
-void SpawnRandomTreasure(MapData *mapInfo, SpawnPoint *a2);
+void SpawnRandomTreasure(MapData *mapData, SpawnPoint *spawn);
 
 void FindBillboardsLightLevels_BLV();
 

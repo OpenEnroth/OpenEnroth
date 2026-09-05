@@ -112,7 +112,7 @@ void loadGame(std::string_view fileName) {
 
     // TODO(captainurist): the start point is a placeholder, the save carries the party's position and the loaders
     //                     skip placement when loading. MapDestination has no way to say that.
-    engine->_pendingTransition = MapDestination(mapIdByFileName(state.header.locationName), MAP_START_POINT_PARTY);
+    engine->_pendingTransition = MapDestination(pMapTable->GetMapInfo(state.header.locationName), MAP_START_POINT_PARTY);
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_SKIP_WORLD_UPDATE;
 
@@ -128,7 +128,7 @@ void loadGame(std::string_view fileName) {
 }
 
 std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view title) {
-    std::string currentMapName = mapTable[engine->_currentLoadedMapId].fileName;
+    std::string currentMapName = pMapTable->pInfos[engine->_currentLoadedMapId].fileName;
 
     // Populate SaveGameState from global variables.
     SaveGame state;

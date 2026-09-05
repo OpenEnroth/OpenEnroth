@@ -139,7 +139,7 @@ void GUIWindow_MapBook::Update() {
 
     Recti map_window = pViewport;
     if (engine->_currentLoadedMapId != MAP_INVALID) {
-        DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, mapTable[engine->_currentLoadedMapId].name, 3, map_window);
+        DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapTable->pInfos[engine->_currentLoadedMapId].name, 3, map_window);
     }
 
     auto party_coordinates = localization->format(LSTR_X_D_Y_D, static_cast<int>(pParty->pos.x), static_cast<int>(pParty->pos.y));

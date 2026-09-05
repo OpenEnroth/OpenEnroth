@@ -9,13 +9,10 @@
 
 class Blob;
 
-void initializeMaps(const Blob &maps);
+struct MapTable {
+    void Initialize(const Blob &mapStats);
+    MapId GetMapInfo(std::string_view fileName);
+    IndexedArray<MapData, MAP_FIRST, MAP_LAST> pInfos;
+};
 
-/**
- * @param fileName                      Map file name, e.g. "out02.odm", case-insensitive.
- * @return                              Id of the map with the given file name, or `MAP_INVALID` if there is no such
- *                                      map.
- */
-MapId mapIdByFileName(std::string_view fileName);
-
-extern IndexedArray<MapData, MAP_FIRST, MAP_LAST> mapTable;
+extern MapTable *pMapTable;

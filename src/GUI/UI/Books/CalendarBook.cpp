@@ -93,7 +93,7 @@ void GUIWindow_CalendarBook::Update() {
 
     std::string pMapName = "Unknown";
     if (engine->_currentLoadedMapId != MAP_INVALID) {
-        pMapName = mapTable[engine->_currentLoadedMapId].name;
+        pMapName = pMapTable->pInfos[engine->_currentLoadedMapId].name;
     }
 
     str = fmt::format("{}\t100:\t110{}", localization->str(LSTR_LOCATION), pMapName);

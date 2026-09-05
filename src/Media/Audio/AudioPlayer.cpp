@@ -462,7 +462,7 @@ void AudioPlayer::UpdateVolumeFromConfig() {
 
 void PlayLevelMusic() {
     if (engine->_currentLoadedMapId != MAP_INVALID) {
-        pAudioPlayer->MusicPlayTrack(mapTable[engine->_currentLoadedMapId].musicId);
+        pAudioPlayer->MusicPlayTrack(pMapTable->pInfos[engine->_currentLoadedMapId].musicId);
     }
 }
 

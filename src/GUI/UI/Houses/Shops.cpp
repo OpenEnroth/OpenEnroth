@@ -1097,7 +1097,7 @@ void GUIWindow_Shop::houseScreenClick() {
             int stealDifficulty = 0;
             int fine;
             if (engine->_currentLoadedMapId != MAP_INVALID) {
-                stealDifficulty = mapTable[engine->_currentLoadedMapId].baseStealingFine;
+                stealDifficulty = pMapTable->pInfos[engine->_currentLoadedMapId].baseStealingFine;
             }
             int partyReputation = pParty->GetPartyReputation();
             if (isStealingModeActive()) {

@@ -103,7 +103,7 @@ EventTraceGameState EngineTraceStateAccessor::makeGameState() {
     };
 
     EventTraceGameState result;
-    result.locationName = ascii::toLower(mapTable[engine->_currentLoadedMapId].fileName);
+    result.locationName = ascii::toLower(pMapTable->pInfos[engine->_currentLoadedMapId].fileName);
     result.partyPosition = pParty->pos.toInt();
     for (const Character &character : pParty->pCharacters) {
         EventTraceCharacterState &traceCharacter = result.characters.emplace_back();

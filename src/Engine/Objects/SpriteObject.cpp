@@ -511,14 +511,14 @@ LABEL_25:
 }
 
 void SpriteObject::explosionTraps() {
-    MapData *pMapInfo = &mapTable[engine->_currentLoadedMapId];
+    MapData *mapData = &pMapTable->pInfos[engine->_currentLoadedMapId];
     int dir_x = pParty->pos.x - this->vPosition.x;
     int dir_y = pParty->pos.y - this->vPosition.y;
     int dir_z = pParty->pos.z + pParty->eyeLevel - this->vPosition.z;
     if (Vec3i(dir_x, dir_y, dir_z).octagonalLength() <= 768) {
         int trapDamage = 5;
-        if (pMapInfo->trapDamageD20DiceCount) {
-            trapDamage += grng->randomDice(pMapInfo->trapDamageD20DiceCount, 20);
+        if (mapData->trapDamageD20DiceCount) {
+            trapDamage += grng->randomDice(mapData->trapDamageD20DiceCount, 20);
         }
         DamageType pDamageType;
         switch (this->spriteId) {

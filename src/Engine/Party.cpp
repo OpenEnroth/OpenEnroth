@@ -174,7 +174,7 @@ bool Party::checkPartyPerceptionAgainstCurrentMap() {
                 maxPerception = playerPerception;
         }
     }
-    return maxPerception >= 2 * mapTable[engine->_currentLoadedMapId].perceptionDifficulty;
+    return maxPerception >= 2 * pMapTable->pInfos[engine->_currentLoadedMapId].perceptionDifficulty;
 }
 
 int Party::canActCount() const {

@@ -212,5 +212,5 @@ void GUIWindow_TownPortalBook::hintTown(int townId) {
         return;
     }
 
-    engine->_statusBar->setPermanent(LSTR_TOWN_PORTAL_TO_S, mapTable[townPortalList[townId].mapInfoID].name);
+    engine->_statusBar->setPermanent(LSTR_TOWN_PORTAL_TO_S, pMapTable->pInfos[townPortalList[townId].mapInfoID].name);
 }

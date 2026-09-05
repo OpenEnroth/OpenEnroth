@@ -878,7 +878,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
             case 23:
                 if (engine->_currentLoadedMapId != MAP_INVALID)
-                    result += mapTable[engine->_currentLoadedMapId].name;
+                    result += pMapTable->pInfos[engine->_currentLoadedMapId].name;
                 else
                     result += localization->str(LSTR_UNKNOWN);
                 break;

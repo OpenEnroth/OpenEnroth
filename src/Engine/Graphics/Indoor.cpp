@@ -297,7 +297,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && mapIdByFileName(filename) != MAP_CASTLE_HARMONDALE)
+            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapTable->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
                 respawnTimed = true;
         } catch (const Exception &e) {
             MM_ERROR("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -879,7 +879,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     assert(isMapIndoor(mapid));
 
     unsigned int respawn_interval;  // ebx@1
-    MapData *map_info;              // edi@9
+    MapData *mapData;              // edi@9
     bool v28;                       // zf@81
     bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
@@ -899,9 +899,9 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
 
-    mapFilename = mapTable[mapid].fileName;
-    map_info = &mapTable[mapid];
-    respawn_interval = mapTable[mapid].respawnIntervalDays;
+    mapFilename = pMapTable->pInfos[mapid].fileName;
+    mapData = &pMapTable->pInfos[mapid];
+    respawn_interval = pMapTable->pInfos[mapid].respawnIntervalDays;
     alertStatus = GetAlertStatus();
 
 
@@ -917,9 +917,9 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         for (unsigned i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
             if (spawn->type == OBJECT_Actor)
-                SpawnEncounter(map_info, spawn, 0, 0, 0);
+                SpawnEncounter(mapData, spawn, 0, 0, 0);
             else
-                SpawnRandomTreasure(map_info, spawn);
+                SpawnRandomTreasure(mapData, spawn);
         }
         RespawnGlobalDecorations();
     }
@@ -1731,7 +1731,7 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
 }
 
 //----- (0045063B) --------------------------------------------------------
-int SpawnEncounterMonsters(MapData *map_info, int enc_index) {
+int SpawnEncounterMonsters(MapData *mapData, int enc_index) {
     // creates random spawn point for encounter
     bool failed_point = false;
     float angle_from_party;
@@ -1813,7 +1813,7 @@ int SpawnEncounterMonsters(MapData *map_info, int enc_index) {
     if (failed_point) {
         return false;
     } else {
-        SpawnEncounter(map_info, &enc_spawn_point, 0, 0, 1);
+        SpawnEncounter(mapData, &enc_spawn_point, 0, 0, 1);
     }
 
     return enc_index;
@@ -1833,14 +1833,14 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
     return a1.Create(0, 0, 0, 0);
 }
 
-void SpawnRandomTreasure(MapData *mapInfo, SpawnPoint *spawn) {
+void SpawnRandomTreasure(MapData *mapData, SpawnPoint *spawn) {
     assert(spawn->type == OBJECT_Sprite);
 
     SpriteObject spawnedObject;
     spawnedObject.containing_item.Reset();
 
     int typeRandom = grng->random(100);
-    ItemTreasureLevel levelRandom = grng->randomSample(RemapTreasureLevel(spawn->treasureLevel, mapInfo->mapTreasureLevel));
+    ItemTreasureLevel levelRandom = grng->randomSample(RemapTreasureLevel(spawn->treasureLevel, mapData->mapTreasureLevel));
     if (levelRandom != ITEM_TREASURE_LEVEL_7) {
         // TODO(pskelton): configurable thresholds for treasure
         // [0, 20) -- nothing

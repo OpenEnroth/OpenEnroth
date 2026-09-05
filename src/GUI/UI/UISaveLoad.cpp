@@ -167,7 +167,7 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
 
         // Draw map name
         GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
-                                 mapTable[mapIdByFileName(slot.header.locationName)].name, 3, titleRect);
+                                 pMapTable->pInfos[pMapTable->GetMapInfo(slot.header.locationName)].name, 3, titleRect);
 
         // Draw date
         CivilTime time = slot.header.playingTime.toCivilTime();
