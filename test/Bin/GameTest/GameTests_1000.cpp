@@ -10,6 +10,7 @@
 #include "GUI/UI/UIHouses.h"
 
 #include "Engine/Tables/TextureFrameTable.h"
+#include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Graphics/Indoor.h"
@@ -221,9 +222,18 @@ GAME_TEST(Issues, Issue1175) {
 
 GAME_TEST(Issues, Issue1191) {
     // Warlock's dragon should add +3 to Self magic skills. Baby dragon also consumes food when resting.
+    // The save is an all-druid party with no dragon, and the trace this replaced spent its length on the
+    // promotion. Doing that in code keeps the test off replayed input, which breaks when actor AI ranges change.
     auto foodTape = tapes.food();
     auto timeTape = tapes.time();
-    test.playTraceFromTestData("issue_1191.mm7", "issue_1191.json");
+    test.loadGameFromTestData("issue_1191.mm7");
+    test.startTaping();
+
+    pParty->pCharacters[0].classType = CLASS_WARLOCK;
+    pParty->pCharacters[2].classType = CLASS_WARLOCK;
+    pNPCStats->pNPCData[57].flags |= NPC_HIRED; // 57 is the baby dragon, the index PartyHasDragon reads.
+
+    game.restAndHeal();
 
     EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_WARLOCK);
     EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_FIRE).level(), 7);
