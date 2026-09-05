@@ -1833,7 +1833,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
 
             auto hint = GetMapBookHintText(mousePos.x, mousePos.y);
             if (!hint.empty()) {
-                Recti popupRect(pX + 5, pY + 5, (assets->pFontArrus->GetLineWidth(hint) + 32) + 0.5f, 64);
+                Recti popupRect(pX + 5, pY + 5, assets->pFontArrus->GetLineWidth(hint) + 32, 64);
                 GUIWindow::DrawMessageBox(popupRect, hint);
             }
             break;
