@@ -1018,15 +1018,14 @@ void GameUI_WritePointedObjectStatusString() {
                             break;
                         case BUTTON_TYPE_CHARACTER:  // hovering over portraits
                             if (!pButton->rect.isEmpty()) {
-                                int distW = mousePos.x - pButton->rect.x;
-                                int distY = mousePos.y - pButton->rect.y;
+                                Pointi center = pButton->rect.center();
+                                int distW = mousePos.x - center.x;
+                                int distY = mousePos.y - center.y;
+                                int semiW = pButton->rect.w / 2;
+                                int semiH = pButton->rect.h / 2;
 
-                                double ratioX =
-                                    1.0 * (distW * distW) /
-                                    (pButton->rect.w * pButton->rect.w);
-                                double ratioY =
-                                    1.0 * (distY * distY) /
-                                    (pButton->rect.h * pButton->rect.h);
+                                double ratioX = 1.0 * (distW * distW) / (semiW * semiW);
+                                double ratioY = 1.0 * (distY * distY) / (semiH * semiH);
 
                                 if (ratioX + ratioY < 1.0) {
                                     engine->_statusBar->setPermanent(pButton->label);  // for character name
@@ -1128,14 +1127,14 @@ void GameUI_WritePointedObjectStatusString() {
                         break;
                     case BUTTON_TYPE_CHARACTER:  // hovering over portraits
                         if (!pButton->rect.isEmpty()) {
-                            int distW = mousePos.x - pButton->rect.x;
-                            int distY = mousePos.y - pButton->rect.y;
+                            Pointi center = pButton->rect.center();
+                            int distW = mousePos.x - center.x;
+                            int distY = mousePos.y - center.y;
+                            int semiW = pButton->rect.w / 2;
+                            int semiH = pButton->rect.h / 2;
 
-                            double ratioX = 1.0 * (distW * distW) /
-                                            (pButton->rect.w * pButton->rect.w);
-                            double ratioY =
-                                1.0 * (distY * distY) /
-                                (pButton->rect.h * pButton->rect.h);
+                            double ratioX = 1.0 * (distW * distW) / (semiW * semiW);
+                            double ratioY = 1.0 * (distY * distY) / (semiH * semiH);
 
                             if (ratioX + ratioY < 1.0) {
                                 engine->_statusBar->setPermanent(pButton->label);  // for character name

@@ -251,9 +251,10 @@ void Io::Mouse::UI_OnMouseLeftClick(bool isDoubleClick) {
                     }
                     if (control->uButtonType == BUTTON_TYPE_CHARACTER) {  // adventurers portraits click (circular button)
                         // TODO(captainurist): actual shape is oval, this check is bugged.
-                        int dx = x - control->rect.x;
-                        int dy = y - control->rect.y;
-                        if (std::sqrt((double)(dx * dx + dy * dy)) < (double)control->rect.w) {
+                        Pointi center = control->rect.center();
+                        int dx = x - center.x;
+                        int dy = y - center.y;
+                        if (std::sqrt((double)(dx * dx + dy * dy)) < control->rect.w / 2.0) {
                             control->field_2C_is_pushed = true;
                             engine->_messageQueue->clear();
                             engine->_messageQueue->addMessageCurrentFrame(control->msg, control->msg_param, 0);
