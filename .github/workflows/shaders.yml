@@ -1,8 +1,8 @@
 name: Shaders
 
 on:
-  pull_request: null
-  push: null
+  pull_request:
+  push:
   workflow_dispatch:
     inputs:
       myCommit:
@@ -10,27 +10,29 @@ on:
         required: false
         default: ''
         type: string
-  release:
-    types:
-      - published
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
 concurrency:
-  group: shaders-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{github.workflow}}-${{github.event.pull_request.number || github.run_id}}
   cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   check_shaders:
+    timeout-minutes: 60
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
-          ref: '${{ inputs.myCommit }}'
+          ref: '${{inputs.myCommit}}'
 
       - name: Install dependencies
-        uses: Wandalen/wretry.action@master
+        uses: Wandalen/wretry.action@v3.8.0
         with:
           attempt_limit: 3
           attempt_delay: 5000
@@ -38,16 +40,11 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y glslang-tools
 
-      - name: Check OpenGL 4.1 (Core) shaders
+      - name: Check shaders
         run: |
-          for shader in resources/shaders/*.vert resources/shaders/*.frag; do
-            echo "Checking $shader..."
-            ./scripts/check_shader.sh "$shader" "410 core"
-          done
-
-      - name: Check OpenGL ES 3.2 shaders
-        run: |
-          for shader in resources/shaders/*.vert resources/shaders/*.frag; do
-            echo "Checking $shader..."
-            ./scripts/check_shader.sh "$shader" "320 es"
+          for glsl_version in "410 core" "320 es"; do
+            for shader in resources/shaders/*.vert resources/shaders/*.frag; do
+              echo "Checking $shader against GLSL $glsl_version..."
+              ./scripts/check_shader.sh "$shader" "$glsl_version"
+            done
           done
