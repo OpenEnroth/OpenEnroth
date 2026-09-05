@@ -83,8 +83,7 @@ class GUIWindow {
     static void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2, Recti frameRect);
     static void DrawShops_next_generation_time_string(Duration time, Recti frameRect);
     // TODO(pskelton): string_view or ref?
-    // TODO(pskelton): inside_game_viewport used anywhere?
-    static void DrawMessageBox(bool inside_game_viewport, Recti& frameRect, std::string hint);
+    static void DrawMessageBox(Recti& frameRect, std::string hint);
 
     /**
      * Draws the dialogue panel with background, e.g. for showing Arcomage rules in a tavern. Automatically switches

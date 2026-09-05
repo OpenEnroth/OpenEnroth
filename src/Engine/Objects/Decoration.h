@@ -3,9 +3,24 @@
 #include <vector>
 #include <cstdint>
 
+#include "Engine/Data/DecorationEnums.h"
+
 #include "Library/Geometry/Vec.h"
 
-#include "DecorationEnums.h"
+#include "Utility/Flags.h"
+
+enum class LevelDecorationFlag : uint16_t {
+    LEVEL_DECORATION_TRIGGERED_BY_TOUCH = 0x01,
+    LEVEL_DECORATION_TRIGGERED_BY_MONSTER = 0x02,
+    LEVEL_DECORATION_TRIGGERED_BY_OBJECT = 0x04,
+    LEVEL_DECORATION_VISIBLE_ON_MAP = 0x08,
+    LEVEL_DECORATION_CHEST = 0x10,
+    LEVEL_DECORATION_INVISIBLE = 0x20,
+    LEVEL_DECORATION_OBELISK_CHEST = 0x40,
+};
+using enum LevelDecorationFlag;
+MM_DECLARE_FLAGS(LevelDecorationFlags, LevelDecorationFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(LevelDecorationFlags)
 
 struct LevelDecoration {
     LevelDecoration();
@@ -27,3 +42,5 @@ extern std::vector<LevelDecoration> pLevelDecorations;
 extern std::vector<int> decorationsWithSound;
 // TODO(captainurist): should be passed to eventProcessor explicitly, not smuggled in through a global.
 extern LevelDecoration *activeLevelDecoration;  // 5C3420
+
+void RespawnGlobalDecorations();

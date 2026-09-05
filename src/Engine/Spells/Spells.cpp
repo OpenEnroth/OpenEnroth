@@ -883,7 +883,7 @@ void armageddonProgress() {
             actor.hp -= incomingDamage;
 
             if (actor.hp >= 0) {
-                Actor::AI_Stun(actor.id, Pid::character(0), 0);
+                Actor::AI_Pain(actor.id, Pid::character(0), 0);
             } else {
                 Actor::Die(actor.id);
                 if (actor.monsterInfo.exp) {

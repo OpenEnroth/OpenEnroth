@@ -6,6 +6,7 @@ set(LIBRARY_BINARY_SOURCES
 set(LIBRARY_BINARY_HEADERS
         BinaryConcepts.h
         BinaryExceptions.h
+        BinaryFwd.h
         BinarySerialization.h
         BinaryTags.h
         BlobSerialization.h

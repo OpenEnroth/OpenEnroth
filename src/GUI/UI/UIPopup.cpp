@@ -246,7 +246,7 @@ static void CharacterUI_DrawTooltip(std::string_view title, std::string_view con
 
     Recti popup_window(128, pt.y + 30, 384, 256);
     popup_window.h = assets->pFontSmallnum->CalcTextHeight(content, popup_window.w, 24) + 2 * assets->pFontLucida->GetHeight() + 24;
-    GUIWindow::DrawMessageBox(0, popup_window, "");
+    GUIWindow::DrawMessageBox(popup_window, "");
 
     popup_window.x += 12;
     popup_window.w -= 28;
@@ -390,7 +390,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     }
 
     if (inspect_item->IsBroken()) {
-        GUIWindow::DrawMessageBox(0, iteminfo_window, "");
+        GUIWindow::DrawMessageBox(iteminfo_window, "");
         render->SetUIClipRect(Recti(
             iteminfo_window.x + 12, iteminfo_window.y + 12,
             iteminfo_window.w - 24, iteminfo_window.h - 24));
@@ -414,7 +414,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     }
 
     if (!inspect_item->IsIdentified()) {
-        GUIWindow::DrawMessageBox(0, iteminfo_window, "");
+        GUIWindow::DrawMessageBox(iteminfo_window, "");
         render->SetUIClipRect(Recti(
             iteminfo_window.x + 12, iteminfo_window.y + 12,
             iteminfo_window.w - 24, iteminfo_window.h - 24));
@@ -541,7 +541,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     // flush draw before starting popup window
     render->DrawTwodVerts();
 
-    GUIWindow::DrawMessageBox(0, iteminfo_window, "");
+    GUIWindow::DrawMessageBox(iteminfo_window, "");
     render->SetUIClipRect(Recti(
         iteminfo_window.x + 12, iteminfo_window.y + 12,
         iteminfo_window.w - 24, iteminfo_window.h - 24));
@@ -1300,7 +1300,7 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     if (frameRect.h < 150)
         frameRect.h = 150;
     frameRect.w = pViewport.w;
-    GUIWindow::DrawMessageBox(false, frameRect, "");
+    GUIWindow::DrawMessageBox(frameRect, "");
     frameRect.w -= 12;
     frameRect.h -= 12;
     GUIWindow::DrawTitleText(
@@ -1367,7 +1367,7 @@ static void drawBuffPopupWindow() {
 
     frameRect.h = assets->pFontArrus->GetHeight() + 72;
     frameRect.h += (stringCount - 1) * assets->pFontArrus->GetHeight();
-    GUIWindow::DrawMessageBox(0, frameRect, "");
+    GUIWindow::DrawMessageBox(frameRect, "");
     GUIWindow::DrawTitleText(assets->pFontArrus.get(), 0, 12, colorTable.White, localization->str(LSTR_ACTIVE_PARTY_SPELLS), 3, frameRect);
     if (!stringCount) {
         GUIWindow::DrawTitleText(assets->pFontComic.get(), 0, 40, colorTable.White, localization->str(LSTR_NONE), 3, frameRect);
@@ -1423,7 +1423,7 @@ void showSpellbookInfo(ItemId spellbook) {
         popup.h = 150;
     }
     popup.w = pViewport.w;
-    GUIWindow::DrawMessageBox(false, popup, "");
+    GUIWindow::DrawMessageBox(popup, "");
     popup.w -= 12;
     popup.h -= 12;
     GUIWindow::DrawTitleText(assets->pFontArrus.get(), 0x78u, 0xCu, colorTable.PaleCanary, pSpellStats->pInfos[spell].name, 3u, popup);
@@ -1640,7 +1640,7 @@ void GameUI_CharacterQuickRecord_Draw(Recti window, int characterIndex) {
             ++numActivePlayerBuffs;
 
     window.h = ((assets->pFontArrus->GetHeight() + 162) + ((numActivePlayerBuffs - 1) * assets->pFontArrus->GetHeight()));
-    GUIWindow::DrawMessageBox(0, window, "");
+    GUIWindow::DrawMessageBox(window, "");
 
     if (player->IsEradicated()) {
         v13 = game_ui_player_face_eradicated;
@@ -1728,7 +1728,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                 if (popup_window.h < 130)
                     popup_window.h = 130;
                 popup_window.w = 400;
-                GUIWindow::DrawMessageBox(0, popup_window, "");
+                GUIWindow::DrawMessageBox(popup_window, "");
                 auto tex_name = fmt::format("NPC{:03}", pNPC->portraitId);
                 render->DrawQuad2D(assets->getImage_ColorKey(tex_name),
                                    {popup_window.x + 22, popup_window.y + 36});
@@ -1758,7 +1758,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     popup_window.x = pX + 30;
                 else
                     popup_window.x = pX - 414;
-                GUIWindow::DrawMessageBox(0, popup_window, localization->format(
+                GUIWindow::DrawMessageBox(popup_window, localization->format(
                     LSTR_S_IS_IN_NO_CONDITION_TO_S,
                     pParty->activeCharacter().name,
                     localization->str(LSTR_IDENTIFY_ITEMS)));
@@ -1800,7 +1800,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     }
                 } else {  // minimap zone
                     Recti popupRect(130, 140, 256, 64);
-                    GUIWindow::DrawMessageBox(0, popupRect, GameUI_GetMinimapHintText());
+                    GUIWindow::DrawMessageBox(popupRect, GameUI_GetMinimapHintText());
                 }
             } else {  // game zone
                 Recti popup_window(pX - 350, 40, 320, 320);
@@ -1815,7 +1815,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     auto [w, h] = MonsterPopup_Draw(pointedObject.id(), nullptr);
                     popup_window.w = w;
                     popup_window.h = h;
-                    GUIWindow::DrawMessageBox(0, popup_window, "");
+                    GUIWindow::DrawMessageBox(popup_window, "");
                     MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
                 if (pointedObject.type() == OBJECT_Sprite) {
@@ -1834,7 +1834,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             auto hint = GetMapBookHintText(mousePos.x, mousePos.y);
             if (!hint.empty()) {
                 Recti popupRect(pX + 5, pY + 5, (assets->pFontArrus->GetLineWidth(hint) + 32) + 0.5f, 64);
-                GUIWindow::DrawMessageBox(0, popupRect, hint);
+                GUIWindow::DrawMessageBox(popupRect, hint);
             }
             break;
         }
@@ -1956,7 +1956,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     assets->pFontSmallnum->CalcTextHeight(
                         sHint, popup_window.w, 24) +
                     2 * assets->pFontLucida->GetHeight() + 24;
-                GUIWindow::DrawMessageBox(0, popup_window, "");
+                GUIWindow::DrawMessageBox(popup_window, "");
                 popup_window.x += 12;
                 popup_window.w -= 24;
                 popup_window.y += 12;
@@ -2055,7 +2055,7 @@ void Inventory_ItemPopupAndAlchemy() {
         } else {
             frameRect.x = pX - 414;
         }
-        GUIWindow::DrawMessageBox(0, frameRect, hint_reference);
+        GUIWindow::DrawMessageBox(frameRect, hint_reference);
         return;
     }
 
@@ -2335,5 +2335,5 @@ uint64_t GetExperienceRequiredForLevel(int level) {
     int effectiveLevel = 0;
     for (int i = 0; i < level; ++i)
         effectiveLevel += i + 1;
-    return (uint64_t)(1000 * effectiveLevel);
+    return 1000ULL * effectiveLevel;
 }
