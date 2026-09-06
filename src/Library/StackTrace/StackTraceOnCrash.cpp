@@ -291,9 +291,12 @@ static const int handledSignals[] = {
 };
 
 /**
- * Signal names for the crash header, spelled the way `strsignal` spells them. Calling `strsignal` itself would
- * not be safe here. It goes through gettext, which takes a lock and allocates a message catalog on first use,
- * so a crash inside the allocator would hang in the handler instead of printing anything.
+ * Signal names for the crash header. Calling `strsignal` instead would not be safe here. It goes through
+ * gettext, which takes a lock and allocates a message catalog on first use, so a crash inside the allocator
+ * would hang in the handler instead of printing anything.
+ *
+ * The spelling is the same on every platform, so that one crash log reads the same wherever it was written.
+ * `strsignal` is the one that differs, glibc calling SIGABRT "Aborted" where darwin calls it "Abort trap".
  *
  * @param signal                        Signal the process is dying of.
  * @return                              Static name of the signal.

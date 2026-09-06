@@ -354,12 +354,14 @@ UNIT_TEST(StackTrace, AbortIsTraced) {
     if (detail::isRunningUnderRosetta())
         GTEST_SKIP() << "SIGABRT is left at its default under Rosetta, so there is no trace to match.";
 
+    // The abort spelling below comes from the crash header and is the same on every platform. It used to be
+    // strsignal's, and matching darwin's "Abort trap" here while the header said "Aborted" was a real failure.
     EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         initStackTraceOnCrash();
         stackTraceAbortFunction();
-    }, killedBy(SIGABRT), testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
+    }, killedBy(SIGABRT), testing::AllOf(testing::HasSubstr(isWindows ? "abort()" : "Aborted"),
                                          testing::HasSubstr("stackTraceAbortFunction")));
 }
 
@@ -376,7 +378,7 @@ UNIT_TEST(StackTrace, AssertIsTraced) {
         initStackTraceOnCrash();
         stackTraceAssertFunction();
     }, killedBy(SIGABRT), testing::AllOf(testing::HasSubstr("Assertion"),
-                                         testing::HasSubstr(isWindows ? "abort()" : isMac ? "Abort trap" : "abort"),
+                                         testing::HasSubstr(isWindows ? "abort()" : "Aborted"),
                                          testing::HasSubstr("stackTraceAssertFunction")));
 }
 
