@@ -155,9 +155,6 @@ UNIT_TEST(FileSystemPath, AppendedEscaping) {
 }
 
 UNIT_TEST(FileSystemPath, Decomposition) {
-    // "..." is here because the offset math is easiest to get wrong there. The FileSystemPathComponents this replaced
-    // carried a hand-written special case to keep "..." apart from "..", and dropping that object means the case has
-    // to be re-derived rather than inherited. The doc on extension() names this exact result, so it needs a pin.
     auto testOne = [](std::string_view path, std::string_view parent, std::string_view name, std::string_view stem, std::string_view ext) {
         FileSystemPath fsPath(path);
         EXPECT_EQ(fsPath.parent().string(), parent) << "for " << path;
