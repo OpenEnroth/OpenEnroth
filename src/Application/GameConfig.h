@@ -290,10 +290,6 @@ class GameConfig : public Config {
             "Monster attack preferences for a class also match its promotions, so a monster that hunts clerics "
             "also hunts priests. In vanilla only the base class matches."};
 
-        Bool GrandmasterAxeHalvesArmor = {this, "grandmaster_axe_halves_armor", true,
-            "Grandmaster axe hits get a skill level percent chance to halve the target's armor for skill level "
-            "minutes. In vanilla the effect is never applied."};
-
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)

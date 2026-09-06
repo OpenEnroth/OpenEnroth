@@ -3000,7 +3000,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
                     break;
 
                 case SKILL_AXE:
-                    if (main_hand_mastery >= MASTERY_GRANDMASTER && engine->config->gameplay.GrandmasterAxeHalvesArmor.value()) {
+                    if (main_hand_mastery >= MASTERY_GRANDMASTER) {
                         if (grng->random(100) < character->getActualSkillValue(SKILL_AXE).level())
                             hit_will_halve_armor = true;
                     }
