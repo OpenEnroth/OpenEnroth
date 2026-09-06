@@ -338,7 +338,7 @@ UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
         return trace != std::string::npos && marker != std::string::npos && trace < marker;
     });
 
-    EXPECT_DEATH({
+    EXPECT_EXIT({
         GTEST_FLAG_SET(catch_exceptions, false);
 
         initStackTraceOnCrash([](std::string_view text, bool final) {
@@ -347,7 +347,7 @@ UNIT_TEST(StackTrace, CrashCallbackRunsAfterTheTrace) {
                 printCrashChunk("crash callback ran", final);
         });
         stackTraceCrashingFunction();
-    }, traceBeforeMarker);
+    }, killedBy(SIGSEGV), traceBeforeMarker);
 }
 
 UNIT_TEST(StackTrace, AbortIsTraced) {
