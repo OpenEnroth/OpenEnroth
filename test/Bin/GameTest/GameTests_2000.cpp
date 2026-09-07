@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -543,35 +544,55 @@ GAME_TEST(Prs, Pr2157b) {
 }
 
 GAME_TEST(Issues, Issue2146) {
-    // Monster attack preferences ignored promoted classes, so a monster that hunts clerics never went for priests.
-    for (bool includePromotions : {true, false}) {
-        test.prepareForNextTest();
-        engine->config->gameplay.AttackPreferencesIncludePromotions.setValue(includePromotions);
+    // Monster attack preferences ignored promoted classes, so a monster that hunts sorcerers never went for wizards.
+    // Gogs are the only MM7 monsters that prefer a class and just shoot. No second attack, no spells and no special
+    // attack means every point of damage they deal lands on a victim that the preference logic picked.
+    struct AttackPreferenceCase {
+        bool includePromotions;
+        std::array<Class, 4> classes;
+        MonsterId monster;
+        int victim; // Index of the only character allowed to take damage, or -1 if the whole party is fair game.
+    };
+    static constexpr AttackPreferenceCase cases[] = {
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_SORCERER, CLASS_KNIGHT}, MONSTER_GOG_A,  2},
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,   CLASS_KNIGHT}, MONSTER_GOG_A,  2},
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_ARCHAMGE, CLASS_KNIGHT}, MONSTER_GOG_A,  2},
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_LICH,     CLASS_KNIGHT}, MONSTER_GOG_A,  2},
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARLOCK,  CLASS_KNIGHT}, MONSTER_GOG_A, -1}, // Druid, not sorcerer.
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_SORCERER, CLASS_KNIGHT}, MONSTER_GOG_A,  2},
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,   CLASS_KNIGHT}, MONSTER_GOG_A, -1},
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_LICH,     CLASS_KNIGHT}, MONSTER_GOG_A, -1},
+    };
+
+    for (int caseIndex = 0; caseIndex < std::size(cases); caseIndex++) {
+        const AttackPreferenceCase &testCase = cases[caseIndex];
+
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        engine->config->gameplay.AttackPreferencesIncludePromotions.setValue(testCase.includePromotions);
         engine->config->debug.NoActors.setValue(true);
         game.startNewGame();
+        test.startTaping();
+
+        std::vector<CharacterPreset> presets;
+        for (Class classType : testCase.classes)
+            presets.push_back({classType, RACE_HUMAN}); // Gogs have no race preference, so the race is free here.
+        prepareForBattleTest(presets);
+        auto hpsTape = charTapes.hps();
+
         engine->config->debug.NoActors.setValue(false);
-
-        // Three knights and a priest at #2, so the priest is the only character a cleric hunter could prefer.
-        for (Character &character : pParty->pCharacters)
-            character.classType = CLASS_KNIGHT;
-        Character &priest = pParty->pCharacters[2];
-        priest.classType = CLASS_PRIEST;
-
-        EXPECT_EQ(priest.matchesAttackPreference(ATTACK_PREFERENCE_CLERIC), includePromotions);
-        EXPECT_FALSE(priest.matchesAttackPreference(ATTACK_PREFERENCE_KNIGHT)); // Promotion doesn't leak into other classes.
-        priest.classType = CLASS_PRIEST_OF_SUN;
-        EXPECT_EQ(priest.matchesAttackPreference(ATTACK_PREFERENCE_CLERIC), includePromotions); // Tier 3 counts as a promotion too.
-        priest.classType = CLASS_PRIEST;
-
-        // Same through the victim picker. A single preferred victim makes the pick deterministic.
-        Actor *hunter = game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY);
-        hunter->monsterInfo.attackPreferences = ATTACK_PREFERENCE_CLERIC;
-        if (includePromotions) {
-            EXPECT_EQ(stru_50C198.which_player_to_attack(hunter), 2); // The priest is the only preferred victim.
-        } else {
-            pParty->pCharacters[1].classType = CLASS_CLERIC;
-            EXPECT_EQ(stru_50C198.which_player_to_attack(hunter), 1); // Only the base-class cleric is preferred, not the priest.
+        for (int i = 0; i < 6; i++) {
+            game.tick(7);
+            game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), testCase.monster, SPAWN_STATIONARY); // Stay in place & shoot.
         }
+        game.tick(300);
+        test.stopTaping();
+
+        auto damage = hpsTape.delta();
+        for (int i = 0; i < damage.size(); i++)
+            if (testCase.victim == -1 || testCase.victim == i)
+                EXPECT_LT(damage[i], 0) << "case " << caseIndex << ", char " << i;
+            else
+                EXPECT_EQ(damage[i], 0) << "case " << caseIndex << ", char " << i;
     }
 }
 
