@@ -545,8 +545,7 @@ GAME_TEST(Prs, Pr2157b) {
 
 GAME_TEST(Issues, Issue2146) {
     // Monster attack preferences ignored promoted classes, so a monster that hunts sorcerers never went for wizards.
-    // Gogs are the only MM7 monsters that prefer a class and just shoot. No second attack, no spells and no special
-    // attack means every point of damage they deal lands on a victim that the preference logic picked.
+    // None of these monsters splash, so all of their damage lands on characters the preference logic picked.
     struct AttackPreferenceCase {
         bool includePromotions;
         std::array<Class, 4> classes;
@@ -554,14 +553,20 @@ GAME_TEST(Issues, Issue2146) {
         int victim; // Index of the only character allowed to take damage, or -1 if the whole party is fair game.
     };
     static constexpr AttackPreferenceCase cases[] = {
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_SORCERER, CLASS_KNIGHT}, MONSTER_GOG_A,  2},
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,   CLASS_KNIGHT}, MONSTER_GOG_A,  2},
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_ARCHAMGE, CLASS_KNIGHT}, MONSTER_GOG_A,  2},
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_LICH,     CLASS_KNIGHT}, MONSTER_GOG_A,  2},
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARLOCK,  CLASS_KNIGHT}, MONSTER_GOG_A, -1}, // Druid, not sorcerer.
-        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_SORCERER, CLASS_KNIGHT}, MONSTER_GOG_A,  2},
-        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,   CLASS_KNIGHT}, MONSTER_GOG_A, -1},
-        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_LICH,     CLASS_KNIGHT}, MONSTER_GOG_A, -1},
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_SORCERER,      CLASS_KNIGHT}, MONSTER_GOG_A,         2},
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,        CLASS_KNIGHT}, MONSTER_GOG_A,         2},
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_ARCHAMGE,      CLASS_KNIGHT}, MONSTER_GOG_A,         2},
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_LICH,          CLASS_KNIGHT}, MONSTER_GOG_A,         2},
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARRIOR_MAGE,  CLASS_KNIGHT}, MONSTER_ARCHER_A,      2}, // Archer promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_PRIEST_OF_SUN, CLASS_KNIGHT}, MONSTER_CLERIC_SUN_A,  2}, // Cleric promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_NINJA,         CLASS_KNIGHT}, MONSTER_MONK_C,        2}, // Monk promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_ARCH_DRUID,    CLASS_KNIGHT}, MONSTER_TREANT_A,      2}, // Druid promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARLOCK,       CLASS_KNIGHT}, MONSTER_GOG_A,        -1}, // Druid promotion, and gogs want sorcerers.
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_SORCERER,      CLASS_KNIGHT}, MONSTER_GOG_A,         2},
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,        CLASS_KNIGHT}, MONSTER_GOG_A,        -1},
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_LICH,          CLASS_KNIGHT}, MONSTER_GOG_A,        -1},
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARRIOR_MAGE,  CLASS_KNIGHT}, MONSTER_ARCHER_A,     -1},
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_PRIEST_OF_SUN, CLASS_KNIGHT}, MONSTER_CLERIC_SUN_A, -1},
     };
 
     for (int caseIndex = 0; caseIndex < std::size(cases); caseIndex++) {
@@ -575,7 +580,7 @@ GAME_TEST(Issues, Issue2146) {
 
         std::vector<CharacterPreset> presets;
         for (Class classType : testCase.classes)
-            presets.push_back({classType, RACE_HUMAN}); // Gogs have no race preference, so the race is free here.
+            presets.push_back({classType, RACE_HUMAN}); // None of these monsters have a race preference.
         prepareForBattleTest(presets);
         auto hpsTape = charTapes.hps();
 
@@ -1743,3 +1748,4 @@ GAME_TEST(Prs, Pr2615d) {
     game.tick(3);
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
 }
+
