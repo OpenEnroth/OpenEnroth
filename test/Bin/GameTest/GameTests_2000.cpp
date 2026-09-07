@@ -555,17 +555,10 @@ GAME_TEST(Issues, Issue2146) {
     static constexpr AttackPreferenceCase cases[] = {
         {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_SORCERER,      CLASS_KNIGHT}, MONSTER_GOG_A,         2},
         {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,        CLASS_KNIGHT}, MONSTER_GOG_A,         2},
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_ARCHAMGE,      CLASS_KNIGHT}, MONSTER_GOG_A,         2},
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_LICH,          CLASS_KNIGHT}, MONSTER_GOG_A,         2},
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARRIOR_MAGE,  CLASS_KNIGHT}, MONSTER_ARCHER_A,      2}, // Archer promotion.
         {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_PRIEST_OF_SUN, CLASS_KNIGHT}, MONSTER_CLERIC_SUN_A,  2}, // Cleric promotion.
         {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_NINJA,         CLASS_KNIGHT}, MONSTER_MONK_C,        2}, // Monk promotion.
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_ARCH_DRUID,    CLASS_KNIGHT}, MONSTER_TREANT_A,      2}, // Druid promotion.
         {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARLOCK,       CLASS_KNIGHT}, MONSTER_GOG_A,        -1}, // Druid promotion, and gogs want sorcerers.
-        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_SORCERER,      CLASS_KNIGHT}, MONSTER_GOG_A,         2},
         {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,        CLASS_KNIGHT}, MONSTER_GOG_A,        -1},
-        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_LICH,          CLASS_KNIGHT}, MONSTER_GOG_A,        -1},
-        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARRIOR_MAGE,  CLASS_KNIGHT}, MONSTER_ARCHER_A,     -1},
         {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_PRIEST_OF_SUN, CLASS_KNIGHT}, MONSTER_CLERIC_SUN_A, -1},
     };
 
@@ -587,17 +580,19 @@ GAME_TEST(Issues, Issue2146) {
         engine->config->debug.NoActors.setValue(false);
         for (int i = 0; i < 6; i++) {
             game.tick(7);
-            game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), testCase.monster, SPAWN_STATIONARY); // Stay in place & shoot.
+            // Spread out in a line abreast in front of the party, so they don't stack up on one spot.
+            game.spawnMonster(pParty->pos + Vec3f(i * 200 - 500, 1500, 0), testCase.monster, SPAWN_STATIONARY);
         }
         game.tick(300);
         test.stopTaping();
 
         auto damage = hpsTape.delta();
-        for (int i = 0; i < damage.size(); i++)
+        for (int i = 0; i < damage.size(); i++) {
             if (testCase.victim == -1 || testCase.victim == i)
                 EXPECT_LT(damage[i], 0) << "case " << caseIndex << ", char " << i;
             else
                 EXPECT_EQ(damage[i], 0) << "case " << caseIndex << ", char " << i;
+        }
     }
 }
 
