@@ -545,7 +545,6 @@ GAME_TEST(Prs, Pr2157b) {
 
 GAME_TEST(Issues, Issue2146) {
     // Monster attack preferences ignored promoted classes, so a monster that hunts sorcerers never went for wizards.
-    // None of these monsters splash, so all of their damage lands on characters the preference logic picked.
     struct AttackPreferenceCase {
         bool includePromotions;
         std::array<Class, 4> classes;
