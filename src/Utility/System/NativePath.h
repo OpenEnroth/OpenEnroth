@@ -29,11 +29,13 @@ class NativePath {
      * Implicit constructor from a byte string, same as `std::filesystem::path`. The bytes are taken as-is, with no
      * charset conversion performed on them.
      *
+     * The `const char *` overload is what lets a string literal convert. Going through `std::string_view` alone
+     * would need two user-defined conversions, and that's ill-formed.
+     *
      * @param path                      Path as a byte string.
      */
     NativePath(std::string_view path); // NOLINT: intentionally implicit.
     NativePath(const char *path) : NativePath(std::string_view(path)) {} // NOLINT: intentionally implicit.
-    NativePath(const std::string &path) : NativePath(std::string_view(path)) {} // NOLINT: intentionally implicit.
 
     // TODO(captainurist): fromWtf8 / toWtf8 are misnomers, the strings are WTF-8 on Windows only. Rename.
 
