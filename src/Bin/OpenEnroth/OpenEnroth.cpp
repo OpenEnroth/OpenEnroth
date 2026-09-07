@@ -7,10 +7,12 @@
 #include <string_view>
 #include <algorithm>
 #include <chrono>
+#include <iterator>
 #include <optional>
 #include <unordered_set>
 
 #ifdef _WINDOWS
+#   include <windows.h> // NOLINT: not a C++ system header.
 #   include <conio.h> // NOLINT: not a C++ system header.
 #   include <io.h> // NOLINT: not a C++ system header.
 #endif
@@ -144,9 +146,11 @@ int runOpenEnroth(const OpenEnrothOptions &options) {
 
 #ifdef _WINDOWS
 static void waitForAnyKey() {
-    // _fileno is what distinguishes having no console at all, where it gives -2. Lowio slot 2 stays marked as a
-    // character device in that case, so _isatty(2) would answer true and we'd wait for a key nobody can press.
-    if (!_isatty(_fileno(stderr)))
+    // Only worth holding open a window that goes away with us, and being the console's only process is what
+    // says it will. A shell or a CI runner attached to the same console keeps it up on its own, and a zero
+    // count means there was no console to begin with.
+    DWORD consumers[2]; // Room for two pids, which is all it takes to tell one process from many.
+    if (GetConsoleProcessList(consumers, static_cast<DWORD>(std::size(consumers))) != 1)
         return;
 
     // Raw write, stdio might be locked by the thread that was printing when it died. _getch reads the console
@@ -172,12 +176,6 @@ static void appCrashCallback(std::string_view text, bool final) {
 #endif
 }
 
-static NativePath crashLogPath(const OpenEnrothOptions &options) {
-    if (options.userPath.isEmpty())
-        return {}; // Resolving the user folder can fail on windows, and a bare relative crash.log would land wherever the game was launched from.
-    return options.userPath / NativePath("crash.log");
-}
-
 int openEnrothMain(int argc, char **argv) {
     try {
         initStackTraceOnCrash(&appCrashCallback);
@@ -191,9 +189,9 @@ int openEnrothMain(int argc, char **argv) {
         // Declared out here so that it lives until the function returns. Its destructor writes the exit line,
         // and that has to happen on every way out, including an exception thrown out of the switch below.
         std::optional<Blackbox> blackbox;
-        NativePath crashLog = crashLogPath(options);
-        if (!options.ramFsUserData && !crashLog.isEmpty()) { // Retrace and play set ramFsUserData, and they write nothing to disk.
-            blackbox.emplace(crashLog);
+        NativePath crashLog = options.userPath / NativePath("crash.log");
+        if (!options.ramFsUserData) { // Retrace and play set ramFsUserData, and they write nothing to disk.
+            blackbox.emplace(crashLog, &appCrashCallback);
 #ifdef __APPLE__
             // Only promise a file that's actually open, the dialog is the one place a mac user hears about it.
             if (blackbox->isLogging())

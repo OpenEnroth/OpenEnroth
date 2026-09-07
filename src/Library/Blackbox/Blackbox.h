@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Library/StackTrace/StackTraceOnCrash.h"
+
 #include "Utility/System/NativePath.h"
 
 /**
@@ -19,13 +21,14 @@ class Blackbox {
  public:
     /**
      * Opens the crash log, rotating it to `.old` first if it has grown past a megabyte, writes the started
-     * line, and registers a crash callback that appends every chunk to the file before handing it on to the
-     * callback that was in effect before. Degrades silently when the file can't be opened - no home directory,
-     * an unwritable path - and the previous callback then stays in charge on its own.
+     * line, and registers a crash callback that appends every chunk to the file before handing it on to
+     * `callback`. Degrades silently when the file can't be opened - no home directory, an unwritable path -
+     * and `callback` then sees every chunk with nothing written to disk.
      *
      * @param path                      Native path of the crash log, `<userDir>/crash.log` for the game.
+     * @param callback                  Callback to hand each chunk on to once the file has it.
      */
-    explicit Blackbox(const NativePath &path);
+    Blackbox(const NativePath &path, CrashCallback callback);
 
     /**
      * Writes the exit line - a clean exit, or an exit with an exception when the destructor runs during

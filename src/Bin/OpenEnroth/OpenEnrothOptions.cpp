@@ -89,7 +89,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     }
 
     // Resolved here rather than by each consumer, so that the crash log and the saves can't end up in different
-    // folders. Stays empty if there's no user folder to be had, and everything downstream handles that.
+    // folders. Never empty afterwards, so no consumer needs a fallback of its own.
     if (result.userPath.isEmpty())
         result.userPath = resolveMm7UserPath(env.get());
 

@@ -54,7 +54,7 @@ MM_NOINLINE int blackboxCrashingFunction() {
 UNIT_TEST_FIXTURE(BlackboxTest, StartedAndCleanExitLinesAreWritten) {
     EXPECT_EXIT({
         {
-            Blackbox blackbox(logPath);
+            Blackbox blackbox(logPath, &printCrashChunk);
         }
         std::exit(0);
     }, testing::ExitedWithCode(0), "");
@@ -72,7 +72,7 @@ UNIT_TEST_FIXTURE(BlackboxTest, ExitDuringUnwindingIsNotClean) {
     // the log looking in the wrong place.
     EXPECT_EXIT({
         try {
-            Blackbox blackbox(logPath);
+            Blackbox blackbox(logPath, &printCrashChunk);
             throw std::runtime_error("unwinding");
         } catch (const std::exception &) {
         }
@@ -91,12 +91,11 @@ UNIT_TEST_FIXTURE(BlackboxTest, CrashIsInTheFileBeforeTheChainedCallbackRuns) {
     EXPECT_DEATH({
         GTEST_FLAG_SET(catch_exceptions, false);
 
-        initStackTraceOnCrash([](std::string_view text, bool final) {
+        Blackbox blackbox(logPath, [](std::string_view text, bool final) {
             printCrashChunk(text, final);
             if (final)
                 printCrashChunk(Blob::fromFile(logPath).str().contains("blackboxCrashingFunction") ? "trace was in the file" : "trace was not in the file", false);
         });
-        Blackbox blackbox(logPath);
         blackboxCrashingFunction();
     }, testing::AllOf(testing::HasSubstr("Crashed because of"), testing::HasSubstr("trace was in the file")));
 
@@ -115,7 +114,7 @@ UNIT_TEST_FIXTURE(BlackboxTest, OversizedLogIsRotated) {
 
     EXPECT_EXIT({
         {
-            Blackbox blackbox(logPath);
+            Blackbox blackbox(logPath, &printCrashChunk);
         }
         std::exit(0);
     }, testing::ExitedWithCode(0), "");

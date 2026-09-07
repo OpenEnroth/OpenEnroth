@@ -40,13 +40,18 @@ static std::string localTimestamp() {
     return fmt::format("{:%Y-%m-%dT%H:%M:%S}", fmt::localtime(std::time(nullptr)));
 }
 
-Blackbox::Blackbox(const NativePath &path) {
+Blackbox::Blackbox(const NativePath &path, CrashCallback callback) {
+    assert(callback);
+
     static bool constructed = false;
     assert(!constructed); // The descriptor and the callback are process-wide, a second instance would fight the first over both.
     constructed = true;
 
+    chainedCallback = callback; // Before registering, or a crash in between would go to the default printer instead.
+    initStackTraceOnCrash(&blackboxCrashCallback);
+
     // Errors are swallowed throughout - the process has better things to do than complain about its crash log,
-    // and without a file the previous callback simply stays in charge.
+    // and without a file the chained callback handles the crash on its own.
     std::error_code error;
     const std::filesystem::path &stdPath = path.toStdPath();
     std::filesystem::create_directories(stdPath.parent_path(), error);
@@ -70,13 +75,6 @@ Blackbox::Blackbox(const NativePath &path) {
     crashLogFd = fd;
 
     writeCrashChunk(fd, fmt::format("--- started {} pid={} revision={} ---", localTimestamp(), pid, gitRevision()));
-
-    // Registering comes before learning what was registered, so for a few instructions a crash would chain to
-    // the default printer rather than to the callback inherited here. Stderr and the file still get written,
-    // at worst a console wait is skipped.
-    CrashCallback previous = initStackTraceOnCrash(&blackboxCrashCallback);
-    if (previous != &blackboxCrashCallback)
-        chainedCallback = previous; // A second instance would otherwise chain the callback to itself and recurse until the signal stack is gone.
 }
 
 bool Blackbox::isLogging() const {
