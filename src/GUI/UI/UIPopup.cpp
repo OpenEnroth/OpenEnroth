@@ -355,11 +355,13 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     }
 
     if (pParty->hasActiveCharacter()) {
+        SpeechId speech = SPEECH_NONE;
+
         // try to identify
         if (!inspect_item->IsIdentified()) {
             if (pParty->activeCharacter().CanIdentify(*inspect_item) == 1)
                 inspect_item->SetIdentified();
-            SpeechId speech = SPEECH_ID_ITEM_FAIL;
+            speech = SPEECH_ID_ITEM_FAIL;
             if (!inspect_item->IsIdentified()) {
                 engine->_statusBar->setEvent(LSTR_IDENTIFY_FAILED);
             } else {
@@ -368,24 +370,23 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
                     speech = SPEECH_ID_ITEM_WEAK;
                 }
             }
-            if (!identifyOrRepairReactionPlayed) {
-                pParty->activeCharacter().playReaction(speech);
-                identifyOrRepairReactionPlayed = true;
-            }
         }
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
         if (inspect_item->IsBroken()) {
             if (pParty->activeCharacter().CanRepair(*inspect_item) == 1)
-                inspect_item->flags = inspect_item->flags & ~ITEM_BROKEN | ITEM_IDENTIFIED;
-            SpeechId speech = SPEECH_REPAIR_FAIL;
-            if (!inspect_item->IsBroken())
+                inspect_item->SetRepaired();
+            if (!inspect_item->IsBroken()) { // Repair success outranks any identification speech, repair failure yields to it.
                 speech = SPEECH_REPAIR_SUCCESS;
-            else
+            } else {
                 engine->_statusBar->setEvent(LSTR_REPAIR_FAILED);
-            if (!identifyOrRepairReactionPlayed) {
-                pParty->activeCharacter().playReaction(speech);
-                identifyOrRepairReactionPlayed = true;
+                if (speech == SPEECH_NONE)
+                    speech = SPEECH_REPAIR_FAIL;
             }
+        }
+        // TODO(pskelton): replace identifyOrRepairReactionPlayed with a check that the character is already reacting.
+        if (speech != SPEECH_NONE && !identifyOrRepairReactionPlayed) {
+            pParty->activeCharacter().playReaction(speech);
+            identifyOrRepairReactionPlayed = true;
         }
     }
 
