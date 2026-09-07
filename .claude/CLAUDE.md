@@ -32,7 +32,7 @@ Every sentence in a comment must say something the code, the names and the previ
 
 Explanations live where the logic lives. A comment about a statement is a trailing comment on that statement. A comment about a return sits at the return. A comment about a call sits at the call. The doxygen block above a function is for callers only, what goes in and what comes out, never a walkthrough of the body.
 
-Public functions, classes, structs and tables get a doxygen block, with a `@param` tag for each parameter and a `@return` tag if there's a result. Descriptions start at column 41. Helpers and test functions don't get one, a trailing line inside the body does the job.
+Public functions, classes, structs, enums and tables get a doxygen block, with a `@param` tag for each parameter and a `@return` tag if there's a result. Descriptions start at column 41. Helpers and test functions get no block, a trailing line inside the body does the job. Either way, a comment above a declaration is a doxygen block or nothing. A `//` line above a function is never right, it either grows into the block or moves inside the body. A `TODO` is a note, not a description, and may stay where it is.
 
 An invariant is an assert, not a comment.
 
