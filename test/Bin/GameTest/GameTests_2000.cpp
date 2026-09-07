@@ -545,6 +545,7 @@ GAME_TEST(Prs, Pr2157b) {
 
 GAME_TEST(Issues, Issue2146) {
     // Monster attack preferences ignored promoted classes, so a monster that hunts sorcerers never went for wizards.
+    // Issue2500a, Issue2500b and Issue2500c cover unpromoted classes, races and having no preference at all.
     struct AttackPreferenceCase {
         bool includePromotions;
         std::array<Class, 4> classes;
@@ -552,7 +553,6 @@ GAME_TEST(Issues, Issue2146) {
         int victim; // Index of the only character allowed to take damage, or -1 if the whole party is fair game.
     };
     static constexpr AttackPreferenceCase cases[] = {
-        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_SORCERER,      CLASS_KNIGHT}, MONSTER_GOG_A,         2},
         {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,        CLASS_KNIGHT}, MONSTER_GOG_A,         2},
         {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_PRIEST_OF_SUN, CLASS_KNIGHT}, MONSTER_CLERIC_SUN_A,  2}, // Cleric promotion.
         {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_NINJA,         CLASS_KNIGHT}, MONSTER_MONK_C,        2}, // Monk promotion.
@@ -1279,6 +1279,7 @@ GAME_TEST(Issues, Issue2490) {
 
 GAME_TEST(Issues, Issue2500a) {
     // Attack preferences are broken. Some monsters attack archers while they should have no attack pref.
+    // Issue2500b covers a class preference, Issue2500c a race one, and Issue2146 promoted classes.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hp0Tape = charTapes.hp(0);
     auto hp1Tape = charTapes.hp(1);
@@ -1302,6 +1303,7 @@ GAME_TEST(Issues, Issue2500a) {
 
 GAME_TEST(Issues, Issue2500b) {
     // Attack preferences are broken. Archers are missing archer attack preference.
+    // Issue2500a covers having no preference, Issue2500c a race one, and Issue2146 promoted classes.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hp0Tape = charTapes.hp(0);
     auto hp1Tape = charTapes.hp(1);
@@ -1324,6 +1326,7 @@ GAME_TEST(Issues, Issue2500b) {
 
 GAME_TEST(Issues, Issue2500c) {
     // Attack preferences are broken. Dwarven Commanders are missing goblin attack preference.
+    // Issue2500a covers having no preference, Issue2500b a class one, and Issue2146 promoted classes.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hp0Tape = charTapes.hp(0);
     auto hp1Tape = charTapes.hp(1);
