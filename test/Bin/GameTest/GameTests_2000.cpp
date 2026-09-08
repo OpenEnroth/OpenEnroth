@@ -579,7 +579,6 @@ GAME_TEST(Issues, Issue2146) {
         engine->config->debug.NoActors.setValue(false);
         for (int i = 0; i < 6; i++) {
             game.tick(7);
-            // Spread out in a line abreast in front of the party, so they don't stack up on one spot.
             game.spawnMonster(pParty->pos + Vec3f(i * 200 - 500, 1500, 0), testCase.monster, SPAWN_STATIONARY);
         }
         game.tick(300);
