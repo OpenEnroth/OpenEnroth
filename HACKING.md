@@ -94,8 +94,8 @@ Naming:
 Code formatting:
 * Lines are at most 200 columns, `check_style` enforces it. Prefer ~120, but readability wins over the number: a long line is fine, ugly wrapping isn't. Applies to all file types, not just C++. Don't wrap at 80!
 * Comments stay within 120 columns, the 200 limit is for code. The exception is a trailing comment, it's part of the code line it's on and only needs to fit in 200 together with it.
-* Braces around a body are optional when the body is a single statement, and when the body is a nested `if`, `for` or `while` that carries no braces itself. So `for (...) if (...) doSomething();` needs no braces at all.
-* An `if` that has an `else` always braces both bodies. A lone `if` doesn't have to, so a braceless `if` can be the body of a braceless `for`, while an `if`/`else` pair also forces braces on the `for` around it.
+* Braces around a body are optional when the body is a single statement, and when the body is an `if`, `for` or `while` that carries no braces itself. This applies at every level, so `for (...) for (...) if (...) doSomething();` needs no braces at all.
+* An `if` that has an `else` always braces both bodies. A lone `if` doesn't have to, so a braceless `if` can be the body of a braceless `for`. An `if`/`else` pair can't, and because it carries braces it forces braces on every loop around it.
 * `*` and `&` in type declarations should be preceded by a space. So it's `char *string`, and not `char* string`.
 * Sort method definitions in `.cpp` files in the same order as they appear in the `.h` file.
 * In header files, use an additional `private:` label before listing all class fields at the end of the class declaration.
