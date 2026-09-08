@@ -587,10 +587,11 @@ GAME_TEST(Issues, Issue2146) {
 
         auto damage = hpsTape.delta();
         for (int i = 0; i < damage.size(); i++) {
-            if (testCase.victim == -1 || testCase.victim == i)
+            if (testCase.victim == -1 || testCase.victim == i) {
                 EXPECT_LT(damage[i], 0) << "case " << caseIndex << ", char " << i;
-            else
+            } else {
                 EXPECT_EQ(damage[i], 0) << "case " << caseIndex << ", char " << i;
+            }
         }
     }
 }
