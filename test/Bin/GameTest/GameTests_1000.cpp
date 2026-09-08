@@ -24,6 +24,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Random/Random.h"
+#include "Engine/mm7_data.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -1004,15 +1005,21 @@ GAME_TEST(Issues, Issue1473) {
         auto zombieHpTape = charTapes.hp(1);
         auto mortalHpTape = charTapes.hp(2);
         game.startNewGame();
+        pParty->_questBits.set(QBIT_DARK_PATH);
 
         Character &lich = pParty->pCharacters[0];
         Character &zombie = pParty->pCharacters[1];
         Character &mortal = pParty->pCharacters[2];
         lich.classType = CLASS_LICH;
+        zombie.classType = CLASS_CLERIC;
         zombie.conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
         ASSERT_TRUE(zombie.IsZombie());
         ASSERT_FALSE(mortal.IsZombie());
         for (Character *wielder : {&lich, &zombie, &mortal}) {
+            ASSERT_GE(skillMaxMasteryPerClass[wielder->classType][SKILL_STAFF], MASTERY_NOVICE);
+            wielder->setSkillValue(SKILL_STAFF, CombinedSkillValue::novice());
+            ASSERT_TRUE(wielder->HasSkill(SKILL_STAFF));
+            ASSERT_TRUE(wielder->CanEquip_RaceAndAlignmentCheck(ITEM_RELIC_ETHRICS_STAFF));
             wielder->inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_RELIC_ETHRICS_STAFF));
             wielder->health = wielder->GetMaxHealth() / 2; // Lich and zombie drains stop at half health.
         }

@@ -63,9 +63,33 @@ class FileSystemPath {
         return FileSystemPathView(*this).split();
     }
 
-    [[nodiscard]] FileSystemPathComponents components() const {
-        return FileSystemPathView(*this).components();
-    }
+    /**
+     * @return                          The last component, empty if there is none. `"a/b.txt"` gives `"b.txt"`.
+     *                                  The returned view points into this path, so it dies with it.
+     */
+    [[nodiscard]] std::string_view name() const;
+
+    /**
+     * @return                          The extension of the file name, with the leading dot, empty if there is none.
+     *                                  A leading dot doesn't start one, so `".bashrc"` has no extension, and only the
+     *                                  last one counts, so `"a.tar.gz"` gives `".gz"`. Same as `std::filesystem`,
+     *                                  which means `"..."` decomposes into a stem of `".."` and an extension of `"."`.
+     *                                  The returned view points into this path, so it dies with it.
+     */
+    [[nodiscard]] std::string_view extension() const;
+
+    /**
+     * @return                          The file name without its extension. `"a/b.tar.gz"` gives `"b.tar"`.
+     *                                  The returned view points into this path, so it dies with it.
+     */
+    [[nodiscard]] std::string_view stem() const;
+
+    /**
+     * @return                          Parent path, or an empty path if this path has no parent. Note that this is
+     *                                  the lexical parent - the lexical parent of `"../.."` is `".."`, which is not
+     *                                  its semantic parent.
+     */
+    [[nodiscard]] FileSystemPath parent() const;
 
     FileSystemPath &operator/=(std::string_view tail);
     FileSystemPath &operator/=(FileSystemPathView tail);

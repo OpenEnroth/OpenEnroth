@@ -6773,17 +6773,17 @@ void Character::Zero() {
 }
 
 bool Character::matchesAttackPreference(MonsterAttackPreference preference) const {
+    Class baseClass = engine->config->gameplay.AttackPreferencesIncludePromotions.value() ? getTier1Class(classType) : classType;
     switch (preference) {
-    // TODO(captainurist): isn't it weird that promotions aren't included in comparisons here?
-    case ATTACK_PREFERENCE_KNIGHT:      return classType == CLASS_KNIGHT;
-    case ATTACK_PREFERENCE_PALADIN:     return classType == CLASS_PALADIN;
-    case ATTACK_PREFERENCE_ARCHER:      return classType == CLASS_ARCHER;
-    case ATTACK_PREFERENCE_DRUID:       return classType == CLASS_DRUID;
-    case ATTACK_PREFERENCE_CLERIC:      return classType == CLASS_CLERIC;
-    case ATTACK_PREFERENCE_SORCERER:    return classType == CLASS_SORCERER;
-    case ATTACK_PREFERENCE_RANGER:      return classType == CLASS_RANGER;
-    case ATTACK_PREFERENCE_THIEF:       return classType == CLASS_THIEF;
-    case ATTACK_PREFERENCE_MONK:        return classType == CLASS_MONK;
+    case ATTACK_PREFERENCE_KNIGHT:      return baseClass == CLASS_KNIGHT;
+    case ATTACK_PREFERENCE_PALADIN:     return baseClass == CLASS_PALADIN;
+    case ATTACK_PREFERENCE_ARCHER:      return baseClass == CLASS_ARCHER;
+    case ATTACK_PREFERENCE_DRUID:       return baseClass == CLASS_DRUID;
+    case ATTACK_PREFERENCE_CLERIC:      return baseClass == CLASS_CLERIC;
+    case ATTACK_PREFERENCE_SORCERER:    return baseClass == CLASS_SORCERER;
+    case ATTACK_PREFERENCE_RANGER:      return baseClass == CLASS_RANGER;
+    case ATTACK_PREFERENCE_THIEF:       return baseClass == CLASS_THIEF;
+    case ATTACK_PREFERENCE_MONK:        return baseClass == CLASS_MONK;
     case ATTACK_PREFERENCE_MALE:        return uSex == SEX_MALE;
     case ATTACK_PREFERENCE_FEMALE:      return uSex == SEX_FEMALE;
     case ATTACK_PREFERENCE_HUMAN:       return GetRace() == RACE_HUMAN;

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -19,6 +20,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Resources/EngineFileSystem.h"
@@ -539,6 +541,58 @@ GAME_TEST(Prs, Pr2157b) {
     EXPECT_FALSE(inventory.find(ITEM_DAZZLING_RING));
     EXPECT_EQ(soundsTape.flatten().count(SOUND_error), 1);
     EXPECT_EQ(inventory.size(), 126);
+}
+
+GAME_TEST(Issues, Issue2146) {
+    // Monster attack preferences ignored promoted classes, so a monster that hunts sorcerers never went for wizards.
+    // Issue2500a, Issue2500b and Issue2500c cover unpromoted classes, races and having no preference at all.
+    struct AttackPreferenceCase {
+        bool includePromotions;
+        std::array<Class, 4> classes;
+        MonsterId monster;
+        int victim; // Index of the only character allowed to take damage, or -1 if the whole party is fair game.
+    };
+    static constexpr AttackPreferenceCase cases[] = {
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,        CLASS_KNIGHT}, MONSTER_GOG_A,         2}, // Sorcerer 1st promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_PRIEST_OF_SUN, CLASS_KNIGHT}, MONSTER_CLERIC_SUN_A,  2}, // Cleric 2nd promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_NINJA,         CLASS_KNIGHT}, MONSTER_MONK_C,        2}, // Monk 2nd promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARLOCK,       CLASS_KNIGHT}, MONSTER_GOG_A,        -1}, // Druid 2nd promotion, and gogs want sorcerers.
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,        CLASS_KNIGHT}, MONSTER_GOG_A,        -1}, // Sorcerer 1st promotion.
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_PRIEST_OF_SUN, CLASS_KNIGHT}, MONSTER_CLERIC_SUN_A, -1}, // Cleric 2nd promotion.
+    };
+
+    for (int caseIndex = 0; caseIndex < std::size(cases); caseIndex++) {
+        const AttackPreferenceCase &testCase = cases[caseIndex];
+
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        engine->config->gameplay.AttackPreferencesIncludePromotions.setValue(testCase.includePromotions);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+
+        std::vector<CharacterPreset> presets;
+        for (Class classType : testCase.classes)
+            presets.push_back({classType, RACE_HUMAN}); // None of these monsters have a race preference.
+        prepareForBattleTest(presets);
+        auto hpsTape = charTapes.hps();
+
+        engine->config->debug.NoActors.setValue(false);
+        for (int i = 0; i < 6; i++) {
+            game.tick(7);
+            game.spawnMonster(pParty->pos + Vec3f(i * 200 - 500, 1500, 0), testCase.monster, SPAWN_STATIONARY);
+        }
+        game.tick(300);
+        test.stopTaping();
+
+        auto damage = hpsTape.delta();
+        for (int i = 0; i < damage.size(); i++) {
+            if (testCase.victim == -1 || testCase.victim == i) {
+                EXPECT_LT(damage[i], 0) << "case " << caseIndex << ", char " << i;
+            } else {
+                EXPECT_EQ(damage[i], 0) << "case " << caseIndex << ", char " << i;
+            }
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue2186a) {
@@ -1225,6 +1279,7 @@ GAME_TEST(Issues, Issue2490) {
 
 GAME_TEST(Issues, Issue2500a) {
     // Attack preferences are broken. Some monsters attack archers while they should have no attack pref.
+    // Issue2500b covers a class preference, Issue2500c a race one, and Issue2146 promoted classes.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hp0Tape = charTapes.hp(0);
     auto hp1Tape = charTapes.hp(1);
@@ -1248,6 +1303,7 @@ GAME_TEST(Issues, Issue2500a) {
 
 GAME_TEST(Issues, Issue2500b) {
     // Attack preferences are broken. Archers are missing archer attack preference.
+    // Issue2500a covers having no preference, Issue2500c a race one, and Issue2146 promoted classes.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hp0Tape = charTapes.hp(0);
     auto hp1Tape = charTapes.hp(1);
@@ -1270,6 +1326,7 @@ GAME_TEST(Issues, Issue2500b) {
 
 GAME_TEST(Issues, Issue2500c) {
     // Attack preferences are broken. Dwarven Commanders are missing goblin attack preference.
+    // Issue2500a covers having no preference, Issue2500b a class one, and Issue2146 promoted classes.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hp0Tape = charTapes.hp(0);
     auto hp1Tape = charTapes.hp(1);
@@ -1688,3 +1745,4 @@ GAME_TEST(Prs, Pr2615d) {
     game.tick(3);
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
 }
+
