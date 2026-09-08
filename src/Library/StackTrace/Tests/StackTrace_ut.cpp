@@ -190,9 +190,9 @@ MM_NOINLINE void stackTraceTrapFunction() {
 
 static volatile char *volatile stackTraceOverflowEscape; // Never read, the pad below is stored here so it exists.
 
-MM_NO_SANITIZE_ADDRESS MM_NOINLINE int stackTraceOverflowFunction(int depth) {
-    // MM_NO_SANITIZE_ADDRESS above is needed because an instrumented prologue calls __asan_stack_malloc, and
-    // that allocator's own frame hits the guard page in some runs, putting libasan on top of the trace.
+MM_NOASAN MM_NOINLINE int stackTraceOverflowFunction(int depth) {
+    // MM_NOASAN above is needed because an instrumented prologue calls __asan_stack_malloc, and that
+    // allocator's own frame hits the guard page in some runs, putting libasan on top of the trace.
     volatile char pad[1024]; // Big frames overflow fast, and the volatile writes keep the endless recursion out of UB land.
     stackTraceOverflowEscape = pad; // Address taken, so the pad keeps its size at -O2 and the recursion can't be folded into a loop.
     pad[0] = static_cast<char>(depth);
