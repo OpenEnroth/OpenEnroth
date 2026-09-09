@@ -126,6 +126,17 @@ class AVStreamWrapper {
 
 class AVAudioStream : public AVStreamWrapper {
  public:
+    virtual ~AVAudioStream() {
+        // ~AVStreamWrapper also calls close(), but a virtual call from a base destructor lands on the base
+        // override, so the resampler has to be freed from here.
+        close();
+    }
+
+    virtual void close() override {
+        swr_free(&converter); // Null-safe, and nulls the pointer.
+        AVStreamWrapper::close();
+    }
+
     virtual bool open(AVFormatContext *format_ctx) override {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_AUDIO)) {
             return false;
@@ -203,6 +214,18 @@ class AVAudioStream : public AVStreamWrapper {
 
 class AVVideoStream : public AVStreamWrapper {
  public:
+    virtual ~AVVideoStream() {
+        // ~AVStreamWrapper also calls close(), but a virtual call from a base destructor lands on the base
+        // override, so the scaler has to be freed from here.
+        close();
+    }
+
+    virtual void close() override {
+        sws_freeContext(converter); // Null-safe.
+        converter = nullptr;
+        AVStreamWrapper::close();
+    }
+
     virtual bool open(AVFormatContext *format_ctx) override {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_VIDEO)) {
             return false;
@@ -480,6 +503,7 @@ class Movie : public IMovie {
                 Blob buffer = audio.decode_frame(&packet);
                 if (buffer) buffq.push(std::move(buffer));
             }
+            av_packet_unref(&packet); // Every read allocates a new reference, and the loop would drop the previous one.
         }
         MM_TRACE("Audio Packets Queued");
 
@@ -509,8 +533,10 @@ class Movie : public IMovie {
             } while (lastvideopts == desired_frame_number);
 
             // ignore audio packets
-            if (packet.stream_index == audio.stream_idx)
+            if (packet.stream_index == audio.stream_idx) {
+                av_packet_unref(&packet); // Skipping the unref at the end of the loop would leak this one.
                 continue;
+            }
 
             if (packet.stream_index == video.stream_idx) {
                 // check if anymore sound frames still in decoder
