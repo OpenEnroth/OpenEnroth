@@ -26,9 +26,9 @@ Put the `🤖 Human Needed` label on every pull request you open, once its CI is
 
 The default is no comment. Write one only for what the code can't say: a non-obvious runtime or domain fact, a hidden dependency, or a value that looks wrong but isn't. Most comments in this codebase are one line, and usually trail the code they're about, match that.
 
-A comment describes the code. It *NEVER* defends the change. The tell is what the sentence is about. A sentence about the game, the data, the platform or a library describes. A sentence about this diff, this test, the suite or what else would notice defends, and so does one about what you didn't do. Delete it, it's commit message material. "Because" is fine when a fact about the world follows it.
+A comment describes the code. It *NEVER* defends the change. A sentence about the game, the data, the platform or a library describes. A sentence about this diff defends, and so does one about what you didn't do. Delete it, it's commit message material. "Because" is fine when a fact about the world follows it.
 
-Every sentence in a comment must say something the code, the names and the previous sentence don't. A comment that repeats the name next to it goes. If a call site needs a comment to be readable, fix the code instead. An enum parameter reads at the call site. A bool doesn't.
+Every sentence in a comment must say something the code, the names and the previous sentence don't. A comment that repeats the name next to it is not needed. If a call site needs a comment to be readable, fix the code instead. An enum parameter reads at the call site. A bool doesn't.
 
 Explanations live where the logic lives. A comment about a statement is a trailing comment on that statement. A comment about a return sits at the return. A comment about a call sits at the call. The doxygen block above a function is for callers only, what it does, what goes in and what comes out, never a walkthrough of the body.
 
@@ -36,4 +36,4 @@ A function, class, struct, enum or table whose name doesn't say it all gets a do
 
 An invariant is an assert, not a comment.
 
-Production code never narrates past bugs. A test does the opposite, its first line names the bug it guards against, as the symptom. "Gold piles are generated with 0 gold" is the shape. What the test would catch, or what else would catch it, is the defending shape from above. When a comment does mention a past bug, say it was a bug. "We used to keep the old buffer" reads like a choice. "This used to be a heap buffer overflow" doesn't.
+Production code never narrates past bugs. A test does the opposite, its first line names the bug it guards against. "Gold piles were generated with 0 gold" is the shape. When a comment does mention a past bug, say it was a bug. "We used to keep the old buffer" reads like a choice. "This used to be a heap buffer overflow" doesn't.
