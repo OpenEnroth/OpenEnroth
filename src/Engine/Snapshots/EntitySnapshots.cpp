@@ -1609,6 +1609,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->position = src.vPosition.toInt();
     snapshot(src.vVelocity, &dst->velocity);
     dst->yawAngle = src.uFacing;
+    dst->preloadedSoundSlot = src.preloadedSoundSlot;
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uSectorID = src.uSectorID;
     dst->uTimeSinceCreated = src.timeSinceCreated.ticks();
@@ -1632,6 +1633,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->vPosition = src.position.toFloat();
     reconstruct(src.velocity, &dst->vVelocity);
     dst->uFacing = src.yawAngle;
+    dst->preloadedSoundSlot = src.preloadedSoundSlot;
     dst->uAttributes = SpriteAttributes(src.uAttributes);
     dst->uSectorID = src.uSectorID;
     dst->timeSinceCreated = Duration::fromTicks(src.uTimeSinceCreated);

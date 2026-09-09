@@ -963,14 +963,15 @@ struct SpriteObject_MM7 {
     Vec3s velocity;
     uint16_t yawAngle;
     uint16_t preloadedSoundSlot; // Vanilla keeps 17 sample pointers per sound, the sample itself and 16 cached copies.
-                                 // This is the cast sound's entry. The impact sound plays from entry + 4, 0 staying 0:
-                                 //   0      the sample itself, loaded on first use. Spellbook, scrolls, and always OE.
+                                 // This slot of the cast sound holds the cast sample, slot + 4 of the impact sound the
+                                 // impact sample, and each plays from its slot, 0 staying 0:
+                                 //   0      the sample itself, loaded at startup or first use. Spellbook, scrolls, OE.
                                  //   1-4    quick spell cast sound of party member 1-4.
                                  //   5-8    quick spell impact sound of party member 1-4.
-                                 //   9-12   wand cast sound of party member 1-4. Blaster shots pass these numbers too.
+                                 //   9-12   wand cast sound of party member 1-4. Blasters pass the same numbers.
                                  //   13-16  wand impact sound of party member 1-4.
-                                 // Vanilla also treats bit 3, the wand rows, like the unpickable flag on level load.
-                                 // Every sprite that could carry it is unpickable anyway.
+                                 // Vanilla purges sprites with bit 3, the 9-12 row, on map entry like unpickable ones.
+                                 // OE keeps the value as loaded and writes it back, never setting it for its own casts.
     uint16_t uAttributes;
     int16_t uSectorID;
     uint16_t uTimeSinceCreated;

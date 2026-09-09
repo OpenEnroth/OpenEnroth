@@ -621,7 +621,8 @@ void CompactLayingItemsList() {
 void SpriteObject::InitializeSpriteObjects() {
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         SpriteObject *item = &pSpriteObjects[i];
-        if (item->uObjectDescID && pObjectList->pObjects[item->uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
+        // Bit 3 of the sound slot is vanilla's mark for wand and blaster shots, and level files can carry it on anything.
+        if (item->uObjectDescID && (item->preloadedSoundSlot & 8 || pObjectList->pObjects[item->uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
             SpriteObject::Remove(i);
         }
     }

@@ -51,10 +51,12 @@ static std::array<CastSpellInfo, CAST_SPELL_QUEUE_SIZE> pCastSpellInfo;
 static constexpr Duration SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100_ticks;
 
 /**
- * Common initialization of SpriteObject for spell casting
+ * Fills in the spell fields of a freshly spawned projectile sprite.
  *
- * Correct field uType of spritePtr must be set before calling this function
- * because initialization depends on it.
+ * @param spritePtr                     Sprite to fill in, with its sprite id already set.
+ * @param spellLevel                    Spell level to stamp on the sprite.
+ * @param spellMastery                  Spell mastery to stamp on the sprite.
+ * @param pCastSpell                    Queued cast that spawns the sprite.
  */
 static void initSpellSprite(SpriteObject *spritePtr,
                             int spellLevel,
@@ -3042,8 +3044,9 @@ void pushSpellOrRangedAttack(SpellId spell,
             case SPELL_DARK_SHRINKING_RAY:
             case SPELL_DARK_SHARPMETAL:
             case SPELL_DARK_DRAGON_BREATH:
-                if (!(flags & ON_CAST_AutoTarget))
+                if (!(flags & ON_CAST_AutoTarget)) {
                     flags |= ON_CAST_TargetedActor;
+                }
                 break;
             case SPELL_MIND_TELEPATHY:
             case SPELL_MIND_BERSERK:

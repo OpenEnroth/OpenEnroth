@@ -42,8 +42,7 @@ enum class SpellCastFlag : uint16_t {
     ON_CAST_TargetedEnchantment = 0x0080,      // Targeted spell, target is item in inventory
     ON_CAST_TargetedActorOrCharacter = 0x0100, // Targeted spell, target either actor or character
     ON_CAST_TargetedHireling = 0x0200,         // Targeted spell, target is hireling
-    ON_CAST_AutoTarget = 0x0400,               // Quick spell key or weapon shot, the target is taken from the cursor
-                                               // or the closest actor instead of a picker.
+    ON_CAST_AutoTarget = 0x0400,               // Quick spell key, wand or blaster shot, target from the cursor or the closest actor instead of a picker
 
     // Cumulative flags indicating that spell is targeted
     ON_CAST_CastingInProgress =
