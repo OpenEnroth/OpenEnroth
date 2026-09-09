@@ -112,10 +112,11 @@ void Io::Mouse::DrawCursor() {
     Pointi pos = this->position();
 
     // manage mouse look state - if only game screen is active and no overlay (console) is open, try enable
-    if (lWindowList.size() == 1 && !engine->isOverlayOpen())
+    if (lWindowList.size() == 1 && !engine->isOverlayOpen()) {
         RestoreMouseLook();
-    else
+    } else {
         SetMouseLook(Suspended);
+    }
 
     // for party held item
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
@@ -374,10 +375,11 @@ bool UI_OnKeyDown(PlatformKey key) {
         } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_DOWN, key)) {
             int v17 = win->pStartingPosActiveItem;
             int v18 = win->pCurrentPosActiveItem;
-            if (v18 >= win->pNumPresenceButton + v17 - 1)
+            if (v18 >= win->pNumPresenceButton + v17 - 1) {
                 win->pCurrentPosActiveItem = v17;
-            else
+            } else {
                 win->pCurrentPosActiveItem = v18 + 1;
+            }
             if (win->_msgOnKeyboardSelect) {
                 GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
                 engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
@@ -411,11 +413,12 @@ bool UI_OnKeyDown(PlatformKey key) {
         } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_UP, key)) {
             int v22 = win->pCurrentPosActiveItem;
             int v23 = win->pStartingPosActiveItem;
-            if (v22 <= v23)
+            if (v22 <= v23) {
                 win->pCurrentPosActiveItem =
                     win->pNumPresenceButton + v23 - 1;
-            else
+            } else {
                 win->pCurrentPosActiveItem = v22 - 1;
+            }
             if (win->_msgOnKeyboardSelect) {
                 GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
                 engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);

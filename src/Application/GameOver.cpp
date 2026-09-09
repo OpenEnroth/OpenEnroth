@@ -45,12 +45,13 @@ GraphicsImage *CreateWinnerCertificate() {
     std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt");
 
     std::string pInString;
-    if (pParty->isPartyGood())
+    if (pParty->isPartyGood()) {
         pInString = localization->str(LSTR_GOOD_ENDING);
-    else if (pParty->isPartyEvil())
+    } else if (pParty->isPartyEvil()) {
         pInString = localization->str(LSTR_EVIL_ENDING);
-    else
+    } else {
         assert(false);
+    }
 
     Duration play_time = pParty->GetPlayingTime() - gameStartingTime;
 

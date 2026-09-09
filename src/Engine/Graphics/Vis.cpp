@@ -95,14 +95,15 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
 
     CastPickRay(screenspace_center_x, screenspace_center_y, pick_depth, &rayOrigin, &rayStep);
 
-    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         PickOutdoorFaces_Mouse(pick_depth, rayOrigin, rayStep, &SelectedPointersList,
                                &vis_face_filter, true);
-    else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+    } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         PickIndoorFaces_Mouse(pick_depth, rayOrigin, rayStep, &SelectedPointersList,
                               &vis_face_filter);
-    else
+    } else {
         assert(false);
+    }
 
     SelectedPointersList.create_object_pointers();
     SelectedPointersList.sort_object_pointers();
@@ -111,10 +112,11 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
     if (!SelectedPointersList.SelectionPointers(VisObjectType_Face, pid))
         return nullptr;
 
-    if (SelectedPointersList.uSize)
+    if (SelectedPointersList.uSize) {
         return SelectedPointersList.object_pointers[0];
-    else
+    } else {
         return nullptr;
+    }
 }
 // F91E08: using guessed type char
 // static_DetermineFacetIntersection_byte_F91E08__init_flags;
@@ -129,11 +131,12 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
     for (unsigned i = 0; i < render->uNumBillboardsToDraw; ++i) {
         RenderBillboardD3D *billboard = render->pSortedBillboardRenderListD3D[i];
         if (IsPointInsideD3DBillboard(billboard, x, y)) {
-            if (v13 == -1)
+            if (v13 == -1) {
                 v13 = i;
-            else if (pBillboardRenderList[billboard->sParentBillboardID].view_space_z <
-                     pBillboardRenderList[render->pSortedBillboardRenderListD3D[v13]->sParentBillboardID].view_space_z)
+            } else if (pBillboardRenderList[billboard->sParentBillboardID].view_space_z <
+                     pBillboardRenderList[render->pSortedBillboardRenderListD3D[v13]->sParentBillboardID].view_space_z) {
                 v13 = i;
+            }
         }
     }
 
@@ -662,12 +665,13 @@ Vis_PIDAndDepth Vis::PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_
     _selectionList.uSize = 0;
 
     PickBillboards_Keyboard(pick_depth, &_selectionList, sprite_filter);
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         PickIndoorFaces_Keyboard(pick_depth, &_selectionList, face_filter);
-    else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         PickOutdoorFaces_Keyboard(pick_depth, &_selectionList, face_filter);
-    else
+    } else {
         assert(false);
+    }
 
     _selectionList.create_object_pointers(Vis_SelectionList::Unique);
     _selectionList.sort_object_pointers();

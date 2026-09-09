@@ -579,9 +579,8 @@ void Game::processQueuedMessages() {
                                 case SCREEN_HOUSE:
                                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                                         while (houseDialogPressEscape()) {}
-                                    } else {
-                                        if (houseDialogPressEscape())
-                                            continue;
+                                    } else if (houseDialogPressEscape()) {
+                                        continue;
                                     }
                                     window_SpeakInHouse->playHouseGoodbyeSpeech();
                                     pAudioPlayer->playHouseSound(SOUND_WoodDoorClosing, false);
@@ -932,12 +931,10 @@ void Game::processQueuedMessages() {
                             pParty->uFallStartZ = z;
                             continue;
                         }
-                    } else {
-                        if ((x > -32768) && (x < 32768) && (y > -32768) && (y < 32768) && (z >= 0) && (z < 10000)) {
-                            pParty->pos = Vec3f(x, y, z);
-                            pParty->uFallStartZ = z;
-                            continue;
-                        }
+                    } else if ((x > -32768) && (x < 32768) && (y > -32768) && (y < 32768) && (z >= 0) && (z < 10000)) {
+                        pParty->pos = Vec3f(x, y, z);
+                        pParty->uFallStartZ = z;
+                        continue;
                     }
                     pAudioPlayer->playUISound(SOUND_error);
                     status_string = "Can't jump to that location!";
@@ -983,20 +980,22 @@ void Game::processQueuedMessages() {
             case UIMSG_STEALFROMACTOR:
                 if (!pParty->hasActiveCharacter()) continue;
                 if (!pParty->bTurnBasedModeOn) {
-                    if (pActors[uMessageParam].aiState == AIState::Dead)
+                    if (pActors[uMessageParam].aiState == AIState::Dead) {
                         pActors[uMessageParam].LootActor();
-                    else
+                    } else {
                         Actor::StealFrom(uMessageParam);
+                    }
                     continue;
                 }
                 if (pTurnEngine->turn_stage == TE_WAIT ||
                     pTurnEngine->turn_stage == TE_MOVEMENT)
                     continue;
                 if (!(pTurnEngine->flags & TE_HAVE_PENDING_ACTIONS)) {
-                    if (pActors[uMessageParam].aiState == AIState::Dead)
+                    if (pActors[uMessageParam].aiState == AIState::Dead) {
                         pActors[uMessageParam].LootActor();
-                    else
+                    } else {
                         Actor::StealFrom(uMessageParam);
+                    }
                 }
                 continue;
 
@@ -1071,10 +1070,11 @@ void Game::processQueuedMessages() {
                         continue;
                     }
 
-                    if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER)) // airbourne or on water
+                    if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER)) { // airbourne or on water
                         engine->_statusBar->setEvent(LSTR_YOU_CANT_REST_HERE);
-                    else
+                    } else {
                         engine->_statusBar->setEvent(LSTR_THERE_ARE_HOSTILE_ENEMIES_NEAR);
+                    }
 
                     if (!pParty->hasActiveCharacter()) continue;
                     pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
@@ -1100,10 +1100,11 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER))
+                if (pParty->uFlags & (PARTY_FLAG_AIRBORNE | PARTY_FLAG_STANDING_ON_WATER)) {
                     engine->_statusBar->setEvent(LSTR_YOU_CANT_REST_HERE);
-                else
+                } else {
                     engine->_statusBar->setEvent(LSTR_THERE_ARE_HOSTILE_ENEMIES_NEAR);
+                }
 
                 if (!pParty->hasActiveCharacter()) continue;
                 pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
@@ -1371,15 +1372,13 @@ void Game::processQueuedMessages() {
 
                 if (character->uSkillPoints < cost) {
                     engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_SKILL_POINTS);
+                } else if (skillValue.level() < skills_max_level[skill]) {
+                    character->setSkillValue(skill, CombinedSkillValue::increaseLevel(skillValue));
+                    character->uSkillPoints -= cost;
+                    character->playReaction(SPEECH_SKILL_INCREASE);
+                    pAudioPlayer->playUISound(SOUND_quest);
                 } else {
-                    if (skillValue.level() < skills_max_level[skill]) {
-                        character->setSkillValue(skill, CombinedSkillValue::increaseLevel(skillValue));
-                        character->uSkillPoints -= cost;
-                        character->playReaction(SPEECH_SKILL_INCREASE);
-                        pAudioPlayer->playUISound(SOUND_quest);
-                    } else {
-                        engine->_statusBar->setEvent(LSTR_YOU_HAVE_ALREADY_MASTERED_THIS_SKILL);
-                    }
+                    engine->_statusBar->setEvent(LSTR_YOU_HAVE_ALREADY_MASTERED_THIS_SKILL);
                 }
                 continue;
             }
@@ -1454,10 +1453,8 @@ void Game::processQueuedMessages() {
                     if (viewparams->uMinimapZoom > 4096) {
                         viewparams->uMinimapZoom = 4096;
                     }
-                } else {
-                    if (viewparams->uMinimapZoom > 2048) {
-                        viewparams->uMinimapZoom = 2048;
-                    }
+                } else if (viewparams->uMinimapZoom > 2048) {
+                    viewparams->uMinimapZoom = 2048;
                 }
 
                 break;
@@ -1470,10 +1467,8 @@ void Game::processQueuedMessages() {
                     if (viewparams->uMinimapZoom < 512) {
                         viewparams->uMinimapZoom = 512;
                     }
-                } else {
-                    if (viewparams->uMinimapZoom < 256) {
-                        viewparams->uMinimapZoom = 256;
-                    }
+                } else if (viewparams->uMinimapZoom < 256) {
+                    viewparams->uMinimapZoom = 256;
                 }
 
                 break;

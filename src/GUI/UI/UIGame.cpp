@@ -250,18 +250,20 @@ void GameUI_ReloadPlayerPortraits(int player_id, int face_id) {  // the transiti
 static Color GameMenuUI_GetKeyBindingColor(InputAction action) {
     if (currently_selected_action_for_binding == action) {
         // TODO(pskelton): #time check tickcount usage here
-        if (platform->tickCount() % 1000 < 500)
+        if (platform->tickCount() % 1000 < 500) {
             return ui_gamemenu_keys_key_selection_blink_color_1;
-        else
+        } else {
             return ui_gamemenu_keys_key_selection_blink_color_2;
+        }
     } else if (key_map_conflicted.contains(action)) {
         int intensity;
 
         int time = platform->tickCount() % 800;
-        if (time < 400)
+        if (time < 400) {
             intensity = -70 + 70 * time / 400;
-        else
+        } else {
             intensity = +70 - 70 * time / 800;
+        }
 
         return Color(185 + intensity, 40 + intensity / 4, 40 + intensity / 4);
     }
@@ -332,10 +334,11 @@ void GUIWindow_GameKeyBindings::Update() {
             }
         }
 
-        if (anyConflicts)
+        if (anyConflicts) {
             engine->_statusBar->setEvent(LSTR_KEY_CONFLICT);
-        else
+        } else {
             engine->_statusBar->clearAll();
+        }
 
         keyboardInputHandler->EndTextInput();
         currently_selected_action_for_binding = INPUT_ACTION_INVALID;
@@ -668,10 +671,11 @@ std::string GameUI_GetMinimapHintText() {
         (int64_t)((double)pParty->pos.y - (double)(pY - 74) * v3);
     if (uCurrentlyLoadedLevelType != LEVEL_OUTDOOR ||
         pOutdoor->pBModels.empty()) {
-        if (engine->_currentLoadedMapId == MAP_INVALID)
+        if (engine->_currentLoadedMapId == MAP_INVALID) {
             result = "No Maze Info for this maze on file!";
-        else
+        } else {
             result = pMapTable->pInfos[engine->_currentLoadedMapId].name;
+        }
     } else {
         for (BSPModel &model : pOutdoor->pBModels) {
             v7 = Vec2i((int)model.boundingCenter.x - global_coord_X,
@@ -690,10 +694,11 @@ std::string GameUI_GetMinimapHintText() {
                     return result;
             }
         }
-        if (engine->_currentLoadedMapId == MAP_INVALID)
+        if (engine->_currentLoadedMapId == MAP_INVALID) {
             result = "No Maze Info for this maze on file!";
-        else
+        } else {
             result = pMapTable->pInfos[engine->_currentLoadedMapId].name;
+        }
         return result;
     }
     return result;
@@ -892,10 +897,11 @@ void GameUI_WritePointedObjectStatusString() {
             } else if (pickedObject.pid.type() == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
                     std::string pText;                 // ecx@79
-                    if (pLevelDecorations[pickedObjectID].IsInteractive())
+                    if (pLevelDecorations[pickedObjectID].IsInteractive()) {
                         pText = pNPCTopics[engine->_persistentVariables.decorVars[pLevelDecorations[pickedObjectID].eventVarId] + 380].pTopic; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-                    else
+                    } else {
                         pText = pDecorationTable->decoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->hint;
+                    }
                     engine->_statusBar->setPermanent(pText);
                 } else {
                     std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);
@@ -1046,12 +1052,13 @@ void GameUI_WritePointedObjectStatusString() {
                                 int skillLevel = pParty->activeCharacter().getSkillValue(skill).level();
                                 requiredSkillpoints = skillLevel + 1;
 
-                                if (skills_max_level[skill] <= skillLevel)
+                                if (skills_max_level[skill] <= skillLevel) {
                                     engine->_statusBar->setPermanent(LSTR_YOU_HAVE_ALREADY_MASTERED_THIS_SKILL);
-                                else if (pParty->activeCharacter().uSkillPoints < requiredSkillpoints)
+                                } else if (pParty->activeCharacter().uSkillPoints < requiredSkillpoints) {
                                     engine->_statusBar->setPermanent(LSTR_YOU_NEED_D_MORE_SKILL_POINTS_TO_ADVANCE, requiredSkillpoints - pParty->activeCharacter().uSkillPoints);
-                                else
+                                } else {
                                     engine->_statusBar->setPermanent(LSTR_CLICKING_HERE_WILL_SPEND_D_SKILL_POINTS, requiredSkillpoints);
+                                }
 
                                 uLastPointedObjectID = Pid::dummy();
                                 return;
@@ -1209,18 +1216,20 @@ void GameUI_DrawPartySpells() {
         GraphicsImage *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
         if (pParty->FlyActive()) {
-            if (pParty->bFlying)
+            if (pParty->bFlying) {
                 spell_texture = pIconsFrameTable->animationFrame(uIconIdx_FlySpell, frameTime);
-            else
+            } else {
                 spell_texture = pIconsFrameTable->animationFrame(uIconIdx_FlySpell, 0_ticks);
+            }
             render->DrawQuad2D(spell_texture, {8, 8});
         }
 
         if (pParty->WaterWalkActive()) {
-            if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
+            if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
                 spell_texture = pIconsFrameTable->animationFrame(uIconIdx_WaterWalk, frameTime);
-            else
+            } else {
                 spell_texture = pIconsFrameTable->animationFrame(uIconIdx_WaterWalk, 0_ticks);
+            }
             render->DrawQuad2D(spell_texture, {396, 8});
         }
     }
@@ -1247,34 +1256,38 @@ void GameUI_DrawPortraits() {
         Character *pPlayer = &pParty->pCharacters[i];
         if (pPlayer->IsEradicated()) {
             pPortrait = game_ui_player_face_eradicated;
-            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                 render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i], 387}, colorTable.MediumGrey); // was 388
-            else
+            } else {
                 render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1, 387}); // was 388
+            }
             continue;
         }
         if (pPlayer->IsDead()) {
             pPortrait = game_ui_player_face_dead;
-            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                 render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i], 388}, colorTable.MediumGrey);
-            else
+            } else {
                 render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1, 388});
+            }
             continue;
         }
 
         int faceTextureIndex = 1;
-        if (pPlayer->portrait == PORTRAIT_TALK)
+        if (pPlayer->portrait == PORTRAIT_TALK) {
             faceTextureIndex = pPlayer->talkAnimation.currentFrameIndex();
-        else
+        } else {
             faceTextureIndex = pPortraitFrameTable->animationFrameIndex(pPortraitFrameTable->animationId(pPlayer->portrait),
                                                                         pPlayer->portraitTimePassed);
+        }
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
             pPlayer->portraitImageIndex = faceTextureIndex - 1;
             pPortrait = game_ui_player_faces[i][pPlayer->portraitImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
-            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                 render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i], 388}, colorTable.MediumGrey);
-            else
+            } else {
                 render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1, 388});
+            }
             continue;
         }
     }
@@ -1286,10 +1299,11 @@ void GameUI_DrawPortraits() {
                         break;
 
                     auto alert_texture = game_ui_player_alert_green;
-                    if (pParty->GetRedAlert())
+                    if (pParty->GetRedAlert()) {
                         alert_texture = game_ui_player_alert_red;
-                    else if (pParty->GetYellowAlert())
+                    } else if (pParty->GetYellowAlert()) {
                         alert_texture = game_ui_player_alert_yellow;
+                    }
 
                     render->DrawQuad2D(alert_texture,
                         {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[pTurnEngine->pQueue[i].uPackedID.id()] - 4, 384}); // was 385
@@ -1300,10 +1314,11 @@ void GameUI_DrawPortraits() {
         for (int i = 0; i < pParty->pCharacters.size(); ++i) {
             if (pParty->pCharacters[i].CanAct() && !pParty->pCharacters[i].timeToRecovery) {
                 auto alert_texture = game_ui_player_alert_green;
-                if (pParty->GetRedAlert())
+                if (pParty->GetRedAlert()) {
                     alert_texture = game_ui_player_alert_red;
-                else if (pParty->GetYellowAlert())
+                } else if (pParty->GetYellowAlert()) {
                     alert_texture = game_ui_player_alert_yellow;
+                }
 
                 render->DrawQuad2D(alert_texture, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] - 4, 384}); // was 385
             }
@@ -1618,10 +1633,11 @@ Color UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value,
         return colorTable.White; // Default - white.
     } else if (actual_value < base_value) {
         if (100 * actual_value / base_value >=
-            25)  // Yellow( current_pos > 1/4 )
+            25) {  // Yellow( current_pos > 1/4 )
             R = 255, G = 255, B = 100;
-        else  // Red( current_pos < 1/4 )
+        } else {  // Red( current_pos < 1/4 )
             R = 255, G = 0, B = 0;
+        }
     } else {  // Green
         R = 0, G = 255, B = 0;
     }
@@ -1666,16 +1682,17 @@ Color GetConditionDrawColor(Condition uConditionIdx) {
 
 //----- (00495430) --------------------------------------------------------
 std::string GetReputationString(int reputation) {
-    if (reputation >= 25)
+    if (reputation >= 25) {
         return localization->str(LSTR_REPUTATION_HATED);
-    else if (reputation >= 6)
+    } else if (reputation >= 6) {
         return localization->str(LSTR_REPUTATION_UNFRIENDLY);
-    else if (reputation >= -5)
+    } else if (reputation >= -5) {
         return localization->str(LSTR_REPUTATION_NEUTRAL);
-    else if (reputation >= -24)
+    } else if (reputation >= -24) {
         return localization->str(LSTR_REPUTATION_FRIENDLY);
-    else
+    } else {
         return localization->str(LSTR_REPUTATION_LIKED);
+    }
 }
 
 void GameUI_handleHintMessage(UIMessageType type, int param) {
@@ -1683,11 +1700,10 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         case UIMSG_HintSelectRemoveQuickSpellBtn: {
             if (spellbookSelectedSpell != SPELL_NONE && spellbookSelectedSpell != pParty->activeCharacter().uQuickSpell) {
                 engine->_statusBar->setPermanent(LSTR_SET_S_AS_THE_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name);
+            } else if (pParty->activeCharacter().uQuickSpell != SPELL_NONE) {
+                engine->_statusBar->setPermanent(LSTR_CLICK_HERE_TO_REMOVE_YOUR_QUICK_SPELL);
             } else {
-                if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
-                    engine->_statusBar->setPermanent(LSTR_CLICK_HERE_TO_REMOVE_YOUR_QUICK_SPELL);
-                else
-                    engine->_statusBar->setPermanent(LSTR_SELECT_A_SPELL_THEN_CLICK_HERE_TO_SET_A);
+                engine->_statusBar->setPermanent(LSTR_SELECT_A_SPELL_THEN_CLICK_HERE_TO_SET_A);
             }
             break;
         }

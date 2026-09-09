@@ -51,12 +51,10 @@ void trace::migrateDropRedundantKeyEvents(EventTrace *trace) {
             } else {
                 pressedKeys.insert(key);
             }
+        } else if (!pressedKeys.contains(key)) {
+            event.reset(); // Drop redundant key release events.
         } else {
-            if (!pressedKeys.contains(key)) {
-                event.reset(); // Drop redundant key release events.
-            } else {
-                pressedKeys.erase(key);
-            }
+            pressedKeys.erase(key);
         }
     }
 

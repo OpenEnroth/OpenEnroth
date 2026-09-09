@@ -491,10 +491,8 @@ LABEL_25:
         pSpriteObject->vPosition.z = floor_lvl + 1;
         if (pIndoor->faces[uFaceID].polygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
-        } else {
-            if (pIndoor->faces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
-                pSpriteObject->vVelocity.z -= gameTimer->dt().ticks() * GetGravityStrength();
-            }
+        } else if (pIndoor->faces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
+            pSpriteObject->vVelocity.z -= gameTimer->dt().ticks() * GetGravityStrength();
         }
         pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
         if (pSpriteObject->vVelocity.xy().lengthSqr() < 400) {
@@ -717,10 +715,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         if (object->spell_caster_pid.type() == OBJECT_Actor && pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()]) == HOSTILITY_FRIENDLY) {
             return 1;
         }
-    } else {
-        if (pid.type() == OBJECT_Character && object->spell_caster_pid.type() == OBJECT_Character) {
-            return 1;
-        }
+    } else if (pid.type() == OBJECT_Character && object->spell_caster_pid.type() == OBJECT_Character) {
+        return 1;
     }
 
     if (pParty->bTurnBasedModeOn) {

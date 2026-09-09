@@ -172,10 +172,11 @@ class ViewInterface : public std::ranges::view_interface<Derived> {
         // So we use a manual loop with emplace_back / emplace.
         container->clear();
         for (auto &&element : derived()) {
-            if constexpr (requires { container->emplace_back(element); })
+            if constexpr (requires { container->emplace_back(element); }) {
                 container->emplace_back(element);
-            else
+            } else {
                 container->emplace(element);
+            }
         }
     }
 

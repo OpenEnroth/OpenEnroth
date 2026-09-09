@@ -53,12 +53,10 @@ void GUIWindow_Temple::healDialogue() {
                 setZombie = true;
             }
         }
-    } else {
-        if (pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
-            pParty->activeCharacter().uCurrentFace = pParty->activeCharacter().uPrevFace;
-            pParty->activeCharacter().uVoiceID = pParty->activeCharacter().uPrevVoiceID;
-            GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, pParty->activeCharacter().uPrevFace);
-        }
+    } else if (pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
+        pParty->activeCharacter().uCurrentFace = pParty->activeCharacter().uPrevFace;
+        pParty->activeCharacter().uVoiceID = pParty->activeCharacter().uPrevVoiceID;
+        GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, pParty->activeCharacter().uPrevFace);
     }
 
     pParty->activeCharacter().conditions.resetAll();

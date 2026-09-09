@@ -418,10 +418,11 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
 void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
     double v3 = (double)a2->timeSinceCreated.ticks() / (double)a2->GetLifetime().ticks();
     double v4;
-    if (v3 >= 0.75)
+    if (v3 >= 0.75) {
         v4 = (1.0 - v3) * 4.0;
-    else
+    } else {
         v4 = v3 * 1.333333333333333;
+    }
 
     Particle_sw local_0 = { 0 };
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Dropping;
@@ -1472,10 +1473,11 @@ bool SpellFX_Billboard::SpellFXViewClip() {
 
     for (int v6 = 0; v6 < this->uNumVertices; v6++) {
         if (NearClip >= field_64[v6].pos.x || field_64[v6].pos.x >= FarClip) {
-            if (NearClip < field_64[v6].pos.x)
+            if (NearClip < field_64[v6].pos.x) {
                 NeedFarClip = 1;
-            else
+            } else {
                 NeedNearClip = 1;
+            }
         }
     }
 

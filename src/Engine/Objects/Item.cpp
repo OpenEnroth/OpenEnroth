@@ -185,10 +185,11 @@ std::string Item::GetIdentifiedName() const {
     if (itemId == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
         if (lichJarCharacterIndex >= 0 && lichJarCharacterIndex < pParty->pCharacters.size()) {
             const std::string &player_name = pParty->pCharacters[lichJarCharacterIndex].name;
-            if (player_name.back() == 's')
+            if (player_name.back() == 's') {
                 return localization->format(LSTR_S_JAR, player_name);
-            else
+            } else {
                 return localization->format(LSTR_SS_JAR, player_name);
+            }
         }
     }
 
@@ -198,32 +199,30 @@ std::string Item::GetIdentifiedName() const {
                    pItemTable->standardEnchantments[*standardEnchantment].itemSuffix;
         } else if (specialEnchantment == ITEM_ENCHANTMENT_NULL) {
             return pItemTable->items[itemId].name;
+        } else if (specialEnchantment == ITEM_ENCHANTMENT_VAMPIRIC
+            || specialEnchantment == ITEM_ENCHANTMENT_DEMON_SLAYING
+            || specialEnchantment == ITEM_ENCHANTMENT_DRAGON_SLAYING
+            || specialEnchantment == ITEM_ENCHANTMENT_ROGUES
+            || specialEnchantment == ITEM_ENCHANTMENT_WARRIORS
+            || specialEnchantment == ITEM_ENCHANTMENT_WIZARDS
+            || specialEnchantment == ITEM_ENCHANTMENT_ANTIQUE
+            || specialEnchantment == ITEM_ENCHANTMENT_MONKS
+            || specialEnchantment == ITEM_ENCHANTMENT_THIEVES
+            || specialEnchantment == ITEM_ENCHANTMENT_SWIFT
+            || specialEnchantment == ITEM_ENCHANTMENT_ELF_SLAYING
+            || specialEnchantment == ITEM_ENCHANTMENT_UNDEAD_SLAYING
+            || specialEnchantment == ITEM_ENCHANTMENT_ASSASINS
+            || specialEnchantment == ITEM_ENCHANTMENT_BARBARIANS
+        ) {            // enchantment and name positions inverted!
+            return fmt::format(
+                "{} {}",
+                pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix,
+                pItemTable->items[itemId].name);
         } else {
-            if (specialEnchantment == ITEM_ENCHANTMENT_VAMPIRIC
-                || specialEnchantment == ITEM_ENCHANTMENT_DEMON_SLAYING
-                || specialEnchantment == ITEM_ENCHANTMENT_DRAGON_SLAYING
-                || specialEnchantment == ITEM_ENCHANTMENT_ROGUES
-                || specialEnchantment == ITEM_ENCHANTMENT_WARRIORS
-                || specialEnchantment == ITEM_ENCHANTMENT_WIZARDS
-                || specialEnchantment == ITEM_ENCHANTMENT_ANTIQUE
-                || specialEnchantment == ITEM_ENCHANTMENT_MONKS
-                || specialEnchantment == ITEM_ENCHANTMENT_THIEVES
-                || specialEnchantment == ITEM_ENCHANTMENT_SWIFT
-                || specialEnchantment == ITEM_ENCHANTMENT_ELF_SLAYING
-                || specialEnchantment == ITEM_ENCHANTMENT_UNDEAD_SLAYING
-                || specialEnchantment == ITEM_ENCHANTMENT_ASSASINS
-                || specialEnchantment == ITEM_ENCHANTMENT_BARBARIANS
-            ) {            // enchantment and name positions inverted!
-                return fmt::format(
-                    "{} {}",
-                    pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix,
-                    pItemTable->items[itemId].name);
-            } else {
-                return fmt::format(
-                    "{} {}",
-                    pItemTable->items[itemId].name,
-                    pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix);
-            }
+            return fmt::format(
+                "{} {}",
+                pItemTable->items[itemId].name,
+                pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix);
         }
     }
 
@@ -598,10 +597,8 @@ void Item::GetItemBonusSpecialEnchantment(const Character *owner,
     if (currBonus.skillType != SKILL_INVALID) {
         if (currBonus.statBonus == 0) {
             *halfSkillBonus = owner->pActiveSkills[currBonus.skillType].level() / 2;
-        } else {
-            if (*additiveBonus < currBonus.statBonus) {
-                *additiveBonus = currBonus.statBonus;
-            }
+        } else if (*additiveBonus < currBonus.statBonus) {
+            *additiveBonus = currBonus.statBonus;
         }
     } else {
         *additiveBonus += currBonus.statBonus;
@@ -664,17 +661,19 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
 
     switch (pItemTable->items[item_id].type) {
         case ITEM_TYPE_ARMOUR:
-            if (shoulder == 0)
+            if (shoulder == 0) {
                 return fmt::format("item{:03}v{}", texture_id, index);
-            else if (shoulder == 1)
+            } else if (shoulder == 1) {
                 return fmt::format("item{:03}v{}a1", texture_id, index);
-            else // shoulder == 2
+            } else { // shoulder == 2
                 return fmt::format("item{:03}v{}a2", texture_id, index);
+            }
         case ITEM_TYPE_CLOAK:
-            if (shoulder == 0)
+            if (shoulder == 0) {
                 return fmt::format("item{:03}v{}", texture_id, index);
-            else // shoulder == 1
+            } else { // shoulder == 1
                 return fmt::format("item{:03}v{}a1", texture_id, index);
+            }
         default:
             return fmt::format("item{:03}v{}", texture_id, index);
     }

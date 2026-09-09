@@ -271,10 +271,11 @@ bool Party::hasItem(ItemId uItemID) {
 
 //----- (00492AD5) --------------------------------------------------------
 void Party::SetFood(int amount) {
-    if (amount > 65535)
+    if (amount > 65535) {
         amount = 65535;
-    else if (amount < 0)
+    } else if (amount < 0) {
         amount = 0;
+    }
 
     uNumFoodRations = amount;
 
@@ -635,34 +636,35 @@ void Party::updateCharactersAndHirelingsEmotions() {
                 player.portraitTimeLength = Duration::randomRealtimeMilliseconds(vrng, 250, 2250);
             } else {
                 int randomVal = vrng->random(100);
-                if (randomVal < 25)
+                if (randomVal < 25) {
                     player.portrait = PORTRAIT_BLINK;
-                else if (randomVal < 31)
+                } else if (randomVal < 31) {
                     player.portrait = PORTRAIT_WINK;
-                else if (randomVal < 37)
+                } else if (randomVal < 37) {
                     player.portrait = PORTRAIT_MOUTH_OPEN_RANDOM;
-                else if (randomVal < 43)
+                } else if (randomVal < 43) {
                     player.portrait = PORTRAIT_PURSE_LIPS_RANDOM;
-                else if (randomVal < 46)
+                } else if (randomVal < 46) {
                     player.portrait = PORTRAIT_LOOK_UP;
-                else if (randomVal < 52)
+                } else if (randomVal < 52) {
                     player.portrait = PORTRAIT_LOOK_RIGHT;
-                else if (randomVal < 58)
+                } else if (randomVal < 58) {
                     player.portrait = PORTRAIT_LOOK_LEFT;
-                else if (randomVal < 64)
+                } else if (randomVal < 64) {
                     player.portrait = PORTRAIT_LOOK_DOWN;
-                else if (randomVal < 70)
+                } else if (randomVal < 70) {
                     player.portrait = PORTRAIT_54;
-                else if (randomVal < 76)
+                } else if (randomVal < 76) {
                     player.portrait = PORTRAIT_55;
-                else if (randomVal < 82)
+                } else if (randomVal < 82) {
                     player.portrait = PORTRAIT_56;
-                else if (randomVal < 88)
+                } else if (randomVal < 88) {
                     player.portrait = PORTRAIT_57;
-                else if (randomVal < 94)
+                } else if (randomVal < 94) {
                     player.portrait = PORTRAIT_PURSE_LIPS_1;
-                else
+                } else {
                     player.portrait = PORTRAIT_PURSE_LIPS_2;
+                }
             }
 
             // TODO(captainurist): We overwrite the random timing from the PORTRAIT_NORMAL branch here.

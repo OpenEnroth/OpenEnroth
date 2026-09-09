@@ -329,19 +329,21 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     Recti iteminfo_window(0, 40, 384, 180);
 
     Pointi pt = mouse->position();
-    if (pt.x <= 320)
+    if (pt.x <= 320) {
         frameXpos = pt.x + 30;
-    else
+    } else {
         frameXpos = pt.x - iteminfo_window.w - 30;
+    }
 
     iteminfo_window.x = frameXpos;
     int itemXspacing = 100 - inspect_item_image->width();
     int itemYspacing = 144 - inspect_item_image->height();
     if (itemXspacing > 0) itemXspacing = itemXspacing / 2;
-    if (itemYspacing <= 0)
+    if (itemYspacing <= 0) {
         itemYspacing = 0;
-    else
+    } else {
         itemYspacing = itemYspacing / 2;
+    }
 
     // added so window is correct size with broken items
     iteminfo_window.h = inspect_item_image->height() + itemYspacing + 54;
@@ -765,10 +767,11 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
             !monsterIdReactionPlayed && skill_mastery != MASTERY_NONE) {
             SpeechId speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
-                if (monsterInfo.level >= pParty->activeCharacter().uLevel - 5)
+                if (monsterInfo.level >= pParty->activeCharacter().uLevel - 5) {
                     speech = SPEECH_ID_MONSTER_STRONG;
-                else
+                } else {
                     speech = SPEECH_ID_MONSTER_WEAK;
+                }
             } else {
                 speech = SPEECH_ID_MONSTER_FAIL;
             }
@@ -922,16 +925,18 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
             spellTitleStr = localization->str(LSTR_SPELLS);
         }
         if (monsterInfo.spell1Id != SPELL_NONE) {
-            if (extended)
+            if (extended) {
                 spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName, localization->skillValueShortString(monsterInfo.spell1SkillMastery));
-            else
+            } else {
                 spell1Str = pSpellStats->pInfos[monsterInfo.spell1Id].pShortName;
+            }
         }
         if (monsterInfo.spell2Id != SPELL_NONE) {
-            if (extended)
+            if (extended) {
                 spell3Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell2Id].pShortName, localization->skillValueShortString(monsterInfo.spell2SkillMastery));
-            else
+            } else {
                 spell2Str = pSpellStats->pInfos[monsterInfo.spell2Id].pShortName;
+            }
         }
     } else {
         spell1Str = localization->str(LSTR_UNKNOWN_VALUE);
@@ -987,15 +992,14 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
             resStr = localization->str(LSTR_UNKNOWN_VALUE);
         } else if (resValues[i] == 200) {
             resStr = localization->str(LSTR_IMMUNE);
-        } else {
-            if (resValues[i]) {
-                if (extended)
-                    resStr = fmt::format("{}", resValues[i]);
-                else
-                    resStr = localization->str(LSTR_RESISTANT);
+        } else if (resValues[i]) {
+            if (extended) {
+                resStr = fmt::format("{}", resValues[i]);
             } else {
-                resStr = localization->str(LSTR_NONE);
+                resStr = localization->str(LSTR_RESISTANT);
             }
+        } else {
+            resStr = localization->str(LSTR_NONE);
         }
 
         if (pWindow) {
@@ -1144,14 +1148,16 @@ void CharacterUI_StatsTab_ShowHint() {
                     CivilDuration d = condition_time.toCivilDuration();
                     pTextColor = GetConditionDrawColor(condition);
                     str += fmt::format("{::}{}\f00000 - ", pTextColor.tag(), localization->characterConditionName(condition));
-                    if (d.hours && d.hours <= 1)
+                    if (d.hours && d.hours <= 1) {
                         pHourWord = localization->str(LSTR_HOUR);
-                    else
+                    } else {
                         pHourWord = localization->str(LSTR_HOURS);
-                    if (d.days && d.days <= 1)
+                    }
+                    if (d.days && d.days <= 1) {
                         pDayWord = localization->str(LSTR_DAY_CAPITALIZED);
-                    else
+                    } else {
                         pDayWord = localization->str(LSTR_DAYS);
+                    }
                     str += fmt::format("{} {}, {} {}", d.days, pDayWord, d.hours, pHourWord);
                 }
             }
@@ -1277,10 +1283,11 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     Pointi pt = mouse->position();
 
     spell = &pSpellStats->pInfos[spell_id];
-    if (pt.y <= 250)
+    if (pt.y <= 250) {
         v3 = pt.y + 30;
-    else
+    } else {
         v3 = 30;
+    }
 
     Recti frameRect(90, v3, 328, 68);
 
@@ -1487,10 +1494,11 @@ void ShowPopupShopItem() {
                 case HOUSE_TYPE_WEAPON_SHOP: {
                     testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
-                        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD) {
                             item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
-                        else
+                        } else {
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
+                        }
 
                         if (item->itemId != ITEM_NULL) {
                             testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
@@ -1516,10 +1524,11 @@ void ShowPopupShopItem() {
                             testx += 4;
                         }
 
-                        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD) {
                             item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
-                        else
+                        } else {
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
+                        }
 
                         if (item->itemId != ITEM_NULL) {
                             if (testx >= 4) {
@@ -1551,10 +1560,11 @@ void ShowPopupShopItem() {
                             testx += 6;
                         }
 
-                        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialogue == DIALOGUE_SHOP_BUY_STANDARD) {
                             item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
-                        else
+                        } else {
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
+                        }
 
                         if (item->itemId != ITEM_NULL) {
                             if (pt.y > 152) {
@@ -1651,11 +1661,12 @@ void GameUI_CharacterQuickRecord_Draw(Recti window, int characterIndex) {
         v13 = game_ui_player_face_dead;
     } else {
         int faceTextureIndex = 1;
-        if (player->portrait == PORTRAIT_TALK)
+        if (player->portrait == PORTRAIT_TALK) {
             faceTextureIndex = player->talkAnimation.currentFrameIndex();
-        else
+        } else {
             faceTextureIndex = pPortraitFrameTable->animationFrameIndex(pPortraitFrameTable->animationId(player->portrait),
                                                                         animTimer->time());
+        }
         player->portraitImageIndex = faceTextureIndex - 1;
         v13 = game_ui_player_faces[characterIndex][faceTextureIndex - 1];
     }
@@ -1678,10 +1689,11 @@ void GameUI_CharacterQuickRecord_Draw(Recti window, int characterIndex) {
                      GetConditionDrawColor(player->GetMajorConditionIdx()).tag(),
                      localization->characterConditionName(player->GetMajorConditionIdx()));
 
-    if (player->uQuickSpell != SPELL_NONE)
+    if (player->uQuickSpell != SPELL_NONE) {
         spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
-    else
+    } else {
         spellName = localization->str(LSTR_NONE);
+    }
 
     str += fmt::format("{}: {}", localization->str(LSTR_QUICK_SPELL), spellName);
 
@@ -1757,10 +1769,11 @@ void UI_OnMouseRightClick(Pointi mousePos) {
         case SCREEN_CHEST: {
             if (!pParty->activeCharacter().CanAct()) {
                 Recti popup_window(0, 40, 384, 180);
-                if ((signed int)pX <= 320)
+                if ((signed int)pX <= 320) {
                     popup_window.x = pX + 30;
-                else
+                } else {
                     popup_window.x = pX - 414;
+                }
                 GUIWindow::DrawMessageBox(popup_window, localization->format(
                     LSTR_S_IS_IN_NO_CONDITION_TO_S,
                     pParty->activeCharacter().name,
@@ -1844,23 +1857,24 @@ void UI_OnMouseRightClick(Pointi mousePos) {
         case SCREEN_CHARACTERS:
         case SCREEN_SHOP_INVENTORY:
         case SCREEN_CHEST_INVENTORY: {
-            if ((signed int)pX > 467 && current_screen_type != SCREEN_SHOP_INVENTORY)
+            if ((signed int)pX > 467 && current_screen_type != SCREEN_SHOP_INVENTORY) {
                 Inventory_ItemPopupAndAlchemy();
-            else if ((signed int)pY >= 345)
+            } else if ((signed int)pY >= 345) {
                 break;
-            else if (current_character_screen_window ==
-                     WINDOW_CharacterWindow_Stats)  // 2DEvent -
+            } else if (current_character_screen_window ==
+                     WINDOW_CharacterWindow_Stats) {  // 2DEvent -
                                                     // CharacerScreenStats
                 CharacterUI_StatsTab_ShowHint();
-            else if (current_character_screen_window ==
-                     WINDOW_CharacterWindow_Skills)  // 2DEvent -
+            } else if (current_character_screen_window ==
+                     WINDOW_CharacterWindow_Skills) {  // 2DEvent -
                                                      // CharacerScreenSkills
                 CharacterUI_SkillsTab_ShowHint();
-            else if (
+            } else if (
                 current_character_screen_window ==
-                WINDOW_CharacterWindow_Inventory)  // 2DEvent -
+                WINDOW_CharacterWindow_Inventory) {  // 2DEvent -
                                                    // CharacerScreenInventory
                 Inventory_ItemPopupAndAlchemy();
+            }
             break;
         }
         case SCREEN_SPELL_BOOK: {

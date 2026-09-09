@@ -94,10 +94,11 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowRelativePosition(Poin
 
     Sizei size = window->size();
     Pointi pos;
-    if (position != nullptr)
+    if (position != nullptr) {
         pos = *position;
-    else
+    } else {
         pos = window->position();
+    }
 
     // Fallback is centered on display 0.
     Pointi relativePos = Pointi(-1, -1);
@@ -273,11 +274,9 @@ void GameWindowHandler::OnMouseMove(Pointi position, Pointi relative, bool left_
         ArcomageGame::OnMouseMove(position);
         ArcomageGame::OnMouseClick(0, left_button);
         ArcomageGame::OnMouseClick(1, right_button);
-    } else {
-        if (mouse) {
-            mouse->setPosition(position);
-            mouse->DoMouseLook(relative);
-        }
+    } else if (mouse) {
+        mouse->setPosition(position);
+        mouse->DoMouseLook(relative);
     }
 }
 
@@ -362,14 +361,16 @@ void GameWindowHandler::OnActivated() {
         dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
 
         if (!pArcomageGame->_gameInProgress) {
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER)
+            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER) {
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0200_EVENT_TIMER;
-            else
+            } else {
                 gameTimer->setPaused(false);
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0400_MISC_TIMER)
+            }
+            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0400_MISC_TIMER) {
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0400_MISC_TIMER;
-            else
+            } else {
                 animTimer->setPaused(false);
+            }
         }
 
         pAudioPlayer->resumeSounds();
@@ -385,17 +386,19 @@ void GameWindowHandler::OnDeactivated() {
 
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_APP_INACTIVE;
         if (gameTimer != nullptr) {
-            if (gameTimer->isPaused())
+            if (gameTimer->isPaused()) {
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
-            else
+            } else {
                 gameTimer->setPaused(true);
+            }
         }
 
         if (animTimer != nullptr) {
-            if (animTimer->isPaused())
+            if (animTimer->isPaused()) {
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
-            else
+            } else {
                 animTimer->setPaused(true);
+            }
         }
 
         if (pAudioPlayer) {

@@ -133,8 +133,9 @@ bool blockCondition(Character *character, Condition condition) {
 }
 
 const std::array<Condition, 18> &conditionImportancyTable() {
-    if (engine->config->gameplay.AlternativeConditionPriorities.value())
+    if (engine->config->gameplay.AlternativeConditionPriorities.value()) {
         return conditionImportancyTableAlternative;
-    else
+    } else {
         return conditionImportancyTableDefault;
+    }
 }

@@ -443,13 +443,11 @@ const std::string &joinGuildOptionString() {
     if (pParty->activeCharacter().CanAct()) {
         if (pParty->activeCharacter()._achievedAwardsBits[guildMembershipAwardBit]) {
             return pNPCTopics[dialogue_base + 13].pText;
+        } else if (gold_transaction_amount <= pParty->GetGold()) {
+            membershipOrTrainingApproved = true;
+            return pNPCTopics[dialogue_base + std::to_underlying(guild_id)].pText;
         } else {
-            if (gold_transaction_amount <= pParty->GetGold()) {
-                membershipOrTrainingApproved = true;
-                return pNPCTopics[dialogue_base + std::to_underlying(guild_id)].pText;
-            } else {
-                return pNPCTopics[dialogue_base + 14].pText;
-            }
+            return pNPCTopics[dialogue_base + 14].pText;
         }
     } else {
         return pNPCTopics[dialogue_base + 12].pText;

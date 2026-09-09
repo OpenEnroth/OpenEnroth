@@ -794,16 +794,18 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 // TODO(captainurist): ^ and what about night?
                 break;
             case 6:
-                if (pPlayer->uSex == SEX_FEMALE)
+                if (pPlayer->uSex == SEX_FEMALE) {
                     result += localization->str(LSTR_LADY_LOWERCASE);
-                else
+                } else {
                     result += localization->str(LSTR_SIR_LOWERCASE);
+                }
                 break;
             case 7:
-                if (pPlayer->uSex == SEX_FEMALE)
+                if (pPlayer->uSex == SEX_FEMALE) {
                     result += localization->str(LSTR_LADY_CAPITALIZED);
-                else
+                } else {
                     result += localization->str(LSTR_SIR_CAPITALIZED);
+                }
                 break;
             case 8:
                 // #mm6 remnant, this code simply won't work in mm7, relevant bits don't look like they are related
@@ -822,16 +824,18 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 }
                 break;
             case 9:
-                if (npc->sex == SEX_FEMALE)
+                if (npc->sex == SEX_FEMALE) {
                     result += localization->str(LSTR_HER);
-                else
+                } else {
                     result += localization->str(LSTR_HIS);
+                }
                 break;
             case 10:
-                if (pPlayer->uSex == SEX_FEMALE)
+                if (pPlayer->uSex == SEX_FEMALE) {
                     result += localization->str(LSTR_LADY_CAPITALIZED);
-                else
+                } else {
                     result += localization->str(LSTR_LORD);
+                }
                 break;
             case 11:
                 result += GetReputationString(pParty->GetPartyReputation());
@@ -843,19 +847,21 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 result += pNPCStats->sub_495366_MispronounceName(pPlayer->name[0], pPlayer->uSex);
                 break;
             case 14:
-                if (npc->sex == SEX_FEMALE)
+                if (npc->sex == SEX_FEMALE) {
                     result += localization->str(LSTR_SISTER);
-                else
+                } else {
                     result += localization->str(LSTR_BROTHER);
+                }
                 break;
             case 15:
                 result += localization->str(LSTR_DAUGHTER);
                 break;
             case 16:
-                if (npc->sex == SEX_FEMALE)
+                if (npc->sex == SEX_FEMALE) {
                     result += localization->str(LSTR_SISTER);
-                else
+                } else {
                     result += localization->str(LSTR_BROTHER);
+                }
                 break;
             case 17:  // hired npc text
             {
@@ -877,10 +883,11 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 result += v1;
                 break;
             case 23:
-                if (engine->_currentLoadedMapId != MAP_INVALID)
+                if (engine->_currentLoadedMapId != MAP_INVALID) {
                     result += pMapTable->pInfos[engine->_currentLoadedMapId].name;
-                else
+                } else {
                     result += localization->str(LSTR_UNKNOWN);
+                }
                 break;
 
             case 24:  // item name
@@ -926,16 +933,14 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                     v29 = PriceCalculator::itemRepairPriceForPlayer(
                         pPlayer, item->GetValue(),
                         houseTable[houseId].fPriceMultiplier);
-                    } else {
-                        if (shop_screen == SHOP_SCREEN_SELL_FOR_CHEAP) {
-                            // TODO(captainurist): encapsulate this logic in PriceCalculator
-                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *item, houseTable[houseId].fPriceMultiplier) / 2;
-                            if (!v29)  // cannot be 0
-                                v29 = 1;
-                            v1 = fmt::format("{}", v29);
-                            result += v1;
-                            break;
-                        }
+                    } else if (shop_screen == SHOP_SCREEN_SELL_FOR_CHEAP) {
+                        // TODO(captainurist): encapsulate this logic in PriceCalculator
+                        v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *item, houseTable[houseId].fPriceMultiplier) / 2;
+                        if (!v29)  // cannot be 0
+                            v29 = 1;
+                        v1 = fmt::format("{}", v29);
+                        result += v1;
+                        break;
                     }
                     v1 = fmt::format("{}", v29);
                     result += v1;

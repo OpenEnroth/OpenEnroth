@@ -14,10 +14,11 @@ float TrigTableLookup::cos(int angle) const {
 
     if (angle > uIntegerPi)
         angle = uIntegerDoublePi - angle;
-    if (angle >= uIntegerHalfPi)
+    if (angle >= uIntegerHalfPi) {
         return -_cosTable[uIntegerPi - angle];
-    else
+    } else {
         return _cosTable[angle];
+    }
 }
 
 float TrigTableLookup::sin(int angle) const {

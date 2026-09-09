@@ -15,10 +15,11 @@ std::unique_ptr<Camera3D> pCamera3D;
 
 //----- (0043643E) --------------------------------------------------------
 float Camera3D::GetMouseInfoDepth() {
-    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         return engine->config->gameplay.MouseInfoDepthOutdoor.value();
-    else
+    } else {
         return engine->config->gameplay.MouseInfoDepthIndoor.value();
+    }
 }
 
 float Camera3D::GetNearClip() const {

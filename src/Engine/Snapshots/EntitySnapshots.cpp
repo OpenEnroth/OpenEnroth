@@ -1491,12 +1491,13 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     reconstruct(src.items, &dst->items);
 
     dst->group = src.group;
-    if (src.hostilityGroup == 9999)
+    if (src.hostilityGroup == 9999) {
         dst->hostilityGroup = MONSTER_TYPE_INVALID;
-    else if (src.hostilityGroup == 0)
+    } else if (src.hostilityGroup == 0) {
         dst->hostilityGroup = monsterTypeForMonsterId(dst->monsterInfo.id);
-    else
+    } else {
         dst->hostilityGroup = static_cast<MonsterType>(src.hostilityGroup);
+    }
 
     reconstruct(src.scheduledJobs, &dst->scheduledJobs);
 
