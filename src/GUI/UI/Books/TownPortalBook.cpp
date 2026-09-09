@@ -184,7 +184,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
             mastery = MASTERY_GRANDMASTER;
         } else if (_castFlags & ON_CAST_CastViaScroll) {
             // Cast from scroll
-            mastery = SCROLL_OR_NPC_SPELL_SKILL_VALUE.mastery();
+            mastery = scrollSpellSkillValue().mastery();
         } else {
             mastery = character.getActualSkillValue(SKILL_WATER).mastery();
             character.SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[mastery]);

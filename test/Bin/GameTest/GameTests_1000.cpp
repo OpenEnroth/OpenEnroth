@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <unordered_set>
 #include <vector>
 #include <utility>
@@ -446,6 +447,56 @@ GAME_TEST(Issues, Issue1255) {
     auto wandTape = tapes.hasItem(ITEM_FAIRY_WAND_OF_LASHING);
     test.playTraceFromTestData("issue_1255.mm7", "issue_1255.json");
     EXPECT_EQ(wandTape, tape(false, true));
+}
+
+GAME_TEST(Issues, Issue1262) {
+    // Scroll and wand spell power were hardcoded. Check that the config options feed the casts, and that the defaults
+    // are the vanilla values - scrolls at level 5 master, wands at level 8 novice.
+    for (bool configured : {false, true}) {
+        test.prepareForNextTest();
+        int scrollLevel = 5;
+        Mastery scrollMastery = MASTERY_MASTER;
+        int wandLevel = 8;
+        Mastery wandMastery = MASTERY_NOVICE;
+        if (configured) {
+            scrollLevel = 12;
+            scrollMastery = MASTERY_EXPERT;
+            wandLevel = 20;
+            wandMastery = MASTERY_GRANDMASTER;
+            engine->config->gameplay.ScrollSpellLevel.setValue(scrollLevel);
+            engine->config->gameplay.ScrollSpellMastery.setValue(std::to_underlying(scrollMastery));
+            engine->config->gameplay.WandSpellLevel.setValue(wandLevel);
+            engine->config->gameplay.WandSpellMastery.setValue(std::to_underlying(wandMastery));
+        }
+
+        game.startNewGame();
+
+        // Torch Light lasts the skill level in hours, and its power is 2, 3 or 4 by mastery.
+        SpellBuff &torch = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT];
+        ASSERT_FALSE(torch.Active());
+        Time castStart = pParty->GetPlayingTime();
+        pParty->setHoldingItem(Item(ITEM_SCROLL_TORCH_LIGHT));
+        pParty->activeCharacter().useItem(0, true); // Scroll dropped on the first character's portrait.
+        game.tick(2);
+        ASSERT_TRUE(torch.Active());
+        EXPECT_EQ(torch.skillMastery, scrollMastery);
+        EXPECT_EQ(torch.power, scrollMastery == MASTERY_EXPERT ? 3 : 4);
+        EXPECT_EQ((torch.GetExpireTime() - castStart).hours(), scrollLevel); // Truncates the frames between the cast and now.
+
+        // A wand of fire shoots a fire bolt that carries the wand skill.
+        ASSERT_TRUE(pParty->hasActiveCharacter()); // The scroll caster may be recovering, whoever is active now shoots.
+        Item wand;
+        wand.itemId = ITEM_WAND_OF_FIRE;
+        wand.numCharges = wand.maxCharges = 1;
+        pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
+        game.tick();
+        game.pressAndReleaseKey(PlatformKey::KEY_A);
+        game.tick(2);
+        auto bolt = std::ranges::find_if(pSpriteObjects, [](const SpriteObject &sprite) { return sprite.uSpellID == SPELL_FIRE_FIRE_BOLT; });
+        ASSERT_NE(bolt, pSpriteObjects.end());
+        EXPECT_EQ(bolt->spell_level, wandLevel);
+        EXPECT_EQ(bolt->spell_skill, wandMastery);
+    }
 }
 
 GAME_TEST(Issues, Issue1272) {

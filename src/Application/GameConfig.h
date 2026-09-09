@@ -15,6 +15,7 @@
 #include "Library/Color/Color.h"
 
 #include "Engine/Random/RandomEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Library/Logger/LogEnums.h"
 
 #include "KeyConfigEntry.h"
@@ -275,6 +276,19 @@ class GameConfig : public Config {
         Bool DestroyDischargedWands = { this, "destroy_discharged_wands", false,
             "Destroy wands when they reach 0 charges." };
 
+        Int ScrollSpellLevel = {this, "scroll_spell_level", 5, &ValidateSpellLevel,
+            "Skill level that spell scrolls and hireling spells are cast with. 5 in vanilla."};
+
+        Int ScrollSpellMastery = {this, "scroll_spell_mastery", 3, &ValidateSpellMastery,
+            "Skill mastery that spell scrolls and hireling spells are cast with, from 1 for novice to 4 for grandmaster. "
+            "3 in vanilla."};
+
+        Int WandSpellLevel = {this, "wand_spell_level", 8, &ValidateSpellLevel,
+            "Skill level that wands are cast with. 8 in vanilla."};
+
+        Int WandSpellMastery = {this, "wand_spell_mastery", 1, &ValidateSpellMastery,
+            "Skill mastery that wands are cast with, from 1 for novice to 4 for grandmaster. 1 in vanilla."};
+
         Bool ShowProtectionMagicPower = {this, "show_prot_magic_power", true, "Display the remaining power of Protection from Magic in the Party Buffs popup."};
 
         Bool NoPotionsForEradicated = {this, "no_potions_for_eradicated", true,
@@ -324,6 +338,12 @@ class GameConfig : public Config {
         }
         static int ValidateMaxActiveAIActors(int num) {
             return std::clamp(num, 30, 500);
+        }
+        static int ValidateSpellLevel(int level) {
+            return std::max(level, 1);
+        }
+        static int ValidateSpellMastery(int mastery) {
+            return std::clamp(mastery, std::to_underlying(MASTERY_FIRST), std::to_underlying(MASTERY_LAST));
         }
     };
 

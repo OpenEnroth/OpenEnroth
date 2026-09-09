@@ -6374,7 +6374,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         shooting_wand = true;
 
         pushSpellOrRangedAttack(spellForWand(wand_item_id),
-                                pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
+                                pParty->activeCharacterIndex() - 1, wandSpellSkillValue(), 0, pParty->activeCharacterIndex() + 8);
 
         // reduce wand charges
         if (!--main_hand->numCharges && engine->config->gameplay.DestroyDischargedWands.value()) {

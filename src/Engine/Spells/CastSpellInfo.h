@@ -53,10 +53,15 @@ using enum SpellCastFlag;
 MM_DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
 
-// Scrolls or NPC spells casted with MASTER mastery of skill level 5
-static const CombinedSkillValue SCROLL_OR_NPC_SPELL_SKILL_VALUE(5, MASTERY_MASTER);
-// Wands cast at novice mastery skill level 8
-static const CombinedSkillValue WANDS_SKILL_VALUE(8, MASTERY_NOVICE);
+/**
+ * @return                              Skill value that spell scrolls and hireling spells are cast with, as configured.
+ */
+CombinedSkillValue scrollSpellSkillValue();
+
+/**
+ * @return                              Skill value that wands are cast with, as configured.
+ */
+CombinedSkillValue wandSpellSkillValue();
 
 struct CastSpellInfo {
     std::unique_ptr<TargetedSpellUI> GetCastSpellInInventoryWindow();
