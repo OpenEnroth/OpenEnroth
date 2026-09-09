@@ -98,6 +98,23 @@ RUN ARCH=$(dpkg --print-architecture) && \
   dpkg -i "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb" && \
   rm "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb"
 
+# Install lua-language-server, which the check_style target picks up from PATH. Without it the lua half of the target
+# silently checks nothing, so style breakages that CI rejects don't reproduce locally. Keep the version in sync with
+# LLS_TAG in .github/workflows/style.yml. Unpacked outside /workspace on purpose, inside it the server lints its own
+# lua sources.
+ARG LLS_VERSION=3.19.1
+RUN ARCH=$(dpkg --print-architecture) && \
+  case "$ARCH" in \
+    amd64) LLS_ARCH=x64 ;; \
+    arm64) LLS_ARCH=arm64 ;; \
+    *) echo "No lua-language-server build for $ARCH" >&2 && exit 1 ;; \
+  esac && \
+  mkdir -p /opt/lua-language-server && \
+  wget -qO /tmp/lls.tar.gz "https://github.com/LuaLS/lua-language-server/releases/download/${LLS_VERSION}/lua-language-server-${LLS_VERSION}-linux-${LLS_ARCH}.tar.gz" && \
+  tar xzf /tmp/lls.tar.gz -C /opt/lua-language-server && \
+  rm /tmp/lls.tar.gz && \
+  ln -s /opt/lua-language-server/bin/lua-language-server /usr/local/bin/lua-language-server
+
 # Set up non-root user
 USER $USERNAME
 

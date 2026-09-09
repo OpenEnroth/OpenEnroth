@@ -1,16 +1,14 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
 #include <string>
 
-#include "Engine/Data/SoundEnums.h"
+#include "DecorationEnums.h"
+#include "SoundEnums.h"
 
 #include "Library/Color/Color.h"
 
-#include "DecorationEnums.h"
-
-struct DecorationDesc {
+struct DecorationData {
     std::string internalName; // Internal name of the decoration (e.g. "dec03").
     std::string hint; // Hint for the decoration (e.g. "campfire", "cauldron"). This text is shown in the status bar
                       // when clicking on the decoration if it's not scripted.
@@ -23,33 +21,14 @@ struct DecorationDesc {
     SoundId uSoundID = SOUND_Invalid;
     Color uColoredLight;
 
-    inline bool CanMoveThrough() const {
+    bool canMoveThrough() const {
         return uFlags & (DECORATION_DESC_MOVE_THROUGH | DECORATION_DESC_DONT_DRAW);
     }
-    inline bool DontDraw() const { return uFlags & DECORATION_DESC_DONT_DRAW; }
-    inline bool SoundOnDawn() const {
+    bool dontDraw() const { return uFlags & DECORATION_DESC_DONT_DRAW; }
+    bool soundOnDawn() const {
         return uFlags & DECORATION_DESC_SOUND_ON_DAWN;
     }
-    inline bool SoundOnDusk() const {
+    bool soundOnDusk() const {
         return uFlags & DECORATION_DESC_SOUND_ON_DUSK;
     }
 };
-
-class DecorationList {
- public:
-    inline DecorationList() {}
-
-    void InitializeDecorationSprite(DecorationId uDecID);
-    DecorationId GetDecorIdByName(std::string_view pName);
-
-    const DecorationDesc *GetDecoration(DecorationId index) const {
-        return &pDecorations[std::to_underlying(index)];
-    }
-
- public:
-    std::vector<DecorationDesc> pDecorations; // TODO(captainurist): IndexedArray.
-};
-
-extern DecorationList *pDecorationList;
-
-void RespawnGlobalDecorations();

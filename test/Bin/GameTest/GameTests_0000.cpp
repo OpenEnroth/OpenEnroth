@@ -654,8 +654,8 @@ GAME_TEST(Issues, Issue415a) {
 
     EXPECT_EQ(hpTape.slice(0).delta(), -60); // Armageddon damage at GM is 60.
     EXPECT_EQ(hpTape.slice(1).delta(), 0); // The stoned titan is unfazed.
-    EXPECT_CONTAINS(stateTape.slice(0), AIState::Stunned); // Armageddon knockback should also affect paralyzed monsters.
-    EXPECT_MISSES(stateTape.slice(1), AIState::Stunned); // But not the stoned ones.
+    EXPECT_CONTAINS(stateTape.slice(0), AIState::InPain); // Armageddon knockback should also affect paralyzed monsters.
+    EXPECT_MISSES(stateTape.slice(1), AIState::InPain); // But not the stoned ones.
     EXPECT_EQ(paralyzedTape, tape(true)); // Stayed paralyzed the whole time.
     EXPECT_EQ(stonedTape, tape(true)); // Stayed stoned the whole time.
 }

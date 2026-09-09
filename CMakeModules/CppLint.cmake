@@ -3,6 +3,8 @@ function(init_check_style)
         find_package(Python COMPONENTS Interpreter GLOBAL)
         set(OE_CPPLINT_COMMAND "${PROJECT_SOURCE_DIR}/thirdparty/cpplint/cpplint.py" CACHE FILEPATH "CppLint command")
         add_custom_target(check_style)
+        add_custom_target(check_cpp_style)
+        add_dependencies(check_style check_cpp_style)
     endif()
 endfunction()
 
@@ -21,7 +23,7 @@ function(source_check_style TARGET TARGET_SOURCES)
                 COMMAND Python::Interpreter ${OE_CPPLINT_COMMAND} "--quiet" ${SOURCES_LIST}
                 DEPENDS ${SOURCES_LIST}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-        add_dependencies(check_style ${TARGET_NAME})
+        add_dependencies(check_cpp_style ${TARGET_NAME})
         set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "check_style")
     endif()
 endfunction()

@@ -9,7 +9,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Decoration.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -255,7 +255,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     std::string decorationName;
     for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
         reconstruct(src.decorationNames[i], &decorationName);
-        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(decorationName);
+        pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(decorationName);
     }
 
     reconstruct(src.lights, &dst->lights);
@@ -532,7 +532,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     std::string decorationName;
     for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
         reconstruct(src.decorationNames[i], &decorationName);
-        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(decorationName);
+        pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(decorationName);
     }
 
     reconstruct(src.decorationPidList, &dst->pFaceIDLIST);

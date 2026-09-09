@@ -19,8 +19,40 @@ local addItemToInventory = function (itemId, characterIndex)
     end
 end
 
+--- @type table<string, integer>|nil
+local itemsByName = nil
+
+--- Item names are localized, so this map can only be built once the item table is loaded. Names are not unique
+--- either - two different items are both called "Lich Jar" - so colliding names get their item id appended.
+--- @return table<string, integer>
+local function itemNameToIdMap()
+    if itemsByName then
+        return itemsByName
+    end
+
+    local allItems = Game.items.allItems()
+    --- Walked in id order so that the lowest id is the one that keeps the plain name. Without the sort the winner
+    --- would depend on hash order, which LuaJIT reseeds on every launch.
+    --- @type table<integer, integer>
+    local ids = {}
+    for id in pairs(allItems) do
+        table.insert(ids, id)
+    end
+    table.sort(ids)
+
+    itemsByName = {}
+    for _, id in ipairs(ids) do
+        local name = string.gsub(allItems[id], " ", "_")
+        if itemsByName[name] then
+            name = name .. "_" .. id
+        end
+        itemsByName[name] = id
+    end
+    return itemsByName
+end
+
 local addItemToInventoryByName = function (itemName, characterIndex)
-    local itemId = stringToEnum(Game.ItemType, itemName)
+    local itemId = stringToEnum(itemNameToIdMap(), itemName)
     return addItemToInventory(itemId, characterIndex)
 end
 
@@ -47,7 +79,7 @@ local subCommands = {
             {
                 name = "itemId",
                 type = "enum",
-                enumValues = Game.ItemType,
+                enumValues = itemNameToIdMap,
                 description = "Item ID to add to the inventory."
             },
             { name = "char", type = "characterIndex", description = "Character index to add the item to. Defaults to active character." }

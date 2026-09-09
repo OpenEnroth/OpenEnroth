@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Rect.h"
@@ -41,4 +42,4 @@ struct ViewingParams {
     Color pPalette[256] {};
 };
 
-extern ViewingParams *viewparams;
+extern std::unique_ptr<ViewingParams> viewparams;

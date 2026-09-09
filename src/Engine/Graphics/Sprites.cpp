@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <string>
 
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Data/DecorationData.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Resources/LodSpriteCache.h"
@@ -206,7 +206,7 @@ SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, Duration time) {
     return sprite;
 }
 
-SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, Duration t, int month) {
+SpriteFrame *LevelDecorationChangeSeason(const DecorationData *desc, Duration t, int month) {
     int spriteId = spriteIdForSeason(desc->uSpriteID, month);
     if (spriteId != desc->uSpriteID)
         pSpriteFrameTable->InitializeSprite(spriteId);

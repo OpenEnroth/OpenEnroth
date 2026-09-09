@@ -10,6 +10,7 @@
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/SpawnPoint.h"
+#include "Engine/LocationInfo.h"
 
 #include "Core/Time/Time.h"
 
@@ -17,13 +18,12 @@
 #include "Library/Geometry/Plane.h"
 #include "Library/Geometry/BBox.h"
 
-#include "LocationInfo.h"
 #include "LocationFunctions.h"
 #include "FaceEnums.h"
 
 struct BspRenderer;
 struct IndoorLocation;
-struct MapInfo;
+struct MapData;
 
 struct BSPNode {
     int uFront;
@@ -322,9 +322,9 @@ void PrepareDrawLists_BLV();
  * @offset 0x460A78
  */
 void loadAndPrepareBLV(MapId mapid, bool bLoading);
-int SpawnEncounterMonsters(MapInfo *a1, int a2);
+int SpawnEncounterMonsters(MapData *mapData, int encIndex);
 int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing);
-void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2);
+void SpawnRandomTreasure(MapData *mapData, SpawnPoint *spawn);
 
 void FindBillboardsLightLevels_BLV();
 

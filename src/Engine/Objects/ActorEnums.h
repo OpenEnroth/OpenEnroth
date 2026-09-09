@@ -62,7 +62,7 @@ enum class AIState : uint16_t {
     Dead = 0x5,
     Pursuing = 0x6,
     Fleeing = 0x7,
-    Stunned = 0x8,
+    InPain = 0x8,
     Fidgeting = 0x9,
     Interacting = 10,
     Removed = 11,
@@ -120,7 +120,7 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ActorAttributes)
 enum class ActorSound {
     ACTOR_ATTACK_SOUND = 0,
     ACTOR_DEATH_SOUND = 1,
-    ACTOR_STUNNED_SOUND = 2,
+    ACTOR_PAIN_SOUND = 2,
     ACTOR_BORED_SOUND = 3,
 
     ACTOR_SOUND_FIRST = ACTOR_ATTACK_SOUND,

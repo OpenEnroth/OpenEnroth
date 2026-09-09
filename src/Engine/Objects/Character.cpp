@@ -17,7 +17,6 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
@@ -26,7 +25,6 @@
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteEnumFunctions.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/SpellFxRenderer.h"
@@ -1644,11 +1642,14 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
     } else if (IsUnarmed() && getActualSkillValue(SKILL_UNARMED).level() > 0) {
         weapon_recovery = base_recovery_times_per_weapon_type[SKILL_UNARMED];
-    } else if (weapon = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND)) {
-        if (weapon->isWand()) {
-            weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[MASTERY_EXPERT];
-        } else {
-            weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
+    } else {
+        weapon = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND);
+        if (weapon) {
+            if (weapon->isWand()) {
+                weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[MASTERY_EXPERT];
+            } else {
+                weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
+            }
         }
     }
 
@@ -5871,7 +5872,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                 actorPtr->hp -= reflectedDamage;
                 if (reflectedDamage >= 0) {
                     if (actorPtr->hp >= 1) {
-                        Actor::AI_Stun(uActorID, Pid(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
+                        Actor::AI_Pain(uActorID, Pid(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
                                     // once Actor::functions are changed to
                                     // nonstatic actor functions
                         Actor::AggroSurroundingPeasants(uActorID, 1);
@@ -6039,7 +6040,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
 
                     if (recvdMagicDmg >= 0) {
                         if (actorPtr->hp >= 1) {
-                            Actor::AI_Stun(uActorID, Pid(OBJECT_Character, targetchar), 0);
+                            Actor::AI_Pain(uActorID, Pid(OBJECT_Character, targetchar), 0);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
                             // actor killed by retaliation
@@ -6358,10 +6359,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         int distance_x = actor->pos.x - pParty->pos.x,
             distance_y = actor->pos.y - pParty->pos.y,
             distance_z = actor->pos.z - pParty->pos.z;
-        actor_distance =
-            integer_sqrt(distance_x * distance_x + distance_y * distance_y +
-                         distance_z * distance_z) -
-            actor->radius;
+        actor_distance = Vec3i(distance_x, distance_y, distance_z).length() - actor->radius;
         if (actor_distance < 0) actor_distance = 0;
     }
 
@@ -6775,17 +6773,17 @@ void Character::Zero() {
 }
 
 bool Character::matchesAttackPreference(MonsterAttackPreference preference) const {
+    Class baseClass = engine->config->gameplay.AttackPreferencesIncludePromotions.value() ? getTier1Class(classType) : classType;
     switch (preference) {
-    // TODO(captainurist): isn't it weird that promotions aren't included in comparisons here?
-    case ATTACK_PREFERENCE_KNIGHT:      return classType == CLASS_KNIGHT;
-    case ATTACK_PREFERENCE_PALADIN:     return classType == CLASS_PALADIN;
-    case ATTACK_PREFERENCE_ARCHER:      return classType == CLASS_ARCHER;
-    case ATTACK_PREFERENCE_DRUID:       return classType == CLASS_DRUID;
-    case ATTACK_PREFERENCE_CLERIC:      return classType == CLASS_CLERIC;
-    case ATTACK_PREFERENCE_SORCERER:    return classType == CLASS_SORCERER;
-    case ATTACK_PREFERENCE_RANGER:      return classType == CLASS_RANGER;
-    case ATTACK_PREFERENCE_THIEF:       return classType == CLASS_THIEF;
-    case ATTACK_PREFERENCE_MONK:        return classType == CLASS_MONK;
+    case ATTACK_PREFERENCE_KNIGHT:      return baseClass == CLASS_KNIGHT;
+    case ATTACK_PREFERENCE_PALADIN:     return baseClass == CLASS_PALADIN;
+    case ATTACK_PREFERENCE_ARCHER:      return baseClass == CLASS_ARCHER;
+    case ATTACK_PREFERENCE_DRUID:       return baseClass == CLASS_DRUID;
+    case ATTACK_PREFERENCE_CLERIC:      return baseClass == CLASS_CLERIC;
+    case ATTACK_PREFERENCE_SORCERER:    return baseClass == CLASS_SORCERER;
+    case ATTACK_PREFERENCE_RANGER:      return baseClass == CLASS_RANGER;
+    case ATTACK_PREFERENCE_THIEF:       return baseClass == CLASS_THIEF;
+    case ATTACK_PREFERENCE_MONK:        return baseClass == CLASS_MONK;
     case ATTACK_PREFERENCE_MALE:        return uSex == SEX_MALE;
     case ATTACK_PREFERENCE_FEMALE:      return uSex == SEX_FEMALE;
     case ATTACK_PREFERENCE_HUMAN:       return GetRace() == RACE_HUMAN;

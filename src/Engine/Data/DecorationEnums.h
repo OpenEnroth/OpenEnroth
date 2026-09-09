@@ -243,6 +243,7 @@ enum class DecorationId : int32_t {
 };
 using enum DecorationId;
 
+// TODO(captainurist): rename to DecorationDataFlag/DECORATION_DATA_*. Plain DECORATION_* is taken by DecorationId.
 enum class DecorationDescFlag : uint16_t {
     DECORATION_DESC_MOVE_THROUGH = 0x0001,
     DECORATION_DESC_DONT_DRAW = 0x0002,
@@ -259,17 +260,3 @@ enum class DecorationDescFlag : uint16_t {
 using enum DecorationDescFlag;
 MM_DECLARE_FLAGS(DecorationDescFlags, DecorationDescFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(DecorationDescFlags)
-
-
-enum class LevelDecorationFlag : uint16_t {
-    LEVEL_DECORATION_TRIGGERED_BY_TOUCH = 0x01,
-    LEVEL_DECORATION_TRIGGERED_BY_MONSTER = 0x02,
-    LEVEL_DECORATION_TRIGGERED_BY_OBJECT = 0x04,
-    LEVEL_DECORATION_VISIBLE_ON_MAP = 0x08,
-    LEVEL_DECORATION_CHEST = 0x10,
-    LEVEL_DECORATION_INVISIBLE = 0x20,
-    LEVEL_DECORATION_OBELISK_CHEST = 0x40,
-};
-using enum LevelDecorationFlag;
-MM_DECLARE_FLAGS(LevelDecorationFlags, LevelDecorationFlag)
-MM_DECLARE_OPERATORS_FOR_FLAGS(LevelDecorationFlags)

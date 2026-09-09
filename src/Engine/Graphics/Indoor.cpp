@@ -14,7 +14,7 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Lighting.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -30,7 +30,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
@@ -38,7 +37,8 @@
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
+#include "Engine/MapEnumFunctions.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
 
@@ -297,7 +297,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapStats->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
+            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapTable->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
                 respawnTimed = true;
         } catch (const Exception &e) {
             MM_ERROR("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -879,7 +879,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     assert(isMapIndoor(mapid));
 
     unsigned int respawn_interval;  // ebx@1
-    MapInfo *map_info;              // edi@9
+    MapData *mapData;              // edi@9
     bool v28;                       // zf@81
     bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
@@ -899,9 +899,9 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
 
-    mapFilename = pMapStats->pInfos[mapid].fileName;
-    map_info = &pMapStats->pInfos[mapid];
-    respawn_interval = pMapStats->pInfos[mapid].respawnIntervalDays;
+    mapFilename = pMapTable->pInfos[mapid].fileName;
+    mapData = &pMapTable->pInfos[mapid];
+    respawn_interval = pMapTable->pInfos[mapid].respawnIntervalDays;
     alertStatus = GetAlertStatus();
 
 
@@ -917,9 +917,9 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         for (unsigned i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
             if (spawn->type == OBJECT_Actor)
-                SpawnEncounter(map_info, spawn, 0, 0, 0);
+                SpawnEncounter(mapData, spawn, 0, 0, 0);
             else
-                SpawnRandomTreasure(map_info, spawn);
+                SpawnRandomTreasure(mapData, spawn);
         }
         RespawnGlobalDecorations();
     }
@@ -938,16 +938,16 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     int interactiveDecorationsNum = 0;
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
-        pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
+        pDecorationTable->initializeSprite(pLevelDecorations[i].uDecorationDescID);
 
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+        const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[i].uDecorationDescID);
 
         if (decoration->uSoundID != SOUND_Invalid) {
             decorationsWithSound.push_back(i);
         }
 
         if (!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            if (!decoration->DontDraw()) {
+            if (!decoration->dontDraw()) {
                 if (decoration->uLightRadius) {
                     Color color = render->config->graphics.ColoredLights.value() ? decoration->uColoredLight : colorTable.White;
                     pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +
@@ -1131,7 +1131,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
 
-    const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[uDecorationID].uDecorationDescID);
+    const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[uDecorationID].uDecorationDescID);
 
     if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
         // TODO(pskelton): common emit fire code
@@ -1649,7 +1649,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
         if (gameTimer->dt()) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
-            int walkDelta = integer_sqrt((oldPos - pParty->pos).lengthSqr());
+            int walkDelta = (oldPos - pParty->pos).length();
 
             if (walkDelta < 2) {
                 // mute the walking sound when stopping
@@ -1721,8 +1721,7 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
     // calculates distance from point x3y3 to line x1y1->x2y2
 
     signed int result;
-    // calc line length
-    result = integer_sqrt(std::abs(x2 - x1) * std::abs(x2 - x1) + std::abs(y2 - y1) * std::abs(y2 - y1));
+    result = Vec2i(x2 - x1, y2 - y1).length();
 
     // orthogonal projection from line to point
     if (result)
@@ -1732,7 +1731,7 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
 }
 
 //----- (0045063B) --------------------------------------------------------
-int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
+int SpawnEncounterMonsters(MapData *mapData, int enc_index) {
     // creates random spawn point for encounter
     bool failed_point = false;
     float angle_from_party;
@@ -1766,10 +1765,9 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {
-                dist_y = std::abs(enc_spawn_point.position.y - model.boundingCenter.y);
-                dist_x = std::abs(enc_spawn_point.position.x - model.boundingCenter.x);
-                if (int_get_vector_length(dist_x, dist_y, 0) <
-                    model.boundingRadius + 256) {
+                dist_y = enc_spawn_point.position.y - model.boundingCenter.y;
+                dist_x = enc_spawn_point.position.x - model.boundingCenter.x;
+                if (Vec2i(dist_x, dist_y).length() < model.boundingRadius + 256) {
                     not_in_model = 1;
                     break;
                 }
@@ -1815,7 +1813,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
     if (failed_point) {
         return false;
     } else {
-        SpawnEncounter(map_info, &enc_spawn_point, 0, 0, 1);
+        SpawnEncounter(mapData, &enc_spawn_point, 0, 0, 1);
     }
 
     return enc_index;
@@ -1835,14 +1833,14 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
     return a1.Create(0, 0, 0, 0);
 }
 
-void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *spawn) {
+void SpawnRandomTreasure(MapData *mapData, SpawnPoint *spawn) {
     assert(spawn->type == OBJECT_Sprite);
 
     SpriteObject spawnedObject;
     spawnedObject.containing_item.Reset();
 
     int typeRandom = grng->random(100);
-    ItemTreasureLevel levelRandom = grng->randomSample(RemapTreasureLevel(spawn->treasureLevel, mapInfo->mapTreasureLevel));
+    ItemTreasureLevel levelRandom = grng->randomSample(RemapTreasureLevel(spawn->treasureLevel, mapData->mapTreasureLevel));
     if (levelRandom != ITEM_TREASURE_LEVEL_7) {
         // TODO(pskelton): configurable thresholds for treasure
         // [0, 20) -- nothing

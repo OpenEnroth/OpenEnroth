@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <memory>
-#include <utility>
 #include <vector>
 
 #include "Engine/Engine.h"
@@ -12,7 +11,7 @@
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AttackList.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "Engine/Random/Random.h"
 
@@ -512,24 +511,14 @@ LABEL_25:
 }
 
 void SpriteObject::explosionTraps() {
-    MapInfo *pMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
-    int dir_x = std::abs(pParty->pos.x - this->vPosition.x);
-    int dir_y = std::abs(pParty->pos.y - this->vPosition.y);
-    int dir_z = std::abs(pParty->pos.z + pParty->eyeLevel - this->vPosition.z);
-    if (dir_x < dir_y) {
-        std::swap(dir_x, dir_y);
-    }
-    if (dir_x < dir_z) {
-        std::swap(dir_x, dir_z);
-    }
-    if (dir_y < dir_z) {
-        std::swap(dir_y, dir_z);
-    }
-    unsigned int v10 = ((unsigned int)(11 * dir_y) >> 5) + (dir_z / 4) + dir_x;
-    if (v10 <= 768) {
+    MapData *mapData = &pMapTable->pInfos[engine->_currentLoadedMapId];
+    int dir_x = pParty->pos.x - this->vPosition.x;
+    int dir_y = pParty->pos.y - this->vPosition.y;
+    int dir_z = pParty->pos.z + pParty->eyeLevel - this->vPosition.z;
+    if (Vec3i(dir_x, dir_y, dir_z).length() <= 768) {
         int trapDamage = 5;
-        if (pMapInfo->trapDamageD20DiceCount) {
-            trapDamage += grng->randomDice(pMapInfo->trapDamageD20DiceCount, 20);
+        if (mapData->trapDamageD20DiceCount) {
+            trapDamage += grng->randomDice(mapData->trapDamageD20DiceCount, 20);
         }
         DamageType pDamageType;
         switch (this->spriteId) {

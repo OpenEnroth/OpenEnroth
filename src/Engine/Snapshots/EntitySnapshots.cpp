@@ -10,7 +10,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
@@ -24,6 +24,7 @@
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Data/IconFrameData.h"
+#include "Engine/Data/OverlayData.h"
 #include "Engine/Data/PortraitFrameData.h"
 #include "Engine/Data/TileData.h"
 #include "Engine/Data/TileEnumFunctions.h"
@@ -391,7 +392,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
 void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     memzero(dst);
 
-    dst->indexToOverlayList = src.indexToOverlayList;
+    dst->indexToOverlayTable = src.indexToOverlayTable;
     dst->spriteFrameTime = src.spriteFrameTime;
     dst->animLength = src.animLength;
     dst->screenSpaceX = src.screenSpaceX;
@@ -404,7 +405,7 @@ void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
 void reconstruct(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     memzero(dst);
 
-    dst->indexToOverlayList = src.indexToOverlayList;
+    dst->indexToOverlayTable = src.indexToOverlayTable;
     dst->spriteFrameTime = src.spriteFrameTime;
     dst->animLength = src.animLength;
     dst->screenSpaceX = src.screenSpaceX;
@@ -1650,7 +1651,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->initialPosition = src.initialPosition.toFloat();
 }
 
-void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
+void reconstruct(const DecorationData_MM6 &src, DecorationData *dst) {
     reconstruct(src.internalName, &dst->internalName);
     reconstruct(src.hint, &dst->hint);
     dst->uType = src.uType;
@@ -1667,8 +1668,8 @@ void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     dst->uColoredLight.a = 255;
 }
 
-void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
-    reconstruct(static_cast<const DecorationDesc_MM6 &>(src), dst);
+void reconstruct(const DecorationData_MM7 &src, DecorationData *dst) {
+    reconstruct(static_cast<const DecorationData_MM6 &>(src), dst);
 
     dst->uColoredLight.r = src.uColoredLightRed;
     dst->uColoredLight.g = src.uColoredLightGreen;
@@ -1758,11 +1759,10 @@ void reconstruct(const BLVLight_MM7 &src, BLVLight *dst) {
     dst->uBrightness = src.uBrightness;
 }
 
-void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
+void reconstruct(const OverlayData_MM7 &src, OverlayData *dst) {
     dst->uOverlayID = src.uOverlayID;
     dst->uOverlayType = src.uOverlayType;
     dst->uSpriteFramesetID = src.uSpriteFramesetID;
-    dst->spriteFramesetGroup = src.spriteFramesetGroup;
 }
 
 void reconstruct(const PortraitFrameData_MM7 &src, PortraitFrameData *dst) {

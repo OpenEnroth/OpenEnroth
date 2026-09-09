@@ -1,0 +1,119 @@
+name: Lint
+
+on:
+  pull_request: null
+  push: null
+  workflow_dispatch:
+    inputs:
+      myCommit:
+        description: Commit SHA1
+        required: false
+        default: ''
+        type: string
+  release:
+    types:
+      - published
+
+# A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
+concurrency:
+  group: lint-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  LLS_TAG: '3.19.1'
+  CLANG_TIDY_VERSION: '22.1.8'
+  DOXYGEN_VERSION: '1.9.5'
+
+jobs:
+  lint:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+        with:
+          submodules: recursive
+          ref: '${{inputs.myCommit}}'
+
+      # The configure step hard-errors on linux unless lld or mold is present.
+      - name: Install mold
+        uses: rui314/setup-mold@v1
+        with:
+          mold-version: 2.36.0
+          make-default: false
+
+      # The configure step resolves OpenGL, so the GL development files have to be there.
+      # The shader checks run glslangValidator, which comes from glslang-tools.
+      - name: Install dependencies
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libglu1-mesa-dev glslang-tools
+
+      # Unpacked outside the workspace on purpose. Inside it, lua-language-server lints its own lua sources.
+      - name: Install lua-language-server
+        run: |
+          mkdir -p "$HOME/lua-language-server"
+          curl -fsSL -o "$RUNNER_TEMP/lls.tar.gz" "https://github.com/LuaLS/lua-language-server/releases/download/$LLS_TAG/lua-language-server-$LLS_TAG-linux-x64.tar.gz"
+          tar xzf "$RUNNER_TEMP/lls.tar.gz" -C "$HOME/lua-language-server"
+
+      - name: Install clang-tidy
+        run: |
+          pip install --break-system-packages "clang-tidy==$CLANG_TIDY_VERSION"
+
+      - name: Install doxygen
+        run: |
+          mkdir -p "$HOME/doxygen"
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/doxygen.tar.gz" "https://github.com/doxygen/doxygen/releases/download/Release_${DOXYGEN_VERSION//./_}/doxygen-$DOXYGEN_VERSION.linux.bin.tar.gz"
+          tar xzf "$RUNNER_TEMP/doxygen.tar.gz" --strip-components=2 -C "$HOME/doxygen" "doxygen-$DOXYGEN_VERSION/bin/doxygen"
+
+      # clang-tidy needs the dependency headers and a compile commands database, so this is a full configure.
+      # The cpp style, lua style and clang-tidy checks all run off it.
+      - name: Configure
+        id: configure
+        run: |
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DOE_LLS_COMMAND="$HOME/lua-language-server/bin/lua-language-server"
+
+      - name: Check cpp style
+        working-directory: build
+        run: |
+          ninja check_cpp_style
+
+      # Gated on the configure rather than on the previous step, so that one push reports every verdict.
+      - name: Check lua style
+        if: '!cancelled() && steps.configure.outcome == ''success'''
+        working-directory: build
+        run: |
+          ninja check_style_lua_scripts
+
+      - name: Run clang-tidy
+        if: '!cancelled() && steps.configure.outcome == ''success'''
+        working-directory: build
+        run: |
+          ninja check_tidy
+
+      # The shader and doxygen checks need no build tree, so they run regardless of how the configure went.
+      - name: Check OpenGL 4.1 (Core) shaders
+        if: '!cancelled()'
+        run: |
+          for shader in resources/shaders/*.vert resources/shaders/*.frag; do
+            echo "Checking $shader..."
+            ./scripts/check_shader.sh "$shader" "410 core"
+          done
+
+      - name: Check OpenGL ES 3.2 shaders
+        if: '!cancelled()'
+        run: |
+          for shader in resources/shaders/*.vert resources/shaders/*.frag; do
+            echo "Checking $shader..."
+            ./scripts/check_shader.sh "$shader" "320 es"
+          done
+
+      # Doxyfile sets WARN_AS_ERROR, so generating the docs is the check.
+      - name: Check doxygen
+        if: '!cancelled()'
+        run: |
+          export PROJECT_NUMBER="$(git describe --always --tags --dirty)"
+          "$HOME/doxygen/doxygen" Doxyfile

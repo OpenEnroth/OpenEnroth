@@ -560,7 +560,7 @@ void GUIWindow_PartyCreation::Update() {
     if (errorMessageExpireTime > animTimer->time()) {
         auto& sHint = pBonusNum < 0 ? localization->str(LSTR_YOU_CANT_SPEND_MORE_THAN_50_POINTS) : localization->str(LSTR_CREATE_PARTY_CANNOT_BE_COMPLETED_UNLESS);
         Recti popupRect(170, 140, 300, 100);
-        DrawMessageBox(0, popupRect, sHint);
+        DrawMessageBox(popupRect, sHint);
     }
 
     // force draw so overlays dont get muddled

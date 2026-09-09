@@ -91,57 +91,34 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         message(STATUS "Not using prebuilt dependencies")
     endif()
 
-    if(OE_USE_DUMMY_DEPENDENCIES)
-        # Just create dummy libs so that configure pass works. We won't be building anything.
-        add_library(ZLIB INTERFACE)
-        add_library(ZLIB::ZLIB ALIAS ZLIB)
-        add_library(OpenAL INTERFACE)
-        add_library(OpenAL::OpenAL ALIAS OpenAL)
-        add_library(SDL3OE INTERFACE)
-        add_library(SDL3::SDL3 ALIAS SDL3OE)
-        add_library(SDL3::SDL3OE ALIAS SDL3OE)
-        add_library(PNG INTERFACE)
-        add_library(PNG::PNG ALIAS PNG)
-        add_library(FFmpeg_avcodec INTERFACE)
-        add_library(FFmpeg::avcodec ALIAS FFmpeg_avcodec)
-        add_library(FFmpeg_avformat INTERFACE)
-        add_library(FFmpeg::avformat ALIAS FFmpeg_avformat)
-        add_library(FFmpeg_avutil INTERFACE)
-        add_library(FFmpeg::avutil ALIAS FFmpeg_avutil)
-        add_library(FFmpeg_swscale INTERFACE)
-        add_library(FFmpeg::swscale ALIAS FFmpeg_swscale)
-        add_library(FFmpeg_swresample INTERFACE)
-        add_library(FFmpeg::swresample ALIAS FFmpeg_swresample)
-    else()
-        # Prebuilt & user-supplied deps are resolved using the same code here.
-        find_package(ZLIB REQUIRED)
-        find_package(FFmpeg REQUIRED)
+    # Prebuilt & user-supplied deps are resolved using the same code here.
+    find_package(ZLIB REQUIRED)
+    find_package(FFmpeg REQUIRED)
 
-        find_package(SDL3 CONFIG REQUIRED)
-        add_library(SDL3OE INTERFACE)
-        target_link_libraries(SDL3OE INTERFACE SDL3::SDL3)
-        if(TARGET SDL3::SDL3main) # Not all platforms have SDL3main.
-            target_link_libraries(SDL3OE INTERFACE SDL3::SDL3main)
-        endif()
-        add_library(SDL3::SDL3OE ALIAS SDL3OE)
-
-        # This should find OpenALConfig.cmake that comes with OpenAL Soft.
-        #
-        # Not even trying to do this w/o CONFIG because on MacOS it will find a MacOS framework, and there are two
-        # problems with it:
-        # - `FindOpenAL.cmake` sets the link target to point to the framework dir, which obviously doesn't work. We
-        #   should be linking to `Frameworks/OpenAL.framework/OpenAL.tbd`.
-        # - OpenEnroth doesn't support OpenAL that ships with MacOS. As in, sound barely works.
-        #
-        # If you're getting an error here, try passing something like -DOPENAL_ROOT=/opt/homebrew/opt/openal-soft to cmake.
-        find_package(OpenAL CONFIG REQUIRED)
-
-        find_package(PNG REQUIRED)
+    find_package(SDL3 CONFIG REQUIRED)
+    add_library(SDL3OE INTERFACE)
+    target_link_libraries(SDL3OE INTERFACE SDL3::SDL3)
+    if(TARGET SDL3::SDL3main) # Not all platforms have SDL3main.
+        target_link_libraries(SDL3OE INTERFACE SDL3::SDL3main)
     endif()
+    add_library(SDL3::SDL3OE ALIAS SDL3OE)
+
+    # This should find OpenALConfig.cmake that comes with OpenAL Soft.
+    #
+    # Not even trying to do this w/o CONFIG because on MacOS it will find a MacOS framework, and there are two
+    # problems with it:
+    # - `FindOpenAL.cmake` sets the link target to point to the framework dir, which obviously doesn't work. We
+    #   should be linking to `Frameworks/OpenAL.framework/OpenAL.tbd`.
+    # - OpenEnroth doesn't support OpenAL that ships with MacOS. As in, sound barely works.
+    #
+    # If you're getting an error here, try passing something like -DOPENAL_ROOT=/opt/homebrew/opt/openal-soft to cmake.
+    find_package(OpenAL CONFIG REQUIRED)
+
+    find_package(PNG REQUIRED)
 
     # On Android we somehow get OpenGL available by default, despite it not being findable by find_package. So we
     # just create a dummy lib.
-    if(OE_USE_DUMMY_DEPENDENCIES OR OE_BUILD_PLATFORM STREQUAL "android")
+    if(OE_BUILD_PLATFORM STREQUAL "android")
         add_library(OpenGL_GL INTERFACE)
         add_library(OpenGL::GL ALIAS OpenGL_GL)
     else()

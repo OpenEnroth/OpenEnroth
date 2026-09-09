@@ -1,11 +1,12 @@
 #include "Collisions.h"
 
+#include <cmath>
 #include <algorithm>
 #include <limits>
 #include <utility>
 
 #include "Engine/Evt/Processor.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -13,7 +14,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 #include "Engine/Random/Random.h"
@@ -372,8 +372,8 @@ static void CollideWithDecoration(int id) {
     if (decor->uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
 
-    const DecorationDesc *desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
-    if (desc->CanMoveThrough())
+    const DecorationData *desc = pDecorationTable->decoration(decor->uDecorationDescID);
+    if (desc->canMoveThrough())
         return;
 
     CollideWithCylinder(decor->vPosition, desc->uRadius, desc->uDecorationHeight, Pid(OBJECT_Decoration, id), false);
@@ -694,7 +694,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
 
         if (type == OBJECT_Decoration) {
-            int speed = integer_sqrt(actor.velocity.x * actor.velocity.x + actor.velocity.y * actor.velocity.y);
+            int speed = actor.velocity.xy().length();
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;
@@ -834,7 +834,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Decoration) {
-            int speed = integer_sqrt(actor.velocity.x * actor.velocity.x + actor.velocity.y * actor.velocity.y);
+            int speed = actor.velocity.xy().length();
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y);
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;

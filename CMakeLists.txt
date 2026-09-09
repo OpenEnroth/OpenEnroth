@@ -7,12 +7,14 @@ project("OpenEnroth")
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For clang-tidy and IDEs.
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 include(Git)
 include(Detection)
 include(ExternalProject)
 include(CppLint)
+include(ClangTidy)
 include(LlsLint)
 include(Dependencies)
 include(CheckLinkerFlag)
@@ -30,20 +32,17 @@ set(OE_BUILD_TESTS ON CACHE BOOL "Build OpenEnroth tests.")
 set(OE_BUILD_TOOLS ON CACHE BOOL "Build OpenEnroth tools - LodTool and CodeGen.")
 set(OE_CHECK_STYLE ON CACHE BOOL "Enable style checks.")
 set(OE_CHECK_LUA_STYLE ON CACHE BOOL "Enable lua style checks.")
+set(OE_CHECK_TIDY ON CACHE BOOL "Enable clang-tidy checks.")
 set(OE_USE_PREBUILT_DEPENDENCIES ${OE_USE_PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebuilt dependencies.")
-set(OE_USE_DUMMY_DEPENDENCIES OFF CACHE BOOL "Use dummy dependencies. Build will fail if this is set to ON, only style checks will work.")
 set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
 set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
 set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
 set(OE_DISTRIBUTION_BUILD OFF CACHE BOOL "Specify that this is a build for distribution, not a dev build.")
+set(OE_USE_SANITIZERS "" CACHE STRING "Sanitizers to build with, passed on to -fsanitize=. Empty string disables sanitizers.")
 
 if(OE_DISTRIBUTION_BUILD)
     add_compile_definitions(OE_DISTRIBUTION_BUILD)
-endif()
-
-if(OE_USE_PREBUILT_DEPENDENCIES AND OE_USE_DUMMY_DEPENDENCIES)
-    message(FATAL_ERROR "Only one of OE_USE_PREBUILT_DEPENDENCIES and OE_USE_DUMMY_DEPENDENCIES must be set.")
 endif()
 
 # Find ccache / sccache.
@@ -95,6 +94,16 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute.
     add_compile_options(/we4172) # Returning address of local variable or temporary.
     add_compile_options(/we26433) # Function should be marked with 'override'.
+endif()
+
+# Set up sanitizers.
+if(OE_USE_SANITIZERS)
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+        message(FATAL_ERROR "OE_USE_SANITIZERS is not supported for ${CMAKE_CXX_COMPILER_ID}.")
+    endif()
+    message(STATUS "Using sanitizers: ${OE_USE_SANITIZERS}.")
+    add_compile_options(-fsanitize=${OE_USE_SANITIZERS})
+    add_link_options(-fsanitize=${OE_USE_SANITIZERS})
 endif()
 
 # Set compiler options. We do a lot of tweaks here.
@@ -159,6 +168,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR (CMAKE_CXX_COMPILER_ID STREQUAL 
     add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines.
     add_compile_options(/MP) # Multi-threaded build.
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor.
+    add_compile_options(/utf-8) # Source and execution charset are UTF-8, so non-ASCII literals mean the same bytes
+                                # as on GCC and Clang. fmt sets it too, but only on the targets that link fmt.
     add_link_options(/OPT:REF) # Eliminate unreferenced data & functions.
     add_link_options(/OPT:ICF) # Enable COMDAT folding, should decrease binary sizes?
     if (OE_BUILD_ARCHITECTURE STREQUAL "x86")
@@ -191,6 +202,7 @@ if(OE_BUILD_PLATFORM STREQUAL "android")
 endif()
 
 init_check_style()
+init_check_tidy()
 init_check_lua_style()
 resolve_dependencies()
 

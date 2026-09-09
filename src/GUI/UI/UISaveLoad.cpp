@@ -12,7 +12,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
@@ -167,7 +167,7 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
 
         // Draw map name
         GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
-                                 pMapStats->pInfos[pMapStats->GetMapInfo(slot.header.locationName)].name, 3, titleRect);
+                                 pMapTable->pInfos[pMapTable->GetMapInfo(slot.header.locationName)].name, 3, titleRect);
 
         // Draw date
         CivilTime time = slot.header.playingTime.toCivilTime();

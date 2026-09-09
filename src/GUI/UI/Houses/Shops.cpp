@@ -13,7 +13,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Objects/Item.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
@@ -1097,7 +1097,7 @@ void GUIWindow_Shop::houseScreenClick() {
             int stealDifficulty = 0;
             int fine;
             if (engine->_currentLoadedMapId != MAP_INVALID) {
-                stealDifficulty = pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine;
+                stealDifficulty = pMapTable->pInfos[engine->_currentLoadedMapId].baseStealingFine;
             }
             int partyReputation = pParty->GetPartyReputation();
             if (isStealingModeActive()) {

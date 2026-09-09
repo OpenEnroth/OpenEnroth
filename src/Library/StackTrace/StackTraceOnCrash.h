@@ -25,6 +25,8 @@ bool isRunningUnderRosetta();
  * faulting thread still parked in the mach exception path where no signal reaches it. A SIGABRT handler then
  * hangs the process for good, where the default handler kills it. Only translated x86_64 is affected, so the
  * check is at runtime, and the same build still traces aborts on an intel mac.
+ *
+ * A `__fastfail` on windows is not handled and leaves no trace (e.g. a failed security cookie check raises one).
  */
 class StackTraceOnCrash {
  public:

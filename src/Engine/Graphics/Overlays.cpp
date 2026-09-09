@@ -4,6 +4,7 @@
 #include "Engine/Timer.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/OverlayTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
 
@@ -11,7 +12,6 @@
 
 
 ActiveOverlayList *pActiveOverlayList = new ActiveOverlayList;  // idb
-OverlayList *pOverlayList = new OverlayList;
 
 // inlined
 //----- (mm6c::0045BD50) --------------------------------------------------
@@ -29,15 +29,15 @@ int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, Duration animLength, int
             this->pOverlays[i].screenSpaceX = 0;
             this->pOverlays[i].pid = pid;
             int indexer = 0;
-            for (; indexer < (signed int)pOverlayList->pOverlays.size(); ++indexer) {
-                if (uOverlayID == pOverlayList->pOverlays[indexer].uOverlayID) break;
+            for (; indexer < (signed int)pOverlayTable->overlays.size(); ++indexer) {
+                if (uOverlayID == pOverlayTable->overlays[indexer].uOverlayID) break;
             }
-            this->pOverlays[i].indexToOverlayList = indexer;
+            this->pOverlays[i].indexToOverlayTable = indexer;
             this->pOverlays[i].spriteFrameTime = 0;
             if (animLength)
                 v11 = animLength;
             else
-                v11 = pSpriteFrameTable->pSpriteSFrames[pOverlayList->pOverlays[indexer].uSpriteFramesetID].animationLength;
+                v11 = pSpriteFrameTable->pSpriteSFrames[pOverlayTable->overlays[indexer].uSpriteFramesetID].animationLength;
             this->pOverlays[i].animLength = v11.ticks();
             this->pOverlays[i].fpDamageMod = fpDamageMod;
             this->pOverlays[i].projSize = projSize;
@@ -47,15 +47,9 @@ int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, Duration animLength, int
     return 0;
 }
 
-//----- (00458D97) --------------------------------------------------------
-void OverlayList::InitializeSprites() {
-    for (size_t i = 0; i < pOverlays.size(); ++i)
-        pSpriteFrameTable->InitializeSprite(pOverlays[i].uSpriteFramesetID);
-}
-
 //----- (0045855F) --------------------------------------------------------
 void ActiveOverlay::Reset() {
-    this->indexToOverlayList = 0;
+    this->indexToOverlayTable = 0;
     this->spriteFrameTime = 0;
     this->animLength = 0;
     this->screenSpaceX = 0;

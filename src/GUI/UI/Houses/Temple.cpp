@@ -10,7 +10,7 @@
 
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
-#include "Engine/Graphics/LocationInfo.h"
+#include "Engine/LocationInfo.h"
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Party.h"

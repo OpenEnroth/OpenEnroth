@@ -24,7 +24,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
-#include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Random/Random.h"
@@ -35,7 +34,7 @@
 #include "Engine/Tables/HostilityTable.h"
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -728,14 +727,6 @@ bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
 
 //----- (0043AC45) --------------------------------------------------------
 void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
-    int v4;  // ebx@8
-    int v5;  // ST1C_4@8
-    int v6;  // eax@8
-
-    int x = 0;
-    x |= 0x80000;
-    int y = 0;
-    y |= 0x80000;
     Actor *victim = &pActors[uActorID];
     if (a2 == 1) victim->attributes |= ACTOR_AGGRESSOR;
 
@@ -744,10 +735,10 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
         if (!actor->CanAct() || i == uActorID) continue;
 
         if (Actor::ArePeasantsOfSameFaction(victim, actor)) {
-            v4 = std::abs(actor->pos.x - victim->pos.x);
-            v5 = std::abs(actor->pos.y - victim->pos.y);
-            v6 = std::abs(actor->pos.z - victim->pos.z);
-            if (int_get_vector_length(v4, v5, v6) < 4096) {
+            int deltaX = actor->pos.x - victim->pos.x;
+            int deltaY = actor->pos.y - victim->pos.y;
+            int deltaZ = actor->pos.z - victim->pos.z;
+            if (Vec3i(deltaX, deltaY, deltaZ).length() < 4096) {
                 actor->monsterInfo.hostilityType =
                     HOSTILITY_LONG;
                 if (a2 == 1) actor->attributes |= ACTOR_AGGRESSOR;
@@ -1124,7 +1115,7 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if ((engine->_currentLoadedMapId == MAP_DEYJA || engine->_currentLoadedMapId == MAP_PIT) && pParty->isPartyGood())
         return;
 
-    pParty->uFine += 100 * (pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine +
+    pParty->uFine += 100 * (pMapTable->pInfos[engine->_currentLoadedMapId].baseStealingFine +
                             pActors[uActorID].monsterInfo.level +
                             pParty->GetPartyReputation());
     if (pParty->uFine < 0)
@@ -1265,7 +1256,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         if (engine->_currentLoadedMapId != MAP_INVALID)
-            v4 = pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine;
+            v4 = pMapTable->pInfos[engine->_currentLoadedMapId].baseStealingFine;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
@@ -1684,8 +1675,8 @@ char Actor::_4031C1_update_job_never_gets_called(
 }
 
 //----- (004030AD) --------------------------------------------------------
-void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
-                    int stunRegardlessOfState) {
+void Actor::AI_Pain(unsigned int uActorID, Pid edx0,
+                    int painRegardlessOfState) {
     Duration v7;      // ax@16
     AIDirection a3;  // [sp+Ch] [bp-40h]@16
 
@@ -1699,8 +1690,8 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
         pActors[uActorID].buffs[ACTOR_BUFF_CHARM].Reset();
     if (pActors[uActorID].buffs[ACTOR_BUFF_AFRAID].Active())
         pActors[uActorID].buffs[ACTOR_BUFF_AFRAID].Reset();
-    if (stunRegardlessOfState ||
-        (pActors[uActorID].aiState != Stunned &&
+    if (painRegardlessOfState ||
+        (pActors[uActorID].aiState != InPain &&
          pActors[uActorID].aiState != AttackingRanged1 &&
          pActors[uActorID].aiState != AttackingRanged2 &&
          pActors[uActorID].aiState != AttackingRanged3 &&
@@ -1713,9 +1704,9 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
                  ->pSpriteSFrames[pActors[uActorID].spriteIds[ANIM_GotHit]]
                  .animationLength;
         pActors[uActorID].currentActionTime = 0_ticks;
-        pActors[uActorID].aiState = Stunned;
+        pActors[uActorID].aiState = InPain;
         pActors[uActorID].currentActionLength = v7;
-        Actor::playSound(uActorID, ACTOR_STUNNED_SOUND);
+        Actor::playSound(uActorID, ACTOR_PAIN_SOUND);
         pActors[uActorID].UpdateAnimation();
     }
 }
@@ -2058,7 +2049,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
     v6->pitchAngle = v16;
     v6->aiState = Pursuing;
     if (vrng->random(100) < 2) {
-        Actor::playSound(uActorID, ACTOR_STUNNED_SOUND);
+        Actor::playSound(uActorID, ACTOR_PAIN_SOUND);
     }
     v6->UpdateAnimation();
 }
@@ -2233,7 +2224,7 @@ void Actor::UpdateAnimation() {
             attributes |= ACTOR_ANIMATION;
             break;
 
-        case Stunned:
+        case InPain:
             currentActionAnimation = ANIM_GotHit;
             attributes |= ACTOR_ANIMATION;
             break;
@@ -2364,7 +2355,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                 pActors[actor_id].hp -= finalDmg;
                 if (finalDmg) {
                     if (pActors[actor_id].hp > 0)
-                        Actor::AI_Stun(actor_id, attacker_id, 0);
+                        Actor::AI_Pain(actor_id, attacker_id, 0);
                     else
                         Actor::Die(actor_id);
                     Actor::AggroSurroundingPeasants(actor_id, 0);
@@ -2376,7 +2367,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                     }
                     Actor::AddOnDamageOverlay(actor_id, 1, finalDmg);
                 } else {
-                    Actor::AI_Stun(actor_id, attacker_id, 0);
+                    Actor::AI_Pain(actor_id, attacker_id, 0);
                 }
                 return;
             }
@@ -2557,8 +2548,8 @@ void Actor::UpdateActorAI() {
         if (pActor->currentActionTime < pActor->currentActionLength)
             continue;
 
-        // A stunned actor still in the air, e.g. thrown up by armageddon, keeps falling and gets up once it lands.
-        if (pActor->isStunnedInMidair())
+        // An actor still in the air, e.g. thrown up by armageddon, keeps falling and leaves the pain state once it lands.
+        if (pActor->isAirborneInPain())
             continue;
 
         if (pActor->aiState == Dying) {
@@ -2634,8 +2625,8 @@ void Actor::UpdateActorAI() {
         pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - gameTimer->dt()); // was animTimer
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
 
-        // A stunned actor still in the air keeps falling and gets up once it lands.
-        if (pActor->isStunnedInMidair())
+        // An actor still in the air keeps falling and leaves the pain state once it lands.
+        if (pActor->isAirborneInPain())
             continue;
 
         if (!pActor->ActorNearby())
@@ -2647,12 +2638,12 @@ void Actor::UpdateActorAI() {
         AIState uAIState = pActor->aiState;
 
          // TODO(captainurist): this check makes no sense, it fails only for monsters that are:
-        // stunned && non-friendly && recovering && far from target && don't have missile attack. Seriously?
+        // in pain && non-friendly && recovering && far from target && don't have missile attack. Seriously?
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
             pActor->monsterInfo.recoveryTime > 0_ticks ||
             radiusMultiplier * meleeRange < pDir->uDistance ||
             uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && pActor->monsterInfo.attack1MissileType == MONSTER_PROJECTILE_NONE ||
-            uAIState != Stunned) {
+            uAIState != InPain) {
             if (pActor->currentActionTime < pActor->currentActionLength) {
                 continue;
             } else if (pActor->aiState == AttackingMelee) {
@@ -3049,10 +3040,10 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     } else {
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
         if (projectileSprite->uSpellID != SPELL_DARK_SOULDRINKER) {
-            int d1 = std::abs(pParty->pos.x - projectileSprite->vPosition.x);
-            int d2 = std::abs(pParty->pos.y - projectileSprite->vPosition.y);
-            int d3 = std::abs(pParty->pos.z - projectileSprite->vPosition.z);
-            v61 = int_get_vector_length(d1, d2, d3);
+            int d1 = pParty->pos.x - projectileSprite->vPosition.x;
+            int d2 = pParty->pos.y - projectileSprite->vPosition.y;
+            int d3 = pParty->pos.z - projectileSprite->vPosition.z;
+            v61 = Vec3i(d1, d2, d3).length();
 
             if (v61 >= 5120 && !(pMonster->attributes & ACTOR_FULL_AI_STATE))  // 0x400
                 return 0;
@@ -3180,7 +3171,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         return 0;
     }
     if (pMonster->hp > 0) {
-        Actor::AI_Stun(uActorID_Monster, a1, 0);
+        Actor::AI_Pain(uActorID_Monster, a1, 0);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
         if (engine->config->settings.ShowHits.value()) {
             if (projectileSprite)
@@ -3479,7 +3470,7 @@ Pid stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not 
 
 //----- (0042F4DA) --------------------------------------------------------
 bool CheckActors_proximity() {
-    unsigned int distance;  // edi@1
+    int distance;  // edi@1
     int for_x;            // ebx@5
     int for_y;            // [sp+Ch] [bp-10h]@5
     int for_z;            // [sp+10h] [bp-Ch]@5
@@ -3488,10 +3479,10 @@ bool CheckActors_proximity() {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) distance = 2560;
 
     for (Actor &actor : pActors) {
-        for_x = std::abs(actor.pos.x - pParty->pos.x);
-        for_y = std::abs(actor.pos.y - pParty->pos.y);
-        for_z = std::abs(actor.pos.z - pParty->pos.z);
-        if (int_get_vector_length(for_x, for_y, for_z) < distance) {
+        for_x = actor.pos.x - pParty->pos.x;
+        for_y = actor.pos.y - pParty->pos.y;
+        for_z = actor.pos.z - pParty->pos.z;
+        if (Vec3i(for_x, for_y, for_z).length() < distance) {
             if (actor.aiState != Dead) {
                 if (actor.aiState != Dying &&
                     actor.aiState != Removed &&
@@ -3886,11 +3877,12 @@ void Actor::MakeActorAIList_ODM() {
             continue;
         }
 
-        int delta_x = std::abs(pParty->pos.x - actor.pos.x);
-        int delta_y = std::abs(pParty->pos.y - actor.pos.y);
-        int delta_z = std::abs(pParty->pos.z - actor.pos.z);
+        int delta_x = pParty->pos.x - actor.pos.x;
+        int delta_y = pParty->pos.y - actor.pos.y;
+        int delta_z = pParty->pos.z - actor.pos.z;
 
-        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - actor.radius;
+        // TODO(captainurist): use length() here, four traces need re-recording and not just a retrace
+        int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
         if (distance < 0)
             distance = 0;
 
@@ -3940,11 +3932,11 @@ int Actor::MakeActorAIList_BLV() {
             continue;
         }
 
-        int delta_x = std::abs(pParty->pos.x - actor.pos.x);
-        int delta_y = std::abs(pParty->pos.y - actor.pos.y);
-        int delta_z = std::abs(pParty->pos.z - actor.pos.z);
+        int delta_x = pParty->pos.x - actor.pos.x;
+        int delta_y = pParty->pos.y - actor.pos.y;
+        int delta_z = pParty->pos.z - actor.pos.z;
 
-        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - actor.radius;
+        int distance = Vec3i(delta_x, delta_y, delta_z).length() - actor.radius;
         if (distance < 0)
             distance = 0;
 
@@ -4212,12 +4204,13 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
     actor->UpdateAnimation();
 
     int sectorId = pIndoor->GetSector(actor->pos);
-    int zlevel;
-    int zdiff;
-    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ||
-            sectorId == partySectorId &&
-            (zlevel = BLV_GetFloorLevel(actor->pos, sectorId), zlevel != -30000) &&
-            (zdiff = std::abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
+    bool positionValid = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR;
+    if (!positionValid && sectorId == partySectorId) {
+        int zlevel = BLV_GetFloorLevel(actor->pos, sectorId);
+        positionValid = zlevel != -30000 && std::abs(zlevel - pParty->pos.z) <= 1024;
+    }
+
+    if (positionValid) {
         actor->summonerId = Pid(OBJECT_Character, spell_power);
 
         actor->buffs[ACTOR_BUFF_SUMMONED].Apply(pParty->GetPlayingTime() + duration,
@@ -4228,7 +4221,7 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
 }
 
 //----- (0044F57C) --------------------------------------------------------
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
+void SpawnEncounter(MapData *mapData, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
     assert(spawn->type == OBJECT_Actor);
 
     char v8;               // zf@5
@@ -4243,46 +4236,46 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
     int monsterCategoryOddsSet = 0;
     switch (spawn->monsterIndex - 1) {
         case 0:
-            monsterCategoryOddsSet = pMapInfo->Dif_M1;
-            NumToSpawn = pMapInfo->encounter1MinCount + grng->random(pMapInfo->encounter1MaxCount - pMapInfo->encounter1MinCount + 1);
-            baseInternalName = pMapInfo->encounter1MonsterInternalName;
+            monsterCategoryOddsSet = mapData->Dif_M1;
+            NumToSpawn = mapData->encounter1MinCount + grng->random(mapData->encounter1MaxCount - mapData->encounter1MinCount + 1);
+            baseInternalName = mapData->encounter1MonsterInternalName;
             break;
         case 1:
-            monsterCategoryOddsSet = pMapInfo->Dif_M2;
-            NumToSpawn = pMapInfo->encounter2MinCount + grng->random(pMapInfo->encounter2MaxCount - pMapInfo->encounter2MinCount + 1);
-            baseInternalName = pMapInfo->encounter2MonsterInternalName;
+            monsterCategoryOddsSet = mapData->Dif_M2;
+            NumToSpawn = mapData->encounter2MinCount + grng->random(mapData->encounter2MaxCount - mapData->encounter2MinCount + 1);
+            baseInternalName = mapData->encounter2MonsterInternalName;
             break;
         case 2:
-            monsterCategoryOddsSet = pMapInfo->Dif_M3;
-            NumToSpawn = pMapInfo->encounter3MinCount + grng->random(pMapInfo->encounter3MaxCount - pMapInfo->encounter3MinCount + 1);
-            baseInternalName = pMapInfo->encounter3MonsterInternalName;
+            monsterCategoryOddsSet = mapData->Dif_M3;
+            NumToSpawn = mapData->encounter3MinCount + grng->random(mapData->encounter3MaxCount - mapData->encounter3MinCount + 1);
+            baseInternalName = mapData->encounter3MonsterInternalName;
             break;
         case 3:
-            baseInternalName = pMapInfo->encounter1MonsterInternalName + " A";
+            baseInternalName = mapData->encounter1MonsterInternalName + " A";
             break;
         case 4:
-            baseInternalName = pMapInfo->encounter2MonsterInternalName + " A";
+            baseInternalName = mapData->encounter2MonsterInternalName + " A";
             break;
         case 5:
-            baseInternalName = pMapInfo->encounter3MonsterInternalName + " A";
+            baseInternalName = mapData->encounter3MonsterInternalName + " A";
             break;
         case 6:
-            baseInternalName = pMapInfo->encounter1MonsterInternalName + " B";
+            baseInternalName = mapData->encounter1MonsterInternalName + " B";
             break;
         case 7:
-            baseInternalName = pMapInfo->encounter2MonsterInternalName + " B";
+            baseInternalName = mapData->encounter2MonsterInternalName + " B";
             break;
         case 8:
-            baseInternalName = pMapInfo->encounter3MonsterInternalName + " B";
+            baseInternalName = mapData->encounter3MonsterInternalName + " B";
             break;
         case 9:
-            baseInternalName = pMapInfo->encounter1MonsterInternalName + " C";
+            baseInternalName = mapData->encounter1MonsterInternalName + " C";
             break;
         case 10:
-            baseInternalName = pMapInfo->encounter2MonsterInternalName + " C";
+            baseInternalName = mapData->encounter2MonsterInternalName + " C";
             break;
         case 11:
-            baseInternalName = pMapInfo->encounter3MonsterInternalName + " C";
+            baseInternalName = mapData->encounter3MonsterInternalName + " C";
             break;
         default:
             return;
@@ -4538,7 +4531,7 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVeloci
 
                 if (damage > 0) {
                     if (pActors[uActorID].hp > 0)
-                        Actor::AI_Stun(uActorID, uObjID, 0);
+                        Actor::AI_Pain(uActorID, uObjID, 0);
                     else
                         Actor::Die(uActorID);
 
@@ -4550,7 +4543,7 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVeloci
                     }
                     Actor::AddOnDamageOverlay(uActorID, 1, damage);
                 } else {
-                    Actor::AI_Stun(uActorID, uObjID, 0);
+                    Actor::AI_Pain(uActorID, uObjID, 0);
                 }
             }
         }

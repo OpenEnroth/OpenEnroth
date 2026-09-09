@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -10,19 +11,19 @@
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/mm7_data.h"
 #include "Engine/MapEnums.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Objects/Actor.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Resources/EngineFileSystem.h"
@@ -85,7 +86,7 @@ GAME_TEST(Issues, Issue2002) {
 }
 
 GAME_TEST(Issues, Issue2003) {
-    // Monsters can be stuck in pain state. In turn-based mode actors outside the turn queue never left the stunned state,
+    // Monsters can be stuck in pain state. In turn-based mode actors outside the turn queue never left the pain state,
     // so everything armageddon threw up stayed in its pain animation after landing. Actors in the queue got up in mid-air
     // instead, on their turn and at the end of every round, and stopped dead in the air each time.
     test.prepareForNextTest(25, RANDOM_ENGINE_MERSENNE_TWISTER); // Armageddon pushes by a fixed amount per frame, at 100ms frames gravity wins and nobody takes off.
@@ -125,10 +126,10 @@ GAME_TEST(Issues, Issue2003) {
     for (size_t i = 0; i < 2; i++) {
         auto flight = flightTape.slice(i);
         float groundZ = flight.front().second;
-        EXPECT_TRUE(flight.contains([] (const auto &p) { return p.first == Stunned; })); // Got stunned...
+        EXPECT_TRUE(flight.contains([] (const auto &p) { return p.first == InPain; })); // Got hurt...
         EXPECT_GT(flight.map([] (const auto &p) { return p.second; }).max(), groundZ + 200); // ...went flying...
-        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != Stunned; })); // ...stunned all the way up and down...
-        EXPECT_NE(flight.back().first, Stunned); // ...and got up.
+        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain; })); // ...in pain all the way up and down...
+        EXPECT_NE(flight.back().first, InPain); // ...and got up.
     }
     EXPECT_FALSE(pActors[farId].isAirborne());
     EXPECT_FALSE(pActors[nearId].isAirborne());
@@ -596,6 +597,58 @@ GAME_TEST(Prs, Pr2157b) {
     EXPECT_EQ(inventory.size(), 126);
 }
 
+GAME_TEST(Issues, Issue2146) {
+    // Monster attack preferences ignored promoted classes, so a monster that hunts sorcerers never went for wizards.
+    // Issue2500a, Issue2500b and Issue2500c cover unpromoted classes, races and having no preference at all.
+    struct AttackPreferenceCase {
+        bool includePromotions;
+        std::array<Class, 4> classes;
+        MonsterId monster;
+        int victim; // Index of the only character allowed to take damage, or -1 if the whole party is fair game.
+    };
+    static constexpr AttackPreferenceCase cases[] = {
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,        CLASS_KNIGHT}, MONSTER_GOG_A,         2}, // Sorcerer 1st promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_PRIEST_OF_SUN, CLASS_KNIGHT}, MONSTER_CLERIC_SUN_A,  2}, // Cleric 2nd promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_NINJA,         CLASS_KNIGHT}, MONSTER_MONK_C,        2}, // Monk 2nd promotion.
+        {true,  {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WARLOCK,       CLASS_KNIGHT}, MONSTER_GOG_A,        -1}, // Druid 2nd promotion, and gogs want sorcerers.
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_WIZARD,        CLASS_KNIGHT}, MONSTER_GOG_A,        -1}, // Sorcerer 1st promotion.
+        {false, {CLASS_KNIGHT, CLASS_KNIGHT, CLASS_PRIEST_OF_SUN, CLASS_KNIGHT}, MONSTER_CLERIC_SUN_A, -1}, // Cleric 2nd promotion.
+    };
+
+    for (int caseIndex = 0; caseIndex < std::size(cases); caseIndex++) {
+        const AttackPreferenceCase &testCase = cases[caseIndex];
+
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        engine->config->gameplay.AttackPreferencesIncludePromotions.setValue(testCase.includePromotions);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+
+        std::vector<CharacterPreset> presets;
+        for (Class classType : testCase.classes)
+            presets.push_back({classType, RACE_HUMAN}); // None of these monsters have a race preference.
+        prepareForBattleTest(presets);
+        auto hpsTape = charTapes.hps();
+
+        engine->config->debug.NoActors.setValue(false);
+        for (int i = 0; i < 6; i++) {
+            game.tick(7);
+            game.spawnMonster(pParty->pos + Vec3f(i * 200 - 500, 1500, 0), testCase.monster, SPAWN_STATIONARY);
+        }
+        game.tick(300);
+        test.stopTaping();
+
+        auto damage = hpsTape.delta();
+        for (int i = 0; i < damage.size(); i++) {
+            if (testCase.victim == -1 || testCase.victim == i) {
+                EXPECT_LT(damage[i], 0) << "case " << caseIndex << ", char " << i;
+            } else {
+                EXPECT_EQ(damage[i], 0) << "case " << caseIndex << ", char " << i;
+            }
+        }
+    }
+}
+
 GAME_TEST(Issues, Issue2186a) {
     // Consistent crashing in Grand Temple of the Sun Upper Level
     auto maps = tapes.map();
@@ -951,7 +1004,7 @@ GAME_TEST(Issues, Issue2341) {
 GAME_TEST(Prs, Pr2354) {
     // Verify that all levels (indoor & outdoor) and their default deltas can be deserialized and reconstructed.
     for (MapId mapId : allMaps()) {
-        std::string_view fileName = pMapStats->pInfos[mapId].fileName;
+        std::string_view fileName = pMapTable->pInfos[mapId].fileName;
         std::string_view baseName = fileName.substr(0, fileName.size() - 4);
 
         if (isMapIndoor(mapId)) {
@@ -1280,6 +1333,7 @@ GAME_TEST(Issues, Issue2490) {
 
 GAME_TEST(Issues, Issue2500a) {
     // Attack preferences are broken. Some monsters attack archers while they should have no attack pref.
+    // Issue2500b covers a class preference, Issue2500c a race one, and Issue2146 promoted classes.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hp0Tape = charTapes.hp(0);
     auto hp1Tape = charTapes.hp(1);
@@ -1303,6 +1357,7 @@ GAME_TEST(Issues, Issue2500a) {
 
 GAME_TEST(Issues, Issue2500b) {
     // Attack preferences are broken. Archers are missing archer attack preference.
+    // Issue2500a covers having no preference, Issue2500c a race one, and Issue2146 promoted classes.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hp0Tape = charTapes.hp(0);
     auto hp1Tape = charTapes.hp(1);
@@ -1325,6 +1380,7 @@ GAME_TEST(Issues, Issue2500b) {
 
 GAME_TEST(Issues, Issue2500c) {
     // Attack preferences are broken. Dwarven Commanders are missing goblin attack preference.
+    // Issue2500a covers having no preference, Issue2500b a class one, and Issue2146 promoted classes.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hp0Tape = charTapes.hp(0);
     auto hp1Tape = charTapes.hp(1);
@@ -1653,8 +1709,8 @@ GAME_TEST(Prs, Pr2615a) {
     auto statusTape = tapes.statusBar();
     game.startNewGame();
     const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
-    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
-    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->uRadius, 52);
+    ASSERT_EQ(pDecorationTable->decoration(campfire.uDecorationDescID)->hint, "campfire");
+    ASSERT_EQ(pDecorationTable->decoration(campfire.uDecorationDescID)->uRadius, 52);
     game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(535, 0, 0), 0); // The pick depth comes out at 560.
     test.startTaping();
     game.pointMouseAtDecoration(7);
@@ -1709,7 +1765,7 @@ GAME_TEST(Prs, Pr2615c) {
     game.startNewGame();
     engine->config->debug.AllMagic.setValue(true);
     const LevelDecoration &campfire = pLevelDecorations[7]; // The campfire on the beach.
-    ASSERT_EQ(pDecorationList->GetDecoration(campfire.uDecorationDescID)->hint, "campfire");
+    ASSERT_EQ(pDecorationTable->decoration(campfire.uDecorationDescID)->hint, "campfire");
     ASSERT_EQ(campfire.uEventID, 0); // The eventless interactive kind - Pr2615d covers the evented kind.
     game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
     test.startTaping();
@@ -1730,7 +1786,7 @@ GAME_TEST(Prs, Pr2615d) {
     engine->config->debug.AllMagic.setValue(true);
     game.teleportTo(MAP_HARMONDALE, Vec3f(-12192, 9000, 0), 0); // Decorations belong to the loaded map.
     const LevelDecoration &tree = pLevelDecorations[559];
-    ASSERT_EQ(pDecorationList->GetDecoration(tree.uDecorationDescID)->hint, "tree");
+    ASSERT_EQ(pDecorationTable->decoration(tree.uDecorationDescID)->hint, "tree");
     ASSERT_NE(tree.uEventID, 0); // The point of this test - Pr2615c covers the eventless interactive kind.
     game.teleportTo(MAP_HARMONDALE, tree.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
     pParty->GetPlayingTime() += Duration::fromDays(150);
@@ -1743,3 +1799,4 @@ GAME_TEST(Prs, Pr2615d) {
     game.tick(3);
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
 }
+

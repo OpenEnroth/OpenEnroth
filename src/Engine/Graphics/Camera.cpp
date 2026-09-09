@@ -1,6 +1,7 @@
 #include "Engine/Graphics/Camera.h"
 
 #include <cmath>
+#include <memory>
 
 #include "Engine/Engine.h"
 
@@ -10,7 +11,7 @@
 
 #include "Engine/Graphics/ClippingFunctions.h"
 
-Camera3D *pCamera3D = new Camera3D;
+std::unique_ptr<Camera3D> pCamera3D;
 
 //----- (0043643E) --------------------------------------------------------
 float Camera3D::GetMouseInfoDepth() {

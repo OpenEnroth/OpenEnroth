@@ -218,6 +218,15 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
             }
             return sol::make_object(solState, sol::lua_nil);
         }),
+        // Keyed by item id and not by name, because item names are localized and several items share one - both lich
+        // jars are called "Lich Jar".
+        "allItems", sol::as_function([&solState]() {
+            sol::table result = solState.create_table();
+            for (ItemId itemId : pItemTable->items.indices())
+                if (!pItemTable->items[itemId].name.empty())
+                    result[itemId] = pItemTable->items[itemId].name;
+            return result;
+        }),
         // The getRandomItem function accept an optional filter function to exclude some items from the randomization
         "getRandomItem", sol::as_function([](const FilterItemFunction &filter) {
             if (filter) {
@@ -357,7 +366,8 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
         "LightPath", QBIT_LIGHT_PATH
     );
 
-    // Let's not expose all the item types for now. I feel like it's too early.
+    // Item names are localized and not unique, so they can't be used as enum keys. Scripts that need a specific item
+    // go through this enum, everything else goes through `items.allItems`.
     table.new_enum<false>("ItemType",
         "LichJarFull", ITEM_QUEST_LICH_JAR_FULL
     );

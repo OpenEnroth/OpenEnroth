@@ -42,7 +42,7 @@ class CharacterConditions;
 class CharacterInventory;
 struct Chest;
 class ChestInventory;
-struct DecorationDesc;
+struct DecorationData;
 struct Item;
 struct LevelDecoration;
 struct LocationInfo;
@@ -51,7 +51,7 @@ struct MonsterDesc;
 struct NPCData;
 struct ObjectDesc;
 struct OutdoorTileType;
-struct OverlayDesc;
+struct OverlayData;
 struct Party;
 struct PersistentVariables;
 struct PortraitFrameData;
@@ -591,7 +591,7 @@ void reconstruct(const Timer_MM7 &src, Timer *dst);
 
 struct ActiveOverlay_MM7 {
     int16_t field_0;
-    int16_t indexToOverlayList;
+    int16_t indexToOverlayTable;
     int16_t spriteFrameTime;
     int16_t animLength;
     int16_t screenSpaceX;
@@ -999,7 +999,7 @@ static_assert(sizeof(ChestData_MM7) == 36);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestData_MM7)
 
 
-struct DecorationDesc_MM6 {
+struct DecorationData_MM6 {
     std::array<char, 32> internalName; // Internal name of the decoration (e.g. "dec03").
     std::array<char, 32> hint;
     int16_t uType;
@@ -1011,20 +1011,20 @@ struct DecorationDesc_MM6 {
     int16_t uSoundID;
     int16_t _pad;
 };
-static_assert(sizeof(DecorationDesc_MM6) == 80);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(DecorationDesc_MM6)
+static_assert(sizeof(DecorationData_MM6) == 80);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(DecorationData_MM6)
 
-struct DecorationDesc_MM7 : DecorationDesc_MM6 {
+struct DecorationData_MM7 : DecorationData_MM6 {
     uint8_t uColoredLightRed;
     uint8_t uColoredLightGreen;
     uint8_t uColoredLightBlue;
     uint8_t _pad;
 };
-static_assert(sizeof(DecorationDesc_MM7) == 84);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(DecorationDesc_MM7)
+static_assert(sizeof(DecorationData_MM7) == 84);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(DecorationData_MM7)
 
-void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst);
-void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst);
+void reconstruct(const DecorationData_MM6 &src, DecorationData *dst);
+void reconstruct(const DecorationData_MM7 &src, DecorationData *dst);
 
 
 struct Chest_MM7 {
@@ -1067,16 +1067,16 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVLight_MM7)
 void reconstruct(const BLVLight_MM7 &src, BLVLight *dst);
 
 
-struct OverlayDesc_MM7 {
+struct OverlayData_MM7 {
     uint16_t uOverlayID;
     uint16_t uOverlayType;
     uint16_t uSpriteFramesetID;
-    int16_t spriteFramesetGroup;
+    int16_t field_6; // Zero in all shipped MM6, MM7 and MM8 records, and no engine reads it.
 };
-static_assert(sizeof(OverlayDesc_MM7) == 8);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayDesc_MM7)
+static_assert(sizeof(OverlayData_MM7) == 8);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayData_MM7)
 
-void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst);
+void reconstruct(const OverlayData_MM7 &src, OverlayData *dst);
 
 
 struct PortraitFrameData_MM7 {

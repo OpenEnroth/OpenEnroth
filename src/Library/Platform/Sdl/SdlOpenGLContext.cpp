@@ -36,7 +36,7 @@ void SdlOpenGLContext::swapBuffers() {
 }
 
 void *SdlOpenGLContext::nativeHandle() {
-    return &_context;
+    return _context;
 }
 
 void *SdlOpenGLContext::getProcAddress(const char *name) {

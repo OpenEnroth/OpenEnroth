@@ -141,7 +141,6 @@ int runDump(const LodToolOptions &options) {
         fmt::println("Size{}: {}", isCompressed ? " (uncompressed)" : "", data.size());
         fmt::println("Data{}:", isCompressed ? " (uncompressed)" : "");
 
-        std::string line;
         for (size_t offset = 0; offset < data.size(); offset += 16) {
             std::string_view chunk = data.str().substr(offset, 16);
 

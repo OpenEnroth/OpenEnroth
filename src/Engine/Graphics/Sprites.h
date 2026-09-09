@@ -9,7 +9,7 @@
 #include "SpriteEnums.h"
 #include "SpriteEnumFunctions.h"
 
-struct DecorationDesc;
+struct DecorationData;
 class GraphicsImage;
 struct LodSprite;
 
@@ -62,4 +62,4 @@ struct SpriteFrameTable {
 
 extern SpriteFrameTable *pSpriteFrameTable;
 
-SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, Duration t, int month);
+SpriteFrame *LevelDecorationChangeSeason(const DecorationData *desc, Duration t, int month);

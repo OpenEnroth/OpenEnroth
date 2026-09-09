@@ -9,7 +9,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Objects/DecorationList.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Actor.h"
@@ -48,7 +48,7 @@ int savedEventStep;
 LevelDecoration *savedDecoration;
 
 void initDecorationEvents() {
-    DecorationId id = pDecorationList->GetDecorIdByName("Event Trigger");
+    DecorationId id = pDecorationTable->decorationId("Event Trigger");
 
     decorationsWithEvents.clear();
     for (int i = 0; i < pLevelDecorations.size(); ++i) {
@@ -164,7 +164,7 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     }
 
     if (!interpreter.isValid()) {
-        MM_INFO("Face has invalid event ID");
+        MM_WARNING("Face has invalid event ID");
         engine->_statusBar->nothingHere();
         return;
     }
