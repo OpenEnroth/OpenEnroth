@@ -1070,3 +1070,42 @@ GAME_TEST(Issues, Issue1997) {
     EXPECT_EQ(blessTape.front(), 0);
     EXPECT_GT(blessTape.back(), 0); // Bless was cast at least once.
 }
+
+GAME_TEST(Issues, Issue1998) {
+    // Repairing an unidentified item from the inventory also identified it, even with no identify skill at all, and it
+    // played the failed identification speech instead of the repair one.
+    for (bool canIdentify : {true, false}) {
+        SCOPED_TRACE(canIdentify ? "can identify" : "cannot identify");
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+
+        Character &character = pParty->pCharacters[0];
+        CombinedSkillValue grandmaster(10, MASTERY_GRANDMASTER); // Always succeeds, for both skills.
+        character.setSkillValue(SKILL_REPAIR, grandmaster);
+        character.setSkillValue(SKILL_ITEM_ID, canIdentify ? grandmaster : CombinedSkillValue::none());
+        Item armor(ITEM_LEATHER_ARMOR); // A fresh item is unidentified.
+        armor.SetBroken();
+        ASSERT_GT(pItemTable->items[armor.itemId].identifyAndRepairDifficulty, 0); // Zero-difficulty items identify on inspection.
+        ASSERT_EQ(character.CanIdentify(armor), canIdentify);
+        ASSERT_TRUE(character.CanRepair(armor));
+        character.inventory.clear();
+        character.inventory.add(Pointi(0, 0), armor);
+
+        // Right-click the item in the inventory grid, the popup does the identification and the repair.
+        auto portraitTape = charTapes.portrait(0);
+        game.goToInventory(1);
+        test.startTaping();
+        game.pressButton(BUTTON_RIGHT, 30, 30);
+        game.tick();
+        game.releaseButton(BUTTON_RIGHT, 30, 30);
+        game.tick();
+        test.stopTaping();
+
+        auto entry = character.inventory.entry(Pointi(0, 0));
+        ASSERT_TRUE(entry);
+        EXPECT_FALSE(entry->IsBroken());
+        EXPECT_EQ(entry->IsIdentified(), canIdentify);
+        EXPECT_CONTAINS(portraitTape, PORTRAIT_WIDE_SMILE); // Repair success portrait, it outranks the identification one.
+    }
+}
