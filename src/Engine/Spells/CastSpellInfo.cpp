@@ -54,8 +54,8 @@ static constexpr Duration SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100_ticks;
  * Fills in the spell fields of a freshly spawned projectile sprite.
  *
  * @param spritePtr                     Sprite to fill in, with its sprite id already set.
- * @param spellLevel                    Spell level to stamp on the sprite.
- * @param spellMastery                  Spell mastery to stamp on the sprite.
+ * @param spellLevel                    Spell level of the cast.
+ * @param spellMastery                  Spell mastery of the cast.
  * @param pCastSpell                    Queued cast that spawns the sprite.
  */
 static void initSpellSprite(SpriteObject *spritePtr,
