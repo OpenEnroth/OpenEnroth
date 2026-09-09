@@ -595,7 +595,6 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;
             spell_sprites.timeSinceCreated = 0_ticks;
             spell_sprites.spell_caster_pid = Pid(OBJECT_Sprite, 1000); // 8000 | OBJECT_Sprite;
-            spell_sprites.uSoundID = 0;
             break;
         default:
             break;
@@ -623,7 +622,6 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             // v20 = yaw;
             spell_sprites.spell_target_pid = Pid();
             spell_sprites.uFacing = yaw;
-            spell_sprites.uSoundID = 0;
             launch_speed = pObjectList->pObjects[(int16_t)spell_sprites.uObjectDescID].uSpeed;
             spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],

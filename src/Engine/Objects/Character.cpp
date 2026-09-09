@@ -6368,13 +6368,12 @@ void Character::_42ECB5_CharacterAttacksActor() {
     if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
         pushSpellOrRangedAttack(SPELL_BLASTER_PROJECTILE,
-                                pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0,
-                                pParty->activeCharacterIndex() + 8); // TODO(captainurist): +8???
+                                pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), ON_CAST_AutoTarget);
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
         pushSpellOrRangedAttack(spellForWand(wand_item_id),
-                                pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
+                                pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, ON_CAST_AutoTarget);
 
         // reduce wand charges
         if (!--main_hand->numCharges && engine->config->gameplay.DestroyDischargedWands.value()) {
@@ -6394,7 +6393,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         shooting_bow = true;
         // TODO(captainurist): target_pid is ignored here - the arrow re-resolves its target in castSpell() with a
         //                     different fallback, so it can fly at a different actor than the one checked above.
-        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0, 0);
+        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0);
     } else {
         melee_attack = true;
         // actor out of range or no actor; no ranged weapon so melee attacking air
@@ -6471,7 +6470,6 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
     a1a.spell_target_pid = Pid();
     a1a.field_60_distance_related_prolly_lod = 0;
     a1a.uFacing = 0;
-    a1a.uSoundID = 0;
 
     if (actchar >= 1 || actchar <= 4) {
         a1a.spell_caster_pid = Pid(OBJECT_Character, actchar - 1);

@@ -120,7 +120,6 @@ bool Chest::open(int uChestID, Pid objectPid) {
             }
             pSpellObject.vPosition = pOut;
 
-            pSpellObject.uSoundID = 0;
             pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;
             pSpellObject.uSectorID = pIndoor->GetSector(pSpellObject.vPosition);
             pSpellObject.timeSinceCreated = 0_ticks;
