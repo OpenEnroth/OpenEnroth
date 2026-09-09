@@ -181,6 +181,12 @@ class Renderer {
     GraphicsImage *solidFillTexture();
 
  protected:
+    /**
+     * Releases the lazily created solid fill texture. A concrete renderer must call this from its own
+     * destructor, because releasing a texture dispatches through the pure virtual `DeleteTexture`.
+     */
+    void releaseSolidFillTexture();
+
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;

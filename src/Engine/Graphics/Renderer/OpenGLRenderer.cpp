@@ -203,6 +203,7 @@ OpenGLRenderer::OpenGLRenderer(
 
 OpenGLRenderer::~OpenGLRenderer() {
     MM_INFO("RenderGl - Destructor");
+    releaseSolidFillTexture();
     _shutdownImGui();
 }
 
