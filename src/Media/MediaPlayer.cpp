@@ -127,9 +127,7 @@ class AVStreamWrapper {
 class AVAudioStream : public AVStreamWrapper {
  public:
     virtual ~AVAudioStream() {
-        // ~AVStreamWrapper also calls close(), but a virtual call from a base destructor lands on the base
-        // override, so the resampler has to be freed from here.
-        close();
+        close(); // A virtual call from ~AVStreamWrapper lands on the base override, so the resampler needs this.
     }
 
     virtual void close() override {
@@ -215,9 +213,7 @@ class AVAudioStream : public AVStreamWrapper {
 class AVVideoStream : public AVStreamWrapper {
  public:
     virtual ~AVVideoStream() {
-        // ~AVStreamWrapper also calls close(), but a virtual call from a base destructor lands on the base
-        // override, so the scaler has to be freed from here.
-        close();
+        close(); // A virtual call from ~AVStreamWrapper lands on the base override, so the scaler needs this.
     }
 
     virtual void close() override {
@@ -534,7 +530,7 @@ class Movie : public IMovie {
 
             // ignore audio packets
             if (packet.stream_index == audio.stream_idx) {
-                av_packet_unref(&packet); // Skipping the unref at the end of the loop would leak this one.
+                av_packet_unref(&packet); // The continue below skips the unref at the end of the loop.
                 continue;
             }
 
