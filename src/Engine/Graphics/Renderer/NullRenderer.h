@@ -7,6 +7,7 @@
 class NullRenderer : public BaseRenderer {
  public:
     using BaseRenderer::BaseRenderer;
+    virtual ~NullRenderer();
 
     virtual void Initialize() override;
     virtual bool Reinitialize(bool firstInit) override;
