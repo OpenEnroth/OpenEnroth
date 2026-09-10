@@ -169,7 +169,7 @@ GAME_TEST(Issues, Issue1532) {
     // keep casting till the spell fails
     while (engine->_statusBar->get() != "Spell failed") {
         if (pParty->pCharacters[0].CanAct())
-            pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue(10, MASTERY_GRANDMASTER), 0, 0);
+            pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue(10, MASTERY_GRANDMASTER), 0);
         game.tick(1);
     }
 

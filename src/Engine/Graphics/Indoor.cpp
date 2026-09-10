@@ -1867,7 +1867,6 @@ void SpawnRandomTreasure(MapData *mapData, SpawnPoint *spawn) {
     }
 
     spawnedObject.uAttributes = 0;
-    spawnedObject.uSoundID = 0;
     spawnedObject.uFacing = 0;
     spawnedObject.vPosition = spawn->position;
     spawnedObject.spell_skill = MASTERY_NONE;

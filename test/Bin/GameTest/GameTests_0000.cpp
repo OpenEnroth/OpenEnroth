@@ -598,7 +598,7 @@ GAME_TEST(Issues, Issue414) {
     // Cast while cursed — sequential RNG returns 0 for grng->random(100), which is < 50,
     // so the spell always fails due to curse.
     character.conditions.set(CONDITION_CURSED, Time::fromTicks(1));
-    pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue::none(), 0, 0);
+    pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue::none(), 0);
     game.tick(1);
     int manaSpentOnFailure = 100 - character.mana;
     EXPECT_EQ(engine->_statusBar->get(), "Spell failed"); // Status bar shows failure message.
@@ -606,7 +606,7 @@ GAME_TEST(Issues, Issue414) {
     // Cast while not cursed — spell succeeds.
     character.conditions.reset(CONDITION_CURSED);
     character.mana = 100;
-    pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue::none(), 0, 0);
+    pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue::none(), 0);
     game.tick(1);
     int manaSpentOnSuccess = 100 - character.mana;
     int fireSpikeCount = std::ranges::count_if(pSpriteObjects, [](const SpriteObject &obj) {

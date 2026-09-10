@@ -42,6 +42,7 @@ enum class SpellCastFlag : uint16_t {
     ON_CAST_TargetedEnchantment = 0x0080,      // Targeted spell, target is item in inventory
     ON_CAST_TargetedActorOrCharacter = 0x0100, // Targeted spell, target either actor or character
     ON_CAST_TargetedHireling = 0x0200,         // Targeted spell, target is hireling
+    ON_CAST_AutoTarget = 0x0400,               // OE addition. Quick spell key, wand or blaster shot, target from the cursor or the closest actor instead of a picker
 
     // Cumulative flags indicating that spell is targeted
     ON_CAST_CastingInProgress =
@@ -70,9 +71,6 @@ struct CastSpellInfo {
     Pid targetPid; // Target pid, if any.
     int targetInventoryIndex = -1; // Target inventory item index (in Character::pInventoryItemList) in target
                                    // character's inventory, if any.
-
-    int overrideSoundId = 0; // TODO(captainurist): doesn't look like sound id. Maybe flags?
-                             //                     Bits 0-2 for caster (1-based), bit 3 for blaster.
 };
 
 /**
@@ -87,19 +85,16 @@ struct CastSpellInfo {
  * listed in ON_CAST_CastingInProgress and this flag will be removed
  * in event queue if correct target is picked.
  *
- * @offset 0x0042777D
- *
  * @param spell                         Spell id.
  * @param casterIndex                   Zero-based index of a character casting the spell.
  * @param skill_value                   Skill value that the spell is cast with.
  * @param flags                         Spell flags. Can be empty or have several flags.
- * @param overrideSoundId                            ???
+ * @offset 0x0042777D
  */
 void pushSpellOrRangedAttack(SpellId spell,
                              int casterIndex,
                              CombinedSkillValue skill_value,
-                             SpellCastFlags flags,
-                             int overrideSoundId);
+                             SpellCastFlags flags);
 
 /**
  * Register spell cast on party with temple donation.

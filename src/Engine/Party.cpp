@@ -911,7 +911,6 @@ void Party::dropHeldItem() {
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.spriteId);
     sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
     sprite.vPosition = pos + Vec3f(0, 0, eyeLevel);
-    sprite.uSoundID = 0;
     sprite.uFacing = 0;
     sprite.uAttributes = SPRITE_DROPPED_BY_PLAYER;
     sprite.uSectorID = pBLVRenderParams->uPartyEyeSectorID;
