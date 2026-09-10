@@ -962,16 +962,16 @@ struct SpriteObject_MM7 {
     Vec3i position;
     Vec3s velocity;
     uint16_t yawAngle;
-    uint16_t preloadedSoundSlot; // Vanilla keeps 17 sample pointers per sound, the sample itself and 16 cached copies.
-                                 // This slot of the cast sound holds the cast sample, slot + 4 of the impact sound the
-                                 // impact sample, and each plays from its slot, 0 staying 0:
-                                 //   0      the sample itself, loaded at startup or first use. Spellbook, scrolls, OE.
-                                 //   1-4    quick spell cast sound of party member 1-4.
-                                 //   5-8    quick spell impact sound of party member 1-4.
-                                 //   9-12   wand cast sound of party member 1-4. Blasters pass the same numbers.
-                                 //   13-16  wand impact sound of party member 1-4.
-                                 // Vanilla purges sprites with bit 3, the 9-12 row, on map entry like unpickable ones.
-                                 // OE keeps the value as loaded and writes it back, never setting it for its own casts.
+    uint16_t preloadedSoundSlotUnused; // Vanilla keeps 17 sample pointers per sound, the sample and 16 cached copies.
+                                       // This slot of the cast sound holds the cast sample, slot + 4 of the impact
+                                       // sound the impact sample, and each plays from its slot, 0 staying 0:
+                                       //   0      the sample itself, loaded at start or first use. Spellbook, scrolls.
+                                       //   1-4    quick spell cast sound of party member 1-4.
+                                       //   5-8    quick spell impact sound of party member 1-4.
+                                       //   9-12   wand cast sound of party member 1-4. Blasters pass the same numbers.
+                                       //   13-16  wand impact sound of party member 1-4.
+                                       // Vanilla purges bit 3 sprites, the 9-12 row, on map entry like unpickable ones.
+                                       // OE writes 0 and ignores it on load.
     uint16_t uAttributes;
     int16_t uSectorID;
     uint16_t uTimeSinceCreated;
