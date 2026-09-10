@@ -962,16 +962,17 @@ struct SpriteObject_MM7 {
     Vec3i position;
     Vec3s velocity;
     uint16_t yawAngle;
-    uint16_t preloadedSoundSlotUnused; // Vanilla keeps 17 sample pointers per sound, the sample and 16 cached copies.
-                                       // This slot of the cast sound holds the cast sample, slot + 4 of the impact
-                                       // sound the impact sample, and each plays from its slot, 0 staying 0:
+    uint16_t preloadedSoundSlotUnused; // Index into SoundInfo_MM7::soundData of the cast sound, where vanilla cached
+                                       // the cast sample, and index + 4 of the impact sound the impact one, 0 stays 0:
                                        //   0      the sample itself, loaded at start or first use. Spellbook, scrolls.
                                        //   1-4    quick spell cast sound of party member 1-4.
                                        //   5-8    quick spell impact sound of party member 1-4.
                                        //   9-12   wand cast sound of party member 1-4. Blasters pass the same numbers.
                                        //   13-16  wand impact sound of party member 1-4.
-                                       // Vanilla purges bit 3 sprites, the 9-12 row, on map entry like unpickable ones.
-                                       // OE writes 0 and ignores it on load.
+                                       // The field holds only 0, 1-4 or 9-12, the impact rows live in the cache, so
+                                       // bit 3 is exactly the wand or blaster mark written as index | 8. Vanilla purges
+                                       // sprites carrying it on map entry like unpickable ones. OE writes 0 and never
+                                       // reads it back.
     uint16_t uAttributes;
     int16_t uSectorID;
     uint16_t uTimeSinceCreated;
@@ -1268,7 +1269,9 @@ struct SoundInfo_MM6 {
     uint32_t soundId;
     uint32_t type;
     uint32_t flags;
-    std::array<uint32_t, 17> soundData; // Always 0 in MM7 data.
+    std::array<uint32_t, 17> soundData; // Vanilla's runtime pointers to a WAV from audio.snd, 0 a heap copy behind a
+                                        // 4-byte size, 1-16 raw copies in the per-character spell sound cache.
+                                        // Always 0 in MM7 data.
 };
 static_assert(sizeof(SoundInfo_MM6) == 112);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM6)
