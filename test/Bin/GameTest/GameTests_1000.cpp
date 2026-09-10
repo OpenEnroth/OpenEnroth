@@ -600,13 +600,19 @@ GAME_TEST(Issues, Issue1301b) {
     game.tick();
     for (Character &character : pParty->pCharacters)
         character.SetVariable(VAR_Eradicated, 1);
+
+    // The queue still has its old head at this point, and switchToNextActiveCharacter used to hand the focus to that
+    // head without checking it could act, which put it right back on a character that had just been eradicated.
+    pParty->switchToNextActiveCharacter();
+    EXPECT_FALSE(pParty->hasActiveCharacter());
+
     game.tick(20);
     test.stopTaping();
 
     EXPECT_EQ(deathsTape.delta(), +1);
     EXPECT_EQ(stateTape, tape(std::tuple(true, GAME_STATE_PLAYING), // The death path force-ends turn-based mode, and
                               std::tuple(false, GAME_STATE_PLAYING))); // the died state is gone before the next frame is drawn.
-    EXPECT_EQ(activeTape, tape(1)); // The drop runs, but in the attack stage it reassigns the focus to the turn queue head, which is this same character.
+    EXPECT_EQ(activeTape, tape(1)); // Every frame ends with the death path re-selecting the first character.
     EXPECT_EQ(pParty->canActCount(), 4);
 }
 
@@ -1157,4 +1163,3 @@ GAME_TEST(Issues, Issue1489) {
     EXPECT_EQ(amuletTape.front(), amuletTape.back());
     EXPECT_CONTAINS(amuletTape, ITEM_NULL);
 }
-

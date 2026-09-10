@@ -221,7 +221,9 @@ void Party::switchToNextActiveCharacter() {
         return;
 
     if (pParty->bTurnBasedModeOn) {
-        if (pTurnEngine->turn_stage != TE_ATTACK || pTurnEngine->pQueue[0].uPackedID.type() != OBJECT_Character) {
+        // The queue is not re-sorted until the turn ticks, so its head can be a character that just went down.
+        if (pTurnEngine->turn_stage != TE_ATTACK || pTurnEngine->pQueue[0].uPackedID.type() != OBJECT_Character ||
+            !pCharacters[pTurnEngine->pQueue[0].uPackedID.id()].CanAct()) {
             _activeCharacter = 0;
         } else {
             _activeCharacter = pTurnEngine->pQueue[0].uPackedID.id() + 1;
