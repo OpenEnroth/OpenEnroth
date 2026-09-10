@@ -127,11 +127,11 @@ class AVStreamWrapper {
 class AVAudioStream : public AVStreamWrapper {
  public:
     virtual ~AVAudioStream() {
-        close(); // A virtual call from ~AVStreamWrapper lands on the base override, so the resampler needs this.
+        close();
     }
 
     virtual void close() override {
-        swr_free(&converter); // Null-safe, and nulls the pointer.
+        swr_free(&converter);
         AVStreamWrapper::close();
     }
 
@@ -213,11 +213,11 @@ class AVAudioStream : public AVStreamWrapper {
 class AVVideoStream : public AVStreamWrapper {
  public:
     virtual ~AVVideoStream() {
-        close(); // A virtual call from ~AVStreamWrapper lands on the base override, so the scaler needs this.
+        close();
     }
 
     virtual void close() override {
-        sws_freeContext(converter); // Null-safe.
+        sws_freeContext(converter);
         converter = nullptr;
         AVStreamWrapper::close();
     }
@@ -499,7 +499,7 @@ class Movie : public IMovie {
                 Blob buffer = audio.decode_frame(&packet);
                 if (buffer) buffq.push(std::move(buffer));
             }
-            av_packet_unref(&packet); // Every read allocates a new reference, and the loop would drop the previous one.
+            av_packet_unref(&packet);
         }
         MM_TRACE("Audio Packets Queued");
 

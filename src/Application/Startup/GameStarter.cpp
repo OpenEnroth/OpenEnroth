@@ -208,7 +208,7 @@ GameStarter::~GameStarter() {
     _engine.reset();
     _overlaySystem.reset();
     _scriptingSystem.reset();
-    _renderer.reset(); // Before the globals below, releasing a texture routes through ::render.
+    _renderer.reset();
 
     ::engine = nullptr;
     ::render = nullptr;
