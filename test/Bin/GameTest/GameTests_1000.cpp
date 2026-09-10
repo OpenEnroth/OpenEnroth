@@ -569,12 +569,10 @@ GAME_TEST(Issues, Issue1301a) {
         ASSERT_TRUE(character.conditions.has(CONDITION_ERADICATED));
         if (turnBased)
             ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
-        if (!skipIncapacitated) {
+        if (!skipIncapacitated)
             EXPECT_EQ(activeTape, tape(activeCharacterIndex));
-        }
-        if (skipIncapacitated && turnBased) {
+        if (skipIncapacitated && turnBased)
             EXPECT_EQ(activeTape, tape(activeCharacterIndex, 0)); // Outside the attack stage turn-based mode has no queue head to fall back on, so no one ends up selected.
-        }
         if (skipIncapacitated && !turnBased) {
             EXPECT_EQ(activeTape, tape(activeCharacterIndex, activeCharacterIndex + 1)); // Realtime mode stops on the first character that can act.
             EXPECT_TRUE(pParty->activeCharacter().CanAct());
@@ -608,7 +606,7 @@ GAME_TEST(Issues, Issue1301b) {
     EXPECT_EQ(deathsTape.delta(), +1);
     EXPECT_EQ(stateTape, tape(std::tuple(true, GAME_STATE_PLAYING), // The death path force-ends turn-based mode, and
                               std::tuple(false, GAME_STATE_PLAYING))); // the died state is gone before the next frame is drawn.
-    EXPECT_EQ(activeTape, tape(1)); // The focus never leaves the first character.
+    EXPECT_EQ(activeTape, tape(1)); // The drop runs, but in the attack stage it reassigns the focus to the turn queue head, which is this same character.
     EXPECT_EQ(pParty->canActCount(), 4);
 }
 
@@ -1159,3 +1157,4 @@ GAME_TEST(Issues, Issue1489) {
     EXPECT_EQ(amuletTape.front(), amuletTape.back());
     EXPECT_CONTAINS(amuletTape, ITEM_NULL);
 }
+
