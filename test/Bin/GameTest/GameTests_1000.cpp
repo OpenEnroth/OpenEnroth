@@ -548,7 +548,7 @@ GAME_TEST(Issues, Issue1301) {
             game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
             for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_MOVEMENT; ++i) {
                 if (pTurnEngine->turn_stage == TE_ATTACK && pParty->hasActiveCharacter() && !pParty->activeCharacter().timeToRecovery)
-                    game.pressAndReleaseKey(PlatformKey::KEY_B);
+                    game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
                 game.tick();
             }
             ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
@@ -569,15 +569,45 @@ GAME_TEST(Issues, Issue1301) {
         ASSERT_TRUE(character.conditions.has(CONDITION_ERADICATED));
         if (turnBased)
             ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
-        EXPECT_EQ(activeTape.front(), activeCharacterIndex);
-        if (skipIncapacitated) {
-            EXPECT_NE(activeTape.back(), activeCharacterIndex); // Focus left the eradicated character.
-            if (pParty->hasActiveCharacter())
-                EXPECT_TRUE(pParty->activeCharacter().CanAct());
+        if (!skipIncapacitated) {
+            EXPECT_EQ(activeTape, tape(activeCharacterIndex));
+        } else if (turnBased) {
+            EXPECT_EQ(activeTape, tape(activeCharacterIndex, 0)); // Outside the attack stage turn-based mode has no queue head to fall back on, so no one ends up selected.
         } else {
-            EXPECT_EQ(activeTape.back(), activeCharacterIndex); // Option off keeps the eradicated character selected.
+            EXPECT_EQ(activeTape, tape(activeCharacterIndex, activeCharacterIndex + 1)); // Realtime mode stops on the first character that can act.
+            EXPECT_TRUE(pParty->activeCharacter().CanAct());
         }
     }
+}
+
+GAME_TEST(Issues, Issue1301b) {
+    // Eradicating the whole party in the attack stage runs the focus drop and the party death check on the same
+    // frame, which is the one path that can ask the turn queue for a head it no longer has.
+    test.prepareForNextTest();
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    engine->config->debug.NoActors.setValue(false);
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+    for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_ATTACK; ++i)
+        game.tick();
+    ASSERT_EQ(pTurnEngine->turn_stage, TE_ATTACK);
+    ASSERT_TRUE(pParty->hasActiveCharacter());
+
+    auto deathsTape = tapes.deaths();
+    auto activeTape = tapes.activeCharacterIndex();
+    auto stateTape = tapes.custom([] { return std::tuple(pParty->bTurnBasedModeOn, uGameState); });
+    test.startTaping();
+    game.tick();
+    for (Character &character : pParty->pCharacters)
+        character.SetVariable(VAR_Eradicated, 1);
+    game.tick(20);
+    test.stopTaping();
+
+    EXPECT_EQ(deathsTape.delta(), +1);
+    EXPECT_EQ(stateTape, tape(std::tuple(true, GAME_STATE_PLAYING), // The death path force-ends turn-based mode, and
+                              std::tuple(false, GAME_STATE_PLAYING))); // the died state is gone before the next frame is drawn.
+    EXPECT_EQ(activeTape, tape(1)); // The focus never leaves the first character.
+    EXPECT_EQ(pParty->canActCount(), 4);
 }
 
 GAME_TEST(Issues, Issue1315) {
