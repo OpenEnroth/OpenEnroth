@@ -1265,8 +1265,10 @@ struct SoundInfo_MM6 {
     std::array<uint32_t, 17> soundData; // Vanilla's runtime sample pointers, serialized with the table, always 0 in MM7
                                         // data. 0 is the WAV from audio.snd, the rest copies in the per-character spell
                                         // sound cache:
-                                        //   1-4    quick spell cast sound of party member 1-4, 5-8 its impact sound.
-                                        //   9-12   wand cast sound of party member 1-4, 13-16 its impact sound.
+                                        //   1-4    quick spell cast sound of party member 1-4.
+                                        //   5-8    quick spell impact sound of party member 1-4.
+                                        //   9-12   wand cast sound of party member 1-4.
+                                        //   13-16  wand impact sound of party member 1-4.
 };
 static_assert(sizeof(SoundInfo_MM6) == 112);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM6)
