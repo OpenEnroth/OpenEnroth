@@ -535,7 +535,7 @@ GAME_TEST(Issues, Issue1294_1389) {
 
 // 1300
 
-GAME_TEST(Issues, Issue1301) {
+GAME_TEST(Issues, Issue1301a) {
     // A character incapacitated by a script stayed selected during the movement phase of turn-based mode.
     for (auto [turnBased, skipIncapacitated] : {std::pair(false, true), std::pair(true, true), std::pair(true, false)}) {
         SCOPED_TRACE(fmt::format("turnBased={} skipIncapacitated={}", turnBased, skipIncapacitated));
@@ -571,9 +571,11 @@ GAME_TEST(Issues, Issue1301) {
             ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
         if (!skipIncapacitated) {
             EXPECT_EQ(activeTape, tape(activeCharacterIndex));
-        } else if (turnBased) {
+        }
+        if (skipIncapacitated && turnBased) {
             EXPECT_EQ(activeTape, tape(activeCharacterIndex, 0)); // Outside the attack stage turn-based mode has no queue head to fall back on, so no one ends up selected.
-        } else {
+        }
+        if (skipIncapacitated && !turnBased) {
             EXPECT_EQ(activeTape, tape(activeCharacterIndex, activeCharacterIndex + 1)); // Realtime mode stops on the first character that can act.
             EXPECT_TRUE(pParty->activeCharacter().CanAct());
         }
