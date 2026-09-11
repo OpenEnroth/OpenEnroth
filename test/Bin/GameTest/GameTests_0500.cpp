@@ -1,5 +1,6 @@
 #include <unordered_set>
 #include <string>
+#include <utility>
 
 #include "Testing/Game/GameTest.h"
 
@@ -17,6 +18,8 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
@@ -988,6 +991,35 @@ GAME_TEST(Issues, Issue929) {
     test.playTraceFromTestData("issue_929.mm7", "issue_929.json");
     EXPECT_EQ(goldTape.delta(), +1);
     EXPECT_EQ(itemsTape.delta(), -1);
+}
+
+GAME_TEST(Issues, Issue959) {
+    // Bug: human town halls selected a missing sound instead of their greeting.
+    for (MapId map : {MAP_HARMONDALE, MAP_ERATHIA}) {
+        SCOPED_TRACE(std::to_underlying(map));
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        bool harmondale = map == MAP_HARMONDALE;
+        Vec3f approach = harmondale ? Vec3f(-13376, 13374, 64) : Vec3f(-10436, 4206, 800);
+        game.teleportTo(map, approach, harmondale ? 90 : 270);
+        Vec3f doorPoint = harmondale ? Vec3f(-13376, 13574, 192) : Vec3f(-10436, 4006, 928);
+        Vec2f screenPos = pCamera3D->Project(pCamera3D->ViewTransform(&doorPoint));
+        game.moveMouse(screenPos.x, screenPos.y);
+        game.tick();
+        Pid door = harmondale ? Pid::odmFace(40, 52) : Pid::odmFace(46, 28);
+        ASSERT_EQ(engine->PickMouseForTargeting().pid, door);
+        ASSERT_LT(engine->PickMouseForTargeting().depth, engine->config->gameplay.MouseInteractionDepth.value());
+        auto houseTape = tapes.house();
+        auto soundsTape = tapes.sounds();
+        test.startTaping();
+        game.pressAndReleaseButton(PlatformMouseButton::BUTTON_LEFT, screenPos.x, screenPos.y);
+        game.tick();
+        ASSERT_EQ(current_screen_type, SCREEN_HOUSE);
+        EXPECT_EQ(houseTape.back(), harmondale ? HOUSE_TOWN_HALL_HARMONDALE : HOUSE_TOWN_HALL_ERATHIA);
+        EXPECT_CONTAINS(soundsTape.flatten(), SOUND_enter);
+        EXPECT_EQ(soundsTape.flatten().count(SoundId(34302)), 1);
+    }
 }
 
 GAME_TEST(Issues, Issue987) {

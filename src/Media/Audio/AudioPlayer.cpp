@@ -236,7 +236,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     } else if (mode == SOUND_MODE_HOUSE_DOOR || mode == SOUND_MODE_HOUSE_SPEECH) {
         pid = mode == SOUND_MODE_HOUSE_DOOR ? FAKE_HOUSE_DOOR_PID : FAKE_HOUSE_SPEECH_PID;
         _regularSoundPool.stopPid(pid);
-        _regularSoundPool.playUniquePid(sample, si->dataSource, pid);
+        result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid);
     } else {
         assert(pid);
 
