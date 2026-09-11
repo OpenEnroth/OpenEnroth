@@ -6750,11 +6750,7 @@ void Character::Zero() {
     uNumDivineInterventionCastsThisDay = 0;
     uNumArmageddonCasts = 0;
     uNumFireSpikeCasts = 0; // TODO(pskelton): firespike meant to remain permanantly??
-    for (int z = 0; z < 5; z++) {
-        if (vBeacons[z])
-            vBeacons[z]->image->release();
-        vBeacons[z].reset();
-    }
+    releaseBeacons();
     // Character bits
     _characterEventBits.reset();
     _achievedAwardsBits.reset();
@@ -6789,6 +6785,15 @@ bool Character::matchesAttackPreference(MonsterAttackPreference preference) cons
     default:
         assert(false);
         return false;
+    }
+}
+
+// TODO(captainurist): make LloydBeacon::image own its texture and drop this.
+void Character::releaseBeacons() {
+    for (std::optional<LloydBeacon> &beacon : vBeacons) {
+        if (beacon)
+            beacon->image->release();
+        beacon.reset();
     }
 }
 
