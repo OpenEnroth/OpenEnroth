@@ -61,6 +61,8 @@ void loadGame(std::string_view fileName) {
     deserialize(Blob::copy(ufs->read(path)), &state, tags::via<SaveGame_MM7>);
 
     // Move loaded state to global variables.
+    for (Character &character : pParty->pCharacters)
+        character.releaseBeacons(); // The assignment below drops these raw owning pointers.
     *pParty = std::move(state.party);
     *gameTimer = std::move(state.eventTimer);
     *pActiveOverlayList = std::move(state.overlays);
