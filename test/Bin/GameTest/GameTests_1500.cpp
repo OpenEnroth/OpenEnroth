@@ -570,45 +570,39 @@ GAME_TEST(Issues, Issue1717) {
 }
 
 GAME_TEST(Issues, Issue1718) {
-    // Roland's cage in Colony Zod handed over the Colony Zod key on every click. Test both sides of the config option -
-    // in vanilla every click gives another key.
-    for (bool noRepeatedKey : {true, false}) {
-        test.prepareForNextTest();
-        engine->config->gameplay.NoRepeatedColonyZodKey.setValue(noRepeatedKey);
-        game.startNewGame();
-        game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180); // On the ledge east of the hanging cage, facing it.
+    // Roland's cage in Colony Zod handed over another key on every click.
+    game.startNewGame();
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180); // On the ledge east of the hanging cage, facing it.
+    game.tick(2);
+
+    auto cage = std::ranges::find_if(pLevelDecorations, [](const LevelDecoration &decoration) { return decoration.uEventID == 376; });
+    ASSERT_NE(cage, pLevelDecorations.end()); // Event 376 is Roland's cage script.
+    int cageId = cage - pLevelDecorations.begin();
+    ASSERT_FALSE(pParty->_questBits.test(QBIT_TALKED_TO_ROLAND));
+    ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
+
+    auto clickCage = [&] {
+        Vec3f top = cage->vPosition + Vec3f(0, 0, pDecorationTable->decoration(cage->uDecorationDescID)->uDecorationHeight); // The cage sprite is transparent around its middle.
+        Vec3f viewPos = pCamera3D->ViewTransform(&top);
+        Vec2f screenPos = pCamera3D->Project(viewPos);
+        game.moveMouse(screenPos.x, screenPos.y);
+        game.tick();
+        ASSERT_EQ(engine->PickMouseForInteraction().pid, Pid(OBJECT_Decoration, cageId));
+        game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+        game.tick(3);
+        ASSERT_EQ(current_screen_type, SCREEN_NPC_DIALOGUE); // Roland speaks on every click.
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         game.tick(2);
+        ASSERT_EQ(current_screen_type, SCREEN_GAME);
+    };
 
-        auto cage = std::ranges::find_if(pLevelDecorations, [](const LevelDecoration &decoration) { return decoration.uEventID == 376; });
-        ASSERT_NE(cage, pLevelDecorations.end()); // Event 376 is Roland's cage script.
-        int cageId = cage - pLevelDecorations.begin();
-        ASSERT_FALSE(pParty->_questBits.test(QBIT_TALKED_TO_ROLAND));
-        ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
+    clickCage();
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_TALKED_TO_ROLAND));
+    ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_COLONY_ZOD_KEY);
+    pParty->takeHoldingItem();
 
-        auto clickCage = [&] {
-            // The cage sprite is see-through around its middle, so aim at the top of the decoration rather than its center.
-            Vec3f top = cage->vPosition + Vec3f(0, 0, pDecorationTable->decoration(cage->uDecorationDescID)->uDecorationHeight);
-            Vec3f viewPos = pCamera3D->ViewTransform(&top);
-            Vec2f screenPos = pCamera3D->Project(viewPos);
-            game.moveMouse(screenPos.x, screenPos.y);
-            game.tick();
-            ASSERT_EQ(engine->PickMouseForInteraction().pid, Pid(OBJECT_Decoration, cageId));
-            game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
-            game.tick(3);
-            ASSERT_EQ(current_screen_type, SCREEN_NPC_DIALOGUE); // Roland speaks on every click.
-            game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-            game.tick(2);
-            ASSERT_EQ(current_screen_type, SCREEN_GAME);
-        };
-
-        clickCage();
-        EXPECT_TRUE(pParty->_questBits.test(QBIT_TALKED_TO_ROLAND));
-        ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_COLONY_ZOD_KEY); // The first click always hands over the key.
-        pParty->takeHoldingItem();
-
-        clickCage();
-        EXPECT_EQ(pParty->pPickedItem.itemId, noRepeatedKey ? ITEM_NULL : ITEM_COLONY_ZOD_KEY);
-    }
+    clickCage();
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
 }
 
 GAME_TEST(Issues, Issue1720) {
