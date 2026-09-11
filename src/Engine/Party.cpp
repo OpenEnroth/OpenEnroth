@@ -23,7 +23,7 @@
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
@@ -174,7 +174,7 @@ bool Party::checkPartyPerceptionAgainstCurrentMap() {
                 maxPerception = playerPerception;
         }
     }
-    return maxPerception >= 2 * pMapStats->pInfos[engine->_currentLoadedMapId].perceptionDifficulty;
+    return maxPerception >= 2 * pMapTable->pInfos[engine->_currentLoadedMapId].perceptionDifficulty;
 }
 
 int Party::canActCount() const {
@@ -911,7 +911,6 @@ void Party::dropHeldItem() {
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.spriteId);
     sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
     sprite.vPosition = pos + Vec3f(0, 0, eyeLevel);
-    sprite.uSoundID = 0;
     sprite.uFacing = 0;
     sprite.uAttributes = SPRITE_DROPPED_BY_PLAYER;
     sprite.uSectorID = pBLVRenderParams->uPartyEyeSectorID;

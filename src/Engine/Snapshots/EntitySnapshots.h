@@ -962,7 +962,12 @@ struct SpriteObject_MM7 {
     Vec3i position;
     Vec3s velocity;
     uint16_t yawAngle;
-    uint16_t uSoundID;
+    uint16_t preloadedSoundSlotUnused; // Index into SoundInfo_MM7::soundData of the cast sound, 1-4 for quick spells,
+                                       // 9-12 for wand and blaster shots, 0 for everything else. Bit 3 thus marks a
+                                       // wand or blaster shot, and vanilla drops sprites carrying it on map entry (but
+                                       // not on save load). Vanilla also drops sprites based on OBJECT_DESC_UNPICKABLE
+                                       // flag, and all wand and blaster sprites carry it, so in OE this field is not
+                                       // used - we write 0 and never read it.
     uint16_t uAttributes;
     int16_t uSectorID;
     uint16_t uTimeSinceCreated;
@@ -1259,7 +1264,23 @@ struct SoundInfo_MM6 {
     uint32_t soundId;
     uint32_t type;
     uint32_t flags;
-    std::array<uint32_t, 17> soundData; // Always 0 in MM7 data.
+    std::array<uint32_t, 17> soundData; // Vanilla's runtime sample pointers, always 0 in MM7 data. 0 is the WAV from
+                                        // audio.snd, the rest point into the static per-character spell sound buffers:
+                                        //   1-4    quick spell cast sound of party member 1-4.
+                                        //   5-8    quick spell impact sound of party member 1-4.
+                                        //   9-12   wand cast sound of party member 1-4.
+                                        //   13-16  wand impact sound of party member 1-4.
+                                        // Cast sounds use rows 1-4 and 9-12, impact sounds use rows 5-8 and 13-16, so
+                                        // no sound uses all rows.
+                                        //
+                                        // Why are cache pointers here? Vanilla frees slot 0 of a non-system sound as
+                                        // soon as it stops playing, so the party's own quick spell and wand sounds are
+                                        // kept resident in static per-member buffers and played from these slots. Every
+                                        // slot of a sound points at a copy of the same sample, slot N at the copy in
+                                        // the buffer of the member who owns row N. The owner matters because each
+                                        // buffer is overwritten when its member changes quick spell or wand, so a
+                                        // caster plays from its own member's slot, the one copy it knows is current,
+                                        // and stale slots left behind in other sounds are never read.
 };
 static_assert(sizeof(SoundInfo_MM6) == 112);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM6)

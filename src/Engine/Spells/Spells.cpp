@@ -512,10 +512,10 @@ void SpellStats::Initialize(const Blob &spells) {
         pInfos[uSpellID].pExpertSkillDesc = unquote(tokens[7]);
         pInfos[uSpellID].pMasterSkillDesc = unquote(tokens[8]);
         pInfos[uSpellID].pGrandmasterSkillDesc = unquote(tokens[9]);
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('m') || tokens[10].contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlag();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('e') || tokens[10].contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlag();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlag();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('x') || tokens[10].contains('X') ? SPELL_FLAG_8 : SpellFlag();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('m') || tokens[10].contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlags();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('e') || tokens[10].contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlags();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlags();
+        pSpellDatas[uSpellID].flags |= tokens[10].contains('x') || tokens[10].contains('X') ? SPELL_FLAG_8 : SpellFlags();
     }
 
     // Patch SPELL_SHIFT_CLICK_CASTABLE flags that are bogus in vanilla spells.txt. See issues #1494, #1495, #1496.
@@ -595,7 +595,6 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;
             spell_sprites.timeSinceCreated = 0_ticks;
             spell_sprites.spell_caster_pid = Pid(OBJECT_Sprite, 1000); // 8000 | OBJECT_Sprite;
-            spell_sprites.uSoundID = 0;
             break;
         default:
             break;
@@ -623,7 +622,6 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             // v20 = yaw;
             spell_sprites.spell_target_pid = Pid();
             spell_sprites.uFacing = yaw;
-            spell_sprites.uSoundID = 0;
             launch_speed = pObjectList->pObjects[(int16_t)spell_sprites.uObjectDescID].uSpeed;
             spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],

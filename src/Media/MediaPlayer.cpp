@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
+#include <cmath>
 #include <deque>
 #include <map>
 #include <memory>
@@ -125,6 +126,15 @@ class AVStreamWrapper {
 
 class AVAudioStream : public AVStreamWrapper {
  public:
+    virtual ~AVAudioStream() {
+        close();
+    }
+
+    virtual void close() override {
+        swr_free(&converter);
+        AVStreamWrapper::close();
+    }
+
     virtual bool open(AVFormatContext *format_ctx) override {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_AUDIO)) {
             return false;
@@ -202,6 +212,16 @@ class AVAudioStream : public AVStreamWrapper {
 
 class AVVideoStream : public AVStreamWrapper {
  public:
+    virtual ~AVVideoStream() {
+        close();
+    }
+
+    virtual void close() override {
+        sws_freeContext(converter);
+        converter = nullptr;
+        AVStreamWrapper::close();
+    }
+
     virtual bool open(AVFormatContext *format_ctx) override {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_VIDEO)) {
             return false;
@@ -402,7 +422,7 @@ class Movie : public IMovie {
         playback_time += std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
         start_time = current_time;
 
-        int desired_frame_number = (int)((playback_time / video.frame_len) + 0.5);
+        int desired_frame_number = std::round(playback_time / video.frame_len);
         if (last_resampled_frame_num == desired_frame_number) {
             return Blob::share(video.last_frame);
         }
@@ -479,6 +499,7 @@ class Movie : public IMovie {
                 Blob buffer = audio.decode_frame(&packet);
                 if (buffer) buffq.push(std::move(buffer));
             }
+            av_packet_unref(&packet);
         }
         MM_TRACE("Audio Packets Queued");
 
@@ -508,8 +529,10 @@ class Movie : public IMovie {
             } while (lastvideopts == desired_frame_number);
 
             // ignore audio packets
-            if (packet.stream_index == audio.stream_idx)
+            if (packet.stream_index == audio.stream_idx) {
+                av_packet_unref(&packet); // The continue below skips the unref at the end of the loop.
                 continue;
+            }
 
             if (packet.stream_index == video.stream_idx) {
                 // check if anymore sound frames still in decoder

@@ -71,7 +71,6 @@ struct SpriteObject {
     Vec3f vPosition;
     Vec3f vVelocity;
     uint16_t uFacing = 0;
-    uint16_t uSoundID = 0;
     SpriteAttributes uAttributes = 0;
     int uSectorID = 0;
     Duration timeSinceCreated;

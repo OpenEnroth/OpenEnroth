@@ -23,7 +23,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Snapshots/TableSerialization.h"
 #include "Engine/Resources/ResourceManager.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/mm7_data.h"
 
@@ -146,39 +146,39 @@ int runItemIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMan
     return 0;
 }
 
-std::string mapIdEnumName(const MapInfo &mapInfo) {
-    std::string result = toUpperCaseEnum(mapInfo.name);
+std::string mapIdEnumName(const MapData &mapData) {
+    std::string result = toUpperCaseEnum(mapData.name);
     if (result.starts_with("THE_"))
         result = result.substr(4);
     return result;
 }
 
 int runMapIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
-    MapStats mapStats;
-    mapStats.Initialize(resourceManager->eventsData("MapStats.txt"));
+    MapTable mapTable;
+    mapTable.Initialize(resourceManager->eventsData("MapStats.txt"));
 
     CodeGenMap map;
     map.insert(MAP_INVALID, "INVALID", "");
 
-    for (MapId i : mapStats.pInfos.indices())
-        map.insert(i, mapIdEnumName(mapStats.pInfos[i]), "");
+    for (MapId i : mapTable.pInfos.indices())
+        map.insert(i, mapIdEnumName(mapTable.pInfos[i]), "");
 
     map.dump(stdout, "MAP_");
     return 0;
 }
 
-const MapInfo &mapInfoByFileName(const MapStats &mapStats, std::string_view fileName) {
-    auto pos = std::find_if(mapStats.pInfos.begin(), mapStats.pInfos.end(), [&] (const MapInfo &mapInfo) {
-        return ascii::noCaseEquals(mapInfo.fileName, fileName);
+const MapData &mapInfoByFileName(const MapTable &mapTable, std::string_view fileName) {
+    auto pos = std::find_if(mapTable.pInfos.begin(), mapTable.pInfos.end(), [&] (const MapData &mapData) {
+        return ascii::noCaseEquals(mapData.fileName, fileName);
     });
-    if (pos == mapStats.pInfos.end())
+    if (pos == mapTable.pInfos.end())
         throw Exception("Unrecognized map '{}'", fileName);
     return *pos;
 }
 
 int runBeaconsCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
-    MapStats mapStats;
-    mapStats.Initialize(resourceManager->eventsData("MapStats.txt"));
+    MapTable mapTable;
+    mapTable.Initialize(resourceManager->eventsData("MapStats.txt"));
 
     LodReader gamesLod(dfs->read("data/games.lod"));
     std::vector<std::string> fileNames = gamesLod.ls();
@@ -188,15 +188,15 @@ int runBeaconsCodeGen(const CodeGenOptions &options, ResourceManager *resourceMa
         if (!fileName.ends_with(".odm") && !fileName.ends_with(".blv"))
             continue; // Not a level file.
 
-        fmt::println("    {{MAP_{}, {}}},", mapIdEnumName(mapInfoByFileName(mapStats, fileName)), i);
+        fmt::println("    {{MAP_{}, {}}},", mapIdEnumName(mapInfoByFileName(mapTable, fileName)), i);
     }
 
     return 0;
 }
 
 int runHouseIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
-    MapStats mapStats;
-    mapStats.Initialize(resourceManager->eventsData("MapStats.txt"));
+    MapTable mapTable;
+    mapTable.Initialize(resourceManager->eventsData("MapStats.txt"));
 
     initializeHouses(resourceManager->eventsData("2dEvents.txt"));
 
@@ -207,7 +207,7 @@ int runHouseIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMa
         if (!fileName.ends_with(".odm") && !fileName.ends_with(".blv"))
             continue; // Not a level file.
 
-        std::string mapName = mapIdEnumName(mapInfoByFileName(mapStats, fileName));
+        std::string mapName = mapIdEnumName(mapInfoByFileName(mapTable, fileName));
         EvtProgram eventMap = EvtProgram::load(resourceManager->eventsData(fileName.substr(0, fileName.size() - 4) + ".evt"));
 
         for (const EventTrigger &trigger : eventMap.enumerateTriggers(EVENT_SpeakInHouse)) {
@@ -395,11 +395,11 @@ int runBountyHuntCodeGen(const CodeGenOptions &options, ResourceManager *resourc
 }
 
 int runMusicCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
-    MapStats mapStats;
-    mapStats.Initialize(resourceManager->eventsData("MapStats.txt"));
+    MapTable mapTable;
+    mapTable.Initialize(resourceManager->eventsData("MapStats.txt"));
 
     std::map<MusicId, std::vector<std::string>> mapNamesByMusicId, mapEnumNamesByMusicId;
-    for (const MapInfo &info : mapStats.pInfos) {
+    for (const MapData &info : mapTable.pInfos) {
         mapNamesByMusicId[info.musicId].push_back(info.name);
         mapEnumNamesByMusicId[info.musicId].push_back(mapIdEnumName(info));
     }

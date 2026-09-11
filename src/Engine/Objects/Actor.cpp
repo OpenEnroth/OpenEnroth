@@ -33,7 +33,7 @@
 #include "Engine/Tables/HostilityTable.h"
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -257,7 +257,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = (short)pDir->uYawAngle;
-            sprite.uSoundID = 0;
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.timeSinceCreated = 0_ticks;
@@ -343,7 +342,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
                 sprite.spell_target_pid = Pid();
                 sprite.uFacing = yaw;
-                sprite.uSoundID = 0;
                 sprite.field_60_distance_related_prolly_lod = distancemod;
                 sprite.spellCasterAbility = ABILITY_SPELL1;
 
@@ -386,7 +384,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
-            sprite.uSoundID = 0;
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
@@ -643,7 +640,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
-            sprite.uSoundID = 0;
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
@@ -719,8 +715,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
             int deltaX = actor->pos.x - victim->pos.x;
             int deltaY = actor->pos.y - victim->pos.y;
             int deltaZ = actor->pos.z - victim->pos.z;
-            // TODO(captainurist): use length() here and retrace
-            if (Vec3i(deltaX, deltaY, deltaZ).octagonalLength() < 4096) {
+            if (Vec3i(deltaX, deltaY, deltaZ).length() < 4096) {
                 actor->monsterInfo.hostilityType =
                     HOSTILITY_LONG;
                 if (a2 == 1) actor->attributes |= ACTOR_AGGRESSOR;
@@ -754,7 +749,6 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
     a1.spell_level = 0;
     a1.spell_skill = MASTERY_NONE;
     a1.uFacing = pDir->uYawAngle;
-    a1.uSoundID = 0;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.timeSinceCreated = 0_ticks;
@@ -806,7 +800,6 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.vPosition.y = pActors[uActorID].pos.y;
     a1.vPosition.z = pActors[uActorID].pos.z + (pActors[uActorID].height * 0.75);
     a1.uFacing = 0;
-    a1.uSoundID = 0;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.timeSinceCreated = 0_ticks;
@@ -1097,7 +1090,7 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if ((engine->_currentLoadedMapId == MAP_DEYJA || engine->_currentLoadedMapId == MAP_PIT) && pParty->isPartyGood())
         return;
 
-    pParty->uFine += 100 * (pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine +
+    pParty->uFine += 100 * (pMapTable->pInfos[engine->_currentLoadedMapId].baseStealingFine +
                             pActors[uActorID].monsterInfo.level +
                             pParty->GetPartyReputation());
     if (pParty->uFine < 0)
@@ -1238,7 +1231,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         if (engine->_currentLoadedMapId != MAP_INVALID)
-            v4 = pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine;
+            v4 = pMapTable->pInfos[engine->_currentLoadedMapId].baseStealingFine;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
@@ -3860,7 +3853,7 @@ void Actor::MakeActorAIList_ODM() {
         int delta_y = pParty->pos.y - actor.pos.y;
         int delta_z = pParty->pos.z - actor.pos.z;
 
-        // TODO(captainurist): use length() here and retrace
+        // TODO(captainurist): use length() here, four traces need re-recording and not just a retrace
         int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
         if (distance < 0)
             distance = 0;
@@ -3915,8 +3908,7 @@ int Actor::MakeActorAIList_BLV() {
         int delta_y = pParty->pos.y - actor.pos.y;
         int delta_z = pParty->pos.z - actor.pos.z;
 
-        // TODO(captainurist): use length() here and retrace
-        int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
+        int distance = Vec3i(delta_x, delta_y, delta_z).length() - actor.radius;
         if (distance < 0)
             distance = 0;
 
@@ -4184,12 +4176,13 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
     actor->UpdateAnimation();
 
     int sectorId = pIndoor->GetSector(actor->pos);
-    int zlevel;
-    int zdiff;
-    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ||
-            sectorId == partySectorId &&
-            (zlevel = BLV_GetFloorLevel(actor->pos, sectorId), zlevel != -30000) &&
-            (zdiff = std::abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
+    bool positionValid = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR;
+    if (!positionValid && sectorId == partySectorId) {
+        int zlevel = BLV_GetFloorLevel(actor->pos, sectorId);
+        positionValid = zlevel != -30000 && std::abs(zlevel - pParty->pos.z) <= 1024;
+    }
+
+    if (positionValid) {
         actor->summonerId = Pid(OBJECT_Character, spell_power);
 
         actor->buffs[ACTOR_BUFF_SUMMONED].Apply(pParty->GetPlayingTime() + duration,
@@ -4200,7 +4193,7 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
 }
 
 //----- (0044F57C) --------------------------------------------------------
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
+void SpawnEncounter(MapData *mapData, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
     assert(spawn->type == OBJECT_Actor);
 
     char v8;               // zf@5
@@ -4215,46 +4208,46 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int
     int monsterCategoryOddsSet = 0;
     switch (spawn->monsterIndex - 1) {
         case 0:
-            monsterCategoryOddsSet = pMapInfo->Dif_M1;
-            NumToSpawn = pMapInfo->encounter1MinCount + grng->random(pMapInfo->encounter1MaxCount - pMapInfo->encounter1MinCount + 1);
-            baseInternalName = pMapInfo->encounter1MonsterInternalName;
+            monsterCategoryOddsSet = mapData->Dif_M1;
+            NumToSpawn = mapData->encounter1MinCount + grng->random(mapData->encounter1MaxCount - mapData->encounter1MinCount + 1);
+            baseInternalName = mapData->encounter1MonsterInternalName;
             break;
         case 1:
-            monsterCategoryOddsSet = pMapInfo->Dif_M2;
-            NumToSpawn = pMapInfo->encounter2MinCount + grng->random(pMapInfo->encounter2MaxCount - pMapInfo->encounter2MinCount + 1);
-            baseInternalName = pMapInfo->encounter2MonsterInternalName;
+            monsterCategoryOddsSet = mapData->Dif_M2;
+            NumToSpawn = mapData->encounter2MinCount + grng->random(mapData->encounter2MaxCount - mapData->encounter2MinCount + 1);
+            baseInternalName = mapData->encounter2MonsterInternalName;
             break;
         case 2:
-            monsterCategoryOddsSet = pMapInfo->Dif_M3;
-            NumToSpawn = pMapInfo->encounter3MinCount + grng->random(pMapInfo->encounter3MaxCount - pMapInfo->encounter3MinCount + 1);
-            baseInternalName = pMapInfo->encounter3MonsterInternalName;
+            monsterCategoryOddsSet = mapData->Dif_M3;
+            NumToSpawn = mapData->encounter3MinCount + grng->random(mapData->encounter3MaxCount - mapData->encounter3MinCount + 1);
+            baseInternalName = mapData->encounter3MonsterInternalName;
             break;
         case 3:
-            baseInternalName = pMapInfo->encounter1MonsterInternalName + " A";
+            baseInternalName = mapData->encounter1MonsterInternalName + " A";
             break;
         case 4:
-            baseInternalName = pMapInfo->encounter2MonsterInternalName + " A";
+            baseInternalName = mapData->encounter2MonsterInternalName + " A";
             break;
         case 5:
-            baseInternalName = pMapInfo->encounter3MonsterInternalName + " A";
+            baseInternalName = mapData->encounter3MonsterInternalName + " A";
             break;
         case 6:
-            baseInternalName = pMapInfo->encounter1MonsterInternalName + " B";
+            baseInternalName = mapData->encounter1MonsterInternalName + " B";
             break;
         case 7:
-            baseInternalName = pMapInfo->encounter2MonsterInternalName + " B";
+            baseInternalName = mapData->encounter2MonsterInternalName + " B";
             break;
         case 8:
-            baseInternalName = pMapInfo->encounter3MonsterInternalName + " B";
+            baseInternalName = mapData->encounter3MonsterInternalName + " B";
             break;
         case 9:
-            baseInternalName = pMapInfo->encounter1MonsterInternalName + " C";
+            baseInternalName = mapData->encounter1MonsterInternalName + " C";
             break;
         case 10:
-            baseInternalName = pMapInfo->encounter2MonsterInternalName + " C";
+            baseInternalName = mapData->encounter2MonsterInternalName + " C";
             break;
         case 11:
-            baseInternalName = pMapInfo->encounter3MonsterInternalName + " C";
+            baseInternalName = mapData->encounter3MonsterInternalName + " C";
             break;
         default:
             return;

@@ -158,7 +158,7 @@
                         "Warlock's Ring of Immunity",
                         "Sapphire Ring of Mind Resistance [+10]"
                     ],
-                    "hp": 89,
+                    "hp": 101,
                     "intelligence": 11,
                     "luck": 25,
                     "might": 22,
@@ -1275,82 +1275,82 @@
             "type": "paint"
         },
         {
-            "randomState": 102,
+            "randomState": 101,
             "tickCount": 6150,
             "type": "paint"
         },
         {
-            "randomState": 103,
+            "randomState": 102,
             "tickCount": 6200,
             "type": "paint"
         },
         {
-            "randomState": 103,
+            "randomState": 102,
             "tickCount": 6250,
             "type": "paint"
         },
         {
-            "randomState": 103,
+            "randomState": 102,
             "tickCount": 6300,
             "type": "paint"
         },
         {
-            "randomState": 103,
+            "randomState": 102,
             "tickCount": 6350,
             "type": "paint"
         },
         {
-            "randomState": 106,
+            "randomState": 105,
             "tickCount": 6400,
             "type": "paint"
         },
         {
-            "randomState": 107,
+            "randomState": 106,
             "tickCount": 6450,
             "type": "paint"
         },
         {
-            "randomState": 107,
+            "randomState": 106,
             "tickCount": 6500,
             "type": "paint"
         },
         {
-            "randomState": 107,
+            "randomState": 106,
             "tickCount": 6550,
             "type": "paint"
         },
         {
-            "randomState": 107,
+            "randomState": 106,
             "tickCount": 6600,
             "type": "paint"
         },
         {
-            "randomState": 109,
+            "randomState": 108,
             "tickCount": 6650,
             "type": "paint"
         },
         {
-            "randomState": 110,
+            "randomState": 109,
             "tickCount": 6700,
             "type": "paint"
         },
         {
-            "randomState": 110,
+            "randomState": 109,
             "tickCount": 6750,
             "type": "paint"
         },
         {
-            "randomState": 110,
+            "randomState": 109,
             "tickCount": 6800,
             "type": "paint"
         },
         {
-            "randomState": 110,
+            "randomState": 109,
             "tickCount": 6850,
             "type": "paint"
         },
         {
-            "randomState": 114,
+            "randomState": 113,
             "tickCount": 6900,
             "type": "paint"
         },
@@ -1375,7 +1375,7 @@
             "type": "paint"
         },
         {
-            "randomState": 117,
+            "randomState": 116,
             "tickCount": 7150,
             "type": "paint"
         },
@@ -1400,32 +1400,32 @@
             "type": "paint"
         },
         {
-            "randomState": 122,
+            "randomState": 121,
             "tickCount": 7400,
             "type": "paint"
         },
         {
-            "randomState": 123,
+            "randomState": 121,
             "tickCount": 7450,
             "type": "paint"
         },
         {
-            "randomState": 123,
+            "randomState": 121,
             "tickCount": 7500,
             "type": "paint"
         },
         {
-            "randomState": 123,
+            "randomState": 121,
             "tickCount": 7550,
             "type": "paint"
         },
         {
-            "randomState": 123,
+            "randomState": 121,
             "tickCount": 7600,
             "type": "paint"
         },
         {
-            "randomState": 126,
+            "randomState": 125,
             "tickCount": 7650,
             "type": "paint"
         },
@@ -1450,67 +1450,67 @@
             "type": "paint"
         },
         {
-            "randomState": 131,
+            "randomState": 129,
             "tickCount": 7900,
             "type": "paint"
         },
         {
-            "randomState": 132,
+            "randomState": 130,
             "tickCount": 7950,
             "type": "paint"
         },
         {
-            "randomState": 132,
+            "randomState": 130,
             "tickCount": 8000,
             "type": "paint"
         },
         {
-            "randomState": 132,
+            "randomState": 130,
             "tickCount": 8050,
             "type": "paint"
         },
         {
-            "randomState": 132,
+            "randomState": 130,
             "tickCount": 8100,
             "type": "paint"
         },
         {
-            "randomState": 133,
+            "randomState": 132,
             "tickCount": 8150,
             "type": "paint"
         },
         {
-            "randomState": 134,
+            "randomState": 132,
             "tickCount": 8200,
             "type": "paint"
         },
         {
-            "randomState": 134,
+            "randomState": 132,
             "tickCount": 8250,
             "type": "paint"
         },
         {
-            "randomState": 134,
+            "randomState": 132,
             "tickCount": 8300,
             "type": "paint"
         },
         {
-            "randomState": 134,
+            "randomState": 132,
             "tickCount": 8350,
             "type": "paint"
         },
         {
-            "randomState": 138,
+            "randomState": 136,
             "tickCount": 8400,
             "type": "paint"
         },
         {
-            "randomState": 139,
+            "randomState": 137,
             "tickCount": 8450,
             "type": "paint"
         },
         {
-            "randomState": 139,
+            "randomState": 137,
             "tickCount": 8500,
             "type": "paint"
         },
@@ -1527,22 +1527,22 @@
             "type": "keyPress"
         },
         {
-            "randomState": 139,
+            "randomState": 137,
             "tickCount": 8550,
             "type": "paint"
         },
         {
-            "randomState": 139,
+            "randomState": 137,
             "tickCount": 8600,
             "type": "paint"
         },
         {
-            "randomState": 141,
+            "randomState": 139,
             "tickCount": 8650,
             "type": "paint"
         },
         {
-            "randomState": 142,
+            "randomState": 141,
             "tickCount": 8700,
             "type": "paint"
         }

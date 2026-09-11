@@ -15,7 +15,7 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-#include "Engine/MapInfo.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineCallObserver.h"
 
@@ -462,7 +462,7 @@ void AudioPlayer::UpdateVolumeFromConfig() {
 
 void PlayLevelMusic() {
     if (engine->_currentLoadedMapId != MAP_INVALID) {
-        pAudioPlayer->MusicPlayTrack(pMapStats->pInfos[engine->_currentLoadedMapId].musicId);
+        pAudioPlayer->MusicPlayTrack(pMapTable->pInfos[engine->_currentLoadedMapId].musicId);
     }
 }
 
