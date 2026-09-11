@@ -3125,36 +3125,36 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_HASTE:
                 if (!playerAffected->conditions.has(CONDITION_WEAK)) {
-                    playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                    playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 }
                 break;
 
             case ITEM_POTION_HEROISM:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 break;
 
             case ITEM_POTION_BLESS:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 break;
 
             case ITEM_POTION_PRESERVATION:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_SHIELD:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_STONESKIN:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 break;
 
             case ITEM_POTION_WATER_BREATHING:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 // Drink potion reaction was missing
                 break;
 
@@ -3173,37 +3173,37 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             case ITEM_POTION_MIGHT_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_INTELLECT_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_PERSONALITY_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_ENDURANCE_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_SPEED_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_ACCURACY_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_CURE_PARALYSIS:
@@ -3236,43 +3236,43 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             case ITEM_POTION_LUCK_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_FIRE_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_AIR_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_WATER_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_EARTH_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_MIND_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_BODY_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_STONE_TO_FLESH:

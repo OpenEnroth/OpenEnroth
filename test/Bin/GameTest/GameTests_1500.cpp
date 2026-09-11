@@ -188,7 +188,7 @@ GAME_TEST(Issues, Issue1535) {
     game.startNewGame();
     engine->config->debug.AllMagic.setValue(true);
 
-    game.castSpell(1, SPELL_FIRE_METEOR_SHOWER);
+    game.castSpell(0, SPELL_FIRE_METEOR_SHOWER);
 
     // Should have put the spell cast message to queue.
     UIMessageType message = UIMSG_Invalid;
@@ -519,7 +519,7 @@ GAME_TEST(Issues, Issue1717) {
     auto immoBuff = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active(); });
     test.playTraceFromTestData("issue_1717.mm7", "issue_1717.json");
     EXPECT_EQ(immoBuff, tape(false, true));
-    EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 4);
+    EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 3);
 
     std::regex regex("Immolation deals [0-9]+ damage to [0-9]+ target\\(s\\)");
     EXPECT_CONTAINS(statusBar, [&](const std::string &message) { return std::regex_match(message, regex); });
@@ -827,7 +827,7 @@ GAME_TEST(Issues, Issue1947) {
     engine->config->debug.TownPortal.setValue(true);
     engine->config->debug.AllMagic.setValue(true);
 
-    game.castSpell(1, SPELL_WATER_TOWN_PORTAL);
+    game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
     game.tick(2);
     game.pressGuiButton("TownPortalBook_Marker10"); // Tatalia.
     game.tick();
@@ -848,7 +848,7 @@ GAME_TEST(Prs, Pr1953) {
     char0.inventory.add(Item(ITEM_LEATHER_ARMOR));
     char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_ROYAL_LEATHER));
 
-    game.goToInventory(1);
+    game.goToInventory(0);
     game.pressAndReleaseButton(BUTTON_LEFT, 20, 20); // Pick up leather armor.
     game.tick();
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_LEATHER_ARMOR);
@@ -895,7 +895,7 @@ GAME_TEST(Issues, Issue1959) {
     game.tick();
 
     for (int i = 0; i < 4; i++) {
-        game.castSpell(i + 1, SPELL_AIR_SPARKS);
+        game.castSpell(i, SPELL_AIR_SPARKS);
         game.tick(30); // Wait for the sparks to settle.
 
         std::vector<float> angles;
@@ -934,7 +934,7 @@ GAME_TEST(Issues, Issue1961) {
     pParty->pCharacters[3].pActiveSkills[SKILL_WATER] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
     pParty->pCharacters[3].bHaveSpell[SPELL_WATER_ENCHANT_ITEM] = true;
 
-    game.castSpell(4, SPELL_WATER_ENCHANT_ITEM);
+    game.castSpell(3, SPELL_WATER_ENCHANT_ITEM);
     game.tick(1);
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 30);
     game.tick(1); // Don't wait out the animation.
@@ -1094,7 +1094,7 @@ GAME_TEST(Issues, Issue1998) {
 
         // Right-click the item in the inventory grid, the popup does the identification and the repair.
         auto portraitTape = charTapes.portrait(0);
-        game.goToInventory(1);
+        game.goToInventory(0);
         test.startTaping();
         game.pressButton(BUTTON_RIGHT, 30, 30);
         game.tick();

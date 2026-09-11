@@ -919,7 +919,7 @@ void ODM_ProcessPartyActions() {
         waterWalkActive = true;
         engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] |= 1;
         if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM &&
-            pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1].mana <= 0)
+            pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster].mana <= 0)
             waterWalkActive = false;
     }
 
@@ -1003,7 +1003,7 @@ void ODM_ProcessPartyActions() {
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM ||
-                    (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
+                    (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster].mana > 0 || engine->config->debug.AllMagic.value())) {
                     if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value() || partyNotTouchingFloor) {
                         pParty->bFlying = true;
                         pParty->velocity.z = 0;
@@ -1218,7 +1218,7 @@ void ODM_ProcessPartyActions() {
             pParty->bFlying = false;
             if (engine->IsUnderwater() ||
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM ||
-                (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
+                (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster].mana > 0 || engine->config->debug.AllMagic.value())) {
                 partyOldFlightZ = pParty->pos.z;
                 partyInputSpeed.z = -pParty->walkSpeed * 4;
                 pParty->bFlying = true;

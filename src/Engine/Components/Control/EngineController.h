@@ -154,7 +154,7 @@ class EngineController {
      * Casts a spell through the quick spell mechanism. Unlike `castSpell`, quick spells don't open the targeting
      * interface, and just auto-target the closest actor.
      *
-     * @param characterIndex            1-based index of the casting character.
+     * @param characterIndex            0-based index of the casting character.
      * @param spell                     Spell to cast.
      */
     void castQuickSpell(int characterIndex, SpellId spell);

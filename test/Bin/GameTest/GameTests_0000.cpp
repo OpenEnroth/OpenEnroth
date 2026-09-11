@@ -489,7 +489,7 @@ GAME_TEST(Issues, Issue405) {
     auto runTrace = [&] {
         engine->config->debug.AllMagic.setValue(true);
         test.loadGameFromTestData("issue_405.mm7");
-        game.castSpell(1, SPELL_FIRE_IMMOLATION);
+        game.castSpell(0, SPELL_FIRE_IMMOLATION);
     };
 
     // 100ms/frame
@@ -648,7 +648,7 @@ GAME_TEST(Issues, Issue415a) {
     EXPECT_FALSE(stonedTitan->CanBeDamaged()); // ...and are invulnerable statues.
 
     // Armageddon deals damage when its 256-tick timer runs out, wait it out.
-    game.castSpell(1, SPELL_DARK_ARMAGEDDON);
+    game.castSpell(0, SPELL_DARK_ARMAGEDDON);
     game.tick(30);
     test.stopTaping();
 
@@ -682,7 +682,7 @@ GAME_TEST(Issues, Issue415b) {
     Actor *stoned = game.spawnMonster(pParty->pos + Vec3f(0, 900, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     stoned->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
 
-    game.castQuickSpell(1, SPELL_FIRE_FIREBALL);
+    game.castQuickSpell(0, SPELL_FIRE_FIREBALL);
     game.tick(30);
     test.stopTaping();
 
@@ -712,7 +712,7 @@ GAME_TEST(Issues, Issue415c) {
     Actor *stoned = game.spawnMonster(pParty->pos + Vec3f(0, 900, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     stoned->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
 
-    game.castQuickSpell(1, SPELL_DARK_SHRINKING_RAY);
+    game.castQuickSpell(0, SPELL_DARK_SHRINKING_RAY);
     game.tick(30);
     test.stopTaping();
 
@@ -781,7 +781,7 @@ GAME_TEST(Issues, Issue415e) {
         buffed->buffs[buff].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
         game.pointMouseAtActor(1);
 
-        game.castQuickSpell(1, SPELL_WATER_ICE_BOLT);
+        game.castQuickSpell(0, SPELL_WATER_ICE_BOLT);
         game.tick(30);
         test.stopTaping();
 
