@@ -6,8 +6,13 @@ on:
     - cron: "16 * * * *"
   workflow_dispatch: # Allow to manually run a workflow
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build_data_cache:
+    timeout-minutes: 60
     runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
@@ -15,27 +20,30 @@ jobs:
         configuration: [Release]
         architecture: [x64]
     steps:
-    - name: Check for data cache
-      id: check-for-data-cache
-      uses: actions/cache/restore@v3
-      with:
-        path: |
-          OpenEnroth_GameData
-        key: data-cache
+      - name: Check for data cache
+        id: check-for-data-cache
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: |
+            OpenEnroth_GameData
+          key: data-cache
+          lookup-only: true
 
-    - name: Checkout private data
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
-      uses: actions/checkout@v3
-      with:
-        repository: OpenEnroth/OpenEnroth_GameData
-        path: OpenEnroth_GameData
-        lfs: 'true' # .vid files are stored in LFS.
-        token: '${{secrets.DATA_ACCESS_TOKEN}}'
+      - name: Checkout private data
+        if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: OpenEnroth/OpenEnroth_GameData
+          path: OpenEnroth_GameData
+          lfs: 'true' # .vid files are stored in LFS.
+          token: '${{secrets.DATA_ACCESS_TOKEN}}'
+          # Persisted credentials land in the checked out tree, and the step below caches that tree.
+          persist-credentials: false
 
-    - name: Cache data
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v3
-      with:
-        path: |
-          OpenEnroth_GameData
-        key: data-cache
+      - name: Cache data
+        if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: |
+            OpenEnroth_GameData
+          key: data-cache
