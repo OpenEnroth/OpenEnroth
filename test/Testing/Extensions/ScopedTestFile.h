@@ -2,7 +2,6 @@
 
 #include <string_view>
 
-#include "Utility/String/AsciiLiteral.h"
 #include "Utility/System/NativePath.h"
 
 /**
@@ -11,7 +10,6 @@
  */
 class ScopedTestFile {
  public:
-    ScopedTestFile(AsciiLiteral path, std::string_view contents) : ScopedTestFile(NativePath(path), contents) {}
     ScopedTestFile(const NativePath &path, std::string_view contents);
     ~ScopedTestFile();
 

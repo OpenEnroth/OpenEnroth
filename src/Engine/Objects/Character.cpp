@@ -17,7 +17,6 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
@@ -1643,11 +1642,14 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
     } else if (IsUnarmed() && getActualSkillValue(SKILL_UNARMED).level() > 0) {
         weapon_recovery = base_recovery_times_per_weapon_type[SKILL_UNARMED];
-    } else if (weapon = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND)) {
-        if (weapon->isWand()) {
-            weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[MASTERY_EXPERT];
-        } else {
-            weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
+    } else {
+        weapon = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND);
+        if (weapon) {
+            if (weapon->isWand()) {
+                weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[MASTERY_EXPERT];
+            } else {
+                weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
+            }
         }
     }
 
@@ -6365,14 +6367,11 @@ void Character::_42ECB5_CharacterAttacksActor() {
          melee_attack = false;
     if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
-        pushSpellOrRangedAttack(SPELL_BLASTER_PROJECTILE,
-                                pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0,
-                                pParty->activeCharacterIndex() + 8); // TODO(captainurist): +8???
+        pushSpellOrRangedAttack(SPELL_BLASTER_PROJECTILE, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), ON_CAST_AutoTarget);
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
-        pushSpellOrRangedAttack(spellForWand(wand_item_id),
-                                pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
+        pushSpellOrRangedAttack(spellForWand(wand_item_id), pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, ON_CAST_AutoTarget);
 
         // reduce wand charges
         if (!--main_hand->numCharges && engine->config->gameplay.DestroyDischargedWands.value()) {
@@ -6392,7 +6391,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         shooting_bow = true;
         // TODO(captainurist): target_pid is ignored here - the arrow re-resolves its target in castSpell() with a
         //                     different fallback, so it can fly at a different actor than the one checked above.
-        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0, 0);
+        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0);
     } else {
         melee_attack = true;
         // actor out of range or no actor; no ranged weapon so melee attacking air
@@ -6469,7 +6468,6 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
     a1a.spell_target_pid = Pid();
     a1a.field_60_distance_related_prolly_lod = 0;
     a1a.uFacing = 0;
-    a1a.uSoundID = 0;
 
     if (actchar >= 1 || actchar <= 4) {
         a1a.spell_caster_pid = Pid(OBJECT_Character, actchar - 1);
@@ -6771,17 +6769,17 @@ void Character::Zero() {
 }
 
 bool Character::matchesAttackPreference(MonsterAttackPreference preference) const {
+    Class baseClass = engine->config->gameplay.AttackPreferencesIncludePromotions.value() ? getTier1Class(classType) : classType;
     switch (preference) {
-    // TODO(captainurist): isn't it weird that promotions aren't included in comparisons here?
-    case ATTACK_PREFERENCE_KNIGHT:      return classType == CLASS_KNIGHT;
-    case ATTACK_PREFERENCE_PALADIN:     return classType == CLASS_PALADIN;
-    case ATTACK_PREFERENCE_ARCHER:      return classType == CLASS_ARCHER;
-    case ATTACK_PREFERENCE_DRUID:       return classType == CLASS_DRUID;
-    case ATTACK_PREFERENCE_CLERIC:      return classType == CLASS_CLERIC;
-    case ATTACK_PREFERENCE_SORCERER:    return classType == CLASS_SORCERER;
-    case ATTACK_PREFERENCE_RANGER:      return classType == CLASS_RANGER;
-    case ATTACK_PREFERENCE_THIEF:       return classType == CLASS_THIEF;
-    case ATTACK_PREFERENCE_MONK:        return classType == CLASS_MONK;
+    case ATTACK_PREFERENCE_KNIGHT:      return baseClass == CLASS_KNIGHT;
+    case ATTACK_PREFERENCE_PALADIN:     return baseClass == CLASS_PALADIN;
+    case ATTACK_PREFERENCE_ARCHER:      return baseClass == CLASS_ARCHER;
+    case ATTACK_PREFERENCE_DRUID:       return baseClass == CLASS_DRUID;
+    case ATTACK_PREFERENCE_CLERIC:      return baseClass == CLASS_CLERIC;
+    case ATTACK_PREFERENCE_SORCERER:    return baseClass == CLASS_SORCERER;
+    case ATTACK_PREFERENCE_RANGER:      return baseClass == CLASS_RANGER;
+    case ATTACK_PREFERENCE_THIEF:       return baseClass == CLASS_THIEF;
+    case ATTACK_PREFERENCE_MONK:        return baseClass == CLASS_MONK;
     case ATTACK_PREFERENCE_MALE:        return uSex == SEX_MALE;
     case ATTACK_PREFERENCE_FEMALE:      return uSex == SEX_FEMALE;
     case ATTACK_PREFERENCE_HUMAN:       return GetRace() == RACE_HUMAN;

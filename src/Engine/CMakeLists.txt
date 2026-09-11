@@ -10,7 +10,6 @@ set(ENGINE_SOURCES
         GpuHints.cpp
         Localization.cpp
         MapEnums.cpp
-        MapInfo.cpp
         Party.cpp
         PartyEnums.cpp
         PartyPlacement.cpp
@@ -39,7 +38,6 @@ set(ENGINE_HEADERS
         LocationInfo.h
         MapEnumFunctions.h
         MapEnums.h
-        MapInfo.h
         Party.h
         PartyEnums.h
         PartyPlacement.h

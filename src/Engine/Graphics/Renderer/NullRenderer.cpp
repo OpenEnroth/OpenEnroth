@@ -7,6 +7,10 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 
+NullRenderer::~NullRenderer() {
+    releaseSolidFillTexture();
+}
+
 void NullRenderer::Initialize() {
     application->initializeOpenGLContext(PlatformOpenGLOptions());
     BaseRenderer::Initialize();

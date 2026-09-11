@@ -154,14 +154,13 @@ UNIT_TEST(FileSystemPath, AppendedEscaping) {
     testOne("aa/bb/cc", "../../..", "");
 }
 
-UNIT_TEST(FileSystemPath, Components) {
-    auto testOne = [](std::string_view path, std::string_view prefix, std::string_view name, std::string_view stem, std::string_view ext) {
+UNIT_TEST(FileSystemPath, Decomposition) {
+    auto testOne = [](std::string_view path, std::string_view parent, std::string_view name, std::string_view stem, std::string_view ext) {
         FileSystemPath fsPath(path);
-        auto components = fsPath.components();
-        EXPECT_EQ(components.prefix().string(), prefix) << "for " << path;
-        EXPECT_EQ(components.name(), name) << "for " << path;
-        EXPECT_EQ(components.stem(), stem) << "for " << path;
-        EXPECT_EQ(components.extension(), ext) << "for " << path;
+        EXPECT_EQ(fsPath.parent().string(), parent) << "for " << path;
+        EXPECT_EQ(fsPath.name(), name) << "for " << path;
+        EXPECT_EQ(fsPath.stem(), stem) << "for " << path;
+        EXPECT_EQ(fsPath.extension(), ext) << "for " << path;
     };
 
     testOne("", "", "", "", "");
@@ -173,6 +172,8 @@ UNIT_TEST(FileSystemPath, Components) {
     testOne("../..", "..", "..", "..", "");
     testOne(".hidden", "", ".hidden", ".hidden", "");
     testOne("..wat", "", "..wat", ".", ".wat");
+    testOne("...", "", "...", "..", ".");
+    testOne("a/...", "a", "...", "..", ".");
     testOne("x/y/z/some.", "x/y/z", "some.", "some", ".");
     testOne("x.y/z.f/a.b.c.d", "x.y/z.f", "a.b.c.d", "a.b.c", ".d");
     testOne("1/2/3/xyz.txt", "1/2/3", "xyz.txt", "xyz", ".txt");

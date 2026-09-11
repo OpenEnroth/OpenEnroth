@@ -181,6 +181,8 @@ class Renderer {
     GraphicsImage *solidFillTexture();
 
  protected:
+    void releaseSolidFillTexture();
+
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;

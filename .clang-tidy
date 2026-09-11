@@ -2,7 +2,6 @@
 Checks: >
   -*,
   bugprone-*,
-  -bugprone-assignment-in-if-condition,
   -bugprone-branch-clone,
   -bugprone-derived-method-shadowing-base-method,
   -bugprone-easily-swappable-parameters,
