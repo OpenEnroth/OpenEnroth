@@ -257,7 +257,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = (short)pDir->uYawAngle;
-            sprite.uSoundID = 0;
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.timeSinceCreated = 0_ticks;
@@ -343,7 +342,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
                 sprite.spell_target_pid = Pid();
                 sprite.uFacing = yaw;
-                sprite.uSoundID = 0;
                 sprite.field_60_distance_related_prolly_lod = distancemod;
                 sprite.spellCasterAbility = ABILITY_SPELL1;
 
@@ -386,7 +384,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
-            sprite.uSoundID = 0;
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
@@ -643,7 +640,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
-            sprite.uSoundID = 0;
             sprite.uAttributes = 0;
             sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
@@ -753,7 +749,6 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
     a1.spell_level = 0;
     a1.spell_skill = MASTERY_NONE;
     a1.uFacing = pDir->uYawAngle;
-    a1.uSoundID = 0;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.timeSinceCreated = 0_ticks;
@@ -805,7 +800,6 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.vPosition.y = pActors[uActorID].pos.y;
     a1.vPosition.z = pActors[uActorID].pos.z + (pActors[uActorID].height * 0.75);
     a1.uFacing = 0;
-    a1.uSoundID = 0;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.timeSinceCreated = 0_ticks;

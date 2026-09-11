@@ -1,5 +1,6 @@
 #include "Renderer.h"
 
+#include <cassert>
 #include <memory>
 
 #include "Engine/Graphics/Image.h"
@@ -26,7 +27,9 @@ Renderer::Renderer(
     drawcalls = 0;
 }
 
-Renderer::~Renderer() = default;
+Renderer::~Renderer() {
+    assert(!_solidFillTexture);
+}
 
 void Renderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color) {
     Recti dstRect(dstPoint.x, dstPoint.y, srcRect.w, srcRect.h);
@@ -45,6 +48,13 @@ GraphicsImage *Renderer::solidFillTexture() {
     if (!_solidFillTexture)
         _solidFillTexture = GraphicsImage::Create(RgbaImage::solid(colorTable.White, 1, 1));
     return _solidFillTexture;
+}
+
+void Renderer::releaseSolidFillTexture() {
+    if (_solidFillTexture) {
+        _solidFillTexture->release();
+        _solidFillTexture = nullptr;
+    }
 }
 
 void Renderer::FillRect(const Recti &rect, Color color) {

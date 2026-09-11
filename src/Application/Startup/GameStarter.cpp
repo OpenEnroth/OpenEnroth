@@ -206,6 +206,9 @@ GameStarter::~GameStarter() {
 
     _game.reset();
     _engine.reset();
+    _overlaySystem.reset();
+    _scriptingSystem.reset();
+    _renderer.reset();
 
     ::engine = nullptr;
     ::render = nullptr;
