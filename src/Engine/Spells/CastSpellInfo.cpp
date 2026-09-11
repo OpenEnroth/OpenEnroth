@@ -102,7 +102,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
 
         pPlayer->SetRecoveryTime(recoveryTime);
 
-        if (!enchantingActiveCharacter) {
+        if (enchantingActiveCharacter == -1) {
             pTurnEngine->ApplyPlayerAction();
         }
     } else {
@@ -3180,7 +3180,7 @@ void pushSpellOrRangedAttack(SpellId spell,
 void pushTempleSpell(SpellId spell) {
     CombinedSkillValue skill_value = CombinedSkillValue(pParty->uCurrentDayOfMonth % 7 + 1, MASTERY_MASTER);
 
-    pushSpellOrRangedAttack(spell, pParty->activeCharacterIndex() - 1, skill_value,
+    pushSpellOrRangedAttack(spell, pParty->activeCharacterIndex(), skill_value,
                             ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell);
 }
 

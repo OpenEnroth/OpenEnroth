@@ -80,10 +80,10 @@ void stru262_TurnBased::SortTurnQueue() {
         return; // All characters are dead & no monsters around.
 
     if (pQueue[0].uPackedID.type() == OBJECT_Character) {  // we have player at queue top
-        pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);
+        pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id());
         flags |= TE_PLAYER_TURN;
     } else {
-        pParty->setActiveCharacterIndex(0);
+        pParty->setActiveCharacterIndex(-1);
         flags &= ~TE_PLAYER_TURN;
     }
     for (i = 0; i < this->pQueue.size(); ++i) {
@@ -369,9 +369,9 @@ void stru262_TurnBased::NextTurn() {
 
     SortTurnQueue();
     if (pQueue[0].uPackedID.type() == OBJECT_Character)
-        pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);
+        pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id());
     else
-        pParty->setActiveCharacterIndex(0);
+        pParty->setActiveCharacterIndex(-1);
 
     if (pending_actions) {
         pTurnEngine->flags |= TE_HAVE_PENDING_ACTIONS;
@@ -498,9 +498,9 @@ void stru262_TurnBased::_406457(int a2) {
     pQueue[a2].actor_initiative = v6.ticks();
     SortTurnQueue();
     if (pQueue[0].uPackedID.type() == OBJECT_Character)
-        pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);
+        pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id());
     else
-        pParty->setActiveCharacterIndex(0);
+        pParty->setActiveCharacterIndex(-1);
     while ((pQueue[0].actor_initiative > 0) && (turn_initiative > 0)) {
         for (i = 0; i < this->pQueue.size(); ++i) {
             --pQueue[i].actor_initiative;
@@ -551,9 +551,9 @@ void stru262_TurnBased::_4065B0() {
     } else {
         StepTurnQueue();
         if (pQueue[0].uPackedID.type() == OBJECT_Character)
-            pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id() + 1);
+            pParty->setActiveCharacterIndex(pQueue[0].uPackedID.id());
         else
-            pParty->setActiveCharacterIndex(0);
+            pParty->setActiveCharacterIndex(-1);
     }
     for (int i = 0; i < this->pQueue.size(); ++i)
         AIAttacks(i);
@@ -756,7 +756,7 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
     int i;
 
     this->ai_turn_timer = 64_ticks;
-    pParty->setActiveCharacterIndex(0);
+    pParty->setActiveCharacterIndex(-1);
     for (i = 0; i < this->pQueue.size(); ++i) {
         if (pQueue[i].uPackedID.type() == OBJECT_Actor) {
             Pid target_pid =

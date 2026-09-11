@@ -205,7 +205,7 @@ Item Party::takeHoldingItem() {
 void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
     for (int i = 0; i < this->pCharacters.size(); ++i) {
         if (this->pCharacters[i].CanAct()) {
-            _activeCharacter = i + 1;
+            _activeCharacterIndex = i;
             return;
         }
     }
@@ -216,17 +216,17 @@ void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems enteri
 //----- (0049370F) --------------------------------------------------------
 void Party::switchToNextActiveCharacter() {
     // avoid switching away from char that can act
-    if (hasActiveCharacter() && this->pCharacters[_activeCharacter - 1].CanAct() &&
-        this->pCharacters[_activeCharacter - 1].timeToRecovery <= 0_ticks)
+    if (hasActiveCharacter() && this->pCharacters[_activeCharacterIndex].CanAct() &&
+        this->pCharacters[_activeCharacterIndex].timeToRecovery <= 0_ticks)
         return;
 
     if (pParty->bTurnBasedModeOn) {
         // The queue is not re-sorted until the turn ticks, so its head can be a character that just went down.
         if (pTurnEngine->turn_stage != TE_ATTACK || pTurnEngine->pQueue[0].uPackedID.type() != OBJECT_Character ||
             !pCharacters[pTurnEngine->pQueue[0].uPackedID.id()].CanAct()) {
-            _activeCharacter = 0;
+            _activeCharacterIndex = -1;
         } else {
-            _activeCharacter = pTurnEngine->pQueue[0].uPackedID.id() + 1;
+            _activeCharacterIndex = pTurnEngine->pQueue[0].uPackedID.id();
         }
         return;
     }
@@ -243,24 +243,24 @@ void Party::switchToNextActiveCharacter() {
             playerAlreadyPicked[i] = true;
             if (i > 0) { // TODO(_) check if this condition really should be here. it is
                 // equal to the original source but still seems kind of weird
-                _activeCharacter = i + 1;
+                _activeCharacterIndex = i;
                 return;
             }
             break;
         }
     }
 
-    int selectedChar = 0; // zero for none
+    int selectedChar = -1;
     int highestSpeed = 0;
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (this->pCharacters[i].CanAct() && !this->pCharacters[i].timeToRecovery) {
-            if (selectedChar == 0 || this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED] > highestSpeed) {
+            if (selectedChar == -1 || this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED] > highestSpeed) {
                 highestSpeed = this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED];
-                selectedChar = i + 1;
+                selectedChar = i;
             }
         }
     }
-    _activeCharacter = selectedChar;
+    _activeCharacterIndex = selectedChar;
     return;
 }
 
@@ -488,7 +488,7 @@ void Party::Reset() {
 
     bTurnBasedModeOn = false;
 
-    _activeCharacter = 1;
+    _activeCharacterIndex = 0;
 
     pCharacters[0].ChangeClass(CLASS_KNIGHT);
     pCharacters[0].uCurrentFace = 17;
@@ -942,7 +942,7 @@ bool Party::addItemToParty(Item *pItem, bool isSilent) {
     }
 
     if (!pItemTable->items[pItem->itemId].iconName.empty()) {
-        int playerId = hasActiveCharacter() ? pParty->_activeCharacter - 1 : 0;
+        int playerId = hasActiveCharacter() ? pParty->_activeCharacterIndex : 0;
         for (int i = 0; i < pCharacters.size(); i++, playerId++) {
             if (playerId >= pCharacters.size()) {
                 playerId = 0;

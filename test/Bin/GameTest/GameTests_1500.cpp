@@ -224,7 +224,7 @@ GAME_TEST(Issues, Issue1547) {
     test.stopTaping();
 
     EXPECT_EQ(actorsTape, tape(0));
-    EXPECT_EQ(activeCharTape, tape(1, 2, 3, 4, 0)); // All chars attacked.
+    EXPECT_EQ(activeCharTape, tape(0, 1, 2, 3, -1)); // All chars attacked.
 }
 
 GAME_TEST(Issues, Issue1569) {
@@ -573,13 +573,13 @@ GAME_TEST(Issues, Issue1786) {
     engine->config->debug.AllMagic.setValue(true);
     game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4); // Select char 4.
     game.tick();
-    EXPECT_EQ(pParty->activeCharacterIndex(), 4);
+    EXPECT_EQ(pParty->activeCharacterIndex(), 3);
 
     game.pressAndReleaseKey(PlatformKey::KEY_S); // Quick cast fire bolt.
     game.tick(2);
     EXPECT_CONTAINS(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
 
-    while (pParty->activeCharacterIndex() != 4) {
+    while (pParty->activeCharacterIndex() != 3) {
         game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4);
         game.tick();
     }
@@ -612,7 +612,7 @@ GAME_TEST(Issues, Issue1808) {
     auto vasesTape = tapes.hasItem(ITEM_QUEST_VASE);
     auto goldTape = tapes.gold();
     test.playTraceFromTestData("issue_1808.mm7", "issue_1808.json");
-    EXPECT_EQ(activeCharTape, tape(1)); // First character was active.
+    EXPECT_EQ(activeCharTape, tape(0)); // First character was active.
     EXPECT_EQ(vaseTape, tape(true, false)); // Vase was taken from 3rd char.
     EXPECT_EQ(vasesTape, tape(true, false)); // And it was the only vase we had.
     EXPECT_EQ(classTape, tape(CLASS_THIEF, CLASS_ROGUE)); // 2nd char was promoted.
@@ -739,7 +739,7 @@ GAME_TEST(Issues, Issue1912) {
     auto hatTape = charTapes.haveItem(ITEM_QUEST_WEALTHY_HAT);
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_1912.mm7", "issue_1912.json");
-    EXPECT_EQ(activeCharTape, tape(1)); // First char was talking.
+    EXPECT_EQ(activeCharTape, tape(0)); // First char was talking.
     EXPECT_EQ(potionTape, tape({false, true, false, false}, {false, false, false, false})); // But 2nd char had the potion.
     EXPECT_EQ(hatTape, tape({false, false, false, false}, {true, false, false, false})); // We passed the hat to the 1st char.
 }

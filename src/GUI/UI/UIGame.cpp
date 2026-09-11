@@ -564,7 +564,7 @@ void GUIWindow_GameOptions::Update() {
 }
 
 void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
-    Character *player = &pParty->pCharacters[uPlayerID - 1];
+    Character *player = &pParty->pCharacters[uPlayerID];
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
         if (std::optional<Pointi> pos = player->inventory.findSpace(pParty->pPickedItem)) {
             player->inventory.add(*pos, pParty->takeHoldingItem());
@@ -1188,7 +1188,7 @@ void GameUI_WritePointedObjectStatusString() {
 void GameUI_DrawCharacterSelectionFrame() {
     if (pParty->hasActiveCharacter())
         render->DrawQuad2D(game_ui_player_selection_frame,
-            {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[pParty->activeCharacterIndex() - 1] - 9, 380});
+            {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[pParty->activeCharacterIndex()] - 9, 380});
 }
 
 //----- (0044162D) --------------------------------------------------------
@@ -1731,7 +1731,7 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         }
 
         case UIMSG_ShowStatus_Player: {
-            Character* character = &pParty->pCharacters[param - 1];
+            Character* character = &pParty->pCharacters[param];
             engine->_statusBar->setPermanent(fmt::format("{}: {}", NameAndTitle(character->name, character->classType),
                 localization->characterConditionName(character->GetMajorConditionIdx())));
             break;

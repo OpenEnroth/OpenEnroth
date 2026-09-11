@@ -179,10 +179,10 @@ void EngineController::goToInventory(int characterIndex) {
 
     goToGame();
 
-    if (pParty->activeCharacterIndex() != characterIndex) {
+    if (pParty->activeCharacterIndex() != characterIndex - 1) {
         pressAndReleaseKey(platformKeyForDigit(characterIndex));
         tick(1);
-        if (pParty->activeCharacterIndex() != characterIndex)
+        if (pParty->activeCharacterIndex() != characterIndex - 1)
             throw Exception("Couldn't activate character #{}", characterIndex);
     }
 
@@ -367,10 +367,10 @@ void EngineController::castSpell(int characterIndex, SpellId spell) {
     if (GetCurrentMenuID() != MENU_NONE)
         throw Exception("Can't cast a spell from the main menu");
 
-    if (pParty->activeCharacterIndex() != characterIndex) {
+    if (pParty->activeCharacterIndex() != characterIndex - 1) {
         pressAndReleaseKey(platformKeyForDigit(characterIndex));
         tick(1);
-        if (pParty->activeCharacterIndex() != characterIndex)
+        if (pParty->activeCharacterIndex() != characterIndex - 1)
             throw Exception("Couldn't activate character #{}", characterIndex);
     }
 
@@ -394,10 +394,10 @@ void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
     if (GetCurrentMenuID() != MENU_NONE)
         throw Exception("Can't cast a spell from the main menu");
 
-    if (pParty->activeCharacterIndex() != characterIndex) {
+    if (pParty->activeCharacterIndex() != characterIndex - 1) {
         pressAndReleaseKey(platformKeyForDigit(characterIndex));
         tick(1);
-        if (pParty->activeCharacterIndex() != characterIndex)
+        if (pParty->activeCharacterIndex() != characterIndex - 1)
             throw Exception("Couldn't activate character #{}", characterIndex);
     }
 

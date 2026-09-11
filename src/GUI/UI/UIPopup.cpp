@@ -1083,7 +1083,7 @@ void CharacterUI_SkillsTab_ShowHint() {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_SkillUp && pButton->Contains(pX, pY)) {
                 Skill skill = static_cast<Skill>(pButton->msg_param);
-                std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill);
+                std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex(), skill);
                 CharacterUI_DrawTooltip(localization->skillName(skill), pSkillDescText);
                 return;
             }
@@ -1452,7 +1452,7 @@ void ShowPopupShopSkills() {
                     if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != MASTERY_NONE &&
                         !pParty->activeCharacter().pActiveSkills[skill_id]) {
                         // is this skill visible
-                        std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill_id);
+                        std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex(), skill_id);
                         CharacterUI_DrawTooltip(localization->skillName(skill_id), pSkillDescText);
                         return;
                     }

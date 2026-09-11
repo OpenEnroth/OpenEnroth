@@ -260,8 +260,6 @@ void Game::closeTargetedSpellWindow() {
 void Game::onEscape() {
     closeTargetedSpellWindow();
 
-    // if ((signed int)pParty->activeCharacterIndex() < 1 || (signed int)pParty->activeCharacterIndex() > 4)
-
     pParty->switchToNextActiveCharacter();  // always check this - could leave
                                            // shops with characters who couldnt
                                            // act sctive
@@ -516,10 +514,10 @@ void Game::processQueuedMessages() {
                         if (current_screen_type < SCREEN_64) {
                             switch (current_screen_type) {
                                 case SCREEN_CASTING:
-                                    if (enchantingActiveCharacter) {
+                                    if (enchantingActiveCharacter != -1) {
                                         pParty->setActiveCharacterIndex(enchantingActiveCharacter);
                                         pParty->switchToNextActiveCharacter();
-                                        enchantingActiveCharacter = 0;
+                                        enchantingActiveCharacter = -1;
                                         if (pParty->bTurnBasedModeOn) {
                                             pTurnEngine->ApplyPlayerAction();
                                         }
@@ -954,7 +952,7 @@ void Game::processQueuedMessages() {
                 if (!pParty->hasActiveCharacter() || pParty->activeCharacter().timeToRecovery) {
                     continue;
                 }
-                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex() - 1,
+                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
                                         CombinedSkillValue::none(), ON_CAST_AutoTarget);
                 continue;
             }
@@ -1253,7 +1251,7 @@ void Game::processQueuedMessages() {
                         current_screen_type = SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
                         // drawing object list which is used to count actors for some spells
-                        engine->_messageQueue->addMessageNextFrame(UIMSG_CastSpellFromBook, std::to_underlying(selectedSpell), pParty->activeCharacterIndex() - 1);
+                        engine->_messageQueue->addMessageNextFrame(UIMSG_CastSpellFromBook, std::to_underlying(selectedSpell), pParty->activeCharacterIndex());
                     } else {
                         spellbookSelectedSpell = selectedSpell;
                     }
@@ -1675,7 +1673,7 @@ void Game::gameLoop() {
                                        // 0, 0x180u);//(pCharacterBuffs[0], 0, 384)
                     character.health = 1;
                 }
-                pParty->setActiveCharacterIndex(1);
+                pParty->setActiveCharacterIndex(0);
 
                 if (pParty->_questBits[QBIT_ESCAPED_EMERALD_ISLE]) {
                     pParty->pos = Vec3f(-17331, 12547, 465); // respawn in harmondale

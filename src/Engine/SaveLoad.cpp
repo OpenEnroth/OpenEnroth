@@ -77,7 +77,7 @@ void loadGame(std::string_view fileName) {
     // We always start in realtime after loading a game.
     pParty->bTurnBasedModeOn = false;
 
-    pParty->setActiveCharacterIndex(0);
+    pParty->setActiveCharacterIndex(-1);
     pParty->setActiveToFirstCanAct();
 
 /*

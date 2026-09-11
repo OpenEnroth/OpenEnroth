@@ -348,10 +348,10 @@ GAME_TEST(Issues, Issue2116) {
             game.tick();
         } while (!pParty->hasActiveCharacter());
     }
+    EXPECT_CONTAINS(activeCharacterTape, 0);
     EXPECT_CONTAINS(activeCharacterTape, 1);
     EXPECT_CONTAINS(activeCharacterTape, 2);
-    EXPECT_CONTAINS(activeCharacterTape, 3);
-    EXPECT_MISSES(activeCharacterTape, 4);
+    EXPECT_MISSES(activeCharacterTape, 3);
 
     pParty->pCharacters[3].conditions.reset(CONDITION_DEAD);
     pParty->pCharacters[3].conditions.reset(CONDITION_UNCONSCIOUS);
@@ -364,7 +364,7 @@ GAME_TEST(Issues, Issue2116) {
             game.tick();
         } while (!pParty->hasActiveCharacter());
     }
-    EXPECT_CONTAINS(activeCharacterTape, 4);
+    EXPECT_CONTAINS(activeCharacterTape, 3);
 }
 
 GAME_TEST(Issues, Issue2117) {
@@ -1261,8 +1261,8 @@ GAME_TEST(Issues, Issue2479) {
 
     test.playTraceFromTestData("issue_2479.mm7", "issue_2479.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_BRANCHLESS_NPC_DIALOG, SCREEN_GAME));
-    EXPECT_EQ(activeChar, tape(1, 4)); // We switched characters.
-    EXPECT_EQ(branchLessCharIndex, tape(-1, 1, -1)); // We didnt switch before the dialog closed.
+    EXPECT_EQ(activeChar, tape(0, 3)); // We switched characters.
+    EXPECT_EQ(branchLessCharIndex, tape(-1, 0, -1)); // We didnt switch before the dialog closed.
 }
 
 GAME_TEST(Issues, Issue2490) {

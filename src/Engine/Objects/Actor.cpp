@@ -1227,7 +1227,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     LocationInfo *v6;  // esi@4
     Duration v8;              // [sp+8h] [bp-4h]@6
 
-    pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex() - 1];
+    pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex()];
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         if (engine->_currentLoadedMapId != MAP_INVALID)
