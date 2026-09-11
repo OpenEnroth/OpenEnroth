@@ -10,25 +10,6 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 
-class TemporaryDir {
- public:
-    explicit TemporaryDir(std::string_view name): _name(name) {
-        if (std::filesystem::exists(_name))
-            std::filesystem::remove_all(_name);
-
-        std::filesystem::create_directory(name);
-        EXPECT_TRUE(std::filesystem::exists(name));
-    }
-
-    ~TemporaryDir() {
-        std::filesystem::remove_all(_name);
-        EXPECT_FALSE(std::filesystem::exists(_name));
-    }
-
- private:
-    std::string _name;
-};
-
 UNIT_TEST(DirectoryFileSystem, LsRoot) {
     // Make sure passing empty paths works as intended.
     ScopedTestFile tmp("1.txt", "");
@@ -112,7 +93,7 @@ UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
 }
 
 UNIT_TEST(DirectoryFileSystem, EscapingPaths) {
-    TemporaryDir tmp("a");
+    ScopedTestFolder tmp("a");
     ScopedTestFile tmp2("1.txt", "");
     ScopedTestFile tmp3("a/1.txt", "");
 
