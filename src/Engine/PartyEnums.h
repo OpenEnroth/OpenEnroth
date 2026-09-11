@@ -90,6 +90,7 @@ enum class QuestBit : uint16_t {
 
     QBIT_ARCOMAGE_CHAMPION = 238, // Won all arcomage games.
     QBIT_DIVINE_INTERVENTION_RETRIEVED = 239,
+    QBIT_TALKED_TO_ROLAND = 240, // Clicked Roland Ironfist's cage in Colony Zod and got the key.
 
     QBIT_241 = 241,
 
