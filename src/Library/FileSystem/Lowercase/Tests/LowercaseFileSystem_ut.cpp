@@ -7,8 +7,6 @@
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 
-#include "Utility/ScopeGuard.h"
-
 UNIT_TEST(LowercaseFileSystem, Empty) {
     MemoryFileSystem fs0("");
     LowercaseFileSystem fs(&fs0);
@@ -28,7 +26,7 @@ UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
 }
 
 UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
-    MM_AT_SCOPE_EXIT(std::filesystem::remove_all("tmp_dir"));
+    ScopedTestFolder tmp("tmp_dir");
 
     DirectoryFileSystem fs0(NativePath("tmp_dir"));
     fs0.write("a/b/c.bin", Blob());

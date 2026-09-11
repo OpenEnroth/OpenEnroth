@@ -4,13 +4,15 @@ if(OE_BUILD_TESTS)
     set(TESTING_EXTENSIONS_SOURCES
             ThrowingAssertions.cpp
             ScopedTestFile.cpp
-            ScopedTestFileSlot.cpp)
+            ScopedTestFileSlot.cpp
+            ScopedTestFolder.cpp)
 
     set(TESTING_EXTENSIONS_HEADERS
             ThrowingAssertions.h
             ExpectExtensions.h
             ScopedTestFile.h
-            ScopedTestFileSlot.h)
+            ScopedTestFileSlot.h
+            ScopedTestFolder.h)
 
     add_library(testing_extensions ${TESTING_EXTENSIONS_SOURCES} ${TESTING_EXTENSIONS_HEADERS})
     target_link_libraries(testing_extensions PUBLIC GTest::gtest utility)
