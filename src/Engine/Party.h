@@ -91,13 +91,14 @@ struct Party {
     Item takeHoldingItem();
 
     /**
-    * Sets _activeCharacterIndex to the first character that can act
-    * Added to fix some nzi access problems
-    */
+     * Makes the first character that can act the active one.
+     */
     void setActiveToFirstCanAct();
+
     /**
-    * Sets _activeCharacterIndex to the first active (recoverd) character
-    */
+     * Picks the active character for the next action. Keeps the current one if it can act and has recovered,
+     * otherwise picks the next character that has, or no one if none has.
+     */
     void switchToNextActiveCharacter();
 
     /**
@@ -383,7 +384,7 @@ struct Party {
     }
 
  private:
-     int _activeCharacterIndex = -1; // -1 for none.
+    int _activeCharacterIndex = -1;
 };
 
 extern Party *pParty;  // idb

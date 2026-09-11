@@ -2024,13 +2024,6 @@ void OnPaperdollLeftClick() {
 
         // enchant / recharge item
         if (IsEnchantingInProgress) {
-            /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
-             *0x7Fu;//CastSpellInfo
-             *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-             *pParty->activeCharacterIndex() - 1;
-             *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
-             *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-             *pEquipType;*/
             pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
             pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
             pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex();
@@ -2081,8 +2074,6 @@ void OnPaperdollLeftClick() {
         InventoryEntry entry = pParty->activeCharacter().inventory.entry(v34);
 
         if (entry) {
-            // v36 = v34 - 1;
-            // v38 = &pCharacters[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
             pEquipType = entry->type();
             if (entry->itemId == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {
@@ -2093,13 +2084,6 @@ void OnPaperdollLeftClick() {
             }
 
             if (IsEnchantingInProgress) {
-                /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
-                 *0x7Fu;//CastSpellInfo
-                 *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-                 *pParty->activeCharacterIndex() - 1;
-                 *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
-                 *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-                 *pEquipType;*/
                 pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
                 pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
                 pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex();

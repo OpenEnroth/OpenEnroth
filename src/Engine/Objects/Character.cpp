@@ -6123,14 +6123,6 @@ void Character::OnInventoryLeftClick() {
             InventoryEntry enchantedItemPos = inventory.entry(inventoryPos);
 
             if (enchantedItemPos) {
-                /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
-                    *0x7Fu;
-                    *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-                    *pParty->activeCharacterIndex() - 1;
-                    *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-                    *enchantedItemPos - 1;
-                    *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-                    *invMatrixIndex;*/
                 CastSpellInfo* pSpellInfo;
                 pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
                 pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
