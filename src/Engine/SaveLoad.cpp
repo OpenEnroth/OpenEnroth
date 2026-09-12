@@ -94,7 +94,7 @@ void loadGame(std::string_view fileName) {
                                   .pInventoryItemList[uEquipIdx - 1]
                                   .uItemID;
                 if (pItemTable->pItems[pItemID].uEquipType == ITEM_TYPE_WAND &&
-                    pItemID) {       // жезл
+                    pItemID) {
                     assert(false);  // looks like offset in player's inventory
                                      // and wand_lut much like case in 0042ECB5
                     stru_A750F8[i].AddPartySpellSound(

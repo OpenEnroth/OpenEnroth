@@ -691,7 +691,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, 0, 0, 0);
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
-            //    0, 0, fromx, fromy, 0, 0, 0);  // звук алтаря
+            //    0, 0, fromx, fromy, 0, 0, 0);
             //    Pid was 0
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE);
             break;

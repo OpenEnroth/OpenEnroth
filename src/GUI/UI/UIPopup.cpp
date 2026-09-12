@@ -1778,9 +1778,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             break;
         }
 
-        case SCREEN_GAME:  // In the main menu displays a pop-up window(В
-                           // главном меню показывает всплывающее окно)
-        {
+        case SCREEN_GAME: {
             if (GetCurrentMenuID() > MENU_MAIN) break;
 
             if ((signed int)pY > pViewport.y + pViewport.h - 1) {
