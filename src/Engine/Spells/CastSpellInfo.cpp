@@ -3053,7 +3053,9 @@ void pushSpellOrRangedAttack(SpellId spell,
             case SPELL_MIND_ENSLAVE:
             case SPELL_LIGHT_PARALYZE:
             case SPELL_DARK_CONTROL_UNDEAD:
-                flags |= ON_CAST_TargetedActor;
+                if (!(flags & ON_CAST_CastViaWand)) {
+                    flags |= ON_CAST_TargetedActor;
+                }
                 break;
 
             case SPELL_EARTH_TELEKINESIS:
