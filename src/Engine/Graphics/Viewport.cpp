@@ -319,7 +319,8 @@ void Engine::onGameViewportClick() {
             engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
         }
     } else if (keyboardInputHandler->IsCastOnClickToggled() && pParty->hasActiveCharacter() &&
-               pParty->activeCharacter().uQuickSpell != SPELL_NONE) {
+               pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
+               IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
         pAudioPlayer->playUISound(SOUND_error); // Shift-click casts at an actor, and there is none under the cursor.
     } else {
         pParty->dropHeldItem();

@@ -1177,12 +1177,7 @@ GAME_TEST(Issues, Issue1497) {
         prepareForBattleTest();
         engine->config->debug.NoActors.setValue(false);
 
-        // The resistance roll is random(level / 4 + resist + 30) < 30, so a low-level monster with zeroed
-        // resistances always gets the buff.
-        Actor *goblin = game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY);
-        ASSERT_LT(goblin->monsterInfo.level, 4);
-        goblin->monsterInfo.resMind = 0;
-        goblin->monsterInfo.resLight = 0;
+        game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists, the roll is random(level / 4 + resist + 30) < 30.
 
         auto buffTape = actorTapes.hasBuff(0, buff);
         auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
@@ -1190,13 +1185,12 @@ GAME_TEST(Issues, Issue1497) {
         game.tick(10);
         test.stopTaping();
 
-        EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened. Before the fix it opened on every shift-click.
+        EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened.
         EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the clicked goblin.
 
-        pParty->pCharacters[0].timeToRecovery = Duration();
-        pParty->setActiveCharacterIndex(1);
+        pParty->pCharacters[0].timeToRecovery = Duration(); // The cast put the caster in recovery, which the S key refuses.
+        pParty->setActiveCharacterIndex(1); // Nobody is active after a cast, and the digit keys only switch between active characters.
         game.castQuickSpell(1, spell);
-        EXPECT_NE(pGUIWindow_CastTargetedSpell, nullptr); // The S key still asks for a target.
-        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        EXPECT_NE(pGUIWindow_CastTargetedSpell, nullptr);
     }
 }

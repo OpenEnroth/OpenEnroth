@@ -43,7 +43,7 @@ enum class SpellCastFlag : uint16_t {
     ON_CAST_TargetedActorOrCharacter = 0x0100, // Targeted spell, target either actor or character
     ON_CAST_TargetedHireling = 0x0200,         // Targeted spell, target is hireling
     ON_CAST_AutoTarget = 0x0400,               // OE addition. Quick spell key, wand or blaster shot, bolt spells go at the cursor or the closest actor instead of asking
-    ON_CAST_CastViaWand = 0x0800,              // OE addition. Wand shot, the single-actor spells go at the cursor or the closest actor too
+    ON_CAST_CastViaWand = 0x0800,              // OE addition. Wand shot, single-actor spells go at the cursor or the closest actor instead of asking
 
     // Cumulative flags indicating that spell is targeted
     ON_CAST_CastingInProgress =
