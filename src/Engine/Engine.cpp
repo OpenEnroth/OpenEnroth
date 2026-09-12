@@ -595,6 +595,14 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     bDialogueUI_InitializeActor_NPC_ID = 0;
     engine->_pendingTransition.reset();
     onMapLoad();
+    if (engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
+        auto &mapVars = engine->_persistentVariables.mapVars;
+        mapVars[18] = (mapVars[15] != 0) + (mapVars[16] != 0) + (mapVars[17] != 0); // The reload event clears the count but leaves the used-pedestal flags intact.
+        if (mapVars[18] == 3) { // Used pedestals exit their event before checking whether all three keys have been inserted.
+            switchDoorAnimation(1, DOOR_ACTION_OPEN);
+            switchDoorAnimation(2, DOOR_ACTION_OPEN);
+        }
+    }
     pGameLoadingUI_ProgressBar->Progress();
     memset(&render->pBillboardRenderListD3D, 0, sizeof(render->pBillboardRenderListD3D));
     render->pSortedBillboardRenderListD3D.fill(nullptr);

@@ -13,6 +13,7 @@
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
@@ -1174,6 +1175,102 @@ GAME_TEST(Issues, Issue2453) {
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
     EXPECT_TRUE(saveLoadMenu()->selectedSlot().fileName.empty()); // The new save slot is selected.
+}
+
+static void checkWallsOfMistExit(DoorState state) {
+    for (int id : {1, 2}) {
+        auto door = std::ranges::find(pIndoor->doors, id, &BLVDoor::doorId);
+        ASSERT_NE(door, pIndoor->doors.end());
+        EXPECT_EQ(door->state, state);
+        ASSERT_GT(door->numVertices, 0);
+        const Vec3f &vertex = pIndoor->vertices[door->pVertexIDs[0]];
+        EXPECT_EQ(vertex.x, state == DOOR_CLOSED ? -896 : (id == 1 ? -1280 : -512));
+        EXPECT_EQ(vertex.y, 3712);
+        EXPECT_EQ(vertex.z, 0);
+    }
+}
+
+GAME_TEST(Issues, Issue2463a) {
+    // Inserting the remaining Walls of Mist keys after a reload did not open the exit.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    Vec3f outsidePosition = pParty->pos;
+    game.teleportTo(MAP_WALLS_OF_MIST, Vec3f(-1777, -495, 1), 90);
+    game.goToGame();
+    pParty->setActiveCharacterIndex(1);
+    ASSERT_EQ(engine->_currentLoadedMapId, MAP_WALLS_OF_MIST);
+
+    constexpr std::array keys = {ITEM_WEST_PILLAR_KEY, ITEM_CENTRAL_PILLAR_KEY, ITEM_EAST_PILLAR_KEY};
+    constexpr std::array faceIds = {164, 4019, 4075};
+    constexpr std::array positions = {Vec3f(-1122, 3392, 1), Vec3f(-482, 3264, 1), Vec3f(158, 3392, 1)};
+    for (ItemId key : keys)
+        ASSERT_TRUE(pParty->activeCharacter().inventory.add(Item(key)));
+    Blob ready = game.saveGame();
+    for (int reloadAfter : {0, 1, 2}) {
+        SCOPED_TRACE(reloadAfter);
+        game.loadGame(ready);
+        for (int var : {15, 16, 17, 18})
+            EXPECT_EQ(engine->_persistentVariables.mapVars[var], 0);
+        checkWallsOfMistExit(DOOR_CLOSED);
+        for (int i = 0; i < 3; ++i) {
+            game.teleportTo(MAP_WALLS_OF_MIST, positions[i], 180);
+            pParty->_viewPitch = -128;
+            game.tick();
+            const BLVFace &face = pIndoor->faces[faceIds[i]];
+            ASSERT_EQ(face.eventId, 376 + i);
+            Vec3f target = face.boundingBox.center();
+            Vec2f point = pCamera3D->Project(pCamera3D->ViewTransform(&target));
+            game.moveMouse(point.x, point.y);
+            game.tick();
+            ASSERT_EQ(current_screen_type, SCREEN_GAME);
+            ASSERT_TRUE(pParty->hasActiveCharacter());
+            ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
+            ASSERT_TRUE(pParty->hasItem(keys[i]));
+            ASSERT_EQ(engine->PickMouseForInteraction().pid, Pid(OBJECT_Face, faceIds[i]));
+            game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+            game.tick(5);
+            ASSERT_FALSE(pParty->hasItem(keys[i]));
+            EXPECT_EQ(engine->_persistentVariables.mapVars[15 + i], 1);
+            EXPECT_EQ(engine->_persistentVariables.mapVars[18], i + 1);
+            if (i + 1 == reloadAfter) {
+                Blob partial = game.saveGame();
+                game.loadGame(partial);
+                for (int j = 0; j < 3; ++j) {
+                    EXPECT_EQ(engine->_persistentVariables.mapVars[15 + j], j <= i ? 1 : 0);
+                    EXPECT_EQ(pParty->hasItem(keys[j]), j > i);
+                }
+                EXPECT_EQ(engine->_persistentVariables.mapVars[18], i + 1);
+            }
+        }
+        game.tick(200);
+        checkWallsOfMistExit(DOOR_OPEN);
+        Blob completed = game.saveGame();
+        game.loadGame(completed);
+        game.tick(200);
+        EXPECT_EQ(engine->_persistentVariables.mapVars[18], 3);
+        checkWallsOfMistExit(DOOR_OPEN);
+
+        int respawnCount = pIndoor->dlv.respawnCount;
+        game.teleportTo(MAP_EMERALD_ISLAND, outsidePosition, 0);
+        game.teleportTo(MAP_WALLS_OF_MIST, Vec3f(-1777, -495, 1), 90);
+        EXPECT_EQ(pIndoor->dlv.respawnCount, respawnCount + 1);
+        for (int var : {15, 16, 17, 18})
+            EXPECT_EQ(engine->_persistentVariables.mapVars[var], 0);
+        checkWallsOfMistExit(DOOR_CLOSED);
+    }
+}
+
+GAME_TEST(Issues, Issue2463b) {
+    // Saves with all three Walls of Mist keys consumed could leave the exit permanently closed.
+    test.loadGameFromTestData("issue_2463.mm7");
+    ASSERT_EQ(engine->_currentLoadedMapId, MAP_WALLS_OF_MIST);
+    for (int var : {15, 16, 17})
+        EXPECT_EQ(engine->_persistentVariables.mapVars[var], 1);
+    for (ItemId key : {ITEM_WEST_PILLAR_KEY, ITEM_CENTRAL_PILLAR_KEY, ITEM_EAST_PILLAR_KEY})
+        EXPECT_FALSE(pParty->hasItem(key));
+    EXPECT_EQ(engine->_persistentVariables.mapVars[18], 3);
+    game.tick(200);
+    checkWallsOfMistExit(DOOR_OPEN);
 }
 
 GAME_TEST(Issues, Issue2464) {
