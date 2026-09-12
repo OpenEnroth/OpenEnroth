@@ -146,7 +146,6 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
     SpriteFrame *frame;     // eax@9
     int v13;                // ecx@9
     Color color;
-    Particle_sw local_0;    // [sp+Ch] [bp-98h]@7
     BillboardFlags v38;                // [sp+88h] [bp-1Ch]@9
 
     for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
@@ -239,7 +238,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                 }
             } else {
                 // Emit fire particles.
-                memset(&local_0, 0, sizeof(Particle_sw));
+                Particle_sw local_0;
                 local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
                 local_0.uDiffuse = colorTable.OrangeyRed;
                 local_0.x = static_cast<float>(pLevelDecorations[i].vPosition.x);
