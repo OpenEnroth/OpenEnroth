@@ -152,8 +152,8 @@ class EngineController {
     void castSpell(int characterIndex, SpellId spell);
 
     /**
-     * Casts a spell through the quick spell key. Bolt-type spells skip the targeting interface and go at the actor
-     * under the cursor or the closest one, the rest open it just like `castSpell` does.
+     * Casts a spell through the quick spell key. Bolt spells go at the actor under the cursor or the closest one,
+     * and single-actor spells such as Berserk open the targeting interface like `castSpell` does.
      *
      * @param characterIndex            0-based index of the casting character.
      * @param spell                     Spell to cast.
@@ -165,9 +165,10 @@ class EngineController {
      * that actor without a targeting interface.
      *
      * @param characterIndex            1-based index of the casting character.
-     * @param spell                     Spell to cast.
+     * @param spell                     Spell to cast, must be one that shift-click casts.
      * @param actorId                   Id of the actor to cast at.
-     * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
+     * @throws Exception                If the spell can't be cast by shift-click, or if pointing at the actor is
+     *                                  not possible, e.g. it's not on the screen.
      */
     void castQuickSpellAtActor(int characterIndex, SpellId spell, int actorId);
 

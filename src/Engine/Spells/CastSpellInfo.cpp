@@ -3138,7 +3138,7 @@ void pushSpellOrRangedAttack(SpellId spell,
     }
 #endif
 
-    if (target != Pid()) {
+    if (target) {
         assert(target.type() == OBJECT_Actor);
         flags &= ~(ON_CAST_TargetedActor | ON_CAST_TargetedActorOrCharacter);
     }

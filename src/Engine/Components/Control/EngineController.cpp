@@ -29,6 +29,7 @@
 
 #include "Io/Mouse.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
+#include "Engine/Spells/Spells.h"
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -175,17 +176,7 @@ void EngineController::goToGame() {
 }
 
 void EngineController::goToInventory(int characterIndex) {
-    assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
-
-    goToGame();
-
-    if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex) {
-        pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
-        tick(1);
-        if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex)
-            throw Exception("Couldn't activate character #{}", characterIndex);
-    }
-
+    activateCharacter(characterIndex);
     pressAndReleaseKey(PlatformKey::KEY_I);
     tick(2); // Need two ticks for inventory to be shown.
 
@@ -361,18 +352,7 @@ void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw) {
 }
 
 void EngineController::castSpell(int characterIndex, SpellId spell) {
-    assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
-
-    goToGame();
-    if (GetCurrentMenuID() != MENU_NONE)
-        throw Exception("Can't cast a spell from the main menu");
-
-    if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex) {
-        pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
-        tick(1);
-        if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex)
-            throw Exception("Couldn't activate character #{}", characterIndex);
-    }
+    activateCharacter(characterIndex);
 
     MagicSchool school = magicSchoolForSpell(spell);
     int index = spellIndexInMagicSchool(spell);
@@ -387,23 +367,6 @@ void EngineController::castSpell(int characterIndex, SpellId spell) {
     tick(1);
 }
 
-Character &EngineController::activateCharacter(int characterIndex) {
-    assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
-
-    goToGame();
-    if (GetCurrentMenuID() != MENU_NONE)
-        throw Exception("Can't cast a spell from the main menu");
-
-    if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex) {
-        pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
-        tick(1);
-        if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex)
-            throw Exception("Couldn't activate character #{}", characterIndex);
-    }
-
-    return pParty->pCharacters[characterIndex];
-}
-
 void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
     Character &character = activateCharacter(characterIndex);
     SpellId oldQuickSpell = character.uQuickSpell;
@@ -416,6 +379,9 @@ void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
 }
 
 void EngineController::castQuickSpellAtActor(int characterIndex, SpellId spell, int actorId) {
+    if (!IsSpellQuickCastableOnShiftClick(spell))
+        throw Exception("Spell #{} can't be cast by shift-click", std::to_underlying(spell));
+
     Character &character = activateCharacter(characterIndex);
     SpellId oldQuickSpell = character.uQuickSpell;
     character.uQuickSpell = spell;
@@ -461,6 +427,23 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
     tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
     if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Decoration, decorationId))
         throw Exception("Failed to point mouse at decoration #{}", decorationId);
+}
+
+Character &EngineController::activateCharacter(int characterIndex) {
+    assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
+
+    goToGame();
+    if (GetCurrentMenuID() != MENU_NONE)
+        throw Exception("Can't activate a character from the main menu");
+
+    if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex) {
+        pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
+        tick(1);
+        if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex)
+            throw Exception("Couldn't activate character #{}", characterIndex);
+    }
+
+    return pParty->pCharacters[characterIndex];
 }
 
 void EngineController::goToGameOrMainMenu() {

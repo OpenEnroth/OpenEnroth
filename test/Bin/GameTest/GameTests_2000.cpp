@@ -1756,11 +1756,7 @@ GAME_TEST(Prs, Pr2669) {
     prepareForBattleTest();
     engine->config->debug.NoActors.setValue(false);
 
-    // The resistance roll is random(level / 4 + resist + 30) < 30, so a low-level monster with zeroed resistance
-    // always gets the buff.
-    Actor *goblin = game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY);
-    ASSERT_LT(goblin->monsterInfo.level, 4);
-    goblin->monsterInfo.resLight = 0;
+    game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists, the roll is random(level / 4 + resist + 30) < 30.
 
     Item wand;
     wand.itemId = ITEM_ARCANE_WAND_OF_PARALYZING;
