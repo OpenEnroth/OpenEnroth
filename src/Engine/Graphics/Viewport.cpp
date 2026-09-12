@@ -266,7 +266,7 @@ void Engine::onGameViewportClick() {
         } else if (pParty->hasActiveCharacter() &&
                    pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
                    IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpell, 0, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtCursor, 0, 0);
         } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
             pParty->dropHeldItem();
         } else {
@@ -318,6 +318,9 @@ void Engine::onGameViewportClick() {
             // Do not interact with faces with no active character
             engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
         }
+    } else if (keyboardInputHandler->IsCastOnClickToggled() && pParty->hasActiveCharacter() &&
+               pParty->activeCharacter().uQuickSpell != SPELL_NONE) {
+        pAudioPlayer->playUISound(SOUND_error); // Shift-click casts at an actor, and there is none under the cursor.
     } else {
         pParty->dropHeldItem();
     }

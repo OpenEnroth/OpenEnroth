@@ -179,10 +179,10 @@ void EngineController::goToInventory(int characterIndex) {
 
     goToGame();
 
-    if (pParty->activeCharacterIndex() != characterIndex) {
+    if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex) {
         pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
         tick(1);
-        if (pParty->activeCharacterIndex() != characterIndex)
+        if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex)
             throw Exception("Couldn't activate character #{}", characterIndex);
     }
 
@@ -367,10 +367,10 @@ void EngineController::castSpell(int characterIndex, SpellId spell) {
     if (GetCurrentMenuID() != MENU_NONE)
         throw Exception("Can't cast a spell from the main menu");
 
-    if (pParty->activeCharacterIndex() != characterIndex) {
+    if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex) {
         pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
         tick(1);
-        if (pParty->activeCharacterIndex() != characterIndex)
+        if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex)
             throw Exception("Couldn't activate character #{}", characterIndex);
     }
 
@@ -394,10 +394,10 @@ void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
     if (GetCurrentMenuID() != MENU_NONE)
         throw Exception("Can't cast a spell from the main menu");
 
-    if (pParty->activeCharacterIndex() != characterIndex) {
+    if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex) {
         pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
         tick(1);
-        if (pParty->activeCharacterIndex() != characterIndex)
+        if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex)
             throw Exception("Couldn't activate character #{}", characterIndex);
     }
 
@@ -411,7 +411,7 @@ void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
     character.uQuickSpell = oldQuickSpell;
 }
 
-void EngineController::pointMouseAtActor(int actorId) {
+Pointi EngineController::pointMouseAtActor(int actorId) {
     // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
     // camera is still at the old position. Tick once to let it catch up.
     tick(1);
@@ -420,12 +420,21 @@ void EngineController::pointMouseAtActor(int actorId) {
     Vec3f viewPos = pCamera3D->ViewTransform(&center);
     if (viewPos.x <= 0)
         throw Exception("Actor #{} is behind the camera", actorId);
-    Vec2f screenPos = pCamera3D->Project(viewPos);
+    Pointi screenPos = pCamera3D->Project(viewPos).toInt();
 
-    moveMouse(screenPos.x, screenPos.y);
+    moveMouse(screenPos);
     tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
     if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Actor, actorId))
         throw Exception("Failed to point mouse at actor #{}", actorId);
+    return screenPos;
+}
+
+void EngineController::shiftClickActor(int actorId) {
+    Pointi screenPos = pointMouseAtActor(actorId);
+    pressKey(PlatformKey::KEY_SHIFT);
+    pressAndReleaseButton(BUTTON_LEFT, screenPos);
+    releaseKey(PlatformKey::KEY_SHIFT);
+    tick(1); // The click is a queued event, the cast is posted only once it's processed.
 }
 
 void EngineController::pointMouseAtDecoration(int decorationId) {

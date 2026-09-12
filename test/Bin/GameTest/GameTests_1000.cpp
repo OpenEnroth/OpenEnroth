@@ -1165,8 +1165,8 @@ GAME_TEST(Issues, Issue1489) {
 }
 
 GAME_TEST(Issues, Issue1497) {
-    // Quick-casting Berserk opened the target picker instead of casting at the actor under the cursor. Paralyze
-    // shared the code path and had the same bug.
+    // Shift-clicking an actor with Berserk as the quick spell opened the target picker instead of casting at the
+    // clicked actor. Paralyze shared the code path and had the same bug. The S key keeps opening the picker.
     for (auto [spell, buff] : {std::pair(SPELL_MIND_BERSERK, ACTOR_BUFF_BERSERK), std::pair(SPELL_LIGHT_PARALYZE, ACTOR_BUFF_PARALYZED)}) {
         test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
 
@@ -1183,15 +1183,22 @@ GAME_TEST(Issues, Issue1497) {
         ASSERT_LT(goblin->monsterInfo.level, 4);
         goblin->monsterInfo.resMind = 0;
         goblin->monsterInfo.resLight = 0;
+        pParty->setActiveCharacterIndex(1);
+        pParty->pCharacters[0].uQuickSpell = spell;
 
         auto buffTape = actorTapes.hasBuff(0, buff);
         auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
-        game.pointMouseAtActor(0);
-        game.castQuickSpell(1, spell);
+        game.shiftClickActor(0);
         game.tick(10);
         test.stopTaping();
 
-        EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened. Before the fix it opened on every quick-cast.
-        EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the goblin under the cursor.
+        EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened. Before the fix it opened on every shift-click.
+        EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the clicked goblin.
+
+        pParty->pCharacters[0].timeToRecovery = Duration();
+        pParty->setActiveCharacterIndex(1);
+        game.castQuickSpell(1, spell);
+        EXPECT_NE(pGUIWindow_CastTargetedSpell, nullptr); // The S key still asks for a target.
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     }
 }

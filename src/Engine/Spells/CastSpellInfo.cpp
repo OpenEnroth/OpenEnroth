@@ -3044,14 +3044,16 @@ void pushSpellOrRangedAttack(SpellId spell,
             case SPELL_DARK_SHRINKING_RAY:
             case SPELL_DARK_SHARPMETAL:
             case SPELL_DARK_DRAGON_BREATH:
+                if (!(flags & ON_CAST_AutoTarget)) {
+                    flags |= ON_CAST_TargetedActor;
+                }
+                break;
             case SPELL_MIND_TELEPATHY:
             case SPELL_MIND_BERSERK:
             case SPELL_MIND_ENSLAVE:
             case SPELL_LIGHT_PARALYZE:
             case SPELL_DARK_CONTROL_UNDEAD:
-                if (!(flags & ON_CAST_AutoTarget)) {
-                    flags |= ON_CAST_TargetedActor;
-                }
+                flags |= ON_CAST_TargetedActor;
                 break;
 
             case SPELL_EARTH_TELEKINESIS:
