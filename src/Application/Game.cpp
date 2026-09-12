@@ -931,10 +931,12 @@ void Game::processQueuedMessages() {
                             pParty->uFallStartZ = z;
                             continue;
                         }
-                    } else if ((x > -32768) && (x < 32768) && (y > -32768) && (y < 32768) && (z >= 0) && (z < 10000)) {
-                        pParty->pos = Vec3f(x, y, z);
-                        pParty->uFallStartZ = z;
-                        continue;
+                    } else {
+                        if ((x > -32768) && (x < 32768) && (y > -32768) && (y < 32768) && (z >= 0) && (z < 10000)) {
+                            pParty->pos = Vec3f(x, y, z);
+                            pParty->uFallStartZ = z;
+                            continue;
+                        }
                     }
                     pAudioPlayer->playUISound(SOUND_error);
                     status_string = "Can't jump to that location!";
@@ -1453,8 +1455,10 @@ void Game::processQueuedMessages() {
                     if (viewparams->uMinimapZoom > 4096) {
                         viewparams->uMinimapZoom = 4096;
                     }
-                } else if (viewparams->uMinimapZoom > 2048) {
-                    viewparams->uMinimapZoom = 2048;
+                } else {
+                    if (viewparams->uMinimapZoom > 2048) {
+                        viewparams->uMinimapZoom = 2048;
+                    }
                 }
 
                 break;
@@ -1467,8 +1471,10 @@ void Game::processQueuedMessages() {
                     if (viewparams->uMinimapZoom < 512) {
                         viewparams->uMinimapZoom = 512;
                     }
-                } else if (viewparams->uMinimapZoom < 256) {
-                    viewparams->uMinimapZoom = 256;
+                } else {
+                    if (viewparams->uMinimapZoom < 256) {
+                        viewparams->uMinimapZoom = 256;
+                    }
                 }
 
                 break;

@@ -250,10 +250,12 @@ void Engine::onGameViewportClick() {
                 } else {
                     pParty->dropHeldItem();
                 }
-            } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->flags |= TE_FLAG_8_finished;
             } else {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
+                if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
+                    pTurnEngine->flags |= TE_FLAG_8_finished;
+                } else {
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
+                }
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->setAirborne(true);

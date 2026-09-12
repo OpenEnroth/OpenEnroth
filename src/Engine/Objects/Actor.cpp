@@ -156,12 +156,14 @@ void Actor::giveItem(signed int uActorID, ItemId uItemID, unsigned int bGive) {
             } else if (pActors[uActorID].items[1].itemId == ITEM_NULL) {
                 pActors[uActorID].items[1].itemId = uItemID;
             }
-        } else if (pActors[uActorID].carriedItemId == uItemID) {
-            pActors[uActorID].carriedItemId = ITEM_NULL;
-        } else if (pActors[uActorID].items[0].itemId == uItemID) {
-            pActors[uActorID].items[0].Reset();
-        } else if (pActors[uActorID].items[1].itemId == uItemID) {
-            pActors[uActorID].items[1].Reset();
+        } else {
+            if (pActors[uActorID].carriedItemId == uItemID) {
+                pActors[uActorID].carriedItemId = ITEM_NULL;
+            } else if (pActors[uActorID].items[0].itemId == uItemID) {
+                pActors[uActorID].items[0].Reset();
+            } else if (pActors[uActorID].items[1].itemId == uItemID) {
+                pActors[uActorID].items[1].Reset();
+            }
         }
     }
 }
@@ -2733,23 +2735,25 @@ void Actor::UpdateActorAI() {
                         } else {
                             Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
                         }
-                    } else if (v81 >= radiusMultiplier * meleeRange) {
-                        if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-                        } else if (v81 >= 1024) {  // monsters
-                            Actor::AI_Pursue3(actor_id, target_pid, 0_ticks, pDir);
-                        } else {
-                            v70 = (radiusMultiplier * meleeRange);
-                            // monsters
-                            // guard after player runs away
-                            // follow player
-                            Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
-                        }
-                    } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
-                        Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                     } else {
-                        // monsters
-                        Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
+                        if (v81 >= radiusMultiplier * meleeRange) {
+                            if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                            } else if (v81 >= 1024) {  // monsters
+                                Actor::AI_Pursue3(actor_id, target_pid, 0_ticks, pDir);
+                            } else {
+                                v70 = (radiusMultiplier * meleeRange);
+                                // monsters
+                                // guard after player runs away
+                                // follow player
+                                Actor::AI_Pursue2(actor_id, target_pid, 0_ticks, pDir, v70);
+                            }
+                        } else if (pActor->monsterInfo.recoveryTime > 0_ticks) {
+                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                        } else {
+                            // monsters
+                            Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
+                        }
                     }
                     continue;
                 } else if (v45 == ABILITY_SPELL1 || v45 == ABILITY_SPELL2) {
@@ -3570,15 +3574,17 @@ void Actor::LootActor() {
             }
             itemFound = true;
         }
-    } else if (grng->random(100) < this->monsterInfo.treasureDropChance && this->monsterInfo.treasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
-        pItemTable->generateItem(this->monsterInfo.treasureLevel, this->monsterInfo.treasureType, &Dst);
+    } else {
+        if (grng->random(100) < this->monsterInfo.treasureDropChance && this->monsterInfo.treasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
+            pItemTable->generateItem(this->monsterInfo.treasureLevel, this->monsterInfo.treasureType, &Dst);
 
-        StatusBarItemFound(foundGold, pItemTable->items[Dst.itemId].unidentifiedName);
+            StatusBarItemFound(foundGold, pItemTable->items[Dst.itemId].unidentifiedName);
 
-        if (!pParty->addItemToParty(&Dst)) {
-            pParty->setHoldingItem(Dst);
+            if (!pParty->addItemToParty(&Dst)) {
+                pParty->setHoldingItem(Dst);
+            }
+            itemFound = true;
         }
-        itemFound = true;
     }
     if (this->items[0].itemId != ITEM_NULL) {
         if (!pParty->addItemToParty(&this->items[0])) {

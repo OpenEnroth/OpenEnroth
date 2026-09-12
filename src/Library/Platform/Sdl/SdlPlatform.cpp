@@ -88,8 +88,9 @@ void SdlPlatform::setCursorShown(bool cursorShown) {
     if (cursorShown) {
         if (!SDL_ShowCursor())
             _state->logSdlError("SDL_ShowCursor");
-    } else if (!SDL_HideCursor()) {
-        _state->logSdlError("SDL_ShowCursor");
+    } else {
+        if (!SDL_HideCursor())
+            _state->logSdlError("SDL_ShowCursor");
     }
 }
 

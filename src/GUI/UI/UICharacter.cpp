@@ -1752,12 +1752,14 @@ void OnPaperdollLeftClick() {
 
                 pickeditem = pParty->pPickedItem.itemId;
             }
-        } else if ((pSkillType == SKILL_SHIELD || pSkillType == SKILL_SWORD || pSkillType == SKILL_DAGGER) && mainhandequip &&
-            mainhandequip->skill() == SKILL_SPEAR) {
-            // cant use spear in one hand till master
-            if (pParty->activeCharacter().getActualSkillValue(SKILL_SPEAR).mastery() < MASTERY_MASTER) {
-                pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
-                return;
+        } else {
+            if ((pSkillType == SKILL_SHIELD || pSkillType == SKILL_SWORD || pSkillType == SKILL_DAGGER) && mainhandequip &&
+                mainhandequip->skill() == SKILL_SPEAR) {
+                // cant use spear in one hand till master
+                if (pParty->activeCharacter().getActualSkillValue(SKILL_SPEAR).mastery() < MASTERY_MASTER) {
+                    pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
+                    return;
+                }
             }
         }
 

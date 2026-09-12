@@ -1263,8 +1263,9 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // t
             if (dirDotNormal <= 0) {
                 if (NegFacePlaceDist > 0)
                     continue;
-            } else if (NegFacePlaceDist < 0) {
-                continue;
+            } else {
+                if (NegFacePlaceDist < 0)
+                    continue;
             }
 
             // TODO(captainurist): what's going on in this check?

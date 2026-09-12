@@ -1238,8 +1238,10 @@ void CastSpellInfoHelpers::castSpell() {
                                 character.conditions.reset(CONDITION_SLEEP);
                                 character.playReaction(SPEECH_AWAKEN);
                             }
-                        } else if (character.DiscardConditionIfLastsLongerThan(CONDITION_SLEEP, pParty->GetPlayingTime() - spell_duration)) {
-                            character.playReaction(SPEECH_AWAKEN);
+                        } else {
+                            if (character.DiscardConditionIfLastsLongerThan(CONDITION_SLEEP, pParty->GetPlayingTime() - spell_duration)) {
+                                character.playReaction(SPEECH_AWAKEN);
+                            }
                         }
                     }
                     break;
@@ -1981,10 +1983,12 @@ void CastSpellInfoHelpers::castSpell() {
                             } else {
                                 engine->_statusBar->setEvent(fmt::format("{} gold", gold_num));
                             }
-                        } else if (item.itemId != ITEM_NULL) {
-                            engine->_statusBar->setEvent(fmt::format("({})", item.GetDisplayName()));
                         } else {
-                            engine->_statusBar->nothingHere();
+                            if (item.itemId != ITEM_NULL) {
+                                engine->_statusBar->setEvent(fmt::format("({})", item.GetDisplayName()));
+                            } else {
+                                engine->_statusBar->nothingHere();
+                            }
                         }
 
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);

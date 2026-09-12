@@ -712,8 +712,9 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (pParty->bTurnBasedModeOn) {
             if (pActors[i].currentActionAnimation == ANIM_Walking)
                 Cur_Action_Time = i * 32_ticks + animTimer->time();
-        } else if (pActors[i].currentActionAnimation == ANIM_Walking) {
-            Cur_Action_Time = i * 32_ticks + gameTimer->time();
+        } else {
+            if (pActors[i].currentActionAnimation == ANIM_Walking)
+                Cur_Action_Time = i * 32_ticks + gameTimer->time();
         }
 
         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active() ||

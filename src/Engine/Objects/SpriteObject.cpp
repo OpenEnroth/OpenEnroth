@@ -715,8 +715,10 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         if (object->spell_caster_pid.type() == OBJECT_Actor && pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()]) == HOSTILITY_FRIENDLY) {
             return 1;
         }
-    } else if (pid.type() == OBJECT_Character && object->spell_caster_pid.type() == OBJECT_Character) {
-        return 1;
+    } else {
+        if (pid.type() == OBJECT_Character && object->spell_caster_pid.type() == OBJECT_Character) {
+            return 1;
+        }
     }
 
     if (pParty->bTurnBasedModeOn) {
