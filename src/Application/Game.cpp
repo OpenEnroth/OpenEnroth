@@ -943,7 +943,8 @@ void Game::processQueuedMessages() {
                 engine->_statusBar->setEvent(status_string);
                 continue;
             }
-            case UIMSG_CastQuickSpell: {
+            case UIMSG_CastQuickSpell:
+            case UIMSG_CastQuickSpellAtCursor: {
                 if (engine->IsUnderwater()) {
                     engine->_statusBar->setEvent(LSTR_YOU_CAN_NOT_DO_THAT_WHILE_YOU_ARE);
                     pAudioPlayer->playUISound(SOUND_error);
@@ -954,6 +955,17 @@ void Game::processQueuedMessages() {
                 }
                 pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
                                         CombinedSkillValue::none(), ON_CAST_AutoTarget);
+                if (uMessage == UIMSG_CastQuickSpellAtCursor && pGUIWindow_CastTargetedSpell &&
+                    pGUIWindow_CastTargetedSpell->spellInfo()->flags & (ON_CAST_TargetedActor | ON_CAST_TargetedActorOrCharacter)) {
+                    Vis_PIDAndDepth object = engine->PickMouseForTargeting();
+                    if (object.pid.type() == OBJECT_Actor && object.depth < engine->config->gameplay.RangedAttackDepth.value()) {
+                        spellTargetPicked(object.pid, -1);
+                    } else {
+                        CastSpellInfoHelpers::cancelSpellCastInProgress();
+                        pAudioPlayer->playUISound(SOUND_error);
+                    }
+                    closeTargetedSpellWindow();
+                }
                 continue;
             }
 

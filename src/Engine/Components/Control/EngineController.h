@@ -151,8 +151,8 @@ class EngineController {
     void castSpell(int characterIndex, SpellId spell);
 
     /**
-     * Casts a spell through the quick spell mechanism. Unlike `castSpell`, quick spells don't open the targeting
-     * interface, and just auto-target the closest actor.
+     * Casts a spell through the quick spell key. Bolt-type spells skip the targeting interface and go at the actor
+     * under the cursor or the closest one, the rest open it just like `castSpell` does.
      *
      * @param characterIndex            0-based index of the casting character.
      * @param spell                     Spell to cast.
@@ -163,9 +163,18 @@ class EngineController {
      * Finds a screen position at which the mouse points at the provided actor & moves the mouse there.
      *
      * @param actorId                   Id of the actor to point at.
+     * @return                          Screen position the mouse was moved to.
      * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
      */
-    void pointMouseAtActor(int actorId);
+    Pointi pointMouseAtActor(int actorId);
+
+    /**
+     * Shift-clicks the provided actor, which casts the active character's quick spell at it.
+     *
+     * @param actorId                   Id of the actor to click.
+     * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
+     */
+    void shiftClickActor(int actorId);
 
     /**
      * Finds a screen position at which the mouse points at the provided decoration & moves the mouse there.
