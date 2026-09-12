@@ -205,10 +205,11 @@ void IndoorLocation::Draw() {
 
 //----- (004AE5BA) --------------------------------------------------------
 GraphicsImage *BLVFace::GetTexture() const {
-    if (this->IsAnimated())
+    if (this->IsAnimated()) {
         return pTextureFrameTable->animationFrame(this->animationId, animTimer->time());
-    else
+    } else {
         return this->texture;
+    }
 }
 
 void BLVFace::SetTexture(std::string_view filename) {
@@ -249,10 +250,11 @@ void IndoorLocation::Release() {
 void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
         (sLightID <= pIndoor->lights.size() - 1) && (sLightID >= 0)) {
-        if (bToggle)
+        if (bToggle) {
             pIndoor->lights[sLightID].uAtributes &= 0xFFFFFFF7;
-        else
+        } else {
             pIndoor->lights[sLightID].uAtributes |= 8;
+        }
     }
 }
 
@@ -812,10 +814,11 @@ void BLV_UpdateActors() {
             int moveSpeed = actor.moveSpeed;
 
             if (actor.buffs[ACTOR_BUFF_SLOWED].Active()) {
-                if (actor.buffs[ACTOR_BUFF_SLOWED].power)
+                if (actor.buffs[ACTOR_BUFF_SLOWED].power) {
                     moveSpeed = actor.moveSpeed / actor.buffs[ACTOR_BUFF_SLOWED].power;
-                else
+                } else {
                     moveSpeed = actor.moveSpeed / 2;
+                }
             }
 
             if (actor.aiState == Pursuing || actor.aiState == Fleeing)
@@ -916,10 +919,11 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     if (indoor_was_respawned) {
         for (unsigned i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
-            if (spawn->type == OBJECT_Actor)
+            if (spawn->type == OBJECT_Actor) {
                 SpawnEncounter(mapData, spawn, 0, 0, 0);
-            else
+            } else {
                 SpawnRandomTreasure(mapData, spawn);
+            }
         }
         RespawnGlobalDecorations();
     }
@@ -1231,10 +1235,11 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // t
 
     for (int sectargetrflip = 0; sectargetrflip < 2; sectargetrflip++) {
         int SectargetrID = 0;
-        if (sectargetrflip)
+        if (sectargetrflip) {
             SectargetrID = pIndoor->GetSector(target);
-        else
+        } else {
             SectargetrID = pIndoor->GetSector(from);
+        }
 
         // loop over sector faces
         const BLVSector &sector = pIndoor->sectors[SectargetrID];
@@ -1510,30 +1515,34 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
-                if (engine->config->settings.TurnSpeed.value() > 0)
+                if (engine->config->settings.TurnSpeed.value() > 0) {
                     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + (int) engine->config->settings.TurnSpeed.value());
-                else
+                } else {
                     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + static_cast<int>(rotation * fTurnSpeedMultiplier));
+                }
                 break;
             case PARTY_TurnRight:
-                if (engine->config->settings.TurnSpeed.value() > 0)
+                if (engine->config->settings.TurnSpeed.value() > 0) {
                     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - (int) engine->config->settings.TurnSpeed.value());
-                else
+                } else {
                     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - static_cast<int>(rotation * fTurnSpeedMultiplier));
+                }
                 break;
 
             case PARTY_FastTurnLeft:
-                if (engine->config->settings.TurnSpeed.value() > 0)
+                if (engine->config->settings.TurnSpeed.value() > 0) {
                     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + (int) engine->config->settings.TurnSpeed.value());
-                else
+                } else {
                     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                }
                 break;
 
             case PARTY_FastTurnRight:
-                if (engine->config->settings.TurnSpeed.value() > 0)
+                if (engine->config->settings.TurnSpeed.value() > 0) {
                     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - (int) engine->config->settings.TurnSpeed.value());
-                else
+                } else {
                     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                }
                 break;
 
             case PARTY_StrafeLeft:
@@ -1701,10 +1710,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
     //-------------------------------------------------------------
 
-    if (!isAboveGround || not_high_fall)
+    if (!isAboveGround || not_high_fall) {
         pParty->setAirborne(false);
-    else
+    } else {
         pParty->setAirborne(true);
+    }
 
     pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
@@ -1884,11 +1894,12 @@ void FindBillboardsLightLevels_BLV() {
     for (unsigned i = 0; i < uNumBillboardsToDraw; ++i) {
         if (pBillboardRenderList[i].flags & BILLBOARD_LIT ||
             uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
-                !pBillboardRenderList[i].uIndoorSectorID)
+                !pBillboardRenderList[i].uIndoorSectorID) {
             pBillboardRenderList[i].dimming_level = 0;
-        else
+        } else {
             pBillboardRenderList[i].dimming_level =
                 _43F55F_get_billboard_light_level(&pBillboardRenderList[i], -1);
+        }
     }
 }
 

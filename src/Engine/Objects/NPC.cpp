@@ -274,20 +274,22 @@ NPCData *FlatHirelings::Get(size_t index) const {
 
     uint8_t id = ids[index];
 
-    if (id < 2)
+    if (id < 2) {
         return &pParty->pHirelings[id];
-    else
+    } else {
         return &pNPCStats->pNPCData[id - 2];
+    }
 }
 
 NPCSacrificeStatus *FlatHirelings::GetSacrificeStatus(size_t index) const {
     assert(index < count);
 
     uint8_t id = ids[index];
-    if (id < 2)
+    if (id < 2) {
         return &pParty->pHirelingsSacrifice[id];
-    else
+    } else {
         return nullptr;
+    }
 }
 
 void setNPCNamesOnLoad() {

@@ -209,10 +209,11 @@ GUIWindow_Spellbook::~GUIWindow_Spellbook() {
 
 void GUIWindow_Spellbook::loadSpellbook() {
     MagicSchool page = pParty->activeCharacter().lastOpenedSpellbookPage;
-    if (pParty->activeCharacter().uQuickSpell != SPELL_NONE && magicSchoolForSpell(pParty->activeCharacter().uQuickSpell) == page)
+    if (pParty->activeCharacter().uQuickSpell != SPELL_NONE && magicSchoolForSpell(pParty->activeCharacter().uQuickSpell) == page) {
         spellbookSelectedSpell = pParty->activeCharacter().uQuickSpell;
-    else
+    } else {
         spellbookSelectedSpell = SPELL_NONE;
+    }
 
     for (SpellId spell : spellsForMagicSchool(page)) {
         if (pParty->activeCharacter().bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {

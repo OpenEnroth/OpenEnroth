@@ -189,12 +189,10 @@ void InteractWithActor(unsigned int id) {
     Actor::AI_FaceObject(id, Pid::character(0), 0);
     if (pActors[id].npcId) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_StartNPCDialogue, id, 0);
-    } else {
-        if (pNPCStats->pGroups[pActors[id].group]) {
-            if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]].empty()) {
-                branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]];
-                startBranchlessDialogue(0, 0, EVENT_Invalid);
-            }
+    } else if (pNPCStats->pGroups[pActors[id].group]) {
+        if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]].empty()) {
+            branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]];
+            startBranchlessDialogue(0, 0, EVENT_Invalid);
         }
     }
 }
@@ -203,12 +201,10 @@ void DecorationInteraction(unsigned int id, Pid pid) {
     if (pLevelDecorations[id].uEventID) {
         eventProcessor(pLevelDecorations[id].uEventID, pid, 1);
         pLevelDecorations[id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
-    } else {
-        if (pLevelDecorations[id].IsInteractive()) {
-            activeLevelDecoration = &pLevelDecorations[id];
-            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-            activeLevelDecoration = nullptr;
-        }
+    } else if (pLevelDecorations[id].IsInteractive()) {
+        activeLevelDecoration = &pLevelDecorations[id];
+        eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
+        activeLevelDecoration = nullptr;
     }
 }
 

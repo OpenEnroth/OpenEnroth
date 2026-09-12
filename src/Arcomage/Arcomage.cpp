@@ -306,22 +306,20 @@ int explosion_effect_struct::UpdateEffect() {
 
                 // set effect still active
                 active_check = 1;
-            } else {
-                if (total_to_init >= 1.0) {
-                    // spark dead - initialze new spark
-                    spark_ptr->spark_remaining_life = vrng->randomInSegment(this->min_lifespan, this->max_lifespan);
-                    spark_ptr->spark_x_speed = static_cast<float> (vrng->random(17) - 8);
-                    spark_ptr->spark_y_speed = static_cast<float> (vrng->random(17) - 8);
-                    spark_ptr->spark_x_pos = static_cast<float> (vrng->randomInSegment(this->start_x_min, (this->start_x_max - 1)));
-                    spark_ptr->spark_position.x = static_cast<int> (spark_ptr->spark_x_pos);
-                    spark_ptr->spark_y_pos = static_cast<float> (vrng->randomInSegment((this->start_y_min - 1), this->start_y_max));
-                    spark_ptr->spark_position.y = static_cast<int> (spark_ptr->spark_y_pos);
-                    --this->remaining_sparks_to_init;
-                    --total_to_init;
+            } else if (total_to_init >= 1.0) {
+                // spark dead - initialze new spark
+                spark_ptr->spark_remaining_life = vrng->randomInSegment(this->min_lifespan, this->max_lifespan);
+                spark_ptr->spark_x_speed = static_cast<float> (vrng->random(17) - 8);
+                spark_ptr->spark_y_speed = static_cast<float> (vrng->random(17) - 8);
+                spark_ptr->spark_x_pos = static_cast<float> (vrng->randomInSegment(this->start_x_min, (this->start_x_max - 1)));
+                spark_ptr->spark_position.x = static_cast<int> (spark_ptr->spark_x_pos);
+                spark_ptr->spark_y_pos = static_cast<float> (vrng->randomInSegment((this->start_y_min - 1), this->start_y_max));
+                spark_ptr->spark_position.y = static_cast<int> (spark_ptr->spark_y_pos);
+                --this->remaining_sparks_to_init;
+                --total_to_init;
 
-                    // set effect still active
-                    active_check = 1;
-                }
+                // set effect still active
+                active_check = 1;
             }
             ++spark_ptr;
         }
@@ -335,10 +333,11 @@ int explosion_effect_struct::UpdateEffect() {
 int explosion_effect_struct::IsEffectActive() {
     // returns 2 if effect still active - 0/1/3 otherwise
     if (mem_signature == SIG_MEMALOC) {
-        if (remaining_sparks_to_init <= 0)
+        if (remaining_sparks_to_init <= 0) {
             return effect_active != 0 ? 2 : 0;
-        else
+        } else {
             return 1;
+        }
     }
 
     return 3;
@@ -1196,18 +1195,20 @@ char PlayerTurn(int player_num) {
                 break;
             case ARCO_MSG_LEFT: {
                 int maxIndex = GetPlayerHandCardCount(0) - 1;
-                if (current_card_slot_index <= 0)
+                if (current_card_slot_index <= 0) {
                     current_card_slot_index = maxIndex;
-                else
+                } else {
                     current_card_slot_index--;
+                }
                 break;
             }
             case ARCO_MSG_RIGHT: {
                 int maxIndex = GetPlayerHandCardCount(0) - 1;
-                if (current_card_slot_index == -1 || current_card_slot_index >= maxIndex)
+                if (current_card_slot_index == -1 || current_card_slot_index >= maxIndex) {
                     current_card_slot_index = 0;
-                else
+                } else {
                     current_card_slot_index++;
+                }
                 break;
             }
             default:
@@ -2007,10 +2008,11 @@ signed int DrawCardsRectangles(int player_num) {
 
                 // see if mouse is hovering
                 if (mouseControl && pRect.contains(pArcomageGame->_mousePos) || mouseControl == false && current_card_slot_index == hand_index) {
-                    if (CanCardBePlayed(player_num, hand_index))
+                    if (CanCardBePlayed(player_num, hand_index)) {
                         color = colorTable.White;
-                    else
+                    } else {
                         color = colorTable.Red;
+                    }
 
                     // draw outline and return
                     DrawRect(&pRect, color, 0);
@@ -2746,24 +2748,26 @@ void GameResultsApply() {
         am_Players[0].resource_bricks;  // bricks are the most plentiful
     if (am_Players[0].resource_gems > am_Players[0].resource_bricks &&
         am_Players[0].resource_gems >
-            am_Players[0].resource_beasts)  // gems are the most plentiful
+            am_Players[0].resource_beasts) {  // gems are the most plentiful
         pl_resource = am_Players[0].resource_gems;
-    else if (am_Players[0].resource_beasts > am_Players[0].resource_gems &&
+    } else if (am_Players[0].resource_beasts > am_Players[0].resource_gems &&
              am_Players[0].resource_beasts >
-                 am_Players[0].resource_bricks)  // beasts are the most plentiful
+                 am_Players[0].resource_bricks) {  // beasts are the most plentiful
         pl_resource = am_Players[0].resource_beasts;
+    }
 
     // Find player 2's (the enemy's) most plentiful resource.
     en_resource =
         am_Players[1].resource_bricks;  // bricks are the most plentiful
     if (am_Players[1].resource_gems > am_Players[1].resource_bricks &&
         am_Players[1].resource_gems >
-            am_Players[1].resource_beasts)  // gems are the most plentiful
+            am_Players[1].resource_beasts) {  // gems are the most plentiful
         en_resource = am_Players[1].resource_gems;
-    else if (am_Players[1].resource_beasts > am_Players[1].resource_gems &&
+    } else if (am_Players[1].resource_beasts > am_Players[1].resource_gems &&
              am_Players[1].resource_beasts >
-                 am_Players[1].resource_bricks)  // beasts are the most plentiful
+                 am_Players[1].resource_bricks) {  // beasts are the most plentiful
         en_resource = am_Players[1].resource_beasts;
+    }
 
     // Compare the players' resources.
     if (winner == -1 && victory_type == -1) {  // no winner on towers

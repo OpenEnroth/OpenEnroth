@@ -241,10 +241,11 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     if (rep_gen >= 60) {
         if (rep_gen >= 90) {
             if (rep_gen >= 95) {
-                if (rep_gen >= 98)
+                if (rep_gen >= 98) {
                     pNPCDataBuff->rep = -600;
-                else
+                } else {
                     pNPCDataBuff->rep = 400;
+                }
             } else {
                 pNPCDataBuff->rep = -300;
             }
@@ -294,10 +295,11 @@ const std::string &NPCStats::sub_495366_MispronounceName(char firstLetter, Sex g
             if (tolower(names[i][0]) == tolower(firstLetter))
                 matches.push_back(i);
 
-        if (!matches.empty())
+        if (!matches.empty()) {
             pickedName = vrng->randomSample(matches);
-        else
+        } else {
             pickedName = vrng->random(names.size()); // No name with this letter - pick any.
+        }
     }
     dword_AE3370_LastMispronouncedNameResult = pickedName;
     return this->pNPCNames[gender][pickedName];

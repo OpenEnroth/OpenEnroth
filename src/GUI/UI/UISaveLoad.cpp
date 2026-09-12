@@ -71,10 +71,11 @@ static std::vector<SavegameSlot> loadMenuSlots() {
 
         // Show autosave & quicksave titles in the current language - the stored titles are in whatever language
         // was active when the save was made.
-        if (ascii::noCaseEquals(slot.fileName, autosaveFileName))
+        if (ascii::noCaseEquals(slot.fileName, autosaveFileName)) {
             slot.header.name = localization->str(LSTR_AUTOSAVE);
-        else if (ascii::noCaseStartsWith(slot.fileName, quickSaveFileNamePrefix))
+        } else if (ascii::noCaseStartsWith(slot.fileName, quickSaveFileNamePrefix)) {
             slot.header.name = localization->str(LSTR_QUICKSAVE);
+        }
 
         if (slot.header.name.empty()) // Foreign saves with blank titles - fall back to the file name.
             slot.header.name = slot.fileName.substr(0, slot.fileName.size() - 4);

@@ -298,20 +298,22 @@ bool ClippingFunctions::AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexS
     if (a1a != 0.0) {
         v10 = -(v8 / a1a);
         if (a1a <= 0.0) {
-            if (v10 <= 0.0)
+            if (v10 <= 0.0) {
                 v12 = 0.0;
-            else
+            } else {
                 v12 = v10;
+            }
             if (v12 <= 1.0) {
                 if (v10 <= 0.0) v10 = (float)0.0;
             } else {
                 v10 = 1.0;
             }
         } else {
-            if (v10 >= 1.0)
+            if (v10 >= 1.0) {
                 v11 = 1.0;
-            else
+            } else {
                 v11 = v10;
+            }
             if (v11 >= 0.0) {
                 if (v10 >= 1.0) v10 = (float)1.0;
             } else {

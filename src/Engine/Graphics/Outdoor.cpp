@@ -286,16 +286,17 @@ MapDestination OutdoorLocation::getTravelDestination(int partyX, int partyY) {
         return {};
 
     // Check which side of the map
-    if (partyX < -maxPartyAxisDistance)
+    if (partyX < -maxPartyAxisDistance) {
         direction = 3; // west
-    else if (partyX > maxPartyAxisDistance)
+    } else if (partyX > maxPartyAxisDistance) {
         direction = 2; // east
-    else if (partyY < -maxPartyAxisDistance)
+    } else if (partyY < -maxPartyAxisDistance) {
         direction = 1; // south
-    else if (partyY > maxPartyAxisDistance)
+    } else if (partyY > maxPartyAxisDistance) {
         direction = 0; // north
-    else
+    } else {
         return {};
+    }
 
     if (currentMap == MAP_AVLEE && direction == 3) {  // to Shoals
         bool wholePartyUnderwaterSuitEquipped = true;
@@ -338,10 +339,11 @@ void OutdoorLocation::UpdateSunlightVectors() {
         this->vSunlight.y = 0;
         this->vSunlight.z = std::sin((minutes * M_PI) / 960.0);
 
-        if (minutes >= 480)
+        if (minutes >= 480) {
             v8 = 960 - minutes;
-        else
+        } else {
             v8 = minutes;
+        }
         this->max_terrain_dimming_level = (int)(20.0 - v8 / 480.0 * 20.0);
         this->uLastSunlightUpdateMinute = pParty->uCurrentMinute;
     }
@@ -521,10 +523,11 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     } else if (lastVisitTime) {
         if (lastVisitTime.toDays() % 28 != pParty->uCurrentDayOfMonth) {
             int sky_to_use;
-            if (vrng->random(100) >= 20)
+            if (vrng->random(100) >= 20) {
                 sky_to_use = skyTexturesIds1[vrng->random(9)];
-            else
+            } else {
                 sky_to_use = skyTexturesIds2[vrng->random(7)];
+            }
             weather.skyTextureName = fmt::format("plansky{}", sky_to_use);
         }
     } else {
@@ -557,18 +560,20 @@ int OutdoorLocation::UpdateDiscoveredArea(Vec2i gridPos) {
 
 //----- (0047F04C) --------------------------------------------------------
 bool OutdoorLocation::IsMapCellFullyRevealed(int x_pos, int y_pos) {
-    if (x_pos < 0 || x_pos >= 88 || y_pos < 0 || y_pos >= 88)
+    if (x_pos < 0 || x_pos >= 88 || y_pos < 0 || y_pos >= 88) {
         return false;
-    else
+    } else {
         return (uFullyRevealedCellOnMap[y_pos][x_pos / 8] & (1 << (7 - (x_pos) % 8))) != 0;
+    }
 }
 
 //----- (0047F097) --------------------------------------------------------
 bool OutdoorLocation::IsMapCellPartiallyRevealed(int x_pos, int y_pos) {
-    if (x_pos < 0 || x_pos >= 88 || y_pos < 0 || y_pos >= 88)
+    if (x_pos < 0 || x_pos >= 88 || y_pos < 0 || y_pos >= 88) {
         return false;
-    else
+    } else {
         return (uPartiallyRevealedCellOnMap[y_pos][x_pos / 8] & (1 << (7 - (x_pos) % 8))) != 0;
+    }
 }
 
 //----- (0047F138) --------------------------------------------------------
@@ -694,8 +699,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 }
             }
             if (!onlist) continue;
-        } else {
-            if (!IsCylinderInFrustum(pActors[i].pos, pActors[i].radius)) continue;
+        } else if (!IsCylinderInFrustum(pActors[i].pos, pActors[i].radius)) {
+            continue;
         }
 
         Angle_To_Cam = TrigLUT.atan2(pActors[i].pos.x - pCamera3D->vCameraPos.x, pActors[i].pos.y - pCamera3D->vCameraPos.y);
@@ -736,13 +741,14 @@ void OutdoorLocation::PrepareActorsDrawList() {
         }
 
 
-        if (pActors[i].aiState == Summoned && !v49)
+        if (pActors[i].aiState == Summoned && !v49) {
             frame = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, Cur_Action_Time);
-        else if (pActors[i].aiState == Resurrected)
+        } else if (pActors[i].aiState == Resurrected) {
             frame = pSpriteFrameTable->GetFrameReversed(pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
-        else
+        } else {
             frame = pSpriteFrameTable->GetFrame(
                 pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
+        }
 
         // no sprite frame to draw
         if (frame->spriteName == "null") continue;
@@ -932,10 +938,11 @@ void ODM_ProcessPartyActions() {
 
     bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItem(ITEM_ARTIFACT_LADYS_ESCORT)
                                     || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
-    if (partyHasFeatherFall)
+    if (partyHasFeatherFall) {
         pParty->uFallStartZ = floorZ;
-    else
+    } else {
         floorZ = pParty->uFallStartZ;
+    }
 
     // face id of any model ceiling face above party
     int ceilingFaceID = 0;
@@ -1023,37 +1030,41 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_TurnLeft:
-                if (engine->config->settings.TurnSpeed.value() > 0)
+                if (engine->config->settings.TurnSpeed.value() > 0) {
                     pParty->_viewYaw += engine->config->settings.TurnSpeed.value();  // discrete turn
-                else
+                } else {
                     pParty->_viewYaw += dturn * fTurnSpeedMultiplier;  // time-based smooth turn
+                }
 
                 pParty->_viewYaw &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_TurnRight:
-                if (engine->config->settings.TurnSpeed.value() > 0)
+                if (engine->config->settings.TurnSpeed.value() > 0) {
                     pParty->_viewYaw -= engine->config->settings.TurnSpeed.value();
-                else
+                } else {
                     pParty->_viewYaw -= dturn * fTurnSpeedMultiplier;
+                }
 
                 pParty->_viewYaw &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_FastTurnLeft:
-                if (engine->config->settings.TurnSpeed.value() > 0)
+                if (engine->config->settings.TurnSpeed.value() > 0) {
                     pParty->_viewYaw += engine->config->settings.TurnSpeed.value();
-                else
+                } else {
                     pParty->_viewYaw += 2.0f * fTurnSpeedMultiplier * dturn;
+                }
 
                 pParty->_viewYaw &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_FastTurnRight:
-                if (engine->config->settings.TurnSpeed.value() > 0)
+                if (engine->config->settings.TurnSpeed.value() > 0) {
                     pParty->_viewYaw -= engine->config->settings.TurnSpeed.value();
-                else
+                } else {
                     pParty->_viewYaw -= 2.0f * fTurnSpeedMultiplier * dturn;
+                }
 
                 pParty->_viewYaw &= TrigLUT.uDoublePiMask;
                 break;
@@ -1311,10 +1322,11 @@ void ODM_ProcessPartyActions() {
         ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
     }
 
-    if (!partyNotTouchingFloor || partyCloseToGround)
+    if (!partyNotTouchingFloor || partyCloseToGround) {
         pParty->setAirborne(false);
-    else
+    } else {
         pParty->setAirborne(true);
+    }
 
     Vec3f partyOldPosition = pParty->pos;
     Vec2i partyOldGridPos = worldToGrid(pParty->pos);
@@ -1348,10 +1360,11 @@ void ODM_ProcessPartyActions() {
         bool waterMoveX;
         bool waterMoveY;
 
-        if (pParty->bFlying || !partyCloseToGround || waterWalkActive || !partyCurrentOnLand)
+        if (pParty->bFlying || !partyCloseToGround || waterWalkActive || !partyCurrentOnLand) {
             waterMoveX = 1;
-        else
+        } else {
             waterMoveX = partyNewXOnLand != 0;
+        }
 
         bool partyDrowningFlag = false;
 
@@ -1529,10 +1542,11 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
                 break;
 
             int height_level;
-            if (face.polygonType == POLYGON_Ceiling)
+            if (face.polygonType == POLYGON_Ceiling) {
                 height_level = model.vertices[face.vertexIds[0]].z;
-            else
+            } else {
                 height_level = face.zCalc.calculate(Party_X, Party_Y);
+            }
 
             ceiling_height_level[ceiling_count] = height_level;
             model_indices[ceiling_count] = model.index;
@@ -1549,12 +1563,13 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
 
     int result_idx = 0;
     for (int i = 0; i < ceiling_count; ++i) {
-        if (ceiling_height_level[i] == ceiling_height_level[0])
+        if (ceiling_height_level[i] == ceiling_height_level[0]) {
             result_idx = i;
-        else if (ceiling_height_level[i] < ceiling_height_level[0] && ceiling_height_level[0] > Party_ZHeight + 15)
+        } else if (ceiling_height_level[i] < ceiling_height_level[0] && ceiling_height_level[0] > Party_ZHeight + 15) {
             result_idx = i;
-        else if (ceiling_height_level[i] > ceiling_height_level[0] && ceiling_height_level[i] <= Party_ZHeight + 15)
+        } else if (ceiling_height_level[i] > ceiling_height_level[0] && ceiling_height_level[i] <= Party_ZHeight + 15) {
             result_idx = i;
+        }
     }
 
     if (result_idx != 0) {
@@ -1770,10 +1785,11 @@ static void loadAndPrepareODMInternal(MapId mapid) {
         for (unsigned i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
             SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 
-            if (spawn->type == OBJECT_Actor)
+            if (spawn->type == OBJECT_Actor) {
                 SpawnEncounter(mapData, spawn, 0, 0, 0);
-            else
+            } else {
                 SpawnRandomTreasure(mapData, spawn);
+            }
         }
         RespawnGlobalDecorations();
     }

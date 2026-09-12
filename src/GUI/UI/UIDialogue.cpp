@@ -79,20 +79,16 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
             (pNumberContacts = pNPCInfo->flags & 0xFFFFFF7F,
              (pNumberContacts & 0x80000000u) != 0)) {
             v9 = 1;
-        } else {
-            if (pNumberContacts > 1) {
-                if (pNumberContacts == 2) {
-                    v9 = 3;
-                } else {
-                    if (pNumberContacts != 3) {
-                        if (pNumberContacts != 4) v9 = 1;
-                    } else {
-                        v9 = 2;
-                    }
-                }
-            } else if (pNPCInfo->rep) {
+        } else if (pNumberContacts > 1) {
+            if (pNumberContacts == 2) {
+                v9 = 3;
+            } else if (pNumberContacts != 3) {
+                if (pNumberContacts != 4) v9 = 1;
+            } else {
                 v9 = 2;
             }
+        } else if (pNPCInfo->rep) {
+            v9 = 2;
         }
     }
     if (speakingNpcId < 0) v9 = 4;
@@ -225,10 +221,11 @@ void GUIWindow_Dialogue::Update() {
                 dialogue_string = current_npc_text;
             } else if (npcType == NPC_TYPE_QUEST) {
                 if (pNPC->greetingIndex) {
-                    if (pNPC->flags & NPC_GREETED_SECOND)
+                    if (pNPC->flags & NPC_GREETED_SECOND) {
                         dialogue_string = pNPCStats->pNPCGreetings[pNPC->greetingIndex].pGreeting2;
-                    else
+                    } else {
                         dialogue_string = pNPCStats->pNPCGreetings[pNPC->greetingIndex].pGreeting1;
+                    }
                 }
             } else if (npcType == NPC_TYPE_HIREABLE) {
                 NPCProfession *prof = &pNPCStats->pProfessions[pNPC->profession];
@@ -265,9 +262,8 @@ void GUIWindow_Dialogue::Update() {
                     actor.aiState == Removed ||
                     actor.aiState == Disabled) {
                     ++num_dead_actors;
-                } else {
-                    if (actor.summonerId.type() == OBJECT_Character)
-                        ++num_dead_actors;
+                } else if (actor.summonerId.type() == OBJECT_Character) {
+                    ++num_dead_actors;
                 }
             }
             if (num_dead_actors == pActors.size()) {
@@ -355,10 +351,11 @@ void selectNPCDialogueOption(DialogueId option) {
                 if (pNPCStats->pNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNPCData[i].name)
                     pNPCStats->pNPCData[i].flags &= ~NPC_HIRED;
             }
-            if (ascii::noCaseEquals(pParty->pHirelings[0].name, speakingNPC->name)) // TODO(captainurist): #unicode this is not ascii
+            if (ascii::noCaseEquals(pParty->pHirelings[0].name, speakingNPC->name)) { // TODO(captainurist): #unicode this is not ascii
                 pParty->pHirelings[0] = NPCData();
-            else if (ascii::noCaseEquals(pParty->pHirelings[1].name, speakingNPC->name)) // TODO(captainurist): #unicode this is not ascii
+            } else if (ascii::noCaseEquals(pParty->pHirelings[1].name, speakingNPC->name)) { // TODO(captainurist): #unicode this is not ascii
                 pParty->pHirelings[1] = NPCData();
+            }
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);

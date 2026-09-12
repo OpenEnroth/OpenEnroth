@@ -177,10 +177,11 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     for (unsigned i = 0; i < faceExtras.size(); ++i) {
         reconstruct(src.faceExtraTextures[i], &textureName);
 
-        if (textureName.empty())
+        if (textureName.empty()) {
             faceExtras[i].additionalBitmapId = -1;
-        else
+        } else {
             faceExtras[i].additionalBitmapId = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
+        }
     }
 
     for (size_t i = 0; i < dst->faces.size(); ++i) {
@@ -194,10 +195,11 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         pFace->eventId = pFaceExtra->eventId;
 
         if (pFace->eventId) {
-            if (pFace->HasEventHint())
+            if (pFace->HasEventHint()) {
                 pFace->attributes |= FACE_HAS_HINT;
-            else
+            } else {
                 pFace->attributes &= ~FACE_HAS_HINT;
+            }
         }
     }
 
@@ -463,10 +465,11 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
         dst->faces[i].SetTexture(textureName);
 
         if (dst->faces[i].eventId) {
-            if (dst->faces[i].HasEventHint())
+            if (dst->faces[i].HasEventHint()) {
                 dst->faces[i].attributes |= FACE_HAS_HINT;
-            else
+            } else {
                 dst->faces[i].attributes &= ~FACE_HAS_HINT;
+            }
         }
     }
 }

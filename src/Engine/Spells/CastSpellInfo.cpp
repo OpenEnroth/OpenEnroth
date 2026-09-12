@@ -1978,10 +1978,11 @@ void CastSpellInfoHelpers::castSpell() {
                             }
                         }
                         if (gold_num > 0) {
-                            if (item.itemId != ITEM_NULL)
+                            if (item.itemId != ITEM_NULL) {
                                 engine->_statusBar->setEvent(fmt::format("({}), and {} gold", item.GetDisplayName(), gold_num));
-                            else
+                            } else {
                                 engine->_statusBar->setEvent(fmt::format("{} gold", gold_num));
+                            }
                         } else {
                             if (item.itemId != ITEM_NULL) {
                                 engine->_statusBar->setEvent(fmt::format("({})", item.GetDisplayName()));

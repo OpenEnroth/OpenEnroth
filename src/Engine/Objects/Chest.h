@@ -16,10 +16,11 @@ struct Chest {
         return flags & CHEST_ITEMS_PLACED;
     }
     inline void SetInitialized(bool b) {
-        if (b)
+        if (b) {
             flags |= CHEST_ITEMS_PLACED;
-        else
+        } else {
             flags &= ~CHEST_ITEMS_PLACED;
+        }
     }
     inline bool Trapped() const { return flags & CHEST_TRAPPED; }
 

@@ -491,10 +491,8 @@ LABEL_25:
         pSpriteObject->vPosition.z = floor_lvl + 1;
         if (pIndoor->faces[uFaceID].polygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
-        } else {
-            if (pIndoor->faces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
-                pSpriteObject->vVelocity.z -= gameTimer->dt().ticks() * GetGravityStrength();
-            }
+        } else if (pIndoor->faces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
+            pSpriteObject->vVelocity.z -= gameTimer->dt().ticks() * GetGravityStrength();
         }
         pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
         if (pSpriteObject->vVelocity.xy().lengthSqr() < 400) {

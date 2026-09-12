@@ -86,8 +86,8 @@ void BaseRenderer::DrawSpriteObjects() {
                 }
             }
             if (!onlist) continue;
-        } else {
-            if (!IsCylinderInFrustum(object->vPosition, 512.0f)) continue;
+        } else if (!IsCylinderInFrustum(object->vPosition, 512.0f)) {
+            continue;
         }
 
         // render as sprte 500 - 9081
@@ -306,10 +306,11 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
             diffuse = Color::fromC32(0x007F7F7F & (diffuse.c32() >> 1)); // TODO(captainurist): what's going on here?
     }
 
-    if (opaquetest)
+    if (opaquetest) {
         billboard->opacity = RenderBillboardD3D::Opaque_3;
-    else
+    } else {
         billboard->opacity = RenderBillboardD3D::Transparent;
+    }
 
     float point_x = pSprite->uWidth / 2;
     float point_y = pSprite->uHeight;
@@ -580,10 +581,11 @@ Sizei BaseRenderer::GetPresentDimensions() {
 void BaseRenderer::updateRenderDimensions() {
     outputPresent = window->size();
 
-    if (config->graphics.RenderFilter.value() != 0)
+    if (config->graphics.RenderFilter.value() != 0) {
         outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
-    else
+    } else {
         outputRender = outputPresent;
+    }
 
     // Set viewport from config values (inclusive TL/BR coordinates).
     int tlX = config->graphics.ViewPortX1.value();  // 8 in vanilla

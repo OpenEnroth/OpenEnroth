@@ -349,11 +349,11 @@ void Character::ItemsPotionDmgBreak(int count) {
 //----- (00492C0B) --------------------------------------------------------
 bool Character::CanAct() const {
     if (this->IsAsleep() || this->IsParalyzed() || this->IsUnconcious() ||
-        this->IsDead() || this->IsPetrified() || this->IsEradicated())
-
+        this->IsDead() || this->IsPetrified() || this->IsEradicated()) {
         return false;
-    else
+    } else {
         return true;
+    }
 }
 
 //----- (00492C40) --------------------------------------------------------
@@ -735,10 +735,11 @@ int Character::GetActualStat(Attribute stat) const {
 
     for (int i = 0; i < 4; ++i) {
         if (uActualAge >=
-            pAgeingTable[i])  // is the character old enough to need attrib adjust
+            pAgeingTable[i]) {  // is the character old enough to need attrib adjust
             uAgeingMultiplier = pAgingAttributeModifier[stat][i];
-        else
+        } else {
             break;
+        }
     }
 
     float uConditionMult = 100.0f;
@@ -1050,10 +1051,11 @@ bool Character::CanTrainToNextLevel() {
 
 //----- (0048D498) --------------------------------------------------------
 Color Character::GetExperienceDisplayColor() {
-    if (CanTrainToNextLevel())
+    if (CanTrainToNextLevel()) {
         return ui_character_bonus_text_color;
-    else
+    } else {
         return ui_character_default_text_color;
+    }
 }
 
 //----- (0048D4B3) --------------------------------------------------------
@@ -1100,10 +1102,11 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
 
     if (GetParameterBonus(player_luck) + resist_value > 0) {
         for (int i = 0; i < 4; i++) {
-            if (grng->random(res_rand_divider) >= 30)
+            if (grng->random(res_rand_divider) >= 30) {
                 dmg /= 2;  // damage reduction on successful check
-            else
+            } else {
                 break;
+            }
         }
     }
 
@@ -1663,11 +1666,9 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
             Duration shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
             shield_recovery = shield_base_recovery * multiplier;
-        } else {
-            if (base_recovery_times_per_weapon_type[offHandItem->skill()] > weapon_recovery) {
-                weapon = offHandItem;
-                weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
-            }
+        } else if (base_recovery_times_per_weapon_type[offHandItem->skill()] > weapon_recovery) {
+            weapon = offHandItem;
+            weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
         }
     }
 
@@ -3015,12 +3016,13 @@ Color Character::GetStatColor(Attribute uStat) const {
     int base_attribute_value = StatTable[GetRace()][uStat].uBaseValue;
 
     int attribute_value = _stats[uStat];
-    if (attribute_value == base_attribute_value)
+    if (attribute_value == base_attribute_value) {
         return ui_character_stat_default_color;
-    else if (attribute_value > base_attribute_value)
+    } else if (attribute_value > base_attribute_value) {
         return ui_character_stat_buffed_color;
-    else
+    } else {
         return ui_character_stat_debuffed_color;
+    }
 }
 
 //----- (004908A8) --------------------------------------------------------
@@ -3563,10 +3565,11 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
 bool CmpSkillValue(int valToCompare, CombinedSkillValue skillValue) {
     int val;
-    if (valToCompare <= 63)
+    if (valToCompare <= 63) {
         val = skillValue.level();
-    else
+    } else {
         val = skillValue.joined();
+    }
     return val >= valToCompare;
 }
 
@@ -5771,10 +5774,11 @@ bool IsDwarfPresentInParty(bool a1) {
     for (Character &character : pParty->pCharacters) {
         Race race = character.GetRace();
 
-        if (race == RACE_DWARF && a1)
+        if (race == RACE_DWARF && a1) {
             return true;
-        else if (race != RACE_DWARF && !a1)
+        } else if (race != RACE_DWARF && !a1) {
             return true;
+        }
     }
     return false;
 }
@@ -6174,32 +6178,30 @@ void Character::OnInventoryLeftClick() {
             // pick up the item
             pParty->setHoldingItem(inventory.take(entry), {-itemXOffset, -itemYOffset});
             return;
+        } else if (entry) {
+            // take out
+            Pointi pos = entry.geometry().topLeft();
+            Item tmp = inventory.take(entry);
+
+            // try to add where we clicked
+            if (!inventory.tryAdd(pos, pParty->pPickedItem)) {
+                // try to add anywhere
+                if (!inventory.tryAdd(pParty->pPickedItem)) {
+                    // failed to add, put back the old item
+                    pAudioPlayer->playUISound(SOUND_error);
+                    inventory.add(pos, tmp);
+                    return;
+                }
+            }
+
+            pParty->takeHoldingItem();
+            pParty->setHoldingItem(tmp);
         } else {
-            if (entry) {
-                // take out
-                Pointi pos = entry.geometry().topLeft();
-                Item tmp = inventory.take(entry);
-
-                // try to add where we clicked
-                if (!inventory.tryAdd(pos, pParty->pPickedItem)) {
-                    // try to add anywhere
-                    if (!inventory.tryAdd(pParty->pPickedItem)) {
-                        // failed to add, put back the old item
-                        pAudioPlayer->playUISound(SOUND_error);
-                        inventory.add(pos, tmp);
-                        return;
-                    }
-                }
-
+            // place picked item
+            if (inventory.tryAdd(inventoryPos, pParty->pPickedItem)) {
                 pParty->takeHoldingItem();
-                pParty->setHoldingItem(tmp);
             } else {
-                // place picked item
-                if (inventory.tryAdd(inventoryPos, pParty->pPickedItem)) {
-                    pParty->takeHoldingItem();
-                } else {
-                    pAudioPlayer->playUISound(SOUND_error); // Overlapping items or out of inventory space.
-                }
+                pAudioPlayer->playUISound(SOUND_error); // Overlapping items or out of inventory space.
             }
         }
     }
@@ -6284,10 +6286,11 @@ bool Character::characterHitOrMiss(Actor *pActor, int distancemod, int skillmod)
     int effectiveActorArmor = armorBuff + naturalArmor;
 
     int attBonus;  // character attack bonus
-    if (distancemod)
+    if (distancemod) {
         attBonus = this->GetRangedAttack();  // range
-    else
+    } else {
         attBonus = this->GetActualAttack(false);  // melee
+    }
 
     int attPositiveMod =
         skillmod + grng->random(effectiveActorArmor + 2 * attBonus + 30);  // positive effects to hit on attack
@@ -6504,10 +6507,11 @@ void Character::tickRegeneration(int tick5, const RegenData &rData, bool stackin
         if (rData.spRegen)
             mana = std::min(GetMaxMana(), mana + tick5 * rData.spRegen);
     } else {
-        if (rData.hpSpellRegen)
+        if (rData.hpSpellRegen) {
             health = std::min(GetMaxHealth(), health + tick5 * rData.hpSpellRegen);
-        else if (rData.hpRegen)
+        } else if (rData.hpRegen) {
             health = std::min(GetMaxHealth(), health + tick5);
+        }
 
         if (rData.spRegen)
             mana = std::min(GetMaxMana(), mana + tick5);
@@ -6561,14 +6565,12 @@ void Character::playEmotion(PortraitId newPortrait, Duration duration) {
         return;  // no react
     } else if (portrait == PORTRAIT_PETRIFIED && newPortrait != PORTRAIT_WAKE_UP) {
         return;  // no react
-    } else {
-        if (!(portrait == PORTRAIT_SLEEP && newPortrait == PORTRAIT_WAKE_UP)) {
-            if (portrait >= PORTRAIT_CURSED && portrait <= PORTRAIT_UNCONSCIOUS && portrait != PORTRAIT_POISONED &&
-                !(newPortrait == PORTRAIT_DMGRECVD_MINOR ||
-                  newPortrait == PORTRAIT_DMGRECVD_MODERATE ||
-                  newPortrait == PORTRAIT_DMGRECVD_MAJOR)) {
-                return;  // no react
-            }
+    } else if (!(portrait == PORTRAIT_SLEEP && newPortrait == PORTRAIT_WAKE_UP)) {
+        if (portrait >= PORTRAIT_CURSED && portrait <= PORTRAIT_UNCONSCIOUS && portrait != PORTRAIT_POISONED &&
+            !(newPortrait == PORTRAIT_DMGRECVD_MINOR ||
+              newPortrait == PORTRAIT_DMGRECVD_MODERATE ||
+              newPortrait == PORTRAIT_DMGRECVD_MAJOR)) {
+            return;  // no react
         }
     }
 
