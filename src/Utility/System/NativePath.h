@@ -20,10 +20,11 @@
  * done by our own code, and the OS is only ever handed `wchar_t` strings. `native` / `fromNative` are the conversions
  * to use when talking to the OS, and `toStdPath` / `fromStdPath` are for the code that still needs `std::filesystem`.
  *
- * Note that `fromWtf8` / `toWtf8` are named somewhat improperly - file names on Linux are arbitrary byte strings,
- * and these bytes are passed through as-is. So the string returned by `toWtf8` is not necessarily valid UTF-8, and
- * not even necessarily valid WTF-8 - it's guaranteed to be valid WTF-8 on Windows only. And MacOS is different
- * again - APFS only takes file names that are valid UTF-8.
+ * Note that `fromWtf8` / `toWtf8` are named somewhat improperly. File names on Linux are arbitrary byte strings,
+ * and these bytes are passed through as-is, so the string returned by `toWtf8` is not necessarily valid UTF-8, and
+ * not even necessarily valid WTF-8. Nothing is validated on the way in either, so on Windows it is the caller that
+ * keeps the string valid WTF-8, and `native` is where an invalid sequence turns into a replacement character. And
+ * MacOS is different again, APFS only takes file names that are valid UTF-8.
  */
 class NativePath {
  public:
@@ -76,7 +77,8 @@ class NativePath {
 
     /**
      * @return                          This path as a string in the OS-native encoding, a `wchar_t` string on
-     *                                  Windows. Separators stay forward slashes, Windows APIs accept those.
+     *                                  Windows. Separators stay forward slashes, which Windows APIs accept, the
+     *                                  exception being an extended-length path where they go back to backslashes.
      */
 #ifdef _WINDOWS
     [[nodiscard]] std::wstring native() const;
