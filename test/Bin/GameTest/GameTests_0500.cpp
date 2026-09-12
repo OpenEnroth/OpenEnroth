@@ -1,5 +1,6 @@
 #include <unordered_set>
 #include <string>
+#include <utility>
 
 #include "Testing/Game/GameTest.h"
 
@@ -21,7 +22,10 @@
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
 
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Timer.h"
 #include "Utility/ScopeGuard.h"
+#include "GameTestCommon.h"
 
 static std::initializer_list<CharacterBuff> allPotionBuffs() {
     static constexpr std::initializer_list<CharacterBuff> result = {
@@ -95,8 +99,18 @@ GAME_TEST(Issues, Issue506) {
 GAME_TEST(Issues, Issue518) {
     // Armageddon yeets the actors way too far into the sky & actors take stops when falling down.
     auto armageddonTape = tapes.custom([] { return pParty->pCharacters[0].uNumArmageddonCasts; });
+    // The nine actors in full AI state when the spell lands.
+    auto flightTape = actorTapes.custom({1, 6, 8, 9, 15, 18, 19, 24, 25}, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
     test.playTraceFromTestData("issue_518.mm7", "issue_518.json");
     EXPECT_EQ(armageddonTape, tape(2, 3)); // +1 armageddon cast.
+
+    for (size_t i = 0; i < 9; i++) {
+        auto flight = flightTape.slice(i);
+        float groundZ = flight.front().second;
+        EXPECT_GT(flight.map([] (const auto &p) { return p.second; }).max(), groundZ + 500); // Went flying...
+        // ...in pain or dying all the way, the stops were actors standing up in mid-air once the pain animation ran out.
+        EXPECT_FALSE(flight.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain && p.first != Dying && p.first != Dead; }));
+    }
 
     for (auto &actor : pActors) {
         EXPECT_LT(actor.pos.z, 3500);
@@ -676,12 +690,36 @@ GAME_TEST(Issues, Issue760) {
 }
 
 GAME_TEST(Issues, Issue774) {
-    // Background stunned actors do idle motions
-    test.playTraceFromTestData("issue_774.mm7", "issue_774.json");
-    for (auto &act : pActors) {
-        if (!(act.attributes & ACTOR_FULL_AI_STATE))
-            EXPECT_TRUE(act.aiState == InPain || act.aiState == Dead);
-    }
+    // Background actors in pain do idle motions. A hit holds a monster in pain for the length of its pain animation, it
+    // should do nothing else meanwhile and get up right after. Background actors used to stay in pain forever instead,
+    // the AI loop skipped them altogether so that they wouldn't get up in mid-air.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Far enough from the party to stay a background actor.
+    int titanId = game.spawnMonster(pParty->pos + Vec3f(0, 6500, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
+    game.tick(1); // Drops it onto the ground.
+
+    auto stateTape = actorTapes.aiState(titanId);
+    auto painTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, gameTimer->time()); });
+    game.tick(1); // A frame on its feet before the hit.
+    Actor::AI_Pain(titanId, Pid::character(0), 0); // What a hit does to a monster that survives it.
+    Duration painLength = pActors[titanId].currentActionLength;
+    game.tick(30); // 3s, the pain animation is well under a second.
+    test.stopTaping();
+
+    EXPECT_EQ(stateTape.front(), Standing);
+    EXPECT_EQ(stateTape.count(InPain), 1); // In pain once, with nothing in between...
+    EXPECT_NE(stateTape.back(), InPain); // ...and up again afterwards.
+    auto inPain = painTape.filter([] (const auto &p) { return p.first == InPain; });
+    Duration held = inPain.back().second - inPain.front().second;
+    EXPECT_GE(held, painLength - Duration::fromRealtimeMilliseconds(200)); // Held for the pain animation, the tape can't see the frame the hit landed on...
+    EXPECT_LE(held, painLength); // ...and not longer.
 }
 
 GAME_TEST(Issues, Issue779) {
@@ -979,6 +1017,39 @@ GAME_TEST(Issues, Issue906_773) {
     test.playTraceFromTestData("issue_906.mm7", "issue_906.json");
     EXPECT_EQ(blessTape, tape(true, false, true));
     EXPECT_EQ(heroismTape, tape(true, false, true));
+}
+
+GAME_TEST(Issues, Issue920) {
+    // Background actors stay in pain after armageddon. The AI loop skipped actors in pain so that they wouldn't get up in
+    // mid-air, and as a result they never got up at all.
+    test.prepareForNextTest(25, RANDOM_ENGINE_MERSENNE_TWISTER); // Armageddon pushes by a fixed amount per frame, at 100ms frames gravity wins and nobody takes off.
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Far enough from the party to stay a background actor.
+    int titanId = game.spawnMonster(pParty->pos + Vec3f(0, 6500, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
+    game.tick(1); // Drops it onto the ground.
+    float groundZ = pActors[titanId].pos.z;
+
+    auto stateTape = actorTapes.aiState(titanId);
+    auto flightTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
+    auto backgroundTape = actorTapes.custom(titanId, [] (const Actor &actor) { return !(actor.attributes & ACTOR_FULL_AI_STATE); });
+
+    game.castSpell(1, SPELL_DARK_ARMAGEDDON);
+    game.tick(250); // Lands at about 4s in, this is 6.25s.
+    test.stopTaping();
+
+    EXPECT_EQ(backgroundTape, tape(true)); // Never made it into full AI state.
+    EXPECT_CONTAINS(stateTape, InPain); // Got hurt...
+    EXPECT_GT(flightTape.map([] (const auto &p) { return p.second; }).max(), groundZ + 200); // ...went flying...
+    EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain; })); // ...in pain all the way up and down...
+    EXPECT_FALSE(pActors[titanId].isAirborne()); // ...landed...
+    EXPECT_NE(stateTape.back(), InPain); // ...and got up.
 }
 
 GAME_TEST(Issues, Issue929) {

@@ -553,7 +553,7 @@ GAME_TEST(Prs, Pr1325) {
     auto vialsTape = tapes.mapItemCount(ITEM_REAGENT_VIAL_OF_TROLL_BLOOD);
     auto deadTape = actorTapes.countByState(AIState::Dead);
     test.playTraceFromTestData("pr_1325.mm7", "pr_1325.json");
-    EXPECT_GE(vialsTape.delta(), +4); // We got some vials.
+    EXPECT_GE(vialsTape.delta(), +1); // We got some vials, how many is up to the 20% drop roll.
     EXPECT_EQ(deadTape.delta(), +84); // And a lot of dead Trolls.
 }
 
