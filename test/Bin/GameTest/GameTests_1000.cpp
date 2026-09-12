@@ -14,6 +14,8 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Party.h"
@@ -516,6 +518,45 @@ GAME_TEST(Issues, Issue1282) {
     test.playTraceFromTestData("issue_1282.mm7", "issue_1282.json");
     EXPECT_EQ(itemTape, tape(false, true));
     EXPECT_EQ(totalObjectsTape.delta(), -1);
+}
+
+GAME_TEST(Issues, Issue1290) {
+    // Bug: the Harmondale Accuracy well's interactive face was missing its clickable flag.
+    for (bool savedOption : {false, true}) {
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        engine->config->gameplay.ClickableAccuracyWell.setValue(savedOption);
+        game.startNewGame();
+        game.teleportTo(MAP_HARMONDALE, Vec3f(-8864, 17936, 384), 90);
+        pParty->_viewPitch = -256; // Look down into the well, within the mouse-look pitch range.
+        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+        game.tick();
+        ASSERT_EQ(pOutdoor->face(Pid::odmFace(97, 10)).Clickable(), savedOption);
+        Blob savedGame = game.saveGame(); // Save before drinking, the bonus is once per character.
+
+        for (bool enabled : {false, true}) {
+            engine->config->gameplay.ClickableAccuracyWell.setValue(enabled);
+            game.loadGame(savedGame);
+            ASSERT_TRUE(pParty->hasActiveCharacter());
+            ASSERT_EQ(pParty->activeCharacterIndex(), 1);
+            ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
+            ASSERT_FALSE(pParty->pCharacters[0]._characterEventBits[2]);
+            const BLVFace &well = pOutdoor->face(Pid::odmFace(97, 10));
+            ASSERT_EQ(well.eventId, 228);
+            EXPECT_EQ(well.Clickable(), enabled);
+
+            Vec3f waterPoint(-8864, 18072, 392);
+            Vec2f screenPos = pCamera3D->Project(pCamera3D->ViewTransform(&waterPoint));
+            game.moveMouse(screenPos.x, screenPos.y);
+            game.tick();
+            ASSERT_EQ(engine->PickMouseForTargeting().pid, Pid::odmFace(97, 10));
+            ASSERT_LT(engine->PickMouseForTargeting().depth, engine->config->gameplay.MouseInteractionDepth.value());
+            int accuracy = pParty->pCharacters[0]._stats[ATTRIBUTE_ACCURACY];
+            game.pressAndReleaseButton(PlatformMouseButton::BUTTON_LEFT, screenPos.x, screenPos.y);
+            game.tick();
+            EXPECT_EQ(pParty->pCharacters[0]._stats[ATTRIBUTE_ACCURACY], accuracy + (enabled ? 2 : 0));
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue1294_1389) {
