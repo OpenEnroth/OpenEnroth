@@ -1183,12 +1183,10 @@ GAME_TEST(Issues, Issue1497) {
         ASSERT_LT(goblin->monsterInfo.level, 4);
         goblin->monsterInfo.resMind = 0;
         goblin->monsterInfo.resLight = 0;
-        pParty->setActiveCharacterIndex(1);
-        pParty->pCharacters[0].uQuickSpell = spell;
 
         auto buffTape = actorTapes.hasBuff(0, buff);
         auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
-        game.shiftClickActor(0);
+        game.castQuickSpellAtActor(1, spell, 0);
         game.tick(10);
         test.stopTaping();
 
