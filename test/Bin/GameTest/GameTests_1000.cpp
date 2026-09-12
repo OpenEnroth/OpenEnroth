@@ -12,6 +12,7 @@
 #include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
@@ -30,6 +31,11 @@
 #include "Utility/Lambda.h"
 
 #include "GameTestCommon.h"
+
+static void hireBabyDragon() {
+    pNPCStats->pNPCData[57].flags |= NPC_HIRED; // The index PartyHasDragon reads.
+    pParty->CountHirelings();
+}
 
 static bool characterHasJar(int charIndex, int jarIndex) {
     for (InventoryEntry jar : pParty->pCharacters[charIndex].inventory.entries(ITEM_QUEST_LICH_JAR_FULL))
@@ -221,63 +227,32 @@ GAME_TEST(Issues, Issue1175) {
 }
 
 GAME_TEST(Issues, Issue1191) {
-    // Warlock's dragon should add +3 to Self magic skills. Baby dragon also consumes food when resting.
-    // The save is an all-druid party with no dragon, and the trace this replaced spent its length on the
-    // promotion. Doing that in code keeps the test off replayed input, which breaks when actor AI ranges change.
-    auto foodTape = tapes.food();
-    auto timeTape = tapes.time();
-    test.loadGameFromTestData("issue_1191.mm7");
-    test.startTaping();
+    // Warlock's baby dragon added +3 to the elemental magic skills but not to the self magic ones.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
 
     pParty->pCharacters[0].classType = CLASS_WARLOCK;
     pParty->pCharacters[2].classType = CLASS_WARLOCK;
-    pNPCStats->pNPCData[57].flags |= NPC_HIRED; // 57 is the baby dragon, the index PartyHasDragon reads.
 
-    game.restAndHeal();
+    // An unlearned skill would take the bonus too, so every skill gets a base to make the expected value exact.
+    for (Character &character : pParty->pCharacters)
+        for (Skill skill : allMagicSkills())
+            character.setSkillValue(skill, CombinedSkillValue::novice(4));
 
-    EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_WARLOCK);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_FIRE).level(), 7);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_FIRE).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_AIR).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_AIR).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_WATER).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_WATER).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_EARTH).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_EARTH).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_SPIRIT).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_SPIRIT).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_MIND).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_MIND).level(), 9); // 4, +3 dragon, +2 Ruler's ring
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_BODY).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_BODY).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_LIGHT).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_LIGHT).level(), 0);
+    // Nothing else grants a magic skill bonus here, so the dragon is the only thing that can move these later.
+    for (const Character &character : pParty->pCharacters)
+        for (Skill skill : allMagicSkills())
+            EXPECT_EQ(character.getActualSkillValue(skill).level(), 4) << character.name << " " << static_cast<int>(skill);
 
-    EXPECT_EQ(pParty->pCharacters[2].classType, CLASS_WARLOCK);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_FIRE).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_FIRE).level(), 4);
-    EXPECT_LE(pParty->pCharacters[2].getSkillValue(SKILL_AIR).level(), 0);
-    EXPECT_LE(pParty->pCharacters[2].getActualSkillValue(SKILL_AIR).level(), 3); // She has no skill. 0 or 3 skill level is fine
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_WATER).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_WATER).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_EARTH).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_EARTH).level(), 18); // 10, +3 dragon, +5 ring
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_SPIRIT).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_SPIRIT).level(), 13);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_MIND).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_MIND).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_BODY).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_BODY).level(), 18); // 10, +3 dragon, +5 ring
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_LIGHT).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_LIGHT).level(), 0);
+    hireBabyDragon();
 
-    EXPECT_GT(timeTape.delta(), Duration::fromHours(8));
-    EXPECT_EQ(pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->pos), 2);
-    EXPECT_EQ(foodTape.delta(), -3); // Dragon consumed 1 additional food.
+    for (const Character &character : pParty->pCharacters) {
+        for (Skill skill : allMagicSkills()) {
+            bool hasDragonBonus = character.classType == CLASS_WARLOCK && skill != SKILL_LIGHT && skill != SKILL_DARK;
+            EXPECT_EQ(character.getActualSkillValue(skill).level(), hasDragonBonus ? 7 : 4)
+                << character.name << " " << static_cast<int>(skill);
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue1196) {
@@ -342,10 +317,7 @@ GAME_TEST(Issues, Issue1226b) {
     game.startNewGame();
     test.startTaping();
 
-    NPCData &dragon = pNPCStats->pNPCData[57];
-    dragon.flags |= NPC_HIRED;
-    pParty->pHirelings[1] = dragon;
-    pParty->pHireling2Name = dragon.name;
+    hireBabyDragon();
     game.tick(1);
     game.restAndHeal();
 
