@@ -14,7 +14,7 @@
 class PlatformIntrospection {
  public:
     template<class T, class Callable>
-    static void visit(T *component, Callable &&callable) {
+    static void visit(T *component, const Callable &callable) {
         int count = 0;
         // Using += instead of one big expression to get deterministic call order.
         count += visitInternal<ProxyPlatform>(component, callable);
@@ -29,7 +29,7 @@ class PlatformIntrospection {
 
  private:
     template<class Installable, class T, class Callable>
-    static bool visitInternal(T *component, Callable &&callable) {
+    static bool visitInternal(T *component, const Callable &callable) {
         if constexpr (std::is_base_of_v<Installable, T>) {
             callable(static_cast<Installable *>(component));
             return true;
