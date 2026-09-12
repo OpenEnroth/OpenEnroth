@@ -224,6 +224,7 @@ void OutdoorLocation::Draw() {
     pOutdoor->ExecDraw(true);
 
     engine->DrawParticles();
+    // pWeather->Draw();  // Engine::DrawGUI already calls this once a frame, a second call doubles the snow speed.
     trail_particle_generator.UpdateParticles();
 }
 
