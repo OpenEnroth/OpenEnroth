@@ -169,7 +169,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     // TODO(captainurist): code looks very similar to stru314::computeBasis
     switch (pFace->polygonType) {
         case POLYGON_VerticalWall:
-            a1.x = -pFace->facePlane.normal.y;  // Polygon direction.
+            a1.x = -pFace->facePlane.normal.y; // Polygon direction.
             a1.y = pFace->facePlane.normal.x;
             a1.z = 0.0f;
             a1.normalize();

@@ -224,30 +224,30 @@ void OutdoorLocation::Draw() {
     pOutdoor->ExecDraw(true);
 
     engine->DrawParticles();
-    // pWeather->Draw();  // Engine::DrawGUI already calls this once a frame, a second call doubles the snow speed.
+    // pWeather->Draw(); // Engine::DrawGUI already calls this once a frame, a second call doubles the snow speed.
     trail_particle_generator.UpdateParticles();
 }
 
 //----- (00488E23) --------------------------------------------------------
 double OutdoorLocation::GetFogDensityByTime() {
-    if (pParty->uCurrentHour < 5) {  // Night.
+    if (pParty->uCurrentHour < 5) { // Night.
         pWeather->bNight = true;
         return 60.0 * 0.016666668;
-    } else if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 6) {  // Dawn.
+    } else if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 6) { // Dawn.
         pWeather->bNight = false;
         return (60.0 - (double)(60 * pParty->uCurrentHour +
                                 pParty->uCurrentMinute - 300)) *
                0.016666668;
-    } else if (pParty->uCurrentHour >= 6 && pParty->uCurrentHour < 20) {  // Day.
+    } else if (pParty->uCurrentHour >= 6 && pParty->uCurrentHour < 20) { // Day.
         pWeather->bNight = false;
         return 0.0;
     } else if (pParty->uCurrentHour >= 20 &&
-               pParty->uCurrentHour < 21) {  // Dusk.
+               pParty->uCurrentHour < 21) { // Dusk.
         pWeather->bNight = false;
         return ((double)(pParty->uCurrentHour - 20) * 60.0 +
                 (double)(signed int)pParty->uCurrentMinute) *
                0.016666668;
-    } else {  // Night.
+    } else { // Night.
         pWeather->bNight = true;
         return 60.0 * 0.016666668;
     }
