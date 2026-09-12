@@ -361,7 +361,8 @@ struct Party {
     std::array<bool, 4> playerAlreadyPicked = {{}};  // Was at offset 0xAE3368 in vanilla, we moved it into Party in OE.
 
     /**
-     * @return                          0-based index of the currently active character.
+     * @return                          0-based index of the active character. Asserts that there is one, so check
+     *                                  `hasActiveCharacter()` first.
      */
     int activeCharacterIndex() const {
         assert(hasActiveCharacter());
