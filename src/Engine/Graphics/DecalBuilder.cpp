@@ -1,5 +1,9 @@
 #include "Engine/Graphics/DecalBuilder.h"
 
+#include <algorithm>
+#include <cassert>
+#include <cmath>
+
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Indoor.h"
@@ -26,36 +30,37 @@ float Decal::Fade_by_time() {
     return result;
 }
 
-//----- (0043B6EF) --------------------------------------------------------
-void BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius, Color color) {
-    // this adds to store of bloodsplats to apply
-    Bloodsplat &splat = pBloodsplats_to_apply[uNumBloodsplats];
+bool BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius, Color color) {
+    assert(uNumBloodsplats <= pBloodsplats_to_apply.size());
+
+    // Consumers read uNumBloodsplats as a count, so a full queue drops the splat.
+    if (uNumBloodsplats >= pBloodsplats_to_apply.size())
+        return false;
+
+    Bloodsplat &splat = pBloodsplats_to_apply[uNumBloodsplats++];
     splat.pos = pos;
     splat.radius = radius;
     splat.color = color;
     splat.blood_flags = DecalFlagsNone;
     splat.fade_timer = 0_ticks;
-
-    uNumBloodsplats = (uNumBloodsplats + 1) % 64;
+    return true;
 }
 
 DecalBuilder::DecalBuilder() {
     this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
-    this->DecalsCount = 0;
 }
 
 
 //----- (0049B490) --------------------------------------------------------
-void DecalBuilder::AddBloodsplat(const Vec3f &pos, Color color, float radius) {
-    bloodsplat_container->AddBloodsplat(pos, radius, color);
+bool DecalBuilder::AddBloodsplat(const Vec3f &pos, Color color, float radius) {
+    return bloodsplat_container->AddBloodsplat(pos, radius, color);
 }
 
 //----- (0049B525) --------------------------------------------------------
-void DecalBuilder::Reset(bool bPreserveBloodsplats) {
-    if (!bPreserveBloodsplats) {
-        bloodsplat_container->uNumBloodsplats = 0;
-    }
+void DecalBuilder::Reset() {
+    bloodsplat_container->uNumBloodsplats = 0;
     DecalsCount = 0;
+    decalsCursor = 0;
 }
 
 //----- (0049B540) --------------------------------------------------------
@@ -98,7 +103,7 @@ bool DecalBuilder::Build_Decal_Geometry(
     RenderVertexSoft *faceverts, char uClipFlags) {
 
     if (DecalRadius == 0.0f) return 1;
-    Decal *decal = &this->Decals[this->DecalsCount];
+    Decal *decal = &this->decalScratch;
     decal->fadetime = blood->fade_timer;
     decal->decal_flags = blood->blood_flags;
 
@@ -175,8 +180,9 @@ bool DecalBuilder::Build_Decal_Geometry(
         if (!decal->uNumVertices) return 1;
 
         // otherwise keep this decal
-        this->DecalsCount++;
-        if (this->DecalsCount == 1024) this->DecalsCount = 0;
+        this->Decals[this->decalsCursor] = *decal;
+        this->decalsCursor = (this->decalsCursor + 1) % this->Decals.size();
+        this->DecalsCount = std::min(this->DecalsCount + 1, this->Decals.size());
         return 1;
     }
 
@@ -193,7 +199,7 @@ bool DecalBuilder::ApplyBloodsplatDecalsToFace(BLVFace* pFace) {
         Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
         if (pFace->boundingBox.intersectsCube(pBloodsplat->pos, pBloodsplat->radius)) {
             double dotdist = dot(pFace->facePlane.normal, pBloodsplat->pos) + pFace->facePlane.dist;
-            if (dotdist <= pBloodsplat->radius)
+            if (std::abs(dotdist) <= pBloodsplat->radius)  // Splat sphere has to reach the face plane.
                 WhichSplatsOnThisFace[uNumSplatsThisFace++] = i;
         }
     }
@@ -216,7 +222,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(bool fading, const Vec3f &terrnorm, 
        *tridotdist = -dot(triverts->vWorldPosition, terrnorm);
        float planedist = dot(terrnorm, bloodsplat_container->pBloodsplats_to_apply[whichsplat].pos) + *tridotdist;
 
-        if (planedist <= bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius) {
+        if (std::abs(planedist) <= bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius) {  // Splat sphere has to reach the tri plane.
             // blood splat hits this terrain tri
 
             // check if water or something else (maybe should be border tile or swampy?)
@@ -241,7 +247,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(bool fading, const Vec3f &terrnorm, 
 
 //----- (0049C2CD) --------------------------------------------------------
 void DecalBuilder::DrawDecals(float z_bias) {
-    for (unsigned i = 0; i < DecalsCount; ++i)
+    for (size_t i = 0; i < DecalsCount; ++i)
         render->DrawDecal(&Decals[i], z_bias);
 }
 
@@ -256,7 +262,7 @@ void DecalBuilder::DrawBloodsplats() {
 
 //----- (0049C550) --------------------------------------------------------
 void DecalBuilder::DrawDecalDebugOutlines() {
-    for (int i = 0; i < DecalsCount; i++)
+    for (size_t i = 0; i < DecalsCount; i++)
         pCamera3D->debug_outline_sw(Decals[i].pVertices.data(), Decals[i].uNumVertices, colorTable.Tawny, 0.0f);
 }
 
