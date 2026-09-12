@@ -365,7 +365,7 @@ class Movie : public IMovie {
         }
     }
 
-    bool Load(const std::string &fileName) {  // Загрузка
+    bool Load(const std::string &fileName) {
         // Open video file
         if (avformat_open_input(&format_ctx, fileName.c_str(), nullptr, nullptr) < 0) {
             MM_WARNING("ffmpeg: Unable to open input file");

@@ -1483,7 +1483,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                 }
             }
         }
-        for (const Actor &actor : pActors) {  // draw actors(отрисовка монстров и нпс)
+        for (const Actor &actor : pActors) {
             if (actor.aiState != Removed &&
                 actor.aiState != Disabled &&
                 (actor.aiState == Dead || actor.ActorNearby())) {
@@ -1519,7 +1519,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                 }
             }
         }
-        for (unsigned i = 0; i < (signed int)pLevelDecorations.size(); ++i) {  // draw items(отрисовка предметов)
+        for (unsigned i = 0; i < (signed int)pLevelDecorations.size(); ++i) {
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
                 pPoint_X = center.x + (pLevelDecorations[i].vPosition.x - pParty->pos.x) * zoom / 65536.0f;
                 pPoint_Y = center.y - (pLevelDecorations[i].vPosition.y - pParty->pos.y) * zoom / 65536.0f;

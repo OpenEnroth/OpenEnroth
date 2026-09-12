@@ -1814,7 +1814,6 @@ void OnPaperdollLeftClick() {
                 return;
             }
 
-                // ------------------------dress rings(одевание колец)----------------------------------
             case ITEM_TYPE_RING:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {  // cant put anything
                                                                                         // on wearing wetsuit
@@ -1872,17 +1871,16 @@ void OnPaperdollLeftClick() {
                     return;  // shouldnt get here but in case??
                 }
 
-                // ------------------dress shield(одеть щит)------------------------------------------------------
-            case ITEM_TYPE_SHIELD:  //Щит
-                if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {  // в акваланге
+            case ITEM_TYPE_SHIELD:
+                if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }
-                if (!pParty->activeCharacter().HasSkill(pSkillType)) {  // нет навыка
+                if (!pParty->activeCharacter().HasSkill(pSkillType)) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
-                if (shieldequip) {  // смена щита щитом
+                if (shieldequip) {
                     Item tmp = pParty->activeCharacter().inventory.take(shieldequip);
                     pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                     pParty->setHoldingItem(tmp);
@@ -1894,17 +1892,15 @@ void OnPaperdollLeftClick() {
                         pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
                         return;
                     }
-                    if (!twohandedequip) {  // обычная установка щита на пустую руку
+                    if (!twohandedequip) {
                         pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                         return;
                     }
-                    // ставим щит когда держит двуручный меч
                     Item tmp = pParty->activeCharacter().inventory.take(twohandedequip);
                     pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                     pParty->setHoldingItem(tmp);
                 }
                 return;
-                // -------------------------taken in hand(взять в руку)-------------------------------------------
             case ITEM_TYPE_SINGLE_HANDED:
             case ITEM_TYPE_WAND:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped() && !isAncientWeapon(pParty->pPickedItem.itemId)) {
@@ -1955,8 +1951,6 @@ void OnPaperdollLeftClick() {
                     pParty->setHoldingItem(tmp);
                     break;
                 }
-                // ---------------------------take two hands(взять двумя
-                // руками)---------------------------------
             case ITEM_TYPE_TWO_HANDED:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {
                     pAudioPlayer->playUISound(SOUND_error);
@@ -1966,8 +1960,7 @@ void OnPaperdollLeftClick() {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
-                if (mainhandequip) {  // взять двуручный меч когда нет
-                                      // щита(замещение оружия)
+                if (mainhandequip) {
                     if (shieldequip) {
                         pAudioPlayer->playUISound(SOUND_error);
                         return;
@@ -2057,7 +2050,7 @@ void OnPaperdollLeftClick() {
             AfterEnchClickEventSecondParam = 0;
             AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
         } else {
-            if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
+            if (!ptr_50C9A4_ItemToEnchant) {
                 pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
 
                 // pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34
@@ -2105,7 +2098,7 @@ void OnPaperdollLeftClick() {
                 WetsuitOff(pParty->activeCharacterIndex());
             }
 
-            if (IsEnchantingInProgress) {  // наложить закл на экипировку
+            if (IsEnchantingInProgress) {
                 /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
                  *0x7Fu;//CastSpellInfo
                  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
@@ -2126,11 +2119,11 @@ void OnPaperdollLeftClick() {
                 AfterEnchClickEventSecondParam = 0;
                 AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
             } else {
-                if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
+                if (!ptr_50C9A4_ItemToEnchant) {
                     pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
                 }
             }
-        } else {  // снять лук
+        } else {
             if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(ITEM_SLOT_BOW)) {
                 pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
             }

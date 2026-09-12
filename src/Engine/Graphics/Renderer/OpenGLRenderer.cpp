@@ -1411,14 +1411,12 @@ void OpenGLRenderer::DrawOutdoorSky() {
         int dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
         int uNumVertices = 4;
 
-        // centering(центруем)-----------------------------------------------------------------
         // plane of sky polygon rotation vector - pitch rotation around y
         float v18x = -std::sin((-pCamera3D->_viewPitch + 16) * rot_to_rads);
         float v18y = 0;
         float v18z = -std::cos((pCamera3D->_viewPitch + 16) * rot_to_rads);
 
-        // sky wiew position(положение неба на
-        // экране)------------------------------------------
+        // Sky position on screen.
         //                X
         // 0._____________________________.3
         //  |8,8                    468,8 |

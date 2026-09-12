@@ -446,7 +446,7 @@ void Game::processQueuedMessages() {
                 // open window
                 pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_JournalBook>();
                 continue;
-            case UIMSG_Escape:  // нажатие Escape and return to game
+            case UIMSG_Escape:
                 back_to_game();
                 engine->_messageQueue->clear();
                 switch (current_screen_type) {
@@ -1199,9 +1199,7 @@ void Game::processQueuedMessages() {
                 continue;
             }
 
-            case UIMSG_SpellBook_PressTab:  //перелистывание страниц
-                                            //клавишей Tab
-            {
+            case UIMSG_SpellBook_PressTab: {
                 if (!pParty->hasActiveCharacter()) continue;
                 std::array<MagicSchool, 9> spellbookPages = {};
                 int skill_count = 0;
@@ -1214,7 +1212,7 @@ void Game::processQueuedMessages() {
                         spellbookPages[skill_count++] = page;
                     }
                 }
-                if (!skill_count) {  //нет скиллов
+                if (!skill_count) {
                     pAudioPlayer->playUISound(vrng->randomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
                 } else {
                     if (keyboardInputHandler->IsSpellBackcycleToggled()) {
@@ -1420,9 +1418,7 @@ void Game::processQueuedMessages() {
                 engine->_messageQueue->clear();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_MouseLeftClickInScreen, 0, 0);
                 continue;
-            case UIMSG_MouseLeftClickInScreen:  // срабатывает при нажатии на
-                                                // правую кнопку мыши после
-                                                // UIMSGmouseLeftClickInGame
+            case UIMSG_MouseLeftClickInScreen:
                 engine->_messageQueue->clear();
                 engine->onGameViewportClick();
                 continue;
@@ -1613,7 +1609,7 @@ void Game::gameLoop() {
                 continue;
             }
 
-            if (uGameState == GAME_STATE_CHANGE_LOCATION) {  // смена локации
+            if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                 pAudioPlayer->stopSounds();
                 PrepareWorld(0);
                 uGameState = GAME_STATE_PLAYING;
