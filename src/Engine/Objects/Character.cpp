@@ -6442,6 +6442,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
 //----- (0042FA66) --------------------------------------------------------
 void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int actchar) {
+    assert(actchar >= 0 && actchar < std::ssize(pParty->pCharacters));
+
         // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
 
     // a5 is range?
