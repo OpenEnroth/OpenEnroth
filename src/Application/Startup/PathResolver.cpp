@@ -138,8 +138,10 @@ bool validateMm7Path(const NativePath &dataPath, std::string *missingFile) {
 NativePath resolveMm7UserPath(Environment *environment) {
 #ifdef _WINDOWS
     std::string savedGames = environment->path(PATH_WINDOWS_SAVED_GAMES);
+    // Shouldn't really happen. An empty path puts the saves in the working directory anyway, and the crash
+    // log has to land with them.
     if (savedGames.empty())
-        return {}; // Shouldn't really happen.
+        return NativePath::fromStdPath(std::filesystem::current_path());
     return NativePath::fromWtf8(fmt::format("{}/OpenEnroth", savedGames));
 #elif __ANDROID__
     return NativePath::fromWtf8(fmt::format("{}/.openenroth", environment->path(PATH_ANDROID_STORAGE_INTERNAL)));

@@ -4,9 +4,22 @@
 #include <ranges>
 #include <vector>
 #include <string>
+#include <string_view>
 #include <algorithm>
 #include <chrono>
+#include <iterator>
+#include <optional>
 #include <unordered_set>
+
+#ifdef _WINDOWS
+#   include <windows.h> // NOLINT: not a C++ system header.
+#   include <conio.h> // NOLINT: not a C++ system header.
+#   include <io.h> // NOLINT: not a C++ system header.
+#endif
+
+#ifdef __APPLE__
+#   include <unistd.h> // NOLINT: not a C++ system header.
+#endif
 
 #include "Application/Startup/GameStarter.h"
 
@@ -23,6 +36,7 @@
 #include "Core/Trace/EventTrace.h"
 #include "Core/Trace/EventTraceMigrations.h"
 
+#include "Library/Blackbox/Blackbox.h"
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 
@@ -31,7 +45,14 @@
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String/Transformations.h"
 
+#include "CrashDialog.h"
 #include "OpenEnrothOptions.h"
+
+static bool crashNeedsAcknowledgement = false; // Set in main before the first thread starts, read from a crash on any of them.
+
+#ifdef __APPLE__
+static const bool stderrIsTerminal = isatty(STDERR_FILENO); // Sampled at startup, because by crash time fd 2 can be closed or pointing somewhere else.
+#endif
 
 void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
     std::unordered_set<PlatformKey> continuousKeys, onceKeys;
@@ -125,22 +146,58 @@ int runOpenEnroth(const OpenEnrothOptions &options) {
 
 #ifdef _WINDOWS
 static void waitForAnyKey() {
-    printf("[Press any key to close this window]");
-    getchar();
+    // Only worth holding open a window that goes away with us, and being the console's only process is what
+    // says it will. A shell or a CI runner attached to the same console keeps it up on its own, and a zero
+    // count means there was no console to begin with.
+    DWORD consumers[2]; // Room for two pids, which is all it takes to tell one process from many.
+    if (GetConsoleProcessList(consumers, static_cast<DWORD>(std::size(consumers))) != 1)
+        return;
+
+    // Raw write, stdio might be locked by the thread that was printing when it died. _getch reads the console
+    // input buffer rather than stdin, and takes the key as it's pressed.
+    constexpr std::string_view prompt = "[Press any key to close this window]";
+    _write(2, prompt.data(), static_cast<unsigned>(prompt.size()));
+    _getch();
 }
 #endif
 
+static void appCrashCallback(std::string_view text, bool final) {
+    printCrashChunk(text, final);
+    if (!final || !crashNeedsAcknowledgement)
+        return;
+
+    // Whatever makes the crash visible comes last, once every sink has the whole trace - a key wait holds the
+    // console window open for good, and a dialog can fail in a broken process.
+#ifdef _WINDOWS
+    waitForAnyKey();
+#elif defined(__APPLE__)
+    if (!stderrIsTerminal) // A terminal user already sees the trace, and a modal dialog would only block them.
+        showCrashDialog();
+#endif
+}
+
 int openEnrothMain(int argc, char **argv) {
     try {
-#ifdef _WINDOWS
-        StackTraceOnCrash st(&waitForAnyKey);
-#else
-        StackTraceOnCrash st;
-#endif
+        initStackTraceOnCrash(&appCrashCallback);
         UnicodeCrt _(argc, argv);
         OpenEnrothOptions options = OpenEnrothOptions::parse(argc, argv);
         if (options.helpPrinted)
             return 1;
+
+        crashNeedsAcknowledgement = !options.headless; // Every subcommand takes --headless and opens a window without it, retrace and play included.
+
+        // Declared out here so that it lives until the function returns. Its destructor writes the exit line,
+        // and that has to happen on every way out, including an exception thrown out of the switch below.
+        std::optional<Blackbox> blackbox;
+        NativePath crashLog = options.userPath / NativePath("crash.log");
+        if (!options.ramFsUserData) { // Retrace and play set ramFsUserData, and they write nothing to disk.
+            blackbox.emplace(crashLog, &appCrashCallback);
+#ifdef __APPLE__
+            // Only promise a file that's actually open, the dialog is the one place a mac user hears about it.
+            if (blackbox->isLogging())
+                setCrashDialogLogPath(crashLog);
+#endif
+        }
 
         switch (options.subcommand) {
         default: assert(false); [[fallthrough]];
