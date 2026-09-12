@@ -125,7 +125,14 @@ NativePath NativePath::fromNative(std::string_view path) {
 
 #ifdef _WINDOWS
 std::wstring NativePath::native() const {
-    return txt::wtf8ToWide(_path); // Win32 takes forward slashes just fine, no need to convert them back.
+    std::wstring result = txt::wtf8ToWide(_path);
+
+    // Win32 takes forward slashes everywhere except in an extended-length path, where it does no parsing at all and
+    // a forward slash is just a character a file name can't contain.
+    if (result.starts_with(L"//?/") || result.starts_with(L"//./"))
+        std::ranges::replace(result, L'/', L'\\');
+
+    return result;
 }
 #endif
 

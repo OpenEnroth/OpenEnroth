@@ -19,7 +19,9 @@ UNIT_TEST(NativePath, StdPathRoundTrip) {
 }
 
 UNIT_TEST(NativePath, NativeRoundTrip) {
-    for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt"})
+    // The conversion to the OS encoding goes through wchar_t on Windows, so WTF-8 has to survive it, unpaired
+    // surrogates included. That is the whole reason this class speaks WTF-8 rather than UTF-8.
+    for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
         EXPECT_EQ(NativePath::fromNative(NativePath::fromWtf8(path).native()).toWtf8(), path);
 }
 
@@ -119,6 +121,12 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("C:") / NativePath("")).toWtf8(), "C:");
     EXPECT_EQ((NativePath("C:/a") / NativePath("")).toWtf8(), "C:/a/");
     EXPECT_EQ((NativePath("//server") / NativePath("")).toWtf8(), "//server/");
+
+    // An extended-length path takes no forward slashes, Win32 does no parsing on those at all.
+    EXPECT_EQ(NativePath::fromWtf8("\\\\?\\C:\\Games\\MM7").native(), L"\\\\?\\C:\\Games\\MM7");
+    EXPECT_EQ(NativePath::fromWtf8("//?/C:/Games").native(), L"\\\\?\\C:\\Games");
+    EXPECT_EQ(NativePath::fromWtf8("\\\\.\\COM1").native(), L"\\\\.\\COM1");
+    EXPECT_EQ(NativePath::fromWtf8("C:/Games/MM7").native(), L"C:/Games/MM7"); // Everything else keeps them.
 
     // A root name is never a file name, so a dot inside one doesn't start an extension.
     EXPECT_EQ(NativePath("C:").withExtension(".x").toWtf8(), "C:.x");
