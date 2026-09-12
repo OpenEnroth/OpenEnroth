@@ -178,7 +178,7 @@ void Localization::initializeSpellNames() {
     this->_actorBuffNames[ACTOR_BUFF_PARALYZED]                = this->_localizationStrings[LSTR_PARALYZED];
     this->_actorBuffNames[ACTOR_BUFF_SLOWED]                   = this->_localizationStrings[LSTR_SLOWED];
     this->_actorBuffNames[ACTOR_BUFF_BERSERK]                  = this->_localizationStrings[LSTR_BERSERK];
-    this->_actorBuffNames[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC] = {};
+    this->_actorBuffNames[ACTOR_BUFF_HALVED_ARMOR]             = {};
     this->_actorBuffNames[ACTOR_BUFF_MASS_DISTORTION]          = {};
     this->_actorBuffNames[ACTOR_BUFF_FATE]                     = this->_localizationStrings[LSTR_FATE];
     this->_actorBuffNames[ACTOR_BUFF_ENSLAVED]                 = this->_localizationStrings[LSTR_ENSLAVED];

@@ -538,6 +538,40 @@ GAME_TEST(Issues, Issue1724) {
     EXPECT_EQ(zombieActor.max(), 0);
 }
 
+GAME_TEST(Issues, Issue1720) {
+    // Grandmaster axe hits never halved the target's armor, the buff existed but nothing ever applied it.
+    for (bool paralyzed : {false, true}) {
+        SCOPED_TRACE(fmt::format("paralyzed={}", paralyzed));
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest({{CLASS_RANGER_LORD, RACE_GOBLIN}});
+        engine->config->debug.NoActors.setValue(false);
+
+        Character &char0 = pParty->pCharacters[0];
+        char0.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BATTLE_AXE));
+        char0.setSkillValue(SKILL_AXE, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // 60% chance per hit.
+
+        auto halvedTape = actorTapes.hasBuff(0, ACTOR_BUFF_HALVED_ARMOR);
+        auto hpTape = actorTapes.hp(0);
+        Actor *target = game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+        if (paralyzed)
+            target->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
+        ASSERT_TRUE(target->CanBeDamaged());
+        ASSERT_EQ(target->CanAct(), !paralyzed);
+        game.pointMouseAtActor(0);
+        for (int i = 0; i < 30; i++) {
+            game.pressAndReleaseKey(PlatformKey::KEY_A);
+            game.tick(5);
+        }
+        test.stopTaping();
+
+        EXPECT_LT(hpTape.delta(), 0); // Hits landed.
+        EXPECT_CONTAINS(halvedTape, true); // Before the fix the buff never appeared.
+    }
+}
+
 GAME_TEST(Issues, Issue1725) {
     // Finishing Strike the Devils quest on dark path glitches out game menus
     auto screenTape = tapes.screen();
