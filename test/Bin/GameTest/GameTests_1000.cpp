@@ -24,6 +24,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Random/Random.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -533,6 +534,87 @@ GAME_TEST(Issues, Issue1294_1389) {
 }
 
 // 1300
+
+GAME_TEST(Issues, Issue1301a) {
+    // A character incapacitated by a script stayed selected during the movement phase of turn-based mode.
+    for (auto [turnBased, skipIncapacitated] : {std::pair(false, true), std::pair(true, true), std::pair(true, false)}) {
+        SCOPED_TRACE(fmt::format("turnBased={} skipIncapacitated={}", turnBased, skipIncapacitated));
+        test.prepareForNextTest();
+        engine->config->gameplay.TurnBasedFocusSkipsIncapacitated.setValue(skipIncapacitated);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        engine->config->debug.NoActors.setValue(false);
+        if (turnBased) {
+            game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+            for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_MOVEMENT; ++i) {
+                if (pTurnEngine->turn_stage == TE_ATTACK && pParty->hasActiveCharacter() && !pParty->activeCharacter().timeToRecovery)
+                    game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
+                game.tick();
+            }
+            ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
+        }
+        ASSERT_EQ(pParty->bTurnBasedModeOn, turnBased);
+        ASSERT_TRUE(pParty->hasActiveCharacter());
+        ASSERT_TRUE(pParty->activeCharacter().CanAct());
+        int activeCharacterIndex = pParty->activeCharacterIndex();
+        Character &character = pParty->activeCharacter();
+
+        auto activeTape = tapes.activeCharacterIndex();
+        test.startTaping();
+        game.tick();
+        character.SetVariable(VAR_Eradicated, 1);
+        game.tick(2);
+        test.stopTaping();
+
+        ASSERT_TRUE(character.conditions.has(CONDITION_ERADICATED));
+        if (turnBased)
+            ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
+        if (!skipIncapacitated)
+            EXPECT_EQ(activeTape, tape(activeCharacterIndex));
+        if (skipIncapacitated && turnBased)
+            EXPECT_EQ(activeTape, tape(activeCharacterIndex, 0)); // Outside the attack stage turn-based mode has no queue head to fall back on, so no one ends up selected.
+        if (skipIncapacitated && !turnBased) {
+            EXPECT_EQ(activeTape, tape(activeCharacterIndex, activeCharacterIndex + 1)); // Realtime mode stops on the first character that can act.
+            EXPECT_TRUE(pParty->activeCharacter().CanAct());
+        }
+    }
+}
+
+GAME_TEST(Issues, Issue1301b) {
+    // Eradicating the whole party in the attack stage runs the focus drop and the party death check on the same
+    // frame, which is the one path that can ask the turn queue for a head it no longer has.
+    test.prepareForNextTest();
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    engine->config->debug.NoActors.setValue(false);
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+    for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_ATTACK; ++i)
+        game.tick();
+    ASSERT_EQ(pTurnEngine->turn_stage, TE_ATTACK);
+    ASSERT_TRUE(pParty->hasActiveCharacter());
+
+    auto deathsTape = tapes.deaths();
+    auto activeTape = tapes.activeCharacterIndex();
+    auto stateTape = tapes.custom([] { return std::tuple(pParty->bTurnBasedModeOn, uGameState); });
+    test.startTaping();
+    game.tick();
+    for (Character &character : pParty->pCharacters)
+        character.SetVariable(VAR_Eradicated, 1);
+
+    // The queue still has its old head at this point, and switchToNextActiveCharacter used to hand the focus to that
+    // head without checking it could act, which put it right back on a character that had just been eradicated.
+    pParty->switchToNextActiveCharacter();
+    EXPECT_FALSE(pParty->hasActiveCharacter());
+
+    game.tick(20);
+    test.stopTaping();
+
+    EXPECT_EQ(deathsTape.delta(), +1);
+    EXPECT_EQ(stateTape, tape(std::tuple(true, GAME_STATE_PLAYING), // The death path force-ends turn-based mode, and
+                              std::tuple(false, GAME_STATE_PLAYING))); // the died state is gone before the next frame is drawn.
+    EXPECT_EQ(activeTape, tape(1)); // Every frame ends with the death path re-selecting the first character.
+    EXPECT_EQ(pParty->canActCount(), 4);
+}
 
 GAME_TEST(Issues, Issue1315) {
     // Dying in turn-based mode asserts.
