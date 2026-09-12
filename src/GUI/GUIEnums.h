@@ -218,7 +218,7 @@ enum UIMessageType : uint32_t {
     UIMSG_QuickSave = 2000,
     UIMSG_QuickLoad = 2001,
     UIMSG_CreditsFinished = 2002,
-    UIMSG_CastQuickSpellAtCursor = 2003, // Shift-click on an actor, the quick spell goes at it without a picker.
+    UIMSG_CastQuickSpellAtActor = 2003, // Shift-click on an actor, params are its id and depth. The quick spell goes at it without a picker.
 
     UIMSG_Invalid = 0xffffffff
 };

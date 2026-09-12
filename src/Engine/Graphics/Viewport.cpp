@@ -266,7 +266,7 @@ void Engine::onGameViewportClick() {
         } else if (pParty->hasActiveCharacter() &&
                    pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
                    IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtCursor, 0, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtActor, mon_id, distance);
         } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
             pParty->dropHeldItem();
         } else {
