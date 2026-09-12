@@ -28,9 +28,13 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
+
+#include "Utility/Streams/BlobInputStream.h"
+#include "Utility/Streams/BlobOutputStream.h"
 
 #include "GameTestCommon.h"
 
@@ -91,6 +95,64 @@ GAME_TEST(Issues, Issue1515) {
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1515.mm7", "issue_1515.json");
     EXPECT_CONTAINS(soundsTape.flatten(), SOUND_RechargeItem); // dispel magic
+}
+
+GAME_TEST(Issues, Issue1516) {
+    // Bug: loading a save or changing maps reset the chosen minimap zoom.
+    auto zoom = [&](PlatformKey key, int expected) {
+        game.pressAndReleaseKey(key);
+        game.tick();
+        EXPECT_EQ(viewparams->uMinimapZoom, expected);
+    };
+
+    for (bool remember : {false, true}) {
+        SCOPED_TRACE(remember);
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        engine->config->settings.RememberMinimapZoom.setValue(remember);
+        if (!remember) {
+            engine->config->settings.IndoorMinimapZoom.setValue(4096);
+            engine->config->settings.OutdoorMinimapZoom.setValue(1024);
+        }
+        game.startNewGame();
+        ASSERT_EQ(viewparams->uMinimapZoom, 512);
+        zoom(PlatformKey::KEY_ADD, 1024);
+        Blob outdoorSave = game.saveGame();
+        zoom(PlatformKey::KEY_ADD, 2048);
+        zoom(PlatformKey::KEY_ADD, 2048);
+        game.loadGame(outdoorSave); // Zoom preferences are independent of the save.
+        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 2048 : 512);
+
+        game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+        ASSERT_EQ(viewparams->uMinimapZoom, 1024);
+        zoom(PlatformKey::KEY_SUBTRACT, 512);
+        Blob indoorSave = game.saveGame();
+        zoom(PlatformKey::KEY_SUBTRACT, 256);
+        zoom(PlatformKey::KEY_SUBTRACT, 256);
+        game.loadGame(indoorSave);
+        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 256 : 1024);
+        game.loadGame(outdoorSave);
+        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 2048 : 512);
+        EXPECT_EQ(engine->config->settings.IndoorMinimapZoom.value(), remember ? 256 : 4096);
+        EXPECT_EQ(engine->config->settings.OutdoorMinimapZoom.value(), remember ? 2048 : 1024);
+
+        Blob savedConfig;
+        BlobOutputStream output(&savedConfig);
+        engine->config->save(&output);
+        output.close();
+        engine->config->settings.RememberMinimapZoom.setValue(!remember);
+        engine->config->settings.IndoorMinimapZoom.reset();
+        engine->config->settings.OutdoorMinimapZoom.reset();
+        BlobInputStream input(savedConfig);
+        engine->config->load(&input);
+        EXPECT_EQ(engine->config->settings.RememberMinimapZoom.value(), remember);
+        EXPECT_EQ(engine->config->settings.IndoorMinimapZoom.value(), remember ? 256 : 4096);
+        EXPECT_EQ(engine->config->settings.OutdoorMinimapZoom.value(), remember ? 2048 : 1024);
+        game.startNewGame();
+        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 2048 : 512);
+        game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 256 : 1024);
+    }
 }
 
 GAME_TEST(Issues, Issue1519) {

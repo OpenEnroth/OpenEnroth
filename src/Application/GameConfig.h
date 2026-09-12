@@ -637,7 +637,23 @@ class GameConfig : public Config {
 
         Bool MouseLookEnabled = {this, "mouse_look_enabled", false, "Whether mouse look is enabled. Persisted between sessions."};
 
+        Bool RememberMinimapZoom = {this, "remember_minimap_zoom", true,
+            "Remember indoor and outdoor minimap zoom between map loads and game sessions. "
+            "Disable for vanilla behavior, which resets zoom on every map load."};
+
+        Int IndoorMinimapZoom = {this, "indoor_minimap_zoom", 1024, &ValidateIndoorMinimapZoom,
+            "Last indoor minimap zoom, from 256 to 4096. Used when remember_minimap_zoom is enabled."};
+
+        Int OutdoorMinimapZoom = {this, "outdoor_minimap_zoom", 512, &ValidateOutdoorMinimapZoom,
+            "Last outdoor minimap zoom, from 512 to 2048. Used when remember_minimap_zoom is enabled."};
+
      private:
+        static int ValidateIndoorMinimapZoom(int zoom) {
+            return std::clamp(zoom, 256, 4096);
+        }
+        static int ValidateOutdoorMinimapZoom(int zoom) {
+            return std::clamp(zoom, 512, 2048);
+        }
         static int ValidateLevel(int level) {
             return std::clamp(level, 0, 9);
         }
