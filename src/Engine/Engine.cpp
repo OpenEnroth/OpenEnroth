@@ -1327,6 +1327,7 @@ void RegeneratePartyHealthMana() {
     }
 
     bool stacking = engine->config->gameplay.RegenStacking.value();
+    bool staffSparesUndead = engine->config->gameplay.NoEthricsStaffDrainForUndead.value();
     for (Character &character : pParty->pCharacters) {
         if (character.conditions.hasAny({CONDITION_DEAD, CONDITION_ERADICATED}))
             continue; // No HP/MP regen/drain for dead characters.
@@ -1336,7 +1337,9 @@ void RegeneratePartyHealthMana() {
         for (InventoryEntry item : character.inventory.functionalEquipment()) {
             if (!isRegular(item->itemId)) {
                 if (item->itemId == ITEM_RELIC_ETHRICS_STAFF) {
-                    character.health -= ticks5;
+                    bool undead = character.classType == CLASS_LICH || character.IsZombie();
+                    if (!undead || !staffSparesUndead)
+                        character.health -= ticks5;
                 }
                 if (item->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
                     thisChar.hpRegen++;

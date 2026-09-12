@@ -285,6 +285,9 @@ class GameConfig : public Config {
             "Monster attack preferences for a class also match its promotions, so a monster that hunts clerics "
             "also hunts priests. In vanilla only the base class matches."};
 
+        Bool NoEthricsStaffDrainForUndead = {this, "no_ethrics_staff_drain_for_undead", true,
+            "Ethric's Staff doesn't drain health from liches and zombies. In vanilla the staff drains liches too."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
