@@ -281,10 +281,6 @@ class GameConfig : public Config {
             "Don't let eradicated characters drink potions. In vanilla a potion dropped on an eradicated "
             "character's portrait is drunk normally."};
 
-        Bool ClickableAccuracyWell = {this, "clickable_accuracy_well", true,
-            "Allow mouse interaction with the Accuracy well in Harmondale. In vanilla it only responds to Space. "
-            "Applied when the map loads."};
-
         Bool AttackPreferencesIncludePromotions = {this, "attack_preferences_include_promotions", true,
             "Monster attack preferences for a class also match its promotions, so a monster that hunts clerics "
             "also hunts priests. In vanilla only the base class matches."};

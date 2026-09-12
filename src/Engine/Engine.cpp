@@ -592,6 +592,14 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
             if (actor.monsterInfo.spell2Id == SPELL_SPIRIT_SPIRIT_LASH)
                 actor.monsterInfo.spell2Id = SPELL_SPIRIT_BLESS;
 
+    // OE fix - the Accuracy well's face is missing FACE_CLICKABLE in map data, so the mouse can't reach it.
+    // TODO(captainurist): move to patched data tables.
+    if (engine->_currentLoadedMapId == MAP_HARMONDALE)
+        for (BSPModel &model : pOutdoor->pBModels)
+            for (BLVFace &face : model.faces)
+                if (face.eventId == 228) // The Accuracy well, "+2 Accuracy (Permanent)" in out02.evt.
+                    face.attributes |= FACE_CLICKABLE;
+
     bDialogueUI_InitializeActor_NPC_ID = 0;
     engine->_pendingTransition.reset();
     onMapLoad();

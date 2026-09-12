@@ -521,42 +521,37 @@ GAME_TEST(Issues, Issue1282) {
 }
 
 GAME_TEST(Issues, Issue1290) {
-    // Bug: the Harmondale Accuracy well's interactive face was missing its clickable flag.
-    for (bool savedOption : {false, true}) {
-        test.prepareForNextTest();
-        engine->config->debug.NoActors.setValue(true);
-        engine->config->gameplay.ClickableAccuracyWell.setValue(savedOption);
-        game.startNewGame();
-        game.teleportTo(MAP_HARMONDALE, Vec3f(-8864, 17936, 384), 90);
-        pParty->_viewPitch = -256; // Look down into the well, within the mouse-look pitch range.
-        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-        game.tick();
-        ASSERT_EQ(pOutdoor->face(Pid::odmFace(97, 10)).Clickable(), savedOption);
-        Blob savedGame = game.saveGame(); // Save before drinking, the bonus is once per character.
+    // Can't interact with the Accuracy well in Harmondale with the mouse.
+    auto statusTape = tapes.statusBar();
+    Pid wellFace = Pid::odmFace(97, 10);
 
-        for (bool enabled : {false, true}) {
-            engine->config->gameplay.ClickableAccuracyWell.setValue(enabled);
-            game.loadGame(savedGame);
-            ASSERT_TRUE(pParty->hasActiveCharacter());
-            ASSERT_EQ(pParty->activeCharacterIndex(), 1);
-            ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
-            ASSERT_FALSE(pParty->pCharacters[0]._characterEventBits[2]);
-            const BLVFace &well = pOutdoor->face(Pid::odmFace(97, 10));
-            ASSERT_EQ(well.eventId, 228);
-            EXPECT_EQ(well.Clickable(), enabled);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-8864, 17936, 384), 90);
+    pParty->_viewPitch = -256; // Look down into the well, within the mouse-look pitch range.
+    game.tick();
 
-            Vec3f waterPoint(-8864, 18072, 392);
-            Vec2f screenPos = pCamera3D->Project(pCamera3D->ViewTransform(&waterPoint));
-            game.moveMouse(screenPos.x, screenPos.y);
-            game.tick();
-            ASSERT_EQ(engine->PickMouseForTargeting().pid, Pid::odmFace(97, 10));
-            ASSERT_LT(engine->PickMouseForTargeting().depth, engine->config->gameplay.MouseInteractionDepth.value());
-            int accuracy = pParty->pCharacters[0]._stats[ATTRIBUTE_ACCURACY];
-            game.pressAndReleaseButton(PlatformMouseButton::BUTTON_LEFT, screenPos.x, screenPos.y);
-            game.tick();
-            EXPECT_EQ(pParty->pCharacters[0]._stats[ATTRIBUTE_ACCURACY], accuracy + (enabled ? 2 : 0));
-        }
-    }
+    const BLVFace &well = pOutdoor->face(wellFace);
+    ASSERT_EQ(well.eventId, 228);
+    ASSERT_EQ(pParty->activeCharacterIndex(), 1);
+    ASSERT_FALSE(pParty->pCharacters[0]._characterEventBits[2]); // The well's once-per-character bit.
+    ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // A held item is dropped instead of interacting.
+    EXPECT_TRUE(well.Clickable());
+
+    Vec3f waterPoint(-8864, 18072, 392);
+    Vec2f screenPos = pCamera3D->Project(pCamera3D->ViewTransform(&waterPoint));
+    game.moveMouse(screenPos.x, screenPos.y);
+    game.tick();
+    Vis_PIDAndDepth picked = engine->PickMouseForTargeting();
+    ASSERT_EQ(picked.pid, wellFace);
+    ASSERT_LT(picked.depth, engine->config->gameplay.MouseInteractionDepth.value());
+
+    int accuracy = pParty->pCharacters[0]._stats[ATTRIBUTE_ACCURACY];
+    game.pressAndReleaseButton(BUTTON_LEFT, screenPos.x, screenPos.y);
+    game.tick(3);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[ATTRIBUTE_ACCURACY], accuracy + 2);
+    EXPECT_CONTAINS(statusTape, "+2 Accuracy (Permanent)");
 }
 
 GAME_TEST(Issues, Issue1294_1389) {

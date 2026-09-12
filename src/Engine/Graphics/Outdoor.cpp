@@ -510,21 +510,6 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
 
     reconstruct(delta, this);
 
-    if (engine->_currentLoadedMapId == MAP_HARMONDALE) {
-        // TODO(captainurist): move to patched data tables.
-        for (BSPModel &model : pBModels) {
-            for (BLVFace &face : model.faces) {
-                if (face.eventId == 228) {
-                    if (engine->config->gameplay.ClickableAccuracyWell.value()) {
-                        face.attributes |= FACE_CLICKABLE;
-                    } else {
-                        face.attributes &= ~FACE_CLICKABLE; // Override the bit restored from a save as well.
-                    }
-                }
-            }
-        }
-    }
-
     if (respawnTimed || respawnInitial)
         ddm.lastRespawnDay = days_played;
     if (respawnTimed)
