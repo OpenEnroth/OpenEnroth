@@ -953,17 +953,14 @@ void Game::processQueuedMessages() {
                 if (!pParty->hasActiveCharacter() || pParty->activeCharacter().timeToRecovery) {
                     continue;
                 }
-                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
-                                        CombinedSkillValue::none(), ON_CAST_AutoTarget);
-                if (uMessage == UIMSG_CastQuickSpellAtActor && pGUIWindow_CastTargetedSpell &&
-                    pGUIWindow_CastTargetedSpell->spellInfo()->flags & (ON_CAST_TargetedActor | ON_CAST_TargetedActorOrCharacter)) {
-                    if (pActors[uMessageParam].CanBeDamaged() && uMessageParam2 < engine->config->gameplay.RangedAttackDepth.value()) {
-                        spellTargetPicked(Pid(OBJECT_Actor, uMessageParam), -1);
-                    } else {
-                        CastSpellInfoHelpers::cancelSpellCastInProgress();
-                        pAudioPlayer->playUISound(SOUND_error);
-                    }
-                    closeTargetedSpellWindow();
+                if (uMessage == UIMSG_CastQuickSpell) {
+                    pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
+                                            CombinedSkillValue::none(), ON_CAST_AutoTarget);
+                } else if (pActors[uMessageParam].CanBeDamaged() && uMessageParam2 < engine->config->gameplay.RangedAttackDepth.value()) {
+                    pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
+                                            CombinedSkillValue::none(), 0, Pid(OBJECT_Actor, uMessageParam));
+                } else {
+                    pAudioPlayer->playUISound(SOUND_error);
                 }
                 continue;
             }

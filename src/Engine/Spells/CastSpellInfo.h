@@ -90,12 +90,15 @@ struct CastSpellInfo {
  * @param casterIndex                   Zero-based index of a character casting the spell.
  * @param skill_value                   Skill value that the spell is cast with.
  * @param flags                         Spell flags. Can be empty or have several flags.
+ * @param target                        Actor to cast at, or an empty pid for the spell to find its own target or
+ *                                      ask for one.
  * @offset 0x0042777D
  */
 void pushSpellOrRangedAttack(SpellId spell,
                              int casterIndex,
                              CombinedSkillValue skill_value,
-                             SpellCastFlags flags);
+                             SpellCastFlags flags,
+                             Pid target = Pid());
 
 /**
  * Register spell cast on party with temple donation.

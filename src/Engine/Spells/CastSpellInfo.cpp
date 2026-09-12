@@ -2941,13 +2941,15 @@ void CastSpellInfoHelpers::castSpell() {
  * @param casterIndex                   Zero-based index of the caster.
  * @param skill_level                   Skill value to use for casting.
  * @param uFlags                        Spell flags.
+ * @param targetPid                     Target of the spell, or an empty pid if not known yet.
  * @return                              Queue slot index, or size_t(-1) if the queue is full.
  * @offset 0x00427DA0
  */
 static size_t pushCastSpellInfo(SpellId uSpellID,
                                 int casterIndex,
                                 CombinedSkillValue skill_level,
-                                SpellCastFlags uFlags) {
+                                SpellCastFlags uFlags,
+                                Pid targetPid) {
     for (size_t i = 0; i < pCastSpellInfo.size(); i++) {
         if (pCastSpellInfo[i].uSpellID == SPELL_NONE) {
             pCastSpellInfo[i].uSpellID = uSpellID;
@@ -2955,7 +2957,7 @@ static size_t pushCastSpellInfo(SpellId uSpellID,
             if (uFlags & ON_CAST_TargetIsParty) {
                 pCastSpellInfo[i].targetCharacterIndex = casterIndex;
             }
-            pCastSpellInfo[i].targetPid = Pid();
+            pCastSpellInfo[i].targetPid = targetPid;
             pCastSpellInfo[i].flags = uFlags;
             pCastSpellInfo[i].overrideSkillValue = skill_level;
             return i;
@@ -2991,7 +2993,8 @@ void CastSpellInfoHelpers::cancelSpellCastInProgress() {
 void pushSpellOrRangedAttack(SpellId spell,
                              int casterIndex,
                              CombinedSkillValue skill_value,
-                             SpellCastFlags flags) {
+                             SpellCastFlags flags,
+                             Pid target) {
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage == TE_WAIT ||
             pTurnEngine->turn_stage == TE_MOVEMENT) {
@@ -3135,9 +3138,14 @@ void pushSpellOrRangedAttack(SpellId spell,
     }
 #endif
 
+    if (target != Pid()) {
+        assert(target.type() == OBJECT_Actor);
+        flags &= ~(ON_CAST_TargetedActor | ON_CAST_TargetedActorOrCharacter);
+    }
+
     CastSpellInfoHelpers::cancelSpellCastInProgress();
 
-    int result = pushCastSpellInfo(spell, casterIndex, skill_value, flags);
+    int result = pushCastSpellInfo(spell, casterIndex, skill_value, flags, target);
 
     // TODO: if no more place for spells in queue then spell is just ignored?
     //       Need assert?
