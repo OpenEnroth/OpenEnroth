@@ -387,7 +387,7 @@ void EngineController::castSpell(int characterIndex, SpellId spell) {
     tick(1);
 }
 
-void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
+Character &EngineController::activateCharacter(int characterIndex) {
     assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
 
     goToGame();
@@ -401,13 +401,29 @@ void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
             throw Exception("Couldn't activate character #{}", characterIndex);
     }
 
-    Character &character = pParty->pCharacters[characterIndex];
+    return pParty->pCharacters[characterIndex];
+}
+
+void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
+    Character &character = activateCharacter(characterIndex);
     SpellId oldQuickSpell = character.uQuickSpell;
     character.uQuickSpell = spell;
     pressAndReleaseKey(PlatformKey::KEY_S);
     // UIMSG_CastQuickSpell is processed in the next frame, and we need to wait for it to be processed before we can
     // roll back the quick spell. Thus two ticks.
     tick(2);
+    character.uQuickSpell = oldQuickSpell;
+}
+
+void EngineController::castQuickSpellAtActor(int characterIndex, SpellId spell, int actorId) {
+    Character &character = activateCharacter(characterIndex);
+    SpellId oldQuickSpell = character.uQuickSpell;
+    character.uQuickSpell = spell;
+    Pointi screenPos = pointMouseAtActor(actorId);
+    pressKey(PlatformKey::KEY_SHIFT);
+    pressAndReleaseButton(BUTTON_LEFT, screenPos);
+    releaseKey(PlatformKey::KEY_SHIFT);
+    tick(2); // The click is a queued event, so the quick spell must stay set until the tick that processes it.
     character.uQuickSpell = oldQuickSpell;
 }
 
@@ -427,14 +443,6 @@ Pointi EngineController::pointMouseAtActor(int actorId) {
     if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Actor, actorId))
         throw Exception("Failed to point mouse at actor #{}", actorId);
     return screenPos;
-}
-
-void EngineController::shiftClickActor(int actorId) {
-    Pointi screenPos = pointMouseAtActor(actorId);
-    pressKey(PlatformKey::KEY_SHIFT);
-    pressAndReleaseButton(BUTTON_LEFT, screenPos);
-    releaseKey(PlatformKey::KEY_SHIFT);
-    tick(1); // The click is a queued event, the cast is posted only once it's processed.
 }
 
 void EngineController::pointMouseAtDecoration(int decorationId) {

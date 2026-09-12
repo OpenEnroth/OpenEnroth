@@ -19,6 +19,7 @@
 class GUIButton;
 class PlatformEvent;
 class Actor;
+class Character;
 
 enum class SpawnFlag {
     SPAWN_STATIONARY = 0x1, // Set moveSpeed to 1 so that the monster stays in place.
@@ -160,6 +161,17 @@ class EngineController {
     void castQuickSpell(int characterIndex, SpellId spell);
 
     /**
+     * Casts a spell by shift-clicking the provided actor with the spell set as the quick spell. The cast goes at
+     * that actor without a targeting interface.
+     *
+     * @param characterIndex            1-based index of the casting character.
+     * @param spell                     Spell to cast.
+     * @param actorId                   Id of the actor to cast at.
+     * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
+     */
+    void castQuickSpellAtActor(int characterIndex, SpellId spell, int actorId);
+
+    /**
      * Finds a screen position at which the mouse points at the provided actor & moves the mouse there.
      *
      * @param actorId                   Id of the actor to point at.
@@ -167,14 +179,6 @@ class EngineController {
      * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
      */
     Pointi pointMouseAtActor(int actorId);
-
-    /**
-     * Shift-clicks the provided actor, which casts the active character's quick spell at it.
-     *
-     * @param actorId                   Id of the actor to click.
-     * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
-     */
-    void shiftClickActor(int actorId);
 
     /**
      * Finds a screen position at which the mouse points at the provided decoration & moves the mouse there.
@@ -186,6 +190,7 @@ class EngineController {
 
  private:
     void goToGameOrMainMenu();
+    Character &activateCharacter(int characterIndex);
 
     void pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y, bool isDoubleClick);
 
