@@ -69,7 +69,7 @@ void GUIWindow_TownHall::payFineDialogue() {
         DrawFlashingInputCursor(assets->pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, assets->pFontArrus.get(), townHall_window);
         return;
     } else if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
-        int sum = static_cast<int>(std::strtol(keyboardInputHandler->GetTextInput().c_str(), nullptr, 10));
+        int sum = std::strtol(keyboardInputHandler->GetTextInput().c_str(), nullptr, 10);
         if (sum > 0) {
             int party_gold = pParty->GetGold();
             if (sum > party_gold) {
