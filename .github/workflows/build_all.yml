@@ -42,7 +42,7 @@ env:
   # This is required for ccache to work for android build, otherwise we get 100% cache misses.
   CCACHE_COMPILERCHECK: content
   # Luajit runs the minilua and buildvm tools that it builds, and both leak by design, so LeakSanitizer
-  # would fail the sanitizer build long before it reaches our code. Many of our own game tests leak too.
+  # would fail the sanitizer build long before it reaches our code. The test steps turn it back on.
   ASAN_OPTIONS: detect_leaks=0
 
 jobs:
@@ -252,6 +252,8 @@ jobs:
         working-directory: build
         run: |
           ninja Run_UnitTest
+        env:
+          ASAN_OPTIONS: detect_leaks=1
 
       - name: '[darwin/windows/linux] Run game tests'
         if: env.MATRIX_PLATFORM != 'android'
@@ -259,6 +261,7 @@ jobs:
         run: |
           ninja Run_GameTest_Headless_Parallel
         env:
+          ASAN_OPTIONS: detect_leaks=1
           OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: '[darwin/windows/linux] Run retrace tests'
