@@ -14,6 +14,8 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Party.h"
@@ -516,6 +518,40 @@ GAME_TEST(Issues, Issue1282) {
     test.playTraceFromTestData("issue_1282.mm7", "issue_1282.json");
     EXPECT_EQ(itemTape, tape(false, true));
     EXPECT_EQ(totalObjectsTape.delta(), -1);
+}
+
+GAME_TEST(Issues, Issue1290) {
+    // Can't interact with the Accuracy well in Harmondale with the mouse.
+    auto statusTape = tapes.statusBar();
+    Pid wellFace = Pid::odmFace(97, 10);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-8864, 17936, 384), 90);
+    pParty->_viewPitch = -256; // Look down into the well, within the mouse-look pitch range.
+    game.tick();
+
+    const BLVFace &well = pOutdoor->face(wellFace);
+    ASSERT_EQ(well.eventId, 228);
+    ASSERT_EQ(pParty->activeCharacterIndex(), 1);
+    ASSERT_FALSE(pParty->pCharacters[0]._characterEventBits[2]); // The well's once-per-character bit.
+    ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // A held item is dropped instead of interacting.
+    EXPECT_TRUE(well.Clickable());
+
+    Vec3f waterPoint(-8864, 18072, 392);
+    Vec2f screenPos = pCamera3D->Project(pCamera3D->ViewTransform(&waterPoint));
+    game.moveMouse(screenPos.x, screenPos.y);
+    game.tick();
+    Vis_PIDAndDepth picked = engine->PickMouseForTargeting();
+    ASSERT_EQ(picked.pid, wellFace);
+    ASSERT_LT(picked.depth, engine->config->gameplay.MouseInteractionDepth.value());
+
+    int accuracy = pParty->pCharacters[0]._stats[ATTRIBUTE_ACCURACY];
+    game.pressAndReleaseButton(BUTTON_LEFT, screenPos.x, screenPos.y);
+    game.tick(3);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[ATTRIBUTE_ACCURACY], accuracy + 2);
+    EXPECT_CONTAINS(statusTape, "+2 Accuracy (Permanent)");
 }
 
 GAME_TEST(Issues, Issue1294_1389) {
