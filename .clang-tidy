@@ -15,10 +15,11 @@ Checks: >
   -bugprone-reserved-identifier,
   -bugprone-signed-char-misuse,
   -bugprone-std-namespace-modification,
-  -bugprone-suspicious-stringview-data-usage,
   -bugprone-switch-missing-default-case,
   -bugprone-throwing-static-initialization,
   -bugprone-unchecked-optional-access
 WarningsAsErrors: '*'
 HeaderFilterRegex: '/(src|test)/'
 ExcludeHeaderFilterRegex: '/thirdparty/' # Submodules have src and test dirs of their own.
+CheckOptions:
+  bugprone-suspicious-stringview-data-usage.AllowedCallees: 'std::from_chars;fast_float::from_chars;noCaseCompare' # These take an explicit end or size.
