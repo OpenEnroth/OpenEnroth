@@ -956,11 +956,9 @@ void Game::processQueuedMessages() {
                 if (uMessage == UIMSG_CastQuickSpell) {
                     pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
                                             CombinedSkillValue::none(), ON_CAST_AutoTarget);
-                } else if (pActors[uMessageParam].CanBeDamaged() && uMessageParam2 < engine->config->gameplay.RangedAttackDepth.value()) {
+                } else {
                     pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
                                             CombinedSkillValue::none(), 0, Pid(OBJECT_Actor, uMessageParam));
-                } else {
-                    pAudioPlayer->playUISound(SOUND_error);
                 }
                 continue;
             }
