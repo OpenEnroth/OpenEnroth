@@ -289,7 +289,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            actorPtr->buffs[ACTOR_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, -1);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.OrangeyRed);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -424,7 +424,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            actorPtr->buffs[ACTOR_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, -1);
             // Spell sound was missing from before
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -447,7 +447,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            actorPtr->buffs[ACTOR_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, -1);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.Cioccolato);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -470,7 +470,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            actorPtr->buffs[ACTOR_BUFF_BLESS].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_BLESS].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, -1);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -493,7 +493,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            actorPtr->buffs[ACTOR_BUFF_FATE].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(5), masteryLevel, spellPower, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_FATE].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(5), masteryLevel, spellPower, 0, -1);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -517,7 +517,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            actorPtr->buffs[ACTOR_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, -1);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -525,7 +525,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_BODY_HAMMERHANDS:
             // TODO(Nik-RE-dev): calculation of duration is strange
             actorPtr->buffs[ACTOR_BUFF_HAMMERHANDS]
-                .Apply(pParty->GetPlayingTime() + Duration::fromHours(realPoints), masteryLevel, realPoints, 0, 0);
+                .Apply(pParty->GetPlayingTime() + Duration::fromHours(realPoints), masteryLevel, realPoints, 0, -1);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam);
             pAudioPlayer->playSound(SOUND_51heroism03, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -582,7 +582,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            actorPtr->buffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, spellPower, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, spellPower, 0, -1);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White);
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -606,7 +606,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     break;
             }
 
-            actorPtr->buffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, -1);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White);
             pAudioPlayer->playSound(SOUND_9armageddon01, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -677,7 +677,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     assert(false);
                     break;
             }
-            actorPtr->buffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
+            actorPtr->buffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, -1);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.MediumGrey);
             pAudioPlayer->playSound(SOUND_Sacrifice2, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -1227,7 +1227,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     LocationInfo *v6;  // esi@4
     Duration v8;              // [sp+8h] [bp-4h]@6
 
-    pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex() - 1];
+    pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex()];
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         if (engine->_currentLoadedMapId != MAP_INVALID)
@@ -3184,7 +3184,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     if (hit_will_paralyze && pMonster->CanAct() &&
         pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
         CombinedSkillValue maceSkill = character->getActualSkillValue(SKILL_MACE);
-        pMonster->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(maceSkill.level()), maceSkill.mastery(), 0, 0, 0);
+        pMonster->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(maceSkill.level()), maceSkill.mastery(), 0, 0, -1);
         if (engine->config->settings.ShowHits.value()) {
             engine->_statusBar->setEvent(LSTR_S_PARALYZES_S, character->name, pMonster->GetDisplayName());
         }
@@ -4186,7 +4186,7 @@ void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Durati
         actor->summonerId = Pid(OBJECT_Character, spell_power);
 
         actor->buffs[ACTOR_BUFF_SUMMONED].Apply(pParty->GetPlayingTime() + duration,
-                                                caster_skill_mastery, spell_power, 0, 0);
+                                                caster_skill_mastery, spell_power, 0, -1);
     } else {
         actor->Remove();
     }

@@ -188,7 +188,7 @@ GAME_TEST(Issues, Issue1535) {
     game.startNewGame();
     engine->config->debug.AllMagic.setValue(true);
 
-    game.castSpell(1, SPELL_FIRE_METEOR_SHOWER);
+    game.castSpell(0, SPELL_FIRE_METEOR_SHOWER);
 
     // Should have put the spell cast message to queue.
     UIMessageType message = UIMSG_Invalid;
@@ -224,7 +224,7 @@ GAME_TEST(Issues, Issue1547) {
     test.stopTaping();
 
     EXPECT_EQ(actorsTape, tape(0));
-    EXPECT_EQ(activeCharTape, tape(1, 2, 3, 4, 0)); // All chars attacked.
+    EXPECT_EQ(activeCharTape, tape(0, 1, 2, 3, -1)); // All chars attacked.
 }
 
 GAME_TEST(Issues, Issue1569) {
@@ -519,7 +519,7 @@ GAME_TEST(Issues, Issue1717) {
     auto immoBuff = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active(); });
     test.playTraceFromTestData("issue_1717.mm7", "issue_1717.json");
     EXPECT_EQ(immoBuff, tape(false, true));
-    EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 4);
+    EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 3);
 
     std::regex regex("Immolation deals [0-9]+ damage to [0-9]+ target\\(s\\)");
     EXPECT_CONTAINS(statusBar, [&](const std::string &message) { return std::regex_match(message, regex); });
@@ -573,13 +573,13 @@ GAME_TEST(Issues, Issue1786) {
     engine->config->debug.AllMagic.setValue(true);
     game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4); // Select char 4.
     game.tick();
-    EXPECT_EQ(pParty->activeCharacterIndex(), 4);
+    EXPECT_EQ(pParty->activeCharacterIndex(), 3);
 
     game.pressAndReleaseKey(PlatformKey::KEY_S); // Quick cast fire bolt.
     game.tick(2);
     EXPECT_CONTAINS(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
 
-    while (pParty->activeCharacterIndex() != 4) {
+    while (pParty->activeCharacterIndex() != 3) {
         game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4);
         game.tick();
     }
@@ -612,7 +612,7 @@ GAME_TEST(Issues, Issue1808) {
     auto vasesTape = tapes.hasItem(ITEM_QUEST_VASE);
     auto goldTape = tapes.gold();
     test.playTraceFromTestData("issue_1808.mm7", "issue_1808.json");
-    EXPECT_EQ(activeCharTape, tape(1)); // First character was active.
+    EXPECT_EQ(activeCharTape, tape(0)); // First character was active.
     EXPECT_EQ(vaseTape, tape(true, false)); // Vase was taken from 3rd char.
     EXPECT_EQ(vasesTape, tape(true, false)); // And it was the only vase we had.
     EXPECT_EQ(classTape, tape(CLASS_THIEF, CLASS_ROGUE)); // 2nd char was promoted.
@@ -739,7 +739,7 @@ GAME_TEST(Issues, Issue1912) {
     auto hatTape = charTapes.haveItem(ITEM_QUEST_WEALTHY_HAT);
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_1912.mm7", "issue_1912.json");
-    EXPECT_EQ(activeCharTape, tape(1)); // First char was talking.
+    EXPECT_EQ(activeCharTape, tape(0)); // First char was talking.
     EXPECT_EQ(potionTape, tape({false, true, false, false}, {false, false, false, false})); // But 2nd char had the potion.
     EXPECT_EQ(hatTape, tape({false, false, false, false}, {true, false, false, false})); // We passed the hat to the 1st char.
 }
@@ -827,7 +827,7 @@ GAME_TEST(Issues, Issue1947) {
     engine->config->debug.TownPortal.setValue(true);
     engine->config->debug.AllMagic.setValue(true);
 
-    game.castSpell(1, SPELL_WATER_TOWN_PORTAL);
+    game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
     game.tick(2);
     game.pressGuiButton("TownPortalBook_Marker10"); // Tatalia.
     game.tick();
@@ -848,7 +848,7 @@ GAME_TEST(Prs, Pr1953) {
     char0.inventory.add(Item(ITEM_LEATHER_ARMOR));
     char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_ROYAL_LEATHER));
 
-    game.goToInventory(1);
+    game.goToInventory(0);
     game.pressAndReleaseButton(BUTTON_LEFT, 20, 20); // Pick up leather armor.
     game.tick();
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_LEATHER_ARMOR);
@@ -895,7 +895,7 @@ GAME_TEST(Issues, Issue1959) {
     game.tick();
 
     for (int i = 0; i < 4; i++) {
-        game.castSpell(i + 1, SPELL_AIR_SPARKS);
+        game.castSpell(i, SPELL_AIR_SPARKS);
         game.tick(30); // Wait for the sparks to settle.
 
         std::vector<float> angles;
@@ -934,7 +934,7 @@ GAME_TEST(Issues, Issue1961) {
     pParty->pCharacters[3].pActiveSkills[SKILL_WATER] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
     pParty->pCharacters[3].bHaveSpell[SPELL_WATER_ENCHANT_ITEM] = true;
 
-    game.castSpell(4, SPELL_WATER_ENCHANT_ITEM);
+    game.castSpell(3, SPELL_WATER_ENCHANT_ITEM);
     game.tick(1);
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 30);
     game.tick(1); // Don't wait out the animation.
@@ -1094,7 +1094,7 @@ GAME_TEST(Issues, Issue1998) {
 
         // Right-click the item in the inventory grid, the popup does the identification and the repair.
         auto portraitTape = charTapes.portrait(0);
-        game.goToInventory(1);
+        game.goToInventory(0);
         test.startTaping();
         game.pressButton(BUTTON_RIGHT, 30, 30);
         game.tick();

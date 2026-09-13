@@ -72,7 +72,7 @@ void GUIWindow_Training::trainDialogue() {
                 pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
                 pParty->activeCharacter().mana = pParty->activeCharacter().GetMaxMana();
                 int maxLevelStepsBefore = *std::max_element(_charactersTrainedLevels.begin(), _charactersTrainedLevels.end());
-                _charactersTrainedLevels[pParty->activeCharacterIndex() - 1]++;
+                _charactersTrainedLevels[pParty->activeCharacterIndex()]++;
                 int maxLevelStepsAfter = *std::max_element(_charactersTrainedLevels.begin(), _charactersTrainedLevels.end());
                 if (maxLevelStepsAfter > maxLevelStepsBefore) {
                     Duration trainingTime = timeUntilDawn() + Duration::fromHours(4);

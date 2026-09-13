@@ -91,13 +91,14 @@ struct Party {
     Item takeHoldingItem();
 
     /**
-    * Sets _activeCharacter to the first character that can act
-    * Added to fix some nzi access problems
-    */
+     * Makes the first character that can act the active one.
+     */
     void setActiveToFirstCanAct();
+
     /**
-    * Sets _activeCharacter to the first active (recoverd) character
-    */
+     * Picks the active character for the next action. Keeps the current one if it can act and has recovered,
+     * otherwise picks the next character that has, or no one if none has.
+     */
     void switchToNextActiveCharacter();
 
     /**
@@ -360,32 +361,31 @@ struct Party {
     std::array<bool, 4> playerAlreadyPicked = {{}};  // Was at offset 0xAE3368 in vanilla, we moved it into Party in OE.
 
     /**
-     * @return                          1-based index of currently active character. Zero means that there is no
-     *                                  active character.
+     * @return                          0-based index of the active character. Asserts that there is one, so check
+     *                                  `hasActiveCharacter()` first.
      */
     int activeCharacterIndex() const {
         assert(hasActiveCharacter());
-        return _activeCharacter;
+        return _activeCharacterIndex;
     }
 
     /**
-     * @param id                        1-based index of currently active character. Pass zero to make no one active.
+     * @param index                     0-based index of the character to make active. Pass `-1` to make no one active.
      */
-    void setActiveCharacterIndex(int id) {
-        assert(id >= 0 && id <= pCharacters.size());
-        _activeCharacter = id;
+    void setActiveCharacterIndex(int index) {
+        assert(index >= -1 && index < std::ssize(pCharacters));
+        _activeCharacterIndex = index;
     }
     bool hasActiveCharacter() const {
-        return _activeCharacter > 0;
+        return _activeCharacterIndex >= 0;
     }
     Character &activeCharacter() {
         assert(hasActiveCharacter());
-        return pCharacters[_activeCharacter - 1];
+        return pCharacters[_activeCharacterIndex];
     }
 
  private:
-     // TODO(pskelton): make 0-based with -1 for none??
-     int _activeCharacter = 0;  // which character is active - 1 based; 0 for none
+    int _activeCharacterIndex = -1;
 };
 
 extern Party *pParty;  // idb

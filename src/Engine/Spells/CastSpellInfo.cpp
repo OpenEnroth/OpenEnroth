@@ -102,7 +102,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
 
         pPlayer->SetRecoveryTime(recoveryTime);
 
-        if (!enchantingActiveCharacter) {
+        if (enchantingActiveCharacter == -1) {
             pTurnEngine->ApplyPlayerAction();
         }
     } else {
@@ -343,7 +343,7 @@ void CastSpellInfoHelpers::castSpell() {
                             break;
                     }
                     pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT]
-                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_power, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_power, 0, -1);
                     break;
                 }
 
@@ -560,7 +560,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_LIGHT)) {
                         Actor::AI_Stand(monster_id, Pid::character(0), 128_ticks, 0);
                         pActors[monster_id].buffs[ACTOR_BUFF_PARALYZED]
-                            .Apply(pParty->GetPlayingTime() + Duration::fromMinutes(3 * spell_level), spell_mastery, 0, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + Duration::fromMinutes(3 * spell_level), spell_mastery, 0, 0, -1);
                         pActors[monster_id].attributes |= ACTOR_AGGRESSOR;
                         pActors[monster_id].velocity.x = 0;
                         pActors[monster_id].velocity.y = 0;
@@ -605,7 +605,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // v721 = 836 * spell_targeted_at.id();
                     int monster_id = spell_targeted_at.id();
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
-                        pActors[monster_id].buffs[ACTOR_BUFF_SLOWED].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
+                        pActors[monster_id].buffs[ACTOR_BUFF_SLOWED].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                         pActors[monster_id].attributes |= ACTOR_AGGRESSOR;
                         spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&pActors[monster_id], Color()); // TODO(captainurist): why transparent black?
                     }
@@ -648,7 +648,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                         pActors[monster_id].buffs[ACTOR_BUFF_BERSERK].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_ENSLAVED].Reset();
-                        pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                        pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height);
                         pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
@@ -762,7 +762,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                     pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_REGENERATION]
-                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_power, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_power, 0, -1);
                     break;
                 }
 
@@ -800,7 +800,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
 
-                    pParty->pPartyBuffs[resist].Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_power, 0, 0);
+                    pParty->pPartyBuffs[resist].Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_power, 0, -1);
                     break;
                 }
 
@@ -837,7 +837,7 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         continue;
                     }
-                    pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                    pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     break;
                 }
@@ -865,11 +865,11 @@ void CastSpellInfoHelpers::castSpell() {
                     if (spell_mastery == MASTERY_NOVICE) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_BLESS]
-                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                     } else {
                         for (size_t i = 0; i < pParty->pCharacters.size(); i++) {
                             pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_BLESS]
-                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
+                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                         }
                         spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     }
@@ -943,7 +943,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[buff]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                     break;
                 }
 
@@ -966,7 +966,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_level, 0, pCastSpell->casterCharacterIndex + 1);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_level, 0, pCastSpell->casterCharacterIndex);
                     break;
                 }
 
@@ -1034,7 +1034,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_AIR_WIZARD_EYE:
                 {
                     pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE]
-                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, 0, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, 0, 0, -1);
                     break;
                 }
 
@@ -1059,7 +1059,7 @@ void CastSpellInfoHelpers::castSpell() {
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
 
                     pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                     break;
                 }
 
@@ -1147,7 +1147,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                     break;
                 }
 
@@ -1166,7 +1166,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].Apply(
                         pParty->GetPlayingTime() + Duration::fromHours(spell_level),
                             spell_mastery, 0, 0,
-                            pCastSpell->casterCharacterIndex + 1);
+                            pCastSpell->casterCharacterIndex);
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM = (spell_mastery == MASTERY_GRANDMASTER);
                     break;
                 }
@@ -1326,7 +1326,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, pCastSpell->casterCharacterIndex + 1);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, pCastSpell->casterCharacterIndex);
                     pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM = (spell_mastery == MASTERY_GRANDMASTER);
                     break;
                 }
@@ -1627,7 +1627,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                     break;
                 }
 
@@ -1654,11 +1654,11 @@ void CastSpellInfoHelpers::castSpell() {
                     if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_FATE]
-                            .Apply(pParty->GetPlayingTime() + Duration::fromMinutes(5), spell_mastery, spell_power, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + Duration::fromMinutes(5), spell_mastery, spell_power, 0, -1);
                     } else if (pCastSpell->targetPid.type() == OBJECT_Actor) {
                         int monster_id = pCastSpell->targetPid.id();
                         pActors[monster_id].buffs[ACTOR_BUFF_FATE]
-                            .Apply(pParty->GetPlayingTime() + Duration::fromMinutes(5), spell_mastery, spell_power, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + Duration::fromMinutes(5), spell_mastery, spell_power, 0, -1);
                         pActors[monster_id].attributes |= ACTOR_AGGRESSOR;
                         spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&pActors[monster_id], Color()); // TODO(captainurist): why transparent black?
                     }
@@ -1720,11 +1720,11 @@ void CastSpellInfoHelpers::castSpell() {
                     if (spell_mastery == MASTERY_NOVICE || spell_mastery == MASTERY_EXPERT) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_PRESERVATION]
-                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                     } else {
                         for (Character &character : pParty->pCharacters) {
                             character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION]
-                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                         }
                         spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     }
@@ -1759,7 +1759,7 @@ void CastSpellInfoHelpers::castSpell() {
                             pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                             pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                             pSpellSprite.Create(0, 0, 0, 0);
-                            actor->buffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                            actor->buffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                         }
                     }
                     spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White, 192_ticks);
@@ -2036,7 +2036,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_ENSLAVED].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_BERSERK]
-                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                         pActors[monster_id].monsterInfo.hostilityType = HOSTILITY_LONG;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -2073,7 +2073,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pActors[monster_id].buffs[ACTOR_BUFF_BERSERK].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Reset();
                         pActors[monster_id].buffs[ACTOR_BUFF_ENSLAVED]
-                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height);
@@ -2113,7 +2113,7 @@ void CastSpellInfoHelpers::castSpell() {
                             pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
                             pSpellSprite.Create(0, 0, 0, 0);
                             if (actor->DoesDmgTypeDoDamage(DAMAGE_MIND)) {
-                                actor->buffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                                actor->buffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                             }
                         }
                     }
@@ -2359,7 +2359,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC]
-                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_level, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_level, 0, -1);
                     break;
                 }
 
@@ -2369,12 +2369,12 @@ void CastSpellInfoHelpers::castSpell() {
                         spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                         for (Character &character : pParty->pCharacters) {
                             character.pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS]
-                                .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_level, spell_level, 0);
+                                .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_level, spell_level, -1);
                         }
                     } else {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                     pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS]
-                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_level, spell_level, 0);
+                        .Apply(pParty->GetPlayingTime() + Duration::fromHours(spell_level), spell_mastery, spell_level, spell_level, -1);
                     }
                     break;
                 }
@@ -2471,7 +2471,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                     break;
                 }
 
@@ -2514,16 +2514,16 @@ void CastSpellInfoHelpers::castSpell() {
                             break;
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
-                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
-                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
-                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
-                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
-                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
-                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
+                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
+                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
+                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
+                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
+                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
+                    pParty->pPartyBuffs[PARTY_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                     // Spell power for Feather fall and Wizard eye was "spell_level + 5"
                     // Changed it to 0 because spell power isn't used for these spells.
-                    pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
-                    pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                    pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
+                    pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                     break;
                 }
 
@@ -2566,7 +2566,7 @@ void CastSpellInfoHelpers::castSpell() {
                     bool player_weak = false;
                     for (Character &character : pParty->pCharacters) {
                        character.pCharacterBuffs[CHARACTER_BUFF_BLESS]
-                            .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, -1);
                         if (character.conditions.has(CONDITION_WEAK)) {
                             player_weak = true;
                         }
@@ -2574,15 +2574,15 @@ void CastSpellInfoHelpers::castSpell() {
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
 
                     pParty->pPartyBuffs[PARTY_BUFF_HEROISM]
-                        .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, -1);
                     pParty->pPartyBuffs[PARTY_BUFF_SHIELD]
-                        .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, 0, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, 0, 0, -1);
                     pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN]
-                        .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, -1);
                     if (!player_weak) {
                         // Spell power was changed to 0 because it is not used in Haste buff
                         pParty->pPartyBuffs[PARTY_BUFF_HASTE]
-                            .Apply(pParty->GetPlayingTime() + haste_duration, spell_mastery, 0, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + haste_duration, spell_mastery, 0, 0, -1);
                     }
                     break;
                 }
@@ -2759,7 +2759,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pActors[monster_id].buffs[ACTOR_BUFF_BERSERK].Reset();
                     pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Reset();
                     pActors[monster_id].buffs[ACTOR_BUFF_ENSLAVED]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, -1);
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
@@ -2829,11 +2829,11 @@ void CastSpellInfoHelpers::castSpell() {
                     if (spell_mastery != MASTERY_MASTER && spell_mastery != MASTERY_GRANDMASTER) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION]
-                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
+                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                     } else {
                         for (Character &character : pParty->pCharacters) {
                             character.pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION]
-                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
+                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                         }
                         spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     }
@@ -3180,7 +3180,7 @@ void pushSpellOrRangedAttack(SpellId spell,
 void pushTempleSpell(SpellId spell) {
     CombinedSkillValue skill_value = CombinedSkillValue(pParty->uCurrentDayOfMonth % 7 + 1, MASTERY_MASTER);
 
-    pushSpellOrRangedAttack(spell, pParty->activeCharacterIndex() - 1, skill_value,
+    pushSpellOrRangedAttack(spell, pParty->activeCharacterIndex(), skill_value,
                             ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell);
 }
 

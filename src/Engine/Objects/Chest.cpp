@@ -132,7 +132,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpellObject.explosionTraps();
             chest->flags &= ~CHEST_TRAPPED;
             if (pParty->hasActiveCharacter() && !OpenedTelekinesis) {
-                pParty->setDelayedReaction(SPEECH_TRAP_EXPLODED, pParty->activeCharacterIndex() - 1);
+                pParty->setDelayedReaction(SPEECH_TRAP_EXPLODED, pParty->activeCharacterIndex());
             }
             OpenedTelekinesis = false;
             return false;

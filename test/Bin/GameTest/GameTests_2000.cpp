@@ -135,7 +135,7 @@ GAME_TEST(Issues, Issue2021_2022) {
 GAME_TEST(Issues, Issue2061) {
     // Game Crashes if you click the border of the inventory screen.
     game.startNewGame();
-    game.goToInventory(1);
+    game.goToInventory(0);
     game.pressAndReleaseButton(BUTTON_LEFT, 3, 20); // This used to assert.
     game.tick();
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // Shouldn't pick anything.
@@ -150,7 +150,7 @@ GAME_TEST(Issues, Issue2066) {
     pParty->pCharacters[0].inventory.clear();
     pParty->pCharacters[0].inventory.add(Pointi(0, 0), Item(ITEM_LEATHER_ARMOR)); // Add leather armor at (0, 0).
 
-    game.goToInventory(1);
+    game.goToInventory(0);
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 30); // Pick up leather armor.
     game.tick();
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 0); // Try to place outside inventory boundaries.
@@ -265,7 +265,7 @@ GAME_TEST(Issues, Issue2108) {
     prepareForBattleTest();
 
     // Cast shield.
-    game.castSpell(1, SPELL_AIR_SHIELD);
+    game.castSpell(0, SPELL_AIR_SHIELD);
 
     // Spawn archers & wait.
     engine->config->debug.NoActors.setValue(false);
@@ -348,10 +348,10 @@ GAME_TEST(Issues, Issue2116) {
             game.tick();
         } while (!pParty->hasActiveCharacter());
     }
+    EXPECT_CONTAINS(activeCharacterTape, 0);
     EXPECT_CONTAINS(activeCharacterTape, 1);
     EXPECT_CONTAINS(activeCharacterTape, 2);
-    EXPECT_CONTAINS(activeCharacterTape, 3);
-    EXPECT_MISSES(activeCharacterTape, 4);
+    EXPECT_MISSES(activeCharacterTape, 3);
 
     pParty->pCharacters[3].conditions.reset(CONDITION_DEAD);
     pParty->pCharacters[3].conditions.reset(CONDITION_UNCONSCIOUS);
@@ -364,7 +364,7 @@ GAME_TEST(Issues, Issue2116) {
             game.tick();
         } while (!pParty->hasActiveCharacter());
     }
-    EXPECT_CONTAINS(activeCharacterTape, 4);
+    EXPECT_CONTAINS(activeCharacterTape, 3);
 }
 
 GAME_TEST(Issues, Issue2117) {
@@ -469,7 +469,7 @@ GAME_TEST(Prs, Pr2157a) {
     // Test that we can't equip items when inventory is full.
     auto soundsTape = tapes.sounds();
     game.startNewGame();
-    game.goToInventory(1);
+    game.goToInventory(0);
     test.startTaping();
 
     CharacterInventory &inventory = pParty->pCharacters[0].inventory;
@@ -518,7 +518,7 @@ GAME_TEST(Prs, Pr2157b) {
     // Test that we can't add items to grid when inventory is full.
     auto soundsTape = tapes.sounds();
     game.startNewGame();
-    game.goToInventory(1);
+    game.goToInventory(0);
     test.startTaping();
 
     CharacterInventory &inventory = pParty->pCharacters[0].inventory;
@@ -658,7 +658,7 @@ GAME_TEST(Issues, Issue2201) {
     pParty->pCharacters[3].bHaveSpell[SPELL_FIRE_HASTE] = true;
     pParty->pCharacters[0].SetCondition(CONDITION_WEAK, false);
 
-    game.castSpell(4, SPELL_FIRE_HASTE);
+    game.castSpell(3, SPELL_FIRE_HASTE);
     game.tick(10); // All mana from 4th character was drained in 10 ticks.
 
     EXPECT_CONTAINS(statusTape, "Spell failed");
@@ -1048,7 +1048,7 @@ GAME_TEST(Issues, Issue2451a) {
     EXPECT_EQ(swordEntry->specialEnchantment, ITEM_ENCHANTMENT_NULL);
 
     // Cast Fire Aura - this opens the enchantment targeting UI.
-    game.castSpell(1, SPELL_FIRE_FIRE_AURA);
+    game.castSpell(0, SPELL_FIRE_FIRE_AURA);
     game.tick();
     ASSERT_TRUE(IsEnchantingInProgress);
 
@@ -1076,7 +1076,7 @@ GAME_TEST(Issues, Issue2451b) {
     EXPECT_EQ(wandEntry->maxCharges, 10);
 
     // Cast Recharge Item - this opens the enchantment targeting UI.
-    game.castSpell(1, SPELL_WATER_RECHARGE_ITEM);
+    game.castSpell(0, SPELL_WATER_RECHARGE_ITEM);
     game.tick();
     ASSERT_TRUE(IsEnchantingInProgress);
 
@@ -1094,7 +1094,7 @@ GAME_TEST(Issues, Issue2452) {
     auto messageBoxesTape = tapes.messageBoxes();
     auto guiTextTape = tapes.allGUIWindowsText();
     game.startNewGame();
-    game.goToInventory(1);
+    game.goToInventory(0);
     game.pressAndReleaseKey(PlatformKey::KEY_S);
     game.tick(2);
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
@@ -1261,8 +1261,8 @@ GAME_TEST(Issues, Issue2479) {
 
     test.playTraceFromTestData("issue_2479.mm7", "issue_2479.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_BRANCHLESS_NPC_DIALOG, SCREEN_GAME));
-    EXPECT_EQ(activeChar, tape(1, 4)); // We switched characters.
-    EXPECT_EQ(branchLessCharIndex, tape(-1, 1, -1)); // We didnt switch before the dialog closed.
+    EXPECT_EQ(activeChar, tape(0, 3)); // We switched characters.
+    EXPECT_EQ(branchLessCharIndex, tape(-1, 0, -1)); // We didnt switch before the dialog closed.
 }
 
 GAME_TEST(Issues, Issue2490) {
@@ -1536,7 +1536,7 @@ GAME_TEST(Issues, Issue2636) {
     game.startNewGame();
     test.startTaping();
     game.tick(2);
-    game.goToInventory(1);
+    game.goToInventory(0);
     game.pressAndReleaseKey(PlatformKey::KEY_C); // Switch to the stats tab.
     game.tick(2);
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
@@ -1715,7 +1715,7 @@ GAME_TEST(Prs, Pr2615c) {
     ASSERT_EQ(campfire.uEventID, 0); // The eventless interactive kind - Pr2615d covers the evented kind.
     game.teleportTo(MAP_EMERALD_ISLAND, campfire.vPosition - Vec3f(1000, 0, 0), 0); // Twice the click reach away.
     test.startTaping();
-    game.castSpell(1, SPELL_EARTH_TELEKINESIS);
+    game.castSpell(0, SPELL_EARTH_TELEKINESIS);
     game.tick(2);
     game.pointMouseAtDecoration(7);
     game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
@@ -1738,7 +1738,7 @@ GAME_TEST(Prs, Pr2615d) {
     pParty->GetPlayingTime() += Duration::fromDays(150);
     game.tick(2);
     ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
-    game.castSpell(1, SPELL_EARTH_TELEKINESIS);
+    game.castSpell(0, SPELL_EARTH_TELEKINESIS);
     game.tick(2);
     game.pointMouseAtDecoration(559);
     game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());

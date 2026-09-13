@@ -56,7 +56,7 @@ GAME_TEST(Issues, Issue502) {
     auto expressionTape = charTapes.portrait(3);
     test.playTraceFromTestData("issue_502.mm7", "issue_502.json");
     EXPECT_CONTAINS(expressionTape, PORTRAIT_NO);
-    EXPECT_EQ(pParty->activeCharacterIndex(), 4);
+    EXPECT_EQ(pParty->activeCharacterIndex(), 3);
 }
 
 GAME_TEST(Issues, Issue503) {
@@ -118,7 +118,7 @@ GAME_TEST(Issues, Issue521) {
     test.playTraceFromTestData("issue_521.mm7", "issue_521.json");
     EXPECT_EQ(enduranceTape, tape(500)); // First char is beefy.
     EXPECT_LT(hpsTape.delta().max(), 0); // All chars took damage.
-    EXPECT_EQ(activeCharTape, tape(1)); // First char didn't flinch.
+    EXPECT_EQ(activeCharTape, tape(0)); // First char didn't flinch.
 }
 
 GAME_TEST(Issues, Issue527) {
@@ -219,7 +219,7 @@ GAME_TEST(Issues, Issue587) {
         drinker.SetCondition(CONDITION_ERADICATED, 0);
         drinker.health = 5;
         ASSERT_LT(drinker.health, drinker.GetMaxHealth());
-        pParty->setActiveCharacterIndex(2); // Active "giver" must be a non-eradicated char.
+        pParty->setActiveCharacterIndex(1); // Active "giver" must be a non-eradicated char.
 
         test.startTaping();
         game.tick(); // Baseline tick records health == 5.
@@ -296,14 +296,14 @@ GAME_TEST(Issues, Issue615a) {
     // Ensure that clicking between active portraits changes active character.
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_615a.mm7", "issue_615a.json");
-    EXPECT_EQ(activeCharTape.frontBack(), tape(1, 3));
+    EXPECT_EQ(activeCharTape.frontBack(), tape(0, 2));
 }
 
 GAME_TEST(Issues, Issue615b) {
     // Assert when clicking on character portrait when no active character is present.
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_615b.mm7", "issue_615b.json");
-    EXPECT_EQ(activeCharTape.frontBack(), tape(1, 4));
+    EXPECT_EQ(activeCharTape.frontBack(), tape(0, 3));
 }
 
 GAME_TEST(Issues, Issue625) {
@@ -442,7 +442,7 @@ GAME_TEST(Issues, Issue663) {
     test.playTraceFromTestData("issue_663.mm7", "issue_663.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_CHEST, SCREEN_CHEST_INVENTORY));
     // should switch to char 2 inv
-    EXPECT_EQ(pParty->activeCharacterIndex(), 2);
+    EXPECT_EQ(pParty->activeCharacterIndex(), 1);
     EXPECT_GT(pParty->activeCharacter().timeToRecovery, 0_ticks);
 }
 

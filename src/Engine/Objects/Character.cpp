@@ -2018,7 +2018,7 @@ void Character::SetRecoveryTime(Duration rec) {
     if (rec > timeToRecovery) timeToRecovery = rec;
 
     if (pParty->hasActiveCharacter() && &pParty->activeCharacter() == this &&
-        !enchantingActiveCharacter)
+        enchantingActiveCharacter == -1)
         pParty->switchToNextActiveCharacter();
 }
 
@@ -3125,36 +3125,36 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_HASTE:
                 if (!playerAffected->conditions.has(CONDITION_WEAK)) {
-                    playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                    playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 }
                 break;
 
             case ITEM_POTION_HEROISM:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 break;
 
             case ITEM_POTION_BLESS:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 break;
 
             case ITEM_POTION_PRESERVATION:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_SHIELD:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_STONESKIN:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 break;
 
             case ITEM_POTION_WATER_BREATHING:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, -1);
                 // Drink potion reaction was missing
                 break;
 
@@ -3173,37 +3173,37 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             case ITEM_POTION_MIGHT_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_INTELLECT_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_PERSONALITY_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_ENDURANCE_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_SPEED_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_ACCURACY_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_CURE_PARALYSIS:
@@ -3236,43 +3236,43 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             case ITEM_POTION_LUCK_BOOST:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_FIRE_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_AIR_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_WATER_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_EARTH_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_MIND_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_BODY_RESISTANCE:
                 // mastery was NONE
                 playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
-                        potionStrength * 3, 0, 0);
+                        potionStrength * 3, 0, -1);
                 break;
 
             case ITEM_POTION_STONE_TO_FLESH:
@@ -5707,7 +5707,7 @@ void Character::SubtractSkillByEvent(Skill skill, uint16_t subSkillValue) {
 }
 
 int cycleCharacter(bool backwards) {
-    int currentId = pParty->activeCharacterIndex() - 1;
+    int currentId = pParty->activeCharacterIndex();
 
     for (int i = 0; i < pParty->pCharacters.size(); i++) {
         currentId += (backwards ? -1 : 1);
@@ -5718,7 +5718,7 @@ int cycleCharacter(bool backwards) {
             currentId = 0;
         }
         if (!pParty->pCharacters[currentId].timeToRecovery) {
-            return currentId + 1;
+            return currentId;
         }
     }
 
@@ -6123,18 +6123,10 @@ void Character::OnInventoryLeftClick() {
             InventoryEntry enchantedItemPos = inventory.entry(inventoryPos);
 
             if (enchantedItemPos) {
-                /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
-                    *0x7Fu;
-                    *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-                    *pParty->activeCharacterIndex() - 1;
-                    *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-                    *enchantedItemPos - 1;
-                    *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-                    *invMatrixIndex;*/
                 CastSpellInfo* pSpellInfo;
                 pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
                 pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
-                pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
+                pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex();
                 pSpellInfo->targetInventoryIndex = enchantedItemPos.index();
                 ptr_50C9A4_ItemToEnchant = enchantedItemPos.get();
                 IsEnchantingInProgress = false;
@@ -6367,11 +6359,11 @@ void Character::_42ECB5_CharacterAttacksActor() {
          melee_attack = false;
     if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
-        pushSpellOrRangedAttack(SPELL_BLASTER_PROJECTILE, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), ON_CAST_AutoTarget);
+        pushSpellOrRangedAttack(SPELL_BLASTER_PROJECTILE, pParty->activeCharacterIndex(), CombinedSkillValue::none(), ON_CAST_AutoTarget);
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
-        pushSpellOrRangedAttack(spellForWand(wand_item_id), pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, ON_CAST_AutoTarget);
+        pushSpellOrRangedAttack(spellForWand(wand_item_id), pParty->activeCharacterIndex(), WANDS_SKILL_VALUE, ON_CAST_AutoTarget);
 
         // reduce wand charges
         if (!--main_hand->numCharges && engine->config->gameplay.DestroyDischargedWands.value()) {
@@ -6383,7 +6375,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         Vec3f a3 = actor->pos - pParty->pos;
         a3.normalize();
 
-        Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex() - 1),
+        Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex()),
                                       target_id, a3);
         if (character->wearsItem(ITEM_ARTIFACT_SPLITTER))
             _42FA66_do_explosive_impact(actor->pos + Vec3f(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
@@ -6391,7 +6383,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         shooting_bow = true;
         // TODO(captainurist): target_pid is ignored here - the arrow re-resolves its target in castSpell() with a
         //                     different fallback, so it can fly at a different actor than the one checked above.
-        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0);
+        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex(), CombinedSkillValue::none(), 0);
     } else {
         melee_attack = true;
         // actor out of range or no actor; no ranged weapon so melee attacking air
@@ -6450,6 +6442,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
 //----- (0042FA66) --------------------------------------------------------
 void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int actchar) {
+    assert(actchar >= 0 && actchar < std::ssize(pParty->pCharacters));
+
         // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
 
     // a5 is range?
@@ -6468,12 +6462,7 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
     a1a.spell_target_pid = Pid();
     a1a.field_60_distance_related_prolly_lod = 0;
     a1a.uFacing = 0;
-
-    if (actchar >= 1 || actchar <= 4) {
-        a1a.spell_caster_pid = Pid(OBJECT_Character, actchar - 1);
-    } else {
-        a1a.spell_caster_pid = Pid();
-    }
+    a1a.spell_caster_pid = Pid(OBJECT_Character, actchar);
 
     int id = a1a.Create(0, 0, 0, 0);
     if (id != -1) {

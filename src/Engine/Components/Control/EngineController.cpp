@@ -175,12 +175,12 @@ void EngineController::goToGame() {
 }
 
 void EngineController::goToInventory(int characterIndex) {
-    assert(characterIndex >= 1 && characterIndex <= 4);
+    assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
 
     goToGame();
 
     if (pParty->activeCharacterIndex() != characterIndex) {
-        pressAndReleaseKey(platformKeyForDigit(characterIndex));
+        pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
         tick(1);
         if (pParty->activeCharacterIndex() != characterIndex)
             throw Exception("Couldn't activate character #{}", characterIndex);
@@ -361,14 +361,14 @@ void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw) {
 }
 
 void EngineController::castSpell(int characterIndex, SpellId spell) {
-    assert(characterIndex >= 1 && characterIndex <= 4);
+    assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
 
     goToGame();
     if (GetCurrentMenuID() != MENU_NONE)
         throw Exception("Can't cast a spell from the main menu");
 
     if (pParty->activeCharacterIndex() != characterIndex) {
-        pressAndReleaseKey(platformKeyForDigit(characterIndex));
+        pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
         tick(1);
         if (pParty->activeCharacterIndex() != characterIndex)
             throw Exception("Couldn't activate character #{}", characterIndex);
@@ -388,20 +388,20 @@ void EngineController::castSpell(int characterIndex, SpellId spell) {
 }
 
 void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
-    assert(characterIndex >= 1 && characterIndex <= 4);
+    assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
 
     goToGame();
     if (GetCurrentMenuID() != MENU_NONE)
         throw Exception("Can't cast a spell from the main menu");
 
     if (pParty->activeCharacterIndex() != characterIndex) {
-        pressAndReleaseKey(platformKeyForDigit(characterIndex));
+        pressAndReleaseKey(platformKeyForDigit(characterIndex + 1));
         tick(1);
         if (pParty->activeCharacterIndex() != characterIndex)
             throw Exception("Couldn't activate character #{}", characterIndex);
     }
 
-    Character &character = pParty->pCharacters[characterIndex - 1];
+    Character &character = pParty->pCharacters[characterIndex];
     SpellId oldQuickSpell = character.uQuickSpell;
     character.uQuickSpell = spell;
     pressAndReleaseKey(PlatformKey::KEY_S);

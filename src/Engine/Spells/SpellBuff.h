@@ -9,10 +9,10 @@ struct SpellBuff {
     /**
      * @offset 0x4584E0
      * TODO(pskelton): check for inconsistent use of caster
-     * caster = 0 for external source (potion / npc), 1 based for party character index
+     * caster is the 0-based party character index, or -1 for an external source like a potion or an npc
      */
     bool Apply(Time time, Mastery uSkillMastery,
-               int uPower, int uOverlayID, uint8_t caster);
+               int uPower, int uOverlayID, int caster);
 
     /**
      * @offset 0x458585
@@ -43,6 +43,6 @@ struct SpellBuff {
     uint16_t power = 0; // Spell power, semantics are spell-specific.
     Mastery skillMastery = MASTERY_NONE;
     uint16_t overlayId = 0;
-    uint8_t caster = 0; // 1-based character index.
+    int caster = -1; // -1 when the buff came from a potion or an npc.
     bool isGM = false; // Buff was casted at grandmaster mastery
 };

@@ -433,7 +433,7 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
     dst->power = src.power;
     dst->skillMastery = std::to_underlying(src.skillMastery);
     dst->overlayId = src.overlayId;
-    dst->caster = src.caster;
+    dst->caster = src.caster + 1;
     dst->isGM = src.isGM;
 }
 
@@ -442,7 +442,7 @@ void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
     dst->power = src.power;
     dst->skillMastery = static_cast<Mastery>(src.skillMastery);
     dst->overlayId = src.overlayId;
-    dst->caster = src.caster;
+    dst->caster = src.caster - 1;
     dst->isGM = src.isGM;
 }
 
