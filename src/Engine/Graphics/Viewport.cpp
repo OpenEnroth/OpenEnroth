@@ -266,7 +266,11 @@ void Engine::onGameViewportClick() {
         } else if (pParty->hasActiveCharacter() &&
                    pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
                    IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtActor, mon_id, distance);
+            if (distance < engine->config->gameplay.RangedAttackDepth.value()) {
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtActor, mon_id, 0);
+            } else {
+                pAudioPlayer->playUISound(SOUND_error);
+            }
         } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
             pParty->dropHeldItem();
         } else {
