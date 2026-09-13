@@ -1746,3 +1746,31 @@ GAME_TEST(Prs, Pr2615d) {
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
 }
 
+GAME_TEST(Prs, Pr2669) {
+    // The Arcane Wand of Paralyzing opened the target picker on every shot, unlike every other wand.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists, the roll is random(level / 4 + resist + 30) < 30.
+
+    Item wand;
+    wand.itemId = ITEM_ARCANE_WAND_OF_PARALYZING;
+    wand.numCharges = wand.maxCharges = 1;
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
+    pParty->setActiveCharacterIndex(0);
+
+    auto buffTape = actorTapes.hasBuff(0, ACTOR_BUFF_PARALYZED);
+    auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
+    game.pointMouseAtActor(0);
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick(10);
+    test.stopTaping();
+
+    EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened.
+    EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // The shot paralyzed the goblin under the cursor.
+}

@@ -1163,3 +1163,34 @@ GAME_TEST(Issues, Issue1489) {
     EXPECT_EQ(amuletTape.front(), amuletTape.back());
     EXPECT_CONTAINS(amuletTape, ITEM_NULL);
 }
+
+GAME_TEST(Issues, Issue1497) {
+    // Shift-clicking an actor with Berserk as the quick spell opened the target picker instead of casting at the
+    // clicked actor. Paralyze shared the code path and had the same bug. The S key keeps opening the picker.
+    for (auto [spell, buff] : {std::pair(SPELL_MIND_BERSERK, ACTOR_BUFF_BERSERK), std::pair(SPELL_LIGHT_PARALYZE, ACTOR_BUFF_PARALYZED)}) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+        engine->config->debug.NoActors.setValue(true);
+        engine->config->debug.AllMagic.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
+
+        game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists, the roll is random(level / 4 + resist + 30) < 30.
+
+        auto buffTape = actorTapes.hasBuff(0, buff);
+        auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
+        game.castQuickSpellAtActor(0, spell, 0);
+        game.tick(10);
+        test.stopTaping();
+
+        EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened.
+        EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the clicked goblin.
+
+        pParty->pCharacters[0].timeToRecovery = Duration(); // The cast put the caster in recovery, which the S key refuses.
+        pParty->setActiveCharacterIndex(0); // Nobody is active after a cast, and the digit keys only switch between active characters.
+        game.castQuickSpell(0, spell);
+        EXPECT_NE(pGUIWindow_CastTargetedSpell, nullptr);
+    }
+}

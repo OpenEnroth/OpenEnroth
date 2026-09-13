@@ -42,7 +42,8 @@ enum class SpellCastFlag : uint16_t {
     ON_CAST_TargetedEnchantment = 0x0080,      // Targeted spell, target is item in inventory
     ON_CAST_TargetedActorOrCharacter = 0x0100, // Targeted spell, target either actor or character
     ON_CAST_TargetedHireling = 0x0200,         // Targeted spell, target is hireling
-    ON_CAST_AutoTarget = 0x0400,               // OE addition. Quick spell key, wand or blaster shot, target from the cursor or the closest actor instead of a picker
+    ON_CAST_AutoTarget = 0x0400,               // OE addition. Quick spell key, wand or blaster shot, bolt spells go at the cursor or the closest actor instead of asking
+    ON_CAST_CastViaWand = 0x0800,              // OE addition. Wand shot, single-actor spells go at the cursor or the closest actor instead of asking
 
     // Cumulative flags indicating that spell is targeted
     ON_CAST_CastingInProgress =
@@ -89,12 +90,15 @@ struct CastSpellInfo {
  * @param casterIndex                   Zero-based index of a character casting the spell.
  * @param skill_value                   Skill value that the spell is cast with.
  * @param flags                         Spell flags. Can be empty or have several flags.
+ * @param target                        Actor to cast at, or an empty pid for the spell to find its own target or
+ *                                      ask for one.
  * @offset 0x0042777D
  */
 void pushSpellOrRangedAttack(SpellId spell,
                              int casterIndex,
                              CombinedSkillValue skill_value,
-                             SpellCastFlags flags);
+                             SpellCastFlags flags,
+                             Pid target = Pid());
 
 /**
  * Register spell cast on party with temple donation.

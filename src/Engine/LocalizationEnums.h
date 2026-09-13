@@ -693,9 +693,10 @@ enum class LstrId {
     LSTR_PLAYER_IS_NOT_ACTIVE           = 687,  // "That player is not active"
     LSTR_NEW_SAVE                       = 688,  // "[New Save]"
     LSTR_QUICKSAVE                      = 689,  // "Quicksave"
+    LSTR_NO_MONSTER_QUICK_SPELL         = 690,  // "Set a QuickSpell that targets a monster!"
 
     LSTR_FIRST = LSTR_AC,
-    LSTR_LAST = LSTR_QUICKSAVE,
+    LSTR_LAST = LSTR_NO_MONSTER_QUICK_SPELL,
 
     LSTR_FIRST_MM7 = LSTR_AC,
     LSTR_LAST_MM7 = LSTR_EVIL_ENDING,
