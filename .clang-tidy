@@ -18,8 +18,7 @@ Checks: >
   -bugprone-suspicious-stringview-data-usage,
   -bugprone-switch-missing-default-case,
   -bugprone-throwing-static-initialization,
-  -bugprone-unchecked-optional-access,
-  -bugprone-use-after-move
+  -bugprone-unchecked-optional-access
 WarningsAsErrors: '*'
 HeaderFilterRegex: '/(src|test)/'
 ExcludeHeaderFilterRegex: '/thirdparty/' # Submodules have src and test dirs of their own.
