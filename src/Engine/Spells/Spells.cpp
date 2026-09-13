@@ -515,7 +515,6 @@ void SpellStats::Initialize(const Blob &spells) {
         pSpellDatas[uSpellID].flags |= tokens[10].contains('m') || tokens[10].contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlags();
         pSpellDatas[uSpellID].flags |= tokens[10].contains('e') || tokens[10].contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlags();
         pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlags();
-        pSpellDatas[uSpellID].flags |= tokens[10].contains('x') || tokens[10].contains('X') ? SPELL_FLAG_8 : SpellFlags();
     }
 
     // Patch SPELL_SHIFT_CLICK_CASTABLE flags that are bogus in vanilla spells.txt. See issues #1494, #1495, #1496.
@@ -807,7 +806,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
 }
 
 bool IsSpellQuickCastableOnShiftClick(SpellId uSpellID) {
-    return pSpellDatas[uSpellID].flags & (SPELL_SHIFT_CLICK_CASTABLE | SPELL_FLAG_8);
+    return pSpellDatas[uSpellID].flags & SPELL_SHIFT_CLICK_CASTABLE;
 }
 
 int CalcSpellDamage(SpellId uSpellID, int spellLevel, Mastery skillMastery, int currentHp) {

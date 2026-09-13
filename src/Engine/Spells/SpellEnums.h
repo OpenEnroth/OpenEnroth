@@ -164,9 +164,6 @@ enum class SpellFlag {
     /** 'C' in spells.txt. Makes the quick spell castable by shift+clicking an actor. E.g. heal isn't shift+click
      * castable (because it targets a character, not an actor), while fire bolt is. */
     SPELL_SHIFT_CLICK_CASTABLE = 0x4,
-
-    /** 'X' in spells.txt, only it's not set for any of the MM7 spells. MMExtension name is `SpecialDamage`. */
-    SPELL_FLAG_8 = 0x8,
 };
 using enum SpellFlag;
 MM_DECLARE_FLAGS(SpellFlags, SpellFlag)
