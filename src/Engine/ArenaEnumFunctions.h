@@ -36,3 +36,13 @@ inline AwardId awardForArenaLevel(ArenaLevel level) {
     case ARENA_LEVEL_LORD:      return AWARD_ARENA_LORD_WINS;
     }
 }
+
+inline float monsterLevelMultiplierForArenaLevel(ArenaLevel level) {
+    switch (level) {
+    default:                    assert(false); [[fallthrough]];
+    case ARENA_LEVEL_PAGE:      return 1.0f;
+    case ARENA_LEVEL_SQUIRE:    return 1.5f;
+    case ARENA_LEVEL_KNIGHT:    return 2.0f;
+    case ARENA_LEVEL_LORD:      return 2.0f;
+    }
+}
