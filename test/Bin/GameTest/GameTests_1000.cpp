@@ -1181,7 +1181,7 @@ GAME_TEST(Issues, Issue1497) {
 
         auto buffTape = actorTapes.hasBuff(0, buff);
         auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
-        game.castQuickSpellAtActor(1, spell, 0);
+        game.castQuickSpellAtActor(0, spell, 0);
         game.tick(10);
         test.stopTaping();
 
@@ -1189,8 +1189,8 @@ GAME_TEST(Issues, Issue1497) {
         EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the clicked goblin.
 
         pParty->pCharacters[0].timeToRecovery = Duration(); // The cast put the caster in recovery, which the S key refuses.
-        pParty->setActiveCharacterIndex(1); // Nobody is active after a cast, and the digit keys only switch between active characters.
-        game.castQuickSpell(1, spell);
+        pParty->setActiveCharacterIndex(0); // Nobody is active after a cast, and the digit keys only switch between active characters.
+        game.castQuickSpell(0, spell);
         EXPECT_NE(pGUIWindow_CastTargetedSpell, nullptr);
     }
 }

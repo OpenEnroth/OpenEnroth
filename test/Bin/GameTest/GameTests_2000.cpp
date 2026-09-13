@@ -1762,7 +1762,7 @@ GAME_TEST(Prs, Pr2669) {
     wand.itemId = ITEM_ARCANE_WAND_OF_PARALYZING;
     wand.numCharges = wand.maxCharges = 1;
     pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
-    pParty->setActiveCharacterIndex(1);
+    pParty->setActiveCharacterIndex(0);
 
     auto buffTape = actorTapes.hasBuff(0, ACTOR_BUFF_PARALYZED);
     auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });

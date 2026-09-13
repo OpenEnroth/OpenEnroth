@@ -163,7 +163,7 @@ class EngineController {
      * Casts a spell by shift-clicking the provided actor with the spell set as the quick spell. The cast goes at
      * that actor without a targeting interface.
      *
-     * @param characterIndex            1-based index of the casting character.
+     * @param characterIndex            0-based index of the casting character.
      * @param spell                     Spell to cast, must be one that shift-click casts.
      * @param actorId                   Id of the actor to cast at.
      * @throws Exception                If the spell can't be cast by shift-click, or if pointing at the actor is
