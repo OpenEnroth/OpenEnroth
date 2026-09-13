@@ -1,5 +1,7 @@
 #include "NPCTopics.h"
 
+#include <algorithm>
+#include <ranges>
 #include <utility>
 #include <string>
 #include <vector>
@@ -289,40 +291,9 @@ void prepareArenaFight(ArenaLevel level) {
     teleportPartyToArena();
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 
-    int characterMaxLevel = 0;
-    for (Character &character : pParty->pCharacters) {
-        if (characterMaxLevel < character.GetActualLevel()) {
-            characterMaxLevel = character.GetActualLevel();
-        }
-    }
-
-    int monsterMaxLevel = characterMaxLevel;
-    int monsterMinLevel = characterMaxLevel / 2;
-
-    switch(level) {
-    case ARENA_LEVEL_PAGE:
-        monsterMaxLevel = characterMaxLevel;
-        break;
-    case ARENA_LEVEL_SQUIRE:
-        monsterMaxLevel = characterMaxLevel * 1.5;
-        break;
-    case ARENA_LEVEL_KNIGHT:
-    case ARENA_LEVEL_LORD:
-        monsterMaxLevel = characterMaxLevel * 2;
-        break;
-    default:
-        assert(false);
-    }
-
-    if (monsterMinLevel < 2)
-        monsterMinLevel = 2;
-    if (monsterMinLevel > 100)
-        monsterMinLevel = 100;
-
-    if (monsterMaxLevel > 100)
-        monsterMaxLevel = 100;
-    if (monsterMaxLevel < 2)
-        monsterMaxLevel = 2;
+    int characterMaxLevel = std::ranges::max(pParty->pCharacters | std::views::transform(&Character::GetActualLevel));
+    int monsterMinLevel = std::clamp(characterMaxLevel / 2, 2, 100);
+    int monsterMaxLevel = std::clamp<int>(characterMaxLevel * monsterLevelMultiplierForArenaLevel(level), 2, 100);
 
     std::vector<MonsterId> candidateIds;
     for (MonsterId i : allArenaMonsters()) {
@@ -332,10 +303,7 @@ void prepareArenaFight(ArenaLevel level) {
     }
     assert(!candidateIds.empty());
 
-    int maxIdsNum = 6;
-    if (candidateIds.size() < 6) {
-        maxIdsNum = candidateIds.size();
-    }
+    int maxIdsNum = std::min<int>(6, std::ssize(candidateIds));
 
     std::vector<MonsterId> monsterIds;
     for (int i = 0; i < maxIdsNum; i++) {
