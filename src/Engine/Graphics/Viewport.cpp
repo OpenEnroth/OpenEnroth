@@ -269,7 +269,11 @@ void Engine::onGameViewportClick() {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtActor, mon_id, 0);
         } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
             pParty->dropHeldItem();
+        } else if (!pParty->hasActiveCharacter()) {
+            engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
+            pAudioPlayer->playUISound(SOUND_error);
         } else {
+            engine->_statusBar->setEvent(LSTR_NO_MONSTER_QUICK_SPELL);
             pAudioPlayer->playUISound(SOUND_error);
         }
     } else if (pid.type() == OBJECT_Decoration) {
@@ -321,7 +325,8 @@ void Engine::onGameViewportClick() {
     } else if (keyboardInputHandler->IsCastOnClickToggled() && pParty->hasActiveCharacter() &&
                pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
                IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
-        pAudioPlayer->playUISound(SOUND_error); // Shift-click casts at an actor, and there is none under the cursor.
+        engine->_statusBar->setEvent(LSTR_NO_VALID_TARGET_EXISTS);
+        pAudioPlayer->playUISound(SOUND_error);
     } else {
         pParty->dropHeldItem();
     }

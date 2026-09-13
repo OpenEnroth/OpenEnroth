@@ -70,6 +70,7 @@ bool Localization::initialize() {
     this->_localizationStrings[LSTR_PLAYER_IS_NOT_ACTIVE] = "That player is not active";
     this->_localizationStrings[LSTR_NEW_SAVE] = "[New Save]";
     this->_localizationStrings[LSTR_QUICKSAVE] = "Quicksave";
+    this->_localizationStrings[LSTR_NO_MONSTER_QUICK_SPELL] = "Set a QuickSpell that targets a monster!";
 
     this->_specialAttackNames[SPECIAL_ATTACK_CURSE] = "Curse";
     this->_specialAttackNames[SPECIAL_ATTACK_WEAK] = "Weaken";
