@@ -572,7 +572,7 @@ GAME_TEST(Issues, Issue1301a) {
         if (!skipIncapacitated)
             EXPECT_EQ(activeTape, tape(activeCharacterIndex));
         if (skipIncapacitated && turnBased)
-            EXPECT_EQ(activeTape, tape(activeCharacterIndex, 0)); // Outside the attack stage turn-based mode has no queue head to fall back on, so no one ends up selected.
+            EXPECT_EQ(activeTape, tape(activeCharacterIndex, -1)); // Outside the attack stage turn-based mode has no queue head to fall back on, so no one ends up selected.
         if (skipIncapacitated && !turnBased) {
             EXPECT_EQ(activeTape, tape(activeCharacterIndex, activeCharacterIndex + 1)); // Realtime mode stops on the first character that can act.
             EXPECT_TRUE(pParty->activeCharacter().CanAct());
@@ -612,7 +612,7 @@ GAME_TEST(Issues, Issue1301b) {
     EXPECT_EQ(deathsTape.delta(), +1);
     EXPECT_EQ(stateTape, tape(std::tuple(true, GAME_STATE_PLAYING), // The death path force-ends turn-based mode, and
                               std::tuple(false, GAME_STATE_PLAYING))); // the died state is gone before the next frame is drawn.
-    EXPECT_EQ(activeTape, tape(1)); // Every frame ends with the death path re-selecting the first character.
+    EXPECT_EQ(activeTape, tape(0)); // Every frame ends with the death path re-selecting the first character.
     EXPECT_EQ(pParty->canActCount(), 4);
 }
 
