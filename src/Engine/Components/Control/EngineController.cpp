@@ -368,7 +368,8 @@ void EngineController::castSpell(int characterIndex, SpellId spell) {
 }
 
 void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
-    Character &character = activateCharacter(characterIndex);
+    activateCharacter(characterIndex);
+    Character &character = pParty->activeCharacter();
     SpellId oldQuickSpell = character.uQuickSpell;
     character.uQuickSpell = spell;
     pressAndReleaseKey(PlatformKey::KEY_S);
@@ -382,18 +383,19 @@ void EngineController::castQuickSpellAtActor(int characterIndex, SpellId spell, 
     if (!IsSpellQuickCastableOnShiftClick(spell))
         throw Exception("Spell #{} can't be cast by shift-click", std::to_underlying(spell));
 
-    Character &character = activateCharacter(characterIndex);
+    activateCharacter(characterIndex);
+    Character &character = pParty->activeCharacter();
     SpellId oldQuickSpell = character.uQuickSpell;
     character.uQuickSpell = spell;
-    Pointi screenPos = pointMouseAtActor(actorId);
+    pointMouseAtActor(actorId);
     pressKey(PlatformKey::KEY_SHIFT);
-    pressAndReleaseButton(BUTTON_LEFT, screenPos);
+    pressAndReleaseButton(BUTTON_LEFT, mouse->position());
     releaseKey(PlatformKey::KEY_SHIFT);
     tick(2); // The click is a queued event, so the quick spell must stay set until the tick that processes it.
     character.uQuickSpell = oldQuickSpell;
 }
 
-Pointi EngineController::pointMouseAtActor(int actorId) {
+void EngineController::pointMouseAtActor(int actorId) {
     // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
     // camera is still at the old position. Tick once to let it catch up.
     tick(1);
@@ -402,13 +404,12 @@ Pointi EngineController::pointMouseAtActor(int actorId) {
     Vec3f viewPos = pCamera3D->ViewTransform(&center);
     if (viewPos.x <= 0)
         throw Exception("Actor #{} is behind the camera", actorId);
-    Pointi screenPos = pCamera3D->Project(viewPos).toInt();
+    Vec2f screenPos = pCamera3D->Project(viewPos);
 
-    moveMouse(screenPos);
+    moveMouse(screenPos.x, screenPos.y);
     tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
     if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Actor, actorId))
         throw Exception("Failed to point mouse at actor #{}", actorId);
-    return screenPos;
 }
 
 void EngineController::pointMouseAtDecoration(int decorationId) {
@@ -429,7 +430,7 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
         throw Exception("Failed to point mouse at decoration #{}", decorationId);
 }
 
-Character &EngineController::activateCharacter(int characterIndex) {
+void EngineController::activateCharacter(int characterIndex) {
     assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
 
     goToGame();
@@ -442,8 +443,6 @@ Character &EngineController::activateCharacter(int characterIndex) {
         if (!pParty->hasActiveCharacter() || pParty->activeCharacterIndex() != characterIndex)
             throw Exception("Couldn't activate character #{}", characterIndex);
     }
-
-    return pParty->pCharacters[characterIndex];
 }
 
 void EngineController::goToGameOrMainMenu() {

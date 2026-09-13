@@ -19,7 +19,6 @@
 class GUIButton;
 class PlatformEvent;
 class Actor;
-class Character;
 
 enum class SpawnFlag {
     SPAWN_STATIONARY = 0x1, // Set moveSpeed to 1 so that the monster stays in place.
@@ -176,10 +175,9 @@ class EngineController {
      * Finds a screen position at which the mouse points at the provided actor & moves the mouse there.
      *
      * @param actorId                   Id of the actor to point at.
-     * @return                          Screen position the mouse was moved to.
      * @throws Exception                If pointing at the actor is not possible, e.g. it's not on the screen.
      */
-    Pointi pointMouseAtActor(int actorId);
+    void pointMouseAtActor(int actorId);
 
     /**
      * Finds a screen position at which the mouse points at the provided decoration & moves the mouse there.
@@ -191,7 +189,7 @@ class EngineController {
 
  private:
     void goToGameOrMainMenu();
-    Character &activateCharacter(int characterIndex);
+    void activateCharacter(int characterIndex);
 
     void pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y, bool isDoubleClick);
 
