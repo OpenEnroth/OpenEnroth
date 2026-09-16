@@ -266,10 +266,14 @@ void Engine::onGameViewportClick() {
         } else if (pParty->hasActiveCharacter() &&
                    pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
                    IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpell, 0, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtActor, mon_id, 0);
         } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
             pParty->dropHeldItem();
+        } else if (!pParty->hasActiveCharacter()) {
+            engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
+            pAudioPlayer->playUISound(SOUND_error);
         } else {
+            engine->_statusBar->setEvent(LSTR_SET_A_QUICK_SPELL);
             pAudioPlayer->playUISound(SOUND_error);
         }
     } else if (pid.type() == OBJECT_Decoration) {

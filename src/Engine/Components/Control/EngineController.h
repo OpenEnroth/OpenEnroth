@@ -151,13 +151,25 @@ class EngineController {
     void castSpell(int characterIndex, SpellId spell);
 
     /**
-     * Casts a spell through the quick spell mechanism. Unlike `castSpell`, quick spells don't open the targeting
-     * interface, and just auto-target the closest actor.
+     * Casts a spell through the quick spell key. Bolt spells go at the actor under the cursor or the closest one,
+     * and single-actor spells such as Berserk open the targeting interface like `castSpell` does.
      *
      * @param characterIndex            0-based index of the casting character.
      * @param spell                     Spell to cast.
      */
     void castQuickSpell(int characterIndex, SpellId spell);
+
+    /**
+     * Casts a spell by shift-clicking the provided actor with the spell set as the quick spell. The cast goes at
+     * that actor without a targeting interface.
+     *
+     * @param characterIndex            0-based index of the casting character.
+     * @param spell                     Spell to cast, must be one that shift-click casts.
+     * @param actorId                   Id of the actor to cast at.
+     * @throws Exception                If the spell can't be cast by shift-click, or if pointing at the actor is
+     *                                  not possible, e.g. it's not on the screen.
+     */
+    void castQuickSpellAtActor(int characterIndex, SpellId spell, int actorId);
 
     /**
      * Finds a screen position at which the mouse points at the provided actor & moves the mouse there.
@@ -177,6 +189,7 @@ class EngineController {
 
  private:
     void goToGameOrMainMenu();
+    void activateCharacter(int characterIndex);
 
     void pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y, bool isDoubleClick);
 
