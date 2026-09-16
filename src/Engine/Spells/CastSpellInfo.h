@@ -42,8 +42,8 @@ enum class SpellCastFlag : uint16_t {
     ON_CAST_TargetedEnchantment = 0x0080,      // Targeted spell, target is item in inventory
     ON_CAST_TargetedActorOrCharacter = 0x0100, // Targeted spell, target either actor or character
     ON_CAST_TargetedHireling = 0x0200,         // Targeted spell, target is hireling
-    ON_CAST_AutoTarget = 0x0400,               // OE addition. Bolt spells go at the cursor or closest actor, no picker
-    ON_CAST_CastViaWand = 0x0800,              // OE addition. Same for Berserk-like single-actor spells, wands only
+    ON_CAST_CastViaQuickSpell = 0x0400,        // OE addition. Spell is cast via the quick spell key
+    ON_CAST_CastViaWand = 0x0800,              // OE addition. Spell is cast via wand
 
     // Cumulative flags indicating that spell is targeted
     ON_CAST_CastingInProgress =

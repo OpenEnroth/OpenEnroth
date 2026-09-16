@@ -3047,7 +3047,7 @@ void pushSpellOrRangedAttack(SpellId spell,
             case SPELL_DARK_SHRINKING_RAY:
             case SPELL_DARK_SHARPMETAL:
             case SPELL_DARK_DRAGON_BREATH:
-                if (!(flags & ON_CAST_AutoTarget)) {
+                if (!(flags & (ON_CAST_CastViaQuickSpell | ON_CAST_CastViaWand))) { // Both find their own target.
                     flags |= ON_CAST_TargetedActor;
                 }
                 break;
@@ -3056,7 +3056,7 @@ void pushSpellOrRangedAttack(SpellId spell,
             case SPELL_MIND_ENSLAVE:
             case SPELL_LIGHT_PARALYZE:
             case SPELL_DARK_CONTROL_UNDEAD:
-                if (!(flags & ON_CAST_CastViaWand)) {
+                if (!(flags & ON_CAST_CastViaWand)) { // A wand finds its own target here, the quick spell key asks.
                     flags |= ON_CAST_TargetedActor;
                 }
                 break;

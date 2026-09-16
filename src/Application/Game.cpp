@@ -955,7 +955,7 @@ void Game::processQueuedMessages() {
                 }
                 if (uMessage == UIMSG_CastQuickSpell) {
                     pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
-                                            CombinedSkillValue::none(), ON_CAST_AutoTarget);
+                                            CombinedSkillValue::none(), ON_CAST_CastViaQuickSpell);
                 } else {
                     pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
                                             CombinedSkillValue::none(), 0, Pid(OBJECT_Actor, uMessageParam));
