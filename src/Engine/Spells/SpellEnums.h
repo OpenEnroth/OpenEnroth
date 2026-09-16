@@ -161,7 +161,7 @@ enum class SpellFlag {
     /** 'E' in spells.txt. Also seems to be properly set, but is never used by the engine. */
     SPELL_CASTABLE_BY_EVENT = 0x2,
 
-    /** 'C' in spells.txt. Makes the quick spell castable by shift+clicking an actor. E.g. heal isn't shift+click
+    /** 'C' or 'X' in spells.txt. Makes the quick spell castable by shift+clicking an actor. E.g. heal isn't shift+click
      * castable (because it targets a character, not an actor), while fire bolt is. */
     SPELL_SHIFT_CLICK_CASTABLE = 0x4,
 };
