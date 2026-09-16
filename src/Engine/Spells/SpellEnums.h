@@ -161,12 +161,11 @@ enum class SpellFlag {
     /** 'E' in spells.txt. Also seems to be properly set, but is never used by the engine. */
     SPELL_CASTABLE_BY_EVENT = 0x2,
 
-    /** 'C' in spells.txt. Makes the quick spell castable by shift+clicking an actor. E.g. heal isn't shift+click
-     * castable (because it targets a character, not an actor), while fire bolt is. */
+    /** 'C' or 'X' in spells.txt. Makes the quick spell castable by shift+clicking an actor. E.g. heal isn't shift+click
+     * castable (because it targets a character, not an actor), while fire bolt is. 'X' had a flag of its own in the
+     * original engine, and the shift+click check read it exactly like 'C'. No MM7 or MM8 spell sets 'X', and MM6's
+     * spells.txt has no Stats column at all. */
     SPELL_SHIFT_CLICK_CASTABLE = 0x4,
-
-    /** 'X' in spells.txt, only it's not set for any of the MM7 spells. MMExtension name is `SpecialDamage`. */
-    SPELL_FLAG_8 = 0x8,
 };
 using enum SpellFlag;
 MM_DECLARE_FLAGS(SpellFlags, SpellFlag)
