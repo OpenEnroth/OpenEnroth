@@ -953,13 +953,9 @@ void Game::processQueuedMessages() {
                 if (!pParty->hasActiveCharacter() || pParty->activeCharacter().timeToRecovery) {
                     continue;
                 }
-                if (uMessage == UIMSG_CastQuickSpell) {
-                    pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
-                                            CombinedSkillValue::none(), ON_CAST_CastViaQuickSpell);
-                } else {
-                    pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
-                                            CombinedSkillValue::none(), 0, Pid(OBJECT_Actor, uMessageParam));
-                }
+                Pid target = uMessage == UIMSG_CastQuickSpellAtActor ? Pid(OBJECT_Actor, uMessageParam) : Pid();
+                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
+                                        CombinedSkillValue::none(), ON_CAST_CastViaQuickSpell, target);
                 continue;
             }
 
