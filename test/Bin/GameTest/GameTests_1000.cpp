@@ -1164,33 +1164,68 @@ GAME_TEST(Issues, Issue1489) {
     EXPECT_CONTAINS(amuletTape, ITEM_NULL);
 }
 
-GAME_TEST(Issues, Issue1497) {
+GAME_TEST(Issues, Issue1497a) {
     // Shift-clicking an actor with Berserk as the quick spell opened the target picker instead of casting at the
     // clicked actor. Paralyze shared the code path and had the same bug. The S key keeps opening the picker.
     for (auto [spell, buff] : {std::pair(SPELL_MIND_BERSERK, ACTOR_BUFF_BERSERK), std::pair(SPELL_LIGHT_PARALYZE, ACTOR_BUFF_PARALYZED)}) {
-        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        for (bool atActor : {true, false}) {
+            test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
 
-        engine->config->debug.NoActors.setValue(true);
-        engine->config->debug.AllMagic.setValue(true);
-        game.startNewGame();
-        test.startTaping();
-        prepareForBattleTest();
-        engine->config->debug.NoActors.setValue(false);
+            engine->config->debug.NoActors.setValue(true);
+            engine->config->debug.AllMagic.setValue(true);
+            game.startNewGame();
+            test.startTaping();
+            prepareForBattleTest();
+            engine->config->debug.NoActors.setValue(false);
 
-        game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists.
+            game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists.
 
-        auto buffTape = actorTapes.hasBuff(0, buff);
-        auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
-        game.castQuickSpellAtActor(0, spell, 0);
-        game.tick(10);
-        test.stopTaping();
+            auto buffTape = actorTapes.hasBuff(0, buff);
+            auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
+            if (atActor) {
+                game.castQuickSpellAtActor(0, spell, 0);
+            } else {
+                game.pointMouseAtActor(0);
+                game.castQuickSpell(0, spell);
+            }
+            game.tick(10);
+            test.stopTaping();
 
-        EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened.
-        EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the clicked goblin.
-
-        pParty->pCharacters[0].timeToRecovery = Duration(); // The cast put the caster in recovery, which the S key refuses.
-        pParty->setActiveCharacterIndex(0); // Nobody is active after a cast, and the digit keys only switch between active characters.
-        game.castQuickSpell(0, spell);
-        EXPECT_NE(pGUIWindow_CastTargetedSpell, nullptr);
+            if (atActor) {
+                EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened.
+                EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the clicked goblin.
+            } else {
+                EXPECT_EQ(pickerTape.frontBack(), tape(false, true)); // The S key asks even with the goblin under the cursor.
+                EXPECT_EQ(buffTape, tape(false));
+            }
+        }
     }
+}
+
+GAME_TEST(Issues, Issue1497b) {
+    // The Arcane Wand of Paralyzing opened the target picker on every shot, unlike every other wand.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists.
+
+    Item wand;
+    wand.itemId = ITEM_ARCANE_WAND_OF_PARALYZING;
+    wand.numCharges = wand.maxCharges = 1;
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
+
+    auto buffTape = actorTapes.hasBuff(0, ACTOR_BUFF_PARALYZED);
+    auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });
+    game.pointMouseAtActor(0);
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick(10);
+    test.stopTaping();
+
+    EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened.
+    EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // The shot paralyzed the goblin under the cursor.
 }
