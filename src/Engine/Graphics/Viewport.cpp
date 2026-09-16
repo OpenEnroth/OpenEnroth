@@ -273,7 +273,7 @@ void Engine::onGameViewportClick() {
             engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             pAudioPlayer->playUISound(SOUND_error);
         } else {
-            engine->_statusBar->setEvent(LSTR_NO_MONSTER_QUICK_SPELL);
+            engine->_statusBar->setEvent(LSTR_SET_A_QUICK_SPELL);
             pAudioPlayer->playUISound(SOUND_error);
         }
     } else if (pid.type() == OBJECT_Decoration) {
