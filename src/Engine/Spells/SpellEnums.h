@@ -162,7 +162,9 @@ enum class SpellFlag {
     SPELL_CASTABLE_BY_EVENT = 0x2,
 
     /** 'C' or 'X' in spells.txt. Makes the quick spell castable by shift+clicking an actor. E.g. heal isn't shift+click
-     * castable (because it targets a character, not an actor), while fire bolt is. */
+     * castable (because it targets a character, not an actor), while fire bolt is. 'X' had a flag of its own in the
+     * original engine, and the shift+click check read it exactly like 'C'. No MM7 or MM8 spell sets 'X', and MM6's
+     * spells.txt has no Stats column at all. */
     SPELL_SHIFT_CLICK_CASTABLE = 0x4,
 };
 using enum SpellFlag;

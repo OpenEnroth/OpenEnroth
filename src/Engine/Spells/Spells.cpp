@@ -515,8 +515,6 @@ void SpellStats::Initialize(const Blob &spells) {
         pSpellDatas[uSpellID].flags |= tokens[10].contains('m') || tokens[10].contains('M') ? SPELL_CASTABLE_BY_MONSTER : SpellFlags();
         pSpellDatas[uSpellID].flags |= tokens[10].contains('e') || tokens[10].contains('E') ? SPELL_CASTABLE_BY_EVENT : SpellFlags();
         pSpellDatas[uSpellID].flags |= tokens[10].contains('c') || tokens[10].contains('C') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlags();
-        // 'X' had a flag of its own in the original engine, and the shift+click check read it exactly like 'C'.
-        // No MM7 or MM8 spell sets it, and MM6's spells.txt has no Stats column at all.
         pSpellDatas[uSpellID].flags |= tokens[10].contains('x') || tokens[10].contains('X') ? SPELL_SHIFT_CLICK_CASTABLE : SpellFlags();
     }
 
