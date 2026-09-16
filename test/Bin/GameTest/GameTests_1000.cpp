@@ -1177,7 +1177,7 @@ GAME_TEST(Issues, Issue1497) {
         prepareForBattleTest();
         engine->config->debug.NoActors.setValue(false);
 
-        game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists, the roll is random(level / 4 + resist + 30) < 30.
+        game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists.
 
         auto buffTape = actorTapes.hasBuff(0, buff);
         auto pickerTape = tapes.custom([] { return pGUIWindow_CastTargetedSpell != nullptr; });

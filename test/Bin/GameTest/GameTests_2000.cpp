@@ -1756,7 +1756,7 @@ GAME_TEST(Prs, Pr2669) {
     prepareForBattleTest();
     engine->config->debug.NoActors.setValue(false);
 
-    game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists, the roll is random(level / 4 + resist + 30) < 30.
+    game.spawnMonster(pParty->pos + Vec3f(0, 400, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY); // Level 1 with no resistances never resists.
 
     Item wand;
     wand.itemId = ITEM_ARCANE_WAND_OF_PARALYZING;
