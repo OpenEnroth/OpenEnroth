@@ -322,11 +322,6 @@ void Engine::onGameViewportClick() {
             // Do not interact with faces with no active character
             engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
         }
-    } else if (keyboardInputHandler->IsCastOnClickToggled() && pParty->hasActiveCharacter() &&
-               pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
-               IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
-        engine->_statusBar->setEvent(LSTR_NO_VALID_TARGET_EXISTS);
-        pAudioPlayer->playUISound(SOUND_error);
     } else {
         pParty->dropHeldItem();
     }
