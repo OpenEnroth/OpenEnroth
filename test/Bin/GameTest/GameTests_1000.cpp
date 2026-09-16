@@ -28,6 +28,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Io/Mouse.h"
+
 #include "Utility/Lambda.h"
 
 #include "GameTestCommon.h"
@@ -1187,17 +1189,13 @@ GAME_TEST(Issues, Issue1497a) {
             } else {
                 game.pointMouseAtActor(0);
                 game.castQuickSpell(0, spell);
+                game.pressAndReleaseButton(BUTTON_LEFT, mouse->position()); // Pick the goblin in the picker.
             }
             game.tick(10);
             test.stopTaping();
 
-            if (atActor) {
-                EXPECT_EQ(pickerTape, tape(false)); // Target picker never opened.
-                EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the clicked goblin.
-            } else {
-                EXPECT_EQ(pickerTape.frontBack(), tape(false, true)); // The S key asks even with the goblin under the cursor.
-                EXPECT_EQ(buffTape, tape(false));
-            }
+            EXPECT_EQ(pickerTape, atActor ? tape(false) : tape(false, true, false)); // Only the S key asks.
+            EXPECT_EQ(buffTape.frontBack(), tape(false, true)); // Spell landed on the goblin.
         }
     }
 }
