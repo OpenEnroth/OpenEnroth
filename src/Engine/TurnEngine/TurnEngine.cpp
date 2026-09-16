@@ -445,6 +445,9 @@ bool stru262_TurnBased::StepTurnQueue() {
     int j;
 
     SortTurnQueue();
+    if (pQueue.empty())
+        return false; // All characters are dead & no monsters around.
+
     if (pQueue[0].actor_initiative != 0) {
         if (pQueue[0].uPackedID.type() == OBJECT_Character) {
             do {
