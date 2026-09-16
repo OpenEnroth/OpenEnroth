@@ -227,14 +227,14 @@ GAME_TEST(Issues, Issue1175) {
 }
 
 GAME_TEST(Issues, Issue1191) {
-    // Warlock's baby dragon added +3 to the elemental magic skills but not to the self magic ones.
+    // Warlock's baby dragon added +3 to the elemental magic skills but missed spirit, mind and body.
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
 
     pParty->pCharacters[0].classType = CLASS_WARLOCK;
     pParty->pCharacters[2].classType = CLASS_WARLOCK;
 
-    // An unlearned skill would take the bonus too, so every skill gets a base to make the expected value exact.
+    // A character without the skill takes the bonus too, so every skill gets a base to keep the expectation exact.
     for (Character &character : pParty->pCharacters)
         for (Skill skill : allMagicSkills())
             character.setSkillValue(skill, CombinedSkillValue::novice(4));
