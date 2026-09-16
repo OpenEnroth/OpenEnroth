@@ -1145,7 +1145,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
         }
 
         if (!pBuff->isGM) {
-            if (!pParty->pCharacters[pBuff->caster - 1].CanAct()) {
+            if (!pParty->pCharacters[pBuff->caster].CanAct()) {
                 pBuff->Reset();
                 if (buffIdx == PARTY_BUFF_FLY) {
                     pParty->bFlying = false;
@@ -1156,14 +1156,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
 
     maybeWakeSoloSurvivor();
     updatePartyDeathState();
-
-    if (pParty->hasActiveCharacter()) {
-        if (current_screen_type != SCREEN_REST) {
-            if (!pParty->activeCharacter().CanAct()) {
-                pParty->switchToNextActiveCharacter();
-            }
-        }
-    }
+    dropFocusFromIncapacitatedCharacter();
 }
 
 void maybeWakeSoloSurvivor() {
@@ -1188,6 +1181,11 @@ void maybeWakeSoloSurvivor() {
 void updatePartyDeathState() {
     if (current_screen_type != SCREEN_REST && pParty->canActCount() == 0)
         uGameState = GAME_STATE_PARTY_DIED;
+}
+
+void dropFocusFromIncapacitatedCharacter() {
+    if (current_screen_type != SCREEN_REST && pParty->hasActiveCharacter() && !pParty->activeCharacter().CanAct())
+        pParty->switchToNextActiveCharacter();
 }
 
 void RegeneratePartyHealthMana() {
@@ -1267,7 +1265,7 @@ void RegeneratePartyHealthMana() {
     // GM does not drain
     if (!engine->config->debug.AllMagic.value() && pParty->FlyActive() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM) {
         if (pParty->bFlying) {
-            int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1;
+            int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].caster;
             pParty->pCharacters[caster].mana = std::max(0, pParty->pCharacters[caster].mana - ticks5);
         }
     }
@@ -1276,7 +1274,7 @@ void RegeneratePartyHealthMana() {
     // GM does not drain
     if (!engine->config->debug.AllMagic.value() && pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM) {
         if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER) {
-            int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1;
+            int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster;
 
             int ticksW = ticks5;
             // Vanilla bug: Water Walk drains mana with the same speed as Fly.

@@ -7,6 +7,8 @@
 #include <vector>
 #include <sol/sol.hpp>
 
+#include "Utility/String/TransparentFunctors.h"
+
 typedef std::vector<std::string_view> QueryTable;
 
 // A helper class used to fill a lua table with all the requested information
@@ -33,7 +35,7 @@ class LuaItemQueryTable {
             }
         } else {
             for (auto &&key : queryTable) {
-                if (auto itr = _mapping.find(key.data()); itr != _mapping.end()) {
+                if (auto itr = _mapping.find(key); itr != _mapping.end()) {
                     table[key] = itr->second(item);
                 }
             }
@@ -42,7 +44,7 @@ class LuaItemQueryTable {
     }
 
  private:
-    typedef std::unordered_map<std::string, std::function<sol::object(const ItemType &)>> MapFunctions;
+    using MapFunctions = std::unordered_map<std::string, std::function<sol::object(const ItemType &)>, TransparentStringHash, TransparentStringEquals>;
 
     MapFunctions _mapping;
     sol::state_view _luaState;

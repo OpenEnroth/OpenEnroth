@@ -260,8 +260,6 @@ void Game::closeTargetedSpellWindow() {
 void Game::onEscape() {
     closeTargetedSpellWindow();
 
-    // if ((signed int)pParty->activeCharacterIndex() < 1 || (signed int)pParty->activeCharacterIndex() > 4)
-
     pParty->switchToNextActiveCharacter();  // always check this - could leave
                                            // shops with characters who couldnt
                                            // act sctive
@@ -446,7 +444,7 @@ void Game::processQueuedMessages() {
                 // open window
                 pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_JournalBook>();
                 continue;
-            case UIMSG_Escape:  // нажатие Escape and return to game
+            case UIMSG_Escape:
                 back_to_game();
                 engine->_messageQueue->clear();
                 switch (current_screen_type) {
@@ -516,10 +514,10 @@ void Game::processQueuedMessages() {
                         if (current_screen_type < SCREEN_64) {
                             switch (current_screen_type) {
                                 case SCREEN_CASTING:
-                                    if (enchantingActiveCharacter) {
+                                    if (enchantingActiveCharacter != -1) {
                                         pParty->setActiveCharacterIndex(enchantingActiveCharacter);
                                         pParty->switchToNextActiveCharacter();
-                                        enchantingActiveCharacter = 0;
+                                        enchantingActiveCharacter = -1;
                                         if (pParty->bTurnBasedModeOn) {
                                             pTurnEngine->ApplyPlayerAction();
                                         }
@@ -954,7 +952,7 @@ void Game::processQueuedMessages() {
                 if (!pParty->hasActiveCharacter() || pParty->activeCharacter().timeToRecovery) {
                     continue;
                 }
-                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex() - 1,
+                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex(),
                                         CombinedSkillValue::none(), ON_CAST_AutoTarget);
                 continue;
             }
@@ -1199,9 +1197,7 @@ void Game::processQueuedMessages() {
                 continue;
             }
 
-            case UIMSG_SpellBook_PressTab:  //перелистывание страниц
-                                            //клавишей Tab
-            {
+            case UIMSG_SpellBook_PressTab: {
                 if (!pParty->hasActiveCharacter()) continue;
                 std::array<MagicSchool, 9> spellbookPages = {};
                 int skill_count = 0;
@@ -1214,7 +1210,7 @@ void Game::processQueuedMessages() {
                         spellbookPages[skill_count++] = page;
                     }
                 }
-                if (!skill_count) {  //нет скиллов
+                if (!skill_count) {
                     pAudioPlayer->playUISound(vrng->randomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
                 } else {
                     if (keyboardInputHandler->IsSpellBackcycleToggled()) {
@@ -1255,7 +1251,7 @@ void Game::processQueuedMessages() {
                         current_screen_type = SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
                         // drawing object list which is used to count actors for some spells
-                        engine->_messageQueue->addMessageNextFrame(UIMSG_CastSpellFromBook, std::to_underlying(selectedSpell), pParty->activeCharacterIndex() - 1);
+                        engine->_messageQueue->addMessageNextFrame(UIMSG_CastSpellFromBook, std::to_underlying(selectedSpell), pParty->activeCharacterIndex());
                     } else {
                         spellbookSelectedSpell = selectedSpell;
                     }
@@ -1420,9 +1416,7 @@ void Game::processQueuedMessages() {
                 engine->_messageQueue->clear();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_MouseLeftClickInScreen, 0, 0);
                 continue;
-            case UIMSG_MouseLeftClickInScreen:  // срабатывает при нажатии на
-                                                // правую кнопку мыши после
-                                                // UIMSGmouseLeftClickInGame
+            case UIMSG_MouseLeftClickInScreen:
                 engine->_messageQueue->clear();
                 engine->onGameViewportClick();
                 continue;
@@ -1592,6 +1586,8 @@ void Game::gameLoop() {
                     // Need to process party death in turn-based mode.
                     maybeWakeSoloSurvivor();
                     updatePartyDeathState();
+                    if (engine->config->gameplay.TurnBasedFocusSkipsIncapacitated.value())
+                        dropFocusFromIncapacitatedCharacter();
                 }
 
                 if (dword_6BE364_game_settings_1 & GAME_SETTINGS_SKIP_WORLD_UPDATE) {
@@ -1613,7 +1609,7 @@ void Game::gameLoop() {
                 continue;
             }
 
-            if (uGameState == GAME_STATE_CHANGE_LOCATION) {  // смена локации
+            if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                 pAudioPlayer->stopSounds();
                 PrepareWorld(0);
                 uGameState = GAME_STATE_PLAYING;
@@ -1677,7 +1673,7 @@ void Game::gameLoop() {
                                        // 0, 0x180u);//(pCharacterBuffs[0], 0, 384)
                     character.health = 1;
                 }
-                pParty->setActiveCharacterIndex(1);
+                pParty->setActiveCharacterIndex(0);
 
                 if (pParty->_questBits[QBIT_ESCAPED_EMERALD_ISLE]) {
                     pParty->pos = Vec3f(-17331, 12547, 465); // respawn in harmondale

@@ -49,7 +49,7 @@ void GUIWindow_Temple::healDialogue() {
                 pParty->activeCharacter().uPrevVoiceID = pParty->activeCharacter().uVoiceID;
                 pParty->activeCharacter().uVoiceID = (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23;
                 pParty->activeCharacter().uCurrentFace = (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23;
-                GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23);
+                GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex(), (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23);
                 setZombie = true;
             }
         }
@@ -57,7 +57,7 @@ void GUIWindow_Temple::healDialogue() {
         if (pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
             pParty->activeCharacter().uCurrentFace = pParty->activeCharacter().uPrevFace;
             pParty->activeCharacter().uVoiceID = pParty->activeCharacter().uPrevVoiceID;
-            GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, pParty->activeCharacter().uPrevFace);
+            GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex(), pParty->activeCharacter().uPrevFace);
         }
     }
 
@@ -83,7 +83,7 @@ void GUIWindow_Temple::donateDialogue() {
             ddm->reputation -= 1;
         }
         int day = pParty->uCurrentDayOfMonth % 7;
-        int counter = _templeSpellCounter[pParty->activeCharacterIndex() - 1] % 7;
+        int counter = _templeSpellCounter[pParty->activeCharacterIndex()] % 7;
         if (counter == day) {
             if (ddm->reputation <= -5) {
                 pushTempleSpell(SPELL_AIR_WIZARD_EYE);
@@ -101,7 +101,7 @@ void GUIWindow_Temple::donateDialogue() {
                 pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
             }
         }
-        _templeSpellCounter[pParty->activeCharacterIndex() - 1]++;
+        _templeSpellCounter[pParty->activeCharacterIndex()]++;
         pParty->activeCharacter().playReaction(SPEECH_TEMPLE_DONATE);
         engine->_statusBar->setEvent(LSTR_THANK_YOU);
     } else {

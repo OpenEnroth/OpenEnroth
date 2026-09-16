@@ -161,7 +161,7 @@ TestMultiTape<SpriteId> CommonTapeRecorder::sprites() {
 }
 
 TestTape<int> CommonTapeRecorder::activeCharacterIndex() {
-    return custom([] { return pParty->hasActiveCharacter() ? pParty->activeCharacterIndex() : 0; });
+    return custom([] { return pParty->hasActiveCharacter() ? pParty->activeCharacterIndex() : -1; });
 }
 
 TestTape<bool> CommonTapeRecorder::questBit(QuestBit bit) {

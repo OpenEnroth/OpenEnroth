@@ -100,9 +100,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
         }),
         "getActiveCharacter", sol::as_function([]() {
             if (pParty->hasActiveCharacter()) {
-                int index = pParty->activeCharacterIndex();
-                assert(index != 0); //keep an assert here in case we change the 1-based index to 0 in the future so we can adjust it accordingly
-                return index; //a 1-based index is totally fine for lua
+                return pParty->activeCharacterIndex() + 1; // Lua side counts characters from 1.
             } else {
                 return 0;
             }

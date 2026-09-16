@@ -224,30 +224,30 @@ void OutdoorLocation::Draw() {
     pOutdoor->ExecDraw(true);
 
     engine->DrawParticles();
-    // pWeather->Draw();// если раскомментировать скорость снега быстрее
+    // pWeather->Draw(); // Engine::DrawGUI already calls this once a frame, a second call doubles the snow speed.
     trail_particle_generator.UpdateParticles();
 }
 
 //----- (00488E23) --------------------------------------------------------
 double OutdoorLocation::GetFogDensityByTime() {
-    if (pParty->uCurrentHour < 5) {  // ночь
+    if (pParty->uCurrentHour < 5) { // Night.
         pWeather->bNight = true;
         return 60.0 * 0.016666668;
-    } else if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 6) {  // рассвет
+    } else if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 6) { // Dawn.
         pWeather->bNight = false;
         return (60.0 - (double)(60 * pParty->uCurrentHour +
                                 pParty->uCurrentMinute - 300)) *
                0.016666668;
-    } else if (pParty->uCurrentHour >= 6 && pParty->uCurrentHour < 20) {  // день
+    } else if (pParty->uCurrentHour >= 6 && pParty->uCurrentHour < 20) { // Day.
         pWeather->bNight = false;
         return 0.0;
     } else if (pParty->uCurrentHour >= 20 &&
-               pParty->uCurrentHour < 21) {  // сумерки
+               pParty->uCurrentHour < 21) { // Dusk.
         pWeather->bNight = false;
         return ((double)(pParty->uCurrentHour - 20) * 60.0 +
                 (double)(signed int)pParty->uCurrentMinute) *
                0.016666668;
-    } else {  // ночь
+    } else { // Night.
         pWeather->bNight = true;
         return 60.0 * 0.016666668;
     }
@@ -919,7 +919,7 @@ void ODM_ProcessPartyActions() {
         waterWalkActive = true;
         engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] |= 1;
         if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGM &&
-            pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1].mana <= 0)
+            pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster].mana <= 0)
             waterWalkActive = false;
     }
 
@@ -1003,7 +1003,7 @@ void ODM_ProcessPartyActions() {
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM ||
-                    (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
+                    (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster].mana > 0 || engine->config->debug.AllMagic.value())) {
                     if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value() || partyNotTouchingFloor) {
                         pParty->bFlying = true;
                         pParty->velocity.z = 0;
@@ -1218,7 +1218,7 @@ void ODM_ProcessPartyActions() {
             pParty->bFlying = false;
             if (engine->IsUnderwater() ||
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].isGM ||
-                (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
+                (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster].mana > 0 || engine->config->debug.AllMagic.value())) {
                 partyOldFlightZ = pParty->pos.z;
                 partyInputSpeed.z = -pParty->walkSpeed * 4;
                 pParty->bFlying = true;

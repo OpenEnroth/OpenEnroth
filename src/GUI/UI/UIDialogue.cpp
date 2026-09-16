@@ -174,7 +174,7 @@ void GUIWindow_Dialogue::Update() {
         return;
     }
 
-    // Window title(Заголовок окна)----
+    // Window title
     NPCData *pNPC = getNPCData(speakingNpcId);
     NpcType npcType = getNPCType(speakingNpcId);
     render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
@@ -245,7 +245,7 @@ void GUIWindow_Dialogue::Update() {
     // Message window
     pDialogueWindow->DrawDialoguePanel(dialogue_string);
 
-    // Right panel(Правая панель)-------
+    // Right panel
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i) {
         GUIButton *pButton = pDialogueWindow->GetControl(i);
         if (!pButton) {
@@ -276,7 +276,7 @@ void GUIWindow_Dialogue::Update() {
         }
     }
 
-    // Install Buttons(Установка кнопок)--------
+    // Button layout
     Recti window = pDialogueWindow->frameRect;
     window.x = SIDE_TEXT_BOX_POS_X;
     window.w = SIDE_TEXT_BOX_WIDTH;

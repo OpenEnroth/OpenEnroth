@@ -201,6 +201,7 @@ void setDecorationSprite(uint16_t uCog, bool bHide, std::string_view pFileName);
 void _494035_timed_effects__water_walking_damage__etc(Duration dt);
 void maybeWakeSoloSurvivor();
 void updatePartyDeathState();
+void dropFocusFromIncapacitatedCharacter();
 
 /**
  * Modify party health or mana based on party or players conditions/buffs.

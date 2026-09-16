@@ -327,8 +327,6 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
 
     std::string result;
 
-    // In the mapbook only lady Margaret dispays for defoult zoom(В
-    // книге карты только Леди Маргарита всплывает при дефолтном зуме)
     int map_tile_X = std::abs(global_coord_X + maxPartyAxisDistance) / 512;
     int map_tile_Y = std::abs(global_coord_Y - maxPartyAxisDistance) / 512;
     if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) &&

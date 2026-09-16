@@ -45,18 +45,18 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
 /**
  * Prepare textures of character doll with wetsuit on.
  *
- * @param uPlayerID     ID of player, 1-based.
+ * @param characterIndex                0-based index of the character.
  * @offset 0x43EF2B
  */
-static void WetsuitOn(int uPlayerID);
+static void WetsuitOn(int characterIndex);
 
 /**
  * Prepare textures of character doll with wetsuit off.
  *
- * @param uPlayerID     ID of player, 1-based.
+ * @param characterIndex                0-based index of the character.
  * @offset 0x43F0BD
  */
-static void WetsuitOff(int uPlayerID);
+static void WetsuitOff(int characterIndex);
 
 HitMap<int> equipmentHitMap;
 
@@ -1358,9 +1358,9 @@ void CharacterUI_LoadPaperdollTextures() {
 
     for (int i = 0; i < pParty->pCharacters.size(); ++i) {
         if (pParty->pCharacters[i].hasUnderwaterSuitEquipped()) {
-            WetsuitOn(i + 1);
+            WetsuitOn(i);
         } else {
-            WetsuitOff(i + 1);
+            WetsuitOff(i);
         }
     }
 
@@ -1417,7 +1417,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     Skill skill;
 
     int buttons_count = 0;
-    if (dword_507CC0_activ_ch) CharacterUI_ReleaseButtons();
+    if (dword_507CC0_activ_ch != -1) CharacterUI_ReleaseButtons();
     dword_507CC0_activ_ch = pParty->activeCharacterIndex();
     for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
         if (pButton->msg == UIMSG_InventoryLeftClick) {
@@ -1653,49 +1653,43 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
     }
 }
 
-void WetsuitOn(int uPlayerID) {
-    if (uPlayerID > 0) {
-        int playerId0 = uPlayerID - 1;
-        Character *player = &pParty->pCharacters[playerId0];
-        int texture_num;
+void WetsuitOn(int characterIndex) {
+    Character *player = &pParty->pCharacters[characterIndex];
+    int texture_num;
 
-        if (player->GetRace() == RACE_DWARF) {
-            texture_num = (player->GetSexByVoice() != SEX_MALE) + 3;
-        } else {
-            texture_num = (player->GetSexByVoice() != SEX_MALE) + 1;
-        }
-        paperdoll_dbods[playerId0] = assets->getImage_Alpha(fmt::format("pc23v{}Bod", texture_num));  // Body texture
-        paperdoll_dlads[playerId0] = assets->getImage_Alpha(fmt::format("pc23v{}lad", texture_num));  // Left Hand
-        paperdoll_dlaus[playerId0] = assets->getImage_Alpha(fmt::format("pc23v{}lau", texture_num));  // Left Hand2
-        paperdoll_drhs[playerId0] = assets->getImage_Alpha(fmt::format("pc23v{}rh", texture_num));  // Right Hand
-        paperdoll_dlhs[playerId0] = assets->getImage_Alpha(fmt::format("pc23v{}lh", texture_num));  // Left Palm
-        paperdoll_dlhus[playerId0] = assets->getImage_Alpha(fmt::format("pc23v{}lhu", texture_num));  // Left Fist
-
-        if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
-            paperdoll_dbrds[player->uCurrentFace] = nullptr;
-        }
-        paperdoll_flying_feet[player->uCurrentFace] = nullptr;
+    if (player->GetRace() == RACE_DWARF) {
+        texture_num = (player->GetSexByVoice() != SEX_MALE) + 3;
+    } else {
+        texture_num = (player->GetSexByVoice() != SEX_MALE) + 1;
     }
+    paperdoll_dbods[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}Bod", texture_num));  // Body texture
+    paperdoll_dlads[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lad", texture_num));  // Left Hand
+    paperdoll_dlaus[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lau", texture_num));  // Left Hand2
+    paperdoll_drhs[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}rh", texture_num));  // Right Hand
+    paperdoll_dlhs[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lh", texture_num));  // Left Palm
+    paperdoll_dlhus[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lhu", texture_num));  // Left Fist
+
+    if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
+        paperdoll_dbrds[player->uCurrentFace] = nullptr;
+    }
+    paperdoll_flying_feet[player->uCurrentFace] = nullptr;
 }
 
-void WetsuitOff(int uPlayerID) {
-    if (uPlayerID > 0) {
-        int playerId0 = uPlayerID - 1;
-        Character *player = &pParty->pCharacters[playerId0];
+void WetsuitOff(int characterIndex) {
+    Character *player = &pParty->pCharacters[characterIndex];
 
-        paperdoll_dbods[playerId0] = assets->getImage_Alpha(dbod_texnames_by_face[player->uCurrentFace]);
-        paperdoll_dlads[playerId0] = assets->getImage_Alpha(dlad_texnames_by_face[player->uCurrentFace]);
-        paperdoll_dlaus[playerId0] = assets->getImage_Alpha(dlau_texnames_by_face[player->uCurrentFace]);
-        paperdoll_drhs[playerId0] = assets->getImage_Alpha(drh_texnames_by_face[player->uCurrentFace]);
-        paperdoll_dlhs[playerId0] = assets->getImage_Alpha(dlh_texnames_by_face[player->uCurrentFace]);
-        paperdoll_dlhus[playerId0] = assets->getImage_Alpha(dlhu_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dbods[characterIndex] = assets->getImage_Alpha(dbod_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dlads[characterIndex] = assets->getImage_Alpha(dlad_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dlaus[characterIndex] = assets->getImage_Alpha(dlau_texnames_by_face[player->uCurrentFace]);
+    paperdoll_drhs[characterIndex] = assets->getImage_Alpha(drh_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dlhs[characterIndex] = assets->getImage_Alpha(dlh_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dlhus[characterIndex] = assets->getImage_Alpha(dlhu_texnames_by_face[player->uCurrentFace]);
 
-        if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
-            paperdoll_dbrds[player->uCurrentFace] = assets->getImage_Alpha(fmt::format("pc{:02}brd", player->uCurrentFace + 1));
-        }
-
-        paperdoll_flying_feet[player->uCurrentFace] = assets->getImage_Alpha(fmt::format("item281pc{:02}", player->uCurrentFace + 1));
+    if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
+        paperdoll_dbrds[player->uCurrentFace] = assets->getImage_Alpha(fmt::format("pc{:02}brd", player->uCurrentFace + 1));
     }
+
+    paperdoll_flying_feet[player->uCurrentFace] = assets->getImage_Alpha(fmt::format("item281pc{:02}", player->uCurrentFace + 1));
 }
 
 //----- (00468F8A) --------------------------------------------------------
@@ -1814,7 +1808,6 @@ void OnPaperdollLeftClick() {
                 return;
             }
 
-                // ------------------------dress rings(одевание колец)----------------------------------
             case ITEM_TYPE_RING:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {  // cant put anything
                                                                                         // on wearing wetsuit
@@ -1872,17 +1865,16 @@ void OnPaperdollLeftClick() {
                     return;  // shouldnt get here but in case??
                 }
 
-                // ------------------dress shield(одеть щит)------------------------------------------------------
-            case ITEM_TYPE_SHIELD:  //Щит
-                if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {  // в акваланге
+            case ITEM_TYPE_SHIELD:
+                if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }
-                if (!pParty->activeCharacter().HasSkill(pSkillType)) {  // нет навыка
+                if (!pParty->activeCharacter().HasSkill(pSkillType)) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
-                if (shieldequip) {  // смена щита щитом
+                if (shieldequip) {
                     Item tmp = pParty->activeCharacter().inventory.take(shieldequip);
                     pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                     pParty->setHoldingItem(tmp);
@@ -1894,17 +1886,15 @@ void OnPaperdollLeftClick() {
                         pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
                         return;
                     }
-                    if (!twohandedequip) {  // обычная установка щита на пустую руку
+                    if (!twohandedequip) {
                         pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                         return;
                     }
-                    // ставим щит когда держит двуручный меч
                     Item tmp = pParty->activeCharacter().inventory.take(twohandedequip);
                     pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                     pParty->setHoldingItem(tmp);
                 }
                 return;
-                // -------------------------taken in hand(взять в руку)-------------------------------------------
             case ITEM_TYPE_SINGLE_HANDED:
             case ITEM_TYPE_WAND:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped() && !isAncientWeapon(pParty->pPickedItem.itemId)) {
@@ -1955,8 +1945,6 @@ void OnPaperdollLeftClick() {
                     pParty->setHoldingItem(tmp);
                     break;
                 }
-                // ---------------------------take two hands(взять двумя
-                // руками)---------------------------------
             case ITEM_TYPE_TWO_HANDED:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {
                     pAudioPlayer->playUISound(SOUND_error);
@@ -1966,8 +1954,7 @@ void OnPaperdollLeftClick() {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
-                if (mainhandequip) {  // взять двуручный меч когда нет
-                                      // щита(замещение оружия)
+                if (mainhandequip) {
                     if (shieldequip) {
                         pAudioPlayer->playUISound(SOUND_error);
                         return;
@@ -1990,7 +1977,7 @@ void OnPaperdollLeftClick() {
                 return;
                 //-------------------------------------------------------------------------------
             default:
-                pParty->activeCharacter().useItem(pParty->activeCharacterIndex() - 1, false);
+                pParty->activeCharacter().useItem(pParty->activeCharacterIndex(), false);
                 return;
         }
         return;
@@ -2037,16 +2024,9 @@ void OnPaperdollLeftClick() {
 
         // enchant / recharge item
         if (IsEnchantingInProgress) {
-            /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
-             *0x7Fu;//CastSpellInfo
-             *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-             *pParty->activeCharacterIndex() - 1;
-             *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
-             *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-             *pEquipType;*/
             pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
             pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
-            pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
+            pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex();
             pSpellInfo->targetInventoryIndex = entry.index();
 
             ptr_50C9A4_ItemToEnchant = entry.get();
@@ -2057,7 +2037,7 @@ void OnPaperdollLeftClick() {
             AfterEnchClickEventSecondParam = 0;
             AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
         } else {
-            if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
+            if (!ptr_50C9A4_ItemToEnchant) {
                 pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
 
                 // pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34
@@ -2094,8 +2074,6 @@ void OnPaperdollLeftClick() {
         InventoryEntry entry = pParty->activeCharacter().inventory.entry(v34);
 
         if (entry) {
-            // v36 = v34 - 1;
-            // v38 = &pCharacters[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
             pEquipType = entry->type();
             if (entry->itemId == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {
@@ -2105,17 +2083,10 @@ void OnPaperdollLeftClick() {
                 WetsuitOff(pParty->activeCharacterIndex());
             }
 
-            if (IsEnchantingInProgress) {  // наложить закл на экипировку
-                /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
-                 *0x7Fu;//CastSpellInfo
-                 *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-                 *pParty->activeCharacterIndex() - 1;
-                 *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
-                 *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-                 *pEquipType;*/
+            if (IsEnchantingInProgress) {
                 pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
                 pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
-                pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
+                pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex();
                 pSpellInfo->targetInventoryIndex = entry.index();
 
                 ptr_50C9A4_ItemToEnchant = entry.get();
@@ -2126,11 +2097,11 @@ void OnPaperdollLeftClick() {
                 AfterEnchClickEventSecondParam = 0;
                 AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
             } else {
-                if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
+                if (!ptr_50C9A4_ItemToEnchant) {
                     pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
                 }
             }
-        } else {  // снять лук
+        } else {
             if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(ITEM_SLOT_BOW)) {
                 pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
             }
@@ -2139,8 +2110,8 @@ void OnPaperdollLeftClick() {
 }
 
 void CharacterUI_ReleaseButtons() {
-    if (dword_507CC0_activ_ch) {
-        dword_507CC0_activ_ch = 0;
+    if (dword_507CC0_activ_ch != -1) {
+        dword_507CC0_activ_ch = -1;
         std::vector<GUIButton*> to_delete;
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->uData & 0x8000) {

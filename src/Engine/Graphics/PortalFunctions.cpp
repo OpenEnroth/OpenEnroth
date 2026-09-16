@@ -169,7 +169,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     // TODO(captainurist): code looks very similar to stru314::computeBasis
     switch (pFace->polygonType) {
         case POLYGON_VerticalWall:
-            a1.x = -pFace->facePlane.normal.y;  // направление полигона
+            a1.x = -pFace->facePlane.normal.y; // Polygon direction.
             a1.y = pFace->facePlane.normal.x;
             a1.z = 0.0f;
             a1.normalize();
@@ -216,7 +216,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     if (pFace->attributes & FACE_XZ_PLANE) {
         face_center_x = (pFaceLimits[0].vWorldPosition.x +
                          pFaceLimits[2].vWorldPosition.x) /
-                        2;  // центр полигона
+                        2;
         face_center_y = (pFaceLimits[0].vWorldPosition.y +
                          pFaceLimits[2].vWorldPosition.y) /
                         2;
@@ -225,9 +225,9 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
                         2;
 
         a3 = face_center_x -
-             pFaceLimits[0].vWorldPosition.x;  //от центра до верхнего края
+             pFaceLimits[0].vWorldPosition.x;
         var_8 = face_center_z -
-                pFaceLimits[1].vWorldPosition.z;  // высота от центра
+                pFaceLimits[1].vWorldPosition.z;
 
         if (pFace->polygonType == POLYGON_VerticalWall) a3 /= a1.x;
     }

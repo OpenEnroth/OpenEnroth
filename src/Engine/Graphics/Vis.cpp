@@ -139,8 +139,6 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
 
     if (v13 == -1) return false;
 
-    // //Bounding rectangle(Ограничивающий
-    // прямоугольник)-------------------------
     // v7 = 3.4028235e38;
     float min_x = FLT_MAX;
     // a4a = 3.4028235e38;
@@ -642,7 +640,7 @@ void Vis::SortVerticesByY(RenderVertexD3D3 *pArray, unsigned int uStart, unsigne
 }
 
 //----- (004C288E) --------------------------------------------------------
-void Vis::SortByScreenSpaceX(RenderVertexSoft *pArray, int start, int end) {  // сортировка по возрастанию экранных координат х
+void Vis::SortByScreenSpaceX(RenderVertexSoft *pArray, int start, int end) {
     auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
         return l.vWorldViewProj.x < r.vWorldViewProj.x;
     };

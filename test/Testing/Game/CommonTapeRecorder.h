@@ -89,7 +89,7 @@ class CommonTapeRecorder {
 
     TestMultiTape<SpriteId> sprites();
 
-    TestTape<int> activeCharacterIndex(); // Remember that 0 means none!
+    TestTape<int> activeCharacterIndex(); // Remember that -1 means none!
 
     TestTape<bool> questBit(QuestBit bit);
 

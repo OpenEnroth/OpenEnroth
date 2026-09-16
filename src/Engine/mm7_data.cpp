@@ -2254,9 +2254,9 @@ int KeyboardPageNum;
 Color uGameUIFontShadow;
 Color uGameUIFontMain;
 SpellId dword_507B00_spell_info_to_draw_in_popup;
-int dword_507CC0_activ_ch;
+int dword_507CC0_activ_ch = -1;
 bool OpenedTelekinesis;
-int enchantingActiveCharacter;
+int enchantingActiveCharacter = -1;
 int uSpriteID_Spell11;  // idb
 bool IsEnchantingInProgress;
 Duration ItemEnchantmentTimer;

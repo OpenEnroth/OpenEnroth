@@ -102,7 +102,7 @@ void GUIWindow_Transport::mainDialogue() {
     travel_window.x = SIDE_TEXT_BOX_POS_X;
     travel_window.w = SIDE_TEXT_BOX_WIDTH;
 
-    assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->activeCharacterIndex() = 0 and crash
+    assert(pParty->hasActiveCharacter());
 
     if (!checkIfPlayerCanInteract()) {
         return;
@@ -194,7 +194,7 @@ void GUIWindow_Transport::transportDialogue() {
 }
 
 void GUIWindow_Transport::houseSpecificDialogue() {
-    assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->activeCharacterIndex() = 0 and crash
+    assert(pParty->hasActiveCharacter());
 
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:

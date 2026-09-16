@@ -115,7 +115,6 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
 
 static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
     Particle_sw particle;
-    memset(&particle, 0, sizeof(Particle_sw));
     particle.x = pos.x;
     particle.y = pos.y;
     particle.z = pos.z;
@@ -642,7 +641,7 @@ bool SpriteObject::applyShrinkRayAoe() {
 
             if (distanceSq <= checkDistanceSq) {
                 if (actor.DoesDmgTypeDoDamage(DAMAGE_DARK)) {
-                    actor.buffs[ACTOR_BUFF_SHRINK].Apply(pParty->GetPlayingTime() + duration, this->spell_skill, shrinkPower, 0, 0);
+                    actor.buffs[ACTOR_BUFF_SHRINK].Apply(pParty->GetPlayingTime() + duration, this->spell_skill, shrinkPower, 0, -1);
                     actor.attributes |= ACTOR_AGGRESSOR;
                     isApplied = true;
                 }
@@ -1129,7 +1128,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                         pActors[actorId].aiState = Standing;
                         pActors[actorId].UpdateAnimation();
                     }
-                    pActors[actorId].buffs[buffIdx].Apply(pParty->GetPlayingTime() + duration, skillMastery, shrinkPower, 0, 0);
+                    pActors[actorId].buffs[buffIdx].Apply(pParty->GetPlayingTime() + duration, skillMastery, shrinkPower, 0, -1);
                 }
             } else {
                 isDamaged = object->applyShrinkRayAoe();

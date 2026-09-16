@@ -143,8 +143,7 @@ void Io::Mouse::DrawCursor() {
     /*
       if (this->bInitialized) {
         if (!this->field_8 && this->bActive && !this->_arrowCursor) //Uninitialized
-    memory access(this->field_8) pMouse->_469AE4();  // Ritor1: странная,
-    непонятная функция this->field_F4 = 1; if (this->_arrowCursor) { this->field_F4 =
+    memory access(this->field_8) pMouse->_469AE4(); this->field_F4 = 1; if (this->_arrowCursor) { this->field_F4 =
     0; return;
         }
 
@@ -182,8 +181,8 @@ void Io::Mouse::DrawCursor() {
           rect.w = pCursorBitmapRect_w;
           rect.z = pCursorBitmapRect_z;
 
-    //      render->_4A6DF5(pCursorBitmap_sysmem, v9, &point, &rect);  //
-    срабатывает когда берём курсором вещь в инвенторе this->bRedraw = false;
+    //      render->_4A6DF5(pCursorBitmap_sysmem, v9, &point, &rect);
+    this->bRedraw = false;
         }
       }
     */

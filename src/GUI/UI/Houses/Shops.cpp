@@ -293,7 +293,7 @@ void GUIWindow_Shop::sellDialogue() {
 
         if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos)) {
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(entry.get(), buildingType(), houseId(), SHOP_SCREEN_SELL);
-            std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, entry.get(), houseId(), SHOP_SCREEN_SELL);
+            std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, entry.get(), houseId(), SHOP_SCREEN_SELL);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
         }
@@ -323,9 +323,9 @@ void GUIWindow_Shop::identifyDialogue() {
             std::string str;
             if (!item->IsIdentified()) {
                 MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_IDENTIFY);
-                str = BuildDialogueString(pMerchantsIdentifyPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_IDENTIFY);
+                str = BuildDialogueString(pMerchantsIdentifyPhrases[phrases_id], pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_IDENTIFY);
             } else {
-                str = BuildDialogueString("%24", pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_IDENTIFY);
+                str = BuildDialogueString("%24", pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_IDENTIFY);
             }
 
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
@@ -359,7 +359,7 @@ void GUIWindow_Shop::repairDialogue() {
         if (entry->flags & ITEM_BROKEN) {
             Item *item = entry.get();
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_REPAIR);
-            std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_REPAIR);
+            std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_REPAIR);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
         }
@@ -417,9 +417,9 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                             std::string str;
                             if (!isStealingModeActive()) {
                                 MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, HOUSE_TYPE_WEAPON_SHOP, houseId(), SHOP_SCREEN_BUY);
-                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
-                                str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
                             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
@@ -504,9 +504,9 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
                             std::string str;
                             if (!isStealingModeActive()) {
                                 MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_BUY);
-                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
-                                str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
                             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);
@@ -607,9 +607,9 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                             std::string str;
                             if (!isStealingModeActive()) {
                                 MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_BUY);
-                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
-                                str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(localization->str(LSTR_STEAL_24), pParty->activeCharacterIndex(), houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
                             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.w, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3, dialogwin);

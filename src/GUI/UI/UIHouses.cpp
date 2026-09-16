@@ -478,7 +478,7 @@ void selectHouseNPCDialogueOption(DialogueId topic) {
 
     if (topic == DIALOGUE_13_hiring_related) {
         current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                               pParty->activeCharacterIndex() - 1, pCurrentNPCInfo);
+                                               pParty->activeCharacterIndex(), pCurrentNPCInfo);
         NPCHireableDialogPrepare();
         dialogue_show_profession_details = false;
         BackToHouseMenu();
@@ -491,10 +491,10 @@ void selectHouseNPCDialogueOption(DialogueId topic) {
         if (topic == DIALOGUE_PROFESSION_DETAILS) {
             if (dialogue_show_profession_details) {
                 current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
-                                                       pParty->activeCharacterIndex() - 1, pCurrentNPCInfo);
+                                                       pParty->activeCharacterIndex(), pCurrentNPCInfo);
             } else {
                 current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                                       pParty->activeCharacterIndex() - 1, pCurrentNPCInfo);
+                                                       pParty->activeCharacterIndex(), pCurrentNPCInfo);
             }
         }
         BackToHouseMenu();
@@ -503,7 +503,7 @@ void selectHouseNPCDialogueOption(DialogueId topic) {
 
     if (!pCurrentNPCInfo->Hired()) {
         current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                                               pParty->activeCharacterIndex() - 1, pCurrentNPCInfo);
+                                               pParty->activeCharacterIndex(), pCurrentNPCInfo);
         BackToHouseMenu();
         return;
     }

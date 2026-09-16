@@ -683,12 +683,12 @@ static int genderOf(std::string_view name) {
  */
 static int caseIndex(char c) {
     switch (ascii::toLower(c)) {
-    case 'i': return 0; // Именительный.
-    case 'r': return 1; // Родительный.
-    case 'd': return 2; // Дательный.
-    case 'v': return 3; // Винительный.
-    case 't': return 4; // Творительный.
-    case 'p': return 5; // Предложный.
+    case 'i': return 0; // Nominative.
+    case 'r': return 1; // Genitive.
+    case 'd': return 2; // Dative.
+    case 'v': return 3; // Accusative.
+    case 't': return 4; // Instrumental.
+    case 'p': return 5; // Prepositional.
     default: return -1;
     }
 }

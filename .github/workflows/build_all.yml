@@ -41,9 +41,6 @@ env:
   NDK_VERSION: 28.1.13356709
   # This is required for ccache to work for android build, otherwise we get 100% cache misses.
   CCACHE_COMPILERCHECK: content
-  # Luajit runs the minilua and buildvm tools that it builds, and both leak by design, so LeakSanitizer
-  # would fail the sanitizer build long before it reaches our code. Many of our own game tests leak too.
-  ASAN_OPTIONS: detect_leaks=0
 
 jobs:
   build_all:
