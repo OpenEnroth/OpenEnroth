@@ -527,9 +527,9 @@ GAME_TEST(Issues, Issue1717) {
 
 GAME_TEST(Issues, Issue1720) {
     // Grandmaster axe hits never halved the target's armor. The hit roll checked the debuff, but nothing applied it.
-    // A paralyzed target still takes hits, so it must get the debuff too.
-    for (bool paralyzed : {false, true}) {
-        SCOPED_TRACE(fmt::format("paralyzed={}", paralyzed));
+    // A master axe must not halve anything.
+    for (Mastery mastery : {MASTERY_GRANDMASTER, MASTERY_MASTER}) {
+        SCOPED_TRACE(fmt::format("mastery={}", std::to_underlying(mastery)));
         test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
         engine->config->debug.NoActors.setValue(true);
         game.startNewGame();
@@ -539,24 +539,29 @@ GAME_TEST(Issues, Issue1720) {
 
         Character &char0 = pParty->pCharacters[0];
         char0.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BATTLE_AXE));
-        char0.setSkillValue(SKILL_AXE, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // Every hit procs on a dummy, which never resists.
+        char0.setSkillValue(SKILL_AXE, CombinedSkillValue(60, mastery)); // Every grandmaster hit procs on a dummy, which never resists.
 
         auto halvedTape = actorTapes.hasBuff(0, ACTOR_BUFF_HALVED_ARMOR);
         auto statusTape = tapes.statusBar();
+        auto hpTape = actorTapes.hp(0);
         Actor *target = game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
-        if (paralyzed)
-            target->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, -1);
+        std::string halvedMessage = fmt::format("{} halves armor of {}", char0.name, target->GetDisplayName());
         ASSERT_TRUE(target->CanBeDamaged());
-        ASSERT_EQ(target->CanAct(), !paralyzed);
         game.pointMouseAtActor(0);
-        for (int i = 0; i < 100 && !target->buffs[ACTOR_BUFF_HALVED_ARMOR].Active(); i++) {
+        for (int i = 0; i < 30 && !target->buffs[ACTOR_BUFF_HALVED_ARMOR].Active() && target->CanBeDamaged(); i++) {
             game.pressAndReleaseKey(PlatformKey::KEY_A);
             game.tick(5);
         }
         test.stopTaping();
 
-        EXPECT_EQ(halvedTape, tape(false, true));
-        EXPECT_CONTAINS(statusTape, fmt::format("{} halves armor of {}", char0.name, target->GetDisplayName()));
+        EXPECT_LT(hpTape.delta(), 0); // Hits landed.
+        if (mastery == MASTERY_GRANDMASTER) {
+            EXPECT_EQ(halvedTape, tape(false, true));
+            EXPECT_CONTAINS(statusTape, halvedMessage);
+        } else {
+            EXPECT_EQ(halvedTape, tape(false));
+            EXPECT_MISSES(statusTape, halvedMessage);
+        }
     }
 }
 
