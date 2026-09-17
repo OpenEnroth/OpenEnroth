@@ -146,7 +146,15 @@ class EngineController {
      */
     Actor *spawnMonster(Vec3f position, MonsterId id, SpawnFlags flags = 0);
 
-    void teleportTo(MapId map, Vec3f position, int viewYaw);
+    /**
+     * Teleports the party, loading `map` first if it's not the current one.
+     *
+     * @param map                       Map to teleport to.
+     * @param position                  Party position on that map.
+     * @param viewYaw                   View yaw, in degrees.
+     * @param viewPitch                 View pitch, in degrees. Negative values look down.
+     */
+    void teleportTo(MapId map, Vec3f position, int viewYaw, int viewPitch = 0);
 
     void castSpell(int characterIndex, SpellId spell);
 
