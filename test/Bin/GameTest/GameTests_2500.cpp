@@ -1,4 +1,5 @@
 #include <string>
+#include <utility>
 
 #include "Testing/Game/GameTest.h"
 
@@ -511,8 +512,9 @@ GAME_TEST(Prs, Pr2723) {
 
 GAME_TEST(Issues, Issue2754) {
     // Clicking a paralyzed friendly peasant made the active character attack it, and the hit turned the peasant
-    // hostile. The hostile peasant is the control, clicking that one still has to attack.
-    for (bool friendly : {false, true}) {
+    // hostile. Past the click reach the same click attacked too. The hostile peasant is the control, clicking
+    // that one still has to attack.
+    for (auto [friendly, depth] : {std::pair(false, 300), std::pair(true, 300), std::pair(true, 1200)}) {
         test.prepareForNextTest();
         engine->config->debug.NoActors.setValue(true);
         game.startNewGame();
@@ -522,11 +524,13 @@ GAME_TEST(Issues, Issue2754) {
 
         auto hpTape = actorTapes.hp(0);
         auto aggressorTape = actorTapes.custom(0, [](const Actor &a) { return a.ActorEnemy(); });
-        Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A,
+        auto msgTape = tapes.uiMessages();
+        Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, depth, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A,
                                            friendly ? SPAWN_DUMMY | SPAWN_FRIENDLY : SPAWN_DUMMY);
         peasant->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
-        EXPECT_EQ(peasant->GetActorsRelation(0) == HOSTILITY_FRIENDLY, friendly);
+        ASSERT_EQ(peasant->GetActorsRelation(nullptr) == HOSTILITY_FRIENDLY, friendly);
         game.pointMouseAtActor(0);
+        ASSERT_EQ(engine->PickMouseForInteraction().pid == Pid(), depth > engine->config->gameplay.MouseInteractionDepth.value());
 
         for (int i = 0; i < 30; i++) {
             game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
@@ -535,9 +539,11 @@ GAME_TEST(Issues, Issue2754) {
         test.stopTaping();
 
         if (friendly) {
+            EXPECT_MISSES(msgTape.flatten(), UIMSG_Attack); // A swing can miss, the queued message cannot.
             EXPECT_EQ(hpTape.delta(), 0);
             EXPECT_EQ(aggressorTape, tape(false));
         } else {
+            EXPECT_CONTAINS(msgTape.flatten(), UIMSG_Attack);
             EXPECT_LT(hpTape.delta(), 0);
         }
     }
