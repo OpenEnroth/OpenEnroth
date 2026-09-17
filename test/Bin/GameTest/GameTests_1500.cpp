@@ -37,48 +37,61 @@
 // 1500
 
 GAME_TEST(Issues, Issue1502) {
-    // HP and SP left above the maximum by an expired buff were snapped down to the maximum by the next regeneration
-    // tick, while damage taken from the same overflow worked normally.
+    // HP and SP sitting above the maximum, e.g. after Day of the Gods expired, were snapped down to the maximum by
+    // the next regeneration tick.
     for (bool keepOverflow : {true, false}) {
-        SCOPED_TRACE(fmt::format("keepOverflow={}", keepOverflow));
-        test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame, a few game minutes.
-        engine->config->gameplay.RegenKeepsOverflow.setValue(keepOverflow);
-        engine->config->debug.NoActors.setValue(true);
-        game.startNewGame();
+        for (bool stacking : {true, false}) {
+            SCOPED_TRACE(fmt::format("keepOverflow={} stacking={}", keepOverflow, stacking));
+            test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame, one regen tick.
+            engine->config->gameplay.RegenKeepsOverflow.setValue(keepOverflow);
+            engine->config->gameplay.RegenStacking.setValue(stacking);
+            engine->config->debug.NoActors.setValue(true);
+            game.startNewGame();
 
-        // The last two characters of the default party are the casters, they have mana to overflow. Both regenerate
-        // HP through the buff and SP through the ring. #2 sits above max like after Day of the Gods expired, #3 sits
-        // below max and proves that regen ticks actually happened.
-        Character &overflowing = pParty->pCharacters[2];
-        Character &wounded = pParty->pCharacters[3];
-        for (Character *character : {&overflowing, &wounded}) {
-            ASSERT_GT(character->GetMaxMana(), 0);
-            character->pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_EXPERT, 1, 0, 0);
-            Item ring(ITEM_BRASS_RING);
-            ring.specialEnchantment = ITEM_ENCHANTMENT_OF_MANA;
-            character->inventory.equip(ITEM_SLOT_RING1, ring);
-        }
-        int maxHp = overflowing.GetMaxHealth();
-        int maxMp = overflowing.GetMaxMana();
-        overflowing.health = maxHp + 20;
-        overflowing.mana = maxMp + 20;
-        wounded.health = 1;
-        wounded.mana = 0;
+            // The last two characters of the default party are the casters, they are the ones with mana to overflow.
+            // Without stacking the regeneration buff shadows item regeneration, so only a character without the buff
+            // can reach the item branch.
+            Character &overflowingCaster = pParty->pCharacters[2];
+            Character &woundedCaster = pParty->pCharacters[3];
+            Character &overflowingFighter = pParty->pCharacters[0];
+            Character &woundedFighter = pParty->pCharacters[1];
+            for (Character &character : pParty->pCharacters) {
+                bool caster = character.GetMaxMana() > 0;
+                Item ring(ITEM_BRASS_RING);
+                ring.specialEnchantment = caster ? ITEM_ENCHANTMENT_OF_MANA : ITEM_ENCHANTMENT_OF_REGENERATION;
+                character.inventory.equip(ITEM_SLOT_RING1, ring);
+                if (caster)
+                    character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_EXPERT, 1, 0, 0);
+            }
+            ASSERT_GT(overflowingCaster.GetMaxMana(), 0);
+            ASSERT_GT(woundedCaster.GetMaxMana(), 0);
+            ASSERT_EQ(overflowingFighter.GetMaxMana(), 0);
+            ASSERT_EQ(woundedFighter.GetMaxMana(), 0);
 
-        auto timeTape = tapes.time();
-        test.startTaping();
-        game.tick(10);
-        test.stopTaping();
+            int maxHp = overflowingCaster.GetMaxHealth();
+            int maxMp = overflowingCaster.GetMaxMana();
+            int fighterMaxHp = overflowingFighter.GetMaxHealth();
+            overflowingCaster.health = maxHp + 20;
+            overflowingCaster.mana = maxMp + 20;
+            overflowingFighter.health = fighterMaxHp + 20;
+            woundedCaster.health = 1;
+            woundedCaster.mana = 0;
+            woundedFighter.health = 1;
 
-        EXPECT_GE(timeTape.delta(), Duration::fromMinutes(5)); // At least one regen tick fits in the window...
-        EXPECT_GT(wounded.health, 1); // ...and it happened.
-        EXPECT_GT(wounded.mana, 0);
-        if (keepOverflow) {
-            EXPECT_EQ(overflowing.health, maxHp + 20); // Overflow left alone.
-            EXPECT_EQ(overflowing.mana, maxMp + 20);
-        } else {
-            EXPECT_EQ(overflowing.health, maxHp); // Vanilla snap.
-            EXPECT_EQ(overflowing.mana, maxMp);
+            game.tick(10);
+
+            EXPECT_EQ(woundedCaster.health, woundedCaster.GetMaxHealth());
+            EXPECT_GT(woundedCaster.mana, 0);
+            EXPECT_GT(woundedFighter.health, 1);
+            if (keepOverflow) {
+                EXPECT_EQ(overflowingCaster.health, maxHp + 20);
+                EXPECT_EQ(overflowingCaster.mana, maxMp + 20);
+                EXPECT_EQ(overflowingFighter.health, fighterMaxHp + 20);
+            } else {
+                EXPECT_EQ(overflowingCaster.health, maxHp); // Vanilla snap.
+                EXPECT_EQ(overflowingCaster.mana, maxMp);
+                EXPECT_EQ(overflowingFighter.health, fighterMaxHp);
+            }
         }
     }
 }
