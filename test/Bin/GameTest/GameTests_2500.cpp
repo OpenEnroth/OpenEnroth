@@ -509,29 +509,36 @@ GAME_TEST(Prs, Pr2723) {
     EXPECT_EQ(pParty->activeCharacterIndex(), 1);
 }
 
-GAME_TEST(Prs, FriendlyParalyzedClick) {
-    // Left-clicking a paralyzed friendly peasant attacked it and turned it hostile. In vanilla the click does nothing.
-    test.prepareForNextTest();
-    engine->config->debug.NoActors.setValue(true);
-    game.startNewGame();
-    test.startTaping();
-    prepareForBattleTest();
-    engine->config->debug.NoActors.setValue(false);
+GAME_TEST(Issues, Issue2754) {
+    // Clicking a paralyzed friendly peasant made the active character attack it, and the hit turned the peasant
+    // hostile. The hostile peasant is the control, clicking that one still has to attack.
+    for (bool friendly : {false, true}) {
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
 
-    auto hpTape = actorTapes.hp(0);
-    auto aggressorTape = actorTapes.custom(0, [](const Actor &a) { return a.ActorEnemy(); });
-    Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A,
-                                       SPAWN_DUMMY | SPAWN_FRIENDLY);
-    peasant->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
-    EXPECT_EQ(peasant->GetActorsRelation(0), HOSTILITY_FRIENDLY); // Otherwise it's the hostile path that's tested.
-    game.pointMouseAtActor(0);
+        auto hpTape = actorTapes.hp(0);
+        auto aggressorTape = actorTapes.custom(0, [](const Actor &a) { return a.ActorEnemy(); });
+        Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_PEASANT_DWARF_FEMALE_A_A,
+                                           friendly ? SPAWN_DUMMY | SPAWN_FRIENDLY : SPAWN_DUMMY);
+        peasant->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
+        EXPECT_EQ(peasant->GetActorsRelation(0) == HOSTILITY_FRIENDLY, friendly);
+        game.pointMouseAtActor(0);
 
-    for (int i = 0; i < 30; i++) { // A knight at melee range hits a level 1 dummy well within 30 swings.
-        game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
-        game.tick(5);
+        for (int i = 0; i < 30; i++) {
+            game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+            game.tick(5);
+        }
+        test.stopTaping();
+
+        if (friendly) {
+            EXPECT_EQ(hpTape.delta(), 0);
+            EXPECT_EQ(aggressorTape, tape(false));
+        } else {
+            EXPECT_LT(hpTape.delta(), 0);
+        }
     }
-    test.stopTaping();
-
-    EXPECT_EQ(hpTape.delta(), 0);
-    EXPECT_EQ(aggressorTape, tape(false));
 }
