@@ -296,7 +296,7 @@ class Character {
 
     void setXP(int xp);
 
-    void tickRegeneration(int tick5, const RegenData &rData, bool stacking);
+    void tickRegeneration(int tick5, const RegenData &rData);
 
     CharacterConditions conditions;
     uint64_t experience = 0;

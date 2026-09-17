@@ -6484,10 +6484,11 @@ void Character::setXP(int xp) {
     experience = xp;
 }
 
-void Character::tickRegeneration(int tick5, const RegenData &rData, bool stacking) {
+void Character::tickRegeneration(int tick5, const RegenData &rData) {
+    bool stacking = engine->config->gameplay.RegenStacking.value();
     bool keepOverflow = engine->config->gameplay.RegenKeepsOverflow.value();
-    auto regen = [keepOverflow](int current, int max, int amount) {
-        int result = std::min(max, current + amount);
+    auto regen = [keepOverflow](int current, int limit, int amount) {
+        int result = std::min(limit, current + amount);
         return keepOverflow ? std::max(current, result) : result;
     };
 
