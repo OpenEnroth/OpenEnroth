@@ -505,7 +505,7 @@ GAME_TEST(Issues, Issue1282) {
     EXPECT_EQ(totalObjectsTape.delta(), -1);
 }
 
-GAME_TEST(Issues, Issue1290) {
+GAME_TEST(Issues, Issue1290a) {
     // Can't interact with the Accuracy well in Harmondale with the mouse.
     auto statusTape = tapes.statusBar();
     auto accuracyTape = charTapes.stat(0, ATTRIBUTE_ACCURACY);
@@ -533,6 +533,34 @@ GAME_TEST(Issues, Issue1290) {
     game.tick(3);
     EXPECT_EQ(accuracyTape.delta(), 2);
     EXPECT_CONTAINS(statusTape, "+2 Accuracy (Permanent)");
+}
+
+GAME_TEST(Issues, Issue1290b) {
+    // Can't enter Alloyed Weapons in Tatalia with the mouse, clicking its door says "Nothing here".
+    auto statusTape = tapes.statusBar();
+    Pid doorFace = Pid::odmFace(72, 41);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_TATALIA, Vec3f(-18100, 4810, 300), 0);
+    game.tick(3); // The party is dropped in above the ground and the camera follows it down.
+
+    const BLVFace &door = pOutdoor->face(doorFace);
+    ASSERT_EQ(door.eventId, 21);
+    EXPECT_TRUE(door.Clickable());
+
+    Pointi doorPos(240, 190);
+    game.moveMouse(doorPos);
+    game.tick();
+    Vis_PIDAndDepth picked = engine->PickMouseForTargeting();
+    ASSERT_EQ(picked.pid, doorFace);
+    ASSERT_LT(picked.depth, engine->config->gameplay.MouseInteractionDepth.value());
+
+    game.pressAndReleaseButton(BUTTON_LEFT, doorPos);
+    game.tick(3);
+    EXPECT_EQ(current_screen_type, SCREEN_HOUSE);
+    EXPECT_MISSES(statusTape, "Nothing here");
 }
 
 GAME_TEST(Issues, Issue1293) {

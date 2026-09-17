@@ -152,6 +152,26 @@ static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::s
     face->zCalc.init(face->facePlane);
 }
 
+/**
+ * Sets the attributes that say how a face's event can be triggered. Both follow from the event, so they are
+ * recomputed on load.
+ *
+ * @param face                          Face to update, with its event id already set.
+ */
+static void reconstructFaceEventAttributes(BLVFace *face) {
+    if (!face->eventId)
+        return;
+
+    if (face->HasEventHint()) {
+        face->attributes |= FACE_EVENT_IS_HINT;
+        return;
+    }
+
+    face->attributes &= ~FACE_EVENT_IS_HINT;
+    if (!(face->attributes & (FACE_PRESSURE_PLATE | FACE_TriggerByObject | FACE_TriggerByMonster)))
+        face->attributes |= FACE_CLICKABLE; // Two MM7 faces ship with an event and no way to reach it, see #1290.
+}
+
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->vertices);
     reconstruct(src.faces, &dst->faces);
@@ -220,12 +240,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         pFace->cogNumber = pFaceExtra->cogNumber;
         pFace->eventId = pFaceExtra->eventId;
 
-        if (pFace->eventId) {
-            if (pFace->HasEventHint())
-                pFace->attributes |= FACE_EVENT_IS_HINT;
-            else
-                pFace->attributes &= ~FACE_EVENT_IS_HINT;
-        }
+        reconstructFaceEventAttributes(pFace);
     }
 
     reconstruct(src.sectors, &dst->sectors);
@@ -355,6 +370,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     for (BLVFace &face : dst->faces) {
         face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
         face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
+        reconstructFaceEventAttributes(&face);
     }
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
@@ -500,12 +516,7 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
         reconstruct(srcExtras.faceTextures[i], &textureName);
         dst->faces[i].SetTexture(textureName);
 
-        if (dst->faces[i].eventId) {
-            if (dst->faces[i].HasEventHint())
-                dst->faces[i].attributes |= FACE_EVENT_IS_HINT;
-            else
-                dst->faces[i].attributes &= ~FACE_EVENT_IS_HINT;
-        }
+        reconstructFaceEventAttributes(&dst->faces[i]);
     }
 }
 
@@ -653,6 +664,7 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
         for (BLVFace &face : model.faces) {
             face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
             face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
+            reconstructFaceEventAttributes(&face);
         }
     }
 
