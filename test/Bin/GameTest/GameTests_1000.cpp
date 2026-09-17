@@ -596,8 +596,7 @@ GAME_TEST(Issues, Issue1301a) {
 }
 
 GAME_TEST(Issues, Issue1301b) {
-    // Eradicating the whole party in the attack stage runs the focus drop and the party death check on the same
-    // frame, which is the one path that can ask the turn queue for a head it no longer has.
+    // switchToNextActiveCharacter used to hand the focus back to an eradicated character at the head of the turn queue.
     test.prepareForNextTest();
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
@@ -616,9 +615,7 @@ GAME_TEST(Issues, Issue1301b) {
     for (Character &character : pParty->pCharacters)
         character.SetVariable(VAR_Eradicated, 1);
 
-    // The queue still has its old head at this point, and switchToNextActiveCharacter used to hand the focus to that
-    // head without checking it could act, which put it right back on a character that had just been eradicated.
-    pParty->switchToNextActiveCharacter();
+    pParty->switchToNextActiveCharacter(); // The turn queue still has its old head, which is now eradicated.
     EXPECT_FALSE(pParty->hasActiveCharacter());
 
     game.tick(20);
