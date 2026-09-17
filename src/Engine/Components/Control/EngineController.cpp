@@ -343,9 +343,9 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
     return actor;
 }
 
-void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw) {
+void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw, int viewPitch) {
     if (engine->_currentLoadedMapId != map) {
-        engine->_pendingTransition = MapDestination(map, PartyPlacement(position, viewYaw * 512 / 90, 0, 0));
+        engine->_pendingTransition = MapDestination(map, PartyPlacement(position, viewYaw * 512 / 90, viewPitch * 512 / 90, 0));
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
         onMapLeave();
@@ -354,7 +354,7 @@ void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw) {
     } else {
         pParty->pos = position;
         pParty->uFallStartZ = position.z;
-        pParty->_viewPitch = 0;
+        pParty->_viewPitch = viewPitch * 512 / 90;
         pParty->_viewYaw = viewYaw * 512 / 90;
         tick();
     }
