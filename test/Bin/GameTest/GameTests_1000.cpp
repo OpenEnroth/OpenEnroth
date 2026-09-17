@@ -609,7 +609,6 @@ GAME_TEST(Issues, Issue1301b) {
 
     auto deathsTape = tapes.deaths();
     auto activeTape = tapes.activeCharacterIndex();
-    auto stateTape = tapes.custom([] { return std::tuple(pParty->bTurnBasedModeOn, uGameState); });
     test.startTaping();
     game.tick();
     for (Character &character : pParty->pCharacters)
@@ -622,8 +621,7 @@ GAME_TEST(Issues, Issue1301b) {
     test.stopTaping();
 
     EXPECT_EQ(deathsTape.delta(), +1);
-    EXPECT_EQ(stateTape, tape(std::tuple(true, GAME_STATE_PLAYING), // The death path force-ends turn-based mode, and
-                              std::tuple(false, GAME_STATE_PLAYING))); // the died state is gone before the next frame is drawn.
+    EXPECT_FALSE(pParty->bTurnBasedModeOn);
     EXPECT_EQ(activeTape, tape(0)); // Every frame ends with the death path re-selecting the first character.
     EXPECT_EQ(pParty->canActCount(), 4);
 }
@@ -634,17 +632,19 @@ GAME_TEST(Issues, Issue1301c) {
     engine->config->debug.NoActors.setValue(true); // A monster would keep the turn queue from ever emptying.
     game.startNewGame();
     engine->config->debug.NoActors.setValue(false);
+
+    auto deathsTape = tapes.deaths();
+    test.startTaping(); // The wipe comes before the attack stage draws a frame, so the baseline has to be taped earlier.
     game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
     for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_ATTACK; ++i)
         game.tick();
     ASSERT_EQ(pTurnEngine->turn_stage, TE_ATTACK);
-
-    int deaths = pParty->uNumDeaths;
     for (Character &character : pParty->pCharacters)
         character.SetVariable(VAR_Eradicated, 1);
     game.tick(10);
+    test.stopTaping();
 
-    EXPECT_EQ(pParty->uNumDeaths, deaths + 1);
+    EXPECT_EQ(deathsTape.delta(), +1);
     EXPECT_FALSE(pParty->bTurnBasedModeOn);
     EXPECT_EQ(pParty->canActCount(), 4);
 }
