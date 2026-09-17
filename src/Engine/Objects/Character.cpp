@@ -6499,10 +6499,11 @@ void Character::tickRegeneration(int tick5, const RegenData &rData) {
         if (rData.spRegen)
             mana = regen(mana, GetMaxMana(), tick5 * rData.spRegen);
     } else {
-        if (rData.hpSpellRegen)
+        if (rData.hpSpellRegen) {
             health = regen(health, GetMaxHealth(), tick5 * rData.hpSpellRegen);
-        else if (rData.hpRegen)
+        } else if (rData.hpRegen) {
             health = regen(health, GetMaxHealth(), tick5);
+        }
 
         if (rData.spRegen)
             mana = regen(mana, GetMaxMana(), tick5);

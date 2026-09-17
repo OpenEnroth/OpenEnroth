@@ -296,6 +296,13 @@ class Character {
 
     void setXP(int xp);
 
+    /**
+     * Adds HP and SP regeneration for the 5-minute ticks that have passed, as configured by `regen_stacking`
+     * and `regen_keeps_overflow`.
+     *
+     * @param tick5                     Number of 5-minute regeneration ticks to apply.
+     * @param rData                     Per-tick HP and SP regeneration from items and spells.
+     */
     void tickRegeneration(int tick5, const RegenData &rData);
 
     CharacterConditions conditions;
