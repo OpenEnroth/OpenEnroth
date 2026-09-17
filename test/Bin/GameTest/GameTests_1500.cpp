@@ -539,12 +539,11 @@ GAME_TEST(Issues, Issue1720) {
 
         Character &char0 = pParty->pCharacters[0];
         char0.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BATTLE_AXE));
-        char0.setSkillValue(SKILL_AXE, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // Only the physical resistance save can fail.
+        char0.setSkillValue(SKILL_AXE, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // Every hit procs on a dummy, which never resists.
 
         auto halvedTape = actorTapes.hasBuff(0, ACTOR_BUFF_HALVED_ARMOR);
         auto statusTape = tapes.statusBar();
         Actor *target = game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
-        target->hp = 10000; // A kill would clear the debuff.
         if (paralyzed)
             target->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, -1);
         ASSERT_TRUE(target->CanBeDamaged());
