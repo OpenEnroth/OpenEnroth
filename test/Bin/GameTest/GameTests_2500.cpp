@@ -274,36 +274,6 @@ GAME_TEST(Issues, Issue2551c) {
     checkQuickLoaded();
 }
 
-GAME_TEST(Issues, Issue2636) {
-    // Attribute descriptions in Localization were dangling string_views into unquote() temporaries - crashed
-    // at startup on FreeBSD and drew garbage in the character screen stats tooltips elsewhere.
-    auto textTape = tapes.allGUIWindowsText();
-    game.startNewGame();
-    test.startTaping();
-    game.tick(2);
-    game.goToInventory(0);
-    game.pressAndReleaseKey(PlatformKey::KEY_C); // Switch to the stats tab.
-    game.tick(2);
-    EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
-    game.pressButton(BUTTON_RIGHT, 100, 60); // Right-click hold over the Might row shows its tooltip.
-    game.tick(2);
-    game.releaseButton(BUTTON_RIGHT, 100, 60);
-    game.tick(1);
-    EXPECT_CONTAINS(textTape.flatten(), "Might is the statistic that represents a character's overall strength, "
-                                        "and the ability to put that strength where it counts.  Characters with a "
-                                        "high might statistic do more damage in combat.");
-}
-
-GAME_TEST(Prs, Pr2626) {
-    // GetSector used to stop looking after 5 candidate floor faces, so where more floors than that stack up it
-    // could miss the one the party is standing on. This spot in Colony Zod has 16 of them, and the truncated
-    // search answered sector 9 instead of 23.
-    game.startNewGame();
-    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-1849, 6726, 934), 0);
-    game.tick(2);
-    EXPECT_EQ(pIndoor->GetSector(-1849, 6726.5f, 934), 23);
-}
-
 GAME_TEST(Prs, Pr2599) {
     // Leaving the Hidden Tomb while looking up used to leave the party staring at the sky in Erathia. Every shipped
     // MoveToMap carries pitch 0, and the original game applies a script's pitch only when it's non-zero, the view
@@ -333,64 +303,7 @@ GAME_TEST(Prs, Pr2599) {
     EXPECT_EQ(pParty->_viewPitch, 0);
 }
 
-GAME_TEST(Issues, Pr2635) {
-    // Loading a save and opening the save name editor take a real double click on a slot, and are not
-    // triggered by two ordinary clicks on it.
-    game.startNewGame();
-    game.tick(2);
-
-    // Save something to load back.
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick(2);
-    game.pressGuiButton("GameMenu_SaveGame");
-    game.tick(2);
-    game.doubleClickGuiButton("SaveMenu_Slot0");
-    game.tick(2);
-    game.pressAndReleaseKey(PlatformKey::KEY_A);
-    game.tick(2);
-    game.pressGuiButton("SaveMenu_Save");
-    game.tick(10);
-    ASSERT_TRUE(ufs->exists("saves/save000.mm7"));
-
-    // Open the load menu and check a row really is selected before anything is clicked.
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick(2);
-    game.pressGuiButton("GameMenu_LoadGame");
-    game.tick(3);
-    ASSERT_EQ(current_screen_type, SCREEN_LOADGAME);
-    ASSERT_TRUE(saveLoadMenu()->hasSelectedSlot()); // A row is selected before the player clicks anything...
-    ASSERT_EQ(saveLoadMenu()->selectedSlot().fileName, "save000.mm7"); // ...and it's the one Slot0 points at.
-
-    // Clicking the already selected row does nothing, however many times it's clicked slowly.
-    game.pressGuiButton("LoadMenu_Slot0");
-    game.tick(2);
-    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME);
-    game.pressGuiButton("LoadMenu_Slot0");
-    game.tick(2);
-    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME);
-
-    // A double click on it loads.
-    game.doubleClickGuiButton("LoadMenu_Slot0");
-    game.tick(2);
-    game.skipLoadingScreen();
-    game.tick(2);
-    EXPECT_EQ(current_screen_type, SCREEN_GAME);
-
-    // Same rule in the save menu - two slow clicks don't open the name input, a double click does.
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick(2);
-    game.pressGuiButton("GameMenu_SaveGame");
-    game.tick(2);
-    game.pressGuiButton("SaveMenu_Slot0");
-    game.tick(2);
-    game.pressGuiButton("SaveMenu_Slot0");
-    game.tick(2);
-    EXPECT_NE(saveLoadMenu()->keyboard_input_status, WINDOW_INPUT_IN_PROGRESS);
-
-    game.doubleClickGuiButton("SaveMenu_Slot0");
-    game.tick(2);
-    EXPECT_EQ(saveLoadMenu()->keyboard_input_status, WINDOW_INPUT_IN_PROGRESS);
-}
+// 2600
 
 GAME_TEST(Prs, Pr2615a) {
     // A decoration's clickable reach extends past the mouse interaction depth by the decoration's radius, so a big
@@ -490,6 +403,97 @@ GAME_TEST(Prs, Pr2615d) {
     game.tick(3);
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
 }
+
+GAME_TEST(Prs, Pr2626) {
+    // GetSector used to stop looking after 5 candidate floor faces, so where more floors than that stack up it
+    // could miss the one the party is standing on. This spot in Colony Zod has 16 of them, and the truncated
+    // search answered sector 9 instead of 23.
+    game.startNewGame();
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-1849, 6726, 934), 0);
+    game.tick(2);
+    EXPECT_EQ(pIndoor->GetSector(-1849, 6726.5f, 934), 23);
+}
+
+GAME_TEST(Issues, Pr2635) {
+    // Loading a save and opening the save name editor take a real double click on a slot, and are not
+    // triggered by two ordinary clicks on it.
+    game.startNewGame();
+    game.tick(2);
+
+    // Save something to load back.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    game.doubleClickGuiButton("SaveMenu_Slot0");
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Save");
+    game.tick(10);
+    ASSERT_TRUE(ufs->exists("saves/save000.mm7"));
+
+    // Open the load menu and check a row really is selected before anything is clicked.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_LoadGame");
+    game.tick(3);
+    ASSERT_EQ(current_screen_type, SCREEN_LOADGAME);
+    ASSERT_TRUE(saveLoadMenu()->hasSelectedSlot()); // A row is selected before the player clicks anything...
+    ASSERT_EQ(saveLoadMenu()->selectedSlot().fileName, "save000.mm7"); // ...and it's the one Slot0 points at.
+
+    // Clicking the already selected row does nothing, however many times it's clicked slowly.
+    game.pressGuiButton("LoadMenu_Slot0");
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME);
+    game.pressGuiButton("LoadMenu_Slot0");
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME);
+
+    // A double click on it loads.
+    game.doubleClickGuiButton("LoadMenu_Slot0");
+    game.tick(2);
+    game.skipLoadingScreen();
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_GAME);
+
+    // Same rule in the save menu - two slow clicks don't open the name input, a double click does.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Slot0");
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Slot0");
+    game.tick(2);
+    EXPECT_NE(saveLoadMenu()->keyboard_input_status, WINDOW_INPUT_IN_PROGRESS);
+
+    game.doubleClickGuiButton("SaveMenu_Slot0");
+    game.tick(2);
+    EXPECT_EQ(saveLoadMenu()->keyboard_input_status, WINDOW_INPUT_IN_PROGRESS);
+}
+
+GAME_TEST(Issues, Issue2636) {
+    // Attribute descriptions in Localization were dangling string_views into unquote() temporaries - crashed
+    // at startup on FreeBSD and drew garbage in the character screen stats tooltips elsewhere.
+    auto textTape = tapes.allGUIWindowsText();
+    game.startNewGame();
+    test.startTaping();
+    game.tick(2);
+    game.goToInventory(0);
+    game.pressAndReleaseKey(PlatformKey::KEY_C); // Switch to the stats tab.
+    game.tick(2);
+    EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
+    game.pressButton(BUTTON_RIGHT, 100, 60); // Right-click hold over the Might row shows its tooltip.
+    game.tick(2);
+    game.releaseButton(BUTTON_RIGHT, 100, 60);
+    game.tick(1);
+    EXPECT_CONTAINS(textTape.flatten(), "Might is the statistic that represents a character's overall strength, "
+                                        "and the ability to put that strength where it counts.  Characters with a "
+                                        "high might statistic do more damage in combat.");
+}
+
+// 2700
 
 GAME_TEST(Prs, Pr2723) {
     // Clicking the top or the bottom of a party portrait did nothing. The portrait is an oval with semi-axes 32
