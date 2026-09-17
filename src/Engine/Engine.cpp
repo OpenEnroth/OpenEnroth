@@ -592,7 +592,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
             if (actor.monsterInfo.spell2Id == SPELL_SPIRIT_SPIRIT_LASH)
                 actor.monsterInfo.spell2Id = SPELL_SPIRIT_BLESS;
 
-    // OE fix - the Accuracy well's face is missing FACE_CLICKABLE in map data, so the mouse can't reach it.
+    // OE fix - the Accuracy well's face lacks FACE_CLICKABLE in map data, so Space reaches it but the mouse doesn't.
     // TODO(captainurist): move to patched data tables.
     if (engine->_currentLoadedMapId == MAP_HARMONDALE)
         for (BSPModel &model : pOutdoor->pBModels)
