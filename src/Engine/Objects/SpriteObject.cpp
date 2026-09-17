@@ -753,14 +753,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                     SpriteObject::Remove(uLayingItemID);
                 }
                 object->spellSpriteStop();
-                // v97 = 0;
-                // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-                //     v97 = (int16_t)pSpriteObjects[uLayingItemID].uSoundID + 4;
-                // }
-                //            v125 =
-                //            word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-                //            - 1] + 1; pAudioPlayer->playSound(v125,
-                //            v124, 0, -1, 0, v97, 0, 0);
                 pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 return 0;
             }
@@ -801,16 +793,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 object->spellSpriteStop();
                 applySpellSpriteDamage(uLayingItemID, pid);
                 SpriteObject::Remove(uLayingItemID);
-                // v16 = 0;
-                // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-                //     v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-                // }
-                //            v124 = 8 * uLayingItemID;
-                //            v124 |= 2;
-                //            v125 =
-                //            word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id]
-                //            + 1; pAudioPlayer->playSound(v125, v124,
-                //            0, -1, 0, v16, 0, 0);
                 pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 return 0;
             }
@@ -869,16 +851,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::Remove(uLayingItemID);
             }
             object->spellSpriteStop();
-            // int v97 = 0;
-            // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-            //     v97 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-            // }
-            //        v124 = 8 * uLayingItemID;
-            //        v124 |= v124 | 2;
-            //        v125 =
-            //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
-            //        -1, 0, v97, 0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
@@ -898,16 +870,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 temp.Create(yaw, 0, 1000, 0);
             }
             SpriteObject::Remove(uLayingItemID);
-            // int v16 = 0;
-            // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-            //     v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-            // }
-            //        v124 = 8 * uLayingItemID;
-            //        v124 |= v124 | 2;
-            //        v125 =
-            //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
-            //        -1, 0, v16, 0, 0);
             pAudioPlayer->playSpellSound(temp.uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
@@ -920,16 +882,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             }
             object->spellSpriteStop();
             applySpellSpriteDamage(uLayingItemID, pid);
-            // int v16 = 0;
-            // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-            //     v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-            // }
-            //        v124 = 8 * uLayingItemID;
-            //        v124 |= v124 | 2;
-            //        v125 =
-            //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
-            //        -1, 0, v16, 0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
@@ -945,15 +897,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
-            // int v78 = 0;
-            // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-            //     v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-            // }
-            //        v125 =
-            //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound(v125,
-            //        pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78,
-            //        0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
@@ -974,16 +917,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 temp.Create(yaw + yawRandomDelta, 0, randomSpeed, 0);
             }
             SpriteObject::Remove(uLayingItemID);
-            // int v16 = 0;
-            // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-            //     v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-            // }
-            //        v124 = 8 * uLayingItemID;
-            //        v124 |= 2;
-            //        v125 =
-            //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
-            //        -1, 0, v16, 0, 0);
             pAudioPlayer->playSpellSound(temp.uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
@@ -997,15 +930,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, object->spellCasterAbility);
-            // int v78 = 0;
-            // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-            //     v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-            // }
-            //        v125 =
-            //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound(v125,
-            //        pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78,
-            //        0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
@@ -1020,17 +944,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::Remove(uLayingItemID);
             }
             object->spellSpriteStop();
-            // int v97 = 0;
-            // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-            //     v97 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-            // }
-            //        v92 = uLayingItemID;
-            //        v124 = 8 * v92;
-            //        v124 |= 2;
-            //        v125 =
-            //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
-            //        -1, 0, v97, 0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
@@ -1066,15 +979,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                         SpriteObject::Remove(uLayingItemID);
                     }
                     object->spellSpriteStop();
-                    // int v114 = 0;
-                    // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-                    //     v114 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-                    // }
-                    //                v115 = 8 * uLayingItemID;
-                    //                v115 |= Pid(OBJECT_Sprite, uLayingItemID);
-                    //                v125 = v143 + 1;
-                    //                pAudioPlayer->playSound(v125,
-                    //                v115, 0, -1, 0, v114, 0, 0);
                     pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 } else {
                     SpriteObject::Remove(uLayingItemID);
@@ -1145,63 +1049,12 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                     SpriteObject::Remove(uLayingItemID);
                 }
                 object->spellSpriteStop();
-                // int v114 = 0;
-                // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-                //     v114 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-                // }
-                //            v115 = 8 * uLayingItemID;
-                //            v115 |= Pid(OBJECT_Sprite, uLayingItemID);
-                //            v125 = v143 + 1;
-                //            pAudioPlayer->playSound(v125, v115, 0,
-                //            -1, 0, v114, 0, 0);
                 pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             } else {
                 SpriteObject::Remove(uLayingItemID);
             }
             return 0;
         }
-
-            /*
-            case 1080:
-            case 2100:
-            {
-            if (a2.type() != 3)
-            {
-            //v32 = 0;
-            pSpriteObjects[uLayingItemID].uType =
-            pSpriteObjects[uLayingItemID].uType + 1; v46 = 0; for (v146 = 0;
-            v146 < (signed int)pObjectList->uNumObjects; ++v146)
-            {
-            if (pSpriteObjects[uLayingItemID].uType ==
-            pObjectList->pObjects[v146].uObjectID) v46 = v146;
-            }
-            pSpriteObjects[uLayingItemID].uObjectDescID = v46;
-            if (!v46)
-            SpriteObject::Remove(uLayingItemID);
-            v100 = pSpriteObjects[uLayingItemID].field_61;
-            pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-            v102 = 8 * uLayingItemID;
-            LOBYTE(v102) = Pid(OBJECT_Sprite, uLayingItemID);
-            pSpriteObjects[uLayingItemID].vVelocity.x = 0;
-            pSpriteObjects[uLayingItemID].vVelocity.y = 0;
-            pSpriteObjects[uLayingItemID].vVelocity.z = 0;
-            AttackerInfo.Add(v102, 512,
-            pSpriteObjects[uLayingItemID].vPosition.x,
-            pSpriteObjects[uLayingItemID].vPosition.y,
-            pSpriteObjects[uLayingItemID].vPosition.z, v100, 0); if
-            (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE)
-            trail_particle_generator.GenerateTrailParticles(pSpriteObjects[uLayingItemID].vPosition.x,
-            pSpriteObjects[uLayingItemID].vPosition.y,
-            pSpriteObjects[uLayingItemID].vPosition.z,
-            objectDesc->uParticleTrailColor); if
-            (!pSpriteObjects[uLayingItemID].uSoundID) v47 = 0; else v47 =
-            (int16_t)pSpriteObjects[uLayingItemID].uSoundID + 4; v125 =
-            word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] +
-            1; pAudioPlayer->playSound(v125, v102, 0, -1, 0, v47, 0,
-            0); return 0;
-            }
-            return 1;
-            }*/
 
         case SPRITE_SPELL_FIRE_METEOR_SHOWER:
         case SPRITE_SPELL_AIR_STARBURST: {
@@ -1225,14 +1078,6 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                     object->vPosition.x, object->vPosition.y, object->vPosition.z,
                     objectDesc->uParticleTrailColor);
             }
-            // int v47 = 0;
-            // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
-            //     v47 = pSpriteObjects[uLayingItemID].uSoundID + 4;
-            // }
-            //        v125 =
-            //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
-            //        - 1] + 1; pAudioPlayer->playSound(v125, v102, 0,
-            //        -1, 0, v47, 0, 0);
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }

@@ -961,10 +961,8 @@ void Game::processQueuedMessages() {
 
             case UIMSG_CastSpell_TargetActorBuff:
             case UIMSG_CastSpell_TargetActor: {
-                Vis_PIDAndDepth object = engine->PickMouseForTargeting();
-                Pid pid = object.pid;
-                int depth = object.depth;
-                if (pid.type() == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.value()) {
+                Pid pid = engine->PickMouseForTargeting().pid;
+                if (pid.type() == OBJECT_Actor) {
                     spellTargetPicked(pid, -1);
                     closeTargetedSpellWindow();
                 }
