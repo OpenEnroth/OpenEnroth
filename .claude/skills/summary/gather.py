@@ -12,6 +12,10 @@ import re
 import subprocess
 import sys
 
+# Importing a sibling would drop a __pycache__ next to it, and a repository that checks this
+# skill in does not ignore one. The summary's own worktree sweep would then report the skill
+# directory as uncommitted work.
+sys.dont_write_bytecode = True
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
     from session_prs import session_scope
