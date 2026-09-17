@@ -42,15 +42,12 @@ GAME_TEST(Issues, Issue1502) {
     for (bool keepOverflow : {true, false}) {
         for (bool stacking : {true, false}) {
             SCOPED_TRACE(fmt::format("keepOverflow={} stacking={}", keepOverflow, stacking));
-            test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame, one regen tick.
+            test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame, one regen tick each.
             engine->config->gameplay.RegenKeepsOverflow.setValue(keepOverflow);
             engine->config->gameplay.RegenStacking.setValue(stacking);
             engine->config->debug.NoActors.setValue(true);
             game.startNewGame();
 
-            // The last two characters of the default party are the casters, they are the ones with mana to overflow.
-            // Without stacking the regeneration buff shadows item regeneration, so only a character without the buff
-            // can reach the item branch.
             Character &overflowingCaster = pParty->pCharacters[2];
             Character &woundedCaster = pParty->pCharacters[3];
             Character &overflowingFighter = pParty->pCharacters[0];
@@ -60,6 +57,8 @@ GAME_TEST(Issues, Issue1502) {
                 Item ring(ITEM_BRASS_RING);
                 ring.specialEnchantment = caster ? ITEM_ENCHANTMENT_OF_MANA : ITEM_ENCHANTMENT_OF_REGENERATION;
                 character.inventory.equip(ITEM_SLOT_RING1, ring);
+                // Without stacking the buff shadows item regeneration, so only a character without it reaches the
+                // item branch.
                 if (caster)
                     character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_EXPERT, 1, 0, 0);
             }
@@ -68,11 +67,11 @@ GAME_TEST(Issues, Issue1502) {
             ASSERT_EQ(overflowingFighter.GetMaxMana(), 0);
             ASSERT_EQ(woundedFighter.GetMaxMana(), 0);
 
-            int maxHp = overflowingCaster.GetMaxHealth();
-            int maxMp = overflowingCaster.GetMaxMana();
+            int casterMaxHp = overflowingCaster.GetMaxHealth();
+            int casterMaxMp = overflowingCaster.GetMaxMana();
             int fighterMaxHp = overflowingFighter.GetMaxHealth();
-            overflowingCaster.health = maxHp + 20;
-            overflowingCaster.mana = maxMp + 20;
+            overflowingCaster.health = casterMaxHp + 20;
+            overflowingCaster.mana = casterMaxMp + 20;
             overflowingFighter.health = fighterMaxHp + 20;
             woundedCaster.health = 1;
             woundedCaster.mana = 0;
@@ -84,12 +83,13 @@ GAME_TEST(Issues, Issue1502) {
             EXPECT_GT(woundedCaster.mana, 0);
             EXPECT_GT(woundedFighter.health, 1);
             if (keepOverflow) {
-                EXPECT_EQ(overflowingCaster.health, maxHp + 20);
-                EXPECT_EQ(overflowingCaster.mana, maxMp + 20);
+                EXPECT_EQ(overflowingCaster.health, casterMaxHp + 20);
+                EXPECT_EQ(overflowingCaster.mana, casterMaxMp + 20);
                 EXPECT_EQ(overflowingFighter.health, fighterMaxHp + 20);
             } else {
-                EXPECT_EQ(overflowingCaster.health, maxHp); // Vanilla snap.
-                EXPECT_EQ(overflowingCaster.mana, maxMp);
+                // The vanilla snap.
+                EXPECT_EQ(overflowingCaster.health, casterMaxHp);
+                EXPECT_EQ(overflowingCaster.mana, casterMaxMp);
                 EXPECT_EQ(overflowingFighter.health, fighterMaxHp);
             }
         }
