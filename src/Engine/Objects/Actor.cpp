@@ -3200,6 +3200,9 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         pMonster->DoesDmgTypeDoDamage(DAMAGE_PHYSICAL)) {
         CombinedSkillValue axeSkill = character->getActualSkillValue(SKILL_AXE);
         pMonster->buffs[ACTOR_BUFF_HALVED_ARMOR].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(axeSkill.level()), axeSkill.mastery(), 0, 0, -1);
+        if (engine->config->settings.ShowHits.value()) {
+            engine->_statusBar->setEvent(LSTR_S_HALVES_ARMOR_OF_S, character->name, pMonster->GetDisplayName());
+        }
     }
     if (knockbackValue > 10) knockbackValue = 10;
     if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {

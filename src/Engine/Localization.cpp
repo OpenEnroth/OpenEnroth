@@ -71,6 +71,8 @@ bool Localization::initialize() {
     this->_localizationStrings[LSTR_NEW_SAVE] = "[New Save]";
     this->_localizationStrings[LSTR_QUICKSAVE] = "Quicksave";
     this->_localizationStrings[LSTR_SET_A_QUICK_SPELL] = "Set a Quick Spell that targets a monster!";
+    this->_localizationStrings[LSTR_ARMOR_HALVED] = "Armor Halved";
+    this->_localizationStrings[LSTR_S_HALVES_ARMOR_OF_S] = "%s halves armor of %s";
 
     this->_specialAttackNames[SPECIAL_ATTACK_CURSE] = "Curse";
     this->_specialAttackNames[SPECIAL_ATTACK_WEAK] = "Weaken";
@@ -179,7 +181,7 @@ void Localization::initializeSpellNames() {
     this->_actorBuffNames[ACTOR_BUFF_PARALYZED]                = this->_localizationStrings[LSTR_PARALYZED];
     this->_actorBuffNames[ACTOR_BUFF_SLOWED]                   = this->_localizationStrings[LSTR_SLOWED];
     this->_actorBuffNames[ACTOR_BUFF_BERSERK]                  = this->_localizationStrings[LSTR_BERSERK];
-    this->_actorBuffNames[ACTOR_BUFF_HALVED_ARMOR]             = {};
+    this->_actorBuffNames[ACTOR_BUFF_HALVED_ARMOR]             = this->_localizationStrings[LSTR_ARMOR_HALVED];
     this->_actorBuffNames[ACTOR_BUFF_MASS_DISTORTION]          = {};
     this->_actorBuffNames[ACTOR_BUFF_FATE]                     = this->_localizationStrings[LSTR_FATE];
     this->_actorBuffNames[ACTOR_BUFF_ENSLAVED]                 = this->_localizationStrings[LSTR_ENSLAVED];

@@ -542,6 +542,7 @@ GAME_TEST(Issues, Issue1720) {
         char0.setSkillValue(SKILL_AXE, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // Only the physical resistance save can fail.
 
         auto halvedTape = actorTapes.hasBuff(0, ACTOR_BUFF_HALVED_ARMOR);
+        auto statusTape = tapes.statusBar();
         Actor *target = game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
         target->hp = 10000; // A kill would clear the debuff.
         if (paralyzed)
@@ -556,6 +557,7 @@ GAME_TEST(Issues, Issue1720) {
         test.stopTaping();
 
         EXPECT_EQ(halvedTape, tape(false, true));
+        EXPECT_CONTAINS(statusTape, fmt::format("{} halves armor of {}", char0.name, target->GetDisplayName()));
     }
 }
 
