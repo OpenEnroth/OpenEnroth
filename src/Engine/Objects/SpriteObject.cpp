@@ -620,6 +620,9 @@ void CompactLayingItemsList() {
 void SpriteObject::InitializeSpriteObjects() {
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         SpriteObject *item = &pSpriteObjects[i];
+        // Vanilla also removed SPRITE_DROPPED_BY_PLAYER sprites here. In MM6, MM7 and MM8 an item left on the ground
+        // was gone once the party left the map and came back, while a save load on the same map kept it. OE keeps
+        // such items.
         if (item->uObjectDescID && pObjectList->pObjects[item->uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
             SpriteObject::Remove(i);
         }

@@ -246,7 +246,7 @@ enum class SpriteAttribute : uint16_t {
     SPRITE_VISIBLE = 0x0001,
     SPRITE_TEMPORARY = 0x0002,
     SPRITE_HALT_TURN_BASED = 0x0004,    // turn based mode must wait until this object hits or is removed
-    SPRITE_DROPPED_BY_PLAYER = 0x0008,
+    SPRITE_DROPPED_BY_PLAYER = 0x0008,  // item was dropped by the party, map load does not snap it to the floor
     SPRITE_IGNORE_RANGE = 0x0010,       // override any range limits of this object
     SPRITE_NO_Z_BUFFER = 0x0020,        // object should not check zbuffer
     SPRITE_SKIP_A_FRAME = 0x0040,       // object movement will not update for one frame
