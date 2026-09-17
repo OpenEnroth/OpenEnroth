@@ -963,11 +963,9 @@ struct SpriteObject_MM7 {
     Vec3s velocity;
     uint16_t yawAngle;
     uint16_t preloadedSoundSlotUnused; // Index into SoundInfo_MM7::soundData of the cast sound, 1-4 for quick spells,
-                                       // 9-12 for wand and blaster shots, 0 for everything else. Bit 3 thus marks a
-                                       // wand or blaster shot, and vanilla drops sprites carrying it on map entry (but
-                                       // not on save load). Vanilla also drops sprites based on OBJECT_DESC_UNPICKABLE
-                                       // flag, and all wand and blaster sprites carry it, so in OE this field is not
-                                       // used - we write 0 and never read it.
+                                       // 9-12 for wand and blaster shots, 0 for everything else. When the projectile
+                                       // hits, vanilla plays the impact sound from that slot plus 4. OE plays sounds
+                                       // by id, so we write 0 and never read it.
     uint16_t uAttributes;
     int16_t uSectorID;
     uint16_t uTimeSinceCreated;
