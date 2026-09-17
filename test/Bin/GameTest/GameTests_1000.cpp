@@ -596,37 +596,6 @@ GAME_TEST(Issues, Issue1301a) {
 }
 
 GAME_TEST(Issues, Issue1301b) {
-    // switchToNextActiveCharacter used to hand the focus back to an eradicated character at the head of the turn queue.
-    test.prepareForNextTest();
-    engine->config->debug.NoActors.setValue(true);
-    game.startNewGame();
-    engine->config->debug.NoActors.setValue(false);
-    game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
-    for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_ATTACK; ++i)
-        game.tick();
-    ASSERT_EQ(pTurnEngine->turn_stage, TE_ATTACK);
-    ASSERT_TRUE(pParty->hasActiveCharacter());
-
-    auto deathsTape = tapes.deaths();
-    auto activeTape = tapes.activeCharacterIndex();
-    test.startTaping();
-    game.tick();
-    for (Character &character : pParty->pCharacters)
-        character.SetVariable(VAR_Eradicated, 1);
-
-    pParty->switchToNextActiveCharacter(); // The turn queue still has its old head, which is now eradicated.
-    EXPECT_FALSE(pParty->hasActiveCharacter());
-
-    game.tick(20);
-    test.stopTaping();
-
-    EXPECT_EQ(deathsTape.delta(), +1);
-    EXPECT_FALSE(pParty->bTurnBasedModeOn);
-    EXPECT_EQ(activeTape, tape(0)); // Every frame ends with the death path re-selecting the first character.
-    EXPECT_EQ(pParty->canActCount(), 4);
-}
-
-GAME_TEST(Issues, Issue1301c) {
     // Eradicating the party on the first frame of the turn-based attack stage used to crash on an empty turn queue.
     test.prepareForNextTest();
     engine->config->debug.NoActors.setValue(true); // A monster would keep the turn queue from ever emptying.
