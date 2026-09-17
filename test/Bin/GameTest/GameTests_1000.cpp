@@ -631,6 +631,27 @@ GAME_TEST(Issues, Issue1301b) {
     EXPECT_EQ(pParty->canActCount(), 4);
 }
 
+GAME_TEST(Issues, Issue1301c) {
+    // Eradicating the party on the first frame of the turn-based attack stage used to crash on an empty turn queue.
+    test.prepareForNextTest();
+    engine->config->debug.NoActors.setValue(true); // A monster would keep the turn queue from ever emptying.
+    game.startNewGame();
+    engine->config->debug.NoActors.setValue(false);
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+    for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_ATTACK; ++i)
+        game.tick();
+    ASSERT_EQ(pTurnEngine->turn_stage, TE_ATTACK);
+
+    int deaths = pParty->uNumDeaths;
+    for (Character &character : pParty->pCharacters)
+        character.SetVariable(VAR_Eradicated, 1);
+    game.tick(10);
+
+    EXPECT_EQ(pParty->uNumDeaths, deaths + 1);
+    EXPECT_FALSE(pParty->bTurnBasedModeOn);
+    EXPECT_EQ(pParty->canActCount(), 4);
+}
+
 GAME_TEST(Issues, Issue1315) {
     // Dying in turn-based mode asserts.
     auto deathsTape = tapes.deaths();
