@@ -532,7 +532,7 @@ GAME_TEST(Issues, Issue1290) {
 
     const BLVFace &well = pOutdoor->face(wellFace);
     ASSERT_EQ(well.eventId, 228);
-    ASSERT_EQ(pParty->activeCharacterIndex(), 1);
+    ASSERT_EQ(pParty->activeCharacterIndex(), 0);
     ASSERT_FALSE(pParty->pCharacters[0]._characterEventBits[2]); // The well's once-per-character bit.
     EXPECT_TRUE(well.Clickable());
 
