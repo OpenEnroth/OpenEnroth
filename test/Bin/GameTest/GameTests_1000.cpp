@@ -1092,8 +1092,8 @@ GAME_TEST(Issues, Issue1471) {
 }
 
 GAME_TEST(Issues, Issue1474) {
-    // Wait until dawn was reported to end at 5:02 instead of 5:00.
-    test.prepareForNextTest();
+    // Wait until dawn ended at 5:02 because every rest frame also added the frame time to the clock.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     auto timeTape = tapes.time();
@@ -1107,14 +1107,11 @@ GAME_TEST(Issues, Issue1474) {
     ASSERT_EQ(currentRestType, REST_WAIT);
     for (int i = 0; i < 200 && currentRestType == REST_WAIT; i++)
         game.tick();
+    ASSERT_EQ(currentRestType, REST_NONE); // The wait finished on its own.
+    game.tick(3); // The rest screen stays open after the wait, the clock must not move.
     test.stopTaping();
 
-    ASSERT_EQ(currentRestType, REST_NONE); // The wait finished on its own.
-    EXPECT_GT(timeTape.delta(), Duration::fromHours(1)); // A new game starts well past dawn, so at least a night passed.
-    CivilTime dawn = timeTape.back().toCivilTime();
-    EXPECT_EQ(dawn.hour, 5);
-    EXPECT_EQ(dawn.minute, 0);
-    EXPECT_EQ(dawn.second, 0);
+    EXPECT_EQ(timeTape.back(), Time::fromDays(1) + Duration::fromHours(5)); // A new game starts on day 1 at 9am, so this is day 2 at 5am.
 }
 
 GAME_TEST(Issues, Issue1475) {
