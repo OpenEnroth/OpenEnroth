@@ -759,10 +759,6 @@ void Rest(Duration restTime) {
         Actor::InitializeActors();
     }
 
-    for (Character &player : pParty->pCharacters) {
-        player.Recover(restTime);
-    }
-
     _494035_timed_effects__water_walking_damage__etc(restTime);
 }
 
