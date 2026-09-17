@@ -525,21 +525,9 @@ GAME_TEST(Issues, Issue1717) {
     EXPECT_CONTAINS(statusBar, [&](const std::string &message) { return std::regex_match(message, regex); });
 }
 
-GAME_TEST(Issues, Issue1724) {
-    // Enemies killed by immolation in turn based mode come back alive
-    auto statusBar = tapes.statusBar();
-    auto partyXP = tapes.totalExperience();
-    auto tbState = tapes.turnBasedMode();
-    auto zombieActor = tapes.custom([]() {return std::ranges::count_if(pActors, [](const Actor &act) { return (act.hp < 1) && act.CanAct(); }); } );
-    test.playTraceFromTestData("issue_1724.mm7", "issue_1724.json");
-    EXPECT_GT(statusBar.filter([](const auto &s) { return s.starts_with("Immolation deals"); }).size(), 0); // test for immolation message.
-    EXPECT_GT(partyXP.back(), partyXP.front());
-    EXPECT_EQ(tbState.back(), true);
-    EXPECT_EQ(zombieActor.max(), 0);
-}
-
 GAME_TEST(Issues, Issue1720) {
-    // Grandmaster axe hits never halved the target's armor, the buff existed but nothing ever applied it.
+    // Grandmaster axe hits never halved the target's armor. The hit roll checked the debuff, but nothing applied it.
+    // A paralyzed target still takes hits, so it must get the debuff too.
     for (bool paralyzed : {false, true}) {
         SCOPED_TRACE(fmt::format("paralyzed={}", paralyzed));
         test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
@@ -551,25 +539,37 @@ GAME_TEST(Issues, Issue1720) {
 
         Character &char0 = pParty->pCharacters[0];
         char0.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BATTLE_AXE));
-        char0.setSkillValue(SKILL_AXE, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // 60% chance per hit.
+        char0.setSkillValue(SKILL_AXE, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // Only the physical resistance save can fail.
 
         auto halvedTape = actorTapes.hasBuff(0, ACTOR_BUFF_HALVED_ARMOR);
-        auto hpTape = actorTapes.hp(0);
         Actor *target = game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+        target->hp = 10000; // A kill would clear the debuff.
         if (paralyzed)
-            target->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
+            target->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, -1);
         ASSERT_TRUE(target->CanBeDamaged());
         ASSERT_EQ(target->CanAct(), !paralyzed);
         game.pointMouseAtActor(0);
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 100 && !target->buffs[ACTOR_BUFF_HALVED_ARMOR].Active(); i++) {
             game.pressAndReleaseKey(PlatformKey::KEY_A);
             game.tick(5);
         }
         test.stopTaping();
 
-        EXPECT_LT(hpTape.delta(), 0); // Hits landed.
-        EXPECT_CONTAINS(halvedTape, true); // Before the fix the buff never appeared.
+        EXPECT_EQ(halvedTape, tape(false, true));
     }
+}
+
+GAME_TEST(Issues, Issue1724) {
+    // Enemies killed by immolation in turn based mode come back alive
+    auto statusBar = tapes.statusBar();
+    auto partyXP = tapes.totalExperience();
+    auto tbState = tapes.turnBasedMode();
+    auto zombieActor = tapes.custom([]() {return std::ranges::count_if(pActors, [](const Actor &act) { return (act.hp < 1) && act.CanAct(); }); } );
+    test.playTraceFromTestData("issue_1724.mm7", "issue_1724.json");
+    EXPECT_GT(statusBar.filter([](const auto &s) { return s.starts_with("Immolation deals"); }).size(), 0); // test for immolation message.
+    EXPECT_GT(partyXP.back(), partyXP.front());
+    EXPECT_EQ(tbState.back(), true);
+    EXPECT_EQ(zombieActor.max(), 0);
 }
 
 GAME_TEST(Issues, Issue1725) {

@@ -3001,7 +3001,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
 
                 case SKILL_AXE:
                     if (main_hand_mastery >= MASTERY_GRANDMASTER) {
-                        if (grng->random(100) < character->getActualSkillValue(SKILL_AXE).level())
+                        if (grng->random(60) < character->getActualSkillValue(SKILL_AXE).level()) // GrayFace's rate: skill 60 always procs.
                             hit_will_halve_armor = true;
                     }
                     break;
@@ -3196,7 +3196,8 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             engine->_statusBar->setEvent(LSTR_S_PARALYZES_S, character->name, pMonster->GetDisplayName());
         }
     }
-    if (hit_will_halve_armor && pMonster->CanBeDamaged()) {
+    if (hit_will_halve_armor && pMonster->CanBeDamaged() && // Paralyzed targets qualify too.
+        pMonster->DoesDmgTypeDoDamage(DAMAGE_PHYSICAL)) {
         CombinedSkillValue axeSkill = character->getActualSkillValue(SKILL_AXE);
         pMonster->buffs[ACTOR_BUFF_HALVED_ARMOR].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(axeSkill.level()), axeSkill.mastery(), 0, 0, -1);
     }
