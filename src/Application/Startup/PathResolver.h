@@ -17,4 +17,10 @@ std::vector<NativePath> resolveMm8Paths(Environment *environment);
 
 bool validateMm7Path(const NativePath &dataPath, std::string *missingFile);
 
+/**
+ * @param environment                   Environment to read the platform's user folder from.
+ * @return                              Folder holding saves, config and the crash log. Never empty, falling
+ *                                      back to the working directory when the platform has no user folder to
+ *                                      give.
+ */
 NativePath resolveMm7UserPath(Environment *environment);

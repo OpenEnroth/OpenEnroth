@@ -18,7 +18,7 @@
 
 int platformMain(int argc, char **argv) {
     try {
-        StackTraceOnCrash st;
+        initStackTraceOnCrash();
         UnicodeCrt _(argc, argv);
         RetraceTestOptions opts = RetraceTestOptions::parse(argc, argv);
         if (opts.helpPrinted)

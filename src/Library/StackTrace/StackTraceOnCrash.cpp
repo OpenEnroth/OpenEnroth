@@ -1,6 +1,7 @@
 #include "StackTraceOnCrash.h"
 
 #include <atomic>
+#include <cerrno>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -16,30 +17,63 @@
 #ifdef _WINDOWS
 #   include <windows.h> // NOLINT: not a C system header.
 #   include <dbghelp.h> // NOLINT: not a C system header.
+#   include <io.h> // NOLINT: not a C system header.
 #   include <csignal>
 #   include <exception>
 #   include <mutex>
-#elif !defined(__ANDROID__)
+#else
 #   include <unistd.h> // NOLINT: not a C++ system header.
-#   include <sys/mman.h> // NOLINT: not a C++ system header.
-#   include <sys/ucontext.h> // NOLINT: not a C++ system header.
-#   ifdef __APPLE__
-#       include <libunwind.h> // NOLINT: not a C++ system header.
-#       include <sys/sysctl.h> // NOLINT: not a C++ system header.
-#   else
-#       include <unwind.h> // NOLINT: not a C++ system header.
+#   ifndef __ANDROID__
+#       include <sys/mman.h> // NOLINT: not a C++ system header.
+#       include <sys/ucontext.h> // NOLINT: not a C++ system header.
+#       ifdef __APPLE__
+#           include <libunwind.h> // NOLINT: not a C++ system header.
+#           include <sys/sysctl.h> // NOLINT: not a C++ system header.
+#       else
+#           include <unwind.h> // NOLINT: not a C++ system header.
+#       endif
+#       include <csignal>
+#       include <cstring>
 #   endif
-#   include <csignal>
-#   include <cstring>
 #endif
 
 #include "Library/StackTrace/StackTrace.h"
 
-#include "Utility/String/Format.h"
+static void writeAll(int fd, std::string_view text) {
+    while (!text.empty()) {
+#ifdef _WINDOWS
+        int written = _write(fd, text.data(), static_cast<unsigned>(text.size()));
+#else
+        ssize_t written = write(fd, text.data(), text.size());
+#endif
+#ifndef _WINDOWS
+        // Only EINTR is worth retrying. Spinning on EAGAIN would hang the handler whenever nothing is draining
+        // the far end of a non-blocking pipe, and a truncated trace beats a process that never dies.
+        if (written < 0 && errno == EINTR)
+            continue;
+#endif
+        if (written <= 0)
+            return; // Nowhere to report an error to.
+        text.remove_prefix(written);
+    }
+}
+
+void writeCrashChunk(int fd, std::string_view text) {
+    writeAll(fd, text);
+    writeAll(fd, "\n");
+}
 
 #ifdef __ANDROID__
 
-StackTraceOnCrash::StackTraceOnCrash(void (*)()) {}
+void printCrashChunk(std::string_view, bool) {}
+
+// Nothing ever calls it here, no handlers are installed, but the return contract holds so that a chaining
+// caller doesn't silently lose the callback it was chaining to.
+static CrashCallback crashCallback = &printCrashChunk;
+
+CrashCallback initStackTraceOnCrash(CrashCallback callback) {
+    return std::exchange(crashCallback, callback ? callback : &printCrashChunk);
+}
 
 #else
 
@@ -47,12 +81,10 @@ StackTraceOnCrash::StackTraceOnCrash(void (*)()) {}
 // inside a handler re-enters it - and one trace is what's actually useful.
 static std::atomic_flag crashHandled = ATOMIC_FLAG_INIT;
 
-static void (*crashCallback)() = nullptr;
-
-static void runCrashCallback() {
-    if (crashCallback)
-        crashCallback();
-}
+// Relaxed throughout - a crash that races a replacement lands on whichever callback the swap has left here,
+// and both are valid.
+static std::atomic<CrashCallback> crashCallback = &printCrashChunk;
+static_assert(std::atomic<CrashCallback>::is_always_lock_free); // A handler reads this, and taking a lock there could deadlock.
 
 bool detail::isRunningUnderRosetta() {
 #ifdef __APPLE__
@@ -64,24 +96,31 @@ bool detail::isRunningUnderRosetta() {
 #endif
 }
 
-static void printCrashHeader(std::string_view reason) {
-    // Flushed on its own because building the trace can hang, and then this is all anyone sees.
-    fmt::println(stderr, "\nCrashed because of {}", reason);
-    std::fflush(stderr);
+void printCrashChunk(std::string_view text, bool) {
+    writeCrashChunk(2, text);
 }
 
-static void printTrace(std::string_view trace) {
-    fmt::println(stderr, "{}", trace);
-    std::fflush(stderr);
+static void emitHeader(std::string_view reason) {
+    // Goes out before anything is symbolized - symbolizing can hang, and then this line is all anyone sees.
+    // Nothing on the way to the callback allocates either, a crash inside the allocator would deadlock on the
+    // first allocation and take this line with it. The buffer is static to stay off the stack a worker thread
+    // has left, and sharing it is safe, crashHandled lets one thread in here.
+    static char header[1024];
+    std::snprintf(header, sizeof(header), "\nCrashed because of %.*s", static_cast<int>(reason.size()), reason.data()); // The newline sets the crash off from whatever was printed before it.
+    crashCallback.load(std::memory_order_relaxed)(header, false);
+}
+
+static void emitTrace(std::string_view trace) {
+    crashCallback.load(std::memory_order_relaxed)(trace, true);
+}
+
+static void emitCrash(std::string_view reason) {
+    emitHeader(reason);
+    emitTrace(stackTraceToString());
 }
 
 static void warmUpCpptrace() {
     (void) cpptrace::generate_trace(0, 1).to_string();
-}
-
-static void printCrashTrace(std::string_view reason) {
-    printCrashHeader(reason);
-    printTrace(stackTraceToString());
 }
 
 #ifdef _WINDOWS
@@ -183,9 +222,8 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
         char reason[128];
         std::snprintf(reason, sizeof(reason), "exception %#lx at %p",
                       exceptionInfo->ExceptionRecord->ExceptionCode, exceptionInfo->ExceptionRecord->ExceptionAddress);
-        printCrashHeader(reason);
-        printTrace(traceFromContext(*exceptionInfo->ContextRecord, exceptionInfo->ExceptionRecord->ExceptionAddress));
-        runCrashCallback();
+        emitHeader(reason);
+        emitTrace(traceFromContext(*exceptionInfo->ContextRecord, exceptionInfo->ExceptionRecord->ExceptionAddress));
     }
 
     // Continuing the search hands the exception to windows error reporting, which is what writes the crash
@@ -194,35 +232,27 @@ static LONG WINAPI onStructuredException(EXCEPTION_POINTERS *exceptionInfo) {
 }
 
 static void onAbort(int signal) {
-    if (!crashHandled.test_and_set()) {
-        printCrashTrace("abort()");
-        runCrashCallback();
-    }
+    if (!crashHandled.test_and_set())
+        emitCrash("abort()");
     // Returning is fine here, abort() goes on to terminate the process.
 }
 
 static void onTerminate() {
-    if (!crashHandled.test_and_set()) {
-        printCrashTrace("std::terminate()");
-        runCrashCallback();
-    }
+    if (!crashHandled.test_and_set())
+        emitCrash("std::terminate()");
     std::abort(); // Ends the process, as returning from a terminate handler is undefined behavior.
 }
 
 static void __cdecl onPureCall() {
-    if (!crashHandled.test_and_set()) {
-        printCrashTrace("pure virtual function call");
-        runCrashCallback();
-    }
+    if (!crashHandled.test_and_set())
+        emitCrash("pure virtual function call");
     std::abort(); // Ends the process, as a pure virtual call leaves nothing sane to continue with.
 }
 
 static void __cdecl onInvalidParameter(const wchar_t *expression, const wchar_t *function, const wchar_t *file,
                                        unsigned int line, uintptr_t reserved) {
-    if (!crashHandled.test_and_set()) {
-        printCrashTrace("invalid parameter passed to a CRT function");
-        runCrashCallback();
-    }
+    if (!crashHandled.test_and_set())
+        emitCrash("invalid parameter passed to a CRT function");
     std::abort(); // Ends the process, as the CRT was handed garbage and can't carry on.
 }
 
@@ -259,6 +289,33 @@ static const int handledSignals[] = {
     SIGXCPU, // CPU time limit exceeded.
     SIGXFSZ, // File size limit exceeded.
 };
+
+/**
+ * Signal names for the crash header. Calling `strsignal` instead would not be safe here. It goes through
+ * gettext, which takes a lock and allocates a message catalog on first use, so a crash inside the allocator
+ * would hang in the handler instead of printing anything.
+ *
+ * The spelling is the same on every platform, so that one crash log reads the same wherever it was written.
+ * `strsignal` is the one that differs, glibc calling SIGABRT "Aborted" where darwin calls it "Abort trap".
+ *
+ * @param signal                        Signal the process is dying of.
+ * @return                              Static name of the signal.
+ */
+static const char *signalName(int signal) {
+    switch (signal) {
+    case SIGABRT: return "Aborted";
+    case SIGBUS: return "Bus error";
+    case SIGFPE: return "Floating point exception";
+    case SIGILL: return "Illegal instruction";
+    case SIGQUIT: return "Quit";
+    case SIGSEGV: return "Segmentation fault";
+    case SIGSYS: return "Bad system call";
+    case SIGTRAP: return "Trace/breakpoint trap";
+    case SIGXCPU: return "CPU time limit exceeded";
+    case SIGXFSZ: return "File size limit exceeded";
+    default: return "Unknown signal";
+    }
+}
 
 #ifdef __APPLE__
 
@@ -492,14 +549,13 @@ static void onSignal(int signal, siginfo_t *info, void *context) {
     // so the kernel kills the process and whatever was printed so far is all there is.
     if (!crashHandled.test_and_set()) {
         char reason[128];
-        std::snprintf(reason, sizeof(reason), "%s at %p", strsignal(info->si_signo), info->si_addr);
-        printCrashHeader(reason);
+        std::snprintf(reason, sizeof(reason), "%s at %p", signalName(info->si_signo), info->si_addr);
+        emitHeader(reason);
 #ifdef __APPLE__
-        printTrace(traceFromContext(*static_cast<ucontext_t *>(context), info->si_signo, info->si_addr));
+        emitTrace(traceFromContext(*static_cast<ucontext_t *>(context), info->si_signo, info->si_addr));
 #else
-        printTrace(traceFromContext(*static_cast<ucontext_t *>(context)));
+        emitTrace(traceFromContext(*static_cast<ucontext_t *>(context)));
 #endif
-        runCrashCallback();
     }
 
     // Die of the original signal, so that a core dump still happens and whoever launched the process sees it
@@ -537,13 +593,17 @@ static void installHandlers() {
 
 #endif // _WINDOWS
 
-StackTraceOnCrash::StackTraceOnCrash(void (*callback)()) {
-    crashCallback = callback;
+CrashCallback initStackTraceOnCrash(CrashCallback callback) {
+    CrashCallback previous = crashCallback.exchange(callback ? callback : &printCrashChunk, std::memory_order_relaxed);
 
-    // Symbols resolve lazily, so the first trace is the one that opens debug info and allocates. Better done
-    // here than inside a handler, with the process already broken.
-    warmUpCpptrace();
-    installHandlers();
+    static std::atomic_flag installed = ATOMIC_FLAG_INIT;
+    if (!installed.test_and_set()) {
+        // Symbols resolve lazily, so the first trace is the one that opens debug info and allocates. Better done
+        // here than inside a handler, with the process already broken.
+        warmUpCpptrace();
+        installHandlers();
+    }
+    return previous;
 }
 
 #endif // __ANDROID__

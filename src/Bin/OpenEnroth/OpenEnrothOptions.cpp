@@ -88,6 +88,11 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
             result.dataPath = NativePath::fromStdPath(std::filesystem::current_path());
     }
 
+    // Resolved here rather than by each consumer, so that the crash log and the saves can't end up in different
+    // folders. Never empty afterwards, so no consumer needs a fallback of its own.
+    if (result.userPath.isEmpty())
+        result.userPath = resolveMm7UserPath(env.get());
+
     if (result.subcommand == SUBCOMMAND_RETRACE) {
         result.ramFsUserData = true; // No config & no user data if retracing.
         result.quickStart = true;
