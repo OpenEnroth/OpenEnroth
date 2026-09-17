@@ -291,8 +291,8 @@ class GameConfig : public Config {
             "also hunts priests. In vanilla only the base class matches."};
 
         Bool RegenKeepsOverflow = {this, "regen_keeps_overflow", true,
-            "Regeneration leaves HP and SP alone when a buff left them above the maximum, it just stops adding. "
-            "In vanilla the next regeneration tick snaps the value down to the maximum."};
+            "Regeneration never lowers HP or SP that is above the maximum, it only stops adding. "
+            "In vanilla the next regeneration tick snaps such values down to the maximum."};
 
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
