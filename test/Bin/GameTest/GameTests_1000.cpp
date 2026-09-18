@@ -1116,6 +1116,31 @@ GAME_TEST(Issues, Issue1471) {
     EXPECT_GT(timeTape.back().toCivilTime().hour, 3);
 }
 
+GAME_TEST(Issues, Issue1473) {
+    // Ethric's Staff drained health from liches and zombies, although its description only promises to drain mortals.
+    auto lichHpTape = charTapes.hp(0);
+    auto zombieHpTape = charTapes.hp(1);
+    auto mortalHpTape = charTapes.hp(2);
+    game.startNewGame();
+
+    Character &lich = pParty->pCharacters[0];
+    Character &zombie = pParty->pCharacters[1];
+    Character &mortal = pParty->pCharacters[2];
+    lich.classType = CLASS_LICH;
+    zombie.conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
+    for (Character *wielder : {&lich, &zombie, &mortal}) {
+        wielder->inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_RELIC_ETHRICS_STAFF));
+        wielder->health = wielder->GetMaxHealth() / 2; // Lich and zombie drains stop at half health.
+    }
+
+    test.startTaping();
+    game.tick(100);
+
+    EXPECT_LT(mortalHpTape.delta(), 0); // Zero would mean that no regeneration tick ran.
+    EXPECT_EQ(lichHpTape.delta(), 0);
+    EXPECT_EQ(zombieHpTape.delta(), 0);
+}
+
 GAME_TEST(Issues, Issue1474) {
     // Wait until dawn ended at 5:02 because every rest frame also added the frame time to the clock.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
