@@ -4,22 +4,12 @@
 #include <string>
 #include <utility>
 
-#include "Engine/Objects/CharacterEnumFunctions.h"
-
 #include "Library/Serialization/Serialization.h"
 #include "Library/Serialization/SerializationExceptions.h"
 
 #include "Utility/IndexedArray.h"
-#include "Utility/Exception.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
-
-static constexpr IndexedArray<char, MASTERY_FIRST, MASTERY_LAST> masteryLetters = {{
-    {MASTERY_NOVICE,        'N'},
-    {MASTERY_EXPERT,        'E'},
-    {MASTERY_MASTER,        'M'},
-    {MASTERY_GRANDMASTER,   'G'}
-}};
 
 CombinedSkillValue::CombinedSkillValue(int level, Mastery mastery) {
     assert(isValid(level, mastery));
@@ -111,35 +101,29 @@ Mastery CombinedSkillValue::mastery() const {
 }
 
 bool trySerialize(const CombinedSkillValue &src, std::string *dst) {
-    if (!src)
-        return false;
-
-    *dst = fmt::format("{}{}", masteryLetters[src.mastery()], src.level());
+    *dst = src ? toString(src.mastery()) + toString(src.level()) : "none";
     return true;
 }
 
 bool tryDeserialize(std::string_view src, CombinedSkillValue *dst) {
-    if (src.empty())
-        return false;
-
-    for (Mastery mastery : allSkillMasteries()) {
-        if (masteryLetters[mastery] != ascii::toUpper(src[0]))
-            continue;
-
-        int level;
-        if (!tryDeserialize(src.substr(1), &level) || !CombinedSkillValue::isValid(level, mastery))
-            return false;
-
-        *dst = CombinedSkillValue(level, mastery);
+    if (ascii::noCaseEquals(src, "none")) {
+        *dst = CombinedSkillValue::none();
         return true;
     }
 
-    return false;
+    Mastery mastery;
+    int level;
+    if (src.empty() || !tryDeserialize(src.substr(0, 1), &mastery) || !tryDeserialize(src.substr(1), &level))
+        return false;
+    if (!CombinedSkillValue::isValid(level, mastery))
+        return false;
+
+    *dst = CombinedSkillValue(level, mastery);
+    return true;
 }
 
 void serialize(const CombinedSkillValue &src, std::string *dst) {
-    if (!trySerialize(src, dst))
-        throw Exception("Cannot serialize an empty skill value");
+    (void) trySerialize(src, dst);
 }
 
 void deserialize(std::string_view src, CombinedSkillValue *dst) {

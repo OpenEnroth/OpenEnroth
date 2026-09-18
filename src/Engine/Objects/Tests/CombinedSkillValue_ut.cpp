@@ -7,15 +7,14 @@
 
 #include "Library/Serialization/Serialization.h"
 
-#include "Utility/Exception.h"
-
 UNIT_TEST(CombinedSkillValue, Serialization) {
-    // A skill value serializes as the mastery letter followed by the level.
+    // A skill value serializes as the mastery letter followed by the level, and an empty one as "none".
     EXPECT_EQ(toString(CombinedSkillValue(8, MASTERY_MASTER)), "M8");
     EXPECT_EQ(toString(CombinedSkillValue(63, MASTERY_GRANDMASTER)), "G63");
     EXPECT_EQ(fromString<CombinedSkillValue>("N1"), CombinedSkillValue(1, MASTERY_NOVICE));
     EXPECT_EQ(fromString<CombinedSkillValue>("e12"), CombinedSkillValue(12, MASTERY_EXPERT));
-    EXPECT_THROW(toString(CombinedSkillValue::none()), Exception);
+    EXPECT_EQ(toString(CombinedSkillValue::none()), "none");
+    EXPECT_EQ(fromString<CombinedSkillValue>("None"), CombinedSkillValue::none());
 
     for (Mastery mastery : allSkillMasteries())
         for (int level = 1; level <= 63; level++)

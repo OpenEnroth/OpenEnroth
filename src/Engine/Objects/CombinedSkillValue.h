@@ -12,7 +12,7 @@
  * Simple POD-like class for storing full skill value (level and mastery).
  *
  * Serializes as the first letter of the mastery followed by the level, e.g. `M8` for master 8, same as in
- * `monsters.txt`. An empty skill value can't be serialized.
+ * `monsters.txt`. An empty skill value serializes as `none`.
  */
 class CombinedSkillValue {
  public:

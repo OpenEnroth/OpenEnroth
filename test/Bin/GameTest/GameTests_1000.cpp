@@ -435,7 +435,7 @@ GAME_TEST(Issues, Issue1255) {
     EXPECT_EQ(wandTape, tape(false, true));
 }
 
-GAME_TEST(Issues, Issue1262) {
+GAME_TEST(Issues, Issue1262a) {
     // Scroll and wand spell skill was hardcoded. Check that the config options feed the casts, and that the defaults
     // are the vanilla values. That is level 5 master for scrolls and level 8 novice for wands.
     for (bool configured : {false, true}) {
@@ -484,6 +484,14 @@ GAME_TEST(Issues, Issue1262) {
         EXPECT_EQ(heroismTape, tape(std::pair(MASTERY_NONE, 0), std::pair(MASTERY_MASTER, scrollSkill.level() + 5))); // Hour of Power takes master to learn.
         EXPECT_EQ(boltsTape.flatten().unique(), tape(wandSkill));
     }
+}
+
+GAME_TEST(Issues, Issue1262b) {
+    // Scroll and wand skill set to none in the config would make every cast assert on the empty skill value.
+    engine->config->gameplay.ScrollSpellSkill.setString("none");
+    engine->config->gameplay.WandSpellSkill.setString("none");
+    EXPECT_EQ(engine->config->gameplay.ScrollSpellSkill.string(), "N1");
+    EXPECT_EQ(engine->config->gameplay.WandSpellSkill.string(), "N1");
 }
 
 GAME_TEST(Issues, Issue1272) {

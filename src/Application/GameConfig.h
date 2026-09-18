@@ -276,11 +276,11 @@ class GameConfig : public Config {
         Bool DestroyDischargedWands = { this, "destroy_discharged_wands", false,
             "Destroy wands when they reach 0 charges." };
 
-        ConfigEntry<CombinedSkillValue> ScrollSpellSkill = {this, "scroll_spell_skill", CombinedSkillValue(5, MASTERY_MASTER),
+        ConfigEntry<CombinedSkillValue> ScrollSpellSkill = {this, "scroll_spell_skill", CombinedSkillValue(5, MASTERY_MASTER), &ValidateSpellSkill,
             "Skill that spell scrolls and hireling spells are cast with, the mastery letter 'N', 'E', 'M' or 'G' followed by "
             "a level from 1 to 63. A spell that takes expert or master to learn is never cast below that. 'M5' in vanilla."};
 
-        ConfigEntry<CombinedSkillValue> WandSpellSkill = {this, "wand_spell_skill", CombinedSkillValue(8, MASTERY_NOVICE),
+        ConfigEntry<CombinedSkillValue> WandSpellSkill = {this, "wand_spell_skill", CombinedSkillValue(8, MASTERY_NOVICE), &ValidateSpellSkill,
             "Skill that wands are cast with, the mastery letter 'N', 'E', 'M' or 'G' followed by a level from 1 to 63. "
             "'N8' in vanilla."};
 
@@ -342,6 +342,9 @@ class GameConfig : public Config {
         }
         static int ValidateMaxActiveAIActors(int num) {
             return std::clamp(num, 30, 500);
+        }
+        static CombinedSkillValue ValidateSpellSkill(CombinedSkillValue skill) {
+            return skill ? skill : CombinedSkillValue::novice();
         }
     };
 
