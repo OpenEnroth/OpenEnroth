@@ -56,12 +56,10 @@ UNIT_TEST_FIXTURE(ConfigTest, ValidValueIsLoaded) {
 }
 
 UNIT_TEST_FIXTURE(ConfigTest, SavedValuesAreLoadedBack) {
-    // Issue #1167: the game started with default values instead of the ones it had itself written to the ini.
     TestConfig saved;
     saved.test.value.setValue(-13);
     saved.test.flag.setValue(true);
-    // Interior '=' and spaces round-trip, the parser splits at the first '=' and trims only the padding.
-    saved.test.text.setValue("with spaces and = sign");
+    saved.test.text.setValue("with spaces and = sign"); // The parser splits at the first '=' and trims only the padding.
 
     Blob blob;
     BlobOutputStream out(&blob);
