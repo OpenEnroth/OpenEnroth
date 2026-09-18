@@ -805,7 +805,7 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
 std::vector<DialogueId> GUIWindow_Shop::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
-        if (listShopLearnableSkills().empty()) // Vanilla offers "Learn Skills" even then. In MM7 that's Vander's Blades & Bows in Tatalia.
+        if (listShopLearnableSkills().empty()) // MM7 and MM8 offer "Learn Skills" even then. In MM7 that's Vander's Blades & Bows in Tatalia.
             return {DIALOGUE_SHOP_BUY_STANDARD, DIALOGUE_SHOP_BUY_SPECIAL, DIALOGUE_SHOP_DISPLAY_EQUIPMENT};
         return {DIALOGUE_SHOP_BUY_STANDARD, DIALOGUE_SHOP_BUY_SPECIAL, DIALOGUE_SHOP_DISPLAY_EQUIPMENT, DIALOGUE_LEARN_SKILLS};
       case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:

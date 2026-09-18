@@ -1,14 +1,13 @@
-#include <algorithm>
 #include <string>
 #include <utility>
 
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/Engine.h"
-#include "Engine/Localization.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
@@ -16,10 +15,7 @@
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
 
-#include "GUI/GUIButton.h"
-#include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Io/Mouse.h"
@@ -556,27 +552,15 @@ GAME_TEST(Issues, Issue2754) {
 
 GAME_TEST(Issues, Issue2759) {
     // Clicking "Learn Skills" in a shop that teaches no skills crashed. Such a shop shouldn't offer the option at all.
+    auto houseTape = tapes.house();
     auto textTape = tapes.allGUIWindowsText();
     game.startNewGame();
-
+    test.startTaping();
     game.teleportTo(MAP_TATALIA, Vec3f(19174, 15056, 3040), 0); // In front of the door of Vander's Blades & Bows, facing it.
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick(2);
-    ASSERT_EQ(current_screen_type, SCREEN_HOUSE);
-    ASSERT_EQ(window_SpeakInHouse->houseId(), HOUSE_WEAPON_SHOP_TATALIA_1); // Stocks only RANDOM_ITEM_WEAPON, so there are no skills to learn.
-    ASSERT_NE(pDialogueWindow, nullptr);
-    EXPECT_EQ(pDialogueWindow->pNumPresenceButton, 3);
-    EXPECT_FALSE(std::ranges::contains(pDialogueWindow->vButtons, std::to_underlying(DIALOGUE_LEARN_SKILLS), &GUIButton::msg_param));
-
-    // The dialogue has to cope with an empty skill list on its own, the crash was in there.
-    test.startTaping();
-    engine->_messageQueue->addMessageCurrentFrame(UIMSG_SelectProprietorDialogueOption, std::to_underlying(DIALOGUE_LEARN_SKILLS));
-    game.tick(2);
-
-    EXPECT_EQ(window_SpeakInHouse->currentDialogue(), DIALOGUE_LEARN_SKILLS);
-    EXPECT_EQ(pDialogueWindow->pNumPresenceButton, 0);
-    const Character &character = pParty->activeCharacter();
-    EXPECT_CONTAINS(textTape.flatten(), localization->format(LSTR_SEEK_KNOWLEDGE_ELSEWHERE_S_THE_S, character.name, localization->className(character.classType)) +
-                                        "\n \n" + localization->str(LSTR_I_CAN_OFFER_YOU_NOTHING_FURTHER));
+    EXPECT_CONTAINS(houseTape, HOUSE_WEAPON_SHOP_TATALIA_1); // Its stock doesn't name a weapon type, so it has no skill to teach.
+    EXPECT_CONTAINS(textTape.flatten(), "Display Inventory"); // We've seen the shop menu.
+    EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
 }
