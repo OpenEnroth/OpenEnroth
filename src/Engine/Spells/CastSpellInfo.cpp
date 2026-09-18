@@ -3204,13 +3204,9 @@ void pushScrollSpell(SpellId spell, int casterIndex) {
 }
 
 CombinedSkillValue scrollSpellSkillValue(SpellId spell) {
+    CombinedSkillValue skill = engine->config->gameplay.ScrollSpellSkill.value();
     Mastery learnedAt = std::min(pSpellDatas[spell].skillMastery, MASTERY_MASTER); // Vanilla scrolls cast grandmaster spells at master.
-    Mastery mastery = std::max(engine->config->gameplay.ScrollSpellMastery.value(), learnedAt); // No spell has rules below the mastery it's learned at.
-    return CombinedSkillValue(engine->config->gameplay.ScrollSpellLevel.value(), mastery);
-}
-
-CombinedSkillValue wandSpellSkillValue() {
-    return CombinedSkillValue(engine->config->gameplay.WandSpellLevel.value(), engine->config->gameplay.WandSpellMastery.value());
+    return CombinedSkillValue(skill.level(), std::max(skill.mastery(), learnedAt)); // No spell has rules below the mastery it's learned at.
 }
 
 void spellTargetPicked(Pid targetPid, int targetCharacterIndex) {

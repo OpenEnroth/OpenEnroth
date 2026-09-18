@@ -3,8 +3,23 @@
 #include <cassert>
 #include <string>
 #include <utility>
+
+#include "Engine/Objects/CharacterEnumFunctions.h"
+
+#include "Library/Serialization/Serialization.h"
+#include "Library/Serialization/SerializationExceptions.h"
+
 #include "Utility/IndexedArray.h"
+#include "Utility/Exception.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
+
+static constexpr IndexedArray<char, MASTERY_FIRST, MASTERY_LAST> masteryLetters = {{
+    {MASTERY_NOVICE,        'N'},
+    {MASTERY_EXPERT,        'E'},
+    {MASTERY_MASTER,        'M'},
+    {MASTERY_GRANDMASTER,   'G'}
+}};
 
 CombinedSkillValue::CombinedSkillValue(int level, Mastery mastery) {
     assert(isValid(level, mastery));
@@ -93,4 +108,41 @@ int CombinedSkillValue::level() const {
 
 Mastery CombinedSkillValue::mastery() const {
     return _mastery;
+}
+
+bool trySerialize(const CombinedSkillValue &src, std::string *dst) {
+    if (!src)
+        return false;
+
+    *dst = fmt::format("{}{}", masteryLetters[src.mastery()], src.level());
+    return true;
+}
+
+bool tryDeserialize(std::string_view src, CombinedSkillValue *dst) {
+    if (src.empty())
+        return false;
+
+    for (Mastery mastery : allSkillMasteries()) {
+        if (masteryLetters[mastery] != ascii::toUpper(src[0]))
+            continue;
+
+        int level;
+        if (!tryDeserialize(src.substr(1), &level) || !CombinedSkillValue::isValid(level, mastery))
+            return false;
+
+        *dst = CombinedSkillValue(level, mastery);
+        return true;
+    }
+
+    return false;
+}
+
+void serialize(const CombinedSkillValue &src, std::string *dst) {
+    if (!trySerialize(src, dst))
+        throw Exception("Cannot serialize an empty skill value");
+}
+
+void deserialize(std::string_view src, CombinedSkillValue *dst) {
+    if (!tryDeserialize(src, dst))
+        throwDeserializationError(src, "CombinedSkillValue");
 }

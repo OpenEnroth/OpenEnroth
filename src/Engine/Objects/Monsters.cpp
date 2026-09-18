@@ -13,6 +13,7 @@
 #include "Utility/MapAccess.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
+#include "Utility/String/Join.h"
 #include "Utility/String/Split.h"
 #include "Utility/Exception.h"
 #include "Utility/String/Transformations.h"
@@ -65,27 +66,6 @@ SpellId ParseSpellType(std::string_view name) {
         return it->second;
     MM_WARNING("Unknown monster spell {}", name);
     return SPELL_NONE;
-}
-
-CombinedSkillValue ParseSkillValue(std::string_view skillString, std::string_view masteryString) {
-    int skill;
-    if (!tryDeserialize(skillString, &skill))
-        return CombinedSkillValue::none(); // TODO(captainurist): this does happen, investigate.
-
-    Mastery mastery;
-    if (masteryString == "N") {
-        mastery = MASTERY_NOVICE;
-    } else if (masteryString == "E") {
-        mastery = MASTERY_EXPERT;
-    } else if (masteryString == "M") {
-        mastery = MASTERY_MASTER;
-    } else if (masteryString == "G") {
-        mastery = MASTERY_GRANDMASTER;
-    } else {
-        throw Exception("Invalid character skill mastery string '{}'", masteryString);
-    }
-
-    return CombinedSkillValue(skill, mastery);
 }
 
 //----- (00454CB4) --------------------------------------------------------
@@ -379,14 +359,9 @@ void MonsterStats::Initialize(const Blob &monsters) {
         if (parts[0].empty())
             return;
         outSpellId = ParseSpellType(parts[0]);
-        std::string_view mastery = parts[1];
-        std::string_view skill = parts[2];
-        if (skill.empty() && mastery.size() > 1) {
-            skill = mastery.substr(1);
-            mastery = mastery.substr(0, 1);
-        }
+        std::string skill = join(parts[1], parts[2]);
         if (!skill.empty())
-            outMastery = ParseSkillValue(skill, mastery);
+            outMastery = fromString<CombinedSkillValue>(skill);
     };
 
     // Special-ability cell. Format is one of:

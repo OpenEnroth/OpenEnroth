@@ -440,19 +440,13 @@ GAME_TEST(Issues, Issue1262) {
     // are the vanilla values. That is level 5 master for scrolls and level 8 novice for wands.
     for (bool configured : {false, true}) {
         test.prepareForNextTest();
-        int scrollLevel = 5;
-        Mastery scrollMastery = MASTERY_MASTER;
-        int wandLevel = 8;
-        Mastery wandMastery = MASTERY_NOVICE;
+        CombinedSkillValue scrollSkill(5, MASTERY_MASTER);
+        CombinedSkillValue wandSkill(8, MASTERY_NOVICE);
         if (configured) {
-            scrollLevel = 12;
-            scrollMastery = MASTERY_EXPERT;
-            wandLevel = 63;
-            wandMastery = MASTERY_GRANDMASTER;
-            engine->config->gameplay.ScrollSpellLevel.setValue(scrollLevel);
-            engine->config->gameplay.ScrollSpellMastery.setValue(scrollMastery);
-            engine->config->gameplay.WandSpellLevel.setValue(64); // Clamped to 63, the highest level a skill value holds.
-            engine->config->gameplay.WandSpellMastery.setValue(wandMastery);
+            scrollSkill = CombinedSkillValue(12, MASTERY_EXPERT);
+            wandSkill = CombinedSkillValue(63, MASTERY_GRANDMASTER);
+            engine->config->gameplay.ScrollSpellSkill.setValue(scrollSkill);
+            engine->config->gameplay.WandSpellSkill.setValue(wandSkill);
         }
 
         engine->config->debug.NoActors.setValue(true);
@@ -465,7 +459,7 @@ GAME_TEST(Issues, Issue1262) {
         auto resistTape = partyBuffTape(PARTY_BUFF_RESIST_FIRE);
         auto heroismTape = partyBuffTape(PARTY_BUFF_HEROISM);
         auto boltsTape = tapes.custom([] {
-            AccessibleVector<std::pair<int, Mastery>> result;
+            AccessibleVector<CombinedSkillValue> result;
             for (const SpriteObject &sprite : pSpriteObjects)
                 if (sprite.uObjectDescID != 0 && sprite.uSpellID == SPELL_FIRE_FIRE_BOLT)
                     result.emplace_back(sprite.spell_level, sprite.spell_skill);
@@ -486,9 +480,9 @@ GAME_TEST(Issues, Issue1262) {
         game.tick(2);
         test.stopTaping();
 
-        EXPECT_EQ(resistTape, tape(std::pair(MASTERY_NONE, 0), std::pair(scrollMastery, std::to_underlying(scrollMastery) * scrollLevel)));
-        EXPECT_EQ(heroismTape, tape(std::pair(MASTERY_NONE, 0), std::pair(MASTERY_MASTER, scrollLevel + 5))); // Hour of Power takes master to learn.
-        EXPECT_EQ(boltsTape.flatten().unique(), tape(std::pair(wandLevel, wandMastery)));
+        EXPECT_EQ(resistTape, tape(std::pair(MASTERY_NONE, 0), std::pair(scrollSkill.mastery(), std::to_underlying(scrollSkill.mastery()) * scrollSkill.level())));
+        EXPECT_EQ(heroismTape, tape(std::pair(MASTERY_NONE, 0), std::pair(MASTERY_MASTER, scrollSkill.level() + 5))); // Hour of Power takes master to learn.
+        EXPECT_EQ(boltsTape.flatten().unique(), tape(wandSkill));
     }
 }
 

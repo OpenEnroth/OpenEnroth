@@ -15,7 +15,7 @@
 #include "Library/Color/Color.h"
 
 #include "Engine/Random/RandomEnums.h"
-#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
 #include "Library/Logger/LogEnums.h"
 
 #include "KeyConfigEntry.h"
@@ -276,18 +276,13 @@ class GameConfig : public Config {
         Bool DestroyDischargedWands = { this, "destroy_discharged_wands", false,
             "Destroy wands when they reach 0 charges." };
 
-        Int ScrollSpellLevel = {this, "scroll_spell_level", 5, &ValidateSpellLevel,
-            "Skill level that spell scrolls and hireling spells are cast with, from 1 to 63. 5 in vanilla."};
+        ConfigEntry<CombinedSkillValue> ScrollSpellSkill = {this, "scroll_spell_skill", CombinedSkillValue(5, MASTERY_MASTER),
+            "Skill that spell scrolls and hireling spells are cast with, the mastery letter 'N', 'E', 'M' or 'G' followed by "
+            "a level from 1 to 63. A spell that takes expert or master to learn is never cast below that. 'M5' in vanilla."};
 
-        ConfigEntry<Mastery> ScrollSpellMastery = {this, "scroll_spell_mastery", MASTERY_MASTER,
-            "Skill mastery that spell scrolls and hireling spells are cast with, one of 'novice', 'expert', 'master' and 'grandmaster'. "
-            "A spell that takes expert or master to learn is never cast below that. 'master' in vanilla."};
-
-        Int WandSpellLevel = {this, "wand_spell_level", 8, &ValidateSpellLevel,
-            "Skill level that wands are cast with, from 1 to 63. 8 in vanilla."};
-
-        ConfigEntry<Mastery> WandSpellMastery = {this, "wand_spell_mastery", MASTERY_NOVICE,
-            "Skill mastery that wands are cast with, one of 'novice', 'expert', 'master' and 'grandmaster'. 'novice' in vanilla."};
+        ConfigEntry<CombinedSkillValue> WandSpellSkill = {this, "wand_spell_skill", CombinedSkillValue(8, MASTERY_NOVICE),
+            "Skill that wands are cast with, the mastery letter 'N', 'E', 'M' or 'G' followed by a level from 1 to 63. "
+            "'N8' in vanilla."};
 
         Bool ShowProtectionMagicPower = {this, "show_prot_magic_power", true, "Display the remaining power of Protection from Magic in the Party Buffs popup."};
 
@@ -347,9 +342,6 @@ class GameConfig : public Config {
         }
         static int ValidateMaxActiveAIActors(int num) {
             return std::clamp(num, 30, 500);
-        }
-        static int ValidateSpellLevel(int level) {
-            return std::clamp(level, 1, 63); // A packed skill value has 6 bits for the level.
         }
     };
 

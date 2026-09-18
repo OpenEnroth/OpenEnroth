@@ -127,11 +127,6 @@ void pushScrollSpell(SpellId spell, int casterIndex);
 CombinedSkillValue scrollSpellSkillValue(SpellId spell);
 
 /**
- * @return                              Skill value that wands are cast with, as configured.
- */
-CombinedSkillValue wandSpellSkillValue();
-
-/**
  * Process successful picking target for spell.
  *
  * @param targetPid                     `Pid` of the target.
