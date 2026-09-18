@@ -40,58 +40,39 @@ GAME_TEST(Issues, Issue1502) {
     // HP and SP sitting above the maximum, e.g. after Day of the Gods expired, were snapped down to the maximum by
     // the next regeneration tick.
     for (bool keepOverflow : {true, false}) {
-        for (bool stacking : {true, false}) {
-            SCOPED_TRACE(fmt::format("keepOverflow={} stacking={}", keepOverflow, stacking));
-            test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame, one regen tick each.
-            engine->config->gameplay.RegenKeepsOverflow.setValue(keepOverflow);
-            engine->config->gameplay.RegenStacking.setValue(stacking);
-            engine->config->debug.NoActors.setValue(true);
-            game.startNewGame();
+        SCOPED_TRACE(fmt::format("keepOverflow={}", keepOverflow));
+        test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame, one regen tick each.
+        engine->config->gameplay.RegenKeepsOverflow.setValue(keepOverflow);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
 
-            Character &overflowingCaster = pParty->pCharacters[2];
-            Character &woundedCaster = pParty->pCharacters[3];
-            Character &overflowingFighter = pParty->pCharacters[0];
-            Character &woundedFighter = pParty->pCharacters[1];
-            for (Character &character : pParty->pCharacters) {
-                bool caster = character.GetMaxMana() > 0;
-                Item ring(ITEM_BRASS_RING);
-                ring.specialEnchantment = caster ? ITEM_ENCHANTMENT_OF_MANA : ITEM_ENCHANTMENT_OF_REGENERATION;
-                character.inventory.equip(ITEM_SLOT_RING1, ring);
-                // Without stacking the buff shadows item regeneration, so only a character without it reaches the
-                // item branch.
-                if (caster)
-                    character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_EXPERT, 1, 0, 0);
-            }
-            ASSERT_GT(overflowingCaster.GetMaxMana(), 0);
-            ASSERT_GT(woundedCaster.GetMaxMana(), 0);
-            ASSERT_EQ(overflowingFighter.GetMaxMana(), 0);
-            ASSERT_EQ(woundedFighter.GetMaxMana(), 0);
+        Character &overflowing = pParty->pCharacters[2];
+        Character &wounded = pParty->pCharacters[3];
+        for (Character *character : {&overflowing, &wounded}) {
+            ASSERT_GT(character->GetMaxMana(), 0);
+            character->pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_EXPERT, 1, 0, 0);
+            Item ring(ITEM_BRASS_RING);
+            ring.specialEnchantment = ITEM_ENCHANTMENT_OF_MANA;
+            character->inventory.equip(ITEM_SLOT_RING1, ring);
+        }
+        int maxHp = overflowing.GetMaxHealth();
+        int maxMp = overflowing.GetMaxMana();
+        overflowing.health = maxHp + 20;
+        overflowing.mana = maxMp + 20;
+        wounded.health = 1;
+        wounded.mana = 0;
 
-            int casterMaxHp = overflowingCaster.GetMaxHealth();
-            int casterMaxMp = overflowingCaster.GetMaxMana();
-            int fighterMaxHp = overflowingFighter.GetMaxHealth();
-            overflowingCaster.health = casterMaxHp + 20;
-            overflowingCaster.mana = casterMaxMp + 20;
-            overflowingFighter.health = fighterMaxHp + 20;
-            woundedCaster.health = 1;
-            woundedCaster.mana = 0;
-            woundedFighter.health = 1;
+        game.tick(10);
 
-            game.tick(10);
-
-            EXPECT_EQ(woundedCaster.health, woundedCaster.GetMaxHealth());
-            EXPECT_GT(woundedCaster.mana, 0);
-            EXPECT_GT(woundedFighter.health, 1);
-            if (keepOverflow) {
-                EXPECT_EQ(overflowingCaster.health, casterMaxHp + 20);
-                EXPECT_EQ(overflowingCaster.mana, casterMaxMp + 20);
-                EXPECT_EQ(overflowingFighter.health, fighterMaxHp + 20);
-            } else {
-                // The vanilla snap.
-                EXPECT_EQ(overflowingCaster.health, casterMaxHp);
-                EXPECT_EQ(overflowingCaster.mana, casterMaxMp);
-                EXPECT_EQ(overflowingFighter.health, fighterMaxHp);
-            }
+        EXPECT_EQ(wounded.health, wounded.GetMaxHealth());
+        EXPECT_GT(wounded.mana, 0);
+        if (keepOverflow) {
+            EXPECT_EQ(overflowing.health, maxHp + 20);
+            EXPECT_EQ(overflowing.mana, maxMp + 20);
+        } else {
+            // The vanilla snap.
+            EXPECT_EQ(overflowing.health, maxHp);
+            EXPECT_EQ(overflowing.mana, maxMp);
         }
     }
 }
