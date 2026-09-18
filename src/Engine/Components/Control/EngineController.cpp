@@ -430,9 +430,9 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
     std::vector<Pointi> points = {screenPos};
     for (int distance = 5; distance <= 50; distance += 5)
         points.insert(points.end(), {screenPos - Pointi(0, distance), screenPos + Pointi(0, distance), screenPos - Pointi(distance, 0), screenPos + Pointi(distance, 0)});
-    float depth = engine->config->gameplay.RangedAttackDepth.value();
-    auto pick = [&](Pointi point) { return engine->PickMouse(depth, point.x, point.y, &vis_anything_filter, &vis_face_filter).pid; };
-    auto target = std::ranges::find(points, Pid(OBJECT_Decoration, decorationId), pick);
+    auto target = std::ranges::find(points, Pid(OBJECT_Decoration, decorationId), [](Pointi point) {
+        return engine->PickMouse(engine->config->gameplay.RangedAttackDepth.value(), point.x, point.y, &vis_anything_filter, &vis_face_filter).pid;
+    });
 
     moveMouse(target != points.end() ? *target : screenPos);
     tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
