@@ -18,9 +18,6 @@
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Objects/SpriteObject.h"
-#include "Engine/Objects/Decoration.h"
-#include "Engine/Tables/DecorationTable.h"
-#include "Engine/Graphics/Camera.h"
 
 #include "Library/Random/SequentialRandomEngine.h"
 
@@ -576,18 +573,9 @@ GAME_TEST(Issues, Issue1718) {
     auto screenTape = tapes.screen();
     game.startNewGame();
     game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180); // On the ledge east of the hanging cage, facing it.
-    game.tick(2);
-
-    auto cage = std::ranges::find(pLevelDecorations, 376, &LevelDecoration::uEventID); // Roland's cage script.
-    ASSERT_NE(cage, pLevelDecorations.end());
-
     test.startTaping();
     for (int click = 0; click < 2; click++) {
-        Vec3f base = cage->vPosition + Vec3f(0, 0, pDecorationTable->decoration(cage->uDecorationDescID)->uDecorationHeight); // The cage's solid base, the bars above it have gaps.
-        Vec3f viewPos = pCamera3D->ViewTransform(&base);
-        Vec2f screenPos = pCamera3D->Project(viewPos);
-        game.moveMouse(screenPos.x, screenPos.y);
-        game.tick();
+        game.pointMouseAtDecoration(1); // Roland's cage.
         game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
         game.tick(3);
         game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
