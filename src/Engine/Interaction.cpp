@@ -124,10 +124,9 @@ void DoInteractionWithTopmostZObject(Pid pid) {
         case OBJECT_Face: {
             const BLVFace *face = nullptr;
             if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                int bmodel_id = id >> 6;
-                if (bmodel_id >= pOutdoor->pBModels.size())
+                if ((id >> 6) >= pOutdoor->pBModels.size())
                     return;
-                face = &pOutdoor->pBModels[bmodel_id].faces[id & 0x3F];
+                face = &pOutdoor->face(pid);
             } else {
                 face = &pIndoor->faces[id];
             }
