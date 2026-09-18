@@ -424,18 +424,17 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
     Vec3f viewPos = pCamera3D->ViewTransform(&center);
     if (viewPos.x <= 0)
         throw Exception("Decoration #{} is behind the camera", decorationId);
-    Vec2f screenPos = pCamera3D->Project(viewPos);
+    Pointi screenPos = pCamera3D->Project(viewPos).toInt();
 
     // Decoration sprites can be transparent in places, and a pick there goes through to whatever is behind.
-    Pointi center(screenPos.x, screenPos.y);
-    std::vector<Pointi> points = {center};
+    std::vector<Pointi> points = {screenPos};
     for (int distance = 5; distance <= 50; distance += 5)
-        points.insert(points.end(), {center - Pointi(0, distance), center + Pointi(0, distance), center - Pointi(distance, 0), center + Pointi(distance, 0)});
+        points.insert(points.end(), {screenPos - Pointi(0, distance), screenPos + Pointi(0, distance), screenPos - Pointi(distance, 0), screenPos + Pointi(distance, 0)});
     float depth = engine->config->gameplay.RangedAttackDepth.value();
     auto pick = [&](Pointi point) { return engine->PickMouse(depth, point.x, point.y, &vis_anything_filter, &vis_face_filter).pid; };
     auto target = std::ranges::find(points, Pid(OBJECT_Decoration, decorationId), pick);
 
-    moveMouse(target != points.end() ? *target : center);
+    moveMouse(target != points.end() ? *target : screenPos);
     tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
     if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Decoration, decorationId))
         throw Exception("Failed to point mouse at decoration #{}", decorationId);
