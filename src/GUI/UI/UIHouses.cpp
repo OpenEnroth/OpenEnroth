@@ -690,8 +690,6 @@ void playHouseSound(HouseId houseID, HouseSoundType type) {
         // TODO(captainurist): encapsulate
         int roomSoundId = pAnimatedRooms[houseTable[houseID].uAnimationID].uRoomSoundId;
         SoundId soundId = SoundId(std::to_underlying(type) + 100 * (roomSoundId + 300));
-        if (roomSoundId == 14 && type == HOUSE_SOUND_GENERAL_GREETING) // Human town hall, MM7 has no 314xx sounds.
-            soundId = SoundId(34302); // "Human Town Hall" in dsounds.bin. TODO(captainurist): move to patched data tables.
         pAudioPlayer->playHouseSound(soundId, true);
     }
 }

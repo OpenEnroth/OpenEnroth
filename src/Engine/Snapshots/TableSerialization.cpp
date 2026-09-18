@@ -1,5 +1,6 @@
 #include "TableSerialization.h"
 
+#include <algorithm>
 #include <vector>
 
 #include "Engine/Tables/PortraitFrameTable.h"
@@ -90,6 +91,10 @@ void deserialize(const Blob &src, SoundList *dst) {
     deserialize(src, &sounds, tags::append, tags::each, tags::via<SoundInfo_MM7>);
 
     assert(!sounds.empty());
+
+    auto humanTownHall = std::ranges::find(sounds, "Human Town Hall", &SoundInfo::name);
+    if (humanTownHall != sounds.end())
+        humanTownHall->soundId = SOUND_HumanTownHall; // MM7 files it as 34302, where playHouseSound never looks.
 
     // TODO(captainurist): there are duplicate ids in the sounds array, look into it.
     for (const SoundInfo &sound : sounds)

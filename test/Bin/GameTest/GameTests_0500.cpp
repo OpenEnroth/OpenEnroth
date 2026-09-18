@@ -1001,7 +1001,7 @@ GAME_TEST(Issues, Issue959) {
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
     EXPECT_EQ(houseTape.back(), HOUSE_TOWN_HALL_HARMONDALE);
-    EXPECT_EQ(soundsTape.flatten().count(SoundId(34302)), 1);
+    EXPECT_EQ(soundsTape.flatten().count(SOUND_HumanTownHall), 1);
 }
 
 GAME_TEST(Issues, Issue987) {
