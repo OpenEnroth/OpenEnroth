@@ -1342,7 +1342,7 @@ void RegeneratePartyHealthMana() {
             if (!isRegular(item->itemId)) {
                 if (item->itemId == ITEM_RELIC_ETHRICS_STAFF) {
                     bool undead = character.classType == CLASS_LICH || character.conditions.has(CONDITION_ZOMBIE);
-                    if (!undead || !engine->config->gameplay.NoEthricsStaffDrainForUndead.value())
+                    if (!undead) // Vanilla bug: the staff drained every wielder, while its description only has it drain mortals.
                         character.health -= ticks5;
                 }
                 if (item->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
