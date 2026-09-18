@@ -295,7 +295,7 @@ class GameConfig : public Config {
             "In vanilla the next regeneration tick snaps such values down to the maximum."};
 
         Bool NoEthricsStaffDrainForUndead = {this, "no_ethrics_staff_drain_for_undead", true,
-            "Ethric's Staff doesn't drain health from liches and zombies. In vanilla the staff drains liches too."};
+            "Ethric's Staff doesn't drain health from liches and zombies. In vanilla the staff drains every wielder."};
 
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
