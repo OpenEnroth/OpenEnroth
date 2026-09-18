@@ -67,8 +67,8 @@ RUN wget -qO /tmp/cmake.sh "https://github.com/Kitware/CMake/releases/download/v
   sh /tmp/cmake.sh --skip-license --prefix=/usr/local && \
   rm /tmp/cmake.sh
 
-# Install Node.js 20 (needed for Claude Code).
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+# Install Node.js 22.
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
   apt-get install -y --no-install-recommends nodejs && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
 
