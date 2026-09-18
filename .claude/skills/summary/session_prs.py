@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Find the pull requests and issues belonging to one session, and only that session.
+"""Find what one session worked on, and only that session.
 
-A glob over ~/.claude/projects sweeps every session on the machine, which in a
-worktree-per-task workflow means every parallel agent's work lands in the summary. One
-session is one file named after its id, so the id is the scope.
+One session is one transcript file named after its id, with the subagents it spawned in a
+directory beside it, so the id is the scope. A glob over every transcript would report every
+parallel agent's work as this session's.
 
-Output is numbers and counts. Transcripts hold raw shell commands, some of them carrying
-access tokens, so nothing from a command line is ever printed here.
+Output is numbers, paths and counts. Transcripts hold raw shell commands, some of them carrying
+access tokens, so no command text is ever printed.
 """
 import argparse
 import collections
@@ -18,21 +18,21 @@ import sys
 
 PROJECTS = os.path.expanduser("~/.claude/projects")
 
-PULL_URL_RE = re.compile(r"github\.com/([\w.-]+)/([\w.-]+)/pull/(\d+)")
-ISSUE_URL_RE = re.compile(r"github\.com/([\w.-]+)/([\w.-]+)/issues/(\d+)")
-HASH_RE = re.compile(r"#(\d{2,6})\b")
-PR_OP_RE = re.compile(r"\bgh\s+pr\s+(?:view|checks|merge|comment|edit|close|ready|diff|review)\s+(\d+)")
-ISSUE_OP_RE = re.compile(r"\bgh\s+issue\s+(?:view|comment|edit|close|reopen|develop|pin)\s+(\d+)")
-PR_CREATE_RE = re.compile(r"\bgh\s+pr\s+create\b")
-ISSUE_CREATE_RE = re.compile(r"\bgh\s+issue\s+create\b")
-API_RE = re.compile(r"\bgh\s+api\s+repos/[\w.-]+/[\w.-]+/(issues|pulls)/(\d+)")
-# A command that searches for the text of a create call is not a create call. Grepping the
-# transcripts for "gh issue create" otherwise files every link in the results as this
-# session's own work.
-SEARCHY_RE = re.compile(r"\b(grep|rg|ripgrep|ag|ack|fgrep|egrep)\b")
-
 # Ranked weakest to strongest, so a stronger sighting always wins.
-EVIDENCE = ("mentioned", "operated", "created")
+EVIDENCE = ("mentioned", "viewed", "changed", "created")
+
+WRITE_VERBS = frozenset(("comment", "edit", "merge", "close", "ready", "review", "reopen", "lock",
+                         "unlock", "pin", "unpin", "develop", "transfer", "delete"))
+READ_VERBS = frozenset(("view", "checks", "diff", "checkout"))
+EDIT_TOOLS = frozenset(("Edit", "Write", "NotebookEdit"))
+
+ITEM_URL_RE = re.compile(r"github\.com/([\w.-]+)/([\w.-]+)/(pull|issues)/(\d+)")
+API_PATH_RE = re.compile(r"repos/([\w.-]+)/([\w.-]+)/(issues|pulls)/(\d+)")
+API_WRITE_RE = re.compile(r"(?:-X|--method)[ =]?(?:POST|PATCH|PUT|DELETE)\b|(?:^|\s)(?:-f|-F|--field|--raw-field|--input)\b")
+REPO_FLAG_RE = re.compile(r"(?:^|\s)(?:-R|--repo)[ =]([\w.-]+/[\w.-]+)")
+NUMBER_ARG_RE = re.compile(r"#?(\d{1,7})(?!\S)")
+PREFIX_RE = re.compile(r"^(?:(?:[A-Za-z_]\w*=(?:\"[^\"]*\"|'[^']*'|\S*)|env|time|sudo|command|exec|nohup|setsid)\s+)*")
+GIT_WRITE_RE = re.compile(r"git\s+(?:-C\s+(\S+)\s+)?(?:-c\s+\S+\s+)*(?:commit|push)\b")
 
 
 def new_entry():
@@ -41,6 +41,14 @@ def new_entry():
     @return                             Fresh entry with no sightings and no kind.
     """
     return {"count": 0, "evidence": "mentioned", "first": "", "last": "", "kind": ""}
+
+
+def new_places():
+    """Build the record of where a session worked.
+
+    @return                             Dict of path sets, one per kind of evidence.
+    """
+    return {"entered": set(), "committed": set(), "edited": set(), "subagent": set()}
 
 
 def transcript_paths(session_id):
@@ -54,52 +62,208 @@ def transcript_paths(session_id):
     return main, subs
 
 
-def blocks(rec):
-    """Walk one record's tool calls, tool results and prose.
+def simple_commands(text):
+    """Split shell text into simple commands, keeping quoted text inside its command.
 
-    @param rec                          One decoded transcript record.
-    @return                             Yields tuples of kind, text and tool id.
+    Matching on the split result is what keeps a search for the words of a command, or a
+    command quoted inside a string, from reading as that command being run.
+
+    @param text                         Raw command string from a Bash tool call.
+    @return                             List of simple commands, each stripped.
     """
-    msg = rec.get("message") or {}
-    content = msg.get("content")
+    text = text.replace("\\\n", " ")
+    out, cur, quote = [], [], None
+    i = 0
+    while i < len(text):
+        ch = text[i]
+        if quote:
+            cur.append(ch)
+            if ch == "\\" and quote == '"' and i + 1 < len(text):
+                i += 1
+                cur.append(text[i])
+            elif ch == quote:
+                quote = None
+        elif ch in "'\"":
+            quote = ch
+            cur.append(ch)
+        elif ch in "\n;|&()":       # No backtick, which in a heredoc is far more often Markdown than a substitution.
+            out.append("".join(cur))
+            cur = []
+        else:
+            cur.append(ch)
+        i += 1
+    out.append("".join(cur))
+    return [c.strip() for c in out if c.strip()]
+
+
+def commands_in(text):
+    """List every simple command in a shell string.
+
+    The string is read twice, once whole and once a line at a time, and the results merged.
+    The whole read follows quoting across lines. The line read still finds a command at the
+    start of a line when an apostrophe in a heredoc body, or quotes nested inside a command
+    substitution, have left the whole read inside a quote. Heredoc bodies are read as commands
+    on purpose, because a session often writes a script that way and runs it in the same call.
+
+    @param text                         Raw command string from a Bash tool call.
+    @return                             List of simple commands with their leading assignments removed.
+    """
+    text = text.replace("\\\n", " ")
+    seen = {}
+    for chunk in simple_commands(text) + [c for line in text.split("\n") for c in simple_commands(line)]:
+        cmd = PREFIX_RE.sub("", chunk)
+        seen.setdefault(cmd.split("\n")[0][:160], cmd)
+    return list(seen.values())
+
+
+def same_repo(found, wanted):
+    """Compare two owner/name strings the way GitHub does, ignoring case.
+
+    @param found                        Repository named in the transcript.
+    @param wanted                       Repository to keep, or None to keep every one.
+    @return                             True when the sighting belongs to the wanted repository.
+    """
+    return not wanted or found.lower() == wanted.lower()
+
+
+def result_text(block):
+    """Pull the plain text out of a tool result block.
+
+    @param block                        One tool_result content block.
+    @return                             The result's text, empty when it holds none.
+    """
+    content = block.get("content")
     if isinstance(content, str):
-        yield "text", content, None
-        return
-    if not isinstance(content, list):
-        return
-    for b in content:
-        if not isinstance(b, dict):
-            continue
-        kind = b.get("type")
-        if kind == "tool_use":
-            yield "tool_use", json.dumps(b.get("input") or {}), b.get("id")
-        elif kind == "tool_result":
-            yield "tool_result", json.dumps(b.get("content")), b.get("tool_use_id")
-        elif kind == "text":
-            yield "text", b.get("text") or "", None
+        return content
+    if isinstance(content, list):
+        return "\n".join(p.get("text", "") for p in content if isinstance(p, dict) and p.get("type") == "text")
+    return ""
 
 
-def scan(paths, repo_filter, found, pending, places=None):
-    """Walk transcripts and record every pull request and issue number sighted.
+class Scan:
+    """One pass over a session's transcripts, collecting numbers and places."""
 
-    `pending` holds the kind a `gh ... create` call is waiting on and the id of that call,
-    because the new number only arrives in a later tool result. Pairing on the id matters.
-    Without it a command that merely contains the text of a create call, such as a grep
-    for one, arms the flag and the next link to scroll past is recorded as something this
-    session filed.
+    def __init__(self, repo_filter):
+        self.repo = repo_filter
+        self.found = collections.defaultdict(new_entry)
+        self.places = new_places()
+        self._armed = set()             # Ids of create calls still waiting for their result.
+        self._ts = ""
 
-    @param paths                        Transcript files to read.
-    @param repo_filter                  Owner/name to keep, or None to keep every repository.
-    @param found                        Mapping of number to entry, updated in place.
-    @param pending                      One element list holding the armed create call, updated in place.
-    @param places                       Optional dict collecting cwds, branches and the time window.
-    @return                             Nothing, the results land in `found` and in `places`.
-    """
-    for path in paths:
+    def sight(self, num, evidence, kind):
+        """Record one sighting of a number.
+
+        @param num                      Pull request or issue number.
+        @param evidence                 One of EVIDENCE.
+        @param kind                     "pr", "issue", or empty when the sighting cannot tell.
+        """
+        entry = self.found[num]
+        entry["count"] += 1
+        if EVIDENCE.index(evidence) > EVIDENCE.index(entry["evidence"]):
+            entry["evidence"] = evidence
+        if kind == "pr" or (kind and not entry["kind"]):
+            entry["kind"] = kind
+        if self._ts:
+            entry["first"] = min(entry["first"] or self._ts, self._ts)
+            entry["last"] = max(entry["last"] or self._ts, self._ts)
+
+    def mention(self, text):
+        """Record every link to a pull request or issue in a piece of prose or output.
+
+        @param text                     Assistant prose, user prose or command output.
+        """
+        for owner, name, path_kind, num in ITEM_URL_RE.findall(text):
+            if same_repo("%s/%s" % (owner, name), self.repo):
+                self.sight(int(num), "mentioned", "pr" if path_kind == "pull" else "issue")
+
+    def gh_call(self, call, tool_id):
+        """Classify one gh invocation.
+
+        @param call                     A simple command that starts with gh.
+        @param tool_id                  Id of the tool call it came from.
+        """
+        m = re.match(r"gh\s+(\S+)\s*(.*)$", call, re.S)
+        if not m:
+            return
+        group, tail = m.group(1), m.group(2)
+        flag = REPO_FLAG_RE.search(tail)
+        if flag and not same_repo(flag.group(1), self.repo):
+            return
+
+        if group == "api":
+            evidence = "changed" if API_WRITE_RE.search(tail) else "viewed"
+            for owner, name, path_kind, num in API_PATH_RE.findall(tail):
+                if same_repo("%s/%s" % (owner, name), self.repo):
+                    # The issues endpoint serves pull requests too, so only pulls settles the kind.
+                    self.sight(int(num), evidence, "pr" if path_kind == "pulls" else "")
+            return
+
+        if group not in ("pr", "issue"):
+            return
+        vm = re.match(r"(\S+)\s*(.*)$", tail, re.S)
+        if not vm:
+            return
+        verb, args = vm.group(1), vm.group(2)
+        if verb == "create":
+            self._armed.add(tool_id)
+            return
+        if verb not in WRITE_VERBS and verb not in READ_VERBS:
+            return
+        evidence = "changed" if verb in WRITE_VERBS else "viewed"
+        url = ITEM_URL_RE.match(re.sub(r"^https?://", "", args))
+        if url:
+            if same_repo("%s/%s" % (url.group(1), url.group(2)), self.repo):
+                self.sight(int(url.group(4)), evidence, group)
+            return
+        num = NUMBER_ARG_RE.match(args)
+        if num:
+            self.sight(int(num.group(1)), evidence, group)
+
+    def command(self, text, tool_id, cwd):
+        """Read one Bash command for gh calls and for commits and pushes.
+
+        @param text                     Raw command string.
+        @param tool_id                  Id of the tool call.
+        @param cwd                      Directory the session was in when it ran.
+        """
+        for cmd in commands_in(text):
+            if cmd.startswith("gh "):
+                self.gh_call(cmd, tool_id)
+                continue
+            git = GIT_WRITE_RE.match(cmd)
+            if git:
+                where = (git.group(1) or "").strip("'\"")
+                where = where if where.startswith("/") else cwd
+                if where:
+                    self.places["committed"].add(where)
+
+    def created(self, block):
+        """Settle a create call from its own result.
+
+        The new item is the last link gh prints, after any warning. A failed create prints the
+        link of the item that already exists, so an errored result settles nothing.
+
+        @param block                    The tool_result block answering an armed create call.
+        """
+        self._armed.discard(block.get("tool_use_id"))
+        if block.get("is_error"):
+            return
+        links = [(o, n, k, num) for o, n, k, num in ITEM_URL_RE.findall(result_text(block))
+                 if same_repo("%s/%s" % (o, n), self.repo)]
+        if links:
+            _, _, path_kind, num = links[-1]
+            self.sight(int(num), "created", "pr" if path_kind == "pull" else "issue")
+
+    def file(self, path, is_subagent):
+        """Walk one transcript file.
+
+        @param path                     Transcript to read.
+        @param is_subagent              True for a subagent's transcript.
+        """
         try:
             fh = open(path, errors="replace")
         except OSError:
-            continue
+            return
         with fh:
             for line in fh:
                 line = line.strip()
@@ -109,145 +273,110 @@ def scan(paths, repo_filter, found, pending, places=None):
                     rec = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                ts = (rec.get("timestamp") or "")[:19]
-                if places is not None:
-                    if rec.get("cwd"):
-                        places["cwds"].add(rec["cwd"])
-                    if rec.get("gitBranch"):
-                        places["branches"].add(rec["gitBranch"])
-                    if ts:
-                        places["first"] = min(places["first"] or ts, ts)
-                        places["last"] = max(places["last"] or ts, ts)
+                self.record(rec, is_subagent)
 
-                for kind, text, tool_id in blocks(rec):
-                    if not text:
-                        continue
-                    if kind == "tool_use" and tool_id and not SEARCHY_RE.search(text):
-                        if PR_CREATE_RE.search(text):
-                            pending[0] = ("pr", tool_id)
-                        elif ISSUE_CREATE_RE.search(text):
-                            pending[0] = ("issue", tool_id)
+    def record(self, rec, is_subagent):
+        """Read one transcript record.
 
-                    # A number carries only the evidence of its own match, because one block
-                    # can hold both a number named by a gh call and plain references to others.
-                    strong = {}
-                    for rx, k in ((PULL_URL_RE, "pr"), (ISSUE_URL_RE, "issue")):
-                        for owner, repo, num in rx.findall(text):
-                            if repo_filter and "%s/%s" % (owner, repo) != repo_filter:
-                                continue
-                            strong[int(num)] = k
-                    for num in PR_OP_RE.findall(text):
-                        strong[int(num)] = "pr"
-                    for num in ISSUE_OP_RE.findall(text):
-                        strong[int(num)] = "issue"
-                    for path_kind, num in API_RE.findall(text):
-                        # The issues endpoint serves pull requests too, so it settles nothing.
-                        strong.setdefault(int(num), "pr" if path_kind == "pulls" else "")
-                    weak = set()
-                    if kind in ("text", "tool_result"):
-                        weak = {int(n) for n in HASH_RE.findall(text)} - set(strong)
+        @param rec                      Decoded record.
+        @param is_subagent              True when it comes from a subagent's transcript.
+        """
+        if rec.get("type") == "worktree-state":
+            entered = (rec.get("worktreeSession") or {}).get("worktreePath")
+            if entered:
+                self.places["entered"].add(entered)
+            return
+        self._ts = (rec.get("timestamp") or "")[:19]
+        cwd = rec.get("cwd") or ""
+        if is_subagent and cwd:
+            self.places["subagent"].add(cwd)
 
-                    for num in list(strong) + list(weak):
-                        # Acting on something means having run a command that named it. A
-                        # number that only appears in command output is incidental, which
-                        # keeps a search result full of links from reading as this session's work.
-                        rec_ev = "mentioned"
-                        if num in strong and kind == "tool_use":
-                            rec_ev = "operated"
-                        if (pending[0] and kind == "tool_result" and num in strong
-                                and tool_id == pending[0][1]):
-                            rec_ev = "created"
-                            if not found[num]["kind"]:
-                                found[num]["kind"] = pending[0][0]
-                            pending[0] = None
-                        entry = found[num]
-                        entry["count"] += 1
-                        if EVIDENCE.index(rec_ev) > EVIDENCE.index(entry["evidence"]):
-                            entry["evidence"] = rec_ev
-                        if num in strong and not entry["kind"] and strong[num]:
-                            entry["kind"] = strong[num]
-                        if ts:
-                            entry["first"] = min(entry["first"] or ts, ts)
-                            entry["last"] = max(entry["last"] or ts, ts)
+        content = (rec.get("message") or {}).get("content")
+        if isinstance(content, str):
+            self.mention(content)
+            return
+        if not isinstance(content, list):
+            return
+        for block in content:
+            if not isinstance(block, dict):
+                continue
+            kind = block.get("type")
+            if kind == "text":
+                self.mention(block.get("text") or "")
+            elif kind == "tool_result":
+                if block.get("tool_use_id") in self._armed:
+                    self.created(block)
+                self.mention(result_text(block))
+            elif kind == "tool_use":
+                inp = block.get("input")
+                if not isinstance(inp, dict):
+                    continue
+                # Only a shell command acts on GitHub. The text of an edit, a written file or a
+                # subagent prompt can quote any command without running it.
+                if block.get("name") == "Bash" and isinstance(inp.get("command"), str):
+                    self.command(inp["command"], block.get("id"), cwd)
+                elif block.get("name") in EDIT_TOOLS:
+                    target = inp.get("file_path") or inp.get("notebook_path")
+                    if isinstance(target, str) and target.startswith("/"):
+                        self.places["edited"].add(target)
 
 
 def session_scope(session_id, repo_filter=None):
     """Gather everything one session touched.
 
-    The cwds and branches come from the per-record fields rather than from the current
-    shell, because a session can move between worktrees while it runs. The window is what
-    a search for issues filed during the session needs, to catch one opened in a browser
-    where no transcript sees it.
-
     @param session_id                   The session to read.
     @param repo_filter                  Owner/name to keep, or None to keep every repository.
-    @return                             Tuple of items, cwds, branches and the time window.
+    @return                             Tuple of items and places, or (None, None) with no transcript.
     """
     main_paths, sub_paths = transcript_paths(session_id)
     if not main_paths:
-        return None, set(), set(), ("", "")
-    found = collections.defaultdict(new_entry)
-    places = {"cwds": set(), "branches": set(), "first": "", "last": ""}
-    scan(main_paths, repo_filter, found, [None], places)
-    scan(sub_paths, repo_filter, found, [None], places)
-    return dict(found), places["cwds"], places["branches"], (places["first"], places["last"])
+        return None, None
+    scan = Scan(repo_filter)
+    for path in main_paths:
+        scan.file(path, False)
+    for path in sub_paths:
+        scan.file(path, True)
+    return dict(scan.found), scan.places
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--session", default=os.environ.get("CLAUDE_CODE_SESSION_ID"),
                     help="session id, defaults to $CLAUDE_CODE_SESSION_ID")
-    ap.add_argument("--repo", default=None,
-                    help="owner/name, drops links to any other repository")
-    ap.add_argument("--min-count", type=int, default=2,
-                    help="hide numbers seen fewer times than this unless the evidence is strong")
+    ap.add_argument("--repo", default=None, help="owner/name, drops sightings in any other repository")
+    ap.add_argument("--all", action="store_true", help="also list numbers the session only mentioned")
     args = ap.parse_args()
 
     if not args.session:
-        print("No session id. Pass --session, or run where $CLAUDE_CODE_SESSION_ID is set.",
-              file=sys.stderr)
+        print("No session id. Pass --session, or run where $CLAUDE_CODE_SESSION_ID is set.", file=sys.stderr)
         return 2
-
     main_paths, sub_paths = transcript_paths(args.session)
-    if not main_paths:
-        print("No transcript found for session %s under %s" % (args.session, PROJECTS),
-              file=sys.stderr)
+    found, places = session_scope(args.session, args.repo)
+    if found is None:
+        print("No transcript found for session %s under %s" % (args.session, PROJECTS), file=sys.stderr)
         return 2
 
-    found, cwds, branches, window = session_scope(args.session, args.repo)
-
-    print("# Pull requests and issues seen in session %s" % args.session)
+    print("# Session %s" % args.session)
     print("transcript: %s" % main_paths[0])
     print("subagent transcripts: %d" % len(sub_paths))
-    print("worked in: %s" % (", ".join(sorted(cwds)) or "unknown"))
-    print("branches seen: %s" % (", ".join(sorted(b for b in branches if b)) or "unknown"))
-    print("session window: %s .. %s" % (window[0] or "?", window[1] or "?"))
+    for tag in ("entered", "committed", "subagent"):
+        if places[tag]:
+            print("%s: %s" % (tag, ", ".join(sorted(places[tag]))))
+    print("files edited: %d" % len(places["edited"]))
     print()
-    if not found:
-        print("No pull request or issue numbers appear in this session.")
-        return 0
 
-    rows = sorted(found.items(),
-                  key=lambda kv: (EVIDENCE.index(kv[1]["evidence"]), kv[1]["count"]),
-                  reverse=True)
-    print("%-8s %-7s %-10s %-9s %s" % ("NUMBER", "kind", "evidence", "sightings",
-                                       "first seen .. last seen"))
-    keep = []
+    rows = sorted(found.items(), key=lambda kv: (EVIDENCE.index(kv[1]["evidence"]), kv[1]["count"]), reverse=True)
+    rows = [r for r in rows if args.all or r[1]["evidence"] != "mentioned"]
+    if not rows:
+        print("This session ran no gh command naming a pull request or an issue.")
+        return 0
+    print("%-8s %-6s %-10s %-9s %s" % ("NUMBER", "kind", "evidence", "sightings", "first seen .. last seen"))
     for num, e in rows:
-        if e["evidence"] == "mentioned" and e["count"] < args.min_count:
-            continue
-        keep.append(num)
-        print("%-8s %-7s %-10s %-9d %s .. %s" % ("#%d" % num, e["kind"] or "?", e["evidence"],
-                                                 e["count"], e["first"] or "?", e["last"] or "?"))
+        print("%-8s %-6s %-10s %-9d %s .. %s" % ("#%d" % num, e["kind"] or "?", e["evidence"], e["count"],
+                                                 e["first"] or "?", e["last"] or "?"))
     print()
-    print("Feed the ones this session actually worked on into gather.py:")
-    print("  " + " ".join("--pr %d" % n for n in keep[:20]))
-    print()
-    print("`operated` means the session ran a command naming it and `created` means it filed")
-    print("it. `mentioned` is everything else, including links that came back inside command")
-    print("output, so treat those as incidental until the conversation says otherwise. A bare")
-    print("number can be a pull request or an issue, and gather.py resolves that on GitHub.")
+    print("created: a gh create call returned it. changed: the session ran a command that wrote to it.")
+    print("viewed: the session only read it. A kind of ? gets settled by gather.py on GitHub.")
     return 0
 
 
