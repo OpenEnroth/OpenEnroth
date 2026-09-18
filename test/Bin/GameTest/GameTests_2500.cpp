@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <string>
 #include <utility>
 
@@ -570,11 +569,17 @@ GAME_TEST(Issues, Issue2759) {
 GAME_TEST(Issues, Issue2771) {
     // Immolation cast by a map event crashed the game on the next regeneration tick. Such a buff has no caster, and
     // the damage sprite built a character pid out of -1.
+    auto hpTape = actorTapes.hp(0);
+    auto casterTape = tapes.custom([] {
+        AccessibleVector<Pid> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.uSpellID == SPELL_FIRE_IMMOLATION)
+                result.push_back(sprite.spell_caster_pid);
+        return result;
+    });
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(3796, 6224, 1216), 0); // 300 west of the pedestal, facing it.
-    const LevelDecoration &pedestal = pLevelDecorations[380];
-    ASSERT_EQ(pedestal.uDecorationDescID, DECORATION_MAGIC_PEDASTAL_217); // Casts grandmaster Immolation.
     game.goToGame(); // A new party arriving here gets a dialogue with Archibald Ironfist.
     game.pointMouseAtDecoration(380);
     game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
@@ -582,12 +587,9 @@ GAME_TEST(Issues, Issue2771) {
     ASSERT_TRUE(pParty->ImmolationActive());
     EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, -1);
 
-    Actor *titan = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_TITAN_A, SPAWN_DUMMY); // Immolation reaches 307.
-    int hp = titan->hp;
-    pParty->GetPlayingTime() += Duration::fromMinutes(5); // Immolation burns once per regeneration tick.
-    game.tick();
-    EXPECT_LT(titan->hp, hp);
-    auto sprite = std::ranges::find(pSpriteObjects, SPELL_FIRE_IMMOLATION, &SpriteObject::uSpellID);
-    ASSERT_NE(sprite, pSpriteObjects.end());
-    EXPECT_EQ(sprite->spell_caster_pid, Pid::character(0)); // Vanilla MM7 credits the first character.
+    game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_TITAN_A, SPAWN_DUMMY | SPAWN_FRIENDLY);
+    test.startTaping();
+    game.tick(100); // A tick is 3 game seconds, and Immolation burns on every five-minute regeneration mark.
+    EXPECT_LT(hpTape.delta(), 0);
+    EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(0))); // Vanilla MM7 credits the first character.
 }
