@@ -18,7 +18,12 @@ class EvtProgram {
     static EvtProgram load(const Blob &rawData);
 
     void add(int eventId, EvtInstruction ir);
+    void remove(int eventId);
     void clear();
+
+    size_t eventCount() const {
+        return _eventsById.size();
+    }
 
     bool hasEvent(int eventId) const {
         return _eventsById.contains(eventId);
