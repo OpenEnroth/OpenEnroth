@@ -46,6 +46,13 @@ class EvtInterpreter {
      void prepare(EvtContext context);
 
      /**
+      * Prepares to run instructions that don't come from an evt file, one `executeInstruction` call at a time.
+      *
+      * @param context                  Event the instructions run as.
+      */
+     void prepareInstructions(EvtContext context);
+
+     /**
       * @param startStep                Step to start from.
       * @return                         Whether the event started a map transition.
       */
@@ -66,6 +73,17 @@ class EvtInterpreter {
       * @return                         Where the event goes after this instruction.
       */
      [[nodiscard]] EvtFlow executeInstruction(EvtInstruction ir);
+
+     /**
+      * @param who                      Characters that the instructions that follow apply to, as `ForPartyMember` sets.
+      */
+     void setTargetCharacter(EvtTargetCharacter who) {
+         _who = who;
+     }
+
+     bool isMapExitTriggered() const {
+         return _transition == EVT_TRANSITION_STARTED;
+     }
 
  private:
      /**

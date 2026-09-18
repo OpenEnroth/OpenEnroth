@@ -98,7 +98,9 @@
             "/libs/",
             "/3rd",
             "/.vscode",
-            "/meta"
+            "/meta",
+            "/resources/scripts/maps/",
+            "/resources/scripts/global/"
         ],
         "checkThirdParty": false
     },

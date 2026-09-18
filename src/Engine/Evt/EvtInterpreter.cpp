@@ -167,6 +167,11 @@ void EvtInterpreter::prepare(EvtContext context) {
         _events = program.function(context.eventId);
 }
 
+void EvtInterpreter::prepareInstructions(EvtContext context) {
+    _context = context;
+    _events.clear();
+}
+
 EvtTransition EvtInterpreter::execute(int startStep) {
     assert(startStep >= 0);
 
