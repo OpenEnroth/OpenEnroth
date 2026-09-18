@@ -544,7 +544,7 @@ GAME_TEST(Issues, Issue1293) {
         engine->config->debug.NoActors.setValue(true);
         game.startNewGame();
         game.resizeWindow(640, 600); // 60 px black bars above and below the 640x480 render area.
-        pParty->setActiveCharacterIndex(4); // The sorcerer, so the spellbook has pages to draw.
+        pParty->setActiveCharacterIndex(3); // The sorcerer, so the spellbook has pages to draw.
         game.pressAndReleaseKey(PlatformKey::KEY_C);
         game.tick(2);
         ASSERT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
