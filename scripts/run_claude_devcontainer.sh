@@ -21,8 +21,7 @@ devcontainer up --workspace-folder "$REPO_DIR" >/dev/null
 # leaves a non-executable stub in its place.
 if ! devcontainer exec --workspace-folder "$REPO_DIR" bash -lc 'claude --version' &>/dev/null; then
     echo "Claude Code in the container is broken, reinstalling..."
-    # npm renames the old tree aside before writing the new one, and that rename fails with ENOTEMPTY on a
-    # half-installed package.
+    # npm renames the old tree aside first, and that rename fails with ENOTEMPTY on a half-installed package.
     devcontainer exec --workspace-folder "$REPO_DIR" bash -lc \
       'rm -rf "$(npm root -g)/@anthropic-ai/claude-code" && npm install -g @anthropic-ai/claude-code@latest' || true
 
