@@ -535,6 +535,31 @@ GAME_TEST(Issues, Issue1290) {
     EXPECT_CONTAINS(statusTape, "+2 Accuracy (Permanent)");
 }
 
+GAME_TEST(Issues, Issue1293) {
+    // Hovering the black bars of a letterboxed window with the spellbook open asserted. The highlight code indexed the
+    // Z-buffer with a mouse position outside the render area.
+    for (int y : {-30, 510}) { // Top bar, bottom bar.
+        SCOPED_TRACE(fmt::format("y={}", y));
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        game.resizeWindow(640, 600); // 60 px black bars above and below the 640x480 render area.
+        pParty->setActiveCharacterIndex(3); // The sorcerer, so the spellbook has pages to draw.
+        game.pressAndReleaseKey(PlatformKey::KEY_C);
+        game.tick(2);
+        ASSERT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
+
+        auto texturesTape = tapes.hudTextures();
+        test.startTaping();
+        game.moveMouse(320, y);
+        game.tick(2);
+        test.stopTaping();
+        ASSERT_EQ(mouse->position().y, y); // Not clamped to the render area.
+        EXPECT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
+        EXPECT_CONTAINS(texturesTape.back(), "sbfs03"); // Torch Light's icon, drawn by the highlight code that crashed.
+    }
+}
+
 GAME_TEST(Issues, Issue1294_1389) {
     // Bow and Blaster recovery times
     // Character::GetAttackRecoveryTime assert when character is using blaster
