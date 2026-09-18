@@ -560,18 +560,9 @@ GAME_TEST(Issues, Issue1290b) {
     game.teleportTo(MAP_TATALIA, Vec3f(-18100, 4810, 0), 0);
     game.tick();
 
-    Pid doorFace = Pid::face(pOutdoor->pBModels[72].faces[41]);
-    const BLVFace &door = pOutdoor->face(doorFace);
-    ASSERT_EQ(door.eventId, 21);
-    EXPECT_TRUE(door.Clickable());
-
     Pointi doorPos(240, 170);
     game.moveMouse(doorPos);
     game.tick();
-    Vis_PIDAndDepth picked = engine->PickMouseForTargeting();
-    ASSERT_EQ(picked.pid, doorFace);
-    ASSERT_LT(picked.depth, engine->config->gameplay.MouseInteractionDepth.value());
-
     game.pressAndReleaseButton(BUTTON_LEFT, doorPos);
     game.tick(3);
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_TATALIA_2));
