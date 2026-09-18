@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(ENGINE_EVENTS_SOURCES
         EvtCommands.cpp
+        EvtDecompiler.cpp
         EvtEnums.cpp
         EvtInstruction.cpp
         EvtProgram.cpp
@@ -10,6 +11,7 @@ set(ENGINE_EVENTS_SOURCES
 
 set(ENGINE_EVENTS_HEADERS
         EvtCommands.h
+        EvtDecompiler.h
         EvtInstruction.h
         EvtProgram.h
         EvtInterpreter.h
@@ -23,7 +25,8 @@ target_check_style(engine_events)
 
 if(OE_BUILD_TESTS)
     set(TEST_ENGINE_EVENTS_SOURCES
-            Tests/EvtCommands_ut.cpp)
+            Tests/EvtCommands_ut.cpp
+            Tests/EvtDecompiler_ut.cpp)
     add_library(test_engine_events OBJECT ${TEST_ENGINE_EVENTS_SOURCES})
     target_link_libraries(test_engine_events PUBLIC testing_unit engine_events)
     target_check_style(test_engine_events)
