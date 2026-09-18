@@ -7,7 +7,6 @@
 #include <vector>
 
 #ifdef _WINDOWS
-#   define WIN32_LEAN_AND_MEAN
 #   include <Windows.h>
 #elif !defined(__ANDROID__)
 #   include <fcntl.h>
@@ -103,7 +102,7 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     startupInfo.hStdOutput = writeEnd;
     startupInfo.hStdError = writeEnd;
 
-    std::wstring commandLine = wtf8ToWide(detail::windowsCommandLine(path.toWtf8(), args)); // CreateProcessW writes into it.
+    std::wstring commandLine = txt::wtf8ToWide(detail::windowsCommandLine(path.toWtf8(), args)); // CreateProcessW writes into it.
     PROCESS_INFORMATION processInfo = {};
     if (!CreateProcessW(path.toStdPath().c_str(), commandLine.data(), nullptr, nullptr, TRUE, CREATE_NO_WINDOW, nullptr, nullptr, &startupInfo, &processInfo))
         throwFromLastError(displayString);
