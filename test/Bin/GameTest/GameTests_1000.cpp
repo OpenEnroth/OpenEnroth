@@ -537,20 +537,20 @@ GAME_TEST(Issues, Issue1290a) {
 
 GAME_TEST(Issues, Issue1290b) {
     // Can't enter Alloyed Weapons in Tatalia with the mouse, clicking its door says "Nothing here".
-    auto statusTape = tapes.statusBar();
+    auto houseTape = tapes.house();
     Pid doorFace = Pid::odmFace(72, 41);
 
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
-    game.teleportTo(MAP_TATALIA, Vec3f(-18100, 4810, 300), 0);
-    game.tick(3); // The party is dropped in above the ground and the camera follows it down.
+    game.teleportTo(MAP_TATALIA, Vec3f(-18100, 4810, 0), 0);
+    game.tick();
 
     const BLVFace &door = pOutdoor->face(doorFace);
     ASSERT_EQ(door.eventId, 21);
     EXPECT_TRUE(door.Clickable());
 
-    Pointi doorPos(240, 190);
+    Pointi doorPos(240, 170);
     game.moveMouse(doorPos);
     game.tick();
     Vis_PIDAndDepth picked = engine->PickMouseForTargeting();
@@ -559,8 +559,7 @@ GAME_TEST(Issues, Issue1290b) {
 
     game.pressAndReleaseButton(BUTTON_LEFT, doorPos);
     game.tick(3);
-    EXPECT_EQ(current_screen_type, SCREEN_HOUSE);
-    EXPECT_MISSES(statusTape, "Nothing here");
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_TATALIA_2));
 }
 
 GAME_TEST(Issues, Issue1293) {
