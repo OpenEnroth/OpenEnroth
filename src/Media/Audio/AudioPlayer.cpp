@@ -236,7 +236,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     } else if (mode == SOUND_MODE_HOUSE_DOOR || mode == SOUND_MODE_HOUSE_SPEECH) {
         pid = mode == SOUND_MODE_HOUSE_DOOR ? FAKE_HOUSE_DOOR_PID : FAKE_HOUSE_SPEECH_PID;
         _regularSoundPool.stopPid(pid);
-        _regularSoundPool.playUniquePid(sample, si->dataSource, pid);
+        result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid);
     } else {
         assert(pid);
 
@@ -322,7 +322,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
 
     switch (result) {
         case SOUND_PLAYBACK_FAILED:
-            if (si->name.empty()) {
+            if (si->name.empty()) { // TODO(captainurist): inverted, the name is only printed when it's empty.
                 MM_WARNING("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->name);
             } else {
                 MM_WARNING("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));

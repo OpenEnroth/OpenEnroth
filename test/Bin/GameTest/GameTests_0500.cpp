@@ -1,5 +1,6 @@
 #include <unordered_set>
 #include <string>
+#include <utility>
 
 #include "Testing/Game/GameTest.h"
 
@@ -988,6 +989,19 @@ GAME_TEST(Issues, Issue929) {
     test.playTraceFromTestData("issue_929.mm7", "issue_929.json");
     EXPECT_EQ(goldTape.delta(), +1);
     EXPECT_EQ(itemsTape.delta(), -1);
+}
+
+GAME_TEST(Issues, Issue959) {
+    // Human town halls played no greeting.
+    auto houseTape = tapes.house();
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-13376, 13374, 64), 90); // In front of the town hall door.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(houseTape.back(), HOUSE_TOWN_HALL_HARMONDALE);
+    EXPECT_EQ(soundsTape.flatten().count(SOUND_HumanTownHall), 1);
 }
 
 GAME_TEST(Issues, Issue987) {

@@ -139,6 +139,7 @@ enum class SoundId : int16_t {
     SOUND_9armageddon01 = 17080,
     SOUND_Sacrifice2 = 18060,
     SOUND_quest = 20001,
+    SOUND_HumanTownHall = 31401,
 };
 using enum SoundId;
 
