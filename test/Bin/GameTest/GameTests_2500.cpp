@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 #include <utility>
 
@@ -12,6 +13,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
 
@@ -563,4 +565,29 @@ GAME_TEST(Issues, Issue2759) {
     EXPECT_CONTAINS(houseTape, HOUSE_WEAPON_SHOP_TATALIA_1);
     EXPECT_CONTAINS(textTape.flatten(), "Display Inventory"); // We've seen the shop menu.
     EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
+}
+
+GAME_TEST(Issues, Issue2771) {
+    // Immolation cast by a map event crashed the game on the next regeneration tick. Such a buff has no caster, and
+    // the damage sprite built a character pid out of -1.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(3796, 6224, 1216), 0); // 300 west of the pedestal, facing it.
+    const LevelDecoration &pedestal = pLevelDecorations[380];
+    ASSERT_EQ(pedestal.uDecorationDescID, DECORATION_MAGIC_PEDASTAL_217); // Casts grandmaster Immolation.
+    game.goToGame(); // A new party arriving here gets a dialogue with Archibald Ironfist.
+    game.pointMouseAtDecoration(380);
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.tick(3);
+    ASSERT_TRUE(pParty->ImmolationActive());
+    EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, -1);
+
+    Actor *titan = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_TITAN_A, SPAWN_DUMMY); // Immolation reaches 307.
+    int hp = titan->hp;
+    pParty->GetPlayingTime() += Duration::fromMinutes(5); // Immolation burns once per regeneration tick.
+    game.tick();
+    EXPECT_LT(titan->hp, hp);
+    auto sprite = std::ranges::find(pSpriteObjects, SPELL_FIRE_IMMOLATION, &SpriteObject::uSpellID);
+    ASSERT_NE(sprite, pSpriteObjects.end());
+    EXPECT_EQ(sprite->spell_caster_pid, Pid::character(0)); // Vanilla MM7 credits the first character.
 }
