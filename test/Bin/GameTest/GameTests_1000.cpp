@@ -1098,12 +1098,11 @@ GAME_TEST(Issues, Issue1474) {
     game.startNewGame();
     auto timeTape = tapes.time();
     test.startTaping();
-    game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_R);
-    game.tick(2);
+    game.tick();
     ASSERT_EQ(current_screen_type, SCREEN_REST);
     game.pressGuiButton("Rest_WaitTillDawn");
-    game.tick(2);
+    game.tick();
     ASSERT_EQ(currentRestType, REST_WAIT);
     for (int i = 0; i < 200 && currentRestType == REST_WAIT; i++)
         game.tick();
