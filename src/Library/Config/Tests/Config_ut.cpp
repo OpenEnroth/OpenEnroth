@@ -18,7 +18,7 @@ struct TestConfig : Config {
 
         ConfigEntry<int> value = {this, "value", 42, "Test integer entry."};
         ConfigEntry<bool> flag = {this, "flag", false, "Test boolean entry."};
-        ConfigEntry<std::string> name = {this, "name", "default", "Test string entry."};
+        ConfigEntry<std::string> text = {this, "text", "default", "Test string entry."};
     } test{this};
 };
 
@@ -61,7 +61,7 @@ UNIT_TEST_FIXTURE(ConfigTest, SavedValuesAreLoadedBack) {
     saved.test.value.setValue(-13);
     saved.test.flag.setValue(true);
     // Interior '=' and spaces round-trip, the parser splits at the first '=' and trims only the padding.
-    saved.test.name.setValue("with spaces and = sign");
+    saved.test.text.setValue("with spaces and = sign");
 
     Blob blob;
     BlobOutputStream out(&blob);
@@ -73,5 +73,5 @@ UNIT_TEST_FIXTURE(ConfigTest, SavedValuesAreLoadedBack) {
     EXPECT_NO_THROW(loaded.load(&in));
     EXPECT_EQ(loaded.test.value.value(), -13);
     EXPECT_EQ(loaded.test.flag.value(), true);
-    EXPECT_EQ(loaded.test.name.value(), "with spaces and = sign");
+    EXPECT_EQ(loaded.test.text.value(), "with spaces and = sign");
 }
