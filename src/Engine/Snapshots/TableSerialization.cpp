@@ -96,7 +96,7 @@ void deserialize(const Blob &src, SoundList *dst) {
     for (SoundInfo &sound : sounds) {
         if (sound.name == "Human Town Hall") {
             sound.soundId = SOUND_HumanTownHall; // MM7 files it as 34302, but playHouseSound derives 31401 from its room sound id.
-        } else if (sound.name == "20implosion03" && sound.soundId == SoundId(12071)) {
+        } else if (sound.name == "20implosion03" && sound.soundId == SoundId(12071)) { // Implosion's cast sound at 11080 is the same sample.
             sound.soundId = SOUND_AcidBurstImpact; // Acid Burst's impact, playSpellSound looks it up as the cast sound 12060 + 1.
         } else if (sound.name.starts_with("Dwarf Weapon Shop")) {
             sound.soundId = SoundId(std::to_underlying(sound.soundId) + 300); // MM7 files these in room 82 over the Elf Magic Shop lines, room 85 is free.
