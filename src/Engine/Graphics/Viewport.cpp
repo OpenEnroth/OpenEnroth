@@ -243,16 +243,16 @@ void Engine::onGameViewportClick() {
                 pParty->dropHeldItem();
             }
         } else if (!keyboardInputHandler->IsCastOnClickToggled()) {
-            if (CanInteractWithActor(mon_id)) {
-                if (in_range) {
+            if (pActors[mon_id].GetActorsRelation(nullptr) == HOSTILITY_FRIENDLY && pActors[mon_id].ActorFriend()) {
+                if (!in_range) {
+                    pParty->dropHeldItem();
+                } else if (pActors[mon_id].CanAct()) {
                     if (pParty->hasActiveCharacter()) {
                         InteractWithActor(mon_id);
                     } else {
                         // Do not interact with actors with no active character
                         engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                     }
-                } else {
-                    pParty->dropHeldItem();
                 }
             } else {
                 if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
