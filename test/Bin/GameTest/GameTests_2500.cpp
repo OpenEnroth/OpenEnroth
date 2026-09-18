@@ -735,3 +735,20 @@ GAME_TEST(Issues, Issue2792) {
         }
     }
 }
+
+GAME_TEST(Issues, Issue2778) {
+    // Colony Zod showed the ending movie on every exit from the map once Xenofex was dead.
+    auto movieTape = tapes.movies();
+    game.startNewGame();
+    Vec3f emeraldIsland = pParty->pos;
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180);
+    test.startTaping();
+    Actor::Die(0); // Xenofex.
+    game.tick(60); // The death animation has to finish.
+    for (int exit = 0; exit < 2; exit++) {
+        autoSave(); // A real exit saves the map, a teleport doesn't, and Xenofex would be back alive.
+        game.teleportTo(MAP_EMERALD_ISLAND, emeraldIsland, 0);
+        game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180);
+    }
+    EXPECT_EQ(movieTape.flatten(), tape<std::string>("family reunion"));
+}
