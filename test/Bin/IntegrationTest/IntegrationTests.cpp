@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <string>
 #include <string_view>
 
@@ -19,9 +20,15 @@ TEST_F(IntegrationTest, UnknownOption) {
     EXPECT_TRUE(result.output.contains("--no-such-option")) << result.output;
 }
 
+TEST_F(IntegrationTest, FirstStartWritesConfig) {
+    ProcessResult result = runOpenEnroth({"--headless", "--exit-after-start", "--user-path", userPath().toWtf8()});
+    EXPECT_EQ(result.exitCode, 0) << result.output;
+    EXPECT_TRUE(std::filesystem::exists((userPath() / configName).toStdPath())) << result.output;
+}
+
 TEST_F(IntegrationTest, Issue1167) {
     // The game ignored openenroth.ini on startup, ran with the defaults and wrote them over the file on exit.
-    FileOutputStream(userPath() / configName).write("[debug]\nno_video = true\n[gameplay]\nparty_walk_speed = 400\n"); // The movie player leaks, which fails the run under LeakSanitizer.
+    FileOutputStream(userPath() / configName).write("[gameplay]\nparty_walk_speed = 400\n");
 
     ProcessResult result = runOpenEnroth({"--headless", "--exit-after-start", "--user-path", userPath().toWtf8()});
     EXPECT_EQ(result.exitCode, 0) << result.output;
