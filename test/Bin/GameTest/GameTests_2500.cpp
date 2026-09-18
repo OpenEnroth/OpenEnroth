@@ -17,6 +17,7 @@
 #include "Engine/Tables/DecorationTable.h"
 
 #include "GUI/GUIButton.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UISaveLoad.h"
@@ -554,7 +555,7 @@ GAME_TEST(Issues, Issue2754) {
 }
 
 GAME_TEST(Issues, Issue2759) {
-    // Clicking "Learn Skills" in a shop that teaches no skills crashed.
+    // Clicking "Learn Skills" in a shop that teaches no skills crashed. Such a shop shouldn't offer the option at all.
     auto textTape = tapes.allGUIWindowsText();
     game.startNewGame();
 
@@ -565,13 +566,12 @@ GAME_TEST(Issues, Issue2759) {
     ASSERT_EQ(current_screen_type, SCREEN_HOUSE);
     ASSERT_EQ(window_SpeakInHouse->houseId(), HOUSE_WEAPON_SHOP_TATALIA_1); // Stocks only RANDOM_ITEM_WEAPON, so there are no skills to learn.
     ASSERT_NE(pDialogueWindow, nullptr);
+    EXPECT_EQ(pDialogueWindow->pNumPresenceButton, 3);
+    EXPECT_FALSE(std::ranges::contains(pDialogueWindow->vButtons, std::to_underlying(DIALOGUE_LEARN_SKILLS), &GUIButton::msg_param));
 
-    auto pos = std::ranges::find(pDialogueWindow->vButtons, std::to_underlying(DIALOGUE_LEARN_SKILLS), &GUIButton::msg_param);
-    ASSERT_NE(pos, pDialogueWindow->vButtons.end());
-    GUIButton *learnSkillsButton = *pos;
-
+    // The dialogue has to cope with an empty skill list on its own, the crash was in there.
     test.startTaping();
-    game.pressAndReleaseButton(BUTTON_LEFT, learnSkillsButton->rect.x + learnSkillsButton->rect.w / 2, learnSkillsButton->rect.y + learnSkillsButton->rect.h / 2);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_SelectProprietorDialogueOption, std::to_underlying(DIALOGUE_LEARN_SKILLS));
     game.tick(2);
 
     EXPECT_EQ(window_SpeakInHouse->currentDialogue(), DIALOGUE_LEARN_SKILLS);

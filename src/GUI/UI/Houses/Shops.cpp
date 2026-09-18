@@ -254,8 +254,9 @@ void GUIWindow_Shop::mainDialogue() {
         return;
     }
 
-    std::vector<std::string> optionsText = {localization->str(LSTR_STANDARD), localization->str(LSTR_SPECIAL),
-                                            localization->str(LSTR_DISPLAY_INVENTORY), localization->str(LSTR_LEARN_SKILLS)};
+    std::vector<std::string> optionsText = {localization->str(LSTR_STANDARD), localization->str(LSTR_SPECIAL), localization->str(LSTR_DISPLAY_INVENTORY)};
+    if (!listShopLearnableSkills().empty())
+        optionsText.push_back(localization->str(LSTR_LEARN_SKILLS));
 
     drawOptions(optionsText, colorTable.Sunflower);
 }
@@ -804,6 +805,8 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
 std::vector<DialogueId> GUIWindow_Shop::listDialogueOptions() {
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
+        if (listShopLearnableSkills().empty()) // Vanilla offers "Learn Skills" even then. In MM7 that's Vander's Blades & Bows in Tatalia.
+            return {DIALOGUE_SHOP_BUY_STANDARD, DIALOGUE_SHOP_BUY_SPECIAL, DIALOGUE_SHOP_DISPLAY_EQUIPMENT};
         return {DIALOGUE_SHOP_BUY_STANDARD, DIALOGUE_SHOP_BUY_SPECIAL, DIALOGUE_SHOP_DISPLAY_EQUIPMENT, DIALOGUE_LEARN_SKILLS};
       case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
         return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY, DIALOGUE_SHOP_REPAIR};
