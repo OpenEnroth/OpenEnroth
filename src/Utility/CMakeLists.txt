@@ -16,6 +16,7 @@ set(UTILITY_SOURCES
         System/Fs.cpp
         System/Path.cpp
         System/PathView.cpp
+        System/Process.cpp
         UnicodeCrt.cpp
         String/Wrap.cpp)
 
@@ -53,6 +54,7 @@ set(UTILITY_HEADERS
         System/Path.h
         System/PathSplit.h
         System/PathView.h
+        System/Process.h
         String/Ascii.h
         String/Encoding.h
         String/Join.h
@@ -106,6 +108,7 @@ if(OE_BUILD_TESTS)
             String/Tests/Encoding_ut.cpp
             System/Tests/Fs_ut.cpp
             System/Tests/Path_ut.cpp
+            System/Tests/Process_ut.cpp
             String/Tests/Split_ut.cpp
             String/Tests/Join_ut.cpp
             String/Tests/Wrap_ut.cpp)
