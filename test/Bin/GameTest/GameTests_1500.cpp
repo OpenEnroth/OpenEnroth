@@ -36,6 +36,45 @@
 
 // 1500
 
+GAME_TEST(Issues, Issue1502) {
+    // HP and SP sitting above the maximum, e.g. after Day of the Gods expired, were snapped down to the maximum by
+    // the next regeneration tick.
+    for (bool keepOverflow : {true, false}) {
+        SCOPED_TRACE(fmt::format("keepOverflow={}", keepOverflow));
+        test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame.
+        engine->config->gameplay.RegenKeepsOverflow.setValue(keepOverflow);
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+
+        Character &overflowing = pParty->pCharacters[2];
+        Character &wounded = pParty->pCharacters[3];
+        for (Character *character : {&overflowing, &wounded}) {
+            ASSERT_GT(character->GetMaxMana(), 0);
+            character->pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_EXPERT, 1, 0, 0);
+            Item ring(ITEM_BRASS_RING);
+            ring.specialEnchantment = ITEM_ENCHANTMENT_OF_MANA;
+            character->inventory.equip(ITEM_SLOT_RING1, ring);
+        }
+        overflowing.health = overflowing.GetMaxHealth() + 20;
+        overflowing.mana = overflowing.GetMaxMana() + 20;
+        wounded.health = 1;
+        wounded.mana = 0;
+
+        game.tick(36);
+
+        EXPECT_EQ(wounded.health, wounded.GetMaxHealth());
+        EXPECT_EQ(wounded.mana, wounded.GetMaxMana());
+        if (keepOverflow) {
+            EXPECT_EQ(overflowing.health, overflowing.GetMaxHealth() + 20);
+            EXPECT_EQ(overflowing.mana, overflowing.GetMaxMana() + 20);
+        } else {
+            // The vanilla snap.
+            EXPECT_EQ(overflowing.health, overflowing.GetMaxHealth());
+            EXPECT_EQ(overflowing.mana, overflowing.GetMaxMana());
+        }
+    }
+}
+
 GAME_TEST(Issues, Issue1503) {
     // Can start new game without 4 skills selected
     test.playTraceFromTestData("issue_1503.mm7", "issue_1503.json");

@@ -1332,7 +1332,6 @@ void RegeneratePartyHealthMana() {
         }
     }
 
-    bool stacking = engine->config->gameplay.RegenStacking.value();
     for (Character &character : pParty->pCharacters) {
         if (character.conditions.hasAny({CONDITION_DEAD, CONDITION_ERADICATED}))
             continue; // No HP/MP regen/drain for dead characters.
@@ -1401,7 +1400,7 @@ void RegeneratePartyHealthMana() {
             }
         }
 
-        character.tickRegeneration(ticks5, thisChar, stacking);
+        character.tickRegeneration(ticks5, thisChar);
 
         // Zombie mana/health drain.
         if (character.conditions.has(CONDITION_ZOMBIE)) {
