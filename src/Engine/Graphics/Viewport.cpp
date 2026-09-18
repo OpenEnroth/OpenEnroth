@@ -144,15 +144,13 @@ void ViewingParams::_443365() {
             if (v6->y > maximum_y) maximum_y = v3->y;
         }
 
-        const auto &zoom = engine->config->settings.IndoorMinimapZoom;
-        uMinimapZoom = engine->config->settings.RememberMinimapZoom.value() ? zoom.value() : zoom.defaultValue();
+        uMinimapZoom = engine->config->settings.IndoorMinimapZoom.value();
         indoor_center_x = (signed int)(minimum_x + maximum_x) / 2;
         indoor_center_y = (signed int)(minimum_y + maximum_y) / 2;
     } else {
         indoor_center_x = 0;
         indoor_center_y = 0;
-        const auto &zoom = engine->config->settings.OutdoorMinimapZoom;
-        uMinimapZoom = engine->config->settings.RememberMinimapZoom.value() ? zoom.value() : zoom.defaultValue();
+        uMinimapZoom = engine->config->settings.OutdoorMinimapZoom.value();
     }
     uMapBookMapZoom = 384;
 }

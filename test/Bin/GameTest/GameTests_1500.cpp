@@ -146,54 +146,43 @@ GAME_TEST(Issues, Issue1516) {
         EXPECT_EQ(viewparams->uMinimapZoom, expected);
     };
 
-    for (bool remember : {false, true}) {
-        SCOPED_TRACE(remember);
-        test.prepareForNextTest();
-        engine->config->debug.NoActors.setValue(true);
-        engine->config->settings.RememberMinimapZoom.setValue(remember);
-        if (!remember) {
-            engine->config->settings.IndoorMinimapZoom.setValue(4096);
-            engine->config->settings.OutdoorMinimapZoom.setValue(1024);
-        }
-        game.startNewGame();
-        ASSERT_EQ(viewparams->uMinimapZoom, 512);
-        zoom(PlatformKey::KEY_ADD, 1024);
-        Blob outdoorSave = game.saveGame();
-        zoom(PlatformKey::KEY_ADD, 2048);
-        zoom(PlatformKey::KEY_ADD, 2048);
-        game.loadGame(outdoorSave); // Zoom preferences are independent of the save.
-        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 2048 : 512);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    ASSERT_EQ(viewparams->uMinimapZoom, 512);
+    zoom(PlatformKey::KEY_ADD, 1024);
+    Blob outdoorSave = game.saveGame();
+    zoom(PlatformKey::KEY_ADD, 2048);
+    zoom(PlatformKey::KEY_ADD, 2048);
+    game.loadGame(outdoorSave); // Zoom preferences are independent of the save.
+    EXPECT_EQ(viewparams->uMinimapZoom, 2048);
 
-        game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
-        ASSERT_EQ(viewparams->uMinimapZoom, 1024);
-        zoom(PlatformKey::KEY_SUBTRACT, 512);
-        Blob indoorSave = game.saveGame();
-        zoom(PlatformKey::KEY_SUBTRACT, 256);
-        zoom(PlatformKey::KEY_SUBTRACT, 256);
-        game.loadGame(indoorSave);
-        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 256 : 1024);
-        game.loadGame(outdoorSave);
-        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 2048 : 512);
-        EXPECT_EQ(engine->config->settings.IndoorMinimapZoom.value(), remember ? 256 : 4096);
-        EXPECT_EQ(engine->config->settings.OutdoorMinimapZoom.value(), remember ? 2048 : 1024);
+    game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+    ASSERT_EQ(viewparams->uMinimapZoom, 1024);
+    zoom(PlatformKey::KEY_SUBTRACT, 512);
+    Blob indoorSave = game.saveGame();
+    zoom(PlatformKey::KEY_SUBTRACT, 256);
+    zoom(PlatformKey::KEY_SUBTRACT, 256);
+    game.loadGame(indoorSave);
+    EXPECT_EQ(viewparams->uMinimapZoom, 256);
+    game.loadGame(outdoorSave);
+    EXPECT_EQ(viewparams->uMinimapZoom, 2048);
+    EXPECT_EQ(engine->config->settings.IndoorMinimapZoom.value(), 256);
+    EXPECT_EQ(engine->config->settings.OutdoorMinimapZoom.value(), 2048);
 
-        Blob savedConfig;
-        BlobOutputStream output(&savedConfig);
-        engine->config->save(&output);
-        output.close();
-        engine->config->settings.RememberMinimapZoom.setValue(!remember);
-        engine->config->settings.IndoorMinimapZoom.reset();
-        engine->config->settings.OutdoorMinimapZoom.reset();
-        BlobInputStream input(savedConfig);
-        engine->config->load(&input);
-        EXPECT_EQ(engine->config->settings.RememberMinimapZoom.value(), remember);
-        EXPECT_EQ(engine->config->settings.IndoorMinimapZoom.value(), remember ? 256 : 4096);
-        EXPECT_EQ(engine->config->settings.OutdoorMinimapZoom.value(), remember ? 2048 : 1024);
-        game.startNewGame();
-        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 2048 : 512);
-        game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
-        EXPECT_EQ(viewparams->uMinimapZoom, remember ? 256 : 1024);
-    }
+    Blob savedConfig;
+    BlobOutputStream output(&savedConfig);
+    engine->config->save(&output);
+    output.close();
+    engine->config->settings.IndoorMinimapZoom.reset();
+    engine->config->settings.OutdoorMinimapZoom.reset();
+    BlobInputStream input(savedConfig);
+    engine->config->load(&input);
+    EXPECT_EQ(engine->config->settings.IndoorMinimapZoom.value(), 256);
+    EXPECT_EQ(engine->config->settings.OutdoorMinimapZoom.value(), 2048);
+    game.startNewGame();
+    EXPECT_EQ(viewparams->uMinimapZoom, 2048);
+    game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+    EXPECT_EQ(viewparams->uMinimapZoom, 256);
 }
 
 GAME_TEST(Issues, Issue1519) {

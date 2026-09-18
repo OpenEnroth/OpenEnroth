@@ -99,8 +99,6 @@
 #include "GameMenu.h"
 
 static void rememberMinimapZoom() {
-    if (!engine->config->settings.RememberMinimapZoom.value())
-        return;
     auto &zoom = uCurrentlyLoadedLevelType == LEVEL_INDOOR ?
         engine->config->settings.IndoorMinimapZoom : engine->config->settings.OutdoorMinimapZoom;
     zoom.setValue(viewparams->uMinimapZoom);
