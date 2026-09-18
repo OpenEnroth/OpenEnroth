@@ -275,6 +275,16 @@ struct BLVRenderParams {
 };
 extern BLVRenderParams *pBLVRenderParams;
 
+/**
+ * Adds `FACE_CLICKABLE` to faces that the map data left unclickable although their event does something when run.
+ * Every face of an event that is already clickable somewhere gets it, and so does every face of an event that
+ * nothing can trigger at all. An event that only pressure plates, objects or monsters trigger is left alone. Events
+ * are looked up in `engine->_localEventMap`, so the map's events must already be loaded.
+ *
+ * @param faces                         All faces of the location, with the save delta already applied.
+ */
+void repairClickableFaces(std::span<BLVFace *> faces);
+
 char DoInteractionWithTopmostZObject(Pid pid);
 // int sub_4AAEA6_transform(RenderVertexSoft *a1);
 void BLV_UpdateUserInputAndOther();
