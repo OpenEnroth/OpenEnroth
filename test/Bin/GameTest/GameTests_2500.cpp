@@ -589,7 +589,7 @@ GAME_TEST(Issues, Issue2771) {
 
     game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_TITAN_A, SPAWN_DUMMY | SPAWN_FRIENDLY);
     test.startTaping();
-    game.tick(100); // A tick is 3 game seconds, and Immolation burns on every five-minute regeneration mark.
+    game.tick(100);
     EXPECT_LT(hpTape.delta(), 0);
     EXPECT_EQ(casterTape.flatten().unique(), tape(Pid())); // A map event cast has no caster to credit.
 }
