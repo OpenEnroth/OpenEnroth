@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Application/Startup/GameStarterOptions.h"
 
 struct CodeGenOptions : GameStarterOptions {
@@ -16,10 +18,12 @@ struct CodeGenOptions : GameStarterOptions {
         SUBCOMMAND_DECORATIONS,
         SUBCOMMAND_SPEECH_PORTRAITS,
         SUBCOMMAND_LSTR_ID,
+        SUBCOMMAND_EVT,
     };
     using enum Subcommand;
 
     Subcommand subcommand = SUBCOMMAND_NONE;
+    std::string evtName; // Evt file to decompile, without the extension.
     bool helpPrinted = false; // True means that help message was already printed.
 
     static CodeGenOptions parse(int argc, char **argv);
