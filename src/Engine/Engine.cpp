@@ -603,14 +603,19 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     bDialogueUI_InitializeActor_NPC_ID = 0;
     engine->_pendingTransition.reset();
     onMapLoad();
+
+    // OE fix - onMapLoad() above runs the reload event of d11.evt, which zeroes the inserted key count in map var 18
+    // on a save load too. The used pedestal flags in map vars 15 to 17 stay set, and a used pedestal exits its event
+    // before the count check.
     if (engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
         auto &mapVars = engine->_persistentVariables.mapVars;
-        mapVars[18] = (mapVars[15] != 0) + (mapVars[16] != 0) + (mapVars[17] != 0); // The reload event clears the count but leaves the used-pedestal flags intact.
-        if (mapVars[18] == 3) { // Used pedestals exit their event before checking whether all three keys have been inserted.
+        mapVars[18] = (mapVars[15] != 0) + (mapVars[16] != 0) + (mapVars[17] != 0);
+        if (mapVars[18] == 3) { // Doors 1 and 2 are the exit, the pedestal events open them at a count of three.
             switchDoorAnimation(1, DOOR_ACTION_OPEN);
             switchDoorAnimation(2, DOOR_ACTION_OPEN);
         }
     }
+
     pGameLoadingUI_ProgressBar->Progress();
     memset(&render->pBillboardRenderListD3D, 0, sizeof(render->pBillboardRenderListD3D));
     render->pSortedBillboardRenderListD3D.fill(nullptr);
