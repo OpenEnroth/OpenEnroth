@@ -21,7 +21,6 @@
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Camera.h"
-#include "Engine/Graphics/Vis.h"
 
 #include "Library/Random/SequentialRandomEngine.h"
 
@@ -572,38 +571,32 @@ GAME_TEST(Issues, Issue1717) {
 
 GAME_TEST(Issues, Issue1718) {
     // Roland's cage in Colony Zod handed over another key on every click.
+    auto keyTape = tapes.totalItemCount(ITEM_COLONY_ZOD_KEY);
+    auto bitTape = tapes.questBit(QBIT_TALKED_TO_ROLAND);
+    auto screenTape = tapes.screen();
     game.startNewGame();
     game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180); // On the ledge east of the hanging cage, facing it.
     game.tick(2);
 
     auto cage = std::ranges::find(pLevelDecorations, 376, &LevelDecoration::uEventID); // Roland's cage script.
     ASSERT_NE(cage, pLevelDecorations.end());
-    int cageId = cage - pLevelDecorations.begin();
-    ASSERT_FALSE(pParty->_questBits.test(QBIT_TALKED_TO_ROLAND));
-    ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
 
-    auto clickCage = [&] {
+    test.startTaping();
+    for (int click = 0; click < 2; click++) {
         Vec3f base = cage->vPosition + Vec3f(0, 0, pDecorationTable->decoration(cage->uDecorationDescID)->uDecorationHeight); // The cage's solid base, the bars above it have gaps.
         Vec3f viewPos = pCamera3D->ViewTransform(&base);
         Vec2f screenPos = pCamera3D->Project(viewPos);
         game.moveMouse(screenPos.x, screenPos.y);
         game.tick();
-        ASSERT_EQ(engine->PickMouseForInteraction().pid, Pid(OBJECT_Decoration, cageId));
         game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
         game.tick(3);
-        ASSERT_EQ(current_screen_type, SCREEN_NPC_DIALOGUE); // Roland speaks on every click.
         game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         game.tick(2);
-        ASSERT_EQ(current_screen_type, SCREEN_GAME);
-    };
+    }
 
-    clickCage();
-    EXPECT_TRUE(pParty->_questBits.test(QBIT_TALKED_TO_ROLAND));
-    ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_COLONY_ZOD_KEY);
-    pParty->takeHoldingItem();
-
-    clickCage();
-    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
+    EXPECT_EQ(keyTape, tape(0, 1));
+    EXPECT_EQ(bitTape, tape(false, true));
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME)); // Roland speaks on every click.
 }
 
 GAME_TEST(Issues, Issue1720) {
