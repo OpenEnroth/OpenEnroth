@@ -1,9 +1,11 @@
+#include <algorithm>
 #include <string>
 #include <utility>
 
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
@@ -14,7 +16,9 @@
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Io/Mouse.h"
@@ -547,4 +551,30 @@ GAME_TEST(Issues, Issue2754) {
             EXPECT_LT(hpTape.delta(), 0);
         }
     }
+}
+
+GAME_TEST(Issues, Issue2759) {
+    // Clicking "Learn Skills" in a shop that teaches no skills crashed.
+    auto textTape = tapes.allGUIWindowsText();
+    game.startNewGame();
+
+    ASSERT_TRUE(enterHouse(HOUSE_WEAPON_SHOP_TATALIA_1)); // Stocks only RANDOM_ITEM_WEAPON, so there are no skills to learn.
+    createHouseUI(HOUSE_WEAPON_SHOP_TATALIA_1);
+    game.tick(2);
+    ASSERT_EQ(current_screen_type, SCREEN_HOUSE);
+    ASSERT_NE(pDialogueWindow, nullptr);
+
+    auto pos = std::ranges::find(pDialogueWindow->vButtons, std::to_underlying(DIALOGUE_LEARN_SKILLS), &GUIButton::msg_param);
+    ASSERT_NE(pos, pDialogueWindow->vButtons.end());
+    GUIButton *learnSkillsButton = *pos;
+
+    test.startTaping();
+    game.pressAndReleaseButton(BUTTON_LEFT, learnSkillsButton->rect.x + learnSkillsButton->rect.w / 2, learnSkillsButton->rect.y + learnSkillsButton->rect.h / 2);
+    game.tick(2);
+
+    EXPECT_EQ(window_SpeakInHouse->currentDialogue(), DIALOGUE_LEARN_SKILLS);
+    EXPECT_EQ(pDialogueWindow->pNumPresenceButton, 0);
+    const Character &character = pParty->activeCharacter();
+    EXPECT_CONTAINS(textTape.flatten(), localization->format(LSTR_SEEK_KNOWLEDGE_ELSEWHERE_S_THE_S, character.name, localization->className(character.classType)) +
+                                        "\n \n" + localization->str(LSTR_I_CAN_OFFER_YOU_NOTHING_FURTHER));
 }
