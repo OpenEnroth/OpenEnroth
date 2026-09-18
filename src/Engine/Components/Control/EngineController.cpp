@@ -1,10 +1,12 @@
 #include "EngineController.h"
 
+#include <algorithm>
 #include <cassert>
 #include <utility>
 #include <thread>
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -26,7 +28,6 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/Graphics/Viewport.h"
 
 #include "Io/Mouse.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
@@ -60,23 +61,6 @@ class ThrowingTicker {
     int _maxTicks = 128;
 };
 } // anonymous namespace
-
-/**
- * Decoration sprites can be transparent in places, and a pick there goes through to whatever is behind.
- *
- * @param decorationId                  Id of the decoration to look for.
- * @param start                         Screen point to look from.
- * @return                              The point closest to `start` in its screen column that picks the decoration,
- *                                      or `start` if there is none.
- */
-static Pointi findDecorationPoint(int decorationId, Pointi start) {
-    float depth = engine->config->gameplay.RangedAttackDepth.value();
-    for (int offset = 0; offset < pViewport.h; offset++)
-        for (Pointi point : {start - Pointi(0, offset), start + Pointi(0, offset)})
-            if (engine->PickMouse(depth, point.x, point.y, &vis_anything_filter, &vis_face_filter).pid == Pid(OBJECT_Decoration, decorationId))
-                return point;
-    return start;
-}
 
 EngineController::EngineController(EngineControlStateHandle state): _state(std::move(state)) {}
 
@@ -442,7 +426,16 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
         throw Exception("Decoration #{} is behind the camera", decorationId);
     Vec2f screenPos = pCamera3D->Project(viewPos);
 
-    moveMouse(findDecorationPoint(decorationId, Pointi(screenPos.x, screenPos.y)));
+    // Decoration sprites can be transparent in places, and a pick there goes through to whatever is behind.
+    Pointi center(screenPos.x, screenPos.y);
+    std::vector<Pointi> points = {center};
+    for (int distance = 5; distance <= 50; distance += 5)
+        points.insert(points.end(), {center - Pointi(0, distance), center + Pointi(0, distance), center - Pointi(distance, 0), center + Pointi(distance, 0)});
+    float depth = engine->config->gameplay.RangedAttackDepth.value();
+    auto pick = [&](Pointi point) { return engine->PickMouse(depth, point.x, point.y, &vis_anything_filter, &vis_face_filter).pid; };
+    auto target = std::ranges::find(points, Pid(OBJECT_Decoration, decorationId), pick);
+
+    moveMouse(target != points.end() ? *target : center);
     tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
     if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Decoration, decorationId))
         throw Exception("Failed to point mouse at decoration #{}", decorationId);
