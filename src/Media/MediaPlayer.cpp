@@ -452,7 +452,7 @@ class Movie : public IMovie {
 
         // keep reading packets until we hit the end or find a video packet
         do {
-            av_packet_unref(avpacket); // av_read_frame doesn't release what the packet was holding.
+            av_packet_unref(avpacket);
             if (av_read_frame(format_ctx, avpacket) < 0) {
                 // probably movie is finished
                 playing = false;
