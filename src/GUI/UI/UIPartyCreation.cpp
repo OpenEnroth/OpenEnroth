@@ -5,6 +5,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
@@ -266,6 +267,7 @@ bool PartyCreationUI_Loop() {
 
     pParty->Reset();
     pParty->createDefaultParty();
+    onGameLoad();
 
     pNPCStats->pNPCData = pNPCStats->pOriginalNPCData;
     pNPCStats->pGroups = pNPCStats->pOriginalGroups;

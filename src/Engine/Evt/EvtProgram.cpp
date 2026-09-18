@@ -43,6 +43,10 @@ void EvtProgram::add(int eventId, EvtInstruction ir) {
     _eventsById[eventId].push_back(std::move(ir));
 }
 
+void EvtProgram::remove(int eventId) {
+    _eventsById.erase(eventId);
+}
+
 void EvtProgram::clear() {
     _eventsById.clear();
 }

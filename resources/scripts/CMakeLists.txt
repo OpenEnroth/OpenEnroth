@@ -26,6 +26,7 @@ set(SCRIPTS_SOURCES
     dev/commands/skillpoints_command.lua
     dev/commands/skills_command.lua
     dev/commands/xp_command.lua
+    mmext/core.lua
     )
 
 add_library(scripts INTERFACE ${SCRIPTS_SOURCES})

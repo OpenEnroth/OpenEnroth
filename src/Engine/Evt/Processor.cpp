@@ -1,21 +1,28 @@
 #include "Processor.h"
 
+#include <algorithm>
+#include <functional>
+#include <optional>
 #include <vector>
 #include <string>
+#include <utility>
 
 #include "Engine/Engine.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Tables/DecorationTable.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/EvtInstruction.h"
 #include "Engine/Evt/EvtInterpreter.h"
+#include "Engine/Evt/EvtScripts.h"
 #include "Engine/Party.h"
 
 #include "GUI/UI/UIStatusBar.h"
@@ -29,6 +36,7 @@ struct MapTimer {
     Time alarmTime;
     int eventId = 0;
     int eventStep = 0;
+    std::function<void()> callback; // Called instead of the event if set.
 };
 
 static std::vector<EventTrigger> onMapLoadTriggers;
@@ -42,6 +50,8 @@ static std::vector<int> decorationsWithEvents;
 // Was in original code and ensures that timers are checked not more often than 30 game seconds.
 // Do not needed in practice but can be considered optimization to avoid checking timers too often.
 static Time timerGuard;
+
+static EvtScripts *scripts = nullptr;
 
 int savedEventID;
 int savedEventStep;
@@ -86,64 +96,64 @@ void checkDecorationEvents() {
     }
 }
 
-static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *triggers) {
-    std::vector<EventTrigger> timerTriggers = engine->_localEventMap.enumerateTriggers(triggerType);
-
+static MapTimer makeTimer(const EvtInstruction &ir) {
     // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
     //                   To support fair timers they need to be saved directly.
     Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
 
-    triggers->clear();
-    for (EventTrigger &trigger : timerTriggers) {
-        MapTimer timer;
-        EvtInstruction ir = engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep);
-
-        if (ir.data.timer_descr.alt_halfmin_interval) {
-            // Alternative interval is defined in terms of half-minutes
-            timer.altInterval = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
-            timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
+    MapTimer timer;
+    if (ir.data.timer_descr.alt_halfmin_interval) {
+        // Alternative interval is defined in terms of half-minutes
+        timer.altInterval = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
+        timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
+    } else {
+        if (ir.data.timer_descr.is_yearly) {
+            timer.interval = Duration::fromYears(1);
+        } else if (ir.data.timer_descr.is_monthly) {
+            timer.interval = Duration::fromDays(28);
+        } else if (ir.data.timer_descr.is_weekly) {
+            timer.interval = Duration::fromDays(7);
         } else {
-            if (ir.data.timer_descr.is_yearly) {
-                timer.interval = Duration::fromYears(1);
-            } else if (ir.data.timer_descr.is_monthly) {
-                timer.interval = Duration::fromDays(28);
-            } else if (ir.data.timer_descr.is_weekly) {
-                timer.interval = Duration::fromDays(7);
-            } else {
-                // Interval is daily with exact time of day
-                timer.interval = Duration::fromDays(1);
-                timer.timeInsideDay = Duration::fromHours(ir.data.timer_descr.daily_start_hour);
-                timer.timeInsideDay += Duration::fromMinutes(ir.data.timer_descr.daily_start_minute);
-                timer.timeInsideDay += Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
-            }
-
-            if (timer.interval == Duration::fromDays(1)) {
-                if (levelLastVisit) {
-                    // Calculate alarm time inside last visit day
-                    timer.alarmTime = Time::fromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
-                    if (timer.alarmTime < levelLastVisit) {
-                        // Last visit time already passed alarm time inside that day so move alarm to next day
-                        timer.alarmTime = timer.alarmTime + Duration::fromDays(1);
-                    }
-                } else {
-                    // Set alarm time to zero because it must always fire
-                    timer.alarmTime = Time();
-                }
-            } else {
-                if (levelLastVisit) {
-                    timer.alarmTime = levelLastVisit + timer.interval;
-                } else {
-                    // Without last visit all timers must fire immediately
-                    timer.alarmTime = pParty->GetPlayingTime();
-                }
-            }
-
-            assert(timer.interval > 0_ticks);
+            // Interval is daily with exact time of day
+            timer.interval = Duration::fromDays(1);
+            timer.timeInsideDay = Duration::fromHours(ir.data.timer_descr.daily_start_hour);
+            timer.timeInsideDay += Duration::fromMinutes(ir.data.timer_descr.daily_start_minute);
+            timer.timeInsideDay += Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
         }
+
+        if (timer.interval == Duration::fromDays(1)) {
+            if (levelLastVisit) {
+                // Calculate alarm time inside last visit day
+                timer.alarmTime = Time::fromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
+                if (timer.alarmTime < levelLastVisit) {
+                    // Last visit time already passed alarm time inside that day so move alarm to next day
+                    timer.alarmTime = timer.alarmTime + Duration::fromDays(1);
+                }
+            } else {
+                // Set alarm time to zero because it must always fire
+                timer.alarmTime = Time();
+            }
+        } else {
+            if (levelLastVisit) {
+                timer.alarmTime = levelLastVisit + timer.interval;
+            } else {
+                // Without last visit all timers must fire immediately
+                timer.alarmTime = pParty->GetPlayingTime();
+            }
+        }
+
+        assert(timer.interval > 0_ticks);
+    }
+    return timer;
+}
+
+static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *triggers) {
+    triggers->clear();
+    for (EventTrigger &trigger : engine->_localEventMap.enumerateTriggers(triggerType)) {
+        MapTimer timer = makeTimer(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep));
         timer.eventId = trigger.eventId;
         timer.eventStep = trigger.eventStep;
-
-        triggers->push_back(timer);
+        triggers->push_back(std::move(timer));
     }
 }
 
@@ -153,9 +163,18 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
         return;
     }
 
+    bool isGlobal = activeLevelDecoration != nullptr;
+
+    bool mapExitTriggered = false;
+    if (scripts && startStep > 0 && scripts->resumeEvent(eventId, &mapExitTriggered)) {
+        if (mapExitTriggered)
+            onMapLeave();
+        return;
+    }
+
     EvtInterpreter interpreter;
     MM_TRACE("Executing regular event starting from step {}", startStep);
-    if (activeLevelDecoration) {
+    if (isGlobal) {
         engine->_globalEventMap.dump(eventId);
         interpreter.prepare(engine->_globalEventMap, eventId, targetObj, canShowMessages);
     } else {
@@ -163,15 +182,20 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
         interpreter.prepare(engine->_localEventMap, eventId, targetObj, canShowMessages);
     }
 
-    if (!interpreter.isValid()) {
+    bool isScripted = scripts && startStep == 0 && scripts->hasEvent(isGlobal, eventId);
+    if (!interpreter.isValid() && !isScripted) {
+        if (scripts && !isGlobal && scripts->eventHint(eventId))
+            return; // The scripts gave the event a hint and nothing to do, like an evt event that is a hint and an exit.
         MM_WARNING("Face has invalid event ID");
         engine->_statusBar->nothingHere();
         return;
     }
 
-    if (interpreter.executeRegular(startStep)) {
+    mapExitTriggered = interpreter.executeRegular(startStep);
+    if (isScripted)
+        mapExitTriggered |= scripts->runEvent(isGlobal, eventId, targetObj, canShowMessages);
+    if (mapExitTriggered)
         onMapLeave();
-    }
 }
 
 bool npcDialogueEventProcessor(int eventId, int startStep) {
@@ -187,14 +211,24 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     engine->_globalEventMap.dump(eventId);
     activeLevelDecoration = oldDecoration;
     interpreter.prepare(engine->_globalEventMap, eventId, Pid(), false);
-    return interpreter.executeNpcDialogue(startStep);
+    bool result = interpreter.executeNpcDialogue(startStep);
+    if (scripts)
+        result = scripts->canShowTopic(eventId).value_or(result);
+    return result;
 }
 
 bool hasEventHint(int eventId) {
+    if (scripts && scripts->hasEvent(false, eventId))
+        return false; // The event does more than show a hint.
+    if (scripts && scripts->eventHint(eventId))
+        return true;
     return engine->_localEventMap.hasHint(eventId);
 }
 
 std::string getEventHintString(int eventId) {
+    if (scripts)
+        if (std::optional<std::string> hint = scripts->eventHint(eventId))
+            return *hint;
     return engine->_localEventMap.hint(eventId);
 }
 
@@ -208,7 +242,44 @@ static void registerEventTriggers() {
     registerTimerTriggers(EVENT_OnTimer, &onTimerTriggers);
 }
 
+void onGameLoad() {
+    if (!scripts)
+        return;
+
+    engine->_globalEventMap = EvtProgram::load(engine->resources()->eventsData("global.evt"));
+    scripts->loadGlobalScripts();
+}
+
+/**
+ * `FACE_EVENT_IS_HINT` is set while the level loads, from the evt file alone. The map's scripts load later and can change
+ * which events only show a hint.
+ */
+static void updateFaceHints() {
+    auto update = [](BLVFace &face) {
+        if (!face.eventId)
+            return;
+        if (hasEventHint(face.eventId)) {
+            face.attributes |= FACE_EVENT_IS_HINT;
+        } else {
+            face.attributes &= ~FACE_EVENT_IS_HINT;
+        }
+    };
+
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+        std::ranges::for_each(pIndoor->faces, update);
+    } else {
+        for (BSPModel &model : pOutdoor->pBModels)
+            std::ranges::for_each(model.faces, update);
+    }
+}
+
 void onMapLoad() {
+    if (scripts) {
+        std::string mapName = pMapTable->pInfos[engine->_currentLoadedMapId].fileName;
+        scripts->loadMapScripts(mapName.substr(0, mapName.rfind('.'))); // Before the triggers, scripts can remove events.
+        updateFaceHints();
+    }
+
     // Register all triggers when map done loading
     registerEventTriggers();
 
@@ -217,6 +288,9 @@ void onMapLoad() {
     for (EventTrigger &triggers : onMapLoadTriggers) {
         eventProcessor(triggers.eventId, Pid(), false, triggers.eventStep + 1);
     }
+
+    if (scripts)
+        scripts->onMapLoad();
 }
 
 void onMapLeave() {
@@ -224,14 +298,28 @@ void onMapLeave() {
         eventProcessor(triggers.eventId, Pid(), true, triggers.eventStep + 1);
     }
 
+    if (scripts)
+        scripts->onMapLeave();
+
     // Cleanup timers to avoid firing while map transition is in process
     onLongTimerTriggers.clear();
     onTimerTriggers.clear();
 }
 
-static void checkTimer(MapTimer &timer) {
-    if (pParty->GetPlayingTime() >= timer.alarmTime) {
-        eventProcessor(timer.eventId, Pid(), true, timer.eventStep + 1);
+static void checkTimers(std::vector<MapTimer> *timers) {
+    for (size_t i = 0; i < timers->size(); i++) {
+        if (pParty->GetPlayingTime() < (*timers)[i].alarmTime)
+            continue;
+
+        if (std::function<void()> callback = (*timers)[i].callback) {
+            callback();
+        } else {
+            eventProcessor((*timers)[i].eventId, Pid(), true, (*timers)[i].eventStep + 1);
+        }
+        if (i >= timers->size())
+            return; // The event sent the party to another map, and leaving a map drops its timers.
+
+        MapTimer &timer = (*timers)[i];
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
@@ -257,11 +345,24 @@ void onTimer() {
 
     timerGuard = pParty->GetPlayingTime();
 
-    for (MapTimer &timer : onTimerTriggers) {
-        checkTimer(timer);
-    }
+    checkTimers(&onTimerTriggers);
+    checkTimers(&onLongTimerTriggers);
+}
 
-    for (MapTimer &timer : onLongTimerTriggers) {
-        checkTimer(timer);
-    }
+void setEvtScripts(EvtScripts *value) {
+    scripts = value;
+    std::erase_if(onTimerTriggers, &MapTimer::callback); // The callbacks belong to the scripts that are going away.
+    std::erase_if(onLongTimerTriggers, &MapTimer::callback);
+}
+
+EvtScripts *evtScripts() {
+    return scripts;
+}
+
+void addTimer(const EvtInstruction &timer, std::function<void()> callback) {
+    assert(timer.opcode == EVENT_OnTimer || timer.opcode == EVENT_OnLongTimer);
+
+    MapTimer result = makeTimer(timer);
+    result.callback = std::move(callback);
+    (timer.opcode == EVENT_OnTimer ? onTimerTriggers : onLongTimerTriggers).push_back(std::move(result));
 }
