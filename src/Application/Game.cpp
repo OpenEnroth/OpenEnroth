@@ -101,13 +101,17 @@
 /**
  * Sets the minimap zoom and stores it in the config entry for the current level type.
  *
- * @param zoom                          New zoom, gets clamped to the range the entry allows.
+ * @param zoom                          New zoom, gets clamped to the limits of the current level type.
  */
 static void setMinimapZoom(int zoom) {
-    auto &entry = uCurrentlyLoadedLevelType == LEVEL_INDOOR ?
-        engine->config->settings.MinimapZoomIndoor : engine->config->settings.MinimapZoomOutdoor;
-    entry.setValue(zoom);
-    viewparams->uMinimapZoom = entry.value();
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+        zoom = std::clamp(zoom, 256, 4096);
+        engine->config->settings.MinimapZoomIndoor.setValue(zoom);
+    } else {
+        zoom = std::clamp(zoom, 512, 2048);
+        engine->config->settings.MinimapZoomOutdoor.setValue(zoom);
+    }
+    viewparams->uMinimapZoom = zoom;
 }
 
 Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
