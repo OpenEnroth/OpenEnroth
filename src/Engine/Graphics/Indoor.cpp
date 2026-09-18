@@ -1394,7 +1394,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
 
                 BLVFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
 
-                if (model.attributes & FACE_HAS_HINT || model.eventId == 0) {
+                if (model.attributes & FACE_EVENT_IS_HINT || model.eventId == 0) {
                     return 1;
                 }
 
@@ -1408,7 +1408,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     engine->_statusBar->nothingHere();
                     return 1;
                 }
-                if (pIndoor->faces[id].attributes & FACE_HAS_HINT || !pIndoor->faces[id].eventId) {
+                if (pIndoor->faces[id].attributes & FACE_EVENT_IS_HINT || !pIndoor->faces[id].eventId) {
                     return 1;
                 }
 

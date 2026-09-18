@@ -29,7 +29,7 @@ Vis_SelectionFilter vis_anything_filter = {
 Vis_SelectionFilter vis_face_filter = {
     VisObjectType_Face, OBJECT_None, -1, 0, None};  // 00F93E44
 Vis_SelectionFilter vis_door_filter = {
-    VisObjectType_Face, OBJECT_Door, -1, static_cast<int>(FACE_HAS_HINT), None };  // 00F93E58
+    VisObjectType_Face, OBJECT_Door, -1, static_cast<int>(FACE_EVENT_IS_HINT), None };  // 00F93E58
 Vis_SelectionFilter vis_decoration_noevent_filter = {
     VisObjectType_Sprite, OBJECT_Decoration, -1, 0, ExclusionIfNoEvent};  // 00F93E6C
 
