@@ -545,7 +545,7 @@ void SpellStats::Initialize(const Blob &spells) {
     controlUndead.pGrandmasterSkillDesc = replaceAll(controlUndead.pGrandmasterSkillDesc, "Mind Magic", "Dark Magic");
 }
 
-void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3f from, Vec3f to) {
+void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3f from, Vec3f to, int caster) {
     // For bug catching
     assert(skillMastery >= MASTERY_NOVICE && skillMastery <= MASTERY_GRANDMASTER);
 
@@ -688,7 +688,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
                     return;
                 }
             }
-            pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, 0, 0, -1);
+            pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, 0, 0, caster);
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
@@ -725,7 +725,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
                 buff_id = PARTY_BUFF_HEROISM;
             }
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
-            pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, -1);
+            pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, caster);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    Pid was 0
@@ -738,7 +738,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
                 spell_length = Duration::fromMinutes(skillLevel);
             }
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
-            pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, skillLevel, 0, -1);
+            pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, skillLevel, 0, caster);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    Pid was 0
@@ -769,7 +769,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             }
 
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
-            pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, -1);
+            pParty->pPartyBuffs[buff_id].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, caster);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    Pid was 0
@@ -795,7 +795,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             }
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
 
-            pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, -1);
+            pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, spell_power, 0, caster);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    Pid was 0

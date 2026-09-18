@@ -365,7 +365,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_CastSpell:
             eventCastSpell(ir.data.spell_descr.spell_id, ir.data.spell_descr.spell_mastery, ir.data.spell_descr.spell_level,
                          Vec3f(ir.data.spell_descr.fromx, ir.data.spell_descr.fromy, ir.data.spell_descr.fromz),
-                         Vec3f(ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz));
+                         Vec3f(ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz),
+                         pParty->hasActiveCharacter() ? pParty->activeCharacterIndex() : 0); // Timers and floor triggers run events with nobody active.
             break;
         case EVENT_SpeakNPC:
             if (_canShowMessages) {

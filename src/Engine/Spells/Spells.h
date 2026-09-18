@@ -84,7 +84,14 @@ bool IsSpellQuickCastableOnShiftClick(SpellId uSpellID);
 
 /**
  * Function for processing spells cast from game scripts.
+ *
+ * @param uSpellID                      Spell to cast.
+ * @param skillMastery                  Mastery to cast it at.
+ * @param skillLevel                    Skill level to cast it at.
+ * @param from                          Where projectiles start.
+ * @param to                            Where projectiles fly, zero aims them at the party.
+ * @param caster                        Party character index that party buffs record as their caster.
  */
-void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3f from, Vec3f to);  // sub_448DF8
+void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3f from, Vec3f to, int caster);  // sub_448DF8
 
 void armageddonProgress();

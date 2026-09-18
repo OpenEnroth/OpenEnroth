@@ -2965,17 +2965,10 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
         a1 = projectileSprite->spell_caster_pid;
     }
+    if (a1.type() != OBJECT_Character) return 0;
 
-    Character *character = nullptr; // Stays null for Immolation cast by a map event, it has no caster.
-    if (a1.type() == OBJECT_Character) {
-        assert(a1.id() < 4);
-        character = &pParty->pCharacters[a1.id()];
-    } else if (projectileSprite && a1 == Pid()) {
-        assert(projectileSprite->uSpellID == SPELL_FIRE_IMMOLATION); // The other spells roll to hit with the caster's stats.
-    } else {
-        return 0;
-    }
-
+    assert(a1.id() < 4);
+    Character *character = &pParty->pCharacters[a1.id()];
     pMonster = &pActors[uActorID_Monster];
     if (pMonster->IsNotAlive()) return 0;
 
@@ -3113,7 +3106,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         }
     }
 
-    if (character && character->IsWeak()) uDamageAmount /= 2;
+    if (character->IsWeak()) uDamageAmount /= 2;
     if (pMonster->buffs[ACTOR_BUFF_STONED].Active()) uDamageAmount = 0;
     v61 = pMonster->CalcMagicalDamageToActor(attackElement, uDamageAmount);
     if (!projectileSprite && character->IsUnarmed() &&
@@ -3153,14 +3146,13 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     }
     pMonster->hp -= uDamageAmount;
     if (uDamageAmount == 0 && !hit_will_stun) {
-        if (character)
-            character->playReaction(SPEECH_ATTACK_MISS);
+        character->playReaction(SPEECH_ATTACK_MISS);
         return 0;
     }
     if (pMonster->hp > 0) {
-        Actor::AI_Pain(uActorID_Monster, character ? a1 : Pid::character(0), 0); // Any character pid turns the monster to the party.
+        Actor::AI_Pain(uActorID_Monster, a1, 0);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
-        if (character && engine->config->settings.ShowHits.value()) {
+        if (engine->config->settings.ShowHits.value()) {
             if (projectileSprite)
                 engine->_statusBar->setEvent(LSTR_S_SHOOTS_S_FOR_LU_POINTS, character->name, pMonster->GetDisplayName(), uDamageAmount);
             else
@@ -3177,16 +3169,15 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         if (vrng->random(100) < 20) {
             speech = pMonster->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
         }
-        if (character)
-            character->playReaction(speech);
-        if (character && engine->config->settings.ShowHits.value()) {
+        character->playReaction(speech);
+        if (engine->config->settings.ShowHits.value()) {
             engine->_statusBar->setEvent(LSTR_S_INFLICTS_LU_POINTS_KILLING_S, character->name, uDamageAmount, pMonster->GetDisplayName());
         }
     }
-    if (character && pMonster->buffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
+    if (pMonster->buffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
         character->receiveDamage(uDamageAmount, attackElement);
     int knockbackValue = 20 * v61 / (signed int)pMonster->monsterInfo.hp;
-    if (((character && character->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE)) ||
+    if ((character->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
          hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
         extraRecoveryTime = 20_ticks;
         knockbackValue = 10;

@@ -567,8 +567,8 @@ GAME_TEST(Issues, Issue2759) {
 }
 
 GAME_TEST(Issues, Issue2771) {
-    // Immolation cast by a map event crashed the game on the next regeneration tick. Such a buff has no caster, and
-    // the damage sprite built a character pid out of -1.
+    // Immolation cast by a map event crashed the game on the next regeneration tick. The buff got caster -1, and the
+    // damage sprite built a character pid out of it.
     auto hpTape = actorTapes.hp(0);
     auto casterTape = tapes.custom([] {
         AccessibleVector<Pid> result;
@@ -580,16 +580,18 @@ GAME_TEST(Issues, Issue2771) {
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(3796, 6224, 1216), 0); // 300 west of the pedestal, facing it.
-    game.goToGame(); // A new party arriving here gets a dialogue with Archibald Ironfist.
+    game.goToGame(); // A new party arriving here gets a dialogue with Archibald Ironfist, and a Blaster in hand.
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Puts the Blaster into the second character's pack.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2);
     game.pointMouseAtDecoration(380);
     game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
     game.tick(3);
     ASSERT_TRUE(pParty->ImmolationActive());
-    EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, -1);
 
     game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_TITAN_A, SPAWN_DUMMY | SPAWN_FRIENDLY);
     test.startTaping();
     game.tick(100);
     EXPECT_LT(hpTape.delta(), 0);
-    EXPECT_EQ(casterTape.flatten().unique(), tape(Pid())); // A map event cast has no caster to credit.
+    EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(1))); // The character who clicked the pedestal.
 }
