@@ -42,6 +42,7 @@ set(RESOURCE_SOURCES
         scripts/dev/console_overlay.lua
         scripts/dev/imgui_demo_overlay.lua
         scripts/init.lua
+        scripts/maps/d25.lua
         scripts/maps/d27.lua
         scripts/mmext/core.lua
         scripts/utils.lua
