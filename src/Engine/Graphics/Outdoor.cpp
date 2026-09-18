@@ -5,6 +5,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -511,6 +512,11 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     }
 
     reconstruct(delta, this);
+
+    std::vector<BLVFace *> allFaces;
+    for (BLVFace &face : faces)
+        allFaces.push_back(&face);
+    repairClickableFaces(allFaces);
 
     if (respawnTimed || respawnInitial)
         ddm.lastRespawnDay = days_played;
