@@ -1109,7 +1109,6 @@ GAME_TEST(Issues, Issue1473) {
     }
 
     test.startTaping();
-    game.tick(); // Baseline tick records half health for everyone.
     game.tick(100); // Long enough for a regeneration tick.
 
     EXPECT_LT(mortalHpTape.delta(), 0); // Zero would mean that no regeneration tick ran.
