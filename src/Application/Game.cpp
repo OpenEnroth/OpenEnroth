@@ -100,7 +100,7 @@
 
 static void rememberMinimapZoom() {
     auto &zoom = uCurrentlyLoadedLevelType == LEVEL_INDOOR ?
-        engine->config->settings.IndoorMinimapZoom : engine->config->settings.OutdoorMinimapZoom;
+        engine->config->settings.MinimapZoomIndoor : engine->config->settings.MinimapZoomOutdoor;
     zoom.setValue(viewparams->uMinimapZoom);
 }
 

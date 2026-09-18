@@ -646,19 +646,13 @@ class GameConfig : public Config {
 
         Bool MouseLookEnabled = {this, "mouse_look_enabled", false, "Whether mouse look is enabled. Persisted between sessions."};
 
-        Int IndoorMinimapZoom = {this, "indoor_minimap_zoom", 1024, &ValidateIndoorMinimapZoom,
+        Int MinimapZoomIndoor = {this, "minimap_zoom_indoor", 1024, &ValidateMinimapZoomIndoor,
             "Minimap zoom in indoor maps, from 256 to 4096. Persisted between sessions."};
 
-        Int OutdoorMinimapZoom = {this, "outdoor_minimap_zoom", 512, &ValidateOutdoorMinimapZoom,
+        Int MinimapZoomOutdoor = {this, "minimap_zoom_outdoor", 512, &ValidateMinimapZoomOutdoor,
             "Minimap zoom in outdoor maps, from 512 to 2048. Persisted between sessions."};
 
      private:
-        static int ValidateIndoorMinimapZoom(int zoom) {
-            return std::clamp(zoom, 256, 4096);
-        }
-        static int ValidateOutdoorMinimapZoom(int zoom) {
-            return std::clamp(zoom, 512, 2048);
-        }
         static int ValidateLevel(int level) {
             return std::clamp(level, 0, 9);
         }
@@ -667,6 +661,12 @@ class GameConfig : public Config {
         }
         static int ValidateTurnSpeed(int speed) {
             return std::clamp(speed, 0, 1024);
+        }
+        static int ValidateMinimapZoomIndoor(int zoom) {
+            return std::clamp(zoom, 256, 4096);
+        }
+        static int ValidateMinimapZoomOutdoor(int zoom) {
+            return std::clamp(zoom, 512, 2048);
         }
     };
 
