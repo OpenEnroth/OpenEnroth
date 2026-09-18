@@ -1,5 +1,6 @@
 #include "CastSpellInfo.h"
 
+#include <algorithm>
 #include <memory>
 #include <vector>
 #include <string>
@@ -3195,21 +3196,21 @@ void pushTempleSpell(SpellId spell) {
 }
 
 void pushNPCSpell(SpellId spell) {
-    pushSpellOrRangedAttack(spell, 0, scrollSpellSkillValue(), 0);
+    pushSpellOrRangedAttack(spell, 0, scrollSpellSkillValue(spell), 0);
 }
 
 void pushScrollSpell(SpellId spell, int casterIndex) {
-    pushSpellOrRangedAttack(spell, casterIndex, scrollSpellSkillValue(), ON_CAST_CastViaScroll);
+    pushSpellOrRangedAttack(spell, casterIndex, scrollSpellSkillValue(spell), ON_CAST_CastViaScroll);
 }
 
-CombinedSkillValue scrollSpellSkillValue() {
-    return CombinedSkillValue(engine->config->gameplay.ScrollSpellLevel.value(),
-                              static_cast<Mastery>(engine->config->gameplay.ScrollSpellMastery.value()));
+CombinedSkillValue scrollSpellSkillValue(SpellId spell) {
+    Mastery learnedAt = std::min(pSpellDatas[spell].skillMastery, MASTERY_MASTER); // Vanilla scrolls cast grandmaster spells at master.
+    Mastery mastery = std::max(engine->config->gameplay.ScrollSpellMastery.value(), learnedAt); // No spell has rules below the mastery it's learned at.
+    return CombinedSkillValue(engine->config->gameplay.ScrollSpellLevel.value(), mastery);
 }
 
 CombinedSkillValue wandSpellSkillValue() {
-    return CombinedSkillValue(engine->config->gameplay.WandSpellLevel.value(),
-                              static_cast<Mastery>(engine->config->gameplay.WandSpellMastery.value()));
+    return CombinedSkillValue(engine->config->gameplay.WandSpellLevel.value(), engine->config->gameplay.WandSpellMastery.value());
 }
 
 void spellTargetPicked(Pid targetPid, int targetCharacterIndex) {

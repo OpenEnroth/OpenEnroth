@@ -67,7 +67,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
     } else {
         CombinedSkillValue skill = pParty->pCharacters[casterId].getActualSkillValue(SKILL_WATER);
         _maxBeacons = masteryToMaxBeacons[skill.mastery()];
-        if (castFlags & ON_CAST_CastViaScroll) skill = scrollSpellSkillValue();
+        if (castFlags & ON_CAST_CastViaScroll) skill = scrollSpellSkillValue(SPELL_WATER_LLOYDS_BEACON);
         _waterMastery = skill.mastery();
         _spellLevel = skill.level();
     }

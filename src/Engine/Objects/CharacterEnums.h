@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Library/Serialization/SerializationFwd.h"
+
 enum class Condition : uint32_t {
     CONDITION_CURSED = 0,
     CONDITION_WEAK = 1,
@@ -39,6 +41,7 @@ enum class Mastery {
     MASTERY_LAST = MASTERY_GRANDMASTER
 };
 using enum Mastery;
+MM_DECLARE_SERIALIZATION_FUNCTIONS(Mastery)
 
 enum class CharacterBuff {
     CHARACTER_BUFF_RESIST_AIR = 0,

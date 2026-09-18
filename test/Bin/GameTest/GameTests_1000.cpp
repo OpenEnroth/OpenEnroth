@@ -437,8 +437,8 @@ GAME_TEST(Issues, Issue1255) {
 }
 
 GAME_TEST(Issues, Issue1262) {
-    // Scroll and wand spell power were hardcoded. Check that the config options feed the casts, and that the defaults
-    // are the vanilla values - scrolls at level 5 master, wands at level 8 novice.
+    // Scroll and wand spell skill was hardcoded. Check that the config options feed the casts, and that the defaults
+    // are the vanilla values. That is level 5 master for scrolls and level 8 novice for wands.
     for (bool configured : {false, true}) {
         test.prepareForNextTest();
         int scrollLevel = 5;
@@ -448,12 +448,12 @@ GAME_TEST(Issues, Issue1262) {
         if (configured) {
             scrollLevel = 12;
             scrollMastery = MASTERY_EXPERT;
-            wandLevel = 20;
+            wandLevel = 63;
             wandMastery = MASTERY_GRANDMASTER;
             engine->config->gameplay.ScrollSpellLevel.setValue(scrollLevel);
-            engine->config->gameplay.ScrollSpellMastery.setValue(std::to_underlying(scrollMastery));
-            engine->config->gameplay.WandSpellLevel.setValue(wandLevel);
-            engine->config->gameplay.WandSpellMastery.setValue(std::to_underlying(wandMastery));
+            engine->config->gameplay.ScrollSpellMastery.setValue(scrollMastery);
+            engine->config->gameplay.WandSpellLevel.setValue(64); // Clamped to 63, the highest level a skill value holds.
+            engine->config->gameplay.WandSpellMastery.setValue(wandMastery);
         }
 
         game.startNewGame();
@@ -468,7 +468,16 @@ GAME_TEST(Issues, Issue1262) {
         ASSERT_TRUE(torch.Active());
         EXPECT_EQ(torch.skillMastery, scrollMastery);
         EXPECT_EQ(torch.power, scrollMastery == MASTERY_EXPERT ? 3 : 4);
-        EXPECT_EQ((torch.GetExpireTime() - castStart).hours(), scrollLevel); // Truncates the frames between the cast and now.
+        EXPECT_EQ((torch.GetExpireTime() - castStart).hours(), scrollLevel); // hours() drops the frames between castStart and the cast.
+
+        // A fallen wizard casts Hour of Power with the scroll skill. The spell takes master to learn, and it's never
+        // cast below that. Its Heroism has the power of the single spell, the level plus 5.
+        UseNPCSkill(FallenWizard, 0);
+        game.tick();
+        SpellBuff &heroism = pParty->pPartyBuffs[PARTY_BUFF_HEROISM];
+        ASSERT_TRUE(heroism.Active());
+        EXPECT_EQ(heroism.skillMastery, MASTERY_MASTER);
+        EXPECT_EQ(heroism.power, scrollLevel + 5);
 
         // A wand of fire shoots a fire bolt that carries the wand skill.
         ASSERT_TRUE(pParty->hasActiveCharacter()); // The scroll caster may be recovering, whoever is active now shoots.
@@ -476,10 +485,9 @@ GAME_TEST(Issues, Issue1262) {
         wand.itemId = ITEM_WAND_OF_FIRE;
         wand.numCharges = wand.maxCharges = 1;
         pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
-        game.tick();
         game.pressAndReleaseKey(PlatformKey::KEY_A);
         game.tick(2);
-        auto bolt = std::ranges::find_if(pSpriteObjects, [](const SpriteObject &sprite) { return sprite.uSpellID == SPELL_FIRE_FIRE_BOLT; });
+        auto bolt = std::ranges::find(pSpriteObjects, SPELL_FIRE_FIRE_BOLT, &SpriteObject::uSpellID);
         ASSERT_NE(bolt, pSpriteObjects.end());
         EXPECT_EQ(bolt->spell_level, wandLevel);
         EXPECT_EQ(bolt->spell_skill, wandMastery);

@@ -277,17 +277,17 @@ class GameConfig : public Config {
             "Destroy wands when they reach 0 charges." };
 
         Int ScrollSpellLevel = {this, "scroll_spell_level", 5, &ValidateSpellLevel,
-            "Skill level that spell scrolls and hireling spells are cast with. 5 in vanilla."};
+            "Skill level that spell scrolls and hireling spells are cast with, from 1 to 63. 5 in vanilla."};
 
-        Int ScrollSpellMastery = {this, "scroll_spell_mastery", 3, &ValidateSpellMastery,
-            "Skill mastery that spell scrolls and hireling spells are cast with, from 1 for novice to 4 for grandmaster. "
-            "3 in vanilla."};
+        ConfigEntry<Mastery> ScrollSpellMastery = {this, "scroll_spell_mastery", MASTERY_MASTER,
+            "Skill mastery that spell scrolls and hireling spells are cast with, one of 'novice', 'expert', 'master' and 'grandmaster'. "
+            "A spell that takes expert or master to learn is never cast below that. 'master' in vanilla."};
 
         Int WandSpellLevel = {this, "wand_spell_level", 8, &ValidateSpellLevel,
-            "Skill level that wands are cast with. 8 in vanilla."};
+            "Skill level that wands are cast with, from 1 to 63. 8 in vanilla."};
 
-        Int WandSpellMastery = {this, "wand_spell_mastery", 1, &ValidateSpellMastery,
-            "Skill mastery that wands are cast with, from 1 for novice to 4 for grandmaster. 1 in vanilla."};
+        ConfigEntry<Mastery> WandSpellMastery = {this, "wand_spell_mastery", MASTERY_NOVICE,
+            "Skill mastery that wands are cast with, one of 'novice', 'expert', 'master' and 'grandmaster'. 'novice' in vanilla."};
 
         Bool ShowProtectionMagicPower = {this, "show_prot_magic_power", true, "Display the remaining power of Protection from Magic in the Party Buffs popup."};
 
@@ -349,10 +349,7 @@ class GameConfig : public Config {
             return std::clamp(num, 30, 500);
         }
         static int ValidateSpellLevel(int level) {
-            return std::max(level, 1);
-        }
-        static int ValidateSpellMastery(int mastery) {
-            return std::clamp(mastery, std::to_underlying(MASTERY_FIRST), std::to_underlying(MASTERY_LAST));
+            return std::clamp(level, 1, 63); // A packed skill value has 6 bits for the level.
         }
     };
 

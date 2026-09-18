@@ -55,16 +55,6 @@ using enum SpellCastFlag;
 MM_DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
 
-/**
- * @return                              Skill value that spell scrolls and hireling spells are cast with, as configured.
- */
-CombinedSkillValue scrollSpellSkillValue();
-
-/**
- * @return                              Skill value that wands are cast with, as configured.
- */
-CombinedSkillValue wandSpellSkillValue();
-
 struct CastSpellInfo {
     std::unique_ptr<TargetedSpellUI> GetCastSpellInInventoryWindow();
 
@@ -127,6 +117,19 @@ void pushNPCSpell(SpellId spell);
  * @param casterIndex                   0-based index of the character casting the spell.
  */
 void pushScrollSpell(SpellId spell, int casterIndex);
+
+/**
+ * @param spell                         Spell being cast.
+ * @return                              Skill value that a spell scroll or a hireling casts the spell with. This is the
+ *                                      configured value, with the mastery raised to what the spell takes to learn,
+ *                                      but not above master.
+ */
+CombinedSkillValue scrollSpellSkillValue(SpellId spell);
+
+/**
+ * @return                              Skill value that wands are cast with, as configured.
+ */
+CombinedSkillValue wandSpellSkillValue();
 
 /**
  * Process successful picking target for spell.
