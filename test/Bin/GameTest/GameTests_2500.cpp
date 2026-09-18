@@ -7,6 +7,7 @@
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
@@ -547,4 +548,19 @@ GAME_TEST(Issues, Issue2754) {
             EXPECT_LT(hpTape.delta(), 0);
         }
     }
+}
+
+GAME_TEST(Issues, Issue2759) {
+    // Clicking "Learn Skills" in a shop that teaches no skills crashed. Such a shop shouldn't offer the option at all.
+    auto houseTape = tapes.house();
+    auto textTape = tapes.allGUIWindowsText();
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_TATALIA, Vec3f(19174, 15056, 3040), 0); // In front of the door of Vander's Blades & Bows, facing it.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    EXPECT_CONTAINS(houseTape, HOUSE_WEAPON_SHOP_TATALIA_1);
+    EXPECT_CONTAINS(textTape.flatten(), "Display Inventory"); // We've seen the shop menu.
+    EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
 }
