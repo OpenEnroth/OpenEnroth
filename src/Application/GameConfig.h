@@ -277,8 +277,12 @@ class GameConfig : public Config {
             "Destroy wands when they reach 0 charges." };
 
         ConfigEntry<CombinedSkillValue> ScrollSpellSkill = {this, "scroll_spell_skill", CombinedSkillValue(5, MASTERY_MASTER), &ValidateSpellSkill,
-            "Skill that spell scrolls and hireling spells are cast with, the mastery letter 'N', 'E', 'M' or 'G' followed by "
-            "a level from 1 to 63. A spell that takes expert or master to learn is never cast below that. 'M5' in vanilla."};
+            "Skill that spell scrolls are cast with, the mastery letter 'N', 'E', 'M' or 'G' followed by a level from 1 to 63. "
+            "A spell that takes expert or master to learn is never cast below that. 'M5' in vanilla."};
+
+        ConfigEntry<CombinedSkillValue> HirelingSpellSkill = {this, "hireling_spell_skill", CombinedSkillValue(5, MASTERY_MASTER), &ValidateSpellSkill,
+            "Skill that hirelings cast their spells with, the mastery letter 'N', 'E', 'M' or 'G' followed by a level from 1 to 63. "
+            "A spell that takes expert or master to learn is never cast below that. 'M5' in vanilla MM7."};
 
         ConfigEntry<CombinedSkillValue> WandSpellSkill = {this, "wand_spell_skill", CombinedSkillValue(8, MASTERY_NOVICE), &ValidateSpellSkill,
             "Skill that wands are cast with, the mastery letter 'N', 'E', 'M' or 'G' followed by a level from 1 to 63. "

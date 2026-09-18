@@ -120,9 +120,9 @@ void pushScrollSpell(SpellId spell, int casterIndex);
 
 /**
  * @param spell                         Spell being cast.
- * @return                              Skill value that a spell scroll or a hireling casts the spell with. This is the
- *                                      configured value, with the mastery raised to what the spell takes to learn,
- *                                      but not above master.
+ * @return                              Skill value that a spell scroll casts the spell with. This is the configured
+ *                                      value, with the mastery raised to what the spell takes to learn, but not above
+ *                                      master.
  */
 CombinedSkillValue scrollSpellSkillValue(SpellId spell);
 

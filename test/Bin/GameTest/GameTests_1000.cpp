@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -437,16 +438,19 @@ GAME_TEST(Issues, Issue1255) {
 }
 
 GAME_TEST(Issues, Issue1262a) {
-    // Scroll and wand spell skill was hardcoded. Check that the config options feed the casts, and that the defaults
-    // are the vanilla values. That is level 5 master for scrolls and level 8 novice for wands.
+    // Scroll, hireling and wand spell skill was hardcoded. Check that the config options feed the casts, and that the
+    // defaults are the vanilla values. That is level 5 master for scrolls and hirelings and level 8 novice for wands.
     for (bool configured : {false, true}) {
         test.prepareForNextTest();
         CombinedSkillValue scrollSkill(5, MASTERY_MASTER);
+        CombinedSkillValue hirelingSkill(5, MASTERY_MASTER);
         CombinedSkillValue wandSkill(8, MASTERY_NOVICE);
         if (configured) {
             scrollSkill = CombinedSkillValue(12, MASTERY_EXPERT);
+            hirelingSkill = CombinedSkillValue(7, MASTERY_NOVICE);
             wandSkill = CombinedSkillValue(63, MASTERY_GRANDMASTER);
             engine->config->gameplay.ScrollSpellSkill.setValue(scrollSkill);
+            engine->config->gameplay.HirelingSpellSkill.setValue(hirelingSkill);
             engine->config->gameplay.WandSpellSkill.setValue(wandSkill);
         }
 
@@ -466,6 +470,10 @@ GAME_TEST(Issues, Issue1262a) {
         auto sparksTape = spellSkillTape(SPELL_AIR_SPARKS);
         auto rockBlastTape = spellSkillTape(SPELL_EARTH_ROCK_BLAST);
         auto boltsTape = spellSkillTape(SPELL_FIRE_FIRE_BOLT);
+        auto heroismTape = tapes.custom([] {
+            const SpellBuff &heroism = pParty->pPartyBuffs[PARTY_BUFF_HEROISM];
+            return std::pair<Mastery, int>(heroism.skillMastery, heroism.power);
+        });
 
         pParty->setHoldingItem(Item(ITEM_SCROLL_SPARKS));
         pParty->activeCharacter().useItem(0, true); // Dropped on the first character's portrait, and that character casts it.
@@ -473,6 +481,8 @@ GAME_TEST(Issues, Issue1262a) {
         pParty->setHoldingItem(Item(ITEM_SCROLL_ROCK_BLAST));
         pParty->activeCharacter().useItem(1, true); // The first character is still recovering.
         game.tick(2);
+        UseNPCSkill(Piper, 0);
+        game.tick();
 
         Item wand(ITEM_WAND_OF_FIRE);
         wand.numCharges = wand.maxCharges = 1;
@@ -484,14 +494,18 @@ GAME_TEST(Issues, Issue1262a) {
         EXPECT_EQ(sparksTape.flatten().unique(), tape(scrollSkill));
         EXPECT_EQ(rockBlastTape.flatten().unique(), tape(CombinedSkillValue(scrollSkill.level(), MASTERY_MASTER))); // Rock Blast takes master to learn.
         EXPECT_EQ(boltsTape.flatten().unique(), tape(wandSkill));
+        EXPECT_EQ(heroismTape, tape(std::pair(MASTERY_NONE, 0),
+                                    std::pair(std::max(hirelingSkill.mastery(), MASTERY_EXPERT), hirelingSkill.level() + 5))); // Heroism takes expert to learn.
     }
 }
 
 GAME_TEST(Issues, Issue1262b) {
-    // Scroll and wand skill set to none in the config would make every cast assert on the empty skill value.
+    // Spell skill set to none in the config would make every cast assert on the empty skill value.
     engine->config->gameplay.ScrollSpellSkill.setString("none");
+    engine->config->gameplay.HirelingSpellSkill.setString("none");
     engine->config->gameplay.WandSpellSkill.setString("none");
     EXPECT_EQ(engine->config->gameplay.ScrollSpellSkill.string(), "N1");
+    EXPECT_EQ(engine->config->gameplay.HirelingSpellSkill.string(), "N1");
     EXPECT_EQ(engine->config->gameplay.WandSpellSkill.string(), "N1");
 }
 

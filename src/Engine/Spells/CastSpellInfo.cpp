@@ -3195,8 +3195,19 @@ void pushTempleSpell(SpellId spell) {
                             ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell);
 }
 
+/**
+ * @param spell                         Spell being cast.
+ * @param skill                         Configured skill value.
+ * @return                              `skill` with its mastery raised to what `spell` takes to learn, but not above
+ *                                      master.
+ */
+static CombinedSkillValue raiseToLearnedMastery(SpellId spell, CombinedSkillValue skill) {
+    Mastery learnedAt = std::min(pSpellDatas[spell].skillMastery, MASTERY_MASTER); // Vanilla MM7 casts grandmaster scrolls at master.
+    return CombinedSkillValue(skill.level(), std::max(skill.mastery(), learnedAt)); // No spell has rules below the mastery it's learned at.
+}
+
 void pushNPCSpell(SpellId spell) {
-    pushSpellOrRangedAttack(spell, 0, scrollSpellSkillValue(spell), 0);
+    pushSpellOrRangedAttack(spell, 0, raiseToLearnedMastery(spell, engine->config->gameplay.HirelingSpellSkill.value()), 0);
 }
 
 void pushScrollSpell(SpellId spell, int casterIndex) {
@@ -3204,9 +3215,7 @@ void pushScrollSpell(SpellId spell, int casterIndex) {
 }
 
 CombinedSkillValue scrollSpellSkillValue(SpellId spell) {
-    CombinedSkillValue skill = engine->config->gameplay.ScrollSpellSkill.value();
-    Mastery learnedAt = std::min(pSpellDatas[spell].skillMastery, MASTERY_MASTER); // Vanilla scrolls cast grandmaster spells at master.
-    return CombinedSkillValue(skill.level(), std::max(skill.mastery(), learnedAt)); // No spell has rules below the mastery it's learned at.
+    return raiseToLearnedMastery(spell, engine->config->gameplay.ScrollSpellSkill.value());
 }
 
 void spellTargetPicked(Pid targetPid, int targetCharacterIndex) {
