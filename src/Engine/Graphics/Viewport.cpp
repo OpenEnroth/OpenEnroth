@@ -179,12 +179,8 @@ void ItemInteraction(unsigned int item_id) {
     SpriteObject::Remove(item_id);
 }
 
-static bool isFriendlyActor(int id) {
-    return pActors[id].GetActorsRelation(nullptr) == HOSTILITY_FRIENDLY && pActors[id].ActorFriend();
-}
-
 bool CanInteractWithActor(unsigned int id) {
-    return isFriendlyActor(id) && pActors[id].CanAct();
+    return pActors[id].GetActorsRelation(0) == HOSTILITY_FRIENDLY && pActors[id].ActorFriend() && pActors[id].CanAct();
 }
 
 void InteractWithActor(unsigned int id) {
@@ -247,7 +243,7 @@ void Engine::onGameViewportClick() {
                 pParty->dropHeldItem();
             }
         } else if (!keyboardInputHandler->IsCastOnClickToggled()) {
-            if (isFriendlyActor(mon_id)) {
+            if (pActors[mon_id].GetActorsRelation(nullptr) == HOSTILITY_FRIENDLY && pActors[mon_id].ActorFriend()) {
                 if (!in_range) {
                     pParty->dropHeldItem();
                 } else if (pActors[mon_id].CanAct()) {
