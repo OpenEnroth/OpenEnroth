@@ -715,6 +715,13 @@ void EvtInterpreter::prepare(const EvtProgram &eventMap, int eventId, Pid object
     }
 }
 
+void EvtInterpreter::prepare(int eventId, Pid objectPid, bool canShowMessages) {
+    _eventId = eventId;
+    _canShowMessages = canShowMessages;
+    _objectPid = objectPid;
+    _events.clear();
+}
+
 bool EvtInterpreter::isValid() {
     return _events.size() > 0;
 }

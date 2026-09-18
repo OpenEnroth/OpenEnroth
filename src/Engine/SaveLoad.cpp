@@ -10,6 +10,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
@@ -51,6 +52,7 @@ void loadGame(std::string_view fileName) {
         return;
     }
     engine->_lastLoadedSaveFileName = fileName;
+    onGameLoad();
 
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
     CastSpellInfoHelpers::cancelSpellCastInProgress();

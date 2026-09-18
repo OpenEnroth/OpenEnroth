@@ -99,6 +99,10 @@ class GameConfig : public Config {
         Bool NoSound = {this, "no_sound", false,
             "Don't play any sounds. Currently in-house movies are not affected."};
 
+        Bool DecompiledEvents = {this, "decompiled_events", false,
+            "Run the events of every evt file through the Lua script that the decompiler makes of it. "
+            "This checks the decompiler and the Lua events against the evt interpreter."};
+
         Bool NoVideo = {this, "no_video", false,
             "Don't play any movies."};
 
