@@ -454,23 +454,23 @@ GAME_TEST(Issues, Issue1262a) {
         game.startNewGame();
         test.startTaping();
 
-        auto partyBuffTape = [&](PartyBuff buff) {
-            return tapes.custom([buff] { return std::pair<Mastery, int>(pParty->pPartyBuffs[buff].skillMastery, pParty->pPartyBuffs[buff].power); });
+        auto spellSkillTape = [&](SpellId spell) {
+            return tapes.custom([spell] {
+                AccessibleVector<CombinedSkillValue> result;
+                for (const SpriteObject &sprite : pSpriteObjects)
+                    if (sprite.uObjectDescID != 0 && sprite.uSpellID == spell)
+                        result.emplace_back(sprite.spell_level, sprite.spell_skill);
+                return result;
+            });
         };
-        auto resistTape = partyBuffTape(PARTY_BUFF_RESIST_FIRE);
-        auto heroismTape = partyBuffTape(PARTY_BUFF_HEROISM);
-        auto boltsTape = tapes.custom([] {
-            AccessibleVector<CombinedSkillValue> result;
-            for (const SpriteObject &sprite : pSpriteObjects)
-                if (sprite.uObjectDescID != 0 && sprite.uSpellID == SPELL_FIRE_FIRE_BOLT)
-                    result.emplace_back(sprite.spell_level, sprite.spell_skill);
-            return result;
-        });
+        auto sparksTape = spellSkillTape(SPELL_AIR_SPARKS);
+        auto rockBlastTape = spellSkillTape(SPELL_EARTH_ROCK_BLAST);
+        auto boltsTape = spellSkillTape(SPELL_FIRE_FIRE_BOLT);
 
-        pParty->setHoldingItem(Item(ITEM_SCROLL_FIRE_RESISTANCE));
+        pParty->setHoldingItem(Item(ITEM_SCROLL_SPARKS));
         pParty->activeCharacter().useItem(0, true); // Dropped on the first character's portrait, and that character casts it.
         game.tick(2);
-        pParty->setHoldingItem(Item(ITEM_SCROLL_HOUR_OF_POWER));
+        pParty->setHoldingItem(Item(ITEM_SCROLL_ROCK_BLAST));
         pParty->activeCharacter().useItem(1, true); // The first character is still recovering.
         game.tick(2);
 
@@ -481,8 +481,8 @@ GAME_TEST(Issues, Issue1262a) {
         game.tick(2);
         test.stopTaping();
 
-        EXPECT_EQ(resistTape, tape(std::pair(MASTERY_NONE, 0), std::pair(scrollSkill.mastery(), std::to_underlying(scrollSkill.mastery()) * scrollSkill.level())));
-        EXPECT_EQ(heroismTape, tape(std::pair(MASTERY_NONE, 0), std::pair(MASTERY_MASTER, scrollSkill.level() + 5))); // Hour of Power takes master to learn.
+        EXPECT_EQ(sparksTape.flatten().unique(), tape(scrollSkill));
+        EXPECT_EQ(rockBlastTape.flatten().unique(), tape(CombinedSkillValue(scrollSkill.level(), MASTERY_MASTER))); // Rock Blast takes master to learn.
         EXPECT_EQ(boltsTape.flatten().unique(), tape(wandSkill));
     }
 }
