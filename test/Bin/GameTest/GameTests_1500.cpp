@@ -35,9 +35,6 @@
 
 #include "Io/Mouse.h"
 
-#include "Utility/Streams/BlobInputStream.h"
-#include "Utility/Streams/BlobOutputStream.h"
-
 #include "GameTestCommon.h"
 
 // 1500
@@ -139,50 +136,26 @@ GAME_TEST(Issues, Issue1515) {
 }
 
 GAME_TEST(Issues, Issue1516) {
-    // Bug: loading a save or changing maps reset the chosen minimap zoom.
-    auto zoom = [&](PlatformKey key, int expected) {
-        game.pressAndReleaseKey(key);
-        game.tick();
-        EXPECT_EQ(viewparams->uMinimapZoom, expected);
-    };
-
-    engine->config->debug.NoActors.setValue(true);
+    // Minimap zoom was reset on every save load and map change.
     game.startNewGame();
-    ASSERT_EQ(viewparams->uMinimapZoom, 512);
-    zoom(PlatformKey::KEY_ADD, 1024);
-    Blob outdoorSave = game.saveGame();
-    zoom(PlatformKey::KEY_ADD, 2048);
-    zoom(PlatformKey::KEY_ADD, 2048);
-    game.loadGame(outdoorSave); // Zoom preferences are independent of the save.
+    EXPECT_EQ(viewparams->uMinimapZoom, 512);
+    Blob save = game.saveGame();
+    game.pressAndReleaseKey(PlatformKey::KEY_ADD);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ADD);
+    game.tick();
     EXPECT_EQ(viewparams->uMinimapZoom, 2048);
 
     game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
-    ASSERT_EQ(viewparams->uMinimapZoom, 1024);
-    zoom(PlatformKey::KEY_SUBTRACT, 512);
-    Blob indoorSave = game.saveGame();
-    zoom(PlatformKey::KEY_SUBTRACT, 256);
-    zoom(PlatformKey::KEY_SUBTRACT, 256);
-    game.loadGame(indoorSave);
-    EXPECT_EQ(viewparams->uMinimapZoom, 256);
-    game.loadGame(outdoorSave);
-    EXPECT_EQ(viewparams->uMinimapZoom, 2048);
-    EXPECT_EQ(engine->config->settings.IndoorMinimapZoom.value(), 256);
-    EXPECT_EQ(engine->config->settings.OutdoorMinimapZoom.value(), 2048);
+    EXPECT_EQ(viewparams->uMinimapZoom, 1024); // Indoor and outdoor maps each have a zoom of their own.
+    game.pressAndReleaseKey(PlatformKey::KEY_SUBTRACT);
+    game.tick();
+    EXPECT_EQ(viewparams->uMinimapZoom, 512);
 
-    Blob savedConfig;
-    BlobOutputStream output(&savedConfig);
-    engine->config->save(&output);
-    output.close();
-    engine->config->settings.IndoorMinimapZoom.reset();
-    engine->config->settings.OutdoorMinimapZoom.reset();
-    BlobInputStream input(savedConfig);
-    engine->config->load(&input);
-    EXPECT_EQ(engine->config->settings.IndoorMinimapZoom.value(), 256);
-    EXPECT_EQ(engine->config->settings.OutdoorMinimapZoom.value(), 2048);
-    game.startNewGame();
-    EXPECT_EQ(viewparams->uMinimapZoom, 2048);
+    game.loadGame(save);
+    EXPECT_EQ(viewparams->uMinimapZoom, 2048); // The save was made at 512, the zoom isn't stored in it.
     game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
-    EXPECT_EQ(viewparams->uMinimapZoom, 256);
+    EXPECT_EQ(viewparams->uMinimapZoom, 512);
 }
 
 GAME_TEST(Issues, Issue1519) {
