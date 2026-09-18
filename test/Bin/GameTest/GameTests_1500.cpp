@@ -41,7 +41,7 @@ GAME_TEST(Issues, Issue1502) {
     // the next regeneration tick.
     for (bool keepOverflow : {true, false}) {
         SCOPED_TRACE(fmt::format("keepOverflow={}", keepOverflow));
-        test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame, one regen tick each.
+        test.prepareForNextTest(10000, RANDOM_ENGINE_MERSENNE_TWISTER); // 10 realtime seconds per frame.
         engine->config->gameplay.RegenKeepsOverflow.setValue(keepOverflow);
         engine->config->debug.NoActors.setValue(true);
         game.startNewGame();
