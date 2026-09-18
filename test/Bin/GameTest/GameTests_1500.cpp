@@ -32,6 +32,8 @@
 #include "Engine/Objects/Chest.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
 
+#include "Io/Mouse.h"
+
 #include "GameTestCommon.h"
 
 // 1500
@@ -562,6 +564,27 @@ GAME_TEST(Issues, Issue1717) {
 
     std::regex regex("Immolation deals [0-9]+ damage to [0-9]+ target\\(s\\)");
     EXPECT_CONTAINS(statusBar, [&](const std::string &message) { return std::regex_match(message, regex); });
+}
+
+GAME_TEST(Issues, Issue1718) {
+    // Roland's cage in Colony Zod handed over another key on every click.
+    auto keyTape = tapes.totalItemCount(ITEM_COLONY_ZOD_KEY);
+    auto bitTape = tapes.questBit(QBIT_TALKED_TO_ROLAND);
+    auto screenTape = tapes.screen();
+    game.startNewGame();
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180); // On the ledge east of the hanging cage, facing it.
+    test.startTaping();
+    for (int click = 0; click < 2; click++) {
+        game.pointMouseAtDecoration(1); // Roland's cage.
+        game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+        game.tick(3);
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick(2);
+    }
+
+    EXPECT_EQ(keyTape, tape(0, 1));
+    EXPECT_EQ(bitTape, tape(false, true));
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME)); // Roland speaks on every click.
 }
 
 GAME_TEST(Issues, Issue1720) {
