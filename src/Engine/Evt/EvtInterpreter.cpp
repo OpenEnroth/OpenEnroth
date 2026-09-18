@@ -327,8 +327,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_Add:
             // TODO(captainurist): move this workaround into patched event data.
             if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
-                ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits.test(QBIT_TALKED_TO_ROLAND))
-                break; // Roland's cage hands over its key once.
+                ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
+                break; // Roland's cage script adds the key on every click, it never checks the quest bit.
             for (Character &character : iterateCharacters(_who, grng))
                 character.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;

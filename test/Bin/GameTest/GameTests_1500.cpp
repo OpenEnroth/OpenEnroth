@@ -26,7 +26,6 @@
 #include "Library/Random/SequentialRandomEngine.h"
 
 #include "GUI/GUIWindow.h"
-#include "Io/Mouse.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UISaveLoad.h"
@@ -36,6 +35,8 @@
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
+
+#include "Io/Mouse.h"
 
 #include "GameTestCommon.h"
 
@@ -575,15 +576,15 @@ GAME_TEST(Issues, Issue1718) {
     game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180); // On the ledge east of the hanging cage, facing it.
     game.tick(2);
 
-    auto cage = std::ranges::find_if(pLevelDecorations, [](const LevelDecoration &decoration) { return decoration.uEventID == 376; });
-    ASSERT_NE(cage, pLevelDecorations.end()); // Event 376 is Roland's cage script.
+    auto cage = std::ranges::find(pLevelDecorations, 376, &LevelDecoration::uEventID); // Roland's cage script.
+    ASSERT_NE(cage, pLevelDecorations.end());
     int cageId = cage - pLevelDecorations.begin();
     ASSERT_FALSE(pParty->_questBits.test(QBIT_TALKED_TO_ROLAND));
     ASSERT_EQ(pParty->pPickedItem.itemId, ITEM_NULL);
 
     auto clickCage = [&] {
-        Vec3f top = cage->vPosition + Vec3f(0, 0, pDecorationTable->decoration(cage->uDecorationDescID)->uDecorationHeight); // The cage sprite is transparent around its middle.
-        Vec3f viewPos = pCamera3D->ViewTransform(&top);
+        Vec3f base = cage->vPosition + Vec3f(0, 0, pDecorationTable->decoration(cage->uDecorationDescID)->uDecorationHeight); // The cage's solid base, the bars above it have gaps.
+        Vec3f viewPos = pCamera3D->ViewTransform(&base);
         Vec2f screenPos = pCamera3D->Project(viewPos);
         game.moveMouse(screenPos.x, screenPos.y);
         game.tick();
