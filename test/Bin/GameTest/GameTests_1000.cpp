@@ -1109,7 +1109,6 @@ GAME_TEST(Issues, Issue1474) {
         game.tick();
     ASSERT_EQ(currentRestType, REST_NONE); // The wait finished on its own.
     game.tick(3); // The rest screen stays open after the wait, the clock must not move.
-    test.stopTaping();
 
     EXPECT_EQ(timeTape.back(), Time::fromDays(1) + Duration::fromHours(5)); // A new game starts on day 1 at 9am, so this is day 2 at 5am.
 }
