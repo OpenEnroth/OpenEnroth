@@ -720,6 +720,8 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     }
 
     reconstruct(src.partyBuffs, &dst->pPartyBuffs);
+    if (dst->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster == -1)
+        dst->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster = 0; // Vanilla MM7 always stores 0 for Immolation's caster, which reads back as -1.
     for (int i = 0; i < 4; i++)
         reconstruct(src.characters[i], &dst->pCharacters[i], tags::context(i));
     reconstruct(src.hirelings, &dst->pHirelings);
