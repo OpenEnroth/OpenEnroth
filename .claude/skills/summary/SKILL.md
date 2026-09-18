@@ -31,7 +31,8 @@ The run takes about five seconds and prints three things.
 - The worktrees this session entered, committed in or edited, each with its uncommitted files,
   its commits on no remote-tracking ref, and its branch's pull request.
 - Each pull request or issue this session created or wrote to, with live state, checks, review
-  decision, unresolved review threads, labels and an `about:` line from its own description.
+  decision, unresolved review threads, labels, an `about:` line from its own description and a
+  `cell:` line holding the finished text for the first column.
 - The numbers the session only read, which are left out on purpose.
 
 `--pr N` adds a pull request or an issue the transcript missed, such as one the user opened by
@@ -52,7 +53,9 @@ a finding and a branch. If such a thing needs action it is a row in the second t
 none it gets at most one line of prose under the table. Drop a gathered row only when the session
 did no work on it.
 
-- **Item** is the linked number.
+- **Item** is the `cell:` line from the gather output, copied as it stands. It reads
+  `[PR #2768](url)` for a pull request and `[Issue #2763](url)` for an issue, so the two are told
+  apart at a glance. Never a bare `#2768`.
 - **What it is** says what the item is about, not what this session did to it. The reader has
   probably never opened it, so lead with what it fixes or changes, taken from the title and the
   `about:` line. "Review fixes pushed, exact end-time assertion, extra ticks after the wait"
@@ -80,6 +83,9 @@ one of these.
 - `Rebase` is a conflicting pull request.
 - `Verify` is a claim the session made and nobody checked.
 - `Save tool` is a script the next session would otherwise write again from nothing.
+
+**Item** takes the same `PR #2768` or `Issue #2763` form when the row is about one, and a short
+name otherwise.
 
 **Whose move** is `You` or `Me`. It is what lets the user answer the table line by line, so the
 user's rows come first.

@@ -371,6 +371,27 @@ def print_trees(trees, index, hidden, scoped):
     return numbers
 
 
+def print_items(heading, label, items, describe):
+    """Print one section of pull requests or issues, newest first.
+
+    @param heading                      Section title.
+    @param label                        "PR" or "Issue", the word the table cell leads with.
+    @param items                        Dict of number to item object.
+    @param describe                     Function turning one item into its status line.
+    """
+    if not items:
+        return
+    print("## %s" % heading)
+    for n in sorted(items, reverse=True):
+        item = items[n]
+        print("- %s #%d %s" % (label, n, item.get("title", "")))
+        print("    %s" % describe(item))
+        if about(item):
+            print("    about: %s" % about(item))
+        print("    cell: [%s #%d](%s)" % (label, n, item["url"]) if item.get("url") else "    cell: %s #%d" % (label, n))
+    print()
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--session", default=os.environ.get("CLAUDE_CODE_SESSION_ID"),
@@ -426,26 +447,8 @@ def main():
             prs[n]["_unresolved"] = count
     issues = {n: it for n, it in resolved.items() if n not in prs}
 
-    if prs:
-        print("## Pull requests")
-        for n in sorted(prs, reverse=True):
-            print("- #%d %s" % (n, prs[n].get("title", "")))
-            print("    %s" % describe_pr(prs[n]))
-            if about(prs[n]):
-                print("    about: %s" % about(prs[n]))
-            if prs[n].get("url"):
-                print("    %s" % prs[n]["url"])
-        print()
-    if issues:
-        print("## Issues")
-        for n in sorted(issues, reverse=True):
-            print("- #%d %s" % (n, issues[n].get("title", "")))
-            print("    %s" % describe_issue(issues[n]))
-            if about(issues[n]):
-                print("    about: %s" % about(issues[n]))
-            if issues[n].get("url"):
-                print("    %s" % issues[n]["url"])
-        print()
+    print_items("Pull requests", "PR", prs, describe_pr)
+    print_items("Issues", "Issue", issues, describe_issue)
     if not prs and not issues:
         print("No pull requests or issues belong to this session.\n")
 
