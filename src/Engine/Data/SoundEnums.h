@@ -130,6 +130,7 @@ enum class SoundId : int32_t {
     SOUND_Haste = 10040,
     SOUND_21fly03 = 11090,
     SOUND_WaterWalk = 12040,
+    SOUND_AcidBurstImpact = 12061,
     SOUND_Stoneskin = 13040,
     SOUND_Bless = 14010,
     SOUND_Fate = 14020,
@@ -140,6 +141,9 @@ enum class SoundId : int32_t {
     SOUND_Sacrifice2 = 18060,
     SOUND_quest = 20001,
     SOUND_HumanTownHall = 31401,
+    SOUND_ElfBank01 = 38001,
+    SOUND_ElfMagicShop01 = 38201,
+    SOUND_DwarfWeaponShop01 = 38501,
 };
 using enum SoundId;
 

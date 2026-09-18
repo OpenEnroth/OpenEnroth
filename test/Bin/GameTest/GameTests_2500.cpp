@@ -19,6 +19,8 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UISaveLoad.h"
 
+#include "Media/Audio/SoundList.h"
+
 #include "GameTestCommon.h"
 
 // 2500
@@ -592,4 +594,46 @@ GAME_TEST(Issues, Issue2771) {
     game.tick(100);
     EXPECT_LT(hpTape.delta(), 0);
     EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(1))); // The active character.
+}
+
+GAME_TEST(Prs, Pr2783a) {
+    // Acid Burst impacts were silent.
+    auto soundsTape = tapes.sounds();
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+    game.spawnMonster(pParty->pos + Vec3f(0, 800, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    game.castQuickSpell(0, SPELL_WATER_ACID_BURST);
+    game.tick(30);
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_AcidBurstImpact);
+}
+
+GAME_TEST(Prs, Pr2783b) {
+    // Elf banks greeted with the Evil Bank lines.
+    auto houseTape = tapes.house();
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.teleportTo(MAP_TULAREAN_FOREST, Vec3f(-11514, -10816, 1344), 0); // In front of Nature's Stockpile.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(houseTape.back(), HOUSE_BANK_TULAREAN_FOREST);
+    EXPECT_EQ(soundsTape.flatten().count(SOUND_ElfBank01), 1);
+}
+
+GAME_TEST(Prs, Pr2783c) {
+    // Natural Magic and The Balanced Axe both greeted with the dwarf smith's lines.
+    auto houseTape = tapes.house();
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.teleportTo(MAP_STONE_CITY, Vec3f(-425, -1461, 0), 225); // In front of The Balanced Axe.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(houseTape.back(), HOUSE_WEAPON_SHOP_STONE_CITY);
+    EXPECT_EQ(soundsTape.flatten().count(SOUND_DwarfWeaponShop01), 1);
+    EXPECT_EQ(pSoundList->soundInfo(SOUND_ElfMagicShop01)->name, "Elf Magic Shop 01"); // Natural Magic's greeting.
 }
