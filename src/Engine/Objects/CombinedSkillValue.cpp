@@ -12,14 +12,14 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
 
-namespace detail_mastery_letter {
+namespace detail_mastery {
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(Mastery, CASE_INSENSITIVE, {
     {MASTERY_NOVICE, "N"},
     {MASTERY_EXPERT, "E"},
     {MASTERY_MASTER, "M"},
     {MASTERY_GRANDMASTER, "G"}
 })
-} // namespace detail_mastery_letter
+} // namespace detail_mastery
 
 CombinedSkillValue::CombinedSkillValue(int level, Mastery mastery) {
     assert(isValid(level, mastery));
@@ -116,7 +116,7 @@ bool trySerialize(const CombinedSkillValue &src, std::string *dst) {
         return true;
     }
 
-    detail_mastery_letter::serialize(src.mastery(), dst);
+    detail_mastery::serialize(src.mastery(), dst);
     *dst += toString(src.level());
     return true;
 }
@@ -129,7 +129,7 @@ bool tryDeserialize(std::string_view src, CombinedSkillValue *dst) {
 
     Mastery mastery;
     int level;
-    if (src.empty() || !detail_mastery_letter::tryDeserialize(src.substr(0, 1), &mastery) || !tryDeserialize(src.substr(1), &level))
+    if (src.empty() || !detail_mastery::tryDeserialize(src.substr(0, 1), &mastery) || !tryDeserialize(src.substr(1), &level))
         return false;
     if (!CombinedSkillValue::isValid(level, mastery))
         return false;
