@@ -88,7 +88,7 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Necromancer Stables", 0x21, 0x2DD, HOUSE_TYPE_STABLE, 67, 3 },
     { "", 0x21, 0x2F0, HOUSE_TYPE_STABLE, 91, 3 },
     { "Wizard Stables", 0x21, 0x3BA, HOUSE_TYPE_STABLE, 16, 3 },
-    { "Warlock Stables", 0x21, 0x181, HOUSE_TYPE_STABLE, 32, 3 },  // movie exist but unused in MM7 as Nighon doesn't have stables
+    { "Warlock Stables", 0x21, 0x181, HOUSE_TYPE_STABLE, 77, 3 },  // movie exist but unused in MM7 as Nighon doesn't have stables
     { "Elf Stables", 0x21, 0x195, HOUSE_TYPE_STABLE, 77, 3 },
     { "Human Tavern01", 0xD, 0x2C2, HOUSE_TYPE_TAVERN, 49, 0 },
     { "Necromancer Tavern 01", 0xD, 0x3B0, HOUSE_TYPE_TAVERN, 57, 0 },
