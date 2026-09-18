@@ -558,10 +558,12 @@ GAME_TEST(Issues, Issue2759) {
     auto textTape = tapes.allGUIWindowsText();
     game.startNewGame();
 
-    ASSERT_TRUE(enterHouse(HOUSE_WEAPON_SHOP_TATALIA_1)); // Stocks only RANDOM_ITEM_WEAPON, so there are no skills to learn.
-    createHouseUI(HOUSE_WEAPON_SHOP_TATALIA_1);
+    game.teleportTo(MAP_TATALIA, Vec3f(19174, 15056, 3040), 0); // In front of the door of Vander's Blades & Bows, facing it.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick(2);
     ASSERT_EQ(current_screen_type, SCREEN_HOUSE);
+    ASSERT_EQ(window_SpeakInHouse->houseId(), HOUSE_WEAPON_SHOP_TATALIA_1); // Stocks only RANDOM_ITEM_WEAPON, so there are no skills to learn.
     ASSERT_NE(pDialogueWindow, nullptr);
 
     auto pos = std::ranges::find(pDialogueWindow->vButtons, std::to_underlying(DIALOGUE_LEARN_SKILLS), &GUIButton::msg_param);
