@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <unordered_set>
 #include <vector>
 #include <utility>
@@ -551,6 +552,43 @@ GAME_TEST(Issues, Issue1290b) {
     game.pressAndReleaseButton(BUTTON_LEFT, doorPos);
     game.tick(3);
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_TATALIA_2));
+}
+
+GAME_TEST(Issues, Issue1290c) {
+    // A door in Fort Riverstride can't be opened from behind, clicking its back says "Nothing here".
+    auto doorTape = tapes.custom([] { return std::ranges::find(pIndoor->doors, 3u, &BLVDoor::doorId)->state; });
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_FORT_RIVERSTRIDE, Vec3f(-440, 1660, -453), 270);
+    game.tick();
+    test.startTaping();
+
+    Pointi doorPos(160, 220);
+    game.moveMouse(doorPos);
+    game.tick();
+    game.pressAndReleaseButton(BUTTON_LEFT, doorPos);
+    game.tick(50);
+    EXPECT_EQ(doorTape, tape(DOOR_CLOSED, DOOR_OPENING, DOOR_OPEN));
+}
+
+GAME_TEST(Issues, Issue1290d) {
+    // Clicking the floor next to the pressure plates in The Lincoln fires their event, only stepping on them should.
+    auto statusTape = tapes.statusBar();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_LINCOLN, Vec3f(2500, -4909, 1484), 180, -45);
+    game.tick();
+    test.startTaping();
+
+    Pointi floorPos(240, 250);
+    game.moveMouse(floorPos);
+    game.tick();
+    ASSERT_EQ(engine->PickMouseForTargeting().pid, Pid(OBJECT_Face, 571)); // The status message doesn't say which face was clicked.
+    game.pressAndReleaseButton(BUTTON_LEFT, floorPos);
+    game.tick();
+    EXPECT_CONTAINS(statusTape, "Nothing here");
 }
 
 GAME_TEST(Issues, Issue1293) {
