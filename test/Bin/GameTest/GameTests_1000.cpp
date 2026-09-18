@@ -1109,7 +1109,7 @@ GAME_TEST(Issues, Issue1473) {
     }
 
     test.startTaping();
-    game.tick(100); // Long enough for a regeneration tick.
+    game.tick(100);
 
     EXPECT_LT(mortalHpTape.delta(), 0); // Zero would mean that no regeneration tick ran.
     EXPECT_EQ(lichHpTape.delta(), 0);
