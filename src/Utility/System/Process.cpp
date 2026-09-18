@@ -9,7 +9,7 @@
 #ifdef _WINDOWS
 #   define WIN32_LEAN_AND_MEAN
 #   include <Windows.h>
-#else
+#elif !defined(__ANDROID__)
 #   include <fcntl.h>
 #   include <poll.h>
 #   include <signal.h> // NOLINT: not a C system header.
@@ -24,7 +24,7 @@
 #include "Utility/ScopeGuard.h"
 #include "Utility/String/Encoding.h"
 
-constexpr std::chrono::milliseconds pollInterval(10);
+[[maybe_unused]] constexpr std::chrono::milliseconds pollInterval(10);
 
 std::string detail::windowsCommandLine(std::string_view program, const std::vector<std::string> &args) {
     std::string result;
@@ -138,7 +138,13 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     return result;
 }
 
-#else // _WINDOWS
+#elif defined(__ANDROID__)
+
+ProcessResult runProcess(const NativePath &path, const std::vector<std::string> &, std::chrono::milliseconds) {
+    throw Exception("{}: can't start a process on Android", path.displayString()); // posix_spawn needs API level 28.
+}
+
+#else // defined(__ANDROID__)
 
 extern char **environ;
 
@@ -227,4 +233,4 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     return result;
 }
 
-#endif // _WINDOWS
+#endif // defined(__ANDROID__)
