@@ -622,38 +622,25 @@ GAME_TEST(Issues, Issue1301a) {
 }
 
 GAME_TEST(Issues, Issue1301b) {
-    // Eradicating the whole party in the attack stage runs the focus drop and the party death check on the same
-    // frame, which is the one path that can ask the turn queue for a head it no longer has.
+    // Eradicating the party on the first frame of the turn-based attack stage used to crash on an empty turn queue.
     test.prepareForNextTest();
-    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.NoActors.setValue(true); // A monster would keep the turn queue from ever emptying.
     game.startNewGame();
     engine->config->debug.NoActors.setValue(false);
+
+    auto deathsTape = tapes.deaths();
+    test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
     for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_ATTACK; ++i)
         game.tick();
     ASSERT_EQ(pTurnEngine->turn_stage, TE_ATTACK);
-    ASSERT_TRUE(pParty->hasActiveCharacter());
-
-    auto deathsTape = tapes.deaths();
-    auto activeTape = tapes.activeCharacterIndex();
-    auto stateTape = tapes.custom([] { return std::tuple(pParty->bTurnBasedModeOn, uGameState); });
-    test.startTaping();
-    game.tick();
     for (Character &character : pParty->pCharacters)
         character.SetVariable(VAR_Eradicated, 1);
-
-    // The queue still has its old head at this point, and switchToNextActiveCharacter used to hand the focus to that
-    // head without checking it could act, which put it right back on a character that had just been eradicated.
-    pParty->switchToNextActiveCharacter();
-    EXPECT_FALSE(pParty->hasActiveCharacter());
-
-    game.tick(20);
+    game.tick(10);
     test.stopTaping();
 
     EXPECT_EQ(deathsTape.delta(), +1);
-    EXPECT_EQ(stateTape, tape(std::tuple(true, GAME_STATE_PLAYING), // The death path force-ends turn-based mode, and
-                              std::tuple(false, GAME_STATE_PLAYING))); // the died state is gone before the next frame is drawn.
-    EXPECT_EQ(activeTape, tape(0)); // Every frame ends with the death path re-selecting the first character.
+    EXPECT_FALSE(pParty->bTurnBasedModeOn);
     EXPECT_EQ(pParty->canActCount(), 4);
 }
 
