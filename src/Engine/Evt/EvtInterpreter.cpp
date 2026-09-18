@@ -183,6 +183,12 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         return step + 1;
     }
 
+    return executeInstruction(ir);
+}
+
+int EvtInterpreter::executeInstruction(EvtInstruction ir) {
+    int step = ir.step;
+
     switch (ir.opcode) {
         case EVENT_Exit:
             return -1;
@@ -665,6 +671,13 @@ void EvtInterpreter::prepare(const EvtProgram &eventMap, int eventId, Pid object
     if (eventMap.hasEvent(eventId)) {
         _events = eventMap.function(eventId);
     }
+}
+
+void EvtInterpreter::prepare(int eventId, Pid objectPid, bool canShowMessages) {
+    _eventId = eventId;
+    _canShowMessages = canShowMessages;
+    _objectPid = objectPid;
+    _events.clear();
 }
 
 bool EvtInterpreter::isValid() {

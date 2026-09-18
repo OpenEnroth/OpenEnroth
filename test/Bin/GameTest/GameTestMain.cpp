@@ -2,6 +2,9 @@
 
 #include "Application/Startup/GameStarter.h"
 
+#include "Application/GameConfig.h"
+
+#include "Engine/Engine.h"
 #include "Engine/Components/Control/EngineController.h"
 
 #include "Testing/Game/GameTest.h"
@@ -45,6 +48,7 @@ int platformMain(int argc, char **argv) {
             DirectoryFileSystem tfs(opts.testPath);
             TestController test(game, &tfs, opts.speed);
             GameTest::init(game, &test);
+            engine->config->debug.DecompiledEvents.setValue(opts.decompiledEvents);
             exitCode = RUN_ALL_TESTS();
         });
         return exitCode;
