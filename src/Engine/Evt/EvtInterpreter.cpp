@@ -257,15 +257,6 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 return {EVT_FLOW_YIELD};
             }
 
-            // TODO(pskelton): Fix #2117 this should be a data mod
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && ir.step == 1)
-                ir.str = "out06.odm";
-
-            // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
-            //                 other, only the first one should run.
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
-                break;
-
             MapDestination destination = moveToMapDestination(ir);
             if (destination.map() == MAP_INVALID) { // teleport within map
                 if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
