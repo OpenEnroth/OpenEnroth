@@ -47,9 +47,9 @@ UNIT_TEST(Process, LargeOutput) {
 
 UNIT_TEST(Process, Timeout) {
 #ifdef _WINDOWS
-    std::string command = "ping -n 30 127.0.0.1"; // There is no sleep, and timeout.exe refuses to run without a console.
+    std::string command = "ping -n 6 127.0.0.1"; // There is no sleep, and timeout.exe refuses to run without a console.
 #else
-    std::string command = "sleep 30";
+    std::string command = "sleep 5";
 #endif
     auto start = std::chrono::steady_clock::now();
     EXPECT_THROW((void) runShell(command, 200ms), Exception);

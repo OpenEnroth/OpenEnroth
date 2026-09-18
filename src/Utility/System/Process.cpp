@@ -1,6 +1,7 @@
 #include "Process.h"
 
 #include <algorithm>
+#include <filesystem>
 #include <string>
 #include <system_error>
 #include <thread>
@@ -102,9 +103,12 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     startupInfo.hStdOutput = writeEnd;
     startupInfo.hStdError = writeEnd;
 
-    std::wstring commandLine = txt::wtf8ToWide(detail::windowsCommandLine(path.toWtf8(), args)); // CreateProcessW writes into it.
+    std::filesystem::path program = path.toStdPath();
+    program.make_preferred(); // cmd.exe reads a forward slash in its own path as the start of a switch.
+
+    std::wstring commandLine = txt::wtf8ToWide(detail::windowsCommandLine(txt::wideToWtf8(program.native()), args)); // CreateProcessW writes into it.
     PROCESS_INFORMATION processInfo = {};
-    if (!CreateProcessW(path.toStdPath().c_str(), commandLine.data(), nullptr, nullptr, TRUE, CREATE_NO_WINDOW, nullptr, nullptr, &startupInfo, &processInfo))
+    if (!CreateProcessW(program.c_str(), commandLine.data(), nullptr, nullptr, TRUE, CREATE_NO_WINDOW, nullptr, nullptr, &startupInfo, &processInfo))
         throwFromLastError(displayString);
     CloseHandle(processInfo.hThread);
     MM_AT_SCOPE_EXIT(CloseHandle(processInfo.hProcess));
