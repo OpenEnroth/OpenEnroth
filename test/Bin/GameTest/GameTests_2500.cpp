@@ -591,5 +591,5 @@ GAME_TEST(Issues, Issue2771) {
     test.startTaping();
     game.tick(100); // A tick is 3 game seconds, and Immolation burns on every five-minute regeneration mark.
     EXPECT_LT(hpTape.delta(), 0);
-    EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(0))); // Vanilla MM7 credits the first character.
+    EXPECT_EQ(casterTape.flatten().unique(), tape(Pid())); // A map event cast has no caster to credit.
 }
