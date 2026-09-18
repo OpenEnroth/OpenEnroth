@@ -17,6 +17,22 @@ fi
 echo "Starting devcontainer (no-op if already running)..."
 devcontainer up --workspace-folder "$REPO_DIR" >/dev/null
 
+# The claude binary is an optional platform dependency, so npm exits 0 even when its download fails, and
+# leaves a non-executable stub in its place.
+if ! devcontainer exec --workspace-folder "$REPO_DIR" bash -lc 'claude --version' &>/dev/null; then
+    echo "Claude Code in the container is broken, reinstalling..."
+    # npm renames the old tree aside before writing the new one, and that rename fails with ENOTEMPTY on a
+    # half-installed package.
+    devcontainer exec --workspace-folder "$REPO_DIR" bash -lc \
+      'rm -rf "$(npm root -g)/@anthropic-ai/claude-code" && npm install -g @anthropic-ai/claude-code@latest' || true
+
+    if ! devcontainer exec --workspace-folder "$REPO_DIR" bash -lc 'claude --version' &>/dev/null; then
+        echo "Error: could not repair Claude Code in the container."
+        echo "Rebuild the image with: devcontainer up --build-no-cache --workspace-folder \"$REPO_DIR\""
+        exit 1
+    fi
+fi
+
 # Claude's agent view is the entry point. Sessions dispatched from it keep running when the host terminal
 # dies. A dead terminal only takes down the view itself. Rerun this script to get it back, with every
 # session still in it.
