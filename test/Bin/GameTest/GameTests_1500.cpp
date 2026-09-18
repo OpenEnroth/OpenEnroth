@@ -545,9 +545,7 @@ GAME_TEST(Issues, Issue1720) {
         auto statusTape = tapes.statusBar();
         auto hpTape = actorTapes.hp(0);
         Actor *target = game.spawnMonster(pParty->pos + Vec3f(0, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
-        std::string halvedMessage = fmt::format("{} halves armor of {}", char0.name, target->GetDisplayName());
         ASSERT_TRUE(target->CanBeDamaged());
-        game.pointMouseAtActor(0);
         for (int i = 0; i < 30 && !target->buffs[ACTOR_BUFF_HALVED_ARMOR].Active() && target->CanBeDamaged(); i++) {
             game.pressAndReleaseKey(PlatformKey::KEY_A);
             game.tick(5);
@@ -555,6 +553,7 @@ GAME_TEST(Issues, Issue1720) {
         test.stopTaping();
 
         EXPECT_LT(hpTape.delta(), 0); // Hits landed.
+        std::string halvedMessage = fmt::format("{} halves armor of {}", char0.name, target->GetDisplayName());
         if (mastery == MASTERY_GRANDMASTER) {
             EXPECT_EQ(halvedTape, tape(false, true));
             EXPECT_CONTAINS(statusTape, halvedMessage);
