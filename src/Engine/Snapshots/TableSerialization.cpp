@@ -92,9 +92,10 @@ void deserialize(const Blob &src, SoundList *dst) {
 
     assert(!sounds.empty());
 
+    // TODO(captainurist): do this as a data patch.
     auto humanTownHall = std::ranges::find(sounds, "Human Town Hall", &SoundInfo::name);
     if (humanTownHall != sounds.end())
-        humanTownHall->soundId = SOUND_HumanTownHall; // MM7 files it as 34302, where playHouseSound never looks.
+        humanTownHall->soundId = SOUND_HumanTownHall; // MM7 files it as 34302, but playHouseSound derives 31401 from its room sound id.
 
     // TODO(captainurist): there are duplicate ids in the sounds array, look into it.
     for (const SoundInfo &sound : sounds)
