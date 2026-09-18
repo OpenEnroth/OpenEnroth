@@ -556,7 +556,7 @@ GAME_TEST(Issues, Issue1293) {
         test.stopTaping();
         ASSERT_EQ(engine->mouse->position().y, y); // The mouse really is outside the render area.
         EXPECT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
-        EXPECT_CONTAINS(texturesTape.back(), "ib-m5-u"); // The spellbook's close button was drawn during the hover.
+        EXPECT_CONTAINS(texturesTape.back(), "sbfs03"); // Torch Light's icon, drawn by the highlight code.
     }
 }
 
