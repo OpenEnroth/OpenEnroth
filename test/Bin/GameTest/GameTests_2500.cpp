@@ -560,7 +560,7 @@ GAME_TEST(Issues, Issue2759) {
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick(2);
-    EXPECT_CONTAINS(houseTape, HOUSE_WEAPON_SHOP_TATALIA_1); // Its stock doesn't name a weapon type, so it has no skill to teach.
+    EXPECT_CONTAINS(houseTape, HOUSE_WEAPON_SHOP_TATALIA_1);
     EXPECT_CONTAINS(textTape.flatten(), "Display Inventory"); // We've seen the shop menu.
     EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
 }
