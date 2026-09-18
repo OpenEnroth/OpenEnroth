@@ -1114,8 +1114,7 @@ GAME_TEST(Issues, Issue1473) {
 
         test.startTaping();
         game.tick(); // Baseline tick records half health for everyone.
-        pParty->GetPlayingTime() += Duration::fromMinutes(10); // Regeneration ticks every 5 game minutes.
-        game.tick(2);
+        game.tick(100); // Long enough for a regeneration tick.
 
         ASSERT_LT(mortalHpTape.delta(), 0); // Zero would mean that no regeneration tick ran.
         int undeadDelta = noDrainForUndead ? 0 : mortalHpTape.delta(); // Vanilla drains every wielder alike.
