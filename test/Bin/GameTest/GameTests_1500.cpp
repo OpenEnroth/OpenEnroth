@@ -55,10 +55,8 @@ GAME_TEST(Issues, Issue1502) {
             ring.specialEnchantment = ITEM_ENCHANTMENT_OF_MANA;
             character->inventory.equip(ITEM_SLOT_RING1, ring);
         }
-        int maxHp = overflowing.GetMaxHealth();
-        int maxMp = overflowing.GetMaxMana();
-        overflowing.health = maxHp + 20;
-        overflowing.mana = maxMp + 20;
+        overflowing.health = overflowing.GetMaxHealth() + 20;
+        overflowing.mana = overflowing.GetMaxMana() + 20;
         wounded.health = 1;
         wounded.mana = 0;
 
@@ -67,12 +65,12 @@ GAME_TEST(Issues, Issue1502) {
         EXPECT_EQ(wounded.health, wounded.GetMaxHealth());
         EXPECT_EQ(wounded.mana, wounded.GetMaxMana());
         if (keepOverflow) {
-            EXPECT_EQ(overflowing.health, maxHp + 20);
-            EXPECT_EQ(overflowing.mana, maxMp + 20);
+            EXPECT_EQ(overflowing.health, overflowing.GetMaxHealth() + 20);
+            EXPECT_EQ(overflowing.mana, overflowing.GetMaxMana() + 20);
         } else {
             // The vanilla snap.
-            EXPECT_EQ(overflowing.health, maxHp);
-            EXPECT_EQ(overflowing.mana, maxMp);
+            EXPECT_EQ(overflowing.health, overflowing.GetMaxHealth());
+            EXPECT_EQ(overflowing.mana, overflowing.GetMaxMana());
         }
     }
 }
