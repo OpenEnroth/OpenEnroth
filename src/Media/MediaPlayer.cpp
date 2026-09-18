@@ -452,6 +452,7 @@ class Movie : public IMovie {
 
         // keep reading packets until we hit the end or find a video packet
         do {
+            av_packet_unref(avpacket); // av_read_frame doesn't release what the packet was holding.
             if (av_read_frame(format_ctx, avpacket) < 0) {
                 // probably movie is finished
                 playing = false;
@@ -618,6 +619,7 @@ class Movie : public IMovie {
                     Blob buffer = audio.decode_frame(&_binkPacket);
                     if (buffer) _binkBuffer.push(std::move(buffer));
                 }
+                av_packet_unref(&_binkPacket);
             }
             MM_TRACE("Audio Packets Queued");
 
@@ -657,6 +659,7 @@ class Movie : public IMovie {
                     if (video.last_frame) {
                         _renderTexture(video.last_frame);
                     }
+                    av_packet_unref(&_binkPacket);
                     return false;
                 }
 
