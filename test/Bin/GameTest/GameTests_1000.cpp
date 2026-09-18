@@ -556,7 +556,7 @@ GAME_TEST(Issues, Issue1293) {
         test.stopTaping();
         ASSERT_EQ(mouse->position().y, y); // Not clamped to the render area.
         EXPECT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
-        EXPECT_CONTAINS(texturesTape.back(), "sbfs03"); // Torch Light's icon, drawn by the highlight code.
+        EXPECT_CONTAINS(texturesTape.back(), "sbfs03"); // Torch Light's icon, drawn by the highlight code that crashed.
     }
 }
 
