@@ -20,7 +20,7 @@ The commit message is where the reasoning lives. Say what was wrong and why this
 
 Keep pull request descriptions short - a few sentences on what was done and how, and that's it. Two or three paragraphs at most, humans don't want to read an essay. The evidence you gathered along the way belongs in a comment on the PR if it belongs anywhere.
 
-Put the `🤖 Human Needed` label on every pull request you open, once its CI is green. The label means a human has to look at the PR, and it's the only label you may ever add or remove - every other label belongs to the humans. Don't add it to a pull request that already carries any other label, a PR that a human has already triaged is in their pipeline anyway. Take the label off while you're working on review comments, and put it back when the ball is with the humans again.
+Put the `🤖 Human Needed` label on every pull request you open, as part of opening it. The label tells the humans that an agent's PR is waiting for its first look. Taking it off is the human's call, and once it's off it stays off, *NEVER* put it back. It's the only label you may ever add, and you *NEVER* remove a label, this one included.
 
 # Comments
 
