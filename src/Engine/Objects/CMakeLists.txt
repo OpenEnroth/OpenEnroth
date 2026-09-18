@@ -12,7 +12,6 @@ set(ENGINE_OBJECTS_SOURCES
         NPC.cpp
         ObjectList.cpp
         Character.cpp
-        CharacterEnums.cpp
         CharacterEnumFunctions.cpp
         SpriteObject.cpp
         TalkAnimation.cpp
