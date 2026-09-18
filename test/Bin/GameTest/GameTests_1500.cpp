@@ -62,10 +62,10 @@ GAME_TEST(Issues, Issue1502) {
         wounded.health = 1;
         wounded.mana = 0;
 
-        game.tick(10);
+        game.tick(36);
 
         EXPECT_EQ(wounded.health, wounded.GetMaxHealth());
-        EXPECT_GT(wounded.mana, 0);
+        EXPECT_EQ(wounded.mana, wounded.GetMaxMana());
         if (keepOverflow) {
             EXPECT_EQ(overflowing.health, maxHp + 20);
             EXPECT_EQ(overflowing.mana, maxMp + 20);
