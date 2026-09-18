@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 #include <utility>
 
@@ -694,4 +695,42 @@ GAME_TEST(Issues, Issue2784d) {
     game.tick();
     EXPECT_EQ(houseTape.back(), HOUSE_MAGIC_SHOP_TULAREAN_FOREST);
     EXPECT_EQ(soundNames(soundsTape).count("Elf Magic Shop 01"), 1);
+}
+
+GAME_TEST(Prs, Pr2772a) {
+    // A door in Fort Riverstride can't be opened from behind, clicking its back says "Nothing here".
+    auto doorState = [] { return std::ranges::find(pIndoor->doors, 3u, &BLVDoor::doorId)->state; };
+    Pid doorBack(OBJECT_Face, 618);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_FORT_RIVERSTRIDE, Vec3f(-440, 1660, -453), 270);
+    game.tick();
+
+    ASSERT_EQ(pIndoor->faces[618].eventId, 32);
+    ASSERT_EQ(doorState(), DOOR_CLOSED);
+    EXPECT_TRUE(pIndoor->faces[618].Clickable());
+
+    Pointi doorPos(160, 220);
+    game.moveMouse(doorPos);
+    game.tick();
+    ASSERT_EQ(engine->PickMouseForTargeting().pid, doorBack);
+
+    game.pressAndReleaseButton(BUTTON_LEFT, doorPos);
+    game.tick(50);
+    EXPECT_EQ(doorState(), DOOR_OPEN);
+}
+
+GAME_TEST(Prs, Pr2772b) {
+    // Clicking a face in The Lincoln fires an event that only its pressure plates should fire.
+    game.startNewGame();
+    game.teleportTo(MAP_LINCOLN, Vec3f(524, 1463, 225), 0);
+    game.tick();
+
+    const BLVFace &face = pIndoor->faces[571];
+    ASSERT_EQ(face.eventId, 28);
+    ASSERT_TRUE(std::ranges::any_of(pIndoor->faces, [](const BLVFace &f) {
+        return f.eventId == 28 && (f.attributes & FACE_PRESSURE_PLATE);
+    }));
+    EXPECT_FALSE(face.Clickable());
 }
