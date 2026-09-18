@@ -137,25 +137,32 @@ GAME_TEST(Issues, Issue1515) {
 
 GAME_TEST(Issues, Issue1516) {
     // Minimap zoom was reset on every save load and map change.
+    auto press = [&](PlatformKey key, int count) {
+        for (int i = 0; i < count; i++) {
+            game.pressAndReleaseKey(key);
+            game.tick();
+        }
+    };
+
     game.startNewGame();
     EXPECT_EQ(viewparams->uMinimapZoom, 512);
     Blob save = game.saveGame();
-    game.pressAndReleaseKey(PlatformKey::KEY_ADD);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_ADD);
-    game.tick();
+    press(PlatformKey::KEY_SUBTRACT, 1);
+    EXPECT_EQ(viewparams->uMinimapZoom, 512); // Outdoor zoom goes from 512 to 2048.
+    press(PlatformKey::KEY_ADD, 3);
     EXPECT_EQ(viewparams->uMinimapZoom, 2048);
 
     game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
     EXPECT_EQ(viewparams->uMinimapZoom, 1024); // Indoor and outdoor maps each have a zoom of their own.
-    game.pressAndReleaseKey(PlatformKey::KEY_SUBTRACT);
-    game.tick();
-    EXPECT_EQ(viewparams->uMinimapZoom, 512);
+    press(PlatformKey::KEY_ADD, 3);
+    EXPECT_EQ(viewparams->uMinimapZoom, 4096); // Indoor zoom goes from 256 to 4096.
+    press(PlatformKey::KEY_SUBTRACT, 5);
+    EXPECT_EQ(viewparams->uMinimapZoom, 256);
 
     game.loadGame(save);
     EXPECT_EQ(viewparams->uMinimapZoom, 2048); // The save was made at 512, the zoom isn't stored in it.
     game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
-    EXPECT_EQ(viewparams->uMinimapZoom, 512);
+    EXPECT_EQ(viewparams->uMinimapZoom, 256);
 }
 
 GAME_TEST(Issues, Issue1519) {

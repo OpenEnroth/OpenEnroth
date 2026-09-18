@@ -1346,6 +1346,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
             // TODO(pskelton): could stretch texture rather than rescale
             assert(rect.w == 137 && rect.h == 117);
+            assert(zoom >= 512); // Below that the sampled window is wider than the margin the party keeps from the map edge.
 
             RgbaImage minimapImage = RgbaImage::solid(Color(), rect.size());
             int step16 = (1 << 16) * imageWidth / zoom;
