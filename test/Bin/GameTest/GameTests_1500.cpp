@@ -148,19 +148,19 @@ GAME_TEST(Issues, Issue1516) {
     EXPECT_EQ(viewparams->uMinimapZoom, 512);
     Blob save = game.saveGame();
     press(PlatformKey::KEY_SUBTRACT, 1);
-    EXPECT_EQ(viewparams->uMinimapZoom, 512); // Outdoor zoom goes from 512 to 2048.
+    EXPECT_EQ(viewparams->uMinimapZoom, 512); // Already at the outdoor minimum.
     press(PlatformKey::KEY_ADD, 3);
-    EXPECT_EQ(viewparams->uMinimapZoom, 2048);
+    EXPECT_EQ(viewparams->uMinimapZoom, 2048); // Outdoor maximum, the last press did nothing.
 
     game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
     EXPECT_EQ(viewparams->uMinimapZoom, 1024); // Indoor and outdoor maps each have a zoom of their own.
     press(PlatformKey::KEY_ADD, 3);
-    EXPECT_EQ(viewparams->uMinimapZoom, 4096); // Indoor zoom goes from 256 to 4096.
+    EXPECT_EQ(viewparams->uMinimapZoom, 4096); // Indoor maximum, the last press did nothing.
     press(PlatformKey::KEY_SUBTRACT, 5);
-    EXPECT_EQ(viewparams->uMinimapZoom, 256);
+    EXPECT_EQ(viewparams->uMinimapZoom, 256); // Indoor minimum, the last press did nothing.
 
     game.loadGame(save);
-    EXPECT_EQ(viewparams->uMinimapZoom, 2048); // The save was made at 512, the zoom isn't stored in it.
+    EXPECT_EQ(viewparams->uMinimapZoom, 2048); // The save predates the zooming, the zoom isn't stored in it.
     game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
     EXPECT_EQ(viewparams->uMinimapZoom, 256);
 }
