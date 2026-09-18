@@ -143,6 +143,9 @@ enum class SoundId {
     SOUND_ElfBank01 = 38001,
     SOUND_ElfMagicShop01 = 38201,
     SOUND_DwarfWeaponShop01 = 38501,
+    SOUND_DwarfWeaponShop02 = 38502,
+    SOUND_DwarfWeaponShop03 = 38503,
+    SOUND_DwarfWeaponShop04 = 38504,
 };
 using enum SoundId;
 
