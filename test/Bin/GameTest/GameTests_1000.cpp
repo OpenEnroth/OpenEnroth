@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <unordered_set>
 #include <vector>
 #include <utility>
@@ -456,41 +455,40 @@ GAME_TEST(Issues, Issue1262) {
             engine->config->gameplay.WandSpellMastery.setValue(wandMastery);
         }
 
+        engine->config->debug.NoActors.setValue(true);
         game.startNewGame();
+        test.startTaping();
 
-        // Torch Light lasts the skill level in hours, and its power is 2, 3 or 4 by mastery.
-        SpellBuff &torch = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT];
-        ASSERT_FALSE(torch.Active());
-        Time castStart = pParty->GetPlayingTime();
-        pParty->setHoldingItem(Item(ITEM_SCROLL_TORCH_LIGHT));
-        pParty->activeCharacter().useItem(0, true); // Scroll dropped on the first character's portrait.
+        auto partyBuffTape = [&](PartyBuff buff) {
+            return tapes.custom([buff] { return std::pair<Mastery, int>(pParty->pPartyBuffs[buff].skillMastery, pParty->pPartyBuffs[buff].power); });
+        };
+        auto resistTape = partyBuffTape(PARTY_BUFF_RESIST_FIRE);
+        auto heroismTape = partyBuffTape(PARTY_BUFF_HEROISM);
+        auto boltsTape = tapes.custom([] {
+            AccessibleVector<std::pair<int, Mastery>> result;
+            for (const SpriteObject &sprite : pSpriteObjects)
+                if (sprite.uObjectDescID != 0 && sprite.uSpellID == SPELL_FIRE_FIRE_BOLT)
+                    result.emplace_back(sprite.spell_level, sprite.spell_skill);
+            return result;
+        });
+
+        pParty->setHoldingItem(Item(ITEM_SCROLL_FIRE_RESISTANCE));
+        pParty->activeCharacter().useItem(0, true); // Dropped on the first character's portrait, and that character casts it.
         game.tick(2);
-        ASSERT_TRUE(torch.Active());
-        EXPECT_EQ(torch.skillMastery, scrollMastery);
-        EXPECT_EQ(torch.power, scrollMastery == MASTERY_EXPERT ? 3 : 4);
-        EXPECT_EQ((torch.GetExpireTime() - castStart).hours(), scrollLevel); // hours() drops the frames between castStart and the cast.
+        pParty->setHoldingItem(Item(ITEM_SCROLL_HOUR_OF_POWER));
+        pParty->activeCharacter().useItem(1, true); // The first character is still recovering.
+        game.tick(2);
 
-        // A fallen wizard casts Hour of Power with the scroll skill. The spell takes master to learn, and it's never
-        // cast below that. Its Heroism has the power of the single spell, the level plus 5.
-        UseNPCSkill(FallenWizard, 0);
-        game.tick();
-        SpellBuff &heroism = pParty->pPartyBuffs[PARTY_BUFF_HEROISM];
-        ASSERT_TRUE(heroism.Active());
-        EXPECT_EQ(heroism.skillMastery, MASTERY_MASTER);
-        EXPECT_EQ(heroism.power, scrollLevel + 5);
-
-        // A wand of fire shoots a fire bolt that carries the wand skill.
-        ASSERT_TRUE(pParty->hasActiveCharacter()); // The scroll caster may be recovering, whoever is active now shoots.
-        Item wand;
-        wand.itemId = ITEM_WAND_OF_FIRE;
+        Item wand(ITEM_WAND_OF_FIRE);
         wand.numCharges = wand.maxCharges = 1;
         pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
         game.pressAndReleaseKey(PlatformKey::KEY_A);
         game.tick(2);
-        auto bolt = std::ranges::find(pSpriteObjects, SPELL_FIRE_FIRE_BOLT, &SpriteObject::uSpellID);
-        ASSERT_NE(bolt, pSpriteObjects.end());
-        EXPECT_EQ(bolt->spell_level, wandLevel);
-        EXPECT_EQ(bolt->spell_skill, wandMastery);
+        test.stopTaping();
+
+        EXPECT_EQ(resistTape, tape(std::pair(MASTERY_NONE, 0), std::pair(scrollMastery, std::to_underlying(scrollMastery) * scrollLevel)));
+        EXPECT_EQ(heroismTape, tape(std::pair(MASTERY_NONE, 0), std::pair(MASTERY_MASTER, scrollLevel + 5))); // Hour of Power takes master to learn.
+        EXPECT_EQ(boltsTape.flatten().unique(), tape(std::pair(wandLevel, wandMastery)));
     }
 }
 
