@@ -536,10 +536,10 @@ GAME_TEST(Issues, Issue1290) {
 }
 
 GAME_TEST(Issues, Issue1293) {
-    // Hovering the black bars of a letterboxed window with the spellbook open asserted, the highlight code indexed the
+    // Hovering the black bars of a letterboxed window with the spellbook open asserted. The highlight code indexed the
     // Z-buffer with a mouse position outside the render area.
     for (int y : {-30, 510}) { // Top bar, bottom bar.
-        SCOPED_TRACE(y);
+        SCOPED_TRACE(fmt::format("y={}", y));
         test.prepareForNextTest();
         engine->config->debug.NoActors.setValue(true);
         game.startNewGame();
@@ -554,7 +554,7 @@ GAME_TEST(Issues, Issue1293) {
         game.moveMouse(320, y);
         game.tick(2);
         test.stopTaping();
-        ASSERT_EQ(engine->mouse->position().y, y); // The mouse really is outside the render area.
+        ASSERT_EQ(mouse->position().y, y); // Not clamped to the render area.
         EXPECT_EQ(current_screen_type, SCREEN_SPELL_BOOK);
         EXPECT_CONTAINS(texturesTape.back(), "sbfs03"); // Torch Light's icon, drawn by the highlight code.
     }
