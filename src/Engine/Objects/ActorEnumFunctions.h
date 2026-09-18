@@ -19,7 +19,7 @@ inline SpellId spellForActorBuff(ActorBuff buff) {
     case ACTOR_BUFF_PARALYZED:                  return SPELL_LIGHT_PARALYZE;
     case ACTOR_BUFF_SLOWED:                     return SPELL_EARTH_SLOW;
     case ACTOR_BUFF_BERSERK:                    return SPELL_MIND_BERSERK;
-    case ACTOR_BUFF_SOMETHING_THAT_HALVES_AC:   return SPELL_NONE;
+    case ACTOR_BUFF_HALVED_ARMOR:               return SPELL_NONE;
     case ACTOR_BUFF_MASS_DISTORTION:            return SPELL_EARTH_MASS_DISTORTION;
     case ACTOR_BUFF_FATE:                       return SPELL_SPIRIT_FATE;
     case ACTOR_BUFF_ENSLAVED:                   return SPELL_MIND_ENSLAVE;
