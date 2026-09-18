@@ -603,7 +603,7 @@ GAME_TEST(Issues, Issue1301b) {
     engine->config->debug.NoActors.setValue(false);
 
     auto deathsTape = tapes.deaths();
-    test.startTaping(); // The wipe comes before the attack stage draws a frame, so the baseline has to be taped earlier.
+    test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
     for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_ATTACK; ++i)
         game.tick();
