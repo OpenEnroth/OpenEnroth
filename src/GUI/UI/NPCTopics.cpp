@@ -293,7 +293,7 @@ void prepareArenaFight(ArenaLevel level) {
 
     int characterMaxLevel = std::ranges::max(pParty->pCharacters | std::views::transform(&Character::GetActualLevel));
     int monsterMinLevel = std::clamp(characterMaxLevel / 2, 2, 100);
-    int monsterMaxLevel = std::clamp<int>(characterMaxLevel * monsterLevelMultiplierForArenaLevel(level), 2, 100);
+    int monsterMaxLevel = std::clamp(static_cast<int>(characterMaxLevel * monsterLevelMultiplierForArenaLevel(level)), 2, 100);
 
     std::vector<MonsterId> candidateIds;
     for (MonsterId i : allArenaMonsters()) {
@@ -303,7 +303,7 @@ void prepareArenaFight(ArenaLevel level) {
     }
     assert(!candidateIds.empty());
 
-    int maxIdsNum = std::min<int>(6, std::ssize(candidateIds));
+    int maxIdsNum = std::min(6, static_cast<int>(candidateIds.size()));
 
     std::vector<MonsterId> monsterIds;
     for (int i = 0; i < maxIdsNum; i++) {
