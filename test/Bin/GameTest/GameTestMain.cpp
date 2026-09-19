@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "Application/Startup/GameStarter.h"
-
 #include "Application/GameConfig.h"
+#include "Application/Startup/GameStarter.h"
 
 #include "Engine/Engine.h"
 #include "Engine/Components/Control/EngineController.h"
