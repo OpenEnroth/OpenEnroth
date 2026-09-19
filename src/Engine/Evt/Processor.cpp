@@ -187,6 +187,11 @@ EvtTransition runEvent(EvtContext context, int startStep) {
     return transition;
 }
 
+void cancelSavedEvent() {
+    if (scripts)
+        scripts->cancelEvent();
+}
+
 bool canShowTopic(int eventId) {
     EvtInterpreter interpreter;
     interpreter.prepare(EvtContext(EVT_SOURCE_GLOBAL, eventId));
@@ -199,9 +204,9 @@ bool canShowTopic(int eventId) {
 bool hasEventHint(int eventId) {
     if (scripts && scripts->hasEvent(false, eventId))
         return false; // The event does more than show a hint.
-    if (scripts && scripts->eventHint(eventId))
-        return true;
-    return engine->_localEventMap.hasHint(eventId);
+    if (engine->_localEventMap.hasEvent(eventId))
+        return engine->_localEventMap.hasHint(eventId);
+    return scripts && scripts->eventHint(eventId);
 }
 
 std::string getEventHintString(int eventId) {
@@ -229,8 +234,8 @@ void onGameLoad() {
 }
 
 /**
- * `FACE_EVENT_IS_HINT` is set while the level loads, from the evt file alone. The map's scripts load later and can change
- * which events only show a hint.
+ * Sets `FACE_EVENT_IS_HINT` on the faces of the current level whose event only shows a hint, and clears it on the
+ * others.
  */
 static void updateFaceHints() {
     auto update = [](BLVFace &face) {
@@ -250,7 +255,7 @@ void onMapLoad() {
     if (scripts) {
         std::string mapName = pMapTable->pInfos[engine->_currentLoadedMapId].fileName;
         scripts->loadMapScripts(mapName.substr(0, mapName.rfind('.'))); // Before the triggers, scripts can remove events.
-        updateFaceHints();
+        updateFaceHints(); // The level loader set the flags from the evt file alone.
     }
 
     // Register all triggers when map done loading
@@ -261,8 +266,8 @@ void onMapLoad() {
     for (EventTrigger &triggers : onMapLoadTriggers)
         runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId, Pid(), /* duringMapLoad = */ true), triggers.eventStep + 1);
 
-    if (scripts)
-        scripts->onMapLoad();
+    if (scripts && scripts->onMapLoad())
+        onMapLeave();
 }
 
 void onMapLeave() {

@@ -700,6 +700,7 @@ void Game::processQueuedMessages() {
                         pParty->GetPlayingTime() += Duration::fromDays(4);
                 } else if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
+                    cancelSavedEvent();
                 } else {
                     stayingPut = true;
                 }
@@ -714,6 +715,7 @@ void Game::processQueuedMessages() {
             }
             case UIMSG_CancelIndoorEntryExit:
                 PlayButtonClickSound();
+                cancelSavedEvent();
                 pMediaPlayer->Unload();
                 DialogueEnding();
                 back_to_game();
