@@ -254,7 +254,7 @@ DialogueId arenaMainDialogue() {
     if (killedMonsters >= pActors.size() || pActors.size() <= 0) {
         pParty->uNumArenaWins[pParty->arenaLevel]++;
         for (Character &player : pParty->pCharacters) {
-            player.SetVariable(VAR_Award, std::to_underlying(awardForArenaLevel(pParty->arenaLevel)));
+            player.giveAward(awardForArenaLevel(pParty->arenaLevel));
         }
         pParty->partyFindsGold(gold_transaction_amount, GOLD_RECEIVE_SHARE);
         pAudioPlayer->playUISound(SOUND_51heroism03);
@@ -360,7 +360,7 @@ void oracleDialogue() {
 
     // missing item found
     if (item_id != ITEM_NULL) {
-        pParty->pCharacters[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
+        pParty->giveItem(item_id);
         // TODO(captainurist): what if fmt throws?
         current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful" // NOLINT: this is not ::sprintf.
                                         fmt::format("{::}{}\f00000", colorTable.Sunflower.tag(),
@@ -698,7 +698,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
             AwardId guildMembershipAwardBit = membershipAwardForGuild(static_cast<GuildId>(topicEventId - 400));
             pParty->TakeGold(gold_transaction_amount, true);
             for (Character &player : pParty->pCharacters) {
-                player.SetVariable(VAR_Award, std::to_underlying(guildMembershipAwardBit));
+                player.giveAward(guildMembershipAwardBit);
             }
 
             switch (guildMembershipNPCTopicId) {

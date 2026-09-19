@@ -202,6 +202,17 @@ Item Party::takeHoldingItem() {
     return result;
 }
 
+void Party::giveItem(ItemId itemId) {
+    Item item;
+    item.flags = ITEM_IDENTIFIED;
+    item.itemId = itemId;
+    item.postGenerate(ITEM_SOURCE_SCRIPT);
+
+    if (isSpawnableArtifact(itemId))
+        pIsArtifactFound[itemId] = true;
+    setHoldingItem(item);
+}
+
 void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
     for (int i = 0; i < this->pCharacters.size(); ++i) {
         if (this->pCharacters[i].CanAct()) {
