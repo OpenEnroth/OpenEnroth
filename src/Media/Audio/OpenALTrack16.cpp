@@ -148,6 +148,7 @@ void OpenALTrack16::Close() {
     if (alIsSource(al_source) != 0) {
         alSourceStop(al_source);
         checkOpenALError();
+        DrainBuffers(); // A stopped source reports all of its queued buffers as processed.
         alDeleteSources(1, &al_source);
         checkOpenALError();
     }
