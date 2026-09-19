@@ -313,22 +313,30 @@ GAME_TEST(Issues, Issue1569) {
     EXPECT_EQ(goldTape.delta(), -500); // And paid for it.
 }
 
-GAME_TEST(Issues, Issue1579) {
-    // Playing movies leaked memory. The ASan build's leak check catches it, this test only has to play them.
+GAME_TEST(Issues, Issue1579a) {
+    // Playing a fullscreen movie leaked memory. The ASan build's leak check catches it, this test only has to play one.
     auto screenTape = tapes.screen();
-    auto houseTape = tapes.house();
     auto movieTape = tapes.custom([] { return pMediaPlayer->IsMoviePlaying(); });
     engine->config->debug.NoVideo.setValue(false);
-    engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
     test.startTaping();
-
     game.pressGuiButton("MainMenu_NewGame");
     game.tick(2);
     game.pressGuiButton("PartyCreation_OK");
     game.tick(10); // Intro Post is playing.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.skipLoadingScreen();
+    EXPECT_CONTAINS(screenTape, SCREEN_VIDEO);
+    EXPECT_EQ(movieTape, tape(false, true, false));
+}
 
+GAME_TEST(Issues, Issue1579b) {
+    // Playing a house movie leaked memory. The ASan build's leak check catches it, this test only has to play one.
+    auto houseTape = tapes.house();
+    auto movieTape = tapes.custom([] { return pMediaPlayer->IsMoviePlaying(); });
+    engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
+    game.startNewGame();
+    engine->config->debug.NoVideo.setValue(false);
+    test.startTaping();
     game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(11648, 7430, 96), 90); // In front of the door of Tellmar Residence, facing it.
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
@@ -337,10 +345,8 @@ GAME_TEST(Issues, Issue1579) {
         game.tick(); // House movies run on wall-clock time, and this one ends and restarts in the meantime.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
-
-    EXPECT_CONTAINS(screenTape, SCREEN_VIDEO);
     EXPECT_CONTAINS(houseTape, HOUSE_EMERALD_ISLAND_TELLMAR_RESIDENCE);
-    EXPECT_EQ(movieTape, tape(false, true, false, true, false)); // Intro Post, then the house movie.
+    EXPECT_EQ(movieTape, tape(false, true, false));
 }
 
 GAME_TEST(Issues, Issue1597) {
