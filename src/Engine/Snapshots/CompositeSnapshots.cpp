@@ -89,7 +89,7 @@ static void dropDuplicateFaceVertices(Face *face) {
 }
 
 /**
- * @param face                          Face to compute the normal of, with at least 3 vertices.
+ * @param face                          Face to compute the normal of.
  * @param vertices                      Vertex positions, indexed by `face.vertexIds`.
  * @return                              Unit normal of the face, or `std::nullopt` if the face has no area.
  */
@@ -124,38 +124,22 @@ static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> 
 }
 
 /**
- * @param door                          Door to check.
- * @param face                          Face to check.
- * @return                              Whether the door moves some of the face's vertices but not all of them, so
- *                                      that the face changes its shape as the door moves.
- */
-static bool doorStretchesFace(const BLVDoor &door, const BLVFace &face) {
-    std::span<const int16_t> doorVertexIds(door.pVertexIDs, door.numVertices);
-    auto isMoving = [&](int16_t vertexId) { return std::ranges::contains(doorVertexIds, vertexId); };
-    return std::ranges::any_of(face.vertexIds, isMoving) && !std::ranges::all_of(face.vertexIds, isMoving);
-}
-
-/**
  * Recomputes the plane of a face from its vertices, and collapses the face to two vertices if it has no area.
  *
  * @param face                          Face to repair.
  * @param vertices                      Vertex positions, indexed by `face->vertexIds`.
- * @param stretchingDoor                Door that stretches the face, or `nullptr`. A face that has no area in
- *                                      `vertices` but gets one as this door moves is not collapsed, it gets the
- *                                      normal it has at the other end of the door's travel.
+ * @param closedVertices                Vertex positions with every door closed, empty if nothing can move. A face
+ *                                      that has no area in `vertices` but has one here is stretched by a door. It
+ *                                      is not collapsed, and gets its normal from `closedVertices`.
  */
 template<class Face>
-static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, const BLVDoor *stretchingDoor = nullptr) {
+static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::span<const Vec3f> closedVertices = {}) {
     if (face->numVertices < 3)
         return;
 
     std::optional<Vec3f> normal = faceNormal(*face, vertices);
-    if (!normal && stretchingDoor) {
-        std::vector<Vec3f> movedVertices(vertices.begin(), vertices.end());
-        for (int16_t vertexId : std::span(stretchingDoor->pVertexIDs, stretchingDoor->numVertices))
-            movedVertices[vertexId] += stretchingDoor->direction * stretchingDoor->moveLength;
-        normal = faceNormal(*face, movedVertices);
-    }
+    if (!normal && !closedVertices.empty())
+        normal = faceNormal(*face, closedVertices);
 
     if (!normal) {
         face->numVertices = 2;
@@ -437,14 +421,13 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    std::vector<const BLVDoor *> stretchingDoors(dst->faces.size());
+    std::vector<Vec3f> closedVertices = dst->vertices;
     for (const BLVDoor &door : dst->doors)
-        for (int16_t faceId : std::span(door.pFaceIDs, door.numFaces))
-            if (doorStretchesFace(door, dst->faces[faceId]))
-                stretchingDoors[faceId] = &door;
+        for (int i = 0; i < door.numVertices; ++i)
+            closedVertices[door.pVertexIDs[i]] = door.direction * door.moveLength + Vec3f(door.pXOffsets[i], door.pYOffsets[i], door.pZOffsets[i]);
 
-    for (size_t i = 0; i < dst->faces.size(); ++i)
-        repairFaceNormal(&dst->faces[i], dst->vertices, stretchingDoors[i]);
+    for (BLVFace &face : dst->faces)
+        repairFaceNormal(&face, dst->vertices, closedVertices);
 
     reconstruct(src.eventVariables, &engine->_persistentVariables);
     dst->lastVisitTime = Time::fromTicks(src.lastVisitTime);
