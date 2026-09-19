@@ -144,13 +144,13 @@ void ViewingParams::_443365() {
             if (v6->y > maximum_y) maximum_y = v3->y;
         }
 
-        uMinimapZoom = 1024;
+        uMinimapZoom = engine->config->settings.MinimapZoomIndoor.value();
         indoor_center_x = (signed int)(minimum_x + maximum_x) / 2;
         indoor_center_y = (signed int)(minimum_y + maximum_y) / 2;
     } else {
         indoor_center_x = 0;
         indoor_center_y = 0;
-        uMinimapZoom = 512;
+        uMinimapZoom = engine->config->settings.MinimapZoomOutdoor.value();
     }
     uMapBookMapZoom = 384;
 }

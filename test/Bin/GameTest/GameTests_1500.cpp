@@ -28,6 +28,7 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
@@ -132,6 +133,36 @@ GAME_TEST(Issues, Issue1515) {
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1515.mm7", "issue_1515.json");
     EXPECT_CONTAINS(soundsTape.flatten(), SOUND_RechargeItem); // dispel magic
+}
+
+GAME_TEST(Issues, Issue1516) {
+    // Minimap zoom was reset on every save load and map change.
+    auto press = [&](PlatformKey key, int count) {
+        for (int i = 0; i < count; i++) {
+            game.pressAndReleaseKey(key);
+            game.tick();
+        }
+    };
+
+    game.startNewGame();
+    EXPECT_EQ(viewparams->uMinimapZoom, 512);
+    Blob save = game.saveGame();
+    press(PlatformKey::KEY_SUBTRACT, 1);
+    EXPECT_EQ(viewparams->uMinimapZoom, 512); // Already at the outdoor minimum.
+    press(PlatformKey::KEY_ADD, 3);
+    EXPECT_EQ(viewparams->uMinimapZoom, 2048); // Outdoor maximum, the last press did nothing.
+
+    game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+    EXPECT_EQ(viewparams->uMinimapZoom, 1024); // Indoor and outdoor maps each have a zoom of their own.
+    press(PlatformKey::KEY_ADD, 3);
+    EXPECT_EQ(viewparams->uMinimapZoom, 4096); // Indoor maximum, the last press did nothing.
+    press(PlatformKey::KEY_SUBTRACT, 5);
+    EXPECT_EQ(viewparams->uMinimapZoom, 256); // Indoor minimum, the last press did nothing.
+
+    game.loadGame(save);
+    EXPECT_EQ(viewparams->uMinimapZoom, 2048); // The save predates the zooming, the zoom isn't stored in it.
+    game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+    EXPECT_EQ(viewparams->uMinimapZoom, 256);
 }
 
 GAME_TEST(Issues, Issue1519) {

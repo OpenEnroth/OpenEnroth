@@ -98,6 +98,22 @@
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
 
+/**
+ * Sets the minimap zoom and stores it in the config entry for the current level type.
+ *
+ * @param zoom                          New zoom, gets clamped to the limits of the current level type.
+ */
+static void setMinimapZoom(int zoom) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+        zoom = std::clamp(zoom, 256, 4096);
+        engine->config->settings.MinimapZoomIndoor.setValue(zoom);
+    } else {
+        zoom = std::clamp(zoom, 512, 2048);
+        engine->config->settings.MinimapZoomOutdoor.setValue(zoom);
+    }
+    viewparams->uMinimapZoom = zoom;
+}
+
 Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
     _application = application;
     _config = config;
@@ -1443,32 +1459,14 @@ void Game::processQueuedMessages() {
                 if (!(current_screen_type == SCREEN_GAME)) continue;
                 new OnButtonClick({519, 136}, {0, 0}, pBtn_ZoomIn);
 
-                viewparams->uMinimapZoom *= 2;
-                if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                    if (viewparams->uMinimapZoom > 4096) {
-                        viewparams->uMinimapZoom = 4096;
-                    }
-                } else {
-                    if (viewparams->uMinimapZoom > 2048) {
-                        viewparams->uMinimapZoom = 2048;
-                    }
-                }
+                setMinimapZoom(viewparams->uMinimapZoom * 2);
 
                 break;
             case UIMSG_ClickZoomOutBtn:
                 if (!(current_screen_type == SCREEN_GAME)) continue;
                 new OnButtonClick({574, 136}, {0, 0}, pBtn_ZoomOut);
 
-                viewparams->uMinimapZoom /= 2;
-                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    if (viewparams->uMinimapZoom < 512) {
-                        viewparams->uMinimapZoom = 512;
-                    }
-                } else {
-                    if (viewparams->uMinimapZoom < 256) {
-                        viewparams->uMinimapZoom = 256;
-                    }
-                }
+                setMinimapZoom(viewparams->uMinimapZoom / 2);
 
                 break;
 
