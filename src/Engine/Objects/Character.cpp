@@ -4590,6 +4590,7 @@ void Character::SetSkillReaction() {
 void Character::AddVariable(EvtVariable var_type, signed int val) {
     int food = 0;
     LocationInfo *ddm;
+    Item item;
 
     if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10) {
         pParty->PartyTimes.CounterEventValues[std::to_underlying(var_type) - std::to_underlying(VAR_Counter1)] = pParty->GetPlayingTime();
@@ -4704,7 +4705,14 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             pParty->_questBits.set(static_cast<QuestBit>(val));
             return;
         case VAR_PlayerItemInHands:
-            pParty->createHoldingItem(ItemId(val));
+            item.Reset();
+            item.flags = ITEM_IDENTIFIED;
+            item.itemId = ItemId(val);
+            item.postGenerate(ITEM_SOURCE_SCRIPT);
+
+            if (isSpawnableArtifact(ItemId(val)))
+                pParty->pIsArtifactFound[ItemId(val)] = true;
+            pParty->setHoldingItem(item);
             return;
         case VAR_FixedGold:
             pParty->partyFindsGold(val, GOLD_RECEIVE_NOSHARE_MSG);
