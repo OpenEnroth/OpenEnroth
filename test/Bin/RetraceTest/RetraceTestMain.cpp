@@ -18,7 +18,7 @@
 
 int platformMain(int argc, char **argv) {
     try {
-        StackTraceOnCrash st(nullptr, STACK_TRACE_LOAD_SYMBOLS_ON_CRASH); // CI runs each trace in a process of its own.
+        StackTraceOnCrash st(nullptr, STACK_TRACE_LOAD_SYMBOLS_ON_CRASH);
         UnicodeCrt _(argc, argv);
         RetraceTestOptions opts = RetraceTestOptions::parse(argc, argv);
         if (opts.helpPrinted)
