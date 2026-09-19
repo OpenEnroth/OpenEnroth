@@ -253,7 +253,7 @@ struct Party {
     Time &GetPlayingTime() { return this->playing_time; }
 
     /**
-     * Moves the game clock forward with no regeneration or HP drain for the skipped time.
+     * Moves the game clock forward without running the 5-minute regeneration and drain effects over the skipped time.
      *
      * @param duration                  Time to skip.
      */
