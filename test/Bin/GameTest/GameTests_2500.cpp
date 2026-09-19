@@ -573,12 +573,13 @@ GAME_TEST(Issues, Issue2776) {
     game.startNewGame();
     for (Character &character : pParty->pCharacters) {
         character.inventory.equip(ITEM_SLOT_BOOTS, Item(ITEM_ARTIFACT_HERMES_SANDALS));
-        character.mana = 0;
+        character.mana = character.GetMaxMana() / 2;
     }
     test.startTaping();
-    for (Character &character : pParty->pCharacters)
-        character.receiveDamage(10000, DAMAGE_PHYSICAL);
-    game.tick(100);
-    EXPECT_EQ(hpsTape.back(), tape(2, 2, 2, 2)); // Respawned with 1 HP, then got one regeneration point.
-    EXPECT_EQ(mpsTape.back(), tape(0, 0, 1, 1)); // The knight and the thief have no SP.
+    for (int i = 0; i < 3; i++)
+        pParty->pCharacters[i].receiveDamage(10000, DAMAGE_PHYSICAL);
+    pParty->pCharacters[3].SetCondition(CONDITION_UNCONSCIOUS, false);
+    game.tick();
+    EXPECT_EQ(hpsTape.back(), tape(1, 1, 1, 1));
+    EXPECT_EQ(mpsTape.back(), tape(0, 0, 0, 18)); // Dying zeroes SP, only the unconscious sorcerer keeps it.
 }
