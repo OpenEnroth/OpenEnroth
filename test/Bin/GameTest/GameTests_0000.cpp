@@ -431,20 +431,14 @@ GAME_TEST(Issues, Issue355_2520) {
 }
 
 GAME_TEST(Issues, Issue388) {
-    // TODO(captainurist): this one doesn't obey the unlimited FPS when retracing. Implement properly.
     // Testing that Arcomage works.
     // Trace enters tavern, plays arcomage, plays a couple of cards then exits and leaves tavern.
-    int oldfpslimit = pArcomageGame->_targetFPS;
-    pArcomageGame->_targetFPS = 500;
-
     auto arcomageTape = tapes.custom([] { return !!pArcomageGame->_gameInProgress; });
     auto screenTape = tapes.screen();
     test.playTraceFromTestData("issue_388.mm7", "issue_388.json");
     EXPECT_EQ(arcomageTape, tape(false, true, false)); // We've played arcomage.
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAME)); // And returned to game screen.
     EXPECT_EQ(pArcomageGame->_gameOver, 1); // With arcomage exit flag.
-
-    pArcomageGame->_targetFPS = oldfpslimit;
 }
 
 GAME_TEST(Issues, Issue395) {
