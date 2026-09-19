@@ -39,7 +39,7 @@
 
 #ifdef __ANDROID__
 
-StackTraceOnCrash::StackTraceOnCrash(void (*)(), StackTraceSymbolLoading) {}
+StackTraceOnCrash::StackTraceOnCrash(void (*)()) {}
 
 #else
 
@@ -537,13 +537,12 @@ static void installHandlers() {
 
 #endif // _WINDOWS
 
-StackTraceOnCrash::StackTraceOnCrash(void (*callback)(), StackTraceSymbolLoading symbolLoading) {
+StackTraceOnCrash::StackTraceOnCrash(void (*callback)()) {
     crashCallback = callback;
 
     // Symbols resolve lazily, so the first trace is the one that opens debug info and allocates. Better done
     // here than inside a handler, with the process already broken.
-    if (symbolLoading == STACK_TRACE_LOAD_SYMBOLS_AT_START)
-        warmUpCpptrace();
+    warmUpCpptrace();
     installHandlers();
 }
 
