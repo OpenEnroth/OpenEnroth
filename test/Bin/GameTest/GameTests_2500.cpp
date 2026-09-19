@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
 
@@ -561,4 +562,34 @@ GAME_TEST(Issues, Issue2759) {
     EXPECT_CONTAINS(houseTape, HOUSE_WEAPON_SHOP_TATALIA_1);
     EXPECT_CONTAINS(textTape.flatten(), "Display Inventory"); // We've seen the shop menu.
     EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
+}
+
+GAME_TEST(Issues, Issue2771) {
+    // Immolation cast by a map event crashed the game on the next regeneration tick. The buff got caster -1, and the
+    // damage sprite built a character pid out of it.
+    auto hpTape = actorTapes.hp(0);
+    auto casterTape = tapes.custom([] {
+        AccessibleVector<Pid> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.uSpellID == SPELL_FIRE_IMMOLATION)
+                result.push_back(sprite.spell_caster_pid);
+        return result;
+    });
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(3796, 6224, 1216), 0); // 300 west of the pedestal, facing it.
+    game.goToGame(); // A new party arriving here gets a dialogue with Archibald Ironfist, and a Blaster in hand.
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Puts the Blaster into the second character's pack.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Makes the second character active.
+    game.pointMouseAtDecoration(380);
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.tick(3);
+    ASSERT_TRUE(pParty->ImmolationActive());
+
+    game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_TITAN_A, SPAWN_DUMMY | SPAWN_FRIENDLY);
+    test.startTaping();
+    game.tick(100);
+    EXPECT_LT(hpTape.delta(), 0);
+    EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(1))); // The active character.
 }

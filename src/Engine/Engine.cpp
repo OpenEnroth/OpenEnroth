@@ -1324,7 +1324,10 @@ void RegeneratePartyHealthMana() {
         spellSprite.uAttributes = 0;
         spellSprite.uSectorID = 0;
         spellSprite.timeSinceCreated = 0_ticks;
-        spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
+        int caster = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster;
+        if (caster == -1) // Cast by a map event, or loaded from a vanilla save.
+            caster = pParty->hasActiveCharacter() ? pParty->activeCharacterIndex() : 0;
+        spellSprite.spell_caster_pid = Pid::character(caster);
         spellSprite.uFacing = 0;
 
         int actorsAffectedByImmolation[100];
