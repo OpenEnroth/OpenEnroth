@@ -183,6 +183,12 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         return step + 1;
     }
 
+    return executeInstruction(ir);
+}
+
+int EvtInterpreter::executeInstruction(EvtInstruction ir) {
+    int step = ir.step;
+
     switch (ir.opcode) {
         case EVENT_Exit:
             return -1;
@@ -219,15 +225,6 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 savedEventStep = step + 1;
                 return -1;
             }
-
-            // TODO(pskelton): Fix #2117 this should be a data mod
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && ir.step == 1)
-                ir.str = "out06.odm";
-
-            // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
-            //                 other, only the first one should run.
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
-                break;
 
             MapDestination destination = moveToMapDestination(ir);
             if (destination.map() == MAP_INVALID) { // teleport within map
@@ -325,12 +322,6 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
             break;
         case EVENT_Add:
-            // TODO(captainurist): move this workaround into patched event data, and add the OnMapReload step from
-            //                     GrayFace's d27.evt that re-applies the empty cage sprite once the quest bit is set.
-            //                     The sprite isn't saved, so after a reload the cage shows Roland until the next click.
-            if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
-                ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
-                break; // Roland's cage script adds the key on every click, it never checks the quest bit.
             for (Character &character : iterateCharacters(_who, grng))
                 character.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
@@ -669,4 +660,11 @@ void EvtInterpreter::prepare(const EvtProgram &eventMap, int eventId, Pid object
 
 bool EvtInterpreter::isValid() {
     return _events.size() > 0;
+}
+
+void EvtInterpreter::prepare(int eventId, Pid objectPid, bool canShowMessages) {
+    _eventId = eventId;
+    _canShowMessages = canShowMessages;
+    _objectPid = objectPid;
+    _events.clear();
 }

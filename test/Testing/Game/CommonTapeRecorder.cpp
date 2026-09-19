@@ -194,6 +194,10 @@ TestMultiTape<SoundId> CommonTapeRecorder::sounds() {
     return _controller->recordFunctionTape<SoundId>(CALL_PLAY_SOUND);
 }
 
+TestMultiTape<std::string> CommonTapeRecorder::movies() {
+    return _controller->recordFunctionTape<std::string>(CALL_PLAY_MOVIE);
+}
+
 TestMultiTape<std::string> CommonTapeRecorder::hudTextures() {
     return _controller->recordFunctionTape<std::string>(CALL_DRAW_2D_TEXTURE);
 }

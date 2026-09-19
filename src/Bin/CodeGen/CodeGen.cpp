@@ -15,6 +15,7 @@
 #include "Engine/Components/Random/EngineRandomComponent.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/HouseTable.h"
+#include "Engine/Evt/EvtDecompiler.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Data/DecorationEnums.h"
@@ -584,6 +585,9 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_DECORATIONS: return runDecorationsCodegen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_SPEECH_PORTRAITS: return runSpeechPortraitsCodegen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_LSTR_ID: return runLstrCodegen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_EVT:
+            fmt::print("{}", decompileGameEvt(options.evtName));
+            return 0;
         default:
             assert(false);
             return 1;

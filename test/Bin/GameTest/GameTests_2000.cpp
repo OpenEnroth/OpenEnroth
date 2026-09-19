@@ -371,7 +371,7 @@ GAME_TEST(Issues, Issue2117) {
     test.playTraceFromTestData("issue_2117.mm7", "issue_2117.json");
     EXPECT_EQ(mapTape.front(), MAP_CELESTE);
     EXPECT_EQ(mapTape.back(), MAP_BRACADA_DESERT); // Jumped down to the desert.
-    EXPECT_TRUE(posTape.contains(Vec3f(8146, 4379, 3700))); // Via the dodgy teleport step.
+    EXPECT_TRUE(posTape.contains(Vec3f(8146, 4379, 3700))); // The first of the six landing spots.
 }
 
 GAME_TEST(Issues, Issue2118) {

@@ -25,6 +25,7 @@ extern "C" {
 }
 
 #include "Engine/Engine.h"
+#include "Engine/EngineCallObserver.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -842,6 +843,9 @@ std::unique_ptr<IMovie> MPlayer::loadFullScreenMovie(std::string_view movieFileN
 }
 
 void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
+    if (engine->callObserver)
+        engine->callObserver->notify(CALL_PLAY_MOVIE, std::string(pFilename));
+
     if (engine->config->debug.NoVideo.value()) {
         return;
     }

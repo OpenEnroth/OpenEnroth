@@ -28,6 +28,8 @@ CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     app->add_subcommand("decorations", "Generate decorations ids enum.", result.subcommand, SUBCOMMAND_DECORATIONS)->fallthrough();
     app->add_subcommand("speech_portraits", "Generate speech / portraits table.", result.subcommand, SUBCOMMAND_SPEECH_PORTRAITS)->fallthrough();
     app->add_subcommand("localization_strings", "Generate localization strings enum.", result.subcommand, SUBCOMMAND_LSTR_ID)->fallthrough();
+    CLI::App *evt = app->add_subcommand("evt", "Decompile an evt file into a Lua script for the events API.", result.subcommand, SUBCOMMAND_EVT)->fallthrough();
+    evt->add_option("NAME", result.evtName, "Name of the evt file without the extension, e.g. 'd27' or 'global'.")->required();
 
     app->parse(argc, argv, result.helpPrinted);
     return result;

@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
@@ -79,6 +80,8 @@ void loadGame(std::string_view fileName) {
 
     pParty->setActiveCharacterIndex(-1);
     pParty->setActiveToFirstCanAct();
+
+    onGameLoad();
 
 /*
     for (int i = 0; i < 4; ++i) {
