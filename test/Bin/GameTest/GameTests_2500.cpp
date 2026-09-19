@@ -564,3 +564,22 @@ GAME_TEST(Issues, Issue2759) {
     EXPECT_CONTAINS(textTape.flatten(), "Display Inventory"); // We've seen the shop menu.
     EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
 }
+
+GAME_TEST(Issues, Issue2776) {
+    // After a party death, characters wearing regeneration gear came back with full HP and SP, regenerated for every
+    // 5 minutes of the week that the death skips.
+    auto hpsTape = charTapes.hps();
+    auto mpsTape = charTapes.mps();
+    game.startNewGame();
+    for (Character &character : pParty->pCharacters) {
+        character.inventory.equip(ITEM_SLOT_BOOTS, Item(ITEM_ARTIFACT_HERMES_SANDALS));
+        character.mana = character.GetMaxMana() / 2;
+    }
+    test.startTaping();
+    for (int i = 0; i < 3; i++)
+        pParty->pCharacters[i].receiveDamage(10000, DAMAGE_PHYSICAL);
+    pParty->pCharacters[3].SetCondition(CONDITION_UNCONSCIOUS, false);
+    game.tick();
+    EXPECT_EQ(hpsTape.back(), tape(1, 1, 1, 1));
+    EXPECT_EQ(mpsTape.back(), tape(0, 0, 0, 18)); // Dying zeroes SP, only the unconscious sorcerer keeps it.
+}

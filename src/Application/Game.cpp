@@ -1652,6 +1652,7 @@ void Game::gameLoop() {
                 }
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime() += Duration::fromDays(7);  // += 2580480
+                pParty->last_regenerated = pParty->GetPlayingTime(); // No regeneration over the skipped week.
                 pParty->uFlags &= ~(PARTY_FLAG_WATER_DAMAGE | PARTY_FLAG_BURNING);
                 pParty->SetGold(0);
                 pActiveOverlayList->Reset();
@@ -1669,7 +1670,7 @@ void Game::gameLoop() {
                                        // 0, 0xA0u);//(pConditions, 0, 160)
                                        // memset(pParty->pCharacters[i].pCharacterBuffs.data(),
                                        // 0, 0x180u);//(pCharacterBuffs[0], 0, 384)
-                    character.health = 1;
+                    character.health = 1; // TODO(captainurist): MM8 respawns with full HP and SP, implement that for MM8.
                 }
                 pParty->setActiveCharacterIndex(0);
 
