@@ -60,7 +60,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   xvfb \
   mesa-utils \
   ccache \
+  linux-tools-generic \
+  valgrind \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Ubuntu's /usr/bin/perf is a wrapper that wants a perf built for the running kernel, and there is none for Docker
+# Desktop's linuxkit kernel. The one from linux-tools-generic profiles user code just fine.
+RUN PERF=$(find /usr/lib -path '*linux-tools*' -name perf -type f | head -n 1) && \
+  test -n "$PERF" && \
+  ln -s "$PERF" /usr/local/bin/perf
 
 # Install fresh CMake (ztd_text requires >= 3.31).
 RUN wget -qO /tmp/cmake.sh "https://github.com/Kitware/CMake/releases/download/v4.3.0/cmake-4.3.0-linux-$(uname -m).sh" && \
