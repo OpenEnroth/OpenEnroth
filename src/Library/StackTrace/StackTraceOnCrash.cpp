@@ -39,7 +39,7 @@
 
 #ifdef __ANDROID__
 
-StackTraceOnCrash::StackTraceOnCrash(void (*)()) {}
+StackTraceOnCrash::StackTraceOnCrash(void (*)(), StackTraceSymbolLoading) {}
 
 #else
 
@@ -73,6 +73,10 @@ static void printCrashHeader(std::string_view reason) {
 static void printTrace(std::string_view trace) {
     fmt::println(stderr, "{}", trace);
     std::fflush(stderr);
+}
+
+static void warmUpCpptrace() {
+    (void) cpptrace::generate_trace(0, 1).to_string();
 }
 
 static void printCrashTrace(std::string_view reason) {
@@ -533,8 +537,13 @@ static void installHandlers() {
 
 #endif // _WINDOWS
 
-StackTraceOnCrash::StackTraceOnCrash(void (*callback)()) {
+StackTraceOnCrash::StackTraceOnCrash(void (*callback)(), StackTraceSymbolLoading symbolLoading) {
     crashCallback = callback;
+
+    // Symbols resolve lazily, so the first trace is the one that opens debug info and allocates. Better done
+    // here than inside a handler, with the process already broken.
+    if (symbolLoading == STACK_TRACE_LOAD_SYMBOLS_AT_START)
+        warmUpCpptrace();
     installHandlers();
 }
 
