@@ -596,7 +596,7 @@ GAME_TEST(Issues, Issue2771) {
     EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(1))); // The active character.
 }
 
-GAME_TEST(Prs, Pr2783a) {
+GAME_TEST(Issues, Issue2784a) {
     // Acid Burst impacts were silent.
     auto soundsTape = tapes.sounds();
     engine->config->debug.NoActors.setValue(true);
@@ -611,7 +611,7 @@ GAME_TEST(Prs, Pr2783a) {
     EXPECT_CONTAINS(soundsTape.flatten(), SOUND_AcidBurstImpact);
 }
 
-GAME_TEST(Prs, Pr2783b) {
+GAME_TEST(Issues, Issue2784b) {
     // Elf banks greeted with the Evil Bank lines.
     auto houseTape = tapes.house();
     auto soundsTape = tapes.sounds();
@@ -624,7 +624,7 @@ GAME_TEST(Prs, Pr2783b) {
     EXPECT_EQ(soundsTape.flatten().count(SOUND_ElfBank01), 1);
 }
 
-GAME_TEST(Prs, Pr2783c) {
+GAME_TEST(Issues, Issue2784c) {
     // Natural Magic and The Balanced Axe both greeted with the dwarf smith's lines.
     auto houseTape = tapes.house();
     auto soundsTape = tapes.sounds();
