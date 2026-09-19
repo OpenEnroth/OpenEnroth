@@ -60,7 +60,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   xvfb \
   mesa-utils \
   ccache \
+  linux-tools-generic \
+  valgrind \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Link the real perf binary that linux-tools-generic installs under /usr/lib into /usr/local/bin, which comes before
+# /usr/bin in PATH, and fail the build if there's no such binary. Ubuntu's /usr/bin/perf is a wrapper that only runs
+# the perf built for the running kernel. A container runs on the host's kernel, which is practically never the one
+# linux-tools-generic was built for, but perf itself works with any kernel version.
+#
+# Inside the container perf also needs PERFMON from devcontainer.json, and a perf_event_paranoid of at most 2 on the
+# host. Docker Desktop on macOS has 2, Ubuntu and Debian hosts default to 4 and 3.
+RUN PERF=$(find /usr/lib -path '*linux-tools*' -name perf -type f | head -n 1) && \
+  test -n "$PERF" && \
+  ln -s "$PERF" /usr/local/bin/perf
 
 # Install fresh CMake (ztd_text requires >= 3.31).
 RUN wget -qO /tmp/cmake.sh "https://github.com/Kitware/CMake/releases/download/v4.3.0/cmake-4.3.0-linux-$(uname -m).sh" && \
