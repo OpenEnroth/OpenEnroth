@@ -123,6 +123,8 @@ class NativePath {
      * @param tail                      Path to append.
      * @return                          The two paths joined with a separator. A rooted `tail` replaces this path
      *                                  instead of being appended to it, same as `std::filesystem::path::operator/`.
+     *                                  An empty `tail` leaves this path as it is, without the trailing separator
+     *                                  that `std::filesystem` would add.
      */
     [[nodiscard]] NativePath operator/(const NativePath &tail) const;
 
