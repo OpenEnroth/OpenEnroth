@@ -745,7 +745,7 @@ GAME_TEST(Issues, Issue2778) {
     test.startTaping();
     Actor::Die(0); // Xenofex.
     game.tick(60); // The death animation has to finish.
-    for (int exit = 0; exit < 2; exit++) {
+    for (int visit = 0; visit < 2; visit++) {
         autoSave(); // A real exit saves the map, a teleport doesn't, and Xenofex would be back alive.
         game.teleportTo(MAP_EMERALD_ISLAND, emeraldIsland, 0);
         game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180);
