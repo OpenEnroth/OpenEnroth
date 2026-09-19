@@ -581,7 +581,7 @@ GAME_TEST(Issues, Issue2760) {
     game.releaseKey(PlatformKey::KEY_LEFTBRACKET);
     game.tick();
     EXPECT_EQ(elevatorTape, tape(DOOR_OPEN, DOOR_CLOSING, DOOR_CLOSED));
-    EXPECT_LE(xTape.max() + pParty->radius, -2976); // The wall is at x = -2976, the car's floor ends there too.
+    EXPECT_NEAR(xTape.max() + pParty->radius, -2976, 1); // Stopped by the shaft's east wall. The floor check only keeps the party's center on the car.
 }
 
 GAME_TEST(Issues, Issue2771) {
