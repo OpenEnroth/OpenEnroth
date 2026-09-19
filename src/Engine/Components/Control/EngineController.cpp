@@ -171,6 +171,10 @@ void EngineController::doubleClickGuiButton(std::string_view buttonId) {
     releaseButton(BUTTON_LEFT, center.x, center.y);
 }
 
+void EngineController::hoverGuiButton(std::string_view buttonId) {
+    moveMouse(existingButton(buttonId)->rect.center());
+}
+
 void EngineController::goToGame() {
     goToGameOrMainMenu();
     if (GetCurrentMenuID() == MENU_MAIN)
