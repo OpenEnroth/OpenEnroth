@@ -70,6 +70,13 @@ class EngineController {
     void pressAndReleaseButton(PlatformMouseButton button, Pointi point);
 
     /**
+     * Clicks at the current mouse position, e.g. after a `pointMouseAtActor` call.
+     *
+     * @param button                    Button to click.
+     */
+    void pressAndReleaseButton(PlatformMouseButton button);
+
+    /**
      * Presses a GUI button identified by the provided id by sending a mouse press and release event.
      *
      * @param buttonId                  Button id.

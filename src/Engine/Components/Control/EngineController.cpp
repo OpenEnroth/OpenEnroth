@@ -156,6 +156,10 @@ void EngineController::pressAndReleaseButton(PlatformMouseButton button, Pointi 
     pressAndReleaseButton(button, point.x, point.y);
 }
 
+void EngineController::pressAndReleaseButton(PlatformMouseButton button) {
+    pressAndReleaseButton(button, mouse->position());
+}
+
 void EngineController::pressGuiButton(std::string_view buttonId) {
     GUIButton *button = existingButton(buttonId);
     Pointi center = button->rect.center();
@@ -391,7 +395,7 @@ void EngineController::castQuickSpellAtActor(int characterIndex, SpellId spell, 
     character.uQuickSpell = spell;
     pointMouseAtActor(actorId);
     pressKey(PlatformKey::KEY_SHIFT);
-    pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    pressAndReleaseButton(BUTTON_LEFT);
     releaseKey(PlatformKey::KEY_SHIFT);
     tick(2); // The click is a queued event, so the quick spell must stay set until the tick that processes it.
     character.uQuickSpell = oldQuickSpell;
