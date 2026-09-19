@@ -15,10 +15,12 @@
 #include "Engine/Evt/EvtDecompiler.h"
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Evt/Processor.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Party.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/HouseTable.h"
+#include "Engine/Tables/NPCTable.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -32,10 +34,16 @@
  */
 struct EvtScriptContext {
     EvtInterpreter interpreter;
-    int eventId = 0;
 };
 
 static const int JUMP_STEP = 2; // A command runs as step 0, so it continues from 1 unless it jumps.
+static const int MAX_LEVEL_STRINGS = 1000; // Keeps a mistyped `evt.str` index from growing the string table without bound.
+
+static int64_t toInteger(double value, std::string_view what) {
+    if (!std::isfinite(value))
+        throw Exception("{} takes a finite number", what);
+    return std::llround(value);
+}
 
 static EvtTargetCharacter toPlayer(const sol::object &value, std::string_view what) {
     if (value.is<std::string>()) {
@@ -44,7 +52,9 @@ static EvtTargetCharacter toPlayer(const sol::object &value, std::string_view wh
         throw Exception("{}: unknown player '{}'", what, value.as<std::string>());
     }
 
-    int result = value.as<int>();
+    if (!value.is<double>())
+        throw Exception("{} takes a player number or name", what);
+    int64_t result = toInteger(value.as<double>(), what);
     if (result < std::to_underlying(CHOOSE_PLAYER1) || result > std::to_underlying(CHOOSE_RANDOM))
         throw Exception("{}: player {} is out of range", what, result);
     return static_cast<EvtTargetCharacter>(result);
@@ -57,9 +67,12 @@ static EvtFieldValue toFieldValue(const EvtCommandInfo &command, const EvtFieldI
         return int64_t(JUMP_STEP);
 
     if (!value.valid() || value.is<sol::lua_nil_t>()) {
-        if (field.type == EVT_FIELD_STRING)
-            return std::string();
-        return int64_t(field.type == EVT_FIELD_PLAYER ? std::to_underlying(player) : 0);
+        switch (field.type) {
+            case EVT_FIELD_STRING: return std::string();
+            case EVT_FIELD_PLAYER: return int64_t(std::to_underlying(player));
+            case EVT_FIELD_MASTERY: return int64_t(std::to_underlying(MASTERY_NOVICE));
+            default: return int64_t(0);
+        }
     }
 
     switch (field.type) {
@@ -84,7 +97,7 @@ static EvtFieldValue toFieldValue(const EvtCommandInfo &command, const EvtFieldI
         return int64_t(value.as<bool>());
     if (!value.is<double>())
         throw Exception("{} takes a number", what);
-    return int64_t(std::llround(value.as<double>()));
+    return toInteger(value.as<double>(), what);
 }
 
 /**
@@ -105,23 +118,77 @@ static EvtRecord toRecord(const EvtCommandInfo &command, const sol::table &args,
 
     EvtRecord result;
     result.opcode = command.opcode;
+    result.values.emplace();
     for (size_t i = 0; i < command.fields.size(); i++) {
         const EvtFieldInfo &field = command.fields[i];
         sol::object value = args[field.name];
         if (!value.valid() || value.is<sol::lua_nil_t>())
             value = args[i + 1];
-        result.values.push_back(toFieldValue(command, field, value, player));
+        result.values->push_back(toFieldValue(command, field, value, player));
     }
     return result;
 }
 
+
 /**
+ * Rejects the values that the interpreter would use to index past a table. It takes evt files as they ship and
+ * doesn't check these itself.
+ *
+ * @param command                       Command to check.
+ * @param ir                            The command as an instruction.
+ * @param who                           Player that the command applies to.
+ * @throws Exception                    If a value is out of range.
+ */
+static void checkIndices(const EvtCommandInfo &command, const EvtInstruction &ir, EvtTargetCharacter who) {
+    auto check = [&](int64_t value, int64_t size, std::string_view what) {
+        if (value < 0 || value >= size)
+            throw Exception("evt.{}: {} {} is out of range [0, {})", command.name, what, value, size);
+    };
+
+    switch (ir.opcode) {
+        case EVENT_SpeakNPC:
+        case EVENT_SetNPCGreeting:
+            check(ir.data.npc_descr.npc_id, pNPCStats->pNPCData.size(), "NPC");
+            break;
+        case EVENT_SetNPCTopic:
+            check(ir.data.npc_topic_descr.npc_id, pNPCStats->pNPCData.size(), "NPC");
+            break;
+        case EVENT_MoveNPC:
+            check(ir.data.npc_move_descr.npc_id, pNPCStats->pNPCData.size(), "NPC");
+            break;
+        case EVENT_SetNPCGroupNews:
+            check(ir.data.npc_groups_descr.groups_id, pNPCStats->pGroups.size(), "NPC group");
+            break;
+        case EVENT_StatusText:
+        case EVENT_ShowMessage:
+            if (activeLevelDecoration) // Then the text is an NPC topic, counted from 1.
+                check(ir.data.text_id - 1, pNPCTopics.size(), "topic text");
+            break;
+        case EVENT_ChangeEvent:
+            if (!activeLevelDecoration || activeLevelDecoration == reinterpret_cast<LevelDecoration *>(1))
+                throw Exception("evt.{} works only in the event of a decoration", command.name);
+            break;
+        case EVENT_CheckSkill:
+            if (who == CHOOSE_PARTY)
+                throw Exception("evt.{} can't check the whole party, it checks one player", command.name);
+            break;
+        default:
+            break;
+    }
+}
+
+/**
+ * @param context                       Context of the running handler.
+ * @param state                         Lua state that gets the result.
+ * @param name                          Command to run, e.g. "SetSprite".
+ * @param args                          Its arguments, by field name, by position, or a mix of the two.
+ * @param player                        Current player of the script, a number or a name.
  * @return                              Whether the command's condition held, or nil if it's not a condition. Then
  *                                      "ok", "exit" if the handler has to stop, or "wait" if it has to stop until
  *                                      the engine resumes the event.
  */
-static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, sol::this_state state, const std::string &name, const sol::table &args,
-                                                    const sol::object &player) {
+static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, sol::this_state state, std::string_view name,
+                                                    const sol::table &args, const sol::object &player) {
     const EvtCommandInfo *command = evtCommand(name);
     if (!command)
         throw Exception("evt.{} doesn't exist", name);
@@ -130,6 +197,7 @@ static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, s
 
     EvtTargetCharacter who = toPlayer(player, "evt.Player");
     EvtInstruction ir = evtInstruction(toRecord(*command, args, who));
+    checkIndices(*command, ir, who);
 
     context.interpreter.setTargetCharacter(who);
     int nextStep = context.interpreter.executeInstruction(ir);
@@ -142,7 +210,8 @@ static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, s
         return {result, "ok"};
 
     // The transition dialogue continues the event from `savedEventStep` if the party stays on the map.
-    bool isWaiting = ir.opcode == EVENT_MoveToMap && (ir.data.move_map_descr.house_id != HOUSE_INVALID || ir.data.move_map_descr.exit_pic_id);
+    const auto &move = ir.data.move_map_descr;
+    bool isWaiting = ir.opcode == EVENT_MoveToMap && (move.house_id != HOUSE_INVALID || move.exit_pic_id);
     return {result, isWaiting ? "wait" : "exit"};
 }
 
@@ -150,6 +219,11 @@ static EvtProgram &program(bool isGlobal) {
     return isGlobal ? engine->_globalEventMap : engine->_localEventMap;
 }
 
+/**
+ * @param folder                        Folder to list.
+ * @param filter                        Takes a file name in lower case and tells whether the file is wanted.
+ * @return                              Paths of the wanted files, sorted.
+ */
 static std::vector<std::string> scriptsIn(std::string_view folder, std::function<bool(std::string_view)> filter) {
     std::vector<std::string> result;
     if (!dfs->exists(folder))
@@ -162,7 +236,15 @@ static std::vector<std::string> scriptsIn(std::string_view folder, std::function
     return result;
 }
 
-static std::tuple<sol::object, sol::object> loadChunk(sol::state_view lua, std::string_view code, const std::string &chunkName, const sol::table &environment) {
+/**
+ * @param lua                           Lua state to load into.
+ * @param code                          Lua source.
+ * @param chunkName                     Name that errors in the code are reported under.
+ * @param environment                   Table that the code sees as its globals.
+ * @return                              The loaded function and nil, or nil and the reason the code didn't load.
+ */
+static std::tuple<sol::object, sol::object> loadChunk(sol::state_view lua, std::string_view code, const std::string &chunkName,
+                                                      const sol::table &environment) {
     sol::load_result chunk = lua.load(code, chunkName);
     if (!chunk.valid())
         return {sol::make_object(lua, sol::lua_nil), sol::make_object(lua, chunk.get<sol::error>().what())};
@@ -173,29 +255,38 @@ static std::tuple<sol::object, sol::object> loadChunk(sol::state_view lua, std::
 
 /**
  * @param period                        Timer period in ticks.
- * @param start                         Time of day in ticks for a daily timer, if the timer follows the calendar.
- * @return                              The `OnTimer` or `OnLongTimer` instruction that fires the same way.
+ * @param start                         Time of day in ticks that a calendar timer fires at. A timer without it counts
+ *                                      its period from the moment it's added, unless it's a refill timer with a
+ *                                      calendar period, which fires at midnight.
+ * @param isRefill                      Whether the timer is an `OnLongTimer`, which the engine checks after every
+ *                                      `OnTimer`.
+ * @return                              The instruction that fires the same way.
+ * @throws Exception                    If an evt timer can't fire like that.
  */
-static EvtInstruction timerInstruction(int64_t period, std::optional<double> start) {
+static EvtInstruction timerInstruction(double period, std::optional<double> start, bool isRefill) {
+    int64_t ticks = toInteger(period, "Timer: the period");
+    bool isYearly = ticks == Duration::fromYears(1).ticks();
+    bool isMonthly = ticks == Duration::fromDays(28).ticks();
+    bool isWeekly = ticks == Duration::fromDays(7).ticks();
+    bool isCalendarPeriod = isYearly || isMonthly || isWeekly || ticks == Duration::fromDays(1).ticks();
+
     EvtRecord record;
-    if (!start) {
-        int64_t halfMinutes = period / Duration::fromSeconds(30).ticks();
-        if (halfMinutes < 1 || halfMinutes > 0xFFFF || halfMinutes * Duration::fromSeconds(30).ticks() != period)
-            throw Exception("Timer: a period of {} ticks isn't a whole number of half minutes", period);
-        record.opcode = EVENT_OnTimer;
-        record.values = {int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), halfMinutes, int64_t(0)};
+    record.opcode = isRefill ? EVENT_OnLongTimer : EVENT_OnTimer;
+    if (!start && !(isRefill && isCalendarPeriod)) {
+        int64_t halfMinute = Duration::fromSeconds(30).ticks();
+        if (ticks < halfMinute || ticks % halfMinute != 0)
+            throw Exception("Timer: a period of {} ticks isn't a whole number of half minutes", ticks);
+        if (ticks / halfMinute > 0xFFFF)
+            throw Exception("Timer: a period of {} half minutes is over the limit of 65535, a longer timer needs a start time", ticks / halfMinute);
+        record.values = std::vector<EvtFieldValue>{int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), ticks / halfMinute, int64_t(0)};
     } else {
-        Duration timeOfDay = Duration::fromSeconds(std::llround(*start * Duration::fromSeconds(30).seconds() / Duration::fromSeconds(30).ticks()));
-        bool isYearly = period == Duration::fromYears(1).ticks();
-        bool isMonthly = period == Duration::fromDays(28).ticks();
-        bool isWeekly = period == Duration::fromDays(7).ticks();
-        if (!isYearly && !isMonthly && !isWeekly && period != Duration::fromDays(1).ticks())
-            throw Exception("Timer: a calendar timer fires every const.Day, const.Week, const.Month or const.Year");
-        if (timeOfDay < 0_ticks || timeOfDay >= Duration::fromDays(1))
+        if (!isCalendarPeriod)
+            throw Exception("Timer: a timer with a start time fires every const.Day, const.Week, const.Month or const.Year");
+        int64_t seconds = toInteger(start.value_or(0) * 30 / Duration::fromSeconds(30).ticks(), "Timer: the start");
+        if (seconds < 0 || seconds >= 24 * 60 * 60)
             throw Exception("Timer: the start has to be a time of day");
-        record.opcode = EVENT_OnLongTimer;
-        record.values = {int64_t(isYearly), int64_t(isMonthly), int64_t(isWeekly), timeOfDay.hours() % 24, timeOfDay.minutes() % 60,
-                         timeOfDay.seconds() % 60, int64_t(0), int64_t(0)};
+        record.values = std::vector<EvtFieldValue>{int64_t(isYearly), int64_t(isMonthly), int64_t(isWeekly), seconds / 3600, seconds / 60 % 60,
+                                                   seconds % 60, int64_t(0), int64_t(0)};
     }
     return evtInstruction(record);
 }
@@ -208,7 +299,6 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
     return solState.create_table_with(
         "newContext", sol::as_function([](int eventId, int targetPid, bool canShowMessages) {
             auto result = std::make_unique<EvtScriptContext>();
-            result->eventId = eventId;
             result->interpreter.prepare(eventId, Pid::fromPacked(targetPid), canShowMessages);
             return result;
         }),
@@ -243,8 +333,8 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
             return engine->_levelStrings[index];
         }),
         "setStr", sol::as_function([](int index, std::string value) {
-            if (index < 0 || index >= 500)
-                throw Exception("evt.str index {} is out of bounds [0..499]", index);
+            if (index < 0 || index >= MAX_LEVEL_STRINGS)
+                throw Exception("evt.str has room for strings 0 to {}, {} is outside", MAX_LEVEL_STRINGS - 1, index);
             if (index >= engine->_levelStrings.size())
                 engine->_levelStrings.resize(index + 1);
             engine->_levelStrings[index] = std::move(value);
@@ -254,10 +344,17 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
                 return std::nullopt;
             return houseTable[static_cast<HouseId>(houseId)].name;
         }),
-        "random", sol::as_function([](int hi) { return grng->random(hi); }),
+        "random", sol::as_function([](int hi) {
+            if (hi < 1)
+                throw Exception("Game.Rand() % {}: the modulus has to be positive", hi);
+            return grng->random(hi);
+        }),
         "time", sol::as_function([] { return static_cast<double>(pParty->GetPlayingTime().ticks()); }),
-        "addTimer", sol::as_function([](double period, std::optional<double> start, sol::protected_function callback) {
-            addTimer(timerInstruction(std::llround(period), start), [callback] {
+        "checkTimer", sol::as_function([](double period, std::optional<double> start, bool isRefill) {
+            timerInstruction(period, start, isRefill);
+        }),
+        "addTimer", sol::as_function([](double period, std::optional<double> start, bool isRefill, sol::main_protected_function callback) {
+            addTimer(timerInstruction(period, start, isRefill), [callback] {
                 sol::protected_function_result result = callback();
                 if (!result.valid()) {
                     MM_ERROR_IN(ScriptingSystem::ScriptingLogCategory, "Timer failed: {}", result.get<sol::error>().what());
@@ -266,7 +363,7 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
                 }
             });
         }),
-        "mapScripts", sol::as_function([](std::string mapName) {
+        "mapScripts", sol::as_function([](std::string_view mapName) {
             std::string fileName = ascii::toLower(mapName) + ".lua";
             return sol::as_table(scriptsIn("scripts/maps", [&](std::string_view name) {
                 return name == fileName || name.ends_with("." + fileName);
@@ -278,10 +375,10 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
         "loadScript", sol::as_function([](sol::this_state state, std::string path, sol::table environment) {
             return loadChunk(state, dfs->read(path).str(), "@" + path, environment);
         }),
-        "loadString", sol::as_function([](sol::this_state state, std::string code, std::string chunkName, sol::table environment) {
+        "loadString", sol::as_function([](sol::this_state state, std::string_view code, std::string chunkName, sol::table environment) {
             return loadChunk(state, code, "=" + chunkName, environment);
         }),
-        "decompile", sol::as_function([](std::string name, std::optional<std::vector<int>> skippedEvents) {
+        "decompile", sol::as_function([](std::string_view name, std::optional<std::vector<int>> skippedEvents) {
             return decompileGameEvt(name, skippedEvents.value_or(std::vector<int>()));
         }),
         "isDecompilingEvents", sol::as_function([] { return engine->config->debug.DecompiledEvents.value(); }),

@@ -91,7 +91,7 @@ void releaseBranchlessDialogue() {
         // Do not run event engine whith no event, it may happen when you close talk window
         // with NPC that only say catch phrases
         activeLevelDecoration = savedDecoration;
-        eventProcessor(savedEventID, Pid(), 1, savedEventStep);
+        continueSavedEvent();
     }
     activeLevelDecoration = nullptr;
     gameTimer->setPaused(false);

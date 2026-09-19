@@ -267,11 +267,11 @@ bool PartyCreationUI_Loop() {
 
     pParty->Reset();
     pParty->createDefaultParty();
-    onGameLoad();
 
     pNPCStats->pNPCData = pNPCStats->pOriginalNPCData;
     pNPCStats->pGroups = pNPCStats->pOriginalGroups;
     pNPCStats->pNPCData[3].flags |= NPC_HIRED; // Lady Margaret.
+    onGameLoad();
 
     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_PartyCreation>();
     return !PartyCreationUI_LoopInternal();
