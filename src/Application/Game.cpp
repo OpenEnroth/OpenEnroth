@@ -1670,7 +1670,7 @@ void Game::gameLoop() {
                                        // 0, 0xA0u);//(pConditions, 0, 160)
                                        // memset(pParty->pCharacters[i].pCharacterBuffs.data(),
                                        // 0, 0x180u);//(pCharacterBuffs[0], 0, 384)
-                    character.health = 1;
+                    character.health = 1; // TODO(captainurist): MM8 respawns with full HP and SP, implement that for MM8.
                 }
                 pParty->setActiveCharacterIndex(0);
 
