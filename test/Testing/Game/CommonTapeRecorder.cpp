@@ -16,6 +16,8 @@
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
 
+#include "Media/Audio/SoundList.h"
+
 #include "Utility/String/Ascii.h"
 
 CommonTapeRecorder::CommonTapeRecorder(TestController *controller) : _controller(controller) {
@@ -170,6 +172,10 @@ TestTape<bool> CommonTapeRecorder::questBit(QuestBit bit) {
 
 TestMultiTape<SoundId> CommonTapeRecorder::sounds() {
     return _controller->recordFunctionTape<SoundId>(CALL_PLAY_SOUND);
+}
+
+TestMultiTape<std::string> CommonTapeRecorder::soundNames() {
+    return _controller->recordFunctionTape<SoundId>(CALL_PLAY_SOUND, [](SoundId id) { return pSoundList->soundInfo(id)->name; });
 }
 
 TestMultiTape<std::string> CommonTapeRecorder::hudTextures() {

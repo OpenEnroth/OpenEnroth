@@ -95,6 +95,12 @@ class CommonTapeRecorder {
 
     TestMultiTape<SoundId> sounds();
 
+    /**
+     * @return                          Tape of the names of the sounds played, as listed in `dsounds.bin`. Can't be
+     *                                  recorded in the same test as `sounds()`.
+     */
+    TestMultiTape<std::string> soundNames();
+
     TestMultiTape<std::string> hudTextures();
 
     /**

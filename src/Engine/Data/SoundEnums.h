@@ -140,8 +140,6 @@ enum class SoundId {
     SOUND_Sacrifice2 = 18060,
     SOUND_quest = 20001,
     SOUND_HumanTownHall = 31401,
-    SOUND_ElfBank01 = 38001,
-    SOUND_ElfMagicShop01 = 38201,
     SOUND_DwarfWeaponShop01 = 38501,
     SOUND_DwarfWeaponShop02 = 38502,
     SOUND_DwarfWeaponShop03 = 38503,
