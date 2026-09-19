@@ -89,6 +89,14 @@ class EngineController {
     void doubleClickGuiButton(std::string_view buttonId);
 
     /**
+     * Moves the mouse over a GUI button identified by the provided id.
+     *
+     * @param buttonId                  Button id.
+     * @throws Exception                If the button with the provided id doesn't exist.
+     */
+    void hoverGuiButton(std::string_view buttonId);
+
+    /**
      * Closes all menus and goes to the game screen. Will fail if main menu is currently open.
      */
     void goToGame();
