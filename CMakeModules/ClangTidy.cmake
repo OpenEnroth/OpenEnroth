@@ -40,7 +40,7 @@ function(init_check_tidy)
                 -p "${PROJECT_BINARY_DIR}" -quiet
                 -config-file "${PROJECT_SOURCE_DIR}/.clang-tidy"
                 ${EXTRA_ARGS}
-                "${SOURCE_DIR_PATTERN}src.*\\.cpp$" "${SOURCE_DIR_PATTERN}test.*\\.cpp$" # The database also lists OpenEnroth.rc on Windows.
+                "${SOURCE_DIR_PATTERN}src.*\\.cpp$" "${SOURCE_DIR_PATTERN}test.*\\.cpp$"
         COMMENT "Running clang-tidy"
         USES_TERMINAL # run-clang-tidy parallelizes internally, and its progress output is worth seeing live.
         VERBATIM)
