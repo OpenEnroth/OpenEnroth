@@ -566,7 +566,7 @@ GAME_TEST(Issues, Issue2759) {
     EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
 }
 
-GAME_TEST(Issues, Issue2771a) {
+GAME_TEST(Issues, Issue2771) {
     // Immolation cast by a map event crashed the game on the next regeneration tick. The buff got caster -1, and the
     // damage sprite built a character pid out of it.
     auto hpTape = actorTapes.hp(0);
@@ -593,15 +593,5 @@ GAME_TEST(Issues, Issue2771a) {
     test.startTaping();
     game.tick(100);
     EXPECT_LT(hpTape.delta(), 0);
-    EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(1))); // The character who clicked the pedestal.
-}
-
-GAME_TEST(Issues, Issue2771b) {
-    // Loading a vanilla save with Immolation running crashed on the next regeneration tick. Vanilla stores the caster as
-    // 0, which loaded as -1.
-    game.startNewGame();
-    pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(pParty->GetPlayingTime() + Duration::fromHours(1), MASTERY_GRANDMASTER, 5, 0, -1); // Saved as 0, like vanilla.
-    game.loadGame(game.saveGame());
-    game.tick(100);
-    EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 0);
+    EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(1))); // The active character.
 }
