@@ -195,9 +195,9 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
         if (pFace->eventId) {
             if (pFace->HasEventHint())
-                pFace->attributes |= FACE_HAS_HINT;
+                pFace->attributes |= FACE_EVENT_IS_HINT;
             else
-                pFace->attributes &= ~FACE_HAS_HINT;
+                pFace->attributes &= ~FACE_EVENT_IS_HINT;
         }
     }
 
@@ -295,7 +295,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - not all of the attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BLVFace &pFace : pIndoor->faces)
-        dst->faceAttributes.push_back(std::to_underlying(pFace.attributes & ~(FACE_HAS_HINT | FACE_ANIMATED)));
+        dst->faceAttributes.push_back(std::to_underlying(pFace.attributes & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -326,8 +326,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BLVFace &face : dst->faces) {
-        face.attributes &= FACE_ANIMATED | FACE_HAS_HINT;
-        face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_HINT | FACE_ANIMATED);
+        face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
+        face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
     }
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
@@ -464,9 +464,9 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
 
         if (dst->faces[i].eventId) {
             if (dst->faces[i].HasEventHint())
-                dst->faces[i].attributes |= FACE_HAS_HINT;
+                dst->faces[i].attributes |= FACE_EVENT_IS_HINT;
             else
-                dst->faces[i].attributes &= ~FACE_HAS_HINT;
+                dst->faces[i].attributes &= ~FACE_EVENT_IS_HINT;
         }
     }
 }
@@ -588,7 +588,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
         for (const BLVFace &face : model.faces)
-            dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_HAS_HINT | FACE_ANIMATED)));
+            dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -613,8 +613,8 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
         for (BLVFace &face : model.faces) {
-            face.attributes &= FACE_ANIMATED | FACE_HAS_HINT;
-            face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_HINT | FACE_ANIMATED);
+            face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
+            face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
         }
     }
 

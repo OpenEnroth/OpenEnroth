@@ -679,7 +679,7 @@ std::string GameUI_GetMinimapHintText() {
             if (v7 < 2 * model.boundingRadius) {
                 for (BLVFace &face : model.faces) {
                     if (face.eventId) {
-                        if (!(face.attributes & FACE_HAS_HINT)) {
+                        if (!(face.attributes & FACE_EVENT_IS_HINT)) {
                             std::string hintString = getEventHintString(face.eventId);
                             if (!hintString.empty())
                                 result = hintString;

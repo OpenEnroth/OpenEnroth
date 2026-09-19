@@ -6,10 +6,13 @@
 #include <optional>
 #include <ranges>
 #include <string>
+#include <unordered_set>
 #include <utility>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
@@ -322,6 +325,11 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     }
 
     reconstruct(delta, this);
+
+    std::vector<BLVFace *> allFaces;
+    for (BLVFace &face : faces)
+        allFaces.push_back(&face);
+    repairClickableFaces(allFaces);
 
     if (respawnTimed || respawnInitial)
         dlv.lastRespawnDay = num_days_played;
@@ -1336,6 +1344,53 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
 //----- (0046A334) --------------------------------------------------------
 // TODO(Nik-RE-dev): does not belong here, it's common function for interaction for both indoor/outdoor
 // TODO(Nik-RE-dev): get rid of external function declaration inside
+static bool isInteractiveEvent(int eventId) {
+    const EvtProgram &program = engine->_localEventMap;
+    if (!program.hasEvent(eventId))
+        return false;
+
+    for (const EvtInstruction &ir : program.function(eventId)) {
+        if (ir.step != 0)
+            continue;
+
+        switch (ir.opcode) {
+        case EVENT_Exit:
+        case EVENT_OnTimer:
+        case EVENT_OnMapReload:
+        case EVENT_OnLongTimer:
+        case EVENT_OnCanShowDialogItemCmp:
+        case EVENT_OnMapLeave:
+        case EVENT_OnDateTimer:
+            return false;
+        default:
+            return true;
+        }
+    }
+    return false;
+}
+
+void repairClickableFaces(std::span<BLVFace *> faces) {
+    const FaceAttributes triggers = FACE_PRESSURE_PLATE | FACE_TriggerByObject | FACE_TriggerByMonster;
+
+    std::unordered_set<int> clickableEvents;
+    std::unordered_set<int> triggeredEvents;
+    for (const BLVFace *face : faces) {
+        if (face->attributes & FACE_CLICKABLE)
+            clickableEvents.insert(face->eventId);
+        if (face->attributes & triggers)
+            triggeredEvents.insert(face->eventId);
+    }
+
+    for (BLVFace *face : faces) {
+        if (!face->eventId || (face->attributes & (FACE_CLICKABLE | triggers)))
+            continue;
+        if (triggeredEvents.contains(face->eventId) && !clickableEvents.contains(face->eventId))
+            continue;
+        if (isInteractiveEvent(face->eventId))
+            face->attributes |= FACE_CLICKABLE;
+    }
+}
+
 char DoInteractionWithTopmostZObject(Pid pid) {
     auto id = pid.id();
     auto type = pid.type();
@@ -1383,43 +1438,30 @@ char DoInteractionWithTopmostZObject(Pid pid) {
             }
             break;
 
-        case OBJECT_Face:
+        case OBJECT_Face: {
+            const BLVFace *face = nullptr;
             if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                int bmodel_id = id >> 6;
-                int face_id = id & 0x3F;
-
-                if (bmodel_id >= pOutdoor->pBModels.size()) {
+                if ((id >> 6) >= pOutdoor->pBModels.size())
                     return 1;
-                }
-
-                BLVFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
-
-                if (model.attributes & FACE_HAS_HINT || model.eventId == 0) {
-                    return 1;
-                }
-
-                if (pParty->hasActiveCharacter()) {
-                    eventProcessor(pOutdoor->pBModels[bmodel_id].faces[face_id].eventId, pid, 1);
-                } else {
-                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                }
+                face = &pOutdoor->face(pid);
             } else {
-                if (!(pIndoor->faces[id].attributes & FACE_CLICKABLE)) {
-                    engine->_statusBar->nothingHere();
-                    return 1;
-                }
-                if (pIndoor->faces[id].attributes & FACE_HAS_HINT || !pIndoor->faces[id].eventId) {
-                    return 1;
-                }
+                face = &pIndoor->faces[id];
+            }
 
-                if (pParty->hasActiveCharacter()) {
-                    eventProcessor((int16_t)pIndoor->faces[id].eventId, pid, 1);
-                } else {
-                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                }
+            if (!face->Clickable()) {
+                engine->_statusBar->nothingHere();
+                return 1;
+            }
+            if (face->attributes & FACE_EVENT_IS_HINT || face->eventId == 0)
+                return 1;
+
+            if (pParty->hasActiveCharacter()) {
+                eventProcessor(face->eventId, pid, 1);
+            } else {
+                engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             }
             return 0;
-            break;
+        }
 
         default:
             MM_WARNING("Warning: Invalid ID reached!");
