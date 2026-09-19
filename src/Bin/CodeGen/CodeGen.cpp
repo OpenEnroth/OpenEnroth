@@ -561,6 +561,7 @@ int runLstrCodegen(const CodeGenOptions &options, ResourceManager *resourceManag
     return 0;
 }
 
+// TODO(captainurist): run every subcommand in the integration tests and check that it exits with 0.
 int platformMain(int argc, char **argv) {
     try {
         UnicodeCrt _(argc, argv);
