@@ -99,7 +99,7 @@ class Renderer {
      */
     virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color = colorTable.White) = 0;
     void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color = colorTable.White);
-    void DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color = colorTable.White);
+    virtual void DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color = colorTable.White);
 
     void FillRect(const Recti &rect, Color color);
 
