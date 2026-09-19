@@ -273,6 +273,17 @@ LodSprite lod::decodeSprite(const Blob &blob) {
     return result;
 }
 
+Sizei lod::decodeSpriteSize(const Blob &blob) {
+    if (!detectSprite(blob))
+        throw Exception("Cannot decode LOD entry '{}' as LOD sprite", blob.displayPath());
+
+    BlobInputStream stream(blob);
+    LodSpriteHeader_MM6 header;
+    deserialize(stream, &header);
+
+    return Sizei(header.width, header.height);
+}
+
 LodFont lod::decodeFont(const Blob &blob) {
     if (!detectFont(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD font", blob.displayPath());

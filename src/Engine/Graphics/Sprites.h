@@ -11,7 +11,6 @@
 
 struct DecorationData;
 class GraphicsImage;
-struct LodSprite;
 
 class Sprite {
  public:
@@ -21,7 +20,6 @@ class Sprite {
     GraphicsImage *texture = nullptr;
     int uWidth = 0; // Same as texture->width().
     int uHeight = 0;
-    LodSprite *sprite_header = nullptr;
 };
 
 // TODO(captainurist) : move to Engine/Data and Engine/Tables

@@ -3,7 +3,6 @@
 #include <vector>
 #include <utility>
 #include <string>
-#include <memory>
 
 #include "Engine/AssetsManager.h" // TODO(captainurist): dependency doesn't belong here
 
@@ -48,24 +47,20 @@ Sprite *LodSpriteCache::loadSprite(std::string_view pContainerName) {
     if (result)
         return result;
 
-    std::unique_ptr<LodSprite> header = std::make_unique<LodSprite>();
-    if (!LoadSpriteFromFile(header.get(), name))
+    if (!_reader.exists(name))
         return nullptr;
+
+    Sizei size = lod::decodeSpriteSize(_reader.read(name));
 
     Sprite &sprite = _spriteByName[name];
     sprite.pName = pContainerName;
-    sprite.uWidth = header->image.width();
-    sprite.uHeight = header->image.height();
+    sprite.uWidth = size.w;
+    sprite.uHeight = size.h;
     sprite.texture = assets->getSprite(pContainerName); // TODO(captainurist): very weird dependency here.
-    sprite.sprite_header = header.release();
     _spritesInOrder.push_back(name);
     return &sprite;
 }
 
-bool LodSpriteCache::LoadSpriteFromFile(LodSprite *pSprite, std::string_view pContainer) {
-    if (!_reader.exists(pContainer))
-        return false;
-
-    *pSprite = lod::decodeSprite(_reader.read(pContainer));
-    return true;
+LodSprite LodSpriteCache::decodeSprite(std::string_view name) {
+    return lod::decodeSprite(_reader.read(name));
 }
