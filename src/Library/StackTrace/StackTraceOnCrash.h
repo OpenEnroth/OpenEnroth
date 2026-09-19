@@ -5,6 +5,15 @@ bool isRunningUnderRosetta();
 } // namespace detail
 
 /**
+ * When `StackTraceOnCrash` loads the debug info it needs to symbolize a trace.
+ */
+enum class StackTraceSymbolLoading {
+    STACK_TRACE_LOAD_SYMBOLS_AT_START, // In the constructor, so that the crash handler doesn't have to.
+    STACK_TRACE_LOAD_SYMBOLS_ON_CRASH, // In the crash handler, with the process already broken.
+};
+using enum StackTraceSymbolLoading;
+
+/**
  * Installs crash handlers that dump a stack trace to stderr, then let the crash proceed so that the OS still
  * produces a core dump or a crash report. The handlers are never uninstalled, the process is dying anyway.
  *
@@ -33,6 +42,9 @@ class StackTraceOnCrash {
     /**
      * @param callback                  Called after the crash trace is printed, right before the process
      *                                  dies.
+     * @param symbolLoading             When to load debug info. Loading it at start takes a while for a binary
+     *                                  with a lot of debug info, and the time is spent even if nothing crashes.
      */
-    explicit StackTraceOnCrash(void (*callback)() = nullptr);
+    explicit StackTraceOnCrash(void (*callback)() = nullptr,
+                               StackTraceSymbolLoading symbolLoading = STACK_TRACE_LOAD_SYMBOLS_AT_START);
 };

@@ -25,7 +25,7 @@ void printGoogleTestHelp(char *app) {
 
 int platformMain(int argc, char **argv) {
     try {
-        StackTraceOnCrash st;
+        StackTraceOnCrash st(nullptr, STACK_TRACE_LOAD_SYMBOLS_ON_CRASH); // CI runs each test in a process of its own.
         UnicodeCrt _(argc, argv);
         GameTestOptions opts = GameTestOptions::parse(argc, argv);
         if (opts.helpPrinted) {
