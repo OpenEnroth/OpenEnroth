@@ -639,5 +639,13 @@ GAME_TEST(Issues, Issue2784c) {
 
 GAME_TEST(Issues, Issue2784d) {
     // Natural Magic greeted with the dwarf smith's lines.
-    EXPECT_EQ(pSoundList->soundInfo(SOUND_ElfMagicShop01)->name, "Elf Magic Shop 01");
+    auto houseTape = tapes.house();
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.teleportTo(MAP_TULAREAN_FOREST, Vec3f(-12992, -6906, 1344), 90); // In front of Natural Magic.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(houseTape.back(), HOUSE_MAGIC_SHOP_TULAREAN_FOREST);
+    EXPECT_CONTAINS(soundsTape.flatten().map([](SoundId id) { return pSoundList->soundInfo(id)->name; }), "Elf Magic Shop 01");
 }
