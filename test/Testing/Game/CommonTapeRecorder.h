@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <initializer_list>
-#include <optional>
 #include <utility>
 #include <string>
 #include <type_traits>
@@ -96,9 +95,9 @@ class CommonTapeRecorder {
 
     TestTape<bool> questBit(QuestBit bit);
 
-    TestTape<std::optional<DoorState>> doorState(int doorId); // Empty while the door's level isn't loaded, e.g. on loading screens.
+    TestTape<DoorState> doorState(int doorId); // The door must exist on every taped frame, and loading screens have no doors.
 
-    TestMultiTape<std::optional<DoorState>> doorStates(std::initializer_list<int> doorIds);
+    TestMultiTape<DoorState> doorStates(std::initializer_list<int> doorIds);
 
     TestMultiTape<SoundId> sounds();
 
