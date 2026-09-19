@@ -1197,7 +1197,7 @@ GAME_TEST(Issues, Issue1998) {
         test.startTaping();
         game.pressButton(BUTTON_RIGHT, 30, 30);
         game.tick();
-        game.releaseButton(BUTTON_RIGHT, 30, 30);
+        game.releaseButton(BUTTON_RIGHT);
         game.tick();
         test.stopTaping();
 

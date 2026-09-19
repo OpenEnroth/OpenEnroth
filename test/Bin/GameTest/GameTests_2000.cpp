@@ -1102,7 +1102,7 @@ GAME_TEST(Issues, Issue2452) {
     for (int y = 40; y < 200; y++) {
         game.pressButton(BUTTON_RIGHT, 100, y);
         game.tick(1);
-        game.releaseButton(BUTTON_RIGHT, 100, y);
+        game.releaseButton(BUTTON_RIGHT);
         game.tick(1);
     }
 

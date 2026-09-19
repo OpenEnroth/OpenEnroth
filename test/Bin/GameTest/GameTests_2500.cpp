@@ -486,7 +486,7 @@ GAME_TEST(Issues, Issue2636) {
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
     game.pressButton(BUTTON_RIGHT, 100, 60); // Right-click hold over the Might row shows its tooltip.
     game.tick(2);
-    game.releaseButton(BUTTON_RIGHT, 100, 60);
+    game.releaseButton(BUTTON_RIGHT);
     game.tick(1);
     EXPECT_CONTAINS(textTape.flatten(), "Might is the statistic that represents a character's overall strength, "
                                         "and the ability to put that strength where it counts.  Characters with a "

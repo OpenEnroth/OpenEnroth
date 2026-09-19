@@ -119,12 +119,20 @@ void EngineController::pressButton(PlatformMouseButton button, Pointi point, boo
     pressButton(button, point.x, point.y, isDoubleClick);
 }
 
+void EngineController::pressButton(PlatformMouseButton button, bool isDoubleClick) {
+    pressButton(button, mouse->position(), isDoubleClick);
+}
+
 void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     pressOrReleaseButton(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
 }
 
 void EngineController::releaseButton(PlatformMouseButton button, Pointi point) {
     releaseButton(button, point.x, point.y);
+}
+
+void EngineController::releaseButton(PlatformMouseButton button) {
+    releaseButton(button, mouse->position());
 }
 
 void EngineController::moveMouse(int x, int y) {
