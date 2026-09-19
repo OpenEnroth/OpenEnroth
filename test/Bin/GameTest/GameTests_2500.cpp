@@ -625,7 +625,7 @@ GAME_TEST(Issues, Issue2784b) {
 }
 
 GAME_TEST(Issues, Issue2784c) {
-    // Natural Magic and The Balanced Axe both greeted with the dwarf smith's lines.
+    // The Balanced Axe shared its greeting ids with Natural Magic.
     auto houseTape = tapes.house();
     auto soundsTape = tapes.sounds();
     game.startNewGame();
@@ -635,5 +635,9 @@ GAME_TEST(Issues, Issue2784c) {
     game.tick();
     EXPECT_EQ(houseTape.back(), HOUSE_WEAPON_SHOP_STONE_CITY);
     EXPECT_EQ(soundsTape.flatten().count(SOUND_DwarfWeaponShop01), 1);
-    EXPECT_EQ(pSoundList->soundInfo(SOUND_ElfMagicShop01)->name, "Elf Magic Shop 01"); // Natural Magic's greeting.
+}
+
+GAME_TEST(Issues, Issue2784d) {
+    // Natural Magic greeted with the dwarf smith's lines.
+    EXPECT_EQ(pSoundList->soundInfo(SOUND_ElfMagicShop01)->name, "Elf Magic Shop 01");
 }
