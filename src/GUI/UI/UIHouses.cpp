@@ -116,7 +116,7 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Elf Training Ground", 0x18, 0x19F, HOUSE_TYPE_TRAINING_GROUND, 74, 0 },
     { "Human Weapon Smith01", 0x16, 0x2C1, HOUSE_TYPE_WEAPON_SHOP, 45, 4 },
     { "Necromancer Weapon Smith01", 0x16, 0x2D9, HOUSE_TYPE_WEAPON_SHOP, 63, 4 },
-    { "Dwarven Weapon Smith01", 0x16, 0x2EE, HOUSE_TYPE_WEAPON_SHOP, 85, 4 }, // Vanilla MM7 has 82, shared with the Elf Magic Shop.
+    { "Dwarven Weapon Smith01", 0x16, 0x2EE, HOUSE_TYPE_WEAPON_SHOP, 85, 4 }, // Vanilla MM7 has 82, the Elf Magic Shop's. The sound table loader moves the dwarf smith's lines to the free room 85.
     { "Wizard Weapon Smith", 0x16, 0x2D5, HOUSE_TYPE_WEAPON_SHOP, 13, 4 },
     { "Warlock Weapon Smith", 0x16, 0x2D7, HOUSE_TYPE_WEAPON_SHOP, 23, 4 },
     { "Elf Weapon Smith", 0x16, 0x2CA, HOUSE_TYPE_WEAPON_SHOP, 75, 4 },
