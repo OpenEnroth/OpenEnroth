@@ -360,7 +360,7 @@ void oracleDialogue() {
 
     // missing item found
     if (item_id != ITEM_NULL) {
-        pParty->giveItem(item_id);
+        pParty->createHoldingItem(item_id);
         // TODO(captainurist): what if fmt throws?
         current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful" // NOLINT: this is not ::sprintf.
                                         fmt::format("{::}{}\f00000", colorTable.Sunflower.tag(),

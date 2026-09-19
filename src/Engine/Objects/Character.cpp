@@ -3575,7 +3575,7 @@ void Character::giveAutonote(int autonote) {
         spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, characterIndex());
         playReaction(SPEECH_AWARD_GOT);
         bFlashAutonotesBook = true;
-        autonoteBookDisplayType = pAutonoteTxt[autonote].eType;  // dword_72371C[2 * a3];
+        autonoteBookDisplayType = pAutonoteTxt[autonote].eType;
     }
     pParty->_autonoteBits.set(autonote);
     PlayAwardSound();
@@ -4704,7 +4704,7 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             pParty->_questBits.set(static_cast<QuestBit>(val));
             return;
         case VAR_PlayerItemInHands:
-            pParty->giveItem(ItemId(val));
+            pParty->createHoldingItem(ItemId(val));
             return;
         case VAR_FixedGold:
             pParty->partyFindsGold(val, GOLD_RECEIVE_NOSHARE_MSG);

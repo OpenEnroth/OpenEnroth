@@ -91,12 +91,12 @@ struct Party {
     Item takeHoldingItem();
 
     /**
-     * Creates an identified item and puts it into the party's hand, see `setHoldingItem`. A spawnable artifact is
-     * marked as found.
+     * Creates an identified item and puts it into the party's hand, see `setHoldingItem`. The item is generated as
+     * `ITEM_SOURCE_SCRIPT`, see `Item::postGenerate`. A spawnable artifact is marked as found.
      *
      * @param itemId                    Item type to create.
      */
-    void giveItem(ItemId itemId);
+    void createHoldingItem(ItemId itemId);
 
     /**
      * Makes the first character that can act the active one.

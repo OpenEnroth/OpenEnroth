@@ -202,7 +202,7 @@ Item Party::takeHoldingItem() {
     return result;
 }
 
-void Party::giveItem(ItemId itemId) {
+void Party::createHoldingItem(ItemId itemId) {
     Item item;
     item.flags = ITEM_IDENTIFIED;
     item.itemId = itemId;
