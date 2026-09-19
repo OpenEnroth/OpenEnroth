@@ -9,61 +9,64 @@ issues. The second is what is still pending and whose move it is.
 ## Rules
 
 **This session only.** Many agents run here at once, one worktree each, all under one GitHub
-login. Another agent's pull request, issue or stranded commit must never appear. `gather.py`
-scopes itself from this session's transcript. If it prints `NO SESSION SCOPE`, say that the scope
-could not be established and stop, rather than widening it.
+login. Report only what this conversation did. Never sweep every worktree, every open pull request
+or every transcript, because that reports other agents' work as this session's.
 
-**Live, never recalled.** Every status and every description comes from `gather.py` output made
-now. A row the output lacks is gathered again with `--pr N`, never written from memory.
+**Live, never recalled.** Which items belong to the session comes from the conversation. Their
+state, and what they are about, come from `status.py` run now.
 
 **Read-only.** A summary is an answer. Do not commit, push, delete, tidy or start on the pending
 items while producing it.
 
 ## Gather
 
-```sh
-<skill-dir>/gather.py
-```
+1. List the pull requests and issues this session created or changed, meaning opened, pushed to,
+   commented on, edited, closed or merged. One it only read is not on the list. If the
+   conversation was compacted and the list may be incomplete, print every number this session's
+   transcripts link to, and keep the ones the session worked on.
 
-`<skill-dir>` is the directory holding this file, which the harness prints when the skill loads.
-The run takes about five seconds and prints three things.
+   ```sh
+   <skill-dir>/status.py --candidates
+   ```
 
-- The worktrees this session entered, committed in or edited, each with its uncommitted files,
-  its commits on no remote-tracking ref, and its branch's pull request.
-- Each pull request or issue this session created or wrote to, with live state, checks, review
-  decision, unresolved review threads, labels, an `about:` line from its own description and a
-  `cell:` line holding the finished text for the first column.
-- The numbers the session only read, which are left out on purpose.
+2. Get the live state of the list. `<skill-dir>` is the directory holding this file.
 
-`--pr N` adds a pull request or an issue the transcript missed, such as one the user opened by
-hand or one pushed to under a different branch name. `--session ID` reads another session.
-`--all-worktrees` shows the whole checkout, and is only for when the user asks for that.
+   ```sh
+   <skill-dir>/status.py 2768 2763
+   ```
 
-The transcript on disk survives compaction, so this works late in a long session. A fresh agent
-working from a handoff has an empty transcript. It reads the handoff, passes every number the
-handoff names with `--pr`, and trusts the live output wherever the two disagree.
+   Each number gets a block with its kind, state, checks, review decision, unresolved review
+   threads, labels, an `about:` line from its own description, and a `cell:` line.
+
+3. In each worktree the session worked in, look for work that never left it.
+
+   ```sh
+   git status --short
+   git log --oneline HEAD --not --remotes
+   ```
+
+A fresh agent working from a handoff has only the handoff. It passes every number the handoff
+names to `status.py`, and trusts the live output wherever the two disagree.
 
 ## First table: pull requests and issues
 
 | Item | What it is | Status |
 
-Rows are the pull requests and issues in the gather output, newest first, and nothing else.
-Anything without a number on GitHub stays out, which covers an investigation, a review verdict,
-a finding and a branch. If such a thing needs action it is a row in the second table. If it needs
-none it gets at most one line of prose under the table. Drop a gathered row only when the session
-did no work on it.
+Rows are the pull requests and issues from step 1, newest first, and nothing else. Anything
+without a number on GitHub stays out, which covers an investigation, a review verdict, a finding
+and a branch. If such a thing needs action it is a row in the second table. If it needs none it
+gets at most one line of prose under the table.
 
-- **Item** is the `cell:` line from the gather output, copied as it stands. It reads
-  `[PR #2768](url)` for a pull request and `[Issue #2763](url)` for an issue, so the two are told
-  apart at a glance. Never a bare `#2768`.
+- **Item** is the `cell:` line, copied as it stands. It reads `[PR #2768](url)` for a pull
+  request and `[Issue #2763](url)` for an issue. Never a bare `#2768`.
 - **What it is** says what the item is about, not what this session did to it. The reader has
   probably never opened it, so lead with what it fixes or changes, taken from the title and the
   `about:` line. "Review fixes pushed, exact end-time assertion, extra ticks after the wait"
   describes an afternoon and leaves the reader with no idea what the pull request is for. When
   the session did not write the whole thing, add its part as a second sentence, as in "Ensrick's
   test that waiting until dawn ends at 5:00. This session pushed review fixes."
-- **Status** is the gathered state, trimmed. `Merged 2026-09-10`, `Open, all 21 checks green,
-  approved`, `Open, 14/21 green, 7 still running`, `Open, CONFLICTING`, `Filed 2026-09-17, open`.
+- **Status** is the `status:` line, trimmed. `Merged 2026-09-10`, `Open, 21/21 checks green,
+  approved`, `Open, 14/21 checks green, 7 pending or cancelled`, `Open, filed 2026-09-17`.
 
 With no pull requests and no issues, say so in one line and print no table.
 
@@ -84,8 +87,8 @@ one of these.
 - `Verify` is a claim the session made and nobody checked.
 - `Save tool` is a script the next session would otherwise write again from nothing.
 
-**Item** takes the same `PR #2768` or `Issue #2763` form when the row is about one, and a short
-name otherwise.
+**Item** takes the `PR #2768` or `Issue #2763` form when the row is about one, and a short name
+otherwise.
 
 **Whose move** is `You` or `Me`. It is what lets the user answer the table line by line, so the
 user's rows come first.
