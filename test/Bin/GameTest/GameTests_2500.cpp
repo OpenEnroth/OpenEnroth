@@ -583,7 +583,7 @@ GAME_TEST(Issues, Issue2771) {
     game.goToGame(); // A new party arriving here gets a dialogue with Archibald Ironfist, and a Blaster in hand.
     game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Puts the Blaster into the second character's pack.
     game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2);
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Makes the second character active.
     game.pointMouseAtDecoration(380);
     game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
     game.tick(3);
