@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <chrono>
 #include <unordered_set>
 #include <ranges>
 #include <string>
@@ -34,6 +35,8 @@
 #include "Engine/Snapshots/EntitySnapshots.h"
 
 #include "Io/Mouse.h"
+
+#include "Media/MediaPlayer.h"
 
 #include "GameTestCommon.h"
 
@@ -308,6 +311,36 @@ GAME_TEST(Issues, Issue1569) {
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAME)); // Visited the shop.
     EXPECT_EQ(chainTape, tape(false, true)); // Learned chain mail.
     EXPECT_EQ(goldTape.delta(), -500); // And paid for it.
+}
+
+GAME_TEST(Issues, Issue1579) {
+    // Playing movies leaked memory. The ASan build's leak check catches it, this test only has to play them.
+    auto screenTape = tapes.screen();
+    auto houseTape = tapes.house();
+    auto movieTape = tapes.custom([] { return pMediaPlayer->IsMoviePlaying(); });
+    engine->config->debug.NoVideo.setValue(false);
+    engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
+    test.startTaping();
+
+    game.pressGuiButton("MainMenu_NewGame");
+    game.tick(2);
+    game.pressGuiButton("PartyCreation_OK");
+    game.tick(10); // Intro Post is playing.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.skipLoadingScreen();
+
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(11648, 7430, 96), 90); // In front of the door of Tellmar Residence, facing it.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    auto start = std::chrono::steady_clock::now();
+    while (std::chrono::steady_clock::now() - start < std::chrono::seconds(2))
+        game.tick(); // House movies run on wall-clock time, and this one ends and restarts in the meantime.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+
+    EXPECT_CONTAINS(screenTape, SCREEN_VIDEO);
+    EXPECT_CONTAINS(houseTape, HOUSE_EMERALD_ISLAND_TELLMAR_RESIDENCE);
+    EXPECT_EQ(movieTape, tape(false, true, false, true, false)); // Intro Post, then the house movie.
 }
 
 GAME_TEST(Issues, Issue1597) {
