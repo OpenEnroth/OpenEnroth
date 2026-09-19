@@ -763,7 +763,7 @@ void Rest(Duration restTime) {
 }
 
 void restAndHeal(Duration restTime) {
-    pParty->GetPlayingTime() += restTime;
+    pParty->skipTime(restTime);
 
     pParty->pHirelings[0].hasUsedAbility = false;
     pParty->pHirelings[1].hasUsedAbility = false;

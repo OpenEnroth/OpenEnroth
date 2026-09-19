@@ -714,7 +714,7 @@ void Game::processQueuedMessages() {
                     onMapLeave();
                     startMapTransition(destination);
                     if (leavingArena)
-                        pParty->GetPlayingTime() += Duration::fromDays(4);
+                        pParty->skipTime(Duration::fromDays(4));
                 } else if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
                 } else {
@@ -1651,7 +1651,7 @@ void Game::gameLoop() {
                     character.giveAward(AWARD_DEATHS);
                 }
                 pParty->days_played_without_rest = 0;
-                pParty->GetPlayingTime() += Duration::fromDays(7);  // += 2580480
+                pParty->skipTime(Duration::fromDays(7));
                 pParty->uFlags &= ~(PARTY_FLAG_WATER_DAMAGE | PARTY_FLAG_BURNING);
                 pParty->SetGold(0);
                 pActiveOverlayList->Reset();
