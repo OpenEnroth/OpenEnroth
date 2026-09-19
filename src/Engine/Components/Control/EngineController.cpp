@@ -440,6 +440,23 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
         throw Exception("Failed to point mouse at decoration #{}", decorationId);
 }
 
+void EngineController::pointMouseAtFace(int faceId) {
+    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
+    // camera is still at the old position. Tick once to let it catch up.
+    tick(1);
+
+    Vec3f center = pIndoor->faces[faceId].boundingBox.center();
+    Vec3f viewPos = pCamera3D->ViewTransform(&center);
+    if (viewPos.x <= 0)
+        throw Exception("Face #{} is behind the camera", faceId);
+    Vec2f screenPos = pCamera3D->Project(viewPos);
+
+    moveMouse(screenPos.x, screenPos.y);
+    tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
+    if (engine->PickMouseForInteraction().pid != Pid(OBJECT_Face, faceId))
+        throw Exception("Failed to point mouse at face #{}", faceId);
+}
+
 void EngineController::activateCharacter(int characterIndex) {
     assert(characterIndex >= 0 && characterIndex < std::ssize(pParty->pCharacters));
 
