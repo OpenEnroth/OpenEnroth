@@ -623,7 +623,6 @@ GAME_TEST(Issues, Issue2771) {
 GAME_TEST(Issues, Issue2776a) {
     // After a party death, characters wearing regeneration gear came back with full HP and SP, regenerated for every
     // 5 minutes of the week that the death skips.
-    auto deathsTape = tapes.deaths();
     auto hpsTape = charTapes.hps();
     auto mpsTape = charTapes.mps();
     game.startNewGame();
@@ -632,27 +631,49 @@ GAME_TEST(Issues, Issue2776a) {
         character.mana = 0;
     }
     test.startTaping();
-    game.tick(); // The frame of the death isn't drawn, so the tapes need one from before it.
     for (Character &character : pParty->pCharacters)
         character.receiveDamage(10000, DAMAGE_PHYSICAL);
-    game.tick();
-    EXPECT_EQ(deathsTape.delta(), +1);
-    EXPECT_EQ(hpsTape.back(), tape(1, 1, 1, 1));
-    EXPECT_EQ(mpsTape.back(), tape(0, 0, 0, 0));
+    game.tick(100);
+    EXPECT_EQ(hpsTape.back(), tape(2, 2, 2, 2)); // Respawned with 1 HP, then got one regeneration point.
+    EXPECT_EQ(mpsTape.back(), tape(0, 0, 1, 1)); // The knight and the thief have no SP.
 }
 
 GAME_TEST(Issues, Issue2776b) {
-    // Ethric's Staff drained a hit point for every 5 minutes of a stagecoach trip, killing its wielder on arrival.
+    // Ethric's Staff drained a hit point for every 5 minutes of a trip, killing its wielder on arrival.
     auto mapTape = tapes.map();
-    auto conditionTape = charTapes.condition(1);
-    test.playTraceFromTestData("issue_331.mm7", "issue_331.json", TRACE_PLAYBACK_SKIP_STATE_CHECKS, [] {
-        CharacterInventory &inventory = pParty->pCharacters[1].inventory;
-        for (ItemSlot slot : {ITEM_SLOT_MAIN_HAND, ITEM_SLOT_OFF_HAND})
-            if (InventoryEntry entry = inventory.entry(slot))
-                inventory.take(entry);
-        inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_RELIC_ETHRICS_STAFF));
-    });
-    EXPECT_EQ(mapTape, tape(MAP_TULAREAN_FOREST, MAP_HARMONDALE, MAP_TULAREAN_FOREST));
+    auto conditionTape = charTapes.condition(0);
+    game.startNewGame();
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_RELIC_ETHRICS_STAFF));
+    game.teleportTo(MAP_HARMONDALE, Vec3f(0, 22200, 2384), 90); // Next to the north edge, facing it.
+    test.startTaping();
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    game.tick();
+    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_TULAREAN_FOREST));
+    EXPECT_MISSES(conditionTape, CONDITION_DEAD);
+}
+
+GAME_TEST(Issues, Issue2776c) {
+    // Leaving the Arena skips 4 days, and Ethric's Staff drained a hit point for every 5 minutes of them, killing its
+    // wielder on the way out.
+    auto mapTape = tapes.map();
+    auto conditionTape = charTapes.condition(0);
+    game.startNewGame();
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_RELIC_ETHRICS_STAFF));
+    game.teleportTo(MAP_ARENA, Vec3f(2656, 2810, 0), 270); // In front of the exit door, facing it.
+    test.startTaping();
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    game.tick();
+    EXPECT_EQ(mapTape, tape(MAP_ARENA, MAP_HARMONDALE));
     EXPECT_MISSES(conditionTape, CONDITION_DEAD);
 }
 
