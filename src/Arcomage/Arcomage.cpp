@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Engine/EngineGlobals.h"
+#include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -20,6 +21,7 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Library/Platform/Application/PlatformApplication.h"
 
 #include "Utility/IndexedArray.h"
 
@@ -840,6 +842,11 @@ bool OpponentsAITurn(int player_num) {
     return true;  // result != 0;
 }
 
+static void limitFrameRate() {
+    if (!application->component<EngineDeterministicComponent>()->isActive()) // Frame time is simulated in deterministic mode.
+        pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
+}
+
 void ArcomageGame::Loop() {
     // reset timer
     pArcomageGame->_frameLimiter.reset();
@@ -877,7 +884,7 @@ void ArcomageGame::Loop() {
         int frame_quant_time = 0;
         int cnt = 0;
         while (1) {
-            pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
+            limitFrameRate();
 
             ArcomageGame::MsgLoop(20, &v10);
             if ((v10.am_input_type == ARCO_MSG_PLAYCARD) || (v10.am_input_type == ARCO_MSG_DISCARD)) break;
@@ -1177,7 +1184,7 @@ char PlayerTurn(int player_num) {
     int frame_quant_time = 0;
     bool break_loop = false;
     do {
-        pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
+        limitFrameRate();
 
         // get input message
         if (pArcomageGame->_forceExit) break_loop = true;

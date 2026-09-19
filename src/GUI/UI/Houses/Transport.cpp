@@ -20,8 +20,12 @@
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
+#include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Library/Platform/Application/PlatformApplication.h"
 
 #include "Utility/IndexedArray.h"
 
@@ -185,7 +189,8 @@ void GUIWindow_Transport::transportDialogue() {
 
         restAndHeal(Duration::fromDays(getTravelTimeTransportDays(transportRoutes[houseId()][choice_id])));
         pParty->activeCharacter().playReaction(pSpeech);
-        pAudioPlayer->soundDrain();
+        if (!application->component<EngineDeterministicComponent>()->isActive()) // Sounds play out in real time, frame time is simulated in deterministic mode.
+            pAudioPlayer->soundDrain();
         while (houseDialogPressEscape()) {}
     } else {
         pAudioPlayer->playUISound(SOUND_error);
