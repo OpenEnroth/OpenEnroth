@@ -17,8 +17,6 @@ function(init_check_tidy)
         return()
     endif()
 
-    find_package(Python COMPONENTS Interpreter REQUIRED GLOBAL)
-
     # clang-tidy discovers gcc toolchains only in the standard prefixes, so when building with a gcc that
     # lives elsewhere it can pair up with an older system libstdc++. Point it at the configured one.
     set(EXTRA_ARGS)
@@ -31,16 +29,19 @@ function(init_check_tidy)
         endif()
     endif()
 
+    # run-clang-tidy matches the file patterns against native absolute paths, which use backslashes on Windows.
+    string(REGEX REPLACE "([][+.*?^$(){}|])" "\\\\\\1" SOURCE_DIR_REGEX "${PROJECT_SOURCE_DIR}")
+    string(REPLACE "/" "[/\\\\]" SOURCE_DIR_REGEX "${SOURCE_DIR_REGEX}")
+
     add_custom_target(check_tidy
-        COMMAND Python::Interpreter -B "${PROJECT_SOURCE_DIR}/scripts/check_tidy_test.py"
         # An unknown check name is silently ignored, so a rename upstream would quietly drop an exclusion.
         COMMAND "${OE_CLANG_TIDY_COMMAND}" --verify-config "--config-file=${PROJECT_SOURCE_DIR}/.clang-tidy"
-        COMMAND Python::Interpreter "${PROJECT_SOURCE_DIR}/scripts/check_tidy.py"
-                "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}" "${OE_RUN_CLANG_TIDY_COMMAND}"
+        COMMAND "${OE_RUN_CLANG_TIDY_COMMAND}"
                 -clang-tidy-binary "${OE_CLANG_TIDY_COMMAND}"
-                -quiet
+                -p "${PROJECT_BINARY_DIR}" -quiet
                 -config-file "${PROJECT_SOURCE_DIR}/.clang-tidy"
                 ${EXTRA_ARGS}
+                "${SOURCE_DIR_REGEX}[/\\\\]src[/\\\\].*\\.cpp$" "${SOURCE_DIR_REGEX}[/\\\\]test[/\\\\].*\\.cpp$" # The database also lists OpenEnroth.rc on Windows.
         COMMENT "Running clang-tidy"
         USES_TERMINAL # run-clang-tidy parallelizes internally, and its progress output is worth seeing live.
         VERBATIM)
