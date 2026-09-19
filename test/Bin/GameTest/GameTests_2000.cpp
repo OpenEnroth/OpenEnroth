@@ -13,7 +13,6 @@
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -1174,44 +1173,46 @@ GAME_TEST(Issues, Issue2453) {
     EXPECT_TRUE(saveLoadMenu()->selectedSlot().fileName.empty()); // The new save slot is selected.
 }
 
-static void checkWallsOfMistExit(DoorState state) {
-    for (int id : {1, 2}) {
-        auto door = std::ranges::find(pIndoor->doors, id, &BLVDoor::doorId);
-        ASSERT_NE(door, pIndoor->doors.end());
-        EXPECT_EQ(door->state, state);
-    }
-}
-
 GAME_TEST(Issues, Issue2463a) {
     // Inserting the remaining Walls of Mist keys after a reload did not open the exit.
     constexpr std::array keys = {ITEM_WEST_PILLAR_KEY, ITEM_CENTRAL_PILLAR_KEY, ITEM_EAST_PILLAR_KEY};
     constexpr std::array pedestalFaceIds = {164, 4019, 4075};
     constexpr std::array positions = {Vec3f(-1122, 3392, 1), Vec3f(-482, 3264, 1), Vec3f(158, 3392, 1)};
+    auto insertKey = [&](int pedestal) {
+        game.teleportTo(MAP_WALLS_OF_MIST, positions[pedestal], 180, -22); // Looking down at the pedestal.
+        game.pointMouseAtFace(pedestalFaceIds[pedestal]);
+        game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+        game.tick(2);
+        EXPECT_FALSE(pParty->hasItem(keys[pedestal]));
+    };
+
+    auto exitTape = tapes.doorStates({1, 2});
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     for (ItemId key : keys)
         pParty->pCharacters[0].inventory.add(Item(key));
-    for (int i = 0; i < 3; i++) {
-        game.teleportTo(MAP_WALLS_OF_MIST, positions[i], 180);
-        pParty->_viewPitch = -128; // Look down at the pedestal.
-        game.tick(); // The camera only updates when a frame is drawn.
-        Vec3f target = pIndoor->faces[pedestalFaceIds[i]].boundingBox.center();
-        Vec2f point = pCamera3D->Project(pCamera3D->ViewTransform(&target));
-        game.pressAndReleaseButton(BUTTON_LEFT, point.x, point.y);
-        game.tick(2);
-        ASSERT_FALSE(pParty->hasItem(keys[i]));
-        if (i < 2)
-            game.loadGame(game.saveGame());
-    }
+    insertKey(0);
+    game.loadGame(game.saveGame());
+    insertKey(1);
+    game.loadGame(game.saveGame());
+    test.startTaping();
+    insertKey(2);
     game.tick(20);
-    checkWallsOfMistExit(DOOR_OPEN);
+    EXPECT_EQ(exitTape, tape({DOOR_CLOSED, DOOR_CLOSED}, {DOOR_OPENING, DOOR_OPENING}, {DOOR_OPEN, DOOR_OPEN}));
 }
 
 GAME_TEST(Issues, Issue2463b) {
     // Saves with all three Walls of Mist keys consumed could leave the exit permanently closed.
-    test.loadGameFromTestData("issue_2463.mm7"); // All three keys are in their pedestals, and the exit is closed.
+    auto exitTape = tapes.doorStates({1, 2});
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_WALLS_OF_MIST, Vec3f(-1777, -495, 1), 90);
+    for (int var : {15, 16, 17})
+        engine->_persistentVariables.mapVars[var] = 1; // Flags all three pedestals as used, with the exit still closed.
+    game.loadGame(game.saveGame());
+    test.startTaping();
     game.tick(20);
-    checkWallsOfMistExit(DOOR_OPEN);
+    EXPECT_EQ(exitTape, tape({DOOR_OPENING, DOOR_OPENING}, {DOOR_OPEN, DOOR_OPEN}));
 }
 
 GAME_TEST(Issues, Issue2464) {

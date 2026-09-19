@@ -195,6 +195,15 @@ class EngineController {
      */
     void pointMouseAtDecoration(int decorationId);
 
+    /**
+     * Finds a screen position at which the mouse points at the provided face of the current indoor level & moves the
+     * mouse there.
+     *
+     * @param faceId                    Id of the face to point at.
+     * @throws Exception                If pointing at the face is not possible, e.g. it's not on the screen.
+     */
+    void pointMouseAtFace(int faceId);
+
  private:
     void goToGameOrMainMenu();
     void activateCharacter(int characterIndex);

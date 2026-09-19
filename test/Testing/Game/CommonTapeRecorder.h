@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <initializer_list>
 #include <utility>
 #include <string>
 #include <type_traits>
@@ -12,6 +13,7 @@
 #include "Engine/MapEnums.h"
 #include "Engine/PartyEnums.h"
 #include "Engine/Data/SoundEnums.h"
+#include "Engine/Graphics/FaceEnums.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
 
@@ -92,6 +94,10 @@ class CommonTapeRecorder {
     TestTape<int> activeCharacterIndex(); // Remember that -1 means none!
 
     TestTape<bool> questBit(QuestBit bit);
+
+    TestTape<DoorState> doorState(int doorId); // The door must exist in the current indoor level on every taped frame.
+
+    TestMultiTape<DoorState> doorStates(std::initializer_list<int> doorIds);
 
     TestMultiTape<SoundId> sounds();
 

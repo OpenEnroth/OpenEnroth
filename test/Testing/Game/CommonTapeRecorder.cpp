@@ -1,8 +1,10 @@
 #include "CommonTapeRecorder.h"
 
+#include <algorithm>
 #include <cassert>
 #include <ranges>
 #include <string>
+#include <vector>
 
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/Actor.h"
@@ -11,12 +13,19 @@
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Indoor.h"
 
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Utility/String/Ascii.h"
+
+static DoorState doorStateById(int doorId) {
+    auto door = std::ranges::find(pIndoor->doors, doorId, &BLVDoor::doorId);
+    assert(door != pIndoor->doors.end());
+    return door->state;
+}
 
 CommonTapeRecorder::CommonTapeRecorder(TestController *controller) : _controller(controller) {
     assert(controller);
@@ -166,6 +175,19 @@ TestTape<int> CommonTapeRecorder::activeCharacterIndex() {
 
 TestTape<bool> CommonTapeRecorder::questBit(QuestBit bit) {
     return custom([bit] { return !!pParty->_questBits[bit]; });
+}
+
+TestTape<DoorState> CommonTapeRecorder::doorState(int doorId) {
+    return custom([doorId] { return doorStateById(doorId); });
+}
+
+TestMultiTape<DoorState> CommonTapeRecorder::doorStates(std::initializer_list<int> doorIds) {
+    return custom([doorIds = std::vector(doorIds)] {
+        AccessibleVector<DoorState> result;
+        for (int doorId : doorIds)
+            result.push_back(doorStateById(doorId));
+        return result;
+    });
 }
 
 TestMultiTape<SoundId> CommonTapeRecorder::sounds() {
