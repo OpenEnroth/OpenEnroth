@@ -623,7 +623,7 @@ GAME_TEST(Issues, Issue2784b) {
 }
 
 GAME_TEST(Issues, Issue2784c) {
-    // The Balanced Axe has to follow the dwarf smith's lines when they move out of room 82.
+    // The Balanced Axe should keep the dwarf smith's greeting after it moves out of room 82.
     auto houseTape = tapes.house();
     auto soundsTape = tapes.soundNames();
     game.startNewGame();
