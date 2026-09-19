@@ -921,7 +921,9 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             ir.data.text_id = fromStream<uint8_t>(stream);
             ir.step = -1; // Step duplicated for other command, so ignore it
             break;
-        case EVENT_LocationName:  // TODO(yoctozepto): not present in used MM7 data
+        case EVENT_LocationName:  // Only in MM6 data.
+            requireSize(6);
+            ir.data.text_id = fromStream<uint8_t>(stream);
             ir.step = -1; // Step duplicated for other command, so ignore it
             break;
         case EVENT_MoveToMap:
@@ -1075,8 +1077,9 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             ir.data.light_descr.light_id = fromStream<uint32_t>(stream);
             ir.data.light_descr.is_enable = fromStream<uint8_t>(stream);
             break;
-        case EVENT_PressAnyKey:  // TODO(yoctozepto): not present in used MM7 data
-            // Nothing?
+        case EVENT_PressAnyKey:  // Only in MM6 data.
+            requireSize(6);
+            fromStream<uint8_t>(stream);  // Always 0 in MM6 data.
             break;
         case EVENT_SummonItem:  // TODO(yoctozepto): not present in used MM7 data
             requireSize(27);
