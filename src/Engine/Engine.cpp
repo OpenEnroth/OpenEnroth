@@ -607,6 +607,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     // OE fix - onMapLoad() above runs the reload event of d11.evt, which zeroes the inserted key count in map var 18
     // on a save load too. The used pedestal flags in map vars 15 to 17 stay set, and a used pedestal exits its event
     // before the count check.
+    // TODO(captainurist): move to a patched d11.evt.
     if (engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
         auto &mapVars = engine->_persistentVariables.mapVars;
         mapVars[18] = (mapVars[15] != 0) + (mapVars[16] != 0) + (mapVars[17] != 0);
