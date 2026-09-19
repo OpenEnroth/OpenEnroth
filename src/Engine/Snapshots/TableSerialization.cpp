@@ -109,8 +109,11 @@ void deserialize(const Blob &src, SoundList *dst) {
         }
     }
 
-    for (const SoundInfo &sound : sounds)
+    for (const SoundInfo &sound : sounds) {
+        if (dst->_mapSounds.contains(sound.soundId))
+            MM_WARNING("Sound id {} is used by both '{}' and '{}'", std::to_underlying(sound.soundId), dst->_mapSounds[sound.soundId].name, sound.name);
         dst->_mapSounds[sound.soundId] = sound;
+    }
 }
 
 void deserialize(const Blob &src, TileTable *dst) {
