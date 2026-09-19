@@ -564,6 +564,26 @@ GAME_TEST(Issues, Issue2759) {
     EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
 }
 
+GAME_TEST(Issues, Issue2760) {
+    // The east wall of an elevator shaft in Stone City was missing while the car was below the top, and the party
+    // could walk through it.
+    auto elevatorTape = tapes.doorState(10);
+    auto xTape = tapes.custom([] { return pParty->pos.x; });
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_STONE_CITY, Vec3f(-3100, 2176, -64), 270); // On the elevator car, facing the button that sends it down.
+    test.startTaping();
+    game.pointMouseAtFace(3459);
+    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.tick(80);
+    game.pressKey(PlatformKey::KEY_LEFTBRACKET); // Strafe east, into the wall.
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_LEFTBRACKET);
+    game.tick();
+    EXPECT_EQ(elevatorTape, tape(DOOR_OPEN, DOOR_CLOSING, DOOR_CLOSED));
+    EXPECT_LE(xTape.max() + pParty->radius, -2976); // The wall is at x = -2976, the car's floor ends there too.
+}
+
 GAME_TEST(Issues, Issue2771) {
     // Immolation cast by a map event crashed the game on the next regeneration tick. The buff got caster -1, and the
     // damage sprite built a character pid out of it.
