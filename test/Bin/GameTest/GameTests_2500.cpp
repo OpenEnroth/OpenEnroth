@@ -564,3 +564,39 @@ GAME_TEST(Issues, Issue2759) {
     EXPECT_CONTAINS(textTape.flatten(), "Display Inventory"); // We've seen the shop menu.
     EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
 }
+
+GAME_TEST(Issues, Issue2776a) {
+    // After a party death, characters wearing regeneration gear came back with full HP and SP, regenerated for every
+    // 5 minutes of the week that the death skips.
+    auto deathsTape = tapes.deaths();
+    auto hpsTape = charTapes.hps();
+    auto mpsTape = charTapes.mps();
+    game.startNewGame();
+    for (Character &character : pParty->pCharacters) {
+        character.inventory.equip(ITEM_SLOT_BOOTS, Item(ITEM_ARTIFACT_HERMES_SANDALS));
+        character.mana = 0;
+    }
+    test.startTaping();
+    game.tick(); // The frame of the death isn't drawn, so the tapes need one from before it.
+    for (Character &character : pParty->pCharacters)
+        character.receiveDamage(10000, DAMAGE_PHYSICAL);
+    game.tick();
+    EXPECT_EQ(deathsTape.delta(), +1);
+    EXPECT_EQ(hpsTape.back(), tape(1, 1, 1, 1));
+    EXPECT_EQ(mpsTape.back(), tape(0, 0, 0, 0));
+}
+
+GAME_TEST(Issues, Issue2776b) {
+    // Ethric's Staff drained a hit point for every 5 minutes of a stagecoach trip, killing its wielder on arrival.
+    auto mapTape = tapes.map();
+    auto conditionTape = charTapes.condition(1);
+    test.playTraceFromTestData("issue_331.mm7", "issue_331.json", TRACE_PLAYBACK_SKIP_STATE_CHECKS, [] {
+        CharacterInventory &inventory = pParty->pCharacters[1].inventory;
+        for (ItemSlot slot : {ITEM_SLOT_MAIN_HAND, ITEM_SLOT_OFF_HAND})
+            if (InventoryEntry entry = inventory.entry(slot))
+                inventory.take(entry);
+        inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_RELIC_ETHRICS_STAFF));
+    });
+    EXPECT_EQ(mapTape, tape(MAP_TULAREAN_FOREST, MAP_HARMONDALE, MAP_TULAREAN_FOREST));
+    EXPECT_MISSES(conditionTape, CONDITION_DEAD);
+}

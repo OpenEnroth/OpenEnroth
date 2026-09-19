@@ -125,11 +125,11 @@
                         "Enchanted Ring of Items [+17]",
                         "Wizard Ring of Disarming [+24]"
                     ],
-                    "hp": 220,
+                    "hp": 1,
                     "intelligence": 40,
                     "luck": 71,
                     "might": 121,
-                    "mp": 310,
+                    "mp": 0,
                     "personality": 32,
                     "speed": 33
                 },
@@ -238,11 +238,11 @@
                         "Platinum Ring of Fire Magic",
                         "Enchanted Ring of Thought [+12]"
                     ],
-                    "hp": 222,
+                    "hp": 1,
                     "intelligence": 48,
                     "luck": 9,
                     "might": 141,
-                    "mp": 330,
+                    "mp": 263,
                     "personality": 80,
                     "speed": 37
                 },
@@ -326,11 +326,11 @@
                         "Angel's Ring of Thought [+12]",
                         "Ruler's Ring"
                     ],
-                    "hp": 266,
+                    "hp": 1,
                     "intelligence": 102,
                     "luck": 9,
                     "might": 115,
-                    "mp": 380,
+                    "mp": 318,
                     "personality": 76,
                     "speed": 83
                 },
@@ -406,7 +406,7 @@
                     "intelligence": 80,
                     "luck": 20,
                     "might": 115,
-                    "mp": 335,
+                    "mp": 290,
                     "personality": 37,
                     "speed": 35
                 }

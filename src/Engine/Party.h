@@ -252,6 +252,16 @@ struct Party {
 
     Time &GetPlayingTime() { return this->playing_time; }
 
+    /**
+     * Moves the game clock forward with no regeneration or HP drain for the skipped time.
+     *
+     * @param duration                  Time to skip.
+     */
+    void skipTime(Duration duration) {
+        playing_time += duration;
+        last_regenerated = playing_time;
+    }
+
     bool isPartyEvil();
     bool isPartyGood();
 
