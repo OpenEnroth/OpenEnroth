@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <optional>
 #include <ranges>
 #include <string>
 #include <vector>
@@ -21,9 +22,10 @@
 
 #include "Utility/String/Ascii.h"
 
-static DoorState doorStateById(int doorId) {
+static std::optional<DoorState> doorStateById(int doorId) {
     auto door = std::ranges::find(pIndoor->doors, doorId, &BLVDoor::doorId);
-    assert(door != pIndoor->doors.end());
+    if (door == pIndoor->doors.end())
+        return std::nullopt;
     return door->state;
 }
 
@@ -177,13 +179,13 @@ TestTape<bool> CommonTapeRecorder::questBit(QuestBit bit) {
     return custom([bit] { return !!pParty->_questBits[bit]; });
 }
 
-TestTape<DoorState> CommonTapeRecorder::doorState(int doorId) {
+TestTape<std::optional<DoorState>> CommonTapeRecorder::doorState(int doorId) {
     return custom([doorId] { return doorStateById(doorId); });
 }
 
-TestMultiTape<DoorState> CommonTapeRecorder::doorStates(std::initializer_list<int> doorIds) {
+TestMultiTape<std::optional<DoorState>> CommonTapeRecorder::doorStates(std::initializer_list<int> doorIds) {
     return custom([doorIds = std::vector(doorIds)] {
-        AccessibleVector<DoorState> result;
+        AccessibleVector<std::optional<DoorState>> result;
         for (int doorId : doorIds)
             result.push_back(doorStateById(doorId));
         return result;
