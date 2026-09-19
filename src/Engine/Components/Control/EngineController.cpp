@@ -119,12 +119,20 @@ void EngineController::pressButton(PlatformMouseButton button, Pointi point, boo
     pressButton(button, point.x, point.y, isDoubleClick);
 }
 
+void EngineController::pressButton(PlatformMouseButton button, bool isDoubleClick) {
+    pressButton(button, mouse->position(), isDoubleClick);
+}
+
 void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     pressOrReleaseButton(EVENT_MOUSE_BUTTON_RELEASE, button, x, y, false);
 }
 
 void EngineController::releaseButton(PlatformMouseButton button, Pointi point) {
     releaseButton(button, point.x, point.y);
+}
+
+void EngineController::releaseButton(PlatformMouseButton button) {
+    releaseButton(button, mouse->position());
 }
 
 void EngineController::moveMouse(int x, int y) {
@@ -154,6 +162,10 @@ void EngineController::pressAndReleaseButton(PlatformMouseButton button, int x, 
 
 void EngineController::pressAndReleaseButton(PlatformMouseButton button, Pointi point) {
     pressAndReleaseButton(button, point.x, point.y);
+}
+
+void EngineController::pressAndReleaseButton(PlatformMouseButton button) {
+    pressAndReleaseButton(button, mouse->position());
 }
 
 void EngineController::pressGuiButton(std::string_view buttonId) {
@@ -391,7 +403,7 @@ void EngineController::castQuickSpellAtActor(int characterIndex, SpellId spell, 
     character.uQuickSpell = spell;
     pointMouseAtActor(actorId);
     pressKey(PlatformKey::KEY_SHIFT);
-    pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    pressAndReleaseButton(BUTTON_LEFT);
     releaseKey(PlatformKey::KEY_SHIFT);
     tick(2); // The click is a queued event, so the quick spell must stay set until the tick that processes it.
     character.uQuickSpell = oldQuickSpell;

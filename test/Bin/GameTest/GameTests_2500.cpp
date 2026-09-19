@@ -18,8 +18,6 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UISaveLoad.h"
 
-#include "Io/Mouse.h"
-
 #include "GameTestCommon.h"
 
 // 2500
@@ -324,7 +322,7 @@ GAME_TEST(Prs, Pr2615a) {
     Vis_PIDAndDepth object = engine->PickMouseForTargeting();
     EXPECT_EQ(object.pid, Pid(OBJECT_Decoration, 7));
     EXPECT_GT(object.depth, engine->config->gameplay.MouseInteractionDepth.value());
-    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick(3);
     EXPECT_EQ(foodTape.delta(), 2);
     EXPECT_CONTAINS(statusTape, "You find 2 food");
@@ -351,7 +349,7 @@ GAME_TEST(Prs, Pr2615b) {
         EXPECT_EQ(engine->PickMouseForInteraction().pid == Pid(), depth > engine->config->gameplay.MouseInteractionDepth.value());
 
         game.pressKey(PlatformKey::KEY_SHIFT);
-        game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+        game.pressAndReleaseButton(BUTTON_LEFT);
         game.tick(2);
         game.releaseKey(PlatformKey::KEY_SHIFT);
         game.tick(30);
@@ -378,7 +376,7 @@ GAME_TEST(Prs, Pr2615c) {
     game.castSpell(0, SPELL_EARTH_TELEKINESIS);
     game.tick(2);
     game.pointMouseAtDecoration(7);
-    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick(3);
     EXPECT_EQ(foodTape.delta(), 2);
     EXPECT_CONTAINS(statusTape, "You find 2 food");
@@ -401,7 +399,7 @@ GAME_TEST(Prs, Pr2615d) {
     game.castSpell(0, SPELL_EARTH_TELEKINESIS);
     game.tick(2);
     game.pointMouseAtDecoration(559);
-    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick(3);
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_RED_APPLE); // The tree handed over an apple.
 }
@@ -488,7 +486,7 @@ GAME_TEST(Issues, Issue2636) {
     EXPECT_EQ(current_screen_type, SCREEN_CHARACTERS);
     game.pressButton(BUTTON_RIGHT, 100, 60); // Right-click hold over the Might row shows its tooltip.
     game.tick(2);
-    game.releaseButton(BUTTON_RIGHT, 100, 60);
+    game.releaseButton(BUTTON_RIGHT);
     game.tick(1);
     EXPECT_CONTAINS(textTape.flatten(), "Might is the statistic that represents a character's overall strength, "
                                         "and the ability to put that strength where it counts.  Characters with a "
@@ -534,7 +532,7 @@ GAME_TEST(Issues, Issue2754) {
         ASSERT_EQ(engine->PickMouseForInteraction().pid == Pid(), depth > engine->config->gameplay.MouseInteractionDepth.value());
 
         for (int i = 0; i < 30; i++) {
-            game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+            game.pressAndReleaseButton(BUTTON_LEFT);
             game.tick(5);
         }
         test.stopTaping();

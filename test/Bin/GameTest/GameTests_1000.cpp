@@ -1261,7 +1261,7 @@ GAME_TEST(Issues, Issue1497a) {
             } else {
                 game.pointMouseAtActor(0);
                 game.castQuickSpell(0, spell);
-                game.pressAndReleaseButton(BUTTON_LEFT, mouse->position()); // Pick the goblin in the picker.
+                game.pressAndReleaseButton(BUTTON_LEFT); // Pick the goblin in the picker.
             }
             game.tick(10);
             test.stopTaping();

@@ -60,14 +60,17 @@ class EngineController {
     void releaseKey(PlatformKey key);
     void pressButton(PlatformMouseButton button, int x, int y, bool isDoubleClick = false);
     void pressButton(PlatformMouseButton button, Pointi point, bool isDoubleClick = false);
+    void pressButton(PlatformMouseButton button, bool isDoubleClick = false);
     void releaseButton(PlatformMouseButton button, int x, int y);
     void releaseButton(PlatformMouseButton button, Pointi point);
+    void releaseButton(PlatformMouseButton button);
     void moveMouse(int x, int y);
     void moveMouse(Pointi point);
 
     void pressAndReleaseKey(PlatformKey key);
     void pressAndReleaseButton(PlatformMouseButton button, int x, int y);
     void pressAndReleaseButton(PlatformMouseButton button, Pointi point);
+    void pressAndReleaseButton(PlatformMouseButton button);
 
     /**
      * Presses a GUI button identified by the provided id by sending a mouse press and release event.

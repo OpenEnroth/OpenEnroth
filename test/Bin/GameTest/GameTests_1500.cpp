@@ -33,8 +33,6 @@
 #include "Engine/Objects/Chest.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
 
-#include "Io/Mouse.h"
-
 #include "GameTestCommon.h"
 
 // 1500
@@ -607,7 +605,7 @@ GAME_TEST(Issues, Issue1718) {
     test.startTaping();
     for (int click = 0; click < 2; click++) {
         game.pointMouseAtDecoration(1); // Roland's cage.
-        game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+        game.pressAndReleaseButton(BUTTON_LEFT);
         game.tick(3);
         game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         game.tick(2);
@@ -1230,7 +1228,7 @@ GAME_TEST(Issues, Issue1998) {
         test.startTaping();
         game.pressButton(BUTTON_RIGHT, 30, 30);
         game.tick();
-        game.releaseButton(BUTTON_RIGHT, 30, 30);
+        game.releaseButton(BUTTON_RIGHT);
         game.tick();
         test.stopTaping();
 
