@@ -1,6 +1,6 @@
 #include "TableSerialization.h"
 
-#include <algorithm>
+#include <utility>
 #include <vector>
 
 #include "Engine/Tables/PortraitFrameTable.h"
@@ -93,13 +93,27 @@ void deserialize(const Blob &src, SoundList *dst) {
     assert(!sounds.empty());
 
     // TODO(captainurist): do this as a data patch.
-    auto humanTownHall = std::ranges::find(sounds, "Human Town Hall", &SoundInfo::name);
-    if (humanTownHall != sounds.end())
-        humanTownHall->soundId = SOUND_HumanTownHall; // MM7 files it as 34302, but playHouseSound derives 31401 from its room sound id.
+    for (SoundInfo &sound : sounds) {
+        if (sound.name == "Human Town Hall") {
+            sound.soundId = SOUND_HumanTownHall; // MM7 files it as 34302, but playHouseSound derives 31401 from its room sound id.
+        } else if (sound.soundId == SoundId(12071)) {
+            sound.soundId = SOUND_AcidBurstImpact; // Acid Burst's impact, playSpellSound looks it up as the cast sound 12060 + 1.
+        } else if (sound.name == "Dwarf Weapon Shop 01") {
+            sound.soundId = SOUND_DwarfWeaponShop01; // MM7 files the dwarf smith in room 82 over the Elf Magic Shop lines, room 85 is free.
+        } else if (sound.name == "Dwarf Weapon Shop 02") {
+            sound.soundId = SOUND_DwarfWeaponShop02;
+        } else if (sound.name == "Dwarf Weapon Shop 03") {
+            sound.soundId = SOUND_DwarfWeaponShop03;
+        } else if (sound.name == "Dwarf Weapon Shop 04") {
+            sound.soundId = SOUND_DwarfWeaponShop04;
+        }
+    }
 
-    // TODO(captainurist): there are duplicate ids in the sounds array, look into it.
-    for (const SoundInfo &sound : sounds)
+    for (const SoundInfo &sound : sounds) {
+        if (dst->_mapSounds.contains(sound.soundId))
+            MM_WARNING("Sound id {} is used by both '{}' and '{}'", std::to_underlying(sound.soundId), dst->_mapSounds[sound.soundId].name, sound.name);
         dst->_mapSounds[sound.soundId] = sound;
+    }
 }
 
 void deserialize(const Blob &src, TileTable *dst) {

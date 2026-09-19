@@ -75,7 +75,7 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Dwarven Bank", 0x6, 0x2F3, HOUSE_TYPE_BANK, 6, 0 },
     { "Wizard Bank", 0x6, 0x3BA, HOUSE_TYPE_BANK, 20, 0 },
     { "Warlock Bank", 0x6, 0x39F, HOUSE_TYPE_BANK, 36, 0 },
-    { "Elf Bank", 0x6, 0x2BC, HOUSE_TYPE_BANK, 71, 0 },
+    { "Elf Bank", 0x6, 0x2BC, HOUSE_TYPE_BANK, 80, 0 }, // Vanilla MM7 has 71, the Evil Bank lines.
     { "Boat01", 0xF, 0x4C, HOUSE_TYPE_BOAT, 53, 3 },
     { "Boat01d", 0xF, 0x4C, HOUSE_TYPE_BOAT, 53, 3 }, // this movie doesn't exist
     { "Human Magic Shop01", 0xA, 0x2C8, HOUSE_TYPE_MAGIC_SHOP, 54, 0 },
@@ -88,7 +88,7 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Necromancer Stables", 0x21, 0x2DD, HOUSE_TYPE_STABLE, 67, 3 },
     { "", 0x21, 0x2F0, HOUSE_TYPE_STABLE, 91, 3 },
     { "Wizard Stables", 0x21, 0x3BA, HOUSE_TYPE_STABLE, 16, 3 },
-    { "Warlock Stables", 0x21, 0x181, HOUSE_TYPE_STABLE, 77, 3 },  // movie exist but unused in MM7 as Nighon doesn't have stables
+    { "Warlock Stables", 0x21, 0x181, HOUSE_TYPE_STABLE, 32, 3 },  // movie exist but unused in MM7 as Nighon doesn't have stables
     { "Elf Stables", 0x21, 0x195, HOUSE_TYPE_STABLE, 77, 3 },
     { "Human Tavern01", 0xD, 0x2C2, HOUSE_TYPE_TAVERN, 49, 0 },
     { "Necromancer Tavern 01", 0xD, 0x3B0, HOUSE_TYPE_TAVERN, 57, 0 },
@@ -116,7 +116,7 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Elf Training Ground", 0x18, 0x19F, HOUSE_TYPE_TRAINING_GROUND, 74, 0 },
     { "Human Weapon Smith01", 0x16, 0x2C1, HOUSE_TYPE_WEAPON_SHOP, 45, 4 },
     { "Necromancer Weapon Smith01", 0x16, 0x2D9, HOUSE_TYPE_WEAPON_SHOP, 63, 4 },
-    { "Dwarven Weapon Smith01", 0x16, 0x2EE, HOUSE_TYPE_WEAPON_SHOP, 82, 4 },
+    { "Dwarven Weapon Smith01", 0x16, 0x2EE, HOUSE_TYPE_WEAPON_SHOP, 85, 4 }, // Vanilla MM7 has 82, the Elf Magic Shop's. The sound table loader moves the dwarf smith's lines to the free room 85.
     { "Wizard Weapon Smith", 0x16, 0x2D5, HOUSE_TYPE_WEAPON_SHOP, 13, 4 },
     { "Warlock Weapon Smith", 0x16, 0x2D7, HOUSE_TYPE_WEAPON_SHOP, 23, 4 },
     { "Elf Weapon Smith", 0x16, 0x2CA, HOUSE_TYPE_WEAPON_SHOP, 75, 4 },

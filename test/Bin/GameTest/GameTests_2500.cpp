@@ -20,7 +20,13 @@
 
 #include "Io/Mouse.h"
 
+#include "Media/Audio/SoundList.h"
+
 #include "GameTestCommon.h"
+
+static AccessibleVector<std::string> soundNames(const TestMultiTape<SoundId> &soundsTape) {
+    return soundsTape.flatten().map([](SoundId id) { return pSoundList->soundInfo(id)->name; });
+}
 
 // 2500
 
@@ -563,4 +569,58 @@ GAME_TEST(Issues, Issue2759) {
     EXPECT_CONTAINS(houseTape, HOUSE_WEAPON_SHOP_TATALIA_1);
     EXPECT_CONTAINS(textTape.flatten(), "Display Inventory"); // We've seen the shop menu.
     EXPECT_MISSES(textTape.flatten(), "Learn Skills"); // But there was no "Learn Skills" option.
+}
+
+GAME_TEST(Issues, Issue2784a) {
+    // Acid Burst impacts were silent.
+    auto soundsTape = tapes.sounds();
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+    game.spawnMonster(pParty->pos + Vec3f(0, 800, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
+    game.castQuickSpell(0, SPELL_WATER_ACID_BURST);
+    game.tick(30);
+    EXPECT_CONTAINS(soundNames(soundsTape), "20implosion03");
+}
+
+GAME_TEST(Issues, Issue2784b) {
+    // Elf banks greeted with the Evil Bank lines.
+    auto houseTape = tapes.house();
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.teleportTo(MAP_TULAREAN_FOREST, Vec3f(-11514, -10816, 1344), 0); // In front of Nature's Stockpile.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(houseTape.back(), HOUSE_BANK_TULAREAN_FOREST);
+    EXPECT_EQ(soundNames(soundsTape).count("Elf Bank 01"), 1);
+}
+
+GAME_TEST(Issues, Issue2784c) {
+    // The Balanced Axe should keep the dwarf smith's greeting after it moves out of room 82.
+    auto houseTape = tapes.house();
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.teleportTo(MAP_STONE_CITY, Vec3f(-425, -1461, 0), 225); // In front of The Balanced Axe.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(houseTape.back(), HOUSE_WEAPON_SHOP_STONE_CITY);
+    EXPECT_EQ(soundNames(soundsTape).count("Dwarf Weapon Shop 01"), 1);
+}
+
+GAME_TEST(Issues, Issue2784d) {
+    // Natural Magic greeted with the dwarf smith's lines.
+    auto houseTape = tapes.house();
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.teleportTo(MAP_TULAREAN_FOREST, Vec3f(-12992, -6906, 1344), 90); // In front of Natural Magic.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(houseTape.back(), HOUSE_MAGIC_SHOP_TULAREAN_FOREST);
+    EXPECT_EQ(soundNames(soundsTape).count("Elf Magic Shop 01"), 1);
 }
