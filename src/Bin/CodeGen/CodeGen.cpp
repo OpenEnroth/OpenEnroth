@@ -12,6 +12,7 @@
 #include "Application/Startup/GameStarter.h"
 
 #include "Engine/Data/HouseEnumFunctions.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Components/Random/EngineRandomComponent.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/HouseTable.h"
@@ -30,6 +31,7 @@
 #include "GUI/UI/Houses/TownHall.h"
 
 #include "Library/Lod/LodReader.h"
+#include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/String/Ascii.h"
@@ -343,8 +345,7 @@ int runMonsterTypeCodeGen(const CodeGenOptions &options, ResourceManager *resour
 
 int runBountyHuntCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
     // Fill bounty hunt map.
-    EngineRandomComponent randomComponent;
-    randomComponent.setType(RANDOM_ENGINE_SEQUENTIAL);
+    application->component<EngineRandomComponent>()->setType(RANDOM_ENGINE_SEQUENTIAL);
 
     IndexedArray<std::unordered_set<MonsterId>, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monstersByTownHall;
     for (const HouseId townHall : allTownhallHouses()) {
@@ -560,6 +561,7 @@ int runLstrCodegen(const CodeGenOptions &options, ResourceManager *resourceManag
     return 0;
 }
 
+// TODO(captainurist): run every subcommand in the integration tests and check that it exits with 0.
 int platformMain(int argc, char **argv) {
     try {
         UnicodeCrt _(argc, argv);
