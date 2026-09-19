@@ -60,6 +60,10 @@ void NullRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, cons
         engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, texture->name());
 }
 
+void NullRenderer::DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color) {
+    DrawQuad2D(texture, Recti(), Recti(), color); // Asking the texture for its size would decode it.
+}
+
 void NullRenderer::DrawImage(GraphicsImage *, const Recti &rect, int paletteid, Color colourmask) {}
 
 void NullRenderer::BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,

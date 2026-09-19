@@ -12,15 +12,12 @@
 #include "Engine/Seasons.h"
 
 #include "Library/Logger/Logger.h"
-#include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/String/Ascii.h"
 
 SpriteFrameTable *pSpriteFrameTable;
 
 void Sprite::Release() {
-    delete this->sprite_header;
-    this->sprite_header = nullptr;
     this->texture->release();
     this->texture = nullptr;
     this->pName = "null";
