@@ -23,7 +23,7 @@ sol::object LuaEvtScripts::call(std::string_view function, Args &&... args) cons
     sol::protected_function_result result = _core.get<sol::protected_function>(function)(std::forward<Args>(args)...);
     if (!result.valid()) {
         MM_ERROR_IN(ScriptingSystem::ScriptingLogCategory, "mmext.core.{} failed: {}", function, result.get<sol::error>().what());
-        return sol::object();
+        return sol::make_object(_core.lua_state(), sol::lua_nil);
     }
     return result.get<sol::object>();
 }
@@ -33,15 +33,17 @@ void LuaEvtScripts::loadGlobalScripts() {
 }
 
 void LuaEvtScripts::loadMapScripts(std::string_view mapName) {
-    call("loadMapScripts", std::string(mapName));
+    call("loadMapScripts", mapName);
 }
 
 bool LuaEvtScripts::hasEvent(bool isGlobal, int eventId) const {
-    return call("hasEvent", isGlobal, eventId).as<bool>();
+    sol::object result = call("hasEvent", isGlobal, eventId);
+    return result.is<bool>() && result.as<bool>();
 }
 
 bool LuaEvtScripts::runEvent(bool isGlobal, int eventId, Pid targetObj, bool canShowMessages) {
-    return call("runEvent", isGlobal, eventId, targetObj.packed(), canShowMessages).as<bool>();
+    sol::object result = call("runEvent", isGlobal, eventId, targetObj.packed(), canShowMessages);
+    return result.is<bool>() && result.as<bool>();
 }
 
 bool LuaEvtScripts::resumeEvent(int eventId, bool *mapExitTriggered) {
@@ -52,16 +54,23 @@ bool LuaEvtScripts::resumeEvent(int eventId, bool *mapExitTriggered) {
     return true;
 }
 
+void LuaEvtScripts::cancelEvent() {
+    call("cancelEvent");
+}
+
 std::optional<std::string> LuaEvtScripts::eventHint(int eventId) const {
-    return call("eventHint", eventId).as<std::optional<std::string>>();
+    sol::object result = call("eventHint", eventId);
+    return result.is<std::string>() ? std::optional(result.as<std::string>()) : std::nullopt;
 }
 
 std::optional<bool> LuaEvtScripts::canShowTopic(int eventId) {
-    return call("canShowTopic", eventId).as<std::optional<bool>>();
+    sol::object result = call("canShowTopic", eventId);
+    return result.is<bool>() ? std::optional(result.as<bool>()) : std::nullopt;
 }
 
-void LuaEvtScripts::onMapLoad() {
-    call("onMapLoad");
+bool LuaEvtScripts::onMapLoad() {
+    sol::object result = call("onMapLoad");
+    return result.is<bool>() && result.as<bool>();
 }
 
 void LuaEvtScripts::onMapLeave() {

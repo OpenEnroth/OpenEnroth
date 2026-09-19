@@ -28,8 +28,9 @@ class EvtInterpreter {
 
      /**
       * @param ir                       Instruction to run.
-      * @return                         Step to continue from, which is `ir.target_step` if the instruction jumped
-      *                                 and `ir.step + 1` if it didn't, or -1 if the event has to stop here.
+      * @return                         Step to continue from, which is `ir.target_step` if the instruction jumped,
+      *                                 the picked step of a `RandomGoTo` and `ir.step + 1` otherwise, or -1 if the
+      *                                 event has to stop here.
       */
      int executeInstruction(EvtInstruction ir);
 
