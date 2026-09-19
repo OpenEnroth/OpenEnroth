@@ -3561,6 +3561,26 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     }
 }
 
+void Character::giveAward(AwardId award) {
+    if (!_achievedAwardsBits[award] && !pAwards[award].pText.empty()) {
+        PlayAwardSound_Anim();
+        playReaction(SPEECH_AWARD_GOT);
+    }
+    _achievedAwardsBits.set(award);
+}
+
+void Character::giveAutonote(int autonote) {
+    assert(autonote > 0);
+    if (!pParty->_autonoteBits[autonote] && !pAutonoteTxt[autonote].pText.empty()) {
+        spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, characterIndex());
+        playReaction(SPEECH_AWARD_GOT);
+        bFlashAutonotesBook = true;
+        autonoteBookDisplayType = pAutonoteTxt[autonote].eType;
+    }
+    pParty->_autonoteBits.set(autonote);
+    PlayAwardSound();
+}
+
 bool CmpSkillValue(int valToCompare, CombinedSkillValue skillValue) {
     int val;
     if (valToCompare <= 63)
@@ -4065,11 +4085,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
             this->sAgeModifier = var_value;
             return;
         case VAR_Award:
-            if (!this->_achievedAwardsBits[static_cast<AwardId>(var_value)] && !pAwards[static_cast<AwardId>(var_value)].pText.empty()) {
-                PlayAwardSound_Anim();
-                this->playReaction(SPEECH_AWARD_GOT);
-            }
-            this->_achievedAwardsBits.set(static_cast<AwardId>(var_value));
+            giveAward(static_cast<AwardId>(var_value));
             return;
         case VAR_Experience:
             this->experience = var_value;
@@ -4332,15 +4348,7 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_AutoNotes:
-            assert(var_value > 0);
-            if (!pParty->_autonoteBits[var_value] && !pAutonoteTxt[var_value].pText.empty()) {
-                spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, characterIndex());
-                this->playReaction(SPEECH_AWARD_GOT);
-                bFlashAutonotesBook = true;
-                autonoteBookDisplayType = pAutonoteTxt[var_value].eType;  // dword_72371C[2 * a3];
-            }
-            pParty->_autonoteBits.set(var_value);
-            PlayAwardSound();
+            giveAutonote(var_value);
             return;
         case VAR_PlayerBits:
             _characterEventBits.set(var_value);
