@@ -2,6 +2,8 @@
 
 #include <string>
 #include <algorithm>
+#include <optional>
+#include <span>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -86,39 +88,65 @@ static void dropDuplicateFaceVertices(Face *face) {
     face->textureVs.resize(face->numVertices);
 }
 
+/**
+ * @param face                          Face to compute the normal of.
+ * @param vertices                      Vertex positions, indexed by `face.vertexIds`.
+ * @return                              Unit normal of the face, or `std::nullopt` if the face has no area.
+ */
 template<class Face>
-static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices) {
-    if (face->numVertices < 3)
-        return;
-
+static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> vertices) {
     // Compute the normal from the first non-degenerate edge pair.
     Vec3f normal;
-    for (int i = 0; i < face->numVertices; i++) {
-        Vec3f dir1 = vertices[face->vertexIds[(i + 1) % face->numVertices]] - vertices[face->vertexIds[i]];
-        Vec3f dir2 = vertices[face->vertexIds[(i + 2) % face->numVertices]] - vertices[face->vertexIds[(i + 1) % face->numVertices]];
+    for (int i = 0; i < face.numVertices; i++) {
+        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.numVertices]] - vertices[face.vertexIds[i]];
+        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.numVertices]] - vertices[face.vertexIds[(i + 1) % face.numVertices]];
         normal = cross(dir1, dir2);
         if (normal.lengthSqr() > 1e-12f)
             break;
     }
 
-    if (normal.lengthSqr() <= 1e-12f) {
-        face->numVertices = 2;
-        return;
-    }
+    if (normal.lengthSqr() <= 1e-12f)
+        return std::nullopt;
 
     // TODO(captainurist): just use Newell's method for everything & retrace.
     // For non-planar polygons a single edge pair can give a wrong normal. Check against the Newell's method
     // normal (sum of all cross products) and use it instead if the two disagree.
     Vec3f sumNormal;
-    for (int i = 0; i < face->numVertices; i++) {
-        Vec3f dir1 = vertices[face->vertexIds[(i + 1) % face->numVertices]] - vertices[face->vertexIds[i]];
-        Vec3f dir2 = vertices[face->vertexIds[(i + 2) % face->numVertices]] - vertices[face->vertexIds[(i + 1) % face->numVertices]];
+    for (int i = 0; i < face.numVertices; i++) {
+        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.numVertices]] - vertices[face.vertexIds[i]];
+        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.numVertices]] - vertices[face.vertexIds[(i + 1) % face.numVertices]];
         sumNormal += cross(dir1, dir2);
     }
     if (dot(normal, sumNormal) <= 0)
         normal = sumNormal;
 
-    face->facePlane.normal = normal / normal.length();
+    return normal / normal.length();
+}
+
+/**
+ * Recomputes the plane of a face from its vertices, and collapses the face to two vertices if it has no area.
+ *
+ * @param face                          Face to repair.
+ * @param vertices                      Vertex positions, indexed by `face->vertexIds`.
+ * @param closedVertices                Vertex positions with every door closed, empty if nothing can move. A face
+ *                                      that has no area in `vertices` but has one here is stretched by a door. It
+ *                                      is not collapsed, and gets its normal from `closedVertices`.
+ */
+template<class Face>
+static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::span<const Vec3f> closedVertices = {}) {
+    if (face->numVertices < 3)
+        return;
+
+    std::optional<Vec3f> normal = faceNormal(*face, vertices);
+    if (!normal && !closedVertices.empty())
+        normal = faceNormal(*face, closedVertices);
+
+    if (!normal) {
+        face->numVertices = 2;
+        return;
+    }
+
+    face->facePlane.normal = *normal;
     face->facePlane.dist = -dot(face->facePlane.normal, vertices[face->vertexIds[0]]);
     face->zCalc.init(face->facePlane);
 }
@@ -156,10 +184,8 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
             throw Exception("BLV face data overflow: offset {} exceeds size {}", j, faceData.size());
     }
 
-    for (BLVFace &face : dst->faces) {
-        dropDuplicateFaceVertices(&face);
-        repairFaceNormal(&face, dst->vertices);
-    }
+    for (BLVFace &face : dst->faces)
+        dropDuplicateFaceVertices(&face); // Normals are repaired in reconstruct(IndoorDelta_MM7), because doors live in the .dlv.
 
     for (size_t i = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
@@ -394,6 +420,14 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
             pDoor->pDeltaVs[j] = pFace->textureDeltaV;
         }
     }
+
+    std::vector<Vec3f> closedVertices = dst->vertices;
+    for (const BLVDoor &door : dst->doors)
+        for (int i = 0; i < door.numVertices; ++i)
+            closedVertices[door.pVertexIDs[i]] = door.direction * door.moveLength + Vec3f(door.pXOffsets[i], door.pYOffsets[i], door.pZOffsets[i]);
+
+    for (BLVFace &face : dst->faces)
+        repairFaceNormal(&face, dst->vertices, closedVertices);
 
     reconstruct(src.eventVariables, &engine->_persistentVariables);
     dst->lastVisitTime = Time::fromTicks(src.lastVisitTime);
