@@ -583,7 +583,7 @@ GAME_TEST(Issues, Issue2771) {
     game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Makes the second character active.
     game.pointMouseAtDecoration(380);
-    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick(3);
     ASSERT_TRUE(pParty->ImmolationActive());
 
