@@ -75,10 +75,6 @@ static void printTrace(std::string_view trace) {
     std::fflush(stderr);
 }
 
-static void warmUpCpptrace() {
-    (void) cpptrace::generate_trace(0, 1).to_string();
-}
-
 static void printCrashTrace(std::string_view reason) {
     printCrashHeader(reason);
     printTrace(stackTraceToString());
@@ -539,10 +535,6 @@ static void installHandlers() {
 
 StackTraceOnCrash::StackTraceOnCrash(void (*callback)()) {
     crashCallback = callback;
-
-    // Symbols resolve lazily, so the first trace is the one that opens debug info and allocates. Better done
-    // here than inside a handler, with the process already broken.
-    warmUpCpptrace();
     installHandlers();
 }
 
