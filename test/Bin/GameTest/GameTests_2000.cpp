@@ -1174,7 +1174,7 @@ GAME_TEST(Issues, Issue2453) {
 }
 
 GAME_TEST(Issues, Issue2464a) {
-    // Hovering an option in an NPC dialogue doesn't show its text in the status bar.
+    // Hovering an option in an NPC dialogue should show its text in the status bar.
     auto statusTape = tapes.statusBar();
 
     engine->config->debug.NoActors.setValue(true);
@@ -1194,7 +1194,7 @@ GAME_TEST(Issues, Issue2464a) {
 }
 
 GAME_TEST(Issues, Issue2464b) {
-    // Hovering an option in a vendor's dialogue shows its text in the status bar.
+    // Hovering an option in a vendor's dialogue should not show its text in the status bar.
     auto statusTape = tapes.statusBar();
 
     engine->config->debug.NoActors.setValue(true);
