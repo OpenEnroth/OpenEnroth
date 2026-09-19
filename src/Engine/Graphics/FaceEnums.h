@@ -25,7 +25,8 @@ enum class FaceAttribute : uint32_t {
     FACE_TexAlignBottom    = 0x00020000,
     FACE_TexMoveByDoor     = 0x00040000,
     FACE_UNKOWN_10         = 0x00080000,  // MMExt: TriggerByTouch, doesn't work anymore
-    FACE_HAS_HINT          = 0x00100000,  // MMExt: IsEventJustHint, [MM7+]
+    FACE_EVENT_IS_HINT     = 0x00100000,  // The event is a MouseOver followed by Exit, set on load.
+                                          // MMExt: IsEventJustHint, [MM7+]
     FACE_INDOOR_CARPET     = 0x00200000,  // MMExt: AlternativeSound
     FACE_INDOOR_SKY        = 0x00400000,  // MMExt: outdoor in software mode: horizontal flow
     FACE_FlipNormalU       = 0x00800000,
