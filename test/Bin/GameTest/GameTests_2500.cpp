@@ -296,7 +296,6 @@ GAME_TEST(Prs, Pr2599) {
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
     game.pressGuiButton("Transition_Yes");
-    game.tick();
     game.skipLoadingScreen();
     EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
     EXPECT_EQ(pParty->pos.x, 14207);
@@ -454,7 +453,6 @@ GAME_TEST(Issues, Pr2635) {
 
     // A double click on it loads.
     game.doubleClickGuiButton("LoadMenu_Slot0");
-    game.tick(2);
     game.skipLoadingScreen();
     game.tick(2);
     EXPECT_EQ(current_screen_type, SCREEN_GAME);
