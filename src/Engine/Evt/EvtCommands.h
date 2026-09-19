@@ -14,6 +14,9 @@
 
 class Blob;
 
+/**
+ * How a field of a command sits in an evt record, and what scripts pass for it.
+ */
 enum class EvtFieldType {
     EVT_FIELD_U8,
     EVT_FIELD_U16,
@@ -49,15 +52,21 @@ enum class EvtCommandKind {
 };
 using enum EvtCommandKind;
 
+/**
+ * One field of a command.
+ */
 struct EvtFieldInfo {
-    std::string_view name; // MMExtension's field name, e.g. "SpriteId".
+    std::string_view name; // MMExtension's field name, e.g. "SpriteId". OpenEnroth's own name in a structural command.
     EvtFieldType type = EVT_FIELD_U8;
     EvtConstGroup constGroup = EVT_CONST_NONE;
 };
 
+/**
+ * One row of the command table.
+ */
 struct EvtCommandInfo {
     EvtOpcode opcode = EVENT_Invalid;
-    std::string_view name; // MMExtension's command name, e.g. "SetFacetBit".
+    std::string_view name; // MMExtension's command name, e.g. "SetFacetBit". The opcode's name in a structural command.
     EvtCommandKind kind = EVT_COMMAND_ACTION;
     std::vector<EvtFieldInfo> fields; // In record order, which is also the order of positional script arguments.
 };
@@ -71,12 +80,12 @@ struct EvtRecord {
     int eventId = 0;
     int step = 0;
     EvtOpcode opcode = EVENT_Invalid;
-    std::vector<EvtFieldValue> values; // One per field of the command. Empty if the record didn't match the table.
-    std::string payload; // Bytes after the opcode, kept for records that didn't match.
+    std::optional<std::vector<EvtFieldValue>> values; // One per field of the command. Not set if the table doesn't match.
+    std::string payload; // Bytes after the opcode, for a record with no values.
 };
 
 /**
- * @return                              All commands of the MM7 evt format, in opcode order.
+ * @return                              The commands the table knows, in opcode order.
  */
 std::span<const EvtCommandInfo> evtCommands();
 
@@ -136,15 +145,16 @@ std::optional<EvtTargetCharacter> evtPlayerByName(std::string_view name);
 std::vector<EvtRecord> decodeEvtRecords(const Blob &data);
 
 /**
- * @param record                        Record to encode. Needs one value per field of its command.
+ * @param record                        Record to encode. Needs one value per field of its command, or no values and
+ *                                      the payload.
  * @return                              The record as it sits in an evt file, size byte included.
- * @throws Exception                    If the opcode has no command, or the values don't fit the fields.
+ * @throws Exception                    If the values don't fit the fields of the command, or the record is too long.
  */
 std::string encodeEvtRecord(const EvtRecord &record);
 
 /**
  * @param record                        Record to convert.
  * @return                              The instruction `EvtInstruction::parse` makes of the encoded record.
- * @throws Exception                    If the record can't be encoded or parsed.
+ * @throws Exception                    If the record can't be encoded, or OpenEnroth doesn't support its command.
  */
 EvtInstruction evtInstruction(const EvtRecord &record);

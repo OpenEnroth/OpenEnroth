@@ -74,6 +74,10 @@ class EvtInterpreter {
       */
      [[nodiscard]] EvtFlow executeInstruction(EvtInstruction ir);
 
+     [[nodiscard]] const EvtContext &context() const {
+         return _context;
+     }
+
      /**
       * @param who                      Characters that the instructions that follow apply to, as `ForPartyMember` sets.
       */

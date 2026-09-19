@@ -46,13 +46,18 @@ class EvtScripts {
     virtual bool runEvent(bool isGlobal, int eventId, Pid targetObj, bool canShowMessages) = 0;
 
     /**
-     * Continues a handler that stopped to wait for a dialogue.
+     * Continues the handler that stopped to wait for the dialogue that has just closed.
      *
-     * @param eventId                   Event id.
+     * @param eventId                   Event id that the dialogue was opened for.
      * @param[out] mapExitTriggered     Whether the event sent the party to another map.
      * @return                          Whether a handler of this event was waiting.
      */
     virtual bool resumeEvent(int eventId, bool *mapExitTriggered) = 0;
+
+    /**
+     * Drops the handler that waits for a dialogue, which closed without letting the event go on.
+     */
+    virtual void cancelEvent() = 0;
 
     /**
      * @param eventId                   Event id.
@@ -69,8 +74,10 @@ class EvtScripts {
     /**
      * Called after `loadMapScripts`, once the evt triggers are registered and the evt map load events have run.
      * Registers the scripts' timers and runs their map load handlers.
+     *
+     * @return                          Whether a map load handler sent the party to another map.
      */
-    virtual void onMapLoad() = 0;
+    virtual bool onMapLoad() = 0;
 
     virtual void onMapLeave() = 0;
 };
