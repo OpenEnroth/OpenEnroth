@@ -44,3 +44,10 @@ add_custom_target(Run_GameTest_Headless_Parallel
         DEPENDS OpenEnroth_GameTest
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         USES_TERMINAL)
+
+add_custom_target(Run_GameTest_Headless_Parallel_DecompiledEvents
+        Python::Interpreter ${CMAKE_SOURCE_DIR}/thirdparty/gtest_parallel/gtest-parallel --print_test_times
+            $<TARGET_FILE:OpenEnroth_GameTest> -- --test-path ${OE_TESTDATA_PATH} --headless --decompiled-events
+        DEPENDS OpenEnroth_GameTest
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        USES_TERMINAL)
