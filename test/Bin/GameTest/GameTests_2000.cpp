@@ -1187,10 +1187,8 @@ GAME_TEST(Issues, Issue2464a) {
     game.tick();
     ASSERT_EQ(current_screen_type, SCREEN_NPC_DIALOGUE);
 
-    auto exit = std::ranges::find(pDialogueWindow->vButtons, "Exit", &GUIButton::label);
-    ASSERT_NE(exit, pDialogueWindow->vButtons.end());
     test.startTaping();
-    game.moveMouse((*exit)->rect.center());
+    game.hoverGuiButton("Dialogue_Exit");
     game.tick();
     EXPECT_CONTAINS(statusTape, "Exit");
 }
@@ -1207,10 +1205,8 @@ GAME_TEST(Issues, Issue2464b) {
     game.tick(2);
     ASSERT_EQ(current_screen_type, SCREEN_HOUSE);
 
-    auto standard = std::ranges::find(pDialogueWindow->vButtons, "Standard", &GUIButton::label);
-    ASSERT_NE(standard, pDialogueWindow->vButtons.end());
     test.startTaping();
-    game.moveMouse((*standard)->rect.center());
+    game.hoverGuiButton("HouseDialogue_Option0");
     game.tick();
     EXPECT_MISSES(statusTape, "Standard");
 }

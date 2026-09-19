@@ -951,7 +951,8 @@ void GUIWindow_House::initializeProprietorDialogue() {
     std::vector<DialogueId> optionList = listDialogueOptions();
 
     for (int i = 0; i < optionList.size(); i++)
-        pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectProprietorDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
+        pDialogueWindow->CreateButton(fmt::format("HouseDialogue_Option{}", i), {480, 146 + 30 * i}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
+                                      UIMSG_SelectProprietorDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
     pDialogueWindow->setKeyboardControlGroup(optionList.size(), false, 0, 2);
     _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
 }
