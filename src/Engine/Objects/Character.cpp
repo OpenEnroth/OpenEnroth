@@ -6362,7 +6362,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
-        pushSpellOrRangedAttack(spellForWand(wand_item_id), pParty->activeCharacterIndex(), WANDS_SKILL_VALUE, ON_CAST_CastViaWand);
+        pushSpellOrRangedAttack(spellForWand(wand_item_id), pParty->activeCharacterIndex(), engine->config->gameplay.WandSpellSkill.value(), ON_CAST_CastViaWand);
 
         // reduce wand charges
         if (!--main_hand->numCharges && engine->config->gameplay.DestroyDischargedWands.value()) {
