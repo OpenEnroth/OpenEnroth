@@ -4,6 +4,12 @@ namespace detail {
 bool isRunningUnderRosetta();
 } // namespace detail
 
+enum class StackTraceSymbolLoading {
+    STACK_TRACE_LOAD_SYMBOLS_AT_START,
+    STACK_TRACE_LOAD_SYMBOLS_ON_CRASH,
+};
+using enum StackTraceSymbolLoading;
+
 /**
  * Installs crash handlers that dump a stack trace to stderr, then let the crash proceed so that the OS still
  * produces a core dump or a crash report. The handlers are never uninstalled, the process is dying anyway.
@@ -33,6 +39,9 @@ class StackTraceOnCrash {
     /**
      * @param callback                  Called after the crash trace is printed, right before the process
      *                                  dies.
+     * @param symbolLoading             When to load the debug info that traces are symbolized with. Loading it all at
+     *                                  start is safer, because at crash time the process is already broken.
      */
-    explicit StackTraceOnCrash(void (*callback)() = nullptr);
+    explicit StackTraceOnCrash(void (*callback)() = nullptr,
+                               StackTraceSymbolLoading symbolLoading = STACK_TRACE_LOAD_SYMBOLS_AT_START);
 };
