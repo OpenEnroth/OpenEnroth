@@ -29,6 +29,9 @@ function(init_check_tidy)
         endif()
     endif()
 
+    # run-clang-tidy matches the file patterns against native paths, and a . matches either separator.
+    string(REPLACE "/" "." SOURCE_DIR_PATTERN "${PROJECT_SOURCE_DIR}/")
+
     add_custom_target(check_tidy
         # An unknown check name is silently ignored, so a rename upstream would quietly drop an exclusion.
         COMMAND "${OE_CLANG_TIDY_COMMAND}" --verify-config "--config-file=${PROJECT_SOURCE_DIR}/.clang-tidy"
@@ -37,7 +40,7 @@ function(init_check_tidy)
                 -p "${PROJECT_BINARY_DIR}" -quiet
                 -config-file "${PROJECT_SOURCE_DIR}/.clang-tidy"
                 ${EXTRA_ARGS}
-                "${PROJECT_SOURCE_DIR}/src/.*" "${PROJECT_SOURCE_DIR}/test/.*"
+                "${SOURCE_DIR_PATTERN}src.*\\.cpp$" "${SOURCE_DIR_PATTERN}test.*\\.cpp$"
         COMMENT "Running clang-tidy"
         USES_TERMINAL # run-clang-tidy parallelizes internally, and its progress output is worth seeing live.
         VERBATIM)
