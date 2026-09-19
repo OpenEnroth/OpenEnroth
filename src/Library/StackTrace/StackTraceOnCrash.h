@@ -39,7 +39,8 @@ class StackTraceOnCrash {
     /**
      * @param callback                  Called after the crash trace is printed, right before the process
      *                                  dies.
-     * @param symbolLoading             When to load the debug info that traces are symbolized with.
+     * @param symbolLoading             When to load the debug info that traces are symbolized with. Loading it all at
+     *                                  start is safer, because at crash time the process is already broken.
      */
     explicit StackTraceOnCrash(void (*callback)() = nullptr,
                                StackTraceSymbolLoading symbolLoading = STACK_TRACE_LOAD_SYMBOLS_AT_START);
