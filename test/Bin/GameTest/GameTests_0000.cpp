@@ -61,10 +61,12 @@ GAME_TEST(Issues, Issue163) {
     game.tick(10);
     EXPECT_TRUE(saveLoadMenu()->slots().empty()); // No saves listed.
 
+    auto loadingTape = tapes.custom([] { return pGameLoadingUI_ProgressBar->startCount(); });
+    test.startTaping();
     game.pressGuiButton("LoadMenu_Load");
     game.tick(10);
     EXPECT_EQ(current_screen_type, SCREEN_LOADGAME);
-    EXPECT_FALSE(pGameLoadingUI_ProgressBar->IsActive()); // Load button shouldn't do anything.
+    EXPECT_EQ(loadingTape.delta(), 0); // Load button shouldn't do anything.
 }
 
 GAME_TEST(Issues, Issue198) {
