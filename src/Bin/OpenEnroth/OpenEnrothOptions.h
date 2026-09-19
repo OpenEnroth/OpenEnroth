@@ -39,6 +39,7 @@ struct OpenEnrothOptions : public GameStarterOptions {
 
     Subcommand subcommand = SUBCOMMAND_GAME;
     bool helpPrinted = false; // True means that help message was already printed.
+    bool exitAfterStart = false; // Leave through the main menu as soon as the game is up.
     RetraceOptions retrace;
     PlayOptions play;
 
