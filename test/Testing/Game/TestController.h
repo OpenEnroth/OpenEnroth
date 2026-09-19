@@ -54,11 +54,6 @@ class TestController {
         return recordTape(_callObserver.record<T>(call));
     }
 
-    template<class T, class Mapper>
-    auto recordFunctionTape(EngineCall call, Mapper mapper) {
-        return recordTape([pull = _callObserver.record<T>(call), mapper] { return pull().map(mapper); });
-    }
-
  private:
     EngineController *_controller;
     FileSystem *_tfs;
