@@ -919,12 +919,13 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
         case EVENT_MouseOver:
             requireSize(6);
             ir.data.text_id = fromStream<uint8_t>(stream);
-            ir.step = -1; // Step duplicated for other command, so ignore it
+            // TODO(captainurist): a hint is not an instruction, store it in EvtProgram outside of the instruction list and drop the -1.
+            ir.step = -1; // Never executed. The data gives a hint the step of the command that follows it, and -1 keeps it out of lookups by step.
             break;
         case EVENT_LocationName:  // Only in MM6 data.
             requireSize(6);
             ir.data.text_id = fromStream<uint8_t>(stream);
-            ir.step = -1; // Step duplicated for other command, so ignore it
+            ir.step = -1; // A hint, same as EVENT_MouseOver.
             break;
         case EVENT_MoveToMap:
             requireSize(32);

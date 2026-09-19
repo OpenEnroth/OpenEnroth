@@ -201,10 +201,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             pAudioPlayer->playSound(ir.data.sound_descr.sound_id, SOUND_MODE_UI);
             break;
         case EVENT_MouseOver:
-            assert(false); // Must be filtered by step in decoder
-            break;
         case EVENT_LocationName:
-            assert(false); // Must be filtered by step in decoder
+            assert(false); // EvtInstruction::parse gives hints step -1, so the lookup by step above never returns one.
             break;
         case EVENT_MoveToMap:
         {
