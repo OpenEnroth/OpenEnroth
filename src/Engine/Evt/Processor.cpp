@@ -351,8 +351,9 @@ void onTimer() {
 
 void setEvtScripts(EvtScripts *value) {
     scripts = value;
-    std::erase_if(onTimerTriggers, &MapTimer::callback); // The callbacks belong to the scripts that are going away.
-    std::erase_if(onLongTimerTriggers, &MapTimer::callback);
+    auto isScripted = [](const MapTimer &timer) { return timer.callback != nullptr; };
+    std::erase_if(onTimerTriggers, isScripted); // The callbacks belong to the scripts that are going away.
+    std::erase_if(onLongTimerTriggers, isScripted);
 }
 
 EvtScripts *evtScripts() {
