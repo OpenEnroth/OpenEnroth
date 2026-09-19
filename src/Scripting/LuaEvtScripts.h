@@ -3,7 +3,6 @@
 #include <optional>
 #include <string>
 #include <string_view>
-#include <utility>
 
 #include <sol/sol.hpp>
 
@@ -23,12 +22,18 @@ class LuaEvtScripts : public EvtScripts {
     virtual bool hasEvent(bool isGlobal, int eventId) const override;
     virtual bool runEvent(bool isGlobal, int eventId, Pid targetObj, bool canShowMessages) override;
     virtual bool resumeEvent(int eventId, bool *mapExitTriggered) override;
+    virtual void cancelEvent() override;
     virtual std::optional<std::string> eventHint(int eventId) const override;
     virtual std::optional<bool> canShowTopic(int eventId) override;
-    virtual void onMapLoad() override;
+    virtual bool onMapLoad() override;
     virtual void onMapLeave() override;
 
  private:
+    /**
+     * @param function                  Function of `mmext.core` to call.
+     * @param args                      Its arguments.
+     * @return                          What the function returned, or nil if it failed.
+     */
     template<class... Args>
     sol::object call(std::string_view function, Args &&... args) const;
 

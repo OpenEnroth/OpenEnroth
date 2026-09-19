@@ -20,6 +20,18 @@ void initDecorationEvents();
 void checkDecorationEvents();
 
 void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep = 0);
+
+/**
+ * Goes on with the event that stopped for a dialogue, from `savedEventID` and `savedEventStep`, once the dialogue
+ * closes and lets it.
+ */
+void continueSavedEvent();
+
+/**
+ * Called when a dialogue that an event stopped for closes without letting the event go on.
+ */
+void cancelSavedEvent();
+
 bool npcDialogueEventProcessor(int eventId, int startStep = 0);
 bool hasEventHint(int eventId);
 std::string getEventHintString(int eventId);
@@ -35,9 +47,9 @@ void onMapLeave();
 void onTimer();
 
 /**
- * @param scripts                       Scripted event handlers to run next to the evt ones, or `nullptr` for none.
+ * @param value                         Scripted event handlers to run next to the evt ones, or `nullptr` for none.
  */
-void setEvtScripts(EvtScripts *scripts);
+void setEvtScripts(EvtScripts *value);
 
 EvtScripts *evtScripts();
 

@@ -52,7 +52,6 @@ void loadGame(std::string_view fileName) {
         return;
     }
     engine->_lastLoadedSaveFileName = fileName;
-    onGameLoad();
 
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
     CastSpellInfoHelpers::cancelSpellCastInProgress();
@@ -95,6 +94,8 @@ void loadGame(std::string_view fileName) {
 
     pParty->setActiveCharacterIndex(-1);
     pParty->setActiveToFirstCanAct();
+
+    onGameLoad();
 
 /*
     for (int i = 0; i < 4; ++i) {

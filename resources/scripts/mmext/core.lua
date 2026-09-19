@@ -15,29 +15,65 @@ local Log = require "bindings.log"
 ---@field context EvtScriptContext
 ---@field eventId integer
 ---@field isGlobal boolean
+---@field scope string? "map" for a handler of the map's scripts. What it registers goes away with the map too.
 ---@field player integer|string Who the commands apply to, as `evt.ForPlayer` sets.
 ---@field defaultPlayer integer
 
+---@class EvtRunOptions How to run a handler. All fields are optional.
+---@field eventId integer?
+---@field isGlobal boolean?
+---@field targetPid integer?
+---@field canShowMessages boolean?
+---@field scope string?
+---@field player integer? Who the commands apply to until the handler says otherwise.
+
 ---@class EvtHandler
 ---@field callback function
----@field scope string? "map" for handlers that go away with the map.
+---@field scope string?
 
 ---@alias EvtHandlerLists table<any, EvtHandler[]>
 
 local stopSignal = {} -- Yielded by a handler that must not continue.
-local waitSignal = {} -- Yielded by a handler that continues once the engine resumes its event.
+local waitSignal = {} -- Yielded by a handler that continues once the dialogue it opened closes.
 
 ---@type EvtFrame?
 local current = nil
----@type table<integer, EvtFrame>
-local waiting = {}
----@type string?
-local loadingScope = nil
+---@type EvtFrame? The handler that waits for the dialogue that is open now.
+local waiting = nil
+
+--- True while the decompiled script of an evt file runs. What it registers goes before what the scripts registered,
+--- the way the evt events run before the scripted handlers, and it doesn't override the scripts' hints and strings.
+local decompiling = false
+---@type table<table, integer>
+local prepended = {}
+
+---@param list any[]
+---@return any[]
+local function copyList(list)
+    ---@type any[]
+    local result = {}
+    for i = 1, #list do
+        result[i] = list[i]
+    end
+    return result
+end
+
+---@param list table
+---@param value any
+local function insert(list, value)
+    if decompiling then
+        prepended[list] = (prepended[list] or 0) + 1
+        table.insert(list, prepended[list], value)
+    else
+        table.insert(list, value)
+    end
+end
 
 ---@param frame EvtFrame
 ---@param ... any Passed to the handler.
 ---@return boolean mapExitTriggered
 ---@return any result What the handler returned, if it ran to its end.
+---@return boolean isWaiting Whether the handler stopped until a dialogue closes.
 local function resume(frame, ...)
     local previous = current
     current = frame
@@ -45,53 +81,65 @@ local function resume(frame, ...)
     local ok, result = coroutine.resume(frame.coroutine, ...)
     current = previous
 
+    local isWaiting = false
     if not ok then
         Log.error(debug.traceback(frame.coroutine, tostring(result)))
         result = nil
     elseif result == waitSignal then
-        waiting[frame.eventId] = frame
+        waiting = frame
+        isWaiting = true
         result = nil
     elseif result == stopSignal then
         result = nil
     end
-    return frame.context:isMapExitTriggered(), result
-end
-
----@param eventId integer
----@param isGlobal boolean
----@param targetPid integer
----@param canShowMessages boolean
----@return EvtFrame
-local function newFrame(eventId, isGlobal, targetPid, canShowMessages)
-    local player = Bindings.defaultPlayer()
-    ---@type EvtFrame
-    return {
-        coroutine = coroutine.running(),
-        context = Bindings.newContext(eventId, targetPid, canShowMessages),
-        eventId = eventId,
-        isGlobal = isGlobal,
-        player = player,
-        defaultPlayer = player,
-    }
+    return frame.context:isMapExitTriggered(), result, isWaiting
 end
 
 ---@param callback function
----@param eventId integer
----@param isGlobal boolean
----@param targetPid integer
----@param canShowMessages boolean
+---@param options EvtRunOptions
 ---@param ... any Passed to the handler.
 ---@return boolean mapExitTriggered
 ---@return any result
-local function run(callback, eventId, isGlobal, targetPid, canShowMessages, ...)
-    local frame = newFrame(eventId, isGlobal, targetPid, canShowMessages)
-    frame.coroutine = coroutine.create(callback)
+---@return boolean isWaiting
+local function run(callback, options, ...)
+    local eventId = options.eventId or 0
+    local player = options.player or Bindings.defaultPlayer()
+    ---@type EvtFrame
+    local frame = {
+        coroutine = coroutine.create(callback),
+        context = Bindings.newContext(eventId, options.targetPid or 0, options.canShowMessages ~= false),
+        eventId = eventId,
+        isGlobal = options.isGlobal or false,
+        scope = options.scope,
+        player = player,
+        defaultPlayer = player,
+    }
     return resume(frame, ...)
 end
 
+---@return EvtFrame
+local function currentFrame()
+    assert(current, "evt works only while a script or one of its handlers runs")
+    return current
+end
+
+---@return string? scope What a handler, a hint or a timer registered now belongs to.
+local function registrationScope()
+    return current and current.scope
+end
+
+---@param value any
+---@param what string
+local function checkFunction(value, what)
+    if type(value) ~= "function" then
+        error(string.format("%s has to be a function, got %s", what, type(value)), 3)
+    end
+end
+
 --- A table of handler lists. `t[key] = f` adds a handler, `t[key].last` is the handler added last, `t[key]()` runs
---- them all.
----@param runHandler fun(callback: function, key: any, ...): any How to run one handler.
+--- them all and `t[key].clear()` removes them.
+---@param runHandler fun(handler: EvtHandler, key: any, ...): boolean, any How to run a handler. Returns whether it
+---                                                                          waits for a dialogue, and its result.
 ---@return table events
 ---@return EvtHandlerLists lists
 local function newEvents(runHandler)
@@ -104,45 +152,23 @@ local function newEvents(runHandler)
     local function call(key, ...)
         ---@type any
         local result = nil
-        for _, handler in ipairs(lists[key] or {}) do
-            ---@type any
-            local value = runHandler(handler.callback, key, ...)
+        for _, handler in ipairs(copyList(lists[key] or {})) do
+            local isWaiting, value = runHandler(handler, key, ...)
             if value ~= nil then
                 result = value
+            end
+            if isWaiting then
+                break -- Like an evt event, the rest of the handlers stop at the dialogue.
             end
         end
         return result
     end
 
-    ---@param key any
-    ---@param callback function
-    local function remove(key, callback)
-        local list = lists[key] or {}
-        for i = #list, 1, -1 do
-            if list[i].callback == callback then
-                table.remove(list, i)
-            end
-        end
-    end
-
-    ---@type table<string, function>
-    local methods = {
-        exists = function (key) return lists[key] ~= nil and #lists[key] > 0 end,
-        clear = function (key) lists[key] = nil end,
-        remove = remove,
-        call = call,
-        cocall = call,
-        cocalls = call,
-    }
-
     local events = setmetatable({}, {
         ---@param _ table
         ---@param key any
-        ---@return any
+        ---@return table
         __index = function (_, key)
-            if methods[key] then
-                return methods[key]
-            end
             return setmetatable({}, {
                 ---@param _ table
                 ---@param field string
@@ -151,12 +177,8 @@ local function newEvents(runHandler)
                     local list = lists[key] or {}
                     if field == "last" then
                         return list[#list] and list[#list].callback
-                    elseif field == "first" then
-                        return list[1] and list[1].callback
                     elseif field == "clear" then
                         return function () lists[key] = nil end
-                    elseif field == "exists" then
-                        return function () return #list > 0 end
                     end
                     return nil
                 end,
@@ -165,14 +187,11 @@ local function newEvents(runHandler)
         end,
         ---@param _ table
         ---@param key any
-        ---@param callback function?
+        ---@param callback function
         __newindex = function (_, key, callback)
-            if callback == nil then
-                lists[key] = nil
-                return
-            end
+            checkFunction(callback, "A handler")
             lists[key] = lists[key] or {}
-            table.insert(lists[key], { callback = callback, scope = loadingScope })
+            insert(lists[key], { callback = callback, scope = registrationScope() })
         end,
     })
     return events, lists
@@ -201,24 +220,33 @@ local mapExitTriggered = false
 ---@return table events
 ---@return EvtHandlerLists lists
 local function newEventHandlers(isGlobal)
-    ---@param callback function
+    ---@param handler EvtHandler
     ---@param eventId integer
     ---@param targetPid integer?
     ---@param canShowMessages boolean?
-    return newEvents(function (callback, eventId, targetPid, canShowMessages)
-        local exit = run(callback, eventId, isGlobal, targetPid or 0, canShowMessages ~= false)
+    ---@return boolean isWaiting
+    ---@return any result
+    return newEvents(function (handler, eventId, targetPid, canShowMessages)
+        local options = { eventId = eventId, isGlobal = isGlobal, targetPid = targetPid, canShowMessages = canShowMessages }
+        options.scope = handler.scope
+        local exit, result, isWaiting = run(handler.callback, options)
         mapExitTriggered = mapExitTriggered or exit
+        return isWaiting, result
     end)
 end
 
----@param callback function
+---@param handler EvtHandler
 ---@param name string
 ---@param ... any
----@return any
-local events, eventLists = newEvents(function (callback, name, ...)
-    local _, result = run(callback, 0, false, 0, name ~= "LoadMap", ...)
-    return result
+---@return boolean isWaiting
+---@return any result
+local events, eventLists = newEvents(function (handler, name, ...)
+    local canShowMessages = name ~= "LoadMap" and name ~= "AfterLoadMap"
+    local exit, result, isWaiting = run(handler.callback, { canShowMessages = canShowMessages, scope = handler.scope }, ...)
+    mapExitTriggered = mapExitTriggered or exit
+    return isWaiting, result
 end)
+
 ---@type EvtHandlerLists, EvtHandlerLists, EvtHandlerLists
 local mapLists, globalLists, topicLists = {}, {}, {}
 ---@type table<any, any>, table<any, any>, table<any, any>
@@ -228,43 +256,72 @@ local hints = {}
 ---@type table<integer, integer>
 local houses = {}
 
+--- A table that the scripts set event hints or houses in. The decompiled script doesn't override them.
+---@param values table<integer, any>
+---@return table
+local function newEventValues(values)
+    return setmetatable({}, {
+        __index = values,
+        ---@param _ table
+        ---@param eventId integer
+        ---@param value any
+        __newindex = function (_, eventId, value)
+            if not decompiling or values[eventId] == nil then
+                values[eventId] = value
+            end
+        end,
+    })
+end
+
+---@type table<integer, string>, table<integer, integer>
+local hintValues, houseValues = newEventValues(hints), newEventValues(houses)
+evt.hint, evt.Hint, evt.house = hintValues, hintValues, houseValues
+
 local function resetGlobalHandlers()
     globalEvents, globalLists = newEventHandlers(true)
-    ---@param callback function
+    ---@param handler EvtHandler
     ---@param topic integer
-    ---@return any
-    topicEvents, topicLists = newEvents(function (callback, topic)
-        local _, result = run(callback, topic, true, 0, false, topic)
-        return result
+    ---@return boolean isWaiting
+    ---@return any result
+    topicEvents, topicLists = newEvents(function (handler, topic)
+        -- The interpreter checks the whole party for a topic.
+        local options = { eventId = topic, isGlobal = true, canShowMessages = false, player = evt.Players.All }
+        options.scope = handler.scope
+        local _, result, isWaiting = run(handler.callback, options, topic)
+        return isWaiting, result
     end)
-    evt.global, evt.Global, evt.CanShowTopic = globalEvents, globalEvents, topicEvents
+    evt.global, evt.CanShowTopic = globalEvents, topicEvents
 end
 
 local function resetMapHandlers()
     mapEvents, mapLists = newEventHandlers(false)
-    hints, houses = {}, {}
     evt.map, evt.Map = mapEvents, mapEvents
-    evt.hint, evt.Hint = hints, hints
-    evt.house, evt.House = houses, houses
+    for key in pairs(hints) do
+        hints[key] = nil
+    end
+    for key in pairs(houses) do
+        houses[key] = nil
+    end
 end
 
----@return EvtFrame
-local function currentFrame()
-    return current or newFrame(0, false, 0, true)
+---@param first any The arguments as a table, or the first of them.
+---@param ... any The rest of the arguments.
+---@return table
+local function argumentTable(first, ...)
+    if type(first) == "table" then
+        return first
+    end
+    return { first, ... }
 end
 
 ---@param name string
 ---@param player integer|string|nil
----@param first any The arguments as a table, or the first of them.
----@param ... any The rest of the arguments.
+---@param ... any The arguments as a table, or one by one.
 ---@return boolean? result Whether the condition held, if the command is one.
-local function execute(name, player, first, ...)
-    ---@type table
-    local args = type(first) == "table" and first or { first, ... }
-
+local function execute(name, player, ...)
     local frame = currentFrame()
-    local result, state = frame.context:execute(name, args, player or frame.player)
-    if state ~= "ok" and current then
+    local result, state = frame.context:execute(name, argumentTable(...), player or frame.player)
+    if state ~= "ok" then
         ---@diagnostic disable-next-line: await-in-sync
         coroutine.yield(state == "wait" and waitSignal or stopSignal)
     end
@@ -296,12 +353,14 @@ for player in pairs(evt.Players) do
     })
 end
 
----@param player integer|string|table
+---@param ... any The player, or a table with it as `Player` or first.
 ---@return table evt
-function evt.ForPlayer(player)
-    if type(player) == "table" then
-        ---@type integer|string
-        player = player.Player or player[1]
+function evt.ForPlayer(...)
+    ---@type table<any, integer|string>
+    local args = argumentTable(...)
+    local player = args.Player
+    if player == nil then
+        player = args[1]
     end
     currentFrame().player = player
     return evt
@@ -315,11 +374,15 @@ end
 ---@param eventId integer
 ---@param houseId integer
 function evt.HouseDoor(eventId, houseId)
-    houses[eventId] = houseId
+    houseValues[eventId] = houseId
     mapEvents[eventId] = function ()
         execute("EnterHouse", nil, houseId)
     end
 end
+
+--- Indices of the strings that the scripts changed.
+---@type table<integer, boolean>
+local changedStrings = {}
 
 evt.str = setmetatable({}, {
     ---@param _ table
@@ -329,9 +392,14 @@ evt.str = setmetatable({}, {
     ---@param _ table
     ---@param index integer
     ---@param value string
-    __newindex = function (_, index, value) Bindings.setStr(index, value) end,
+    __newindex = function (_, index, value)
+        if decompiling and changedStrings[index] then
+            return
+        end
+        changedStrings[index] = changedStrings[index] or not decompiling
+        Bindings.setStr(index, value)
+    end,
 })
-evt.Str = evt.str
 
 setmetatable(evt, {
     ---@param _ table
@@ -351,6 +419,8 @@ setmetatable(evt, {
     __newindex = function (self, key, value)
         if key == "Player" then
             currentFrame().player = value
+        elseif key == "CurrentPlayer" then
+            error("evt.CurrentPlayer can't be set, it's the player that was active when the handler started", 2)
         else
             rawset(self, key, value)
         end
@@ -394,19 +464,34 @@ local function newEvtLines(isGlobal)
     })
 end
 
+local function onlyModulus()
+    error("Game.Rand() works only as Game.Rand() % n", 2)
+end
+
 --- `Game.Rand() % n` draws like the interpreter's random jump does, so that a decompiled script rolls what its evt
---- file would have rolled.
-local randomValue = setmetatable({}, {
-    ---@param _ table
-    ---@param hi integer
-    ---@return integer
-    __mod = function (_, hi) return Bindings.random(hi) end,
-})
+--- file would have rolled. The draw waits for the modulus, and each modulus is drawn once.
+---@return table
+local function newRandomValue()
+    ---@type table<integer, integer>
+    local values = {}
+    return setmetatable({}, {
+        ---@param _ table
+        ---@param hi integer
+        ---@return integer
+        __mod = function (_, hi)
+            values[hi] = values[hi] or Bindings.random(hi)
+            return values[hi]
+        end,
+        __eq = onlyModulus,
+        __lt = onlyModulus,
+        __le = onlyModulus,
+    })
+end
 
 local Game = setmetatable({
     MapEvtLines = newEvtLines(false),
     GlobalEvtLines = newEvtLines(true),
-    Rand = function () return randomValue end,
+    Rand = newRandomValue,
 }, {
     ---@param _ table
     ---@param key string
@@ -446,58 +531,125 @@ local Mouse = {
     }),
 }
 
+--- Makes reading a name that the table doesn't have an error, so that a typo doesn't pass as nil or zero.
+---@param values table
+---@param name string
+---@return table
+local function strict(values, name)
+    return setmetatable(values, {
+        ---@param _ table
+        ---@param key any
+        __index = function (_, key)
+            error(string.format("%s.%s doesn't exist", name, tostring(key)), 2)
+        end,
+    })
+end
+
 ---@type table<string, any>
 local const = Bindings.constants()
+for group, constants in pairs(const) do
+    strict(constants, "const." .. group)
+end
 const.Minute = 256
-const.Second = const.Minute / 60
 const.Hour = 60 * const.Minute
 const.Day = 24 * const.Hour
 const.Week = 7 * const.Day
 const.Month = 4 * const.Week
 const.Year = 12 * const.Month
 const.Novice, const.Expert, const.Master, const.GM = 1, 2, 3, 4
+strict(const, "const")
 
 ---@class EvtTimer
 ---@field callback function
 ---@field period number
 ---@field startTime number?
+---@field isRefill boolean `RefillTimer`, which the engine checks after every `Timer`.
+---@field firesAtOnce boolean
+---@field scope string?
+---@field isRemoved boolean
 
 ---@type EvtTimer[]
-local pendingTimers = {}
----@type table<function, boolean>
-local removedTimers = {}
+local timers = {}
+---@type EvtTimer?
+local runningTimer = nil
+local isMapLoaded = false
 
----@param callback function
----@param period number?
----@param startTime number?
-local function Timer(callback, period, startTime)
-    removedTimers[callback] = nil
-    table.insert(pendingTimers, { callback = callback, period = period or const.Minute, startTime = startTime })
-end
-
---- OpenEnroth doesn't fire timers on a map refill, so this is `Timer` that follows the calendar.
----@param callback function
----@param period number?
----@param startTime number?
-local function RefillTimer(callback, period, startTime)
-    Timer(callback, period or const.Day, startTime or 0)
-end
-
----@param callback function
-local function RemoveTimer(callback)
-    removedTimers[callback] = true
-end
-
-local function registerTimers()
-    for _, timer in ipairs(pendingTimers) do
-        Bindings.addTimer(timer.period, timer.startTime, function ()
-            if removedTimers[timer.callback] then
-                return false
-            end
-            return (run(timer.callback, 0, false, 0, true))
-        end)
+---@param timer EvtTimer
+local function registerTimer(timer)
+    ---@return boolean mapExitTriggered
+    local function fire()
+        if timer.isRemoved then
+            return false
+        end
+        local previous = runningTimer
+        runningTimer = timer
+        local exit = run(timer.callback, { scope = timer.scope })
+        runningTimer = previous
+        return exit
     end
-    pendingTimers = {}
+
+    Bindings.addTimer(timer.period, timer.startTime, timer.isRefill, fire)
+    if timer.firesAtOnce then
+        mapExitTriggered = fire() or mapExitTriggered
+    end
+end
+
+---@param callback function
+---@param period number
+---@param startTime number|boolean?
+---@param isRefill boolean
+local function newTimer(callback, period, startTime, isRefill)
+    checkFunction(callback, "A timer")
+    local firesAtOnce = startTime == true
+    if type(startTime) == "boolean" then
+        startTime = nil
+    end
+    ---@cast startTime number?
+
+    local ok, message = pcall(Bindings.checkTimer, period, startTime, isRefill)
+    if not ok then
+        error(message, 3)
+    end
+
+    ---@type EvtTimer
+    local timer = {
+        callback = callback,
+        period = period,
+        startTime = startTime,
+        isRefill = isRefill,
+        firesAtOnce = firesAtOnce,
+        scope = registrationScope(),
+        isRemoved = false,
+    }
+    insert(timers, timer)
+    if isMapLoaded then
+        registerTimer(timer)
+    end
+end
+
+---@param callback function
+---@param period number?
+---@param startTime number|boolean? Time of day to fire at, or true to also fire right away.
+local function Timer(callback, period, startTime)
+    newTimer(callback, period or const.Minute, startTime, false)
+end
+
+--- OpenEnroth doesn't fire timers on a map refill, so this is a `Timer` that the engine checks after the others, like
+--- an evt `OnLongTimer`. Without a start time a calendar period fires at midnight.
+---@param callback function
+---@param period number?
+---@param startTime number|boolean?
+local function RefillTimer(callback, period, startTime)
+    newTimer(callback, period or const.Day, startTime, true)
+end
+
+---@param callback function? The function of the timers to remove, the timer that is firing if not given.
+local function RemoveTimer(callback)
+    for _, timer in ipairs(timers) do
+        if (callback == nil and timer == runningTimer) or (callback ~= nil and timer.callback == callback) then
+            timer.isRemoved = true
+        end
+    end
 end
 
 ---@param source table<any, any>
@@ -517,7 +669,6 @@ end
 ---@type table<string, any>
 local environment = setmetatable({
     evt = evt,
-    Evt = evt,
     events = events,
     Game = Game,
     Party = Party,
@@ -546,9 +697,7 @@ local function runScript(chunk, message, scope)
         Log.error(tostring(message))
         return
     end
-    loadingScope = scope
-    run(chunk, 0, false, 0, false)
-    loadingScope = nil
+    run(chunk, { scope = scope, canShowMessages = false })
 end
 
 ---@param paths string[]
@@ -565,17 +714,22 @@ end
 ---@param isGlobal boolean
 ---@param scope string?
 local function runDecompiledEvents(name, isGlobal, scope)
-    if Bindings.isDecompilingEvents() and Bindings.eventCount(isGlobal) > 0 then
-        local script = Bindings.decompile(name, removedEvents[isGlobal])
-        local chunk, message = Bindings.loadString(script, name .. ".evt", environment)
-        runScript(chunk, message, scope)
+    if not Bindings.isDecompilingEvents() or Bindings.eventCount(isGlobal) == 0 then
+        return
     end
+    local script = Bindings.decompile(name, removedEvents[isGlobal])
+    local chunk, message = Bindings.loadString(script, name .. ".evt", environment)
+    decompiling, prepended = true, {}
+    runScript(chunk, message, scope)
+    decompiling = false
 end
 
-local Core = { environment = environment }
+local wasInGame = false
+
+local Core = {}
 
 function Core.loadGlobalScripts()
-    waiting, pendingTimers, removedTimers = {}, {}, {}
+    waiting, timers, isMapLoaded, wasInGame = nil, {}, false, false
     for key in pairs(eventLists) do
         eventLists[key] = nil
     end
@@ -589,13 +743,18 @@ end
 
 ---@param mapName string
 function Core.loadMapScripts(mapName)
-    waiting, pendingTimers = {}, {}
+    waiting, isMapLoaded = nil, false
+    for i = #timers, 1, -1 do
+        if timers[i].scope == "map" or timers[i].isRemoved then
+            table.remove(timers, i)
+        end
+    end
     removeMapHandlers(eventLists)
     removeMapHandlers(globalLists)
     removeMapHandlers(topicLists)
     resetMapHandlers()
     resetVariables("mapvars")
-    removedEvents[false] = {}
+    removedEvents[false], changedStrings = {}, {}
     runScripts(Bindings.mapScripts(mapName), "map")
     runDecompiledEvents(mapName, false, "map")
 end
@@ -616,19 +775,23 @@ end
 function Core.runEvent(isGlobal, eventId, targetPid, canShowMessages)
     mapExitTriggered = false
     local handlers = isGlobal and globalEvents or mapEvents
-    handlers.call(eventId, targetPid, canShowMessages)
+    handlers[eventId](targetPid, canShowMessages)
     return mapExitTriggered
 end
 
 ---@param eventId integer
 ---@return boolean? mapExitTriggered Nil if no handler of the event was waiting.
 function Core.resumeEvent(eventId)
-    local frame = waiting[eventId]
-    if not frame then
+    local frame = waiting
+    if not frame or frame.eventId ~= eventId then
         return nil
     end
-    waiting[eventId] = nil
+    waiting = nil
     return (resume(frame))
+end
+
+function Core.cancelEvent()
+    waiting = nil
 end
 
 ---@param eventId integer
@@ -642,20 +805,30 @@ end
 ---@return boolean?
 function Core.canShowTopic(eventId)
     ---@type any
-    local result = topicEvents.call(eventId)
+    local result = topicEvents[eventId]()
     if result == nil then
         return nil
     end
     return result and true or false
 end
 
+---@return boolean mapExitTriggered
 function Core.onMapLoad()
-    registerTimers()
-    events.call("LoadMap")
+    mapExitTriggered, isMapLoaded = false, true
+    for _, timer in ipairs(copyList(timers)) do
+        if not timer.isRemoved then
+            registerTimer(timer)
+        end
+    end
+    events.LoadMap(wasInGame)
+    events.AfterLoadMap(wasInGame)
+    wasInGame = true
+    return mapExitTriggered
 end
 
 function Core.onMapLeave()
-    events.call("LeaveMap")
+    isMapLoaded = false
+    events.LeaveMap()
 end
 
 resetGlobalHandlers()
