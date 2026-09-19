@@ -419,6 +419,7 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
+    pPrimaryWindow.reset(); // Still alive if Game::run was never called.
     delete gameTimer;
     pCamera3D.reset();
     pAudioPlayer.reset();
