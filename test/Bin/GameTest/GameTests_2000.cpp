@@ -1225,7 +1225,7 @@ GAME_TEST(Issues, Issue2464a) {
     npc->npcId = 19; // Margaret the Docent.
     game.tick();
     game.pointMouseAtActor(npc->id);
-    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick();
     ASSERT_EQ(current_screen_type, SCREEN_NPC_DIALOGUE);
 
