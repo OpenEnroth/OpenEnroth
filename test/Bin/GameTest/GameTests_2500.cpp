@@ -581,7 +581,7 @@ GAME_TEST(Issues, Issue2760) {
     game.tick(20);
     game.releaseKey(PlatformKey::KEY_LEFTBRACKET);
     game.tick();
-    EXPECT_NEAR(xTape.max() + pParty->radius, -2976, 1); // Stopped by the shaft's east wall. The floor check only keeps the party's center on the car.
+    EXPECT_NEAR(xTape.max() + pParty->radius, -2976, 1); // Stopped by the shaft's east wall.
 }
 
 GAME_TEST(Issues, Issue2771) {
