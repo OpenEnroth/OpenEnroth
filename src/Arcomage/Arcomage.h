@@ -165,6 +165,8 @@ struct ArcomageGame {
     static void PrepareArcomage();
     static void Loop();
 
+    // TODO(captainurist): advance the Arcomage animations with time, they advance once per frame now, so the
+    //                     frame rate decides how fast the game plays.
     FrameLimiter _frameLimiter;
     // TODO(captainurist): drop this, fps_limit in config should be the only target fps.
     int _targetFPS = 32;
