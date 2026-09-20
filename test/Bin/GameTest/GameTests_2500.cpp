@@ -578,7 +578,7 @@ GAME_TEST(Issues, Issue2760) {
     game.tick(80);
     ASSERT_EQ(elevatorTape, tape(DOOR_OPEN, DOOR_CLOSING, DOOR_CLOSED)); // Make sure the car is down before strafing.
     game.pressKey(PlatformKey::KEY_LEFTBRACKET); // Strafe east, into the wall.
-    game.tick(10);
+    game.tick(20);
     game.releaseKey(PlatformKey::KEY_LEFTBRACKET);
     game.tick();
     EXPECT_NEAR(xTape.max() + pParty->radius, -2976, 1); // Stopped by the shaft's east wall. The floor check only keeps the party's center on the car.
