@@ -841,11 +841,6 @@ bool OpponentsAITurn(int player_num) {
     return true;  // result != 0;
 }
 
-static void limitFrameRate() {
-    if (engine->config->graphics.FPSLimit.value() > 0) // 0 is unlimited, which is what trace playback and tests run with.
-        pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
-}
-
 void ArcomageGame::Loop() {
     // reset timer
     pArcomageGame->_frameLimiter.reset();
@@ -883,7 +878,8 @@ void ArcomageGame::Loop() {
         int frame_quant_time = 0;
         int cnt = 0;
         while (1) {
-            limitFrameRate();
+            if (engine->config->graphics.FPSLimit.value() > 0)
+                pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
 
             ArcomageGame::MsgLoop(20, &v10);
             if ((v10.am_input_type == ARCO_MSG_PLAYCARD) || (v10.am_input_type == ARCO_MSG_DISCARD)) break;
@@ -1183,7 +1179,8 @@ char PlayerTurn(int player_num) {
     int frame_quant_time = 0;
     bool break_loop = false;
     do {
-        limitFrameRate();
+        if (engine->config->graphics.FPSLimit.value() > 0)
+            pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
 
         // get input message
         if (pArcomageGame->_forceExit) break_loop = true;

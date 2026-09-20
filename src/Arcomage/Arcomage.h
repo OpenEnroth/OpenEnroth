@@ -166,6 +166,7 @@ struct ArcomageGame {
     static void Loop();
 
     FrameLimiter _frameLimiter;
+    // TODO(captainurist): drop this, fps_limit in config should be the only target fps.
     int _targetFPS = 32;
 
     ArcomageGame_InputMSG _amMsg;
