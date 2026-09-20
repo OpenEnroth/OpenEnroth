@@ -127,7 +127,8 @@ GAME_TEST(Issues, Issue1511) {
 }
 
 GAME_TEST(Issues, Issue1515) {
-    // Only the first of several monsters casting dispel magic was heard.
+    // Monsters casting dispel magic in the same frame were heard only once.
+    constexpr int wizardCount = 4;
     auto soundsTape = tapes.sounds();
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
@@ -135,14 +136,14 @@ GAME_TEST(Issues, Issue1515) {
     prepareForBattleTest(); // Gives the party wizard eye, and a monster only dispels when the party has a buff.
 
     engine->config->debug.NoActors.setValue(false);
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < wizardCount; i++) {
         Actor *wizard = game.spawnMonster(pParty->pos + Vec3f(0, 700 + 100 * i, 0), MONSTER_MAGE_B);
         wizard->monsterInfo.spell1Id = SPELL_LIGHT_DISPEL_MAGIC;
         wizard->monsterInfo.spell1UseChance = 100;
     }
     game.tick(100);
 
-    EXPECT_GE(std::ranges::count(soundsTape.flatten(), SOUND_RechargeItem), 2); // dispel magic
+    EXPECT_EQ(std::ranges::count(soundsTape.flatten(), SOUND_RechargeItem), wizardCount); // dispel magic
 }
 
 GAME_TEST(Issues, Issue1516) {
