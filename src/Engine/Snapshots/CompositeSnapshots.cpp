@@ -142,6 +142,7 @@ static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::s
         normal = faceNormal(*face, closedVertices);
 
     if (!normal) {
+        // TODO(captainurist): drop such faces on load, ids are referenced from sectors, doors, the bsp tree and saves.
         face->numVertices = 2;
         return;
     }
