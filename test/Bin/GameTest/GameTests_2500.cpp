@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 #include <utility>
 
@@ -7,7 +8,9 @@
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnums.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
@@ -15,8 +18,13 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
+#include "Engine/Tables/NPCTable.h"
+#include "Engine/mm7_data.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIGame.h"
+#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Media/Audio/SoundList.h"
@@ -655,6 +663,160 @@ GAME_TEST(Issues, Issue2784a) {
     game.castQuickSpell(0, SPELL_WATER_ACID_BURST);
     game.tick(30);
     EXPECT_CONTAINS(soundNames(soundsTape), "20implosion03");
+}
+
+GAME_TEST(Issues, Issue2777a) {
+    // A Lich healed at an evil temple was turned into a Zombie.
+    for (Class classType : {CLASS_WIZARD, CLASS_LICH}) {
+        SCOPED_TRACE(fmt::format("class={}", std::to_underlying(classType)));
+        test.prepareForNextTest();
+        game.startNewGame();
+
+        Character &target = pParty->pCharacters[0];
+        target.classType = classType;
+        if (classType == CLASS_LICH) {
+            target.uPrevFace = target.uCurrentFace;
+            target.uPrevVoiceID = target.uVoiceID;
+            target.uCurrentFace = 20;
+            target.uVoiceID = 20;
+            GameUI_ReloadPlayerPortraits(0, target.uCurrentFace);
+        }
+        int originalFace = target.uCurrentFace;
+        int originalVoice = target.uVoiceID;
+        int originalPreviousFace = target.uPrevFace;
+        int originalPreviousVoice = target.uPrevVoiceID;
+        int zombieFace = (target.GetSexByVoice() != SEX_MALE) + 23;
+        target.SetCondition(CONDITION_DEAD, 0);
+        pParty->setActiveCharacterIndex(0);
+        pParty->SetGold(100000);
+
+        ASSERT_TRUE(enterHouse(HOUSE_TEMPLE_MOUNT_NIGHON));
+        createHouseUI(HOUSE_TEMPLE_MOUNT_NIGHON);
+        game.tick();
+        game.pressGuiButton("HouseDialogue_Option0");
+        game.tick(2);
+
+        bool shouldBeZombie = classType != CLASS_LICH;
+        EXPECT_EQ(target.conditions.has(CONDITION_ZOMBIE), shouldBeZombie);
+        EXPECT_FALSE(target.conditions.has(CONDITION_DEAD));
+        EXPECT_EQ(target.uCurrentFace, shouldBeZombie ? zombieFace : originalFace);
+        EXPECT_EQ(target.uVoiceID, shouldBeZombie ? zombieFace : originalVoice);
+        EXPECT_EQ(target.uPrevFace, shouldBeZombie ? originalFace : originalPreviousFace);
+        EXPECT_EQ(target.uPrevVoiceID, shouldBeZombie ? originalVoice : originalPreviousVoice);
+        EXPECT_EQ(target.health, target.GetMaxHealth());
+        EXPECT_EQ(target.mana, target.GetMaxMana());
+        EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[target.uCurrentFace]));
+    }
+}
+
+GAME_TEST(Issues, Issue2777b) {
+    // Reanimate forced the Zombie condition and portrait onto a dead Lich.
+    for (Class classType : {CLASS_WIZARD, CLASS_LICH}) {
+        SCOPED_TRACE(fmt::format("class={}", std::to_underlying(classType)));
+        test.prepareForNextTest();
+        game.startNewGame();
+
+        Character &target = pParty->pCharacters[0];
+        target.classType = classType;
+        if (classType == CLASS_LICH) {
+            target.uPrevFace = target.uCurrentFace;
+            target.uPrevVoiceID = target.uVoiceID;
+            target.uCurrentFace = 20;
+            target.uVoiceID = 20;
+            GameUI_ReloadPlayerPortraits(0, target.uCurrentFace);
+        }
+        int originalFace = target.uCurrentFace;
+        int originalVoice = target.uVoiceID;
+        int originalPreviousFace = target.uPrevFace;
+        int originalPreviousVoice = target.uPrevVoiceID;
+        int zombieFace = (target.GetSexByVoice() != SEX_MALE) + 23;
+        target.SetCondition(CONDITION_DEAD, 0);
+
+        Character &caster = pParty->pCharacters[3];
+        caster.classType = CLASS_LICH;
+        caster.setSkillValue(SKILL_DARK, CombinedSkillValue(10, MASTERY_NOVICE));
+        caster.bHaveSpell[SPELL_DARK_REANIMATE] = true;
+        caster.mana = 1000;
+
+        game.castSpell(3, SPELL_DARK_REANIMATE);
+        game.tick();
+        ASSERT_NE(pGUIWindow_CastTargetedSpell, nullptr);
+        game.pressAndReleaseButton(BUTTON_LEFT, 50, 420);
+        game.tick(2);
+
+        bool shouldBeZombie = classType != CLASS_LICH;
+        EXPECT_EQ(target.conditions.has(CONDITION_ZOMBIE), shouldBeZombie);
+        EXPECT_EQ(target.conditions.has(CONDITION_DEAD), !shouldBeZombie);
+        EXPECT_EQ(target.uCurrentFace, shouldBeZombie ? zombieFace : originalFace);
+        EXPECT_EQ(target.uVoiceID, shouldBeZombie ? zombieFace : originalVoice);
+        EXPECT_EQ(target.uPrevFace, shouldBeZombie ? originalFace : originalPreviousFace);
+        EXPECT_EQ(target.uPrevVoiceID, shouldBeZombie ? originalVoice : originalPreviousVoice);
+        EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[target.uCurrentFace]));
+    }
+}
+
+GAME_TEST(Issues, Issue2777c) {
+    // Promoting a Zombie Wizard to Lich kept the Zombie condition and lost the original portrait and voice.
+    game.startNewGame();
+
+    Character &target = pParty->pCharacters[0];
+    target.classType = CLASS_WIZARD;
+    int originalFace = target.uCurrentFace;
+    int originalVoice = target.uVoiceID;
+    Sex originalSex = target.GetSexByVoice();
+    target.SetCondition(CONDITION_DEAD, 0);
+    target.SetCondition(CONDITION_ZOMBIE, 0);
+    ASSERT_TRUE(target.conditions.has(CONDITION_ZOMBIE));
+    ASSERT_EQ(target.uPrevFace, originalFace);
+    ASSERT_EQ(target.uPrevVoiceID, originalVoice);
+    GameUI_ReloadPlayerPortraits(0, target.uCurrentFace);
+
+    target.giveAward(AWARD_PROMOTION_WIZARD);
+    pParty->_questBits[QBIT_DARK_PATH] = true;
+    for (Character &character : pParty->pCharacters)
+        character.inventory.add(Item(ITEM_QUEST_LICH_JAR_EMPTY));
+    pParty->setActiveCharacterIndex(0);
+
+    ASSERT_TRUE(enterHouse(HOUSE_PIT_DARKENMORE_RESIDENCE));
+    auto halfgildDesc = std::ranges::find_if(houseNpcs, [](const HouseNpcDesc &candidate) {
+        return candidate.npc && candidate.npc->dialogue_1_evt_id == 96;
+    });
+    ASSERT_NE(halfgildDesc, houseNpcs.end());
+    int halfgildIndex = static_cast<int>(halfgildDesc - houseNpcs.begin());
+    NPCData &halfgild = *halfgildDesc->npc;
+    createHouseUI(HOUSE_PIT_DARKENMORE_RESIDENCE);
+    ASSERT_NE(houseNpcs[halfgildIndex].button, nullptr);
+    game.pressAndReleaseButton(BUTTON_LEFT, houseNpcs[halfgildIndex].button->rect.center());
+    game.tick();
+
+    auto button = std::ranges::find_if(pDialogueWindow->vButtons, [](const GUIButton *candidate) {
+        return candidate->msg == UIMSG_SelectHouseNPCDialogueOption && candidate->msg_param == std::to_underlying(DIALOGUE_SCRIPTED_LINE_1);
+    });
+    ASSERT_NE(button, pDialogueWindow->vButtons.end());
+    game.pressAndReleaseButton(BUTTON_LEFT, (*button)->rect.center());
+    game.tick(2);
+    ASSERT_EQ(halfgild.dialogue_1_evt_id, 97);
+
+    button = std::ranges::find_if(pDialogueWindow->vButtons, [](const GUIButton *candidate) {
+        return candidate->msg == UIMSG_SelectHouseNPCDialogueOption && candidate->msg_param == std::to_underlying(DIALOGUE_SCRIPTED_LINE_1);
+    });
+    ASSERT_NE(button, pDialogueWindow->vButtons.end());
+    game.pressAndReleaseButton(BUTTON_LEFT, (*button)->rect.center());
+    game.tick(2);
+
+    int lichFace = originalSex == SEX_FEMALE ? 21 : 20;
+    EXPECT_EQ(target.classType, CLASS_LICH);
+    EXPECT_FALSE(target.conditions.has(CONDITION_ZOMBIE));
+    EXPECT_EQ(target.uCurrentFace, lichFace);
+    EXPECT_EQ(target.uVoiceID, lichFace);
+    EXPECT_EQ(target.uPrevFace, originalFace);
+    EXPECT_EQ(target.uPrevVoiceID, originalVoice);
+    EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[lichFace]));
+    EXPECT_FALSE(target.inventory.find(ITEM_QUEST_LICH_JAR_EMPTY));
+    InventoryEntry jar = target.inventory.find(ITEM_QUEST_LICH_JAR_FULL);
+    ASSERT_TRUE(jar);
+    EXPECT_EQ(jar->lichJarCharacterIndex, 0);
+    EXPECT_EQ(halfgild.dialogue_1_evt_id, 0);
 }
 
 GAME_TEST(Issues, Issue2784b) {
