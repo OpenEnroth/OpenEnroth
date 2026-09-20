@@ -695,3 +695,44 @@ GAME_TEST(Issues, Issue2784d) {
     EXPECT_EQ(houseTape.back(), HOUSE_MAGIC_SHOP_TULAREAN_FOREST);
     EXPECT_EQ(soundNames(soundsTape).count("Elf Magic Shop 01"), 1);
 }
+
+GAME_TEST(Issues, Issue2792) {
+    // Pain Reflection at Expert and Master used the Grandmaster duration.
+    auto checkCast = [&](Mastery mastery, Duration expectedDuration) {
+        test.prepareForNextTest();
+        game.startNewGame();
+
+        Character &caster = pParty->pCharacters[3];
+        caster.classType = CLASS_LICH;
+        caster.setSkillValue(SKILL_DARK, CombinedSkillValue(10, mastery));
+        caster.bHaveSpell[SPELL_DARK_PAIN_REFLECTION] = true;
+        caster.mana = caster.GetMaxMana();
+
+        game.castSpell(3, SPELL_DARK_PAIN_REFLECTION);
+        if (mastery == MASTERY_EXPERT) {
+            game.tick();
+            ASSERT_NE(pGUIWindow_CastTargetedSpell, nullptr);
+        } else {
+            ASSERT_EQ(pGUIWindow_CastTargetedSpell, nullptr);
+        }
+        Time applicationStartedAt = pParty->GetPlayingTime();
+        if (mastery == MASTERY_EXPERT)
+            game.pressAndReleaseButton(BUTTON_LEFT, 50, 420);
+        game.tick();
+        Time applicationFinishedAt = pParty->GetPlayingTime();
+
+        for (int i = 0; i < 4; i++) {
+            SpellBuff &buff = pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION];
+            bool shouldHaveBuff = mastery != MASTERY_EXPERT || i == 0;
+            EXPECT_EQ(buff.Active(), shouldHaveBuff) << "character=" << i;
+            if (shouldHaveBuff) {
+                EXPECT_GE(buff.GetExpireTime(), applicationStartedAt + expectedDuration) << "character=" << i;
+                EXPECT_LE(buff.GetExpireTime(), applicationFinishedAt + expectedDuration) << "character=" << i;
+            }
+        }
+    };
+
+    checkCast(MASTERY_EXPERT, Duration::fromMinutes(110));
+    checkCast(MASTERY_MASTER, Duration::fromMinutes(110));
+    checkCast(MASTERY_GRANDMASTER, Duration::fromMinutes(210));
+}

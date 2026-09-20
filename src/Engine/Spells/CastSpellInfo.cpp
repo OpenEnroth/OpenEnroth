@@ -2818,6 +2818,7 @@ void CastSpellInfoHelpers::castSpell() {
                         case MASTERY_EXPERT:
                         case MASTERY_MASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(5 * spell_level);
+                            break;
                         case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(15 * spell_level);
                             break;
