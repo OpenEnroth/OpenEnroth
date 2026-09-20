@@ -102,17 +102,21 @@ void LodReader::open(Blob blob, LodOpenFlags openFlags) {
     rootEntry.dataSize = blob.size() - rootEntry.dataOffset;
 
     BlobInputStream dirStream(blob.subBlob(rootEntry.dataOffset, rootEntry.dataSize));
-    std::vector<LodEntry> entries = parseFileEntries(dirStream, rootEntry, version);
     std::unordered_map<std::string, LodRegion> files;
-    files.reserve(entries.size());
-    for (const LodEntry &entry : entries) {
+    for (const LodEntry &entry : parseFileEntries(dirStream, rootEntry, version)) {
+        std::string name = ascii::toLower(entry.name);
+        if (files.contains(name)) {
+            if (openFlags & LOD_ALLOW_DUPLICATES) {
+                continue; // Only the first entry is kept in this case.
+            } else {
+                throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", blob.displayPath(), name);
+            }
+        }
+
         LodRegion region;
         region.offset = rootEntry.dataOffset + entry.dataOffset;
         region.size = entry.dataSize;
-
-        auto [pos, inserted] = files.try_emplace(ascii::toLower(entry.name), region); // Keeps the first of duplicate entries.
-        if (!inserted && !(openFlags & LOD_ALLOW_DUPLICATES))
-            throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", blob.displayPath(), pos->first);
+        files.emplace(std::move(name), region);
     }
 
     // All good, this is a valid LOD, can update `this`.
