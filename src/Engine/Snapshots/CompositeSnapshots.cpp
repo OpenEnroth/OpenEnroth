@@ -185,7 +185,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     }
 
     for (BLVFace &face : dst->faces)
-        dropDuplicateFaceVertices(&face); // Normals are repaired in reconstruct(IndoorDelta_MM7), because doors live in the .dlv.
+        dropDuplicateFaceVertices(&face); // Vertex ids don't move with the doors, normals do, see reconstruct(IndoorDelta_MM7).
 
     for (size_t i = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
