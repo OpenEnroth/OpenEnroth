@@ -1215,81 +1215,42 @@ GAME_TEST(Issues, Issue2463b) {
     EXPECT_EQ(exitTape, tape({DOOR_OPENING, DOOR_OPENING}, {DOOR_OPEN, DOOR_OPEN}));
 }
 
-GAME_TEST(Issues, Issue2464) {
-    // Hovering on NPC dialog options displays the hovered text in the log bar.
+GAME_TEST(Issues, Issue2464a) {
+    // Hovering an option in an NPC dialogue should show its text in the status bar.
     auto statusTape = tapes.statusBar();
 
-    test.prepareForNextTest();
+    engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
-    game.tick(20);
-
-    // 1. Trigger tutorial dialog (which uses SCREEN_NPC_DIALOGUE)
-    // Vanilla behavior: Mirroring SHOULD happen for regular NPCs
-    game.pressKey(PlatformKey::KEY_UP);
-    game.tick(20);
-    game.releaseKey(PlatformKey::KEY_UP);
-    game.tick(10);
+    Actor *npc = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_PEASANT_DWARF_MALE_A_A, SPAWN_FRIENDLY | SPAWN_STATIONARY);
+    npc->npcId = 19; // Margaret the Docent.
+    game.tick();
+    game.pointMouseAtActor(npc->id);
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick();
     ASSERT_EQ(current_screen_type, SCREEN_NPC_DIALOGUE);
-    ASSERT_NE(pDialogueWindow, nullptr);
 
-    // Find \"Goodbye\" button or any button with a label
-    GUIButton *pTargetBtn = nullptr;
-    for (GUIButton *pBtn : pDialogueWindow->vButtons) {
-        if (pBtn->uButtonType == BUTTON_TYPE_NORMAL && !pBtn->label.empty()) {
-            pTargetBtn = pBtn;
-            break;
-        }
-    }
-    ASSERT_NE(pTargetBtn, nullptr);
-
-    // Hover over it
     test.startTaping();
-    game.moveMouse(pTargetBtn->rect.x + pTargetBtn->rect.w / 2,
-                   pTargetBtn->rect.y + pTargetBtn->rect.h / 2);
-    game.tick(10);
+    game.hoverGuiButton("Dialogue_Exit");
+    game.tick();
+    EXPECT_CONTAINS(statusTape, "Exit");
+}
 
-    // The status bar SHOULD contain the label for regular NPCs
-    EXPECT_EQ(engine->_statusBar->get(), pTargetBtn->label);
-    test.stopTaping();
+GAME_TEST(Issues, Issue2464b) {
+    // Hovering an option in a vendor's dialogue should not show its text in the status bar.
+    auto statusTape = tapes.statusBar();
 
-    // Exit dialogue
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick(10);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_TATALIA, Vec3f(19174, 15056, 3040), 0); // In front of the door of Vander's Blades & Bows.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    ASSERT_EQ(current_screen_type, SCREEN_HOUSE);
 
-    // 2. Enter a house/vendor
-    // Vanilla behavior: Mirroring SHOULD NOT happen for vendors
-    // Emerald Island Town Hall is right in front of us if we turn a bit.
-    game.pressKey(PlatformKey::KEY_LEFT);
-    game.tick(5);
-    game.releaseKey(PlatformKey::KEY_LEFT);
-    game.pressKey(PlatformKey::KEY_UP);
-    game.tick(150);
-    game.releaseKey(PlatformKey::KEY_UP);
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Enter house
-    game.tick(20);
-
-    if (current_screen_type == SCREEN_HOUSE) {
-        ASSERT_NE(pDialogueWindow, nullptr);
-
-        // Find a service button in the house (like \"Exit Building\")
-        GUIButton *pServiceBtn = nullptr;
-        for (GUIButton *pBtn : pDialogueWindow->vButtons) {
-            if (pBtn->uButtonType == BUTTON_TYPE_NORMAL && !pBtn->label.empty()) {
-                pServiceBtn = pBtn;
-                break;
-            }
-        }
-
-        if (pServiceBtn) {
-            test.startTaping();
-            game.moveMouse(pServiceBtn->rect.x + pServiceBtn->rect.w / 2,
-                           pServiceBtn->rect.y + pServiceBtn->rect.h / 2);
-            game.tick(10);
-
-            // The status bar should NOT contain the label for vendors/shops
-            EXPECT_FALSE(statusTape.contains(pServiceBtn->label));
-        }
-    }
+    test.startTaping();
+    game.hoverGuiButton("HouseDialogue_Option0");
+    game.tick();
+    EXPECT_MISSES(statusTape, "Standard");
 }
 
 GAME_TEST(Issues, Issue2479) {
@@ -1313,3 +1274,4 @@ GAME_TEST(Issues, Issue2490) {
     game.tick(2);
     EXPECT_EQ(current_screen_type, SCREEN_BOOKS); // Book opened, no assertion.
 }
+
