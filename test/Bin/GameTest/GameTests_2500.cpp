@@ -576,11 +576,11 @@ GAME_TEST(Issues, Issue2760) {
     game.pointMouseAtFace(3459);
     game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
     game.tick(80);
+    ASSERT_EQ(elevatorTape, tape(DOOR_OPEN, DOOR_CLOSING, DOOR_CLOSED)); // With the car still up, the wall above the shaft would stop the party at the same x.
     game.pressKey(PlatformKey::KEY_LEFTBRACKET); // Strafe east, into the wall.
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_LEFTBRACKET);
     game.tick();
-    EXPECT_EQ(elevatorTape, tape(DOOR_OPEN, DOOR_CLOSING, DOOR_CLOSED));
     EXPECT_NEAR(xTape.max() + pParty->radius, -2976, 1); // Stopped by the shaft's east wall. The floor check only keeps the party's center on the car.
 }
 
