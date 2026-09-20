@@ -363,7 +363,7 @@ bool BaseRenderer::AddBillboardIfVisible(Sprite* spr, int palette, const Vec3f& 
     // TODO(pskelton): replace asserts with warning and return false
     assert(::uNumBillboardsToDraw < 500 - 1);
     assert(spr != nullptr);
-    assert(spr->texture->height() != 0 && spr->texture->width() != 0);
+    assert(spr->uWidth != 0 && spr->uHeight != 0);
 
     Vec3f viewspace;
     if (pCamera3D->ViewClip(pos, &viewspace)) {

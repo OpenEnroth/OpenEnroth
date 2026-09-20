@@ -9,7 +9,6 @@
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Graphics/AtlasLayout.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/TileGenerator.h"
 #include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Resources/LodSpriteCache.h"
@@ -18,6 +17,7 @@
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
+#include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/LodFormats/LodSprite.h"
 #include "Library/Logger/Logger.h"
@@ -279,19 +279,14 @@ bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
 }
 
 bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    Sprite *pSprite = lod->loadSprite(this->resource_name);
+    LodSprite sprite = lod::decodeSprite(lod->read(this->resource_name));
 
-    size_t w = pSprite->sprite_header->image.width();
-    size_t h = pSprite->sprite_header->image.height();
+    *rgbaImage = RgbaImage::uninitialized(sprite.image.width(), sprite.image.height());
 
-    *rgbaImage = RgbaImage::solid(Color(), w, h);
-
-    for (size_t y = 0; y < h; y++) {
-        for (size_t x = 0; x < w; x++) {
-            uint8_t index = pSprite->sprite_header->image[y][x];
-            (*rgbaImage)[y][x] = Color(index, 0, 0, index == 0 ? 0 : 255);
-        }
-    }
+    auto srcPixels = sprite.image.pixels();
+    auto dstPixels = rgbaImage->pixels();
+    for (size_t i = 0, size = srcPixels.size(); i < size; i++)
+        dstPixels[i] = Color(srcPixels[i], 0, 0, srcPixels[i] == 0 ? 0 : 255);
 
     return true;
 }

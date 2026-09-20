@@ -93,6 +93,16 @@ Sizei decodeImageSize(const Blob &blob);
 LodSprite decodeSprite(const Blob &blob);
 
 /**
+ * This function processes lod sprites. It reads the sprite header and returns sprite size w/o decompressing the pixel
+ * data.
+ *
+ * @param blob                          Sprite `Blob`, as read from a LOD file.
+ * @return                              Sprite size.
+ * @throw Exception                     If the format is not recognized.
+ */
+Sizei decodeSpriteSize(const Blob &blob);
+
+/**
  * This function processes lod fonts.
  *
  * @param blob                          Font `blob`, as read from a LOD file.

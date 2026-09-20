@@ -36,6 +36,7 @@ class NullRenderer : public BaseRenderer {
     virtual void ResetUIClipRect() override;
 
     virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) override;
+    virtual void DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color) override;
     virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask = colorTable.White) override;
 
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,

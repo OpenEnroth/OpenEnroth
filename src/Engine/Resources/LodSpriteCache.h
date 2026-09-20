@@ -11,7 +11,6 @@
 #include "Library/Lod/LodReader.h"
 
 class LodReader;
-struct LodSprite;
 
 class LodSpriteCache {
  public:
@@ -23,10 +22,13 @@ class LodSpriteCache {
     void reserveLoadedSprites();
     void releaseUnreserved();
 
+    /**
+     * @param pContainerName            Sprite name in the LOD.
+     * @return                          Cached sprite, or `nullptr` if there's no such sprite.
+     */
     Sprite *loadSprite(std::string_view pContainerName);
 
- private:
-    bool LoadSpriteFromFile(LodSprite *pSprite, std::string_view pContainer);
+    Blob read(std::string_view pContainer) const; // TODO(captainurist): drop this, the texture loader shouldn't read through the sprite cache.
 
  private:
     LodReader _reader;
