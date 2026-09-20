@@ -576,7 +576,7 @@ GAME_TEST(Issues, Issue2760) {
     game.pointMouseAtFace(3459);
     game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
     game.tick(80);
-    ASSERT_EQ(elevatorTape, tape(DOOR_OPEN, DOOR_CLOSING, DOOR_CLOSED)); // With the car still up, the wall above the shaft would stop the party at the same x.
+    ASSERT_EQ(elevatorTape, tape(DOOR_OPEN, DOOR_CLOSING, DOOR_CLOSED)); // The wall above the shaft stops the party at the same x while the car is up.
     game.pressKey(PlatformKey::KEY_LEFTBRACKET); // Strafe east, into the wall.
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_LEFTBRACKET);

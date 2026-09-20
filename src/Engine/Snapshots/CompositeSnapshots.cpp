@@ -129,12 +129,11 @@ static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> 
  * @param face                          Face to repair.
  * @param vertices                      Vertex positions, indexed by `face->vertexIds`.
  * @param closedVertices                Vertex positions with every door closed, empty for outdoor models, which
- *                                      have no doors. A face that has no area in `vertices` but has one here is
- *                                      stretched by a door. It is not collapsed, and gets its normal from
- *                                      `closedVertices`.
+ *                                      have no doors. A face with no area in `vertices` but some here is stretched
+ *                                      by a door, and takes its normal from here instead of being collapsed.
  */
 template<class Face>
-static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::span<const Vec3f> closedVertices = {}) {
+static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::span<const Vec3f> closedVertices) {
     if (face->numVertices < 3)
         return;
 
@@ -143,7 +142,7 @@ static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::s
         normal = faceNormal(*face, closedVertices);
 
     if (!normal) {
-        // TODO(captainurist): drop such faces on load, ids are referenced from sectors, doors, the bsp tree and saves.
+        // TODO(captainurist): drop such faces instead, ids are referenced from sectors, doors, the bsp tree and saves.
         face->numVertices = 2;
         return;
     }
@@ -423,10 +422,13 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    std::vector<Vec3f> closedVertices = dst->vertices;
-    for (const BLVDoor &door : dst->doors)
-        for (int i = 0; i < door.numVertices; ++i)
-            closedVertices[door.pVertexIDs[i]] = door.direction * door.moveLength + Vec3f(door.pXOffsets[i], door.pYOffsets[i], door.pZOffsets[i]);
+    std::vector<Vec3f> closedVertices;
+    if (!dst->doors.empty()) {
+        closedVertices = dst->vertices;
+        for (const BLVDoor &door : dst->doors)
+            for (int i = 0; i < door.numVertices; ++i)
+                closedVertices[door.pVertexIDs[i]] = door.direction * door.moveLength + Vec3f(door.pXOffsets[i], door.pYOffsets[i], door.pZOffsets[i]);
+    }
 
     for (BLVFace &face : dst->faces)
         repairFaceNormal(&face, dst->vertices, closedVertices);
@@ -488,7 +490,7 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
 
     for (BLVFace &face : dst->faces) {
         dropDuplicateFaceVertices(&face);
-        repairFaceNormal(&face, dst->vertices);
+        repairFaceNormal(&face, dst->vertices, {});
     }
 
     reconstruct(srcExtras.bspNodes, &dst->nodes);
