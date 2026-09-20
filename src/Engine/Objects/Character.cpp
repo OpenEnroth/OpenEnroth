@@ -3570,7 +3570,7 @@ void Character::giveAward(AwardId award) {
 }
 
 void Character::giveAutonote(int autonote) {
-    assert(autonote > 0);
+    assert(autonote > 0); // TODO(captainurist): autonote is coming from a script, do range checking here.
     if (!pParty->_autonoteBits[autonote] && !pAutonoteTxt[autonote].pText.empty()) {
         spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, characterIndex());
         playReaction(SPEECH_AWARD_GOT);
