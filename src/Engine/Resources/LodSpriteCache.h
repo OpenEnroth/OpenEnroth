@@ -29,7 +29,7 @@ class LodSpriteCache {
      */
     Sprite *loadSprite(std::string_view pContainerName);
 
-    Blob read(std::string_view pContainer) const;
+    Blob read(std::string_view pContainer) const; // TODO(captainurist): drop this, the texture loader shouldn't read through the sprite cache.
 
  private:
     LodReader _reader;
