@@ -128,9 +128,10 @@ static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> 
  *
  * @param face                          Face to repair.
  * @param vertices                      Vertex positions, indexed by `face->vertexIds`.
- * @param closedVertices                Vertex positions with every door closed, empty if nothing can move. A face
- *                                      that has no area in `vertices` but has one here is stretched by a door. It
- *                                      is not collapsed, and gets its normal from `closedVertices`.
+ * @param closedVertices                Vertex positions with every door closed, empty for outdoor models, which
+ *                                      have no doors. A face that has no area in `vertices` but has one here is
+ *                                      stretched by a door. It is not collapsed, and gets its normal from
+ *                                      `closedVertices`.
  */
 template<class Face>
 static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::span<const Vec3f> closedVertices = {}) {
