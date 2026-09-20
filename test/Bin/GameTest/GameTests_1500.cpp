@@ -129,7 +129,11 @@ GAME_TEST(Issues, Issue1511) {
 GAME_TEST(Issues, Issue1515) {
     // No dispel magic sound
     auto soundsTape = tapes.sounds();
-    test.playTraceFromTestData("issue_1515.mm7", "issue_1515.json");
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    game.castSpell(0, SPELL_LIGHT_DISPEL_MAGIC);
+    game.tick(2);
     EXPECT_CONTAINS(soundsTape.flatten(), SOUND_RechargeItem); // dispel magic
 }
 

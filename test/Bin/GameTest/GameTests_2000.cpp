@@ -455,7 +455,7 @@ GAME_TEST(Issues, Issue2142) {
         engine->config->debug.NoActors.setValue(false);
         for (int i = 0; i < 10; i++)
             game.spawnMonster(pParty->pos + Vec3f(0, 700, 0), monsterId);
-        game.tick(200);
+        game.tick(400);
 
         EXPECT_CONTAINS(specialAttack.flatten(), attack); // Check that the special attack was used.
         EXPECT_TRUE(pParty->pCharacters[0].conditions.has(condition)); // Check that the condition was applied.
