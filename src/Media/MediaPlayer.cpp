@@ -734,6 +734,7 @@ class Movie : public IMovie {
     AVVideoStream video;
     int last_resampled_frame_num;
 
+    // TODO(captainurist): movie timing should go through platform->tickCount().
     std::chrono::time_point<std::chrono::system_clock> start_time;
     bool looping;
     bool playing;
