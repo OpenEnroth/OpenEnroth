@@ -2632,11 +2632,11 @@ void CastSpellInfoHelpers::castSpell() {
                     int zombie_hp_limit = target_monster_level * 10;
                     if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                        if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_DEAD)) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].SetCondition(CONDITION_ZOMBIE, 1);
-                            GameUI_ReloadPlayerPortraits(pCastSpell->targetCharacterIndex, (pParty->pCharacters[pCastSpell->targetCharacterIndex].GetSexByVoice() != SEX_MALE) + 23);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
-                            // TODO: why call SetCondition and then conditions.set?
+                        Character &target = pParty->pCharacters[pCastSpell->targetCharacterIndex];
+                        if (target.conditions.has(CONDITION_DEAD)) {
+                            target.SetCondition(CONDITION_ZOMBIE, 1);
+                            if (target.IsZombie())
+                                GameUI_ReloadPlayerPortraits(pCastSpell->targetCharacterIndex, target.uCurrentFace);
                         }
                         break;
                     }
