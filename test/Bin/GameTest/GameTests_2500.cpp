@@ -574,7 +574,7 @@ GAME_TEST(Issues, Issue2760) {
     game.teleportTo(MAP_STONE_CITY, Vec3f(-3100, 2176, -64), 270); // On the elevator car, facing the button that sends it down.
     test.startTaping();
     game.pointMouseAtFace(3459);
-    game.pressAndReleaseButton(BUTTON_LEFT, mouse->position());
+    game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick(80);
     ASSERT_EQ(elevatorTape, tape(DOOR_OPEN, DOOR_CLOSING, DOOR_CLOSED)); // Make sure the car is down before strafing.
     game.pressKey(PlatformKey::KEY_LEFTBRACKET); // Strafe east, into the wall.
