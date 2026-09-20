@@ -603,7 +603,7 @@ GAME_TEST(Issues, Issue1301a) {
         auto activeTape = tapes.activeCharacterIndex();
         test.startTaping();
         game.tick();
-        character.SetVariable(VAR_Eradicated, 1);
+        character.SetCondition(CONDITION_ERADICATED, 1);
         game.tick(2);
         test.stopTaping();
 
@@ -635,7 +635,7 @@ GAME_TEST(Issues, Issue1301b) {
         game.tick();
     ASSERT_EQ(pTurnEngine->turn_stage, TE_ATTACK);
     for (Character &character : pParty->pCharacters)
-        character.SetVariable(VAR_Eradicated, 1);
+        character.SetCondition(CONDITION_ERADICATED, 1);
     game.tick(10);
     test.stopTaping();
 

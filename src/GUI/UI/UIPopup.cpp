@@ -2156,7 +2156,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 // Can be zero even for valid potion combination when resulting potion is of lower grade than it's components
                 // Example: "Cure Paralysis(white) + Cure Wounds(red) = Cure Wounds(red)"
                 if (pItemTable->potionNotes[potionSrc1][potionSrc2] != 0) {
-                    pParty->activeCharacter().SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
+                    pParty->activeCharacter().giveAutonote(pItemTable->potionNotes[potionSrc1][potionSrc2]);
                 }
             }
             if (!(pItemTable->items[entry->itemId].identifyAndRepairDifficulty)) {

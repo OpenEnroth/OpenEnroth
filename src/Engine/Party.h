@@ -324,6 +324,7 @@ struct Party {
     ArenaState arenaState = ARENA_STATE_INITIAL;
     ArenaLevel arenaLevel = ARENA_LEVEL_INVALID;
     IndexedArray<uint8_t, ARENA_LEVEL_FIRST_VALID, ARENA_LEVEL_LAST_VALID> uNumArenaWins;
+    // TODO(captainurist): rename, this is set when an artifact is generated, not when the party finds it.
     IndexedArray<bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT> pIsArtifactFound;  // 7ba
     IndexedBitset<1, 208> _autonoteBits;
     int uNumArcomageWins = 0;

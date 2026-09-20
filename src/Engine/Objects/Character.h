@@ -74,11 +74,26 @@ class Character {
 
     bool matchesAttackPreference(MonsterAttackPreference preference) const;
 
-    // TODO(captainurist): evt script semantics, belongs in the Evt module. The callers outside it all go through
-    //                     VAR_Award or VAR_PlayerItemInHands and need their own entry points first.
+    /**
+     * Adds the award to this character's awards. If the award is new and has text in the awards table, then the
+     * award sound plays and the character reacts.
+     *
+     * @param award                     Award to give.
+     */
+    void giveAward(AwardId award);
+
+    /**
+     * Adds the autonote to the party's autonotes and plays the award sound. If the note is new and has text in the
+     * autonotes table, then the character reacts, and the autonotes book flashes and switches to the note's category.
+     *
+     * @param autonote                  Autonote to give, an index into `pAutonoteTxt`.
+     */
+    void giveAutonote(int autonote);
+
+    // TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
     void SetVariable(EvtVariable var, signed int a3);
 
-    // TODO(captainurist): evt script semantics, belongs in the Evt module, see SetVariable.
+    // TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
     void AddVariable(EvtVariable var, signed int val);
 
     /**
