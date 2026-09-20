@@ -110,9 +110,9 @@ void LodReader::open(Blob blob, LodOpenFlags openFlags) {
         region.offset = rootEntry.dataOffset + entry.dataOffset;
         region.size = entry.dataSize;
 
-        auto [pos, inserted] = files.try_emplace(ascii::toLower(entry.name), region); // Keeps the first of duplicate entries.
+        auto [_, inserted] = files.try_emplace(ascii::toLower(entry.name), region); // Keeps the first of duplicate entries.
         if (!inserted && !(openFlags & LOD_ALLOW_DUPLICATES))
-            throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", blob.displayPath(), pos->first);
+            throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", blob.displayPath(), entry.name);
     }
 
     // All good, this is a valid LOD, can update `this`.
