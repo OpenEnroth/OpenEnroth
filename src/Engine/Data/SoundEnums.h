@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cassert>
-#include <cstdint>
 #include <utility>
 
 #include "Utility/Flags.h"
@@ -10,7 +9,7 @@
  * There's 2000+ sounds in MM7, and there is little point in adding all of them here via codegen. Only the ids that are
  * actually used in the codebase should be kept in this enum.
  */
-enum class SoundId : int16_t {
+enum class SoundId {
     SOUND_Invalid = 0,
     SOUND_enter = 6,
     SOUND_WoodDoorClosing = 7,
@@ -130,6 +129,7 @@ enum class SoundId : int16_t {
     SOUND_Haste = 10040,
     SOUND_21fly03 = 11090,
     SOUND_WaterWalk = 12040,
+    SOUND_AcidBurstImpact = 12061,
     SOUND_Stoneskin = 13040,
     SOUND_Bless = 14010,
     SOUND_Fate = 14020,
@@ -140,6 +140,10 @@ enum class SoundId : int16_t {
     SOUND_Sacrifice2 = 18060,
     SOUND_quest = 20001,
     SOUND_HumanTownHall = 31401,
+    SOUND_DwarfWeaponShop01 = 38501,
+    SOUND_DwarfWeaponShop02 = 38502,
+    SOUND_DwarfWeaponShop03 = 38503,
+    SOUND_DwarfWeaponShop04 = 38504,
 };
 using enum SoundId;
 
