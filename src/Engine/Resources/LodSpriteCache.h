@@ -9,7 +9,6 @@
 
 #include "Library/Image/Image.h"
 #include "Library/Lod/LodReader.h"
-#include "Library/LodFormats/LodSprite.h"
 
 class LodReader;
 
@@ -26,15 +25,11 @@ class LodSpriteCache {
     /**
      * @param pContainerName            Sprite name in the LOD.
      * @return                          Cached sprite with its size filled in, or `nullptr` if there's no such
-     *                                  sprite. Pixels are not decoded, use `decodeSprite` for that.
+     *                                  sprite. Pixels are not decoded, read the entry and decode it for those.
      */
     Sprite *loadSprite(std::string_view pContainerName);
 
-    /**
-     * @param name                      Sprite name in the LOD.
-     * @return                          Sprite pixels, decompressed anew on every call.
-     */
-    LodSprite decodeSprite(std::string_view name);
+    Blob read(std::string_view pContainer) const;
 
  private:
     LodReader _reader;

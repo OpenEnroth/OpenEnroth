@@ -17,6 +17,7 @@
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
+#include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/LodFormats/LodSprite.h"
 #include "Library/Logger/Logger.h"
@@ -278,7 +279,7 @@ bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
 }
 
 bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    LodSprite sprite = lod->decodeSprite(this->resource_name);
+    LodSprite sprite = lod::decodeSprite(lod->read(this->resource_name));
 
     *rgbaImage = RgbaImage::uninitialized(sprite.image.width(), sprite.image.height());
 

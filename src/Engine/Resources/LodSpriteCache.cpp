@@ -61,6 +61,6 @@ Sprite *LodSpriteCache::loadSprite(std::string_view pContainerName) {
     return &sprite;
 }
 
-LodSprite LodSpriteCache::decodeSprite(std::string_view name) {
-    return lod::decodeSprite(_reader.read(name));
+Blob LodSpriteCache::read(std::string_view pContainer) const {
+    return _reader.read(pContainer);
 }
