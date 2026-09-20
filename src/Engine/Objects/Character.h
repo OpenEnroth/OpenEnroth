@@ -75,17 +75,18 @@ class Character {
     bool matchesAttackPreference(MonsterAttackPreference preference) const;
 
     /**
-     * This character reacts to an award it didn't have yet, with the award sound and animation.
+     * Adds the award to this character's awards. If the award is new and has text in the awards table, then the
+     * award sound plays and the character reacts.
      *
-     * @param award                     An award with no text in the awards table is given silently.
+     * @param award                     Award to give.
      */
     void giveAward(AwardId award);
 
     /**
-     * Adds the autonote to the party's autonotes and plays the award sound. If the note is new and has text, this
-     * character reacts to it, and the autonotes book starts flashing and switches to the note's category.
+     * Adds the autonote to the party's autonotes and plays the award sound. If the note is new and has text in the
+     * autonotes table, then the character reacts, and the autonotes book flashes and switches to the note's category.
      *
-     * @param autonote                  Index into `pAutonoteTxt`, positive.
+     * @param autonote                  Autonote to give, an index into `pAutonoteTxt`.
      */
     void giveAutonote(int autonote);
 
