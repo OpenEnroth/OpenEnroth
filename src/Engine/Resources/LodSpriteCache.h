@@ -24,8 +24,8 @@ class LodSpriteCache {
 
     /**
      * @param pContainerName            Sprite name in the LOD.
-     * @return                          Cached sprite with its size filled in, or `nullptr` if there's no such
-     *                                  sprite. Pixels are not decoded, read the entry and decode it for those.
+     * @return                          Cached sprite, or `nullptr` if there's no such sprite. Its size is read
+     *                                  from the entry header, its texture decodes the pixels when first used.
      */
     Sprite *loadSprite(std::string_view pContainerName);
 
