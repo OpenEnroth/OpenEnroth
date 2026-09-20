@@ -320,7 +320,7 @@ GAME_TEST(Issues, Issue1579a) {
     game.pressGuiButton("MainMenu_NewGame");
     game.tick(2);
     game.pressGuiButton("PartyCreation_OK");
-    game.tick(10); // Intro Post is playing.
+    game.tick(10); // Intro Post is playing, PlayBink presents one movie frame per tick.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.skipLoadingScreen();
     EXPECT_CONTAINS(screenTape, SCREEN_VIDEO);
