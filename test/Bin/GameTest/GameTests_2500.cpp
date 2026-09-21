@@ -695,3 +695,43 @@ GAME_TEST(Issues, Issue2784d) {
     EXPECT_EQ(houseTape.back(), HOUSE_MAGIC_SHOP_TULAREAN_FOREST);
     EXPECT_EQ(soundNames(soundsTape).count("Elf Magic Shop 01"), 1);
 }
+
+GAME_TEST(Issues, Issue2792) {
+    // Pain Reflection at Expert and Master used the Grandmaster duration.
+    static constexpr int skillLevel = 10;
+
+    for (Mastery mastery : {MASTERY_EXPERT, MASTERY_MASTER, MASTERY_GRANDMASTER}) {
+        SCOPED_TRACE(fmt::format("mastery={}", std::to_underlying(mastery)));
+        test.prepareForNextTest();
+        game.startNewGame();
+        test.startTaping();
+
+        Character &caster = pParty->pCharacters[3];
+        caster.classType = CLASS_LICH; // A sorcerer gets half the mana per level, and the spell costs a flat 40.
+        caster.setSkillValue(SKILL_DARK, CombinedSkillValue(skillLevel, mastery));
+        caster.bHaveSpell[SPELL_DARK_PAIN_REFLECTION] = true;
+        caster.mana = caster.GetMaxMana();
+
+        auto buffsTape = charTapes.haveBuffs(CHARACTER_BUFF_PAIN_REFLECTION);
+        game.castSpell(3, SPELL_DARK_PAIN_REFLECTION);
+        Time castAt = pParty->GetPlayingTime(); // The cast runs before the clock advances and the picker pauses it, so the buff lands at exactly this time.
+        game.tick(); // The target picker opens a frame after the spellbook click, and a party-wide cast lands there.
+        if (mastery == MASTERY_EXPERT) {
+            ASSERT_NE(pGUIWindow_CastTargetedSpell, nullptr);
+            game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+            game.tick();
+        }
+        test.stopTaping();
+
+        bool partyWide = mastery != MASTERY_EXPERT;
+        EXPECT_EQ(buffsTape.frontBack(), tape({false, false, false, false}, {true, partyWide, partyWide, partyWide}));
+
+        // Vanilla MM7 lasts an hour plus five minutes per skill point, and fifteen minutes per point at grandmaster.
+        Duration expectedDuration = Duration::fromHours(1) + Duration::fromMinutes((mastery == MASTERY_GRANDMASTER ? 15 : 5) * skillLevel);
+        for (Character &character : pParty->pCharacters) {
+            SpellBuff &buff = character.pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION];
+            if (buff.Active())
+                EXPECT_EQ(buff.GetExpireTime(), castAt + expectedDuration);
+        }
+    }
+}
