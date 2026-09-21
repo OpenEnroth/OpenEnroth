@@ -130,6 +130,7 @@ GAME_TEST(Issues, Issue1515) {
     // Monsters casting dispel magic a few frames apart were heard only once.
     constexpr int wizardCount = 4;
     auto soundsTape = tapes.sounds();
+    auto eyeTape = tapes.custom([] { return pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Active(); });
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
@@ -144,7 +145,8 @@ GAME_TEST(Issues, Issue1515) {
     }
     game.tick(100);
 
-    EXPECT_EQ(std::ranges::count(soundsTape.flatten(), SOUND_RechargeItem), wizardCount); // dispel magic
+    EXPECT_EQ(eyeTape, tape(true, false)); // The first cast took wizard eye down.
+    EXPECT_EQ(std::ranges::count(soundsTape.flatten(), SOUND_RechargeItem), wizardCount);
 }
 
 GAME_TEST(Issues, Issue1516) {
