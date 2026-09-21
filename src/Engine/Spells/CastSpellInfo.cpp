@@ -2633,7 +2633,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         Character &target = pParty->pCharacters[pCastSpell->targetCharacterIndex];
-                        if (target.conditions.has(CONDITION_DEAD)) {
+                        if (target.IsDead()) {
                             target.SetCondition(CONDITION_ZOMBIE, 1);
                             if (target.IsZombie())
                                 GameUI_ReloadPlayerPortraits(pCastSpell->targetCharacterIndex, target.uCurrentFace);
