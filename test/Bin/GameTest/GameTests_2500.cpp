@@ -714,14 +714,13 @@ GAME_TEST(Issues, Issue2792) {
 
         auto buffsTape = charTapes.haveBuffs(CHARACTER_BUFF_PAIN_REFLECTION);
         game.castSpell(3, SPELL_DARK_PAIN_REFLECTION);
-        Time castAt = pParty->GetPlayingTime();
+        Time castAt = pParty->GetPlayingTime(); // The cast runs before the clock advances and the picker pauses it, so the buff lands at exactly this time.
         game.tick(); // The target picker opens a frame after the spellbook click, and a party-wide cast lands there.
         if (mastery == MASTERY_EXPERT) {
             ASSERT_NE(pGUIWindow_CastTargetedSpell, nullptr);
             game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
             game.tick();
         }
-        Time castDoneAt = pParty->GetPlayingTime();
         test.stopTaping();
 
         bool partyWide = mastery != MASTERY_EXPERT;
@@ -731,10 +730,8 @@ GAME_TEST(Issues, Issue2792) {
         Duration expectedDuration = Duration::fromHours(1) + Duration::fromMinutes((mastery == MASTERY_GRANDMASTER ? 15 : 5) * skillLevel);
         for (Character &character : pParty->pCharacters) {
             SpellBuff &buff = character.pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION];
-            if (buff.Active()) {
-                EXPECT_GE(buff.GetExpireTime(), castAt + expectedDuration);
-                EXPECT_LE(buff.GetExpireTime(), castDoneAt + expectedDuration);
-            }
+            if (buff.Active())
+                EXPECT_EQ(buff.GetExpireTime(), castAt + expectedDuration);
         }
     }
 }
