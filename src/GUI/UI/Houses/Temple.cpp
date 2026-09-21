@@ -41,8 +41,7 @@ void GUIWindow_Temple::healDialogue() {
     }
 
     bool setZombie = false;
-    bool isEvilTemple = houseId() == HOUSE_TEMPLE_DEYJA || houseId() == HOUSE_TEMPLE_PIT || houseId() == HOUSE_TEMPLE_MOUNT_NIGHON;
-    if (isEvilTemple && pParty->activeCharacter().classType != CLASS_LICH) {
+    if (isEvilTemple() && pParty->activeCharacter().classType != CLASS_LICH) {
         setZombie = pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE);
         if (!pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
             if (pParty->activeCharacter().conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD})) {
@@ -181,8 +180,12 @@ bool GUIWindow_Temple::isPlayerHealableByTemple(const Character &player) const {
         return false;
     } else if (player.GetMajorConditionIdx() == CONDITION_ZOMBIE) {
         // zombie cant be healed at these tmeples
-        return houseId() != HOUSE_TEMPLE_DEYJA && houseId() != HOUSE_TEMPLE_PIT && houseId() != HOUSE_TEMPLE_MOUNT_NIGHON;
+        return !isEvilTemple();
     }
 
     return true;
+}
+
+bool GUIWindow_Temple::isEvilTemple() const {
+    return houseId() == HOUSE_TEMPLE_DEYJA || houseId() == HOUSE_TEMPLE_PIT || houseId() == HOUSE_TEMPLE_MOUNT_NIGHON;
 }
