@@ -2635,7 +2635,8 @@ void CastSpellInfoHelpers::castSpell() {
                         Character &target = pParty->pCharacters[pCastSpell->targetCharacterIndex];
                         // A Lich is already undead, so Reanimate raises it as itself, on the halved health a zombie gets.
                         if (target.classType == CLASS_LICH && target.IsDead() && !target.IsEradicated()) {
-                            target.conditions.resetAll();
+                            target.conditions.reset(CONDITION_DEAD);
+                            target.conditions.reset(CONDITION_UNCONSCIOUS);
                             target.health = target.GetMaxHealth() / 2;
                             target.mana = 0;
                             target.playReaction(SPEECH_CHEATED_DEATH);
