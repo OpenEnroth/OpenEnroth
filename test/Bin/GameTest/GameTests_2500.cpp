@@ -730,8 +730,10 @@ GAME_TEST(Issues, Issue2777b) {
 
         EXPECT_LT(manaTape.delta(), 0); // Mana was spent, so the cast went through.
         if (classType == CLASS_LICH) {
-            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD));
+            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_GOOD)); // Raised as a Lich, not as a Zombie.
             EXPECT_EQ(faceTape, tape(originalFace));
+            EXPECT_EQ(target.health, target.GetMaxHealth() / 2);
+            EXPECT_EQ(target.mana, 0);
         } else {
             EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_ZOMBIE));
             EXPECT_EQ(faceTape, tape(originalFace, zombieFace));
