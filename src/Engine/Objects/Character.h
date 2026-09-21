@@ -90,23 +90,6 @@ class Character {
      */
     void giveAutonote(int autonote);
 
-    // TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
-    void SetVariable(EvtVariable var, signed int a3);
-
-    // TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
-    void AddVariable(EvtVariable var, signed int val);
-
-    /**
-     * TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
-     *
-     * @return                          False if the subtraction could not be performed, e.g. the party doesn't have
-     *                                  enough gold. A script that hits this is aborted.
-     */
-    [[nodiscard]] bool SubtractVariable(EvtVariable VarNum, signed int pValue);
-
-    // TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
-    bool CompareVariable(EvtVariable VarNum, signed int pValue);
-
     /**
      * Use item on character.
      * This includes potion drinking, spell scroll/books usages and so on.
@@ -399,3 +382,15 @@ int CharacterCreation_GetUnspentAttributePointCount();
  * @offset 0x49387A
  */
 int cycleCharacter(bool backwards);
+
+// TODO(captainurist): these four belong in the Evt module.
+void setEvtVariable(Character &character, EvtVariable var, signed int a3);
+void addEvtVariable(Character &character, EvtVariable var, signed int val);
+
+/**
+ * @return                          False if the subtraction could not be performed, e.g. the party doesn't have
+ *                                  enough gold. A script that hits this is aborted.
+ */
+[[nodiscard]] bool subtractEvtVariable(Character &character, EvtVariable VarNum, signed int pValue);
+
+bool compareEvtVariable(Character &character, EvtVariable VarNum, signed int pValue);
