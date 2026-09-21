@@ -205,6 +205,12 @@ class Character {
     void SetCondition(Condition condition, int blockable);
 
     /**
+     * Clears `CONDITION_ZOMBIE` and puts back the face and voice that `SetCondition` stored when it was set.
+     * Does nothing for a character who isn't a zombie.
+     */
+    void cureZombie();
+
+    /**
      * @offset 0x49327B
      */
     bool isClass(Class class_type, bool check_honorary = true) const;

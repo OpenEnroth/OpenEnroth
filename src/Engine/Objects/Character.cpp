@@ -528,6 +528,16 @@ void Character::SetCondition(Condition condition, int blockable) {
     return;
 }
 
+void Character::cureZombie() {
+    if (!IsZombie())
+        return;
+
+    conditions.reset(CONDITION_ZOMBIE);
+    uCurrentFace = uPrevFace;
+    uVoiceID = uPrevVoiceID;
+    GameUI_ReloadPlayerPortraits(characterIndex(), uCurrentFace);
+}
+
 //----- (00492700) --------------------------------------------------------
 bool Character::HasSkill(Skill skill) const {
     if (this->pActiveSkills[skill]) {

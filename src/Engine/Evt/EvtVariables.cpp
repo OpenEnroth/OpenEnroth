@@ -483,13 +483,10 @@ void setEvtVariable(Character &character, EvtVariable var_type, int var_value) {
                 if (character.sResEarthBase < 20) character.sResEarthBase = 20;
                 character.sResMindBase = 200;
                 character.sResBodyBase = 200;
+                character.cureZombie();
                 Sex sex = character.GetSexByVoice();
-                if (character.IsZombie()) {
-                    character.conditions.reset(CONDITION_ZOMBIE);
-                } else {
-                    character.uPrevVoiceID = character.uVoiceID;
-                    character.uPrevFace = character.uCurrentFace;
-                }
+                character.uPrevVoiceID = character.uVoiceID;
+                character.uPrevFace = character.uCurrentFace;
                 if (sex == SEX_FEMALE) {
                     character.uCurrentFace = 21;
                     character.uVoiceID = 21;

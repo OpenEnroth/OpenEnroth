@@ -54,11 +54,7 @@ void GUIWindow_Temple::healDialogue() {
             }
         }
     } else {
-        if (pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
-            pParty->activeCharacter().uCurrentFace = pParty->activeCharacter().uPrevFace;
-            pParty->activeCharacter().uVoiceID = pParty->activeCharacter().uPrevVoiceID;
-            GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex(), pParty->activeCharacter().uPrevFace);
-        }
+        pParty->activeCharacter().cureZombie();
     }
 
     pParty->activeCharacter().conditions.resetAll();
