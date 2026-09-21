@@ -161,9 +161,6 @@ NativePath NativePath::withExtension(std::string_view extension) const {
 }
 
 NativePath NativePath::operator/(const NativePath &tail) const {
-    if (tail._path.empty())
-        return *this;
-
     size_t rootSize = rootNameSize(_path);
     size_t tailRootSize = rootNameSize(tail._path);
     bool tailNamesAnotherRoot = tailRootSize > 0 && tail._path.substr(0, tailRootSize) != _path.substr(0, rootSize);

@@ -37,11 +37,10 @@ UNIT_TEST(NativePath, Composition) {
             << "for '" << head << "' / '" << tail << "'";
     };
 
-    // An empty path contributes nothing, on either side.
+    // An empty head contributes nothing, while an empty tail leaves a trailing separator behind.
     testOne("", "", "");
     testOne("", "a", "a");
-    testOne("a", "", "a");
-    testOne("a/", "", "a/");
+    testOne("a", "", "a/");
     testOne("/", "", "/");
 
     // Exactly one separator goes in, whether or not the head already ends with one.
@@ -118,10 +117,11 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("//server") / NativePath("/share")).toWtf8(), "//server/share");
     EXPECT_EQ((NativePath("C:a") / NativePath("b")).toWtf8(), "C:a/b"); // Drive-relative with a name appends normally.
 
-    // An empty tail contributes nothing, whatever kind of root the head has.
+    // An empty tail leaves a separator only where the head can take one. "C:" names the current directory on
+    // drive C while "C:/" names its root, so appending nothing to a bare drive letter must not move it.
     EXPECT_EQ((NativePath("C:") / NativePath("")).toWtf8(), "C:");
-    EXPECT_EQ((NativePath("C:/a") / NativePath("")).toWtf8(), "C:/a");
-    EXPECT_EQ((NativePath("//server") / NativePath("")).toWtf8(), "//server");
+    EXPECT_EQ((NativePath("C:/a") / NativePath("")).toWtf8(), "C:/a/");
+    EXPECT_EQ((NativePath("//server") / NativePath("")).toWtf8(), "//server/");
 
     // An extended-length path takes no forward slashes, Win32 does no parsing on those at all.
     EXPECT_EQ(NativePath::fromWtf8("\\\\?\\C:\\Games\\MM7").native(), L"\\\\?\\C:\\Games\\MM7");
