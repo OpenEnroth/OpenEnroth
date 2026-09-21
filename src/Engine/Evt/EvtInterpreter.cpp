@@ -7,6 +7,7 @@
 
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Evt/EvtInstruction.h"
+#include "Engine/Evt/EvtVariables.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
