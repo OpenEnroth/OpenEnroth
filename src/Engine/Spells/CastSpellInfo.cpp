@@ -2633,7 +2633,13 @@ void CastSpellInfoHelpers::castSpell() {
                     if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         Character &target = pParty->pCharacters[pCastSpell->targetCharacterIndex];
-                        if (target.IsDead()) {
+                        // A Lich is already undead, so Reanimate raises it as itself, on the halved health a zombie gets.
+                        if (target.classType == CLASS_LICH && target.IsDead() && !target.IsEradicated()) {
+                            target.conditions.resetAll();
+                            target.health = target.GetMaxHealth() / 2;
+                            target.mana = 0;
+                            target.playReaction(SPEECH_CHEATED_DEATH);
+                        } else if (target.IsDead()) {
                             target.SetCondition(CONDITION_ZOMBIE, 1);
                             if (target.IsZombie())
                                 GameUI_ReloadPlayerPortraits(pCastSpell->targetCharacterIndex, target.uCurrentFace);
