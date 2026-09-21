@@ -620,6 +620,28 @@ GAME_TEST(Issues, Issue2771) {
     EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(1))); // The active character.
 }
 
+GAME_TEST(Issues, Issue2776) {
+    // After a party death, characters wearing regeneration gear came back with full HP and SP, regenerated for every
+    // 5 minutes of the week that the death skips.
+    auto deathsTape = tapes.deaths();
+    auto hpsTape = charTapes.hps();
+    auto mpsTape = charTapes.mps();
+    game.startNewGame();
+    for (Character &character : pParty->pCharacters) {
+        character.inventory.equip(ITEM_SLOT_BOOTS, Item(ITEM_ARTIFACT_HERMES_SANDALS));
+        character.mana = character.GetMaxMana() / 2;
+    }
+    test.startTaping();
+    game.tick(); // The frame the party dies in isn't drawn, so the tapes need a frame from before it.
+    for (int i = 0; i < 3; i++)
+        pParty->pCharacters[i].receiveDamage(10000, DAMAGE_PHYSICAL);
+    pParty->pCharacters[3].SetCondition(CONDITION_UNCONSCIOUS, false);
+    game.tick();
+    EXPECT_EQ(deathsTape.delta(), +1);
+    EXPECT_EQ(hpsTape.back(), tape(1, 1, 1, 1));
+    EXPECT_EQ(mpsTape.back(), tape(0, 0, 0, 18)); // Dying zeroes SP, only the unconscious sorcerer keeps it.
+}
+
 GAME_TEST(Issues, Issue2784a) {
     // Acid Burst impacts were silent.
     auto soundsTape = tapes.sounds();
