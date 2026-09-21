@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <string>
 #include <utility>
 
@@ -20,9 +19,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
-#include "Engine/Tables/NPCTable.h"
 
-#include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
@@ -34,15 +31,6 @@
 
 static AccessibleVector<std::string> soundNames(const TestMultiTape<SoundId> &soundsTape) {
     return soundsTape.flatten().map([](SoundId id) { return pSoundList->soundInfo(id)->name; });
-}
-
-static void pressHouseNpcButton(EngineController &game, int dialogueEventId) {
-    auto desc = std::ranges::find_if(houseNpcs, [&](const HouseNpcDesc &candidate) {
-        return candidate.npc && candidate.npc->dialogue_1_evt_id == dialogueEventId;
-    });
-    ASSERT_NE(desc, houseNpcs.end());
-    ASSERT_NE(desc->button, nullptr);
-    game.pressAndReleaseButton(BUTTON_LEFT, desc->button->rect.center());
 }
 
 // 2500
@@ -771,7 +759,7 @@ GAME_TEST(Issues, Issue2777c) {
     game.tick(2);
     game.pressGuiButton("Game_Character1");
     game.tick();
-    pressHouseNpcButton(game, 96); // Halfgild is the only MM7 NPC who promotes Wizards to Liches.
+    game.pressGuiButton("HouseNpc0"); // Halfgild Wynac, the only MM7 NPC who promotes Wizards to Liches.
     game.tick();
     game.pressGuiButton("HouseNpcDialogue_Option0"); // Halfgild's only topic, where he offers the promotion.
     game.tick(2);
