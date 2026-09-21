@@ -1,5 +1,6 @@
 #include "Engine/Evt/EvtVariables.h"
 
+#include <algorithm>
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/EvtEnumFunctions.h"
