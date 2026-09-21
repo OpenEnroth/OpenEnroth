@@ -205,10 +205,12 @@ class Character {
     void SetCondition(Condition condition, int blockable);
 
     /**
-     * Clears `CONDITION_ZOMBIE` and puts back the face and voice that `SetCondition` stored when it was set.
-     * Does nothing for a character who isn't a zombie.
+     * Clears a condition. For Zombie, also restores the character's original face and voice. Does nothing if the
+     * character doesn't have the condition.
+     *
+     * @param condition                 Condition to clear.
      */
-    void cureZombie();
+    void ResetCondition(Condition condition);
 
     /**
      * @offset 0x49327B

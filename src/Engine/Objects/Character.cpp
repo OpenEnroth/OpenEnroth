@@ -528,14 +528,23 @@ void Character::SetCondition(Condition condition, int blockable) {
     return;
 }
 
-void Character::cureZombie() {
-    if (!IsZombie())
+void Character::ResetCondition(Condition condition) {
+    if (!conditions.has(condition)) {
         return;
+    }
 
-    conditions.reset(CONDITION_ZOMBIE);
-    uCurrentFace = uPrevFace;
-    uVoiceID = uPrevVoiceID;
-    GameUI_ReloadPlayerPortraits(characterIndex(), uCurrentFace);
+    conditions.reset(condition);
+
+    switch (condition) {
+        case CONDITION_ZOMBIE:
+            uCurrentFace = uPrevFace;
+            uVoiceID = uPrevVoiceID;
+            GameUI_ReloadPlayerPortraits(characterIndex(), uCurrentFace);
+            break;
+
+        default:
+            break;
+    }
 }
 
 //----- (00492700) --------------------------------------------------------

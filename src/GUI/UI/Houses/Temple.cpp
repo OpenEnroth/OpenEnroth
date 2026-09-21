@@ -54,7 +54,7 @@ void GUIWindow_Temple::healDialogue() {
             }
         }
     } else {
-        pParty->activeCharacter().cureZombie();
+        pParty->activeCharacter().ResetCondition(CONDITION_ZOMBIE);
     }
 
     pParty->activeCharacter().conditions.resetAll();
