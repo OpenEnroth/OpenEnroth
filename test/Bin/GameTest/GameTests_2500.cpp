@@ -698,41 +698,43 @@ GAME_TEST(Issues, Issue2784d) {
 
 GAME_TEST(Issues, Issue2792) {
     // Pain Reflection at Expert and Master used the Grandmaster duration.
-    auto checkCast = [&](Mastery mastery, Duration expectedDuration) {
+    static constexpr int skillLevel = 10;
+
+    for (Mastery mastery : {MASTERY_EXPERT, MASTERY_MASTER, MASTERY_GRANDMASTER}) {
+        SCOPED_TRACE(fmt::format("mastery={}", std::to_underlying(mastery)));
         test.prepareForNextTest();
         game.startNewGame();
+        test.startTaping();
 
         Character &caster = pParty->pCharacters[3];
-        caster.classType = CLASS_LICH;
-        caster.setSkillValue(SKILL_DARK, CombinedSkillValue(10, mastery));
+        caster.classType = CLASS_LICH; // A sorcerer gets half the mana per level, and the spell costs a flat 40.
+        caster.setSkillValue(SKILL_DARK, CombinedSkillValue(skillLevel, mastery));
         caster.bHaveSpell[SPELL_DARK_PAIN_REFLECTION] = true;
         caster.mana = caster.GetMaxMana();
 
+        auto buffsTape = charTapes.haveBuffs(CHARACTER_BUFF_PAIN_REFLECTION);
         game.castSpell(3, SPELL_DARK_PAIN_REFLECTION);
+        Time castAt = pParty->GetPlayingTime();
+        game.tick(); // The target picker opens a frame after the spellbook click, and a party-wide cast lands there.
         if (mastery == MASTERY_EXPERT) {
-            game.tick();
             ASSERT_NE(pGUIWindow_CastTargetedSpell, nullptr);
-        } else {
-            ASSERT_EQ(pGUIWindow_CastTargetedSpell, nullptr);
+            game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+            game.tick();
         }
-        Time applicationStartedAt = pParty->GetPlayingTime();
-        if (mastery == MASTERY_EXPERT)
-            game.pressAndReleaseButton(BUTTON_LEFT, 50, 420);
-        game.tick();
-        Time applicationFinishedAt = pParty->GetPlayingTime();
+        Time castDoneAt = pParty->GetPlayingTime();
+        test.stopTaping();
 
-        for (int i = 0; i < 4; i++) {
-            SpellBuff &buff = pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION];
-            bool shouldHaveBuff = mastery != MASTERY_EXPERT || i == 0;
-            EXPECT_EQ(buff.Active(), shouldHaveBuff) << "character=" << i;
-            if (shouldHaveBuff) {
-                EXPECT_GE(buff.GetExpireTime(), applicationStartedAt + expectedDuration) << "character=" << i;
-                EXPECT_LE(buff.GetExpireTime(), applicationFinishedAt + expectedDuration) << "character=" << i;
+        bool partyWide = mastery != MASTERY_EXPERT;
+        EXPECT_EQ(buffsTape.frontBack(), tape({false, false, false, false}, {true, partyWide, partyWide, partyWide}));
+
+        // Vanilla MM7 lasts an hour plus five minutes per skill point, and fifteen minutes per point at grandmaster.
+        Duration expectedDuration = Duration::fromHours(1) + Duration::fromMinutes((mastery == MASTERY_GRANDMASTER ? 15 : 5) * skillLevel);
+        for (Character &character : pParty->pCharacters) {
+            SpellBuff &buff = character.pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION];
+            if (buff.Active()) {
+                EXPECT_GE(buff.GetExpireTime(), castAt + expectedDuration);
+                EXPECT_LE(buff.GetExpireTime(), castDoneAt + expectedDuration);
             }
         }
-    };
-
-    checkCast(MASTERY_EXPERT, Duration::fromMinutes(110));
-    checkCast(MASTERY_MASTER, Duration::fromMinutes(110));
-    checkCast(MASTERY_GRANDMASTER, Duration::fromMinutes(210));
+    }
 }
