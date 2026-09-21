@@ -45,14 +45,6 @@ static void pressHouseNpcButton(EngineController &game, int dialogueEventId) {
     game.pressAndReleaseButton(BUTTON_LEFT, desc->button->rect.center());
 }
 
-static void pressScriptedDialogueLine(EngineController &game) {
-    auto button = std::ranges::find_if(pDialogueWindow->vButtons, [](const GUIButton *candidate) {
-        return candidate->msg == UIMSG_SelectHouseNPCDialogueOption && candidate->msg_param == std::to_underlying(DIALOGUE_SCRIPTED_LINE_1);
-    });
-    ASSERT_NE(button, pDialogueWindow->vButtons.end());
-    game.pressAndReleaseButton(BUTTON_LEFT, (*button)->rect.center());
-}
-
 // 2500
 
 GAME_TEST(Issues, Issue2500a) {
@@ -779,9 +771,9 @@ GAME_TEST(Issues, Issue2777c) {
     game.tick();
     pressHouseNpcButton(game, 96); // Halfgild is the only MM7 NPC who promotes Wizards to Liches.
     game.tick();
-    pressScriptedDialogueLine(game); // He offers the promotion.
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Halfgild's only topic, where he offers the promotion.
     game.tick(2);
-    pressScriptedDialogueLine(game); // And then carries it out.
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // And then carries it out.
     game.tick(2);
 
     EXPECT_EQ(houseTape.back(), HOUSE_PIT_DARKENMORE_RESIDENCE);
