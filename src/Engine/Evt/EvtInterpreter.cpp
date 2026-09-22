@@ -7,6 +7,7 @@
 
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Evt/EvtInstruction.h"
+#include "Engine/Evt/EvtVariables.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
@@ -157,7 +158,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             case EVENT_OnCanShowDialogItemCmp:
                 _readyToExit = true;
                 for (Character &player : pParty->pCharacters) {
-                    if (player.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value)) {
+                    if (compareEvtVariable(player, ir.data.variable_descr.type, ir.data.variable_descr.value)) {
                         return ir.target_step;
                     }
                 }
@@ -316,7 +317,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_Compare:
             for (Character &character : iterateCharacters(_who, grng))
-                if (character.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value))
+                if (compareEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                     return ir.target_step;
             break;
         case EVENT_ChangeDoorState:
@@ -330,7 +331,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
                 break; // Roland's cage script adds the key on every click, it never checks the quest bit.
             for (Character &character : iterateCharacters(_who, grng))
-                character.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
+                addEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_Subtract:
             // We had a couple issues with quest items not being removed from inventory, and the reason was that the
@@ -340,20 +341,20 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 ItemId itemId = static_cast<ItemId>(ir.data.variable_descr.value);
                 for (Character &character : pParty->pCharacters) {
                     if (pParty->pPickedItem.itemId == itemId || character.inventory.find(itemId)) {
-                        if (!character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value))
+                        if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                             _cancelled = true;
                         break;  // Only take one item.
                     }
                 }
             } else {
                 for (Character &character : iterateCharacters(_who, grng))
-                    if (!character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value))
+                    if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                         _cancelled = true;
             }
             break;
         case EVENT_Set:
             for (Character &character : iterateCharacters(_who, grng))
-                character.SetVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
+                setEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_SummonMonsters:
             spawnMonsters(ir.data.monster_descr.type, ir.data.monster_descr.level, ir.data.monster_descr.count,

@@ -4,12 +4,14 @@ set(ENGINE_EVENTS_SOURCES
         EvtEnums.cpp
         EvtInstruction.cpp
         EvtProgram.cpp
+        EvtVariables.cpp
         EvtInterpreter.cpp
         Processor.cpp)
 
 set(ENGINE_EVENTS_HEADERS
         EvtInstruction.h
         EvtProgram.h
+        EvtVariables.h
         EvtInterpreter.h
         EvtEnums.h
         Processor.h

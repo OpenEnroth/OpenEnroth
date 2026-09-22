@@ -17,7 +17,6 @@
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Spells/SpellBuff.h"
-#include "Engine/Evt/EvtEnums.h"
 #include "Engine/Pid.h"
 
 #include "GUI/GUIEnums.h"
@@ -89,23 +88,6 @@ class Character {
      * @param autonote                  Autonote to give, an index into `pAutonoteTxt`.
      */
     void giveAutonote(int autonote);
-
-    // TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
-    void SetVariable(EvtVariable var, signed int a3);
-
-    // TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
-    void AddVariable(EvtVariable var, signed int val);
-
-    /**
-     * TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
-     *
-     * @return                          False if the subtraction could not be performed, e.g. the party doesn't have
-     *                                  enough gold. A script that hits this is aborted.
-     */
-    [[nodiscard]] bool SubtractVariable(EvtVariable VarNum, signed int pValue);
-
-    // TODO(captainurist): evt script semantics, belongs in the Evt module. Only the interpreter calls this one.
-    bool CompareVariable(EvtVariable VarNum, signed int pValue);
 
     /**
      * Use item on character.
