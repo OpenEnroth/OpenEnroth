@@ -1,5 +1,5 @@
-#include <set>
 #include <string>
+#include <vector>
 
 #include "Testing/Game/GameTest.h"
 
@@ -7,7 +7,6 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
-#include "Engine/Evt/EvtCommands.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/EvtScripts.h"
 #include "Engine/Evt/Processor.h"
@@ -18,11 +17,8 @@
 
 #include "Utility/ScopeGuard.h"
 
-static std::set<int> eventIds(std::string_view evtName) {
-    std::set<int> result;
-    for (const EvtRecord &record : decodeEvtRecords(engine->resources()->eventsData(fmt::format("{}.evt", evtName))))
-        result.insert(record.eventId);
-    return result;
+static std::vector<int> eventIds(std::string_view evtName) {
+    return EvtProgram::load(engine->resources()->eventsData(fmt::format("{}.evt", evtName))).eventIds();
 }
 
 GAME_TEST(EvtScripts, DecompiledEvents) {
