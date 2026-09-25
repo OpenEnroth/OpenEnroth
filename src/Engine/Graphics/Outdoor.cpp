@@ -798,7 +798,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
             if (face.Ethereal())
                 continue;
 
-            if (face.numVertices == 0)
+            if (face.vertices.empty())
                 continue;
 
             if (face.polygonType != POLYGON_Floor && face.polygonType != POLYGON_InBetweenFloorAndWall)
@@ -813,7 +813,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
 
             int floor_level;
             if (face.polygonType == POLYGON_Floor) {
-                floor_level = model.vertices[face.vertexIds[0]].z;
+                floor_level = face.vertices[0]->z;
             } else {
                 floor_level = face.zCalc.calculate(pos.x, pos.y);
             }
@@ -1530,7 +1530,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
 
             int height_level;
             if (face.polygonType == POLYGON_Ceiling)
-                height_level = model.vertices[face.vertexIds[0]].z;
+                height_level = face.vertices[0]->z;
             else
                 height_level = face.zCalc.calculate(Party_X, Party_Y);
 

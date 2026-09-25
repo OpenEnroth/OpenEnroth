@@ -630,13 +630,13 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     BLVFace *pFace = &pIndoor->faces[uFaceID];
-    if (pFace->numVertices <= 0) return;
+    if (pFace->vertices.empty()) return;
 
     // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
     if (!pFace->GetTexture()) return;
 
     int dimming_level = 0;
-    unsigned int uNumVertices = pFace->numVertices;
+    unsigned int uNumVertices = static_cast<unsigned int>(pFace->vertices.size());
 
 
     // TODO(pskelton): repeated maths could be saved when calculating sky planes
@@ -667,10 +667,8 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     RenderVertexSoft originalVertices[50];
 
     // copy to buff in
-    for (unsigned i = 0; i < pFace->numVertices; ++i) {
-        originalVertices[i].vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[i]].x;
-        originalVertices[i].vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[i]].y;
-        originalVertices[i].vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[i]].z;
+    for (size_t i = 0; i < pFace->vertices.size(); ++i) {
+        originalVertices[i].vWorldPosition = *pFace->vertices[i];
         originalVertices[i].u = (signed short)pFace->textureUs[i];
         originalVertices[i].v = (signed short)pFace->textureVs[i];
     }
@@ -2515,12 +2513,12 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                     attribflags |= 0x00010000;
 
                                 // load up verts here
-                                for (int z = 0; z < (face.numVertices - 2); z++) {
+                                for (size_t z = 0; z + 2 < face.vertices.size(); z++) {
                                     // 123, 134, 145, 156..
 
                                     // copy first
                                     ShaderVertex &v0 = _outbuildVertices[texunit].emplace_back();
-                                    v0.pos = model.vertices[face.vertexIds[0]];
+                                    v0.pos = *face.vertices[0];
                                     v0.texuv = Vec2f(face.textureUs[0] + face.textureDeltaU,
                                                      face.textureVs[0] + face.textureDeltaV);
                                     v0.texturelayer = texlayer;
@@ -2530,7 +2528,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                     // copy other two (z+1)(z+2)
                                     for (unsigned i = 1; i < 3; ++i) {
                                         ShaderVertex &v = _outbuildVertices[texunit].emplace_back();
-                                        v.pos = model.vertices[face.vertexIds[z + i]];
+                                        v.pos = *face.vertices[z + i];
                                         v.texuv = Vec2f(face.textureUs[z + i] + face.textureDeltaU,
                                                         face.textureVs[z + i] + face.textureDeltaV);
                                         v.texturelayer = texlayer;
@@ -2700,16 +2698,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x + face.facePlane.normal.y * pOutdoor->vSunlight.y + face.facePlane.normal.z * pOutdoor->vSunlight.z;
             int dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f1 + 0.5f)), 0, 31);
 
-            for (unsigned vertex_id = 1; vertex_id <= face.numVertices; vertex_id++) {
-                array_73D150[vertex_id - 1].vWorldPosition.x =
-                    model.vertices[face.vertexIds[vertex_id - 1]].x;
-                array_73D150[vertex_id - 1].vWorldPosition.y =
-                    model.vertices[face.vertexIds[vertex_id - 1]].y;
-                array_73D150[vertex_id - 1].vWorldPosition.z =
-                    model.vertices[face.vertexIds[vertex_id - 1]].z;
-            }
-
-            for (int vertex_id = 0; vertex_id < face.numVertices; ++vertex_id) {
+            for (size_t vertex_id = 0; vertex_id < face.vertices.size(); ++vertex_id) {
+                array_73D150[vertex_id].vWorldPosition = *face.vertices[vertex_id];
                 memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
                 VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
             }
@@ -2719,7 +2709,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 decal_builder->BuildAndApplyDecals(
                     31 - dimming_level, LocationBuildings,
                     face.facePlane,
-                    face.numVertices, VertexRenderList, 0, -1);
+                    static_cast<int>(face.vertices.size()), VertexRenderList, 0, -1);
             }
         }
     }
@@ -2944,7 +2934,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 if (face->Indoor_sky()) {
                     if (face->polygonType != POLYGON_InBetweenFloorAndWall && face->polygonType != POLYGON_Floor) {
                         // draw forced perspective sky
-                        DrawIndoorSky(face->numVertices, uFaceID);
+                        DrawIndoorSky(static_cast<int>(face->vertices.size()), uFaceID);
                         continue;
                     } else {
                         // TODO(pskelton): check tickcount usage here
@@ -3004,12 +2994,12 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 }
 
 
-                for (int z = 0; z < (face->numVertices - 2); z++) {
+                for (size_t z = 0; z + 2 < face->vertices.size(); z++) {
                     // 123, 134, 145, 156..
 
                     // copy first
                     ShaderVertex &v0 = _bspVertices[texunit].emplace_back();
-                    v0.pos = pIndoor->vertices[face->vertexIds[0]];
+                    v0.pos = *face->vertices[0];
                     v0.texuv = Vec2f(face->textureUs[0] + face->textureDeltaU,
                                      face->textureVs[0] + face->textureDeltaV);
                     if (face->Indoor_sky()) {
@@ -3023,7 +3013,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     // copy other two (z+1)(z+2)
                     for (unsigned i = 1; i < 3; ++i) {
                         ShaderVertex &v = _bspVertices[texunit].emplace_back();
-                        v.pos = pIndoor->vertices[face->vertexIds[z + i]];
+                        v.pos = *face->vertices[z + i];
                         v.texuv = Vec2f(face->textureUs[z + i] + face->textureDeltaU,
                                         face->textureVs[z + i] + face->textureDeltaV);
                         if (face->Indoor_sky()) {
@@ -3260,20 +3250,15 @@ void OpenGLRenderer::DrawIndoorFaces() {
             if (!decal_builder->uNumSplatsThisFace) continue;
 
             // copy to buff in
-            for (unsigned i = 0; i < pface->numVertices; ++i) {
-                static_vertices_buff_in[i].vWorldPosition.x =
-                    pIndoor->vertices[pface->vertexIds[i]].x;
-                static_vertices_buff_in[i].vWorldPosition.y =
-                    pIndoor->vertices[pface->vertexIds[i]].y;
-                static_vertices_buff_in[i].vWorldPosition.z =
-                    pIndoor->vertices[pface->vertexIds[i]].z;
+            for (size_t i = 0; i < pface->vertices.size(); ++i) {
+                static_vertices_buff_in[i].vWorldPosition = *pface->vertices[i];
                 static_vertices_buff_in[i].u = pface->textureUs[i];
                 static_vertices_buff_in[i].v = pface->textureVs[i];
             }
 
             // blood draw
             decal_builder->BuildAndApplyDecals(uCurrentAmbientLightLevel, LocationIndoors, pface->facePlane,
-                pface->numVertices, static_vertices_buff_in,
+                static_cast<int>(pface->vertices.size()), static_vertices_buff_in,
                 0, pface->sectorId);
         }
 
