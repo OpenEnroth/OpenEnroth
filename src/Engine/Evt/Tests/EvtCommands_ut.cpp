@@ -8,13 +8,12 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/EvtCommands.h"
+#include "Engine/Evt/EvtProgram.h"
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Tables/MapTable.h"
 
-#include "Utility/Memory/Blob.h"
-
-using namespace std::string_literals; // NOLINT: the record bytes below hold zeros.
+using namespace std::string_literals; // NOLINT: for the string values of the commands.
 
 static std::vector<std::string> evtFileNames() {
     std::vector<std::string> result = {"global"};
@@ -25,106 +24,61 @@ static std::vector<std::string> evtFileNames() {
     return result;
 }
 
-GAME_TEST(EvtCommands, RecordBytes) {
-    // A record has to come out as the bytes an evt file holds for it, and come back from them.
-    EvtRecord record;
-    record.eventId = 376;
-    record.step = 2;
-    record.opcode = EVENT_SetSprite;
-    record.values = std::vector<EvtFieldValue>{int64_t(20), int64_t(1), "dec05"s};
-
-    std::string bytes = encodeEvtRecord(record);
-    EXPECT_EQ(bytes, "\x0f\x78\x01\x02\x0d\x14\x00\x00\x00\x01"s "dec05\x00"s);
-
-    std::vector<EvtRecord> decoded = decodeEvtRecords(Blob::view(bytes));
-    ASSERT_EQ(decoded.size(), 1);
-    EXPECT_EQ(decoded[0].eventId, 376);
-    EXPECT_EQ(decoded[0].step, 2);
-    EXPECT_EQ(decoded[0].opcode, EVENT_SetSprite);
-    EXPECT_EQ(decoded[0].values, record.values);
-}
-
-GAME_TEST(EvtCommands, Instruction) {
-    // A record has to turn into the instruction that the interpreter runs.
-    EvtRecord record;
-    record.opcode = EVENT_Compare;
-    record.values = std::vector<EvtFieldValue>{int64_t(std::to_underlying(*evtVariableByName("QBits"))), int64_t(240), int64_t(7)};
-
-    EvtInstruction ir = evtInstruction(record);
-    EXPECT_EQ(ir.opcode, EVENT_Compare);
-    EXPECT_EQ(ir.data.variable_descr.type, VAR_QBits_QuestsDone);
-    EXPECT_EQ(ir.data.variable_descr.value, 240);
-    EXPECT_EQ(ir.target_step, 7);
-
-    record.values = std::vector<EvtFieldValue>{int64_t(0), int64_t(240)}; // The jump is missing.
-    EXPECT_ANY_THROW((void) evtInstruction(record));
+static EvtInstruction instruction(std::string_view name, std::vector<EvtFieldValue> values) {
+    const EvtCommandInfo *command = evtCommand(name);
+    EvtInstruction result = {};
+    result.opcode = command->opcode;
+    for (size_t i = 0; i < values.size(); i++)
+        if (command->fields[i].set)
+            command->fields[i].set(&result, values[i]);
+    return result;
 }
 
 GAME_TEST(EvtCommands, Table) {
-    // Scripts call commands by name, and a condition reports its result through its jump, so it needs exactly one.
+    // Scripts call commands by name, and each field has to be both readable and writable or neither.
     std::set<std::string_view> names;
     for (const EvtCommandInfo &command : evtCommands()) {
         EXPECT_TRUE(names.insert(command.name).second) << command.name;
         EXPECT_FALSE(command.fields.empty()) << command.name;
-        if (command.kind == EVT_COMMAND_CONDITION)
-            EXPECT_EQ(std::ranges::count(command.fields, EVT_FIELD_JUMP, &EvtFieldInfo::type), 1) << command.name;
+        for (const EvtFieldInfo &field : command.fields)
+            EXPECT_EQ(static_cast<bool>(field.get), static_cast<bool>(field.set)) << command.name << "." << field.name;
     }
     EXPECT_TRUE(std::ranges::is_sorted(evtCommands(), std::ranges::less(), &EvtCommandInfo::opcode));
 }
 
-GAME_TEST(EvtCommands, EncodeErrors) {
-    // A value that a field can't hold must not get into a record, a script typo would reach the interpreter as it is.
-    auto encode = [](EvtOpcode opcode, std::vector<EvtFieldValue> values) {
-        EvtRecord record;
-        record.opcode = opcode;
-        record.values = std::move(values);
-        return encodeEvtRecord(record);
-    };
-    int64_t gold = std::to_underlying(VAR_FixedGold);
+GAME_TEST(EvtCommands, Instruction) {
+    // The fields of a command have to land in the members of the instruction that the interpreter reads.
+    EvtInstruction cmp = instruction("Cmp", {int64_t(std::to_underlying(*evtVariableByName("QBits"))), int64_t(240)});
+    EXPECT_EQ(cmp.opcode, EVENT_Compare);
+    EXPECT_EQ(cmp.data.variable_descr.type, VAR_QBits_QuestsDone);
+    EXPECT_EQ(cmp.data.variable_descr.value, 240);
 
-    EXPECT_NO_THROW((void) encode(EVENT_Add, {gold, int64_t(-1000)}));
-    EXPECT_ANY_THROW((void) encode(EVENT_Add, {gold, int64_t(3000000000)}));
-    EXPECT_NO_THROW((void) encode(EVENT_SetFacesBit, {int64_t(1), int64_t(0x80000000), int64_t(1)})); // A bit mask is unsigned.
-    EXPECT_ANY_THROW((void) encode(EVENT_ForPartyMember, {int64_t(7)}));
-    EXPECT_ANY_THROW((void) encode(EVENT_ChangeDoorState, {int64_t(256), int64_t(0)}));
-    EXPECT_ANY_THROW((void) encode(EVENT_ChangeDoorState, {"door"s, int64_t(0)}));
-    EXPECT_ANY_THROW((void) encode(EVENT_SetTexture, {int64_t(1), "a\0b"s}));
-    EXPECT_ANY_THROW((void) encode(EVENT_SetTexture, {int64_t(1), std::string(300, 'a')}));
+    EvtInstruction sprite = instruction("SetSprite", {int64_t(20), int64_t(1), "dec05"s});
+    EXPECT_EQ(sprite.data.sprite_texture_descr.cog, 20);
+    EXPECT_EQ(sprite.data.sprite_texture_descr.hide, 1);
+    EXPECT_EQ(sprite.str, "dec05");
 
-    std::vector<EvtFieldValue> spell = {int64_t(6), int64_t(4), int64_t(10), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0)};
-    EXPECT_NO_THROW((void) encode(EVENT_CastSpell, spell));
-    spell[1] = int64_t(5); // There is no mastery above grandmaster.
-    EXPECT_ANY_THROW((void) encode(EVENT_CastSpell, spell));
+    EvtInstruction spell = instruction("CastSpell", {int64_t(6), int64_t(4), int64_t(10)});
+    EXPECT_EQ(spell.data.spell_descr.spell_mastery, MASTERY_GRANDMASTER);
 
-    EvtRecord record;
-    record.opcode = EVENT_Exit;
-    record.values = std::vector<EvtFieldValue>{int64_t(0)};
-    record.eventId = 0x10000;
-    EXPECT_ANY_THROW((void) encodeEvtRecord(record));
+    EvtInstruction damage = instruction("DamagePlayer", {int64_t(std::to_underlying(CHOOSE_PARTY)), int64_t(0), int64_t(50)});
+    EXPECT_EQ(damage.who, CHOOSE_PARTY);
+    EXPECT_EQ(damage.data.damage_descr.damage, 50);
 }
 
-GAME_TEST(EvtCommands, UnmatchedRecords) {
-    // A record that the table can't describe keeps its bytes, and can't be run.
-    std::string bytes = "\x04\x01\x00\x00\x24"s // A jump without its target.
-                        "\x06\x01\x00\x01\xff\xaa\xbb"s; // No such opcode.
-
-    std::vector<EvtRecord> decoded = decodeEvtRecords(Blob::view(bytes));
-    ASSERT_EQ(decoded.size(), 2);
-    EXPECT_FALSE(decoded[0].values);
-    EXPECT_FALSE(decoded[1].values);
-    EXPECT_EQ(decoded[1].payload, "\xaa\xbb");
-    EXPECT_EQ(encodeEvtRecord(decoded[0]) + encodeEvtRecord(decoded[1]), bytes);
-    EXPECT_ANY_THROW((void) evtInstruction(decoded[0]));
-    EXPECT_ANY_THROW((void) evtInstruction(decoded[1]));
-
-    EvtRecord question;
-    question.opcode = EVENT_InputString;
-    question.values = std::vector<EvtFieldValue>{int64_t(1), int64_t(2), int64_t(3), int64_t(4)};
-    EXPECT_NO_THROW((void) encodeEvtRecord(question));
-    EXPECT_ANY_THROW((void) evtInstruction(question)); // The interpreter doesn't run it.
-
-    EXPECT_ANY_THROW((void) decodeEvtRecords(Blob::view("\x03\x01\x00\x00"s))); // Too short for a record.
-    EXPECT_ANY_THROW((void) decodeEvtRecords(Blob::view("\x05\x01\x00\x00\x01"s))); // Cut off.
+GAME_TEST(EvtCommands, SetErrors) {
+    // A value that a field can't hold must not get into an instruction. A script's typo would reach the interpreter.
+    int64_t gold = std::to_underlying(VAR_FixedGold);
+    EXPECT_NO_THROW((void) instruction("Add", {gold, int64_t(-1000)}));
+    EXPECT_ANY_THROW((void) instruction("Add", {gold, int64_t(3000000000)}));
+    EXPECT_NO_THROW((void) instruction("SetFacetBit", {int64_t(1), int64_t(0x80000000), int64_t(1)})); // A bit mask is unsigned.
+    EXPECT_ANY_THROW((void) instruction("SetFacetBit", {int64_t(1), int64_t(-1), int64_t(1)}));
+    EXPECT_ANY_THROW((void) instruction("SetFacetBit", {int64_t(1), int64_t(1), int64_t(2)})); // On is a bool.
+    EXPECT_ANY_THROW((void) instruction("DamagePlayer", {int64_t(7)}));
+    EXPECT_ANY_THROW((void) instruction("CastSpell", {int64_t(6), int64_t(5)})); // There is no mastery above grandmaster.
+    EXPECT_ANY_THROW((void) instruction("CastSpell", {int64_t(6), int64_t(0)}));
+    EXPECT_ANY_THROW((void) instruction("SetDoorState", {"door"s}));
+    EXPECT_ANY_THROW((void) instruction("SetSprite", {int64_t(20), int64_t(1), int64_t(5)}));
 }
 
 GAME_TEST(EvtCommands, Names) {
@@ -147,15 +101,26 @@ GAME_TEST(EvtCommands, Names) {
 }
 
 GAME_TEST(EvtCommands, GameFilesRoundTrip) {
-    // The command table has to describe every record of every evt file of the game, down to the byte.
+    // Every field that the interpreter reads from a command of the game's evt files has to be one scripts can set.
     for (const std::string &name : evtFileNames()) {
-        Blob data = engine->resources()->eventsData(name + ".evt");
+        EvtProgram program = EvtProgram::load(engine->resources()->eventsData(name + ".evt"));
+        for (int eventId : program.eventIds()) {
+            for (const EvtInstruction &ir : program.function(eventId)) {
+                const EvtCommandInfo *command = evtCommand(ir.opcode);
+                if (!command)
+                    continue;
 
-        std::string encoded;
-        for (const EvtRecord &record : decodeEvtRecords(data)) {
-            ASSERT_TRUE(record.values) << name << ".evt, event " << record.eventId;
-            encoded += encodeEvtRecord(record);
+                EvtInstruction copy = {};
+                copy.opcode = ir.opcode;
+                copy.step = ir.step;
+                copy.target_step = ir.target_step;
+                for (const EvtFieldInfo &field : command->fields)
+                    if (field.get)
+                        field.set(&copy, field.get(ir));
+                EXPECT_EQ(copy.toString(), ir.toString()) << name << ".evt, event " << eventId;
+                EXPECT_EQ(copy.str, ir.str) << name << ".evt, event " << eventId;
+                EXPECT_EQ(copy.who, ir.who) << name << ".evt, event " << eventId;
+            }
         }
-        EXPECT_EQ(encoded, data.str()) << name << ".evt";
     }
 }

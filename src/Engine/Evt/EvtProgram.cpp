@@ -1,5 +1,6 @@
 #include "EvtProgram.h"
 
+#include <algorithm>
 #include <ranges>
 #include <tuple>
 #include <vector>
@@ -49,6 +50,14 @@ void EvtProgram::remove(int eventId) {
 
 void EvtProgram::clear() {
     _eventsById.clear();
+}
+
+std::vector<int> EvtProgram::eventIds() const {
+    std::vector<int> result;
+    for (const auto &[eventId, _] : _eventsById)
+        result.push_back(eventId);
+    std::ranges::sort(result);
+    return result;
 }
 
 const EvtInstruction &EvtProgram::instruction(int eventId, int step) const {
