@@ -283,7 +283,7 @@ GAME_TEST(EvtDecompiler, Hints) {
         call(33, 0, "EnterHouse", {int64_t(2)}),
         op(33, 1, EVENT_Exit),
         op(34, 0, EVENT_MouseOver, [](EvtInstruction &ir) { ir.data.text_id = 1; }),
-        call(34, 0, "EnterHouse", {int64_t(9999)}), // There is no such house, and the engine keeps the hint then.
+        op(34, 0, EVENT_SpeakInHouse, [](EvtInstruction &ir) { ir.data.house_id = static_cast<HouseId>(9999); }), // No such house keeps the hint.
         op(34, 1, EVENT_Exit),
     });
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 #include <string>
 
 #include "Engine/Pid.h"
@@ -75,14 +76,14 @@ struct EvtTimerSchedule {
  * `EVENT_OnLongTimer`.
  */
 enum class EvtTimerKind {
-    EVT_TIMER_REGULAR,
-    EVT_TIMER_REFILL,
+    EVT_TIMER_KIND_REGULAR,
+    EVT_TIMER_KIND_REFILL,
 };
 using enum EvtTimerKind;
 
 enum class EvtTimerLifetime {
-    EVT_TIMER_MAP, // Dropped when the party leaves the map, like the evt timers.
-    EVT_TIMER_GAME, // Kept until a game is loaded or started.
+    EVT_TIMER_LIFETIME_MAP, // Dropped when the party leaves the map, like the evt timers.
+    EVT_TIMER_LIFETIME_GAME, // Kept until a game is loaded or started.
 };
 using enum EvtTimerLifetime;
 
@@ -100,5 +101,13 @@ int addTimer(const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifeti
  *                                      firing.
  */
 void removeTimer(int handle);
+
+/**
+ * Drops the timers and the map load and leave triggers that the current map's evt file registered for an event, once
+ * a script has removed the event.
+ *
+ * @param eventId                       Event, or `std::nullopt` for all of them.
+ */
+void removeEventTriggers(std::optional<int> eventId);
 
 extern LevelDecoration *savedDecoration;

@@ -100,21 +100,6 @@ bool EvtProgram::hasHint(int eventId) const {
     return events && isHintOnly(*events);
 }
 
-std::string EvtProgram::hint(int eventId) const {
-    const auto *events = valuePtr(_eventsById, eventId);
-    if (!events)
-        return {};
-
-    std::optional<EvtHintSource> source = hintSource(*events);
-    if (!source)
-        return {};
-    if (source->houseId != HOUSE_INVALID)
-        return houseTable[source->houseId].name;
-    if (source->textId < engine->_levelStrings.size())
-        return engine->_levelStrings[source->textId];
-    return {};
-}
-
 bool EvtProgram::isHintOnly(const std::vector<EvtInstruction> &instructions) {
     return instructions.size() >= 2 && instructions[0].opcode == EVENT_MouseOver && instructions[1].opcode == EVENT_Exit;
 }
@@ -131,6 +116,21 @@ std::optional<EvtHintSource> EvtProgram::hintSource(const std::vector<EvtInstruc
         }
     }
     return result;
+}
+
+std::string EvtProgram::hint(int eventId) const {
+    const auto *events = valuePtr(_eventsById, eventId);
+    if (!events)
+        return {};
+
+    std::optional<EvtHintSource> source = hintSource(*events);
+    if (!source)
+        return {};
+    if (source->houseId != HOUSE_INVALID)
+        return houseTable[source->houseId].name;
+    if (source->textId < engine->_levelStrings.size())
+        return engine->_levelStrings[source->textId];
+    return {};
 }
 
 void EvtProgram::dump(int eventId) const {

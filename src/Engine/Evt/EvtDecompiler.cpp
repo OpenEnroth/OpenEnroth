@@ -115,7 +115,7 @@ static std::string withComment(std::string statement, std::string_view comment) 
 }
 
 /**
- * Decompiles the records of one event. Instructions are addressed by their index in the event, not by their step.
+ * Decompiles one event. Instructions are addressed by their index in the event, not by their step.
  */
 class EvtEventDecompiler {
  public:
@@ -328,13 +328,15 @@ std::pair<std::string_view, std::string> EvtEventDecompiler::timerCall(int index
 }
 
 /**
- * @return                              The line that gives the event its hint, or an empty string if it has none. The
- *                                      hint is what `EvtProgram::hint` makes of the same records.
+ * @return                              The line that gives the event its hint, or an empty string if it has none.
  */
 std::string EvtEventDecompiler::hint() const {
-    std::optional<EvtHintSource> source = EvtProgram::hintSource(_instructions);
-    if (_isGlobal || !source)
+    if (_isGlobal)
         return {}; // Hints belong to map events.
+
+    std::optional<EvtHintSource> source = EvtProgram::hintSource(_instructions);
+    if (!source)
+        return {};
 
     if (source->houseId != HOUSE_INVALID) {
         int64_t houseId = std::to_underlying(source->houseId);
@@ -388,7 +390,6 @@ EvtFlow EvtEventDecompiler::flow(int index, EvtMode mode) const {
         case EVENT_Jmp:
             return {EVT_FLOW_JUMP, {}, {indexOfStep(ir.target_step)}};
         case EVENT_RandomGoTo: {
-            // The interpreter picks among as many of the leading steps as there are non-zero ones.
             EvtFlow result = {EVT_FLOW_RANDOM};
             for (int i = 0; i < ir.data.random_goto_descr.random_goto_len; i++)
                 result.targets.push_back(indexOfStep(ir.data.random_goto_descr.random_goto[i]));
@@ -411,7 +412,7 @@ EvtFlow EvtEventDecompiler::flow(int index, EvtMode mode) const {
     const EvtCommandInfo *info = evtCommand(ir.opcode);
     if (!info)
         return {EVT_FLOW_NEXT, fmt::format("-- {} isn't supported by OpenEnroth.", ::toString(ir.opcode))};
-    if (info->isCondition)
+    if (info->kind == EVT_COMMAND_CONDITION)
         return {EVT_FLOW_BRANCH, formatCall(index, "evt."), {indexOfStep(ir.target_step)}};
     return {EVT_FLOW_NEXT, formatCall(index, "evt.")};
 }

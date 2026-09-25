@@ -25,6 +25,7 @@ enum class EvtFieldType {
     EVT_FIELD_MASTERY, // Scripts pass 1-4, as in `const.Novice` to `const.GM`.
     EVT_FIELD_NPC, // Index into `NPCStats::pNPCData`.
     EVT_FIELD_NPC_GROUP, // Index into `NPCStats::pGroups`.
+    EVT_FIELD_HOUSE, // `HouseId` of a house in `houseTable`, or one of the two throne room endings.
 };
 using enum EvtFieldType;
 
@@ -42,12 +43,23 @@ using enum EvtConstGroup;
 using EvtFieldValue = std::variant<int64_t, std::string>;
 
 /**
+ * How a command takes part in a script.
+ */
+enum class EvtCommandKind {
+    EVT_COMMAND_ACTION, // Does something.
+    EVT_COMMAND_CONDITION, // Jumps when its condition holds. From a script it returns the condition as a boolean.
+};
+using enum EvtCommandKind;
+
+/**
  * One field of a command, and where it lives in an `EvtInstruction`.
  */
 struct EvtFieldInfo {
     std::string_view name; // MMExtension's field name, e.g. "SpriteId".
     EvtFieldType type = EVT_FIELD_INT;
     EvtConstGroup constGroup = EVT_CONST_NONE;
+    int64_t min = 0; // Smallest value of a number field.
+    int64_t max = 0; // Largest value of a number field.
     std::function<EvtFieldValue(const EvtInstruction &)> get; // Empty for a field that OpenEnroth doesn't keep.
     std::function<void(EvtInstruction *, const EvtFieldValue &)> set; // Throws if the value doesn't fit the field.
 };
@@ -58,7 +70,7 @@ struct EvtFieldInfo {
 struct EvtCommandInfo {
     EvtOpcode opcode = EVENT_Invalid;
     std::string_view name; // MMExtension's command name, e.g. "SetFacetBit".
-    bool isCondition = false; // Jumps when its condition holds. From a script it returns the condition.
+    EvtCommandKind kind = EVT_COMMAND_ACTION;
     std::vector<EvtFieldInfo> fields; // In the order of positional script arguments.
 };
 
@@ -105,7 +117,8 @@ std::span<const std::pair<std::string_view, int64_t>> evtConstants(EvtConstGroup
 
 /**
  * @param target                        Character target.
- * @return                              What scripts pass for it: "0" to "3", "Current", "All" or "Random".
+ * @return                              What scripts pass for it: "Current", "All" or "Random". Empty for a single
+ *                                      player, which scripts pass as a number from 0 to 3.
  */
 std::string_view evtPlayerName(EvtTargetCharacter target);
 

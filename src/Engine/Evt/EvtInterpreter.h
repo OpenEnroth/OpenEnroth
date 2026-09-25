@@ -19,6 +19,9 @@ enum class EvtOutcome {
 };
 using enum EvtOutcome;
 
+/**
+ * What `EvtInterpreter::executeInstruction` returns.
+ */
 struct EvtResult {
     EvtOutcome outcome = EVT_OUTCOME_NEXT;
     int target = 0;
@@ -44,7 +47,8 @@ class EvtInterpreter {
 
      /**
       * @param ir                       Instruction to run.
-      * @return                         What the event does next. A condition that holds and a `RandomGoTo` jump.
+      * @return                         What the event does next. A condition that holds jumps, and so does a
+      *                                 `RandomGoTo`.
       */
      EvtResult executeInstruction(EvtInstruction ir);
 

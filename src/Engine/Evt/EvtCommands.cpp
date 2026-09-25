@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <limits>
+#include <optional>
 #include <string>
 #include <tuple>
 #include <type_traits>
@@ -10,6 +11,9 @@
 #include <utility>
 #include <vector>
 
+#include "Engine/Data/HouseEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
 #include "Engine/Tables/NPCTable.h"
 
 #include "Utility/Exception.h"
@@ -18,7 +22,7 @@
 /**
  * @param type                          Type of a field.
  * @return                              Smallest and largest value that a script can pass for a field of the given
- *                                      type that is stored as `T`.
+ *                                      type that is stored as `T`, unless the field names a narrower range.
  */
 template<class T>
 static std::pair<int64_t, int64_t> fieldRange(EvtFieldType type) {
@@ -32,6 +36,8 @@ static std::pair<int64_t, int64_t> fieldRange(EvtFieldType type) {
         return {0, std::tuple_size_v<decltype(NPCStats::pNPCData)> - 1};
     if (type == EVT_FIELD_NPC_GROUP)
         return {0, std::tuple_size_v<decltype(NPCStats::pGroups)> - 1};
+    if (type == EVT_FIELD_HOUSE)
+        return {std::to_underlying(HOUSE_FIRST), std::to_underlying(HOUSE_THRONEROOM_WIN_EVIL)};
 
     using Stored = typename std::conditional_t<std::is_enum_v<T>, std::underlying_type<T>, std::type_identity<T>>::type;
     if constexpr (std::is_same_v<Stored, bool>) {
@@ -46,17 +52,22 @@ static std::pair<int64_t, int64_t> fieldRange(EvtFieldType type) {
  * @param type                          What scripts pass for it.
  * @param access                        Takes an `EvtInstruction`, const or not, and returns the member that holds the
  *                                      field.
+ * @param range                         Smallest and largest value of a number field, if the interpreter takes fewer
+ *                                      values than the member can hold.
  * @param constGroup                    Group of constants that the field's values are named by.
  * @return                              The field.
  */
 template<class Access>
-static EvtFieldInfo field(std::string_view name, EvtFieldType type, Access access, EvtConstGroup constGroup = EVT_CONST_NONE) {
+static EvtFieldInfo field(std::string_view name, EvtFieldType type, Access access, std::optional<std::pair<int64_t, int64_t>> range = {},
+                          EvtConstGroup constGroup = EVT_CONST_NONE) {
     using T = std::remove_cvref_t<decltype(access(std::declval<EvtInstruction &>()))>;
 
     EvtFieldInfo result;
     result.name = name;
     result.type = type;
     result.constGroup = constGroup;
+    if constexpr (!std::is_same_v<T, std::string>)
+        std::tie(result.min, result.max) = range.value_or(fieldRange<T>(type));
     result.get = [access](const EvtInstruction &ir) -> EvtFieldValue {
         const T &value = access(ir);
         if constexpr (std::is_same_v<T, std::string>) {
@@ -67,7 +78,7 @@ static EvtFieldInfo field(std::string_view name, EvtFieldType type, Access acces
             return static_cast<int64_t>(value);
         }
     };
-    result.set = [access, name, type](EvtInstruction *ir, const EvtFieldValue &value) {
+    result.set = [access, name, type, min = result.min, max = result.max](EvtInstruction *ir, const EvtFieldValue &value) {
         T &target = access(*ir);
         if constexpr (std::is_same_v<T, std::string>) {
             const std::string *string = std::get_if<std::string>(&value);
@@ -78,9 +89,10 @@ static EvtFieldInfo field(std::string_view name, EvtFieldType type, Access acces
             const int64_t *number = std::get_if<int64_t>(&value);
             if (!number)
                 throw Exception("field {} takes a number", name);
-            auto [min, max] = fieldRange<T>(type);
             if (*number < min || *number > max)
                 throw Exception("field {} takes {} to {}, got {}", name, min, max, *number);
+            if (type == EVT_FIELD_HOUSE && *number > std::to_underlying(HOUSE_LAST) && *number < std::to_underlying(HOUSE_THRONEROOM_WIN_GOOD))
+                throw Exception("field {} takes a house, got {}", name, *number);
             target = static_cast<T>(*number);
         }
     };
@@ -91,126 +103,142 @@ static EvtFieldInfo field(std::string_view name, EvtFieldType type, Access acces
  * @param name                          MMExtension's name of a field that OpenEnroth doesn't keep.
  * @return                              The field. Scripts can pass it, and it's dropped.
  */
+/**
+ * @param min                           Smallest value.
+ * @param max                           Largest value.
+ * @return                              A range for `field` from two values of an enum or of `int`.
+ */
+template<class T>
+static std::pair<int64_t, int64_t> range(T min, T max) {
+    if constexpr (std::is_enum_v<T>) {
+        return {std::to_underlying(min), std::to_underlying(max)};
+    } else {
+        return {min, max};
+    }
+}
+
 static EvtFieldInfo ignoredField(std::string_view name) {
     EvtFieldInfo result;
     result.name = name;
     return result;
 }
 
-#define EVT_ACCESS(member) [](auto &ir) -> auto & { return ir.member; }
+#define MM_EVT_ACCESS(member) [](auto &ir) -> auto & { return ir.member; }
 
 static std::vector<EvtCommandInfo> makeCommands() {
-    const EvtFieldInfo who = field("Player", EVT_FIELD_PLAYER, EVT_ACCESS(who));
-    const EvtFieldInfo variable = field("VarNum", EVT_FIELD_VARIABLE, EVT_ACCESS(data.variable_descr.type));
-    const EvtFieldInfo value = field("Value", EVT_FIELD_INT, EVT_ACCESS(data.variable_descr.value));
-    const EvtFieldInfo name = field("Name", EVT_FIELD_STRING, EVT_ACCESS(str));
+    const EvtFieldInfo who = field("Player", EVT_FIELD_PLAYER, MM_EVT_ACCESS(who));
+    const EvtFieldInfo variable = field("VarNum", EVT_FIELD_VARIABLE, MM_EVT_ACCESS(data.variable_descr.type));
+    const EvtFieldInfo value = field("Value", EVT_FIELD_INT, MM_EVT_ACCESS(data.variable_descr.value));
+    const EvtFieldInfo comparedValue = field("Value", EVT_FIELD_INT, MM_EVT_ACCESS(data.variable_descr.value), range(0, INT32_MAX));
+    const EvtFieldInfo name = field("Name", EVT_FIELD_STRING, MM_EVT_ACCESS(str));
 
     return {
-        {EVENT_SpeakInHouse, "EnterHouse", false, {field("Id", EVT_FIELD_INT, EVT_ACCESS(data.house_id))}},
-        {EVENT_PlaySound, "PlaySound", false,
-         {field("Id", EVT_FIELD_INT, EVT_ACCESS(data.sound_descr.sound_id)), field("X", EVT_FIELD_INT, EVT_ACCESS(data.sound_descr.x)),
-          field("Y", EVT_FIELD_INT, EVT_ACCESS(data.sound_descr.y))}},
-        {EVENT_MoveToMap, "MoveToMap", false,
-         {field("X", EVT_FIELD_INT, EVT_ACCESS(data.move_map_descr.x)), field("Y", EVT_FIELD_INT, EVT_ACCESS(data.move_map_descr.y)),
-          field("Z", EVT_FIELD_INT, EVT_ACCESS(data.move_map_descr.z)), field("Direction", EVT_FIELD_INT, EVT_ACCESS(data.move_map_descr.yaw)),
-          field("LookAngle", EVT_FIELD_INT, EVT_ACCESS(data.move_map_descr.pitch)),
-          field("SpeedZ", EVT_FIELD_INT, EVT_ACCESS(data.move_map_descr.zspeed)),
-          field("HouseId", EVT_FIELD_INT, EVT_ACCESS(data.move_map_descr.house_id)),
-          field("Icon", EVT_FIELD_INT, EVT_ACCESS(data.move_map_descr.exit_pic_id)), name}},
-        {EVENT_OpenChest, "OpenChest", false, {field("Id", EVT_FIELD_INT, EVT_ACCESS(data.chest_id))}},
-        {EVENT_ShowFace, "FaceExpression", false, {who, field("Frame", EVT_FIELD_INT, EVT_ACCESS(data.portrait_id))}},
-        {EVENT_ReceiveDamage, "DamagePlayer", false,
-         {who, field("DamageType", EVT_FIELD_INT, EVT_ACCESS(data.damage_descr.damage_type)),
-          field("Damage", EVT_FIELD_INT, EVT_ACCESS(data.damage_descr.damage))}},
-        {EVENT_SetSnow, "SetSnow", false,
-         {field("EffectId", EVT_FIELD_INT, EVT_ACCESS(data.snow_descr.is_nop)), field("On", EVT_FIELD_BOOL, EVT_ACCESS(data.snow_descr.is_enable))}},
-        {EVENT_SetTexture, "SetTexture", false, {field("Facet", EVT_FIELD_INT, EVT_ACCESS(data.sprite_texture_descr.cog)), name}},
-        {EVENT_ShowMovie, "ShowMovie", false,
-         {ignoredField("DoubleSize"), field("ExitCurrentScreen", EVT_FIELD_BOOL, EVT_ACCESS(data.movie_unknown_field)), name}},
-        {EVENT_SetSprite, "SetSprite", false,
-         {field("SpriteId", EVT_FIELD_INT, EVT_ACCESS(data.sprite_texture_descr.cog)),
-          field("Visible", EVT_FIELD_INT, EVT_ACCESS(data.sprite_texture_descr.hide)), name}},
-        {EVENT_Compare, "Cmp", true, {variable, value}},
-        {EVENT_ChangeDoorState, "SetDoorState", false,
-         {field("Id", EVT_FIELD_INT, EVT_ACCESS(data.door_descr.door_id)), field("State", EVT_FIELD_INT, EVT_ACCESS(data.door_descr.door_action))}},
-        {EVENT_Add, "Add", false, {variable, value}},
-        {EVENT_Subtract, "Subtract", false, {variable, value}},
-        {EVENT_Set, "Set", false, {variable, value}},
-        {EVENT_SummonMonsters, "SummonMonsters", false,
-         {field("TypeIndexInMapStats", EVT_FIELD_INT, EVT_ACCESS(data.monster_descr.type)),
-          field("Level", EVT_FIELD_INT, EVT_ACCESS(data.monster_descr.level)), field("Count", EVT_FIELD_INT, EVT_ACCESS(data.monster_descr.count)),
-          field("X", EVT_FIELD_INT, EVT_ACCESS(data.monster_descr.x)), field("Y", EVT_FIELD_INT, EVT_ACCESS(data.monster_descr.y)),
-          field("Z", EVT_FIELD_INT, EVT_ACCESS(data.monster_descr.z)), field("NPCGroup", EVT_FIELD_INT, EVT_ACCESS(data.monster_descr.group)),
-          field("unk", EVT_FIELD_INT, EVT_ACCESS(data.monster_descr.name_id))}},
-        {EVENT_CastSpell, "CastSpell", false,
-         {field("Spell", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.spell_id)),
-          field("Mastery", EVT_FIELD_MASTERY, EVT_ACCESS(data.spell_descr.spell_mastery)),
-          field("Skill", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.spell_level)), field("FromX", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.fromx)),
-          field("FromY", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.fromy)), field("FromZ", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.fromz)),
-          field("ToX", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.tox)), field("ToY", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.toy)),
-          field("ToZ", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.toz))}},
-        {EVENT_SpeakNPC, "SpeakNPC", false, {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_descr.npc_id))}},
-        {EVENT_SetFacesBit, "SetFacetBit", false,
-         {field("Id", EVT_FIELD_INT, EVT_ACCESS(data.faces_bit_descr.cog)),
-          field("Bit", EVT_FIELD_INT, EVT_ACCESS(data.faces_bit_descr.face_bit), EVT_CONST_FACET_BITS),
-          field("On", EVT_FIELD_BOOL, EVT_ACCESS(data.faces_bit_descr.is_on))}},
-        {EVENT_ToggleActorFlag, "SetMonsterBit", false,
-         {field("Monster", EVT_FIELD_INT, EVT_ACCESS(data.actor_flag_descr.id)),
-          field("Bit", EVT_FIELD_INT, EVT_ACCESS(data.actor_flag_descr.attr), EVT_CONST_MONSTER_BITS),
-          field("On", EVT_FIELD_BOOL, EVT_ACCESS(data.actor_flag_descr.is_set))}},
-        {EVENT_StatusText, "StatusText", false, {field("Str", EVT_FIELD_INT, EVT_ACCESS(data.text_id))}},
-        {EVENT_ShowMessage, "SetMessage", false, {field("Str", EVT_FIELD_INT, EVT_ACCESS(data.text_id))}},
-        {EVENT_ToggleIndoorLight, "SetLight", false,
-         {field("Id", EVT_FIELD_INT, EVT_ACCESS(data.light_descr.light_id)), field("On", EVT_FIELD_BOOL, EVT_ACCESS(data.light_descr.is_enable))}},
-        {EVENT_SummonItem, "SummonObject", false,
-         {field("Type", EVT_FIELD_INT, EVT_ACCESS(data.summon_item_descr.sprite)), field("X", EVT_FIELD_INT, EVT_ACCESS(data.summon_item_descr.x)),
-          field("Y", EVT_FIELD_INT, EVT_ACCESS(data.summon_item_descr.y)), field("Z", EVT_FIELD_INT, EVT_ACCESS(data.summon_item_descr.z)),
-          field("Speed", EVT_FIELD_INT, EVT_ACCESS(data.summon_item_descr.speed)),
-          field("Count", EVT_FIELD_INT, EVT_ACCESS(data.summon_item_descr.count)),
-          field("RandomAngle", EVT_FIELD_BOOL, EVT_ACCESS(data.summon_item_descr.random_rotate))}},
-        {EVENT_SetNPCTopic, "SetNPCTopic", false,
-         {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_topic_descr.npc_id)), field("Index", EVT_FIELD_INT, EVT_ACCESS(data.npc_topic_descr.index)),
-          field("Event", EVT_FIELD_INT, EVT_ACCESS(data.npc_topic_descr.event_id))}},
-        {EVENT_MoveNPC, "MoveNPC", false,
-         {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_move_descr.npc_id)),
-          field("HouseId", EVT_FIELD_INT, EVT_ACCESS(data.npc_move_descr.location_id))}},
-        {EVENT_GiveItem, "GiveItem", false,
-         {field("Strength", EVT_FIELD_INT, EVT_ACCESS(data.give_item_descr.treasure_level)),
-          field("Type", EVT_FIELD_INT, EVT_ACCESS(data.give_item_descr.treasure_type)),
-          field("Id", EVT_FIELD_INT, EVT_ACCESS(data.give_item_descr.item_id))}},
-        {EVENT_ChangeEvent, "ChangeEvent", false, {field("NewEvent", EVT_FIELD_INT, EVT_ACCESS(data.event_id))}},
-        {EVENT_CheckSkill, "CheckSkill", true,
-         {field("Skill", EVT_FIELD_INT, EVT_ACCESS(data.check_skill_descr.skill_type)),
-          field("Mastery", EVT_FIELD_MASTERY, EVT_ACCESS(data.check_skill_descr.skill_mastery)),
-          field("Level", EVT_FIELD_INT, EVT_ACCESS(data.check_skill_descr.skill_level))}},
-        {EVENT_SetNPCGroupNews, "SetNPCGroupNews", false,
-         {field("NPCGroup", EVT_FIELD_NPC_GROUP, EVT_ACCESS(data.npc_groups_descr.groups_id)),
-          field("NPCNews", EVT_FIELD_INT, EVT_ACCESS(data.npc_groups_descr.group))}},
-        {EVENT_NPCSetItem, "SetNPCItem", false,
-         {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_item_descr.id)), field("Item", EVT_FIELD_INT, EVT_ACCESS(data.npc_item_descr.item)),
-          field("On", EVT_FIELD_BOOL, EVT_ACCESS(data.npc_item_descr.is_give))}},
-        {EVENT_SetNPCGreeting, "SetNPCGreeting", false,
-         {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_descr.npc_id)), field("Greeting", EVT_FIELD_INT, EVT_ACCESS(data.npc_descr.greeting))}},
-        {EVENT_IsActorKilled, "CheckMonstersKilled", true,
-         {field("CheckType", EVT_FIELD_INT, EVT_ACCESS(data.actor_descr.policy)), field("Id", EVT_FIELD_INT, EVT_ACCESS(data.actor_descr.param)),
-          field("Count", EVT_FIELD_INT, EVT_ACCESS(data.actor_descr.num))}},
-        {EVENT_CheckSeason, "CheckSeason", true, {field("Season", EVT_FIELD_INT, EVT_ACCESS(data.season))}},
-        {EVENT_ToggleActorGroupFlag, "SetMonGroupBit", false,
-         {field("NPCGroup", EVT_FIELD_INT, EVT_ACCESS(data.actor_flag_descr.id)),
-          field("Bit", EVT_FIELD_INT, EVT_ACCESS(data.actor_flag_descr.attr), EVT_CONST_MONSTER_BITS),
-          field("On", EVT_FIELD_BOOL, EVT_ACCESS(data.actor_flag_descr.is_set))}},
-        {EVENT_ToggleChestFlag, "SetChestBit", false,
-         {field("ChestId", EVT_FIELD_INT, EVT_ACCESS(data.chest_flag_descr.chest_id)),
-          field("Bit", EVT_FIELD_INT, EVT_ACCESS(data.chest_flag_descr.flag), EVT_CONST_CHEST_BITS),
-          field("On", EVT_FIELD_BOOL, EVT_ACCESS(data.chest_flag_descr.is_set))}},
-        {EVENT_CharacterAnimation, "FaceAnimation", false, {who, field("Animation", EVT_FIELD_INT, EVT_ACCESS(data.speech_id))}},
-        {EVENT_SetActorItem, "SetMonsterItem", false,
-         {field("Monster", EVT_FIELD_INT, EVT_ACCESS(data.npc_item_descr.id)), field("Item", EVT_FIELD_INT, EVT_ACCESS(data.npc_item_descr.item)),
-          field("Has", EVT_FIELD_BOOL, EVT_ACCESS(data.npc_item_descr.is_give))}},
+        {EVENT_SpeakInHouse, "EnterHouse", EVT_COMMAND_ACTION, {field("Id", EVT_FIELD_HOUSE, MM_EVT_ACCESS(data.house_id))}},
+        {EVENT_PlaySound, "PlaySound", EVT_COMMAND_ACTION,
+         {field("Id", EVT_FIELD_INT, MM_EVT_ACCESS(data.sound_descr.sound_id)), field("X", EVT_FIELD_INT, MM_EVT_ACCESS(data.sound_descr.x)),
+          field("Y", EVT_FIELD_INT, MM_EVT_ACCESS(data.sound_descr.y))}},
+        {EVENT_MoveToMap, "MoveToMap", EVT_COMMAND_ACTION,
+         {field("X", EVT_FIELD_INT, MM_EVT_ACCESS(data.move_map_descr.x)), field("Y", EVT_FIELD_INT, MM_EVT_ACCESS(data.move_map_descr.y)),
+          field("Z", EVT_FIELD_INT, MM_EVT_ACCESS(data.move_map_descr.z)), field("Direction", EVT_FIELD_INT, MM_EVT_ACCESS(data.move_map_descr.yaw)),
+          field("LookAngle", EVT_FIELD_INT, MM_EVT_ACCESS(data.move_map_descr.pitch)),
+          field("SpeedZ", EVT_FIELD_INT, MM_EVT_ACCESS(data.move_map_descr.zspeed)),
+          field("HouseId", EVT_FIELD_INT, MM_EVT_ACCESS(data.move_map_descr.house_id)),
+          field("Icon", EVT_FIELD_INT, MM_EVT_ACCESS(data.move_map_descr.exit_pic_id)), name}},
+        {EVENT_OpenChest, "OpenChest", EVT_COMMAND_ACTION, {field("Id", EVT_FIELD_INT, MM_EVT_ACCESS(data.chest_id))}},
+        {EVENT_ShowFace, "FaceExpression", EVT_COMMAND_ACTION, {who, field("Frame", EVT_FIELD_INT, MM_EVT_ACCESS(data.portrait_id))}},
+        {EVENT_ReceiveDamage, "DamagePlayer", EVT_COMMAND_ACTION,
+         {who, field("DamageType", EVT_FIELD_INT, MM_EVT_ACCESS(data.damage_descr.damage_type)),
+          field("Damage", EVT_FIELD_INT, MM_EVT_ACCESS(data.damage_descr.damage))}},
+        {EVENT_SetSnow, "SetSnow", EVT_COMMAND_ACTION,
+         {field("EffectId", EVT_FIELD_INT, MM_EVT_ACCESS(data.snow_descr.is_nop)), field("On", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.snow_descr.is_enable))}},
+        {EVENT_SetTexture, "SetTexture", EVT_COMMAND_ACTION, {field("Facet", EVT_FIELD_INT, MM_EVT_ACCESS(data.sprite_texture_descr.cog)), name}},
+        {EVENT_ShowMovie, "ShowMovie", EVT_COMMAND_ACTION,
+         {ignoredField("DoubleSize"), field("ExitCurrentScreen", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.movie_unknown_field)), name}},
+        {EVENT_SetSprite, "SetSprite", EVT_COMMAND_ACTION,
+         {field("SpriteId", EVT_FIELD_INT, MM_EVT_ACCESS(data.sprite_texture_descr.cog)),
+          field("Visible", EVT_FIELD_INT, MM_EVT_ACCESS(data.sprite_texture_descr.hide)), name}},
+        {EVENT_Compare, "Cmp", EVT_COMMAND_CONDITION, {variable, comparedValue}},
+        {EVENT_ChangeDoorState, "SetDoorState", EVT_COMMAND_ACTION,
+         {field("Id", EVT_FIELD_INT, MM_EVT_ACCESS(data.door_descr.door_id)), field("State", EVT_FIELD_INT, MM_EVT_ACCESS(data.door_descr.door_action))}},
+        {EVENT_Add, "Add", EVT_COMMAND_ACTION, {variable, value}},
+        {EVENT_Subtract, "Subtract", EVT_COMMAND_ACTION, {variable, value}},
+        {EVENT_Set, "Set", EVT_COMMAND_ACTION, {variable, value}},
+        {EVENT_SummonMonsters, "SummonMonsters", EVT_COMMAND_ACTION,
+         {field("TypeIndexInMapStats", EVT_FIELD_INT, MM_EVT_ACCESS(data.monster_descr.type)),
+          field("Level", EVT_FIELD_INT, MM_EVT_ACCESS(data.monster_descr.level)), field("Count", EVT_FIELD_INT, MM_EVT_ACCESS(data.monster_descr.count)),
+          field("X", EVT_FIELD_INT, MM_EVT_ACCESS(data.monster_descr.x)), field("Y", EVT_FIELD_INT, MM_EVT_ACCESS(data.monster_descr.y)),
+          field("Z", EVT_FIELD_INT, MM_EVT_ACCESS(data.monster_descr.z)), field("NPCGroup", EVT_FIELD_INT, MM_EVT_ACCESS(data.monster_descr.group)),
+          field("unk", EVT_FIELD_INT, MM_EVT_ACCESS(data.monster_descr.name_id))}},
+        {EVENT_CastSpell, "CastSpell", EVT_COMMAND_ACTION,
+         {field("Spell", EVT_FIELD_INT, MM_EVT_ACCESS(data.spell_descr.spell_id)),
+          field("Mastery", EVT_FIELD_MASTERY, MM_EVT_ACCESS(data.spell_descr.spell_mastery)),
+          field("Skill", EVT_FIELD_INT, MM_EVT_ACCESS(data.spell_descr.spell_level)), field("FromX", EVT_FIELD_INT, MM_EVT_ACCESS(data.spell_descr.fromx)),
+          field("FromY", EVT_FIELD_INT, MM_EVT_ACCESS(data.spell_descr.fromy)), field("FromZ", EVT_FIELD_INT, MM_EVT_ACCESS(data.spell_descr.fromz)),
+          field("ToX", EVT_FIELD_INT, MM_EVT_ACCESS(data.spell_descr.tox)), field("ToY", EVT_FIELD_INT, MM_EVT_ACCESS(data.spell_descr.toy)),
+          field("ToZ", EVT_FIELD_INT, MM_EVT_ACCESS(data.spell_descr.toz))}},
+        {EVENT_SpeakNPC, "SpeakNPC", EVT_COMMAND_ACTION, {field("NPC", EVT_FIELD_NPC, MM_EVT_ACCESS(data.npc_descr.npc_id))}},
+        {EVENT_SetFacesBit, "SetFacetBit", EVT_COMMAND_ACTION,
+         {field("Id", EVT_FIELD_INT, MM_EVT_ACCESS(data.faces_bit_descr.cog)),
+          field("Bit", EVT_FIELD_INT, MM_EVT_ACCESS(data.faces_bit_descr.face_bit), {}, EVT_CONST_FACET_BITS),
+          field("On", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.faces_bit_descr.is_on))}},
+        {EVENT_ToggleActorFlag, "SetMonsterBit", EVT_COMMAND_ACTION,
+         {field("Monster", EVT_FIELD_INT, MM_EVT_ACCESS(data.actor_flag_descr.id)),
+          field("Bit", EVT_FIELD_INT, MM_EVT_ACCESS(data.actor_flag_descr.attr), {}, EVT_CONST_MONSTER_BITS),
+          field("On", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.actor_flag_descr.is_set))}},
+        {EVENT_StatusText, "StatusText", EVT_COMMAND_ACTION, {field("Str", EVT_FIELD_INT, MM_EVT_ACCESS(data.text_id))}},
+        {EVENT_ShowMessage, "SetMessage", EVT_COMMAND_ACTION, {field("Str", EVT_FIELD_INT, MM_EVT_ACCESS(data.text_id))}},
+        {EVENT_ToggleIndoorLight, "SetLight", EVT_COMMAND_ACTION,
+         {field("Id", EVT_FIELD_INT, MM_EVT_ACCESS(data.light_descr.light_id)), field("On", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.light_descr.is_enable))}},
+        {EVENT_SummonItem, "SummonObject", EVT_COMMAND_ACTION,
+         {field("Type", EVT_FIELD_INT, MM_EVT_ACCESS(data.summon_item_descr.sprite)), field("X", EVT_FIELD_INT, MM_EVT_ACCESS(data.summon_item_descr.x)),
+          field("Y", EVT_FIELD_INT, MM_EVT_ACCESS(data.summon_item_descr.y)), field("Z", EVT_FIELD_INT, MM_EVT_ACCESS(data.summon_item_descr.z)),
+          field("Speed", EVT_FIELD_INT, MM_EVT_ACCESS(data.summon_item_descr.speed)),
+          field("Count", EVT_FIELD_INT, MM_EVT_ACCESS(data.summon_item_descr.count)),
+          field("RandomAngle", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.summon_item_descr.random_rotate))}},
+        {EVENT_SetNPCTopic, "SetNPCTopic", EVT_COMMAND_ACTION,
+         {field("NPC", EVT_FIELD_NPC, MM_EVT_ACCESS(data.npc_topic_descr.npc_id)), field("Index", EVT_FIELD_INT, MM_EVT_ACCESS(data.npc_topic_descr.index)),
+          field("Event", EVT_FIELD_INT, MM_EVT_ACCESS(data.npc_topic_descr.event_id))}},
+        {EVENT_MoveNPC, "MoveNPC", EVT_COMMAND_ACTION,
+         {field("NPC", EVT_FIELD_NPC, MM_EVT_ACCESS(data.npc_move_descr.npc_id)),
+          field("HouseId", EVT_FIELD_INT, MM_EVT_ACCESS(data.npc_move_descr.location_id))}},
+        {EVENT_GiveItem, "GiveItem", EVT_COMMAND_ACTION,
+         {field("Strength", EVT_FIELD_INT, MM_EVT_ACCESS(data.give_item_descr.treasure_level),
+                range(ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM)),
+          field("Type", EVT_FIELD_INT, MM_EVT_ACCESS(data.give_item_descr.treasure_type)),
+          field("Id", EVT_FIELD_INT, MM_EVT_ACCESS(data.give_item_descr.item_id))}},
+        {EVENT_ChangeEvent, "ChangeEvent", EVT_COMMAND_ACTION, {field("NewEvent", EVT_FIELD_INT, MM_EVT_ACCESS(data.event_id))}},
+        {EVENT_CheckSkill, "CheckSkill", EVT_COMMAND_CONDITION,
+         {field("Skill", EVT_FIELD_INT, MM_EVT_ACCESS(data.check_skill_descr.skill_type), range(SKILL_FIRST, SKILL_LAST)),
+          field("Mastery", EVT_FIELD_MASTERY, MM_EVT_ACCESS(data.check_skill_descr.skill_mastery)),
+          field("Level", EVT_FIELD_INT, MM_EVT_ACCESS(data.check_skill_descr.skill_level))}},
+        {EVENT_SetNPCGroupNews, "SetNPCGroupNews", EVT_COMMAND_ACTION,
+         {field("NPCGroup", EVT_FIELD_NPC_GROUP, MM_EVT_ACCESS(data.npc_groups_descr.groups_id)),
+          field("NPCNews", EVT_FIELD_INT, MM_EVT_ACCESS(data.npc_groups_descr.group))}},
+        {EVENT_NPCSetItem, "SetNPCItem", EVT_COMMAND_ACTION,
+         {field("NPC", EVT_FIELD_NPC, MM_EVT_ACCESS(data.npc_item_descr.id)), field("Item", EVT_FIELD_INT, MM_EVT_ACCESS(data.npc_item_descr.item)),
+          field("On", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.npc_item_descr.is_give))}},
+        {EVENT_SetNPCGreeting, "SetNPCGreeting", EVT_COMMAND_ACTION,
+         {field("NPC", EVT_FIELD_NPC, MM_EVT_ACCESS(data.npc_descr.npc_id)), field("Greeting", EVT_FIELD_INT, MM_EVT_ACCESS(data.npc_descr.greeting))}},
+        {EVENT_IsActorKilled, "CheckMonstersKilled", EVT_COMMAND_CONDITION,
+         {field("CheckType", EVT_FIELD_INT, MM_EVT_ACCESS(data.actor_descr.policy)), field("Id", EVT_FIELD_INT, MM_EVT_ACCESS(data.actor_descr.param)),
+          field("Count", EVT_FIELD_INT, MM_EVT_ACCESS(data.actor_descr.num))}},
+        {EVENT_CheckSeason, "CheckSeason", EVT_COMMAND_CONDITION, {field("Season", EVT_FIELD_INT, MM_EVT_ACCESS(data.season), range(SEASON_SPRING, SEASON_WINTER))}},
+        {EVENT_ToggleActorGroupFlag, "SetMonGroupBit", EVT_COMMAND_ACTION,
+         {field("NPCGroup", EVT_FIELD_INT, MM_EVT_ACCESS(data.actor_flag_descr.id)),
+          field("Bit", EVT_FIELD_INT, MM_EVT_ACCESS(data.actor_flag_descr.attr), {}, EVT_CONST_MONSTER_BITS),
+          field("On", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.actor_flag_descr.is_set))}},
+        {EVENT_ToggleChestFlag, "SetChestBit", EVT_COMMAND_ACTION,
+         {field("ChestId", EVT_FIELD_INT, MM_EVT_ACCESS(data.chest_flag_descr.chest_id)),
+          field("Bit", EVT_FIELD_INT, MM_EVT_ACCESS(data.chest_flag_descr.flag), {}, EVT_CONST_CHEST_BITS),
+          field("On", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.chest_flag_descr.is_set))}},
+        {EVENT_CharacterAnimation, "FaceAnimation", EVT_COMMAND_ACTION, {who, field("Animation", EVT_FIELD_INT, MM_EVT_ACCESS(data.speech_id), range(SPEECH_FIRST, SPEECH_LAST))}},
+        {EVENT_SetActorItem, "SetMonsterItem", EVT_COMMAND_ACTION,
+         {field("Monster", EVT_FIELD_INT, MM_EVT_ACCESS(data.npc_item_descr.id)), field("Item", EVT_FIELD_INT, MM_EVT_ACCESS(data.npc_item_descr.item)),
+          field("Has", EVT_FIELD_BOOL, MM_EVT_ACCESS(data.npc_item_descr.is_give))}},
     };
 }
 
-#undef EVT_ACCESS
+#undef MM_EVT_ACCESS
 
 static const std::vector<EvtCommandInfo> &commands() {
     static const std::vector<EvtCommandInfo> result = makeCommands();
@@ -364,10 +392,6 @@ std::span<const std::pair<std::string_view, int64_t>> evtConstants(EvtConstGroup
 
 std::string_view evtPlayerName(EvtTargetCharacter target) {
     switch (target) {
-        case CHOOSE_PLAYER1: return "0";
-        case CHOOSE_PLAYER2: return "1";
-        case CHOOSE_PLAYER3: return "2";
-        case CHOOSE_PLAYER4: return "3";
         case CHOOSE_ACTIVE: return "Current";
         case CHOOSE_PARTY: return "All";
         case CHOOSE_RANDOM: return "Random";

@@ -17,8 +17,8 @@
 
 #include "Utility/ScopeGuard.h"
 
-static std::vector<int> eventIds(std::string_view evtName) {
-    return EvtProgram::load(engine->resources()->eventsData(fmt::format("{}.evt", evtName))).eventIds();
+static EvtProgram evtFile(std::string_view evtName) {
+    return EvtProgram::load(engine->resources()->eventsData(fmt::format("{}.evt", evtName)));
 }
 
 GAME_TEST(EvtScripts, DecompiledEvents) {
@@ -31,7 +31,7 @@ GAME_TEST(EvtScripts, DecompiledEvents) {
 
     game.startNewGame();
     EXPECT_EQ(engine->_globalEventMap.eventCount(), 0);
-    for (int eventId : eventIds("global"))
+    for (int eventId : evtFile("global").eventIds())
         EXPECT_TRUE(evtScripts()->hasEvent(true, eventId)) << "global.evt, event " << eventId;
 
     for (MapId map : allMaps()) {
@@ -45,9 +45,9 @@ GAME_TEST(EvtScripts, DecompiledEvents) {
         game.tick();
         game.skipLoadingScreen();
 
-        EvtProgram program = EvtProgram::load(engine->resources()->eventsData(fmt::format("{}.evt", name)));
+        EvtProgram program = evtFile(name);
         EXPECT_EQ(engine->_localEventMap.eventCount(), 0) << name << ".evt";
-        for (int eventId : eventIds(name)) {
+        for (int eventId : program.eventIds()) {
             EXPECT_TRUE(evtScripts()->hasEvent(false, eventId) || evtScripts()->eventHint(eventId)) << name << ".evt, event " << eventId;
             EXPECT_EQ(hasEventHint(eventId), program.hasHint(eventId)) << name << ".evt, event " << eventId;
             EXPECT_EQ(getEventHintString(eventId), program.hint(eventId)) << name << ".evt, event " << eventId;
