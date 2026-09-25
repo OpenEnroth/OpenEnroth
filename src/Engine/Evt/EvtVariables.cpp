@@ -550,7 +550,7 @@ void setEvtVariable(Character &character, EvtVariable var_type, int var_value) {
             item.flags = ITEM_IDENTIFIED;
             pParty->setHoldingItem(item);
             if (isSpawnableArtifact(ItemId(var_value)))
-                pParty->pIsArtifactFound[ItemId(var_value)] = true;
+                pParty->isArtifactGenerated[ItemId(var_value)] = true;
             return;
         case VAR_FixedGold:
             pParty->SetGold(var_value);
@@ -1126,7 +1126,7 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
             item.postGenerate(ITEM_SOURCE_SCRIPT);
 
             if (isSpawnableArtifact(ItemId(val)))
-                pParty->pIsArtifactFound[ItemId(val)] = true;
+                pParty->isArtifactGenerated[ItemId(val)] = true;
             pParty->setHoldingItem(item);
             return;
         case VAR_FixedGold:

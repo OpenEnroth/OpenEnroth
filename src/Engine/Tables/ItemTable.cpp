@@ -349,13 +349,13 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
     } else {
         // Try to generate an artifact.
         if (treasureLevel == ITEM_TREASURE_LEVEL_6) {
-            int artifactsFound = 0;
+            int artifactsGenerated = 0;
             ItemId artifactRandomId = grng->randomSample(allSpawnableArtifacts());
             for (ItemId i : allSpawnableArtifacts())
-                artifactsFound += pParty->pIsArtifactFound[i];
-            bool artifactLimitReached = (engine->config->gameplay.ArtifactLimit.value() != 0 && artifactsFound >= engine->config->gameplay.ArtifactLimit.value());
-            if ((grng->random(100) < 5) && !pParty->pIsArtifactFound[artifactRandomId] && !artifactLimitReached) {
-                pParty->pIsArtifactFound[artifactRandomId] = true;
+                artifactsGenerated += pParty->isArtifactGenerated[i];
+            bool artifactLimitReached = (engine->config->gameplay.ArtifactLimit.value() != 0 && artifactsGenerated >= engine->config->gameplay.ArtifactLimit.value());
+            if ((grng->random(100) < 5) && !pParty->isArtifactGenerated[artifactRandomId] && !artifactLimitReached) {
+                pParty->isArtifactGenerated[artifactRandomId] = true;
                 outItem->flags = 0;
                 outItem->itemId = artifactRandomId;
                 return;
