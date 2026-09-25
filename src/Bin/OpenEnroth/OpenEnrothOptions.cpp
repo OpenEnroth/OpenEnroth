@@ -46,6 +46,9 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "Run in portable mode, game & user data paths will default to current folder. "
         "If '.portable' file exists in the current folder, then this parameter defaults to 'true'.");
     app->add_flag(
+        "--exit-after-start", result.exitAfterStart,
+        "Start the game, then exit through the main menu right away. Config is loaded & saved as usual.");
+    app->add_flag(
         "--tracing-rng", result.tracingRng,
         "Use random number generators that print stack trace on each call.");
     app->add_option(
