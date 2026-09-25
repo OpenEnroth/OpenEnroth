@@ -30,20 +30,16 @@
 
 #include "Library/Logger/Logger.h"
 
-/**
- * When a timer fires.
- */
-struct EvtTimerSchedule {
-    EvtTimerType type = EVT_TIMER_INTERVAL;
-    Duration duration;
-};
-
 struct MapTimer {
     EvtTimerSchedule schedule;
     Time alarmTime;
+    EvtTimerKind kind = EVT_TIMER_REGULAR;
     int eventId = 0;
     int eventStep = 0;
     std::function<void()> callback; // Called instead of the event if set.
+    int handle = 0;
+    EvtTimerLifetime lifetime = EVT_TIMER_MAP;
+    bool isRemoved = false; // Erased once no loop over the timers is running.
 };
 
 static std::vector<EventTrigger> onMapLoadTriggers;
@@ -58,6 +54,7 @@ static std::vector<int> decorationsWithEvents;
 static Time timerGuard;
 
 static EvtScripts *scripts = nullptr;
+static int lastTimerHandle = 0;
 
 void initDecorationEvents() {
     DecorationId id = pDecorationTable->decorationId("Event Trigger");
@@ -137,17 +134,31 @@ static void registerTimers() {
     Time levelEnterTime = pParty->GetPlayingTime();
     Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
 
-    mapTimers.clear();
-    for (EvtOpcode triggerType : {EVENT_OnTimer, EVENT_OnLongTimer}) { // The `OnTimer` ones are checked first.
+    std::erase_if(mapTimers, [](const MapTimer &timer) { return timer.callback == nullptr; });
+
+    std::vector<MapTimer> evtTimers;
+    for (EvtOpcode triggerType : {EVENT_OnTimer, EVENT_OnLongTimer}) {
         for (const EventTrigger &trigger : engine->_localEventMap.enumerateTriggers(triggerType)) {
             MapTimer timer;
             timer.schedule = timerSchedule(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep));
             timer.alarmTime = firstAlarm(timer.schedule, levelEnterTime, levelLastVisit);
+            timer.kind = triggerType == EVENT_OnTimer ? EVT_TIMER_REGULAR : EVT_TIMER_REFILL;
             timer.eventId = trigger.eventId;
             timer.eventStep = trigger.eventStep;
-            mapTimers.push_back(timer);
+            evtTimers.push_back(timer);
         }
     }
+    mapTimers.insert(mapTimers.begin(), evtTimers.begin(), evtTimers.end()); // Before the scripts' timers, as evt events go first.
+}
+
+static void removeTimers(std::function<bool(const MapTimer &)> predicate) {
+    for (MapTimer &timer : mapTimers)
+        if (predicate(timer))
+            timer.isRemoved = true;
+}
+
+static void eraseRemovedTimers() {
+    std::erase_if(mapTimers, [](const MapTimer &timer) { return timer.isRemoved; });
 }
 
 EvtTransition runEvent(EvtContext context, int startStep) {
@@ -230,6 +241,8 @@ void onGameLoad() {
         return;
 
     engine->_globalEventMap = EvtProgram::load(engine->resources()->eventsData("global.evt"));
+    removeTimers([](const MapTimer &timer) { return timer.callback != nullptr; }); // They belong to the game that is left.
+    eraseRemovedTimers();
     scripts->loadGlobalScripts();
 }
 
@@ -252,6 +265,9 @@ static void updateFaceHints() {
 }
 
 void onMapLoad() {
+    removeTimers([](const MapTimer &timer) { return timer.lifetime == EVT_TIMER_MAP; });
+    eraseRemovedTimers();
+
     if (scripts) {
         std::string mapName = pMapTable->pInfos[engine->_currentLoadedMapId].fileName;
         scripts->loadMapScripts(mapName.substr(0, mapName.rfind('.'))); // Before the triggers, scripts can remove events.
@@ -278,36 +294,39 @@ void onMapLeave() {
         scripts->onMapLeave();
 
     // Cleanup timers to avoid firing while map transition is in process
-    mapTimers.clear();
+    removeTimers([](const MapTimer &timer) { return timer.lifetime == EVT_TIMER_MAP; });
 }
 
 /**
- * Fires the timers that are due, until one of them starts a map transition.
+ * Fires the timers that are due, the regular ones first, until one of them starts a map transition.
  */
 static void checkTimers() {
-    for (size_t i = 0; i < mapTimers.size(); i++) {
-        if (pParty->GetPlayingTime() < mapTimers[i].alarmTime)
-            continue;
+    for (EvtTimerKind kind : {EVT_TIMER_REGULAR, EVT_TIMER_REFILL}) {
+        for (size_t i = 0; i < mapTimers.size(); i++) {
+            if (mapTimers[i].kind != kind || mapTimers[i].isRemoved || pParty->GetPlayingTime() < mapTimers[i].alarmTime)
+                continue;
 
-        if (std::function<void()> callback = mapTimers[i].callback) {
-            callback();
-            if (i >= mapTimers.size())
-                return; // The callback sent the party to another map, and leaving a map drops its timers.
-        } else if (runEvent(EvtContext(EVT_SOURCE_MAP, mapTimers[i].eventId), mapTimers[i].eventStep + 1) == EVT_TRANSITION_STARTED) {
-            return; // Leaving the map cleared the timers.
-        }
+            if (std::function<void()> callback = mapTimers[i].callback) {
+                callback();
+            } else if (runEvent(EvtContext(EVT_SOURCE_MAP, mapTimers[i].eventId), mapTimers[i].eventStep + 1) == EVT_TRANSITION_STARTED) {
+                return; // Leaving the map removed the timers.
+            }
 
-        MapTimer &timer = mapTimers[i];
-        Time now = pParty->GetPlayingTime();
-        if (timer.schedule.type == EVT_TIMER_INTERVAL) {
-            timer.alarmTime = now + timer.schedule.duration;
-        } else if (timer.schedule.type == EVT_TIMER_DAILY) {
-            timer.alarmTime = Time::fromDays(now.toDays()) + timer.schedule.duration;
-            if (timer.alarmTime <= now)
-                timer.alarmTime += Duration::fromDays(1);
-        } else {
-            while (now >= timer.alarmTime)
-                timer.alarmTime += periodForTimerType(timer.schedule.type);
+            MapTimer &timer = mapTimers[i];
+            if (timer.isRemoved)
+                continue; // The callback sent the party to another map, or removed its timer.
+
+            Time now = pParty->GetPlayingTime();
+            if (timer.schedule.type == EVT_TIMER_INTERVAL) {
+                timer.alarmTime = now + timer.schedule.duration;
+            } else if (timer.schedule.type == EVT_TIMER_DAILY) {
+                timer.alarmTime = Time::fromDays(now.toDays()) + timer.schedule.duration;
+                if (timer.alarmTime <= now)
+                    timer.alarmTime += Duration::fromDays(1);
+            } else {
+                while (now >= timer.alarmTime)
+                    timer.alarmTime += periodForTimerType(timer.schedule.type);
+            }
         }
     }
 }
@@ -322,6 +341,7 @@ void onTimer() {
     timerGuard = pParty->GetPlayingTime();
 
     checkTimers();
+    eraseRemovedTimers();
 }
 
 void setEvtScripts(EvtScripts *value) {
@@ -333,12 +353,20 @@ EvtScripts *evtScripts() {
     return scripts;
 }
 
-void addTimer(const EvtInstruction &timer, std::function<void()> callback) {
+int addTimer(const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifetime lifetime, std::function<void()> callback) {
     Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
 
     MapTimer result;
-    result.schedule = timerSchedule(timer);
-    result.alarmTime = firstAlarm(result.schedule, pParty->GetPlayingTime(), levelLastVisit);
+    result.schedule = schedule;
+    result.alarmTime = firstAlarm(schedule, pParty->GetPlayingTime(), levelLastVisit);
+    result.kind = kind;
     result.callback = std::move(callback);
+    result.handle = ++lastTimerHandle;
+    result.lifetime = lifetime;
     mapTimers.push_back(std::move(result));
+    return lastTimerHandle;
+}
+
+void removeTimer(int handle) {
+    removeTimers([handle](const MapTimer &timer) { return timer.handle == handle; });
 }

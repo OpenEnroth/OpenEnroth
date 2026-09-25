@@ -5,7 +5,8 @@
 
 #include "Engine/Evt/EvtContext.h"
 
-class EvtInstruction;
+#include "Core/Time/Duration.h"
+
 class EvtScripts;
 
 /**
@@ -57,9 +58,40 @@ void setEvtScripts(EvtScripts *value);
 EvtScripts *evtScripts();
 
 /**
- * Registers a timer for the current map. It's dropped when the party leaves the map, like the evt timers.
- *
- * @param timer                         `EVENT_OnTimer` or `EVENT_OnLongTimer` instruction that says when to fire.
- * @param callback                      What to call when it fires.
+ * When a timer fires.
  */
-void addTimer(const EvtInstruction &timer, std::function<void()> callback);
+struct EvtTimerSchedule {
+    EvtTimerType type = EVT_TIMER_INTERVAL;
+    Duration duration;
+};
+
+/**
+ * The engine checks all the regular timers before any refill timer, as vanilla does with `EVENT_OnTimer` and
+ * `EVENT_OnLongTimer`.
+ */
+enum class EvtTimerKind {
+    EVT_TIMER_REGULAR,
+    EVT_TIMER_REFILL,
+};
+using enum EvtTimerKind;
+
+enum class EvtTimerLifetime {
+    EVT_TIMER_MAP, // Dropped when the party leaves the map, like the evt timers.
+    EVT_TIMER_GAME, // Kept until a game is loaded or started.
+};
+using enum EvtTimerLifetime;
+
+/**
+ * @param schedule                      When the timer fires.
+ * @param kind                          Which timers it's checked with.
+ * @param lifetime                      How long it's kept.
+ * @param callback                      What to call when it fires.
+ * @return                              Handle of the timer, for `removeTimer`.
+ */
+int addTimer(const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifetime lifetime, std::function<void()> callback);
+
+/**
+ * @param handle                        Timer to remove, as `addTimer` returned it. The timer can be the one that is
+ *                                      firing.
+ */
+void removeTimer(int handle);
