@@ -52,6 +52,14 @@ void EvtProgram::clear() {
     _eventsById.clear();
 }
 
+std::vector<int> EvtProgram::eventIds() const {
+    std::vector<int> result;
+    for (const auto &[eventId, _] : _eventsById)
+        result.push_back(eventId);
+    std::ranges::sort(result);
+    return result;
+}
+
 const EvtInstruction &EvtProgram::instruction(int eventId, int step) const {
     for (const EvtInstruction &ir : function(eventId))
         if (ir.step == step)

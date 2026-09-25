@@ -30,6 +30,11 @@ class EvtProgram {
     }
 
     /**
+     * @return                          Ids of the events, sorted.
+     */
+    std::vector<int> eventIds() const;
+
+    /**
      * @param eventId                   Event id.
      * @param step                      Step in the script to get event for.
      * @return                          Reference to an instruction for the given `eventId` and `step`.
