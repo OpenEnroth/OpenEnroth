@@ -109,7 +109,7 @@ void Party::Zero() {
     arenaState = ARENA_STATE_INITIAL;
     arenaLevel = ARENA_LEVEL_INVALID;
     uNumArenaWins.fill(0);
-    pIsArtifactFound.fill(false);
+    isArtifactGenerated.fill(false);
     _autonoteBits.reset();
     uNumArcomageWins = 0;
     uNumArcomageLoses = 0;
@@ -551,7 +551,7 @@ void Party::Reset() {
     _questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
     _questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
 
-    pIsArtifactFound.fill(false);
+    isArtifactGenerated.fill(false);
 
     PartyTimes.shopBanTimes.fill(Time());
 

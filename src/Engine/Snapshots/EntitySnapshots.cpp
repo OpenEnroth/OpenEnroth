@@ -582,7 +582,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
 
     snapshot(src.uNumArenaWins, &dst->numArenaWins);
 
-    snapshot(src.pIsArtifactFound, &dst->isArtifactFound);
+    snapshot(src.isArtifactGenerated, &dst->isArtifactGenerated);
     snapshot(src._autonoteBits, &dst->autonoteBits, tags::reverseBits);
 
     dst->numArcomageWins = src.uNumArcomageWins;
@@ -697,7 +697,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 
     reconstruct(src.numArenaWins, &dst->uNumArenaWins);
 
-    reconstruct(src.isArtifactFound, &dst->pIsArtifactFound);
+    reconstruct(src.isArtifactGenerated, &dst->isArtifactGenerated);
     reconstruct(src.autonoteBits, &dst->_autonoteBits, tags::reverseBits);
 
     dst->uNumArcomageWins = src.numArcomageWins;

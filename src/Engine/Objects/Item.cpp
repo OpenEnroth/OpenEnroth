@@ -232,19 +232,19 @@ std::string Item::GetIdentifiedName() const {
 
 //----- (004505CC) --------------------------------------------------------
 bool Item::GenerateArtifact() {
-    signed int uNumArtifactsNotFound;  // esi@1
+    signed int uNumArtifactsNotGenerated;  // esi@1
     std::array<ItemId, 32> artifacts_list;
 
     artifacts_list.fill(ITEM_NULL);
-    uNumArtifactsNotFound = 0;
+    uNumArtifactsNotGenerated = 0;
 
     for (ItemId i : allSpawnableArtifacts())
-        if (!pParty->pIsArtifactFound[i])
-            artifacts_list[uNumArtifactsNotFound++] = i;
+        if (!pParty->isArtifactGenerated[i])
+            artifacts_list[uNumArtifactsNotGenerated++] = i;
 
     Reset();
-    if (uNumArtifactsNotFound) {
-        itemId = artifacts_list[grng->random(uNumArtifactsNotFound)];
+    if (uNumArtifactsNotGenerated) {
+        itemId = artifacts_list[grng->random(uNumArtifactsNotGenerated)];
         return true;
     } else {
         return false;
