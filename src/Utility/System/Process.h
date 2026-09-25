@@ -11,6 +11,7 @@ struct ProcessResult {
     std::string output; // Standard output and standard error, interleaved.
 };
 
+// TODO(captainurist): add WTF-8 support to subprocess.h upstream, it converts arguments with MB_ERR_INVALID_CHARS.
 /**
  * Runs a process to completion, with nothing on its standard input.
  *
