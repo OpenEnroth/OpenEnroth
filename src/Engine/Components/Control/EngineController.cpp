@@ -234,8 +234,9 @@ void EngineController::startNewGame() {
 }
 
 void EngineController::skipLoadingScreen() {
+    int startCount = pGameLoadingUI_ProgressBar->startCount();
     ThrowingTicker ticker1(this, "Can't skip a non-existent loading screen");
-    while (!pGameLoadingUI_ProgressBar->IsActive())
+    while (pGameLoadingUI_ProgressBar->startCount() == startCount)
         ticker1.tick();
 
     ThrowingTicker ticker2(this, "Couldn't skip a loading screen");
@@ -358,7 +359,6 @@ void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw, int vi
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
         onMapLeave();
-        tick();
         skipLoadingScreen();
     } else {
         pParty->pos = position;
