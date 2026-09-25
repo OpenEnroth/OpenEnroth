@@ -79,6 +79,9 @@ GAME_TEST(EvtCommands, SetErrors) {
     EXPECT_ANY_THROW((void) instruction("CastSpell", {int64_t(6), int64_t(0)}));
     EXPECT_ANY_THROW((void) instruction("SetDoorState", {"door"s}));
     EXPECT_ANY_THROW((void) instruction("SetSprite", {int64_t(20), int64_t(1), int64_t(5)}));
+    EXPECT_NO_THROW((void) instruction("SpeakNPC", {int64_t(500)}));
+    EXPECT_ANY_THROW((void) instruction("SpeakNPC", {int64_t(501)}));
+    EXPECT_ANY_THROW((void) instruction("SetNPCGroupNews", {int64_t(51), int64_t(1)}));
 }
 
 GAME_TEST(EvtCommands, Names) {

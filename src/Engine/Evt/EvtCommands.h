@@ -23,6 +23,8 @@ enum class EvtFieldType {
     EVT_FIELD_PLAYER, // `EvtTargetCharacter`. Scripts pass 0-3, "Current", "All" or "Random".
     EVT_FIELD_VARIABLE, // `EvtVariable`. Scripts pass a name like "QBits".
     EVT_FIELD_MASTERY, // Scripts pass 1-4, as in `const.Novice` to `const.GM`.
+    EVT_FIELD_NPC, // Index into `NPCStats::pNPCData`.
+    EVT_FIELD_NPC_GROUP, // Index into `NPCStats::pGroups`.
 };
 using enum EvtFieldType;
 

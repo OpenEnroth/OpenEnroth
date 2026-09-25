@@ -4,10 +4,13 @@
 #include <cassert>
 #include <limits>
 #include <string>
+#include <tuple>
 #include <type_traits>
 #include <unordered_map>
 #include <utility>
 #include <vector>
+
+#include "Engine/Tables/NPCTable.h"
 
 #include "Utility/Exception.h"
 #include "Utility/MapAccess.h"
@@ -25,6 +28,10 @@ static std::pair<int64_t, int64_t> fieldRange(EvtFieldType type) {
         return {std::to_underlying(CHOOSE_PLAYER1), std::to_underlying(CHOOSE_RANDOM)};
     if (type == EVT_FIELD_BOOL)
         return {0, 1};
+    if (type == EVT_FIELD_NPC)
+        return {0, std::tuple_size_v<decltype(NPCStats::pNPCData)> - 1};
+    if (type == EVT_FIELD_NPC_GROUP)
+        return {0, std::tuple_size_v<decltype(NPCStats::pGroups)> - 1};
 
     using Stored = typename std::conditional_t<std::is_enum_v<T>, std::underlying_type<T>, std::type_identity<T>>::type;
     if constexpr (std::is_same_v<Stored, bool>) {
@@ -142,7 +149,7 @@ static std::vector<EvtCommandInfo> makeCommands() {
           field("FromY", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.fromy)), field("FromZ", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.fromz)),
           field("ToX", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.tox)), field("ToY", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.toy)),
           field("ToZ", EVT_FIELD_INT, EVT_ACCESS(data.spell_descr.toz))}},
-        {EVENT_SpeakNPC, "SpeakNPC", false, {field("NPC", EVT_FIELD_INT, EVT_ACCESS(data.npc_descr.npc_id))}},
+        {EVENT_SpeakNPC, "SpeakNPC", false, {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_descr.npc_id))}},
         {EVENT_SetFacesBit, "SetFacetBit", false,
          {field("Id", EVT_FIELD_INT, EVT_ACCESS(data.faces_bit_descr.cog)),
           field("Bit", EVT_FIELD_INT, EVT_ACCESS(data.faces_bit_descr.face_bit), EVT_CONST_FACET_BITS),
@@ -162,10 +169,10 @@ static std::vector<EvtCommandInfo> makeCommands() {
           field("Count", EVT_FIELD_INT, EVT_ACCESS(data.summon_item_descr.count)),
           field("RandomAngle", EVT_FIELD_BOOL, EVT_ACCESS(data.summon_item_descr.random_rotate))}},
         {EVENT_SetNPCTopic, "SetNPCTopic", false,
-         {field("NPC", EVT_FIELD_INT, EVT_ACCESS(data.npc_topic_descr.npc_id)), field("Index", EVT_FIELD_INT, EVT_ACCESS(data.npc_topic_descr.index)),
+         {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_topic_descr.npc_id)), field("Index", EVT_FIELD_INT, EVT_ACCESS(data.npc_topic_descr.index)),
           field("Event", EVT_FIELD_INT, EVT_ACCESS(data.npc_topic_descr.event_id))}},
         {EVENT_MoveNPC, "MoveNPC", false,
-         {field("NPC", EVT_FIELD_INT, EVT_ACCESS(data.npc_move_descr.npc_id)),
+         {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_move_descr.npc_id)),
           field("HouseId", EVT_FIELD_INT, EVT_ACCESS(data.npc_move_descr.location_id))}},
         {EVENT_GiveItem, "GiveItem", false,
          {field("Strength", EVT_FIELD_INT, EVT_ACCESS(data.give_item_descr.treasure_level)),
@@ -177,13 +184,13 @@ static std::vector<EvtCommandInfo> makeCommands() {
           field("Mastery", EVT_FIELD_MASTERY, EVT_ACCESS(data.check_skill_descr.skill_mastery)),
           field("Level", EVT_FIELD_INT, EVT_ACCESS(data.check_skill_descr.skill_level))}},
         {EVENT_SetNPCGroupNews, "SetNPCGroupNews", false,
-         {field("NPCGroup", EVT_FIELD_INT, EVT_ACCESS(data.npc_groups_descr.groups_id)),
+         {field("NPCGroup", EVT_FIELD_NPC_GROUP, EVT_ACCESS(data.npc_groups_descr.groups_id)),
           field("NPCNews", EVT_FIELD_INT, EVT_ACCESS(data.npc_groups_descr.group))}},
         {EVENT_NPCSetItem, "SetNPCItem", false,
-         {field("NPC", EVT_FIELD_INT, EVT_ACCESS(data.npc_item_descr.id)), field("Item", EVT_FIELD_INT, EVT_ACCESS(data.npc_item_descr.item)),
+         {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_item_descr.id)), field("Item", EVT_FIELD_INT, EVT_ACCESS(data.npc_item_descr.item)),
           field("On", EVT_FIELD_BOOL, EVT_ACCESS(data.npc_item_descr.is_give))}},
         {EVENT_SetNPCGreeting, "SetNPCGreeting", false,
-         {field("NPC", EVT_FIELD_INT, EVT_ACCESS(data.npc_descr.npc_id)), field("Greeting", EVT_FIELD_INT, EVT_ACCESS(data.npc_descr.greeting))}},
+         {field("NPC", EVT_FIELD_NPC, EVT_ACCESS(data.npc_descr.npc_id)), field("Greeting", EVT_FIELD_INT, EVT_ACCESS(data.npc_descr.greeting))}},
         {EVENT_IsActorKilled, "CheckMonstersKilled", true,
          {field("CheckType", EVT_FIELD_INT, EVT_ACCESS(data.actor_descr.policy)), field("Id", EVT_FIELD_INT, EVT_ACCESS(data.actor_descr.param)),
           field("Count", EVT_FIELD_INT, EVT_ACCESS(data.actor_descr.num))}},
