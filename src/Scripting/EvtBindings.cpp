@@ -360,8 +360,13 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
         "loadString", sol::as_function([](sol::this_state state, std::string_view code, std::string chunkName, sol::table environment) {
             return loadChunk(state, code, "=" + chunkName, environment);
         }),
-        "decompile", sol::as_function([](std::string_view name, std::optional<std::vector<int>> skippedEvents) {
-            return decompileGameEvt(name, skippedEvents.value_or(std::vector<int>()));
+        "decompile", sol::as_function([](sol::this_state state, std::string_view name) {
+            sol::state_view lua(state);
+            EvtLuaScript script = decompileGameEvt(name);
+            sol::table events = lua.create_table();
+            for (const auto &[eventId, code] : script.events)
+                events.add(lua.create_table_with("id", eventId, "code", code));
+            return lua.create_table_with("header", script.header, "events", events);
         }),
         "isDecompilingEvents", sol::as_function([] { return engine->config->debug.DecompiledEvents.value(); }),
         "questBit", sol::as_function([](int bit) { return pParty->_questBits.test(static_cast<QuestBit>(bit)); }),

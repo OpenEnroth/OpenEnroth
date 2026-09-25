@@ -1,11 +1,24 @@
 #pragma once
 
-#include <span>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 class EvtProgram;
+
+/**
+ * The Lua script of an evt file, in one piece for each event.
+ */
+struct EvtLuaScript {
+    std::string header; // Puts the map's strings into `evt.str` and removes the file's events.
+    std::vector<std::pair<int, std::string>> events; // Id and code of each event, by id.
+
+    /**
+     * @return                          The whole script.
+     */
+    std::string text() const;
+};
 
 /**
  * Turns an evt file into a Lua script for MMExtension's `evt` API that does what the file does. The script starts by
@@ -19,12 +32,11 @@ class EvtProgram;
  * @param isGlobal                      Whether this is global.evt.
  * @return                              The script.
  */
-std::string decompileEvt(const EvtProgram &program, const std::vector<std::string> &strings, bool isGlobal);
+EvtLuaScript decompileEvt(const EvtProgram &program, const std::vector<std::string> &strings, bool isGlobal);
 
 /**
  * @param name                          Name of an evt file of the game without the extension, e.g. "d27" or "global".
- * @param skippedEvents                 Ids of the events to leave out.
  * @return                              The file as a Lua script, see `decompileEvt`.
  * @throws Exception                    If the game has no such file.
  */
-std::string decompileGameEvt(std::string_view name, std::span<const int> skippedEvents = {});
+EvtLuaScript decompileGameEvt(std::string_view name);

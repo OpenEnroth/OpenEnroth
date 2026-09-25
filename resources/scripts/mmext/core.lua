@@ -16,6 +16,7 @@ local Log = require "bindings.log"
 ---@field eventId integer
 ---@field isGlobal boolean
 ---@field scope string? "map" for a handler of the map's scripts. What it registers goes away with the map too.
+---@field owner string? The decompiled evt event that the handler is part of. What it registers is that event's too.
 ---@field player integer|string Who the commands apply to, as `evt.ForPlayer` sets.
 ---@field defaultPlayer integer
 
@@ -25,11 +26,13 @@ local Log = require "bindings.log"
 ---@field targetPid integer?
 ---@field canShowMessages boolean?
 ---@field scope string?
+---@field owner string?
 ---@field player integer? Who the commands apply to until the handler says otherwise.
 
 ---@class EvtHandler
 ---@field callback function
 ---@field scope string?
+---@field owner string?
 
 ---@alias EvtHandlerLists table<any, EvtHandler[]>
 
@@ -41,12 +44,6 @@ local current = nil
 ---@type EvtFrame? The handler that waits for the dialogue that is open now.
 local waiting = nil
 
---- True while the decompiled script of an evt file runs. What it registers goes before what the scripts registered,
---- the way the evt events run before the scripted handlers, and it doesn't override the scripts' hints and strings.
-local decompiling = false
----@type table<table, integer>
-local prepended = {}
-
 ---@param list any[]
 ---@return any[]
 local function copyList(list)
@@ -56,17 +53,6 @@ local function copyList(list)
         result[i] = list[i]
     end
     return result
-end
-
----@param list table
----@param value any
-local function insert(list, value)
-    if decompiling then
-        prepended[list] = (prepended[list] or 0) + 1
-        table.insert(list, prepended[list], value)
-    else
-        table.insert(list, value)
-    end
 end
 
 ---@param frame EvtFrame
@@ -111,6 +97,7 @@ local function run(callback, options, ...)
         eventId = eventId,
         isGlobal = options.isGlobal or false,
         scope = options.scope,
+        owner = options.owner,
         player = player,
         defaultPlayer = player,
     }
@@ -126,6 +113,18 @@ end
 ---@return string? scope What a handler, a hint or a timer registered now belongs to.
 local function registrationScope()
     return current and current.scope
+end
+
+---@return string? owner The decompiled evt event that a handler, a hint or a timer registered now belongs to.
+local function registrationOwner()
+    return current and current.owner
+end
+
+---@param isGlobal boolean
+---@param eventId integer?
+---@return string owner The decompiled event, or the prefix of every decompiled event of the file if `eventId` is nil.
+local function ownerKey(isGlobal, eventId)
+    return (isGlobal and "global:" or "map:") .. (eventId and tostring(eventId) or "")
 end
 
 ---@param value any
@@ -191,7 +190,7 @@ local function newEvents(runHandler)
         __newindex = function (_, key, callback)
             checkFunction(callback, "A handler")
             lists[key] = lists[key] or {}
-            insert(lists[key], { callback = callback, scope = registrationScope() })
+            table.insert(lists[key], { callback = callback, scope = registrationScope(), owner = registrationOwner() })
         end,
     })
     return events, lists
@@ -228,7 +227,7 @@ local function newEventHandlers(isGlobal)
     ---@return any result
     return newEvents(function (handler, eventId, targetPid, canShowMessages)
         local options = { eventId = eventId, isGlobal = isGlobal, targetPid = targetPid, canShowMessages = canShowMessages }
-        options.scope = handler.scope
+        options.scope, options.owner = handler.scope, handler.owner
         local exit, result, isWaiting = run(handler.callback, options)
         mapExitTriggered = mapExitTriggered or exit
         return isWaiting, result
@@ -242,7 +241,8 @@ end
 ---@return any result
 local events, eventLists = newEvents(function (handler, name, ...)
     local canShowMessages = name ~= "LoadMap" and name ~= "AfterLoadMap"
-    local exit, result, isWaiting = run(handler.callback, { canShowMessages = canShowMessages, scope = handler.scope }, ...)
+    local options = { canShowMessages = canShowMessages, scope = handler.scope, owner = handler.owner }
+    local exit, result, isWaiting = run(handler.callback, options, ...)
     mapExitTriggered = mapExitTriggered or exit
     return isWaiting, result
 end)
@@ -255,8 +255,10 @@ local mapEvents, globalEvents, topicEvents = {}, {}, {}
 local hints = {}
 ---@type table<integer, integer>
 local houses = {}
+---@type table<integer, string?>
+local hintOwners = {}
 
---- A table that the scripts set event hints or houses in. The decompiled script doesn't override them.
+--- A table that the scripts set event hints or houses in.
 ---@param values table<integer, any>
 ---@return table
 local function newEventValues(values)
@@ -266,9 +268,8 @@ local function newEventValues(values)
         ---@param eventId integer
         ---@param value any
         __newindex = function (_, eventId, value)
-            if not decompiling or values[eventId] == nil then
-                values[eventId] = value
-            end
+            values[eventId] = value
+            hintOwners[eventId] = registrationOwner()
         end,
     })
 end
@@ -286,7 +287,7 @@ local function resetGlobalHandlers()
     topicEvents, topicLists = newEvents(function (handler, topic)
         -- The interpreter checks the whole party for a topic.
         local options = { eventId = topic, isGlobal = true, canShowMessages = false, player = evt.Players.All }
-        options.scope = handler.scope
+        options.scope, options.owner = handler.scope, handler.owner
         local _, result, isWaiting = run(handler.callback, options, topic)
         return isWaiting, result
     end)
@@ -302,6 +303,7 @@ local function resetMapHandlers()
     for key in pairs(houses) do
         houses[key] = nil
     end
+    hintOwners = {}
 end
 
 ---@param first any The arguments as a table, or the first of them.
@@ -380,10 +382,6 @@ function evt.HouseDoor(eventId, houseId)
     end
 end
 
---- Indices of the strings that the scripts changed.
----@type table<integer, boolean>
-local changedStrings = {}
-
 evt.str = setmetatable({}, {
     ---@param _ table
     ---@param index integer
@@ -392,13 +390,7 @@ evt.str = setmetatable({}, {
     ---@param _ table
     ---@param index integer
     ---@param value string
-    __newindex = function (_, index, value)
-        if decompiling and changedStrings[index] then
-            return
-        end
-        changedStrings[index] = changedStrings[index] or not decompiling
-        Bindings.setStr(index, value)
-    end,
+    __newindex = function (_, index, value) Bindings.setStr(index, value) end,
 })
 
 setmetatable(evt, {
@@ -427,9 +419,9 @@ setmetatable(evt, {
     end,
 })
 
---- Ids of the evt events that the scripts removed, global ones and the current map's ones.
----@type table<boolean, integer[]>
-local removedEvents = { [true] = {}, [false] = {} }
+--- Removes what the decompiled evt events registered.
+---@type fun(prefix: string)
+local removeOwned
 
 ---@param isGlobal boolean
 ---@return table lines
@@ -439,7 +431,7 @@ local function newEvtLines(isGlobal)
         ---@param eventId integer
         RemoveEvent = function (_, eventId)
             Bindings.removeEvent(isGlobal, eventId)
-            table.insert(removedEvents[isGlobal], eventId)
+            removeOwned(ownerKey(isGlobal, eventId))
         end,
     }, {
         ---@param _ table
@@ -457,6 +449,7 @@ local function newEvtLines(isGlobal)
         __newindex = function (_, key, value)
             if (key == "Count" or key == "count") and value == 0 then
                 Bindings.clearEvents(isGlobal)
+                removeOwned(ownerKey(isGlobal))
             else
                 error("Only Count = 0 is supported", 2)
             end
@@ -565,6 +558,7 @@ strict(const, "const")
 ---@field startTime number?
 ---@field isRefill boolean `RefillTimer`, which the engine checks after every `Timer`.
 ---@field scope string?
+---@field owner string?
 ---@field handle integer? The engine's handle, once the engine has the timer.
 
 ---@type EvtTimer[] The timers of the scripts, in the order they were set.
@@ -581,7 +575,7 @@ local firstFires = {}
 local function fire(timer)
     local previous = runningTimer
     runningTimer = timer
-    local exit = run(timer.callback, { scope = timer.scope })
+    local exit = run(timer.callback, { scope = timer.scope, owner = timer.owner })
     runningTimer = previous
     return exit
 end
@@ -611,7 +605,9 @@ local function newTimer(callback, period, startTime, isRefill)
     end
 
     ---@type EvtTimer
-    local timer = { callback = callback, period = period, startTime = startTime, isRefill = isRefill, scope = registrationScope() }
+    ---@type EvtTimer
+    local timer = { callback = callback, period = period, startTime = startTime, isRefill = isRefill }
+    timer.scope, timer.owner = registrationScope(), registrationOwner()
     table.insert(timers, timer)
     if isLevelLoaded then
         registerTimer(timer)
@@ -639,15 +635,55 @@ local function RefillTimer(callback, period, startTime)
     newTimer(callback, period or const.Day, startTime, true)
 end
 
----@param callback function? The function of the timers to remove, the timer that is firing if not given.
-local function RemoveTimer(callback)
+---@param match fun(timer: EvtTimer): boolean
+local function removeTimers(match)
     for i = #timers, 1, -1 do
         local timer = timers[i]
-        if (callback == nil and timer == runningTimer) or (callback ~= nil and timer.callback == callback) then
+        if match(timer) then
             if timer.handle then
                 Bindings.removeTimer(timer.handle)
             end
             table.remove(timers, i)
+        end
+    end
+    for i = #firstFires, 1, -1 do
+        if match(firstFires[i]) then
+            table.remove(firstFires, i)
+        end
+    end
+end
+
+---@param callback function? The function of the timers to remove, the timer that is firing if not given.
+local function RemoveTimer(callback)
+    removeTimers(function (timer)
+        return (callback == nil and timer == runningTimer) or (callback ~= nil and timer.callback == callback)
+    end)
+end
+
+---@param prefix string An owner, or the start of the owners to remove, see `ownerKey`.
+function removeOwned(prefix)
+    ---@param owner string?
+    ---@return boolean
+    local function matches(owner)
+        return owner ~= nil and (owner == prefix or (prefix:sub(-1) == ":" and owner:sub(1, #prefix) == prefix))
+    end
+
+    for _, lists in ipairs({ mapLists, globalLists, topicLists, eventLists }) do
+        for key, list in pairs(lists) do
+            for i = #list, 1, -1 do
+                if matches(list[i].owner) then
+                    table.remove(list, i)
+                end
+            end
+            if #list == 0 then
+                lists[key] = nil
+            end
+        end
+    end
+    removeTimers(function (timer) return matches(timer.owner) end)
+    for eventId, owner in pairs(hintOwners) do
+        if matches(owner) then
+            hints[eventId], houses[eventId], hintOwners[eventId] = nil, nil, nil
         end
     end
 end
@@ -692,12 +728,13 @@ end
 ---@param chunk function? A loaded script.
 ---@param message string? Why it didn't load.
 ---@param scope string?
-local function runScript(chunk, message, scope)
+---@param owner string?
+local function runScript(chunk, message, scope, owner)
     if not chunk then
         Log.error(tostring(message))
         return
     end
-    run(chunk, { scope = scope, canShowMessages = false })
+    run(chunk, { scope = scope, owner = owner, canShowMessages = false })
 end
 
 ---@param paths string[]
@@ -709,19 +746,22 @@ local function runScripts(paths, scope)
     end
 end
 
---- Replaces what's left of an evt file with its decompiled script, see `debug.decompiled_events`.
+--- Replaces an evt file with its decompiled script, see `debug.decompiled_events`. It runs before the scripts, as the
+--- evt events do, and what each event registers is marked as the event's, so that a script can remove it.
 ---@param name string
 ---@param isGlobal boolean
 ---@param scope string?
 local function runDecompiledEvents(name, isGlobal, scope)
-    if not Bindings.isDecompilingEvents() or Bindings.eventCount(isGlobal) == 0 then
+    if not Bindings.isDecompilingEvents() then
         return
     end
-    local script = Bindings.decompile(name, removedEvents[isGlobal])
-    local chunk, message = Bindings.loadString(script, name .. ".evt", environment)
-    decompiling, prepended = true, {}
+    local script = Bindings.decompile(name)
+    local chunk, message = Bindings.loadString(script.header, name .. ".evt", environment)
     runScript(chunk, message, scope)
-    decompiling = false
+    for _, event in ipairs(script.events) do
+        chunk, message = Bindings.loadString(event.code, string.format("%s.evt, event %d", name, event.id), environment)
+        runScript(chunk, message, scope, ownerKey(isGlobal, event.id))
+    end
 end
 
 local wasInGame = false
@@ -736,9 +776,8 @@ function Core.loadGlobalScripts()
     resetGlobalHandlers()
     resetMapHandlers()
     resetVariables("vars")
-    removedEvents[true] = {}
-    runScripts(Bindings.globalScripts(), nil)
     runDecompiledEvents("global", true, nil)
+    runScripts(Bindings.globalScripts(), nil)
 end
 
 ---@param mapName string
@@ -757,9 +796,8 @@ function Core.loadMapScripts(mapName)
     removeMapHandlers(topicLists)
     resetMapHandlers()
     resetVariables("mapvars")
-    removedEvents[false], changedStrings = {}, {}
-    runScripts(Bindings.mapScripts(mapName), "map")
     runDecompiledEvents(mapName, false, "map")
+    runScripts(Bindings.mapScripts(mapName), "map")
 end
 
 ---@param isGlobal boolean

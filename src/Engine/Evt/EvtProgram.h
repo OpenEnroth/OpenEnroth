@@ -1,9 +1,11 @@
 #pragma once
 
+#include <optional>
 #include <unordered_map>
 #include <vector>
 #include <string>
 
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Evt/EvtInstruction.h"
 
 class Blob;
@@ -11,6 +13,14 @@ class Blob;
 struct EventTrigger {
     int eventId = 0;
     int eventStep = 0;
+};
+
+/**
+ * Where the hint of an event comes from.
+ */
+struct EvtHintSource {
+    int textId = 0; // Index into the map's strings. Can be past their end, and then the hint is empty.
+    HouseId houseId = HOUSE_INVALID; // House whose name the hint is instead, if any.
 };
 
 class EvtProgram {
@@ -61,6 +71,19 @@ class EvtProgram {
      * @return                          Whether a script exists for the provided `eventId` that shows a hint.
      */
     bool hasHint(int eventId) const;
+
+    /**
+     * @param instructions              Instructions of an event.
+     * @return                          Whether the event only shows a hint, which it does if it opens with a
+     *                                  `MouseOver` and an `Exit`.
+     */
+    static bool isHintOnly(const std::vector<EvtInstruction> &instructions);
+
+    /**
+     * @param instructions              Instructions of an event.
+     * @return                          Where the event's hint comes from, or `std::nullopt` if it has no hint.
+     */
+    static std::optional<EvtHintSource> hintSource(const std::vector<EvtInstruction> &instructions);
 
     /**
      * @param eventId                   Event id to check.
