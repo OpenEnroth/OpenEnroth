@@ -8,6 +8,11 @@
                 "value": "16"
             },
             {
+                "key": "trace_no_loading_screen",
+                "section": "debug",
+                "value": "true"
+            },
+            {
                 "key": "trace_no_party_actor_collisions",
                 "section": "debug",
                 "value": "false"
@@ -10929,7 +10934,7 @@
             "type": "mouseButtonPress"
         },
         {
-            "randomState": 362,
+            "randomState": 364,
             "tickCount": 7600,
             "type": "paint"
         },
@@ -11071,51 +11076,6 @@
         {
             "randomState": 364,
             "tickCount": 8048,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8064,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8080,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8096,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8112,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8128,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8144,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8160,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8176,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8192,
             "type": "paint"
         },
         {
@@ -12620,6 +12580,51 @@
         },
         {
             "randomState": 364,
+            "tickCount": 8064,
+            "type": "paint"
+        },
+        {
+            "randomState": 364,
+            "tickCount": 8080,
+            "type": "paint"
+        },
+        {
+            "randomState": 364,
+            "tickCount": 8096,
+            "type": "paint"
+        },
+        {
+            "randomState": 364,
+            "tickCount": 8112,
+            "type": "paint"
+        },
+        {
+            "randomState": 364,
+            "tickCount": 8128,
+            "type": "paint"
+        },
+        {
+            "randomState": 364,
+            "tickCount": 8144,
+            "type": "paint"
+        },
+        {
+            "randomState": 364,
+            "tickCount": 8160,
+            "type": "paint"
+        },
+        {
+            "randomState": 364,
+            "tickCount": 8176,
+            "type": "paint"
+        },
+        {
+            "randomState": 364,
+            "tickCount": 8192,
+            "type": "paint"
+        },
+        {
+            "randomState": 364,
             "tickCount": 8208,
             "type": "paint"
         },
@@ -12684,9 +12689,21 @@
             "type": "paint"
         },
         {
+            "isAutoRepeat": false,
+            "key": "CONTROL",
+            "mods": "ctrl|num",
+            "type": "keyPress"
+        },
+        {
             "randomState": 364,
             "tickCount": 8416,
             "type": "paint"
+        },
+        {
+            "isAutoRepeat": false,
+            "key": "SHIFT",
+            "mods": "shift|ctrl|num",
+            "type": "keyPress"
         },
         {
             "randomState": 364,
@@ -12726,63 +12743,6 @@
         {
             "randomState": 364,
             "tickCount": 8544,
-            "type": "paint"
-        },
-        {
-            "isAutoRepeat": false,
-            "key": "CONTROL",
-            "mods": "ctrl|num",
-            "type": "keyPress"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8560,
-            "type": "paint"
-        },
-        {
-            "isAutoRepeat": false,
-            "key": "SHIFT",
-            "mods": "shift|ctrl|num",
-            "type": "keyPress"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8576,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8592,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8608,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8624,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8640,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8656,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8672,
-            "type": "paint"
-        },
-        {
-            "randomState": 364,
-            "tickCount": 8688,
             "type": "paint"
         }
     ]
