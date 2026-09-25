@@ -415,7 +415,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
             startBranchlessDialogue(EVENT_InputString, continuation(ir.step + 1));
 #endif
-            return {EVT_FLOW_STOP};
+            return {EVT_FLOW_STOP}; // The dialogue that would wait for the answer isn't there.
         case EVENT_StatusText:
             if (_context.source == EVT_SOURCE_GLOBAL) {
                 if (!_context.objectPid) // An NPC topic.
