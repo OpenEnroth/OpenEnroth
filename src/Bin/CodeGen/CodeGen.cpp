@@ -588,7 +588,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_SPEECH_PORTRAITS: return runSpeechPortraitsCodegen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_LSTR_ID: return runLstrCodegen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_EVT:
-            fmt::print("{}", decompileGameEvt(options.evtName));
+            fmt::print("{}", decompileGameEvt(options.evtName).text());
             return 0;
         default:
             assert(false);
