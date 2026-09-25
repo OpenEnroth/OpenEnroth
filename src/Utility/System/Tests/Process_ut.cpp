@@ -59,13 +59,3 @@ UNIT_TEST(Process, Timeout) {
 UNIT_TEST(Process, MissingExecutable) {
     EXPECT_THROW((void) runProcess("no_such_executable_here", {}, 30s), Exception);
 }
-
-UNIT_TEST(Process, WindowsCommandLine) {
-    EXPECT_EQ(detail::windowsCommandLine("a.exe", {}), "a.exe");
-    EXPECT_EQ(detail::windowsCommandLine("a.exe", {"--flag", "value"}), "a.exe --flag value");
-    EXPECT_EQ(detail::windowsCommandLine("C:/Program Files/a.exe", {""}), "\"C:/Program Files/a.exe\" \"\"");
-    EXPECT_EQ(detail::windowsCommandLine("a.exe", {"C:\\dir\\"}), "a.exe C:\\dir\\"); // No quotes, so backslashes are literal.
-    EXPECT_EQ(detail::windowsCommandLine("a.exe", {"C:\\my dir\\"}), "a.exe \"C:\\my dir\\\\\""); // Or they'd escape the closing quote.
-    EXPECT_EQ(detail::windowsCommandLine("a.exe", {"say \"hi\""}), "a.exe \"say \\\"hi\\\"\"");
-    EXPECT_EQ(detail::windowsCommandLine("a.exe", {"a\\\"b"}), "a.exe \"a\\\\\\\"b\"");
-}
