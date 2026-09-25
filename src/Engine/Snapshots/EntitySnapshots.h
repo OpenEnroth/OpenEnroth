@@ -504,7 +504,7 @@ struct Party_MM7 {
     int8_t field_7B5_in_arena_quest; // -1 for a win, 0 for initial state, otherwise dialogue id for the
                                      // arena level being fought.
     std::array<uint8_t, 4> numArenaWins;
-    std::array<bool, 29> isArtifactFound;  // 7ba
+    std::array<bool, 29> isArtifactGenerated;  // 7ba
     std::array<char, 39> field_7d7;
     std::array<uint8_t, 26> autonoteBits;
     std::array<char, 60> field_818;
