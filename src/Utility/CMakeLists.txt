@@ -71,7 +71,8 @@ target_link_libraries(utility
         Boost::lambda2
         PRIVATE
         ztd::text
-        mio::mio)
+        mio::mio
+        subprocess::subprocess)
 
 # Tweak ztd buffer size, default is 512Kb, but default stack size of non-main threads on MacOS is also 512Kb.
 target_compile_definitions(utility PRIVATE ZTD_INTERMEDIATE_BUFFER_SUGGESTED_BYTE_SIZE=65536)
