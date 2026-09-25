@@ -34,6 +34,7 @@ bool GUIProgressBar::Initialize(Type type) {
         return true;
     assert(type == TYPE_Box || type == TYPE_Fullscreen);
     uType = type;
+    _startCount++;
 
     turnHourIconId = pIconsFrameTable->animationId("turnhour");
 
@@ -90,6 +91,9 @@ void GUIProgressBar::Release() {
 }
 
 void GUIProgressBar::Draw() {
+    if (engine->config->debug.NoLoadingScreen.value())
+        return;
+
     // render->BeginScene3D();
     render->BeginScene2D();
 

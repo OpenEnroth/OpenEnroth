@@ -21,6 +21,14 @@ class GUIProgressBar {
 
     bool IsActive();
 
+    /**
+     * @return                          Number of loading screens started so far, including the ones that weren't drawn
+     *                                  because of `no_loading_screen`.
+     */
+    int startCount() const {
+        return _startCount;
+    }
+
  protected:
     int uX = 0;
     int uY = 0;
@@ -35,6 +43,7 @@ class GUIProgressBar {
     GraphicsImage *progressbar_loading = nullptr;  // struct Texture_MM7 pLoadingProgress;
     GraphicsImage *loading_bg = nullptr;
     int turnHourIconId = 0;
+    int _startCount = 0;
 };
 
 extern GUIProgressBar *pGameLoadingUI_ProgressBar;

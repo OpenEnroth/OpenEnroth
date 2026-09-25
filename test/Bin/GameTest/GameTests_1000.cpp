@@ -646,14 +646,14 @@ GAME_TEST(Issues, Issue1315) {
     // Dying in turn-based mode asserts.
     auto deathsTape = tapes.deaths();
     auto mapTape = tapes.map();
-    auto stateTape = tapes.custom([] { return std::tuple(pParty->bTurnBasedModeOn, uGameState); });
+    auto stateTape = tapes.custom([] { return std::tuple(pParty->bTurnBasedModeOn, pParty->uNumDeaths); });
     test.playTraceFromTestData("issue_1315.mm7", "issue_1315.json");
     EXPECT_EQ(deathsTape.delta(), +1);
     EXPECT_EQ(mapTape, tape(MAP_LAND_OF_THE_GIANTS, MAP_HARMONDALE)); // Land of the Giants -> Harmondale.
-    EXPECT_EQ(stateTape, tape(std::tuple(false, GAME_STATE_PLAYING),
-                              std::tuple(true, GAME_STATE_PLAYING),
-                              std::tuple(false, GAME_STATE_PARTY_DIED), // Instant switch from turn-based & alive into realtime & dead,
-                              std::tuple(false, GAME_STATE_PLAYING)));  // meaning that the party died in turn-based mode.
+    EXPECT_EQ(stateTape, tape(std::tuple(false, 0),
+                              std::tuple(true, 0),
+                              std::tuple(false, 1))); // Instant switch from turn-based & alive into realtime & dead,
+                                                      // meaning that the party died in turn-based mode.
 }
 
 GAME_TEST(Prs, Pr1325) {
