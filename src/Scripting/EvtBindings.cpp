@@ -15,6 +15,7 @@
 #include "Engine/Evt/EvtCommands.h"
 #include "Engine/Evt/EvtDecompiler.h"
 #include "Engine/Evt/EvtInterpreter.h"
+#include "Engine/Evt/EvtScripts.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Party.h"
@@ -188,9 +189,16 @@ static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, s
         result = sol::make_object(state, flow.type == EVT_FLOW_JUMP);
 
     switch (flow.type) {
-        case EVT_FLOW_STOP: return {result, "exit"};
-        case EVT_FLOW_YIELD: return {result, "wait"};
-        default: return {result, "ok"};
+        case EVT_FLOW_STOP:
+            return {result, "exit"};
+        case EVT_FLOW_YIELD:
+            setEventContinuation([] { // Replaces the interpreter's, which would go on with an evt event.
+                if (EvtScripts *scripts = evtScripts(); scripts && scripts->resumeEvent())
+                    onMapLeave();
+            });
+            return {result, "wait"};
+        default:
+            return {result, "ok"};
     }
 }
 

@@ -78,8 +78,11 @@ void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
     if (!pGUIWindow_BranchlessDialogue) {
         animTimer->setPaused(true);
         gameTimer->setPaused(true);
-        savedEventID = eventid;
-        savedEventStep = entryline;
+        if (eventid) {
+            setEventContinuation([eventid, entryline] { eventProcessor(eventid, Pid(), true, entryline); });
+        } else {
+            setEventContinuation(nullptr);
+        }
         savedDecoration = activeLevelDecoration;
         pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(type);
     }
@@ -87,7 +90,7 @@ void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
 
 void releaseBranchlessDialogue() {
     pGUIWindow_BranchlessDialogue = nullptr;
-    if (savedEventID) {
+    if (hasEventContinuation()) {
         // Do not run event engine whith no event, it may happen when you close talk window
         // with NPC that only say catch phrases
         activeLevelDecoration = savedDecoration;

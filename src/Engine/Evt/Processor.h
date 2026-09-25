@@ -23,8 +23,15 @@ void checkDecorationEvents();
 void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep = 0);
 
 /**
- * Goes on with the event that stopped for a dialogue, from `savedEventID` and `savedEventStep`, once the dialogue
- * closes and lets it.
+ * @param continuation                  What goes on with the event that stops for the dialogue it opened, once the
+ *                                      dialogue closes and lets it. Empty if nothing waits for the dialogue.
+ */
+void setEventContinuation(std::function<void()> continuation);
+
+bool hasEventContinuation();
+
+/**
+ * Called when a dialogue that an event stopped for closes and lets the event go on.
  */
 void continueSavedEvent();
 
@@ -94,6 +101,4 @@ int addTimer(const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifeti
  */
 void removeTimer(int handle);
 
-extern int savedEventID;
-extern int savedEventStep;
 extern LevelDecoration *savedDecoration;
