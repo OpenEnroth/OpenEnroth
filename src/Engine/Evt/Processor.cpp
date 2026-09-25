@@ -37,6 +37,9 @@ struct MapTimer {
     int eventId = 0;
     int eventStep = 0;
     std::function<void()> callback; // Called instead of the event if set.
+    int handle = 0;
+    EvtTimerLifetime lifetime = EVT_TIMER_MAP;
+    bool isRemoved = false; // Erased once no loop over the timers is running.
 };
 
 static std::vector<EventTrigger> onMapLoadTriggers;
@@ -52,6 +55,7 @@ static std::vector<int> decorationsWithEvents;
 static Time timerGuard;
 
 static EvtScripts *scripts = nullptr;
+static int lastTimerHandle = 0;
 
 int savedEventID;
 int savedEventStep;
@@ -96,32 +100,38 @@ void checkDecorationEvents() {
     }
 }
 
-static MapTimer makeTimer(const EvtInstruction &ir) {
+static EvtTimerSchedule timerSchedule(const EvtInstruction &ir) {
+    EvtTimerSchedule result;
+    if (ir.data.timer_descr.alt_halfmin_interval) {
+        result.interval = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
+    } else if (ir.data.timer_descr.is_yearly) {
+        result.period = Duration::fromYears(1);
+    } else if (ir.data.timer_descr.is_monthly) {
+        result.period = Duration::fromDays(28);
+    } else if (ir.data.timer_descr.is_weekly) {
+        result.period = Duration::fromDays(7);
+    } else {
+        result.period = Duration::fromDays(1);
+        result.timeOfDay = Duration::fromHours(ir.data.timer_descr.daily_start_hour);
+        result.timeOfDay += Duration::fromMinutes(ir.data.timer_descr.daily_start_minute);
+        result.timeOfDay += Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
+    }
+    return result;
+}
+
+static MapTimer makeTimer(const EvtTimerSchedule &schedule) {
     // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
     //                   To support fair timers they need to be saved directly.
     Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
 
     MapTimer timer;
-    if (ir.data.timer_descr.alt_halfmin_interval) {
-        // Alternative interval is defined in terms of half-minutes
-        timer.altInterval = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
+    if (schedule.interval) {
+        timer.altInterval = schedule.interval;
         timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
     } else {
-        if (ir.data.timer_descr.is_yearly) {
-            timer.interval = Duration::fromYears(1);
-        } else if (ir.data.timer_descr.is_monthly) {
-            timer.interval = Duration::fromDays(28);
-        } else if (ir.data.timer_descr.is_weekly) {
-            timer.interval = Duration::fromDays(7);
-        } else {
-            // Interval is daily with exact time of day
-            timer.interval = Duration::fromDays(1);
-            timer.timeInsideDay = Duration::fromHours(ir.data.timer_descr.daily_start_hour);
-            timer.timeInsideDay += Duration::fromMinutes(ir.data.timer_descr.daily_start_minute);
-            timer.timeInsideDay += Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
-        }
-
+        timer.interval = schedule.period;
         if (timer.interval == Duration::fromDays(1)) {
+            timer.timeInsideDay = schedule.timeOfDay;
             if (levelLastVisit) {
                 // Calculate alarm time inside last visit day
                 timer.alarmTime = Time::fromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
@@ -148,13 +158,28 @@ static MapTimer makeTimer(const EvtInstruction &ir) {
 }
 
 static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *triggers) {
-    triggers->clear();
+    std::erase_if(*triggers, [](const MapTimer &timer) { return timer.callback == nullptr; });
+
+    std::vector<MapTimer> evtTimers;
     for (EventTrigger &trigger : engine->_localEventMap.enumerateTriggers(triggerType)) {
-        MapTimer timer = makeTimer(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep));
+        MapTimer timer = makeTimer(timerSchedule(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep)));
         timer.eventId = trigger.eventId;
         timer.eventStep = trigger.eventStep;
-        triggers->push_back(std::move(timer));
+        evtTimers.push_back(std::move(timer));
     }
+    triggers->insert(triggers->begin(), evtTimers.begin(), evtTimers.end()); // Before the scripts' timers, as evt events go first.
+}
+
+static void removeTimers(std::function<bool(const MapTimer &)> predicate) {
+    for (std::vector<MapTimer> *timers : {&onTimerTriggers, &onLongTimerTriggers})
+        for (MapTimer &timer : *timers)
+            if (predicate(timer))
+                timer.isRemoved = true;
+}
+
+static void eraseRemovedTimers() {
+    std::erase_if(onTimerTriggers, &MapTimer::isRemoved);
+    std::erase_if(onLongTimerTriggers, &MapTimer::isRemoved);
 }
 
 void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep) {
@@ -255,6 +280,8 @@ void onGameLoad() {
         return;
 
     engine->_globalEventMap = EvtProgram::load(engine->resources()->eventsData("global.evt"));
+    removeTimers([](const MapTimer &timer) { return timer.callback != nullptr; }); // They belong to the game that is left.
+    eraseRemovedTimers();
     scripts->loadGlobalScripts();
 }
 
@@ -282,6 +309,9 @@ static void updateFaceHints() {
 }
 
 void onMapLoad() {
+    removeTimers([](const MapTimer &timer) { return timer.lifetime == EVT_TIMER_MAP; });
+    eraseRemovedTimers();
+
     if (scripts) {
         std::string mapName = pMapTable->pInfos[engine->_currentLoadedMapId].fileName;
         scripts->loadMapScripts(mapName.substr(0, mapName.rfind('.'))); // Before the triggers, scripts can remove events.
@@ -310,13 +340,12 @@ void onMapLeave() {
         scripts->onMapLeave();
 
     // Cleanup timers to avoid firing while map transition is in process
-    onLongTimerTriggers.clear();
-    onTimerTriggers.clear();
+    removeTimers([](const MapTimer &timer) { return timer.lifetime == EVT_TIMER_MAP; });
 }
 
 static void checkTimers(std::vector<MapTimer> *timers) {
     for (size_t i = 0; i < timers->size(); i++) {
-        if (pParty->GetPlayingTime() < (*timers)[i].alarmTime)
+        if ((*timers)[i].isRemoved || pParty->GetPlayingTime() < (*timers)[i].alarmTime)
             continue;
 
         if (std::function<void()> callback = (*timers)[i].callback) {
@@ -324,10 +353,9 @@ static void checkTimers(std::vector<MapTimer> *timers) {
         } else {
             eventProcessor((*timers)[i].eventId, Pid(), true, (*timers)[i].eventStep + 1);
         }
-        if (i >= timers->size())
-            return; // The event sent the party to another map, and leaving a map drops its timers.
-
         MapTimer &timer = (*timers)[i];
+        if (timer.isRemoved)
+            continue; // The event sent the party to another map, or the callback removed its timer.
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
@@ -355,6 +383,7 @@ void onTimer() {
 
     checkTimers(&onTimerTriggers);
     checkTimers(&onLongTimerTriggers);
+    eraseRemovedTimers();
 }
 
 void setEvtScripts(EvtScripts *value) {
@@ -368,10 +397,15 @@ EvtScripts *evtScripts() {
     return scripts;
 }
 
-void addTimer(const EvtInstruction &timer, std::function<void()> callback) {
-    assert(timer.opcode == EVENT_OnTimer || timer.opcode == EVENT_OnLongTimer);
-
-    MapTimer result = makeTimer(timer);
+int addTimer(const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifetime lifetime, std::function<void()> callback) {
+    MapTimer result = makeTimer(schedule);
     result.callback = std::move(callback);
-    (timer.opcode == EVENT_OnTimer ? onTimerTriggers : onLongTimerTriggers).push_back(std::move(result));
+    result.handle = ++lastTimerHandle;
+    result.lifetime = lifetime;
+    (kind == EVT_TIMER_REGULAR ? onTimerTriggers : onLongTimerTriggers).push_back(std::move(result));
+    return lastTimerHandle;
+}
+
+void removeTimer(int handle) {
+    removeTimers([handle](const MapTimer &timer) { return timer.handle == handle; });
 }
