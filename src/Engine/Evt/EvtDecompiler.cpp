@@ -183,10 +183,9 @@ std::string EvtEventDecompiler::decompile() {
 
     // An event that does nothing still has to exist, or a click on it reports that there's nothing here. The engine
     // takes an event that opens with a hint and an exit for a hint alone, and its faces can't be clicked at all.
-    bool isHintOnly = _instructions.size() >= 2 && _instructions[0].opcode == EVENT_MouseOver && _instructions[1].opcode == EVENT_Exit;
     std::string main = function(entry, EVT_MODE_EVENT, fmt::format("evt.{}[{}] = function()", _isGlobal ? "global" : "map", _eventId), "end");
     bool isEmpty = std::ranges::count(main, '\n') <= 2;
-    if (!isEmpty || !isHintOnly)
+    if (!isEmpty || !EvtProgram::isHintOnly(_instructions))
         result += main;
 
     for (int index = 0; index < _code.size(); index++) {
@@ -333,32 +332,17 @@ std::pair<std::string_view, std::string> EvtEventDecompiler::timerCall(int index
  *                                      hint is what `EvtProgram::hint` makes of the same records.
  */
 std::string EvtEventDecompiler::hint() const {
-    if (_isGlobal)
+    std::optional<EvtHintSource> source = EvtProgram::hintSource(_instructions);
+    if (_isGlobal || !source)
         return {}; // Hints belong to map events.
 
-    bool hasHint = false;
-    std::optional<int64_t> stringId;
-    for (const EvtInstruction &ir : _instructions) {
-        bool isHouse = hasHint && ir.opcode == EVENT_SpeakInHouse;
-        if (ir.opcode != EVENT_MouseOver && !isHouse)
-            continue;
-
-        int64_t id = isHouse ? std::to_underlying(ir.data.house_id) : ir.data.text_id;
-        if (isHouse) {
-            if (houseTable.indices().contains(static_cast<HouseId>(id)))
-                return withComment(fmt::format("evt.house[{}] = {}", _eventId, id), houseName(id)) + "\n";
-            break;
-        }
-        hasHint = true;
-        if (id >= 0 && id < _strings.size())
-            stringId = id;
+    if (source->houseId != HOUSE_INVALID) {
+        int64_t houseId = std::to_underlying(source->houseId);
+        return withComment(fmt::format("evt.house[{}] = {}", _eventId, houseId), houseName(houseId)) + "\n";
     }
-
-    if (!hasHint)
-        return {};
-    if (!stringId)
+    if (source->textId < 0 || source->textId >= _strings.size())
         return fmt::format("evt.hint[{}] = \"\"\n", _eventId);
-    return withComment(fmt::format("evt.hint[{}] = evt.str[{}]", _eventId, *stringId), string(*stringId)) + "\n";
+    return withComment(fmt::format("evt.hint[{}] = evt.str[{}]", _eventId, source->textId), string(source->textId)) + "\n";
 }
 
 int EvtEventDecompiler::indexOfStep(int64_t step) const {
@@ -683,24 +667,31 @@ std::string EvtEventDecompiler::function(int entry, EvtMode mode, std::string_vi
     return result + std::string(footer) + "\n";
 }
 
-std::string decompileEvt(const EvtProgram &program, const std::vector<std::string> &strings, bool isGlobal) {
-    std::string result;
-    if (!std::ranges::all_of(strings, &std::string::empty)) {
-        result += "local TXT = Localize{\n";
-        for (size_t i = 0; i < strings.size(); i++)
-            if (!strings[i].empty())
-                result += fmt::format("{}[{}] = {},\n", INDENT, i, luaString(strings[i]));
-        result += "}\ntable.copy(TXT, evt.str, true)\n\n";
-    }
-    result += fmt::format("Game.{}EvtLines.Count = 0\n\n", isGlobal ? "Global" : "Map");
-
-    for (int eventId : program.eventIds())
-        if (std::string event = EvtEventDecompiler(eventId, program.function(eventId), strings, isGlobal).decompile(); !event.empty())
-            result += event + "\n";
+std::string EvtLuaScript::text() const {
+    std::string result = header;
+    for (const auto &[_, code] : events)
+        result += code + "\n";
     return result;
 }
 
-std::string decompileGameEvt(std::string_view name, std::span<const int> skippedEvents) {
+EvtLuaScript decompileEvt(const EvtProgram &program, const std::vector<std::string> &strings, bool isGlobal) {
+    EvtLuaScript result;
+    if (!std::ranges::all_of(strings, &std::string::empty)) {
+        result.header += "local TXT = Localize{\n";
+        for (size_t i = 0; i < strings.size(); i++)
+            if (!strings[i].empty())
+                result.header += fmt::format("{}[{}] = {},\n", INDENT, i, luaString(strings[i]));
+        result.header += "}\ntable.copy(TXT, evt.str, true)\n\n";
+    }
+    result.header += fmt::format("Game.{}EvtLines.Count = 0\n\n", isGlobal ? "Global" : "Map");
+
+    for (int eventId : program.eventIds())
+        if (std::string code = EvtEventDecompiler(eventId, program.function(eventId), strings, isGlobal).decompile(); !code.empty())
+            result.events.emplace_back(eventId, std::move(code));
+    return result;
+}
+
+EvtLuaScript decompileGameEvt(std::string_view name) {
     std::string fileName = ascii::toLower(name);
     bool isGlobal = fileName == "global";
 
@@ -715,8 +706,5 @@ std::string decompileGameEvt(std::string_view name, std::span<const int> skipped
         }
     }
 
-    EvtProgram program = EvtProgram::load(engine->resources()->eventsData(fileName + ".evt"));
-    for (int eventId : skippedEvents)
-        program.remove(eventId);
-    return decompileEvt(program, strings, isGlobal);
+    return decompileEvt(EvtProgram::load(engine->resources()->eventsData(fileName + ".evt")), strings, isGlobal);
 }
