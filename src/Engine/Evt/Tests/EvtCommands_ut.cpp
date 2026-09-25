@@ -46,6 +46,27 @@ GAME_TEST(EvtCommands, Table) {
     EXPECT_TRUE(std::ranges::is_sorted(evtCommands(), std::ranges::less(), &EvtCommandInfo::opcode));
 }
 
+GAME_TEST(EvtCommands, DistinctMembers) {
+    // Every field has to go to a member of its own, or setting one field would change another.
+    for (const EvtCommandInfo &command : evtCommands()) {
+        EvtInstruction ir = {};
+        std::vector<EvtFieldValue> values;
+        for (size_t i = 0; i < command.fields.size(); i++) {
+            const EvtFieldInfo &field = command.fields[i];
+            if (field.type == EVT_FIELD_STRING) {
+                values.emplace_back(std::string(field.name));
+            } else {
+                values.emplace_back(std::clamp(field.min + static_cast<int64_t>(i) + 1, field.min, field.max));
+            }
+            if (field.set)
+                field.set(&ir, values.back());
+        }
+        for (size_t i = 0; i < command.fields.size(); i++)
+            if (command.fields[i].get)
+                EXPECT_EQ(command.fields[i].get(ir), values[i]) << command.name << "." << command.fields[i].name;
+    }
+}
+
 GAME_TEST(EvtCommands, Instruction) {
     // The fields of a command have to land in the members of the instruction that the interpreter reads.
     EvtInstruction cmp = instruction("Cmp", {int64_t(std::to_underlying(*evtVariableByName("QBits"))), int64_t(240)});
@@ -79,6 +100,9 @@ GAME_TEST(EvtCommands, SetErrors) {
     EXPECT_ANY_THROW((void) instruction("CastSpell", {int64_t(6), int64_t(0)}));
     EXPECT_ANY_THROW((void) instruction("SetDoorState", {"door"s}));
     EXPECT_ANY_THROW((void) instruction("SetSprite", {int64_t(20), int64_t(1), int64_t(5)}));
+    EXPECT_ANY_THROW((void) instruction("GiveItem", {int64_t(0), int64_t(0), int64_t(630)})); // There is no treasure level 0.
+    EXPECT_ANY_THROW((void) instruction("CheckSeason", {int64_t(4)}));
+    EXPECT_ANY_THROW((void) instruction("Cmp", {int64_t(std::to_underlying(VAR_ReputationInCurrentLocation)), int64_t(-5)}));
     EXPECT_NO_THROW((void) instruction("SpeakNPC", {int64_t(500)}));
     EXPECT_ANY_THROW((void) instruction("SpeakNPC", {int64_t(501)}));
     EXPECT_ANY_THROW((void) instruction("SetNPCGroupNews", {int64_t(51), int64_t(1)}));

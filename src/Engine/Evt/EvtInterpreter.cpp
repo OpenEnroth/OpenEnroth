@@ -434,7 +434,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
             startBranchlessDialogue(_eventId, step + 1, EVENT_InputString);
 #endif
-            return {EVT_FLOW_STOP};
+            return {EVT_FLOW_STOP}; // The dialogue that would wait for the answer isn't there.
         case EVENT_StatusText:
             if (activeLevelDecoration) {
                 if (activeLevelDecoration == (LevelDecoration *)1) {

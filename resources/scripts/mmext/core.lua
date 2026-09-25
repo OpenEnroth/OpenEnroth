@@ -156,8 +156,8 @@ local function newEvents(runHandler)
             if value ~= nil then
                 result = value
             end
-            if isWaiting then
-                break -- Like an evt event, the rest of the handlers stop at the dialogue.
+            if isWaiting and not handler.owner then
+                break -- The rest of the scripts' handlers stop at the dialogue.
             end
         end
         return result
@@ -190,7 +190,15 @@ local function newEvents(runHandler)
         __newindex = function (_, key, callback)
             checkFunction(callback, "A handler")
             lists[key] = lists[key] or {}
-            table.insert(lists[key], { callback = callback, scope = registrationScope(), owner = registrationOwner() })
+            local list, owner = lists[key], registrationOwner()
+            local position = #list + 1
+            if owner then -- Decompiled evt events go before the scripts' handlers, as evt events run first.
+                position = 1
+                while position <= #list and list[position].owner do
+                    position = position + 1
+                end
+            end
+            table.insert(list, position, { callback = callback, scope = registrationScope(), owner = owner })
         end,
     })
     return events, lists
@@ -255,27 +263,36 @@ local mapEvents, globalEvents, topicEvents = {}, {}, {}
 local hints = {}
 ---@type table<integer, integer>
 local houses = {}
----@type table<integer, string?>
-local hintOwners = {}
+---@type table<integer, string?>, table<integer, string?>
+local hintOwners, houseOwners = {}, {}
 
---- A table that the scripts set event hints or houses in.
+--- A table that the scripts set event hints or houses in. A script's hint for an event replaces a decompiled evt
+--- event's house and the other way around, as it replaces the hint of the evt event in normal mode.
 ---@param values table<integer, any>
+---@param owners table<integer, string?>
+---@param otherValues table<integer, any>
+---@param otherOwners table<integer, string?>
 ---@return table
-local function newEventValues(values)
+local function newEventValues(values, owners, otherValues, otherOwners)
     return setmetatable({}, {
         __index = values,
         ---@param _ table
         ---@param eventId integer
         ---@param value any
         __newindex = function (_, eventId, value)
-            values[eventId] = value
-            hintOwners[eventId] = registrationOwner()
+            local owner = registrationOwner()
+            values[eventId], owners[eventId] = value, owner
+            if not owner and otherOwners[eventId] then
+                otherValues[eventId], otherOwners[eventId] = nil, nil
+            end
         end,
     })
 end
 
----@type table<integer, string>, table<integer, integer>
-local hintValues, houseValues = newEventValues(hints), newEventValues(houses)
+---@type table<integer, string>
+local hintValues = newEventValues(hints, hintOwners, houses, houseOwners)
+---@type table<integer, integer>
+local houseValues = newEventValues(houses, houseOwners, hints, hintOwners)
 evt.hint, evt.Hint, evt.house = hintValues, hintValues, houseValues
 
 local function resetGlobalHandlers()
@@ -303,7 +320,12 @@ local function resetMapHandlers()
     for key in pairs(houses) do
         houses[key] = nil
     end
-    hintOwners = {}
+    for key in pairs(hintOwners) do
+        hintOwners[key] = nil
+    end
+    for key in pairs(houseOwners) do
+        houseOwners[key] = nil
+    end
 end
 
 ---@param first any The arguments as a table, or the first of them.
@@ -605,9 +627,11 @@ local function newTimer(callback, period, startTime, isRefill)
     end
 
     ---@type EvtTimer
-    ---@type EvtTimer
     local timer = { callback = callback, period = period, startTime = startTime, isRefill = isRefill }
     timer.scope, timer.owner = registrationScope(), registrationOwner()
+    if isMapRunning and not timer.scope then
+        timer.scope = "map" -- Set by a handler while a map runs, so the handler sets it again on the next map.
+    end
     table.insert(timers, timer)
     if isLevelLoaded then
         registerTimer(timer)
@@ -627,7 +651,7 @@ local function Timer(callback, period, startTime)
 end
 
 --- OpenEnroth doesn't fire timers on a map refill, so this is a `Timer` that the engine checks after the others, like
---- an evt `OnLongTimer`. Without a start time a calendar period fires at midnight.
+--- an evt `OnLongTimer`. Without a start time a daily one fires at midnight.
 ---@param callback function
 ---@param period number?
 ---@param startTime number|boolean?
@@ -683,7 +707,12 @@ function removeOwned(prefix)
     removeTimers(function (timer) return matches(timer.owner) end)
     for eventId, owner in pairs(hintOwners) do
         if matches(owner) then
-            hints[eventId], houses[eventId], hintOwners[eventId] = nil, nil, nil
+            hints[eventId], hintOwners[eventId] = nil, nil
+        end
+    end
+    for eventId, owner in pairs(houseOwners) do
+        if matches(owner) then
+            houses[eventId], houseOwners[eventId] = nil, nil
         end
     end
 end
@@ -783,11 +812,16 @@ end
 ---@param mapName string
 function Core.loadMapScripts(mapName)
     waiting, isMapRunning = nil, false
-    for i = #timers, 1, -1 do
-        if timers[i].scope == "map" then
-            table.remove(timers, i) -- The engine dropped it with the map.
-        elseif not isLevelLoaded then
-            registerTimer(timers[i])
+    for _, list in ipairs({ timers, firstFires }) do
+        for i = #list, 1, -1 do
+            if list[i].scope == "map" then
+                table.remove(list, i) -- The engine dropped it with the map.
+            end
+        end
+    end
+    if not isLevelLoaded then
+        for _, timer in ipairs(timers) do
+            registerTimer(timer)
         end
     end
     isLevelLoaded = true
@@ -830,7 +864,6 @@ function Core.resumeEvent()
     return (resume(frame))
 end
 
-
 ---@param eventId integer
 ---@return string?
 function Core.eventHint(eventId)
@@ -852,13 +885,13 @@ end
 ---@return boolean mapExitTriggered
 function Core.onMapLoad()
     mapExitTriggered, isMapRunning = false, true
-    for _, timer in ipairs(firstFires) do
-        mapExitTriggered = fire(timer) or mapExitTriggered
-    end
-    firstFires = {}
     events.LoadMap(wasInGame)
     events.AfterLoadMap(wasInGame)
     wasInGame = true
+    for _, timer in ipairs(copyList(firstFires)) do
+        mapExitTriggered = fire(timer) or mapExitTriggered
+    end
+    firstFires = {}
     return mapExitTriggered
 end
 

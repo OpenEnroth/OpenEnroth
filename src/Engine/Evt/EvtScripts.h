@@ -66,7 +66,7 @@ class EvtScripts {
 
     /**
      * Called after `loadMapScripts`, once the evt triggers are registered and the evt map load events have run.
-     * Registers the scripts' timers and runs their map load handlers.
+     * Runs the scripts' map load handlers, and fires their timers that fire at once.
      *
      * @return                          Whether a map load handler sent the party to another map.
      */
