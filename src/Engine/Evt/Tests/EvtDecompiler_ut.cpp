@@ -1,3 +1,5 @@
+#include <functional>
+#include <initializer_list>
 #include <string>
 #include <utility>
 #include <vector>
@@ -6,34 +8,52 @@
 
 #include "Engine/Evt/EvtCommands.h"
 #include "Engine/Evt/EvtDecompiler.h"
+#include "Engine/Evt/EvtProgram.h"
 
-using namespace std::string_literals; // NOLINT: for the string values of the records.
+using namespace std::string_literals; // NOLINT: for the string values of the commands.
 
 static const int64_t MAP_VAR0 = std::to_underlying(VAR_MapPersistentVariable_0);
 static const int64_t GOLD = std::to_underlying(VAR_FixedGold);
 
-static EvtRecord record(int eventId, int step, EvtOpcode opcode, std::vector<EvtFieldValue> values) {
-    EvtRecord result;
-    result.eventId = eventId;
+static std::pair<int, EvtInstruction> op(int eventId, int step, EvtOpcode opcode, std::function<void(EvtInstruction &)> fill = {}) {
+    EvtInstruction result = {};
     result.step = step;
     result.opcode = opcode;
-    result.values = std::move(values);
+    if (fill)
+        fill(result);
+    return {eventId, result};
+}
+
+static std::pair<int, EvtInstruction> call(int eventId, int step, std::string_view name, std::vector<EvtFieldValue> values, int target = 0) {
+    const EvtCommandInfo *command = evtCommand(name);
+    auto [_, result] = op(eventId, step, command->opcode);
+    result.target_step = target;
+    for (size_t i = 0; i < values.size(); i++)
+        if (command->fields[i].set)
+            command->fields[i].set(&result, values[i]);
+    return {eventId, result};
+}
+
+static EvtProgram program(std::initializer_list<std::pair<int, EvtInstruction>> instructions) {
+    EvtProgram result;
+    for (const auto &[eventId, ir] : instructions)
+        result.add(eventId, ir);
     return result;
 }
 
 GAME_TEST(EvtDecompiler, IfElse) {
     // A condition that jumps over a block ending in a forward jump is an if with an else.
-    std::vector<EvtRecord> records = {
-        record(1, 0, EVENT_MouseOver, {int64_t(1)}),
-        record(1, 0, EVENT_Compare, {MAP_VAR0, int64_t(1), int64_t(3)}),
-        record(1, 1, EVENT_StatusText, {int64_t(2)}),
-        record(1, 2, EVENT_Jmp, {int64_t(4)}),
-        record(1, 3, EVENT_Add, {GOLD, int64_t(100)}),
-        record(1, 4, EVENT_ChangeDoorState, {int64_t(5), int64_t(2)}),
-        record(1, 5, EVENT_Exit, {int64_t(0)}),
-    };
+    EvtProgram events = program({
+        op(1, 0, EVENT_MouseOver, [](EvtInstruction &ir) { ir.data.text_id = 1; }),
+        call(1, 0, "Cmp", {MAP_VAR0, int64_t(1)}, 3),
+        call(1, 1, "StatusText", {int64_t(2)}),
+        op(1, 2, EVENT_Jmp, [](EvtInstruction &ir) { ir.target_step = 4; }),
+        call(1, 3, "Add", {GOLD, int64_t(100)}),
+        call(1, 4, "SetDoorState", {int64_t(5), int64_t(2)}),
+        op(1, 5, EVENT_Exit),
+    });
 
-    EXPECT_EQ(decompileEvt(records, {"", "Lever", "Locked"}, false),
+    EXPECT_EQ(decompileEvt(events, {"", "Lever", "Locked"}, false),
               "local TXT = Localize{\n"
               "    [1] = \"Lever\",\n"
               "    [2] = \"Locked\",\n"
@@ -57,15 +77,15 @@ GAME_TEST(EvtDecompiler, IfElse) {
 GAME_TEST(EvtDecompiler, Goto) {
     // Random jumps and jumps back can't be blocks. They are gotos, and an Exit in the middle is a return in a block of
     // its own.
-    std::vector<EvtRecord> records = {
-        record(2, 0, EVENT_RandomGoTo, {int64_t(1), int64_t(3), int64_t(0), int64_t(0), int64_t(0), int64_t(0)}),
-        record(2, 1, EVENT_Add, {GOLD, int64_t(1)}),
-        record(2, 2, EVENT_Exit, {int64_t(0)}),
-        record(2, 3, EVENT_Add, {GOLD, int64_t(2)}),
-        record(2, 4, EVENT_Jmp, {int64_t(1)}),
-    };
+    EvtProgram events = program({
+        op(2, 0, EVENT_RandomGoTo, [](EvtInstruction &ir) { ir.data.random_goto_descr = {{1, 3, 0, 0, 0, 0}, 2}; }),
+        call(2, 1, "Add", {GOLD, int64_t(1)}),
+        op(2, 2, EVENT_Exit),
+        call(2, 3, "Add", {GOLD, int64_t(2)}),
+        op(2, 4, EVENT_Jmp, [](EvtInstruction &ir) { ir.target_step = 1; }),
+    });
 
-    EXPECT_EQ(decompileEvt(records, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[2] = function()\n"
@@ -88,18 +108,18 @@ GAME_TEST(EvtDecompiler, Goto) {
 
 GAME_TEST(EvtDecompiler, Triggers) {
     // An event that starts with a trigger does nothing when it's run by id. What follows the trigger is a handler.
-    std::vector<EvtRecord> records = {
-        record(3, 0, EVENT_OnMapReload, {int64_t(0)}),
-        record(3, 1, EVENT_SetSprite, {int64_t(20), int64_t(1), "dec05"s}),
-        record(3, 2, EVENT_Exit, {int64_t(0)}),
-        record(4, 0, EVENT_OnTimer, {int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(5), int64_t(0)}),
-        record(4, 1, EVENT_ForPartyMember, {int64_t(std::to_underlying(CHOOSE_PARTY))}),
-        record(4, 2, EVENT_Subtract, {GOLD, int64_t(1)}),
-        record(5, 0, EVENT_OnLongTimer, {int64_t(0), int64_t(0), int64_t(0), int64_t(9), int64_t(30), int64_t(0), int64_t(0), int64_t(0)}),
-        record(5, 1, EVENT_Set, {MAP_VAR0, int64_t(0)}),
-    };
+    EvtProgram events = program({
+        op(3, 0, EVENT_OnMapReload),
+        call(3, 1, "SetSprite", {int64_t(20), int64_t(1), "dec05"s}),
+        op(3, 2, EVENT_Exit),
+        op(4, 0, EVENT_OnTimer, [](EvtInstruction &ir) { ir.data.timer_descr = {0, 0, 0, 0, 0, 0, 5}; }),
+        op(4, 1, EVENT_ForPartyMember, [](EvtInstruction &ir) { ir.who = CHOOSE_PARTY; }),
+        call(4, 2, "Subtract", {GOLD, int64_t(1)}),
+        op(5, 0, EVENT_OnLongTimer, [](EvtInstruction &ir) { ir.data.timer_descr = {0, 0, 0, 9, 30, 0, 0}; }),
+        call(5, 1, "Set", {MAP_VAR0, int64_t(0)}),
+    });
 
-    EXPECT_EQ(decompileEvt(records, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[3] = function()\n"
@@ -125,17 +145,17 @@ GAME_TEST(EvtDecompiler, Triggers) {
 
 GAME_TEST(EvtDecompiler, Topics) {
     // The commands that decide whether an NPC topic shows up run on their own, before the topic is picked.
-    std::vector<EvtRecord> records = {
-        record(10, 0, EVENT_OnCanShowDialogItemCmp, {GOLD, int64_t(500), int64_t(3)}),
-        record(10, 1, EVENT_SetCanShowDialogItem, {int64_t(0)}),
-        record(10, 2, EVENT_EndCanShowDialogItem, {int64_t(0)}),
-        record(10, 3, EVENT_SetCanShowDialogItem, {int64_t(1)}),
-        record(10, 4, EVENT_EndCanShowDialogItem, {int64_t(0)}),
-        record(10, 5, EVENT_ShowMessage, {int64_t(15)}),
-        record(10, 6, EVENT_Exit, {int64_t(0)}),
-    };
+    EvtProgram events = program({
+        op(10, 0, EVENT_OnCanShowDialogItemCmp, [](EvtInstruction &ir) { ir.data.variable_descr = {VAR_FixedGold, 500}; ir.target_step = 3; }),
+        op(10, 1, EVENT_SetCanShowDialogItem, [](EvtInstruction &ir) { ir.data.can_show_npc_dialogue = 0; }),
+        op(10, 2, EVENT_EndCanShowDialogItem),
+        op(10, 3, EVENT_SetCanShowDialogItem, [](EvtInstruction &ir) { ir.data.can_show_npc_dialogue = 1; }),
+        op(10, 4, EVENT_EndCanShowDialogItem),
+        call(10, 5, "SetMessage", {int64_t(15)}),
+        op(10, 6, EVENT_Exit),
+    });
 
-    EXPECT_EQ(decompileEvt(records, {}, true),
+    EXPECT_EQ(decompileEvt(events, {}, true),
               "Game.GlobalEvtLines.Count = 0\n"
               "\n"
               "evt.CanShowTopic[10] = function()\n"
@@ -153,7 +173,7 @@ GAME_TEST(EvtDecompiler, Topics) {
               "\n");
 
     // Topics are global events, so in a map's file the same commands do nothing.
-    EXPECT_EQ(decompileEvt(records, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[10] = function()\n"
@@ -164,13 +184,13 @@ GAME_TEST(EvtDecompiler, Topics) {
 
 GAME_TEST(EvtDecompiler, NestedIf) {
     // A condition nests inside another one's block. A block that is jumped into from outside can't be a Lua block.
-    std::vector<EvtRecord> nested = {
-        record(20, 0, EVENT_Compare, {MAP_VAR0, int64_t(1), int64_t(4)}),
-        record(20, 1, EVENT_Compare, {GOLD, int64_t(100), int64_t(3)}),
-        record(20, 2, EVENT_Add, {GOLD, int64_t(5)}),
-        record(20, 3, EVENT_StatusText, {int64_t(2)}),
-        record(20, 4, EVENT_Exit, {int64_t(0)}),
-    };
+    EvtProgram nested = program({
+        call(20, 0, "Cmp", {MAP_VAR0, int64_t(1)}, 4),
+        call(20, 1, "Cmp", {GOLD, int64_t(100)}, 3),
+        call(20, 2, "Add", {GOLD, int64_t(5)}),
+        call(20, 3, "StatusText", {int64_t(2)}),
+        op(20, 4, EVENT_Exit),
+    });
 
     EXPECT_EQ(decompileEvt(nested, {}, false),
               "Game.MapEvtLines.Count = 0\n"
@@ -185,13 +205,13 @@ GAME_TEST(EvtDecompiler, NestedIf) {
               "end\n"
               "\n");
 
-    std::vector<EvtRecord> entered = {
-        record(21, 0, EVENT_Compare, {MAP_VAR0, int64_t(1), int64_t(2)}),
-        record(21, 1, EVENT_Add, {GOLD, int64_t(1)}),
-        record(21, 2, EVENT_Add, {GOLD, int64_t(2)}),
-        record(21, 3, EVENT_Compare, {GOLD, int64_t(100), int64_t(1)}),
-        record(21, 4, EVENT_Exit, {int64_t(0)}),
-    };
+    EvtProgram entered = program({
+        call(21, 0, "Cmp", {MAP_VAR0, int64_t(1)}, 2),
+        call(21, 1, "Add", {GOLD, int64_t(1)}),
+        call(21, 2, "Add", {GOLD, int64_t(2)}),
+        call(21, 3, "Cmp", {GOLD, int64_t(100)}, 1),
+        op(21, 4, EVENT_Exit),
+    });
 
     EXPECT_EQ(decompileEvt(entered, {}, false),
               "Game.MapEvtLines.Count = 0\n"
@@ -213,16 +233,16 @@ GAME_TEST(EvtDecompiler, NestedIf) {
 
 GAME_TEST(EvtDecompiler, StepOrder) {
     // The interpreter starts from step 0 and looks every step up, so the order of the records in a file doesn't count.
-    std::vector<EvtRecord> records = {
-        record(22, 1, EVENT_Add, {GOLD, int64_t(1)}),
-        record(22, 0, EVENT_Add, {GOLD, int64_t(2)}),
-        record(22, 2, EVENT_Exit, {int64_t(0)}),
-        record(23, 0, EVENT_MouseOver, {int64_t(1)}), // The hint is all there is at step 0, so the event does nothing.
-        record(23, 1, EVENT_Add, {GOLD, int64_t(3)}),
-        record(23, 2, EVENT_Exit, {int64_t(0)}),
-    };
+    EvtProgram events = program({
+        call(22, 1, "Add", {GOLD, int64_t(1)}),
+        call(22, 0, "Add", {GOLD, int64_t(2)}),
+        op(22, 2, EVENT_Exit),
+        op(23, 0, EVENT_MouseOver, [](EvtInstruction &ir) { ir.data.text_id = 1; }), // The hint is all there is at step 0, so the event does nothing.
+        call(23, 1, "Add", {GOLD, int64_t(3)}),
+        op(23, 2, EVENT_Exit),
+    });
 
-    EXPECT_EQ(decompileEvt(records, {"", "Door"}, false),
+    EXPECT_EQ(decompileEvt(events, {"", "Door"}, false),
               "local TXT = Localize{\n"
               "    [1] = \"Door\",\n"
               "}\n"
@@ -250,24 +270,24 @@ GAME_TEST(EvtDecompiler, StepOrder) {
 GAME_TEST(EvtDecompiler, Hints) {
     // The engine takes an event for a hint alone only if it opens with a hint and an exit. Any other event has to get a
     // handler, even an empty one, or its faces stop taking clicks.
-    std::vector<EvtRecord> records = {
-        record(30, 0, EVENT_MouseOver, {int64_t(1)}),
-        record(30, 0, EVENT_Exit, {int64_t(0)}),
-        record(31, 0, EVENT_MouseOver, {int64_t(1)}),
-        record(31, 0, EVENT_OnMapReload, {int64_t(0)}),
-        record(31, 1, EVENT_Add, {GOLD, int64_t(1)}),
-        record(31, 2, EVENT_Exit, {int64_t(0)}),
-        record(32, 0, EVENT_MouseOver, {int64_t(9)}), // There is no such string, and the engine shows an empty hint then.
-        record(32, 0, EVENT_Exit, {int64_t(0)}),
-        record(33, 0, EVENT_MouseOver, {int64_t(1)}),
-        record(33, 0, EVENT_SpeakInHouse, {int64_t(2)}),
-        record(33, 1, EVENT_Exit, {int64_t(0)}),
-        record(34, 0, EVENT_MouseOver, {int64_t(1)}),
-        record(34, 0, EVENT_SpeakInHouse, {int64_t(9999)}), // There is no such house, and the engine keeps the hint then.
-        record(34, 1, EVENT_Exit, {int64_t(0)}),
-    };
+    EvtProgram events = program({
+        op(30, 0, EVENT_MouseOver, [](EvtInstruction &ir) { ir.data.text_id = 1; }),
+        op(30, 0, EVENT_Exit),
+        op(31, 0, EVENT_MouseOver, [](EvtInstruction &ir) { ir.data.text_id = 1; }),
+        op(31, 0, EVENT_OnMapReload),
+        call(31, 1, "Add", {GOLD, int64_t(1)}),
+        op(31, 2, EVENT_Exit),
+        op(32, 0, EVENT_MouseOver, [](EvtInstruction &ir) { ir.data.text_id = 9; }), // There is no such string, and the engine shows an empty hint then.
+        op(32, 0, EVENT_Exit),
+        op(33, 0, EVENT_MouseOver, [](EvtInstruction &ir) { ir.data.text_id = 1; }),
+        call(33, 0, "EnterHouse", {int64_t(2)}),
+        op(33, 1, EVENT_Exit),
+        op(34, 0, EVENT_MouseOver, [](EvtInstruction &ir) { ir.data.text_id = 1; }),
+        call(34, 0, "EnterHouse", {int64_t(9999)}), // There is no such house, and the engine keeps the hint then.
+        op(34, 1, EVENT_Exit),
+    });
 
-    EXPECT_EQ(decompileEvt(records, {"", "Door"}, false),
+    EXPECT_EQ(decompileEvt(events, {"", "Door"}, false),
               "local TXT = Localize{\n"
               "    [1] = \"Door\",\n"
               "}\n"
@@ -301,18 +321,18 @@ GAME_TEST(EvtDecompiler, Hints) {
 GAME_TEST(EvtDecompiler, CalendarTimers) {
     // `Timer` stands for `OnTimer` and `RefillTimer` for `OnLongTimer` whatever the fields are, and the engine checks
     // all of the former before any of the latter.
-    std::vector<EvtRecord> records = {
-        record(40, 0, EVENT_OnTimer, {int64_t(0), int64_t(0), int64_t(0), int64_t(1), int64_t(0), int64_t(0), int64_t(0), int64_t(0)}),
-        record(40, 1, EVENT_Add, {GOLD, int64_t(1)}),
-        record(41, 0, EVENT_OnLongTimer, {int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(1), int64_t(0), int64_t(0)}),
-        record(41, 1, EVENT_Add, {GOLD, int64_t(2)}),
-        record(42, 0, EVENT_OnLongTimer, {int64_t(0), int64_t(0), int64_t(7), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0)}),
-        record(42, 1, EVENT_Add, {GOLD, int64_t(3)}),
-        record(43, 0, EVENT_OnLongTimer, {int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(2), int64_t(0)}),
-        record(43, 1, EVENT_Add, {GOLD, int64_t(4)}),
-    };
+    EvtProgram events = program({
+        op(40, 0, EVENT_OnTimer, [](EvtInstruction &ir) { ir.data.timer_descr = {0, 0, 0, 1, 0, 0, 0}; }),
+        call(40, 1, "Add", {GOLD, int64_t(1)}),
+        op(41, 0, EVENT_OnLongTimer, [](EvtInstruction &ir) { ir.data.timer_descr = {0, 0, 0, 0, 0, 1, 0}; }),
+        call(41, 1, "Add", {GOLD, int64_t(2)}),
+        op(42, 0, EVENT_OnLongTimer, [](EvtInstruction &ir) { ir.data.timer_descr = {0, 0, 1, 0, 0, 0, 0}; }),
+        call(42, 1, "Add", {GOLD, int64_t(3)}),
+        op(43, 0, EVENT_OnLongTimer, [](EvtInstruction &ir) { ir.data.timer_descr = {0, 0, 0, 0, 0, 0, 2}; }),
+        call(43, 1, "Add", {GOLD, int64_t(4)}),
+    });
 
-    EXPECT_EQ(decompileEvt(records, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[40] = function()\n"
@@ -343,13 +363,13 @@ GAME_TEST(EvtDecompiler, CalendarTimers) {
 
 GAME_TEST(EvtDecompiler, Strings) {
     // Quotes, backslashes and line breaks in a string must not end the Lua string or the comment they sit in.
-    std::vector<EvtRecord> records = {
-        record(50, 0, EVENT_ShowMovie, {int64_t(1), int64_t(1), "\"family reunion\" "s}),
-        record(50, 1, EVENT_StatusText, {int64_t(1)}),
-        record(50, 2, EVENT_Exit, {int64_t(0)}),
-    };
+    EvtProgram events = program({
+        call(50, 0, "ShowMovie", {int64_t(1), int64_t(1), "\"family reunion\" "s}),
+        call(50, 1, "StatusText", {int64_t(1)}),
+        op(50, 2, EVENT_Exit),
+    });
 
-    EXPECT_EQ(decompileEvt(records, {"", "a\nb\\c"}, false),
+    EXPECT_EQ(decompileEvt(events, {"", "a\nb\\c"}, false),
               "local TXT = Localize{\n"
               "    [1] = \"a\\nb\\\\c\",\n"
               "}\n"
@@ -358,36 +378,31 @@ GAME_TEST(EvtDecompiler, Strings) {
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[50] = function()\n"
-              "    evt.ShowMovie{DoubleSize = 1, ExitCurrentScreen = true, Name = \"\\\"family reunion\\\" \"}\n"
+              "    evt.ShowMovie{ExitCurrentScreen = true, Name = \"\\\"family reunion\\\" \"}\n"
               "    evt.StatusText(1)  -- \"a\\nb\\\\c\"\n"
               "end\n"
               "\n");
 }
 
 GAME_TEST(EvtDecompiler, Unsupported) {
-    // The interpreter ends an event on a question, and a record that the table can't describe has no fields to print.
-    EvtRecord unknown;
-    unknown.eventId = 61;
-    unknown.opcode = static_cast<EvtOpcode>(0xFF);
-    unknown.payload = "ab";
+    // The interpreter ends an event on a question, and doesn't run a command it doesn't support.
+    EvtProgram events = program({
+        op(60, 0, EVENT_InputString, [](EvtInstruction &ir) { ir.data.text_id = 1; }),
+        call(60, 1, "Add", {GOLD, int64_t(1)}),
+        op(60, 2, EVENT_Exit),
+        op(61, 0, EVENT_SetActorGroup),
+        op(61, 1, EVENT_Exit),
+    });
 
-    std::vector<EvtRecord> records = {
-        record(60, 0, EVENT_InputString, {int64_t(1), int64_t(2), int64_t(3), int64_t(2)}),
-        record(60, 1, EVENT_Add, {GOLD, int64_t(1)}),
-        record(60, 2, EVENT_Exit, {int64_t(0)}),
-        unknown,
-        record(61, 1, EVENT_Exit, {int64_t(0)}),
-    };
-
-    EXPECT_EQ(decompileEvt(records, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[60] = function()\n"
-              "    -- evt.Question{Question = 1, Answer1 = 2, Answer2 = 3} isn't supported by OpenEnroth.\n"
+              "    -- EVENT_InputString isn't supported by OpenEnroth.\n"
               "end\n"
               "\n"
               "evt.map[61] = function()\n"
-              "    -- Command 255 with 2 bytes of data isn't known to OpenEnroth.\n"
+              "    -- EVENT_SetActorGroup isn't supported by OpenEnroth.\n"
               "end\n"
               "\n");
 }

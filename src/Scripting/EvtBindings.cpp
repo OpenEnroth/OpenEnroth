@@ -62,9 +62,6 @@ static EvtTargetCharacter toPlayer(const sol::object &value, std::string_view wh
 static EvtFieldValue toFieldValue(const EvtCommandInfo &command, const EvtFieldInfo &field, const sol::object &value, EvtTargetCharacter player) {
     std::string what = fmt::format("evt.{}: field {}", command.name, field.name);
 
-    if (field.type == EVT_FIELD_JUMP)
-        return int64_t(0); // The outcome of the instruction tells whether it jumped.
-
     if (!value.valid() || value.is<sol::lua_nil_t>()) {
         switch (field.type) {
             case EVT_FIELD_STRING: return std::string();
@@ -103,9 +100,9 @@ static EvtFieldValue toFieldValue(const EvtCommandInfo &command, const EvtFieldI
  * @param command                       Command to run.
  * @param args                          Its arguments, by field name, by position, or a mix of the two.
  * @param player                        Current player of the script.
- * @return                              The command as an evt record.
+ * @return                              The command as an instruction.
  */
-static EvtRecord toRecord(const EvtCommandInfo &command, const sol::table &args, EvtTargetCharacter player) {
+static EvtInstruction toInstruction(const EvtCommandInfo &command, const sol::table &args, EvtTargetCharacter player) {
     for (const auto &[key, _] : args) {
         if (key.is<std::string>()) {
             if (!std::ranges::contains(command.fields, key.as<std::string>(), &EvtFieldInfo::name))
@@ -115,19 +112,23 @@ static EvtRecord toRecord(const EvtCommandInfo &command, const sol::table &args,
         }
     }
 
-    EvtRecord result;
+    EvtInstruction result = {};
     result.opcode = command.opcode;
-    result.values.emplace();
     for (size_t i = 0; i < command.fields.size(); i++) {
         const EvtFieldInfo &field = command.fields[i];
+        if (!field.set)
+            continue;
         sol::object value = args[field.name];
         if (!value.valid() || value.is<sol::lua_nil_t>())
             value = args[i + 1];
-        result.values->push_back(toFieldValue(command, field, value, player));
+        try {
+            field.set(&result, toFieldValue(command, field, value, player));
+        } catch (const Exception &e) {
+            throw Exception("evt.{}: {}", command.name, e.what());
+        }
     }
     return result;
 }
-
 
 /**
  * Rejects the values that the interpreter would use to index past a table. It takes evt files as they ship and
@@ -191,18 +192,16 @@ static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, s
     const EvtCommandInfo *command = evtCommand(name);
     if (!command)
         throw Exception("evt.{} doesn't exist", name);
-    if (command->kind != EVT_COMMAND_ACTION && command->kind != EVT_COMMAND_CONDITION)
-        throw Exception("evt.{} can't be called from a script", name);
 
     EvtTargetCharacter who = toPlayer(player, "evt.Player");
-    EvtInstruction ir = evtInstruction(toRecord(*command, args, who));
+    EvtInstruction ir = toInstruction(*command, args, who);
     checkIndices(*command, ir, who);
 
     context.interpreter.setTargetCharacter(who);
     EvtResult next = context.interpreter.executeInstruction(ir);
 
     sol::object result = sol::make_object(state, sol::lua_nil);
-    if (command->kind == EVT_COMMAND_CONDITION)
+    if (command->isCondition)
         result = sol::make_object(state, next.outcome == EVT_OUTCOME_JUMP);
 
     switch (next.outcome) {
@@ -267,25 +266,30 @@ static EvtInstruction timerInstruction(double period, std::optional<double> star
     bool isWeekly = ticks == Duration::fromDays(7).ticks();
     bool isCalendarPeriod = isYearly || isMonthly || isWeekly || ticks == Duration::fromDays(1).ticks();
 
-    EvtRecord record;
-    record.opcode = isRefill ? EVENT_OnLongTimer : EVENT_OnTimer;
+    EvtInstruction result = {};
+    result.opcode = isRefill ? EVENT_OnLongTimer : EVENT_OnTimer;
+    auto &timer = result.data.timer_descr;
     if (!start && !(isRefill && isCalendarPeriod)) {
         int64_t halfMinute = Duration::fromSeconds(30).ticks();
         if (ticks < halfMinute || ticks % halfMinute != 0)
             throw Exception("Timer: a period of {} ticks isn't a whole number of half minutes", ticks);
         if (ticks / halfMinute > 0xFFFF)
             throw Exception("Timer: a period of {} half minutes is over the limit of 65535, a longer timer needs a start time", ticks / halfMinute);
-        record.values = std::vector<EvtFieldValue>{int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), ticks / halfMinute, int64_t(0)};
+        timer.alt_halfmin_interval = ticks / halfMinute;
     } else {
         if (!isCalendarPeriod)
             throw Exception("Timer: a timer with a start time fires every const.Day, const.Week, const.Month or const.Year");
         int64_t seconds = toInteger(start.value_or(0) * 30 / Duration::fromSeconds(30).ticks(), "Timer: the start");
         if (seconds < 0 || seconds >= 24 * 60 * 60)
             throw Exception("Timer: the start has to be a time of day");
-        record.values = std::vector<EvtFieldValue>{int64_t(isYearly), int64_t(isMonthly), int64_t(isWeekly), seconds / 3600, seconds / 60 % 60,
-                                                   seconds % 60, int64_t(0), int64_t(0)};
+        timer.is_yearly = isYearly;
+        timer.is_monthly = isMonthly;
+        timer.is_weekly = isWeekly;
+        timer.daily_start_hour = seconds / 3600;
+        timer.daily_start_minute = seconds / 60 % 60;
+        timer.daily_start_second = seconds % 60;
     }
-    return evtInstruction(record);
+    return result;
 }
 
 sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
@@ -306,8 +310,7 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
             sol::state_view lua(state);
             sol::table result = lua.create_table();
             for (const EvtCommandInfo &command : evtCommands())
-                if (command.kind == EVT_COMMAND_ACTION || command.kind == EVT_COMMAND_CONDITION)
-                    result.add(command.name);
+                result.add(command.name);
             return result;
         }),
         "constants", sol::as_function([](sol::this_state state) {

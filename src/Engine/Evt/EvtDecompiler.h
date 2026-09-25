@@ -2,9 +2,10 @@
 
 #include <span>
 #include <string>
+#include <string_view>
 #include <vector>
 
-#include "Engine/Evt/EvtCommands.h"
+class EvtProgram;
 
 /**
  * Turns an evt file into a Lua script for MMExtension's `evt` API that does what the file does. The script starts by
@@ -13,12 +14,12 @@
  * Conditions become `if` blocks where no jump enters the block from outside, and `goto` otherwise. Names from the game
  * tables go into comments when the tables are loaded.
  *
- * @param records                       Records of the evt file, see `decodeEvtRecords`.
+ * @param program                       The evt file.
  * @param strings                       Strings of the map, from its str file. Empty for global.evt.
  * @param isGlobal                      Whether this is global.evt.
  * @return                              The script.
  */
-std::string decompileEvt(std::span<const EvtRecord> records, const std::vector<std::string> &strings, bool isGlobal);
+std::string decompileEvt(const EvtProgram &program, const std::vector<std::string> &strings, bool isGlobal);
 
 /**
  * @param name                          Name of an evt file of the game without the extension, e.g. "d27" or "global".
