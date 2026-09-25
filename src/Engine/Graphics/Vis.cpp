@@ -51,45 +51,28 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
             static_DetermineFacetIntersection_array_F8F200[i].flt_2C = 0.0f;
     }
 
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        if ((signed int)face->numVertices > 0) {
-            for (int i = 0; i < face->numVertices; i++) {
-                static_DetermineFacetIntersection_array_F8F200[i]
-                    .vWorldPosition.x =
-                    (float)pIndoor->vertices[face->vertexIds[i]].x;
-                static_DetermineFacetIntersection_array_F8F200[i]
-                    .vWorldPosition.y =
-                    (float)pIndoor->vertices[face->vertexIds[i]].y;
-                static_DetermineFacetIntersection_array_F8F200[i]
-                    .vWorldPosition.z =
-                    (float)pIndoor->vertices[face->vertexIds[i]].z;
-            }
-        }
-    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        const std::vector<Vec3f> &v = pOutdoor->model(pid).vertices;
-        for (unsigned i = 0; i < face->numVertices; ++i)
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->vertexIds[i]];
-    } else {
-        assert(false);
+    const int numVertices = static_cast<int>(face->vertices.size());
+    for (int i = 0; i < numVertices; i++) {
+        static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = *face->vertices[i];
     }
 
     pCamera3D->ViewTransform(
-        static_DetermineFacetIntersection_array_F8F200, face->numVertices);
+        static_DetermineFacetIntersection_array_F8F200, numVertices);
     pCamera3D->Project(static_DetermineFacetIntersection_array_F8F200,
-                              face->numVertices, 1);
+                              numVertices, 1);
 
     SortVectors_x(static_DetermineFacetIntersection_array_F8F200, 0,
-                  face->numVertices - 1);
+                  numVertices - 1);
     if (static_DetermineFacetIntersection_array_F8F200[0].vWorldViewPosition.x >
         pick_depth)
         return nullptr;
 
     float screenspace_center_x, screenspace_center_y;
     GetPolygonScreenSpaceCenter(static_DetermineFacetIntersection_array_F8F200,
-                                face->numVertices, &screenspace_center_x,
+                                numVertices, &screenspace_center_x,
                                 &screenspace_center_y);
     if (IsPolygonOccludedByBillboard(
-            static_DetermineFacetIntersection_array_F8F200, face->numVertices,
+            static_DetermineFacetIntersection_array_F8F200, numVertices,
             screenspace_center_x, screenspace_center_y))
         return nullptr;
 

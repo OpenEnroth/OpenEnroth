@@ -400,7 +400,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
     for (uint16_t faceId : foundFaces) {
         // calc distance between this face and party
         if (this->faces[faceId].polygonType == POLYGON_Floor)
-            CalcZDist = sZ - this->vertices[this->faces[faceId].vertexIds[0]].z;
+            CalcZDist = sZ - this->faces[faceId].vertices[0]->z;
         if (this->faces[faceId].polygonType == POLYGON_InBetweenFloorAndWall) {
             CalcZDist = sZ - this->faces[faceId].zCalc.calculate(sX, sY);
         }
@@ -473,32 +473,26 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
 
     auto do_flatten = [&](auto &&vertex_accessor) {
         if (plane & FACE_XY_PLANE) {
-            for (int i = 0; i < this->numVertices; i++) {
+            for (size_t i = 0; i < this->vertices.size(); i++) {
                 points->u[i] = vertex_accessor(i).x;
                 points->v[i] = vertex_accessor(i).y;
             }
         } else if (plane & FACE_XZ_PLANE) {
-            for (int i = 0; i < this->numVertices; i++) {
+            for (size_t i = 0; i < this->vertices.size(); i++) {
                 points->u[i] = vertex_accessor(i).x;
                 points->v[i] = vertex_accessor(i).z;
             }
         } else {
-            for (int i = 0; i < this->numVertices; i++) {
+            for (size_t i = 0; i < this->vertices.size(); i++) {
                 points->u[i] = vertex_accessor(i).y;
                 points->v[i] = vertex_accessor(i).z;
             }
         }
     };
 
-    if (model_idx == MODEL_INDOOR) {
-        do_flatten([&](int index) -> const auto &{
-            return pIndoor->vertices[this->vertexIds[index]];
-        });
-    } else {
-        do_flatten([&](int index) -> const auto &{
-            return pOutdoor->pBModels[model_idx].vertices[this->vertexIds[index]];
-        });
-    }
+    do_flatten([&](int index) -> const auto &{
+        return *this->vertices[index];
+    });
 }
 
 bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttributes override_plane) const {
@@ -509,7 +503,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
     // float d = std::abs(this->facePlane.signedDistanceTo(pos.toFloat()));
     // assert(d < 0.01f);
 
-    if (this->numVertices < 3)
+    if (this->vertices.size() < 3)
         return false; // This does happen.
 
     FaceAttributes plane = override_plane;
@@ -535,7 +529,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
 #if 0
     // Old algo for reference.
     bool inside = false;
-    for (int i = 0, j = this->numVertices - 1; i < this->numVertices; j = i++) {
+    for (size_t i = 0, j = this->vertices.size() - 1; i < this->vertices.size(); j = i++) {
         if ((points.v[i] > v) == (points.v[j] > v))
             continue;
 
@@ -549,7 +543,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
     // The polygons we're dealing with are convex, so instead of the usual ray casting algorithm we can simply
     // check that the point in question lies on the same side relative to all of the polygon's edges.
     int sign = 0;
-    for (int i = 0, j = this->numVertices - 1; i < this->numVertices; j = i++) {
+    for (size_t i = 0, j = this->vertices.size() - 1; i < this->vertices.size(); j = i++) {
         float a_u = points.u[j] - points.u[i];
         float a_v = points.v[j] - points.v[i];
         float b_u = u - points.u[i];
@@ -673,7 +667,7 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
 
     for (int j = 0; j < door->numFaces; ++j) {
         BLVFace* face = &pIndoor->faces[door->pFaceIDs[j]];
-        const Vec3f& facePoint = pIndoor->vertices[face->vertexIds[0]];
+        const Vec3f& facePoint = *face->vertices[0];
         face->facePlane.dist = -dot(facePoint, face->facePlane.normal);
         face->zCalc.init(face->facePlane);
 
@@ -685,8 +679,8 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         float minV = std::numeric_limits<float>::infinity();
         float maxU = -std::numeric_limits<float>::infinity();
         float maxV = -std::numeric_limits<float>::infinity();
-        for (unsigned k = 0; k < face->numVertices; ++k) {
-            Vec3f point = pIndoor->vertices[face->vertexIds[k]];
+        for (size_t k = 0; k < face->vertices.size(); ++k) {
+            Vec3f point = *face->vertices[k];
             float pointU = dot(point, u);
             float pointV = dot(point, v);
             minU = std::min(minU, pointU);
@@ -1058,7 +1052,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         // And if this z is ceiling z, then this will place the actor above the ceiling.
         float z_calc;
         if (pFloor->polygonType == POLYGON_Floor || pFloor->polygonType == POLYGON_Ceiling) {
-            z_calc = pIndoor->vertices[pFloor->vertexIds[0]].z; // POLYGON_Floor has normal (0,0,1)
+            z_calc = pFloor->vertices[0]->z; // POLYGON_Floor has normal (0,0,1)
         } else {
             z_calc = pFloor->zCalc.calculate(pos.x, pos.y);
         }

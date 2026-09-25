@@ -110,7 +110,7 @@ void CalcPolygonLimits(const BLVFace *pFace, RenderVertexSoft *pOutVertices) {
     float y_max = points.v[0];
     unsigned y_max_idx = 0;
 
-    for (unsigned i = 0; i < pFace->numVertices; ++i) {
+    for (size_t i = 0; i < pFace->vertices.size(); ++i) {
         if (points.u[i] < x_min) {
             x_min = points.u[i];
             x_min_idx = i;
@@ -131,27 +131,19 @@ void CalcPolygonLimits(const BLVFace *pFace, RenderVertexSoft *pOutVertices) {
     }
 
     RenderVertexSoft v1;  // [sp+30Ch] [bp-54h]@24
-    v1.vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[x_min_idx]].x;
-    v1.vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[x_min_idx]].y;
-    v1.vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[x_min_idx]].z;
+    v1.vWorldPosition = *pFace->vertices[x_min_idx];
     pOutVertices[0] = v1;
 
     RenderVertexSoft v2;  // [sp+30Ch] [bp-54h]@24
-    v2.vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[y_min_idx]].x;
-    v2.vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[y_min_idx]].y;
-    v2.vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[y_min_idx]].z;
+    v2.vWorldPosition = *pFace->vertices[y_min_idx];
     pOutVertices[1] = v2;
 
     RenderVertexSoft v3;  // [sp+30Ch] [bp-54h]@24
-    v3.vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[x_max_idx]].x;
-    v3.vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[x_max_idx]].y;
-    v3.vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[x_max_idx]].z;
+    v3.vWorldPosition = *pFace->vertices[x_max_idx];
     pOutVertices[2] = v3;
 
     RenderVertexSoft v4;  // [sp+30Ch] [bp-54h]@24
-    v4.vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[y_max_idx]].x;
-    v4.vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[y_max_idx]].y;
-    v4.vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[y_max_idx]].z;
+    v4.vWorldPosition = *pFace->vertices[y_max_idx];
     pOutVertices[3] = v4;
 }
 
