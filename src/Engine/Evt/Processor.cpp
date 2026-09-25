@@ -33,12 +33,12 @@
 struct MapTimer {
     EvtTimerSchedule schedule;
     Time alarmTime;
-    EvtTimerKind kind = EVT_TIMER_REGULAR;
+    EvtTimerKind kind = EVT_TIMER_KIND_REGULAR;
     int eventId = 0;
     int eventStep = 0;
     std::function<void()> callback; // Called instead of the event if set.
     int handle = 0;
-    EvtTimerLifetime lifetime = EVT_TIMER_MAP;
+    EvtTimerLifetime lifetime = EVT_TIMER_LIFETIME_MAP;
     bool isRemoved = false; // Erased once no loop over the timers is running.
 };
 
@@ -55,6 +55,7 @@ static Time timerGuard;
 
 static EvtScripts *scripts = nullptr;
 static int lastTimerHandle = 0;
+static int mapLeaveCount = 0;
 
 void initDecorationEvents() {
     DecorationId id = pDecorationTable->decorationId("Event Trigger");
@@ -142,7 +143,7 @@ static void registerTimers() {
             MapTimer timer;
             timer.schedule = timerSchedule(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep));
             timer.alarmTime = firstAlarm(timer.schedule, levelEnterTime, levelLastVisit);
-            timer.kind = triggerType == EVENT_OnTimer ? EVT_TIMER_REGULAR : EVT_TIMER_REFILL;
+            timer.kind = triggerType == EVENT_OnTimer ? EVT_TIMER_KIND_REGULAR : EVT_TIMER_KIND_REFILL;
             timer.eventId = trigger.eventId;
             timer.eventStep = trigger.eventStep;
             evtTimers.push_back(timer);
@@ -259,7 +260,7 @@ static void updateFaceHints() {
 }
 
 void onMapLoad() {
-    removeTimers([](const MapTimer &timer) { return timer.lifetime == EVT_TIMER_MAP; });
+    removeTimers([](const MapTimer &timer) { return timer.lifetime == EVT_TIMER_LIFETIME_MAP; });
     eraseRemovedTimers();
 
     if (scripts) {
@@ -281,6 +282,8 @@ void onMapLoad() {
 }
 
 void onMapLeave() {
+    mapLeaveCount++;
+
     for (EventTrigger &triggers : onMapLeaveTriggers)
         runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId), triggers.eventStep + 1);
 
@@ -288,27 +291,30 @@ void onMapLeave() {
         scripts->onMapLeave();
 
     // Cleanup timers to avoid firing while map transition is in process
-    removeTimers([](const MapTimer &timer) { return timer.lifetime == EVT_TIMER_MAP; });
+    removeTimers([](const MapTimer &timer) { return timer.lifetime == EVT_TIMER_LIFETIME_MAP; });
 }
 
 /**
- * Fires the timers that are due, the regular ones first, until one of them starts a map transition.
+ * Fires the timers that are due, the regular ones first, until one of them leaves the map.
  */
 static void checkTimers() {
-    for (EvtTimerKind kind : {EVT_TIMER_REGULAR, EVT_TIMER_REFILL}) {
+    int leaveCount = mapLeaveCount;
+    for (EvtTimerKind kind : {EVT_TIMER_KIND_REGULAR, EVT_TIMER_KIND_REFILL}) {
         for (size_t i = 0; i < mapTimers.size(); i++) {
             if (mapTimers[i].kind != kind || mapTimers[i].isRemoved || pParty->GetPlayingTime() < mapTimers[i].alarmTime)
                 continue;
 
             if (std::function<void()> callback = mapTimers[i].callback) {
                 callback();
-            } else if (runEvent(EvtContext(EVT_SOURCE_MAP, mapTimers[i].eventId), mapTimers[i].eventStep + 1) == EVT_TRANSITION_STARTED) {
-                return; // Leaving the map removed the timers.
+            } else {
+                runEvent(EvtContext(EVT_SOURCE_MAP, mapTimers[i].eventId), mapTimers[i].eventStep + 1);
             }
+            if (mapLeaveCount != leaveCount)
+                return; // The timers that are left belong to the map or the game being left.
 
             MapTimer &timer = mapTimers[i];
             if (timer.isRemoved)
-                continue; // The callback sent the party to another map, or removed its timer.
+                continue; // The callback removed its timer.
 
             Time now = pParty->GetPlayingTime();
             if (timer.schedule.type == EVT_TIMER_INTERVAL) {
@@ -363,4 +369,11 @@ int addTimer(const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifeti
 
 void removeTimer(int handle) {
     removeTimers([handle](const MapTimer &timer) { return timer.handle == handle; });
+}
+
+void removeEventTriggers(std::optional<int> eventId) {
+    auto isRemoved = [eventId](int id) { return !eventId || id == *eventId; };
+    removeTimers([&](const MapTimer &timer) { return timer.callback == nullptr && isRemoved(timer.eventId); });
+    std::erase_if(onMapLoadTriggers, [&](const EventTrigger &trigger) { return isRemoved(trigger.eventId); });
+    std::erase_if(onMapLeaveTriggers, [&](const EventTrigger &trigger) { return isRemoved(trigger.eventId); });
 }
