@@ -53,7 +53,7 @@ GAME_TEST(EvtDecompiler, IfElse) {
         op(1, 5, EVENT_Exit),
     });
 
-    EXPECT_EQ(decompileEvt(events, {"", "Lever", "Locked"}, false),
+    EXPECT_EQ(decompileEvt(events, {"", "Lever", "Locked"}, false).text(),
               "local TXT = Localize{\n"
               "    [1] = \"Lever\",\n"
               "    [2] = \"Locked\",\n"
@@ -85,7 +85,7 @@ GAME_TEST(EvtDecompiler, Goto) {
         op(2, 4, EVENT_Jmp, [](EvtInstruction &ir) { ir.target_step = 1; }),
     });
 
-    EXPECT_EQ(decompileEvt(events, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false).text(),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[2] = function()\n"
@@ -119,7 +119,7 @@ GAME_TEST(EvtDecompiler, Triggers) {
         call(5, 1, "Set", {MAP_VAR0, int64_t(0)}),
     });
 
-    EXPECT_EQ(decompileEvt(events, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false).text(),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[3] = function()\n"
@@ -155,7 +155,7 @@ GAME_TEST(EvtDecompiler, Topics) {
         op(10, 6, EVENT_Exit),
     });
 
-    EXPECT_EQ(decompileEvt(events, {}, true),
+    EXPECT_EQ(decompileEvt(events, {}, true).text(),
               "Game.GlobalEvtLines.Count = 0\n"
               "\n"
               "evt.CanShowTopic[10] = function()\n"
@@ -173,7 +173,7 @@ GAME_TEST(EvtDecompiler, Topics) {
               "\n");
 
     // Topics are global events, so in a map's file the same commands do nothing.
-    EXPECT_EQ(decompileEvt(events, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false).text(),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[10] = function()\n"
@@ -192,7 +192,7 @@ GAME_TEST(EvtDecompiler, NestedIf) {
         op(20, 4, EVENT_Exit),
     });
 
-    EXPECT_EQ(decompileEvt(nested, {}, false),
+    EXPECT_EQ(decompileEvt(nested, {}, false).text(),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[20] = function()\n"
@@ -213,7 +213,7 @@ GAME_TEST(EvtDecompiler, NestedIf) {
         op(21, 4, EVENT_Exit),
     });
 
-    EXPECT_EQ(decompileEvt(entered, {}, false),
+    EXPECT_EQ(decompileEvt(entered, {}, false).text(),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[21] = function()\n"
@@ -242,7 +242,7 @@ GAME_TEST(EvtDecompiler, StepOrder) {
         op(23, 2, EVENT_Exit),
     });
 
-    EXPECT_EQ(decompileEvt(events, {"", "Door"}, false),
+    EXPECT_EQ(decompileEvt(events, {"", "Door"}, false).text(),
               "local TXT = Localize{\n"
               "    [1] = \"Door\",\n"
               "}\n"
@@ -287,7 +287,7 @@ GAME_TEST(EvtDecompiler, Hints) {
         op(34, 1, EVENT_Exit),
     });
 
-    EXPECT_EQ(decompileEvt(events, {"", "Door"}, false),
+    EXPECT_EQ(decompileEvt(events, {"", "Door"}, false).text(),
               "local TXT = Localize{\n"
               "    [1] = \"Door\",\n"
               "}\n"
@@ -332,7 +332,7 @@ GAME_TEST(EvtDecompiler, CalendarTimers) {
         call(43, 1, "Add", {GOLD, int64_t(4)}),
     });
 
-    EXPECT_EQ(decompileEvt(events, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false).text(),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[40] = function()\n"
@@ -369,7 +369,7 @@ GAME_TEST(EvtDecompiler, Strings) {
         op(50, 2, EVENT_Exit),
     });
 
-    EXPECT_EQ(decompileEvt(events, {"", "a\nb\\c"}, false),
+    EXPECT_EQ(decompileEvt(events, {"", "a\nb\\c"}, false).text(),
               "local TXT = Localize{\n"
               "    [1] = \"a\\nb\\\\c\",\n"
               "}\n"
@@ -394,7 +394,7 @@ GAME_TEST(EvtDecompiler, Unsupported) {
         op(61, 1, EVENT_Exit),
     });
 
-    EXPECT_EQ(decompileEvt(events, {}, false),
+    EXPECT_EQ(decompileEvt(events, {}, false).text(),
               "Game.MapEvtLines.Count = 0\n"
               "\n"
               "evt.map[60] = function()\n"

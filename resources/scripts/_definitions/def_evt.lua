@@ -5,6 +5,11 @@
 --- @field execute fun(self: EvtScriptContext, name: string, args: table, player: integer|string): boolean?, string
 --- @field isMapExitTriggered fun(self: EvtScriptContext): boolean
 
+--- The Lua script of an evt file, in one piece for each event.
+--- @class EvtDecompiledScript
+--- @field header string
+--- @field events { id: integer, code: string }[]
+
 --- @class EvtBindings
 --- @field newContext fun(eventId: integer, targetPid: integer, canShowMessages: boolean): EvtScriptContext
 --- @field defaultPlayer fun(): integer
@@ -25,7 +30,7 @@
 --- @field globalScripts fun(): string[]
 --- @field loadScript fun(path: string, environment: table): function?, string?
 --- @field loadString fun(code: string, chunkName: string, environment: table): function?, string?
---- @field decompile fun(name: string, skippedEvents: integer[]?): string
+--- @field decompile fun(name: string): EvtDecompiledScript
 --- @field isDecompilingEvents fun(): boolean
 --- @field questBit fun(bit: integer): boolean
 --- @field setQuestBit fun(bit: integer, value: boolean)
