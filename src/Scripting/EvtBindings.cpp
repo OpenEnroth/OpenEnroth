@@ -131,38 +131,20 @@ static EvtInstruction toInstruction(const EvtCommandInfo &command, const sol::ta
 }
 
 /**
- * Rejects the values that the interpreter would use to index past a table. It takes evt files as they ship and
- * doesn't check these itself.
+ * Rejects a command that the interpreter can't run where the script runs it. The table's setters have already checked
+ * the values that don't depend on that.
  *
  * @param command                       Command to check.
  * @param ir                            The command as an instruction.
  * @param who                           Player that the command applies to.
- * @throws Exception                    If a value is out of range.
+ * @throws Exception                    If the command can't run here.
  */
-static void checkIndices(const EvtCommandInfo &command, const EvtInstruction &ir, EvtTargetCharacter who) {
-    auto check = [&](int64_t value, int64_t size, std::string_view what) {
-        if (value < 0 || value >= size)
-            throw Exception("evt.{}: {} {} is out of range [0, {})", command.name, what, value, size);
-    };
-
+static void checkContext(const EvtCommandInfo &command, const EvtInstruction &ir, EvtTargetCharacter who) {
     switch (ir.opcode) {
-        case EVENT_SpeakNPC:
-        case EVENT_SetNPCGreeting:
-            check(ir.data.npc_descr.npc_id, pNPCStats->pNPCData.size(), "NPC");
-            break;
-        case EVENT_SetNPCTopic:
-            check(ir.data.npc_topic_descr.npc_id, pNPCStats->pNPCData.size(), "NPC");
-            break;
-        case EVENT_MoveNPC:
-            check(ir.data.npc_move_descr.npc_id, pNPCStats->pNPCData.size(), "NPC");
-            break;
-        case EVENT_SetNPCGroupNews:
-            check(ir.data.npc_groups_descr.groups_id, pNPCStats->pGroups.size(), "NPC group");
-            break;
         case EVENT_StatusText:
         case EVENT_ShowMessage:
-            if (activeLevelDecoration) // Then the text is an NPC topic, counted from 1.
-                check(ir.data.text_id - 1, pNPCTopics.size(), "topic text");
+            if (activeLevelDecoration && (ir.data.text_id < 1 || ir.data.text_id > pNPCTopics.size())) // Then it's a topic text, from 1.
+                throw Exception("evt.{}: topic text {} is out of range [1, {}]", command.name, ir.data.text_id, pNPCTopics.size());
             break;
         case EVENT_ChangeEvent:
             if (!activeLevelDecoration || activeLevelDecoration == reinterpret_cast<LevelDecoration *>(1))
@@ -195,7 +177,7 @@ static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, s
 
     EvtTargetCharacter who = toPlayer(player, "evt.Player");
     EvtInstruction ir = toInstruction(*command, args, who);
-    checkIndices(*command, ir, who);
+    checkContext(*command, ir, who);
 
     context.interpreter.setTargetCharacter(who);
     EvtResult next = context.interpreter.executeInstruction(ir);
