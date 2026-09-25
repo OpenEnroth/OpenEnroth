@@ -36,7 +36,6 @@ struct EvtScriptContext {
     EvtInterpreter interpreter;
 };
 
-static const int JUMP_STEP = 2; // A command runs as step 0, so it continues from 1 unless it jumps.
 static const int MAX_LEVEL_STRINGS = 1000; // Keeps a mistyped `evt.str` index from growing the string table without bound.
 
 static int64_t toInteger(double value, std::string_view what) {
@@ -64,7 +63,7 @@ static EvtFieldValue toFieldValue(const EvtCommandInfo &command, const EvtFieldI
     std::string what = fmt::format("evt.{}: field {}", command.name, field.name);
 
     if (field.type == EVT_FIELD_JUMP)
-        return int64_t(JUMP_STEP);
+        return int64_t(0); // The outcome of the instruction tells whether it jumped.
 
     if (!value.valid() || value.is<sol::lua_nil_t>()) {
         switch (field.type) {
@@ -200,19 +199,17 @@ static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, s
     checkIndices(*command, ir, who);
 
     context.interpreter.setTargetCharacter(who);
-    int nextStep = context.interpreter.executeInstruction(ir);
+    EvtResult next = context.interpreter.executeInstruction(ir);
 
     sol::object result = sol::make_object(state, sol::lua_nil);
     if (command->kind == EVT_COMMAND_CONDITION)
-        result = sol::make_object(state, nextStep == JUMP_STEP);
+        result = sol::make_object(state, next.outcome == EVT_OUTCOME_JUMP);
 
-    if (nextStep != -1 && !context.interpreter.isCancelled())
-        return {result, "ok"};
-
-    // The transition dialogue continues the event from `savedEventStep` if the party stays on the map.
-    const auto &move = ir.data.move_map_descr;
-    bool isWaiting = ir.opcode == EVENT_MoveToMap && (move.house_id != HOUSE_INVALID || move.exit_pic_id);
-    return {result, isWaiting ? "wait" : "exit"};
+    switch (next.outcome) {
+        case EVT_OUTCOME_STOP: return {result, "exit"};
+        case EVT_OUTCOME_WAIT: return {result, "wait"};
+        default: return {result, "ok"};
+    }
 }
 
 static EvtProgram &program(bool isGlobal) {

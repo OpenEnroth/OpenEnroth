@@ -184,15 +184,20 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         return step + 1;
     }
 
-    return executeInstruction(ir);
+    EvtResult result = executeInstruction(ir);
+    switch (result.outcome) {
+        case EVT_OUTCOME_NEXT: return step + 1;
+        case EVT_OUTCOME_JUMP: return result.target;
+        default: return -1;
+    }
 }
 
-int EvtInterpreter::executeInstruction(EvtInstruction ir) {
+EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
     int step = ir.step;
 
     switch (ir.opcode) {
         case EVENT_Exit:
-            return -1;
+            return {EVT_OUTCOME_STOP};
         case EVENT_SpeakInHouse:
             if (enterHouse(ir.data.house_id)) {
                 pAudioPlayer->playHouseSound(SOUND_enter, false);
@@ -222,7 +227,7 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
                                                                              moveToMapDestination(ir), ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;
-                return -1;
+                return {EVT_OUTCOME_WAIT};
             }
 
             MapDestination destination = moveToMapDestination(ir);
@@ -244,14 +249,14 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
                         current_screen_type = SCREEN_GAME;
                         pDialogueWindow = nullptr;
                     }
-                    return -1;
+                    return {EVT_OUTCOME_STOP};
                 }
             }
             break;
         }
         case EVENT_OpenChest:
             if (!Chest::open(ir.data.chest_id, _objectPid)) {
-                return -1;
+                return {EVT_OUTCOME_STOP};
             }
             break;
         case EVENT_ShowFace:
@@ -315,7 +320,7 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
         case EVENT_Compare:
             for (Character &character : iterateCharacters(_who, grng))
                 if (compareEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
-                    return ir.target_step;
+                    return {EVT_OUTCOME_JUMP, ir.target_step};
             break;
         case EVENT_ChangeDoorState:
             switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
@@ -325,24 +330,28 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 addEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_Subtract:
+        {
             // We had a couple issues with quest items not being removed from inventory, and the reason was that the
             // character target wasn't properly set in the script. Thus, we don't even check `_who` here and just try
             // to take the item from all characters. See issues #1808 and #1912.
+            bool isShort = false; // The party had less than the script asked for, e.g. gold, which ends the event.
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands/* && (_who == CHOOSE_PARTY || _who == CHOOSE_ACTIVE)*/) {
                 ItemId itemId = static_cast<ItemId>(ir.data.variable_descr.value);
                 for (Character &character : pParty->pCharacters) {
                     if (pParty->pPickedItem.itemId == itemId || character.inventory.find(itemId)) {
-                        if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
-                            _cancelled = true;
+                        isShort = !subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
                         break;  // Only take one item.
                     }
                 }
             } else {
                 for (Character &character : iterateCharacters(_who, grng))
                     if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
-                        _cancelled = true;
+                        isShort = true;
             }
+            if (isShort)
+                return {EVT_OUTCOME_STOP};
             break;
+        }
         case EVENT_Set:
             for (Character &character : iterateCharacters(_who, grng))
                 setEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
@@ -379,7 +388,7 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
             Actor::toggleFlag(ir.data.actor_flag_descr.id, ir.data.actor_flag_descr.attr, ir.data.actor_flag_descr.is_set);
             break;
         case EVENT_RandomGoTo:
-            return ir.data.random_goto_descr.random_goto[grng->random(ir.data.random_goto_descr.random_goto_len)];
+            return {EVT_OUTCOME_JUMP, ir.data.random_goto_descr.random_goto[grng->random(ir.data.random_goto_descr.random_goto_len)]};
         case EVENT_InputString:
             // Originally starting step was checked to ensure skipping this command when returning from dialogue.
             // Changed to using "step + 1" to go to next event
@@ -391,7 +400,7 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
             startBranchlessDialogue(_eventId, step + 1, EVENT_InputString);
 #endif
-            return -1;
+            return {EVT_OUTCOME_WAIT};
         case EVENT_StatusText:
             if (activeLevelDecoration) {
                 if (activeLevelDecoration == (LevelDecoration *)1) {
@@ -416,13 +425,13 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         case EVENT_OnTimer:
             // Trigger, must be skipped but can be encountered in vanilla
-            return -1;
+            return {EVT_OUTCOME_STOP};
         case EVENT_ToggleIndoorLight:
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
             break;
         case EVENT_PressAnyKey:
             startBranchlessDialogue(_eventId, step + 1, EVENT_PressAnyKey);
-            return -1;
+            return {EVT_OUTCOME_WAIT};
         case EVENT_SummonItem:
             SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3f(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
                                      ir.data.summon_item_descr.speed, ir.data.summon_item_descr.count, ir.data.summon_item_descr.random_rotate);
@@ -431,13 +440,13 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
             _who = ir.who;
             break;
         case EVENT_Jmp:
-            return ir.target_step;
+            return {EVT_OUTCOME_JUMP, ir.target_step};
         case EVENT_OnMapReload:
             // Trigger, must be skipped but can be encountered in vanilla
-            return -1;
+            return {EVT_OUTCOME_STOP};
         case EVENT_OnLongTimer:
             // Trigger, must be skipped but can be encountered in vanilla
-            return -1;
+            return {EVT_OUTCOME_STOP};
         case EVENT_SetNPCTopic:
         {
             NPCData *npc = &pNPCStats->pNPCData[ir.data.npc_topic_descr.npc_id];
@@ -511,7 +520,7 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
             for (Character &character : iterateCharacters(_who, grng)) {
                 CombinedSkillValue val = character.getSkillValue(ir.data.check_skill_descr.skill_type);
                 if (val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery)
-                    return ir.target_step;
+                    return {EVT_OUTCOME_JUMP, ir.target_step};
             }
             break;
         case EVENT_SetNPCGroupNews:
@@ -537,12 +546,12 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         case EVENT_IsActorKilled:
             if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
-                return ir.target_step;
+                return {EVT_OUTCOME_JUMP, ir.target_step};
             }
             break;
         case EVENT_OnMapLeave:
             // Trigger, must be skipped but can be encountered in vanilla
-            return -1;
+            return {EVT_OUTCOME_STOP};
         case EVENT_ChangeGroup:
             // TODO: enconunter and process
             assert(false);
@@ -569,7 +578,7 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         case EVENT_CheckSeason:
             if (checkSeason(ir.data.season)) {
-                return ir.target_step;
+                return {EVT_OUTCOME_JUMP, ir.target_step};
             }
             break;
         case EVENT_ToggleActorGroupFlag:
@@ -600,7 +609,7 @@ int EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
     }
 
-    return step + 1;
+    return {};
 }
 
 bool EvtInterpreter::executeRegular(int startStep) {
@@ -614,7 +623,7 @@ bool EvtInterpreter::executeRegular(int startStep) {
 
     _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
 
-    while (step != -1 && !_cancelled) {
+    while (step != -1) {
         step = executeOneEvent(step, false);
     }
 
