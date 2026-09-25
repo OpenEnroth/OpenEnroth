@@ -19,7 +19,8 @@
 --- @field random fun(hi: integer): integer
 --- @field time fun(): number
 --- @field checkTimer fun(period: number, start: number?, isRefill: boolean)
---- @field addTimer fun(period: number, start: number?, isRefill: boolean, callback: fun(): boolean)
+--- @field addTimer fun(period: number, start: number?, isRefill: boolean, isGlobal: boolean, callback: fun(): boolean): integer
+--- @field removeTimer fun(handle: integer)
 --- @field mapScripts fun(mapName: string): string[]
 --- @field globalScripts fun(): string[]
 --- @field loadScript fun(path: string, environment: table): function?, string?

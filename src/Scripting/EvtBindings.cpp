@@ -1,6 +1,7 @@
 #include "EvtBindings.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <functional>
 #include <memory>
@@ -233,43 +234,31 @@ static std::tuple<sol::object, sol::object> loadChunk(sol::state_view lua, std::
 
 /**
  * @param period                        Timer period in ticks.
- * @param start                         Time of day in ticks that a calendar timer fires at. A timer without it counts
- *                                      its period from the moment it's added, unless it's a refill timer with a
- *                                      calendar period, which fires at midnight.
- * @param isRefill                      Whether the timer is an `OnLongTimer`, which the engine checks after every
- *                                      `OnTimer`.
- * @return                              The instruction that fires the same way.
- * @throws Exception                    If an evt timer can't fire like that.
+ * @param start                         Time of day in ticks that a timer that follows the calendar fires at. A timer
+ *                                      without it counts its period from the moment it's added, unless it's a refill
+ *                                      timer with a calendar period, which fires at midnight.
+ * @param kind                          Which timers the timer is checked with.
+ * @return                              When the timer fires.
+ * @throws Exception                    If a timer can't fire like that.
  */
-static EvtInstruction timerInstruction(double period, std::optional<double> start, bool isRefill) {
-    int64_t ticks = toInteger(period, "Timer: the period");
-    bool isYearly = ticks == Duration::fromYears(1).ticks();
-    bool isMonthly = ticks == Duration::fromDays(28).ticks();
-    bool isWeekly = ticks == Duration::fromDays(7).ticks();
-    bool isCalendarPeriod = isYearly || isMonthly || isWeekly || ticks == Duration::fromDays(1).ticks();
+static EvtTimerSchedule timerSchedule(double period, std::optional<double> start, EvtTimerKind kind) {
+    Duration duration = Duration::fromTicks(toInteger(period, "Timer: the period"));
+    bool isCalendarPeriod = std::ranges::contains(std::array{Duration::fromDays(1), Duration::fromDays(7), Duration::fromDays(28), Duration::fromYears(1)},
+                                                  duration);
 
-    EvtInstruction result = {};
-    result.opcode = isRefill ? EVENT_OnLongTimer : EVENT_OnTimer;
-    auto &timer = result.data.timer_descr;
-    if (!start && !(isRefill && isCalendarPeriod)) {
-        int64_t halfMinute = Duration::fromSeconds(30).ticks();
-        if (ticks < halfMinute || ticks % halfMinute != 0)
-            throw Exception("Timer: a period of {} ticks isn't a whole number of half minutes", ticks);
-        if (ticks / halfMinute > 0xFFFF)
-            throw Exception("Timer: a period of {} half minutes is over the limit of 65535, a longer timer needs a start time", ticks / halfMinute);
-        timer.alt_halfmin_interval = ticks / halfMinute;
+    EvtTimerSchedule result;
+    if (!start && !(kind == EVT_TIMER_REFILL && isCalendarPeriod)) {
+        if (duration <= 0_ticks)
+            throw Exception("Timer: the period has to be positive, got {} ticks", duration.ticks());
+        result.interval = duration;
     } else {
         if (!isCalendarPeriod)
             throw Exception("Timer: a timer with a start time fires every const.Day, const.Week, const.Month or const.Year");
-        int64_t seconds = toInteger(start.value_or(0) * 30 / Duration::fromSeconds(30).ticks(), "Timer: the start");
-        if (seconds < 0 || seconds >= 24 * 60 * 60)
+        Duration timeOfDay = Duration::fromTicks(toInteger(start.value_or(0), "Timer: the start"));
+        if (timeOfDay < 0_ticks || timeOfDay >= Duration::fromDays(1))
             throw Exception("Timer: the start has to be a time of day");
-        timer.is_yearly = isYearly;
-        timer.is_monthly = isMonthly;
-        timer.is_weekly = isWeekly;
-        timer.daily_start_hour = seconds / 3600;
-        timer.daily_start_minute = seconds / 60 % 60;
-        timer.daily_start_second = seconds % 60;
+        result.period = duration;
+        result.timeOfDay = timeOfDay;
     }
     return result;
 }
@@ -333,10 +322,12 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
         }),
         "time", sol::as_function([] { return static_cast<double>(pParty->GetPlayingTime().ticks()); }),
         "checkTimer", sol::as_function([](double period, std::optional<double> start, bool isRefill) {
-            timerInstruction(period, start, isRefill);
+            timerSchedule(period, start, isRefill ? EVT_TIMER_REFILL : EVT_TIMER_REGULAR);
         }),
-        "addTimer", sol::as_function([](double period, std::optional<double> start, bool isRefill, sol::main_protected_function callback) {
-            addTimer(timerInstruction(period, start, isRefill), [callback] {
+        "addTimer", sol::as_function([](double period, std::optional<double> start, bool isRefill, bool isGlobal,
+                                        sol::main_protected_function callback) {
+            EvtTimerKind kind = isRefill ? EVT_TIMER_REFILL : EVT_TIMER_REGULAR;
+            return addTimer(timerSchedule(period, start, kind), kind, isGlobal ? EVT_TIMER_GAME : EVT_TIMER_MAP, [callback] {
                 sol::protected_function_result result = callback();
                 if (!result.valid()) {
                     MM_ERROR_IN(ScriptingSystem::ScriptingLogCategory, "Timer failed: {}", result.get<sol::error>().what());
@@ -345,6 +336,7 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
                 }
             });
         }),
+        "removeTimer", sol::as_function([](int handle) { removeTimer(handle); }),
         "mapScripts", sol::as_function([](std::string_view mapName) {
             std::string fileName = ascii::toLower(mapName) + ".lua";
             return sol::as_table(scriptsIn("scripts/maps", [&](std::string_view name) {

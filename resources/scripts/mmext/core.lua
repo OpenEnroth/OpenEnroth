@@ -564,34 +564,33 @@ strict(const, "const")
 ---@field period number
 ---@field startTime number?
 ---@field isRefill boolean `RefillTimer`, which the engine checks after every `Timer`.
----@field firesAtOnce boolean
 ---@field scope string?
----@field isRemoved boolean
+---@field handle integer? The engine's handle, once the engine has the timer.
 
----@type EvtTimer[]
+---@type EvtTimer[] The timers of the scripts, in the order they were set.
 local timers = {}
 ---@type EvtTimer?
 local runningTimer = nil
-local isMapLoaded = false
+local isLevelLoaded = false -- Timers set before a level loads wait for it, the engine counts them from the level's time.
+local isMapRunning = false -- Timers that fire at once and are set while a map loads fire once it has loaded.
+---@type EvtTimer[]
+local firstFires = {}
+
+---@param timer EvtTimer
+---@return boolean mapExitTriggered
+local function fire(timer)
+    local previous = runningTimer
+    runningTimer = timer
+    local exit = run(timer.callback, { scope = timer.scope })
+    runningTimer = previous
+    return exit
+end
 
 ---@param timer EvtTimer
 local function registerTimer(timer)
-    ---@return boolean mapExitTriggered
-    local function fire()
-        if timer.isRemoved then
-            return false
-        end
-        local previous = runningTimer
-        runningTimer = timer
-        local exit = run(timer.callback, { scope = timer.scope })
-        runningTimer = previous
-        return exit
-    end
-
-    Bindings.addTimer(timer.period, timer.startTime, timer.isRefill, fire)
-    if timer.firesAtOnce then
-        mapExitTriggered = fire() or mapExitTriggered
-    end
+    timer.handle = Bindings.addTimer(timer.period, timer.startTime, timer.isRefill, timer.scope == nil, function ()
+        return fire(timer)
+    end)
 end
 
 ---@param callback function
@@ -612,18 +611,15 @@ local function newTimer(callback, period, startTime, isRefill)
     end
 
     ---@type EvtTimer
-    local timer = {
-        callback = callback,
-        period = period,
-        startTime = startTime,
-        isRefill = isRefill,
-        firesAtOnce = firesAtOnce,
-        scope = registrationScope(),
-        isRemoved = false,
-    }
-    insert(timers, timer)
-    if isMapLoaded then
+    local timer = { callback = callback, period = period, startTime = startTime, isRefill = isRefill, scope = registrationScope() }
+    table.insert(timers, timer)
+    if isLevelLoaded then
         registerTimer(timer)
+    end
+    if firesAtOnce and isMapRunning then
+        mapExitTriggered = fire(timer) or mapExitTriggered
+    elseif firesAtOnce then
+        table.insert(firstFires, timer)
     end
 end
 
@@ -645,9 +641,13 @@ end
 
 ---@param callback function? The function of the timers to remove, the timer that is firing if not given.
 local function RemoveTimer(callback)
-    for _, timer in ipairs(timers) do
+    for i = #timers, 1, -1 do
+        local timer = timers[i]
         if (callback == nil and timer == runningTimer) or (callback ~= nil and timer.callback == callback) then
-            timer.isRemoved = true
+            if timer.handle then
+                Bindings.removeTimer(timer.handle)
+            end
+            table.remove(timers, i)
         end
     end
 end
@@ -729,7 +729,7 @@ local wasInGame = false
 local Core = {}
 
 function Core.loadGlobalScripts()
-    waiting, timers, isMapLoaded, wasInGame = nil, {}, false, false
+    waiting, timers, firstFires, isLevelLoaded, isMapRunning, wasInGame = nil, {}, {}, false, false, false
     for key in pairs(eventLists) do
         eventLists[key] = nil
     end
@@ -743,12 +743,15 @@ end
 
 ---@param mapName string
 function Core.loadMapScripts(mapName)
-    waiting, isMapLoaded = nil, false
+    waiting, isMapRunning = nil, false
     for i = #timers, 1, -1 do
-        if timers[i].scope == "map" or timers[i].isRemoved then
-            table.remove(timers, i)
+        if timers[i].scope == "map" then
+            table.remove(timers, i) -- The engine dropped it with the map.
+        elseif not isLevelLoaded then
+            registerTimer(timers[i])
         end
     end
+    isLevelLoaded = true
     removeMapHandlers(eventLists)
     removeMapHandlers(globalLists)
     removeMapHandlers(topicLists)
@@ -794,6 +797,7 @@ function Core.cancelEvent()
     waiting = nil
 end
 
+
 ---@param eventId integer
 ---@return string?
 function Core.eventHint(eventId)
@@ -814,12 +818,11 @@ end
 
 ---@return boolean mapExitTriggered
 function Core.onMapLoad()
-    mapExitTriggered, isMapLoaded = false, true
-    for _, timer in ipairs(copyList(timers)) do
-        if not timer.isRemoved then
-            registerTimer(timer)
-        end
+    mapExitTriggered, isMapRunning = false, true
+    for _, timer in ipairs(firstFires) do
+        mapExitTriggered = fire(timer) or mapExitTriggered
     end
+    firstFires = {}
     events.LoadMap(wasInGame)
     events.AfterLoadMap(wasInGame)
     wasInGame = true
@@ -827,7 +830,7 @@ function Core.onMapLoad()
 end
 
 function Core.onMapLeave()
-    isMapLoaded = false
+    isMapRunning = false
     events.LeaveMap()
 end
 
