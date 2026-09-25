@@ -46,16 +46,9 @@ bool LuaEvtScripts::runEvent(bool isGlobal, int eventId, Pid targetObj, bool can
     return result.is<bool>() && result.as<bool>();
 }
 
-bool LuaEvtScripts::resumeEvent(int eventId, bool *mapExitTriggered) {
-    sol::object result = call("resumeEvent", eventId);
-    if (!result.is<bool>())
-        return false; // Nothing was waiting.
-    *mapExitTriggered = result.as<bool>();
-    return true;
-}
-
-void LuaEvtScripts::cancelEvent() {
-    call("cancelEvent");
+bool LuaEvtScripts::resumeEvent() {
+    sol::object result = call("resumeEvent");
+    return result.is<bool>() && result.as<bool>();
 }
 
 std::optional<std::string> LuaEvtScripts::eventHint(int eventId) const {

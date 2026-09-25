@@ -225,8 +225,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
 
                 pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
                                                                              moveToMapDestination(ir), ir.str);
-                savedEventID = _eventId;
-                savedEventStep = step + 1;
+                setEventContinuation([eventId = _eventId, next = step + 1] { eventProcessor(eventId, Pid(), true, next); });
                 return {EVT_OUTCOME_WAIT};
             }
 

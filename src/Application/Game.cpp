@@ -711,6 +711,7 @@ void Game::processQueuedMessages() {
                 if (destination.map() != MAP_INVALID) {
                     //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                     bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
+                    cancelSavedEvent();
                     onMapLeave();
                     startMapTransition(destination);
                     if (leavingArena)

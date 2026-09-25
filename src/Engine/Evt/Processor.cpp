@@ -57,8 +57,7 @@ static Time timerGuard;
 static EvtScripts *scripts = nullptr;
 static int lastTimerHandle = 0;
 
-int savedEventID;
-int savedEventStep;
+static std::function<void()> eventContinuation;
 LevelDecoration *savedDecoration;
 
 void initDecorationEvents() {
@@ -216,19 +215,21 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
         onMapLeave();
 }
 
+void setEventContinuation(std::function<void()> continuation) {
+    eventContinuation = std::move(continuation);
+}
+
+bool hasEventContinuation() {
+    return eventContinuation != nullptr;
+}
+
 void continueSavedEvent() {
-    bool mapExitTriggered = false;
-    if (scripts && scripts->resumeEvent(savedEventID, &mapExitTriggered)) {
-        if (mapExitTriggered)
-            onMapLeave();
-        return;
-    }
-    eventProcessor(savedEventID, Pid(), true, savedEventStep);
+    if (std::function<void()> continuation = std::exchange(eventContinuation, nullptr))
+        continuation();
 }
 
 void cancelSavedEvent() {
-    if (scripts)
-        scripts->cancelEvent();
+    eventContinuation = nullptr;
 }
 
 bool npcDialogueEventProcessor(int eventId, int startStep) {
