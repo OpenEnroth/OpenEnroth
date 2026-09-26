@@ -122,7 +122,6 @@ GAME_TEST(Issues, Issue1511) {
     game.pressGuiButton("GameMenu_LoadGame");
     game.tick(3);
     game.doubleClickGuiButton("LoadMenu_Slot0");
-    game.tick(2);
     game.skipLoadingScreen();
     game.tick(2);
     EXPECT_EQ(current_screen_type, SCREEN_GAME);
@@ -1015,7 +1014,6 @@ GAME_TEST(Issues, Issue1947) {
     game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
     game.tick(2);
     game.pressGuiButton("TownPortalBook_Marker10"); // Tatalia.
-    game.tick();
     game.skipLoadingScreen();
 
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_TATALIA));
