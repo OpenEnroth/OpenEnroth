@@ -360,7 +360,7 @@ void Game::processQueuedMessages() {
                 // pGUIWindow_CurrentMenu =
                 // GUIWindow::Create(0, 0,
                 // window->GetWidth(), window->GetHeight(),
-                // WINDOW_8, 0, 0);
+                // WINDOW_UNUSED_OPTIONS, 0, 0);
                 continue;
             case UIMSG_Cancel:
                 new OnCancel({350, 302}, {106, 42}, pBtnCancel);
@@ -1439,12 +1439,12 @@ void Game::processQueuedMessages() {
             case UIMSG_F:  // what event?
                 assert(false);
                 //pButton2 = (GUIButton *)(uint16_t)vis->get_picked_object_zbuf_val().object_pid;
-                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
+                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_UNUSED_PICKED_OBJECT, (int)pButton2, 0);
                 continue;
             case UIMSG_54:  // what event?
                 assert(false);
                 //pButton2 = (GUIButton *)uMessageParam;
-                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_22, (int)pButton2, 0);
+                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_UNUSED_BUTTON, (int)pButton2, 0);
                 continue;
             case UIMSG_Game_Action:
                 engine->_messageQueue->clear();

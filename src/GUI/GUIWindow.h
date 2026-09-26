@@ -148,20 +148,6 @@ class OnButtonClick3 : public GUIWindow {
     GUIButton *_button = nullptr;
 };
 
-// something debug? not really sure, unused
-class OnButtonClick4 : public GUIWindow {
- public:
-    OnButtonClick4(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
-        GUIWindow(WINDOW_59, position, dimensions, hint),
-        _button(button)
-    {}
-
-    virtual void Update() override;
-
- private:
-    GUIButton *_button = nullptr;
-};
-
 class OnSaveLoad : public GUIWindow {
  public:
     OnSaveLoad(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
