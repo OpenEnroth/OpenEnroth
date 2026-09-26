@@ -49,7 +49,7 @@ struct LocationInfo;
 struct MapWeather;
 struct MonsterDesc;
 struct NPCData;
-struct ObjectDesc;
+struct ObjectData;
 struct OutdoorTileType;
 struct OverlayData;
 struct Party;
@@ -1165,7 +1165,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVMapOutline_MM7)
 void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
 
 
-struct ObjectDesc_MM6 {
+struct ObjectData_MM6 {
     std::array<char, 32> nameUnused;
     int16_t uObjectID;
     int16_t uRadius;
@@ -1180,10 +1180,10 @@ struct ObjectDesc_MM6 {
     uint8_t uParticleTrailColorB;
     char _pad;
 };
-static_assert(sizeof(ObjectDesc_MM6) == 52);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(ObjectDesc_MM6)
+static_assert(sizeof(ObjectData_MM6) == 52);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(ObjectData_MM6)
 
-struct ObjectDesc_MM7 {
+struct ObjectData_MM7 {
     std::array<char, 32> nameUnused; // Object name, not used by the engine, doesn't always match item names.
     int16_t uObjectID;
     int16_t uRadius;
@@ -1198,11 +1198,11 @@ struct ObjectDesc_MM7 {
     uint8_t uParticleTrailColorB;
     std::array<char, 3> _pad;
 };
-static_assert(sizeof(ObjectDesc_MM7) == 56);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(ObjectDesc_MM7)
+static_assert(sizeof(ObjectData_MM7) == 56);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(ObjectData_MM7)
 
-void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst);
-void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst);
+void reconstruct(const ObjectData_MM6 &src, ObjectData *dst);
+void reconstruct(const ObjectData_MM7 &src, ObjectData *dst);
 
 
 struct BSPModelData_MM7 {

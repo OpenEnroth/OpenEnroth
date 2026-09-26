@@ -3,7 +3,7 @@
 #include "Utility/Memory/Blob.h"
 
 struct DecorationTable;
-class ObjectList;
+struct ObjectTable;
 class SoundList;
 class IconFrameTable;
 struct MonsterList;
@@ -33,7 +33,7 @@ void deserialize(const Blob &src, IconFrameTable *dst);
  */
 void deserialize(const Blob &src, MonsterList *dst);
 
-void deserialize(const Blob &src, ObjectList *dst);
+void deserialize(const Blob &src, ObjectTable *dst);
 
 /**
  * @offset 0x00458E08

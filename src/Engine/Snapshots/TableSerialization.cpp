@@ -9,7 +9,7 @@
 #include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Objects/Monsters.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Tables/DecorationTable.h"
 
 #include "Media/Audio/SoundList.h"
@@ -61,9 +61,9 @@ void deserialize(const Blob &src, MonsterList *dst) {
         dst->monsters[index] = monsters[i++];
 }
 
-void deserialize(const Blob &src, ObjectList *dst) {
+void deserialize(const Blob &src, ObjectTable *dst) {
     dst->pObjects.clear();
-    deserialize(src, &dst->pObjects, tags::append, tags::each, tags::via<ObjectDesc_MM7>);
+    deserialize(src, &dst->pObjects, tags::append, tags::each, tags::via<ObjectData_MM7>);
 
     assert(!dst->pObjects.empty());
 }

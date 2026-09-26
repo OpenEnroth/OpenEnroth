@@ -12,7 +12,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -906,7 +906,7 @@ void Party::dropHeldItem() {
 
     SpriteObject sprite;
     sprite.spriteId = pItemTable->items[pPickedItem.itemId].spriteId;
-    sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.spriteId);
+    sprite.uObjectDescID = pObjectTable->ObjectIDByItemID(sprite.spriteId);
     sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
     sprite.vPosition = pos + Vec3f(0, 0, eyeLevel);
     sprite.uFacing = 0;

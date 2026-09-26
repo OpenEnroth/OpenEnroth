@@ -10,7 +10,7 @@
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -588,7 +588,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             spell_sprites.uSpellID = uSpellID;
             spell_sprites.spell_level = skillLevel;
             spell_sprites.spell_skill = skillMastery;
-            spell_sprites.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprites.spriteId);
+            spell_sprites.uObjectDescID = pObjectTable->ObjectIDByItemID(spell_sprites.spriteId);
             spell_sprites.vPosition = from;
             spell_sprites.uAttributes = SPRITE_IGNORE_RANGE;
             spell_sprites.uSectorID = pIndoor->GetSector(from);
@@ -622,7 +622,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             // v20 = yaw;
             spell_sprites.spell_target_pid = Pid();
             spell_sprites.uFacing = yaw;
-            launch_speed = pObjectList->pObjects[(int16_t)spell_sprites.uObjectDescID].uSpeed;
+            launch_speed = pObjectTable->pObjects[(int16_t)spell_sprites.uObjectDescID].uSpeed;
             spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
@@ -633,14 +633,14 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             spell_sprites.spell_target_pid = Pid();
             spell_sprites.uFacing = yaw;
             if (spell_num_objects == 1) {
-                launch_speed = pObjectList->pObjects[(int16_t)spell_sprites.uObjectDescID].uSpeed;
+                launch_speed = pObjectTable->pObjects[(int16_t)spell_sprites.uObjectDescID].uSpeed;
                 spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             } else {
                 spell_spray_arc = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
                 spell_spray_angles = spell_spray_arc / (spell_num_objects - 1);
                 for (int i = spell_spray_arc / -2; i <= spell_spray_arc / 2; i += spell_spray_angles) {
                     spell_sprites.uFacing = i + yaw;
-                    spriteid = spell_sprites.Create(i + yaw, pitch, pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed, 0);
+                    spriteid = spell_sprites.Create(i + yaw, pitch, pObjectTable->pObjects[spell_sprites.uObjectDescID].uSpeed, 0);
                 }
             }
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
@@ -654,7 +654,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             spell_sprites.spell_target_pid = Pid::character(0);
             for (int i = spell_spray_arc / -2; i <= spell_spray_arc / 2; i += spell_spray_angles) {
                 spell_sprites.uFacing = i + yaw;
-                spriteid = spell_sprites.Create(i + yaw, pitch, pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed, 0);
+                spriteid = spell_sprites.Create(i + yaw, pitch, pObjectTable->pObjects[spell_sprites.uObjectDescID].uSpeed, 0);
             }
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
@@ -665,7 +665,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
                 return;
             }
             spell_sprites.spell_target_pid = Pid::character(0);
-            launch_speed = pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed;
+            launch_speed = pObjectTable->pObjects[spell_sprites.uObjectDescID].uSpeed;
             launch_angle = TrigLUT.uIntegerHalfPi / 2;
             spriteid = spell_sprites.Create(yaw, launch_angle, launch_speed, 0);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
