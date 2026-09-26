@@ -788,6 +788,7 @@ void MPlayer::HouseMovieLoop() {
 
     render->BeginScene2D();
 
+    // TODO(captainurist): function-local static that owns a texture, make it a member.
     static GraphicsImage *tex = nullptr;
 
     Blob buffer = pMovie_Track->GetFrame();

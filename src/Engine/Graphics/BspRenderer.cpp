@@ -28,6 +28,8 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
 
     // check if any triangle of the face can be seen
 
+    // TODO(captainurist): function-local statics, make them members. AddFace recurses through AddNode, so they are
+    //                     too big for locals.
     static RenderVertexSoft originalFaceVertices[64];
     static RenderVertexSoft clippedFaceVertices[64];
 

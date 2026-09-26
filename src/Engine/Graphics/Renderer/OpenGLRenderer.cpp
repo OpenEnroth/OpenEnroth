@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <tuple>
+#include <vector>
 
 #include <glad/gl.h> // NOLINT: not a C system header.
 
@@ -90,7 +91,7 @@ void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_a
     GLenum err = glad_glGetError();
 
     while (err != GL_NO_ERROR) {
-        static std::string error;
+        std::string error;
         if (!detail_gl_error::trySerialize(err, &error))
             error = "Unknown Error";
 
@@ -112,7 +113,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
 } // namespace detail_fb_error
 
 void GL_Check_Framebuffer(const char *name) {
-    static std::string error;
+    std::string error;
 
     GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
     if (!detail_fb_error::trySerialize(status, &error))
@@ -988,7 +989,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // TODO(pskelton): move this to map loading
     // generate array and populate data
     if (!_terrainBuffer) {
-        static RenderVertexSoft pTerrainVertices[128 * 128];
+        std::vector<RenderVertexSoft> pTerrainVertices(128 * 128);
 
         // generate vertex locations
         for (int y = 0; y < 128; ++y)
@@ -1753,6 +1754,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             auto texture = billboard->texture;
             gltexid = texture->renderId().value();
         } else {
+            // TODO(captainurist): function-local static caching an asset, make it a member.
             static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
             gltexid = static_cast<float>(effpar03->renderId().value());
         }
@@ -3234,7 +3236,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
         // stack decals start
 
         if (!decal_builder->bloodsplat_container->uNumBloodsplats) return;
-        static RenderVertexSoft static_vertices_buff_in[64];  // buff in
+        RenderVertexSoft static_vertices_buff_in[64];  // buff in
 
         // loop over faces
         for (int test = 0; test < pIndoor->faces.size(); test++) {

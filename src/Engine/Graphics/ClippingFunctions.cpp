@@ -30,7 +30,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
         return true;
     }
 
-    static RenderVertexSoft static_AE3FB4;
+    RenderVertexSoft static_AE3FB4;
     /*static bool __init_flag1 = false;
     if (!__init_flag1) {
       __init_flag1 = true;
@@ -38,7 +38,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
       static_AE3FB4.flt_2C = 0.0;
     }*/
 
-    static Vec3f static_AE3FA4;  // idb
+    Vec3f static_AE3FA4;  // idb
     /*static bool __init_flag2 = false;
     if (!__init_flag2) {
       __init_flag2 = true;
@@ -46,7 +46,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
       //stru312::stru312(&static_AE3FA4);
     }*/
 
-    static VertexBuffer static_AE33A0;  // idb
+    VertexBuffer static_AE33A0;  // idb
     /*static bool __init_flag3 = false;
     if (!__init_flag3) {
       __init_flag3 = true;
@@ -280,8 +280,8 @@ bool ClippingFunctions::AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexS
 
     // assert(false);
 
-    static Vec3f static_AE3388;
-    static Vec3f static_AE3378;
+    Vec3f static_AE3388;
+    Vec3f static_AE3378;
 
     v6 = a1;
     static_AE3378.x = a1->vWorldPosition.x - a3->vWorldPosition.x;
@@ -395,9 +395,9 @@ bool ClippingFunctions::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumV
     double v15;             // st5@12
     signed int v25;         // [sp+18h] [bp-Ch]@7
 
-    static RenderVertexSoft stru_AE4BFC;
-    static Vec3f static_sub_4980B9_stru_AE4BEC;       // idb
-    static VertexBuffer static_sub_4980B9_stru_AE3FE8;  // idb
+    RenderVertexSoft stru_AE4BFC;
+    Vec3f static_sub_4980B9_stru_AE4BEC;       // idb
+    VertexBuffer static_sub_4980B9_stru_AE3FE8;  // idb
 
     v25 = 0;
     if (uNumVertices <= 0) {

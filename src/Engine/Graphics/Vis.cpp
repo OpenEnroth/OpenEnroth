@@ -40,16 +40,11 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
     Vec3f rayOrigin, rayStep;  // [sp+20h] [bp-70h]@17
                                //  int v20; // [sp+84h] [bp-Ch]@10
 
+    // TODO(captainurist): function-local static, the returned pointer points into it. Return the result by value.
     static Vis_SelectionList SelectedPointersList;  // stru_F8FE00
     SelectedPointersList.uSize = 0;
 
-    static bool _init_flag = false;
-    static RenderVertexSoft static_DetermineFacetIntersection_array_F8F200[64];
-    if (!_init_flag) {
-        _init_flag = true;
-        for (unsigned i = 0; i < 64; ++i)
-            static_DetermineFacetIntersection_array_F8F200[i].flt_2C = 0.0f;
-    }
+    RenderVertexSoft static_DetermineFacetIntersection_array_F8F200[64];
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         if ((signed int)face->numVertices > 0) {
@@ -388,7 +383,7 @@ Pid Vis::PickClosestActor(ObjectType object_type, unsigned int pick_depth,
                                      VisSelectFlags select_flags, int not_at_ai_state, int at_ai_state) {
     Vis_SelectionFilter selectionFilter;  // [sp+18h] [bp-20h]@3
 
-    static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
+    Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
     selectionFilter.vis_object_type = VisObjectType_Sprite;
     selectionFilter.object_type = object_type;

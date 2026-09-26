@@ -1336,8 +1336,8 @@ void CharacterUI_DrawPaperdollWithRingOverlay(Character *player) {
         if (!entry)
             continue;
 
-        static int pPaperdollRingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
-        static int pPaperdollRingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
+        static constexpr int pPaperdollRingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
+        static constexpr int pPaperdollRingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
 
         CharacterUI_DrawItem(
             pPaperdollRingsX[i], pPaperdollRingsY[i],
@@ -1697,14 +1697,14 @@ void OnPaperdollLeftClick() {
     int mousex = mouse->position().x;
     int mousey = mouse->position().y;
 
-    static int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
-    static int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
+    static constexpr int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
+    static constexpr int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
 
-    static int glovex = 586;
-    static int glovey = 88;
+    static constexpr int glovex = 586;
+    static constexpr int glovey = 88;
 
-    static int amuletx = 493;
-    static int amulety = 91;
+    static constexpr int amuletx = 493;
+    static constexpr int amulety = 91;
 
     int cellSize = 32;
     ItemSlot pos = ITEM_SLOT_INVALID;

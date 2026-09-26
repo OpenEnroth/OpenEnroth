@@ -564,6 +564,7 @@ void GUI_UpdateWindows() {
 
 //----- (004226EF) --------------------------------------------------------
 void SetUserInterface(PartyAlignment align) {
+    // TODO(captainurist): function-local static, the applied alignment should live next to the UI skin it caches.
     static std::optional<PartyAlignment> intAlign;
     if (intAlign == align) return;
     intAlign = align;
