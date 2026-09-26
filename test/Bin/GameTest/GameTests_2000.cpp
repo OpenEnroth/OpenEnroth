@@ -139,24 +139,41 @@ GAME_TEST(Issues, Issue2018b) {
     EXPECT_EQ(mpTape, tape(10));
 }
 
-GAME_TEST(Issues, Issue2021_2022) {
-    // Lloyd's Beacon did not keep beacons in the player-selected slot.
-    // Also, OE did allow characters in recovery to cast from spell scrolls.
-    // The trace does a similar portal to Erathia and back as Issue2018, but selects the center slot to do so.
-    // Additionally, it tries to cast a Protection from Magic scroll on a 'greyed' character - should _not_ succeed.
-    auto mapTape = tapes.map();
-    auto scrollsPMTape = tapes.totalItemCount(ITEM_SCROLL_PROTECTION_FROM_MAGIC);
+GAME_TEST(Issues, Issue2021) {
+    // Lloyd's Beacon put a new beacon in the first free slot instead of the one the player picked.
+    auto firstSlotTape = tapes.custom([] { return static_cast<bool>(pParty->pCharacters[3].vBeacons[0]); });
+    auto centerSlotTape = tapes.custom([] { return static_cast<bool>(pParty->pCharacters[3].vBeacons[4]); });
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue(4, MASTERY_MASTER)); // Five beacon slots.
+    readScroll(game, 3, ITEM_SCROLL_LLOYDS_BEACON);
+    game.tick(3);
+    game.pressGuiButton("LloydsBook_Slot4");
+    game.tick();
+
+    EXPECT_EQ(firstSlotTape, tape(false));
+    EXPECT_EQ(centerSlotTape, tape(false, true));
+}
+
+GAME_TEST(Issues, Issue2022) {
+    // A character who was still recovering could read a spell scroll.
+    auto buffTape = tapes.custom([] { return pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].Active(); });
     auto soundsTape = tapes.sounds();
     auto statusTape = tapes.statusBar();
-    auto pmBuffTape = tapes.custom([] { return pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].Active(); });
-    auto lloydSlot1Tape = tapes.custom([] { return static_cast<bool>(pParty->pCharacters[3].vBeacons[0]); });
-    test.playTraceFromTestData("issue_2021_2022.mm7", "issue_2021_2022.json");
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_ERATHIA, MAP_EMERALD_ISLAND));
-    EXPECT_EQ(scrollsPMTape.delta(), 0); // No Protection from Magic scroll used
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    readScroll(game, 1, ITEM_SCROLL_TORCH_LIGHT);
+    game.tick(3);
+    readScroll(game, 1, ITEM_SCROLL_PROTECTION_FROM_MAGIC);
+    game.tick(3);
+
+    EXPECT_EQ(buffTape, tape(false));
     EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
     EXPECT_CONTAINS(statusTape, "That player is not active");
-    EXPECT_EQ(lloydSlot1Tape, tape(false)); // Top left slot stayed empty
-    EXPECT_EQ(pmBuffTape, tape(false)); // Not Prot Mg buff received
 }
 
 GAME_TEST(Issues, Issue2061) {
