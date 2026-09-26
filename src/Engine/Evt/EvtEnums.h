@@ -183,6 +183,8 @@ enum class EvtVariable {
     VAR_StealingSkill = 0x66,
     VAR_AlchemySkill = 0x67,
     VAR_LearningSkill = 0x68,
+    VAR_FIRST_SKILL = VAR_StaffSkill,
+    VAR_LAST_SKILL = VAR_LearningSkill,
     VAR_Cursed = 0x69,
     VAR_Weak = 0x6A,
     VAR_Asleep = 0x6B,
