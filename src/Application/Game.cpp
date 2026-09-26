@@ -353,15 +353,6 @@ void Game::processQueuedMessages() {
                 // case UIMSG_Game_OpenLoadGameDialog:
                 // Game_OpenLoadGameDialog(); continue; case UIMSG_Quit:
                 // Game_QuitGameWhilePlaying(uMessageParam); continue;
-            case UIMSG_80:
-                assert(false);
-                pGUIWindow_CurrentMenu = nullptr;
-                current_screen_type = SCREEN_OPTIONS;
-                // pGUIWindow_CurrentMenu =
-                // GUIWindow::Create(0, 0,
-                // window->GetWidth(), window->GetHeight(),
-                // WINDOW_UNUSED_OPTIONS, 0, 0);
-                continue;
             case UIMSG_Cancel:
                 new OnCancel({350, 302}, {106, 42}, pBtnCancel);
                 continue;
@@ -1435,16 +1426,6 @@ void Game::processQueuedMessages() {
             case UIMSG_MouseLeftClickInScreen:
                 engine->_messageQueue->clear();
                 engine->onGameViewportClick();
-                continue;
-            case UIMSG_F:  // what event?
-                assert(false);
-                //pButton2 = (GUIButton *)(uint16_t)vis->get_picked_object_zbuf_val().object_pid;
-                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_UNUSED_PICKED_OBJECT, (int)pButton2, 0);
-                continue;
-            case UIMSG_54:  // what event?
-                assert(false);
-                //pButton2 = (GUIButton *)uMessageParam;
-                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_UNUSED_BUTTON, (int)pButton2, 0);
                 continue;
             case UIMSG_Game_Action:
                 engine->_messageQueue->clear();
