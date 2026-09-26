@@ -139,7 +139,6 @@ int UseNPCSkill(NpcProfession profession, int id) {
         } break;
 
         case NPC_PROFESSION_COOK: {
-            // Was 13
             if (pParty->GetFood() >= 14) {
                 return 1;
             }
@@ -148,7 +147,6 @@ int UseNPCSkill(NpcProfession profession, int id) {
         } break;
 
         case NPC_PROFESSION_CHEF: {
-            // Was 13
             if (pParty->GetFood() >= 14) {
                 return 1;
             }
