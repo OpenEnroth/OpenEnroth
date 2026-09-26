@@ -300,8 +300,8 @@ enum class WindowType {
     WINDOW_GREETING_NPC = 19,
     WINDOW_CHEST = 20,
     WINDOW_22 = 0x16,
-    WINDOW_SAVE_LOAD_BUTTONS = 23,
-    WINDOW_MAIN_MENU_LOAD = 0x18,
+    WINDOW_SAVE = 23,
+    WINDOW_LOAD = 0x18,
     WINDOW_HOUSE_INTERIOR = 0x19,
     WINDOW_INDOOR_ENTRY_EXIT = 26,
     WINDOW_CAST_SPELL = 27,  // OnCastTargetedSpell
@@ -310,13 +310,13 @@ enum class WindowType {
     WINDOW_GAME_OVER_WINDOW = 70,
     WINDOW_50 = 80,  // Debug
     WINDOW_59 = 89,  // Debug: Item Generation Window
-    WINDOW_PRESSED_BUTTON2 = 90,      // OnButtonClick?
+    WINDOW_PRESSED_BUTTON = 90,
     WINDOW_CHARACTERS_PRESSED_BUTTON = 91,
-    WINDOW_PRESSED_BUTTON = 92,
+    WINDOW_PRESSED_BUTTON_TRANSPARENT = 92,
     WINDOW_5D = 93,
     WINDOW_SAVE_LOAD_BUTTON = 94,
     WINDOW_LOAD_GAME_CANCEL_BUTTON = 95,  // OnCancel3?
-    WINDOW_CLOSE_REST_WINDOW_BUTTON = 96,
+    WINDOW_GENERIC_CANCEL = 96,
     WINDOW_EXIT_CHARACTER_WINDOW = 97,  // OnCancel2
     WINDOW_REST_WINDOW = 0x62,
     WINDOW_BOOKS_BUTTON_OVERLAY = 99,
@@ -334,14 +334,10 @@ enum class WindowType {
     WINDOW_MAPS_BOOK = 0xCA,
     WINDOW_CALENDAR_BOOK = 0xCB,
     WINDOW_JOURNAL_BOOK = 0xE0,
-    WINDOW_UNKNOWN,                    // i wasnt able to find real value for those
-    WINDOW_CHARACTER_CREATION,         // new addition, because i wasnt able to find real value for this
-    WINDOW_CHARACTER_CREATION_BUTTON,  // new addition, because i wasnt able to find real value for this
-    WINDOW_GENERIC_CANCEL,             // new addition, because i wasnt able to find real value for this
-    WINDOW_GAME_UI,                    // new addition, because i wasnt able to find real value for this
-    WINDOW_CREDITS,                    // new addition, because i wasnt able to find real value for this
-    WINDOW_SAVE,                       // new addition, because i wasnt able to find real value for this
-    WINDOW_LOAD,                       // new addition, because i wasnt able to find real value for this
+    WINDOW_UNKNOWN,             // Vanilla MM7 uses 1.
+    WINDOW_CHARACTER_CREATION,  // Vanilla MM7 uses 1.
+    WINDOW_GAME_UI,             // Vanilla MM7 uses 1.
+    WINDOW_CREDITS,             // Vanilla MM7 uses 1.
 };
 using enum WindowType;
 

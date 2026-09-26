@@ -123,7 +123,7 @@ class GUIWindow {
 class OnButtonClick : public GUIWindow {
  public:
     OnButtonClick(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}, bool playSound = true) :
-        GUIWindow(WINDOW_CHARACTER_CREATION_BUTTON, position, dimensions, hint),
+        GUIWindow(WINDOW_PRESSED_BUTTON, position, dimensions, hint),
         _playSound(playSound),
         _button(button)
     {}
