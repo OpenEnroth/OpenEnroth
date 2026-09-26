@@ -241,7 +241,7 @@ void EngineController::skipLoadingScreen() {
     ThrowingTicker ticker2(this, "Couldn't skip a loading screen");
     while (pGameLoadingUI_ProgressBar->IsActive())
         ticker2.tick();
-    while (dword_6BE364_game_settings_1 & GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME)
+    while (engineFlags & ENGINE_SKIP_NEXT_USER_INPUT)
         ticker2.tick();
 }
 
@@ -352,7 +352,7 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
 void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw, int viewPitch) {
     if (engine->_currentLoadedMapId != map) {
         engine->_pendingTransition = MapDestination(map, PartyPlacement(position, viewYaw * 512 / 90, viewPitch * 512 / 90, 0));
-        dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+        engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
         onMapLeave();
         tick();

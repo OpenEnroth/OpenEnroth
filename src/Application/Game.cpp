@@ -834,7 +834,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 autoSave();
                 MapDestination destination(houseNpcs[currentHouseNpc].targetMapID, MAP_START_POINT_PARTY);
-                dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+                engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
                 // int)ptr_507BC0->ptr_1C];
@@ -921,7 +921,7 @@ void Game::processQueuedMessages() {
                     if (!allMaps().contains(map_index))
                         continue;
                     engine->_pendingTransition = MapDestination(map_index, MAP_START_POINT_PARTY);
-                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+                    engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     onMapLeave();
                     continue;
@@ -1524,7 +1524,7 @@ void Game::gameLoop() {
 
         DoPrepareWorld(bLoading, 1);
         gameTimer->setPaused(false);
-        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
+        engineFlags |= ENGINE_SKIP_NEXT_USER_INPUT;
         // uGame_if_0_else_ui_id__11_save__else_load__8_drawSpellInfoPopup__22_final_window__26_keymapOptions__2_options__28_videoOptions
         // = 0;
         current_screen_type = SCREEN_GAME;
@@ -1569,8 +1569,8 @@ void Game::gameLoop() {
                         dropFocusFromIncapacitatedCharacter();
                 }
 
-                if (dword_6BE364_game_settings_1 & GAME_SETTINGS_SKIP_WORLD_UPDATE) {
-                    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_SKIP_WORLD_UPDATE;
+                if (engineFlags & ENGINE_SKIP_NEXT_WORLD_UPDATE) {
+                    engineFlags &= ~ENGINE_SKIP_NEXT_WORLD_UPDATE;
                 } else {
                     Actor::UpdateActorAI();
                     UpdateUserInput_and_MapSpecificStuff();

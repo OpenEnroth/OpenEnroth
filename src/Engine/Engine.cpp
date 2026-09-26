@@ -506,8 +506,8 @@ void PlayButtonClickSound() {
 
 //----- (0046BDC0) --------------------------------------------------------
 void UpdateUserInput_and_MapSpecificStuff() {
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME) {
-        dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
+    if (engineFlags & ENGINE_SKIP_NEXT_USER_INPUT) {
+        engineFlags &= ~ENGINE_SKIP_NEXT_USER_INPUT;
         return;
     }
 
@@ -719,7 +719,7 @@ void Engine::MM7_Initialize() {
     if (engine->config->graphics.GenerateTiles.value())
         pTileGenerator->fillTable();
 
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
+    engineFlags |= ENGINE_ESCAPE_ENABLED;
 }
 
 //----- (00465D0B) --------------------------------------------------------

@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
@@ -294,7 +295,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (delta.header.info.lastRespawnDay == 0)
                 respawnInitial = true;
 
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
+            if (engineFlags & ENGINE_LOADING_SAVEGAME)
                 respawn_interval_days = 0x1BAF800;
 
             if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapTable->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
@@ -907,11 +908,11 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     pStationaryLightsStack->uNumLightsActive = 0;
     pIndoor->Load(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
-    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
+    if (!(engineFlags & ENGINE_LOADING_SAVEGAME)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
     }
-    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
+    engineFlags &= ~ENGINE_LOADING_SAVEGAME;
 
     if (indoor_was_respawned) {
         for (unsigned i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {

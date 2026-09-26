@@ -234,7 +234,7 @@ void CreateParty_EventLoop() {
             keyboardInputHandler->StartTextInput(TEXT_INPUT_TEXT, 15, pGUIWindow_CurrentMenu.get());
             break;
         case UIMSG_Escape:
-            if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000)) break;
+            if (!(engineFlags & ENGINE_ESCAPE_ENABLED)) break;
             if (GetCurrentMenuID() == MENU_MAIN ||
                 GetCurrentMenuID() == MENU_MMT_MAIN_MENU ||
                 GetCurrentMenuID() == MENU_CREATEPARTY ||

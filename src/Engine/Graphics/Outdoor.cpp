@@ -479,7 +479,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
             if (delta.header.info.lastRespawnDay == 0)
                 respawnInitial = true;
 
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
+            if (engineFlags & ENGINE_LOADING_SAVEGAME)
                 respawn_interval_days = 0x1BAF800;
 
             if (!respawnInitial && days_played - delta.header.info.lastRespawnDay >= respawn_interval_days)
@@ -1754,11 +1754,11 @@ static void loadAndPrepareODMInternal(MapId mapid) {
     pOutdoor->weather.flags &= ~MAP_WEATHER_FOGGY;
     pOutdoor->Initialize(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
 
-    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
+    if (!(engineFlags & ENGINE_LOADING_SAVEGAME)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
     }
-    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
+    engineFlags &= ~ENGINE_LOADING_SAVEGAME;
 
     if (outdoor_was_respawned) {
         for (unsigned i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {

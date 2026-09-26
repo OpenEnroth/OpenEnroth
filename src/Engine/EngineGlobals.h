@@ -5,6 +5,8 @@
 #include "Library/Platform/Interface/PlatformOpenGLContext.h"
 #include "Library/Platform/Interface/PlatformEventLoop.h"
 
+#include "Engine/EngineEnums.h"
+
 class PlatformApplication;
 
 namespace detail {
@@ -12,7 +14,7 @@ void globalProcessMessages();
 void globalWaitForMessages();
 } // namespace detail
 
-extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
+extern EngineFlags engineFlags;
 
 // TODO(captainurist): drop all of these, they are accessible through PlatformApplication
 extern Platform *platform;
@@ -26,7 +28,7 @@ extern PlatformApplication *application;
 
 #define MessageLoopWithWait() {                                                                                         \
     detail::globalProcessMessages();                                                                                    \
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {                                                    \
+    if (engineFlags & ENGINE_APP_INACTIVE) {                                                                            \
         detail::globalWaitForMessages();                                                                                \
         continue;                                                                                                       \
     }                                                                                                                   \
