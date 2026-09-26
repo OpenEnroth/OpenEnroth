@@ -79,6 +79,18 @@ class Actor {
     void SetRandomGoldIfTheresNoItem();
     bool CanAct() const;
     bool CanBeDamaged() const;
+
+    /**
+     * @return                          Whether gravity has the actor, that is it's above the floor and isn't a flying
+     *                                  monster that can act. True for a thrown actor until it lands.
+     */
+    bool isAirborne() const;
+
+    /**
+     * @return                          Whether the actor is in pain and still in the air, e.g. thrown up by armageddon.
+     *                                  The pain state holds until it lands.
+     */
+    bool isAirborneInPain() const { return aiState == InPain && isAirborne(); }
     bool IsNotAlive();
     bool IsPeasant();
 
