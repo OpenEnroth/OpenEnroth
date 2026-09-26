@@ -550,7 +550,7 @@ std::array<GraphicsImage *, 16> paperdoll_dbrds;
 
 Recti savedInventoryLeftClickButtonRect;
 
-GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, ScreenType screen)
+GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(ScreenType screen)
     : GUIWindow(WINDOW_CharacterRecord, {0, 0}, render->GetRenderDimensions()) {
     gameTimer->setPaused(true);
     bRingsShownInCharScreen = false;

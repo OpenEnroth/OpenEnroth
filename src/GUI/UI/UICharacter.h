@@ -10,7 +10,7 @@
 
 class GUIWindow_CharacterRecord : public GUIWindow {
  public:
-    GUIWindow_CharacterRecord(int uActiveCharacter, ScreenType screen);
+    explicit GUIWindow_CharacterRecord(ScreenType screen);
     virtual ~GUIWindow_CharacterRecord() {}
 
     virtual void Update() override;
