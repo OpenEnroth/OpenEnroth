@@ -70,10 +70,8 @@ struct Particle {
     int view_space_z_lineEnd = 0;             // line end z
     float screenspace_scale = 1.0;  // fixed screenspace_scale {};  // int _screenspace_scale;
     float fov_x = 0;
-    /**
-     * Color the particle is drawn with, `uParticleColor` dimmed to black over the last 128 ticks of `timeToLive`.
-     * Particle billboards are drawn with additive blending, so black is invisible.
-     */
+    /** Color the particle is drawn with, `uParticleColor` dimmed to black over the last 128 ticks of `timeToLive`.
+     * Particle billboards are drawn with additive blending, so black is invisible. */
     Color fadedColor;
 };
 
