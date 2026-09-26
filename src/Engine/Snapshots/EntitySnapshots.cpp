@@ -39,6 +39,7 @@
 #include "Library/Snapshots/CommonSnapshots.h"
 
 #include "Utility/Memory/MemSet.h"
+#include "Utility/Exception.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
@@ -1566,9 +1567,16 @@ void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex
     dst->zCalc.init(dst->facePlane);
     dst->attributes = FaceAttributes(src.attributes);
     dst->vertices.clear();
+    if (src.numVertices > src.vertexIds.size())
+        throw Exception("ODM face vertex count {} exceeds the maximum {}", src.numVertices, src.vertexIds.size());
     dst->vertices.reserve(src.numVertices);
-    for (size_t i = 0; i < src.numVertices; ++i)
-        dst->vertices.push_back(&vertices[src.vertexIds[i]]);
+    for (size_t i = 0; i < src.numVertices; ++i) {
+        int16_t vertexId = src.vertexIds[i];
+        if (vertexId < 0 || static_cast<size_t>(vertexId) >= vertices.size())
+            throw Exception("ODM face vertex index {} is out of range for {} vertices", vertexId, vertices.size());
+
+        dst->vertices.push_back(&vertices[vertexId]);
+    }
     dst->textureUs = std::vector<int16_t>(src.textureUs.begin(), src.textureUs.begin() + src.numVertices);
     dst->textureVs = std::vector<int16_t>(src.textureVs.begin(), src.textureVs.begin() + src.numVertices);
     dst->texture = nullptr;

@@ -178,8 +178,16 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
         pFace->vertices.clear();
         pFace->vertices.reserve(numVertices);
-        for (size_t k = 0; k < numVertices; ++k)
-            pFace->vertices.push_back(&dst->vertices[faceData[j + k]]);
+        for (size_t k = 0; k < numVertices; ++k) {
+            if (j + k >= faceData.size())
+                throw Exception("BLV face vertex data overflow: offset {} exceeds size {}", j + k, faceData.size());
+
+            int16_t vertexId = faceData[j + k];
+            if (vertexId < 0 || static_cast<size_t>(vertexId) >= dst->vertices.size())
+                throw Exception("BLV face vertex index {} is out of range for {} vertices", vertexId, dst->vertices.size());
+
+            pFace->vertices.push_back(&dst->vertices[vertexId]);
+        }
         j += numVertices + 1; // +1 to skip closing vertex in source data.
 
         // Skipping pXInterceptDisplacements.
