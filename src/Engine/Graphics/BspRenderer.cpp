@@ -232,7 +232,7 @@ void BspRenderer::AddNode() {
     for (uint16_t faceId : pSector->nonBspFaceIds)
         AddFace(node_id, faceId);  // can recurse back to this function
 
-    if (pSector->flags & 0x10) {
+    if (pSector->flags & SECTOR_HAS_BSP) {
         AddBSPFaces(node_id, pSector->firstBspNode);  // can recurse back to this function through AddFace
     }
 }
