@@ -103,11 +103,8 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
     if (who >= CHOOSE_PLAYER1 && who <= CHOOSE_PLAYER4) {
         co_yield pParty->pCharacters[std::to_underlying(who)];
     } else if (who == CHOOSE_ACTIVE) {
-        if (pParty->hasActiveCharacter()) {
+        if (pParty->hasActiveCharacter())
             co_yield pParty->activeCharacter();
-        } else {
-            co_yield pParty->pCharacters[rng->random(4)]; // Nobody is active while all four recover, vanilla MM7 picks at random then.
-        }
     } else if (who == CHOOSE_PARTY) {
         for (Character &player : pParty->pCharacters)
             co_yield player;
@@ -115,6 +112,17 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
         assert(who == CHOOSE_RANDOM);
         co_yield pParty->pCharacters[rng->random(4)];
     }
+}
+
+/**
+ * @param who                           Characters that `Cmp`, `Add`, `Subtract` or `Set` targets.
+ * @return                              The characters to run it for. Nobody is active while all four characters
+ *                                      recover, and vanilla MM6 and MM7 run these commands for a random character then.
+ */
+static EvtTargetCharacter variableCommandTarget(EvtTargetCharacter who) {
+    if (who == CHOOSE_ACTIVE && !pParty->hasActiveCharacter())
+        return CHOOSE_RANDOM;
+    return who;
 }
 
 /**
@@ -319,7 +327,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             setDecorationSprite(ir.data.sprite_texture_descr.cog, ir.data.sprite_texture_descr.hide, ir.str);
             break;
         case EVENT_Compare:
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(variableCommandTarget(_who), grng))
                 if (compareEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                     return ir.target_step;
             break;
@@ -333,7 +341,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
                 ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
                 break; // Roland's cage script adds the key on every click, it never checks the quest bit.
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(variableCommandTarget(_who), grng))
                 addEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_Subtract:
@@ -350,13 +358,13 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                     }
                 }
             } else {
-                for (Character &character : iterateCharacters(_who, grng))
+                for (Character &character : iterateCharacters(variableCommandTarget(_who), grng))
                     if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                         _cancelled = true;
             }
             break;
         case EVENT_Set:
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(variableCommandTarget(_who), grng))
                 setEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_SummonMonsters:

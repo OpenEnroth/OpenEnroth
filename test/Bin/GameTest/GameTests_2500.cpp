@@ -3,8 +3,6 @@
 
 #include "Testing/Game/GameTest.h"
 
-#include "Application/GameConfig.h"
-
 #include "Engine/Engine.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
@@ -742,7 +740,6 @@ GAME_TEST(Issues, Issue2792) {
 GAME_TEST(Issues, Issue2834) {
     // Evt commands after ForPlayer(Active) did nothing while no character was active, so the hired golem took the
     // abbey normal head and never gave its own head back.
-    engine->config->debug.NoMargaret.setValue(true); // Her tour opens a dialogue at the start.
     game.startNewGame();
     pNPCStats->pNPCData[56].flags |= NPC_HIRED; // The golem, as global.evt hires it.
     pParty->CountHirelings();
@@ -752,7 +749,7 @@ GAME_TEST(Issues, Issue2834) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
         game.tick(1);
     }
-    EXPECT_FALSE(pParty->hasActiveCharacter());
+    ASSERT_FALSE(pParty->hasActiveCharacter());
 
     game.pressGuiButton("Game_Hireling2"); // Lady Margaret is the first hireling.
     game.tick(2);
@@ -761,4 +758,5 @@ GAME_TEST(Issues, Issue2834) {
 
     EXPECT_FALSE(pParty->hasItem(ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD));
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_QUEST_GOLEM_HEAD);
+    EXPECT_TRUE(pParty->_questBits[static_cast<QuestBit>(72)]); // The golem wears the abbey normal head.
 }

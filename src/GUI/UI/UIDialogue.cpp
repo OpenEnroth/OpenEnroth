@@ -338,7 +338,8 @@ void selectNPCDialogueOption(DialogueId option) {
                                                             localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
             for (int i = 0; i < topics.size(); i++) {
-                pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]), INPUT_ACTION_INVALID, "");
+                pDialogueWindow->CreateButton(fmt::format("Dialogue_Option{}", i), {480, 160 + i * 30}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
+                                              UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]), INPUT_ACTION_INVALID, "");
             }
             pDialogueWindow->setKeyboardControlGroup(topics.size(), false, 0, 1);
 
