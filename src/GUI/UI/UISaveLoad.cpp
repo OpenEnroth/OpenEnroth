@@ -31,8 +31,6 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/Exception.h"
 
-using Io::TextInputType;
-
 std::array<int, 2> saveload_dlg_xs = {{82, 0}};
 std::array<int, 2> saveload_dlg_ys = {{60, 0}};
 std::array<int, 2> saveload_dlg_zs = {{460, 640}};
@@ -188,7 +186,7 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
         keyboard_input_status = WINDOW_INPUT_NONE;
         if (keyboardInputHandler->GetTextInput().empty()) {
             // Saves need a name, keep the input open.
-            keyboardInputHandler->StartTextInput(TextInputType::Text, 19, this);
+            keyboardInputHandler->StartTextInput(TEXT_INPUT_TEXT, 19, this);
         } else {
             setSelectedSlotName(keyboardInputHandler->GetTextInput());
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
@@ -285,7 +283,7 @@ void GUIWindow_Save::slotClicked(int slotIndex, bool isDoubleClick) {
         return; // Clicked below the last slot.
     _selectedSlot = slot;
     if (isDoubleClick) {
-        keyboardInputHandler->StartTextInput(TextInputType::Text, 19, this);
+        keyboardInputHandler->StartTextInput(TEXT_INPUT_TEXT, 19, this);
         if (!selectedSlot().fileName.empty())
             keyboardInputHandler->SetTextInput(selectedSlot().header.name);
     }

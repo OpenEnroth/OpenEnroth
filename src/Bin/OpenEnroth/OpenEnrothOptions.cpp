@@ -9,18 +9,9 @@
 
 #include "Library/Cli/CliApp.h"
 #include "Library/Environment/Interface/Environment.h"
-#include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Exception.h"
 #include "Utility/String/Format.h"
-
-MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(OpenEnrothOptions::Migration, CASE_INSENSITIVE, {
-    {OpenEnrothOptions::MIGRATION_NONE, "none"},
-    {OpenEnrothOptions::MIGRATION_DROP_REDUNDANT_KEY_EVENTS, "drop_redundant_key_events"},
-    {OpenEnrothOptions::MIGRATION_DROP_PRESS_RELEASE_FOR_CONTINUOUS_ACTIONS, "drop_press_release_for_continuous_actions"},
-    {OpenEnrothOptions::MIGRATION_DROP_PAINT_AFTER_ACTIVATE, "drop_paint_after_activate"},
-    {OpenEnrothOptions::MIGRATION_TIGHTEN_KEY_EVENTS_FOR_ONCE_ACTIONS, "tighten_key_events_for_once_actions"}
-})
 
 OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     // Note that it's OK to create a temporary `Environment` here.
@@ -69,9 +60,6 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     app->add_flag(
         "--headless", result.headless,
         "Run in headless mode.");
-    retrace->add_option(
-        "--migration", result.retrace.migration,
-        "Migration to apply before retracing.")->option_text("MIGRATION");
     retrace->add_option(
         "TRACE", result.retrace.traces,
         "Path to trace file(s) to retrace.")->option_text("...");

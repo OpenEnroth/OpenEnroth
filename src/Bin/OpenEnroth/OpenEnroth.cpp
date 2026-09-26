@@ -6,7 +6,6 @@
 #include <string>
 #include <algorithm>
 #include <chrono>
-#include <unordered_set>
 
 #include "Application/Startup/GameStarter.h"
 
@@ -17,11 +16,7 @@
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Engine.h"
 
-#include "Io/KeyboardActionMapping.h"
-#include "Io/InputEnumFunctions.h"
-
 #include "Core/Trace/EventTrace.h"
-#include "Core/Trace/EventTraceMigrations.h"
 
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -32,27 +27,6 @@
 #include "Utility/String/Transformations.h"
 
 #include "OpenEnrothOptions.h"
-
-void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
-    std::unordered_set<PlatformKey> continuousKeys, onceKeys;
-    for (InputAction inputAction : allInputActions())
-        (triggerModeForInputAction(inputAction) == TRIGGER_ONCE ? onceKeys : continuousKeys).insert(keyboardActionMapping->keyFor(inputAction));
-    erase_if(onceKeys, [&] (PlatformKey key) { return continuousKeys.contains(key); });
-
-    switch (migration) {
-    default: assert(false); [[fallthrough]];
-    case OpenEnrothOptions::MIGRATION_NONE:
-        return;
-    case OpenEnrothOptions::MIGRATION_DROP_REDUNDANT_KEY_EVENTS:
-        return trace::migrateDropRedundantKeyEvents(trace);
-    case OpenEnrothOptions::MIGRATION_DROP_PRESS_RELEASE_FOR_CONTINUOUS_ACTIONS:
-        return trace::migrateDropKeyPressReleaseEvents(continuousKeys, trace);
-    case OpenEnrothOptions::MIGRATION_DROP_PAINT_AFTER_ACTIVATE:
-        return trace::migrateDropPaintAfterActivate(trace);
-    case OpenEnrothOptions::MIGRATION_TIGHTEN_KEY_EVENTS_FOR_ONCE_ACTIONS:
-        return trace::migrateTightenKeyEvents(onceKeys, trace);
-    }
-}
 
 int runRetrace(const OpenEnrothOptions &options) {
     GameStarter starter(options);
@@ -70,7 +44,6 @@ int runRetrace(const OpenEnrothOptions &options) {
             Blob oldSaveBlob = Blob::fromFile(savePath);
 
             EventTrace oldTrace = EventTrace::fromJsonBlob(oldTraceBlob, application->window());
-            migrateTrace(options.retrace.migration, &oldTrace);
 
             EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
             recorder->startRecording(game, oldSaveBlob);

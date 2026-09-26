@@ -408,6 +408,7 @@ int new_explosion_effect(Pointi *startXY, int effect_value) {
 }
 
 void DrawSparks() {
+    Recti screen(Pointi(), render->GetRenderDimensions());
     Color rgb_pixel_color;
 
     for (size_t i = 0; i < am_effects_array.size(); ++i) {
@@ -419,18 +420,15 @@ void DrawSparks() {
             // draw sparks
             for (size_t j = 0; j < am_effects_array[i].effect_sparks.size(); ++j) {
                 if (am_effects_array[i].effect_sparks[j].spark_remaining_life > 0) {
-                    // check limits - TODO(pskelton): hardcoded 640x480 screen bounds
-                    if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
-                        if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
-                            if (j % 2) {
-                                // draw single pixel
-                                render->FillRect(Recti(am_effects_array[i].effect_sparks[j].spark_position.x,
-                                    am_effects_array[i].effect_sparks[j].spark_position.y, 1, 1), rgb_pixel_color);
-                            } else {
-                                // draw square
-                                render->FillRect(Recti(am_effects_array[i].effect_sparks[j].spark_position.x,
-                                    am_effects_array[i].effect_sparks[j].spark_position.y, 2, 2), rgb_pixel_color);
-                            }
+                    if (screen.contains(am_effects_array[i].effect_sparks[j].spark_position)) {
+                        if (j % 2) {
+                            // draw single pixel
+                            render->FillRect(Recti(am_effects_array[i].effect_sparks[j].spark_position.x,
+                                am_effects_array[i].effect_sparks[j].spark_position.y, 1, 1), rgb_pixel_color);
+                        } else {
+                            // draw square
+                            render->FillRect(Recti(am_effects_array[i].effect_sparks[j].spark_position.x,
+                                am_effects_array[i].effect_sparks[j].spark_position.y, 2, 2), rgb_pixel_color);
                         }
                     }
                 }

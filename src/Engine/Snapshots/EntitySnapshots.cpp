@@ -1539,7 +1539,7 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
     memzero(dst);
 
-    dst->flags = src.flags;
+    dst->flags = std::to_underlying(src.flags);
     dst->numFloors = src.floorIds.size();
     dst->numWalls = src.wallIds.size();
     dst->numCeilings = src.ceilingIds.size();
@@ -1554,7 +1554,7 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
 }
 
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
-    dst->flags = src.flags;
+    dst->flags = SectorFlags(src.flags);
     // Spans (floorIds, wallIds, etc.) are set up in CompositeSnapshots.cpp after sectorData is reconstructed.
     dst->minAmbientLightLevel = src.minAmbientLightLevel;
     dst->firstBspNode = src.firstBspNode;
@@ -1654,7 +1654,7 @@ void reconstruct(const DecorationData_MM6 &src, DecorationData *dst) {
     dst->uRadius = src.uRadius;
     dst->uLightRadius = src.uLightRadius;
     dst->uSpriteID = src.uSpriteID;
-    dst->uFlags = DecorationDescFlags(src.uFlags);
+    dst->uFlags = DecorationDataFlags(src.uFlags);
     dst->uSoundID = static_cast<SoundId>(src.uSoundID);
 
     dst->uColoredLight.r = 255;

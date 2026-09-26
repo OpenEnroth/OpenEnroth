@@ -162,8 +162,8 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
             pLevelDecorations[i].IsObeliskChestActive()) &&
             !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
             const DecorationData *decor_desc = pDecorationTable->decoration(pLevelDecorations[i].uDecorationDescID);
-            if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
-                if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
+            if (!(decor_desc->uFlags & DECORATION_DATA_EMITS_FIRE)) {
+                if (!(decor_desc->uFlags & (DECORATION_DATA_MARKER | DECORATION_DATA_DONT_DRAW))) {
                     v6 = animTimer->time();
                     v7 = std::abs(pLevelDecorations[i].vPosition.x +
                         pLevelDecorations[i].vPosition.y);
@@ -232,8 +232,6 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     if (render->AddBillboardIfVisible(frame->sprites[(int64_t)v37], frame->paletteId, pLevelDecorations[i].vPosition, { frame->scale, frame->scale },
                         v38, Pid(OBJECT_Decoration, i))) {
                         ++uNumDecorationsDrawnThisFrame;
-                        // TODO(pskelton): what is this for?
-                        pBillboardRenderList[::uNumBillboardsToDraw - 1].flags |= BILLBOARD_0X200;
                     }
                 }
             } else {
@@ -302,7 +300,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     if (config->graphics.Tinting.value() && pBillboard->sTintColor.c32() & 0x00FFFFFF) {
         diffuse = BlendColors(pBillboard->sTintColor, diffuse);
         if (opaquetest)
-            diffuse = Color::fromC32(0x007F7F7F & (diffuse.c32() >> 1)); // TODO(captainurist): what's going on here?
+            diffuse = Color(diffuse.r / 2, diffuse.g / 2, diffuse.b / 2, 0);
     }
 
     if (opaquetest)
@@ -415,7 +413,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         billboard->pQuads[0].pos.x = (acos * v16 - asin * v17) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[0].pos.y = (acos * v17 + asin * v16 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
         billboard->pQuads[0].pos.z = p.view_space_z;
-        billboard->pQuads[0].diffuse = p.uLightColor_bgr;
+        billboard->pQuads[0].diffuse = p.fadedColor;
         billboard->pQuads[0].texcoord.x = 0.f;
         billboard->pQuads[0].texcoord.y = 0.f;
     }
@@ -426,7 +424,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         billboard->pQuads[1].pos.x = (acos * v31 - asin * v32) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[1].pos.y = (acos * v32 + asin * v31 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
         billboard->pQuads[1].pos.z = p.view_space_z;
-        billboard->pQuads[1].diffuse = p.uLightColor_bgr;
+        billboard->pQuads[1].diffuse = p.fadedColor;
         billboard->pQuads[1].texcoord.x = 0.0;
         billboard->pQuads[1].texcoord.y = 1.0;
     }
@@ -437,7 +435,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         billboard->pQuads[2].pos.x = (acos * v23 - asin * v24) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[2].pos.y = (acos * v24 + asin * v23 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
         billboard->pQuads[2].pos.z = p.view_space_z;
-        billboard->pQuads[2].diffuse = p.uLightColor_bgr;
+        billboard->pQuads[2].diffuse = p.fadedColor;
         billboard->pQuads[2].texcoord.x = 1.0;
         billboard->pQuads[2].texcoord.y = 1.0;
     }
@@ -448,7 +446,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(const Particle& p) {
         billboard->pQuads[3].pos.x = (acos * v39 - asin * v40) * p.screenspace_scale + (float)p.uScreenSpaceX;
         billboard->pQuads[3].pos.y = (acos * v40 + asin * v39 - 12.f) * p.screenspace_scale + (float)p.uScreenSpaceY;
         billboard->pQuads[3].pos.z = p.view_space_z;
-        billboard->pQuads[3].diffuse = p.uLightColor_bgr;
+        billboard->pQuads[3].diffuse = p.fadedColor;
         billboard->pQuads[3].texcoord.x = 1.0;
         billboard->pQuads[3].texcoord.y = 0.0;
     }

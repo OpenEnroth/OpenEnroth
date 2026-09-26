@@ -158,8 +158,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
             hint = localization->format(LSTR_ENTER_S, pMapTable->pInfos[pMapTable->GetMapInfo(destMap)].name);
         } else {
             hint = localization->str(LSTR_EXIT_DIALOGUE);
-            if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[houseTable[transitionHouse].uAnimationID].uRoomSoundId)
-                playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
+            playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
         }
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
             pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
@@ -171,8 +170,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
         } else {
             hint = localization->str(LSTR_EXIT_DIALOGUE);
         }
-        if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[houseTable[transitionHouse].uAnimationID].uRoomSoundId)
-            playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
+        playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
             pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
     }

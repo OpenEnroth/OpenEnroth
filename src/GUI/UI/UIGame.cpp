@@ -589,7 +589,7 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
                 pParty->setActiveCharacterIndex(uPlayerID);
                 return;
             }
-            pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(pParty->activeCharacterIndex(), SCREEN_CHARACTERS);
+            pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(SCREEN_CHARACTERS);
             return;
         }
         return;
@@ -644,7 +644,7 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
     if (window_SpeakInHouse->currentDialogue() == DIALOGUE_SHOP_BUY_STANDARD ||
         window_SpeakInHouse->currentDialogue() == DIALOGUE_SHOP_BUY_SPECIAL) {
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-        pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(pParty->activeCharacterIndex(), SCREEN_SHOP_INVENTORY);
+        pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(SCREEN_SHOP_INVENTORY);
         return;
     }
 }

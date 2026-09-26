@@ -103,8 +103,11 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
     if (who >= CHOOSE_PLAYER1 && who <= CHOOSE_PLAYER4) {
         co_yield pParty->pCharacters[std::to_underlying(who)];
     } else if (who == CHOOSE_ACTIVE) {
-        if (pParty->hasActiveCharacter())
+        if (pParty->hasActiveCharacter()) {
             co_yield pParty->activeCharacter();
+        } else {
+            co_yield pParty->pCharacters[rng->random(4)]; // Nobody is active while all four characters recover.
+        }
     } else if (who == CHOOSE_PARTY) {
         for (Character &player : pParty->pCharacters)
             co_yield player;

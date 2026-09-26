@@ -95,3 +95,10 @@ enum class InputActionTriggerMode {
     TRIGGER_WITH_KEYREPEAT = 2, // Trigger once, then trigger once every 66ms after a 500ms delay.
 };
 using enum InputActionTriggerMode;
+
+enum class TextInputType {
+    TEXT_INPUT_NONE = 0,
+    TEXT_INPUT_TEXT = 1,
+    TEXT_INPUT_NUMBER = 2,
+};
+using enum TextInputType;

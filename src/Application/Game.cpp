@@ -1472,7 +1472,7 @@ void Game::processQueuedMessages() {
 
             case UIMSG_OpenInventory: {
                 if (pParty->hasActiveCharacter()) {
-                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(pParty->activeCharacterIndex(), SCREEN_CHARACTERS);
+                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(SCREEN_CHARACTERS);
                     ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->ShowInventoryTab();
                 }
                 break;
