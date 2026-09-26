@@ -395,8 +395,7 @@ EvtFlow EvtEventDecompiler::flow(int index, EvtMode mode) const {
                 result.targets.push_back(indexOfStep(ir.data.random_goto_descr.random_goto[i]));
             return result;
         }
-        case EVENT_InputString:
-        case EVENT_PressAnyKey: // The interpreter ends the event on these two.
+        case EVENT_InputString: // The interpreter ends the event on it.
             return {EVT_FLOW_STOP, fmt::format("-- {} isn't supported by OpenEnroth.", ::toString(ir.opcode))};
         case EVENT_OnCanShowDialogItemCmp:
         case EVENT_EndCanShowDialogItem:
@@ -412,7 +411,7 @@ EvtFlow EvtEventDecompiler::flow(int index, EvtMode mode) const {
     const EvtCommandInfo *info = evtCommand(ir.opcode);
     if (!info)
         return {EVT_FLOW_NEXT, fmt::format("-- {} isn't supported by OpenEnroth.", ::toString(ir.opcode))};
-    if (info->kind == EVT_COMMAND_CONDITION)
+    if (info->kind == EVT_COMMAND_KIND_CONDITION)
         return {EVT_FLOW_BRANCH, formatCall(index, "evt."), {indexOfStep(ir.target_step)}};
     return {EVT_FLOW_NEXT, formatCall(index, "evt.")};
 }
