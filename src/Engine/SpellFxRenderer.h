@@ -118,6 +118,13 @@ struct SpellFxRenderer {
      * @offset 0x4A7E89
      */
     void sparklesOnActorAfterItCastsBuff(Actor *pActor, Color uDiffuse);
+
+    /**
+     * Adds one rising fire particle, the kind burning decorations and fire trails emit.
+     *
+     * @param pos                       World position of the particle.
+     */
+    void addFireParticle(Vec3f pos);
     void _4A7F74(int x, int y, int z);
     float _4A806F_get_mass_distortion_value(Actor *pActor);
     // void _4A80DC_implosion_particle_sw(SpriteObject *a2);

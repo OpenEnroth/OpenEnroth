@@ -1133,20 +1133,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[uDecorationID].uDecorationDescID);
 
     if (decoration->uFlags & DECORATION_DATA_EMITS_FIRE) {
-        // TODO(pskelton): common emit fire code
-        Particle_sw particle; // Fire, like at the Pit's tavern.
-        particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-        particle.uDiffuse = colorTable.OrangeyRed;
-        particle.x = (double)pLevelDecorations[uDecorationID].vPosition.x;
-        particle.y = (double)pLevelDecorations[uDecorationID].vPosition.y;
-        particle.z = (double)pLevelDecorations[uDecorationID].vPosition.z;
-        particle.shiftX = 0.0;
-        particle.shiftY = 0.0;
-        particle.shiftZ = 0.0;
-        particle.particle_size = 1.0;
-        particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
-        particle.texture = spell_fx_renderer->effpar01;
-        particle_engine->AddParticle(&particle);
+        spell_fx_renderer->addFireParticle(pLevelDecorations[uDecorationID].vPosition); // Fire, like at the Pit's tavern.
         return;
     }
 
