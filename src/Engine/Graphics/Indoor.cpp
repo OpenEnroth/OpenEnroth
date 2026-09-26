@@ -1335,31 +1335,35 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
 
 //----- (0046A334) --------------------------------------------------------
 // TODO(Nik-RE-dev): does not belong here, it's common function for interaction for both indoor/outdoor
-char DoInteractionWithTopmostZObject(Pid pid) {
+// TODO(Nik-RE-dev): get rid of external function declaration inside
+void DoInteractionWithTopmostZObject(Pid pid) {
     auto id = pid.id();
     auto type = pid.type();
 
     // was SCREEN_BRANCHLESS_NPC_DIALOG
     if (current_screen_type != SCREEN_GAME) {
-        return 1;
+        return;
     }
 
     switch (type) {
         case OBJECT_Sprite: {  // take the item
             if (pSpriteObjects[id].IsUnpickable() || id >= pSpriteObjects.size() || !pSpriteObjects[id].uObjectDescID) {
-                return 1;
+                return;
             }
 
+            extern void ItemInteraction(int item_id);
             ItemInteraction(id);
             break;
         }
 
         case OBJECT_Actor:
             if (pActors[id].aiState == Dying || pActors[id].aiState == Summoned)
-                return 1;
+                return;
             if (pActors[id].aiState == Dead) {
                 pActors[id].LootActor();
             } else {
+                extern bool CanInteractWithActor(int id);
+                extern void InteractWithActor(int id);
                 if (CanInteractWithActor(id)) {
                     if (pParty->hasActiveCharacter()) {
                         InteractWithActor(id);
@@ -1371,6 +1375,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
             break;
 
         case OBJECT_Decoration:
+            extern void DecorationInteraction(int id, Pid pid);
             if (pParty->hasActiveCharacter()) {
                 DecorationInteraction(id, pid);
             } else {
@@ -1384,13 +1389,13 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                 int face_id = id & 0x3F;
 
                 if (bmodel_id >= pOutdoor->pBModels.size()) {
-                    return 1;
+                    return;
                 }
 
                 BLVFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
 
                 if (model.attributes & FACE_EVENT_IS_HINT || model.eventId == 0) {
-                    return 1;
+                    return;
                 }
 
                 if (pParty->hasActiveCharacter()) {
@@ -1401,10 +1406,10 @@ char DoInteractionWithTopmostZObject(Pid pid) {
             } else {
                 if (!(pIndoor->faces[id].attributes & FACE_CLICKABLE)) {
                     engine->_statusBar->nothingHere();
-                    return 1;
+                    return;
                 }
                 if (pIndoor->faces[id].attributes & FACE_EVENT_IS_HINT || !pIndoor->faces[id].eventId) {
-                    return 1;
+                    return;
                 }
 
                 if (pParty->hasActiveCharacter()) {
@@ -1413,15 +1418,12 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
             }
-            return 0;
             break;
 
         default:
             MM_WARNING("Warning: Invalid ID reached!");
-            return 1;
+            break;
     }
-
-    return 0;
 }
 //----- (0046BDF1) --------------------------------------------------------
 void BLV_UpdateUserInputAndOther() {
