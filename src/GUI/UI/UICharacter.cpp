@@ -212,16 +212,6 @@ IndexedArray<std::array<GraphicsImage *, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> p
 IndexedArray<std::array<GraphicsImage *, 16>, BODY_TYPE_MALE, BODY_TYPE_FEMALE> paperdoll_helm_texture;  // 511698
 IndexedArray<std::array<GraphicsImage *, 7>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_belt_texture;  // 511718
 
-/**
- * Dwarves draw most belts and helms with the non-dwarf textures.
- *
- * @param bodyType                      Body type to map.
- * @return                              Non-dwarf body type of the same sex.
- */
-static BodyType nonDwarfBodyType(BodyType bodyType) {
-    return bodyType == BODY_TYPE_MALE || bodyType == BODY_TYPE_DWARF_MALE ? BODY_TYPE_MALE : BODY_TYPE_FEMALE;
-}
-
 const IndexedArray<std::array<std::array<int, 2>, 16>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Weapon = {  // 4E4C30
     {BODY_TYPE_MALE, {{
         {128, 205}, {30, 144}, {88, 85}, {0, 0}, {0, 0}, {0, 0}, {17, 104}, {0, 0},
@@ -1088,7 +1078,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 if (index == 5) // Titan's Belt has dwarf textures.
                     texture = paperdoll_belt_texture[bodyType][index];
                 else
-                    texture = paperdoll_belt_texture[nonDwarfBodyType(bodyType)][index];
+                    texture = paperdoll_belt_texture[humanBodyType(bodyType)][index];
 
                 CharacterUI_DrawItem(item_X, item_Y, belt.get(), belt.index(), texture, !bRingsShownInCharScreen);
             }
@@ -1149,7 +1139,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
                 GraphicsImage *texture = nullptr;
                 if (!isDwarf || helm->itemId != ITEM_PHYNAXIAN_HELM)
-                    texture = paperdoll_helm_texture[nonDwarfBodyType(bodyType)][index];
+                    texture = paperdoll_helm_texture[humanBodyType(bodyType)][index];
                 else
                     texture = paperdoll_dbrds[11];
 
