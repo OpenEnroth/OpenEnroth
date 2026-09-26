@@ -314,9 +314,9 @@ enum class WindowType {
     WINDOW_CHARACTERS_PRESSED_BUTTON = 91,
     WINDOW_PRESSED_BUTTON = 92,
     WINDOW_5D = 93,
-    WINDOW_SAVE_LOAD_BTN = 94,
-    WINDOW_LOAD_GAME_CANCEL_BTN = 95,  // OnCancel3?
-    WINDOW_CLOSE_REST_WINDOW_BTN = 96,
+    WINDOW_SAVE_LOAD_BUTTON = 94,
+    WINDOW_LOAD_GAME_CANCEL_BUTTON = 95,  // OnCancel3?
+    WINDOW_CLOSE_REST_WINDOW_BUTTON = 96,
     WINDOW_EXIT_CHARACTER_WINDOW = 97,  // OnCancel2
     WINDOW_REST_WINDOW = 0x62,
     WINDOW_BOOKS_BUTTON_OVERLAY = 99,
@@ -334,14 +334,14 @@ enum class WindowType {
     WINDOW_MAPS_BOOK = 0xCA,
     WINDOW_CALENDAR_BOOK = 0xCB,
     WINDOW_JOURNAL_BOOK = 0xE0,
-    WINDOW_UNKNOWN,                 // i wasnt able to find real value for those
-    WINDOW_CHARACTER_CREATION,      // new addition, because i wasnt able to find real value for this
-    WINDOW_CHARACTER_CREATION_BTN,  // new addition, because i wasnt able to find real value for this
-    WINDOW_GENERIC_CANCEL,          // new addition, because i wasnt able to find real value for this
-    WINDOW_GAME_UI,                 // new addition, because i wasnt able to find real value for this
-    WINDOW_CREDITS,                 // new addition, because i wasnt able to find real value for this
-    WINDOW_SAVE,                    // new addition, because i wasnt able to find real value for this
-    WINDOW_LOAD,                    // new addition, because i wasnt able to find real value for this
+    WINDOW_UNKNOWN,                    // i wasnt able to find real value for those
+    WINDOW_CHARACTER_CREATION,         // new addition, because i wasnt able to find real value for this
+    WINDOW_CHARACTER_CREATION_BUTTON,  // new addition, because i wasnt able to find real value for this
+    WINDOW_GENERIC_CANCEL,             // new addition, because i wasnt able to find real value for this
+    WINDOW_GAME_UI,                    // new addition, because i wasnt able to find real value for this
+    WINDOW_CREDITS,                    // new addition, because i wasnt able to find real value for this
+    WINDOW_SAVE,                       // new addition, because i wasnt able to find real value for this
+    WINDOW_LOAD,                       // new addition, because i wasnt able to find real value for this
 };
 using enum WindowType;
 

@@ -123,7 +123,7 @@ class GUIWindow {
 class OnButtonClick : public GUIWindow {
  public:
     OnButtonClick(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}, bool playSound = true) :
-        GUIWindow(WINDOW_CHARACTER_CREATION_BTN, position, dimensions, hint),
+        GUIWindow(WINDOW_CHARACTER_CREATION_BUTTON, position, dimensions, hint),
         _playSound(playSound),
         _button(button)
     {}
@@ -165,7 +165,7 @@ class OnButtonClick4 : public GUIWindow {
 class OnSaveLoad : public GUIWindow {
  public:
     OnSaveLoad(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
-        GUIWindow(WINDOW_SAVE_LOAD_BTN, position, dimensions, hint),
+        GUIWindow(WINDOW_SAVE_LOAD_BUTTON, position, dimensions, hint),
         _button(button)
     {}
 
@@ -204,7 +204,7 @@ class OnCancel2 : public GUIWindow {
 class OnCancel3 : public GUIWindow {
  public:
     OnCancel3(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint = {}) :
-        GUIWindow(WINDOW_LOAD_GAME_CANCEL_BTN, position, dimensions, hint),
+        GUIWindow(WINDOW_LOAD_GAME_CANCEL_BUTTON, position, dimensions, hint),
         _button(button)
     {}
 
