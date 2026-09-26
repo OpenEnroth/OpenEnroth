@@ -20,7 +20,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
@@ -265,7 +265,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.field_60_distance_related_prolly_lod = distancemod;
             sprite.spellCasterAbility = ABILITY_SPELL1;
 
-            spriteId = sprite.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
+            spriteId = sprite.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectTable->pObjects[sprite.uObjectDescID].uSpeed, 0);
             if (spriteId != -1) {
                 pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
             }
@@ -345,7 +345,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.field_60_distance_related_prolly_lod = distancemod;
                 sprite.spellCasterAbility = ABILITY_SPELL1;
 
-                spriteId = sprite.Create(yaw, pitch, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
+                spriteId = sprite.Create(yaw, pitch, pObjectTable->pObjects[sprite.uObjectDescID].uSpeed, 0);
                 j = grng->random(1024) - 512;
                 k = grng->random(1024) - 512;
             }
@@ -396,7 +396,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             if (spell_spray_angle_start <= spell_spray_angle_end) {
                 do {
                     sprite.uFacing = spell_spray_angle_start + pDir->uYawAngle;
-                    spriteId = sprite.Create(sprite.uFacing, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
+                    spriteId = sprite.Create(sprite.uFacing, pDir->uPitchAngle, pObjectTable->pObjects[sprite.uObjectDescID].uSpeed, 0);
                     spell_spray_angle_start += ONE_THIRD_PI / (sparks - 1);
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
@@ -652,7 +652,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             if (spell_spray_angle_start <= spell_spray_angle_end) {
                 do {
                     sprite.uFacing = spell_spray_angle_start + pDir->uYawAngle;
-                    spriteId = sprite.Create(sprite.uFacing, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
+                    spriteId = sprite.Create(sprite.uFacing, pDir->uPitchAngle, pObjectTable->pObjects[sprite.uObjectDescID].uSpeed, 0);
                     spell_spray_angle_start += ONE_THIRD_PI / (pieces - 1);
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
@@ -689,7 +689,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 }
 
 unsigned short Actor::GetObjDescId(SpellId spellId) {
-    return pObjectList->ObjectIDByItemID(SpellSpriteMapping[spellId]);  // crash here
+    return pObjectTable->ObjectIDByItemID(SpellSpriteMapping[spellId]);  // crash here
 }
 
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
@@ -736,7 +736,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
     SpriteObject a1;  // [sp+Ch] [bp-74h]@1
     a1.spriteId = spriteForMonsterProjectile(type);
 
-    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.spriteId);
+    a1.uObjectDescID = pObjectTable->ObjectIDByItemID(a1.spriteId);
     if (a1.uObjectDescID == 0) {
         MM_ERROR("Item not found");
         return;
@@ -766,7 +766,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
     a1.spellCasterAbility = a4;
     // 1
     a1.Create(pDir->uYawAngle, pDir->uPitchAngle,
-              pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
+              pObjectTable->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
 
     if (pActors[uActorID].monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_MULTI_SHOT) {
         specAb = pActors[uActorID].monsterInfo.specialAbilityDamageDiceBonus;
@@ -777,12 +777,12 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
             if (specAb != 3) return;
             // 3 - for sprays of 3
             a1.Create(pDir->uYawAngle + 30, pDir->uPitchAngle,
-                pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
+                pObjectTable->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
             v13 = pDir->uYawAngle - 30;
         }
         // 2 - double height stacked / spray of 3
         a1.Create(v13, pDir->uPitchAngle,
-            pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
+            pObjectTable->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
     }
     return;
 }
@@ -791,7 +791,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
 void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors eg gogs
     SpriteObject a1;
     a1.spriteId = SPRITE_OBJECT_EXPLODE;
-    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.spriteId);
+    a1.uObjectDescID = pObjectTable->ObjectIDByItemID(a1.spriteId);
     a1.containing_item.Reset();
     a1.uSpellID = SPELL_NONE;
     a1.spell_level = 0;

@@ -1,18 +1,18 @@
-#include "Engine/Objects/ObjectList.h"
+#include "ObjectTable.h"
 
 #include "Engine/Graphics/Sprites.h"
 
-ObjectList *pObjectList;
+ObjectTable *pObjectTable;
 
-unsigned int ObjectList::ObjectIDByItemID(SpriteId uItemID) {
+unsigned int ObjectTable::ObjectIDByItemID(SpriteId uItemID) {
     for (size_t i = 0; i < pObjects.size(); i++)
         if (uItemID == pObjects[i].uObjectID)
             return i;
     return 0;
 }
 
-void ObjectList::InitializeSprites() {
-    for (const ObjectDesc &object : pObjects) {
+void ObjectTable::InitializeSprites() {
+    for (const ObjectData &object : pObjects) {
         pSpriteFrameTable->InitializeSprite(object.uSpriteID);
     }
 }

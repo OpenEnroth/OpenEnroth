@@ -30,7 +30,7 @@
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
@@ -879,7 +879,7 @@ void GameUI_WritePointedObjectStatusString() {
             Vis_PIDAndDepth pickedObject = engine->PickMouseForInfo();
             pickedObjectID = (signed)pickedObject.pid.id();
             if (pickedObject.pid.type() == OBJECT_Sprite) {
-                if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
+                if (pObjectTable->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     engine->_statusBar->clearPermanent();
                     uLastPointedObjectID = Pid();
                     return;
@@ -1435,7 +1435,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                 //     pPoint_Y >= render->raster_clip_y && pPoint_Y <=
                 //     render->raster_clip_w)
                 {
-                    if (pObjectList->pObjects[pSpriteObjects[i].uObjectDescID]
+                    if (pObjectTable->pObjects[pSpriteObjects[i].uObjectDescID]
                             .uFlags &
                         OBJECT_DESC_UNPICKABLE) {
                         render->RasterLine2D(Pointi(pPoint_X, pPoint_Y), Pointi(pPoint_X + 1, pPoint_Y + 1),
