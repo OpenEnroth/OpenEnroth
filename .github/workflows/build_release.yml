@@ -32,11 +32,11 @@ jobs:
       GH_TOKEN: '${{secrets.GITHUB_TOKEN}}'
       GH_REPO: '${{github.repository}}'
     steps:
-      # A dispatch can ask for a commit other than the one that triggered the run, and the tag has to follow it.
       - name: Advance nightly tag
         env:
-          NIGHTLY_SHA: '${{inputs.myCommit || github.sha}}'
+          NIGHTLY_REF: '${{inputs.myCommit || github.sha}}'
         run: |
+          NIGHTLY_SHA=$(gh api "repos/$GH_REPO/commits/$NIGHTLY_REF" --jq .sha) # The refs API takes only a full sha.
           if ! gh api --method PATCH "repos/$GH_REPO/git/refs/tags/$TAG_NAME" -f sha="$NIGHTLY_SHA" -F force=true; then
             gh api --method POST "repos/$GH_REPO/git/refs" -f ref="refs/tags/$TAG_NAME" -f sha="$NIGHTLY_SHA"
           fi

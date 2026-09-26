@@ -21,7 +21,7 @@ jobs:
         architecture: [x64]
     steps:
       - name: Check for data cache
-        id: check-for-data-cache
+        id: check_for_data_cache
         uses: actions/cache/restore@v6.1.0
         with:
           path: |
@@ -30,18 +30,17 @@ jobs:
           lookup-only: true
 
       - name: Checkout private data
-        if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+        if: steps.check_for_data_cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v7.0.1
         with:
           repository: OpenEnroth/OpenEnroth_GameData
           path: OpenEnroth_GameData
           lfs: 'true' # .vid files are stored in LFS.
           token: '${{secrets.DATA_ACCESS_TOKEN}}'
-          # Persisted credentials land in the checked out tree, and the step below caches that tree.
-          persist-credentials: false
+          persist-credentials: false # This tree is cached, and the cache is restored in pull request runs.
 
       - name: Cache data
-        if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+        if: steps.check_for_data_cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v6.1.0
         with:
           path: |
