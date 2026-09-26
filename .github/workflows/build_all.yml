@@ -29,7 +29,7 @@ on:
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
 concurrency:
-  group: ${{github.workflow}}-${{github.event.pull_request.number || github.run_id}}
+  group: build-all-${{github.event.pull_request.number || github.run_id}} # Called from Build Release, github.workflow would be the caller's name.
   cancel-in-progress: true
 
 env:
@@ -104,7 +104,7 @@ jobs:
           echo "MATRIX_CCACHE_SIZE=$ccache_size" >> "$GITHUB_ENV"
           echo "MATRIX_CMAKE_ARGS=$cmake_args" >> "$GITHUB_ENV"
 
-          # PR builds pass an empty release tag, which must not leave a doubled underscore in the file name.
+          # An empty release tag must not leave a doubled underscore in the file name.
           release_suffix="${RELEASE_TAG:+_$RELEASE_TAG}_${{matrix.configuration}}_$architecture"
           if [ "$platform" = "android" ]; then
             echo "RELEASE_FILE=dist/Android$release_suffix.apk" >> "$GITHUB_ENV"
@@ -138,7 +138,7 @@ jobs:
       - name: '[android] Decode keystore'
         if: env.MATRIX_PLATFORM == 'android' && env.SECRETS_KEYSTORE != ''
         id: decode_keystore
-        uses: timheuer/base64-to-file@v2
+        uses: timheuer/base64-to-file@v2.0.0
         with:
           fileName: android_keystore.jks
           encodedString: '${{env.SECRETS_KEYSTORE}}'
@@ -164,7 +164,7 @@ jobs:
               sudo apt-get install -y gcc-multilib g++-multilib
             fi
 
-      - name: '[android] Setup Java'
+      - name: '[android] Set up Java'
         if: env.MATRIX_PLATFORM == 'android'
         uses: actions/setup-java@v6.0.0
         with:
@@ -195,7 +195,7 @@ jobs:
               sudo apt-get install -y libglu1-mesa-dev
             fi
 
-      - name: '[windows] Setup MSVC environment'
+      - name: '[windows] Set up MSVC environment'
         if: env.MATRIX_PLATFORM == 'windows'
         uses: ilammy/msvc-dev-cmd@v1
         with:

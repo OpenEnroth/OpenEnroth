@@ -120,7 +120,7 @@ control over install location. Requires Ubuntu 24.04 or a distribution with comp
 
 Android is not actively tested by the dev team — expect issues and be prepared to troubleshoot.
 
-1. Download `openenroth-release.apk` from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
+1. Download `Android_nightly_RelWithDebInfo_universal.apk` from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
 2. Install the APK on your device (you will need to allow installation from unknown sources in your device settings).
 3. Copy the game data (`ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) to
    `/sdcard/Android/data/io.github.openenroth.openenroth/files/` on your device.
