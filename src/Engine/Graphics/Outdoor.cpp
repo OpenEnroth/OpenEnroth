@@ -660,10 +660,6 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
     }
 
     pGameLoadingUI_ProgressBar->Progress();
-    // no use for this
-    //  Actor thisa;
-    //  thisa.pMonsterInfo.uID = 45;
-    //  thisa.PrepareSprites(0);
     return 1;
 }
 
