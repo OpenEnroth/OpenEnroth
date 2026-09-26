@@ -151,6 +151,8 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
         NpcProfession prof = static_cast<NpcProfession>(fromString<int>(tokens[0]));
         pProfessions[prof].uHirePrice = fromString<int>(tokens[2]);
         pProfessions[prof].pActionText = unquote(tokens[3]);
+        // TODO(captainurist): MM7 says Hunter increases the identify monster skill "by four", but vanilla MM7 and OE
+        //                     give +6. Fix the text as a data patch.
         pProfessions[prof].pBenefits = unquote(tokens[4]);
         pProfessions[prof].pJoinText = unquote(tokens[5]);
         pProfessions[prof].pDismissText = unquote(tokens[6]);
