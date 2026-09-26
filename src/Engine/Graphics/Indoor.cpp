@@ -1000,10 +1000,6 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    Actor this_;
-    this_.monsterInfo.id = MONSTER_ELEMENTAL_LIGHT_C;
-    this_.PrepareSprites(0); // TODO(captainurist): can drop this? Was loaded because light elementals can be summoned.
-
     // Party to start position
     if (!bLoading) {
         pParty->_viewPitch = 0;
