@@ -4123,7 +4123,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
 }
 
 void Character::OnInventoryLeftClick() {
-    if (current_character_screen_window != WINDOW_CHARACTER_WINDOW_INVENTORY) {
+    if (current_character_screen_window != WINDOW_CHARACTER_INVENTORY) {
         return;
     }
 

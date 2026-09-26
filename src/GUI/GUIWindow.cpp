@@ -66,7 +66,7 @@ std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;
 std::unique_ptr<GUIWindow_GameOver> pGameOverWindow;
 std::unique_ptr<GUIWindow_BranchlessDialogue> pGUIWindow_BranchlessDialogue;
 
-enum WindowType current_character_screen_window = WINDOW_CHARACTER_WINDOW_STATS;
+enum WindowType current_character_screen_window = WINDOW_CHARACTER_STATS;
 std::list<GUIWindow*> lWindowList;
 
 MenuType sCurrentMenuID;

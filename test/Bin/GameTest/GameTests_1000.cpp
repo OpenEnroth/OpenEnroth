@@ -567,8 +567,8 @@ GAME_TEST(Issues, Issue1294_1389) {
     test.playTraceFromTestData("issue_1294.mm7", "issue_1294.json");
 
     // Check that we get back to stats screen without asserting
-    EXPECT_CONTAINS(windowTape, WINDOW_CHARACTER_WINDOW_INVENTORY);
-    EXPECT_EQ(windowTape.back(), WINDOW_CHARACTER_WINDOW_STATS);
+    EXPECT_CONTAINS(windowTape, WINDOW_CHARACTER_INVENTORY);
+    EXPECT_EQ(windowTape.back(), WINDOW_CHARACTER_STATS);
     // Check min values are used
     EXPECT_EQ(pParty->pCharacters[0].GetAttackRecoveryTime(false), Duration::fromTicks(engine->config->gameplay.MinRecoveryBlasters.value()));
     EXPECT_EQ(pParty->pCharacters[2].GetAttackRecoveryTime(true), Duration::fromTicks(engine->config->gameplay.MinRecoveryRanged.value()));

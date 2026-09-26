@@ -1361,11 +1361,11 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_ClickAwardsUpBtn:
-                new OnButtonClick3(WINDOW_CHARACTER_WINDOW_AWARDS, pBtn_Up->rect.topLeft(), {0, 0}, pBtn_Up);
+                new OnButtonClick3(WINDOW_CHARACTER_AWARDS, pBtn_Up->rect.topLeft(), {0, 0}, pBtn_Up);
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->clickAwardsUp();
                 continue;
             case UIMSG_ClickAwardsDownBtn:
-                new OnButtonClick3(WINDOW_CHARACTER_WINDOW_AWARDS, pBtn_Down->rect.topLeft(), {0, 0}, pBtn_Down);
+                new OnButtonClick3(WINDOW_CHARACTER_AWARDS, pBtn_Down->rect.topLeft(), {0, 0}, pBtn_Down);
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->clickAwardsDown();
                 continue;
             case UIMSG_ChangeDetaliz:
