@@ -54,6 +54,15 @@ void setEvtScripts(EvtScripts *value);
 EvtScripts *evtScripts();
 
 /**
+ * What a timer counts its first alarm from.
+ */
+enum class EvtTimerStart {
+    EVT_TIMER_START_LAST_VISIT, // The last visit to the map, as evt timers do when their map loads. Fires at once on a first visit.
+    EVT_TIMER_START_NOW,
+};
+using enum EvtTimerStart;
+
+/**
  * When a timer fires.
  */
 struct EvtTimerSchedule {
@@ -79,12 +88,13 @@ using enum EvtTimerLifetime;
 
 /**
  * @param schedule                      When the timer fires.
+ * @param start                         What the first alarm counts from.
  * @param kind                          Which timers it's checked with.
  * @param lifetime                      How long it's kept.
  * @param callback                      What to call when it fires.
  * @return                              Handle of the timer, for `removeTimer`.
  */
-int addTimer(const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifetime lifetime, std::function<void()> callback);
+int addTimer(const EvtTimerSchedule &schedule, EvtTimerStart start, EvtTimerKind kind, EvtTimerLifetime lifetime, std::function<void()> callback);
 
 /**
  * @param handle                        Timer to remove, as `addTimer` returned it. The timer can be the one that is
