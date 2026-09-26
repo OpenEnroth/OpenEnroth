@@ -28,8 +28,11 @@
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "Engine/Graphics/BspRenderer.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
@@ -669,6 +672,29 @@ GAME_TEST(Issues, Issue1718) {
     EXPECT_EQ(keyTape, tape(0, 1));
     EXPECT_EQ(bitTape, tape(false, true));
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME)); // Roland speaks on every click.
+}
+
+GAME_TEST(Issues, Issue1718b) {
+    // Roland was back in his cage in Colony Zod once the party came back to the map, because a decoration's sprite
+    // isn't saved. Without a save of the map in between, as after a refill, the cage's faces were back too.
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    Vec3f emeraldIsland = pParty->pos;
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180);
+    test.startTaping();
+    game.pointMouseAtDecoration(1); // Roland's cage.
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick(3);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.teleportTo(MAP_EMERALD_ISLAND, emeraldIsland, 0);
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180);
+
+    EXPECT_EQ(mapTape, tape(MAP_COLONY_ZOD, MAP_EMERALD_ISLAND, MAP_COLONY_ZOD));
+    EXPECT_EQ(pDecorationTable->decoration(pLevelDecorations[1].uDecorationDescID)->internalName, "dec05"); // The empty cage.
+    for (const BLVFace &face : pIndoor->faces)
+        if (face.cogNumber == 1) // The cage.
+            EXPECT_TRUE((face.attributes & FACE_IsInvisible) && (face.attributes & FACE_ETHEREAL));
 }
 
 GAME_TEST(Issues, Issue1720) {

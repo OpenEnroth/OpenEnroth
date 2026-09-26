@@ -8,6 +8,25 @@
 
 #include "Library/Geometry/Vec.h"
 
+/**
+ * What an instruction tells the interpreter to do next.
+ */
+enum class EvtOutcome {
+    EVT_OUTCOME_NEXT, // Go on with the next step.
+    EVT_OUTCOME_JUMP, // Go on with the step in `EvtResult::target`.
+    EVT_OUTCOME_STOP, // The event ends here.
+    EVT_OUTCOME_WAIT, // The event ends here, and a dialogue it opened goes on with it once it closes.
+};
+using enum EvtOutcome;
+
+/**
+ * What `EvtInterpreter::executeInstruction` returns.
+ */
+struct EvtResult {
+    EvtOutcome outcome = EVT_OUTCOME_NEXT;
+    int target = 0;
+};
+
 // EvtInterpreter
 class EvtInterpreter {
  public:
@@ -16,6 +35,33 @@ class EvtInterpreter {
 
      void prepare(const EvtProgram &eventMap, int eventId, Pid objectPid, bool canShowMessages);
      bool isValid();
+
+     /**
+      * Prepares to run instructions that don't come from an evt file, one `executeInstruction` call at a time.
+      *
+      * @param eventId                  Id of the event the instructions run as.
+      * @param objectPid                Object that triggered the event.
+      * @param canShowMessages          Whether the event can show status texts and open dialogues.
+      */
+     void prepare(int eventId, Pid objectPid, bool canShowMessages);
+
+     /**
+      * @param ir                       Instruction to run.
+      * @return                         What the event does next. A condition that holds jumps, and so does a
+      *                                 `RandomGoTo`.
+      */
+     EvtResult executeInstruction(EvtInstruction ir);
+
+     /**
+      * @param who                      Characters that the instructions that follow apply to, as `ForPartyMember` sets.
+      */
+     void setTargetCharacter(EvtTargetCharacter who) {
+         _who = who;
+     }
+
+     bool isMapExitTriggered() const {
+         return _mapExitTriggered;
+     }
 
  protected:
      int executeOneEvent(int step, bool isNpc);
@@ -28,7 +74,6 @@ class EvtInterpreter {
      bool _canShowOption = true;
      bool _readyToExit = false;
      bool _mapExitTriggered = false;
-     bool _cancelled = false; // Set when a script asks for more than the party has, e.g. gold, and aborts it.
      EvtTargetCharacter _who = CHOOSE_PARTY;
 };
 

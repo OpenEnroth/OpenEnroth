@@ -24,6 +24,10 @@ class ScriptingSystem {
 
     void executeEntryPoint();
 
+    sol::state_view state() {
+        return *_solState;
+    }
+
     template<typename TBindings, typename ...TArgs>
     void addBindings(std::string_view bindingTableName, TArgs &&... args) {
         auto bindings = std::make_unique<TBindings>(std::forward<TArgs>(args) ...);
