@@ -601,7 +601,7 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
 
     if (current_screen_type == SCREEN_CHEST) {
         if (pParty->activeCharacterIndex() == uPlayerID) {
-            current_character_screen_window = WINDOW_CHARACTER_WINDOW_INVENTORY;
+            current_character_screen_window = WINDOW_CHARACTER_INVENTORY;
             current_screen_type = SCREEN_CHEST_INVENTORY;
             return;
         }
@@ -621,7 +621,7 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
             return;
         }
         if (pParty->activeCharacterIndex() == uPlayerID) {
-            current_character_screen_window = WINDOW_CHARACTER_WINDOW_INVENTORY;
+            current_character_screen_window = WINDOW_CHARACTER_INVENTORY;
             current_screen_type = SCREEN_CHEST_INVENTORY;
             pParty->setActiveCharacterIndex(uPlayerID);
             return;
@@ -643,7 +643,7 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
 
     if (window_SpeakInHouse->currentDialogue() == DIALOGUE_SHOP_BUY_STANDARD ||
         window_SpeakInHouse->currentDialogue() == DIALOGUE_SHOP_BUY_SPECIAL) {
-        current_character_screen_window = WINDOW_CHARACTER_WINDOW_INVENTORY;
+        current_character_screen_window = WINDOW_CHARACTER_INVENTORY;
         pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(pParty->activeCharacterIndex(), SCREEN_SHOP_INVENTORY);
         return;
     }
@@ -956,7 +956,7 @@ void GameUI_WritePointedObjectStatusString() {
         // (window->GetHeight() - 1) * 0.73125) {
         if (current_screen_type == SCREEN_CHARACTERS) {
             if (current_character_screen_window ==
-                WINDOW_CHARACTER_WINDOW_INVENTORY) {
+                WINDOW_CHARACTER_INVENTORY) {
                 if (pParty->hasActiveCharacter() && pY > 0 && pY < 350 && pX >= 13 &&
                     pX <= 462) {  // inventory poitned
                     // inventoryYCoord = (pY - 17) / 32;

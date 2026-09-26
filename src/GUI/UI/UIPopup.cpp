@@ -1847,16 +1847,16 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             else if ((signed int)pY >= 345)
                 break;
             else if (current_character_screen_window ==
-                     WINDOW_CHARACTER_WINDOW_STATS)  // 2DEvent -
+                     WINDOW_CHARACTER_STATS)  // 2DEvent -
                                                     // CharacerScreenStats
                 CharacterUI_StatsTab_ShowHint();
             else if (current_character_screen_window ==
-                     WINDOW_CHARACTER_WINDOW_SKILLS)  // 2DEvent -
+                     WINDOW_CHARACTER_SKILLS)  // 2DEvent -
                                                      // CharacerScreenSkills
                 CharacterUI_SkillsTab_ShowHint();
             else if (
                 current_character_screen_window ==
-                WINDOW_CHARACTER_WINDOW_INVENTORY)  // 2DEvent -
+                WINDOW_CHARACTER_INVENTORY)  // 2DEvent -
                                                    // CharacerScreenInventory
                 Inventory_ItemPopupAndAlchemy();
             break;

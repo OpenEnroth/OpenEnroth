@@ -50,7 +50,7 @@ void loadGame(std::string_view fileName) {
     engine->_lastLoadedSaveFileName = fileName;
 
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
-    current_character_screen_window = WINDOW_CHARACTER_WINDOW_STATS;
+    current_character_screen_window = WINDOW_CHARACTER_STATS;
     if (pParty->bTurnBasedModeOn) {
         pTurnEngine->End(false);
         pParty->bTurnBasedModeOn = false;

@@ -539,7 +539,7 @@ void Party::Reset() {
         buff.Reset();
     }
 
-    current_character_screen_window = WINDOW_CHARACTER_WINDOW_STATS;  // default character ui - stats
+    current_character_screen_window = WINDOW_CHARACTER_STATS;  // default character ui - stats
     uFlags = 0;
     _autonoteBits.reset();
 
