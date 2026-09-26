@@ -6,6 +6,7 @@
 #include <tl/generator.hpp>
 
 #include "Engine/Evt/EvtInterpreter.h"
+#include "Engine/Evt/EvtEnumFunctions.h"
 #include "Engine/Evt/EvtInstruction.h"
 #include "Engine/Evt/EvtVariables.h"
 #include "Engine/Evt/Processor.h"
@@ -341,8 +342,11 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
                 ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
                 break; // Roland's cage script adds the key on every click, it never checks the quest bit.
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(_who, grng)) {
                 addEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
+                if (isPartyVariable(ir.data.variable_descr.type))
+                    break;
+            }
             break;
         case EVENT_Subtract:
             if (!validateVariableValue(ir))
@@ -360,16 +364,22 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                     }
                 }
             } else {
-                for (Character &character : iterateCharacters(_who, grng))
+                for (Character &character : iterateCharacters(_who, grng)) {
                     if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                         _cancelled = true;
+                    if (isPartyVariable(ir.data.variable_descr.type))
+                        break;
+                }
             }
             break;
         case EVENT_Set:
             if (!validateVariableValue(ir))
                 break;
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(_who, grng)) {
                 setEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
+                if (isPartyVariable(ir.data.variable_descr.type))
+                    break;
+            }
             break;
         case EVENT_SummonMonsters:
             spawnMonsters(ir.data.monster_descr.type, ir.data.monster_descr.level, ir.data.monster_descr.count,
