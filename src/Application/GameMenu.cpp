@@ -31,8 +31,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Utility/MapAccess.h"
 
-using Io::TextInputType;
-
 enum class CurrentConfirmationState {
     CONFIRM_NONE,
     CONFIRM_NEW_GAME,
@@ -143,7 +141,7 @@ void Menu::EventLoop() {
                     keyboardInputHandler->EndTextInput();
                 } else if (menu->selectedSlot().fileName.empty() && menu->selectedSlot().header.name.empty()) {
                     // Don't just save into the new save slot, ask for the save name first.
-                    keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu.get());
+                    keyboardInputHandler->StartTextInput(TEXT_INPUT_TEXT, 19, pGUIWindow_CurrentMenu.get());
                     continue;
                 }
                 doSavegame(menu->selectedSlot().fileName, menu->selectedSlot().header.name);
@@ -190,7 +188,7 @@ void Menu::EventLoop() {
                     currently_selected_action_for_binding = (InputAction)param;
                     if (KeyboardPageNum != 1)
                         currently_selected_action_for_binding = (InputAction)(param + 14);
-                    keyboardInputHandler->StartTextInput(TextInputType::Text, 1, pGUIWindow_CurrentMenu.get());
+                    keyboardInputHandler->StartTextInput(TEXT_INPUT_TEXT, 1, pGUIWindow_CurrentMenu.get());
                 }
                 continue;
             }

@@ -400,7 +400,7 @@ void Io::KeyboardInputHandler::EndTextInput() {
     }
 
     pPressedKeysBuffer.clear();
-    inputType = TextInputType::None;
+    inputType = TEXT_INPUT_NONE;
 }
 
 void Io::KeyboardInputHandler::EndTextInput(GUIWindow *window) {
@@ -410,7 +410,7 @@ void Io::KeyboardInputHandler::EndTextInput(GUIWindow *window) {
 
 //----- (00459ED1) --------------------------------------------------------
 void Io::KeyboardInputHandler::SetWindowInputStatus(WindowInputStatus status) {
-    inputType = TextInputType::None;
+    inputType = TEXT_INPUT_NONE;
     if (window) {
         window->keyboard_input_status = status;
     }
@@ -419,7 +419,7 @@ void Io::KeyboardInputHandler::SetWindowInputStatus(WindowInputStatus status) {
 //----- (00459F10) --------------------------------------------------------
 bool Io::KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
     if (currently_selected_action_for_binding == INPUT_ACTION_INVALID) {
-        if (inputType != TextInputType::Text && inputType != TextInputType::Number) {
+        if (inputType != TEXT_INPUT_TEXT && inputType != TEXT_INPUT_NUMBER) {
             return false;
         }
 
@@ -432,13 +432,13 @@ bool Io::KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
         } else if (key == PlatformKey::KEY_ESCAPE) {
             SetWindowInputStatus(WINDOW_INPUT_NONE);
         } else if (key == PlatformKey::KEY_SPACE && pPressedKeysBuffer.size() < this->max_input_string_len) {
-            if (inputType == TextInputType::Text) {
+            if (inputType == TEXT_INPUT_TEXT) {
                 pPressedKeysBuffer.push_back(' ');
             }
         } else if (key == PlatformKey::KEY_CHAR && pPressedKeysBuffer.size() < this->max_input_string_len) {
-            if (inputType == TextInputType::Text) {
+            if (inputType == TEXT_INPUT_TEXT) {
                 pPressedKeysBuffer.push_back(c);
-            } else if (inputType == TextInputType::Number && isdigit(c)) {
+            } else if (inputType == TEXT_INPUT_NUMBER && isdigit(c)) {
                 pPressedKeysBuffer.push_back(c);
             }
         }

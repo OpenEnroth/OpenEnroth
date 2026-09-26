@@ -15,13 +15,6 @@ enum class KeybindingsQuery {
 using enum KeybindingsQuery;
 
 namespace Io {
-// TODO(captainurist): #enum
-enum class TextInputType {
-    None = 0,
-    Text = 1,
-    Number = 2,
-};
-
 using Keybindings = std::unordered_map<InputAction, PlatformKey>;
 
 class KeyboardActionMapping {
