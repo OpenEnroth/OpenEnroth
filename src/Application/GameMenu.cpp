@@ -363,7 +363,7 @@ void Menu::EventLoop() {
                     } else {
                         for (int i = 0; i < 5; i++) {
                             if (game_ui_options_controls[i]) {
-                                game_ui_options_controls[i]->release();
+                                assets->releaseImage(game_ui_options_controls[i]);
                                 game_ui_options_controls[i] = nullptr;
                             }
                         }

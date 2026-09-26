@@ -446,7 +446,7 @@ void OptionsMenuSkin::Release() {
 #define RELEASE(img)        \
     {                       \
         if (img) {          \
-            img->release(); \
+            assets->releaseImage(img); \
             img = nullptr;  \
         }                   \
     }

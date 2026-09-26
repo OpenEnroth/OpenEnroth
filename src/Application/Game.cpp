@@ -569,12 +569,12 @@ void Game::processQueuedMessages() {
                                         }
                                     }
                                     if (rest_ui_sky_frame_current) {
-                                        rest_ui_sky_frame_current->release();
+                                        assets->releaseImage(rest_ui_sky_frame_current);
                                         rest_ui_sky_frame_current = nullptr;
                                     }
 
                                     if (rest_ui_hourglass_frame_current) {
-                                        rest_ui_hourglass_frame_current->release();
+                                        assets->releaseImage(rest_ui_hourglass_frame_current);
                                         rest_ui_hourglass_frame_current = nullptr;
                                     }
 

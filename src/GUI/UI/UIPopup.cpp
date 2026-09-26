@@ -407,7 +407,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         render->ResetUIClipRect();
 
         if (inspect_item_image) {
-            inspect_item_image->release();
+            assets->releaseImage(inspect_item_image);
             inspect_item_image = nullptr;
         }
 
@@ -433,7 +433,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         render->ResetUIClipRect();
 
         if (inspect_item_image) {
-            inspect_item_image->release();
+            assets->releaseImage(inspect_item_image);
             inspect_item_image = nullptr;
         }
         return;

@@ -110,7 +110,7 @@ GraphicsImage *CreateWinnerCertificate() {
     ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
     GraphicsImage *result = GraphicsImage::Create(std::move(pixels));
 
-    background->release();
+    assets->releaseImage(background);
     background = nullptr;
 
     return result;

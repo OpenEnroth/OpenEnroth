@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <string>
 
+#include "Engine/AssetsManager.h"
 #include "Engine/Data/DecorationData.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Image.h"
@@ -18,7 +19,7 @@
 SpriteFrameTable *pSpriteFrameTable;
 
 void Sprite::Release() {
-    this->texture->release();
+    assets->releaseImage(this->texture);
     this->texture = nullptr;
     this->pName = "null";
 }

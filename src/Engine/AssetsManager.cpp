@@ -1,7 +1,9 @@
 #include "Engine/AssetsManager.h"
 
+#include <cassert>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"
@@ -39,46 +41,45 @@ static void ReloadFonts() {
         assets->pFontSmallnum->CreateFontTex();
 }
 
+AssetsManager::AssetsManager() = default;
+AssetsManager::~AssetsManager() = default;
+
 void AssetsManager::releaseAllTextures() {
     MM_TRACE("Render - Releasing Textures.");
     // clears any textures from gpu
-    for (auto img : images) {
-        img.second->releaseRenderId();
+    for (const auto &[name, image] : images) {
+        image->releaseRenderId();
     }
-    for (auto bit : bitmaps) {
-        bit.second->releaseRenderId();
+    for (const auto &[name, image] : bitmaps) {
+        image->releaseRenderId();
     }
-    for (auto spr : sprites) {
-        spr.second->releaseRenderId();
+    for (const auto &[name, image] : sprites) {
+        image->releaseRenderId();
     }
 
     ReloadFonts();
 }
 
-bool AssetsManager::releaseImage(std::string_view name) {
-    std::string filename = ascii::toLower(name);
-
-    auto i = images.find(filename);
-    if (i == images.end()) {
-        return false;
+void AssetsManager::releaseImage(GraphicsImage *image) {
+    for (auto *cache : {&images, &bitmaps, &sprites}) {
+        auto pos = cache->find(image->name());
+        if (pos != cache->end() && pos->second.get() == image) {
+            cache->erase(pos);
+            return;
+        }
     }
 
-    i->second->releaseRenderId();
-    images.erase(filename);
-    return true;
+    assert(false && "Image is not in the cache");
 }
 
 GraphicsImage *AssetsManager::getImage_Paletted(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
-    if (i == images.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, filename));
-        images[filename] = image;
-        return image;
-    }
+    if (i == images.end())
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, filename))).first;
 
-    return i->second;
+    return i->second.get();
 }
 
 
@@ -86,13 +87,10 @@ GraphicsImage *AssetsManager::getImage_ColorKey(std::string_view name, Color col
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
-    if (i == images.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, filename, colorkey));
-        images[filename] = image;
-        return image;
-    }
+    if (i == images.end())
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, filename, colorkey))).first;
 
-    return i->second;
+    return i->second.get();
 }
 
 
@@ -101,52 +99,40 @@ GraphicsImage *AssetsManager::getImage_Solid(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
-    if (i == images.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, filename));
-        images[filename] = image;
-        return image;
-    }
+    if (i == images.end())
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, filename))).first;
 
-    return i->second;
+    return i->second.get();
 }
 
 GraphicsImage *AssetsManager::getImage_Alpha(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
-    if (i == images.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, filename));
-        images[filename] = image;
-        return image;
-    }
+    if (i == images.end())
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, filename))).first;
 
-    return i->second;
+    return i->second.get();
 }
 
 GraphicsImage *AssetsManager::getImage_Buff(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
-    if (i == images.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<Buff_LOD_Loader>(pIcons_LOD, filename));
-        images[filename] = image;
-        return image;
-    }
+    if (i == images.end())
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Buff_LOD_Loader>(pIcons_LOD, filename))).first;
 
-    return i->second;
+    return i->second.get();
 }
 
 GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name, Color colorkey) {
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
-    if (i == images.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, filename, colorkey));
-        images[filename] = image;
-        return image;
-    }
+    if (i == images.end())
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, filename, colorkey))).first;
 
-    return i->second;
+    return i->second.get();
 }
 
 GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
@@ -154,55 +140,24 @@ GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
 
     auto i = bitmaps.find(filename);
     if (i == bitmaps.end()) {
-        GraphicsImage *image = nullptr;
+        std::unique_ptr<ImageLoader> loader;
         if (generated) {
-            image = GraphicsImage::Create(std::make_unique<Bitmaps_GEN_Loader>(filename));
+            loader = std::make_unique<Bitmaps_GEN_Loader>(filename);
         } else {
-            image = GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename));
+            loader = std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename);
         }
-        bitmaps[filename] = image;
-        return image;
+        i = bitmaps.emplace(filename, GraphicsImage::Create(std::move(loader))).first;
     }
 
-    return i->second;
-}
-
-bool AssetsManager::releaseBitmap(std::string_view name) {
-    std::string filename = ascii::toLower(name);
-
-    auto i = bitmaps.find(filename);
-    if (i == bitmaps.end()) {
-        return false;
-    }
-
-    i->second->releaseRenderId();
-    bitmaps.erase(filename);
-    return true;
+    return i->second.get();
 }
 
 GraphicsImage *AssetsManager::getSprite(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = sprites.find(filename);
-    if (i == sprites.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, filename));
-        sprites[filename] = image;
-        return image;
-    }
+    if (i == sprites.end())
+        i = sprites.emplace(filename, GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, filename))).first;
 
-    return i->second;
+    return i->second.get();
 }
-
-bool AssetsManager::releaseSprite(std::string_view name) {
-    std::string filename = ascii::toLower(name);
-
-    auto i = sprites.find(filename);
-    if (i == sprites.end()) {
-        return false;
-    }
-
-    i->second->releaseRenderId();
-    sprites.erase(filename);
-    return true;
-}
-

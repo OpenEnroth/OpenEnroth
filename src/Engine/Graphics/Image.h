@@ -16,7 +16,9 @@ class GraphicsImage {
     static GraphicsImage *Create(RgbaImage image);
     static GraphicsImage *Create(int width, int height);
     static GraphicsImage *Create(Sizei size);
-    static GraphicsImage *Create(std::unique_ptr<ImageLoader> loader);
+    static std::unique_ptr<GraphicsImage> Create(std::unique_ptr<ImageLoader> loader);
+
+    ~GraphicsImage();
 
     int width();
     int height();
@@ -33,7 +35,6 @@ class GraphicsImage {
 
  private:
     GraphicsImage();
-    ~GraphicsImage(); // Call Release() instead.
 
     bool initialize();
 
