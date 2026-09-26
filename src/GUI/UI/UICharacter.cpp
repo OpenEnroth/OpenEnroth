@@ -1364,6 +1364,9 @@ void CharacterUI_LoadPaperdollTextures() {
         for (unsigned j : {0, 1, 2, 3, 4, 6}) // Belt
             paperdoll_belt_texture[bodyType][j] = loadTexture(paperdoll_belt_typeByIndex, j, bodyType, 0);
 
+        // TODO(captainurist): MM7 ships distinct dwarf helm textures that are never loaded: item091v3, item240v3,
+        //                     item344v3 and item344v4. And item092v3, loaded for dwarves below, is a copy of item092v1.
+        //                     Check whether dwarves should use the dwarf variants.
         for (unsigned j = 0; j < 16; ++j)  // Helm
             paperdoll_helm_texture[bodyType][j] = loadTexture(paperdoll_helm_typeByIndex, j, bodyType, 0);
 
