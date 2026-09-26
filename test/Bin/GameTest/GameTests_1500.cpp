@@ -149,7 +149,7 @@ GAME_TEST(Issues, Issue1515) {
     game.tick(100);
 
     EXPECT_EQ(eyeTape, tape(true, false)); // The first cast took wizard eye down.
-    EXPECT_EQ(std::ranges::count(soundsTape.flatten(), SOUND_RechargeItem), wizardCount);
+    EXPECT_EQ(soundsTape.flatten().count(SOUND_RechargeItem), wizardCount);
 }
 
 GAME_TEST(Issues, Issue1516) {
