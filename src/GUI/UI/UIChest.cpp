@@ -12,7 +12,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/UI/ItemGrid.h"
 
-GUIWindow_Chest::GUIWindow_Chest(int chestId) : GUIWindow(WINDOW_Chest, {0, 0}, render->GetRenderDimensions()), _chestId(chestId) {
+GUIWindow_Chest::GUIWindow_Chest(int chestId) : GUIWindow(WINDOW_CHEST, {0, 0}, render->GetRenderDimensions()), _chestId(chestId) {
     CreateCharacterButtons();
 
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,

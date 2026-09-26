@@ -14,7 +14,7 @@
 #include "Io/Mouse.h"
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
-    GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions()) {
+    GUIWindow(WINDOW_MAIN_MENU, {0, 0}, render->GetRenderDimensions()) {
     main_menu_background = assets->getImage_PCXFromIconsLOD("title.pcx");
 
     ui_mainmenu_new = assets->getImage_ColorKey("title_new");
