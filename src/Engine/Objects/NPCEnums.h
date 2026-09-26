@@ -28,7 +28,7 @@ enum class NpcProfession : int32_t {
     NPC_PROFESSION_SMITH = 1,            // Repairs any weapon.
     NPC_PROFESSION_ARMORER = 2,          // Repairs any armor.
     NPC_PROFESSION_ALCHEMIST = 3,        // Repairs any magic item.
-    NPC_PROFESSION_SCHOLAR = 4,          // Identifies any item. Learning: +5.
+    NPC_PROFESSION_SCHOLAR = 4,          // Identifies any item. Experience: +5%.
     NPC_PROFESSION_GUIDE = 5,            // Travel by foot: -1 day.
     NPC_PROFESSION_TRACKER = 6,          // Travel by foot: -2 days.
     NPC_PROFESSION_PATHFINDER = 7,       // Travel by foot: -3 days.
@@ -37,8 +37,8 @@ enum class NpcProfession : int32_t {
     NPC_PROFESSION_HEALER = 10,          // Heals the party once a day.
     NPC_PROFESSION_EXPERT_HEALER = 11,   // Heals the party and cures every condition except Dead, Petrified and Eradicated once a day.
     NPC_PROFESSION_MASTER_HEALER = 12,   // Heals the party and cures every condition except Eradicated once a day.
-    NPC_PROFESSION_TEACHER = 13,         // Learning: +10.
-    NPC_PROFESSION_INSTRUCTOR = 14,      // Learning: +15.
+    NPC_PROFESSION_TEACHER = 13,         // Experience: +10%.
+    NPC_PROFESSION_INSTRUCTOR = 14,      // Experience: +15%.
     NPC_PROFESSION_ARMS_MASTER = 15,     // Armsmaster: +2.
     NPC_PROFESSION_WEAPONS_MASTER = 16,  // Armsmaster: +3.
     NPC_PROFESSION_APPRENTICE = 17,      // Fire: +2, Air: +2, Water: +2, Earth: +2.
