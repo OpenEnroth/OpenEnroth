@@ -162,8 +162,8 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
             pLevelDecorations[i].IsObeliskChestActive()) &&
             !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
             const DecorationData *decor_desc = pDecorationTable->decoration(pLevelDecorations[i].uDecorationDescID);
-            if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
-                if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
+            if (!(decor_desc->uFlags & DECORATION_DATA_EMITS_FIRE)) {
+                if (!(decor_desc->uFlags & (DECORATION_DATA_MARKER | DECORATION_DATA_DONT_DRAW))) {
                     v6 = animTimer->time();
                     v7 = std::abs(pLevelDecorations[i].vPosition.x +
                         pLevelDecorations[i].vPosition.y);
