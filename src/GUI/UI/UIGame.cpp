@@ -403,11 +403,6 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     }
 
     // update gamma preview
-    if (gamma_preview_image) {
-        gamma_preview_image->release();
-        gamma_preview_image = nullptr;
-    }
-
     gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 }
 
@@ -423,7 +418,7 @@ void GUIWindow_GameVideoOptions::Update() {
         render->DrawQuad2D(game_ui_menu_options_video_gamma_positions[gammalevel], {17 * gammalevel + 42, 162});
 
         if (gamma_preview_image)
-            render->DrawQuad2D(gamma_preview_image, {274, 169});
+            render->DrawQuad2D(gamma_preview_image.get(), {274, 169});
 
         Recti msg_window(22, 190, 211, 79);
         DrawTitleText(
@@ -1325,15 +1320,11 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         // TODO(captainurist): function-local static that owns a texture, make it a member.
-        static GraphicsImage *minimaptemp = nullptr;
+        static std::unique_ptr<GraphicsImage> minimaptemp;
 
         bool partymoved = true;  // TODO(pskelton): actually check for party movement
 
         if (partymoved) {
-            if (minimaptemp) {
-                minimaptemp->release();
-            }
-
             int imageWidth = viewparams->location_minimap->width(); // Assume a square image.
 
             // Party position in fixpoint image coordinates.
@@ -1359,10 +1350,10 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
             // draw image
             minimaptemp = GraphicsImage::Create(std::move(minimapImage));
-            render->DrawQuad2D(minimaptemp, rect.topLeft());
+            render->DrawQuad2D(minimaptemp.get(), rect.topLeft());
         } else {
             // no need to update map - just redraw
-            render->DrawQuad2D(minimaptemp, rect.topLeft());
+            render->DrawQuad2D(minimaptemp.get(), rect.topLeft());
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {

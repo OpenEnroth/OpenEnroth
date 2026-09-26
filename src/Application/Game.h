@@ -36,4 +36,4 @@ class Game {
     DecalBuilder *_decalBuilder = nullptr;
 };
 
-extern GraphicsImage *gamma_preview_image;  // 506E40
+extern std::unique_ptr<GraphicsImage> gamma_preview_image;  // 506E40

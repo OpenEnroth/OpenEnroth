@@ -13,9 +13,9 @@ class ImageLoader;
 
 class GraphicsImage {
  public:
-    static GraphicsImage *Create(RgbaImage image);
-    static GraphicsImage *Create(int width, int height);
-    static GraphicsImage *Create(Sizei size);
+    static std::unique_ptr<GraphicsImage> Create(RgbaImage image);
+    static std::unique_ptr<GraphicsImage> Create(int width, int height);
+    static std::unique_ptr<GraphicsImage> Create(Sizei size);
     static std::unique_ptr<GraphicsImage> Create(std::unique_ptr<ImageLoader> loader);
 
     ~GraphicsImage();
@@ -27,8 +27,6 @@ class GraphicsImage {
     RgbaImage &rgba();
 
     const std::string &name();
-
-    void release(); // TODO(captainurist): drop
 
     [[nodiscard]] TextureRenderId renderId();
     void releaseRenderId();
@@ -45,11 +43,3 @@ class GraphicsImage {
     RgbaImage _rgba;
     TextureRenderId _renderId;
 };
-
-struct GraphicsImageDeleter {
-    void operator()(GraphicsImage *image) const {
-        image->release();
-    }
-};
-
-using GraphicsImagePtr = std::unique_ptr<GraphicsImage, GraphicsImageDeleter>;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_GameOver : public GUIWindow {
@@ -14,5 +16,5 @@ class GUIWindow_GameOver : public GUIWindow {
  protected:
     UIMessageType _releaseEvent = UIMSG_0;
     bool _showPopUp = false;
-    GraphicsImage *_winnerCert = nullptr;
+    std::unique_ptr<GraphicsImage> _winnerCert;
 };

@@ -15,20 +15,20 @@ GraphicsImage::~GraphicsImage() {
         releaseRenderId();
 }
 
-GraphicsImage *GraphicsImage::Create(RgbaImage image) {
-    GraphicsImage *result = new GraphicsImage();
+std::unique_ptr<GraphicsImage> GraphicsImage::Create(RgbaImage image) {
+    std::unique_ptr<GraphicsImage> result(new GraphicsImage());
     result->_initialized = true;
     result->_rgba = std::move(image);
     result->_renderId = render->CreateTexture(result->_rgba);
     return result;
 }
 
-GraphicsImage *GraphicsImage::Create(int width, int height) {
+std::unique_ptr<GraphicsImage> GraphicsImage::Create(int width, int height) {
     assert(width > 0 && height > 0);
     return Create(RgbaImage::solid(Color(), width, height));
 }
 
-GraphicsImage *GraphicsImage::Create(Sizei size) {
+std::unique_ptr<GraphicsImage> GraphicsImage::Create(Sizei size) {
     return Create(size.w, size.h);
 }
 
@@ -58,11 +58,6 @@ RgbaImage &GraphicsImage::rgba() {
 
 const std::string &GraphicsImage::name() {
     return _name;
-}
-
-void GraphicsImage::release() {
-    assert(!_loader);
-    delete this;
 }
 
 [[nodiscard]] TextureRenderId GraphicsImage::renderId() {

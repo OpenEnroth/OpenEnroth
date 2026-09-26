@@ -233,11 +233,6 @@ void Menu::EventLoop() {
                 engine->config->graphics.Gamma.setValue(gammalevel);
                 pAudioPlayer->playUISound(SOUND_ClickMovingSelector);
 
-                if (gamma_preview_image) {
-                    gamma_preview_image->release();
-                    gamma_preview_image = nullptr;
-                }
-
                 gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
                 continue;
             }
@@ -391,11 +386,6 @@ void Menu::MenuLoop() {
     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
     confirmationState = CONFIRM_NONE;
 
-    if (gamma_preview_image) {
-        gamma_preview_image->release();
-        gamma_preview_image = nullptr;
-    }
-
     gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 
     pParty->resetCharacterEmotions();
@@ -422,8 +412,5 @@ void Menu::MenuLoop() {
 
     pGUIWindow_CurrentMenu = nullptr;
 
-    if (gamma_preview_image) {
-        gamma_preview_image->release();
-        gamma_preview_image = nullptr;
-    }
+    gamma_preview_image = nullptr;
 }

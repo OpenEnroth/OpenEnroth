@@ -112,7 +112,7 @@ void GUIWindow_LloydsBook::Update() {
 
         if (pPlayer->vBeacons[beaconId]) {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId].value();
-            render->DrawQuad2D(beacon.image, {lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId]});
+            render->DrawQuad2D(beacon.image.get(), {lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId]});
             std::string Str = pMapTable->pInfos[beacon.mapId].name;
             int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.w, 0);
             pWindow.y -= 6 + pTextHeight;

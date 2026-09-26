@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "Engine/Engine.h"
@@ -4764,7 +4765,7 @@ void Character::Zero() {
     uNumDivineInterventionCastsThisDay = 0;
     uNumArmageddonCasts = 0;
     uNumFireSpikeCasts = 0; // TODO(pskelton): firespike meant to remain permanantly??
-    releaseBeacons();
+    std::ranges::fill(vBeacons, std::nullopt);
     // Character bits
     _characterEventBits.reset();
     _achievedAwardsBits.reset();
@@ -4802,20 +4803,10 @@ bool Character::matchesAttackPreference(MonsterAttackPreference preference) cons
     }
 }
 
-// TODO(captainurist): make LloydBeacon::image own its texture and drop this.
-void Character::releaseBeacons() {
-    for (std::optional<LloydBeacon> &beacon : vBeacons) {
-        if (beacon)
-            beacon->image->release();
-        beacon.reset();
-    }
-}
-
 void Character::cleanupBeacons() {
     for (int i = 0; i < 5; i++) {
         if (!vBeacons[i] || vBeacons[i]->uBeaconTime >= pParty->GetPlayingTime())
             continue;
-        vBeacons[i]->image->release();
         vBeacons[i].reset();
     }
 }
@@ -4834,11 +4825,7 @@ bool Character::setBeacon(int index, Duration duration) {
     beacon._partyViewPitch = pParty->_viewPitch;
     beacon.mapId = engine->_currentLoadedMapId;
 
-    if (vBeacons[index]) {
-        // overwrite so clear image
-        vBeacons[index]->image->release();
-    }
-    vBeacons[index] = beacon;
+    vBeacons[index] = std::move(beacon);
 
     return true;
 }

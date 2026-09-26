@@ -78,7 +78,7 @@ static std::vector<SavegameSlot> loadMenuSlots() {
             slot.header.name = slot.fileName.substr(0, slot.fileName.size() - 4);
 
         try {
-            slot.thumbnail.reset(GraphicsImage::Create(pcx::decode(save.thumbnail))); // TODO(captainurist): lazy-load.
+            slot.thumbnail = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
 
             if (slot.thumbnail->width() == 0)
                 slot.thumbnail = nullptr;

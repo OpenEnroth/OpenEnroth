@@ -619,12 +619,10 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
         }
 
         // draw image
-        GraphicsImage *temp = GraphicsImage::Create(std::move(dstImage));
-        render->DrawQuad2D(temp, {x, y});
+        std::unique_ptr<GraphicsImage> temp = GraphicsImage::Create(std::move(dstImage));
+        render->DrawQuad2D(temp.get(), {x, y});
 
         render->DrawTwodVerts();
-
-        temp->release();
     }
 }
 
