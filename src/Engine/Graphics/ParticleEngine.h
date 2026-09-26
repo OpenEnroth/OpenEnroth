@@ -70,7 +70,7 @@ struct Particle {
     int view_space_z_lineEnd = 0;             // line end z
     float screenspace_scale = 1.0;  // fixed screenspace_scale {};  // int _screenspace_scale;
     float fov_x = 0;
-    Color fadedColor; // Drawn colour, uParticleColor dimmed to black over the last 128 ticks of timeToLive.
+    Color fadedColor; // Drawn color, uParticleColor dimmed to black over the last 128 ticks of timeToLive.
 };
 
 struct stru2_LineList {
