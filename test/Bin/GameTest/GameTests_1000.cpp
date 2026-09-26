@@ -1035,7 +1035,7 @@ GAME_TEST(Issues, Issue1454) {
     game.pressAndReleaseKey(PlatformKey::KEY_M);
     game.tick(1);
     EXPECT_EQ(current_screen_type, ScreenType::SCREEN_BOOKS);
-    EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WindowType::WINDOW_MAPS_BOOK);
+    EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WINDOW_MAPS_BOOK);
     game.pressAndReleaseKey(PlatformKey::KEY_M);
     game.tick(1);
     EXPECT_EQ(current_screen_type, ScreenType::SCREEN_GAME);

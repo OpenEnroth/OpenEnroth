@@ -42,7 +42,7 @@ IndexedArray<int, MASTERY_NONE, MASTERY_LAST> masteryToMaxBeacons = {
 
 GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFlags)
         : _casterPid(casterPid), _castFlags(castFlags) {
-    this->eWindowType = WindowType::WINDOW_LLOYDS_BEACON;
+    this->eWindowType = WINDOW_LLOYDS_BEACON;
 
     _recallingBeacon = false;
 
