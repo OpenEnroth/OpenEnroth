@@ -374,10 +374,10 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
         case EVENT_Subtract: {
             if (!validateVariableValue(ir))
                 break;
+            bool isShort = false; // The party had less than the script asked for, e.g. gold, which ends the event.
             // We had a couple issues with quest items not being removed from inventory, and the reason was that the
             // character target wasn't properly set in the script. Thus, we don't even check `_who` here and just try
             // to take the item from all characters. See issues #1808 and #1912.
-            bool isShort = false; // The party had less than the script asked for, e.g. gold, which ends the event.
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands/* && (_who == CHOOSE_PARTY || _who == CHOOSE_ACTIVE)*/) {
                 ItemId itemId = static_cast<ItemId>(ir.data.variable_descr.value);
                 for (Character &character : pParty->pCharacters) {
