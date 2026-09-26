@@ -125,9 +125,82 @@ static constexpr IndexedArray<int, MASTERY_FIRST, MASTERY_LAST> goldStealingDieS
     {MASTERY_GRANDMASTER, 10}
 };
 
-// TODO(captainurist): #enum
-static constexpr int pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30, 25, 20, 20, 0,  0,  0};
-static constexpr int pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
+static constexpr IndexedArray<int, CLASS_FIRST, CLASS_LAST> pBaseHealthByClass = {
+    {CLASS_KNIGHT,            40},
+    {CLASS_CAVALIER,          40},
+    {CLASS_CHAMPION,          40},
+    {CLASS_BLACK_KNIGHT,      40},
+    {CLASS_THIEF,             35},
+    {CLASS_ROGUE,             35},
+    {CLASS_SPY,               35},
+    {CLASS_ASSASSIN,          35},
+    {CLASS_MONK,              35},
+    {CLASS_INITIATE,          35},
+    {CLASS_MASTER,            35},
+    {CLASS_NINJA,             35},
+    {CLASS_PALADIN,           30},
+    {CLASS_CRUSADER,          30},
+    {CLASS_HERO,              30},
+    {CLASS_VILLIAN,           30},
+    {CLASS_ARCHER,            30},
+    {CLASS_WARRIOR_MAGE,      30},
+    {CLASS_MASTER_ARCHER,     30},
+    {CLASS_SNIPER,            30},
+    {CLASS_RANGER,            30},
+    {CLASS_HUNTER,            30},
+    {CLASS_RANGER_LORD,       30},
+    {CLASS_BOUNTY_HUNTER,     30},
+    {CLASS_CLERIC,            25},
+    {CLASS_PRIEST,            25},
+    {CLASS_PRIEST_OF_SUN,     25},
+    {CLASS_PRIEST_OF_MOON,    25},
+    {CLASS_DRUID,             20},
+    {CLASS_GREAT_DRUID,       20},
+    {CLASS_ARCH_DRUID,        20},
+    {CLASS_WARLOCK,           20},
+    {CLASS_SORCERER,          20},
+    {CLASS_WIZARD,            20},
+    {CLASS_ARCHAMGE,          20},
+    {CLASS_LICH,              20}
+};
+static constexpr IndexedArray<int, CLASS_FIRST, CLASS_LAST> pBaseManaByClass = {
+    {CLASS_KNIGHT,            0},
+    {CLASS_CAVALIER,          0},
+    {CLASS_CHAMPION,          0},
+    {CLASS_BLACK_KNIGHT,      0},
+    {CLASS_THIEF,             0},
+    {CLASS_ROGUE,             0},
+    {CLASS_SPY,               0},
+    {CLASS_ASSASSIN,          0},
+    {CLASS_MONK,              0},
+    {CLASS_INITIATE,          0},
+    {CLASS_MASTER,            0},
+    {CLASS_NINJA,             0},
+    {CLASS_PALADIN,           5},
+    {CLASS_CRUSADER,          5},
+    {CLASS_HERO,              5},
+    {CLASS_VILLIAN,           5},
+    {CLASS_ARCHER,            5},
+    {CLASS_WARRIOR_MAGE,      5},
+    {CLASS_MASTER_ARCHER,     5},
+    {CLASS_SNIPER,            5},
+    {CLASS_RANGER,            0},
+    {CLASS_HUNTER,            0},
+    {CLASS_RANGER_LORD,       0},
+    {CLASS_BOUNTY_HUNTER,     0},
+    {CLASS_CLERIC,            10},
+    {CLASS_PRIEST,            10},
+    {CLASS_PRIEST_OF_SUN,     10},
+    {CLASS_PRIEST_OF_MOON,    10},
+    {CLASS_DRUID,             10},
+    {CLASS_GREAT_DRUID,       10},
+    {CLASS_ARCH_DRUID,        10},
+    {CLASS_WARLOCK,           10},
+    {CLASS_SORCERER,          15},
+    {CLASS_WIZARD,            15},
+    {CLASS_ARCHAMGE,          15},
+    {CLASS_LICH,              15}
+};
 
 static constexpr IndexedArray<int, CLASS_FIRST, CLASS_LAST> pBaseHealthPerLevelByClass = {
     {CLASS_KNIGHT,            5},
@@ -1776,7 +1849,7 @@ int Character::GetMaxHealth() const {
     int healthbylevel =
         pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + endbonus);
     int itembonus = GetItemsBonus(ATTRIBUTE_HEALTH) + healthbylevel;
-    int maxhealth = uFullHealthBonus + pBaseHealthByClass[std::to_underlying(classType) / 4] +
+    int maxhealth = uFullHealthBonus + pBaseHealthByClass[classType] +
                     GetSkillBonus(ATTRIBUTE_HEALTH) + itembonus;
 
     if (maxhealth < 0)  // min zero
@@ -1846,7 +1919,7 @@ int Character::GetMaxMana() const {
     int manabylevel =
         pBaseManaPerLevelByClass[classType] * (GetActualLevel() + statbonus);
     int itembonus = GetItemsBonus(ATTRIBUTE_MANA) + manabylevel;
-    int maxmana = uFullManaBonus + pBaseManaByClass[std::to_underlying(classType) / 4] +
+    int maxmana = uFullManaBonus + pBaseManaByClass[classType] +
                   GetSkillBonus(ATTRIBUTE_MANA) + itembonus;
 
     if (maxmana < 0)  // min of 0
