@@ -748,8 +748,6 @@ GAME_TEST(Issues, Issue2834) {
     pParty->CountHirelings();
     pParty->_questBits.set(static_cast<QuestBit>(71)); // The golem wears its own head.
     pParty->pCharacters[0].inventory.add(Item(ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD));
-    game.spawnMonster(pParty->pos + Vec3f(150, 100, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
-    game.tick(1);
     for (int i = 0; i < 4; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
         game.tick(1);
