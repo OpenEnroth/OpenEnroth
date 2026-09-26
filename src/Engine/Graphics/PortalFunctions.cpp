@@ -342,7 +342,7 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
 
 //----- (0049C5DA) --------------------------------------------------------
 bool CalcPortalShapePoly(const BLVFace *pFace, RenderVertexSoft *pVertices,
-                     unsigned int *pNumVertices, Planef *pOutFrustum) {
+                         unsigned int *pNumVertices, Planef *pOutFrustum) {
     // calc poly limits
     RenderVertexSoft pLimits[4];
     _49CE9E(pFace, pVertices, *pNumVertices, pLimits);

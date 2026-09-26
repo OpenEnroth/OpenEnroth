@@ -113,7 +113,6 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
 
     auto newNode = &nodes[num_nodes];
 
-    // calculates the portal frustum
     bool isFrustumBuilt = CalcPortalShapePoly(
         pFace,
         clippedFaceVertices,
