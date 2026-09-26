@@ -155,7 +155,7 @@ void ViewingParams::_443365() {
     uMapBookMapZoom = 384;
 }
 
-void ItemInteraction(unsigned int item_id) {
+void ItemInteraction(int item_id) {
     if (pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].type == ITEM_TYPE_GOLD) {
         pParty->partyFindsGold(pSpriteObjects[item_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
     } else {
@@ -179,11 +179,11 @@ void ItemInteraction(unsigned int item_id) {
     SpriteObject::Remove(item_id);
 }
 
-bool CanInteractWithActor(unsigned int id) {
+bool CanInteractWithActor(int id) {
     return pActors[id].GetActorsRelation(0) == HOSTILITY_FRIENDLY && pActors[id].ActorFriend() && pActors[id].CanAct();
 }
 
-void InteractWithActor(unsigned int id) {
+void InteractWithActor(int id) {
     assert(CanInteractWithActor(id));
 
     Actor::AI_FaceObject(id, Pid::character(0), 0);
@@ -199,7 +199,7 @@ void InteractWithActor(unsigned int id) {
     }
 }
 
-void DecorationInteraction(unsigned int id, Pid pid) {
+void DecorationInteraction(int id, Pid pid) {
     if (pLevelDecorations[id].uEventID) {
         eventProcessor(pLevelDecorations[id].uEventID, pid, 1);
         pLevelDecorations[id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
