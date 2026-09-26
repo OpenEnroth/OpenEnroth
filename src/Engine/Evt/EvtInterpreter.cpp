@@ -192,6 +192,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
     }
 }
 
+// TODO(captainurist): take a const reference once the MoveToMap data hacks below are gone, they patch `ir`.
 EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
     int step = ir.step;
 
