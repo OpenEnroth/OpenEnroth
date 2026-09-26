@@ -48,7 +48,7 @@ struct LloydBeacon {
     int16_t _partyViewPitch = 0;
     uint16_t unknown = 0;
     MapId mapId = MAP_INVALID;
-    std::shared_ptr<GraphicsImage> image;
+    std::shared_ptr<GraphicsImage> image; // TODO(captainurist): shouldn't be shared, it is only because createSaveData() copies the whole Party to serialize it. Redo serialization.
 };
 
 // HP/SP regeneration from items and spell
