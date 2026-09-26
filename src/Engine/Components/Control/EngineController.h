@@ -76,9 +76,10 @@ class EngineController {
      * Presses a GUI button identified by the provided id by sending a mouse press and release event.
      *
      * @param buttonId                  Button id.
+     * @param button                    Mouse button to press with.
      * @throws Exception                If the button with the provided id doesn't exist.
      */
-    void pressGuiButton(std::string_view buttonId);
+    void pressGuiButton(std::string_view buttonId, PlatformMouseButton button = BUTTON_LEFT);
 
     /**
      * Clicks a GUI button twice, the second click carrying the double click flag the platform would set.
