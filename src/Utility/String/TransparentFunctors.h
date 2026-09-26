@@ -5,7 +5,7 @@
 #include <string_view>
 #include <utility>
 
-// TODO(captainurist): This is not needed in C++26 as we'll have transparent operator[].
+// TODO(captainurist): #cpp26 This is not needed in C++26 as we'll have transparent operator[].
 /**
  * This one is needed for fully transparent maps, otherwise in pre-C++26 you'll get compilation errors in the following
  * code:
