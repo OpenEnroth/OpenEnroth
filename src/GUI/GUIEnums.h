@@ -334,7 +334,7 @@ enum class WindowType {
     WINDOW_MAPS_BOOK = 0xCA,
     WINDOW_CALENDAR_BOOK = 0xCB,
     WINDOW_JOURNAL_BOOK = 0xE0,
-    WINDOW_UNKNOWN,             // Vanilla MM7 uses 1.
+    WINDOW_WINNER_CERTIFICATE,  // Vanilla MM7 uses 1.
     WINDOW_CHARACTER_CREATION,  // Vanilla MM7 uses 1.
     WINDOW_GAME_UI,             // Vanilla MM7 uses 1.
     WINDOW_CREDITS,             // Vanilla MM7 uses 1.
