@@ -26,6 +26,8 @@ set(ENGINE_DATA_HEADERS
         IconFrameData.h
         ItemData.h
         MapData.h
+        ObjectData.h
+        ObjectEnums.h
         OverlayData.h
         PortraitFrameData.h
         SoundEnums.h

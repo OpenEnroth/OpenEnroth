@@ -37,7 +37,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -696,8 +696,8 @@ void Engine::MM7_Initialize() {
     pDecorationTable = new DecorationTable;
     deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationTable);
 
-    pObjectList = new ObjectList;
-    deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectList);
+    pObjectTable = new ObjectTable;
+    deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectTable);
 
     pMonsterList = new MonsterList;
     deserialize(engine->resources()->eventsData("dmonlist.bin"), pMonsterList);
@@ -748,7 +748,7 @@ void Engine::SecondaryInitialization() {
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
-    pObjectList->InitializeSprites();
+    pObjectTable->InitializeSprites();
     pOverlayTable->initializeSprites();
 
     // TODO(captainurist): try resurrecting the food / gold animations using resource files from MM6?
@@ -1319,7 +1319,7 @@ void RegeneratePartyHealthMana() {
         spellSprite.spell_skill = pParty->ImmolationSkillLevel();
         spellSprite.spriteId = SPRITE_SPELL_FIRE_IMMOLATION;
         spellSprite.uSpellID = SPELL_FIRE_IMMOLATION;
-        spellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SpellSpriteMapping[SPELL_FIRE_IMMOLATION]);
+        spellSprite.uObjectDescID = pObjectTable->ObjectIDByItemID(SpellSpriteMapping[SPELL_FIRE_IMMOLATION]);
         spellSprite.field_60_distance_related_prolly_lod = 0;
         spellSprite.uAttributes = 0;
         spellSprite.uSectorID = 0;

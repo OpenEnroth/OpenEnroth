@@ -18,7 +18,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Data/ObjectData.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Party.h"
@@ -1806,7 +1806,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
     dst->uFlags = src.uFlags;
 }
 
-void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
+void reconstruct(const ObjectData_MM6 &src, ObjectData *dst) {
     dst->uObjectID = static_cast<SpriteId>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
@@ -1818,7 +1818,7 @@ void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
     dst->uSpeed = src.uSpeed;
 }
 
-void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
+void reconstruct(const ObjectData_MM7 &src, ObjectData *dst) {
     dst->uObjectID = static_cast<SpriteId>(src.uObjectID);
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;

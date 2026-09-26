@@ -19,7 +19,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -4402,7 +4402,7 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
     a1a.uSpellID = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;
     a1a.spell_skill = MASTERY_MASTER;
-    a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.spriteId);
+    a1a.uObjectDescID = pObjectTable->ObjectIDByItemID(a1a.spriteId);
     a1a.vPosition = pos;
     a1a.uAttributes = 0;
     a1a.uSectorID = pIndoor->GetSector(pos);

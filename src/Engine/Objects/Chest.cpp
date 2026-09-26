@@ -16,7 +16,7 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Item.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Tables/ItemTable.h"
@@ -108,7 +108,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pSpellObject.uSpellID = SPELL_NONE;
             pSpellObject.field_54 = 0;
             pSpellObject.spriteId = pSpriteID[pRandom];
-            pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellObject.spriteId);
+            pSpellObject.uObjectDescID = pObjectTable->ObjectIDByItemID(pSpellObject.spriteId);
 
             // adjust height to account for different sprite sizes and offset
             SpriteFrame *frame = pSpellObject.spriteFrame();

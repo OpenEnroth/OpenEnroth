@@ -386,7 +386,7 @@ GAME_TEST(Issues, Issue315) {
 }
 
 GAME_TEST(Issues, Issue331_679) {
-    // Assert when traveling by horse caused by out of bound access to pObjectList->pObjects.
+    // Assert when traveling by horse caused by out of bound access to pObjectTable->pObjects.
     auto goldTape = tapes.gold();
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_331.mm7", "issue_331.json");

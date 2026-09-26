@@ -27,7 +27,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"
@@ -1823,7 +1823,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.spriteId = pItemTable->items[a1.containing_item.itemId].spriteId;
-    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.spriteId);
+    a1.uObjectDescID = pObjectTable->ObjectIDByItemID(a1.spriteId);
     a1.vPosition = pos;
     a1.uFacing = facing;
     a1.uAttributes = 0;
@@ -1856,12 +1856,12 @@ void SpawnRandomTreasure(MapData *mapData, SpawnPoint *spawn) {
 
         spawnedObject.containing_item.generateGold(spawn->treasureLevel);
         spawnedObject.spriteId = pItemTable->items[spawnedObject.containing_item.itemId].spriteId;
-        spawnedObject.uObjectDescID = pObjectList->ObjectIDByItemID(spawnedObject.spriteId);
+        spawnedObject.uObjectDescID = pObjectTable->ObjectIDByItemID(spawnedObject.spriteId);
     } else {
         if (!spawnedObject.containing_item.GenerateArtifact())
             return;
         spawnedObject.spriteId = pItemTable->items[spawnedObject.containing_item.itemId].spriteId;
-        spawnedObject.uObjectDescID = pObjectList->ObjectIDByItemID(spawnedObject.spriteId);
+        spawnedObject.uObjectDescID = pObjectTable->ObjectIDByItemID(spawnedObject.spriteId);
         spawnedObject.containing_item.Reset();  // TODO(captainurist): this needs checking
     }
 

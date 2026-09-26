@@ -14,7 +14,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -1820,7 +1820,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
                 if (pointedObject.type() == OBJECT_Sprite) {
-                    if (!(pObjectList->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
+                    if (!(pObjectTable->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
                         GameUI_DrawItemInfo(&pSpriteObjects[pointedObject.id()].containing_item);
                     }
                 }

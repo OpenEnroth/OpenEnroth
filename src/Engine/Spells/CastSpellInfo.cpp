@@ -15,7 +15,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -69,7 +69,7 @@ static void initSpellSprite(SpriteObject *spritePtr,
     spritePtr->spell_level = spellLevel;
     spritePtr->uSpellID = pCastSpell->uSpellID;
     spritePtr->spell_skill = spellMastery;
-    spritePtr->uObjectDescID = pObjectList->ObjectIDByItemID(spritePtr->spriteId);
+    spritePtr->uObjectDescID = pObjectTable->ObjectIDByItemID(spritePtr->spriteId);
     spritePtr->spell_caster_pid = Pid(OBJECT_Character, pCastSpell->casterCharacterIndex);
 }
 
@@ -250,7 +250,7 @@ void CastSpellInfoHelpers::castSpell() {
 
             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
             if (pPlayer->wearsItem(ITEM_ARTIFACT_ULLYSES)) {
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BOLT);
+                pSpellSprite.uObjectDescID = pObjectTable->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BOLT);
             }
             pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
             pSpellSprite.spell_target_pid = spell_targeted_at;
@@ -266,7 +266,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.vPosition.z += 32;
                 }
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                     pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
@@ -289,7 +289,7 @@ void CastSpellInfoHelpers::castSpell() {
             if (pParty->bTurnBasedModeOn) {
                 pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
             }
-            int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+            int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
             if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                 pParty->bTurnBasedModeOn) {
                 ++pTurnEngine->pending_actions;
@@ -388,7 +388,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(pParty->_viewYaw, pParty->_viewPitch + 10, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                         pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
@@ -489,7 +489,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                         pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
@@ -512,7 +512,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                         pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
@@ -538,7 +538,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                         pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
@@ -676,7 +676,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                         pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
@@ -1002,7 +1002,7 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pParty->bTurnBasedModeOn) {
                             pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                         }
-                        int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                        int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                         if (pSpellSprite.Create(yaw, pitch, spell_speed, 0) != -1 &&
                                 pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
@@ -1094,7 +1094,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int spell_spray_angle_start = ONE_THIRD_PI / -2;
                     int spell_spray_angle_end = ONE_THIRD_PI / 2;
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     while (spell_spray_angle_start <= spell_spray_angle_end) {
                         // vPosition is modified by Create so reset for each loop
                         pSpellSprite.vPosition = pos;
@@ -1200,7 +1200,7 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pParty->bTurnBasedModeOn) {
                             pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                         }
-                        int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                        int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                         if (pSpellSprite.Create(yaw, pitch, spell_speed, 0) != -1 &&
                                 pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
@@ -1276,7 +1276,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (shots_num == 1) {
                         pSpellSprite.vPosition = pos;
                         if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
@@ -1575,7 +1575,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(pParty->_viewYaw, pParty->_viewPitch, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                         pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
@@ -1598,7 +1598,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(pParty->_viewYaw, TrigLUT.uIntegerHalfPi / 2, spell_speed, 0) != -1 &&
                             pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
@@ -2703,7 +2703,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int spell_spray_angle_start = ONE_THIRD_PI / -2;
                     int spell_spray_angle_end = ONE_THIRD_PI / 2;
-                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     do {
                         // vPosition is modified by Create so reset for each loop
                         pSpellSprite.vPosition = pos;
