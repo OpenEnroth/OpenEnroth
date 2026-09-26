@@ -342,8 +342,6 @@ enum class WindowType {
     WINDOW_CREDITS,                 // new addition, because i wasnt able to find real value for this
     WINDOW_SAVE,                    // new addition, because i wasnt able to find real value for this
     WINDOW_LOAD,                    // new addition, because i wasnt able to find real value for this
-    // =======
-    // ToString (below) is updated until this point
 };
 using enum WindowType;
 
