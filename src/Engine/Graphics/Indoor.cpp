@@ -1069,7 +1069,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
     }
 
     // as above but for sector portal faces
-    if (pSector->flags & 8) { // sector has vertical transitions
+    if (pSector->flags & SECTOR_HAS_PORTALS) {
         for (uint16_t portalId : pSector->portalIds) {
             if (FacesFound >= 5) break;
 

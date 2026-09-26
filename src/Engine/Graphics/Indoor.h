@@ -190,8 +190,7 @@ struct BLVFace {
 struct BLVSector {
     // Note that all spans below point into `IndoorLocation::sectorData` or `IndoorLocation::sectorLightData`.
 
-    // TODO(captainurist): #enum
-    int flags; // &8 checks floor level against portals, &0x10 adds additional node faces.
+    SectorFlags flags;
     std::span<uint16_t> floorIds; // Indices into `IndoorLocation::faces` for floor faces.
     std::span<uint16_t> wallIds; // Indices into `IndoorLocation::faces` for wall faces.
     std::span<uint16_t> ceilingIds; // Indices into `IndoorLocation::faces` for ceiling faces.
