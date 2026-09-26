@@ -1,6 +1,7 @@
 #include "EntitySnapshots.h"
 
 #include <algorithm>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <utility>

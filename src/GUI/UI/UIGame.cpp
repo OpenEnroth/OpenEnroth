@@ -438,12 +438,12 @@ void GUIWindow_GameVideoOptions::Update() {
 OptionsMenuSkin options_menu_skin;  // 507C60
 
 void OptionsMenuSkin::Release() {
-#define RELEASE(img)        \
-    {                       \
-        if (img) {          \
+#define RELEASE(img)                   \
+    {                                  \
+        if (img) {                     \
             assets->releaseImage(img); \
-            img = nullptr;  \
-        }                   \
+            img = nullptr;             \
+        }                              \
     }
 
     RELEASE(uTextureID_Background);
