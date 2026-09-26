@@ -58,6 +58,14 @@ using enum DoorAttribute;
 MM_DECLARE_FLAGS(DoorAttributes, DoorAttribute)
 MM_DECLARE_OPERATORS_FOR_FLAGS(DoorAttributes)
 
+enum class SectorFlag : uint32_t {
+    SECTOR_HAS_PORTALS = 0x00000008,
+    SECTOR_HAS_BSP     = 0x00000010,
+};
+using enum SectorFlag;
+MM_DECLARE_FLAGS(SectorFlags, SectorFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(SectorFlags)
+
 // TODO(captainurist): most closed doors are in DOOR_OPEN, and most open doors are in DOOR_CLOSED. Rename states?
 enum class DoorState : uint16_t {
     DOOR_OPEN = 0, // Initial state, door mesh is at a position where BLVDoor::p[XYZ]Offsets point.
