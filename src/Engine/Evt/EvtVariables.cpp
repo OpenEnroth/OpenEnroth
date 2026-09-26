@@ -2024,7 +2024,7 @@ bool subtractEvtVariable(Character &character, EvtVariable VarNum, signed int pV
         case VAR_HiredNPCHasSpeciality:
             for (int i = 0; i < pNPCStats->uNumNewNPCs; i++) {
                 if (pNPCStats->pNPCData[i].profession == (NpcProfession)pValue) {
-                    pNPCStats->pNPCData[(int)pValue].flags &= ~NPC_HIRED;
+                    pNPCStats->pNPCData[i].flags &= ~NPC_HIRED;
                 }
             }
             if (pParty->pHirelings[0].profession == (NpcProfession)pValue) {
