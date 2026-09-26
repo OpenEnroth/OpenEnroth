@@ -7,6 +7,7 @@
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/mm7_data.h"
 #include "Engine/Data/HouseEnums.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Vis.h"
@@ -694,6 +695,34 @@ GAME_TEST(Issues, Issue2784d) {
     game.tick();
     EXPECT_EQ(houseTape.back(), HOUSE_MAGIC_SHOP_TULAREAN_FOREST);
     EXPECT_EQ(soundNames(soundsTape).count("Elf Magic Shop 01"), 1);
+}
+
+GAME_TEST(Issues, Issue2789) {
+    // Quickloading while an enchantment spell waited for its target item crashed on the next click on an item.
+    test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    game.tick(2);
+    pParty->pCharacters[0].setSkillValue(SKILL_SWORD, CombinedSkillValue::novice());
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BROADSWORD));
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
+    game.tick(2);
+
+    game.castSpell(0, SPELL_FIRE_FIRE_AURA); // Opens the enchantment targeting inventory.
+    game.tick();
+    ASSERT_TRUE(IsEnchantingInProgress);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_F9); // Quickload.
+    game.skipLoadingScreen();
+    game.tick(2);
+    EXPECT_FALSE(IsEnchantingInProgress);
+    EXPECT_EQ(enchantingActiveCharacter, -1);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_I);
+    game.tick(2);
+    game.pressAndReleaseButton(BUTTON_LEFT, 521, 95); // The sword on the paperdoll.
+    game.tick(2);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_BROADSWORD);
 }
 
 GAME_TEST(Issues, Issue2792) {
