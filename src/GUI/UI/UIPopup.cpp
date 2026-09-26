@@ -1721,7 +1721,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                 // TODO(captainurist): we need a saner check for baby dragon, comparing pointers here is questionable.
                 if (pNPC == &pNPCStats->pNPCData[57]) {
                     pText = pNPCTopics[512].pText; // Baby dragon text.
-                } else if (pNPC->profession != NoProfession) {
+                } else if (pNPC->profession != NPC_PROFESSION_NONE) {
                     pText = pNPCStats->pProfessions[pNPC->profession].pBenefits;
                     if (pText.empty())
                         pText = pNPCStats->pProfessions[pNPC->profession].pJoinText;

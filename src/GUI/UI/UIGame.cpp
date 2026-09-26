@@ -1313,7 +1313,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
     bool bWizardEyeActive = pParty->wizardEyeActive();
     Mastery uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
-    if (CheckHiredNPCSpeciality(Cartographer)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_CARTOGRAPHER)) {
         bWizardEyeActive = true;
         uWizardEyeSkillLevel = uWizardEyeSkillLevel > MASTERY_EXPERT ? uWizardEyeSkillLevel : MASTERY_EXPERT;
     }

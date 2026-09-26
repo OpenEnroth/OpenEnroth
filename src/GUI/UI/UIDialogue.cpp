@@ -124,12 +124,12 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
             optionList = {DIALOGUE_PROFESSION_DETAILS, DIALOGUE_HIRE_FIRE};
         }
         if (speakingNPC->Hired() && !speakingNPC->hasUsedAbility) {
-            if (speakingNPC->profession == Healer || speakingNPC->profession == ExpertHealer ||
-                speakingNPC->profession == MasterHealer || speakingNPC->profession == Cook ||
-                speakingNPC->profession == Chef || speakingNPC->profession == WindMaster ||
-                speakingNPC->profession == WaterMaster || speakingNPC->profession == GateMaster ||
-                speakingNPC->profession == Acolyte ||  // or Chaplain? mb discrepancy between game versions?
-                speakingNPC->profession == Piper || speakingNPC->profession == FallenWizard) {
+            if (speakingNPC->profession == NPC_PROFESSION_HEALER || speakingNPC->profession == NPC_PROFESSION_EXPERT_HEALER ||
+                speakingNPC->profession == NPC_PROFESSION_MASTER_HEALER || speakingNPC->profession == NPC_PROFESSION_COOK ||
+                speakingNPC->profession == NPC_PROFESSION_CHEF || speakingNPC->profession == NPC_PROFESSION_WIND_MASTER ||
+                speakingNPC->profession == NPC_PROFESSION_WATER_MASTER || speakingNPC->profession == NPC_PROFESSION_GATE_MASTER ||
+                speakingNPC->profession == NPC_PROFESSION_ACOLYTE ||  // or Chaplain? mb discrepancy between game versions?
+                speakingNPC->profession == NPC_PROFESSION_PIPER || speakingNPC->profession == NPC_PROFESSION_FALLEN_WIZARD) {
                 optionList.push_back(DIALOGUE_USE_HIRED_NPC_ABILITY);
                 // TODO(Nik-RE-dev): this is for compatability. Previously when NPC can use ability, dialogue allocated 4 buttons unconditionally.
                 //                   Without it many test will fail because of changed buttons positions.

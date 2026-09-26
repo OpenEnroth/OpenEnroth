@@ -81,17 +81,17 @@ NpcType getNPCType(int npcId) {
 //----- (00445308) --------------------------------------------------------
 const std::string &GetProfessionActionText(NpcProfession prof) {
     switch (prof) {
-    case Healer:
-    case ExpertHealer:
-    case MasterHealer:
-    case Cook:
-    case Chef:
-    case WindMaster:
-    case WaterMaster:
-    case GateMaster:
-    case Acolyte:
-    case Piper:
-    case FallenWizard:
+    case NPC_PROFESSION_HEALER:
+    case NPC_PROFESSION_EXPERT_HEALER:
+    case NPC_PROFESSION_MASTER_HEALER:
+    case NPC_PROFESSION_COOK:
+    case NPC_PROFESSION_CHEF:
+    case NPC_PROFESSION_WIND_MASTER:
+    case NPC_PROFESSION_WATER_MASTER:
+    case NPC_PROFESSION_GATE_MASTER:
+    case NPC_PROFESSION_ACOLYTE:
+    case NPC_PROFESSION_PIPER:
+    case NPC_PROFESSION_FALLEN_WIZARD:
         return pNPCStats->pProfessions[prof].pActionText;
     default:
         // TODO(captainurist): This looks broken.
@@ -105,7 +105,7 @@ const std::string &GetProfessionActionText(NpcProfession prof) {
 //----- (004BB756) --------------------------------------------------------
 int UseNPCSkill(NpcProfession profession, int id) {
     switch (profession) {
-        case Healer: {
+        case NPC_PROFESSION_HEALER: {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
                 player.playReaction(SPEECH_TEMPLE_HEAL);
@@ -113,7 +113,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             pAudioPlayer->playExclusiveSound(SOUND_heal);
         } break;
 
-        case ExpertHealer: {
+        case NPC_PROFESSION_EXPERT_HEALER: {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
                 for (Condition condition : standardConditionsExcludeDead) {
@@ -124,7 +124,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             pAudioPlayer->playExclusiveSound(SOUND_heal);
         } break;
 
-        case MasterHealer: {
+        case NPC_PROFESSION_MASTER_HEALER: {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
                 for (Condition condition : standardConditionsIncludeDead) {
@@ -138,7 +138,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             pAudioPlayer->playExclusiveSound(SOUND_heal);
         } break;
 
-        case Cook: {
+        case NPC_PROFESSION_COOK: {
             // Was 13
             if (pParty->GetFood() >= 14) {
                 return 1;
@@ -147,7 +147,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             pParty->GiveFood(1);
         } break;
 
-        case Chef: {
+        case NPC_PROFESSION_CHEF: {
             // Was 13
             if (pParty->GetFood() >= 14) {
                 return 1;
@@ -160,7 +160,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             }
         } break;
 
-        case WindMaster: {
+        case NPC_PROFESSION_WIND_MASTER: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 engine->_statusBar->setEvent(LSTR_CAN_NOT_CAST_FLY_INDOORS);
                 pAudioPlayer->playUISound(SOUND_fizzle);
@@ -174,7 +174,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             }
         } break;
 
-        case WaterMaster: {
+        case NPC_PROFESSION_WATER_MASTER: {
             pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
                 .Apply(pParty->GetPlayingTime() + Duration::fromHours(3), MASTERY_MASTER, 0, 0, -1);
             // Mark buff as GM because NPC buff does not drain mana
@@ -182,59 +182,59 @@ int UseNPCSkill(NpcProfession profession, int id) {
             pAudioPlayer->playSpellSound(SPELL_WATER_WATER_WALK, false, SOUND_MODE_UI);
         } break;
 
-        case GateMaster: {
+        case NPC_PROFESSION_GATE_MASTER: {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
             engine->_messageQueue->addMessageNextFrame(UIMSG_OnCastTownPortal, Pid(OBJECT_Character, pParty->pCharacters.size() + id).packed(), 0);
         } break;
 
-        case Acolyte:
+        case NPC_PROFESSION_ACOLYTE:
             pushNPCSpell(SPELL_SPIRIT_BLESS);
             break;
-        case Piper:
+        case NPC_PROFESSION_PIPER:
             pushNPCSpell(SPELL_SPIRIT_HEROISM);
             break;
-        case FallenWizard:
+        case NPC_PROFESSION_FALLEN_WIZARD:
             pushNPCSpell(SPELL_LIGHT_HOUR_OF_POWER);
             break;
 
-        case Teacher:
-        case Instructor:
-        case Armsmaster:
-        case Weaponsmaster:
-        case Apprentice:
-        case Mystic:
-        case Spellmaster:
-        case Trader:
-        case Merchant:
-        case Scout:
-        case Herbalist:
-        case Apothecary:
-        case Tinker:
-        case Locksmith:
-        case Fool:
-        case ChimneySweep:
-        case Porter:
-        case QuarterMaster:
-        case Factor:
-        case Banker:
-        case Horseman:
-        case Bard:
-        case Enchanter:
-        case Cartographer:
-        case Explorer:
-        case Pirate:
-        case Squire:
-        case Psychic:
-        case Gypsy:
-        case Diplomat:
-        case Duper:
-        case Burglar:
-        case Acolyte2:
-        case Initiate:
-        case Prelate:
-        case Monk:
-        case Sage:
-        case Hunter:
+        case NPC_PROFESSION_TEACHER:
+        case NPC_PROFESSION_INSTRUCTOR:
+        case NPC_PROFESSION_ARMSMASTER:
+        case NPC_PROFESSION_WEAPONSMASTER:
+        case NPC_PROFESSION_APPRENTICE:
+        case NPC_PROFESSION_MYSTIC:
+        case NPC_PROFESSION_SPELLMASTER:
+        case NPC_PROFESSION_TRADER:
+        case NPC_PROFESSION_MERCHANT:
+        case NPC_PROFESSION_SCOUT:
+        case NPC_PROFESSION_HERBALIST:
+        case NPC_PROFESSION_APOTHECARY:
+        case NPC_PROFESSION_TINKER:
+        case NPC_PROFESSION_LOCKSMITH:
+        case NPC_PROFESSION_FOOL:
+        case NPC_PROFESSION_CHIMNEY_SWEEP:
+        case NPC_PROFESSION_PORTER:
+        case NPC_PROFESSION_QUARTER_MASTER:
+        case NPC_PROFESSION_FACTOR:
+        case NPC_PROFESSION_BANKER:
+        case NPC_PROFESSION_HORSEMAN:
+        case NPC_PROFESSION_BARD:
+        case NPC_PROFESSION_ENCHANTER:
+        case NPC_PROFESSION_CARTOGRAPHER:
+        case NPC_PROFESSION_EXPLORER:
+        case NPC_PROFESSION_PIRATE:
+        case NPC_PROFESSION_SQUIRE:
+        case NPC_PROFESSION_PSYCHIC:
+        case NPC_PROFESSION_GYPSY:
+        case NPC_PROFESSION_DIPLOMAT:
+        case NPC_PROFESSION_DUPER:
+        case NPC_PROFESSION_BURGLAR:
+        case NPC_PROFESSION_ACOLYTE2:
+        case NPC_PROFESSION_INITIATE:
+        case NPC_PROFESSION_PRELATE:
+        case NPC_PROFESSION_MONK:
+        case NPC_PROFESSION_SAGE:
+        case NPC_PROFESSION_HUNTER:
             break;
 
         default:

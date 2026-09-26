@@ -45,7 +45,7 @@ struct NPCData {  // 4Ch
     int fame = 0; // Fame requirement for NPC to talk to the party, unused.
     int rep = 0; // NPC's reputation, is it even used in the game?
     HouseId house = HOUSE_INVALID; // House where this NPC is in.
-    NpcProfession profession = NoProfession;
+    NpcProfession profession = NPC_PROFESSION_NONE;
     int greetingIndex = 0; // Index into "npcgreet.txt" for this NPC's greeting.
     bool canJoin = false;
     int field_24 = 0;

@@ -227,17 +227,17 @@ std::vector<DialogueId> GUIWindow_Transport::listDialogueOptions() {
 int GUIWindow_Transport::getTravelTimeTransportDays(int schedule_id) {
     int travel_time = transportSchedule[schedule_id].uTravelTime;
     if (isBoat(houseId())) {
-        if (CheckHiredNPCSpeciality(Sailor))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_SAILOR))
             travel_time -= 2;
-        if (CheckHiredNPCSpeciality(Navigator))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_NAVIGATOR))
             travel_time -= 3;
-        if (CheckHiredNPCSpeciality(Pirate))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_PIRATE))
             travel_time -= 2;
     } else {
-        if (CheckHiredNPCSpeciality(Horseman))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_HORSEMAN))
             travel_time -= 2;
     }
-    if (CheckHiredNPCSpeciality(Explorer))
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_EXPLORER))
         travel_time -= 1;
     if (travel_time < 1)
         travel_time = 1;

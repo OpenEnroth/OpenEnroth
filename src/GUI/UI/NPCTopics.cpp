@@ -752,7 +752,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         }
         assert(hirelingId < pParty->pHirelings.size());
         if (UseNPCSkill(npcData->profession, hirelingId) == 0) {
-            if (npcData->profession != GateMaster) {
+            if (npcData->profession != NPC_PROFESSION_GATE_MASTER) {
                 npcData->hasUsedAbility = 1;
             }
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
@@ -781,7 +781,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         if (!pParty->pHirelings[0].name.empty() && !pParty->pHirelings[1].name.empty()) {
             engine->_statusBar->setEvent(LSTR_I_CANNOT_JOIN_YOU_YOURE_PARTY_IS_FULL);
         } else {
-            if (npcData->profession != Burglar) {
+            if (npcData->profession != NPC_PROFESSION_BURGLAR) {
                 // burglars have no hiring price
                 if (pParty->GetGold() < pNPCStats->pProfessions[npcData->profession].uHirePrice) {
                     engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
