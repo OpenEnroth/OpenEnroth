@@ -19,7 +19,7 @@ CombinedSkillValue::CombinedSkillValue() {
 }
 
 bool CombinedSkillValue::isValid(int level, Mastery mastery) {
-    if (level < 0 || level > 63)
+    if (level < 0 || level > 63) // TODO(captainurist): should probably be 60, the highest level in skills_max_level.
         return false;
 
     if ((level == 0) == (mastery != MASTERY_NONE))
