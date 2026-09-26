@@ -31,20 +31,11 @@ static bool isInRange(int value, auto first, auto last) {
 }
 
 bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
-    bool isCompare = opcode == EVENT_Compare || opcode == EVENT_OnCanShowDialogItemCmp;
-    bool isSetOrAdd = opcode == EVENT_Set || opcode == EVENT_Add;
-    assert(isCompare || isSetOrAdd || opcode == EVENT_Subtract);
-
-    if (isCompare && value < 0)
-        return false;
-
     if (var >= VAR_FIRST_SKILL && var <= VAR_LAST_SKILL) {
-        if (isCompare)
-            return true;
         if (!isInRange(value, 0, std::numeric_limits<uint16_t>::max()))
             return false;
         if (opcode != EVENT_Set)
-            return true;
+            return true; // Compare and add give meaning to mastery bits without a level, 0x80 is "master or better".
         auto [level, mastery] = CombinedSkillValue::fromJoinedUnchecked(value);
         return CombinedSkillValue::isValid(level, mastery);
     }
@@ -63,14 +54,11 @@ bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
         case VAR_QBits_QuestsDone:
             return isInRange(value, QBIT_FIRST, QBIT_LAST);
         case VAR_PlayerItemInHands:
-            if (isSetOrAdd)
-                return isInRange(value, ITEM_FIRST_VALID, ITEM_LAST_VALID);
-            return value != std::to_underlying(ITEM_NULL); // ITEM_NULL matches every empty inventory slot and an empty hand.
         case VAR_ItemEquipped:
             return isInRange(value, ITEM_FIRST_VALID, ITEM_LAST_VALID);
         case VAR_RandomGold:
         case VAR_RandomFood:
-            return isCompare || value > 0;
+            return value > 0;
         case VAR_AutoNotes:
             return pParty->_autonoteBits.indices().contains(value);
         case VAR_PlayerBits:
