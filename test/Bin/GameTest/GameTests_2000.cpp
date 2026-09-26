@@ -40,6 +40,11 @@
 
 #include "GameTestCommon.h"
 
+static void readScroll(EngineController &game, int characterIndex, ItemId scroll) {
+    pParty->setHoldingItem(Item(scroll));
+    game.pressGuiButton(fmt::format("Game_Character{}", characterIndex + 1), BUTTON_RIGHT);
+}
+
 // 2000
 
 GAME_TEST(Issues, Issue2002) {
@@ -89,24 +94,49 @@ GAME_TEST(Issues, Issue2017) {
     }
 }
 
-GAME_TEST(Issues, Issue2018) {
-    // Scrolls of Town Portal and Lloyd's Beacon did consume mana or assert when cast by a character with insufficient mana.
+GAME_TEST(Issues, Issue2018a) {
+    // A Town Portal scroll spent the reader's mana on picking the town, and asserted when there wasn't enough.
     auto mapTape = tapes.map();
-    auto scrollsLBTape = tapes.totalItemCount(ITEM_SCROLL_LLOYDS_BEACON);
-    auto scrollsTPTape = tapes.totalItemCount(ITEM_SCROLL_TOWN_PORTAL);
-    auto recoveryTape = charTapes.areRecovering();
-    auto mpTape = charTapes.mps();
-    test.playTraceFromTestData("issue_2018.mm7", "issue_2018.json");
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_ERATHIA, MAP_EMERALD_ISLAND));
-    EXPECT_EQ(scrollsLBTape.frontBack(), tape(6, 4)); // Used 2 Lloyd's out of 6, ignore intervening steps from pickup and r-click.
-    EXPECT_EQ(scrollsTPTape.frontBack(), tape(4, 2)); // Also used 2 Town Portal because it fails once on the Thief.
-    EXPECT_MISSES(recoveryTape.slice(0), true); // Char 0 didn't do anything.
-    EXPECT_CONTAINS(recoveryTape.slice(1), true); // Char 1 did cast a spell.
-    EXPECT_LT(mpTape.slice(1).max(), 20); // Char 1 didn't have enough mana for the spells cast.
-    EXPECT_MISSES(recoveryTape.slice(2), true); // Char 2 didn't do anything.
-    EXPECT_CONTAINS(recoveryTape.slice(3), true); // Char 3 did cast a spell.
-    EXPECT_LT(mpTape.slice(3).max(), 20); // Char 3 didn't have enough mana for the spells cast.
-    EXPECT_EQ(mpTape.back(), mpTape.front()); // No mana was spent.
+    auto mpTape = charTapes.mp(3);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    pParty->_questBits[QBIT_FOUNTAIN_IN_STEADWICK_ACTIVATED] = true;
+    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue::novice());
+    pParty->pCharacters[3].mana = 10;
+
+    // A scroll casts Town Portal at master, where it fails half the time.
+    for (int i = 0; i < 10 && current_screen_type != SCREEN_BOOKS; i++) {
+        readScroll(game, 3, ITEM_SCROLL_TOWN_PORTAL);
+        game.tick(3);
+    }
+    game.pressGuiButton("TownPortalBook_Marker2"); // Erathia.
+    game.tick();
+    game.skipLoadingScreen();
+
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_ERATHIA));
+    EXPECT_EQ(mpTape, tape(10));
+}
+
+GAME_TEST(Issues, Issue2018b) {
+    // A Lloyd's Beacon scroll spent the reader's mana on setting the beacon, and asserted when there wasn't enough.
+    auto beaconTape = charTapes.hasBeacon(3, 0);
+    auto mpTape = charTapes.mp(3);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue::novice());
+    pParty->pCharacters[3].mana = 10;
+
+    readScroll(game, 3, ITEM_SCROLL_LLOYDS_BEACON);
+    game.tick(3);
+    game.pressGuiButton("LloydsBook_Slot0");
+    game.tick();
+
+    EXPECT_EQ(beaconTape, tape(false, true));
+    EXPECT_EQ(mpTape, tape(10));
 }
 
 GAME_TEST(Issues, Issue2021_2022) {
