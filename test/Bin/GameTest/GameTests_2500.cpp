@@ -742,6 +742,7 @@ GAME_TEST(Issues, Issue2834) {
     // abbey normal head and never gave its own head back.
     auto abbeyHeadTape = tapes.totalItemCount(ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD);
     auto golemHeadTape = tapes.totalItemCount(ITEM_QUEST_GOLEM_HEAD);
+    auto golemHeadPlacedTape = tapes.questBit(QBIT_GOLEM_HEAD_PLACED);
     auto abbeyHeadPlacedTape = tapes.questBit(QBIT_ABBEY_NORMAL_GOLEM_HEAD_PLACED);
     game.startNewGame();
     pNPCStats->pNPCData[56].flags |= NPC_HIRED; // The golem, as global.evt hires it.
@@ -763,5 +764,6 @@ GAME_TEST(Issues, Issue2834) {
 
     EXPECT_EQ(abbeyHeadTape, tape(1, 0));
     EXPECT_EQ(golemHeadTape, tape(0, 1));
+    EXPECT_EQ(golemHeadPlacedTape, tape(true, false));
     EXPECT_EQ(abbeyHeadPlacedTape, tape(false, true));
 }
