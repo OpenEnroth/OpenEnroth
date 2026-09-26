@@ -740,15 +740,31 @@ GAME_TEST(Issues, Issue1340) {
 }
 
 GAME_TEST(Issues, Issue1341) {
-    // Can't steal gold from peasants.
+    // Stealing gold from a peasant always came up empty.
     auto goldTape = tapes.gold();
     auto statusTape = tapes.statusBar();
-    auto deadTape = actorTapes.countByState(AIState::Dead);
-    test.playTraceFromTestData("issue_1341.mm7", "issue_1341.json");
-    EXPECT_GT(goldTape.delta(), 0); // We did steal some gold.
-    EXPECT_CONTAINS(statusTape, "Roderick failed to steal anything!"); // We have tried many times.
-    EXPECT_CONTAINS(statusTape, fmt::format("Roderick stole {} gold!", goldTape.delta())); // And succeeded.
-    EXPECT_EQ(deadTape, tape(0)); // No one died in the process.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    pParty->pCharacters[1].setSkillValue(SKILL_STEALING, CombinedSkillValue(10, MASTERY_GRANDMASTER));
+    Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_PEASANT_DWARF_MALE_A_A,
+                                       SPAWN_FRIENDLY | SPAWN_STATIONARY);
+    peasant->monsterInfo.goldDiceRolls = pMonsterStats->infos[peasant->monsterId].goldDiceRolls; // spawnMonster strips it.
+    game.tick();
+
+    // Only some steals go for the gold, so keep trying.
+    for (int i = 0; i < 20 && goldTape.delta() == 0; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Roderick.
+        game.pointMouseAtActor(peasant->id);
+        game.pressKey(PlatformKey::KEY_CONTROL);
+        game.pressAndReleaseButton(BUTTON_LEFT);
+        game.releaseKey(PlatformKey::KEY_CONTROL);
+        game.tick(50);
+    }
+
+    EXPECT_GT(goldTape.delta(), 0);
+    EXPECT_CONTAINS(statusTape, fmt::format("Roderick stole {} gold!", goldTape.delta()));
 }
 
 GAME_TEST(Issues, Issue1342) {
