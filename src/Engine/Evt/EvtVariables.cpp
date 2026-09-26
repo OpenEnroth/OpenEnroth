@@ -1001,13 +1001,6 @@ void setEvtVariable(Character &character, EvtVariable var_type, int var_value) {
     }
 }
 
-/**
- * Adds a joined skill value from an evt script to a character's skill.
- *
- * @param character                     Character to change.
- * @param skill                         Skill to change.
- * @param joinedValue                   Levels to add in the low 6 bits, mastery to raise to in the bits above.
- */
 static void addJoinedSkillValue(Character &character, Skill skill, int joinedValue) {
     auto [level, mastery] = CombinedSkillValue::fromJoinedUnchecked(joinedValue);
     character.AddSkillByEvent(skill, level, mastery);
