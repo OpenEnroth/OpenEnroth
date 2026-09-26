@@ -30,8 +30,6 @@
 
 #include "Utility/String/Ascii.h"
 
-using Io::TextInputType;
-
 int speakingNpcId;
 Actor *currentSpeakingActor = nullptr;
 

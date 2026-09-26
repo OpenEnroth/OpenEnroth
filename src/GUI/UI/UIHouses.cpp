@@ -49,8 +49,6 @@
 
 #include "Utility/Math/TrigLut.h"
 
-using Io::TextInputType;
-
 GraphicsImage *_591428_endcap = nullptr;
 
 std::vector<HouseNpcDesc> houseNpcs;
