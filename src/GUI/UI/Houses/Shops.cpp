@@ -893,7 +893,7 @@ void GUIWindow_Shop::houseScreenClick() {
 
     switch (_currentDialogue) {
         case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
-            current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+            current_character_screen_window = WINDOW_CHARACTER_INVENTORY;
             pParty->activeCharacter().OnInventoryLeftClick();
             break;
         }

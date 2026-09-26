@@ -21,7 +21,7 @@ TargetedSpellUI::TargetedSpellUI(WindowType windowType, Pointi position, Sizei d
 }
 
 TargetedSpellUI_Hirelings::TargetedSpellUI_Hirelings(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
-    : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
+    : TargetedSpellUI(WINDOW_CAST_SPELL, position, dimensions, spellInfo, hint) {
     CreateButton({469, 178}, ui_btn_npc_left->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ScrollNPCPanel, 0, INPUT_ACTION_INVALID, "", {ui_btn_npc_left});
     CreateButton({626, 178}, ui_btn_npc_right->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ScrollNPCPanel, 1, INPUT_ACTION_INVALID, "", {ui_btn_npc_right});
     CreateButton({491, 149}, {64, 74}, BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_Hireling, 0, INPUT_ACTION_SELECT_NPC_1);
@@ -29,23 +29,23 @@ TargetedSpellUI_Hirelings::TargetedSpellUI_Hirelings(Pointi position, Sizei dime
 }
 
 TargetedSpellUI_Character::TargetedSpellUI_Character(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
-    : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
+    : TargetedSpellUI(WINDOW_CAST_SPELL, position, dimensions, spellInfo, hint) {
     CreateButtonsTargetCharacters();
 }
 
 TargetedSpellUI_Actor::TargetedSpellUI_Actor(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
-    : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
+    : TargetedSpellUI(WINDOW_CAST_SPELL, position, dimensions, spellInfo, hint) {
     CreateButton(pViewport.topLeft(), pViewport.size(), BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_TargetActor, 0);
 }
 
 TargetedSpellUI_ActorOrCharacter::TargetedSpellUI_ActorOrCharacter(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
-    : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
+    : TargetedSpellUI(WINDOW_CAST_SPELL, position, dimensions, spellInfo, hint) {
     CreateButtonsTargetCharacters();
     CreateButton(pViewport.topLeft(), pViewport.size(), BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_TargetActorBuff, 0);
 }
 
 TargetedSpellUI_Telekinesis::TargetedSpellUI_Telekinesis(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
-    : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
+    : TargetedSpellUI(WINDOW_CAST_SPELL, position, dimensions, spellInfo, hint) {
     CreateButton(pViewport.topLeft(), pViewport.size(), BUTTON_TYPE_NORMAL, 0, UIMSG_CastSpell_Telekinesis, 0);
 }
 

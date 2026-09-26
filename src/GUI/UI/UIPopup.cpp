@@ -1828,7 +1828,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             break;
         }
         case SCREEN_BOOKS: {
-            if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MapsBook || !pViewport.contains(mousePos)) {
+            if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MAPS_BOOK || !pViewport.contains(mousePos)) {
                 break;
             }
 
@@ -1847,16 +1847,16 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             else if ((signed int)pY >= 345)
                 break;
             else if (current_character_screen_window ==
-                     WINDOW_CharacterWindow_Stats)  // 2DEvent -
+                     WINDOW_CHARACTER_STATS)  // 2DEvent -
                                                     // CharacerScreenStats
                 CharacterUI_StatsTab_ShowHint();
             else if (current_character_screen_window ==
-                     WINDOW_CharacterWindow_Skills)  // 2DEvent -
+                     WINDOW_CHARACTER_SKILLS)  // 2DEvent -
                                                      // CharacerScreenSkills
                 CharacterUI_SkillsTab_ShowHint();
             else if (
                 current_character_screen_window ==
-                WINDOW_CharacterWindow_Inventory)  // 2DEvent -
+                WINDOW_CHARACTER_INVENTORY)  // 2DEvent -
                                                    // CharacerScreenInventory
                 Inventory_ItemPopupAndAlchemy();
             break;

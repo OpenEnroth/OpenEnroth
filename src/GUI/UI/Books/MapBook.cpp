@@ -30,7 +30,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y);
 GraphicsImage *ui_book_map_background = nullptr;
 
 GUIWindow_MapBook::GUIWindow_MapBook() {
-    this->eWindowType = WindowType::WINDOW_MapsBook;
+    this->eWindowType = WINDOW_MAPS_BOOK;
     viewparams->sViewCenterX = pParty->pos.x;
     viewparams->sViewCenterY = pParty->pos.y;
     viewparams->ClampMapViewPosition();

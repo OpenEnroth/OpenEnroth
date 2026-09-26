@@ -20,7 +20,7 @@
 GraphicsImage *ui_book_quests_background = nullptr;
 
 GUIWindow_QuestBook::GUIWindow_QuestBook() {
-    this->eWindowType = WindowType::WINDOW_QuestBook;
+    this->eWindowType = WINDOW_QUEST_BOOK;
 
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{493, 355}, Sizei{0, 0}, pBtn_Quests);
     bFlashQuestBook = false;

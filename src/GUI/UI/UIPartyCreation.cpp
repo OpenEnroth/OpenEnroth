@@ -570,7 +570,7 @@ void GUIWindow_PartyCreation::Update() {
 
 //----- (0049695A) --------------------------------------------------------
 GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
-    GUIWindow(WINDOW_CharacterCreation, {0, 0}, render->GetRenderDimensions()) {
+    GUIWindow(WINDOW_PARTY_CREATION, {0, 0}, render->GetRenderDimensions()) {
     engine->_messageQueue->clear();
     errorMessageExpireTime = Duration(); // Clear any lingering error popup from previous session.
 

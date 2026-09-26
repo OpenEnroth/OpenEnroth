@@ -283,69 +283,56 @@ enum class ScreenType {
 };
 using enum ScreenType;
 
-// TODO(captainurist): #enum class
-enum WindowType {
-    WINDOW_null = 0,
-    WINDOW_MainMenu = 1,
-    WINDOW_GameMenu = 3,
-    WINDOW_CharacterRecord = 4,
-    WINDOW_Options = 6,
-    WINDOW_8 = 8,
-    WINDOW_Book = 9,
-    WINDOW_Dialogue = 10,
-    WINDOW_QuickReference = 12,
-    WINDOW_F = 15,
-    WINDOW_Rest = 16,
-    WINDOW_Travel = 17,
-    WINDOW_SpellBook = 18,
-    WINDOW_GreetingNPC = 19,
-    WINDOW_Chest = 20,
-    WINDOW_22 = 0x16,
-    WINDOW_SaveLoadButtons = 23,
-    WINDOW_MainMenu_Load = 0x18,
-    WINDOW_HouseInterior = 0x19,
-    WINDOW_IndoorEntryExit = 26,
-    WINDOW_CastSpell = 27,  // OnCastTargetedSpell
-    WINDOW_Scroll = 0x1E,
-    WINDOW_CastSpell_InInventory = 31,
-    WINDOW_GameOverWindow = 70,
-    WINDOW_50 = 80,  // Debug
-    WINDOW_59 = 89,  // Debug: Item Generation Window
-    WINDOW_PressedButton2 = 90,      // OnButtonClick?
-    WINDOW_CharactersPressedButton = 91,
-    WINDOW_PressedButton = 92,
-    WINDOW_5D = 93,
-    WINDOW_SaveLoadBtn = 94,
-    WINDOW_LoadGame_CancelBtn = 95,  // OnCancel3?
-    WINDOW_CloseRestWindowBtn = 96,
-    WINDOW_ExitCharacterWindow = 97,  // OnCancel2
-    WINDOW_RestWindow = 0x62,
-    WINDOW_BooksButtonOverlay = 99,
-    WINDOW_CharacterWindow_Stats = 0x64,
-    WINDOW_CharacterWindow_Skills = 0x65,
-    WINDOW_CharacterWindow_Awards = 0x66,
-    WINDOW_CharacterWindow_Inventory = 0x67,
-    WINDOW_GameOptions = 104,
-    WINDOW_KeyMappingOptions = 0x69,
-    WINDOW_VideoOptions = 0x6A,
-    WINDOW_LloydsBeacon = 177,
-    WINDOW_TownPortal = 195,
-    WINDOW_QuestBook = 200,
-    WINDOW_AutonotesBook = 0xC9,
-    WINDOW_MapsBook = 0xCA,
-    WINDOW_CalendarBook = 0xCB,
-    WINDOW_JournalBook = 0xE0,
-    WINDOW_Unknown,               // i wasnt able to find real value for those
-    WINDOW_CharacterCreation,     // new addition, because i wasnt able to find real value for this
-    WINDOW_CharacterCreationBtn,  // new addition, because i wasnt able to find real value for this
-    WINDOW_GenericCancel,         // new addition, because i wasnt able to find real value for this
-    WINDOW_GameUI,                // new addition, because i wasnt able to find real value for this
-    WINDOW_Credits,               // new addition, because i wasnt able to find real value for this
-    WINDOW_Save,                  // new addition, because i wasnt able to find real value for this
-    WINDOW_Load,                  // new addition, because i wasnt able to find real value for this
-    // =======
-    // ToString (below) is updated until this point
+enum class WindowType {
+    WINDOW_NULL = 0,
+    WINDOW_MAIN_MENU = 1,
+    WINDOW_GAME_MENU = 3,
+    WINDOW_CHARACTER_RECORD = 4,
+    WINDOW_OPTIONS = 6,
+    WINDOW_BOOK = 9,
+    WINDOW_DIALOGUE = 10,
+    WINDOW_QUICK_REFERENCE = 12,
+    WINDOW_REST = 16,
+    WINDOW_TRAVEL = 17,
+    WINDOW_SPELL_BOOK = 18,
+    WINDOW_GREETING_NPC = 19,
+    WINDOW_CHEST = 20,
+    WINDOW_SAVE = 23,
+    WINDOW_LOAD = 24,
+    WINDOW_HOUSE_INTERIOR = 25,
+    WINDOW_INDOOR_ENTRY_EXIT = 26,
+    WINDOW_CAST_SPELL = 27,
+    WINDOW_SCROLL = 30,
+    WINDOW_CAST_SPELL_IN_INVENTORY = 31,
+    WINDOW_GAME_OVER = 70,
+    WINDOW_PRESSED_BUTTON = 90,
+    WINDOW_CHARACTERS_PRESSED_BUTTON = 91,
+    WINDOW_PRESSED_BUTTON_TRANSPARENT = 92,
+    WINDOW_SAVE_LOAD_BUTTON = 94,
+    WINDOW_LOAD_GAME_CANCEL_BUTTON = 95,
+    WINDOW_GENERIC_CANCEL = 96,
+    WINDOW_EXIT_CHARACTER_WINDOW = 97,
+    WINDOW_BOOKS_BUTTON_OVERLAY = 99,
+    WINDOW_CHARACTER_STATS = 100,
+    WINDOW_CHARACTER_SKILLS = 101,
+    WINDOW_CHARACTER_AWARDS = 102,
+    WINDOW_CHARACTER_INVENTORY = 103,
+    WINDOW_GAME_OPTIONS = 104,
+    WINDOW_KEY_MAPPING_OPTIONS = 105,
+    WINDOW_VIDEO_OPTIONS = 106,
+    WINDOW_LLOYDS_BEACON = 177,
+    WINDOW_TOWN_PORTAL = 195,
+    WINDOW_QUEST_BOOK = 200,
+    WINDOW_AUTONOTES_BOOK = 201,
+    WINDOW_MAPS_BOOK = 202,
+    WINDOW_CALENDAR_BOOK = 203,
+    WINDOW_JOURNAL_BOOK = 224,
+    WINDOW_WINNER_CERTIFICATE,  // Vanilla MM7 uses 1.
+    WINDOW_PARTY_CREATION,      // Vanilla MM7 uses 1.
+    WINDOW_GAME_UI,             // Vanilla MM7 uses 1.
+    WINDOW_CREDITS,             // Vanilla MM7 uses 1.
 };
+using enum WindowType;
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(WindowType)
 
