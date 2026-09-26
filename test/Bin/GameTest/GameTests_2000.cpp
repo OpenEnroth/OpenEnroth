@@ -141,25 +141,26 @@ GAME_TEST(Issues, Issue2018b) {
 
 GAME_TEST(Issues, Issue2021) {
     // Lloyd's Beacon put a new beacon in the first free slot instead of the one the player picked.
-    auto firstSlotTape = tapes.custom([] { return static_cast<bool>(pParty->pCharacters[3].vBeacons[0]); });
-    auto centerSlotTape = tapes.custom([] { return static_cast<bool>(pParty->pCharacters[3].vBeacons[4]); });
+    auto firstSlotTape = charTapes.hasBeacon(3, 0);
+    auto lastSlotTape = charTapes.hasBeacon(3, 2);
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
 
-    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue(4, MASTERY_MASTER)); // Five beacon slots.
+    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue(4, MASTERY_EXPERT)); // Three beacon slots.
     readScroll(game, 3, ITEM_SCROLL_LLOYDS_BEACON);
     game.tick(3);
-    game.pressGuiButton("LloydsBook_Slot4");
+    game.pressGuiButton("LloydsBook_Slot2");
     game.tick();
 
     EXPECT_EQ(firstSlotTape, tape(false));
-    EXPECT_EQ(centerSlotTape, tape(false, true));
+    EXPECT_EQ(lastSlotTape, tape(false, true));
 }
 
 GAME_TEST(Issues, Issue2022) {
     // A character who was still recovering could read a spell scroll.
     auto buffTape = tapes.custom([] { return pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].Active(); });
+    auto scrollTape = tapes.totalItemCount(ITEM_SCROLL_PROTECTION_FROM_MAGIC);
     auto soundsTape = tapes.sounds();
     auto statusTape = tapes.statusBar();
     engine->config->debug.NoActors.setValue(true);
@@ -172,6 +173,7 @@ GAME_TEST(Issues, Issue2022) {
     game.tick(3);
 
     EXPECT_EQ(buffTape, tape(false));
+    EXPECT_EQ(scrollTape, tape(0, 1)); // Still on the cursor.
     EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
     EXPECT_CONTAINS(statusTape, "That player is not active");
 }
