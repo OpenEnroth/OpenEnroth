@@ -11,7 +11,7 @@
 
 #include "Application/GameOver.h"
 
-GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(WINDOW_GAME_OVER_WINDOW, {0, 0}, render->GetRenderDimensions()), _releaseEvent(releaseEvent) {
+GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(WINDOW_GAME_OVER, {0, 0}, render->GetRenderDimensions()), _releaseEvent(releaseEvent) {
     gameTimer->setPaused(true);
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_GAMEOVER_WINDOW;

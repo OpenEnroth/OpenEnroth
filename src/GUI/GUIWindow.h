@@ -214,7 +214,7 @@ class OnCancel3 : public GUIWindow {
     GUIButton *_button = nullptr;
 };
 
-extern enum WindowType current_character_screen_window;
+extern WindowType current_character_screen_window;
 extern std::list<GUIWindow*> lWindowList;
 
 class WindowManager {
