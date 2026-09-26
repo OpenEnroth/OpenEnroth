@@ -22,11 +22,12 @@ class EvtInterpreter {
 
  private:
      /**
+      * Logs an error naming the event and step when the command's value is out of range for its variable.
+      *
       * @param ir                       A compare, set, add or subtract command.
-      * @return                         Whether the command's value is in range for its variable. Logs an error
-      *                                 when it isn't.
+      * @return                         Whether the value is in range.
       */
-     bool validateVariableValue(const EvtInstruction &ir) const;
+     [[nodiscard]] bool validateVariableValue(const EvtInstruction &ir) const;
 
  private:
      int _eventId = 0;

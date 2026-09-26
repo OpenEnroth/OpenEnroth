@@ -1,6 +1,7 @@
 #include "Engine/Evt/EvtVariables.h"
 
 #include <algorithm>
+#include <cassert>
 #include <limits>
 
 #include "Engine/Engine.h"
@@ -29,13 +30,10 @@ static bool isInRange(int value, auto first, auto last) {
     return value >= static_cast<int>(first) && value <= static_cast<int>(last);
 }
 
-static bool isInRange(int value, auto indices) {
-    return isInRange(value, indices.front(), indices.back());
-}
-
 bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
     bool isCompare = opcode == EVENT_Compare || opcode == EVENT_OnCanShowDialogItemCmp;
     bool isSetOrAdd = opcode == EVENT_Set || opcode == EVENT_Add;
+    assert(isCompare || isSetOrAdd || opcode == EVENT_Subtract);
 
     if (isCompare && value < 0)
         return false;
@@ -67,16 +65,18 @@ bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
         case VAR_PlayerItemInHands:
             if (isSetOrAdd)
                 return isInRange(value, ITEM_FIRST_VALID, ITEM_LAST_VALID);
-            return value != std::to_underlying(ITEM_NULL); // ITEM_NULL would match every empty inventory slot.
+            return value != std::to_underlying(ITEM_NULL); // ITEM_NULL matches every empty inventory slot and an empty hand.
+        case VAR_ItemEquipped:
+            return isInRange(value, ITEM_FIRST_VALID, ITEM_LAST_VALID);
         case VAR_RandomGold:
         case VAR_RandomFood:
             return isCompare || value > 0;
         case VAR_AutoNotes:
-            return isInRange(value, pParty->_autonoteBits.indices());
+            return pParty->_autonoteBits.indices().contains(value);
         case VAR_PlayerBits:
-            return isInRange(value, pParty->pCharacters[0]._characterEventBits.indices());
+            return pParty->pCharacters[0]._characterEventBits.indices().contains(value);
         case VAR_NPCs2:
-            return value >= 0 && value < std::ssize(pNPCStats->pNPCData);
+            return isInRange(value, 0, std::ssize(pNPCStats->pNPCData) - 1);
         default:
             return true;
     }
@@ -93,10 +93,6 @@ static bool CmpSkillValue(int valToCompare, CombinedSkillValue skillValue) {
 
 //----- (00449BB4) --------------------------------------------------------
 bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
-    // in some cases this calls only calls v4 >= pValue, which i've
-    // changed to return false, since these values are supposed to
-    // be positive and v4 was -1 by default
-
     signed int v4;                         // edi@1
     uint8_t test_bit_value;        // eax@25
     uint8_t byteWithRequestedBit;  // cl@25
@@ -111,9 +107,6 @@ bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
     // not really sure whether the number gets up to 99, but can't ignore the possibility
     if (VarNum >= VAR_MapPersistentDecorVariable_0 && VarNum <= VAR_MapPersistentDecorVariable_24)
         return (uint8_t)engine->_persistentVariables.decorVars[std::to_underlying(VarNum) - std::to_underlying(VAR_MapPersistentDecorVariable_0)] >= pValue;
-
-    if (VarNum >= VAR_History_0 && VarNum <= VAR_History_28)
-        return false; // Vanilla MM7 has no history compare and returns false. MM7's out02.evt event 110 compares one.
 
     switch (VarNum) {
         case VAR_Sex:
@@ -1107,12 +1100,10 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
 
     switch (var_type) {
         case VAR_RandomGold:
-            if (val == 0) val = 1;
             pParty->partyFindsGold(grng->random(val) + 1, GOLD_RECEIVE_NOSHARE_MSG);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_RandomFood:
-            if (val == 0) val = 1;
             food = grng->random(val) + 1;
             pParty->GiveFood(food);
             engine->_statusBar->setEvent(LSTR_YOU_FIND_LU_FOOD, food);
