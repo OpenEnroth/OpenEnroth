@@ -211,11 +211,11 @@ void Localization::initializeNpcProfessionNames() {
     this->_npcProfessionNames[NPC_PROFESSION_MASTER_HEALER]  = this->_localizationStrings[LSTR_MASTER_HEALER];
     this->_npcProfessionNames[NPC_PROFESSION_TEACHER]        = this->_localizationStrings[LSTR_TEACHER];
     this->_npcProfessionNames[NPC_PROFESSION_INSTRUCTOR]     = this->_localizationStrings[LSTR_INSTRUCTOR];
-    this->_npcProfessionNames[NPC_PROFESSION_ARMSMASTER]     = this->_localizationStrings[LSTR_ARMS_MASTER];
-    this->_npcProfessionNames[NPC_PROFESSION_WEAPONSMASTER]  = this->_localizationStrings[LSTR_WEAPONS_MASTER];
+    this->_npcProfessionNames[NPC_PROFESSION_ARMS_MASTER]    = this->_localizationStrings[LSTR_ARMS_MASTER];
+    this->_npcProfessionNames[NPC_PROFESSION_WEAPONS_MASTER] = this->_localizationStrings[LSTR_WEAPONS_MASTER];
     this->_npcProfessionNames[NPC_PROFESSION_APPRENTICE]     = this->_localizationStrings[LSTR_APPRENTICE];
     this->_npcProfessionNames[NPC_PROFESSION_MYSTIC]         = this->_localizationStrings[LSTR_MYSTIC];
-    this->_npcProfessionNames[NPC_PROFESSION_SPELLMASTER]    = this->_localizationStrings[LSTR_SPELL_MASTER];
+    this->_npcProfessionNames[NPC_PROFESSION_SPELL_MASTER]   = this->_localizationStrings[LSTR_SPELL_MASTER];
     this->_npcProfessionNames[NPC_PROFESSION_TRADER]         = this->_localizationStrings[LSTR_TRADER];
     this->_npcProfessionNames[NPC_PROFESSION_MERCHANT]       = this->_localizationStrings[LSTR_MERCHANT];
     this->_npcProfessionNames[NPC_PROFESSION_SCOUT]          = this->_localizationStrings[LSTR_SCOUT];
@@ -238,7 +238,7 @@ void Localization::initializeNpcProfessionNames() {
     this->_npcProfessionNames[NPC_PROFESSION_WIND_MASTER]    = this->_localizationStrings[LSTR_WIND_MASTER];
     this->_npcProfessionNames[NPC_PROFESSION_WATER_MASTER]   = this->_localizationStrings[LSTR_WATER_MASTER];
     this->_npcProfessionNames[NPC_PROFESSION_GATE_MASTER]    = this->_localizationStrings[LSTR_GATE_MASTER];
-    this->_npcProfessionNames[NPC_PROFESSION_ACOLYTE]        = this->_localizationStrings[LSTR_CHAPLAIN]; // TODO(captainurist): why not LSTR_ACOLYTE?
+    this->_npcProfessionNames[NPC_PROFESSION_CHAPLAIN]       = this->_localizationStrings[LSTR_CHAPLAIN];
     this->_npcProfessionNames[NPC_PROFESSION_PIPER]          = this->_localizationStrings[LSTR_PIPER];
     this->_npcProfessionNames[NPC_PROFESSION_EXPLORER]       = this->_localizationStrings[LSTR_EXPLORER];
     this->_npcProfessionNames[NPC_PROFESSION_PIRATE]         = this->_localizationStrings[LSTR_PIRATE];
@@ -249,7 +249,7 @@ void Localization::initializeNpcProfessionNames() {
     this->_npcProfessionNames[NPC_PROFESSION_DUPER]          = this->_localizationStrings[LSTR_DUPER];
     this->_npcProfessionNames[NPC_PROFESSION_BURGLAR]        = this->_localizationStrings[LSTR_BURGLAR];
     this->_npcProfessionNames[NPC_PROFESSION_FALLEN_WIZARD]  = this->_localizationStrings[LSTR_FALLEN_WIZARD];
-    this->_npcProfessionNames[NPC_PROFESSION_ACOLYTE2]       = this->_localizationStrings[LSTR_ACOLYTE];
+    this->_npcProfessionNames[NPC_PROFESSION_ACOLYTE]        = this->_localizationStrings[LSTR_ACOLYTE];
     this->_npcProfessionNames[NPC_PROFESSION_INITIATE]       = this->_localizationStrings[LSTR_INITIATE];
     this->_npcProfessionNames[NPC_PROFESSION_PRELATE]        = this->_localizationStrings[LSTR_PRELATE];
     this->_npcProfessionNames[NPC_PROFESSION_MONK]           = this->_localizationStrings[LSTR_MONK];

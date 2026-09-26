@@ -128,7 +128,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
                 speakingNPC->profession == NPC_PROFESSION_MASTER_HEALER || speakingNPC->profession == NPC_PROFESSION_COOK ||
                 speakingNPC->profession == NPC_PROFESSION_CHEF || speakingNPC->profession == NPC_PROFESSION_WIND_MASTER ||
                 speakingNPC->profession == NPC_PROFESSION_WATER_MASTER || speakingNPC->profession == NPC_PROFESSION_GATE_MASTER ||
-                speakingNPC->profession == NPC_PROFESSION_ACOLYTE ||  // or Chaplain? mb discrepancy between game versions?
+                speakingNPC->profession == NPC_PROFESSION_CHAPLAIN ||  // or Chaplain? mb discrepancy between game versions?
                 speakingNPC->profession == NPC_PROFESSION_PIPER || speakingNPC->profession == NPC_PROFESSION_FALLEN_WIZARD) {
                 optionList.push_back(DIALOGUE_USE_HIRED_NPC_ABILITY);
                 // TODO(Nik-RE-dev): this is for compatability. Previously when NPC can use ability, dialogue allocated 4 buttons unconditionally.

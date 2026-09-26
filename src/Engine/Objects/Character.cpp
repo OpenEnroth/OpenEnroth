@@ -2484,8 +2484,8 @@ int Character::actualSkillLevel(Skill skill) const {
         } break;
 
         case SKILL_ARMSMASTER: {
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ARMSMASTER)) bonus = 2;
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_WEAPONSMASTER)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ARMS_MASTER)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_WEAPONS_MASTER)) bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ARMSMASTER);
         } break;
 
@@ -2524,7 +2524,7 @@ int Character::actualSkillLevel(Skill skill) const {
         case SKILL_EARTH:
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELLMASTER)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_EARTH);
@@ -2532,7 +2532,7 @@ int Character::actualSkillLevel(Skill skill) const {
         case SKILL_FIRE:
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELLMASTER)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_FIRE);
@@ -2540,7 +2540,7 @@ int Character::actualSkillLevel(Skill skill) const {
         case SKILL_AIR:
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELLMASTER)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_AIR);
@@ -2548,13 +2548,13 @@ int Character::actualSkillLevel(Skill skill) const {
         case SKILL_WATER:
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELLMASTER)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_WATER);
             break;
         case SKILL_SPIRIT:
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE2)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE)) bonus = 2;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_INITIATE)) bonus += 3;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_PRELATE)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
@@ -2562,7 +2562,7 @@ int Character::actualSkillLevel(Skill skill) const {
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_SPIRIT);
             break;
         case SKILL_MIND:
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE2)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE)) bonus = 2;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_INITIATE)) bonus += 3;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_PRELATE)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
@@ -2570,7 +2570,7 @@ int Character::actualSkillLevel(Skill skill) const {
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MIND);
             break;
         case SKILL_BODY:
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE2)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE)) bonus = 2;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_INITIATE)) bonus += 3;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_PRELATE)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())

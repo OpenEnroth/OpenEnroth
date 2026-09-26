@@ -89,7 +89,7 @@ const std::string &GetProfessionActionText(NpcProfession prof) {
     case NPC_PROFESSION_WIND_MASTER:
     case NPC_PROFESSION_WATER_MASTER:
     case NPC_PROFESSION_GATE_MASTER:
-    case NPC_PROFESSION_ACOLYTE:
+    case NPC_PROFESSION_CHAPLAIN:
     case NPC_PROFESSION_PIPER:
     case NPC_PROFESSION_FALLEN_WIZARD:
         return pNPCStats->pProfessions[prof].pActionText;
@@ -187,7 +187,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             engine->_messageQueue->addMessageNextFrame(UIMSG_OnCastTownPortal, Pid(OBJECT_Character, pParty->pCharacters.size() + id).packed(), 0);
         } break;
 
-        case NPC_PROFESSION_ACOLYTE:
+        case NPC_PROFESSION_CHAPLAIN:
             pushNPCSpell(SPELL_SPIRIT_BLESS);
             break;
         case NPC_PROFESSION_PIPER:
@@ -199,11 +199,11 @@ int UseNPCSkill(NpcProfession profession, int id) {
 
         case NPC_PROFESSION_TEACHER:
         case NPC_PROFESSION_INSTRUCTOR:
-        case NPC_PROFESSION_ARMSMASTER:
-        case NPC_PROFESSION_WEAPONSMASTER:
+        case NPC_PROFESSION_ARMS_MASTER:
+        case NPC_PROFESSION_WEAPONS_MASTER:
         case NPC_PROFESSION_APPRENTICE:
         case NPC_PROFESSION_MYSTIC:
-        case NPC_PROFESSION_SPELLMASTER:
+        case NPC_PROFESSION_SPELL_MASTER:
         case NPC_PROFESSION_TRADER:
         case NPC_PROFESSION_MERCHANT:
         case NPC_PROFESSION_SCOUT:
@@ -229,7 +229,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
         case NPC_PROFESSION_DIPLOMAT:
         case NPC_PROFESSION_DUPER:
         case NPC_PROFESSION_BURGLAR:
-        case NPC_PROFESSION_ACOLYTE2:
+        case NPC_PROFESSION_ACOLYTE:
         case NPC_PROFESSION_INITIATE:
         case NPC_PROFESSION_PRELATE:
         case NPC_PROFESSION_MONK:
