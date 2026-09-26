@@ -114,13 +114,16 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
 }
 
 static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
+    if (flags & OBJECT_DESC_TRAIL_FIRE) {
+        spell_fx_renderer->addFireParticle(pos);
+        return;
+    }
+
     Particle_sw particle;
     particle.x = pos.x;
     particle.y = pos.y;
     particle.z = pos.z;
-    if (flags & OBJECT_DESC_TRAIL_FIRE) {
-        spell_fx_renderer->addFireParticle(pos);
-    } else if (flags & OBJECT_DESC_TRAIL_LINE) {
+    if (flags & OBJECT_DESC_TRAIL_LINE) {
         particle.type = ParticleType_Line;
         particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
         particle.timeToLive = 64_ticks;

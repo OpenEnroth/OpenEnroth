@@ -118,7 +118,6 @@ struct SpellFxRenderer {
      * @offset 0x4A7E89
      */
     void sparklesOnActorAfterItCastsBuff(Actor *pActor, Color uDiffuse);
-
     /**
      * Adds one rising fire particle, the kind burning decorations and fire trails emit.
      *
