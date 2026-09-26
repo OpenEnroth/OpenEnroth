@@ -30,6 +30,14 @@ inline Segment<Mastery> allSkillMasteries() {
     return {MASTERY_FIRST, MASTERY_LAST};
 }
 
+//
+// BodyType
+//
+
+inline Segment<BodyType> allBodyTypes() {
+    return {BODY_TYPE_FIRST, BODY_TYPE_LAST};
+}
+
 inline int spellCountForMastery(Mastery maxMastery) {
     switch(maxMastery) {
     case MASTERY_NOVICE:

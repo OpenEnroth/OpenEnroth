@@ -2836,6 +2836,13 @@ Sex Character::GetSexByVoice() const {
     }
 }
 
+BodyType Character::bodyType() const {
+    bool isMale = GetSexByVoice() == SEX_MALE;
+    if (GetRace() == RACE_DWARF)
+        return isMale ? BODY_TYPE_DWARF_MALE : BODY_TYPE_DWARF_FEMALE;
+    return isMale ? BODY_TYPE_MALE : BODY_TYPE_FEMALE;
+}
+
 //----- (00490188) --------------------------------------------------------
 void Character::SetInitialStats() {
     Race race = GetRace();
@@ -3680,39 +3687,8 @@ bool Character::hasUnderwaterSuitEquipped() const {
 }
 
 //----- (0043EDB9) --------------------------------------------------------
-bool ShouldLoadTexturesForRaceAndGender(int bodyType) {
-    Race race;  // edi@2
-    Sex sex;       // eax@2
-
-    for (Character &character : pParty->pCharacters) {
-        race = character.GetRace();
-        sex = character.GetSexByVoice();
-        switch (bodyType) {
-            case 0:
-                if ((race == RACE_HUMAN ||
-                     race == RACE_ELF ||
-                     race == RACE_GOBLIN) &&
-                    sex == SEX_MALE)
-                    return true;
-                break;
-            case 1:
-                if ((race == RACE_HUMAN ||
-                     race == RACE_ELF ||
-                     race == RACE_GOBLIN) &&
-                    sex == SEX_FEMALE)
-                    return true;
-                break;
-            case 2:
-                if (race == RACE_DWARF && sex == SEX_MALE)
-                    return true;
-                break;
-            case 3:
-                if (race == RACE_DWARF && sex == SEX_FEMALE)
-                    return true;
-                break;
-        }
-    }
-    return false;
+bool ShouldLoadTexturesForRaceAndGender(BodyType bodyType) {
+    return std::ranges::contains(pParty->pCharacters, bodyType, &Character::bodyType);
 }
 
 //----- (0043ED6F) --------------------------------------------------------
