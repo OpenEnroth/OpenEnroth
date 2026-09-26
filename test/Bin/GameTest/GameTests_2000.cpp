@@ -42,7 +42,7 @@
 
 static void readScroll(EngineController &game, int characterIndex, ItemId scroll) {
     pParty->setHoldingItem(Item(scroll));
-    game.pressAndReleaseButton(BUTTON_RIGHT, 51 + 113 * characterIndex, 420); // Right-click on the reader's portrait.
+    game.pressGuiButton(fmt::format("Game_Character{}", characterIndex + 1), BUTTON_RIGHT);
 }
 
 // 2000
@@ -97,16 +97,18 @@ GAME_TEST(Issues, Issue2017) {
 GAME_TEST(Issues, Issue2018a) {
     // A Town Portal scroll spent the reader's mana on picking the town, and asserted when there wasn't enough.
     auto mapTape = tapes.map();
-    auto mpTape = charTapes.mp(1);
+    auto mpTape = charTapes.mp(3);
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
 
     pParty->_questBits[QBIT_FOUNTAIN_IN_STEADWICK_ACTIVATED] = true;
+    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue::novice());
+    pParty->pCharacters[3].mana = 10;
 
     // A scroll casts Town Portal at master, where it fails half the time.
     for (int i = 0; i < 10 && current_screen_type != SCREEN_BOOKS; i++) {
-        readScroll(game, 1, ITEM_SCROLL_TOWN_PORTAL);
+        readScroll(game, 3, ITEM_SCROLL_TOWN_PORTAL);
         game.tick(3);
     }
     game.pressGuiButton("TownPortalBook_Marker2"); // Erathia.
@@ -114,24 +116,27 @@ GAME_TEST(Issues, Issue2018a) {
     game.skipLoadingScreen();
 
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_ERATHIA));
-    EXPECT_EQ(mpTape, tape(0));
+    EXPECT_EQ(mpTape, tape(10));
 }
 
 GAME_TEST(Issues, Issue2018b) {
     // A Lloyd's Beacon scroll spent the reader's mana on setting the beacon, and asserted when there wasn't enough.
-    auto beaconTape = tapes.custom([] { return static_cast<bool>(pParty->pCharacters[1].vBeacons[0]); });
-    auto mpTape = charTapes.mp(1);
+    auto beaconTape = charTapes.hasBeacon(3, 0);
+    auto mpTape = charTapes.mp(3);
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
 
-    readScroll(game, 1, ITEM_SCROLL_LLOYDS_BEACON);
+    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue::novice());
+    pParty->pCharacters[3].mana = 10;
+
+    readScroll(game, 3, ITEM_SCROLL_LLOYDS_BEACON);
     game.tick(3);
     game.pressGuiButton("LloydsBook_Slot0");
     game.tick();
 
     EXPECT_EQ(beaconTape, tape(false, true));
-    EXPECT_EQ(mpTape, tape(0));
+    EXPECT_EQ(mpTape, tape(10));
 }
 
 GAME_TEST(Issues, Issue2021_2022) {

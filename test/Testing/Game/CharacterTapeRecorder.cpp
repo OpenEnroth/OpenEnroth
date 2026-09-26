@@ -111,6 +111,14 @@ TestMultiTape<bool> CharacterTapeRecorder::haveBuffs(CharacterBuff buff) {
     return custom([=](const Character &character) { return character.pCharacterBuffs[buff].Active(); });
 }
 
+TestTape<bool> CharacterTapeRecorder::hasBeacon(int characterIndex, int slot) {
+    return custom(characterIndex, [=](const Character &character) { return character.vBeacons[slot].has_value(); });
+}
+
+TestMultiTape<bool> CharacterTapeRecorder::haveBeacons(int slot) {
+    return custom([=](const Character &character) { return character.vBeacons[slot].has_value(); });
+}
+
 TestTape<SpellId> CharacterTapeRecorder::quickSpell(int characterIndex) {
     return custom(characterIndex, std::bind(&Character::uQuickSpell, _1));
 }
