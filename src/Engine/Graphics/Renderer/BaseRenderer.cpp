@@ -302,7 +302,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     if (config->graphics.Tinting.value() && pBillboard->sTintColor.c32() & 0x00FFFFFF) {
         diffuse = BlendColors(pBillboard->sTintColor, diffuse);
         if (opaquetest)
-            diffuse = Color::fromC32(0x007F7F7F & (diffuse.c32() >> 1)); // TODO(captainurist): what's going on here?
+            diffuse = Color(diffuse.r / 2, diffuse.g / 2, diffuse.b / 2, 0);
     }
 
     if (opaquetest)
