@@ -322,10 +322,10 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
 
     switch (result) {
         case SOUND_PLAYBACK_FAILED:
-            if (si->name.empty()) { // TODO(captainurist): inverted, the name is only printed when it's empty.
-                MM_WARNING("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->name);
-            } else {
+            if (si->name.empty()) {
                 MM_WARNING("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
+            } else {
+                MM_WARNING("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->name);
             }
             break;
         case SOUND_PLAYBACK_SKIPPED:
