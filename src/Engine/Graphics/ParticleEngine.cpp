@@ -84,7 +84,7 @@ void ParticleEngine::AddParticle(Particle_sw *particle) {
             freeParticle->shift_y = particle->shiftY;
             freeParticle->shift_z = particle->shiftZ;
             freeParticle->uParticleColor = particle->uDiffuse;
-            freeParticle->uLightColor_bgr = particle->uDiffuse;
+            freeParticle->fadedColor = particle->uDiffuse;
             // v6 = (v4->uType & 4) == 0;
             freeParticle->timeToLive = particle->timeToLive;
             freeParticle->texture = particle->texture;
@@ -172,17 +172,16 @@ void ParticleEngine::UpdateParticles() {
 
         p->angle += time.ticks() * p->rotation_speed / 16;
 
-        // With time particles become more transparent
+        // Particle billboards use additive blending, so fading to black fades them out without touching alpha.
         int dissipate_value = 2 * p->timeToLive.ticks();
         if (dissipate_value >= 255) {
             dissipate_value = 255;
         }
         float dissipate_factor = dissipate_value / 255.0f;
         // v10 = (double)v22 * 0.0039215689;
-        // TODO(Nik-RE-dev): check colour format use in particles
-        p->uLightColor_bgr = Color(floorf(p->uParticleColor.r * dissipate_factor + 0.5),
-                                   floorf(p->uParticleColor.g * dissipate_factor + 0.5),
-                                   floorf(p->uParticleColor.b * dissipate_factor + 0.5));
+        p->fadedColor = Color(floorf(p->uParticleColor.r * dissipate_factor + 0.5),
+                              floorf(p->uParticleColor.g * dissipate_factor + 0.5),
+                              floorf(p->uParticleColor.b * dissipate_factor + 0.5));
 
         if (i < uCurrentBegin) {
            uCurrentBegin = i;
@@ -236,7 +235,7 @@ void ParticleEngine::DrawParticles_BLV() {
                     pLines.pLineVertices[2 * pLines.uNumLines].pos.y = p->uScreenSpaceY;
                     pLines.pLineVertices[2 * pLines.uNumLines].pos.z = 1.0 - 1.0 / (p->view_space_z * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines].rhw = 1.0;
-                    pLines.pLineVertices[2 * pLines.uNumLines].diffuse = p->uLightColor_bgr;
+                    pLines.pLineVertices[2 * pLines.uNumLines].diffuse = p->fadedColor;
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.x = 0.0;
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.y = 0.0;
 
@@ -244,7 +243,7 @@ void ParticleEngine::DrawParticles_BLV() {
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.y = p->uScreenSpaceW;
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.z = 1.0 - 1.0 / ((short)p->view_space_z_lineEnd * 0.061758894);
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].rhw = 1.0;
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].diffuse = p->uLightColor_bgr;
+                    pLines.pLineVertices[2 * pLines.uNumLines + 1].diffuse = p->fadedColor;
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].texcoord.x = 0.0;
                     pLines.pLineVertices[2 * pLines.uNumLines++ + 1].texcoord.y = 0.0;
                 }
