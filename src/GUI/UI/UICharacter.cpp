@@ -1370,27 +1370,26 @@ void CharacterUI_LoadPaperdollTextures() {
         for (unsigned j = 0; j < 16; ++j)  // Helm
             paperdoll_helm_texture[bodyType][j] = loadTexture(paperdoll_helm_typeByIndex, j, bodyType, 0);
 
-        if (IsDwarfPresentInParty(true))  // the phynaxian helm uses a slightly
-                                          // different graphic for dwarves
+        if (IsDwarfPresentInParty(true))
             paperdoll_dbrds[11] = assets->getImage_Alpha("item092v3");
     }
 
     for (BodyType bodyType : allBodyTypes()) {
         if (isBodyTypeInParty(bodyType)) {
-            paperdoll_belt_texture[bodyType][5] = loadTexture(paperdoll_belt_typeByIndex, 5, bodyType, 0);  // Titans belt
+            paperdoll_belt_texture[bodyType][5] = loadTexture(paperdoll_belt_typeByIndex, 5, bodyType, 0);  // Titan's Belt
 
-            for (int v32 = 0; v32 < 17; ++v32) {  // simple armor
-                paperdoll_armor_texture[bodyType][v32][0] = loadTexture(paperdoll_armor_typeByIndex, v32, bodyType, 0);  // armor
-                paperdoll_armor_texture[bodyType][v32][1] = loadTexture(paperdoll_armor_typeByIndex, v32, bodyType, 1);  // shoulder 1
-                paperdoll_armor_texture[bodyType][v32][2] = loadTexture(paperdoll_armor_typeByIndex, v32, bodyType, 2);  // shoulder 2
+            for (int armorIndex = 0; armorIndex < 17; ++armorIndex) {
+                paperdoll_armor_texture[bodyType][armorIndex][0] = loadTexture(paperdoll_armor_typeByIndex, armorIndex, bodyType, 0);  // armor
+                paperdoll_armor_texture[bodyType][armorIndex][1] = loadTexture(paperdoll_armor_typeByIndex, armorIndex, bodyType, 1);  // shoulder 1
+                paperdoll_armor_texture[bodyType][armorIndex][2] = loadTexture(paperdoll_armor_typeByIndex, armorIndex, bodyType, 2);  // shoulder 2
             }
 
-            for (int v33 = 0; v33 < 6; ++v33)  // boots
-                paperdoll_boots_texture[bodyType][v33] = loadTexture(paperdoll_boots_typeByIndex, v33, bodyType, 0);
+            for (int bootsIndex = 0; bootsIndex < 6; ++bootsIndex)
+                paperdoll_boots_texture[bodyType][bootsIndex] = loadTexture(paperdoll_boots_typeByIndex, bootsIndex, bodyType, 0);
 
-            for (int v38 = 0; v38 < 10; ++v38) {  // Cloak
-                paperdoll_cloak_texture[bodyType][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, bodyType, 0);
-                paperdoll_cloak_collar_texture[bodyType][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, bodyType, 1);
+            for (int cloakIndex = 0; cloakIndex < 10; ++cloakIndex) {
+                paperdoll_cloak_texture[bodyType][cloakIndex] = loadTexture(paperdoll_cloak_typeByIndex, cloakIndex, bodyType, 0);
+                paperdoll_cloak_collar_texture[bodyType][cloakIndex] = loadTexture(paperdoll_cloak_typeByIndex, cloakIndex, bodyType, 1);
             }
         }
     }
