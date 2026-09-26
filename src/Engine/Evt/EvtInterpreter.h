@@ -8,6 +8,25 @@
 
 #include "Library/Geometry/Vec.h"
 
+/**
+ * What an instruction tells the interpreter to do next.
+ */
+enum class EvtOutcome {
+    EVT_OUTCOME_NEXT, // Go on with the next step.
+    EVT_OUTCOME_JUMP, // Go on with the step in `EvtResult::target`.
+    EVT_OUTCOME_STOP, // The event ends here.
+    EVT_OUTCOME_WAIT, // The event ends here, and a dialogue it opened decides whether it goes on once the dialogue closes.
+};
+using enum EvtOutcome;
+
+/**
+ * Where an event goes after one of its instructions ran.
+ */
+struct EvtResult {
+    EvtOutcome outcome = EVT_OUTCOME_NEXT;
+    int target = 0; // Step to go on with, for `EVT_OUTCOME_JUMP`.
+};
+
 // EvtInterpreter
 class EvtInterpreter {
  public:
@@ -20,6 +39,13 @@ class EvtInterpreter {
  protected:
      int executeOneEvent(int step, bool isNpc);
 
+     /**
+      * @param ir                       Instruction to run, outside of NPC mode.
+      * @return                         What the event does next. `Jmp`, `RandomGoTo` and a condition that holds
+      *                                 jump.
+      */
+     EvtResult executeInstruction(EvtInstruction ir);
+
  private:
      int _eventId = 0;
      std::vector<EvtInstruction> _events;
@@ -28,7 +54,6 @@ class EvtInterpreter {
      bool _canShowOption = true;
      bool _readyToExit = false;
      bool _mapExitTriggered = false;
-     bool _cancelled = false; // Set when a script asks for more than the party has, e.g. gold, and aborts it.
      EvtTargetCharacter _who = CHOOSE_PARTY;
 };
 
