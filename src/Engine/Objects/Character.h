@@ -389,7 +389,7 @@ class Character {
 
 void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int a4);
 bool IsDwarfPresentInParty(bool b);
-bool ShouldLoadTexturesForRaceAndGender(BodyType bodyType);
+bool isBodyTypeInParty(BodyType bodyType);
 int CharacterCreation_GetUnspentAttributePointCount();
 
 /**

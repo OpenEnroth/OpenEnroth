@@ -2913,7 +2913,7 @@ BodyType Character::bodyType() const {
     bool isMale = GetSexByVoice() == SEX_MALE;
     if (GetRace() == RACE_DWARF)
         return isMale ? BODY_TYPE_DWARF_MALE : BODY_TYPE_DWARF_FEMALE;
-    return isMale ? BODY_TYPE_MALE : BODY_TYPE_FEMALE;
+    return isMale ? BODY_TYPE_HUMAN_MALE : BODY_TYPE_HUMAN_FEMALE;
 }
 
 //----- (00490188) --------------------------------------------------------
@@ -3757,7 +3757,7 @@ bool Character::hasUnderwaterSuitEquipped() const {
 }
 
 //----- (0043EDB9) --------------------------------------------------------
-bool ShouldLoadTexturesForRaceAndGender(BodyType bodyType) {
+bool isBodyTypeInParty(BodyType bodyType) {
     return std::ranges::contains(pParty->pCharacters, bodyType, &Character::bodyType);
 }
 
