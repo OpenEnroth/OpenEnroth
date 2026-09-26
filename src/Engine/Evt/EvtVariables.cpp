@@ -1001,6 +1001,11 @@ void setEvtVariable(Character &character, EvtVariable var_type, int var_value) {
     }
 }
 
+static void addJoinedSkillValue(Character &character, Skill skill, int joinedValue) {
+    auto [level, mastery] = CombinedSkillValue::fromJoinedUnchecked(joinedValue);
+    character.AddSkillByEvent(skill, level, mastery);
+}
+
 //----- (0044AFFB) --------------------------------------------------------
 void addEvtVariable(Character &character, EvtVariable var_type, signed int val) {
     int food = 0;
@@ -1405,150 +1410,150 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
             pParty->uNumArenaWins[ARENA_LEVEL_LORD] += val;
             return;
         case VAR_StaffSkill:
-            character.AddSkillByEvent(SKILL_STAFF, val);
+            addJoinedSkillValue(character, SKILL_STAFF, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_SwordSkill:
-            character.AddSkillByEvent(SKILL_SWORD, val);
+            addJoinedSkillValue(character, SKILL_SWORD, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_DaggerSkill:
-            character.AddSkillByEvent(SKILL_DAGGER, val);;
+            addJoinedSkillValue(character, SKILL_DAGGER, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_AxeSkill:
-            character.AddSkillByEvent(SKILL_AXE, val);
+            addJoinedSkillValue(character, SKILL_AXE, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_SpearSkill:
-            character.AddSkillByEvent(SKILL_SPEAR, val);
+            addJoinedSkillValue(character, SKILL_SPEAR, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_BowSkill:
-            character.AddSkillByEvent(SKILL_BOW, val);
+            addJoinedSkillValue(character, SKILL_BOW, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_MaceSkill:
-            character.AddSkillByEvent(SKILL_MACE, val);;
+            addJoinedSkillValue(character, SKILL_MACE, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_BlasterSkill:
-            character.AddSkillByEvent(SKILL_BLASTER, val);
+            addJoinedSkillValue(character, SKILL_BLASTER, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_ShieldSkill:
-            character.AddSkillByEvent(SKILL_SHIELD, val);
+            addJoinedSkillValue(character, SKILL_SHIELD, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_LeatherSkill:
-            character.AddSkillByEvent(SKILL_LEATHER, val);
+            addJoinedSkillValue(character, SKILL_LEATHER, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_SkillChain:
-            character.AddSkillByEvent(SKILL_CHAIN, val);
+            addJoinedSkillValue(character, SKILL_CHAIN, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_PlateSkill:
-            character.AddSkillByEvent(SKILL_PLATE, val);
+            addJoinedSkillValue(character, SKILL_PLATE, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_FireSkill:
-            character.AddSkillByEvent(SKILL_FIRE, val);
+            addJoinedSkillValue(character, SKILL_FIRE, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_AirSkill:
-            character.AddSkillByEvent(SKILL_AIR, val);
+            addJoinedSkillValue(character, SKILL_AIR, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_WaterSkill:
-            character.AddSkillByEvent(SKILL_WATER, val);
+            addJoinedSkillValue(character, SKILL_WATER, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_EarthSkill:
-            character.AddSkillByEvent(SKILL_EARTH, val);
+            addJoinedSkillValue(character, SKILL_EARTH, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_SpiritSkill:
-            character.AddSkillByEvent(SKILL_SPIRIT, val);
+            addJoinedSkillValue(character, SKILL_SPIRIT, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_MindSkill:
-            character.AddSkillByEvent(SKILL_MIND, val);
+            addJoinedSkillValue(character, SKILL_MIND, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_BodySkill:
-            character.AddSkillByEvent(SKILL_BODY, val);
+            addJoinedSkillValue(character, SKILL_BODY, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_LightSkill:
-            character.AddSkillByEvent(SKILL_LIGHT, val);
+            addJoinedSkillValue(character, SKILL_LIGHT, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_DarkSkill:
-            character.AddSkillByEvent(SKILL_DARK, val);;
+            addJoinedSkillValue(character, SKILL_DARK, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_IdentifyItemSkill:
-            character.AddSkillByEvent(SKILL_ITEM_ID, val);
+            addJoinedSkillValue(character, SKILL_ITEM_ID, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_MerchantSkill:
-            character.AddSkillByEvent(SKILL_MERCHANT, val);
+            addJoinedSkillValue(character, SKILL_MERCHANT, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_RepairSkill:
-            character.AddSkillByEvent(SKILL_REPAIR, val);
+            addJoinedSkillValue(character, SKILL_REPAIR, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_BodybuildingSkill:
-            character.AddSkillByEvent(SKILL_BODYBUILDING, val);
+            addJoinedSkillValue(character, SKILL_BODYBUILDING, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_MeditationSkill:
-            character.AddSkillByEvent(SKILL_MEDITATION, val);
+            addJoinedSkillValue(character, SKILL_MEDITATION, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_PerceptionSkill:
-            character.AddSkillByEvent(SKILL_PERCEPTION, val);
+            addJoinedSkillValue(character, SKILL_PERCEPTION, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_DiplomacySkill:
-            character.AddSkillByEvent(SKILL_DIPLOMACY, val);
+            addJoinedSkillValue(character, SKILL_DIPLOMACY, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_ThieverySkill:
             MM_ERROR("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
-            character.AddSkillByEvent(SKILL_TRAP_DISARM, val);
+            addJoinedSkillValue(character, SKILL_TRAP_DISARM, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_DodgeSkill:
-            character.AddSkillByEvent(SKILL_DODGE, val);
+            addJoinedSkillValue(character, SKILL_DODGE, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_UnarmedSkill:
-            character.AddSkillByEvent(SKILL_UNARMED, val);
+            addJoinedSkillValue(character, SKILL_UNARMED, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_IdentifyMonsterSkill:
-            character.AddSkillByEvent(SKILL_MONSTER_ID, val);
+            addJoinedSkillValue(character, SKILL_MONSTER_ID, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_ArmsmasterSkill:
-            character.AddSkillByEvent(SKILL_ARMSMASTER, val);
+            addJoinedSkillValue(character, SKILL_ARMSMASTER, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_StealingSkill:
-            character.AddSkillByEvent(SKILL_STEALING, val);
+            addJoinedSkillValue(character, SKILL_STEALING, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_AlchemySkill:
-            character.AddSkillByEvent(SKILL_ALCHEMY, val);
+            addJoinedSkillValue(character, SKILL_ALCHEMY, val);
             character.PlayAwardSound_Anim97();
             return;
         case VAR_LearningSkill:
-            character.AddSkillByEvent(SKILL_LEARNING, val);
+            addJoinedSkillValue(character, SKILL_LEARNING, val);
             character.PlayAwardSound_Anim97();
             return;
         default:

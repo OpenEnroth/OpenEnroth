@@ -3620,11 +3620,9 @@ void Character::PlayAwardSound_Anim97_Face(SpeechId speech) {
 }
 
 //----- (new function) --------------------------------------------------------
-void Character::AddSkillByEvent(Skill skill, uint16_t addSkillValue) {
-    auto [addLevel, addMastery] = CombinedSkillValue::fromJoinedUnchecked(addSkillValue);
-
-    int newLevel = pActiveSkills[skill].level() + addLevel;
-    Mastery newMastery = std::max(pActiveSkills[skill].mastery(), addMastery);
+void Character::AddSkillByEvent(Skill skill, int level, Mastery mastery) {
+    int newLevel = std::min(pActiveSkills[skill].level() + level, skills_max_level[skill]);
+    Mastery newMastery = std::max(pActiveSkills[skill].mastery(), mastery);
 
     pActiveSkills[skill] = CombinedSkillValue(newLevel, newMastery);
 }
@@ -3643,13 +3641,11 @@ void Character::PlayAwardSound_AnimSubtract_Face(SpeechId speech) {
 }
 
 //----- (new function) --------------------------------------------------------
-void Character::SubtractSkillByEvent(Skill skill, uint16_t subSkillValue) {
-    auto [subLevel, subMastery] = CombinedSkillValue::fromJoinedUnchecked(subSkillValue);
-
+void Character::SubtractSkillByEvent(Skill skill, int level) {
     if (pActiveSkills[skill] == CombinedSkillValue::none())
         return; // Already at zero!
 
-    int newLevel = std::max(1, pActiveSkills[skill].level() - subLevel);
+    int newLevel = std::max(1, pActiveSkills[skill].level() - level);
     pActiveSkills[skill] = CombinedSkillValue(newLevel, pActiveSkills[skill].mastery());
     // TODO(pskelton): check - should this be able to forget a skill '0' or min of '1'
     // TODO(pskelton): check - should this modify mastery as well
