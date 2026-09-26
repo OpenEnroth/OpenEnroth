@@ -243,8 +243,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     // v17 = 0.0;
     // thisa = engine->pStru9Instance;
 
-    // TODO(captainurist): function-local static used as a scratch buffer, make it a local.
-    static RenderVertexSoft sr_vertices_50D9D8[64];
+    RenderVertexSoft sr_vertices_50D9D8[64];
 
     // result = 0;
     // VertsAdjusted = 0;

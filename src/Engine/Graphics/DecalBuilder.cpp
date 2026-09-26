@@ -63,8 +63,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
                                        RenderVertexSoft *FaceVerts, char ClipFlags, int uSectorID) {
     if (!NumFaceVerts) return 0;
 
-    // TODO(captainurist): function-local static used as a scratch variable, make it a local.
-    static stru314 static_FacePlane;
+    stru314 static_FacePlane;
     static_FacePlane.Normal = FacePlane.normal;
     static_FacePlane.dist = FacePlane.dist;
     static_FacePlane.computeBasis();

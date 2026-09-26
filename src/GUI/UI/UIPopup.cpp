@@ -2047,10 +2047,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
     // check character condition
     if (!pParty->activeCharacter().CanAct()) {
-        // TODO(captainurist): pointless function-local static, make it a local.
-        static std::string hint_reference;
-        hint_reference = localization->format(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name,
-                                                    localization->str(LSTR_IDENTIFY_ITEMS));
+        std::string hint_reference = localization->format(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name, localization->str(LSTR_IDENTIFY_ITEMS));
 
         Recti frameRect(0, 40, 384, 180);
         if (pX <= 320) {
