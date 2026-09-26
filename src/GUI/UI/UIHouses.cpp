@@ -685,12 +685,14 @@ void BackToHouseMenu() {
 #endif
 }
 
+static SoundId houseSoundId(int roomSoundId, HouseSoundType type) {
+    return SoundId(30000 + 100 * roomSoundId + std::to_underlying(type));
+}
+
 void playHouseSound(HouseId houseID, HouseSoundType type) {
     if (houseID != HOUSE_INVALID && pAnimatedRooms[houseTable[houseID].uAnimationID].uRoomSoundId) {
-        // TODO(captainurist): encapsulate
         int roomSoundId = pAnimatedRooms[houseTable[houseID].uAnimationID].uRoomSoundId;
-        SoundId soundId = SoundId(std::to_underlying(type) + 100 * (roomSoundId + 300));
-        pAudioPlayer->playHouseSound(soundId, true);
+        pAudioPlayer->playHouseSound(houseSoundId(roomSoundId, type), true);
     }
 }
 
