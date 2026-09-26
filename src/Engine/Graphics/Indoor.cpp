@@ -1132,7 +1132,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
     const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[uDecorationID].uDecorationDescID);
 
-    if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
+    if (decoration->uFlags & DECORATION_DATA_EMITS_FIRE) {
         // TODO(pskelton): common emit fire code
         Particle_sw particle; // Fire, like at the Pit's tavern.
         particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
@@ -1150,7 +1150,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         return;
     }
 
-    if (decoration->uFlags & DECORATION_DESC_DONT_DRAW) {
+    if (decoration->uFlags & DECORATION_DATA_DONT_DRAW) {
         return;
     }
 
