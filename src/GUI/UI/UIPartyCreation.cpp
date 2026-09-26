@@ -29,8 +29,6 @@
 
 #include "Library/Logger/Logger.h"
 
-using Io::TextInputType;
-
 
 GraphicsImage *ui_partycreation_top = nullptr;
 GraphicsImage *ui_partycreation_sky_scroller = nullptr;
@@ -233,7 +231,7 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationChangeName:
             pAudioPlayer->playUISound(SOUND_ClickSkill);
             uPlayerCreationUI_NameEditCharacter = param;
-            keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu.get());
+            keyboardInputHandler->StartTextInput(TEXT_INPUT_TEXT, 15, pGUIWindow_CurrentMenu.get());
             break;
         case UIMSG_Escape:
             if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000)) break;

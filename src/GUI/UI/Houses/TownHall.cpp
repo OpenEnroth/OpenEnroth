@@ -25,8 +25,6 @@
 
 #include "Engine/AssetsManager.h"
 
-using Io::TextInputType;
-
 void GUIWindow_TownHall::mainDialogue() {
     Recti townHall_window = this->frameRect;
     townHall_window.x = SIDE_TEXT_BOX_POS_X;
@@ -115,7 +113,7 @@ void GUIWindow_TownHall::houseDialogueOptionSelected(DialogueId option) {
     if (option == DIALOGUE_TOWNHALL_BOUNTY_HUNT) {
         bountyHuntingDialogueOptionClicked();
     } else if (option == DIALOGUE_TOWNHALL_PAY_FINE) {
-        keyboardInputHandler->StartTextInput(TextInputType::Number, 10, this);
+        keyboardInputHandler->StartTextInput(TEXT_INPUT_NUMBER, 10, this);
     }
 }
 

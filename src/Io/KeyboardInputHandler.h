@@ -29,7 +29,7 @@ class KeyboardInputHandler {
         this->actionMapping = actionMapping;
 
         lastKeyPressed = PlatformKey::KEY_NONE;
-        inputType = TextInputType::None;
+        inputType = TEXT_INPUT_NONE;
         window = nullptr;
     }
 
@@ -78,7 +78,7 @@ class KeyboardInputHandler {
     Duration keydelaytimer;
     int max_input_string_len = 0;
     std::string pPressedKeysBuffer;
-    TextInputType inputType = TextInputType::None;
+    TextInputType inputType = TEXT_INPUT_NONE;
     GUIWindow *window = nullptr;
 };
 }  // namespace Io

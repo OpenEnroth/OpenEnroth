@@ -15,8 +15,6 @@
 
 #include "Io/KeyboardActionMapping.h"
 
-using Io::TextInputType;
-
 void GUIWindow_Bank::mainDialogue() {
     Recti bank_window = this->frameRect;
     bank_window.x = SIDE_TEXT_BOX_POS_X;
@@ -109,7 +107,7 @@ void GUIWindow_Bank::getGoldDialogue() {
 void GUIWindow_Bank::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
     if (option == DIALOGUE_BANK_PUT_GOLD || option == DIALOGUE_BANK_GET_GOLD) {
-        keyboardInputHandler->StartTextInput(TextInputType::Number, 10, this);
+        keyboardInputHandler->StartTextInput(TEXT_INPUT_NUMBER, 10, this);
     }
 }
 
