@@ -380,12 +380,14 @@ using enum Sex;
 
 /**
  * Paperdoll body shape. Humans, elves and goblins share the non-dwarf bodies.
+ *
+ * Values are the body number in paperdoll texture names, e.g. `item092v3` or `pc23v1Bod`.
  */
 enum class BodyType {
-    BODY_TYPE_MALE = 0,
-    BODY_TYPE_FEMALE = 1,
-    BODY_TYPE_DWARF_MALE = 2,
-    BODY_TYPE_DWARF_FEMALE = 3,
+    BODY_TYPE_MALE = 1,
+    BODY_TYPE_FEMALE = 2,
+    BODY_TYPE_DWARF_MALE = 3,
+    BODY_TYPE_DWARF_FEMALE = 4,
 
     BODY_TYPE_FIRST = BODY_TYPE_MALE,
     BODY_TYPE_LAST = BODY_TYPE_DWARF_FEMALE,
