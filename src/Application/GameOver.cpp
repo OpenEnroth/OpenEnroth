@@ -40,7 +40,7 @@ GraphicsImage *CreateWinnerCertificate() {
     GraphicsImage *background = assets->getImage_PCXFromIconsLOD("winbg.pcx");
     render->DrawQuad2D(background, {0, 0});
 
-    std::unique_ptr<GUIWindow> tempwindow_SpeakInHouse = std::make_unique<GUIWindow>(WINDOW_UNKNOWN, Pointi{ 0, 0 }, render->GetRenderDimensions());
+    std::unique_ptr<GUIWindow> tempwindow_SpeakInHouse = std::make_unique<GUIWindow>(WINDOW_WINNER_CERTIFICATE, Pointi{ 0, 0 }, render->GetRenderDimensions());
     Recti frameRect(75, 60, 469, 338);
     std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt");
 
