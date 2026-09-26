@@ -38,6 +38,8 @@
 #include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIStatusBar.h"
 
+#include "Library/Logger/Logger.h"
+
 /**
  * @offset 0x4465DF
  */
@@ -157,6 +159,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 return -1;
             case EVENT_OnCanShowDialogItemCmp:
                 _readyToExit = true;
+                if (!validateVariableValue(ir))
+                    break;
                 for (Character &player : pParty->pCharacters) {
                     if (compareEvtVariable(player, ir.data.variable_descr.type, ir.data.variable_descr.value)) {
                         return ir.target_step;
@@ -316,6 +320,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             setDecorationSprite(ir.data.sprite_texture_descr.cog, ir.data.sprite_texture_descr.hide, ir.str);
             break;
         case EVENT_Compare:
+            if (!validateVariableValue(ir))
+                break;
             for (Character &character : iterateCharacters(_who, grng))
                 if (compareEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                     return ir.target_step;
@@ -324,6 +330,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
             break;
         case EVENT_Add:
+            if (!validateVariableValue(ir))
+                break;
             // TODO(captainurist): move this workaround into patched event data, and add the OnMapReload step from
             //                     GrayFace's d27.evt that re-applies the empty cage sprite once the quest bit is set.
             //                     The sprite isn't saved, so after a reload the cage shows Roland until the next click.
@@ -334,6 +342,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 addEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_Subtract:
+            if (!validateVariableValue(ir))
+                break;
             // We had a couple issues with quest items not being removed from inventory, and the reason was that the
             // character target wasn't properly set in the script. Thus, we don't even check `_who` here and just try
             // to take the item from all characters. See issues #1808 and #1912.
@@ -353,6 +363,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             }
             break;
         case EVENT_Set:
+            if (!validateVariableValue(ir))
+                break;
             for (Character &character : iterateCharacters(_who, grng))
                 setEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
@@ -668,4 +680,13 @@ void EvtInterpreter::prepare(const EvtProgram &eventMap, int eventId, Pid object
 
 bool EvtInterpreter::isValid() {
     return _events.size() > 0;
+}
+
+bool EvtInterpreter::validateVariableValue(const EvtInstruction &ir) const {
+    if (isEvtVariableValueValid(ir.opcode, ir.data.variable_descr.type, ir.data.variable_descr.value))
+        return true;
+
+    MM_ERROR("Skipping step {} of evt event {}, value {} is out of range for evt variable {}",
+             ir.step, _eventId, ir.data.variable_descr.value, std::to_underlying(ir.data.variable_descr.type));
+    return false;
 }

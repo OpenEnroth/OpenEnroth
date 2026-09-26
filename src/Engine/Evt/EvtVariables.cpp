@@ -1,6 +1,8 @@
 #include "Engine/Evt/EvtVariables.h"
 
 #include <algorithm>
+#include <cassert>
+#include <limits>
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/EvtEnumFunctions.h"
@@ -24,6 +26,50 @@
 
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
+static bool isInRange(int value, auto first, auto last) {
+    return value >= static_cast<int>(first) && value <= static_cast<int>(last);
+}
+
+bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
+    if (var >= VAR_FIRST_SKILL && var <= VAR_LAST_SKILL) {
+        if (!isInRange(value, 0, std::numeric_limits<uint16_t>::max()))
+            return false;
+        if (opcode != EVENT_Set)
+            return true; // Compare and add give meaning to mastery bits without a level, 0x80 is "master or better".
+        auto [level, mastery] = CombinedSkillValue::fromJoinedUnchecked(value);
+        return CombinedSkillValue::isValid(level, mastery);
+    }
+
+    switch (var) {
+        case VAR_Sex:
+            return isInRange(value, SEX_FIRST, SEX_LAST);
+        case VAR_Class:
+            return isInRange(value, CLASS_FIRST, CLASS_LAST);
+        case VAR_Race:
+            return isInRange(value, RACE_FIRST, RACE_LAST);
+        case VAR_HiredNPCHasSpeciality:
+            return isInRange(value, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST);
+        case VAR_Award:
+            return isInRange(value, AWARD_FIRST, AWARD_LAST);
+        case VAR_QBits_QuestsDone:
+            return isInRange(value, QBIT_FIRST, QBIT_LAST);
+        case VAR_PlayerItemInHands:
+        case VAR_ItemEquipped:
+            return isInRange(value, ITEM_FIRST_VALID, ITEM_LAST_VALID);
+        case VAR_RandomGold:
+        case VAR_RandomFood:
+            return value > 0;
+        case VAR_AutoNotes:
+            return pParty->_autonoteBits.indices().contains(value);
+        case VAR_PlayerBits:
+            return pParty->pCharacters[0]._characterEventBits.indices().contains(value);
+        case VAR_NPCs2:
+            return isInRange(value, 0, std::ssize(pNPCStats->pNPCData) - 1);
+        default:
+            return true;
+    }
+}
+
 static bool CmpSkillValue(int valToCompare, CombinedSkillValue skillValue) {
     int val;
     if (valToCompare <= 63)
@@ -35,11 +81,6 @@ static bool CmpSkillValue(int valToCompare, CombinedSkillValue skillValue) {
 
 //----- (00449BB4) --------------------------------------------------------
 bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
-    // in some cases this calls only calls v4 >= pValue, which i've
-    // changed to return false, since these values are supposed to
-    // be positive and v4 was -1 by default
-    assert(pValue >= 0 && "Compare variable shouldn't have negative arguments");
-
     signed int v4;                         // edi@1
     uint8_t test_bit_value;        // eax@25
     uint8_t byteWithRequestedBit;  // cl@25
@@ -85,7 +126,7 @@ bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
         case VAR_Experience:
             return character.experience >= pValue;
         case VAR_QBits_QuestsDone:
-            return pParty->_questBits[static_cast<QuestBit>(pValue)]; // TODO(captainurist): values coming from scripts should be bound-checked.
+            return pParty->_questBits[static_cast<QuestBit>(pValue)];
         case VAR_PlayerItemInHands:
             // for (int i = 0; i < 138; i++)
             if (character.inventory.find(static_cast<ItemId>(pValue)))
@@ -424,7 +465,7 @@ bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
         case VAR_ItemEquipped:
             return character.wearsItem(static_cast<ItemId>(pValue));
         default:
-            MM_WARNING("Comparing unsupported evt variable {}", std::to_underlying(VarNum));
+            MM_ERROR("Comparing unsupported evt variable {}", std::to_underlying(VarNum));
             return false;
     }
 }
@@ -535,7 +576,6 @@ void setEvtVariable(Character &character, EvtVariable var_type, int var_value) {
             character.PlayAwardSound_Anim();
             return;
         case VAR_QBits_QuestsDone:
-            // TODO(captainurist): qbits value is coming from a script, need to bound-check.
             if (!pParty->_questBits[static_cast<QuestBit>(var_value)] && !pQuestTable[static_cast<QuestBit>(var_value)].empty()) {
                 bFlashQuestBook = true;
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, character.characterIndex());
@@ -996,7 +1036,7 @@ void setEvtVariable(Character &character, EvtVariable var_type, int var_value) {
             character.SetSkillReaction();
             return;
         default:
-            MM_WARNING("Setting unsupported evt variable {}", std::to_underlying(var_type));
+            MM_ERROR("Setting unsupported evt variable {}", std::to_underlying(var_type));
             return;
     }
 }
@@ -1048,12 +1088,10 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
 
     switch (var_type) {
         case VAR_RandomGold:
-            if (val == 0) val = 1;
             pParty->partyFindsGold(grng->random(val) + 1, GOLD_RECEIVE_NOSHARE_MSG);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_RandomFood:
-            if (val == 0) val = 1;
             food = grng->random(val) + 1;
             pParty->GiveFood(food);
             engine->_statusBar->setEvent(LSTR_YOU_FIND_LU_FOOD, food);
@@ -1112,7 +1150,6 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
             character.PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
-            // TODO(captainurist): quest bit is coming from a script, do range checking here.
             if (!pParty->_questBits[static_cast<QuestBit>(val)] && !pQuestTable[static_cast<QuestBit>(val)].empty()) {
                 bFlashQuestBook = true;
                 character.PlayAwardSound_Anim97_Face(SPEECH_QUEST_GOT);
@@ -1353,7 +1390,6 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
             character.PlayAwardSound_Anim97();
             return;
         case VAR_AutoNotes:
-            assert(val > 0);
             if (!pParty->_autonoteBits[val] && !pAutonoteTxt[val].pText.empty()) {
                 character.playReaction(SPEECH_AWARD_GOT);
                 bFlashAutonotesBook = true;
@@ -1552,6 +1588,7 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
             character.PlayAwardSound_Anim97();
             return;
         default:
+            MM_ERROR("Adding unsupported evt variable {}", std::to_underlying(var_type));
             return;
     }
 }
@@ -1603,7 +1640,6 @@ bool subtractEvtVariable(Character &character, EvtVariable VarNum, signed int pV
             character.PlayAwardSound_AnimSubtract();
             return true;
         case VAR_QBits_QuestsDone:
-            // TODO(captainurist): quest bit is coming from a script, do range checking here.
             pParty->_questBits.reset(static_cast<QuestBit>(pValue));
             character.playReaction(SPEECH_AWARD_GOT);
             return true;
@@ -2076,6 +2112,7 @@ bool subtractEvtVariable(Character &character, EvtVariable VarNum, signed int pV
             pParty->uNumArenaWins[ARENA_LEVEL_LORD] -= pValue;
             return true;
         default:
+            MM_ERROR("Subtracting unsupported evt variable {}", std::to_underlying(VarNum));
             return true;
     }
 }

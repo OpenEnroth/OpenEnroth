@@ -246,6 +246,9 @@ enum class EvtVariable {
     VAR_ArenaWinsLord = 0x139,
     VAR_Invisible = 0x13A,
     VAR_ItemEquipped = 0x13B,
+
+    VAR_FIRST_SKILL = VAR_StaffSkill,
+    VAR_LAST_SKILL = VAR_LearningSkill,
 };
 using enum EvtVariable;
 
