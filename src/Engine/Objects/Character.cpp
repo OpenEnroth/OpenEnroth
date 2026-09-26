@@ -3623,7 +3623,7 @@ void Character::PlayAwardSound_Anim97_Face(SpeechId speech) {
 void Character::AddSkillByEvent(Skill skill, uint16_t addSkillValue) {
     auto [addLevel, addMastery] = CombinedSkillValue::fromJoinedUnchecked(addSkillValue);
 
-    int newLevel = pActiveSkills[skill].level() + addLevel;
+    int newLevel = std::min(pActiveSkills[skill].level() + addLevel, skills_max_level[skill]);
     Mastery newMastery = std::max(pActiveSkills[skill].mastery(), addMastery);
 
     pActiveSkills[skill] = CombinedSkillValue(newLevel, newMastery);
