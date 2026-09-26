@@ -15,6 +15,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
+#include "Engine/Tables/NPCTable.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UISaveLoad.h"
@@ -734,4 +735,37 @@ GAME_TEST(Issues, Issue2792) {
                 EXPECT_EQ(buff.GetExpireTime(), castAt + expectedDuration);
         }
     }
+}
+
+GAME_TEST(Issues, Issue2834) {
+    // Evt commands after ForPlayer(Active) did nothing while no character was active, so the hired golem took the
+    // abbey normal head and never gave its own head back.
+    auto abbeyHeadTape = tapes.totalItemCount(ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD);
+    auto golemHeadTape = tapes.totalItemCount(ITEM_QUEST_GOLEM_HEAD);
+    auto activeCharacterTape = tapes.activeCharacterIndex();
+    auto golemHeadPlacedTape = tapes.questBit(QBIT_GOLEM_HEAD_PLACED);
+    auto abbeyHeadPlacedTape = tapes.questBit(QBIT_ABBEY_NORMAL_GOLEM_HEAD_PLACED);
+    game.startNewGame();
+    pNPCStats->pNPCData[56].flags |= NPC_HIRED; // The golem, as global.evt hires it.
+    pParty->CountHirelings();
+    pParty->_questBits.set(QBIT_GOLEM_HEAD_PLACED);
+    pParty->pCharacters[0].inventory.add(Item(ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD));
+    test.startTaping();
+    for (int i = 0; i < 4; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_A);
+        game.tick(1);
+    }
+    ASSERT_FALSE(pParty->hasActiveCharacter());
+
+    game.pressGuiButton("Game_Hireling2"); // Lady Margaret is the first hireling.
+    game.tick(2);
+    game.pressGuiButton("Dialogue_Option1"); // Swap the heads.
+    game.tick(2);
+    test.stopTaping();
+
+    EXPECT_EQ(activeCharacterTape, tape(1, 2, 3, -1)); // Nobody recovered while the dialogue was open.
+    EXPECT_EQ(abbeyHeadTape, tape(1, 0));
+    EXPECT_EQ(golemHeadTape, tape(0, 1));
+    EXPECT_EQ(golemHeadPlacedTape, tape(true, false));
+    EXPECT_EQ(abbeyHeadPlacedTape, tape(false, true));
 }
