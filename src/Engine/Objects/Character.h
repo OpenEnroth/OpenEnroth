@@ -246,10 +246,24 @@ class Character {
     void PlayAwardSound_Anim_Face(SpeechId speech);
     void PlayAwardSound_Anim97();
     void PlayAwardSound_Anim97_Face(SpeechId speech);
-    void AddSkillByEvent(Skill, uint16_t addSkillValue);
+    /**
+     * Adds levels to a skill and raises its mastery, capping the level at `skills_max_level`.
+     *
+     * @param skill                     Skill to change.
+     * @param level                     Number of levels to add.
+     * @param mastery                   Mastery to raise the skill to, a lower one leaves it as is.
+     */
+    void AddSkillByEvent(Skill skill, int level, Mastery mastery);
     void PlayAwardSound_AnimSubtract();
     void PlayAwardSound_AnimSubtract_Face(SpeechId speech);
-    void SubtractSkillByEvent(Skill skill, uint16_t subSkillValue);
+    /**
+     * Removes levels from a skill, keeping at least one level and the mastery. A skill the character doesn't have
+     * stays unlearned.
+     *
+     * @param skill                     Skill to change.
+     * @param level                     Number of levels to remove.
+     */
+    void SubtractSkillByEvent(Skill skill, int level);
 
     bool IsWeak() const;
     bool IsDead() const;
