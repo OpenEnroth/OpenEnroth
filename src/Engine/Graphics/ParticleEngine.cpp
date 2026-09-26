@@ -172,7 +172,7 @@ void ParticleEngine::UpdateParticles() {
 
         p->angle += time.ticks() * p->rotation_speed / 16;
 
-        // With time particles become more transparent
+        // Particle billboards use additive blending, so fading to black fades them out without touching alpha.
         int dissipate_value = 2 * p->timeToLive.ticks();
         if (dissipate_value >= 255) {
             dissipate_value = 255;
