@@ -174,6 +174,7 @@ class Character {
     Race GetRace() const;
     std::string GetRaceName() const;
     Sex GetSexByVoice() const;
+    BodyType bodyType() const;
     void SetInitialStats();
     void SetSexByVoice();
     void ChangeClass(Class classType);
@@ -374,7 +375,7 @@ class Character {
 
 void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int a4);
 bool IsDwarfPresentInParty(bool b);
-bool ShouldLoadTexturesForRaceAndGender(int bodyType); // TODO(captainurist): #enum
+bool isBodyTypeInParty(BodyType bodyType);
 int CharacterCreation_GetUnspentAttributePointCount();
 
 /**
