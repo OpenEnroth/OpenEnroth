@@ -18,18 +18,8 @@ struct OpenEnrothOptions : public GameStarterOptions {
     };
     using enum Subcommand;
 
-    enum class Migration {
-        MIGRATION_NONE,
-        MIGRATION_DROP_REDUNDANT_KEY_EVENTS,
-        MIGRATION_DROP_PRESS_RELEASE_FOR_CONTINUOUS_ACTIONS,
-        MIGRATION_DROP_PAINT_AFTER_ACTIVATE,
-        MIGRATION_TIGHTEN_KEY_EVENTS_FOR_ONCE_ACTIONS,
-    };
-    using enum Migration;
-
     struct RetraceOptions {
         std::vector<NativePath> traces;
-        Migration migration = MIGRATION_NONE;
     };
 
     struct PlayOptions {
@@ -51,5 +41,3 @@ struct OpenEnrothOptions : public GameStarterOptions {
      */
     static OpenEnrothOptions parse(int argc, char **argv);
 };
-
-MM_DECLARE_SERIALIZATION_FUNCTIONS(OpenEnrothOptions::Migration)
