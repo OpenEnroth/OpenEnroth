@@ -63,12 +63,22 @@ void setEvtScripts(EvtScripts *value);
 EvtScripts *evtScripts();
 
 /**
+ * What a timer counts its first alarm from.
+ */
+enum class EvtTimerStart {
+    EVT_TIMER_START_LAST_VISIT, // The last visit to the map, as evt timers do when their map loads. Fires at once on a first visit.
+    EVT_TIMER_START_NOW,
+};
+using enum EvtTimerStart;
+
+/**
  * When a timer fires.
  */
 struct EvtTimerSchedule {
     Duration interval; // Counted from when the timer is added. Zero for a timer that follows the calendar.
     Duration period; // Of a timer that follows the calendar: a day, a week, 28 days or a year.
     Duration timeOfDay; // Of a daily timer that follows the calendar.
+    EvtTimerStart start = EVT_TIMER_START_LAST_VISIT; // Of a timer that follows the calendar.
 };
 
 /**

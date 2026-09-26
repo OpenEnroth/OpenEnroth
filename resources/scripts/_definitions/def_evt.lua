@@ -10,6 +10,14 @@
 --- @field header string
 --- @field events { id: integer, code: string }[]
 
+--- How a timer fires.
+--- @class EvtTimerOptions
+--- @field period number In ticks.
+--- @field start number? Time of day in ticks that a daily timer fires at.
+--- @field isRefill boolean
+--- @field isGlobal boolean Whether the timer is kept when the party leaves the map.
+--- @field countsFromNow boolean Whether the first alarm is counted from now, not from the last visit to the map.
+
 --- @class EvtBindings
 --- @field newContext fun(eventId: integer, targetPid: integer, canShowMessages: boolean): EvtScriptContext
 --- @field defaultPlayer fun(): integer
@@ -24,7 +32,7 @@
 --- @field random fun(hi: integer): integer
 --- @field time fun(): number
 --- @field checkTimer fun(period: number, start: number?, isRefill: boolean)
---- @field addTimer fun(period: number, start: number?, isRefill: boolean, isGlobal: boolean, callback: fun(): boolean): integer
+--- @field addTimer fun(options: EvtTimerOptions, callback: fun(): boolean): integer
 --- @field removeTimer fun(handle: integer)
 --- @field mapScripts fun(mapName: string): string[]
 --- @field globalScripts fun(): string[]
