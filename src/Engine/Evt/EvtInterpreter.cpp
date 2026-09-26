@@ -116,6 +116,21 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
 }
 
 /**
+ * @param who                           Characters that a variable command targets.
+ * @param variable                      Variable of the command.
+ * @param rng                           Random engine for `CHOOSE_RANDOM`.
+ * @return                              The characters to run the command for. A party variable gets only the first
+ *                                      of them, so that the command changes it once.
+ */
+static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, EvtVariable variable, RandomEngine *rng) {
+    for (Character &character : iterateCharacters(who, rng)) {
+        co_yield character;
+        if (isPartyVariable(variable))
+            co_return;
+    }
+}
+
+/**
  * @param ir                            MoveToMap instruction.
  * @return                              Where it sends the party. An all-zero position means the script isn't placing
  *                                      the party itself - on the current map it stays put, which is how the MM6
@@ -317,7 +332,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             setDecorationSprite(ir.data.sprite_texture_descr.cog, ir.data.sprite_texture_descr.hide, ir.str);
             break;
         case EVENT_Compare:
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 if (compareEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                     return ir.target_step;
             break;
@@ -331,11 +346,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
                 ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
                 break; // Roland's cage script adds the key on every click, it never checks the quest bit.
-            for (Character &character : iterateCharacters(_who, grng)) {
+            for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 addEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
-                if (isPartyVariable(ir.data.variable_descr.type))
-                    break;
-            }
             break;
         case EVENT_Subtract:
             // We had a couple issues with quest items not being removed from inventory, and the reason was that the
@@ -351,20 +363,14 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                     }
                 }
             } else {
-                for (Character &character : iterateCharacters(_who, grng)) {
+                for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                     if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                         _cancelled = true;
-                    if (isPartyVariable(ir.data.variable_descr.type))
-                        break;
-                }
             }
             break;
         case EVENT_Set:
-            for (Character &character : iterateCharacters(_who, grng)) {
+            for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 setEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
-                if (isPartyVariable(ir.data.variable_descr.type))
-                    break;
-            }
             break;
         case EVENT_SummonMonsters:
             spawnMonsters(ir.data.monster_descr.type, ir.data.monster_descr.level, ir.data.monster_descr.count,
