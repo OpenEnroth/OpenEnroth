@@ -1,0 +1,25 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_lod_formats",
+    srcs = [
+        "LodFormatSnapshots.cpp",
+        "LodFormats.cpp",
+    ],
+    hdrs = [
+        "LodFont.h",
+        "LodFormatSnapshots.h",
+        "LodFormats.h",
+        "LodImage.h",
+        "LodSprite.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Binary:library_binary",
+        "//src/Library/Compression:library_compression",
+        "//src/Library/Image:library_image",
+        "//src/Library/Serialization:library_serialization",
+        "//src/Library/Snapshots:library_snapshots",
+        "//src/Utility:utility",
+    ],
+)

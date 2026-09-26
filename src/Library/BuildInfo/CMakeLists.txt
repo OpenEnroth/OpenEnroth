@@ -19,5 +19,6 @@ string(TIMESTAMP BUILD_TIME UTC)
 add_library(library_buildinfo ${LIBRARY_BUILDINFO_SOURCES} ${LIBRARY_BUILDINFO_HEADERS})
 target_compile_definitions(library_buildinfo PRIVATE
         MM_GIT_REVISION="${GIT_REVISION}"
-        MM_BUILD_TIME="${BUILD_TIME}")
+        MM_BUILD_TIME="${BUILD_TIME}"
+        PROJECT_VERSION="${PROJECT_VERSION}")
 target_check_style(library_buildinfo)

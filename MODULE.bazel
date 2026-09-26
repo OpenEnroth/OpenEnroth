@@ -1,0 +1,325 @@
+"""OpenEnroth Bazel module definition."""
+
+module(
+    name = "openenroth",
+    version = "0.0.0",
+)
+
+# ─── Core Bazel rules ────────────────────────────────────────────────────────
+
+bazel_dep(name = "rules_cc", version = "0.2.17")
+
+# Explicit dep for the py_binary loads in //bazel/cmrc (Bazel 9 drops autoload).
+bazel_dep(name = "rules_python", version = "0.40.0")
+
+# The flatpak sandbox builds as root; rules_python refuses that by default.
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    ignore_root_user_error = True,
+    python_version = "3.11",
+)
+bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+
+# ─── Testing ─────────────────────────────────────────────────────────────────
+
+bazel_dep(name = "googletest", version = "1.17.0")
+
+# ─── Libraries from the Bazel Central Registry ───────────────────────────────
+# Kept as close to the CMake-pinned versions as the registry allows.
+
+# fmt is capped at 11.x: the CMake build pins 11.1.1, and fmt 12 fails to compile
+# for 32-bit x86 (its uint128 fallback lacks operator~). spdlog 1.15.3 is the last
+# version whose fmt dependency stays at 11.x under MVS.
+bazel_dep(name = "fmt", version = "11.2.0")
+bazel_dep(name = "spdlog", version = "1.15.3")
+bazel_dep(name = "nlohmann_json", version = "3.12.0.bcr.1")
+bazel_dep(name = "cli11", version = "2.6.2")
+bazel_dep(name = "glm", version = "1.0.3")
+bazel_dep(name = "fast_float", version = "8.2.4")
+bazel_dep(name = "magic_enum", version = "0.9.8")
+bazel_dep(name = "boost.lambda2", version = "1.90.0.bcr.1", repo_name = "lambda2")
+bazel_dep(name = "zlib", version = "1.3.2")
+bazel_dep(name = "libpng", version = "1.6.58")
+bazel_dep(name = "libdwarf", version = "2.2.0")  # Cpptrace symbolizes with it. Its cmake build fetches v2.1.0, which the BCR skipped.
+
+# ─── rules_foreign_cc — wraps CMake/Make deps (used for LuaJIT, SDL3, etc.) ──
+
+bazel_dep(name = "rules_foreign_cc", version = "0.15.1")
+
+# Expose the autoconfigured cc repo: //bazel/platforms:windows_x86_cc_toolchain
+# wraps its unregistered x64->x86 msvc cross toolchain.
+cc_configure = use_extension("@rules_cc//cc:extensions.bzl", "cc_configure_extension")
+use_repo(cc_configure, "local_config_cc")
+
+# Hermetic windows make/pkg-config - see bazel/rules/windows_tools.bzl.
+windows_tools = use_extension("//bazel/rules:windows_tools.bzl", "windows_tools")
+use_repo(windows_tools, "msys2")
+
+register_toolchains(
+    "@msys2//:make_toolchain",
+    "@msys2//:pkgconfig_toolchain",
+)
+
+# ─── Android ─────────────────────────────────────────────────────────────────
+
+bazel_dep(name = "rules_android", version = "0.6.0")
+
+# NDK C++ toolchains for all ABIs, resolved from ANDROID_NDK_HOME.
+bazel_dep(name = "rules_android_ndk", version = "0.1.3")
+
+# Patch: stub repo instead of fail() when ANDROID_NDK_HOME is unset, so
+# non-android builds work without an NDK.
+single_version_override(
+    module_name = "rules_android_ndk",
+    patch_strip = 1,
+    patches = ["//bazel/patches:rules_android_ndk_stub_no_ndk.patch"],
+    version = "0.1.3",
+)
+
+android_ndk_repository_extension = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
+use_repo(android_ndk_repository_extension, "androidndk")
+
+register_toolchains("@androidndk//:all")
+
+# SDK for android_binary (APK packaging); stubs out when ANDROID_HOME is unset.
+android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
+use_repo(android_sdk_repository_extension, "androidsdk")
+
+register_toolchains("@androidsdk//:sdk-toolchain", "@androidsdk//:all")
+
+# ─── Non-BCR deps via http_archive ───────────────────────────────────────────
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Header-only deps ----------------------------------------------------------
+
+http_archive(
+    name = "mio",
+    build_file = "//bazel/deps:mio.BUILD",
+    sha256 = "86248113bb2f1484f9cd44a260fe09beaa911307073c6f21fa9e765588d54b4b",
+    strip_prefix = "mio-8b6b7d878c89e81614d05edca7936de41ccdd2da",
+    url = "https://github.com/mandreyel/mio/archive/8b6b7d878c89e81614d05edca7936de41ccdd2da.tar.gz",
+)
+
+http_archive(
+    name = "inifile_cpp",
+    build_file = "//bazel/deps:inifile_cpp.BUILD",
+    sha256 = "7587e9eb93e07e7cff5647c96f14e0d103c0e16a2d0ef0efcc9df8bdd0846d26",
+    strip_prefix = "inifile-cpp-7bb1ec3534768e0d1fd9893d01027468b72af5ec",
+    url = "https://github.com/Rookfighter/inifile-cpp/archive/7bb1ec3534768e0d1fd9893d01027468b72af5ec.tar.gz",
+)
+
+http_archive(
+    name = "tcpp",
+    build_file = "//bazel/deps:tcpp.BUILD",
+    sha256 = "b9940749fb2fba55699ba1c0f2c1682289bb93425a85208b9b2b5a376de13ff2",
+    strip_prefix = "tcpp-8041d013d3ad97c95c1e857f0bd3f8008becb72e",
+    url = "https://github.com/bnoazx005/tcpp/archive/8041d013d3ad97c95c1e857f0bd3f8008becb72e.tar.gz",
+)
+
+http_archive(
+    name = "small_vector",
+    build_file = "//bazel/deps:small_vector.BUILD",
+    sha256 = "ad63d9437ebefb33404ed0b93c5e4f8a3e061ae20c89e2e80ec1cdabf4c0324b",
+    strip_prefix = "small_vector-e8e63fe12ef578528ca5e954bc91321967e76393",
+    url = "https://github.com/gharveymn/small_vector/archive/e8e63fe12ef578528ca5e954bc91321967e76393.tar.gz",
+)
+
+http_archive(
+    name = "generator",
+    build_file = "//bazel/deps:generator.BUILD",
+    sha256 = "44e50a7f15976195c6eba36c226b9f95a90d2c46fedd0efb009b7aca2a88f402",
+    strip_prefix = "generator-2a912502de4f97dcba4f95c958ee0ddf7bc22cf5",
+    url = "https://github.com/TartanLlama/generator/archive/2a912502de4f97dcba4f95c958ee0ddf7bc22cf5.tar.gz",
+)
+
+# Pinned to the thirdparty/cpplint submodule commit; backs //:check_style.
+http_archive(
+    name = "cpplint",
+    build_file = "//bazel/deps:cpplint.BUILD",
+    sha256 = "ed79aec06aab455c1d257e6f39bba0bcf33d9bfebf0879326266b7372549fd54",
+    strip_prefix = "cpplint-45102d1497f3688c7c1eceffb7b87e1fdcce49f3",
+    url = "https://github.com/cpplint/cpplint/archive/45102d1497f3688c7c1eceffb7b87e1fdcce49f3.tar.gz",
+)
+
+http_archive(
+    name = "gtest_parallel",
+    build_file = "//bazel/deps:gtest_parallel.BUILD",
+    sha256 = "6cffbe413d10ad6e7a93b50ffa05a01f9a4d52ff04310f680a17be0b66eda950",
+    strip_prefix = "gtest-parallel-96f4f904922f9bf66689e749c40f314845baaac8",
+    url = "https://github.com/google/gtest-parallel/archive/96f4f904922f9bf66689e749c40f314845baaac8.tar.gz",
+)
+
+# lua-language-server for //:check_style_lua, same 3.19.1 that the cmake style
+# workflow pinned - the lua sources are kept clean against this exact release,
+# and different releases flag different diagnostics. The archive
+# is a full install tree - bin/ finds main.lua, script/ and meta/ next to it,
+# so the whole tree ships as the :files filegroup. Only the archive matching
+# the build machine is ever downloaded.
+_LLS_BUILD = """
+filegroup(
+    name = "files",
+    srcs = glob(["**"]),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "binary",
+    srcs = ["bin/lua-language-server"],
+    visibility = ["//visibility:public"],
+)
+"""
+
+http_archive(
+    name = "lls_linux_x64",
+    build_file_content = _LLS_BUILD,
+    sha256 = "e9235d2d72ef55bc41cf8c99cda2ed64777682024b4bb81f5dea425060c5cbb8",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.19.1/lua-language-server-3.19.1-linux-x64.tar.gz",
+)
+
+http_archive(
+    name = "lls_linux_arm64",
+    build_file_content = _LLS_BUILD,
+    sha256 = "abd2572e8fc929dc838a81ffb8473c5bce0bf39bfe8edb4b120b3b623176ce83",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.19.1/lua-language-server-3.19.1-linux-arm64.tar.gz",
+)
+
+http_archive(
+    name = "lls_darwin_x64",
+    build_file_content = _LLS_BUILD,
+    sha256 = "eb373c159cbe556711d7cd316315de2dce969bfd54b31edb7eb9cab2937f2cca",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.19.1/lua-language-server-3.19.1-darwin-x64.tar.gz",
+)
+
+http_archive(
+    name = "lls_darwin_arm64",
+    build_file_content = _LLS_BUILD,
+    sha256 = "0bc077f4447f076b4c92c14e9fd303f5b569eda2ec74b4dca2b55f75fae2e90c",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.19.1/lua-language-server-3.19.1-darwin-arm64.tar.gz",
+)
+
+http_archive(
+    name = "lls_win32_x64",
+    build_file_content = _LLS_BUILD.replace("bin/lua-language-server", "bin/lua-language-server.exe"),
+    sha256 = "fdb9a59108cf62517813c97fa5549b0e16d1ef0688306bac728b08434db7e4cd",
+    url = "https://github.com/LuaLS/lua-language-server/releases/download/3.19.1/lua-language-server-3.19.1-win32-x64.zip",
+)
+
+# Built deps -----------------------------------------------------------------
+
+http_archive(
+    name = "sol2",
+    build_file = "//bazel/deps:sol2.BUILD",
+    sha256 = "679230074b411c58d802f8fdd6793523f4bbfa6acb2cc42a7d1bf43474fdef61",
+    strip_prefix = "sol2-336f76c3772c84e347a7f4ffb246d8c0e2d5f426",
+    url = "https://github.com/ThePhD/sol2/archive/336f76c3772c84e347a7f4ffb246d8c0e2d5f426.tar.gz",
+)
+
+# BCR imgui has no SDL3 backend; we compile the backends against @sdl3_src.
+http_archive(
+    name = "imgui",
+    build_file = "//bazel/deps:imgui.BUILD",
+    sha256 = "94862c296d4930f122902e4b2194eca198efc8d5a196965cff6a326534e76027",
+    strip_prefix = "imgui-1f7f1f54af38b0350d8c0008b096a9af6de299c7",
+    url = "https://github.com/ocornut/imgui/archive/1f7f1f54af38b0350d8c0008b096a9af6de299c7.tar.gz",
+)
+
+# Cpptrace is in the BCR at this very version, but the BCR build unwinds with execinfo on macos, which starts
+# traces two frames in. This overlay configures it the way cmake does, matching the thirdparty/ submodule.
+http_archive(
+    name = "cpptrace",
+    build_file = "//bazel/deps:cpptrace.BUILD",
+    sha256 = "5c9f5b301e903714a4d01f1057b9543fa540f7bfcc5e3f8bd1748e652e24f9ea",
+    strip_prefix = "cpptrace-1.0.4",
+    url = "https://github.com/jeremy-rifkin/cpptrace/archive/refs/tags/v1.0.4.tar.gz",
+)
+
+http_archive(
+    name = "ztd_text",
+    build_file = "//bazel/deps:ztd_text.BUILD",
+    sha256 = "e16ff3e235d91784b88a7d4051e7f2ec89d5cb9aecbdc44da271829daad70741",
+    strip_prefix = "ztd_text-c17bbb1e0bbd953f65a1846e8df11939f83f2169",
+    url = "https://github.com/captainurist/ztd_text/archive/c17bbb1e0bbd953f65a1846e8df11939f83f2169.tar.gz",
+)
+
+# ztd.idk + companion libraries — all required by ztd_text (all header-only)
+http_archive(
+    name = "ztd_idk",
+    build_file = "//bazel/deps:ztd_idk.BUILD",
+    sha256 = "dcadf4a26aed59671f81c812e70bb3ec9897a5ba3a57f19e179b4cef726cae03",
+    strip_prefix = "idk-a8f2f9dfe6afc68e28d7bc40254259743b48bb45",
+    url = "https://github.com/soasis/idk/archive/a8f2f9dfe6afc68e28d7bc40254259743b48bb45.tar.gz",
+)
+
+http_archive(
+    name = "ztd_platform",
+    build_file = "//bazel/deps:ztd_platform.BUILD",
+    sha256 = "f41c1bb5b53534b4c7d4807539cb87b164fedff4eabff4b2c84af8bf22fdf216",
+    strip_prefix = "platform-d03b15049adb00ffb67c0f46b888f2a611ecf21f",
+    url = "https://github.com/soasis/platform/archive/d03b15049adb00ffb67c0f46b888f2a611ecf21f.tar.gz",
+)
+
+http_archive(
+    name = "ztd_encoding_tables",
+    build_file = "//bazel/deps:ztd_encoding_tables.BUILD",
+    sha256 = "34f962f230772bad8c5e1ec686bfd8dffdbd145faf3711efff8b3ff581511f99",
+    strip_prefix = "encoding_tables-c0c5de5a45dee2fc3a8a3c6831d7070acae435ad",
+    url = "https://github.com/soasis/encoding_tables/archive/c0c5de5a45dee2fc3a8a3c6831d7070acae435ad.tar.gz",
+)
+
+http_archive(
+    name = "ztd_cuneicode",
+    build_file = "//bazel/deps:ztd_cuneicode.BUILD",
+    sha256 = "395b68cf5820ebf7e7c78c680a53392b726f2cdba3cb29f90994366ceb70b123",
+    strip_prefix = "cuneicode-8ed6b88ee41a0edc398db8dbc53d61a6bf6a8f8f",
+    url = "https://github.com/soasis/cuneicode/archive/8ed6b88ee41a0edc398db8dbc53d61a6bf6a8f8f.tar.gz",
+)
+
+http_archive(
+    name = "ztd_inline_containers",
+    build_file = "//bazel/deps:ztd_inline_containers.BUILD",
+    sha256 = "83e8a6db073df17b41e4e82c919dc679790050796e271361abd42dd4685daa9e",
+    strip_prefix = "inline_containers-80c5acbe8256c1802b3b0c006cbc0e0f61fea534",
+    url = "https://github.com/soasis/inline_containers/archive/80c5acbe8256c1802b3b0c006cbc0e0f61fea534.tar.gz",
+)
+
+# LuaJIT — two-stage build (buildvm host → target bytecode) -----------------
+
+http_archive(
+    name = "luajit",
+    build_file = "//bazel/deps:luajit.BUILD",
+    sha256 = "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7",
+    strip_prefix = "LuaJIT-97813fb924edf822455f91a5fbbdfdb349e5984f",
+    url = "https://github.com/LuaJIT/LuaJIT/archive/97813fb924edf822455f91a5fbbdfdb349e5984f.tar.gz",
+)
+
+# System deps — source builds via rules_foreign_cc cmake()/configure_make() -
+
+http_archive(
+    name = "sdl3_src",
+    build_file = "//bazel/deps:sdl3_src.BUILD",
+    sha256 = "9f3a6dabc12c5f04894e0a70359ac448eb9cbe4065fde09e0ab4cf013ff39dd9",
+    strip_prefix = "SDL-a96677bdf6b4acb84af4ec294e5f60a4e8cbbe03",
+    url = "https://github.com/libsdl-org/SDL/archive/a96677bdf6b4acb84af4ec294e5f60a4e8cbbe03.tar.gz",
+)
+
+http_archive(
+    name = "openal_src",
+    build_file = "//bazel/deps:openal_src.BUILD",
+    patch_args = ["-p1"],
+    # Patch: strip the bazel --copts that rules_foreign_cc exports via CXXFLAGS.
+    patches = ["//bazel/patches:openal_strip_injected_flags.patch"],
+    sha256 = "dd733d74c33b106b90f83a0e0e9917b39aa401162ff8da23d7948615dcb92ef7",
+    strip_prefix = "openal-soft-dc7d7054a5b4f3bec1dc23a42fd616a0847af948",
+    url = "https://github.com/kcat/openal-soft/archive/dc7d7054a5b4f3bec1dc23a42fd616a0847af948.tar.gz",
+)
+
+# FFmpeg n7.0 — configure_make() source build; the BCR module is linux/macos-only.
+http_archive(
+    name = "ffmpeg_src",
+    build_file = "//bazel/deps:ffmpeg_src.BUILD",
+    sha256 = "a68fbc06a645cc93e5c877adbaa592cffc40e8595ba50eb716807c4a35bf0f03",
+    strip_prefix = "FFmpeg-n7.0",
+    url = "https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.0.tar.gz",
+)

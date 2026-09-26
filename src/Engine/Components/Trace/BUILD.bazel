@@ -1,0 +1,34 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "engine_components_trace",
+    srcs = [
+        "EngineTracePlayer.cpp",
+        "EngineTraceRecorder.cpp",
+        "EngineTraceSimplePlayer.cpp",
+        "EngineTraceSimpleRecorder.cpp",
+        "EngineTraceStateAccessor.cpp",
+    ],
+    hdrs = [
+        "EngineTraceEnums.h",
+        "EngineTracePlayer.h",
+        "EngineTraceRecorder.h",
+        "EngineTraceRecording.h",
+        "EngineTraceSimplePlayer.h",
+        "EngineTraceSimpleRecorder.h",
+        "EngineTraceStateAccessor.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Engine:engine",
+        "//src/Engine/Components/Control:engine_components_control",
+        "//src/Engine/Components/Deterministic:engine_components_deterministic",
+        "//src/Io:io",
+        "//src/Library/Logger:library_logger",
+        "//src/Library/Platform/Application:library_platform_application",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Random:library_random",
+        "//src/Core/Trace:core_trace",
+        "//src/Utility:utility",
+    ],
+)

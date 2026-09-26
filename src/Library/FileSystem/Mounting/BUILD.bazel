@@ -1,0 +1,35 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_filesystem_mounting",
+    srcs = [
+        "MountingFileSystem.cpp",
+    ],
+    hdrs = [
+        "MountingFileSystem.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/FileSystem/Interface:library_filesystem_interface",
+        "//src/Library/FileSystem/Trie:library_filesystem_trie",
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_filesystem_mounting",
+    testonly = True,
+    srcs = [
+        "Tests/MountingFileSystem_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_filesystem_mounting",
+        "//src/Library/FileSystem/Dump:library_filesystem_dump",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//src/Library/FileSystem/Merging:library_filesystem_merging",
+        "//src/Library/FileSystem/Null:library_filesystem_null",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

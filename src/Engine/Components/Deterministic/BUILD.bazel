@@ -1,0 +1,16 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "engine_components_deterministic",
+    srcs = [
+        "EngineDeterministicComponent.cpp",
+    ],
+    hdrs = [
+        "EngineDeterministicComponent.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Engine/Components/Random:engine_components_random",
+        "//src/Library/Platform/Application:library_platform_application",
+    ],
+)

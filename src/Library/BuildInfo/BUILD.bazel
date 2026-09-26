@@ -1,0 +1,42 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
+
+# CMake target name: library_buildinfo
+# Bazel label: //src/Library/BuildInfo:library_build_info
+
+# Renders the workspace status (see bazel/workspace_status.sh) into a header.
+# stamp = 1 stamps unconditionally, mirroring cmake's configure-time
+# execute_process - the cost is one recompiled .cpp and a relink per commit.
+# BUILD_TIMESTAMP comes from bazel itself via volatile-status.txt, so a
+# timestamp-only change never invalidates anything.
+genrule(
+    name = "build_info_stamp",
+    outs = ["BuildInfoStamp.h"],
+    cmd = """
+rev=$$(sed -n 's/^STABLE_MM_GIT_REVISION //p' bazel-out/stable-status.txt)
+ver=$$(sed -n 's/^STABLE_OE_VERSION //p' bazel-out/stable-status.txt)
+ts=$$(sed -n 's/^BUILD_TIMESTAMP //p' bazel-out/volatile-status.txt)
+time=$$(date -u -d "@$$ts" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -r "$$ts" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null)
+{
+    echo "#define MM_GIT_REVISION \\"$${rev:-unknown}\\""
+    echo "#define MM_BUILD_TIME \\"$${time:-unknown}\\""
+    echo "#define PROJECT_VERSION \\"$${ver:-unknown}\\""
+} > $@
+""",
+    stamp = 1,
+)
+
+cc_library(
+    name = "library_build_info",
+    defines = STDLIB_HARDENING_DEFINES,
+    srcs = [
+        "BuildInfo.cpp",
+        "BuildInfoStamp.h",
+    ],
+    hdrs = [
+        "BuildInfo.h",
+    ],
+    # BuildInfo.cpp includes the generated header by its source-rooted path.
+    copts = ["-I$(GENDIR)/src"],
+    visibility = ["//visibility:public"],
+)

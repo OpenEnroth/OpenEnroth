@@ -1,0 +1,24 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "core_trace",
+    srcs = [
+        "EventTrace.cpp",
+        "EventTraceMigrations.cpp",
+    ],
+    hdrs = [
+        "EventTrace.h",
+        "EventTraceMigrations.h",
+        "PaintEvent.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Core/Serialization:core_serialization",
+        "//src/Io:io",
+        "//src/Library/Config:library_config",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Library/Json:library_json",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Serialization:library_serialization",
+    ],
+)

@@ -1,0 +1,24 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_platform_proxy",
+    srcs = [
+        "ProxyEventLoop.cpp",
+        "ProxyGamepad.cpp",
+        "ProxyOpenGLContext.cpp",
+        "ProxyPlatform.cpp",
+        "ProxyWindow.cpp",
+    ],
+    hdrs = [
+        "ProxyBase.h",
+        "ProxyEventLoop.h",
+        "ProxyGamepad.h",
+        "ProxyOpenGLContext.h",
+        "ProxyPlatform.h",
+        "ProxyWindow.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Platform/Interface:library_platform_interface",
+    ],
+)

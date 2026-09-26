@@ -1,0 +1,18 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "engine_random",
+    srcs = [
+        "Random.cpp",
+        "RandomEnums.cpp",
+    ],
+    hdrs = [
+        "Random.h",
+        "RandomEnums.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Random:library_random",
+        "//src/Library/Serialization:library_serialization",
+    ],
+)
