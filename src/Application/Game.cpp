@@ -368,7 +368,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenQuestBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_QuestBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_QUEST_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -387,7 +387,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenAutonotes:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_AutonotesBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_AUTONOTES_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -406,7 +406,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenMapBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_MapsBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_MAPS_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -425,7 +425,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenCalendar:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_CalendarBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_CALENDAR_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -444,7 +444,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenHistoryBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_JournalBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_JOURNAL_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -691,7 +691,7 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_OnIndoorEntryExit: {
-                assert(pDialogueWindow && pDialogueWindow->eWindowType == WINDOW_IndoorEntryExit);
+                assert(pDialogueWindow && pDialogueWindow->eWindowType == WINDOW_INDOOR_ENTRY_EXIT);
                 GUIWindow_IndoorEntryExit *window = static_cast<GUIWindow_IndoorEntryExit *>(pDialogueWindow.get());
                 MapDestination destination = window->destination();
 
@@ -1361,11 +1361,11 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_ClickAwardsUpBtn:
-                new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Up->rect.topLeft(), {0, 0}, pBtn_Up);
+                new OnButtonClick3(WINDOW_CHARACTER_WINDOW_AWARDS, pBtn_Up->rect.topLeft(), {0, 0}, pBtn_Up);
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->clickAwardsUp();
                 continue;
             case UIMSG_ClickAwardsDownBtn:
-                new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Down->rect.topLeft(), {0, 0}, pBtn_Down);
+                new OnButtonClick3(WINDOW_CHARACTER_WINDOW_AWARDS, pBtn_Down->rect.topLeft(), {0, 0}, pBtn_Down);
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->clickAwardsDown();
                 continue;
             case UIMSG_ChangeDetaliz:

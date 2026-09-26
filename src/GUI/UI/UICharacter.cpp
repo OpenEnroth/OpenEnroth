@@ -551,7 +551,7 @@ std::array<GraphicsImage *, 16> paperdoll_dbrds;
 Recti savedInventoryLeftClickButtonRect;
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, ScreenType screen)
-    : GUIWindow(WINDOW_CharacterRecord, {0, 0}, render->GetRenderDimensions()) {
+    : GUIWindow(WINDOW_CHARACTER_RECORD, {0, 0}, render->GetRenderDimensions()) {
     gameTimer->setPaused(true);
     bRingsShownInCharScreen = false;
     CharacterUI_LoadPaperdollTextures();
@@ -635,14 +635,14 @@ void GUIWindow_CharacterRecord::Update() {
     auto player = &pParty->activeCharacter();
 
     switch (current_character_screen_window) {
-        case WINDOW_CharacterWindow_Stats: {
+        case WINDOW_CHARACTER_WINDOW_STATS: {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_StatsTab_Draw(player);
             render->DrawQuad2D(assets->getImage_ColorKey("ib-cd1-d"), pCharacterScreen_StatsBtn->rect.topLeft());
             break;
         }
-        case WINDOW_CharacterWindow_Skills: {
+        case WINDOW_CHARACTER_WINDOW_SKILLS: {
             if (dword_507CC0_activ_ch != pParty->activeCharacterIndex()) {
                 CharacterUI_ReleaseButtons();
                 CharacterUI_SkillsTab_CreateButtons();
@@ -652,14 +652,14 @@ void GUIWindow_CharacterRecord::Update() {
             render->DrawQuad2D(assets->getImage_ColorKey("ib-cd2-d"), pCharacterScreen_SkillsBtn->rect.topLeft());
             break;
         }
-        case WINDOW_CharacterWindow_Awards: {
+        case WINDOW_CHARACTER_WINDOW_AWARDS: {
             CharacterUI_ReleaseButtons();
             createAwardsScrollBar();
             CharacterUI_AwardsTab_Draw(player);
             render->DrawQuad2D(assets->getImage_ColorKey("ib-cd4-d"), pCharacterScreen_AwardsBtn->rect.topLeft());
             break;
         }
-        case WINDOW_CharacterWindow_Inventory: {
+        case WINDOW_CHARACTER_WINDOW_INVENTORY: {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_InventoryTab_Draw(player, false);
@@ -678,27 +678,27 @@ void GUIWindow_CharacterRecord::Update() {
 }
 
 void GUIWindow_CharacterRecord::ShowStatsTab() {
-    current_character_screen_window = WINDOW_CharacterWindow_Stats;
+    current_character_screen_window = WINDOW_CHARACTER_WINDOW_STATS;
     CharacterUI_ReleaseButtons();
     releaseAwardsScrollBar();
-    new OnButtonClick3(WINDOW_CharacterWindow_Stats,
+    new OnButtonClick3(WINDOW_CHARACTER_WINDOW_STATS,
         pCharacterScreen_StatsBtn->rect.topLeft(), {0, 0}, pCharacterScreen_StatsBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowSkillsTab() {
-    current_character_screen_window = WINDOW_CharacterWindow_Skills;
+    current_character_screen_window = WINDOW_CHARACTER_WINDOW_SKILLS;
     CharacterUI_ReleaseButtons();
     releaseAwardsScrollBar();
     CharacterUI_SkillsTab_CreateButtons();
-    new OnButtonClick3(WINDOW_CharacterWindow_Skills,
+    new OnButtonClick3(WINDOW_CHARACTER_WINDOW_SKILLS,
         pCharacterScreen_SkillsBtn->rect.topLeft(), {0, 0}, pCharacterScreen_SkillsBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowInventoryTab() {
-    current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+    current_character_screen_window = WINDOW_CHARACTER_WINDOW_INVENTORY;
     releaseAwardsScrollBar();
     CharacterUI_ReleaseButtons();
-    new OnButtonClick3(WINDOW_CharacterWindow_Inventory,
+    new OnButtonClick3(WINDOW_CHARACTER_WINDOW_INVENTORY,
         pCharacterScreen_InventoryBtn->rect.topLeft(), {0, 0}, pCharacterScreen_InventoryBtn);
 }
 
@@ -706,8 +706,8 @@ void GUIWindow_CharacterRecord::ShowAwardsTab() {
     releaseAwardsScrollBar();
     CharacterUI_ReleaseButtons();
     createAwardsScrollBar();
-    current_character_screen_window = WINDOW_CharacterWindow_Awards;
-    new OnButtonClick3(WINDOW_CharacterWindow_Awards,
+    current_character_screen_window = WINDOW_CHARACTER_WINDOW_AWARDS;
+    new OnButtonClick3(WINDOW_CHARACTER_WINDOW_AWARDS,
         pCharacterScreen_AwardsBtn->rect.topLeft(), {0, 0}, pCharacterScreen_AwardsBtn);
     fillAwardsData();
 }

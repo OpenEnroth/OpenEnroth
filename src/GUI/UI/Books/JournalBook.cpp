@@ -20,7 +20,7 @@
 GraphicsImage *ui_book_journal_background = nullptr;
 
 GUIWindow_JournalBook::GUIWindow_JournalBook() {
-    eWindowType = WINDOW_JournalBook;
+    eWindowType = WINDOW_JOURNAL_BOOK;
 
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{600, 361}, Sizei{0, 0}, pBtn_History);
     bFlashHistoryBook = false;

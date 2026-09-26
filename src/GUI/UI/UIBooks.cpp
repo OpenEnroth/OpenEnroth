@@ -74,7 +74,7 @@ GUIWindow_Book::~GUIWindow_Book() {
     pChildBooksOverlay = nullptr;
 }
 
-GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions()) {
+GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_BOOK, {0, 0}, render->GetRenderDimensions()) {
     initializeFonts();
     CreateButton({475, 445}, {158, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_EXIT_DIALOGUE));
     current_screen_type = SCREEN_BOOKS;
@@ -102,7 +102,7 @@ void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {
 }
 
 GUIWindow_BooksButtonOverlay::GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint) :
-    GUIWindow(WINDOW_BooksButtonOverlay, position, dimensions, hint),
+    GUIWindow(WINDOW_BOOKS_BUTTON_OVERLAY, position, dimensions, hint),
     _button(button)
 {}
 

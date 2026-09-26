@@ -66,7 +66,7 @@ std::unique_ptr<TargetedSpellUI> pGUIWindow_CastTargetedSpell;
 std::unique_ptr<GUIWindow_GameOver> pGameOverWindow;
 std::unique_ptr<GUIWindow_BranchlessDialogue> pGUIWindow_BranchlessDialogue;
 
-enum WindowType current_character_screen_window = WINDOW_CharacterWindow_Stats;
+enum WindowType current_character_screen_window = WINDOW_CHARACTER_WINDOW_STATS;
 std::list<GUIWindow*> lWindowList;
 
 MenuType sCurrentMenuID;
@@ -1066,7 +1066,7 @@ void UI_Create() {
     dialogue_ui_x_ok_u = assets->getImage_ColorKey("x_ok_u");
     ui_buttyes2 = assets->getImage_Alpha("BUTTYES2");
 
-    pPrimaryWindow = std::make_unique<GUIWindow>(WINDOW_GameUI, Pointi{0, 0}, render->GetRenderDimensions());
+    pPrimaryWindow = std::make_unique<GUIWindow>(WINDOW_GAME_UI, Pointi{0, 0}, render->GetRenderDimensions());
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, BUTTON_TYPE_NORMAL, 0, UIMSG_MouseLeftClickInGame, 0);
 
     pPrimaryWindow->CreateCharacterButtons();

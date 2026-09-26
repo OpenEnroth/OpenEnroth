@@ -198,7 +198,7 @@ void EngineController::goToInventory(int characterIndex) {
     pressAndReleaseKey(PlatformKey::KEY_I);
     tick(2); // Need two ticks for inventory to be shown.
 
-    if (current_screen_type != SCREEN_CHARACTERS || current_character_screen_window != WINDOW_CharacterWindow_Inventory)
+    if (current_screen_type != SCREEN_CHARACTERS || current_character_screen_window != WINDOW_CHARACTER_WINDOW_INVENTORY)
         throw Exception("Couldn't to go to inventory");
 }
 

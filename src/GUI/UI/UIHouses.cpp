@@ -444,7 +444,7 @@ void NPCHireableDialogPrepare() {
     int v0 = 0;
     NPCData *v1 = houseNpcs[currentHouseNpc].npc;
 
-    pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetRenderDimensions().w, 350));
+    pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_DIALOGUE, Pointi(0, 0), Sizei(render->GetRenderDimensions().w, 350));
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
@@ -518,7 +518,7 @@ void updateHouseNPCTopics(int npc) {
     currentHouseNpc = npc;
     if (houseNpcs[npc].type == HOUSE_TRANSITION) {
         // TODO(Nik-RE-dev): can use GUIWindow_Transition
-        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), render->GetRenderDimensions());
+        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_DIALOGUE, Pointi(0, 0), render->GetRenderDimensions());
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_TRANSITION_NO, localization->str(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseTransitionConfirmation, 1,
@@ -776,7 +776,7 @@ void GUIWindow_House::reinitDialogueWindow() {
         pDialogueWindow->receives_keyboard_input = false;
         pDialogueWindow->DeleteButtons();
     } else {
-        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetPresentDimensions().w, 345));
+        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_DIALOGUE, Pointi(0, 0), Sizei(render->GetPresentDimensions().w, 345));
     }
 
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
@@ -1034,7 +1034,7 @@ void GUIWindow_House::learnSelectedSkill(Skill skill) {
     }
 }
 
-GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions()), _houseId(houseId) {
+GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTERIOR, {0, 0}, render->GetRenderDimensions()), _houseId(houseId) {
     gameTimer->setPaused(true);  // pause timer so not attacked
 
     current_screen_type = SCREEN_HOUSE;
