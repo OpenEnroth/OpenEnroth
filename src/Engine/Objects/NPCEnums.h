@@ -36,7 +36,7 @@ enum class NpcProfession : int32_t {
     NPC_PROFESSION_NAVIGATOR = 9,        // Travel by sea: -3 days;
     NPC_PROFESSION_HEALER = 10,          // Heal party once a day;
     NPC_PROFESSION_EXPERT_HEALER = 11,   // Heal party and cure conditions once a day;
-    NPC_PROFESSION_MASTER_HEALER = 12,   // Heal party and cure all conditions once a day;
+    NPC_PROFESSION_MASTER_HEALER = 12,   // Heal party and cure all conditions except Eradicated once a day;
     NPC_PROFESSION_TEACHER = 13,         // Learning: +10;
     NPC_PROFESSION_INSTRUCTOR = 14,      // Learning: +15;
     NPC_PROFESSION_ARMS_MASTER = 15,     // Armsmaster: +2;
@@ -68,9 +68,9 @@ enum class NpcProfession : int32_t {
     NPC_PROFESSION_GATE_MASTER = 41,     // Casts Town Portal once a day;
     NPC_PROFESSION_CHAPLAIN = 42,        // Casts Bless once a day;
     NPC_PROFESSION_PIPER = 43,           // Casts Heroism once a day;
-    NPC_PROFESSION_EXPLORER = 44,        // Travel by foot: -1 day;    Travel by sea: -1 day;     Travel by stable: -1 day;
+    NPC_PROFESSION_EXPLORER = 44,        // Travel by foot: -1 day;    Travel by sea: -1 day; Travel by stable: -1 day;
     NPC_PROFESSION_PIRATE = 45,          // Travel by sea: -2 days;    Gold finds: +10%; Reputation: +5;
-    NPC_PROFESSION_SQUIRE = 46,          // TODO(captainurist): vanilla MM7 gives +2 to weapon and armor skills, OE doesn't.
+    NPC_PROFESSION_SQUIRE = 46,          // No effect;                 TODO(captainurist): vanilla MM7 gives +2 to weapon and armor skills, OE doesn't.
     NPC_PROFESSION_PSYCHIC = 47,         // Perception: +5;            Luck: +10;
     NPC_PROFESSION_GYPSY = 48,           // Food for rest: -1;         Merchant: +3; Reputation: +5;
     NPC_PROFESSION_DIPLOMAT = 49,        // No effect;
