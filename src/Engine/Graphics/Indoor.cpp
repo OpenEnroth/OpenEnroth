@@ -1335,7 +1335,6 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
 
 //----- (0046A334) --------------------------------------------------------
 // TODO(Nik-RE-dev): does not belong here, it's common function for interaction for both indoor/outdoor
-// TODO(Nik-RE-dev): get rid of external function declaration inside
 char DoInteractionWithTopmostZObject(Pid pid) {
     auto id = pid.id();
     auto type = pid.type();
@@ -1351,7 +1350,6 @@ char DoInteractionWithTopmostZObject(Pid pid) {
                 return 1;
             }
 
-            extern void ItemInteraction(unsigned int item_id);
             ItemInteraction(id);
             break;
         }
@@ -1362,8 +1360,6 @@ char DoInteractionWithTopmostZObject(Pid pid) {
             if (pActors[id].aiState == Dead) {
                 pActors[id].LootActor();
             } else {
-                extern bool CanInteractWithActor(unsigned int id);
-                extern void InteractWithActor(unsigned int id);
                 if (CanInteractWithActor(id)) {
                     if (pParty->hasActiveCharacter()) {
                         InteractWithActor(id);
@@ -1375,7 +1371,6 @@ char DoInteractionWithTopmostZObject(Pid pid) {
             break;
 
         case OBJECT_Decoration:
-            extern void DecorationInteraction(unsigned int id, Pid pid);
             if (pParty->hasActiveCharacter()) {
                 DecorationInteraction(id, pid);
             } else {

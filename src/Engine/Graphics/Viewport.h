@@ -8,6 +8,7 @@
 #include "Library/Geometry/Size.h"
 
 class GraphicsImage;
+class Pid;
 
 extern Recti pViewport;
 
@@ -43,3 +44,8 @@ struct ViewingParams {
 };
 
 extern std::unique_ptr<ViewingParams> viewparams;
+
+void ItemInteraction(unsigned int item_id);
+bool CanInteractWithActor(unsigned int id);
+void InteractWithActor(unsigned int id);
+void DecorationInteraction(unsigned int id, Pid pid);
