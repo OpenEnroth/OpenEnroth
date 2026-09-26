@@ -1324,6 +1324,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+        // TODO(captainurist): function-local static that owns a texture, make it a member.
         static GraphicsImage *minimaptemp = nullptr;
 
         bool partymoved = true;  // TODO(pskelton): actually check for party movement

@@ -221,6 +221,7 @@ void Engine::DrawGUI() {
         GameUI_DrawTorchlightAndWizardEye();
     }
 
+    // TODO(captainurist): function-local statics, move the FPS counter state into Engine.
     static bool render_framerate = false;
     static float framerate = 0.0f;
     static unsigned frames_this_second = 0;

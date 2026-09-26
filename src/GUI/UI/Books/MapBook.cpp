@@ -175,6 +175,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
             ((double)(-center.y - maxPartyAxisDistance / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int scaled_posY = stepY_r >> 16;
 
+        // TODO(captainurist): function-local static that owns a texture, make it a member.
         static GraphicsImage *minimaptemp = nullptr;
         if (minimaptemp) {
             minimaptemp->release();

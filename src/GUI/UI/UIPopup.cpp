@@ -649,6 +649,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
         , Y_EFFECT_LIST = Y_POS_DOLL + SIZE_DOLL            // Lower edge doll frame - add an empty line!
         , RIGHT_BOTTOM_MARGIN = 16;                         // Added to measured bottom and right edge of rendered text
 
+    // TODO(captainurist): function-local static, the doll's animation state should live in the popup window.
     static Actor pMonsterInfoUI_Doll;
     MonsterInfo &monsterInfo = pActors[uActorID].monsterInfo;
 
@@ -2046,6 +2047,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
     // check character condition
     if (!pParty->activeCharacter().CanAct()) {
+        // TODO(captainurist): pointless function-local static, make it a local.
         static std::string hint_reference;
         hint_reference = localization->format(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name,
                                                     localization->str(LSTR_IDENTIFY_ITEMS));

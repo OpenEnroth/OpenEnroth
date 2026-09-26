@@ -90,6 +90,7 @@ void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_a
     GLenum err = glad_glGetError();
 
     while (err != GL_NO_ERROR) {
+        // TODO(captainurist): pointless function-local static, make it a local.
         static std::string error;
         if (!detail_gl_error::trySerialize(err, &error))
             error = "Unknown Error";
@@ -112,6 +113,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
 } // namespace detail_fb_error
 
 void GL_Check_Framebuffer(const char *name) {
+    // TODO(captainurist): pointless function-local static, make it a local.
     static std::string error;
 
     GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
@@ -1753,6 +1755,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             auto texture = billboard->texture;
             gltexid = texture->renderId().value();
         } else {
+            // TODO(captainurist): function-local static caching an asset, make it a member.
             static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
             gltexid = static_cast<float>(effpar03->renderId().value());
         }
@@ -3234,6 +3237,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
         // stack decals start
 
         if (!decal_builder->bloodsplat_container->uNumBloodsplats) return;
+        // TODO(captainurist): function-local static used as a scratch buffer, make it a local.
         static RenderVertexSoft static_vertices_buff_in[64];  // buff in
 
         // loop over faces

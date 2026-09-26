@@ -40,6 +40,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
     Vec3f rayOrigin, rayStep;  // [sp+20h] [bp-70h]@17
                                //  int v20; // [sp+84h] [bp-Ch]@10
 
+    // TODO(captainurist): function-local statics used as scratch buffers, make them locals.
     static Vis_SelectionList SelectedPointersList;  // stru_F8FE00
     SelectedPointersList.uSize = 0;
 
@@ -388,6 +389,7 @@ Pid Vis::PickClosestActor(ObjectType object_type, unsigned int pick_depth,
                                      VisSelectFlags select_flags, int not_at_ai_state, int at_ai_state) {
     Vis_SelectionFilter selectionFilter;  // [sp+18h] [bp-20h]@3
 
+    // TODO(captainurist): function-local static used as a scratch buffer, make it a local.
     static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
     selectionFilter.vis_object_type = VisObjectType_Sprite;

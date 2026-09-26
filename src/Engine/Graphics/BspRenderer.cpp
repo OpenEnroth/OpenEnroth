@@ -28,6 +28,7 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
 
     // check if any triangle of the face can be seen
 
+    // TODO(captainurist): function-local statics used as scratch buffers, make them locals.
     static RenderVertexSoft originalFaceVertices[64];
     static RenderVertexSoft clippedFaceVertices[64];
 

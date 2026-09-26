@@ -30,6 +30,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
         return true;
     }
 
+    // TODO(captainurist): function-local statics used as scratch variables, make them locals.
     static RenderVertexSoft static_AE3FB4;
     /*static bool __init_flag1 = false;
     if (!__init_flag1) {
@@ -280,6 +281,7 @@ bool ClippingFunctions::AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexS
 
     // assert(false);
 
+    // TODO(captainurist): function-local statics used as scratch variables, make them locals.
     static Vec3f static_AE3388;
     static Vec3f static_AE3378;
 
@@ -395,6 +397,7 @@ bool ClippingFunctions::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumV
     double v15;             // st5@12
     signed int v25;         // [sp+18h] [bp-Ch]@7
 
+    // TODO(captainurist): function-local statics used as scratch variables, make them locals.
     static RenderVertexSoft stru_AE4BFC;
     static Vec3f static_sub_4980B9_stru_AE4BEC;       // idb
     static VertexBuffer static_sub_4980B9_stru_AE3FE8;  // idb
