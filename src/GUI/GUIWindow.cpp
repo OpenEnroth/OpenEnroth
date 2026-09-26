@@ -467,15 +467,6 @@ void OnButtonClick3::Update() {
     delete this;
 }
 
-void OnButtonClick4::Update() {
-    if (!sHint.empty()) {
-        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    }
-    render->DrawQuad2D(_button->vTextures[1], frameRect.topLeft());
-
-    delete this;
-}
-
 void OnSaveLoad::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
