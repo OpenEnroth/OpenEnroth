@@ -1357,7 +1357,7 @@ void CharacterUI_LoadPaperdollTextures() {
     paperdoll_dbrds[1] = assets->getImage_Solid("ib-cd5-d");
 
     auto loadTexture = [&](const auto &map, int itemIndex, BodyType bodyType, int shoulderIndex) {
-        std::string name = GetItemTextureFilename(*valuePtr(map, itemIndex), std::to_underlying(bodyType) + 1, shoulderIndex);
+        std::string name = GetItemTextureFilename(*valuePtr(map, itemIndex), std::to_underlying(bodyType), shoulderIndex);
         return assets->getImage_Alpha(name);
     };
 
@@ -1636,7 +1636,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
 
 void WetsuitOn(int characterIndex) {
     Character *player = &pParty->pCharacters[characterIndex];
-    int texture_num = std::to_underlying(player->bodyType()) + 1;
+    int texture_num = std::to_underlying(player->bodyType());
     paperdoll_dbods[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}Bod", texture_num));  // Body texture
     paperdoll_dlads[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lad", texture_num));  // Left Hand
     paperdoll_dlaus[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lau", texture_num));  // Left Hand2
