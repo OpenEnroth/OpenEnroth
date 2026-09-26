@@ -1805,7 +1805,7 @@ bool subtractEvtVariable(Character &character, EvtVariable VarNum, signed int pV
             character.PlayAwardSound_AnimSubtract();
             return true;
         case VAR_SpearSkill:
-            character.SubtractSkillByEvent(SKILL_BOW, pValue);
+            character.SubtractSkillByEvent(SKILL_SPEAR, pValue);
             character.PlayAwardSound_AnimSubtract();
             return true;
         case VAR_BowSkill:
