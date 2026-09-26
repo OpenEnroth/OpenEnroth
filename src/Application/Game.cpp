@@ -368,7 +368,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenQuestBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_QUEST_BOOK) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_QUEST_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -387,7 +387,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenAutonotes:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_AUTONOTES_BOOK) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_AUTONOTES_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -406,7 +406,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenMapBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_MAPS_BOOK) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_MAPS_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -425,7 +425,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenCalendar:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_CALENDAR_BOOK) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_CALENDAR_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -444,7 +444,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenHistoryBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_JOURNAL_BOOK) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_JOURNAL_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
