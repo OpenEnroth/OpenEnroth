@@ -740,11 +740,15 @@ GAME_TEST(Issues, Issue2792) {
 GAME_TEST(Issues, Issue2834) {
     // Evt commands after ForPlayer(Active) did nothing while no character was active, so the hired golem took the
     // abbey normal head and never gave its own head back.
+    auto abbeyHeadTape = tapes.custom([] { return pParty->hasItem(ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD); });
+    auto heldTape = tapes.custom([] { return pParty->pPickedItem.itemId; });
+    auto abbeyHeadOnGolemTape = tapes.custom([] { return static_cast<bool>(pParty->_questBits[static_cast<QuestBit>(72)]); });
     game.startNewGame();
     pNPCStats->pNPCData[56].flags |= NPC_HIRED; // The golem, as global.evt hires it.
     pParty->CountHirelings();
     pParty->_questBits.set(static_cast<QuestBit>(71)); // The golem wears its own head.
     pParty->pCharacters[0].inventory.add(Item(ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD));
+    test.startTaping();
     for (int i = 0; i < 4; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
         game.tick(1);
@@ -755,8 +759,9 @@ GAME_TEST(Issues, Issue2834) {
     game.tick(2);
     game.pressGuiButton("Dialogue_Option1"); // Swap the heads.
     game.tick(2);
+    test.stopTaping();
 
-    EXPECT_FALSE(pParty->hasItem(ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD));
-    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_QUEST_GOLEM_HEAD);
-    EXPECT_TRUE(pParty->_questBits[static_cast<QuestBit>(72)]); // The golem wears the abbey normal head.
+    EXPECT_EQ(abbeyHeadTape, tape(true, false));
+    EXPECT_EQ(heldTape, tape(ITEM_NULL, ITEM_QUEST_GOLEM_HEAD));
+    EXPECT_EQ(abbeyHeadOnGolemTape, tape(false, true));
 }
