@@ -770,8 +770,6 @@ void OutdoorLocation::PrepareActorsDrawList() {
             pActors[i].attributes |= ACTOR_VISIBLE;
             // TODO(pskelton): drop tint color anyway?
             pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->monsters[pActors[i].monsterInfo.id].tintColor;
-            // TODO(pskelton): what is this for?
-            pBillboardRenderList[uNumBillboardsToDraw - 1].flags |= BILLBOARD_0X200;
         }
     }
 }

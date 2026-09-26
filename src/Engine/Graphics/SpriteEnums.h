@@ -9,7 +9,6 @@ enum class BillboardFlag {
     BILLBOARD_TRANSPARENT = 0x40,
     BILLBOARD_GLOWING = 0x80,
     BILLBOARD_STONED = 0x100, // Affected by ACTOR_BUFF_STONED.
-    BILLBOARD_0X200 = 0x200,
 };
 using enum BillboardFlag;
 MM_DECLARE_FLAGS(BillboardFlags, BillboardFlag)

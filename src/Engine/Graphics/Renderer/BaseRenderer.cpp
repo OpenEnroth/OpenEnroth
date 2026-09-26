@@ -232,8 +232,6 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     if (render->AddBillboardIfVisible(frame->sprites[(int64_t)v37], frame->paletteId, pLevelDecorations[i].vPosition, { frame->scale, frame->scale },
                         v38, Pid(OBJECT_Decoration, i))) {
                         ++uNumDecorationsDrawnThisFrame;
-                        // TODO(pskelton): what is this for?
-                        pBillboardRenderList[::uNumBillboardsToDraw - 1].flags |= BILLBOARD_0X200;
                     }
                 }
             } else {
