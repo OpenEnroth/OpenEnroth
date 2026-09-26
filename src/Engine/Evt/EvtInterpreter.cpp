@@ -357,7 +357,8 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 ItemId itemId = static_cast<ItemId>(ir.data.variable_descr.value);
                 for (Character &character : pParty->pCharacters) {
                     if (pParty->pPickedItem.itemId == itemId || character.inventory.find(itemId)) {
-                        isShort = !subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
+                        if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
+                            isShort = true;
                         break;  // Only take one item.
                     }
                 }
