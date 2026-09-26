@@ -205,6 +205,14 @@ class Character {
     void SetCondition(Condition condition, int blockable);
 
     /**
+     * Clears a condition. For Zombie, also restores the character's original face and voice. Does nothing if the
+     * character doesn't have the condition.
+     *
+     * @param condition                 Condition to clear.
+     */
+    void ResetCondition(Condition condition);
+
+    /**
      * @offset 0x49327B
      */
     bool isClass(Class class_type, bool check_honorary = true) const;

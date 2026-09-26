@@ -5,9 +5,13 @@
 
 #include "Engine/Engine.h"
 #include "Engine/MapEnums.h"
+#include "Engine/mm7_data.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnums.h"
+#include "Engine/Evt/EvtVariables.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
@@ -17,6 +21,8 @@
 #include "Engine/Tables/DecorationTable.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIGame.h"
+#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Media/Audio/SoundList.h"
@@ -640,6 +646,134 @@ GAME_TEST(Issues, Issue2776) {
     EXPECT_EQ(deathsTape.delta(), +1);
     EXPECT_EQ(hpsTape.back(), tape(1, 1, 1, 1));
     EXPECT_EQ(mpsTape.back(), tape(0, 0, 0, 18)); // Dying zeroes SP, only the unconscious sorcerer keeps it.
+}
+
+GAME_TEST(Issues, Issue2777a) {
+    // A Lich healed at an evil temple was turned into a Zombie.
+    for (Class classType : {CLASS_WIZARD, CLASS_LICH}) {
+        SCOPED_TRACE(fmt::format("class={}", std::to_underlying(classType)));
+        test.prepareForNextTest();
+        game.startNewGame();
+
+        Character &target = pParty->pCharacters[0];
+        setEvtVariable(target, VAR_Class, std::to_underlying(classType));
+        target.SetCondition(CONDITION_DEAD, 0);
+        pParty->SetGold(100000);
+        int originalFace = target.uCurrentFace;
+        int zombieFace = target.IsMale() ? 23 : 24;
+
+        auto conditionTape = charTapes.condition(0);
+        auto faceTape = charTapes.face(0);
+        auto houseTape = tapes.house();
+        test.startTaping();
+        game.teleportTo(MAP_MOUNT_NIGHON, Vec3f(5894, -11456, 576), 0); // In front of Offerings and Blessings.
+        game.tick(2);
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick(2);
+        game.pressGuiButton("Game_Character1");
+        game.tick();
+        game.pressGuiButton("HouseDialogue_Option0"); // Heal.
+        game.tick(2);
+
+        EXPECT_EQ(houseTape.back(), HOUSE_TEMPLE_MOUNT_NIGHON);
+        EXPECT_EQ(target.health, target.GetMaxHealth());
+        if (classType == CLASS_LICH) {
+            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_GOOD));
+            EXPECT_EQ(faceTape, tape(originalFace));
+        } else {
+            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_ZOMBIE));
+            EXPECT_EQ(faceTape, tape(originalFace, zombieFace));
+            EXPECT_EQ(target.uPrevFace, originalFace);
+        }
+        EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[target.uCurrentFace]));
+    }
+}
+
+GAME_TEST(Issues, Issue2777b) {
+    // Reanimate forced the Zombie condition and portrait onto a dead Lich.
+    for (Class classType : {CLASS_WIZARD, CLASS_LICH}) {
+        SCOPED_TRACE(fmt::format("class={}", std::to_underlying(classType)));
+        test.prepareForNextTest();
+        game.startNewGame();
+
+        Character &target = pParty->pCharacters[0];
+        setEvtVariable(target, VAR_Class, std::to_underlying(classType));
+        target.SetCondition(CONDITION_DEAD, 0);
+        int originalFace = target.uCurrentFace;
+        int zombieFace = target.IsMale() ? 23 : 24;
+
+        Character &caster = pParty->pCharacters[3];
+        caster.setSkillValue(SKILL_DARK, CombinedSkillValue(10, MASTERY_NOVICE));
+        caster.bHaveSpell[SPELL_DARK_REANIMATE] = true;
+        caster.mana = 1000;
+
+        auto conditionTape = charTapes.condition(0);
+        auto faceTape = charTapes.face(0);
+        auto manaTape = charTapes.mp(3);
+        test.startTaping();
+        game.castSpell(3, SPELL_DARK_REANIMATE);
+        game.tick();
+        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1); // Targets the first character.
+        game.tick(2);
+
+        EXPECT_LT(manaTape.delta(), 0); // Mana was spent, so the cast went through.
+        if (classType == CLASS_LICH) {
+            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_GOOD)); // Raised as a Lich, not as a Zombie.
+            EXPECT_EQ(faceTape, tape(originalFace));
+            EXPECT_EQ(target.health, target.GetMaxHealth() / 2);
+            EXPECT_EQ(target.mana, 0);
+        } else {
+            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_ZOMBIE));
+            EXPECT_EQ(faceTape, tape(originalFace, zombieFace));
+            EXPECT_EQ(target.uPrevFace, originalFace);
+        }
+        EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[target.uCurrentFace]));
+    }
+}
+
+GAME_TEST(Issues, Issue2777c) {
+    // Promoting a Zombie Wizard to Lich kept the Zombie condition and lost the pre-zombie portrait.
+    game.startNewGame();
+
+    Character &target = pParty->pCharacters[0];
+    setEvtVariable(target, VAR_Class, std::to_underlying(CLASS_WIZARD));
+    target.giveAward(AWARD_PROMOTION_WIZARD);
+    pParty->_questBits[QBIT_DARK_PATH] = true;
+    for (Character &character : pParty->pCharacters)
+        character.inventory.add(Item(ITEM_QUEST_LICH_JAR_EMPTY)); // MM7's promotion script refuses unless every party member carries a jar.
+    int originalFace = target.uCurrentFace;
+    int originalVoice = target.uVoiceID;
+    int zombieFace = target.IsMale() ? 23 : 24;
+    int lichFace = target.IsMale() ? 20 : 21;
+    target.SetCondition(CONDITION_DEAD, 0);
+    target.SetCondition(CONDITION_ZOMBIE, 0);
+
+    auto conditionTape = charTapes.condition(0);
+    auto faceTape = charTapes.face(0);
+    auto classTape = charTapes.clazz(0);
+    auto houseTape = tapes.house();
+    test.startTaping();
+    game.teleportTo(MAP_PIT, Vec3f(3398, -7952, 59), 0); // In front of Halfgild Wynac's house.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("Game_Character1");
+    game.tick();
+    game.pressGuiButton("HouseNpc0"); // Halfgild Wynac, the only MM7 NPC who promotes Wizards to Liches.
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Halfgild's only topic, where he offers the promotion.
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // And then carries it out.
+    game.tick(2);
+
+    EXPECT_EQ(houseTape.back(), HOUSE_PIT_DARKENMORE_RESIDENCE);
+    EXPECT_EQ(classTape, tape(CLASS_WIZARD, CLASS_LICH));
+    EXPECT_EQ(conditionTape, tape(CONDITION_ZOMBIE, CONDITION_GOOD));
+    EXPECT_EQ(faceTape, tape(zombieFace, lichFace));
+    EXPECT_EQ(target.uVoiceID, lichFace);
+    EXPECT_EQ(target.uPrevFace, originalFace);
+    EXPECT_EQ(target.uPrevVoiceID, originalVoice);
+    EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[lichFace]));
 }
 
 GAME_TEST(Issues, Issue2784a) {

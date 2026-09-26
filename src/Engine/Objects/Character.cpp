@@ -528,6 +528,25 @@ void Character::SetCondition(Condition condition, int blockable) {
     return;
 }
 
+void Character::ResetCondition(Condition condition) {
+    if (!conditions.has(condition)) {
+        return;
+    }
+
+    conditions.reset(condition);
+
+    switch (condition) {
+        case CONDITION_ZOMBIE:
+            uCurrentFace = uPrevFace;
+            uVoiceID = uPrevVoiceID;
+            GameUI_ReloadPlayerPortraits(characterIndex(), uCurrentFace);
+            break;
+
+        default:
+            break;
+    }
+}
+
 //----- (00492700) --------------------------------------------------------
 bool Character::HasSkill(Skill skill) const {
     if (this->pActiveSkills[skill]) {

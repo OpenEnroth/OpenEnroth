@@ -2632,11 +2632,18 @@ void CastSpellInfoHelpers::castSpell() {
                     int zombie_hp_limit = target_monster_level * 10;
                     if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                        if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_DEAD)) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].SetCondition(CONDITION_ZOMBIE, 1);
-                            GameUI_ReloadPlayerPortraits(pCastSpell->targetCharacterIndex, (pParty->pCharacters[pCastSpell->targetCharacterIndex].GetSexByVoice() != SEX_MALE) + 23);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
-                            // TODO: why call SetCondition and then conditions.set?
+                        Character &target = pParty->pCharacters[pCastSpell->targetCharacterIndex];
+                        // A Lich is already undead, so Reanimate raises it as itself, on the halved health a zombie gets.
+                        if (target.classType == CLASS_LICH && target.IsDead() && !target.IsEradicated()) {
+                            target.conditions.reset(CONDITION_DEAD);
+                            target.conditions.reset(CONDITION_UNCONSCIOUS);
+                            target.health = target.GetMaxHealth() / 2;
+                            target.mana = 0;
+                            target.playReaction(SPEECH_CHEATED_DEATH);
+                        } else if (target.IsDead()) {
+                            target.SetCondition(CONDITION_ZOMBIE, 1);
+                            if (target.IsZombie())
+                                GameUI_ReloadPlayerPortraits(pCastSpell->targetCharacterIndex, target.uCurrentFace);
                         }
                         break;
                     }
