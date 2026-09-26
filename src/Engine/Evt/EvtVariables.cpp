@@ -2004,9 +2004,7 @@ bool subtractEvtVariable(Character &character, EvtVariable VarNum, signed int pV
             character.PlayAwardSound_AnimSubtract();
             return true;
         case VAR_AutoNotes:
-            // TODO(Nik-RE-dev): decreasing 1 seems wrong, also bits indexing was changed
-            assert(false);
-            //pParty->_autonoteBits.reset(pValue - 1);
+            pParty->_autonoteBits.reset(pValue);
             return true;
         case VAR_PlayerBits:
             character._characterEventBits.reset(pValue);
