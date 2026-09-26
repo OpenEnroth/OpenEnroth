@@ -7,7 +7,7 @@ struct BLVFace;
 struct RenderVertexSoft;
 
 bool CalcPortalShapePoly(const BLVFace *pFace, RenderVertexSoft *pVertices,
-                         unsigned int *pNumVertices, Planef *pOutFrustum, RenderVertexSoft* pOutBounding);
+                         unsigned int *pNumVertices, Planef *pOutFrustum);
 bool CalcPortalFrustum(RenderVertexSoft *pFaceBounding, Planef *pPortalDataFrustum);
 bool CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
                             RenderVertexSoft *pFaceBounding2,
