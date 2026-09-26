@@ -55,6 +55,9 @@ bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
     if (VarNum >= VAR_MapPersistentDecorVariable_0 && VarNum <= VAR_MapPersistentDecorVariable_24)
         return (uint8_t)engine->_persistentVariables.decorVars[std::to_underlying(VarNum) - std::to_underlying(VAR_MapPersistentDecorVariable_0)] >= pValue;
 
+    if (VarNum >= VAR_History_0 && VarNum <= VAR_History_28)
+        return pParty->PartyTimes.HistoryEventTimes[historyIndex(VarNum)].isValid();
+
     switch (VarNum) {
         case VAR_Sex:
             return pValue == std::to_underlying(character.uSex);
