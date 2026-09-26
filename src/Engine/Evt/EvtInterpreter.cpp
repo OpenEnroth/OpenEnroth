@@ -211,11 +211,14 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
     switch (result.outcome) {
         case EVT_OUTCOME_NEXT: return step + 1;
         case EVT_OUTCOME_JUMP: return result.target;
-        default: return -1;
+        case EVT_OUTCOME_STOP:
+        case EVT_OUTCOME_WAIT: return -1;
     }
+    assert(false);
+    return -1;
 }
 
-// TODO(captainurist): take a const reference once the MoveToMap data hacks below are gone, they patch `ir`.
+// TODO(captainurist): take a const reference once the MoveToMap data hacks below stop patching `ir`.
 EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
     int step = ir.step;
 
@@ -375,7 +378,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
         case EVENT_Subtract: {
             if (!validateVariableValue(ir))
                 break;
-            bool isShort = false; // The party had less than the script asked for, e.g. gold, which ends the event.
+            bool isShort = false; // The party had less than the script asked for, e.g. gold.
             // We had a couple issues with quest items not being removed from inventory, and the reason was that the
             // character target wasn't properly set in the script. Thus, we don't even check `_who` here and just try
             // to take the item from all characters. See issues #1808 and #1912.
@@ -655,7 +658,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
     }
 
-    return {};
+    return {EVT_OUTCOME_NEXT};
 }
 
 bool EvtInterpreter::executeRegular(int startStep) {

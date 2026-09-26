@@ -15,12 +15,12 @@ enum class EvtOutcome {
     EVT_OUTCOME_NEXT, // Go on with the next step.
     EVT_OUTCOME_JUMP, // Go on with the step in `EvtResult::target`.
     EVT_OUTCOME_STOP, // The event ends here.
-    EVT_OUTCOME_WAIT, // The event ends here, and a dialogue it opened goes on with it once it closes.
+    EVT_OUTCOME_WAIT, // The event ends here, and a dialogue it opened decides whether it goes on once the dialogue closes.
 };
 using enum EvtOutcome;
 
 /**
- * What `EvtInterpreter::executeInstruction` returns.
+ * Where an event goes after one of its instructions ran.
  */
 struct EvtResult {
     EvtOutcome outcome = EVT_OUTCOME_NEXT;
@@ -41,8 +41,8 @@ class EvtInterpreter {
 
      /**
       * @param ir                       Instruction to run, outside of NPC mode.
-      * @return                         What the event does next. A condition that holds jumps, and so does a
-      *                                 `RandomGoTo`.
+      * @return                         What the event does next. `Jmp`, `RandomGoTo` and a condition that holds
+      *                                 jump.
       */
      EvtResult executeInstruction(EvtInstruction ir);
 
