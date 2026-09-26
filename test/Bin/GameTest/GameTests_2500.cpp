@@ -742,6 +742,7 @@ GAME_TEST(Issues, Issue2834) {
     // abbey normal head and never gave its own head back.
     auto abbeyHeadTape = tapes.totalItemCount(ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD);
     auto golemHeadTape = tapes.totalItemCount(ITEM_QUEST_GOLEM_HEAD);
+    auto activeCharacterTape = tapes.activeCharacterIndex();
     auto golemHeadPlacedTape = tapes.questBit(QBIT_GOLEM_HEAD_PLACED);
     auto abbeyHeadPlacedTape = tapes.questBit(QBIT_ABBEY_NORMAL_GOLEM_HEAD_PLACED);
     game.startNewGame();
@@ -762,6 +763,7 @@ GAME_TEST(Issues, Issue2834) {
     game.tick(2);
     test.stopTaping();
 
+    EXPECT_EQ(activeCharacterTape, tape(1, 2, 3, -1)); // Nobody recovered while the dialogue was open.
     EXPECT_EQ(abbeyHeadTape, tape(1, 0));
     EXPECT_EQ(golemHeadTape, tape(0, 1));
     EXPECT_EQ(golemHeadPlacedTape, tape(true, false));
