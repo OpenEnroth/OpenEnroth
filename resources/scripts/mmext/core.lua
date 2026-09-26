@@ -13,10 +13,10 @@ local Log = require "bindings.log"
 ---@class EvtFrame One running handler.
 ---@field coroutine thread
 ---@field context EvtScriptContext
----@field eventId integer
 ---@field isGlobal boolean
 ---@field scope string? "map" for a handler of the map's scripts. What it registers goes away with the map too.
 ---@field owner string? The decompiled evt event that the handler is part of. What it registers is that event's too.
+---@field timer EvtTimer? The timer that the handler is the callback of.
 ---@field player integer|string Who the commands apply to, as `evt.ForPlayer` sets.
 ---@field defaultPlayer integer
 
@@ -27,6 +27,7 @@ local Log = require "bindings.log"
 ---@field canShowMessages boolean?
 ---@field scope string?
 ---@field owner string?
+---@field timer EvtTimer?
 ---@field player integer? Who the commands apply to until the handler says otherwise.
 
 ---@class EvtHandler
@@ -43,6 +44,8 @@ local waitSignal = {} -- Yielded by a handler that continues once the dialogue i
 local current = nil
 ---@type EvtFrame? The handler that waits for the dialogue that is open now.
 local waiting = nil
+---@type EvtTimer? The timer whose callback runs, which `RemoveTimer()` removes.
+local runningTimer = nil
 
 ---@param list any[]
 ---@return any[]
@@ -61,11 +64,11 @@ end
 ---@return any result What the handler returned, if it ran to its end.
 ---@return boolean isWaiting Whether the handler stopped until a dialogue closes.
 local function resume(frame, ...)
-    local previous = current
-    current = frame
+    local previous, previousTimer = current, runningTimer
+    current, runningTimer = frame, frame.timer or runningTimer
     ---@type boolean, any
     local ok, result = coroutine.resume(frame.coroutine, ...)
-    current = previous
+    current, runningTimer = previous, previousTimer
 
     local isWaiting = false
     if not ok then
@@ -94,10 +97,10 @@ local function run(callback, options, ...)
     local frame = {
         coroutine = coroutine.create(callback),
         context = Bindings.newContext(eventId, options.targetPid or 0, options.canShowMessages ~= false),
-        eventId = eventId,
         isGlobal = options.isGlobal or false,
         scope = options.scope,
         owner = options.owner,
+        timer = options.timer,
         player = player,
         defaultPlayer = player,
     }
@@ -281,6 +284,9 @@ local function newEventValues(values, owners, otherValues, otherOwners)
         ---@param value any
         __newindex = function (_, eventId, value)
             local owner = registrationOwner()
+            if value == nil and not owner and owners[eventId] then
+                return -- The engine falls back to the evt event's hint then.
+            end
             values[eventId], owners[eventId] = value, owner
             if not owner and otherOwners[eventId] then
                 otherValues[eventId], otherOwners[eventId] = nil, nil
@@ -581,30 +587,38 @@ strict(const, "const")
 ---@field isRefill boolean `RefillTimer`, which the engine checks after every `Timer`.
 ---@field scope string?
 ---@field owner string?
+---@field countsFromNow boolean Whether the engine counts the first alarm from when it gets the timer, not from the last visit to the map.
 ---@field handle integer? The engine's handle, once the engine has the timer.
 
 ---@type EvtTimer[] The timers of the scripts, in the order they were set.
 local timers = {}
----@type EvtTimer?
-local runningTimer = nil
 local isLevelLoaded = false -- Timers set before a level loads wait for it, the engine counts them from the level's time.
 local isMapRunning = false -- Timers that fire at once and are set while a map loads fire once it has loaded.
+local isRunningMapHandlers = false -- The `LoadMap`, `AfterLoadMap` and `LeaveMap` handlers run.
 ---@type EvtTimer[]
 local firstFires = {}
 
 ---@param timer EvtTimer
 ---@return boolean mapExitTriggered
 local function fire(timer)
-    local previous = runningTimer
-    runningTimer = timer
-    local exit = run(timer.callback, { scope = timer.scope, owner = timer.owner })
-    runningTimer = previous
+    local outerExit = mapExitTriggered
+    mapExitTriggered = false
+    local exit = run(timer.callback, { scope = timer.scope, owner = timer.owner, timer = timer })
+    exit, mapExitTriggered = exit or mapExitTriggered, outerExit
     return exit
 end
 
 ---@param timer EvtTimer
 local function registerTimer(timer)
-    timer.handle = Bindings.addTimer(timer.period, timer.startTime, timer.isRefill, timer.scope == nil, function ()
+    ---@type EvtTimerOptions
+    local options = {
+        period = timer.period,
+        start = timer.startTime,
+        isRefill = timer.isRefill,
+        isGlobal = timer.scope == nil,
+        countsFromNow = timer.countsFromNow,
+    }
+    timer.handle = Bindings.addTimer(options, function ()
         return fire(timer)
     end)
 end
@@ -627,10 +641,16 @@ local function newTimer(callback, period, startTime, isRefill)
     end
 
     ---@type EvtTimer
-    local timer = { callback = callback, period = period, startTime = startTime, isRefill = isRefill }
+    local timer = {
+        callback = callback,
+        period = period,
+        startTime = startTime,
+        isRefill = isRefill,
+        countsFromNow = isMapRunning or firesAtOnce,
+    }
     timer.scope, timer.owner = registrationScope(), registrationOwner()
-    if isMapRunning and not timer.scope then
-        timer.scope = "map" -- Set by a handler while a map runs, so the handler sets it again on the next map.
+    if isRunningMapHandlers and not timer.scope then
+        timer.scope = "map" -- The handler sets it again on the next map.
     end
     table.insert(timers, timer)
     if isLevelLoaded then
@@ -798,7 +818,7 @@ local wasInGame = false
 local Core = {}
 
 function Core.loadGlobalScripts()
-    waiting, timers, firstFires, isLevelLoaded, isMapRunning, wasInGame = nil, {}, {}, false, false, false
+    waiting, timers, firstFires, isLevelLoaded, isMapRunning, isRunningMapHandlers, wasInGame = nil, {}, {}, false, false, false, false
     for key in pairs(eventLists) do
         eventLists[key] = nil
     end
@@ -860,8 +880,9 @@ function Core.resumeEvent()
     if not frame then
         return false
     end
-    waiting = nil
-    return (resume(frame))
+    waiting, mapExitTriggered = nil, false
+    local exit = resume(frame)
+    return exit or mapExitTriggered
 end
 
 ---@param eventId integer
@@ -884,20 +905,21 @@ end
 
 ---@return boolean mapExitTriggered
 function Core.onMapLoad()
-    mapExitTriggered, isMapRunning = false, true
+    mapExitTriggered, isMapRunning, isRunningMapHandlers = false, true, true
     events.LoadMap(wasInGame)
     events.AfterLoadMap(wasInGame)
-    wasInGame = true
-    for _, timer in ipairs(copyList(firstFires)) do
-        mapExitTriggered = fire(timer) or mapExitTriggered
+    isRunningMapHandlers, wasInGame = false, true
+    while #firstFires > 0 and not mapExitTriggered do
+        mapExitTriggered = fire(table.remove(firstFires, 1)) or mapExitTriggered -- `RemoveTimer` takes a timer out of the list.
     end
     firstFires = {}
     return mapExitTriggered
 end
 
 function Core.onMapLeave()
-    isMapRunning = false
+    isMapRunning, isRunningMapHandlers = false, true
     events.LeaveMap()
+    isRunningMapHandlers = false
 end
 
 resetGlobalHandlers()

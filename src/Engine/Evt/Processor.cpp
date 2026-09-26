@@ -124,10 +124,21 @@ static MapTimer makeTimer(const EvtTimerSchedule &schedule) {
     //                   To support fair timers they need to be saved directly.
     Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
 
+    Time now = pParty->GetPlayingTime();
     MapTimer timer;
     if (schedule.interval) {
         timer.altInterval = schedule.interval;
-        timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
+        timer.alarmTime = now + timer.altInterval;
+    } else if (schedule.start == EVT_TIMER_START_NOW) {
+        timer.interval = schedule.period;
+        timer.timeInsideDay = schedule.timeOfDay;
+        if (timer.interval == Duration::fromDays(1)) {
+            timer.alarmTime = Time::fromDays(now.toDays()) + timer.timeInsideDay;
+            if (timer.alarmTime <= now)
+                timer.alarmTime += Duration::fromDays(1);
+        } else {
+            timer.alarmTime = now + timer.interval;
+        }
     } else {
         timer.interval = schedule.period;
         if (timer.interval == Duration::fromDays(1)) {
@@ -148,7 +159,7 @@ static MapTimer makeTimer(const EvtTimerSchedule &schedule) {
                 timer.alarmTime = levelLastVisit + timer.interval;
             } else {
                 // Without last visit all timers must fire immediately
-                timer.alarmTime = pParty->GetPlayingTime();
+                timer.alarmTime = now;
             }
         }
 
@@ -326,9 +337,8 @@ void onMapLoad() {
 
     timerGuard = pParty->GetPlayingTime();
 
-    for (EventTrigger &triggers : onMapLoadTriggers) {
-        eventProcessor(triggers.eventId, Pid(), false, triggers.eventStep + 1);
-    }
+    for (EventTrigger trigger : std::vector(onMapLoadTriggers)) // A script can remove triggers while they run.
+        eventProcessor(trigger.eventId, Pid(), false, trigger.eventStep + 1);
 
     if (scripts && scripts->onMapLoad())
         onMapLeave();
@@ -337,9 +347,8 @@ void onMapLoad() {
 void onMapLeave() {
     mapLeaveCount++;
 
-    for (EventTrigger &triggers : onMapLeaveTriggers) {
-        eventProcessor(triggers.eventId, Pid(), true, triggers.eventStep + 1);
-    }
+    for (EventTrigger trigger : std::vector(onMapLeaveTriggers)) // A script can remove triggers while they run.
+        eventProcessor(trigger.eventId, Pid(), true, trigger.eventStep + 1);
 
     if (scripts)
         scripts->onMapLeave();
@@ -357,20 +366,10 @@ void onMapLeave() {
 static bool checkTimers(std::vector<MapTimer> *timers) {
     int leaveCount = mapLeaveCount;
     for (size_t i = 0; i < timers->size(); i++) {
-        if ((*timers)[i].isRemoved || pParty->GetPlayingTime() < (*timers)[i].alarmTime)
+        MapTimer &timer = (*timers)[i];
+        if (timer.isRemoved || pParty->GetPlayingTime() < timer.alarmTime)
             continue;
 
-        if (std::function<void()> callback = (*timers)[i].callback) {
-            callback();
-        } else {
-            eventProcessor((*timers)[i].eventId, Pid(), true, (*timers)[i].eventStep + 1);
-        }
-        if (mapLeaveCount != leaveCount)
-            return true; // The timers that are left belong to the map or the game being left.
-
-        MapTimer &timer = (*timers)[i];
-        if (timer.isRemoved)
-            continue; // The callback removed its timer.
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
@@ -382,6 +381,14 @@ static bool checkTimers(std::vector<MapTimer> *timers) {
                 timer.alarmTime += timer.interval;
             }
         }
+
+        if (std::function<void()> callback = timer.callback) {
+            callback(); // Can add timers, which invalidates `timer`.
+        } else {
+            eventProcessor(timer.eventId, Pid(), true, timer.eventStep + 1);
+        }
+        if (mapLeaveCount != leaveCount)
+            return true; // The rest wait for the next pass, on the new map.
     }
     return false;
 }
@@ -423,6 +430,7 @@ int addTimer(const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifeti
 }
 
 void removeTimer(int handle) {
+    assert(handle > 0); // Evt timers have no handle.
     removeTimers([handle](const MapTimer &timer) { return timer.handle == handle; });
 }
 

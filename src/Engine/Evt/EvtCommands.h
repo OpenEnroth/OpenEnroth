@@ -46,8 +46,8 @@ using EvtFieldValue = std::variant<int64_t, std::string>;
  * How a command takes part in a script.
  */
 enum class EvtCommandKind {
-    EVT_COMMAND_ACTION, // Does something.
-    EVT_COMMAND_CONDITION, // Jumps when its condition holds. From a script it returns the condition as a boolean.
+    EVT_COMMAND_KIND_ACTION, // Does something.
+    EVT_COMMAND_KIND_CONDITION, // Jumps when its condition holds. From a script it returns the condition as a boolean.
 };
 using enum EvtCommandKind;
 
@@ -70,7 +70,7 @@ struct EvtFieldInfo {
 struct EvtCommandInfo {
     EvtOpcode opcode = EVENT_Invalid;
     std::string_view name; // MMExtension's command name, e.g. "SetFacetBit".
-    EvtCommandKind kind = EVT_COMMAND_ACTION;
+    EvtCommandKind kind = EVT_COMMAND_KIND_ACTION;
     std::vector<EvtFieldInfo> fields; // In the order of positional script arguments.
 };
 

@@ -41,9 +41,9 @@ struct EvtScriptContext {
 static const int MAX_LEVEL_STRINGS = 1000; // Keeps a mistyped `evt.str` index from growing the string table without bound.
 
 static int64_t toInteger(double value, std::string_view what) {
-    if (!std::isfinite(value) || std::abs(value) >= 0x1p53) // Past 2^53 a double doesn't hold every integer.
-        throw Exception("{} takes a whole number smaller than 2^53, got {}", what, value);
-    return std::llround(value);
+    if (!std::isfinite(value) || std::abs(value) >= 0x1p53 || value != std::trunc(value)) // Past 2^53 a double doesn't hold every integer.
+        throw Exception("{} takes a whole number smaller than 2^53 in magnitude, got {}", what, value);
+    return static_cast<int64_t>(value);
 }
 
 static EvtTargetCharacter toPlayer(const sol::object &value, std::string_view what) {
@@ -68,6 +68,8 @@ static EvtFieldValue toFieldValue(const EvtCommandInfo &command, const EvtFieldI
         switch (field.type) {
             case EVT_FIELD_STRING: return std::string();
             case EVT_FIELD_PLAYER: return int64_t(std::to_underlying(player));
+            case EVT_FIELD_VARIABLE:
+            case EVT_FIELD_HOUSE: throw Exception("{} is required", what);
             default: return std::clamp(int64_t(0), field.min, field.max);
         }
     }
@@ -185,7 +187,7 @@ static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, s
     EvtResult next = context.interpreter.executeInstruction(ir);
 
     sol::object result = sol::make_object(state, sol::lua_nil);
-    if (command->kind == EVT_COMMAND_CONDITION)
+    if (command->kind == EVT_COMMAND_KIND_CONDITION)
         result = sol::make_object(state, next.outcome == EVT_OUTCOME_JUMP);
 
     switch (next.outcome) {
@@ -264,7 +266,7 @@ static EvtTimerSchedule timerSchedule(double period, std::optional<double> start
             throw Exception("Timer: a timer with a start time fires every const.Day, const.Week, const.Month or const.Year");
         if (start && *start != 0 && duration != Duration::fromDays(1))
             throw Exception("Timer: only a daily timer takes a start time");
-        Duration timeOfDay = Duration::fromTicks(toInteger(start.value_or(0), "Timer: the start"));
+        Duration timeOfDay = Duration::fromTicks(toInteger(std::floor(start.value_or(0)), "Timer: the start")); // Seconds are fractions of a tick.
         if (timeOfDay < 0_ticks || timeOfDay >= Duration::fromDays(1))
             throw Exception("Timer: the start has to be a time of day");
         result.period = duration;
@@ -342,10 +344,13 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
         "checkTimer", sol::as_function([](double period, std::optional<double> start, bool isRefill) {
             timerSchedule(period, start, isRefill ? EVT_TIMER_KIND_REFILL : EVT_TIMER_KIND_REGULAR);
         }),
-        "addTimer", sol::as_function([](double period, std::optional<double> start, bool isRefill, bool isGlobal,
-                                        sol::main_protected_function callback) {
-            EvtTimerKind kind = isRefill ? EVT_TIMER_KIND_REFILL : EVT_TIMER_KIND_REGULAR;
-            return addTimer(timerSchedule(period, start, kind), kind, isGlobal ? EVT_TIMER_LIFETIME_GAME : EVT_TIMER_LIFETIME_MAP, [callback] {
+        "addTimer", sol::as_function([](const sol::table &options, sol::main_protected_function callback) {
+            EvtTimerKind kind = options.get_or("isRefill", false) ? EVT_TIMER_KIND_REFILL : EVT_TIMER_KIND_REGULAR;
+            EvtTimerSchedule schedule = timerSchedule(options.get<double>("period"), options.get<std::optional<double>>("start"), kind);
+            if (options.get_or("countsFromNow", false))
+                schedule.start = EVT_TIMER_START_NOW;
+            EvtTimerLifetime lifetime = options.get_or("isGlobal", false) ? EVT_TIMER_LIFETIME_GAME : EVT_TIMER_LIFETIME_MAP;
+            return addTimer(schedule, kind, lifetime, [callback] {
                 sol::protected_function_result result = callback();
                 if (!result.valid()) {
                     MM_ERROR_IN(ScriptingSystem::ScriptingLogCategory, "Timer failed: {}", result.get<sol::error>().what());

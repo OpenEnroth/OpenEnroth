@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <optional>
 #include <set>
 #include <string>
 #include <utility>
@@ -6,12 +7,15 @@
 
 #include "Testing/Game/GameTest.h"
 
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Engine.h"
 #include "Engine/Evt/EvtCommands.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Tables/MapTable.h"
+
+#include "Utility/Exception.h"
 
 using namespace std::string_literals; // NOLINT: for the string values of the commands.
 
@@ -49,21 +53,43 @@ GAME_TEST(EvtCommands, Table) {
 GAME_TEST(EvtCommands, DistinctMembers) {
     // Every field has to go to a member of its own, or setting one field would change another.
     for (const EvtCommandInfo &command : evtCommands()) {
-        EvtInstruction ir = {};
-        std::vector<EvtFieldValue> values;
+        auto values = [&](const EvtInstruction &ir) {
+            std::vector<std::optional<EvtFieldValue>> result;
+            for (const EvtFieldInfo &field : command.fields)
+                result.push_back(field.get ? std::optional(field.get(ir)) : std::nullopt);
+            return result;
+        };
+        std::vector<std::optional<EvtFieldValue>> defaults = values(EvtInstruction());
+
         for (size_t i = 0; i < command.fields.size(); i++) {
             const EvtFieldInfo &field = command.fields[i];
-            if (field.type == EVT_FIELD_STRING) {
-                values.emplace_back(std::string(field.name));
-            } else {
-                values.emplace_back(std::clamp(field.min + static_cast<int64_t>(i) + 1, field.min, field.max));
+            if (!field.set)
+                continue;
+
+            std::vector<EvtFieldValue> candidates = {std::string(field.name)};
+            if (field.type == EVT_FIELD_VARIABLE) {
+                candidates = {int64_t(std::to_underlying(VAR_FixedGold))};
+            } else if (field.type != EVT_FIELD_STRING) {
+                candidates = {field.max, field.min, field.min + 1, field.max - 1};
             }
-            if (field.set)
-                field.set(&ir, values.back());
+            std::optional<std::vector<std::optional<EvtFieldValue>>> changed;
+            for (const EvtFieldValue &candidate : candidates) {
+                EvtInstruction ir = {};
+                try {
+                    field.set(&ir, candidate);
+                } catch (const Exception &) {
+                    continue;
+                }
+                if (values(ir)[i] != defaults[i]) {
+                    changed = values(ir);
+                    break;
+                }
+            }
+            ASSERT_TRUE(changed) << command.name << "." << field.name;
+            for (size_t j = 0; j < command.fields.size(); j++)
+                if (j != i)
+                    EXPECT_EQ((*changed)[j], defaults[j]) << command.name << "." << field.name << " changes " << command.fields[j].name;
         }
-        for (size_t i = 0; i < command.fields.size(); i++)
-            if (command.fields[i].get)
-                EXPECT_EQ(command.fields[i].get(ir), values[i]) << command.name << "." << command.fields[i].name;
     }
 }
 
@@ -103,6 +129,18 @@ GAME_TEST(EvtCommands, SetErrors) {
     EXPECT_ANY_THROW((void) instruction("GiveItem", {int64_t(0), int64_t(0), int64_t(630)})); // There is no treasure level 0.
     EXPECT_ANY_THROW((void) instruction("CheckSeason", {int64_t(4)}));
     EXPECT_ANY_THROW((void) instruction("Cmp", {int64_t(std::to_underlying(VAR_ReputationInCurrentLocation)), int64_t(-5)}));
+    EXPECT_ANY_THROW((void) instruction("GiveItem", {int64_t(1), int64_t(5), int64_t(0)})); // Types 1 to 19 aren't used.
+    EXPECT_ANY_THROW((void) instruction("GiveItem", {int64_t(1), int64_t(0), int64_t(5000)}));
+    EXPECT_ANY_THROW((void) instruction("EnterHouse", {int64_t(550)}));
+    EXPECT_NO_THROW((void) instruction("EnterHouse", {int64_t(std::to_underlying(HOUSE_THRONEROOM_WIN_GOOD))}));
+    EXPECT_ANY_THROW((void) instruction("MoveToMap", {int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(20)}));
+    EXPECT_ANY_THROW((void) instruction("SetNPCGreeting", {int64_t(5), int64_t(500)}));
+    int64_t npcs = std::to_underlying(VAR_NPCs2);
+    EXPECT_NO_THROW((void) instruction("Set", {npcs, int64_t(500)}));
+    EXPECT_ANY_THROW((void) instruction("Set", {npcs, int64_t(600)})); // There is no NPC 600, and the interpreter indexes with it.
+    EXPECT_ANY_THROW((void) instruction("Cmp", {int64_t(std::to_underlying(VAR_QBits_QuestsDone)), int64_t(0)}));
+    EXPECT_ANY_THROW((void) instruction("Add", {int64_t(std::to_underlying(VAR_AutoNotes)), int64_t(209)}));
+    EXPECT_ANY_THROW((void) instruction("Add", {int64_t(0), int64_t(1)})); // There is no variable 0.
     EXPECT_NO_THROW((void) instruction("SpeakNPC", {int64_t(500)}));
     EXPECT_ANY_THROW((void) instruction("SpeakNPC", {int64_t(501)}));
     EXPECT_ANY_THROW((void) instruction("SetNPCGroupNews", {int64_t(51), int64_t(1)}));
