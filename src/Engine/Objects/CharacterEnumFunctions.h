@@ -188,7 +188,7 @@ inline Segment<BodyType> allBodyTypes() {
  *                                      these textures.
  */
 inline BodyType humanBodyType(BodyType bodyType) {
-    return bodyType == BODY_TYPE_MALE || bodyType == BODY_TYPE_DWARF_MALE ? BODY_TYPE_MALE : BODY_TYPE_FEMALE;
+    return bodyType == BODY_TYPE_HUMAN_MALE || bodyType == BODY_TYPE_DWARF_MALE ? BODY_TYPE_HUMAN_MALE : BODY_TYPE_HUMAN_FEMALE;
 }
 
 

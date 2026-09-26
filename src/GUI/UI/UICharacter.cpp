@@ -209,15 +209,15 @@ GraphicsImage *paperdoll_flying_feet[22];      // 005115E0
 IndexedArray<std::array<GraphicsImage *, 6>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_boots_texture;  // 511638
 IndexedArray<std::array<GraphicsImage *, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_cloak_collar_texture;
 IndexedArray<std::array<GraphicsImage *, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_cloak_texture;
-IndexedArray<std::array<GraphicsImage *, 16>, BODY_TYPE_MALE, BODY_TYPE_FEMALE> paperdoll_helm_texture;  // 511698
+IndexedArray<std::array<GraphicsImage *, 16>, BODY_TYPE_HUMAN_MALE, BODY_TYPE_HUMAN_FEMALE> paperdoll_helm_texture;  // 511698
 IndexedArray<std::array<GraphicsImage *, 7>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_belt_texture;  // 511718
 
 const IndexedArray<std::array<std::array<int, 2>, 16>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Weapon = {  // 4E4C30
-    {BODY_TYPE_MALE, {{
+    {BODY_TYPE_HUMAN_MALE, {{
         {128, 205}, {30, 144}, {88, 85}, {0, 0}, {0, 0}, {0, 0}, {17, 104}, {0, 0},
         {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
     }}},
-    {BODY_TYPE_FEMALE, {{
+    {BODY_TYPE_HUMAN_FEMALE, {{
         {131, 201}, {38, 158}, {98, 87}, {0, 0}, {0, 0}, {0, 0}, {21, 100}, {0, 0},
         {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
     }}},
@@ -231,12 +231,11 @@ const IndexedArray<std::array<std::array<int, 2>, 16>, BODY_TYPE_FIRST, BODY_TYP
     }}},
 };
 
-// body complexion, item index, x/y position
 const IndexedArray<std::array<std::array<int, 2>, 7>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Boot = {  // 4E5490
-    {BODY_TYPE_MALE, {{
+    {BODY_TYPE_HUMAN_MALE, {{
         {0x0E, 0x11D}, {0x0D, 0x11D}, {0x0C, 0x10A}, {0x0A, 0xFF}, {0x0D, 0xF9}, {0x0C, 0x10E}, {0x0D, 0x137},
     }}},
-    {BODY_TYPE_FEMALE, {{
+    {BODY_TYPE_HUMAN_FEMALE, {{
         {0x14, 0x125}, {0x13, 0x122}, {0x15, 0x120}, {0x15, 0x114}, {0x13, 0x10A}, {0x11, 0x116}, {0x11, 0x13E},
     }}},
     {BODY_TYPE_DWARF_MALE, {{
@@ -258,11 +257,11 @@ const std::unordered_map<ItemId, int> paperdoll_boots_indexByType = {
 const std::unordered_map<int, ItemId> paperdoll_boots_typeByIndex = inverted(paperdoll_boots_indexByType);
 
 const IndexedArray<std::array<std::array<int, 2>, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Cloak = {  // 4E5570
-    {BODY_TYPE_MALE, {{
+    {BODY_TYPE_HUMAN_MALE, {{
         {0x11, 0x68}, {0x0F, 0x68}, {0x14, 0x71}, {0x19, 0x6B}, {0x21, 0x6F}, {0x05, 0x68}, {0x05, 0x68}, {0x14, 0x71},
         {0x03, 0x6B}, {0x0F, 0x6F},
     }}},
-    {BODY_TYPE_FEMALE, {{
+    {BODY_TYPE_HUMAN_FEMALE, {{
         {0x15, 0x64}, {0xB, 0x6B}, {0x0E, 0x67}, {0x15, 0x6B}, {0x1B, 0x6F}, {0x03, 0x6B}, {0, 0x6B}, {0xE, 0x67},
         {0, 0x6B}, {0x3, 0x6F},
     }}},
@@ -290,11 +289,11 @@ const std::unordered_map<ItemId, int> paperdoll_cloak_indexByType = {
 const std::unordered_map<int, ItemId> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
 
 const IndexedArray<std::array<std::array<int, 2>, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_CloakCollar = {  // 4E56B0
-    {BODY_TYPE_MALE, {{
+    {BODY_TYPE_HUMAN_MALE, {{
         {0, 0}, {0x34, 0x64}, {0x21, 0x69}, {0x1D, 0x67}, {0x20, 0x67}, {0x21, 0x68}, {0x34, 0x64}, {0x21, 0x69},
         {0x1D, 0x67}, {0x1F, 0x67},
     }}},
-    {BODY_TYPE_FEMALE, {{
+    {BODY_TYPE_HUMAN_FEMALE, {{
         {0, 0}, {0x35, 0x66}, {0x29, 0x68}, {0x1F, 0x68}, {0x1F, 0x6A}, {0x21, 0x6A}, {0x2B, 0x66}, {0x26, 0x68},
         {0x1F, 0x68}, {0x1F, 0x6A},
     }}},
@@ -309,10 +308,10 @@ const IndexedArray<std::array<std::array<int, 2>, 10>, BODY_TYPE_FIRST, BODY_TYP
 };
 // int dword_4E56B4;
 const IndexedArray<std::array<std::array<int, 2>, 7>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Belt = {  // 4E57F0
-    {BODY_TYPE_MALE, {{
+    {BODY_TYPE_HUMAN_MALE, {{
         {0x3A, 0xB6}, {0x37, 0xB2}, {0x34, 0xB9}, {0x3A, 0xB9}, {0x37, 0xB7}, {0x38, 0xAC}, {0x37, 0xB7},
     }}},
-    {BODY_TYPE_FEMALE, {{
+    {BODY_TYPE_HUMAN_FEMALE, {{
         {0x3E, 0xAD}, {0x3A, 0xAC}, {0x37, 0xB0}, {0x3A, 0xB1}, {0x39, 0xB0}, {0x3C, 0xA5}, {0x39, 0xB0},
     }}},
     {BODY_TYPE_DWARF_MALE, {{
@@ -334,11 +333,11 @@ const std::unordered_map<ItemId, int> paperdoll_belt_indexByType = {
 const std::unordered_map<int, ItemId> paperdoll_belt_typeByIndex = inverted(paperdoll_belt_indexByType);
 
 const IndexedArray<std::array<std::array<int, 2>, 16>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Helm = {  // 4E58D0
-    {BODY_TYPE_MALE, {{
+    {BODY_TYPE_HUMAN_MALE, {{
         {0x3E, 0x1F}, {0x41, 0x2C}, {0x37, 0x2F}, {0x31, 0x32}, {0x37, 0x2A}, {0x39, 0x28}, {0x36, 0x34}, {0x41, 0x38},
         {0x40, 0x31}, {0x40, 0x21}, {0x40, 0x31}, {0x3C, 0x33}, {0x3D, 0x24}, {0x3A, 0x1A}, {0x37, 0x2A}, {0x41, 0x48},
     }}},
-    {BODY_TYPE_FEMALE, {{
+    {BODY_TYPE_HUMAN_FEMALE, {{
         {0x41, 0x1E}, {0x42, 0x2B}, {0x37, 0x2F}, {0x34, 0x30}, {0x39, 0x29}, {0x3A, 0x26}, {0x36, 0x34}, {0x41, 0x37},
         {0x42, 0x32}, {0x40, 0x21}, {0x40, 0x31}, {0x40, 0x2F}, {0x3E, 0x22}, {0x3B, 0x1A}, {0x39, 0x29}, {0x42, 0x47},
     }}},
@@ -378,26 +377,26 @@ const int pPaperdoll_Beards[4] = {  // 4E5AD0
     136,
 };
 const IndexedArray<std::array<int, 2>, BODY_TYPE_FIRST, BODY_TYPE_LAST> pPaperdoll_LeftHand = {  // 4E5AE0
-    {BODY_TYPE_MALE, {0x67, 0x6A}},
-    {BODY_TYPE_FEMALE, {0x65, 0x6C}},
+    {BODY_TYPE_HUMAN_MALE, {0x67, 0x6A}},
+    {BODY_TYPE_HUMAN_FEMALE, {0x65, 0x6C}},
     {BODY_TYPE_DWARF_MALE, {0x74, 0x8D}},
     {BODY_TYPE_DWARF_FEMALE, {0x74, 0x93}},
 };
 const IndexedArray<std::array<int, 2>, BODY_TYPE_FIRST, BODY_TYPE_LAST> pPaperdoll_SecondLeftHand = {  // 4E5B00
-    {BODY_TYPE_MALE, {0x1A, 0x6B}},
-    {BODY_TYPE_FEMALE, {0x28, 0x6D}},
+    {BODY_TYPE_HUMAN_MALE, {0x1A, 0x6B}},
+    {BODY_TYPE_HUMAN_FEMALE, {0x28, 0x6D}},
     {BODY_TYPE_DWARF_MALE, {0x19, 0x8D}},
     {BODY_TYPE_DWARF_FEMALE, {0x20, 0x92}},
 };
 const IndexedArray<std::array<int, 2>, BODY_TYPE_FIRST, BODY_TYPE_LAST> pPaperdoll_RightHand = {  // 4E5B20
-    {BODY_TYPE_MALE, {0x1E, 0x90}},
-    {BODY_TYPE_FEMALE, {0x22, 0x9E}},
+    {BODY_TYPE_HUMAN_MALE, {0x1E, 0x90}},
+    {BODY_TYPE_HUMAN_FEMALE, {0x22, 0x9E}},
     {BODY_TYPE_DWARF_MALE, {0x19, 0xBA}},
     {BODY_TYPE_DWARF_FEMALE, {0x1F, 0xB8}},
 };
 const IndexedArray<std::array<int, 2>, BODY_TYPE_FIRST, BODY_TYPE_LAST> pPaperdollLeftEmptyHand = {  // 4E5B40
-    {BODY_TYPE_MALE, {0x80, 0xCD}},
-    {BODY_TYPE_FEMALE, {0x83, 0xC9}},
+    {BODY_TYPE_HUMAN_MALE, {0x80, 0xCD}},
+    {BODY_TYPE_HUMAN_FEMALE, {0x83, 0xC9}},
     {BODY_TYPE_DWARF_MALE, {0x83, 0xD8}},
     {BODY_TYPE_DWARF_FEMALE, {0x7B, 0xD8}},
 };
@@ -405,12 +404,12 @@ const IndexedArray<std::array<int, 2>, BODY_TYPE_FIRST, BODY_TYPE_LAST> pPaperdo
 int pPaperdoll_BodyX = 481;                  // 004E4C28
 int pPaperdoll_BodyY = 0;                    // 004E4C2C
 const IndexedArray<std::array<std::array<int, 2>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Armor_Coord = {  // 4E4E30
-    {BODY_TYPE_MALE, {{
+    {BODY_TYPE_HUMAN_MALE, {{
         {0x2C, 0x67}, {0x30, 0x69}, {0x2D, 0x67}, {0x2C, 0x64}, {0x14, 0x66}, {0x22, 0x67}, {0x20, 0x66}, {0x25, 0x66},
         {0x12, 0x66}, {0x0A, 0x66}, {0x13, 0x64}, {0x0E, 0x64}, {0x0A, 0x63}, {0x14, 0x66}, {0x0A, 0x63}, {0x0A, 0x66},
         {0x25, 0x66},
     }}},
-    {BODY_TYPE_FEMALE, {{
+    {BODY_TYPE_HUMAN_FEMALE, {{
         {0x32, 0x68}, {0x32, 0x69}, {0x35, 0x69}, {0x33, 0x68}, {0x24, 0x67}, {0x30, 0x69}, {0x33, 0x68}, {0x31, 0x69},
         {0x19, 0x69}, {0x19, 0x6A}, {0x16, 0x66}, {0x16, 0x65}, {0x0F, 0x6B}, {0x24, 0x67}, {0x0F, 0x6B}, {0x19, 0x6A},
         {0x31, 0x69},
@@ -448,12 +447,12 @@ const std::unordered_map<ItemId, int> paperdoll_armor_indexByType = {
 const std::unordered_map<int, ItemId> paperdoll_armor_typeByIndex = inverted(paperdoll_armor_indexByType);
 
 const IndexedArray<std::array<std::array<int, 2>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_shoulder_coord = {  // 4E5050
-    {BODY_TYPE_MALE, {{
+    {BODY_TYPE_HUMAN_MALE, {{
         {0x64, 0x67}, {0x61, 0x67}, {0x65, 0x68}, {0x6E, 0x74}, {0x6C, 0x68}, {0x61, 0x67}, {0x66, 0x68}, {0x6C, 0x6A},
         {0x6E, 0x6D}, {0x67, 0x69}, {0x70, 0x67}, {0x6E, 0x6D}, {0x6C, 0x6F}, {0x6C, 0x68}, {0x6C, 0x6F}, {0x67, 0x69},
         {0x6C, 0x6A},
     }}},
-    {BODY_TYPE_FEMALE, {{
+    {BODY_TYPE_HUMAN_FEMALE, {{
         {0x60, 0x6B}, {0x60, 0x6C}, {0x60, 0x6B}, {0x61, 0x6A}, {0x60, 0x69}, {0, 0}, {0x60, 0x6A}, {0x61, 0x69},
         {0x63, 0x6A}, {0x64, 0x6A}, {0x61, 0x66}, {0x66, 0x67}, {0x64, 0x6C}, {0x60, 0x69}, {0x64, 0x6C}, {0x64, 0x6A},
         {0x61, 0x69},
@@ -470,12 +469,12 @@ const IndexedArray<std::array<std::array<int, 2>, 17>, BODY_TYPE_FIRST, BODY_TYP
     }}},
 };
 const IndexedArray<std::array<std::array<int, 2>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_shoulder_second_coord = {  // dword_4E5270
-    {BODY_TYPE_MALE, {{
+    {BODY_TYPE_HUMAN_MALE, {{
         {0, 0}, {0x61, 0x67}, {0, 0}, {0x64, 0x69}, {0x64, 0x68}, {0, 0}, {0, 0}, {0x5E, 0x66},
         {0x5F, 0x69}, {0x55, 0x69}, {0x5F, 0x67}, {0x5F, 0x68}, {0x32, 0x69}, {0x64, 0x68}, {0x32, 0x69}, {0x55, 0x69},
         {0x5E, 0x66},
     }}},
-    {BODY_TYPE_FEMALE, {{
+    {BODY_TYPE_HUMAN_FEMALE, {{
         {0, 0}, {0, 0}, {0, 0}, {0x60, 0x6C}, {0x5E, 0x69}, {0, 0}, {0, 0}, {0x5D, 0x6A},
         {0x5B, 0x6A}, {0x5B, 0x6A}, {0x59, 0x69}, {0x56, 0x68}, {0x38, 0x6E}, {0x5E, 0x69}, {0x38, 0x6E}, {0x5B, 0x6A},
         {0x5D, 0x6A},
@@ -1361,7 +1360,7 @@ void CharacterUI_LoadPaperdollTextures() {
         return assets->getImage_Alpha(name);
     };
 
-    for (BodyType bodyType : {BODY_TYPE_MALE, BODY_TYPE_FEMALE}) {
+    for (BodyType bodyType : {BODY_TYPE_HUMAN_MALE, BODY_TYPE_HUMAN_FEMALE}) {
         for (unsigned j : {0, 1, 2, 3, 4, 6}) // Belt
             paperdoll_belt_texture[bodyType][j] = loadTexture(paperdoll_belt_typeByIndex, j, bodyType, 0);
 
@@ -1374,7 +1373,7 @@ void CharacterUI_LoadPaperdollTextures() {
     }
 
     for (BodyType bodyType : allBodyTypes()) {
-        if (ShouldLoadTexturesForRaceAndGender(bodyType)) {
+        if (isBodyTypeInParty(bodyType)) {
             paperdoll_belt_texture[bodyType][5] = loadTexture(paperdoll_belt_typeByIndex, 5, bodyType, 0);  // Titans belt
 
             for (int v32 = 0; v32 < 17; ++v32) {  // simple armor
