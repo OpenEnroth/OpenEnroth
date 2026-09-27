@@ -7,7 +7,7 @@
 
 struct ObjectTable {
     void InitializeSprites();
-    unsigned int ObjectIDByItemID(SpriteId uItemID);
+    unsigned int ObjectIDByItemID(SpriteId uItemID); // TODO(captainurist): rename to objectIndexBySpriteId, it takes a SpriteId, not an item id.
 
     std::vector<ObjectData> pObjects;
 };
