@@ -90,10 +90,9 @@ export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
    launch unsigned binaries without this step.
 4. Run `OpenEnroth.app`.
 
-### Linux (Flatpak)
+### Linux
 
-The Flatpak package is the easiest choice if you aren't using Ubuntu 24.04, or you cannot install system
-packages on your computer (e.g. on "atomic"/"immutable" distributions like Bazzite or SteamOS).
+OpenEnroth ships for Linux as a Flatpak package only.
 
 1. Check for Flatpak support:
    * Run `flatpak --version`. If you get a version number, you're ready; otherwise visit
@@ -104,17 +103,6 @@ packages on your computer (e.g. on "atomic"/"immutable" distributions like Bazzi
    * Create `~/.var/app/io.github.openenroth.openenroth/data/mm7/data/`
    * Move the game data (at least `ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) into this new directory.
 3. Run OpenEnroth from your application menu or using `flatpak run io.github.openenroth.openenroth`.
-
-### Linux (Loose executable)
-
-The loose executable is better if you want direct access to the binary (e.g. for development), or need full
-control over install location. Requires Ubuntu 24.04 or a distribution with compatible system libraries.
-
-1. Install required libraries: `sudo apt-get install libgl1` (Ubuntu 24.04).
-   For other distributions, check your package manager for equivalent packages.
-2. Download a prebuilt [release](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip it.
-3. Copy the game data (`ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) next to the `OpenEnroth` executable.
-4. Run `OpenEnroth` (you may need `chmod a+x OpenEnroth` first).
 
 ### Android (Experimental)
 

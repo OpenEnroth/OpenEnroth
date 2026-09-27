@@ -71,8 +71,8 @@ jobs:
           - {target: windows_x86_64,    runner: windows-2022, platform: windows, architecture: x86_64,    ccache_size: 400M, release_prefix: Windows, release_extension: zip}
           - {target: darwin_arm64,      runner: macos-15,     platform: darwin,  architecture: arm64,     ccache_size: 400M, release_prefix: macOS,   release_extension: dmg, cmake_args: -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11}
           - {target: darwin_x86_64,     runner: macos-15,     platform: darwin,  architecture: x86_64,    ccache_size: 400M, release_prefix: macOS,   release_extension: dmg, cmake_args: -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15}
-          - {target: linux_x86,         runner: ubuntu-26.04, platform: linux,   architecture: x86,       ccache_size: 400M, release_prefix: Linux,   release_extension: zip, cmake_args: -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32}
-          - {target: linux_x86_64,      runner: ubuntu-26.04, platform: linux,   architecture: x86_64,    ccache_size: 400M, release_prefix: Linux,   release_extension: zip}
+          - {target: linux_x86,         runner: ubuntu-26.04, platform: linux,   architecture: x86,       ccache_size: 400M, cmake_args: -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32}
+          - {target: linux_x86_64,      runner: ubuntu-26.04, platform: linux,   architecture: x86_64,    ccache_size: 400M}
           - {target: android_universal, runner: ubuntu-26.04, platform: android, architecture: universal, ccache_size: 800M, release_prefix: Android, release_extension: apk}
           # Listing ASan in the configurations above would cross it with every target, and one job is all we want. A job
           # that an include adds gets nothing from the other entries, so this one spells out what it shares with linux_x86_64.
@@ -269,22 +269,16 @@ jobs:
           cp build/src/Bin/OpenEnroth/OpenEnroth.exe dist/
           cp build/src/Bin/OpenEnroth/OpenEnroth.pdb dist/
 
-      - name: '[linux] Prepare files for release'
-        if: matrix.platform == 'linux' && !matrix.sanitizers
-        run: |
-          mkdir -p dist
-          cp build/src/Bin/OpenEnroth/OpenEnroth dist/
-
-      - name: '[windows/linux] Zip folder for release'
-        if: (matrix.platform == 'windows' || matrix.platform == 'linux') && !matrix.sanitizers
+      - name: '[windows] Zip folder for release'
+        if: matrix.platform == 'windows'
         uses: thedoctor0/zip-release@0.7.6
         with:
           type: zip
           filename: ${{env.RELEASE_FILE}}
           path: dist
 
-      - name: 'Publish release'
-        if: inputs.releaseTag != '' && !matrix.sanitizers
+      - name: '[darwin/windows/android] Publish release'
+        if: inputs.releaseTag != '' && matrix.platform != 'linux' # Linux ships as a Flatpak only.
         uses: softprops/action-gh-release@v3.0.3
         with:
           prerelease: true
