@@ -75,6 +75,8 @@ UNIT_TEST(NativePath, WithExtension) {
 
     // A name whose stem would be all dots has no extension, so that dropping the extension can't turn a file name
     // into a navigation token. The stem of "..." is "..", so "a/..." would otherwise become the parent of "a".
+    testOne("a/.", "", "a/.");
+    testOne("a/..", "", "a/..");
     testOne("a/...", "", "a/...");
     testOne("..a.txt", "", "..a"); // A stem that isn't all dots still splits normally.
 }
