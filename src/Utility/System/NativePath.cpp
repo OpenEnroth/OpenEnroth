@@ -21,14 +21,14 @@ using enum PathRootKind;
 
 struct PathRoot {
     PathRootKind kind = PATH_ROOT_NONE;
-    size_t nameSize = 0;
-    bool hasDirectory = false; // Whether a separator follows the root name, as in "C:/" and "/".
+    size_t size = 0;
+    bool hasRootDirectory = false; // Whether a separator follows the root name, as in "C:/" and "/".
 
     [[nodiscard]] bool isAbsolute() const {
 #ifdef _WINDOWS
-        return kind == PATH_ROOT_DRIVE ? hasDirectory : kind != PATH_ROOT_NONE; // "C:x" and "/x" are relative.
+        return kind == PATH_ROOT_DRIVE ? hasRootDirectory : kind != PATH_ROOT_NONE; // "C:x" and "/x" are relative.
 #else
-        return hasDirectory;
+        return hasRootDirectory;
 #endif
     }
 };
@@ -44,7 +44,7 @@ static PathRoot parseRoot(std::string_view path) {
 #ifdef _WINDOWS
     if (path.size() >= 2 && (ascii::isLower(path[0]) || ascii::isUpper(path[0])) && path[1] == ':') {
         root.kind = PATH_ROOT_DRIVE;
-        root.nameSize = 2;
+        root.size = 2;
     } else if (path.size() >= 3 && path[0] == separator && path[1] == separator && path[2] != separator) {
         root.kind = path.starts_with("//?/") || path.starts_with("//./") ? PATH_ROOT_DEVICE : PATH_ROOT_UNC;
 
@@ -57,16 +57,16 @@ static PathRoot parseRoot(std::string_view path) {
                 break; // A missing component ends the root name early, as in a bare "//server".
             end = std::min(path.find(separator, end + 1), path.size());
         }
-        root.nameSize = end;
+        root.size = end;
     }
 #endif
-    root.hasDirectory = path.size() > root.nameSize && path[root.nameSize] == separator;
+    root.hasRootDirectory = path.size() > root.size && path[root.size] == separator;
     return root;
 }
 
 static size_t fileNameOffset(std::string_view path, PathRoot root) {
     size_t separatorPos = path.rfind(separator);
-    return std::max(separatorPos == std::string_view::npos ? 0 : separatorPos + 1, root.nameSize);
+    return std::max(separatorPos == std::string_view::npos ? 0 : separatorPos + 1, root.size);
 }
 
 /**
@@ -77,7 +77,7 @@ static size_t fileNameOffset(std::string_view path, PathRoot root) {
  *                                  `"C:x"` names `"x"` in the current directory of drive C.
  */
 static bool needsSeparator(std::string_view path, PathRoot root) {
-    return !path.empty() && path.back() != separator && !(root.kind == PATH_ROOT_DRIVE && root.nameSize == path.size());
+    return !path.empty() && path.back() != separator && !(root.kind == PATH_ROOT_DRIVE && root.size == path.size());
 }
 
 /**
@@ -167,20 +167,20 @@ NativePath NativePath::withExtension(std::string_view extension) const {
 NativePath NativePath::operator/(const NativePath &tail) const {
     PathRoot root = parseRoot(_path);
     PathRoot tailRoot = parseRoot(tail._path);
-    bool tailNamesAnotherRoot = tailRoot.nameSize > 0 && tail._path.compare(0, tailRoot.nameSize, _path, 0, root.nameSize) != 0;
+    bool tailNamesAnotherRoot = tailRoot.size > 0 && tail._path.compare(0, tailRoot.size, _path, 0, root.size) != 0;
 
     if (tailRoot.isAbsolute() || tailNamesAnotherRoot)
         return tail;
 
     NativePath result;
-    if (tailRoot.hasDirectory) {
-        result._path = _path.substr(0, root.nameSize); // A rooted tail keeps our root name, and drops everything after it.
+    if (tailRoot.hasRootDirectory) {
+        result._path = _path.substr(0, root.size); // A rooted tail keeps our root name, and drops everything after it.
     } else {
         result._path = _path;
         if (needsSeparator(_path, root))
             result._path += separator;
     }
 
-    result._path.append(tail._path, tailRoot.nameSize);
+    result._path.append(tail._path, tailRoot.size);
     return result;
 }
