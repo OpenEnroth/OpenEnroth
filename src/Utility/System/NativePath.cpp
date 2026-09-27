@@ -63,14 +63,12 @@ static bool hasRootDirectory(std::string_view path) {
  *                                  (`"/x"`).
  */
 static bool isAbsolute(std::string_view path) {
-    if (hasDriveLetter(path))
-        return hasRootDirectory(path);
-    if (rootNameSize(path) > 0)
-        return true;
+    size_t rootSize = rootNameSize(path);
+    bool rooted = path.size() > rootSize && path[rootSize] == separator;
 #ifdef _WINDOWS
-    return false;
+    return hasDriveLetter(path) ? rooted : rootSize > 0;
 #else
-    return hasRootDirectory(path);
+    return rooted;
 #endif
 }
 
