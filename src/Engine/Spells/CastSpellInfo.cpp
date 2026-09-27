@@ -2638,7 +2638,6 @@ void CastSpellInfoHelpers::castSpell() {
                             target.conditions.reset(CONDITION_UNCONSCIOUS);
                             target.health = target.GetMaxHealth() / 2;
                             target.mana = 0;
-                            target.playReaction(SPEECH_CHEATED_DEATH);
                         } else if (target.IsDead()) {
                             target.SetCondition(CONDITION_ZOMBIE, 1);
                         }
