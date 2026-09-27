@@ -101,7 +101,7 @@ UNIT_TEST(NativePath, WindowsRoots) {
     testJoin("C:/a", "/b", "C:/b"); // A rooted tail keeps our drive.
     testJoin("C:/a", "D:b", "D:b"); // Another drive replaces, even a relative one.
 
-    // Drive letters are case-insensitive, and a tail in the other case used to replace the head as another drive.
+    // Drive letters are case-insensitive, so a tail in the other case names the same drive.
     testJoin("C:/a", "c:b", "C:/a/b");
     testJoin("C:", "c:b", "C:/b");
 
@@ -125,7 +125,7 @@ UNIT_TEST(NativePath, WindowsRoots) {
     testJoin("//?/UNC/server/share/a", "/b", "//?/UNC/server/share/b");
     testJoin("//?/C:/Games", "/anims", "//?/C:/anims");
 
-    // The root name used to stop at "//?/unc" and "//./UNC", so a rooted tail climbed off the share. Win32 opens both.
+    // Win32 opens a share after "//./" too, and reads "UNC" in any case, so a rooted tail stays on the share there.
     testJoin("//?/unc/server/share/a", "/b", "//?/unc/server/share/b");
     testJoin("//./UNC/server/share/a", "/b", "//./UNC/server/share/b");
     testJoin("//?/uNc/server/share/a", "/b", "//?/uNc/server/share/b");
@@ -152,8 +152,8 @@ UNIT_TEST(NativePath, WindowsRoots) {
 }
 
 UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
-    // Win32 only honors a literal "\\?\", and handing it the stored forward slashes used to lose that. A path over
-    // MAX_PATH then failed to open, and a trailing dot got stripped off the file name.
+    // Win32 only honors a literal "\\?\". With forward slashes a path over MAX_PATH fails to open, and a trailing dot
+    // gets stripped off the file name.
     std::filesystem::path temp = std::filesystem::temp_directory_path();
     std::string prefixed = "//?/" + NativePath::fromStdPath(temp).toWtf8();
     std::string longName = "oe_" + std::string(240, 'x') + ".txt";
