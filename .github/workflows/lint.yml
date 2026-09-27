@@ -13,7 +13,7 @@ on:
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
 concurrency:
-  group: ${{github.workflow}}-${{github.event.pull_request.number || github.run_id}}
+  group: lint-${{github.event.pull_request.number || github.run_id}}
   cancel-in-progress: true
 
 env:
