@@ -11,7 +11,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Party.h"
@@ -552,7 +552,7 @@ void _46ED8A_collide_against_sprite_objects(Pid pid) {
         if (pSpriteObjects[i].uObjectDescID == 0)
             continue;
 
-        ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
+        ObjectData *object = &pObjectTable->pObjects[pSpriteObjects[i].uObjectDescID];
         if (object->uFlags & OBJECT_DESC_NO_COLLISION)
             continue;
 

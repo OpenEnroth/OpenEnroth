@@ -10,7 +10,6 @@ set(ENGINE_OBJECTS_SOURCES
         MonsterEnumFunctions.cpp
         Monsters.cpp
         NPC.cpp
-        ObjectList.cpp
         Character.cpp
         CharacterEnumFunctions.cpp
         SpriteObject.cpp
@@ -35,7 +34,6 @@ set(ENGINE_OBJECTS_HEADERS
         NPC.h
         NPCEnums.h
         NPCEnumFunctions.h
-        ObjectList.h
         Character.h
         CharacterConditions.h
         CharacterEnums.h
