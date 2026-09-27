@@ -10,7 +10,6 @@
 struct DecorationTable {
     void initializeSprite(DecorationId id);
 
-    // TODO(captainurist): rename to decorationDataId, a decoration id in a Pid is an index into pLevelDecorations.
     /**
      * @param name                      Internal name of a decoration, case-insensitive.
      * @return                          Id of the decoration with the given name, or `DECORATION_NULL` if there is
