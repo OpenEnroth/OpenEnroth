@@ -759,7 +759,9 @@ GAME_TEST(Issues, Issue1341) {
         game.pressKey(PlatformKey::KEY_CONTROL);
         game.pressAndReleaseButton(BUTTON_LEFT);
         game.releaseKey(PlatformKey::KEY_CONTROL);
-        game.tick(50);
+        game.tick();
+        while (pParty->pCharacters[1].timeToRecovery)
+            game.tick();
     }
 
     EXPECT_GT(goldTape.delta(), 0);
