@@ -135,6 +135,8 @@ UNIT_TEST(NativePath, WindowsRoots) {
     // Win32 collapses doubled separators in a plain UNC root, so "//server//x" is share "x" on "server". After "//?/"
     // it doesn't, and a missing component ends the root name early.
     testJoin("//server//x", "/b", "//server//x/b");
+    testJoin("//server///x", "/b", "//server///x/b");
+    testJoin("//server//", "/b", "//server/b");
     testJoin("//?/UNC/", "/b", "//?/UNC/b");
     testJoin("//?/UNC//share/a", "/b", "//?/UNC/b");
 
