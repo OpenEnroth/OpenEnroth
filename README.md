@@ -92,7 +92,7 @@ export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
 
 ### Linux
 
-OpenEnroth ships for Linux as a Flatpak package only.
+OpenEnroth ships for Linux as a Flatpak package.
 
 1. Check for Flatpak support:
    * Run `flatpak --version`. If you get a version number, you're ready; otherwise visit

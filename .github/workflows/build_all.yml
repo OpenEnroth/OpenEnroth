@@ -278,7 +278,7 @@ jobs:
           path: dist
 
       - name: '[darwin/windows/android] Publish release'
-        if: inputs.releaseTag != '' && matrix.platform != 'linux' # Linux ships as a Flatpak only.
+        if: inputs.releaseTag != '' && matrix.platform != 'linux' # Linux ships as a Flatpak.
         uses: softprops/action-gh-release@v3.0.3
         with:
           prerelease: true
