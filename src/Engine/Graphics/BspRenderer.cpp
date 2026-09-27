@@ -115,16 +115,11 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
 
     auto newNode = &nodes[num_nodes];
 
-    // TODO(yoctozepto): remove it from here
-    static RenderVertexSoft pPortalBounding[4];
-
-    // calculates the portal bounding and frustum
     bool isFrustumBuilt = CalcPortalShapePoly(
         pFace,
         clippedFaceVertices,
         &pNewNumVertices,
-        newNode->ViewportNodeFrustum.data(),
-        pPortalBounding);
+        newNode->ViewportNodeFrustum.data());
 
     if (!isFrustumBuilt) {
         return;  // no way we can see through this portal
