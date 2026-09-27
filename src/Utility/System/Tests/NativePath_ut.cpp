@@ -8,7 +8,6 @@
 #include "Utility/System/NativePath.h"
 
 UNIT_TEST(NativePath, Wtf8RoundTrip) {
-    // The conversion goes through wchar_t on Windows, so WTF-8 has to survive, unpaired surrogates included.
     for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
         EXPECT_EQ(NativePath::fromWtf8(path).toWtf8(), path);
 }
@@ -20,7 +19,7 @@ UNIT_TEST(NativePath, StdPathRoundTrip) {
 
 UNIT_TEST(NativePath, NativeRoundTrip) {
     // The conversion to the OS encoding goes through wchar_t on Windows, so WTF-8 has to survive it, unpaired
-    // surrogates included. That is the whole reason this class speaks WTF-8 rather than UTF-8.
+    // surrogates included.
     for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
         EXPECT_EQ(NativePath::fromNative(NativePath::fromWtf8(path).native()).toWtf8(), path);
 }
@@ -53,7 +52,7 @@ UNIT_TEST(NativePath, Composition) {
     testOne("/", "a", "/a");
     testOne("/a", "b", "/a/b");
 
-    // An absolute tail replaces the head outright.
+    // A rooted tail replaces a head that has no root name.
     testOne("", "/a", "/a");
     testOne("a/b", "/c", "/c");
     testOne("a/b", "/", "/");
@@ -79,7 +78,7 @@ UNIT_TEST(NativePath, WithExtension) {
     EXPECT_EQ(NativePath("/a/b.c").withExtension("").toWtf8(), "/a/b");
     EXPECT_EQ(NativePath("a.txt").withExtension(".tar.gz").toWtf8(), "a.tar.gz"); // A dotted argument goes in whole.
 
-    // A path with no file name in it grows one, so the extension is all that's left of the last component.
+    // A path with no file name gets the extension as its file name.
     EXPECT_EQ(NativePath("").withExtension(".x").toWtf8(), ".x");
     EXPECT_EQ(NativePath("a/").withExtension(".x").toWtf8(), "a/.x");
     EXPECT_EQ(NativePath("/").withExtension(".x").toWtf8(), "/.x");
@@ -88,7 +87,6 @@ UNIT_TEST(NativePath, WithExtension) {
 UNIT_TEST(NativePath, DottedNames) {
     // A name whose stem would be all dots has no extension, so that dropping the extension can't turn a file name
     // into a navigation token. The stem of "..." is "..", so "a/..." would otherwise become the parent of "a".
-    // std::filesystem splits these the other way round, so these are ours rather than inherited.
     EXPECT_EQ(NativePath("a/...").withExtension("").toWtf8(), "a/...");
     EXPECT_EQ(NativePath("a/...a").withExtension("").toWtf8(), "a/...a");
     EXPECT_EQ(NativePath("...json").withExtension("").toWtf8(), "...json");
@@ -108,10 +106,11 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("C:/a") / NativePath("/b")).toWtf8(), "C:/b"); // A rooted tail keeps our drive.
     EXPECT_EQ((NativePath("C:/a") / NativePath("C:b")).toWtf8(), "C:/a/b"); // Same drive, so it's a plain append.
     EXPECT_EQ((NativePath("C:") / NativePath("b")).toWtf8(), "C:b"); // Drive-relative, no separator inserted.
+    EXPECT_EQ((NativePath("C:a") / NativePath("b")).toWtf8(), "C:a/b"); // Drive-relative with a name appends normally.
     EXPECT_EQ((NativePath("//server/share") / NativePath("f")).toWtf8(), "//server/share/f");
 
-    // A bare drive letter is drive-relative, but a bare share name is already absolute. So a separator does go in
-    // after it, and it replaces whatever it's appended to.
+    // A bare drive letter is drive-relative, but a bare server name is already absolute. So a separator goes in
+    // after it, and as a tail it replaces the head.
     EXPECT_EQ((NativePath("//server") / NativePath("share")).toWtf8(), "//server/share");
     EXPECT_EQ((NativePath("//server/share") / NativePath("//server")).toWtf8(), "//server");
     EXPECT_EQ((NativePath("//server") / NativePath("/share")).toWtf8(), "//server/share");
@@ -121,11 +120,9 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("//server/share/a") / NativePath("//server/other")).toWtf8(), "//server/other");
     EXPECT_EQ((NativePath("//server/share") / NativePath("")).toWtf8(), "//server/share/");
 
-    // The same holds for the extended-length spellings, where the share sits two components further in.
+    // Extended-length root names are "//?/C:" and "//?/UNC/server/share", and a rooted tail keeps them too.
     EXPECT_EQ((NativePath("//?/UNC/server/share/a") / NativePath("/b")).toWtf8(), "//?/UNC/server/share/b");
     EXPECT_EQ((NativePath("//?/C:/Games") / NativePath("/anims")).toWtf8(), "//?/C:/anims");
-    EXPECT_EQ(NativePath("//?/UNC/ser.ver/sh.are").withExtension("").toWtf8(), "//?/UNC/ser.ver/sh.are");
-    EXPECT_EQ((NativePath("C:a") / NativePath("b")).toWtf8(), "C:a/b"); // Drive-relative with a name appends normally.
 
     // An empty tail leaves a separator only where the head can take one. "C:" names the current directory on
     // drive C while "C:/" names its root, so appending nothing to a bare drive letter must not move it.
@@ -133,7 +130,7 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("C:/a") / NativePath("")).toWtf8(), "C:/a/");
     EXPECT_EQ((NativePath("//server") / NativePath("")).toWtf8(), "//server/");
 
-    // An extended-length path takes no forward slashes, Win32 does no parsing on those at all.
+    // Extended-length and device paths go to Win32 with backslashes.
     EXPECT_EQ(NativePath::fromWtf8("\\\\?\\C:\\Games\\MM7").native(), L"\\\\?\\C:\\Games\\MM7");
     EXPECT_EQ(NativePath::fromWtf8("//?/C:/Games").native(), L"\\\\?\\C:\\Games");
     EXPECT_EQ(NativePath::fromWtf8("\\\\.\\COM1").native(), L"\\\\.\\COM1");
@@ -144,6 +141,12 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ(NativePath("//ser.ver").withExtension("").toWtf8(), "//ser.ver");
     EXPECT_EQ(NativePath("//ser.ver/sh.are").withExtension("").toWtf8(), "//ser.ver/sh.are");
     EXPECT_EQ(NativePath("//ser.ver/sh.are/a.txt").withExtension("").toWtf8(), "//ser.ver/sh.are/a");
+    EXPECT_EQ(NativePath("//?/UNC/ser.ver/sh.are").withExtension("").toWtf8(), "//?/UNC/ser.ver/sh.are");
+
+    // A UNC root name has no file name, so an extension starts one under it rather than renaming the share.
+    EXPECT_EQ(NativePath("//server/share").withExtension(".x").toWtf8(), "//server/share/.x");
+    EXPECT_EQ(NativePath("//server").withExtension(".x").toWtf8(), "//server/.x");
+    EXPECT_EQ(NativePath("//server/share/").withExtension(".x").toWtf8(), "//server/share/.x");
 }
 #endif
 

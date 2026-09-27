@@ -10,21 +10,21 @@
 /**
  * The repo's vocabulary type for native paths - everything that takes a native path takes a `NativePath`.
  *
- * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX, and all path manipulation here is
- * lexical, so these methods never touch the file system. Separators are normalized to forward slashes on Windows,
- * where both slashes separate path components. On POSIX a backslash is an ordinary character in a file name, so it
- * is left alone.
+ * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX, and path manipulation is lexical,
+ * with `absolute` the only method that asks the OS. Separators are normalized to forward slashes on Windows, where
+ * both slashes separate path components. On POSIX a backslash is an ordinary character in a file name, so it is left
+ * alone.
  *
- * Unlike `std::filesystem::path`, this class does not depend on the C locale - on Windows constructing an
+ * Unlike `std::filesystem::path`, this class does not depend on the C locale. On Windows constructing an
  * `std::filesystem::path` from a narrow string converts it per the C locale, while here all charset conversions are
  * done by our own code, and the OS is only ever handed `wchar_t` strings. `native` / `fromNative` are the conversions
  * to use when talking to the OS, and `toStdPath` / `fromStdPath` are for the code that still needs `std::filesystem`.
  *
- * Note that `fromWtf8` / `toWtf8` are named somewhat improperly. File names on Linux are arbitrary byte strings,
- * and these bytes are passed through as-is, so the string returned by `toWtf8` is not necessarily valid UTF-8, and
- * not even necessarily valid WTF-8. Nothing is validated on the way in either, so on Windows it is the caller that
- * keeps the string valid WTF-8, and `native` is where an invalid sequence turns into a replacement character. And
- * MacOS is different again, APFS only takes file names that are valid UTF-8.
+ * File names on Linux are arbitrary byte strings, and these bytes are passed through as-is, so the string returned
+ * by `toWtf8` is not necessarily valid UTF-8, and not even necessarily valid WTF-8. Nothing is validated on the way
+ * in either, so on Windows it is the caller that keeps the string valid WTF-8, and `native` is where an invalid
+ * sequence turns into a replacement character. And MacOS is different again, APFS only takes file names that are
+ * valid UTF-8.
  */
 class NativePath {
  public:
@@ -77,8 +77,8 @@ class NativePath {
 
     /**
      * @return                          This path as a string in the OS-native encoding, a `wchar_t` string on
-     *                                  Windows. Separators stay forward slashes, which Windows APIs accept, the
-     *                                  exception being an extended-length path where they go back to backslashes.
+     *                                  Windows. Separators stay forward slashes, which Windows APIs accept, except
+     *                                  in an extended-length or device path, which gets backslashes.
      */
 #ifdef _WINDOWS
     [[nodiscard]] std::wstring native() const;
@@ -109,9 +109,9 @@ class NativePath {
      * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
      *                                  the extension. WTF-8 on Windows, byte string on POSIX.
      * @return                          Copy of this path with the extension replaced. Only the last extension is
-     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`. Dropping an
-     *                                  extension only ever shortens the file name, since the stem left behind is
-     *                                  never all dots.
+     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`. A dotfile such
+     *                                  as `".bashrc"`, or a name like `"..."` whose stem would be all dots, has no
+     *                                  extension. A path without a file name gets the extension as one.
      */
     [[nodiscard]] NativePath withExtension(std::string_view extension) const;
 
@@ -121,8 +121,9 @@ class NativePath {
 
     /**
      * @param tail                      Path to append.
-     * @return                          The two paths joined with a separator. A rooted `tail` replaces this path
-     *                                  instead of being appended to it, same as `std::filesystem::path::operator/`.
+     * @return                          The two paths joined with a separator. An absolute `tail`, or one naming
+     *                                  another root, replaces this path. A rooted `tail` keeps only this path's root
+     *                                  name.
      */
     [[nodiscard]] NativePath operator/(const NativePath &tail) const;
 
