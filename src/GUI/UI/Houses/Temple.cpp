@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/UIGame.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 
@@ -40,26 +39,20 @@ void GUIWindow_Temple::healDialogue() {
         return;
     }
 
-    bool setZombie = false;
+    bool keepZombie = false;
+    bool makeZombie = false;
     if (isEvilTemple() && pParty->activeCharacter().classType != CLASS_LICH) {
-        setZombie = pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE);
-        if (!pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
-            if (pParty->activeCharacter().conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD})) {
-                pParty->activeCharacter().uPrevFace = pParty->activeCharacter().uCurrentFace;
-                pParty->activeCharacter().uPrevVoiceID = pParty->activeCharacter().uVoiceID;
-                pParty->activeCharacter().uVoiceID = (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23;
-                pParty->activeCharacter().uCurrentFace = (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23;
-                GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex(), (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23);
-                setZombie = true;
-            }
-        }
+        keepZombie = pParty->activeCharacter().IsZombie();
+        makeZombie = !keepZombie && pParty->activeCharacter().conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD});
     } else {
         pParty->activeCharacter().ResetCondition(CONDITION_ZOMBIE);
     }
 
     pParty->activeCharacter().conditions.resetAll();
-    if (setZombie) {
+    if (keepZombie) {
         pParty->activeCharacter().conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
+    } else if (makeZombie) {
+        pParty->activeCharacter().SetCondition(CONDITION_ZOMBIE, 0);
     }
     pParty->TakeGold(price);
     pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();

@@ -2632,14 +2632,20 @@ void CastSpellInfoHelpers::castSpell() {
                     if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         Character &target = pParty->pCharacters[pCastSpell->targetCharacterIndex];
-                        // A Lich is already undead, so it rises as itself, at the half health a zombie is capped to.
-                        if (target.classType == CLASS_LICH && target.IsDead() && !target.IsEradicated()) {
-                            target.conditions.reset(CONDITION_DEAD);
-                            target.conditions.reset(CONDITION_UNCONSCIOUS);
-                            target.health = target.GetMaxHealth() / 2;
+                        if (target.IsDead() && !target.IsEradicated() && !target.IsZombie()) {
+                            if (target.classType == CLASS_LICH) {
+                                // A Lich is already undead and rises as itself, at a zombie's half health cap.
+                                target.conditions.reset(CONDITION_DEAD);
+                                target.conditions.reset(CONDITION_UNCONSCIOUS);
+                                target.health = target.GetMaxHealth() / 2;
+                            } else {
+                                // TODO(captainurist): this also cures petrification, disease, insanity and the rest, as
+                                // vanilla MM7 does. It should clear only death, like the Lich branch.
+                                target.conditions.resetAll();
+                                target.health = target.GetMaxHealth();
+                                target.SetCondition(CONDITION_ZOMBIE, 1);
+                            }
                             target.mana = 0;
-                        } else if (target.IsDead()) {
-                            target.SetCondition(CONDITION_ZOMBIE, 1);
                         }
                         break;
                     }

@@ -553,15 +553,8 @@ void Character::SetCondition(Condition condition, int blockable) {
             break;
 
         case CONDITION_ZOMBIE:
-            if (classType == CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
-                return;
-            }
+            assert(classType != CLASS_LICH);
 
-            // TODO(captainurist): this also cures petrification, disease, insanity and the rest, as vanilla MM7 does.
-            // It should clear only death, like Resurrection and the Lich branch of Reanimate.
-            conditions.resetAll();
-            health = GetMaxHealth();
-            mana = 0;
             uPrevFace = uCurrentFace;
             uPrevVoiceID = uVoiceID;
 

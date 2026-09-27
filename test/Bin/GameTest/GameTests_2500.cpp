@@ -741,7 +741,6 @@ GAME_TEST(Issues, Issue2777c) {
     int originalVoice = target.uVoiceID;
     int zombieFace = target.IsMale() ? 23 : 24;
     int lichFace = target.IsMale() ? 20 : 21;
-    target.SetCondition(CONDITION_DEAD, 0);
     target.SetCondition(CONDITION_ZOMBIE, 0);
 
     auto conditionTape = charTapes.condition(0);
