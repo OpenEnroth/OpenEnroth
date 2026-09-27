@@ -36,15 +36,12 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/Localization.h"
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
 
 #include "GUI/GUIProgressBar.h"
-#include "GUI/GUIWindow.h"
-#include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

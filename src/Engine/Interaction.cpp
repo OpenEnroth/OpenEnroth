@@ -1,5 +1,7 @@
 #include "Interaction.h"
 
+#include <cassert>
+
 #include "Engine/Engine.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Indoor.h"
