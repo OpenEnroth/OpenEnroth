@@ -284,14 +284,13 @@ jobs:
         run: |
           find android/openenroth/build/outputs/apk
 
-      # PR builds get no keystore, and an unsigned release apk is written under a different name.
       - name: '[android] Prepare files for release'
-        if: env.MATRIX_PLATFORM == 'android' && inputs.releaseTag != ''
+        if: env.MATRIX_PLATFORM == 'android'
         run: |
           if [ "$MATRIX_CONFIGURATION" = "Debug" ]; then
             cp android/openenroth/build/outputs/apk/debug/openenroth-debug.apk "$RELEASE_FILE"
           else
-            cp android/openenroth/build/outputs/apk/release/openenroth-release.apk "$RELEASE_FILE"
+            cp android/openenroth/build/outputs/apk/release/openenroth-release*.apk "$RELEASE_FILE" # -unsigned without a keystore.
           fi
 
       - name: '[darwin] Prepare files for release'
