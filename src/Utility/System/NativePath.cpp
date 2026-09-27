@@ -36,8 +36,8 @@ static size_t rootNameSize([[maybe_unused]] std::string_view path) {
         // The extended-length spelling of a share, "//?/UNC/server/share", is two components longer.
         size_t components = path.starts_with("//?/UNC/") ? 4 : 2;
 
-        size_t end = std::min(path.find(separator, 2), path.size());
-        for (size_t i = 1; i < components; i++) {
+        size_t end = 1; // The second leading slash, which is the separator before the first component.
+        for (size_t i = 0; i < components; i++) {
             if (end + 1 >= path.size() || path[end + 1] == separator)
                 break; // A missing component ends the root name early, as in a bare "//server".
             end = std::min(path.find(separator, end + 1), path.size());
