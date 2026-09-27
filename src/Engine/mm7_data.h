@@ -44,6 +44,8 @@ extern std::array<const char *, 11> pHouse_ExitPictures;
 extern char _4E94D0_light_type;
 extern char _4E94D2_light_type;
 extern char _4E94D3_light_type;
+// TODO(captainurist): face ids index this table as bare ints, 20/21 are the Lich faces and 23/24 the zombie ones.
+// Give them an enum, then use it for uCurrentFace, uPrevFace and the voice ids that mirror them.
 extern std::array<const char *, 25> pPlayerPortraitsNames;
 
 extern std::array<std::array<unsigned char, 25>, 48> byte_4ECF08;
