@@ -83,7 +83,7 @@ export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
 ### macOS
 
 1. Move the game data to `~/Library/Application Support/OpenEnroth`, creating this directory if needed.
-2. Download `macOS_nightly_RelWithDebInfo_arm64.dmg` (`x86_64` for Intel Macs) from the
+2. Download `OpenEnroth_macOS_nightly_RelWithDebInfo_arm64.dmg` (`x86_64` for Intel Macs) from the
    [releases page](https://github.com/OpenEnroth/OpenEnroth/releases), open it and drag `OpenEnroth.app` into
    `Applications`.
 3. Run `xattr -rc /Applications/OpenEnroth.app`. This clears the quarantine flag — macOS will refuse to
@@ -98,8 +98,8 @@ OpenEnroth ships for Linux as a Flatpak package.
    * Run `flatpak --version`. If you get a version number, you're ready; otherwise visit
      [https://flatpak.org/setup/](https://flatpak.org/setup/) for setup instructions.
 2. Install OpenEnroth:
-   * Download the `io.github.openenroth.openenroth_*.flatpak` package from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
-   * Run `flatpak install --user /path/to/io.github.openenroth.openenroth_*.flatpak`.
+   * Download the `OpenEnroth_Linux_*.flatpak` package from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
+   * Run `flatpak install --user /path/to/OpenEnroth_Linux_*.flatpak`.
    * Create `~/.var/app/io.github.openenroth.openenroth/data/mm7/data/`
    * Move the game data (at least `ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) into this new directory.
 3. Run OpenEnroth from your application menu or using `flatpak run io.github.openenroth.openenroth`.
@@ -108,7 +108,7 @@ OpenEnroth ships for Linux as a Flatpak package.
 
 Android is not actively tested by the dev team — expect issues and be prepared to troubleshoot.
 
-1. Download `Android_nightly_RelWithDebInfo_universal.apk` from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
+1. Download `OpenEnroth_Android_nightly_RelWithDebInfo_universal.apk` from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
 2. Install the APK on your device (you will need to allow installation from unknown sources in your device settings).
 3. Copy the game data (`ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) to
    `/sdcard/Android/data/io.github.openenroth.openenroth/files/` on your device.

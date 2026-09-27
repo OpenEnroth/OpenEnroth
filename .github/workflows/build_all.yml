@@ -67,19 +67,19 @@ jobs:
         include:
           - {configuration: Debug,          build_type: Debug}
           - {configuration: RelWithDebInfo, build_type: RelWithDebInfo}
-          - {target: windows_x86,       runner: windows-2022, platform: windows, architecture: x86,       ccache_size: 400M, release_prefix: Windows, release_extension: zip}
-          - {target: windows_x86_64,    runner: windows-2022, platform: windows, architecture: x86_64,    ccache_size: 400M, release_prefix: Windows, release_extension: zip}
-          - {target: darwin_arm64,      runner: macos-15,     platform: darwin,  architecture: arm64,     ccache_size: 400M, release_prefix: macOS,   release_extension: dmg, cmake_args: -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11}
-          - {target: darwin_x86_64,     runner: macos-15,     platform: darwin,  architecture: x86_64,    ccache_size: 400M, release_prefix: macOS,   release_extension: dmg, cmake_args: -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15}
+          - {target: windows_x86,       runner: windows-2022, platform: windows, architecture: x86,       ccache_size: 400M, release_os: Windows, release_extension: zip}
+          - {target: windows_x86_64,    runner: windows-2022, platform: windows, architecture: x86_64,    ccache_size: 400M, release_os: Windows, release_extension: zip}
+          - {target: darwin_arm64,      runner: macos-15,     platform: darwin,  architecture: arm64,     ccache_size: 400M, release_os: macOS,   release_extension: dmg, cmake_args: -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11}
+          - {target: darwin_x86_64,     runner: macos-15,     platform: darwin,  architecture: x86_64,    ccache_size: 400M, release_os: macOS,   release_extension: dmg, cmake_args: -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15}
           - {target: linux_x86,         runner: ubuntu-26.04, platform: linux,   architecture: x86,       ccache_size: 400M, cmake_args: -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32}
           - {target: linux_x86_64,      runner: ubuntu-26.04, platform: linux,   architecture: x86_64,    ccache_size: 400M}
-          - {target: android_universal, runner: ubuntu-26.04, platform: android, architecture: universal, ccache_size: 800M, release_prefix: Android, release_extension: apk}
+          - {target: android_universal, runner: ubuntu-26.04, platform: android, architecture: universal, ccache_size: 800M, release_os: Android, release_extension: apk}
           # Listing ASan in the configurations above would cross it with every target, and one job is all we want. A job
           # that an include adds gets nothing from the other entries, so this one spells out what it shares with linux_x86_64.
           - {configuration: ASan, build_type: Debug, sanitizers: address, target: linux_x86_64, runner: ubuntu-26.04, platform: linux, architecture: x86_64, ccache_size: 400M}
     env:
       # An empty release tag must not leave a doubled underscore in the file name.
-      RELEASE_FILE: ${{matrix.release_prefix}}${{inputs.releaseTag && format('_{0}', inputs.releaseTag) || ''}}_${{matrix.configuration}}_${{matrix.architecture}}.${{matrix.release_extension}}
+      RELEASE_FILE: OpenEnroth_${{matrix.release_os}}${{inputs.releaseTag && format('_{0}', inputs.releaseTag) || ''}}_${{matrix.configuration}}_${{matrix.architecture}}.${{matrix.release_extension}}
     steps:
       - name: '[linux/android] Configure fast APT mirror'
         if: matrix.platform == 'linux' || matrix.platform == 'android'
