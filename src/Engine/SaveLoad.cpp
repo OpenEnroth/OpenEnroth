@@ -51,9 +51,8 @@ void loadGame(std::string_view fileName) {
     }
     engine->_lastLoadedSaveFileName = fileName;
 
-    CastSpellInfoHelpers::cancelSpellCastInProgress();
-
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
+    CastSpellInfoHelpers::cancelSpellCastInProgress();
     current_character_screen_window = WINDOW_CharacterWindow_Stats;
     if (pParty->bTurnBasedModeOn) {
         pTurnEngine->End(false);
