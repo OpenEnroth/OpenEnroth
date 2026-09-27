@@ -189,7 +189,7 @@ class Renderer {
     Vis *vis = nullptr;
 
  private:
-    GraphicsImage *_solidFillTexture = nullptr;
+    std::unique_ptr<GraphicsImage> _solidFillTexture;
 };
 
 extern Renderer *render;

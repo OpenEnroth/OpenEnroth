@@ -1,8 +1,10 @@
 #include "EntitySnapshots.h"
 
 #include <algorithm>
+#include <optional>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "Engine/ArenaEnumFunctions.h"
@@ -1102,7 +1104,7 @@ void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> chara
     dst->portraitImageIndex = src.portraitImageIndex;
     dst->talkAnimation = TalkAnimation();
 
-    dst->releaseBeacons();
+    std::ranges::fill(dst->vBeacons, std::nullopt);
 
     for (unsigned int i = 0; i < 5; ++i) {
         if (src.installedBeacons[i].beaconTime != 0) {
@@ -1114,7 +1116,7 @@ void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> chara
             beacon._partyViewYaw = src.installedBeacons[i].partyViewYaw;
             beacon._partyViewPitch = src.installedBeacons[i].partyViewPitch;
             beacon.mapId = valueOr(mapIdByGamesLodIndex, src.installedBeacons[i].mapIndexInGamesLod, MAP_INVALID);
-            dst->vBeacons[i] = beacon;
+            dst->vBeacons[i] = std::move(beacon);
         }
     }
 

@@ -34,7 +34,7 @@ void GameOver_Setup() {
     pDialogueWindow = nullptr;
 }
 
-GraphicsImage *CreateWinnerCertificate() {
+std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
     render->Present();
     render->BeginScene2D();
     GraphicsImage *background = assets->getImage_PCXFromIconsLOD("winbg.pcx");
@@ -108,9 +108,9 @@ GraphicsImage *CreateWinnerCertificate() {
 
     RgbaImage pixels = render->MakeFullScreenshot();
     ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
-    GraphicsImage *result = GraphicsImage::Create(std::move(pixels));
+    std::unique_ptr<GraphicsImage> result = GraphicsImage::Create(std::move(pixels));
 
-    background->release();
+    assets->releaseImage(background);
     background = nullptr;
 
     return result;

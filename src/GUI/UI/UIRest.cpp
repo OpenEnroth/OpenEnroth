@@ -107,7 +107,7 @@ void GUIWindow_Rest::Update() {
         render->DrawQuad2D(rest_ui_restmain, {8, 8});
         render->DrawQuad2D(rest_ui_sky_frame_current, {16, 26});
         if (rest_ui_hourglass_frame_current) {
-            rest_ui_hourglass_frame_current->release();
+            assets->releaseImage(rest_ui_hourglass_frame_current);
             rest_ui_hourglass_frame_current = nullptr;
         }
 

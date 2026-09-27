@@ -229,7 +229,7 @@ bool Game::loop() {
     return true;
 }
 
-GraphicsImage *gamma_preview_image = nullptr;  // 506E40
+std::unique_ptr<GraphicsImage> gamma_preview_image;  // 506E40
 
 void Game_StartDialogue(int actor_id) {
     if (pParty->hasActiveCharacter()) {
@@ -560,12 +560,12 @@ void Game::processQueuedMessages() {
                                         }
                                     }
                                     if (rest_ui_sky_frame_current) {
-                                        rest_ui_sky_frame_current->release();
+                                        assets->releaseImage(rest_ui_sky_frame_current);
                                         rest_ui_sky_frame_current = nullptr;
                                     }
 
                                     if (rest_ui_hourglass_frame_current) {
-                                        rest_ui_hourglass_frame_current->release();
+                                        assets->releaseImage(rest_ui_hourglass_frame_current);
                                         rest_ui_hourglass_frame_current = nullptr;
                                     }
 
@@ -1338,10 +1338,6 @@ void Game::processQueuedMessages() {
                     current_screen_type = SCREEN_GAME;
                 }
 
-                if (gamma_preview_image) {
-                    gamma_preview_image->release();
-                    gamma_preview_image = nullptr;
-                }
                 gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 
                 new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings);

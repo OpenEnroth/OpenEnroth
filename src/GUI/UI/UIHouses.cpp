@@ -571,7 +571,7 @@ bool houseDialogPressEscape() {
         window_SpeakInHouse->currentDialogue() == DIALOGUE_MAIN) {
         currentHouseNpc = -1;
         if (shop_ui_background) {
-            shop_ui_background->release();
+            assets->releaseImage(shop_ui_background);
             shop_ui_background = nullptr;
         }
         window_SpeakInHouse->updateDialogueOnEscape();
@@ -1075,13 +1075,13 @@ GUIWindow_House::~GUIWindow_House() {
 
     for (HouseNpcDesc &desc : houseNpcs) {
         if (desc.icon) {
-            desc.icon->release();
+            assets->releaseImage(desc.icon);
         }
     }
     houseNpcs.clear();
 
     if (game_ui_dialogue_background) {
-        game_ui_dialogue_background->release();
+        assets->releaseImage(game_ui_dialogue_background);
         game_ui_dialogue_background = nullptr;
     }
 

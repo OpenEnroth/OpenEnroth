@@ -176,10 +176,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         int scaled_posY = stepY_r >> 16;
 
         // TODO(captainurist): function-local static that owns a texture, make it a member.
-        static GraphicsImage *minimaptemp = nullptr;
-        if (minimaptemp) {
-            minimaptemp->release();
-        }
+        static std::unique_ptr<GraphicsImage> minimaptemp;
 
         RgbaImage minimapImage = RgbaImage::solid(Color(), screenWidth, screenHeight);
         Color *minitempix = minimapImage.pixels().data();
@@ -217,7 +214,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         }
 
         minimaptemp = GraphicsImage::Create(std::move(minimapImage));
-        render->DrawQuad2D(minimaptemp, {tl_x, tl_y});
+        render->DrawQuad2D(minimaptemp.get(), {tl_x, tl_y});
     } else {  // indoors
         if (!pIndoor->mapOutlines.empty()) {
             render->BeginLines2D();

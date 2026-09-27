@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 #include <string>
 #include <utility>
@@ -41,21 +42,13 @@ enum class StealResult {
 using enum StealResult;
 
 struct LloydBeacon {
-    ~LloydBeacon() {
-        // if (image != nullptr) {
-        //    image->Release();
-        // }
-        // image release moved to install beacon to avoid de-refernce
-        image = nullptr;
-    }
-
     Time uBeaconTime = Time();
     Vec3f _partyPos;
     int16_t _partyViewYaw = 0;
     int16_t _partyViewPitch = 0;
     uint16_t unknown = 0;
     MapId mapId = MAP_INVALID;
-    GraphicsImage *image = nullptr;
+    std::shared_ptr<GraphicsImage> image; // TODO(captainurist): shouldn't be shared, it is only because createSaveData() copies the whole Party to serialize it. Redo serialization.
 };
 
 // HP/SP regeneration from items and spell
@@ -316,7 +309,6 @@ class Character {
     static void _42ECB5_CharacterAttacksActor();
     static void _42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int actchar);
     void cleanupBeacons();
-    void releaseBeacons();
     bool setBeacon(int index, Duration duration);
 
     // TODO(captainurist): check all usages, most should be using getActualSkillValue.

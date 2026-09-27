@@ -47,14 +47,11 @@ void Renderer::DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color) 
 GraphicsImage *Renderer::solidFillTexture() {
     if (!_solidFillTexture)
         _solidFillTexture = GraphicsImage::Create(RgbaImage::solid(colorTable.White, 1, 1));
-    return _solidFillTexture;
+    return _solidFillTexture.get();
 }
 
 void Renderer::releaseSolidFillTexture() {
-    if (_solidFillTexture) {
-        _solidFillTexture->release();
-        _solidFillTexture = nullptr;
-    }
+    _solidFillTexture.reset();
 }
 
 void Renderer::FillRect(const Recti &rect, Color color) {

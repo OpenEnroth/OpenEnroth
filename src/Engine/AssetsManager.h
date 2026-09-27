@@ -11,14 +11,17 @@ class GraphicsImage;
 
 class AssetsManager {
  public:
-    AssetsManager() {}
+    AssetsManager();
+    ~AssetsManager();
 
     void releaseAllTextures();
 
-    // TODO(captainurist): These are called back from GraphicsImage::Release, which is a questionable design.
-    bool releaseImage(std::string_view name);
-    bool releaseSprite(std::string_view name);
-    bool releaseBitmap(std::string_view name);
+    /**
+     * Removes an image from the cache and frees it.
+     *
+     * @param image                     Image returned by one of the getters below.
+     */
+    void releaseImage(GraphicsImage *image);
 
     GraphicsImage *getImage_ColorKey(std::string_view name, Color colorkey = colorTable.TealMask);
     GraphicsImage *getImage_Paletted(std::string_view name);
@@ -43,9 +46,9 @@ class AssetsManager {
     std::unique_ptr<GUIFont> pFontSmallnum;
 
  protected:
-    std::unordered_map<std::string, GraphicsImage *> bitmaps;
-    std::unordered_map<std::string, GraphicsImage *> sprites;
-    std::unordered_map<std::string, GraphicsImage *> images;
+    std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> bitmaps;
+    std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> sprites;
+    std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> images;
 };
 
 extern AssetsManager *assets;

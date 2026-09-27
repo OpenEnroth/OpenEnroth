@@ -7,30 +7,33 @@
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/AssetsManager.h"
 
 GraphicsImage::GraphicsImage() = default;
-GraphicsImage::~GraphicsImage() = default;
 
-GraphicsImage *GraphicsImage::Create(RgbaImage image) {
-    GraphicsImage *result = new GraphicsImage();
+GraphicsImage::~GraphicsImage() {
+    if (render) // GPU textures go away with the GL context once the renderer is shut down.
+        releaseRenderId();
+}
+
+std::unique_ptr<GraphicsImage> GraphicsImage::Create(RgbaImage image) {
+    std::unique_ptr<GraphicsImage> result(new GraphicsImage());
     result->_initialized = true;
     result->_rgba = std::move(image);
     result->_renderId = render->CreateTexture(result->_rgba);
     return result;
 }
 
-GraphicsImage *GraphicsImage::Create(int width, int height) {
+std::unique_ptr<GraphicsImage> GraphicsImage::Create(int width, int height) {
     assert(width > 0 && height > 0);
     return Create(RgbaImage::solid(Color(), width, height));
 }
 
-GraphicsImage *GraphicsImage::Create(Sizei size) {
+std::unique_ptr<GraphicsImage> GraphicsImage::Create(Sizei size) {
     return Create(size.w, size.h);
 }
 
-GraphicsImage *GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
-    GraphicsImage *result = new GraphicsImage();
+std::unique_ptr<GraphicsImage> GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
+    std::unique_ptr<GraphicsImage> result(new GraphicsImage());
     result->_name = loader->GetResourceName();
     result->_loader = std::move(loader);
     return result;
@@ -55,18 +58,6 @@ RgbaImage &GraphicsImage::rgba() {
 
 const std::string &GraphicsImage::name() {
     return _name;
-}
-
-void GraphicsImage::release() {
-    if (_loader) {
-        if (!assets->releaseSprite(_loader->GetResourceName()))
-            if (!assets->releaseImage(_loader->GetResourceName()))
-                assets->releaseBitmap(_loader->GetResourceName());
-    }
-
-    releaseRenderId();
-
-    delete this;
 }
 
 [[nodiscard]] TextureRenderId GraphicsImage::renderId() {

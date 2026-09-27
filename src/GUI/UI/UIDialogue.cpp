@@ -154,12 +154,12 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
 
 GUIWindow_Dialogue::~GUIWindow_Dialogue() {
     if (houseNpcs[0].icon) {
-        houseNpcs[0].icon->release();
+        assets->releaseImage(houseNpcs[0].icon);
     }
     houseNpcs.clear();
 
     if (game_ui_dialogue_background) {
-        game_ui_dialogue_background->release();
+        assets->releaseImage(game_ui_dialogue_background);
         game_ui_dialogue_background = nullptr;
     }
 

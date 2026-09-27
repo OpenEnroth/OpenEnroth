@@ -64,10 +64,7 @@ void GUIFont::CreateFontTex() {
 }
 
 void GUIFont::ReleaseFontTex() {
-    if (_texture) {
-        _texture->release();
-        _texture = nullptr;
-    }
+    _texture.reset();
 }
 
 int GUIFont::GetHeight() const {
@@ -177,7 +174,7 @@ Color GUIFont::DrawTextLine(std::string_view text, Color startColor, Color defau
     if (text.empty())
         return startColor;
 
-    render->BeginTextNew(_texture);
+    render->BeginTextNew(_texture.get());
 
     Color color = startColor;
     int x = position.x;
@@ -365,7 +362,7 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
         return;
     }
 
-    render->BeginTextNew(_texture);
+    render->BeginTextNew(_texture.get());
 
     if (!position.x) {
         position.x = 12;
