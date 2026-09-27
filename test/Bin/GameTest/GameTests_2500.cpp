@@ -770,7 +770,7 @@ GAME_TEST(Issues, Issue2777c) {
 }
 
 GAME_TEST(Issues, Issue2777d) {
-    // A Lich loaded from a save made before the fix kept the Zombie condition.
+    // A Lich that vanilla MM7 had made a zombie kept the Zombie condition when its save was loaded.
     game.startNewGame();
 
     Character &reanimated = pParty->pCharacters[0];
