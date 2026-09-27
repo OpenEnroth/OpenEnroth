@@ -15,6 +15,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineCallObserver.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Interaction.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Evt/Processor.h"

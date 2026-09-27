@@ -8,6 +8,7 @@ set(ENGINE_SOURCES
         EngineGlobals.cpp
         EngineIocContainer.cpp
         GpuHints.cpp
+        Interaction.cpp
         Localization.cpp
         MapEnums.cpp
         Party.cpp
@@ -34,6 +35,7 @@ set(ENGINE_HEADERS
         EngineGlobals.h
         EngineIocContainer.h
         HitMap.h
+        Interaction.h
         Localization.h
         LocalizationEnums.h
         LocationInfo.h
