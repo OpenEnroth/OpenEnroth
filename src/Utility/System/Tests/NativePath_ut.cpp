@@ -115,6 +115,11 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("//server") / NativePath("share")).toWtf8(), "//server/share");
     EXPECT_EQ((NativePath("//server/share") / NativePath("//server")).toWtf8(), "//server");
     EXPECT_EQ((NativePath("//server") / NativePath("/share")).toWtf8(), "//server/share");
+
+    // The share is part of the root name, so a rooted tail stays on the share rather than climbing to the server.
+    EXPECT_EQ((NativePath("//server/share/a") / NativePath("/b")).toWtf8(), "//server/share/b");
+    EXPECT_EQ((NativePath("//server/share/a") / NativePath("//server/other")).toWtf8(), "//server/other");
+    EXPECT_EQ((NativePath("//server/share") / NativePath("")).toWtf8(), "//server/share/");
     EXPECT_EQ((NativePath("C:a") / NativePath("b")).toWtf8(), "C:a/b"); // Drive-relative with a name appends normally.
 
     // An empty tail leaves a separator only where the head can take one. "C:" names the current directory on
@@ -132,7 +137,8 @@ UNIT_TEST(NativePath, WindowsRoots) {
     // A root name is never a file name, so a dot inside one doesn't start an extension.
     EXPECT_EQ(NativePath("C:").withExtension(".x").toWtf8(), "C:.x");
     EXPECT_EQ(NativePath("//ser.ver").withExtension("").toWtf8(), "//ser.ver");
-    EXPECT_EQ(NativePath("//ser.ver/a.txt").withExtension("").toWtf8(), "//ser.ver/a");
+    EXPECT_EQ(NativePath("//ser.ver/sh.are").withExtension("").toWtf8(), "//ser.ver/sh.are");
+    EXPECT_EQ(NativePath("//ser.ver/sh.are/a.txt").withExtension("").toWtf8(), "//ser.ver/sh.are/a");
 }
 #endif
 

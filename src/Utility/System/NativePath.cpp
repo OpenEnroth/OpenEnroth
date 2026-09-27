@@ -22,17 +22,22 @@ static bool hasDriveLetter([[maybe_unused]] std::string_view path) {
 
 /**
  * @param path                      Path to scan.
- * @return                          Length of the root name, `"C:"` or `"//server"` on Windows, always zero on
- *                                  POSIX. A root name is what a relative path is relative to, and POSIX has only
- *                                  one file system tree, so there is nothing to name there.
+ * @return                          Length of the root name, `"C:"` or `"//server/share"` on Windows, always zero
+ *                                  on POSIX. Win32 roots a UNC path at the share, since a server on its own is not
+ *                                  a directory, so a bare `"//server"` is a root name with nothing to open under
+ *                                  it. POSIX has only one file system tree, so there is nothing to name there.
  */
 static size_t rootNameSize([[maybe_unused]] std::string_view path) {
 #ifdef _WINDOWS
     if (hasDriveLetter(path))
         return 2;
 
-    if (path.size() >= 3 && path[0] == separator && path[1] == separator && path[2] != separator)
-        return std::min(path.find(separator, 2), path.size()); // UNC share, e.g. "//server" in "//server/share".
+    if (path.size() >= 3 && path[0] == separator && path[1] == separator && path[2] != separator) {
+        size_t serverEnd = std::min(path.find(separator, 2), path.size());
+        if (serverEnd + 1 >= path.size() || path[serverEnd + 1] == separator)
+            return serverEnd; // No share, just "//server".
+        return std::min(path.find(separator, serverEnd + 1), path.size());
+    }
 #endif
     return 0;
 }
@@ -71,7 +76,7 @@ static size_t fileNameOffset(std::string_view path) {
 /**
  * @param path                      Path to scan.
  * @return                          Whether the path ends in a component that names a file. `"a/b"` does, while
- *                                  `"a/b/"`, `"C:"` and `"//server"` don't.
+ *                                  `"a/b/"`, `"C:"` and `"//server/share"` don't.
  */
 static bool hasFileName(std::string_view path) {
     return fileNameOffset(path) < path.size();
