@@ -28,8 +28,8 @@ on:
         type: string
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
-# Build Release runs this workflow and linux_flatpak inside its own run, where both see its name and run_id, so only a
-# literal prefix ("build-all-") keeps their concurrency groups apart.
+# Build Release runs this workflow and linux_flatpak inside its own run, where both see Build Release's name and run_id,
+# so only a literal prefix ("build-all-") keeps their concurrency groups apart.
 concurrency:
   group: build-all-${{github.event.pull_request.number || github.run_id}}
   cancel-in-progress: true
@@ -333,6 +333,7 @@ jobs:
           prerelease: true
           tag_name: '${{inputs.releaseTag}}'
           files: ${{env.RELEASE_FILE}}
+          fail_on_unmatched_files: true
 
       - name: '[darwin] Check dependencies'
         if: env.MATRIX_PLATFORM == 'darwin'
@@ -349,7 +350,7 @@ jobs:
         run: |
           objdump -p build/src/Bin/OpenEnroth/OpenEnroth | grep 'NEEDED'
 
-      - name: 'Cleanup ccache'
+      - name: 'Clean up ccache'
         run: |
           BUILD_END_TIME=$(date +%s)
           BUILD_DURATION=$((BUILD_END_TIME - BUILD_START_TIME))

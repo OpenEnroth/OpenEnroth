@@ -28,8 +28,8 @@ on:
         type: string
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
-# Build Release runs this workflow and build_all inside its own run, where both see its name and run_id, so only a
-# literal prefix ("linux-flatpak-") keeps their concurrency groups apart.
+# Build Release runs this workflow and build_all inside its own run, where both see Build Release's name and run_id,
+# so only a literal prefix ("linux-flatpak-") keeps their concurrency groups apart.
 concurrency:
   group: linux-flatpak-${{github.event.pull_request.number || github.run_id}}
   cancel-in-progress: true
@@ -103,7 +103,8 @@ jobs:
           prerelease: true
           tag_name: '${{inputs.releaseTag}}'
           files: ${{env.BUNDLE_NAME}}
+          fail_on_unmatched_files: true
 
-      - name: Cleanup ccache
+      - name: Clean up ccache
         run: |
           ccache -c
