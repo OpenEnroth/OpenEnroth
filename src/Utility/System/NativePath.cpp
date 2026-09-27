@@ -11,27 +11,43 @@
 
 static constexpr char separator = '/'; // The only separator in the stored string, fromWtf8 converts backslashes.
 
-static bool hasDriveLetter([[maybe_unused]] std::string_view path) {
+enum class PathRootKind {
+    PATH_ROOT_NONE, // No root name, as in "x" and "/x", and every path on POSIX.
+    PATH_ROOT_DRIVE, // A drive letter, "C:".
+    PATH_ROOT_UNC, // A network share, "//server/share".
+    PATH_ROOT_DEVICE, // An extended-length or device prefix, "//?/C:", "//?/UNC/server/share" or "//./COM1".
+};
+using enum PathRootKind;
+
+struct PathRoot {
+    PathRootKind kind = PATH_ROOT_NONE;
+    size_t nameSize = 0;
+    bool hasDirectory = false; // Whether a separator follows the root name, as in "C:/" and "/".
+
+    [[nodiscard]] bool isAbsolute() const {
 #ifdef _WINDOWS
-    return path.size() >= 2 && (ascii::isLower(path[0]) || ascii::isUpper(path[0])) && path[1] == ':';
+        return kind == PATH_ROOT_DRIVE ? hasDirectory : kind != PATH_ROOT_NONE; // "C:x" and "/x" are relative.
 #else
-    return false;
+        return hasDirectory;
 #endif
-}
+    }
+};
 
 /**
- * @param path                          Path to scan.
- * @return                              Length of the root name, which is `"C:"`, `"//server/share"`, `"//?/C:"` or
- *                                      `"//?/UNC/server/share"` on Windows, and always zero on POSIX. Win32 roots a
- *                                      UNC path at the share, and a bare `"//server"` is a root name with nothing to
- *                                      open under it.
+ * @param path                      Path to parse.
+ * @return                          What the path starts with. Win32 roots a UNC path at the share, so
+ *                                  `"//server/share"` is a single root name, and a bare `"//server"` is a root name
+ *                                  with nothing to open under it. POSIX has no root names at all.
  */
-static size_t rootNameSize([[maybe_unused]] std::string_view path) {
+static PathRoot parseRoot(std::string_view path) {
+    PathRoot root;
 #ifdef _WINDOWS
-    if (hasDriveLetter(path))
-        return 2;
+    if (path.size() >= 2 && (ascii::isLower(path[0]) || ascii::isUpper(path[0])) && path[1] == ':') {
+        root.kind = PATH_ROOT_DRIVE;
+        root.nameSize = 2;
+    } else if (path.size() >= 3 && path[0] == separator && path[1] == separator && path[2] != separator) {
+        root.kind = path.starts_with("//?/") || path.starts_with("//./") ? PATH_ROOT_DEVICE : PATH_ROOT_UNC;
 
-    if (path.size() >= 3 && path[0] == separator && path[1] == separator && path[2] != separator) {
         // The extended-length spelling of a share, "//?/UNC/server/share", is two components longer.
         size_t components = path.starts_with("//?/UNC/") ? 4 : 2;
 
@@ -41,55 +57,36 @@ static size_t rootNameSize([[maybe_unused]] std::string_view path) {
                 break; // A missing component ends the root name early, as in a bare "//server".
             end = std::min(path.find(separator, end + 1), path.size());
         }
-        return end;
+        root.nameSize = end;
     }
 #endif
-    return 0;
+    root.hasDirectory = path.size() > root.nameSize && path[root.nameSize] == separator;
+    return root;
 }
 
-static bool hasRootDirectory(std::string_view path, size_t rootSize) {
-    return path.size() > rootSize && path[rootSize] == separator;
-}
-
-/**
- * @param path                          Path to scan.
- * @param rootSize                      Length of the path's root name.
- * @return                              Whether the path depends on neither a current directory nor a current drive.
- *                                      On POSIX that takes a leading separator. On Windows it takes a UNC root name,
- *                                      or a drive letter followed by a separator, since `"C:x"` is relative to the
- *                                      current directory of drive C and `"/x"` to the current drive.
- */
-static bool isAbsolute(std::string_view path, size_t rootSize) {
-#ifdef _WINDOWS
-    return hasDriveLetter(path) ? hasRootDirectory(path, rootSize) : rootSize > 0;
-#else
-    return hasRootDirectory(path, rootSize);
-#endif
-}
-
-static size_t fileNameOffset(std::string_view path, size_t rootSize) {
+static size_t fileNameOffset(std::string_view path, PathRoot root) {
     size_t separatorPos = path.rfind(separator);
-    return std::max(separatorPos == std::string_view::npos ? 0 : separatorPos + 1, rootSize);
+    return std::max(separatorPos == std::string_view::npos ? 0 : separatorPos + 1, root.nameSize);
 }
 
 /**
- * @param path                          Path to scan.
- * @param rootSize                      Length of the path's root name.
- * @return                              Whether a component appended to the path needs a separator in front of it.
- *                                      It doesn't after an empty path, a trailing separator, or a bare drive letter,
- *                                      since `"C:x"` names `"x"` in the current directory of drive C.
+ * @param path                      Path to append to.
+ * @param root                      The path's root.
+ * @return                          Whether a component appended to the path needs a separator in front of it. It
+ *                                  doesn't after an empty path, a trailing separator, or a bare drive letter, since
+ *                                  `"C:x"` names `"x"` in the current directory of drive C.
  */
-static bool needsSeparator(std::string_view path, size_t rootSize) {
-    return !path.empty() && path.back() != separator && !(hasDriveLetter(path) && rootSize == path.size());
+static bool needsSeparator(std::string_view path, PathRoot root) {
+    return !path.empty() && path.back() != separator && !(root.kind == PATH_ROOT_DRIVE && root.nameSize == path.size());
 }
 
 /**
- * @param path                          Path to scan.
- * @param nameOffset                    Offset of the file name inside the path.
- * @return                              Offset of the extension inside the path, or `npos` if there is none. A leading
- *                                      dot doesn't start an extension, so `".bashrc"` has none. Neither does a name
- *                                      whose stem would be all dots, because the stem of `"..."` is `".."`, and
- *                                      dropping the extension of such a name would turn it into a navigation token.
+ * @param path                      Path to scan.
+ * @param nameOffset                Offset of the file name inside the path.
+ * @return                          Offset of the extension inside the path, or `npos` if there is none. A leading
+ *                                  dot doesn't start an extension, so `".bashrc"` has none. Neither does a name
+ *                                  whose stem would be all dots, because the stem of `"..."` is `".."`, and
+ *                                  dropping the extension of such a name would turn it into a navigation token.
  */
 static size_t extensionOffset(std::string_view path, size_t nameOffset) {
     std::string_view fileName = path.substr(nameOffset);
@@ -133,7 +130,7 @@ std::wstring NativePath::native() const {
 
     // Win32 does no parsing after an extended-length prefix, so a forward slash there is just a character a file
     // name can't contain. A device path gets its backslashes back too, which is how Win32 spells those.
-    if (result.starts_with(L"//?/") || result.starts_with(L"//./"))
+    if (parseRoot(_path).kind == PATH_ROOT_DEVICE)
         std::ranges::replace(result, L'/', L'\\');
 
     return result;
@@ -151,15 +148,15 @@ NativePath NativePath::absolute() const {
 }
 
 NativePath NativePath::withExtension(std::string_view extension) const {
-    size_t rootSize = rootNameSize(_path);
-    size_t nameOffset = fileNameOffset(_path, rootSize);
+    PathRoot root = parseRoot(_path);
+    size_t nameOffset = fileNameOffset(_path, root);
 
     NativePath result;
     result._path = _path.substr(0, extensionOffset(_path, nameOffset));
     if (extension.empty())
         return result;
 
-    if (nameOffset == _path.size() && needsSeparator(_path, rootSize))
+    if (nameOffset == _path.size() && needsSeparator(_path, root))
         result._path += separator; // A root name like "//server/share" has no file name, so the extension starts one.
     if (extension[0] != '.')
         result._path += '.';
@@ -168,22 +165,22 @@ NativePath NativePath::withExtension(std::string_view extension) const {
 }
 
 NativePath NativePath::operator/(const NativePath &tail) const {
-    size_t rootSize = rootNameSize(_path);
-    size_t tailRootSize = rootNameSize(tail._path);
-    bool tailNamesAnotherRoot = tailRootSize > 0 && tail._path.compare(0, tailRootSize, _path, 0, rootSize) != 0;
+    PathRoot root = parseRoot(_path);
+    PathRoot tailRoot = parseRoot(tail._path);
+    bool tailNamesAnotherRoot = tailRoot.nameSize > 0 && tail._path.compare(0, tailRoot.nameSize, _path, 0, root.nameSize) != 0;
 
-    if (isAbsolute(tail._path, tailRootSize) || tailNamesAnotherRoot)
+    if (tailRoot.isAbsolute() || tailNamesAnotherRoot)
         return tail;
 
     NativePath result;
-    if (hasRootDirectory(tail._path, tailRootSize)) {
-        result._path = _path.substr(0, rootSize); // A rooted tail keeps our root name, and drops everything after it.
+    if (tailRoot.hasDirectory) {
+        result._path = _path.substr(0, root.nameSize); // A rooted tail keeps our root name, and drops everything after it.
     } else {
         result._path = _path;
-        if (needsSeparator(_path, rootSize))
+        if (needsSeparator(_path, root))
             result._path += separator;
     }
 
-    result._path.append(tail._path, tailRootSize);
+    result._path.append(tail._path, tailRoot.nameSize);
     return result;
 }
