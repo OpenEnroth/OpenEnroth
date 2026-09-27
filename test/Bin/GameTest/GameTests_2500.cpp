@@ -33,6 +33,10 @@ static AccessibleVector<std::string> soundNames(const TestMultiTape<SoundId> &so
     return soundsTape.flatten().map([](SoundId id) { return pSoundList->soundInfo(id)->name; });
 }
 
+static std::string portraitName(int face) {
+    return fmt::format("{}01", pPlayerPortraitsNames[face]);
+}
+
 // 2500
 
 GAME_TEST(Issues, Issue2500a) {
@@ -684,7 +688,7 @@ GAME_TEST(Issues, Issue2777a) {
             EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_ZOMBIE));
             EXPECT_EQ(faceTape.back(), zombieFace);
         }
-        EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[target.uCurrentFace]));
+        EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(target.uCurrentFace));
     }
 }
 
@@ -723,7 +727,7 @@ GAME_TEST(Issues, Issue2777b) {
             EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_ZOMBIE));
             EXPECT_EQ(faceTape.back(), zombieFace);
         }
-        EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[target.uCurrentFace]));
+        EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(target.uCurrentFace));
     }
 }
 
@@ -765,7 +769,7 @@ GAME_TEST(Issues, Issue2777c) {
     EXPECT_EQ(faceTape, tape(zombieFace, lichFace));
     EXPECT_EQ(target.uPrevFace, originalFace);
     EXPECT_EQ(target.uPrevVoiceID, originalVoice);
-    EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[lichFace]));
+    EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(lichFace));
 }
 
 GAME_TEST(Issues, Issue2777d) {
@@ -805,7 +809,7 @@ GAME_TEST(Issues, Issue2777d) {
     EXPECT_EQ(reanimatedFaceTape, tape(reanimatedFace));
     EXPECT_EQ(templedFaceTape, tape(zombieFace, templedFace));
     EXPECT_EQ(templedVoiceTape, tape(zombieFace, templedVoice));
-    EXPECT_EQ(game_ui_player_faces[1][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[templedFace]));
+    EXPECT_EQ(game_ui_player_faces[1][0]->name(), portraitName(templedFace));
 }
 
 GAME_TEST(Issues, Issue2784a) {
