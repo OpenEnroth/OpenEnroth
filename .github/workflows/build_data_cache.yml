@@ -37,7 +37,13 @@ jobs:
           path: OpenEnroth_GameData
           lfs: true # .vid files are stored in LFS.
           token: ${{secrets.DATA_ACCESS_TOKEN}}
-          persist-credentials: false # This tree is cached, and the cache is restored in pull request runs.
+          persist-credentials: false # Keeps the data repo token out of this tree, which gets cached and restored in pull request runs.
+
+      # Pull request runs restore this cache, and they only need the data files.
+      - name: 'Drop git metadata'
+        if: steps.check_for_data_cache.outputs.cache-hit != 'true'
+        run: |
+          rm -rf OpenEnroth_GameData/.git
 
       - name: 'Cache data'
         if: steps.check_for_data_cache.outputs.cache-hit != 'true'
