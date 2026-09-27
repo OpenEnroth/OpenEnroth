@@ -750,7 +750,6 @@ GAME_TEST(Issues, Issue1341) {
     pParty->pCharacters[1].setSkillValue(SKILL_STEALING, CombinedSkillValue(10, MASTERY_GRANDMASTER));
     Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_PEASANT_DWARF_MALE_A_A,
                                        SPAWN_FRIENDLY | SPAWN_STATIONARY);
-    peasant->monsterInfo.goldDiceRolls = pMonsterStats->infos[peasant->monsterId].goldDiceRolls; // spawnMonster strips it.
     game.tick();
 
     // Only some steals go for the gold, so keep trying.

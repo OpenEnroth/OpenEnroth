@@ -311,9 +311,6 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
     actor->monsterId = id;
     actor->radius = pMonsterList->monsters[id].monsterRadius;
     actor->height = pMonsterList->monsters[id].monsterHeight;
-    actor->monsterInfo.goldDiceRolls = 0;
-    actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
-    actor->monsterInfo.exp = 0;
     actor->moveSpeed = pMonsterList->monsters[id].movementSpeed;
     actor->initialPosition = position;
     actor->pos = actor->initialPosition;
