@@ -1,6 +1,6 @@
 #pragma once
 
-class Pid;
+#include "Engine/Pid.h"
 
 void ItemInteraction(int item_id);
 bool CanInteractWithActor(int id);
