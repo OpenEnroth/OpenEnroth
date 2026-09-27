@@ -165,8 +165,10 @@ GAME_TEST(Issues, Issue2022) {
     game.startNewGame();
     test.startTaping();
 
-    readScroll(game, 1, ITEM_SCROLL_TORCH_LIGHT);
-    game.tick(3);
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Roderick.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick();
     readScroll(game, 1, ITEM_SCROLL_PROTECTION_FROM_MAGIC);
     game.tick(3);
 
