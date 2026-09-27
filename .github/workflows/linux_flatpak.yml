@@ -44,7 +44,7 @@ defaults:
 jobs:
   build_flatpak_bundle:
     timeout-minutes: 60
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-24.04
     container:
       image: bilelmoussaoui/flatpak-github-actions:freedesktop-24.08
       options: --privileged
