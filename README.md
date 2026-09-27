@@ -87,8 +87,8 @@ export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
 2. Download `OpenEnroth_nightly_macOS_arm64_RelWithDebInfo.dmg` (`x86_64` for Intel Macs) from the
    [releases page](https://github.com/OpenEnroth/OpenEnroth/releases), open it and drag `OpenEnroth.app` into
    `Applications`.
-3. Run `xattr -rc /Applications/OpenEnroth.app`. This clears the quarantine flag. macOS refuses to launch
-   unsigned binaries without this step.
+3. Run `xattr -rc /Applications/OpenEnroth.app`. This clears the quarantine flag — macOS will refuse to
+   launch unsigned binaries without this step.
 4. Run `OpenEnroth.app`.
 
 ### Linux
