@@ -75,6 +75,9 @@ class CharacterTapeRecorder {
     TestTape<bool> hasBuff(int characterIndex, CharacterBuff buff);
     TestMultiTape<bool> haveBuffs(CharacterBuff buff);
 
+    TestTape<bool> hasBeacon(int characterIndex, int slot);
+    TestMultiTape<bool> haveBeacons(int slot);
+
     TestTape<SpellId> quickSpell(int characterIndex);
     TestMultiTape<SpellId> quickSpells();
 

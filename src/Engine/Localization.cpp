@@ -67,7 +67,7 @@ bool Localization::initialize() {
     this->_localizationStrings[LSTR_ENERGY] = "Energy";
     this->_localizationStrings[LSTR_IMMOLATION_DAMAGE] = "Immolation deals %d damage to %d target(s)";
     this->_localizationStrings[LSTR_REMAINING_POWER] = "Remaining power: %d";
-    this->_localizationStrings[LSTR_PLAYER_IS_NOT_ACTIVE] = "That player is not active";
+    this->_localizationStrings[LSTR_PLAYER_IS_NOT_ACTIVE] = "That player is not active"; // TODO(captainurist): make it "%s is still recovering" with the character's name.
     this->_localizationStrings[LSTR_NEW_SAVE] = "[New Save]";
     this->_localizationStrings[LSTR_QUICKSAVE] = "Quicksave";
     this->_localizationStrings[LSTR_SET_A_QUICK_SPELL] = "Set a Quick Spell that targets a monster!";

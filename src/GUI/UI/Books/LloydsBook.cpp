@@ -73,7 +73,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
     }
 
     for (int i = 0; i < _maxBeacons; ++i) {
-        CreateButton({lloydsBeaconsPreviewXs[i], lloydsBeaconsPreviewYs[i]}, {92, 68}, BUTTON_TYPE_NORMAL, UIMSG_HintBeaconSlot, UIMSG_InstallOrRecallBeacon, i);
+        CreateButton(fmt::format("LloydsBook_Slot{}", i), {lloydsBeaconsPreviewXs[i], lloydsBeaconsPreviewYs[i]}, {92, 68}, BUTTON_TYPE_NORMAL, UIMSG_HintBeaconSlot, UIMSG_InstallOrRecallBeacon, i);
     }
 
     // purges expired beacons
