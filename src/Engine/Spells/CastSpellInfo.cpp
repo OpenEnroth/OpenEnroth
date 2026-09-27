@@ -2633,7 +2633,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         Character &target = pParty->pCharacters[pCastSpell->targetCharacterIndex];
-                        // A Lich is already undead, so Reanimate raises it as itself, on the halved health a zombie gets.
+                        // A Lich is already undead, so it rises as itself, at the half health a zombie is capped to.
                         if (target.classType == CLASS_LICH && target.IsDead() && !target.IsEradicated()) {
                             target.conditions.reset(CONDITION_DEAD);
                             target.conditions.reset(CONDITION_UNCONSCIOUS);
