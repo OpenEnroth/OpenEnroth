@@ -1280,7 +1280,7 @@ GAME_TEST(Issues, Issue2464a) {
     ASSERT_EQ(current_screen_type, SCREEN_NPC_DIALOGUE);
 
     test.startTaping();
-    game.hoverGuiButton("Dialogue_Exit");
+    game.hoverGuiButton("NpcDialogue_Exit");
     game.tick();
     EXPECT_CONTAINS(statusTape, "Exit");
 }
