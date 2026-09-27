@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/UIGame.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 
@@ -14,6 +13,7 @@
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Party.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -28,11 +28,12 @@ void GUIWindow_Temple::mainDialogue() {
 }
 
 void GUIWindow_Temple::healDialogue() {
-    if (!isPlayerHealableByTemple(pParty->activeCharacter())) {
+    Character &character = pParty->activeCharacter();
+    if (!isPlayerHealableByTemple(character)) {
         return;
     }
 
-    int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()].fPriceMultiplier);
+    int price = PriceCalculator::templeHealingCostForPlayer(&character, houseTable[houseId()].fPriceMultiplier);
     if (pParty->GetGold() < price) {
         engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
         playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
@@ -40,36 +41,20 @@ void GUIWindow_Temple::healDialogue() {
         return;
     }
 
-    bool setZombie = false;
-    if (houseId() == HOUSE_TEMPLE_DEYJA || houseId() == HOUSE_TEMPLE_PIT || houseId() == HOUSE_TEMPLE_MOUNT_NIGHON) {
-        setZombie = pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE);
-        if (!pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
-            if (pParty->activeCharacter().conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD})) {
-                pParty->activeCharacter().uPrevFace = pParty->activeCharacter().uCurrentFace;
-                pParty->activeCharacter().uPrevVoiceID = pParty->activeCharacter().uVoiceID;
-                pParty->activeCharacter().uVoiceID = (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23;
-                pParty->activeCharacter().uCurrentFace = (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23;
-                GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex(), (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23);
-                setZombie = true;
-            }
-        }
-    } else {
-        if (pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
-            pParty->activeCharacter().uCurrentFace = pParty->activeCharacter().uPrevFace;
-            pParty->activeCharacter().uVoiceID = pParty->activeCharacter().uPrevVoiceID;
-            GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex(), pParty->activeCharacter().uPrevFace);
-        }
-    }
+    bool keepZombie = isEvilTemple() && character.IsZombie();
+    bool makeZombie = isEvilTemple() && !keepZombie && character.classType != CLASS_LICH &&
+                      character.conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD});
 
-    pParty->activeCharacter().conditions.resetAll();
-    if (setZombie) {
-        pParty->activeCharacter().conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
-    }
+    for (Condition condition : allConditions())
+        if (condition != CONDITION_ZOMBIE || !keepZombie)
+            character.ResetCondition(condition);
+    if (makeZombie)
+        character.SetCondition(CONDITION_ZOMBIE, 0);
     pParty->TakeGold(price);
-    pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
-    pParty->activeCharacter().mana = pParty->activeCharacter().GetMaxMana();
+    character.health = character.GetMaxHealth();
+    character.mana = character.GetMaxMana();
     pAudioPlayer->playExclusiveSound(SOUND_heal);
-    pParty->activeCharacter().playReaction(SPEECH_TEMPLE_HEAL);
+    character.playReaction(SPEECH_TEMPLE_HEAL);
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
@@ -180,8 +165,12 @@ bool GUIWindow_Temple::isPlayerHealableByTemple(const Character &player) const {
         return false;
     } else if (player.GetMajorConditionIdx() == CONDITION_ZOMBIE) {
         // zombie cant be healed at these tmeples
-        return houseId() != HOUSE_TEMPLE_DEYJA && houseId() != HOUSE_TEMPLE_PIT && houseId() != HOUSE_TEMPLE_MOUNT_NIGHON;
+        return !isEvilTemple();
     }
 
     return true;
+}
+
+bool GUIWindow_Temple::isEvilTemple() const {
+    return houseId() == HOUSE_TEMPLE_DEYJA || houseId() == HOUSE_TEMPLE_PIT || houseId() == HOUSE_TEMPLE_MOUNT_NIGHON;
 }

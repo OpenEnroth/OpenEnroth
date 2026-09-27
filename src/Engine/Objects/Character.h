@@ -202,7 +202,25 @@ class Character {
     bool CanAct() const;
     bool CanSteal() const;
     bool CanEquip_RaceAndAlignmentCheck(ItemId uItemID) const;
+
+    // TODO(captainurist): make `blockable` a bool, which is what callers already pass as 0 and 1. The
+    // SetCond*WithBlockCheck wrappers below are only ever called with false.
+    /**
+     * Does nothing if the character already has the condition, or if `blockable` is set and Protection from Magic
+     * or a worn item wards it off. Setting Zombie swaps in the zombie face and voice, and a Lich must not get it.
+     *
+     * @param condition                 Condition to set.
+     * @param blockable                 Whether Protection from Magic and worn items can block the condition.
+     */
     void SetCondition(Condition condition, int blockable);
+
+    /**
+     * Clears a condition. For Zombie, also restores the character's original face and voice. Does nothing if the
+     * character doesn't have the condition.
+     *
+     * @param condition                 Condition to clear.
+     */
+    void ResetCondition(Condition condition);
 
     /**
      * @offset 0x49327B

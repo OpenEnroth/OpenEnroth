@@ -553,13 +553,8 @@ void Character::SetCondition(Condition condition, int blockable) {
             break;
 
         case CONDITION_ZOMBIE:
-            if (classType == CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
-                return;
-            }
+            assert(classType != CLASS_LICH);
 
-            conditions.resetAll();
-            health = GetMaxHealth();
-            mana = 0;
             uPrevFace = uCurrentFace;
             uPrevVoiceID = uVoiceID;
 
@@ -570,6 +565,7 @@ void Character::SetCondition(Condition condition, int blockable) {
                 uCurrentFace = 24;
                 uVoiceID = 24;
             }
+            GameUI_ReloadPlayerPortraits(characterIndex(), uCurrentFace);
 
             playReaction(SPEECH_CHEATED_DEATH);
             break;
@@ -599,6 +595,25 @@ void Character::SetCondition(Condition condition, int blockable) {
     }
 
     return;
+}
+
+void Character::ResetCondition(Condition condition) {
+    if (!conditions.has(condition)) {
+        return;
+    }
+
+    conditions.reset(condition);
+
+    switch (condition) {
+        case CONDITION_ZOMBIE:
+            uCurrentFace = uPrevFace;
+            uVoiceID = uPrevVoiceID;
+            GameUI_ReloadPlayerPortraits(characterIndex(), uCurrentFace);
+            break;
+
+        default:
+            break;
+    }
 }
 
 //----- (00492700) --------------------------------------------------------
