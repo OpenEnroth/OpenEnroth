@@ -2,10 +2,29 @@
 #include <fstream>
 #include <string>
 #include <string_view>
+#include <type_traits>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/System/NativePath.h"
+
+template<class T>
+concept BuildsFromStdPath = requires(const T &path) { NativePath::fromStdPath(path); };
+
+UNIT_TEST(NativePath, ConversionsAreChecked) {
+    // A string must not reach fromStdPath, because std::filesystem::path converts a narrow string per the C locale on
+    // Windows. The deleted template overload is what turns each of these into a compile error.
+    static_assert(BuildsFromStdPath<std::filesystem::path>);
+    static_assert(!BuildsFromStdPath<std::string>);
+    static_assert(!BuildsFromStdPath<std::string_view>);
+    static_assert(!BuildsFromStdPath<const char *>);
+    static_assert(!BuildsFromStdPath<std::wstring>);
+    static_assert(!BuildsFromStdPath<std::u8string>);
+
+    static_assert(std::is_convertible_v<const char *, NativePath>);
+    static_assert(std::is_convertible_v<std::string_view, NativePath>);
+    static_assert(std::is_same_v<decltype(NativePath().toWtf8()), const std::string &>); // No copy on every call.
+}
 
 UNIT_TEST(NativePath, Wtf8RoundTrip) {
     for (std::string_view path : {"a/b/c.txt", "\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
@@ -15,6 +34,11 @@ UNIT_TEST(NativePath, Wtf8RoundTrip) {
 UNIT_TEST(NativePath, StdPathRoundTrip) {
     std::filesystem::path cwd = std::filesystem::current_path();
     EXPECT_EQ(NativePath::fromStdPath(cwd).toStdPath(), cwd);
+
+    // A name that isn't ASCII goes through wchar_t on Windows, where a narrow conversion would mangle it.
+    std::filesystem::path lol(u8"a/\u043b\u043e\u043b.txt");
+    EXPECT_EQ(NativePath::fromStdPath(lol).toWtf8(), "a/\xd0\xbb\xd0\xbe\xd0\xbb.txt");
+    EXPECT_EQ(NativePath::fromWtf8("a/\xd0\xbb\xd0\xbe\xd0\xbb.txt").toStdPath(), lol);
 }
 
 UNIT_TEST(NativePath, NativeRoundTrip) {
@@ -25,7 +49,7 @@ UNIT_TEST(NativePath, NativeRoundTrip) {
 }
 
 UNIT_TEST(NativePath, Literals) {
-    // ASCII literals construct directly, everything else goes through fromWtf8.
+    // The implicit constructors take the same bytes fromWtf8 does.
     EXPECT_EQ(NativePath("a/b/c.txt"), NativePath::fromWtf8("a/b/c.txt"));
     EXPECT_EQ(NativePath(""), NativePath());
 }
@@ -105,6 +129,13 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("C:/a") / NativePath("D:/b")).toWtf8(), "D:/b"); // Another drive replaces everything.
     EXPECT_EQ((NativePath("C:/a") / NativePath("/b")).toWtf8(), "C:/b"); // A rooted tail keeps our drive.
     EXPECT_EQ((NativePath("C:/a") / NativePath("C:b")).toWtf8(), "C:/a/b"); // Same drive, so it's a plain append.
+    EXPECT_EQ((NativePath("C:/a") / NativePath("D:b")).toWtf8(), "D:b"); // Another drive replaces, even a relative one.
+
+    // A drive letter is an ASCII letter of either case followed by a colon, and nothing else is one.
+    EXPECT_EQ((NativePath("c:/a") / NativePath("/b")).toWtf8(), "c:/b");
+    EXPECT_EQ((NativePath("Ab") / NativePath("c")).toWtf8(), "Ab/c");
+    EXPECT_EQ((NativePath("1:/a") / NativePath("/b")).toWtf8(), "/b");
+    EXPECT_EQ((NativePath("C:/a") / NativePath("///b")).toWtf8(), "C:///b"); // Three slashes start no UNC root.
     EXPECT_EQ((NativePath("//server/share") / NativePath("f")).toWtf8(), "//server/share/f");
 
     // A bare drive letter takes a separator like any other root name. The drive-relative "C:x" has to be spelled out.
@@ -134,6 +165,17 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("//./Unc/server/share/a") / NativePath("/b")).toWtf8(), "//./Unc/server/share/b");
     EXPECT_EQ(NativePath("//./UNC/ser.ver/sh.are").withExtension("").toWtf8(), "//./UNC/ser.ver/sh.are");
     EXPECT_EQ(NativePath("//?/unc/ser.ver/sh.are").withExtension("").toWtf8(), "//?/unc/ser.ver/sh.are");
+    EXPECT_EQ((NativePath("//?/uNc/server/share/a") / NativePath("/b")).toWtf8(), "//?/uNc/server/share/b");
+    EXPECT_EQ((NativePath("//?/UNCx/server/share/a") / NativePath("/b")).toWtf8(), "//?/UNCx/b"); // Not "UNC".
+    EXPECT_EQ((NativePath("//./COM1/a") / NativePath("/b")).toWtf8(), "//./COM1/b");
+
+    // A missing component ends the root name early, wherever in the root name it's missing.
+    EXPECT_EQ((NativePath("//server//x") / NativePath("/b")).toWtf8(), "//server/b");
+    EXPECT_EQ((NativePath("//?//x") / NativePath("/b")).toWtf8(), "//?/b");
+    EXPECT_EQ((NativePath("//?/UNC/") / NativePath("/b")).toWtf8(), "//?/UNC/b");
+    EXPECT_EQ((NativePath("//?/UNC//share/a") / NativePath("/b")).toWtf8(), "//?/UNC/b");
+    EXPECT_EQ((NativePath("//?/UNC/server") / NativePath("/b")).toWtf8(), "//?/UNC/server/b");
+    EXPECT_EQ((NativePath("//?/UNC/server//a") / NativePath("/b")).toWtf8(), "//?/UNC/server/b");
 
     // An empty tail leaves a trailing separator, after a root name as well.
     EXPECT_EQ((NativePath("C:/a") / NativePath("")).toWtf8(), "C:/a/");
@@ -144,7 +186,10 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ(NativePath::fromWtf8("//?/C:/Games").native(), L"\\\\?\\C:\\Games");
     EXPECT_EQ(NativePath::fromWtf8("\\\\.\\COM1").native(), L"\\\\.\\COM1");
     EXPECT_EQ(NativePath::fromWtf8("//./UNC/server/share/f").native(), L"\\\\.\\UNC\\server\\share\\f");
+    EXPECT_EQ(NativePath::fromWtf8("//?/UNC/server/share/f").native(), L"\\\\?\\UNC\\server\\share\\f");
     EXPECT_EQ(NativePath::fromWtf8("C:/Games/MM7").native(), L"C:/Games/MM7"); // Everything else keeps them.
+    EXPECT_EQ(NativePath::fromWtf8("\\\\server\\share\\f").native(), L"//server/share/f");
+    EXPECT_EQ(NativePath::fromNative(L"C:\\a\\b").toWtf8(), "C:/a/b"); // Separators from the OS get converted too.
 
     // A root name is never a file name, so a dot inside one doesn't start an extension.
     EXPECT_EQ(NativePath("//ser.ver").withExtension("").toWtf8(), "//ser.ver");
@@ -193,9 +238,56 @@ UNIT_TEST(NativePath, DisplayString) {
 UNIT_TEST(NativePath, Absolute) {
     EXPECT_EQ(NativePath().absolute().toStdPath(), std::filesystem::current_path());
     EXPECT_EQ(NativePath("a").absolute().toStdPath(), std::filesystem::current_path() / "a");
+
+    NativePath cwd = NativePath::fromStdPath(std::filesystem::current_path());
+    EXPECT_EQ(cwd.absolute(), cwd); // An absolute path stays as it is.
+}
+
+UNIT_TEST(NativePath, Comparison) {
+    // Paths compare as their stored strings, so a trailing or doubled separator makes a different path, and "a/b"
+    // sorts after "a.b" where std::filesystem::path would put it first.
+    EXPECT_NE(NativePath("a"), NativePath("b"));
+    EXPECT_NE(NativePath("a"), NativePath("a/"));
+    EXPECT_NE(NativePath("a/b"), NativePath("a//b"));
+    EXPECT_LT(NativePath("a"), NativePath("b"));
+    EXPECT_LT(NativePath("A"), NativePath("a"));
+    EXPECT_GT(NativePath("a/b"), NativePath("a.b"));
+}
+
+UNIT_TEST(NativePath, IsEmpty) {
+    EXPECT_TRUE(NativePath().isEmpty());
+    EXPECT_TRUE(NativePath("").isEmpty());
+    EXPECT_FALSE(NativePath("a").isEmpty());
+    EXPECT_FALSE(NativePath("/").isEmpty());
+}
+
+UNIT_TEST(NativePath, Format) {
+    EXPECT_EQ(fmt::format("[{}]", NativePath("a/b")), "[a/b]");
+    EXPECT_EQ(fmt::format("[{:>6}]", NativePath("a/b")), "[   a/b]"); // Format specs reach the string formatter.
+}
+
+UNIT_TEST(NativePath, LexicalCast) {
+    // CLI11 binds NativePath options through this, so it has to take any string, an empty one included.
+    NativePath path("x");
+    EXPECT_TRUE(lexical_cast(std::string("a/b"), path));
+    EXPECT_EQ(path, NativePath("a/b"));
+    EXPECT_TRUE(lexical_cast(std::string(""), path));
+    EXPECT_TRUE(path.isEmpty());
 }
 
 #ifndef _WINDOWS
+UNIT_TEST(NativePath, PosixSyntax) {
+    // Backslashes and Windows roots are ordinary text on POSIX, where the only separator is a forward slash.
+    EXPECT_EQ(NativePath::fromWtf8("a\\b").toWtf8(), "a\\b");
+    EXPECT_EQ((NativePath("a\\b") / NativePath("c")).toWtf8(), "a\\b/c");
+    EXPECT_EQ((NativePath("a") / NativePath("\\b")).toWtf8(), "a/\\b");
+    EXPECT_EQ(NativePath("a.b\\c").withExtension("").toWtf8(), "a"); // One file name, so ".b\c" is its extension.
+    EXPECT_EQ((NativePath("C:") / NativePath("x")).toWtf8(), "C:/x");
+    EXPECT_EQ(NativePath("C:").withExtension(".x").toWtf8(), "C:.x");
+    EXPECT_EQ((NativePath("a") / NativePath("//server")).toWtf8(), "//server");
+    EXPECT_EQ(NativePath("//a.b").withExtension("").toWtf8(), "//a");
+}
+
 UNIT_TEST(NativePath, InvalidUtf8RoundTrip) {
     // File names on POSIX are byte strings, so fromWtf8 / toWtf8 have to pass invalid UTF-8 through as-is. "\xD0" is
     // an incomplete UTF-8 sequence, "\xFF" can't appear in UTF-8 at all.

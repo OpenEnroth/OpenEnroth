@@ -33,6 +33,16 @@ UNIT_TEST(Blob, FromEmptyFile) {
     EXPECT_TRUE(!blob);
 }
 
+UNIT_TEST(Blob, FromFileNonAscii) {
+    // The name reaches the OS through NativePath::native(), which converts it to wchar_t on Windows. A wrong
+    // conversion still opens an ASCII name, but not this one.
+    NativePath fileName = NativePath::fromWtf8("\xd0\xbb\xd0\xbe\xd0\xbb.tmp");
+    ScopedTestFile tmp(fileName, "lol");
+
+    EXPECT_EQ(Blob::fromFile(fileName).str(), "lol");
+    EXPECT_EQ(FileInputStream(fileName).readAll(), "lol");
+}
+
 UNIT_TEST(Blob, SharedFromFile) {
     NativePath fileName = NativePath("abcdefghijklmnopqrstuvwxyz1.tmp");
     std::string fileContents = "0123456789";
