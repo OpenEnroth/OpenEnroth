@@ -34,8 +34,7 @@ UNIT_TEST(Blob, FromEmptyFile) {
 }
 
 UNIT_TEST(Blob, FromFileNonAscii) {
-    // On Windows the name reaches the OS through NativePath::native(), converted to wchar_t. A broken conversion can
-    // still get every ASCII name right, so this one is Cyrillic.
+    // Non-ASCII file names have to open through both Blob and FileInputStream.
     NativePath fileName = NativePath::fromWtf8("\xd0\xbb\xd0\xbe\xd0\xbb.tmp");
     ScopedTestFile tmp(fileName, "lol");
 
