@@ -46,10 +46,12 @@ static PathRoot parseRoot(std::string_view path) {
         root.kind = PATH_ROOT_DRIVE;
         root.size = 2;
     } else if (path.size() >= 3 && path[0] == separator && path[1] == separator && path[2] != separator) {
-        root.kind = path.starts_with("//?/") || path.starts_with("//./") ? PATH_ROOT_EXTENDED : PATH_ROOT_UNC;
+        bool isExtended = path.starts_with("//?/") || path.starts_with("//./");
+        root.kind = isExtended ? PATH_ROOT_EXTENDED : PATH_ROOT_UNC;
 
-        // The extended-length spelling of a share, "//?/UNC/server/share", is two components longer.
-        size_t components = path.starts_with("//?/UNC/") ? 4 : 2;
+        // The extended-length spelling of a share, "//?/UNC/server/share", is two components longer. Win32 takes it
+        // after "//./" as well, and reads "UNC" in any case.
+        size_t components = isExtended && ascii::noCaseStartsWith(path.substr(4), "UNC/") ? 4 : 2;
 
         size_t end = 1; // The second leading slash, which is the separator before the first component.
         for (size_t i = 0; i < components; i++) {
@@ -128,8 +130,8 @@ NativePath NativePath::fromNative(std::string_view path) {
 std::wstring NativePath::native() const {
     std::wstring result = txt::wtf8ToWide(_path);
 
-    // Win32 does no parsing after an extended-length prefix, so a forward slash there is just a character a file
-    // name can't contain. A device path gets its backslashes back too, which is how Win32 spells those.
+    // Win32 only recognizes a literal "\\?\". Spelled with forward slashes the prefix gets parsed like any other path,
+    // which brings back MAX_PATH and strips a trailing dot off a file name. "//./" makes no difference either way.
     if (parseRoot(_path).kind == PATH_ROOT_EXTENDED)
         std::ranges::replace(result, L'/', L'\\');
 

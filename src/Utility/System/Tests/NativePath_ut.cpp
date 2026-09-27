@@ -124,6 +124,13 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("//?/UNC/server/share/a") / NativePath("/b")).toWtf8(), "//?/UNC/server/share/b");
     EXPECT_EQ((NativePath("//?/C:/Games") / NativePath("/anims")).toWtf8(), "//?/C:/anims");
 
+    // The root name used to stop at "//?/unc" and "//./UNC", so a rooted tail climbed off the share. Win32 opens both.
+    EXPECT_EQ((NativePath("//?/unc/server/share/a") / NativePath("/b")).toWtf8(), "//?/unc/server/share/b");
+    EXPECT_EQ((NativePath("//./UNC/server/share/a") / NativePath("/b")).toWtf8(), "//./UNC/server/share/b");
+    EXPECT_EQ((NativePath("//./Unc/server/share/a") / NativePath("/b")).toWtf8(), "//./Unc/server/share/b");
+    EXPECT_EQ(NativePath("//./UNC/ser.ver/sh.are").withExtension("").toWtf8(), "//./UNC/ser.ver/sh.are");
+    EXPECT_EQ(NativePath("//?/unc/ser.ver/sh.are").withExtension("").toWtf8(), "//?/unc/ser.ver/sh.are");
+
     // An empty tail leaves a separator only where the head can take one. "C:" names the current directory on
     // drive C while "C:/" names its root, so appending nothing to a bare drive letter must not move it.
     EXPECT_EQ((NativePath("C:") / NativePath("")).toWtf8(), "C:");
@@ -134,6 +141,7 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ(NativePath::fromWtf8("\\\\?\\C:\\Games\\MM7").native(), L"\\\\?\\C:\\Games\\MM7");
     EXPECT_EQ(NativePath::fromWtf8("//?/C:/Games").native(), L"\\\\?\\C:\\Games");
     EXPECT_EQ(NativePath::fromWtf8("\\\\.\\COM1").native(), L"\\\\.\\COM1");
+    EXPECT_EQ(NativePath::fromWtf8("//./UNC/server/share/f").native(), L"\\\\.\\UNC\\server\\share\\f");
     EXPECT_EQ(NativePath::fromWtf8("C:/Games/MM7").native(), L"C:/Games/MM7"); // Everything else keeps them.
 
     // A root name is never a file name, so a dot inside one doesn't start an extension.
@@ -147,6 +155,26 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ(NativePath("//server/share").withExtension(".x").toWtf8(), "//server/share/.x");
     EXPECT_EQ(NativePath("//server").withExtension(".x").toWtf8(), "//server/.x");
     EXPECT_EQ(NativePath("//server/share/").withExtension(".x").toWtf8(), "//server/share/.x");
+}
+
+UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
+    // Win32 only honors a literal "\\?\", and handing it the stored forward slashes used to lose that. A path over
+    // MAX_PATH then failed to open, and a trailing dot got stripped off the file name.
+    std::filesystem::path temp = std::filesystem::temp_directory_path();
+    std::string prefixed = "//?/" + NativePath::fromStdPath(temp).toWtf8();
+    std::string longName = "oe_" + std::string(240, 'x') + ".txt";
+
+    for (std::string_view name : {std::string_view(longName), std::string_view("oe_trailing_dot.")}) {
+        NativePath path = NativePath::fromWtf8(prefixed + std::string(name));
+        {
+            std::ofstream stream(path.toStdPath());
+            ASSERT_TRUE(stream.is_open()) << name;
+        }
+
+        std::filesystem::path onDisk(L"\\\\?\\" + (temp / name).wstring()); // Built by hand, NativePath not involved.
+        EXPECT_TRUE(std::filesystem::exists(onDisk)) << name;
+        EXPECT_TRUE(std::filesystem::remove(onDisk)) << name;
+    }
 }
 #endif
 
