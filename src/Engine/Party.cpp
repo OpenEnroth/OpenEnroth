@@ -825,11 +825,11 @@ int Party::GetPartyReputation() {
     LocationInfo *ddm_dlv = &currentLocationInfo();
 
     int npcRep = 0;
-    if (CheckHiredNPCSpeciality(Pirate)) npcRep += 5;
-    if (CheckHiredNPCSpeciality(Burglar)) npcRep += 5;
-    if (CheckHiredNPCSpeciality(Gypsy)) npcRep += 5;
-    if (CheckHiredNPCSpeciality(Duper)) npcRep += 5;
-    if (CheckHiredNPCSpeciality(FallenWizard)) npcRep += 5;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_PIRATE)) npcRep += 5;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_BURGLAR)) npcRep += 5;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_GYPSY)) npcRep += 5;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_DUPER)) npcRep += 5;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_FALLEN_WIZARD)) npcRep += 5;
     return npcRep + ddm_dlv->reputation;
 }
 
@@ -870,17 +870,17 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
 
         for (int i = 0; i < buf.Size(); i++) {
             NpcProfession prof = buf.Get(i)->profession;
-            if (prof != NoProfession) {
+            if (prof != NPC_PROFESSION_NONE) {
                 hirelingSalaries += pNPCStats->pProfessions[prof].uHirePrice;
             }
         }
-        if (CheckHiredNPCSpeciality(Factor)) {
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_FACTOR)) {
             goldToGain += (signed int)(10 * goldToGain) / 100;
         }
-        if (CheckHiredNPCSpeciality(Banker)) {
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_BANKER)) {
             goldToGain += (signed int)(20 * goldToGain) / 100;
         }
-        if (CheckHiredNPCSpeciality(Pirate)) {
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_PIRATE)) {
             goldToGain += (signed int)(10 * goldToGain) / 100;
         }
         if (hirelingSalaries) {
@@ -1004,10 +1004,10 @@ int getTravelTime() {
     signed int new_travel_time;  // esi@1
 
     new_travel_time = uDefaultTravelTime_ByFoot;
-    if (CheckHiredNPCSpeciality(Guide)) --new_travel_time;
-    if (CheckHiredNPCSpeciality(Tracker)) new_travel_time -= 2;
-    if (CheckHiredNPCSpeciality(Pathfinder)) new_travel_time -= 3;
-    if (CheckHiredNPCSpeciality(Explorer)) --new_travel_time;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_GUIDE)) --new_travel_time;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_TRACKER)) new_travel_time -= 2;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_PATHFINDER)) new_travel_time -= 3;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_EXPLORER)) --new_travel_time;
     if (new_travel_time < 1) new_travel_time = 1;
     return new_travel_time;
 }

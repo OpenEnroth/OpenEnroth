@@ -52,13 +52,13 @@ static void calculateRequiredFood() {
         ++foodRequiredToRest;
     }
 
-    if (CheckHiredNPCSpeciality(Porter)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_PORTER)) {
         --foodRequiredToRest;
     }
-    if (CheckHiredNPCSpeciality(QuarterMaster)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_QUARTER_MASTER)) {
         foodRequiredToRest -= 2;
     }
-    if (CheckHiredNPCSpeciality(Gypsy)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_GYPSY)) {
         --foodRequiredToRest;
     }
     if (foodRequiredToRest < 1) {

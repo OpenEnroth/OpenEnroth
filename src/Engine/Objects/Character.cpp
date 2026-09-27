@@ -651,7 +651,7 @@ bool Character::CanIdentify(const Item &item) const {
     int multiplier =
         GetMultiplierForSkillLevel(SKILL_ITEM_ID, 1, 2, 3, 5);
 
-    if (CheckHiredNPCSpeciality(Scholar) || val.mastery() == MASTERY_GRANDMASTER)  // always identify
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_SCHOLAR) || val.mastery() == MASTERY_GRANDMASTER)  // always identify
         return true;
 
     // check item level against skill
@@ -667,9 +667,9 @@ bool Character::CanRepair(const Item &item) const {
     int multiplier = GetMultiplierForSkillLevel(SKILL_REPAIR, 1, 2, 3, 5);
 
     // TODO(Nik-RE-dev): is check for boots correct?
-    if (CheckHiredNPCSpeciality(Smith) && item.isWeapon() ||
-        CheckHiredNPCSpeciality(Armorer) && item.isArmor() ||
-        CheckHiredNPCSpeciality(Alchemist) && item.type() >= ITEM_TYPE_BOOTS)
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_SMITH) && item.isWeapon() ||
+        CheckHiredNPCSpeciality(NPC_PROFESSION_ARMORER) && item.isArmor() ||
+        CheckHiredNPCSpeciality(NPC_PROFESSION_ALCHEMIST) && item.type() >= ITEM_TYPE_BOOTS)
         return true;  // check against hired help
 
     if (val.mastery() == MASTERY_GRANDMASTER)  // gm repair
@@ -711,9 +711,9 @@ int Character::GetDisarmTrap() const {
 
 int Character::learningPercent() const {
     int hirelingBonus = 0;
-    if (CheckHiredNPCSpeciality(Teacher)) hirelingBonus = 10;
-    if (CheckHiredNPCSpeciality(Instructor)) hirelingBonus += 15;
-    if (CheckHiredNPCSpeciality(Scholar)) hirelingBonus += 5;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_TEACHER)) hirelingBonus = 10;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_INSTRUCTOR)) hirelingBonus += 15;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_SCHOLAR)) hirelingBonus += 5;
 
     int skill = getActualSkillValue(SKILL_LEARNING).level();
 
@@ -839,11 +839,11 @@ int Character::GetActualStat(Attribute stat) const {
 
     int npcBonus = 0;
     if (stat == ATTRIBUTE_LUCK) {
-        if (CheckHiredNPCSpeciality(Fool))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_FOOL))
             npcBonus += 5;
-        if (CheckHiredNPCSpeciality(ChimneySweep))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_CHIMNEY_SWEEP))
             npcBonus += 20;
-        if (CheckHiredNPCSpeciality(Psychic))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_PSYCHIC))
             npcBonus += 10;
     }
 
@@ -2037,7 +2037,7 @@ int Character::GetActualResistance(Attribute resistance) const {
 
     CombinedSkillValue leatherSkill = getActualSkillValue(SKILL_LEATHER);
 
-    if (CheckHiredNPCSpeciality(Enchanter)) v10 = 20;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_ENCHANTER)) v10 = 20;
     if ((resistance == ATTRIBUTE_RESIST_FIRE ||
          resistance == ATTRIBUTE_RESIST_AIR ||
          resistance == ATTRIBUTE_RESIST_WATER ||
@@ -2495,25 +2495,25 @@ int Character::actualSkillLevel(Skill skill) const {
     int bonus = 0;
     switch (skill) {
         case SKILL_MONSTER_ID: {
-            if (CheckHiredNPCSpeciality(Hunter)) bonus = 6;
-            if (CheckHiredNPCSpeciality(Sage)) bonus += 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_HUNTER)) bonus = 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SAGE)) bonus += 6;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MONSTER_ID);
         } break;
 
         case SKILL_ARMSMASTER: {
-            if (CheckHiredNPCSpeciality(Armsmaster)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Weaponsmaster)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ARMS_MASTER)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_WEAPONS_MASTER)) bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ARMSMASTER);
         } break;
 
         case SKILL_STEALING: {
-            if (CheckHiredNPCSpeciality(Burglar)) bonus = 8;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_BURGLAR)) bonus = 8;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_STEALING);
         } break;
 
         case SKILL_ALCHEMY: {
-            if (CheckHiredNPCSpeciality(Herbalist)) bonus = 4;
-            if (CheckHiredNPCSpeciality(Apothecary)) bonus += 8;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_HERBALIST)) bonus = 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APOTHECARY)) bonus += 8;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ALCHEMY);
         } break;
 
@@ -2522,12 +2522,12 @@ int Character::actualSkillLevel(Skill skill) const {
         } break;
 
         case SKILL_UNARMED: {
-            if (CheckHiredNPCSpeciality(Monk)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MONK)) bonus = 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_UNARMED);
         } break;
 
         case SKILL_DODGE: {
-            if (CheckHiredNPCSpeciality(Monk)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MONK)) bonus = 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_DODGE);
         } break;
 
@@ -2539,57 +2539,57 @@ int Character::actualSkillLevel(Skill skill) const {
             break;
 
         case SKILL_EARTH:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_EARTH);
             break;
         case SKILL_FIRE:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_FIRE);
             break;
         case SKILL_AIR:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_AIR);
             break;
         case SKILL_WATER:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_WATER);
             break;
         case SKILL_SPIRIT:
-            if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_INITIATE)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_PRELATE)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_SPIRIT);
             break;
         case SKILL_MIND:
-            if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_INITIATE)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_PRELATE)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MIND);
             break;
         case SKILL_BODY:
-            if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_INITIATE)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_PRELATE)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_BODY);
@@ -2602,15 +2602,15 @@ int Character::actualSkillLevel(Skill skill) const {
         } break;
 
         case SKILL_MERCHANT: {
-            if (CheckHiredNPCSpeciality(Trader)) bonus = 4;
-            if (CheckHiredNPCSpeciality(Merchant)) bonus += 6;
-            if (CheckHiredNPCSpeciality(Gypsy)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Duper)) bonus += 8;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_TRADER)) bonus = 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MERCHANT)) bonus += 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_GYPSY)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_DUPER)) bonus += 8;
         } break;
 
         case SKILL_PERCEPTION: {
-            if (CheckHiredNPCSpeciality(Scout)) bonus = 6;
-            if (CheckHiredNPCSpeciality(Psychic)) bonus += 5;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SCOUT)) bonus = 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_PSYCHIC)) bonus += 5;
         } break;
 
         case SKILL_ITEM_ID:
@@ -2620,9 +2620,9 @@ int Character::actualSkillLevel(Skill skill) const {
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MEDITATION);
             break;
         case SKILL_TRAP_DISARM: {
-            if (CheckHiredNPCSpeciality(Tinker)) bonus = 4;
-            if (CheckHiredNPCSpeciality(Locksmith)) bonus += 6;
-            if (CheckHiredNPCSpeciality(Burglar)) bonus += 8;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_TINKER)) bonus = 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_LOCKSMITH)) bonus += 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_BURGLAR)) bonus += 8;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_TRAP_DISARM);
         } break;
         default:
