@@ -16,6 +16,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Party.h"
@@ -454,6 +455,112 @@ GAME_TEST(Issues, Issue664) {
     EXPECT_EQ(pParty->pos.x, 7323);
     EXPECT_EQ(pParty->pos.y, 10375);
     EXPECT_EQ(pParty->pos.z, 309);
+}
+
+GAME_TEST(Issues, Issue673a) {
+    // Giving the false Riverstride plans to the Elf King changed the reputation once per character.
+    auto reputationTape = tapes.reputation();
+    auto plansTape = tapes.totalItemCount(ITEM_MESSAGE_FALSE_RIVERSTRIDE_PLANS);
+    auto plansGivenTape = tapes.questBit(QBIT_FALSE_RIVERSTRIDE_PLANS_GIVEN);
+    game.startNewGame();
+    pParty->_questBits.set(QBIT_HARMONDALE_REBUILT); // The guards let the party into the throne room.
+    pParty->pCharacters[0].inventory.add(Item(ITEM_MESSAGE_FALSE_RIVERSTRIDE_PLANS));
+    game.teleportTo(MAP_CASTLE_NAVAN, Vec3f(-3360, 10710, -1541), 90); // In front of the throne room.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Take the quest.
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Hand over the plans.
+    game.tick(2);
+    test.stopTaping();
+
+    EXPECT_EQ(plansTape, tape(1, 0));
+    EXPECT_EQ(plansGivenTape, tape(false, true));
+    EXPECT_EQ(reputationTape.delta(), +5);
+}
+
+GAME_TEST(Issues, Issue673b) {
+    // Giving the Big Tapestry to Niles Stantley changed the reputation once per character.
+    auto reputationTape = tapes.reputation();
+    auto tapestryTape = tapes.totalItemCount(ITEM_BIG_TAPESTRY);
+    auto finishedTape = tapes.questBit(QBIT_MALWICK_QUESTS_FINISHED);
+    game.startNewGame();
+    pParty->_questBits.set(QBIT_MALWICK_FIREBALL_WAND_ACCEPTED);
+    pParty->_questBits.set(QBIT_MERCENARY_GUILD_VISIT_ACTIVE); // Niles meets the party at the guild door.
+    pParty->_questBits.set(QBIT_LIGHT_PATH); // He offers the quest only once a path is chosen.
+    pParty->pCharacters[0].inventory.add(Item(ITEM_BIG_TAPESTRY));
+    game.teleportTo(MAP_TATALIA, Vec3f(17920, 16652, 3120), 90); // In front of the Mercenary Guild.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("Dialogue_Option0"); // Take the quest.
+    game.tick(2);
+    game.pressGuiButton("Dialogue_Option0"); // Hand over the tapestry.
+    game.tick(2);
+    test.stopTaping();
+
+    EXPECT_EQ(tapestryTape, tape(1, 0));
+    EXPECT_EQ(finishedTape, tape(false, true));
+    EXPECT_EQ(reputationTape.delta(), +5);
+}
+
+GAME_TEST(Issues, Issue673c) {
+    // Reporting the troglodytes under Stone City killed to Spark Burnkindle changed the reputation once per character.
+    auto reputationTape = tapes.reputation();
+    auto questTape = tapes.questBit(QBIT_STONE_CITY_TROGLODYTES_ACTIVE);
+    auto experienceTape = tapes.totalExperience();
+    game.startNewGame();
+    game.teleportTo(MAP_STONE_CITY, Vec3f(3904, -3334, -5), 270); // In front of Spark's house.
+    for (Actor &actor : pActors)
+        if (monsterTypeForMonsterId(actor.monsterInfo.id) == MONSTER_TYPE_TROGLODYTE)
+            Actor::Die(actor.id);
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("House_Npc0"); // Spark Burnkindle.
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Take the quest.
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Report the troglodytes killed.
+    game.tick(2);
+    test.stopTaping();
+
+    EXPECT_EQ(questTape, tape(false, true, false));
+    EXPECT_EQ(experienceTape.delta(), 4 * 5000); // Experience belongs to each character, so all four get it.
+    EXPECT_EQ(reputationTape.delta(), -10);
+}
+
+GAME_TEST(Issues, Issue673d) {
+    // Reporting the griffins killed to Seth Drakkson changed the reputation once per character.
+    auto reputationTape = tapes.reputation();
+    auto questTape = tapes.questBit(QBIT_GRIFFINS_ACTIVE);
+    game.startNewGame();
+    pParty->_questBits.set(QBIT_DARK_PATH); // Seth offers the quest only on the dark path.
+    for (MapId map : {MAP_ERATHIA, MAP_BRACADA_DESERT}) {
+        game.teleportTo(map, Vec3f(0, 0, 0), 0);
+        for (Actor &actor : pActors) {
+            if (monsterTypeForMonsterId(actor.monsterInfo.id) == MONSTER_TYPE_GRIFFIN)
+                Actor::Die(actor.id);
+            // TODO(captainurist): #2868 makes the griffin check want Bracada's Gold Golems dead, drop this once it's fixed.
+            if (actor.monsterInfo.id == MONSTER_GOLEM_C)
+                Actor::Die(actor.id);
+        }
+    }
+    game.teleportTo(MAP_DEYJA, Vec3f(-19150, 14456, 0), 180); // In front of Slicer's house.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("House_Npc1"); // Seth Drakkson.
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Take the quest.
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Report the griffins killed.
+    game.tick(2);
+    test.stopTaping();
+
+    EXPECT_EQ(questTape, tape(false, true, false));
+    EXPECT_EQ(reputationTape.delta(), -10);
 }
 
 GAME_TEST(Issues, Issue674) {

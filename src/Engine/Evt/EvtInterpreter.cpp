@@ -6,6 +6,7 @@
 #include <tl/generator.hpp>
 
 #include "Engine/Evt/EvtInterpreter.h"
+#include "Engine/Evt/EvtEnumFunctions.h"
 #include "Engine/Evt/EvtInstruction.h"
 #include "Engine/Evt/EvtVariables.h"
 #include "Engine/Evt/Processor.h"
@@ -116,6 +117,21 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
     } else {
         assert(who == CHOOSE_RANDOM);
         co_yield pParty->pCharacters[rng->random(4)];
+    }
+}
+
+/**
+ * @param who                           Characters that a variable command targets.
+ * @param variable                      Variable of the command.
+ * @param rng                           Random engine for `CHOOSE_RANDOM`.
+ * @return                              Characters to run the command for. For a party variable this is just the first
+ *                                      targeted character, since the whole party shares one value.
+ */
+static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, EvtVariable variable, RandomEngine *rng) {
+    for (Character &character : iterateCharacters(who, rng)) {
+        co_yield character;
+        if (isPartyVariable(variable))
+            co_return;
     }
 }
 
@@ -325,7 +341,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_Compare:
             if (!validateVariableValue(ir))
                 break;
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 if (compareEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                     return ir.target_step;
             break;
@@ -341,7 +357,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
                 ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
                 break; // Roland's cage script adds the key on every click, it never checks the quest bit.
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 addEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_Subtract:
@@ -360,7 +376,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                     }
                 }
             } else {
-                for (Character &character : iterateCharacters(_who, grng))
+                for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                     if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                         _cancelled = true;
             }
@@ -368,7 +384,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_Set:
             if (!validateVariableValue(ir))
                 break;
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 setEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_SummonMonsters:

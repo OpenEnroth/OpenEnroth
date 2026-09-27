@@ -101,6 +101,10 @@ TestTape<int> CommonTapeRecorder::food() {
     return custom([] { return pParty->GetFood(); });
 }
 
+TestTape<int> CommonTapeRecorder::reputation() {
+    return custom([] { return pParty->GetPartyReputation(); });
+}
+
 TestTape<int> CommonTapeRecorder::deaths() {
     return custom([] { return pParty->uNumDeaths; });
 }
