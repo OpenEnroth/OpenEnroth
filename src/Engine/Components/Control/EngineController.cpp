@@ -169,8 +169,7 @@ void EngineController::pressAndReleaseButton(PlatformMouseButton button) {
 }
 
 void EngineController::pressGuiButton(std::string_view buttonId, PlatformMouseButton button) {
-    Pointi center = existingButton(buttonId)->rect.center();
-    pressAndReleaseButton(button, center.x, center.y);
+    pressAndReleaseButton(button, existingButton(buttonId)->rect.center());
 }
 
 void EngineController::doubleClickGuiButton(std::string_view buttonId) {
