@@ -157,7 +157,14 @@ UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
     // gets stripped off the file name.
     std::filesystem::path temp = std::filesystem::temp_directory_path();
     std::string prefixed = "//?/" + NativePath::fromStdPath(temp).toWtf8();
-    std::string longName = "oe_" + std::string(240, 'x') + ".txt";
+    auto onDisk = [&] (std::string_view name) { // Built by hand, NativePath not involved.
+        return std::filesystem::path(L"\\\\?\\" + std::filesystem::path(temp / name).make_preferred().wstring());
+    };
+
+    // A single component is capped at 255 characters, so it takes two to get over MAX_PATH wherever temp is.
+    std::string dir = "oe_" + std::string(200, 'd');
+    std::string longName = dir + "/oe_" + std::string(200, 'x') + ".txt";
+    std::filesystem::create_directory(onDisk(dir));
 
     for (std::string_view name : {std::string_view(longName), std::string_view("oe_trailing_dot.")}) {
         NativePath path = NativePath::fromWtf8(prefixed + std::string(name));
@@ -166,10 +173,10 @@ UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
             ASSERT_TRUE(stream.is_open()) << name;
         }
 
-        std::filesystem::path onDisk(L"\\\\?\\" + (temp / name).wstring()); // Built by hand, NativePath not involved.
-        EXPECT_TRUE(std::filesystem::exists(onDisk)) << name;
-        EXPECT_TRUE(std::filesystem::remove(onDisk)) << name;
+        EXPECT_TRUE(std::filesystem::exists(onDisk(name))) << name;
+        EXPECT_TRUE(std::filesystem::remove(onDisk(name))) << name;
     }
+    EXPECT_TRUE(std::filesystem::remove(onDisk(dir)));
 }
 #endif
 
