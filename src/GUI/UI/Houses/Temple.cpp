@@ -13,6 +13,7 @@
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Party.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -40,22 +41,15 @@ void GUIWindow_Temple::healDialogue() {
         return;
     }
 
-    bool keepZombie = false;
-    bool makeZombie = false;
-    if (isEvilTemple()) {
-        keepZombie = character.IsZombie();
-        makeZombie = !keepZombie && character.classType != CLASS_LICH &&
-                     character.conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD});
-    } else {
-        character.ResetCondition(CONDITION_ZOMBIE);
-    }
+    bool keepZombie = isEvilTemple() && character.IsZombie();
+    bool makeZombie = isEvilTemple() && !keepZombie && character.classType != CLASS_LICH &&
+                      character.conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD});
 
-    character.conditions.resetAll();
-    if (keepZombie) {
-        character.conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
-    } else if (makeZombie) {
+    for (Condition condition : allConditions())
+        if (condition != CONDITION_ZOMBIE || !keepZombie)
+            character.ResetCondition(condition);
+    if (makeZombie)
         character.SetCondition(CONDITION_ZOMBIE, 0);
-    }
     pParty->TakeGold(price);
     character.health = character.GetMaxHealth();
     character.mana = character.GetMaxMana();
