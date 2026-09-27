@@ -557,6 +557,8 @@ void Character::SetCondition(Condition condition, int blockable) {
                 return;
             }
 
+            // TODO(captainurist): this also cures petrification, disease, insanity and the rest, as vanilla MM7 does.
+            // It should clear only death, like Resurrection and the Lich branch of Reanimate.
             conditions.resetAll();
             health = GetMaxHealth();
             mana = 0;
