@@ -89,6 +89,9 @@ UNIT_TEST(NativePath, WindowsRoots) {
         EXPECT_EQ(NativePath::fromWtf8(path).withExtension(extension).toWtf8(), result)
             << "for '" << path << "' with '" << extension << "'";
     };
+    auto testNative = [] (std::string_view path, const std::wstring &result) {
+        EXPECT_EQ(NativePath::fromWtf8(path).native(), result) << "for '" << path << "'";
+    };
 
     EXPECT_EQ(NativePath::fromWtf8("a\\b").toWtf8(), "a/b"); // Both slashes separate components on Windows.
 
@@ -133,9 +136,9 @@ UNIT_TEST(NativePath, WindowsRoots) {
     testJoin("//?/UNC//share/a", "/b", "//?/UNC/b");
 
     // Extended-length and device paths go to Win32 with backslashes.
-    EXPECT_EQ(NativePath::fromWtf8("//?/C:/Games").native(), L"\\\\?\\C:\\Games");
-    EXPECT_EQ(NativePath::fromWtf8("//./UNC/server/share/f").native(), L"\\\\.\\UNC\\server\\share\\f");
-    EXPECT_EQ(NativePath::fromWtf8("C:/Games/MM7").native(), L"C:/Games/MM7"); // Everything else keeps them.
+    testNative("//?/C:/Games", L"\\\\?\\C:\\Games");
+    testNative("//./UNC/server/share/f", L"\\\\.\\UNC\\server\\share\\f");
+    testNative("C:/Games/MM7", L"C:/Games/MM7"); // Everything else keeps them.
     EXPECT_EQ(NativePath::fromNative(L"C:\\a\\b").toWtf8(), "C:/a/b"); // Separators from the OS get converted too.
 
     // A root name is never a file name, so a dot inside one doesn't start an extension.
@@ -213,11 +216,16 @@ UNIT_TEST(NativePath, LexicalCast) {
 
 #ifndef _WINDOWS
 UNIT_TEST(NativePath, PosixSyntax) {
+    auto testExtension = [] (std::string_view path, std::string_view extension, std::string_view result) {
+        EXPECT_EQ(NativePath::fromWtf8(path).withExtension(extension).toWtf8(), result)
+            << "for '" << path << "' with '" << extension << "'";
+    };
+
     // Backslashes and Windows roots are ordinary text on POSIX, where the only separator is a forward slash.
     EXPECT_EQ(NativePath::fromWtf8("a\\b").toWtf8(), "a\\b");
-    EXPECT_EQ(NativePath("a.b\\c").withExtension("").toWtf8(), "a"); // One file name, so ".b\c" is its extension.
-    EXPECT_EQ(NativePath("C:").withExtension(".x").toWtf8(), "C:.x");
-    EXPECT_EQ(NativePath("//a.b").withExtension("").toWtf8(), "//a");
+    testExtension("a.b\\c", "", "a"); // One file name, so ".b\c" is its extension.
+    testExtension("C:", ".x", "C:.x");
+    testExtension("//a.b", "", "//a");
 }
 
 UNIT_TEST(NativePath, InvalidUtf8RoundTrip) {
