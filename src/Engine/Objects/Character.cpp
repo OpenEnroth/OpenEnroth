@@ -3697,6 +3697,8 @@ void Character::AddSkillByEvent(Skill skill, int level, Mastery mastery) {
     int newLevel = std::min(pActiveSkills[skill].level() + level, skills_max_level[skill]);
     Mastery newMastery = std::max(pActiveSkills[skill].mastery(), mastery);
 
+    // TODO(captainurist): adding only a mastery to a skill at level 0 builds mastery without a level, and the
+    //                     constructor asserts. No MM6, MM7 or MM8 script adds to a skill, so only mods get here.
     pActiveSkills[skill] = CombinedSkillValue(newLevel, newMastery);
 }
 
