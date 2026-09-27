@@ -55,9 +55,12 @@ static PathRoot parseRoot(std::string_view path) {
 
         size_t end = 1; // The second leading slash, which is the separator before the first component.
         for (size_t i = 0; i < components; i++) {
-            if (end + 1 >= path.size() || path[end + 1] == separator)
+            size_t start = end + 1;
+            while (!isExtended && start < path.size() && path[start] == separator)
+                start++; // Win32 collapses doubled separators in a plain UNC root, but not after "//?/".
+            if (start >= path.size() || path[start] == separator)
                 break; // A missing component ends the root name early, as in a bare "//server".
-            end = std::min(path.find(separator, end + 1), path.size());
+            end = std::min(path.find(separator, start), path.size());
         }
         root.size = end;
     }
