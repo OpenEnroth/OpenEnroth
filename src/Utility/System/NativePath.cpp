@@ -15,7 +15,7 @@ enum class PathRootKind {
     PATH_ROOT_NONE, // No root name, as in "x" and "/x", and every path on POSIX.
     PATH_ROOT_DRIVE, // A drive letter, "C:".
     PATH_ROOT_UNC, // A network share, "//server/share".
-    PATH_ROOT_DEVICE, // An extended-length or device prefix, "//?/C:", "//?/UNC/server/share" or "//./COM1".
+    PATH_ROOT_EXTENDED, // An extended-length or device prefix, "//?/C:", "//?/UNC/server/share" or "//./COM1".
 };
 using enum PathRootKind;
 
@@ -46,7 +46,7 @@ static PathRoot parseRoot(std::string_view path) {
         root.kind = PATH_ROOT_DRIVE;
         root.size = 2;
     } else if (path.size() >= 3 && path[0] == separator && path[1] == separator && path[2] != separator) {
-        root.kind = path.starts_with("//?/") || path.starts_with("//./") ? PATH_ROOT_DEVICE : PATH_ROOT_UNC;
+        root.kind = path.starts_with("//?/") || path.starts_with("//./") ? PATH_ROOT_EXTENDED : PATH_ROOT_UNC;
 
         // The extended-length spelling of a share, "//?/UNC/server/share", is two components longer.
         size_t components = path.starts_with("//?/UNC/") ? 4 : 2;
@@ -130,7 +130,7 @@ std::wstring NativePath::native() const {
 
     // Win32 does no parsing after an extended-length prefix, so a forward slash there is just a character a file
     // name can't contain. A device path gets its backslashes back too, which is how Win32 spells those.
-    if (parseRoot(_path).kind == PATH_ROOT_DEVICE)
+    if (parseRoot(_path).kind == PATH_ROOT_EXTENDED)
         std::ranges::replace(result, L'/', L'\\');
 
     return result;
