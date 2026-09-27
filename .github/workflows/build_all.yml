@@ -264,18 +264,9 @@ jobs:
 
       - name: '[windows] Prepare files for release'
         if: matrix.platform == 'windows'
+        working-directory: build/src/Bin/OpenEnroth
         run: |
-          mkdir -p dist
-          cp build/src/Bin/OpenEnroth/OpenEnroth.exe dist/
-          cp build/src/Bin/OpenEnroth/OpenEnroth.pdb dist/
-
-      - name: '[windows] Zip folder for release'
-        if: matrix.platform == 'windows'
-        uses: thedoctor0/zip-release@0.7.6
-        with:
-          type: zip
-          filename: ${{env.RELEASE_FILE}}
-          path: dist
+          7z a -tzip "$GITHUB_WORKSPACE/$RELEASE_FILE" OpenEnroth.exe OpenEnroth.pdb
 
       - name: '[darwin/windows/android] Publish release'
         if: inputs.releaseTag != '' && matrix.platform != 'linux' # Linux ships as a Flatpak.

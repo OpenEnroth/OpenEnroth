@@ -76,8 +76,9 @@ export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
 
 ### Windows
 
-1. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
-2. Copy `OpenEnroth.exe` and `OpenEnroth.pdb` to the directory containing the game data.
+1. Download `OpenEnroth_nightly_Windows_x86_64_RelWithDebInfo.zip` (`x86` for 32-bit Windows) from the
+   [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
+2. Unzip `OpenEnroth.exe` and `OpenEnroth.pdb` into the directory containing the game data.
 3. Run `OpenEnroth.exe`.
 
 ### macOS
