@@ -509,6 +509,7 @@ GAME_TEST(Issues, Issue673c) {
     // Reporting the troglodytes under Stone City killed to Spark Burnkindle changed the reputation once per character.
     auto reputationTape = tapes.reputation();
     auto questTape = tapes.questBit(QBIT_STONE_CITY_TROGLODYTES_ACTIVE);
+    auto experienceTape = tapes.totalExperience();
     game.startNewGame();
     game.teleportTo(MAP_STONE_CITY, Vec3f(3904, -3334, -5), 270); // In front of Spark's house.
     for (Actor &actor : pActors)
@@ -526,6 +527,7 @@ GAME_TEST(Issues, Issue673c) {
     test.stopTaping();
 
     EXPECT_EQ(questTape, tape(false, true, false));
+    EXPECT_EQ(experienceTape.delta(), 4 * 5000); // Experience belongs to each character, so all four get it.
     EXPECT_EQ(reputationTape.delta(), -10);
 }
 
