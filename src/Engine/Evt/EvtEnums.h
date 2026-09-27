@@ -234,6 +234,8 @@ enum class EvtVariable {
     VAR_UnknownTimeEvent19 = 0x112,
     VAR_ReputationInCurrentLocation = 0x113,
     VAR_History_0 = 0x114,
+    // TODO(captainurist): MM7's history.txt only has text for History_0..History_27, so History_28 reads past
+    //                     historyLines. No MM7 script uses History_18 or History_28.
     VAR_History_28 = 0x130,
     VAR_AlertStatus = 0x131,
     VAR_GoldInBank = 0x132,
