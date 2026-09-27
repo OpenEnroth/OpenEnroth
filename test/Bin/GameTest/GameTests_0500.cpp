@@ -587,7 +587,7 @@ GAME_TEST(Issues, Issue720) {
     // Test that quest book is opening fine
     test.playTraceFromTestData("issue_720.mm7", "issue_720.json");
     EXPECT_EQ(current_screen_type, SCREEN_BOOKS);
-    EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WINDOW_QuestBook);
+    EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WINDOW_QUEST_BOOK);
 }
 
 GAME_TEST(Issues, Issue724) {

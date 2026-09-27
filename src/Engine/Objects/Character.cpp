@@ -3131,7 +3131,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         pAudioPlayer->playUISound(SOUND_eat);
 
         if (pGUIWindow_CurrentMenu &&
-            pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
+            pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         }
         //if (v73) {
@@ -3377,7 +3377,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->playReaction(SPEECH_DRINK_POTION);
         }
         pAudioPlayer->playUISound(SOUND_drink);
-        if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
+        if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         }
         if (pParty->bTurnBasedModeOn) {
@@ -3422,7 +3422,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             pParty->takeHoldingItem();
             // Process spell on next frame after game exits inventory window.
             engine->_messageQueue->addMessageNextFrame(UIMSG_SpellScrollUse, std::to_underlying(scrollSpellId), targetCharacter);
-            if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
+            if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL)) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
             }
         }
@@ -3454,7 +3454,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         playerAffected->bHaveSpell[bookSpellId] = true;
         playerAffected->playReaction(SPEECH_LEARN_SPELL);
 
-        // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
+        // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL) {
         //     if (!v73) { // v73 is always 0 at this point
         //         mouse->RemoveHoldingItem();
         //         return;
@@ -4123,7 +4123,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
 }
 
 void Character::OnInventoryLeftClick() {
-    if (current_character_screen_window != WINDOW_CharacterWindow_Inventory) {
+    if (current_character_screen_window != WINDOW_CHARACTER_INVENTORY) {
         return;
     }
 

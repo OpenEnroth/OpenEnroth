@@ -30,7 +30,7 @@ void GUIWindow_AutonotesBook::recalculateCurrentNotesTypePages() {
 }
 
 GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
-    this->eWindowType = WindowType::WINDOW_AutonotesBook;
+    this->eWindowType = WINDOW_AUTONOTES_BOOK;
 
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{527, 353}, Sizei{0, 0}, pBtn_Autonotes);
     bFlashAutonotesBook = false;

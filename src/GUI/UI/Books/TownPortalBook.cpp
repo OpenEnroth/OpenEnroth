@@ -93,7 +93,7 @@ GraphicsImage *ui_townportal_cheat_destination_icon = nullptr;
 
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags castFlags)
         : _casterPid(casterPid), _castFlags(castFlags) {
-    this->eWindowType = WindowType::WINDOW_TownPortal;
+    this->eWindowType = WINDOW_TOWN_PORTAL;
 
     ui_book_townportal_background = assets->getImage_Solid("townport");
 
