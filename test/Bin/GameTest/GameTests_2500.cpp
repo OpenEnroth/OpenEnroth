@@ -788,7 +788,7 @@ GAME_TEST(Issues, Issue2834) {
 
     game.pressGuiButton("Game_Hireling2"); // Lady Margaret is the first hireling.
     game.tick(2);
-    game.pressGuiButton("Dialogue_Option1"); // Swap the heads.
+    game.pressGuiButton("NpcDialogue_Option1"); // Swap the heads.
     game.tick(2);
     test.stopTaping();
 
