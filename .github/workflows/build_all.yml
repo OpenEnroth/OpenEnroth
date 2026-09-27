@@ -242,11 +242,6 @@ jobs:
         env:
           OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
-      - name: '[android] List artifacts'
-        if: matrix.platform == 'android'
-        run: |
-          find android/openenroth/build/outputs/apk
-
       - name: '[android] Prepare files for release'
         if: matrix.platform == 'android'
         run: |
